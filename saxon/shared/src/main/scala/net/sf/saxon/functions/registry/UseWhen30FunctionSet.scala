@@ -1,0 +1,79 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Function signatures (and pointers to implementations) of the functions available for use
+ * in static expressions (including use-when expressions) in XSLT 3.0 stylesheets
+ */
+
+package net.sf.saxon.functions.registry
+
+import net.sf.saxon.functions._
+import net.sf.saxon.functions.registry.BuiltInFunctionSet._
+import net.sf.saxon.model.BuiltInAtomicType
+
+//remove if not needed
+
+object UseWhen30FunctionSet {
+
+  private var THE_INSTANCE: UseWhen30FunctionSet = new UseWhen30FunctionSet()
+
+  def getInstance(): UseWhen30FunctionSet = THE_INSTANCE
+
+}
+
+class UseWhen30FunctionSet  () extends BuiltInFunctionSet {
+
+  init()
+
+   def init(): Unit = {
+    addXPathFunctions()
+    register("available-system-properties",
+             0,
+             classOf[AvailableSystemProperties],
+             BuiltInAtomicType.QNAME,
+      BuiltInFunctionSet.STAR,
+      BuiltInFunctionSet.LATE)
+    register("element-available",
+             1,
+             classOf[ElementAvailable],
+             BuiltInAtomicType.BOOLEAN,
+      BuiltInFunctionSet.ONE,
+      BuiltInFunctionSet.NS).arg(0, BuiltInAtomicType.STRING, ONE, null)
+    register("function-available",
+             1,
+             classOf[FunctionAvailable],
+             BuiltInAtomicType.BOOLEAN,
+             ONE,
+             NS | LATE).arg(0, BuiltInAtomicType.STRING, ONE, null)
+    register("function-available",
+             2,
+             classOf[FunctionAvailable],
+             BuiltInAtomicType.BOOLEAN,
+             ONE,
+             NS | LATE)
+      .arg(0, BuiltInAtomicType.STRING, ONE, null)
+      .arg(1, BuiltInAtomicType.INTEGER, ONE, null)
+    register("system-property",
+             1,
+             classOf[SystemProperty],
+             BuiltInAtomicType.STRING,
+             ONE,
+             NS | LATE).arg(0, BuiltInAtomicType.STRING, ONE, null)
+    register("type-available",
+             1,
+             classOf[TypeAvailable],
+             BuiltInAtomicType.BOOLEAN,
+             ONE,
+             NS).arg(0, BuiltInAtomicType.STRING, ONE, null)
+  }
+
+   def addXPathFunctions(): Unit = {
+    importFunctionSet(XPath31FunctionSet.getInstance)
+  }
+
+}
+

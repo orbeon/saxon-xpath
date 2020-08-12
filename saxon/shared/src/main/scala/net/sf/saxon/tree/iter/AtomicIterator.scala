@@ -1,0 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package net.sf.saxon.tree.iter
+
+import net.sf.saxon.value.AtomicValue
+
+
+
+
+trait AtomicIterator[T <: AtomicValue] extends UnfailingIterator {
+
+  def next(): T
+
+}
