@@ -1,28 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.ma.json
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.event.Builder
-import net.sf.saxon.event.ComplexContentOutputter
-import net.sf.saxon.event.Outputter
-import net.sf.saxon.event.ReceiverOption
+import java.util.{HashMap, HashSet, Stack}
+
+import javax.xml.transform.sax.SAXSource
+import net.sf.saxon.event.{Builder, ComplexContentOutputter, Outputter, ReceiverOption}
 import net.sf.saxon.expr.XPathContext
 import net.sf.saxon.expr.parser.Loc
-import net.sf.saxon.lib.NamespaceConstant
-import net.sf.saxon.lib.StandardEntityResolver
-import net.sf.saxon.model._
+import net.sf.saxon.lib.{NamespaceConstant, StandardEntityResolver}
+import net.sf.saxon.ma.json.JsonHandlerXML._
+import net.sf.saxon.model.Untyped.Untyped
+import net.sf.saxon.model.{AnySimpleType, _}
 import net.sf.saxon.om._
 import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.Configuration
 import org.xml.sax.InputSource
-import org.xml.sax.SAXException
-import javax.xml.transform.sax.SAXSource
-import java.util.HashMap
-import java.util.HashSet
-import java.util.Stack
-
-import JsonHandlerXML._
-import net.sf.saxon.model.AnySimpleType.AnySimpleType
-import net.sf.saxon.model.Untyped.Untyped
 
 
 object JsonHandlerXML {
@@ -35,7 +32,7 @@ object JsonHandlerXML {
 
   private val UNTYPED: Untyped = Untyped.getInstance
 
-  private val SIMPLE_TYPE: AnySimpleType = AnySimpleType.getInstance
+  private val SIMPLE_TYPE: AnySimpleType.type = AnySimpleType
 
   private val BOOLEAN_TYPE: BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
 
@@ -328,9 +325,3 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

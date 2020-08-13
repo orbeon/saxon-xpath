@@ -153,7 +153,7 @@ object AnyType extends Enumeration {
     /*@NotNull*/
 
     def getAttributeUseType(attributeName: StructuredQName): SimpleType =
-      AnySimpleType.getInstance
+      AnySimpleType
 
     def getAttributeUseCardinality(attributeName: StructuredQName): Int =
       StaticProperty.ALLOWS_ZERO_OR_ONE

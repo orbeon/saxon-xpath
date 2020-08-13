@@ -97,7 +97,7 @@ abstract class NodeTest
       p match {
         case DOCUMENT => AnyType.getInstance
         case ELEMENT => AnyType.getInstance
-        case ATTRIBUTE => AnySimpleType.getInstance
+        case ATTRIBUTE => AnySimpleType
         case COMMENT => BuiltInAtomicType.STRING
         case TEXT => BuiltInAtomicType.UNTYPED_ATOMIC
         case PI => BuiltInAtomicType.STRING

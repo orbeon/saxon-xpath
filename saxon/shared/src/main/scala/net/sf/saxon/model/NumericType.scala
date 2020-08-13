@@ -75,7 +75,7 @@ class NumericType private()
 
   override def isBuiltInType(): Boolean = true
 
-  def getBuiltInBaseType(): SchemaType = AnySimpleType.getInstance
+  def getBuiltInBaseType(): SchemaType = AnySimpleType
 
   override def getTypedValue(value: CharSequence,
                              resolver: NamespaceResolver,
@@ -128,7 +128,7 @@ class NumericType private()
 
   def getBlock(): Int = 0
 
-  def getBaseType(): SchemaType = AnySimpleType.getInstance
+  def getBaseType(): SchemaType = AnySimpleType
 
   def getDerivationMethod(): Int = DERIVATION_RESTRICTION
 

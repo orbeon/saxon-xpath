@@ -110,7 +110,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
   override def getContentType(): SchemaType = kind match {
     case Type.DOCUMENT => AnyType.getInstance
     case Type.ELEMENT => AnyType.getInstance
-    case Type.ATTRIBUTE => AnySimpleType.getInstance
+    case Type.ATTRIBUTE => AnySimpleType
     case Type.COMMENT => BuiltInAtomicType.STRING
     case Type.TEXT => BuiltInAtomicType.UNTYPED_ATOMIC
     case Type.PROCESSING_INSTRUCTION => BuiltInAtomicType.STRING

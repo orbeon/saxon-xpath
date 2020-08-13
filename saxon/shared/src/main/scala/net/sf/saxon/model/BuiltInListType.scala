@@ -79,7 +79,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getValidationStatus(): ValidationStatus = VALIDATED
 
-  def getBaseType(): SchemaType = AnySimpleType.getInstance
+  def getBaseType(): SchemaType = AnySimpleType
 
   def isAtomicType(): Boolean = false
 
@@ -111,7 +111,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getBlock(): Int = 0
 
-  def getKnownBaseType(): SchemaType = AnySimpleType.getInstance
+  def getKnownBaseType(): SchemaType = AnySimpleType
 
   def getDerivationMethod(): Int = DERIVATION_LIST
 

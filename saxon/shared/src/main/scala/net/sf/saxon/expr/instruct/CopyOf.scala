@@ -325,14 +325,14 @@ class CopyOf(select: Expression,
                   catch {
                     case e1: MissingComponentException =>
                       new ContentTypeTest(Type.ATTRIBUTE,
-                        AnySimpleType.getInstance,
+                        AnySimpleType,
                         config,
                         false)
 
                   }
                 } else {
                   new ContentTypeTest(Type.ATTRIBUTE,
-                    AnySimpleType.getInstance,
+                    AnySimpleType,
                     config,
                     false)
                 }

@@ -1,47 +1,22 @@
 package net.sf.saxon.expr.instruct
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Controller
-
-import net.sf.saxon.event._
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionTool
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
-import net.sf.saxon.expr.parser.RebindingMap
-
-import net.sf.saxon.lib.ParseOptions
-
-import net.sf.saxon.lib.Validation
-
-import net.sf.saxon.model._
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.pattern._
-
-import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.BooleanValue
-
-import net.sf.saxon.value.SequenceType
-
 import java.util.Iterator
 
-import Copy._
+import net.sf.saxon.event._
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.instruct.Copy._
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
+import net.sf.saxon.lib.{ParseOptions, Validation}
+import net.sf.saxon.model.Affinity.Affinity
+import net.sf.saxon.model._
+import net.sf.saxon.om._
+import net.sf.saxon.pattern._
+import net.sf.saxon.trace.ExpressionPresenter
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.{Configuration, Controller}
+import net.sf.saxon.value.{BooleanValue, SequenceType}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-import Affinity.Affinity
-import scala.jdk.CollectionConverters._
+import scala.beans.BooleanBeanProperty
 
 object Copy {
 
@@ -231,14 +206,14 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
                   catch {
                     case e1: MissingComponentException =>
                       new ContentTypeTest(Type.ATTRIBUTE,
-                        AnySimpleType.getInstance,
+                        AnySimpleType,
                         config,
                         false)
 
                   }
                 } else {
                   new ContentTypeTest(Type.ATTRIBUTE,
-                    AnySimpleType.getInstance,
+                    AnySimpleType,
                     config,
                     false)
                 }

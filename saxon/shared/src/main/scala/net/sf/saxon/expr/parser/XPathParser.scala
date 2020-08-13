@@ -1127,7 +1127,7 @@ class XPathParser() {
       case _ =>
         throw new IllegalArgumentException
     }
-    //            if (type == AnySimpleType.getInstance()) {
+    //            if (type == AnySimpleType()) {
     //                throw new XPathException("Cannot cast to xs:anySimpleType", "XPST0080");
     //            } else {
     throw new XPathException("Cannot cast to " + `type`.getClass, "XPST0051")
@@ -2648,7 +2648,7 @@ class XPathParser() {
             }
             else if (primaryType == Type.ATTRIBUTE) {
               if (nodeTest == null) nodeTest = new NameTest(Type.ATTRIBUTE, fp, pool)
-              if ((schemaType eq AnyType.getInstance) || (schemaType eq AnySimpleType.getInstance)) result = nodeTest
+              if ((schemaType eq AnyType.getInstance) || (schemaType eq AnySimpleType)) result = nodeTest
               else result = new CombinedNodeTest(nodeTest, Token.INTERSECT, typeTest)
               nextToken()
             }

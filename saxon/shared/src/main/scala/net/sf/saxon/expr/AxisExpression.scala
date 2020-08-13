@@ -317,7 +317,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (!env.getPackageData.isSchemaAware) {
         val ct: SchemaType = test.getContentType
         if (!(ct == AnyType.getInstance || ct == Untyped.getInstance ||
-          ct == AnySimpleType.getInstance ||
+          ct == AnySimpleType ||
           ct == BuiltInAtomicType.ANY_ATOMIC ||
           ct == BuiltInAtomicType.UNTYPED_ATOMIC ||
           ct == BuiltInAtomicType.STRING)) {

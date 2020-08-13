@@ -50,7 +50,7 @@ class ErrorType private()
 
   def getValidationStatus(): ValidationStatus = VALIDATED
 
-  def getBaseType(): SchemaType = AnySimpleType.getInstance
+  def getBaseType(): SchemaType = AnySimpleType
 
   def getKnownBaseType(): SchemaType = getBaseType
 
@@ -76,7 +76,7 @@ class ErrorType private()
     new UntypedAtomicValue(node.getStringValueCS)
 
   def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = {
-    if (`type` == this || `type` == AnySimpleType.getInstance) {
+    if (`type` == this || `type` == AnySimpleType) {
       return
     }
     throw new SchemaException(

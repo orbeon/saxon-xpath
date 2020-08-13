@@ -19,7 +19,7 @@ object BuiltInType {
   private var lookupByLocalName: Map[String, SchemaType] =
     new HashMap[String, SchemaType](100)
 
-  register(StandardNames.XS_ANY_SIMPLE_TYPE, AnySimpleType.getInstance)
+  register(StandardNames.XS_ANY_SIMPLE_TYPE, AnySimpleType)
 
   register(StandardNames.XS_ANY_TYPE, AnyType.getInstance)
 

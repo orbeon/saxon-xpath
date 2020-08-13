@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,8 +8,8 @@ package net.sf.saxon.model
 
 import java.util.{HashMap, Map}
 
-import net.sf.saxon.expr.{Expression, Literal, StaticProperty}
 import net.sf.saxon.expr.instruct.ValueOf
+import net.sf.saxon.expr.{Expression, Literal, StaticProperty}
 import net.sf.saxon.lib.{ConversionRules, NamespaceConstant}
 import net.sf.saxon.model.SchemaComponent.ValidationStatus.VALIDATED
 import net.sf.saxon.model.StringConverter._
@@ -23,13 +22,15 @@ import net.sf.saxon.value._
  * (such as xs:decimal or xs:anyURI) or a derived type (such as xs:ID or xs:dayTimeDuration).
  */
 object BuiltInAtomicType {
+
   private var byAlphaCode: Map[String, BuiltInAtomicType] = new HashMap(60)
 
   val ANY_ATOMIC: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_ANY_ATOMIC_TYPE,
-    AnySimpleType.getInstance,
+    AnySimpleType,
     "A",
-    true)
+    true
+  )
 
   val STRING: BuiltInAtomicType =
     makeAtomicType(StandardNames.XS_STRING, ANY_ATOMIC, "AS", true)
@@ -312,7 +313,8 @@ object BuiltInAtomicType {
    * @param ordered     true if the type is ordered
    * @return the newly constructed built in atomic type
    */
-  /*@NotNull*/ private def makeAtomicType(fingerprint: Int, baseType: SimpleType, code: String, ordered: Boolean) = {
+  /*@NotNull*/
+  private def makeAtomicType(fingerprint: Int, baseType: SimpleType, code: String, ordered: Boolean) = {
     val t = new BuiltInAtomicType(fingerprint)
     t.setBaseTypeFingerprint(baseType.getFingerprint)
     if (t.isPrimitiveType) t.primitiveFingerprint = fingerprint
@@ -724,7 +726,7 @@ class BuiltInAtomicType private(var fingerprint: Int) extends AtomicType with It
    * @throws SchemaException if the derivation is not allowed
    */
   @throws[SchemaException]
-  override def checkTypeDerivationIsOK(`type`: SchemaType, block: Int) = if (`type` eq AnySimpleType.getInstance) {
+  override def checkTypeDerivationIsOK(`type`: SchemaType, block: Int) = if (`type` eq AnySimpleType) {
     // OK
   }
   else if (isSameType(`type`)) {

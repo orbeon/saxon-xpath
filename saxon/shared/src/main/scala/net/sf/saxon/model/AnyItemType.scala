@@ -2,16 +2,8 @@
 package net.sf.saxon.model
 
 import net.sf.saxon.expr.StaticProperty
-
-import net.sf.saxon.om.Genre
-
-import net.sf.saxon.om.Item
-
+import net.sf.saxon.om.{Genre, Item}
 import net.sf.saxon.value.SequenceType
-
-import AnyItemType._
-
-
 
 
 object AnyItemType {

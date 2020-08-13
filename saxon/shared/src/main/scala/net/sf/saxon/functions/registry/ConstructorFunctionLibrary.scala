@@ -113,7 +113,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
     if (`type`.isAtomicType && `type`.asInstanceOf[AtomicType].isAbstract) {
       false
     }
-    `type` != AnySimpleType.getInstance
+    `type` ne AnySimpleType
   }
 
   def bind(functionName: SymbolicName.F,

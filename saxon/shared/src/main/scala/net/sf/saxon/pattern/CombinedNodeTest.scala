@@ -225,11 +225,11 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     }
     if (operator == Token.INTERSECT) {
       if (type2.isInstanceOf[AnyType] ||
-        (type2.isInstanceOf[AnySimpleType] && type1.isSimpleType)) {
+        ((type2 eq AnySimpleType) && type1.isSimpleType)) {
         return type1
       }
       if (type1.isInstanceOf[AnyType] ||
-        (type1.isInstanceOf[AnySimpleType] && type2.isSimpleType)) {
+        ((type1 eq AnySimpleType) && type2.isSimpleType)) {
         return type2
       }
     }
