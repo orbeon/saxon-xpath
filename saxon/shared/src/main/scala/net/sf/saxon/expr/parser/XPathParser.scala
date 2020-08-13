@@ -946,8 +946,7 @@ class XPathParser() {
 
   @throws[XPathException]
   private def makeBinaryExpression(lhs: Expression, operator: Int, rhs: Expression): Expression = {
-    var lhsExp = lhs
-    var rhsExp = rhs
+
     operator match {
       case Token.OR =>
         new OrExpression(lhs, rhs)
@@ -970,8 +969,8 @@ class XPathParser() {
           System.arraycopy(args, 0, newArgs, 0, args.length)
           newArgs(args.length) = rhs
           SystemFunction.makeCall("concat", rsc, newArgs: _*)
-        }
-        else SystemFunction.makeCall("concat", rsc, lhs, rhs)
+        } else
+          SystemFunction.makeCall("concat", rsc, lhs, rhs)
       case Token.PLUS | Token.MINUS | Token.MULT | Token.DIV | Token.IDIV | Token.MOD =>
         env.getConfiguration.getTypeChecker(env.isInBackwardsCompatibleMode).makeArithmeticExpression(lhs, operator, rhs)
       case Token.OTHERWISE =>
@@ -980,12 +979,10 @@ class XPathParser() {
         new VennExpression(lhs, operator, rhs)
       case Token.OR_ELSE =>
         val rsc = new RetainedStaticContext(env)
-        lhsExp = SystemFunction.makeCall("boolean", rsc, rhsExp)
-        Choose.makeConditional(lhsExp, Literal.makeLiteral(BooleanValue.TRUE), rhsExp)
+        Choose.makeConditional(lhs, Literal.makeLiteral(BooleanValue.TRUE), SystemFunction.makeCall("boolean", rsc, rhs))
       case Token.AND_ALSO =>
         val rsc = new RetainedStaticContext(env)
-        rhsExp = SystemFunction.makeCall("boolean", rsc, rhsExp)
-        Choose.makeConditional(lhsExp, rhsExp, Literal.makeLiteral(BooleanValue.FALSE))
+        Choose.makeConditional(lhs, SystemFunction.makeCall("boolean", rsc, rhs), Literal.makeLiteral(BooleanValue.FALSE))
       case _ =>
         throw new IllegalArgumentException(Token.tokens(operator))
     }
