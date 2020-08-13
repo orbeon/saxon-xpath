@@ -14,9 +14,7 @@ import java.net.URLConnection
 import net.sf.saxon.utils.Configuration
 
 object UnknownResource {
-
-  val FACTORY: ResourceFactory = new UnknownResource().asInstanceOf[ResourceFactory]
-
+  val FACTORY: ResourceFactory = (_, _) => new UnknownResource
 }
 
 class UnknownResource extends Resource {
