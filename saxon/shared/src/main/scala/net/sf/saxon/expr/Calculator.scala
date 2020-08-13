@@ -1,48 +1,34 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
+import java.math.{BigDecimal, BigInteger, RoundingMode}
+
 import net.sf.saxon.expr.parser.Token
-
-import net.sf.saxon.model.AtomicType
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.model.Converter
-
-import net.sf.saxon.model.Type
-
+import net.sf.saxon.model.{AtomicType, BuiltInAtomicType, Converter, Type}
 import net.sf.saxon.om.StandardNames
-
 import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.value._
-
 import net.sf.saxon.z.IntHashMap
 
-import java.math.BigDecimal
 
-import java.math.BigInteger
-
-import java.math.RoundingMode
-
-import Calculator._
-
-
-
-
+/**
+  * This class evaluates arithmetic expressions; it acts as a helper class to the ArithmeticExpression
+  * class. There are many subclasses for the different kinds of arithmetic expression, and static methods
+  * that allow the right subclass to be selected, either at compile time or at run time.
+  */
 object Calculator {
 
-  val PLUS: Int = 0
-
+  val PLUS : Int = 0
   val MINUS: Int = 1
-
   val TIMES: Int = 2
-
-  val DIV: Int = 3
-
-  val MOD: Int = 4
-
-  val IDIV: Int = 5
+  val DIV  : Int = 3
+  val MOD  : Int = 4
+  val IDIV : Int = 5
 
   def getTokenFromOperator(operator: Int): Int = tokens(operator)
 
@@ -145,31 +131,25 @@ object Calculator {
   val NUMERIC_DURATION: Array[Calculator] =
     Array(null, null, new NumericTimesDuration(), null, null, null)
 
-  private var table: IntHashMap[Array[Calculator]] = new IntHashMap(100)
+  private val table: IntHashMap[Array[Calculator]] = new IntHashMap(100)
+  private val nameTable: IntHashMap[String] = new IntHashMap(100)
 
-  private var nameTable: IntHashMap[String] = new IntHashMap(100)
+  private def `def`(typeA: Int, typeB: Int, calculatorSet: Array[Calculator], setName: String): Unit = {
 
-  private def `def`(typeA: Int,
-                    typeB: Int,
-                    calculatorSet: Array[Calculator],
-                    setName: String): Unit = {
     val key: Int = (typeA & 0xffff) << 16 | (typeB & 0xffff)
+
     table.put(key, calculatorSet)
     nameTable.put(key, setName)
-// considered primitive
+
+    // As well as the entries added directly, we also add derived entries for other types
+    // considered primitive
     if (typeA == StandardNames.XS_DURATION) {
       `def`(StandardNames.XS_DAY_TIME_DURATION, typeB, calculatorSet, setName)
-      `def`(StandardNames.XS_YEAR_MONTH_DURATION,
-            typeB,
-            calculatorSet,
-            setName)
+      `def`(StandardNames.XS_YEAR_MONTH_DURATION, typeB, calculatorSet, setName)
     }
     if (typeB == StandardNames.XS_DURATION) {
       `def`(typeA, StandardNames.XS_DAY_TIME_DURATION, calculatorSet, setName)
-      `def`(typeA,
-            StandardNames.XS_YEAR_MONTH_DURATION,
-            calculatorSet,
-            setName)
+      `def`(typeA, StandardNames.XS_YEAR_MONTH_DURATION, calculatorSet, setName)
     }
     if (typeA == StandardNames.XS_DATE_TIME) {
       `def`(StandardNames.XS_DATE, typeB, calculatorSet, setName)
@@ -189,12 +169,12 @@ object Calculator {
 // As well as the entries added directly, we also add derived entries for other types
 // As well as the entries added directly, we also add derived entries for other types
 
-  def getCalculator(typeA: Int,
-                    typeB: Int,
-                    operator: Int,
-                    mustResolve: Boolean): Calculator = {
+  def getCalculator(typeA: Int, typeB: Int, operator: Int, mustResolve: Boolean): Calculator = {
+
     val key: Int = (typeA & 0xffff) << 16 | (typeB & 0xffff)
+
     val set: Array[Calculator] = table.get(key)
+
     if (set == null) {
       if (mustResolve) {
         null
@@ -222,8 +202,7 @@ object Calculator {
     case 'n' => StandardNames.XS_NUMERIC
     case 't' => StandardNames.XS_DATE_TIME
     case 'u' => StandardNames.XS_DURATION
-    case _ => throw new AssertionError()
-
+    case _ => throw new AssertionError
   }
 
   def operatorFromCode(code: Char): Int = code match {
@@ -233,8 +212,7 @@ object Calculator {
     case '/' => DIV
     case '~' => IDIV
     case '%' => MOD
-    case _ => throw new AssertionError()
-
+    case _ => throw new AssertionError
   }
 
   def getCalculatorSetName(typeA: Int, typeB: Int): String = {
@@ -1053,16 +1031,4 @@ abstract class Calculator {
   def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue
 
   def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class evaluates arithmetic expressions; it acts as a helper class to the ArithmeticExpression
-  * class. There are many subclasses for the different kinds of arithmetic expression, and static methods
-  * that allow the right subclass to be selected, either at compile time or at run time.
-  */

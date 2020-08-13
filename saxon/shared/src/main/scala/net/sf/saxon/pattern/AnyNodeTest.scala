@@ -1,27 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.pattern
-
-import net.sf.saxon.model.SchemaType
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.model.UType
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.NodeName
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.tree.tiny.NodeVectorTree
 
 import java.util.function.IntPredicate
 
-import AnyNodeTest._
+import net.sf.saxon.model.{SchemaType, Type, UType}
+import net.sf.saxon.om.{NodeInfo, NodeName, StructuredQName}
+import net.sf.saxon.tree.tiny.NodeVectorTree
 
 
-
-
+/**
+  * NodeTest is an interface that enables a test of whether a node has a particular
+  * name and type. An AnyNodeTest matches any node.
+  *
+  * @author Michael H. Kay
+  */
 object AnyNodeTest {
 
   private var THE_INSTANCE: AnyNodeTest = new AnyNodeTest()
@@ -97,15 +94,3 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
   def generateJavaScriptNameTest(targetVersion: Int): String = "true"
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * NodeTest is an interface that enables a test of whether a node has a particular
-  * name and type. An AnyNodeTest matches any node.
-  *
-  * @author Michael H. Kay
-  */

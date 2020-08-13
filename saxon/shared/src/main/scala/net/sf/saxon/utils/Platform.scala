@@ -24,17 +24,11 @@ import javax.xml.transform.stream.StreamSource
 trait Platform {
 
   def initialize(config: Configuration): Unit
-
   def isJava(): Boolean
-
   def isDotNet(): Boolean
-
   def getPlatformVersion(): String
-
   def getPlatformSuffix(): String
-
   def loadParser(): XMLReader
-
   def loadParserForXmlFragments(): XMLReader
 
   def getParserSource(pipe: PipelineConfiguration,
@@ -43,7 +37,6 @@ trait Platform {
                       dtdValidation: Boolean): Source
 
   /*@Nullable*/
-
   def makeCollation(config: Configuration,
                     props: Properties,
                     uri: String): StringCollator
@@ -75,19 +68,11 @@ trait Platform {
                                hostLanguage: String,
                                warnings: List[String]): RegularExpression
 
-  def getExternalObjectType(config: Configuration,
-                            uri: String,
-                            localName: String): ExternalObjectType
-
+  def getExternalObjectType(config: Configuration, uri: String, localName: String): ExternalObjectType
   def getInstallationDirectory(edition: String, config: Configuration): String
-
   def registerAllBuiltInObjectModels(config: Configuration): Unit
-
   def setDefaultSAXParserFactory(config: Configuration): Unit
-
-  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext,
-                             sc: StaticContext): Boolean
-
+  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext, sc: StaticContext): Boolean
   def makeStandardModuleURIResolver(config: Configuration): ModuleURIResolver
 
 }

@@ -14,7 +14,7 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 object Loc {
 
-  var NONE: Loc = new Loc(null, -1, -1)
+  val NONE: Loc = new Loc(null, -1, -1)
 
   def makeFromSax(loc: Locator): Loc =
     new Loc(loc.getSystemId, loc.getLineNumber, loc.getColumnNumber)

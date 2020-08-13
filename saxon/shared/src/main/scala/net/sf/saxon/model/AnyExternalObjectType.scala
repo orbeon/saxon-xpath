@@ -12,11 +12,8 @@ import net.sf.saxon.om.{Genre, Item}
 import net.sf.saxon.value.ObjectValue
 
 
-
 object AnyExternalObjectType {
-
   var THE_INSTANCE: AnyExternalObjectType = new AnyExternalObjectType()
-
 }
 
 /**

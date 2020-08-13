@@ -518,7 +518,7 @@ class Configuration() extends SourceResolver with NotationSet {
 //
 //   def makeConfigurationReader = new ConfigurationReader
 
-   def init() = {
+   def init(): Unit = {
     Version.platform.initialize(this)
     //defaultXsltCompilerInfo.setURIResolver(getSystemURIResolver)
     val resolver = new StandardEntityResolver(this)

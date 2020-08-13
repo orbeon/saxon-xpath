@@ -44,13 +44,14 @@ object BigDecimalValue {
    * @return the required DecimalValue if the input is valid, or a ValidationFailure encapsulating the error
    *         message if not.
    */
-  def makeDecimalValue(in: CharSequence, validate: Boolean) = try parse(in)
-  catch {
-    case err: NumberFormatException =>
-      val e = new ValidationFailure("Cannot convert string " + Err.wrap(Whitespace.trim(in), Err.VALUE) + " to xs:decimal: " + err.getMessage)
-      e.setErrorCode("FORG0001")
-      e
-  }
+  def makeDecimalValue(in: CharSequence, validate: Boolean) =
+    try parse(in)
+    catch {
+      case err: NumberFormatException =>
+        val e = new ValidationFailure("Cannot convert string " + Err.wrap(Whitespace.trim(in), Err.VALUE) + " to xs:decimal: " + err.getMessage)
+        e.setErrorCode("FORG0001")
+        e
+    }
 
   /**
    * Factory method to construct a DecimalValue from a string, throwing an unchecked exception

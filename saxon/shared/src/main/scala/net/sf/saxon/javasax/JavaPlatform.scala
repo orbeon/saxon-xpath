@@ -38,9 +38,7 @@ import net.sf.saxon.javasax.JavaCollationFactory
 import net.sf.saxon.utils.{Configuration, Platform}
 
 object JavaPlatform {
-
   var tryJdk9: Boolean = true
-
 }
 
 class JavaPlatform extends Platform {

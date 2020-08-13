@@ -78,8 +78,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     getExpressionName + "(" + getBaseExpression + ")"
 
   override def toShortString(): String =
-    getExpressionName + "(" + getBaseExpression.toShortString() +
-      ")"
+    getExpressionName + "(" + getBaseExpression.toShortString() + ")"
 
   def export(out: ExpressionPresenter): Unit = {
     val name: String = getExpressionName

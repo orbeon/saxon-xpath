@@ -29,7 +29,7 @@ class XPathSelector(private var exp: XPathExpression,
                     private var declaredVariables: Map[StructuredQName, XPathVariable])
   extends java.lang.Iterable[XdmItem] {
 
-  private var dynamicContext: XPathDynamicContext = exp.createDynamicContext()
+  private val dynamicContext: XPathDynamicContext = exp.createDynamicContext()
 
   def setContextItem(item: XdmItem): Unit = {
     if (item == null) {
@@ -78,11 +78,11 @@ class XPathSelector(private var exp: XPathExpression,
   }
 
   def evaluateSingle(): XdmItem = {
-    val i: Item = exp.evaluateSingle(dynamicContext)
-    if (i == null) {
+    val i = exp.evaluateSingle(dynamicContext)
+    if (i == null)
       null
-    }
-    XdmValue.wrap(i).asInstanceOf[XdmItem]
+    else
+      XdmValue.wrap(i).asInstanceOf[XdmItem]
   }
 
   def iterator(): XdmSequenceIterator[XdmItem] =

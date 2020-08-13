@@ -74,7 +74,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     if (itemType0.isInstanceOf[ErrorType])
       return Literal.makeEmptySequence()
 
-    var type0  =
+    var type0 =
       itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
 
     if (type0.getFingerprint == StandardNames.XS_UNTYPED_ATOMIC) {
@@ -84,10 +84,8 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
           getLhsExpression,
           BuiltInAtomicType.DOUBLE))
       type0 = BuiltInAtomicType.DOUBLE
-    } else if ((getLhsExpression.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC) ==
-      0 &&
-      th.relationship(type0, BuiltInAtomicType.UNTYPED_ATOMIC) !=
-        Affinity.DISJOINT) {
+    } else if ((getLhsExpression.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC) == 0 &&
+      th.relationship(type0, BuiltInAtomicType.UNTYPED_ATOMIC) != Affinity.DISJOINT) {
       setLhsExpression(
         UntypedSequenceConverter.makeUntypedSequenceConverter(
           config,
@@ -155,7 +153,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
           .asInstanceOf[NumericValue]
         return Literal.makeLiteral(nv.negate(), this)
       } else {
-        val ne: NegateExpression = new NegateExpression(getRhsExpression)
+        val ne = new NegateExpression(getRhsExpression)
         ne.setBackwardsCompatible(false)
         return ne.typeCheck(visitor, contextInfo)
       }
@@ -221,48 +219,46 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
   override def getIntegerBounds(): Array[IntegerValue] = {
     val bounds0: Array[IntegerValue] = getLhsExpression.getIntegerBounds
     val bounds1: Array[IntegerValue] = getRhsExpression.getIntegerBounds
-    var result: Array[IntegerValue] = null
     if (bounds0 == null || bounds1 == null) {
       null
     } else {
       operator match {
         case Token.PLUS =>
-          result = Array(bounds0(0).plus(bounds1(0)), bounds0(1).plus(bounds1(1)))
-          result
+          Array(bounds0(0).plus(bounds1(0)), bounds0(1).plus(bounds1(1)))
         case Token.MINUS =>
-          result = Array(bounds0(0).minus(bounds1(1)), bounds0(1).minus(bounds1(0)))
-          result
+          Array(bounds0(0).minus(bounds1(1)), bounds0(1).minus(bounds1(0)))
         case Token.MULT =>
           if (getRhsExpression.isInstanceOf[Literal]) {
-            val val1: IntegerValue = bounds1(0)
+            val val1  = bounds1(0)
             if (val1.signum() > 0) {
-              result = Array(bounds0(0).times(val1), bounds0(1).times(val1))
+              Array(bounds0(0).times(val1), bounds0(1).times(val1))
             } else {
-              result = null
+              null
             }
           } else if (getLhsExpression.isInstanceOf[Literal]) {
-            val val0: IntegerValue = bounds1(0)
+            val val0 = bounds1(0)
             if (val0.signum() > 0) {
-              result = Array(bounds1(0).times(val0), bounds1(1).times(val0))
+              Array(bounds1(0).times(val0), bounds1(1).times(val0))
             } else {
-              result = null
+              null
             }
-          }
-          result
+          } else
+            null
         case Token.DIV | Token.IDIV =>
           if (getRhsExpression.isInstanceOf[Literal]) {
-            val val1: IntegerValue = bounds1(0)
+            val val1 = bounds1(0)
             if (val1.signum() > 0) {
               try Array(bounds0(0).idiv(val1), bounds0(1).idiv(val1))
               catch {
-                case e: XPathException => null
-
+                case _: XPathException =>
+                  null
               }
-            }
-          }
+            } else
+              null
+          } else
+            null
+        case _ =>
           null
-        case _ => null
-
       }
     }
   }
@@ -324,35 +320,29 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
   }
 
   override def evaluateItem(context: XPathContext): AtomicValue = {
-    val v0: AtomicValue =
-      getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+    val v0 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (v0 == null) {
-      null
+      return null
     }
-    val v1: AtomicValue =
-      getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+    val v1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (v1 == null) {
-      null
+      return null
     }
+
     try calculator.compute(v0, v1, context)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetFailingExpression(this)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
   }
 
-   override def tag(): String = "arith"
+  override def tag(): String = "arith"
 
-   override def explainExtraAttributes(
-                                                 out: ExpressionPresenter): Unit = {
-    if (calculator != null) {
+  override def explainExtraAttributes(out: ExpressionPresenter): Unit =
+    if (calculator != null)
       out.emitAttribute("calc", calculator.code())
-    }
-  }
 
 }

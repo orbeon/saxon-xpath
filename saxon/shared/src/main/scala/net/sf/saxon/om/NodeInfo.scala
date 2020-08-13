@@ -1,30 +1,57 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.om
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.event.Receiver
-import net.sf.saxon.event.ReceiverOption
-import net.sf.saxon.expr.parser.Loc
-import net.sf.saxon.model._
-import net.sf.saxon.pattern.AnyNodeTest
-import net.sf.saxon.pattern.NodeTest
-import net.sf.saxon.s9api.Location
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.tree.iter.AxisIterator
-import net.sf.saxon.tree.util.FastStringBuffer
-import net.sf.saxon.tree.util.Navigator
-import org.xml.sax.Locator
-import javax.xml.transform.Source
-import javax.xml.transform.SourceLocator
 import java.util.Collections
 import java.util.function.Predicate
-import scala.jdk.CollectionConverters._
+
+import javax.xml.transform.Source
+import net.sf.saxon.event.{Receiver, ReceiverOption}
+import net.sf.saxon.expr.parser.Loc
+import net.sf.saxon.model._
 import net.sf.saxon.om.Genre.Genre
+import net.sf.saxon.pattern.AnyNodeTest
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.trans.Err
+import net.sf.saxon.tree.iter.AxisIterator
+import net.sf.saxon.tree.util.{FastStringBuffer, Navigator}
+import net.sf.saxon.utils.Configuration
+
+import scala.jdk.CollectionConverters._
 
 
-
-
+/**
+  * The NodeInfo interface represents a node in Saxon's implementation of the XPath 2.0 data model.
+  * <p>Note that several NodeInfo objects may represent the same node. To test node identity, the
+  * method {@link #equals(Object)} should be used. An exception to this rule applies for
+  * document nodes, where the correspondence between document nodes and DocumentInfo objects is one to
+  * one. NodeInfo objects are never reused: a given NodeInfo object represents the same node for its entire
+  * lifetime.</p>
+  * <p>This is the primary interface for accessing trees in Saxon, and it forms part of the public
+  * Saxon API. Methods that form part of the public API are (since Saxon 8.4)
+  * labelled with a JavaDoc "since" tag: classes and methods that have no such label should not be
+  * regarded as stable interfaces.</p>
+  * <p>The interface represented by this class is at a slightly higher level than the abstraction described
+  * in the W3C data model specification, in that it includes support for the XPath axes, rather than exposing
+  * the lower-level properties (such as "parent" and "children") directly. All navigation within trees,
+  * except for a few convenience methods, is done by following the axes using the {@link #iterateAxis} method.
+  * This allows different implementations of the XPath tree model to implement axis navigation in different ways.
+  * Some implementations may choose to use the helper methods provided in class {@link net.sf.saxon.tree.util.Navigator}.</p>
+  * <p>Note that the stability of this interface applies to classes that use the interface,
+  * not to classes that implement it. The interface may be extended in future to add new methods.</p>
+  * <p>New implementations of NodeInfo are advised also to implement the methods in interface
+  * ExtendedNodeInfo, which will be moved into this interface at some time in the future.</p>
+  *
+  * @since 8.4. Extended with three extra methods, previously in ExtendedNodeInfo, in 9.1.
+  * In 9.7, DocumentInfo is no longer defined as a sub-interface; it is replaced with TreeInfo,
+  * which contains information about any XML node tree, whether or not it is rooted at a document node.
+  * In 9.8, default implementations are provided for some of the methods, making it easier to create
+  * a new implementation of this interface.
+  */
 trait NodeInfo extends Source with Item with Location {
 
   def getTreeInfo(): TreeInfo
@@ -173,39 +200,4 @@ trait NodeInfo extends Source with Item with Location {
     * be overridden) returns {@link Genre#NODE}.
     */
   override def getGenre(): Genre = Genre.NODE
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * The NodeInfo interface represents a node in Saxon's implementation of the XPath 2.0 data model.
-  * <p>Note that several NodeInfo objects may represent the same node. To test node identity, the
-  * method {@link #equals(Object)} should be used. An exception to this rule applies for
-  * document nodes, where the correspondence between document nodes and DocumentInfo objects is one to
-  * one. NodeInfo objects are never reused: a given NodeInfo object represents the same node for its entire
-  * lifetime.</p>
-  * <p>This is the primary interface for accessing trees in Saxon, and it forms part of the public
-  * Saxon API. Methods that form part of the public API are (since Saxon 8.4)
-  * labelled with a JavaDoc "since" tag: classes and methods that have no such label should not be
-  * regarded as stable interfaces.</p>
-  * <p>The interface represented by this class is at a slightly higher level than the abstraction described
-  * in the W3C data model specification, in that it includes support for the XPath axes, rather than exposing
-  * the lower-level properties (such as "parent" and "children") directly. All navigation within trees,
-  * except for a few convenience methods, is done by following the axes using the {@link #iterateAxis} method.
-  * This allows different implementations of the XPath tree model to implement axis navigation in different ways.
-  * Some implementations may choose to use the helper methods provided in class {@link net.sf.saxon.tree.util.Navigator}.</p>
-  * <p>Note that the stability of this interface applies to classes that use the interface,
-  * not to classes that implement it. The interface may be extended in future to add new methods.</p>
-  * <p>New implementations of NodeInfo are advised also to implement the methods in interface
-  * ExtendedNodeInfo, which will be moved into this interface at some time in the future.</p>
-  *
-  * @since 8.4. Extended with three extra methods, previously in ExtendedNodeInfo, in 9.1.
-  * In 9.7, DocumentInfo is no longer defined as a sub-interface; it is replaced with TreeInfo,
-  * which contains information about any XML node tree, whether or not it is rooted at a document node.
-  * In 9.8, default implementations are provided for some of the methods, making it easier to create
-  * a new implementation of this interface.
-  */

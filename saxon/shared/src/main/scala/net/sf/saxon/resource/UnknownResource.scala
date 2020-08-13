@@ -33,14 +33,13 @@ class UnknownResource extends Resource {
   def getResourceURI(): String = details.resourceUri
 
   def getItem(context: XPathContext): Item = {
-    var stream: InputStream = null
-    stream =
+    var stream =
       if (details.binaryContent != null)
         new ByteArrayInputStream(details.binaryContent)
-      else details.getInputStream
+      else
+        details.getInputStream
     if (stream == null) {
-      throw new XPathException(
-        "Unable to dereference resource URI " + details.resourceUri)
+      throw new XPathException("Unable to dereference resource URI " + details.resourceUri)
     }
     var mediaType: String = null
     try {
@@ -61,9 +60,9 @@ class UnknownResource extends Resource {
     details.contentType = mediaType
     details.binaryContent =
       BinaryResource.readBinaryFromStream(stream, details.resourceUri)
-    val delegee: ResourceFactory =
+    val delegee =
       config.getResourceFactoryForMediaType(mediaType)
-    val actual: Resource = delegee.makeResource(config, details)
+    val actual = delegee.makeResource(config, details)
     actual.getItem(context)
   }
 

@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,17 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.value
 
-import net.sf.saxon.expr.{Expression, StaticProperty}
+import java.util.Optional
+
+import net.sf.saxon.expr.StaticProperty
 import net.sf.saxon.expr.parser.RoleDiagnostic
 import net.sf.saxon.model._
-import net.sf.saxon.om.GroundedValue
-import net.sf.saxon.om.Item
-import net.sf.saxon.om.Sequence
-import net.sf.saxon.om.SequenceIterator
-import net.sf.saxon.pattern.AnyNodeTest
-import net.sf.saxon.pattern.NodeKindTest
+import net.sf.saxon.om.{GroundedValue, Item, Sequence}
+import net.sf.saxon.pattern.{AnyNodeTest, NodeKindTest}
 import net.sf.saxon.trans.XPathException
-import java.util.Optional
 
 /**
  * SequenceType: a sequence type consists of a primary type, which indicates the type of item,

@@ -1,26 +1,19 @@
 package net.sf.saxon.s9api
 
-import OccurrenceIndicator._
-import net.sf.saxon.expr.StaticContext
-import net.sf.saxon.expr.parser.OptimizerOptions
-import net.sf.saxon.functions.FunctionLibraryList
-import net.sf.saxon.lib.ErrorReporter
-import net.sf.saxon.lib.StringCollator
-import net.sf.saxon.sxpath.IndependentContext
-import net.sf.saxon.sxpath.XPathEvaluator
-import net.sf.saxon.sxpath.XPathExpression
-import net.sf.saxon.sxpath.XPathVariable
-import net.sf.saxon.trans._
-import net.sf.saxon.value.SequenceType
 import java.net.URI
-import java.util.Iterator
-import java.util.Map
-import java.util.Objects
+import java.util.{Iterator, Map, Objects}
 import java.util.concurrent.ConcurrentHashMap
 
+import net.sf.saxon.expr.StaticContext
+import net.sf.saxon.expr.parser.OptimizerOptions
+import net.sf.saxon.lib.{ErrorReporter, StringCollator}
+import net.sf.saxon.s9api.OccurrenceIndicator._
+import net.sf.saxon.sxpath.{IndependentContext, XPathEvaluator, XPathExpression, XPathVariable}
+import net.sf.saxon.trans._
 import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.SequenceType
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 class XPathCompiler(@BeanProperty var processor: Processor) {
 
@@ -211,7 +204,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     Objects.requireNonNull(source)
     if (cache != null) {
       this.synchronized {
-        var expr: XPathExecutable = cache.get(source)
+        var expr = cache.get(source)
         if (expr == null) {
           expr = internalCompile(source)
           cache.put(source, expr)
@@ -225,20 +218,20 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
 
   private def internalCompile(source: String): XPathExecutable = {
     env.getDecimalFormatManager.checkConsistency()
-    var eval: XPathEvaluator = evaluator
-    var ic: IndependentContext = env
+    var eval = evaluator
+    var ic = env
     if (ic.isAllowUndeclaredVariables) {
       eval = new XPathEvaluator(processor.getUnderlyingConfiguration)
       ic = new IndependentContext(env)
       eval.setStaticContext(ic)
-      var iter: Iterator[XPathVariable] = env.iterateExternalVariables()
+      val iter = env.iterateExternalVariables()
       while (iter.hasNext) {
-        val `var`: XPathVariable = iter.next()
-        val var2: XPathVariable = ic.declareVariable(`var`.getVariableQName)
+        val `var` = iter.next()
+        val var2 = ic.declareVariable(`var`.getVariableQName)
         var2.setRequiredType(`var`.getRequiredType)
       }
     }
-    val cexp: XPathExpression = eval.createExpression(source)
+    val cexp = eval.createExpression(source)
     new XPathExecutable(cexp, processor, ic)
   }
 

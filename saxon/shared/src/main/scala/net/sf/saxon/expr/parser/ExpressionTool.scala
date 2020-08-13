@@ -52,7 +52,6 @@ object ExpressionTool {
     if (terminator == -1)
       rTerminator = Token.EOF
     var exp = parser.parse(expression, start, terminator, env)
-
     setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext)
     exp = exp.simplify
     exp

@@ -1,51 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package net.sf.saxon.functions
 
-import net.sf.saxon.utils.Controller
+import java.io.Closeable
+import java.net.{URI, URISyntaxException}
+import java.util.{ArrayList, Iterator}
 
 import net.sf.saxon.expr._
-
-import net.sf.saxon.lib.CollectionFinder
-
-import net.sf.saxon.lib.Feature
-
-import net.sf.saxon.lib.Resource
-
-import net.sf.saxon.lib.ResourceCollection
-
+import net.sf.saxon.functions.CollectionFn._
+import net.sf.saxon.lib.{CollectionFinder, Feature, Resource, ResourceCollection}
 import net.sf.saxon.model.Type
-
 import net.sf.saxon.om._
-
 import net.sf.saxon.resource.AbstractResourceCollection
-
 import net.sf.saxon.style.StylesheetPackage
-
-import net.sf.saxon.trans.UncheckedXPathException
-
 import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.tree.wrapper.SpaceStrippedDocument
-
-import net.sf.saxon.value.ExternalObject
-
-import net.sf.saxon.value.ObjectValue
-
-import java.io.Closeable
-
-import java.io.IOException
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util.ArrayList
-
-import java.util.Iterator
-
-import CollectionFn._
-
-
+import net.sf.saxon.utils.Controller
+import net.sf.saxon.value.{ExternalObject, ObjectValue}
 
 
 object CollectionFn {

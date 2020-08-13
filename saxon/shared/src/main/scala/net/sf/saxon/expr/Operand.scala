@@ -1,26 +1,29 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-import net.sf.saxon.expr.parser.ExpressionTool
-import net.sf.saxon.expr.parser.ExpressionVisitor
-import net.sf.saxon.model.AnyItemType
-import net.sf.saxon.pattern.NodeTest
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.trans.XmlProcessingException
-import net.sf.saxon.tree.jiter.MonoIterator
-import net.sf.saxon.value.SequenceType
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.io.{PrintWriter, StringWriter}
 import java.util.Iterator
 
-import Operand._
+import net.sf.saxon.expr.Operand._
 import net.sf.saxon.expr.OperandUsage.OperandUsage
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor}
+import net.sf.saxon.model.AnyItemType
+import net.sf.saxon.pattern.NodeTest
+import net.sf.saxon.trans.{XPathException, XmlProcessingException}
+import net.sf.saxon.tree.jiter.MonoIterator
+import net.sf.saxon.value.SequenceType
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-import scala.collection
+import scala.beans.BeanProperty
 
 
+/**
+  * Information about a sub-expression and its relationship to the parent expression
+  */
 object Operand {
 
   private val DEBUG: Boolean = false
@@ -28,13 +31,11 @@ object Operand {
   def typeDeterminedUsage(`type`: net.sf.saxon.model.ItemType): OperandUsage =
     if (`type`.isPlainType) {
       OperandUsage.ABSORPTION
-    } else if (`type`
-                 .isInstanceOf[NodeTest] || `type` == AnyItemType.getInstance) {
+    } else if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType.getInstance) {
       OperandUsage.NAVIGATION
     } else {
       OperandUsage.INSPECTION
     }
-
 }
 
 class Operand(@BeanProperty val parentExpression: Expression,
@@ -178,12 +179,3 @@ class Operand(@BeanProperty val parentExpression: Expression,
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Information about a sub-expression and its relationship to the parent expression
-  */

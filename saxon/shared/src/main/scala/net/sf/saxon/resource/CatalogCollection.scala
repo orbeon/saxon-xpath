@@ -1,37 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.resource
 
-import net.sf.saxon.utils.Configuration
+import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.net.{URI, URISyntaxException}
+import java.nio.charset.Charset
+import java.util.{ArrayList, Iterator, List}
+
+import javax.xml.transform.Source
 import net.sf.saxon.expr.XPathContext
-import net.sf.saxon.functions.DocumentFn
-import net.sf.saxon.functions.URIQueryParameters
-import net.sf.saxon.lib.ParseOptions
-import net.sf.saxon.lib.Resource
-import net.sf.saxon.lib.Validation
-import net.sf.saxon.om.AxisInfo
-import net.sf.saxon.om.NodeInfo
-import net.sf.saxon.om.SpaceStrippingRule
-import net.sf.saxon.om.TreeInfo
+import net.sf.saxon.functions.{DocumentFn, URIQueryParameters}
+import net.sf.saxon.lib.{ParseOptions, Resource, Validation}
+import net.sf.saxon.om.{AxisInfo, NodeInfo, SpaceStrippingRule, TreeInfo}
 import net.sf.saxon.pattern.NodeKindTest
+import net.sf.saxon.resource.AbstractResourceCollection.InputDetails
 import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.iter.AxisIterator
 import net.sf.saxon.tree.jiter.MappingJavaIterator
-import javax.xml.transform.Source
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.URI
-import java.net.URISyntaxException
-import java.nio.charset.Charset
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-
-import CatalogCollection._
-import net.sf.saxon.resource.AbstractResourceCollection.InputDetails
-
-
+import net.sf.saxon.utils.Configuration
 
 
 object CatalogCollection {
@@ -61,7 +46,7 @@ class CatalogCollection //TODO we might know the catalog File already
 
   private var whitespaceRules: SpaceStrippingRule = _
 
-  this.setCollectionURI(collectionURI) 
+  this.setCollectionURI(collectionURI)
 
   def getResourceURIs(context: XPathContext): Iterator[String] = {
     StandardCollectionFinder.checkNotNull(collectionURI, context)

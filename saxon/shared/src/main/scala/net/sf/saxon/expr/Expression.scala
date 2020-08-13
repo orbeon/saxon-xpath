@@ -306,18 +306,14 @@ abstract class Expression
 
   def isCallOn(function: Class[_ <: SystemFunction]): Boolean = false
 
-  def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+  def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     typeCheckChildren(visitor, contextInfo)
     Expression.this
   }
 
-  def typeCheckChildren(visitor: ExpressionVisitor,
-                        contextInfo: ContextItemStaticInfo): Unit = {
-    for (o <- operands().asScala) {
+  final def typeCheckChildren(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
+    for (o <- operands().asScala)
       o.typeCheck(visitor, contextInfo)
-    }
-  }
 
   def staticTypeCheck(req: SequenceType,
                       backwardsCompatible: Boolean,
@@ -633,7 +629,7 @@ abstract class Expression
       "Cannot convert the expression {" + this + "} to a pattern")
   }
 
-  def getSlotsUsed(): Array[Int] = synchronized {
+  def getSlotsUsed: Array[Int] = synchronized {
     if (slotsUsed != null) {
       slotsUsed
     } else {

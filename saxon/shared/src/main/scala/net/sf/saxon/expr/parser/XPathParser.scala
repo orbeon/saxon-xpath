@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -887,37 +886,43 @@ class XPathParser() {
           val seq = parseSequenceType
           lhsExp = makeSequenceTypeExpression(lhsExp, operator, seq)
           setLocation(lhsExp, offset)
-          if (getCurrentOperatorPrecedence >= prec) grumble("Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses")
+          if (getCurrentOperatorPrecedence >= prec)
+            grumble("Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses")
         case Token.CAST_AS | Token.CASTABLE_AS =>
           nextToken()
           var at: CastingTarget = null
-          if (allowSaxonExtensions && t.currentToken == Token.NODEKIND && t.currentTokenValue == "union") { // Saxon 9.8 extension
+          if (allowSaxonExtensions && t.currentToken == Token.NODEKIND && t.currentTokenValue == "union") {
+            // Saxon 9.8 extension
             at = parseItemType.asInstanceOf[CastingTarget]
-          }
-          else {
+          } else {
             expect(Token.NAME)
             at = getSimpleType(t.currentTokenValue)
-            if (at eq ANY_ATOMIC) grumble("No value is castable to xs:anyAtomicType", "XPST0080")
-            if (at eq NOTATION) grumble("No value is castable to xs:NOTATION", "XPST0080")
+            if (at eq ANY_ATOMIC)
+              grumble("No value is castable to xs:anyAtomicType", "XPST0080")
+            if (at eq NOTATION)
+              grumble("No value is castable to xs:NOTATION", "XPST0080")
             nextToken()
           }
           val allowEmpty = t.currentToken == Token.QMARK
-          if (allowEmpty) nextToken()
+          if (allowEmpty)
+            nextToken()
           lhsExp = makeSingleTypeExpression(lhsExp, operator, at, allowEmpty)
           setLocation(lhsExp, offset)
-          if (getCurrentOperatorPrecedence >= prec) grumble("Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses")
+          if (getCurrentOperatorPrecedence >= prec)
+            grumble("Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses")
         case Token.ARROW =>
           lhsExp = parseArrowPostfix(lhsExp)
         case _ =>
           nextToken()
-          var rhs: Expression = parseUnaryExpression
+          var rhs = parseUnaryExpression
           while (getCurrentOperatorPrecedence > prec)
             rhs = parseBinaryExpression(rhs, getCurrentOperatorPrecedence)
 
           if (getCurrentOperatorPrecedence == prec && !allowMultipleOperators.toString.toBoolean) {
             val tok = Token.tokens(t.currentToken)
             var message = "Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses"
-            if (tok == "<" || tok == ">") { // Example input: return <a>3</a><b>4</b> - bug 2659
+            if (tok == "<" || tok == ">") {
+              // Example input: return <a>3</a><b>4</b> - bug 2659
               message += ". Or perhaps an XQuery element constructor appears where it is not allowed"
             }
             grumble(message)
@@ -929,7 +934,7 @@ class XPathParser() {
     lhsExp
   }
 
-  private def allowMultipleOperators = t.currentToken match {
+  private def allowMultipleOperators: Boolean = t.currentToken match {
     case Token.FEQ | Token.FNE | Token.FLE | Token.FLT | Token.FGE | Token.FGT | Token.EQUALS | Token.NE |
          Token.LE | Token.LT | Token.GE | Token.GT | Token.IS | Token.PRECEDES | Token.FOLLOWS | Token.TO =>
       false
@@ -3174,11 +3179,10 @@ class XPathParser() {
    * @param exp    the expression whose location information is to be set
    * @param offset the character position within the expression (ignoring newlines)
    */
-  def setLocation(exp: Expression, offset: Int): Unit = {
+  def setLocation(exp: Expression, offset: Int): Unit =
     if (exp != null)
       if (exp.getLocation == null || (exp.getLocation eq Loc.NONE))
         exp.setLocation(makeLocation(offset))
-  }
 
   /**
    * Make a location object corresponding to a specified offset in the query

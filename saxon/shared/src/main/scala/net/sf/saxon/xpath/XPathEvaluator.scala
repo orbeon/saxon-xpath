@@ -90,9 +90,10 @@ class XPathEvaluator /**
   /*@NotNull*/
 
   def compile(expr: String): XPathExpression = {
-    if (expr == null) {
+
+    if (expr == null)
       throw new NullPointerException("expr")
-    }
+
     val exec: Executable = new Executable(getConfiguration)
     var exp: Expression = ExpressionTool.make(expr, staticContext, 0, -1, null)
     val visitor: ExpressionVisitor = ExpressionVisitor.make(staticContext)

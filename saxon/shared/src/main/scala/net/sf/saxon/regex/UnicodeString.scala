@@ -1,15 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * An abstract class that efficiently handles Unicode strings including
+  * non-BMP characters; it has three subclasses, respectively handling
+  * strings whose maximum character code is 255, 65535, or 1114111.
+  */
+
 package net.sf.saxon.regex
 
 import net.sf.saxon.expr.sort.AtomicMatchKey
-
 import net.sf.saxon.tree.util.FastStringBuffer
-
-import net.sf.saxon.value.AtomicValue
-
-import net.sf.saxon.value.Base64BinaryValue
-
-import UnicodeString._
+import net.sf.saxon.value.{AtomicValue, Base64BinaryValue}
 
 
 
@@ -191,14 +196,3 @@ abstract class UnicodeString
     new Base64BinaryValue(getCodepointCollationKey)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An abstract class that efficiently handles Unicode strings including
-  * non-BMP characters; it has three subclasses, respectively handling
-  * strings whose maximum character code is 255, 65535, or 1114111.
-  */
