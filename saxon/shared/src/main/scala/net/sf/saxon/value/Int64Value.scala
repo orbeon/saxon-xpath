@@ -186,7 +186,7 @@ class Int64Value extends IntegerValue {
     IntegerValue.checkRange(value, `type`)
   }
 
-  def getSchemaComparable(): Comparable[AnyRef] = new Int64Comparable(this).asInstanceOf
+  def getSchemaComparable(): Comparable[AnyRef] = new Int64Comparable(this)
 
   override def hashCode(): Int =
     if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE) {
