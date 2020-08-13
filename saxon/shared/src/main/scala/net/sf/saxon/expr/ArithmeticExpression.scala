@@ -1,24 +1,13 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.expr.compat.ArithmeticExpression10
-
+import net.sf.saxon.expr.ArithmeticExpression._
 import net.sf.saxon.expr.parser._
-
 import net.sf.saxon.model._
-
-import net.sf.saxon.om.GroundedValue
-
 import net.sf.saxon.om.StandardNames
-
 import net.sf.saxon.trace.ExpressionPresenter
-
 import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.value._
 
-import ArithmeticExpression._
 
 object ArithmeticExpression {
 
@@ -40,10 +29,8 @@ object ArithmeticExpression {
     case Token.DIV => Calculator.DIV
     case Token.IDIV => Calculator.IDIV
     case Token.MOD => Calculator.MOD
-    case _ => throw new IllegalArgumentException()
-
+    case _ => throw new IllegalArgumentException
   }
-
 }
 
 class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extends BinaryExpression(p0, operator, p1) {
@@ -65,25 +52,31 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
 
   def getCalculator(): Calculator = calculator
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
+
     resetLocalStaticProperties()
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
-    val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
-    val tc: TypeChecker = config.getTypeChecker(false)
-    val oldOp0: Expression = getLhsExpression
-    val oldOp1: Expression = getRhsExpression
-    val atomicType: SequenceType = SequenceType.OPTIONAL_ATOMIC
-    val role0: RoleDiagnostic = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 0)
+
+    val config = visitor.getConfiguration
+    val th = config.getTypeHierarchy
+    val tc = config.getTypeChecker(false)
+
+    val oldOp0 = getLhsExpression
+    val oldOp1 = getRhsExpression
+
+    val atomicType = SequenceType.OPTIONAL_ATOMIC
+    val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 0)
+
     setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
-    val itemType0: ItemType = getLhsExpression.getItemType
-    if (itemType0.isInstanceOf[ErrorType]) {
-      Literal.makeEmptySequence()
-    }
-    var type0: AtomicType =
+
+    val itemType0 = getLhsExpression.getItemType
+    if (itemType0.isInstanceOf[ErrorType])
+      return Literal.makeEmptySequence()
+
+    var type0  =
       itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
+
     if (type0.getFingerprint == StandardNames.XS_UNTYPED_ATOMIC) {
       setLhsExpression(
         UntypedSequenceConverter.makeUntypedSequenceConverter(
@@ -103,16 +96,19 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       type0 = getLhsExpression.getItemType.getPrimitiveItemType
         .asInstanceOf[AtomicType]
     }
-    val role1: RoleDiagnostic =
+
+    val role1 =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 1)
-    setLhsExpression(
-      tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
-    val itemType1: ItemType = getRhsExpression.getItemType
-    if (itemType1.isInstanceOf[ErrorType]) {
-      Literal.makeEmptySequence()
-    }
-    var type1: AtomicType =
+
+    setLhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
+
+    val itemType1 = getRhsExpression.getItemType
+    if (itemType1.isInstanceOf[ErrorType])
+      return Literal.makeEmptySequence()
+
+    var type1 =
       itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
+
     if (type1.getFingerprint == StandardNames.XS_UNTYPED_ATOMIC) {
       setLhsExpression(
         UntypedSequenceConverter.makeUntypedSequenceConverter(
@@ -132,52 +128,53 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       type1 = getRhsExpression.getItemType.getPrimitiveItemType
         .asInstanceOf[AtomicType]
     }
-    if (itemType0.getUType
-      .union(itemType1.getUType)
-      .overlaps(UType.EXTENSION)) {
-      val de: XPathException = new XPathException(
-        "Arithmetic operators are not defined for external objects")
+
+    if (itemType0.getUType.union(itemType1.getUType).overlaps(UType.EXTENSION)) {
+      val de = new XPathException("Arithmetic operators are not defined for external objects")
       de.setLocation(getLocation)
       de.setErrorCode("XPTY0004")
       throw de
     }
-    if (getLhsExpression != oldOp0) {
+
+    if (getLhsExpression != oldOp0)
       adoptChildExpression(getLhsExpression)
-    }
-    if (getRhsExpression != oldOp1) {
+    if (getRhsExpression != oldOp1)
       adoptChildExpression(getRhsExpression)
-    }
-    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
-      getRhsExpression)) {
-      Literal.makeEmptySequence()
-    }
+    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
+      return Literal.makeEmptySequence()
+
     if (operator == Token.NEGATE) {
       if (getRhsExpression.isInstanceOf[Literal] &&
         getRhsExpression
           .asInstanceOf[Literal]
           .getValue
           .isInstanceOf[NumericValue]) {
-        val nv: NumericValue = getRhsExpression
+        val nv = getRhsExpression
           .asInstanceOf[Literal]
           .getValue
           .asInstanceOf[NumericValue]
-        Literal.makeLiteral(nv.negate(), this)
+        return Literal.makeLiteral(nv.negate(), this)
       } else {
         val ne: NegateExpression = new NegateExpression(getRhsExpression)
         ne.setBackwardsCompatible(false)
-        ne.typeCheck(visitor, contextInfo)
+        return ne.typeCheck(visitor, contextInfo)
       }
     }
-    val mustResolve: Boolean =
+
+    val mustResolve =
       !(type0 == BuiltInAtomicType.ANY_ATOMIC || type1 == BuiltInAtomicType.ANY_ATOMIC ||
         type0 == NumericType.getInstance ||
         type1 == NumericType.getInstance)
-    calculator = Calculator.getCalculator(type0.getFingerprint,
+
+    calculator = Calculator.getCalculator(
+      type0.getFingerprint,
       type1.getFingerprint,
       mapOpCode(operator),
-      mustResolve)
+      mustResolve
+    )
+
     if (calculator == null) {
-      val de: XPathException = new XPathException(
+      val de = new XPathException(
         "Arithmetic operator is not defined for arguments of types (" +
           type0.getDescription +
           ", " +
@@ -191,7 +188,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     if (calculator.code().matches("d.d")) {
       if (getLhsExpression
         .isInstanceOf[Literal] && type0 != BuiltInAtomicType.DOUBLE) {
-        val value: GroundedValue =
+        val value =
           getLhsExpression.asInstanceOf[Literal].getValue
         if (value.isInstanceOf[NumericValue]) {
           setLhsExpression(Literal.makeLiteral(
@@ -201,7 +198,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       }
       if (getRhsExpression
         .isInstanceOf[Literal] && type1 != BuiltInAtomicType.DOUBLE) {
-        val value: GroundedValue =
+        val value =
           getRhsExpression.asInstanceOf[Literal].getValue
         if (value.isInstanceOf[NumericValue]) {
           setLhsExpression(Literal.makeLiteral(
@@ -210,15 +207,13 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
         }
       }
     }
-    try if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
-      .isInstanceOf[Literal])) {
-      Literal.makeLiteral(
-        evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize(),
-        this)
+    try if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
+      return Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize(), this)
     } catch {
-      case err: XPathException => {}
-
+      case _: XPathException =>
+        // if early evaluation fails, suppress the error: the value might
+        // not be needed at run-time, or it might be due to context such as the implicit timezone
+        // not being available yet
     }
     this
   }

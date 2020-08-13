@@ -42,37 +42,24 @@ object TypeHierarchy {
     }
   }
 
-  private def nameTestRelationship(t1: QNameTest, t2: QNameTest): Affinity = {
+  private def nameTestRelationship(t1: QNameTest, t2: QNameTest): Affinity =
     if (t1 == t2) {
       SAME_TYPE
-    }
-    if (t2.isInstanceOf[NameTest]) {
-      if (t1.matches(t2.asInstanceOf[NameTest].getMatchingNodeName)) SUBSUMES
-      else DISJOINT
-    }
-    if (t1.isInstanceOf[NameTest]) {
-      if (t2.matches(t1.asInstanceOf[NameTest].getMatchingNodeName))
-        SUBSUMED_BY
-      else DISJOINT
-    }
-    if (t2.isInstanceOf[SameNameTest]) {
-      if (t1.matches(t2.asInstanceOf[SameNameTest].getMatchingNodeName))
-        SUBSUMES
-      else DISJOINT
-    }
-    if (t1.isInstanceOf[SameNameTest]) {
-      if (t2.matches(t1.asInstanceOf[SameNameTest].getMatchingNodeName))
-        SUBSUMED_BY
-      else DISJOINT
-    }
-    if (t1.isInstanceOf[NamespaceTest] && t2.isInstanceOf[NamespaceTest]) {
+    } else if (t2.isInstanceOf[NameTest]) {
+      if (t1.matches(t2.asInstanceOf[NameTest].getMatchingNodeName)) SUBSUMES else DISJOINT
+    } else if (t1.isInstanceOf[NameTest]) {
+      if (t2.matches(t1.asInstanceOf[NameTest].getMatchingNodeName)) SUBSUMED_BY else DISJOINT
+    } else if (t2.isInstanceOf[SameNameTest]) {
+      if (t1.matches(t2.asInstanceOf[SameNameTest].getMatchingNodeName)) SUBSUMES else DISJOINT
+    } else if (t1.isInstanceOf[SameNameTest]) {
+      if (t2.matches(t1.asInstanceOf[SameNameTest].getMatchingNodeName)) SUBSUMED_BY else DISJOINT
+    } else if (t1.isInstanceOf[NamespaceTest] && t2.isInstanceOf[NamespaceTest]) {
       DISJOINT
-    }
-    if (t1.isInstanceOf[LocalNameTest] && t2.isInstanceOf[LocalNameTest]) {
+    } else if (t1.isInstanceOf[LocalNameTest] && t2.isInstanceOf[LocalNameTest]) {
       DISJOINT
+    } else {
+      OVERLAPS
     }
-    OVERLAPS
-  }
 
   private def combineRelationships(rel1: Affinity, rel2: Affinity): Affinity =
     if (rel1 == SAME_TYPE && rel2 == SAME_TYPE) {
@@ -124,7 +111,7 @@ object TypeHierarchy {
 
 class TypeHierarchy( var config: Configuration) {
 
-  private var map: Map[ItemTypePair, Affinity] = new ConcurrentHashMap()
+  private val map: Map[ItemTypePair, Affinity] = new ConcurrentHashMap()
 
   def applyFunctionConversionRules(value: Sequence,
                                    requiredType: SequenceType,
@@ -297,16 +284,14 @@ class TypeHierarchy( var config: Configuration) {
     Objects.requireNonNull(itmTyp2)
     itmTyp1 = stabilize(itmTyp1)
     itmTyp2 = stabilize(itmTyp2)
+
     if (itmTyp1 == itmTyp2) {
       SAME_TYPE
-    }
-    if (itmTyp2.isInstanceOf[AnyItemType]) {
+    } else if (itmTyp2.isInstanceOf[AnyItemType]) {
       SUBSUMED_BY
-    }
-    if (itmTyp1.isInstanceOf[AnyItemType]) {
+    } else if (itmTyp1.isInstanceOf[AnyItemType]) {
       SUBSUMES
-    }
-    if (itmTyp1.isInstanceOf[BuiltInAtomicType] && itmTyp2
+    } else if (itmTyp1.isInstanceOf[BuiltInAtomicType] && itmTyp2
       .isInstanceOf[BuiltInAtomicType]) {
       if (itmTyp1.getBasicAlphaCode.startsWith(itmTyp2.getBasicAlphaCode)) {
         SUBSUMED_BY
@@ -315,20 +300,19 @@ class TypeHierarchy( var config: Configuration) {
       } else {
         DISJOINT
       }
-    }
-    if (itmTyp1.isInstanceOf[ErrorType]) {
+    } else if (itmTyp1.isInstanceOf[ErrorType]) {
       SUBSUMED_BY
-    }
-    if (itmTyp2.isInstanceOf[ErrorType]) {
+    } else if (itmTyp2.isInstanceOf[ErrorType]) {
       SUBSUMES
+    } else {
+      val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
+      var result: Affinity = map.get(pair)
+      if (result == null) {
+        result = computeRelationship(itmTyp1, itmTyp2)
+        map.put(pair, result)
+      }
+      result
     }
-    val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
-    var result: Affinity = map.get(pair)
-    if (result == null) {
-      result = computeRelationship(itmTyp1, itmTyp2)
-      map.put(pair, result)
-    }
-    result
   }
 
   private def computeRelationship(t1: ItemType, t2: ItemType): Affinity = {
@@ -337,8 +321,7 @@ class TypeHierarchy( var config: Configuration) {
     try {
       if (t1 == t2) {
         SAME_TYPE
-      }
-      if (t1.isInstanceOf[AnyItemType]) {
+      } else if (t1.isInstanceOf[AnyItemType]) {
         if (t2.isInstanceOf[AnyItemType]) {
           SAME_TYPE
         } else {
@@ -347,25 +330,20 @@ class TypeHierarchy( var config: Configuration) {
       } else if (t2.isInstanceOf[AnyItemType]) {
         SUBSUMED_BY
       } else if (t1.isPlainType) {
-        if (t2.isInstanceOf[NodeTest] || t2.isInstanceOf[FunctionItemType] ||
-          t2.isInstanceOf[JavaExternalObjectType]) {
+        if (t2.isInstanceOf[NodeTest] || t2.isInstanceOf[FunctionItemType] || t2.isInstanceOf[JavaExternalObjectType]) {
           DISJOINT
         } else if (t1 == BuiltInAtomicType.ANY_ATOMIC && t2.isPlainType) {
           SUBSUMES
         } else if (t2 == BuiltInAtomicType.ANY_ATOMIC) {
           SUBSUMED_BY
-        } else if (t1.isInstanceOf[AtomicType] && t2
-          .isInstanceOf[AtomicType]) {
-          if (t1.asInstanceOf[AtomicType].getFingerprint == t2
-            .asInstanceOf[AtomicType]
-            .getFingerprint) {
-            SAME_TYPE
+        } else if (t1.isInstanceOf[AtomicType] && t2.isInstanceOf[AtomicType]) {
+          if (t1.asInstanceOf[AtomicType].getFingerprint == t2.asInstanceOf[AtomicType].getFingerprint) {
+            return SAME_TYPE
           }
           var t: AtomicType = t2.asInstanceOf[AtomicType]
           while (true) {
-            if (t1.asInstanceOf[AtomicType]
-              .getFingerprint == t.getFingerprint) {
-              SUBSUMES
+            if (t1.asInstanceOf[AtomicType].getFingerprint == t.getFingerprint) {
+              return SUBSUMES
             }
             val st: SchemaType = t.getBaseType
             if (st.isInstanceOf[AtomicType]) {
@@ -376,10 +354,8 @@ class TypeHierarchy( var config: Configuration) {
           }
           t = t1.asInstanceOf[AtomicType]
           while (true) {
-            if (t.getFingerprint == t2
-              .asInstanceOf[AtomicType]
-              .getFingerprint) {
-              SUBSUMED_BY
+            if (t.getFingerprint == t2.asInstanceOf[AtomicType].getFingerprint) {
+              return SUBSUMED_BY
             }
             val st: SchemaType = t.getBaseType
             if (st.isInstanceOf[AtomicType]) {
@@ -496,7 +472,7 @@ class TypeHierarchy( var config: Configuration) {
         }
       } else if (t1.isInstanceOf[AnyExternalObjectType]) {
         if (!(t2.isInstanceOf[AnyExternalObjectType])) {
-          DISJOINT
+          return DISJOINT
         }
         if (t1.isInstanceOf[JavaExternalObjectType]) {
           if (t2 == AnyExternalObjectType.THE_INSTANCE) {
@@ -507,8 +483,7 @@ class TypeHierarchy( var config: Configuration) {
           } else {
             DISJOINT
           }
-        }
-        if (t2.isInstanceOf[JavaExternalObjectType]) {
+        } else if (t2.isInstanceOf[JavaExternalObjectType]) {
           SUBSUMES
         } else {
           DISJOINT
@@ -516,15 +491,15 @@ class TypeHierarchy( var config: Configuration) {
       } else {
         if (t1.isInstanceOf[MapType] && t2.isInstanceOf[MapType]) {
           if (t1 == MapType.EMPTY_MAP_TYPE) {
-            SUBSUMED_BY
+            return SUBSUMED_BY
           } else if (t2 == MapType.EMPTY_MAP_TYPE) {
-            SUBSUMES
-          }
-          if (t1 == MapType.ANY_MAP_TYPE) {
-            SUBSUMES
+            return SUBSUMES
+          } else if (t1 == MapType.ANY_MAP_TYPE) {
+            return SUBSUMES
           } else if (t2 == MapType.ANY_MAP_TYPE) {
-            SUBSUMED_BY
+            return SUBSUMED_BY
           }
+
           val k1: AtomicType = t1.asInstanceOf[MapType].getKeyType
           val k2: AtomicType = t2.asInstanceOf[MapType].getKeyType
           val v1: SequenceType = t1.asInstanceOf[MapType].getValueType
@@ -533,20 +508,21 @@ class TypeHierarchy( var config: Configuration) {
           val valueRel: Affinity = sequenceTypeRelationship(v1, v2)
           val rel: Affinity = combineRelationships(keyRel, valueRel)
           if (rel == SAME_TYPE || rel == SUBSUMES || rel == SUBSUMED_BY) {
-            rel
+            return rel
           }
         }
         if (t2.isInstanceOf[FunctionItemType]) {
-          val signatureRelationship: Affinity = t1
-            .asInstanceOf[FunctionItemType]
-            .relationship(t2.asInstanceOf[FunctionItemType], this)
+
+          val signatureRelationship =
+            t1.asInstanceOf[FunctionItemType].relationship(t2.asInstanceOf[FunctionItemType], this)
+
           if (signatureRelationship == DISJOINT) {
             DISJOINT
           } else {
-            var assertionRelationship: Affinity = SAME_TYPE
-            val first: AnnotationList =
+            var assertionRelationship = SAME_TYPE
+            val first =
               t1.asInstanceOf[FunctionItemType].getAnnotationAssertions
-            val second: AnnotationList =
+            val second =
               t2.asInstanceOf[FunctionItemType].getAnnotationAssertions
             val namespaces: Set[String] = new HashSet[String]()
             for (a <- first.asScala) {
@@ -583,8 +559,7 @@ class TypeHierarchy( var config: Configuration) {
         }
       }
     } catch {
-      case e: MissingComponentException => OVERLAPS
-
+      case _: MissingComponentException => OVERLAPS
     }
   }
 
@@ -661,65 +636,59 @@ class TypeHierarchy( var config: Configuration) {
   def sequenceTypeRelationship(s1: SequenceType, s2: SequenceType): Affinity = {
     val c1: Int = s1.getCardinality
     val c2: Int = s2.getCardinality
-    var cardRel: Affinity = null
-    if (c1 == c2) {
-      cardRel = SAME_TYPE
-    } else if (Cardinality.subsumes(c1, c2)) {
-      cardRel = SUBSUMES
-    } else if (Cardinality.subsumes(c2, c1)) {
-      cardRel = SUBSUMED_BY
-    } else if (c1 == StaticProperty.EMPTY && !Cardinality.allowsZero(c2)) {
+    var cardRel =
+      if (c1 == c2) {
+        SAME_TYPE
+      } else if (Cardinality.subsumes(c1, c2)) {
+        SUBSUMES
+      } else if (Cardinality.subsumes(c2, c1)) {
+        SUBSUMED_BY
+      } else if (c1 == StaticProperty.EMPTY && !Cardinality.allowsZero(c2)) {
+        return DISJOINT
+      } else if (c2 == StaticProperty.EMPTY && !Cardinality.allowsZero(c1)) {
+        return DISJOINT
+      } else {
+        OVERLAPS
+      }
+
+    val itemRel = relationship(s1.getPrimaryType, s2.getPrimaryType)
+    if (itemRel == DISJOINT)
       DISJOINT
-    } else if (c2 == StaticProperty.EMPTY && !Cardinality.allowsZero(c1)) {
-      DISJOINT
-    } else {
-      cardRel = OVERLAPS
-    }
-    val itemRel: Affinity = relationship(s1.getPrimaryType, s2.getPrimaryType)
-    if (itemRel == DISJOINT) {
-      DISJOINT
-    }
-    if (cardRel == SAME_TYPE || cardRel == itemRel) {
+    else if (cardRel == SAME_TYPE || cardRel == itemRel)
       itemRel
-    }
-    if (itemRel == SAME_TYPE) {
+    else if (itemRel == SAME_TYPE)
       cardRel
-    }
-    OVERLAPS
+    else
+      OVERLAPS
   }
 
   def schemaTypeRelationship(s1: SchemaType, s2: SchemaType): Affinity = {
     if (s1.isSameType(s2)) {
       SAME_TYPE
-    }
-    if (s1.isInstanceOf[AnyType.AnyType]) {
+    } else if (s1.isInstanceOf[AnyType.AnyType]) {
       SUBSUMES
-    }
-    if (s2.isInstanceOf[AnyType.AnyType]) {
+    } else if (s2.isInstanceOf[AnyType.AnyType]) {
       SUBSUMED_BY
-    }
-    if (s1.isInstanceOf[Untyped.Untyped] &&
-      (s2 == BuiltInAtomicType.ANY_ATOMIC || s2 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
+    } else if (s1.isInstanceOf[Untyped.Untyped] && (s2 == BuiltInAtomicType.ANY_ATOMIC || s2 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       OVERLAPS
-    }
-    if (s2.isInstanceOf[Untyped.Untyped] &&
-      (s1 == BuiltInAtomicType.ANY_ATOMIC || s1 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
+    } else if (s2.isInstanceOf[Untyped.Untyped] && (s1 == BuiltInAtomicType.ANY_ATOMIC || s1 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       OVERLAPS
-    }
-    if (s1.isInstanceOf[PlainType] && s1.asInstanceOf[PlainType].isPlainType &&
-      s2.isInstanceOf[PlainType] &&
-      s2.asInstanceOf[PlainType].isPlainType) {
+    } else if (s1.isInstanceOf[PlainType] && s1.asInstanceOf[PlainType].isPlainType && s2.isInstanceOf[PlainType] && s2.asInstanceOf[PlainType].isPlainType) {
       relationship(s1.asInstanceOf[ItemType], s2.asInstanceOf[ItemType])
+    } else {
+      var t1 = s1
+      while ((t1 = t1.getBaseType) != null)
+        if (t1.isSameType(s2)) {
+          return SUBSUMED_BY
+        }
+      var t2 = s2
+      while ((t2 = t2.getBaseType) != null)
+        if (t2.isSameType(s1)) {
+          return SUBSUMES
+        }
+
+      DISJOINT
     }
-    var t1: SchemaType = s1
-    while ((t1 = t1.getBaseType) != null) if (t1.isSameType(s2)) {
-      SUBSUMED_BY
-    }
-    var t2: SchemaType = s2
-    while ((t2 = t2.getBaseType) != null) if (t2.isSameType(s1)) {
-      SUBSUMES
-    }
-    DISJOINT
   }
 
   def getGenericFunctionItemType(): ItemType = AnyItemType.getInstance

@@ -251,24 +251,21 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     a2
   }
 
-   override def tag(): String = "arith10"
+  override def tag(): String = "arith10"
 
-   override def explainExtraAttributes(
-                                                 out: ExpressionPresenter): Unit = {
+  override def explainExtraAttributes(out: ExpressionPresenter): Unit =
     out.emitAttribute("calc", calculator.code())
-  }
 
   override def evaluateItem(context: XPathContext): AtomicValue = {
     var calc: Calculator = calculator
-    val v1: AtomicValue =
-      getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+    val v1 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (v1 == null) {
-      DoubleValue.NaN
+      return DoubleValue.NaN
     }
     val v2: AtomicValue =
       getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (v2 == null) {
-      DoubleValue.NaN
+      return DoubleValue.NaN
     }
     if (calc == null) {
       calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, true)
@@ -280,11 +277,11 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     var calc: Calculator = calculator
     val v1: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
     if (v1 == null) {
-      DoubleValue.NaN
+      return DoubleValue.NaN
     }
     val v2: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
     if (v2 == null) {
-      DoubleValue.NaN
+      return DoubleValue.NaN
     }
     if (calc == null) {
       calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, true)

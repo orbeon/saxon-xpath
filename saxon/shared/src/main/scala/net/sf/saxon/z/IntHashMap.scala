@@ -114,7 +114,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
       _key(j) = _key(i)
       _value(j) = _value(i)
     }
-    return false
+    false
     //_filled[j] = _filled[i];
     //_filled[j] = _filled[i];
   }
@@ -174,7 +174,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     //while (_filled[i]) {
     while (_value(i) != null) {
       if (_key(i) == key) {
-        i
+        return i
       }
       i = (i - 1) & _mask
     }
@@ -202,7 +202,6 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     nbit = 1
     nmax = 2
     while (nmax * factor < capacity && nmax < NMAX) {
-
       nmax *= 2
     }
     // no-op
@@ -267,7 +266,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     def hasNext(): Boolean = {
       while (i < _key.length) if (_value(i) != null) {
-        true
+        return true
       } else {
         { i += 1; i - 1 }
       }
@@ -289,7 +288,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     def hasNext(): Boolean = {
       while (i < _key.length) if (_value(i) != null) {
-        true
+        return true
       } else {
         { i += 1; i - 1 }
       }
@@ -314,7 +313,6 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     override def remove(): Unit = {
       throw new UnsupportedOperationException("remove")
     }
-
   }
 
   def keySet(): IntSet = new IntSet() {
@@ -357,7 +355,4 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     override def toString(): String = IntHashSet.toString(iterator())
   }
-
 }
-
-

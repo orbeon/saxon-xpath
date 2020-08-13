@@ -636,18 +636,19 @@ abstract class Expression
   def getSlotsUsed(): Array[Int] = synchronized {
     if (slotsUsed != null) {
       slotsUsed
+    } else {
+      val slots = new IntHashSet(10)
+      gatherSlotsUsed(Expression.this, slots)
+      slotsUsed = Array.ofDim[Int](slots.size)
+      var i = 0
+      val iter  = slots.iterator()
+      while (iter.hasNext) {
+        slotsUsed(i) = iter.next
+        i = i + 1
+      }
+      Arrays.sort(slotsUsed)
+      slotsUsed
     }
-    val slots: IntHashSet = new IntHashSet(10)
-    gatherSlotsUsed(Expression.this, slots)
-    slotsUsed = Array.ofDim[Int](slots.size)
-    var i: Int = 0
-    val iter: IntIterator = slots.iterator()
-    while (iter.hasNext) {
-      slotsUsed(i) = iter.next
-      i = i + 1
-    }
-    Arrays.sort(slotsUsed)
-    slotsUsed
   }
 
   def dynamicError(message: String,
