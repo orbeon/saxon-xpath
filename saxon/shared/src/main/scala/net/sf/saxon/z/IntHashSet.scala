@@ -101,7 +101,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
   private var _values: Array[Int] = _
 
   //_factor = 0.25;
-  this.capacity = capacity
+  setCapacity(capacity)
 
   /**
     * Initializes a set with a capacity of 8 and a load factor of 0,25.

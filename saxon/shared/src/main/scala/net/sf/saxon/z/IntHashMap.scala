@@ -15,12 +15,9 @@
 package net.sf.saxon.z
 
 import java.io.PrintStream
+import java.util.{Iterator, NoSuchElementException}
 
-import java.util.Iterator
-
-import java.util.NoSuchElementException
-
-import IntHashMap._
+import net.sf.saxon.z.IntHashMap._
 
 object IntHashMap {
 
@@ -43,6 +40,8 @@ object IntHashMap {
   *
   */
 class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
+
+  setCapacity(capacity)
 
   /**
     * Initializes a map with a capacity of 8 and a load factor of 0,25.

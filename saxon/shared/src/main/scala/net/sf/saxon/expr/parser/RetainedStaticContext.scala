@@ -31,16 +31,16 @@ class RetainedStaticContext extends NamespaceResolver {
   private var config: Configuration = _
 
   @BeanProperty
-  var packageData: PackageData = new PackageData(config)
+  var packageData: PackageData = _
 
   private var staticBaseUri: URI = _
 
   var staticBaseUriString: String = _
 
   @BeanProperty
-  var defaultCollationName: String = NamespaceConstant.CODEPOINT_COLLATION_URI
+  var defaultCollationName: String = _
 
-  private var namespaces: NamespaceResolver = NamespaceMap.emptyMap
+  private var namespaces: NamespaceResolver = _
 
   @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
@@ -53,9 +53,12 @@ class RetainedStaticContext extends NamespaceResolver {
   @BooleanBeanProperty
   var backwardsCompatibility: Boolean = _
 
-  def this(configur: Configuration) {
+  def this(config: Configuration) {
     this()
-    this.config = configur
+    this.config = config
+    this.packageData = new PackageData(config)
+    this.namespaces = NamespaceMap.emptyMap
+    this.defaultCollationName = NamespaceConstant.CODEPOINT_COLLATION_URI
   }
 
   def this(sc: StaticContext) = {

@@ -1,13 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.regex
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-import LatinString._
+package net.sf.saxon.regex
 
 
 object LatinString {
-
   val SINGLE_SPACE: LatinString = new LatinString(Array(0x20.toByte))
-
 }
 
 /**
@@ -17,12 +19,12 @@ object LatinString {
 class LatinString(src: CharSequence)
   extends UnicodeString {
 
-  private var charArr: Array[Byte] = new Array[Byte](len)
-
-  val len: Int = src.length
-
-  for (i <- 0 until len) {
-    charArr.array(i) = (src.charAt(i) & 0xff).toByte
+  private var charArr: Array[Byte] = {
+    val len = src.length
+    val newArray = new Array[Byte](len)
+    for (i <- 0 until len)
+      newArray.array(i) = (src.charAt(i) & 0xff).toByte
+    newArray
   }
 
   def this(chars: Array[Byte]) = {
@@ -43,9 +45,10 @@ class LatinString(src: CharSequence)
       -1
     } else {
       for (i <- pos until charArr.length) {
-        if ((charArr(i) & 0xff) == search) return i
+        if ((charArr(i) & 0xff) == search)
+          return i
       }
-      return -1;
+      -1;
     }
 
   def uLength(): Int = charArr.length
@@ -102,9 +105,3 @@ class LatinString(src: CharSequence)
   def subSequence(start: Int, end: Int): CharSequence = uSubstring(start, end)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
