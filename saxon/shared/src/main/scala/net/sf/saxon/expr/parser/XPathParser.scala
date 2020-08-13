@@ -8,40 +8,27 @@
 package net.sf.saxon.expr.parser
 
 import java.util
+import java.util.function.IntPredicate
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.utils.Version
 import net.sf.saxon.expr._
 import net.sf.saxon.expr.flwor.Clause
-import net.sf.saxon.expr.instruct.Block
-import net.sf.saxon.expr.instruct.Choose
-import net.sf.saxon.expr.instruct.ForEach
+import net.sf.saxon.expr.instruct.{Block, Choose, ForEach}
+import net.sf.saxon.expr.parser.XPathParser.ParsedLanguage
 import net.sf.saxon.functions._
 import net.sf.saxon.functions.registry.VendorFunctionSetHE
-import net.sf.saxon.lib.Feature
-import net.sf.saxon.lib.NamespaceConstant
-import net.sf.saxon.ma.arrays.ArrayFunctionSet
-import net.sf.saxon.ma.arrays.ArrayItemType
-import net.sf.saxon.ma.arrays.SimpleArrayItem
-import net.sf.saxon.ma.arrays.SquareArrayConstructor
+import net.sf.saxon.lib.{Feature, NamespaceConstant}
+import net.sf.saxon.ma.arrays.{ArrayFunctionSet, ArrayItemType, SimpleArrayItem, SquareArrayConstructor}
 import net.sf.saxon.ma.map._
+import net.sf.saxon.model.BuiltInAtomicType._
 import net.sf.saxon.model._
 import net.sf.saxon.om._
 import net.sf.saxon.pattern._
 import net.sf.saxon.query.AnnotationList
-import net.sf.saxon.s9api.Location
-import net.sf.saxon.s9api.UnprefixedElementMatchingPolicy
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.SymbolicName
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.s9api.{Location, UnprefixedElementMatchingPolicy}
+import net.sf.saxon.trans.{Err, SymbolicName, XPathException}
+import net.sf.saxon.utils.{Configuration, Version}
 import net.sf.saxon.value._
-import net.sf.saxon.z.IntArraySet
-import net.sf.saxon.z.IntSet
-import java.util.function.IntPredicate
-
-import net.sf.saxon.expr.parser.XPathParser.ParsedLanguage
-import net.sf.saxon.model.BuiltInAtomicType._
-import org.w3c.dom.NodeList
+import net.sf.saxon.z.{IntArraySet, IntSet}
 
 import scala.collection.mutable
 import scala.util.control.Breaks._
@@ -95,47 +82,27 @@ object XPathParser {
    * @param operator the operator in question
    * @return a higher number for higher precedence (closer binding)
    */
-  def operatorPrecedence(operator: Int) = operator match {
-    case Token.OR =>
-    case Token.OR_ELSE =>
+  def operatorPrecedence(operator: Int): Int = operator match {
+    case Token.OR | Token.OR_ELSE =>
       4
-    case Token.AND =>
-    case Token.AND_ALSO =>
+    case Token.AND | Token.AND_ALSO =>
       5
-    case Token.FEQ =>
-    case Token.FNE =>
-    case Token.FLE =>
-    case Token.FLT =>
-    case Token.FGE =>
-    case Token.FGT =>
-    case Token.EQUALS =>
-    case Token.NE =>
-    case Token.LE =>
-    case Token.LT =>
-    case Token.GE =>
-    case Token.GT =>
-    case Token.IS =>
-    case Token.PRECEDES =>
-    case Token.FOLLOWS =>
+    case Token.FEQ | Token.FNE | Token.FLE | Token.FLT | Token.FGE | Token.FGT | Token.EQUALS | Token.NE |
+         Token.LE | Token.LT | Token.GE | Token.GT | Token.IS | Token.PRECEDES | Token.FOLLOWS =>
       6
     case Token.CONCAT =>
       7
     case Token.TO =>
       8
-    case Token.PLUS =>
-    case Token.MINUS =>
+    case Token.PLUS | Token.MINUS =>
       9
-    case Token.MULT =>
-    case Token.DIV =>
-    case Token.IDIV =>
-    case Token.MOD =>
+    case Token.MULT | Token.DIV | Token.IDIV | Token.MOD =>
       10
     case Token.OTHERWISE =>
       11
     case Token.UNION =>
       12
-    case Token.INTERSECT =>
-    case Token.EXCEPT =>
+    case Token.INTERSECT | Token.EXCEPT =>
       13
     case Token.INSTANCE_OF =>
       14
@@ -196,19 +163,31 @@ object XPathParser {
       case NamespaceConstant.FN =>
         return null
       case NamespaceConstant.SAXON =>
-        if (config.getEditionCode == "HE") return "Saxon extension functions are not available under Saxon-HE"
-        else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION)) return "Saxon extension functions require a Saxon-PE or Saxon-EE license"
+        if (config.getEditionCode == "HE")
+          return "Saxon extension functions are not available under Saxon-HE"
+        else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
+          return "Saxon extension functions require a Saxon-PE or Saxon-EE license"
       case NamespaceConstant.XSLT =>
-        if (functionName.getLocalPart == "original") return "Function name xsl:original is only available within an overriding function"
-        else return "There are no functions defined in the XSLT namespace"
-    }
-    else return "Perhaps the intended namespace was '" + similarNamespace + "'"
-    else if (actualURI.contains("java")) if (config.getEditionCode == "HE") return "Reflexive calls to Java methods are not available under Saxon-HE"
-    else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION)) return "Reflexive calls to Java methods require a Saxon-PE or Saxon-EE license, and none was found"
-    else return "For diagnostics on calls to Java methods, use the -TJ command line option " + "or set the Configuration property FeatureKeys.TRACE_EXTERNAL_FUNCTIONS"
-    else if (actualURI.startsWith("clitype:")) if (config.getEditionCode == "HE") return "Reflexive calls to external .NET methods are not available under Saxon-HE"
-    else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION)) return "Reflexive calls to external .NET methods require a Saxon-PE or Saxon-EE license, and none was found"
-    else return "For diagnostics on calls to .NET methods, use the -TJ command line option " + "or call processor.SetProperty(\"http://saxon.sf.net/feature/trace-external-functions\", \"true\")"
+        if (functionName.getLocalPart == "original")
+          return "Function name xsl:original is only available within an overriding function"
+        else
+          return "There are no functions defined in the XSLT namespace"
+    } else
+      return "Perhaps the intended namespace was '" + similarNamespace + "'"
+    else if (actualURI.contains("java"))
+      if (config.getEditionCode == "HE")
+        return "Reflexive calls to Java methods are not available under Saxon-HE"
+    else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
+        return "Reflexive calls to Java methods require a Saxon-PE or Saxon-EE license, and none was found"
+    else
+        return "For diagnostics on calls to Java methods, use the -TJ command line option " + "or set the Configuration property FeatureKeys.TRACE_EXTERNAL_FUNCTIONS"
+    else if (actualURI.startsWith("clitype:"))
+      if (config.getEditionCode == "HE")
+        return "Reflexive calls to external .NET methods are not available under Saxon-HE"
+    else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
+        return "Reflexive calls to external .NET methods require a Saxon-PE or Saxon-EE license, and none was found"
+    else
+        return "For diagnostics on calls to .NET methods, use the -TJ command line option " + "or call processor.SetProperty(\"http://saxon.sf.net/feature/trace-external-functions\", \"true\")"
     null
   }
 
@@ -220,7 +199,7 @@ object XPathParser {
    * @param name the function name (the local-name as a string)
    * @return true if the function name is reserved
    */
-  def isReservedFunctionName30(name: String) = {
+  def isReservedFunctionName30(name: String): Boolean = {
     val x = util.Arrays.binarySearch(reservedFunctionNames30, name)
     x >= 0
   }
@@ -300,7 +279,7 @@ object XPathParser {
      *         the position is within the attribute after XML attribute-value normalization,
      *         which replaces newlines by spaces and expands entity references.
      */
-    override def getColumnNumber = localColumnNumber
+    override def getColumnNumber: Int = localColumnNumber
 
     /**
      * Get the system identifier of the expression's container. This will normally
@@ -308,7 +287,7 @@ object XPathParser {
      *
      * @return the system identifier of the expression's container, or null if not known
      */
-    override def getSystemId = containingLocation.getSystemId
+    override def getSystemId: String = containingLocation.getSystemId
 
     /**
      * Get the public identifier. This will normally be null, but is provided for
@@ -316,7 +295,7 @@ object XPathParser {
      *
      * @return the public identifier - usually null
      */
-    override def getPublicId = containingLocation.getPublicId
+    override def getPublicId: String = containingLocation.getPublicId
 
     /**
      * Get the local line number, that is the line number relative to the start of the
@@ -328,7 +307,7 @@ object XPathParser {
      * @return the local line number within the expression or query. Set to -1
      *         if not known.
      */
-    def getLocalLineNumber = localLineNumber
+    def getLocalLineNumber: Int = localLineNumber
 
     /**
      * Get the line number within the containing entity. This is the sum of the containing
@@ -336,7 +315,7 @@ object XPathParser {
      *
      * @return the line number within the containing entity, or -1 if unknown.
      */
-    override def getLineNumber = containingLocation.getLineNumber + localLineNumber
+    override def getLineNumber: Int = containingLocation.getLineNumber + localLineNumber
 
     /**
      * Get text appearing near to the error (typically a syntax error) within the source
@@ -344,7 +323,7 @@ object XPathParser {
      *
      * @return nearby text to the error. May be null.
      */
-    def getNearbyText = nearbyText
+    def getNearbyText: String = nearbyText
 
     /**
      * Save an immutable copy of the location information. This implementation does
@@ -352,7 +331,7 @@ object XPathParser {
      *
      * @return immutable location information.
      */
-    override def saveLocation = this
+    override def saveLocation: Location = this
   }
 
 }
@@ -403,7 +382,7 @@ class XPathParser() {
    *
    * @param injector the code injector to be used
    */
-  def setCodeInjector(injector: CodeInjector) = this.codeInjector = injector
+  def setCodeInjector(injector: CodeInjector): Unit = this.codeInjector = injector
 
   /**
    * Set a CodeInjector which can be used to modify or wrap expressions on the tree
@@ -412,14 +391,14 @@ class XPathParser() {
    *
    * @return the code injector in use, if any; or null otherwise
    */
-  def getCodeInjector = codeInjector
+  def getCodeInjector: CodeInjector = codeInjector
 
   /**
    * Set an accelerator which can be used for fast parsing of special cases
    *
    * @param accelerator a parsing accelerator
    */
-  def setAccelerator(accelerator: XPathParser.Accelerator) = this.accelerator = accelerator
+  def setAccelerator(accelerator: XPathParser.Accelerator): Unit = this.accelerator = accelerator
 
   /**
    * Get the tokenizer (the lexical analyzer)
@@ -441,14 +420,14 @@ class XPathParser() {
    *
    * @param extension a parser extension
    */
-  def setParserExtension(extension: ParserExtension) = this.parserExtension = extension
+  def setParserExtension(extension: ParserExtension): Unit = this.parserExtension = extension
 
   /**
    * Set the depth of nesting within try/catch
    *
    * @param depth the depth of nesting
    */
-  def setCatchDepth(depth: Int) = catchDepth = depth
+  def setCatchDepth(depth: Int): Unit = catchDepth = depth
 
   /**
    * Read the next token, catching any exception thrown by the tokenizer
@@ -456,7 +435,7 @@ class XPathParser() {
    * @throws XPathException if an invalid token is found
    */
   @throws[XPathException]
-  def nextToken() = try t.next()
+  def nextToken(): Unit = try t.next()
   catch {
     case e: XPathException =>
       grumble(e.getMessage)
@@ -471,7 +450,7 @@ class XPathParser() {
    *                        token
    */
   @throws[XPathException]
-  def expect(token: Int) = if (t.currentToken != token) grumble("expected \"" + Token.tokens(token) + "\", found " + currentTokenDisplay)
+  def expect(token: Int): Unit = if (t.currentToken != token) grumble("expected \"" + Token.tokens(token) + "\", found " + currentTokenDisplay)
 
   /**
    * Report a syntax error (a static error with error code XPST0003)
@@ -567,8 +546,7 @@ class XPathParser() {
     language match {
       case XPATH =>
         if (!(verson == 20 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
-      case XSLT_PATTERN =>
-      case SEQUENCE_TYPE =>
+      case XSLT_PATTERN | SEQUENCE_TYPE =>
         if (!(verson == 20 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
       case XQUERY =>
         if (!(verson == 10 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
@@ -613,7 +591,7 @@ class XPathParser() {
    *
    * @param qp the QNameParser
    */
-  def setQNameParser(qp: QNameParser) = this.qNameParser = qp
+  def setQNameParser(qp: QNameParser): Unit = this.qNameParser = qp
 
   /**
    * Get the QNameParser to be used while parsing
@@ -628,7 +606,7 @@ class XPathParser() {
    * @return the display representation of the token
    */
   /*@NotNull*/
-  def currentTokenDisplay = if (t.currentToken == Token.NAME) "name \"" + t.currentTokenValue + '\"'
+  def currentTokenDisplay: String = if (t.currentToken == Token.NAME) "name \"" + t.currentTokenValue + '\"'
   else if (t.currentToken == Token.UNKNOWN) "(unknown token)"
   else '\"' + Token.tokens(t.currentToken) + '\"'
 
@@ -644,7 +622,8 @@ class XPathParser() {
    * @throws XPathException if the expression contains a syntax error
    */
   @throws[XPathException]
-  def parse(expression: String, start: Int, terminator: Int, env: StaticContext): Expression = { // System.err.println("Parse expression: " + expression);
+  def parse(expression: String, start: Int, terminator: Int, env: StaticContext): Expression = {
+    // System.err.println("Parse expression: " + expression);
     this.env = env
     var languageVersion = env.getXPathVersion
     if (languageVersion == 20 && (language eq ParsedLanguage.XQUERY)) languageVersion = 10
@@ -672,18 +651,20 @@ class XPathParser() {
         case err: XPathException =>
           grumble(err.getMessage)
       }
-      if (t.currentToken == terminator) if (allowAbsentExpression) {
-        val result = Literal.makeEmptySequence
-        result.setRetainedStaticContext(env.makeRetainedStaticContext)
-        setLocation(result)
-        return result
-      }
-      else grumble("The expression is empty")
+      if (t.currentToken == terminator)
+        if (allowAbsentExpression) {
+          val result = Literal.makeEmptySequence
+          result.setRetainedStaticContext(env.makeRetainedStaticContext)
+          setLocation(result)
+          return result
+        } else
+          grumble("The expression is empty")
       exp = parseExpression
       if (t.currentToken != terminator && terminator != Token.IMPLICIT_EOF)
         if (t.currentToken == Token.EOF && terminator == Token.RCURLY)
           grumble("Missing curly brace after expression in value template", "XTSE0350")
-        else grumble("Unexpected token " + currentTokenDisplay + " beyond end of expression")
+        else
+          grumble("Unexpected token " + currentTokenDisplay + " beyond end of expression")
       setLocation(exp, offset)
     }
     exp.setRetainedStaticContextThoroughly(env.makeRetainedStaticContext)
@@ -696,7 +677,7 @@ class XPathParser() {
    *
    * @param t the Tokenizer to be customized
    */
-  def customizeTokenizer(t: Tokenizer) = {
+  def customizeTokenizer(t: Tokenizer): Unit = {
     // do nothing
   }
 
@@ -744,7 +725,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseExtendedItemType(input: String, env: StaticContext) = {
+  def parseExtendedItemType(input: String, env: StaticContext): ItemType = {
     this.env = env
     language = ParsedLanguage.EXTENDED_ITEM_TYPE
     t = new Tokenizer
@@ -772,7 +753,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseExtendedSequenceType(input: String, env: StaticContext) = {
+  def parseExtendedSequenceType(input: String, env: StaticContext): SequenceType = {
     this.env = env
     language = ParsedLanguage.EXTENDED_ITEM_TYPE
     t = new Tokenizer
@@ -797,13 +778,12 @@ class XPathParser() {
    * @throws XPathException if the expression contains a syntax error
    */
   @throws[XPathException]
-  def parseExpression = {
+  def parseExpression: Expression = {
     val offset = t.currentTokenStartOffset
     var exp = parseExprSingle
     var list: util.List[Expression] = null
-    while ( {
-      t.currentToken == Token.COMMA
-    }) { // An expression containing a comma often contains many, so we accumulate all the
+    while (t.currentToken == Token.COMMA) {
+      // An expression containing a comma often contains many, so we accumulate all the
       // subexpressions into a list before creating the Block expression which reduces it to an array
       if (list == null) {
         list = new util.ArrayList[Expression](10)
@@ -838,10 +818,7 @@ class XPathParser() {
         return parseStringLiteral(true)
       case Token.NUMBER =>
         return parseNumericLiteral(true)
-      case Token.NAME =>
-      case Token.PREFIX =>
-      case Token.SUFFIX =>
-      case Token.STAR =>
+      case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
         return parseBasicStep(true)
       case Token.DOT =>
         nextToken()
@@ -854,21 +831,15 @@ class XPathParser() {
         setLocation(pne)
         return pne
       case Token.EOF =>
-      // fall through
       case _ =>
     }
     t.currentToken match {
-      case Token.EOF => {
+      case Token.EOF =>
         grumble("Expected an expression, but reached the end of the input")
         null
-      }
-      case Token.FOR => null
-      case Token.LET => null
-      case Token.FOR_SLIDING => null
-      case Token.FOR_TUMBLING =>
+      case Token.FOR |  Token.LET |  Token.FOR_SLIDING |  Token.FOR_TUMBLING =>
         parseFLWORExpression
-      case Token.SOME => null
-      case Token.EVERY =>
+      case Token.SOME | Token.EVERY =>
         parseQuantifiedExpression
       case Token.FOR_MEMBER =>
         parserExtension.parseForMemberExpression(this)
@@ -878,10 +849,7 @@ class XPathParser() {
         parseSwitchExpression
       case Token.TYPESWITCH =>
         parseTypeswitchExpression
-      case Token.VALIDATE => null
-      case Token.VALIDATE_STRICT => null
-      case Token.VALIDATE_LAX => null
-      case Token.VALIDATE_TYPE =>
+      case Token.VALIDATE | Token.VALIDATE_STRICT | Token.VALIDATE_LAX | Token.VALIDATE_TYPE =>
         parseValidateExpression
       case Token.PRAGMA =>
         parseExtensionExpression // XQuery only
@@ -914,15 +882,13 @@ class XPathParser() {
       val operator = t.currentToken
       val prec = getCurrentOperatorPrecedence
       operator match {
-        case Token.INSTANCE_OF =>
-        case Token.TREAT_AS =>
+        case Token.INSTANCE_OF | Token.TREAT_AS =>
           nextToken()
           val seq = parseSequenceType
           lhsExp = makeSequenceTypeExpression(lhsExp, operator, seq)
           setLocation(lhsExp, offset)
           if (getCurrentOperatorPrecedence >= prec) grumble("Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses")
-        case Token.CAST_AS =>
-        case Token.CASTABLE_AS =>
+        case Token.CAST_AS | Token.CASTABLE_AS =>
           nextToken()
           var at: CastingTarget = null
           if (allowSaxonExtensions && t.currentToken == Token.NODEKIND && t.currentTokenValue == "union") { // Saxon 9.8 extension
@@ -964,22 +930,8 @@ class XPathParser() {
   }
 
   private def allowMultipleOperators = t.currentToken match {
-    case Token.FEQ =>
-    case Token.FNE =>
-    case Token.FLE =>
-    case Token.FLT =>
-    case Token.FGE =>
-    case Token.FGT =>
-    case Token.EQUALS =>
-    case Token.NE =>
-    case Token.LE =>
-    case Token.LT =>
-    case Token.GE =>
-    case Token.GT =>
-    case Token.IS =>
-    case Token.PRECEDES =>
-    case Token.FOLLOWS =>
-    case Token.TO =>
+    case Token.FEQ | Token.FNE | Token.FLE | Token.FLT | Token.FGE | Token.FGT | Token.EQUALS | Token.NE |
+         Token.LE | Token.LT | Token.GE | Token.GT | Token.IS | Token.PRECEDES | Token.FOLLOWS | Token.TO =>
       false
     case _ =>
       true
@@ -996,23 +948,11 @@ class XPathParser() {
         new OrExpression(lhs, rhs)
       case Token.AND =>
         new AndExpression(lhs, rhs)
-      case Token.FEQ => null
-      case Token.FNE => null
-      case Token.FLE => null
-      case Token.FLT => null
-      case Token.FGE => null
-      case Token.FGT =>
+      case Token.FEQ | Token.FNE | Token.FLE | Token.FLT | Token.FGE | Token.FGT =>
         new ValueComparison(lhs, operator, rhs)
-      case Token.EQUALS => null
-      case Token.NE => null
-      case Token.LE => null
-      case Token.LT => null
-      case Token.GE => null
-      case Token.GT =>
+      case Token.EQUALS | Token.NE | Token.LE | Token.LT | Token.GE | Token.GT =>
         env.getConfiguration.getTypeChecker(env.isInBackwardsCompatibleMode).makeGeneralComparison(lhs, operator, rhs)
-      case Token.IS => null
-      case Token.PRECEDES => null
-      case Token.FOLLOWS =>
+      case Token.IS | Token.PRECEDES | Token.FOLLOWS =>
         new IdentityComparison(lhs, operator, rhs)
       case Token.TO =>
         new RangeExpression(lhs, rhs)
@@ -1027,18 +967,11 @@ class XPathParser() {
           SystemFunction.makeCall("concat", rsc, newArgs: _*)
         }
         else SystemFunction.makeCall("concat", rsc, lhs, rhs)
-      case Token.PLUS => null
-      case Token.MINUS => null
-      case Token.MULT => null
-      case Token.DIV => null
-      case Token.IDIV => null
-      case Token.MOD =>
+      case Token.PLUS | Token.MINUS | Token.MULT | Token.DIV | Token.IDIV | Token.MOD =>
         env.getConfiguration.getTypeChecker(env.isInBackwardsCompatibleMode).makeArithmeticExpression(lhs, operator, rhs)
       case Token.OTHERWISE =>
         makeOtherwiseExpression(lhs, rhs)
-      case Token.UNION => null
-      case Token.INTERSECT => null
-      case Token.EXCEPT =>
+      case Token.UNION | Token.INTERSECT | Token.EXCEPT =>
         new VennExpression(lhs, operator, rhs)
       case Token.OR_ELSE =>
         val rsc = new RetainedStaticContext(env)
@@ -1219,7 +1152,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseFLWORExpression = {
+  def parseFLWORExpression: Expression = {
     if (t.currentToken == Token.LET && !allowXPath30Syntax) grumble("'let' is not permitted in XPath 2.0")
     if (t.currentToken == Token.FOR_SLIDING || t.currentToken == Token.FOR_TUMBLING) grumble("sliding/tumbling windows can only be used in XQuery")
     var clauses = 0
@@ -1447,7 +1380,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  private def checkAllowedType(env: StaticContext, `type`: BuiltInAtomicType) = {
+  private def checkAllowedType(env: StaticContext, `type`: BuiltInAtomicType): Unit = {
     val s = XPathParser.whyDisallowedType(env.getPackageData, `type`)
     if (s != null) grumble(s, "XPST0080")
   }
@@ -1532,8 +1465,7 @@ class XPathParser() {
     }
     var occurrenceFlag = 0
     t.currentToken match {
-      case Token.STAR =>
-      case Token.MULT =>
+      case Token.STAR | Token.MULT =>
         // "*" will be tokenized different ways depending on what precedes it
         occurrenceFlag = StaticProperty.ALLOWS_ZERO_OR_MORE
         // Make the tokenizer ignore the occurrence indicator when classifying the next token
@@ -1560,7 +1492,7 @@ class XPathParser() {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseItemType = {
+  def parseItemType: ItemType = {
     val extended = parserExtension.parseExtendedItemType(this)
     if (extended == null) parseSimpleItemType
     else extended
@@ -1648,7 +1580,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def parseFunctionItemType(annotations: AnnotationList) = parserExtension.parseFunctionItemType(this, annotations)
+  def parseFunctionItemType(annotations: AnnotationList): ItemType = parserExtension.parseFunctionItemType(this, annotations)
 
   /**
    * Parse the item type used for maps (XSLT extension to XPath 3.0)
@@ -1699,7 +1631,7 @@ class XPathParser() {
    *                        is not available
    */
   @throws[XPathException]
-  def parseArrayItemType = {
+  def parseArrayItemType: ArrayItemType = {
     checkLanguageVersion31()
     val t = getTokenizer
     nextToken()
@@ -1731,9 +1663,7 @@ class XPathParser() {
     while ( {
       primaryType.isInstanceOf[NodeTest] && (language eq ParsedLanguage.EXTENDED_ITEM_TYPE) && t.currentToken != Token.RPAR
     }) t.currentToken match {
-      case Token.UNION =>
-      case Token.EXCEPT =>
-      case Token.INTERSECT =>
+      case Token.UNION | Token.EXCEPT | Token.INTERSECT =>
         val op = t.currentToken
         nextToken()
         primaryType = new CombinedNodeTest(primaryType.asInstanceOf[NodeTest], op, parseItemType.asInstanceOf[NodeTest])
@@ -1765,18 +1695,12 @@ class XPathParser() {
         // force conversion to a number which would affect operations such as "=".
         val operand = parseUnaryExpression
         exp = makeUnaryExpression(Token.PLUS, operand)
-      case Token.VALIDATE =>
-      case Token.VALIDATE_STRICT =>
-      case Token.VALIDATE_LAX =>
-      case Token.VALIDATE_TYPE =>
+      case Token.VALIDATE | Token.VALIDATE_STRICT | Token.VALIDATE_LAX | Token.VALIDATE_TYPE =>
         exp = parseValidateExpression
       case Token.PRAGMA =>
         exp = parseExtensionExpression
-      case Token.KEYWORD_CURLY =>
-        if (t.currentTokenValue == "validate") {
-          exp = parseValidateExpression
-        }
-      // else fall through
+      case Token.KEYWORD_CURLY if t.currentTokenValue == "validate" =>
+        exp = parseValidateExpression
       case _ =>
         exp = parseSimpleMappingExpression
     }
@@ -1802,27 +1726,11 @@ class XPathParser() {
    *
    * @return the resulting subexpression
    */
-  def atStartOfRelativePath = t.currentToken match {
-    case Token.AXIS =>
-    case Token.AT =>
-    case Token.NAME =>
-    case Token.PREFIX =>
-    case Token.SUFFIX =>
-    case Token.STAR =>
-    case Token.NODEKIND =>
-    case Token.DOT =>
-    case Token.DOTDOT =>
-    case Token.FUNCTION =>
-    case Token.STRING_LITERAL =>
-    case Token.NUMBER =>
-    case Token.LPAR =>
-    case Token.DOLLAR =>
-    case Token.PRAGMA =>
-    case Token.ELEMENT_QNAME =>
-    case Token.ATTRIBUTE_QNAME =>
-    case Token.PI_QNAME =>
-    case Token.NAMESPACE_QNAME =>
-    case Token.NAMED_FUNCTION_REF =>
+  def atStartOfRelativePath: Boolean = t.currentToken match {
+    case Token.AXIS | Token.AT | Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR | Token.NODEKIND |
+         Token.DOT | Token.DOTDOT | Token.FUNCTION | Token.STRING_LITERAL | Token.NUMBER | Token.LPAR |
+         Token.DOLLAR | Token.PRAGMA | Token.ELEMENT_QNAME | Token.ATTRIBUTE_QNAME | Token.PI_QNAME |
+         Token.NAMESPACE_QNAME | Token.NAMED_FUNCTION_REF =>
       true
     case Token.KEYWORD_CURLY =>
       t.currentTokenValue == "ordered" || t.currentTokenValue == "unordered"
@@ -1838,13 +1746,8 @@ class XPathParser() {
    * @return the resulting subexpression
    */
   def disallowedAtStartOfRelativePath: Boolean = t.currentToken match {
-    case Token.CAST_AS => false
-    case Token.CASTABLE_AS => false
-    case Token.INSTANCE_OF => false
-    case Token.TREAT_AS =>
-      true
-    case _ =>
-      false
+    case Token.CAST_AS | Token.CASTABLE_AS | Token.INSTANCE_OF | Token.TREAT_AS => true
+    case _ => false
   }
 
   /**
@@ -1856,7 +1759,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parsePathExpression = {
+  def parsePathExpression: Expression = {
     val offset = t.currentTokenStartOffset
     t.currentToken match {
       case Token.SLASH =>
@@ -1901,7 +1804,7 @@ class XPathParser() {
    * @throws XPathException in the event of a syntax error
    */
   @throws[XPathException]
-  def parseSimpleMappingExpression = {
+  def parseSimpleMappingExpression: Expression = {
     val offset = t.currentTokenStartOffset
     var exp = parsePathExpression
     while ( {
@@ -1924,7 +1827,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseRelativePath = {
+  def parseRelativePath: Expression = {
     val offset = t.currentTokenStartOffset
     var exp = parseStepExpression(language eq ParsedLanguage.XSLT_PATTERN)
     while ( {
@@ -1962,7 +1865,7 @@ class XPathParser() {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseRemainingPath(start: Expression) = {
+  def parseRemainingPath(start: Expression): Expression = {
     val offset = t.currentTokenStartOffset
     var exp = start
     var op = Token.SLASH
@@ -2000,7 +1903,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseStepExpression(firstInPattern: Boolean) = {
+  def parseStepExpression(firstInPattern: Boolean): Expression = {
     var step = parseBasicStep(firstInPattern)
     // When the filter is applied to an Axis step, the nodes are considered in
     // axis order. In all other cases they are considered in document order
@@ -2049,7 +1952,7 @@ class XPathParser() {
    * @return the expression that results from the parsing
    */
   @throws[XPathException]
-  def parseArrowPostfix(lhs: Expression) = {
+  def parseArrowPostfix(lhs: Expression): Expression = {
     checkLanguageVersion31()
     nextToken()
     val token = getTokenizer.currentToken
@@ -2077,9 +1980,9 @@ class XPathParser() {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parsePredicate = parseExpression
+  def parsePredicate: Expression = parseExpression
 
-  def isReservedInQuery(uri: String) = NamespaceConstant.isReservedInQuery31(uri)
+  def isReservedInQuery(uri: String): Boolean = NamespaceConstant.isReservedInQuery31(uri)
 
   /**
    * Parse a basic step expression (without the predicates)
@@ -2125,18 +2028,13 @@ class XPathParser() {
         if (!(t.currentTokenValue == "function")) grumble("Expected 'function' to follow the annotation assertion")
         annotations.check(env.getConfiguration, "IF")
         return parseInlineFunction(annotations)
-      case Token.NODEKIND =>
-        if (t.currentTokenValue == "function") {
-          val annotations = AnnotationList.EMPTY
-          return parseInlineFunction(annotations)
+      case Token.NODEKIND if t.currentTokenValue == "function" =>
+        val annotations = AnnotationList.EMPTY
+        return parseInlineFunction(annotations)
           //                } else if (t.currentTokenValue.equals("map")) {
           //                    return parseFunctionCall(null);
-        }
-      // fall through!
-      case Token.NAME =>
-      case Token.PREFIX =>
-      case Token.SUFFIX =>
-      case Token.STAR =>
+
+      case Token.NODEKIND| Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
         var defaultAxis = AxisInfo.CHILD
         if (t.currentToken == Token.NODEKIND && (t.currentTokenValue == "attribute" || t.currentTokenValue == "schema-attribute")) defaultAxis = AxisInfo.ATTRIBUTE
         else if (t.currentToken == Token.NODEKIND && t.currentTokenValue == "namespace-node") {
@@ -2155,11 +2053,7 @@ class XPathParser() {
       case Token.AT =>
         nextToken()
         t.currentToken match {
-          case Token.NAME =>
-          case Token.PREFIX =>
-          case Token.SUFFIX =>
-          case Token.STAR =>
-          case Token.NODEKIND =>
+          case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR | Token.NODEKIND =>
             val ae2 = new AxisExpression(AxisInfo.ATTRIBUTE, parseNodeTest(Type.ATTRIBUTE))
             setLocation(ae2)
             return ae2
@@ -2178,11 +2072,7 @@ class XPathParser() {
         val principalNodeType = AxisInfo.principalNodeType(axis)
         nextToken()
         t.currentToken match {
-          case Token.NAME =>
-          case Token.PREFIX =>
-          case Token.SUFFIX =>
-          case Token.STAR =>
-          case Token.NODEKIND =>
+          case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR | Token.NODEKIND =>
             val ax = new AxisExpression(axis, parseNodeTest(principalNodeType))
             setLocation(ax)
             return ax
@@ -2195,17 +2085,14 @@ class XPathParser() {
             return parseMapExpression
           case "array" =>
             return parseArrayCurlyConstructor
-          case "fn" =>
-          case "." =>
+          case "fn" | "." =>
             return parserExtension.parseDotFunction(this)
           case "_" =>
             return parserExtension.parseUnderscoreFunction(this)
+          case _ ⇒
+            return parseConstructor
         }
-      case Token.ELEMENT_QNAME =>
-      case Token.ATTRIBUTE_QNAME =>
-      case Token.NAMESPACE_QNAME =>
-      case Token.PI_QNAME =>
-      case Token.TAG =>
+      case Token.ELEMENT_QNAME | Token.ATTRIBUTE_QNAME | Token.NAMESPACE_QNAME | Token.PI_QNAME | Token.TAG =>
         return parseConstructor
       case Token.NAMED_FUNCTION_REF =>
         return parseNamedFunctionReference
@@ -2230,19 +2117,21 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def testPermittedAxis(axis: Int, errorCode: String) = if (axis == AxisInfo.PRECEDING_OR_ANCESTOR) grumble("The preceding-or-ancestor axis is for internal use only", errorCode)
+  def testPermittedAxis(axis: Int, errorCode: String): Unit =
+    if (axis == AxisInfo.PRECEDING_OR_ANCESTOR)
+      grumble("The preceding-or-ancestor axis is for internal use only", errorCode)
 
   @throws[XPathException]
-  def parseNumericLiteral(traceable: Boolean) = {
+  def parseNumericLiteral(traceable: Boolean): Expression = {
     val offset = t.currentTokenStartOffset
     val number = NumericValue.parseNumber(t.currentTokenValue)
-    if (number.isNaN) grumble("Invalid numeric literal " + Err.wrap(t.currentTokenValue, Err.VALUE))
+    if (number.isNaN)
+      grumble("Invalid numeric literal " + Err.wrap(t.currentTokenValue, Err.VALUE))
     nextToken()
     val lit = Literal.makeLiteral(number)
     setLocation(lit, offset)
     //lit.setRetainedStaticContext(env.makeRetainedStaticContext());
-    if (traceable) makeTracer(lit, null)
-    else lit
+    if (traceable) makeTracer(lit, null) else lit
   }
 
   @throws[XPathException]
@@ -2326,7 +2215,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def parseDynamicFunctionCall(functionItem: Expression, prefixArgument: Expression) = {
+  def parseDynamicFunctionCall(functionItem: Expression, prefixArgument: Expression): Expression = {
     checkLanguageVersion30()
     val args = new util.ArrayList[Expression](10)
     if (prefixArgument != null) args.add(prefixArgument)
@@ -2355,7 +2244,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def generateApplyCall(functionItem: Expression, args: util.ArrayList[Expression]) = {
+  def generateApplyCall(functionItem: Expression, args: util.ArrayList[Expression]): Expression = {
     val block = new SquareArrayConstructor(args)
     val rsc = new RetainedStaticContext(getStaticContext)
     val fn = VendorFunctionSetHE.getInstance.makeFunction("apply", 2)
@@ -2431,7 +2320,7 @@ class XPathParser() {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  def parseNodeTest(nodeType: Short) = {
+  def parseNodeTest(nodeType: Short): NodeTest = {
     val tok = t.currentToken
     var tokv = t.currentTokenValue
     tok match {
@@ -2553,9 +2442,7 @@ class XPathParser() {
         expect(Token.RPAR)
         nextToken()
         new NameTest(Type.PROCESSING_INSTRUCTION, fp, pool)
-      case Type.ATTRIBUTE => null
-      // drop through
-      case Type.ELEMENT =>
+      case Type.ATTRIBUTE | Type.ELEMENT =>
         var nodeName = ""
         var nodeTest: NodeTest = null
         if (empty) return NodeKindTest.makeNodeKindTest(primaryType)
@@ -2684,7 +2571,7 @@ class XPathParser() {
    *
    * @return true unless XPath 2.0 / XQuery 1.0 syntax is required
    */
-  def isNamespaceTestAllowed = allowXPath30Syntax
+  def isNamespaceTestAllowed: Boolean = allowXPath30Syntax
 
   /**
    * Get a system type - that is, one whose name is a keyword rather than a QName. This includes the node
@@ -2712,16 +2599,16 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def checkLanguageVersion30() = if (!allowXPath30Syntax) grumble("To use XPath 3.0 syntax, you must configure the XPath parser to handle it")
+  def checkLanguageVersion30(): Unit = if (!allowXPath30Syntax) grumble("To use XPath 3.0 syntax, you must configure the XPath parser to handle it")
 
   @throws[XPathException]
-  def checkLanguageVersion31() = if (!allowXPath31Syntax) grumble("The XPath parser is not configured to allow use of XPath 3.1 syntax")
+  def checkLanguageVersion31(): Unit = if (!allowXPath31Syntax) grumble("The XPath parser is not configured to allow use of XPath 3.1 syntax")
 
   @throws[XPathException]
-  def checkMapExtensions() = if (!(allowXPath31Syntax || allowXPath30XSLTExtensions)) grumble("The XPath parser is not configured to allow use of the map syntax from XSLT 3.0 or XPath 3.1")
+  def checkMapExtensions(): Unit = if (!(allowXPath31Syntax || allowXPath30XSLTExtensions)) grumble("The XPath parser is not configured to allow use of the map syntax from XSLT 3.0 or XPath 3.1")
 
   @throws[XPathException]
-  def checkSyntaxExtensions(construct: String) = if (!allowSaxonExtensions) grumble("Saxon XPath syntax extensions have not been enabled: " + construct + " is not allowed")
+  def checkSyntaxExtensions(construct: String): Unit = if (!allowSaxonExtensions) grumble("Saxon XPath syntax extensions have not been enabled: " + construct + " is not allowed")
 
   /**
    * Parse a map expression. Requires XPath/XQuery 3.0
@@ -2732,7 +2619,7 @@ class XPathParser() {
    * @throws XPathException if parsing fails
    */
   @throws[XPathException]
-  def parseMapExpression = {
+  def parseMapExpression: Expression = {
     checkMapExtensions()
     // have read the "map {"
     val t = getTokenizer
@@ -2919,7 +2806,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def reportMissingFunction(offset: Int, functionName: StructuredQName, arguments: Array[Expression], reasons: util.List[String]) = {
+  def reportMissingFunction(offset: Int, functionName: StructuredQName, arguments: Array[Expression], reasons: util.List[String]): ErrorExpression = {
     val sb = new StringBuilder
     sb.append("Cannot find a ").append(arguments.length).append("-argument function named ").append(functionName.getEQName).append("()")
     val config = env.getConfiguration
@@ -3026,7 +2913,7 @@ class XPathParser() {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def makeCurriedFunction(offset: Int, name: StructuredQName, args: Array[Expression], placeMarkers: IntSet) = {
+  def makeCurriedFunction(offset: Int, name: StructuredQName, args: Array[Expression], placeMarkers: IntSet): ErrorExpression = {
     grumble("Partial function application is not allowed in Saxon-HE")
     new ErrorExpression
   }
@@ -3043,7 +2930,7 @@ class XPathParser() {
    *
    * @param variables the stack of variables
    */
-  def setRangeVariables(variables: mutable.Stack[LocalBinding]) = this.rangeVariables = variables
+  def setRangeVariables(variables: mutable.Stack[LocalBinding]): Unit = this.rangeVariables = variables
 
   /**
    * Declare a range variable (record its existence within the parser).
@@ -3140,7 +3027,7 @@ class XPathParser() {
    *                        undeclared
    */
   @throws[XPathException]
-  final def makeStructuredQName(qname: String, defaultUri: String) = try makeStructuredQNameSilently(qname, defaultUri)
+  final def makeStructuredQName(qname: String, defaultUri: String): StructuredQName = try makeStructuredQNameSilently(qname, defaultUri)
   catch {
     case err: XPathException =>
       grumble(err.getMessage, err.getErrorCodeLocalPart)
@@ -3160,7 +3047,7 @@ class XPathParser() {
    *                        undeclared
    */
   @throws[XPathException]
-  final def makeNodeName(qname: String, useDefault: Boolean) = {
+  final def makeNodeName(qname: String, useDefault: Boolean): NodeName = {
     val sq = makeStructuredQNameSilently(qname, if (useDefault) env.getDefaultElementNamespace
     else "")
     val prefix = sq.getPrefix
@@ -3218,7 +3105,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def makeQNameTest(nodeType: Short, qname: String) = {
+  def makeQNameTest(nodeType: Short, qname: String): NameTest = {
     val pool = env.getConfiguration.getNamePool
     val q = makeStructuredQName(qname, "")
     assert(q != null)
@@ -3265,7 +3152,7 @@ class XPathParser() {
    * @throws XPathException if the local name is invalid
    */
   @throws[XPathException]
-  def makeLocalNameTest(nodeType: Short, localName: String) = {
+  def makeLocalNameTest(nodeType: Short, localName: String): LocalNameTest = {
     if (!NameChecker.isValidNCName(localName)) grumble("Local name [" + localName + "] contains invalid characters")
     new LocalNameTest(env.getConfiguration.getNamePool, nodeType, localName)
   }
@@ -3287,12 +3174,16 @@ class XPathParser() {
    * @param exp    the expression whose location information is to be set
    * @param offset the character position within the expression (ignoring newlines)
    */
-  def setLocation(exp: Expression, offset: Int) = if (exp != null) if (exp.getLocation == null || (exp.getLocation eq Loc.NONE)) exp.setLocation(makeLocation(offset))
+  def setLocation(exp: Expression, offset: Int): Unit = {
+    if (exp != null)
+      if (exp.getLocation == null || (exp.getLocation eq Loc.NONE))
+        exp.setLocation(makeLocation(offset))
+  }
 
   /**
    * Make a location object corresponding to a specified offset in the query
    */
-  def makeLocation(offset: Int) = {
+  def makeLocation(offset: Int): Location = {
     val line = t.getLineNumber(offset)
     val column = t.getColumnNumber(offset)
     makeNestedLocation(env.getContainingLocation, line, column, null)
@@ -3306,7 +3197,7 @@ class XPathParser() {
    * @param clause the clause whose location information is to be set
    * @param offset the character position within the expression (ignoring newlines)
    */
-  def setLocation(clause: Clause, offset: Int) = {
+  def setLocation(clause: Clause, offset: Int): Unit = {
     val line = t.getLineNumber(offset)
     val column = t.getColumnNumber(offset)
     val loc = makeNestedLocation(env.getContainingLocation, line, column, null)
@@ -3316,7 +3207,7 @@ class XPathParser() {
 
   private var mostRecentLocation: Location = Loc.NONE
 
-  def makeLocation = if (t.getLineNumber == mostRecentLocation.getLineNumber && t.getColumnNumber == mostRecentLocation.getColumnNumber && ((env.getSystemId == null && mostRecentLocation.getSystemId == null) || env.getSystemId == mostRecentLocation.getSystemId)) mostRecentLocation
+  def makeLocation: Location = if (t.getLineNumber == mostRecentLocation.getLineNumber && t.getColumnNumber == mostRecentLocation.getColumnNumber && ((env.getSystemId == null && mostRecentLocation.getSystemId == null) || env.getSystemId == mostRecentLocation.getSystemId)) mostRecentLocation
   else {
     val line = t.getLineNumber
     val column = t.getColumnNumber
@@ -3333,7 +3224,7 @@ class XPathParser() {
    * @param nearbyText    (maybe null) expression text around the point of the error
    * @return a suitable Location object
    */
-  def makeNestedLocation(containingLoc: Location, line: Int, column: Int, nearbyText: String) =
+  def makeNestedLocation(containingLoc: Location, line: Int, column: Int, nearbyText: String): Location =
     if (containingLoc.isInstanceOf[Loc] && containingLoc.getLineNumber <= 1 && containingLoc.getColumnNumber == -1 && nearbyText == null) {
       new Loc(env.getSystemId, line + 1, column + 1)
     }
@@ -3346,7 +3237,7 @@ class XPathParser() {
    * @param qName the name of the construct (if applicable)
    * @return the expression that does the tracing
    */
-  def makeTracer(exp: Expression, qName: StructuredQName) = {
+  def makeTracer(exp: Expression, qName: StructuredQName): Expression = {
     exp.setRetainedStaticContextLocally(env.makeRetainedStaticContext)
     //        if (codeInjector != null) {
     //            return codeInjector.inject(exp, env, construct, qName);
@@ -3361,7 +3252,7 @@ class XPathParser() {
    * @param s The string to be compared with the current token
    * @return true if they are the same
    */
-  def isKeyword(s: String) = t.currentToken == Token.NAME && t.currentTokenValue == s
+  def isKeyword(s: String): Boolean = t.currentToken == Token.NAME && t.currentTokenValue == s
 
   /**
    * Set that we are parsing in "scan only"
@@ -3370,7 +3261,7 @@ class XPathParser() {
    *                 namespace bindings are not yet known, so no attempt is made to look up namespace
    *                 prefixes.
    */
-  def setScanOnly(scanOnly: Boolean) = this.scanOnly = scanOnly
+  def setScanOnly(scanOnly: Boolean): Unit = this.scanOnly = scanOnly
 
   /**
    * Say whether an absent expression is permitted
@@ -3379,7 +3270,7 @@ class XPathParser() {
    *                   only of whitespace and comments, in which case the result
    *                   of parsing will be an EmptySequence literal
    */
-  def setAllowAbsentExpression(allowEmpty: Boolean) = this.allowAbsentExpression = allowEmpty
+  def setAllowAbsentExpression(allowEmpty: Boolean): Unit = this.allowAbsentExpression = allowEmpty
 
   /**
    * Ask whether an absent expression is permitted
@@ -3388,5 +3279,5 @@ class XPathParser() {
    *         only of whitespace and comments, in which case the result
    *         of parsing will be an EmptySequence literal
    */
-  def isAllowAbsentExpression(allowEmpty: Boolean) = this.allowAbsentExpression
+  def isAllowAbsentExpression(allowEmpty: Boolean): Boolean = this.allowAbsentExpression
 }
