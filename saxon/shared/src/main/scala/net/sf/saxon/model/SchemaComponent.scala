@@ -7,7 +7,6 @@
 package net.sf.saxon.model
 
 import net.sf.saxon.model.SchemaComponent.ValidationStatus.ValidationStatus
-import net.sf.saxon.value.SequenceType
 
 
 object SchemaComponent {
@@ -15,15 +14,10 @@ object SchemaComponent {
   object ValidationStatus extends Enumeration {
 
     val UNVALIDATED: ValidationStatus = new ValidationStatus()
-
     val FIXED_UP: ValidationStatus = new ValidationStatus()
-
     val VALIDATING: ValidationStatus = new ValidationStatus()
-
     val VALIDATED: ValidationStatus = new ValidationStatus()
-
     val INVALID: ValidationStatus = new ValidationStatus()
-
     val INCOMPLETE: ValidationStatus = new ValidationStatus()
 
     class ValidationStatus extends Val
@@ -44,10 +38,10 @@ object SchemaComponent {
 trait SchemaComponent {
 
   def getValidationStatus(): ValidationStatus
-
   def getRedefinitionLevel(): Int
 
-  var COMPONENT_FUNCTION_TYPE: FunctionItemType = new SpecificFunctionType(
-    Array(SequenceType.SINGLE_STRING),
-    SequenceType.ANY_SEQUENCE)
+  // ORBEON: This is unused and causes unwanted recursion during initialization.
+//  var COMPONENT_FUNCTION_TYPE: FunctionItemType = new SpecificFunctionType(
+//    Array(SequenceType.SINGLE_STRING),
+//    SequenceType.ANY_SEQUENCE)
 }
