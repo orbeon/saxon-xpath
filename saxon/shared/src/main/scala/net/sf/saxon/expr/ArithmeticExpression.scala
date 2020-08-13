@@ -98,7 +98,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     val role1 =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 1)
 
-    setLhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
+    setRhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
 
     val itemType1 = getRhsExpression.getItemType
     if (itemType1.isInstanceOf[ErrorType])
@@ -108,7 +108,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
 
     if (type1.getFingerprint == StandardNames.XS_UNTYPED_ATOMIC) {
-      setLhsExpression(
+      setRhsExpression(
         UntypedSequenceConverter.makeUntypedSequenceConverter(
           config,
           getRhsExpression,
@@ -118,7 +118,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       0 &&
       th.relationship(type1, BuiltInAtomicType.UNTYPED_ATOMIC) !=
         Affinity.DISJOINT) {
-      setLhsExpression(
+      setRhsExpression(
         UntypedSequenceConverter.makeUntypedSequenceConverter(
           config,
           getRhsExpression,
