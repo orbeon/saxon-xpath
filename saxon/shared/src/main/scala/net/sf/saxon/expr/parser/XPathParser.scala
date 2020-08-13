@@ -918,7 +918,7 @@ class XPathParser() {
           while (getCurrentOperatorPrecedence > prec)
             rhs = parseBinaryExpression(rhs, getCurrentOperatorPrecedence)
 
-          if (getCurrentOperatorPrecedence == prec && !allowMultipleOperators.toString.toBoolean) {
+          if (getCurrentOperatorPrecedence == prec && ! allowMultipleOperators) {
             val tok = Token.tokens(t.currentToken)
             var message = "Left operand of '" + Token.tokens(t.currentToken) + "' needs parentheses"
             if (tok == "<" || tok == ">") {
