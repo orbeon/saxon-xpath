@@ -80,7 +80,7 @@ object HTMLEmitter {
 
   private def isBooleanAttribute(element: String, attribute: String, value: String) = attribute.equalsIgnoreCase(value) && booleanAttributes.contains(attribute) && (booleanCombinations.contains(element + '+' + attribute) || booleanCombinations.contains("*+" + attribute))
 
-  try setBooleanAttribute("*", "hidden") // HTML5
+  setBooleanAttribute("*", "hidden") // HTML5
   setBooleanAttribute("area", "nohref")
   setBooleanAttribute("audio", "autoplay")
   setBooleanAttribute("audio", "controls")
