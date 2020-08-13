@@ -141,12 +141,13 @@ class Processor extends Configuration.ApiProvider {
     }
   }
 
-  def this(source: Source) = {
-    this()
-    config = Configuration.readConfiguration(source)
-    schemaManager = makeSchemaManager()
-    config.setProcessor(this)
-  }
+  //ORBEON: Remove as `Configuration.readConfiguration` is not available
+//  def this(source: Source) = {
+//    this()
+//    config = Configuration.readConfiguration(source)
+//    schemaManager = makeSchemaManager()
+//    config.setProcessor(this)
+//  }
 
   def newDocumentBuilder(): DocumentBuilder = new DocumentBuilder(config)
 
