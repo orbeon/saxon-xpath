@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -39,7 +38,7 @@ object Tokenizer {
   val OPERATOR_STATE = 3
 }
 
-final class Tokenizer() {
+final class Tokenizer {
   private var state = Tokenizer.DEFAULT_STATE
   /**
    * The number identifying the most recently read token
@@ -48,7 +47,8 @@ final class Tokenizer() {
   /**
    * The string value of the most recently read token
    */
-  /*@Nullable*/ var currentTokenValue: String = null
+  /*@Nullable*/
+  var currentTokenValue: String = null
   /**
    * The position in the input expression where the current token starts
    */
@@ -120,14 +120,14 @@ final class Tokenizer() {
    *
    * @return the current state
    */
-  def getState = state
+  def getState: Int = state
 
   /**
    * Set the tokenizer into a special state
    *
    * @param state the new state
    */
-  def setState(state: Int) = {
+  def setState(state: Int): Unit = {
     this.state = state
     if (state == Tokenizer.DEFAULT_STATE) { // force the followsOperator() test to return true
       precedingToken = Token.UNKNOWN
@@ -153,16 +153,19 @@ final class Tokenizer() {
    *                        string quotes
    */
   @throws[XPathException]
-  def tokenize(input: String, start: Int, end: Int) = {
+  def tokenize(input: String, start: Int, end: Int): Unit = {
     nextToken = Token.EOF
     nextTokenValue = null
     nextTokenStartOffset = 0
     inputOffset = start
     this.input = input
-    this.lineNumber = 0
+    lineNumber = 0
     nextLineNumber = 0
-    if (end == -1) inputLength = input.length
-    else inputLength = end
+    inputLength =
+      if (end == -1)
+        input.length
+      else
+        end
     // The tokenizer actually reads one token ahead. The raw lexical analysis performed by
     // the lookAhead() method does not (in general) distinguish names used as QNames from names
     // used for operators, axes, and functions. The next() routine further refines names into the
@@ -315,7 +318,7 @@ final class Tokenizer() {
   /**
    * Force the current token to be treated as an operator if possible
    */
-  def treatCurrentAsOperator() = currentToken match {
+  def treatCurrentAsOperator(): Unit = currentToken match {
     case Token.NAME =>
       val optype = getBinaryOp(currentTokenValue)
       if (optype != Token.UNKNOWN) currentToken = optype
@@ -551,7 +554,7 @@ final class Tokenizer() {
             var allowE = true
             var allowSign = false
             var allowDot = true
-            // numloop //todo: labels are not supporte
+            // numloop //todo: labels are not supported
             breakable {
               while (true) {
                 c match {
@@ -919,7 +922,7 @@ final class Tokenizer() {
    * input.
    */
   @throws[StringIndexOutOfBoundsException]
-  def nextChar = {
+  def nextChar: Char = {
     val c = input.charAt({
       inputOffset += 1;
       inputOffset - 1
@@ -946,7 +949,7 @@ final class Tokenizer() {
    *
    * @param offset the place in the input string where the newline occurred
    */
-  def incrementLineNumber(offset: Int) = {
+  def incrementLineNumber(offset: Int): Boolean = {
     nextLineNumber += 1
     if (newlineOffsets == null) newlineOffsets = new util.ArrayList[Integer](20)
     newlineOffsets.add(offset)
@@ -955,7 +958,7 @@ final class Tokenizer() {
   /**
    * Step back one character. If this steps back to a previous line, adjust the line number.
    */
-  def unreadChar() = if (input.charAt({
+  def unreadChar(): Any = if (input.charAt({
     inputOffset -= 1;
     inputOffset
   }) == '\n') {
@@ -987,14 +990,14 @@ final class Tokenizer() {
    *
    * @return the line number. Line numbers reported by the tokenizer start at zero.
    */
-  def getLineNumber = lineNumber
+  def getLineNumber: Int = lineNumber
 
   /**
    * Get the column number of the current token
    *
    * @return the column number. Column numbers reported by the tokenizer start at zero.
    */
-  def getColumnNumber = (getLineAndColumn(currentTokenStartOffset) & 0x7fffffff).toInt
+  def getColumnNumber: Int = (getLineAndColumn(currentTokenStartOffset) & 0x7fffffff).toInt
 
   /**
    * Get the line and column number corresponding to a given offset in the input expression,
@@ -1019,7 +1022,7 @@ final class Tokenizer() {
    * @param offset the byte offset in the expression
    * @return the line number. Line and column numbers reported by the tokenizer start at zero.
    */
-  def getLineNumber(offset: Int) = (getLineAndColumn(offset) >> 32).toInt
+  def getLineNumber(offset: Int): Int = (getLineAndColumn(offset) >> 32).toInt
 
   /**
    * Return the column number corresponding to a given offset in the expression
@@ -1027,7 +1030,7 @@ final class Tokenizer() {
    * @param offset the byte offset in the expression
    * @return the column number. Line and column numbers reported by the tokenizer start at zero.
    */
-  def getColumnNumber(offset: Int) = (getLineAndColumn(offset) & 0x7fffffff).toInt
+  def getColumnNumber(offset: Int): Int = (getLineAndColumn(offset) & 0x7fffffff).toInt
 }
 
 /*
