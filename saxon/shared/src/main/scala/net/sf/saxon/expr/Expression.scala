@@ -527,19 +527,19 @@ abstract class Expression
     resetLocalStaticProperties()
   }
 
-  def setLocation(id: Location): Unit = {
+  def setLocation(id: Location): Unit =
     location = id
-  }
 
-  def getLocation(): Location = {
+  def getLocation: Location = {
     var limit: Int = 0
     var exp: Expression = this
-    while (limit < 10) if ((exp.location == null || exp.location == Loc.NONE) && exp.getParentExpression != null) {
-      exp = exp.getParentExpression
-      limit = limit + 1
-    } else {
-      exp.location
-    }
+    while (limit < 10)
+      if ((exp.location == null || exp.location == Loc.NONE) && exp.getParentExpression != null) {
+        exp = exp.getParentExpression
+        limit = limit + 1
+      } else {
+        return exp.location
+      }
     exp.location
   }
 
