@@ -137,8 +137,8 @@ object ContextStackFrame {
         return "template name=\"" + objectName + "\""
       } else if (container.isInstanceOf[UserFunction]) {
         return "function " + objectName + "()"
-      } else if (container.isInstanceOf[AttributeSet]) {
-        return "attribute-set " + objectName
+//      } else if (container.isInstanceOf[AttributeSet]) {
+//        return "attribute-set " + objectName
       } /*else if (container.isInstanceOf[KeyDefinition]) { // KeyDefinition not exist
         return "key " + objectName
       }*/ else if (container.isInstanceOf[GlobalVariable]) {

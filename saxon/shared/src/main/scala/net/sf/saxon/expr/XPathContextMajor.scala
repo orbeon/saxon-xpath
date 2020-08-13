@@ -7,29 +7,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Controller
-import net.sf.saxon.expr.instruct.Executable
-import net.sf.saxon.expr.instruct.ParameterSet
-import net.sf.saxon.expr.instruct.SlotManager
+import net.sf.saxon.expr.instruct.{Executable, ParameterSet, SlotManager}
 import net.sf.saxon.expr.sort.GroupIterator
-import net.sf.saxon.lib.ErrorReporter
-import net.sf.saxon.lib.StandardURIResolver
+import net.sf.saxon.lib.{ErrorReporter, StandardURIResolver}
 import net.sf.saxon.om._
 import net.sf.saxon.regex.RegexIterator
 import net.sf.saxon.trans.XPathException
-import net.sf.saxon.trans.XsltController
 import net.sf.saxon.trans.rules.Rule
+import net.sf.saxon.utils.Controller
 
 /*import net.sf.saxon.trans.rules.RuleManager*/
 // RuleManager not exist
-import net.sf.saxon.tree.iter.SingletonIterator
-import net.sf.saxon.tree.iter.UnfailingIterator
-import javax.xml.transform.URIResolver
 import java.util
 
+import javax.xml.transform.URIResolver
 import net.sf.saxon.expr.Component.M
 import net.sf.saxon.expr.TailCallLoop.TailCallInfo
 import net.sf.saxon.expr.XPathContextMajor.ThreadManager
+import net.sf.saxon.tree.iter.SingletonIterator
 
 /**
  * This class represents a "major context" in which an XPath expression is evaluated:

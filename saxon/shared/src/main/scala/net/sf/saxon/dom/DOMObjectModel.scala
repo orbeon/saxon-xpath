@@ -1,64 +1,23 @@
 package net.sf.saxon.dom
 
-import net.sf.saxon.utils.Configuration
+import java.util.{ArrayList, HashSet, List}
 
-import net.sf.saxon.event._
-
-import net.sf.saxon.expr.JPConverter
-
-import net.sf.saxon.expr.PJConverter
-
-import net.sf.saxon.expr.StaticProperty
-
-import net.sf.saxon.expr.XPathContext
-
-import net.sf.saxon.lib.ExternalObjectModel
-
-import net.sf.saxon.model.ItemType
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.pattern.AnyNodeTest
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.tree.wrapper.VirtualNode
-
-import net.sf.saxon.value.SequenceExtent
-
-import org.w3c.dom.Document
-
-import org.w3c.dom.DocumentFragment
-
-import org.w3c.dom.Node
-
-import org.w3c.dom.NodeList
-
-import javax.xml.parsers.DocumentBuilder
-
-import javax.xml.parsers.DocumentBuilderFactory
-
-import javax.xml.parsers.ParserConfigurationException
-
-import javax.xml.transform.Result
-
-import javax.xml.transform.Source
-
-import javax.xml.transform.dom.DOMResult
-
-import javax.xml.transform.dom.DOMSource
-
+import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
+import javax.xml.transform.{Result, Source}
+import javax.xml.transform.dom.{DOMResult, DOMSource}
 import javax.xml.xpath.XPathConstants
-
-import java.util.ArrayList
-
-import java.util.HashSet
-
-import java.util.List
-
-import DOMObjectModel._
+import net.sf.saxon.dom.DOMObjectModel._
+import net.sf.saxon.event._
+import net.sf.saxon.expr.{JPConverter, PJConverter, StaticProperty, XPathContext}
+import net.sf.saxon.lib.ExternalObjectModel
+import net.sf.saxon.model.{ItemType, Type}
+import net.sf.saxon.om._
+import net.sf.saxon.pattern.AnyNodeTest
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.tree.wrapper.VirtualNode
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.SequenceExtent
+import org.w3c.dom.{Document, DocumentFragment, Node, NodeList}
 
 object DOMObjectModel {
 

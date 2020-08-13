@@ -1,40 +1,16 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Controller
-
 import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionTool
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor}
+import net.sf.saxon.functions.Doc._
 import net.sf.saxon.functions.registry.BuiltInFunctionSet
-
-import net.sf.saxon.lib.Feature
-
-import net.sf.saxon.lib.ParseOptions
-
-import net.sf.saxon.om.GroundedValue
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.ZeroOrOne
-
+import net.sf.saxon.lib.{Feature, ParseOptions}
+import net.sf.saxon.om.{GroundedValue, NodeInfo, Sequence, ZeroOrOne}
 import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.trans.XsltController
-
+import net.sf.saxon.utils.{Configuration, Controller}
 import net.sf.saxon.value.AtomicValue
 
-import Doc._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object Doc {
 
@@ -127,13 +103,13 @@ class Doc extends SystemFunction with Callable {
         context)
     }
     val controller: Controller = context.getController
-    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
-      controller
-        .asInstanceOf[XsltController]
-        .getAccumulatorManager
-        .setApplicableAccumulators(item.getTreeInfo,
-          parseOptions.getApplicableAccumulators)
-    }
+//    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
+//      controller
+//        .asInstanceOf[XsltController]
+//        .getAccumulatorManager
+//        .setApplicableAccumulators(item.getTreeInfo,
+//          parseOptions.getApplicableAccumulators)
+//    }
     new ZeroOrOne(item)
   }
 

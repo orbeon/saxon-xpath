@@ -1,60 +1,23 @@
 package net.sf.saxon.lib
 
-import net.sf.saxon.utils.Controller
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.instruct._
-
-import net.sf.saxon.expr.parser.Loc
-
-import net.sf.saxon.expr.parser.XPathParser
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.model.ValidationException
-
-import net.sf.saxon.model.ValidationFailure
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.StandardNames
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.regex.BMPString
-
-import net.sf.saxon.regex.GeneralUnicodeString
-
-import net.sf.saxon.regex.LatinString
-
-import net.sf.saxon.regex.UnicodeString
-
-import net.sf.saxon.s9api.Location
-
-import net.sf.saxon.serialize.charcode.UTF16CharacterSet
-
-import net.sf.saxon.trans.Err
-
-import net.sf.saxon.trans.Mode
-
-import net.sf.saxon.trans.rules.BuiltInRuleSet
-
-import net.sf.saxon.trans.rules.Rule
-
-import net.sf.saxon.tree.AttributeLocation
-
-import net.sf.saxon.tree.util.FastStringBuffer
-
-import net.sf.saxon.tree.util.Navigator
-
-import javax.xml.transform.SourceLocator
-
-import javax.xml.transform.dom.DOMLocator
-
 import java.util.List
 
-import StandardDiagnostics._
+import javax.xml.transform.SourceLocator
+import javax.xml.transform.dom.DOMLocator
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.instruct._
+import net.sf.saxon.expr.parser.{Loc, XPathParser}
+import net.sf.saxon.lib.StandardDiagnostics._
+import net.sf.saxon.model.{Type, ValidationException, ValidationFailure}
+import net.sf.saxon.om.{NodeInfo, StandardNames, StructuredQName}
+import net.sf.saxon.regex.{BMPString, GeneralUnicodeString, LatinString, UnicodeString}
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.serialize.charcode.UTF16CharacterSet
+import net.sf.saxon.trans.{Err, Mode}
+import net.sf.saxon.trans.rules.{BuiltInRuleSet, Rule}
+import net.sf.saxon.tree.AttributeLocation
+import net.sf.saxon.tree.util.{FastStringBuffer, Navigator}
+import net.sf.saxon.utils.Controller
 
 import scala.jdk.CollectionConverters._
 
@@ -178,9 +141,9 @@ class StandardDiagnostics {
         kind = "function"
       } else if (sorLoc.isInstanceOf[NamedTemplate]) {
         kind = "template"
-      } else if (sorLoc.isInstanceOf[AttributeSet]) {
-        kind = "attribute-set"
-      } /*else if (sorLoc.isInstanceOf[KeyDefinition]) { // KeyDefinition not found
+//      } else if (sorLoc.isInstanceOf[AttributeSet]) {
+//        kind = "attribute-set"
+      }/*else if (sorLoc.isInstanceOf[KeyDefinition]) { // KeyDefinition not found
         kind = "key"
       }*/ else if (sorLoc.isInstanceOf[GlobalParam]) {
         kind = "parameter"

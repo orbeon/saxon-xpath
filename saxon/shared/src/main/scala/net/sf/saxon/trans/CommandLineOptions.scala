@@ -452,7 +452,7 @@ class CommandLineOptions {
     value = getOptionValue("ea")
     if (value != null) {
       val on: Boolean = Configuration.requireBoolean("ea", value)
-      config.getDefaultXsltCompilerInfo.setAssertionsEnabled(on)
+//      config.getDefaultXsltCompilerInfo.setAssertionsEnabled(on)
     }
     value = getOptionValue("expand")
     if (value != null) {

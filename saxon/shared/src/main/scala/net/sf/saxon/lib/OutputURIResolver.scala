@@ -1,23 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.lib
 
-import net.sf.saxon.trans.XsltController
-
 import javax.xml.transform.Result
 
-import javax.xml.transform.TransformerException
-
-
-
-
 trait OutputURIResolver {
-
   def newInstance(): OutputURIResolver
-
   def resolve(href: String, base: String): Result
-
   def close(result: Result): Unit
-
 }
 
 // Copyright (c) 2018-2020 Saxonica Limited

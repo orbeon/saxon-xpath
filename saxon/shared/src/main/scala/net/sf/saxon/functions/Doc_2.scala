@@ -1,60 +1,23 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Controller
-
-import net.sf.saxon.event.Builder
-
-import net.sf.saxon.event.Sender
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.accum.Accumulator
-
-import net.sf.saxon.expr.accum.AccumulatorRegistry
-
-import net.sf.saxon.lib.ParseOptions
-
-import net.sf.saxon.lib.Validation
-
-import net.sf.saxon.ma.map.MapItem
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.style.StylesheetPackage
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.trans.XsltController
-
-import net.sf.saxon.tree.tiny.TinyBuilder
-
-import net.sf.saxon.value.AtomicValue
-
-import net.sf.saxon.value.BooleanValue
-
-import net.sf.saxon.value.QNameValue
-
-import net.sf.saxon.value.SequenceType
+import java.net.URI
+import java.util.{HashSet, Map, Set}
 
 import javax.xml.transform.Source
-
 import javax.xml.transform.dom.DOMSource
-
 import javax.xml.transform.stream.StreamSource
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util.HashSet
-
-import java.util.Map
-
-import java.util.Set
+import net.sf.saxon.event.{Builder, Sender}
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.accum.{Accumulator, AccumulatorRegistry}
+import net.sf.saxon.lib.{ParseOptions, Validation}
+import net.sf.saxon.ma.map.MapItem
+import net.sf.saxon.model.BuiltInAtomicType
+import net.sf.saxon.om._
+import net.sf.saxon.style.StylesheetPackage
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.tree.tiny.TinyBuilder
+import net.sf.saxon.utils.{Configuration, Controller}
+import net.sf.saxon.value.{AtomicValue, BooleanValue, QNameValue, SequenceType}
 
 object Doc_2 {
 
@@ -177,13 +140,13 @@ class Doc_2 extends SystemFunction with Callable {
         context)
     }
     val controller: Controller = context.getController
-    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
-      controller
-        .asInstanceOf[XsltController]
-        .getAccumulatorManager
-        .setApplicableAccumulators(item.getTreeInfo,
-          parseOptions.getApplicableAccumulators)
-    }
+//    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
+//      controller
+//        .asInstanceOf[XsltController]
+//        .getAccumulatorManager
+//        .setApplicableAccumulators(item.getTreeInfo,
+//          parseOptions.getApplicableAccumulators)
+//    }
     new ZeroOrOne(item)
   }
 

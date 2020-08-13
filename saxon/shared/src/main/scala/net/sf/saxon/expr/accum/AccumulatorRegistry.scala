@@ -1,16 +1,9 @@
 package net.sf.saxon.expr.accum
 
-import net.sf.saxon.functions.AccumulatorFn
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.Sequence
+import java.util._
 
 import net.sf.saxon.om.StructuredQName
-
 import net.sf.saxon.value.Whitespace
-
-import java.util._
 
 import scala.jdk.CollectionConverters._
 
@@ -75,8 +68,8 @@ class AccumulatorRegistry {
   def getAllAccumulators(): java.lang.Iterable[Accumulator] =
     accumulatorsByName.values
 
-  def getStreamingAccumulatorValue(node: NodeInfo,
-                                   accumulator: Accumulator,
-                                   phase: AccumulatorFn.Phase.Phase): Sequence = null
+//  def getStreamingAccumulatorValue(node: NodeInfo,
+//                                   accumulator: Accumulator,
+//                                   phase: AccumulatorFn.Phase.Phase): Sequence = null
 
 }

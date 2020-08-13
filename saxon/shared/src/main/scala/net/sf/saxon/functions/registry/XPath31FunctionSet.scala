@@ -284,14 +284,14 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       0).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("trace", 1, classOf[Trace], Type.ITEM_TYPE, STAR, AS_ARG0 | LATE)
       .arg(0, Type.ITEM_TYPE, STAR | TRA, null)
-    register("transform",
-      1,
-      classOf[TransformFn],
-      MapType.ANY_MAP_TYPE,
-      ONE,
-      LATE)
-      .arg(0, MapType.ANY_MAP_TYPE, ONE, EMPTY)
-      .optionDetails(TransformFn.makeOptionsParameter())
+//    register("transform",
+//      1,
+//      classOf[TransformFn],
+//      MapType.ANY_MAP_TYPE,
+//      ONE,
+//      LATE)
+//      .arg(0, MapType.ANY_MAP_TYPE, ONE, EMPTY)
+//      .optionDetails(TransformFn.makeOptionsParameter())
     register("xml-to-json",
       1,
       classOf[XMLToJsonFn],

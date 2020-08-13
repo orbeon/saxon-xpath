@@ -1,46 +1,22 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
+import java.util.Arrays
 
 import net.sf.saxon.event.Outputter
-
 import net.sf.saxon.expr.instruct.AnalyzeString
-
 import net.sf.saxon.expr.oper.OperandArray
-
 import net.sf.saxon.expr.parser._
-
-import net.sf.saxon.functions.Error
-
-import net.sf.saxon.functions._
-
+import net.sf.saxon.functions.{Error, _}
 import net.sf.saxon.functions.registry.BuiltInFunctionSet
-
 import net.sf.saxon.lib.NamespaceConstant
-
 import net.sf.saxon.ma.map.MapFunctionSet
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.model.ItemType
-
-import net.sf.saxon.model.TypeHierarchy
-
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.pattern.NodeSetPattern
-
-import net.sf.saxon.pattern.Pattern
-
+import net.sf.saxon.model.{BuiltInAtomicType, ItemType, TypeHierarchy}
+import net.sf.saxon.om.{Function, Sequence}
+import net.sf.saxon.pattern.{NodeSetPattern, Pattern}
 import net.sf.saxon.trace.ExpressionPresenter
-
 import net.sf.saxon.trans.XPathException
-
+import net.sf.saxon.utils.Configuration
 import net.sf.saxon.value.IntegerValue
-
-import java.util.Arrays
 
 import scala.jdk.CollectionConverters._
 
@@ -141,8 +117,8 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     if ((properties & BuiltInFunctionSet.DCOLL) != 0) {
       dep |= StaticProperty.DEPENDS_ON_STATIC_CONTEXT
     }
-    if (isCallOn(classOf[RegexGroup]) || isCallOn(classOf[CurrentMergeGroup]) ||
-      isCallOn(classOf[CurrentMergeKey])) {
+//    if (isCallOn(classOf[RegexGroup]) || isCallOn(classOf[CurrentMergeGroup]) || isCallOn(classOf[CurrentMergeKey])) {
+    if (isCallOn(classOf[RegexGroup])) {
       dep |= StaticProperty.DEPENDS_ON_CURRENT_GROUP
     }
     dep
@@ -171,9 +147,10 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     }
 
   override def isLiftable(forStreaming: Boolean): Boolean =
-    super.isLiftable(forStreaming) && !isCallOn(classOf[CurrentMergeGroup]) &&
-      !isCallOn(classOf[CurrentMergeKey]) &&
-      (!forStreaming || !isCallOn(classOf[MapFunctionSet.MapEntry]))
+    super.isLiftable(forStreaming) &&
+//      ! isCallOn(classOf[CurrentMergeGroup]) &&
+//      ! isCallOn(classOf[CurrentMergeKey])   &&
+      (! forStreaming || ! isCallOn(classOf[MapFunctionSet.MapEntry]))
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {

@@ -1,11 +1,11 @@
 package net.sf.saxon.utils
 
-import java.io.{FileNotFoundException, FileOutputStream, IOException, InputStream, PrintStream, UnsupportedEncodingException}
-import java.net.{ContentHandler, URI, URISyntaxException, URL, URLDecoder}
+import java.io._
+import java.net._
 import java.util
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.{Collections, Comparator, Locale, Properties}
 import java.util.function.{IntPredicate, Predicate}
+import java.util.{Collections, Comparator, Locale, Properties}
 
 import javax.xml.parsers.{ParserConfigurationException, SAXParserFactory}
 import javax.xml.transform._
@@ -13,29 +13,28 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.stax.StAXSource
 import javax.xml.transform.stream.StreamSource
-import net.sf.saxon.utils.Configuration.ApiProvider
-import net.sf.saxon.event.{ContentHandlerProxy, EventSource, Outputter, PipelineConfiguration, Receiver, Sender}
+import net.sf.saxon.event._
 import net.sf.saxon.expr.accum.AccumulatorRegistry
-import net.sf.saxon.expr.{EarlyEvaluationContext, Expression, ItemMappingFunction, ItemMappingIterator, PackageData, PendingUpdateList, StaticProperty, XPathContext, XPathContextMajor}
 import net.sf.saxon.expr.compat.TypeChecker10
-import net.sf.saxon.expr.instruct.{Debugger, Executable, GlobalParam, MemoFunction, ParameterSet, SlotManager, SourceDocument, TemplateRule, UserFunction}
+import net.sf.saxon.expr.instruct._
 import net.sf.saxon.expr.number.Numberer_en
 import net.sf.saxon.expr.parser.XPathParser.ParsedLanguage
-import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ICompilerService, Optimizer, OptimizerOptions, PathMap, RetainedStaticContext, TypeChecker, XPathParser}
+import net.sf.saxon.expr.parser._
 import net.sf.saxon.expr.sort.{AlphanumericCollator, CodepointCollator, HTML5CaseBlindCollator}
-import net.sf.saxon.functions.registry.{BuiltInFunctionSet, UseWhen30FunctionSet, VendorFunctionSetHE, XPath30FunctionSet, XPath31FunctionSet}
+import net.sf.saxon.expr._
+import net.sf.saxon.functions.registry._
 import net.sf.saxon.functions.{FunctionLibraryList, IntegratedFunctionLibrary, MathFunctionSet, ResolveURI}
-import net.sf.saxon.om
-import net.sf.saxon.lib.{AugmentedSource, CollationURIResolver, CollectionFinder, ConversionRules, EnvironmentVariableResolver, ErrorReporter, ExtensionFunctionDefinition, ExternalObjectModel, Feature, FeatureCode, FeatureKeys, FunctionAnnotationHandler, InvalidityReportGenerator, LocalizerFactory, Logger, ModuleURIResolver, NamespaceConstant, Numberer, OutputURIResolver, ParseOptions, ProtocolRestricter, ResourceCollection, ResourceFactory, SchemaURIResolver, SerializerFactory, SourceResolver, StandardCollationURIResolver, StandardEntityResolver, StandardEnvironmentVariableResolver, StandardErrorReporter, StandardLogger, StandardURIChecker, StandardURIResolver, StandardUnparsedTextResolver, StaticQueryContextFactory, StringCollator, TraceListener, UnparsedTextURIResolver, Validation, XQueryFunctionAnnotationHandler}
+import net.sf.saxon.lib._
 import net.sf.saxon.ma.arrays.ArrayFunctionSet
 import net.sf.saxon.ma.map.{MapFunctionSet, MapItem}
-import net.sf.saxon.model.{AtomicType, BuiltInAtomicType, BuiltInType, ItemType, JavaExternalObjectType, MissingComponentException, SchemaDeclaration, SchemaException, SchemaType, SimpleType, StringConverter, StringToDouble, Type, TypeHierarchy, ValidationException}
+import net.sf.saxon.model._
+import net.sf.saxon.om
 import net.sf.saxon.om.{AllElementsSpaceStrippingRule, DocumentPool, FocusTrackingIterator, GroundedValue, IgnorableSpaceStrippingRule, NamePool, NoElementsSpaceStrippingRule, NodeInfo, NotationSet, Sequence, SequenceIterator, StructuredQName, TreeInfo, TreeModel}
 import net.sf.saxon.pattern.PatternParser30
 import net.sf.saxon.pull.PullSource
 import net.sf.saxon.query.{QueryModule, StaticQueryContext, XQueryExpression, XQueryParser}
 import net.sf.saxon.regex.RegularExpression
-import net.sf.saxon.resource.{BinaryResource, JSONResource, StandardCollectionFinder, UnknownResource, UnparsedTextResource, XmlResource}
+import net.sf.saxon.resource._
 import net.sf.saxon.s9api.HostLanguage.HostLanguage
 import net.sf.saxon.s9api.Location
 import net.sf.saxon.sapling.SaplingDocument
@@ -44,19 +43,20 @@ import net.sf.saxon.serialize.charcode.{CharacterSetFactory, XMLCharacterData}
 import net.sf.saxon.sxpath.IndependentContext
 import net.sf.saxon.trace.TraceCodeInjector
 import net.sf.saxon.trans.FunctionStreamability.FunctionStreamability
-import net.sf.saxon.trans.packages.IPackageLoader
-import net.sf.saxon.trans.{CompilerInfo, ConfigurationReader, DynamicLoader, LicenseException, Mode, PackageLoaderHE, SaxonErrorCode, SimpleMode, TypeAliasManager, XPathException, XmlProcessingException, XmlProcessingIncident}
+import net.sf.saxon.trans._
 import net.sf.saxon.tree.tiny.TreeStatistics
 import net.sf.saxon.tree.util.DocumentNumberAllocator
-import net.sf.saxon.value.{Closure, MemoClosure, ObjectValue, QNameValue, StringToDouble11}
+import net.sf.saxon.utils.Configuration.ApiProvider
+import net.sf.saxon.value._
 import net.sf.saxon.z.{IntHashSet, IntSet}
 import org.xml
-import org.xml.sax.{EntityResolver, SAXException, SAXNotRecognizedException, SAXNotSupportedException, XMLReader}
 import org.xml.sax.ext.DefaultHandler2
+import org.xml.sax.{ContentHandler ⇒ _, _}
 
 import scala.jdk.CollectionConverters._
 
 object Configuration {
+
    var booleanFeatures = new util.HashSet[Feature[_]](40)
   /**
    * Constant indicating the XML Version 1.0
@@ -167,35 +167,35 @@ object Configuration {
     new StreamSource(in, url.toString)
   }
 
-  /**
-   * Factory method to construct a Configuration object by reading a configuration file.
-   *
-   * @param source Source object containing the configuration file
-   * @return the resulting Configuration
-   */
-  @throws[XPathException]
-  def readConfiguration(source: Source) = {
-    val tempConfig = newConfiguration
-    tempConfig.readConfigurationFile(source)
-  }
-
-  /**
-   * Factory method to construct a Configuration object by reading a configuration file.
-   * This version of the method creates a configuration that is "compatible" with the
-   * supplied configuration, in that it shares the same NamePool and DocumentNumberAllocator.
-   * (This is used by fn:transform)
-   *
-   * @param source            Source object containing the configuration file
-   * @param baseConfiguration an existing configuration whose NamePool and DocumentNumberAllocator
-   *                          will be used in the new Configuration; the license details from
-   *                          the base configuration will also be shared
-   * @return the resulting Configuration
-   */
-  @throws[XPathException]
-  def readConfiguration(source: Source, baseConfiguration: Configuration) = {
-    val tempConfig = newConfiguration
-    tempConfig.readConfigurationFile(source, baseConfiguration)
-  }
+//  /**
+//   * Factory method to construct a Configuration object by reading a configuration file.
+//   *
+//   * @param source Source object containing the configuration file
+//   * @return the resulting Configuration
+//   */
+//  @throws[XPathException]
+//  def readConfiguration(source: Source) = {
+//    val tempConfig = newConfiguration
+//    tempConfig.readConfigurationFile(source)
+//  }
+//
+//  /**
+//   * Factory method to construct a Configuration object by reading a configuration file.
+//   * This version of the method creates a configuration that is "compatible" with the
+//   * supplied configuration, in that it shares the same NamePool and DocumentNumberAllocator.
+//   * (This is used by fn:transform)
+//   *
+//   * @param source            Source object containing the configuration file
+//   * @param baseConfiguration an existing configuration whose NamePool and DocumentNumberAllocator
+//   *                          will be used in the new Configuration; the license details from
+//   *                          the base configuration will also be shared
+//   * @return the resulting Configuration
+//   */
+//  @throws[XPathException]
+//  def readConfiguration(source: Source, baseConfiguration: Configuration): Configuration = {
+//    val tempConfig = newConfiguration
+//    tempConfig.readConfigurationFile(source, baseConfiguration)
+//  }
 
   /**
    * Instantiate a Configuration object with a given class name
@@ -281,7 +281,7 @@ object Configuration {
    * Marker interface to represent an API that is provided as a layer on top of this
    * {@code Configuration}
    */
-  trait ApiProvider {}
+  trait ApiProvider
 
   /**
    * Get a parser by instantiating the SAXParserFactory
@@ -377,36 +377,22 @@ object Configuration {
  */
 
 class Configuration() extends SourceResolver with NotationSet {
-  init()
   @transient private var apiProcessor: ApiProvider = null
-
   @transient private var characterSetFactory: CharacterSetFactory = _
-
   private var collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
-
   private var collationResolver: CollationURIResolver = new StandardCollationURIResolver()
-
   private var defaultCollationName: String = NamespaceConstant.CODEPOINT_COLLATION_URI
-
   private var allowedUriTest: Predicate[URI] = (uri: URI) => true
-
   private val standardCollectionFinder: StandardCollectionFinder = new StandardCollectionFinder()
-
   private var collectionFinder: CollectionFinder = standardCollectionFinder
-
   private var environmentVariableResolver: EnvironmentVariableResolver = new StandardEnvironmentVariableResolver()
-
   private var defaultCollection: String = null
-
   private var defaultParseOptions: ParseOptions = new ParseOptions()
-
   @transient  var defaultStaticQueryContext: StaticQueryContext = _
-
   private var staticQueryContextFactory: StaticQueryContextFactory = new StaticQueryContextFactory()
+  var optimizerOptions: OptimizerOptions = OptimizerOptions.FULL_HE_OPTIMIZATION
 
-   var optimizerOptions: OptimizerOptions = OptimizerOptions.FULL_HE_OPTIMIZATION
-
-   var defaultXsltCompilerInfo: CompilerInfo = makeCompilerInfo
+  //var defaultXsltCompilerInfo: CompilerInfo = makeCompilerInfo
 
   private var errorReporterFactory: java.util.function.Function[Configuration, _ <: ErrorReporter] = (config: Configuration) => {
     val reporter: StandardErrorReporter = new StandardErrorReporter()
@@ -510,29 +496,31 @@ class Configuration() extends SourceResolver with NotationSet {
 
   private var treeStatistics: TreeStatistics = new TreeStatistics()
 
+  init()
 
-  /**
-   * Read the configuration file an construct a new Configuration (the real one)
-   *
-   * @param source the source of the configuration file
-   * @return the Configuration that will be used for real work
-   * @throws XPathException if the configuration file cannot be read or is invalid
-   */
-  @throws[XPathException]
-   def readConfigurationFile(source: Source): Configuration = new ConfigurationReader().makeConfiguration(source)
 
-  @throws[XPathException]
-   def readConfigurationFile(source: Source, baseConfiguration: Configuration): Configuration = {
-    val reader = makeConfigurationReader
-    reader.setBaseConfiguration(baseConfiguration)
-    reader.makeConfiguration(source)
-  }
-
-   def makeConfigurationReader = new ConfigurationReader
+//  /**
+//   * Read the configuration file an construct a new Configuration (the real one)
+//   *
+//   * @param source the source of the configuration file
+//   * @return the Configuration that will be used for real work
+//   * @throws XPathException if the configuration file cannot be read or is invalid
+//   */
+//  @throws[XPathException]
+//   def readConfigurationFile(source: Source): Configuration = new ConfigurationReader().makeConfiguration(source)
+//
+//  @throws[XPathException]
+//   def readConfigurationFile(source: Source, baseConfiguration: Configuration): Configuration = {
+//    val reader = makeConfigurationReader
+//    reader.setBaseConfiguration(baseConfiguration)
+//    reader.makeConfiguration(source)
+//  }
+//
+//   def makeConfigurationReader = new ConfigurationReader
 
    def init() = {
     Version.platform.initialize(this)
-    defaultXsltCompilerInfo.setURIResolver(getSystemURIResolver)
+    //defaultXsltCompilerInfo.setURIResolver(getSystemURIResolver)
     val resolver = new StandardEntityResolver(this)
     defaultParseOptions.setEntityResolver(resolver)
     internalSetBooleanProperty(Feature.PREFER_JAXP_PARSER, true)
@@ -721,8 +709,9 @@ class Configuration() extends SourceResolver with NotationSet {
    * @throws XPathException if the class cannot be loaded.
    */
   @throws[XPathException]
-  def getConfClass(className: String, tracing: Boolean, classLoader: ClassLoader): Class[_] = dynamicLoader.getClass(className, if (tracing) traceOutput
-  else null, classLoader)
+  def getConfClass(className: String, tracing: Boolean, classLoader: ClassLoader): Class[_] = {
+    dynamicLoader.getClass(className, if (tracing) traceOutput else null, classLoader)
+  }
 
   /**
    * Instantiate a class using the class name provided.
@@ -805,7 +794,7 @@ class Configuration() extends SourceResolver with NotationSet {
   def setURIResolver(resolver: URIResolver) = {
     uriResolver = resolver
     if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(this)
-    defaultXsltCompilerInfo.setURIResolver(resolver)
+    //defaultXsltCompilerInfo.setURIResolver(resolver)
   }
 
   /**
@@ -1015,8 +1004,6 @@ class Configuration() extends SourceResolver with NotationSet {
    * @return an IntPredicate whose matches() method tests a character for validity against
    *         the version of XML (1.0 or 1.1) selected by this configuration
    */
-
-  import scala.jdk.FunctionWrappers._
 
   def getValidCharacterChecker: IntPredicate = if (xmlVersion == Configuration.XML10) (x: Int) => XMLCharacterData.isValid10(x)
   else (x: Int) => XMLCharacterData.isValid11(x)
@@ -1740,7 +1727,7 @@ class Configuration() extends SourceResolver with NotationSet {
    * @return the default options for XSLT compilation. The CompilerInfo object will reflect any options
    *         set using other methods available for this Configuration object
    */
-  def getDefaultXsltCompilerInfo: CompilerInfo = defaultXsltCompilerInfo
+  //def getDefaultXsltCompilerInfo: CompilerInfo = defaultXsltCompilerInfo
 
   /**
    * Get the default options for XQuery compilation
@@ -1798,17 +1785,17 @@ class Configuration() extends SourceResolver with NotationSet {
    * @return the full class name of the message emitter class.
    * @since 8.4
    */
-  def getMessageEmitterClass: String = defaultXsltCompilerInfo.getMessageReceiverClassName
+  //def getMessageEmitterClass: String = defaultXsltCompilerInfo.getMessageReceiverClassName
 
-  /**
-   * Set the name of the class that will be instantiated to
-   * to process the output of xsl:message instructions in XSLT.
-   *
-   * @param messageReceiverClassName the full class name of the message receiver. This
-   *                                 must implement net.sf.saxon.event.Receiver.
-   * @since 8.4
-   */
-  def setMessageEmitterClass(messageReceiverClassName: String) = defaultXsltCompilerInfo.setMessageReceiverClassName(messageReceiverClassName)
+//  /**
+//   * Set the name of the class that will be instantiated to
+//   * to process the output of xsl:message instructions in XSLT.
+//   *
+//   * @param messageReceiverClassName the full class name of the message receiver. This
+//   *                                 must implement net.sf.saxon.event.Receiver.
+//   * @since 8.4
+//   */
+  //def setMessageEmitterClass(messageReceiverClassName: String) = defaultXsltCompilerInfo.setMessageReceiverClassName(messageReceiverClassName)
 
   /**
    * Get the name of the class that will be instantiated to create an XML parser
@@ -1865,18 +1852,18 @@ class Configuration() extends SourceResolver with NotationSet {
    *         default OutputURIResolver is returned.
    * @since 8.4
    */
-  def getOutputURIResolver: OutputURIResolver = defaultXsltCompilerInfo.getOutputURIResolver
+  //def getOutputURIResolver: OutputURIResolver = defaultXsltCompilerInfo.getOutputURIResolver
 
-  /**
-   * Set the OutputURIResolver that will be used to resolve URIs used in the
-   * href attribute of the xsl:result-document instruction.
-   *
-   * @param outputURIResolver the OutputURIResolver to be used.
-   * @since 8.4
-   * @deprecated since 9.9. Use { @link Xslt30Transformer#setResultDocumentHandler(java.util.function.Function)}
-   *             or { @link XsltController#setResultDocumentResolver(ResultDocumentResolver)} instead.
-   */
-  def setOutputURIResolver(outputURIResolver: OutputURIResolver) = defaultXsltCompilerInfo.setOutputURIResolver(outputURIResolver)
+//  /**
+//   * Set the OutputURIResolver that will be used to resolve URIs used in the
+//   * href attribute of the xsl:result-document instruction.
+//   *
+//   * @param outputURIResolver the OutputURIResolver to be used.
+//   * @since 8.4
+//   * @deprecated since 9.9. Use { @link Xslt30Transformer#setResultDocumentHandler(java.util.function.Function)}
+//   *             or { @link XsltController#setResultDocumentResolver(ResultDocumentResolver)} instead.
+//   */
+  //def setOutputURIResolver(outputURIResolver: OutputURIResolver) = defaultXsltCompilerInfo.setOutputURIResolver(outputURIResolver)
 
   /**
    * Set a custom SerializerFactory. This will be used to create a serializer for a given
@@ -2694,14 +2681,14 @@ class Configuration() extends SourceResolver with NotationSet {
   def makeStreamingTransformer(mode: Mode, ordinaryParams: ParameterSet, tunnelParams: ParameterSet,
                                output: Outputter, context: XPathContext): Receiver = throw new XPathException("Streaming is only available in Saxon-EE")
 
-  @throws[XPathException]
-  def makeStreamInstruction(hrefExp: Expression, body: Expression, streaming: Boolean,
-                            options: ParseOptions, packageData: PackageData, location: Location, rsc: RetainedStaticContext): Expression = {
-    val si = new SourceDocument(hrefExp, body, options)
-    si.setLocation(location)
-    si.setRetainedStaticContext(rsc)
-    si
-  }
+//  @throws[XPathException]
+//  def makeStreamInstruction(hrefExp: Expression, body: Expression, streaming: Boolean,
+//                            options: ParseOptions, packageData: PackageData, location: Location, rsc: RetainedStaticContext): Expression = {
+//    val si = new SourceDocument(hrefExp, body, options)
+//    si.setLocation(location)
+//    si.setRetainedStaticContext(rsc)
+//    si
+//  }
 
   def getFocusTrackerFactory(exec: Executable, multithreaded: Boolean): Function1[SequenceIterator, FocusTrackingIterator] =
     (insts: SequenceIterator) => new FocusTrackingIterator()
@@ -2818,12 +2805,14 @@ class Configuration() extends SourceResolver with NotationSet {
   def registerExternalObjectModel(model: ExternalObjectModel): Unit = {
     try getConfClass(model.getDocumentClassName(), false, null)
     catch {
-      case e: XPathException =>
+      case _: XPathException =>
         // If the model can't be loaded, do nothing
         return
     }
-    if (externalObjectModels == null) externalObjectModels = new java.util.ArrayList[ExternalObjectModel](4)
-    if (!externalObjectModels.contains(model)) externalObjectModels.add(model)
+    if (externalObjectModels == null)
+      externalObjectModels = new java.util.ArrayList[ExternalObjectModel](4)
+    if (! externalObjectModels.contains(model))
+      externalObjectModels.add(model)
   }
 
 
@@ -3280,7 +3269,7 @@ class Configuration() extends SourceResolver with NotationSet {
         setLineNumbering(b)
       case FeatureCode.MESSAGE_EMITTER_CLASS =>
         if (!value.isInstanceOf[String]) throw new IllegalArgumentException("MESSAGE_EMITTER_CLASS class must be a String")
-        setMessageEmitterClass(value.asInstanceOf[String])
+        //setMessageEmitterClass(value.asInstanceOf[String])
       case FeatureCode.MODULE_URI_RESOLVER =>
         if (!value.isInstanceOf[ModuleURIResolver]) throw new IllegalArgumentException("MODULE_URI_RESOLVER value must be an instance of net.sf.saxon.lib.ModuleURIResolver")
         setModuleURIResolver(value.asInstanceOf[ModuleURIResolver])
@@ -3306,12 +3295,12 @@ class Configuration() extends SourceResolver with NotationSet {
         }
         if (optimizer != null) optimizer.setOptimizerOptions(optimizerOptions)
         internalSetBooleanProperty(Feature.GENERATE_BYTE_CODE, optimizerOptions.isSet(OptimizerOptions.BYTE_CODE))
-        defaultXsltCompilerInfo.setOptimizerOptions(optimizerOptions)
+        //defaultXsltCompilerInfo.setOptimizerOptions(optimizerOptions)
       case FeatureCode.OUTPUT_URI_RESOLVER =>
         if (!value.isInstanceOf[OutputURIResolver]) throw new IllegalArgumentException("OUTPUT_URI_RESOLVER value must be an instance of net.sf.saxon.lib.OutputURIResolver")
-        setOutputURIResolver(value.asInstanceOf[OutputURIResolver])
+        //setOutputURIResolver(value.asInstanceOf[OutputURIResolver])
       case FeatureCode.OUTPUT_URI_RESOLVER_CLASS =>
-        setOutputURIResolver(instantiateClassName(name, value, classOf[OutputURIResolver]).asInstanceOf[OutputURIResolver])
+        //setOutputURIResolver(instantiateClassName(name, value, classOf[OutputURIResolver]).asInstanceOf[OutputURIResolver])
       case FeatureCode.RECOGNIZE_URI_QUERY_PARAMETERS =>
         val b = Configuration.requireBoolean(name, value)
         getSystemURIResolver.setRecognizeQueryParameters(b)
@@ -3451,22 +3440,22 @@ class Configuration() extends SourceResolver with NotationSet {
         xsdVersion = if (value == "1.0") Configuration.XSD10
         else Configuration.XSD11
         theConversionRules = null
-      case FeatureCode.XSLT_ENABLE_ASSERTIONS =>
-        getDefaultXsltCompilerInfo.setAssertionsEnabled(Configuration.requireBoolean(name, value))
-      case FeatureCode.XSLT_INITIAL_MODE =>
-        val s = requireString(name, value)
-        getDefaultXsltCompilerInfo.setDefaultInitialMode(StructuredQName.fromClarkName(s))
-      case FeatureCode.XSLT_INITIAL_TEMPLATE =>
-        val s = requireString(name, value)
-        getDefaultXsltCompilerInfo.setDefaultInitialTemplate(StructuredQName.fromClarkName(s))
-      case FeatureCode.XSLT_SCHEMA_AWARE =>
-        getDefaultXsltCompilerInfo.setSchemaAware(Configuration.requireBoolean(name, value))
-      case FeatureCode.XSLT_STATIC_ERROR_LISTENER_CLASS =>
-        getDefaultXsltCompilerInfo.setErrorListener(instantiateClassName(name, value, classOf[ErrorListener]).asInstanceOf[ErrorListener])
-      case FeatureCode.XSLT_STATIC_URI_RESOLVER_CLASS =>
-        getDefaultXsltCompilerInfo.setURIResolver(instantiateClassName(name, value, classOf[URIResolver]).asInstanceOf[URIResolver])
-      case FeatureCode.XSLT_VERSION =>
-        if (!("3.0" == value)) makeErrorReporter.report(new XmlProcessingIncident("XSLT version ignored: only \"3.0\" is recognized").asWarning)
+//      case FeatureCode.XSLT_ENABLE_ASSERTIONS =>
+        //getDefaultXsltCompilerInfo.setAssertionsEnabled(Configuration.requireBoolean(name, value))
+//      case FeatureCode.XSLT_INITIAL_MODE =>
+//        val s = requireString(name, value)
+        //getDefaultXsltCompilerInfo.setDefaultInitialMode(StructuredQName.fromClarkName(s))
+//      case FeatureCode.XSLT_INITIAL_TEMPLATE =>
+//        val s = requireString(name, value)
+        //getDefaultXsltCompilerInfo.setDefaultInitialTemplate(StructuredQName.fromClarkName(s))
+//      case FeatureCode.XSLT_SCHEMA_AWARE =>
+//        getDefaultXsltCompilerInfo.setSchemaAware(Configuration.requireBoolean(name, value))
+//      case FeatureCode.XSLT_STATIC_ERROR_LISTENER_CLASS =>
+//        getDefaultXsltCompilerInfo.setErrorListener(instantiateClassName(name, value, classOf[ErrorListener]).asInstanceOf[ErrorListener])
+//      case FeatureCode.XSLT_STATIC_URI_RESOLVER_CLASS =>
+//        getDefaultXsltCompilerInfo.setURIResolver(instantiateClassName(name, value, classOf[URIResolver]).asInstanceOf[URIResolver])
+//      case FeatureCode.XSLT_VERSION =>
+//        if (!("3.0" == value)) makeErrorReporter.report(new XmlProcessingIncident("XSLT version ignored: only \"3.0\" is recognized").asWarning)
       //getDefaultXsltCompilerInfo().setXsltVersion(v);
       case _ =>
         throw new IllegalArgumentException("Unknown configuration property " + name)
@@ -3610,8 +3599,8 @@ class Configuration() extends SourceResolver with NotationSet {
         return java.lang.Boolean.valueOf(isExpandAttributeDefaults).asInstanceOf[T]
       case FeatureCode.LINE_NUMBERING =>
         return java.lang.Boolean.valueOf(isLineNumbering).asInstanceOf[T]
-      case FeatureCode.MESSAGE_EMITTER_CLASS =>
-        return getMessageEmitterClass.asInstanceOf[T]
+//      case FeatureCode.MESSAGE_EMITTER_CLASS =>
+//        return getMessageEmitterClass.asInstanceOf[T]
       case FeatureCode.MODULE_URI_RESOLVER =>
         return getModuleURIResolver.asInstanceOf[T]
       case FeatureCode.MODULE_URI_RESOLVER_CLASS =>
@@ -3620,10 +3609,10 @@ class Configuration() extends SourceResolver with NotationSet {
         return getNamePool.asInstanceOf[T]
       case FeatureCode.OPTIMIZATION_LEVEL =>
         return optimizerOptions.toString.asInstanceOf[T]
-      case FeatureCode.OUTPUT_URI_RESOLVER =>
-        return getOutputURIResolver.asInstanceOf[T]
-      case FeatureCode.OUTPUT_URI_RESOLVER_CLASS =>
-        return getOutputURIResolver.getClass.getName.asInstanceOf[T]
+//      case FeatureCode.OUTPUT_URI_RESOLVER =>
+//        return getOutputURIResolver.asInstanceOf[T]
+//      case FeatureCode.OUTPUT_URI_RESOLVER_CLASS =>
+//        return getOutputURIResolver.getClass.getName.asInstanceOf[T]
       case FeatureCode.RECOGNIZE_URI_QUERY_PARAMETERS =>
         return java.lang.Boolean.valueOf(getSystemURIResolver.queryParametersAreRecognized).asInstanceOf[T]
       case FeatureCode.RECOVERY_POLICY =>
@@ -3720,20 +3709,20 @@ class Configuration() extends SourceResolver with NotationSet {
       case FeatureCode.XSD_VERSION =>
         return (if (xsdVersion == Configuration.XSD10) "1.0"
         else "1.1").asInstanceOf[T]
-      case FeatureCode.XSLT_ENABLE_ASSERTIONS =>
-        return java.lang.Boolean.valueOf(getDefaultXsltCompilerInfo.isAssertionsEnabled).asInstanceOf[T]
-      case FeatureCode.XSLT_INITIAL_MODE =>
-        return getDefaultXsltCompilerInfo.getDefaultInitialMode.getClarkName.asInstanceOf[T]
-      case FeatureCode.XSLT_INITIAL_TEMPLATE =>
-        return getDefaultXsltCompilerInfo.getDefaultInitialTemplate.getClarkName.asInstanceOf[T]
-      case FeatureCode.XSLT_SCHEMA_AWARE =>
-        return java.lang.Boolean.valueOf(getDefaultXsltCompilerInfo.isSchemaAware).asInstanceOf[T]
-      case FeatureCode.XSLT_STATIC_ERROR_LISTENER_CLASS =>
-        return getDefaultXsltCompilerInfo.getErrorListener.getClass.getName.asInstanceOf[T]
-      case FeatureCode.XSLT_STATIC_URI_RESOLVER_CLASS =>
-        return getDefaultXsltCompilerInfo.getURIResolver.getClass.getName.asInstanceOf[T]
-      case FeatureCode.XSLT_VERSION =>
-        return Integer.valueOf(30).asInstanceOf[T]
+//      case FeatureCode.XSLT_ENABLE_ASSERTIONS =>
+//        return java.lang.Boolean.valueOf(getDefaultXsltCompilerInfo.isAssertionsEnabled).asInstanceOf[T]
+//      case FeatureCode.XSLT_INITIAL_MODE =>
+//        return getDefaultXsltCompilerInfo.getDefaultInitialMode.getClarkName.asInstanceOf[T]
+//      case FeatureCode.XSLT_INITIAL_TEMPLATE =>
+//        return getDefaultXsltCompilerInfo.getDefaultInitialTemplate.getClarkName.asInstanceOf[T]
+//      case FeatureCode.XSLT_SCHEMA_AWARE =>
+//        return java.lang.Boolean.valueOf(getDefaultXsltCompilerInfo.isSchemaAware).asInstanceOf[T]
+//      case FeatureCode.XSLT_STATIC_ERROR_LISTENER_CLASS =>
+//        return getDefaultXsltCompilerInfo.getErrorListener.getClass.getName.asInstanceOf[T]
+//      case FeatureCode.XSLT_STATIC_URI_RESOLVER_CLASS =>
+//        return getDefaultXsltCompilerInfo.getURIResolver.getClass.getName.asInstanceOf[T]
+//      case FeatureCode.XSLT_VERSION =>
+//        return Integer.valueOf(30).asInstanceOf[T]
     }
     throw new IllegalArgumentException("Unknown configuration property " + feature.name)
   }
@@ -3782,7 +3771,7 @@ class Configuration() extends SourceResolver with NotationSet {
    *
    * @return a package loader
    */
-  def makePackageLoader: IPackageLoader = new PackageLoaderHE(this)
+//  def makePackageLoader: IPackageLoader = new PackageLoaderHE(this)
 
   /**
    * Register a report generator for reporting invalidities detected in the course
@@ -3801,14 +3790,14 @@ class Configuration() extends SourceResolver with NotationSet {
    */
   def getCountDown: Int = byteCodeThreshold
 
-  /**
-   * Make a new Mode - this can be overridden in subclasses to produce optimized variants
-   *
-   * @param modeName     the name of the mode
-   * @param compilerInfo information on the compiler, that can alter rule optimization
-   * @return an instantiated Mode
-   */
-  def makeMode(modeName: StructuredQName, compilerInfo: CompilerInfo): SimpleMode = new SimpleMode(modeName)
+//  /**
+//   * Make a new Mode - this can be overridden in subclasses to produce optimized variants
+//   *
+//   * @param modeName     the name of the mode
+//   * @param compilerInfo information on the compiler, that can alter rule optimization
+//   * @return an instantiated Mode
+//   */
+//  def makeMode(modeName: StructuredQName, compilerInfo: CompilerInfo): SimpleMode = new SimpleMode(modeName)
 
   /**
    * Factory method to create a Template Rule
@@ -3830,7 +3819,7 @@ class Configuration() extends SourceResolver with NotationSet {
    *
    * @return a new CompilerInfo object
    */
-  def makeCompilerInfo: CompilerInfo = new CompilerInfo(this)
+//  def makeCompilerInfo: CompilerInfo = new CompilerInfo(this)
 
   /**
    * Make a CompilerService object, to handle byte code generation, or null if byte code

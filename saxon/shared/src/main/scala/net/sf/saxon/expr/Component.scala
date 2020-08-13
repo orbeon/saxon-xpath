@@ -1,44 +1,18 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.expr.instruct.Actor
+import java.util.{ArrayList, List, Map}
 
-import net.sf.saxon.expr.instruct.AttributeSet
-
-import net.sf.saxon.expr.instruct.GlobalVariable
-
-import net.sf.saxon.expr.instruct.NamedTemplate
-
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.StandardNames
-
+import net.sf.saxon.expr.instruct.{Actor, GlobalVariable, NamedTemplate}
+import net.sf.saxon.om.{Function, StandardNames}
 import net.sf.saxon.style.StylesheetPackage
-
 import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.Mode
-
-import net.sf.saxon.trans.Visibility
-
-import net.sf.saxon.trans.VisibilityProvenance
-
-import net.sf.saxon.trans.XPathException
-
+import net.sf.saxon.trans.Visibility.Visibility
+import net.sf.saxon.trans.{Mode, Visibility, VisibilityProvenance}
+import net.sf.saxon.trans.VisibilityProvenance.VisibilityProvenance
 import net.sf.saxon.tree.util.FastStringBuffer
 
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.Map
-
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-import Visibility.Visibility
-
-import VisibilityProvenance.VisibilityProvenance
 
 object Component {
 
@@ -162,8 +136,8 @@ class Component private () {
       StandardNames.XSL_VARIABLE
     } else if (actor.isInstanceOf[Function]) {
       StandardNames.XSL_FUNCTION
-    } else if (actor.isInstanceOf[AttributeSet]) {
-      StandardNames.XSL_ATTRIBUTE_SET
+//    } else if (actor.isInstanceOf[AttributeSet]) {
+//      StandardNames.XSL_ATTRIBUTE_SET
     } else if (actor.isInstanceOf[Mode]) {
       StandardNames.XSL_MODE
     } else {

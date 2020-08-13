@@ -2899,14 +2899,14 @@ class XPathParser() {
       grumble("The current-grouping-key() function cannot be used in a pattern", "XTSE1070", offset)
       return new ErrorExpression
     }
-    else if (fcall.isCallOn(classOf[CurrentMergeGroup])) {
-      grumble("The current-merge-group() function cannot be used in a pattern", "XTSE3470", offset)
-      return new ErrorExpression
-    }
-    else if (fcall.isCallOn(classOf[CurrentMergeKey])) {
-      grumble("The current-merge-key() function cannot be used in a pattern", "XTSE3500", offset)
-      return new ErrorExpression
-    }
+//    else if (fcall.isCallOn(classOf[CurrentMergeGroup])) {
+//      grumble("The current-merge-group() function cannot be used in a pattern", "XTSE3470", offset)
+//      return new ErrorExpression
+//    }
+//    else if (fcall.isCallOn(classOf[CurrentMergeKey])) {
+//      grumble("The current-merge-key() function cannot be used in a pattern", "XTSE3500", offset)
+//      return new ErrorExpression
+//    }
     setLocation(fcall, offset)
     for (argument <- arguments) {
       if ((fcall ne argument) && !functionName.hasURI(NamespaceConstant.GLOBAL_JS)) { // avoid doing this when the function has already been optimized away, e.g. unordered()

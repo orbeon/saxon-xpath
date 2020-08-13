@@ -1,114 +1,60 @@
 package net.sf.saxon.expr.instruct
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Controller
-
-import net.sf.saxon.event.ComplexContentOutputter
-
-import net.sf.saxon.event.NamespaceReducer
-
-import net.sf.saxon.event.Outputter
-
-import net.sf.saxon.event.Receiver
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser._
-
-import net.sf.saxon.functions.IriToUri
-
-import net.sf.saxon.functions.ResolveURI
-
-import net.sf.saxon.lib._
-
-import net.sf.saxon.model.ErrorType
-
-import net.sf.saxon.model.ItemType
-
-import net.sf.saxon.model.SchemaType
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.serialize.CharacterMapIndex
-
-import net.sf.saxon.serialize.PrincipalOutputGatekeeper
-
-import net.sf.saxon.serialize.SerializationProperties
-
-import net.sf.saxon.style.StylesheetPackage
-
-// import net.sf.saxon.style.XSLResultDocument // XSLResultDocument not exist
-
-import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.Err
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.trans.XmlProcessingException
-
-import net.sf.saxon.trans.XsltController
-
-import net.sf.saxon.value.Whitespace
-
-import javax.xml.transform.OutputKeys
-
-import javax.xml.transform.Result
-
-import scala.jdk.CollectionConverters._
+import java.util.{ArrayList, HashMap, Map, Properties}
 
 import javax.xml.transform.dom.DOMResult
-
 import javax.xml.transform.sax.SAXResult
-
 import javax.xml.transform.stream.StreamResult
-
-import java.util.ArrayList
-
-import java.util.HashMap
-
-import java.util.Map
-
-import java.util.Properties
-
-import ResultDocument._
+import javax.xml.transform.{OutputKeys, Result}
+import net.sf.saxon.event.Outputter
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.instruct.ResultDocument._
+import net.sf.saxon.expr.parser._
+import net.sf.saxon.lib._
+import net.sf.saxon.model.{ErrorType, ItemType, SchemaType}
+import net.sf.saxon.om._
+import net.sf.saxon.serialize.CharacterMapIndex
+import net.sf.saxon.style.StylesheetPackage
+import net.sf.saxon.trace.ExpressionPresenter
+import net.sf.saxon.trans.{Err, XPathException, XmlProcessingException}
+import net.sf.saxon.utils.{Configuration, Controller}
+import net.sf.saxon.value.Whitespace
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 object ResultDocument {
 
-  def makeReceiver(hrefValue: String,
-                   baseURI: String,
-                   context: XPathContext,
-                   resolver: ResultDocumentResolver,
-                   params: SerializationProperties,
-                   resolveAgainstStaticBase: Boolean): Receiver = {
-    val resultURI: String = null
-    val controller: Controller = context.getController
-    var base: String = null
-    base =
-      if (resolveAgainstStaticBase) baseURI else controller.getBaseOutputURI
-    try {
-      val out: Receiver = resolver.resolve(context, hrefValue, base, params)
-      var systemId: String = out.getSystemId
-      if (systemId == null) {
-        systemId = ResolveURI.makeAbsolute(hrefValue, base).toASCIIString()
-        out.setSystemId(systemId)
-      }
-      checkAcceptableUri(context, systemId)
-      out
-    } catch {
-      case e: XPathException => throw e
-
-      case err: Exception => {
-        err.printStackTrace()
-        throw new XPathException("Exception thrown by output resolver", err)
-      }
-
-    }
-  }
+//  def makeReceiver(hrefValue: String,
+//                   baseURI: String,
+//                   context: XPathContext,
+//                   resolver: ResultDocumentResolver,
+//                   params: SerializationProperties,
+//                   resolveAgainstStaticBase: Boolean): Receiver = {
+//    val resultURI: String = null
+//    val controller: Controller = context.getController
+//    var base: String = null
+//    base =
+//      if (resolveAgainstStaticBase) baseURI else controller.getBaseOutputURI
+//    try {
+//      val out: Receiver = resolver.resolve(context, hrefValue, base, params)
+//      var systemId: String = out.getSystemId
+//      if (systemId == null) {
+//        systemId = ResolveURI.makeAbsolute(hrefValue, base).toASCIIString()
+//        out.setSystemId(systemId)
+//      }
+//      checkAcceptableUri(context, systemId)
+//      out
+//    } catch {
+//      case e: XPathException => throw e
+//
+//      case err: Exception => {
+//        err.printStackTrace()
+//        throw new XPathException("Exception thrown by output resolver", err)
+//      }
+//
+//    }
+//  }
 
   def traceDestination(context: XPathContext, result: Result): Unit = {
     val config: Configuration = context.getConfiguration
@@ -126,38 +72,38 @@ object ResultDocument {
     }
   }
 
-  def checkAcceptableUri(context: XPathContext, uri: String): Unit = {
-    val controller: XsltController =
-      context.getController.asInstanceOf[XsltController]
-    assert(controller != null)
-    if (uri != null) {
-      if (controller.getDocumentPool.find(uri) != null) {
-        val err: XPathException = new XPathException(
-          "Cannot write to a URI that has already been read: " +
-            (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
-              "(implicit output URI)"
-            else uri))
-        err.setXPathContext(context)
-        err.setErrorCode("XTDE1500")
-        throw err
-      }
-      val documentKey: DocumentURI = new DocumentURI(uri)
-      controller.synchronized {
-        if (!controller.checkUniqueOutputDestination(documentKey)) {
-          val err: XPathException = new XPathException(
-            "Cannot write more than one result document to the same URI: " +
-              (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
-                "(implicit output URI)"
-              else uri))
-          err.setXPathContext(context)
-          err.setErrorCode("XTDE1490")
-          throw err
-        } else {
-          controller.addUnavailableOutputDestination(documentKey)
-        }
-      }
-    }
-  }
+//  def checkAcceptableUri(context: XPathContext, uri: String): Unit = {
+//    val controller: XsltController =
+//      context.getController.asInstanceOf[XsltController]
+//    assert(controller != null)
+//    if (uri != null) {
+//      if (controller.getDocumentPool.find(uri) != null) {
+//        val err: XPathException = new XPathException(
+//          "Cannot write to a URI that has already been read: " +
+//            (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
+//              "(implicit output URI)"
+//            else uri))
+//        err.setXPathContext(context)
+//        err.setErrorCode("XTDE1500")
+//        throw err
+//      }
+//      val documentKey: DocumentURI = new DocumentURI(uri)
+//      controller.synchronized {
+//        if (!controller.checkUniqueOutputDestination(documentKey)) {
+//          val err: XPathException = new XPathException(
+//            "Cannot write more than one result document to the same URI: " +
+//              (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
+//                "(implicit output URI)"
+//              else uri))
+//          err.setXPathContext(context)
+//          err.setErrorCode("XTDE1490")
+//          throw err
+//        } else {
+//          controller.addUnavailableOutputDestination(documentKey)
+//        }
+//      }
+//    }
+//  }
 
   def setSerializationProperty(details: Properties,
                                uri: String,
@@ -533,97 +479,97 @@ class ResultDocument(private val globalProperties: Properties,
     //context.getConfiguration.processResultDocument(this, content, context) // processResultDocument method commented
   }
 
-  def processInstruction(content: Expression, context: XPathContext): Unit = {
-    val controller: XsltController =
-      context.getController.asInstanceOf[XsltController]
-    assert(controller != null)
-    val savedOutputUri: String = context.getCurrentOutputUri
-    val out: ComplexContentOutputter = processLeft(context)
-    var failed: Boolean = false
-    try content.process(out, context)
-    catch {
-      case err: XPathException => {
-        failed = true
-        err.maybeSetContext(context)
-        err.maybeSetLocation(getLocation)
-        throw err
-      }
+//  def processInstruction(content: Expression, context: XPathContext): Unit = {
+//    val controller: XsltController =
+//      context.getController.asInstanceOf[XsltController]
+//    assert(controller != null)
+//    val savedOutputUri: String = context.getCurrentOutputUri
+//    val out: ComplexContentOutputter = processLeft(context)
+//    var failed: Boolean = false
+//    try content.process(out, context)
+//    catch {
+//      case err: XPathException => {
+//        failed = true
+//        err.maybeSetContext(context)
+//        err.maybeSetLocation(getLocation)
+//        throw err
+//      }
+//
+//    } finally try out.close()
+//    catch {
+//      case e: XPathException =>
+//        if (!failed) {
+//          throw e
+//        }
+//
+//    }
+//    context.setCurrentOutputUri(savedOutputUri)
+//  }
 
-    } finally try out.close()
-    catch {
-      case e: XPathException =>
-        if (!failed) {
-          throw e
-        }
-
-    }
-    context.setCurrentOutputUri(savedOutputUri)
-  }
-
-  def processLeft(context: XPathContext): ComplexContentOutputter = {
-    val controller: XsltController =
-      context.getController.asInstanceOf[XsltController]
-    val config: Configuration = controller.getConfiguration
-    checkNotTemporaryOutputState(context)
-    val computedLocalProps: Properties = gatherOutputProperties(context)
-    if (getStaticBaseURIString != null) {
-      computedLocalProps.setProperty(
-        SaxonOutputKeys.PARAMETER_DOCUMENT_BASE_URI,
-        getStaticBaseURIString)
-    }
-    val serParams: SerializationProperties =
-      new SerializationProperties(computedLocalProps, characterMapIndex)
-    if (validationOptions != null &&
-      validationOptions.getSchemaValidationMode != Validation.PRESERVE) {
-      serParams.setValidationFactory((output) => {
-        val nr: NamespaceReducer = new NamespaceReducer(output)
-        config.getDocumentValidator(nr,
-          output.getSystemId,
-          validationOptions,
-          getLocation)
-      })
-    }
-    var out: Receiver = null
-    var resolver: ResultDocumentResolver = null
-    var hrefValue: String = ""
-    if (getHref != null) {
-      hrefValue = IriToUri.iriToUri(getHref.evaluateAsString(context)).toString
-    }
-    if (hrefValue.isEmpty || hrefValue == controller.getBaseOutputURI) {
-      val gateKeeper: PrincipalOutputGatekeeper = controller.getGatekeeper
-      if (gateKeeper != null) {
-        gateKeeper.useAsSecondary()
-        out = gateKeeper.makeReceiver(serParams)
-      }
-    }
-    if (out == null) {
-      try {
-        resolver = controller.getResultDocumentResolver
-        out = makeReceiver(hrefValue,
-          getStaticBaseURIString,
-          context,
-          resolver,
-          serParams,
-          resolveAgainstStaticBase)
-        traceDestination(context, out)
-      } catch {
-        case e: XPathException => {
-          e.maybeSetLocation(getLocation)
-          e.maybeSetContext(context)
-          throw e
-        }
-
-      }
-    }
-    out.getPipelineConfiguration.setController(controller)
-    val systemId: String = out.getSystemId
-    val nr: NamespaceReducer = new NamespaceReducer(out)
-    val cco: ComplexContentOutputter = new ComplexContentOutputter(nr)
-    cco.setSystemId(systemId)
-    context.setCurrentOutputUri(systemId)
-    cco.open()
-    cco
-  }
+//  def processLeft(context: XPathContext): ComplexContentOutputter = {
+//    val controller: XsltController =
+//      context.getController.asInstanceOf[XsltController]
+//    val config: Configuration = controller.getConfiguration
+//    checkNotTemporaryOutputState(context)
+//    val computedLocalProps: Properties = gatherOutputProperties(context)
+//    if (getStaticBaseURIString != null) {
+//      computedLocalProps.setProperty(
+//        SaxonOutputKeys.PARAMETER_DOCUMENT_BASE_URI,
+//        getStaticBaseURIString)
+//    }
+//    val serParams: SerializationProperties =
+//      new SerializationProperties(computedLocalProps, characterMapIndex)
+//    if (validationOptions != null &&
+//      validationOptions.getSchemaValidationMode != Validation.PRESERVE) {
+//      serParams.setValidationFactory((output) => {
+//        val nr: NamespaceReducer = new NamespaceReducer(output)
+//        config.getDocumentValidator(nr,
+//          output.getSystemId,
+//          validationOptions,
+//          getLocation)
+//      })
+//    }
+//    var out: Receiver = null
+//    var resolver: ResultDocumentResolver = null
+//    var hrefValue: String = ""
+//    if (getHref != null) {
+//      hrefValue = IriToUri.iriToUri(getHref.evaluateAsString(context)).toString
+//    }
+//    if (hrefValue.isEmpty || hrefValue == controller.getBaseOutputURI) {
+//      val gateKeeper: PrincipalOutputGatekeeper = controller.getGatekeeper
+//      if (gateKeeper != null) {
+//        gateKeeper.useAsSecondary()
+//        out = gateKeeper.makeReceiver(serParams)
+//      }
+//    }
+//    if (out == null) {
+//      try {
+//        resolver = controller.getResultDocumentResolver
+//        out = makeReceiver(hrefValue,
+//          getStaticBaseURIString,
+//          context,
+//          resolver,
+//          serParams,
+//          resolveAgainstStaticBase)
+//        traceDestination(context, out)
+//      } catch {
+//        case e: XPathException => {
+//          e.maybeSetLocation(getLocation)
+//          e.maybeSetContext(context)
+//          throw e
+//        }
+//
+//      }
+//    }
+//    out.getPipelineConfiguration.setController(controller)
+//    val systemId: String = out.getSystemId
+//    val nr: NamespaceReducer = new NamespaceReducer(out)
+//    val cco: ComplexContentOutputter = new ComplexContentOutputter(nr)
+//    cco.setSystemId(systemId)
+//    context.setCurrentOutputUri(systemId)
+//    cco.open()
+//    cco
+//  }
 
   private def checkNotTemporaryOutputState(context: XPathContext): Unit = {
     if (context.getTemporaryOutputState != 0) {

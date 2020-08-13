@@ -1,68 +1,23 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Controller
-
-import net.sf.saxon.event.Builder
-
-import net.sf.saxon.event.PipelineConfiguration
-
-import net.sf.saxon.event.Receiver
-
-import net.sf.saxon.event.Sender
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser.PathMap
-
-import net.sf.saxon.expr.sort.DocumentOrderIterator
-
-import net.sf.saxon.expr.sort.GlobalOrderComparer
-
-import net.sf.saxon.lib.Feature
-
-import net.sf.saxon.lib.ParseOptions
-
-import net.sf.saxon.lib.RelativeURIResolver
-
-import net.sf.saxon.lib.StandardErrorHandler
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.s9api.Location
-
-import net.sf.saxon.style.StylesheetPackage
-
-import net.sf.saxon.trans.Err
-
-import net.sf.saxon.trans.NonDelegatingURIResolver
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.trans.XsltController
-
-import net.sf.saxon.tree.tiny.TinyBuilder
-
-import net.sf.saxon.value.Cardinality
-
-import javax.xml.transform.Source
-
-import javax.xml.transform.SourceLocator
-
-import javax.xml.transform.TransformerException
-
-import javax.xml.transform.URIResolver
+import java.net.{URI, URISyntaxException}
 
 import javax.xml.transform.dom.DOMSource
-
 import javax.xml.transform.stream.StreamSource
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import DocumentFn._
+import javax.xml.transform.{Source, SourceLocator, TransformerException, URIResolver}
+import net.sf.saxon.event.{Builder, PipelineConfiguration, Receiver, Sender}
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.parser.PathMap
+import net.sf.saxon.expr.sort.{DocumentOrderIterator, GlobalOrderComparer}
+import net.sf.saxon.functions.DocumentFn._
+import net.sf.saxon.lib.{Feature, ParseOptions, RelativeURIResolver, StandardErrorHandler}
+import net.sf.saxon.om._
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.style.StylesheetPackage
+import net.sf.saxon.trans.{Err, NonDelegatingURIResolver, XPathException}
+import net.sf.saxon.tree.tiny.TinyBuilder
+import net.sf.saxon.utils.{Configuration, Controller}
+import net.sf.saxon.value.Cardinality
 
 object DocumentFn {
 
@@ -142,19 +97,19 @@ object DocumentFn {
       if (doc != null) {
         getFragment(doc, fragmentId, c, locator)
       }
-      if (controller.isInstanceOf[XsltController] &&
-        !controller
-          .asInstanceOf[XsltController]
-          .checkUniqueOutputDestination(documentKey)) {
-        pool.markUnavailable(documentKey)
-        val err: XPathException = new XPathException(
-          "Cannot read a document that was written during the same transformation: " +
-            documentKey)
-        err.setXPathContext(c)
-        err.setErrorCode("XTRE1500")
-        err.setLocator(locator)
-        throw err
-      }
+//      if (controller.isInstanceOf[XsltController] &&
+//        !controller
+//          .asInstanceOf[XsltController]
+//          .checkUniqueOutputDestination(documentKey)) {
+//        pool.markUnavailable(documentKey)
+//        val err: XPathException = new XPathException(
+//          "Cannot read a document that was written during the same transformation: " +
+//            documentKey)
+//        err.setXPathContext(c)
+//        err.setErrorCode("XTRE1500")
+//        err.setLocator(locator)
+//        throw err
+//      }
       if (pool.isMarkedUnavailable(documentKey)) {
         val err: XPathException = new XPathException(
           "Document has been marked not available: " + documentKey)
@@ -240,11 +195,11 @@ object DocumentFn {
           getFragment(doc, fragmentId, c, locator)
         }
         controller.registerDocument(newdoc, documentKey)
-        if (controller.isInstanceOf[XsltController]) {
-          controller
-            .asInstanceOf[XsltController]
-            .addUnavailableOutputDestination(documentKey)
-        }
+//        if (controller.isInstanceOf[XsltController]) {
+//          controller
+//            .asInstanceOf[XsltController]
+//            .addUnavailableOutputDestination(documentKey)
+//        }
       }
       getFragment(newdoc, fragmentId, c, locator)
     } catch {
