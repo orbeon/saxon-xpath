@@ -2,6 +2,10 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 enablePlugins(ScalaJSPlugin)
 
+val ScalatTestVersion = "3.2.1"
+
+traceLevel in ThisBuild := 0
+
 lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("saxon"))
   .settings(
     organization := "org.orbeon",
@@ -10,12 +14,14 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
 
     scalaVersion := "2.13.1",
 
-    libraryDependencies += "com.lihaoyi"   %%% "utest"       % "0.7.2" % Test,
-    libraryDependencies += "org.jetbrains" % "annotations"   % "17.0.0",
-    libraryDependencies += "com.ibm.icu"   % "icu4j"         % "63.1", // Java  only
-    libraryDependencies += "xml-resolver"  % "xml-resolver"  % "1.2",   // Java  only
+    libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalatTestVersion    % Test,
+    libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalatTestVersion    % Test,
 
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
+    libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
+    libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
+
+    testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
 
 lazy val saxonJS = saxon.js
