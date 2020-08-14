@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 enablePlugins(ScalaJSPlugin)
 
-val ScalatTestVersion = "3.2.1"
+val ScalaTestVersion = "3.2.1"
 
 traceLevel in ThisBuild := 0
 
@@ -12,7 +12,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     name         := "saxon",
     version      := "1.0-SNAPSHOT",
 
-    scalaVersion := "2.13.1",
+    scalaVersion := "2.13.1", // 2.13.3 is not supported with Scala.js 0.6.x
 
     scalacOptions ++= Seq(
     "-encoding", "utf8",
@@ -20,8 +20,8 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     "-unchecked"
     ),
 
-    libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalatTestVersion    % Test,
-    libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalatTestVersion    % Test,
+    libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
+    libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,
 
     libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
     libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
@@ -30,5 +30,5 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
 
-lazy val saxonJS = saxon.js
+lazy val saxonJS  = saxon.js
 lazy val saxonJVM = saxon.jvm
