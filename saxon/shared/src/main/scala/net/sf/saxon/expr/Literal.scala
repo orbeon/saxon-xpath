@@ -1,31 +1,24 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.event.Outputter
-import net.sf.saxon.event.ReceiverOption
+import java.io.StringWriter
+import java.util.{ArrayList, List, Properties}
+
+import javax.xml.transform.stream.StreamResult
+import net.sf.saxon.event.{Outputter, ReceiverOption}
+import net.sf.saxon.expr.Literal._
 import net.sf.saxon.expr.parser._
 import net.sf.saxon.functions.hof.FunctionLiteral
 import net.sf.saxon.ma.arrays.ArrayItem
-
-import scala.jdk.CollectionConverters._
 import net.sf.saxon.ma.map.MapItem
 import net.sf.saxon.model._
 import net.sf.saxon.om._
-import net.sf.saxon.pattern.NodeTestPattern
-import net.sf.saxon.pattern.Pattern
+import net.sf.saxon.pattern.{NodeTestPattern, Pattern}
+import net.sf.saxon.query.QueryResult
 import net.sf.saxon.trace.ExpressionPresenter
 import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.Configuration
 import net.sf.saxon.value._
-import javax.xml.transform.stream.StreamResult
-import java.io.StringWriter
-import java.util.ArrayList
-import java.util.List
-import java.util.Properties
 
-import Literal._
-import net.sf.saxon.query.QueryResult
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 object Literal {
@@ -407,41 +400,35 @@ class Literal extends Expression {
         if (m0 == null || m1 == null) {
           return false
         }
-        if (m0 == m1) {
-          // continue
-        }
-        val n0: Boolean = m0.isInstanceOf[NodeInfo]
-        val n1: Boolean = m1.isInstanceOf[NodeInfo]
-        if (n0 != n1) {
-          return false
-        }
-        if (n0) {
-          if (m0 == m1) {
-            //continue
-          } else {
+        if (m0 ne m1) {
+          val n0: Boolean = m0.isInstanceOf[NodeInfo]
+          val n1: Boolean = m1.isInstanceOf[NodeInfo]
+          if (n0 != n1) {
             return false
           }
-        }
-        val a0: Boolean = m0.isInstanceOf[AtomicValue]
-        val a1: Boolean = m1.isInstanceOf[AtomicValue]
-        if (a0 != a1) {
-          return false
-        }
-        if (a0) {
-          if (m0.asInstanceOf[AtomicValue]
-            .isIdentical(m1.asInstanceOf[AtomicValue]) &&
-            m0.asInstanceOf[AtomicValue]
-              .getItemType == m1.asInstanceOf[AtomicValue].getItemType) {
-            //continue
+          if (n0) {
+            if (m0 != m1) {
+              return false
+            }
           } else {
-            return false
+            val a0: Boolean = m0.isInstanceOf[AtomicValue]
+            val a1: Boolean = m1.isInstanceOf[AtomicValue]
+            if (a0 != a1) {
+              return false
+            }
+            if (a0) {
+              if (! (m0.asInstanceOf[AtomicValue].isIdentical(m1.asInstanceOf[AtomicValue]) &&
+                  m0.asInstanceOf[AtomicValue].getItemType == m1.asInstanceOf[AtomicValue].getItemType)) {
+                return false
+              }
+            } else
+              return false
           }
         }
-        return false
       }
-      return false
+      false
     } catch {
-      case err: XPathException => return false
+      case _: XPathException => false
     }
   }
 
