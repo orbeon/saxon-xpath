@@ -1,0 +1,9 @@
+language: scala
+scala:
+  - 2.13.1
+jdk:
+  - openjdk8
+node_js:
+  - node
+script:
+  - sbt saxonJVM/test
