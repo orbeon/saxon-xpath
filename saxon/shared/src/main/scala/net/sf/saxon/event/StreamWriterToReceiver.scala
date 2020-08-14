@@ -1,33 +1,22 @@
 package net.sf.saxon.event
 
+import java.util
+
 import net.sf.saxon.utils.Configuration
-
 import net.sf.saxon.expr.parser.Loc
-
 import net.sf.saxon.lib.StandardURIChecker
-
 import net.sf.saxon.model.BuiltInAtomicType
-
 import net.sf.saxon.model.Untyped
-
 import net.sf.saxon.om._
-
 import net.sf.saxon.pull.NamespaceContextImpl
-
 import net.sf.saxon.serialize.charcode.UTF16CharacterSet
-
 import net.sf.saxon.trans.Err
 
 import scala.collection.JavaConverters._
-
 import javax.xml.namespace.NamespaceContext
-
 import javax.xml.stream.XMLStreamException
-
 import javax.xml.stream.XMLStreamWriter
-
 import java.util._
-
 import java.util.function.IntPredicate
 
 import StreamWriterToReceiver._
@@ -574,8 +563,9 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
         for ((key, value) <- bindings.asScala if value == namespaceURI) {
           prefixes.add(key)
         }
-        val root = rootNamespaceContext.getPrefixes(namespaceURI)
-        while (root.hasNext) prefixes.add(root.next())
+        val root = rootNamespaceContext.getPrefixes(namespaceURI).asInstanceOf[util.Iterator[String]]
+        while (root.hasNext)
+          prefixes.add(root.next())
         prefixes.iterator()
       }
     }
