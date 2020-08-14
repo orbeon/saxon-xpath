@@ -1,25 +1,24 @@
 package net.sf.saxon.lib
 
-import java.util.Iterator
+import java.{util => ju}
 
 import net.sf.saxon.lib.Feature._
-
 import net.sf.saxon.utils.Configuration
-//remove if not needed
+
+import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 
 object Feature {
 
   private val HE: Int = 0
-
   private val PE: Int = 1
-
   private val EE: Int = 2
 
-  private val index: java.util.Map[String, Feature[_]] = new java.util.TreeMap[String, Feature[_]]()
+  private val index: mutable.Map[String, Feature[_]] = mutable.TreeMap[String, Feature[_]]()
 
-  def byName(name: String): Feature[_] = index.get(name)
+  def byName(name: String): Feature[_] = index.get(name).orNull
 
-  def getNames(): Iterator[String] = index.keySet.iterator()
+  def getNames(): ju.Iterator[String] = index.keySet.iterator.asJava
 
   val ALLOW_EXTERNAL_FUNCTIONS: Feature[Boolean] = new Feature[Boolean](
     "http://saxon.sf.net/feature/allow-external-functions",
