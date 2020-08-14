@@ -18,15 +18,15 @@ class XPathTest extends AnyFunSpec {
   describe("Minimalistic expression compilation and execution") {
 
     val Expected = List(
-      "42"     → "42",
-      "42 + 1" → "43",
-//      "3.1415" → "43",
-      "'To be, or not to be, that is the question'" → "To be, or not to be, that is the question",
-//      "concat('To be', ', or not to be')" → "To be, or not to be",
-//      "'To be' || ', or not to be'" → "To be, or not to be",
+      "42"     -> "42",
+      "42 + 1" -> "43",
+//      "3.1415" -> "43",
+      "'To be, or not to be, that is the question'" -> "To be, or not to be, that is the question",
+//      "concat('To be', ', or not to be')" -> "To be, or not to be",
+//      "'To be' || ', or not to be'" -> "To be, or not to be",
     )
 
-    for ((in, out) ← Expected)
+    for ((in, out) <- Expected)
       it(s"must evaluate `$in`") {
         assert(out == compileAndRunExpression(in).toString)
       }

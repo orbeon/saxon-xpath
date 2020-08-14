@@ -203,7 +203,7 @@ final class Tokenizer {
       case Token.STAR =>
         if (!followsOperator(precedingToken))
           currentToken = Token.MULT
-      case _ ⇒ //ORBEON: Java doesn't have `MatchError`
+      case _ => //ORBEON: Java doesn't have `MatchError`
     }
     if (currentToken == Token.TAG || currentToken == Token.RCURLY) {
       // No lookahead after encountering "<" at the start of an XML-like tag.

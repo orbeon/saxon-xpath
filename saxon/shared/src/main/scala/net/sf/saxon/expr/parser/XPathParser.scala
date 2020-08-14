@@ -2091,7 +2091,7 @@ class XPathParser() {
             return parserExtension.parseDotFunction(this)
           case "_" =>
             return parserExtension.parseUnderscoreFunction(this)
-          case _ ⇒
+          case _ =>
             return parseConstructor
         }
       case Token.ELEMENT_QNAME | Token.ATTRIBUTE_QNAME | Token.NAMESPACE_QNAME | Token.PI_QNAME | Token.TAG =>

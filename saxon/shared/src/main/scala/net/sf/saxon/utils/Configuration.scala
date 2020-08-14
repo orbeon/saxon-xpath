@@ -51,7 +51,7 @@ import net.sf.saxon.value._
 import net.sf.saxon.z.{IntHashSet, IntSet}
 import org.xml
 import org.xml.sax.ext.DefaultHandler2
-import org.xml.sax.{ContentHandler ⇒ _, _}
+import org.xml.sax.{ContentHandler => _, _}
 
 import scala.jdk.CollectionConverters._
 
