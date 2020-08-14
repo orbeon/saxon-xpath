@@ -14,6 +14,12 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
 
     scalaVersion := "2.13.1",
 
+    scalacOptions ++= Seq(
+    "-encoding", "utf8",
+    "-deprecation",
+    "-unchecked"
+    ),
+
     libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalatTestVersion    % Test,
     libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalatTestVersion    % Test,
 
