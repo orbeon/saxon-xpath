@@ -40,29 +40,26 @@ import java.util._
 import net.sf.saxon.s9api.HostLanguage.HostLanguage
 
 
-
-
 /**
-  * XQueryExpression represents a compiled query. This object is immutable and thread-safe,
-  * the same compiled query may be executed many times in series or in parallel. The object
-  * is intended to be created only by using the compileQuery method of the QueryProcessor class.
-  * <p>Various methods are provided for evaluating the query, with different options for
-  * delivery of the results.</p>
-  */
-class XQueryExpression( var expression: Expression,
-                        var mainModule: QueryModule,
+ * XQueryExpression represents a compiled query. This object is immutable and thread-safe,
+ * the same compiled query may be executed many times in series or in parallel. The object
+ * is intended to be created only by using the compileQuery method of the QueryProcessor class.
+ * <p>Various methods are provided for evaluating the query, with different options for
+ * delivery of the results.</p>
+ */
+class XQueryExpression(var expression: Expression,
+                       var mainModule: QueryModule,
                        streaming: Boolean)
-    extends Location
+  extends Location
     with ExpressionOwner
     with TraceableComponent {
 
-   var stackFrameMap: SlotManager = config.makeSlotManager
+  val config: Configuration = mainModule.getConfiguration
+  var stackFrameMap: SlotManager = config.makeSlotManager
 
-   var executable: Executable = _
+  var executable: Executable = _
 
   val exec: Executable = mainModule.getExecutable
-
-  val config: Configuration = mainModule.getConfiguration
 
   expression.setRetainedStaticContext(mainModule.makeRetainedStaticContext())
 
@@ -135,11 +132,11 @@ class XQueryExpression( var expression: Expression,
   }
 
   /**
-    * Get a name identifying the object of the expression, for example a function name, template name,
-    * variable name, key name, element name, etc. This is used only where the name is known statically.
-    *
-    * @return the QName of the object declared or manipulated by this instruction or expression
-    */
+   * Get a name identifying the object of the expression, for example a function name, template name,
+   * variable name, key name, element name, etc. This is used only where the name is known statically.
+   *
+   * @return the QName of the object declared or manipulated by this instruction or expression
+   */
   override def getObjectName(): StructuredQName = null
 
   override def getTracingTag(): String = "query"
@@ -147,28 +144,28 @@ class XQueryExpression( var expression: Expression,
   override def getLocation(): Location = this
 
   /**
-    * Get data about the unit of compilation (XQuery module, XSLT package) to which this
-    * container belongs
-    */
+   * Get data about the unit of compilation (XQuery module, XSLT package) to which this
+   * container belongs
+   */
   def getPackageData(): PackageData = mainModule.getPackageData
 
   /**
-    * Get the Configuration to which this Container belongs
-    *
-    * @return the Configuration
-    */
+   * Get the Configuration to which this Container belongs
+   *
+   * @return the Configuration
+   */
   def getConfiguration(): Configuration = mainModule.getConfiguration
 
   def usesContextItem(): Boolean = {
     if (ExpressionTool.dependsOnFocus(expression)) {
-      true
+      return true
     }
     val map: List[GlobalVariable] = getPackageData.getGlobalVariableList
     if (map != null) {
-      map.forEach {gVar =>
+      map.forEach { gVar =>
         val select: Expression = gVar.getBody
         if (select != null && ExpressionTool.dependsOnFocus(select)) {
-          true
+          return true
         }
       }
     }
@@ -180,19 +177,20 @@ class XQueryExpression( var expression: Expression,
   def getStackFrameMap(): SlotManager = stackFrameMap
 
   def explainPathMap(): Unit = {}
-// No action (requires Saxon-EE)
-// No action (requires Saxon-EE)
+
+  // No action (requires Saxon-EE)
+  // No action (requires Saxon-EE)
 
   /**
-    * Get the static context in which this expression was compiled. This is essentially an internal
-    * copy of the original user-created StaticQueryContext object, augmented with information obtained
-    * from the query prolog of the main query module, and with information about functions and variables
-    * imported from other library modules. The user-created StaticQueryContext object is not modified
-    * by Saxon, whereas the QueryModule object includes additional information found in the query prolog.
-    *
-    * @return the QueryModule object representing the static context of the main module of the query.
-    *         This is available for inspection, but must not be modified or reused by the application.
-    */
+   * Get the static context in which this expression was compiled. This is essentially an internal
+   * copy of the original user-created StaticQueryContext object, augmented with information obtained
+   * from the query prolog of the main query module, and with information about functions and variables
+   * imported from other library modules. The user-created StaticQueryContext object is not modified
+   * by Saxon, whereas the QueryModule object includes additional information found in the query prolog.
+   *
+   * @return the QueryModule object representing the static context of the main module of the query.
+   *         This is available for inspection, but must not be modified or reused by the application.
+   */
   def getMainModule(): QueryModule = mainModule
 
   /*@NotNull*/
@@ -229,7 +227,7 @@ class XQueryExpression( var expression: Expression,
 
     val itr: SequenceIterator = iterator(env)
     val item: Item = itr.next()
-    
+
     if (item == null) {
       return null
     }
@@ -251,13 +249,13 @@ class XQueryExpression( var expression: Expression,
     try {
       val contextItem: Item = controller.getGlobalContextItem
       if (contextItem.isInstanceOf[NodeInfo] &&
-          contextItem.asInstanceOf[NodeInfo].getTreeInfo.isTyped &&
-          !getExecutable.isSchemaAware) {
+        contextItem.asInstanceOf[NodeInfo].getTreeInfo.isTyped &&
+        !getExecutable.isSchemaAware) {
         throw new XPathException(
           "A typed input document can only be used with a schema-aware query")
       }
       val context: XPathContextMajor = initialContext(env, controller)
-// In tracing/debugging mode, evaluate all the global variables first
+      // In tracing/debugging mode, evaluate all the global variables first
       if (controller.getTraceListener != null) {
         controller.preEvaluateGlobals(context)
       }
@@ -294,8 +292,8 @@ class XQueryExpression( var expression: Expression,
     }
     val contextItem: Item = env.getContextItem
     if (contextItem.isInstanceOf[NodeInfo] &&
-        contextItem.asInstanceOf[NodeInfo].getTreeInfo.isTyped &&
-        !getExecutable.isSchemaAware) {
+      contextItem.asInstanceOf[NodeInfo].getTreeInfo.isTyped &&
+      !getExecutable.isSchemaAware) {
       throw new XPathException(
         "A typed input document can only be used with a schema-aware query")
     }
@@ -309,14 +307,14 @@ class XQueryExpression( var expression: Expression,
     val actualProperties: Properties =
       validateOutputProperties(controller, outputProperties)
     val context: XPathContextMajor = initialContext(env, controller)
-// In tracing/debugging mode, evaluate all the global variables first
+    // In tracing/debugging mode, evaluate all the global variables first
     val tracer: TraceListener = controller.getTraceListener
     if (tracer != null) {
       controller.preEvaluateGlobals(context)
     }
     context.openStackFrame(stackFrameMap)
     val mustClose: Boolean = result.isInstanceOf[StreamResult] &&
-        result.asInstanceOf[StreamResult].getOutputStream == null
+      result.asInstanceOf[StreamResult].getOutputStream == null
     var out: Receiver = null
     if (result.isInstanceOf[Receiver]) {
       out = result.asInstanceOf[Receiver]
@@ -325,12 +323,12 @@ class XQueryExpression( var expression: Expression,
       val pipe: PipelineConfiguration = controller.makePipelineConfiguration
       pipe.setHostLanguage(HostLanguage.XQUERY)
       out = sf.getReceiver(result,
-                           new SerializationProperties(actualProperties),
-                           pipe)
+        new SerializationProperties(actualProperties),
+        pipe)
     }
     val dest: ComplexContentOutputter = new ComplexContentOutputter(out)
     dest.open()
-// Run the query
+    // Run the query
     try expression.process(dest, context)
     catch {
       case err: XPathException => {
@@ -352,8 +350,8 @@ class XQueryExpression( var expression: Expression,
     }
   }
 
-   def closeStreamIfNecessary(result: StreamResult,
-                                       mustClose: Boolean): Unit = {
+  def closeStreamIfNecessary(result: StreamResult,
+                             mustClose: Boolean): Unit = {
     if (mustClose) {
       val os: OutputStream = result.getOutputStream
       if (os != null) {
@@ -369,9 +367,9 @@ class XQueryExpression( var expression: Expression,
     throw new XPathException("Streaming requires Saxon-EE")
   }
 
-   def validateOutputProperties(
-      controller: Controller,
-      outputProperties: Properties): Properties = {
+  def validateOutputProperties(
+                                controller: Controller,
+                                outputProperties: Properties): Properties = {
     val baseProperties: Properties =
       controller.getExecutable.getPrimarySerializationProperties.getProperties
     val sf: SerializerFactory =
@@ -397,13 +395,14 @@ class XQueryExpression( var expression: Expression,
       }
     }
     if (baseProperties.getProperty("method") == null) {
-// XQuery forces the default method to XML, unlike XSLT where it depends on the contents of the result tree
+      // XQuery forces the default method to XML, unlike XSLT where it depends on the contents of the result tree
       baseProperties.setProperty("method", "xml")
     }
     baseProperties
   }
-// Validate the serialization properties requested
-// Validate the serialization properties requested
+
+  // Validate the serialization properties requested
+  // Validate the serialization properties requested
 
   /*@NotNull*/
 
@@ -414,8 +413,8 @@ class XQueryExpression( var expression: Expression,
     throw new XPathException("Calling runUpdate() on a non-updating query")
   }
 
-   def initialContext(dynamicEnv: DynamicQueryContext,
-                               controller: Controller): XPathContextMajor = {
+  def initialContext(dynamicEnv: DynamicQueryContext,
+                     controller: Controller): XPathContextMajor = {
     val contextItem: Item = controller.getGlobalContextItem
     val context: XPathContextMajor = controller.newXPathContext
     if (contextItem != null) {
@@ -432,14 +431,14 @@ class XQueryExpression( var expression: Expression,
     val controller: Controller =
       new Controller(executable.getConfiguration, executable)
     env.initializeController(controller)
-//controller.getBindery(getPackageData()).allocateGlobals(executable.getGlobalVariableMap());
+    //controller.getBindery(getPackageData()).allocateGlobals(executable.getGlobalVariableMap());
     controller
   }
 
   def explain(out: ExpressionPresenter): Unit = {
     out.startElement("query")
     // getKeyManager class does not exist. It will be fixed later.
-  //  mainModule.getKeyManager.exportKeys(out, null)
+    //  mainModule.getKeyManager.exportKeys(out, null)
     getExecutable.explainGlobalVariables(out)
     mainModule.explainGlobalFunctions(out)
     out.startElement("body")
@@ -469,40 +468,40 @@ class XQueryExpression( var expression: Expression,
   def getSystemId(): String = mainModule.getSystemId
 
   /**
-    * Return the line number where the current document event ends.
-    * <p><strong>Warning:</strong> The return value from the method
-    * is intended only as an approximation for the sake of error
-    * reporting; it is not intended to provide sufficient information
-    * to edit the character content of the original XML document.</p>
-    * <p>The return value is an approximation of the line number
-    * in the document entity or external parsed entity where the
-    * markup that triggered the event appears.</p>
-    *
-    * @return The line number, or -1 if none is available.
-    * @see #getColumnNumber
-    */
+   * Return the line number where the current document event ends.
+   * <p><strong>Warning:</strong> The return value from the method
+   * is intended only as an approximation for the sake of error
+   * reporting; it is not intended to provide sufficient information
+   * to edit the character content of the original XML document.</p>
+   * <p>The return value is an approximation of the line number
+   * in the document entity or external parsed entity where the
+   * markup that triggered the event appears.</p>
+   *
+   * @return The line number, or -1 if none is available.
+   * @see #getColumnNumber
+   */
   def getLineNumber(): Int = -1
 
   /**
-    * Return the character position where the current document event ends.
-    * <p><strong>Warning:</strong> The return value from the method
-    * is intended only as an approximation for the sake of error
-    * reporting; it is not intended to provide sufficient information
-    * to edit the character content of the original XML document.</p>
-    * <p>The return value is an approximation of the column number
-    * in the document entity or external parsed entity where the
-    * markup that triggered the event appears.</p>
-    *
-    * @return The column number, or -1 if none is available.
-    * @see #getLineNumber
-    */
+   * Return the character position where the current document event ends.
+   * <p><strong>Warning:</strong> The return value from the method
+   * is intended only as an approximation for the sake of error
+   * reporting; it is not intended to provide sufficient information
+   * to edit the character content of the original XML document.</p>
+   * <p>The return value is an approximation of the column number
+   * in the document entity or external parsed entity where the
+   * markup that triggered the event appears.</p>
+   *
+   * @return The column number, or -1 if none is available.
+   * @see #getLineNumber
+   */
   def getColumnNumber(): Int = -1
 
   /**
-    * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
-    * should not be saved for later use. The result of this operation holds the same location information,
-    * but in an immutable form.
-    */
+   * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
+   * should not be saved for later use. The result of this operation holds the same location information,
+   * but in an immutable form.
+   */
   def saveLocation(): Location = this
 
   def getHostLanguage(): HostLanguage = HostLanguage.XQUERY
@@ -513,7 +512,7 @@ class XQueryExpression( var expression: Expression,
 
   private class ErrorReportingIterator(private var base: SequenceIterator,
                                        private var reporter: ErrorReporter)
-      extends SequenceIterator {
+    extends SequenceIterator {
 
     /*@Nullable*/
 

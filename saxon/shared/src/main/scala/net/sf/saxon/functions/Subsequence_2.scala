@@ -23,7 +23,7 @@ object Subsequence_2 {
   def subSequence(seq: SequenceIterator,
                   startVal: NumericValue): SequenceIterator = {
     var startNumVal = startVal
-    var lstart: Long = 0l
+    var lstart: Long = 0L
     if (startNumVal.isInstanceOf[Int64Value]) {
       lstart = startNumVal.longValue()
       if (lstart <= 1) {
@@ -72,7 +72,7 @@ class Subsequence_2 extends SystemFunction with Callable {
       start = start.round(0)
       val intStart: Long = start.longValue()
       if (intStart > java.lang.Integer.MAX_VALUE) {
-        super.makeFunctionCall(arguments: _*)
+        super.makeFunctionCall(arguments.toIndexedSeq: _*)
       }
       if (intStart <= 0) {
         arguments(0)
@@ -82,7 +82,7 @@ class Subsequence_2 extends SystemFunction with Callable {
       case e: Exception => {}
 
     }
-    super.makeFunctionCall(arguments: _*)
+    super.makeFunctionCall(arguments.toIndexedSeq: _*)
   }
 
   override def getStreamerName(): String = "Subsequence"
