@@ -50,6 +50,8 @@ import GeneralComparison10._
 
 import scala.jdk.CollectionConverters._
 
+import scala.util.control.Breaks._
+
 object GeneralComparison10 {
 
   private def compare(a0: AtomicValue,
@@ -57,8 +59,8 @@ object GeneralComparison10 {
                       a1: AtomicValue,
                       comparer: AtomicComparer,
                       context: XPathContext): Boolean = {
-    var atomicVal0 =a0
-    var atomicVal1 =a1
+    var atomicVal0 = a0
+    var atomicVal1 = a1
     var atomicCom = comparer
     atomicCom = atomicCom.provideContext(context)
     val rules: ConversionRules = context.getConfiguration.getConversionRules
@@ -96,10 +98,10 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
   extends BinaryExpression(p0, op, p1)
     with Callable {
 
-   var singletonop: Int =
+  var singletonop: Int =
     GeneralComparison.getCorrespondingSingletonOperator(op)
 
-   var comparer: AtomicComparer = _
+  var comparer: AtomicComparer = _
 
   private var atomize0: Boolean = true
 
@@ -111,8 +113,8 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
- override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor,
+                         contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
     val env: StaticContext = visitor.getStaticContext
@@ -134,8 +136,8 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     this.comparer = comparer
   }
 
- override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
     val env: StaticContext = visitor.getStaticContext
     getLhs.optimize(visitor, contextInfo)
@@ -293,37 +295,40 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     }
     var seq1: List[AtomicValue] = null
     var item0: AtomicValue = null
-    while ((item0 = seqItr0.next().asInstanceOf[AtomicValue]) != null) if (seqItr1 != null) {
-      while (true) {
-        val item1: AtomicValue = seqItr1.next().asInstanceOf[AtomicValue]
-        if (item1 == null) {
-          seqItr1 = null
-          if (seq1 == null) {
-            false
-          }
-          //break
-        }
-        try {
-          if (compare(item0, singletonop, item1, comparer, context)) {
-            true
-          }
-          if (seq1 == null) {
-            seq1 = new ArrayList[AtomicValue](40)
-          }
-          seq1.add(item1)
-        } catch {
-          case e: XPathException => {
-            e.maybeSetLocation(getLocation)
-            e.maybeSetContext(context)
-            throw e
-          }
+    breakable {
+      while ((item0 = seqItr0.next().asInstanceOf[AtomicValue]) != null) if (seqItr1 != null) {
 
+        while (true) {
+          val item1: AtomicValue = seqItr1.next().asInstanceOf[AtomicValue]
+          if (item1 == null) {
+            seqItr1 = null
+            if (seq1 == null) {
+              false
+            }
+            break
+          }
+          try {
+            if (compare(item0, singletonop, item1, comparer, context)) {
+              true
+            }
+            if (seq1 == null) {
+              seq1 = new ArrayList[AtomicValue](40)
+            }
+            seq1.add(item1)
+          } catch {
+            case e: XPathException => {
+              e.maybeSetLocation(getLocation)
+              e.maybeSetContext(context)
+              throw e
+            }
+
+          }
         }
-      }
-    } else {
-      for (item1 <- seq1.asScala
-           if compare(item0, singletonop, item1, comparer, context)) {
-        true
+      } else {
+        for (item1 <- seq1.asScala
+             if compare(item0, singletonop, item1, comparer, context)) {
+          true
+        }
       }
     }
     false
@@ -346,7 +351,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
 
   def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
 
-  override  def explainExtraAttributes(out: ExpressionPresenter): Unit = {
+  override def explainExtraAttributes(out: ExpressionPresenter): Unit = {
     out.emitAttribute("cardinality", "many-to-many (1.0)")
     out.emitAttribute("comp", comparer.save())
   }

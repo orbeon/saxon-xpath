@@ -1,5 +1,6 @@
 package net.sf.saxon.expr
 
+import AxisExpression._
 import java.util
 
 import net.sf.saxon.utils.Configuration
@@ -21,6 +22,7 @@ import AxisExpression._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.collection.JavaConverters._
+import scala.util.control.Breaks._
 
 object AxisExpression {
 
@@ -360,24 +362,28 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             val extensions: util.Iterator[_ <: SchemaType] = config.getExtensionsOfType(contentType)
             var found: Boolean = false
             if (targetfp == -1) {
-              while (extensions.hasNext) {
-                val extension: ComplexType =
-                  extensions.next().asInstanceOf[ComplexType]
-                if (extension.allowsAttributes()) {
-                  found = true
-                  //break
+              breakable {
+                while (extensions.hasNext) {
+                  val extension: ComplexType =
+                    extensions.next().asInstanceOf[ComplexType]
+                  if (extension.allowsAttributes()) {
+                    found = true
+                    break
+                  }
                 }
               }
             } else {
-              while (extensions.hasNext) {
-                val extension: ComplexType =
-                  extensions.next().asInstanceOf[ComplexType]
-                try if (extension.getAttributeUseType(targetName) != null) {
-                  found = true
-                  //break
-                } catch {
-                  case e: SchemaException => {}
+              breakable {
+                while (extensions.hasNext) {
+                  val extension: ComplexType =
+                    extensions.next().asInstanceOf[ComplexType]
+                  try if (extension.getAttributeUseType(targetName) != null) {
+                    found = true
+                    break
+                  } catch {
+                    case e: SchemaException => {}
 
+                  }
                 }
               }
             }
@@ -519,17 +525,19 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 .gatherAllPermittedChildren(permitted, false)
               if (!permitted.contains(-1)) {
                 val kids: IntIterator = permitted.iterator()
-                while (kids.hasNext) {
-                  val kid: Int = kids.next
-                  val sq: StructuredQName =
-                    getConfiguration.getNamePool.getStructuredQName(kid)
-                  if (sq.getLocalPart == childElement.getLocalPart && kid != childfp) {
-                    message += ". Perhaps the namespace is " +
-                      (if (childElement.hasURI("")) "missing" else "wrong") +
-                      ", and " +
-                      sq.getEQName +
-                      " was intended?"
-                    //break
+                breakable {
+                  while (kids.hasNext) {
+                    val kid: Int = kids.next
+                    val sq: StructuredQName =
+                      getConfiguration.getNamePool.getStructuredQName(kid)
+                    if (sq.getLocalPart == childElement.getLocalPart && kid != childfp) {
+                      message += ". Perhaps the namespace is " +
+                        (if (childElement.hasURI("")) "missing" else "wrong") +
+                        ", and " +
+                        sq.getEQName +
+                        " was intended?"
+                      break
+                    }
                   }
                 }
               }

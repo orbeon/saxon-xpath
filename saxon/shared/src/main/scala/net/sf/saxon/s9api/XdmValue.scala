@@ -28,10 +28,11 @@ import net.sf.saxon.s9apir.XdmFunctionItem
 import net.sf.saxon.utils.Configuration
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object XdmValue {
 
-   def fromGroundedValue(value: GroundedValue): XdmValue = {
+  def fromGroundedValue(value: GroundedValue): XdmValue = {
     val xv: XdmValue = new XdmValue()
     xv.setValue(value)
     xv
@@ -127,7 +128,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
 
   def this(stream: Stream[_ <: XdmItem]) = this(stream.iterator())
 
-   def setValue(value: GroundedValue): Unit = {
+  def setValue(value: GroundedValue): Unit = {
     this.value = value
   }
 
@@ -167,9 +168,11 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
       var config: Configuration = null
       val iter: SequenceIterator = value.iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
-        config = item.asInstanceOf[NodeInfo].getConfiguration
-        //break
+      breakable {
+        while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
+          config = item.asInstanceOf[NodeInfo].getConfiguration
+          break
+        }
       }
       if (config == null) {
         config = Configuration.newConfiguration

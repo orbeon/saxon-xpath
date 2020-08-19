@@ -28,6 +28,7 @@ import net.sf.saxon.value.UntypedAtomicValue
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.collection.mutable
+import scala.util.control.Breaks._
 
 object KeyIndex {
 
@@ -183,19 +184,21 @@ class KeyIndex(isRangeKey: Boolean) {
         val comparer: LocalOrderComparer = LocalOrderComparer.getInstance
         var found: Boolean = false
         var i: Int = nodes.size - 1
-        while (i >= 0) {
+        breakable {   while (i >= 0) {
           val d: Int = comparer.compare(curr, nodes.get(i))
           if (d >= 0) {
             if (d == 0) {} else {
               nodes.add(i + 1, curr)
             }
             found = true
-            //break
+            break
           }
           {
-            i -= 1; i + 1
+            i -= 1;
+            i + 1
           }
         }
+      }
         if (!found) {
           nodes.add(0, curr)
         }

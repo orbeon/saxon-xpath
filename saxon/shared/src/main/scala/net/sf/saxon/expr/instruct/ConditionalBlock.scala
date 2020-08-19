@@ -33,6 +33,7 @@ import java.util.Arrays
 import java.util.List
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
@@ -56,7 +57,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   override def getExpressionName(): String = "condSeq"
 
-override  def computeSpecialProperties(): Int = {
+  override def computeSpecialProperties(): Int = {
     if (size == 0) {
       StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
     }
@@ -67,20 +68,22 @@ override  def computeSpecialProperties(): Int = {
     var allAxisExpressions: Boolean = true
     var allChildAxis: Boolean = true
     var allSubtreeAxis: Boolean = true
-    for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
-      if (!(child.isInstanceOf[AxisExpression])) {
-        allAxisExpressions = false
-        allChildAxis = false
-        allSubtreeAxis = false
-        //break
-      }
-      val axis: Int = child.asInstanceOf[AxisExpression].getAxis
-      if (axis != AxisInfo.CHILD) {
-        allChildAxis = false
-      }
-      if (!AxisInfo.isSubtreeAxis(axis)) {
-        allSubtreeAxis = false
+    breakable {
+      for (o <- operands().asScala) {
+        val child: Expression = o.getChildExpression
+        if (!(child.isInstanceOf[AxisExpression])) {
+          allAxisExpressions = false
+          allChildAxis = false
+          allSubtreeAxis = false
+          break
+        }
+        val axis: Int = child.asInstanceOf[AxisExpression].getAxis
+        if (axis != AxisInfo.CHILD) {
+          allChildAxis = false
+        }
+        if (!AxisInfo.isSubtreeAxis(axis)) {
+          allSubtreeAxis = false
+        }
       }
     }
     if (allAxisExpressions) {
@@ -117,7 +120,7 @@ override  def computeSpecialProperties(): Int = {
     b2
   }
 
-override  def getItemType(): ItemType = {
+  override def getItemType(): ItemType = {
     if (size == 0) {
       ErrorType.getInstance
     }
@@ -132,24 +135,26 @@ override  def getItemType(): ItemType = {
     t1
   }
 
-override  def getCardinality(): Int = {
+  override def getCardinality(): Int = {
     if (size == 0) {
       StaticProperty.EMPTY
     }
     var c1: Int = getChildExpression(0).getCardinality
-    for (i <- 1 until size) {
-      c1 = Cardinality.sum(c1, getChildExpression(i).getCardinality)
-      if (c1 == StaticProperty.ALLOWS_ZERO_OR_MORE) {
-        //break
+    breakable {
+      for (i <- 1 until size) {
+        c1 = Cardinality.sum(c1, getChildExpression(i).getCardinality)
+        if (c1 == StaticProperty.ALLOWS_ZERO_OR_MORE) {
+          break
+        }
       }
     }
     c1
   }
 
-override  def mayCreateNewNodes(): Boolean = someOperandCreatesNewNodes()
+  override def mayCreateNewNodes(): Boolean = someOperandCreatesNewNodes()
 
   override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+                         contextInfo: ContextItemStaticInfo): Expression = {
     typeCheckChildren(visitor, contextInfo)
     if (Block.neverReturnsTypedNodes(
       this,
@@ -161,7 +166,7 @@ override  def mayCreateNewNodes(): Boolean = someOperandCreatesNewNodes()
   }
 
   override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+                        contextInfo: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextInfo)
     if (e != this) {
       e
@@ -169,23 +174,25 @@ override  def mayCreateNewNodes(): Boolean = someOperandCreatesNewNodes()
     var lastOrdinaryInstruction: Int = -1
     var alwaysNonEmpty: Boolean = false
     var alwaysEmpty: Boolean = true
-    for (c <- 0 until size if !(getChildExpression(c)
-      .isInstanceOf[OnEmptyExpr] || getChildExpression(c)
-      .isInstanceOf[OnNonEmptyExpr])) {
-      lastOrdinaryInstruction = c
-      if (getChildExpression(c).getItemType.getUType
-        .intersection(UType.DOCUMENT.union(UType.TEXT)) == UType.VOID) {
-        val card: Int = getChildExpression(c).getCardinality
-        if (!Cardinality.allowsZero(card)) {
-          alwaysNonEmpty = true
-        }
-        if (card != StaticProperty.ALLOWS_ZERO) {
+    breakable {
+      for (c <- 0 until size if !(getChildExpression(c)
+        .isInstanceOf[OnEmptyExpr] || getChildExpression(c)
+        .isInstanceOf[OnNonEmptyExpr])) {
+        lastOrdinaryInstruction = c
+        if (getChildExpression(c).getItemType.getUType
+          .intersection(UType.DOCUMENT.union(UType.TEXT)) == UType.VOID) {
+          val card: Int = getChildExpression(c).getCardinality
+          if (!Cardinality.allowsZero(card)) {
+            alwaysNonEmpty = true
+          }
+          if (card != StaticProperty.ALLOWS_ZERO) {
+            alwaysEmpty = false
+          }
+        } else {
           alwaysEmpty = false
+          alwaysNonEmpty = false
+          break
         }
-      } else {
-        alwaysEmpty = false
-        alwaysNonEmpty = false
-        //break
       }
     }
     if (alwaysEmpty) {

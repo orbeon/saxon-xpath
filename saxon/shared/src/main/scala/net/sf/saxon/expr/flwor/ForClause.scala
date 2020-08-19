@@ -37,6 +37,7 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 import Clause.ClauseName.ClauseName
+import scala.util.control.Breaks._
 
 class ForClause extends Clause {
 
@@ -177,43 +178,45 @@ class ForClause extends Clause {
       if (ExpressionTool.dependsOnVariable(flwor, Array(positionVariable))) {
         return false
       }
-      for (op <- 0.until(2)) {
-        val thisVar: Array[Binding] = Array(this.getRangeVariable)
-        if (positionVariable != null && operands(op)
-          .isInstanceOf[VariableReference] &&
-          !changed) {
-          val varRefs: List[VariableReference] =
-            new ArrayList[VariableReference]()
-          ExpressionTool.gatherVariableReferences(condition,
-            positionVariable,
-            varRefs)
-          if (varRefs.size == 1 && varRefs.get(0) == operands(op) &&
-            !ExpressionTool.dependsOnFocus(operands(1 - op)) &&
-            !ExpressionTool.dependsOnVariable(operands(1 - op), thisVar)) {
-            val rsc: RetainedStaticContext = new RetainedStaticContext(
-              visitor.getStaticContext)
-            val position: Expression = SystemFunction.makeCall("position", rsc)
-            val predicate: Expression = condition.copy(new RebindingMap())
-            val child: Operand =
-              if (op == 0) predicate.asInstanceOf[ComparisonExpression].getLhs
-              else predicate.asInstanceOf[ComparisonExpression].getRhs
-            child.setChildExpression(position)
-            if (debug) {
-              opt.trace(
-                "Replaced positional variable in predicate by position()",
-                predicate)
+      breakable {
+        for (op <- 0.until(2)) {
+          val thisVar: Array[Binding] = Array(this.getRangeVariable)
+          if (positionVariable != null && operands(op)
+            .isInstanceOf[VariableReference] &&
+            !changed) {
+            val varRefs: List[VariableReference] =
+              new ArrayList[VariableReference]()
+            ExpressionTool.gatherVariableReferences(condition,
+              positionVariable,
+              varRefs)
+            if (varRefs.size == 1 && varRefs.get(0) == operands(op) &&
+              !ExpressionTool.dependsOnFocus(operands(1 - op)) &&
+              !ExpressionTool.dependsOnVariable(operands(1 - op), thisVar)) {
+              val rsc: RetainedStaticContext = new RetainedStaticContext(
+                visitor.getStaticContext)
+              val position: Expression = SystemFunction.makeCall("position", rsc)
+              val predicate: Expression = condition.copy(new RebindingMap())
+              val child: Operand =
+                if (op == 0) predicate.asInstanceOf[ComparisonExpression].getLhs
+                else predicate.asInstanceOf[ComparisonExpression].getRhs
+              child.setChildExpression(position)
+              if (debug) {
+                opt.trace(
+                  "Replaced positional variable in predicate by position()",
+                  predicate)
+              }
+              selection = new FilterExpression(selection, predicate)
+              ExpressionTool.copyLocationInfo(predicate, selection)
+              val cit: ContextItemStaticInfo =
+                config.makeContextItemStaticInfo(selectionContextItemType, true)
+              selection = selection.typeCheck(visitor, cit)
+              if (!ExpressionTool.dependsOnVariable(flwor,
+                Array(positionVariable))) {
+                positionVariable = null
+              }
+              changed = true
+              break
             }
-            selection = new FilterExpression(selection, predicate)
-            ExpressionTool.copyLocationInfo(predicate, selection)
-            val cit: ContextItemStaticInfo =
-              config.makeContextItemStaticInfo(selectionContextItemType, true)
-            selection = selection.typeCheck(visitor, cit)
-            if (!ExpressionTool.dependsOnVariable(flwor,
-              Array(positionVariable))) {
-              positionVariable = null
-            }
-            changed = true
-            //break
           }
         }
       }

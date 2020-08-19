@@ -23,6 +23,7 @@ import net.sf.saxon.value.SequenceType
 import scala.jdk.CollectionConverters._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 
 object SortExpression {
@@ -66,8 +67,8 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     operandList(selectOp, sortOp)
 
   override def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val target: PathMap.PathMapNodeSet =
       getSelect.addToPathMap(pathMap, pathMapNodeSet)
     for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
@@ -100,8 +101,8 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     target
   }
 
-override  def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor,
+                         contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.typeCheck(visitor, contextInfo)
     val select2: Expression = getSelect
     if (select2 != getSelect) {
@@ -113,10 +114,12 @@ override  def typeCheck(visitor: ExpressionVisitor,
     }
     val sortedItemType: ItemType = getSelect.getItemType
     var allKeysFixed: Boolean = true
-    for (sortKeyDefinition <- getSortKeyDefinitionList.asScala
-         if !sortKeyDefinition.isFixed) {
-      allKeysFixed = false
-      //break
+    breakable {
+      for (sortKeyDefinition <- getSortKeyDefinitionList.asScala
+           if !sortKeyDefinition.isFixed) {
+        allKeysFixed = false
+        break
+      }
     }
     if (allKeysFixed) {
       comparators = Array.ofDim[AtomicComparer](getSortKeyDefinitionList.size)
@@ -164,7 +167,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
   }
 
   override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+                        contextItemType: ContextItemStaticInfo): Expression = {
     selectOp.optimize(visitor, contextItemType)
     var cit: ContextItemStaticInfo = null
     if (getSortKeyDefinition(0).isSetContextForSortKey) {

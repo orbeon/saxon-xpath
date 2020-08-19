@@ -32,6 +32,7 @@ import net.sf.saxon.query.{AnnotationList, XQueryFunction, XQueryParser}
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object ParserExtension {
 
@@ -170,7 +171,7 @@ object ParserExtension {
 
     def getLocalSlotNumber(): Int = 0
 
-    def getVariableQName(): StructuredQName = new StructuredQName("","","")
+    def getVariableQName(): StructuredQName = new StructuredQName("", "", "")
 
     def addReference(ref: VariableReference,
                      isLoopingReference: Boolean): Unit = {}
@@ -220,11 +221,13 @@ object ParserExtension {
           while (bs <= inlineFunctionStack.size - 1) {
             details = inlineFunctionStack.get(bs)
             var found: Boolean = false
-            for (p <- 0 until details.outerVariablesUsed.size - 1
-                 if details.outerVariablesUsed.get(p) == b2) {
-              b2 = details.implicitParams.get(p)
-              found = true
-              //break
+            breakable {
+              for (p <- 0 until details.outerVariablesUsed.size - 1
+                   if details.outerVariablesUsed.get(p) == b2) {
+                b2 = details.implicitParams.get(p)
+                found = true
+                break
+              }
             }
             if (!found) {
               details.outerVariablesUsed.add(b2)
@@ -235,13 +238,15 @@ object ParserExtension {
               b2 = ufp
             }
             {
-              bs += 1; bs - 1
+              bs += 1;
+              bs - 1
             }
           }
           b2
         }
         {
-          v -= 1; v + 1
+          v -= 1;
+          v + 1
         }
       }
       val b2: LocalBinding =
@@ -250,7 +255,8 @@ object ParserExtension {
         b2
       }
       {
-        s -= 1; s + 1
+        s -= 1;
+        s + 1
       }
     }
     null
@@ -268,11 +274,13 @@ object ParserExtension {
       while (bs <= inlineFunctionStack.size - 1) {
         details = inlineFunctionStack.get(bs)
         var found: Boolean = false
-        for (p <- 0 until details.outerVariablesUsed.size - 1
-             if details.outerVariablesUsed.get(p) == param) {
-          b2 = details.implicitParams.get(p)
-          found = true
-          //break
+        breakable {
+          for (p <- 0 until details.outerVariablesUsed.size - 1
+               if details.outerVariablesUsed.get(p) == param) {
+            b2 = details.implicitParams.get(p)
+            found = true
+            break
+          }
         }
         if (!found) {
           details.outerVariablesUsed.add(param)
@@ -283,7 +291,8 @@ object ParserExtension {
           b2 = ufp
         }
         {
-          bs += 1; bs - 1
+          bs += 1;
+          bs - 1
         }
       }
       if (b2 != null) {
@@ -329,7 +338,7 @@ object ParserExtension {
 
 class ParserExtension {
 
-   var inlineFunctionStack: Stack[InlineFunctionDetails] = new Stack()
+  var inlineFunctionStack: Stack[InlineFunctionDetails] = new Stack()
 
   private def needExtension(p: XPathParser, what: String): Unit = {
     p.grumble(what +
@@ -431,18 +440,20 @@ class ParserExtension {
           p.getStaticContext.getConfiguration)
       }
     } else {
-      while (t.currentToken != Token.RPAR) {
-        val arg: SequenceType = p.parseSequenceType
-        argTypes.add(arg)
-        if (t.currentToken == Token.RPAR) {
-          //break
-        } else if (t.currentToken == Token.COMMA) {
-          p.nextToken()
-        } else {
-          p.grumble(
-            "Expected ',' or ')' after function argument type, found '" +
-              Token.tokens(t.currentToken) +
-              '\'')
+      breakable {
+        while (t.currentToken != Token.RPAR) {
+          val arg: SequenceType = p.parseSequenceType
+          argTypes.add(arg)
+          if (t.currentToken == Token.RPAR) {
+            break
+          } else if (t.currentToken == Token.COMMA) {
+            p.nextToken()
+          } else {
+            p.grumble(
+              "Expected ',' or ')' after function argument type, found '" +
+                Token.tokens(t.currentToken) +
+                '\'')
+          }
         }
       }
       p.nextToken()
@@ -503,41 +514,44 @@ class ParserExtension {
       new ArrayList[UserFunctionParameter](8)
     var resultType: SequenceType = SequenceType.ANY_SEQUENCE
     var paramSlot: Int = 0
-    while (t.currentToken != Token.RPAR) {
-      p.expect(Token.DOLLAR)
-      p.nextToken()
-      p.expect(Token.NAME)
-      val argName: String = t.currentTokenValue
-      val argQName: StructuredQName = p.makeStructuredQName(argName, "")
-      if (paramNames.contains(argQName)) {
-        p.grumble("Duplicate parameter name " + Err.wrap(t.currentTokenValue,
-          Err.VARIABLE),
-          "XQST0039")
-      }
-      paramNames.add(argQName)
-      var paramType: SequenceType = SequenceType.ANY_SEQUENCE
-      p.nextToken()
-      if (t.currentToken == Token.AS) {
+    breakable {
+      while (t.currentToken != Token.RPAR) {
+        p.expect(Token.DOLLAR)
         p.nextToken()
-        paramType = p.parseSequenceType
-      }
-      val arg: UserFunctionParameter = new UserFunctionParameter()
-      arg.setRequiredType(paramType)
-      arg.setVariableQName(argQName)
-      arg.setSlotNumber({
-        paramSlot += 1; paramSlot - 1
-      })
-      params.add(arg)
-      p.declareRangeVariable(arg)
-      if (t.currentToken == Token.RPAR) {
-        //break
-      } else if (t.currentToken == Token.COMMA) {
+        p.expect(Token.NAME)
+        val argName: String = t.currentTokenValue
+        val argQName: StructuredQName = p.makeStructuredQName(argName, "")
+        if (paramNames.contains(argQName)) {
+          p.grumble("Duplicate parameter name " + Err.wrap(t.currentTokenValue,
+            Err.VARIABLE),
+            "XQST0039")
+        }
+        paramNames.add(argQName)
+        var paramType: SequenceType = SequenceType.ANY_SEQUENCE
         p.nextToken()
-      } else {
-        p.grumble(
-          "Expected ',' or ')' after function argument, found '" +
-            Token.tokens(t.currentToken) +
-            '\'')
+        if (t.currentToken == Token.AS) {
+          p.nextToken()
+          paramType = p.parseSequenceType
+        }
+        val arg: UserFunctionParameter = new UserFunctionParameter()
+        arg.setRequiredType(paramType)
+        arg.setVariableQName(argQName)
+        arg.setSlotNumber({
+          paramSlot += 1;
+          paramSlot - 1
+        })
+        params.add(arg)
+        p.declareRangeVariable(arg)
+        if (t.currentToken == Token.RPAR) {
+          break
+        } else if (t.currentToken == Token.COMMA) {
+          p.nextToken()
+        } else {
+          p.grumble(
+            "Expected ',' or ')' after function argument, found '" +
+              Token.tokens(t.currentToken) +
+              '\'')
+        }
       }
     }
     t.setState(Tokenizer.BARE_NAME_STATE)

@@ -18,6 +18,8 @@ import Expression._
 import scala.jdk.CollectionConverters._
 import Clause.ClauseName._
 import net.sf.saxon.query.QueryModule
+import scala.util.control.Breaks
+import scala.util.control.Breaks._
 
 object FLWORExpression {
 
@@ -44,9 +46,11 @@ class FLWORExpression extends Expression {
   def init(clauses: List[Clause], returnClause: Expression): Unit = {
     this.clauses = clauses
     var looping: Boolean = false
-    for (c <- clauses.asScala if isLoopingClause(c)) {
-      looping = true
-      //break
+    breakable {
+      for (c <- clauses.asScala if isLoopingClause(c)) {
+        looping = true
+        break
+      }
     }
     this.returnClauseOp = new Operand(
       this,
@@ -99,7 +103,7 @@ class FLWORExpression extends Expression {
     this
   }
 
-override  def implementsStaticTypeCheck(): Boolean = {
+  override def implementsStaticTypeCheck(): Boolean = {
     for (c <- clauses.asScala) {
       c.getClauseKey match {
         case LET | WHERE => //continue
@@ -111,9 +115,9 @@ override  def implementsStaticTypeCheck(): Boolean = {
   }
 
   override def staticTypeCheck(req: SequenceType,
-                      backwardsCompatible: Boolean,
-                      role: RoleDiagnostic,
-                      visitor: ExpressionVisitor): Expression = {
+                               backwardsCompatible: Boolean,
+                               role: RoleDiagnostic,
+                               visitor: ExpressionVisitor): Expression = {
     val tc: TypeChecker =
       visitor.getConfiguration.getTypeChecker(backwardsCompatible)
     returnClauseOp.setChildExpression(
@@ -123,7 +127,7 @@ override  def implementsStaticTypeCheck(): Boolean = {
 
   override def getItemType(): ItemType = getReturnClause.getItemType
 
-   override def computeCardinality(): Int =
+  override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE
 
   override def operands(): java.lang.Iterable[Operand] = {
@@ -139,7 +143,7 @@ override  def implementsStaticTypeCheck(): Boolean = {
     list
   }
 
-override  def checkForUpdatingSubexpressions(): Unit = {
+  override def checkForUpdatingSubexpressions(): Unit = {
     val processor: OperandProcessor = (op) => {
       op.getChildExpression.checkForUpdatingSubexpressions()
       if (op.getChildExpression.isUpdatingExpression) {
@@ -160,8 +164,8 @@ override  def checkForUpdatingSubexpressions(): Unit = {
   override def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     for (c <- clauses.asScala) {
       c.addToPathMap(pathMap, pathMapNodeSet)
     }
@@ -256,8 +260,8 @@ override  def checkForUpdatingSubexpressions(): Unit = {
     }
   }
 
- override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextItemType: ContextItemStaticInfo): Expression = {
     for (c <- clauses.asScala) {
       c.processOperands((op) => op.optimize(visitor, contextItemType))
       c.optimize(visitor, contextItemType)
@@ -274,38 +278,44 @@ override  def checkForUpdatingSubexpressions(): Unit = {
     }
     var tryAgain: Boolean = false
     var changed: Boolean = false
+    val outer = new Breaks
+    val inner = new Breaks
     do {
       tryAgain = false
-      for (c <- clauses.asScala if c.getClauseKey == Clause.ClauseName.LET) {
-        val lc: LetClause = c.asInstanceOf[LetClause]
-        if (!ExpressionTool.dependsOnVariable(this,
-          Array(lc.getRangeVariable))) {
-          clauses.remove(c)
-          tryAgain = true
-          //break
-        }
-        var suppressInlining: Boolean = false
-        for (c2 <- clauses.asScala if c2.containsNonInlineableVariableReference(
-          lc.getRangeVariable)) {
-          suppressInlining = true
-          //break
-        }
-        if (!suppressInlining) {
-          val oneRef: Boolean = lc.getRangeVariable.getNominalReferenceCount == 1
-          val simpleSeq: Boolean = lc.getSequence
-            .isInstanceOf[VariableReference] || lc.getSequence
-            .isInstanceOf[Literal]
-          if (oneRef || simpleSeq) {
-            ExpressionTool.replaceVariableReferences(this,
-              lc.getRangeVariable,
-              lc.getSequence,
-              !oneRef)
+      outer.breakable {
+        for (c <- clauses.asScala if c.getClauseKey == Clause.ClauseName.LET) {
+          val lc: LetClause = c.asInstanceOf[LetClause]
+          if (!ExpressionTool.dependsOnVariable(this,
+            Array(lc.getRangeVariable))) {
             clauses.remove(c)
-            if (clauses.isEmpty) {
-              getReturnClause
-            }
             tryAgain = true
-            //break
+            outer.break
+          }
+          var suppressInlining: Boolean = false
+          inner.breakable {
+            for (c2 <- clauses.asScala if c2.containsNonInlineableVariableReference(
+              lc.getRangeVariable)) {
+              suppressInlining = true
+              inner.break
+            }
+          }
+          if (!suppressInlining) {
+            val oneRef: Boolean = lc.getRangeVariable.getNominalReferenceCount == 1
+            val simpleSeq: Boolean = lc.getSequence
+              .isInstanceOf[VariableReference] || lc.getSequence
+              .isInstanceOf[Literal]
+            if (oneRef || simpleSeq) {
+              ExpressionTool.replaceVariableReferences(this,
+                lc.getRangeVariable,
+                lc.getSequence,
+                !oneRef)
+              clauses.remove(c)
+              if (clauses.isEmpty) {
+                getReturnClause
+              }
+              tryAgain = true
+              outer.break
+            }
           }
         }
       }
@@ -318,15 +328,20 @@ override  def checkForUpdatingSubexpressions(): Unit = {
           clauses.get(i - 1).getClauseKey == Clause.ClauseName.TRACE) {
           clauses.remove(i)
         }
-        { i -= 1; i + 1 }
+        {
+          i -= 1;
+          i + 1
+        }
       }
     }
     var depends: Boolean = false
-    for (w <- clauses.asScala if w.isInstanceOf[WhereClause] &&
-      ExpressionTool.dependsOnFocus(
-        w.asInstanceOf[WhereClause].getPredicate)) {
-      depends = true
-      //break
+    breakable {
+      for (w <- clauses.asScala if w.isInstanceOf[WhereClause] &&
+        ExpressionTool.dependsOnFocus(
+          w.asInstanceOf[WhereClause].getPredicate)) {
+        depends = true
+        break
+      }
     }
     if (depends && contextItemType != null) {
       val expr1: Expression =
@@ -342,15 +357,17 @@ override  def checkForUpdatingSubexpressions(): Unit = {
       expr2.optimize(visitor, contextItemType)
     }
     var allForOrLetExpr: Boolean = true
-    for (c <- clauses.asScala) {
-      if (c.isInstanceOf[ForClause]) {
-        if (c.asInstanceOf[ForClause].getPositionVariable != null) {
+    breakable {
+      for (c <- clauses.asScala) {
+        if (c.isInstanceOf[ForClause]) {
+          if (c.asInstanceOf[ForClause].getPositionVariable != null) {
+            allForOrLetExpr = false
+            break
+          }
+        } else if (!(c.isInstanceOf[LetClause])) {
           allForOrLetExpr = false
-          //break
+          break
         }
-      } else if (!(c.isInstanceOf[LetClause])) {
-        allForOrLetExpr = false
-        //break
       }
     }
     if (allForOrLetExpr) {
@@ -379,7 +396,10 @@ override  def checkForUpdatingSubexpressions(): Unit = {
         wStruct.whereIndex = clauses.size - whereIndex
         whereList.add(wStruct)
       }
-      { whereIndex += 1; whereIndex - 1 }
+      {
+        whereIndex += 1;
+        whereIndex - 1
+      }
     }
     if (whereList.size == 0) {
       null
@@ -394,33 +414,38 @@ override  def checkForUpdatingSubexpressions(): Unit = {
       while (i >= 0) {
         val term: Expression = list.get(i)
         var c: Int = clauses.size - whereIndex - 1
-        while (c >= 0) {
-          val clause: Clause = clauses.get(c)
-          val bindingList: Array[Binding] = clause.getRangeVariables.asInstanceOf[Array[Binding]]
-          if (ExpressionTool.dependsOnVariable(term, bindingList) ||
-            clause.getClauseKey == Clause.ClauseName.COUNT) {
-            val removedExpr: Expression = list.remove(i)
-            if (list.isEmpty) {
-              clauses.remove(clauses.size - whereIndex)
-            } else {
-              whereClause.setPredicate(makeAndCondition(list))
-            }
-            if ((clause.isInstanceOf[ForClause]) && !clause
-              .asInstanceOf[ForClause]
-              .isAllowingEmpty) {
-              val added: Boolean = clause
-                .asInstanceOf[ForClause]
-                .addPredicate(this, visitor, contextItemType, term)
-              if (!added) {
-                clauses.add(c + 1, new WhereClause(this, removedExpr))
+        breakable {
+          while (c >= 0) {
+            val clause: Clause = clauses.get(c)
+            val bindingList: Array[Binding] = clause.getRangeVariables.asInstanceOf[Array[Binding]]
+            if (ExpressionTool.dependsOnVariable(term, bindingList) ||
+              clause.getClauseKey == Clause.ClauseName.COUNT) {
+              val removedExpr: Expression = list.remove(i)
+              if (list.isEmpty) {
+                clauses.remove(clauses.size - whereIndex)
+              } else {
+                whereClause.setPredicate(makeAndCondition(list))
               }
-            } else {
-              val newWhere: WhereClause = new WhereClause(this, term)
-              clauses.add(c + 1, newWhere)
+              if ((clause.isInstanceOf[ForClause]) && !clause
+                .asInstanceOf[ForClause]
+                .isAllowingEmpty) {
+                val added: Boolean = clause
+                  .asInstanceOf[ForClause]
+                  .addPredicate(this, visitor, contextItemType, term)
+                if (!added) {
+                  clauses.add(c + 1, new WhereClause(this, removedExpr))
+                }
+              } else {
+                val newWhere: WhereClause = new WhereClause(this, term)
+                clauses.add(c + 1, newWhere)
+              }
+              break
             }
-            //break
+            {
+              c -= 1
+              c + 1
+            }
           }
-          { c -= 1; c + 1 }
         }
         if (list.size - 1 == i) {
           list.remove(i)
@@ -432,7 +457,10 @@ override  def checkForUpdatingSubexpressions(): Unit = {
           val newWhere: WhereClause = new WhereClause(this, term)
           clauses.add(0, newWhere)
         }
-        { i -= 1; i + 1 }
+        {
+          i -= 1;
+          i + 1
+        }
       }
       whereList.remove(0)
     }
@@ -491,7 +519,10 @@ override  def checkForUpdatingSubexpressions(): Unit = {
           letExpr)
         action = letExpr
       }
-      { i -= 1; i + 1 }
+      {
+        i -= 1;
+        i + 1
+      }
     }
     action = action.typeCheck(visitor, contextItemType)
     action = action.optimize(visitor, contextItemType)
@@ -512,7 +543,7 @@ override  def checkForUpdatingSubexpressions(): Unit = {
     while (i >= 0) {
       val c: Clause = clauses.get(i)
       destination = c.getPushStream(destination, output, context)
-        i -= 1
+      i -= 1
     }
     destination.processTuple(context)
     destination.close()
@@ -552,10 +583,12 @@ override  def checkForUpdatingSubexpressions(): Unit = {
 
   def hasLoopingVariableReference(binding: Binding): Boolean = {
     var bindingClause: Int = -1
-    for (i <- 0 until clauses.size
-         if clauseHasBinding(clauses.get(i), binding)) {
-      bindingClause = i
-      //break
+    breakable {
+      for (i <- 0 until clauses.size
+           if clauseHasBinding(clauses.get(i), binding)) {
+        bindingClause = i
+        break
+      }
     }
     val boundOutside: Boolean = bindingClause < 0
     if (boundOutside) {
@@ -571,18 +604,22 @@ override  def checkForUpdatingSubexpressions(): Unit = {
           response.add(true)
         }
       var i: Int = clauses.size - 1
-      while (i >= 0) {
-        try {
-          clauses.get(i).processOperands(checker)
-          if (!response.isEmpty) {
-            lastReferencingClause = i
-            //break
+      breakable {
+        while (i >= 0) {
+          try {
+            clauses.get(i).processOperands(checker)
+            if (!response.isEmpty) {
+              lastReferencingClause = i
+              break
+            }
+          } catch {
+            case e: XPathException => assert(false)
           }
-        } catch {
-          case e: XPathException => assert(false)
-
+          {
+            i -= 1;
+            i + 1
+          }
         }
-        { i -= 1; i + 1 }
       }
     }
     var i: Int = lastReferencingClause - 1
@@ -590,7 +627,10 @@ override  def checkForUpdatingSubexpressions(): Unit = {
       if (isLoopingClause(clauses.get(i))) {
         true
       }
-      { i -= 1; i + 1 }
+      {
+        i -= 1;
+        i + 1
+      }
     }
     false
   }

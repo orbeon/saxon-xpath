@@ -1,5 +1,4 @@
 package net.sf.saxon.expr
-
 import net.sf.saxon.expr.instruct.Block
 
 import net.sf.saxon.expr.instruct.Choose
@@ -30,6 +29,8 @@ import net.sf.saxon.trans.XPathException
 
 import net.sf.saxon.tree.iter.AdjacentTextNodeMergingIterator
 
+import scala.util.control.Breaks._
+
 import net.sf.saxon.value.AtomicValue
 
 import net.sf.saxon.value.Cardinality
@@ -52,7 +53,7 @@ object AdjacentTextNodeMerger {
 
 class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
 
-   def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   override def simplify(): Expression = {
     val operand: Expression = getBaseExpression
@@ -94,34 +95,36 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
       var prevtext: Boolean = false
       var needed: Boolean = false
       var maybeEmpty: Boolean = false
-      for (o <- actions) {
-        val action: Expression = o.getChildExpression
-        var maybetext: Boolean = false
-        if (action.isInstanceOf[ValueOf]) {
-          maybetext = true
-          val content: Expression = action.asInstanceOf[ValueOf].getSelect
-          if (content.isInstanceOf[StringLiteral]) {
-            maybeEmpty |= content
-              .asInstanceOf[StringLiteral]
-              .getStringValue
-              .isEmpty
+      breakable {
+        for (o <- actions) {
+          val action: Expression = o.getChildExpression
+          var maybetext: Boolean = false
+          if (action.isInstanceOf[ValueOf]) {
+            maybetext = true
+            val content: Expression = action.asInstanceOf[ValueOf].getSelect
+            if (content.isInstanceOf[StringLiteral]) {
+              maybeEmpty |= content
+                .asInstanceOf[StringLiteral]
+                .getStringValue
+                .isEmpty
+            } else {
+              maybeEmpty = true
+            }
           } else {
-            maybeEmpty = true
+            maybetext = th.relationship(action.getItemType, NodeKindTest.TEXT) !=
+              Affinity.DISJOINT
+            maybeEmpty |= maybetext
           }
-        } else {
-          maybetext = th.relationship(action.getItemType, NodeKindTest.TEXT) !=
-            Affinity.DISJOINT
-          maybeEmpty |= maybetext
+          if (prevtext && maybetext) {
+            needed = true
+            break
+          }
+          if (maybetext && Cardinality.allowsMany(action.getCardinality)) {
+            needed = true
+            break
+          }
+          prevtext = maybetext
         }
-        if (prevtext && maybetext) {
-          needed = true
-          //break
-        }
-        if (maybetext && Cardinality.allowsMany(action.getCardinality)) {
-          needed = true
-          //break
-        }
-        prevtext = maybetext
       }
       if (!needed) {
         if (maybeEmpty) {
@@ -150,6 +153,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
   }
 
   import Expression._
+
   def getImplementationMethod(): Int = PROCESS_METHOD | ITERATE_METHOD | ITEM_FEED_METHOD | WATCH_METHOD
 
   override def getStreamerName(): String = "AdjacentTextNodeMerger"

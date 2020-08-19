@@ -23,8 +23,7 @@ import net.sf.saxon.s9api.Location
 import net.sf.saxon.serialize.charcode.{CharacterSet, UTF16CharacterSet}
 import net.sf.saxon.tree.tiny.CharSlice
 import net.sf.saxon.tree.util.FastStringBuffer
-
-//remove if not needed
+import scala.util.control.Breaks._
 
 class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
 
@@ -127,23 +126,25 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
           val array: Array[Char] = Array.ofDim[Char](k - start)
           buffer.getChars(start, k, array, 0)
           flushCDATA(array, k - start)
-          while (k < end) {
-            nextReceiver.characters(buffer.subSequence(k, k + skip),
-              Loc.NONE,
-              ReceiverOption.DISABLE_CHARACTER_MAPS)
-            k += skip
-            if (k >= end) {
-              //break
-            }
-            next = buffer.charAt(k)
-            skip = 1
-            if (UTF16CharacterSet.isHighSurrogate(next.toChar)) {
-              next = UTF16CharacterSet.combinePair(next.toChar,
-                buffer.charAt(k + 1))
-              skip = 2
-            }
-            if (characterSet.inCharset(next)) {
-              //break
+          breakable {
+            while (k < end) {
+              nextReceiver.characters(buffer.subSequence(k, k + skip),
+                Loc.NONE,
+                ReceiverOption.DISABLE_CHARACTER_MAPS)
+              k += skip
+              if (k >= end) {
+                break
+              }
+              next = buffer.charAt(k)
+              skip = 1
+              if (UTF16CharacterSet.isHighSurrogate(next.toChar)) {
+                next = UTF16CharacterSet.combinePair(next.toChar,
+                  buffer.charAt(k + 1))
+                skip = 2
+              }
+              if (characterSet.inCharset(next)) {
+                break
+              }
             }
           }
           start = k

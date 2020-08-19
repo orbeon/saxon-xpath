@@ -16,18 +16,22 @@ import net.sf.saxon.value.BooleanValue
 
 import Lang._
 
+import scala.util.control.Breaks._
+
 object Lang {
 
   def isLang(arglang: String, target: NodeInfo): Boolean = {
     var doclang: String = null
     var node: NodeInfo = target
-    while (node != null) {
-      doclang = node.getAttributeValue(NamespaceConstant.XML, "lang")
-      if (doclang != null) {
-        //break
+    breakable {
+      while (node != null) {
+        doclang = node.getAttributeValue(NamespaceConstant.XML, "lang")
+        if (doclang != null) {
+          break
+        }
+        node = node.getParent
+        if (node == null) false
       }
-      node = node.getParent
-      if (node == null) false
     }
     if (doclang == null) return false
     while (true) {

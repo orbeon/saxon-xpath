@@ -219,7 +219,7 @@ class ForEachGroup(select: Expression,
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
   override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+                         contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.typeCheck(visitor, contextInfo)
     if (collationOp != null) {
       collationOp.typeCheck(visitor, contextInfo)
@@ -284,7 +284,7 @@ class ForEachGroup(select: Expression,
   }
 
   override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+                        contextItemType: ContextItemStaticInfo): Expression = {
     selectOp.optimize(visitor, contextItemType)
     val selectedItemType: ItemType = getSelectExpression.getItemType
     val sit: ContextItemStaticInfo = visitor.getConfiguration
@@ -368,7 +368,7 @@ class ForEachGroup(select: Expression,
 
   override def getItemType(): ItemType = getActionExpression.getItemType
 
-override  def computeDependencies(): Int = {
+  override def computeDependencies(): Int = {
     var dependencies: Int = 0
     dependencies |= getSelectExpression.getDependencies
     dependencies |= getGroupingKey.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS
@@ -403,16 +403,16 @@ override  def computeDependencies(): Int = {
     p
   }
 
-override  def mayCreateNewNodes(): Boolean = {
+  override def mayCreateNewNodes(): Boolean = {
     val props: Int = getActionExpression.getSpecialProperties
     (props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0
   }
 
   override def getStreamerName(): String = "ForEachGroup"
 
-override  def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+  override def addToPathMap(
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val target: PathMap.PathMapNodeSet =
       getSelectExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (getCollationNameExpression != null) {
@@ -446,7 +446,7 @@ override  def addToPathMap(
     getActionExpression.addToPathMap(pathMap, target)
   }
 
-override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     getActionExpression.checkPermittedContents(parentType, false)
   }
 
@@ -518,7 +518,6 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
         val population: FocusIterator = c2.trackFocus(select.iterate(context))
         groupIterator =
           new GroupByIterator(population, getGroupingKey, c2, coll, composite)
-        //break
       }
       case GROUP_ADJACENT => {
         var coll: StringCollator = collator
@@ -530,7 +529,6 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
           context,
           coll,
           composite)
-        //break
       }
       case GROUP_STARTING =>
         groupIterator = new GroupStartingIterator(
@@ -560,7 +558,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
     groupIterator
   }
 
-override  def iterate(context: XPathContext): SequenceIterator = {
+  override def iterate(context: XPathContext): SequenceIterator = {
     val master: GroupIterator = getGroupIterator(context)
     val c2: XPathContextMajor = context.newContext()
     c2.setOrigin(this)

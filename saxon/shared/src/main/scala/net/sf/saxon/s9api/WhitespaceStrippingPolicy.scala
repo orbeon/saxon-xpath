@@ -71,7 +71,7 @@ class WhitespaceStrippingPolicy(private var policy: Int) {
       stripperRules = NoElementsSpaceStrippingRule.getInstance
     case Whitespace.IGNORABLE =>
       stripperRules = IgnorableSpaceStrippingRule.getInstance
-    case _ => //break
+    case _ =>
 
   }
 

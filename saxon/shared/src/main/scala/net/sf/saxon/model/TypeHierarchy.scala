@@ -25,6 +25,7 @@ import TypeHierarchy._
 import net.sf.saxon.query.AnnotationList
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object TypeHierarchy {
 
@@ -109,7 +110,7 @@ object TypeHierarchy {
 
 }
 
-class TypeHierarchy( var config: Configuration) {
+class TypeHierarchy(var config: Configuration) {
 
   private val map: Map[ItemTypePair, Affinity] = new ConcurrentHashMap()
 
@@ -248,10 +249,10 @@ class TypeHierarchy( var config: Configuration) {
     SequenceTool.toMemoSequence(iterator)
   }
 
-   def applyFunctionCoercion(iterator: SequenceIterator,
-                                      suppliedItemType: ItemType,
-                                      requiredItemType: ItemType,
-                                      locator: Location): SequenceIterator =
+  def applyFunctionCoercion(iterator: SequenceIterator,
+                            suppliedItemType: ItemType,
+                            requiredItemType: ItemType,
+                            locator: Location): SequenceIterator =
     if (requiredItemType.isInstanceOf[FunctionItemType] &&
       !requiredItemType.asInstanceOf[FunctionItemType].isMapType &&
       !requiredItemType.asInstanceOf[FunctionItemType].isArrayType &&
@@ -341,27 +342,31 @@ class TypeHierarchy( var config: Configuration) {
             return SAME_TYPE
           }
           var t: AtomicType = t2.asInstanceOf[AtomicType]
-          while (true) {
-            if (t1.asInstanceOf[AtomicType].getFingerprint == t.getFingerprint) {
-              return SUBSUMES
-            }
-            val st: SchemaType = t.getBaseType
-            if (st.isInstanceOf[AtomicType]) {
-              t = st.asInstanceOf[AtomicType]
-            } else {
-              //break
+          breakable {
+            while (true) {
+              if (t1.asInstanceOf[AtomicType].getFingerprint == t.getFingerprint) {
+                return SUBSUMES
+              }
+              val st: SchemaType = t.getBaseType
+              if (st.isInstanceOf[AtomicType]) {
+                t = st.asInstanceOf[AtomicType]
+              } else {
+                break
+              }
             }
           }
           t = t1.asInstanceOf[AtomicType]
-          while (true) {
-            if (t.getFingerprint == t2.asInstanceOf[AtomicType].getFingerprint) {
-              return SUBSUMED_BY
-            }
-            val st: SchemaType = t.getBaseType
-            if (st.isInstanceOf[AtomicType]) {
-              t = st.asInstanceOf[AtomicType]
-            } else {
-              //break
+          breakable {
+            while (true) {
+              if (t.getFingerprint == t2.asInstanceOf[AtomicType].getFingerprint) {
+                return SUBSUMED_BY
+              }
+              val st: SchemaType = t.getBaseType
+              if (st.isInstanceOf[AtomicType]) {
+                t = st.asInstanceOf[AtomicType]
+              } else {
+                break
+              }
             }
           }
           DISJOINT
@@ -567,11 +572,13 @@ class TypeHierarchy( var config: Configuration) {
                             s2: Set[_ <: PlainType]): Boolean = {
     for (t2 <- s2.asScala) {
       var t2isSubsumed: Boolean = false
-      for (t1 <- s1.asScala) {
-        val rel: Affinity = relationship(t1, t2)
-        if (rel == SUBSUMES || rel == SAME_TYPE) {
-          t2isSubsumed = true
-          //break
+      breakable {
+        for (t1 <- s1.asScala) {
+          val rel: Affinity = relationship(t1, t2)
+          if (rel == SUBSUMES || rel == SAME_TYPE) {
+            t2isSubsumed = true
+            break
+          }
         }
       }
       if (!t2isSubsumed) {
@@ -592,10 +599,10 @@ class TypeHierarchy( var config: Configuration) {
     false
   }
 
-   def computeContentRelationship(t1: ItemType,
-                                           t2: ItemType,
-                                           n1: Optional[IntSet],
-                                           n2: Optional[IntSet]): Affinity = {
+  def computeContentRelationship(t1: ItemType,
+                                 t2: ItemType,
+                                 n1: Optional[IntSet],
+                                 n2: Optional[IntSet]): Affinity = {
     var contentRelationship: Affinity = null
     if (t1.isInstanceOf[DocumentNodeTest]) {
       contentRelationship =
@@ -617,16 +624,14 @@ class TypeHierarchy( var config: Configuration) {
         case SUBSUMES =>
           if (nillable2) {
             contentRelationship = OVERLAPS
-            //break
           }
         case SUBSUMED_BY =>
           if (nillable1) {
             contentRelationship = OVERLAPS
-            //break
           }
         case SAME_TYPE =>
           contentRelationship = if (nillable1) SUBSUMES else SUBSUMED_BY
-        case _ => //break
+        case _ =>
 
       }
     }

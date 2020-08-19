@@ -6,7 +6,9 @@ import java.io.Writer
 
 import CompressedWhitespace._
 
-object CompressedWhitespace  {
+import scala.util.control.Breaks._
+
+object CompressedWhitespace {
 
   private var WHITE_CHARS: Array[Char] = Array(0x09, 0x0A, 0x0D, 0x20)
 
@@ -47,7 +49,10 @@ object CompressedWhitespace  {
         ix = ix + 1
         runlength = 1
       } else {
-        { runlength += 1; runlength - 1 }
+        {
+          runlength += 1;
+          runlength - 1
+        }
       }
     }
     var value: Long = 0
@@ -60,18 +65,20 @@ object CompressedWhitespace  {
 
   def uncompress(value: Long, buffer: FastStringBuffer): Unit = {
     var s: Int = 56
-    while (s >= 0) {
-      val b: Byte = ((value >>> s) & 0xff).toByte
-      if (b == 0) {
-        //break
+    breakable {
+      while (s >= 0) {
+        val b: Byte = ((value >>> s) & 0xff).toByte
+        if (b == 0) {
+          break
+        }
+        val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
+        val len: Int = b & 0x3f
+        buffer.ensureCapacity(len)
+        for (j <- 0 until len) {
+          buffer.cat(c)
+        }
+        s -= 8
       }
-      val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-      val len: Int = b & 0x3f
-      buffer.ensureCapacity(len)
-      for (j <- 0 until len) {
-        buffer.cat(c)
-      }
-      s -= 8
     }
   }
 
@@ -94,13 +101,15 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     var count: Int = 0
     val `val`: Long = value
     var s: Int = 56
-    while (s >= 0) {
-      val c: Int = ((`val` >>> s) & 0x3f).toInt
-      if (c == 0) {
-        //break
+    breakable {
+      while (s >= 0) {
+        val c: Int = ((`val` >>> s) & 0x3f).toInt
+        if (c == 0) {
+          break
+        }
+        count += c
+        s -= 8
       }
-      count += c
-      s -= 8
     }
     count
   }
@@ -109,16 +118,18 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     var count: Int = 0
     val `val`: Long = value
     var s: Int = 56
-    while (s >= 0) {
-      val b: Byte = ((`val` >>> s) & 0xff).toByte
-      if (b == 0) {
-        //break
+    breakable {
+      while (s >= 0) {
+        val b: Byte = ((`val` >>> s) & 0xff).toByte
+        if (b == 0) {
+          break
+        }
+        count += b & 0x3f
+        if (count > index) {
+          WHITE_CHARS(b >>> 6 & 0x3)
+        }
+        s -= 8
       }
-      count += b & 0x3f
-      if (count > index) {
-        WHITE_CHARS(b >>> 6 & 0x3)
-      }
-      s -= 8
     }
     throw new IndexOutOfBoundsException(index + "")
   }
@@ -140,48 +151,52 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   def write(writer: Writer): Unit = {
     val `val`: Long = value
     var s: Int = 56
-    while (s >= 0) {
-      val b: Byte = ((`val` >>> s) & 0xff).toByte
-      if (b == 0) {
-        //break
+    breakable {
+      while (s >= 0) {
+        val b: Byte = ((`val` >>> s) & 0xff).toByte
+        if (b == 0) {
+          break
+        }
+        val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
+        val len: Int = b & 0x3f
+        for (j <- 0 until len) {
+          writer.write(c)
+        }
+        s -= 8
       }
-      val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-      val len: Int = b & 0x3f
-      for (j <- 0 until len) {
-        writer.write(c)
-      }
-      s -= 8
     }
   }
 
   def writeEscape(specialChars: Array[Boolean], writer: Writer): Unit = {
     val `val`: Long = value
     var s: Int = 56
-    while (s >= 0) {
-      val b: Byte = ((`val` >>> s) & 0xff).toByte
-      if (b == 0) {
-        //break
+    breakable {
+      while (s >= 0) {
+        val b: Byte = ((`val` >>> s) & 0xff).toByte
+        if (b == 0) {
+          break
+        }
+        val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
+        val len: Int = b & 0x3f
+        if (specialChars(c)) {
+          var e: String = ""
+          if (c == '\n') {
+            e = "&#xA;"
+          } else if (c == '\r') {
+            e = "&#xD;"
+          } else if (c == '\t') {
+            e = "&#x9;"
+          }
+          for (j <- 0 until len) {
+            writer.write(e)
+          }
+        } else {
+          for (j <- 0 until len) {
+            writer.write(c)
+          }
+        }
+        s -= 8
       }
-      val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-      val len: Int = b & 0x3f
-      if (specialChars(c)) {
-        var e: String = ""
-        if (c == '\n') {
-          e = "&#xA;"
-        } else if (c == '\r') {
-          e = "&#xD;"
-        } else if (c == '\t') {
-          e = "&#x9;"
-        }
-        for (j <- 0 until len) {
-          writer.write(e)
-        }
-      } else {
-        for (j <- 0 until len) {
-          writer.write(c)
-        }
-      }
-      s -= 8
     }
   }
 

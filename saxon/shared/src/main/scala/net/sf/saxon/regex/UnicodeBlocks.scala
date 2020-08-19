@@ -41,7 +41,7 @@ import java.util.HashMap
 
 import java.util.Map
 
-
+import scala.util.control.Breaks._
 
 
 object UnicodeBlocks {
@@ -66,7 +66,6 @@ object UnicodeBlocks {
       val c: Char = name.charAt(i)
       c match {
         case ' ' | '\t' | '\r' | '\n' | '_' => // no action
-//break
         case _ => fsb.cat(c)
 
       }
@@ -79,8 +78,8 @@ object UnicodeBlocks {
       blocks = new HashMap(250)
       val in: InputStream =
         Configuration.locateResource("unicodeBlocks.xml",
-                                     new ArrayList(),
-                                     new ArrayList[ClassLoader]())
+          new ArrayList(),
+          new ArrayList[ClassLoader]())
       if (in == null) {
         throw new RESyntaxException("Unable to read unicodeBlocks.xml file")
       }
@@ -90,33 +89,35 @@ object UnicodeBlocks {
       options.setSpaceStrippingRule(AllElementsSpaceStrippingRule.getInstance)
       var doc: TreeInfo = null
       doc = config.buildDocumentTree(new StreamSource(in, "unicodeBlocks.xml"),
-                                     options)
+        options)
       val iter: AxisIterator = doc.getRootNode.iterateAxis(
         AxisInfo.DESCENDANT,
         new NameTest(Type.ELEMENT, "", "block", config.getNamePool))
-      while (true) {
-        val item: NodeInfo = iter.next()
-        if (item == null) {
-//break
+      breakable {
+        while (true) {
+          val item: NodeInfo = iter.next()
+          if (item == null) {
+            break
+          }
+          val blockName: String =
+            normalizeBlockName(item.getAttributeValue("", "name"))
+          var range: IntSet = null
+          for (rangeElement <- item.children(NodeKindTest.ELEMENT)) {
+            val from: Int = java.lang.Integer.parseInt(
+              rangeElement.getAttributeValue("", "from").substring(2),
+              16)
+            val to: Int = java.lang.Integer.parseInt(
+              rangeElement.getAttributeValue("", "to").substring(2),
+              16)
+            val cr: IntSet = new IntBlockSet(from, to)
+            range =
+              if (range == null) cr
+              else if (range.isInstanceOf[IntBlockSet])
+                range.mutableCopy().union(cr)
+              else range.union(cr)
+          }
+          blocks.put(blockName, range)
         }
-        val blockName: String =
-          normalizeBlockName(item.getAttributeValue("", "name"))
-        var range: IntSet = null
-        for (rangeElement <- item.children(NodeKindTest.ELEMENT)) {
-          val from: Int = java.lang.Integer.parseInt(
-            rangeElement.getAttributeValue("", "from").substring(2),
-            16)
-          val to: Int = java.lang.Integer.parseInt(
-            rangeElement.getAttributeValue("", "to").substring(2),
-            16)
-          val cr: IntSet = new IntBlockSet(from, to)
-          range =
-            if (range == null) cr
-            else if (range.isInstanceOf[IntBlockSet])
-              range.mutableCopy().union(cr)
-            else range.union(cr)
-        }
-        blocks.put(blockName, range)
       }
     }
   }

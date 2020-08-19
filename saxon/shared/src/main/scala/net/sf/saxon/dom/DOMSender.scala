@@ -180,7 +180,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
         val child: Node = nit.item(i)
         currentNode = child
         child.getNodeType match {
-          case Node.DOCUMENT_NODE | Node.DOCUMENT_FRAGMENT_NODE => //break
+          case Node.DOCUMENT_NODE | Node.DOCUMENT_FRAGMENT_NODE =>
           case Node.ELEMENT_NODE =>
             var element: Element = child.asInstanceOf[Element]
             var parentNamespaces: NamespaceMap = namespaces.peek()
@@ -188,7 +188,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
             namespaces.push(childNamespaces)
             outputElement(element, !childNamespaces.isEmpty.asInstanceOf[Boolean])
             namespaces.pop()
-          case Node.ATTRIBUTE_NODE => //break
+          case Node.ATTRIBUTE_NODE =>
           case Node.PROCESSING_INSTRUCTION_NODE =>
             receiver.processingInstruction(
               child.asInstanceOf[ProcessingInstruction].getTarget,
@@ -200,17 +200,15 @@ class DOMSender(startNode: Node, receiver: Receiver) {
             if (text != null) {
               receiver.comment(text, loc, ReceiverOption.NONE)
             }
-            //break
           }
           case Node.TEXT_NODE | Node.CDATA_SECTION_NODE => {
             val text: String = child.asInstanceOf[CharacterData].getData
             if (text != null) {
               receiver.characters(text, loc, ReceiverOption.NONE)
             }
-            //break
           }
           case Node.ENTITY_REFERENCE_NODE => walkNode(child)
-          case _ => //break
+          case _ =>
 
         }
       }

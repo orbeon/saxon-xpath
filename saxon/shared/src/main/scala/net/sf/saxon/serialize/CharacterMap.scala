@@ -17,8 +17,8 @@ import net.sf.saxon.z.IntHashMap
 import net.sf.saxon.z.IntIterator
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 class CharacterMap(@BeanProperty var name: StructuredQName,
                    map: IntHashMap[String]) {
@@ -71,13 +71,16 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
     }
     var move: Boolean = false
     var i: Int = 0
-    while (i < in.length) {
-      val c: Char = in.charAt({
-        i += 1; i - 1
-      })
-      if (c >= min && c <= max) {
-        move = true
-        //break
+    breakable {
+      while (i < in.length) {
+        val c: Char = in.charAt({
+          i += 1;
+          i - 1
+        })
+        if (c >= min && c <= max) {
+          move = true
+          break
+        }
       }
     }
     if (!move) {
@@ -85,14 +88,16 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
     }
     val buffer: FastStringBuffer = new FastStringBuffer(in.length * 2)
     var k: Int = 0
-    while (k< in.length) {
+    while (k < in.length) {
       val c: Char = in.charAt({
-        k += 1; k - 1
+        k += 1;
+        k - 1
       })
       if (c >= min && c <= max) {
         if (UTF16CharacterSet.isHighSurrogate(c)) {
           val d: Char = in.charAt({
-            k += 1; k - 1
+            k += 1;
+            k - 1
           })
           val s: Int = UTF16CharacterSet.combinePair(c, d)
           val rep: String = charMap.get(s)

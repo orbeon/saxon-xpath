@@ -37,7 +37,7 @@ import java.util.ArrayList
 
 import java.util.List
 
-
+import scala.util.control.Breaks._
 
 
 class NumberSequenceFormatter(value: Expression,
@@ -50,7 +50,7 @@ class NumberSequenceFormatter(value: Expression,
                               lang: Expression,
                               private var formatter: NumberFormatter,
                               private var backwardsCompatible: Boolean)
-    extends Expression {
+  extends Expression {
 
   private var valueOp: Operand = _
 
@@ -96,7 +96,7 @@ class NumberSequenceFormatter(value: Expression,
     ordinalOp = new Operand(this, ordinal, OperandRole.SINGLE_ATOMIC)
   }
 
-//}
+  //}
   if (lang != null) {
     langOp = new Operand(this, lang, OperandRole.SINGLE_ATOMIC)
   }
@@ -107,16 +107,16 @@ class NumberSequenceFormatter(value: Expression,
   }
 
   /**
-    * Simplify an expression. This performs any static optimization (by rewriting the expression
-    * as a different expression). The default implementation simplifies its operands.
-    *
-    * @return the simplified expression (or the original if unchanged, or if modified in-situ)
-    * @throws XPathException if an error is discovered during expression
-    *                                           rewriting
-    */
+   * Simplify an expression. This performs any static optimization (by rewriting the expression
+   * as a different expression). The default implementation simplifies its operands.
+   *
+   * @return the simplified expression (or the original if unchanged, or if modified in-situ)
+   * @throws XPathException if an error is discovered during expression
+   *                        rewriting
+   */
   override def simplify(): Expression = {
     if (valueOp != null &&
-        !valueOp.getChildExpression.getItemType.isPlainType) {
+      !valueOp.getChildExpression.getItemType.isPlainType) {
       valueOp.setChildExpression(
         Atomizer.makeAtomizer(valueOp.getChildExpression, null))
     }
@@ -145,19 +145,19 @@ class NumberSequenceFormatter(value: Expression,
         numberer = config.makeNumberer(language, null)
       }
     }
-// else we allocate a numberer at run-time
-// else we allocate a numberer at run-time
+    // else we allocate a numberer at run-time
+    // else we allocate a numberer at run-time
   }
 
   override def operands(): java.lang.Iterable[Operand] =
     operandSparseList(valueOp,
-                      formatOp,
-                      groupSizeOp,
-                      groupSeparatorOp,
-                      letterValueOp,
-                      ordinalOp,
-                      startAtOp,
-                      langOp)
+      formatOp,
+      groupSizeOp,
+      groupSeparatorOp,
+      letterValueOp,
+      ordinalOp,
+      startAtOp,
+      langOp)
 
   private def isFixed(op: Operand): Boolean =
     op == null || op.getChildExpression.isInstanceOf[Literal]
@@ -207,20 +207,20 @@ class NumberSequenceFormatter(value: Expression,
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
   /**
-    * An implementation of Expression must provide at least one of the methods evaluateItem(), iterate(), or process().
-    * This method indicates which of these methods is provided directly. The other methods will always be available
-    * indirectly, using an implementation that relies on one of the other methods.
-    *
-    * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
-    * {@link #PROCESS_METHOD}
-    */
+   * An implementation of Expression must provide at least one of the methods evaluateItem(), iterate(), or process().
+   * This method indicates which of these methods is provided directly. The other methods will always be available
+   * indirectly, using an implementation that relies on one of the other methods.
+   *
+   * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
+   *                                                        { @link #PROCESS_METHOD}
+   */
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): StringValue = {
     val value: Long = -1
-// a list whose items may be of type either Long or
+    // a list whose items may be of type either Long or
     val vec: List[Any] = new ArrayList[Any](4)
-// BigInteger or the string to be output (e.g. "NaN")
+    // BigInteger or the string to be output (e.g. "NaN")
     val rules: ConversionRules = context.getConfiguration.getConversionRules
     val startAv: String =
       startAtOp.getChildExpression.evaluateAsString(context).toString
@@ -228,64 +228,66 @@ class NumberSequenceFormatter(value: Expression,
     val iter: SequenceIterator = valueOp.getChildExpression.iterate(context)
     var `val`: AtomicValue = null
     var pos: Int = 0
-    while ((`val` = iter.next().asInstanceOf[AtomicValue]) != null) {
-      if (backwardsCompatible && !vec.isEmpty) {
-//break
-      }
-      val startValue: Int =
-        if (startValues.size > pos) startValues.get(pos)
-        else startValues.get(startValues.size - 1)
+    breakable {
+      while ((`val` = iter.next().asInstanceOf[AtomicValue]) != null) {
+        if (backwardsCompatible && !vec.isEmpty) {
+          break
+        }
+        val startValue: Int =
+          if (startValues.size > pos) startValues.get(pos)
+          else startValues.get(startValues.size - 1)
         pos += 1
-      try {
-        var num: NumericValue = null
-        num =
-          if (`val`.isInstanceOf[NumericValue])
-            `val`.asInstanceOf[NumericValue]
-          else Number_1.convert(`val`, context.getConfiguration)
-        if (num.isNaN) {
-// thrown to be caught
-          throw new XPathException("NaN")
-        }
-        num = num.round(0)
-        if (num.compareTo(Int64Value.MAX_LONG) > 0) {
-          var bi: BigInteger = Converter
-            .convert(num, BuiltInAtomicType.INTEGER, rules)
-            .asAtomic()
-            .asInstanceOf[BigIntegerValue]
-            .asBigInteger()
-          if (startValue != 1) {
-            bi = bi.add(BigInteger.valueOf(startValue - 1))
+        try {
+          var num: NumericValue = null
+          num =
+            if (`val`.isInstanceOf[NumericValue])
+              `val`.asInstanceOf[NumericValue]
+            else Number_1.convert(`val`, context.getConfiguration)
+          if (num.isNaN) {
+            // thrown to be caught
+            throw new XPathException("NaN")
           }
-          vec.add(bi)
-        } else {
-          if (num.compareTo(Int64Value.ZERO) < 0) {
-            throw new XPathException(
-              "The numbers to be formatted must not be negative")
-          }
-// thrown to be caught
-// thrown to be caught
-          var i: Long = Converter
-            .convert(num, BuiltInAtomicType.INTEGER, rules)
-            .asAtomic()
-            .asInstanceOf[NumericValue]
-            .longValue()
-          i += startValue - 1
-          vec.add(i)
-        }
-      } catch {
-        case err: XPathException =>
-          if (backwardsCompatible) {
-            vec.add("NaN")
+          num = num.round(0)
+          if (num.compareTo(Int64Value.MAX_LONG) > 0) {
+            var bi: BigInteger = Converter
+              .convert(num, BuiltInAtomicType.INTEGER, rules)
+              .asAtomic()
+              .asInstanceOf[BigIntegerValue]
+              .asBigInteger()
+            if (startValue != 1) {
+              bi = bi.add(BigInteger.valueOf(startValue - 1))
+            }
+            vec.add(bi)
           } else {
-            vec.add(`val`.getStringValue)
-            val e: XPathException = new XPathException(
-              "Cannot convert supplied value to an integer. " + err.getMessage)
-            e.setErrorCode("XTDE0980")
-            e.setLocation(getLocation)
-            e.setXPathContext(context)
-            throw e
+            if (num.compareTo(Int64Value.ZERO) < 0) {
+              throw new XPathException(
+                "The numbers to be formatted must not be negative")
+            }
+            // thrown to be caught
+            // thrown to be caught
+            var i: Long = Converter
+              .convert(num, BuiltInAtomicType.INTEGER, rules)
+              .asAtomic()
+              .asInstanceOf[NumericValue]
+              .longValue()
+            i += startValue - 1
+            vec.add(i)
           }
+        } catch {
+          case err: XPathException =>
+            if (backwardsCompatible) {
+              vec.add("NaN")
+            } else {
+              vec.add(`val`.getStringValue)
+              val e: XPathException = new XPathException(
+                "Cannot convert supplied value to an integer. " + err.getMessage)
+              e.setErrorCode("XTDE0980")
+              e.setLocation(getLocation)
+              e.setXPathContext(context)
+              throw e
+            }
 
+        }
       }
     }
     if (backwardsCompatible && vec.isEmpty) {
@@ -319,7 +321,7 @@ class NumberSequenceFormatter(value: Expression,
       ordinalVal =
         ordinalOp.getChildExpression.evaluateAsString(context).toString
     }
-// add it to the table.
+    // add it to the table.
     var numb: Numberer = numberer
     if (numb == null) {
       if (langOp == null) {
@@ -353,7 +355,7 @@ class NumberSequenceFormatter(value: Expression,
     }
     var nf: NumberFormatter = null
     if (formatter == null) {
-// format not known until run-time
+      // format not known until run-time
       nf = new NumberFormatter()
       nf.prepare(
         formatOp.getChildExpression.evaluateAsString(context).toString)
@@ -364,10 +366,11 @@ class NumberSequenceFormatter(value: Expression,
       nf.format(vec, gpsize, gpseparator, letterVal, ordinalVal, numb)
     new StringValue(s)
   }
-// Use the numberer decided at compile time if possible; otherwise try to get it from
-// a table of numberers indexed by language; if not there, load the relevant class and
-// Use the numberer decided at compile time if possible; otherwise try to get it from
-// a table of numberers indexed by language; if not there, load the relevant class and
+
+  // Use the numberer decided at compile time if possible; otherwise try to get it from
+  // a table of numberers indexed by language; if not there, load the relevant class and
+  // Use the numberer decided at compile time if possible; otherwise try to get it from
+  // a table of numberers indexed by language; if not there, load the relevant class and
 
   def parseStartAtValue(value: String): List[Integer] = {
     val list: List[Integer] = new ArrayList[Integer]()
@@ -446,8 +449,8 @@ class NumberSequenceFormatter(value: Expression,
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This expression performs the formatting part of the logic of the xsl:number instruction
-  * It takes as input a sequence of integers, which may either be supplied directly as the
-  * value attribute of xsl:number, or may be computed by counting nodes. The expression
-  * returns a string.
-  */
+ * This expression performs the formatting part of the logic of the xsl:number instruction
+ * It takes as input a sequence of integers, which may either be supplied directly as the
+ * value attribute of xsl:number, or may be computed by counting nodes. The expression
+ * returns a string.
+ */

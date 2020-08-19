@@ -30,9 +30,9 @@ import java.util.Collections
 
 import FunctionCall._
 
-import scala.beans.{BeanProperty}
-
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object FunctionCall {
 
@@ -63,8 +63,8 @@ abstract class FunctionCall extends Expression {
     this.operanda = new OperandArray(this, args)
   }
 
-   def setOperanda(args: Array[Expression],
-                            roles: Array[OperandRole]): Unit = {
+  def setOperanda(args: Array[Expression],
+                  roles: Array[OperandRole]): Unit = {
     this.operanda = new OperandArray(this, args, roles)
   }
 
@@ -85,7 +85,7 @@ abstract class FunctionCall extends Expression {
     adoptChildExpression(child)
   }
 
-   def simplifyArguments(env: StaticContext): Expression = {
+  def simplifyArguments(env: StaticContext): Expression = {
     for (i <- 0 until getArguments.length) {
       val exp: Expression = getArg(i).simplify()
       if (exp != getArg(i)) {
@@ -103,7 +103,7 @@ abstract class FunctionCall extends Expression {
     preEvaluateIfConstant(visitor)
   }
 
-   def preEvaluateIfConstant(visitor: ExpressionVisitor): Expression = {
+  def preEvaluateIfConstant(visitor: ExpressionVisitor): Expression = {
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       var fixed: Boolean = true
@@ -142,9 +142,11 @@ abstract class FunctionCall extends Expression {
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       var fixed: Boolean = true
-      for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
-        fixed = false
-        //break
+      breakable {
+        for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
+          fixed = false
+          break
+        }
       }
       if (fixed) {
         preEvaluate(visitor)
@@ -182,9 +184,9 @@ abstract class FunctionCall extends Expression {
     }
   }
 
-   def checkArguments(visitor: ExpressionVisitor): Unit = {}
+  def checkArguments(visitor: ExpressionVisitor): Unit = {}
 
-   def checkArgumentCount(min: Int, max: Int): Int = {
+  def checkArgumentCount(min: Int, max: Int): Int = {
     val numArgs: Int = getArity
     var msg: String = null
     if (min == max && numArgs != min) {

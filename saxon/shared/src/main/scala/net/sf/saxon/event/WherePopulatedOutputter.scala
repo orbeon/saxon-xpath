@@ -34,7 +34,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
   private var pendingNamespaces: NamespaceMap = _
 
   override def startDocument(properties: Int): Unit = {
-    level+=1
+    level += 1
     if (level == 0) {
       pendingStartTag = true
       pendingElemName = null
@@ -49,7 +49,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
                             location: Location,
                             properties: Int): Unit = {
     releaseStartTag()
-    level+=1
+    level += 1
     if (level == 0) {
       pendingStartTag = true
       pendingElemName = elemName
@@ -70,7 +70,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
                             location: Location,
                             properties: Int): Unit = {
     releaseStartTag()
-    level+=1
+    level += 1
     if (level == 0) {
       pendingStartTag = true
       pendingElemName = elemName
@@ -117,7 +117,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
   }
 
   override def endDocument(): Unit = {
-    level-=1
+    level -= 1
     if (level == 0) {
       if (!pendingStartTag) {
         super.endDocument()
@@ -128,7 +128,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
   }
 
   override def endElement(): Unit = {
-    level-=1
+    level -= 1
     if (level == 0) {
       if (!pendingStartTag) {
         super.endElement()
@@ -234,7 +234,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
           case Type.NAMESPACE =>
             namespace(node.getLocalPart, node.getStringValue, 0)
             return
-          case _ => //break
+          case _ =>
 
         }
       }
@@ -274,7 +274,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
           case Type.NAMESPACE =>
             namespace(node.getLocalPart, node.getStringValue, 0)
             return
-          case _ => //break
+          case _ =>
 
         }
       }

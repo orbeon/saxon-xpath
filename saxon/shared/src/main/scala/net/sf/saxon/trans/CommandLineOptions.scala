@@ -598,7 +598,7 @@ class CommandLineOptions {
           var message: String = "Value: one of "
           message += displayPermittedValues(permittedValues.get(option))
           System.err.println(message)
-        case _ => //break
+        case _ =>
 
       }
     }

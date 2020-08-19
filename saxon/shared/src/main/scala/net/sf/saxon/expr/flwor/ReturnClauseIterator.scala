@@ -8,6 +8,8 @@ import net.sf.saxon.om.Item
 
 import net.sf.saxon.om.SequenceIterator
 
+import scala.util.control.Breaks._
+
 class ReturnClauseIterator(private var base: TuplePull,
                            flwor: FLWORExpression,
                            private var context: XPathContext)
@@ -19,32 +21,34 @@ class ReturnClauseIterator(private var base: TuplePull,
 
   def next(): Item = {
     var nextItem: Item = null
-    while (true) {
-      if (results != null) {
-        nextItem = results.next()
-        if (nextItem != null) {
-          //break
+    breakable {
+      while (true) {
+        if (results != null) {
+          nextItem = results.next()
+          if (nextItem != null) {
+            break
+          } else {
+            results = null
+          }
+        }
+        if (base.nextTuple(context)) {
+          results = action.iterate(context)
+          nextItem = results.next()
+          if (nextItem == null) {
+            results = null
+          } else {
+            break
+          }
         } else {
           results = null
+          null
         }
-      }
-      if (base.nextTuple(context)) {
-        results = action.iterate(context)
-        nextItem = results.next()
-        if (nextItem == null) {
-          results = null
-        } else {
-          //break
-        }
-      } else {
-        results = null
-        null
       }
     }
     nextItem
   }
 
-override  def close(): Unit = {
+  override def close(): Unit = {
     if (results != null) {
       results.close()
     }

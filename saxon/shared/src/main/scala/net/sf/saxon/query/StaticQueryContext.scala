@@ -29,6 +29,7 @@ import StaticQueryContext._
 import net.sf.saxon.utils.Configuration
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 object StaticQueryContext {
 
@@ -238,14 +239,15 @@ class StaticQueryContext () {
   def compileQuery(source: Reader): XQueryExpression = synchronized {
     val buffer: Array[Char] = Array.ofDim[Char](4096)
     val sb: StringBuilder = new StringBuilder(4096)
-    while (true) {
+    breakable { while (true) {
       val n: Int = source.read(buffer)
       if (n > 0) {
         sb.append(buffer, 0, n)
       } else {
-        //break
+        break
       }
     }
+  }
     compileQuery(sb.toString)
   }
 

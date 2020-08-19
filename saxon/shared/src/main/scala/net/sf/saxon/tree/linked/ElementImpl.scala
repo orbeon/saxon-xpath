@@ -23,6 +23,7 @@ import net.sf.saxon.tree.linked.ElementImpl.isIdRefNode
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object ElementImpl {
 
@@ -214,15 +215,17 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     if (root != null) {
       val iter: AxisIterator =
         iterateAxis(AxisInfo.DESCENDANT_OR_SELF, NodeKindTest.ELEMENT)
-      while (true) {
-        val n: ElementImpl = iter.next().asInstanceOf[ElementImpl]
-        for (att <- attributeMap if att.isId) {
-          root.deregisterID(att.getValue)
+      breakable {
+        while (true) {
+          val n: ElementImpl = iter.next().asInstanceOf[ElementImpl]
+          for (att <- attributeMap if att.isId) {
+            root.deregisterID(att.getValue)
+          }
+          if (n == null) {
+            break
+          }
+          root.deIndex(n)
         }
-        if (n == null) {
-          //break
-        }
-        root.deIndex(n)
       }
     }
   }
@@ -424,12 +427,13 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
-  if (hasChildNodes()) {
-    val parent: NodeInfo = this
-     (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator().toIterable
-  } else {
-     Collections.emptyList().asScala
-  }
+    if (hasChildNodes()) {
+      val parent: NodeInfo = this
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator().toIterable
+    } else {
+      Collections.emptyList().asScala
+    }
+
   override def getAllNamespaces(): NamespaceMap = namespaceMap
 
   override def getAttributeValue(uri: String, localName: String): String =

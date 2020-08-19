@@ -37,6 +37,7 @@ import net.sf.saxon.expr.OperandUsage.OperandUsage
 import scala.beans.BeanProperty
 import scala.collection
 import scala.collection.JavaConverters._
+import scala.util.control.Breaks._
 
 object Expression {
 
@@ -342,10 +343,12 @@ abstract class Expression
   def getCost(): Double = {
     if (cost < 0) {
       var i: Double = getNetCost
-      for (o <- operands().asScala) {
-        i += o.getChildExpression.getCost
-        if (i > MAX_COST) {
-          //break
+      breakable {
+        for (o <- operands().asScala) {
+          i += o.getChildExpression.getCost
+          if (i > MAX_COST) {
+            break
+          }
         }
       }
       cost = i
@@ -461,12 +464,14 @@ abstract class Expression
   override def toString(): String = {
     val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     var className: String = getClass.getName
-    while (true) {
-      val dot: Int = className.indexOf('.')
-      if (dot >= 0) {
-        className = className.substring(dot + 1)
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val dot: Int = className.indexOf('.')
+        if (dot >= 0) {
+          className = className.substring(dot + 1)
+        } else {
+          break
+        }
       }
     }
     buff.append(className)
@@ -637,7 +642,7 @@ abstract class Expression
       gatherSlotsUsed(Expression.this, slots)
       slotsUsed = Array.ofDim[Int](slots.size)
       var i = 0
-      val iter  = slots.iterator()
+      val iter = slots.iterator()
       while (iter.hasNext) {
         slotsUsed(i) = iter.next
         i = i + 1
@@ -680,7 +685,7 @@ abstract class Expression
   def getProperties(): collection.Iterator[String] = new MonoIterator("expression").asScala
 
   def addToPathMap(pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+                   pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val dependsOnFocus: Boolean =
       ExpressionTool.dependsOnFocus(Expression.this)
     var attachmentPoint: PathMap.PathMapNodeSet = null

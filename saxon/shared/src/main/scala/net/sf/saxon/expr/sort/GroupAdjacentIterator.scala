@@ -29,6 +29,7 @@ import java.util.List
 import scala.jdk.CollectionConverters._
 
 import SequenceIterator.Property._
+import scala.util.control.Breaks._
 
 class GroupAdjacentIterator(private var select: Expression,
                             private var keyExpression: Expression,
@@ -78,12 +79,14 @@ class GroupAdjacentIterator(private var select: Expression,
   private def getKey(context: XPathContext): List[AtomicValue] = {
     val key: List[AtomicValue] = new ArrayList[AtomicValue]()
     val iter: SequenceIterator = keyExpression.iterate(context)
-    while (true) {
-      val `val`: AtomicValue = iter.next().asInstanceOf[AtomicValue]
-      if (`val` == null) {
-        //break
+    breakable {
+      while (true) {
+        val `val`: AtomicValue = iter.next().asInstanceOf[AtomicValue]
+        if (`val` == null) {
+          break
+        }
+        key.add(`val`)
       }
-      key.add(`val`)
     }
     key
   }
@@ -108,31 +111,33 @@ class GroupAdjacentIterator(private var select: Expression,
   private def advance(): Unit = {
     currentMembers = new ArrayList(20)
     currentMembers.add(current)
-    while (true) {
-      val nextCandidate: Item = population.next()
-      if (nextCandidate == null) {
-        //break
-      }
-      val newKey: List[AtomicValue] = getKey(runningContext)
-      val newComparisonKey: List[AtomicMatchKey] =
-        getComparisonKey(newKey, baseContext)
-      try if (currentComparisonKey == newComparisonKey) {
-        currentMembers.add(nextCandidate)
-      } else {
-        nextItem = nextCandidate
-        nextComparisonKey = newComparisonKey
-        nextKey = newKey
-        return
-      } catch {
-        case e: ClassCastException => {
-          val message: String =
-            "Grouping key values are of non-comparable types"
-          val err: XPathException = new XPathException(message)
-          err.setIsTypeError(true)
-          err.setXPathContext(runningContext)
-          throw err
+    breakable {
+      while (true) {
+        val nextCandidate: Item = population.next()
+        if (nextCandidate == null) {
+          break
         }
+        val newKey: List[AtomicValue] = getKey(runningContext)
+        val newComparisonKey: List[AtomicMatchKey] =
+          getComparisonKey(newKey, baseContext)
+        try if (currentComparisonKey == newComparisonKey) {
+          currentMembers.add(nextCandidate)
+        } else {
+          nextItem = nextCandidate
+          nextComparisonKey = newComparisonKey
+          nextKey = newKey
+          return
+        } catch {
+          case e: ClassCastException => {
+            val message: String =
+              "Grouping key values are of non-comparable types"
+            val err: XPathException = new XPathException(message)
+            err.setIsTypeError(true)
+            err.setXPathContext(runningContext)
+            throw err
+          }
 
+        }
       }
     }
     nextItem = null

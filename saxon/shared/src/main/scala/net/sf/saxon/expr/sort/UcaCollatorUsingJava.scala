@@ -96,7 +96,7 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
     val fallback: String = props.getProperty("fallback")
     if (fallback != null) {
       fallback match {
-        case "yes" => //break
+        case "yes" =>
         case "no" => error("fallback=no is not supported in Saxon-HE")
         case _ => error("fallback", "yes|no")
 

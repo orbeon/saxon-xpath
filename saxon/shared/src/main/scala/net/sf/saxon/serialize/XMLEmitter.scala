@@ -51,13 +51,13 @@ object XMLEmitter {
   var i: Int = 0
   while (i <= 31) {
     specialInText(i) = true
-    i = i+ 1
+    i = i + 1
   }
 
   var j: Int = 32
   while (j <= 127) {
     specialInText(i) = false
-    j = j+ 1
+    j = j + 1
   }
 
   specialInText('\n') = false
@@ -75,13 +75,13 @@ object XMLEmitter {
   i = 0
   while (i <= 31) {
     specialInAtt(i) = true
-    i = i+ 1
+    i = i + 1
   }
 
   j = 32
   while (i <= 127) {
     specialInAtt(i) = false
-    j= j+ 1
+    j = j + 1
   }
 
   specialInAtt(0.toChar) = true
@@ -108,29 +108,29 @@ object XMLEmitter {
 
 class XMLEmitter extends Emitter {
 
-   var canonical: Boolean = false
+  var canonical: Boolean = false
 
-   var started: Boolean = false
+  var started: Boolean = false
 
-   var startedElement: Boolean = false
+  var startedElement: Boolean = false
 
-   var openStartTag: Boolean = false
+  var openStartTag: Boolean = false
 
-   var declarationIsWritten: Boolean = false
+  var declarationIsWritten: Boolean = false
 
-   var elementCode: NodeName = _
+  var elementCode: NodeName = _
 
-   var indentForNextAttribute: Int = -1
+  var indentForNextAttribute: Int = -1
 
-   var undeclareNamespaces: Boolean = false
+  var undeclareNamespaces: Boolean = false
 
-   var unfailing: Boolean = false
+  var unfailing: Boolean = false
 
-   var delimiter: Char = '"'
+  var delimiter: Char = '"'
 
-   var attSpecials: Array[Boolean] = specialInAtt
+  var attSpecials: Array[Boolean] = specialInAtt
 
-   var elementStack: Stack[String] = new Stack()
+  var elementStack: Stack[String] = new Stack()
 
   private var indenting: Boolean = false
 
@@ -139,7 +139,7 @@ class XMLEmitter extends Emitter {
 
   private var requireWellFormed: Boolean = false
 
-   var characterReferenceGenerator: CharacterReferenceGenerator =
+  var characterReferenceGenerator: CharacterReferenceGenerator =
     HexCharacterReferenceGenerator.THE_INSTANCE
 
   def setCharacterReferenceGenerator(
@@ -155,7 +155,7 @@ class XMLEmitter extends Emitter {
 
   def endDocument(): Unit = {}
 
-   def openDocument(): Unit = {
+  def openDocument(): Unit = {
     if (writer == null) {
       makeWriter()
     }
@@ -277,10 +277,10 @@ class XMLEmitter extends Emitter {
     }
   }
 
-   def writeDocType(name: NodeName,
-                             displayName: String,
-                             systemId: String,
-                             publicId: String): Unit = {
+  def writeDocType(name: NodeName,
+                   displayName: String,
+                   systemId: String,
+                   publicId: String): Unit = {
     if (!canonical) {
       if (declarationIsWritten && !indenting) {
         writer.write("\n")
@@ -383,7 +383,7 @@ class XMLEmitter extends Emitter {
     indentForNextAttribute = -1
   }
 
-   def writeDocTypeWithNullSystemId(): Boolean = false
+  def writeDocTypeWithNullSystemId(): Boolean = false
 
   def namespace(nsprefix: String, nsuri: String, isFirst: Boolean): Unit = {
     val sep: String = if (isFirst) " " else getAttributeIndentString
@@ -437,7 +437,7 @@ class XMLEmitter extends Emitter {
     writeAttribute(elementCode, displayName, value, properties)
   }
 
-   def getAttributeIndentString(): String =
+  def getAttributeIndentString(): String =
     if (indentForNextAttribute < 0) {
       " "
     } else {
@@ -453,14 +453,14 @@ class XMLEmitter extends Emitter {
     }
   }
 
-   def emptyElementTagCloser(displayName: String,
-                                      nameCode: NodeName): String =
+  def emptyElementTagCloser(displayName: String,
+                            nameCode: NodeName): String =
     if (canonical) "></" + displayName + ">" else "/>"
 
-   def writeAttribute(elCode: NodeName,
-                               attname: String,
-                               value: CharSequence,
-                               properties: Int): Unit = {
+  def writeAttribute(elCode: NodeName,
+                     attname: String,
+                     value: CharSequence,
+                     properties: Int): Unit = {
     val `val`: String = value.toString
     writer.write(attname)
     if (ReceiverOption.contains(properties, ReceiverOption.NO_SPECIAL_CHARS)) {
@@ -485,13 +485,13 @@ class XMLEmitter extends Emitter {
     }
   }
 
-   def testCharacters(chars: CharSequence): Int = {
-    var i:Int= 0
+  def testCharacters(chars: CharSequence): Int = {
+    var i: Int = 0
     while (i < chars.length) {
       val c: Char = chars.charAt(i)
       if (c > 127) {
         if (UTF16CharacterSet.isHighSurrogate(c)) {
-          i=i+1
+          i = i + 1
           val cc: Int = UTF16CharacterSet.combinePair(c, chars.charAt(i))
           if (!characterSet.inCharset(cc)) {
             cc
@@ -500,12 +500,12 @@ class XMLEmitter extends Emitter {
           c
         }
       }
-      i =i +1
+      i = i + 1
     }
     0
   }
 
-   def convertToAscii(chars: CharSequence): String = {
+  def convertToAscii(chars: CharSequence): String = {
     val buff: FastStringBuffer = new FastStringBuffer(chars.length)
     for (i <- 0 until chars.length) {
       val c: Char = chars.charAt(i)
@@ -568,7 +568,7 @@ class XMLEmitter extends Emitter {
         }
       } else {
         val len: Int = chars.length
-        var i :Int = 0
+        var i: Int = 0
         while (i < len) {
           val c: Char = chars.charAt(i)
           if (c != 0) {
@@ -612,7 +612,7 @@ class XMLEmitter extends Emitter {
     }
   }
 
-/**
+  /**
    * Handle a processing instruction.
    */
   @throws[XPathException]
@@ -623,8 +623,8 @@ class XMLEmitter extends Emitter {
     if (!started) {
       openDocument()
     }
-    var targetVar : String = target
-    var dataVar : CharSequence = data
+    var targetVar: String = target
+    var dataVar: CharSequence = data
     var x: Int = testCharacters(targetVar)
     if (x != 0) {
       if (unfailing) {
@@ -671,7 +671,7 @@ class XMLEmitter extends Emitter {
    */
   @throws[java.io.IOException]
   @throws[XPathException]
-   def writeEscape(chars: CharSequence, inAttribute: Boolean): Unit = {
+  def writeEscape(chars: CharSequence, inAttribute: Boolean): Unit = {
     var segstart = 0
     var disabled = false
     val specialChars = if (inAttribute) attSpecials
@@ -681,26 +681,24 @@ class XMLEmitter extends Emitter {
       return
     }
     val clength = chars.length
-    while ( {
-      segstart < clength
-    }) {
+    while (segstart < clength) {
       var i = segstart
       // find a maximal sequence of "ordinary" characters
-      while ( {
-        i < clength
-      }) {
-        val c = chars.charAt(i)
-        if (c < 127)
-          if (specialChars(c)) {
-          break
-          }
-        //todo: break is not supported
-        else i += 1
-        else if (c < 160) break //todo: break is not supported
-        else if (c == 0x2028) break //todo: break is not supported
-        else if (UTF16CharacterSet.isHighSurrogate(c)) break //todo: break is not supported
-        else if (!characterSet.inCharset(c)) break //todo: break is not supported
-        else i += 1
+      breakable {
+        while (i < clength) {
+          val c = chars.charAt(i)
+          if (c < 127)
+            if (specialChars(c)) {
+              break
+            }
+
+            else i += 1
+          else if (c < 160) break
+          else if (c == 0x2028) break
+          else if (UTF16CharacterSet.isHighSurrogate(c)) break
+          else if (!characterSet.inCharset(c)) break
+          else i += 1
+        }
       }
       // if this was the whole string write it out and exit
       if (i >= clength) {
@@ -759,7 +757,8 @@ class XMLEmitter extends Emitter {
       }
       else if (UTF16CharacterSet.isHighSurrogate(c)) {
         val d = chars.charAt({
-          i += 1; i
+          i += 1;
+          i
         })
         val charval = UTF16CharacterSet.combinePair(c, d)
         if (characterSet.inCharset(charval)) {
@@ -772,7 +771,8 @@ class XMLEmitter extends Emitter {
         characterReferenceGenerator.outputCharacterReference(c, writer)
       }
       segstart = {
-        i += 1; i
+        i += 1;
+        i
       }
     }
   }

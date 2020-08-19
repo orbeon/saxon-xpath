@@ -28,6 +28,8 @@ import net.sf.saxon.value.SequenceType
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
+import scala.util.control.Breaks._
+
 class DocumentSorter(base: Expression) extends UnaryExpression(base) {
 
   @BeanProperty
@@ -51,7 +53,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
       else GlobalOrderComparer.getInstance
   }
 
-   def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   override def getExpressionName(): String = "docOrder"
 
@@ -91,48 +93,50 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     getOperand.optimize(visitor, contextInfo)
     val sortable: Expression = getBaseExpression
     var tryHarder: Boolean = sortable.isStaticPropertiesKnown
-    while (true) {
-      if (sortable.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-        sortable
-      }
-      if (!Cardinality.allowsMany(sortable.getCardinality)) {
-        sortable
-      }
-      if (sortable.isInstanceOf[SlashExpression]) {
-        val slash: SlashExpression = sortable.asInstanceOf[SlashExpression]
-        val lhs: Expression = slash.getLhsExpression
-        val rhs: Expression = slash.getRhsExpression
-        if (lhs.isInstanceOf[ConditionalSorter] &&
-          slash.getRhsExpression.hasSpecialProperty(
-            StaticProperty.PEER_NODESET)) {
-          val c: ConditionalSorter = lhs.asInstanceOf[ConditionalSorter]
-          val d: DocumentSorter = c.getDocumentSorter
-          val condition: Expression = c.getCondition
-          var s: Expression = new SlashExpression(d.getBaseExpression, rhs)
-          s = s.optimize(visitor, contextInfo)
-          new ConditionalSorter(condition, new DocumentSorter(s))
+    breakable {
+      while (true) {
+        if (sortable.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
+          sortable
         }
-        if (lhs.isInstanceOf[DocumentSorter] && rhs
-          .isInstanceOf[AxisExpression] &&
-          rhs.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
-          val s1: SlashExpression = new SlashExpression(
-            lhs.asInstanceOf[DocumentSorter].getBaseExpression,
-            rhs)
-          ExpressionTool.copyLocationInfo(this, s1)
-          new DocumentSorter(s1).optimize(visitor, contextInfo)
+        if (!Cardinality.allowsMany(sortable.getCardinality)) {
+          sortable
         }
-        if (!ExpressionTool.dependsOnFocus(rhs) &&
-          !rhs.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) &&
-          rhs.hasSpecialProperty(StaticProperty.NO_NODES_NEWLY_CREATED)) {
-          this.setBaseExpression(slash.getRhsExpression)
-          optimize(visitor, contextInfo)
+        if (sortable.isInstanceOf[SlashExpression]) {
+          val slash: SlashExpression = sortable.asInstanceOf[SlashExpression]
+          val lhs: Expression = slash.getLhsExpression
+          val rhs: Expression = slash.getRhsExpression
+          if (lhs.isInstanceOf[ConditionalSorter] &&
+            slash.getRhsExpression.hasSpecialProperty(
+              StaticProperty.PEER_NODESET)) {
+            val c: ConditionalSorter = lhs.asInstanceOf[ConditionalSorter]
+            val d: DocumentSorter = c.getDocumentSorter
+            val condition: Expression = c.getCondition
+            var s: Expression = new SlashExpression(d.getBaseExpression, rhs)
+            s = s.optimize(visitor, contextInfo)
+            new ConditionalSorter(condition, new DocumentSorter(s))
+          }
+          if (lhs.isInstanceOf[DocumentSorter] && rhs
+            .isInstanceOf[AxisExpression] &&
+            rhs.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
+            val s1: SlashExpression = new SlashExpression(
+              lhs.asInstanceOf[DocumentSorter].getBaseExpression,
+              rhs)
+            ExpressionTool.copyLocationInfo(this, s1)
+            new DocumentSorter(s1).optimize(visitor, contextInfo)
+          }
+          if (!ExpressionTool.dependsOnFocus(rhs) &&
+            !rhs.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) &&
+            rhs.hasSpecialProperty(StaticProperty.NO_NODES_NEWLY_CREATED)) {
+            this.setBaseExpression(slash.getRhsExpression)
+            optimize(visitor, contextInfo)
+          }
         }
-      }
-      if (tryHarder) {
-        sortable.resetLocalStaticProperties()
-        tryHarder = false
-      } else {
-        //break
+        if (tryHarder) {
+          sortable.resetLocalStaticProperties()
+          tryHarder = false
+        } else {
+          break
+        }
       }
     }
     if (sortable

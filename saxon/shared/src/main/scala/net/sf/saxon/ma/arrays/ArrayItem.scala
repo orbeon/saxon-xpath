@@ -9,13 +9,11 @@ import net.sf.saxon.om.Genre.Genre
 import net.sf.saxon.om.GroundedValue
 import net.sf.saxon.value.SequenceType
 import net.sf.saxon.z.IntSet
-
-
-
+import scala.util.control.Breaks._
 
 /**
-  * Interface supported by different implementations of an XDM array item
-  */
+ * Interface supported by different implementations of an XDM array item
+ */
 trait ArrayItem extends Function {
 
   var SINGLE_ARRAY_TYPE: SequenceType = SequenceType.makeSequenceType(
@@ -45,32 +43,37 @@ trait ArrayItem extends Function {
   def getMemberType(th: TypeHierarchy): SequenceType
 
   /**
-    * Provide a short string showing the contents of the item, suitable
-    * for use in error messages
-    *
-    * @return a depiction of the item suitable for use in error messages
-    */
+   * Provide a short string showing the contents of the item, suitable
+   * for use in error messages
+   *
+   * @return a depiction of the item suitable for use in error messages
+   */
   override def toShortString(): String = {
     val sb: StringBuilder = new StringBuilder()
     sb.append("array{")
     var count: Int = 0
-    for (member <- members()) {
-      if ({ count += 1; count - 1 } > 2) {
-        sb.append(" ...")
-//break
+    breakable {
+      for (member <- members()) {
+        if ( {
+          count += 1;
+          count - 1
+        } > 2) {
+          sb.append(" ...")
+          break
+        }
+        sb.append(member.toShortString())
+        sb.append(", ")
       }
-      sb.append(member.toShortString())
-      sb.append(", ")
     }
     sb.append("}")
     sb.toString
   }
 
   /**
-    * Get the genre of this item
-    *
-    * @return the genre: specifically, {@link Genre#ARRAY}.
-    */
+   * Get the genre of this item
+   *
+   * @return the genre: specifically, { @link Genre#ARRAY}.
+   */
   override def getGenre(): Genre = Genre.ARRAY
 
 }

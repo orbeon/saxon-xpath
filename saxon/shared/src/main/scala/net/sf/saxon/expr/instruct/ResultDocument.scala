@@ -210,7 +210,7 @@ object ResultDocument {
             false,
             prevalidated,
             true)
-        case SaxonOutputKeys.NEXT_IN_CHAIN => //break
+        case SaxonOutputKeys.NEXT_IN_CHAIN =>
         case _ =>
           if (clarkName.==("output-version")) {
             clarkName = "version"

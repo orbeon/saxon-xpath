@@ -135,8 +135,8 @@ object PathMap {
   }
 
   class PathMapArc(@BeanProperty var axis: Int,
-                            var test: NodeTest,
-                            @BeanProperty var target: PathMapNode) {
+                   var test: NodeTest,
+                   @BeanProperty var target: PathMapNode) {
 
     def getNodeTest(): NodeTest = test
 
@@ -332,21 +332,24 @@ class PathMap(exp: Expression) {
             newRoot.createArc(AxisInfo.DESCENDANT,
               NodeKindTest.ELEMENT,
               newTarget)
-            //break
           }
           case _ => {
             newRoot.createArc(AxisInfo.DESCENDANT_OR_SELF,
               arc.getNodeTest,
               arc.getTarget)
-            //break
           }
 
         }
-        { i -= 1; i + 1 }
+        {
+          i -= 1;
+          i + 1
+        }
       }
-      for (i <- 0 until pathMapRoots.size if pathMapRoots.get(i) == root) {
-        pathMapRoots.remove(i)
-        //break
+      breakable {
+        for (i <- 0 until pathMapRoots.size if pathMapRoots.get(i) == root) {
+          pathMapRoots.remove(i)
+          break
+        }
       }
     }
     val nodeStack: Stack[PathMapNode] = new Stack[PathMapNode]()
@@ -388,7 +391,6 @@ class PathMap(exp: Expression) {
             for (arc <- thisArc.getTarget.arcs.asScala) {
               root.arcs.add(arc)
             }
-            //break
           } else {}
         case AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING => {
           if (thisArc.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
@@ -397,23 +399,20 @@ class PathMap(exp: Expression) {
               thisArc.getTarget)
             node.arcs.remove(i)
           }
-          //break
         }
         case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
-             AxisInfo.NAMESPACE => //break
+             AxisInfo.NAMESPACE =>
         case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
           if (grandParent != null) {
             grandParent.createArc(lastAxis,
               thisArc.getNodeTest,
               thisArc.getTarget)
             node.arcs.remove(i)
-            //break
           } else {
             root.createArc(AxisInfo.CHILD,
               thisArc.getNodeTest,
               thisArc.getTarget)
             node.arcs.remove(i)
-            //break
           }
         case AxisInfo.PARENT => {
           if (lastAxis == AxisInfo.CHILD || lastAxis == AxisInfo.ATTRIBUTE ||
@@ -446,15 +445,16 @@ class PathMap(exp: Expression) {
             }
             node.arcs.remove(i)
           }
-          //break
         }
         case AxisInfo.SELF => {
           node.arcs.remove(i)
-          //break
         }
 
       }
-      { i -= 1; i + 1 }
+      {
+        i -= 1;
+        i + 1
+      }
     }
   }
 
