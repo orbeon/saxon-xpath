@@ -7,14 +7,11 @@ import net.sf.saxon.om.Item
 
 import net.sf.saxon.om.SequenceIterator
 
-import net.sf.saxon.trans.XPathException
-
-
-
+import scala.util.control.Breaks._
 
 class ContextMappingIterator(private var action: ContextMappingFunction,
                              private var context: XPathContext)
-    extends SequenceIterator {
+  extends SequenceIterator {
 
   private var base: FocusIterator = context.getCurrentIterator
 
@@ -22,27 +19,29 @@ class ContextMappingIterator(private var action: ContextMappingFunction,
 
   def next(): Item = {
     var nextItem: Item = null
-    while (true) {
-      if (stepIterator != null) {
-        nextItem = stepIterator.next()
-        if (nextItem != null) {
-//break
+    breakable {
+      while (true) {
+        if (stepIterator != null) {
+          nextItem = stepIterator.next()
+          if (nextItem != null) {
+            break
+          } else {
+            stepIterator = null
+          }
+        }
+        if (base.next() != null) {
+          // Call the supplied mapping function
+          stepIterator = action.map(context)
+          nextItem = stepIterator.next()
+          if (nextItem == null) {
+            stepIterator = null
+          } else {
+            break
+          }
         } else {
           stepIterator = null
+          null
         }
-      }
-      if (base.next() != null) {
-// Call the supplied mapping function
-        stepIterator = action.map(context)
-        nextItem = stepIterator.next()
-        if (nextItem == null) {
-          stepIterator = null
-        } else {
-//break
-        }
-      } else {
-        stepIterator = null
-        null
       }
     }
     nextItem

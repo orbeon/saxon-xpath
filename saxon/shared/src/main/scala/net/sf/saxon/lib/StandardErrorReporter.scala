@@ -107,7 +107,7 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
     var langText: String = ""
     if (lang != null) {
       lang match {
-        case HostLanguage.XSLT => //break
+        case HostLanguage.XSLT =>
         case HostLanguage.XQUERY => langText = "in query "
         case HostLanguage.XPATH => langText = "in expression "
         case HostLanguage.XML_SCHEMA => langText = "in schema "

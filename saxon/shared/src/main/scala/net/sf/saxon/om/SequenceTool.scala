@@ -30,7 +30,7 @@ import net.sf.saxon.tree.util.FastStringBuffer
 import net.sf.saxon.tree.wrapper.VirtualNode
 
 import net.sf.saxon.value._
-
+import scala.util.control.Breaks._
 
 object SequenceTool {
 
@@ -86,7 +86,8 @@ object SequenceTool {
     } else {
       var n: Int = 0
       while (iter.next() != null) if ( {
-        n += 1; n - 1
+        n += 1;
+        n - 1
       } == length) {
         iter.close()
         false
@@ -204,13 +205,15 @@ object SequenceTool {
         var `type`: ItemType = null
         val iter: SequenceIterator = sequence.iterate()
         var item: Item = null
-        while ((item = iter.next()) != null) {
-          `type` =
-            if (`type` == null) Type.getItemType(item, th)
-            else
-              Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
-          if (`type` == AnyItemType.getInstance) {
-            //break
+        breakable {
+          while ((item = iter.next()) != null) {
+            `type` =
+              if (`type` == null) Type.getItemType(item, th)
+              else
+                Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
+            if (`type` == AnyItemType.getInstance) {
+              break
+            }
           }
         }
         if (`type` == null) ErrorType.getInstance else `type`
@@ -230,12 +233,13 @@ object SequenceTool {
       val iter: UnfailingIterator =
         sequence.asInstanceOf[GroundedValue].iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) {
+      breakable { while ((item = iter.next()) != null) {
         `type` = `type`.union(UType.getUType(item))
         if (`type` == UType.ANY) {
-          //break
+          break
         }
       }
+    }
       `type`
     } else {
       UType.ANY

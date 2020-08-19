@@ -138,8 +138,7 @@ object QueryResult {
                     backup: Boolean,
                     log: PrintStream): Unit = {
     doc.getNodeKind match {
-      case Type.DOCUMENT => // OK
-      //break
+      case Type.DOCUMENT =>
       case Type.ELEMENT =>
         var parent: NodeInfo = doc.getParent
         if (parent != null && parent.getNodeKind != Type.DOCUMENT) {

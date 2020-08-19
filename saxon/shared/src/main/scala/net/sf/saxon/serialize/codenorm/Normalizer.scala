@@ -10,6 +10,8 @@ import net.sf.saxon.tree.util.FastStringBuffer
 
 import Normalizer._
 
+import scala.util.control.Breaks._
+
 object Normalizer {
 
   def make(form: Int, config: Configuration): Normalizer = synchronized {
@@ -81,7 +83,8 @@ class Normalizer private(private var form: Int) {
     while (i < source.length) {
       buffer.setLength(0)
       ch32 = source.charAt({
-        i += 1; i - 1
+        i += 1;
+        i - 1
       })
       if (ch32 < 128) {
         target.cat(ch32.toChar)
@@ -89,7 +92,8 @@ class Normalizer private(private var form: Int) {
       }
       if (UTF16CharacterSet.isHighSurrogate(ch32)) {
         val low: Char = source.charAt({
-          i += 1; i - 1
+          i += 1;
+          i - 1
         })
         ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
       }
@@ -98,11 +102,13 @@ class Normalizer private(private var form: Int) {
       var j: Int = 0
       while (j < buffer.length) {
         ch = buffer.charAt({
-          j += 1; j - 1
+          j += 1;
+          j - 1
         })
         if (UTF16CharacterSet.isHighSurrogate(ch)) {
           val low: Char = buffer.charAt({
-            j += 1; j - 1
+            j += 1;
+            j - 1
           })
           ch = UTF16CharacterSet.combinePair(ch.toChar, low)
         }
@@ -110,16 +116,18 @@ class Normalizer private(private var form: Int) {
         var k: Int = target.length
         if (chClass != 0) {
           var ch2: Int = 0
-          while (k > 0) {
-            var step: Int = 1
-            ch2 = target.charAt(k - 1)
-            if (UTF16CharacterSet.isSurrogate(ch2)) {
-              step = 2
-              val high: Char = target.charAt(k - 2)
-              ch2 = UTF16CharacterSet.combinePair(high, ch2.toChar)
+          breakable {
+            while (k > 0) {
+              var step: Int = 1
+              ch2 = target.charAt(k - 1)
+              if (UTF16CharacterSet.isSurrogate(ch2)) {
+                step = 2
+                val high: Char = target.charAt(k - 2)
+                ch2 = UTF16CharacterSet.combinePair(high, ch2.toChar)
+              }
+              if (data.getCanonicalClass(ch2) <= chClass) break
+              k -= step
             }
-            if (data.getCanonicalClass(ch2) <= chClass) //break
-            k -= step
           }
         }
         if (ch < 65536) {
@@ -146,7 +154,8 @@ class Normalizer private(private var form: Int) {
     var decompPos: Int = compPos
     while (decompPos < target.length) {
       ch = target.charAt({
-        decompPos += 1; decompPos - 1
+        decompPos += 1;
+        decompPos - 1
       })
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
         ch = UTF16CharacterSet.combinePair(ch.toChar, target.charAt({

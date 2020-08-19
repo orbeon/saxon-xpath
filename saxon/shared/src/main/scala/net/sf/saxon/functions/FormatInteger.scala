@@ -50,6 +50,8 @@ import java.util.function.IntPredicate
 
 import FormatInteger._
 
+import scala.util.control.Breaks._
+
 object FormatInteger {
 
   private var badHashPattern: RegularExpression = _
@@ -107,14 +109,15 @@ object FormatInteger {
             }
           }
           {
-            groupingPosition += 1; groupingPosition - 1
+            groupingPosition += 1;
+            groupingPosition - 1
           }
         case java.lang.Character.LETTER_NUMBER |
              java.lang.Character.OTHER_NUMBER |
              java.lang.Character.UPPERCASE_LETTER |
              java.lang.Character.LOWERCASE_LETTER |
              java.lang.Character.MODIFIER_LETTER |
-             java.lang.Character.OTHER_LETTER => //break
+             java.lang.Character.OTHER_LETTER =>
         case _ =>
           if (i == picExpanded.uLength() - 1) {
             throw new XPathException(
@@ -123,7 +126,8 @@ object FormatInteger {
           }
           if (codePoint == '#') {
             {
-              groupingPosition += 1; groupingPosition - 1
+              groupingPosition += 1;
+              groupingPosition - 1
             }
             if (i != 0) {
               java.lang.Character.getType(picExpanded.uCharAt(i - 1)) match {
@@ -141,7 +145,6 @@ object FormatInteger {
 
               }
             }
-            //break
           } else {
             val added: Boolean = groupingPositions.add(groupingPosition)
             if (!added) {
@@ -170,7 +173,8 @@ object FormatInteger {
 
       }
       {
-        i -= 1; i + 1
+        i -= 1;
+        i + 1
       }
     }
     if (regularCheck && groupingPositions.size >= 1) {
@@ -308,10 +312,12 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     val primary: UnicodeString = UnicodeString.makeUnicodeString(primaryToken)
     val isDecimalDigit: IntPredicate = Categories.getCategory("Nd")
     var isDecimalDigitPattern: Boolean = false
-    for (i <- 0 until primary.uLength()
-         if isDecimalDigit.test(primary.uCharAt(i))) {
-      isDecimalDigitPattern = true
-      //break
+    breakable {
+      for (i <- 0 until primary.uLength()
+           if isDecimalDigit.test(primary.uCharAt(i))) {
+        isDecimalDigitPattern = true
+        break
+      }
     }
     if (isDecimalDigitPattern) {
       if (!decimalDigitPattern.matches(primaryToken)) {

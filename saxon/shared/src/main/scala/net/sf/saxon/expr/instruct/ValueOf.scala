@@ -47,6 +47,7 @@ import net.sf.saxon.value.Whitespace
 import java.util.function.BiConsumer
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 class ValueOf(select: Expression,
               disable: Boolean,
@@ -65,12 +66,14 @@ class ValueOf(select: Expression,
   if (select.isInstanceOf[StringLiteral]) {
     var special: Boolean = false
     val `val`: CharSequence = select.asInstanceOf[StringLiteral].getStringValue
-    for (k <- 0 until `val`.length) {
-      val c: Char = `val`.charAt(k)
-      if (c.toInt < 33 || c.toInt > 126 || c == '<' || c == '>' ||
-        c == '&') {
-        special = true
-        //break
+    breakable {
+      for (k <- 0 until `val`.length) {
+        val c: Char = `val`.charAt(k)
+        if (c.toInt < 33 || c.toInt > 126 || c == '<' || c == '>' ||
+          c == '&') {
+          special = true
+          break
+        }
       }
     }
     if (!special) {

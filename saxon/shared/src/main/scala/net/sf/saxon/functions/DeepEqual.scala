@@ -44,6 +44,8 @@ import java.util.List
 
 import DeepEqual._
 
+import scala.util.control.Breaks._
+
 object DeepEqual {
 
   val INCLUDE_NAMESPACES: Int = 1
@@ -88,27 +90,31 @@ object DeepEqual {
       while (true) {
         val item1: Item = opSeqItr1.next()
         val item2: Item = opSeqItr2.next()
-        if (item1 == null && item2 == null) {
-          //break
+        breakable {
+          if (item1 == null && item2 == null)
+            break
         }
+
         pos1 += 1
         pos2 += 1
-        if (item1 == null || item2 == null) {
-          result = false
-          reason =
-            if (item1 == null)
-              "Second sequence is longer (first sequence length = " +
-                pos2 +
-                ")"
-            else
-              "First sequence is longer (second sequence length = " +
-                pos1 +
-                ")"
-          if (item1.isInstanceOf[WhitespaceTextImpl] || item2
-            .isInstanceOf[WhitespaceTextImpl]) {
-            reason += " (the first extra node is whitespace text)"
+        breakable {
+          if (item1 == null || item2 == null) {
+            result = false
+            reason =
+              if (item1 == null)
+                "Second sequence is longer (first sequence length = " +
+                  pos2 +
+                  ")"
+              else
+                "First sequence is longer (second sequence length = " +
+                  pos1 +
+                  ")"
+            if (item1.isInstanceOf[WhitespaceTextImpl] || item2
+              .isInstanceOf[WhitespaceTextImpl]) {
+              reason += " (the first extra node is whitespace text)"
+            }
+            break
           }
-          //break
         }
         if (item1.isInstanceOf[Function] || item2.isInstanceOf[Function]) {
           if (!(item1.isInstanceOf[Function] && item2
@@ -121,49 +127,50 @@ object DeepEqual {
           val fe: Boolean = item1
             .asInstanceOf[Function]
             .deepEquals(item2.asInstanceOf[Function], context, comparer, flags)
-          if (!fe) {
-            result = false
-            reason = "functions at position " + pos1 + " differ"
-            //break
+          breakable {
+            if (!fe) {
+              result = false
+              reason = "functions at position " + pos1 + " differ"
+              break
+            }
           }
-          //continue
         }
         if (item1.isInstanceOf[ObjectValue[_]] || item2
           .isInstanceOf[ObjectValue[_]]) {
           if (item1 != item2) return false
-
-          //continue
         }
-        if (item1.isInstanceOf[NodeInfo]) {
-          if (item2.isInstanceOf[NodeInfo]) {
-            if (!deepEquals(item1.asInstanceOf[NodeInfo],
-              item2.asInstanceOf[NodeInfo],
-              comparer,
-              context,
-              flags)) {
+        breakable {
+          if (item1.isInstanceOf[NodeInfo]) {
+            if (item2.isInstanceOf[NodeInfo]) {
+              if (!deepEquals(item1.asInstanceOf[NodeInfo],
+                item2.asInstanceOf[NodeInfo],
+                comparer,
+                context,
+                flags)) {
+                result = false
+                reason = "nodes at position " + pos1 + " differ"
+                break
+              }
+            } else {
               result = false
-              reason = "nodes at position " + pos1 + " differ"
-              //break
+              reason = "comparing a node to an atomic value at position " + pos1
+              break
             }
           } else {
-            result = false
-            reason = "comparing a node to an atomic value at position " + pos1
-            //break
-          }
-        } else {
-          if (item2.isInstanceOf[NodeInfo]) {
-            result = false
-            reason = "comparing an atomic value to a node at position " + pos1
-            //break
-          } else {
-            val av1: AtomicValue = item1.asInstanceOf[AtomicValue]
-            val av2: AtomicValue = item2.asInstanceOf[AtomicValue]
-            if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
-              av1,
-              av2)) {
+            if (item2.isInstanceOf[NodeInfo]) {
               result = false
-              reason = "atomic values at position " + pos1 + " differ"
-              //break
+              reason = "comparing an atomic value to a node at position " + pos1
+              break
+            } else {
+              val av1: AtomicValue = item1.asInstanceOf[AtomicValue]
+              val av2: AtomicValue = item2.asInstanceOf[AtomicValue]
+              if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
+                av1,
+                av2)) {
+                result = false
+                reason = "atomic values at position " + pos1 + " differ"
+                break
+              }
             }
           }
         }
@@ -498,14 +505,16 @@ object DeepEqual {
                 v2.substring(0, Math.min(v2.length, 10)) +
                 "\")"
             } else {
-              for (i <- 1 until min
-                   if v1.substring(0, i) != v2.substring(0, i)) {
-                message += " different at char " + (i - 1) + "(\"" + v1
-                  .substring(i - 1, Math.min(v1.length, i + 10)) +
-                  "\", \"" +
-                  v2.substring(i - 1, Math.min(v2.length, i + 10)) +
-                  "\")"
-                //break
+              breakable {
+                for (i <- 1 until min
+                     if v1.substring(0, i) != v2.substring(0, i)) {
+                  message += " different at char " + (i - 1) + "(\"" + v1
+                    .substring(i - 1, Math.min(v1.length, i + 10)) +
+                    "\", \"" +
+                    v2.substring(i - 1, Math.min(v2.length, i + 10)) +
+                    "\")"
+                  break
+                }
               }
             }
           }
@@ -585,25 +594,27 @@ object DeepEqual {
     var prevIsText: Boolean = false
     val textBuffer: FastStringBuffer = new FastStringBuffer(
       FastStringBuffer.C64)
-    while (true) {
-      val next: Item = in.next()
-      if (next == null) {
-        //break
-      }
-      if (next.isInstanceOf[NodeInfo] &&
-        next.asInstanceOf[NodeInfo].getNodeKind == Type.TEXT) {
-        textBuffer.cat(next.getStringValueCS)
-        prevIsText = true
-      } else {
-        if (prevIsText) {
-          val textNode: Orphan = new Orphan(null)
-          textNode.setNodeKind(Type.TEXT)
-          textNode.setStringValue(textBuffer.toString)
-          items.add(textNode)
-          textBuffer.setLength(0)
+    breakable {
+      while (true) {
+        val next: Item = in.next()
+        if (next == null) {
+          break
         }
-        prevIsText = false
-        items.add(next)
+        if (next.isInstanceOf[NodeInfo] &&
+          next.asInstanceOf[NodeInfo].getNodeKind == Type.TEXT) {
+          textBuffer.cat(next.getStringValueCS)
+          prevIsText = true
+        } else {
+          if (prevIsText) {
+            val textNode: Orphan = new Orphan(null)
+            textNode.setNodeKind(Type.TEXT)
+            textNode.setStringValue(textBuffer.toString)
+            items.add(textNode)
+            textBuffer.setLength(0)
+          }
+          prevIsText = false
+          items.add(next)
+        }
       }
     }
     if (prevIsText) {

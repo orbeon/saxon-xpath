@@ -37,6 +37,7 @@ import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.tiny.TinyBuilder
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 class Doctype(content: Expression) extends Instruction {
 
@@ -54,7 +55,7 @@ class Doctype(content: Expression) extends Instruction {
   def copy(rebindings: RebindingMap): Expression =
     throw new UnsupportedOperationException("Doctype.copy()")
 
-override  def mayCreateNewNodes(): Boolean = true
+  override def mayCreateNewNodes(): Boolean = true
 
   override def getInstructionNameCode(): Int = StandardNames.SAXON_DOCTYPE
 
@@ -134,39 +135,41 @@ override  def mayCreateNewNodes(): Boolean = true
         }
         write(out, "\n  <!ATTLIST " + elname + ' ')
         val attributes: SequenceIterator = child.iterateAxis(AxisInfo.CHILD)
-        while (true) {
-          val attDef: NodeInfo = attributes.next().asInstanceOf[NodeInfo]
-          if (attDef == null) {
-            //break
-          }
-          if ("attribute" == attDef.getLocalPart) {
-            val atname: String = attDef.getAttributeValue("", "name")
-            val `type`: String = attDef.getAttributeValue("", "type")
-            val value: String = attDef.getAttributeValue("", "value")
-            if (atname == null) {
+        breakable {
+          while (true) {
+            val attDef: NodeInfo = attributes.next().asInstanceOf[NodeInfo]
+            if (attDef == null) {
+              break
+            }
+            if ("attribute" == attDef.getLocalPart) {
+              val atname: String = attDef.getAttributeValue("", "name")
+              val `type`: String = attDef.getAttributeValue("", "type")
+              val value: String = attDef.getAttributeValue("", "value")
+              if (atname == null) {
+                val e: XPathException = new XPathException(
+                  "dtd:attribute must have a name attribute")
+                e.setXPathContext(context)
+                throw e
+              }
+              if (`type` == null) {
+                val e: XPathException = new XPathException(
+                  "dtd:attribute must have a type attribute")
+                e.setXPathContext(context)
+                throw e
+              }
+              if (value == null) {
+                val e: XPathException = new XPathException(
+                  "dtd:attribute must have a value attribute")
+                e.setXPathContext(context)
+                throw e
+              }
+              write(out, "\n    " + atname + ' ' + `type` + ' ' + value)
+            } else {
               val e: XPathException = new XPathException(
-                "dtd:attribute must have a name attribute")
+                "Unrecognized element within dtd:attlist")
               e.setXPathContext(context)
               throw e
             }
-            if (`type` == null) {
-              val e: XPathException = new XPathException(
-                "dtd:attribute must have a type attribute")
-              e.setXPathContext(context)
-              throw e
-            }
-            if (value == null) {
-              val e: XPathException = new XPathException(
-                "dtd:attribute must have a value attribute")
-              e.setXPathContext(context)
-              throw e
-            }
-            write(out, "\n    " + atname + ' ' + `type` + ' ' + value)
-          } else {
-            val e: XPathException = new XPathException(
-              "Unrecognized element within dtd:attlist")
-            e.setXPathContext(context)
-            throw e
           }
         }
         write(out, ">")

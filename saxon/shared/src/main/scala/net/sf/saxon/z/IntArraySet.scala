@@ -5,6 +5,8 @@ import java.util.Arrays
 
 import IntArraySet._
 
+import scala.util.control.Breaks._
+
 object IntArraySet {
 
 
@@ -29,7 +31,10 @@ object IntArraySet {
 
     def hasNext(): Boolean = i < limit
 
-    def next: Integer = contents({ i += 1; i - 1 })
+    def next: Integer = contents({
+      i += 1;
+      i - 1
+    })
 
   }
 
@@ -150,18 +155,18 @@ class IntArraySet extends IntSet {
         if (a(i) < b(j)) {
 
           merged(o) = a(i)
-          o +=1
-          i+=1
+          o += 1
+          i += 1
 
         } else if (b(j) < a(i)) {
           merged(o) = b(j)
-          o +=1
-          j+=1
+          o += 1
+          j += 1
         } else {
           merged(o) = a(i)
-          o+=1
-          i+=1
-          j+=1
+          o += 1
+          i += 1
+          j += 1
         }
         if (i == m) {
           System.arraycopy(b, j, merged, o, n - j)
@@ -197,10 +202,15 @@ class IntArraySet extends IntSet {
         sb.append(contents(i) + ",")
       } else {
         var j: Int = i + 1
-        while (contents(j) == contents(j - 1) + 1) {
-          { j += 1; j - 1 }
-          if (j == contents.length) {
-            //break
+        breakable {
+          while (contents(j) == contents(j - 1) + 1) {
+            {
+              j += 1;
+              j - 1
+            }
+            if (j == contents.length) {
+              break
+            }
           }
         }
         sb.append(contents(i) + "-" + contents(j - 1) + ",")
@@ -225,7 +235,7 @@ class IntArraySet extends IntSet {
       var h: Int = 936247625
       val it: IntIterator = iterator()
       while (it.hasNext) h += it.next
-       return h
+      return h
     }
     hashCodeVar
   }

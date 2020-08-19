@@ -56,13 +56,8 @@ class XdmNode extends XdmItem {
     n.getNodeKind match {
       case Type.DOCUMENT | Type.TEXT | Type.COMMENT => null
       case Type.PROCESSING_INSTRUCTION | Type.NAMESPACE =>
-        if (n.getLocalPart.isEmpty) {
-          null
-        } else {
-          new QName(new StructuredQName("", "", n.getLocalPart))
-        }
-      case Type.ELEMENT | Type.ATTRIBUTE =>
-        new QName(n.getPrefix, n.getURI, n.getLocalPart)
+        if (n.getLocalPart.isEmpty) null else new QName(new StructuredQName("", "", n.getLocalPart))
+      case Type.ELEMENT | Type.ATTRIBUTE => new QName(n.getPrefix, n.getURI, n.getLocalPart)
       case _ => null
 
     }

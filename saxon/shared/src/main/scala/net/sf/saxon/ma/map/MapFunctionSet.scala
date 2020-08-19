@@ -407,7 +407,7 @@ object MapFunctionSet {
               val existing: Sequence = baseMap.get(pair.key)
               if (existing != null) {
                 duplicates match {
-                  case "use-first" | "unspecified" | "use-any" => //break
+                  case "use-first" | "unspecified" | "use-any" =>
                   case "use-last" =>
                     baseMap.initialPut(pair.key.getStringValue, pair.value)
                   case "combine" =>
@@ -452,7 +452,7 @@ object MapFunctionSet {
             val existing: Sequence = baseMap.get(pair.key)
             if (existing != null) {
               duplicates match {
-                case "use-first" | "unspecified" | "use-any" => //break
+                case "use-first" | "unspecified" | "use-any" =>
                 case "use-last" =>
                   baseMap = baseMap.addEntry(pair.key, pair.value)
                 case "combine" =>

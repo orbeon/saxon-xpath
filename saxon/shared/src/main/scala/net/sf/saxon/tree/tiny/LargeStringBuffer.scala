@@ -6,6 +6,8 @@ import java.util.Arrays
 
 import LargeStringBuffer._
 
+import scala.util.control.Breaks._
+
 object LargeStringBuffer {
 
   private val BITS: Int = 16
@@ -33,7 +35,9 @@ class LargeStringBuffer extends AppendableCharSequence {
       }
       data = Arrays.copyOf(data, segs * 2)
     }
-    data({ segmentsUsed += 1; segmentsUsed - 1 }) = seg
+    data({
+      segmentsUsed += 1; segmentsUsed - 1
+    }) = seg
   }
 
   def cat(s: CharSequence): LargeStringBuffer = {
@@ -154,14 +158,19 @@ class LargeStringBuffer extends AppendableCharSequence {
       val firstSegLen: Int = SEGLEN - (start & MASK)
       fsb.append(data(firstSeg), start & MASK, firstSegLen)
       var doneTo: Int = start + firstSegLen
-      while (true) {
-        { firstSeg += 1; firstSeg - 1 }
-        if (doneTo + SEGLEN < end) {
-          fsb.append(data(firstSeg))
-          doneTo += SEGLEN
-        } else {
-          fsb.append(data(firstSeg), 0, end - doneTo)
-          //break
+      breakable {
+        while (true) {
+          {
+            firstSeg += 1;
+            firstSeg - 1
+          }
+          if (doneTo + SEGLEN < end) {
+            fsb.append(data(firstSeg))
+            doneTo += SEGLEN
+          } else {
+            fsb.append(data(firstSeg), 0, end - doneTo)
+            break
+          }
         }
       }
       fsb

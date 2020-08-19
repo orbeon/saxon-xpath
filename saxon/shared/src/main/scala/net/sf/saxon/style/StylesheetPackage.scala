@@ -28,6 +28,7 @@ import StylesheetPackage._
 import net.sf.saxon.query.XQueryFunctionLibrary
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 object StylesheetPackage {
 
@@ -37,8 +38,8 @@ object StylesheetPackage {
 
 class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
-/*  @BeanProperty
-  var packageVersion: PackageVersion = null  // PackageVersion not exist*/
+  /*  @BeanProperty
+    var packageVersion: PackageVersion = null  // PackageVersion not exist*/
 
   @BeanProperty
   var packageName: String = _
@@ -47,9 +48,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   var usedPackages: List[StylesheetPackage] = new ArrayList()
 
   private var xsltVersion: Int = _
-/*
-  @BeanProperty
-  var ruleManager: RuleManager = _*/
+  /*
+    @BeanProperty
+    var ruleManager: RuleManager = _*/
 
   @BeanProperty
   var characterMapIndex: CharacterMapIndex = _
@@ -59,11 +60,11 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   private var completionActions: List[Action] = new ArrayList()
 
-   var globalContextRequirement: GlobalContextRequirement = null
+  var globalContextRequirement: GlobalContextRequirement = null
 
   private var containsGlobalContextItemDeclaration: Boolean = false
 
-   var stripperRules: SpaceStrippingRule = _
+  var stripperRules: SpaceStrippingRule = _
 
   @BooleanBeanProperty
   var stripsWhitespace: Boolean = false
@@ -71,7 +72,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   @BooleanBeanProperty
   var stripsTypeAnnotations: Boolean = false
 
-   var defaultOutputProperties: Properties = _
+  var defaultOutputProperties: Properties = _
 
   @BeanProperty
   var defaultMode: StructuredQName = _
@@ -79,10 +80,10 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   @BooleanBeanProperty
   var declaredModes: Boolean = _
 
-   var namedOutputProperties: Map[StructuredQName, Properties] =
+  var namedOutputProperties: Map[StructuredQName, Properties] =
     new HashMap(4)
 
-   var schemaIndex: Set[String] = new HashSet(10)
+  var schemaIndex: Set[String] = new HashSet(10)
 
   @BeanProperty
   var functionLibrary: FunctionLibraryList = _
@@ -104,9 +105,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   @BeanProperty
   var componentIndex: HashMap[SymbolicName, Component] = new HashMap(20)
 
-   var hiddenComponents: List[Component] = new ArrayList()
+  var hiddenComponents: List[Component] = new ArrayList()
 
-   var overriddenComponents: HashMap[SymbolicName, Component] =
+  var overriddenComponents: HashMap[SymbolicName, Component] =
     new HashMap()
 
   @BeanProperty
@@ -186,7 +187,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     completionActions.add(action)
   }
 
-   def complete(): Unit = {
+  def complete(): Unit = {
     for (a <- completionActions.asScala) {
       a.doAction()
     }
@@ -262,8 +263,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     overriddenComponents.put(comp.getActor.getSymbolicName, comp)
   }
 
-  def addComponentsFromUsedPackage(usedPackage: StylesheetPackage/*,
-                                   acceptors: List[XSLAccept]*/, // XSLAccept not exist
+  def addComponentsFromUsedPackage(usedPackage: StylesheetPackage /*,
+                                   acceptors: List[XSLAccept]*/ , // XSLAccept not exist
                                    overrides: Set[SymbolicName]): Unit = {
     usedPackages.add(usedPackage)
     trace(
@@ -297,11 +298,11 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
           newV = acceptedVisibility
         } else {
           acceptedVisibility = wildcardAcceptedVisibility(name)
-         /* if (acceptedVisibility != null) {
-            if (XSLAccept.isCompatible(oldV, acceptedVisibility)) {
-              newV = acceptedVisibility
-            }
-          }*/
+          /* if (acceptedVisibility != null) {
+             if (XSLAccept.isCompatible(oldV, acceptedVisibility)) {
+               newV = acceptedVisibility
+             }
+           }*/
         }
         if (newV == null) {
           newV =
@@ -339,13 +340,13 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         componentIndex.put(name, newC)
         if (oldC.getActor.isInstanceOf[Mode] &&
           (oldV == Visibility.PUBLIC || oldV == Visibility.FINAL)) {
-         /* val existing: Mode =
-            getRuleManager.obtainMode(name.getComponentName, false)*/
-        /*  if (existing != null) {
-            throw new XPathException("Duplicate " + key,
-              "XTSE3050",
-              oldC.getActor)
-          } else {}*/
+          /* val existing: Mode =
+             getRuleManager.obtainMode(name.getComponentName, false)*/
+          /*  if (existing != null) {
+              throw new XPathException("Duplicate " + key,
+                "XTSE3050",
+                oldC.getActor)
+            } else {}*/
         }
       }
       if (newC.getActor.isInstanceOf[Mode] && overrides.contains(name)) {
@@ -456,7 +457,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   }
 
   private def explicitAcceptedVisibility(
-                                          name: SymbolicName/*,
+                                          name: SymbolicName /*,
                                           acceptors: List[XSLAccept]*/): Visibility.Visibility = {
     /*for (acceptor <- acceptors.asScala; test <- acceptor.getExplicitComponentTests
          if test.matches(name)) {
@@ -466,22 +467,22 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   }
 
   private def wildcardAcceptedVisibility(
-                                          name: SymbolicName/*,
+                                          name: SymbolicName /*,
                                           acceptors: List[XSLAccept]*/): Visibility.Visibility = {
     var vis: Visibility.Visibility = null
- /*   for (acceptor <- acceptors.asScala; test <- acceptor.getWildcardComponentTests // XSLAccept not exist
-         if test.getQNameTest.asInstanceOf[NodeTest].getDefaultPriority ==
-           -0.25 &&
-           test.matches(name)) {
-      vis = acceptor.getVisibility
-    }*/
+    /*   for (acceptor <- acceptors.asScala; test <- acceptor.getWildcardComponentTests // XSLAccept not exist
+            if test.getQNameTest.asInstanceOf[NodeTest].getDefaultPriority ==
+              -0.25 &&
+              test.matches(name)) {
+         vis = acceptor.getVisibility
+       }*/
     if (vis != null) {
       return vis
     }
-   /* for (acceptor <- acceptors.asScala; test <- acceptor.getWildcardComponentTests
-         if test.matches(name)) {
-      vis = acceptor.getVisibility
-    }*/
+    /* for (acceptor <- acceptors.asScala; test <- acceptor.getWildcardComponentTests
+          if test.matches(name)) {
+       vis = acceptor.getVisibility
+     }*/
     vis
   }
 
@@ -526,7 +527,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     this.underriding = underriding
   }
 
-   def getFunction(name: SymbolicName.F): UserFunction =
+  def getFunction(name: SymbolicName.F): UserFunction =
     if (name.getArity == -1) {
       val maximumArity: Int = 20
       for (a <- 0 until maximumArity) {
@@ -558,23 +559,23 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
          if value.getVisibility == Visibility.ABSTRACT) {
       abstractComponents.put(key, value)
     }
-   /* pss.setTopLevelPackage(this)
-    if (isSchemaAware || !schemaIndex.isEmpty) {
-      pss.setSchemaAware(true)
-    }
-    pss.setHostLanguage(HostLanguage.XSLT)*/
+    /* pss.setTopLevelPackage(this)
+     if (isSchemaAware || !schemaIndex.isEmpty) {
+       pss.setSchemaAware(true)
+     }
+     pss.setHostLanguage(HostLanguage.XSLT)*/
     val libraryList: FunctionLibraryList = new FunctionLibraryList()
     for (lib <- functionLibrary.getLibraryList.asScala) {
-  /*    if (lib.isInstanceOf[StylesheetFunctionLibrary]) {
-        if (lib
-          .asInstanceOf[StylesheetFunctionLibrary]
-          .isOverrideExtensionFunction) {
-          libraryList.addFunctionLibrary(overriding)
-        } else {
-          libraryList.addFunctionLibrary(underriding)
-        }
-      } else {*/
-        libraryList.addFunctionLibrary(lib)
+      /*    if (lib.isInstanceOf[StylesheetFunctionLibrary]) {
+            if (lib
+              .asInstanceOf[StylesheetFunctionLibrary]
+              .isOverrideExtensionFunction) {
+              libraryList.addFunctionLibrary(overriding)
+            } else {
+              libraryList.addFunctionLibrary(underriding)
+            }
+          } else {*/
+      libraryList.addFunctionLibrary(lib)
       //}
     }
     /*pss.setFunctionLibrary(libraryList)
@@ -594,17 +595,17 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     for (comp <- componentIndex.values.asScala
          if comp.getActor.isInstanceOf[NamedTemplate]) {
       val t: NamedTemplate = comp.getActor.asInstanceOf[NamedTemplate]
-     // pss.putNamedTemplate(t.getTemplateName, t)
+      // pss.putNamedTemplate(t.getTemplateName, t)
     }
     //pss.setComponentIndex(componentIndex)
     for (comp <- componentIndex.values.asScala
          if comp.getActor.isInstanceOf[GlobalParam]) {
       val gv: GlobalParam = comp.getActor.asInstanceOf[GlobalParam]
-     // pss.registerGlobalParameter(gv)
+      // pss.registerGlobalParameter(gv)
     }
-   /* if (globalContextRequirement != null) {
-      pss.setGlobalContextRequirement(globalContextRequirement)
-    }*/
+    /* if (globalContextRequirement != null) {
+       pss.setGlobalContextRequirement(globalContextRequirement)
+     }*/
   }
 
   private def mayCreateSecondaryResultDocuments(): Boolean = {
@@ -629,16 +630,19 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     if (!abstractComponents.isEmpty) {
       val buff: FastStringBuffer = new FastStringBuffer(256)
       var count: Int = 0
-      for (name <- abstractComponents.keySet.asScala) {
-        if ( {
-          count += 1; count - 1
-        } > 0) {
-          buff.append(", ")
-        }
-        buff.append(name.toString)
-        if (buff.length > 300) {
-          buff.append(" ...")
-          //break
+      breakable {
+        for (name <- abstractComponents.keySet.asScala) {
+          if ( {
+            count += 1;
+            count - 1
+          } > 0) {
+            buff.append(", ")
+          }
+          buff.append(name.toString)
+          if (buff.length > 300) {
+            buff.append(" ...")
+            break
+          }
         }
       }
       throw new XPathException(

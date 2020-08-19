@@ -30,6 +30,8 @@ import scala.jdk.CollectionConverters._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
+import scala.util.control.Breaks._
+
 
 object Operation {
 
@@ -175,33 +177,39 @@ object Operation {
     override def matchesEmptyString(): Int = {
       var matchesEmptyAnywhere: Boolean = true
       val matchesEmptyNowhere: Boolean = false
-      for (o <- operations.asScala) {
-        val m: Int = o.matchesEmptyString()
-        if (m == MATCHES_ZLS_NEVER) {
-          MATCHES_ZLS_NEVER
-        }
-        if (m != MATCHES_ZLS_ANYWHERE) {
-          matchesEmptyAnywhere = false
-          //break
+      breakable {
+        for (o <- operations.asScala) {
+          val m: Int = o.matchesEmptyString()
+          if (m == MATCHES_ZLS_NEVER) {
+            MATCHES_ZLS_NEVER
+          }
+          if (m != MATCHES_ZLS_ANYWHERE) {
+            matchesEmptyAnywhere = false
+            break
+          }
         }
       }
       if (matchesEmptyAnywhere) {
         MATCHES_ZLS_ANYWHERE
       }
       var matchesBOL: Boolean = true
-      for (o <- operations.asScala
-           if (o.matchesEmptyString() & MATCHES_ZLS_AT_START) == 0) {
-        matchesBOL = false
-        //break
+      breakable {
+        for (o <- operations.asScala
+             if (o.matchesEmptyString() & MATCHES_ZLS_AT_START) == 0) {
+          matchesBOL = false
+          break
+        }
       }
       if (matchesBOL) {
         MATCHES_ZLS_AT_START
       }
       var matchesEOL: Boolean = true
-      for (o <- operations.asScala
-           if (o.matchesEmptyString() & MATCHES_ZLS_AT_END) == 0) {
-        matchesEOL = false
-        //break
+      breakable {
+        for (o <- operations.asScala
+             if (o.matchesEmptyString() & MATCHES_ZLS_AT_END) == 0) {
+          matchesEOL = false
+          break
+        }
       }
       if (matchesEOL) {
         MATCHES_ZLS_AT_END
@@ -467,24 +475,26 @@ object Operation {
       }
       var p: Int = position
       var matches: Int = 0
-      while (p <= guard) {
-        val it: IntIterator = opt.iterateMatches(matcher, p)
-        var matched: Boolean = false
-        if (it.hasNext) {
-          matched = true
-          it.next
-        }
-        if (matched) {
-          {
-            matches += 1;
-            matches - 1
+      breakable {
+        while (p <= guard) {
+          val it: IntIterator = opt.iterateMatches(matcher, p)
+          var matched: Boolean = false
+          if (it.hasNext) {
+            matched = true
+            it.next
           }
-          p += len
-          if (matches == max) {
-            //break
+          if (matched) {
+            {
+              matches += 1;
+              matches - 1
+            }
+            p += len
+            if (matches == max) {
+              break
+            }
+          } else {
+            break
           }
-        } else {
-          //break
         }
       }
       if (matches < min) {
@@ -523,16 +533,18 @@ object Operation {
       val guard: Int = matcher.search.uLength()
       var p: Int = position
       var matches: Int = 0
-      while (matches < max && p <= guard) {
-        val it: IntIterator = opt.iterateMatches(matcher, p)
-        if (it.hasNext) {
-          {
-            matches += 1;
-            matches - 1
+      breakable {
+        while (matches < max && p <= guard) {
+          val it: IntIterator = opt.iterateMatches(matcher, p)
+          if (it.hasNext) {
+            {
+              matches += 1;
+              matches - 1
+            }
+            p = it.next
+          } else {
+            break
           }
-          p = it.next
-        } else {
-          //break
         }
       }
       if (matches < min) {
@@ -590,16 +602,18 @@ object Operation {
           iterators.push(new IntSingletonIterator(position))
           positions.push(p)
         }
-        for (i <- 0 until bound) {
-          val it: IntIterator = op.iterateMatches(matcher, p)
-          if (it.hasNext) {
-            p = it.next
-            iterators.push(it)
-            positions.push(p)
-          } else if (iterators.isEmpty) {
-            EmptyIntIterator.getInstance
-          } else {
-            //break
+        breakable {
+          for (i <- 0 until bound) {
+            val it: IntIterator = op.iterateMatches(matcher, p)
+            if (it.hasNext) {
+              p = it.next
+              iterators.push(it)
+              positions.push(p)
+            } else if (iterators.isEmpty) {
+              EmptyIntIterator.getInstance
+            } else {
+              break
+            }
           }
         }
         val base: IntIterator = new IntIterator() {
@@ -611,16 +625,17 @@ object Operation {
               var p: Int = top.next
               positions.pop()
               positions.push(p)
-              while (iterators.size < bound) {
+              breakable { while (iterators.size < bound) {
                 var it: IntIterator = op.iterateMatches(matcher, p)
                 if (it.hasNext) {
                   p = it.next
                   iterators.push(it)
                   positions.push(p)
                 } else {
-                  //break
+                  break
                 }
               }
+            }
             } else {
               iterators.pop()
               positions.pop()

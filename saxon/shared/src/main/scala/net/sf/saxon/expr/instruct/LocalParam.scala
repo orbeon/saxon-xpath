@@ -238,7 +238,7 @@ class LocalParam extends Instruction with LocalBinding {
     val wasSupplied: Int =
       context.useLocalParameter(variableQName, slotNumber, isTunnelParam)
     wasSupplied match {
-      case ParameterSet.SUPPLIED_AND_CHECKED => //break
+      case ParameterSet.SUPPLIED_AND_CHECKED =>
       case ParameterSet.SUPPLIED =>
         if (conversionOp != null) {
           context.setLocalVariable(

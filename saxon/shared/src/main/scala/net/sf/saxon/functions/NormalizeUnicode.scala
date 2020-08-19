@@ -16,6 +16,8 @@ import net.sf.saxon.value.Whitespace
 
 import NormalizeUnicode._
 
+import scala.util.control.Breaks._
+
 object NormalizeUnicode {
 
   def normalize(sv: StringValue, form: String, c: XPathContext): StringValue = {
@@ -41,12 +43,14 @@ object NormalizeUnicode {
     val chars: CharSequence = sv.getStringValueCS
     if (chars.isInstanceOf[CompressedWhitespace]) return sv
     var i: Int = chars.length - 1
-    while (i >= 0) {
-      if (chars.charAt(i) > 127) {
-        allASCII = false
-        //break
+    breakable {
+      while (i >= 0) {
+        if (chars.charAt(i) > 127) {
+          allASCII = false
+          break
+        }
+        i -= 1
       }
-      i -= 1
     }
     if (allASCII) return sv
     val norm: Normalizer = Normalizer.make(fb, c.getConfiguration)

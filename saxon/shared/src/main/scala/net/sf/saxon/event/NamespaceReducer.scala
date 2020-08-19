@@ -36,7 +36,7 @@ class NamespaceReducer(val next: Receiver)
   private var countStack = new Array[Int](50)
   private var depth = 0
   private var disinheritStack = new Array[Boolean](50)
-  private var pendingUndeclarations : Array[NamespaceBinding] = null
+  private var pendingUndeclarations: Array[NamespaceBinding] = null
 
   /**
    * startElement. This call removes redundant namespace declarations, and
@@ -52,17 +52,18 @@ class NamespaceReducer(val next: Receiver)
       // undeclared. Note (bug 20340) that namespaces are still inherited from grandparent elements
       val undeclarations = new util.ArrayList[NamespaceBinding](namespacesSize)
       var k = namespacesSize
-      breakable{
-      for (d <- depth - 1 to 0 by -1) {
-        if (!disinheritStack(d)) break //todo: break is not supported
-        for (i <- 0 until countStack(d)) {
-          undeclarations.add(namespaces({
-            k -= 1;
-            k
-          }))
+      breakable {
+        for (d <- depth - 1 to 0 by -1) {
+          if (!disinheritStack(d))
+            break
+          for (i <- 0 until countStack(d)) {
+            undeclarations.add(namespaces({
+              k -= 1;
+              k
+            }))
+          }
         }
       }
-    }
       pendingUndeclarations = undeclarations.toArray(NamespaceBinding.EMPTY_ARRAY)
     }
     else pendingUndeclarations = null
@@ -70,7 +71,8 @@ class NamespaceReducer(val next: Receiver)
     countStack(depth) = 0
     disinheritStack(depth) = ReceiverOption.contains(properties, ReceiverOption.DISINHERIT_NAMESPACES)
     if ( {
-      depth += 1; depth
+      depth += 1;
+      depth
     } >= countStack.length) {
       countStack = util.Arrays.copyOf(countStack, depth * 2)
       disinheritStack = util.Arrays.copyOf(disinheritStack, depth * 2)
@@ -90,13 +92,13 @@ class NamespaceReducer(val next: Receiver)
     }
     // First cancel any pending undeclaration of this namespace prefix (there may be more than one)
     val prefix = nsBinding.getPrefix
-    if (pendingUndeclarations != null) for (p <- 0 until pendingUndeclarations.length) {
-      val nb = pendingUndeclarations(p)
-      if (nb != null && prefix == nb.getPrefix) {
-        pendingUndeclarations(p) = null
-        //break;
+    if (pendingUndeclarations != null)
+      for (p <- 0 until pendingUndeclarations.length) {
+        val nb = pendingUndeclarations(p)
+        if (nb != null && prefix == nb.getPrefix) {
+          pendingUndeclarations(p) = null
+        }
       }
-    }
     for (i <- namespacesSize - 1 to 0 by -1) {
       if (namespaces(i) == nsBinding) { // it's a duplicate so we don't need it
         return false
@@ -117,7 +119,8 @@ class NamespaceReducer(val next: Receiver)
   private def addToStack(nsBinding: NamespaceBinding) = { // expand the stack if necessary
     if (namespacesSize + 1 >= namespaces.length) namespaces = util.Arrays.copyOf(namespaces, namespacesSize * 2)
     namespaces({
-      namespacesSize += 1; namespacesSize - 1
+      namespacesSize += 1;
+      namespacesSize - 1
     }) = nsBinding
   }
 
@@ -134,7 +137,8 @@ class NamespaceReducer(val next: Receiver)
   @throws[XPathException]
   override def endElement() = {
     if ( {
-      depth -= 1; depth + 1
+      depth -= 1;
+      depth + 1
     } == 0) throw new IllegalStateException("Attempt to output end tag with no matching start tag")
     namespacesSize -= countStack(depth)
     nextReceiver.endElement()

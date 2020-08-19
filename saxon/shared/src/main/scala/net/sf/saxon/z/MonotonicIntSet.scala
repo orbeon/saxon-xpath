@@ -5,10 +5,10 @@
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * Set of int values. This implementation requires that new entries are added in monotonically
-  * increasing order; any attempt to add a value out of sequence, or to remove a value, results
-  * is an UnsupportedOperationException
-  */
+ * Set of int values. This implementation requires that new entries are added in monotonically
+ * increasing order; any attempt to add a value out of sequence, or to remove a value, results
+ * is an UnsupportedOperationException
+ */
 
 package net.sf.saxon.z
 
@@ -18,8 +18,7 @@ import java.util.Arrays
 
 import MonotonicIntSet._
 
-//remove if not needed
-//import scala.collection.JavaConversions._
+import scala.util.control.Breaks._
 
 object MonotonicIntSet {
 
@@ -74,7 +73,10 @@ class MonotonicIntSet extends IntSet {
     if (used == contents.length) {
       contents = Arrays.copyOf(contents, if (used == 0) 4 else used * 2)
     }
-    contents({ used += 1; used - 1 }) = value
+    contents({
+      used += 1;
+      used - 1
+    }) = value
     true
   }
 
@@ -86,14 +88,14 @@ class MonotonicIntSet extends IntSet {
     if (size == 0) {
       return other.copy()
     } else if (other.isEmpty) {
-      return  copy()
+      return copy()
     } else if (other == IntUniversalSet.getInstance) {
-      return  other
+      return other
     } else if (other.isInstanceOf[IntComplementSet]) {
       return other.union(this)
     }
     if (equals(other)) {
-      return  copy()
+      return copy()
     }
     if (other.isInstanceOf[MonotonicIntSet]) {
       // Form the union by a merge of the two sorted arrays
@@ -108,22 +110,22 @@ class MonotonicIntSet extends IntSet {
       while (true) {
         if (a(i) < b(j)) {
           merged(o) = a(i)
-          o +=1
-          i+=1
+          o += 1
+          i += 1
         } else if (b(j) < a(i)) {
           merged(o) = b(j)
-          o +=1
-          j+=1
+          o += 1
+          j += 1
         } else {
           merged(o) = a(i)
-          o+=1
-          i+=1
-          j+=1
+          o += 1
+          i += 1
+          j += 1
         }
         if (i == m) {
           System.arraycopy(b, j, merged, o, n - j)
           o += (n - j)
-          return   make(merged, o)
+          return make(merged, o)
         } else if (j == n) {
           System.arraycopy(a, i, merged, o, m - i)
           o += (m - i)
@@ -160,10 +162,15 @@ class MonotonicIntSet extends IntSet {
         sb.append(contents(i) + ",")
       } else {
         var j: Int = i + 1
-        while (contents(j) == contents(j - 1) + 1) {
-          { j += 1; j - 1 }
-          if (j == used) {
-            //break
+        breakable {
+          while (contents(j) == contents(j - 1) + 1) {
+            {
+              j += 1;
+              j - 1
+            }
+            if (j == used) {
+              break
+            }
           }
         }
         sb.append(contents(i) + "-" + contents(j - 1) + ",")

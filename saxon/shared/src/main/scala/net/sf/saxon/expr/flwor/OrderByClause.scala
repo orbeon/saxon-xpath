@@ -26,6 +26,7 @@ import net.sf.saxon.value.SequenceType
 import net.sf.saxon.expr.flwor.Clause.ClauseName.ORDER_BY
 import Clause.ClauseName.ClauseName
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 
 /**
@@ -130,9 +131,11 @@ class OrderByClause(flwor: FLWORExpression,
                 contextInfo: ContextItemStaticInfo): Unit = {
     var allKeysFixed: Boolean = true
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
-    for (sk <- sortKeys.asScala if !sk.isFixed.asInstanceOf[Boolean]) {
-      allKeysFixed = false
-//break
+    breakable {
+      for (sk <- sortKeys.asScala if !sk.isFixed.asInstanceOf[Boolean]) {
+        allKeysFixed = false
+        break
+      }
     }
     if (allKeysFixed) {
       comparators = Array.ofDim[AtomicComparer](sortKeys.size)

@@ -7,6 +7,7 @@ import java.util.LinkedList
 import java.util.List
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object ImmutableHashTrieMap {
 
@@ -246,10 +247,11 @@ object ImmutableHashTrieMap {
       val newSize: Int = if (newNodes(bucket) == EMPTY_NODE) size - 1 else size
       if (newSize == 1) {
         var orphanedBucket: Int = -1
-        for (i <- 0 until FANOUT if newNodes(i) != EMPTY_NODE) {
+        breakable { for (i <- 0 until FANOUT if newNodes(i) != EMPTY_NODE) {
           orphanedBucket = i
-          //break
+          break
         }
+      }
         val orphanedEntry: ImmutableHashTrieMap[K, V] = subnodes(
           orphanedBucket)
         if (orphanedEntry.isArrayNode) {

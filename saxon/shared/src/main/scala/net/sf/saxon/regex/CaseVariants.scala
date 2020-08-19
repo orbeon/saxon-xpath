@@ -33,8 +33,7 @@ import java.io.InputStream
 
 import java.util.ArrayList
 
-
-
+import scala.util.control.Breaks._
 
 object CaseVariants {
 
@@ -46,8 +45,8 @@ object CaseVariants {
     monoVariants = new IntToIntHashMap(2500)
     polyVariants = new IntHashMap(100)
     val in: InputStream = Configuration.locateResource("casevariants.xml",
-                                                       new ArrayList(),
-                                                       new ArrayList())
+      new ArrayList(),
+      new ArrayList())
     if (in == null) {
       throw new RuntimeException("Unable to read casevariants.xml file")
     }
@@ -62,23 +61,25 @@ object CaseVariants {
     val iter: AxisIterator = doc.iterateAxis(
       AxisInfo.DESCENDANT,
       new NameTest(Type.ELEMENT, "", "c", config.getNamePool))
-    while (true) {
-      val item: NodeInfo = iter.next()
-      if (item == null) {
-//break
-      }
-      val code: String = item.getAttributeValue("", "n")
-      val icode: Int = java.lang.Integer.parseInt(code, 16)
-      val variants: String = item.getAttributeValue("", "v")
-      val vhex: Array[String] = variants.split(",")
-      val vint: Array[Int] = Array.ofDim[Int](vhex.length)
-      for (i <- 0 until vhex.length) {
-        vint(i) = java.lang.Integer.parseInt(vhex(i), 16)
-      }
-      if (vhex.length == 1) {
-        monoVariants.put(icode, vint(0))
-      } else {
-        polyVariants.put(icode, vint)
+    breakable {
+      while (true) {
+        val item: NodeInfo = iter.next()
+        if (item == null) {
+          break
+        }
+        val code: String = item.getAttributeValue("", "n")
+        val icode: Int = java.lang.Integer.parseInt(code, 16)
+        val variants: String = item.getAttributeValue("", "v")
+        val vhex: Array[String] = variants.split(",")
+        val vint: Array[Int] = Array.ofDim[Int](vhex.length)
+        for (i <- 0 until vhex.length) {
+          vint(i) = java.lang.Integer.parseInt(vhex(i), 16)
+        }
+        if (vhex.length == 1) {
+          monoVariants.put(icode, vint(0))
+        } else {
+          polyVariants.put(icode, vint)
+        }
       }
     }
   }

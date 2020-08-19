@@ -12,6 +12,8 @@ import net.sf.saxon.functions.SystemFunction
 
 import net.sf.saxon.model._
 
+import scala.util.control.Breaks._
+
 import net.sf.saxon.om.Item
 
 import net.sf.saxon.om.SequenceIterator
@@ -168,14 +170,15 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     result
   }
 
-  private def removeRedundantBranches0(
-                                        visitor: ExpressionVisitor): Expression = {
+  private def removeRedundantBranches0(visitor: ExpressionVisitor): Expression = {
     var compress: Boolean = false
-    for (i <- 0 until size()) {
-      val condition: Expression = getCondition(i)
-      if (condition.isInstanceOf[Literal]) {
-        compress = true
-        //break
+    breakable {
+      for (i <- 0 until size()) {
+        val condition: Expression = getCondition(i)
+        if (condition.isInstanceOf[Literal]) {
+          compress = true
+          break
+        }
       }
     }
     val localSize: Int = size
@@ -183,14 +186,16 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     if (compress) {
       val conditions: List[Expression] = new ArrayList[Expression](localSize)
       val actions: List[Expression] = new ArrayList[Expression](localSize)
-      for (i <- 0 until localSize) {
-        val condition: Expression = getCondition(i)
-        if (!Literal.hasEffectiveBooleanValue(condition, false)) {
-          conditions.add(condition)
-          actions.add(getAction(i))
-        }
-        if (Literal.hasEffectiveBooleanValue(condition, true)) {
-          //break
+      breakable {
+        for (i <- 0 until localSize) {
+          val condition: Expression = getCondition(i)
+          if (!Literal.hasEffectiveBooleanValue(condition, false)) {
+            conditions.add(condition)
+            actions.add(getAction(i))
+          }
+          if (Literal.hasEffectiveBooleanValue(condition, true)) {
+            break
+          }
         }
       }
       if (conditions.isEmpty) {
@@ -273,33 +278,38 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         throw err
       }
     }
-    for (i <- 0 until size) {
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
-        //continue
-      }
-      try actionOps(i).typeCheck(visitor, contextInfo)
-      catch {
-        case err: XPathException => {
-          err.maybeSetLocation(getLocation)
-          err.maybeSetFailingExpression(getAction(i))
-          if (err.isStaticError) {
-            throw err
-          } else if (err.isTypeError) {
-            if (Literal.isEmptySequence(getAction(i)) ||
-              Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
-              setAction(i,
-                new ErrorExpression(new XmlProcessingException(err)))
-            } else {
-              throw err
+    // Check that each of the action branches satisfies the expected type. This is a stronger check than checking the
+    // type of the top-level expression. It's important with tail recursion not to wrap a tail call in a type checking
+    // expression just because a dynamic type check is needed on a different branch of the choice.
+    breakable {
+      for (i <- 0 until size) {
+        if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+          // Don't do any checking if we know statically the condition will be false, because it could
+          // result in spurious warnings: bug 4537
+        } else {
+          try actionOps(i).typeCheck(visitor, contextInfo)
+          catch {
+            case err: XPathException => {
+              err.maybeSetLocation(getLocation)
+              err.maybeSetFailingExpression(getAction(i))
+              if (err.isStaticError) {
+                throw err
+              } else if (err.isTypeError) {
+                if (Literal.isEmptySequence(getAction(i)) ||
+                  Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+                  setAction(i,
+                    new ErrorExpression(new XmlProcessingException(err)))
+                } else {
+                  throw err
+                }
+              } else {
+                setAction(i, new ErrorExpression(new XmlProcessingException(err)))
+              }
             }
-          } else {
-            setAction(i, new ErrorExpression(new XmlProcessingException(err)))
           }
+          if (Literal.hasEffectiveBooleanValue(getCondition(i), true))
+            break
         }
-
-      }
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
-        //break
       }
     }
     val opt: Optimizer = visitor.obtainOptimizer()
@@ -393,7 +403,6 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
     for (i <- 0 until sizeInt) {
       if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
-        //continue
       }
       try actionOps(i).optimize(visitor, contextItemType)
       catch {
@@ -420,8 +429,10 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
           getAction(i).getLocation
         )
       }
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
-        //break
+      breakable {
+        if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
+          break
+        }
       }
     }
     if (sizeInt == 0) {

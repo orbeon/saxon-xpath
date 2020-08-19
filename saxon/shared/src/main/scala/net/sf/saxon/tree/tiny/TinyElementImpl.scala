@@ -253,20 +253,17 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
               lLocation,
               ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY)
           }
-          //break
         }
         case Type.TEXT => {
           closePending = false
           val value: CharSequence = TinyTextImpl.getStringValue(tree, next)
           receiver.characters(value, location, ReceiverOption.WHOLE_TEXT_NODE)
-          //break
         }
         case Type.WHITESPACE_TEXT => {
           closePending = false
           val value: CharSequence =
             WhitespaceTextImpl.getStringValueCS(tree, next)
           receiver.characters(value, location, ReceiverOption.WHOLE_TEXT_NODE)
-          //break
         }
         case Type.COMMENT => {
           closePending = false
@@ -280,7 +277,6 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
           } else {
             receiver.comment("", Loc.NONE, ReceiverOption.NONE)
           }
-          //break
         }
         case Type.PROCESSING_INSTRUCTION => {
           closePending = false
@@ -289,7 +285,6 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
             pi.getStringValue,
             lLocation,
             ReceiverOption.NONE)
-          //break
         }
         case Type.PARENT_POINTER => closePending = false
 

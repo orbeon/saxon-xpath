@@ -54,22 +54,23 @@ import java.io._
 import java.net.URISyntaxException
 
 import java.util.Properties
+import scala.util.control.Breaks._
 
 abstract class Emitter
   extends SequenceReceiver(null)
     with ReceiverWithOutputProperties {
 
-   var streamResult: StreamResult = _
+  var streamResult: StreamResult = _
 
-   var writer: Writer = _
+  var writer: Writer = _
 
-   var outputStream: OutputStream = _
+  var outputStream: OutputStream = _
 
-   var outputProperties: Properties = _
+  var outputProperties: Properties = _
 
-   var characterSet: CharacterSet = _
+  var characterSet: CharacterSet = _
 
-   var allCharactersEncodable: Boolean = false
+  var allCharactersEncodable: Boolean = false
 
   private var mustClose: Boolean = false
 
@@ -93,7 +94,7 @@ abstract class Emitter
     }
   }
 
-   def makeWriter(): Unit = {
+  def makeWriter(): Unit = {
     if (writer != null) {
       return
     }
@@ -113,7 +114,7 @@ abstract class Emitter
     }
   }
 
-   def makeOutputStream(): OutputStream = {
+  def makeOutputStream(): OutputStream = {
     val uriString: String = streamResult.getSystemId
     if (uriString == null) {
       throw new XPathException(
@@ -182,33 +183,35 @@ abstract class Emitter
       } else if (!(characterSet.isInstanceOf[UTF8CharacterSet])) {
         encoding = characterSet.getCanonicalName
       }
-      while (true) try {
-        var javaEncoding: String = encoding
-        if (encoding.equalsIgnoreCase("iso-646") || encoding.equalsIgnoreCase(
-          "iso646")) {
-          javaEncoding = "US-ASCII"
-        }
-        writer =
-          if (encoding.equalsIgnoreCase("UTF8")) new UTF8Writer(outputStream)
-          else
-            new BufferedWriter(
-              new OutputStreamWriter(outputStream, javaEncoding))
-        //break
-      } catch {
-        case err: Exception => {
-          if (encoding.equalsIgnoreCase("UTF8")) {
-            throw new XPathException("Failed to create a UTF8 output writer")
+      breakable {
+        while (true) try {
+          var javaEncoding: String = encoding
+          if (encoding.equalsIgnoreCase("iso-646") || encoding.equalsIgnoreCase(
+            "iso646")) {
+            javaEncoding = "US-ASCII"
           }
-          val de: XmlProcessingIncident = new XmlProcessingIncident(
-            "Encoding " + encoding + " is not supported: using UTF8",
-            "SESU0007")
-          getPipelineConfiguration.getErrorReporter.report(de)
-          encoding = "UTF8"
-          characterSet = UTF8CharacterSet.getInstance
-          allCharactersEncodable = true
-          outputProperties.setProperty(OutputKeys.ENCODING, "UTF-8")
-        }
+          writer =
+            if (encoding.equalsIgnoreCase("UTF8")) new UTF8Writer(outputStream)
+            else
+              new BufferedWriter(
+                new OutputStreamWriter(outputStream, javaEncoding))
+          //break
+        } catch {
+          case err: Exception => {
+            if (encoding.equalsIgnoreCase("UTF8")) {
+              throw new XPathException("Failed to create a UTF8 output writer")
+            }
+            val de: XmlProcessingIncident = new XmlProcessingIncident(
+              "Encoding " + encoding + " is not supported: using UTF8",
+              "SESU0007")
+            getPipelineConfiguration.getErrorReporter.report(de)
+            encoding = "UTF8"
+            characterSet = UTF8CharacterSet.getInstance
+            allCharactersEncodable = true
+            outputProperties.setProperty(OutputKeys.ENCODING, "UTF-8")
+          }
 
+        }
       }
     }
   }

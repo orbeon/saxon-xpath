@@ -52,6 +52,8 @@ import Mode._
 
 import scala.beans.BeanProperty
 
+import scala.util.control.Breaks._
+
 object Mode {
 
   val OMNI_MODE: StructuredQName =
@@ -65,7 +67,7 @@ object Mode {
 
   val RECOVER_WITH_WARNINGS: Int = 1
 
-   trait RuleFilter {
+  trait RuleFilter {
 
     def testRule(r: Rule): Boolean
 
@@ -79,7 +81,7 @@ object Mode {
 
 }
 
-abstract class Mode( var modeName: StructuredQName) extends Actor {
+abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   private var streamable: Boolean = _
 
@@ -228,87 +230,89 @@ abstract class Mode( var modeName: StructuredQName) extends Actor {
     val lookahead: Boolean =
       iterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD)
     var previousTemplate: TemplateRule = null
-    while (true) {
-      if (tc != null) {
-        if (lookahead && !iterator.asInstanceOf[LookaheadIterator].hasNext) {
-          //break
+    breakable {
+      while (true) {
+        if (tc != null) {
+          if (lookahead && !iterator.asInstanceOf[LookaheadIterator].hasNext) {
+            break
+          }
+          do tc = tc.processLeavingTail() while (tc != null);
         }
-        do tc = tc.processLeavingTail() while (tc != null);
-      }
-      val item: Item = iterator.next()
-      if (item == null) {
-        //break
-      }
-      if (mustBeTyped) {
-        if (item.isInstanceOf[NodeInfo]) {
-          val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
-          if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
-            val annotation: SchemaType =
-              item.asInstanceOf[NodeInfo].getSchemaType
-            if (annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC) {
-              throw new XPathException(
-                getModeTitle + " requires typed nodes, but the input is untyped",
-                "XTTE3100")
+        val item: Item = iterator.next()
+        if (item == null) {
+          break
+        }
+        if (mustBeTyped) {
+          if (item.isInstanceOf[NodeInfo]) {
+            val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
+            if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
+              val annotation: SchemaType =
+                item.asInstanceOf[NodeInfo].getSchemaType
+              if (annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC) {
+                throw new XPathException(
+                  getModeTitle + " requires typed nodes, but the input is untyped",
+                  "XTTE3100")
+              }
+            }
+          }
+        } else if (mustBeUntyped) {
+          if (item.isInstanceOf[NodeInfo]) {
+            val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
+            if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
+              val annotation: SchemaType =
+                item.asInstanceOf[NodeInfo].getSchemaType
+              if (!(annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC)) {
+                throw new XPathException(
+                  getModeTitle + " requires untyped nodes, but the input is typed",
+                  "XTTE3110")
+              }
             }
           }
         }
-      } else if (mustBeUntyped) {
-        if (item.isInstanceOf[NodeInfo]) {
-          val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
-          if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
-            val annotation: SchemaType =
-              item.asInstanceOf[NodeInfo].getSchemaType
-            if (!(annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC)) {
-              throw new XPathException(
-                getModeTitle + " requires untyped nodes, but the input is typed",
-                "XTTE3110")
-            }
-          }
-        }
-      }
-      if (tracing) {
-        traceListener.startRuleSearch()
-      }
-      val rule: Rule = getRule(item, context)
-      if (tracing) {
-        traceListener.endRuleSearch(
-          if ((rule != null)) rule else getBuiltInRuleSet,
-          this,
-          item)
-      }
-      if (rule == null) {
-        getBuiltInRuleSet.process(item,
-          parameters,
-          tunnelParameters,
-          output,
-          context,
-          locationId)
-      } else {
-        val template: TemplateRule = rule.getAction.asInstanceOf[TemplateRule]
-        if (template != previousTemplate) {
-          previousTemplate = template
-          template.initialize()
-          context.openStackFrame(template.getStackFrameMap)
-          context.setLocalParameters(parameters)
-          context.setTunnelParameters(tunnelParameters)
-          context.setCurrentMergeGroupIterator(null)
-        }
-        context.setCurrentTemplateRule(rule)
         if (tracing) {
-          traceListener.startCurrentItem(item)
-          if (modeTracing) {
-            traceListener.enter(template, Collections.emptyMap(), context)
-          }
-          tc = template.applyLeavingTail(output, context)
-          if (tc != null) {
-            do tc = tc.processLeavingTail() while (tc != null);
-          }
-          if (modeTracing) {
-            traceListener.leave(template)
-          }
-          traceListener.endCurrentItem(item)
+          traceListener.startRuleSearch()
+        }
+        val rule: Rule = getRule(item, context)
+        if (tracing) {
+          traceListener.endRuleSearch(
+            if ((rule != null)) rule else getBuiltInRuleSet,
+            this,
+            item)
+        }
+        if (rule == null) {
+          getBuiltInRuleSet.process(item,
+            parameters,
+            tunnelParameters,
+            output,
+            context,
+            locationId)
         } else {
-          tc = template.applyLeavingTail(output, context)
+          val template: TemplateRule = rule.getAction.asInstanceOf[TemplateRule]
+          if (template != previousTemplate) {
+            previousTemplate = template
+            template.initialize()
+            context.openStackFrame(template.getStackFrameMap)
+            context.setLocalParameters(parameters)
+            context.setTunnelParameters(tunnelParameters)
+            context.setCurrentMergeGroupIterator(null)
+          }
+          context.setCurrentTemplateRule(rule)
+          if (tracing) {
+            traceListener.startCurrentItem(item)
+            if (modeTracing) {
+              traceListener.enter(template, Collections.emptyMap(), context)
+            }
+            tc = template.applyLeavingTail(output, context)
+            if (tc != null) {
+              do tc = tc.processLeavingTail() while (tc != null);
+            }
+            if (modeTracing) {
+              traceListener.leave(template)
+            }
+            traceListener.endCurrentItem(item)
+          } else {
+            tc = template.applyLeavingTail(output, context)
+          }
         }
       }
     }
@@ -402,7 +406,7 @@ abstract class Mode( var modeName: StructuredQName) extends Actor {
     }
   }
 
-   def exportUseAccumulators(presenter: ExpressionPresenter): Unit = {}
+  def exportUseAccumulators(presenter: ExpressionPresenter): Unit = {}
 
   def isMustBeTyped(): Boolean = mustBeTyped
 

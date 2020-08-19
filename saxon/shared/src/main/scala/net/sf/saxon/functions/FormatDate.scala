@@ -38,6 +38,8 @@ import java.util.regex.Pattern
 
 import FormatDate._
 
+import scala.util.control.Breaks._
+
 object FormatDate {
 
   val knownCalendars: Array[String] = Array("AD",
@@ -105,48 +107,50 @@ object FormatDate {
           "]")
     }
     var i: Int = 0
-    while (true) {
-      while (i < format.length && format.charAt(i) != '[') {
-        sb.cat(format.charAt(i))
-        if (format.charAt(i) == ']') {
-          {
-            i += 1;
-            i - 1
+    breakable {
+      while (true) {
+        while (i < format.length && format.charAt(i) != '[') {
+          sb.cat(format.charAt(i))
+          if (format.charAt(i) == ']') {
+            {
+              i += 1;
+              i - 1
+            }
+            if (i == format.length || format.charAt(i) != ']') {
+              val e: XPathException = new XPathException(
+                "Closing ']' in date picture must be written as ']]'")
+              e.setErrorCode("FOFD1340")
+              e.setXPathContext(context)
+              throw e
+            }
           }
-          if (i == format.length || format.charAt(i) != ']') {
+          i += 1
+        }
+        if (i == format.length) {
+          break
+        }
+        i += 1
+        if (i < format.length && format.charAt(i) == '[') {
+          sb.cat('[')
+          i += 1
+        } else {
+          val close: Int = if (i < format.length) format.indexOf("]", i) else -1
+          if (close == -1) {
             val e: XPathException = new XPathException(
-              "Closing ']' in date picture must be written as ']]'")
+              "Date format contains a '[' with no matching ']'")
             e.setErrorCode("FOFD1340")
             e.setXPathContext(context)
             throw e
           }
+          val componentFormat: String = format.substring(i, close)
+          sb.cat(
+            formatComponent(calVal,
+              Whitespace.removeAllWhitespace(componentFormat),
+              numberer,
+              placeStr,
+              context))
+          i = close + 1
         }
-        i += 1
-      }
-      if (i == format.length) {
-        //break
-      }
-      i += 1
-      if (i < format.length && format.charAt(i) == '[') {
-        sb.cat('[')
-        i += 1
-      } else {
-        val close: Int = if (i < format.length) format.indexOf("]", i) else -1
-        if (close == -1) {
-          val e: XPathException = new XPathException(
-            "Date format contains a '[' with no matching ']'")
-          e.setErrorCode("FOFD1340")
-          e.setXPathContext(context)
-          throw e
-        }
-        val componentFormat: String = format.substring(i, close)
-        sb.cat(
-          formatComponent(calVal,
-            Whitespace.removeAllWhitespace(componentFormat),
-            numberer,
-            placeStr,
-            context))
-        i = close + 1
       }
     }
     sb
@@ -184,7 +188,7 @@ object FormatDate {
         case 'P' => format = 'n' + format
         case 'C' | 'E' => format = 'N' + format
         case 'm' | 's' => format = "01" + format
-        case 'z' | 'Z' => //break
+        case 'z' | 'Z' =>
         case _ => format = '1' + format
 
       }

@@ -25,6 +25,7 @@ import net.sf.saxon.trans.XPathException
 import net.sf.saxon.value.BooleanValue
 
 import net.sf.saxon.value.NumericValue
+import scala.util.control.Breaks._
 
 class FunctionAvailable extends SystemFunction {
 
@@ -64,14 +65,17 @@ class FunctionAvailable extends SystemFunction {
         maxArity = minArity
       }
       var i: Int = minArity
-      while (i <= maxArity) {
-        val sn: SymbolicName.F = new SymbolicName.F(functionName, i)
-        if (env.getFunctionLibrary.isAvailable(sn)) {
-          b = true
-          //break
-        }
-        {
-          i += 1; i - 1
+      breakable {
+        while (i <= maxArity) {
+          val sn: SymbolicName.F = new SymbolicName.F(functionName, i)
+          if (env.getFunctionLibrary.isAvailable(sn)) {
+            b = true
+            break
+          }
+          {
+            i += 1;
+            i - 1
+          }
         }
       }
       Literal.makeLiteral(BooleanValue.get(b))

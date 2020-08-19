@@ -348,7 +348,6 @@ class ReceivingContentHandler
       if (retainDTDAttributeTypes) {
         `type` match {
           case "CDATA" => // common case, no action
-          //break
           case "ID" => typeCode = BuiltInAtomicType.ID
           case "IDREF" => typeCode = BuiltInAtomicType.IDREF
           case "IDREFS" => typeCode = BuiltInListType.IDREFS

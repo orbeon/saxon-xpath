@@ -3,6 +3,7 @@ package net.sf.saxon.regex
 
 import net.sf.saxon.expr.LastPositionFinder
 import net.sf.saxon.expr.parser.Loc
+import scala.util.control.Breaks._
 import net.sf.saxon.trans.SaxonErrorCode
 import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.util.FastStringBuffer
@@ -31,7 +32,8 @@ object ARegexIterator {
     var group: Int = 1
     var inBrackets: Int = 0
     stack({
-      tos += 1; tos - 1
+      tos += 1;
+      tos - 1
     }) = 0
     var i: Int = 0
     val regexLen = regex.uLength()
@@ -39,27 +41,33 @@ object ARegexIterator {
       val ch: Int = regex.uCharAt(i)
       if (ch == '\\') {
         {
-          i += 1; i - 1
+          i += 1;
+          i - 1
         }
       } else if (ch == '[') {
         {
-          inBrackets += 1; inBrackets - 1
+          inBrackets += 1;
+          inBrackets - 1
         }
       } else if (ch == ']') {
         {
-          inBrackets -= 1; inBrackets + 1
+          inBrackets -= 1;
+          inBrackets + 1
         }
       } else if (ch == '(' && inBrackets == 0) {
         val capture: Boolean = regex.uCharAt(i + 1) != '?'
         captureStack({
-          captureTos += 1; captureTos - 1
+          captureTos += 1;
+          captureTos - 1
         }) = capture
         if (capture) {
           nestingTable.put(group, stack(tos - 1))
           stack({
-            tos += 1; tos - 1
+            tos += 1;
+            tos - 1
           }) = {
-            group += 1; group - 1
+            group += 1;
+            group - 1
           }
         }
       } else if (ch == ')' && inBrackets == 0) {
@@ -69,7 +77,8 @@ object ARegexIterator {
         })
         if (capture) {
           {
-            tos -= 1; tos + 1
+            tos -= 1;
+            tos + 1
           }
         }
       }
@@ -104,7 +113,8 @@ class ARegexIterator(private var theString: UnicodeString,
       new ARegexIterator(theString, regex, new REMatcher(matcher.getProgram))
     var n: Int = 0
     while (another.next() != null) {
-      n += 1; n - 1
+      n += 1;
+      n - 1
     }
     n
   }
@@ -116,7 +126,8 @@ class ARegexIterator(private var theString: UnicodeString,
       if (skip) {
         // previous match was zero-length
         {
-          searchStart += 1; searchStart - 1
+          searchStart += 1;
+          searchStart - 1
         }
         if (searchStart >= theString.uLength()) {
           if (prevEnd < theString.uLength()) {
@@ -199,59 +210,62 @@ class ARegexIterator(private var theString: UnicodeString,
       // The "actions" in each list are: +N: start group N; -N: end group N.
       val actions: IntHashMap[List[Integer]] = new IntHashMap[List[Integer]](c)
       var i: Int = 1
-      while (i <= c) {
-        val start: Int = matcher.getParenStart(i) - matcher.getParenStart(0)
-        if (start != -1) {
-          val end: Int = matcher.getParenEnd(i) - matcher.getParenStart(0)
-          if (start < end) {
-            // Add the start action after all other actions on the list for the same position
-            var s: List[Integer] = actions.get(start)
-            if (s == null) {
-              s = new ArrayList[Integer](4)
-              actions.put(start, s)
-            }
-            s.add(i)
-            // Add the end action before all other actions on the list for the same position
-            var e: List[Integer] = actions.get(end)
-            if (e == null) {
-              e = new ArrayList[Integer](4)
-              actions.put(end, e)
-            }
-            e.add(0, -i)
-          } else {
-            // So we need to go back to the original regex to determine the group nesting
-            if (nestingTable == null) {
-              nestingTable = computeNestingTable(regex)
-            }
-            val parentGroup: Int = nestingTable.get(i)
-            // if present; otherwise after all existing events for this position
-            var s: List[Integer] = actions.get(start)
-            if (s == null) {
-              s = new ArrayList[Integer](4)
-              actions.put(start, s)
-              s.add(i)
-              s.add(-i)
-            } else {
-              var pos: Int = s.size
-              for (e <- 0 until s.size if s.get(e) == -parentGroup) {
-                pos = e
-                //break
+      breakable {
+        while (i <= c) {
+          val start: Int = matcher.getParenStart(i) - matcher.getParenStart(0)
+          if (start != -1) {
+            val end: Int = matcher.getParenEnd(i) - matcher.getParenStart(0)
+            if (start < end) {
+              // Add the start action after all other actions on the list for the same position
+              var s: List[Integer] = actions.get(start)
+              if (s == null) {
+                s = new ArrayList[Integer](4)
+                actions.put(start, s)
               }
-              s.add(pos, -i)
-              s.add(pos, i)
+              s.add(i)
+              // Add the end action before all other actions on the list for the same position
+              var e: List[Integer] = actions.get(end)
+              if (e == null) {
+                e = new ArrayList[Integer](4)
+                actions.put(end, e)
+              }
+              e.add(0, -i)
+            } else {
+              // So we need to go back to the original regex to determine the group nesting
+              if (nestingTable == null) {
+                nestingTable = computeNestingTable(regex)
+              }
+              val parentGroup: Int = nestingTable.get(i)
+              // if present; otherwise after all existing events for this position
+              var s: List[Integer] = actions.get(start)
+              if (s == null) {
+                s = new ArrayList[Integer](4)
+                actions.put(start, s)
+                s.add(i)
+                s.add(-i)
+              } else {
+                var pos: Int = s.size
+                for (e <- 0 until s.size if s.get(e) == -parentGroup) {
+                  pos = e
+                  break
+                }
+                s.add(pos, -i)
+                s.add(pos, i)
+              }
             }
+            // zero-length group (start==end). The problem here is that the information available
+            // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
+            // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
+            // insert the start and end events immediately before the end event for the parent group,
+            // zero-length group (start==end). The problem here is that the information available
+            // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
+            // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
+            // insert the start and end events immediately before the end event for the parent group,
           }
-          // zero-length group (start==end). The problem here is that the information available
-          // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
-          // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
-          // insert the start and end events immediately before the end event for the parent group,
-          // zero-length group (start==end). The problem here is that the information available
-          // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
-          // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
-          // insert the start and end events immediately before the end event for the parent group,
-        }
-        {
-          i += 1; i - 1
+          {
+            i += 1;
+            i - 1
+          }
         }
       }
       val buff: FastStringBuffer = new FastStringBuffer(current.uLength())

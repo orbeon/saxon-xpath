@@ -15,6 +15,7 @@ import net.sf.saxon.om.NodeInfo
 import net.sf.saxon.om.StandardNames
 import net.sf.saxon.pattern._
 import net.sf.saxon.value._
+import scala.util.control.Breaks._
 
 
 object Type {
@@ -127,17 +128,19 @@ object Type {
         case Type.DOCUMENT =>
           // Need to know whether the document is well-formed and if so what the element type is
           var elementType: ItemType = null
-          for (n <- node.children()) {
-            val kind: Int = n.getNodeKind
-            if (kind == Type.TEXT) {
-              elementType = null
-              //break
-            } else if (kind == Type.ELEMENT) {
-              if (elementType != null) {
+          breakable {
+            for (n <- node.children()) {
+              val kind: Int = n.getNodeKind
+              if (kind == Type.TEXT) {
                 elementType = null
-                //break
+                break
+              } else if (kind == Type.ELEMENT) {
+                if (elementType != null) {
+                  elementType = null
+                  break
+                }
+                elementType = Type.getItemType(n, th)
               }
-              elementType = Type.getItemType(n, th)
             }
           }
           if (elementType == null) {
