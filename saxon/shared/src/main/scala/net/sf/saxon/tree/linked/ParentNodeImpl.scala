@@ -36,6 +36,7 @@ import java.util.Collections
 import java.util.function.Predicate
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 
 abstract class ParentNodeImpl extends NodeImpl {
@@ -49,7 +50,7 @@ abstract class ParentNodeImpl extends NodeImpl {
   override def getSequenceNumber(): Long =
     if (getRawSequenceNumber == -1) -1L else getRawSequenceNumber.toLong << 32
 
-   def getRawSequenceNumber(): Int = sequence
+  def getRawSequenceNumber(): Int = sequence
 
   def setRawSequenceNumber(seq: Int): Unit = {
     sequence = seq
@@ -146,20 +147,22 @@ abstract class ParentNodeImpl extends NodeImpl {
       return
     }
     val nodes: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
-    for (i <- 0 until nodes.length if nodes(i) == child) {
-      if (nodes.length == 2) {
-        childrenImpl = nodes(1 - i)
-      } else {
-        val n2: Array[NodeImpl] = Array.ofDim[NodeImpl](nodes.length - 1)
-        if (i > 0) {
-          System.arraycopy(nodes, 0, n2, 0, i)
+    breakable {
+      for (i <- 0 until nodes.length if nodes(i) == child) {
+        if (nodes.length == 2) {
+          childrenImpl = nodes(1 - i)
+        } else {
+          val n2: Array[NodeImpl] = Array.ofDim[NodeImpl](nodes.length - 1)
+          if (i > 0) {
+            System.arraycopy(nodes, 0, n2, 0, i)
+          }
+          if (i < nodes.length - 1) {
+            System.arraycopy(nodes, i + 1, n2, i, nodes.length - i - 1)
+          }
+          childrenImpl = cleanUpChildren(n2)
         }
-        if (i < nodes.length - 1) {
-          System.arraycopy(nodes, i + 1, n2, i, nodes.length - i - 1)
-        }
-        childrenImpl = cleanUpChildren(n2)
+        break
       }
-      //break
     }
   }
 

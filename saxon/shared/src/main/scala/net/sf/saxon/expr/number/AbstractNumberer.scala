@@ -395,7 +395,6 @@ abstract class AbstractNumberer extends Numberer {
               sb.append(ordinalSuffix(ordinal, number))
             }
           }
-          //break
         }
 
     }

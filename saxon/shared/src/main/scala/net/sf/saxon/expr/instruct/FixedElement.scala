@@ -35,9 +35,10 @@ import java.util.function.BiConsumer
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 class FixedElement(@BeanProperty var elementName: NodeName,
-                    var namespaceBindings: NamespaceMap,
+                   var namespaceBindings: NamespaceMap,
                    inheritNamespacesToChildren: Boolean,
                    inheritNamespacesFromParent: Boolean,
                    schemaType: SchemaType,
@@ -58,12 +59,12 @@ class FixedElement(@BeanProperty var elementName: NodeName,
 
   override def operands(): java.lang.Iterable[Operand] = contentOp
 
- override def simplify(): Expression = {
+  override def simplify(): Expression = {
     preservingTypes |= !getPackageData.isSchemaAware
     super.simplify()
   }
 
-  override  def checkContentSequence(env: StaticContext): Unit = {
+  override def checkContentSequence(env: StaticContext): Unit = {
     super.checkContentSequence(env)
     itemType = computeFixedElementItemType(this,
       env,
@@ -73,8 +74,8 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       getContentExpression)
   }
 
-override  def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextItemType: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextItemType)
     if (e != this) {
       e
@@ -98,21 +99,23 @@ override  def optimize(visitor: ExpressionVisitor,
     if (!ok) {
       if (getContentExpression.isInstanceOf[Block]) {
         ok = true
-        for (o <- getContentExpression.operands().asScala) {
-          val exp: Expression = o.getChildExpression
-          if (exp.isInstanceOf[FixedAttribute]) {
-            if (!exp
-              .asInstanceOf[FixedAttribute]
-              .getAttributeName
-              .hasURI("")) {
-              ok = false
-              //break
-            }
-          } else {
-            val childType: ItemType = exp.getItemType
-            if (th.relationship(childType, NodeKindTest.ATTRIBUTE) != Affinity.DISJOINT) {
-              ok = false
-              //break
+        breakable {
+          for (o <- getContentExpression.operands().asScala) {
+            val exp: Expression = o.getChildExpression
+            if (exp.isInstanceOf[FixedAttribute]) {
+              if (!exp
+                .asInstanceOf[FixedAttribute]
+                .getAttributeName
+                .hasURI("")) {
+                ok = false
+                break
+              }
+            } else {
+              val childType: ItemType = exp.getItemType
+              if (th.relationship(childType, NodeKindTest.ATTRIBUTE) != Affinity.DISJOINT) {
+                ok = false
+                break
+              }
             }
           }
         }

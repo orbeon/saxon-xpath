@@ -32,6 +32,8 @@ import scala.beans.{BeanProperty}
 
 import scala.jdk.CollectionConverters._
 
+import scala.util.control.Breaks._
+
 object LoopLifter {
 
   def process(exp: Expression,
@@ -170,27 +172,29 @@ class LoopLifter(@BeanProperty var root: Expression,
           var child: Expression = exp
           val expInfo: ExpInfo = expInfoMap.get(exp)
           var parent: Expression = exp.getParentExpression
-          while (parent != null) {
-            if (expInfo.dependees.get(parent) != null) {
-              val childInfo: ExpInfo = expInfoMap.get(child)
-              if (expInfo.loopLevel != childInfo.loopLevel) {
-                val o: Operand = ExpressionTool.findOperand(parent, child)
-                assert(o != null)
-                if (exp.isLiftable(streaming) && !(child
-                  .isInstanceOf[PseudoExpression]) &&
-                  !o.getOperandRole.isConstrainedClass) {
-                  val lifted: Expression = lift(exp, child)
-                  o.setChildExpression(lifted)
+          breakable {
+            while (parent != null) {
+              if (expInfo.dependees.get(parent) != null) {
+                val childInfo: ExpInfo = expInfoMap.get(child)
+                if (expInfo.loopLevel != childInfo.loopLevel) {
+                  val o: Operand = ExpressionTool.findOperand(parent, child)
+                  assert(o != null)
+                  if (exp.isLiftable(streaming) && !(child
+                    .isInstanceOf[PseudoExpression]) &&
+                    !o.getOperandRole.isConstrainedClass) {
+                    val lifted: Expression = lift(exp, child)
+                    o.setChildExpression(lifted)
+                  }
                 }
+                break
               }
-              //break
+              child = parent
+              parent = parent.getParentExpression
             }
-            child = parent
-            parent = parent.getParentExpression
           }
         }
       }
-      for (o <- exp.operands() .asScala if !o.getOperandRole.isConstrainedClass) {
+      for (o <- exp.operands().asScala if !o.getOperandRole.isConstrainedClass) {
         loopLift(o.getChildExpression)
       }
     }
@@ -208,7 +212,9 @@ class LoopLifter(@BeanProperty var root: Expression,
     let.setVariableQName(
       new StructuredQName("vv",
         NamespaceConstant.SAXON_GENERATED_VARIABLE,
-        "v" + { sequence += 1; sequence - 1 }))
+        "v" + {
+          sequence += 1; sequence - 1
+        }))
     val `type`: SequenceType =
       SequenceType.makeSequenceType(child.getItemType, child.getCardinality)
     let.setRequiredType(`type`)

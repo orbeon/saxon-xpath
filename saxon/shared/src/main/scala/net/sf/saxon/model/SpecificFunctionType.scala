@@ -148,7 +148,7 @@ class SpecificFunctionType extends AnyFunctionType {
           case OVERLAPS =>
             wider = true
             narrower = true
-          case _ => //break
+          case _ =>
 
         }
       }
@@ -161,7 +161,7 @@ class SpecificFunctionType extends AnyFunctionType {
         case OVERLAPS =>
           wider = true
           narrower = true
-        case _ => //break
+        case _ =>
 
       }
       if (wider) {

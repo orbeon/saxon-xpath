@@ -31,6 +31,7 @@ import java.util.ArrayList
 import java.util.function.BiConsumer
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 
 class LetExpression extends Assignation with TailCallReturner {
@@ -42,7 +43,7 @@ class LetExpression extends Assignation with TailCallReturner {
 
   var needsLazyEvaluation: Boolean = false
 
-   var isInstruct: Boolean = false
+  var isInstruct: Boolean = false
 
   def setInstruction(inst: Boolean): Unit = {
     isInstruct = inst
@@ -174,15 +175,17 @@ class LetExpression extends Assignation with TailCallReturner {
         }
         var child: Expression = references.get(0)
         var parent: Expression = child.getParentExpression
-        while (parent != null && parent != this) {
-          val operand: Operand = ExpressionTool.findOperand(parent, child)
-          assert(operand != null)
-          if (!operand.hasSameFocus()) {
-            considerRemoval = false
-            //break
+        breakable {
+          while (parent != null && parent != this) {
+            val operand: Operand = ExpressionTool.findOperand(parent, child)
+            assert(operand != null)
+            if (!operand.hasSameFocus()) {
+              considerRemoval = false
+              break
+            }
+            child = parent
+            parent = child.getParentExpression
           }
-          child = parent
-          parent = child.getParentExpression
         }
       }
       if (considerRemoval && references.size == 1) {
@@ -206,38 +209,42 @@ class LetExpression extends Assignation with TailCallReturner {
       }
     }
     var tries: Int = 0
-    while ( {
-      tries += 1;
-      tries - 1
-    } < 5) {
-      val seq0: Expression = getSequence
-      getSequenceOp.optimize(visitor, contextItemType)
-      if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
-        optimize(visitor, contextItemType)
-      }
-      if (seq0 == getSequence) {
-        //break
+    breakable {
+      while ( {
+        tries += 1;
+        tries - 1
+      } < 5) {
+        val seq0: Expression = getSequence
+        getSequenceOp.optimize(visitor, contextItemType)
+        if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
+          optimize(visitor, contextItemType)
+        }
+        if (seq0 == getSequence) {
+          break
+        }
       }
     }
     tries = 0
-    while ( {
-      tries += 1;
-      tries - 1
-    } < 5) {
-      val act0: Expression = getAction
-      getActionOp.optimize(visitor, contextItemType)
-      if (act0 == getAction) {
-        //break
-      }
-      if (!isIndexedVariable && !needsEagerEvaluation) {
-        verifyReferences()
-        if (references != null && references.size < 2) {
-          if (references.isEmpty) {
-            hasLoopingReference = false
-            optimize(visitor, contextItemType)
-          } else {
-            if (!references.get(0).isInLoop) {
+    breakable {
+      while ( {
+        tries += 1;
+        tries - 1
+      } < 5) {
+        val act0: Expression = getAction
+        getActionOp.optimize(visitor, contextItemType)
+        if (act0 == getAction) {
+          break
+        }
+        if (!isIndexedVariable && !needsEagerEvaluation) {
+          verifyReferences()
+          if (references != null && references.size < 2) {
+            if (references.isEmpty) {
+              hasLoopingReference = false
               optimize(visitor, contextItemType)
+            } else {
+              if (!references.get(0).isInLoop) {
+                optimize(visitor, contextItemType)
+              }
             }
           }
         }
@@ -295,13 +302,15 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def iterate(context: XPathContext): SequenceIterator = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     let.getAction.iterate(context)
@@ -334,13 +343,15 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def evaluateItem(context: XPathContext): Item = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     let.getAction.evaluateItem(context)
@@ -348,13 +359,15 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def effectiveBooleanValue(context: XPathContext): Boolean = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     let.getAction.effectiveBooleanValue(context)
@@ -362,13 +375,15 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def process(output: Outputter, context: XPathContext): Unit = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     let.getAction.process(output, context)
@@ -416,13 +431,15 @@ class LetExpression extends Assignation with TailCallReturner {
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     if (let.getAction.isInstanceOf[TailCallReturner]) {
@@ -438,13 +455,15 @@ class LetExpression extends Assignation with TailCallReturner {
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit = {
     var let: LetExpression = this
-    while (true) {
-      val `val`: Sequence = let.eval(context)
-      context.setLocalVariable(let.getLocalSlotNumber, `val`)
-      if (let.getAction.isInstanceOf[LetExpression]) {
-        let = let.getAction.asInstanceOf[LetExpression]
-      } else {
-        //break
+    breakable {
+      while (true) {
+        val `val`: Sequence = let.eval(context)
+        context.setLocalVariable(let.getLocalSlotNumber, `val`)
+        if (let.getAction.isInstanceOf[LetExpression]) {
+          let = let.getAction.asInstanceOf[LetExpression]
+        } else {
+          break
+        }
       }
     }
     let.getAction.evaluatePendingUpdates(context, pul)

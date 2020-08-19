@@ -14,14 +14,15 @@ import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.iter.LookaheadIterator
 import net.sf.saxon.tree.iter.LookaheadIteratorImpl
 import net.sf.saxon.value.EmptySequence
+import scala.util.control.Breaks._
 
 class OuterForExpression extends ForExpression {
 
-  override  def getRangeVariableCardinality(): Int =
+  override def getRangeVariableCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_ONE
 
   override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+                        contextItemType: ContextItemStaticInfo): Expression = {
     val sequence0: Expression = getSequence
     getSequenceOp.optimize(visitor, contextItemType)
     val action0: Expression = getAction
@@ -66,11 +67,13 @@ class OuterForExpression extends ForExpression {
     val ahead: LookaheadIterator =
       LookaheadIteratorImpl.makeLookaheadIterator(base)
     if (ahead.hasNext) {
-      while (true) {
-        val item: Item = ahead.next()
-        if (item == null) //break
-        context.setLocalVariable(slot, item)
-        getAction.process(output, context)
+      breakable {
+        while (true) {
+          val item: Item = ahead.next()
+          if (item == null) break
+          context.setLocalVariable(slot, item)
+          getAction.process(output, context)
+        }
       }
     } else {
       context.setLocalVariable(getLocalSlotNumber, EmptySequence.getInstance)
@@ -81,18 +84,20 @@ class OuterForExpression extends ForExpression {
   override def getExpressionName(): String = "outerFor"
 
   override def evaluatePendingUpdates(context: XPathContext,
-                             pul: PendingUpdateList): Unit = {
+                                      pul: PendingUpdateList): Unit = {
     val base: SequenceIterator = getSequence.iterate(context)
     val position: Int = 1
     val slot: Int = getLocalSlotNumber
     val ahead: LookaheadIterator =
       LookaheadIteratorImpl.makeLookaheadIterator(base)
     if (ahead.hasNext) {
-      while (true) {
-        val item: Item = ahead.next()
-        if (item == null) //break
-        context.setLocalVariable(slot, item)
-        getAction.evaluatePendingUpdates(context, pul)
+      breakable {
+        while (true) {
+          val item: Item = ahead.next()
+          if (item == null) break
+          context.setLocalVariable(slot, item)
+          getAction.evaluatePendingUpdates(context, pul)
+        }
       }
     } else {
       context.setLocalVariable(getLocalSlotNumber, EmptySequence.getInstance)
@@ -100,7 +105,7 @@ class OuterForExpression extends ForExpression {
     }
   }
 
-  override  def explainSpecializedAttributes(out: ExpressionPresenter): Unit = {
+  override def explainSpecializedAttributes(out: ExpressionPresenter): Unit = {
     out.emitAttribute("outer", "true")
   }
 

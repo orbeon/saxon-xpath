@@ -35,6 +35,7 @@ import java.util.Properties
 import Minimax._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 object Minimax {
 
@@ -57,120 +58,124 @@ object Minimax {
     atomicComp = atomicComp.provideContext(context)
     var min: AtomicValue = null
     var prim: AtomicValue = null
-    while (true) {
-      min = iter.next().asInstanceOf[AtomicValue]
-      if (min == null) {
-        null
-      }
-      prim = min
-      if (min.isInstanceOf[UntypedAtomicValue]) {
-        try {
-          min = new DoubleValue(converter.stringToNumber(min.getStringValueCS))
-          prim = min
-          foundDouble = true
-        } catch {
-          case e: NumberFormatException => {
-            val de: XPathException = new XPathException(
-              "Failure converting " + Err.wrap(min.getStringValueCS) +
-                " to a number")
-            de.setErrorCode("FORG0001")
-            de.setXPathContext(context)
-            throw de
-          }
-
+    breakable {
+      while (true) {
+        min = iter.next().asInstanceOf[AtomicValue]
+        if (min == null) {
+          null
         }
-      } else {
-        if (prim.isInstanceOf[DoubleValue]) {
-          foundDouble = true
-        } else if (prim.isInstanceOf[FloatValue]) {
-          foundFloat = true
-        } else if (prim.isInstanceOf[StringValue] && !(prim
-          .isInstanceOf[AnyURIValue])) {
-          foundString = true
-        }
-      }
-      if (prim.isNaN) {
-        if (ignoreNaN) {} else if (prim.isInstanceOf[DoubleValue]) {
-          min
-        } else {
-          foundNaN = true
-          min = FloatValue.NaN
-          //break
-        }
-      } else {
-        if (!prim.getPrimitiveType.isOrdered(false)) {
-          val de: XPathException = new XPathException(
-            "Type " + prim.getPrimitiveType + " is not an ordered type")
-          de.setErrorCode("FORG0006")
-          de.setIsTypeError(true)
-          de.setXPathContext(context)
-          throw de
-        }
-        //break
-      }
-    }
-    while (true) {
-      val test: AtomicValue = iter.next().asInstanceOf[AtomicValue]
-      if (test == null) {
-        //break
-      }
-      var test2: AtomicValue = test
-      prim = test2
-      if (test.isInstanceOf[UntypedAtomicValue]) {
-        try {
-          test2 = new DoubleValue(
-            converter.stringToNumber(test.getStringValueCS))
-          if (foundNaN) {
-            DoubleValue.NaN
-          }
-          prim = test2
-          foundDouble = true
-        } catch {
-          case e: NumberFormatException => {
-            val de: XPathException = new XPathException(
-              "Failure converting " + Err.wrap(test.getStringValueCS) +
-                " to a number")
-            de.setErrorCode("FORG0001")
-            de.setXPathContext(context)
-            throw de
-          }
-
-        }
-      } else {
-        if (prim.isInstanceOf[DoubleValue]) {
-          if (foundNaN) {
-            DoubleValue.NaN
-          }
-          foundDouble = true
-        } else if (prim.isInstanceOf[FloatValue]) {
-          foundFloat = true
-        } else if (prim.isInstanceOf[StringValue] && !(prim
-          .isInstanceOf[AnyURIValue])) {
-          foundString = true
-        }
-      }
-      if (prim.isNaN) {
-        if (ignoreNaN) {} else if (foundDouble) {
-          DoubleValue.NaN
-        } else {
-          foundNaN = true
-        }
-      } else {
-        try if (atomicComp.compareAtomicValues(prim, min) < 0) {
-          min = test2
-        } catch {
-          case err: ClassCastException =>
-            if (min.getItemType == test2.getItemType) {
-              throw err
-            } else {
+        prim = min
+        if (min.isInstanceOf[UntypedAtomicValue]) {
+          try {
+            min = new DoubleValue(converter.stringToNumber(min.getStringValueCS))
+            prim = min
+            foundDouble = true
+          } catch {
+            case e: NumberFormatException => {
               val de: XPathException = new XPathException(
-                "Cannot compare " + min.getItemType + " with " + test2.getItemType)
-              de.setErrorCode("FORG0006")
-              de.setIsTypeError(true)
+                "Failure converting " + Err.wrap(min.getStringValueCS) +
+                  " to a number")
+              de.setErrorCode("FORG0001")
               de.setXPathContext(context)
               throw de
             }
 
+          }
+        } else {
+          if (prim.isInstanceOf[DoubleValue]) {
+            foundDouble = true
+          } else if (prim.isInstanceOf[FloatValue]) {
+            foundFloat = true
+          } else if (prim.isInstanceOf[StringValue] && !(prim
+            .isInstanceOf[AnyURIValue])) {
+            foundString = true
+          }
+        }
+        if (prim.isNaN) {
+          if (ignoreNaN) {} else if (prim.isInstanceOf[DoubleValue]) {
+            min
+          } else {
+            foundNaN = true
+            min = FloatValue.NaN
+            break
+          }
+        } else {
+          if (!prim.getPrimitiveType.isOrdered(false)) {
+            val de: XPathException = new XPathException(
+              "Type " + prim.getPrimitiveType + " is not an ordered type")
+            de.setErrorCode("FORG0006")
+            de.setIsTypeError(true)
+            de.setXPathContext(context)
+            throw de
+          }
+          break
+        }
+      }
+    }
+    breakable {
+      while (true) {
+        val test: AtomicValue = iter.next().asInstanceOf[AtomicValue]
+        if (test == null) {
+          break
+        }
+        var test2: AtomicValue = test
+        prim = test2
+        if (test.isInstanceOf[UntypedAtomicValue]) {
+          try {
+            test2 = new DoubleValue(
+              converter.stringToNumber(test.getStringValueCS))
+            if (foundNaN) {
+              DoubleValue.NaN
+            }
+            prim = test2
+            foundDouble = true
+          } catch {
+            case e: NumberFormatException => {
+              val de: XPathException = new XPathException(
+                "Failure converting " + Err.wrap(test.getStringValueCS) +
+                  " to a number")
+              de.setErrorCode("FORG0001")
+              de.setXPathContext(context)
+              throw de
+            }
+
+          }
+        } else {
+          if (prim.isInstanceOf[DoubleValue]) {
+            if (foundNaN) {
+              DoubleValue.NaN
+            }
+            foundDouble = true
+          } else if (prim.isInstanceOf[FloatValue]) {
+            foundFloat = true
+          } else if (prim.isInstanceOf[StringValue] && !(prim
+            .isInstanceOf[AnyURIValue])) {
+            foundString = true
+          }
+        }
+        if (prim.isNaN) {
+          if (ignoreNaN) {} else if (foundDouble) {
+            DoubleValue.NaN
+          } else {
+            foundNaN = true
+          }
+        } else {
+          try if (atomicComp.compareAtomicValues(prim, min) < 0) {
+            min = test2
+          } catch {
+            case err: ClassCastException =>
+              if (min.getItemType == test2.getItemType) {
+                throw err
+              } else {
+                val de: XPathException = new XPathException(
+                  "Cannot compare " + min.getItemType + " with " + test2.getItemType)
+                de.setErrorCode("FORG0006")
+                de.setIsTypeError(true)
+                de.setXPathContext(context)
+                throw de
+              }
+
+          }
         }
       }
     }

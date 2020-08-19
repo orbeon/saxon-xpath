@@ -99,8 +99,8 @@ object DOMNodeWrapper {
       val child: Node = list.item(i)
       child.getNodeType match {
         case Node.ELEMENT_NODE => expandStringValue(child.getChildNodes, sb)
-        case Node.COMMENT_NODE | Node.PROCESSING_INSTRUCTION_NODE => //break
-        case Node.DOCUMENT_TYPE_NODE => //break
+        case Node.COMMENT_NODE | Node.PROCESSING_INSTRUCTION_NODE =>
+        case Node.DOCUMENT_TYPE_NODE =>
         case _ => sb.append(emptyIfNull(child.getNodeValue))
 
       }

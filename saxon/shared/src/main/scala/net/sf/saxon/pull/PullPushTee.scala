@@ -15,6 +15,7 @@ import java.util.Stack
 
 import net.sf.saxon.pull.PullProvider.Event
 import net.sf.saxon.pull.PullProvider.Event._
+import scala.util.control.Breaks._
 
 class PullPushTee(base: PullProvider, private var branch: Receiver)
   extends PullFilter(base) {
@@ -44,11 +45,13 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
         var bindings: Array[NamespaceBinding] = in.getNamespaceDeclarations
         var nsMap: NamespaceMap =
           if (nsStack.isEmpty) NamespaceMap.emptyMap else nsStack.peek()
-        for (binding <- bindings) {
-          if (binding == null) {
-            //break
+        breakable {
+          for (binding <- bindings) {
+            if (binding == null) {
+              break
+            }
+            nsMap = nsMap.put(binding.getPrefix, binding.getURI)
           }
-          nsMap = nsMap.put(binding.getPrefix, binding.getURI)
         }
         nsStack.push(nsMap)
         out.startElement(in.getNodeName,

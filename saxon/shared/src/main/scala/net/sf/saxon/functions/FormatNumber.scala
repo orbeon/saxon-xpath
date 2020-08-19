@@ -33,6 +33,7 @@ import java.util.Arrays
 import java.util.List
 
 import FormatNumber._
+import scala.util.control.Breaks._
 
 object FormatNumber {
 
@@ -137,7 +138,8 @@ object FormatNumber {
           trial = new BigDecimal(sb.toString)
         } else {
           while (i >= 0 && (s.charAt(i) == '9' || s.charAt(i) == '.')) {
-            i -= 1; i + 1
+            i -= 1;
+            i + 1
           }
           if (i < 0 || s.charAt(i) == '-') {
             initial
@@ -221,11 +223,13 @@ object FormatNumber {
 
     var foundExponentSeparator2: Boolean = false
 
-    for (ch <- pic
-         if ch == digitSign || ch == zeroDigit || isInDigitFamily(ch,
-           zeroDigit)) {
-      foundDigit = true
-      //break
+    breakable {
+      for (ch <- pic
+           if ch == digitSign || ch == zeroDigit || isInDigitFamily(ch,
+             zeroDigit)) {
+        foundDigit = true
+        break
+      }
     }
 
     if (!foundDigit) {
@@ -284,7 +288,7 @@ object FormatNumber {
             phase = 2
             minWholePartSize += 1
             maxWholePartSize += 1
-          case 3 =>  minFractionPartSize += 1
+          case 3 => minFractionPartSize += 1
             maxFractionPartSize += 1
           case 4 =>
             grumble(
@@ -374,7 +378,6 @@ object FormatNumber {
               phase = 6
               suffix += unicodeChar(exponentSeparator)
               suffix += unicodeChar(c)
-              //break
             }
           case 6 =>
             phase = 6
@@ -417,10 +420,12 @@ object FormatNumber {
       } else if (n > 1) {
         regular = true
         val first: Int = wholePartGroupingPositions(0)
-        for (i <- 1 until n
-             if wholePartGroupingPositions(i) != (i + 1) * first) {
-          regular = false
-          //break
+        breakable {
+          for (i <- 1 until n
+               if wholePartGroupingPositions(i) != (i + 1) * first) {
+            regular = false
+            break
+          }
         }
         if (regular &&
           (maxWholePartSize - wholePartGroupingPositions(n - 1) >
@@ -495,7 +500,10 @@ object FormatNumber {
       } else {
         ib(point) = dfs.getDecimalSeparator
         if (maxFractionPartSize == 0) {
-          { ibused -= 1; ibused + 1 }
+          {
+            ibused -= 1;
+            ibused + 1
+          }
         }
       }
       if (dfs.getZeroDigit != '0') {
@@ -518,7 +526,10 @@ object FormatNumber {
           val g: Int = wholePartGroupingPositions(0)
           var p: Int = point - g
           while (p > 0) {
-            ib = insert(ib, { ibused += 1; ibused - 1 },
+            ib = insert(ib, {
+              ibused += 1;
+              ibused - 1
+            },
               dfs.getGroupingSeparator,
               p)
             p -= g
@@ -527,7 +538,10 @@ object FormatNumber {
           for (wholePartGroupingPosition <- wholePartGroupingPositions) {
             val p: Int = point - wholePartGroupingPosition
             if (p > 0) {
-              ib = insert(ib, { ibused += 1; ibused - 1 },
+              ib = insert(ib, {
+                ibused += 1;
+                ibused - 1
+              },
                 dfs.getGroupingSeparator,
                 p)
             }
@@ -535,14 +549,19 @@ object FormatNumber {
         }
       }
       if (fractionalPartGroupingPositions != null) {
-        for (i <- 0 until fractionalPartGroupingPositions.length) {
-          val p: Int = point + 1 + fractionalPartGroupingPositions(i) + i
-          if (p < ibused) {
-            ib = insert(ib, { ibused += 1; ibused - 1 },
-              dfs.getGroupingSeparator,
-              p)
-          } else {
-            //break
+        breakable {
+          for (i <- 0 until fractionalPartGroupingPositions.length) {
+            val p: Int = point + 1 + fractionalPartGroupingPositions(i) + i
+            if (p < ibused) {
+              ib = insert(ib, {
+                ibused += 1;
+                ibused - 1
+              },
+                dfs.getGroupingSeparator,
+                p)
+            } else {
+              break
+            }
           }
         }
       }
@@ -572,11 +591,13 @@ object FormatNumber {
       var intDigits: Int = 0
       if (point >= 0) {
         var zz: Int = maxFractionPartSize - minFractionPartSize
-        while (zz > 0) if (fsb.charAt(fsb.length - 1) == '0') {
-          fsb.setLength(fsb.length - 1)
-          zz -= 1
-        } else {
-          //break
+        breakable {
+          while (zz > 0) if (fsb.charAt(fsb.length - 1) == '0') {
+            fsb.setLength(fsb.length - 1)
+            zz -= 1
+          } else {
+            break
+          }
         }
         intDigits = point
         if (fsb.charAt(fsb.length - 1) == '.') {
@@ -646,6 +667,7 @@ object FormatNumber {
       new CharSlice(sb, 0, 2)
     }
   }
+
   private def insert(array: Array[Int],
                      used: Int,
                      value: Int,
@@ -762,8 +784,8 @@ class FormatNumber extends SystemFunction with Callable {
     }
   }
 
-   def getNamedDecimalFormat(dfm: DecimalFormatManager,
-                                      lexicalName: String): DecimalSymbols = {
+  def getNamedDecimalFormat(dfm: DecimalFormatManager,
+                            lexicalName: String): DecimalSymbols = {
     var dfs: DecimalSymbols = null
     var qName: StructuredQName = null
     try qName = StructuredQName.fromLexicalQName(lexicalName,

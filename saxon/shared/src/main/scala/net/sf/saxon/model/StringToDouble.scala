@@ -31,21 +31,11 @@ class StringToDouble extends StringConverter {
         for (i <- 0 until len) {
           val c = s.charAt(i)
           c match {
-            case ' ' =>
-            case '\n' =>
-            case '\t' =>
+            case ' ' | '\n' | '\t' =>
             case '\r' =>
               containsWhitespace = true
               if (lastDigit != -1) onlySpaceAllowed = true
-            case '0' =>
-            case '1' =>
-            case '2' =>
-            case '3' =>
-            case '4' =>
-            case '5' =>
-            case '6' =>
-            case '7' =>
-            case '8' =>
+            case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' =>
             case '9' =>
               if (onlySpaceAllowed) throw new NumberFormatException("Numeric value contains embedded whitespace")
               lastDigit = i
@@ -54,19 +44,12 @@ class StringToDouble extends StringConverter {
               if (onlySpaceAllowed) throw new NumberFormatException("Numeric value contains embedded whitespace")
               if (dot != -1) throw new NumberFormatException("Only one decimal point allowed")
               dot = i
-            case 'x' =>
-            case 'X' =>
-            case 'f' =>
-            case 'F' =>
-            case 'd' =>
-            case 'D' =>
-            case 'n' =>
+            case 'x' | 'X' | 'f' | 'F' | 'd' | 'D' | 'n' =>
             case 'N' =>
               containsDisallowedChars = true
               useJava = true
               break
-            case _ =>
-              useJava = true
+            case _ => useJava = true
           }
         }
       }
@@ -82,26 +65,9 @@ class StringToDouble extends StringConverter {
         for (i <- 0 until len) {
           val c = s.charAt(i)
           c match {
-            case ' ' =>
-            case '\n' =>
-            case '\t' =>
-            case '\r' =>
-              containsWhitespace = true
-            case '0' =>
-            case '1' =>
-            case '2' =>
-            case '3' =>
-            case '4' =>
-            case '5' =>
-            case '6' =>
-            case '7' =>
-            case '8' =>
-            case '9' =>
-            case '.' =>
-            case 'e' =>
-            case 'E' =>
-            case '+' =>
-            case '-' =>
+            case ' ' | '\n' | '\t' =>
+            case '\r' => containsWhitespace = true
+            case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '.' | 'e' | 'E' | '+' | '-' =>
             case _ =>
               containsDisallowedChars = true
               break
@@ -123,7 +89,7 @@ class StringToDouble extends StringConverter {
     }
   }
 
-   def signedPositiveInfinity:Double = throw new NumberFormatException("the float/double value '+INF' is not allowed under XSD 1.0")
+  def signedPositiveInfinity: Double = throw new NumberFormatException("the float/double value '+INF' is not allowed under XSD 1.0")
 
   override def convertString(input: CharSequence): ConversionResult = try {
     val d = stringToNumber(input)

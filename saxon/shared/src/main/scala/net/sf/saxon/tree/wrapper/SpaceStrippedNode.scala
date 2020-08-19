@@ -43,16 +43,15 @@ import java.util.function.Predicate
 
 import SpaceStrippedNode._
 
-
-
+import scala.util.control.Breaks._
 
 object SpaceStrippedNode {
 
   /*@NotNull*/
 
   def makeWrapper(node: NodeInfo,
-                            docWrapper: SpaceStrippedDocument,
-                            parent: SpaceStrippedNode): SpaceStrippedNode = {
+                  docWrapper: SpaceStrippedDocument,
+                  parent: SpaceStrippedNode): SpaceStrippedNode = {
     val wrapper: SpaceStrippedNode = new SpaceStrippedNode(node, parent)
     wrapper.docWrapper = docWrapper
     wrapper
@@ -61,53 +60,55 @@ object SpaceStrippedNode {
   def isPreservedNode(node: NodeInfo,
                       docWrapper: SpaceStrippedDocument,
                       actualParent: NodeInfo): Boolean = {
-// Non-text nodes, non-whitespace nodes, and parentless nodes are preserved
+    // Non-text nodes, non-whitespace nodes, and parentless nodes are preserved
     if (node.getNodeKind != Type.TEXT || actualParent == null ||
-        !Whitespace.isWhite(node.getStringValueCS)) {
+      !Whitespace.isWhite(node.getStringValueCS)) {
       true
     }
-// if the node has a simple type annotation, it is preserved
+    // if the node has a simple type annotation, it is preserved
     val `type`: SchemaType = actualParent.getSchemaType
     if (`type`.isSimpleType || `type`
-          .asInstanceOf[ComplexType]
-          .isSimpleContent) {
+      .asInstanceOf[ComplexType]
+      .isSimpleContent) {
       true
     }
-// if there is an ancestor with xml:space="preserve", it is preserved
+    // if there is an ancestor with xml:space="preserve", it is preserved
     if (docWrapper.containsPreserveSpace()) {
       var p: NodeInfo = actualParent
-// if one of them is on an ancestor of this node
-      while (p.getNodeKind == Type.ELEMENT) {
-        val `val`: String = p.getAttributeValue(NamespaceConstant.XML, "space")
-        if (`val` != null) {
-          if ("preserve" == `val`) {
-            true
-          } else if ("default" == `val`) {
-//break
+      // if one of them is on an ancestor of this node
+      breakable {
+        while (p.getNodeKind == Type.ELEMENT) {
+          val `val`: String = p.getAttributeValue(NamespaceConstant.XML, "space")
+          if (`val` != null) {
+            if ("preserve" == `val`) {
+              true
+            } else if ("default" == `val`) {
+              break
+            }
           }
+          p = p.getParent
         }
-        p = p.getParent
       }
     }
-// the document contains one or more xml:space="preserve" attributes, so we need to see
-// the document contains one or more xml:space="preserve" attributes, so we need to see
-// if there is an ancestor whose type has an assertion, it is preserved
+    // the document contains one or more xml:space="preserve" attributes, so we need to see
+    // the document contains one or more xml:space="preserve" attributes, so we need to see
+    // if there is an ancestor whose type has an assertion, it is preserved
     if (docWrapper.containsAssertions) {
       var p: NodeInfo = actualParent
-// if one of them is on an ancestor of this node
+      // if one of them is on an ancestor of this node
       while (p.getNodeKind == Type.ELEMENT) {
         val t: SchemaType = p.getSchemaType
         if (t.isInstanceOf[ComplexType] && t
-              .asInstanceOf[ComplexType]
-              .hasAssertions()) {
+          .asInstanceOf[ComplexType]
+          .hasAssertions()) {
           true
         }
         p = p.getParent
       }
     }
-// the document contains one or more xml:space="preserve" attributes, so we need to see
-// the document contains one or more xml:space="preserve" attributes, so we need to see
-// otherwise it depends on xsl:strip-space
+    // the document contains one or more xml:space="preserve" attributes, so we need to see
+    // the document contains one or more xml:space="preserve" attributes, so we need to see
+    // otherwise it depends on xsl:strip-space
     try {
       val preserve: Int = docWrapper.getStrippingRule
         .isSpacePreserving(NameOfNode.makeName(actualParent), null)
@@ -120,8 +121,8 @@ object SpaceStrippedNode {
 
 }
 
-class SpaceStrippedNode  ()
-    extends AbstractVirtualNode
+class SpaceStrippedNode()
+  extends AbstractVirtualNode
     with WrappingFunction {
 
   def this(node: NodeInfo, parent: SpaceStrippedNode) = {
@@ -161,19 +162,21 @@ class SpaceStrippedNode  ()
     }
 
   override def getStringValueCS()
-    : CharSequence = // Might not be the same as the string value of the underlying node because of space stripping
+  : CharSequence = // Might not be the same as the string value of the underlying node because of space stripping
     getNodeKind match {
       case Type.DOCUMENT | Type.ELEMENT =>
         var iter: AxisIterator = iterateAxis(
           AxisInfo.DESCENDANT,
           NodeKindTest.makeNodeKindTest(Type.TEXT))
         var sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
-        while (true) {
-          val it: NodeInfo = iter.next()
-          if (it == null) {
-//break
+        breakable {
+          while (true) {
+            val it: NodeInfo = iter.next()
+            if (it == null) {
+              break
+            }
+            sb.cat(it.getStringValueCS)
           }
-          sb.cat(it.getStringValueCS)
         }
         sb.condense()
       case _ => node.getStringValueCS
@@ -187,8 +190,8 @@ class SpaceStrippedNode  ()
       val realParent: NodeInfo = node.getParent
       if (realParent != null) {
         parent = SpaceStrippedNode.makeWrapper(realParent,
-                             docWrapper.asInstanceOf[SpaceStrippedDocument],
-                             null)
+          docWrapper.asInstanceOf[SpaceStrippedDocument],
+          null)
       }
     }
     parent
@@ -197,17 +200,17 @@ class SpaceStrippedNode  ()
   override def iterateAxis(axisNumber: Int,
                            nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
     if (nodeTest.isInstanceOf[NodeTest] &&
-        nodeTest.asInstanceOf[NodeTest].getUType.intersection(UType.TEXT) ==
-          UType.VOID ||
-        axisNumber == AxisInfo.ATTRIBUTE ||
-        axisNumber == AxisInfo.NAMESPACE) {
-// iteration does not include text nodes, so no stripping needed
+      nodeTest.asInstanceOf[NodeTest].getUType.intersection(UType.TEXT) ==
+        UType.VOID ||
+      axisNumber == AxisInfo.ATTRIBUTE ||
+      axisNumber == AxisInfo.NAMESPACE) {
+      // iteration does not include text nodes, so no stripping needed
       new WrappingIterator(node.iterateAxis(axisNumber, nodeTest),
-                           this,
-                           getParentForAxis(axisNumber))
+        this,
+        getParentForAxis(axisNumber))
     } else {
       new StrippingIterator(node.iterateAxis(axisNumber, nodeTest),
-                            getParentForAxis(axisNumber))
+        getParentForAxis(axisNumber))
     }
 
   /*@Nullable*/
@@ -238,23 +241,24 @@ class SpaceStrippedNode  ()
     }
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
-// version of the document (test case strip-space-008)
+    // version of the document (test case strip-space-008)
     val temp: Receiver = out
     val stripper: Stripper = new Stripper(
       docWrapper.asInstanceOf[SpaceStrippedDocument].getStrippingRule,
       temp)
     node.copy(stripper, copyOptions, locationId)
   }
-// The underlying code does not do whitespace stripping. So we need to interpose
-// a stripper. Moreover, if the node is typed and we are removing type annotations,
-// then we need to take care that we're not applying space-stripping to the untyped
-// The underlying code does not do whitespace stripping. So we need to interpose
-// a stripper. Moreover, if the node is typed and we are removing type annotations,
-// then we need to take care that we're not applying space-stripping to the untyped
+
+  // The underlying code does not do whitespace stripping. So we need to interpose
+  // a stripper. Moreover, if the node is typed and we are removing type annotations,
+  // then we need to take care that we're not applying space-stripping to the untyped
+  // The underlying code does not do whitespace stripping. So we need to interpose
+  // a stripper. Moreover, if the node is typed and we are removing type annotations,
+  // then we need to take care that we're not applying space-stripping to the untyped
 
   private class StrippingIterator(var base: AxisIterator,
                                   var parent: SpaceStrippedNode)
-      extends AxisIterator {
+    extends AxisIterator {
 
     var currentVirtualNode: NodeInfo = _
 
@@ -264,22 +268,24 @@ class SpaceStrippedNode  ()
 
     def next(): NodeInfo = {
       var nextRealNode: NodeInfo = null
-      while (true) {
-        nextRealNode = base.next()
-        if (nextRealNode == null) {
-          null
-        }
-        if (isPreserved(nextRealNode)) {
-//break
+      breakable {
+        while (true) {
+          nextRealNode = base.next()
+          if (nextRealNode == null) {
+            null
+          }
+          if (isPreserved(nextRealNode)) {
+            break
+          }
         }
       }
-// otherwise skip this whitespace text node
-// otherwise skip this whitespace text node
+      // otherwise skip this whitespace text node
+      // otherwise skip this whitespace text node
       currentVirtualNode = SpaceStrippedNode.makeWrapper(
-                            nextRealNode,
-                            docWrapper.asInstanceOf[SpaceStrippedDocument],
-                            parent
-                          )
+        nextRealNode,
+        docWrapper.asInstanceOf[SpaceStrippedDocument],
+        parent
+      )
       position += 1
       currentVirtualNode
     }
@@ -291,8 +297,8 @@ class SpaceStrippedNode  ()
       val actualParent: NodeInfo =
         if (parent == null) nextRealNode.getParent else parent.node
       isPreservedNode(nextRealNode,
-                      docWrapper.asInstanceOf[SpaceStrippedDocument],
-                      actualParent)
+        docWrapper.asInstanceOf[SpaceStrippedDocument],
+        actualParent)
     }
 
     override def close(): Unit = {
@@ -309,12 +315,12 @@ class SpaceStrippedNode  ()
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A StrippedNode is a view of a node, in a virtual tree that has whitespace
-  * text nodes stripped from it. All operations on the node produce the same result
-  * as operations on the real underlying node, except that iterations over the axes
-  * take care to skip whitespace-only text nodes that are supposed to be stripped.
-  * Note that this class is only used in cases where a pre-built tree is supplied as
-  * the input to a transformation, and where the stylesheet does whitespace stripping;
-  * if a SAXSource or StreamSource is supplied, whitespace is stripped as the tree
-  * is built.
-  */
+ * A StrippedNode is a view of a node, in a virtual tree that has whitespace
+ * text nodes stripped from it. All operations on the node produce the same result
+ * as operations on the real underlying node, except that iterations over the axes
+ * take care to skip whitespace-only text nodes that are supposed to be stripped.
+ * Note that this class is only used in cases where a pre-built tree is supplied as
+ * the input to a transformation, and where the stylesheet does whitespace stripping;
+ * if a SAXSource or StreamSource is supplied, whitespace is stripped as the tree
+ * is built.
+ */

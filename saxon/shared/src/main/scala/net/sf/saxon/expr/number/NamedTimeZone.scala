@@ -5,6 +5,7 @@ import net.sf.saxon.value.{CalendarValue, DateTimeValue}
 import java.util._
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object NamedTimeZone {
 
@@ -421,19 +422,23 @@ object NamedTimeZone {
         possibleZones = new ArrayList()
       }
       val epochDate: Long = date.getCalendar.getTime.getTime
-      for (z <- possibleZones.asScala) {
-        val tz: TimeZone = TimeZone.getTimeZone(z)
-        if (tz != null && tz.getOffset(epochDate) == tzMinutes * 60000) {
-          zone = tz
-          //break
-        }
-      }
-      if (zone == null) {
-        for (z <- worldTimeZones.asScala) {
+      breakable {
+        for (z <- possibleZones.asScala) {
           val tz: TimeZone = TimeZone.getTimeZone(z)
           if (tz != null && tz.getOffset(epochDate) == tzMinutes * 60000) {
             zone = tz
-            //break
+            break
+          }
+        }
+      }
+      if (zone == null) {
+        breakable {
+          for (z <- worldTimeZones.asScala) {
+            val tz: TimeZone = TimeZone.getTimeZone(z)
+            if (tz != null && tz.getOffset(epochDate) == tzMinutes * 60000) {
+              zone = tz
+              break
+            }
           }
         }
       }

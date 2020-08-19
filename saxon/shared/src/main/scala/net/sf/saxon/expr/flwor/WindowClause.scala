@@ -199,7 +199,7 @@ class WindowClause extends Clause {
     val th: TypeHierarchy = config.getTypeHierarchy
     val rel: Affinity.Affinity = th.relationship(required, supplied)
     rel match {
-      case SAME_TYPE | SUBSUMES => //break
+      case SAME_TYPE | SUBSUMES =>
       case OVERLAPS | SUBSUMED_BY =>
         var role: RoleDiagnostic = new RoleDiagnostic(
           RoleDiagnostic.VARIABLE,

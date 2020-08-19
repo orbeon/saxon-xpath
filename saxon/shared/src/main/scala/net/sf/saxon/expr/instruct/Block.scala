@@ -36,6 +36,8 @@ import scala.jdk.CollectionConverters._
 
 import Expression._
 
+import scala.util.control.Breaks._
+
 object Block {
 
   def makeBlock(e1: Expression, e2: Expression): Expression = {
@@ -147,20 +149,22 @@ class Block(children: Array[Expression]) extends Instruction {
     var allAxisExpressions: Boolean = true
     var allChildAxis: Boolean = true
     var allSubtreeAxis: Boolean = true
-    for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
-      if (!(child.isInstanceOf[AxisExpression])) {
-        allAxisExpressions = false
-        allChildAxis = false
-        allSubtreeAxis = false
-        //break
-      }
-      val axis: Int = child.asInstanceOf[AxisExpression].getAxis
-      if (axis != AxisInfo.CHILD) {
-        allChildAxis = false
-      }
-      if (!AxisInfo.isSubtreeAxis(axis)) {
-        allSubtreeAxis = false
+    breakable {
+      for (o <- operands().asScala) {
+        val child: Expression = o.getChildExpression
+        if (!(child.isInstanceOf[AxisExpression])) {
+          allAxisExpressions = false
+          allChildAxis = false
+          allSubtreeAxis = false
+          break
+        }
+        val axis: Int = child.asInstanceOf[AxisExpression].getAxis
+        if (axis != AxisInfo.CHILD) {
+          allChildAxis = false
+        }
+        if (!AxisInfo.isSubtreeAxis(axis)) {
+          allSubtreeAxis = false
+        }
       }
     }
     if (allAxisExpressions) {
@@ -302,13 +306,14 @@ class Block(children: Array[Expression]) extends Instruction {
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
     for (i <- 0 until size) {
       val child1: Expression = child(i)
-      /*if (!(child1.isInstanceOf[Message])) {*/ // Message class does not exist
-        val t: ItemType = child1.getItemType
-        t1 = if (t1 == null) t else Type.getCommonSuperType(t1, t, th)
-        if (t1.isInstanceOf[AnyItemType]) {
-          t1
-        }
-     // }
+      /*if (!(child1.isInstanceOf[Message])) {*/
+      // Message class does not exist
+      val t: ItemType = child1.getItemType
+      t1 = if (t1 == null) t else Type.getCommonSuperType(t1, t, th)
+      if (t1.isInstanceOf[AnyItemType]) {
+        t1
+      }
+      // }
     }
     if (t1 == null) ErrorType.getInstance else t1
   }
@@ -335,10 +340,12 @@ class Block(children: Array[Expression]) extends Instruction {
       StaticProperty.EMPTY
     }
     var c1: Int = child(0).getCardinality
-    for (i <- 1 until size) {
-      c1 = Cardinality.sum(c1, child(i).getCardinality)
-      if (c1 == StaticProperty.ALLOWS_MANY) {
-        //break
+    breakable {
+      for (i <- 1 until size) {
+        c1 = Cardinality.sum(c1, child(i).getCardinality)
+        if (c1 == StaticProperty.ALLOWS_MANY) {
+          break
+        }
       }
     }
     c1
@@ -502,21 +509,23 @@ class Block(children: Array[Expression]) extends Instruction {
     optimizeChildren(visitor, contextInfo)
     var canSimplify: Boolean = false
     var prevLiteral: Boolean = false
-    for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
-      if (child.isInstanceOf[Block]) {
-        canSimplify = true
-        //break
-      }
-      if (child.isInstanceOf[Literal] &&
-        !(child.asInstanceOf[Literal].getValue.isInstanceOf[IntegerRange])) {
-        if (prevLiteral || Literal.isEmptySequence(child)) {
+    breakable {
+      for (o <- operands().asScala) {
+        val child: Expression = o.getChildExpression
+        if (child.isInstanceOf[Block]) {
           canSimplify = true
-          //break
+          break
         }
-        prevLiteral = true
-      } else {
-        prevLiteral = false
+        if (child.isInstanceOf[Literal] &&
+          !(child.asInstanceOf[Literal].getValue.isInstanceOf[IntegerRange])) {
+          if (prevLiteral || Literal.isEmptySequence(child)) {
+            canSimplify = true
+            break
+          }
+          prevLiteral = true
+        } else {
+          prevLiteral = false
+        }
       }
     }
     if (canSimplify) {

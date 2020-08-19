@@ -25,21 +25,22 @@ import java.util.HashMap
 import java.util.List
 
 import SequenceIterator.Property._
+import scala.util.control.Breaks._
 
 class GroupByIterator
   extends GroupIterator
     with LastPositionFinder
     with LookaheadIterator {
   private var population: SequenceIterator = _
-   var keyExpression: Expression = _
+  var keyExpression: Expression = _
   private var keyContext: XPathContext = _
   private var collator: StringCollator = _
-   var composite: Boolean = _
+  var composite: Boolean = _
   private var position: Int = 0
 
-   var groups: List[List[Item]] = new ArrayList(40)
+  var groups: List[List[Item]] = new ArrayList(40)
 
-   var groupKeys: List[AtomicSequence] = new ArrayList(40)
+  var groupKeys: List[AtomicSequence] = new ArrayList(40)
 
   def this(population: SequenceIterator, keyExpression: Expression, keyContext: XPathContext, collator: StringCollator, composite: Boolean) {
     this()
@@ -66,32 +67,34 @@ class GroupByIterator
     while ((item = focus.next()) != null) {
       val keys: SequenceIterator = keyExpression.iterate(c2)
       var firstKey: Boolean = true
-      while (true) {
-        val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
-        if (key == null) {
-          //break
-        }
-        var comparisonKey: AtomicMatchKey = null
-        comparisonKey =
-          if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
-          else key.getXPathComparable(false, collator, implicitTimezone)
-        val g: List[Item] = index.get(comparisonKey)
-        if (g == null) {
-          val newGroup: List[Item] = new ArrayList[Item](20)
-          newGroup.add(item)
-          groups.add(newGroup)
-          groupKeys.add(key)
-          index.put(comparisonKey, newGroup)
-        } else {
-          if (firstKey) {
-            g.add(item)
+      breakable {
+        while (true) {
+          val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
+          if (key == null) {
+            break
+          }
+          var comparisonKey: AtomicMatchKey = null
+          comparisonKey =
+            if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
+            else key.getXPathComparable(false, collator, implicitTimezone)
+          val g: List[Item] = index.get(comparisonKey)
+          if (g == null) {
+            val newGroup: List[Item] = new ArrayList[Item](20)
+            newGroup.add(item)
+            groups.add(newGroup)
+            groupKeys.add(key)
+            index.put(comparisonKey, newGroup)
           } else {
-            if (g.get(g.size - 1) != item) {
+            if (firstKey) {
               g.add(item)
+            } else {
+              if (g.get(g.size - 1) != item) {
+                g.add(item)
+              }
             }
           }
+          firstKey = false
         }
-        firstKey = false
       }
     }
   }
@@ -107,17 +110,19 @@ class GroupByIterator
       val keys: SequenceIterator = keyExpression.iterate(c2)
       val ckList: List[AtomicMatchKey] = new ArrayList[AtomicMatchKey]()
       val compositeKey: List[AtomicValue] = new ArrayList[AtomicValue]()
-      while (true) {
-        val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
-        if (key == null) {
-          //break
+      breakable {
+        while (true) {
+          val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
+          if (key == null) {
+            break
+          }
+          compositeKey.add(key)
+          var comparisonKey: AtomicMatchKey = null
+          comparisonKey =
+            if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
+            else key.getXPathComparable(false, collator, implicitTimezone)
+          ckList.add(comparisonKey)
         }
-        compositeKey.add(key)
-        var comparisonKey: AtomicMatchKey = null
-        comparisonKey =
-          if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
-          else key.getXPathComparable(false, collator, implicitTimezone)
-        ckList.add(comparisonKey)
       }
       val g: List[Item] = index.get(ckList)
       if (g == null) {

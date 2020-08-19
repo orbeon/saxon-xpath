@@ -18,24 +18,27 @@ import java.util.ArrayList
 
 import java.util.List
 import NodeOverNodeInfo._
+import scala.util.control.Breaks._
 
 object DocumentOverNodeInfo {
 
    def getElementsByTagName(node: NodeInfo,
                                      tagname: String): NodeList = {
-    val allElements: AxisIterator = node.iterateAxis(AxisInfo.DESCENDANT)
-    val nodes: List[Node] = new ArrayList[Node](100)
-    while (true) {
-      val next: NodeInfo = allElements.next()
-      if (next == null) {
-        //break
-      }
-      if (next.getNodeKind == Type.ELEMENT) {
-        if (tagname.==("*") || tagname == next.getDisplayName) {
-          nodes.add(NodeOverNodeInfo.wrap(next))
-        }
-      }
-    }
+     val allElements: AxisIterator = node.iterateAxis(AxisInfo.DESCENDANT)
+     val nodes: List[Node] = new ArrayList[Node](100)
+     breakable {
+       while (true) {
+         val next: NodeInfo = allElements.next()
+         if (next == null) {
+           break
+         }
+         if (next.getNodeKind == Type.ELEMENT) {
+           if (tagname.==("*") || tagname == next.getDisplayName) {
+             nodes.add(NodeOverNodeInfo.wrap(next))
+           }
+         }
+       }
+   }
     new DOMNodeList(nodes)
   }
 
@@ -45,15 +48,17 @@ object DocumentOverNodeInfo {
     val ns: String = if (namespaceURI == null) "" else namespaceURI
     val allElements: AxisIterator = node.iterateAxis(AxisInfo.DESCENDANT)
     val nodes: List[Node] = new ArrayList[Node](100)
-    while (true) {
-      val next: NodeInfo = allElements.next()
-      if (next == null) {
-        //break
-      }
-      if (next.getNodeKind == Type.ELEMENT) {
-        if ((ns.==("*") || ns == next.getURI) &&
-          (localName.==("*") || localName == next.getLocalPart)) {
-          nodes.add(NodeOverNodeInfo.wrap(next))
+    breakable {
+      while (true) {
+        val next: NodeInfo = allElements.next()
+        if (next == null) {
+          break
+        }
+        if (next.getNodeKind == Type.ELEMENT) {
+          if ((ns.==("*") || ns == next.getURI) &&
+            (localName.==("*") || localName == next.getLocalPart)) {
+            nodes.add(NodeOverNodeInfo.wrap(next))
+          }
         }
       }
     }

@@ -24,6 +24,7 @@ import java.util.zip.ZipInputStream
 import net.sf.saxon.resource.AbstractResourceCollection.InputDetails
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 
 
@@ -174,6 +175,7 @@ class JarCollection(private var context: XPathContext,
     private def advance(): Unit = {
       while (true) {
         var entry: ZipEntry = null
+        breakable {
         try {
           entry = zipInputStream.getNextEntry
           if (entry == null) {
@@ -183,10 +185,11 @@ class JarCollection(private var context: XPathContext,
         } catch {
           case e: IOException => {
             nextt = new FailedResource(null, new XPathException(e))
-//break
+            break
           }
 
         }
+      }
         if (entry.isDirectory) {
           dirStr = entry.getName
         } else {
@@ -199,7 +202,6 @@ class JarCollection(private var context: XPathContext,
                 else ""
             }
             if (!filter.accept(new File(dirStr), entryName)) {
-//continue
             }
           }
           var resourceURI: String = null
@@ -219,12 +221,12 @@ class JarCollection(private var context: XPathContext,
                 throw new UncheckedXPathException(new XPathException(err))
 
             } finally // we must always close the output file
-            try output.close()
-            catch {
-              case e: IOException =>
-                nextt = new FailedResource(null, new XPathException(e))
+              try output.close()
+              catch {
+                case e: IOException =>
+                  nextt = new FailedResource(null, new XPathException(e))
 
-            }
+              }
             val details: InputDetails = new InputDetails()
             details.binaryContent = output.toByteArray()
             details.contentType =

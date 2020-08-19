@@ -5,6 +5,7 @@ import net.sf.saxon.om.NodeInfo
 import net.sf.saxon.pattern.NodeTest
 import net.sf.saxon.tree.iter.AxisIterator
 import java.util.function.IntPredicate
+import scala.util.control.Breaks._
 
 class FollowingIterator(var doc: TinyTree,
                         var startNode: TinyNodeImpl,
@@ -40,11 +41,11 @@ class FollowingIterator(var doc: TinyTree,
           nodeNr += 1; nodeNr - 1
         }
       } else {
-        while (true) {
+        breakable {  while (true) {
           val nextSib: Int = tree.next(nodeNr)
           if (nextSib > nodeNr) {
             nodeNr = nextSib
-            //break
+            break
           } else if (tree.depth(nextSib) == 0) {
             current = null
             position = -1
@@ -53,6 +54,7 @@ class FollowingIterator(var doc: TinyTree,
             nodeNr = nextSib
           }
         }
+      }
       }
     } else {
       assert(current != null)

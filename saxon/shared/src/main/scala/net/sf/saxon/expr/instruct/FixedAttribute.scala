@@ -4,6 +4,8 @@ import net.sf.saxon.utils.Configuration
 
 import net.sf.saxon.event.ReceiverOption
 
+import scala.util.control.Breaks._
+
 import net.sf.saxon.expr._
 
 import net.sf.saxon.expr.parser.ContextItemStaticInfo
@@ -126,14 +128,16 @@ class FixedAttribute(private var nodeName: NodeName,
       var special: Boolean = false
       val `val`: CharSequence =
         getSelect.asInstanceOf[StringLiteral].getStringValue
-      for (k <- 0 until `val`.length) {
-        val c: Char = `val`.charAt(k)
-        if (c.toInt < 33 || c.toInt > 126 || c == '<' || c == '>' ||
-          c == '&' ||
-          c == '\"' ||
-          c == '\'') {
-          special = true
-          //break
+      breakable {
+        for (k <- 0 until `val`.length) {
+          val c: Char = `val`.charAt(k)
+          if (c.toInt < 33 || c.toInt > 126 || c == '<' || c == '>' ||
+            c == '&' ||
+            c == '\"' ||
+            c == '\'') {
+            special = true
+            break
+          }
         }
       }
       if (!special) {

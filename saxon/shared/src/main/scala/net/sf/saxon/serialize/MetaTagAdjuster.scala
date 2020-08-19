@@ -31,7 +31,7 @@ import javax.xml.transform.OutputKeys
 
 import java.util.Properties
 
-
+import scala.util.control.Breaks._
 
 
 class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
@@ -103,16 +103,18 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
                             properties: Int): Unit = {
     if (droppingMetaTags == level) {
       if (matchesName(elemName, "meta")) {
-// if there was an http-equiv="ContentType" attribute, discard the meta element entirely
+        // if there was an http-equiv="ContentType" attribute, discard the meta element entirely
         var found: Boolean = false
-        for (att <- attributes) {
-          val name: String = att.getNodeName.getLocalPart
-          if (comparesEqual(name, "http-equiv")) {
-            val value: String = Whitespace.trim(att.getValue)
-            if (value.equalsIgnoreCase("Content-Type")) {
-// case-blind comparison even for XHTML
-              found = true
-//break
+        breakable {
+          for (att <- attributes) {
+            val name: String = att.getNodeName.getLocalPart
+            if (comparesEqual(name, "http-equiv")) {
+              val value: String = Whitespace.trim(att.getValue)
+              if (value.equalsIgnoreCase("Content-Type")) {
+                // case-blind comparison even for XHTML
+                found = true
+                break
+              }
             }
           }
         }
@@ -122,13 +124,15 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
         }
       }
     }
-    { level += 1; level - 1 }
+    {
+      level += 1; level - 1
+    }
     nextReceiver.startElement(elemName,
-                              `type`,
-                              attributes,
-                              namespaces,
-                              location,
-                              properties)
+      `type`,
+      attributes,
+      namespaces,
+      location,
+      properties)
     if (seekingHead && matchesName(elemName, "head")) {
       val headPrefix: String = elemName.getPrefix
       val headURI: String = elemName.getURI
@@ -137,22 +141,22 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
       var atts: AttributeMap = EmptyAttributeMap.getInstance
       atts = atts.put(
         new AttributeInfo(new NoNamespaceName("http-equiv"),
-                          BuiltInAtomicType.UNTYPED_ATOMIC,
-                          "Content-Type",
-                          Loc.NONE,
-                          ReceiverOption.NONE))
+          BuiltInAtomicType.UNTYPED_ATOMIC,
+          "Content-Type",
+          Loc.NONE,
+          ReceiverOption.NONE))
       atts = atts.put(
         new AttributeInfo(new NoNamespaceName("content"),
-                          BuiltInAtomicType.UNTYPED_ATOMIC,
-                          mediaType + "; charset=" + encoding,
-                          Loc.NONE,
-                          ReceiverOption.NONE))
+          BuiltInAtomicType.UNTYPED_ATOMIC,
+          mediaType + "; charset=" + encoding,
+          Loc.NONE,
+          ReceiverOption.NONE))
       nextReceiver.startElement(metaCode,
-                                Untyped.getInstance,
-                                atts,
-                                namespaces,
-                                location,
-                                ReceiverOption.NONE)
+        Untyped.getInstance,
+        atts,
+        namespaces,
+        location,
+        ReceiverOption.NONE)
       droppingMetaTags = level
       seekingHead = false
       nextReceiver.endElement()
@@ -163,7 +167,9 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
     if (inMetaTag) {
       inMetaTag = false
     } else {
-      { level -= 1; level + 1 }
+      {
+        level -= 1; level + 1
+      }
       if (droppingMetaTags == level + 1) {
         droppingMetaTags = -1
       }
@@ -179,7 +185,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The MetaTagAdjuster adds a meta element to the content of the head element, indicating
-  * the required content type and encoding; it also removes any existing meta element
-  * containing this information
-  */
+ * The MetaTagAdjuster adds a meta element to the content of the head element, indicating
+ * the required content type and encoding; it also removes any existing meta element
+ * containing this information
+ */

@@ -582,7 +582,6 @@ class CopyOf(select: Expression,
         if (copyLineNumbers) {
           pipe.setComponent(classOf[CopyInformee[_ <: AnyRef]].getName, null)
         }
-        //break
       }
       case Type.ATTRIBUTE =>
         if (schemaType != null && schemaType.isComplexType) {
@@ -660,7 +659,6 @@ class CopyOf(select: Expression,
         if (copyLineNumbers) {
           `val`.setPipelineConfiguration(savedPipe)
         }
-        //break
       }
       case _ =>
         throw new IllegalArgumentException(

@@ -105,11 +105,9 @@ object SnapshotFn {
             anc.getAllNamespaces,
             Loc.NONE,
             ReceiverOption.NONE)
-          //break
         }
         case Type.DOCUMENT => {
           bm.startDocument(ReceiverOption.NONE)
-          //break
         }
         case _ =>
           throw new IllegalStateException(
@@ -126,11 +124,9 @@ object SnapshotFn {
       anc.getNodeKind match {
         case Type.ELEMENT => {
           bm.endElement()
-          //break
         }
         case Type.DOCUMENT => {
           bm.endDocument()
-          //break
         }
         case _ =>
           throw new IllegalStateException(

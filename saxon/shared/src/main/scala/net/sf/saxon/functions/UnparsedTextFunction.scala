@@ -17,7 +17,7 @@ import net.sf.saxon.trans.Err
 import net.sf.saxon.trans.XPathException
 
 import net.sf.saxon.tree.tiny.CharSlice
-
+import scala.util.control.Breaks._
 import net.sf.saxon.tree.util.CharSequenceConsumer
 
 import net.sf.saxon.tree.util.FastStringBuffer
@@ -142,57 +142,71 @@ object UnparsedTextFunction {
     var line: Int = 1
     var column: Int = 1
     var latin: Boolean = true
-    while (true) {
-      actual = reader.read(buffer, 0, buffer.length)
-      if (actual < 0) {
-        //break
-      }
-      var c: Int = 0
-      while (c < actual) {
-        var ch32: Int = buffer({ c += 1; c - 1 })
-        if (ch32 == '\n') {
-          { line += 1; line - 1 }
-          column = 0
+    breakable {
+      while (true) {
+        actual = reader.read(buffer, 0, buffer.length)
+        if (actual < 0) {
+          break
         }
-        { column += 1; column - 1 }
-        if (ch32 > 255) {
-          latin = false
-          if (UTF16CharacterSet.isHighSurrogate(ch32)) {
-            if (c == actual) {
-              val buffer2: Array[Char] = Array.ofDim[Char](2048)
-              val actual2: Int = reader.read(buffer2, 0, 2048)
-              val buffer3: Array[Char] = Array.ofDim[Char](actual + actual2)
-              System.arraycopy(buffer, 0, buffer3, 0, actual)
-              System.arraycopy(buffer2, 0, buffer3, actual, actual2)
-              buffer = buffer3
-              actual = actual + actual2
+        var c: Int = 0
+        while (c < actual) {
+          var ch32: Int = buffer({
+            c += 1;
+            c - 1
+          })
+          if (ch32 == '\n') {
+            {
+              line += 1;
+              line - 1
             }
-            val low: Char = buffer({ c += 1; c - 1 })
-            ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
+            column = 0
+          }
+          {
+            column += 1;
+            column - 1
+          }
+          if (ch32 > 255) {
+            latin = false
+            if (UTF16CharacterSet.isHighSurrogate(ch32)) {
+              if (c == actual) {
+                val buffer2: Array[Char] = Array.ofDim[Char](2048)
+                val actual2: Int = reader.read(buffer2, 0, 2048)
+                val buffer3: Array[Char] = Array.ofDim[Char](actual + actual2)
+                System.arraycopy(buffer, 0, buffer3, 0, actual)
+                System.arraycopy(buffer2, 0, buffer3, actual, actual2)
+                buffer = buffer3
+                actual = actual + actual2
+              }
+              val low: Char = buffer({
+                c += 1;
+                c - 1
+              })
+              ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
+            }
+          }
+          if (!checker.test(ch32)) {
+            val err: XPathException = new XPathException(
+              "The text file contains a character that is illegal in XML (line=" +
+                line +
+                " column=" +
+                column +
+                " value=hex " +
+                java.lang.Integer.toHexString(ch32) +
+                ')')
+            err.setErrorCode("FOUT1190")
+            throw err
           }
         }
-        if (!checker.test(ch32)) {
-          val err: XPathException = new XPathException(
-            "The text file contains a character that is illegal in XML (line=" +
-              line +
-              " column=" +
-              column +
-              " value=hex " +
-              java.lang.Integer.toHexString(ch32) +
-              ')')
-          err.setErrorCode("FOUT1190")
-          throw err
-        }
-      }
-      if (first) {
-        first = false
-        if (buffer(0) == '﻿') {
-          output.cat(new CharSlice(buffer, 1, actual - 1))
+        if (first) {
+          first = false
+          if (buffer(0) == '﻿') {
+            output.cat(new CharSlice(buffer, 1, actual - 1))
+          } else {
+            output.cat(new CharSlice(buffer, 0, actual))
+          }
         } else {
           output.cat(new CharSlice(buffer, 0, actual))
         }
-      } else {
-        output.cat(new CharSlice(buffer, 0, actual))
       }
     }
     reader.close()

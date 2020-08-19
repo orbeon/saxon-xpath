@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.resource
 
+import BinaryResource._
 import net.sf.saxon.expr.XPathContext
 
 import net.sf.saxon.lib.Resource
@@ -32,9 +33,7 @@ import java.net.URLConnection
 import BinaryResource._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
+import scala.util.control.Breaks._
 
 object BinaryResource {
 
@@ -46,8 +45,8 @@ object BinaryResource {
     var nRead: Int = 0
     val data: Array[Byte] = Array.ofDim[Byte](16384)
     while ((nRead = in.read(data, 0, data.length)) != -1) buffer.write(data,
-                                                                       0,
-                                                                       nRead)
+      0,
+      nRead)
     buffer.flush()
     buffer.toByteArray()
   }
@@ -55,7 +54,7 @@ object BinaryResource {
 }
 
 class BinaryResource(in: AbstractResourceCollection.InputDetails)
-    extends Resource {
+  extends Resource {
 
   private var href: String = in.resourceUri
 
@@ -83,7 +82,7 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
     val contentLength: Int = connection.getContentLength
     val in: InputStream = new BufferedInputStream(raw)
     if (contentLength < 0) {
-// bug 4475
+      // bug 4475
       val result: Array[Byte] =
         readBinaryFromStream(in, connection.getURL.getPath)
       in.close()
@@ -92,12 +91,14 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
       val data: Array[Byte] = Array.ofDim[Byte](contentLength)
       var bytesRead: Int = 0
       var offset: Int = 0
-      while (offset < contentLength) {
-        bytesRead = in.read(data, offset, data.length - offset)
-        if (bytesRead == -1) {
-//break
+      breakable {
+        while (offset < contentLength) {
+          bytesRead = in.read(data, offset, data.length - offset)
+          if (bytesRead == -1) {
+            break
+          }
+          offset += bytesRead
         }
-        offset += bytesRead
       }
       in.close()
       if (offset != contentLength) {

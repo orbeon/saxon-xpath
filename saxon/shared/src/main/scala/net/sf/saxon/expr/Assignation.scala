@@ -51,13 +51,13 @@ abstract class Assignation() extends Expression with LocalBinding {
   else Assignation.REPEATED_ACTION_ROLE)
   private var sequenceOp: Operand = null
   private var actionOp: Operand = null
-   var slotNumber = -999 // slot number for range variable
+  var slotNumber = -999 // slot number for range variable
   // (initialized to ensure a crash if no real slot is allocated)
-   var variableName: StructuredQName = null
-   var requiredType: SequenceType = null
+  var variableName: StructuredQName = null
+  var requiredType: SequenceType = null
   var isIndexedVariable: Boolean = false
-   var hasLoopingReference = false
-   var references: util.ArrayList[VariableReference] = null
+  var hasLoopingReference = false
+  var references: util.ArrayList[VariableReference] = null
 
   def getSequenceOp: Operand = sequenceOp
 
@@ -360,19 +360,19 @@ abstract class Assignation() extends Expression with LocalBinding {
    *
    * @return true if any of the references in the reference list occurs within a looping construct.
    */
-   def removeDeadReferences = {
+  def removeDeadReferences = {
     var inLoop = false
     if (references != null) for (i <- references.size - 1 to 0 by -1) { // Check whether the reference still has this Assignation as an ancestor in the expression tree
       var found = false
       inLoop |= references.get(i).isInLoop
       var parent = references.get(i).getParentExpression
-      while ( {
-        parent != null
-      }) if (parent eq this) {
-        found = true
-        break //todo: break is not supported
+      breakable {
+        while (parent != null) if (parent eq this) {
+          found = true
+          break
+        }
+        else parent = parent.getParentExpression
       }
-      else parent = parent.getParentExpression
       if (!found) references.remove(i)
     }
     inLoop
@@ -384,7 +384,7 @@ abstract class Assignation() extends Expression with LocalBinding {
    * then the scan is abandoned. On completion the reference list for the variable is either accurate, or
    * is null.
    */
-   def verifyReferences() = rebuildReferenceList(false)
+  def verifyReferences() = rebuildReferenceList(false)
 
   /**
    * Rebuild the reference list to guide subsequent optimization.

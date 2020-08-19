@@ -20,6 +20,8 @@ import java.util.function.IntPredicate
 
 import NumberFormatter._
 
+import scala.util.control.Breaks._
+
 object NumberFormatter {
 
   def isLetterOrDigit(c: Int): Boolean =
@@ -56,35 +58,44 @@ class NumberFormatter {
     var t: Int = 0
     var first: Boolean = true
     startsWithPunctuation = true
-    while (i < len) {
-      var c: Int = uFormat.uCharAt(i)
-      t = i
-      while (isLetterOrDigit(c)) {
-        { i += 1; i - 1 }
-        if (i == len) //break
-        c = uFormat.uCharAt(i)
-      }
-      if (i > t) {
-        val tok: UnicodeString = uFormat.uSubstring(t, i)
-        formatTokens.add(tok)
-        if (first) {
-          punctuationTokens.add(UnicodeString.makeUnicodeString("."))
-          startsWithPunctuation = false
-          first = false
+    breakable {
+      while (i < len) {
+        var c: Int = uFormat.uCharAt(i)
+        t = i
+
+        while (isLetterOrDigit(c)) {
+          {
+            i += 1;
+            i - 1
+          }
+          if (i == len) break
+          c = uFormat.uCharAt(i)
         }
-      }
-      if (i == len) //break
-      t = i
-      c = uFormat.uCharAt(i)
-      while (!isLetterOrDigit(c)) {
-        first = false
-        i += 1
-        if (i == len) //break
+
+        if (i > t) {
+          val tok: UnicodeString = uFormat.uSubstring(t, i)
+          formatTokens.add(tok)
+          if (first) {
+            punctuationTokens.add(UnicodeString.makeUnicodeString("."))
+            startsWithPunctuation = false
+            first = false
+          }
+        }
+        if (i == len) break
+        t = i
         c = uFormat.uCharAt(i)
-      }
-      if (i > t) {
-        val sep: UnicodeString = uFormat.uSubstring(t, i)
-        punctuationTokens.add(sep)
+        breakable {
+          while (!isLetterOrDigit(c)) {
+            first = false
+            i += 1
+            if (i == len) break
+            c = uFormat.uCharAt(i)
+          }
+        }
+        if (i > t) {
+          val sep: UnicodeString = uFormat.uSubstring(t, i)
+          punctuationTokens.add(sep)
+        }
       }
     }
     if (formatTokens.isEmpty) {
@@ -141,7 +152,10 @@ class NumberFormatter {
       sb.append(s)
       tok += 1
       if (tok == formatTokens.size) {
-        { tok -= 1; tok + 1 }
+        {
+          tok -= 1;
+          tok + 1
+        }
       }
     }
     if (punctuationTokens.size > formatTokens.size) {

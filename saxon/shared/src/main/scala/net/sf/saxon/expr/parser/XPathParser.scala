@@ -2098,9 +2098,7 @@ class XPathParser() {
         return parseConstructor
       case Token.NAMED_FUNCTION_REF =>
         return parseNamedFunctionReference
-      case _ =>
-        grumble("Unexpected token " + currentTokenDisplay + " at start of expression")
-      //break;
+      case _ => grumble("Unexpected token " + currentTokenDisplay + " at start of expression")
     }
     new ErrorExpression
   }

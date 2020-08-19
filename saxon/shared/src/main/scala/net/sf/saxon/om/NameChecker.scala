@@ -9,7 +9,7 @@ import net.sf.saxon.trans.Err
 
 import net.sf.saxon.trans.XPathException
 
-
+import scala.util.control.Breaks._
 
 
 object NameChecker {
@@ -21,7 +21,7 @@ object NameChecker {
     }
     colon != 0 && colon != name.length - 1 && isValidNCName(
       name.substring(0, colon)) &&
-    isValidNCName(name.substring(colon + 1))
+      isValidNCName(name.substring(colon + 1))
   }
 
   def getPrefix(qname: String): String = {
@@ -36,9 +36,11 @@ object NameChecker {
     val parts: Array[String] = Array.ofDim[String](2)
     var colon: Int = -1
     val len: Int = qname.length
-    for (i <- 0 until len if qname.charAt(i) == ':') {
-      colon = i
-//break
+    breakable {
+      for (i <- 0 until len if qname.charAt(i) == ':') {
+        colon = i
+        break
+      }
     }
     if (colon < 0) {
       parts(0) = ""
@@ -97,7 +99,7 @@ object NameChecker {
     var ch: Char = ncName.charAt(0)
     if (UTF16CharacterSet.isHighSurrogate(ch)) {
       if (!isNCNameStartChar(
-            UTF16CharacterSet.combinePair(ch, ncName.charAt(1)))) {
+        UTF16CharacterSet.combinePair(ch, ncName.charAt(1)))) {
         false
       }
       s = 2
@@ -106,11 +108,11 @@ object NameChecker {
         false
       }
     }
-    var i : Int = 0
-    while( i < ncName.length) {
+    var i: Int = 0
+    while (i < ncName.length) {
       ch = ncName.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
-        i = i+1
+        i = i + 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, ncName.charAt(i)))) {
           false
         }
@@ -128,11 +130,11 @@ object NameChecker {
     if (nmtoken.length == 0) {
       false
     }
-    var i : Int = 0
-    while(i < nmtoken.length) {
+    var i: Int = 0
+    while (i < nmtoken.length) {
       val ch: Char = nmtoken.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
-        i= i+1
+        i = i + 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, nmtoken.charAt(i)))) {
           false
         }
@@ -159,12 +161,12 @@ object NameChecker {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The NameChecker performs validation and analysis of XML names.
-  *
-  * <p>In releases prior to 9.6, there were two name checkers, one for XML 1.0 and
-  * one for XML 1.1. However, XML 1.0 fifth edition uses the same rules for XML names
-  * as XML 1.1, so they were actually checking the same rules for names (although they
-  * were different when checking for valid characters). From 9.6, the name checker
-  * no longer performs checks for valid XML characters, so only one name checker is
-  * needed, and the methods have become static.</p>
-  */
+ * The NameChecker performs validation and analysis of XML names.
+ *
+ * <p>In releases prior to 9.6, there were two name checkers, one for XML 1.0 and
+ * one for XML 1.1. However, XML 1.0 fifth edition uses the same rules for XML names
+ * as XML 1.1, so they were actually checking the same rules for names (although they
+ * were different when checking for valid characters). From 9.6, the name checker
+ * no longer performs checks for valid XML characters, so only one name checker is
+ * needed, and the methods have become static.</p>
+ */

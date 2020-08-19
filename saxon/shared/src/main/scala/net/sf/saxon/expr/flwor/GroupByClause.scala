@@ -48,6 +48,7 @@ import net.sf.saxon.expr.flwor.Clause.ClauseName.GROUP_BY
 import GroupByClause._
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 
 object GroupByClause {
@@ -63,14 +64,14 @@ object GroupByClause {
 }
 
 /**
-  * This class represents an "group by" clause in a FLWOR expression
-  */
+ * This class represents an "group by" clause in a FLWOR expression
+ */
 class GroupByClause(var config: Configuration) extends Clause {
 
-// Variables bound in the output tuple stream.
+  // Variables bound in the output tuple stream.
   var bindings: Array[LocalVariableBinding] = _
 
-// One comparer per grouping variable
+  // One comparer per grouping variable
   var comparers: Array[GenericAtomicComparer] = _
 
   var retainedTupleOp: Operand = _
@@ -80,7 +81,7 @@ class GroupByClause(var config: Configuration) extends Clause {
   override def getClauseKey(): Clause.ClauseName.ClauseName = GROUP_BY
 
   override def containsNonInlineableVariableReference(
-      binding: Binding): Boolean =
+                                                       binding: Binding): Boolean =
     getRetainedTupleExpression.includesBinding(binding) ||
       getGroupingTupleExpression.includesBinding(binding)
 
@@ -94,13 +95,13 @@ class GroupByClause(var config: Configuration) extends Clause {
     }
     g2.comparers = comparers
     g2.initRetainedTupleExpression(flwor,
-                                   getRetainedTupleExpression
-                                     .copy(rebindings)
-                                     .asInstanceOf[TupleExpression])
+      getRetainedTupleExpression
+        .copy(rebindings)
+        .asInstanceOf[TupleExpression])
     g2.initGroupingTupleExpression(flwor,
-                                   getGroupingTupleExpression
-                                     .copy(rebindings)
-                                     .asInstanceOf[TupleExpression])
+      getGroupingTupleExpression
+        .copy(rebindings)
+        .asInstanceOf[TupleExpression])
     g2
   }
 
@@ -161,48 +162,48 @@ class GroupByClause(var config: Configuration) extends Clause {
   }
 
   /**
-    * Get a tuple stream that implements the functionality of this clause, taking its
-    * input from another tuple stream which this clause modifies
-    *
-    * @param base    the input tuple stream
-    * @param context the XPath dynamic evaluation context
-    * @return the output tuple stream
-    */
+   * Get a tuple stream that implements the functionality of this clause, taking its
+   * input from another tuple stream which this clause modifies
+   *
+   * @param base    the input tuple stream
+   * @param context the XPath dynamic evaluation context
+   * @return the output tuple stream
+   */
   override def getPullStream(base: TuplePull,
                              context: XPathContext): TuplePull =
     new GroupByClausePull(base, this, context)
 
   /**
-    * Get a push-mode tuple stream that implements the functionality of this clause, supplying its
-    * output to another tuple stream
-    *
-    * @param destination the output tuple stream
-    * @param output the destination for the result
-    * @param context the dynamic evaluation context
-    * @return the push tuple stream that implements the functionality of this clause of the FLWOR
-    *         expression
-    */
+   * Get a push-mode tuple stream that implements the functionality of this clause, supplying its
+   * output to another tuple stream
+   *
+   * @param destination the output tuple stream
+   * @param output      the destination for the result
+   * @param context     the dynamic evaluation context
+   * @return the push tuple stream that implements the functionality of this clause of the FLWOR
+   *         expression
+   */
   override def getPushStream(destination: TuplePush,
                              output: Outputter,
                              context: XPathContext): TuplePush =
     new GroupByClausePush(output, destination, this, context)
 
   /**
-    * Process the subexpressions of this clause
-    *
-    * @param processor the expression processor used to process the subexpressions
-    */
+   * Process the subexpressions of this clause
+   *
+   * @param processor the expression processor used to process the subexpressions
+   */
   override def processOperands(processor: OperandProcessor): Unit = {
     processor.processOperand(groupingTupleOp)
     processor.processOperand(retainedTupleOp)
   }
 
   /**
-    * Diagnostic print of expression structure. The abstract expression tree
-    * is written to the supplied output destination.
-    *
-    * @param out the expression presenter used to display the structure
-    */
+   * Diagnostic print of expression structure. The abstract expression tree
+   * is written to the supplied output destination.
+   *
+   * @param out the expression presenter used to display the structure
+   */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("group-by")
     for (o <- getRetainedTupleExpression.operands().asScala) {
@@ -246,8 +247,8 @@ class GroupByClause(var config: Configuration) extends Clause {
   }
 
   def getComparisonKey(
-      t: Tuple,
-      comparers: Array[GenericAtomicComparer]): TupleComparisonKey =
+                        t: Tuple,
+                        comparers: Array[GenericAtomicComparer]): TupleComparisonKey =
     new TupleComparisonKey(t.getMembers, comparers)
 
   override def addToPathMap(pathMap: PathMap,
@@ -257,8 +258,8 @@ class GroupByClause(var config: Configuration) extends Clause {
   }
 
   class TupleComparisonKey(
-      private var groupingValues: Array[Sequence],
-      private var comparers: Array[GenericAtomicComparer]) {
+                            private var groupingValues: Array[Sequence],
+                            private var comparers: Array[GenericAtomicComparer]) {
 
     override def hashCode(): Int = {
       var h: Int = 0x77557755 ^ groupingValues.length
@@ -267,17 +268,19 @@ class GroupByClause(var config: Configuration) extends Clause {
         val implicitTimezone: Int = comparer.getContext.getImplicitTimezone
         try {
           val atoms: SequenceIterator = groupingValues(i).iterate()
-          while (true) {
-            val `val`: AtomicValue = atoms.next().asInstanceOf[AtomicValue]
-            if (`val` == null) {
-//break
+          breakable {
+            while (true) {
+              val `val`: AtomicValue = atoms.next().asInstanceOf[AtomicValue]
+              if (`val` == null) {
+                break
+              }
+              h ^= i +
+                `val`
+                  .getXPathComparable(false,
+                    comparer.getCollator,
+                    implicitTimezone)
+                  .hashCode
             }
-            h ^= i +
-              `val`
-                .getXPathComparable(false,
-                                    comparer.getCollator,
-                                    implicitTimezone)
-                .hashCode
           }
         } catch {
           case e: XPathException => {}
@@ -292,18 +295,18 @@ class GroupByClause(var config: Configuration) extends Clause {
         false
       }
       if (groupingValues.length !=
-            other.asInstanceOf[TupleComparisonKey].groupingValues.length) {
+        other.asInstanceOf[TupleComparisonKey].groupingValues.length) {
         false
       }
       for (i <- 0 until groupingValues.length) {
         try if (!DeepEqual.deepEqual(groupingValues(i).iterate(),
-                                     other
-                                       .asInstanceOf[TupleComparisonKey]
-                                       .groupingValues(i)
-                                       .iterate(),
-                                     comparers(i),
-                                     comparers(i).getContext,
-                                     0)) {
+          other
+            .asInstanceOf[TupleComparisonKey]
+            .groupingValues(i)
+            .iterate(),
+          comparers(i),
+          comparers(i).getContext,
+          0)) {
           false
         } catch {
           case e: XPathException => false

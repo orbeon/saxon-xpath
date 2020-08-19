@@ -14,6 +14,8 @@ import net.sf.saxon.tree.iter.LookaheadIterator
 
 import java.util.ArrayList
 
+import scala.util.control.Breaks._
+
 class GroupEndingIterator(select: Expression,
                           endPattern: Pattern,
                           context: XPathContext)
@@ -39,19 +41,21 @@ class GroupEndingIterator(select: Expression,
     Count.steppingCount(another)
   }
 
-   def advance(): Unit = {
+  def advance(): Unit = {
     currentMembers = new ArrayList(20)
     currentMembers.add(current)
     nextItem = current
-    while (nextItem != null) if (pattern.matches(nextItem, runningContext)) {
-      nextItem = population.next()
-      if (nextItem != null) {
-        //break
-      }
-    } else {
-      nextItem = population.next()
-      if (nextItem != null) {
-        currentMembers.add(nextItem)
+    breakable {
+      while (nextItem != null) if (pattern.matches(nextItem, runningContext)) {
+        nextItem = population.next()
+        if (nextItem != null) {
+          break
+        }
+      } else {
+        nextItem = population.next()
+        if (nextItem != null) {
+          currentMembers.add(nextItem)
+        }
       }
     }
   }

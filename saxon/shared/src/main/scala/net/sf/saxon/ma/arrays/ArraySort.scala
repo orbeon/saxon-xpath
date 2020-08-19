@@ -54,18 +54,17 @@ object ArraySort {
       val firstb: AtomicValue = iteratorb.next().asInstanceOf[AtomicValue]
       if (firsta == null) {
         if (firstb == null) {
-          0
+          return 0
         } else {
-          -1
+          return -1
         }
       } else if (firstb == null) {
-        +1
+        return +1
       } else {
         val first: Int = comparer.compareAtomicValues(firsta, firstb)
         if (first == 0) {
-          //continue
         } else {
-          first
+          return first
         }
       }
     }

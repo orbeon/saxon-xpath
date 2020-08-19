@@ -5,6 +5,7 @@ import net.sf.saxon.tree.util.FastStringBuffer
 import java.text.CollationElementIterator
 import java.text.RuleBasedCollator
 import java.util.Comparator
+import scala.util.control.Breaks._
 
 object RuleBasedSubstringMatcher {
 
@@ -17,13 +18,13 @@ object RuleBasedSubstringMatcher {
       val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
       val iter: CollationElementIterator =
         collator.getCollationElementIterator(args(i))
+      breakable {
       while (true) {
         val e: Int = iter.next()
-        if (e == -1) {
-          //break
-        }
+        if (e == -1) break
         sb.append(e + " ")
       }
+    }
       System.err.println(sb.toString)
     }
   }

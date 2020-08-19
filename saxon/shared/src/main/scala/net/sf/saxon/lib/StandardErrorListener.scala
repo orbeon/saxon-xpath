@@ -14,6 +14,7 @@ import net.sf.saxon.tree.AttributeLocation
 import org.xml.sax.SAXException
 
 import scala.beans.BeanProperty
+import scala.util.control.Breaks._
 
 //remove if not needed
 
@@ -31,13 +32,13 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
 
   private var warningsIssued: Set[String] = new HashSet()
 
-  @transient  var logger: Logger = new StandardLogger()
+  @transient var logger: Logger = new StandardLogger()
 
   def makeAnother(hostLanguage: HostLanguage): StandardErrorListener = {
     var sel: StandardErrorListener = null
     try sel = this.getClass.newInstance()
     catch {
-      case e @ (_: InstantiationException | _: IllegalAccessException) =>
+      case e@(_: InstantiationException | _: IllegalAccessException) =>
         sel = new StandardErrorListener()
 
     }
@@ -68,7 +69,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
         logger.error(message)
       } else {
         logger.warning(message)
-         warningCount += 1
+        warningCount += 1
         if (warningCount > getMaximumNumberOfWarnings) {
           logger.info("No more warnings will be displayed")
           warningCount = 0
@@ -247,7 +248,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       expandSpecialCharacters(wordWrap(getExpandedMessage(err))).toString
     }
 
-   def outputStackTrace(out: Logger, context: XPathContext): Unit = {
+  def outputStackTrace(out: Logger, context: XPathContext): Unit = {
     printStackTrace(context, out, stackTraceDetail)
   }
 
@@ -287,29 +288,31 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
                            message: String): String = {
     var e: Throwable = err
     var messageVar = message
-    while (true) {
-      if (e == null) {
-        //break
-      }
-      var next: String = e.getMessage
-      if (next == null) {
-        next = ""
-      }
-      if (next.startsWith("net.sf.saxon.trans.XPathException: ")) {
-        next = next.substring(next.indexOf(": ") + 2)
-      }
-      if (!("TRaX Transform Exception" == next || messageVar.endsWith(next))) {
-        if ("" != messageVar && !messageVar.trim().endsWith(":")) {
-          messageVar += ": "
+    breakable {
+      while (true) {
+        if (e == null) {
+          break
         }
-        messageVar += next
-      }
-      if (e.isInstanceOf[TransformerException]) {
-        e = e.asInstanceOf[TransformerException].getException
-      } else if (e.isInstanceOf[SAXException]) {
-        e = e.asInstanceOf[SAXException].getException
-      } else {
-        //break
+        var next: String = e.getMessage
+        if (next == null) {
+          next = ""
+        }
+        if (next.startsWith("net.sf.saxon.trans.XPathException: ")) {
+          next = next.substring(next.indexOf(": ") + 2)
+        }
+        if (!("TRaX Transform Exception" == next || messageVar.endsWith(next))) {
+          if ("" != messageVar && !messageVar.trim().endsWith(":")) {
+            messageVar += ": "
+          }
+          messageVar += next
+        }
+        if (e.isInstanceOf[TransformerException]) {
+          e = e.asInstanceOf[TransformerException].getException
+        } else if (e.isInstanceOf[SAXException]) {
+          e = e.asInstanceOf[SAXException].getException
+        } else {
+          break
+        }
       }
     }
     messageVar

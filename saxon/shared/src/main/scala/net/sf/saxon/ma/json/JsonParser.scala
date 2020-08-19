@@ -434,25 +434,21 @@ class JsonParser() {
     private def readToken: JsonToken = {
       var jsonToken = new JsonToken
       if (position >= input.length) return JsonParser.JsonToken.EOF
-      breakable {
         while (true) {
           val c = input.charAt(position)
           c match {
-            case '\n' =>
+            case '\n' | ' ' =>
             case '\r' =>
               lineNumber += 1
             // drop through
-            case ' ' =>
             case '\t' =>
               if ( {
                 position += 1;
                 position
               } >= input.length) return JsonParser.JsonToken.EOF
             case _ =>
-              break
           }
         }
-      }
       val ch = input.charAt({
         position += 1;
         position - 1

@@ -236,7 +236,7 @@ class TupleItemType(names: List[String],
       } else {
         val a: Affinity = th.sequenceTypeRelationship(t1, t2)
         a match {
-          case SAME_TYPE => //break
+          case SAME_TYPE =>
           case SUBSUMED_BY => foundSubsumed = true
           case SUBSUMES => foundSubsuming = true
           case OVERLAPS => foundOverlap = true

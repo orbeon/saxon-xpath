@@ -38,6 +38,8 @@ import java.util.Map
 
 import UnparsedText._
 
+import scala.util.control.Breaks._
+
 object UnparsedText {
 
   private val errorValue: String = ""
@@ -111,20 +113,22 @@ object UnparsedText {
     var sb2: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val file: File = new File(args(0))
     val is: InputStream = new FileInputStream(file)
-    while (true) {
-      val b: Int = is.read()
-      if (b < 0) {
-        println(sb1)
-        println(sb2)
-        //break
-      }
-      sb1.append(java.lang.Integer.toHexString(b) + " ")
-      sb2.append(b.toChar + " ")
-      if (sb1.length > 80) {
-        println(sb1)
-        println(sb2)
-        sb1 = new FastStringBuffer(FastStringBuffer.C256)
-        sb2 = new FastStringBuffer(FastStringBuffer.C256)
+    breakable {
+      while (true) {
+        val b: Int = is.read()
+        if (b < 0) {
+          println(sb1)
+          println(sb2)
+          break
+        }
+        sb1.append(java.lang.Integer.toHexString(b) + " ")
+        sb2.append(b.toChar + " ")
+        if (sb1.length > 80) {
+          println(sb1)
+          println(sb2)
+          sb1 = new FastStringBuffer(FastStringBuffer.C256)
+          sb2 = new FastStringBuffer(FastStringBuffer.C256)
+        }
       }
     }
     is.close()

@@ -129,7 +129,6 @@ object DurationValue {
             months = value
             state = 2
             components += 1
-            //break
           } else {
             badDuration("M is out of sequence", s)
           }

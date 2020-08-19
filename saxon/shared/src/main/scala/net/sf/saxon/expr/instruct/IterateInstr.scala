@@ -33,6 +33,7 @@ import net.sf.saxon.value.SequenceType
 import IterateInstr._
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 object IterateInstr {
 
@@ -44,11 +45,13 @@ object IterateInstr {
     } else {
       var found: Boolean = false
       val inTryCatch: Boolean = withinTryCatch || exp.isInstanceOf[TryCatch]
-      for (o <- exp.operands().asScala
-           if containsBreakOrNextIterationWithinTryCatch(o.getChildExpression,
-             inTryCatch)) {
-        found = true
-        //break
+      breakable {
+        for (o <- exp.operands().asScala
+             if containsBreakOrNextIterationWithinTryCatch(o.getChildExpression,
+               inTryCatch)) {
+          found = true
+          break
+        }
       }
       found
     }
@@ -115,7 +118,7 @@ class IterateInstr(select: Expression,
   def getActionExpression(): Expression = actionOp.getChildExpression
 
   override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+                         contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.typeCheck(visitor, contextInfo)
     initiallyOp.typeCheck(visitor, contextInfo)
     var selectType: ItemType = getSelectExpression.getItemType
@@ -136,8 +139,8 @@ class IterateInstr(select: Expression,
     this
   }
 
- override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.optimize(visitor, contextInfo)
     initiallyOp.optimize(visitor, contextInfo)
     val cit2: ContextItemStaticInfo = visitor.getConfiguration
@@ -157,7 +160,7 @@ class IterateInstr(select: Expression,
   def isCompilable(): Boolean =
     !containsBreakOrNextIterationWithinTryCatch(this, false)
 
- override def getItemType(): ItemType =
+  override def getItemType(): ItemType =
     if (Literal.isEmptySequence(getOnCompletion)) {
       getActionExpression.getItemType
     } else {
@@ -167,7 +170,7 @@ class IterateInstr(select: Expression,
         th)
     }
 
-override  def mayCreateNewNodes(): Boolean =
+  override def mayCreateNewNodes(): Boolean =
     (getActionExpression.getSpecialProperties & getOnCompletion.getSpecialProperties &
       StaticProperty.NO_NODES_NEWLY_CREATED) ==
       0
@@ -185,7 +188,7 @@ override  def mayCreateNewNodes(): Boolean =
 
   override def getStreamerName(): String = "Iterate"
 
- override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
+  override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     getActionExpression.checkPermittedContents(parentType, false)
@@ -215,26 +218,28 @@ override  def mayCreateNewNodes(): Boolean =
     val listener: TraceListener =
       if (tracing) context.getController.getTraceListener else null
     getInitiallyExp.process(output, context)
-    while (true) {
-      val item: Item = iter.next()
-      if (item != null) {
-        if (tracing) {
-          listener.startCurrentItem(item)
+    breakable {
+      while (true) {
+        val item: Item = iter.next()
+        if (item != null) {
+          if (tracing) {
+            listener.startCurrentItem(item)
+          }
+          getActionExpression.process(output, c2)
+          if (tracing) {
+            listener.endCurrentItem(item)
+          }
+          val comp: TailCallLoop.TailCallInfo = c2.getTailCallInfo
+          if (comp == null) {} else if (comp.isInstanceOf[BreakInstr]) {
+            iter.close()
+            null
+          } else {}
+        } else {
+          val c3: XPathContextMinor = context.newMinorContext()
+          c3.setCurrentIterator(null)
+          getOnCompletion.process(output, c3)
+          break
         }
-        getActionExpression.process(output, c2)
-        if (tracing) {
-          listener.endCurrentItem(item)
-        }
-        val comp: TailCallLoop.TailCallInfo = c2.getTailCallInfo
-        if (comp == null) {} else if (comp.isInstanceOf[BreakInstr]) {
-          iter.close()
-          null
-        } else {}
-      } else {
-        val c3: XPathContextMinor = context.newMinorContext()
-        c3.setCurrentIterator(null)
-        getOnCompletion.process(output, c3)
-        //break
       }
     }
     pipe.setXPathContext(context)

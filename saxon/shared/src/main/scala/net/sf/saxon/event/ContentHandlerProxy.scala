@@ -47,12 +47,13 @@ import javax.xml.transform.sax.TransformerHandler
 import java.util.Properties
 
 import java.util.Stack
-
+import scala.util.control.Breaks._
 import ContentHandlerProxy._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 import scala.collection.JavaConverters._
+
 
 object ContentHandlerProxy {
 
@@ -94,9 +95,9 @@ class ContentHandlerProxy extends Receiver {
 
   var systemId: String = _
 
-   var handler: ContentHandler = _
+  var handler: ContentHandler = _
 
-   var lexicalHandler: LexicalHandler = _
+  var lexicalHandler: LexicalHandler = _
 
   private var depth: Int = 0
 
@@ -263,20 +264,20 @@ class ContentHandlerProxy extends Receiver {
 
       }
     }
-    while (true) {
-      val prefix: String = namespaceStack.pop()
-      if (prefix == MARKER) {
-        //break
-      }
-      try handler.endPrefixMapping(prefix)
-      catch {
-        case err: SAXException => handleSAXException(err)
+    breakable {
+      while (true) {
+        val prefix: String = namespaceStack.pop()
+        if (prefix == MARKER) {
+          break
+        }
+        try handler.endPrefixMapping(prefix)
+        catch {
+          case err: SAXException => handleSAXException(err)
 
+        }
       }
     }
-    {
-      depth -= 1; depth + 1
-    }
+    depth -= 1
     if (requireWellFormed && depth <= 0) {
       depth = java.lang.Integer.MIN_VALUE
     }
@@ -306,7 +307,7 @@ class ContentHandlerProxy extends Receiver {
     }
   }
 
-   def notifyNotWellFormed(): Unit = {
+  def notifyNotWellFormed(): Unit = {
     val err: XPathException = new XPathException(
       "The result tree cannot be supplied to the ContentHandler because it is not well-formed XML")
     err.setErrorCode(SaxonErrorCode.SXCH0002)

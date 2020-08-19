@@ -1132,7 +1132,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
               }
             }
           }
-          //break
         }
         case Type.TEXTUAL_ELEMENT => {
           val start: Int = source.alpha(from)
@@ -1143,7 +1142,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
           alpha(to) = charBuffer.length
           appendChars(source.charBuffer.subSequence(start, start + len))
           beta(to) = len
-          //break
         }
         case Type.TEXT => {
           val start: Int = source.alpha(from)
@@ -1152,13 +1150,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
           alpha(to) = charBuffer.length
           appendChars(source.charBuffer.subSequence(start, start + len))
           beta(to) = len
-          //break
         }
         case Type.WHITESPACE_TEXT => {
           nameCode(to) = -1
           alpha(to) = source.alpha(from)
           beta(to) = source.beta(from)
-          //break
         }
         case Type.COMMENT => {
           val start: Int = source.alpha(from)
@@ -1172,7 +1168,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
           alpha(to) = commentBuffer.length
           commentBuffer.cat(text)
           beta(to) = len
-          //break
         }
         case Type.PROCESSING_INSTRUCTION =>
           var start: Int = source.alpha(from)
@@ -1190,7 +1185,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
           nameCode(to) = -1
           alpha(to) = source.alpha(from) + (to - from)
           beta(to) = -1
-        case _ => //break
+        case _ =>
 
       }
     }

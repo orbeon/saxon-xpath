@@ -6,6 +6,8 @@ import IntToIntHashMap._
 
 import scala.beans.{BeanProperty}
 
+import scala.util.control.Breaks._
+
 object IntToIntHashMap {
 
   private val NBIT: Int = 30
@@ -167,16 +169,18 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     buffer.append("{")
     val keys: IntIterator = keyIterator()
     var count: Int = 0
-    while (keys.hasNext) {
-      val k: Int = keys.next
-      val v: Int = get(k)
-      buffer.append(" " + k + ":" + v + ",")
-      if ( {
-        count += 1;
-        count - 1
-      } >= 100) {
-        buffer.append("....")
-        //break
+    breakable {
+      while (keys.hasNext) {
+        val k: Int = keys.next
+        val v: Int = get(k)
+        buffer.append(" " + k + ":" + v + ",")
+        if ( {
+          count += 1;
+          count - 1
+        } >= 100) {
+          buffer.append("....")
+          break
+        }
       }
     }
     buffer.setCharAt(buffer.length - 1, '}')
