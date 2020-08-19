@@ -68,13 +68,13 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
 
   private var startElementLocationId: Location = Loc.NONE
 
-  private var hostLanguage: HostLanguage.HostLanguage = pipe.getHostLanguage
-
   private var state: RegularSequenceChecker.State.State = Initial
 
   private var previousAtomic: Boolean = false
 
   val pipe: PipelineConfiguration = next.getPipelineConfiguration
+
+  private var hostLanguage: HostLanguage.HostLanguage = pipe.getHostLanguage
 
   this.pipelineConfiguration = pipe
 

@@ -60,7 +60,6 @@ object Base64BinaryValue {
     val remainder = value.length % 3
     remainder match {
       case 0 =>
-      case _ =>
       // no action
       case 1 =>
         // pad the final 8 bits to 12 (2 groups of 6)
@@ -75,6 +74,7 @@ object Base64BinaryValue {
         buff.cat(encoding((`val` >> 6) & 0x3f).toChar)
         buff.cat(encoding(`val` & 0x3f).toChar)
         buff.append("=")
+      case _ =>
     }
     buff.condense
   }
@@ -183,7 +183,7 @@ object Base64BinaryValue {
     d
   }
 
-  try util.Arrays.fill(decoding, -1)
+  util.Arrays.fill(decoding, -1)
   for (i <- 0 until alphabet.length) {
     val c = alphabet.charAt(i)
     encoding(i) = c

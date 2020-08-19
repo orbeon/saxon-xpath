@@ -72,14 +72,14 @@ object Subsequence_3 {
       if (rend.compareTo(Int64Value.ZERO) <= 0) {
         EmptyIterator.emptyIterator()
       }
-      var lstart: Long = 0l
+      var lstart: Long = 0L
       lstart =
         if (startNumVal.compareTo(Int64Value.PLUS_ONE) <= 0) 1
         else startNumVal.longValue()
       if (lstart > java.lang.Integer.MAX_VALUE) {
         EmptyIterator.emptyIterator()
       }
-      var lend: Long = 0l
+      var lend: Long = 0L
       lend =
         if (rend.compareTo(Int64Value.MAX_LONG) >= 0)
           java.lang.Integer.MAX_VALUE

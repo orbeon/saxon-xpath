@@ -22,6 +22,7 @@ import RecoveryPolicy._
 import net.sf.saxon.trans.Mode.RuleAction
 
 import scala.jdk.CollectionConverters._
+
 /*import net.sf.saxon.style.StylesheetModule*/
 // StylesheetModule not exist
 import net.sf.saxon.style.StylesheetPackage
@@ -139,59 +140,59 @@ object SimpleMode {
      *
      * @param s a string value to be used for the group
      */
-    def setString(s: String)
+    def setString(s: String): Unit
 
     /**
      * Start of a generic group
      */
-    def start()
+    def start(): Unit
 
     /**
      * Start of a group characterised by some integer parameter
      *
      * @param i characteristic of this group
      */
-    def start(i: Int)
+    def start(i: Int): Unit
 
     /**
      * Invoked at the end of a group
      */
-    def end()
+    def end(): Unit
   }
 
 }
 
 class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeName) {
 
-   val genericRuleChain: RuleChain = new RuleChain()
+  val genericRuleChain: RuleChain = new RuleChain()
 
-   var atomicValueRuleChain: RuleChain = new RuleChain()
+  var atomicValueRuleChain: RuleChain = new RuleChain()
 
-   var functionItemRuleChain: RuleChain = new RuleChain()
+  var functionItemRuleChain: RuleChain = new RuleChain()
 
-   var documentRuleChain: RuleChain = new RuleChain()
+  var documentRuleChain: RuleChain = new RuleChain()
 
-   var textRuleChain: RuleChain = new RuleChain()
+  var textRuleChain: RuleChain = new RuleChain()
 
-   var commentRuleChain: RuleChain = new RuleChain()
+  var commentRuleChain: RuleChain = new RuleChain()
 
-   var processingInstructionRuleChain: RuleChain = new RuleChain()
+  var processingInstructionRuleChain: RuleChain = new RuleChain()
 
-   var namespaceRuleChain: RuleChain = new RuleChain()
+  var namespaceRuleChain: RuleChain = new RuleChain()
 
-   var unnamedElementRuleChain: RuleChain = new RuleChain()
+  var unnamedElementRuleChain: RuleChain = new RuleChain()
 
-   var unnamedAttributeRuleChain: RuleChain = new RuleChain()
+  var unnamedAttributeRuleChain: RuleChain = new RuleChain()
 
-   var namedElementRuleChains: IntHashMap[RuleChain] = new IntHashMap(
+  var namedElementRuleChains: IntHashMap[RuleChain] = new IntHashMap(
     32)
 
-   var namedAttributeRuleChains: IntHashMap[RuleChain] =
+  var namedAttributeRuleChains: IntHashMap[RuleChain] =
     new IntHashMap(8)
 
-   var qNamedElementRuleChains: Map[StructuredQName, RuleChain] = _
+  var qNamedElementRuleChains: Map[StructuredQName, RuleChain] = _
 
-   var qNamedAttributeRuleChains: Map[StructuredQName, RuleChain] = _
+  var qNamedAttributeRuleChains: Map[StructuredQName, RuleChain] = _
 
   private var builtInRuleSet: BuiltInRuleSet = TextOnlyCopyRuleSet.getInstance
 
@@ -287,7 +288,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    *
    * @return a new object capable of holding the state of a search for a rule
    */
-   def makeRuleSearchState(chain: RuleChain, context: XPathContext) = new RuleSearchState
+  def makeRuleSearchState(chain: RuleChain, context: XPathContext) = new RuleSearchState
 
   /**
    * Ask whether there are any template rules in this mode
@@ -356,7 +357,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     namespaces
   }
 
-  def addRule(pattern: Pattern, action: RuleTarget/*, module: StylesheetModule*/, precedence: Int, priority: Double, position: Int, part: Int): Unit = {
+  def addRule(pattern: Pattern, action: RuleTarget /*, module: StylesheetModule*/ , precedence: Int, priority: Double, position: Int, part: Int): Unit = {
     hasRules = true
     // Ignore a pattern that will never match, e.g. "@comment"
     if (pattern.getItemType.isInstanceOf[ErrorType]) return
@@ -376,7 +377,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     //            sequence = mostRecentRule.getSequence() + 1;
     //        }
     //int precedence = module.getPrecedence();
-   // val minImportPrecedence = module.getMinImportPrecedence
+    // val minImportPrecedence = module.getMinImportPrecedence
     val newRule = makeRule(pattern, action, precedence, 0, priority, position, part)
     if (pattern.isInstanceOf[NodeTestPattern]) {
       val test = pattern.getItemType
@@ -388,7 +389,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
       }
     }
     mostRecentRule = newRule
-   // mostRecentModuleHash = moduleHash
+    // mostRecentModuleHash = moduleHash
     addRule(pattern, newRule)
   }
 
@@ -426,7 +427,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     else addRuleToList(newRule, genericRuleChain)
   }
 
-   def addRuleToNamedOrUnnamedChain(newRule: Rule, fp: Int, unnamedRuleChain: RuleChain, namedRuleChains: IntHashMap[RuleChain]) = if (fp == -1) addRuleToList(newRule, unnamedRuleChain)
+  def addRuleToNamedOrUnnamedChain(newRule: Rule, fp: Int, unnamedRuleChain: RuleChain, namedRuleChains: IntHashMap[RuleChain]) = if (fp == -1) addRuleToList(newRule, unnamedRuleChain)
   else {
     var chain = namedRuleChains.get(fp)
     if (chain == null) {
@@ -542,7 +543,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @return the Rule at the head of the rule chain for nodes of this name, or null if there are no rules
    *         to consider
    */
-   def getNamedRuleChain(c: XPathContext, kind: Int, uri: String, local: String) = {
+  def getNamedRuleChain(c: XPathContext, kind: Int, uri: String, local: String) = {
     this synchronized {
       if (qNamedElementRuleChains == null) {
         qNamedElementRuleChains = new HashMap[StructuredQName, RuleChain](namedElementRuleChains.size)
@@ -568,7 +569,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @throws XPathException if an error occurs matching a pattern
    */
   @throws[XPathException]
-   def searchRuleChain(item: Item, context: XPathContext, bestRule: Rule, chain: RuleChain): Rule = {
+  def searchRuleChain(item: Item, context: XPathContext, bestRule: Rule, chain: RuleChain): Rule = {
     var XPathContext = context
     var bstRule = bestRule
     while (!XPathContext.isInstanceOf[XPathContextMajor])
@@ -626,7 +627,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @throws XPathException if a dynamic error occurs while matching the pattern
    */
   @throws[XPathException]
-   def ruleMatches(r: Rule, item: Item, context: XPathContextMajor, pre: RuleSearchState) = r.isAlwaysMatches || r.matches(item, context)
+  def ruleMatches(r: Rule, item: Item, context: XPathContextMajor, pre: RuleSearchState) = r.isAlwaysMatches || r.matches(item, context)
 
   /**
    * Get the rule corresponding to a given item, by finding the best Pattern match.
@@ -719,7 +720,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @throws XPathException if an error occurs while matching a pattern
    */
   @throws[XPathException]
-   def searchRuleChain(item: Item, context: XPathContext, bestRule: Rule, chain: RuleChain, ruleSearchState: RuleSearchState, filter: Mode.RuleFilter): Rule = {
+  def searchRuleChain(item: Item, context: XPathContext, bestRule: Rule, chain: RuleChain, ruleSearchState: RuleSearchState, filter: Mode.RuleFilter): Rule = {
     var head = if (chain == null) null else chain.head
     var xPathContext = context
     var bstRule = bestRule
@@ -759,7 +760,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    *                        non-recoverable error
    */
   @throws[XPathException]
-   def reportAmbiguity(item: Item, r1: Rule, r2: Rule, c: XPathContext): Unit = {
+  def reportAmbiguity(item: Item, r1: Rule, r2: Rule, c: XPathContext): Unit = {
     if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) return
 
     if ((r1.getAction eq r2.getAction) && r1.getSequence == r2.getSequence) return
@@ -927,7 +928,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @param type  the type of the rule group
    * @return modified rulegroup action
    */
-   def setGroup(group: SimpleMode.RuleGroupAction, `type`: String) = {
+  def setGroup(group: SimpleMode.RuleGroupAction, `type`: String) = {
     if (group != null) group.setString(`type`)
     group
   }

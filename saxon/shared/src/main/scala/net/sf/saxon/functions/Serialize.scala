@@ -116,7 +116,10 @@ object Serialize {
     val iterator = charMap.keys
     var charKey: AtomicValue = null
     val intHashMap = new IntHashMap[String]
-    while ((charKey = iterator.next) != null) {
+    while ( {
+      charKey = iterator.next
+      charKey
+    } != null) {
       val ch = charKey.getStringValue
       val str = charMap.get(charKey).head.getStringValue
       val chValue = UnicodeString.makeUnicodeString(ch)
@@ -133,7 +136,7 @@ object Serialize {
     new CharacterMap(name, intHashMap)
   }
 
-  try requiredTypes.put("allow-duplicate-names", SequenceType.SINGLE_BOOLEAN)
+  requiredTypes.put("allow-duplicate-names", SequenceType.SINGLE_BOOLEAN)
   requiredTypes.put("byte-order-mark", SequenceType.SINGLE_BOOLEAN)
   requiredTypes.put("cdata-section-elements", BuiltInAtomicType.QNAME.zeroOrMore)
   requiredTypes.put("doctype-public", SequenceType.SINGLE_STRING)
@@ -196,7 +199,10 @@ class Serialize extends SystemFunction with Callable {
     val th = context.getConfiguration.getTypeHierarchy
     val keysIterator = map.keys
     var key: AtomicValue = null
-    while ((key = keysIterator.next) != null)
+    while (({
+      key = keysIterator.next
+      key
+    }) != null)
       breakable {
         if (key.isInstanceOf[StringValue]) {
           val keyName = key.getStringValue
@@ -247,15 +253,17 @@ class Serialize extends SystemFunction with Callable {
     val iterator = seqVal.iterate
     var item: Item = null
     val stringVal = new StringBuilder
-    while ( {
-      (item = iterator.next) != null
-    }) if (item.isInstanceOf[QNameValue]) {
-      val qNameValue = item.asInstanceOf[QNameValue]
-      stringVal.append(" Q{").append(qNameValue.getComponent(AccessorFn.Component.NAMESPACE).getStringValue).append('}').append(qNameValue.getComponent(AccessorFn.Component.LOCALNAME).getStringValue)
-    }
-    else if (allowStar && item.isInstanceOf[StringValue] && item.getStringValue == "*") stringVal.append(" *")
-    else throw new XPathException("Invalid serialization parameter value: expected sequence of QNames " + (if (allowStar) "(or *) "
-    else ""), "SEPM0017")
+    while (({
+      item = iterator.next
+      item
+    }) != null)
+      if (item.isInstanceOf[QNameValue]) {
+        val qNameValue = item.asInstanceOf[QNameValue]
+        stringVal.append(" Q{").append(qNameValue.getComponent(AccessorFn.Component.NAMESPACE).getStringValue).append('}').append(qNameValue.getComponent(AccessorFn.Component.LOCALNAME).getStringValue)
+      }
+      else if (allowStar && item.isInstanceOf[StringValue] && item.getStringValue == "*") stringVal.append(" *")
+      else throw new XPathException("Invalid serialization parameter value: expected sequence of QNames " + (if (allowStar) "(or *) "
+      else ""), "SEPM0017")
     stringVal.toString
   }
 
@@ -264,9 +272,11 @@ class Serialize extends SystemFunction with Callable {
     val iterator = seqVal.iterate
     var item: Item = null
     val stringVal = new StringBuilder
-    while ( {
-      (item = iterator.next) != null
-    }) stringVal.append(" ").append(item.getStringValue)
+    while (({
+      item = iterator.next
+      item
+    }) != null
+    ) stringVal.append(" ").append(item.getStringValue)
     stringVal.toString
   }
 
@@ -292,43 +302,139 @@ class Serialize extends SystemFunction with Callable {
     var seqVal: Sequence = null
     val props = new Properties
     val charMapIndex = new CharacterMapIndex
-    if ((seqVal = map.get("allow-duplicate-names")) != null) props.setProperty("allow-duplicate-names", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("byte-order-mark")) != null) props.setProperty("byte-order-mark", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("cdata-section-elements")) != null) props.setProperty("cdata-section-elements", toQNamesTypeString(seqVal, false))
-    if ((seqVal = map.get("doctype-public")) != null) props.setProperty("doctype-public", seqVal.head.getStringValue)
-    if ((seqVal = map.get("doctype-system")) != null) props.setProperty("doctype-system", seqVal.head.getStringValue)
-    if ((seqVal = map.get("encoding")) != null) props.setProperty("encoding", seqVal.head.getStringValue)
-    if ((seqVal = map.get("escape-uri-attributes")) != null) props.setProperty("escape-uri-attributes", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("html-version")) != null) props.setProperty("html-version", seqVal.head.getStringValue)
-    if ((seqVal = map.get("include-content-type")) != null) props.setProperty("include-content-type", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("indent")) != null) props.setProperty("indent", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("item-separator")) != null) props.setProperty("item-separator", seqVal.head.getStringValue)
-    if ((seqVal = map.get("json-node-output-method")) != null) props.setProperty("json-node-output-method", toMethodTypeString(seqVal))
-    if ((seqVal = map.get("media-type")) != null) props.setProperty("media-type", seqVal.head.getStringValue)
-    if ((seqVal = map.get("method")) != null) props.setProperty(OutputKeys.METHOD, toMethodTypeString(seqVal))
-    if ((seqVal = map.get("normalization-form")) != null) props.setProperty("normalization-form", seqVal.head.getStringValue) //NMTOKEN param type
-    if ((seqVal = map.get("omit-xml-declaration")) != null) props.setProperty("omit-xml-declaration", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("standalone")) != null) props.setProperty("standalone", toYesNoOmitTypeString(seqVal))
-    if ((seqVal = map.get("suppress-indentation")) != null) props.setProperty("suppress-indentation", toQNamesTypeString(seqVal, false))
-    if ((seqVal = map.get("undeclare-prefixes")) != null) props.setProperty("undeclare-prefixes", toYesNoTypeString(seqVal))
-    if ((seqVal = map.get("use-character-maps")) != null) {
+    if (({
+      seqVal = map.get("allow-duplicate-names")
+      seqVal
+    }) != null) props.setProperty("allow-duplicate-names", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("byte-order-mark")
+      seqVal
+    }) != null) props.setProperty("byte-order-mark", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("cdata-section-elements")
+      seqVal
+    }) != null) props.setProperty("cdata-section-elements", toQNamesTypeString(seqVal, false))
+    if (({
+      seqVal = map.get("doctype-public")
+      seqVal
+    }) != null) props.setProperty("doctype-public", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("doctype-system")
+      seqVal
+    }) != null) props.setProperty("doctype-system", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("encoding")
+      seqVal
+    }) != null) props.setProperty("encoding", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("escape-uri-attributes")
+      seqVal
+    }) != null) props.setProperty("escape-uri-attributes", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("html-version")
+      seqVal
+    }) != null) props.setProperty("html-version", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("include-content-type")
+      seqVal
+    }) != null) props.setProperty("include-content-type", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("indent")
+      seqVal
+    }) != null) props.setProperty("indent", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("item-separator")
+      seqVal
+    }) != null) props.setProperty("item-separator", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("json-node-output-method")
+      seqVal
+    }) != null) props.setProperty("json-node-output-method", toMethodTypeString(seqVal))
+    if (({
+      seqVal = map.get("media-type")
+      seqVal
+    }) != null) props.setProperty("media-type", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("method")
+      seqVal
+    }) != null) props.setProperty(OutputKeys.METHOD, toMethodTypeString(seqVal))
+    if (({
+      seqVal = map.get("normalization-form")
+      seqVal
+    }) != null) props.setProperty("normalization-form", seqVal.head.getStringValue) //NMTOKEN param type
+    if (({
+      seqVal = map.get("omit-xml-declaration")
+      seqVal
+    }) != null) props.setProperty("omit-xml-declaration", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("standalone")
+      seqVal
+    }) != null) props.setProperty("standalone", toYesNoOmitTypeString(seqVal))
+    if (({
+      seqVal = map.get("suppress-indentation")
+      seqVal
+    }) != null) props.setProperty("suppress-indentation", toQNamesTypeString(seqVal, false))
+    if (({
+      seqVal = map.get("undeclare-prefixes")
+      seqVal
+    }) != null) props.setProperty("undeclare-prefixes", toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get("use-character-maps")
+      seqVal
+    }) != null) {
       val characterMap = toCharacterMap(seqVal, context)
       charMapIndex.putCharacterMap(new StructuredQName("", "", "charMap"), characterMap)
       props.setProperty(SaxonOutputKeys.USE_CHARACTER_MAPS, "charMap")
     }
-    if ((seqVal = map.get("version")) != null) props.setProperty("version", seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get("version")
+      seqVal
+    }) != null) props.setProperty("version", seqVal.head.getStringValue)
     // Saxon extension serialization parameters
-    if ((seqVal = map.get(Serialize.sx("attribute-order"))) != null) props.setProperty(SaxonOutputKeys.ATTRIBUTE_ORDER, toQNamesTypeString(seqVal, true))
-    if ((seqVal = map.get(Serialize.sx("canonical"))) != null) props.setProperty(SaxonOutputKeys.CANONICAL, toYesNoTypeString(seqVal))
-    if ((seqVal = map.get(Serialize.sx("character-representation"))) != null) props.setProperty(SaxonOutputKeys.CHARACTER_REPRESENTATION, seqVal.head.getStringValue)
-    if ((seqVal = map.get(Serialize.sx("double-space"))) != null) props.setProperty(SaxonOutputKeys.DOUBLE_SPACE, toQNamesTypeString(seqVal, false))
-    if ((seqVal = map.get(Serialize.sx("indent-spaces"))) != null) props.setProperty(SaxonOutputKeys.INDENT_SPACES, seqVal.head.getStringValue)
-    if ((seqVal = map.get(Serialize.sx("line-length"))) != null) props.setProperty(SaxonOutputKeys.LINE_LENGTH, seqVal.head.getStringValue)
-    if ((seqVal = map.get(Serialize.sx("property-order"))) != null) props.setProperty(SaxonOutputKeys.PROPERTY_ORDER, toSpaceSeparatedString(seqVal))
-    if ((seqVal = map.get(Serialize.sx("recognize-binary"))) != null) props.setProperty(SaxonOutputKeys.RECOGNIZE_BINARY, toYesNoTypeString(seqVal))
-    if ((seqVal = map.get(Serialize.sx("require-well-formed"))) != null) props.setProperty(SaxonOutputKeys.REQUIRE_WELL_FORMED, toYesNoTypeString(seqVal))
-    if ((seqVal = map.get(Serialize.sx("single-quotes"))) != null) props.setProperty(SaxonOutputKeys.SINGLE_QUOTES, toYesNoTypeString(seqVal))
-    if ((seqVal = map.get(Serialize.sx("supply-source-locator"))) != null) props.setProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR, toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("attribute-order"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.ATTRIBUTE_ORDER, toQNamesTypeString(seqVal, true))
+    if (({
+      seqVal = map.get(Serialize.sx("canonical"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.CANONICAL, toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("character-representation"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.CHARACTER_REPRESENTATION, seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get(Serialize.sx("double-space"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.DOUBLE_SPACE, toQNamesTypeString(seqVal, false))
+    if (({
+      seqVal = map.get(Serialize.sx("indent-spaces"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.INDENT_SPACES, seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get(Serialize.sx("line-length"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.LINE_LENGTH, seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get(Serialize.sx("property-order"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.PROPERTY_ORDER, toSpaceSeparatedString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("recognize-binary"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.RECOGNIZE_BINARY, toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("require-well-formed"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.REQUIRE_WELL_FORMED, toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("single-quotes"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.SINGLE_QUOTES, toYesNoTypeString(seqVal))
+    if (({
+      seqVal = map.get(Serialize.sx("supply-source-locator"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR, toYesNoTypeString(seqVal))
     new SerializationProperties(props, charMapIndex)
   }
 
@@ -353,9 +459,10 @@ class Serialize extends SystemFunction with Callable {
       var paramMap = param.asInstanceOf[MapItem]
       val keyIter = param.asInstanceOf[MapItem].keys
       var k: AtomicValue = null
-      while ( {
-        (k = keyIter.next) != null
-      }) if (k.isInstanceOf[QNameValue]) {
+      while (({
+        k = keyIter.next
+        k
+      }) != null) if (k.isInstanceOf[QNameValue]) {
         val s = k.asInstanceOf[QNameValue].getStructuredQName.getEQName
         paramMap = paramMap.addEntry(new StringValue(s), paramMap.get(k))
       }

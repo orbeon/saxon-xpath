@@ -19,7 +19,7 @@ object Substring {
   def substring(sv: StringValue, start: NumericValue): UnicodeString = {
     val s: UnicodeString = sv.getUnicodeString
     val slength: Int = s.uLength()
-    var lstart: Long = 0l
+    var lstart: Long = 0L
     if (start.isInstanceOf[Int64Value]) {
       lstart = start.asInstanceOf[Int64Value].longValue()
       if (lstart > slength) {
@@ -48,7 +48,7 @@ object Substring {
                 start: NumericValue,
                 len: NumericValue): UnicodeString = {
     val slength: Int = sv.getStringLengthUpperBound
-    var lstart: Long = 0l
+    var lstart: Long = 0L
     if (start.isInstanceOf[Int64Value]) {
       lstart = start.asInstanceOf[Int64Value].longValue()
       if (lstart > slength) {
@@ -66,7 +66,7 @@ object Substring {
           else Math.round(dstart)
       }
     }
-    var llen: Long = 0l
+    var llen: Long = 0L
     if (len.isInstanceOf[Int64Value]) {
       llen = len.asInstanceOf[Int64Value].longValue()
       if (llen <= 0) {
