@@ -6,11 +6,8 @@ import net.sf.saxon.trans.Err
 import net.sf.saxon.tree.util.FastStringBuffer
 import net.sf.saxon.tree.util.Navigator
 import java.util
-
 import net.sf.saxon.om
-
-import scala.collection.JavaConverters._
-
+import scala.jdk.CollectionConverters._
 
 object AbsolutePath {
 
@@ -95,7 +92,7 @@ object AbsolutePath {
       val index = getIndex
       if (index != -1) {
         fsb.cat('[')
-        fsb.append(getIndex + "")
+        fsb.append(s"$getIndex")
         fsb.cat(']')
       }
     }

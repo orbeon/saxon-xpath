@@ -20,7 +20,7 @@ import net.sf.saxon.pattern.NodeTest
 import net.sf.saxon.trace.ExpressionPresenter
 import net.sf.saxon.trans.XPathException
 import net.sf.saxon.value.Cardinality
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import java.util
 import Expression._
 

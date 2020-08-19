@@ -6,7 +6,7 @@ import net.sf.saxon.expr.instruct.GlobalVariable
 import net.sf.saxon.trans.XPathException
 import java.util.Collections
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 

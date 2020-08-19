@@ -75,7 +75,10 @@ class TupleItemType(names: List[String],
     if (!extensible) {
       val keyIter: AtomicIterator[_ <: AtomicValue] = map.keys
       var key: AtomicValue = null
-      while ((key = keyIter.next()) != null) if (!(key.isInstanceOf[
+      while (({
+        key = keyIter.next()
+        key
+      }) != null) if (!(key.isInstanceOf[
         StringValue]) || !fields
         .containsKey(
           key.getStringValue)) {
@@ -289,7 +292,10 @@ class TupleItemType(names: List[String],
         val keyIter: AtomicIterator[_ <: AtomicValue] =
           item.asInstanceOf[MapItem].keys
         var key: AtomicValue = null
-        while ((key = keyIter.next()) != null) if (!(key.isInstanceOf[
+        while (({
+          key = keyIter.next()
+          key
+        }) != null) if (!(key.isInstanceOf[
           StringValue])) {
           Optional.of(
             "Undeclared field " + key +

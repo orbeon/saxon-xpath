@@ -39,7 +39,7 @@ object TypeHierarchy {
   private def requireTrueItemType(t: ItemType): Unit = {
     Objects.requireNonNull(t)
     if (!t.isTrueItemType) {
-      throw new AssertionError(t + " is a non-pure union type")
+      throw new AssertionError(s"$t is a non-pure union type")
     }
   }
 
@@ -682,12 +682,18 @@ class TypeHierarchy(var config: Configuration) {
       relationship(s1.asInstanceOf[ItemType], s2.asInstanceOf[ItemType])
     } else {
       var t1 = s1
-      while ((t1 = t1.getBaseType) != null)
+      while (({
+        t1 = t1.getBaseType
+        t1
+      }) != null)
         if (t1.isSameType(s2)) {
           return SUBSUMED_BY
         }
       var t2 = s2
-      while ((t2 = t2.getBaseType) != null)
+      while (({
+        t2 = t2.getBaseType
+        t2
+      }) != null)
         if (t2.isSameType(s1)) {
           return SUBSUMES
         }

@@ -184,12 +184,12 @@ object FormatDate {
     if ("" == format || format.startsWith(",")) {
       defaultFormat = true
       component.charAt(0) match {
-        case 'F' => format = "Nn" + format
-        case 'P' => format = 'n' + format
-        case 'C' | 'E' => format = 'N' + format
-        case 'm' | 's' => format = "01" + format
+        case 'F' => format = s"Nn$format"
+        case 'P' => format = s"n$format"
+        case 'C' | 'E' => format = s"N$format"
+        case 'm' | 's' => format = s"01$format"
         case 'z' | 'Z' =>
-        case _ => format = '1' + format
+        case _ => format = s"1$format"
 
       }
     }
@@ -650,7 +650,7 @@ object FormatDate {
       if (intVal == 0) {
         s = new StringBuilder("0")
       } else {
-        s = new StringBuilder(((1000000 + intVal) + "").substring(1))
+        s = new StringBuilder((s"${(1000000 + intVal)}").substring(1))
         if (s.length > max) {
           s = new StringBuilder(s.substring(0, max))
         }

@@ -386,7 +386,10 @@ object MapFunctionSet {
         var next: MapItem = null
         duplicates match {
           case "unspecified" | "use-any" | "use-last" =>
-            while ((next = iter.next().asInstanceOf[MapItem]) != null) for (pair <- next
+            while (({
+              next = iter.next().asInstanceOf[MapItem]
+              next
+            }) != null) for (pair <- next
               .keyValuePairs().asScala) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
@@ -397,7 +400,10 @@ object MapFunctionSet {
             }
             null
           case _ =>
-            while ((next = iter.next().asInstanceOf[MapItem]) != null) for (pair <- next
+            while (({
+              next = iter.next().asInstanceOf[MapItem]
+              next
+            }) != null) for (pair <- next
               .keyValuePairs().asScala) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
@@ -447,7 +453,10 @@ object MapFunctionSet {
             baseMap = HashTrieMap.copy(baseMap)
           }
           var next: MapItem = null
-          while ((next = iter.next().asInstanceOf[MapItem]) != null) for (pair <- next
+          while (({
+            next = iter.next().asInstanceOf[MapItem]
+            next
+          }) != null) for (pair <- next
             .keyValuePairs().asScala) {
             val existing: Sequence = baseMap.get(pair.key)
             if (existing != null) {
@@ -522,7 +531,10 @@ object MapFunctionSet {
       var map: MapItem = arguments(0).head().asInstanceOf[MapItem]
       val iter: SequenceIterator = arguments(1).iterate()
       var key: AtomicValue = null
-      while ((key = iter.next().asInstanceOf[AtomicValue]) != null) map =
+      while (({
+        key = iter.next().asInstanceOf[AtomicValue]
+        key
+      }) != null) map =
         map.remove(key)
       map
     }

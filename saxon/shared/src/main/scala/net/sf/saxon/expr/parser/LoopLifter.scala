@@ -174,7 +174,7 @@ class LoopLifter(@BeanProperty var root: Expression,
           var parent: Expression = exp.getParentExpression
           breakable {
             while (parent != null) {
-              if (expInfo.dependees.get(parent) != null) {
+              if (expInfo.dependees.get(parent)) {
                 val childInfo: ExpInfo = expInfoMap.get(child)
                 if (expInfo.loopLevel != childInfo.loopLevel) {
                   val o: Operand = ExpressionTool.findOperand(parent, child)
@@ -213,7 +213,8 @@ class LoopLifter(@BeanProperty var root: Expression,
       new StructuredQName("vv",
         NamespaceConstant.SAXON_GENERATED_VARIABLE,
         "v" + {
-          sequence += 1; sequence - 1
+          sequence += 1;
+          sequence - 1
         }))
     val `type`: SequenceType =
       SequenceType.makeSequenceType(child.getItemType, child.getCardinality)

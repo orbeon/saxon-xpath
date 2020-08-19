@@ -484,12 +484,12 @@ class LetExpression extends Assignation with TailCallReturner {
     if (isIndexedVariable) {
       out.emitAttribute("indexable", "true")
     }
-    out.emitAttribute("slot", getLocalSlotNumber + "")
+    out.emitAttribute("slot", s"$getLocalSlotNumber")
     if (evaluator == null) {
       this.evaluator =
         ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
     }
-    out.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode + "")
+    out.emitAttribute("eval", s"${getEvaluator.getEvaluationMode.getCode}")
     getSequence.export(out)
     getAction.export(out)
     out.endElement()
