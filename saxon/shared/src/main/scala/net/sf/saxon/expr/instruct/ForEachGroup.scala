@@ -156,6 +156,11 @@ class ForEachGroup(select: Expression,
 
   var isInFork: Boolean = false
 
+  val keyRole: OperandRole =
+    if ((algorithm == GROUP_ENDING || algorithm == GROUP_STARTING))
+      OperandRole.PATTERN
+    else OperandRole.NEW_FOCUS_ATOMIC
+
   private var selectOp: Operand =
     new Operand(this, select, OperandRole.FOCUS_CONTROLLING_SELECT)
 
@@ -167,11 +172,6 @@ class ForEachGroup(select: Expression,
   private var collationOp: Operand = _
 
   private var sortKeysOp: Operand = _
-
-  val keyRole: OperandRole =
-    if ((algorithm == GROUP_ENDING || algorithm == GROUP_STARTING))
-      OperandRole.PATTERN
-    else OperandRole.NEW_FOCUS_ATOMIC
 
   if (cnExpression != null) {
     collationOp =
@@ -465,7 +465,10 @@ class ForEachGroup(select: Expression,
       val listener: TraceListener = controller.getTraceListener
       assert(listener != null)
       var item: Item = null
-      while ((item = focusIterator.next()) != null) {
+      while (({
+        item = focusIterator.next()
+        item
+      }) != null) {
         listener.startCurrentItem(item)
         getActionExpression.process(output, c2)
         listener.endCurrentItem(item)

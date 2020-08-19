@@ -12,7 +12,7 @@ import net.sf.saxon.pull.NamespaceContextImpl
 import net.sf.saxon.serialize.charcode.UTF16CharacterSet
 import net.sf.saxon.trans.Err
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import javax.xml.namespace.NamespaceContext
 import javax.xml.stream.XMLStreamException
 import javax.xml.stream.XMLStreamWriter

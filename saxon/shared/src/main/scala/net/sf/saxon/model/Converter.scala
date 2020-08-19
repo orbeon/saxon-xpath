@@ -9,7 +9,7 @@ import net.sf.saxon.value._
 import java.math.BigDecimal
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object Converter {
 

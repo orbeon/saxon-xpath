@@ -64,7 +64,10 @@ class GroupByIterator
     val focus: FocusIterator = c2.trackFocus(population)
     val implicitTimezone: Int = c2.getImplicitTimezone
     var item: Item = null
-    while ((item = focus.next()) != null) {
+    while (({
+      item = focus.next()
+      item
+    }) != null) {
       val keys: SequenceIterator = keyExpression.iterate(c2)
       var firstKey: Boolean = true
       breakable {
@@ -106,7 +109,10 @@ class GroupByIterator
     val focus: FocusIterator = c2.trackFocus(population)
     val implicitTimezone: Int = c2.getImplicitTimezone
     var item: Item = null
-    while ((item = focus.next()) != null) {
+    while (({
+      item = focus.next()
+      item
+    }) != null) {
       val keys: SequenceIterator = keyExpression.iterate(c2)
       val ckList: List[AtomicMatchKey] = new ArrayList[AtomicMatchKey]()
       val compositeKey: List[AtomicValue] = new ArrayList[AtomicValue]()

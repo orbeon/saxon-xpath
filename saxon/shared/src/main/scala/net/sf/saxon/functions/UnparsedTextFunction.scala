@@ -98,7 +98,7 @@ object UnparsedTextFunction {
                     context: XPathContext): XPathException = {
     var message: String = "Failed to read input file"
     if (absoluteURI != null && ioErr.getMessage != absoluteURI.toString) {
-      message += ' ' + absoluteURI.toString
+      message +=  s" ${absoluteURI.toString}"
     }
     message += " (" + ioErr.getClass.getName + ')'
     val e: XPathException = new XPathException(message, ioErr)

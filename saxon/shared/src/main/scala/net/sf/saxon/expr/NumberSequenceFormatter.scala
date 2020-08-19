@@ -212,7 +212,7 @@ class NumberSequenceFormatter(value: Expression,
    * indirectly, using an implementation that relies on one of the other methods.
    *
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
-   *                                                        { @link #PROCESS_METHOD}
+   *         { @link #PROCESS_METHOD}
    */
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
@@ -226,10 +226,13 @@ class NumberSequenceFormatter(value: Expression,
       startAtOp.getChildExpression.evaluateAsString(context).toString
     val startValues: List[Integer] = parseStartAtValue(startAv)
     val iter: SequenceIterator = valueOp.getChildExpression.iterate(context)
-    var `val`: AtomicValue = null
+    var atomicVal: AtomicValue = null
     var pos: Int = 0
     breakable {
-      while ((`val` = iter.next().asInstanceOf[AtomicValue]) != null) {
+      while ( {
+        atomicVal = iter.next().asInstanceOf[AtomicValue]
+        atomicVal
+      } != null) {
         if (backwardsCompatible && !vec.isEmpty) {
           break
         }
@@ -240,9 +243,9 @@ class NumberSequenceFormatter(value: Expression,
         try {
           var num: NumericValue = null
           num =
-            if (`val`.isInstanceOf[NumericValue])
-              `val`.asInstanceOf[NumericValue]
-            else Number_1.convert(`val`, context.getConfiguration)
+            if (atomicVal.isInstanceOf[NumericValue])
+              atomicVal.asInstanceOf[NumericValue]
+            else Number_1.convert(atomicVal, context.getConfiguration)
           if (num.isNaN) {
             // thrown to be caught
             throw new XPathException("NaN")
@@ -278,7 +281,7 @@ class NumberSequenceFormatter(value: Expression,
             if (backwardsCompatible) {
               vec.add("NaN")
             } else {
-              vec.add(`val`.getStringValue)
+              vec.add(atomicVal.getStringValue)
               val e: XPathException = new XPathException(
                 "Cannot convert supplied value to an integer. " + err.getMessage)
               e.setErrorCode("XTDE0980")

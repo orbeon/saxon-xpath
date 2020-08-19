@@ -129,7 +129,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def hasVariableBinding(binding: Binding): Boolean = {
     if (binding.isInstanceOf[LocalParam]) {
-      for (o <- operanda if o.getChildExpression == binding) {
+      for (o <- operanda if o.getChildExpression eq binding) {
         true
       }
     }
@@ -464,7 +464,10 @@ class Block(children: Array[Expression]) extends Instruction {
           currentLiteralList = new ArrayList(10)
         }
         var item: Item = null
-        while ((item = iterator.next()) != null) currentLiteralList.add(item)
+        while (({
+          item = iterator.next()
+          item
+        }) != null) currentLiteralList.add(item)
       } else {
         flushCurrentLiteralList(currentLiteralList, targetList)
         currentLiteralList = null

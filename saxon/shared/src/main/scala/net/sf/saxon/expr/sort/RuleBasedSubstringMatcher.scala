@@ -19,12 +19,12 @@ object RuleBasedSubstringMatcher {
       val iter: CollationElementIterator =
         collator.getCollationElementIterator(args(i))
       breakable {
-      while (true) {
-        val e: Int = iter.next()
-        if (e == -1) break
-        sb.append(e + " ")
+        while (true) {
+          val e: Int = iter.next()
+          if (e == -1) break
+          sb.append(s"$e" + " ")
+        }
       }
-    }
       System.err.println(sb.toString)
     }
   }
@@ -146,7 +146,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
     false
   }
 
- override def getCollationKey(s: CharSequence): AtomicMatchKey =
+  override def getCollationKey(s: CharSequence): AtomicMatchKey =
     new CollationMatchKey(getRuleBasedCollator.getCollationKey(s.toString))
 
 }

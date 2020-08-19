@@ -296,7 +296,10 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     var seq1: List[AtomicValue] = null
     var item0: AtomicValue = null
     breakable {
-      while ((item0 = seqItr0.next().asInstanceOf[AtomicValue]) != null) if (seqItr1 != null) {
+      while (({
+        item0 = seqItr0.next().asInstanceOf[AtomicValue]
+        item0
+      }) != null) if (seqItr1 != null) {
 
         while (true) {
           val item1: AtomicValue = seqItr1.next().asInstanceOf[AtomicValue]

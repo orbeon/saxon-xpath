@@ -53,7 +53,7 @@ import java.util.List
 
 import java.util.Map
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 object Sender {

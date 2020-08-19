@@ -31,7 +31,7 @@ import java.util.Collections
 
 import java.util.Iterator
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 
