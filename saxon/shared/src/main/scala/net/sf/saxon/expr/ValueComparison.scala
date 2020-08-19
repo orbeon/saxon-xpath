@@ -27,7 +27,7 @@ import ValueComparison._
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 //remove if not needed
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object ValueComparison {
 

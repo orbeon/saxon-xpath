@@ -153,7 +153,7 @@ object JsonParser {
             if (liberal) buffer.cat(literal.charAt(i))
             else {
               val next = literal.charAt(i)
-              val xx = if (next < 256) next + ""
+              val xx = if (next < 256) s"$next"
               else "x" + Integer.toHexString(next)
               throw new XPathException("Unknown escape sequence \\" + xx, errorCode)
             }
@@ -416,10 +416,9 @@ class JsonParser() {
    * Inner class to do the tokenization
    */
   class JsonTokenizer(var input: String) {
-    this.position = 0
+    private var position: Int = 0
     // Ignore a leading BOM
     if (!input.isEmpty && input.charAt(0) == 65279) position += 1
-    private var position: Int = 0
     var lineNumber: Int = 1
     var currentToken: JsonToken = null
     var currentTokenValue = new FastStringBuffer(FastStringBuffer.C64)
@@ -447,6 +446,7 @@ class JsonParser() {
             case _ =>
           }
         }
+      }
       val ch = input.charAt({
         position += 1;
         position - 1

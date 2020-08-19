@@ -37,7 +37,7 @@ import scala.util.control.Breaks._
 object FunctionCall {
 
   def pluralArguments(num: Int): String =
-    if (num == 1) "one argument" else (num + " arguments")
+    if (num == 1) "one argument" else s"$num arguments"
 
 }
 

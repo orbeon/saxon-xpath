@@ -20,7 +20,7 @@ import net.sf.saxon.value.BooleanValue
 
 import java.util.List
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object BooleanExpression {
 

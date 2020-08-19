@@ -5,7 +5,7 @@ import net.sf.saxon.expr.parser.PathMap
 import net.sf.saxon.model.ItemType
 import net.sf.saxon.om.GroundedValue
 import net.sf.saxon.om.NodeInfo
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import net.sf.saxon.om.StructuredQName
 import net.sf.saxon.trans.XPathException
 import scala.util.control.Breaks._
@@ -46,11 +46,11 @@ object Assignation {
 }
 
 abstract class Assignation() extends Expression with LocalBinding {
+  private var sequenceOp: Operand = null
+  private var actionOp: Operand = null
   sequenceOp = new Operand(this, null, OperandRole.NAVIGATE)
   actionOp = new Operand(this, null, if (this.isInstanceOf[LetExpression]) OperandRole.SAME_FOCUS_ACTION
   else Assignation.REPEATED_ACTION_ROLE)
-  private var sequenceOp: Operand = null
-  private var actionOp: Operand = null
   var slotNumber = -999 // slot number for range variable
   // (initialized to ensure a crash if no real slot is allocated)
   var variableName: StructuredQName = null

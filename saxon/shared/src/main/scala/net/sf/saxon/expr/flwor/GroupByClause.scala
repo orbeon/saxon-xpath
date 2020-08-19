@@ -211,7 +211,7 @@ class GroupByClause(var config: Configuration) extends Clause {
         o.getChildExpression.asInstanceOf[LocalVariableReference]
       out.startSubsidiaryElement("by")
       out.emitAttribute("var", ref.getDisplayName)
-      out.emitAttribute("slot", ref.getBinding.getLocalSlotNumber + "")
+      out.emitAttribute("slot", s"${ref.getBinding.getLocalSlotNumber}")
       out.endSubsidiaryElement()
     }
     out.endElement()
@@ -239,7 +239,10 @@ class GroupByClause(var config: Configuration) extends Clause {
           otbg.retainedValues.getMembers()(j - groupingValues.length)
         val si: SequenceIterator = `val`.iterate()
         var it: Item = null
-        while ((it = si.next()) != null) concatenatedValue.add(it)
+        while (({
+          it = si.next()
+          it
+        }) != null) concatenatedValue.add(it)
       }
       val se: SequenceExtent = new SequenceExtent(concatenatedValue)
       context.setLocalVariable(bindings(j).getLocalSlotNumber, se)

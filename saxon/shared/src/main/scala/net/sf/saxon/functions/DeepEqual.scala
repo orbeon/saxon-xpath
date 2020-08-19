@@ -240,7 +240,10 @@ object DeepEqual {
         }
         var att1: NodeInfo = null
         a1 = n1.iterateAxis(AxisInfo.ATTRIBUTE)
-        while ((att1 = a1.next()) != null) {
+        while (({
+          att1 = a1.next()
+          att1
+        }) != null) {
           val a2iter: AxisIterator =
             n2.iterateAxis(AxisInfo.ATTRIBUTE, new SameNameTest(att1))
           val att2: NodeInfo = a2iter.next()
@@ -272,14 +275,20 @@ object DeepEqual {
             new HashSet[NamespaceBinding](10)
           val it1: AxisIterator = n1.iterateAxis(AxisInfo.NAMESPACE)
           var nn1: NodeInfo = null
-          while ((nn1 = it1.next()) != null) {
+          while (({
+            nn1 = it1.next()
+            nn1
+          }) != null) {
             val nscode1: NamespaceBinding =
               new NamespaceBinding(nn1.getLocalPart, nn1.getStringValue)
             ns1.add(nscode1)
           }
           val it2: AxisIterator = n2.iterateAxis(AxisInfo.NAMESPACE)
           var nn2: NodeInfo = null
-          while ((nn2 = it2.next()) != null) {
+          while (({
+            nn2 = it2.next()
+            nn2
+          }) != null) {
             val nscode2: NamespaceBinding =
               new NamespaceBinding(nn2.getLocalPart, nn2.getStringValue)
             ns2.add(nscode2)

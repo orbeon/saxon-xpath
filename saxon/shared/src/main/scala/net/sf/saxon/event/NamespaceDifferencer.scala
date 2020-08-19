@@ -9,7 +9,7 @@ import net.sf.saxon.om._
 
 import net.sf.saxon.s9api.Location
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 import java.util.Properties
 

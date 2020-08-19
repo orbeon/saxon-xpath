@@ -49,7 +49,7 @@ import Atomizer._
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 //remove if not needed
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object Atomizer {
 
@@ -156,7 +156,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   sequence.setFlattened(true)
 
-   def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
+  def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
 
   def getImplementationMethod(): Int = Expression.ITERATE_METHOD | Expression.WATCH_METHOD
 
@@ -175,7 +175,10 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
       }
       val iter: SequenceIterator = `val`.iterate()
       var i: Item = null
-      while ((i = iter.next()) != null) {
+      while (({
+        i = iter.next()
+        i
+      }) != null) {
         if (i.isInstanceOf[NodeInfo]) {
           this
         }
@@ -442,7 +445,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   override def toShortString(): String = getBaseExpression.toShortString()
 
-   override def emitExtraAttributes(out: ExpressionPresenter): Unit = {
+  override def emitExtraAttributes(out: ExpressionPresenter): Unit = {
     if (roleDiagnostic != null) {
       out.emitAttribute("diag", roleDiagnostic.save())
     }
