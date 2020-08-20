@@ -591,16 +591,14 @@ class QueryModule extends StaticContext {
         if (`var` == null) {
           var uvar: UndeclaredVariable = undeclaredVariables.get(qName)
           if (uvar != null) {
-            val ref: GlobalVariableReference = new GlobalVariableReference(
-              qName)
+            val ref: GlobalVariableReference = new GlobalVariableReference(qName)
             uvar.registerReference(ref)
             ref
           } else {
             uvar = new UndeclaredVariable()
             uvar.setPackageData(main.getPackageData)
             uvar.setVariableQName(qName)
-            val ref: GlobalVariableReference = new GlobalVariableReference(
-              qName)
+            val ref: GlobalVariableReference = new GlobalVariableReference(qName)
             uvar.registerReference(ref)
             undeclaredVariables.put(qName, uvar)
             ref
