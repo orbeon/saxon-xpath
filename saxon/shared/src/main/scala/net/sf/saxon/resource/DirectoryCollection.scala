@@ -147,10 +147,10 @@ class DirectoryCollection /**
             if (metadata) {
               makeMetadataResource(resource, details)
             } else {
-              retrun resource
+              resource
             }
-          }
-          null
+          } else
+            null
         } catch {
           case e: XPathException => {
             val onError: Int = params.getOnError
