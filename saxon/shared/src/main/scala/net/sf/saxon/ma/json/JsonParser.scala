@@ -435,19 +435,19 @@ class JsonParser() {
     @throws[XPathException]
     private def readToken: JsonToken = {
       var jsonToken = new JsonToken
-      if (position >= input.length) return JsonParser.JsonToken.EOF
-        while (true) {
-          val c = input.charAt(position)
-          c match {
-            case '\n' | '\r' | ' ' | '\t' =>
-              if (c == '\n' || c == '\r')
-                lineNumber += 1
-              if ( {
-                position += 1;
-                position
-              } >= input.length) return JsonParser.JsonToken.EOF
-            case _ =>
-          }
+      if (position >= input.length)
+        return JsonParser.JsonToken.EOF
+      while (true) {
+        val c = input.charAt(position)
+        c match {
+          case '\n' | '\r' | ' ' | '\t' =>
+            if (c == '\n' || c == '\r')
+              lineNumber += 1
+            if ( {
+              position += 1;
+              position
+            } >= input.length) return JsonParser.JsonToken.EOF
+          case _ =>
         }
       }
       val ch = input.charAt({
