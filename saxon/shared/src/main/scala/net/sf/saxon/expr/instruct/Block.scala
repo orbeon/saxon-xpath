@@ -130,7 +130,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def hasVariableBinding(binding: Binding): Boolean = {
     if (binding.isInstanceOf[LocalParam]) {
       for (o <- operanda if o.getChildExpression eq binding) {
-        true
+        return true
       }
     }
     false
