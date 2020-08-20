@@ -30,16 +30,16 @@ object AlphaCode {
     def makeContainer: T
 
 
-    def setStringProperty(container: T, key: String, value: String)
+    def setStringProperty(container: T, key: String, value: String): Unit
 
 
-    def setMultiStringProperty(container: T, key: String, value: util.List[String])
+    def setMultiStringProperty(container: T, key: String, value: util.List[String]): Unit
 
 
-    def setTypeProperty(container: T, key: String, value: T)
+    def setTypeProperty(container: T, key: String, value: T): Unit
 
 
-    def setMultiTypeProperty(container: T, key: String, value: util.List[T])
+    def setMultiTypeProperty(container: T, key: String, value: util.List[T]): Unit
   }
 
 

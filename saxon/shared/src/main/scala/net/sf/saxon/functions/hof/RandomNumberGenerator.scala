@@ -87,7 +87,10 @@ object RandomNumberGenerator {
       var item: Item = null
       val output: List[Item] = new LinkedList[Item]()
       val random: Random = new Random(nextSeed)
-      while ((item = iterator.next()) != null) {
+      while (({
+        item = iterator.next()
+        item
+      }) != null) {
         val p: Int = random.nextInt(output.size + 1)
         output.add(p, item)
       }
@@ -115,7 +118,7 @@ object RandomNumberGenerator {
 class RandomNumberGenerator extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    var seed: Long = 0l
+    var seed: Long = 0L
     if (arguments.length == 0) {
 // seed value must be repeatable within execution scope
       seed = context.getCurrentDateTime.getCalendar.getTimeInMillis
