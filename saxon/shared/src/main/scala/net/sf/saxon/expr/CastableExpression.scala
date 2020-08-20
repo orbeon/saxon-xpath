@@ -133,12 +133,15 @@ class CastableExpression(source: Expression,
     var count: Int = 0
     val iter: SequenceIterator = getBaseExpression.iterate(context)
     var item: Item = null
-    while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) if (item.isInstanceOf[NodeInfo]) {
       val atomizedValue: AtomicSequence = item.atomize()
       val length: Int = SequenceTool.getLength(atomizedValue)
       count += length
       if (count > 1) {
-        false
+        return false
       }
       if (length != 0) {
         val av: AtomicValue = atomizedValue.head()
@@ -150,7 +153,7 @@ class CastableExpression(source: Expression,
       val av: AtomicValue = item.asInstanceOf[AtomicValue]
       count += 1
       if (count > 1) {
-        false
+        return false
       }
       if (!isCastable(av, getTargetType, context)) {
         false
@@ -172,10 +175,10 @@ class CastableExpression(source: Expression,
       converter = context.getConfiguration.getConversionRules
         .getConverter(value.getPrimitiveType, targetType)
       if (converter == null) {
-        false
+        return false
       }
       if (converter.isAlwaysSuccessful) {
-        true
+        return  true
       }
       if (getTargetType.isNamespaceSensitive) {
         converter = converter.setNamespaceResolver(getRetainedStaticContext)

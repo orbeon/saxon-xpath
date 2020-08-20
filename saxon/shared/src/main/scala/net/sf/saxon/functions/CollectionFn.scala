@@ -201,7 +201,10 @@ class CollectionFn extends SystemFunction with Callable {
       cachedCollection = result.materialize()
       val iter: SequenceIterator = cachedCollection.iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo] &&
+      while (({
+        item = iter.next()
+        item
+      }) != null) if (item.isInstanceOf[NodeInfo] &&
                                                item
                                                  .asInstanceOf[NodeInfo]
                                                  .getNodeKind == Type.DOCUMENT) {
@@ -217,7 +220,7 @@ class CollectionFn extends SystemFunction with Callable {
       context.getController.setUserData("saxon:collections",
                                         collectionKey,
                                         cachedCollection)
-      cachedCollection
+      return cachedCollection
     }
     new LazySequence(result)
   }

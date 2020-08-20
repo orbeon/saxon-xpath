@@ -125,10 +125,7 @@ class ARegexIterator(private var theString: UnicodeString,
       var searchStart: Int = prevEnd
       if (skip) {
         // previous match was zero-length
-        {
-          searchStart += 1;
-          searchStart - 1
-        }
+        searchStart += 1
         if (searchStart >= theString.uLength()) {
           if (prevEnd < theString.uLength()) {
             current = theString.uSubstring(prevEnd, theString.uLength())
@@ -136,7 +133,7 @@ class ARegexIterator(private var theString: UnicodeString,
           } else {
             current = null
             prevEnd = -1
-            null
+            return null
           }
         }
       }
@@ -163,7 +160,7 @@ class ARegexIterator(private var theString: UnicodeString,
           // this really is the end...
           current = null
           prevEnd = -1
-          null
+          return null
         }
         prevEnd = -1
       }
@@ -175,7 +172,7 @@ class ARegexIterator(private var theString: UnicodeString,
         prevEnd = matcher.getParenEnd(0)
       } else {
         current = null
-        null
+        return null
       }
     }
     currentStringValue()
@@ -192,7 +189,7 @@ class ARegexIterator(private var theString: UnicodeString,
     if (!isMatching) {
       return null
     }
-    if (number >= matcher.getParenCount || number < 0) ""
+    if (number >= matcher.getParenCount || number < 0) return ""
     val us: UnicodeString = matcher.getParen(number)
     (if (us == null) "" else us.toString)
   }

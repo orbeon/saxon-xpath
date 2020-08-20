@@ -66,10 +66,10 @@ object AtomicSequenceConverter {
 }
 
 class AtomicSequenceConverter(sequence: Expression,
-                               var requiredItemType: PlainType)
+                              var requiredItemType: PlainType)
   extends UnaryExpression(sequence) {
 
-   var converter: Converter = _
+  var converter: Converter = _
 
   var roleDiagnostic: RoleDiagnostic = _
 
@@ -81,7 +81,7 @@ class AtomicSequenceConverter(sequence: Expression,
   def allocateConverter(config: Configuration, allowNull: Boolean): Converter =
     allocateConverter(config, allowNull, getBaseExpression.getItemType)
 
-   def getConverterDynamically(context: XPathContext): Converter = {
+  def getConverterDynamically(context: XPathContext): Converter = {
     if (converter != null) {
       return converter
     }
@@ -124,7 +124,7 @@ class AtomicSequenceConverter(sequence: Expression,
     converter
   }
 
-   def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
+  def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
 
   def getRequiredItemType(): PlainType = requiredItemType
 
@@ -148,7 +148,7 @@ class AtomicSequenceConverter(sequence: Expression,
     if (operand.isInstanceOf[Literal] && requiredItemType
       .isInstanceOf[AtomicType]) {
       if (Literal.isEmptySequence(operand)) {
-        operand
+        return operand
       }
       val config: Configuration = getConfiguration
       allocateConverterStatically(config, true)
@@ -181,7 +181,7 @@ class AtomicSequenceConverter(sequence: Expression,
                         contextInfo: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextInfo)
     if (e != this) {
-      e
+      return e
     }
     if (getBaseExpression.isInstanceOf[UntypedSequenceConverter]) {
       val asc: UntypedSequenceConverter =
@@ -263,7 +263,7 @@ class AtomicSequenceConverter(sequence: Expression,
     val item: AtomicValue =
       getBaseExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (item == null) {
-      null
+      return null
     }
     val result: ConversionResult = conv.convert(item)
     if (roleDiagnostic != null && result.isInstanceOf[ValidationFailure]) {
@@ -283,7 +283,7 @@ class AtomicSequenceConverter(sequence: Expression,
 
   override def getExpressionName(): String = "convert"
 
-   override def displayOperator(config: Configuration): String =
+  override def displayOperator(config: Configuration): String =
     "convert"
 
   override def export(destination: ExpressionPresenter): Unit = {

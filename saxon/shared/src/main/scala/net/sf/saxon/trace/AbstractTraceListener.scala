@@ -36,11 +36,11 @@ abstract class AbstractTraceListener
   extends StandardDiagnostics
     with TraceListener {
 
-   var indent: Int = 0
+  var indent: Int = 0
 
   private var detail: Int = 2
 
-   var out: Logger = new StandardLogger()
+  var out: Logger = new StandardLogger()
 
   def getCodeInjector(): CodeInjector = new TraceCodeInjector()
 
@@ -57,7 +57,7 @@ abstract class AbstractTraceListener
     indent += 1
   }
 
-   def getOpeningAttributes(): String
+  def getOpeningAttributes(): String
 
   def close(): Unit = {
     indent -= 1
@@ -103,7 +103,7 @@ abstract class AbstractTraceListener
 
   def escape(in: String): String = {
     if (in == null) {
-      ""
+      return ""
     }
     val collapsed: CharSequence = Whitespace.collapseWhitespace(in)
     val sb: FastStringBuffer = new FastStringBuffer(collapsed.length + 10)
@@ -138,13 +138,13 @@ abstract class AbstractTraceListener
     }
   }
 
-   def isApplicable(info: Traceable): Boolean = level(info) <= detail
+  def isApplicable(info: Traceable): Boolean = level(info) <= detail
 
-   def tag(info: Traceable): String
+  def tag(info: Traceable): String
 
-   def level(info: Traceable): Int = {
+  def level(info: Traceable): Int = {
     if (info.isInstanceOf[TraceableComponent]) {
-      1
+      return 1
     }
     if (info.isInstanceOf[Instruction]) {
       2
@@ -165,17 +165,11 @@ abstract class AbstractTraceListener
           abbreviateLocationURI(curr.getSystemId) +
           "\">")
     }
-    {
-      indent += 1;
-      indent - 1
-    }
+    indent += 1
   }
 
   def endCurrentItem(item: Item): Unit = {
-    {
-      indent -= 1;
-      indent + 1
-    }
+    indent -= 1
     if (item.isInstanceOf[NodeInfo] && detail > 0) {
       val curr: NodeInfo = item.asInstanceOf[NodeInfo]
       out.info(

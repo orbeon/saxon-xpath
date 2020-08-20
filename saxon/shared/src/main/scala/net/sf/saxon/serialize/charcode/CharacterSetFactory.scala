@@ -87,7 +87,7 @@ class CharacterSetFactory {
       val encodingKey: String = normalizeCharsetName(encoding)
       val cs: CharacterSet = characterSets.get(encodingKey)
       if (cs != null) {
-        cs
+        return cs
       }
       var charset: Charset = null
       try {

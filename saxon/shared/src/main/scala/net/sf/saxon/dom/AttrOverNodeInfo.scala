@@ -14,17 +14,15 @@ import java.util.ArrayList
 import java.util.List
 
 
-
-
 class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   def getName(): String = {
     if (node.getNodeKind == Type.NAMESPACE) {
       val local: String = node.getLocalPart
       if (local.==("")) {
-        "xmlns"
+        return "xmlns"
       } else {
-        "xmlns:" + local
+        return "xmlns:" + local
       }
     }
     node.getDisplayName
@@ -38,7 +36,7 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   override def getLastChild(): Node = getFirstChild
 
- override def getChildNodes(): NodeList = {
+  override def getChildNodes(): NodeList = {
     val list: List[Node] = new ArrayList[Node](1)
     list.add(getFirstChild)
     new DOMNodeList(list)
@@ -65,7 +63,7 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
   def getSchemaTypeInfo(): TypeInfo = {
     val `type`: SchemaType = node.getSchemaType
     if (`type` == null || BuiltInAtomicType.UNTYPED_ATOMIC == `type`) {
-      null
+      return null
     }
     new TypeInfoImpl(node.getConfiguration, `type`)
   }
@@ -78,6 +76,6 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This class is an implementation of the DOM Attr class that wraps a Saxon NodeInfo
-  * representation of an attribute or namespace node.
-  */
+ * This class is an implementation of the DOM Attr class that wraps a Saxon NodeInfo
+ * representation of an attribute or namespace node.
+ */

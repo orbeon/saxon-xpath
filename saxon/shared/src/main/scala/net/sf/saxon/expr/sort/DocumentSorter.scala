@@ -60,7 +60,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
   override def simplify(): Expression = {
     val operand: Expression = getBaseExpression.simplify()
     if (operand.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-      operand
+      return operand
     }
     this
   }
@@ -69,7 +69,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
                          contextInfo: ContextItemStaticInfo): Expression = {
     val e2: Expression = super.typeCheck(visitor, contextInfo)
     if (e2 != this) {
-      e2
+      return e2
     }
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     if (th.relationship(getBaseExpression.getItemType, AnyNodeTest.getInstance) ==
@@ -96,10 +96,10 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     breakable {
       while (true) {
         if (sortable.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-          sortable
+          return sortable
         }
         if (!Cardinality.allowsMany(sortable.getCardinality)) {
-          sortable
+          return sortable
         }
         if (sortable.isInstanceOf[SlashExpression]) {
           val slash: SlashExpression = sortable.asInstanceOf[SlashExpression]
@@ -157,10 +157,10 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     val operand: Expression =
       getBaseExpression.unordered(retainAllNodes, forStreaming)
     if (operand.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-      operand
+      return operand
     }
     if (!retainAllNodes) {
-      operand
+      return  operand
     } else if (operand.isInstanceOf[SlashExpression]) {
       val exp: SlashExpression = operand.asInstanceOf[SlashExpression]
       var a: Expression = exp.getSelectExpression

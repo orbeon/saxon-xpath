@@ -41,7 +41,7 @@ object AndExpression {
 class AndExpression(p1: Expression, p2: Expression)
   extends BooleanExpression(p1, Token.AND, p2) {
 
-   override def preEvaluate(): Expression =
+  override def preEvaluate(): Expression =
     if (Literal.isConstantBoolean(getLhsExpression, false) || Literal
       .isConstantBoolean(getRhsExpression, false)) {
       Literal.makeLiteral(BooleanValue.FALSE, this)
@@ -53,11 +53,11 @@ class AndExpression(p1: Expression, p2: Expression)
       this
     }
 
- override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextInfo: ContextItemStaticInfo): Expression = {
     val t: Expression = super.optimize(visitor, contextInfo)
     if (t != this) {
-      t
+      return t
     }
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     if (getRhsExpression.isInstanceOf[UserFunctionCall] &&
@@ -68,7 +68,7 @@ class AndExpression(p1: Expression, p2: Expression)
         getRhsExpression,
         Literal.makeLiteral(BooleanValue.FALSE, this))
       ExpressionTool.copyLocationInfo(this, cond)
-      cond
+      return cond
     }
     this
   }
@@ -94,7 +94,7 @@ class AndExpression(p1: Expression, p2: Expression)
     new OrExpression(not0, not1)
   }
 
-   override def tag(): String = "and"
+  override def tag(): String = "and"
 
   override def effectiveBooleanValue(c: XPathContext): Boolean =
     getLhsExpression.effectiveBooleanValue(c) && getRhsExpression

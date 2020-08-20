@@ -39,7 +39,7 @@ class CaseFirstCollator(base: StringCollator,
   def compareStrings(a: CharSequence, b: CharSequence): Int = {
     val diff: Int = baseCollator.compareStrings(a, b)
     if (diff != 0) {
-      diff
+      return diff
     }
     var i: Int = 0
     var j: Int = 0

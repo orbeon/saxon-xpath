@@ -65,7 +65,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
   def next(): ContextStackFrame = {
     val context: XPathContextMajor = nextVar
     if (context == null) {
-      null
+      return null
     }
     val origin: ContextOriginator = context.getOrigin
     if (origin.isInstanceOf[Controller]) {

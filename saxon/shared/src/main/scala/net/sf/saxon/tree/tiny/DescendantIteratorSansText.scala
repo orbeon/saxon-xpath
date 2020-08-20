@@ -23,7 +23,7 @@ class DescendantIteratorSansText(private val doc: TinyTree,
 
   def next(): NodeInfo = {
     do {
-      { nextNodeNr += 1; nextNodeNr - 1 }
+      nextNodeNr += 1
       try if (tree.depth(nextNodeNr) <= startDepth) {
         nextNodeNr = -1
         null

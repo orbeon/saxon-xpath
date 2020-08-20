@@ -235,7 +235,7 @@ override  def optimize(visitor: ExpressionVisitor,
     }
     val iter: SequenceIterator = getSelect.iterate(context)
     if (iter.isInstanceOf[EmptyIterator]) {
-      null
+      return null
     }
     val c2: XPathContextMajor = context.newContext()
     c2.trackFocus(iter)

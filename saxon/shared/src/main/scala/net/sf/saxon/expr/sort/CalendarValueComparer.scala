@@ -18,9 +18,9 @@ class CalendarValueComparer(@transient private var context: XPathContext)
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {
-      if (b == null) 0 else -1
+      if (b == null) return 0 else return -1
     } else if (b == null) {
-      +1
+      return +1
     }
     a.asInstanceOf[CalendarValue]
       .compareTo(b.asInstanceOf[CalendarValue], context.getImplicitTimezone)

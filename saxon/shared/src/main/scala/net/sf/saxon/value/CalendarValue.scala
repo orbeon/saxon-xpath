@@ -60,7 +60,7 @@ object CalendarValue {
       cr = GDayValue.makeGDayValue(s)
     }
     if (cr.isInstanceOf[ValidationFailure]) {
-      firstError
+      return firstError
     }
     cr
   }
@@ -117,7 +117,10 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
     var dt2: DateTimeValue = other.toDateTime()
     if (dt1.getTimezoneInMinutes != dt2.getTimezoneInMinutes) {
       var tz: Int = CalendarValue.NO_TIMEZONE
-      if (context == null || (tz = context.getImplicitTimezone()) == CalendarValue.MISSING_TIMEZONE) {
+      if (context == null || ({
+        tz = context.getImplicitTimezone()
+        tz
+      }) == CalendarValue.MISSING_TIMEZONE) {
         throw new NoDynamicContextException("Implicit timezone required");
       }
       dt1 = dt1.adjustToUTC(tz)
@@ -159,10 +162,10 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
                          collator: StringCollator,
                          implicitTimezone: Int): AtomicMatchKey = {
     if (ordered && !(this.isInstanceOf[Comparable[_]])) {
-      null
+      return null
     }
     if (hasTimezone()) {
-      this
+      return this
     }
     if (implicitTimezone == MISSING_TIMEZONE) {
       throw new NoDynamicContextException("Unknown implicit timezone")

@@ -42,10 +42,10 @@ object Block {
 
   def makeBlock(e1: Expression, e2: Expression): Expression = {
     if (e1 == null || Literal.isEmptySequence(e1)) {
-      e2
+      return e2
     }
     if (e2 == null || Literal.isEmptySequence(e2)) {
-      e1
+      return e1
     }
     if (e1.isInstanceOf[Block] || e2.isInstanceOf[Block]) {
       val list: List[Expression] = new ArrayList[Expression](10)
@@ -536,7 +536,7 @@ class Block(children: Array[Expression]) extends Instruction {
       flatten(list)
       val result: Expression = Block.makeBlock(list)
       result.setRetainedStaticContext(getRetainedStaticContext)
-      result
+      return result
     }
     if (size == 0) {
       Literal.makeEmptySequence()

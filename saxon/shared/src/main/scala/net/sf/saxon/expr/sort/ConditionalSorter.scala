@@ -87,7 +87,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     if (base.isInstanceOf[DocumentSorter]) {
       sorterOp.setChildExpression(base)
     } else {
-      base
+      return base
     }
     val cond: Expression = rewriter.rewrite(getCondition)
     if (cond.isInstanceOf[Literal]) {

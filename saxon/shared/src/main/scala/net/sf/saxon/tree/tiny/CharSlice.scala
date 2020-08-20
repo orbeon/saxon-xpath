@@ -56,7 +56,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
     if (other.isInstanceOf[CharSlice]) {
       val cs2: CharSlice = other.asInstanceOf[CharSlice]
       if (count != cs2.count) {
-        false
+        return false
       }
       val limit: Int = offset + count
       var j: Int = offset
@@ -65,7 +65,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
         .array({ k += 1; k - 1 })) {
         false
       }
-      true
+      return true
     } else if (other.isInstanceOf[CharSequence]) {
       count == other
         .asInstanceOf[CharSequence]

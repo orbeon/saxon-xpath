@@ -66,12 +66,12 @@ class Annotation(name: StructuredQName) {
       .qName &&
       getAnnotationParameters.size ==
         other.asInstanceOf[Annotation].getAnnotationParameters.size)) {
-      false
+      return false
     }
     for (i <- 0 until annotationParameters.size if !annotationParamEqual(
       annotationParameters.get(i),
       other.asInstanceOf[Annotation].annotationParameters.get(i))) {
-      false
+      return false
     }
     true
   }

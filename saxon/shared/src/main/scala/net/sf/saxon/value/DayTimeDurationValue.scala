@@ -27,7 +27,7 @@ object DayTimeDurationValue {
   def makeDayTimeDurationValue(s: CharSequence): ConversionResult = {
     val d: ConversionResult = DurationValue.makeDuration(s, false, true)
     if (d.isInstanceOf[ValidationFailure]) {
-      d
+      return d
     }
     val dv: DurationValue = d.asInstanceOf[DurationValue]
     Converter.DurationToDayTimeDuration.INSTANCE.convert(dv)
@@ -212,21 +212,21 @@ class DayTimeDurationValue
     val seconds: Int = getSeconds
     sb.cat('P')
     if (days != 0) {
-      sb.append(days + "D")
+      sb.append(s"${days}D")
     }
     if (days == 0 || hours != 0 || minutes != 0 || seconds != 0 ||
       nanoseconds != 0) {
       sb.cat('T')
     }
     if (hours != 0) {
-      sb.append(hours + "H")
+      sb.append(s"${hours}H")
     }
     if (minutes != 0) {
-      sb.append(minutes + "M")
+      sb.append(s"${minutes}M")
     }
     if (seconds != 0 || nanoseconds != 0 || (days == 0 && minutes == 0 && hours == 0)) {
       if (nanoseconds == 0) {
-        sb.append(seconds + "S")
+        sb.append(s"${seconds}S")
       } else {
         DurationValue.formatFractionalSeconds(sb,
           seconds,

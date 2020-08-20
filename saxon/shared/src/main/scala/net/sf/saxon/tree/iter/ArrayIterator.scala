@@ -70,7 +70,7 @@ class ArrayIterator[T <: Item]( var items: Array[T])
   def next(): T = {
     if (index >= end) {
       index = end + 1
-      null
+      return null.asInstanceOf[T]
     }
     items({ index += 1; index - 1 })
   }

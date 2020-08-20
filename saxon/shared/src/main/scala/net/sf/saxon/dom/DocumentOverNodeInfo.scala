@@ -111,7 +111,7 @@ class DocumentOverNodeInfo extends NodeOverNodeInfo with Document {
   def getDocumentElement(): Element = {
     val root: NodeInfo = node.getRoot
     if (root == null) {
-      null
+      return null
     }
     val children: AxisIterator =
       root.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
@@ -140,7 +140,7 @@ class DocumentOverNodeInfo extends NodeOverNodeInfo with Document {
   def getElementById(elementId: String): Element = {
     val doc: TreeInfo = node.getTreeInfo
     if (doc == null) {
-      null
+      return null
     }
     wrap(doc.selectID(elementId, false)).asInstanceOf[Element]
   }

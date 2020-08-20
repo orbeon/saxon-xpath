@@ -74,7 +74,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def matches(item: Item, context: XPathContext): Boolean = {
     if (!getBasePattern.matches(item, context)) {
-      false
+      return false
     }
     matchesPredicate(item, context)
   }

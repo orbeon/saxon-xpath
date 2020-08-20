@@ -17,7 +17,7 @@ class DocAvailable extends SystemFunction {
   private def isDocAvailable(hrefVal: AtomicValue,
                              context: XPathContext): Boolean = {
     if (hrefVal == null) {
-      false
+      return false
     }
     val href: String = hrefVal.getStringValue
     docAvailable(href, context)
@@ -37,11 +37,11 @@ class DocAvailable extends SystemFunction {
         context)
       val pool: DocumentPool = context.getController.getDocumentPool
       if (pool.isMarkedUnavailable(documentKey)) {
-        false
+        return false
       }
       val doc: TreeInfo = pool.find(documentKey)
       if (doc != null) {
-        true
+        return true
       }
       val item: Item = DocumentFn.makeDoc(href,
         getStaticBaseUriString,

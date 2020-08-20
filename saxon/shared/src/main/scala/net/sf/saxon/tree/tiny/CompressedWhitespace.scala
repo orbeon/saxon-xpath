@@ -19,7 +19,7 @@ object CompressedWhitespace {
   def compress(in: CharSequence): CharSequence = {
     val inlen: Int = in.length
     if (inlen == 0) {
-      in
+      return in
     }
     var runlength: Int = 1
     var outlength: Int = 0
@@ -131,7 +131,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
         s -= 8
       }
     }
-    throw new IndexOutOfBoundsException(index + "")
+    throw new IndexOutOfBoundsException(s"$index")
   }
 
   def subSequence(start: Int, end: Int): CharSequence =
