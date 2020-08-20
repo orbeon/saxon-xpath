@@ -121,13 +121,13 @@ class LetExpression extends Assignation with TailCallReturner {
       !ExpressionTool.changesXsltContext(getSequence)) {
       getSequenceOp.optimize(visitor, contextItemType)
       opt.trace("Eliminated trivial variable " + getVariableName, getSequence)
-      getSequence
+      return getSequence
     }
     if (getSequence.isInstanceOf[Literal] && opt.isOptionSet(
       OptimizerOptions.INLINE_VARIABLES)) {
       opt.trace("Inlined constant variable " + getVariableName, getSequence)
       replaceVariable(getSequence)
-      getAction.optimize(visitor, contextItemType)
+      return getAction.optimize(visitor, contextItemType)
     }
     if (getSequence.isInstanceOf[DocumentInstr] && getSequence
       .asInstanceOf[DocumentInstr]
@@ -216,7 +216,7 @@ class LetExpression extends Assignation with TailCallReturner {
         val seq0: Expression = getSequence
         getSequenceOp.optimize(visitor, contextItemType)
         if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
-          optimize(visitor, contextItemType)
+          return optimize(visitor, contextItemType)
         }
         if (seq0 == getSequence) {
           break
@@ -239,10 +239,10 @@ class LetExpression extends Assignation with TailCallReturner {
           if (references != null && references.size < 2) {
             if (references.isEmpty) {
               hasLoopingReference = false
-              optimize(visitor, contextItemType)
+              return optimize(visitor, contextItemType)
             } else {
               if (!references.get(0).isInLoop) {
-                optimize(visitor, contextItemType)
+                return optimize(visitor, contextItemType)
               }
             }
           }
