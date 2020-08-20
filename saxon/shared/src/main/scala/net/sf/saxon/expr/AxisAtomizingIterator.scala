@@ -33,7 +33,7 @@ class AxisAtomizingIterator(private var base: AtomizedValueIterator) extends Seq
       val atomized: AtomicSequence = base.nextAtomizedValue()
       if (atomized == null) {
         results = null
-        null
+        return null
       }
       if (atomized.isInstanceOf[AtomicValue]) {
         // common case (the atomized value of the node is a single atomic value)

@@ -169,7 +169,7 @@ class DocumentBuilder (var config: Configuration) {
       if (`val`.isInstanceOf[ProxyReceiver]) {
         `val`.asInstanceOf[ProxyReceiver].setUnderlyingReceiver(r)
       }
-      `val`
+      return `val`
     }
     r
   }

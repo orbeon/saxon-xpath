@@ -13,14 +13,15 @@ import scala.beans.BooleanBeanProperty
 object ConversionRules {
 
   /**
-    * Default conversion rules. Changed in Saxon 9.9 so these are the XSD 1.1 rules (year zero allowed in dates,
-    * {@code -INF} allowed in {@code xs:double}). Modifying the default conversion rules is inadvisable,
-    * but it could potentially be done in order to retain compatibility with earlier Saxon releases.
-    */ /**
-    * Default conversion rules. Changed in Saxon 9.9 so these are the XSD 1.1 rules (year zero allowed in dates,
-    * {@code -INF} allowed in {@code xs:double}). Modifying the default conversion rules is inadvisable,
-    * but it could potentially be done in order to retain compatibility with earlier Saxon releases.
-    */
+   * Default conversion rules. Changed in Saxon 9.9 so these are the XSD 1.1 rules (year zero allowed in dates,
+   * {@code -INF} allowed in {@code xs:double}). Modifying the default conversion rules is inadvisable,
+   * but it could potentially be done in order to retain compatibility with earlier Saxon releases.
+   */
+  /**
+   * Default conversion rules. Changed in Saxon 9.9 so these are the XSD 1.1 rules (year zero allowed in dates,
+   * {@code -INF} allowed in {@code xs:double}). Modifying the default conversion rules is inadvisable,
+   * but it could potentially be done in order to retain compatibility with earlier Saxon releases.
+   */
   val DEFAULT: ConversionRules = new ConversionRules()
 
 }
@@ -29,7 +30,7 @@ class ConversionRules {
 
   private var stringToDouble: StringToDouble = StringToDouble11.getInstance
 
-// may be null
+  // may be null
   private var notationSet: NotationSet = _
 
   private var uriChecker: URIChecker = _
@@ -37,10 +38,10 @@ class ConversionRules {
   @BooleanBeanProperty
   var allowYearZero: Boolean = true
 
-// may be null
+  // may be null
   private var typeHierarchy: TypeHierarchy = _
 
-// These two tables need to be synchronised to make the caching thread-safe
+  // These two tables need to be synchronised to make the caching thread-safe
   private var converterCache: LRUCache[Integer, Converter] =
     new LRUCache(100, true)
 
@@ -75,7 +76,7 @@ class ConversionRules {
 
   def isDeclaredNotation(uri: String, local: String): Boolean = //noinspection SimplifiableIfStatement
     if (notationSet == null) {
-// in the absence of a known configuration, treat all notations as valid
+      // in the absence of a known configuration, treat all notations as valid
       true
     } else {
       notationSet.isDeclaredNotation(uri, local)
@@ -91,7 +92,7 @@ class ConversionRules {
   /*@Nullable*/
 
   def getConverter(source: AtomicType, target: AtomicType): Converter = {
-// Handle some common cases before looking in the cache
+    // Handle some common cases before looking in the cache
     if (source == target) {
       Converter.IdentityConverter.INSTANCE
     } else if (source == BuiltInAtomicType.STRING || source == BuiltInAtomicType.UNTYPED_ATOMIC) {
@@ -101,7 +102,7 @@ class ConversionRules {
     } else if (target == BuiltInAtomicType.UNTYPED_ATOMIC) {
       Converter.ToUntypedAtomicConverter.INSTANCE
     }
-// fingerprint of the target type (20 bits)
+    // fingerprint of the target type (20 bits)
     val key: Int = (source.getPrimitiveType << 20) | target.getFingerprint
     var converter: Converter = converterCache.get(key)
     if (converter == null) {
@@ -109,13 +110,14 @@ class ConversionRules {
       if (converter != null) {
         converterCache.put(key, converter)
       } else {
-        null
+        return null
       }
     }
     converter
   }
-// For a lookup key, use the primitive type of the source type (always 10 bits) and the
-// For a lookup key, use the primitive type of the source type (always 10 bits) and the
+
+  // For a lookup key, use the primitive type of the source type (always 10 bits) and the
+  // For a lookup key, use the primitive type of the source type (always 10 bits) and the
 
   /*@Nullable*/
 
@@ -128,7 +130,7 @@ class ConversionRules {
     val tp: Int = targetType.getPrimitiveType
     val st: Int = sourceType.getPrimitiveType
     if ((st == StandardNames.XS_STRING || st == StandardNames.XS_UNTYPED_ATOMIC) &&
-        (tp == StandardNames.XS_STRING || tp == StandardNames.XS_UNTYPED_ATOMIC)) {
+      (tp == StandardNames.XS_STRING || tp == StandardNames.XS_UNTYPED_ATOMIC)) {
       makeStringConverter(targetType)
     }
     if (!targetType.isPrimitiveType) {
@@ -140,7 +142,7 @@ class ConversionRules {
       } else {
         val stageOne: Converter = makeConverter(sourceType, primTarget)
         if (stageOne == null) {
-          null
+          return null
         }
         val stageTwo: Converter =
           new Converter.DownCastingConverter(targetType, this)
@@ -148,9 +150,9 @@ class ConversionRules {
       }
     }
     if (st == tt) {
-// we are casting between subtypes of the same primitive type.
+      // we are casting between subtypes of the same primitive type.
       if (typeHierarchy != null && typeHierarchy.isSubType(sourceType,
-                                                           targetType)) {
+        targetType)) {
         new Converter.UpCastingConverter(targetType)
       }
       val upcast: Converter =
@@ -168,7 +170,7 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             new StringConverter.StringToFloat(this)
           case StandardNames.XS_DOUBLE | StandardNames.XS_DECIMAL |
-              StandardNames.XS_INTEGER | StandardNames.XS_NUMERIC =>
+               StandardNames.XS_INTEGER | StandardNames.XS_NUMERIC =>
             Converter.NumericToFloat.INSTANCE
           case StandardNames.XS_BOOLEAN => Converter.BooleanToFloat.INSTANCE
           case _ => null
@@ -179,7 +181,7 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             stringToDouble
           case StandardNames.XS_FLOAT | StandardNames.XS_DECIMAL |
-              StandardNames.XS_INTEGER | StandardNames.XS_NUMERIC =>
+               StandardNames.XS_INTEGER | StandardNames.XS_NUMERIC =>
             Converter.NumericToDouble.INSTANCE
           case StandardNames.XS_BOOLEAN => Converter.BooleanToDouble.INSTANCE
           case _ => null
@@ -214,7 +216,7 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             StringConverter.StringToDuration.INSTANCE
           case StandardNames.XS_DAY_TIME_DURATION |
-              StandardNames.XS_YEAR_MONTH_DURATION =>
+               StandardNames.XS_YEAR_MONTH_DURATION =>
             new Converter.UpCastingConverter(BuiltInAtomicType.DURATION)
           case _ => null
 
@@ -224,7 +226,7 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             StringConverter.StringToYearMonthDuration.INSTANCE
           case StandardNames.XS_DURATION |
-              StandardNames.XS_DAY_TIME_DURATION =>
+               StandardNames.XS_DAY_TIME_DURATION =>
             Converter.DurationToYearMonthDuration.INSTANCE
           case _ => null
 
@@ -234,7 +236,7 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             StringConverter.StringToDayTimeDuration.INSTANCE
           case StandardNames.XS_DURATION |
-              StandardNames.XS_YEAR_MONTH_DURATION =>
+               StandardNames.XS_YEAR_MONTH_DURATION =>
             Converter.DurationToDayTimeDuration.INSTANCE
           case _ => null
 
@@ -341,8 +343,8 @@ class ConversionRules {
           case StandardNames.XS_UNTYPED_ATOMIC | StandardNames.XS_STRING =>
             StringConverter.StringToBoolean.INSTANCE
           case StandardNames.XS_FLOAT | StandardNames.XS_DOUBLE |
-              StandardNames.XS_DECIMAL | StandardNames.XS_INTEGER |
-              StandardNames.XS_NUMERIC =>
+               StandardNames.XS_DECIMAL | StandardNames.XS_INTEGER |
+               StandardNames.XS_NUMERIC =>
             Converter.NumericToBoolean.INSTANCE
           case _ => null
 
@@ -427,7 +429,7 @@ class ConversionRules {
       } else if (tt == StandardNames.XS_UNTYPED_ATOMIC) {
         StringConverter.StringToUntypedAtomic.INSTANCE
       } else if (targetType.isPrimitiveType) {
-// converter to built-in types unrelated to xs:string
+        // converter to built-in types unrelated to xs:string
         val converter: Converter =
           getConverter(BuiltInAtomicType.STRING, targetType)
         assert(converter != null)
@@ -455,14 +457,14 @@ class ConversionRules {
     } else {
       if (tt == StandardNames.XS_STRING) {
         if (targetType.getBuiltInBaseType == BuiltInAtomicType.STRING) {
-// converter to user-defined subtypes of xs:string
+          // converter to user-defined subtypes of xs:string
           new StringConverter.StringToStringSubtype(this, targetType)
         } else {
-// converter to user-defined subtypes of built-in subtypes of xs:string
+          // converter to user-defined subtypes of built-in subtypes of xs:string
           new StringConverter.StringToDerivedStringSubtype(this, targetType)
         }
       } else {
-// converter to user-defined types derived from types other than xs:string
+        // converter to user-defined types derived from types other than xs:string
         val first: StringConverter =
           targetType.getPrimitiveItemType.getStringConverter(this)
         val second: Converter.DownCastingConverter =
@@ -480,13 +482,13 @@ class ConversionRules {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This class defines a set of rules for converting between different atomic types. It handles the variations
-  * that arise between different versions of the W3C specifications, for example the changes in Name syntax
-  * between XML 1.0 and XML 1.1, the introduction of "+INF" as a permitted xs:double value in XSD 1.1, and so on.
-  * <p>It is possible to nominate a customized <code>ConversionRules</code> object at the level of the
-  * {@link net.sf.saxon.Configuration}, either by instantiating this class and changing the properties, or
-  * by subclassing.</p>
-  *
-  * @see net.sf.saxon.Configuration#setConversionRules(ConversionRules)
-  * @since 9.3
-  */
+ * This class defines a set of rules for converting between different atomic types. It handles the variations
+ * that arise between different versions of the W3C specifications, for example the changes in Name syntax
+ * between XML 1.0 and XML 1.1, the introduction of "+INF" as a permitted xs:double value in XSD 1.1, and so on.
+ * <p>It is possible to nominate a customized <code>ConversionRules</code> object at the level of the
+ * {@link net.sf.saxon.Configuration}, either by instantiating this class and changing the properties, or
+ * by subclassing.</p>
+ *
+ * @see net.sf.saxon.Configuration#setConversionRules(ConversionRules)
+ * @since 9.3
+ */

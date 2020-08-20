@@ -119,7 +119,7 @@ object DateValue {
 
     d -= 2378500
     while (d <= 0)
-    d += 70000000
+      d += 70000000
     (d - 1) % 7 + 1
   }
 
@@ -134,8 +134,8 @@ object DateValue {
 
       val lastDayPrevMonth: DateValue = yesterday(year, month.toByte, 1.toByte)
       getWeekNumberWithinMonth(lastDayPrevMonth.year,
-                               lastDayPrevMonth.month,
-                               lastDayPrevMonth.day)
+        lastDayPrevMonth.month,
+        lastDayPrevMonth.day)
     }
 
     val inc: Int = if (firstDay < 5) 1 else 0
@@ -197,11 +197,10 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   def this(localDate: LocalDate) =
     this(localDate.getYear,
-         localDate.getMonthValue.toByte,
-         localDate.getDayOfMonth.toByte)
+      localDate.getMonthValue.toByte,
+      localDate.getDayOfMonth.toByte)
 
-  
-  
+
   def this(calendar: GregorianCalendar, tz: Int) = {
     this()
 
@@ -228,7 +227,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
         sb.cat('-')
       }
     }
-    appendString(sb, yr, if (yr > 9999) (yr + "").length else 4)
+    appendString(sb, yr, if (yr > 9999) s"$yr".length else 4)
     sb.cat('-')
     appendTwoDigits(sb, month)
     sb.cat('-')
@@ -251,7 +250,6 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
     target.getStringValueCS
   }
 
-  
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: DateValue =
@@ -263,10 +261,10 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   def adjustTimezone(timezone: Int): DateValue = {
     val dt: DateTimeValue = toDateTime().adjustTimezone(timezone)
     new DateValue(dt.getYear,
-                  dt.getMonth,
-                  dt.getDay,
-                  dt.getTimezoneInMinutes,
-                  hasNoYearZero)
+      dt.getMonth,
+      dt.getDay,
+      dt.getTimezoneInMinutes,
+      hasNoYearZero)
   }
 
   def add(duration: DurationValue): DateValue =
@@ -299,7 +297,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
         m += 12
         y -= 1
       }
-      { m += 1; m - 1 }
+      m += 1
       var d: Int = day
       while (!isValidDate(y, m, d)) d -= 1
       new DateValue(y, m.toByte, d.toByte, getTimezoneInMinutes, hasNoYearZero)

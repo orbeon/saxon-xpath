@@ -247,7 +247,7 @@ class CopyOf(select: Expression,
   override def getItemType(): ItemType = {
     val in: ItemType = getSelect.getItemType
     if (!isSchemaAware) {
-      in
+      return in
     }
     val config: Configuration = getConfiguration
     if (schemaType != null) {
@@ -283,7 +283,7 @@ class CopyOf(select: Expression,
             if (in.isInstanceOf[NodeTest]) AnyNodeTest.getInstance
             else AnyItemType.getInstance
           } else {
-            in
+            return in
           }
         }
         case Validation.STRICT | Validation.LAX =>
@@ -349,7 +349,7 @@ class CopyOf(select: Expression,
             }
             AnyNodeTest.getInstance
           } else if (in.isInstanceOf[AtomicType]) {
-            in
+            return in
           } else {
             AnyItemType.getInstance
           }

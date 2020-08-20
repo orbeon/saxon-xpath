@@ -109,11 +109,11 @@ class BooleanFn extends SystemFunction {
             ebv = ebv.optimize(visitor, contextItemType)
             if (ebv.getItemType == BuiltInAtomicType.BOOLEAN && ebv.getCardinality == StaticProperty.EXACTLY_ONE) {
               ebv.setParentExpression(getParentExpression)
-              ebv
+              return ebv
             } else {
               setArg(0, ebv)
               adoptChildExpression(ebv)
-              this
+              return this
             }
           }
         }

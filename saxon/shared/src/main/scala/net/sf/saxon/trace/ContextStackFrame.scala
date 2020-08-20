@@ -189,7 +189,7 @@ abstract class ContextStackFrame {
 
    def showLocation(): String = {
     if (getSystemId == null) {
-      ""
+      return ""
     }
     val line: Int = getLineNumber
     if (line == -1 || line == 0xfffff) {

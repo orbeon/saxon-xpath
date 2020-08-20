@@ -22,33 +22,33 @@ object AbstractNumberer {
 
   val TITLE_CASE: Int = 2
 
-   val westernDigits: Array[Int] =
+  val westernDigits: Array[Int] =
     Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
-   val latinUpper: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  val latinUpper: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-   val latinLower: String = "abcdefghijklmnopqrstuvwxyz"
+  val latinLower: String = "abcdefghijklmnopqrstuvwxyz"
 
-   val greekUpper: String = "ΑΒΓΔΕΖΗΘΙΚ" + "ΛΜΝΞΟΠΡ΢ΣΤ" + "ΥΦΧΨΩ"
+  val greekUpper: String = "ΑΒΓΔΕΖΗΘΙΚ" + "ΛΜΝΞΟΠΡ΢ΣΤ" + "ΥΦΧΨΩ"
 
-   val greekLower: String = "αβγδεζηθικ" + "λμνξοπρςστ" + "υφχψω"
+  val greekLower: String = "αβγδεζηθικ" + "λμνξοπρςστ" + "υφχψω"
 
-   val cyrillicUpper: String = "АБВГДЕЖЗИ" + "КЛМНОПРССУ" + "ФХЦЧШЩЫЭЮЯ"
+  val cyrillicUpper: String = "АБВГДЕЖЗИ" + "КЛМНОПРССУ" + "ФХЦЧШЩЫЭЮЯ"
 
-   val cyrillicLower: String = "абвгдежзи" + "клмнопрссу" + "фхцчшщыэюя"
+  val cyrillicLower: String = "абвгдежзи" + "клмнопрссу" + "фхцчшщыэюя"
 
-   val hebrew: String = "אבגדהוזחטיכל" + "מנסעפצקרשת"
+  val hebrew: String = "אבגדהוזחטיכל" + "מנסעפצקרשת"
 
-   val hiraganaA: String = "あいうえおかきくけこ" + "さしすせそたちつてと" + "なにぬねのはひふへほ" + "まみむめもやゆよらり" +
+  val hiraganaA: String = "あいうえおかきくけこ" + "さしすせそたちつてと" + "なにぬねのはひふへほ" + "まみむめもやゆよらり" +
     "るれろわをん"
 
-   val katakanaA: String = "アイウエオカキクケコ" + "サシスセソタチツテト" + "ナニヌネノハヒフヘホ" + "マミムメモヤユヨラリ" +
+  val katakanaA: String = "アイウエオカキクケコ" + "サシスセソタチツテト" + "ナニヌネノハヒフヘホ" + "マミムメモヤユヨラリ" +
     "ルレロワヲン"
 
-   val hiraganaI: String = "いろはにほへとちりぬ" + "るをわかよたれそつね" + "ならむうゐのおくやま" + "けふこえてあさきゆめ" +
+  val hiraganaI: String = "いろはにほへとちりぬ" + "るをわかよたれそつね" + "ならむうゐのおくやま" + "けふこえてあさきゆめ" +
     "みしゑひもせす"
 
-   val katakanaI: String = "イロハニホヘトチリヌ" + "ルヲワカヨタレソツネ" + "ナラムウヰノオクヤマ" + "ケフコエテアサキユメ" +
+  val katakanaI: String = "イロハニホヘトチリヌ" + "ルヲワカヨタレソツネ" + "ナラムウヰノオクヤマ" + "ケフコエテアサキユメ" +
     "ミシヱヒモセス"
 
   def convertDigitSystem(number: Long,
@@ -74,7 +74,7 @@ object AbstractNumberer {
 
   def toRoman(n: Long): String = {
     if (n <= 0 || n > 9999) {
-      "" + n
+      return "" + n
     }
     romanThousands(n.toInt / 1000) + romanHundreds((n.toInt / 100) % 10) +
       romanTens((n.toInt / 10) % 10) +
@@ -134,7 +134,7 @@ abstract class AbstractNumberer extends Numberer {
 
   var country: String = _
 
- var language: String = _
+  var language: String = _
 
   def getLanguage: String = language
 
@@ -164,10 +164,10 @@ abstract class AbstractNumberer extends Numberer {
              letterValue: String,
              ordinal: String): String = {
     if (number < 0) {
-      "" + number
+      return "" + number
     }
     if (picture == null || picture.uLength() == 0) {
-      "" + number
+      return "" + number
     }
     val pictureLength: Int = picture.uLength()
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -182,12 +182,12 @@ abstract class AbstractNumberer extends Numberer {
         }
       case 'A' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, latinUpper)
       case 'a' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, latinLower)
       case 'w' | 'W' =>
@@ -203,7 +203,7 @@ abstract class AbstractNumberer extends Numberer {
         }
       case 'i' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         if (letterValue == null || letterValue.isEmpty || letterValue.==(
           "traditional")) {
@@ -213,7 +213,7 @@ abstract class AbstractNumberer extends Numberer {
         }
       case 'I' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         if (letterValue == null || letterValue.isEmpty || letterValue.==(
           "traditional")) {
@@ -223,94 +223,94 @@ abstract class AbstractNumberer extends Numberer {
         }
       case '①' =>
         if (number == 0) {
-          "" + 0x24EA.toChar
+          return "" + 0x24EA.toChar
         }
         if (number > 20 && number <= 35) {
-          "" + (0x3251 + number - 21).toChar
+          return "" + (0x3251 + number - 21).toChar
         }
         if (number > 35 && number <= 50) {
-          "" + (0x32B1 + number - 36).toChar
+          return "" + (0x32B1 + number - 36).toChar
         }
         if (number > 50) {
-          "" + number
+          return "" + number
         }
-        "" + (0x2460 + number - 1).toChar
+        return "" + (0x2460 + number - 1).toChar
       case '⑴' =>
         if (number == 0 || number > 20) {
-          "" + number
+          return "" + number
         }
-        "" + (0x2474 + number - 1).toChar
+        return "" + (0x2474 + number - 1).toChar
       case '⒈' =>
         if (number == 0) {
-          "" + 0xD83C.toChar + 0xDD00.toChar
+          return "" + 0xD83C.toChar + 0xDD00.toChar
         }
         if (number > 20) {
-          "" + number
+          return "" + number
         }
-        "" + (0x2488 + number - 1).toChar
+        return "" + (0x2488 + number - 1).toChar
       case '❶' =>
         if (number == 0) {
-          "" + 0x24FF.toChar
+          return "" + 0x24FF.toChar
         }
         if (number > 10 && number <= 20) {
-          "" + (0x24EB + number - 11).toChar
+          return "" + (0x24EB + number - 11).toChar
         }
         if (number > 20) {
-          "" + number
+          return "" + number
         }
-        "" + (0x2776 + number - 1).toChar
+        return "" + (0x2776 + number - 1).toChar
       case '➀' =>
         if (number == 0) {
-          "" + 0xD83C.toChar + 0xDD0B.toChar
+          return "" + 0xD83C.toChar + 0xDD0B.toChar
         }
         if (number > 10) {
-          "" + number
+          return "" + number
         }
-        "" + (0x2780 + number - 1).toChar
+        return "" + (0x2780 + number - 1).toChar
       case '⓵' =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
-        "" + (0x24F5 + number - 1).toChar
+        return "" + (0x24F5 + number - 1).toChar
       case '➊' =>
         if (number == 0) {
-          "" + 0xD83C.toChar + 0xDD0C.toChar
+          return "" + 0xD83C.toChar + 0xDD0C.toChar
         }
         if (number > 10) {
-          "" + number
+          return "" + number
         }
-        "" + (0x278A + number - 1).toChar
+        return "" + (0x278A + number - 1).toChar
       case '㈠' =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
-        "" + (0x3220 + number - 1).toChar
+        return "" + (0x3220 + number - 1).toChar
       case '㊀' =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
-        "" + (0x3280 + number - 1).toChar
+        return "" + (0x3280 + number - 1).toChar
       case 65799 =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
         fsb.appendWideChar(65799 + number.toInt - 1)
         fsb.toString
       case 69216 =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
         fsb.appendWideChar(69216 + number.toInt - 1)
         fsb.toString
       case 69714 =>
         if (number == 0 || number > 10) {
-          "" + number
+          return "" + number
         }
         fsb.appendWideChar(69714 + number.toInt - 1)
         fsb.toString
       case 119648 =>
         if (number == 0 || number >= 10) {
-          "" + number
+          return "" + number
         }
         fsb.appendWideChar(119648 + number.toInt - 1)
         fsb.toString
@@ -320,53 +320,53 @@ abstract class AbstractNumberer extends Numberer {
           fsb.toString
         }
         if (number >= 10) {
-          "" + number
+          return "" + number
         }
         fsb.appendWideChar(127234 + number.toInt - 1)
         fsb.toString
       case 'Α' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, greekUpper)
       case 'α' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, greekLower)
       case 'А' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, cyrillicUpper)
       case 'а' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, cyrillicLower)
       case 'א' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, hebrew)
       case 'あ' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, hiraganaA)
       case 'ア' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, katakanaA)
       case 'い' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, hiraganaI)
       case 'イ' =>
         if (number == 0) {
-          "0"
+          return "0"
         }
         toAlphaSequence(number, katakanaI)
       case '一' => toJapanese(number)
@@ -401,11 +401,11 @@ abstract class AbstractNumberer extends Numberer {
     sb.toString
   }
 
-   def ordinalSuffix(ordinalParam: String, number: Long): String = ""
+  def ordinalSuffix(ordinalParam: String, number: Long): String = ""
 
-   def alphaDefault(number: Long,
-                             formchar: Char,
-                             sb: FastStringBuffer): Unit = {
+  def alphaDefault(number: Long,
+                   formchar: Char,
+                   sb: FastStringBuffer): Unit = {
     val min: Int = formchar.toInt
     var max: Int = formchar.toInt
     while (java.lang.Character.isLetterOrDigit((max + 1).toChar)) {
@@ -415,29 +415,29 @@ abstract class AbstractNumberer extends Numberer {
     sb.append(toAlpha(number, min, max))
   }
 
-   def toAlpha(number: Long, min: Int, max: Int): String = {
+  def toAlpha(number: Long, min: Int, max: Int): String = {
     if (number <= 0) {
-      "" + number
+      return "" + number
     }
     val range: Int = max - min + 1
     val last: Char = (((number - 1) % range) + min).toChar
     if (number > range) {
-      toAlpha((number - 1) / range, min, max) + last
+      return toAlpha((number - 1) / range, min, max) + last
     } else {
-      "" + last
+      return "" + last
     }
   }
 
-   def toAlphaSequence(number: Long, alphabet: String): String = {
+  def toAlphaSequence(number: Long, alphabet: String): String = {
     if (number <= 0) {
-      "" + number
+      return "" + number
     }
     val range: Int = alphabet.length
     val last: Char = alphabet.charAt(((number - 1) % range).toInt)
     if (number > range) {
-      toAlphaSequence((number - 1) / range, alphabet) + last
+      return toAlphaSequence((number - 1) / range, alphabet) + last
     } else {
-      "" + last
+      return "" + last
     }
   }
 
@@ -448,7 +448,7 @@ abstract class AbstractNumberer extends Numberer {
     val temp: FastStringBuffer =
       convertDigitSystem(number, digits, pictureLength)
     if (numGroupFormatter == null) {
-      temp.toString
+      return temp.toString
     }
     numGroupFormatter.format(temp)
   }

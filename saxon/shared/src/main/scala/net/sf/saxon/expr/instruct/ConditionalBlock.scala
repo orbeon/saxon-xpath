@@ -169,7 +169,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
                         contextInfo: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextInfo)
     if (e != this) {
-      e
+      return e
     }
     var lastOrdinaryInstruction: Int = -1
     var alwaysNonEmpty: Boolean = false

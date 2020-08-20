@@ -73,7 +73,7 @@ object Categories {
       } else if (other.isInstanceOf[IntSetCharacterClass]) {
         val intSet: IntSet = other.getIntSet
         if (intSet.size > 100) {
-          false
+          return false
         }
         val ii: IntIterator = intSet.iterator()
         while (ii.hasNext) if (test(ii.next)) {
@@ -134,7 +134,7 @@ object Categories {
       for ((key, value) <- CATEGORIES.asScala if key.charAt(0) == ch) {
         ip = if (ip == null) value else ip.or(value)
       }
-      val label: String = ch + ""
+      val label: String = s"$ch"
       CATEGORIES.put(label, new Category(label, ip))
     }
   }

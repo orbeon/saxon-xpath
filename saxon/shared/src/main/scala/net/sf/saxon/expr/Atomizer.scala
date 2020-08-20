@@ -66,7 +66,7 @@ object Atomizer {
                           th: TypeHierarchy): ItemType = {
     val in: ItemType = operand.getItemType
     if (in.isPlainType) {
-      in
+      return in
     } else if (in.isInstanceOf[NodeTest]) {
       val kinds: UType = in.getUType
       if (alwaysUntyped) {
@@ -90,7 +90,7 @@ object Atomizer {
         .getMemberType
         .getPrimaryType
         .getAtomizedItemType
-      if (ait == null) ErrorType.getInstance else ait
+      if (ait == null) return ErrorType.getInstance else return ait
     } else if (in.isInstanceOf[FunctionItemType]) {
       ErrorType.getInstance
     }
@@ -171,7 +171,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     if (operand.isInstanceOf[Literal]) {
       val `val`: GroundedValue = operand.asInstanceOf[Literal].getValue
       if (`val`.isInstanceOf[AtomicValue]) {
-        operand
+        return operand
       }
       val iter: SequenceIterator = `val`.iterate()
       var i: Item = null
@@ -180,7 +180,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
         i
       }) != null) {
         if (i.isInstanceOf[NodeInfo]) {
-          this
+          return this
         }
         if (i.isInstanceOf[Function]) {
           if (i.asInstanceOf[Function].isArray) {
@@ -203,7 +203,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           }
         }
       }
-      operand
+      return operand
     } else if (operand.isInstanceOf[ValueOf] &&
       !ReceiverOption.contains(
         operand.asInstanceOf[ValueOf].getOptions,
@@ -284,7 +284,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
       val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
       val operand: Expression = getBaseExpression
       if (th.isSubType(operand.getItemType, BuiltInAtomicType.ANY_ATOMIC)) {
-        operand
+        return operand
       }
       if (operand.isInstanceOf[ValueOf] &&
         !ReceiverOption.contains(operand.asInstanceOf[ValueOf].getOptions,
@@ -337,7 +337,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
         }
         ag.setRequiredChecks(checks)
         ExpressionTool.copyLocationInfo(this, ag)
-        ag
+        return ag
       }
     }
     exp

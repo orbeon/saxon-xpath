@@ -62,8 +62,8 @@ object BooleanValue {
 
 }
 
-class BooleanValue private ()
-    extends AtomicValue
+class BooleanValue private()
+  extends AtomicValue
     with Comparable[BooleanValue]
     with AtomicMatchKey {
 
@@ -74,6 +74,7 @@ class BooleanValue private ()
     this()
     this.value = value
   }
+
   def this(value: Boolean, typeLabel: AtomicType) = {
     this()
     this.value = value
@@ -89,10 +90,10 @@ class BooleanValue private ()
   def getBooleanValue(): Boolean = value
 
   /**
-    * Get the effective boolean value of this expression
-    *
-    * @return the boolean value
-    */
+   * Get the effective boolean value of this expression
+   *
+   * @return the boolean value
+   */
   override def effectiveBooleanValue(): Boolean = value
 
   def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
@@ -130,22 +131,22 @@ class BooleanValue private ()
       throw new ComparisonException(e)
     }
     if (value == other.asInstanceOf[BooleanValue].value) {
-      0
+      return 0
     }
     if (value) {
-      +1
+      return +1
     }
     -1
   }
 
   /**
-    * Determine whether two boolean values are equal
-    *
-    * @param other the value to be compared to this value
-    * @return true if the other value is a boolean value and is equal to this
-    *         value
-    * @throws ClassCastException if other value is not xs:boolean or derived therefrom
-    */
+   * Determine whether two boolean values are equal
+   *
+   * @param other the value to be compared to this value
+   * @return true if the other value is a boolean value and is equal to this
+   *         value
+   * @throws ClassCastException if other value is not xs:boolean or derived therefrom
+   */
   override def equals(other: Any): Boolean = other match {
     case other: BooleanValue => value == other.value
     case _ => false
@@ -153,17 +154,17 @@ class BooleanValue private ()
   }
 
   /**
-    * Get a hash code for comparing two BooleanValues
-    *
-    * @return the hash code
-    */
+   * Get a hash code for comparing two BooleanValues
+   *
+   * @return the hash code
+   */
   override def hashCode(): Int = if (value) 0 else 1
 
   /**
-    * Diagnostic display of this value as a string
-    *
-    * @return a string representation of this value: "true()" or "false()"
-    */
+   * Diagnostic display of this value as a string
+   *
+   * @return a string representation of this value: "true()" or "false()"
+   */
   override def toString(): String = getStringValue + "()"
 
 }
@@ -174,5 +175,5 @@ class BooleanValue private ()
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A boolean XPath value
-  */
+ * A boolean XPath value
+ */

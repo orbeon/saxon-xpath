@@ -22,13 +22,11 @@ import org.xml.sax.Attributes
 import java.util.Arrays
 
 
-
-
 class AttributeCollectionImpl(private var config: Configuration,
                               initialSize: Int)
-    extends Attributes {
+  extends Attributes {
 
-// case of an empty attribute collection.
+  // case of an empty attribute collection.
   private var names: Array[NodeName] = new Array[NodeName](initialSize)
 
   private var values: Array[String] = new Array[String](initialSize)
@@ -39,7 +37,7 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   private var used: Int = 0
 
-// the types array can be null even if used>0; this indicates that all attributes are untyped
+  // the types array can be null even if used>0; this indicates that all attributes are untyped
   private var types: Array[SimpleType] = null
 
   def addAttribute(nodeName: NodeName,
@@ -72,7 +70,9 @@ class AttributeCollectionImpl(private var config: Configuration,
     props(n) = properties
     locations(n) = locationId.saveLocation()
     setTypeAnnotation(n, `type`)
-    values({ used += 1; used - 1 }) = value
+    values({
+      used += 1; used - 1
+    }) = value
   }
 
   def setAttribute(index: Int,
@@ -124,10 +124,10 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   def getQName(index: Int): String = {
     if (names == null) {
-      null
+      return null
     }
     if (index < 0 || index >= used) {
-      null
+      return null
     }
     names(index).getDisplayName
   }
@@ -136,10 +136,10 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   def getLocalName(index: Int): String = {
     if (names == null) {
-      null
+      return null
     }
     if (index < 0 || index >= used) {
-      null
+      return null
     }
     names(index).getLocalPart
   }
@@ -148,10 +148,10 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   def getURI(index: Int): String = {
     if (names == null) {
-      null
+      return null
     }
     if (index < 0 || index >= used) {
-      null
+      return null
     }
     names(index).getURI
   }
@@ -184,10 +184,10 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   def getValue(index: Int): String = {
     if (values == null) {
-      null
+      return null
     }
     if (index < 0 || index >= used) {
-      null
+      return null
     }
     values(index)
   }
@@ -201,16 +201,16 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   def getIndex(qname: String): Int = {
     if (names == null) {
-      -1
+      return -1
     }
     if (qname.indexOf(':') < 0) {
       findByName("", qname)
     }
-// Searching using prefix+localname is not recommended, but SAX allows it...
+    // Searching using prefix+localname is not recommended, but SAX allows it...
     var parts: Array[String] = null
     try parts = NameChecker.getQNameParts(qname)
     catch {
-      case err: QNameException => -1
+      case err: QNameException => return -1
 
     }
     val prefix: String = parts(0)
@@ -248,12 +248,12 @@ class AttributeCollectionImpl(private var config: Configuration,
 
   private def findByName(uri: String, localName: String): Int = {
     if (names == null || config == null) {
-// indicates an empty attribute set
-      -1
+      // indicates an empty attribute set
+      return -1
     }
     for (i <- 0 until used
          if names(i) != null && names(i).hasURI(uri) && localName == names(i).getLocalPart) {
-      i
+      return i
     }
     -1
   }
@@ -279,17 +279,17 @@ class AttributeCollectionImpl(private var config: Configuration,
     val index: Int = getIndex(name.getURI, name.getLocalPart)
     if (index < 0) {
       addAttribute(name,
-                   attribute.getType,
-                   attribute.getValue,
-                   attribute.getLocation,
-                   attribute.getProperties)
+        attribute.getType,
+        attribute.getValue,
+        attribute.getLocation,
+        attribute.getProperties)
     } else {
       setAttribute(index,
-                   name,
-                   attribute.getType,
-                   attribute.getValue,
-                   attribute.getLocation,
-                   attribute.getProperties)
+        name,
+        attribute.getType,
+        attribute.getValue,
+        attribute.getLocation,
+        attribute.getProperties)
     }
   }
 
@@ -301,11 +301,11 @@ class AttributeCollectionImpl(private var config: Configuration,
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * AttributeCollectionImpl is an implementation of the SAX2 interface Attributes.
-  * <p>As well as providing the information required by the SAX2 interface, an
-  * AttributeCollection can hold type information (as needed to support the JAXP 1.3
-  * {@link javax.xml.validation.ValidatorHandler} interface), and location information
-  * for debugging. The location information is used in the case of attributes on a result
-  * tree to identify the location in the query or stylesheet from which they were
-  * generated.</p>
-  */
+ * AttributeCollectionImpl is an implementation of the SAX2 interface Attributes.
+ * <p>As well as providing the information required by the SAX2 interface, an
+ * AttributeCollection can hold type information (as needed to support the JAXP 1.3
+ * {@link javax.xml.validation.ValidatorHandler} interface), and location information
+ * for debugging. The location information is used in the case of attributes on a result
+ * tree to identify the location in the query or stylesheet from which they were
+ * generated.</p>
+ */

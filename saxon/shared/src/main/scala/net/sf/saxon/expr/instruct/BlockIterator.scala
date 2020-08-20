@@ -20,7 +20,7 @@ class BlockIterator(private var operanda: Array[Operand],
 
   def next(): Item = {
     if (position < 0) {
-      null
+      return null
     }
     while (true) {
       if (currentIter == null) {
@@ -29,8 +29,8 @@ class BlockIterator(private var operanda: Array[Operand],
       }
       val current: Item = currentIter.next()
       if (current != null) {
-         position += 1
-        current
+        position += 1
+        return current
       }
       currentIter = null
       if (currentChildExpr >= operanda.length) {
@@ -41,7 +41,7 @@ class BlockIterator(private var operanda: Array[Operand],
     null
   }
 
- override def close(): Unit = {
+  override def close(): Unit = {
     if (currentIter != null) {
       currentIter.close()
     }

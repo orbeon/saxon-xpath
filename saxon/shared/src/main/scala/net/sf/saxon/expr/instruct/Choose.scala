@@ -201,7 +201,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       if (conditions.isEmpty) {
         val lit: Literal = Literal.makeEmptySequence()
         ExpressionTool.copyLocationInfo(this, lit)
-        lit
+        return lit
       } else if (conditions.size == 1 &&
         Literal.hasEffectiveBooleanValue(conditions.get(0), true)) {
         actions.get(0)
@@ -212,7 +212,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
           actions.toArray(Array.ofDim[Expression](actions.size))
         val result: Choose = new Choose(c, a)
         result.setRetainedStaticContext(getRetainedStaticContext)
-        result
+        return result
       }
     }
     if (localSize == 1 &&
@@ -223,7 +223,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       if (localSize == 1) {
         val lit: Literal = Literal.makeEmptySequence()
         ExpressionTool.copyLocationInfo(this, lit)
-        lit
+        return lit
       } else {
         val conditions: Array[Expression] = Array.ofDim[Expression](localSize - 1)
         val actions: Array[Expression] = Array.ofDim[Expression](localSize - 1)
@@ -314,7 +314,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       if (reduced != this) {
         reduced.typeCheck(visitor, contextInfo)
       }
-      reduced
+      return reduced
     }
     this
   }
@@ -440,7 +440,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       if (e.isInstanceOf[Choose]) {
         visitor.obtainOptimizer().trySwitch(e.asInstanceOf[Choose], visitor)
       } else {
-        e
+        return e
       }
     }
     this
@@ -651,7 +651,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
           .processLeavingTail(output, context)
       } else {
         action.process(output, context)
-        null
+        return null
       }
     }
     null

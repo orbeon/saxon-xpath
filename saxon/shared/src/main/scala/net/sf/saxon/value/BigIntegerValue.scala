@@ -119,7 +119,7 @@ class BigIntegerValue() extends IntegerValue {
                        validate: Boolean): ValidationFailure = {
     if (!validate) {
       typeLabel = `type`
-      null
+      return null
     }
     if (IntegerValue.checkBigRange(value, `type`)) {
       typeLabel = `type`
@@ -185,7 +185,7 @@ class BigIntegerValue() extends IntegerValue {
 
   def compareTo(other: Long): Int = {
     if (other == 0) {
-      value.signum()
+      return value.signum()
     }
     value.compareTo(BigInteger.valueOf(other))
   }
@@ -375,7 +375,7 @@ class BigIntegerValue() extends IntegerValue {
           java.lang.Long.MIN_VALUE) > 0) {
       val iv: Int64Value = new Int64Value(longValue())
       iv.setTypeLabel(typeLabel)
-      iv
+      return iv
     }
     this
   }

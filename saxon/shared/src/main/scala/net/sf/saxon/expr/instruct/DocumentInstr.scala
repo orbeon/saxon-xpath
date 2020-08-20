@@ -84,7 +84,7 @@ object DocumentInstr {
           de.setLocator(component.getLocation)
           throw de
         } else if (possibleNodeKinds == UType.ELEMENT) {
-          { elementCount += 1; elementCount - 1 }
+          elementCount += 1
           if (elementCount > 1 &&
             (validation == Validation.STRICT || validation == Validation.LAX ||
               `type` != null)) {

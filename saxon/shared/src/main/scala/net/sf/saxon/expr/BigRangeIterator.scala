@@ -39,7 +39,7 @@ class BigRangeIterator(var start: BigInteger, var limit: BigInteger)
   def next(): IntegerValue = {
     currentValue = currentValue.add(BigInteger.valueOf(1))
     if (currentValue.compareTo(limit) > 0) {
-      null
+      return null
     }
     IntegerValue.makeIntegerValue(currentValue)
   }

@@ -83,7 +83,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     */
   override def getDefaultPriority(): Double = {
     if (this == BuiltInAtomicType.ANY_ATOMIC) {
-      0
+      return 0
     }
     var factor: Double = 1
     var at: SchemaType = this

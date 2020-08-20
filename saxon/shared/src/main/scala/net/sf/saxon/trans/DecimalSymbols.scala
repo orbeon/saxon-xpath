@@ -338,7 +338,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
 
   override def equals(obj: Any): Boolean = {
     if (!(obj.isInstanceOf[DecimalSymbols])) {
-      false
+      return false
     }
     val o: DecimalSymbols = obj.asInstanceOf[DecimalSymbols]
     getDecimalSeparator == o.getDecimalSeparator && getGroupingSeparator == o.getGroupingSeparator &&

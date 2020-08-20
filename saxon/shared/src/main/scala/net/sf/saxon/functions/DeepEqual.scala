@@ -476,7 +476,7 @@ object DeepEqual {
             return false
           }
         }
-        true
+        return true
       case Type.PROCESSING_INSTRUCTION | Type.NAMESPACE =>
         if (n1.getLocalPart != n2.getLocalPart) {
           explain(reporter,
@@ -539,7 +539,7 @@ object DeepEqual {
             n1,
             n2)
         }
-        vr
+        return vr
       case _ => throw new IllegalArgumentException("Unknown node type")
 
     }
@@ -549,11 +549,11 @@ object DeepEqual {
   private def isIgnorable(node: NodeInfo, flags: Int): Boolean = {
     val kind: Int = node.getNodeKind
     if (kind == Type.COMMENT) {
-      (flags & INCLUDE_COMMENTS) == 0
+      return (flags & INCLUDE_COMMENTS) == 0
     } else if (kind == Type.PROCESSING_INSTRUCTION) {
-      (flags & INCLUDE_PROCESSING_INSTRUCTIONS) == 0
+      return (flags & INCLUDE_PROCESSING_INSTRUCTIONS) == 0
     } else if (kind == Type.TEXT) {
-      ((flags & EXCLUDE_WHITESPACE_TEXT_NODES) != 0) && Whitespace.isWhite(
+      return ((flags & EXCLUDE_WHITESPACE_TEXT_NODES) != 0) && Whitespace.isWhite(
         node.getStringValueCS)
     }
     false

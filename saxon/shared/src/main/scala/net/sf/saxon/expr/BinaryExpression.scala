@@ -213,7 +213,7 @@ abstract class BinaryExpression(p0: Expression,
 
   private def pairwiseEqual(a: List[_], b: List[_]): Boolean = {
     if (a.size != b.size) {
-      false
+      return false
     }
     for (i <- 0 until a.size if a.get(i) != b.get(i)) {
       false

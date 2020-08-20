@@ -24,7 +24,7 @@ class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
   def next(): Item = {
     var current: Item = lNext
     if (current == null) {
-      null
+      return null
     }
     lNext = base.next()
     if (AdjacentTextNodeMerger.isTextNode(current)) {

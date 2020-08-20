@@ -115,10 +115,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
   }
 
   def startDocument(properties: Int): Unit = {
-    {
-      level += 1;
-      level - 1
-    }
+    level += 1
     if (level == 0) {
       nextReceiver.startDocument(properties)
     } else if (state == StartTag) {
@@ -171,10 +168,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
                    typeCode: SchemaType,
                    location: Location,
                    properties: Int): Unit = {
-    {
-      level += 1;
-      level - 1
-    }
+    level += 1
     if (state == StartTag) {
       startContent()
     }
@@ -393,7 +387,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
                                   uri: String,
                                   seq: Int): String = {
     if (uri == NamespaceConstant.XML) {
-      "xml"
+      return "xml"
     }
     prefix + '_' + seq
   }
@@ -522,9 +516,9 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
 
   override def usesTypeAnnotations(): Boolean = nextReceiver.usesTypeAnnotations()
 
-   def flatten(array: ArrayItem,
-                        locationId: Location,
-                        copyNamespaces: Int): Unit = {
+  def flatten(array: ArrayItem,
+              locationId: Location,
+              copyNamespaces: Int): Unit = {
     for (member <- array.members()) {
       member
         .iterate()
@@ -532,9 +526,9 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     }
   }
 
-   def decompose(item: Item,
-                          locationId: Location,
-                          copyNamespaces: Int): Unit = {
+  def decompose(item: Item,
+                locationId: Location,
+                copyNamespaces: Int): Unit = {
     if (item != null) {
       if (item.isInstanceOf[AtomicValue] || item
         .isInstanceOf[ExternalObject[_]]) {
@@ -612,7 +606,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     }
   }
 
-   def getErrorCodeForDecomposingFunctionItems(): String =
+  def getErrorCodeForDecomposingFunctionItems(): String =
     if (getPipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
 
 }

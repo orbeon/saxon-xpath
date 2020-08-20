@@ -28,7 +28,7 @@ import java.util.function.Predicate
 
 abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
-   var treeInfo: TreeInfo = _
+  var treeInfo: TreeInfo = _
 
   def getTreeInfo(): TreeInfo = treeInfo
 
@@ -45,7 +45,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[AbstractNodeWrapper])) {
-      false
+      return false
     }
     val ow: AbstractNodeWrapper = other.asInstanceOf[AbstractNodeWrapper]
     getUnderlyingNode == ow.getUnderlyingNode
@@ -70,7 +70,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   def getBaseURI(): String = {
     if (getNodeKind == Type.NAMESPACE) {
-      null
+      return null
     }
     var n: NodeInfo = this
     if (getNodeKind != Type.ELEMENT) {
@@ -79,7 +79,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     while (n != null) {
       val xmlbase: String = n.getAttributeValue(NamespaceConstant.XML, "base")
       if (xmlbase != null) {
-        xmlbase
+        return xmlbase
       }
       n = n.getParent
     }
@@ -187,17 +187,17 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     }
   }
 
-   def iterateAttributes(
-                                   nodeTest: Predicate[_ >: NodeInfo]): AxisIterator
+  def iterateAttributes(
+                         nodeTest: Predicate[_ >: NodeInfo]): AxisIterator
 
-   def iterateChildren(
-                                 nodeTest: Predicate[_ >: NodeInfo]): AxisIterator
+  def iterateChildren(
+                       nodeTest: Predicate[_ >: NodeInfo]): AxisIterator
 
-   def iterateSiblings(nodeTest: Predicate[_ >: NodeInfo],
-                                forwards: Boolean): AxisIterator
+  def iterateSiblings(nodeTest: Predicate[_ >: NodeInfo],
+                      forwards: Boolean): AxisIterator
 
-   def iterateDescendants(nodeTest: Predicate[_ >: NodeInfo],
-                                   includeSelf: Boolean): AxisIterator = {
+  def iterateDescendants(nodeTest: Predicate[_ >: NodeInfo],
+                         includeSelf: Boolean): AxisIterator = {
     var iter: AxisIterator =
       new Navigator.DescendantEnumeration(this, includeSelf, true)
     if (!(nodeTest.isInstanceOf[AnyNodeTest])) {

@@ -31,16 +31,16 @@ class DescendantIterator(private val doc: TinyTree,
       if (pending != null) {
         val p: NodeInfo = pending
         pending = null
-        p
+        return p
       }
-      { nextNodeNr += 1; nextNodeNr - 1 }
+      nextNodeNr += 1
       try if (tree.depth(nextNodeNr) <= startDepth) {
         nextNodeNr = -1
-        null
+        return null
       } catch {
         case e: ArrayIndexOutOfBoundsException => {
           nextNodeNr = -1
-          null
+          return null
         }
 
       }
