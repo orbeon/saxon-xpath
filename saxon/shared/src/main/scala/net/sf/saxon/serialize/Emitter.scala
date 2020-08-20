@@ -195,7 +195,7 @@ abstract class Emitter
             else
               new BufferedWriter(
                 new OutputStreamWriter(outputStream, javaEncoding))
-          //break
+          break
         } catch {
           case err: Exception => {
             if (encoding.equalsIgnoreCase("UTF8")) {
