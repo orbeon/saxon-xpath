@@ -949,7 +949,7 @@ object Navigator {
             val forwards = start.iterateAxis(AxisInfo.CHILD)
             var n: NodeInfo = null
             while ( {
-              (n = forwards.next) != null
+              {n = forwards.next; n} != null
             }) list.addFirst(n)
             children = new ListIterator.OfNodes(list)
           }
