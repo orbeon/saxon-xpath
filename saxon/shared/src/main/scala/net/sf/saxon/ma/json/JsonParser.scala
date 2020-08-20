@@ -153,9 +153,12 @@ object JsonParser {
             if (liberal) buffer.cat(literal.charAt(i))
             else {
               val next = literal.charAt(i)
-              val xx = if (next < 256) s"$next"
-              else "x" + Integer.toHexString(next)
-              throw new XPathException("Unknown escape sequence \\" + xx, errorCode)
+              val xx =
+                if (next < 256)
+                  next.toString
+                else
+                  "x" + Integer.toHexString(next)
+              throw new XPathException(s"Unknown escape sequence \\$xx", errorCode)
             }
         }
       }

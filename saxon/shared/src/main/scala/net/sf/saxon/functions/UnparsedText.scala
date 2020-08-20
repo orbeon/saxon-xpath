@@ -122,7 +122,7 @@ object UnparsedText {
           break
         }
         sb1.append(java.lang.Integer.toHexString(b) + " ")
-        sb2.append(b.toChar + " ")
+        sb2.append(s"${b.toChar} ")
         if (sb1.length > 80) {
           println(sb1)
           println(sb2)

@@ -315,11 +315,11 @@ class ForClause extends Clause {
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("for")
     out.emitAttribute("var", getRangeVariable.getVariableQName)
-    out.emitAttribute("slot", s"${getRangeVariable.getLocalSlotNumber}")
+    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
     val posVar: LocalVariableBinding = getPositionVariable
     if (posVar != null) {
       out.emitAttribute("at", posVar.getVariableQName)
-      out.emitAttribute("at-slot", s"${posVar.getLocalSlotNumber}")
+      out.emitAttribute("at-slot", posVar.getLocalSlotNumber.toString)
     }
     getSequence.export(out)
     out.endElement()

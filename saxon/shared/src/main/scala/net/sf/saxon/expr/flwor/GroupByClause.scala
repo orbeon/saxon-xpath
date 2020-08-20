@@ -211,7 +211,7 @@ class GroupByClause(var config: Configuration) extends Clause {
         o.getChildExpression.asInstanceOf[LocalVariableReference]
       out.startSubsidiaryElement("by")
       out.emitAttribute("var", ref.getDisplayName)
-      out.emitAttribute("slot", s"${ref.getBinding.getLocalSlotNumber}")
+      out.emitAttribute("slot", ref.getBinding.getLocalSlotNumber.toString)
       out.endSubsidiaryElement()
     }
     out.endElement()
