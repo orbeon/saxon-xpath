@@ -117,8 +117,7 @@ class LetExpression extends Assignation with TailCallReturner {
                         contextItemType: ContextItemStaticInfo): Expression = {
     val opt: Optimizer = visitor.obtainOptimizer()
     if (getAction.isInstanceOf[VariableReference] &&
-      getAction.asInstanceOf[VariableReference].getBinding ==
-        this &&
+      (getAction.asInstanceOf[VariableReference].getBinding eq this) &&
       !ExpressionTool.changesXsltContext(getSequence)) {
       getSequenceOp.optimize(visitor, contextItemType)
       opt.trace("Eliminated trivial variable " + getVariableName, getSequence)
