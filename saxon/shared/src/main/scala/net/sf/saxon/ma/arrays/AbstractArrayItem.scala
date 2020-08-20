@@ -112,7 +112,7 @@ abstract class AbstractArrayItem extends ArrayItem {
     if (other.isInstanceOf[ArrayItem]) {
       val that: ArrayItem = other.asInstanceOf[ArrayItem]
       if (this.arrayLength() != that.arrayLength()) {
-        false
+        return false
       }
       for (i <- 0 until this.arrayLength()
            if !DeepEqual.deepEqual(this.get(i).iterate(),
@@ -145,7 +145,7 @@ abstract class AbstractArrayItem extends ArrayItem {
    */
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("array")
-    out.emitAttribute("size", arrayLength() + "")
+    out.emitAttribute("size", s"${arrayLength()}")
     for (mem <- members()) {
       Literal.exportValue(mem, out)
     }

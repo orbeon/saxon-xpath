@@ -63,12 +63,12 @@ class AtomicSortComparer  (
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {
       if (b == null) {
-        0
+        return 0
       } else {
-        -1
+        return -1
       }
     } else if (b == null) {
-      +1
+      return +1
     }
     if (a.isNaN) {
       if (b.isNaN) 0 else -1

@@ -107,7 +107,7 @@ object BuiltInFunctionSet {
     if (num == 1) {
       return "one argument"
     }
-    num + " arguments"
+    s"$num arguments"
   }
 
   class Entry {
@@ -187,17 +187,17 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
           found
         }
       }
-      null
+      return null
     }
     var key: String = name + "#" + arity
     var entry: Entry = functionTable.get(key)
     if (entry != null) {
-      entry
+      return entry
     }
     if (name.==("concat") && arity >= 2 && getNamespace == NamespaceConstant.FN) {
       key = "concat#-1"
       entry = functionTable.get(key)
-      entry
+      return entry
     }
     null
   }
@@ -216,7 +216,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       try {
         val fn: SystemFunction = makeFunction(localName, arity)
         fn.setRetainedStaticContext(rsc)
-        val f: Expression = fn.makeFunctionCall(staticArgs: _*)
+        val f: Expression = fn.makeFunctionCall(staticArgs.toIndexedSeq: _*)
         f.setRetainedStaticContext(rsc)
         f
       } catch {
@@ -295,12 +295,12 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     }
   }
 
-   def register(name: String,
-                         arity: Int,
-                         implementationClass: Class[_ <: SystemFunction],
-                         itemType: ItemType,
-                         cardinality: Int,
-                         properties: Int): Entry = {
+  def register(name: String,
+               arity: Int,
+               implementationClass: Class[_ <: SystemFunction],
+               itemType: ItemType,
+               cardinality: Int,
+               properties: Int): Entry = {
     val e: Entry = new Entry()
     e.name = new StructuredQName(getConventionalPrefix, getNamespace, name)
     e.arity = arity
@@ -321,9 +321,9 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     e
   }
 
-   def registerReducedArityVariants(key: String,
-                                             min: Int,
-                                             max: Int): Unit = {
+  def registerReducedArityVariants(key: String,
+                                   min: Int,
+                                   max: Int): Unit = {
     val master: Entry = functionTable.get(key)
     var arity: Int = min
     while (arity <= max) {

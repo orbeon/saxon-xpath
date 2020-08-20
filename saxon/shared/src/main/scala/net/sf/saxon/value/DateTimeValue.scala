@@ -107,7 +107,7 @@ object DateTimeValue {
 
   def makeDateTimeValue(date: DateValue, time: TimeValue): DateTimeValue = {
     if (date == null || time == null) {
-      null
+      return null
     }
     val tz1: Int = date.getTimezoneInMinutes
     val tz2: Int = time.getTimezoneInMinutes
@@ -171,10 +171,7 @@ object DateTimeValue {
       badDate("Year zero is not allowed", s)
     }
     if (era < 0 && !rules.isAllowYearZero) {
-      {
-        dt.year += 1;
-        dt.year - 1
-      }
+      dt.year += 1
     }
     if (!tok.hasMoreElements()) {
       badDate("Too short", s)
@@ -314,10 +311,7 @@ object DateTimeValue {
           java.lang.Double.parseDouble('.' + part)
         var nanoSeconds: Int = Math.round(fractionalSeconds * 1000000000).toInt
         if (nanoSeconds == 1000000000) {
-          {
-            nanoSeconds -= 1;
-            nanoSeconds + 1
-          }
+          nanoSeconds -= 1
         }
         dt.nanosecond = nanoSeconds
         if (dt.hour == 24 && dt.nanosecond != 0) {
@@ -506,8 +500,8 @@ object DateTimeValue {
 }
 
 class DateTimeValue extends CalendarValue
-    with Comparable[AnyRef]
-    with TemporalAccessor {
+  with Comparable[AnyRef]
+  with TemporalAccessor {
 
   @BeanProperty
   var year: Int = _
@@ -691,7 +685,7 @@ class DateTimeValue extends CalendarValue
         sb.cat('-')
       }
     }
-    appendString(sb, yr, if (yr > 9999) (yr + "").length else 4)
+    appendString(sb, yr, if (yr > 9999) s"$yr".length else 4)
     sb.cat('-')
     appendTwoDigits(sb, month)
     sb.cat('-')
@@ -750,11 +744,11 @@ class DateTimeValue extends CalendarValue
     if (!hasTimezone()) {
       val in: DateTimeValue = copyAsSubType(typeLabel)
       in.setTimezoneInMinutes(timezone)
-      in
+      return in
     }
     val oldtz: Int = getTimezoneInMinutes
     if (oldtz == timezone) {
-      this
+      return this
     }
     val tz: Int = timezone - oldtz
     var h: Int = hour
@@ -774,7 +768,7 @@ class DateTimeValue extends CalendarValue
         nanosecond,
         timezone)
       d2.hasNoYearZero = hasNoYearZero
-      d2
+      return d2
     }
     var dt: DateTimeValue = this
     while (h < 0) {
@@ -827,10 +821,7 @@ class DateTimeValue extends CalendarValue
         m += 12
         y -= 1
       }
-      {
-        m += 1;
-        m - 1
-      }
+      m += 1
       var d: Int = day
       while (!isValidDate(y, m, d)) d -= 1
       val dtv: DateTimeValue = new DateTimeValue(y,

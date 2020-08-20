@@ -111,7 +111,7 @@ object Converter {
     def convert(input: AtomicValue): ConversionResult = {
       val temp: ConversionResult = phaseOne.convert(input)
       if (temp.isInstanceOf[ValidationFailure]) {
-        temp
+        return temp
       }
       val aTemp: AtomicValue = temp.asInstanceOf[AtomicValue]
       if (phaseTwo.isInstanceOf[DownCastingConverter]) {

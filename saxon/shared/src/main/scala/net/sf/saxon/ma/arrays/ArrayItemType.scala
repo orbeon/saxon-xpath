@@ -56,7 +56,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
     if (!(item.isInstanceOf[ArrayItem])) {
-      false
+      return false
     }
     if (this == ANY_ARRAY_TYPE) {
       true

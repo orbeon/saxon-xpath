@@ -75,7 +75,7 @@ class ContextItemExpression extends Expression {
         absentContextIsTypeError)
       ee.setOriginalExpression(this)
       ExpressionTool.copyLocationInfo(this, ee)
-      ee
+      return ee
     } else {
       staticInfo = contextInfo
     }

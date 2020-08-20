@@ -126,7 +126,7 @@ class DocumentImpl
 
   override def getBaseURI(): String = {
     if (baseURI != null) {
-      baseURI
+      return baseURI
     }
     getSystemId
   }
@@ -315,7 +315,7 @@ class DocumentImpl
 
   def getUnparsedEntity(name: String): Array[String] = {
     if (entityTable == null) {
-      null
+      return null
     }
     entityTable.get(name)
   }

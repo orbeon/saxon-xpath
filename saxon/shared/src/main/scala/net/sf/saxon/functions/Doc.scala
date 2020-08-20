@@ -30,13 +30,13 @@ object Doc {
               .asInstanceOf[Literal]
               .value
             if (firstArg.getLength == 0) {
-              null
+              return null
             } else if (firstArg.getLength > 1) {
-              this
+              return this
             }
             val href: String = firstArg.head().getStringValue
             if (href.indexOf('#') >= 0) {
-              this
+              return this
             }
             val item: NodeInfo = DocumentFn.preLoadDoc(
               href,
@@ -46,10 +46,10 @@ object Doc {
             if (item != null) {
               val constant: Expression = Literal.makeLiteral(item)
               ExpressionTool.copyLocationInfo(getArg(0), constant)
-              constant
+              return constant
             }
           } catch {
-            case err: Exception => this
+            case err: Exception => return this
 
           }
           this

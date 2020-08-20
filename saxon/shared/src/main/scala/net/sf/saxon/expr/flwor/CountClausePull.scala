@@ -33,7 +33,7 @@ class CountClausePull(var base: TuplePull, countClause: CountClause)
     if (!base.nextTuple(context)) {
       count = 0
       context.setLocalVariable(slot, Int64Value.ZERO)
-      false
+      return false
     }
     context.setLocalVariable(slot, new Int64Value())
     true

@@ -123,11 +123,11 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
   private def computeItemType(th: TypeHierarchy): ItemType = {
     val selectItemType: ItemType = this.selectItemType
     if (!getPackageData.isSchemaAware) {
-      selectItemType
+      return selectItemType
     }
     if (selectItemType.getUType.overlaps(
       UType.ANY_ATOMIC.union(UType.FUNCTION))) {
-      selectItemType
+      return selectItemType
     }
     val config: Configuration = th.getConfiguration
     if (getSchemaType != null) {
@@ -257,7 +257,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
           if (p.isInstanceOf[Choose] && p.asInstanceOf[Choose].size == 2 &&
             p.asInstanceOf[Choose].getAction(1) == this &&
             p.asInstanceOf[Choose].getAction(0).isInstanceOf[CopyOf]) {
-            exp
+            return exp
           }
           val copyOf: Expression = new CopyOf(new ContextItemExpression(),
             false,
@@ -276,7 +276,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
           val actions: Array[Expression] = Array(copyOf, this)
           val choose: Choose = new Choose(conditions, actions)
           ExpressionTool.copyLocationInfo(this, choose)
-          choose
+          return choose
         }
       }
     }
@@ -308,11 +308,11 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     val controller: Controller = context.getController
     val item: Item = context.getContextItem
     if (item == null) {
-      null
+      return null
     }
     if (!(item.isInstanceOf[NodeInfo])) {
       outPutter.append(item, getLocation, ReceiverOption.ALL_NAMESPACES)
-      null
+      return null
     }
     val source: NodeInfo = item.asInstanceOf[NodeInfo]
     source.getNodeKind match {

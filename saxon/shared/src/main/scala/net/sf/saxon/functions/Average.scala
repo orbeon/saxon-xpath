@@ -52,10 +52,7 @@ class Average extends FoldingFunction {
         next =
           toDouble.convert(next.asInstanceOf[UntypedAtomicValue]).asAtomic()
       }
-      {
-        count += 1;
-        count - 1
-      }
+      count += 1
       if (atStart) {
         if (next.isInstanceOf[NumericValue] || next
           .isInstanceOf[DayTimeDurationValue] ||

@@ -20,7 +20,7 @@ class ATokenIterator(private var input: UnicodeString,
   def next(): StringValue = {
     if (prevEnd < 0) {
       current = null
-      null
+      return null
     }
     if (matcher.`match`(input, prevEnd)) {
       val start: Int = matcher.getParenStart(0)

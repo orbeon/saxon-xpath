@@ -35,7 +35,7 @@ object ArithmeticExpression {
 
 class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extends BinaryExpression(p0, operator, p1) {
 
-   var calculator: Calculator = _
+  var calculator: Calculator = _
 
   private var itemType: PlainType = _
 
@@ -209,9 +209,9 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       return Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize(), this)
     } catch {
       case _: XPathException =>
-        // if early evaluation fails, suppress the error: the value might
-        // not be needed at run-time, or it might be due to context such as the implicit timezone
-        // not being available yet
+      // if early evaluation fails, suppress the error: the value might
+      // not be needed at run-time, or it might be due to context such as the implicit timezone
+      // not being available yet
     }
     this
   }
@@ -229,7 +229,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
           Array(bounds0(0).minus(bounds1(1)), bounds0(1).minus(bounds1(0)))
         case Token.MULT =>
           if (getRhsExpression.isInstanceOf[Literal]) {
-            val val1  = bounds1(0)
+            val val1 = bounds1(0)
             if (val1.signum() > 0) {
               Array(bounds0(0).times(val1), bounds0(1).times(val1))
             } else {
@@ -251,7 +251,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
               try Array(bounds0(0).idiv(val1), bounds0(1).idiv(val1))
               catch {
                 case _: XPathException =>
-                  null
+                  return null
               }
             } else
               null
@@ -275,7 +275,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
 
   def getItemType(): PlainType = {
     if (itemType != null) {
-      itemType
+      return itemType
     }
     if (calculator == null) {
       BuiltInAtomicType.ANY_ATOMIC

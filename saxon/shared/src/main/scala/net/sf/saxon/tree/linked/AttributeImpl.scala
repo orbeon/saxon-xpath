@@ -32,14 +32,14 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
 
   override def getNodeName(): NodeName = {
     if (getRawParent == null || getSiblingPosition == -1) {
-      null
+      return null
     }
     getAttributeInfo.getNodeName
   }
 
   override def getFingerprint(): Int = {
     if (getRawParent == null || getSiblingPosition == -1) {
-      -1
+      return -1
     }
     getNodeName.obtainFingerprint(getNamePool)
   }
@@ -51,17 +51,17 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   override def isIdref(): Boolean = {
     if (ReceiverOption.contains(getAttributeInfo.getProperties,
       ReceiverOption.IS_IDREF)) {
-      true
+      return true
     }
     ElementImpl.isIdRefNode(this)
   }
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[AttributeImpl])) {
-      false
+      return false
     }
     if (this == other) {
-      true
+      return true
     }
     val otherAtt: AttributeImpl = other.asInstanceOf[AttributeImpl]
     getRawParent == otherAtt.getRawParent && getSiblingPosition == otherAtt.getSiblingPosition
@@ -70,7 +70,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   override def hashCode(): Int =
     getRawParent.hashCode ^ (getSiblingPosition << 16)
 
-   override def getSequenceNumber(): Long = {
+  override def getSequenceNumber(): Long = {
     val parseq: Long = getRawParent.getSequenceNumber
     (if (parseq == -1L) parseq else parseq + 0x8000 + getSiblingPosition)
   }
@@ -86,7 +86,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   override def getPreviousInDocument(): NodeImpl = getParent
 
   override def getNextInDocument(anchor: NodeImpl): NodeImpl = {
-    if (anchor == this) null
+    if (anchor == this) return null
     getParent.getNextInDocument(anchor)
   }
 

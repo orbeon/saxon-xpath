@@ -36,36 +36,34 @@ import net.sf.saxon.value.SequenceType
 import java.util.List
 
 
-
-
 class ConstructorFunctionLibrary(private var config: Configuration)
-    extends FunctionLibrary {
+  extends FunctionLibrary {
 
   /**
-    * Test whether a function with a given name and arity is available; if so, return a function
-    * item that can be dynamically called.
-    * <p>This supports the function-lookup() function in XPath 3.0.</p>
-    *
-    * @param functionName  the qualified name of the function being called
-    * @param staticContext the static context to be used by the function, in the event that
-    *                      it is a system function with dependencies on the static context
-    * @return if a function of this name and arity is available for calling, then a corresponding
-    *         function item; or null if the function does not exist
-    * @throws net.sf.saxon.trans.XPathException
-    *          in the event of certain errors, for example attempting to get a function
-    *          that is private
-    */
+   * Test whether a function with a given name and arity is available; if so, return a function
+   * item that can be dynamically called.
+   * <p>This supports the function-lookup() function in XPath 3.0.</p>
+   *
+   * @param functionName  the qualified name of the function being called
+   * @param staticContext the static context to be used by the function, in the event that
+   *                      it is a system function with dependencies on the static context
+   * @return if a function of this name and arity is available for calling, then a corresponding
+   *         function item; or null if the function does not exist
+   * @throws net.sf.saxon.trans.XPathException
+   * in the event of certain errors, for example attempting to get a function
+   * that is private
+   */
   def getFunctionItem(functionName: SymbolicName.F,
                       staticContext: StaticContext): Function = {
     if (functionName.getArity != 1) {
-      null
+      return null
     }
     val uri: String = functionName.getComponentName.getURI
     val localName: String = functionName.getComponentName.getLocalPart
     val `type`: SchemaType =
       config.getSchemaType(new StructuredQName("", uri, localName))
     if (`type` == null || `type`.isComplexType) {
-      null
+      return null
     }
     val resolver: NamespaceResolver =
       if (`type`.asInstanceOf[SimpleType].isNamespaceSensitive)
@@ -75,10 +73,10 @@ class ConstructorFunctionLibrary(private var config: Configuration)
       new AtomicConstructorFunction(`type`.asInstanceOf[AtomicType], resolver)
     } else if (`type`.isInstanceOf[ListType]) {
       new ListConstructorFunction(`type`.asInstanceOf[ListType],
-                                  resolver,
-                                  true)
+        resolver,
+        true)
     } else {
-      val callable: Callable = (context:XPathContext, arguments:Array[Sequence]) => {
+      val callable: Callable = (context: XPathContext, arguments: Array[Sequence]) => {
         var value: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
         if (value == null) {
           EmptySequence.getInstance
@@ -95,23 +93,23 @@ class ConstructorFunctionLibrary(private var config: Configuration)
         1,
         callable,
         new SpecificFunctionType(Array(SequenceType.OPTIONAL_ATOMIC),
-                                 returnType))
+          returnType))
     }
   }
 
   def isAvailable(functionName: SymbolicName.F): Boolean = {
     if (functionName.getArity != 1) {
-      false
+      return false
     }
     val uri: String = functionName.getComponentName.getURI
     val localName: String = functionName.getComponentName.getLocalPart
     val `type`: SchemaType =
       config.getSchemaType(new StructuredQName("", uri, localName))
     if (`type` == null || `type`.isComplexType) {
-      false
+      return false
     }
     if (`type`.isAtomicType && `type`.asInstanceOf[AtomicType].isAbstract) {
-      false
+      return false
     }
     `type` ne AnySimpleType
   }
@@ -124,10 +122,10 @@ class ConstructorFunctionLibrary(private var config: Configuration)
     val localName: String = functionName.getComponentName.getLocalPart
     val builtInNamespace: Boolean = uri == NamespaceConstant.SCHEMA
     if (builtInNamespace) {
-// it's a constructor function: treat it as shorthand for a cast expression
+      // it's a constructor function: treat it as shorthand for a cast expression
       if (functionName.getArity != 1) {
         reasons.add("A constructor function must have exactly one argument")
-        null
+        return null
       }
       val `type`: SimpleType = Type.getBuiltInSimpleType(uri, localName)
       if (`type` != null) {
@@ -137,7 +135,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
               "Abstract type used in constructor function: {" + uri +
                 '}' +
                 localName)
-            null
+            return null
           } else {
             val cast: CastExpression = new CastExpression(
               arguments(0),
@@ -146,7 +144,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
             if (arguments(0).isInstanceOf[StringLiteral]) {
               cast.setOperandIsStringLiteral(true)
             }
-            cast
+            return cast
           }
         } else if (`type`.isUnionType) {
           val resolver: NamespaceResolver = env.getNamespaceResolver
@@ -166,14 +164,14 @@ class ConstructorFunctionLibrary(private var config: Configuration)
           } catch {
             case e: MissingComponentException => {
               reasons.add("Missing schema component: " + e.getMessage)
-              null
+              return null
             }
 
           }
         }
       } else {
         reasons.add("Unknown constructor function: {" + uri + '}' + localName)
-        null
+        return null
       }
     }
     if (arguments.length == 1) {
@@ -193,12 +191,12 @@ class ConstructorFunctionLibrary(private var config: Configuration)
           } catch {
             case e: MissingComponentException => {
               reasons.add("Missing schema component: " + e.getMessage)
-              null
+              return null
             }
 
           }
         } else if (st.asInstanceOf[SimpleType]
-                     .isUnionType && env.getXPathVersion >= 30) {
+          .isUnionType && env.getXPathVersion >= 30) {
           val resolver: NamespaceResolver = env.getNamespaceResolver
           val ucf: UnionConstructorFunction = new UnionConstructorFunction(
             st.asInstanceOf[UnionType],
@@ -210,8 +208,9 @@ class ConstructorFunctionLibrary(private var config: Configuration)
     }
     null
   }
-// Now see if it's a constructor function for a user-defined type
-// Now see if it's a constructor function for a user-defined type
+
+  // Now see if it's a constructor function for a user-defined type
+  // Now see if it's a constructor function for a user-defined type
 
   def copy(): FunctionLibrary = this
 
@@ -223,6 +222,6 @@ class ConstructorFunctionLibrary(private var config: Configuration)
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The ConstructorFunctionLibrary represents the collection of constructor functions for atomic types. These
-  * are provided for the built-in types such as xs:integer and xs:date, and also for user-defined atomic types.
-  */
+ * The ConstructorFunctionLibrary represents the collection of constructor functions for atomic types. These
+ * are provided for the built-in types such as xs:integer and xs:date, and also for user-defined atomic types.
+ */

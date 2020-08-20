@@ -39,7 +39,7 @@ class DecimalFormatManager(var language: HostLanguage,
   def getNamedDecimalFormat(qName: StructuredQName): DecimalSymbols = {
     val ds: DecimalSymbols = formatTable.get(qName)
     if (ds == null) {
-      null
+      return null
     }
     // following two lines had been added to the code since 9.4, but they break XSLT test error089
     //            ds = new DecimalSymbols();

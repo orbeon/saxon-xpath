@@ -25,14 +25,14 @@ object AnyURIValue {
 
   def decode(s: String): String = {
     if (s == null) {
-      s
+      return s
     }
     val n: Int = s.length
     if (n == 0) {
-      s
+      return s
     }
     if (s.indexOf('%') < 0) {
-      s
+      return s
     }
     val sb: FastStringBuffer = new FastStringBuffer(n)
     val bb: ByteBuffer = ByteBuffer.allocate(n)

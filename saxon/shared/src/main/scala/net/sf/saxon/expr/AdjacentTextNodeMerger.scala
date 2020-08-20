@@ -1,4 +1,5 @@
 package net.sf.saxon.expr
+
 import net.sf.saxon.expr.instruct.Block
 
 import net.sf.saxon.expr.instruct.Choose
@@ -73,12 +74,12 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
       Affinity.DISJOINT) {
       val base: Expression = getBaseExpression
       base.setParentExpression(getParentExpression)
-      base
+      return base
     }
     if (!Cardinality.allowsMany(getBaseExpression.getCardinality)) {
       val base: Expression = getBaseExpression
       base.setParentExpression(getParentExpression)
-      base
+      return base
     }
     if (getBaseExpression.isInstanceOf[Choose]) {
       val choose: Choose = getBaseExpression.asInstanceOf[Choose]
@@ -87,7 +88,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
           choose.getAction(i))
         choose.setAction(i, atm2.typeCheck(visitor, contextInfo))
       }
-      choose
+      return choose
     }
     if (getBaseExpression.isInstanceOf[Block]) {
       val block: Block = getBaseExpression.asInstanceOf[Block]
@@ -130,7 +131,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
         if (maybeEmpty) {
           new EmptyTextNodeRemover(block)
         } else {
-          block
+          return block
         }
       }
     }

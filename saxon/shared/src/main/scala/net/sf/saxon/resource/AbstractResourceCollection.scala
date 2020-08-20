@@ -134,7 +134,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
 
   def isStable(context: XPathContext): Boolean = {
     if (params == null) {
-      false
+      return false
     }
     val stable: java.lang.Boolean = params.getStable
     if (stable == null) {
@@ -273,7 +273,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
     val i: Int = name.lastIndexOf('.')
     val p: Int = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'))
     if (i > p && i + 1 < name.length) {
-      name.substring(i + 1)
+      return name.substring(i + 1)
     }
     null
   }
@@ -296,7 +296,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
     val factory: ResourceFactory =
       config.getResourceFactoryForMediaType(mediaType)
     if (factory == null) {
-      basicResource
+      return basicResource
     }
     if (basicResource.isInstanceOf[BinaryResource]) {
       val details: InputDetails = new InputDetails()

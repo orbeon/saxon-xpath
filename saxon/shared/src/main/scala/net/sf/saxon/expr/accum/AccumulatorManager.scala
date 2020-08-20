@@ -85,7 +85,7 @@ class AccumulatorManager {
                 " requires access to its own value",
               "XTDE3400")
           }
-          data
+         return data
         }
       } else {
         map = new HashMap[Accumulator, IAccumulatorData]()

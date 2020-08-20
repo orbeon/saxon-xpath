@@ -24,28 +24,32 @@ import net.sf.saxon.value.Whitespace
 import ContainsToken._
 
 
-
-
 object ContainsToken {
 
   private def containsToken(arg0: SequenceIterator,
                             arg1: StringValue,
                             collator: StringCollator): Boolean = {
     if (arg1 == null) {
-      false
+      return false
     }
     val search: String = Whitespace.trim(arg1.getPrimitiveStringValue.toString)
     if (search.isEmpty) {
-      false
+      return false
     }
     var item: Item = null
-    while ((item = arg0.next()) != null) {
+    while (({
+      item = arg0.next()
+      item
+    }) != null) {
       val tokens: UnfailingIterator =
         new Whitespace.Tokenizer(item.getStringValueCS)
       var token: Item = null
-      while ((token = tokens.next()) != null) if (collator.comparesEqual(
-                                                    search,
-                                                    token.getStringValue)) {
+      while (({
+        token = tokens.next()
+        token
+      }) != null) if (collator.comparesEqual(
+        search,
+        token.getStringValue)) {
         tokens.close()
         arg0.close()
         true
@@ -57,9 +61,9 @@ object ContainsToken {
 }
 
 /**
-  * Implements the fn:contains-token() function with the collation already bound.
-  * This function was introduced in XPath 3.1
-  */
+ * Implements the fn:contains-token() function with the collation already bound.
+ * This function was introduced in XPath 3.1
+ */
 class ContainsToken extends CollatingFunctionFixed {
 
   override def isSubstringMatchingFunction(): Boolean = true
@@ -67,8 +71,8 @@ class ContainsToken extends CollatingFunctionFixed {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     BooleanValue.get(
       containsToken(arguments(0).iterate(),
-                    arguments(1).head().asInstanceOf[StringValue],
-                    getStringCollator))
+        arguments(1).head().asInstanceOf[StringValue],
+        getStringCollator))
 
 }
 

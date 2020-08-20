@@ -58,7 +58,7 @@ class Bindery(pack: PackageData) {
             false
           }
         }
-        true
+        return true
       }
     }
     busy(slot) = thisThread

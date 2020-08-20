@@ -88,7 +88,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
       val `val`: String = item
         .asInstanceOf[TinyElementImpl]
         .getAttributeValue(attributeName.getFingerprint)
-      if (`val` == null) null else new UntypedAtomicValue(`val`)
+      if (`val` == null) return null else return new UntypedAtomicValue(`val`)
     }
     if (item == null) {
 // This doesn't actually happen, we don't create an AttributeGetter unless we know statically

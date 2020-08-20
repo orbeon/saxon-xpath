@@ -63,7 +63,7 @@ object AxisExpression {
 
   private def isPeerNodeTest(test: NodeTest): Boolean = {
     if (test == null) {
-      false
+      return false
     }
     val uType: UType = test.getUType
     if (uType.overlaps(UType.ELEMENT)) {
@@ -134,7 +134,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         val thisExp: Expression =
           checkPlausibility(visitor, contextInfo, !noWarnings)
         if (Literal.isEmptySequence(thisExp)) {
-          thisExp
+          return thisExp
         }
         val exp: ContextItemExpression = new ContextItemExpression()
         ExpressionTool.copyLocationInfo(this, exp)
@@ -147,7 +147,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         val step: SimpleStepExpression =
           new SimpleStepExpression(checker, thisExp)
         ExpressionTool.copyLocationInfo(this, step)
-        step
+        return step
       }
     }
     if (visitor.getStaticContext.getOptimizerOptions.isSet(
@@ -295,7 +295,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               } else {
                 itemType = elementTest
               }
-              this
+              return this
             } else if (axis == AxisInfo.DESCENDANT) {
               val canMatchOutermost: Boolean = !selectedElementNames.get
                 .intersect(outermostElementNames.get)
@@ -314,7 +314,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       val contentType: SchemaType =
         contextType.asInstanceOf[NodeTest].getContentType
       if (contentType == AnyType.getInstance) {
-        this
+        return this
       }
       if (!env.getPackageData.isSchemaAware) {
         val ct: SchemaType = test.getContentType
@@ -487,7 +487,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             if (contentType
               .asInstanceOf[ComplexType]
               .containsElementWildcard()) {
-              this
+              return this
             }
             val children: IntHashSet = new IntHashSet()
             contentType
@@ -507,7 +507,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 childfp = iter.next
               }
             } else {
-              this
+              return this
             }
           }
           val schemaType: SchemaType = contentType
@@ -579,7 +579,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           .asInstanceOf[ComplexType]
           .gatherAllPermittedDescendants(descendants)
         if (descendants.contains(-1)) {
-          this
+          return this
         }
         if (descendants.contains(targetfp)) {
           val children: IntHashSet = new IntHashSet()
@@ -731,7 +731,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
   def getItemType(): ItemType = {
     if (itemType != null) {
-      itemType
+      return itemType
     }
     val p: Int = AxisInfo.principalNodeType(axis)
     p match {
