@@ -122,9 +122,8 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
   }
 
   def head(): Item = {
-    if (extent != null) {
-      if (extent.isEmpty) return null else return extent.get(0)
-    }
+    if (extent != null)
+      return if (extent.isEmpty) null else extent.get(0)
     for (seq <- children.asScala) {
       val head: Item = seq.head()
       if (head != null) {
