@@ -724,24 +724,38 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     var head = if (chain == null) null else chain.head
     var xPathContext = context
     var bstRule = bestRule
-    while (!context.isInstanceOf[XPathContextMajor]) xPathContext = xPathContext.getCaller
-    while (head != null) {
-      if (filter == null || filter.testRule(head)) if (bstRule != null) {
-        val rank = head.compareRank(bstRule)
-        if (rank < 0) break //todo: break is not supported
-        else if (rank == 0) if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
-          reportAmbiguity(item, bstRule, head, xPathContext)
-          bstRule = if (bstRule.getSequence > head.getSequence) bstRule
-          else head
-          break //todo: break is not supported
+
+    while (! xPathContext.isInstanceOf[XPathContextMajor])
+      xPathContext = xPathContext.getCaller
+
+    breakable {
+      while (head != null) {
+        if (filter == null || filter.testRule(head)) if (bstRule != null) {
+          val rank = head.compareRank(bstRule)
+          if (rank < 0) {
+            break()
+          } else if (rank == 0) {
+            if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
+              reportAmbiguity(item, bstRule, head, xPathContext)
+              bstRule =
+                if (bstRule.getSequence > head.getSequence)
+                  bstRule
+                else
+                  head
+              break()
+            } else {
+              // keep searching other rules of the same precedence and priority
+            }
+          } else {
+            // this rule has higher rank than the matching rule already found
+            if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState))
+              bstRule = head
+          }
+        } else if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
+          bstRule = head
+          if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY)
+            break()
         }
-        else {
-        }
-        else if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) bstRule = head
-      }
-      else if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
-        bstRule = head
-        if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) break //todo: break is not supported
       }
       head = head.getNext
     }

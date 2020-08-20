@@ -115,18 +115,24 @@ object Whitespace {
   def removeLeadingWhitespace(value: CharSequence): CharSequence = {
     val len = value.length
     // quick exit for common cases...
-    if (len == 0 || value.charAt(0) > 32) return value
+    if (len == 0 || value.charAt(0) > 32)
+      return value
     var start = -1
-    for (i <- 0 until len) {
-      val c = value.charAt(i)
-      if (c > 32 || !C0WHITE(c)) {
-        start = i
-        break //todo: break is not supported
+    breakable {
+      for (i <- 0 until len) {
+        val c = value.charAt(i)
+        if (c > 32 || !C0WHITE(c)) {
+          start = i
+          break()
+        }
       }
     }
-    if (start == 0) value
-    else if (start < 0 || start == len) ""
-    else value.subSequence(start, len)
+    if (start == 0)
+      value
+    else if (start < 0 || start == len)
+      ""
+    else
+      value.subSequence(start, len)
   }
 
   /**
@@ -260,27 +266,31 @@ object Whitespace {
    * @return the result of removing excess whitespace
    */
   def trimWhitespace(in: CharSequence): CharSequence = {
-    if (in.length == 0) return in
+    if (in.length == 0)
+      return in
     var first = 0
     var last = in.length - 1
-    while ( {
-      true
-    }) {
-      val x = in.charAt(first)
-      if (x > 32 || !C0WHITE(x)) break //todo: break is not supported
-      if ( {
-        first += 1; first - 1
-      } >= last) return ""
+    breakable {
+      while (true) {
+        val x = in.charAt(first)
+        if (x > 32 || !C0WHITE(x))
+          break()
+        if ( { first += 1; first - 1 } >= last)
+          return ""
+      }
     }
-    while ( {
-      true
-    }) {
-      val x = in.charAt(last)
-      if (x > 32 || !C0WHITE(x)) break //todo: break is not supported
-      last -= 1
+    breakable {
+      while (true) {
+        val x = in.charAt(last)
+        if (x > 32 || !C0WHITE(x))
+          break()
+        last -= 1
+      }
     }
-    if (first == 0 && last == in.length - 1) in
-    else in.subSequence(first, last + 1)
+    if (first == 0 && last == in.length - 1)
+      in
+    else
+      in.subSequence(first, last + 1)
   }
 
   /**

@@ -286,7 +286,8 @@ object Navigator {
     breakable {
       while (true) {
         val prev = preceding.next
-        if (prev == null) break //todo: break is not supported
+        if (prev == null)
+          break()
         if (controller != null) {
           var memo = controller.getRememberedNumber(prev)
           if (memo > 0) {

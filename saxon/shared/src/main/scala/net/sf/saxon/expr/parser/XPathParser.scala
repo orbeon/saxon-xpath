@@ -2232,8 +2232,10 @@ class XPathParser() {
             arg = Literal.makeEmptySequence // a convenient fiction
           }
           args.add(arg)
-          if (t.currentToken == Token.COMMA) nextToken()
-          else break //todo: break is not supported
+          if (t.currentToken == Token.COMMA)
+            nextToken()
+          else
+            break()
         }
       }
       expect(Token.RPAR)
