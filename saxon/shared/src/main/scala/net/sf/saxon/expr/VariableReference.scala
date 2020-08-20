@@ -38,34 +38,24 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 import Expression._
 
-abstract class VariableReference extends Expression with BindingReference {
+abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
+  extends Expression with BindingReference {
 
-  @BeanProperty var variableName: StructuredQName = _
+  @BeanProperty var variableName: StructuredQName = qnameOrBinding.fold(identity, _.getVariableQName)
 
+  // This will be null until fixup() is called; it will also be null if the variable reference has been inlined
    var binding: Binding = null
 
-   var staticType: SequenceType = null
+  locally {
+    qnameOrBinding foreach fixup
+  }
 
-   var constantValue: GroundedValue = null
-
+  var staticType: SequenceType = null
+  var constantValue: GroundedValue = null
   var flattened: Boolean = false
-
   @BooleanBeanProperty
   var inLoop: Boolean = false
-
-
   var filtered: Boolean = false
-
-  def this(varName: StructuredQName) {
-    this
-    variableName = varName
-  }
-
-  def this(binding: Binding) = {
-    this
-    variableName = binding.getVariableQName
-    fixup(binding)
-  }
 
   override def setFlattened(flattened: Boolean): Unit = {
     this.flattened = flattened
@@ -111,7 +101,7 @@ abstract class VariableReference extends Expression with BindingReference {
                          contextInfo: ContextItemStaticInfo): Expression = {
     if (constantValue != null) {
       binding = null
-      Literal.makeLiteral(constantValue, this)
+      return Literal.makeLiteral(constantValue, this)
     }
     if (binding != null) {
       recomputeInLoop()
@@ -165,12 +155,13 @@ abstract class VariableReference extends Expression with BindingReference {
   }
 
   def fixup(newBinding: Binding): Unit = {
-    val indexed: Boolean = binding.isInstanceOf[LocalBinding] &&
-      binding.asInstanceOf[LocalBinding].isIndexedVariable
+
+    val indexed = binding.isInstanceOf[LocalBinding] && binding.asInstanceOf[LocalBinding].isIndexedVariable
     this.binding = newBinding
-    if (indexed && newBinding.isInstanceOf[LocalBinding]) {
+
+    if (indexed && newBinding.isInstanceOf[LocalBinding])
       newBinding.asInstanceOf[LocalBinding].setIndexedVariable()
-    }
+
     resetLocalStaticProperties()
   }
 
