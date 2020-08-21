@@ -236,7 +236,7 @@ object DurationValue {
     var result: Long = 0
     val len: Int = s.length
     if (len == 0) {
-      -1
+      return -1
     }
     for (i <- 0 until len) {
       val c: Char = s.charAt(i)
@@ -267,8 +267,8 @@ object DurationValue {
   }
 
   class DurationComparable(private var months: Int,
-                                   private var seconds: Long,
-                                   private var nanoseconds: Int)
+                           private var seconds: Long,
+                           private var nanoseconds: Int)
     extends Comparable[DurationComparable] {
 
     def compareTo(other: DurationComparable): Int = //            }
@@ -477,12 +477,8 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.DURATION
 
   def signum(): Int = {
-    if (negative) {
-      -1
-    }
-    if (months == 0 && seconds == 0L && nanoseconds == 0) {
-      0
-    }
+    if (negative) return -1
+    if (months == 0 && seconds == 0L && nanoseconds == 0) return 0
     +1
   }
 
@@ -525,33 +521,16 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
     val minutes: Int = getMinutes
     val seconds: Int = getSeconds
 
-    if (months == 0 && seconds == 0L && nanoseconds == 0) {
-      "PT0S"
-    }
+    if (months == 0 && seconds == 0L && nanoseconds == 0) return "PT0S"
     val sb: FastStringBuffer = new FastStringBuffer(32)
-    if (negative) {
-      sb.cat('-')
-    }
-
+    if (negative) sb.cat('-')
     sb.append("P")
-    if (years != 0) {
-      sb.append(years + "Y")
-    }
-    if (months != 0) {
-      sb.append(months + "M")
-    }
-    if (days != 0) {
-      sb.append(days + "D")
-    }
-    if (hours != 0 || minutes != 0 || seconds != 0 || nanoseconds != 0) {
-      sb.append("T")
-    }
-    if (hours != 0) {
-      sb.append(hours + "H")
-    }
-    if (minutes != 0) {
-      sb.append(minutes + "M")
-    }
+    if (years != 0) sb.append(years + "Y")
+    if (months != 0) sb.append(months + "M")
+    if (days != 0) sb.append(days + "D")
+    if (hours != 0 || minutes != 0 || seconds != 0 || nanoseconds != 0) sb.append("T")
+    if (hours != 0) sb.append(hours + "H")
+    if (minutes != 0) sb.append(minutes + "M")
     if (seconds != 0 || nanoseconds != 0) {
       if (seconds != 0 && nanoseconds == 0) {
         sb.append(seconds + "S")
@@ -681,7 +660,8 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   /*@NotNull*/
 
   def getSchemaComparable(): Comparable[AnyRef] = DurationValue.getSchemaComparable(this).asInstanceOf
-    //.asInstanceOf[Comparable[AnyRef]]
+
+  //.asInstanceOf[Comparable[AnyRef]]
 
 }
 

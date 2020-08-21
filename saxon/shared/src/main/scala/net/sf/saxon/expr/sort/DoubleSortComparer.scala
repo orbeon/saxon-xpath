@@ -33,19 +33,19 @@ class DoubleSortComparer private () extends AtomicComparer {
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {
       if (b == null) {
-        0
+        return  0
       } else {
-        -1
+        return -1
       }
     } else if (b == null) {
-      +1
+      return +1
     }
     val an: NumericValue = a.asInstanceOf[NumericValue]
     val bn: NumericValue = b.asInstanceOf[NumericValue]
     if (an.isNaN) {
-      if (bn.isNaN) 0 else -1
+      if (bn.isNaN) return 0 else return -1
     } else if (bn.isNaN) {
-      +1
+      return +1
     }
     an.compareTo(bn)
   }

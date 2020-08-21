@@ -116,7 +116,7 @@ class Executable(var config: Configuration) {
 
   def getQueryLibraryModules(namespace: String): List[QueryModule] = {
     if (queryLibraryModules == null) {
-      null
+      return null
     }
     queryLibraryModules.get(namespace)
   }
@@ -124,7 +124,7 @@ class Executable(var config: Configuration) {
   def getQueryModuleWithSystemId(systemId: String,
                                  topModule: QueryModule): QueryModule = {
     if (systemId == topModule.getSystemId) {
-      topModule
+      return topModule
     }
     val miter: Iterator[QueryModule] = getQueryLibraryModules
     while (miter.hasNext) {

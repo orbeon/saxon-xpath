@@ -112,10 +112,7 @@ object FormatDate {
         while (i < format.length && format.charAt(i) != '[') {
           sb.cat(format.charAt(i))
           if (format.charAt(i) == ']') {
-            {
-              i += 1;
-              i - 1
-            }
+            i += 1
             if (i == format.length || format.charAt(i) != ']') {
               val e: XPathException = new XPathException(
                 "Closing ']' in date picture must be written as ']]'")
@@ -548,19 +545,10 @@ object FormatDate {
         for (i <- 0 until uPrimary.uLength()) {
           val c: Int = uPrimary.uCharAt(i)
           if (c == '#') {
-            {
-              max += 1;
-              max - 1
-            }
+            max += 1
           } else if ((c >= '0' && c <= '9') || Categories.ESCAPE_d.test(c)) {
-            {
-              min += 1;
-              min - 1
-            }
-            {
-              max += 1;
-              max - 1
-            }
+            min += 1
+            max += 1
           }
         }
       }

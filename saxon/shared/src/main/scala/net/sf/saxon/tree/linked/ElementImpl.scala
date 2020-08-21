@@ -31,7 +31,7 @@ object ElementImpl {
     val `type`: SchemaType = node.getSchemaType
     try if (`type`.isIdRefType) {
       if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS) {
-        true
+        return true
       }
       try for (av <- node.atomize().asScala if av.getItemType.isIdRefType) {
         true
@@ -40,7 +40,7 @@ object ElementImpl {
 
       }
     } catch {
-      case e: MissingComponentException => false
+      case e: MissingComponentException => return false
 
     }
     false

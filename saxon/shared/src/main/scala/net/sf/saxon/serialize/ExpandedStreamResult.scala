@@ -105,7 +105,7 @@ class ExpandedStreamResult(private var config: Configuration,
 
    def obtainOutputStream(): OutputStream = {
     if (outputStream != null) {
-      outputStream
+      return outputStream
     }
     val uriString: String = systemId
     if (uriString == null) {

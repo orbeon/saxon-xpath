@@ -421,7 +421,7 @@ abstract class Expression
     val o: Item = evaluateItem(context)
     val value: StringValue = o.asInstanceOf[StringValue]
     if (value == null) {
-      ""
+      return ""
     }
     value.getStringValueCS
   }
@@ -636,7 +636,7 @@ abstract class Expression
 
   def getSlotsUsed: Array[Int] = synchronized {
     if (slotsUsed != null) {
-      slotsUsed
+      return slotsUsed
     } else {
       val slots = new IntHashSet(10)
       gatherSlotsUsed(Expression.this, slots)
@@ -744,16 +744,12 @@ abstract class Expression
   }
 
   def hasCompatibleStaticContext(other: Expression): Boolean = {
-    val d1: Boolean = (getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) !=
-      0
-    val d2: Boolean = (other.getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) !=
-      0
-    if (d1 != d2) {
-      false
-    }
-    if (d1) {
+    val d1: Boolean = (getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
+    val d2: Boolean = (other.getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
+    if (d1 != d2)
+      return false
+    if (d1)
       getRetainedStaticContext == other.getRetainedStaticContext
-    }
     true
   }
 

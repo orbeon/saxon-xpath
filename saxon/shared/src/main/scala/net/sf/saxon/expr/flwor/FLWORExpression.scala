@@ -347,7 +347,7 @@ class FLWORExpression extends Expression {
       val expr1: Expression =
         ExpressionTool.tryToFactorOutDot(this, contextItemType.getItemType)
       if (expr1 == null || expr1 == this) {
-        this
+        return this
       }
       resetLocalStaticProperties()
       expr1.optimize(visitor, contextItemType)
@@ -396,13 +396,10 @@ class FLWORExpression extends Expression {
         wStruct.whereIndex = clauses.size - whereIndex
         whereList.add(wStruct)
       }
-      {
-        whereIndex += 1;
-        whereIndex - 1
-      }
+      whereIndex += 1
     }
     if (whereList.size == 0) {
-      null
+      return null
     }
     while (!whereList.isEmpty) {
       whereClause = whereList.get(0).whereClause
@@ -615,22 +612,15 @@ class FLWORExpression extends Expression {
           } catch {
             case e: XPathException => assert(false)
           }
-          {
-            i -= 1;
-            i + 1
-          }
+          i -= 1
         }
       }
     }
     var i: Int = lastReferencingClause - 1
     while (i >= bindingClause) {
-      if (isLoopingClause(clauses.get(i))) {
-        true
-      }
-      {
-        i -= 1;
-        i + 1
-      }
+      if (isLoopingClause(clauses.get(i)))
+        return true
+      i -= 1
     }
     false
   }
