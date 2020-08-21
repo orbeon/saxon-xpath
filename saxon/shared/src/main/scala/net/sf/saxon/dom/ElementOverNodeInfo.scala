@@ -95,12 +95,12 @@ class ElementOverNodeInfo extends NodeOverNodeInfo with Element {
   def getAttributeNS(namespaceURI: String, localName: String): String = {
     if (NamespaceConstant.XMLNS == namespaceURI) {
       val node: Node = getAttributes.getNamedItemNS(namespaceURI, localName)
-      if (node == null) "" else node.getNodeValue
+      if (node == null) return "" else return node.getNodeValue
     }
     val uri: String = if (namespaceURI == null) "" else namespaceURI
     val `val`: String = node.getAttributeValue(uri, localName)
     if (`val` == null) {
-      ""
+      return ""
     }
     `val`
   }
@@ -153,7 +153,7 @@ class ElementOverNodeInfo extends NodeOverNodeInfo with Element {
   def hasAttributeNS(namespaceURI: String, localName: String): Boolean = {
     if (NamespaceConstant.XMLNS == namespaceURI) {
       val node: Node = getAttributes.getNamedItemNS(namespaceURI, localName)
-      node != null
+      return node != null
     }
     val uri: String = if (namespaceURI == null) "" else namespaceURI
     node.getAttributeValue(uri, localName) != null
@@ -176,7 +176,7 @@ class ElementOverNodeInfo extends NodeOverNodeInfo with Element {
   def getSchemaTypeInfo(): TypeInfo = {
     val `type`: SchemaType = node.getSchemaType
     if (`type` == null || Untyped.getInstance == `type` || BuiltInAtomicType.UNTYPED_ATOMIC == `type`) {
-      null
+      return null
     }
     new TypeInfoImpl(node.getConfiguration, `type`)
   }

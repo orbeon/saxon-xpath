@@ -71,7 +71,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
 
   def item(index: Int): Node = {
     if (index < 0) {
-      null
+      return null
     }
     val namespaces: Array[NamespaceBinding] = getNamespaceBindings
     if (index < namespaces.length) {

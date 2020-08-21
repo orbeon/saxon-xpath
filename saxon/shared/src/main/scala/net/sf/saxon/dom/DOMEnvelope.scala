@@ -82,7 +82,7 @@ class DOMEnvelope extends ExternalObjectModel {
         val base: NodeInfo =
           startNode.asInstanceOf[NodeOverNodeInfo].getUnderlyingNodeInfo
         Sender.send(base, receiver, null)
-        true
+        return true
       }
     }
     false

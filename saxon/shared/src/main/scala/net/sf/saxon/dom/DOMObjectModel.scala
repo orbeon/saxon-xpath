@@ -221,7 +221,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
         emitter.setNode(root)
         emitter.setNextSibling(nextSibling)
       }
-      emitter
+      return emitter
     }
     null
   }
@@ -235,7 +235,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
   def sendSource(source: Source, receiver: Receiver): Boolean = {
     if (source.isInstanceOf[DOMSource]) {
       sendDOMSource(source.asInstanceOf[DOMSource], receiver)
-      true
+      return true
     }
     false
   }

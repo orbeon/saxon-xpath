@@ -44,7 +44,7 @@ class Exists extends Aggregate {
                             contextInfo: ContextItemStaticInfo): Expression = {
         val e2: Expression = super.optimize(visitor, contextInfo)
         if (e2 != this) {
-          e2
+          return e2
         }
         val c: Int = getArg(0).getCardinality
         if (!Cardinality.allowsZero(c)) {

@@ -44,18 +44,18 @@ class ForEach(select: Expression,
     with ContextMappingFunction
     with ContextSwitchingExpression {
 
-   var containTailCall: Boolean = containsTailCall && action
+  var containTailCall: Boolean = containsTailCall && action
     .isInstanceOf[TailCallReturner]
 
-   var selectOp: Operand =
+  var selectOp: Operand =
     new Operand(this, select, OperandRole.FOCUS_CONTROLLING_SELECT)
 
-   var actionOp: Operand =
+  var actionOp: Operand =
     new Operand(this, action, OperandRole.FOCUS_CONTROLLED_ACTION)
 
-   var threadsOp: Operand = _
+  var threadsOp: Operand = _
 
-   var isInstr: Boolean = _
+  var isInstr: Boolean = _
 
   if (threads != null) {
     threadsOp = new Operand(this, threads, OperandRole.SINGLE_ATOMIC)
@@ -133,7 +133,7 @@ class ForEach(select: Expression,
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+                         contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.typeCheck(visitor, contextInfo)
     val selectType: ItemType = getSelect.getItemType
     if (selectType == ErrorType.getInstance) {
@@ -151,7 +151,7 @@ class ForEach(select: Expression,
   }
 
   override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+                        contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.optimize(visitor, contextInfo)
     val cit: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(getSelect.getItemType, false)
@@ -183,8 +183,8 @@ class ForEach(select: Expression,
   }
 
   override def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val target: PathMap.PathMapNodeSet =
       getSelect.addToPathMap(pathMap, pathMapNodeSet)
     getAction.addToPathMap(pathMap, target)
@@ -214,7 +214,7 @@ class ForEach(select: Expression,
     (getAction.isInstanceOf[Instruction]) &&
       getAction.asInstanceOf[Instruction].alwaysCreatesNewNodes()
 
-  override  def isUpdatingExpression(): Boolean = getAction.isUpdatingExpression
+  override def isUpdatingExpression(): Boolean = getAction.isUpdatingExpression
 
   override def checkForUpdatingSubexpressions(): Unit = {
     if (getSelect.isUpdatingExpression) {
@@ -227,9 +227,9 @@ class ForEach(select: Expression,
   }
 
   override def getImplementationMethod(): Int =
-    ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD |ITEM_FEED_METHOD
+    ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD | ITEM_FEED_METHOD
 
-  override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     getAction.checkPermittedContents(parentType, false)
   }
 
@@ -247,17 +247,17 @@ class ForEach(select: Expression,
         assert(listener != null)
         val item: Item = iter.next()
         if (item == null) {
-          null
+          return null
         }
         listener.startCurrentItem(item)
         val tc: TailCall =
           action.asInstanceOf[TailCallReturner].processLeavingTail(output, c2)
         listener.endCurrentItem(item)
-        tc
+        return tc
       } else {
         val item: Item = iter.next()
         if (item == null) {
-          null
+          return null
         }
         action.asInstanceOf[TailCallReturner].processLeavingTail(output, c2)
       }
@@ -290,7 +290,7 @@ class ForEach(select: Expression,
   def map(context: XPathContext): SequenceIterator = getAction.iterate(context)
 
   override def evaluatePendingUpdates(context: XPathContext,
-                             pul: PendingUpdateList): Unit = {
+                                      pul: PendingUpdateList): Unit = {
     val c2: XPathContextMinor = context.newMinorContext()
     c2.trackFocus(getSelect.iterate(context))
     val iter: SequenceIterator = c2.getCurrentIterator
@@ -307,7 +307,7 @@ class ForEach(select: Expression,
     out.endElement()
   }
 
-   def explainThreads(out: ExpressionPresenter): Unit = {}
+  def explainThreads(out: ExpressionPresenter): Unit = {}
 
   override def toString(): String =
     ExpressionTool.parenthesize(getSelect) + " ! " + ExpressionTool
