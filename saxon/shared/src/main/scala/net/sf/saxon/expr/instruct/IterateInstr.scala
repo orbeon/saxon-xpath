@@ -50,7 +50,7 @@ object IterateInstr {
              if containsBreakOrNextIterationWithinTryCatch(o.getChildExpression,
                inTryCatch)) {
           found = true
-          break
+          break()
         }
       }
       found
@@ -238,7 +238,7 @@ class IterateInstr(select: Expression,
           val c3: XPathContextMinor = context.newMinorContext()
           c3.setCurrentIterator(null)
           getOnCompletion.process(output, c3)
-          break
+          break()
         }
       }
     }

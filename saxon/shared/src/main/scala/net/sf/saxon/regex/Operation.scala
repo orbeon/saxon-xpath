@@ -185,7 +185,7 @@ object Operation {
           }
           if (m != MATCHES_ZLS_ANYWHERE) {
             matchesEmptyAnywhere = false
-            break
+            break()
           }
         }
       }
@@ -197,7 +197,7 @@ object Operation {
         for (o <- operations.asScala
              if (o.matchesEmptyString() & MATCHES_ZLS_AT_START) == 0) {
           matchesBOL = false
-          break
+          break()
         }
       }
       if (matchesBOL) {
@@ -208,7 +208,7 @@ object Operation {
         for (o <- operations.asScala
              if (o.matchesEmptyString() & MATCHES_ZLS_AT_END) == 0) {
           matchesEOL = false
-          break
+          break()
         }
       }
       if (matchesEOL) {
@@ -490,10 +490,10 @@ object Operation {
             }
             p += len
             if (matches == max) {
-              break
+              break()
             }
           } else {
-            break
+            break()
           }
         }
       }
@@ -543,7 +543,7 @@ object Operation {
             }
             p = it.next
           } else {
-            break
+            break()
           }
         }
       }
@@ -612,7 +612,7 @@ object Operation {
             } else if (iterators.isEmpty) {
               EmptyIntIterator.getInstance
             } else {
-              break
+              break()
             }
           }
         }
@@ -632,7 +632,7 @@ object Operation {
                   iterators.push(it)
                   positions.push(p)
                 } else {
-                  break
+                  break()
                 }
               }
             }

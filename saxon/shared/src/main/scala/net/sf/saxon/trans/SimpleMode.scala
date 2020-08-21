@@ -454,7 +454,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
         newRule.setNext(rule)
         if (prev == null) list.setHead(newRule)
         else prev.setNext(newRule)
-        break
+        break()
       }
       else {
         prev = rule
@@ -582,7 +582,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
         if (bstRule != null) {
           val rank = head.compareRank(bstRule)
           if (rank < 0) {
-            break
+            break()
           }
           else if (rank == 0) { // this rule has the same precedence and priority as the matching rule already found
             if (ruleMatches(head, item, XPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
@@ -595,7 +595,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
                 bstRule = if (bstRule.getPartNumber > head.getPartNumber) bstRule
                 else head
               }
-              break
+              break()
             }
             else {
             }
@@ -607,7 +607,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
         else if (ruleMatches(head, item, XPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
           bstRule = head
           if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) { //ruleSearchState.count();
-            break
+            break()
           }
         }
         head = head.getNext

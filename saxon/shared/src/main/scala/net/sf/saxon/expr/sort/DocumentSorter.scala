@@ -135,7 +135,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
           sortable.resetLocalStaticProperties()
           tryHarder = false
         } else {
-          break
+          break()
         }
       }
     }

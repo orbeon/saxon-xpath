@@ -62,7 +62,7 @@ class TinyBuilderCondensed(pipeConf: PipelineConfiguration)
             for (i <- 1 until used) {
               val nodeNr: Int = nodes(i)
               if (nodeNr == 0) {
-                break
+                break()
               } else if (isEqual(chars,
                 TinyTextImpl.getStringValue(tree, nodeNr))) {
                 // the latest text node is equal to some previous text node

@@ -1896,7 +1896,7 @@ class XPathParser() {
         }
         setLocation(exp, offset)
         op = t.currentToken
-        if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG) break
+        if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG) break()
         nextToken()
       }
     }
@@ -1927,7 +1927,7 @@ class XPathParser() {
         step = parseLookup(step)
         setLocation(step)
       }
-      else break
+      else break()
     }
     if (reverse) { // An AxisExpression such as preceding-sibling::x delivers nodes in axis
       // order, so that positional predicate like preceding-sibling::x[1] work
@@ -2655,7 +2655,7 @@ class XPathParser() {
           else entry = MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
           entries.add(entry)
           if (t.currentToken == Token.RCURLY)
-            break
+            break()
           else {
             expect(Token.COMMA)
             nextToken()
@@ -2709,7 +2709,7 @@ class XPathParser() {
         }
         else if (t.currentToken == Token.RSQB) {
           nextToken()
-          break
+          break()
         }
       }
       grumble("Expected ',' or ']', " + "found " + Token.tokens(t.currentToken))
@@ -2778,7 +2778,7 @@ class XPathParser() {
           }
           args.add(arg)
           if (t.currentToken == Token.COMMA) nextToken()
-          else break
+          else break()
         }
       }
       expect(Token.RPAR)
@@ -2838,7 +2838,7 @@ class XPathParser() {
             val sn = new SymbolicName.F(functionName, i)
             if (env.getFunctionLibrary.isAvailable(sn)) {
               existsWithDifferentArity = true
-              break
+              break()
             }
           }
         }

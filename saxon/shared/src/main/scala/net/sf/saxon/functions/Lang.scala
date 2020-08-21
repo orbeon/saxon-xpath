@@ -27,7 +27,7 @@ object Lang {
       while (node != null) {
         doclang = node.getAttributeValue(NamespaceConstant.XML, "lang")
         if (doclang != null) {
-          break
+          break()
         }
         node = node.getParent
         if (node == null) false

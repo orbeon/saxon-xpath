@@ -417,15 +417,15 @@ object Navigator {
     breakable {
       while (true) {
         val prev: NodeInfo = preceding.next
-        if (prev == null) break
+        if (prev == null) break()
         if (count.matches(prev, context)) {
           if (num == 1 && prev == memoNode) {
             num = memoNumber + 1
-            break
+            break()
           }
           num += 1
         }
-        if (from != null && from.matches(prev, context)) break
+        if (from != null && from.matches(prev, context)) break()
       }
     }
     if (memoise) {

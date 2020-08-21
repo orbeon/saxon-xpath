@@ -97,7 +97,7 @@ object UnicodeBlocks {
         while (true) {
           val item: NodeInfo = iter.next()
           if (item == null) {
-            break
+            break()
           }
           val blockName: String =
             normalizeBlockName(item.getAttributeValue("", "name"))

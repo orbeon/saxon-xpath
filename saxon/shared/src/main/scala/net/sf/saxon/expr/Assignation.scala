@@ -369,7 +369,7 @@ abstract class Assignation() extends Expression with LocalBinding {
       breakable {
         while (parent != null) if (parent eq this) {
           found = true
-          break
+          break()
         }
         else parent = parent.getParentExpression
       }

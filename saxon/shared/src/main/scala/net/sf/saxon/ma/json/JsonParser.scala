@@ -337,11 +337,11 @@ class JsonParser() {
         if (tok eq JsonParser.JsonToken.COMMA) {
           tok = tokenizer.next
           if (tok eq JsonParser.JsonToken.RCURLY) if (liberal) {
-            break
+            break()
           }
           else invalidJSON("Trailing comma after entry in object", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
         }
-        else if (tok eq JsonParser.JsonToken.RCURLY) break
+        else if (tok eq JsonParser.JsonToken.RCURLY) break()
         else invalidJSON("Unexpected token after value of \"" + Err.wrap(key) + "\" property", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
       }
     }
@@ -375,10 +375,10 @@ class JsonParser() {
         tok = tokenizer.next
         if (tok eq JsonParser.JsonToken.COMMA) {
           tok = tokenizer.next
-          if (tok eq JsonParser.JsonToken.RSQB) if (liberal) break
+          if (tok eq JsonParser.JsonToken.RSQB) if (liberal) break()
           else invalidJSON("Trailing comma after entry in array", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
         }
-        else if (tok eq JsonParser.JsonToken.RSQB) break
+        else if (tok eq JsonParser.JsonToken.RSQB) break()
         else invalidJSON("Unexpected token (" + JsonParser.toString(tok, tokenizer.currentTokenValue.toString) +
           ") after entry in array", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
       }
@@ -483,7 +483,7 @@ class JsonParser() {
                   invalidJSON("\\u must be followed by four hex characters", JsonParser.ERR_GRAMMAR, lineNumber)
               }
               if (c == '"' && !afterBackslash)
-                break
+                break()
               else {
                 currentTokenValue.cat(c)
                 afterBackslash = c == '\\' && !afterBackslash
@@ -520,10 +520,10 @@ class JsonParser() {
                     position += 1;
                     position
                   } >= input.length)
-                    break
+                    break()
                 }
                 else
-                  break
+                  break()
               }
             }
           }
@@ -540,7 +540,7 @@ class JsonParser() {
                   currentTokenValue.cat(c)
                   position += 1
                 }
-                else break
+                else break()
               }
             }
             val `val` = currentTokenValue.toString

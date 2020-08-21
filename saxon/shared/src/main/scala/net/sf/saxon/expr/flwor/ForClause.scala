@@ -215,7 +215,7 @@ class ForClause extends Clause {
                 positionVariable = null
               }
               changed = true
-              break
+              break()
             }
           }
         }

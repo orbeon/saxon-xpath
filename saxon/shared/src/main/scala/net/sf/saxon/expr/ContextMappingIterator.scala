@@ -24,7 +24,7 @@ class ContextMappingIterator(private var action: ContextMappingFunction,
         if (stepIterator != null) {
           nextItem = stepIterator.next()
           if (nextItem != null) {
-            break
+            break()
           } else {
             stepIterator = null
           }
@@ -36,7 +36,7 @@ class ContextMappingIterator(private var action: ContextMappingFunction,
           if (nextItem == null) {
             stepIterator = null
           } else {
-            break
+            break()
           }
         } else {
           stepIterator = null

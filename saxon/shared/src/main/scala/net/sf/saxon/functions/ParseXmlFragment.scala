@@ -87,7 +87,7 @@ class ParseXmlFragment extends SystemFunction with Callable {
       if (attempt == 1) {
         reader = configuration.getSourceParser
         breakable {
-          if (reader.getEntityResolver != null) break
+          if (reader.getEntityResolver != null) break()
           else reader = Version.platform.loadParserForXmlFragments
         }
         source.setXMLReader(reader)
@@ -134,7 +134,7 @@ class ParseXmlFragment extends SystemFunction with Callable {
                   xe.maybeSetContext(context)
                   throw xe
                 }
-                else break
+                else break()
               }
             }
             else throw e

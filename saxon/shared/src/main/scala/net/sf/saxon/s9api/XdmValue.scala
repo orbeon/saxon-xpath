@@ -171,7 +171,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
       breakable {
         while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
           config = item.asInstanceOf[NodeInfo].getConfiguration
-          break
+          break()
         }
       }
       if (config == null) {

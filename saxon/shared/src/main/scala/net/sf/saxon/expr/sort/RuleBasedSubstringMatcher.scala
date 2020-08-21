@@ -21,7 +21,7 @@ object RuleBasedSubstringMatcher {
       breakable {
         while (true) {
           val e: Int = iter.next()
-          if (e == -1) break
+          if (e == -1) break()
           sb.append(e.toString)
           sb.append(" ")
         }

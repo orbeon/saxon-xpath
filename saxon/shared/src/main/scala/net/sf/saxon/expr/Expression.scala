@@ -347,7 +347,7 @@ abstract class Expression
         for (o <- operands().asScala) {
           i += o.getChildExpression.getCost
           if (i > MAX_COST) {
-            break
+            break()
           }
         }
       }
@@ -470,7 +470,7 @@ abstract class Expression
         if (dot >= 0) {
           className = className.substring(dot + 1)
         } else {
-          break
+          break()
         }
       }
     }

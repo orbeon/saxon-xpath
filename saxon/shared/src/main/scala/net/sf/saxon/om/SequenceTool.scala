@@ -212,7 +212,7 @@ object SequenceTool {
               else
                 Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
             if (`type` == AnyItemType.getInstance) {
-              break
+              break()
             }
           }
         }
@@ -236,7 +236,7 @@ object SequenceTool {
       breakable { while ((item = iter.next()) != null) {
         `type` = `type`.union(UType.getUType(item))
         if (`type` == UType.ANY) {
-          break
+          break()
         }
       }
     }

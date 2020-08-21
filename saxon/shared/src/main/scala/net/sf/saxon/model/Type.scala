@@ -133,11 +133,11 @@ object Type {
               val kind: Int = n.getNodeKind
               if (kind == Type.TEXT) {
                 elementType = null
-                break
+                break()
               } else if (kind == Type.ELEMENT) {
                 if (elementType != null) {
                   elementType = null
-                  break
+                  break()
                 }
                 elementType = Type.getItemType(n, th)
               }

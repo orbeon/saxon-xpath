@@ -177,7 +177,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         val condition: Expression = getCondition(i)
         if (condition.isInstanceOf[Literal]) {
           compress = true
-          break
+          break()
         }
       }
     }
@@ -194,7 +194,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
             actions.add(getAction(i))
           }
           if (Literal.hasEffectiveBooleanValue(condition, true)) {
-            break
+            break()
           }
         }
       }
@@ -308,7 +308,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
             }
           }
           if (Literal.hasEffectiveBooleanValue(getCondition(i), true))
-            break
+            break()
         }
       }
     }
@@ -431,7 +431,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
       breakable {
         if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
-          break
+          break()
         }
       }
     }

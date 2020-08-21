@@ -118,11 +118,11 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
           }
           if (prevtext && maybetext) {
             needed = true
-            break
+            break()
           }
           if (maybetext && Cardinality.allowsMany(action.getCardinality)) {
             needed = true
-            break
+            break()
           }
           prevtext = maybetext
         }

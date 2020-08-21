@@ -768,7 +768,7 @@ object ExpressionTool {
           val child = info.getChildExpression
           val childLoop = inLoop || info.isEvaluatedRepeatedly
           rcount += getReferenceCount(child, binding, childLoop)
-          if (rcount >= FilterExpression.FILTERED) break
+          if (rcount >= FilterExpression.FILTERED) break()
         }
       }
     }

@@ -119,7 +119,7 @@ object UnparsedText {
         if (b < 0) {
           println(sb1)
           println(sb2)
-          break
+          break()
         }
         sb1.append(java.lang.Integer.toHexString(b) + " ")
         sb2.append(s"${b.toChar} ")

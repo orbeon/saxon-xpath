@@ -127,7 +127,7 @@ object FormatDate {
           i += 1
         }
         if (i == format.length) {
-          break
+          break()
         }
         i += 1
         if (i < format.length && format.charAt(i) == '[') {

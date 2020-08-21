@@ -70,7 +70,7 @@ class OuterForExpression extends ForExpression {
       breakable {
         while (true) {
           val item: Item = ahead.next()
-          if (item == null) break
+          if (item == null) break()
           context.setLocalVariable(slot, item)
           getAction.process(output, context)
         }
@@ -94,7 +94,7 @@ class OuterForExpression extends ForExpression {
       breakable {
         while (true) {
           val item: Item = ahead.next()
-          if (item == null) break
+          if (item == null) break()
           context.setLocalVariable(slot, item)
           getAction.evaluatePendingUpdates(context, pul)
         }

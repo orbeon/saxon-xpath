@@ -180,7 +180,7 @@ class LetExpression extends Assignation with TailCallReturner {
             assert(operand != null)
             if (!operand.hasSameFocus()) {
               considerRemoval = false
-              break
+              break()
             }
             child = parent
             parent = child.getParentExpression
@@ -219,7 +219,7 @@ class LetExpression extends Assignation with TailCallReturner {
           return optimize(visitor, contextItemType)
         }
         if (seq0 == getSequence) {
-          break
+          break()
         }
       }
     }
@@ -232,7 +232,7 @@ class LetExpression extends Assignation with TailCallReturner {
         val act0: Expression = getAction
         getActionOp.optimize(visitor, contextItemType)
         if (act0 == getAction) {
-          break
+          break()
         }
         if (!isIndexedVariable && !needsEagerEvaluation) {
           verifyReferences()
@@ -308,7 +308,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -349,7 +349,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -365,7 +365,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -381,7 +381,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -437,7 +437,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -461,7 +461,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }

@@ -249,7 +249,7 @@ object ImmutableHashTrieMap {
         var orphanedBucket: Int = -1
         breakable { for (i <- 0 until FANOUT if newNodes(i) != EMPTY_NODE) {
           orphanedBucket = i
-          break
+          break()
         }
       }
         val orphanedEntry: ImmutableHashTrieMap[K, V] = subnodes(

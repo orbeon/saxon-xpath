@@ -209,7 +209,7 @@ class IntArraySet extends IntSet {
               j - 1
             }
             if (j == contents.length) {
-              break
+              break()
             }
           }
         }

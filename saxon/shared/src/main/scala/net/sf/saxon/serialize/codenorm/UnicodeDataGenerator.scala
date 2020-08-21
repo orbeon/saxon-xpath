@@ -49,7 +49,7 @@ object UnicodeDataGenerator {
     breakable {
       while (true) {
         var line = in.readLine
-        if (line == null) break
+        if (line == null) break()
         val comment = line.indexOf('#')
         if (comment != -1) line = line.substring(0, comment)
         if (line.isEmpty) {
@@ -71,7 +71,7 @@ object UnicodeDataGenerator {
     var counter = 0
     while (true) {
       var line = in.readLine
-      if (line == null) break
+      if (line == null) break()
       val comment = line.indexOf('#')
       if (comment != -1) line = line.substring(0, comment)
       if (line.isEmpty)
@@ -172,7 +172,7 @@ object UnicodeDataGenerator {
             val j = source.indexOf('>', i)
             if (j > 0) {
               i = j
-              break
+              break()
             }
           case _ => {
             throw new IllegalArgumentException("Bad hex value in " + source)
@@ -344,11 +344,11 @@ object UnicodeDataGenerator {
         }) if (iter.hasNext) {
           next = iter.next
           if (next == `val`) runLength += 1
-          else break
+          else break()
         }
         else {
           next = -1
-          break
+          break()
         }
         if (runLength != 1) {
           buff.append(Integer.toString(runLength))

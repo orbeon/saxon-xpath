@@ -92,7 +92,7 @@ object DeepEqual {
         val item2: Item = opSeqItr2.next()
         breakable {
           if (item1 == null && item2 == null)
-            break
+            break()
         }
 
         pos1 += 1
@@ -113,7 +113,7 @@ object DeepEqual {
               .isInstanceOf[WhitespaceTextImpl]) {
               reason += " (the first extra node is whitespace text)"
             }
-            break
+            break()
           }
         }
         if (item1.isInstanceOf[Function] || item2.isInstanceOf[Function]) {
@@ -131,7 +131,7 @@ object DeepEqual {
             if (!fe) {
               result = false
               reason = "functions at position " + pos1 + " differ"
-              break
+              break()
             }
           }
         }
@@ -149,18 +149,18 @@ object DeepEqual {
                 flags)) {
                 result = false
                 reason = "nodes at position " + pos1 + " differ"
-                break
+                break()
               }
             } else {
               result = false
               reason = "comparing a node to an atomic value at position " + pos1
-              break
+              break()
             }
           } else {
             if (item2.isInstanceOf[NodeInfo]) {
               result = false
               reason = "comparing an atomic value to a node at position " + pos1
-              break
+              break()
             } else {
               val av1: AtomicValue = item1.asInstanceOf[AtomicValue]
               val av2: AtomicValue = item2.asInstanceOf[AtomicValue]
@@ -169,7 +169,7 @@ object DeepEqual {
                 av2)) {
                 result = false
                 reason = "atomic values at position " + pos1 + " differ"
-                break
+                break()
               }
             }
           }
@@ -522,7 +522,7 @@ object DeepEqual {
                     "\", \"" +
                     v2.substring(i - 1, Math.min(v2.length, i + 10)) +
                     "\")"
-                  break
+                  break()
                 }
               }
             }
@@ -607,7 +607,7 @@ object DeepEqual {
       while (true) {
         val next: Item = in.next()
         if (next == null) {
-          break
+          break()
         }
         if (next.isInstanceOf[NodeInfo] &&
           next.asInstanceOf[NodeInfo].getNodeKind == Type.TEXT) {

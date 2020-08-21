@@ -275,7 +275,7 @@ class GroupByClause(var config: Configuration) extends Clause {
             while (true) {
               val `val`: AtomicValue = atoms.next().asInstanceOf[AtomicValue]
               if (`val` == null) {
-                break
+                break()
               }
               h ^= i +
                 `val`

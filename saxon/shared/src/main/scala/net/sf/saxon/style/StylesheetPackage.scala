@@ -641,7 +641,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
           buff.append(name.toString)
           if (buff.length > 300) {
             buff.append(" ...")
-            break
+            break()
           }
         }
       }

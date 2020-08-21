@@ -75,7 +75,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
           allAxisExpressions = false
           allChildAxis = false
           allSubtreeAxis = false
-          break
+          break()
         }
         val axis: Int = child.asInstanceOf[AxisExpression].getAxis
         if (axis != AxisInfo.CHILD) {
@@ -144,7 +144,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
       for (i <- 1 until size) {
         c1 = Cardinality.sum(c1, getChildExpression(i).getCardinality)
         if (c1 == StaticProperty.ALLOWS_ZERO_OR_MORE) {
-          break
+          break()
         }
       }
     }
@@ -191,7 +191,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
         } else {
           alwaysEmpty = false
           alwaysNonEmpty = false
-          break
+          break()
         }
       }
     }

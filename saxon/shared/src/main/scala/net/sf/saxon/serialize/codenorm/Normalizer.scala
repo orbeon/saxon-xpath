@@ -125,7 +125,7 @@ class Normalizer private(private var form: Int) {
                 val high: Char = target.charAt(k - 2)
                 ch2 = UTF16CharacterSet.combinePair(high, ch2.toChar)
               }
-              if (data.getCanonicalClass(ch2) <= chClass) break
+              if (data.getCanonicalClass(ch2) <= chClass) break()
               k -= step
             }
           }

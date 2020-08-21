@@ -98,7 +98,7 @@ object Minimax {
           } else {
             foundNaN = true
             min = FloatValue.NaN
-            break
+            break()
           }
         } else {
           if (!prim.getPrimitiveType.isOrdered(false)) {
@@ -109,7 +109,7 @@ object Minimax {
             de.setXPathContext(context)
             throw de
           }
-          break
+          break()
         }
       }
     }
@@ -117,7 +117,7 @@ object Minimax {
       while (true) {
         val test: AtomicValue = iter.next().asInstanceOf[AtomicValue]
         if (test == null) {
-          break
+          break()
         }
         var test2: AtomicValue = test
         prim = test2

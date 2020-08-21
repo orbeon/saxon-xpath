@@ -351,7 +351,7 @@ class TypeHierarchy(var config: Configuration) {
               if (st.isInstanceOf[AtomicType]) {
                 t = st.asInstanceOf[AtomicType]
               } else {
-                break
+                break()
               }
             }
           }
@@ -365,7 +365,7 @@ class TypeHierarchy(var config: Configuration) {
               if (st.isInstanceOf[AtomicType]) {
                 t = st.asInstanceOf[AtomicType]
               } else {
-                break
+                break()
               }
             }
           }
@@ -577,7 +577,7 @@ class TypeHierarchy(var config: Configuration) {
           val rel: Affinity = relationship(t1, t2)
           if (rel == SUBSUMES || rel == SAME_TYPE) {
             t2isSubsumed = true
-            break
+            break()
           }
         }
       }

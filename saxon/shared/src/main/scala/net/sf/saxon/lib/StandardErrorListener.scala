@@ -291,7 +291,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     breakable {
       while (true) {
         if (e == null) {
-          break
+          break()
         }
         var next: String = e.getMessage
         if (next == null) {
@@ -311,7 +311,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
         } else if (e.isInstanceOf[SAXException]) {
           e = e.asInstanceOf[SAXException].getException
         } else {
-          break
+          break()
         }
       }
     }

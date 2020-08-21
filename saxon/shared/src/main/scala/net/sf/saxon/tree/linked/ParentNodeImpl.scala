@@ -161,7 +161,7 @@ abstract class ParentNodeImpl extends NodeImpl {
           }
           childrenImpl = cleanUpChildren(n2)
         }
-        break
+        break()
       }
     }
   }

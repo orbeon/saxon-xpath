@@ -248,7 +248,7 @@ object FloatingPointConverter {
         Mplus = Mplus * 10
         low = 2 * R < Mminus
         high = 2 * R > 2 * S - Mplus
-        if (low || high) break
+        if (low || high) break()
         if (k == -1) {
           if (initial) {
             sb.cat('0')
@@ -340,7 +340,7 @@ object FloatingPointConverter {
         val R2: BigInteger = R.shiftLeft(1)
         low = R2.compareTo(Mminus) < 0
         high = R2.compareTo(S.shiftLeft(1).subtract(Mplus)) > 0
-        if (low || high) break
+        if (low || high) break()
         if (k == -1) {
 
           if (initial) {
@@ -432,7 +432,7 @@ object FloatingPointConverter {
         val R2: BigInteger = R.shiftLeft(1)
         low = R2.compareTo(Mminus) < 0
         high = R2.compareTo(S.shiftLeft(1).subtract(Mplus)) > 0
-        if (low || high) break
+        if (low || high) break()
         sb.cat(charForDigit(U))
         if (initial) {
           sb.cat('.')

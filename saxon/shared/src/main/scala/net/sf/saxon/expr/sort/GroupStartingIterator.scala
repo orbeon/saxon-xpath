@@ -46,7 +46,7 @@ class GroupStartingIterator(select: Expression,
      breakable{ while (true) {
        val nextCandidate: Item = population.next()
        if (nextCandidate == null) {
-         break
+         break()
        }
        if (pattern.matches(nextCandidate, runningContext)) {
          nextItem = nextCandidate

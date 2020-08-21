@@ -348,7 +348,7 @@ class PathMap(exp: Expression) {
       breakable {
         for (i <- 0 until pathMapRoots.size if pathMapRoots.get(i) == root) {
           pathMapRoots.remove(i)
-          break
+          break()
         }
       }
     }

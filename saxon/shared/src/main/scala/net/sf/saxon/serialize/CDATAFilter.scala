@@ -133,7 +133,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
                 ReceiverOption.DISABLE_CHARACTER_MAPS)
               k += skip
               if (k >= end) {
-                break
+                break()
               }
               next = buffer.charAt(k)
               skip = 1
@@ -143,7 +143,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
                 skip = 2
               }
               if (characterSet.inCharset(next)) {
-                break
+                break()
               }
             }
           }

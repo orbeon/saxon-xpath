@@ -689,14 +689,14 @@ class XMLEmitter extends Emitter {
           val c = chars.charAt(i)
           if (c < 127)
             if (specialChars(c)) {
-              break
+              break()
             }
 
             else i += 1
-          else if (c < 160) break
-          else if (c == 0x2028) break
-          else if (UTF16CharacterSet.isHighSurrogate(c)) break
-          else if (!characterSet.inCharset(c)) break
+          else if (c < 160) break()
+          else if (c == 0x2028) break()
+          else if (UTF16CharacterSet.isHighSurrogate(c)) break()
+          else if (!characterSet.inCharset(c)) break()
           else i += 1
         }
       }

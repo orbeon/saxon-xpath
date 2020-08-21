@@ -79,7 +79,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
         })
         if (c >= min && c <= max) {
           move = true
-          break
+          break()
         }
       }
     }

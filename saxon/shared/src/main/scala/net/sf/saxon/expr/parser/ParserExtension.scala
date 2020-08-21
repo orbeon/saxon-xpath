@@ -226,7 +226,7 @@ object ParserExtension {
                    if details.outerVariablesUsed.get(p) == b2) {
                 b2 = details.implicitParams.get(p)
                 found = true
-                break
+                break()
               }
             }
             if (!found) {
@@ -279,7 +279,7 @@ object ParserExtension {
                if details.outerVariablesUsed.get(p) == param) {
             b2 = details.implicitParams.get(p)
             found = true
-            break
+            break()
           }
         }
         if (!found) {
@@ -445,7 +445,7 @@ class ParserExtension {
           val arg: SequenceType = p.parseSequenceType
           argTypes.add(arg)
           if (t.currentToken == Token.RPAR) {
-            break
+            break()
           } else if (t.currentToken == Token.COMMA) {
             p.nextToken()
           } else {
@@ -543,7 +543,7 @@ class ParserExtension {
         params.add(arg)
         p.declareRangeVariable(arg)
         if (t.currentToken == Token.RPAR) {
-          break
+          break()
         } else if (t.currentToken == Token.COMMA) {
           p.nextToken()
         } else {

@@ -55,7 +55,7 @@ class NamespaceReducer(val next: Receiver)
       breakable {
         for (d <- depth - 1 to 0 by -1) {
           if (!disinheritStack(d))
-            break
+            break()
           for (i <- 0 until countStack(d)) {
             undeclarations.add(namespaces({
               k -= 1;

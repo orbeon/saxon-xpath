@@ -136,7 +136,7 @@ class FixedAttribute(private var nodeName: NodeName,
             c == '\"' ||
             c == '\'') {
             special = true
-            break
+            break()
           }
         }
       }
