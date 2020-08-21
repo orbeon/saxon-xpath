@@ -78,10 +78,10 @@ class FixedElement(@BeanProperty var elementName: NodeName,
                         contextItemType: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextItemType)
     if (e != this) {
-      e
+      return e
     }
     if (!bequeathNamespacesToChildren) {
-      this
+      return this
     }
     this
   }
@@ -318,7 +318,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           attValue.asInstanceOf[StringLiteral].getStringValue)
         val uri: String = namespaceBindings.getURI(parts(0))
         if (uri == null) {
-          null
+          return null
         } else {
           env.getConfiguration.getSchemaType(
             new StructuredQName("", uri, parts(1)))

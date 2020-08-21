@@ -36,7 +36,7 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
       if (currentIteration == null) {
         if (!base.nextTuple(context)) {
           res = false
-          res
+          return res
         }
         currentIteration = new FocusTrackingIterator(
           forClause.getSequence.iterate(context))
@@ -52,7 +52,7 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
           currentIteration = null
           res = true
         }
-        res
+        return res
       } else {
         next = currentIteration.next()
       }

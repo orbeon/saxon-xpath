@@ -113,7 +113,7 @@ object DOMNodeWrapper {
       val n: String = node.getNodeName
       val colon: Int = n.indexOf(':')
       if (colon >= 0) {
-        n.substring(colon + 1)
+       return n.substring(colon + 1)
       }
       n
     } else {
@@ -124,7 +124,7 @@ object DOMNodeWrapper {
   private def getElementURI(element: Element): String = {
     val uri: String = element.getNamespaceURI
     if (uri != null) {
-      uri
+      return uri
     }
     val displayName: String = element.getNodeName
     val colon: Int = displayName.indexOf(':')
@@ -152,12 +152,12 @@ object DOMNodeWrapper {
   private def getAttributeURI(attr: Attr): String = {
     val uri: String = attr.getNamespaceURI
     if (uri != null) {
-      uri
+      return uri
     }
     val displayName: String = attr.getNodeName
     val colon: Int = displayName.indexOf(':')
     if (colon < 0) {
-      ""
+      return ""
     }
     val attName: String = "xmlns:" + displayName.substring(0, colon)
     if (attName.==("xmlns:xml")) {
@@ -316,9 +316,9 @@ class DOMNodeWrapper(var node: Node,
       val name: String = node.getNodeName
       val colon: Int = name.indexOf(':')
       if (colon < 0) {
-        ""
+        return ""
       } else {
-        name.substring(0, colon)
+        return  name.substring(0, colon)
       }
     }
     ""

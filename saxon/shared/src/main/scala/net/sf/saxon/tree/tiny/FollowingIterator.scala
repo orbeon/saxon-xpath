@@ -37,34 +37,33 @@ class FollowingIterator(var doc: TinyTree,
       }
       nodeNr = startNode.nodeNr
       if (includeDescendants) {
-        {
-          nodeNr += 1; nodeNr - 1
-        }
+        nodeNr += 1
       } else {
-        breakable {  while (true) {
-          val nextSib: Int = tree.next(nodeNr)
-          if (nextSib > nodeNr) {
-            nodeNr = nextSib
-            break
-          } else if (tree.depth(nextSib) == 0) {
-            current = null
-            position = -1
-            null
-          } else {
-            nodeNr = nextSib
+        breakable {
+          while (true) {
+            val nextSib: Int = tree.next(nodeNr)
+            if (nextSib > nodeNr) {
+              nodeNr = nextSib
+              break
+            } else if (tree.depth(nextSib) == 0) {
+              current = null
+              position = -1
+              null
+            } else {
+              nodeNr = nextSib
+            }
           }
         }
-      }
       }
     } else {
       assert(current != null)
       var here: TinyNodeImpl = null
       here = if (current.isInstanceOf[TinyTextualElement])
-          current.getParent.asInstanceOf[TinyNodeImpl]
-        else current.asInstanceOf[TinyNodeImpl]
+        current.getParent.asInstanceOf[TinyNodeImpl]
+      else current.asInstanceOf[TinyNodeImpl]
       nodeNr = here.nodeNr + 1
     }
-    while ({
+    while ( {
       true
     }) {
       if (tree.depth(nodeNr) == 0) {
@@ -80,26 +79,18 @@ class FollowingIterator(var doc: TinyTree,
           if (test.test(t)) {
             pending = t
           }
-          {
-            position += 1; position - 1
-          }
+          position += 1
           current = tree.getNode(nodeNr)
         } else if (test.test(t)) {
-          {
-            position += 1
-          }
+          position += 1
           current = t
         }
       } else if (matcher.test(nodeNr)) {
-        {
-          position += 1
-        }
+        position += 1
         current = tree.getNode(nodeNr)
         return current
       }
-      {
-        nodeNr += 1
-      }
+      nodeNr += 1
     }
     null
   }

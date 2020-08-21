@@ -106,7 +106,7 @@ class DynamicQueryContext(private var config: Configuration) {
 
   def getParameter(expandedName: StructuredQName): GroundedValue = {
     if (parameters == null) {
-      null
+      return null
     }
     parameters.get(expandedName)
   }

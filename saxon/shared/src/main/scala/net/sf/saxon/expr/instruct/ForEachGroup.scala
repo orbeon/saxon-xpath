@@ -582,9 +582,7 @@ class ForEachGroup(select: Expression,
       .asInstanceOf[AtomicValue]
 
   def getSortKeyDefinitionList(): SortKeyDefinitionList = {
-    if (sortKeysOp == null) {
-      null
-    }
+    if (sortKeysOp == null) return null
     sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
   }
 

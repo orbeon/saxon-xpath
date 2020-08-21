@@ -24,8 +24,6 @@ import java.math.BigDecimal
 import FloatValue._
 
 
-
-
 object FloatValue {
 
   val ZERO: FloatValue = new FloatValue(0.0.toFloat)
@@ -75,22 +73,22 @@ class FloatValue() extends NumericValue {
   def getDoubleValue(): Double = value.toDouble
 
   /**
-    * Get the numeric value converted to a decimal
-    *
-    * @return a decimal representing this numeric value;
-    * @throws ValidationException
-    *          if the value cannot be converted, for example if it is NaN or infinite
-    */
+   * Get the numeric value converted to a decimal
+   *
+   * @return a decimal representing this numeric value;
+   * @throws ValidationException
+   * if the value cannot be converted, for example if it is NaN or infinite
+   */
   override def getDecimalValue(): BigDecimal = new BigDecimal(value.toDouble)
 
   /**
-    * Return the numeric value as a Java long.
-    *
-    * @return the numeric value as a Java long. This performs truncation
-    *         towards zero.
-    * @throws XPathException
-    *          if the value cannot be converted
-    */
+   * Return the numeric value as a Java long.
+   *
+   * @return the numeric value as a Java long. This performs truncation
+   *         towards zero.
+   * @throws XPathException
+   * if the value cannot be converted
+   */
   override def longValue(): Long = value.toLong
 
   override def hashCode(): Int =
@@ -103,10 +101,10 @@ class FloatValue() extends NumericValue {
   override def isNaN(): Boolean = java.lang.Float.isNaN(value)
 
   /**
-    * Get the effective boolean value
-    *
-    * @return true unless the value is zero or NaN
-    */
+   * Get the effective boolean value
+   *
+   * @return true unless the value is zero or NaN
+   */
   override def effectiveBooleanValue(): Boolean =
     (value != 0.0 && !java.lang.Float.isNaN(value))
 
@@ -127,14 +125,14 @@ class FloatValue() extends NumericValue {
 
   def round(scale: Int): NumericValue = {
     if (java.lang.Float.isNaN(value)) {
-      this
+      return this
     }
     if (java.lang.Float.isInfinite(value)) {
-      this
+      return this
     }
     if (value == 0.0) {
-// handles the negative zero case
-      this
+      // handles the negative zero case
+      return this
     }
     if (scale == 0 && value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE) {
       if (value >= -0.5 && value < 0.0) {
@@ -155,16 +153,16 @@ class FloatValue() extends NumericValue {
 
   def signum(): Int = {
     if (java.lang.Float.isNaN(value)) {
-      0
+      return 0
     }
     compareTo(0)
   }
 
   /**
-    * Ask whether this value is negative zero
-    *
-    * @return true if this value is float or double negative zero
-    */
+   * Ask whether this value is negative zero
+   *
+   * @return true if this value is float or double negative zero
+   */
   override def isNegativeZero(): Boolean =
     value == 0.0 &&
       (java.lang.Float
@@ -175,11 +173,12 @@ class FloatValue() extends NumericValue {
     value == Math.floor(value) && !java.lang.Float.isInfinite(value)
 
   /**
-    * Test whether a number is a possible subscript into a sequence, that is,
-    * a whole number greater than zero and less than 2^31
-    *
-    * @return the number as an int if it is a possible subscript, or -1 otherwise
-    */
+   * Test whether a number is a possible subscript into a sequence, that is,
+   * a whole number greater than zero and less than 2^31
+   *
+   *
+   * @return the number as an int if it is a possible subscript, or -1 otherwise
+   */
   override def asSubscript(): Int =
     if (isWholeNumber && value > 0 && value <= java.lang.Integer.MAX_VALUE) {
       value.toInt
@@ -197,13 +196,13 @@ class FloatValue() extends NumericValue {
   override def compareTo(other: NumericValue): Int = {
     if (other.isInstanceOf[FloatValue]) {
       val otherFloat: Float = other.asInstanceOf[FloatValue].value
-// Do not rewrite as Float.compare() - see IntelliJ bug IDEA-196419
+      // Do not rewrite as Float.compare() - see IntelliJ bug IDEA-196419
       if (value == otherFloat) {
-        0
+        return 0
       } else if (value < otherFloat) {
-        -1
+        return -1
       } else {
-        +1
+        return +1
       }
     }
     if (other.isInstanceOf[DoubleValue]) {
@@ -215,7 +214,7 @@ class FloatValue() extends NumericValue {
   def compareTo(other: Long): Int = {
     val otherFloat: Float = other.toFloat
     if (value == otherFloat) {
-      0
+      return 0
     }
     if (value < otherFloat) -1 else +1
   }
@@ -235,7 +234,7 @@ class FloatValue() extends NumericValue {
   override def isIdentical(v: AtomicValue): Boolean =
     v.isInstanceOf[FloatValue] &&
       DoubleSortComparer.getInstance.comparesEqual(this,
-                                                   v.asInstanceOf[FloatValue])
+        v.asInstanceOf[FloatValue])
 
   override def asAtomic(): FloatValue = this
 
@@ -247,5 +246,5 @@ class FloatValue() extends NumericValue {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A numeric (single precision floating point) value
-  */
+ * A numeric (single precision floating point) value
+ */

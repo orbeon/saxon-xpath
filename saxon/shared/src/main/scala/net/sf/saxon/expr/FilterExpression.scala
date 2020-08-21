@@ -328,7 +328,7 @@ class FilterExpression(base: Expression, filter: Expression)
 
   baseExp.setFiltered(true)
 
-   override def getOperandRole(arg: Int): OperandRole =
+  override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.SAME_FOCUS_ACTION else FILTER_PREDICATE
 
   def getBase(): Expression = getLhsExpression
@@ -424,7 +424,7 @@ class FilterExpression(base: Expression, filter: Expression)
       val fie: Expression =
         FirstItemExpression.makeFirstItemExpression(getBase)
       ExpressionTool.copyLocationInfo(this, fie)
-      fie
+      return fie
     }
     filterIsPositional = isPositionalFilter(getFilter, th)
     filterIsSingletonBoolean = getFilter.getCardinality == StaticProperty.EXACTLY_ONE &&
@@ -495,7 +495,7 @@ class FilterExpression(base: Expression, filter: Expression)
           getFilter.asInstanceOf[CompareToStringConstant].getComparand)
       )
       ExpressionTool.copyLocationInfo(this, ax2)
-      ax2
+      return ax2
     }
     val filterType: ItemType = getFilter.getItemType
     if (!th.isSubType(filterType, BuiltInAtomicType.BOOLEAN) &&
@@ -524,7 +524,7 @@ class FilterExpression(base: Expression, filter: Expression)
             "Filter expression eliminated because predicate is always false",
             result)
         }
-        result
+        return result
       }
     }
     filterIsPositional = isPositionalFilter(getFilter, th)
@@ -605,7 +605,7 @@ class FilterExpression(base: Expression, filter: Expression)
         opt.reorderPredicates(this, visitor, contextItemType)
       if (f2 != this) {
         f2.doneReorderingPredicates = true
-        f2
+        return f2
       }
     }
     val sequence: Sequence = tryEarlyEvaluation(visitor)
@@ -633,7 +633,7 @@ class FilterExpression(base: Expression, filter: Expression)
         visitor.getStaticContext.makeEarlyEvaluationContext()
       iterate(context).materialize()
     } catch {
-      case e: Exception => null
+      case e: Exception => return null
 
     }
     null
@@ -669,7 +669,7 @@ class FilterExpression(base: Expression, filter: Expression)
             "Rewriting numeric filter expression with constant subscript",
             result)
         }
-        result
+        return result
       } else {
         val result: Expression =
           if (ExpressionTool.effectiveBooleanValue(`val`.iterate())) getBase
@@ -680,7 +680,7 @@ class FilterExpression(base: Expression, filter: Expression)
             "Rewriting boolean filter expression with constant subscript",
             result)
         }
-        result
+        return result
       }
     }
     if (NumericType.isNumericType(getFilter.getItemType) && !Cardinality
@@ -694,7 +694,7 @@ class FilterExpression(base: Expression, filter: Expression)
           "Rewriting numeric filter expression with focus-independent subscript",
           result)
       }
-      result
+      return result
     }
     if (getFilter.isInstanceOf[ComparisonExpression]) {
       val lhs: Expression =
@@ -712,14 +712,14 @@ class FilterExpression(base: Expression, filter: Expression)
         comparand = lhs
         operator = Token.inverse(operator)
       } else {
-        null
+        return null
       }
       if (ExpressionTool.dependsOnFocus(comparand)) {
-        null
+        return null
       }
       val card: Int = comparand.getCardinality
       if (Cardinality.allowsMany(card)) {
-        null
+        return null
       }
       if (Cardinality.allowsZero(card)) {
         val let: LetExpression = new LetExpression()
@@ -739,7 +739,7 @@ class FilterExpression(base: Expression, filter: Expression)
         val rewrite: Expression =
           tryToRewritePositionalFilterSupport(getBase, comparand, operator, th)
         if (rewrite == null) {
-          this
+          return this
         }
         val choice: Expression = Choose.makeConditional(exists, rewrite)
         let.setAction(choice)
@@ -750,12 +750,12 @@ class FilterExpression(base: Expression, filter: Expression)
     } else if (getFilter.isInstanceOf[IntegerRangeTest]) {
       val `val`: Expression = getFilter.asInstanceOf[IntegerRangeTest].getValue
       if (!`val`.isCallOn(classOf[PositionAndLast])) {
-        null
+        return null
       }
       var min: Expression = getFilter.asInstanceOf[IntegerRangeTest].getMin
       val max: Expression = getFilter.asInstanceOf[IntegerRangeTest].getMax
       if (ExpressionTool.dependsOnFocus(min)) {
-        null
+        return null
       }
       if (ExpressionTool.dependsOnFocus(max)) {
         if (max.isCallOn(classOf[PositionAndLast.Last])) {
@@ -770,9 +770,9 @@ class FilterExpression(base: Expression, filter: Expression)
               "Rewriting numeric range filter expression using subsequence()",
               result)
           }
-          result
+          return result
         } else {
-          null
+          return null
         }
       }
       val let: LetExpression = new LetExpression()
@@ -821,18 +821,18 @@ class FilterExpression(base: Expression, filter: Expression)
                                             opt: Optimizer,
                                             th: TypeHierarchy): FilterExpression = {
     if (!ExpressionTool.dependsOnVariable(getBase, bindings)) {
-      this
+      return this
     }
     if (isPositional(th)) {
-      this
+      return this
     }
     if (getBase.isInstanceOf[FilterExpression]) {
       val fe: FilterExpression = getBase.asInstanceOf[FilterExpression]
       if (fe.isPositional(th)) {
-        this
+        return this
       }
       if (!ExpressionTool.dependsOnVariable(fe.getFilter, bindings)) {
-        this
+        return this
       }
       if (!ExpressionTool.dependsOnVariable(getFilter, bindings)) {
         val result: FilterExpression = new FilterExpression(
@@ -840,7 +840,7 @@ class FilterExpression(base: Expression, filter: Expression)
             .promoteIndependentPredicates(bindings, opt, th),
           fe.getFilter)
         opt.trace("Reordered filter predicates:", result)
-        result
+        return result
       }
     }
     this
@@ -1012,7 +1012,7 @@ class FilterExpression(base: Expression, filter: Expression)
     }
     val baseIter: SequenceIterator = getBase.iterate(context)
     if (baseIter.isInstanceOf[EmptyIterator]) {
-      baseIter
+      return baseIter
     }
     if (filterIsPositional && !filterIsSingletonBoolean) {
       new FilterIterator(baseIter, getFilter, context)

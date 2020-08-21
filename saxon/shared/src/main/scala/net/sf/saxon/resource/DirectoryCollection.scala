@@ -147,7 +147,7 @@ class DirectoryCollection /**
             if (metadata) {
               makeMetadataResource(resource, details)
             } else {
-              retrun resource
+              resource
             }
           }
           null

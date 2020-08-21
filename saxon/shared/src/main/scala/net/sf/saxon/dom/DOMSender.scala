@@ -276,7 +276,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
     }
     val atts: NamedNodeMap = element.getAttributes
     if (atts == null) {
-      result
+      return result
     }
     val alen: Int = atts.getLength
     for (a1 <- 0 until alen) {

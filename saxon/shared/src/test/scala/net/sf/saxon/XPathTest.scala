@@ -20,10 +20,10 @@ class XPathTest extends AnyFunSpec {
     val Expected = List(
       "42"     -> "42",
       "42 + 1" -> "43",
-//      "3.1415" -> "43",
+       "3.1415" -> "43",
       "'To be, or not to be, that is the question'" -> "To be, or not to be, that is the question",
-//      "concat('To be', ', or not to be')" -> "To be, or not to be",
-//      "'To be' || ', or not to be'" -> "To be, or not to be",
+     "concat('To be', ', or not to be')" -> "To be, or not to be",
+     "'To be' || ', or not to be'" -> "To be, or not to be",
     )
 
     for ((in, out) <- Expected)

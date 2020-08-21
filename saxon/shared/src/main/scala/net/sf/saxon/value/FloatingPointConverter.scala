@@ -68,7 +68,7 @@ object FloatingPointConverter {
       if (i1 == java.lang.Integer.MIN_VALUE) {
         //cannot make this positive due to integer overflow
         s.append("-2147483648")
-        s
+        return s
       }
       s.cat('-')
       i1 = -i1
@@ -212,10 +212,7 @@ object FloatingPointConverter {
     var k: Int = 0
     while (R < (S + 9) / 10) {
       // (S+9)/10 == ceiling(S/10)
-      {
-        k -= 1;
-        k + 1
-      }
+      k -= 1
       R = R * 10
       Mminus = Mminus * 10
       Mplus = Mplus * 10
@@ -236,10 +233,7 @@ object FloatingPointConverter {
     var U: Int = 0
     breakable {
       while (true) {
-        {
-          k -= 1;
-          k + 1
-        }
+        k -= 1
         val R10: Long = R * 10
         U = (R10 / S).toInt
         // = R*10 % S, but faster - saves a division
@@ -261,10 +255,7 @@ object FloatingPointConverter {
     }
 
     if (high && (!low || 2 * R > S)) {
-      {
-        U += 1;
-        U - 1
-      }
+      U += 1
     }
     if (k == -1) {
       if (initial) {
@@ -303,10 +294,7 @@ object FloatingPointConverter {
     var k: Int = 0
     while (R.compareTo(S.add(NINE).divide(TEN)) < 0) {
       // (S+9)/10 == ceiling(S/10)
-      {
-        k -= 1;
-        k + 1
-      }
+      k -= 1
       R = R.multiply(TEN)
       Mminus = Mminus.multiply(TEN)
       Mplus = Mplus.multiply(TEN)
@@ -328,10 +316,7 @@ object FloatingPointConverter {
     var U: Int = 0
     breakable {
       while (true) {
-        {
-          k -= 1;
-          k + 1
-        }
+        k -= 1
         val R10: BigInteger = R.multiply(TEN)
         U = R10.divide(S).intValue()
         R = R10.mod(S)
@@ -353,12 +338,8 @@ object FloatingPointConverter {
       }
     }
 
-    if (
-      high && (!low || R.shiftLeft(1).compareTo(S) > 0)) {
-      {
-        U += 1;
-        U - 1
-      }
+    if (high && (!low || R.shiftLeft(1).compareTo(S) > 0)) {
+      U += 1
     }
     if (k == -1) {
       if (initial) {
@@ -401,16 +382,12 @@ object FloatingPointConverter {
     var k: Int = 0
     while (R.compareTo(S.add(NINE).divide(TEN)) < 0) {
       // (S+9)/10 == ceiling(S/10)
-      {
-        k -= 1;
-        k + 1
-      }
+      k -= 1
       R = R.multiply(TEN)
       Mminus = Mminus.multiply(TEN)
       Mplus = Mplus.multiply(TEN)
     }
-    while (R.shiftLeft(1).add(Mplus).compareTo(S.shiftLeft(1)) >=
-      0) {
+    while (R.shiftLeft(1).add(Mplus).compareTo(S.shiftLeft(1)) >= 0) {
       S = S.multiply(TEN)
       k += 1
     }
@@ -420,10 +397,7 @@ object FloatingPointConverter {
     var U: Int = 0
     breakable {
       while (true) {
-        {
-          k -= 1;
-          k + 1
-        }
+        k -= 1
         val R10: BigInteger = R.multiply(TEN)
         U = R10.divide(S).intValue()
         R = R10.mod(S)
@@ -441,12 +415,7 @@ object FloatingPointConverter {
         initial = false
       }
     }
-    if (high && (!low || R.shiftLeft(1).compareTo(S) > 0)) {
-      {
-        U += 1;
-        U - 1
-      }
-    }
+    if (high && (!low || R.shiftLeft(1).compareTo(S) > 0)) U += 1
     sb.cat(charForDigit(U))
     if (!doneDot) {
       sb.append(".0")
@@ -499,7 +468,7 @@ object FloatingPointConverter {
       if (rawExp == 0) {
         // don't know how to handle this currently: hand it over to Java to deal with
         s.append(java.lang.Double.toString(d1))
-        s
+        return s
       }
       if (forceExponential || (d1 >= 1000000 || d1 < 0.000001)) {
         fppfppExponential(s, exp, fraction, 52)
@@ -575,7 +544,7 @@ object FloatingPointConverter {
       if (rawExp == 0) {
         // don't know how to handle this currently: hand it over to Java to deal with
         s.append(java.lang.Float.toString(f1))
-        s
+        return s
       }
       if (forceExponential || (f1 >= 1000000 || f1 < 0.000001F)) {
         fppfppExponential(s, exp, fraction, precision)

@@ -89,9 +89,7 @@ class Empty extends Aggregate {
       override def optimize(visitor: ExpressionVisitor,
                             contextInfo: ContextItemStaticInfo): Expression = {
         val e2: Expression = super.optimize(visitor, contextInfo)
-        if (e2 != this) {
-          e2
-        }
+        if (e2 != this) return e2
         // See if we can deduce the answer from the cardinality
         val c: Int = getArg(0).getCardinality
         if (c == StaticProperty.ALLOWS_ONE_OR_MORE) {

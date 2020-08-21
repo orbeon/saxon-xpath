@@ -40,7 +40,7 @@ import Expression._
 
 object ForExpression {
 
-  class MappingAction( var context: XPathContext,
+  class MappingAction(var context: XPathContext,
                       private var slotNumber: Int,
                       private var action: Expression)
     extends MappingFunction
@@ -94,10 +94,10 @@ class ForExpression extends Assignation {
     this
   }
 
-   def getRangeVariableCardinality(): Int = StaticProperty.EXACTLY_ONE
+  def getRangeVariableCardinality(): Int = StaticProperty.EXACTLY_ONE
 
   override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+                        contextItemType: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
     val opt: Optimizer = visitor.obtainOptimizer()
     val debug: Boolean =
@@ -208,7 +208,7 @@ class ForExpression extends Assignation {
             else new AndExpression(term, promotedCondition)
           list.remove(i)
         }
-        { i -= 1; i + 1 }
+        i -= 1
       }
       if (promotedCondition != null) {
         if (list.isEmpty) {
@@ -227,7 +227,7 @@ class ForExpression extends Assignation {
             this,
             Literal.makeEmptySequence)
           ExpressionTool.copyLocationInfo(this, newIf)
-          newIf
+          return newIf
         }
       }
     }
@@ -288,7 +288,7 @@ class ForExpression extends Assignation {
   }
 
   override def evaluatePendingUpdates(context: XPathContext,
-                             pul: PendingUpdateList): Unit = {
+                                      pul: PendingUpdateList): Unit = {
     val slot: Int = getLocalSlotNumber
     getSequence
       .iterate(context)
@@ -338,7 +338,7 @@ class ForExpression extends Assignation {
     out.endElement()
   }
 
-   def explainSpecializedAttributes(out: ExpressionPresenter): Unit = {}
+  def explainSpecializedAttributes(out: ExpressionPresenter): Unit = {}
 
   override def getStreamerName(): String = "ForExpression"
 
