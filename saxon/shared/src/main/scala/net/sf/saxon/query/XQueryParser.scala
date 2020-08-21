@@ -730,7 +730,7 @@ class XQueryParser extends XPathParser {
             else grumble("Annotation parameter must be a string or number")
             if (t.currentToken == Token.RPAR) {
               nextToken()
-              break
+              break()
             }
             expect(Token.COMMA)
             nextToken()
@@ -958,7 +958,7 @@ class XQueryParser extends XPathParser {
         val imp = schemaImport.asInstanceOf[XQueryParser.Import]
         if (imp.namespaceURI == sImport.namespaceURI) {
           grumble("Schema namespace '" + sImport.namespaceURI + "' is imported more than once", "XQST0058")
-          break
+          break()
         }
       }
     }
@@ -1128,11 +1128,11 @@ class XQueryParser extends XPathParser {
             val uri = existingModule.location_URI
             if (uri != null && uri.toString == mImport.locationURIs.get(m)) {
               loaded = true
-              break
+              break()
             }
           }
         }
-        if (loaded) break
+        if (loaded) break()
         try {
           val queryText = QueryReader.readSourceQuery(ss, charChecker)
           try if (ss.getInputStream != null) ss.getInputStream.close()
@@ -1526,7 +1526,7 @@ class XQueryParser extends XPathParser {
           arg.setVariableQName(argQName)
           func.addArgument(arg)
           declareRangeVariable(arg)
-          if (t.currentToken == Token.RPAR) break
+          if (t.currentToken == Token.RPAR) break()
           else if (t.currentToken == Token.COMMA) nextToken()
           else grumble("Expected ',' or ')' after function argument, found '" + Token.tokens(t.currentToken) + '\'')
         }
@@ -1741,7 +1741,7 @@ class XQueryParser extends XPathParser {
           clause.setRepeated(XQueryParser.containsLoopingClause(clauseList))
           clauseList.add(clause)
         }
-        else break
+        else break()
         setLocation(clauseList.get(clauseList.size - 1), offset)
       }
     }
@@ -1941,7 +1941,7 @@ class XQueryParser extends XPathParser {
         }
         else collations.add(env.getDefaultCollationName)
         if (t.currentToken == Token.COMMA) nextToken()
-        else break
+        else break()
       }
     }
 
@@ -1961,7 +1961,7 @@ class XQueryParser extends XPathParser {
               groupedBindings.add(b)
               groupingRefs.add(new LocalVariableReference(b))
               found = true
-              search.break
+              search.break()
             }
           }
         }
@@ -2151,7 +2151,7 @@ class XQueryParser extends XPathParser {
         if (isKeyword("collation")) sortSpec.collation = readCollationName
         sortSpecList.add(sortSpec)
         if (t.currentToken == Token.COMMA) nextToken()
-        else break
+        else break()
       }
     }
     sortSpecList
@@ -2270,7 +2270,7 @@ class XQueryParser extends XPathParser {
         typeList.add(`type`)
         t.treatCurrentAsOperator()
         if (t.currentToken == Token.UNION) nextToken()
-        else break
+        else break()
       }
     }
     expect(Token.RETURN)
@@ -2959,7 +2959,7 @@ class XQueryParser extends XPathParser {
           breakable {
             while (true) {
               c = t.nextChar
-              if (c == '>') break
+              if (c == '>') break()
               sb.cat(c)
             }
           }
@@ -2995,7 +2995,7 @@ class XQueryParser extends XPathParser {
         true
       }) {
         c = t.nextChar
-        if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '/' || c == '>') break
+        if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '/' || c == '>') break()
         buff.cat(c)
       }
     }
@@ -3009,7 +3009,7 @@ class XQueryParser extends XPathParser {
 
 
       c = skipSpaces(c)
-      if (c == '/' || c == '>') break
+      if (c == '/' || c == '>') break()
       val attOffset = t.inputOffset - 1
       buff.setLength(0)
 
@@ -3242,7 +3242,7 @@ class XQueryParser extends XPathParser {
           }
           else {
             last = i2
-            break
+            break()
           }
         }
         else if (i8 >= 0 && (i0 < 0 || i8 < i0)) {
@@ -3349,7 +3349,7 @@ class XQueryParser extends XPathParser {
         if (i2 + 1 < avt.length && avt.charAt(i2 + 1) == terminator) last = i2 + 2
         else {
           last = i2
-          break
+          break()
         }
       }
     }
@@ -3378,7 +3378,7 @@ class XQueryParser extends XPathParser {
               t.unreadChar()
             }
             else t.unreadChar()
-            break
+            break()
           }
           else if (c == '&') {
             text.append(readEntityReference)
@@ -3393,7 +3393,7 @@ class XQueryParser extends XPathParser {
             c = t.nextChar
             if (c != '{') {
               c = '{'
-              break
+              break()
             }
             text.cat(c)
           }
@@ -3565,7 +3565,7 @@ class XQueryParser extends XPathParser {
     breakable {
       while (true) {
         val c = t.nextChar
-        if (c == ';') break
+        if (c == ';') break()
         sb.cat(c)
       }
     }
@@ -3622,7 +3622,7 @@ class XQueryParser extends XPathParser {
                 components.add(new StringLiteral(sb))
                 t.lookAhead()
                 t.next()
-                outer.break
+                outer.break()
               }
               sb.cat(c)
               penult = prior

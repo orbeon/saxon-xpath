@@ -118,7 +118,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       for (sortKeyDefinition <- getSortKeyDefinitionList.asScala
            if !sortKeyDefinition.isFixed) {
         allKeysFixed = false
-        break
+        break()
       }
     }
     if (allKeysFixed) {

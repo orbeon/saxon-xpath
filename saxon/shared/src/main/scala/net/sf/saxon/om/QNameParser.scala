@@ -72,19 +72,17 @@ class QNameParser(private var resolver: NamespaceResolver) {
     qp2
   }
 
-  def parse(lexicalNameVar: CharSequence, defaultNS: String): StructuredQName = {
-    var lexicalName = lexicalNameVar
+  def parse(_lexicalName: CharSequence, defaultNS: String): StructuredQName = {
+    var lexicalName = _lexicalName
     lexicalName = Whitespace.trimWhitespace(lexicalName)
     if (acceptEQName && lexicalName.length >= 4 && lexicalName.charAt(0) == 'Q' &&
       lexicalName.charAt(1) == '{') {
       val name: String = lexicalName.toString
       val endBrace: Int = name.indexOf('}')
       if (endBrace < 0) {
-        throw new XPathException("Invalid EQName: closing brace not found",
-          errorOnBadSyntax)
+        throw new XPathException("Invalid EQName: closing brace not found", errorOnBadSyntax)
       } else if (endBrace == name.length - 1) {
-        throw new XPathException("Invalid EQName: local part is missing",
-          errorOnBadSyntax)
+        throw new XPathException("Invalid EQName: local part is missing", errorOnBadSyntax)
       }
       var uri: String = name.substring(2, endBrace).toString
       //String uri = Whitespace.collapseWhitespace(name.substring(2, endBrace)).toString();

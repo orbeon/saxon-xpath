@@ -134,7 +134,7 @@ object Categories {
       for ((key, value) <- CATEGORIES.asScala if key.charAt(0) == ch) {
         ip = if (ip == null) value else ip.or(value)
       }
-      val label: String = s"$ch"
+      val label = ch.toString
       CATEGORIES.put(label, new Category(label, ip))
     }
   }

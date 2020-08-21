@@ -268,7 +268,7 @@ class ContentHandlerProxy extends Receiver {
       while (true) {
         val prefix: String = namespaceStack.pop()
         if (prefix == MARKER) {
-          break
+          break()
         }
         try handler.endPrefixMapping(prefix)
         catch {

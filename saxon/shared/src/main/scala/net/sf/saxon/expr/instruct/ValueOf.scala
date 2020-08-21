@@ -72,7 +72,7 @@ class ValueOf(select: Expression,
         if (c.toInt < 33 || c.toInt > 126 || c == '<' || c == '>' ||
           c == '&') {
           special = true
-          break
+          break()
         }
       }
     }

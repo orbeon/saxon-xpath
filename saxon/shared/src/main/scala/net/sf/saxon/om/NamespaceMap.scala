@@ -279,20 +279,20 @@ class NamespaceMap() extends NamespaceBindingSet with NamespaceResolver {
           p3.add(p1(i1))
           u3.add(u1(i1))
           i1 += 1
-          if (i1 >= p1.length) break
+          if (i1 >= p1.length) break()
         }
         else if (c > 0) {
           p3.add(p2(i2))
           u3.add(u2(i2))
           i2 += 1
-          if (i2 >= p2.length) break
+          if (i2 >= p2.length) break()
         }
         else {
           p3.add(p2(i2))
           u3.add(u2(i2))
           i1 += 1
           i2 += 1
-          if (i1 >= p1.length || i2 >= p2.length) break
+          if (i1 >= p1.length || i2 >= p2.length) break()
         }
       }
     }

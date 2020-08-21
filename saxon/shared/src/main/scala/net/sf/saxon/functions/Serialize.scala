@@ -225,7 +225,7 @@ class Serialize extends SystemFunction with Callable {
           }
           // Implementation-defined serialization parameters in an unrecognised namespace are ignored.
         }
-        else break
+        else break()
       }
     result
   }

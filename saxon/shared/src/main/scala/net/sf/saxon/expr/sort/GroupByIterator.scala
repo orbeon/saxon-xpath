@@ -74,7 +74,7 @@ class GroupByIterator
         while (true) {
           val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
           if (key == null) {
-            break
+            break()
           }
           var comparisonKey: AtomicMatchKey = null
           comparisonKey =
@@ -120,7 +120,7 @@ class GroupByIterator
         while (true) {
           val key: AtomicValue = keys.next().asInstanceOf[AtomicValue]
           if (key == null) {
-            break
+            break()
           }
           compositeKey.add(key)
           var comparisonKey: AtomicMatchKey = null

@@ -48,7 +48,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
         breakable {
           for (binding <- bindings) {
             if (binding == null) {
-              break
+              break()
             }
             nsMap = nsMap.put(binding.getPrefix, binding.getURI)
           }

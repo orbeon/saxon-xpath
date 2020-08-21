@@ -83,7 +83,7 @@ object SpaceStrippedNode {
             if ("preserve" == `val`) {
               true
             } else if ("default" == `val`) {
-              break
+              break()
             }
           }
           p = p.getParent
@@ -173,7 +173,7 @@ class SpaceStrippedNode()
           while (true) {
             val it: NodeInfo = iter.next()
             if (it == null) {
-              break
+              break()
             }
             sb.cat(it.getStringValueCS)
           }
@@ -275,7 +275,7 @@ class SpaceStrippedNode()
             null
           }
           if (isPreserved(nextRealNode)) {
-            break
+            break()
           }
         }
       }

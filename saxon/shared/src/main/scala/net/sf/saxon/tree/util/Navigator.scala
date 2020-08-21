@@ -286,7 +286,8 @@ object Navigator {
     breakable {
       while (true) {
         val prev = preceding.next
-        if (prev == null) break //todo: break is not supported
+        if (prev == null)
+          break()
         if (controller != null) {
           var memo = controller.getRememberedNumber(prev)
           if (memo > 0) {
@@ -416,15 +417,15 @@ object Navigator {
     breakable {
       while (true) {
         val prev: NodeInfo = preceding.next
-        if (prev == null) break
+        if (prev == null) break()
         if (count.matches(prev, context)) {
           if (num == 1 && prev == memoNode) {
             num = memoNumber + 1
-            break
+            break()
           }
           num += 1
         }
-        if (from != null && from.matches(prev, context)) break
+        if (from != null && from.matches(prev, context)) break()
       }
     }
     if (memoise) {
@@ -948,7 +949,7 @@ object Navigator {
             val forwards = start.iterateAxis(AxisInfo.CHILD)
             var n: NodeInfo = null
             while ( {
-              (n = forwards.next) != null
+              {n = forwards.next; n} != null
             }) list.addFirst(n)
             children = new ListIterator.OfNodes(list)
           }

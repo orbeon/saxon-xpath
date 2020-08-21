@@ -650,6 +650,7 @@ class XPathParser() {
         case err: XPathException =>
           grumble(err.getMessage)
       }
+
       if (t.currentToken == terminator)
         if (allowAbsentExpression) {
           val result = Literal.makeEmptySequence
@@ -658,6 +659,7 @@ class XPathParser() {
           return result
         } else
           grumble("The expression is empty")
+
       exp = parseExpression
       if (t.currentToken != terminator && terminator != Token.IMPLICIT_EOF)
         if (t.currentToken == Token.EOF && terminator == Token.RCURLY)
@@ -809,29 +811,32 @@ class XPathParser() {
   @throws[XPathException]
   def parseExprSingle: Expression = {
     val e = parserExtension.parseExtendedExprSingle(this)
-    if (e != null) return e
+    if (e != null)
+      return e
     // Short-circuit for a single-token expression
     val peek = t.peekAhead
-    if (peek == Token.EOF || peek == Token.COMMA || peek == Token.RPAR || peek == Token.RSQB) t.currentToken match {
-      case Token.STRING_LITERAL =>
-        return parseStringLiteral(true)
-      case Token.NUMBER =>
-        return parseNumericLiteral(true)
-      case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
-        return parseBasicStep(true)
-      case Token.DOT =>
-        nextToken()
-        val cie = new ContextItemExpression
-        setLocation(cie)
-        return cie
-      case Token.DOTDOT =>
-        nextToken()
-        val pne = new AxisExpression(AxisInfo.PARENT, null)
-        setLocation(pne)
-        return pne
-      case Token.EOF =>
-      case _ =>
-    }
+    if (peek == Token.EOF || peek == Token.COMMA || peek == Token.RPAR || peek == Token.RSQB)
+      t.currentToken match {
+        case Token.STRING_LITERAL =>
+          return parseStringLiteral(true)
+        case Token.NUMBER =>
+          return parseNumericLiteral(true)
+        case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
+          return parseBasicStep(true)
+        case Token.DOT =>
+          nextToken()
+          val cie = new ContextItemExpression
+          setLocation(cie)
+          return cie
+        case Token.DOTDOT =>
+          nextToken()
+          val pne = new AxisExpression(AxisInfo.PARENT, null)
+          setLocation(pne)
+          return pne
+        case Token.EOF =>
+        case _ =>
+      }
+
     t.currentToken match {
       case Token.EOF =>
         grumble("Expected an expression, but reached the end of the input")
@@ -1155,8 +1160,10 @@ class XPathParser() {
    */
   @throws[XPathException]
   def parseFLWORExpression: Expression = {
-    if (t.currentToken == Token.LET && !allowXPath30Syntax) grumble("'let' is not permitted in XPath 2.0")
-    if (t.currentToken == Token.FOR_SLIDING || t.currentToken == Token.FOR_TUMBLING) grumble("sliding/tumbling windows can only be used in XQuery")
+    if (t.currentToken == Token.LET && ! allowXPath30Syntax)
+      grumble("'let' is not permitted in XPath 2.0")
+    if (t.currentToken == Token.FOR_SLIDING || t.currentToken == Token.FOR_TUMBLING)
+      grumble("sliding/tumbling windows can only be used in XQuery")
     var clauses = 0
     var offset = 0
     val operator: Int = t.currentToken
@@ -1174,8 +1181,7 @@ class XPathParser() {
       if (operator == Token.FOR) {
         v = new ForExpression
         v.setRequiredType(SequenceType.SINGLE_ITEM)
-      }
-      else {
+      } else {
         v = new LetExpression
         v.setRequiredType(SequenceType.ANY_SEQUENCE)
       }
@@ -1184,19 +1190,20 @@ class XPathParser() {
       v.setVariableQName(makeStructuredQName(`var`, ""))
       nextToken()
       // process the "in" or ":=" clause
-      expect(if (operator == Token.LET) Token.ASSIGN
-      else Token.IN)
+      expect(if (operator == Token.LET) Token.ASSIGN else Token.IN)
       nextToken()
       v.setSequence(parseExprSingle)
       declareRangeVariable(v)
-      if (previous == null) first = v
-      else previous.setAction(v)
+      if (previous == null)
+        first = v
+      else
+        previous.setAction(v)
       previous = v
-    } while ( {
-      t.currentToken == Token.COMMA
-    })
+    } while (t.currentToken == Token.COMMA)
+
     // process the "return" expression (called the "action")
     expect(Token.RETURN)
+
     nextToken()
     previous.setAction(parseExprSingle)
     // undeclare all the range variables
@@ -1889,7 +1896,7 @@ class XPathParser() {
         }
         setLocation(exp, offset)
         op = t.currentToken
-        if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG) break
+        if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG) break()
         nextToken()
       }
     }
@@ -1920,7 +1927,7 @@ class XPathParser() {
         step = parseLookup(step)
         setLocation(step)
       }
-      else break
+      else break()
     }
     if (reverse) { // An AxisExpression such as preceding-sibling::x delivers nodes in axis
       // order, so that positional predicate like preceding-sibling::x[1] work
@@ -2158,26 +2165,31 @@ class XPathParser() {
     expect(Token.NAME)
     val `var` = t.currentTokenValue
     nextToken()
+
     if (scanOnly) {
       return new ContextItemExpression
       // don't do any semantic checks during a prescan
     }
+
     //int vtest = makeNameCode(var, false) & 0xfffff;
     val vtest = makeStructuredQName(`var`, "")
     assert(vtest != null)
+
     // See if it's a range variable or a variable in the context
     val b = findRangeVariable(vtest)
     var ref: Expression = null
-    if (b != null) ref = new LocalVariableReference(b)
-    else {
-      if (catchDepth > 0) for (errorVariable <- StandardNames.errorVariables) {
-        if (errorVariable.getLocalPart == vtest.getLocalPart) {
-          val functionName = new StructuredQName("saxon", NamespaceConstant.SAXON, "dynamic-error-info")
-          val sn = new SymbolicName.F(functionName, 1)
-          val args = Array[Expression](new StringLiteral(vtest.getLocalPart))
-          return VendorFunctionSetHE.getInstance.bind(sn, args, env, new util.ArrayList[String])
+    if (b != null) {
+      ref = new LocalVariableReference(b)
+    } else {
+      if (catchDepth > 0)
+        for (errorVariable <- StandardNames.errorVariables) {
+          if (errorVariable.getLocalPart == vtest.getLocalPart) {
+            val functionName = new StructuredQName("saxon", NamespaceConstant.SAXON, "dynamic-error-info")
+            val sn = new SymbolicName.F(functionName, 1)
+            val args = Array[Expression](new StringLiteral(vtest.getLocalPart))
+            return VendorFunctionSetHE.getInstance.bind(sn, args, env, new util.ArrayList[String])
+          }
         }
-      }
       try ref = env.bindVariable(vtest)
       catch {
         case err: XPathException =>
@@ -2232,8 +2244,10 @@ class XPathParser() {
             arg = Literal.makeEmptySequence // a convenient fiction
           }
           args.add(arg)
-          if (t.currentToken == Token.COMMA) nextToken()
-          else break //todo: break is not supported
+          if (t.currentToken == Token.COMMA)
+            nextToken()
+          else
+            break()
         }
       }
       expect(Token.RPAR)
@@ -2630,7 +2644,8 @@ class XPathParser() {
       breakable {
         while (true) {
           val key = parseExprSingle
-          if (t.currentToken == Token.ASSIGN) grumble("The ':=' notation is no longer accepted in map expressions: use ':' instead")
+          if (t.currentToken == Token.ASSIGN)
+            grumble("The ':=' notation is no longer accepted in map expressions: use ':' instead")
           expect(Token.COLON)
           nextToken()
           val value: Expression = parseExprSingle
@@ -2639,7 +2654,8 @@ class XPathParser() {
             entry = Literal.makeLiteral(new SingleEntryMap(key.asInstanceOf[Literal].value.asInstanceOf[AtomicValue], value.asInstanceOf[Literal].value))
           else entry = MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
           entries.add(entry)
-          if (t.currentToken == Token.RCURLY) break
+          if (t.currentToken == Token.RCURLY)
+            break()
           else {
             expect(Token.COMMA)
             nextToken()
@@ -2693,7 +2709,7 @@ class XPathParser() {
         }
         else if (t.currentToken == Token.RSQB) {
           nextToken()
-          break
+          break()
         }
       }
       grumble("Expected ',' or ']', " + "found " + Token.tokens(t.currentToken))
@@ -2762,7 +2778,7 @@ class XPathParser() {
           }
           args.add(arg)
           if (t.currentToken == Token.COMMA) nextToken()
-          else break
+          else break()
         }
       }
       expect(Token.RPAR)
@@ -2822,7 +2838,7 @@ class XPathParser() {
             val sn = new SymbolicName.F(functionName, i)
             if (env.getFunctionLibrary.isAvailable(sn)) {
               existsWithDifferentArity = true
-              break
+              break()
             }
           }
         }
@@ -2939,7 +2955,8 @@ class XPathParser() {
    *
    * @param declaration the variable declaration to be added to the stack
    */
-  def declareRangeVariable(declaration: LocalBinding): mutable.Stack[LocalBinding] = rangeVariables.push(declaration)
+  def declareRangeVariable(declaration: LocalBinding): mutable.Stack[LocalBinding] =
+    rangeVariables.push(declaration)
 
   /**
    * Note when the most recently declared range variable has gone out of scope
@@ -3012,8 +3029,10 @@ class XPathParser() {
    */
   @throws[XPathException]
   final def makeStructuredQNameSilently(qname: String, defaultUri: String): StructuredQName = {
-    if (scanOnly) return new StructuredQName("", NamespaceConstant.SAXON, "dummy")
-    qNameParser.parse(qname, defaultUri)
+    if (scanOnly)
+      new StructuredQName("", NamespaceConstant.SAXON, "dummy")
+    else
+      qNameParser.parse(qname, defaultUri)
   }
 
   /**
@@ -3027,12 +3046,14 @@ class XPathParser() {
    *                        undeclared
    */
   @throws[XPathException]
-  final def makeStructuredQName(qname: String, defaultUri: String): StructuredQName = try makeStructuredQNameSilently(qname, defaultUri)
-  catch {
-    case err: XPathException =>
-      grumble(err.getMessage, err.getErrorCodeLocalPart)
-      new StructuredQName("", "", "error") // Not executed; here to keep the compiler happy
-  }
+  final def makeStructuredQName(qname: String, defaultUri: String): StructuredQName =
+    try {
+      makeStructuredQNameSilently(qname, defaultUri)
+    } catch {
+      case err: XPathException =>
+        grumble(err.getMessage, err.getErrorCodeLocalPart)
+        new StructuredQName("", "", "error") // Not executed; here to keep the compiler happy
+    }
 
   /**
    * Make a FingerprintedQName, using the static context for namespace resolution

@@ -134,7 +134,7 @@ class OrderByClause(flwor: FLWORExpression,
     breakable {
       for (sk <- sortKeys.asScala if !sk.isFixed.asInstanceOf[Boolean]) {
         allKeysFixed = false
-        break
+        break()
       }
     }
     if (allKeysFixed) {

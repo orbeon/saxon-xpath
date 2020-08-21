@@ -228,7 +228,7 @@ object FormatNumber {
            if ch == digitSign || ch == zeroDigit || isInDigitFamily(ch,
              zeroDigit)) {
         foundDigit = true
-        break
+        break()
       }
     }
 
@@ -424,7 +424,7 @@ object FormatNumber {
           for (i <- 1 until n
                if wholePartGroupingPositions(i) != (i + 1) * first) {
             regular = false
-            break
+            break()
           }
         }
         if (regular &&
@@ -560,7 +560,7 @@ object FormatNumber {
                 dfs.getGroupingSeparator,
                 p)
             } else {
-              break
+              break()
             }
           }
         }
@@ -596,7 +596,7 @@ object FormatNumber {
             fsb.setLength(fsb.length - 1)
             zz -= 1
           } else {
-            break
+            break()
           }
         }
         intDigits = point

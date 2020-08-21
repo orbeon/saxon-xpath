@@ -234,13 +234,13 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
       while (true) {
         if (tc != null) {
           if (lookahead && !iterator.asInstanceOf[LookaheadIterator].hasNext) {
-            break
+            break()
           }
           do tc = tc.processLeavingTail() while (tc != null);
         }
         val item: Item = iterator.next()
         if (item == null) {
-          break
+          break()
         }
         if (mustBeTyped) {
           if (item.isInstanceOf[NodeInfo]) {

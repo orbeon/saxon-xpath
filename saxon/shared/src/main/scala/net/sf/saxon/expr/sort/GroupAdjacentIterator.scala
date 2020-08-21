@@ -83,7 +83,7 @@ class GroupAdjacentIterator(private var select: Expression,
       while (true) {
         val `val`: AtomicValue = iter.next().asInstanceOf[AtomicValue]
         if (`val` == null) {
-          break
+          break()
         }
         key.add(`val`)
       }
@@ -115,7 +115,7 @@ class GroupAdjacentIterator(private var select: Expression,
       while (true) {
         val nextCandidate: Item = population.next()
         if (nextCandidate == null) {
-          break
+          break()
         }
         val newKey: List[AtomicValue] = getKey(runningContext)
         val newComparisonKey: List[AtomicMatchKey] =

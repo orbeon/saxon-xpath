@@ -309,7 +309,7 @@ class RECompiler() {
               if (c1 < 0) break()
               else {
                 val backRef2 = backRef * 10 + c1
-                if (backRef2 > (capturingOpenParenCount - 1)) break
+                if (backRef2 > (capturingOpenParenCount - 1)) break()
                 else {
                   backRef = backRef2
                   idx += 1
@@ -500,7 +500,7 @@ class RECompiler() {
             case '+' =>
 
 
-              if (lenAtom != 0)  atomLoop.break
+              if (lenAtom != 0)  atomLoop.break()
           }
         }
 
@@ -511,7 +511,7 @@ class RECompiler() {
           case '(' =>
           case ')' =>
           case '|' =>
-             atomLoop.break
+             atomLoop.break()
           case '{' =>
           case '?' =>
           case '*' =>
@@ -520,10 +520,10 @@ class RECompiler() {
             if (lenAtom == 0) {
               syntaxError("No expression before quantifier")
             }
-             atomLoop.break
+             atomLoop.break()
           case '}' =>
             syntaxError("Unescaped right curly brace")
-             atomLoop.break
+             atomLoop.break()
           case '\\' =>
 
             val idxBeforeEscape = idx
@@ -531,14 +531,14 @@ class RECompiler() {
 
             if (charClass.isInstanceOf[RECompiler#BackReference] || !charClass.isInstanceOf[IntValuePredicate]) {
               idx = idxBeforeEscape
-               atomLoop.break
+               atomLoop.break()
             }
 
             fsb.appendWideChar(charClass.asInstanceOf[IntValuePredicate].getTarget)
             lenAtom += 1
           case '^' =>
           case '$' =>
-            if (isXPath)  atomLoop.break
+            if (isXPath)  atomLoop.break()
 
           case _ =>
 

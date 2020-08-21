@@ -140,7 +140,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
         else rule)
         if (prev == null) return newRule
         else prev.setNext(newRule)
-        break
+        break()
       }
       else {
         prev = rule
@@ -186,7 +186,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
           val rank = headRule.compareRank(bstRule)
           if (rank < 0) { // if we already have a match, and the precedence or priority of this
             // rule is lower, quit the search
-            break
+            break()
           }
           else if (rank == 0) { // this rule has the same precedence and priority as the matching rule already found
             if (headRule.isAlwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) { // reportAmbiguity(bestRule, head);
@@ -194,7 +194,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
               // take the recovery action.
               // choose whichever one comes last (assuming the error wasn't fatal)
               bstRule = headRule
-              break
+              break()
             }
             else {
               // keep searching other rules of the same precedence and priority
@@ -206,7 +206,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
         }
         else if (headRule.isAlwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) {
           bstRule = headRule
-          break
+          break()
         }
         headRule = headRule.getNext
       }

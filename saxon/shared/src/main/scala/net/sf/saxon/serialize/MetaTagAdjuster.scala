@@ -113,7 +113,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
               if (value.equalsIgnoreCase("Content-Type")) {
                 // case-blind comparison even for XHTML
                 found = true
-                break
+                break()
               }
             }
           }

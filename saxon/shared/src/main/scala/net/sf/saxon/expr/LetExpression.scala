@@ -117,18 +117,17 @@ class LetExpression extends Assignation with TailCallReturner {
                         contextItemType: ContextItemStaticInfo): Expression = {
     val opt: Optimizer = visitor.obtainOptimizer()
     if (getAction.isInstanceOf[VariableReference] &&
-      getAction.asInstanceOf[VariableReference].getBinding ==
-        this &&
+      (getAction.asInstanceOf[VariableReference].getBinding eq this) &&
       !ExpressionTool.changesXsltContext(getSequence)) {
       getSequenceOp.optimize(visitor, contextItemType)
       opt.trace("Eliminated trivial variable " + getVariableName, getSequence)
-      getSequence
+      return getSequence
     }
     if (getSequence.isInstanceOf[Literal] && opt.isOptionSet(
       OptimizerOptions.INLINE_VARIABLES)) {
       opt.trace("Inlined constant variable " + getVariableName, getSequence)
       replaceVariable(getSequence)
-      getAction.optimize(visitor, contextItemType)
+      return getAction.optimize(visitor, contextItemType)
     }
     if (getSequence.isInstanceOf[DocumentInstr] && getSequence
       .asInstanceOf[DocumentInstr]
@@ -181,7 +180,7 @@ class LetExpression extends Assignation with TailCallReturner {
             assert(operand != null)
             if (!operand.hasSameFocus()) {
               considerRemoval = false
-              break
+              break()
             }
             child = parent
             parent = child.getParentExpression
@@ -217,10 +216,10 @@ class LetExpression extends Assignation with TailCallReturner {
         val seq0: Expression = getSequence
         getSequenceOp.optimize(visitor, contextItemType)
         if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
-          optimize(visitor, contextItemType)
+          return optimize(visitor, contextItemType)
         }
         if (seq0 == getSequence) {
-          break
+          break()
         }
       }
     }
@@ -233,17 +232,17 @@ class LetExpression extends Assignation with TailCallReturner {
         val act0: Expression = getAction
         getActionOp.optimize(visitor, contextItemType)
         if (act0 == getAction) {
-          break
+          break()
         }
         if (!isIndexedVariable && !needsEagerEvaluation) {
           verifyReferences()
           if (references != null && references.size < 2) {
             if (references.isEmpty) {
               hasLoopingReference = false
-              optimize(visitor, contextItemType)
+              return optimize(visitor, contextItemType)
             } else {
               if (!references.get(0).isInLoop) {
-                optimize(visitor, contextItemType)
+                return optimize(visitor, contextItemType)
               }
             }
           }
@@ -309,7 +308,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -350,7 +349,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -366,7 +365,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -382,7 +381,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -438,7 +437,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -462,7 +461,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (let.getAction.isInstanceOf[LetExpression]) {
           let = let.getAction.asInstanceOf[LetExpression]
         } else {
-          break
+          break()
         }
       }
     }
@@ -484,12 +483,12 @@ class LetExpression extends Assignation with TailCallReturner {
     if (isIndexedVariable) {
       out.emitAttribute("indexable", "true")
     }
-    out.emitAttribute("slot", s"$getLocalSlotNumber")
+    out.emitAttribute("slot", getLocalSlotNumber.toString)
     if (evaluator == null) {
       this.evaluator =
         ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
     }
-    out.emitAttribute("eval", s"${getEvaluator.getEvaluationMode.getCode}")
+    out.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
     getSequence.export(out)
     getAction.export(out)
     out.endElement()

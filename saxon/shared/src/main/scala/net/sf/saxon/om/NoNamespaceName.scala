@@ -124,7 +124,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     * @return true if the two values are indentical, false otherwise
     */
   def isIdentical(other: IdentityComparable): Boolean =
-    other.isInstanceOf[NodeName] && this == other && other
+    other.isInstanceOf[NodeName] && (this eq other) && other
       .asInstanceOf[NodeName]
       .getPrefix
       .isEmpty

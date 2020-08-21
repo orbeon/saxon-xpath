@@ -130,7 +130,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def hasVariableBinding(binding: Binding): Boolean = {
     if (binding.isInstanceOf[LocalParam]) {
       for (o <- operanda if o.getChildExpression eq binding) {
-        true
+        return true
       }
     }
     false
@@ -156,7 +156,7 @@ class Block(children: Array[Expression]) extends Instruction {
           allAxisExpressions = false
           allChildAxis = false
           allSubtreeAxis = false
-          break
+          break()
         }
         val axis: Int = child.asInstanceOf[AxisExpression].getAxis
         if (axis != AxisInfo.CHILD) {
@@ -344,7 +344,7 @@ class Block(children: Array[Expression]) extends Instruction {
       for (i <- 1 until size) {
         c1 = Cardinality.sum(c1, child(i).getCardinality)
         if (c1 == StaticProperty.ALLOWS_MANY) {
-          break
+          break()
         }
       }
     }
@@ -517,13 +517,13 @@ class Block(children: Array[Expression]) extends Instruction {
         val child: Expression = o.getChildExpression
         if (child.isInstanceOf[Block]) {
           canSimplify = true
-          break
+          break()
         }
         if (child.isInstanceOf[Literal] &&
           !(child.asInstanceOf[Literal].getValue.isInstanceOf[IntegerRange])) {
           if (prevLiteral || Literal.isEmptySequence(child)) {
             canSimplify = true
-            break
+            break()
           }
           prevLiteral = true
         } else {

@@ -185,7 +185,7 @@ class JarCollection(private var context: XPathContext,
         } catch {
           case e: IOException => {
             nextt = new FailedResource(null, new XPathException(e))
-            break
+            break()
           }
 
         }

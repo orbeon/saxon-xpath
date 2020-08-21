@@ -70,7 +70,7 @@ class FunctionAvailable extends SystemFunction {
           val sn: SymbolicName.F = new SymbolicName.F(functionName, i)
           if (env.getFunctionLibrary.isAvailable(sn)) {
             b = true
-            break
+            break()
           }
           {
             i += 1;

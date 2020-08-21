@@ -59,7 +59,7 @@ trait ArrayItem extends Function {
           count - 1
         } > 2) {
           sb.append(" ...")
-          break
+          break()
         }
         sb.append(member.toShortString())
         sb.append(", ")

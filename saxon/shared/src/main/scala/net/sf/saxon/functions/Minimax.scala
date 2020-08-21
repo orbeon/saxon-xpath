@@ -62,7 +62,7 @@ object Minimax {
       while (true) {
         min = iter.next().asInstanceOf[AtomicValue]
         if (min == null) {
-          null
+          return null
         }
         prim = min
         if (min.isInstanceOf[UntypedAtomicValue]) {
@@ -92,12 +92,13 @@ object Minimax {
           }
         }
         if (prim.isNaN) {
-          if (ignoreNaN) {} else if (prim.isInstanceOf[DoubleValue]) {
-            min
+          if (ignoreNaN) {
+          } else if (prim.isInstanceOf[DoubleValue]) {
+            return min
           } else {
             foundNaN = true
             min = FloatValue.NaN
-            break
+            break()
           }
         } else {
           if (!prim.getPrimitiveType.isOrdered(false)) {
@@ -108,7 +109,7 @@ object Minimax {
             de.setXPathContext(context)
             throw de
           }
-          break
+          break()
         }
       }
     }
@@ -116,7 +117,7 @@ object Minimax {
       while (true) {
         val test: AtomicValue = iter.next().asInstanceOf[AtomicValue]
         if (test == null) {
-          break
+          break()
         }
         var test2: AtomicValue = test
         prim = test2
@@ -125,7 +126,7 @@ object Minimax {
             test2 = new DoubleValue(
               converter.stringToNumber(test.getStringValueCS))
             if (foundNaN) {
-              DoubleValue.NaN
+              return DoubleValue.NaN
             }
             prim = test2
             foundDouble = true
@@ -143,7 +144,7 @@ object Minimax {
         } else {
           if (prim.isInstanceOf[DoubleValue]) {
             if (foundNaN) {
-              DoubleValue.NaN
+              return DoubleValue.NaN
             }
             foundDouble = true
           } else if (prim.isInstanceOf[FloatValue]) {
@@ -155,7 +156,7 @@ object Minimax {
         }
         if (prim.isNaN) {
           if (ignoreNaN) {} else if (foundDouble) {
-            DoubleValue.NaN
+            return DoubleValue.NaN
           } else {
             foundNaN = true
           }
@@ -180,7 +181,7 @@ object Minimax {
       }
     }
     if (foundNaN) {
-      FloatValue.NaN
+      return FloatValue.NaN
     }
     if (foundDouble) {
       if (!(min.isInstanceOf[DoubleValue])) {

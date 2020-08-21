@@ -347,7 +347,7 @@ abstract class Expression
         for (o <- operands().asScala) {
           i += o.getChildExpression.getCost
           if (i > MAX_COST) {
-            break
+            break()
           }
         }
       }
@@ -470,7 +470,7 @@ abstract class Expression
         if (dot >= 0) {
           className = className.substring(dot + 1)
         } else {
-          break
+          break()
         }
       }
     }
@@ -734,7 +734,7 @@ abstract class Expression
       true
     }
 
-  def isEqual(other: Expression): Boolean = this == other || (hashCode == other.hashCode && equals(other))
+  def isEqual(other: Expression): Boolean = (this eq other) || (hashCode == other.hashCode && equals(other))
 
   override def hashCode(): Int = {
     if (cachedHashCode == -1) {
@@ -759,7 +759,7 @@ abstract class Expression
 
   def computeHashCode(): Int = super.hashCode
 
-  def isIdentical(other: IdentityComparable): Boolean = this == other
+  def isIdentical(other: IdentityComparable): Boolean = (this eq other)
 
   def identityHashCode(): Int =
     System.identityHashCode(Expression.this.getLocation)

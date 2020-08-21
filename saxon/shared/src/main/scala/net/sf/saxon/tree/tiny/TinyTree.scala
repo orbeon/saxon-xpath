@@ -570,7 +570,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
             for (v <- as.asScala) {
               if (v.getItemType.isIdRefType) {
                 isIDREF = true
-                break
+                break()
               }
             }
           }

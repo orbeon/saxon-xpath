@@ -177,7 +177,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         val condition: Expression = getCondition(i)
         if (condition.isInstanceOf[Literal]) {
           compress = true
-          break
+          break()
         }
       }
     }
@@ -194,7 +194,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
             actions.add(getAction(i))
           }
           if (Literal.hasEffectiveBooleanValue(condition, true)) {
-            break
+            break()
           }
         }
       }
@@ -278,33 +278,37 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         throw err
       }
     }
-    for (i <- 0 until size) {
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
-      }
-      try actionOps(i).typeCheck(visitor, contextInfo)
-      catch {
-        case err: XPathException => {
-          err.maybeSetLocation(getLocation)
-          err.maybeSetFailingExpression(getAction(i))
-          if (err.isStaticError) {
-            throw err
-          } else if (err.isTypeError) {
-            if (Literal.isEmptySequence(getAction(i)) ||
-              Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
-              setAction(i,
-                new ErrorExpression(new XmlProcessingException(err)))
-            } else {
-              throw err
+    // Check that each of the action branches satisfies the expected type. This is a stronger check than checking the
+    // type of the top-level expression. It's important with tail recursion not to wrap a tail call in a type checking
+    // expression just because a dynamic type check is needed on a different branch of the choice.
+    breakable {
+      for (i <- 0 until size) {
+        if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+          // Don't do any checking if we know statically the condition will be false, because it could
+          // result in spurious warnings: bug 4537
+        } else {
+          try actionOps(i).typeCheck(visitor, contextInfo)
+          catch {
+            case err: XPathException => {
+              err.maybeSetLocation(getLocation)
+              err.maybeSetFailingExpression(getAction(i))
+              if (err.isStaticError) {
+                throw err
+              } else if (err.isTypeError) {
+                if (Literal.isEmptySequence(getAction(i)) ||
+                  Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+                  setAction(i,
+                    new ErrorExpression(new XmlProcessingException(err)))
+                } else {
+                  throw err
+                }
+              } else {
+                setAction(i, new ErrorExpression(new XmlProcessingException(err)))
+              }
             }
-          } else {
-            setAction(i, new ErrorExpression(new XmlProcessingException(err)))
           }
-        }
-
-      }
-      breakable {
-        if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
-          break
+          if (Literal.hasEffectiveBooleanValue(getCondition(i), true))
+            break()
         }
       }
     }
@@ -427,7 +431,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
       breakable {
         if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
-          break
+          break()
         }
       }
     }

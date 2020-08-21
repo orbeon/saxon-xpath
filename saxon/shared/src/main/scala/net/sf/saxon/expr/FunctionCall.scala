@@ -145,7 +145,7 @@ abstract class FunctionCall extends Expression {
       breakable {
         for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
           fixed = false
-          break
+          break()
         }
       }
       if (fixed) {

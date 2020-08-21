@@ -346,27 +346,85 @@ final class Tokenizer {
     precedingTokenValue = nextTokenValue
     nextTokenValue = null
     nextTokenStartOffset = inputOffset
-    breakable {
-      while (true) {
-        if (inputOffset >= inputLength) {
-          nextToken = Token.EOF
-          return
-        }
-        var c = input.charAt({
-          inputOffset += 1;
-          inputOffset - 1
-        })
-        c match {
-          case '/' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '/') {
-              inputOffset += 1
-              nextToken = Token.SLASH_SLASH
-              return
+
+    while (true) {
+      if (inputOffset >= inputLength) {
+        nextToken = Token.EOF
+        return
+      }
+      var c = input.charAt({
+        inputOffset += 1;
+        inputOffset - 1
+      })
+
+      def processOtherCharacter(): Unit = {
+        var foundColon = false
+        breakable {
+          while (inputOffset < inputLength) {
+            c = input.charAt(inputOffset)
+            c match {
+              case ':' =>
+                if (!foundColon) {
+                  if (precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) {
+                    // only NCName allowed after "? in a lookup expression, or after *:
+                    nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+                    nextToken = Token.NAME
+                    return
+                  }
+                  if (inputOffset + 1 < inputLength) {
+                    val nc = input.charAt(inputOffset + 1)
+                    if (nc == ':') {
+                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+                      nextToken = Token.AXIS
+                      inputOffset += 2
+                      return
+                    } else if (nc == '*') {
+                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+                      nextToken = Token.PREFIX
+                      inputOffset += 2
+                      return
+                    } else if (!(nc == '_' || nc > 127 || Character.isLetter(nc))) {
+                      // for example: "let $x:=2", "x:y:z", "x:2"
+                      // end the token before the colon
+                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+                      nextToken = Token.NAME
+                      return
+                    }
+                  }
+                  foundColon = true
+                } else
+                  break()
+              case '.' | '-' =>
+                // If the name up to the "-" or "." is a valid operator, and if the preceding token
+                // is such that an operator is valid here and an NCName isn't, then quit here (bug 2715)
+                if (precedingToken > Token.LAST_OPERATOR && !(precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) && getBinaryOp(input.substring(nextTokenStartOffset, inputOffset)) != Token.UNKNOWN && !(precedingToken == Token.NAME && getBinaryOp(precedingTokenValue) != Token.UNKNOWN)) {
+                  nextToken = getBinaryOp(input.substring(nextTokenStartOffset, inputOffset))
+                  return
+                }
+              case '_' =>
+              case _ =>
+                if (c < 0x80 && ! Character.isLetterOrDigit(c))
+                  break()
             }
-            nextToken = Token.SLASH
+            inputOffset += 1
+          }
+        }
+        nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+        nextToken = Token.NAME
+      }
+
+      c match {
+        case '/' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '/') {
+            inputOffset += 1
+            nextToken = Token.SLASH_SLASH
             return
-          case ':' =>
-            if (inputOffset < inputLength) if (input.charAt(inputOffset) == ':') {
+          }
+          nextToken = Token.SLASH
+          return
+        case ':' =>
+          if (inputOffset < inputLength)
+            if (input.charAt(inputOffset) == ':') {
               inputOffset += 1
               nextToken = Token.COLONCOLON
               return
@@ -378,381 +436,336 @@ final class Tokenizer {
               nextToken = Token.COLON
               return
             }
-            throw new XPathException("Unexpected colon at start of token")
-          case '@' =>
-            nextToken = Token.AT
-            return
-          case '?' =>
-            nextToken = Token.QMARK
-            return
-          case '[' =>
-            nextToken = Token.LSQB
-            return
-          case ']' =>
-            nextToken = Token.RSQB
-            return
-          case '{' =>
-            nextToken = Token.LCURLY
-            return
-          case '}' =>
-            nextToken = Token.RCURLY
-            return
-          case ';' =>
-            nextToken = Token.SEMICOLON
-            state = Tokenizer.DEFAULT_STATE
-            return
-          case '%' =>
-            nextToken = Token.PERCENT
-            return
-          case '(' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '#') {
-              inputOffset += 1
-              val pragmaStart = inputOffset
-              var nestingDepth = 1
-              while (nestingDepth > 0 && inputOffset < (inputLength - 1)) {
-                if (input.charAt(inputOffset) == '\n') incrementLineNumber()
-                else if (input.charAt(inputOffset) == '#' && input.charAt(inputOffset + 1) == ')') {
-                  nestingDepth -= 1
-                  inputOffset += 1
-                } else if (input.charAt(inputOffset) == '(' && input.charAt(inputOffset + 1) == '#') {
-                  nestingDepth += 1
-                  inputOffset += 1
-                }
+          throw new XPathException("Unexpected colon at start of token")
+        case '@' =>
+          nextToken = Token.AT
+          return
+        case '?' =>
+          nextToken = Token.QMARK
+          return
+        case '[' =>
+          nextToken = Token.LSQB
+          return
+        case ']' =>
+          nextToken = Token.RSQB
+          return
+        case '{' =>
+          nextToken = Token.LCURLY
+          return
+        case '}' =>
+          nextToken = Token.RCURLY
+          return
+        case ';' =>
+          nextToken = Token.SEMICOLON
+          state = Tokenizer.DEFAULT_STATE
+          return
+        case '%' =>
+          nextToken = Token.PERCENT
+          return
+        case '(' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '#') {
+            inputOffset += 1
+            val pragmaStart = inputOffset
+            var nestingDepth = 1
+            while (nestingDepth > 0 && inputOffset < (inputLength - 1)) {
+              if (input.charAt(inputOffset) == '\n') incrementLineNumber()
+              else if (input.charAt(inputOffset) == '#' && input.charAt(inputOffset + 1) == ')') {
+                nestingDepth -= 1
+                inputOffset += 1
+              } else if (input.charAt(inputOffset) == '(' && input.charAt(inputOffset + 1) == '#') {
+                nestingDepth += 1
                 inputOffset += 1
               }
-              if (nestingDepth > 0)
-                throw new XPathException("Unclosed XQuery pragma")
-              nextToken = Token.PRAGMA
-              nextTokenValue = input.substring(pragmaStart, inputOffset - 2)
-              return
-            }
-            if (inputOffset < inputLength && input.charAt(inputOffset) == ':') { // XPath comment syntax is (: .... :)
-              // Comments may be nested, and may now be empty
               inputOffset += 1
-              var nestingDepth = 1
-              while (nestingDepth > 0 && inputOffset < (inputLength - 1)) {
-                if (input.charAt(inputOffset) == '\n')
-                  incrementLineNumber()
-                else if (input.charAt(inputOffset) == ':' && input.charAt(inputOffset + 1) == ')') {
-                  nestingDepth -= 1
-                  inputOffset += 1
-                } else if (input.charAt(inputOffset) == '(' && input.charAt(inputOffset + 1) == ':') {
-                  nestingDepth += 1
-                  inputOffset += 1
-                }
+            }
+            if (nestingDepth > 0)
+              throw new XPathException("Unclosed XQuery pragma")
+            nextToken = Token.PRAGMA
+            nextTokenValue = input.substring(pragmaStart, inputOffset - 2)
+            return
+          }
+          if (inputOffset < inputLength && input.charAt(inputOffset) == ':') { // XPath comment syntax is (: .... :)
+            // Comments may be nested, and may now be empty
+            inputOffset += 1
+            var nestingDepth = 1
+            while (nestingDepth > 0 && inputOffset < (inputLength - 1)) {
+              if (input.charAt(inputOffset) == '\n')
+                incrementLineNumber()
+              else if (input.charAt(inputOffset) == ':' && input.charAt(inputOffset + 1) == ')') {
+                nestingDepth -= 1
+                inputOffset += 1
+              } else if (input.charAt(inputOffset) == '(' && input.charAt(inputOffset + 1) == ':') {
+                nestingDepth += 1
                 inputOffset += 1
               }
-              if (nestingDepth > 0)
-                throw new XPathException("Unclosed XPath comment")
-              lookAhead()
-            } else
-              nextToken = Token.LPAR
-            return
-          case ')' =>
-            nextToken = Token.RPAR
-            return
-          case '+' =>
-            nextToken = Token.PLUS
-            return
-          case '-' =>
-            nextToken = Token.MINUS // not detected if part of a name
-            return
-          case '=' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '>') {
               inputOffset += 1
-              nextToken = Token.ARROW
-              return
             }
-            nextToken = Token.EQUALS
+            if (nestingDepth > 0)
+              throw new XPathException("Unclosed XPath comment")
+            lookAhead()
+          } else
+            nextToken = Token.LPAR
+          return
+        case ')' =>
+          nextToken = Token.RPAR
+          return
+        case '+' =>
+          nextToken = Token.PLUS
+          return
+        case '-' =>
+          nextToken = Token.MINUS // not detected if part of a name
+          return
+        case '=' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '>') {
+            inputOffset += 1
+            nextToken = Token.ARROW
             return
-          case '!' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
-              inputOffset += 1
-              nextToken = Token.NE
-              return
-            }
-            nextToken = Token.BANG
+          }
+          nextToken = Token.EQUALS
+          return
+        case '!' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
+            inputOffset += 1
+            nextToken = Token.NE
             return
-          case '*' =>
-            // disambiguation of MULT and STAR is now done later
-            if (inputOffset < inputLength && input.charAt(inputOffset) == ':' && inputOffset + 1 < inputLength && (input.charAt(inputOffset + 1) > 127 || NameChecker.isNCNameStartChar(input.charAt(inputOffset + 1)))) {
-              inputOffset += 1
-              nextToken = Token.SUFFIX
-              return
-            }
-            nextToken = Token.STAR
+          }
+          nextToken = Token.BANG
+          return
+        case '*' =>
+          // disambiguation of MULT and STAR is now done later
+          if (inputOffset < inputLength && input.charAt(inputOffset) == ':' && inputOffset + 1 < inputLength && (input.charAt(inputOffset + 1) > 127 || NameChecker.isNCNameStartChar(input.charAt(inputOffset + 1)))) {
+            inputOffset += 1
+            nextToken = Token.SUFFIX
             return
-          case ',' =>
-            nextToken = Token.COMMA
+          }
+          nextToken = Token.STAR
+          return
+        case ',' =>
+          nextToken = Token.COMMA
+          return
+        case '$' =>
+          nextToken = Token.DOLLAR
+          return
+        case '|' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '|') {
+            inputOffset += 1
+            nextToken = Token.CONCAT
             return
-          case '$' =>
-            nextToken = Token.DOLLAR
+          }
+          nextToken = Token.UNION
+          return
+        case '#' =>
+          nextToken = Token.HASH
+          return
+        case '<' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
+            inputOffset += 1
+            nextToken = Token.LE
             return
-          case '|' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '|') {
-              inputOffset += 1
-              nextToken = Token.CONCAT
-              return
-            }
-            nextToken = Token.UNION
+          }
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '<') {
+            inputOffset += 1
+            nextToken = Token.PRECEDES
             return
-          case '#' =>
-            nextToken = Token.HASH
+          }
+          nextToken = Token.LT
+          return
+        case '>' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
+            inputOffset += 1
+            nextToken = Token.GE
             return
-          case '<' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
-              inputOffset += 1
-              nextToken = Token.LE
-              return
-            }
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '<') {
-              inputOffset += 1
-              nextToken = Token.PRECEDES
-              return
-            }
-            nextToken = Token.LT
+          }
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '>') {
+            inputOffset += 1
+            nextToken = Token.FOLLOWS
             return
-          case '>' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '=') {
-              inputOffset += 1
-              nextToken = Token.GE
-              return
-            }
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '>') {
-              inputOffset += 1
-              nextToken = Token.FOLLOWS
-              return
-            }
-            nextToken = Token.GT
+          }
+          nextToken = Token.GT
+          return
+        case '.' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '.') {
+            inputOffset += 1
+            nextToken = Token.DOTDOT
             return
-          case '.' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '.') {
-              inputOffset += 1
-              nextToken = Token.DOTDOT
-              return
-            }
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '{') {
-              inputOffset += 1
-              nextTokenValue = "."
-              nextToken = Token.KEYWORD_CURLY
-              return
-            }
-            if (inputOffset == inputLength || input.charAt(inputOffset) < '0' || input.charAt(inputOffset) > '9') {
-              nextToken = Token.DOT
-              return
-            }
-          // otherwise drop through: we have a number starting with a decimal point
-          case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
-            var allowE = true
-            var allowSign = false
-            var allowDot = true
-            breakable {
-              while (true) {
-                c match {
-                  case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+          }
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '{') {
+            inputOffset += 1
+            nextTokenValue = "."
+            nextToken = Token.KEYWORD_CURLY
+            return
+          }
+          if (inputOffset == inputLength || input.charAt(inputOffset) < '0' || input.charAt(inputOffset) > '9') {
+            nextToken = Token.DOT
+            return
+          }
+        // otherwise drop through: we have a number starting with a decimal point
+        case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+          var allowE = true
+          var allowSign = false
+          var allowDot = true
+          breakable {
+            while (true) {
+              c match {
+                case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+                  allowSign = false
+                case '.' =>
+                  if (allowDot) {
+                    allowDot = false
                     allowSign = false
-                  case '.' =>
-                    if (allowDot) {
-                      allowDot = false
-                      allowSign = false
-                    } else {
-                      inputOffset -= 1
-                      break()
-                    }
-                  case 'E' | 'e' =>
-                    if (allowE) {
-                      allowSign = true
-                      allowE = false
-                    } else {
-                      inputOffset -= 1
-                      break()
-                    }
-                  case '+' | '-' =>
-                    if (allowSign)
-                      allowSign = false
-                    else {
-                      inputOffset -= 1
-                      break()
-                    }
-                  case _ =>
-                    if (('a' <= c && c <= 'z') || c > 127) { // this prevents the famous "10div 3"
-                      throw new XPathException("Separator needed after numeric literal")
-                    }
+                  } else {
                     inputOffset -= 1
                     break()
-                }
-                if (inputOffset >= inputLength)
-                  break()
-                c = input.charAt({
-                  inputOffset += 1;
-                  inputOffset - 1
-                })
-              }
-            }
-            nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-            nextToken = Token.NUMBER
-            return
-          case '"' =>
-          case '\'' =>
-            nextTokenValue = ""
-            breakable {
-              while (true) {
-                inputOffset = input.indexOf(c, inputOffset)
-                if (inputOffset < 0) {
-                  inputOffset = nextTokenStartOffset + 1
-                  throw new XPathException("Unmatched quote in expression")
-                }
-                nextTokenValue += input.substring(nextTokenStartOffset + 1, {
-                  inputOffset += 1;
-                  inputOffset - 1
-                })
-                if (inputOffset < inputLength) {
-                  val n = input.charAt(inputOffset)
-                  if (n == c) { // Doubled delimiters
-                    nextTokenValue += c
-                    nextTokenStartOffset = inputOffset
-                    inputOffset += 1
-                  } else
+                  }
+                case 'E' | 'e' =>
+                  if (allowE) {
+                    allowSign = true
+                    allowE = false
+                  } else {
+                    inputOffset -= 1
                     break()
+                  }
+                case '+' | '-' =>
+                  if (allowSign)
+                    allowSign = false
+                  else {
+                    inputOffset -= 1
+                    break()
+                  }
+                case _ =>
+                  if (('a' <= c && c <= 'z') || c > 127) { // this prevents the famous "10div 3"
+                    throw new XPathException("Separator needed after numeric literal")
+                  }
+                  inputOffset -= 1
+                  break()
+              }
+              if (inputOffset >= inputLength)
+                break()
+              c = input.charAt({
+                inputOffset += 1;
+                inputOffset - 1
+              })
+            }
+          }
+          nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+          nextToken = Token.NUMBER
+          return
+        case '"' =>
+        case '\'' =>
+          nextTokenValue = ""
+          breakable {
+            while (true) {
+              inputOffset = input.indexOf(c, inputOffset)
+              if (inputOffset < 0) {
+                inputOffset = nextTokenStartOffset + 1
+                throw new XPathException("Unmatched quote in expression")
+              }
+              nextTokenValue += input.substring(nextTokenStartOffset + 1, {
+                inputOffset += 1;
+                inputOffset - 1
+              })
+              if (inputOffset < inputLength) {
+                val n = input.charAt(inputOffset)
+                if (n == c) { // Doubled delimiters
+                  nextTokenValue += c
+                  nextTokenStartOffset = inputOffset
+                  inputOffset += 1
+                } else
+                  break()
+              } else
+                break()
+            }
+          }
+          // maintain line number if there are newlines in the string
+          if (nextTokenValue.indexOf('\n') >= 0)
+            for (i <- 0 until nextTokenValue.length) {
+              if (nextTokenValue.charAt(i) == '\n')
+                incrementLineNumber(nextTokenStartOffset + i + 1)
+            }
+          //nextTokenValue = nextTokenValue.intern();
+          nextToken = Token.STRING_LITERAL
+          return
+        case '`' =>
+          if (isXQuery && inputOffset < inputLength - 1 && input.charAt(inputOffset) == '`' && input.charAt(inputOffset + 1) == '[') {
+            inputOffset += 2
+            var j = inputOffset
+            var newlines = 0
+            while (true) {
+              if (j >= inputLength)
+                throw new XPathException("Unclosed string template in expression")
+              if (input.charAt(j) == '\n')
+                newlines += 1
+              else if (input.charAt(j) == '`' && j + 1 < inputLength && input.charAt(j + 1) == '{') {
+                nextToken = Token.STRING_CONSTRUCTOR_INITIAL
+                nextTokenValue = input.substring(inputOffset, j)
+                inputOffset = j + 2
+                incrementLineNumber(newlines)
+                return
+              } else if (input.charAt(j) == ']' && j + 2 < inputLength && input.charAt(j + 1) == '`' && input.charAt(j + 2) == '`') {
+                nextToken = Token.STRING_LITERAL_BACKTICKED
+                // Can't return STRING_LITERAL because it's not accepted everywhere that a string literal is
+                nextTokenValue = input.substring(inputOffset, j)
+                inputOffset = j + 3
+                incrementLineNumber(newlines)
+                return
+              }
+              j += 1
+            }
+          }
+          else
+            throw new XPathException("Invalid character '`' (backtick) in expression")
+        case '\n' | ' ' | '\t' | '\r' =>
+          if (c == '\n')
+            incrementLineNumber()
+
+          nextTokenStartOffset = inputOffset
+        case '\u00B6' | 'Q' =>
+          if (inputOffset < inputLength && input.charAt(inputOffset) == '{') {
+            // EQName, revised syntax as per bug 15399
+            val close = input.indexOf('}', {
+              inputOffset += 1;
+              inputOffset - 1
+            })
+            if (close < inputOffset)
+              throw new XPathException("Missing closing brace in EQName")
+            var uri = input.substring(inputOffset, close)
+            uri = Whitespace.collapseWhitespace(uri).toString // Bug 29708
+            if (uri.contains("{"))
+              throw new XPathException("EQName must not contain opening brace")
+            inputOffset = close + 1
+            val start = inputOffset
+            var isStar = false
+            breakable {
+              while (inputOffset < inputLength) {
+                val c2 = input.charAt(inputOffset)
+                if (c2 > 0x80 || Character.isLetterOrDigit(c2) || c2 == '_' || c2 == '.' || c2 == '-') inputOffset += 1
+                else if (c2 == '*' && (start == inputOffset)) {
+                  inputOffset += 1
+                  isStar = true
+                  break()
                 } else
                   break()
               }
             }
-            // maintain line number if there are newlines in the string
-            if (nextTokenValue.indexOf('\n') >= 0)
-              for (i <- 0 until nextTokenValue.length) {
-                if (nextTokenValue.charAt(i) == '\n')
-                  incrementLineNumber(nextTokenStartOffset + i + 1)
-              }
-            //nextTokenValue = nextTokenValue.intern();
-            nextToken = Token.STRING_LITERAL
+            val localName = input.substring(start, inputOffset)
+            nextTokenValue = "Q{" + uri + "}" + localName
+            // Reuse Token.NAME because EQName is allowed anywhere that QName is allowed
+            nextToken = if (isStar) Token.PREFIX else Token.NAME
             return
-          case '`' =>
-            if (isXQuery && inputOffset < inputLength - 1 && input.charAt(inputOffset) == '`' && input.charAt(inputOffset + 1) == '[') {
-              inputOffset += 2
-              var j = inputOffset
-              var newlines = 0
-              while (true) {
-                if (j >= inputLength)
-                  throw new XPathException("Unclosed string template in expression")
-                if (input.charAt(j) == '\n')
-                  newlines += 1
-                else if (input.charAt(j) == '`' && j + 1 < inputLength && input.charAt(j + 1) == '{') {
-                  nextToken = Token.STRING_CONSTRUCTOR_INITIAL
-                  nextTokenValue = input.substring(inputOffset, j)
-                  inputOffset = j + 2
-                  incrementLineNumber(newlines)
-                  return
-                } else if (input.charAt(j) == ']' && j + 2 < inputLength && input.charAt(j + 1) == '`' && input.charAt(j + 2) == '`') {
-                  nextToken = Token.STRING_LITERAL_BACKTICKED
-                  // Can't return STRING_LITERAL because it's not accepted everywhere that a string literal is
-                  nextTokenValue = input.substring(inputOffset, j)
-                  inputOffset = j + 3
-                  incrementLineNumber(newlines)
-                  return
-                }
-                j += 1
-              }
-            }
-            else
-              throw new XPathException("Invalid character '`' (backtick) in expression")
-          case '\n' | ' ' | '\t' | '\r' =>
-            if (c == '\n')
-              incrementLineNumber()
-
-            nextTokenStartOffset = inputOffset
-          case '\u00B6' | 'Q' =>
-            if (inputOffset < inputLength && input.charAt(inputOffset) == '{') { // EQName, revised syntax as per bug 15399
-              val close = input.indexOf('}', {
-                inputOffset += 1;
-                inputOffset - 1
-              })
-              if (close < inputOffset)
-                throw new XPathException("Missing closing brace in EQName")
-              var uri = input.substring(inputOffset, close)
-              uri = Whitespace.collapseWhitespace(uri).toString // Bug 29708
-              if (uri.contains("{"))
-                throw new XPathException("EQName must not contain opening brace")
-              inputOffset = close + 1
-              val start = inputOffset
-              var isStar = false
-              breakable {
-                while (inputOffset < inputLength) {
-                  val c2 = input.charAt(inputOffset)
-                  if (c2 > 0x80 || Character.isLetterOrDigit(c2) || c2 == '_' || c2 == '.' || c2 == '-') inputOffset += 1
-                  else if (c2 == '*' && (start == inputOffset)) {
-                    inputOffset += 1
-                    isStar = true
-                    break()
-                  } else
-                    break()
-                }
-              }
-              val localName = input.substring(start, inputOffset)
-              nextTokenValue = "Q{" + uri + "}" + localName
-              // Reuse Token.NAME because EQName is allowed anywhere that QName is allowed
-              nextToken = if (isStar) Token.PREFIX else Token.NAME
-              return
-            }
-          /* else fall through */
-          case _ =>
+          } else {
             if (c < 0x80 && !Character.isLetter(c))
               throw new XPathException("Invalid character '" + c + "' in expression")
-          /* fall through */
-          case '_' =>
-            var foundColon = false
-            breakable {
-              while (inputOffset < inputLength) {
-                c = input.charAt(inputOffset)
-                c match {
-                  case ':' =>
-                    if (!foundColon) {
-                      if (precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) { // only NCName allowed after "? in a lookup expression, or after *:
-                        nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                        nextToken = Token.NAME
-                        return
-                      }
-                      if (inputOffset + 1 < inputLength) {
-                        val nc = input.charAt(inputOffset + 1)
-                        if (nc == ':') {
-                          nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                          nextToken = Token.AXIS
-                          inputOffset += 2
-                          return
-                        } else if (nc == '*') {
-                          nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                          nextToken = Token.PREFIX
-                          inputOffset += 2
-                          return
-                        } else if (!(nc == '_' || nc > 127 || Character.isLetter(nc))) { // for example: "let $x:=2", "x:y:z", "x:2"
-                          // end the token before the colon
-                          nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                          nextToken = Token.NAME
-                          return
-                        }
-                      }
-                      foundColon = true
-                    } else
-                      break()
-                  case '.' | '-' =>
-                    // If the name up to the "-" or "." is a valid operator, and if the preceding token
-                    // is such that an operator is valid here and an NCName isn't, then quit here (bug 2715)
-                    if (precedingToken > Token.LAST_OPERATOR && !(precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) && getBinaryOp(input.substring(nextTokenStartOffset, inputOffset)) != Token.UNKNOWN && !(precedingToken == Token.NAME && getBinaryOp(precedingTokenValue) != Token.UNKNOWN)) {
-                      nextToken = getBinaryOp(input.substring(nextTokenStartOffset, inputOffset))
-                      return
-                    }
-                  case '_' =>
-                  case _ =>
-                    if (c < 0x80 && !Character.isLetterOrDigit(c))
-                      break()
-                }
-                inputOffset += 1
-              }
-            }
-            nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-            nextToken = Token.NAME
+            processOtherCharacter()
             return
-        }
+          }
+        case '_' =>
+          processOtherCharacter()
+          return
+        case _ =>
+          if (c < 0x80 && ! Character.isLetter(c))
+            throw new XPathException("Invalid character '" + c + "' in expression")
+          processOtherCharacter()
+          return
       }
     }
   }

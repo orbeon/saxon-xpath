@@ -169,7 +169,7 @@ class LargeStringBuffer extends AppendableCharSequence {
             doneTo += SEGLEN
           } else {
             fsb.append(data(firstSeg), 0, end - doneTo)
-            break
+            break()
           }
         }
       }

@@ -139,7 +139,7 @@ class Doctype(content: Expression) extends Instruction {
           while (true) {
             val attDef: NodeInfo = attributes.next().asInstanceOf[NodeInfo]
             if (attDef == null) {
-              break
+              break()
             }
             if ("attribute" == attDef.getLocalPart) {
               val atname: String = attDef.getAttributeValue("", "name")

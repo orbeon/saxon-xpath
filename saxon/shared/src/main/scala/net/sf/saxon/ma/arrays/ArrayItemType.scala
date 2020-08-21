@@ -88,16 +88,12 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
   override def toExportString(): String =
     makeString((seqType: SequenceType) => toExportString())
 
-  override def equals(other: Any): Boolean = {
-    if (this == other) {
-      return true
+  override def equals(other: Any): Boolean =
+    other match {
+      case o: ArrayItemType if this eq o => true
+      case o: ArrayItemType => memberType == o.memberType
+      case _ => false
     }
-    if (other.isInstanceOf[ArrayItemType]) {
-      val f2: ArrayItemType = other.asInstanceOf[ArrayItemType]
-      return memberType == f2.memberType
-    }
-    false
-  }
 
   override def hashCode(): Int = memberType.hashCode
 

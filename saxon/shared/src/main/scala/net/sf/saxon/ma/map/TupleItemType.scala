@@ -148,10 +148,11 @@ class TupleItemType(names: List[String],
   }
 
   override def equals(other: Any): Boolean =
-    this == other ||
-      other.isInstanceOf[TupleItemType] &&
-        extensible == other.asInstanceOf[TupleItemType].extensible &&
-        fields == other.asInstanceOf[TupleItemType].fields
+    other match {
+      case o: TupleItemType if this eq o => true
+      case o: TupleItemType => extensible == o.extensible && fields == o.fields
+      case _ => false
+    }
 
   override def hashCode(): Int = fields.hashCode
 

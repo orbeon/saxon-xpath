@@ -244,7 +244,7 @@ class StaticQueryContext () {
       if (n > 0) {
         sb.append(buffer, 0, n)
       } else {
-        break
+        break()
       }
     }
   }

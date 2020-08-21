@@ -64,7 +64,7 @@ class SubsequenceIterator private(private var base: SequenceIterator,
       nextItem = base.next()
       basePosition += 1
       if (nextItem == null) {
-        break
+        break()
       }
     }
   }

@@ -88,20 +88,20 @@ object UntypedNumericComparer {
         else if (c == '-') {
           if (sign != '?' || wholePartLength > 0 || decimalPoints > 0) {
             simple = false
-            break
+            break()
           }
           sign = c
         }
         else if (c == '.') {
           if (decimalPoints > 0) {
             simple = false
-            break
+            break()
           }
           decimalPoints = 1
         }
         else {
           simple = false
-          break
+          break()
         }
       }
     }

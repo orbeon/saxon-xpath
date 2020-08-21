@@ -54,7 +54,7 @@ object AnyURIValue {
           sb.cat(c)
           i += 1
           if (i >= n) {
-            break
+            break()
           }
           c = s.charAt(i)
           //          continue
@@ -66,11 +66,11 @@ object AnyURIValue {
           i += 1
           bb.put(hex(s.charAt(i), s.charAt(i)))
           if (i >= n) {
-            break
+            break()
           }
           c = s.charAt(i)
           if (c != '%') {
-            break
+            break()
           }
         }
         bb.flip()

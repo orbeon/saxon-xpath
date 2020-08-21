@@ -30,7 +30,7 @@ object DocumentOverNodeInfo {
        while (true) {
          val next: NodeInfo = allElements.next()
          if (next == null) {
-           break
+           break()
          }
          if (next.getNodeKind == Type.ELEMENT) {
            if (tagname.==("*") || tagname == next.getDisplayName) {
@@ -52,7 +52,7 @@ object DocumentOverNodeInfo {
       while (true) {
         val next: NodeInfo = allElements.next()
         if (next == null) {
-          break
+          break()
         }
         if (next.getNodeKind == Type.ELEMENT) {
           if ((ns.==("*") || ns == next.getURI) &&
