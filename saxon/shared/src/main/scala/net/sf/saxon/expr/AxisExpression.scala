@@ -368,7 +368,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                     extensions.next().asInstanceOf[ComplexType]
                   if (extension.allowsAttributes()) {
                     found = true
-                    break
+                    break()
                   }
                 }
               }
@@ -379,7 +379,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                     extensions.next().asInstanceOf[ComplexType]
                   try if (extension.getAttributeUseType(targetName) != null) {
                     found = true
-                    break
+                    break()
                   } catch {
                     case e: SchemaException => {}
 
@@ -536,7 +536,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                         ", and " +
                         sq.getEQName +
                         " was intended?"
-                      break
+                      break()
                     }
                   }
                 }

@@ -27,26 +27,21 @@ import java.util.Set
 /**
  * A reference to a global variable
  */
-class GlobalVariableReference(var name: StructuredQName)
-  extends VariableReference(name)
+class GlobalVariableReference private (qnameOrBinding: StructuredQName Either GlobalVariable)
+  extends VariableReference(qnameOrBinding)
     with ComponentInvocation {
 
   var bindingSlot: Int = -1
 
-  def this(globalVariable: GlobalVariable) = {
-    this(globalVariable.getVariableQName)
-    name = globalVariable.getVariableQName
-    fixup(globalVariable)
-  }
+  def this(name: StructuredQName)    = this(Left(name))
+  def this(variable: GlobalVariable) = this(Right(variable))
 
   def copy(rebindings: RebindingMap): Expression = {
-    if (binding == null) {
+    if (binding == null)
       //System.err.println("copy unbound variable " + this);
-      throw new UnsupportedOperationException(
-        "Cannot copy a variable reference whose binding is unknown")
-    }
-    val ref: GlobalVariableReference = new GlobalVariableReference(
-      getVariableName)
+      throw new UnsupportedOperationException("Cannot copy a variable reference whose binding is unknown")
+
+    val ref = new GlobalVariableReference(Left(getVariableName))
     ref.copyFrom(this)
     ref
   }

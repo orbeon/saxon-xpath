@@ -231,7 +231,7 @@ object AlphaCode {
                 else {
                   expect(']')
                   callBack.setMultiTypeProperty(container, "" + c, nestedTypes)
-                  break
+                  break()
                 }
               }
             }
@@ -257,7 +257,7 @@ object AlphaCode {
                   fieldNames.add(currName.toString)
                   currName.setLength(0)
                   callBack.setMultiStringProperty(container, "f", fieldNames)
-                  break
+                  break()
                 }
                 else {
                   currName.append(ch)

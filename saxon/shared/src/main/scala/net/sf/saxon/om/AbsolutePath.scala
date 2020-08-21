@@ -92,7 +92,7 @@ object AbsolutePath {
       val index = getIndex
       if (index != -1) {
         fsb.cat('[')
-        fsb.append(s"$getIndex")
+        fsb.append(getIndex.toString)
         fsb.cat(']')
       }
     }

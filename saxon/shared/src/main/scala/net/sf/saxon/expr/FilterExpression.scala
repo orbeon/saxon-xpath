@@ -162,12 +162,9 @@ object FilterExpression {
               NamespaceConstant.SAXON,
               "pp" + let.hashCode))
           let.setSequence(comparand)
-          val isWholeArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val arithArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val floorArg: LocalVariableReference = new LocalVariableReference(
-            let)
+          val isWholeArg: LocalVariableReference = new LocalVariableReference(let)
+          val arithArg: LocalVariableReference = new LocalVariableReference(let)
+          val floorArg: LocalVariableReference = new LocalVariableReference(let)
           val isWhole: Expression = VendorFunctionSetHE.getInstance
             .makeFunction("is-whole-number", 1)
             .makeFunctionCall(isWholeArg)

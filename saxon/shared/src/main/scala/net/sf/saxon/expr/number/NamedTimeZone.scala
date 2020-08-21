@@ -427,7 +427,7 @@ object NamedTimeZone {
           val tz: TimeZone = TimeZone.getTimeZone(z)
           if (tz != null && tz.getOffset(epochDate) == tzMinutes * 60000) {
             zone = tz
-            break
+            break()
           }
         }
       }
@@ -437,7 +437,7 @@ object NamedTimeZone {
             val tz: TimeZone = TimeZone.getTimeZone(z)
             if (tz != null && tz.getOffset(epochDate) == tzMinutes * 60000) {
               zone = tz
-              break
+              break()
             }
           }
         }

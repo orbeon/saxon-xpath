@@ -47,7 +47,7 @@ object NormalizeUnicode {
       while (i >= 0) {
         if (chars.charAt(i) > 127) {
           allASCII = false
-          break
+          break()
         }
         i -= 1
       }

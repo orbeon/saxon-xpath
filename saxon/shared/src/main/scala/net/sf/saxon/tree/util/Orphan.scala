@@ -205,7 +205,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     typeAnnotation
   }
 
-  def equals(other: NodeInfo): Boolean = this == other
+  def equals(other: NodeInfo): Boolean = this eq other
 
   override def hashCode(): Int = super.hashCode
 
@@ -227,7 +227,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   def compareOrder(other: NodeInfo): Int = {
 // are they the same node?
-    if (this == other) {
+    if (this eq other) {
       0
     }
     if (this.hashCode < other.hashCode) -1 else +1

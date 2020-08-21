@@ -191,7 +191,7 @@ class KeyIndex(isRangeKey: Boolean) {
               nodes.add(i + 1, curr)
             }
             found = true
-            break
+            break()
           }
           {
             i -= 1;

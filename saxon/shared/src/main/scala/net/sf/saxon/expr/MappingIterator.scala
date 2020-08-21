@@ -18,7 +18,7 @@ class MappingIterator(private var base: SequenceIterator,
         if (results != null) {
           nextItem = results.next()
           if (nextItem != null) {
-            break
+            break()
           } else {
             results = null
           }
@@ -32,7 +32,7 @@ class MappingIterator(private var base: SequenceIterator,
             if (nextItem == null) {
               results = null
             } else {
-              break
+              break()
             }
           }
         } else {

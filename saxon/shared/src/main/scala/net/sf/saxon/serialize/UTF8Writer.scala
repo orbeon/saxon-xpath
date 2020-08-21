@@ -155,7 +155,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
           _surrogate = c
 
           if (offInt >= len) {
-            break
+            break()
           }
           c = _convertSurrogate(cbuf({
             offInt += 1;
@@ -348,7 +348,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
             throwIllegal(c)
           }
           _surrogate = c
-          if (offInt >= lenInt) break
+          if (offInt >= lenInt) break()
           c = _convertSurrogate(str.charAt({
             offInt += 1;
             offInt - 1

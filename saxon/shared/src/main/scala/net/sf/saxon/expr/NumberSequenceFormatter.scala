@@ -234,7 +234,7 @@ class NumberSequenceFormatter(value: Expression,
         atomicVal
       } != null) {
         if (backwardsCompatible && !vec.isEmpty) {
-          break
+          break()
         }
         val startValue: Int =
           if (startValues.size > pos) startValues.get(pos)

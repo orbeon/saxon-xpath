@@ -39,7 +39,7 @@ object NameChecker {
     breakable {
       for (i <- 0 until len if qname.charAt(i) == ':') {
         colon = i
-        break
+        break()
       }
     }
     if (colon < 0) {

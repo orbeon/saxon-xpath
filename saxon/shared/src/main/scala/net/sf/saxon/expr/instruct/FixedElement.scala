@@ -108,13 +108,13 @@ class FixedElement(@BeanProperty var elementName: NodeName,
                 .getAttributeName
                 .hasURI("")) {
                 ok = false
-                break
+                break()
               }
             } else {
               val childType: ItemType = exp.getItemType
               if (th.relationship(childType, NodeKindTest.ATTRIBUTE) != Affinity.DISJOINT) {
                 ok = false
-                break
+                break()
               }
             }
           }

@@ -48,7 +48,7 @@ class StringToDouble extends StringConverter {
             case 'N' =>
               containsDisallowedChars = true
               useJava = true
-              break
+              break()
             case _ => useJava = true
           }
         }
@@ -70,7 +70,7 @@ class StringToDouble extends StringConverter {
             case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '.' | 'e' | 'E' | '+' | '-' =>
             case _ =>
               containsDisallowedChars = true
-              break
+              break()
           }
         }
       }

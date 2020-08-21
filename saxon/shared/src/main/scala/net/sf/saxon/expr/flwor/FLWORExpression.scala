@@ -49,7 +49,7 @@ class FLWORExpression extends Expression {
     breakable {
       for (c <- clauses.asScala if isLoopingClause(c)) {
         looping = true
-        break
+        break()
       }
     }
     this.returnClauseOp = new Operand(
@@ -289,14 +289,14 @@ class FLWORExpression extends Expression {
             Array(lc.getRangeVariable))) {
             clauses.remove(c)
             tryAgain = true
-            outer.break
+            outer.break()
           }
           var suppressInlining: Boolean = false
           inner.breakable {
             for (c2 <- clauses.asScala if c2.containsNonInlineableVariableReference(
               lc.getRangeVariable)) {
               suppressInlining = true
-              inner.break
+              inner.break()
             }
           }
           if (!suppressInlining) {
@@ -314,7 +314,7 @@ class FLWORExpression extends Expression {
                 getReturnClause
               }
               tryAgain = true
-              outer.break
+              outer.break()
             }
           }
         }
@@ -340,7 +340,7 @@ class FLWORExpression extends Expression {
         ExpressionTool.dependsOnFocus(
           w.asInstanceOf[WhereClause].getPredicate)) {
         depends = true
-        break
+        break()
       }
     }
     if (depends && contextItemType != null) {
@@ -362,11 +362,11 @@ class FLWORExpression extends Expression {
         if (c.isInstanceOf[ForClause]) {
           if (c.asInstanceOf[ForClause].getPositionVariable != null) {
             allForOrLetExpr = false
-            break
+            break()
           }
         } else if (!(c.isInstanceOf[LetClause])) {
           allForOrLetExpr = false
-          break
+          break()
         }
       }
     }
@@ -436,7 +436,7 @@ class FLWORExpression extends Expression {
                 val newWhere: WhereClause = new WhereClause(this, term)
                 clauses.add(c + 1, newWhere)
               }
-              break
+              break()
             }
             {
               c -= 1
@@ -584,7 +584,7 @@ class FLWORExpression extends Expression {
       for (i <- 0 until clauses.size
            if clauseHasBinding(clauses.get(i), binding)) {
         bindingClause = i
-        break
+        break()
       }
     }
     val boundOutside: Boolean = bindingClause < 0
@@ -607,7 +607,7 @@ class FLWORExpression extends Expression {
             clauses.get(i).processOperands(checker)
             if (!response.isEmpty) {
               lastReferencingClause = i
-              break
+              break()
             }
           } catch {
             case e: XPathException => assert(false)

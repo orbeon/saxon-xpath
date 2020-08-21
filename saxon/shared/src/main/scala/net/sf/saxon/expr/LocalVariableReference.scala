@@ -6,27 +6,23 @@ import net.sf.saxon.om.Sequence
 
 import net.sf.saxon.om.StructuredQName
 
-class LocalVariableReference(name: StructuredQName)
-  extends VariableReference(name) {
+class LocalVariableReference private (qnameOrBinding: StructuredQName Either LocalBinding)
+  extends VariableReference(qnameOrBinding) {
+
+  def this(name: StructuredQName) = this(Left(name))
+  def this(binding: LocalBinding) = this(Right(binding))
 
   var slotNumber: Int = -999
 
-  def this(binding: LocalBinding) = {
-    this(binding.getVariableQName())
-
-  }
-
-
   def copy(rebindings: RebindingMap): Expression = {
-    if (binding == null) {
-      throw new UnsupportedOperationException(
-        "Cannot copy a variable reference whose binding is unknown")
-    }
-    val ref: LocalVariableReference = new LocalVariableReference(
-      getVariableName)
+
+    if (binding == null)
+      throw new UnsupportedOperationException("Cannot copy a variable reference whose binding is unknown")
+
+    val ref = new LocalVariableReference(Left(getVariableName))
     ref.copyFrom(this)
     ref.slotNumber = slotNumber
-    val newBinding: Binding = rebindings.get(binding)
+    val newBinding = rebindings.get(binding)
     if (newBinding != null) {
       ref.binding = newBinding
     }

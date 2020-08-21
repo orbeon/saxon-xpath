@@ -101,7 +101,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
   }
 
   def isIdentical(other: IdentityComparable): Boolean =
-    other.isInstanceOf[NodeName] && this == other &&
+    other.isInstanceOf[NodeName] && (this eq other) &&
       this.getPrefix == other.asInstanceOf[NodeName].getPrefix
 
   /**

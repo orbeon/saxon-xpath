@@ -26,7 +26,7 @@ class ReturnClauseIterator(private var base: TuplePull,
         if (results != null) {
           nextItem = results.next()
           if (nextItem != null) {
-            break
+            break()
           } else {
             results = null
           }
@@ -37,7 +37,7 @@ class ReturnClauseIterator(private var base: TuplePull,
           if (nextItem == null) {
             results = null
           } else {
-            break
+            break()
           }
         } else {
           results = null

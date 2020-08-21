@@ -593,7 +593,7 @@ class DOMNodeWrapper(var node: Node,
           (currText.getNodeType == Node.TEXT_NODE || currText.getNodeType == Node.CDATA_SECTION_NODE)) {
           thisSpan += 1
         } else {
-          break
+          break()
         }
       }
     }
@@ -632,7 +632,7 @@ class DOMNodeWrapper(var node: Node,
               span += 1
               currNode = prev
             } else {
-              break
+              break()
             }
           }
         }
@@ -764,7 +764,7 @@ class DOMNodeWrapper(var node: Node,
           if (kind == Node.TEXT_NODE || kind == Node.CDATA_SECTION_NODE) {
             count += 1
           } else {
-            break
+            break()
           }
         }
       }
@@ -782,7 +782,7 @@ class DOMNodeWrapper(var node: Node,
           if (kind == Node.TEXT_NODE || kind == Node.CDATA_SECTION_NODE) {
             pos += 1
             count += 1
-          } else break
+          } else break()
         }
       }
       if (count == 0) 1 else count
@@ -806,11 +806,11 @@ class DOMNodeWrapper(var node: Node,
             val currentDomNode: Node = childNodes.item(ix)
             currentDomNode.getNodeType match {
               case Node.DOCUMENT_TYPE_NODE =>
-              case Node.ELEMENT_NODE => break
+              case Node.ELEMENT_NODE => break()
               case _ =>
                 if (elementsOnly) {
                 } else {
-                  break
+                  break()
                 }
 
             }
@@ -831,12 +831,12 @@ class DOMNodeWrapper(var node: Node,
             val currentDomNode: Node = childNodes.item(ix)
             currentDomNode.getNodeType match {
               case Node.DOCUMENT_TYPE_NODE =>
-              case Node.ELEMENT_NODE => break
+              case Node.ELEMENT_NODE => break()
               case _ =>
                 if (elementsOnly) {
 
                 } else {
-                  break
+                  break()
                 }
 
             }

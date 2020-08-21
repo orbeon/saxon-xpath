@@ -222,7 +222,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
             root.deregisterID(att.getValue)
           }
           if (n == null) {
-            break
+            break()
           }
           root.deIndex(n)
         }

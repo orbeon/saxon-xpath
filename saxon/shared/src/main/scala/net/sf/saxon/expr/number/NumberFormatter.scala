@@ -68,7 +68,7 @@ class NumberFormatter {
             i += 1;
             i - 1
           }
-          if (i == len) break
+          if (i == len) break()
           c = uFormat.uCharAt(i)
         }
 
@@ -81,14 +81,14 @@ class NumberFormatter {
             first = false
           }
         }
-        if (i == len) break
+        if (i == len) break()
         t = i
         c = uFormat.uCharAt(i)
         breakable {
           while (!isLetterOrDigit(c)) {
             first = false
             i += 1
-            if (i == len) break
+            if (i == len) break()
             c = uFormat.uCharAt(i)
           }
         }

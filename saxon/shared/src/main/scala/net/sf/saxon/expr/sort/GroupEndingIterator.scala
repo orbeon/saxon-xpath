@@ -49,7 +49,7 @@ class GroupEndingIterator(select: Expression,
       while (nextItem != null) if (pattern.matches(nextItem, runningContext)) {
         nextItem = population.next()
         if (nextItem != null) {
-          break
+          break()
         }
       } else {
         nextItem = population.next()

@@ -11,17 +11,22 @@ class XPathTest extends AnyFunSpec {
     val c = p.newXPathCompiler()
     val executable = c.compile(xpath)
     val selector = executable.load()
-    selector.setContextItem(new XdmAtomicValue(1))
+    selector.setContextItem(new XdmAtomicValue(2020))
     selector.evaluateSingle()
   }
 
   describe("Minimalistic expression compilation and execution") {
 
     val Expected = List(
-      "42"     -> "42",
-      "42 + 1" -> "43",
-//      "3.1415" -> "43",
+      "."                   -> "2020",
+      "42"                  -> "42",
+      "42 + 1"              -> "43",
+      "2 + 3 * 4 - 5 * 2"   -> "4",
+      "(2 + 3) * 4 - 5 * 2" -> "10",
       "'To be, or not to be, that is the question'" -> "To be, or not to be, that is the question",
+      "let $a := 42 return $a" -> "42",
+      "let $a := 1, $b := 2 return $a + $b" -> "3",
+//      "3.1415" -> "3.1415",
 //      "concat('To be', ', or not to be')" -> "To be, or not to be",
 //      "'To be' || ', or not to be'" -> "To be, or not to be",
     )

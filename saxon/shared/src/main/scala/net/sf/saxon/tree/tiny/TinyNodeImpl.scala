@@ -112,7 +112,7 @@ abstract class TinyNodeImpl extends NodeInfo {
   }
 
   override def isSameNodeInfo(other: NodeInfo): Boolean =
-    this == other ||
+    (this eq other) ||
       (other.isInstanceOf[TinyNodeImpl] && tree == other
         .asInstanceOf[TinyNodeImpl]
         .tree &&

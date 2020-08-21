@@ -149,8 +149,8 @@ class DirectoryCollection /**
             } else {
               resource
             }
-          }
-          null
+          } else
+            null
         } catch {
           case e: XPathException => {
             val onError: Int = params.getOnError

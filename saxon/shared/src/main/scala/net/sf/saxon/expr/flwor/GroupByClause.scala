@@ -211,7 +211,7 @@ class GroupByClause(var config: Configuration) extends Clause {
         o.getChildExpression.asInstanceOf[LocalVariableReference]
       out.startSubsidiaryElement("by")
       out.emitAttribute("var", ref.getDisplayName)
-      out.emitAttribute("slot", s"${ref.getBinding.getLocalSlotNumber}")
+      out.emitAttribute("slot", ref.getBinding.getLocalSlotNumber.toString)
       out.endSubsidiaryElement()
     }
     out.endElement()
@@ -275,7 +275,7 @@ class GroupByClause(var config: Configuration) extends Clause {
             while (true) {
               val `val`: AtomicValue = atoms.next().asInstanceOf[AtomicValue]
               if (`val` == null) {
-                break
+                break()
               }
               h ^= i +
                 `val`

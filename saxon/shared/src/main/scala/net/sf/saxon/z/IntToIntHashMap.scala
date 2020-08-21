@@ -179,7 +179,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
           count - 1
         } >= 100) {
           buffer.append("....")
-          break
+          break()
         }
       }
     }

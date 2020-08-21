@@ -54,7 +54,8 @@ class NamespaceReducer(val next: Receiver)
       var k = namespacesSize
       breakable {
         for (d <- depth - 1 to 0 by -1) {
-          if (!disinheritStack(d)) break
+          if (!disinheritStack(d))
+            break()
           for (i <- 0 until countStack(d)) {
             undeclarations.add(namespaces({
               k -= 1;

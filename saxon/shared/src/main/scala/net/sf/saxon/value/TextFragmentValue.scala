@@ -90,7 +90,11 @@ class TextFragmentValue(config: Configuration,
 
   def getStringValueCS(): CharSequence = text
 
-  override def equals(other: Any): Boolean = this == other
+  override def equals(other: Any): Boolean =
+    other match {
+      case o: TextFragmentValue if this eq o => true
+      case _ => false
+    }
 
   override def hasFingerprint(): Boolean = true
 
@@ -106,7 +110,7 @@ class TextFragmentValue(config: Configuration,
   def getSystemId(): String = documentURI
 
   def compareOrder(other: NodeInfo): Int = {
-    if (this == other) {
+    if (this eq other) {
       0
     }
     -1
@@ -218,7 +222,7 @@ class TextFragmentValue(config: Configuration,
 
     def getStringValueCS(): CharSequence = text
 
-     def equals(other: NodeInfo): Boolean = this == other
+     def equals(other: NodeInfo): Boolean = this eq other
 
     def generateId(buffer: FastStringBuffer): Unit = {
       buffer.append("tt")
@@ -231,7 +235,7 @@ class TextFragmentValue(config: Configuration,
     def getBaseURI(): String = baseURI
 
     def compareOrder(other: NodeInfo): Int = {
-      if (this == other) {
+      if (this eq other) {
         0
       }
       +1

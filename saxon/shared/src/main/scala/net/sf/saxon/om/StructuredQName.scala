@@ -216,34 +216,27 @@ class StructuredQName private(var content: Array[Char],
 
   override def toString(): String = getDisplayName
 
-  override def equals(other: Any): Boolean = {
-    if (this == other) {
-      true
-    }
-    if (other.isInstanceOf[StructuredQName]) {
-      val c: Int = other.asInstanceOf[StructuredQName].cachedHashCode
-      if (c != -1 && c != hashCode) {
-        false
-      }
-      val sq2: StructuredQName = other.asInstanceOf[StructuredQName]
-      if (localNameStart != sq2.localNameStart || prefixStart != sq2.prefixStart) {
-        false
-      }
-      var i: Int = prefixStart - 1
-      while (i >= 0) {
-        if (content(i) != sq2.content(i)) {
-          false
+  override def equals(other: Any): Boolean =
+    other match {
+      case sq2: StructuredQName if sq2 eq this => true
+      case sq2: StructuredQName =>
+        val c = sq2.cachedHashCode
+        if (c != -1 && c != hashCode) {
+          return false
         }
-        {
+        if (localNameStart != sq2.localNameStart || prefixStart != sq2.prefixStart) {
+          return false
+        }
+        var i = prefixStart - 1
+        while (i >= 0) {
+          if (content(i) != sq2.content(i)) {
+            return false
+          }
           i -= 1;
-          i + 1
         }
-      }
-      true
-    } else {
-      false
+        true
+      case _ => false
     }
-  }
 
   override def hashCode(): Int =
     if (cachedHashCode == -1) {

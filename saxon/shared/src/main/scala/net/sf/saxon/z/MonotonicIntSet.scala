@@ -169,7 +169,7 @@ class MonotonicIntSet extends IntSet {
               j - 1
             }
             if (j == used) {
-              break
+              break()
             }
           }
         }

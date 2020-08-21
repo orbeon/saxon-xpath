@@ -151,7 +151,7 @@ class JRegexIterator(private var theString: String,
                 var pos: Int = s.size
                 for (e <- 0 until s.size if s.get(e) == -parentGroup) {
                   pos = e
-                  break
+                  break()
                 }
                 s.add(pos, -i)
                 s.add(pos, i)

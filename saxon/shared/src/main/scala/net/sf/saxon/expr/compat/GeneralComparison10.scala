@@ -308,7 +308,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
             if (seq1 == null) {
               false
             }
-            break
+            break()
           }
           try {
             if (compare(item0, singletonop, item1, comparer, context)) {

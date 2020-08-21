@@ -65,7 +65,7 @@ object CaseVariants {
       while (true) {
         val item: NodeInfo = iter.next()
         if (item == null) {
-          break
+          break()
         }
         val code: String = item.getAttributeValue("", "n")
         val icode: Int = java.lang.Integer.parseInt(code, 16)

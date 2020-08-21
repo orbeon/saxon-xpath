@@ -92,7 +92,7 @@ abstract class NodeImpl
     }
   }
 
-  def equals(other: NodeInfo): Boolean = this == other
+  def equals(other: NodeInfo): Boolean = this eq other
 
   def getNodeName(): NodeName = null
 

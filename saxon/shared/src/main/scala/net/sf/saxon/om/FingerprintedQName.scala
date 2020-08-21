@@ -199,7 +199,7 @@ class FingerprintedQName
     * @return true if the two values are indentical, false otherwise
     */
   def isIdentical(other: IdentityComparable): Boolean =
-    other.isInstanceOf[NodeName] && this == other &&
+    other.isInstanceOf[NodeName] && (this eq other) &&
       this.getPrefix == other.asInstanceOf[NodeName].getPrefix
 
   override def toString(): String = qName.getDisplayName

@@ -219,7 +219,7 @@ class REMatcher(val progrm: REProgram) {
             while (k < prefixLength) {
               if (!equalCaseBlind(search.uCharAt(j), prefix.uCharAt(k))) {
                 prefixOK = false
-                break
+                break()
               }
               j += 1
               k += 1
@@ -233,7 +233,7 @@ class REMatcher(val progrm: REProgram) {
             while (k < prefixLength) {
               if (search.uCharAt(j) != prefix.uCharAt(k)) {
                 prefixOK = false
-                break
+                break()
               }
               j += 1
               k += 1
@@ -266,7 +266,7 @@ class REMatcher(val progrm: REProgram) {
           while (!search.isEnd(i)) {
             if ((condition.fixedPosition == -1 || condition.fixedPosition == i) && condition.operation.iterateMatches(this, i).hasNext) {
               found = true
-              break
+              break()
             }
             i += 1
           }
@@ -360,19 +360,19 @@ class REMatcher(val progrm: REProgram) {
                   if ( {
                     i += 1;
                     i
-                  } >= replacement.uLength) break
+                  } >= replacement.uLength) break()
                   ch = replacement.uCharAt(i)
                   if (ch >= '0' && ch <= '9') {
                     val m = n * 10 + (ch - '0')
                     if (m > maxCapture) {
                       i -= 1
-                      break
+                      break()
                     }
                     else n = m
                   }
                   else {
                     i -= 1
-                    break
+                    break()
                   }
                 }
               }

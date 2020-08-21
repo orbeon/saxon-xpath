@@ -316,7 +316,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
       for (i <- 0 until primary.uLength()
            if isDecimalDigit.test(primary.uCharAt(i))) {
         isDecimalDigitPattern = true
-        break
+        break()
       }
     }
     if (isDecimalDigitPattern) {

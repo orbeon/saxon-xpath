@@ -146,7 +146,7 @@ object UnparsedTextFunction {
       while (true) {
         actual = reader.read(buffer, 0, buffer.length)
         if (actual < 0) {
-          break
+          break()
         }
         var c: Int = 0
         while (c < actual) {

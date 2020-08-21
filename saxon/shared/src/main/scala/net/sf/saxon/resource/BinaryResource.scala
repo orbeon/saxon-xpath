@@ -95,7 +95,7 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
         while (offset < contentLength) {
           bytesRead = in.read(data, offset, data.length - offset)
           if (bytesRead == -1) {
-            break
+            break()
           }
           offset += bytesRead
         }

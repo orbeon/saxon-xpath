@@ -99,76 +99,79 @@ object Base64BinaryValue {
     var chars = 0
     var last = 0
     // process characters 4 at a time: 4 characters => 3 bytes
-    while ( {
-      i < in.length
-    }) {
-      val c = in.charAt({
-        i += 1;
-        i - 1
-      })
-      if (!Whitespace.isWhite(c)) {
-        chars += 1
-        if (c == '=') { // all following chars must be '=' or whitespace
-          pad = 1
-          for (k <- i until in.length) {
-            val ch = in.charAt(k)
-            if (ch == '=') {
-              pad += 1
-              chars += 1
+    breakable {
+      while ( {
+        i < in.length
+      }) {
+        val c = in.charAt({
+          i += 1;
+          i - 1
+        })
+        if (!Whitespace.isWhite(c)) {
+          chars += 1
+          if (c == '=') { // all following chars must be '=' or whitespace
+            pad = 1
+            for (k <- i until in.length) {
+              val ch = in.charAt(k)
+              if (ch == '=') {
+                pad += 1
+                chars += 1
+              }
+              else if (Whitespace.isWhite(ch)) {
+              }
+              else throw new XPathException("Base64 padding character '=' is followed by non-padding characters", "FORG0001")
             }
-            else if (Whitespace.isWhite(ch)) {
+            if (pad == 1 && "AEIMQUYcgkosw048".indexOf(last) < 0) throw new XPathException("In base64, if the value ends with a single '=' character, then the preceding character must be" + " one of [AEIMQUYcgkosw048]", "FORG0001")
+            else if (pad == 2 && "AQgw".indexOf(last) < 0) throw new XPathException("In base64, if the value ends with '==', then the preceding character must be" + " one of [AQgw]", "FORG0001")
+            // number of padding characters must be the number required
+            if (pad > 2) throw new XPathException("Found " + pad + " '=' characters at end of base64 value; max is 2", "FORG0001")
+            if (pad != ((4 - u) % 4)) throw new XPathException("Required " + ((4 - u) % 4) + " '=' characters at end of base64 value; found " + pad, "FORG0001")
+            // append 0 sextets corresponding to number of padding characters
+            for (p <- 0 until pad) {
+              unit({
+                u += 1;
+                u - 1
+              }) = 'A'
             }
-            else throw new XPathException("Base64 padding character '=' is followed by non-padding characters", "FORG0001")
+            i = in.length
           }
-          if (pad == 1 && "AEIMQUYcgkosw048".indexOf(last) < 0) throw new XPathException("In base64, if the value ends with a single '=' character, then the preceding character must be" + " one of [AEIMQUYcgkosw048]", "FORG0001")
-          else if (pad == 2 && "AQgw".indexOf(last) < 0) throw new XPathException("In base64, if the value ends with '==', then the preceding character must be" + " one of [AQgw]", "FORG0001")
-          // number of padding characters must be the number required
-          if (pad > 2) throw new XPathException("Found " + pad + " '=' characters at end of base64 value; max is 2", "FORG0001")
-          if (pad != ((4 - u) % 4)) throw new XPathException("Required " + ((4 - u) % 4) + " '=' characters at end of base64 value; found " + pad, "FORG0001")
-          // append 0 sextets corresponding to number of padding characters
-          for (p <- 0 until pad) {
+          else {
+            last = c
             unit({
               u += 1;
               u - 1
-            }) = 'A'
+            }) = c
           }
-          i = in.length
-        }
-        else {
-          last = c
-          unit({
-            u += 1;
-            u - 1
-          }) = c
-        }
-        if (u == 4) {
-          val t = (decodeChar(unit(0)) << 18) + (decodeChar(unit(1)) << 12) + (decodeChar(unit(2)) << 6) + decodeChar(unit(3))
-          if (bytesUsed + 3 > result.length) {
-            val r2 = new Array[Byte](bytesUsed * 2)
-            System.arraycopy(result, 0, r2, 0, bytesUsed)
-            result = r2
+          if (u == 4) {
+            val t = (decodeChar(unit(0)) << 18) + (decodeChar(unit(1)) << 12) + (decodeChar(unit(2)) << 6) + decodeChar(unit(3))
+            if (bytesUsed + 3 > result.length) {
+              val r2 = new Array[Byte](bytesUsed * 2)
+              System.arraycopy(result, 0, r2, 0, bytesUsed)
+              result = r2
+            }
+            result({
+              bytesUsed += 1;
+              bytesUsed - 1
+            }) = ((t >> 16) & 0xff).toByte
+            result({
+              bytesUsed += 1;
+              bytesUsed - 1
+            }) = ((t >> 8) & 0xff).toByte
+            result({
+              bytesUsed += 1;
+              bytesUsed - 1
+            }) = (t & 0xff).toByte
+            u = 0
           }
-          result({
-            bytesUsed += 1;
-            bytesUsed - 1
-          }) = ((t >> 16) & 0xff).toByte
-          result({
-            bytesUsed += 1;
-            bytesUsed - 1
-          }) = ((t >> 8) & 0xff).toByte
-          result({
-            bytesUsed += 1;
-            bytesUsed - 1
-          }) = (t & 0xff).toByte
-          u = 0
         }
-      }
-      if (i >= in.length) {
-        bytesUsed -= pad
-        break //todo: break is not supported
+        if (i >= in.length) {
+          bytesUsed -= pad
+          break()
+        }
       }
     }
-    if (chars % 4 != 0) throw new XPathException("Length of base64 value must be a multiple of four", "FORG0001")
+    if (chars % 4 != 0)
+      throw new XPathException("Length of base64 value must be a multiple of four", "FORG0001")
     val r3 = new Array[Byte](bytesUsed)
     System.arraycopy(result, 0, r3, 0, bytesUsed)
     r3

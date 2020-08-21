@@ -56,16 +56,12 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     ElementImpl.isIdRefNode(this)
   }
 
-  override def equals(other: Any): Boolean = {
-    if (!(other.isInstanceOf[AttributeImpl])) {
-      return false
+  override def equals(other: Any): Boolean =
+    other match {
+      case o: AttributeImpl if this eq o => true
+      case o: AttributeImpl => getRawParent == o.getRawParent && getSiblingPosition == o.getSiblingPosition
+      case _ => false
     }
-    if (this == other) {
-      return true
-    }
-    val otherAtt: AttributeImpl = other.asInstanceOf[AttributeImpl]
-    getRawParent == otherAtt.getRawParent && getSiblingPosition == otherAtt.getSiblingPosition
-  }
 
   override def hashCode(): Int =
     getRawParent.hashCode ^ (getSiblingPosition << 16)

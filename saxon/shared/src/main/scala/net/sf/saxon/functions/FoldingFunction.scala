@@ -26,7 +26,7 @@ abstract class FoldingFunction extends SystemFunction {
       }) != null) {
         fold.processItem(item)
         if (fold.isFinished) {
-          break
+          break()
         }
       }
     }

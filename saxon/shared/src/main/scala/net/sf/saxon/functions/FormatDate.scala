@@ -124,7 +124,7 @@ object FormatDate {
           i += 1
         }
         if (i == format.length) {
-          break
+          break()
         }
         i += 1
         if (i < format.length && format.charAt(i) == '[') {
@@ -638,7 +638,7 @@ object FormatDate {
       if (intVal == 0) {
         s = new StringBuilder("0")
       } else {
-        s = new StringBuilder((s"${(1000000 + intVal)}").substring(1))
+        s = new StringBuilder((1000000 + intVal).toString.substring(1))
         if (s.length > max) {
           s = new StringBuilder(s.substring(0, max))
         }

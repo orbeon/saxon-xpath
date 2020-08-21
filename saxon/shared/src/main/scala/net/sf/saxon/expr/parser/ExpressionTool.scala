@@ -351,7 +351,8 @@ object ExpressionTool {
       exp.asInstanceOf[Assignation].setSlotNumber(nextFreeCount)
       val count = exp.asInstanceOf[Assignation].getRequiredSlots
       nextFreeCount += count
-      if (frame != null) frame.allocateSlotNumber(exp.asInstanceOf[Assignation].getVariableQName())
+      if (frame != null)
+        frame.allocateSlotNumber(exp.asInstanceOf[Assignation].getVariableQName())
     }
     if (exp.isInstanceOf[LocalParam] && exp.asInstanceOf[LocalParam].getSlotNumber < 0) exp.asInstanceOf[LocalParam].setSlotNumber({
       nextFreeCount += 1
@@ -372,7 +373,9 @@ object ExpressionTool {
     if (exp.isInstanceOf[VariableReference]) {
       val `var` = exp.asInstanceOf[VariableReference]
       val binding = `var`.getBinding
-      if (exp.isInstanceOf[LocalVariableReference]) `var`.asInstanceOf[LocalVariableReference].setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber())
+
+      if (exp.isInstanceOf[LocalVariableReference])
+        `var`.asInstanceOf[LocalVariableReference].setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber())
       if (binding.isInstanceOf[Assignation] && binding.asInstanceOf[LocalBinding].getLocalSlotNumber() < 0) {
 
 
@@ -765,7 +768,7 @@ object ExpressionTool {
           val child = info.getChildExpression
           val childLoop = inLoop || info.isEvaluatedRepeatedly
           rcount += getReferenceCount(child, binding, childLoop)
-          if (rcount >= FilterExpression.FILTERED) break
+          if (rcount >= FilterExpression.FILTERED) break()
         }
       }
     }

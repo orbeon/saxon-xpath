@@ -69,7 +69,7 @@ object CompressedWhitespace {
       while (s >= 0) {
         val b: Byte = ((value >>> s) & 0xff).toByte
         if (b == 0) {
-          break
+          break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
         val len: Int = b & 0x3f
@@ -105,7 +105,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
       while (s >= 0) {
         val c: Int = ((`val` >>> s) & 0x3f).toInt
         if (c == 0) {
-          break
+          break()
         }
         count += c
         s -= 8
@@ -122,7 +122,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
       while (s >= 0) {
         val b: Byte = ((`val` >>> s) & 0xff).toByte
         if (b == 0) {
-          break
+          break()
         }
         count += b & 0x3f
         if (count > index) {
@@ -155,7 +155,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
       while (s >= 0) {
         val b: Byte = ((`val` >>> s) & 0xff).toByte
         if (b == 0) {
-          break
+          break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
         val len: Int = b & 0x3f
@@ -174,7 +174,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
       while (s >= 0) {
         val b: Byte = ((`val` >>> s) & 0xff).toByte
         if (b == 0) {
-          break
+          break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
         val len: Int = b & 0x3f

@@ -186,7 +186,7 @@ class LoopLifter(@BeanProperty var root: Expression,
                     o.setChildExpression(lifted)
                   }
                 }
-                break
+                break()
               }
               child = parent
               parent = parent.getParentExpression

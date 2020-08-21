@@ -196,16 +196,12 @@ class MapType(@BeanProperty var keyType: AtomicType,
       sb.toString
     }
 
-  override def equals(other: Any): Boolean = {
-    if (this == other) {
-      true
+  override def equals(other: Any): Boolean =
+    other match {
+      case o: MapType if this eq o => true
+      case o: MapType => keyType == o.keyType && valueType == o.valueType && mustBeEmpty == o.mustBeEmpty
+      case _ => false
     }
-    if (other.isInstanceOf[MapType]) {
-      val f2: MapType = other.asInstanceOf[MapType]
-      keyType == f2.keyType && valueType == f2.valueType && mustBeEmpty == f2.mustBeEmpty
-    }
-    false
-  }
 
   /**
     * Returns a hash code value for the object.
