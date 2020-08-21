@@ -7,30 +7,21 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.lib
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.event._
-import net.sf.saxon.om.NameChecker
-import net.sf.saxon.om.NamespaceResolver
-import net.sf.saxon.om.QNameException
-import net.sf.saxon.serialize._
-import net.sf.saxon.stax.StAXResultHandlerImpl
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.SaxonErrorCode
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.value.BigDecimalValue
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.Result
-import javax.xml.transform.Source
-import javax.xml.transform.TransformerException
-import javax.xml.transform.sax.SAXResult
-import javax.xml.transform.stax.StAXResult
-import javax.xml.transform.stream.StreamResult
-
-import scala.jdk.CollectionConverters._
 import java.util._
 import java.util.regex.Pattern
 
+import javax.xml.transform.{OutputKeys, Result, Source, TransformerException}
+import javax.xml.transform.sax.SAXResult
+import javax.xml.transform.stream.StreamResult
+import net.sf.saxon.event._
+import net.sf.saxon.om.{NameChecker, NamespaceResolver, QNameException}
 import net.sf.saxon.query.SequenceWrapper
+import net.sf.saxon.serialize._
+import net.sf.saxon.trans.{Err, SaxonErrorCode, XPathException}
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.BigDecimalValue
+
+import scala.jdk.CollectionConverters._
 
 /**
  * Helper class to construct a serialization pipeline for a given result destination
@@ -459,12 +450,13 @@ class SerializerFactory {
       //proxy.open();
       return makeSequenceNormalizer(proxy, props)
     }
-    else if (result.isInstanceOf[StAXResult]) {
-      val handler = new StAXResultHandlerImpl
-      val r = handler.getReceiver(result, props)
-      r.setPipelineConfiguration(pipe)
-      return makeSequenceNormalizer(r, props)
-    }
+    //ORBEON: No StAX support.
+//    else if (result.isInstanceOf[StAXResult]) {
+//      val handler = new StAXResultHandlerImpl
+//      val r = handler.getReceiver(result, props)
+//      r.setPipelineConfiguration(pipe)
+//      return makeSequenceNormalizer(r, props)
+//    }
     else if (pipe != null) { // try to find an external object model that knows this kind of Result
       val externalObjectModels = pipe.getConfiguration.getExternalObjectModels
 
