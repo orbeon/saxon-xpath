@@ -36,7 +36,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
           .materialize(),
         this)
       ExpressionTool.copyLocationInfo(this, e2)
-      e2
+      return e2
     } catch {
       case err: Exception => {}
 

@@ -236,7 +236,7 @@ class ValueOf(select: Expression,
       val item: Item = getSelect.evaluateItem(context)
       if (item == null) {
         if (noNodeIfEmpty) {
-          null
+          return null
         } else {
           `val` = ""
         }
