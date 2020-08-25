@@ -47,18 +47,18 @@ class StandardURIChecker  () extends URIChecker {
       caches.set(cache)
     }
     if (cache.get(value) != null) {
-      true
+      return true
     }
     var sv: String = Whitespace.trim(value)
 // Allow zero-length strings (RFC2396 is ambivalent on this point)
     if (sv.isEmpty) {
-      true
+      return true
     }
 // Allow a string if the java.net.URI class accepts it
     try {
       new URI(sv)
       cache.put(value, true)
-      true
+      return true
     } catch {
       case e: URISyntaxException => {}
 
