@@ -276,7 +276,7 @@ object SaxonOutputKeys {
   def isBuildTree(properties: Properties): Boolean = {
     val buildTreeProperty: String = properties.getProperty("build-tree")
     if (buildTreeProperty != null) {
-      "yes" == buildTreeProperty
+      return "yes" == buildTreeProperty
     }
     val method: String = properties.getProperty("method")
     !("json" == method || "adaptive" == method)

@@ -138,11 +138,10 @@ object FormatNumber {
           trial = new BigDecimal(sb.toString)
         } else {
           while (i >= 0 && (s.charAt(i) == '9' || s.charAt(i) == '.')) {
-            i -= 1;
-            i + 1
+            i -= 1
           }
           if (i < 0 || s.charAt(i) == '-') {
-            initial
+            return initial
           } else if (p < 0 || i < p) {
             val sb: FastStringBuffer = new FastStringBuffer(s.length)
             sb.append(s.substring(0, i))
@@ -500,10 +499,7 @@ object FormatNumber {
       } else {
         ib(point) = dfs.getDecimalSeparator
         if (maxFractionPartSize == 0) {
-          {
-            ibused -= 1;
-            ibused + 1
-          }
+          ibused -= 1
         }
       }
       if (dfs.getZeroDigit != '0') {

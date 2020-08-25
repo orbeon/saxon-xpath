@@ -20,8 +20,6 @@ import java.util.StringTokenizer
 import StandardCollationURIResolver._
 
 
-
-
 object StandardCollationURIResolver {
 
   private val theInstance: StandardCollationURIResolver =
@@ -57,7 +55,7 @@ class StandardCollationURIResolver extends CollationURIResolver {
     } else if (uri.startsWith("http://www.w3.org/2013/collation/UCA")) {
       val uca: StringCollator = Version.platform.makeUcaCollator(uri, config)
       if (uca != null) {
-        uca
+        return uca
       }
       if (uri.contains("fallback=no")) {
         null
@@ -73,10 +71,10 @@ class StandardCollationURIResolver extends CollationURIResolver {
             var `val`: String = tokens(1)
             if (kw.==("fallback")) {
               if (`val`.==("no")) {
-                null
+                return null
               } else if (`val`.!=("yes")) {
-// effect is implementation-defined, but it seems best to reject it
-                null
+                // effect is implementation-defined, but it seems best to reject it
+                return null
               }
             }
             kw match {
@@ -90,7 +88,7 @@ class StandardCollationURIResolver extends CollationURIResolver {
                 }
               case "caseFirst" =>
                 kw = "case-order"
-// Should check correct?
+                // Should check correct?
                 `val` += "-first"
               case "numeric" => kw = "alphanumeric"
 
@@ -112,6 +110,6 @@ class StandardCollationURIResolver extends CollationURIResolver {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * StandardCollationURIResolver allows a Collation to be created given
-  * a URI starting with "http://saxon.sf.net/collation" followed by a set of query parameters.
-  */
+ * StandardCollationURIResolver allows a Collation to be created given
+ * a URI starting with "http://saxon.sf.net/collation" followed by a set of query parameters.
+ */

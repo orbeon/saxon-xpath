@@ -18,11 +18,9 @@ import net.sf.saxon.value.BooleanValue
 import net.sf.saxon.value.StringValue
 
 
-
-
 class Matches extends RegexFunction {
 
-   def allowRegexMatchingEmptyString(): Boolean = true
+  def allowRegexMatchingEmptyString(): Boolean = true
 
   def evalMatches(input: AtomicValue,
                   regex: AtomicValue,
@@ -30,7 +28,7 @@ class Matches extends RegexFunction {
                   context: XPathContext): Boolean = {
     var re: RegularExpression = null
     if (regex == null) {
-      false
+      return false
     }
     try {
       var lang: String = "XP30"
@@ -55,14 +53,14 @@ class Matches extends RegexFunction {
   }
 
   /**
-    * Evaluate the expression
-    *
-    * @param context   the dynamic evaluation context
-    * @param arguments the values of the arguments, supplied as Sequences
-    * @return the result of the evaluation, in the form of a Sequence
-    * @throws net.sf.saxon.trans.XPathException
-    *          if a dynamic error occurs during the evaluation of the expression
-    */
+   * Evaluate the expression
+   *
+   * @param context   the dynamic evaluation context
+   * @param arguments the values of the arguments, supplied as Sequences
+   * @return the result of the evaluation, in the form of a Sequence
+   * @throws net.sf.saxon.trans.XPathException
+   * if a dynamic error occurs during the evaluation of the expression
+   */
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val re: RegularExpression = getRegularExpression(arguments)
     val arg: StringValue = arguments(0).head().asInstanceOf[StringValue]
@@ -81,5 +79,5 @@ class Matches extends RegexFunction {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This class implements the 3-argument matches() function for regular expression matching
-  */
+ * This class implements the 3-argument matches() function for regular expression matching
+ */

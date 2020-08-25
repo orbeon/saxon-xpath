@@ -5,13 +5,14 @@
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This class represents the XPath built-in type xs:integer. It is used for all
-  * subtypes of xs:integer, other than user-defined subtypes. There are two implementations
-  * of IntegerValue: {@link Int64Value}, which accommodates values up to 2^63, and
-  * {@link BigIntegerValue}, which accommodates unlimited-length integers.
-  * @since 9.8: changed in 9.8 to make this class a subclass of the new abstract
-  * class DecimalValue, to better reflect the XDM type hierarchy
-  */
+ * This class represents the XPath built-in type xs:integer. It is used for all
+ * subtypes of xs:integer, other than user-defined subtypes. There are two implementations
+ *
+ * of IntegerValue: {@link Int64Value}, which accommodates values up to 2^63, and
+ * {@link BigIntegerValue}, which accommodates unlimited-length integers.
+ * @since 9.8: changed in 9.8 to make this class a subclass of the new abstract
+ *        class DecimalValue, to better reflect the XDM type hierarchy
+ */
 package net.sf.saxon.value
 
 import net.sf.saxon.functions.FormatNumber
@@ -39,18 +40,19 @@ import IntegerValue._
 object IntegerValue {
 
   /**
-    * Static data identifying the min and max values for each built-in subtype of xs:integer.
-    * This is a sequence of triples, each holding the fingerprint of the type, the minimum
-    * value, and the maximum value. The special value NO_LIMIT indicates that there is no
-    * minimum (or no maximum) for this type. The special value MAX_UNSIGNED_LONG represents the
-    * value 2^64-1
-    */ /**
-    * Static data identifying the min and max values for each built-in subtype of xs:integer.
-    * This is a sequence of triples, each holding the fingerprint of the type, the minimum
-    * value, and the maximum value. The special value NO_LIMIT indicates that there is no
-    * minimum (or no maximum) for this type. The special value MAX_UNSIGNED_LONG represents the
-    * value 2^64-1
-    */
+   * Static data identifying the min and max values for each built-in subtype of xs:integer.
+   * This is a sequence of triples, each holding the fingerprint of the type, the minimum
+   * value, and the maximum value. The special value NO_LIMIT indicates that there is no
+   * minimum (or no maximum) for this type. The special value MAX_UNSIGNED_LONG represents the
+   * value 2^64-1
+   **/
+  /**
+   * Static data identifying the min and max values for each built-in subtype of xs:integer.
+   * This is a sequence of triples, each holding the fingerprint of the type, the minimum
+   * value, and the maximum value. The special value NO_LIMIT indicates that there is no
+   * minimum (or no maximum) for this type. The special value MAX_UNSIGNED_LONG represents the
+   * value 2^64-1
+   **/
   private var NO_LIMIT: Long = -9999
 
   private var MAX_UNSIGNED_LONG: Long = -9998
@@ -112,13 +114,13 @@ object IntegerValue {
       val err: ValidationFailure = new ValidationFailure(
         "Cannot convert double NaN to an integer")
       err.setErrorCode("FOCA0002")
-      err
+      return err
     }
     if (java.lang.Double.isInfinite(value)) {
       val err: ValidationFailure = new ValidationFailure(
         "Cannot convert double INF to an integer")
       err.setErrorCode("FOCA0002")
-      err
+      return err
     }
     if (value > java.lang.Long.MAX_VALUE || value < java.lang.Long.MIN_VALUE) {
       if (value == Math.floor(value)) {
@@ -143,10 +145,10 @@ object IntegerValue {
       if (ranges(i) == fp) {
         val min: Long = ranges(i + 1)
         if (min != NO_LIMIT && value < min) {
-          false
+          return false
         }
         val max: Long = ranges(i + 2)
-        max == NO_LIMIT || max == MAX_UNSIGNED_LONG || value <= max
+        return (max == NO_LIMIT || max == MAX_UNSIGNED_LONG || value <= max)
       }
       i += 3
     }
@@ -161,7 +163,7 @@ object IntegerValue {
       if (ranges(i) == fp) {
         val min: Long = ranges(i + 1)
         if (min == NO_LIMIT) {
-          null
+          return null
         } else {
           Int64Value.makeIntegerValue(min)
         }
@@ -178,7 +180,7 @@ object IntegerValue {
       if (ranges(i) == fp) {
         val max: Long = ranges(i + 2)
         if (max == NO_LIMIT) {
-          null
+          return null
         } else if (max == MAX_UNSIGNED_LONG) {
           IntegerValue.makeIntegerValue(BigIntegerValue.MAX_UNSIGNED_LONG)
         } else {
@@ -196,11 +198,11 @@ object IntegerValue {
       if (ranges(i) == `type`.getFingerprint) {
         val min: Long = ranges(i + 1)
         if (min != NO_LIMIT && BigInteger.valueOf(min).compareTo(big) > 0) {
-          false
+          return false
         }
         val max: Long = ranges(i + 2)
         if (max == NO_LIMIT) {
-          true
+          return true
         } else if (max == MAX_UNSIGNED_LONG) {
           BigIntegerValue.MAX_UNSIGNED_LONG.compareTo(big) >= 0
         } else {
@@ -217,8 +219,12 @@ object IntegerValue {
     val len: Int = s.length
     var start: Int = 0
     var last: Int = len - 1
-    while (start < len && s.charAt(start) <= 0x20) { start += 1; start - 1 }
-    while (last > start && s.charAt(last) <= 0x20) { last -= 1; last + 1 }
+    while (start < len && s.charAt(start) <= 0x20) {
+      start += 1; start - 1
+    }
+    while (last > start && s.charAt(last) <= 0x20) {
+      last -= 1; last + 1
+    }
     if (start > last) {
       new ValidationFailure("Cannot convert zero-length string to an integer")
     }
@@ -238,7 +244,9 @@ object IntegerValue {
             .wrap(s, Err.VALUE) + " to integer: no digits after the sign")
       }
       while (i <= last) {
-        val d: Char = s.charAt({ i += 1; i - 1 })
+        val d: Char = s.charAt({
+          i += 1; i - 1
+        })
         if (d >= '0' && d <= '9') {
           value = 10 * value + (d - '0')
         } else {
@@ -279,7 +287,7 @@ object IntegerValue {
     }
     var i: Int = 0
     if (s.charAt(i) == '+' || s.charAt(i) == '-') {
-      { i += 1; i - 1 }
+      i += 1
     }
     if (i > last) {
       new ValidationFailure(
@@ -287,7 +295,9 @@ object IntegerValue {
           .wrap(s, Err.VALUE) + " to integer: no digits after the sign")
     }
     while (i <= last) {
-      val d: Char = s.charAt({ i += 1; i - 1 })
+      val d: Char = s.charAt({
+        i += 1; i - 1
+      })
       if (d >= '0' && d <= '9') {} else {
         new ValidationFailure(
           "Cannot convert string " + Err.wrap(s, Err.VALUE) +

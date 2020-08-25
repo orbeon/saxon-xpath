@@ -211,9 +211,7 @@ class IndependentContext(config: Configuration)
   def getSlotNumber(qname: QNameValue): Int = {
     val sq: StructuredQName = qname.getStructuredQName
     val `var`: XPathVariable = variables.get(sq)
-    if (`var` == null) {
-      -1
-    }
+    if (`var` == null) return -1
     `var`.getLocalSlotNumber
   }
 

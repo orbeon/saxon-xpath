@@ -71,7 +71,7 @@ class JRegexIterator(private var theString: String,
           // this really is the end...
           current = null
           prevEnd = -1
-          null
+          return null
         }
         prevEnd = -1
       }
@@ -83,7 +83,7 @@ class JRegexIterator(private var theString: String,
         prevEnd = matcher.end()
       } else {
         current = null
-        null
+        return null
       }
     }
     StringValue.makeStringValue(current)
@@ -94,10 +94,10 @@ class JRegexIterator(private var theString: String,
   def isMatching(): Boolean = next1 == null && prevEnd >= 0
 
   def getRegexGroup(number: Int): String = {
-    if (!isMatching) null
-    if (number > matcher.groupCount() || number < 0) ""
+    if (!isMatching) return null
+    if (number > matcher.groupCount() || number < 0) return ""
     val s: String = matcher.group(number)
-    if (s == null) ""
+    if (s == null) return ""
     s
   }
 
@@ -210,33 +210,40 @@ class JRegexIterator(private var theString: String,
     var group: Int = 1
     var inBrackets: Int = 0
     stack({
-      tos += 1; tos - 1
+      tos += 1;
+      tos - 1
     }) = 0
     var i = 0;
     while (i < s.length) {
       val ch: Char = s.charAt(i)
       if (ch == '\'') {
         {
-          i += 1; i - 1
+          i += 1;
+          i - 1
         }
       } else if (ch == '[') {
         {
-          inBrackets += 1; inBrackets - 1
+          inBrackets += 1;
+          inBrackets - 1
         }
       } else if (ch == ']') {
         {
-          inBrackets -= 1; inBrackets + 1
+          inBrackets -= 1;
+          inBrackets + 1
         }
       } else if (ch == '(' && s.charAt(i + 1) != '?' && inBrackets == 0) {
         nestingTable.put(group, stack(tos - 1))
         stack({
-          tos += 1; tos - 1
+          tos += 1;
+          tos - 1
         }) = {
-          group += 1; group - 1
+          group += 1;
+          group - 1
         }
       } else if (ch == ')' && inBrackets == 0) {
         {
-          tos -= 1; tos + 1
+          tos -= 1;
+          tos + 1
         }
       }
     }

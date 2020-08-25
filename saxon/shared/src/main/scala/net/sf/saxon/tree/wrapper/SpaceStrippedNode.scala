@@ -63,14 +63,14 @@ object SpaceStrippedNode {
     // Non-text nodes, non-whitespace nodes, and parentless nodes are preserved
     if (node.getNodeKind != Type.TEXT || actualParent == null ||
       !Whitespace.isWhite(node.getStringValueCS)) {
-      true
+      return true
     }
     // if the node has a simple type annotation, it is preserved
     val `type`: SchemaType = actualParent.getSchemaType
     if (`type`.isSimpleType || `type`
       .asInstanceOf[ComplexType]
       .isSimpleContent) {
-      true
+      return true
     }
     // if there is an ancestor with xml:space="preserve", it is preserved
     if (docWrapper.containsPreserveSpace()) {
@@ -81,7 +81,7 @@ object SpaceStrippedNode {
           val `val`: String = p.getAttributeValue(NamespaceConstant.XML, "space")
           if (`val` != null) {
             if ("preserve" == `val`) {
-              true
+              return true
             } else if ("default" == `val`) {
               break()
             }
@@ -101,7 +101,7 @@ object SpaceStrippedNode {
         if (t.isInstanceOf[ComplexType] && t
           .asInstanceOf[ComplexType]
           .hasAssertions()) {
-          true
+          return true
         }
         p = p.getParent
       }
@@ -272,7 +272,7 @@ class SpaceStrippedNode()
         while (true) {
           nextRealNode = base.next()
           if (nextRealNode == null) {
-            null
+            return null
           }
           if (isPreserved(nextRealNode)) {
             break()
@@ -292,7 +292,7 @@ class SpaceStrippedNode()
 
     private def isPreserved(nextRealNode: NodeInfo): Boolean = {
       if (nextRealNode.getNodeKind != Type.TEXT) {
-        true
+        return true
       }
       val actualParent: NodeInfo =
         if (parent == null) nextRealNode.getParent else parent.node

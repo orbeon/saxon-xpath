@@ -48,7 +48,7 @@ object IriToUri {
 
   def iriToUri(s: CharSequence): CharSequence = {
     if (allAllowedAscii(s)) {
-      s
+      return s
     }
     val sb: FastStringBuffer = new FastStringBuffer(s.length + 20)
     for (i <- 0 until s.length) {

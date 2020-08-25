@@ -64,7 +64,7 @@ class Normalizer private(private var form: Int) {
 
   def normalize(source: CharSequence): CharSequence = {
     if (form == NO_ACTION || source.length == 0) {
-      source
+      return source
     }
     val target: FastStringBuffer = new FastStringBuffer(source.length + 8)
     internalDecompose(source, target)

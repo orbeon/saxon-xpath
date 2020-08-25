@@ -48,16 +48,16 @@ class LocalParam extends Instruction with LocalBinding {
 
   private var selectOp: Operand = null
 
-   var variableQName: StructuredQName = _
+  var variableQName: StructuredQName = _
 
   @BeanProperty
   var requiredType: SequenceType = _
 
-   var slotNumber: Int = -999
+  var slotNumber: Int = -999
 
-   var referenceCount: Int = 10
+  var referenceCount: Int = 10
 
-   var evaluator: Evaluator = null
+  var evaluator: Evaluator = null
 
   def setSelectExpression(select: Expression): Unit = {
     if (select != null) {
@@ -93,7 +93,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   def setTunnel(tunnel: Boolean): Unit = {
     if (tunnel) {
-      properties  = (properties |  TUNNEL).toByte
+      properties = (properties | TUNNEL).toByte
     } else {
       properties = (properties & ~TUNNEL).toByte
     }
@@ -122,7 +122,7 @@ class LocalParam extends Instruction with LocalBinding {
                          contextItemType: ContextItemStaticInfo): Expression = {
     val e2: Expression = super.typeCheck(visitor, contextItemType)
     if (e2 != this) {
-      e2
+      return e2
     }
     checkAgainstRequiredType(visitor)
     this
@@ -132,7 +132,7 @@ class LocalParam extends Instruction with LocalBinding {
                         contextItemType: ContextItemStaticInfo): Expression = {
     val e2: Expression = super.optimize(visitor, contextItemType)
     if (e2 != this) {
-      e2
+      return e2
     }
     this
   }

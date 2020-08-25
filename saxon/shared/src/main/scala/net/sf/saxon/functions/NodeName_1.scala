@@ -24,7 +24,7 @@ object NodeName_1 {
 
   def nodeName(node: NodeInfo): QNameValue = {
     if (node.getLocalPart.isEmpty) {
-      null
+      return null
     }
     new QNameValue(node.getPrefix,
                    node.getURI,

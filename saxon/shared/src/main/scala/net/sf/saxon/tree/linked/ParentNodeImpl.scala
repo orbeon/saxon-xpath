@@ -129,7 +129,7 @@ abstract class ParentNodeImpl extends NodeImpl {
       return null
     }
     if (childrenImpl.isInstanceOf[NodeImpl]) {
-      if (n == 0) childrenImpl.asInstanceOf[NodeImpl] else null
+      if (n == 0) childrenImpl.asInstanceOf[NodeImpl] else return null
     }
     val nodes: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
     if (n < 0 || n >= nodes.length) {
@@ -211,9 +211,7 @@ abstract class ParentNodeImpl extends NodeImpl {
       }
       next = next.getNextInDocument(this)
     }
-    if (sb == null) {
-      ""
-    }
+    if (sb == null) return ""
     sb.condense()
   }
 

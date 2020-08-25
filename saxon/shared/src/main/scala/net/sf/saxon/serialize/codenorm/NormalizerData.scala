@@ -66,7 +66,7 @@ class NormalizerData /**
     */
   def getPairwiseComposition(first: Int, second: Int): Char = {
     if (first < 0 || first > 0x10FFFF || second < 0 || second > 0x10FFFF)
-      NOT_COMPOSITE
+      return NOT_COMPOSITE.toChar
     compose.get((first << 16) | second).toChar
   }
 

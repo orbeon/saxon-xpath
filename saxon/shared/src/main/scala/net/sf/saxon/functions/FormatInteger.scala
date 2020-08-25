@@ -108,10 +108,7 @@ object FormatInteger {
                 "FODF1310")
             }
           }
-          {
-            groupingPosition += 1;
-            groupingPosition - 1
-          }
+          groupingPosition += 1
         case java.lang.Character.LETTER_NUMBER |
              java.lang.Character.OTHER_NUMBER |
              java.lang.Character.UPPERCASE_LETTER |
@@ -125,10 +122,7 @@ object FormatInteger {
               "FODF1310")
           }
           if (codePoint == '#') {
-            {
-              groupingPosition += 1;
-              groupingPosition - 1
-            }
+            groupingPosition += 1
             if (i != 0) {
               java.lang.Character.getType(picExpanded.uCharAt(i - 1)) match {
                 case java.lang.Character.DECIMAL_DIGIT_NUMBER |

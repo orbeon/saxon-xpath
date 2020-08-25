@@ -12,13 +12,11 @@ import java.util.HashMap
 import JavaCharacterSet._
 
 
-
-
 object JavaCharacterSet {
 
   var map: HashMap[Charset, JavaCharacterSet] = _
 
-//private final static byte UNKNOWN = 0;
+  //private final static byte UNKNOWN = 0;
   private val GOOD: Byte = 1
 
   private val BAD: Byte = 2
@@ -37,16 +35,16 @@ object JavaCharacterSet {
 
 }
 
-class JavaCharacterSet private (charset: Charset) extends CharacterSet {
+class JavaCharacterSet private(charset: Charset) extends CharacterSet {
 
   private var encoder: CharsetEncoder = charset.newEncoder()
 
   private var charinfo: Array[Byte] = new Array[Byte](65536)
 
   def inCharset(c: Int): Boolean = {
-// Assume ASCII chars are always OK
+    // Assume ASCII chars are always OK
     if (c <= 127) {
-      true
+      return true
     }
     if (c <= 65535) {
       if (charinfo(c) == GOOD) {
@@ -80,8 +78,8 @@ class JavaCharacterSet private (charset: Charset) extends CharacterSet {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * This class establishes properties of a character set that is
-  * known to the Java VM but not specifically known to Saxon. It determines whether particular
-  * characters are encodable by calling {@link CharsetEncoder#canEncode(char)}, and then caches
-  * this information locally.
-  */
+ * This class establishes properties of a character set that is
+ * known to the Java VM but not specifically known to Saxon. It determines whether particular
+ * characters are encodable by calling {@link CharsetEncoder#canEncode(char)}, and then caches
+ * this information locally.
+ */

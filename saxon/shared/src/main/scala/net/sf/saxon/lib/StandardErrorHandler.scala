@@ -20,10 +20,8 @@ import java.util.Objects
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 
-
-
 class StandardErrorHandler(reporter: ErrorReporter)
-    extends org.xml.sax.ErrorHandler {
+  extends org.xml.sax.ErrorHandler {
 
   private var errorReporter: ErrorReporter = Objects.requireNonNull(reporter)
 
@@ -44,7 +42,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
 
   def warning(e: SAXParseException): Unit = {
     try {
-      { warningCount += 1; warningCount - 1 }
+      warningCount += 1
       if (!silent) {
         errorReporter.report(
           new XmlProcessingException(XPathException.makeXPathException(e))
@@ -57,23 +55,23 @@ class StandardErrorHandler(reporter: ErrorReporter)
   }
 
   def error(e: SAXParseException): Unit = {
-//System.err.println("ErrorHandler.error " + e.getMessage());
-    { errorCount += 1; errorCount - 1 }
+    //System.err.println("ErrorHandler.error " + e.getMessage());
+    errorCount += 1
     if (!silent) {
       reportError(e, false)
     }
   }
 
   def fatalError(e: SAXParseException): Unit = {
-//System.err.println("ErrorHandler.fatalError " + e.getMessage());
-    { fatalErrorCount += 1; fatalErrorCount - 1 }
+    //System.err.println("ErrorHandler.fatalError " + e.getMessage());
+    fatalErrorCount += 1
     if (!silent) {
       reportError(e, true)
     }
     throw e
   }
 
-   def reportError(e: SAXParseException, isFatal: Boolean): Unit = {
+  def reportError(e: SAXParseException, isFatal: Boolean): Unit = {
     val loc: Loc = new Loc(e.getSystemId, e.getLineNumber, e.getColumnNumber)
     if (errorReporter != null) {
       val err: XmlProcessingIncident = new XmlProcessingIncident(
@@ -93,6 +91,6 @@ class StandardErrorHandler(reporter: ErrorReporter)
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A default implementation of the SAX ErrorHandler interface. Used by Saxon to catch XML parsing errors
-  * if no error handler is supplied by the application.
-  */
+ * A default implementation of the SAX ErrorHandler interface. Used by Saxon to catch XML parsing errors
+ * if no error handler is supplied by the application.
+ */

@@ -91,7 +91,7 @@ class NestedIntegerValue(v: String)
     v
   }
 
-   override def getPrimitiveStringValue(): CharSequence = {
+  override def getPrimitiveStringValue(): CharSequence = {
     val buffer: FastStringBuffer = new FastStringBuffer(value.length * 2)
     for (i <- 0 until value.length - 1) {
       buffer.append(value(i) + ".")
@@ -110,12 +110,12 @@ class NestedIntegerValue(v: String)
       while (i < value.length && i < v2.value.length) {
         if (value(i) != v2.value(i)) {
           if (value(i) < v2.value(i)) {
-            -1
+            return -1
           } else {
-            1
+            return 1
           }
         }
-        { i += 1; i - 1 }
+        i += 1
       }
       java.lang.Integer.signum(value.length - v2.value.length)
     }

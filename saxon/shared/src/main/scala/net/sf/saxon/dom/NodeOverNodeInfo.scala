@@ -35,7 +35,7 @@ object NodeOverNodeInfo {
   def wrap(node: NodeInfo): NodeOverNodeInfo = {
     var n: NodeOverNodeInfo = null
     if (node == null) {
-      null
+      return null
     }
     node.getNodeKind match {
       case Type.DOCUMENT => n = new DocumentOverNodeInfo()
@@ -44,7 +44,7 @@ object NodeOverNodeInfo {
       case Type.TEXT | Type.COMMENT => n = new TextOverNodeInfo()
       case Type.PROCESSING_INSTRUCTION => n = new PIOverNodeInfo()
       case Type.NAMESPACE => n = new AttrOverNodeInfo()
-      case _ => null
+      case _ => return null
 
     }
     n.node = node
@@ -61,7 +61,7 @@ object NodeOverNodeInfo {
 
 abstract class NodeOverNodeInfo extends Node {
 
-   var node: NodeInfo = _
+  var node: NodeInfo = _
 
   def getUnderlyingNodeInfo(): NodeInfo = node
 
@@ -218,9 +218,9 @@ abstract class NodeOverNodeInfo extends Node {
   def getPrefix(): String = {
     if (node.getNodeKind == Type.NAMESPACE) {
       if (node.getLocalPart.isEmpty) {
-        null
+        return null
       } else {
-        "xmlns"
+        return "xmlns"
       }
     }
     val p: String = node.getPrefix
@@ -238,7 +238,7 @@ abstract class NodeOverNodeInfo extends Node {
     val DOCUMENT_POSITION_CONTAINS: Short = 0x08
     val DOCUMENT_POSITION_CONTAINED_BY: Short = 0x10
     if (!(other.isInstanceOf[NodeOverNodeInfo])) {
-      DOCUMENT_POSITION_DISCONNECTED
+      return DOCUMENT_POSITION_DISCONNECTED
     }
     val c: Int = node.compareOrder(other.asInstanceOf[NodeOverNodeInfo].node)
     if (c == 0) {

@@ -31,9 +31,7 @@ class QNameParser(private var resolver: NamespaceResolver) {
   }
 
   def withAcceptEQName(acceptEQName: Boolean): QNameParser = {
-    if (acceptEQName == this.acceptEQName) {
-      this
-    }
+    if (acceptEQName == this.acceptEQName) return this
     val qp2: QNameParser = copy()
     qp2.acceptEQName = acceptEQName
     qp2
@@ -41,7 +39,7 @@ class QNameParser(private var resolver: NamespaceResolver) {
 
   def withErrorOnBadSyntax(code: String): QNameParser = {
     if (code == errorOnBadSyntax) {
-      this
+      return this
     }
     val qp2: QNameParser = copy()
     qp2.errorOnBadSyntax = code
@@ -50,7 +48,7 @@ class QNameParser(private var resolver: NamespaceResolver) {
 
   def withErrorOnUnresolvedPrefix(code: String): QNameParser = {
     if (code == errorOnUnresolvedPrefix) {
-      this
+      return this
     }
     val qp2: QNameParser = copy()
     qp2.errorOnUnresolvedPrefix = code

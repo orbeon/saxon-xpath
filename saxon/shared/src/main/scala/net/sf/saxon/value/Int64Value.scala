@@ -295,8 +295,8 @@ class Int64Value extends IntegerValue {
     }
 
   def signum(): Int = {
-    if (value > 0) +1
-    if (value == 0) 0
+    if (value > 0) return +1
+    if (value == 0) return 0
     -1
   }
 

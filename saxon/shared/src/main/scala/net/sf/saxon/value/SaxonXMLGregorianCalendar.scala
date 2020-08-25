@@ -248,7 +248,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
 
   def getFractionalSecond(): BigDecimal = {
     if (second == DatatypeConstants.FIELD_UNDEFINED) {
-      null
+      return null
     }
     BigDecimal.valueOf(microsecond).movePointLeft(6)
   }
@@ -358,7 +358,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
 
   def toCalendarValue(): CalendarValue = {
     if (calendarValue != null) {
-      calendarValue
+      return calendarValue
     }
     if (second == DatatypeConstants.FIELD_UNDEFINED) {
       if (year == null) {

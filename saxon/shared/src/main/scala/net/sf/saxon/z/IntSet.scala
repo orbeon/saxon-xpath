@@ -9,8 +9,8 @@ package net.sf.saxon.z
 
 
 /**
-  * A set of integers represented as int values
-  */
+ * A set of integers represented as int values
+ */
 trait IntSet {
 
   def copy(): IntSet
@@ -20,8 +20,8 @@ trait IntSet {
   def isMutable(): Boolean = true
 
   /**
-    * Clear the contents of the IntSet (making it an empty set)
-    */
+   * Clear the contents of the IntSet (making it an empty set)
+   */
   def clear(): Unit
 
   def size(): Int
@@ -39,12 +39,12 @@ trait IntSet {
   def containsAll(other: IntSet): Boolean = {
     if (other == IntUniversalSet.getInstance || (other
       .isInstanceOf[IntComplementSet])) {
-      false
+      return false
     }
     val it: IntIterator = other.iterator()
     while (it.hasNext) {
-      if (!contains(it.next)){
-        false
+      if (!contains(it.next)) {
+        return false
       }
     }
     true
@@ -52,7 +52,7 @@ trait IntSet {
 
   def union(other: IntSet): IntSet = {
     if (other == IntUniversalSet.getInstance) {
-      other
+      return other
     }
     if (this.isEmpty) {
       other.copy()
@@ -65,9 +65,13 @@ trait IntSet {
     }
     val n = new IntHashSet(this.size + other.size)
     var it: IntIterator = iterator()
-    while (it.hasNext) {n.add(it.next)}
+    while (it.hasNext) {
+      n.add(it.next)
+    }
     it = other.iterator()
-    while (it.hasNext){ n.add(it.next)}
+    while (it.hasNext) {
+      n.add(it.next)
+    }
     n
   }
 

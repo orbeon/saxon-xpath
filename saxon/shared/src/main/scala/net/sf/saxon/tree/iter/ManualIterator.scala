@@ -46,7 +46,7 @@ class ManualIterator
   }
 
   def incrementPosition(): Unit = {
-    { position += 1; position - 1 }
+    position += 1
   }
 
   def setPosition(position: Int): Unit = {

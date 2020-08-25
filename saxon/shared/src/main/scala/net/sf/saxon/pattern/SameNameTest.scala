@@ -57,7 +57,7 @@ class SameNameTest(private var origin: NodeInfo)
                        name: NodeName,
                        annotation: SchemaType): Boolean = {
     if (nodeKind != origin.getNodeKind) {
-      false
+      return      false
     }
     if (name.hasFingerprint() && origin.hasFingerprint()) {
       name.getFingerprint == origin.getFingerprint

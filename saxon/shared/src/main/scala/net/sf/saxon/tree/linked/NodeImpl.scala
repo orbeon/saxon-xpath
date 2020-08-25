@@ -126,7 +126,7 @@ abstract class NodeImpl
 
   def getBaseURI(): String = parent.getBaseURI
 
-   def getSequenceNumber(): Long = {
+  def getSequenceNumber(): Long = {
     var prev: NodeImpl = this
     var i: Int = 0
     while (true) {
@@ -185,12 +185,12 @@ abstract class NodeImpl
     if (parent.isInstanceOf[DocumentImpl] && parent
       .asInstanceOf[DocumentImpl]
       .isImaginary) {
-      null
+      return null
     }
     parent
   }
 
-   def getRawParent(): ParentNodeImpl = parent
+  def getRawParent(): ParentNodeImpl = parent
 
   def setRawParent(parent: ParentNodeImpl): Unit = {
     this.parent = parent
@@ -198,14 +198,14 @@ abstract class NodeImpl
 
   def getPreviousSibling(): NodeImpl = {
     if (parent == null) {
-      null
+      return null
     }
     parent.getNthChild(index - 1)
   }
 
   def getNextSibling(): NodeImpl = {
     if (parent == null) {
-      null
+      return null
     }
     parent.getNthChild(index + 1)
   }
@@ -349,7 +349,7 @@ abstract class NodeImpl
   private def getLastDescendantOrSelf(): NodeImpl = {
     val last: NodeImpl = getLastChild.asInstanceOf[NodeImpl]
     if (last == null) {
-      this
+      return this
     }
     last.getLastDescendantOrSelf
   }

@@ -120,12 +120,12 @@ class MapType(@BeanProperty var keyType: AtomicType,
     */
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
     if (!(item.isInstanceOf[MapItem])) {
-      false
+      return      false
     }
     if (item.asInstanceOf[MapItem].isEmpty) {
-      true
+      return true
     } else if (mustBeEmpty) {
-      false
+      return false
     }
     if (this == ANY_MAP_TYPE) {
       true
@@ -231,7 +231,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
         Affinity.OVERLAPS
       }
       if (keyRel == valueRel) {
-        keyRel
+        return keyRel
       }
       if ((keyRel == Affinity.SAME_TYPE || keyRel == Affinity.SUBSUMES) &&
         (valueRel == Affinity.SAME_TYPE || valueRel == Affinity.SUBSUMES)) {

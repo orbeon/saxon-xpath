@@ -22,7 +22,7 @@ object Nilled_1 {
 
   private def getNilledProperty(node: NodeInfo): BooleanValue = {
     if (node == null || node.getNodeKind != Type.ELEMENT) {
-       null
+      return null
     }
     BooleanValue.get(node.isNilled)
   }

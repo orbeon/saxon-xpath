@@ -129,14 +129,14 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
       if (generateIdEmulation) {
         BooleanValue.get(getNode(getRhsExpression, context) == null)
       }
-      null
+      return null
     }
     val node1: NodeInfo = getNode(getRhsExpression, context)
     if (node1 == null) {
       if (generateIdEmulation) {
         BooleanValue.FALSE
       }
-      null
+      return null
     }
     BooleanValue.get(compareIdentity(node0, node1))
   }

@@ -61,19 +61,19 @@ class NumericComparer  () extends AtomicComparer {
     }
     if (java.lang.Double.isNaN(d1)) {
       if (java.lang.Double.isNaN(d2)) {
-        0
+        return  0
       } else {
-        -1
+        return -1
       }
     }
     if (java.lang.Double.isNaN(d2)) {
-      +1
+      return +1
     }
     if (d1 < d2) {
-      -1
+      return -1
     }
     if (d1 > d2) {
-      +1
+      return +1
     }
     0
   }

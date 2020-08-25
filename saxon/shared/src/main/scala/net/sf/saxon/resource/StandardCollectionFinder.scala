@@ -28,8 +28,6 @@ import java.util.Map
 import StandardCollectionFinder._
 
 
-
-
 object StandardCollectionFinder {
 
   def checkNotNull(collectionURI: String, context: XPathContext): Unit = {
@@ -73,7 +71,7 @@ class StandardCollectionFinder extends CollectionFinder {
     val registeredCollection: ResourceCollection =
       registeredCollections.get(collectionURI)
     if (registeredCollection != null) {
-      registeredCollection
+      return registeredCollection
     }
     var params: URIQueryParameters = null
     var query: String = null
@@ -108,9 +106,9 @@ class StandardCollectionFinder extends CollectionFinder {
       checkFileExists(file, resolvedURI, context)
       if (file.isDirectory) {
         new DirectoryCollection(context.getConfiguration,
-                                collectionURI1,
-                                file,
-                                params)
+          collectionURI1,
+          file,
+          params)
       }
     }
     if (isJarFileURI(collectionURI1)) {
@@ -118,12 +116,13 @@ class StandardCollectionFinder extends CollectionFinder {
     }
     new CatalogCollection(context.getConfiguration, collectionURI1)
   }
-// check if file is a zip file
-// otherwise assume the URI identifies a collection catalog
-// check if file is a zip file
-// otherwise assume the URI identifies a collection catalog
 
-   def isJarFileURI(collectionURI: String): Boolean =
+  // check if file is a zip file
+  // otherwise assume the URI identifies a collection catalog
+  // check if file is a zip file
+  // otherwise assume the URI identifies a collection catalog
+
+  def isJarFileURI(collectionURI: String): Boolean =
     collectionURI.endsWith(".jar") || collectionURI.endsWith(".zip") ||
       collectionURI.startsWith("jar:")
 
@@ -135,17 +134,17 @@ class StandardCollectionFinder extends CollectionFinder {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * Default implementation of the CollectionFinder interface. The standard CollectionFinder recognizes four
-  * types of collection:
-  * <p>
-  * <ol>
-  *     <li>Any URI may be explicitly registered and associated with an instance of {@link ResourceCollection}</li>
-  *     <li>If the file: URI scheme is used, and the relevant file identifies a directory, the directory
-  *     is treated as a collection: it is returned as an instance of {@link DirectoryCollection}</li>
-  *     <li>If the URI ends with ".jar" or ".zip", or more generally, if the method {@link #isJarFileURI(String)} returns
-  *     true, the URI is treated as identifying a JAR or ZIP archive, whose contents form the
-  *     resources in the collection: it is returned as an instance of {@link JarCollection}</li>
-  *     <li>In all other cases, the URI is treated as the URI of an XML document listing the URIs
-  *     of the resources in the collection, which are then retrieved using the {@link javax.xml.transform.URIResolver}</li>
-  * </ol>
-  */
+ * Default implementation of the CollectionFinder interface. The standard CollectionFinder recognizes four
+ * types of collection:
+ * <p>
+ * <ol>
+ * <li>Any URI may be explicitly registered and associated with an instance of {@link ResourceCollection}</li>
+ * <li>If the file: URI scheme is used, and the relevant file identifies a directory, the directory
+ * is treated as a collection: it is returned as an instance of {@link DirectoryCollection}</li>
+ * <li>If the URI ends with ".jar" or ".zip", or more generally, if the method {@link #isJarFileURI(String)} returns
+ * true, the URI is treated as identifying a JAR or ZIP archive, whose contents form the
+ * resources in the collection: it is returned as an instance of {@link JarCollection}</li>
+ * <li>In all other cases, the URI is treated as the URI of an XML document listing the URIs
+ * of the resources in the collection, which are then retrieved using the {@link javax.xml.transform.URIResolver}</li>
+ * </ol>
+ */

@@ -14,8 +14,6 @@ import java.util.Arrays
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 
-
-
 /**
  * Set of int values. This implementation of IntSet uses a sorted array
  * of integer ranges.
@@ -92,13 +90,13 @@ class IntRangeSet extends IntSet {
 
   def contains(value: Int): Boolean = {
     if (used == 0) {
-      false
+      return false
     }
     if (value > endPoints(used - 1)) {
-      false
+      return false
     }
     if (value < startPoints(0)) {
-      false
+      return false
     }
     var i: Int = 0
     var j: Int = used
@@ -125,22 +123,28 @@ class IntRangeSet extends IntSet {
       startPoints(used - 1) = value
       endPoints(used - 1) = value
       size += 1;
-      true
+      return true
     }
     if (value > endPoints(used - 1)) {
       if (value == endPoints(used - 1) + 1) {
-        { endPoints(used - 1) += 1; endPoints(used - 1) - 1 }
+        {
+          endPoints(used - 1) += 1;
+          endPoints(used - 1) - 1
+        }
       } else {
         ensureCapacity(used + 1)
         startPoints(used - 1) = value
         endPoints(used - 1) = value
       }
-      { size += 1; size - 1 }
-      true
+      size += 1
+      return true
     }
     if (value < startPoints(0)) {
       if (value == startPoints(0) - 1) {
-        { startPoints(0) -= 1; startPoints(0) + 1 }
+        {
+          startPoints(0) -= 1;
+          startPoints(0) + 1
+        }
       } else {
         ensureCapacity(used + 1)
         System.arraycopy(startPoints, 0, startPoints, 1, used - 1)
@@ -148,8 +152,8 @@ class IntRangeSet extends IntSet {
         startPoints(0) = value
         endPoints(0) = value
       }
-      { size += 1; size - 1 }
-      true
+      size += 1
+      return true
     }
     var i: Int = 0
     var j: Int = used
@@ -165,9 +169,9 @@ class IntRangeSet extends IntSet {
       }
     } while (i != j);
     if (i > 0 && endPoints(i - 1) + 1 == value) {
-      { i -= 1; i + 1 }
+      i -= 1
     } else if (i < used - 1 && startPoints(i + 1) - 1 == value) {
-      { i += 1; i - 1 }
+      i += 1
     }
     if (endPoints(i) + 1 == value) {
       if (value == startPoints(i + 1) - 1) {
@@ -177,9 +181,12 @@ class IntRangeSet extends IntSet {
         System.arraycopy(endPoints, i + 2, endPoints, i + 1, used - i - 2)
         used = used - 1
       } else {
-        { endPoints(i) += 1; endPoints(i) - 1 }
+        {
+          endPoints(i) += 1;
+          endPoints(i) - 1
+        }
       }
-      { size += 1; size - 1 }
+      size += 1
       true
     } else if (startPoints(i) - 1 == value) {
       if (value == endPoints(i - 1) + 1) {
@@ -189,13 +196,16 @@ class IntRangeSet extends IntSet {
         System.arraycopy(endPoints, i + 1, endPoints, i, used - i - 1)
         used = used - 1
       } else {
-        { startPoints(i) -= 1; startPoints(i) + 1 }
+        {
+          startPoints(i) -= 1;
+          startPoints(i) + 1
+        }
       }
-      { size += 1; size - 1 }
+      size += 1
       true
     } else {
       if (value > endPoints(i)) {
-        { i += 1; i - 1 }
+        i += 1
       }
       ensureCapacity(used + 1)
       try {
@@ -207,7 +217,7 @@ class IntRangeSet extends IntSet {
       }
       startPoints(i) = value
       endPoints(i) = value
-      size =size+ 1
+      size = size + 1
       true
     }
   }
@@ -237,14 +247,14 @@ class IntRangeSet extends IntSet {
   override def equals(other: Any): Boolean = other match {
     case other: IntSet =>
       if (other.isInstanceOf[IntRangeSet]) {
-       var otherVar : IntRangeSet = other.asInstanceOf[IntRangeSet]
+        var otherVar: IntRangeSet = other.asInstanceOf[IntRangeSet]
         if (used == otherVar.used && Arrays.equals(startPoints, otherVar.startPoints) && Arrays.equals(endPoints, otherVar.endPoints)) {
           return true
         } else {
           return false
         }
       } else {
-       return containsAll(other)
+        return containsAll(other)
       }
     case _ => return false
 
@@ -326,14 +336,14 @@ class IntRangeSet extends IntSet {
       if (i < 0) {
         i = 0
         current = startPoints(0)
-        current
+        return current
       }
       if (current == endPoints(i)) {
         i = i + 1
         current = startPoints(i)
         current
       } else {
-         current = current + 1;
+        current = current + 1;
         current
       }
     }

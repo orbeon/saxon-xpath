@@ -170,7 +170,7 @@ class NamespaceNode(var element: NodeInfo,
   def getFingerprint(): Int = {
     if (fingerprint == -1) {
       if (nsBinding.getPrefix.isEmpty) {
-        -1
+        return -1
       } else {
         fingerprint = element.getConfiguration.getNamePool
           .allocateFingerprint("", nsBinding.getPrefix)

@@ -46,7 +46,7 @@ class SlashExpression(start: Expression, step: Expression)
 
   var contextFree: Boolean = _
 
-   override def getOperandRole(arg: Int): OperandRole =
+  override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT
     else OperandRole.FOCUS_CONTROLLED_ACTION
 
@@ -76,8 +76,8 @@ class SlashExpression(start: Expression, step: Expression)
   override def getIntegerBounds(): Array[IntegerValue] =
     getStep.getIntegerBounds
 
-override  def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor,
+                         contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getStart)) {
       getStart
@@ -122,19 +122,19 @@ override  def typeCheck(visitor: ExpressionVisitor,
       if (underlyingStep
         .asInstanceOf[FilterExpression]
         .isPositional(env.getConfiguration.getTypeHierarchy)) {
-        null
+        return null
       }
       underlyingStep =
         underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
     }
     if (!(underlyingStep.isInstanceOf[AxisExpression])) {
-      null
+      return null
     }
     var st: Expression = getStart
     if (st.isInstanceOf[AxisExpression]) {
       val stax: AxisExpression = st.asInstanceOf[AxisExpression]
       if (stax.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
-        null
+        return null
       }
       val cie: ContextItemExpression = new ContextItemExpression()
       ExpressionTool.copyLocationInfo(this, cie)
@@ -143,19 +143,19 @@ override  def typeCheck(visitor: ExpressionVisitor,
       ExpressionTool.copyLocationInfo(this, st)
     }
     if (!(st.isInstanceOf[SlashExpression])) {
-      null
+      return null
     }
     val startPath: SlashExpression = st.asInstanceOf[SlashExpression]
     if (!(startPath.getStep.isInstanceOf[AxisExpression])) {
-      null
+      return null
     }
     val mid: AxisExpression = startPath.getStep.asInstanceOf[AxisExpression]
     if (mid.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
-      null
+      return null
     }
     val test: NodeTest = mid.getNodeTest
     if (!(test == null || test.isInstanceOf[AnyNodeTest])) {
-      null
+      return null
     }
     val underlyingAxis: Int =
       underlyingStep.asInstanceOf[AxisExpression].getAxis
@@ -183,7 +183,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
       val newPath: Expression =
         ExpressionTool.makePathExpression(startPath.getStart, newStep)
       if (!(newPath.isInstanceOf[SlashExpression])) {
-        null
+        return null
       }
       ExpressionTool.copyLocationInfo(this, newPath)
       newPath.asInstanceOf[SlashExpression]
@@ -196,7 +196,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
         ExpressionTool.makePathExpression(startPath.getStart, newStep)
       val e3: Expression = ExpressionTool.makePathExpression(e2, getStep)
       if (!(e3.isInstanceOf[SlashExpression])) {
-        null
+        return null
       }
       ExpressionTool.copyLocationInfo(this, e3)
       e3.asInstanceOf[SlashExpression]
@@ -205,7 +205,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
   }
 
   override def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Expression = {
+                        contextItemType: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
     val opt: Optimizer = visitor.obtainOptimizer()
@@ -251,7 +251,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
     }
     e2 = tryToMakeSorted(visitor, contextItemType)
     if (e2 != null) {
-      e2
+      return e2
     }
     if (getStep.isInstanceOf[AxisExpression]) {
       if (!Cardinality.allowsMany(getStart.getCardinality)) {
@@ -259,7 +259,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
           new SimpleStepExpression(getStart, getStep)
         ExpressionTool.copyLocationInfo(this, sse)
         sse.setParentExpression(getParentExpression)
-        sse
+        return sse
       } else {
         contextFree = true
       }
@@ -273,13 +273,13 @@ override  def typeCheck(visitor: ExpressionVisitor,
         keyCall.setArg(2, new RootExpression())
         keyCall.setParentExpression(getParentExpression)
         ExpressionTool.resetStaticProperties(keyCall)
-        keyCall
+        return keyCall
       }
     }
     val k: Expression =
       promoteFocusIndependentSubexpressions(visitor, contextItemType)
     if (k != this) {
-      k
+      return k
     }
     if (visitor.isOptimizeForStreaming) {
       val rawStep: Expression =
@@ -301,7 +301,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
   def tryToMakeAbsolute(): SlashExpression = {
     val first: Expression = getFirstStep
     if (first.getItemType.getPrimitiveType == Type.DOCUMENT) {
-      this
+      return this
     }
     if (first.isInstanceOf[AxisExpression]) {
       val contextItemType: ItemType =
@@ -313,7 +313,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
           root,
           this.copy(new RebindingMap()))
         if (!(path.isInstanceOf[SlashExpression])) {
-          null
+          return null
         }
         ExpressionTool.copyLocationInfo(this, path)
         path.asInstanceOf[SlashExpression]
@@ -331,7 +331,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
       val se2: SlashExpression = se.tryToMakeAbsolute()
       if (se2 != null) {
         if (se2 == se) {
-          this
+          return this
         } else {
           val rest: Expression = getRemainingSteps
           val ds: DocumentSorter = new DocumentSorter(se2)
@@ -359,12 +359,12 @@ override  def typeCheck(visitor: ExpressionVisitor,
     val s1: Expression = ExpressionTool.unfilteredExpression(getStart, false).asInstanceOf[Expression]
     if (!(s1.isInstanceOf[AxisExpression] &&
       s1.asInstanceOf[AxisExpression].getAxis == AxisInfo.DESCENDANT)) {
-      null
+      return null
     }
     val s2: Expression = ExpressionTool.unfilteredExpression(getStep, false).asInstanceOf[Expression]
     if (!(s2.isInstanceOf[AxisExpression] &&
       s2.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD)) {
-      null
+      return null
     }
     val x: Expression = getStart.copy(new RebindingMap())
     val ax: AxisExpression = ExpressionTool
@@ -393,9 +393,9 @@ override  def typeCheck(visitor: ExpressionVisitor,
     k
   }
 
-   def promoteFocusIndependentSubexpressions(
-                                                       visitor: ExpressionVisitor,
-                                                       contextItemType: ContextItemStaticInfo): Expression = this
+  def promoteFocusIndependentSubexpressions(
+                                             visitor: ExpressionVisitor,
+                                             contextItemType: ContextItemStaticInfo): Expression = this
 
   override def unordered(retainAllNodes: Boolean,
                          forStreaming: Boolean): Expression = {
@@ -404,9 +404,9 @@ override  def typeCheck(visitor: ExpressionVisitor,
     this
   }
 
- override def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+  override def addToPathMap(
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val target: PathMap.PathMapNodeSet =
       getStart.addToPathMap(pathMap, pathMapNodeSet)
     getStep.addToPathMap(pathMap, target)
@@ -473,18 +473,18 @@ override  def typeCheck(visitor: ExpressionVisitor,
   private def testNaturallySorted(startProperties: Int,
                                   stepProperties: Int): Boolean = {
     if ((stepProperties & StaticProperty.ORDERED_NODESET) == 0) {
-      false
+      return false
     }
     if (Cardinality.allowsMany(getStart.getCardinality)) {
       if ((startProperties & StaticProperty.ORDERED_NODESET) == 0) {
-        false
+        return false
       }
     } else {
-      true
+      return true
     }
     if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) !=
       0) {
-      true
+      return true
     }
     if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) !=
       0) {
@@ -522,7 +522,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
     val tailPattern: Pattern = tail.toPattern(config)
     if (tailPattern.isInstanceOf[NodeTestPattern]) {
       if (tailPattern.getItemType.isInstanceOf[ErrorType]) {
-        tailPattern
+        return tailPattern
       }
     } else if (tailPattern.isInstanceOf[GeneralNodePattern]) {
       new GeneralNodePattern(this,
@@ -558,7 +558,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[SlashExpression])) {
-      false
+      return false
     }
     val p: SlashExpression = other.asInstanceOf[SlashExpression]
     getStart.isEqual(p.getStart) && getStep.isEqual(p.getStep)
@@ -567,7 +567,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
   override def computeHashCode(): Int =
     "SlashExpression".hashCode + getStart.hashCode + getStep.hashCode
 
- override def iterate(context: XPathContext): SequenceIterator = {
+  override def iterate(context: XPathContext): SequenceIterator = {
     if (contextFree) {
       new MappingIterator(getStart.iterate(context),
         (item) =>

@@ -257,7 +257,7 @@ object ImmutableHashTrieMap {
         if (orphanedEntry.isArrayNode) {
           new SingletonArrayHashNode(orphanedBucket, orphanedEntry)
         }
-        orphanedEntry
+        return orphanedEntry
       }
       new BranchedArrayHashNode(newSize, newNodes)
     }

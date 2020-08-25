@@ -71,7 +71,7 @@ abstract class RegexFunction
     copy
   }
 
-   def allowRegexMatchingEmptyString(): Boolean
+  def allowRegexMatchingEmptyString(): Boolean
 
   override def makeFunctionCall(arguments: Expression*): Expression = {
     tryToBindRegularExpression(arguments.toArray)
@@ -86,10 +86,9 @@ abstract class RegexFunction
     super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
   }
 
-   def getRegularExpression(
-                                      args: Array[Sequence]): RegularExpression = {
+  def getRegularExpression(args: Array[Sequence]): RegularExpression = {
     if (staticRegex != null) {
-      staticRegex
+      return staticRegex
     }
     val config: Configuration = getRetainedStaticContext.getConfiguration
     val regexArg: StringValue = args(1).head().asInstanceOf[StringValue]

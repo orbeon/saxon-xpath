@@ -70,7 +70,7 @@ object GDateValue {
       }
       if (era < 0 && !allowYearZero) {
         {
-          d.year += 1; d.year - 1
+          d.year += 1
         }
       }
       if (!tok.hasMoreElements()) {
@@ -294,7 +294,7 @@ abstract class GDateValue extends CalendarValue {
       if (day != v2.day) {
         IntegerValue.signum(day - v2.day)
       }
-      0
+      return 0
     }
     toDateTime().compareTo(other.toDateTime(), implicitTimezone)
   }

@@ -107,7 +107,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
     if (state == 0) {
       function.supplyStaticContext(visitor.getStaticContext, 0, getArguments)
     }
-    { state += 1; state - 1 }
+    state += 1
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -119,7 +119,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
         .function
         .rewrite(visitor.getStaticContext, getArguments)
       if (exp2 == null) {
-        exp
+        return  exp
       } else {
         ExpressionTool.copyLocationInfo(this, exp2)
         exp2

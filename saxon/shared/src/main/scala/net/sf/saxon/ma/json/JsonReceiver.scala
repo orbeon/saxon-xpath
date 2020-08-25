@@ -125,7 +125,7 @@ object JsonReceiver {
 
   private def unescape(literal: String): String = {
     if (literal.indexOf('\\') < 0) {
-      literal
+      return literal
     }
     val buffer: FastStringBuffer = new FastStringBuffer(literal.length)
     for (k <- 0 until literal.length) {
