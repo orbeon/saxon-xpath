@@ -137,7 +137,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       var parent: Expression = getParentExpression
       while (parent != null) {
         if (parent.isInstanceOf[AnalyzeString]) {
-          parent
+          return parent
         }
         parent = parent.getParentExpression
       }
@@ -170,7 +170,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
             .allocateArgumentEvaluators(
               sfo.asInstanceOf[SystemFunctionCall].getArguments)
         }
-        sfo
+        return sfo
       }
     }
     if (sf.isInstanceOf[SystemFunctionCall] && opt.isOptionSet(
@@ -229,7 +229,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     if (fn.isInstanceOf[NotFn]) {
       val arg: Expression = getArg(0)
       if (arg.getItemType == BuiltInAtomicType.BOOLEAN && arg.getCardinality == StaticProperty.EXACTLY_ONE) {
-        arg
+        return arg
       } else {
         SystemFunction.makeCall("boolean", getRetainedStaticContext, arg)
       }
