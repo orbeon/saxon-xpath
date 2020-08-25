@@ -61,15 +61,15 @@ class LookupExpression(start: Expression, step: Expression)
 
   private var isClassified: Boolean = false
 
-   var isArrayLookup: Boolean = false
+  var isArrayLookup: Boolean = false
 
-   var isMapLookup: Boolean = false
+  var isMapLookup: Boolean = false
 
-   var isSingleContainer: Boolean = false
+  var isSingleContainer: Boolean = false
 
-   var isSingleEntry: Boolean = false
+  var isSingleEntry: Boolean = false
 
-   override def getOperandRole(arg: Int): OperandRole =
+  override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.INSPECT else OperandRole.ABSORB
 
   override def getExpressionName(): String = "lookupExp"
@@ -221,7 +221,7 @@ class LookupExpression(start: Expression, step: Expression)
    * indirectly, using an implementation that relies on one of the other methods.
    *
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
-   *                                                        { @link #PROCESS_METHOD}
+   *         { @link #PROCESS_METHOD}
    */
   override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
 
@@ -273,7 +273,7 @@ class LookupExpression(start: Expression, step: Expression)
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[LookupExpression])) {
-      false
+      return false
     }
     val p: LookupExpression = other.asInstanceOf[LookupExpression]
     getLhsExpression.isEqual(p.getLhsExpression) && getRhsExpression.isEqual(

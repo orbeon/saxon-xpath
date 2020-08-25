@@ -216,12 +216,12 @@ class VirtualCopy(var original: NodeInfo,
 
   def getParent(): NodeInfo = {
     if (original == root) {
-      null
+      return null
     }
     if (parent == null) {
       val basep: NodeInfo = original.getParent
       if (basep == null) {
-        null
+        return null
       }
       parent = wrap(basep)
     }
@@ -288,7 +288,7 @@ class VirtualCopy(var original: NodeInfo,
     while (true) {
       val p: NodeInfo = n.getParent
       if (p == null) {
-        n
+        return n
       }
       n = p
     }
@@ -394,7 +394,7 @@ class VirtualCopy(var original: NodeInfo,
       if (next != null) {
         if (testInclusion && !isIncludedInCopy(next)) {
           //         the subtree.
-          null
+          return null
         }
         // we're only interested in nodes within the subtree that was copied.
         // Assert: once we find a node outside this subtree, all further nodes will also be outside

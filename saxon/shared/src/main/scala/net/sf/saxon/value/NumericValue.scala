@@ -122,10 +122,10 @@ abstract class NumericValue
     val b: Double = other.getDoubleValue
 //noinspection UseCompareMethod
     if (a == b) {
-      0
+     return 0
     }
     if (a < b) {
-      -1
+      return -1
     }
     +1
   }

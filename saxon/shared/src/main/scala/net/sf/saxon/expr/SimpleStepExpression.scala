@@ -28,8 +28,6 @@ import net.sf.saxon.value.SequenceType
 import SimpleStepExpression._
 
 
-
-
 object SimpleStepExpression {
 
   private var STEP_ROLE: OperandRole = new OperandRole(
@@ -40,13 +38,13 @@ object SimpleStepExpression {
 }
 
 class SimpleStepExpression(start: Expression, step: Expression)
-    extends SlashExpression(start, step) {
+  extends SlashExpression(start, step) {
 
   if (!(step.isInstanceOf[AxisExpression])) {
     throw new IllegalArgumentException()
   }
 
-   override def getOperandRole(arg: Int): OperandRole =
+  override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT else STEP_ROLE
 
   /*@NotNull*/
@@ -68,10 +66,10 @@ class SimpleStepExpression(start: Expression, step: Expression)
       }
       val se: SlashExpression = new SlashExpression(getStart, getStep)
       ExpressionTool.copyLocationInfo(this, se)
-      se
+      return se
     }
     if (getStart.isInstanceOf[ContextItemExpression] &&
-        AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis)) {
+      AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis)) {
       getStep
     }
     this
@@ -94,13 +92,13 @@ class SimpleStepExpression(start: Expression, step: Expression)
   }
 
   /**
-    * An implementation of Expression must provide at least one of the methods evaluateItem(), iterate(), or process().
-    * This method indicates which of these methods is provided directly. The other methods will always be available
-    * indirectly, using an implementation that relies on one of the other methods.
-    *
-    * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
-    * {@link #PROCESS_METHOD}
-    */
+   * An implementation of Expression must provide at least one of the methods evaluateItem(), iterate(), or process().
+   * This method indicates which of these methods is provided directly. The other methods will always be available
+   * indirectly, using an implementation that relies on one of the other methods.
+   *
+   * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
+   *                                                        { @link #PROCESS_METHOD}
+   */
   override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
 
   /*@NotNull*/
@@ -137,9 +135,9 @@ class SimpleStepExpression(start: Expression, step: Expression)
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A SimpleStepExpression is a special case of a SlashExpression in which the
-  * start expression selects a single item (or nothing), and the step expression is
-  * a simple AxisExpression. This is designed to avoid the costs of creating a new
-  * dynamic context for expressions (common in XQuery) such as
-  * for $b in EXPR return $b/title
-  */
+ * A SimpleStepExpression is a special case of a SlashExpression in which the
+ * start expression selects a single item (or nothing), and the step expression is
+ * a simple AxisExpression. This is designed to avoid the costs of creating a new
+ * dynamic context for expressions (common in XQuery) such as
+ * for $b in EXPR return $b/title
+ */

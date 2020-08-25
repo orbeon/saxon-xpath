@@ -100,10 +100,10 @@ class FastStringBuffer(initialSize: Int)
       s.asInstanceOf[FastStringBuffer].getChars(0, len, array, used)
     } else if (s.isInstanceOf[CompressedWhitespace]) {
       s.asInstanceOf[CompressedWhitespace].uncompress(this)
-      this
+      return this
     } else if (s.isInstanceOf[BMPString]) {
       this.cat(s.asInstanceOf[BMPString].getCharSequence)
-      this
+      return this
     } else if (s.isInstanceOf[GeneralUnicodeString]) {
       for (i <- 0 until s.asInstanceOf[GeneralUnicodeString].uLength()) {
         appendWideChar(s.asInstanceOf[GeneralUnicodeString].uCharAt(i))
@@ -337,7 +337,7 @@ class FastStringBuffer(initialSize: Int)
     if (index < 0 || index > used) {
       throw new IndexOutOfBoundsException("" + index)
     }
-    { used -= 1; used + 1 }
+    used -= 1
     System.arraycopy(array, index + 1, array, index, used - index)
   }
 

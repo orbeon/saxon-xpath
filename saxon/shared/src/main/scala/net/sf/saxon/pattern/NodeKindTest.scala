@@ -145,7 +145,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
                                th: TypeHierarchy): Optional[String] = {
     val explanation: Optional[String] = super.explainMismatch(item, th)
     if (explanation.isPresent) {
-      explanation
+      return explanation
     }
     if (item.isInstanceOf[NodeInfo]) {
       val actualKind: UType = UType.getUType(item)

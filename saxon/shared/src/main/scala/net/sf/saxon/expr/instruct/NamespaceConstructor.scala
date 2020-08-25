@@ -84,7 +84,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     val value: AtomicValue =
       getNameExp.evaluateItem(context).asInstanceOf[AtomicValue]
     if (value == null) {
-      ""
+      return ""
     }
     if (!(value.isInstanceOf[net.sf.saxon.value.StringValue]) ||
       value.isInstanceOf[AnyURIValue]) {

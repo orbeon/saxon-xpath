@@ -191,7 +191,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
         reasons.add(
           "Cannot call the private XQuery function " + functionName.getComponentName.getDisplayName +
             " from outside its module")
-        null
+        return null
       }
       val ufc: UserFunctionCall = new UserFunctionCall()
       ufc.setFunctionName(fd.getFunctionName)
@@ -255,7 +255,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
         new SymbolicName.F(new StructuredQName("", uri, localName), arity)
       val fd: XQueryFunction = functions.get(functionKey)
       if (fd == null) {
-        null
+        return null
       }
       fd.getUserFunction
     }

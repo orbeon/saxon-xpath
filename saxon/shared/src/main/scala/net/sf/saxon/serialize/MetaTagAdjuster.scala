@@ -84,7 +84,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
   private def matchesName(name: NodeName, local: String): Boolean =
     if (isXHTML) {
       if (name.getLocalPart != local) {
-        false
+        return false
       }
       if (htmlVersion == 5) {
         name.hasURI("") || name.hasURI(NamespaceConstant.XHTML)
@@ -124,9 +124,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
         }
       }
     }
-    {
-      level += 1; level - 1
-    }
+    level += 1
     nextReceiver.startElement(elemName,
       `type`,
       attributes,
@@ -167,9 +165,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
     if (inMetaTag) {
       inMetaTag = false
     } else {
-      {
-        level -= 1; level + 1
-      }
+      level -= 1
       if (droppingMetaTags == level + 1) {
         droppingMetaTags = -1
       }

@@ -38,11 +38,11 @@ import Expression._
 
 object Instruction {
 
-   def dynamicError(loc: Location,
-                             error: XPathException,
-                             context: XPathContext): XPathException = {
+  def dynamicError(loc: Location,
+                   error: XPathException,
+                   context: XPathContext): XPathException = {
     if (error.isInstanceOf[TerminationException]) {
-      error
+      return error
     }
     error.maybeSetLocation(loc)
     error.maybeSetContext(context)
@@ -52,7 +52,7 @@ object Instruction {
   def assembleParams(context: XPathContext,
                      actualParams: Array[WithParam]): ParameterSet = {
     if (actualParams == null || actualParams.length == 0) {
-      null
+      return null
     }
     val params: ParameterSet = new ParameterSet(actualParams.length)
     for (actualParam <- actualParams) {
@@ -70,7 +70,7 @@ object Instruction {
       assembleParams(context, actualParams)
     }
     if (actualParams == null || actualParams.length == 0) {
-      existingParams
+      return existingParams
     }
     val newParams: ParameterSet =
       new ParameterSet(existingParams, actualParams.length)
@@ -143,7 +143,7 @@ abstract class Instruction extends Expression with TailCallReturner {
 
   def alwaysCreatesNewNodes(): Boolean = false
 
-   def someOperandCreatesNewNodes(): Boolean = {
+  def someOperandCreatesNewNodes(): Boolean = {
     for (o <- operands().asScala) {
       val child: Expression = o.getChildExpression
       val props: Int = child.getSpecialProperties

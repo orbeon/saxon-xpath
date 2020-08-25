@@ -112,15 +112,15 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
     if (node.isInstanceOf[Document]) {
       val docType: DocumentType = node.asInstanceOf[Document].getDoctype
       if (docType == null) {
-        null
+       return null
       }
       val map: NamedNodeMap = docType.getEntities
       if (map == null) {
-        null
+        return null
       }
       val entity: Entity = map.getNamedItem(name).asInstanceOf[Entity]
       if (entity == null || entity.getNotationName == null) {
-        null
+        return null
       }
       var systemId: String = entity.getSystemId
       try {

@@ -41,7 +41,7 @@ class OnDemandFunctionSet(private var config: Configuration,
               reasons.add(
                 "Class " + libraryClass + " was loaded but it is not a FunctionLibrary")
             }
-            false
+            return false
           }
         } catch {
           case e: XPathException => {
@@ -49,7 +49,7 @@ class OnDemandFunctionSet(private var config: Configuration,
               reasons.add(
                 "Failed to load class " + libraryClass + ": " + e.getMessage)
             }
-            false
+            return false
           }
 
         }

@@ -24,21 +24,19 @@ import net.sf.saxon.tree.util.Navigator
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 
-
-
 class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
                               @BeanProperty var position: Int)
-    extends Pattern {
+  extends Pattern {
 
   def matches(item: Item, context: XPathContext): Boolean =
     item.isInstanceOf[NodeInfo] &&
       matchesBeneathAnchor(item.asInstanceOf[NodeInfo], null, context)
 
   /**
-    * Get a UType indicating which kinds of items this Pattern can match.
-    *
-    * @return a UType indicating all the primitive types of item that the pattern can match.
-    */
+   * Get a UType indicating which kinds of items this Pattern can match.
+   *
+   * @return a UType indicating all the primitive types of item that the pattern can match.
+   */
   override def getUType(): UType = nodeTest.getUType
 
   override def getFingerprint(): Int = nodeTest.getFingerprint
@@ -62,10 +60,10 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
                                     anchor: NodeInfo,
                                     context: XPathContext): Boolean = {
     if (!nodeTest.test(node)) {
-      false
+      return false
     }
     if (anchor != null && node.getParent != anchor) {
-      false
+      return false
     }
     position ==
       Navigator.getSiblingPosition(node, nodeTest, position)
@@ -81,8 +79,8 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
   }
 
   /**
-    * Get the original pattern text
-    */
+   * Get the original pattern text
+   */
   override def toString(): String = nodeTest + "[" + position + "]"
 
   def export(presenter: ExpressionPresenter): Unit = {
@@ -100,6 +98,6 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A SimplePositionalPattern is a pattern of the form A[N] where A is an axis expression using the child axis
-  * and P is a numeric literal.
-  */
+ * A SimplePositionalPattern is a pattern of the form A[N] where A is an axis expression using the child axis
+ * and P is a numeric literal.
+ */

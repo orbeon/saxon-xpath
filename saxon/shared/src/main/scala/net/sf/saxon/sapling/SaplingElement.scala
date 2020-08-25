@@ -101,7 +101,7 @@ class SaplingElement(name: String) extends SaplingNode {
   def withNamespace(prefix: String, uri: String): SaplingElement = {
     if (uri.isEmpty) {
       if (prefix.isEmpty) {
-        this
+        return this
       } else {
         throw new IllegalArgumentException(
           "Cannot bind non-empty prefix to empty URI")
@@ -110,7 +110,7 @@ class SaplingElement(name: String) extends SaplingNode {
     val existingURI: String = namespaces.getURI(prefix)
     if (existingURI != null) {
       if (existingURI == uri) {
-        this
+        return this
       } else {
         throw new IllegalStateException(
           "Inconsistent namespace bindings for prefix '" + prefix +
@@ -122,7 +122,7 @@ class SaplingElement(name: String) extends SaplingNode {
     e2
   }
 
-   override def sendTo(receiver: Receiver): Unit = {
+  override def sendTo(receiver: Receiver): Unit = {
     val config: Configuration =
       receiver.getPipelineConfiguration.getConfiguration
     val namePool: NamePool = config.getNamePool

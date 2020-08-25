@@ -143,7 +143,7 @@ class XmlProcessingIncident(@BeanProperty var msg: String,
 
   def getErrorCode(): QName = {
     if (errorCode == null) {
-      null
+      return null
     }
     new QName(StructuredQName.fromEQName(errorCode))
   }

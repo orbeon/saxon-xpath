@@ -241,7 +241,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       }
       if (i01 == null && !maybeBoolean1) {
         seqItr0.close()
-        false
+        return false
       }
       if (i02 != null) {
         seqItr0 = new PrependSequenceIterator(i02, seqItr0)
@@ -264,7 +264,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       }
       if (i11 == null && !maybeBoolean0) {
         seqItr1.close()
-        false
+        return false
       }
       if (i12 != null) {
         seqItr1 = new PrependSequenceIterator(i12, seqItr1)
@@ -281,7 +281,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     }
     if (seqItr0.isInstanceOf[EmptyIterator] || seqItr1
       .isInstanceOf[EmptyIterator]) {
-      false
+      return false
     }
     if (op == Token.LT || op == Token.LE || op == Token.GT ||
       op == Token.GE) {
@@ -306,13 +306,13 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
           if (item1 == null) {
             seqItr1 = null
             if (seq1 == null) {
-              false
+              return false
             }
             break()
           }
           try {
             if (compare(item0, singletonop, item1, comparer, context)) {
-              true
+              return true
             }
             if (seq1 == null) {
               seq1 = new ArrayList[AtomicValue](40)

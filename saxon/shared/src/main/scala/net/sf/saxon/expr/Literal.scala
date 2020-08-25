@@ -198,7 +198,7 @@ object Literal {
       try value ==
         exp.asInstanceOf[Literal].value.effectiveBooleanValue()
       catch {
-        case err: XPathException => false
+        case err: XPathException => return false
 
       }
     }
@@ -367,7 +367,7 @@ class Literal extends Expression {
   override def evaluateAsString(context: XPathContext): CharSequence = {
     val value: AtomicValue = evaluateItem(context).asInstanceOf[AtomicValue]
     if (value == null) {
-      ""
+      return ""
     }
     value.getStringValueCS
   }

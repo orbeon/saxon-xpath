@@ -610,7 +610,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   private def mayCreateSecondaryResultDocuments(): Boolean = {
     if (createsSecondaryResultDocuments) {
-      true
+      return true
     }
     for (p <- usedPackages.asScala if p.mayCreateSecondaryResultDocuments()) {
       true

@@ -36,7 +36,7 @@ class UnionCastableFunction(targetType: UnionType,
       val length: Int = SequenceTool.getLength(atomizedValue)
       count += length
       if (count > 1) {
-        false
+        return false
       }
       if (length != 0) {
         val av: AtomicValue = atomizedValue.head()
@@ -48,7 +48,7 @@ class UnionCastableFunction(targetType: UnionType,
       val av: AtomicValue = item.asInstanceOf[AtomicValue]
         count += 1
       if (count > 1) {
-        false
+        return false
       }
       if (!castable(av, context)) {
         false

@@ -260,7 +260,7 @@ object JPConverter {
     }
     val c: JPConverter = converterMap.get(javaClass)
     if (c != null) {
-      c
+      return c
     }
     if (javaClass == classOf[AnyRef]) {
       FromObject.INSTANCE

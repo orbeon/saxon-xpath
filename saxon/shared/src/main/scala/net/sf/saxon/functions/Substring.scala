@@ -31,7 +31,7 @@ object Substring {
       if (start.isNaN) {
         EmptyString.THE_INSTANCE
       } else if (start.signum() <= 0) {
-        s
+        return s
       } else if (start.compareTo(slength) > 0) {
         EmptyString.THE_INSTANCE
       } else {
@@ -114,7 +114,7 @@ class Substring extends SystemFunction with Callable {
                                contextInfo: ContextItemStaticInfo): Expression = {
     val e2: Expression = super.typeCheckCaller(caller, visitor, contextInfo)
     if (e2 != caller) {
-      e2
+      return e2
     }
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     if (caller.getArg(1).isCallOn(classOf[Number_1])) {

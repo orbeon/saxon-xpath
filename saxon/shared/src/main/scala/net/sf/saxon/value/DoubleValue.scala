@@ -136,14 +136,14 @@ class DoubleValue() extends NumericValue {
 
   def round(scale: Int): NumericValue = {
     if (java.lang.Double.isNaN(value)) {
-      this
+      return this
     }
     if (java.lang.Double.isInfinite(value)) {
-      this
+      return this
     }
     if (value == 0.0) {
 // handles the negative zero case
-      this
+      return this
     }
     if (scale == 0 && value > java.lang.Long.MIN_VALUE && value < java.lang.Long.MAX_VALUE) {
       if (value >= -0.5 && value < 0.0) {
@@ -179,10 +179,10 @@ class DoubleValue() extends NumericValue {
 // Now convert back to the original magnitude
 
   def roundHalfToEven(scale: Int): NumericValue = {
-    if (java.lang.Double.isNaN(value)) this
-    if (java.lang.Double.isInfinite(value)) this
+    if (java.lang.Double.isNaN(value)) return this
+    if (java.lang.Double.isInfinite(value)) return this
 // handles the negative zero case
-    if (value == 0.0) this
+    if (value == 0.0) return this
     val factor: Double = Math.pow(10, scale + 1)
     var d: Double = Math.abs(value * factor)
     if (java.lang.Double.isInfinite(d)) {
@@ -219,7 +219,7 @@ class DoubleValue() extends NumericValue {
 
   def signum(): Int = {
     if (java.lang.Double.isNaN(value)) {
-      0
+      return  0
     }
     if (value > 0) 1 else if (value == 0) 0 else -1
   }
@@ -261,7 +261,7 @@ class DoubleValue() extends NumericValue {
   def compareTo(other: Long): Int = {
     val otherDouble: Double = other.toDouble
     if (value == otherDouble) {
-      0
+      return 0
     }
     if (value < otherDouble) -1 else +1
   }

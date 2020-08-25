@@ -3615,7 +3615,7 @@ class XQueryParser extends XPathParser {
                   components.add(Literal.makeEmptySequence)
                   sb.setLength(0)
                 }
-                else ""
+                else { return "".asInstanceOf[Expression] }
               }
               else if (penult == ']' && prior == '`' && c == '`') {
                 sb.setLength(sb.length - 2)

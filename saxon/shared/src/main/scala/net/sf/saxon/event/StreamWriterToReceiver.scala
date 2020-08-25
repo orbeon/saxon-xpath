@@ -201,7 +201,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     }
     val setPrefix: String = getPrefix(uri)
     if (setPrefix != null) {
-      setPrefix
+      return setPrefix
     }
     val prefixes: Iterator[String] = inScopeNamespaces.iteratePrefixes()
     while (prefixes.hasNext) {
@@ -546,7 +546,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       def getNamespaceURI(prefix: String): String = {
         val uri: String = bindings.get(prefix)
         if (uri != null) {
-          uri
+          return uri
         }
         rootNamespaceContext.getNamespaceURI(prefix)
       }

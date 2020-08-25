@@ -43,11 +43,11 @@ object SnapshotNode {
 
 }
 
-class SnapshotNode (base: NodeInfo,  var pivot: NodeInfo)
+class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
   extends VirtualCopy(base, pivot.getRoot)
     with NodeInfo {
 
-  override  def wrap(node: NodeInfo): SnapshotNode = {
+  override def wrap(node: NodeInfo): SnapshotNode = {
     val vc: SnapshotNode = new SnapshotNode(node, pivot)
     vc.tree = tree
     vc
@@ -64,7 +64,7 @@ class SnapshotNode (base: NodeInfo,  var pivot: NodeInfo)
     if (parent == null) {
       val basep: NodeInfo = original.getParent
       if (basep == null) {
-        null
+        return null
       }
       parent = wrap(basep)
     }
@@ -147,7 +147,7 @@ class SnapshotNode (base: NodeInfo,  var pivot: NodeInfo)
     null
   }
 
-   override def isIncludedInCopy(sourceNode: NodeInfo): Boolean =
+  override def isIncludedInCopy(sourceNode: NodeInfo): Boolean =
     sourceNode.getNodeKind match {
       case Type.ATTRIBUTE | Type.NAMESPACE =>
         isIncludedInCopy(sourceNode.getParent)

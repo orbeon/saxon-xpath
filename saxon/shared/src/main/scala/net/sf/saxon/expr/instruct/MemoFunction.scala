@@ -70,7 +70,7 @@ class MemoFunction extends UserFunction {
       .asInstanceOf[HashMap[String, Sequence]]
     var value: Sequence = if (map == null) null else map.get(key)
     if (value != null) {
-      value
+      return value
     }
     value = super.call(context, actualArgs)
     if (map == null) {

@@ -135,7 +135,7 @@ object SequenceTool {
     val iter: SequenceIterator = sequence.iterate()
     val first: Item = iter.next()
     if (first == null) {
-      null
+     return null
     }
     if (iter.next() != null) {
       throw new XPathException("Sequence contains more than one item")

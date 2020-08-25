@@ -109,7 +109,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     var i: Int = hash(key)
     while (_filled(i)) {
       if (_key(i) == key) {
-        i
+        return i
       }
       i = (i - 1) & _mask
     }

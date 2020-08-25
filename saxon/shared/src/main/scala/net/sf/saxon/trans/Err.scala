@@ -53,7 +53,7 @@ object Err {
     */
   def wrap(cs: CharSequence, valueType: Int): String = {
     if (cs == null) {
-      "(NULL)"
+      return "(NULL)"
     }
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     val len: Int = cs.length
@@ -63,7 +63,6 @@ object Err {
         case '\n' => sb.append("\\n")
         case '\t' => sb.append("\\t")
         case '\r' => sb.append("\\r")
-//                    break;
         case _ =>
           if (c < 32) {
             sb.append("\\x")
@@ -134,7 +133,7 @@ object Err {
 
   def depictSequence(seq: Sequence): CharSequence = {
     if (seq == null) {
-      "(*null*)"
+      return "(*null*)"
     }
     try {
       val `val`: GroundedValue = seq.materialize()
@@ -186,7 +185,7 @@ object Err {
 
   def abbreviateURI(uri: String): String = {
     if (uri == null) {
-      ""
+      return ""
     }
     val lastSlash: Int =
       (if (uri.endsWith("/")) uri.substring(0, uri.length - 1) else uri)

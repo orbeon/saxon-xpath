@@ -141,7 +141,7 @@ class NamespaceTest(private var namePool: NamePool,
                                th: TypeHierarchy): Optional[String] = {
     val explanation: Optional[String] = super.explainMismatch(item, th)
     if (explanation.isPresent) {
-      explanation
+      return explanation
     }
     Optional.of("The node is in the wrong namespace")
   }

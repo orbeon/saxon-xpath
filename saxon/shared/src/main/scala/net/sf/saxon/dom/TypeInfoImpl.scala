@@ -31,9 +31,9 @@ class TypeInfoImpl(private var config: Configuration, `type`: SchemaType)
         (derivationMethod & schemaType.getDerivationMethod) !=
           0) {
       if (base.getFingerprint == fingerprint) {
-        true
+        return true
       } else if (base.isInstanceOf[Any]) {
-        false
+        return false
       } else {
         new TypeInfoImpl(config, base)
           .isDerivedFrom(typeNamespaceArg, typeNameArg, derivationMethod)

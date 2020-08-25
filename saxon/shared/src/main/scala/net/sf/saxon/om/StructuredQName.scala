@@ -151,7 +151,7 @@ class StructuredQName private(var content: Array[Char],
 
   def getURI(): String = {
     if (localNameStart == 0) {
-      ""
+      return ""
     }
     new String(content, 0, localNameStart)
   }

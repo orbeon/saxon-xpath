@@ -17,12 +17,12 @@ class DynamicLoader {
   @BeanProperty
   var classLoader: ClassLoader = _
 
-   var knownClasses: HashMap[String, Class[_]] =
+  var knownClasses: HashMap[String, Class[_]] =
     new HashMap[String, Class[_]](20)
 
   registerKnownClasses()
 
-   def registerKnownClasses(): Unit = {
+  def registerKnownClasses(): Unit = {
     knownClasses.put("net.sf.saxon.serialize.MessageEmitter",
       classOf[MessageEmitter])
     knownClasses.put("net.sf.saxon.Configuration", classOf[Configuration])
@@ -32,40 +32,25 @@ class DynamicLoader {
                traceOut: Logger,
                classLoader: ClassLoader): Class[_] = {
     val known: Class[_] = knownClasses.get(className)
-    if (known != null) {
-      known
-    }
+    if (known != null) return known
     val tracing: Boolean = traceOut != null
-    if (tracing) {
-      traceOut.info("Loading " + className)
-    }
+    if (tracing) traceOut.info("Loading " + className)
     try {
       var loader: ClassLoader = classLoader
-      if (loader == null) {
-        loader = this.classLoader
-      }
-      if (loader == null) {
-        loader = Thread.currentThread().getContextClassLoader
-      }
+      if (loader == null) loader = this.classLoader
+      if (loader == null) loader = Thread.currentThread().getContextClassLoader
       if (loader != null) {
         try loader.loadClass(className)
         catch {
           case ex: Throwable => Class.forName(className)
-
         }
       } else {
         Class.forName(className)
       }
     } catch {
       case e: Throwable => {
-        if (tracing) {
-          traceOut.error(
-            "The class " + className + " could not be loaded: " +
-              e.getMessage)
-        }
-        throw new XPathException(
-          "Failed to load " + className + getMissingJarFileMessage(className),
-          e)
+        if (tracing) traceOut.error("The class " + className + " could not be loaded: " + e.getMessage)
+        throw new XPathException("Failed to load " + className + getMissingJarFileMessage(className), e)
       }
 
     }

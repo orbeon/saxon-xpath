@@ -75,7 +75,7 @@ class ExpressionVisitor(private var config: Configuration) {
   def incrementAndTestDepth(): Boolean = { depth += 1; depth - 1 } < MAX_DEPTH
 
   def decrementDepth(): Unit = {
-    { depth -= 1; depth + 1 }
+     depth -= 1
   }
 
 }

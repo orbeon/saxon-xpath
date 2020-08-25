@@ -31,7 +31,7 @@ class PrecedingIterator(private var doc: TinyTree,
     if (pending != null) {
       current = pending
       pending = null
-     return  current
+      return current
     }
     if (current == null) {
       return null
@@ -40,24 +40,30 @@ class PrecedingIterator(private var doc: TinyTree,
       current = current.getParent
     }
     var nextNodeNr: Int = current.nodeNr
-    while ({
+    while ( {
       true
     }) {
       if (!includeAncestors) {
-        { nextNodeNr -= 1 }
+        {
+          nextNodeNr -= 1
+        }
         while (nextAncestorDepth >= 0 && tree.depth(nextNodeNr) == nextAncestorDepth) {
-          if ({ nextAncestorDepth -= 1; nextAncestorDepth + 1 } <= 0) {
+          if ( {
+            nextAncestorDepth -= 1; nextAncestorDepth + 1
+          } <= 0) {
             current = null
             return null
           }
-          { nextNodeNr -= 1; nextNodeNr + 1 }
+          {
+            nextNodeNr -= 1; nextNodeNr + 1
+          }
         }
       } else {
         if (tree.depth(nextNodeNr) == 0) {
           current = null
-          null
+          return null
         } else {
-          { nextNodeNr -= 1; nextNodeNr + 1 }
+          nextNodeNr -= 1
         }
       }
       if (matchesTextNodes && tree.nodeKind(nextNodeNr) == Type.TEXTUAL_ELEMENT) {

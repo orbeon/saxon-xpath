@@ -22,8 +22,6 @@ import net.sf.saxon.value.Whitespace
 import java.util.Arrays
 
 
-
-
 class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
 
   private var stripStack: Array[Boolean] = new Array[Boolean](100)
@@ -31,35 +29,36 @@ class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
   private var top: Int = 0
 
   override def startElement(elemName: NodeName,
-                   `type`: SchemaType,
-                   attributes: AttributeMap,
-                   namespaces: NamespaceMap,
-                   location: Location,
-                   properties: Int): Unit = {
+                            `type`: SchemaType,
+                            attributes: AttributeMap,
+                            namespaces: NamespaceMap,
+                            location: Location,
+                            properties: Int): Unit = {
     nextReceiver.startElement(elemName,
-                              `type`,
-                              attributes,
-                              namespaces,
-                              location,
-                              properties)
+      `type`,
+      attributes,
+      namespaces,
+      location,
+      properties)
     var strip: Boolean = false
     if (`type` != Untyped.getInstance) {
-// if the element has element-only content, whitespace stripping is enabled
+      // if the element has element-only content, whitespace stripping is enabled
       if (`type`.isComplexType && !`type`
-            .asInstanceOf[ComplexType]
-            .isSimpleContent &&
-          !`type`.asInstanceOf[ComplexType].isMixedContent) {
+        .asInstanceOf[ComplexType]
+        .isSimpleContent &&
+        !`type`.asInstanceOf[ComplexType].isMixedContent) {
         strip = true
       }
     }
-    { top += 1; top - 1 }
+    top += 1
     if (top >= stripStack.length) {
       stripStack = Arrays.copyOf(stripStack, top * 2)
     }
     stripStack(top) = strip
   }
-// put "strip" value on top of stack
-// put "strip" value on top of stack
+
+  // put "strip" value on top of stack
+  // put "strip" value on top of stack
 
   override def endElement(): Unit = {
     nextReceiver.endElement()
@@ -67,8 +66,8 @@ class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
   }
 
   override def characters(chars: CharSequence,
-                 locationId: Location,
-                 properties: Int): Unit = {
+                          locationId: Location,
+                          properties: Int): Unit = {
     if (chars.length > 0 && (!stripStack(top) || !Whitespace.isWhite(chars))) {
       nextReceiver.characters(chars, locationId, properties)
     }
@@ -84,7 +83,7 @@ class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The IgnorableWhitespaceStripper removes whitespace text nodes belonging to elements
-  * whose schema-defined type defines element-only content
-  */
+ * The IgnorableWhitespaceStripper removes whitespace text nodes belonging to elements
+ * whose schema-defined type defines element-only content
+ */
 // Copyright (c) 2005-2020 Saxonica Limited

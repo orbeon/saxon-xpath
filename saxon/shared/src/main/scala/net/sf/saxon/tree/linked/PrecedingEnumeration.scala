@@ -12,17 +12,17 @@ class PrecedingEnumeration(node: NodeImpl, nodeTest: Predicate[_ >: NodeInfo])
 
   advance()
 
-  override  def conforms(node: NodeImpl): Boolean = {
+  override def conforms(node: NodeImpl): Boolean = {
     if (node != null) {
       if (node == nextAncestor) {
         nextAncestor = nextAncestor.getParent
-        false
+        return false
       }
     }
     super.conforms(node)
   }
 
-   def step(): Unit = {
+  def step(): Unit = {
     nextImpl = nextImpl.getPreviousInDocument
   }
 

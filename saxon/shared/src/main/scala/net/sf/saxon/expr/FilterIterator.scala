@@ -27,7 +27,7 @@ object FilterIterator {
                          filter: Expression): Boolean = {
     val first: Item = iterator.next()
     if (first == null) {
-      false
+      return false
     }
     if (first.isInstanceOf[NodeInfo]) {
       true

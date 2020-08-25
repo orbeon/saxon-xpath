@@ -36,8 +36,6 @@ import java.util.List
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 
-
-
 class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 
   private var config: Configuration = null
@@ -79,7 +77,7 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
                             location: Location,
                             properties: Int): Unit = {
     terminated = true
-// abort the parse when the first start element tag is found
+    // abort the parse when the first start element tag is found
     throw new XPathException("#start#")
   }
 
@@ -98,40 +96,39 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
         return
       }
       if ((piType.==("text/xml") || piType.==("application/xml") ||
-          piType.==("text/xsl") ||
-          piType.==("applicaton/xsl") ||
-          piType.==("application/xml+xslt")) &&
-          (reqMedia == null || piMedia == null ||
+        piType.==("text/xsl") ||
+        piType.==("applicaton/xsl") ||
+        piType.==("application/xml+xslt")) &&
+        (reqMedia == null || piMedia == null ||
           // see bug 1729
           getConfiguration.getMediaQueryEvaluator.compare(piMedia, reqMedia) ==
             0) &&
-          ((piTitle == null && (piAlternate == null || piAlternate.==("no"))) ||
+        ((piTitle == null && (piAlternate == null || piAlternate.==("no"))) ||
           (reqTitle == null) ||
           (piTitle != null && piTitle == reqTitle))) {
         val href: String = ProcInstParser.getPseudoAttribute(value, "href")
         if (href == null) {
           throw new XPathException("xml-stylesheet PI has no href attribute")
         }
-// System.err.println("Adding " + href);
+        // System.err.println("Adding " + href);
         if (piTitle == null && (piAlternate == null || piAlternate.==("no"))) {
           stylesheets.add(0, href)
         } else {
           stylesheets.add(href)
         }
       } else {}
-//System.err.println("No match on required media=" + reqMedia + " title=" + reqTitle );
-//System.err.println("No match on required media=" + reqMedia + " title=" + reqTitle );
+      //System.err.println("No match on required media=" + reqMedia + " title=" + reqTitle );
+      //System.err.println("No match on required media=" + reqMedia + " title=" + reqTitle );
     }
-// System.err.println("Found xml-stylesheet media=" + piMedia + " title=" + piTitle);
-// System.err.println("Found xml-stylesheet media=" + piMedia + " title=" + piTitle);
+    // System.err.println("Found xml-stylesheet media=" + piMedia + " title=" + piTitle);
+    // System.err.println("Found xml-stylesheet media=" + piMedia + " title=" + piTitle);
   }
 
   /*@Nullable*/
 
   def getAssociatedStylesheets(): Array[Source] = {
-    if (stylesheets.isEmpty) {
-      null
-    }
+    if (stylesheets.isEmpty)
+      return null
     if (uriResolver == null) {
       uriResolver = new StandardURIResolver(config)
     }
@@ -158,8 +155,8 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The <tt>PIGrabber</tt> class is a {@link ProxyReceiver} that looks for {@code xml-stylesheet} processing
-  * instructions and tests whether they match specified criteria; for those that do, it creates
-  * a {@link Source} object referring to the relevant stylesheet
-  */
+ * The <tt>PIGrabber</tt> class is a {@link ProxyReceiver} that looks for {@code xml-stylesheet} processing
+ * instructions and tests whether they match specified criteria; for those that do, it creates
+ * a {@link Source} object referring to the relevant stylesheet
+ */
 //

@@ -83,14 +83,8 @@ class FocusTrackingIterator()
    */
   def next(): Item = {
     curr = base.next()
-    if (curr == null) {
-      pos = -1
-    } else {
-      {
-        pos += 1;
-        pos - 1
-      }
-    }
+    if (curr == null) pos = -1
+    else pos += 1
     curr
   }
 
@@ -214,7 +208,7 @@ class FocusTrackingIterator()
     if (siblingMemory == null) {
       siblingMemory = new SiblingMemory()
     } else if (siblingMemory.mostRecentNodeTest == nodeTest && node == siblingMemory.mostRecentNode) {
-      siblingMemory.mostRecentPosition
+      return siblingMemory.mostRecentPosition
     }
     val s: SiblingMemory = siblingMemory
     val prev: AxisIterator =
@@ -226,7 +220,7 @@ class FocusTrackingIterator()
         val result: Int = count + s.mostRecentPosition
         s.mostRecentNode = node
         s.mostRecentPosition = result
-        result
+        return result
       }
       count = count + 1
       if (count > max) {

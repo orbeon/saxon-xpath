@@ -27,7 +27,7 @@ object EnvironmentVariable {
       try {
         environValue = resolver.getEnvironmentVariable(environVarName)
         if (environValue == null) {
-          null
+          return null
         }
       } catch {
         case e@(_: SecurityException | _: NullPointerException) => {}

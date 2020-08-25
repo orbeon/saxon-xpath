@@ -76,12 +76,12 @@ class Optimizer( var config: Configuration) {
     var e2: Expression = optimizePositionVsLast(lhs, rhs, vc.getOperator)
     if (e2 != null) {
       trace("Rewrote position() ~= last()", e2)
-      e2
+      return e2
     }
     e2 = optimizePositionVsLast(rhs, lhs, Token.inverse(vc.getOperator))
     if (e2 != null) {
       trace("Rewrote last() ~= position()", e2)
-      e2
+      return e2
     }
     vc
   }
@@ -95,11 +95,11 @@ class Optimizer( var config: Configuration) {
         case Token.FEQ | Token.FGE =>
           var iletrue: IsLastExpression = new IsLastExpression(true)
           ExpressionTool.copyLocationInfo(lhs, iletrue)
-          iletrue
+          return iletrue
         case Token.FNE | Token.FLT =>
           var ilefalse: IsLastExpression = new IsLastExpression(false)
           ExpressionTool.copyLocationInfo(lhs, ilefalse)
-          ilefalse
+          return ilefalse
         case Token.FGT => Literal.makeLiteral(BooleanValue.FALSE, lhs)
         case Token.FLE => Literal.makeLiteral(BooleanValue.TRUE, lhs)
 
@@ -118,7 +118,7 @@ class Optimizer( var config: Configuration) {
                                   cisi: ContextItemStaticInfo,
                                   select: Expression): Expression = {
     if (select.getItemType.isPlainType) {
-      select
+      return select
     }
     null
   }
