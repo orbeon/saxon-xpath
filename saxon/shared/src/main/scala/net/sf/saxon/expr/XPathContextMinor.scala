@@ -101,7 +101,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getContextItem(): Item = {
     if (currentIterator == null) {
-      null
+      return null
     }
     currentIterator.current()
   }
@@ -115,7 +115,7 @@ class XPathContextMinor () extends XPathContext {
       throw e
     }
     if (last.value >= 0) {
-      last.value
+      return last.value
     }
     currentIterator.getLength
   }

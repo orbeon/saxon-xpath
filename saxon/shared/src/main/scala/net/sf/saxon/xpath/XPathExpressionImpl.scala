@@ -112,7 +112,7 @@ class XPathExpressionImpl (private var expression: Expression,
       val iter: SequenceIterator = expression.iterate(context)
       val first: Item = iter.next()
       if (first == null) {
-        ""
+        return ""
       }
       first.getStringValue
     } else if (qName == XPathConstants.NUMBER) {
@@ -138,7 +138,7 @@ class XPathExpressionImpl (private var expression: Expression,
         first.asInstanceOf[VirtualNode].getRealNode
       }
       if (first == null || first.isInstanceOf[NodeInfo]) {
-        first
+        return first
       }
       throw new XPathExpressionException("Expression result is not a node")
     } else if (qName == XPathConstants.NODESET) {

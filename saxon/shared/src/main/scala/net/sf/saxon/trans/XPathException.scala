@@ -248,16 +248,16 @@ class XPathException(message: String) extends TransformerException(message) {
 
   def isReportableStatically(): Boolean = {
     if (isStaticError || isTypeError) {
-      true
+      return true
     }
     val err: StructuredQName = errorCode
     if (err != null && err.hasURI(NamespaceConstant.ERR)) {
       val local: String = err.getLocalPart
-      local.==("XTDE1260") || local.==("XTDE1280") || local.==("XTDE1390") ||
-      local.==("XTDE1400") ||
-      local.==("XTDE1428") ||
-      local.==("XTDE1440") ||
-      local.==("XTDE1460")
+      return local.==("XTDE1260") || local.==("XTDE1280") || local.==("XTDE1390") ||
+            local.==("XTDE1400") ||
+            local.==("XTDE1428") ||
+            local.==("XTDE1440") ||
+            local.==("XTDE1460")
     }
     false
   }
