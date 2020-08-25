@@ -99,7 +99,6 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
     }
     {
       level += 1;
-      level - 1
     }
     if (suppressedAtLevel < 0) {
       val xmlSpace: String =
@@ -156,7 +155,6 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
   override def endElement(): Unit = {
     {
       level -= 1;
-      level + 1
     }
     if (afterEndTag && !sameline) {
       indent()

@@ -78,7 +78,7 @@ class XQueryEvaluator(var processor: Processor,
   def getContextItem(): XdmItem = {
     val item: Item = context.getContextItem
     if (item == null) {
-      null
+      return null
     }
     XdmValue.wrap(item).asInstanceOf[XdmItem]
   }
@@ -93,7 +93,7 @@ class XQueryEvaluator(var processor: Processor,
   def getExternalVariable(name: QName): XdmValue = {
     val oval: GroundedValue = context.getParameter(name.getStructuredQName)
     if (oval == null) {
-      null
+      return null
     }
     XdmValue.wrap(oval)
   }

@@ -31,7 +31,7 @@ object YearMonthDurationValue {
   def makeYearMonthDurationValue(s: CharSequence): ConversionResult = {
     val d: ConversionResult = DurationValue.makeDuration(s, true, false)
     if (d.isInstanceOf[ValidationFailure]) {
-      d
+      return d
     }
     val dv: DurationValue = d.asInstanceOf[DurationValue]
     YearMonthDurationValue.fromMonths(
