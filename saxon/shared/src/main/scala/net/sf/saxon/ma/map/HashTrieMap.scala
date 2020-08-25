@@ -98,7 +98,7 @@ class HashTrieMap extends MapItem {
 
   def size(): Int = {
     if (entries >= 0) {
-      entries
+      return entries
     }
     var count: Int = 0
     for (entry <- keyValuePairs().asScala) {
@@ -119,7 +119,7 @@ class HashTrieMap extends MapItem {
     if (keyAtomicType == requiredKeyType && valueItemType == requiredValueType.getPrimaryType &&
       Cardinality.subsumes(requiredValueType.getCardinality,
         valueCardinality)) {
-      true
+      return true
     }
     var needFullCheck: Boolean = false
     if (requiredKeyType != BuiltInAtomicType.ANY_ATOMIC) {
@@ -147,7 +147,7 @@ class HashTrieMap extends MapItem {
       needFullCheck = true
     }
     if (needFullCheck) {
-      val keyIter: AtomicIterator[_<:AtomicValue] = keys
+      val keyIter: AtomicIterator[_ <: AtomicValue] = keys
       var key: AtomicValue = null
       while ((key = keyIter.next()) != null) {
         if (!requiredKeyType.matches(key, th)) {
@@ -228,7 +228,7 @@ class HashTrieMap extends MapItem {
     val m2: ImmutableMap[AtomicMatchKey, KeyValuePair] =
       imap.remove(makeKey(key))
     if (m2 == imap) {
-      this
+      return this
     }
     val result: HashTrieMap = new HashTrieMap(m2)
     result.keyUType = keyUType

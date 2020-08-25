@@ -98,30 +98,30 @@ object QueryReader {
   private def inferEncoding(start: Array[Byte], read: Int): String = {
     if (read >= 2) {
       if (ch(start(0)) == 0xFE && ch(start(1)) == 0xFF) {
-        "UTF-16"
+        return "UTF-16"
       } else if (ch(start(0)) == 0xFF && ch(start(1)) == 0xFE) {
-        "UTF-16LE"
+        return "UTF-16LE"
       }
     }
     if (read >= 3) {
       if (ch(start(0)) == 0xEF && ch(start(1)) == 0xBB && ch(start(2)) == 0xBF) {
-        "UTF-8"
+        return "UTF-8"
       }
     }
     if (read >= 8 && start(0) == 0 && start(2) == 0 && start(4) == 0 &&
       start(6) == 0) {
-      "UTF-16"
+      return "UTF-16"
     }
     if (read >= 8 && start(1) == 0 && start(3) == 0 && start(5) == 0 &&
       start(7) == 0) {
-      "UTF-16LE"
+      return "UTF-16LE"
     }
     var i: Int = 0
     var tok: String = readToken(start, i, read)
     if (Whitespace.trim(tok).==("xquery")) {
       i += tok.length
     } else {
-      "UTF-8"
+      return "UTF-8"
     }
     tok = readToken(start, i, read)
     if (Whitespace.trim(tok).==("encoding")) {
@@ -130,7 +130,7 @@ object QueryReader {
       if (Whitespace.trim(tok).==("version")) {
         i += tok.length
       } else {
-        "UTF-8"
+        return "UTF-8"
       }
       tok = readToken(start, i, read)
       i += tok.length
@@ -138,7 +138,7 @@ object QueryReader {
       if (Whitespace.trim(tok).==("encoding")) {
         i += tok.length
       } else {
-        "UTF-8"
+        return "UTF-8"
       }
     }
     tok = Whitespace.trim(readToken(start, i, read))
@@ -159,27 +159,18 @@ object QueryReader {
       p - 1
     }
     if (ch(in(p)) == '"') {
-      {
-        p += 1;
-        p - 1
-      }
+      p += 1
       while (p < len && ch(in(p)) != '"') {
-        p += 1;
-        p - 1
+        p += 1
       }
     } else if (ch(in(p)) == '\'') {
-      {
-        p += 1;
-        p - 1
-      }
+        p += 1
       while (p < len && ch(in(p)) != '\'') {
-        p += 1;
-        p - 1
+        p += 1
       }
     } else {
       while (p < len && " \n\r\t".indexOf(ch(in(p))) < 0) {
-        p += 1;
-        p - 1
+        p += 1
       }
     }
     if (p >= len) {

@@ -190,12 +190,12 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     val filter: Mode.RuleFilter = (r) => {
       var comp: Int = r.compareRank(currentRule)
       if (comp < 0) {
-        true
+         true
       } else if (comp == 0) {
         var seqComp: Int =
           java.lang.Integer.compare(r.getSequence, currentRule.getSequence)
         if (seqComp < 0) {
-          true
+           true
         } else if (seqComp == 0) {
           r.getPartNumber < currentRule.getPartNumber
         }

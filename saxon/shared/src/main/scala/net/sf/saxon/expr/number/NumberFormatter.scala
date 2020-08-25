@@ -64,10 +64,7 @@ class NumberFormatter {
         t = i
 
         while (isLetterOrDigit(c)) {
-          {
-            i += 1;
-            i - 1
-          }
+          i += 1
           if (i == len) break()
           c = uFormat.uCharAt(i)
         }
@@ -166,14 +163,14 @@ class NumberFormatter {
 
   private def translateDigits(in: String, picture: UnicodeString): String = {
     if (picture.length == 0) {
-      in
+      return in
     }
     val formchar: Int = picture.uCharAt(0)
     val digitValue: Int = Alphanumeric.getDigitValue(formchar)
     if (digitValue >= 0) {
       val zero: Int = formchar - digitValue
       if (zero == '0'.toInt) {
-        in
+        return in
       }
       val digits: Array[Int] = Array.ofDim[Int](10)
       var z: Int = 0

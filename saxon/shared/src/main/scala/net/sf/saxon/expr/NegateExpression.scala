@@ -60,7 +60,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
     val v1: NumericValue =
       getBaseExpression.evaluateItem(context).asInstanceOf[NumericValue]
     if (v1 == null) {
-      if (backwardsCompatible) DoubleValue.NaN else null
+      if (backwardsCompatible) DoubleValue.NaN else return null
     }
     v1.negate()
   }

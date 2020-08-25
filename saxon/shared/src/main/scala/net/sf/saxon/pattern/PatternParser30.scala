@@ -158,14 +158,13 @@ class PatternParser30 extends XPathParser with PatternParser {
   }
 
   private def isSelectionPattern(pattern: String): Boolean = {
-    if (pattern.startsWith(".")) {
-      true
-    }
+    if (pattern.startsWith("."))
+      return true
     if (pattern.matches("^(type|tuple|map|array|union|atomic)\\s*\\(.+")) {
       checkSyntaxExtensions(
         "Patterns matching " + pattern.replace("\\(.*$", "") +
           " types")
-      true
+      return true
     }
     false
   }
@@ -186,7 +185,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override  def customizeTokenizer(t: Tokenizer): Unit = {}
+  override def customizeTokenizer(t: Tokenizer): Unit = {}
 
   override def parseExpression(): Expression = {
     val t: Tokenizer = getTokenizer
@@ -228,7 +227,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override  def parseBasicStep(firstInPattern: Boolean): Expression =
+  override def parseBasicStep(firstInPattern: Boolean): Expression =
     if (inPredicate > 0) {
       super.parseBasicStep(firstInPattern)
     } else {
@@ -266,8 +265,8 @@ class PatternParser30 extends XPathParser with PatternParser {
       }
     }
 
-   override def testPermittedAxis(axis: Int,
-                                           errorCode: String): Unit = {
+  override def testPermittedAxis(axis: Int,
+                                 errorCode: String): Unit = {
     super.testPermittedAxis(axis, errorCode)
     if (inPredicate == 0) {
       if (!AxisInfo.isSubtreeAxis(axis)) {
@@ -277,7 +276,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override  def parsePredicate(): Expression = {
+  override def parsePredicate(): Expression = {
     val disallow: Boolean = t.disallowUnionKeyword
     t.disallowUnionKeyword = false
 

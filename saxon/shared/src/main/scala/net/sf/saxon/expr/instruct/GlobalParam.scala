@@ -39,7 +39,7 @@ class GlobalParam extends GlobalVariable {
       if (`val`.isInstanceOf[Bindery.FailureValue]) {
         throw `val`.asInstanceOf[Bindery.FailureValue].getObject
       }
-      `val`
+      return `val`
     }
     `val` = controller.getConvertedParameter(getVariableQName,
                                              getRequiredType,

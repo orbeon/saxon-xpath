@@ -30,9 +30,7 @@ class PrefixPool {
   prefixes(0) = ""
 
   def obtainPrefixCode(prefix: String): Int = {
-    if (prefix.isEmpty) {
-      0
-    }
+    if (prefix.isEmpty) return 0
 // Create an index if it's going to be useful
     if (index == null && used > 8) {
       makeIndex()
@@ -41,7 +39,7 @@ class PrefixPool {
     if (index != null) {
       val existing: java.lang.Integer = index.get(prefix)
       if (existing != null) {
-        existing
+        return existing
       }
     } else {
       for (i <- 0 until used if prefixes(i) == prefix) {

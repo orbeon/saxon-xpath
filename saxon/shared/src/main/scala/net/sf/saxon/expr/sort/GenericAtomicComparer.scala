@@ -82,9 +82,9 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {
-      if (b == null) 0 else -1
+      if (b == null) return 0 else return -1
     } else if (b == null) {
-      +1
+      return +1
     }
     if (a.isInstanceOf[StringValue] && b.isInstanceOf[StringValue]) {
       if (collator.isInstanceOf[CodepointCollator]) {

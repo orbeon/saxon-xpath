@@ -34,7 +34,7 @@ object StandardDiagnostics {
       }
       val construct: Int = inst.getInstructionNameCode
       if (construct < 0) {
-        ""
+        return ""
       }
       if (construct < 1024 && construct != StandardNames.XSL_FUNCTION &&
         construct != StandardNames.XSL_TEMPLATE) {
@@ -46,23 +46,23 @@ object StandardDiagnostics {
           if (colon > 0) {
             val local: String = s.substring(colon + 1)
             if (local.==("document")) {
-              "document node constructor"
+              return "document node constructor"
             } else if (local.==("text") || s.==("value-of")) {
-              "text node constructor"
+              return "text node constructor"
             } else if (local.==("element")) {
-              "computed element constructor"
+              return "computed element constructor"
             } else if (local.==("attribute")) {
-              "computed attribute constructor"
+              return "computed attribute constructor"
             } else if (local.==("variable")) {
-              "variable declaration"
+              return "variable declaration"
             } else if (local.==("param")) {
-              "external variable declaration"
+              return "external variable declaration"
             } else if (local.==("comment")) {
-              "comment constructor"
+              return "comment constructor"
             } else if (local.==("processing-instruction")) {
-              "processing-instruction constructor"
+              return "processing-instruction constructor"
             } else if (local.==("namespace")) {
-              "namespace node constructor"
+              return "namespace node constructor"
             }
           }
           s
@@ -77,7 +77,7 @@ object StandardDiagnostics {
 
   def abbreviateLocationURIDefault(uri: String): String = {
     if (uri == null) {
-      "*unknown*"
+      return "*unknown*"
     }
     val slash: Int = uri.lastIndexOf('/')
     if (slash >= 0 && slash < uri.length - 1) {
@@ -141,9 +141,9 @@ class StandardDiagnostics {
         kind = "function"
       } else if (sorLoc.isInstanceOf[NamedTemplate]) {
         kind = "template"
-//      } else if (sorLoc.isInstanceOf[AttributeSet]) {
-//        kind = "attribute-set"
-      }/*else if (sorLoc.isInstanceOf[KeyDefinition]) { // KeyDefinition not found
+        //      } else if (sorLoc.isInstanceOf[AttributeSet]) {
+        //        kind = "attribute-set"
+      } /*else if (sorLoc.isInstanceOf[KeyDefinition]) { // KeyDefinition not found
         kind = "key"
       }*/ else if (sorLoc.isInstanceOf[GlobalParam]) {
         kind = "parameter"
@@ -201,7 +201,7 @@ class StandardDiagnostics {
     if (level > 0) {
       var depth: Int = 20
       depth -= 1
-      while ( depth > 0) {
+      while (depth > 0) {
         val component: Component = xPathContext.getCurrentComponent
         if (component != null) {
           if (component.getActor.isInstanceOf[Mode]) {
@@ -245,7 +245,7 @@ class StandardDiagnostics {
     }
   }
 
-   def showOriginator(originator: ContextOriginator): String = {
+  def showOriginator(originator: ContextOriginator): String = {
     val sb: StringBuilder = new StringBuilder()
     if (originator == null) {
       sb.append("unknown caller (null)")
@@ -261,7 +261,8 @@ class StandardDiagnostics {
         .append(")")
     } /*else if (originator.isInstanceOf[KeyDefinition]) {  // KeyDefinition class not found
       sb.append("xsl:key definition")
-    } */else if (originator.isInstanceOf[GlobalParam]) {
+    } */
+    else if (originator.isInstanceOf[GlobalParam]) {
       sb.append("global parameter ")
         .append(
           originator.asInstanceOf[GlobalParam].getVariableQName.getDisplayName)
@@ -282,8 +283,8 @@ class StandardDiagnostics {
     sb.toString
   }
 
-   def formatListOfOffendingNodes(
-                                            failure: ValidationFailure): String = {
+  def formatListOfOffendingNodes(
+                                  failure: ValidationFailure): String = {
     val message: StringBuilder = new StringBuilder()
     val offendingNodes: List[NodeInfo] = failure.getOffendingNodes
     if (!offendingNodes.isEmpty) {
@@ -349,7 +350,7 @@ class StandardDiagnostics {
 
   def expandSpecialCharacters(in: CharSequence, threshold: Int): CharSequence = {
     if (threshold >= UTF16CharacterSet.NONBMP_MAX) {
-     return in
+      return in
     }
     var max: Int = 0
     var isAstral: Boolean = false
@@ -363,7 +364,7 @@ class StandardDiagnostics {
       }
     }
     if (max <= threshold && !isAstral) {
-     return  in
+      return in
     }
     var str: UnicodeString = null
     str =

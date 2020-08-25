@@ -22,7 +22,7 @@ class RuleChain {
     var i: Int = 0
     var r: Rule = head
     while (r != null) {
-      { i += 1; i - 1 }
+      i += 1
       r = r.getNext
     }
     i

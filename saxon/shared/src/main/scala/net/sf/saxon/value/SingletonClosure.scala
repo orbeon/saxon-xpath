@@ -18,10 +18,8 @@ import net.sf.saxon.tree.iter.SingletonIterator
 import net.sf.saxon.tree.iter.UnfailingIterator
 
 
-
-
 class SingletonClosure(exp: Expression, context: XPathContext)
-    extends Closure
+  extends Closure
     with Sequence {
 
   private var built: Boolean = false
@@ -46,7 +44,7 @@ class SingletonClosure(exp: Expression, context: XPathContext)
     if (!built) {
       value = expression.evaluateItem(savedXPathContext)
       built = true
-// release variables saved in the context to the garbage collector
+      // release variables saved in the context to the garbage collector
       savedXPathContext = null
     }
     value
@@ -56,7 +54,7 @@ class SingletonClosure(exp: Expression, context: XPathContext)
 
   def itemAt(n: Int): Item = {
     if (n != 0) {
-      null
+      return null
     }
     asItem()
   }
@@ -75,16 +73,16 @@ class SingletonClosure(exp: Expression, context: XPathContext)
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A SingletonClosure represents a value that has not yet been evaluated: the value is represented
-  * by an expression, together with saved values of all the context variables that the
-  * expression depends on. The value of a SingletonClosure is always either a single item
-  * or an empty sequence.
-  * <p>The expression may depend on local variables and on the context item; these values
-  * are held in the saved XPathContext object that is kept as part of the Closure, and they
-  * will always be read from that object. The expression may also depend on global variables;
-  * these are unchanging, so they can be read from the Bindery in the normal way. Expressions
-  * that depend on other contextual information, for example the values of position(), last(),
-  * current(), current-group(), should not be evaluated using this mechanism: they should
-  * always be evaluated eagerly. This means that the Closure does not need to keep a copy
-  * of these context variables.</p>
-  */
+ * A SingletonClosure represents a value that has not yet been evaluated: the value is represented
+ * by an expression, together with saved values of all the context variables that the
+ * expression depends on. The value of a SingletonClosure is always either a single item
+ * or an empty sequence.
+ * <p>The expression may depend on local variables and on the context item; these values
+ * are held in the saved XPathContext object that is kept as part of the Closure, and they
+ * will always be read from that object. The expression may also depend on global variables;
+ * these are unchanging, so they can be read from the Bindery in the normal way. Expressions
+ * that depend on other contextual information, for example the values of position(), last(),
+ * current(), current-group(), should not be evaluated using this mechanism: they should
+ * always be evaluated eagerly. This means that the Closure does not need to keep a copy
+ * of these context variables.</p>
+ */

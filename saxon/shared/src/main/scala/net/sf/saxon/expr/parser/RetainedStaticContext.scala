@@ -159,7 +159,7 @@ class RetainedStaticContext extends NamespaceResolver {
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[RetainedStaticContext])) {
-      false
+      return false
     }
     val r: RetainedStaticContext = other.asInstanceOf[RetainedStaticContext]
     ExpressionTool.equalOrNull(staticBaseUriString, r.staticBaseUriString) &&

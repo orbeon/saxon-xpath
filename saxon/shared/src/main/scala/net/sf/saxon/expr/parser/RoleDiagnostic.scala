@@ -198,7 +198,7 @@ class RoleDiagnostic(private var kind: Int,
       if (more.isPresent) {
         s = s + ". " + more.get
       }
-      s
+      return s
     }
     composeRequiredMessage(requiredItemType) + ", but the supplied expression {" +
       supplied.toShortString() +

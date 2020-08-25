@@ -127,10 +127,10 @@ class LoopLifter(@BeanProperty var root: Expression,
           throw new AssertionError()
         }
         if (o.getOperandRole.isInChoiceGroup) {
-          parent
+          return parent
         }
       } else if (parent.isInstanceOf[TryCatch]) {
-        parent
+        return parent
       }
       expressn = parent
       parent = parent.getParentExpression

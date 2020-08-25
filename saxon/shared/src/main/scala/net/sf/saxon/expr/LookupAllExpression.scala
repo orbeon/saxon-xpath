@@ -29,7 +29,7 @@ import scala.jdk.CollectionConverters._
 
 class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
 
-   override def getOperandRole(): OperandRole = OperandRole.INSPECT
+  override def getOperandRole(): OperandRole = OperandRole.INSPECT
 
   override def getItemType(): ItemType = {
     val base: ItemType = getBaseExpression.getItemType
@@ -90,7 +90,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
         children.toArray(Array.ofDim[Expression](0))
       val block: Block = new Block(childExpressions)
       ExpressionTool.copyLocationInfo(this, block)
-      block
+      return block
     }
     this
   }
@@ -106,7 +106,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[LookupAllExpression])) {
-      false
+      return false
     }
     val p: LookupAllExpression = other.asInstanceOf[LookupAllExpression]
     getBaseExpression.isEqual(p.getBaseExpression)

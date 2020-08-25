@@ -295,11 +295,11 @@ class GroupByClause(var config: Configuration) extends Clause {
 
     override def equals(other: Any): Boolean = {
       if (!(other.isInstanceOf[TupleComparisonKey])) {
-        false
+        return false
       }
       if (groupingValues.length !=
         other.asInstanceOf[TupleComparisonKey].groupingValues.length) {
-        false
+        return false
       }
       for (i <- 0 until groupingValues.length) {
         try if (!DeepEqual.deepEqual(groupingValues(i).iterate(),

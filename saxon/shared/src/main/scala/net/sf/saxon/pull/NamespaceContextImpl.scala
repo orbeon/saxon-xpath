@@ -12,7 +12,6 @@ import java.util.Iterator
 import java.util.List
 
 
-
 class NamespaceContextImpl(var resolver: NamespaceResolver)
   extends NamespaceContext
     with NamespaceResolver {
@@ -36,10 +35,11 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
 
   def getNamespaceURI(prefix: String): String = {
     if (prefix.==("xmlns")) {
-      "http://www.w3.org/2000/xmlns/"
+      return "http://www.w3.org/2000/xmlns/"
     }
     resolver.getURIForPrefix(prefix, true)
   }
+
   def getPrefixes(uri: String): Iterator[String] = {
     val list: List[String] = new ArrayList[String](4)
     val prefixes: Iterator[String] = iteratePrefixes()

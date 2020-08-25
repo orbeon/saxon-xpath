@@ -121,7 +121,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
       while (true) {
         val n: NodeInfo = nsv.next().asInstanceOf[NodeInfo]
         if (n == null) {
-          false
+          return false
         }
         if (n == node) {
           true

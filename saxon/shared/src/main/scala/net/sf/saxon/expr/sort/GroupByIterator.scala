@@ -161,10 +161,7 @@ class GroupByIterator
 
   def next(): Item =
     if (position >= 0 && position < groups.size) {
-      {
-        position += 1;
-        position - 1
-      }
+      position += 1
       current()
     } else {
       position = -1
@@ -173,7 +170,7 @@ class GroupByIterator
 
   private def current(): Item = {
     if (position < 1) {
-      null
+      return null
     }
     groups.get(position - 1).get(0)
   }

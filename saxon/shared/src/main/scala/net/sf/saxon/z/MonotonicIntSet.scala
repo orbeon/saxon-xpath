@@ -64,7 +64,7 @@ class MonotonicIntSet extends IntSet {
     if (used > 0) {
       val last: Int = contents(used - 1)
       if (value == last) {
-        false
+        return false
       } else if (value < last) {
         throw new UnsupportedOperationException(
           "Values must be added in monotonic order")
@@ -164,10 +164,7 @@ class MonotonicIntSet extends IntSet {
         var j: Int = i + 1
         breakable {
           while (contents(j) == contents(j - 1) + 1) {
-            {
-              j += 1;
-              j - 1
-            }
+            j += 1
             if (j == used) {
               break()
             }
@@ -184,10 +181,10 @@ class MonotonicIntSet extends IntSet {
     if (other.isInstanceOf[MonotonicIntSet]) {
       val s: MonotonicIntSet = other.asInstanceOf[MonotonicIntSet]
       if (used != s.used) {
-        false
+        return false
       }
       for (i <- 0 until used if contents(i) != s.contents(i)) {
-        false
+        return false
       }
       true
     } else

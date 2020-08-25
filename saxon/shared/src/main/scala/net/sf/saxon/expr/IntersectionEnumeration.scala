@@ -10,12 +10,10 @@ import net.sf.saxon.om.SequenceIterator
 import net.sf.saxon.trans.XPathException
 
 
-
-
 class IntersectionEnumeration(private var e1: SequenceIterator,
                               private var e2: SequenceIterator,
                               private var comparer: ItemOrderComparer)
-    extends SequenceIterator {
+  extends SequenceIterator {
 
   /*@Nullable*/
 
@@ -28,7 +26,7 @@ class IntersectionEnumeration(private var e1: SequenceIterator,
 
   def next(): NodeInfo = {
     if (nextNode1 == null || nextNode2 == null) {
-      null
+      return null
     }
     while (nextNode1 != null && nextNode2 != null) {
       val c: Int = comparer.compare(nextNode1, nextNode2)
@@ -37,21 +35,22 @@ class IntersectionEnumeration(private var e1: SequenceIterator,
       } else if (c > 0) {
         nextNode2 = next(e2)
       } else {
-// which is the same as nextNode1
+        // which is the same as nextNode1
         val current: NodeInfo = nextNode2
         nextNode2 = next(e2)
         nextNode1 = next(e1)
         current
       }
-// keys are equal
-// keys are equal
+      // keys are equal
+      // keys are equal
     }
     null
   }
-// main merge loop: iterate whichever sequence has the lower value, returning when a pair
-// is found that match.
-// main merge loop: iterate whichever sequence has the lower value, returning when a pair
-// is found that match.
+
+  // main merge loop: iterate whichever sequence has the lower value, returning when a pair
+  // is found that match.
+  // main merge loop: iterate whichever sequence has the lower value, returning when a pair
+  // is found that match.
 
   override def close(): Unit = {
     e1.close()
@@ -66,6 +65,6 @@ class IntersectionEnumeration(private var e1: SequenceIterator,
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * An enumeration representing a nodeset that is an intersection of two other NodeSets.
-  * This implements the XPath 2.0 operator "intersect".
-  */
+ * An enumeration representing a nodeset that is an intersection of two other NodeSets.
+ * This implements the XPath 2.0 operator "intersect".
+ */

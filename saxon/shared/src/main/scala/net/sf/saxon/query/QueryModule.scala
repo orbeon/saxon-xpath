@@ -300,10 +300,10 @@ class QueryModule extends StaticContext {
 
   def mayImportModule(namespace: String): Boolean = {
     if (namespace == moduleNamespace) {
-      false
+      return false
     }
     if (importers == null) {
-      true
+      return true
     }
     for (importer <- importers.asScala if !importer.mayImportModule(namespace)) {
       false
@@ -593,7 +593,7 @@ class QueryModule extends StaticContext {
           if (uvar != null) {
             val ref: GlobalVariableReference = new GlobalVariableReference(qName)
             uvar.registerReference(ref)
-            ref
+            return ref
           } else {
             uvar = new UndeclaredVariable()
             uvar.setPackageData(main.getPackageData)
@@ -601,7 +601,7 @@ class QueryModule extends StaticContext {
             val ref: GlobalVariableReference = new GlobalVariableReference(qName)
             uvar.registerReference(ref)
             undeclaredVariables.put(qName, uvar)
-            ref
+            return ref
           }
         } else {
           if (`var`.isPrivate) {
@@ -841,14 +841,11 @@ class QueryModule extends StaticContext {
         if (activeNamespaces.get(i).getPrefix == prefix) {
           val uri: String = activeNamespaces.get(i).getURI
           if (uri.==("") && prefix.!=("")) {
-            null
+            return null
           }
-          uri
+          return uri
         }
-        {
-          i -= 1;
-          i + 1
-        }
+          i -= 1
       }
     }
     if (prefix.isEmpty) {
@@ -856,12 +853,12 @@ class QueryModule extends StaticContext {
     }
     var uri: String = explicitPrologNamespaces.get(prefix)
     if (uri != null) {
-      if (uri.isEmpty) null else uri
+      if (uri.isEmpty) return null else return uri
     }
     if (userQueryContext != null) {
       uri = userQueryContext.getNamespaceForPrefix(prefix)
       if (uri != null) {
-        uri
+        return uri
       }
     }
     null
@@ -921,7 +918,7 @@ class QueryModule extends StaticContext {
       result = result.put("", defaultElementNamespace)
     }
     if (activeNamespaces == null) {
-      result
+      return result
     }
     val prefixes: HashSet[String] = new HashSet[String](10)
     var n: Int = activeNamespaces.size - 1

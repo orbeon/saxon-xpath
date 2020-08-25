@@ -228,7 +228,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def compareOrder(other: NodeInfo): Int = {
 // are they the same node?
     if (this eq other) {
-      0
+      return 0
     }
     if (this.hashCode < other.hashCode) -1 else +1
   }

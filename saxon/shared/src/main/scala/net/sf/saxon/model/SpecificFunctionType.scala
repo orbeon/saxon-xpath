@@ -52,7 +52,7 @@ class SpecificFunctionType extends AnyFunctionType {
 
   override def isAtomizable(th: TypeHierarchy): Boolean = {
     if (getArity != 1) {
-      false
+      return      false
     }
     val argType: ItemType = getArgumentTypes()(0).getPrimaryType
     th.isSubType(BuiltInAtomicType.INTEGER, argType)
@@ -92,18 +92,18 @@ class SpecificFunctionType extends AnyFunctionType {
     if (other.isInstanceOf[SpecificFunctionType]) {
       val f2: SpecificFunctionType = other.asInstanceOf[SpecificFunctionType]
       if (resultType != f2.resultType) {
-        false
+        return        false
       }
       if (argTypes.length != f2.argTypes.length) {
-        false
+        return false
       }
       for (i <- 0 until argTypes.length if argTypes(i) != f2.argTypes(i)) {
-        false
+        return false
       }
       if (getAnnotationAssertions != f2.getAnnotationAssertions) {
-        false
+        return        false
       }
-      true
+      return true
     }
     false
   }
@@ -189,7 +189,7 @@ class SpecificFunctionType extends AnyFunctionType {
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
     if (!(item.isInstanceOf[Function])) {
-      false
+      return      false
     }
     if (item.isInstanceOf[MapItem]) {
       if (getArity == 1 &&
@@ -203,9 +203,9 @@ class SpecificFunctionType extends AnyFunctionType {
 
           }
         }
-        true
+        return        true
       } else {
-        false
+        return false
       }
     }
     if (item.isInstanceOf[ArrayItem]) {
@@ -215,7 +215,7 @@ class SpecificFunctionType extends AnyFunctionType {
         val rel: Affinity = th.relationship(argTypes(0).getPrimaryType,
           BuiltInAtomicType.INTEGER)
         if (!(rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY)) {
-          false
+          return false
         }
         for (member <- item.asInstanceOf[ArrayItem].members()) {
           try if (!resultType.matches(member, th)) {
@@ -225,9 +225,9 @@ class SpecificFunctionType extends AnyFunctionType {
 
           }
         }
-        true
+        return true
       } else {
-        false
+        return false
       }
     }
     val rel: Affinity =

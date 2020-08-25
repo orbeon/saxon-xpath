@@ -89,7 +89,7 @@ class IntArraySet extends IntSet {
     hashCodeVar = -1
     val pos: Int = Arrays.binarySearch(contents, value)
     if (pos < 0) {
-      false
+      return false
     }
     val newArray: Array[Int] = Array.ofDim[Int](contents.length - 1)
     if (pos > 0) {
@@ -106,11 +106,11 @@ class IntArraySet extends IntSet {
     hashCodeVar = -1
     if (contents.length == 0) {
       contents = Array(value)
-      true
+      return true
     }
     var pos: Int = Arrays.binarySearch(contents, value)
     if (pos >= 0) {
-      false
+      return false
     }
     pos = -pos - 1
     val newArray: Array[Int] = Array.ofDim[Int](contents.length + 1)
@@ -204,10 +204,7 @@ class IntArraySet extends IntSet {
         var j: Int = i + 1
         breakable {
           while (contents(j) == contents(j - 1) + 1) {
-            {
-              j += 1;
-              j - 1
-            }
+            j += 1
             if (j == contents.length) {
               break()
             }

@@ -691,10 +691,10 @@ class ResultDocument(private val globalProperties: Properties,
     val clarkName: String = name.getClarkName
     val local: String = localProperties.getProperty(clarkName)
     if (local != null) {
-      local
+      return local
     }
     if (serializationAttributes.containsKey(name)) {
-      null
+      return null
     }
     globalProperties.getProperty(clarkName)
   }

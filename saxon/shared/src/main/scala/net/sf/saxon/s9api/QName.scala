@@ -242,9 +242,7 @@ class QName(prefix: String, uri: String, localName: String) {
   def isValid(processor: Processor): Boolean = {
     val prefix: String = getPrefix
     if (prefix.length > 0) {
-      if (!NameChecker.isValidNCName(prefix)) {
-        false
-      }
+      if (!NameChecker.isValidNCName(prefix)) return false
     }
     NameChecker.isValidNCName(getLocalName)
   }

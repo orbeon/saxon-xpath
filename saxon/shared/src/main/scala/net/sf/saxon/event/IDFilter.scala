@@ -14,8 +14,6 @@ import net.sf.saxon.trans.XPathException
 import java.util.HashSet
 
 
-
-
 class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
 
   private var requiredId: String = id
@@ -27,11 +25,11 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
   private var nonIDs: HashSet[SimpleType] = _
 
   override def startElement(elemName: NodeName,
-                   `type`: SchemaType,
-                   attributes: AttributeMap,
-                   namespaces: NamespaceMap,
-                   location: Location,
-                   properties: Int): Unit = {
+                            `type`: SchemaType,
+                            attributes: AttributeMap,
+                            namespaces: NamespaceMap,
+                            location: Location,
+                            properties: Int): Unit = {
     matched = false
     if (activeDepth == 0) {
       for (att <- attributes
@@ -42,23 +40,23 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
       }
       if (matched) {
         activeDepth = 1
-// this remembers the details
+        // this remembers the details
         super.startElement(elemName,
-                           `type`,
-                           attributes,
-                           namespaces,
-                           location,
-                           properties)
+          `type`,
+          attributes,
+          namespaces,
+          location,
+          properties)
       }
     } else {
-      { activeDepth += 1; activeDepth - 1 }
-// this remembers the details
+      activeDepth += 1
+      // this remembers the details
       super.startElement(elemName,
-                         `type`,
-                         attributes,
-                         namespaces,
-                         location,
-                         properties)
+        `type`,
+        attributes,
+        namespaces,
+        location,
+        properties)
     }
   }
 
@@ -70,25 +68,25 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
   }
 
   override def characters(chars: CharSequence,
-                 locationId: Location,
-                 properties: Int): Unit = {
+                          locationId: Location,
+                          properties: Int): Unit = {
     if (activeDepth > 0) {
       super.characters(chars, locationId, properties)
     }
   }
 
   override def processingInstruction(target: String,
-                            data: CharSequence,
-                            locationId: Location,
-                            properties: Int): Unit = {
+                                     data: CharSequence,
+                                     locationId: Location,
+                                     properties: Int): Unit = {
     if (activeDepth > 0) {
       super.processingInstruction(target, data, locationId, properties)
     }
   }
 
   override def comment(chars: CharSequence,
-              locationId: Location,
-              properties: Int): Unit = {
+                       locationId: Location,
+                       properties: Int): Unit = {
     if (activeDepth > 0) {
       super.comment(chars, locationId, properties)
     }
@@ -104,9 +102,9 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * IDFilter is a ProxyReceiver that extracts the subtree of a document rooted at the
-  * element with a given ID value. Namespace declarations outside this subtree are
-  * treated as if they were present on the identified element.
-  *
-  * <p>Note, this class only looks for ID attributes, not for ID elements.</p>
-  */
+ * IDFilter is a ProxyReceiver that extracts the subtree of a document rooted at the
+ * element with a given ID value. Namespace declarations outside this subtree are
+ * treated as if they were present on the identified element.
+ *
+ * <p>Note, this class only looks for ID attributes, not for ID elements.</p>
+ */

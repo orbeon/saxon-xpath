@@ -110,7 +110,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       this.setSelect(select2)
     }
     if (!Cardinality.allowsMany(select2.getCardinality)) {
-      select2
+      return select2
     }
     val sortedItemType: ItemType = getSelect.getItemType
     var allKeysFixed: Boolean = true
@@ -236,7 +236,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
   override def iterate(context: XPathContext): SequenceIterator = {
     var iter: SequenceIterator = getSelect.iterate(context)
     if (iter.isInstanceOf[EmptyIterator]) {
-      iter
+      return iter
     }
     var comps: Array[AtomicComparer] = comparators
     if (comparators == null) {
