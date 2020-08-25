@@ -70,7 +70,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   override def getBaseURI(): String = {
     if (baseURI != null) {
-      baseURI
+      return baseURI
     }
     getSystemId
   }
@@ -121,7 +121,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
       }
       { i += 1; i - 1 }
     } catch {
-      case e: ArrayIndexOutOfBoundsException => list
+      case e: ArrayIndexOutOfBoundsException => return list
 
     }
     list.trimToSize()

@@ -20,7 +20,7 @@ object TinyParentNodeImpl {
     } else if (next < tree.numberOfNodes) {
 // bug 4445
       if (tree.depth(next) <= level) {
-        ""
+        return ""
       } else if (tree.nodeKind(next) == Type.TEXT &&
                  (next + 1 >= tree.numberOfNodes || tree.depth(next + 1) <= level)) {
         TinyTextImpl.getStringValue(tree, next)
@@ -43,7 +43,7 @@ object TinyParentNodeImpl {
       { next += 1; next - 1 }
     }
     if (sb == null) {
-      ""
+      return ""
     }
     sb.condense()
   }

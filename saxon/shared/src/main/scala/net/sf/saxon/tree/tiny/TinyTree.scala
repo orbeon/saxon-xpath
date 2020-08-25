@@ -483,7 +483,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
   def getPrefix(nodeNr: Int): String = {
     val code: Int = nameCode(nodeNr) >> 20
     if (code <= 0) {
-      if (code == 0) "" else null
+      if (code == 0) return "" else return null
     }
     prefixPool.getPrefix(code)
   }
@@ -592,7 +592,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       }
     }
     {
-      numberOfAttributes += 1; numberOfAttributes - 1
+      numberOfAttributes += 1;
     }
   }
 
@@ -766,7 +766,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     val `type`: SchemaType = getSchemaType(nr)
     try if (`type`.isIdRefType) {
       if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS) {
-        true
+        return true
       }
       try for (av <- getTypedValueOfElement(nr).asScala
                if av.getItemType.isIdRefType) {
@@ -776,7 +776,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
       }
     } catch {
-      case e: MissingComponentException => false
+      case e: MissingComponentException => return false
 
     }
     false
@@ -797,7 +797,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getSystemId(seq: Int): String = {
     if (systemIdMap == null) {
-      null
+      return null
     }
     systemIdMap.getSystemId(seq)
   }
@@ -835,7 +835,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       while (i >= 0) {
         val c: Int = lineNumbers(i)
         if (c > 0) {
-          c
+          return c
         }
         {
           i -= 1; i + 1
@@ -851,7 +851,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       while (i >= 0) {
         val c: Int = columnNumbers(i)
         if (c > 0) {
-          c
+          return c
         }
         {
           i -= 1; i + 1
@@ -882,7 +882,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   override def selectID(id: String, getParent: Boolean): NodeInfo = {
     if (idTable == null) {
-      null
+      return null
     }
     var node: NodeInfo = idTable.get(id)
     if (node != null && getParent && node.isId && node.getStringValue == id) {
@@ -913,7 +913,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   override def getUnparsedEntity(name: String): Array[String] = {
     if (entityTable == null) {
-      null
+      return null
     }
     entityTable.get(name)
   }
@@ -1037,7 +1037,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       end = source.numberOfNodes
       if (end - 1 < source.nodeKind.length && source.nodeKind(end - 1) == Type.STOPPER) {
         {
-          end -= 1; end + 1
+          end -= 1;
         }
       }
     }
@@ -1095,10 +1095,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
                 idRefAttributes.add(aTo)
               }
               {
-                a += 1; a - 1
+                a += 1;
               }
               {
-                aFrom += 1; aFrom - 1
+                aFrom += 1;
               }
               {
                 aTo += 1; aTo - 1

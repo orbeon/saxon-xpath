@@ -157,7 +157,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
         Loc.NONE)
     }
     {
-      level += 1; level - 1
+      level += 1;
     }
     getNextOutputter.startDocument(properties)
   }

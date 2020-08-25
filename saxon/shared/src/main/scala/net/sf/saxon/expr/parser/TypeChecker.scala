@@ -64,7 +64,7 @@ object TypeChecker {
       itemTypeOK = relation == SAME_TYPE || relation == SUBSUMES
     }
     if (itemTypeOK && cardOK) {
-      exp
+      return exp
     }
     if (suppliedCard == -1) {
       suppliedCard =
@@ -75,7 +75,7 @@ object TypeChecker {
       }
     }
     if (cardOK && suppliedCard == StaticProperty.EMPTY) {
-      exp
+      return exp
     }
     if (suppliedItemType == null) {
       suppliedItemType = exp.getItemType
@@ -145,7 +145,7 @@ object TypeChecker {
     var count: Int = 0
     var item: Item = null
     while ((item = iter.next()) != null) {
-      { count += 1; count - 1 }
+      { count += 1;}
       if (!reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {
         val err: XPathException = new XPathException(
@@ -162,7 +162,7 @@ object TypeChecker {
         "Required type does not allow empty sequence, but supplied value is empty")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
-      err
+      return err
     }
     if (count > 1 && !Cardinality.allowsMany(reqCardinality)) {
       val err: XPathException = new XPathException(
@@ -171,21 +171,21 @@ object TypeChecker {
           " items")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
-      err
+      return err
     }
     if (count > 0 && reqCardinality == StaticProperty.EMPTY) {
       val err: XPathException = new XPathException(
         "Required type requires an empty sequence, but supplied value is non-empty")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
-      err
+      return err
     }
     null
   }
 
   def ebvError(exp: Expression, th: TypeHierarchy): XPathException = {
     if (Cardinality.allowsZero(exp.getCardinality)) {
-      null
+      return null
     }
     val t: ItemType = exp.getItemType
     if (th.relationship(t, Type.NODE_TYPE) == DISJOINT &&
@@ -201,7 +201,7 @@ object TypeChecker {
           "booleans, strings, numbers, URIs, or nodes")
       err.setErrorCode("FORG0006")
       err.setIsTypeError(true)
-      err
+      return err
     }
     null
   }
@@ -232,7 +232,7 @@ object TypeChecker {
         val converted: Literal =
           Literal.makeLiteral(result.asInstanceOf[AtomicValue], exp)
         ExpressionTool.copyLocationInfo(exp, converted)
-        converted
+        return converted
       }
     }
     val asc: AtomicSequenceConverter = new AtomicSequenceConverter(exp, `type`)
@@ -503,7 +503,7 @@ class TypeChecker {
       }
     }
     if (itemTypeOK && cardOK) {
-      exp
+      return exp
     }
     if (suppliedCard == -1) {
       suppliedCard = exp.getCardinality
@@ -512,7 +512,7 @@ class TypeChecker {
       }
     }
     if (cardOK && suppliedCard == StaticProperty.EMPTY) {
-      exp
+      return exp
     }
     if (suppliedCard == StaticProperty.EMPTY && ((reqCard & StaticProperty.ALLOWS_ZERO) == 0)) {
       val err: XPathException = new XPathException(
@@ -549,7 +549,7 @@ class TypeChecker {
     if (!(relation == SAME_TYPE || relation == SUBSUMED_BY)) {
       if (exp.isInstanceOf[Literal]) {
         if (req.matches(exp.asInstanceOf[Literal].value, th)) {
-          exp
+          return exp
         }
         val msg: String = role.composeErrorMessage(reqItemType, supplied, th)
         val err: XPathException =
