@@ -42,7 +42,7 @@ object StringConverter {
       }
       val temp: ConversionResult = phaseOne.convertString(in)
       if (temp.isInstanceOf[ValidationFailure]) {
-        temp
+        return temp
       }
       phaseTwo.convert(temp.asInstanceOf[AtomicValue], in)
     }
@@ -295,7 +295,7 @@ object StringConverter {
     override def validate(input: CharSequence): ValidationFailure = {
       val trimmed: CharSequence = Whitespace.trimWhitespace(input)
       if (NameChecker.isValidNCName(trimmed)) {
-        null
+        return null
       }
       val buff: FastStringBuffer = new FastStringBuffer(trimmed.length)
       buff.cat(trimmed)
@@ -365,7 +365,7 @@ object StringConverter {
         Whitespace.applyWhitespaceNormalization(whitespaceAction, input)
       var f: ValidationFailure = builtInValidator.validate(cs)
       if (f != null) {
-        f
+        return f
       }
       try cs = targetType.preprocess(cs)
       catch {
@@ -694,7 +694,7 @@ object StringConverter {
             "Namespace prefix " + Err
               .wrap(parts(0)) + " has not been declared")
           failure.setErrorCode("FONS0004")
-          failure
+          return failure
         }
         new QNameValue(parts(0), uri, parts(1), BuiltInAtomicType.QNAME, false)
       } catch {

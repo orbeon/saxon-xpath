@@ -73,7 +73,7 @@ class TreeReceiver(@BeanProperty var nextReceiver: Receiver) extends SequenceRec
   }
 
   def endDocument(): Unit = {
-    { level -= 1; level + 1 }
+    { level -= 1;}
     if (level == 0) {
       nextReceiver.endDocument()
     }

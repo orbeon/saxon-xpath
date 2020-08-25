@@ -53,14 +53,14 @@ class XPathFunctionLibrary extends FunctionLibrary {
            env: StaticContext,
            reasons: List[String]): Expression = {
     if (resolver == null) {
-      null
+      return null
     }
     val qn: StructuredQName = functionName.getComponentName
     val name: QName = new QName(qn.getURI, qn.getLocalPart)
     val function: XPathFunction =
       resolver.resolveFunction(name, functionName.getArity)
     if (function == null) {
-      null
+      return null
     }
     val fc: XPathFunctionCall = new XPathFunctionCall(qn, function)
     fc.setArguments(staticArgs)
@@ -81,14 +81,14 @@ class XPathFunctionLibrary extends FunctionLibrary {
   def getFunctionItem(symbolicName: SymbolicName.F,
                       staticContext: StaticContext): Function = {
     if (resolver == null) {
-      null
+      return null
     }
     val functionName: StructuredQName = symbolicName.getComponentName
     val arity: Int = symbolicName.getArity
     val name: QName = new QName(functionName.getURI, functionName.getLocalPart)
     val function: XPathFunction = resolver.resolveFunction(name, arity)
     if (function == null) {
-      null
+      return null
     }
     val functionCall: XPathFunctionCall =new XPathFunctionCall(functionName, function)
     val argTypes: Array[SequenceType] = Array.fill[SequenceType](arity)(SequenceType.ANY_SEQUENCE)

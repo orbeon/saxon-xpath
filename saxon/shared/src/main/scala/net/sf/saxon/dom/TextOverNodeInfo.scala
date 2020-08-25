@@ -76,11 +76,11 @@ class TextOverNodeInfo extends NodeOverNodeInfo with Text with Comment {
         "Method is defined only on text nodes")
     }
     if (!Whitespace.isWhite(node.getStringValue)) {
-      false
+      return false
     }
     val parent: NodeInfo = node.getParent
     if (parent == null) {
-      false
+      return false
     }
     val `type`: SchemaType = parent.getSchemaType
     `type`.isComplexType && !`type`.asInstanceOf[ComplexType].isMixedContent

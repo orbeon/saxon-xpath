@@ -69,10 +69,10 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     op match {
       case Token.UNION =>
         if (Literal.isEmptySequence(getLhsExpression)) {
-          c2
+          return c2
         }
         if (Literal.isEmptySequence(getRhsExpression)) {
-          c1
+          return c1
         }
         c1 | c2 | StaticProperty.ALLOWS_ONE | StaticProperty.ALLOWS_MANY
       case Token.INTERSECT =>
@@ -213,7 +213,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
                         contextItemType: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextItemType)
     if (e != this) {
-      e
+      return e
     }
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
@@ -224,36 +224,36 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         if (Literal.isEmptySequence(lhs) &&
           (rhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
             0) {
-          rhs
+          return rhs
         }
         if (Literal.isEmptySequence(rhs) &&
           (lhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
             0) {
-          lhs
+          return lhs
         }
         if (lhs.isInstanceOf[CurrentGroupCall] && rhs
           .isInstanceOf[ContextItemExpression]) {
-          lhs
+          return lhs
         }
       case Token.INTERSECT =>
         if (Literal.isEmptySequence(lhs)) {
-          lhs
+          return lhs
         }
         if (Literal.isEmptySequence(rhs)) {
-          rhs
+          return rhs
         }
         if (lhs.isInstanceOf[CurrentGroupCall] && rhs
           .isInstanceOf[ContextItemExpression]) {
-          rhs
+          return rhs
         }
       case Token.EXCEPT =>
         if (Literal.isEmptySequence(lhs)) {
-          lhs
+          return lhs
         }
         if (Literal.isEmptySequence(rhs) &&
           (lhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
             0) {
-          lhs
+          return lhs
         }
         if (lhs.isInstanceOf[CurrentGroupCall] && rhs
           .isInstanceOf[ContextItemExpression]) {
@@ -266,13 +266,13 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val a2: AxisExpression = rhs.asInstanceOf[AxisExpression]
       if (a1.getAxis == a2.getAxis) {
         if (a1.getNodeTest == a2.getNodeTest) {
-          if (op == Token.EXCEPT) Literal.makeEmptySequence() else a1
+          if (op == Token.EXCEPT) Literal.makeEmptySequence() else return a1
         } else {
           val ax: AxisExpression = new AxisExpression(
             a1.getAxis,
             new CombinedNodeTest(a1.getNodeTest, op, a2.getNodeTest))
           ExpressionTool.copyLocationInfo(this, ax)
-          ax
+          return ax
         }
       }
     }
@@ -351,7 +351,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       } else if (op == Token.EXCEPT) {
         if ((lhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
           0) {
-          lhs
+          return lhs
         } else {
           new DocumentSorter(lhs)
         }
@@ -370,7 +370,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       operandsAreDisjoint(getConfiguration.getTypeHierarchy)) {
       val block: Block = new Block(Array(getLhsExpression, getRhsExpression))
       ExpressionTool.copyLocationInfo(this, block)
-      block
+      return block
     }
     this
   }
@@ -393,18 +393,18 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     if (other.isInstanceOf[VennExpression]) {
       val b: VennExpression = other.asInstanceOf[VennExpression]
       if (op != b.op) {
-        false
+        return false
       }
       if (getLhsExpression.isEqual(b.getLhsExpression) && getRhsExpression
         .isEqual(b.getRhsExpression)) {
-        true
+        return true
       }
       if (op == Token.UNION || op == Token.INTERSECT) {
         val s0: Set[Expression] = new HashSet[Expression](10)
         gatherComponents(op, s0)
         val s1: Set[Expression] = new HashSet[Expression](10)
         other.asInstanceOf[VennExpression].gatherComponents(op, s1)
-        s0 == s1
+        return s0 == s1
       }
     }
     false

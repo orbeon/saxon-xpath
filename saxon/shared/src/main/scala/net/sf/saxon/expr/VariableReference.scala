@@ -136,7 +136,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       Optimizer.trace(visitor.getConfiguration,
         "Replaced variable " + getDisplayName + " by its value",
         result)
-      result
+      return result
     }
     if (binding.isInstanceOf[GlobalParam] && binding
       .asInstanceOf[GlobalParam]
@@ -148,7 +148,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
           visitor.getConfiguration,
           "Replaced static parameter " + getDisplayName + " by its value",
           select)
-        select
+        return select
       }
     }
     this
@@ -318,7 +318,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     var parent: Expression = getParentExpression
     while (parent != null) {
       if (parent.hasVariableBinding(binding)) {
-        parent
+        return parent
       }
       parent = parent.getParentExpression
     }

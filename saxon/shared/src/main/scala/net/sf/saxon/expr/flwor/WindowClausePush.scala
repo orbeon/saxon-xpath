@@ -45,7 +45,7 @@ class WindowClausePush(outputter: Outputter,
       if (next == null) {
         finished = true
       }
-      { position += 1; position - 1 }
+       position += 1
       if (position > 0) {
         if ((windowClause.isSlidingWindow || currentWindows.isEmpty ||
           autoclose) &&

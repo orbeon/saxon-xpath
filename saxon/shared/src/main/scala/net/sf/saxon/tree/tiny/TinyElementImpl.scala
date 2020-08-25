@@ -67,7 +67,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
   override def getAttributeValue(uri: String, local: String): String = {
     var a: Int = tree.alpha(nodeNr)
     if (a < 0) {
-      null
+      return null
     }
     val pool: NamePool = getNamePool
     while (a < tree.numberOfAttributes && tree.attParent(a) == nodeNr) {
@@ -84,7 +84,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
   def getAttributeValue(fp: Int): String = {
     var a: Int = tree.alpha(nodeNr)
     if (a < 0) {
-      null
+      return null
     }
     while (a < tree.numberOfAttributes && tree.attParent(a) == nodeNr) {
       if (fp == (tree.attCode(a) & NamePool.FP_MASK)) {
@@ -99,7 +99,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     var next: Int = tree.next(nodeNr)
     while (next < nodeNr) {
       if (next < 0) {
-        tree.numberOfNodes - nodeNr
+        return tree.numberOfNodes - nodeNr
       }
       next = tree.next(next)
     }
@@ -126,7 +126,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     do {
       val nodeLevel: Short = tree.depth(next)
       if (closePending) {
-        { level += 1; level - 1 }
+        { level += 1;}
       }
 
       while (level > nodeLevel) {
@@ -336,7 +336,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
 
   def getURIForPrefix(prefix: String, useDefault: Boolean): String = {
     if (!useDefault && (prefix == null || prefix.isEmpty)) {
-      ""
+      return ""
     }
     val ns: Int = tree.beta(nodeNr)
     val map: NamespaceMap = tree.namespaceMaps(ns)

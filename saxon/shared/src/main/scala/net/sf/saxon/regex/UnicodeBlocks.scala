@@ -54,7 +54,7 @@ object UnicodeBlocks {
     }
     var cc: IntSet = blocks.get(name)
     if (cc != null) {
-      cc
+      return cc
     }
     cc = blocks.get(normalizeBlockName(name))
     cc

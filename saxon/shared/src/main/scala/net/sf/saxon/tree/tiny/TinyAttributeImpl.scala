@@ -65,7 +65,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   override def getPrefix(): String = {
     val code: Int = tree.attCode(nodeNr)
     if (!NamePool.isPrefixed(code)) {
-      ""
+      return ""
     }
     tree.prefixPool.getPrefix(code >> 20)
   }
@@ -73,7 +73,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   override def getDisplayName(): String = {
     val code: Int = tree.attCode(nodeNr)
     if (code < 0) {
-      ""
+      return ""
     }
     if (NamePool.isPrefixed(code)) {
       getPrefix + ":" + getLocalPart
@@ -88,7 +88,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   override def getURI(): String = {
     val code: Int = tree.attCode(nodeNr)
     if (!NamePool.isPrefixed(code)) {
-      ""
+      return ""
     }
     tree.getNamePool.getURI(code)
   }

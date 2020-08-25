@@ -13,11 +13,11 @@ package net.sf.saxon.ma.trie
 class Tuple2[T1, T2](val _1: T1, val _2: T2) {
 
   override def equals(o: Any): Boolean = {
-    if (this == o) true
-    if (o == null || getClass != o.getClass) false
+    if (this == o) return true
+    if (o == null || getClass != o.getClass) return false
     val tuple: Tuple2[T1, T2] = o.asInstanceOf[Tuple2[T1, T2]]
-    if (if (_1 != null) _1 != tuple._1 else tuple._1 != null) false
-    if (if (_2 != null) _2 != tuple._2 else tuple._2 != null) false
+    if (if (_1 != null) _1 != tuple._1 else tuple._1 != null) return false
+    if (if (_2 != null) _2 != tuple._2 else tuple._2 != null) return false
     true
   }
 

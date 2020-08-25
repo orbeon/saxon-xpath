@@ -494,10 +494,10 @@ class XMLEmitter extends Emitter {
           i = i + 1
           val cc: Int = UTF16CharacterSet.combinePair(c, chars.charAt(i))
           if (!characterSet.inCharset(cc)) {
-            cc
+            return cc
           }
         } else if (!characterSet.inCharset(c)) {
-          c
+          return c
         }
       }
       i = i + 1

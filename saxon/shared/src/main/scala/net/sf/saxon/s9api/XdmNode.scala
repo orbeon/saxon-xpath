@@ -162,7 +162,7 @@ class XdmNode extends XdmItem {
         .replace("<", "&lt;")
       var name: String = node.getDisplayName
       name = if (name.==("")) "xmlns" else "xmlns:" + name
-      name + "=\"" + `val` + '"'
+      return name + "=\"" + `val` + '"'
     } else if (node.getNodeKind == Type.TEXT) {
       node.getStringValue
         .replace("&", "&amp;")

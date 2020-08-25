@@ -37,11 +37,11 @@ class UnboundFunctionLibrary extends FunctionLibrary {
            env: StaticContext,
            reasons: List[String]): Expression = {
     if (resolving) {
-      null
+      return null
     }
     if (!reasons.isEmpty &&
       reasons.get(0).startsWith("Cannot call the private XQuery function")) {
-      null
+      return null
     }
     val ufc: UserFunctionCall = new UserFunctionCall()
     ufc.setFunctionName(functionName.getComponentName)
@@ -55,7 +55,7 @@ class UnboundFunctionLibrary extends FunctionLibrary {
   def getFunctionItem(functionName: SymbolicName.F,
                       staticContext: StaticContext): Function = {
     if (resolving) {
-      null
+      return null
     }
     val uc: XQueryFunctionLibrary.UnresolvedCallable =
       new XQueryFunctionLibrary.UnresolvedCallable(functionName)
