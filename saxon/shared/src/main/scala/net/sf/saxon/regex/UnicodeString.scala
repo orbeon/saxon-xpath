@@ -71,13 +71,13 @@ object UnicodeString {
 
   private def getMaxWidth(value: CharSequence): Int = {
     if (value.isInstanceOf[LatinString] || value.isInstanceOf[EmptyString]) {
-      1
+      return 1
     }
     if (value.isInstanceOf[BMPString]) {
-      2
+      return 2
     }
     if (value.isInstanceOf[GeneralUnicodeString]) {
-      4
+      return 4
     }
     var nonLatin: Boolean = false
     for (i <- 0 until value.length) {
@@ -136,10 +136,10 @@ abstract class UnicodeString
 
   override def equals(obj: Any): Boolean = {
     if (!(obj.isInstanceOf[UnicodeString])) {
-      false
+      return false
     }
     if (uLength() != obj.asInstanceOf[UnicodeString].uLength()) {
-      false
+      return false
     }
     for (i <- 0 until uLength()
          if uCharAt(i) != obj.asInstanceOf[UnicodeString].uCharAt(i)) {

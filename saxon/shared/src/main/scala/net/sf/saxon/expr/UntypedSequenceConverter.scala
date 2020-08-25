@@ -99,7 +99,7 @@ class UntypedSequenceConverter(sequence: Expression,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val e2: Expression = super.typeCheck(visitor, contextInfo)
     if (e2 != this) {
-      e2
+      return e2
     }
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     val base: Expression = getBaseExpression
