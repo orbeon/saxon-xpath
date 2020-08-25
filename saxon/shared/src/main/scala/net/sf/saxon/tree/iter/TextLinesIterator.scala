@@ -58,7 +58,7 @@ abstract class TextLinesIterator  () extends SequenceIterator {
     if (position < 0) {
 // input already exhausted
       close()
-      null
+      return null
     }
     try {
       var s: String = reader.readLine()
@@ -66,7 +66,7 @@ abstract class TextLinesIterator  () extends SequenceIterator {
         current = null
         position = -1
         close()
-        null
+        return null
       }
       if (position == 0 && s.startsWith("﻿")) {
 // remove any BOM found at start of file

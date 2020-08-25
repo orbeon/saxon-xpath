@@ -228,7 +228,6 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     {
       currentDepth += 1;
-      currentDepth - 1
 
     }
     if (currentDepth == prevAtDepth.length) {
@@ -343,7 +342,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   def getLastCompletedElement(): TinyNodeImpl = {
     if (tree == null) {
-      null
+      return null
     }
     tree.getNode(if (currentDepth >= 0) prevAtDepth(currentDepth) else 0)
   }

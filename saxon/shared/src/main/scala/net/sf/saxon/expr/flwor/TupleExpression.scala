@@ -80,7 +80,7 @@ class TupleExpression extends Expression {
     } else {
       val t2: TupleExpression = other.asInstanceOf[TupleExpression]
       if (getOperanda.getNumberOfOperands != t2.getOperanda.getNumberOfOperands) {
-        false
+        return false
       }
       for (i <- 0 until getSize if !getSlot(i).isEqual(t2.getSlot(i))) {
         false

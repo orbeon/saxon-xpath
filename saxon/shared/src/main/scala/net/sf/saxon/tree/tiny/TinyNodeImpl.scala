@@ -44,7 +44,7 @@ object TinyNodeImpl{
 
   def getParentNodeNr(tree: TinyTree, nodeNr: Int): Int = {
     if (tree.depth(nodeNr) == 0) {
-      -1
+      return -1
     }
     var p: Int = tree.next(nodeNr)
     while (p > nodeNr) {
@@ -170,7 +170,7 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getFingerprint(): Int = {
     val nc: Int = tree.nameCode(nodeNr)
     if (nc == -1) {
-      -1
+      return -1
     }
     nc & NamePool.FP_MASK
   }
@@ -178,10 +178,10 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getPrefix(): String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
-      ""
+      return ""
     }
     if (!NamePool.isPrefixed(code)) {
-      ""
+      return ""
     }
     tree.prefixPool.getPrefix(code >> 20)
   }
@@ -189,7 +189,7 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getURI(): String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
-      ""
+      return ""
     }
     tree.getNamePool.getURI(code & NamePool.FP_MASK)
   }
@@ -197,7 +197,7 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getDisplayName(): String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
-      ""
+      return ""
     }
     if (NamePool.isPrefixed(code)) {
       getPrefix + ":" + getLocalPart
@@ -209,7 +209,7 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getLocalPart(): String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
-      ""
+      return ""
     }
     tree.getNamePool.getLocalName(code)
   }
@@ -347,11 +347,11 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   def getParent(): TinyNodeImpl = {
     if (parent != null) {
-      parent
+      return parent
     }
     val p: Int = getParentNodeNr(tree, nodeNr)
     if (p == -1) {
-      null
+      return null
     } else {
       parent = tree.getNode(p)
     }
@@ -394,30 +394,30 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   def isAncestorOrSelf(d: TinyNodeImpl): Boolean = {
     if (tree != d.tree) {
-      false
+      return false
     }
     var dn: Int = d.nodeNr
     if (d.isInstanceOf[TinyAttributeImpl]) {
       if (this.isInstanceOf[TinyAttributeImpl]) {
-        nodeNr == dn
+        return nodeNr == dn
       } else {
         dn = tree.attParent(dn)
       }
     }
     if (this.isInstanceOf[TinyAttributeImpl]) {
-      false
+      return false
     }
     if (nodeNr > dn) {
-      false
+      return false
     }
     if (nodeNr == dn) {
-      true
+      return true
     }
     if (!(this.isInstanceOf[TinyParentNodeImpl])) {
-      false
+      return false
     }
     if (tree.depth(nodeNr) >= tree.depth(dn)) {
-      false
+      return false
     }
     var n: Int = nodeNr
     while (true) {

@@ -37,7 +37,7 @@ object SystemProperty {
     val edition: String = rsc.getPackageData.getTargetEdition
     if (uri == NamespaceConstant.XSLT) {
       local match {
-        case "version" => "3.0"
+        case "version" => return "3.0"
         case "vendor" => Version.getProductVendor
         case "vendor-url" => Version.getWebSiteAddress
         case "product-name" => Version.getProductName
@@ -46,8 +46,8 @@ object SystemProperty {
           var schemaAware: Boolean = rsc.getPackageData.isSchemaAware
           yesOrNo(schemaAware)
         case "supports-serialization" => yesOrNo("JS" != edition)
-        case "supports-backwards-compatibility" => "yes"
-        case "supports-namespace-axis" => "yes"
+        case "supports-backwards-compatibility" => return "yes"
+        case "supports-namespace-axis" => return "yes"
         case "supports-streaming" =>
           yesOrNo(
             "EE" == edition &&
@@ -56,11 +56,11 @@ object SystemProperty {
               config.getConfigurationProperty(Feature.STREAMABILITY).!=("off"))
         case "supports-dynamic-evaluation" =>
           yesOrNo(!config.getBooleanProperty(Feature.DISABLE_XSL_EVALUATE))
-        case "supports-higher-order-functions" => "yes"
-        case "xpath-version" => "3.1"
+        case "supports-higher-order-functions" => return "yes"
+        case "xpath-version" => return "3.1"
         case "xsd-version" =>
-          if (rsc.getConfiguration.getXsdVersion == Configuration.XSD10) "1.0"
-          else "1.1"
+          if (rsc.getConfiguration.getXsdVersion == Configuration.XSD10) return "1.0"
+          else return "1.1"
 
       }
       ""
