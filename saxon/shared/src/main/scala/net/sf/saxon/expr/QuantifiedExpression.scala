@@ -101,13 +101,13 @@ class QuantifiedExpression extends Assignation {
       } else {
         val e2: Expression = new Literal(BooleanValue.TRUE)
         ExpressionTool.copyLocationInfo(this, e2)
-        e2
+        return e2
       }
     } else if (Literal.hasEffectiveBooleanValue(ebv, false)) {
       if (getOperator == Token.SOME) {
         val e2: Expression = new Literal(BooleanValue.FALSE)
         ExpressionTool.copyLocationInfo(this, e2)
-        e2
+        return e2
       } else {
         SystemFunction.makeCall("empty", getRetainedStaticContext, getSequence)
       }
@@ -119,7 +119,7 @@ class QuantifiedExpression extends Assignation {
         val e2: Expression = new Literal(
           BooleanValue.get(getOperator == Token.EVERY))
         ExpressionTool.copyLocationInfo(this, e2)
-        e2
+        return e2
       } else if (len == 1) {
         if (getAction.isInstanceOf[VariableReference] &&
           getAction.asInstanceOf[VariableReference].getBinding ==

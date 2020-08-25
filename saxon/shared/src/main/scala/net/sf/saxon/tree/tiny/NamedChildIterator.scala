@@ -44,7 +44,7 @@ class NamedChildIterator(private var tree: TinyTree,
       } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) ||
         ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT));
     } else if (nextNodeNr == -1) {
-      null
+      return null
     }
     needToAdvance = true
     val nextNode: TinyNodeImpl = tree.getNode(nextNodeNr)
@@ -65,7 +65,7 @@ class NamedChildIterator(private var tree: TinyTree,
       } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) ||
         (tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT);
     } else if (nextNodeNr == -1) {
-      null
+      return null
     }
     needToAdvance = true
     tree.getTypedValueOfElement(nextNodeNr)

@@ -127,15 +127,15 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   import GeneralComparison.ComparisonCardinality._
 
-   var singletonOperator: Int = GeneralComparison.getCorrespondingSingletonOperator(op)
+  var singletonOperator: Int = GeneralComparison.getCorrespondingSingletonOperator(op)
 
-   var comparer: AtomicComparer = _
+  var comparer: AtomicComparer = _
 
-   var needsRuntimeCheck: Boolean = true
+  var needsRuntimeCheck: Boolean = true
 
-   var comparisonCardinality: ComparisonCardinality = MANY_TO_MANY
+  var comparisonCardinality: ComparisonCardinality = MANY_TO_MANY
 
-   var doneWarnings: Boolean = false
+  var doneWarnings: Boolean = false
 
   def getNeedsRuntimeCheck(): Boolean = needsRuntimeCheck
 
@@ -406,7 +406,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         val ir: IntegerRangeTest =
           new IntegerRangeTest(getRhsExpression, min, max)
         ExpressionTool.copyLocationInfo(this, ir)
-        ir
+        return ir
       }
       if (getRhsExpression.isInstanceOf[RangeExpression]) {
         val min: Expression =
@@ -416,7 +416,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         val ir: IntegerRangeTest =
           new IntegerRangeTest(getLhsExpression, min, max)
         ExpressionTool.copyLocationInfo(this, ir)
-        ir
+        return ir
       }
       if (getLhsExpression.isInstanceOf[Literal]) {
         val value0: GroundedValue =
@@ -429,7 +429,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
             Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
             Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
           ExpressionTool.copyLocationInfo(this, ir)
-          ir
+          return ir
         }
       }
       if (getRhsExpression.isInstanceOf[Literal]) {
@@ -443,7 +443,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
             Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
             Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
           ExpressionTool.copyLocationInfo(this, ir)
-          ir
+          return ir
         }
       }
     }
@@ -596,7 +596,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
                                 context: XPathContext): Boolean =
     try {
       if (value1 == null) {
-        false
+        return false
       }
       var item0: AtomicValue = null
       val boundComparer: AtomicComparer = comparer.provideContext(context)
@@ -635,7 +635,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
           val item0: AtomicValue = iter0.next().asInstanceOf[AtomicValue]
           if (item0 == null) {
             if (exhausted1) {
-              false
+              return false
             }
             exhausted0 = true
           } else {
@@ -659,7 +659,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
           val item1: AtomicValue = iter1.next().asInstanceOf[AtomicValue]
           if (item1 == null) {
             if (exhausted0) {
-              false
+              return false
             }
             exhausted1 = true
           } else {
@@ -694,7 +694,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
-   def getInverseComparison(): GeneralComparison = {
+  def getInverseComparison(): GeneralComparison = {
     val gc2: GeneralComparison20 = new GeneralComparison20(
       getRhsExpression,
       Token.inverse(op),
@@ -707,7 +707,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   override def tag(): String = "gc"
 
-  override  def explainExtraAttributes(out: ExpressionPresenter): Unit = {
+  override def explainExtraAttributes(out: ExpressionPresenter): Unit = {
     var cc: String = ""
     comparisonCardinality match {
       case ONE_TO_ONE => cc = "1:1"

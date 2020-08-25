@@ -67,7 +67,7 @@ class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
   def substringAfter(s1: String, s2: String): String = {
     val i: Int = normalize(s1).indexOf(normalize(s2))
     if (i < 0) {
-      ""
+      return ""
     }
     s1.substring(i + s2.length)
   }
@@ -75,7 +75,7 @@ class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
   def substringBefore(s1: String, s2: String): String = {
     val j: Int = normalize(s1).indexOf(normalize(s2))
     if (j < 0) {
-      ""
+      return ""
     }
     s1.substring(0, j)
   }

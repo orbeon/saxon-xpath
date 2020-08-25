@@ -86,7 +86,7 @@ class RangeExpression(start: Expression, end: Expression)
           result = Literal.makeLiteral(new IntegerRange(i0, i1), this)
         }
         ExpressionTool.copyLocationInfo(this, result)
-        result
+        return result
       }
     }
     this

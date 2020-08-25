@@ -46,7 +46,7 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
   def next(): Item = {
     var item: Item = base.next()
     if (item == null) {
-      null
+      return null
     }
 //first item in iterator
     if (state == 0) {

@@ -10,11 +10,9 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
-
-
 class JTokenIterator(private var input: CharSequence,
                      private var pattern: Pattern)
-    extends AtomicIterator[StringValue] {
+  extends AtomicIterator[StringValue] {
 
   private var matcher: Matcher = pattern.matcher(input)
 
@@ -27,7 +25,7 @@ class JTokenIterator(private var input: CharSequence,
   def next(): StringValue = {
     if (prevEnd < 0) {
       current = null
-      null
+      return null
     }
     if (matcher.find()) {
       current = input.subSequence(prevEnd, matcher.start())
@@ -49,6 +47,6 @@ class JTokenIterator(private var input: CharSequence,
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
 /**
-  * A JTokenIterator is an iterator over the strings that result from tokenizing a string using
-  * a regular expression, in this case a regular expression evaluated using the JDK regex engine
-  */
+ * A JTokenIterator is an iterator over the strings that result from tokenizing a string using
+ * a regular expression, in this case a regular expression evaluated using the JDK regex engine
+ */

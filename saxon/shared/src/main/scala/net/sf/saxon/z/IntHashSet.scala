@@ -24,7 +24,7 @@ object IntHashSet {
 
   def containsSome(one: IntSet, two: IntSet): Boolean = {
     if (two.isInstanceOf[IntEmptySet]) {
-      false
+      return false
     }
     if (two.isInstanceOf[IntUniversalSet]) {
       !one.isEmpty
@@ -35,7 +35,7 @@ object IntHashSet {
     val it: IntIterator = two.iterator()
     while (it.hasNext) {
       if (one.contains(it.next)) {
-      true
+        true
       }
     }
     false
@@ -62,19 +62,19 @@ object IntHashSet {
 }
 
 /**
-  * Set of int values. This class is modelled on the java.net.Set interface, but it does
-  * not implement this interface, because the set members are nint's rather than Objects.
-  * <p>Not thread safe.</p>
-  *
-  * @author Dominique Devienne
-  * @author Michael Kay: retrofitted to JDK 1.4, added iterator()
-  */
+ * Set of int values. This class is modelled on the java.net.Set interface, but it does
+ * not implement this interface, because the set members are nint's rather than Objects.
+ * <p>Not thread safe.</p>
+ *
+ * @author Dominique Devienne
+ * @author Michael Kay: retrofitted to JDK 1.4, added iterator()
+ */
 /**
-  * Initializes a set with a load factor of 0,25.
-  *
-  * @param capacity    the initial capacity.
-  * @param ndv the value to use for non-values.
-  */
+ * Initializes a set with a load factor of 0,25.
+ *
+ * @param capacity the initial capacity.
+ * @param ndv      the value to use for non-values.
+ */
 
 class IntHashSet(var capacity: Int, private val ndv: Int)
   extends IntSet {
@@ -104,18 +104,18 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
   setCapacity(capacity)
 
   /**
-    * Initializes a set with a capacity of 8 and a load factor of 0,25.
-    */
+   * Initializes a set with a capacity of 8 and a load factor of 0,25.
+   */
   /**
-    * Initializes a set with a capacity of 8 and a load factor of 0,25.
-    */
+   * Initializes a set with a capacity of 8 and a load factor of 0,25.
+   */
   def this() = this(8, java.lang.Integer.MIN_VALUE)
 
   /**
-    * Initializes a set with the given capacity and a load factor of 0,25.
-    *
-    * @param capacity the initial capacity.
-    */
+   * Initializes a set with the given capacity and a load factor of 0,25.
+   *
+   * @param capacity the initial capacity.
+   */
   def this(capacity: Int) = this(capacity, java.lang.Integer.MIN_VALUE)
 
   def copy(): IntSet =
@@ -151,7 +151,9 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     var index: Int = 0
     val values: Array[Int] = Array.ofDim[Int](_size)
     for (_value <- _values if _value != ndv) {
-      values({ index += 1; index - 1 }) = _value
+      values({
+        index += 1; index - 1
+      }) = _value
     }
     values
   }
@@ -207,14 +209,14 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     ((1327217885 * key) >> _shift) & _mask
 
   /**
-    * Gets the index of the value, if it exists, or the index at which
-    * this value would be added if it does not exist yet.
-    */
+   * Gets the index of the value, if it exists, or the index at which
+   * this value would be added if it does not exist yet.
+   */
   private def indexOf(value: Int): Int = {
     var i: Int = hash(value)
     while (_values(i) != ndv) {
       if (_values(i) == value) {
-        i
+        return i
       }
       i = (i - 1) & _mask
     }
@@ -315,7 +317,9 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     val iter: IntIterator = iterator()
     var i: Int = 0
     while (iter.hasNext) {
-      if ({ i += 1; i - 1 } % 10 == 0) {
+      if ( {
+        i += 1; i - 1
+      } % 10 == 0) {
         System.err.println(sb.toString)
         sb.setLength(0)
       }
@@ -333,7 +337,9 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       while (i < _values.length) if (_values(i) != ndv) {
         true
       } else {
-        { i += 1; i - 1 }
+        {
+          i += 1; i - 1
+        }
       }
       false
     }

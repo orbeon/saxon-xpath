@@ -50,7 +50,7 @@ class RangeIterator(var start: Long, var limit: Long)
   def next(): IntegerValue = {
     currentValue += 1
     if (currentValue > limit) {
-      null
+      return null
     }
     Int64Value.makeIntegerValue(currentValue)
   }

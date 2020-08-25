@@ -37,20 +37,20 @@ class SingletonAtomizer(sequence: Expression,
 
   private var roleDiagnostic: RoleDiagnostic = role
 
-   def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC
+  def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC
 
   override def simplify(): Expression = {
     val operand: Expression = getBaseExpression.simplify()
     if (operand.isInstanceOf[Literal] &&
       operand.asInstanceOf[Literal].getValue.isInstanceOf[AtomicValue]) {
-      operand
+      return operand
     }
     this.setBaseExpression(operand)
     this
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+                         contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
     val operand: Expression = getBaseExpression
     ExpressionTool.resetStaticProperties(this)
@@ -61,11 +61,11 @@ class SingletonAtomizer(sequence: Expression,
           roleDiagnostic.getErrorCode,
           null)
       }
-      operand
+      return operand
     }
     val operandType: ItemType = operand.getItemType
     if (operandType.isPlainType) {
-      operand
+      return operand
     }
     if (!operandType.isAtomizable(visitor.getConfiguration.getTypeHierarchy)) {
       var err: XPathException = null
@@ -87,8 +87,8 @@ class SingletonAtomizer(sequence: Expression,
     this
   }
 
- override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor,
+                        contextInfo: ContextItemStaticInfo): Expression = {
     val exp: Expression = super.optimize(visitor, contextInfo)
     if (exp == this) {
       this.setBaseExpression(getBaseExpression.unordered(true, false))
@@ -102,7 +102,7 @@ class SingletonAtomizer(sequence: Expression,
     }
   }
 
-override  def computeSpecialProperties(): Int = {
+  override def computeSpecialProperties(): Int = {
     val p: Int = super.computeSpecialProperties()
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
@@ -123,8 +123,8 @@ override  def computeSpecialProperties(): Int = {
   def getRole(): RoleDiagnostic = roleDiagnostic
 
   override def addToPathMap(
-                    pathMap: PathMap,
-                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+                             pathMap: PathMap,
+                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val result: PathMap.PathMapNodeSet =
       getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (result != null) {
@@ -189,7 +189,7 @@ override  def computeSpecialProperties(): Int = {
     result
   }
 
-override  def getItemType(): ItemType = {
+  override def getItemType(): ItemType = {
     var isSchemaAware: Boolean = true
     try isSchemaAware = getPackageData.isSchemaAware
     catch {
@@ -202,7 +202,7 @@ override  def getItemType(): ItemType = {
     }
     val in: ItemType = getBaseExpression.getItemType
     if (in.isPlainType) {
-      in
+      return in
     } else if (in.isInstanceOf[NodeTest]) {
       val kinds: UType = in.getUType
       if (!isSchemaAware) {
@@ -224,14 +224,14 @@ override  def getItemType(): ItemType = {
     BuiltInAtomicType.ANY_ATOMIC
   }
 
-override  def computeCardinality(): Int =
+  override def computeCardinality(): Int =
     if (allowEmpty) {
       StaticProperty.ALLOWS_ZERO_OR_ONE
     } else {
       StaticProperty.EXACTLY_ONE
     }
 
- override def getExpressionName(): String = "atomizeSingleton"
+  override def getExpressionName(): String = "atomizeSingleton"
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("atomSing", this)

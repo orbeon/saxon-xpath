@@ -406,7 +406,7 @@ object NamedTimeZone {
 
   def getTimeZoneNameForDate(date: DateTimeValue, place: String): String = {
     if (!date.hasTimezone()) {
-      ""
+      return ""
     }
     if (place == null) {
       formatTimeZoneOffset(date)
@@ -464,7 +464,7 @@ object NamedTimeZone {
 
   def getOlsenTimeZoneName(date: DateTimeValue, country: String): String = {
     if (!date.hasTimezone()) {
-      ""
+      return ""
     }
     val possibleIds: List[String] = idForCountry.get(country.toLowerCase())
     var exampleId: String = null
@@ -493,7 +493,7 @@ object NamedTimeZone {
     if (region.length == 2) {
       val possibleIds: List[String] = idForCountry.get(region.toLowerCase())
       if (possibleIds == null) {
-        null
+        return null
       } else {
         olsenName = possibleIds.get(0)
       }

@@ -60,7 +60,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
                        name: NodeName,
                        annotation: SchemaType): Boolean = {
     if (nodeKind != this.nodeKind) {
-      false
+      return false
     }
     if (name.hasFingerprint()) {
       name.getFingerprint == this.fingerPrintInt
@@ -166,7 +166,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
                                th: TypeHierarchy): Optional[String] = {
     val explanation: Optional[String] = super.explainMismatch(item, th)
     if (explanation.isPresent) {
-      explanation
+      return explanation
     }
     Optional.of("The node has the wrong name")
   }

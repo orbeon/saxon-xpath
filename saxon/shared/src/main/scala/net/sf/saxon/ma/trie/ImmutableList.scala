@@ -70,9 +70,7 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     var input: ImmutableList[T] = this
     var size: Int = 0
     while (!input.isEmpty) {
-      {
-        size += 1; size - 1
-      }
+      size += 1
       input = input.tail()
     }
     size

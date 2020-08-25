@@ -75,9 +75,8 @@ object PathMap {
       arcs.toArray(Array.ofDim[PathMapArc](arcs.size))
 
     def hasReachableReturnables(): Boolean = {
-      if (isReturnable) {
-        true
-      }
+      if (isReturnable)
+        return true
       for (arc <- arcs.asScala if arc.getTarget.hasReachableReturnables()) {
         true
       }
@@ -93,9 +92,8 @@ object PathMap {
     }
 
     def allPathsAreWithinStreamableSnapshot(): Boolean = {
-      if (hasUnknownDependencies || isReturnable || isAtomized) {
-        false
-      }
+      if (hasUnknownDependencies || isReturnable || isAtomized)
+        return false
       for (arc <- arcs.asScala) {
         val axis: Int = arc.getAxis
         if (axis == AxisInfo.ATTRIBUTE) {
@@ -104,18 +102,16 @@ object PathMap {
             false
           }
           if (next.getArcs.length != 0 && !next
-            .allPathsAreWithinStreamableSnapshot()) {
-            false
-          }
+            .allPathsAreWithinStreamableSnapshot())
+            return false
         } else if (axis == AxisInfo.SELF || axis == AxisInfo.ANCESTOR || axis == AxisInfo.ANCESTOR_OR_SELF ||
           axis == AxisInfo.PARENT) {
           val next: PathMapNode = arc.getTarget
           if (next.isAtomized) {
             false
           }
-          if (!next.allPathsAreWithinStreamableSnapshot()) {
-            false
-          }
+          if (!next.allPathsAreWithinStreamableSnapshot())
+            return false
         } else {
           false
         }
@@ -314,9 +310,8 @@ class PathMap(exp: Expression) {
   }
 
   def reduceToDownwardsAxes(root: PathMap.PathMapRoot): PathMapRoot = {
-    if (root.isDownwardsOnly) {
-      root
-    }
+    if (root.isDownwardsOnly)
+      return root
     var newRoot: PathMapRoot = root
     if (root.getRootExpression.isInstanceOf[ContextItemExpression]) {
       val slash: RootExpression = new RootExpression()

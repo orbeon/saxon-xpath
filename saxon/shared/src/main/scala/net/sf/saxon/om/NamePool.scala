@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import NamePool._
 
 
-
-
 object NamePool {
 
   val FP_MASK: Int = 0xfffff
@@ -23,10 +21,10 @@ object NamePool {
   def isPrefixed(nameCode: Int): Boolean = (nameCode & 0x3ff00000) != 0
 
   /**
-    * Unchecked Exception raised when some limit in the design of the name pool is exceeded
-    */
+   * Unchecked Exception raised when some limit in the design of the name pool is exceeded
+   */
   class NamePoolLimitException(message: String)
-      extends RuntimeException(message)
+    extends RuntimeException(message)
 
 }
 
@@ -60,7 +58,7 @@ class NamePool {
 
   def suggestPrefixForURI(uri: String): String = {
     if (uri == NamespaceConstant.XML) {
-      "xml"
+      return "xml"
     }
     suggestedPrefixes.get(uri)
   }
@@ -69,13 +67,13 @@ class NamePool {
     if (NamespaceConstant.isReserved(uri) || NamespaceConstant.SAXON == uri) {
       val fp: Int = StandardNames.getFingerprint(uri, local)
       if (fp != -1) {
-        fp
+        return fp
       }
     }
     val qName: StructuredQName = new StructuredQName("", uri, local)
     var existing: java.lang.Integer = qNameToInteger.get(qName)
     if (existing != null) {
-      existing
+      return existing
     }
     val next: Int = unique.getAndIncrement
     if (next > MAX_FINGERPRINT) {
@@ -135,17 +133,18 @@ class NamePool {
     if (NamespaceConstant.isReserved(uri) || uri == NamespaceConstant.SAXON) {
       val fp: Int = StandardNames.getFingerprint(uri, localName)
       if (fp != -1) {
-        fp
+        return fp
       }
-// otherwise, look for the name in this namepool
-// otherwise, look for the name in this namepool
+      // otherwise, look for the name in this namepool
+      // otherwise, look for the name in this namepool
     }
     val fp: java.lang.Integer =
       qNameToInteger.get(new StructuredQName("", uri, localName))
     if (fp == null) -1 else fp
   }
-// A read-only version of allocate()
-// A read-only version of allocate()
+
+  // A read-only version of allocate()
+  // A read-only version of allocate()
 
 }
 
@@ -155,22 +154,22 @@ class NamePool {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A NamePool holds a collection of expanded names, each containing a namespace URI,
-  * and a local name.
-  * <p>Each expanded name is allocated a unique 20-bit fingerprint. The fingerprint enables
-  * the URI and the local name to be determined. Some subsystems (notably the Tinytree) use
-  * the top 10 bits to represent the prefix, but the NamePool is no longer concerned with
-  * managing prefixes, and prefixes do not have global codes.</p>
-  * <p>The NamePool has been redesigned in Saxon 9.7 to make use of two Java
-  * ConcurrentHashMaps, one from QNames to integers, one from integers to QNames.
-  * This gives better scaleability in terms of multithreaded concurrency and in terms
-  * of the capacity of the NamePool and retention of performance as the size of
-  * the vocabulary increases.</p>
-  * <p>Fingerprints in the range 0 to 1023 are reserved for system use, and are allocated as constants
-  * mainly to names in the XSLT and XML Schema namespaces: constants representing these names
-  * are found in {@link StandardNames}.</p>
-  * <p>The fingerprint -1 is reserved to mean "not known" or inapplicable.</p>
-  * <p>Modified in 9.4 to remove namespace codes.</p>
-  * <p>Modified in 9.7 to remove URI codes.</p>
-  * <p>Modified in 9.8 to remove namecodes and all handling of prefixes.</p>
-  */
+ * A NamePool holds a collection of expanded names, each containing a namespace URI,
+ * and a local name.
+ * <p>Each expanded name is allocated a unique 20-bit fingerprint. The fingerprint enables
+ * the URI and the local name to be determined. Some subsystems (notably the Tinytree) use
+ * the top 10 bits to represent the prefix, but the NamePool is no longer concerned with
+ * managing prefixes, and prefixes do not have global codes.</p>
+ * <p>The NamePool has been redesigned in Saxon 9.7 to make use of two Java
+ * ConcurrentHashMaps, one from QNames to integers, one from integers to QNames.
+ * This gives better scaleability in terms of multithreaded concurrency and in terms
+ * of the capacity of the NamePool and retention of performance as the size of
+ * the vocabulary increases.</p>
+ * <p>Fingerprints in the range 0 to 1023 are reserved for system use, and are allocated as constants
+ * mainly to names in the XSLT and XML Schema namespaces: constants representing these names
+ * are found in {@link StandardNames}.</p>
+ * <p>The fingerprint -1 is reserved to mean "not known" or inapplicable.</p>
+ * <p>Modified in 9.4 to remove namespace codes.</p>
+ * <p>Modified in 9.7 to remove URI codes.</p>
+ * <p>Modified in 9.8 to remove namecodes and all handling of prefixes.</p>
+ */

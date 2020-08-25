@@ -74,7 +74,7 @@ class SortedIterator ()
 
   def hasNext(): Boolean = {
     if (position < 0) {
-      false
+      return      false
     }
     if (count < 0) {
       if (base.isInstanceOf[LookaheadIterator]) {
@@ -99,7 +99,7 @@ class SortedIterator ()
 
   def next(): Item = {
     if (position < 0) {
-      null
+      return      null
     }
     if (count < 0) {
       doSort()

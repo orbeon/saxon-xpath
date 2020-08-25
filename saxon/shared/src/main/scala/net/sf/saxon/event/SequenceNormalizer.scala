@@ -24,7 +24,7 @@ import java.util.List
 
 abstract class SequenceNormalizer(next: Receiver) extends ProxyReceiver(next) {
 
-   var level: Int = 0
+  var level: Int = 0
 
   private var actionList: List[Action] = _
 
@@ -38,12 +38,12 @@ abstract class SequenceNormalizer(next: Receiver) extends ProxyReceiver(next) {
   }
 
   override def startDocument(properties: Int): Unit = {
-    { level += 1; level - 1 }
+    level += 1
     previousAtomic = false
   }
 
   override def endDocument(): Unit = {
-    { level -= 1; level + 1 }
+    level -= 1
     previousAtomic = false
   }
 
@@ -54,7 +54,7 @@ abstract class SequenceNormalizer(next: Receiver) extends ProxyReceiver(next) {
                             location: Location,
                             properties: Int): Unit = {
     try {
-      { level += 1; level - 1 }
+      level += 1
       super.startElement(elemName,
         `type`,
         attributes,
@@ -119,7 +119,7 @@ abstract class SequenceNormalizer(next: Receiver) extends ProxyReceiver(next) {
 
   override def endElement(): Unit = {
     try {
-      { level -= 1; level + 1 }
+      level -= 1
       super.endElement()
       previousAtomic = false
     } catch {

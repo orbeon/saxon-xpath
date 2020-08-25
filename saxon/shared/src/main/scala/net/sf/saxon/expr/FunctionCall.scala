@@ -113,7 +113,7 @@ abstract class FunctionCall extends Expression {
       if (fixed) {
         try preEvaluate(visitor)
         catch {
-          case err: NoDynamicContextException => this
+          case err: NoDynamicContextException => return this
 
         }
       }
@@ -160,7 +160,7 @@ abstract class FunctionCall extends Expression {
   def preEvaluate(visitor: ExpressionVisitor): Expression = {
     if ((getIntrinsicDependencies & ~StaticProperty.DEPENDS_ON_STATIC_CONTEXT) !=
       0) {
-      this
+      return this
     }
     try {
       val lit: Literal = Literal.makeLiteral(

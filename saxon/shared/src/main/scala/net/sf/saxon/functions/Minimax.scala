@@ -282,7 +282,7 @@ abstract class Minimax extends CollatingFunctionFixed {
   override def getAtomicComparer(context: XPathContext): AtomicComparer = {
     val comparer: AtomicComparer = getPreAllocatedAtomicComparer
     if (comparer != null) {
-      comparer
+      return comparer
     }
     var `type`: PlainType = argumentType.getPrimitiveItemType
     if (`type` == BuiltInAtomicType.UNTYPED_ATOMIC) {

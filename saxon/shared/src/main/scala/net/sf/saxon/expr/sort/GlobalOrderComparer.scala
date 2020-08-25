@@ -23,7 +23,7 @@ class GlobalOrderComparer extends ItemOrderComparer {
 
   def compare(a: Item, b: Item): Int = {
     if (a == b) {
-      0
+      return 0
     }
     val d1: Long = a.asInstanceOf[NodeInfo].getTreeInfo.getDocumentNumber
     val d2: Long = b.asInstanceOf[NodeInfo].getTreeInfo.getDocumentNumber

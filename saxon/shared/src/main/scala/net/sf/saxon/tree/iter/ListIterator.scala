@@ -30,7 +30,7 @@ object ListIterator {
 
 }
 
-class ListIterator[T <: Item]( var list: List[T])
+class ListIterator[T <: Item](var list: List[T])
   extends UnfailingIterator
     with LastPositionFinder
     with LookaheadIterator
@@ -43,9 +43,11 @@ class ListIterator[T <: Item]( var list: List[T])
 
   def next(): T = {
     if (index >= list.size) {
-      null
+      return null.asInstanceOf[T]
     }
-    list.get({ index += 1; index - 1 })
+    list.get({
+      index += 1; index - 1
+    })
   }
 
   def getLength(): Int = list.size

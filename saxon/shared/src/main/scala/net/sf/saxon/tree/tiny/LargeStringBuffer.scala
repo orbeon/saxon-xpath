@@ -151,7 +151,6 @@ class LargeStringBuffer extends AppendableCharSequence {
           e.printStackTrace()
           throw e
         }
-
       }
     } else {
       val fsb: FastStringBuffer = new FastStringBuffer(end - start)
@@ -160,10 +159,7 @@ class LargeStringBuffer extends AppendableCharSequence {
       var doneTo: Int = start + firstSegLen
       breakable {
         while (true) {
-          {
-            firstSeg += 1;
-            firstSeg - 1
-          }
+            firstSeg += 1
           if (doneTo + SEGLEN < end) {
             fsb.append(data(firstSeg))
             doneTo += SEGLEN

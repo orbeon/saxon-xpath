@@ -29,7 +29,7 @@ object NamespaceForPrefix {
     val resolver: NamespaceResolver = element.getAllNamespaces
     val uri: String = resolver.getURIForPrefix(prefix, true)
     if (uri == null || uri.isEmpty) {
-      null
+      return null
     }
     new AnyURIValue(uri)
   }

@@ -59,7 +59,7 @@ class RootExpression extends Expression {
       val cie: ContextItemExpression = new ContextItemExpression()
       ExpressionTool.copyLocationInfo(this, cie)
       cie.setStaticInfo(contextInfo)
-      cie
+      return cie
     }
     val relation: Affinity.Affinity =
       th.relationship(contextInfo.getItemType, AnyNodeTest.getInstance)
@@ -85,7 +85,7 @@ class RootExpression extends Expression {
 
   def isContextPossiblyUndefined(): Boolean = contextMaybeUndefined
 
-   def noContextMessage(): String = "Leading '/' selects nothing"
+  def noContextMessage(): String = "Leading '/' selects nothing"
 
   override def equals(other: Any): Boolean = other.isInstanceOf[RootExpression]
 
@@ -114,7 +114,7 @@ class RootExpression extends Expression {
           "XPDY0050",
           context)
       }
-      doc
+      return doc
     }
     typeError("Finding root of tree: the context item is not a node",
       "XPTY0020",

@@ -75,11 +75,11 @@ class SiblingIterator(private var tree: TinyTree,
       if (nextNodeNr < thisNode) {
         nextNodeNr = -1
         needToAdvance = false
-        null
+        return null
       }
     }
     if (nextNodeNr == -1) {
-      null
+      return null
     }
     needToAdvance = true
     val nextNode: TinyNodeImpl = tree.getNode(nextNodeNr)
@@ -101,11 +101,11 @@ class SiblingIterator(private var tree: TinyTree,
       if (nextNodeNr < thisNode) {
         nextNodeNr = -1
         needToAdvance = false
-        null
+        return null
       }
     }
     if (nextNodeNr == -1) {
-      null
+      return null
     }
     needToAdvance = true
     val kind: Int = tree.nodeKind(nextNodeNr)
@@ -135,7 +135,7 @@ class SiblingIterator(private var tree: TinyTree,
         do n = tNext(n) while (n >= nextNodeNr && !matcher.test(n));
       }
       if (n < nextNodeNr) {
-        false
+        return false
       }
     }
     n != -1

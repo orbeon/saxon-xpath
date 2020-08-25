@@ -237,33 +237,21 @@ object ParserExtension {
               details.implicitParams.add(ufp)
               b2 = ufp
             }
-            {
-              bs += 1;
-              bs - 1
-            }
+            bs += 1
           }
-          b2
+          return b2
         }
-        {
-          v -= 1;
-          v + 1
-        }
+        v -= 1
       }
       val b2: LocalBinding =
         bindParametersInNestedFunctions(qName, inlineFunctionStack, s)
-      if (b2 != null) {
-        b2
-      }
-      {
-        s -= 1;
-        s + 1
-      }
+      if (b2 != null) return b2
+      s -= 1
     }
     null
   }
 
-  private def bindParametersInNestedFunctions(
-                                               qName: StructuredQName,
+  private def bindParametersInNestedFunctions(qName: StructuredQName,
                                                inlineFunctionStack: Stack[InlineFunctionDetails],
                                                start: Int): LocalBinding = {
     var details: InlineFunctionDetails = inlineFunctionStack.get(start)

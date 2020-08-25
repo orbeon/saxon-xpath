@@ -14,7 +14,7 @@ class ModeTraceListener extends AbstractTraceListener {
 
   private var stack: Stack[Item] = new Stack()
 
-   def getOpeningAttributes(): String =
+  def getOpeningAttributes(): String =
     "xmlns:xsl=\"" + NamespaceConstant.XSLT + '\"'
 
   override def startCurrentItem(item: Item): Unit = {
@@ -51,11 +51,11 @@ class ModeTraceListener extends AbstractTraceListener {
 
   override def leave(info: Traceable): Unit = {
     if (info.isInstanceOf[TemplateRule]) {
-      { indent -= 1; indent + 1 }
+      indent -= 1
       out.info(AbstractTraceListener.spaces(indent) + "</rule>")
     }
   }
 
-   override def tag(info: Traceable): String = ""
+  override def tag(info: Traceable): String = ""
 
 }

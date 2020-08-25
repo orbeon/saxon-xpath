@@ -159,7 +159,7 @@ object Operation {
       for (o <- operations.asScala) {
         val i: Int = o.getMatchLength
         if (i == -1) {
-          -1
+          return -1
         }
         len += i
       }
@@ -181,7 +181,7 @@ object Operation {
         for (o <- operations.asScala) {
           val m: Int = o.matchesEmptyString()
           if (m == MATCHES_ZLS_NEVER) {
-            MATCHES_ZLS_NEVER
+            return MATCHES_ZLS_NEVER
           }
           if (m != MATCHES_ZLS_ANYWHERE) {
             matchesEmptyAnywhere = false
@@ -190,7 +190,7 @@ object Operation {
         }
       }
       if (matchesEmptyAnywhere) {
-        MATCHES_ZLS_ANYWHERE
+        return MATCHES_ZLS_ANYWHERE
       }
       var matchesBOL: Boolean = true
       breakable {
@@ -201,7 +201,7 @@ object Operation {
         }
       }
       if (matchesBOL) {
-        MATCHES_ZLS_AT_START
+        return MATCHES_ZLS_AT_START
       }
       var matchesEOL: Boolean = true
       breakable {
@@ -212,7 +212,7 @@ object Operation {
         }
       }
       if (matchesEOL) {
-        MATCHES_ZLS_AT_END
+        return MATCHES_ZLS_AT_END
       }
       0
     }
@@ -298,7 +298,7 @@ object Operation {
               matcher.clearCapturedGroupsBeyond(p)
               val i: Int = iterators.size
               if (i >= operations.size) {
-                p
+                return p
               }
               top = operations.get(i).iterateMatches(matcher, p)
               iterators.push(top)
@@ -484,10 +484,7 @@ object Operation {
             it.next
           }
           if (matched) {
-            {
-              matches += 1;
-              matches - 1
-            }
+            matches += 1
             p += len
             if (matches == max) {
               break()
@@ -537,10 +534,7 @@ object Operation {
         while (matches < max && p <= guard) {
           val it: IntIterator = opt.iterateMatches(matcher, p)
           if (it.hasNext) {
-            {
-              matches += 1;
-              matches - 1
-            }
+            matches += 1
             p = it.next
           } else {
             break()
@@ -625,17 +619,18 @@ object Operation {
               var p: Int = top.next
               positions.pop()
               positions.push(p)
-              breakable { while (iterators.size < bound) {
-                var it: IntIterator = op.iterateMatches(matcher, p)
-                if (it.hasNext) {
-                  p = it.next
-                  iterators.push(it)
-                  positions.push(p)
-                } else {
-                  break()
+              breakable {
+                while (iterators.size < bound) {
+                  var it: IntIterator = op.iterateMatches(matcher, p)
+                  if (it.hasNext) {
+                    p = it.next
+                    iterators.push(it)
+                    positions.push(p)
+                  } else {
+                    break()
+                  }
                 }
               }
-            }
             } else {
               iterators.pop()
               positions.pop()
@@ -677,10 +672,7 @@ object Operation {
                 pos = -1
               }
             } else if (min == 0 && counter == 0) {
-              {
-                counter += 1;
-                counter - 1
-              }
+                counter += 1
             } else {
               pos = -1
             }

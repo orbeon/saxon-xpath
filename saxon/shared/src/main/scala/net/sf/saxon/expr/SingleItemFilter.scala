@@ -10,11 +10,9 @@ import net.sf.saxon.trans.XPathException
 import net.sf.saxon.value.Cardinality
 
 
-
-
 abstract class SingleItemFilter(base: Expression) extends UnaryExpression(base) {
 
-   def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   /*@NotNull*/
 
@@ -23,7 +21,7 @@ abstract class SingleItemFilter(base: Expression) extends UnaryExpression(base) 
     getOperand.optimize(visitor, contextInfo)
     val base: Expression = getBaseExpression
     if (!Cardinality.allowsMany(base.getCardinality)) {
-      base
+      return base
     }
     super.optimize(visitor, contextInfo)
   }
@@ -38,5 +36,5 @@ abstract class SingleItemFilter(base: Expression) extends UnaryExpression(base) 
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A SingleItemFilter is an expression that selects zero or one items from a supplied sequence
-  */
+ * A SingleItemFilter is an expression that selects zero or one items from a supplied sequence
+ */

@@ -27,7 +27,7 @@ object NameChecker {
   def getPrefix(qname: String): String = {
     val colon: Int = qname.indexOf(':')
     if (colon < 0) {
-      ""
+      return ""
     }
     qname.substring(0, colon)
   }
@@ -93,19 +93,19 @@ object NameChecker {
 
   def isValidNCName(ncName: CharSequence): Boolean = {
     if (ncName.length == 0) {
-      false
+      return false
     }
     var s: Int = 1
     var ch: Char = ncName.charAt(0)
     if (UTF16CharacterSet.isHighSurrogate(ch)) {
       if (!isNCNameStartChar(
         UTF16CharacterSet.combinePair(ch, ncName.charAt(1)))) {
-        false
+        return false
       }
       s = 2
     } else {
       if (!isNCNameStartChar(ch)) {
-        false
+        return false
       }
     }
     var i: Int = 0
@@ -114,11 +114,11 @@ object NameChecker {
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
         i = i + 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, ncName.charAt(i)))) {
-          false
+          return false
         }
       } else {
         if (!isNCNameChar(ch)) {
-          false
+          return  false
         }
       }
       i = i + 1
@@ -128,7 +128,7 @@ object NameChecker {
 
   def isValidNmtoken(nmtoken: CharSequence): Boolean = {
     if (nmtoken.length == 0) {
-      false
+      return false
     }
     var i: Int = 0
     while (i < nmtoken.length) {
@@ -136,11 +136,11 @@ object NameChecker {
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
         i = i + 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, nmtoken.charAt(i)))) {
-          false
+          return false
         }
       } else {
         if (ch != ':' && !isNCNameChar(ch)) {
-          false
+          return false
         }
       }
       i = i + 1

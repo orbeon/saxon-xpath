@@ -104,11 +104,11 @@ class JSONSerializer(pipe: PipelineConfiguration,
   private def isOneLinerArray(array: ArrayItem): Boolean = {
     var totalSize: Int = 0
     if (array.arrayLength() < 2) {
-      true
+      return true
     }
     for (member <- array.members()) {
       if (!(member.isInstanceOf[AtomicValue])) {
-        false
+        return false
       }
       totalSize += member.asInstanceOf[AtomicValue].getStringValueCS.length +
         1

@@ -26,8 +26,6 @@ import java.util.Collection
 import java.util.HashMap
 
 
-
-
 class GlobalParameterSet {
 
   private var params: HashMap[StructuredQName, GroundedValue] = new HashMap(10)
@@ -55,7 +53,7 @@ class GlobalParameterSet {
                             context: XPathContext): GroundedValue = {
     var `val`: Sequence = get(qName)
     if (`val` == null) {
-      null
+      return null
     }
     if (requiredType != null) {
       if (convert) {
@@ -94,8 +92,8 @@ class GlobalParameterSet {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A GlobalParameterSet is a set of parameters supplied when invoking a stylesheet or query.
-  * It is a collection of name-value pairs, the names being represented by StructuredQName objects.
-  * The values are objects, as supplied by the caller: conversion of the object
-  * to a required type takes place when the parameter is actually used.
-  */
+ * A GlobalParameterSet is a set of parameters supplied when invoking a stylesheet or query.
+ * It is a collection of name-value pairs, the names being represented by StructuredQName objects.
+ * The values are objects, as supplied by the caller: conversion of the object
+ * to a required type takes place when the parameter is actually used.
+ */

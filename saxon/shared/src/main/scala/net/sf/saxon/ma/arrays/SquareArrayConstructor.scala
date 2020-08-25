@@ -63,7 +63,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
       val ab2: SquareArrayConstructor =
         other.asInstanceOf[SquareArrayConstructor]
       if (ab2.getOperanda.getNumberOfOperands != getOperanda.getNumberOfOperands) {
-        false
+        return        false
       }
       for (i <- 0 until getOperanda.getNumberOfOperands
            if getOperanda.getOperand(i) != ab2.getOperanda.getOperand(i)) {
@@ -93,7 +93,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
                         contextInfo: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextInfo)
     if (e != this) {
-      e
+      return      e
     }
     preEvaluate(visitor)
   }
