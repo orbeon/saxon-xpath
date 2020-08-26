@@ -239,7 +239,7 @@ class IntRangeSet extends IntSet {
   override def toString(): String = {
     val sb: FastStringBuffer = new FastStringBuffer(used * 8)
     for (i <- 0 until used) {
-      sb.append(startPoints(i) + "-" + endPoints(i) + ",")
+      sb.append(startPoints(i).toString + "-" + endPoints(i).toString + ",")
     }
     sb.toString
   }

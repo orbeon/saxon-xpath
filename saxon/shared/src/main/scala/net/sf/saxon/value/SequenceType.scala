@@ -300,9 +300,10 @@ class SequenceType {
     var count = 0
     val iter = value.iterate
     var item: Item = null
-    while ( {
-      (item = iter.next) != null
-    }) {
+    while (({
+      item = iter.next
+      item
+    }) != null) {
       count += 1
       if (!primaryType.matches(item, th)) return false
     }
@@ -321,9 +322,10 @@ class SequenceType {
     var count = 0
     val iter = value.iterate
     var item: Item = null
-    while ( {
-      (item = iter.next) != null
-    }) {
+    while (({
+      item = iter.next
+      item
+    }) != null) {
       count += 1
       if (!primaryType.matches(item, th)) {
         var s = "The " + RoleDiagnostic.ordinal(count) + " item is not an instance of the required type"
@@ -349,7 +351,7 @@ class SequenceType {
    *         SequenceType construct
    */
   override def toString = if (cardinality == StaticProperty.ALLOWS_ZERO) "empty-sequence()"
-  else primaryType + Cardinality.getOccurrenceIndicator(cardinality)
+  else primaryType.toString + Cardinality.getOccurrenceIndicator(cardinality).toString
 
   /**
    * Return a string representation of this SequenceType suitable for use in stylesheet

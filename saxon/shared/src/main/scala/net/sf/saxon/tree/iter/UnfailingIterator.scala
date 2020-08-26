@@ -16,7 +16,10 @@ trait UnfailingIterator extends SequenceIterator {
 
   def forEach(consumer: Consumer[_ >: Item]): Unit = {
     var item: Item = null
-    while ((item = next()) != null) consumer.accept(item)
+    while (({
+      item = next()
+      item
+    }) != null) consumer.accept(item)
   }
 
   def toList(): List[Item] = {

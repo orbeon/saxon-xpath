@@ -26,8 +26,6 @@ import net.sf.saxon.trans.XPathException
 import StreamingFunctionArgumentPattern._
 
 
-
-
 object StreamingFunctionArgumentPattern {
 
   private var THE_INSTANCE: StreamingFunctionArgumentPattern =
@@ -38,17 +36,17 @@ object StreamingFunctionArgumentPattern {
 }
 
 /**
-  * This is a special pattern that matches the node supplied as the first argument of a call to
-  * a streamable stylesheet function; it corresponds to the
-  * pattern match="$arg" where $arg is the first argument of the function.
-  */
-class StreamingFunctionArgumentPattern  () extends Pattern {
+ * This is a special pattern that matches the node supplied as the first argument of a call to
+ * a streamable stylesheet function; it corresponds to the
+ * pattern match="$arg" where $arg is the first argument of the function.
+ */
+class StreamingFunctionArgumentPattern() extends Pattern {
 
   /**
-    * Get a UType indicating which kinds of items this Pattern can match.
-    *
-    * @return a UType indicating all the primitive types of item that the pattern can match.
-    */
+   * Get a UType indicating which kinds of items this Pattern can match.
+   *
+   * @return a UType indicating all the primitive types of item that the pattern can match.
+   */
   override def getUType(): UType = UType.ANY_NODE
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -58,7 +56,10 @@ class StreamingFunctionArgumentPattern  () extends Pattern {
     val arg: Sequence = context.getStackFrame().getStackFrameValues()(0)
     val iter: SequenceIterator = arg.iterate()
     var j: Item = null
-    while ((j = iter.next()) != null) if (j == item) {
+    while (({
+      j = iter.next()
+      j
+    }) != null) if (j == item) {
       true
     }
     false

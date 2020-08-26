@@ -104,7 +104,10 @@ class VirtualCopy(var original: NodeInfo,
         }
         val iter: AxisIterator = original.iterateAxis(AxisInfo.ATTRIBUTE)
         var att: NodeInfo = null
-        while ((att = iter.next()) != null) if (att.getURI.!=("")) {
+        while (({
+          att = iter.next()
+          att
+        }) != null) if (att.getURI.!=("")) {
           nsMap = nsMap.put(att.getPrefix, att.getURI)
         }
         nsMap

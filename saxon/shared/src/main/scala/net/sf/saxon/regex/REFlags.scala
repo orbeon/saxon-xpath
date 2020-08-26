@@ -21,7 +21,18 @@ package net.sf.saxon.regex
  * @param language one of "XSD10", "XSD11", "XP20", or "XP30" indicating the regular expression dialect.
  *                 Also allow combinations, e.g. "XP20/XSD11".
  */
-class REFlags(val flags: String, val language: String){
+class REFlags(val flags: String, val language: String) {
+  private var caseIndependent = false
+  private var multiLine = false
+  private var singleLine = false
+  private var allowWhitespace = false
+  private var literal = false
+  private var xpath20 = false
+  private var xpath30 = false
+  private var xsd11 = false
+  private var debug = false // flags = ";g"
+  private var allowUnknownBlockNames = false //flags = ";k"
+
   if (language == "XSD10") {
     // no action
   }
@@ -66,16 +77,7 @@ class REFlags(val flags: String, val language: String){
         allowUnknownBlockNames = false
     }
   }
-  private var caseIndependent = false
-  private var multiLine = false
-  private var singleLine = false
-  private var allowWhitespace = false
-  private var literal = false
-  private var xpath20 = false
-  private var xpath30 = false
-  private var xsd11 = false
-  private var debug = false // flags = ";g"
-  private var allowUnknownBlockNames = false //flags = ";k"
+
   def isCaseIndependent = caseIndependent
 
   def isMultiLine = multiLine

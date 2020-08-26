@@ -139,16 +139,15 @@ class Rule {
     if (target.isInstanceOf[TemplateRule]) {
       template = target.asInstanceOf[TemplateRule]
       val s: Int = out.startElement("templateRule")
-      out.emitAttribute("prec", getPrecedence + "")
-      out.emitAttribute("prio", getPriority + "")
-      out.emitAttribute("seq", getSequence + "")
+      out.emitAttribute("prec", getPrecedence.toString + "")
+      out.emitAttribute("prio", getPriority.toString + "")
+      out.emitAttribute("seq", getSequence.toString + "")
       if (part != 0) {
         out.emitAttribute("part", "" + part)
       }
-      out.emitAttribute("rank", "" + getRank)
-      out.emitAttribute("minImp", getMinImportPrecedence + "")
-      out.emitAttribute("slots",
-                        template.getStackFrameMap.getNumberOfVariables + "")
+      out.emitAttribute("rank", "" + getRank.toString)
+      out.emitAttribute("minImp", getMinImportPrecedence.toString + "")
+      out.emitAttribute("slots", template.getStackFrameMap.getNumberOfVariables.toString + "")
       out.emitAttribute("matches", pattern.getItemType.getFullAlphaCode)
       template.explainProperties(out)
       exportOtherProperties(out)
@@ -163,7 +162,7 @@ class Rule {
         throw new IllegalStateException(
           "exported expression tree unbalanced in template at line " +
             (if (template != null)
-               template.getLineNumber + " of " + template.getSystemId
+               template.getLineNumber.toString + " of " + template.getSystemId.toString
              else ""))
       }
     } else {

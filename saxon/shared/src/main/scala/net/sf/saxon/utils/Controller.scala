@@ -72,9 +72,9 @@ object Controller {
 class Controller extends ContextOriginator {
   private var config: Configuration = _
 
-   var executable: Executable = _
+  var executable: Executable = _
 
-   var globalContextItem: Item = _
+  var globalContextItem: Item = _
 
   private var globalContextItemPreset: Boolean = _
 
@@ -86,7 +86,7 @@ class Controller extends ContextOriginator {
 
   private var globalVariableDependencies: Map[GlobalVariable, Set[GlobalVariable]] = new HashMap()
 
-   var traceListener: TraceListener = _
+  var traceListener: TraceListener = _
 
   private var tracingPaused: Boolean = _
 
@@ -96,9 +96,9 @@ class Controller extends ContextOriginator {
 
   private var userURIResolver: URIResolver = _
 
-   var principalResult: Receiver = _
+  var principalResult: Receiver = _
 
-   var principalResultURI: String = _
+  var principalResultURI: String = _
 
   private var unparsedTextResolver: UnparsedTextURIResolver = _
 
@@ -125,9 +125,9 @@ class Controller extends ContextOriginator {
 
   private var pathMap: PathMap = null
 
-   var validationMode: Int = Validation.DEFAULT
+  var validationMode: Int = Validation.DEFAULT
 
-   var inUse: Boolean = false
+  var inUse: Boolean = false
 
   private var stripSourceTrees: Boolean = true
 
@@ -219,7 +219,7 @@ class Controller extends ContextOriginator {
    * Reset variables that need to be reset for each transformation if the controller
    * is serially reused
    */
-   def clearPerTransformationData() = {
+  def clearPerTransformationData() = {
     userDataTable = new HashMap[String, AnyRef]()
     principalResult = null
     tracingPaused = false
@@ -268,9 +268,10 @@ class Controller extends ContextOriginator {
       val config = getConfiguration
       val iter = `val`.iterate()
       var next: Item = null
-      while ( {
-        (next = iter.next()) != null
-      }) if (next.isInstanceOf[NodeInfo] && !config.isCompatible((next.asInstanceOf[NodeInfo]).getConfiguration)) throw new XPathException("A node supplied in a global parameter must be built using the same Configuration " + "that was used to compile the stylesheet or query", SaxonErrorCode.SXXP0004)
+      while (({
+        next = iter.next()
+        next
+      }) != null) if (next.isInstanceOf[NodeInfo] && !config.isCompatible((next.asInstanceOf[NodeInfo]).getConfiguration)) throw new XPathException("A node supplied in a global parameter must be built using the same Configuration " + "that was used to compile the stylesheet or query", SaxonErrorCode.SXXP0004)
       // If the supplied value is a document node, and the document node has a systemID that is an absolute
       // URI, and the absolute URI does not already exist in the document pool, then register it in the document
       // pool, so that the document-uri() function will find it there, and so that a call on doc() will not
@@ -405,7 +406,7 @@ class Controller extends ContextOriginator {
   }
 
   @throws[XPathException]
-   def handleXPathException(err: XPathException) = {
+  def handleXPathException(err: XPathException) = {
     var cause = err.getException
     if (cause.isInstanceOf[SAXParseException]) { // This generally means the error was already reported.
       // But if a RuntimeException occurs in Saxon during a callback from
@@ -442,9 +443,9 @@ class Controller extends ContextOriginator {
    * the transformations use common look-up documents, the caching is beneficial.
    */
   def clearDocumentPool(): Unit = {
-   /* for (pack <- getExecutable.getPackages.asScala) {
-     // sourceDocumentPool.discardIndexes(pack.getKeyManager) // required KeyManager type but this class not exist
-    }*/
+    /* for (pack <- getExecutable.getPackages.asScala) {
+      // sourceDocumentPool.discardIndexes(pack.getKeyManager) // required KeyManager type but this class not exist
+     }*/
     sourceDocumentPool = new DocumentPool
   }
 
@@ -728,10 +729,10 @@ class Controller extends ContextOriginator {
    *
    * @return true if whitespace stripping has been requested
    */
-   def isStylesheetContainingStripSpace = {
+  def isStylesheetContainingStripSpace = {
     var rule = null
-   /* executable.isInstanceOf[PreparedStylesheet] && (rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule) != null &&*/
-      rule != NoElementsSpaceStrippingRule.getInstance // PreparedStylesheet class not exist
+    /* executable.isInstanceOf[PreparedStylesheet] && (rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule) != null &&*/
+    rule != NoElementsSpaceStrippingRule.getInstance // PreparedStylesheet class not exist
   }
 
   /**
@@ -776,10 +777,10 @@ class Controller extends ContextOriginator {
    */
   def getSpaceStrippingRule: SpaceStrippingRule = {
     if (config.getParseOptions.getSpaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance) return AllElementsSpaceStrippingRule.getInstance
-   /* else if (executable.isInstanceOf[PreparedStylesheet]) {
-      val rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule // // PreparedStylesheet class not exist
-      if (rule != null) return rule
-    }*/
+    /* else if (executable.isInstanceOf[PreparedStylesheet]) {
+       val rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule // // PreparedStylesheet class not exist
+       if (rule != null) return rule
+     }*/
     NoElementsSpaceStrippingRule.getInstance
   }
 
@@ -958,7 +959,7 @@ class Controller extends ContextOriginator {
    * @return the value of the required property
    */
   def getUserData(key: Any, name: String): Any = {
-    val keyValue = key.hashCode + " " + name
+    val keyValue = key.hashCode.toString + " " + name
     // System.err.println("getUserData " + name + " on object returning " + userDataTable.get(key));
     userDataTable.get(keyValue).getOrElse(null)
   }
@@ -978,7 +979,7 @@ class Controller extends ContextOriginator {
    *             for the key is removed.
    */
   def setUserData(key: Any, name: String, data: Any): Unit = { // System.err.println("setUserData " + name + " on object to " + data);
-    val keyVal: String = key.hashCode + " " + name
+    val keyVal: String = key.hashCode.toString + " " + name
     if (data == null) userDataTable.-(keyVal)
     else userDataTable += (keyVal -> data)
   }
@@ -1024,7 +1025,7 @@ class Controller extends ContextOriginator {
   }
 
   @throws[XPathException]
-   def checkReadiness(): Unit = {
+  def checkReadiness(): Unit = {
     if (inUse) throw new IllegalStateException("The Controller is being used recursively or concurrently. This is not permitted.")
     if (binderies == null) throw new IllegalStateException("The Controller has not been initialized")
     inUse = true
@@ -1056,7 +1057,7 @@ class Controller extends ContextOriginator {
       r = makeStripper(sourceBuilder)
       spaceStrippingRule = getSpaceStrippingRule
     }
-   /* if (isStylesheetStrippingTypeAnnotations) r = config.getAnnotationStripper(r)*/
+    /* if (isStylesheetStrippingTypeAnnotations) r = config.getAnnotationStripper(r)*/
     val pipe = sourceBuilder.getPipelineConfiguration
     pipe.getParseOptions.setSchemaValidationMode(validationMode)
     r.setPipelineConfiguration(pipe)
@@ -1086,13 +1087,13 @@ class Controller extends ContextOriginator {
   def prepareInputTree(source: Source): NodeInfo = {
     var start = getConfiguration.unravel(source)
     // Stripping type annotations happens before stripping of whitespace
-   /* if (false) {
-      val docInfo = start.getTreeInfo()
-      if (docInfo.isTyped) {
-        val strippedDoc = new TypeStrippedDocument(docInfo)
-        start = strippedDoc.wrap(start)
-      }
-    }*/
+    /* if (false) {
+       val docInfo = start.getTreeInfo()
+       if (docInfo.isTyped) {
+         val strippedDoc = new TypeStrippedDocument(docInfo)
+         start = strippedDoc.wrap(start)
+       }
+     }*/
     if (stripSourceTrees && isStylesheetContainingStripSpace) {
       val docInfo = start.getTreeInfo()
       val spaceStrippingRule = getSpaceStrippingRule

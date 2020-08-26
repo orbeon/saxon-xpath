@@ -40,10 +40,9 @@ class GroupAdjacentIterator(private var select: Expression,
     with LastPositionFinder
     with LookaheadIterator {
 
+  private var runningContext: XPathContext = baseContext.newMinorContext()
   private var population: FocusIterator =
     runningContext.trackFocus(select.iterate(baseContext))
-
-  private var runningContext: XPathContext = baseContext.newMinorContext()
 
   private var currentComparisonKey: List[AtomicMatchKey] = _
 

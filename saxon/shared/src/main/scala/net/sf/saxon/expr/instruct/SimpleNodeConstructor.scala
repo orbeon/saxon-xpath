@@ -32,10 +32,9 @@ import net.sf.saxon.value.Cardinality
 
 abstract class SimpleNodeConstructor extends Instruction {
 
-   var selectOp: Operand =
-    new Operand(this, select, OperandRole.SINGLE_ATOMIC)
-
   var select: Expression = Literal.makeEmptySequence()
+  var selectOp: Operand =
+    new Operand(this, select, OperandRole.SINGLE_ATOMIC)
 
   def setSelect(select: Expression): Unit = {
     selectOp.setChildExpression(select)
@@ -141,7 +140,7 @@ abstract class SimpleNodeConstructor extends Instruction {
     o
   }
 
-   def checkContent(data: String, context: XPathContext): String =
+  def checkContent(data: String, context: XPathContext): String =
     data
 
   def evaluateNodeName(context: XPathContext): NodeName = null

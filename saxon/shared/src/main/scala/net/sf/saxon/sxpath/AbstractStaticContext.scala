@@ -53,7 +53,7 @@ abstract class AbstractStaticContext extends StaticContext {
 
   private var xpathLanguageLevel: Int = 31
 
-   var usingDefaultFunctionLibrary: Boolean = _
+  var usingDefaultFunctionLibrary: Boolean = _
 
   private var typeAliases: Map[StructuredQName, ItemType] = new HashMap()
 
@@ -73,7 +73,7 @@ abstract class AbstractStaticContext extends StaticContext {
     config.makeErrorReporter.report(incident)
   }
 
-   def setConfiguration(config: Configuration): Unit = {
+  def setConfiguration(config: Configuration): Unit = {
     this.config = config
     this.defaultCollationName = config.getDefaultCollationName
   }
@@ -87,7 +87,7 @@ abstract class AbstractStaticContext extends StaticContext {
   def makeRetainedStaticContext(): RetainedStaticContext =
     new RetainedStaticContext(this)
 
-   def setDefaultFunctionLibrary(): Unit = {
+  def setDefaultFunctionLibrary(): Unit = {
     val lib: FunctionLibraryList = new FunctionLibraryList()
     lib.addFunctionLibrary(config.getXPath31FunctionSet)
     lib.addFunctionLibrary(getConfiguration.getBuiltInExtensionLibraryList)
@@ -97,7 +97,7 @@ abstract class AbstractStaticContext extends StaticContext {
     this.setFunctionLibrary(lib)
   }
 
-   def addFunctionLibrary(library: FunctionLibrary): Unit = {
+  def addFunctionLibrary(library: FunctionLibrary): Unit = {
     libraryList.addFunctionLibrary(library)
   }
 
@@ -154,17 +154,10 @@ abstract class AbstractStaticContext extends StaticContext {
   def setDefaultFunctionLibrary(version: Int): Unit = {
     val lib: FunctionLibraryList = new FunctionLibraryList
     version match {
-      case 20 =>
-      case _ =>
-        lib.addFunctionLibrary(XPath20FunctionSet.getInstance)
-
-      case 30 =>
-      case 305 =>
-        lib.addFunctionLibrary(config.getXPath30FunctionSet)
-
-      case 31 =>
-        lib.addFunctionLibrary(config.getXPath31FunctionSet)
-
+      case 20 | 30 =>
+      case 305 => lib.addFunctionLibrary(config.getXPath30FunctionSet)
+      case 31 => lib.addFunctionLibrary(config.getXPath31FunctionSet)
+      case _ => lib.addFunctionLibrary(XPath20FunctionSet.getInstance)
     }
     lib.addFunctionLibrary(getConfiguration.getBuiltInExtensionLibraryList)
     lib.addFunctionLibrary(new ConstructorFunctionLibrary(getConfiguration))

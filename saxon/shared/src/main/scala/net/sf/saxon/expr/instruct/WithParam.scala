@@ -108,7 +108,7 @@ object WithParam {
           out.emitAttribute("as", param.getRequiredType.toAlphaCode)
         }
         if (param.getSlotNumber != -1) {
-          out.emitAttribute("slot", param.getSlotNumber + "")
+          out.emitAttribute("slot", param.getSlotNumber.toString)
         }
         param.selectOp.getChildExpression.export(out)
         out.endElement()

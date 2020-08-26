@@ -128,7 +128,10 @@ object KeyFn {
     var allResults: SequenceIterator = null
     val keys: SequenceIterator = sought.iterate()
     var keyValue: AtomicValue = null
-    while ((keyValue = keys.next().asInstanceOf[AtomicValue]) != null) {
+    while (({
+      keyValue = keys.next().asInstanceOf[AtomicValue]
+      keyValue
+    }) != null) {
       /* val someResults: SequenceIterator = keyManager.selectByKey(
          selectedKeySet,
          doc.getTreeInfo,

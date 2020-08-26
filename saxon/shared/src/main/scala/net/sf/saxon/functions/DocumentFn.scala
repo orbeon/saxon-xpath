@@ -97,19 +97,19 @@ object DocumentFn {
       if (doc != null) {
         getFragment(doc, fragmentId, c, locator)
       }
-//      if (controller.isInstanceOf[XsltController] &&
-//        !controller
-//          .asInstanceOf[XsltController]
-//          .checkUniqueOutputDestination(documentKey)) {
-//        pool.markUnavailable(documentKey)
-//        val err: XPathException = new XPathException(
-//          "Cannot read a document that was written during the same transformation: " +
-//            documentKey)
-//        err.setXPathContext(c)
-//        err.setErrorCode("XTRE1500")
-//        err.setLocator(locator)
-//        throw err
-//      }
+      //      if (controller.isInstanceOf[XsltController] &&
+      //        !controller
+      //          .asInstanceOf[XsltController]
+      //          .checkUniqueOutputDestination(documentKey)) {
+      //        pool.markUnavailable(documentKey)
+      //        val err: XPathException = new XPathException(
+      //          "Cannot read a document that was written during the same transformation: " +
+      //            documentKey)
+      //        err.setXPathContext(c)
+      //        err.setErrorCode("XTRE1500")
+      //        err.setLocator(locator)
+      //        throw err
+      //      }
       if (pool.isMarkedUnavailable(documentKey)) {
         val err: XPathException = new XPathException(
           "Document has been marked not available: " + documentKey)
@@ -195,11 +195,11 @@ object DocumentFn {
           getFragment(doc, fragmentId, c, locator)
         }
         controller.registerDocument(newdoc, documentKey)
-//        if (controller.isInstanceOf[XsltController]) {
-//          controller
-//            .asInstanceOf[XsltController]
-//            .addUnavailableOutputDestination(documentKey)
-//        }
+        //        if (controller.isInstanceOf[XsltController]) {
+        //          controller
+        //            .asInstanceOf[XsltController]
+        //            .addUnavailableOutputDestination(documentKey)
+        //        }
       }
       getFragment(newdoc, fragmentId, c, locator)
     } catch {
@@ -274,9 +274,9 @@ object DocumentFn {
   }
 
   def computeDocumentKey(href: String,
-                                   baseURI: String,
-                                   packageData: PackageData,
-                                   c: XPathContext): DocumentURI = {
+                         baseURI: String,
+                         packageData: PackageData,
+                         c: XPathContext): DocumentURI = {
     val controller: Controller = c.getController
     var resolver: URIResolver = controller.getURIResolver
     if (resolver == null) {
@@ -296,7 +296,7 @@ object DocumentFn {
       try documentKey =
         resolver.asInstanceOf[RelativeURIResolver].makeAbsolute(hrefStr, baseURI)
       catch {
-        case e: TransformerException => documentKey = '/' + hrefStr
+        case e: TransformerException => documentKey = s"/$hrefStr"
 
       }
     } else {
@@ -304,7 +304,7 @@ object DocumentFn {
       if (baseURI == null) {
         try documentKey = new URI(hrefStr).toString
         catch {
-          case err: URISyntaxException => documentKey = '/' + hrefStr
+          case err: URISyntaxException => documentKey = s"/$hrefStr"
 
         }
       } else if (hrefStr.isEmpty) {
@@ -314,7 +314,7 @@ object DocumentFn {
           val uri: URI = new URI(baseURI).resolve(hrefStr)
           documentKey = uri.toString
         } catch {
-          case err @ (_: URISyntaxException | _: IllegalArgumentException) =>
+          case err@(_: URISyntaxException | _: IllegalArgumentException) =>
             documentKey = baseURI + "/../" + hrefStr
 
         }
@@ -351,7 +351,7 @@ object DocumentFn {
         resolver.asInstanceOf[RelativeURIResolver].makeAbsolute(href, baseUri)
       catch {
         case e: TransformerException => {
-          documentKey = '/' + href
+          documentKey = s"/$href"
           baseUri = ""
         }
 
@@ -361,7 +361,7 @@ object DocumentFn {
         try documentKey = new URI(href).toString
         catch {
           case err: URISyntaxException => {
-            documentKey = '/' + href
+            documentKey =  s"/$href"
             baseUri = ""
           }
 
@@ -440,7 +440,7 @@ object DocumentFn {
       try documentKey = new URI(href).toString
       catch {
         case err: URISyntaxException => {
-          documentKey = '/' + href
+          documentKey =  s"/$href"
           baseUrl = ""
         }
 
@@ -542,7 +542,7 @@ class DocumentFn extends SystemFunction with Callable {
   override def makeFunctionCall(arguments: Expression*): Expression = {
     location = arguments(0).getLocation
     val expr: Expression = Doc.maybePreEvaluate(this, arguments.toArray)
-    if (expr == null) super.makeFunctionCall(arguments:_*) else expr
+    if (expr == null) super.makeFunctionCall(arguments: _*) else expr
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {

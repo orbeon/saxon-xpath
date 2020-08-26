@@ -83,7 +83,10 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
     val attNr: Int = index - namespaces.length
     val atts: AxisIterator = element.iterateAxis(AxisInfo.ATTRIBUTE)
     var att: NodeInfo = null
-    while ((att = atts.next()) != null) {
+    while (({
+      att = atts.next()
+      att
+    }) != null) {
       if (pos == attNr) {
         NodeOverNodeInfo.wrap(att)
       }

@@ -410,7 +410,7 @@ class UserFunctionCall extends FunctionCall
     if (argumentEvaluators != null && getArity > 0) {
       val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
       for (e <- argumentEvaluators) {
-        fsb.append(e.getEvaluationMode.getCode + " ")
+        fsb.append(e.getEvaluationMode.getCode.toString + " ")
       }
       out.emitAttribute("eval", Whitespace.trim(fsb))
     }

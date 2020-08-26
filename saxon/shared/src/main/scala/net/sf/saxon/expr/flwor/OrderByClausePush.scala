@@ -26,6 +26,8 @@ class OrderByClausePush(outputter: Outputter,
                         private var context: XPathContext)
   extends TuplePush(outputter) {
 
+  val suppliedComparers: Array[AtomicComparer] = orderBy.getAtomicComparers
+
   private var orderByClause: OrderByClause = orderBy
 
   private var comparers: Array[AtomicComparer] =
@@ -34,8 +36,6 @@ class OrderByClausePush(outputter: Outputter,
   private var position: Int = 0
 
   private var tupleArray: ArrayList[ItemToBeSorted] = new ArrayList(100)
-
-  val suppliedComparers: Array[AtomicComparer] = orderBy.getAtomicComparers
 
   for (n <- 0 until comparers.length) {
     this.comparers(n) = suppliedComparers(n).provideContext(context)

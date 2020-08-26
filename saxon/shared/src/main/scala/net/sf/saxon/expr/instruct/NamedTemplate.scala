@@ -204,7 +204,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     if (getRequiredType != SequenceType.ANY_SEQUENCE) {
       presenter.emitAttribute("as", getRequiredType.toAlphaCode)
     }
-    presenter.emitAttribute("line", getLineNumber + "")
+    presenter.emitAttribute("line", getLineNumber.toString + "")
     presenter.emitAttribute("module", getSystemId)
   }
 

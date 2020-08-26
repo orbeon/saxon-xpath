@@ -272,7 +272,10 @@ object ArrayFunctionSet {
       val iterator: SequenceIterator = arguments(0).iterate()
       var array: ArrayItem = SimpleArrayItem.EMPTY_ARRAY
       var nextArray: ArrayItem = null
-      while ((nextArray = iterator.next().asInstanceOf[ArrayItem]) !=
+      while (({
+        nextArray = iterator.next().asInstanceOf[ArrayItem]
+        nextArray
+      }) !=
         null) array = array.concat(nextArray)
       array
     }

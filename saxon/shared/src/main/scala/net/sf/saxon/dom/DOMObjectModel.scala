@@ -58,7 +58,10 @@ object DOMObjectModel {
     val nodes: List[Node] = new ArrayList[Node](20)
     val iter: SequenceIterator = value.iterate()
     var item: Item = null
-    while ((item = iter.next()) != null) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) {
       if (item.isInstanceOf[VirtualNode]) {
         val o: AnyRef = item.asInstanceOf[VirtualNode].getRealNode
         if (o.isInstanceOf[Node]) {

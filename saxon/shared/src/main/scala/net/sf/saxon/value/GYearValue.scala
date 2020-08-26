@@ -69,7 +69,7 @@ class GYearValue() extends GDateValue {
         sb.cat('-')
       }
     }
-    appendString(sb, yr, (if (yr > 9999) (yr + "").length else 4))
+    appendString(sb, yr, (if (yr > 9999) (yr.toString + "").length else 4))
     if (hasTimezone()) {
       appendTimezone(sb)
     }

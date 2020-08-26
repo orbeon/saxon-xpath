@@ -25,12 +25,12 @@ import java.util._
  * @param concurrent set to true if concurrent access is required, so that access will
  *                   be synchronized
  */
-class LRUCache[K, V](val cacheSize: Int, val concurrent: Boolean){
+class LRUCache[K, V](val cacheSize: Int, val concurrent: Boolean) {
+  private var map: util.Map[K, V] = null
   map = new LinkedHashMap[K, V](cacheSize, 0.75f, true) {
-    override  def removeEldestEntry(eldest: util.Map.Entry[K, V]) = cacheSize < super.size
+    override def removeEldestEntry(eldest: util.Map.Entry[K, V]) = cacheSize < super.size
   }
   if (concurrent) map = Collections.synchronizedMap(map)
-  private var map: util.Map[K,V] = null
 
   /**
    * Creates a new LRU cache.
@@ -48,7 +48,7 @@ class LRUCache[K, V](val cacheSize: Int, val concurrent: Boolean){
    * @param key the key whose associated value is to be returned.
    * @return the value associated to this key, or null if no value with this key exists in the cache.
    */
-  def get(key: K) : V = map.get(key)
+  def get(key: K): V = map.get(key)
 
   /**
    * Adds an entry to this cache.

@@ -26,7 +26,10 @@ trait AxisIterator extends UnfailingIterator {
 
   def forEachNode(consumer: Consumer[_ >: NodeInfo]): Unit = {
     var item: NodeInfo = null
-    while ((item = next()) != null) consumer.accept(item)
+    while (({
+      item = next()
+      item
+    }) != null) consumer.accept(item)
   }
 
 }

@@ -49,7 +49,10 @@ object MapItem {
     try {
       val iter: SequenceIterator = value.iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) if (item
+      while (({
+        item = iter.next()
+        item
+      }) != null) if (item
         .isInstanceOf[AtomicValue]) {
         if (itemType.isInstanceOf[AtomicType]) {
           if (!Type.isSubType(item.asInstanceOf[AtomicValue].getItemType,
@@ -224,7 +227,10 @@ trait MapItem extends Function {
       .isInstanceOf[MapItem] && other.asInstanceOf[MapItem].size == size) {
       val keysL: AtomicIterator[_ <: AtomicValue] = keys
       var key: AtomicValue = null
-      while ((key = keysL.next()) != null) {
+      while (({
+        key = keysL.next()
+        key
+      }) != null) {
         val thisValue: Sequence = get(key)
         val otherValue: Sequence = other.asInstanceOf[MapItem].get(key)
         if (otherValue == null) {

@@ -94,9 +94,9 @@ class NestedIntegerValue(v: String)
   override def getPrimitiveStringValue(): CharSequence = {
     val buffer: FastStringBuffer = new FastStringBuffer(value.length * 2)
     for (i <- 0 until value.length - 1) {
-      buffer.append(value(i) + ".")
+      buffer.append(value(i).toString + ".")
     }
-    buffer.append(value(value.length - 1) + "")
+    buffer.append(value(value.length - 1).toString + "")
     buffer
   }
 

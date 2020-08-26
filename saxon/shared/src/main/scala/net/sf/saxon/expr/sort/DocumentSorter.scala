@@ -32,14 +32,14 @@ import scala.util.control.Breaks._
 
 class DocumentSorter(base: Expression) extends UnaryExpression(base) {
 
+  val props: Int = base.getSpecialProperties
+
   @BeanProperty
   var comparer: ItemOrderComparer =
     if (((props & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0) ||
       (props & StaticProperty.SINGLE_DOCUMENT_NODESET) != 0)
       LocalOrderComparer.getInstance
     else GlobalOrderComparer.getInstance
-
-  val props: Int = base.getSpecialProperties
 
   def this(base: Expression, intraDocument: Boolean) = {
     this(???) /* TODO: Scala does not allow multiple super constructor calls

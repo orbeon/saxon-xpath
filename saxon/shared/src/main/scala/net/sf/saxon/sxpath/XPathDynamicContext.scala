@@ -32,25 +32,23 @@ import net.sf.saxon.value.SequenceType
 import javax.xml.transform.URIResolver
 
 
-
-
 /**
-  * This object represents the dynamic XPath execution context for use in the free-standing Saxon XPath API.
-  * The dynamic context holds the context item and the values of external variables used by the XPath expression.
-  * <p>This object is always created via the method
-  * {@link net.sf.saxon.sxpath.XPathExpression#createDynamicContext(net.sf.saxon.om.Item)}</p>
-  */
-class XPathDynamicContext (
-    private var contextItemType: ItemType,
-    private var contextObject: XPathContextMajor,
-    private var stackFrameMap: SlotManager) {
+ * This object represents the dynamic XPath execution context for use in the free-standing Saxon XPath API.
+ * The dynamic context holds the context item and the values of external variables used by the XPath expression.
+ * <p>This object is always created via the method
+ * {@link net.sf.saxon.sxpath.XPathExpression#createDynamicContext(net.sf.saxon.om.Item)}</p>
+ */
+class XPathDynamicContext(
+                           private var contextItemType: ItemType,
+                           private var contextObject: XPathContextMajor,
+                           private var stackFrameMap: SlotManager) {
 
   def setContextItem(item: Item): Unit = {
     if (item.isInstanceOf[NodeInfo]) {
       if (!item
-            .asInstanceOf[NodeInfo]
-            .getConfiguration
-            .isCompatible(contextObject.getConfiguration)) {
+        .asInstanceOf[NodeInfo]
+        .getConfiguration
+        .isCompatible(contextObject.getConfiguration)) {
         throw new XPathException(
           "Supplied node must be built using the same or a compatible Configuration",
           SaxonErrorCode.SXXP0004)
@@ -79,12 +77,15 @@ class XPathDynamicContext (
     }
     val iter: SequenceIterator = value.iterate()
     var item: Item = null
-    while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo] &&
-                                             !item
-                                               .asInstanceOf[NodeInfo]
-                                               .getConfiguration
-                                               .isCompatible(
-                                                 contextObject.getConfiguration)) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) if (item.isInstanceOf[NodeInfo] &&
+      !item
+        .asInstanceOf[NodeInfo]
+        .getConfiguration
+        .isCompatible(
+          contextObject.getConfiguration)) {
       throw new XPathException(
         "Supplied node must be built using the same or a compatible Configuration",
         SaxonErrorCode.SXXP0004)
@@ -129,7 +130,7 @@ class XPathDynamicContext (
     contextObject.getController.getUnparsedTextURIResolver
 
   def checkExternalVariables(stackFrameMap: SlotManager,
-                                       numberOfExternals: Int): Unit = {
+                             numberOfExternals: Int): Unit = {
     val stack: Array[Sequence] =
       contextObject.getStackFrame.getStackFrameValues
     for (i <- 0 until numberOfExternals if stack(i) == null) {

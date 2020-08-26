@@ -44,7 +44,10 @@ object BinaryResource {
     val buffer: ByteArrayOutputStream = new ByteArrayOutputStream()
     var nRead: Int = 0
     val data: Array[Byte] = Array.ofDim[Byte](16384)
-    while ((nRead = in.read(data, 0, data.length)) != -1) buffer.write(data,
+    while (({
+      nRead = in.read(data, 0, data.length)
+      nRead
+    }) != -1) buffer.write(data,
       0,
       nRead)
     buffer.flush()

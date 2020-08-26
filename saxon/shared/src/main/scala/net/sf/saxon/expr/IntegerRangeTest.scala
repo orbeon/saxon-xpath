@@ -101,7 +101,10 @@ override def typeCheck(visitor: ExpressionVisitor,
     var toDouble: StringConverter = null
     val iter: SequenceIterator = getValue.iterate(c)
     var atom: AtomicValue = null
-    while ((atom = iter.next().asInstanceOf[AtomicValue]) != null) {
+    while (({
+      atom = iter.next().asInstanceOf[AtomicValue]
+      atom
+    }) != null) {
       if (minVal == null) {
         minVal = getMin.evaluateItem(c).asInstanceOf[IntegerValue]
         if (minVal == null) {

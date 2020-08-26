@@ -252,11 +252,13 @@ class StaxBridge extends PullProvider {
         val event: Int = reader.next()
         if (event == XMLStreamConstants.START_ELEMENT) {
           {
-            skipDepth += 1; skipDepth - 1
+            skipDepth += 1;
+            skipDepth - 1
           }
         } else if (event == XMLStreamConstants.END_ELEMENT) {
           if ( {
-            skipDepth -= 1; skipDepth + 1
+            skipDepth -= 1;
+            skipDepth + 1
           } == 0) {
             currentEvent = END_ELEMENT
             currentEvent
@@ -335,6 +337,7 @@ class StaxBridge extends PullProvider {
         } else if (event == XMLStreamConstants.END_ELEMENT) {
           if ( {
             depth -= 1
+            depth
           } == 0) {
             currentEvent = END_ELEMENT
             if (combinedText != null) {

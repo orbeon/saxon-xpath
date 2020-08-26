@@ -80,7 +80,7 @@ class AlphanumericCollator(private var baseCollator: StringCollator)
       if (!b1)  return UnicodeString.makeUnicodeString(sb)
 
       val n1: Int = java.lang.Integer.parseInt(s.substring(m1start, m1.end()))
-      sb.append(n1 + "")
+      sb.append(n1.toString)
       pos1 = m1.end()
     }
     null

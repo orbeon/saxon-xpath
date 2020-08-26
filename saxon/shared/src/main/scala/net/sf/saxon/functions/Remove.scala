@@ -78,7 +78,7 @@ class Remove extends SystemFunction {
         }
       }
     }
-    super.makeFunctionCall(arguments: _*)
+    super.makeFunctionCall(arguments.toIndexedSeq: _*)
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {

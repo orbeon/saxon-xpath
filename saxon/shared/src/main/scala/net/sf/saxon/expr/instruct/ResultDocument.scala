@@ -155,7 +155,7 @@ object ResultDocument {
                   throw err
                 }
                 details.setProperty(OutputKeys.METHOD,
-                  '{' + muri + '}' + parts(1))
+                  "{" + muri + "}" + parts(1))
               } else {
                 details.setProperty(OutputKeys.METHOD, valStr)
               }
@@ -233,7 +233,7 @@ object ResultDocument {
 
       }
     } else {
-      details.setProperty('{' + uri + '}' + lname, valStr)
+      details.setProperty("{" + uri + "}" + lname, valStr)
     }
   }
 

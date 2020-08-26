@@ -1,10 +1,6 @@
 
 
 
-
-
-
-
 package net.sf.saxon.query
 
 import net.sf.saxon.event.ComplexContentOutputter
@@ -28,8 +24,9 @@ object SequenceWrapper {
 }
 
 class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destination.getPipelineConfiguration) {
-  out = new ComplexContentOutputter(destination)
   private var out: ComplexContentOutputter = _
+
+  out = new ComplexContentOutputter(destination)
 
   private var depth: Int = 0
 
@@ -71,7 +68,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   }
 
   @throws[XPathException]
-  private def endWrapper():Unit = out.endElement()
+  private def endWrapper(): Unit = out.endElement()
 
   @throws[XPathException]
   override def open(): Unit = {
@@ -95,25 +92,26 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     startWrapper(resultSequence)
   }
 
-  
+
   @throws[XPathException]
-  override def startDocument(properties: Int):Unit = {
+  override def startDocument(properties: Int): Unit = {
     startWrapper(resultDocument)
     depth += 1
   }
 
-  
+
   @throws[XPathException]
-  override def endDocument():Unit = {
+  override def endDocument(): Unit = {
     endWrapper()
     depth -= 1
   }
 
-  
+
   @throws[XPathException]
-  override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int):Unit = {
+  override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int): Unit = {
     if ( {
-      depth += 1; depth - 1
+      depth += 1;
+      depth - 1
     } == 0) startWrapper(resultElement)
     out.startElement(elemName, `type`, location, properties)
     out.namespace("", "", properties)
@@ -124,25 +122,26 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.startContent()
   }
 
-  
+
   @throws[XPathException]
-  override def endElement():Unit = {
+  override def endElement(): Unit = {
     out.endElement()
     if ( {
-      depth -= 1; depth
+      depth -= 1;
+      depth
     } == 0) endWrapper()
   }
 
-  
+
   @throws[XPathException]
-  override def characters(chars: CharSequence, locationId: Location, properties: Int):Unit = if (depth == 0) {
+  override def characters(chars: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
     startWrapper(resultText)
     out.characters(chars, locationId, properties)
     endWrapper()
   }
   else out.characters(chars, locationId, properties)
 
-  
+
   @throws[XPathException]
   override def comment(chars: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
     startWrapper(resultComment)
@@ -151,7 +150,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   }
   else out.comment(chars, locationId, properties)
 
-  
+
   @throws[XPathException]
   override def processingInstruction(target: String, data: CharSequence, locationId: Location, properties: Int) = if (depth == 0) {
     startWrapper(resultPI)
@@ -160,9 +159,9 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   }
   else out.processingInstruction(target, data, locationId, properties)
 
-  
+
   @throws[XPathException]
-  override def append( item: Item, locationId: Location, copyNamespaces: Int) = if (item.isInstanceOf[AtomicValue]) {
+  override def append(item: Item, locationId: Location, copyNamespaces: Int) = if (item.isInstanceOf[AtomicValue]) {
     val pool = getNamePool
     out.startElement(resultAtomicValue, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
     out.namespace("", "", ReceiverOption.NONE)
@@ -217,7 +216,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.endElement()
   }
 
-  
+
   @throws[XPathException]
   override def close() = {
     endWrapper()
@@ -225,10 +224,10 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.close()
   }
 
-  
+
   override def usesTypeAnnotations = true
 
-  
+
   @throws[XPathException]
   private def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, locationId: Location, properties: Int) = {
     val atts = SingletonAttributeMap.of(new AttributeInfo(attName, typeCode, value.toString, locationId, properties))
@@ -239,7 +238,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.endElement()
   }
 
-  
+
   @throws[XPathException]
   private def namespace(namespaceBindings: NamespaceBindingSet, properties: Int) = {
     var ns = NamespaceMap.emptyMap

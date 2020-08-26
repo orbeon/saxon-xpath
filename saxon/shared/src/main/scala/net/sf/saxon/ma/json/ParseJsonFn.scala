@@ -32,13 +32,13 @@ import ParseJsonFn._
 
 object ParseJsonFn {
 
+  val parseJsonOptions: OptionsParameter = new OptionsParameter()
+
   var OPTION_DETAILS: OptionsParameter = parseJsonOptions
 
   val fallbackType: SpecificFunctionType = new SpecificFunctionType(
     Array(SequenceType.SINGLE_STRING),
     SequenceType.SINGLE_STRING)
-
-  val parseJsonOptions: OptionsParameter = new OptionsParameter()
 
   parseJsonOptions.addAllowedOption("liberal",
                                     SequenceType.SINGLE_BOOLEAN,

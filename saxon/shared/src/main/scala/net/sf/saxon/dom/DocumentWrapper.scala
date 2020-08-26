@@ -71,7 +71,10 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
         val iter: AxisIterator =
           getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
         var e: NodeInfo = null
-        while ((e = iter.next()) != null) {
+        while (({
+          e = iter.next()
+          e
+        }) != null) {
           val xmlId: String = e.getAttributeValue(NamespaceConstant.XML, "id")
           if (xmlId != null) {
             idIndex.put(xmlId, e)

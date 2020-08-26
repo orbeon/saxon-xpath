@@ -41,34 +41,17 @@ object NumberInstruction {
   val LEVEL_NAMES = Array[String]("single", "multi", "any", "simple")
 }
 
-class NumberInstruction(val select: Expression, var level: Int, val count: Pattern, val from: Pattern)
-
-/**
- * Construct a NumberInstruction
- *
- * @param select the expression supplied in the select attribute
- * @param level  one of "single", "level", "multi"
- * @param count  the pattern supplied in the count attribute
- * @param from   the pattern supplied in the from attribute
- */
-  extends Expression {
+class NumberInstruction(val select: Expression, var level: Int, val count: Pattern, val from: Pattern) extends Expression {
+  private var selectOp: Operand = null
+  private var countOp: Operand = null
+  private var fromOp: Operand = null
+  private var hasVariablesInPatterns = false
   assert(select != null)
   selectOp = new Operand(this, select, new OperandRole(0, OperandUsage.NAVIGATION, SequenceType.SINGLE_NODE))
   if (count != null) countOp = new Operand(this, count, OperandRole.INSPECT)
   if (from != null) fromOp = new Operand(this, from, OperandRole.INSPECT)
   this.hasVariablesInPatterns = Pattern.patternContainsVariable(count) || Pattern.patternContainsVariable(from)
-  private var selectOp: Operand = null
-  private var countOp: Operand = null
-  private var fromOp:Operand = null
-  private var hasVariablesInPatterns = false
 
-  /**
-   * Ask whether this expression is an instruction. In XSLT streamability analysis this
-   * is used to distinguish constructs corresponding to XSLT instructions from other constructs,
-   * typically XPath expressions.
-   *
-   * @return true -- this construct originates as an XSLT instruction
-   */
   override def isInstruction = true
 
   override def operands = operandSparseList(selectOp, countOp, fromOp)
@@ -126,11 +109,11 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
   override def getItemType = BuiltInAtomicType.INTEGER
 
   override def computeCardinality = level match {
-    case NumberInstruction.SIMPLE =>0
-    case NumberInstruction.SINGLE =>0
+    case NumberInstruction.SIMPLE => 0
+    case NumberInstruction.SINGLE => 0
     case NumberInstruction.ANY =>
       StaticProperty.ALLOWS_ZERO_OR_ONE
-    case NumberInstruction.MULTI =>0
+    case NumberInstruction.MULTI => 0
     case _ =>
       StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -141,7 +124,7 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
    * indirectly, using an implementation that relies on one of the other methods.
    *
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
-   *                                                        { @link #PROCESS_METHOD}
+   *         { @link #PROCESS_METHOD}
    */
   override def getImplementationMethod = Expression.ITERATE_METHOD
 
@@ -179,17 +162,17 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
       case NumberInstruction.SIMPLE =>
         val value = Navigator.getNumberSimple(source, context)
         if (value != 0) vec.add(Int64Value.makeIntegerValue(value))
-     /* case NumberInstruction.SINGLE =>
-        val value = Navigator.getNumberSingle(source, getCount, getFrom, context)  // getNumberSingle method has commented out in Navigator
-        if (value != 0) vec.add(Int64Value.makeIntegerValue(value))*/
+      /* case NumberInstruction.SINGLE =>
+         val value = Navigator.getNumberSingle(source, getCount, getFrom, context)  // getNumberSingle method has commented out in Navigator
+         if (value != 0) vec.add(Int64Value.makeIntegerValue(value))*/
       case NumberInstruction.ANY =>
         val value = Navigator.getNumberAny(this, source, getCount, getFrom, context, hasVariablesInPatterns)
         if (value != 0) vec.add(Int64Value.makeIntegerValue(value))
       case NumberInstruction.MULTI =>
 
-       /* for (n <- Navigator.getNumberMulti(source, getCount, getFrom, context).asScala) { // getNumberMulti method has commented out in Navigator
-          vec.add(Int64Value.makeIntegerValue(n))
-        }*/
+      /* for (n <- Navigator.getNumberMulti(source, getCount, getFrom, context).asScala) { // getNumberMulti method has commented out in Navigator
+         vec.add(Int64Value.makeIntegerValue(n))
+       }*/
     }
     new ListIterator[IntegerValue](vec)
   }

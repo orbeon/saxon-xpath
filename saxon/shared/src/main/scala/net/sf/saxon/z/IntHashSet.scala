@@ -301,7 +301,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       if (_values(i) == ndv) {
         sb.append("*, ")
       } else {
-        sb.append(_values(i) + ", ")
+        sb.append(_values(i).toString + ", ")
       }
     }
     System.err.println(sb.toString)
@@ -323,7 +323,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
         System.err.println(sb.toString)
         sb.setLength(0)
       }
-      sb.append(iter.next + ", ")
+      sb.append(iter.next.toString + ", ")
     }
     System.err.println(sb.toString)
     System.err.println("=====================")

@@ -149,7 +149,10 @@ class HashTrieMap extends MapItem {
     if (needFullCheck) {
       val keyIter: AtomicIterator[_ <: AtomicValue] = keys
       var key: AtomicValue = null
-      while ((key = keyIter.next()) != null) {
+      while (({
+        key = keyIter.next()
+        key
+      }) != null) {
         if (!requiredKeyType.matches(key, th)) {
           return false
         }
@@ -168,7 +171,10 @@ class HashTrieMap extends MapItem {
     var valueCard: Int = 0
     val keyIter: AtomicIterator[_ <: AtomicValue] = keys
     var key: AtomicValue = null
-    while ((key = keyIter.next()) != null) {
+    while (({
+      key = keyIter.next()
+      key
+    }) != null) {
       val `val`: Sequence = get(key)
       if (keyType == null) {
         keyType = key.getItemType
@@ -280,12 +286,12 @@ class HashTrieMap extends MapItem {
       val k2: AtomicValue = entry._2.key
       val v: Sequence = entry._2.value
       System.err.println(
-        k1.getClass + " " + k1 + " #:" + k1.hashCode + " = (" +
-          k2.getClass +
+        k1.getClass.toString + " " + k1.toString + " #:" + k1.hashCode.toString + " = (" +
+          k2.getClass.toString +
           " " +
-          k2 +
+          k2.toString +
           " : " +
-          v +
+          v.toString +
           ")")
     }
   }
