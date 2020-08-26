@@ -31,7 +31,7 @@ class SystemIdMap {
 
   def getSystemId(sequence: Int): String = {
     if (allocated == 0) {
-      null
+      return null
     }
     for (i <- 1 until allocated if sequenceNumbers(i) > sequence) {
       uris(i - 1)

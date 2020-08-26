@@ -147,7 +147,6 @@ object StringValue {
             case e: StringIndexOutOfBoundsException => {
               System.err.println("Invalid surrogate at end of string")
               System.err.println(diagnosticDisplay(value.toString))
-              e.printStackTrace()
               throw e
             }
 

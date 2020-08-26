@@ -37,27 +37,27 @@ class UnionEnumeration(p1: SequenceIterator,
       if (c < 0) {
         val current: NodeInfo = nextNode1
         nextNode1 = next(e1)
-        current
+        return current
       } else if (c > 0) {
         val current: NodeInfo = nextNode2
         nextNode2 = next(e2)
-        current
+        return current
       } else {
         val current: NodeInfo = nextNode2
         nextNode2 = next(e2)
         nextNode1 = next(e1)
-        current
+        return current
       }
     }
     if (nextNode1 != null) {
       val current: NodeInfo = nextNode1
       nextNode1 = next(e1)
-      current
+      return current
     }
     if (nextNode2 != null) {
       val current: NodeInfo = nextNode2
       nextNode2 = next(e2)
-      current
+      return current
     }
     null
   }

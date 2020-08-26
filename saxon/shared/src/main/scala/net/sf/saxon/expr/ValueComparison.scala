@@ -121,7 +121,7 @@ override  def getExpressionName(): String = "ValueComparison"
       else Literal.makeLiteral(resultWhenEmpty, this)
     }
     if (comparer.isInstanceOf[UntypedNumericComparer]) {
-      this
+      return this
     }
     val optionalAtomic: SequenceType = SequenceType.OPTIONAL_ATOMIC
     val tc: TypeChecker = config.getTypeChecker(false)
@@ -294,12 +294,12 @@ override  def effectiveBooleanValue(context: XPathContext): Boolean =
       val v0: AtomicValue =
         getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
       if (v0 == null) {
-        resultWhenEmpty
+        return resultWhenEmpty
       }
       val v1: AtomicValue =
         getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
       if (v1 == null) {
-        resultWhenEmpty
+        return resultWhenEmpty
       }
       BooleanValue.get(
         compare(v0,

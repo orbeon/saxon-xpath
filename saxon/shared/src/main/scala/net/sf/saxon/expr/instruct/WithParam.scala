@@ -58,7 +58,7 @@ object WithParam {
            params: Array[WithParam],
            rebindings: RebindingMap): Array[WithParam] = {
     if (params == null) {
-      null
+      return null
     }
     val result: Array[WithParam] = Array.ofDim[WithParam](params.length)
     for (i <- 0 until params.length) {

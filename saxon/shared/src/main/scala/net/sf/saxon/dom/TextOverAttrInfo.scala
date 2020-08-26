@@ -34,7 +34,7 @@ class TextOverAttrInfo(private var attr: AttrOverNodeInfo)
     val DOCUMENT_POSITION_FOLLOWING: Short = 0x04
     if (other.isInstanceOf[TextOverAttrInfo]) {
       if (node == other.asInstanceOf[TextOverAttrInfo].node) {
-        0
+        return 0
       } else {
         attr.compareDocumentPosition(other.asInstanceOf[TextOverAttrInfo].attr)
       }

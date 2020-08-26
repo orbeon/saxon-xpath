@@ -418,7 +418,7 @@ class TypeHierarchy(var config: Configuration) {
             val m1: UType = t1.getUType
             val m2: UType = t2.getUType
             if (!m1.overlaps(m2)) {
-              DISJOINT
+              return DISJOINT
             } else
               nodeKindRelationship =
                 if (m1 == m2) SAME_TYPE

@@ -109,11 +109,11 @@ class StaxBridge extends PullProvider {
   def next(): Event = {
     if (currentEvent == START_OF_INPUT) {
       currentEvent = START_DOCUMENT
-      currentEvent
+      return currentEvent
     }
     if (currentEvent == END_OF_INPUT || currentEvent == END_DOCUMENT) {
       reader.close()
-      END_OF_INPUT
+      return END_OF_INPUT
     }
     try if (reader.hasNext) {
       val event: Int = reader.next()
@@ -212,7 +212,7 @@ class StaxBridge extends PullProvider {
       }
     case XMLStreamConstants.START_DOCUMENT => next()
     case XMLStreamConstants.START_ELEMENT => {
-      depth += 1; depth - 1
+      depth += 1;
     }
       START_ELEMENT
     case _ => throw new IllegalStateException("Unknown StAX event " + event)

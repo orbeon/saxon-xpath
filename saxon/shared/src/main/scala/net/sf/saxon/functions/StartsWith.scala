@@ -29,10 +29,10 @@ object StartsWith {
                  collator: SubstringMatcher): Boolean = {
     if (arg1 == null || arg1.isZeroLength ||
       collator.comparesEqual(arg1.getPrimitiveStringValue, "")) {
-      true
+      return true
     }
     if (arg0 == null || arg0.isZeroLength) {
-      false
+      return false
     }
     val s0: String = arg0.getStringValue
     val s1: String = arg1.getStringValue

@@ -63,12 +63,12 @@ object StandardUnparsedTextResolver {
         if (debug) {
           logger.info("unparsed-text(): found UTF-16 byte order mark")
         }
-        "UTF-16"
+        return "UTF-16"
       } else if (ch(start(0)) == 0xFF && ch(start(1)) == 0xFE) {
         if (debug) {
           logger.info("unparsed-text(): found UTF-16LE byte order mark")
         }
-        "UTF-16LE"
+        return "UTF-16LE"
       }
     }
     if (read >= 3) {
@@ -76,7 +76,7 @@ object StandardUnparsedTextResolver {
         if (debug) {
           logger.info("unparsed-text(): found UTF-8 byte order mark")
         }
-        "UTF-8"
+        return "UTF-8"
       }
     }
     if (read >= 4) {
@@ -116,14 +116,14 @@ object StandardUnparsedTextResolver {
         logger.info(
           "unparsed-text(): even-numbered bytes are zero, inferring UTF-16")
       }
-      "UTF-16"
+      return "UTF-16"
     } else if (read > 1 && start(1) == 0 && start(3) == 0 && start(5) == 0 &&
                start(7) == 0) {
       if (debug) {
         logger.info(
           "unparsed-text(): odd-numbered bytes are zero, inferring UTF-16LE")
       }
-      "UTF-16LE"
+      return "UTF-16LE"
     }
 // If all else fails, assume UTF-8
     if (debug) {

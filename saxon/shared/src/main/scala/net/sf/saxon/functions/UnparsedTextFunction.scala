@@ -157,13 +157,11 @@ object UnparsedTextFunction {
           if (ch32 == '\n') {
             {
               line += 1;
-              line - 1
             }
             column = 0
           }
           {
             column += 1;
-            column - 1
           }
           if (ch32 > 255) {
             latin = false

@@ -281,13 +281,13 @@ object Type {
                          t2: ItemType,
                          th: TypeHierarchy): ItemType = {
     if (t1 == t2) {
-      t1
+      return t1
     }
     if (t1.isInstanceOf[ErrorType]) {
-      t2
+      return t2
     }
     if (t2.isInstanceOf[ErrorType]) {
-      t1
+      return t1
     }
     if (t1.isInstanceOf[JavaExternalObjectType] && t2
       .isInstanceOf[JavaExternalObjectType]) {
@@ -299,10 +299,10 @@ object Type {
     }
     if (t1.isInstanceOf[MapType] && t2.isInstanceOf[MapType]) {
       if (t1 == MapType.EMPTY_MAP_TYPE) {
-        t2
+        return t2
       }
       if (t2 == MapType.EMPTY_MAP_TYPE) {
-        t1
+        return t1
       }
       val keyType: ItemType = getCommonSuperType(
         t1.asInstanceOf[MapType].getKeyType,
@@ -336,13 +336,13 @@ object Type {
 
   def getCommonSuperType(t1: ItemType, t2: ItemType): ItemType = {
     if (t1 == t2) {
-      t1
+      return t1
     }
     if (t1.isInstanceOf[ErrorType]) {
-      t2
+      return t2
     }
     if (t2.isInstanceOf[ErrorType]) {
-      t1
+      return t1
     }
     if (t1 == AnyItemType.getInstance || t2 == AnyItemType.getInstance) {
       AnyItemType.getInstance
@@ -350,11 +350,11 @@ object Type {
     val p1: ItemType = t1.getPrimitiveItemType
     val p2: ItemType = t2.getPrimitiveItemType
     if (p1 == p2) {
-      p1
+      return p1
     }
     if ((p1 == DECIMAL && p2 == INTEGER) ||
       (p2 == DECIMAL && p1 == INTEGER)) {
-      DECIMAL
+      return DECIMAL
     }
     if (p1.isInstanceOf[BuiltInAtomicType] && p1
       .asInstanceOf[BuiltInAtomicType]
@@ -364,7 +364,7 @@ object Type {
       NumericType.getInstance
     }
     if (t1.isAtomicType && t2.isAtomicType) {
-      ANY_ATOMIC
+      return ANY_ATOMIC
     }
     if (t1.isInstanceOf[NodeTest] && t2.isInstanceOf[NodeTest]) {
       AnyNodeTest.getInstance
@@ -392,16 +392,16 @@ object Type {
   private def leastCommonSuperClass(class1: Class[_],
                                     class2: Class[_]): Class[_] = {
     if (class1 == class2) {
-      class1
+      return class1
     }
     if (class1 == null || class2 == null) {
-      null
+      return null
     }
     if (!class1.isArray && class1.isAssignableFrom(class2)) {
-      class1
+      return class1
     }
     if (!class2.isArray && class2.isAssignableFrom(class1)) {
-      class2
+      return class2
     }
     if (class1.isInterface || class2.isInterface) {
       classOf[AnyRef]
@@ -443,7 +443,7 @@ object Type {
     var t2 = t2Var
     if (t1 == t2) {
       // short cut
-      true
+      return true
     }
     if (t1.isPrimitiveNumeric) {
       t2.isPrimitiveNumeric
@@ -478,11 +478,11 @@ object Type {
     var t2 = t2Var
     if (t1 == t2) {
       // short cut
-      true
+      return true
     }
     if (t1 == ANY_ATOMIC || t2 == ANY_ATOMIC) {
       // meaning we don't actually know at this stage
-      true
+      return true
     }
     if (t1.isPrimitiveNumeric) {
       t2.isPrimitiveNumeric

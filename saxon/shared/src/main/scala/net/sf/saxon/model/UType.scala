@@ -271,7 +271,7 @@ class UType(private var bits: Int) {
   override def toString(): String = {
     val components: Set[PrimitiveUType] = decompose()
     if (components.isEmpty) {
-      "U{}"
+      return "U{}"
     }
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val iter: Iterator[PrimitiveUType] = components.iterator()

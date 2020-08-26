@@ -1025,10 +1025,10 @@ object StandardNames {
 
   def getDisplayName(fingerprint: Int): String = {
     if (fingerprint == -1) {
-      "(anonymous type)"
+      return "(anonymous type)"
     }
     if (fingerprint > 1023) {
-      "(" + fingerprint + ')'
+      return "(" + fingerprint + ')'
     }
     if ((fingerprint >> 7) == DFLT) {
       getLocalName(fingerprint)

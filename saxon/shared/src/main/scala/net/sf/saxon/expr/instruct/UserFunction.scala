@@ -49,7 +49,7 @@ object UserFunction {
 
   private def containsUserFunctionCalls(exp: Expression): Boolean = {
     if (exp.isInstanceOf[UserFunctionCall]) {
-      true
+      return true
     }
     for (o <- exp.operands().asScala
          if containsUserFunctionCalls(o.getChildExpression)) {
@@ -197,14 +197,14 @@ class UserFunction
 
   def isInlineable(): java.lang.Boolean = {
     if (inlineable != -1) {
-      inlineable > 0 && inliningCount < MAX_INLININGS
+      return inlineable > 0 && inliningCount < MAX_INLININGS
     }
     if (body == null) {
-      null
+      return null
     }
     if (body.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) ||
       tailCalls) {
-      false
+      return false
     }
     val component: Component = getDeclaringComponent
     if (component != null) {
@@ -230,7 +230,6 @@ class UserFunction
   def markAsInlined(): Unit = {
     {
       inliningCount += 1;
-      inliningCount - 1
     }
   }
 

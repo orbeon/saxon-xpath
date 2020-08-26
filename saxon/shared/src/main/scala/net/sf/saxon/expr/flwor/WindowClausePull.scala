@@ -40,7 +40,7 @@ class WindowClausePull(private var source: TuplePull,
     var deliver: Boolean = false
     val pending: Boolean = lookForEarliest()
     if (pending) {
-      true
+      return true
     }
     if (finished || baseIterator == null) {
       if (source.nextTuple(context)) {
@@ -62,7 +62,7 @@ class WindowClausePull(private var source: TuplePull,
       if (next == null) {
         finished = true
       }
-      { position += 1; position - 1 }
+      { position += 1;}
       if (position > 0) {
         if ((windowClause.isSlidingWindow || currentWindows.isEmpty ||
           autoclose) &&

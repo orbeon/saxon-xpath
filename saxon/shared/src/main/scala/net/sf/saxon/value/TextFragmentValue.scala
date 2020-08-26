@@ -111,7 +111,7 @@ class TextFragmentValue(config: Configuration,
 
   def compareOrder(other: NodeInfo): Int = {
     if (this eq other) {
-      0
+      return 0
     }
     -1
   }
@@ -236,7 +236,7 @@ class TextFragmentValue(config: Configuration,
 
     def compareOrder(other: NodeInfo): Int = {
       if (this eq other) {
-        0
+        return 0
       }
       +1
     }

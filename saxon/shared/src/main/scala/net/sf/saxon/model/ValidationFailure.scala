@@ -131,7 +131,7 @@ class ValidationFailure(@BeanProperty var message: String)
 
   def getConstraintReferenceMessage(): String = {
     if (schemaPart == -1) {
-      null
+      return null
     }
     "See http://www.w3.org/TR/xmlschema11-" + schemaPart +
       "/#" +
@@ -284,7 +284,7 @@ class ValidationFailure(@BeanProperty var message: String)
   def makeException(): ValidationException = {
     if (exception != null) {
       exception.maybeSetLocation(this)
-      exception
+      return exception
     }
     val ve: ValidationException = new ValidationException(this)
     if (errorCode == null) {

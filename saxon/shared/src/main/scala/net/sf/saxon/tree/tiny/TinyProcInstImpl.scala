@@ -33,7 +33,7 @@ class TinyProcInstImpl() extends TinyNodeImpl {
     val len: Int = tree.beta(nodeNr)
     if (len == 0) {
 // need to special-case this for the Microsoft JVM
-      ""
+      return ""
     }
     val dest: Array[Char] = Array.ofDim[Char](len)
     tree.commentBuffer.getChars(start, start + len, dest, 0)

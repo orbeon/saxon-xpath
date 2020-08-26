@@ -111,10 +111,10 @@ object XHTMLURIEscaper {
 
   private def isURLAttribute(elcode: NodeName, atcode: NodeName): Boolean = {
     if (!elcode.hasURI(NamespaceConstant.XHTML)) {
-      false
+      return false
     }
     if (!atcode.hasURI("")) {
-      false
+      return false
     }
     val attName: String = atcode.getLocalPart
     attTable.contains(attName) &&
