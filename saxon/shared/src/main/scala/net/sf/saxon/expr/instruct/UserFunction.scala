@@ -192,7 +192,7 @@ class UserFunction
   def computeEvaluationMode(): Unit = {
     evaluator =
       if (tailRecursive) ExpressionTool.eagerEvaluator(getBody)
-      else ExpressionTool.lazyEvaluator(getBody, true)
+      else ExpressionTool.lazyEvaluator(getBody, repeatable = true)
   }
 
   def isInlineable(): java.lang.Boolean = {

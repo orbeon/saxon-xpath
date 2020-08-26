@@ -151,7 +151,7 @@ class OrderByClause(flwor: FLWORExpression,
                                    SequenceType.OPTIONAL_ATOMIC,
                                    role,
                                    visitor)
-      skd.setSortKey(sortKey, false)
+      skd.setSortKey(sortKey, setContext = false)
       skd.typeCheck(visitor, contextInfo)
       if (skd.isFixed.asInstanceOf[Boolean]) {
         val comp: AtomicComparer = skd.makeComparator(

@@ -318,7 +318,7 @@ abstract class FunctionCall extends Expression {
     val numArgs: Int = getArity
     val actualArgs: Array[Sequence] = Array.ofDim[Sequence](numArgs)
     for (i <- 0 until numArgs) {
-      actualArgs(i) = ExpressionTool.lazyEvaluate(getArg(i), context, false)
+      actualArgs(i) = ExpressionTool.lazyEvaluate(getArg(i), context, repeatable = false)
     }
     actualArgs
   }

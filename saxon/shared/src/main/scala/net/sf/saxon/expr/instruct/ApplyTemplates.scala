@@ -208,7 +208,7 @@ override  def optimize(visitor: ExpressionVisitor,
   override def mayCreateNewNodes(): Boolean = true
 
   override def process(output: Outputter, context: XPathContext): Unit = {
-    apply(output, context, false)
+    apply(output, context, returnTailCall = false)
   }
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall =
@@ -225,7 +225,7 @@ override  def optimize(visitor: ExpressionVisitor,
       val c2: XPathContextMajor = context.newContext()
       c2.setOrigin(this)
       new ApplyTemplatesPackage(
-        ExpressionTool.lazyEvaluate(getSelect, context, false),
+        ExpressionTool.lazyEvaluate(getSelect, context, repeatable = false),
         targetMode,
         params,
         tunnels,
@@ -330,10 +330,10 @@ override  def optimize(visitor: ExpressionVisitor,
     out.setChildRole("select")
     getSelect.export(out)
     if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, false)
+      WithParam.exportParameters(getActualParams, out, tunnel = false)
     }
     if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, true)
+      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

@@ -175,8 +175,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       getRhsExpression)) {
       Literal.makeLiteral(BooleanValue.FALSE, this)
     }
-    this.setLhsExpression(getLhsExpression.unordered(false, false))
-    this.setRhsExpression(getRhsExpression.unordered(false, false))
+    this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+    this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     val atomicType: SequenceType = SequenceType.ATOMIC_SEQUENCE
     val tc: TypeChecker = config.getTypeChecker(false)
     val role0: RoleDiagnostic =
@@ -366,8 +366,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       getRhsExpression)) {
       Literal.makeLiteral(BooleanValue.FALSE, this)
     }
-    this.setLhsExpression(getLhsExpression.unordered(false, false))
-    this.setRhsExpression(getRhsExpression.unordered(false, false))
+    this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+    this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
       .isInstanceOf[Literal]) {
       Literal.makeLiteral(
@@ -481,7 +481,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     }
     visitor
       .obtainOptimizer()
-      .optimizeGeneralComparison(visitor, this, false, contextInfo)
+      .optimizeGeneralComparison(visitor, this, backwardsCompatible = false, contextInfo)
   }
 
   private def manyOperandIsLiftable(): Boolean = {

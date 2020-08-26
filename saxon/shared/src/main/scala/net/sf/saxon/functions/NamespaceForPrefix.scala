@@ -27,7 +27,7 @@ object NamespaceForPrefix {
     var prefix: String = null
     prefix = if (p == null) "" else p.getStringValue
     val resolver: NamespaceResolver = element.getAllNamespaces
-    val uri: String = resolver.getURIForPrefix(prefix, true)
+    val uri: String = resolver.getURIForPrefix(prefix, useDefault = true)
     if (uri == null || uri.isEmpty) {
       return null
     }

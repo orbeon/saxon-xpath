@@ -56,7 +56,7 @@ object KeyIndex {
         collation.getCollationKey(value.getStringValue)
       }
     } else {
-      value.getXPathComparable(false, collation, implicitTimezone)
+      value.getXPathComparable(ordered = false, collation, implicitTimezone)
     }
 
 }
@@ -224,11 +224,11 @@ class KeyIndex(isRangeKey: Boolean) {
         getCollationKey(convertedValue, collation, implicitTimezone)
       val value: AnyRef = index.get(uk).asInstanceOf[AnyRef]
       if (value.isInstanceOf[NodeInfo]) {
-        addEntry(amk, value.asInstanceOf[NodeInfo], false)
+        addEntry(amk, value.asInstanceOf[NodeInfo], isFirst = false)
       } else {
         val nodes: List[NodeInfo] = value.asInstanceOf[List[NodeInfo]]
         for (node <- nodes) {
-          addEntry(amk, node, false)
+          addEntry(amk, node, isFirst = false)
         }
       }
     }

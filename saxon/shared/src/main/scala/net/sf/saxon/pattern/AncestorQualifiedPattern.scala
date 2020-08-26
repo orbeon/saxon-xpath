@@ -89,7 +89,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
         val exp: Expression = step.typeCheck(
           visitor,
           visitor.getConfiguration
-            .makeContextItemStaticInfo(upperPattern.getItemType, false))
+            .makeContextItemStaticInfo(upperPattern.getItemType, maybeUndefined = false))
         refinedItemType = exp.getItemType
       }
     }

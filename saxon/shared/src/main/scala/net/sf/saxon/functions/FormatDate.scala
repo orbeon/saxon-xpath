@@ -619,7 +619,7 @@ object FormatDate {
           "s",
           java.lang.Integer.parseInt(reverseValue.toString),
           reverseFormat.toString,
-          false,
+          defaultFormat = false,
           numberer,
           context)
         var correctedResult: UnicodeString = reverse(
@@ -940,8 +940,8 @@ class FormatDate extends SystemFunction with Callable {
     try {
       val c: String = calendarVal.getStringValue
       cal = StructuredQName.fromLexicalQName(c,
-        false,
-        true,
+        useDefault = false,
+        allowEQName = true,
         getRetainedStaticContext)
     } catch {
       case e: XPathException => {

@@ -139,13 +139,13 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
         }
       case AxisInfo.DESCENDANT =>
         if (nodeKind == Type.ELEMENT || nodeKind == Type.DOCUMENT) {
-          iterateDescendants(nodeTest, false)
+          iterateDescendants(nodeTest, includeSelf = false)
         } else {
           EmptyIterator.ofNodes()
         }
       case AxisInfo.DESCENDANT_OR_SELF =>
         if (nodeKind == Type.ELEMENT || nodeKind == Type.DOCUMENT) {
-          iterateDescendants(nodeTest, true)
+          iterateDescendants(nodeTest, includeSelf = true)
         } else {
           Navigator.filteredSingleton(this, nodeTest)
         }
@@ -156,7 +156,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
         nodeKind match {
           case Type.DOCUMENT | Type.ATTRIBUTE | Type.NAMESPACE =>
             EmptyIterator.ofNodes()
-          case _ => iterateSiblings(nodeTest, true)
+          case _ => iterateSiblings(nodeTest, forwards = true)
 
         }
       case AxisInfo.NAMESPACE =>
@@ -173,7 +173,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
         nodeKind match {
           case Type.DOCUMENT | Type.ATTRIBUTE | Type.NAMESPACE =>
             EmptyIterator.ofNodes()
-          case _ => iterateSiblings(nodeTest, false)
+          case _ => iterateSiblings(nodeTest, forwards = false)
 
         }
       case AxisInfo.SELF => Navigator.filteredSingleton(this, nodeTest)

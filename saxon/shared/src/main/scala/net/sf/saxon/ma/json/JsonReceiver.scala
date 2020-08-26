@@ -291,7 +291,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
           .effectiveBooleanValue()
       }
       key = (if (alreadyEscaped) handleEscapedString(key)
-      else escape(key, false, new ControlChar())).toString
+      else escape(key, forXml = false, new ControlChar())).toString
       val normalizedKey: String = if (alreadyEscaped) unescape(key) else key
       val added: Boolean = keyChecker.peek().add(normalizedKey)
       if (!added) {
@@ -379,7 +379,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
       if (escaped) {
         output.cat(handleEscapedString(str))
       } else {
-        output.cat(escape(str, false, new ControlChar()))
+        output.cat(escape(str, forXml = false, new ControlChar()))
       }
       output.cat("\"")
     } else if (!Whitespace.isWhite(textBuffer)) {

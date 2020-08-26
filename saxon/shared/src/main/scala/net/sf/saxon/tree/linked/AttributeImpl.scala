@@ -150,7 +150,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
           new NamespaceBinding(newPrefix, newURI)
         val oldURI: String = getRawParent
           .asInstanceOf[ElementImpl]
-          .getURIForPrefix(newPrefix, false)
+          .getURIForPrefix(newPrefix, useDefault = false)
         if (oldURI == null) {
           owner.addNamespace(newBinding)
         } else if (oldURI != newURI) {

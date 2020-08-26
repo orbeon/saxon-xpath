@@ -45,7 +45,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
       collator.getCollationElementIterator(s1)
     val iter2: CollationElementIterator =
       collator.getCollationElementIterator(s2)
-    collationContains(iter1, iter2, null, false)
+    collationContains(iter1, iter2, null, matchAtEnd = false)
   }
 
   def endsWith(s1: String, s2: String): Boolean = {
@@ -54,7 +54,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
       collator.getCollationElementIterator(s1)
     val iter2: CollationElementIterator =
       collator.getCollationElementIterator(s2)
-    collationContains(iter1, iter2, null, true)
+    collationContains(iter1, iter2, null, matchAtEnd = true)
   }
 
   def startsWith(s1: String, s2: String): Boolean = {
@@ -73,7 +73,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
     val iter2: CollationElementIterator =
       collator.getCollationElementIterator(s2)
     val ia: Array[Int] = Array.ofDim[Int](2)
-    val ba: Boolean = collationContains(iter1, iter2, ia, false)
+    val ba: Boolean = collationContains(iter1, iter2, ia, matchAtEnd = false)
     if (ba) {
       s1.substring(ia(1))
     } else {
@@ -88,7 +88,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
     val iter2: CollationElementIterator =
       collator.getCollationElementIterator(s2)
     val ib: Array[Int] = Array.ofDim[Int](2)
-    val bb: Boolean = collationContains(iter1, iter2, ib, false)
+    val bb: Boolean = collationContains(iter1, iter2, ib, matchAtEnd = false)
     if (bb) {
       s1.substring(0, ib(0))
     } else {

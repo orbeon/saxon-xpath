@@ -250,7 +250,7 @@ class TypeChecker {
                       role: RoleDiagnostic,
                       visitor: ExpressionVisitor): Expression = {
     if (supplied.implementsStaticTypeCheck()) {
-      supplied.staticTypeCheck(req, false, role, visitor)
+      supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
     }
     var exp: Expression = supplied
     val env: StaticContext = visitor.getStaticContext

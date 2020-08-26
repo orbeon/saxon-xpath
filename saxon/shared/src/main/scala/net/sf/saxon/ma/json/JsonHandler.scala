@@ -117,7 +117,7 @@ class JsonHandler {
   def reEscape(`val`: String): String = {
     var escaped: CharSequence = null
     if (escape) {
-      escaped = JsonReceiver.escape(`val`, true, new IntPredicate() {
+      escaped = JsonReceiver.escape(`val`, forXml = true, new IntPredicate() {
         def test(value: Int): Boolean =
           (value >= 0 && value <= 0x1F) || (value >= 0x7F && value <= 0x9F) ||
             !charChecker.test(value) ||

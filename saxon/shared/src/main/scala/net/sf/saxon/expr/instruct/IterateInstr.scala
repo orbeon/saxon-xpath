@@ -126,7 +126,7 @@ class IterateInstr(select: Expression,
       selectType = AnyItemType.getInstance
     }
     val cit: ContextItemStaticInfo =
-      visitor.getConfiguration.makeContextItemStaticInfo(selectType, false)
+      visitor.getConfiguration.makeContextItemStaticInfo(selectType, maybeUndefined = false)
     cit.setContextSettingExpression(getSelectExpression)
     actionOp.typeCheck(visitor, cit)
     onCompletionOp.typeCheck(visitor, ContextItemStaticInfo.ABSENT)
@@ -144,7 +144,7 @@ class IterateInstr(select: Expression,
     selectOp.optimize(visitor, contextInfo)
     initiallyOp.optimize(visitor, contextInfo)
     val cit2: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getSelectExpression.getItemType, false)
+      .makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     cit2.setContextSettingExpression(getSelectExpression)
     actionOp.optimize(visitor, cit2)
     onCompletionOp.optimize(visitor, ContextItemStaticInfo.ABSENT)
@@ -158,7 +158,7 @@ class IterateInstr(select: Expression,
   }
 
   def isCompilable(): Boolean =
-    !containsBreakOrNextIterationWithinTryCatch(this, false)
+    !containsBreakOrNextIterationWithinTryCatch(this, withinTryCatch = false)
 
   override def getItemType(): ItemType =
     if (Literal.isEmptySequence(getOnCompletion)) {
@@ -191,8 +191,8 @@ class IterateInstr(select: Expression,
   override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
-    getActionExpression.checkPermittedContents(parentType, false)
-    getOnCompletion.checkPermittedContents(parentType, false)
+    getActionExpression.checkPermittedContents(parentType, whole = false)
+    getOnCompletion.checkPermittedContents(parentType, whole = false)
   }
 
   def copy(rebindings: RebindingMap): Expression = {

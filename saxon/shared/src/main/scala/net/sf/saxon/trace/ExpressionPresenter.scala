@@ -296,7 +296,7 @@ class ExpressionPresenter {
       var iter: Iterator[String] = sc.iteratePrefixes.asInstanceOf[Iterator[String]]
       while (iter.hasNext) {
         val p: String = iter.next()
-        var uri: String = sc.getURIForPrefix(p, true).asInstanceOf[String]
+        var uri: String = sc.getURIForPrefix(p, useDefault = true).asInstanceOf[String]
         fsb.append(p)
         fsb.append("=")
         if (Whitespace.containsWhitespace(uri)) {

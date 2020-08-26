@@ -719,8 +719,8 @@ class FormatNumber extends SystemFunction with Callable {
             .getStringValue
           decimalFormatName = StructuredQName.fromLexicalQName(
             lexicalName,
-            false,
-            true,
+            useDefault = false,
+            allowEQName = true,
             getRetainedStaticContext)
         } catch {
           case e: XPathException => {
@@ -785,8 +785,8 @@ class FormatNumber extends SystemFunction with Callable {
     var dfs: DecimalSymbols = null
     var qName: StructuredQName = null
     try qName = StructuredQName.fromLexicalQName(lexicalName,
-      false,
-      true,
+      useDefault = false,
+      allowEQName = true,
       getRetainedStaticContext)
     catch {
       case e: XPathException => {

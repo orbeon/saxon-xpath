@@ -241,7 +241,7 @@ abstract class Minimax extends CollatingFunctionFixed {
   override def getResultItemType(args: Array[Expression]): ItemType = {
     val th: TypeHierarchy =
       getRetainedStaticContext.getConfiguration.getTypeHierarchy
-    var base: ItemType = Atomizer.getAtomizedItemType(args(0), false, th)
+    var base: ItemType = Atomizer.getAtomizedItemType(args(0), alwaysUntyped = false, th)
     if (base == BuiltInAtomicType.UNTYPED_ATOMIC) {
       base = BuiltInAtomicType.DOUBLE
     }

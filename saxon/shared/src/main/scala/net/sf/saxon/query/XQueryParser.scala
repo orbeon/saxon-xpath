@@ -115,7 +115,7 @@ object XQueryParser {
     val t = express.getItemType
     if (!(t == BuiltInAtomicType.STRING) && !(t == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       express = new AtomicSequenceConverter(express, BuiltInAtomicType.STRING)
-      express.asInstanceOf[AtomicSequenceConverter].allocateConverterStatically(env.getConfiguration, false)
+      express.asInstanceOf[AtomicSequenceConverter].allocateConverterStatically(env.getConfiguration, allowNull = false)
     }
     if (express.getCardinality == StaticProperty.EXACTLY_ONE) express
     else {
@@ -1423,7 +1423,7 @@ class XQueryParser extends XPathParser {
       exp = CardinalityChecker.makeCardinalityChecker(exp, StaticProperty.EXACTLY_ONE, role)
       val visitor = ExpressionVisitor.make(env)
       exp = exp.simplify
-      val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType.getInstance, true)
+      val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
       exp.setRetainedStaticContext(env.makeRetainedStaticContext)
       exp = exp.typeCheck(visitor, info)
       req.setDefaultValue(exp)
@@ -1653,7 +1653,7 @@ class XQueryParser extends XPathParser {
         grumble("Output declaration use-character-maps cannot appear except in a parameter file", "XQST0109")
       case _ =>
         val props = getExecutable.getPrimarySerializationProperties.getProperties
-        ResultDocument.setSerializationProperty(props, "", localName, value, env.getNamespaceResolver, false, env.getConfiguration)
+        ResultDocument.setSerializationProperty(props, "", localName, value, env.getNamespaceResolver, prevalidated = false, env.getConfiguration)
     }
   }
 
@@ -1670,7 +1670,7 @@ class XQueryParser extends XPathParser {
       val name = makeStructuredQName(keyword, "")
       val lname = name.getLocalPart
       val uri = name.getURI
-      ResultDocument.setSerializationProperty(props, uri, lname, value, env.getNamespaceResolver, false, env.getConfiguration)
+      ResultDocument.setSerializationProperty(props, uri, lname, value, env.getNamespaceResolver, prevalidated = false, env.getConfiguration)
     } catch {
       case e: XPathException =>
         badOutputProperty(e.getMessage)
@@ -1726,7 +1726,7 @@ class XQueryParser extends XPathParser {
           for (i <- 0 until keys.length) {
             val spec = sortSpecList.get(i)
             val key = new SortKeyDefinition
-            key.setSortKey(sortSpecList.get(i).sortKey, false)
+            key.setSortKey(sortSpecList.get(i).sortKey, setContext = false)
             key.setOrder(new StringLiteral(if (spec.ascending) "ascending"
             else "descending"))
             key.setEmptyLeast(spec.emptyLeast)
@@ -2568,7 +2568,7 @@ class XQueryParser extends XPathParser {
       if (vName.isInstanceOf[StringValue] && !vName.isInstanceOf[AnyURIValue]) {
         val lex = vName.asInstanceOf[StringValue].getStringValue
         try {
-          elemName = makeNodeName(lex, true)
+          elemName = makeNodeName(lex, useDefault = true)
           elemName.obtainFingerprint(env.getConfiguration.getNamePool)
         } catch {
           case staticError: XPathException =>
@@ -2615,7 +2615,7 @@ class XQueryParser extends XPathParser {
 
   @throws[XPathException]
   private def parseNamedElementConstructor(offset: Int): Expression = {
-    val nodeName: NodeName = makeNodeName(t.currentTokenValue, true)
+    val nodeName: NodeName = makeNodeName(t.currentTokenValue, useDefault = true)
     var content: Expression = null
     nextToken()
     if (t.currentToken != Token.RCURLY) {
@@ -2658,7 +2658,7 @@ class XQueryParser extends XPathParser {
         val lex = vName.asInstanceOf[StringValue].getStringValue
         if (lex == "xmlns" || lex.startsWith("xmlns:")) grumble("Cannot create a namespace using an attribute constructor", "XQDY0044", offset)
         var attributeName: NodeName = null
-        try attributeName = makeNodeName(lex, false)
+        try attributeName = makeNodeName(lex, useDefault = false)
         catch {
           case staticError: XPathException =>
             val code = staticError.getErrorCodeLocalPart
@@ -2696,7 +2696,7 @@ class XQueryParser extends XPathParser {
   private def parseNamedAttributeConstructor(offset: Int): Expression = {
     var warningStr: String = null
     if (t.currentTokenValue == "xmlns" || t.currentTokenValue.startsWith("xmlns:")) warningStr = "Cannot create a namespace declaration using an attribute constructor"
-    var attributeName = makeNodeName(t.currentTokenValue, false)
+    var attributeName = makeNodeName(t.currentTokenValue, useDefault = false)
     if (!(attributeName.getURI == "") && attributeName.getPrefix == "") {
       attributeName = new FingerprintedQName("_", attributeName.getURI, attributeName.getLocalPart)
     }
@@ -2730,7 +2730,7 @@ class XQueryParser extends XPathParser {
     expect(Token.RCURLY)
     lookAhead()
     nextToken()
-    val select = XQueryParser.stringify(value, true, env)
+    val select = XQueryParser.stringify(value, noNodeIfEmpty = true, env)
     val vof = new ValueOf(select, false, true)
     setLocation(vof, offset)
     makeTracer(vof, null)
@@ -2926,7 +2926,7 @@ class XQueryParser extends XPathParser {
 
    def makeSimpleContent(content: Expression, inst: SimpleNodeConstructor, offset: Int): Unit = {
     if (content == null) inst.setSelect(new StringLiteral(StringValue.EMPTY_STRING))
-    else inst.setSelect(XQueryParser.stringify(content, false, env))
+    else inst.setSelect(XQueryParser.stringify(content, noNodeIfEmpty = false, env))
     setLocation(inst, offset)
   }
 
@@ -3034,7 +3034,7 @@ class XQueryParser extends XPathParser {
       }
       else {
         var avt: Expression = null
-        try avt = makeAttributeContent(t.input, t.inputOffset, delim, true)
+        try avt = makeAttributeContent(t.input, t.inputOffset, delim, scanOnly = true)
         catch {
           case err: XPathException =>
             if (!err.hasBeenReported) grumble(err.getMessage)
@@ -3171,7 +3171,7 @@ class XQueryParser extends XPathParser {
         val attInst = new FixedAttribute(attributeName, Validation.STRIP, null)
         setLocation(attInst)
         var select: Expression = null
-        try select = makeAttributeContent(attValue, 1, attValue.charAt(0), false)
+        try select = makeAttributeContent(attValue, 1, attValue.charAt(0), scanOnly = false)
         catch {
           case err: XPathException =>
             err.setIsStaticError(true)

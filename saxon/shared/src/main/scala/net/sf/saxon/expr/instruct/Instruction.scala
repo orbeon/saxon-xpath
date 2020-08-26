@@ -77,7 +77,7 @@ object Instruction {
     for (actualParam <- actualParams) {
       newParams.put(actualParam.getVariableQName,
         actualParam.getSelectValue(context),
-        false)
+        checked = false)
     }
     newParams
   }

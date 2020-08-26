@@ -100,10 +100,10 @@ class NextMatch(var useTailRecursion: Boolean)
     }
     out.emitAttribute("flags", flags)
     if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, false)
+      WithParam.exportParameters(getActualParams, out, tunnel = false)
     }
     if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, true)
+      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

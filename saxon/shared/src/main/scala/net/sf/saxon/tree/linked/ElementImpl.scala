@@ -234,7 +234,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     val prefix: String = newName.getPrefix
     val uri: String = newName.getURI
     val ns: NamespaceBinding = new NamespaceBinding(prefix, uri)
-    var uc: String = getURIForPrefix(prefix, true)
+    var uc: String = getURIForPrefix(prefix, useDefault = true)
     if (uc == null) {
       uc = ""
     }
@@ -306,7 +306,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     if (!nodeName.hasURI("")) {
       val binding: NamespaceBinding = nodeName.getNamespaceBinding
       val prefix: String = binding.getPrefix
-      val uc: String = getURIForPrefix(prefix, false)
+      val uc: String = getURIForPrefix(prefix, useDefault = false)
       if (uc == null) {
         addNamespace(binding)
       } else if (uc != binding.getURI) {

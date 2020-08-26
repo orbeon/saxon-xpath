@@ -52,7 +52,7 @@ class Exists extends Aggregate {
         } else if (c == StaticProperty.ALLOWS_ZERO) {
           Literal.makeLiteral(BooleanValue.FALSE, e2)
         }
-        setArg(0, getArg(0).unordered(false, visitor.isOptimizeForStreaming))
+        setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming))
         if (getArg(0)
           .isInstanceOf[VennExpression] && !visitor.isOptimizeForStreaming) {
           val v: VennExpression = getArg(0).asInstanceOf[VennExpression]
@@ -107,7 +107,7 @@ class Exists extends Aggregate {
     } else if (c == StaticProperty.ALLOWS_ZERO) {
       Literal.makeLiteral(BooleanValue.FALSE, args(0))
     }
-    args(0) = args(0).unordered(false, visitor.isOptimizeForStreaming)
+    args(0) = args(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming)
     if (args(0).isInstanceOf[VennExpression] && !visitor.isOptimizeForStreaming) {
       val v: VennExpression = args(0).asInstanceOf[VennExpression]
       if (v.getOperator == Token.UNION) {

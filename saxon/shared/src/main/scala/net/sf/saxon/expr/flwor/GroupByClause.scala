@@ -279,7 +279,7 @@ class GroupByClause(var config: Configuration) extends Clause {
               }
               h ^= i +
                 `val`
-                  .getXPathComparable(false,
+                  .getXPathComparable(ordered = false,
                     comparer.getCollator,
                     implicitTimezone)
                   .hashCode

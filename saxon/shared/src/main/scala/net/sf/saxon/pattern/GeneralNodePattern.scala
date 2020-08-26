@@ -47,7 +47,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     if (equivalentExpr.isInstanceOf[FilterExpression] &&
       !equivalentExpr.asInstanceOf[FilterExpression].isFilterIsPositional) {
       try PatternMaker
-        .fromExpression(equivalentExpr, config, true)
+        .fromExpression(equivalentExpr, config, is30 = true)
         .typeCheck(visitor, defaultInfo)
       catch {
         case err: XPathException => {}
@@ -64,7 +64,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
   override def bindCurrent(binding: LocalBinding): Unit = {
     if (ExpressionTool.callsFunction(equivalentExpr,
       Current.FN_CURRENT,
-      false)) {
+      sameFocusOnly = false)) {
       if (equivalentExpr.isCallOn(classOf[Current])) {
         equivalentExpr = new LocalVariableReference(binding)
       } else {

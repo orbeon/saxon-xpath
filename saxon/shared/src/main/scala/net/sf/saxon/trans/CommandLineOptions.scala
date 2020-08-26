@@ -430,21 +430,21 @@ class CommandLineOptions {
         }
       }
       value = sb.toString
-      config.getConfClass("org.apache.xml.resolver.CatalogManager", false, null)
+      config.getConfClass("org.apache.xml.resolver.CatalogManager", tracing = false, null)
       XmlCatalogResolver.setCatalog(value, config, getOptionValue("t") != null)
     }
     value = getOptionValue("dtd")
     if (value != null) {
       value match {
         case "on" =>
-          config.setBooleanProperty(Feature.DTD_VALIDATION, true)
+          config.setBooleanProperty(Feature.DTD_VALIDATION, value = true)
           config.getParseOptions.setDTDValidationMode(Validation.STRICT)
         case "off" =>
-          config.setBooleanProperty(Feature.DTD_VALIDATION, false)
+          config.setBooleanProperty(Feature.DTD_VALIDATION, value = false)
           config.getParseOptions.setDTDValidationMode(Validation.SKIP)
         case "recover" =>
-          config.setBooleanProperty(Feature.DTD_VALIDATION, true)
-          config.setBooleanProperty(Feature.DTD_VALIDATION_RECOVERABLE, true)
+          config.setBooleanProperty(Feature.DTD_VALIDATION, value = true)
+          config.setBooleanProperty(Feature.DTD_VALIDATION_RECOVERABLE, value = true)
           config.getParseOptions.setDTDValidationMode(Validation.LAX)
 
       }
@@ -635,7 +635,7 @@ class CommandLineOptions {
       val name: String = e.nextElement().asInstanceOf[String]
       val value: String = paramFiles.getProperty(name)
       val sourceList: List[Source] = new ArrayList[Source]()
-      loadDocuments(value, useURLs, processor, true, sourceList)
+      loadDocuments(value, useURLs, processor, useSAXSource = true, sourceList)
       if (!sourceList.isEmpty) {
         val nodeList: List[XdmNode] = new ArrayList[XdmNode](sourceList.size)
         val builder: DocumentBuilder = processor.newDocumentBuilder()

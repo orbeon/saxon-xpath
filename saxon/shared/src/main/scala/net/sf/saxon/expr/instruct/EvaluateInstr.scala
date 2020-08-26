@@ -427,7 +427,7 @@ class EvaluateInstr(xpath: Expression,
         dynamicParams.get(new QNameValue(name, BuiltInAtomicType.QNAME)) ==
           null &&
         !isActualParam(name) &&
-        ExpressionTool.contains(expr, false, nameMatch)) {
+        ExpressionTool.contains(expr, sameFocusOnly = false, nameMatch)) {
         throw new XPathException(
           "No value has been supplied for variable " + name.getDisplayName,
           "XPST0008")
@@ -490,7 +490,7 @@ class EvaluateInstr(xpath: Expression,
       out.setChildRole("options")
       optionsOp.getChildExpression.export(out)
     }
-    WithParam.exportParameters(actualParams, out, false)
+    WithParam.exportParameters(actualParams, out, tunnel = false)
     if (dynamicParamsOp != null) {
       out.setChildRole("wp")
       getDynamicParams.export(out)

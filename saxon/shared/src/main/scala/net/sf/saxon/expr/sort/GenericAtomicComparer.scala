@@ -95,10 +95,10 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
     } else {
       val implicitTimezone: Int = context.getImplicitTimezone
       val ac: Comparable[AtomicValue] = a
-        .getXPathComparable(true, collator, implicitTimezone)
+        .getXPathComparable(ordered = true, collator, implicitTimezone)
         .asInstanceOf[Comparable[AtomicValue]]
       val bc: AtomicValue= b
-        .getXPathComparable(true, collator, implicitTimezone).asAtomic()
+        .getXPathComparable(ordered = true, collator, implicitTimezone).asAtomic()
       if (ac == null || bc == null) {
         val e: XPathException = new XPathException(
           "Objects are not comparable (" + Type.displayTypeName(a) +
@@ -123,8 +123,8 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
         0
     } else {
       val implicitTimezone: Int = context.getImplicitTimezone
-      val ac: AnyRef = a.getXPathComparable(false, collator, implicitTimezone)
-      val bc: AnyRef = b.getXPathComparable(false, collator, implicitTimezone)
+      val ac: AnyRef = a.getXPathComparable(ordered = false, collator, implicitTimezone)
+      val bc: AnyRef = b.getXPathComparable(ordered = false, collator, implicitTimezone)
       ac == bc
     }
 

@@ -21,14 +21,14 @@ class OrExpression(val p1: Expression, val p2: Expression)
  * @param p2 the second operand
  */
   extends BooleanExpression(p1, Token.OR, p2) {
-  override  def preEvaluate = if (Literal.hasEffectiveBooleanValue(getLhsExpression, true) || Literal.hasEffectiveBooleanValue(getRhsExpression, true)) { // A or true() => true()
+  override  def preEvaluate = if (Literal.hasEffectiveBooleanValue(getLhsExpression, value = true) || Literal.hasEffectiveBooleanValue(getRhsExpression, value = true)) { // A or true() => true()
     // true() or B => true()
     Literal.makeLiteral(BooleanValue.TRUE, this)
   }
-  else if (Literal.hasEffectiveBooleanValue(getLhsExpression, false)) { // false() or B => B
+  else if (Literal.hasEffectiveBooleanValue(getLhsExpression, value = false)) { // false() or B => B
     forceToBoolean(getRhsExpression)
   }
-  else if (Literal.hasEffectiveBooleanValue(getRhsExpression, false)) { // A or false() => A
+  else if (Literal.hasEffectiveBooleanValue(getRhsExpression, value = false)) { // A or false() => A
     forceToBoolean(getLhsExpression)
   }
   else this

@@ -66,7 +66,7 @@ object NamespaceMap {
     val bindings = new ArrayList[NamespaceBinding]
     while (iter.hasNext) {
       val prefix = iter.next
-      val uri = resolver.getURIForPrefix(prefix, true)
+      val uri = resolver.getURIForPrefix(prefix, useDefault = true)
       bindings.add(new NamespaceBinding(prefix, uri))
     }
     new NamespaceMap(bindings)

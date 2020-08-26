@@ -110,7 +110,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
         .setContextItem(node)
       var rule: Rule = accumulator.getPreDescentRules.getRule(node, context).asInstanceOf[Rule]
       if (rule != null) {
-        seq = processRule(rule, node, false, seq, context)
+        seq = processRule(rule, node, isPostDescent = false, seq, context)
         logChange(node, seq, context, " BEFORE ")
       }
       for (kid <- node.children()) {
@@ -121,7 +121,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
         .setContextItem(node)
       rule = accumulator.getPostDescentRules.getRule(node, context).asInstanceOf[Rule]
       if (rule != null) {
-        seq = processRule(rule, node, true, seq, context)
+        seq = processRule(rule, node, isPostDescent = true, seq, context)
         logChange(node, seq, context, " AFTER ")
       }
       seq

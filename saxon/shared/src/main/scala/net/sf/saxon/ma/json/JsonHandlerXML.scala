@@ -228,7 +228,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
       var k: String = keys.pop()
       k = reEscape(k)
       if (escape) {
-        markAsEscaped(k, true)
+        markAsEscaped(k, isKey = true)
       }
       out.attribute(keyQN,
         if (validate) STRING_TYPE else SIMPLE_TYPE,
@@ -291,7 +291,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
       if (isInMap) "stringWithinMapType" else "stringType")
     val escaped: CharSequence = reEscape(`val`)
     if (escape) {
-      markAsEscaped(escaped, false)
+      markAsEscaped(escaped, isKey = false)
     }
     startContent()
     characters(escaped.toString)

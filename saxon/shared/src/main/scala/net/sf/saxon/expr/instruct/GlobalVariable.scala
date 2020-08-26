@@ -245,7 +245,7 @@ class GlobalVariable
         getVariableQName.getDisplayName,
         0)
       val cit: ContextItemStaticInfo = getConfiguration
-        .makeContextItemStaticInfo(AnyItemType.getInstance, true)
+        .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
       var value2: Expression = TypeChecker.strictTypeCheck(
         value.simplify().typeCheck(visitor, cit),
         getRequiredType,

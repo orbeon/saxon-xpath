@@ -74,7 +74,7 @@ class XQueryExpression(var expression: Expression,
       if (contextReq == null) AnyItemType.getInstance
       else contextReq.getRequiredItemType
     val cit: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(req, true)
+      config.makeContextItemStaticInfo(req, maybeUndefined = true)
     var e2: Expression = expression.typeCheck(visitor, cit)
     if (e2 != expression) {
       e2.setRetainedStaticContext(expression.getRetainedStaticContext)

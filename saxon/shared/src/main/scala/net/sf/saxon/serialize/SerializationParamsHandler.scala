@@ -171,7 +171,7 @@ class SerializationParamsHandler {
           lname,
           value,
           child.getAllNamespaces,
-          false,
+          prevalidated = false,
           nodeInf.getConfiguration)
         catch {
           case err: XPathException =>

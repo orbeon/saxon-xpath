@@ -29,7 +29,7 @@ object GMonthValue {
     val tz: String = m.group(2)
     val date: String = "2000-" + base + "-01" + (if (tz == null) "" else tz)
     g.typeLabel = BuiltInAtomicType.G_MONTH
-    setLexicalValue(g, date, true)
+    setLexicalValue(g, date, allowYearZero = true)
   }
 
 }

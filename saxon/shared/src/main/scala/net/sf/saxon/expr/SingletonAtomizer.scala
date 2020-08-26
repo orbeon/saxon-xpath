@@ -91,7 +91,7 @@ class SingletonAtomizer(sequence: Expression,
                         contextInfo: ContextItemStaticInfo): Expression = {
     val exp: Expression = super.optimize(visitor, contextInfo)
     if (exp == this) {
-      this.setBaseExpression(getBaseExpression.unordered(true, false))
+      this.setBaseExpression(getBaseExpression.unordered(retainAllNodes = true, forStreaming = false))
       if (getBaseExpression.getItemType.isPlainType &&
         !Cardinality.allowsMany(getBaseExpression.getCardinality)) {
         getBaseExpression

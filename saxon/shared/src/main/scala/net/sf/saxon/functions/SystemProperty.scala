@@ -79,8 +79,8 @@ class SystemProperty extends SystemFunction with Callable {
           .asInstanceOf[StringValue]
         val qName: StructuredQName = StructuredQName.fromLexicalQName(
           name.getStringValue,
-          false,
-          true,
+          useDefault = false,
+          allowEQName = true,
           getRetainedStaticContext)
         val uri: String = qName.getURI
         val local: String = qName.getLocalPart
@@ -106,8 +106,8 @@ class SystemProperty extends SystemFunction with Callable {
     val name: StringValue = arguments(0).head().asInstanceOf[StringValue]
     val qName: StructuredQName = StructuredQName.fromLexicalQName(
       name.getStringValue,
-      false,
-      true,
+      useDefault = false,
+      allowEQName = true,
       getRetainedStaticContext)
     new StringValue(
       getProperty(qName.getURI, qName.getLocalPart, getRetainedStaticContext))
@@ -118,8 +118,8 @@ class SystemProperty extends SystemFunction with Callable {
     val name: StringValue = arguments(0).head().asInstanceOf[StringValue]
     val qName: StructuredQName = StructuredQName.fromLexicalQName(
       name.getStringValue,
-      false,
-      true,
+      useDefault = false,
+      allowEQName = true,
       getRetainedStaticContext)
     val uri: String = qName.getURI
     val local: String = qName.getLocalPart

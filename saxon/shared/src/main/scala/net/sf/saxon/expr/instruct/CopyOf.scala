@@ -550,8 +550,8 @@ class CopyOf(select: Expression,
               var typeName: StructuredQName = null
               typeName = StructuredQName.fromLexicalQName(
                 xsitype,
-                true,
-                false,
+                useDefault = true,
+                allowEQName = false,
                 item.getAllNamespaces)
               `type` = config.getSchemaType(typeName)
               if (`type` == null) {

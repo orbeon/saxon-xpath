@@ -413,7 +413,7 @@ object StringConverter {
   class StringToDecimal extends StringConverter {
 
     def convertString(input: CharSequence): ConversionResult =
-      BigDecimalValue.makeDecimalValue(input, true)
+      BigDecimalValue.makeDecimalValue(input, validate = true)
 
     /*@Nullable*/
 
@@ -688,7 +688,7 @@ object StringConverter {
       try {
         val parts: Array[String] =
           NameChecker.getQNameParts(Whitespace.trimWhitespace(input))
-        val uri: String = nsResolver.getURIForPrefix(parts(0), true)
+        val uri: String = nsResolver.getURIForPrefix(parts(0), useDefault = true)
         if (uri == null) {
           val failure: ValidationFailure = new ValidationFailure(
             "Namespace prefix " + Err
@@ -730,7 +730,7 @@ object StringConverter {
       try {
         val parts: Array[String] =
           NameChecker.getQNameParts(Whitespace.trimWhitespace(input))
-        val uri: String = getNamespaceResolver.getURIForPrefix(parts(0), true)
+        val uri: String = getNamespaceResolver.getURIForPrefix(parts(0), useDefault = true)
         if (uri == null) {
           new ValidationFailure(
             "Namespace prefix " + Err

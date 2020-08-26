@@ -210,7 +210,7 @@ class HTMLURIEscaper(nextReceiver: Receiver) extends ProxyReceiver(nextReceiver)
               new AttributeInfo(
                 att.getNodeName,
                 att.getType,
-                escapeURL(value, true, getConfiguration).toString,
+                escapeURL(value, normalize = true, getConfiguration).toString,
                 att.getLocation,
                 att.getProperties | ReceiverOption.DISABLE_CHARACTER_MAPS)
             } else {

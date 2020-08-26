@@ -47,7 +47,7 @@ object ExpressionTool {
   def make(expression: String, env: StaticContext, start: Int, terminator: Int, codeInjector: CodeInjector) = {
     var rTerminator = terminator
     val languageLevel = env.getXPathVersion
-    val parser = env.getConfiguration.newExpressionParser("XP", false, languageLevel)
+    val parser = env.getConfiguration.newExpressionParser("XP", updating = false, languageLevel)
     if (codeInjector != null) parser.setCodeInjector(codeInjector)
     if (terminator == -1)
       rTerminator = Token.EOF
@@ -79,7 +79,7 @@ object ExpressionTool {
   def unsortedIfHomogeneous(exp: Expression, forStreaming: Boolean): Expression = {
     if (exp.isInstanceOf[Literal]) return exp
     if (exp.getItemType.isInstanceOf[AnyItemType]) exp
-    else exp.unordered(false, forStreaming)
+    else exp.unordered(retainAllNodes = false, forStreaming = forStreaming)
   }
 
 
@@ -175,10 +175,10 @@ object ExpressionTool {
   }
 
 
-  def containsLocalParam(exp: Expression) = contains(exp, true, (e: Expression) => e.isInstanceOf[LocalParam])
+  def containsLocalParam(exp: Expression) = contains(exp, sameFocusOnly = true, (e: Expression) => e.isInstanceOf[LocalParam])
 
 
-  def containsLocalVariableReference(exp: Expression) = contains(exp, false, (e: Expression) => {
+  def containsLocalVariableReference(exp: Expression) = contains(exp, sameFocusOnly = false, (e: Expression) => {
     def foo(e: Expression) = {
       if (e.isInstanceOf[LocalVariableReference]) {
         val vref = e.asInstanceOf[LocalVariableReference]
@@ -521,7 +521,7 @@ object ExpressionTool {
   def dependsOnFocus(exp: Expression): Boolean = (exp.getDependencies & StaticProperty.DEPENDS_ON_FOCUS) != 0
 
 
-  def dependsOnVariable(exp: Expression, bindingList: Array[Binding]) = !(bindingList == null || bindingList.length == 0) && contains(exp, false, (e: Expression) => {
+  def dependsOnVariable(exp: Expression, bindingList: Array[Binding]) = !(bindingList == null || bindingList.length == 0) && contains(exp, sameFocusOnly = false, (e: Expression) => {
     def foo(e: Expression) = {
       if (e.isInstanceOf[VariableReference]) for (binding <- bindingList) {
         if (e.asInstanceOf[VariableReference].getBinding eq binding) true
@@ -545,7 +545,7 @@ object ExpressionTool {
   }
 
 
-  def refersToVariableOrFunction(exp: Expression) = contains(exp, false, (e: Expression) => e.isInstanceOf[VariableReference] ||
+  def refersToVariableOrFunction(exp: Expression) = contains(exp, sameFocusOnly = false, (e: Expression) => e.isInstanceOf[VariableReference] ||
     e.isInstanceOf[UserFunctionCall] || e.isInstanceOf[Binding] || e.isInstanceOf[CallTemplate] || e.isInstanceOf[ApplyTemplates] || e.isInstanceOf[ApplyImports] ||
     isCallOnSystemFunction(e, "function-lookup") || e.isCallOn(classOf[ApplyFn]))
 
@@ -557,7 +557,7 @@ object ExpressionTool {
     (e: Expression) => e.isInstanceOf[FunctionCall] && qName == e.asInstanceOf[FunctionCall].getFunctionName())
 
 
-  def containsSubexpression(exp: Expression, subClass: Class[_ <: Expression]) = contains(exp, false,
+  def containsSubexpression(exp: Expression, subClass: Class[_ <: Expression]) = contains(exp, sameFocusOnly = false,
     (e: Expression) => subClass.isAssignableFrom(e.getClass))
 
 
@@ -682,10 +682,10 @@ object ExpressionTool {
     cie
   }
   else {
-    if (callsFunction(exp, Current.FN_CURRENT, true)) {
+    if (callsFunction(exp, Current.FN_CURRENT, sameFocusOnly = true)) {
       replaceTrivialCallsToCurrent(exp)
     }
-    if (callsFunction(exp, Current.FN_CURRENT, false)) {
+    if (callsFunction(exp, Current.FN_CURRENT, sameFocusOnly = false)) {
       val let = new LetExpression
       let.setVariableQName(new StructuredQName("vv", NamespaceConstant.SAXON_GENERATED_VARIABLE, "current" + exp.hashCode))
       let.setRequiredType(SequenceType.SINGLE_ITEM)
@@ -824,7 +824,7 @@ object ExpressionTool {
   }
 
 
-  private def isFilteredAxisPath(exp: Expression): Boolean = unfilteredExpression(exp, true).isInstanceOf[AxisExpression]
+  private def isFilteredAxisPath(exp: Expression): Boolean = unfilteredExpression(exp, allowPositional = true).isInstanceOf[AxisExpression]
 
 
   def unfilteredExpression(exp: Expression, allowPositional: Boolean): Expression =
@@ -943,7 +943,7 @@ object ExpressionTool {
         val `var` = new LocalVariableReference(binding)
         ExpressionTool.copyLocationInfo(child, `var`)
         o.setChildExpression(`var`)
-        binding.addReference(`var`, true)
+        binding.addReference(`var`, isLoopingReference = true)
         found = true
       }
       else found = replaceCallsToCurrent(child, binding)

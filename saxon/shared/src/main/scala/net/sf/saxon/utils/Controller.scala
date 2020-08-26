@@ -181,8 +181,8 @@ class Controller extends ContextOriginator {
    */
   def reset(): Unit = {
     globalParameters = new GlobalParameterSet
-    focusTrackerFactory = config.getFocusTrackerFactory(executable, false)
-    multiThreadedFocusTrackerFactory = config.getFocusTrackerFactory(executable, true)
+    focusTrackerFactory = config.getFocusTrackerFactory(executable, multithreaded = false)
+    multiThreadedFocusTrackerFactory = config.getFocusTrackerFactory(executable, multithreaded = true)
     standardURIResolver = config.getSystemURIResolver
     userURIResolver = config.getURIResolver
     unparsedTextResolver = config.getUnparsedTextURIResolver
@@ -464,7 +464,7 @@ class Controller extends ContextOriginator {
    * @since 9.7. Changed in 9.9 to raise an exception if the context item is inappropriate.
    */
   @throws[XPathException]
-  def setGlobalContextItem(contextItem: Item): Unit = setGlobalContextItem(contextItem, false)
+  def setGlobalContextItem(contextItem: Item): Unit = setGlobalContextItem(contextItem, alreadyStripped = false)
 
   /**
    * Set the item used as the context for evaluating global variables. This value is used

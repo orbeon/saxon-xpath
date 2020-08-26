@@ -40,7 +40,7 @@ object GroupByClausePush {
     for (i <- 0 until groupingValues.length) {
       var v: Sequence = groupingValues(i)
       if (!(v.isInstanceOf[EmptySequence[_ <: Item]] || v.isInstanceOf[AtomicValue])) {
-        v = Atomizer.getAtomizingIterator(v.iterate(), false).materialize()
+        v = Atomizer.getAtomizingIterator(v.iterate(), oneToOne = false).materialize()
         if (SequenceTool.getLength(v) > 1) {
           throw new XPathException(
             "Grouping key value cannot be a sequence of more than one item",

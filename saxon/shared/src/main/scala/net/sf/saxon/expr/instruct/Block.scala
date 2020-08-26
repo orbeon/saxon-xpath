@@ -550,7 +550,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     for (o <- operands().asScala) {
       val child: Expression = o.getChildExpression
-      child.checkPermittedContents(parentType, false)
+      child.checkPermittedContents(parentType, whole = false)
     }
   }
 

@@ -44,7 +44,7 @@ class Data_1 extends SystemFunction {
       arg.asInstanceOf[Item].atomize()
     } else {
       val a: SequenceIterator =
-        Atomizer.getAtomizingIterator(arg.iterate(), false)
+        Atomizer.getAtomizingIterator(arg.iterate(), oneToOne = false)
       SequenceTool.toLazySequence(a)
     }
   }

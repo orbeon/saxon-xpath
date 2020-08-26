@@ -222,8 +222,8 @@ class QName(prefix: String, uri: String, localName: String) {
     }
     val node: NodeInfo = element.getUnderlyingValue.asInstanceOf[NodeInfo]
     sqName = StructuredQName.fromLexicalQName(lexName,
-      true,
-      true,
+      useDefault = true,
+      allowEQName = true,
       node.getAllNamespaces)
   }
 

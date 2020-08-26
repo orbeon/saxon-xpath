@@ -73,7 +73,7 @@ class SpaceStrippedDocument(doc: TreeInfo, @BeanProperty var strippingRule: Spac
   override def isTyped(): Boolean = underlyingTree.isTyped
 
   override def selectID(id: String, getParent: Boolean): NodeInfo = {
-    val n: NodeInfo = underlyingTree.selectID(id, false)
+    val n: NodeInfo = underlyingTree.selectID(id, getParent = false)
     if (n == null) {
       null
     } else {

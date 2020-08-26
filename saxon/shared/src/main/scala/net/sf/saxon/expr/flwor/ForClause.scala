@@ -208,7 +208,7 @@ class ForClause extends Clause {
               selection = new FilterExpression(selection, predicate)
               ExpressionTool.copyLocationInfo(predicate, selection)
               val cit: ContextItemStaticInfo =
-                config.makeContextItemStaticInfo(selectionContextItemType, true)
+                config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
               selection = selection.typeCheck(visitor, cit)
               if (!ExpressionTool.dependsOnVariable(flwor,
                 Array(positionVariable))) {
@@ -231,7 +231,7 @@ class ForClause extends Clause {
           replacement)
         if (found) {
           var cit: ContextItemStaticInfo =
-            config.makeContextItemStaticInfo(getSequence.getItemType, true)
+            config.makeContextItemStaticInfo(getSequence.getItemType, maybeUndefined = true)
           var predicate: Expression = condition.typeCheck(visitor, cit)
           val rel: Affinity.Affinity =
             th.relationship(predicate.getItemType, BuiltInAtomicType.INTEGER)
@@ -244,7 +244,7 @@ class ForClause extends Clause {
           selection = new FilterExpression(selection, predicate)
           ExpressionTool.copyLocationInfo(predicate, selection)
           cit =
-            config.makeContextItemStaticInfo(selectionContextItemType, true)
+            config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
           selection = selection.typeCheck(visitor, cit)
           changed = true
         }

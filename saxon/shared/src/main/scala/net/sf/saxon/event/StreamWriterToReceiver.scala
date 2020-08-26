@@ -96,9 +96,9 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       writeStartDocument()
     }
     if (pendingTag != null) {
-      completeTriple(pendingTag.elementName, false)
+      completeTriple(pendingTag.elementName, isAttribute = false)
       for (t <- pendingTag.attributes.asScala) {
-        completeTriple(t, true)
+        completeTriple(t, isAttribute = true)
       }
       var elemName: NodeName = null
       elemName =
@@ -187,13 +187,13 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     pendingTag.namespaces.asScala
       .find(t => t.prefix == null || t.prefix.isEmpty)
       .map(_.uri)
-      .getOrElse(inScopeNamespaces.getURIForPrefix("", true))
+      .getOrElse(inScopeNamespaces.getURIForPrefix("", useDefault = true))
 
   private def getUriForPrefix(prefix: String): String =
     pendingTag.namespaces.asScala
       .find(prefix == _.prefix)
       .map(_.uri)
-      .getOrElse(inScopeNamespaces.getURIForPrefix(prefix, false))
+      .getOrElse(inScopeNamespaces.getURIForPrefix(prefix, useDefault = false))
 
   private def getPrefixForUri(uri: String): String = {
     for (t <- pendingTag.namespaces.asScala if uri == t.uri) {
@@ -206,7 +206,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     val prefixes: Iterator[String] = inScopeNamespaces.iteratePrefixes()
     while (prefixes.hasNext) {
       val p: String = prefixes.next()
-      if (inScopeNamespaces.getURIForPrefix(p, false) == uri) {
+      if (inScopeNamespaces.getURIForPrefix(p, useDefault = false) == uri) {
         p
       }
     }

@@ -25,7 +25,7 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
     val prefixes: util.Iterator[String] = iteratePrefixes()
     while (prefixes.hasNext) {
       val p: String = prefixes.next()
-      val u: String = resolver.getURIForPrefix(p, true)
+      val u: String = resolver.getURIForPrefix(p, useDefault = true)
       if (u == uri) {
         p
       }
@@ -37,14 +37,14 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
     if (prefix.==("xmlns")) {
       return "http://www.w3.org/2000/xmlns/"
     }
-    resolver.getURIForPrefix(prefix, true)
+    resolver.getURIForPrefix(prefix, useDefault = true)
   }
 
   def getPrefixes(uri: String): Iterator[String] = {
     val list: List[String] = new ArrayList[String](4)
     val prefixes: Iterator[String] = iteratePrefixes()
     prefixes.forEachRemaining((p) => {
-      val u: String = resolver.getURIForPrefix(p, true)
+      val u: String = resolver.getURIForPrefix(p, useDefault = true)
       if (u == uri) {
         list.add(p)
       }

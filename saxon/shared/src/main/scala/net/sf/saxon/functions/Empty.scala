@@ -98,7 +98,7 @@ class Empty extends Aggregate {
           Literal.makeLiteral(BooleanValue.TRUE, e2)
         }
         // Don't sort the argument
-        setArg(0, getArg(0).unordered(false, visitor.isOptimizeForStreaming))
+        setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming))
         //    empty(A|B) => empty(A) and empty(B)
         if (getArg(0).isInstanceOf[VennExpression]) {
           val v: VennExpression = getArg(0).asInstanceOf[VennExpression]

@@ -142,7 +142,7 @@ class DocumentOverNodeInfo extends NodeOverNodeInfo with Document {
     if (doc == null) {
       return null
     }
-    wrap(doc.selectID(elementId, false)).asInstanceOf[Element]
+    wrap(doc.selectID(elementId, getParent = false)).asInstanceOf[Element]
   }
 
   def getInputEncoding(): String = null

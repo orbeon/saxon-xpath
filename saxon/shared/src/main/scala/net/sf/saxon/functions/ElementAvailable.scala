@@ -160,10 +160,10 @@ class ElementAvailable extends SystemFunction {
 
   @throws[XPathException]
   private def getElementName(lexicalName: String) = try if (lexicalName.indexOf(':') < 0 && NameChecker.isValidNCName(lexicalName)) {
-    val uri = getRetainedStaticContext.getURIForPrefix("", true)
+    val uri = getRetainedStaticContext.getURIForPrefix("", useDefault = true)
     new StructuredQName("", uri, lexicalName)
   }
-  else StructuredQName.fromLexicalQName(lexicalName, false, true, getRetainedStaticContext)
+  else StructuredQName.fromLexicalQName(lexicalName, useDefault = false, allowEQName = true, getRetainedStaticContext)
   catch {
     case e: XPathException =>
       val err = new XPathException("Invalid element name passed to element-available(): " + e.getMessage)

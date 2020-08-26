@@ -574,7 +574,7 @@ class QueryModule extends StaticContext {
         executable.getGlobalContextRequirement
       if (gcr != null && gcr.getDefaultValue != null) {
         val info: ContextItemStaticInfo = getConfiguration
-          .makeContextItemStaticInfo(AnyItemType.getInstance, true)
+          .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
         gcr.setDefaultValue(gcr.getDefaultValue.typeCheck(visitor, info))
       }
     }

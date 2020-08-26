@@ -54,7 +54,7 @@ class XPathEvaluator(config: Configuration) {
     val contextItemType = staticContext.getRequiredContextItemType
 
     val cit =
-      config.makeContextItemStaticInfo(contextItemType, true)
+      config.makeContextItemStaticInfo(contextItemType, maybeUndefined = true)
 
     cit.setParentless(staticContext.isContextItemParentless)
 
@@ -91,7 +91,7 @@ class XPathEvaluator(config: Configuration) {
       Pattern.make(pattern, staticContext, new PackageData(config))
     val visitor: ExpressionVisitor = ExpressionVisitor.make(staticContext)
     pat.typeCheck(visitor,
-      config.makeContextItemStaticInfo(Type.NODE_TYPE, true))
+      config.makeContextItemStaticInfo(Type.NODE_TYPE, maybeUndefined = true))
     val map: SlotManager = staticContext.getStackFrameMap
     var slots: Int = map.getNumberOfVariables
     slots = pat.allocateSlots(map, slots)

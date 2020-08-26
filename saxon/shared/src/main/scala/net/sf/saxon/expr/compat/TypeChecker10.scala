@@ -46,7 +46,7 @@ class TypeChecker10 extends TypeChecker {
                       visitor: ExpressionVisitor): Expression = {
     var suppliedExp = supplied
     if (suppliedExp.implementsStaticTypeCheck()) {
-      suppliedExp.staticTypeCheck(req, true, role, visitor)
+      suppliedExp.staticTypeCheck(req, backwardsCompatible = true, role, visitor)
     }
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
@@ -134,7 +134,7 @@ class TypeChecker10 extends TypeChecker {
       selExp = new AtomicSequenceConverter(selExp, BuiltInAtomicType.STRING)
       selExp
         .asInstanceOf[AtomicSequenceConverter]
-        .allocateConverterStatically(config, false)
+        .allocateConverterStatically(config, allowNull = false)
     }
     selExp
   }

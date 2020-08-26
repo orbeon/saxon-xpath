@@ -138,7 +138,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
         if (`val`.isInstanceOf[StringValue]) {
           val parts = NameChecker.checkQNameParts(`val`.getStringValueCS)
           if (getNamespaceExp == null) {
-            val uri = getNamespaceResolver.getURIForPrefix(parts(0), false)
+            val uri = getNamespaceResolver.getURIForPrefix(parts(0), useDefault = false)
             if (uri == null) {
               val se = new XPathException("Prefix " + parts(0) + " has not been declared")
               if (isXSLT) {
@@ -300,7 +300,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
     }
     if (getNamespaceExp == null && uri == null) if (prefix.isEmpty) uri = ""
     else {
-      uri = getRetainedStaticContext.getURIForPrefix(prefix, false)
+      uri = getRetainedStaticContext.getURIForPrefix(prefix, useDefault = false)
       if (uri == null) {
         val errorCode = if (isXSLT) "XTDE0860"
         else "XQDY0074"

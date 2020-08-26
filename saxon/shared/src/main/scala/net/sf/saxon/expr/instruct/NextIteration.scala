@@ -123,7 +123,7 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("nextIteration", this)
     if (actualParams != null && actualParams.length > 0) {
-      WithParam.exportParameters(actualParams, out, false)
+      WithParam.exportParameters(actualParams, out, tunnel = false)
     }
     out.endElement()
   }

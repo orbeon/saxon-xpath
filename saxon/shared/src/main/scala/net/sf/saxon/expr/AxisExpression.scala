@@ -36,7 +36,7 @@ object AxisExpression {
       var it: Iterator[String] = resolver.iteratePrefixes()
       while (it.hasNext) {
         val prefix: String = it.next()
-        if (uri == resolver.getURIForPrefix(prefix, true)) {
+        if (uri == resolver.getURIForPrefix(prefix, useDefault = true)) {
           if (prefix.isEmpty) {
             "Q{" + uri + "}" + name.getLocalPart
           } else {
@@ -492,7 +492,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             val children: IntHashSet = new IntHashSet()
             contentType
               .asInstanceOf[ComplexType]
-              .gatherAllPermittedChildren(children, false)
+              .gatherAllPermittedChildren(children, ignoreWildcards = false)
             if (children.isEmpty) {
               if (warnings) {
                 visitor.issueWarning(
@@ -512,7 +512,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           }
           val schemaType: SchemaType = contentType
             .asInstanceOf[ComplexType]
-            .getElementParticleType(childfp, true)
+            .getElementParticleType(childfp, considerExtensions = true)
           if (schemaType == null) {
             if (warnings) {
               val childElement: StructuredQName =
@@ -522,7 +522,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               val permitted: IntHashSet = new IntHashSet()
               contentType
                 .asInstanceOf[ComplexType]
-                .gatherAllPermittedChildren(permitted, false)
+                .gatherAllPermittedChildren(permitted, ignoreWildcards = false)
               if (!permitted.contains(-1)) {
                 val kids: IntIterator = permitted.iterator()
                 breakable {
@@ -551,7 +551,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               new ContentTypeTest(Type.ELEMENT, schemaType, config, true))
             val computedCardinality: Int = contentType
               .asInstanceOf[ComplexType]
-              .getElementParticleCardinality(childfp, true)
+              .getElementParticleCardinality(childfp, considerExtensions = true)
             ExpressionTool.resetStaticProperties(this)
             if (computedCardinality == StaticProperty.ALLOWS_ZERO) {
               val childElement: StructuredQName =
@@ -585,7 +585,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           val children: IntHashSet = new IntHashSet()
           contentType
             .asInstanceOf[ComplexType]
-            .gatherAllPermittedChildren(children, false)
+            .gatherAllPermittedChildren(children, ignoreWildcards = false)
           val usefulChildren: IntHashSet = new IntHashSet()
           var considerSelf: Boolean = false
           var considerDescendants: Boolean = false
@@ -598,7 +598,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             }
             val st: SchemaType = contentType
               .asInstanceOf[ComplexType]
-              .getElementParticleType(c, true)
+              .getElementParticleType(c, considerExtensions = true)
             if (st == null) {
               throw new AssertionError(
                 "Can't find type for child element " + c)

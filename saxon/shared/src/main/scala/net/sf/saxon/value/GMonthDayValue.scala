@@ -29,7 +29,7 @@ object GMonthDayValue {
     val tz: String = m.group(2)
     val date: String = "2000-" + base + (if (tz == null) "" else tz)
     g.typeLabel = BuiltInAtomicType.G_MONTH_DAY
-    setLexicalValue(g, date, true)
+    setLexicalValue(g, date, allowYearZero = true)
   }
 
 }

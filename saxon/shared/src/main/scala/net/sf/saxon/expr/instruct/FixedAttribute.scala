@@ -192,7 +192,7 @@ class FixedAttribute(private var nodeName: NodeName,
       err.setErrorCode(if (getPackageData.isXSLT) "XTTE1510" else "XQDY0027")
       throw err
     }
-    try getSelect.checkPermittedContents(`type`, true)
+    try getSelect.checkPermittedContents(`type`, whole = true)
     catch {
       case e: XPathException => {
         e.maybeSetLocation(getLocation)

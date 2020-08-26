@@ -313,7 +313,7 @@ class Serialize extends SystemFunction with Callable {
     if (({
       seqVal = map.get("cdata-section-elements")
       seqVal
-    }) != null) props.setProperty("cdata-section-elements", toQNamesTypeString(seqVal, false))
+    }) != null) props.setProperty("cdata-section-elements", toQNamesTypeString(seqVal, allowStar = false))
     if (({
       seqVal = map.get("doctype-public")
       seqVal
@@ -373,7 +373,7 @@ class Serialize extends SystemFunction with Callable {
     if (({
       seqVal = map.get("suppress-indentation")
       seqVal
-    }) != null) props.setProperty("suppress-indentation", toQNamesTypeString(seqVal, false))
+    }) != null) props.setProperty("suppress-indentation", toQNamesTypeString(seqVal, allowStar = false))
     if (({
       seqVal = map.get("undeclare-prefixes")
       seqVal
@@ -394,7 +394,7 @@ class Serialize extends SystemFunction with Callable {
     if (({
       seqVal = map.get(Serialize.sx("attribute-order"))
       seqVal
-    }) != null) props.setProperty(SaxonOutputKeys.ATTRIBUTE_ORDER, toQNamesTypeString(seqVal, true))
+    }) != null) props.setProperty(SaxonOutputKeys.ATTRIBUTE_ORDER, toQNamesTypeString(seqVal, allowStar = true))
     if (({
       seqVal = map.get(Serialize.sx("canonical"))
       seqVal
@@ -406,7 +406,7 @@ class Serialize extends SystemFunction with Callable {
     if (({
       seqVal = map.get(Serialize.sx("double-space"))
       seqVal
-    }) != null) props.setProperty(SaxonOutputKeys.DOUBLE_SPACE, toQNamesTypeString(seqVal, false))
+    }) != null) props.setProperty(SaxonOutputKeys.DOUBLE_SPACE, toQNamesTypeString(seqVal, allowStar = false))
     if (({
       seqVal = map.get(Serialize.sx("indent-spaces"))
       seqVal

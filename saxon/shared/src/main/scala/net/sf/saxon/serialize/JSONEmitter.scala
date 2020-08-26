@@ -229,7 +229,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     if (characterMap != null) {
       val out: FastStringBuffer = new FastStringBuffer(cs.length)
       var chSeq = cs
-      chSeq = characterMap.map(chSeq, true)
+      chSeq = characterMap.map(chSeq, insertNulls = true)
       val s: String = chSeq.toString
       var prev: Int = 0
       while (true) {
@@ -256,7 +256,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     }
     JsonReceiver.escape(
       chSeq,
-      false,
+      forXml = false,
       (c) => c < 31 || (c >= 127 && c <= 159) || !characterSet.inCharset(c))
   }
 

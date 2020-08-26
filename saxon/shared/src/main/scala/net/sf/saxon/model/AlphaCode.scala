@@ -670,17 +670,17 @@ object AlphaCode {
     }
     if (tree.keyType != null) {
       sb.append(" k[")
-      alphaCodeFromTree(tree.keyType, false, sb)
+      alphaCodeFromTree(tree.keyType, withCardinality = false, sb)
       sb.append("]")
     }
     if (tree.valueType != null) {
       sb.append(" v[")
-      alphaCodeFromTree(tree.valueType, true, sb)
+      alphaCodeFromTree(tree.valueType, withCardinality = true, sb)
       sb.append("]")
     }
     if (tree.resultType != null) {
       sb.append(" r[")
-      alphaCodeFromTree(tree.resultType, true, sb)
+      alphaCodeFromTree(tree.resultType, withCardinality = true, sb)
       sb.append("]")
     }
     if (tree.argTypes != null) {
@@ -690,7 +690,7 @@ object AlphaCode {
       for (a <- tree.argTypes.asScala) {
         if (first) first = false
         else sb.append(",")
-        alphaCodeFromTree(a, true, sb)
+        alphaCodeFromTree(a, withCardinality = true, sb)
       }
       sb.append("]")
     }
@@ -701,13 +701,13 @@ object AlphaCode {
       for (a <- tree.members.asScala) {
         if (first) first = false
         else sb.append(",")
-        alphaCodeFromTree(a, false, sb)
+        alphaCodeFromTree(a, withCardinality = false, sb)
       }
       sb.append("]")
     }
     if (tree.elementType != null) {
       sb.append(" e[")
-      alphaCodeFromTree(tree.elementType, false, sb)
+      alphaCodeFromTree(tree.elementType, withCardinality = false, sb)
       sb.append("]")
     }
     if (tree.vennOperands != null) {
@@ -717,7 +717,7 @@ object AlphaCode {
       sb.append(" ").append(operator).append("[")
       for (i <- 0 until tree.vennOperands.length) {
         if (i != 0) sb.append(",")
-        alphaCodeFromTree(tree.vennOperands(i), false, sb)
+        alphaCodeFromTree(tree.vennOperands(i), withCardinality = false, sb)
       }
       sb.append("]")
     }
@@ -738,7 +738,7 @@ object AlphaCode {
   def fromItemType(`type`: ItemType) = {
     val tree = makeTree(`type`)
     val sb = new StringBuilder
-    alphaCodeFromTree(tree, false, sb)
+    alphaCodeFromTree(tree, withCardinality = false, sb)
     sb.toString.trim
   }
 
@@ -751,7 +751,7 @@ object AlphaCode {
 
   @throws[XPathException]
   def fromLexicalSequenceType(context: XPathContext, input: String) = {
-    val parser = context.getConfiguration.newExpressionParser("XP", false, 31)
+    val parser = context.getConfiguration.newExpressionParser("XP", updating = false, 31)
     val env = new IndependentContext(context.getConfiguration)
     env.declareNamespace("xs", NamespaceConstant.SCHEMA)
     env.declareNamespace("fn", NamespaceConstant.FN)

@@ -146,7 +146,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
         i += 1
     }
     namespaces.push(inScopeNamespaces)
-    outputElement(startNode, true)
+    outputElement(startNode, hasNamespaceDeclarations = true)
     namespaces.pop()
   }
 
@@ -217,7 +217,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
 
   private def outputElement(element: Element,
                             hasNamespaceDeclarations: Boolean): Unit = {
-    val name: NodeName = getNodeName(element.getTagName, true)
+    val name: NodeName = getNodeName(element.getTagName, useDefaultNS = true)
     val loc: Location = new Loc(systemId, -1, -1)
     var attributes: AttributeMap = EmptyAttributeMap.getInstance
     val atts: NamedNodeMap = element.getAttributes
@@ -230,7 +230,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
         val attname: String = att.getName
         if (hasNamespaceDeclarations && attname.startsWith("xmlns") &&
           ((attname.length == 5 || attname.charAt(5) == ':'))) {} else {
-          val attNodeName: NodeName = getNodeName(attname, false)
+          val attNodeName: NodeName = getNodeName(attname, useDefaultNS = false)
           attributes = attributes.put(
             new AttributeInfo(attNodeName,
               BuiltInAtomicType.UNTYPED_ATOMIC,

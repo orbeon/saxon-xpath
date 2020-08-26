@@ -78,7 +78,7 @@ object ForEachGroup {
         fixupGroupReferences(feg2.getActionExpression,
           feg,
           selectedItemType,
-          false)
+          isInLoop = false)
       } else {
         fixupGroupReferences(feg2.getSelectExpression,
           feg,
@@ -229,10 +229,10 @@ class ForEachGroup(select: Expression,
       Literal.makeEmptySequence()
     }
     for (o <- operands().asScala) {
-      fixupGroupReferences(this, this, selectedItemType, false)
+      fixupGroupReferences(this, this, selectedItemType, isInLoop = false)
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(selectedItemType, false)
+      .makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getSelectExpression)
     actionOp.typeCheck(visitor, cit)
     keyOp.typeCheck(visitor, cit)
@@ -260,7 +260,7 @@ class ForEachGroup(select: Expression,
             StaticProperty.ALLOWS_ZERO_OR_ONE,
             role)
         }
-        sk.setSortKey(sortKey, true)
+        sk.setSortKey(sortKey, setContext = true)
         sk.typeCheck(visitor, contextInfo)
         if (sk.isFixed) {
           val comp: AtomicComparer = sk.makeComparator(
@@ -288,7 +288,7 @@ class ForEachGroup(select: Expression,
     selectOp.optimize(visitor, contextItemType)
     val selectedItemType: ItemType = getSelectExpression.getItemType
     val sit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(selectedItemType, false)
+      .makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
     sit.setContextSettingExpression(getSelectExpression)
     actionOp.optimize(visitor, sit)
     keyOp.optimize(visitor, sit)
@@ -302,7 +302,7 @@ class ForEachGroup(select: Expression,
       for (skd <- getSortKeyDefinitions.asScala) {
         var sortKey: Expression = skd.getSortKey
         sortKey = sortKey.optimize(visitor, sit)
-        skd.setSortKey(sortKey, true)
+        skd.setSortKey(sortKey, setContext = true)
       }
     }
     if (collationOp != null) {
@@ -362,7 +362,7 @@ class ForEachGroup(select: Expression,
     )
     ExpressionTool.copyLocationInfo(this, feg)
     feg.setComposite(isComposite)
-    fixupGroupReferences(feg, feg, getSelectExpression.getItemType, false)
+    fixupGroupReferences(feg, feg, getSelectExpression.getItemType, isInLoop = false)
     feg
   }
 
@@ -447,7 +447,7 @@ class ForEachGroup(select: Expression,
   }
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
-    getActionExpression.checkPermittedContents(parentType, false)
+    getActionExpression.checkPermittedContents(parentType, whole = false)
   }
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {

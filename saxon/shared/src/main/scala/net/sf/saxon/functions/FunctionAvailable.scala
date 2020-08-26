@@ -99,8 +99,8 @@ class FunctionAvailable extends SystemFunction {
       qName = new StructuredQName("", uri, lexicalName)
     } else {
       qName = StructuredQName.fromLexicalQName(lexicalName,
-        false,
-        true,
+        useDefault = false,
+        allowEQName = true,
         getRetainedStaticContext)
     } catch {
       case e: XPathException => {

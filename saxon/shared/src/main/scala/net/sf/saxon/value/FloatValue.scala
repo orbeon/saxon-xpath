@@ -40,7 +40,7 @@ object FloatValue {
     FloatingPointConverter.appendFloat(
       new FastStringBuffer(FastStringBuffer.C16),
       value,
-      false)
+      forceExponential = false)
 
 }
 
@@ -114,7 +114,7 @@ class FloatValue() extends NumericValue {
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
-    FloatingPointConverter.appendFloat(fsb, value, true)
+    FloatingPointConverter.appendFloat(fsb, value, forceExponential = true)
   }
 
   def negate(): NumericValue = new FloatValue(-value)

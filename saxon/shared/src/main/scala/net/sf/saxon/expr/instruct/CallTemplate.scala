@@ -305,10 +305,10 @@ class CallTemplate(private var template: NamedTemplate,
       out.emitAttribute("flags", flags)
     }
     if (actualParams.length > 0) {
-      WithParam.exportParameters(actualParams, out, false)
+      WithParam.exportParameters(actualParams, out, tunnel = false)
     }
     if (tunnelParams.length > 0) {
-      WithParam.exportParameters(tunnelParams, out, true)
+      WithParam.exportParameters(tunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

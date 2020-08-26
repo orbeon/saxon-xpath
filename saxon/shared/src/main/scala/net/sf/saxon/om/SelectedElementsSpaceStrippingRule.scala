@@ -103,7 +103,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
     newRule.setRank((precedence << 18) + (prio << 16) + sequence)
     if (test.isInstanceOf[NodeKindTest]) {
       newRule.setAlwaysMatches(true)
-      anyElementRule = addRuleToList(newRule, anyElementRule, true)
+      anyElementRule = addRuleToList(newRule, anyElementRule, dropRemainder = true)
     }
     else if (test.isInstanceOf[NameTest]) {
       newRule.setAlwaysMatches(true)
@@ -111,9 +111,9 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
       val pool = test.asInstanceOf[NameTest].getNamePool
       val key = new FingerprintedQName(pool.getUnprefixedQName(fp), pool)
       val chain = namedElementRules.get(key)
-      namedElementRules.put(key, addRuleToList(newRule, chain, true))
+      namedElementRules.put(key, addRuleToList(newRule, chain, dropRemainder = true))
     }
-    else unnamedElementRuleChain = addRuleToList(newRule, unnamedElementRuleChain, false)
+    else unnamedElementRuleChain = addRuleToList(newRule, unnamedElementRuleChain, dropRemainder = false)
   }
 
   /**

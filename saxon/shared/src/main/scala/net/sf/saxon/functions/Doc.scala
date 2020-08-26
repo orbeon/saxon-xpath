@@ -96,7 +96,7 @@ class Doc extends SystemFunction with Callable {
       getParseOptions,
       context,
       null,
-      false)
+      silent = false)
     if (item == null) {
       throw new XPathException("Failed to load document " + href,
         "FODC0002",

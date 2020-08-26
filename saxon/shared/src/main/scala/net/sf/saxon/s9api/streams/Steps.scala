@@ -351,7 +351,7 @@ object Steps {
       }
       XdmNodeKind
       val target: NodeInfo =
-        doc.getUnderlyingNode.getTreeInfo.selectID(item.getStringValue, true)
+        doc.getUnderlyingNode.getTreeInfo.selectID(item.getStringValue, getParent = true)
       if (target == null) Stream.empty()
       else Stream.of(XdmValue.wrap(target).asInstanceOf[XdmNode])
     }

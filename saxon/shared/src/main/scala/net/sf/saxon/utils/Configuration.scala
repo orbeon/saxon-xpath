@@ -2803,7 +2803,7 @@ class Configuration() extends SourceResolver with NotationSet {
    *              <p>This method is intended for advanced users only, and is subject to change.</p>
    */
   def registerExternalObjectModel(model: ExternalObjectModel): Unit = {
-    try getConfClass(model.getDocumentClassName(), false, null)
+    try getConfClass(model.getDocumentClassName(), tracing = false, null)
     catch {
       case _: XPathException =>
         // If the model can't be loaded, do nothing

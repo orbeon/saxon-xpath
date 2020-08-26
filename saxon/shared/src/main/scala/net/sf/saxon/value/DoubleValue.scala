@@ -42,7 +42,7 @@ object DoubleValue {
     FloatingPointConverter.appendDouble(
       new FastStringBuffer(FastStringBuffer.C16),
       value,
-      false)
+      forceExponential = false)
 
 }
 
@@ -125,7 +125,7 @@ class DoubleValue() extends NumericValue {
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
-    FloatingPointConverter.appendDouble(fsb, value, true)
+    FloatingPointConverter.appendDouble(fsb, value, forceExponential = true)
   }
 
   def negate(): NumericValue = new DoubleValue(-value)

@@ -6,7 +6,7 @@ package net.sf.saxon.expr
 
 class CurrentItemExpression extends ContextItemExpression {
 
-  setErrorCodeForUndefinedContext("XTDE1360", false)
+  setErrorCodeForUndefinedContext("XTDE1360", isTypeError = false)
 
 }
 

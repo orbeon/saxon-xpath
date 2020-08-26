@@ -174,7 +174,7 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
   }
 
   def getComparisonKey(context: XPathContext): AtomicMatchKey =
-    try getXPathComparable(false,
+    try getXPathComparable(ordered = false,
       CodepointCollator.getInstance,
       context.getImplicitTimezone)
     catch {

@@ -1007,10 +1007,10 @@ class XPathParser() {
     let.setRequiredType(SequenceType.ANY_SEQUENCE)
     val v1 = new LocalVariableReference(let.getVariableQName)
     v1.setBinding(let)
-    let.addReference(v1, false)
+    let.addReference(v1, isLoopingReference = false)
     val v2 = new LocalVariableReference(let.getVariableQName)
     v2.setBinding(let)
-    let.addReference(v2, false)
+    let.addReference(v2, isLoopingReference = false)
     val rsc = new RetainedStaticContext(env)
     val conditions = Array[Expression](SystemFunction.makeCall("exists", rsc, v1), Literal.makeLiteral(BooleanValue.TRUE, lhs))
     val actions = Array[Expression](v2, rhs)
@@ -1347,7 +1347,7 @@ class XPathParser() {
       var theClass: Class[_] = null
       try {
         val className = JavaExternalObjectType.localNameToClassName(local)
-        theClass = config.getConfClass(className, false, null)
+        theClass = config.getConfClass(className, tracing = false, null)
       } catch {
         case err: XPathException =>
           grumble("Unknown Java class " + local, "XPST0051")
@@ -2505,7 +2505,7 @@ class XPathParser() {
               }
               else return elementDecl.makeSchemaNodeTest
             }
-            else return makeNameTest(Type.ELEMENT, nodeName, true)
+            else return makeNameTest(Type.ELEMENT, nodeName, useDefault = true)
           }
         }
         else if (t.currentToken == Token.COMMA) {

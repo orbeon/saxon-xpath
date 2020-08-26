@@ -189,11 +189,11 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       breakable {
         for (i <- 0 until localSize) {
           val condition: Expression = getCondition(i)
-          if (!Literal.hasEffectiveBooleanValue(condition, false)) {
+          if (!Literal.hasEffectiveBooleanValue(condition, value = false)) {
             conditions.add(condition)
             actions.add(getAction(i))
           }
-          if (Literal.hasEffectiveBooleanValue(condition, true)) {
+          if (Literal.hasEffectiveBooleanValue(condition, value = true)) {
             break()
           }
         }
@@ -203,7 +203,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         ExpressionTool.copyLocationInfo(this, lit)
         return lit
       } else if (conditions.size == 1 &&
-        Literal.hasEffectiveBooleanValue(conditions.get(0), true)) {
+        Literal.hasEffectiveBooleanValue(conditions.get(0), value = true)) {
         actions.get(0)
       } else if (conditions.size != localSize) {
         val c: Array[Expression] =
@@ -216,7 +216,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
     }
     if (localSize == 1 &&
-      Literal.hasEffectiveBooleanValue(getCondition(0), true)) {
+      Literal.hasEffectiveBooleanValue(getCondition(0), value = true)) {
       getAction(0)
     }
     if (Literal.isEmptySequence(getAction(localSize - 1))) {
@@ -234,7 +234,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         new Choose(conditions, actions)
       }
     }
-    if (Literal.hasEffectiveBooleanValue(getCondition(localSize - 1), true) &&
+    if (Literal.hasEffectiveBooleanValue(getCondition(localSize - 1), value = true) &&
       getAction(localSize - 1).isInstanceOf[Choose]) {
       val choose2: Choose = getAction(localSize - 1).asInstanceOf[Choose]
       val newLen: Int = localSize + choose2.size - 1
@@ -250,9 +250,9 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
       new Choose(c2, a2)
     }
-    if (localSize == 2 && Literal.isConstantBoolean(getAction(0), true) &&
-      Literal.isConstantBoolean(getAction(1), false) &&
-      Literal.hasEffectiveBooleanValue(getCondition(1), true)) {
+    if (localSize == 2 && Literal.isConstantBoolean(getAction(0), value = true) &&
+      Literal.isConstantBoolean(getAction(1), value = false) &&
+      Literal.hasEffectiveBooleanValue(getCondition(1), value = true)) {
       val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
       if (th.isSubType(getCondition(0).getItemType, BuiltInAtomicType.BOOLEAN) &&
         getCondition(0).getCardinality == StaticProperty.EXACTLY_ONE) {
@@ -283,7 +283,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     // expression just because a dynamic type check is needed on a different branch of the choice.
     breakable {
       for (i <- 0 until size) {
-        if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+        if (Literal.hasEffectiveBooleanValue(getCondition(i), value = false)) {
           // Don't do any checking if we know statically the condition will be false, because it could
           // result in spurious warnings: bug 4537
         } else {
@@ -296,7 +296,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
                 throw err
               } else if (err.isTypeError) {
                 if (Literal.isEmptySequence(getAction(i)) ||
-                  Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+                  Literal.hasEffectiveBooleanValue(getCondition(i), value = false)) {
                   setAction(i,
                     new ErrorExpression(new XmlProcessingException(err)))
                 } else {
@@ -307,7 +307,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
               }
             }
           }
-          if (Literal.hasEffectiveBooleanValue(getCondition(i), true))
+          if (Literal.hasEffectiveBooleanValue(getCondition(i), value = true))
             break()
         }
       }
@@ -346,7 +346,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
       }
     }
-    if (!Literal.hasEffectiveBooleanValue(getCondition(sizeInt - 1), true) &&
+    if (!Literal.hasEffectiveBooleanValue(getCondition(sizeInt - 1), value = true) &&
       !Cardinality.allowsZero(req.getCardinality)) {
       val c: Array[Expression] = Array.ofDim[Expression](sizeInt + 1)
       val a: Array[Expression] = Array.ofDim[Expression](sizeInt + 1)
@@ -402,7 +402,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
     }
     for (i <- 0 until sizeInt) {
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), false)) {
+      if (Literal.hasEffectiveBooleanValue(getCondition(i), value = false)) {
       }
       try actionOps(i).optimize(visitor, contextItemType)
       catch {
@@ -420,8 +420,8 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
       if (getAction(i).isInstanceOf[ErrorExpression] &&
         getAction(i).asInstanceOf[ErrorExpression].isTypeError &&
-        !Literal.isConstantBoolean(getCondition(i), false) &&
-        !Literal.isConstantBoolean(getCondition(i), true)) {
+        !Literal.isConstantBoolean(getCondition(i), value = false) &&
+        !Literal.isConstantBoolean(getCondition(i), value = true)) {
         visitor.issueWarning(
           "Branch " + (i + 1) +
             " of conditional will fail with a type error if executed. " +
@@ -430,7 +430,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         )
       }
       breakable {
-        if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
+        if (Literal.hasEffectiveBooleanValue(getCondition(i), value = true)) {
           break()
         }
       }
@@ -560,7 +560,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     var includesTrue: Boolean = false
     for (i <- 0 until size) {
       card = Cardinality.union(card, getAction(i).getCardinality)
-      if (Literal.hasEffectiveBooleanValue(getCondition(i), true)) {
+      if (Literal.hasEffectiveBooleanValue(getCondition(i), value = true)) {
         includesTrue = true
       }
     }

@@ -28,12 +28,12 @@ class TypeAvailable extends SystemFunction {
                             config: Configuration): Boolean = {
     var qName: StructuredQName = null
     try if (lexicalName.indexOf(':') < 0 && !lexicalName.startsWith("Q{")) {
-      val uri: String = getRetainedStaticContext.getURIForPrefix("", true)
+      val uri: String = getRetainedStaticContext.getURIForPrefix("", useDefault = true)
       qName = new StructuredQName("", uri, lexicalName)
     } else {
       qName = StructuredQName.fromLexicalQName(lexicalName,
-        false,
-        true,
+        useDefault = false,
+        allowEQName = true,
         getRetainedStaticContext)
     } catch {
       case e: XPathException => {
@@ -47,7 +47,7 @@ class TypeAvailable extends SystemFunction {
       try {
         val className: String =
           JavaExternalObjectType.localNameToClassName(qName.getLocalPart)
-        config.getConfClass(className, false, null)
+        config.getConfClass(className, tracing = false, null)
         true
       } catch {
         case err: XPathException => false

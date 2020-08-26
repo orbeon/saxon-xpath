@@ -475,12 +475,12 @@ class XMLEmitter extends Emitter {
         if (`val`.indexOf('"') >= 0 && `val`.indexOf('\'') < 0) '\''
         else delimiter
       writer.write(delim)
-      writeEscape(value, true)
+      writeEscape(value, inAttribute = true)
       writer.write(delim)
     } else {
       writer.write("=")
       writer.write(delimiter)
-      writeEscape(value, true)
+      writeEscape(value, inAttribute = true)
       writer.write(delimiter)
     }
   }
@@ -551,7 +551,7 @@ class XMLEmitter extends Emitter {
       writeCharSequence(chars)
     } else if (!ReceiverOption.contains(properties,
       ReceiverOption.DISABLE_ESCAPING)) {
-      writeEscape(chars, false)
+      writeEscape(chars, inAttribute = false)
     } else {
       if (testCharacters(chars) == 0) {
         if (!ReceiverOption.contains(properties,
@@ -579,14 +579,14 @@ class XMLEmitter extends Emitter {
               pair(1) = chars.charAt(i)
               val cc: Int = UTF16CharacterSet.combinePair(c, pair(1))
               if (!characterSet.inCharset(cc)) {
-                writeEscape(new CharSlice(pair), false)
+                writeEscape(new CharSlice(pair), inAttribute = false)
               } else {
                 writeCharSequence(new CharSlice(pair))
               }
             } else {
               val ca: Array[Char] = Array(c)
               if (!characterSet.inCharset(c)) {
-                writeEscape(new CharSlice(ca), false)
+                writeEscape(new CharSlice(ca), inAttribute = false)
               } else {
                 writeCharSequence(new CharSlice(ca))
               }

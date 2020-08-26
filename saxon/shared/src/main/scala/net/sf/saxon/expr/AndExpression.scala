@@ -42,12 +42,12 @@ class AndExpression(p1: Expression, p2: Expression)
   extends BooleanExpression(p1, Token.AND, p2) {
 
   override def preEvaluate(): Expression =
-    if (Literal.isConstantBoolean(getLhsExpression, false) || Literal
-      .isConstantBoolean(getRhsExpression, false)) {
+    if (Literal.isConstantBoolean(getLhsExpression, value = false) || Literal
+      .isConstantBoolean(getRhsExpression, value = false)) {
       Literal.makeLiteral(BooleanValue.FALSE, this)
-    } else if (Literal.hasEffectiveBooleanValue(getLhsExpression, true)) {
+    } else if (Literal.hasEffectiveBooleanValue(getLhsExpression, value = true)) {
       forceToBoolean(getRhsExpression)
-    } else if (Literal.hasEffectiveBooleanValue(getRhsExpression, true)) {
+    } else if (Literal.hasEffectiveBooleanValue(getRhsExpression, value = true)) {
       forceToBoolean(getLhsExpression)
     } else {
       this

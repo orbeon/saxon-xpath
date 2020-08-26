@@ -268,7 +268,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       return DoubleValue.NaN
     }
     if (calc == null) {
-      calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, true)
+      calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, mustResolve = true)
     }
     calc.compute(v1, v2, context)
   }
@@ -284,7 +284,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       return DoubleValue.NaN
     }
     if (calc == null) {
-      calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, true)
+      calc = assignCalculator(v1.getPrimitiveType, v2.getPrimitiveType, mustResolve = true)
     }
     calc.compute(v1, v2, context)
   }

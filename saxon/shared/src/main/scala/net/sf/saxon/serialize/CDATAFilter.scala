@@ -107,7 +107,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
         buffer = new FastStringBuffer(
           getNextReceiver
             .asInstanceOf[UnicodeNormalizer]
-            .normalize(buffer, true))
+            .normalize(buffer, containsNullMarkers = true))
         end = buffer.length
       }
       var start: Int = 0

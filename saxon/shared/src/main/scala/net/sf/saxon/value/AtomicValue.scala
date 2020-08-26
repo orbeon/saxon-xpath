@@ -48,7 +48,7 @@ abstract class AtomicValue
                          implicitTimezone: Int): AtomicMatchKey
 
   def asMapKey(): AtomicMatchKey =
-    getXPathComparable(false,
+    getXPathComparable(ordered = false,
                        CodepointCollator.getInstance,
                        CalendarValue.NO_TIMEZONE)
 

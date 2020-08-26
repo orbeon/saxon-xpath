@@ -92,7 +92,7 @@ class DOMWriter extends Builder {
     val parentNamespaces: NamespaceMap = nsStack.peek()
     if (namespaces != parentNamespaces) {
       val declarations: Array[NamespaceBinding] =
-        namespaces.getDifferences(parentNamespaces, false)
+        namespaces.getDifferences(parentNamespaces, addUndeclarations = false)
       for (ns <- declarations) {
         val prefix: String = ns.getPrefix
         val nsuri: String = ns.getURI

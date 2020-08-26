@@ -57,7 +57,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
       Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo =
-      visitor.getConfiguration.makeContextItemStaticInfo(selectType, false)
+      visitor.getConfiguration.makeContextItemStaticInfo(selectType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
     getRhs.typeCheck(visitor, cit)
     if (!(getStep.isInstanceOf[AxisExpression])) {

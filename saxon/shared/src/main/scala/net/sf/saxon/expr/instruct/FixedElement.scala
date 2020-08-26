@@ -354,7 +354,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     var `type`: SchemaType = null
     val fp: Int = elementName.obtainFingerprint(getConfiguration.getNamePool)
     `type` =
-      parentType.asInstanceOf[ComplexType].getElementParticleType(fp, true)
+      parentType.asInstanceOf[ComplexType].getElementParticleType(fp, considerExtensions = true)
     if (`type` == null) {
       val err: XPathException = new XPathException(
         "Element " + elementName.getDisplayName +
@@ -368,7 +368,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     if (`type`.isInstanceOf[AnyType.AnyType]) {
       return
     }
-    try getContentExpression.checkPermittedContents(`type`, true)
+    try getContentExpression.checkPermittedContents(`type`, whole = true)
     catch {
       case e: XPathException => {
         e.maybeSetLocation(getLocation)
@@ -409,7 +409,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
         if (prefix.!=("xml")) {
           fsb.append(if (prefix.isEmpty) "#" else prefix)
           if (ns.getURI != getRetainedStaticContext.getURIForPrefix(prefix,
-            true)) {
+            useDefault = true)) {
             fsb.cat('=')
             fsb.append(ns.getURI)
           }

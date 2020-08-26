@@ -42,9 +42,9 @@ class EquivalenceComparer (collator: StringCollator,
     } else {
       val implicitTimezone: Int = getContext.getImplicitTimezone
       val ac: AnyRef =
-        a.getXPathComparable(false, getStringCollator, implicitTimezone)
+        a.getXPathComparable(ordered = false, getStringCollator, implicitTimezone)
       val bc: AnyRef =
-        b.getXPathComparable(false, getStringCollator, implicitTimezone)
+        b.getXPathComparable(ordered = false, getStringCollator, implicitTimezone)
       ac == bc
     }
 

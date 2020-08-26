@@ -232,7 +232,7 @@ object SaxonOutputKeys {
       properties.getProperty(SaxonOutputKeys.HTML_VERSION)
     try htmlVersion != null &&
       BigDecimalValue
-        .makeDecimalValue(htmlVersion, false)
+        .makeDecimalValue(htmlVersion, validate = false)
         .asAtomic()
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)
@@ -259,7 +259,7 @@ object SaxonOutputKeys {
     }
     if (htmlVersion != null) {
       try BigDecimalValue
-        .makeDecimalValue(htmlVersion, false)
+        .makeDecimalValue(htmlVersion, validate = false)
         .asAtomic()
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)

@@ -88,7 +88,7 @@ class LoopLifter(@BeanProperty var root: Expression,
   private var expInfoMap: Map[Expression, ExpInfo] = new IdentityHashMap()
 
   def gatherInfo(exp: Expression): Unit = {
-    gatherInfo(exp, 0, 0, false)
+    gatherInfo(exp, 0, 0, multiThreaded = false)
   }
 
   private def gatherInfo(exp: Expression,
@@ -250,7 +250,7 @@ class LoopLifter(@BeanProperty var root: Expression,
     val properties: Int = child.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC
     `var`.setStaticType(`type`, null, properties)
     `var`.setInLoop(true)
-    let.addReference(`var`, true)
+    let.addReference(`var`, isLoopingReference = true)
     ExpressionTool.copyLocationInfo(child, `var`)
     oldOperand.setChildExpression(`var`)
     if (tracing) {

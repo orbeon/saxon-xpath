@@ -35,7 +35,7 @@ object Pattern {
         env.asInstanceOf[ExpressionContext].getStyleElement.getLineNumber // class not exist
       else -1*/
     val parser: PatternParser = env.getConfiguration
-      .newExpressionParser("PATTERN", false, languageLevel)
+      .newExpressionParser("PATTERN", updating = false, languageLevel)
       .asInstanceOf[PatternParser]
     parser
       .asInstanceOf[XPathParser]

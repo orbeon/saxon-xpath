@@ -29,167 +29,167 @@ object BuiltInAtomicType {
     StandardNames.XS_ANY_ATOMIC_TYPE,
     AnySimpleType,
     "A",
-    true
+    ordered = true
   )
 
   val STRING: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_STRING, ANY_ATOMIC, "AS", true)
+    makeAtomicType(StandardNames.XS_STRING, ANY_ATOMIC, "AS", ordered = true)
 
   val BOOLEAN: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_BOOLEAN, ANY_ATOMIC, "AB", true)
+    makeAtomicType(StandardNames.XS_BOOLEAN, ANY_ATOMIC, "AB", ordered = true)
 
   val DURATION: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DURATION, ANY_ATOMIC, "AR", false)
+    makeAtomicType(StandardNames.XS_DURATION, ANY_ATOMIC, "AR", ordered = false)
 
   val DATE_TIME: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DATE_TIME, ANY_ATOMIC, "AM", true)
+    makeAtomicType(StandardNames.XS_DATE_TIME, ANY_ATOMIC, "AM", ordered = true)
 
   val DATE: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DATE, ANY_ATOMIC, "AA", true)
+    makeAtomicType(StandardNames.XS_DATE, ANY_ATOMIC, "AA", ordered = true)
 
   val TIME: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_TIME, ANY_ATOMIC, "AT", true)
+    makeAtomicType(StandardNames.XS_TIME, ANY_ATOMIC, "AT", ordered = true)
 
   val G_YEAR_MONTH: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_G_YEAR_MONTH, ANY_ATOMIC, "AH", false)
+    makeAtomicType(StandardNames.XS_G_YEAR_MONTH, ANY_ATOMIC, "AH", ordered = false)
 
   val G_MONTH: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_G_MONTH, ANY_ATOMIC, "AI", false)
+    makeAtomicType(StandardNames.XS_G_MONTH, ANY_ATOMIC, "AI", ordered = false)
 
   val G_MONTH_DAY: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_G_MONTH_DAY, ANY_ATOMIC, "AJ", false)
+    makeAtomicType(StandardNames.XS_G_MONTH_DAY, ANY_ATOMIC, "AJ", ordered = false)
 
   val G_YEAR: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_G_YEAR, ANY_ATOMIC, "AG", false)
+    makeAtomicType(StandardNames.XS_G_YEAR, ANY_ATOMIC, "AG", ordered = false)
 
   val G_DAY: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_G_DAY, ANY_ATOMIC, "AK", false)
+    makeAtomicType(StandardNames.XS_G_DAY, ANY_ATOMIC, "AK", ordered = false)
 
   val HEX_BINARY: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_HEX_BINARY, ANY_ATOMIC, "AX", true)
+    makeAtomicType(StandardNames.XS_HEX_BINARY, ANY_ATOMIC, "AX", ordered = true)
 
   val BASE64_BINARY: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_BASE64_BINARY, ANY_ATOMIC, "A2", true)
+    makeAtomicType(StandardNames.XS_BASE64_BINARY, ANY_ATOMIC, "A2", ordered = true)
 
   val ANY_URI: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_ANY_URI, ANY_ATOMIC, "AU", true)
+    makeAtomicType(StandardNames.XS_ANY_URI, ANY_ATOMIC, "AU", ordered = true)
 
   val QNAME: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_QNAME, ANY_ATOMIC, "AQ", false)
+    makeAtomicType(StandardNames.XS_QNAME, ANY_ATOMIC, "AQ", ordered = false)
 
   val NOTATION: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_NOTATION, ANY_ATOMIC, "AN", false)
+    makeAtomicType(StandardNames.XS_NOTATION, ANY_ATOMIC, "AN", ordered = false)
 
   val UNTYPED_ATOMIC: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_UNTYPED_ATOMIC, ANY_ATOMIC, "AZ", true)
+    makeAtomicType(StandardNames.XS_UNTYPED_ATOMIC, ANY_ATOMIC, "AZ", ordered = true)
 
   val DECIMAL: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DECIMAL, ANY_ATOMIC, "AD", true)
+    makeAtomicType(StandardNames.XS_DECIMAL, ANY_ATOMIC, "AD", ordered = true)
 
   val FLOAT: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_FLOAT, ANY_ATOMIC, "AF", true)
+    makeAtomicType(StandardNames.XS_FLOAT, ANY_ATOMIC, "AF", ordered = true)
 
   val DOUBLE: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DOUBLE, ANY_ATOMIC, "AO", true)
+    makeAtomicType(StandardNames.XS_DOUBLE, ANY_ATOMIC, "AO", ordered = true)
 
   val INTEGER: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_INTEGER, DECIMAL, "ADI", true)
+    makeAtomicType(StandardNames.XS_INTEGER, DECIMAL, "ADI", ordered = true)
 
   val NON_POSITIVE_INTEGER: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_NON_POSITIVE_INTEGER,
     INTEGER,
     "ADIN",
-    true)
+    ordered = true)
 
   val NEGATIVE_INTEGER: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_NEGATIVE_INTEGER,
     NON_POSITIVE_INTEGER,
     "ADINN",
-    true)
+    ordered = true)
 
   val LONG: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_LONG, INTEGER, "ADIL", true)
+    makeAtomicType(StandardNames.XS_LONG, INTEGER, "ADIL", ordered = true)
 
   val INT: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_INT, LONG, "ADILI", true)
+    makeAtomicType(StandardNames.XS_INT, LONG, "ADILI", ordered = true)
 
   val SHORT: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_SHORT, INT, "ADILIS", true)
+    makeAtomicType(StandardNames.XS_SHORT, INT, "ADILIS", ordered = true)
 
   val BYTE: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_BYTE, SHORT, "ADILISB", true)
+    makeAtomicType(StandardNames.XS_BYTE, SHORT, "ADILISB", ordered = true)
 
   val NON_NEGATIVE_INTEGER: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_NON_NEGATIVE_INTEGER,
     INTEGER,
     "ADIP",
-    true)
+    ordered = true)
 
   val POSITIVE_INTEGER: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_POSITIVE_INTEGER,
     NON_NEGATIVE_INTEGER,
     "ADIPP",
-    true)
+    ordered = true)
 
   val UNSIGNED_LONG: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_UNSIGNED_LONG,
     NON_NEGATIVE_INTEGER,
     "ADIPL",
-    true)
+    ordered = true)
 
   val UNSIGNED_INT: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_UNSIGNED_INT,
     UNSIGNED_LONG,
     "ADIPLI",
-    true)
+    ordered = true)
 
   val UNSIGNED_SHORT: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_UNSIGNED_SHORT,
     UNSIGNED_INT,
     "ADIPLIS",
-    true)
+    ordered = true)
 
   val UNSIGNED_BYTE: BuiltInAtomicType = makeAtomicType(
     StandardNames.XS_UNSIGNED_BYTE,
     UNSIGNED_SHORT,
     "ADIPLISB",
-    true)
+    ordered = true)
 
   val YEAR_MONTH_DURATION: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_YEAR_MONTH_DURATION, DURATION, "ARY", true)
+    makeAtomicType(StandardNames.XS_YEAR_MONTH_DURATION, DURATION, "ARY", ordered = true)
 
   val DAY_TIME_DURATION: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DAY_TIME_DURATION, DURATION, "ARD", true)
+    makeAtomicType(StandardNames.XS_DAY_TIME_DURATION, DURATION, "ARD", ordered = true)
 
   val NORMALIZED_STRING: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_NORMALIZED_STRING, STRING, "ASN", true)
+    makeAtomicType(StandardNames.XS_NORMALIZED_STRING, STRING, "ASN", ordered = true)
 
   val TOKEN: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_TOKEN, NORMALIZED_STRING, "ASNT", true)
+    makeAtomicType(StandardNames.XS_TOKEN, NORMALIZED_STRING, "ASNT", ordered = true)
 
   val LANGUAGE: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_LANGUAGE, TOKEN, "ASNTL", true)
+    makeAtomicType(StandardNames.XS_LANGUAGE, TOKEN, "ASNTL", ordered = true)
 
   val NAME: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_NAME, TOKEN, "ASNTN", true)
+    makeAtomicType(StandardNames.XS_NAME, TOKEN, "ASNTN", ordered = true)
 
   val NMTOKEN: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_NMTOKEN, TOKEN, "ASNTK", true)
+    makeAtomicType(StandardNames.XS_NMTOKEN, TOKEN, "ASNTK", ordered = true)
 
   val NCNAME: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_NCNAME, NAME, "ASNTNC", true)
+    makeAtomicType(StandardNames.XS_NCNAME, NAME, "ASNTNC", ordered = true)
 
   val ID: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_ID, NCNAME, "ASNTNCI", true)
+    makeAtomicType(StandardNames.XS_ID, NCNAME, "ASNTNCI", ordered = true)
 
   val IDREF: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_IDREF, NCNAME, "ASNTNCR", true)
+    makeAtomicType(StandardNames.XS_IDREF, NCNAME, "ASNTNCR", ordered = true)
 
   val ENTITY: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_ENTITY, NCNAME, "ASNTNCE", true)
+    makeAtomicType(StandardNames.XS_ENTITY, NCNAME, "ASNTNCE", ordered = true)
 
   val DATE_TIME_STAMP: BuiltInAtomicType =
-    makeAtomicType(StandardNames.XS_DATE_TIME_STAMP, DATE_TIME, "AMP", true)
+    makeAtomicType(StandardNames.XS_DATE_TIME_STAMP, DATE_TIME, "AMP", ordered = true)
 
   ANY_ATOMIC.stringConverter = StringConverter.StringToString.INSTANCE
 
@@ -289,7 +289,7 @@ object BuiltInAtomicType {
    */
   @throws[XPathException]
   def analyzeContentExpression(simpleType: SimpleType, expression: Expression, kind: Int) = if (kind == Type.ELEMENT) {
-    expression.checkPermittedContents(simpleType, true)
+    expression.checkPermittedContents(simpleType, whole = true)
     //            // if we are building the content of an element or document, no atomization will take
     //            // place, and therefore the presence of any element or attribute nodes in the content will
     //            // cause a validity error, since only simple content is allowed
@@ -300,7 +300,7 @@ object BuiltInAtomicType {
     //                throw new XPathException("The content of an element with a simple type must not include any attribute nodes");
   }
   else if (kind == Type.ATTRIBUTE) { // for attributes, do a check only for text nodes and atomic values: anything else gets atomized
-    if (expression.isInstanceOf[ValueOf] || expression.isInstanceOf[Literal]) expression.checkPermittedContents(simpleType, true)
+    if (expression.isInstanceOf[ValueOf] || expression.isInstanceOf[Literal]) expression.checkPermittedContents(simpleType, whole = true)
   }
 
   /**

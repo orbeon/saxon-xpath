@@ -80,7 +80,7 @@ object IndexOf {
         index += 1
         if (Type.isGuaranteedComparable(searchType,
           baseItem.getPrimitiveType,
-          false) &&
+          ordered = false) &&
           comparer.comparesEqual(baseItem, key)) {
           new Int64Value(index)
         }

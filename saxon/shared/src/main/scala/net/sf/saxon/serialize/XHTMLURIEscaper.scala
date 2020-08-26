@@ -156,7 +156,7 @@ class XHTMLURIEscaper(next: Receiver) extends HTMLURIEscaper(next) {
               new AttributeInfo(
                 attName,
                 att.getType,
-                HTMLURIEscaper.escapeURL(normalized, true, getConfiguration).toString,
+                HTMLURIEscaper.escapeURL(normalized, normalize = true, getConfiguration).toString,
                 att.getLocation,
                 att.getProperties | ReceiverOption.DISABLE_CHARACTER_MAPS)
             } else {
