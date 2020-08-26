@@ -215,7 +215,10 @@ class FocusTrackingIterator()
       node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
     var prior: NodeInfo = null
     var count: Int = 1
-    while ((prior = prev.next()) != null) {
+    while (({
+      prior = prev.next()
+      prior
+    }) != null) {
       if (prior == s.mostRecentNode && nodeTest == s.mostRecentNodeTest) {
         val result: Int = count + s.mostRecentPosition
         s.mostRecentNode = node

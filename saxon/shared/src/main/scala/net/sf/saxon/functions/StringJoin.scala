@@ -76,7 +76,10 @@ class StringJoin extends FoldingFunction with PushableFunction {
     var first: Boolean = true
     val iter: SequenceIterator = arguments(0).iterate()
     var it: Item = null
-    while ((it = iter.next()) != null) {
+    while (({
+      it = iter.next()
+      it
+    }) != null) {
       if (first) {
         first = false
       } else {

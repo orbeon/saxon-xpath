@@ -241,7 +241,7 @@ final class BigDecimalValue extends DecimalValue {
     } catch {
       case err: NumberFormatException =>
         // Must be a special value such as NaN or infinity
-        val e = new ValidationFailure("Cannot convert double " + Err.wrap(in + "", Err.VALUE) + " to decimal")
+        val e = new ValidationFailure("Cannot convert double " + Err.wrap(in.toString + "", Err.VALUE) + " to decimal")
         e.setErrorCode("FOCA0002")
         throw e.makeException
     }

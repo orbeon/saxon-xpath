@@ -126,7 +126,10 @@ class LoadXqueryModule extends SystemFunction with Callable {
     if (locationHintsOption != null) {
       val iterator: SequenceIterator = locationHintsOption.iterate()
       var hint: Item = null
-      while ((hint = iterator.next()) != null) locationHints.add(
+      while (({
+        hint = iterator.next()
+        hint
+      }) != null) locationHints.add(
         hint.getStringValue)
     }
     val config: Configuration = context.getConfiguration
@@ -189,7 +192,10 @@ class LoadXqueryModule extends SystemFunction with Callable {
       val extVariables: MapItem = variablesOption.head().asInstanceOf[MapItem]
       val iterator: AtomicIterator[_ <: AtomicValue] = extVariables.keys
       var key: AtomicValue = null
-      while ((key = iterator.next()) != null) dqc.setParameter(
+      while (({
+        key = iterator.next()
+        key
+      }) != null) dqc.setParameter(
         key.asInstanceOf[QNameValue].getStructuredQName,
         extVariables.get(key).asInstanceOf[Sequence].materialize())
     }

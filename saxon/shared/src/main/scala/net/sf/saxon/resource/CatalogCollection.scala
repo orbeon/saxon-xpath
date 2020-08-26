@@ -148,7 +148,10 @@ class CatalogCollection //TODO we might know the catalog File already
       top.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
     val result: List[String] = new ArrayList[String]()
     var item: NodeInfo = null
-    while ((item = documents.next()) != null) {
+    while (({
+      item = documents.next()
+      item
+    }) != null) {
       if (!("doc" == item.getLocalPart && item.getURI.isEmpty)) {
         val err: XPathException = new XPathException(
           "Children of <collection> element must be <doc> elements")

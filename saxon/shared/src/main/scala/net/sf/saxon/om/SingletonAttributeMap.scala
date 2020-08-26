@@ -78,7 +78,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
     if (index == 0) {
       this
     } else {
-      throw new IndexOutOfBoundsException(index + " of 1")
+      throw new IndexOutOfBoundsException(index.toString + " of 1")
     }
 
 }

@@ -29,16 +29,16 @@ import net.sf.saxon.value._
  * statically
  */
 final class ComputedAttribute(val attributeName: Expression, val namespace: Expression,
-                              val nsContext: NamespaceResolver,  val validAction:
-                              Int,  val schemaTyp: SimpleType, var allowNameAsQName: Boolean) extends AttributeCreator {
+                              val nsContext: NamespaceResolver, val validAction:
+                              Int, val schemaTyp: SimpleType, var allowNameAsQName: Boolean) extends AttributeCreator {
 
+  private var nameOp: Operand = null
+  private var namespaceOp: Operand = null
   nameOp = new Operand(this, attributeName, OperandRole.SINGLE_ATOMIC)
   if (namespace != null) namespaceOp = new Operand(this, namespace, OperandRole.SINGLE_ATOMIC)
   setSchemaType(schemaType)
   setValidationAction(validAction)
   setOptions(ReceiverOption.NONE)
-  private var nameOp: Operand = null
-  private var namespaceOp: Operand = null
 
   /**
    * Indicate that two attributes with the same name are not acceptable.
@@ -278,7 +278,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
             // If the prefix is a duplicate, a different one will be substituted
           }
         }
-        if (uri == NamespaceConstant.XML != "xml" == prefix) {
+        if ((uri == NamespaceConstant.XML) != ("xml" == prefix)) {
           var message: String = null
           if ("xml" == prefix) message = "When the prefix is 'xml', the namespace URI must be " + NamespaceConstant.XML
           else message = "When the namespace URI is " + NamespaceConstant.XML + ", the prefix must be 'xml'"

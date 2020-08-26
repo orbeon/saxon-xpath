@@ -76,10 +76,10 @@ class YearMonthDurationValue private ()
     }
     sb.cat('P')
     if (y != 0) {
-      sb.append(y + "Y")
+      sb.append(y.toString + "Y")
     }
     if (m != 0 || y == 0) {
-      sb.append(m + "M")
+      sb.append(m.toString + "M")
     }
     sb
   }

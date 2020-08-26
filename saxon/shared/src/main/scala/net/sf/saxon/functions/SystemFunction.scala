@@ -216,7 +216,7 @@ abstract class SystemFunction extends AbstractFunction {
       if (qName.hasURI(NamespaceConstant.FN)) qName.getLocalPart
       else qName.getEQName
     out.emitAttribute("name", name)
-    out.emitAttribute("arity", getArity + "")
+    out.emitAttribute("arity", getArity.toString)
     if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) !=
       0) {
       out.emitRetainedStaticContext(getRetainedStaticContext, null)

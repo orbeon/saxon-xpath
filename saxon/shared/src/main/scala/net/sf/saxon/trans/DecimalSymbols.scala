@@ -243,7 +243,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
     for (i <- 0 until intValues.length) {
       val propValue: Int = intValues(i)
       if (propValue != defaultSymbols.intValues(i)) {
-        out.emitAttribute(propertyNames(i), propValue + "")
+        out.emitAttribute(propertyNames(i), propValue.toString + "")
       }
     }
     if ("Infinity" != getInfinity) {

@@ -493,11 +493,11 @@ class GlobalVariable
     presenter.startElement(if (asParam) "globalParam" else "globalVariable")
     presenter.emitAttribute("name", getVariableQName)
     presenter.emitAttribute("as", getRequiredType.toAlphaCode)
-    presenter.emitAttribute("line", getLineNumber + "")
+    presenter.emitAttribute("line", getLineNumber.toString + "")
     presenter.emitAttribute("module", getSystemId)
     if (getStackFrameMap != null) {
       presenter.emitAttribute("slots",
-        getStackFrameMap.getNumberOfVariables + "")
+        getStackFrameMap.getNumberOfVariables.toString + "")
     }
     if (getDeclaringComponent != null) {
       val vis: Visibility.Visibility = getDeclaringComponent.getVisibility

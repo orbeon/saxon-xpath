@@ -216,7 +216,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
 
   override def toString: String = {
     val res = if (upwardsAxis == AxisInfo.PARENT) "/" else ""
-    upperPattern + res
+    upperPattern.toString + res
   }
 
   def copy(rebindings: RebindingMap): AncestorQualifiedPattern = {

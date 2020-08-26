@@ -32,7 +32,10 @@ class ForClausePush(outputter: Outputter,
     val iter: SequenceIterator = forClause.getSequence.iterate(context)
     var pos: Int = 0
     var next: Item = null
-    while ((next = iter.next()) != null) {
+    while (({
+      next = iter.next()
+      next
+    }) != null) {
       context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
                                next)
       if (forClause.getPositionVariable != null) {

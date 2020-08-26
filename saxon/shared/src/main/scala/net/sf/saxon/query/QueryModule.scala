@@ -95,10 +95,10 @@ class QueryModule extends StaticContext {
 
   private var topModule: QueryModule = this
 
+  private var baseURI: String = sqc.getBaseURI
+
   @BeanProperty
   var location_URI: URI = if (baseURI == null) null else new URI(baseURI)
-
-  private var baseURI: String = sqc.getBaseURI
 
   @BeanProperty
   var moduleNamespace: String = _
@@ -790,7 +790,7 @@ class QueryModule extends StaticContext {
       throw new NullPointerException(
         "Null namespace URI supplied to declarePrologNamespace()")
     }
-    if (prefix.==("xml") != uri == NamespaceConstant.XML) {
+    if ((prefix == "xml") != (uri == NamespaceConstant.XML)) {
       val err: XPathException = new XPathException(
         "Invalid declaration of the XML namespace")
       err.setErrorCode("XQST0070")
@@ -845,7 +845,7 @@ class QueryModule extends StaticContext {
           }
           return uri
         }
-          i -= 1
+        i -= 1
       }
     }
     if (prefix.isEmpty) {

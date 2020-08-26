@@ -657,7 +657,7 @@ class XMLEmitter extends Emitter {
       closeStartTag()
     }
     writer.write(
-      "<?" + targetVar + (if (dataVar.length > 0) ' ' + dataVar.toString else "") +
+      "<?" + targetVar + (if (dataVar.length > 0) " " + dataVar.toString else "") +
         "?>")
   }
 

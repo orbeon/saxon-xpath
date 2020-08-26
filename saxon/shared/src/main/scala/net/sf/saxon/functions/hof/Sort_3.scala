@@ -21,7 +21,10 @@ class Sort_3 extends Sort_2 {
     val key: Function = arguments(2).head().asInstanceOf[Function]
     val iterator: SequenceIterator = input.iterate()
     var item: Item = null
-    while ((item = iterator.next()) != null) {
+    while (({
+      item = iterator.next()
+      item
+    }) != null) {
       val member: ItemToBeSorted = new ItemToBeSorted()
       member.value = item
       member.originalPosition = {

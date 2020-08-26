@@ -39,7 +39,10 @@ object Path_1 {
     var fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val iter: AxisIterator = node.iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
     var n: NodeInfo = null
-    while ((n = iter.next()) != null) {
+    while (({
+      n = iter.next()
+      n
+    }) != null) {
       if (n.getParent == null) {
         if (n.getNodeKind == Type.DOCUMENT) {
           new StringValue(fsb)
@@ -72,19 +75,19 @@ object Path_1 {
           fsb = fsb2
         case Type.TEXT =>
           fsb2.append("/text()[")
-          fsb2.append(Navigator.getNumberSimple(n, context) + "]")
+          fsb2.append(Navigator.getNumberSimple(n, context).toString + "]")
           fsb2.append(fsb)
           fsb = fsb2
         case Type.COMMENT =>
           fsb2.append("/comment()[")
-          fsb2.append(Navigator.getNumberSimple(n, context) + "]")
+          fsb2.append(Navigator.getNumberSimple(n, context).toString + "]")
           fsb2.append(fsb)
           fsb = fsb2
         case Type.PROCESSING_INSTRUCTION =>
           fsb2.append("/processing-instruction(")
           fsb2.append(n.getLocalPart)
           fsb2.append(")[")
-          fsb2.append(Navigator.getNumberSimple(n, context) + "]")
+          fsb2.append(Navigator.getNumberSimple(n, context).toString + "]")
           fsb2.append(fsb)
           fsb = fsb2
         case Type.NAMESPACE =>

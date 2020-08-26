@@ -143,7 +143,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
     }
   }
 
-  override def toString(): String = getBasePattern + "[" + getPredicate + "]"
+  override def toString(): String = getBasePattern.toString + "[" + getPredicate.toString + "]"
 
   override def toShortString(): String =
     getBasePattern.toShortString() + "[" + getPredicate.toShortString() +

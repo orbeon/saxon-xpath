@@ -47,7 +47,7 @@ class RuleSetWithWarnings(@BeanProperty var baseRuleSet: BuiltInRuleSet)
                         locationId)
   }
 
-  override def getName(): String = baseRuleSet + " with warnings"
+  override def getName(): String = baseRuleSet.toString + " with warnings"
 
   def outputWarning(item: Item, context: XPathContext): Unit = {
     val id: String =

@@ -224,7 +224,7 @@ class Doctype(content: Expression) extends Instruction {
         if (npublicid != null) {
           write(out, " PUBLIC \"" + npublicid + "\" ")
           if (nsystem != null) {
-            write(out, '\"' + nsystem + "\" ")
+            write(out, "\"" + nsystem + "\" ")
           }
         } else {
           write(out, " SYSTEM \"" + nsystem + "\" ")

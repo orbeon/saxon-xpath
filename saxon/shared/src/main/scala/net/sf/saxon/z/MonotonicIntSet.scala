@@ -157,9 +157,9 @@ class MonotonicIntSet extends IntSet {
     var i = 0
     while (i < used) {
       if (i == used - 1) {
-        sb.append(contents(i) + "")
+        sb.append(contents(i).toString + "")
       } else if (contents(i) + 1 != contents(i + 1)) {
-        sb.append(contents(i) + ",")
+        sb.append(contents(i).toString + ",")
       } else {
         var j: Int = i + 1
         breakable {
@@ -170,7 +170,7 @@ class MonotonicIntSet extends IntSet {
             }
           }
         }
-        sb.append(contents(i) + "-" + contents(j - 1) + ",")
+        sb.append(contents(i).toString + "-" + contents(j - 1).toString + ",")
         i = j
       }
     }

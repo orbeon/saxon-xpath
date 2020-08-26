@@ -132,7 +132,10 @@ class SortedIterator ()
     values = Array.ofDim[ObjectToBeSorted[Item]](allocated)
     count = 0
     var item: Item = null
-    while ((item = base.next()) != null) {
+    while (({
+      item = base.next()
+      item
+    }) != null) {
       if (count == allocated) {
         allocated *= 2
         val nk2: Array[ObjectToBeSorted[Item]] =

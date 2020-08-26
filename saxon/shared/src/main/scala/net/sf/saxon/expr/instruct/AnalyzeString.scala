@@ -280,7 +280,10 @@ class AnalyzeString(select: Expression,
     val pipe: PipelineConfiguration = output.getPipelineConfiguration
     pipe.setXPathContext(c2)
     var it: Item = null
-    while ((it = focusIter.next()) != null) if (iter.isMatching) {
+    while (({
+      it = focusIter.next()
+      it
+    }) != null) if (iter.isMatching) {
       if (getMatching != null) {
         getMatching.process(output, c2)
       }

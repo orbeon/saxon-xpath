@@ -18,16 +18,16 @@ object UTF8Writer {
 
 final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Writer {
   var buffLength = bufferLength
+  private[serialize] var _surrogate = 0
+  var _outBuffer: Array[Byte] = null
+  final var _outBufferLast: Int = 0
+  var _outPtr: Int = 0
   if (buffLength < UTF8Writer.MIN_BUF_LEN)
     buffLength = UTF8Writer.MIN_BUF_LEN
   _outBuffer = new Array[Byte](buffLength)
   _outBufferLast = buffLength - 4
   _outPtr = 0
-   var _outBuffer: Array[Byte] = null
-  final  var _outBufferLast: Int = 0
-   var _outPtr: Int = 0
 
-  private[serialize] var _surrogate = 0
 
   def this(out: OutputStream) {
     this(out, UTF8Writer.DEFAULT_BUF_LEN)

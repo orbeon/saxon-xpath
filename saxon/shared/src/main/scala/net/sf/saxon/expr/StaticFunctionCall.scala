@@ -87,7 +87,7 @@ class StaticFunctionCall(private var target: Function,
       val pf: OriginalFunction = target.asInstanceOf[OriginalFunction]
       out.startElement("origFC", this)
       out.emitAttribute("name", pf.getFunctionName)
-      out.emitAttribute("pack", options.componentMap.get(pf.getComponent.getContainingPackage) + "")
+      out.emitAttribute("pack", options.componentMap.get(pf.getComponent.getContainingPackage).toString + "")
       for (o <- operands().asScala) {
         o.getChildExpression.export(out)
       }

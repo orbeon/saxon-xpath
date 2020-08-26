@@ -76,7 +76,10 @@ object IndexOf {
      */
     def next(): Int64Value = {
       var baseItem: AtomicValue = null
-      while ((baseItem = base.next().asInstanceOf[AtomicValue]) != null) {
+      while (({
+        baseItem = base.next().asInstanceOf[AtomicValue]
+        baseItem
+      }) != null) {
         index += 1
         if (Type.isGuaranteedComparable(searchType,
           baseItem.getPrimitiveType,

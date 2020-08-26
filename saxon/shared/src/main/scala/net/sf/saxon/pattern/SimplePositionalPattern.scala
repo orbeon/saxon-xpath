@@ -81,12 +81,12 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
   /**
    * Get the original pattern text
    */
-  override def toString(): String = nodeTest + "[" + position + "]"
+  override def toString(): String = nodeTest.toString + "[" + position.toString + "]"
 
   def export(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.simPos")
     presenter.emitAttribute("test", AlphaCode.fromItemType(nodeTest))
-    presenter.emitAttribute("pos", position + "")
+    presenter.emitAttribute("pos", position.toString + "")
     presenter.endElement()
   }
 

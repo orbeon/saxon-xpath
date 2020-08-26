@@ -397,7 +397,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
       presenter.emitAttribute("flags", flags)
     }
     exportUseAccumulators(presenter)
-    presenter.emitAttribute("patternSlots", getStackFrameSlotsNeeded + "")
+    presenter.emitAttribute("patternSlots", getStackFrameSlotsNeeded.toString + "")
     exportTemplateRules(presenter)
     val e: Int = presenter.endElement()
     if (s != e) {
@@ -438,7 +438,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     if (!flags.isEmpty) {
       presenter.emitAttribute("flags", flags)
     }
-    presenter.emitAttribute("patternSlots", getStackFrameSlotsNeeded + "")
+    presenter.emitAttribute("patternSlots", getStackFrameSlotsNeeded.toString + "")
     explainTemplateRules(presenter)
     val e: Int = presenter.endElement()
     if (s != e) {

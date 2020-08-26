@@ -142,7 +142,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
       val c: Int = iter.next
       val s: String = charMap.get(c)
       out.startElement("m")
-      out.emitAttribute("c", c + "")
+      out.emitAttribute("c", c.toString + "")
       out.emitAttribute("s", s)
       out.endElement()
     }

@@ -116,7 +116,7 @@ object TimeValue {
           badTime("Non-numeric fractional seconds component", s)
         }
         val fractionalSeconds: Double =
-          java.lang.Double.parseDouble('.' + part)
+          java.lang.Double.parseDouble("."+ part)
         tv.nanosecond = Math.round(fractionalSeconds * 1000000000).toInt
         if (tv.hour == 24 && tv.nanosecond != 0) {
           badTime("If hour is 24, fractional seconds must be 0", s)

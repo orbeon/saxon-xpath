@@ -20,10 +20,8 @@ import java.util.ArrayList
 import java.util.List
 
 
-
-
 class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
-    extends SequenceIterator {
+  extends SequenceIterator {
 
   var state: Int = 0
 
@@ -48,24 +46,27 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
     if (item == null) {
       return null
     }
-//first item in iterator
+    //first item in iterator
     if (state == 0) {
       if (item.isInstanceOf[NodeInfo]) {
         val nodes: List[Item] = new ArrayList[Item](50)
         nodes.add(item)
-        while ((item = base.next()) != null) if (!(item
-                                                   .isInstanceOf[NodeInfo])) {
+        while (({
+          item = base.next()
+          item
+        }) != null) if (!(item
+          .isInstanceOf[NodeInfo])) {
           throw reportMixedItems()
         } else {
           nodes.add(item)
         }
         base = new DocumentOrderIterator(new ListIterator(nodes),
-                                         GlobalOrderComparer.getInstance)
-// first item is a node
+          GlobalOrderComparer.getInstance)
+        // first item is a node
         state = 1
         base.next()
       } else {
-// first item is an atomic value or function item
+        // first item is an atomic value or function item
         state = -1
       }
     } else if (state == -1 && item.isInstanceOf[NodeInfo]) {
@@ -82,6 +83,6 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * An iterator that returns the same items as its base iterator, checking to see that they are either
-  * all nodes, or all non-nodes; if they are all nodes, it delivers them in document order.
-  */
+ * An iterator that returns the same items as its base iterator, checking to see that they are either
+ * all nodes, or all non-nodes; if they are all nodes, it delivers them in document order.
+ */

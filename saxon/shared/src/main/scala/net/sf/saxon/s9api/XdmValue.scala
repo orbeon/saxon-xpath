@@ -169,7 +169,10 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
       val iter: SequenceIterator = value.iterate()
       var item: Item = null
       breakable {
-        while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
+        while (({
+          item = iter.next()
+          item
+        }) != null) if (item.isInstanceOf[NodeInfo]) {
           config = item.asInstanceOf[NodeInfo].getConfiguration
           break()
         }

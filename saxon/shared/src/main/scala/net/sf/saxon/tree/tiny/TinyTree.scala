@@ -75,11 +75,15 @@ class TinyTree(config: Configuration, statistics: Statistics)
   extends GenericTreeInfo(config)
     with NodeVectorTree {
 
-  var charBuffer: AppendableCharSequence =
-    if (characters > 65000) new LargeStringBuffer()
-    else new FastStringBuffer(characters)
-
   /*@Nullable*/
+
+  val nodes: Int = statistics.getAverageNodes.toInt + 1
+
+  val attributes: Int = statistics.getAverageAttributes.toInt + 1
+
+  val namespaces: Int = statistics.getAverageNamespaces.toInt + 1
+
+  val characters: Int = statistics.getAverageCharacters.toInt + 1
 
   var commentBuffer: FastStringBuffer = null
 
@@ -172,15 +176,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
   @BeanProperty
   var uniformBaseUri: String = null
 
-  val nodes: Int = statistics.getAverageNodes.toInt + 1
-
-  val attributes: Int = statistics.getAverageAttributes.toInt + 1
-
-  val namespaces: Int = statistics.getAverageNamespaces.toInt + 1
-
-  val characters: Int = statistics.getAverageCharacters.toInt + 1
-
   this.setConfiguration(config)
+
+  var charBuffer: AppendableCharSequence =
+    if (characters > 65000) new LargeStringBuffer()
+    else new FastStringBuffer(characters)
 
   override def setConfiguration(config: Configuration): Unit = {
     super.setConfiguration(config)

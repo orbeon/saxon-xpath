@@ -112,7 +112,10 @@ class AnalyzeStringFn extends RegexFunction {
     out.startElement(resultName, resultType, Loc.NONE, ReceiverOption.NONE)
     out.startContent()
     var item: Item = null
-    while ((item = iter.next()) != null) if (iter.isMatching) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) if (iter.isMatching) {
       out.startElement(matchName, matchType, Loc.NONE, ReceiverOption.NONE)
       out.startContent()
       iter.processMatchingSubstring(new RegexIterator.MatchHandler() {

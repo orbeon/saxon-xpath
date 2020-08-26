@@ -32,7 +32,10 @@ class MapCreate extends SystemFunction {
         baseMap = HashTrieMap.copy(baseMap)
       }
       var next: MapItem = null
-      while ((next = iter.next().asInstanceOf[MapItem]) != null) for (pair <- next.keyValuePairs().asScala) {
+      while (({
+        next = iter.next().asInstanceOf[MapItem]
+        next
+      }) != null) for (pair <- next.keyValuePairs().asScala) {
         if (baseMap.get(pair.key) != null) {
           throw new XPathException(
             "Duplicate key value (" + pair.key + ") in map",

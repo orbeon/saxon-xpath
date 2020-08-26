@@ -44,7 +44,7 @@ object StaticQueryContext {
 
 }
 
-class StaticQueryContext () {
+class StaticQueryContext() {
 
   private var config: Configuration = _
 
@@ -239,15 +239,16 @@ class StaticQueryContext () {
   def compileQuery(source: Reader): XQueryExpression = synchronized {
     val buffer: Array[Char] = Array.ofDim[Char](4096)
     val sb: StringBuilder = new StringBuilder(4096)
-    breakable { while (true) {
-      val n: Int = source.read(buffer)
-      if (n > 0) {
-        sb.append(buffer, 0, n)
-      } else {
-        break()
+    breakable {
+      while (true) {
+        val n: Int = source.read(buffer)
+        if (n > 0) {
+          sb.append(buffer, 0, n)
+        } else {
+          break()
+        }
       }
     }
-  }
     compileQuery(sb.toString)
   }
 
@@ -288,10 +289,10 @@ class StaticQueryContext () {
       throw new NullPointerException(
         "Null namespace URI supplied to declareNamespace()")
     }
-    if (prefix.==("xml") != uri == NamespaceConstant.XML) {
+    if ((prefix == "xml") != (uri == NamespaceConstant.XML)) {
       throw new IllegalArgumentException("Misdeclaration of XML namespace")
     }
-    if (prefix.==("xmlns") || uri == NamespaceConstant.XMLNS) {
+    if ((prefix == "xmlns") || (uri == NamespaceConstant.XMLNS)) {
       throw new IllegalArgumentException("Misdeclaration of xmlns namespace")
     }
     if (prefix.isEmpty) {

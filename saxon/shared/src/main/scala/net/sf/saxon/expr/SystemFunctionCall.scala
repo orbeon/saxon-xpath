@@ -160,7 +160,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       val sfo: Expression = getTargetFunction.makeOptimizedFunctionCall(
         visitor,
         contextInfo,
-        getArguments: _*)
+        getArguments.toIndexedSeq: _*)
       if (sfo != null) {
         sfo.setParentExpression(getParentExpression)
         ExpressionTool.copyLocationInfo(this, sfo)
@@ -207,7 +207,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     if (target.isInstanceOf[StatefulSystemFunction]) {
       target = target.asInstanceOf[StatefulSystemFunction].copy()
     }
-    target.makeFunctionCall(args: _*)
+    target.makeFunctionCall(args.toIndexedSeq: _*)
   }
 
   override def getIntegerBounds(): Array[IntegerValue] = {

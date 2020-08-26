@@ -125,7 +125,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("supplied", this)
-    destination.emitAttribute("slot", slotNumber + "")
+    destination.emitAttribute("slot", slotNumber.toString + "")
     destination.endElement()
   }
 

@@ -88,13 +88,13 @@ object RoleDiagnostic {
     case _ =>
       if (n >= 21) {
         n % 10 match {
-          case 1 => n + "st"
-          case 2 => n + "nd"
-          case 3 => n + "rd"
+          case 1 => n.toString + "st"
+          case 2 => n.toString + "nd"
+          case 3 => n.toString + "rd"
 
         }
       }
-      n + "th"
+      n.toString + "th"
 
   }
 
@@ -233,8 +233,8 @@ class RoleDiagnostic(private var kind: Int,
 
   def save(): String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
-    fsb.append(kind + "|")
-    fsb.append(operand + "|")
+    fsb.append(kind.toString + "|")
+    fsb.append(operand.toString + "|")
     fsb.append(if (errorCode.==("XPTY0004")) "" else errorCode)
     fsb.append("|")
     fsb.append(operation)

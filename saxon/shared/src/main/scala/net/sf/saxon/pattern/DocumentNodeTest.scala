@@ -70,7 +70,10 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
     // children, and the element node matches the element test.
     var found: Boolean = false
     var n: NodeInfo = null
-    while ((n = iter.next()) != null) {
+    while (({
+      n = iter.next()
+      n
+    }) != null) {
       val kind: Int = n.getNodeKind
       if (kind == Type.TEXT) {
         false
@@ -129,7 +132,10 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
     // children, and the element node matches the element test.
     var found: Boolean = false
     var n: NodeInfo = null
-    while ((n = iter.next()) != null) {
+    while (({
+      n = iter.next()
+      n
+    }) != null) {
       val kind: Int = n.getNodeKind
       if (kind == Type.TEXT) {
         Optional.of("The supplied document node has text node children")

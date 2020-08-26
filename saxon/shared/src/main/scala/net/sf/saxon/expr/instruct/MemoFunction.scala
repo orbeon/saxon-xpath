@@ -27,7 +27,10 @@ object MemoFunction {
     for (seq <- params) {
       val iter: SequenceIterator = seq.iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) {
+      while (({
+        item = iter.next()
+        item
+      }) != null) {
         if (item.isInstanceOf[NodeInfo]) {
           val node: NodeInfo = item.asInstanceOf[NodeInfo]
           node.generateId(sb)

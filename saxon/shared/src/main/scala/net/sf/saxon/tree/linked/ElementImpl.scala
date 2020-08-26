@@ -429,7 +429,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes()) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator().toIterable
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator() .iterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }

@@ -308,7 +308,7 @@ object DateTimeValue {
           badDate("Non-numeric fractional seconds component", s)
         }
         val fractionalSeconds: Double =
-          java.lang.Double.parseDouble('.' + part)
+          java.lang.Double.parseDouble("." + part)
         var nanoSeconds: Int = Math.round(fractionalSeconds * 1000000000).toInt
         if (nanoSeconds == 1000000000) {
           nanoSeconds -= 1

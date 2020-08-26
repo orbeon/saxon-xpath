@@ -74,7 +74,10 @@ class JarCollection(private var context: XPathContext,
     val result: List[String] = new ArrayList[String]()
     var entry: ZipEntry = null
     var dirStr: String = ""
-    while ((entry = zipInputStream.getNextEntry) != null) {
+    while (({
+      entry = zipInputStream.getNextEntry
+      entry
+    }) != null) {
       if (entry.isDirectory) {
         dirStr = entry.getName
       }
@@ -142,15 +145,15 @@ class JarCollection(private var context: XPathContext,
 
     private var dirStr: String = ""
 
+    val metadataParam: java.lang.Boolean =
+      if (params == null) null else params.getMetaData
+    
     private var options: ParseOptions =
       optionsFromQueryParameters(params, context)
 
     private var metadata: Boolean = metadataParam != null && metadataParam
 
     this.options.setSpaceStrippingRule(whitespaceRules)
-
-    val metadataParam: java.lang.Boolean =
-      if (params == null) null else params.getMetaData
 
     advance()
 
