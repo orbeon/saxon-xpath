@@ -317,7 +317,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     lReceiver.close()
   }
 
-  def flush(): Unit = {}
+  def flush(): Unit = ()
 
   def writeAttribute(localName: String, value: String): Unit = {
     checkNonNull(localName)
@@ -434,7 +434,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     writeCharacters(data)
   }
 
-  def writeDTD(dtd: String): Unit = {}
+  def writeDTD(dtd: String): Unit = ()
 
   def writeEntityRef(name: String): Unit = {
     throw new UnsupportedOperationException("writeEntityRef")

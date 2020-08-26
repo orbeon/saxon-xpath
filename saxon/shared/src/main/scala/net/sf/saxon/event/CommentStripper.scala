@@ -71,12 +71,12 @@ class CommentStripper(next: Receiver) extends ProxyReceiver(next) {
 
   override def comment(chars: CharSequence,
                        locationId: Location,
-                       properties: Int): Unit = {}
+                       properties: Int): Unit = ()
 
   override def processingInstruction(name: String,
                                      data: CharSequence,
                                      locationId: Location,
-                                     properties: Int): Unit = {}
+                                     properties: Int): Unit = ()
 
   private def flush(): Unit = {
     if (!buffer.isEmpty) {

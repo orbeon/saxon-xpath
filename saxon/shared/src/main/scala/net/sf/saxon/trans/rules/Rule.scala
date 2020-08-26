@@ -175,7 +175,7 @@ class Rule {
     * Add other exported properties as required
     * @param out  the export destination
     */
-  def exportOtherProperties(out: ExpressionPresenter): Unit = {}
+  def exportOtherProperties(out: ExpressionPresenter): Unit = ()
 
   def compareRank(other: Rule): Int = rank - other.rank
 

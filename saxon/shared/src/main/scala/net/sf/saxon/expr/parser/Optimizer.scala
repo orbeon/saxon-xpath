@@ -143,9 +143,9 @@ class Optimizer( var config: Configuration) {
   def makeIndexedValue(iter: SequenceIterator): GroundedValue =
     throw new UnsupportedOperationException("Indexing requires Saxon-EE")
 
-  def optimizeNodeSetPattern(pattern: NodeSetPattern): Unit = {}
+  def optimizeNodeSetPattern(pattern: NodeSetPattern): Unit = ()
 
-  def prepareForStreaming(exp: Expression): Unit = {}
+  def prepareForStreaming(exp: Expression): Unit = ()
 
   def evaluateStreamingArgument(expr: Expression,
                                 context: XPathContext): Sequence =
@@ -189,10 +189,10 @@ class Optimizer( var config: Configuration) {
   def makeInversion(pattern: Pattern, template: NamedTemplate): RuleTarget =
     null
 
-  def makeCopyOperationsExplicit(parent: Expression, child: Operand): Unit = {}
+  def makeCopyOperationsExplicit(parent: Expression, child: Operand): Unit = ()
 
   def checkStreamability(/*sourceTemplate: XSLTemplate,*/ // no scala class found
-                         compiledTemplate: TemplateRule): Unit = {}
+                         compiledTemplate: TemplateRule): Unit = ()
 
   def optimizeQuantifiedExpressionForStreaming(
                                                 expr: QuantifiedExpression): Expression = expr
@@ -210,7 +210,7 @@ class Optimizer( var config: Configuration) {
                             objectName: String,
                             requiredEvaluationModes: Int): Expression = expr
 
-  def injectByteCodeCandidates(exp: Expression): Unit = {}
+  def injectByteCodeCandidates(exp: Expression): Unit = ()
 
   def optimizeNumberInstruction(
                                  ni: NumberInstruction,

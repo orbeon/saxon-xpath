@@ -150,7 +150,7 @@ object AnySimpleType extends SimpleType {
 
   def getWhitespaceAction(): Int = Whitespace.PRESERVE
 
-  def analyzeContentExpression(expression: Expression, kind: Int): Unit = {}
+  def analyzeContentExpression(expression: Expression, kind: Int): Unit = ()
 //return;
 //return;
 

@@ -176,7 +176,7 @@ class XQueryExpression(var expression: Expression,
 
   def getStackFrameMap(): SlotManager = stackFrameMap
 
-  def explainPathMap(): Unit = {}
+  def explainPathMap(): Unit = ()
 
   // No action (requires Saxon-EE)
   // No action (requires Saxon-EE)

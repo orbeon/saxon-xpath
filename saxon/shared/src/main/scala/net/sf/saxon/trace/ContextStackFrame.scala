@@ -32,7 +32,7 @@ object ContextStackFrame {
 
   class CallingApplication extends ContextStackFrame {
 
-    def print(out: Logger): Unit = {}
+    def print(out: Logger): Unit = ()
 
   }
 

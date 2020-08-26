@@ -74,11 +74,11 @@ abstract class Pattern extends PseudoExpression {
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
-  def bindCurrent(binding: LocalBinding): Unit = {}
+  def bindCurrent(binding: LocalBinding): Unit = ()
 
   def matchesCurrentGroup(): Boolean = false
 
-  def setOriginalText(text: String): Unit = {}
+  def setOriginalText(text: String): Unit = ()
 
    def handleDynamicError(ex: XPathException,
                                    context: XPathContext): Unit = {

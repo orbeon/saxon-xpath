@@ -160,7 +160,7 @@ abstract class AtomicValue
     }
   }
 
-  def checkValidInJavascript(): Unit = {}
+  def checkValidInJavascript(): Unit = ()
 // default - no action
 // default - no action
 

@@ -29,7 +29,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   this.nodeNr = nodeNrImpl
 
-  override def setSystemId(uri: String): Unit = {}
+  override def setSystemId(uri: String): Unit = ()
 
   override def getSystemId(): String = {
     val parent: NodeInfo = getParent

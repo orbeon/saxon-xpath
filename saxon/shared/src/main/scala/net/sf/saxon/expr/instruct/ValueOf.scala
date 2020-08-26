@@ -124,7 +124,7 @@ class ValueOf(select: Expression,
     }
 
   def localTypeCheck(visitor: ExpressionVisitor,
-                     contextItemType: ContextItemStaticInfo): Unit = {}
+                     contextItemType: ContextItemStaticInfo): Unit = ()
 
   override def getIntrinsicDependencies(): Int = {
     var d: Int = super.getIntrinsicDependencies

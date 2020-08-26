@@ -214,7 +214,7 @@ class TextFragmentValue(config: Configuration,
 
     def getTreeInfo(): TreeInfo = treeInfo
 
-    def setSystemId(systemId: String): Unit = {}
+    def setSystemId(systemId: String): Unit = ()
 
     def getNodeKind(): Int = Type.TEXT
 

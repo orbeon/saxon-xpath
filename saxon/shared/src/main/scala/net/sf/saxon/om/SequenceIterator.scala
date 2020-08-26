@@ -60,7 +60,7 @@ trait SequenceIterator extends Closeable {
 
   def next(): Item
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
   def getProperties(): Set[Property] = Set()
 

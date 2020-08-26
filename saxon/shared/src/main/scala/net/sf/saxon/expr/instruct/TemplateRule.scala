@@ -168,9 +168,9 @@ class TemplateRule
 
   /*def prepareInitializer(compilation: Compilation,
                          decl: ComponentDeclaration,
-                         modeName: StructuredQName): Unit = {}*/ //Compilation,ComponentDeclaration does not exist
+                         modeName: StructuredQName): Unit = ()*/ //Compilation,ComponentDeclaration does not exist
 
-  def initialize(): Unit = {}
+  def initialize(): Unit = ()
 
   def apply(output: Outputter, context: XPathContextMajor): Unit = {
     var tc: TailCall = applyLeavingTail(output, context)
@@ -232,7 +232,7 @@ class TemplateRule
     throw new UnsupportedOperationException()
   }
 
-  def setDeclaredStreamable(streamable: Boolean): Unit = {}
+  def setDeclaredStreamable(streamable: Boolean): Unit = ()
 
   def isDeclaredStreamable(): Boolean = false
 

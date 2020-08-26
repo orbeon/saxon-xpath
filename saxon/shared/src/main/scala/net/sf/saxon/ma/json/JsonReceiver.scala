@@ -203,19 +203,19 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   def getPipelineConfiguration(): PipelineConfiguration = pipe
 
-  def setSystemId(systemId: String): Unit = {}
+  def setSystemId(systemId: String): Unit = ()
 
   def open(): Unit = {
     output.open()
   }
 
-  def startDocument(properties: Int): Unit = {}
+  def startDocument(properties: Int): Unit = ()
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {}
+                        publicID: String): Unit = ()
 
   def startElement(elemName: NodeName,
                    `type`: SchemaType,
@@ -407,11 +407,11 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
   def processingInstruction(name: String,
                             data: CharSequence,
                             locationId: Location,
-                            properties: Int): Unit = {}
+                            properties: Int): Unit = ()
 
   def comment(content: CharSequence,
               locationId: Location,
-              properties: Int): Unit = {}
+              properties: Int): Unit = ()
 
   def close(): Unit = {
     if (output != null) {

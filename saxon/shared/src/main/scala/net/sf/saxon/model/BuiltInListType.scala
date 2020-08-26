@@ -129,7 +129,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getDescription(): String = getDisplayName
 
-  def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = {}
+  def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
 
   def getLocalName(): String = StandardNames.getLocalName(fingerprint)
 

@@ -486,7 +486,7 @@ class GlobalVariable
       "global variable " + getVariableQName.getDisplayName
     }
 
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {}
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
   override def export(presenter: ExpressionPresenter): Unit = {
     val asParam: Boolean = this.isInstanceOf[GlobalParam] && !isStatic

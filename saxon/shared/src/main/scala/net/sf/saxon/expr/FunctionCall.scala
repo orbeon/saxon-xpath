@@ -184,7 +184,7 @@ abstract class FunctionCall extends Expression {
     }
   }
 
-  def checkArguments(visitor: ExpressionVisitor): Unit = {}
+  def checkArguments(visitor: ExpressionVisitor): Unit = ()
 
   def checkArgumentCount(min: Int, max: Int): Int = {
     val numArgs: Int = getArity

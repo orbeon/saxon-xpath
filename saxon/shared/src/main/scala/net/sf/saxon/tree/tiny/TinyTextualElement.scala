@@ -156,7 +156,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getTreeInfo(): TreeInfo = TinyTextualElement.this.getTreeInfo
 
-    def setSystemId(systemId: String): Unit = {}
+    def setSystemId(systemId: String): Unit = ()
 
     def getNodeKind(): Int = Type.TEXT
 

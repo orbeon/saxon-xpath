@@ -145,7 +145,7 @@ object OutputterEvent {
   */
 abstract class OutputterEvent {
 
-  def replay(out: Outputter): Unit = {}
+  def replay(out: Outputter): Unit = ()
 
 }
 

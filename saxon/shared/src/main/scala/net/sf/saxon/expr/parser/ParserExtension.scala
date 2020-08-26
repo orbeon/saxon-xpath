@@ -174,11 +174,11 @@ object ParserExtension {
     def getVariableQName(): StructuredQName = new StructuredQName("", "", "")
 
     def addReference(ref: VariableReference,
-                     isLoopingReference: Boolean): Unit = {}
+                     isLoopingReference: Boolean): Unit = ()
 
     def getIntegerBoundsForVariable(): Array[IntegerValue] = null
 
-    override def setIndexedVariable(): Unit = {}
+    override def setIndexedVariable(): Unit = ()
 
     override def isIndexedVariable(): Boolean = false
 

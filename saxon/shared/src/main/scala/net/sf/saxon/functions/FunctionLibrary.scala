@@ -13,7 +13,7 @@ import net.sf.saxon.trans.SymbolicName
 
 trait FunctionLibrary {
 
-  def setConfiguration(config: Configuration): Unit = {}
+  def setConfiguration(config: Configuration): Unit = ()
 
   /*@Nullable*/
 

@@ -40,7 +40,7 @@ class SlotManager {
     numberOfVariables
   }
 
-  def showStackFrame(context: XPathContext, logger: Logger): Unit = {}
+  def showStackFrame(context: XPathContext, logger: Logger): Unit = ()
   def getNumberOfVariables: Int = numberOfVariables
 
 }

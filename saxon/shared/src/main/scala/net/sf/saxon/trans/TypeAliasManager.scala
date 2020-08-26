@@ -29,7 +29,7 @@ class TypeAliasManager {
     throw new UnsupportedOperationException()
   }
 
-  def processAllDeclarations(topLevel: List[ComponentDeclaration]): Unit = {}*/
+  def processAllDeclarations(topLevel: List[ComponentDeclaration]): Unit = ()*/
 // No action
 // No action
 

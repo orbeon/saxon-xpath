@@ -147,13 +147,13 @@ class XMLEmitter extends Emitter {
     this.characterReferenceGenerator = generator
   }
 
-  def setEscapeNonAscii(escape: java.lang.Boolean): Unit = {}
+  def setEscapeNonAscii(escape: java.lang.Boolean): Unit = ()
 
-  override def open(): Unit = {}
+  override def open(): Unit = ()
 
-  def startDocument(properties: Int): Unit = {}
+  def startDocument(properties: Int): Unit = ()
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def openDocument(): Unit = {
     if (writer == null) {

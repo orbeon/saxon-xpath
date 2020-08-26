@@ -17,10 +17,9 @@ import scala.beans.BeanProperty
 
 class XPathCompiler(@BeanProperty var processor: Processor) {
 
-  private var evaluator: XPathEvaluator = new XPathEvaluator(
-    processor.getUnderlyingConfiguration)
+  private val evaluator: XPathEvaluator = new XPathEvaluator(processor.getUnderlyingConfiguration)
 
-  private var env: IndependentContext =
+  private val env: IndependentContext =
     this.evaluator.getStaticContext.asInstanceOf[IndependentContext]
 
   @BeanProperty

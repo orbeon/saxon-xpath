@@ -46,10 +46,10 @@ abstract class AbstractFunction extends Function {
     throw new XPathException("A function has no effective boolean value",
       "XPTY0004")
 
-  def simplify(): Unit = {}
+  def simplify(): Unit = ()
 
   def typeCheck(visitor: ExpressionVisitor,
-                contextItemType: ContextItemStaticInfo): Unit = {}
+                contextItemType: ContextItemStaticInfo): Unit = ()
 
   def makeNewContext(callingContext: XPathContext,
                      originator: ContextOriginator): XPathContext =

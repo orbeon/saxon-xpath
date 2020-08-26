@@ -163,7 +163,7 @@ class DocumentOverNodeInfo extends NodeOverNodeInfo with Document {
 
   def getStrictErrorChecking(): Boolean = false
 
-  def setStrictErrorChecking(strictErrorChecking: Boolean): Unit = {}
+  def setStrictErrorChecking(strictErrorChecking: Boolean): Unit = ()
 
   def getDocumentURI(): String = node.getSystemId
 

@@ -64,7 +64,7 @@ object ContentHandlerProxy {
     @BeanProperty
     var contextItemStack: Stack[Item] = _
 
-    def setOutputDestination(stream: Logger): Unit = {}
+    def setOutputDestination(stream: Logger): Unit = ()
 
     def open(controller: Controller): Unit = {
       contextItemStack = new Stack()
@@ -187,9 +187,9 @@ class ContentHandlerProxy extends Receiver {
     depth = -1
   }
 
-  def startDocument(properties: Int): Unit = {}
+  def startDocument(properties: Int): Unit = ()
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def startElement(elemName: NodeName,
                    `type`: SchemaType,

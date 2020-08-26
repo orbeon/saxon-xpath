@@ -24,7 +24,7 @@ class DOMDestination(root: org.w3c.dom.Node) extends AbstractDestination {
     params.makeSequenceNormalizer(domWriter)
   }
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 // no action
 // no action
 

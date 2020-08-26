@@ -16,7 +16,7 @@ trait Traceable extends Locatable {
 
   def getObjectName(): StructuredQName
 
-  def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {}
+  def gatherProperties(consumer: BiConsumer[String, Any]): Unit = ()
 
 }
 

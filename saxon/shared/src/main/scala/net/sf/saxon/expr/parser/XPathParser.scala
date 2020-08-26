@@ -2792,7 +2792,8 @@ class XPathParser() {
     val sn = new SymbolicName.F(functionName, args.size)
     val reasons = new util.ArrayList[String]
     fcall = env.getFunctionLibrary.bind(sn, arguments, env, reasons)
-    if (fcall == null) return reportMissingFunction(offset, functionName, arguments, reasons)
+    if (fcall == null)
+      return reportMissingFunction(offset, functionName, arguments, reasons)
     if (language eq ParsedLanguage.XSLT_PATTERN) if (fcall.isCallOn(classOf[RegexGroup])) return Literal.makeEmptySequence
     else if (fcall.isInstanceOf[CurrentGroupCall]) {
       grumble("The current-group() function cannot be used in a pattern", "XTSE1060", offset)
@@ -2852,8 +2853,7 @@ class XPathParser() {
     else sb.append(". External function calls have been disabled")
     if (env.isInBackwardsCompatibleMode) { // treat this as a dynamic error to be reported only if the function call is executed
       new ErrorExpression(sb.toString, "XTDE1425", false)
-    }
-    else {
+    } else {
       grumble(sb.toString, "XPST0017", offset)
       null
     }

@@ -64,7 +64,7 @@ object ParseXml {
       errors.add(exception)
     }
 
-    def warning(exception: SAXParseException): Unit = {}
+    def warning(exception: SAXParseException): Unit = ()
 
     def fatalError(exception: SAXParseException): Unit = {
       errors.add(exception)

@@ -136,7 +136,7 @@ abstract class SystemFunction extends AbstractFunction {
 
   def supplyTypeInformation(visitor: ExpressionVisitor,
                             contextItemType: ContextItemStaticInfo,
-                            arguments: Array[Expression]): Unit = {}
+                            arguments: Array[Expression]): Unit = ()
 
   override def equals(o: Any): Boolean =
     (o.isInstanceOf[SystemFunction]) && this == o
@@ -233,12 +233,12 @@ abstract class SystemFunction extends AbstractFunction {
   def getStaticBaseUriString(): String =
     getRetainedStaticContext.getStaticBaseUriString
 
-  def exportAttributes(out: ExpressionPresenter): Unit = {}
+  def exportAttributes(out: ExpressionPresenter): Unit = ()
 
   def exportAdditionalArguments(call: SystemFunctionCall,
-                                out: ExpressionPresenter): Unit = {}
+                                out: ExpressionPresenter): Unit = ()
 
-  def importAttributes(attributes: Properties): Unit = {}
+  def importAttributes(attributes: Properties): Unit = ()
 
   def getCompilerName(): String = null
 

@@ -22,7 +22,7 @@ class NullDestination extends AbstractDestination {
                            params: SerializationProperties): Receiver =
     new Sink(pipe)
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 
 }
 

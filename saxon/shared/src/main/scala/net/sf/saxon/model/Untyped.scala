@@ -61,7 +61,7 @@ object Untyped extends Enumeration {
       */
     def getFinalProhibitions(): Int = 0
 
-    def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = {}
+    def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
 
     def getFingerprint(): Int = StandardNames.XS_UNTYPED
 
@@ -133,7 +133,7 @@ object Untyped extends Enumeration {
 
     def getDescription(): String = "xs:untyped"
 
-    def analyzeContentExpression(expression: Expression, kind: Int): Unit = {}
+    def analyzeContentExpression(expression: Expression, kind: Int): Unit = ()
 //return;
 //return;
 

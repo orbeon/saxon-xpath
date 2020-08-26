@@ -16,7 +16,7 @@ abstract class TuplePull {
 
   def nextTuple(context: XPathContext): Boolean
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 // default implementation takes no action
 // default implementation takes no action
 

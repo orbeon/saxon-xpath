@@ -199,7 +199,7 @@ abstract class NodeOverNodeInfo extends Node {
     null
   }
 
-  def normalize(): Unit = {}
+  def normalize(): Unit = ()
 
   def isSupported(feature: String, version: String): Boolean =
     (feature.equalsIgnoreCase("XML") || feature.equalsIgnoreCase("Core")) &&

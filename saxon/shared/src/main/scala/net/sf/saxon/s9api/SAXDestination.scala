@@ -27,7 +27,7 @@ class SAXDestination(private var contentHandler: ContentHandler)
     params.makeSequenceNormalizer(chp)
   }
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 // no action
 // no action
 

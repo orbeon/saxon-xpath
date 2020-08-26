@@ -165,7 +165,7 @@ class JavaPlatform extends Platform {
 
   def addFunctionLibraries(list: FunctionLibraryList,
                            config: Configuration,
-                           hostLanguage: Int): Unit = {}
+                           hostLanguage: Int): Unit = ()
 
   def getExternalObjectType(config: Configuration,
                             uri: String,
@@ -180,9 +180,9 @@ class JavaPlatform extends Platform {
 
     }
 
-  def registerAllBuiltInObjectModels(config: Configuration): Unit = {}
+  def registerAllBuiltInObjectModels(config: Configuration): Unit = ()
 
-  def setDefaultSAXParserFactory(config: Configuration): Unit = {}
+  def setDefaultSAXParserFactory(config: Configuration): Unit = ()
 
   def makeStandardModuleURIResolver(config: Configuration): ModuleURIResolver =
     new StandardModuleURIResolver(config)

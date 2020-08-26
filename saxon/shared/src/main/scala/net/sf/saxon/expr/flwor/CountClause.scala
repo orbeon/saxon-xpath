@@ -72,12 +72,12 @@ class CountClause extends Clause {
     *
     * @param processor the expression processor used to process the subexpressions
     */
-  override def processOperands(processor: OperandProcessor): Unit = {}
+  override def processOperands(processor: OperandProcessor): Unit = ()
 // no action
 // no action
 
   override def addToPathMap(pathMap: PathMap,
-                            pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {}
+                            pathMapNodeSet: PathMap.PathMapNodeSet): Unit = ()
 // no action
 // no action
 

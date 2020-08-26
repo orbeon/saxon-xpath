@@ -35,7 +35,7 @@ class AccumulatorRule(@BeanProperty var newValueExpression: Expression,
     *
     * @param rule a rule in which this is the target
     */
-  def registerRule(rule: Rule): Unit = {}
+  def registerRule(rule: Rule): Unit = ()
 // no action
 // no action
 

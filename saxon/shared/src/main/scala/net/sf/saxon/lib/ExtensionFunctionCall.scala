@@ -49,7 +49,7 @@ abstract class ExtensionFunctionCall extends Callable {
 
   def supplyStaticContext(context: StaticContext,
                           locationId: Int,
-                          arguments: Array[Expression]): Unit = {}
+                          arguments: Array[Expression]): Unit = ()
 // default implementation does nothing
 // default implementation does nothing
 
@@ -59,7 +59,7 @@ abstract class ExtensionFunctionCall extends Callable {
     : Expression = // default implementation does nothing
     null
 
-  def copyLocalData(destination: ExtensionFunctionCall): Unit = {}
+  def copyLocalData(destination: ExtensionFunctionCall): Unit = ()
 // default implementation does nothing
 // default implementation does nothing
 

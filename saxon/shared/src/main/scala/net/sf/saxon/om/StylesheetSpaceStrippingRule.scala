@@ -69,7 +69,7 @@ class StylesheetSpaceStrippingRule(pool: NamePool) extends SpaceStrippingRule {
     *
     * @param presenter the output handler
     */
-  def export(presenter: ExpressionPresenter): Unit = {}
+  def export(presenter: ExpressionPresenter): Unit = ()
 // no action
 // no action
 

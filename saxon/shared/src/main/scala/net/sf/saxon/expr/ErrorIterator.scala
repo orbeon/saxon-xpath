@@ -19,7 +19,7 @@ class ErrorIterator(private var exception: XPathException)
 
   def next(): Item = throw exception
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 
 }
 

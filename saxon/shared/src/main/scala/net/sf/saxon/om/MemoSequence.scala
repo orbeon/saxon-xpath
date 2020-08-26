@@ -193,7 +193,7 @@ class MemoSequence extends Sequence {
       }
     }
 
-    override def close(): Unit = {}
+    override def close(): Unit = ()
 
     def getLength(): Int =
       if (state == ALL_READ) {

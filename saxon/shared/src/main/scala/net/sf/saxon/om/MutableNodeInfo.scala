@@ -31,11 +31,11 @@ trait MutableNodeInfo extends NodeInfo {
                    value: CharSequence,
                    properties: Int): Unit
 
-  def removeNamespace(prefix: String): Unit = {}
+  def removeNamespace(prefix: String): Unit = ()
 // default: no action
 // default: no action
 
-  def addNamespace(prefix: String, uri: String): Unit = {}
+  def addNamespace(prefix: String, uri: String): Unit = ()
 // default: no action
 // default: no action
 

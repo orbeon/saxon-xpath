@@ -55,11 +55,11 @@ class DOMWriter extends Builder {
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {}
+                        publicID: String): Unit = ()
 
-  override def open(): Unit = {}
+  override def open(): Unit = ()
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 
   def startDocument(properties: Int): Unit = {
     if (document == null) {
@@ -71,7 +71,7 @@ class DOMWriter extends Builder {
     }
   }
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def startElement(elemName: NodeName,
                    `type`: SchemaType,

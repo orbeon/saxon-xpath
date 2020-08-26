@@ -60,12 +60,12 @@ object Stripper {
 
   class StripRuleTarget extends RuleTarget {
 
-    def export(presenter: ExpressionPresenter): Unit = {}
+    def export(presenter: ExpressionPresenter): Unit = ()
 
     // no-op
     // no-op
 
-    def registerRule(rule: Rule): Unit = {}
+    def registerRule(rule: Rule): Unit = ()
 
     // no action
     // no action

@@ -474,6 +474,6 @@ class UserFunction
 
   def getReferenceCount(): Int = refCount
 
-  def prepareForStreaming(): Unit = {}
+  def prepareForStreaming(): Unit = ()
 
 }

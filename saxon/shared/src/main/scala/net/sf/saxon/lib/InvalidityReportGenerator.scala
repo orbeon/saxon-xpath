@@ -27,26 +27,26 @@ class InvalidityReportGenerator(config: Configuration) extends StandardInvalidit
   def this(config: Configuration, receiver: Outputter) =
     this(???) // TODO: Scala does not allow multiple super constructor calls
 
-  def setReceiver(receiver: Outputter): Unit = {}
+  def setReceiver(receiver: Outputter): Unit = ()
 
-  def setSystemId(id: String): Unit = {}
+  def setSystemId(id: String): Unit = ()
 
-  def setSchemaName(name: String): Unit = {}
+  def setSchemaName(name: String): Unit = ()
 
   def getErrorCount(): Int = 0
 
   def getWarningCount(): Int = 0
 
-  def setXsdVersion(version: String): Unit = {}
+  def setXsdVersion(version: String): Unit = ()
 
   def getWriter(): XMLStreamWriter = null
 
-  override def reportInvalidity(failure: Invalidity): Unit = {}
+  override def reportInvalidity(failure: Invalidity): Unit = ()
 
-  override def startReporting(systemId: String): Unit = {}
+  override def startReporting(systemId: String): Unit = ()
 
   override def endReporting(): Sequence = null
 
-  def createMetaData(): Unit = {}
+  def createMetaData(): Unit = ()
 
 }

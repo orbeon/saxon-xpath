@@ -185,7 +185,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override def customizeTokenizer(t: Tokenizer): Unit = {}
+  override def customizeTokenizer(t: Tokenizer): Unit = ()
 
   override def parseExpression(): Expression = {
     val t: Tokenizer = getTokenizer

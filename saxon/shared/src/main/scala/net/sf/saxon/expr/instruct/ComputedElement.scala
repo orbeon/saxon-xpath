@@ -336,7 +336,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
 
   def outputNamespaceNodes(out: Outputter,
                            nodeName: NodeName,
-                           copiedNode: NodeInfo): Unit = {}
+                           copiedNode: NodeInfo): Unit = ()
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ELEMENT
 

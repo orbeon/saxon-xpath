@@ -355,13 +355,13 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   def insertChildren(source: Array[NodeInfo],
                      atStart: Boolean,
-                     inherit: Boolean): Unit = {}
+                     inherit: Boolean): Unit = ()
 // no action: node is not a document or element node
 // no action: node is not a document or element node
 
   def insertSiblings(source: Array[NodeInfo],
                      before: Boolean,
-                     inherit: Boolean): Unit = {}
+                     inherit: Boolean): Unit = ()
 // no action: node has no parent
 // no action: node has no parent
 
@@ -375,14 +375,14 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     throw new UnsupportedOperationException()
   }
 
-  def removeAttribute(attribute: NodeInfo): Unit = {}
+  def removeAttribute(attribute: NodeInfo): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 
   def addAttribute(nameCode: NodeName,
                    attType: SimpleType,
                    value: CharSequence,
-                   properties: Int): Unit = {}
+                   properties: Int): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 
@@ -407,7 +407,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     }
   }
 
-  def addNamespace(nscode: NamespaceBinding): Unit = {}
+  def addNamespace(nscode: NamespaceBinding): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 

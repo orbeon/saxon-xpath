@@ -58,7 +58,7 @@ class XPathVariable private() extends LocalBinding {
 
   def getVariableQName(): StructuredQName = name
 
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {}
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
   // no action
   // no action
@@ -69,7 +69,7 @@ class XPathVariable private() extends LocalBinding {
   /**
    * Say that the bound value has the potential to be indexed
    */
-  def setIndexedVariable(): Unit = {}
+  def setIndexedVariable(): Unit = ()
 
   /**
    * Ask whether the binding is to be indexed

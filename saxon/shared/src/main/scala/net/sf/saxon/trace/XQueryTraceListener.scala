@@ -52,8 +52,8 @@ class XQueryTraceListener extends AbstractTraceListener {
       null
     }
 
-  override def startRuleSearch(): Unit = {}
+  override def startRuleSearch(): Unit = ()
 
-  override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = {}
+  override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = ()
 
 }

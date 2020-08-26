@@ -32,7 +32,7 @@ class TEXTEmitter extends XMLEmitter {
 
   private var newlineRepresentation: String = null
 
-  override def open(): Unit = {}
+  override def open(): Unit = ()
 
   override  def openDocument(): Unit = {
     if (writer == null) {
@@ -66,7 +66,7 @@ class TEXTEmitter extends XMLEmitter {
     started = true
   }
 
-  override def writeDeclaration(): Unit = {}
+  override def writeDeclaration(): Unit = ()
 
   override def characters(chars: CharSequence,
                           locationId: Location,
@@ -101,18 +101,18 @@ class TEXTEmitter extends XMLEmitter {
     previousAtomic = false
   }
 
-  override def endElement(): Unit = {}
+  override def endElement(): Unit = ()
 // no-op
 // no-op
 
   override def processingInstruction(name: String,
                                      value: CharSequence,
                                      locationId: Location,
-                                     properties: Int): Unit = {}
+                                     properties: Int): Unit = ()
 
   override def comment(chars: CharSequence,
                        locationId: Location,
-                       properties: Int): Unit = {}
+                       properties: Int): Unit = ()
 
 }
 

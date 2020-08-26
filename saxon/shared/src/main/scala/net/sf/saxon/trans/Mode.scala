@@ -408,7 +408,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     }
   }
 
-  def exportUseAccumulators(presenter: ExpressionPresenter): Unit = {}
+  def exportUseAccumulators(presenter: ExpressionPresenter): Unit = ()
 
   def isMustBeTyped(): Boolean = mustBeTyped
 

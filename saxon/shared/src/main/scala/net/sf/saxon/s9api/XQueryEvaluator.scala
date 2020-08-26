@@ -242,7 +242,7 @@ class XQueryEvaluator(var processor: Processor,
     sn
   }
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
   def getUpdatedDocuments(): Iterator[XdmNode] = updatedDocuments.iterator()
 

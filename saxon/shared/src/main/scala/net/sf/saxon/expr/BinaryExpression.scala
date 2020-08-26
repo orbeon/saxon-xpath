@@ -258,7 +258,7 @@ abstract class BinaryExpression(p0: Expression,
 
   def tag(): String = "operator"
 
-  def explainExtraAttributes(out: ExpressionPresenter): Unit = {}
+  def explainExtraAttributes(out: ExpressionPresenter): Unit = ()
 
   def displayOperator(): String = Token.tokens(operator)
 

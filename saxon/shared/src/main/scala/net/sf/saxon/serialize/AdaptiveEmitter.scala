@@ -73,7 +73,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   }
 
 
-  def setNormalizer(normalizer: Normalizer): Unit = {}
+  def setNormalizer(normalizer: Normalizer): Unit = ()
 
   def setCharacterMap(map: CharacterMap): Unit = {
     this.characterMap = map

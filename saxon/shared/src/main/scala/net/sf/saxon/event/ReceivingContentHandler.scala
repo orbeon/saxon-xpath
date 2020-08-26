@@ -225,7 +225,7 @@ class ReceivingContentHandler
     currentNamespaceMap = currentNamespaceMap.bind(prefix, uri)
   }
 
-  def endPrefixMapping(prefix: String): Unit = {}
+  def endPrefixMapping(prefix: String): Unit = ()
 
   //System.err.println("endPrefixMapping " + prefix);
   //System.err.println("endPrefixMapping " + prefix);
@@ -542,7 +542,7 @@ class ReceivingContentHandler
     }
   }
 
-  def skippedEntity(name: String): Unit = {}
+  def skippedEntity(name: String): Unit = ()
 
   def startDTD(name: String, publicId: String, systemId: String): Unit = {
     inDTD = true
@@ -564,11 +564,11 @@ class ReceivingContentHandler
     localLocator.levelInEntity = elementDepthWithinEntity.pop()
   }
 
-  def startCDATA(): Unit = {}
+  def startCDATA(): Unit = ()
 
-  def endCDATA(): Unit = {}
+  def endCDATA(): Unit = ()
 
-  def notationDecl(name: String, publicId: String, systemId: String): Unit = {}
+  def notationDecl(name: String, publicId: String, systemId: String): Unit = ()
 
   def unparsedEntityDecl(name: String,
                          publicId: String,

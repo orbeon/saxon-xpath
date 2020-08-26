@@ -218,7 +218,7 @@ abstract class Emitter
 
   def getOutputStream(): OutputStream = outputStream
 
-  override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {}
+  override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = ()
 
   def close(): Unit = {
     if (mustClose && outputStream != null) {

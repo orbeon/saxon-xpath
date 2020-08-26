@@ -197,7 +197,7 @@ class Executable(var config: Configuration) {
   def getGlobalParameter(name: StructuredQName): GlobalParam =
     globalParams.get(name)
 
-  def checkSuppliedParameters(params: GlobalParameterSet): Unit = {}
+  def checkSuppliedParameters(params: GlobalParameterSet): Unit = ()
 
   def setCreatesSecondaryResult(flag: Boolean): Unit = {
     createsSecondaryResult = flag
