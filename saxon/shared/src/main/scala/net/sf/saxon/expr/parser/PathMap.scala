@@ -99,7 +99,7 @@ object PathMap {
         if (axis == AxisInfo.ATTRIBUTE) {
           val next: PathMapNode = arc.getTarget
           if (next.isReturnable) {
-            false
+            return false
           }
           if (next.getArcs.length != 0 && !next
             .allPathsAreWithinStreamableSnapshot())
@@ -108,17 +108,16 @@ object PathMap {
           axis == AxisInfo.PARENT) {
           val next: PathMapNode = arc.getTarget
           if (next.isAtomized) {
-            false
+            return false
           }
           if (!next.allPathsAreWithinStreamableSnapshot())
             return false
         } else {
-          false
+          return false
         }
       }
-      true
+      return true
     }
-
   }
 
   class PathMapRoot(root: Expression) extends PathMapNode {

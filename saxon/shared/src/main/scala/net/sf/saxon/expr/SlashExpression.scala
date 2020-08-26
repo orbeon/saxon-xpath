@@ -482,13 +482,11 @@ class SlashExpression(start: Expression, step: Expression)
     } else {
       return true
     }
-    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) !=
-      0) {
+    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) != 0) {
       return true
     }
-    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) !=
-      0) {
-      true
+    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) != 0) {
+      return true
     }
     ((startProperties & StaticProperty.PEER_NODESET) != 0) &&
       ((stepProperties & StaticProperty.SUBTREE_NODESET) != 0)

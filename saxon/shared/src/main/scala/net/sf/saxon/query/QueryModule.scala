@@ -845,15 +845,15 @@ class QueryModule extends StaticContext {
           }
           return uri
         }
-          i -= 1
+        i -= 1
       }
     }
     if (prefix.isEmpty) {
-      defaultElementNamespace
+      return defaultElementNamespace
     }
     var uri: String = explicitPrologNamespaces.get(prefix)
     if (uri != null) {
-      if (uri.isEmpty) return null else return uri
+      return if (uri.isEmpty)  null else uri
     }
     if (userQueryContext != null) {
       uri = userQueryContext.getNamespaceForPrefix(prefix)

@@ -168,21 +168,21 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       th.isSubType(`type`, BuiltInAtomicType.TIME) ||
       th.isSubType(`type`, BuiltInAtomicType.DATE_TIME) ||
       th.isSubType(`type`, BuiltInAtomicType.DURATION)) {
-      expr
+      return expr
     }
-    if (th.isSubType(`type`, BuiltInAtomicType.BOOLEAN) || th.isSubType(
-      `type`,
-      BuiltInAtomicType.STRING) ||
+    if (
+      th.isSubType(`type`, BuiltInAtomicType.BOOLEAN) || th.isSubType(`type`, BuiltInAtomicType.STRING) ||
       th.isSubType(`type`, BuiltInAtomicType.UNTYPED_ATOMIC) ||
       th.isSubType(`type`, BuiltInAtomicType.FLOAT) ||
-      th.isSubType(`type`, BuiltInAtomicType.DECIMAL)) {
-      if (expr.isInstanceOf[Literal]) {
-        val `val`: GroundedValue = expr.asInstanceOf[Literal].getValue
-        Literal.makeLiteral(
-          Number_1.convert(`val`.asInstanceOf[AtomicValue], config),
-          this)
-      } else {
-        SystemFunction.makeCall("number", getRetainedStaticContext, expr)
+      th.isSubType(`type`, BuiltInAtomicType.DECIMAL)
+    ) {
+      return {
+        if (expr.isInstanceOf[Literal]) {
+          val `val`: GroundedValue = expr.asInstanceOf[Literal].getValue
+          Literal.makeLiteral(Number_1.convert(`val`.asInstanceOf[AtomicValue], config), this)
+        } else {
+          SystemFunction.makeCall("number", getRetainedStaticContext, expr)
+        }
       }
     }
     val let: LetExpression = new LetExpression()

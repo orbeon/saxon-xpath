@@ -86,7 +86,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
   private var streamable: Boolean = _
 
   @BeanProperty
-  var recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
+  val recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
 
   var mustBeTyped: Boolean = false
 
@@ -177,8 +177,8 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
               filter: Mode.RuleFilter): Rule
 
   def getRule(item: Item, min: Int, max: Int, context: XPathContext): Rule = {
-    val filter: RuleFilter = (r) => {
-      var p: Int = r.getPrecedence
+    val filter: RuleFilter = r => {
+      val p: Int = r.getPrecedence
       p >= min && p <= max
     }
     getRule(item, context, filter)
@@ -187,20 +187,22 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
   def getNextMatchRule(item: Item,
                        currentRule: Rule,
                        context: XPathContext): Rule = {
-    val filter: Mode.RuleFilter = (r) => {
-      var comp: Int = r.compareRank(currentRule)
+    val filter: Mode.RuleFilter = r => {
+      val comp: Int = r.compareRank(currentRule)
       if (comp < 0) {
          true
       } else if (comp == 0) {
-        var seqComp: Int =
-          java.lang.Integer.compare(r.getSequence, currentRule.getSequence)
+        val seqComp = java.lang.Integer.compare(r.getSequence, currentRule.getSequence)
         if (seqComp < 0) {
            true
         } else if (seqComp == 0) {
           r.getPartNumber < currentRule.getPartNumber
+        } else {
+          false
         }
+      } else {
+        false
       }
-      false
     }
     getRule(item, context, filter)
   }
