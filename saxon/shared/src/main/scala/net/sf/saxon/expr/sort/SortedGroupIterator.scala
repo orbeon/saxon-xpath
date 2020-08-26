@@ -40,7 +40,10 @@ class SortedGroupIterator(context: XPathContext,
       .asInstanceOf[GroupIterator]
     c2.setCurrentGroupIterator(groupIter)
     var item: Item = null
-    while ((item = base.next()) != null) {
+    while (({
+      item = base.next()
+      item
+    }) != null) {
       if (count == allocated) {
         allocated *= 2
         values = Arrays.copyOf(values, allocated)

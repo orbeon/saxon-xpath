@@ -222,7 +222,7 @@ class UserFunctionReference
       }
       out.startElement("ufRef")
       out.emitAttribute("name", nominalTarget.getFunctionName)
-      out.emitAttribute("arity", nominalTarget.getArity + "")
+      out.emitAttribute("arity", nominalTarget.getArity.toString)
       out.emitAttribute("bSlot", "" + getBindingSlot)
       out.endElement()
     }

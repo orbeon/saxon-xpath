@@ -97,7 +97,7 @@ class Component private () {
     if (baseComponent != null && getActor == baseComponent.getActor) {
       val baseId: Int = obtainComponentId(baseComponent, componentIdMap)
       out.emitAttribute("base", "" + baseId)
-      out.emitAttribute("dpack", packageIdMap.get(declaringPackage) + "")
+      out.emitAttribute("dpack", packageIdMap.get(declaringPackage).toString + "")
     } else {
       actor.export(out)
     }

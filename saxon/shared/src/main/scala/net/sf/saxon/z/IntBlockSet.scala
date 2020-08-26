@@ -46,7 +46,7 @@ class IntBlockSet(@BeanProperty var startPoint: Int,
 
   def iterator(): IntIterator = mutableCopy().iterator()
 
-  override def toString(): String = startPoint + " - " + endPoint
+  override def toString(): String = startPoint.toString + " - " + endPoint.toString
 
   override def equals(other: Any): Boolean = mutableCopy() == other
 

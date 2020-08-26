@@ -240,7 +240,7 @@ class MemoSequence extends Sequence {
         }
       } else {
         SequenceExtent.makeSequenceExtent {
-          Seq(reservoir: _*).slice(0, used).toList.asInstanceOf[util.List[Item]]
+          Seq(reservoir.toIndexedSeq: _*).slice(0, used).toList.asInstanceOf[util.List[Item]]
         }
       }
 
@@ -258,7 +258,7 @@ class MemoSequence extends Sequence {
         position = savePos
         // return all the items
         SequenceExtent.makeSequenceExtent(
-          Seq(reservoir: _*).slice(position + 1, used).toList.asInstanceOf[util.List[Item]])
+          Seq(reservoir.toIndexedSeq: _*).slice(position + 1, used).toList.asInstanceOf[util.List[Item]])
       }
 
     override def getProperties(): Set[Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)

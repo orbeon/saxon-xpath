@@ -73,7 +73,10 @@ class FoldRightFn extends SystemFunction {
     val args: Array[Sequence] = Array.ofDim[Sequence](2)
     var item: Item = null
     var zeroVar : Sequence = zero
-    while ((item = reverseBase.next()) != null) {
+    while (({
+      item = reverseBase.next()
+      item
+    }) != null) {
       args(0) = item
       args(1) = zeroVar.materialize()
       try {

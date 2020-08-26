@@ -30,7 +30,7 @@ class RegexFunctionSansFlags extends SystemFunction {
       Array.ofDim[Expression](arguments.length + 1)
     System.arraycopy(arguments, 0, newArgs, 0, arguments.length)
     newArgs(arguments.length) = new StringLiteral("")
-    withFlags.makeFunctionCall(newArgs: _*)
+    withFlags.makeFunctionCall(newArgs.toIndexedSeq: _*)
   }
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {

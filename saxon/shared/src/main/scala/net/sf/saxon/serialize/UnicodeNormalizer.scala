@@ -31,10 +31,10 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 class UnicodeNormalizer(form: String, next: Receiver)
   extends ProxyReceiver(next) {
 
+  var fb: Byte = 0
+
   @BeanProperty
   var normalizer: Normalizer = Normalizer.make(fb, getConfiguration)
-
-  var fb: Byte = 0
 
   form match {
     case "NFC" => fb = Normalizer.C.toByte

@@ -312,8 +312,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         }
       }
       trace(
-        oldC.getActor.getSymbolicName + " (" + oldV.show() + ") becomes " +
-          newV.show())
+        oldC.getActor.getSymbolicName.toString + " (" + oldV.show().toString + ") becomes " +
+          newV.show().toString)
       val newC: Component = Component.makeComponent(
         oldC.getActor,
         newV,
@@ -394,8 +394,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     }
     for (oldC <- usedPackage.hiddenComponents.asScala) {
       trace(
-        oldC.getActor.getSymbolicName + " (HIDDEN, declared in " +
-          oldC.getDeclaringPackage.getPackageName +
+        oldC.getActor.getSymbolicName.toString + " (HIDDEN, declared in " +
+          oldC.getDeclaringPackage.getPackageName.toString +
           ") becomes HIDDEN")
       val newC: Component = Component.makeComponent(
         oldC.getActor,

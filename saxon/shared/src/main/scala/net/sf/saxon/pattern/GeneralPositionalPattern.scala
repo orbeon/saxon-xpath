@@ -176,7 +176,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
     n
   }
 
-  override def toString(): String = nodeTest + "[" + positionExpr + "]"
+  override def toString(): String = nodeTest.toString + "[" + positionExpr.toString + "]"
 
   def export(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.genPos")

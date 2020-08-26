@@ -582,7 +582,10 @@ object PJConverter {
       val config: Configuration = context.getConfiguration
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
-      while ((it = iter.next()) != null) if (it.isInstanceOf[AtomicValue]) {
+      while (({
+        it = iter.next()
+        it
+      }) != null) if (it.isInstanceOf[AtomicValue]) {
         val pj: PJConverter = allocate(
           config,
           it.asInstanceOf[AtomicValue].getItemType,
@@ -613,7 +616,10 @@ object PJConverter {
       val list: List[Any] = new ArrayList[Any](20)
       val iter: SequenceIterator = value.iterate()
       var item: Item = null
-      while ((item = iter.next()) != null) {
+      while (({
+        item = iter.next()
+        item
+      }) != null) {
         val obj: Any = itemConverter.convert(item, componentClass, context)
         if (obj != null) {
           list.add(obj)

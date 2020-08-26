@@ -15,13 +15,13 @@ import net.sf.saxon.value.{BooleanValue, EmptySequence, SequenceType}
 
 object JsonToXMLFn {
 
+  val jsonToXmlOptions: OptionsParameter = new OptionsParameter()
+
   var OPTION_DETAILS: OptionsParameter = jsonToXmlOptions
 
   val fallbackType: SpecificFunctionType = new SpecificFunctionType(
     Array(SequenceType.SINGLE_STRING),
     SequenceType.SINGLE_STRING)
-
-  val jsonToXmlOptions: OptionsParameter = new OptionsParameter()
 
   jsonToXmlOptions.addAllowedOption("liberal",
                                     SequenceType.SINGLE_BOOLEAN,

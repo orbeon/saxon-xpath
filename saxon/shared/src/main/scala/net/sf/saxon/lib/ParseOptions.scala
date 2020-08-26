@@ -413,8 +413,7 @@ class ParseOptions {
 
   def isXIncludeAwareSet(): Boolean =
     parserFeatures != null &&
-      parserFeatures.get("http://apache.org/xml/features/xinclude") !=
-        null
+      parserFeatures.get("http://apache.org/xml/features/xinclude") ne null
 
   def isXIncludeAware(): Boolean =
     if (parserFeatures == null) {

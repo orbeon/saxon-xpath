@@ -134,11 +134,11 @@ class JSONEmitter(pipe: PipelineConfiguration,
             "SERE0020")
         }
       } else if (item.isInstanceOf[IntegerValue]) {
-        emit(num.longValue() + "")
+        emit(num.longValue().toString + "")
       } else if (num.isWholeNumber && !num.isNegativeZero && num
         .abs()
         .compareTo(1000000000000000000L) < 0) {
-        emit(num.longValue() + "")
+        emit(num.longValue().toString + "")
       } else {
         emit(num.getStringValue)
       }
@@ -269,7 +269,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   }
 
   private def emit(c: Char): Unit = {
-    emit(c + "")
+    emit(c.toString + "")
   }
 
   def close(): Unit = {

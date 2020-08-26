@@ -24,14 +24,12 @@ class OrderByClausePull(private var base: TuplePull,
   private var orderByClause: OrderByClause = orderBy
 
   private var currentPosition: Int = -1
-
+  val suppliedComparers: Array[AtomicComparer] = orderBy.getAtomicComparers
   private var comparers: Array[AtomicComparer] =
     new Array[AtomicComparer](suppliedComparers.length)
 
   private var tupleArray: ArrayList[ItemToBeSorted] =
     new ArrayList[ItemToBeSorted](100)
-
-  val suppliedComparers: Array[AtomicComparer] = orderBy.getAtomicComparers
 
   for (n <- 0 until comparers.length) {
     this.comparers(n) = suppliedComparers(n).provideContext(context)
@@ -79,7 +77,8 @@ class OrderByClausePull(private var base: TuplePull,
         context,
         tupleArray
           .get({
-            currentPosition += 1; currentPosition - 1
+            currentPosition += 1;
+            currentPosition - 1
           })
           .value
           .asInstanceOf[Tuple])

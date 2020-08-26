@@ -110,7 +110,10 @@ class SerializationParamsHandler {
     val kids: AxisIterator =
       nodeInf.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
     var child: NodeInfo = null
-    while ((child = kids.next()) != null) {
+    while (({
+      child = kids.next()
+      child
+    }) != null) {
       if (!nodeNames.add(NameOfNode.makeName(child))) {
         throw new XPathException(
           "Duplicated serialization parameter " + child.getDisplayName,
@@ -132,7 +135,10 @@ class SerializationParamsHandler {
           child.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
         var gChild: NodeInfo = null
         val map: IntHashMap[String] = new IntHashMap[String]()
-        while ((gChild = gKids.next()) != null) {
+        while (({
+          gChild = gKids.next()
+          gChild
+        }) != null) {
           restrictAttributes(gChild, "character", "map-string")
           if (!(gChild.getURI == NAMESPACE && gChild.getLocalPart.==(
             "character-map"))) {

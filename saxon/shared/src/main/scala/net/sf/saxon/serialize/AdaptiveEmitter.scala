@@ -243,7 +243,10 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
     if (!omitParens) {
       emit("(")
     }
-    while ((it = iter.next()) != null) {
+    while (({
+      it = iter.next()
+      it
+    }) != null) {
       if (!first) {
         emit(",")
       }

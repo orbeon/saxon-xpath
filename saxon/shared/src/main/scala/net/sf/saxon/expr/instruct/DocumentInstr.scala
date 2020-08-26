@@ -199,7 +199,10 @@ override  def getItemType(): ItemType = NodeKindTest.DOCUMENT
         val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
         val iter: SequenceIterator = getContentExpression.iterate(context)
         var item: Item = null
-        while ((item = iter.next()) != null) sb.cat(item.getStringValueCS)
+        while (({
+          item = iter.next()
+          item
+        }) != null) sb.cat(item.getStringValueCS)
         textValue = sb.condense()
       }
       root = TextFragmentValue.makeTextFragment(config,

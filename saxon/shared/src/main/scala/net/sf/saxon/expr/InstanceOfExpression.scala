@@ -24,21 +24,14 @@ import net.sf.saxon.value.SequenceType
  * InstanceOf Expression: implements "Expr instance of data-type"
  */
 final class InstanceOfExpression(val source: Expression, val target: SequenceType)
-
-/**
- * Construct an "instance of" expression in the form "source instance of target"
- *
- * @param source the expression whose type is to be tested
- * @param target the type against which it is tested
- */
   extends UnaryExpression(source) {
+  private[expr] var targetType: ItemType = null
+  private[expr] var targetCardinality = 0
   targetType = target.getPrimaryType
   if (targetType == null) throw new IllegalArgumentException("Primary item type must not be null")
   targetCardinality = target.getCardinality
-  private[expr] var targetType: ItemType = null
-  private[expr] var targetCardinality = 0
 
-  override  def getOperandRole = if (targetType.isInstanceOf[DocumentNodeTest]) OperandRole.ABSORB
+  override def getOperandRole = if (targetType.isInstanceOf[DocumentNodeTest]) OperandRole.ABSORB
   else OperandRole.INSPECT
 
   /**
@@ -127,7 +120,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
    * indirectly, using an implementation that relies on one of the other methods.
    *
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
-   *                                                        { @link #PROCESS_METHOD}
+   *         { @link #PROCESS_METHOD}
    */
   override def getImplementationMethod = Expression.EVALUATE_METHOD
 
@@ -199,10 +192,11 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
   @throws[XPathException]
   private def isInstance(iter: SequenceIterator, context: XPathContext): Boolean = {
     var count = 0
-    var item:Item = null
-    while ( {
-      (item = iter.next) != null
-    }) {
+    var item: Item = null
+    while (({
+      item = iter.next
+      item
+    }) != null) {
       count += 1
       if (!targetType.matches(item, context.getConfiguration.getTypeHierarchy)) {
         iter.close()

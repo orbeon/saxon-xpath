@@ -31,7 +31,10 @@ class UnionCastableFunction(targetType: UnionType,
                                     context: XPathContext): Boolean = {
     var count: Int = 0
     var item: Item = null
-    while ((item = iter.next()) != null) if (item.isInstanceOf[NodeInfo]) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) if (item.isInstanceOf[NodeInfo]) {
       val atomizedValue: AtomicSequence = item.atomize()
       val length: Int = SequenceTool.getLength(atomizedValue)
       count += length

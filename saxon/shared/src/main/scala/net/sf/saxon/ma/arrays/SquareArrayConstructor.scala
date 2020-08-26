@@ -35,12 +35,11 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 class SquareArrayConstructor(children: List[Expression]) extends Expression {
+  val kids: Array[Expression] = children.toArray(Array.ofDim[Expression](0))
 
   @BeanProperty
   var operanda: OperandArray =
     new OperandArray(this, kids, OperandRole.NAVIGATE)
-
-  val kids: Array[Expression] = children.toArray(Array.ofDim[Expression](0))
 
   for (e <- children.asScala) {
     adoptChildExpression(e)

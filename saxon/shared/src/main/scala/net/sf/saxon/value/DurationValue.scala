@@ -24,7 +24,7 @@ object DurationValue {
   def formatFractionalSeconds(sb: FastStringBuffer,
                               seconds: Int,
                               nanosecs: Long): Unit = {
-    var mss: String = nanosecs + ""
+    var mss: String = nanosecs.toString
     if (seconds == 0) {
       mss = "0000000000" + mss
       mss = mss.substring(mss.length - 10)
@@ -525,15 +525,15 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
     val sb: FastStringBuffer = new FastStringBuffer(32)
     if (negative) sb.cat('-')
     sb.append("P")
-    if (years != 0) sb.append(years + "Y")
-    if (months != 0) sb.append(months + "M")
-    if (days != 0) sb.append(days + "D")
+    if (years != 0) sb.append(years.toString + "Y")
+    if (months != 0) sb.append(months.toString + "M")
+    if (days != 0) sb.append(days.toString + "D")
     if (hours != 0 || minutes != 0 || seconds != 0 || nanoseconds != 0) sb.append("T")
-    if (hours != 0) sb.append(hours + "H")
-    if (minutes != 0) sb.append(minutes + "M")
+    if (hours != 0) sb.append(hours.toString + "H")
+    if (minutes != 0) sb.append(minutes.toString + "M")
     if (seconds != 0 || nanoseconds != 0) {
       if (seconds != 0 && nanoseconds == 0) {
-        sb.append(seconds + "S")
+        sb.append(seconds.toString + "S")
       } else {
         formatFractionalSeconds(sb,
           seconds,

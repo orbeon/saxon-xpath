@@ -3652,12 +3652,9 @@ class Configuration() extends SourceResolver with NotationSet {
         import net.sf.saxon.event.Builder._
         getTreeModel match {
           case TINY_TREE =>
-          case _ =>
-            return "tinyTree".asInstanceOf[T]
-          case TINY_TREE_CONDENSED =>
-            return "tinyTreeCondensed".asInstanceOf[T]
-          case LINKED_TREE =>
-            return "linkedTree".asInstanceOf[T]
+          case TINY_TREE_CONDENSED => return "tinyTreeCondensed".asInstanceOf[T]
+          case LINKED_TREE => return "linkedTree".asInstanceOf[T]
+          case _ => return "tinyTree".asInstanceOf[T]
         }
       case FeatureCode.UNPARSED_TEXT_URI_RESOLVER =>
         return getUnparsedTextURIResolver.asInstanceOf[T]

@@ -161,7 +161,7 @@ object CommandLineOptions {
 
   def showExecutionTimeNano(nanosecs: Long): String =
     if (nanosecs < 1e9) {
-      (nanosecs / 1e6) + "ms"
+      (nanosecs / 1e6).toString + "ms"
     } else {
       try {
         val millisecs: Double = nanosecs / 1e6
@@ -184,18 +184,18 @@ object CommandLineOptions {
           .getDecimalValue
         val fsb: FastStringBuffer = new FastStringBuffer(256)
         if (days > 0) {
-          fsb.append(days + "days ")
+          fsb.append(days.toString + "days ")
         }
         if (hours > 0) {
-          fsb.append(hours + "h ")
+          fsb.append(hours.toString + "h ")
         }
         if (minutes > 0) {
-          fsb.append(minutes + "m ")
+          fsb.append(minutes.toString + "m ")
         }
-        fsb.append(seconds + "s")
-        fsb + " (" + nanosecs / 1e6 + "ms)"
+        fsb.append(seconds.toString + "s")
+        fsb.toString + " (" + (nanosecs / 1e6).toString + "ms)"
       } catch {
-        case e: XPathException => nanosecs / 1e6 + "ms"
+        case e: XPathException => (nanosecs / 1e6).toString + "ms"
 
       }
     }

@@ -108,7 +108,10 @@ class Doc_2 extends SystemFunction with Callable {
       val accumulators: Set[Accumulator] = new HashSet[Accumulator]()
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
-      while ((it = iter.next()) != null) {
+      while (({
+        it = iter.next()
+        it
+      }) != null) {
         val name: QNameValue = it.asInstanceOf[QNameValue]
         val acc: Accumulator = reg.getAccumulator(name.getStructuredQName)
         accumulators.add(acc)

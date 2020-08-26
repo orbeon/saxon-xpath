@@ -181,7 +181,10 @@ class QuantifiedExpression extends Assignation {
     val some: Boolean = operator == Token.SOME
     val slot: Int = getLocalSlotNumber
     var it: Item = null
-    while ((it = base.next()) != null) {
+    while (({
+      it = base.next()
+      it
+    }) != null) {
       context.setLocalVariable(slot, it)
       if (some == getAction.effectiveBooleanValue(context)) {
         base.close()

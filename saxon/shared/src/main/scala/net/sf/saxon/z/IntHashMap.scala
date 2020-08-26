@@ -253,7 +253,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     while (iter.hasNext) {
       val key: Int = iter.next
       val value: T = get(key)
-      ps.println(key + " -> " + value.toString)
+      ps.println(key.toString + " -> " + value.toString)
     }
   }
 

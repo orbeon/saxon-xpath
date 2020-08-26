@@ -16,10 +16,10 @@ import net.sf.saxon.tree.util.Navigator
 import net.sf.saxon.value.EmptySequence
 
 class StandardInvalidityHandler(var config: Configuration) extends StandardDiagnostics with InvalidityHandler {
+  private var logger: Logger = null
   this.logger = config.getLogger
-  private var logger:Logger = null
 
-  def setLogger(logger: Logger):Unit = this.logger = logger
+  def setLogger(logger: Logger): Unit = this.logger = logger
 
   def getLogger: Logger = logger
 
@@ -46,13 +46,16 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
 
   def getLocationMessage(err: Invalidity): String = {
     var locMessage: String = ""
-    var systemId :String= null
-    val node :NodeInfo= err.getInvalidNode
-    var path : AbsolutePath= null
-    var nodeMessage:String = null
+    var systemId: String = null
+    val node: NodeInfo = err.getInvalidNode
+    var path: AbsolutePath = null
+    var nodeMessage: String = null
     val lineNumber = err.getLineNumber
     if (err.isInstanceOf[DOMLocator]) nodeMessage = "at " + err.asInstanceOf[DOMLocator].getOriginatingNode.getNodeName + ' '
-    else if (lineNumber == -1 && (path = err.getPath) != null) nodeMessage = "at " + path + ' '
+    else if ((lineNumber == -1) && ({
+      path = err.getPath
+      path
+    } != null)) nodeMessage = "at " + path.toString + " "
     else if (node != null) nodeMessage = "at " + Navigator.getPath(node) + ' '
     val containsLineNumber = lineNumber != -1
     if (nodeMessage != null) locMessage += nodeMessage
@@ -72,7 +75,7 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
     else code + ": ") + err.getMessage
   }
 
- def getConstraintReferenceMessage(err: Invalidity): String = {
+  def getConstraintReferenceMessage(err: Invalidity): String = {
     if (err.getSchemaPart == -1) return null
     "See http://www.w3.org/TR/xmlschema-" + err.getSchemaPart + "/#" + err.getConstraintName + " clause " + err.getConstraintClauseNumber
   }

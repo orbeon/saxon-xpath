@@ -407,7 +407,10 @@ class EvaluateInstr(xpath: Expression,
     if (dynamicParams != null) {
       val iter = dynamicParams.keys
       var paramName: QNameValue = null
-      while ((paramName = iter.next().asInstanceOf[QNameValue]) != null) {
+      while (({
+        paramName = iter.next().asInstanceOf[QNameValue]
+        paramName
+      }) != null) {
         val slot: Int =
           slotMap.getVariableMap.indexOf(paramName.getStructuredQName)
         if (slot >= 0) {

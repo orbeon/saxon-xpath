@@ -18,7 +18,7 @@ object Version {
   def getProductVariantAndVersion(edition: String): String =
     edition + " " + getProductVersion
 
-  def getProductVersion(): String = MAJOR_VERSION + "." + MINOR_VERSION
+  def getProductVersion(): String = MAJOR_VERSION.toString + "." + MINOR_VERSION.toString
 
   def getStructuredVersionNumber(): Array[Int] =
     Array(MAJOR_VERSION, MINOR_VERSION, BUILD)

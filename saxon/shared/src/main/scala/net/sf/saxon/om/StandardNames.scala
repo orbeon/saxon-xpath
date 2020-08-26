@@ -245,7 +245,7 @@ object StandardNames {
 
   val SAXON_ORDER: Int = SAXON + 23
 
-  private val SAXON_B: String = '{' + NamespaceConstant.SAXON + '}'
+  private val SAXON_B: String = "{" + NamespaceConstant.SAXON + "}"
 
   val SAXON_ASYCHRONOUS: String = SAXON_B + "asynchronous"
 
@@ -508,27 +508,27 @@ object StandardNames {
 
   private def bindXSLTName(constant: Int, localName: String): Unit = {
     localNames(constant) = localName
-    lookup.put('{' + NamespaceConstant.XSLT + '}' + localName, constant)
+    lookup.put("{" + NamespaceConstant.XSLT + "}" + localName, constant)
   }
 
   private def bindSaxonName(constant: Int, localName: String): Unit = {
     localNames(constant) = localName
-    lookup.put('{' + NamespaceConstant.SAXON + '}' + localName, constant)
+    lookup.put("{" + NamespaceConstant.SAXON + "}" + localName, constant)
   }
 
   private def bindXMLName(constant: Int, localName: String): Unit = {
     localNames(constant) = localName
-    lookup.put('{' + NamespaceConstant.XML + '}' + localName, constant)
+    lookup.put("{" + NamespaceConstant.XML + "}" + localName, constant)
   }
 
   private def bindXSName(constant: Int, localName: String): Unit = {
     localNames(constant) = localName
-    lookup.put('{' + NamespaceConstant.SCHEMA + '}' + localName, constant)
+    lookup.put("{" + NamespaceConstant.SCHEMA + "}" + localName, constant)
   }
 
   private def bindXSIName(constant: Int, localName: String): Unit = {
     localNames(constant) = localName
-    lookup.put('{' + NamespaceConstant.SCHEMA_INSTANCE + '}' + localName,
+    lookup.put("{" + NamespaceConstant.SCHEMA_INSTANCE + "}" + localName,
                constant)
   }
 
@@ -972,7 +972,7 @@ object StandardNames {
   bindXSIName(XSI_SCHEMA_LOCATION_TYPE, "anonymous_schemaLocationType")
 
   def getFingerprint(uri: String, localName: String): Int = {
-    val fp: java.lang.Integer = lookup.get('{' + uri + '}' + localName)
+    val fp: java.lang.Integer = lookup.get("{" + uri + "}" + localName)
     if (fp == null) {
       -1
     } else {
@@ -1005,7 +1005,7 @@ object StandardNames {
     if (uri.isEmpty) {
       getLocalName(fingerprint)
     } else {
-      '{' + uri + '}' + getLocalName(fingerprint)
+      "{" + uri + "}" + getLocalName(fingerprint)
     }
   }
 

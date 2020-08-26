@@ -103,13 +103,13 @@ class Accumulator extends Actor {
     //        }
     out.startElement("accumulator")
     out.emitAttribute("name", getObjectName)
-    out.emitAttribute("line", getLineNumber + "")
+    out.emitAttribute("line", getLineNumber.toString + "")
     out.emitAttribute("module", getSystemId)
     out.emitAttribute("as", seqType.toAlphaCode)
     out.emitAttribute("streamable", if (streamable) "1" else "0")
     out.emitAttribute(
       "slots",
-      getSlotManagerForInitialValueExpression.getNumberOfVariables +
+      getSlotManagerForInitialValueExpression.getNumberOfVariables.toString +
         "")
     if (componentIdMap != null) {
       out.emitAttribute(
@@ -129,7 +129,7 @@ class Accumulator extends Actor {
           r.getAction
             .asInstanceOf[AccumulatorRule]
             .getStackFrameMap
-            .getNumberOfVariables +
+            .getNumberOfVariables.toString +
             "")
         out.emitAttribute("rank", "" + r.getRank)
         if (r.getAction.asInstanceOf[AccumulatorRule].isCapturing) {
@@ -141,11 +141,11 @@ class Accumulator extends Actor {
       }
     }
     out.startElement("pre")
-    out.emitAttribute("slots", preDescentRules.getStackFrameSlotsNeeded + "")
+    out.emitAttribute("slots", preDescentRules.getStackFrameSlotsNeeded.toString + "")
     preDescentRules.processRules(action)
     out.endElement()
     out.startElement("post")
-    out.emitAttribute("slots", postDescentRules.getStackFrameSlotsNeeded + "")
+    out.emitAttribute("slots", postDescentRules.getStackFrameSlotsNeeded.toString + "")
     postDescentRules.processRules(action)
     out.endElement()
     out.endElement()

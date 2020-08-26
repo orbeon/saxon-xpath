@@ -150,7 +150,10 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
     val iter: Whitespace.Tokenizer = new Whitespace.Tokenizer(value)
     var found: Boolean = false
     var `val`: StringValue = null
-    while ((`val` = iter.next()) != null) {
+    while (({
+      `val` = iter.next()
+      `val`
+    }) != null) {
       found = true
       val v: ValidationFailure =
         base.validateContent(`val`.getStringValue, nsResolver, rules)

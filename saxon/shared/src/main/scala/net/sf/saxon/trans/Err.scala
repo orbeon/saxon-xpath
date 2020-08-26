@@ -114,9 +114,9 @@ object Err {
       val node: NodeInfo = item.asInstanceOf[NodeInfo]
       node.getNodeKind match {
         case Type.DOCUMENT => "doc(" + abbreviateURI(node.getSystemId) + ')'
-        case Type.ELEMENT => '<' + node.getDisplayName + '>'
+        case Type.ELEMENT => "<" + node.getDisplayName + ">"
         case Type.ATTRIBUTE =>
-          '@' + node.getDisplayName + "=\"" + node.getStringValueCS +
+          "@" + node.getDisplayName + "=\"" + node.getStringValueCS +
             '"'
         case Type.TEXT => "text{" + truncate30(node.getStringValueCS) + "}"
         case Type.COMMENT => "<!--...-->"
@@ -158,7 +158,10 @@ object Err {
       var count: Int = 0
       sb.append(" (")
       var next: Item = null
-      while ((next = seq.next()) != null) {
+      while (({
+        next = seq.next()
+        next
+      }) != null) {
         if ({ count += 1; count - 1 } > 0) {
           sb.append(", ")
         }
@@ -179,7 +182,7 @@ object Err {
     if (cs.length <= 30) {
       Whitespace.collapseWhitespace(cs)
     } else {
-      Whitespace.collapseWhitespace(cs.subSequence(0, 30)) +
+      Whitespace.collapseWhitespace(cs.subSequence(0, 30)).toString +
         "..."
     }
 

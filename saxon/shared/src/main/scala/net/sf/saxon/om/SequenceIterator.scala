@@ -66,7 +66,10 @@ trait SequenceIterator extends Closeable {
 
   def forEachOrFail(consumer: ItemConsumer[_ >: Item]): Unit = {
     var item: Item = null
-    while ((item = next()) != null) consumer.accept(item)
+    while (({
+      item = next()
+      item
+    }) != null) consumer.accept(item)
   }
 
   def materialize(): GroundedValue = new SequenceExtent(this).reduce()

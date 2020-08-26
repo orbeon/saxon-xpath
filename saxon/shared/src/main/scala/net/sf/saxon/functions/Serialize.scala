@@ -285,7 +285,7 @@ class Serialize extends SystemFunction with Callable {
     var stringVal: String = null
     if (seqVal.head.isInstanceOf[QNameValue]) {
       val qNameValue = seqVal.head.asInstanceOf[QNameValue]
-      stringVal = '{' + qNameValue.getComponent(AccessorFn.Component.NAMESPACE).toString + '}' + qNameValue.getComponent(AccessorFn.Component.LOCALNAME)
+      stringVal = "{" + qNameValue.getComponent(AccessorFn.Component.NAMESPACE).toString + "}" + qNameValue.getComponent(AccessorFn.Component.LOCALNAME)
     }
     else stringVal = seqVal.head.getStringValue
     stringVal

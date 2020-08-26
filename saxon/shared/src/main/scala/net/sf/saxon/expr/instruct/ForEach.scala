@@ -268,7 +268,10 @@ class ForEach(select: Expression,
         val listener: TraceListener = controller.getTraceListener
         assert(listener != null)
         var item: Item = null
-        while ((item = iter.next()) != null) {
+        while (({
+          item = iter.next()
+          item
+        }) != null) {
           listener.startCurrentItem(item)
           action.process(output, c2)
           listener.endCurrentItem(item)
@@ -295,7 +298,10 @@ class ForEach(select: Expression,
     c2.trackFocus(getSelect.iterate(context))
     val iter: SequenceIterator = c2.getCurrentIterator
     var item: Item = null
-    while ((item = iter.next()) != null) getAction.evaluatePendingUpdates(c2,
+    while (({
+      item = iter.next()
+      item
+    }) != null) getAction.evaluatePendingUpdates(c2,
       pul)
   }
 

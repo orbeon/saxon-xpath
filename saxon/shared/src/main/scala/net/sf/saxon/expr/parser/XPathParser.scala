@@ -607,7 +607,7 @@ class XPathParser() {
   /*@NotNull*/
   def currentTokenDisplay: String = if (t.currentToken == Token.NAME) "name \"" + t.currentTokenValue + '\"'
   else if (t.currentToken == Token.UNKNOWN) "(unknown token)"
-  else '\"' + Token.tokens(t.currentToken) + '\"'
+  else "\"" + Token.tokens(t.currentToken).toString() + "\""
 
   /**
    * Parse a string representing an expression. This will accept an XPath expression if called on an
@@ -973,7 +973,7 @@ class XPathParser() {
           val newArgs = new Array[Expression](args.length + 1)
           System.arraycopy(args, 0, newArgs, 0, args.length)
           newArgs(args.length) = rhs
-          SystemFunction.makeCall("concat", rsc, newArgs: _*)
+          SystemFunction.makeCall("concat", rsc, newArgs.toIndexedSeq: _*)
         } else
           SystemFunction.makeCall("concat", rsc, lhs, rhs)
       case Token.PLUS | Token.MINUS | Token.MULT | Token.DIV | Token.IDIV | Token.MOD =>

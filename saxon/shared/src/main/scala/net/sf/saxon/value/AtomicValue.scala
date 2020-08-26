@@ -169,7 +169,7 @@ abstract class AtomicValue
   def asAtomic(): AtomicValue = this
 
   override def toString(): String =
-    typeLabel + "(\"" + getStringValueCS + "\")"
+    typeLabel.toString + "(\"" + getStringValueCS.toString + "\")"
 
   /**
     * Get an iterator over all the items in the sequence

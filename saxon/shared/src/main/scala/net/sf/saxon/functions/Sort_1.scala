@@ -52,7 +52,10 @@ class Sort_1 extends SystemFunction {
     var i: Int = 0
     val iterator: SequenceIterator = input.iterate()
     var item: Item = null
-    while ((item = iterator.next()) != null) {
+    while (({
+      item = iterator.next()
+      item
+    }) != null) {
       val member: ItemToBeSorted = new ItemToBeSorted()
       member.value = item
       i += 1

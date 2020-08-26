@@ -279,7 +279,10 @@ abstract class NodeOverNodeInfo extends Node {
     } else if (node.getNodeKind == Type.ELEMENT) {
       val iter: AxisIterator = node.iterateAxis(AxisInfo.NAMESPACE)
       var ns: NodeInfo = null
-      while ((ns = iter.next()) != null) if (ns.getStringValue == namespaceURI) {
+      while (({
+        ns = iter.next()
+        ns
+      }) != null) if (ns.getStringValue == namespaceURI) {
         ns.getLocalPart
       }
       null
@@ -296,7 +299,10 @@ abstract class NodeOverNodeInfo extends Node {
     } else if (node.getNodeKind == Type.ELEMENT) {
       val iter: AxisIterator = node.iterateAxis(AxisInfo.NAMESPACE)
       var ns: NodeInfo = null
-      while ((ns = iter.next()) != null) if (ns.getLocalPart == prefix) {
+      while (({
+        ns = iter.next()
+        ns
+      }) != null) if (ns.getLocalPart == prefix) {
         ns.getStringValue
       }
       null

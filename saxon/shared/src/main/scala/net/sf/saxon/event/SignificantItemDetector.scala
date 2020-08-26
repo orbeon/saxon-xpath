@@ -35,9 +35,10 @@ object SignificantItemDetector {
         try {
           val memIter = mem.iterate
           var it: Item = null
-          while ( {
-            (it = memIter.next) != null
-          }) if (isSignificant(it)) return true
+          while (({
+            it = memIter.next
+            it
+          }) != null) if (isSignificant(it)) return true
         } catch {
           case e: XPathException =>
             return true

@@ -148,8 +148,8 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     } else {
       val nt1: String = if (nodetest1 == null) "item()" else nodetest1.toString
       val nt2: String = if (nodetest2 == null) "item()" else nodetest2.toString
-      '(' + nt1 + ' ' + Token.tokens(operator) + ' ' + nt2 +
-        ')'
+      "(" + nt1 + " " + Token.tokens(operator).toString + " " + nt2 +
+        ")"
     }
 
   override def toExportString(): String = makeString(true)

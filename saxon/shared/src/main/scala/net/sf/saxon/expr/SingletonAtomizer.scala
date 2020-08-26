@@ -145,7 +145,10 @@ class SingletonAtomizer(sequence: Expression,
     var result: AtomicValue = null
     val iter: SequenceIterator = getBaseExpression.iterate(context)
     var item: Item = null
-    while ((item = iter.next()) != null) {
+    while (({
+      item = iter.next()
+      item
+    }) != null) {
       var seq: AtomicSequence = null
       try seq = item.atomize()
       catch {

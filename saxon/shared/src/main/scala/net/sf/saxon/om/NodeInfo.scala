@@ -137,7 +137,7 @@ trait NodeInfo extends Source with Item with Location {
   def children(filter: Predicate[_ >: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes()) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator().toIterable
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator().iterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }
@@ -147,7 +147,10 @@ trait NodeInfo extends Source with Item with Location {
     if (getNodeKind == Type.ELEMENT) {
       val iter: AxisIterator = iterateAxis(AxisInfo.ATTRIBUTE)
       var attr: NodeInfo = null
-      while ((attr = iter.next()) != null) atts = atts.put(
+      while (({
+        attr = iter.next()
+        attr
+      }) != null) atts = atts.put(
         new AttributeInfo(NameOfNode.makeName(attr),
                           attr.getSchemaType.asInstanceOf[SimpleType],
                           attr.getStringValue,

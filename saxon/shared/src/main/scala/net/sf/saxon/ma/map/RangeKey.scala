@@ -69,9 +69,9 @@ class RangeKey
   def keyValuePairs(): java.lang.Iterable[KeyValuePair] =
     () =>
       new Iterator[KeyValuePair]() {
-        var keys: AtomicIterator[_ <: AtomicValue] = keys
+        var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys()
 
-        var nextVal: AtomicValue = keys.next()
+        var nextVal: AtomicValue = keyAtItr.next()
 
         def hasNext(): Boolean = nextVal != null
 
@@ -80,7 +80,7 @@ class RangeKey
             null
           } else {
             val kvp: KeyValuePair = new KeyValuePair(nextVal, get(nextVal))
-            nextVal = keys.next()
+            nextVal = keyAtItr.next()
             kvp
           }
       }
@@ -97,7 +97,10 @@ class RangeKey
                         th: TypeHierarchy): Boolean = {
     val keyIter: AtomicIterator[_ <: AtomicValue] = keys
     var key: AtomicValue = null
-    while ((key = keyIter.next()) != null) {
+    while (({
+      key = keyIter.next()
+      key
+    }) != null) {
       val value: Sequence = get(key)
       if (!valueType.matches(value, th)) {
         false
@@ -127,7 +130,7 @@ class RangeKey
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("range-key-map")
-    out.emitAttribute("size", size + "")
+    out.emitAttribute("size", size.toString + "")
     out.endElement()
   }
 

@@ -39,17 +39,17 @@ object CardinalityChecker {
    * @param role        information to be used in error reporting
    * @return a new Expression that does the CardinalityChecking (not necessarily a CardinalityChecker)
    */
-    def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression = {
-      var result: Expression = null
-      if (sequence.isInstanceOf[Literal] && Cardinality.subsumes(cardinality, SequenceTool.getCardinality(sequence.asInstanceOf[Literal].getValue))) return sequence
-      if (sequence.isInstanceOf[Atomizer] && !Cardinality.allowsMany(cardinality)) {
-        val base = sequence.asInstanceOf[Atomizer].getBaseExpression
-        result = new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
-      }
-      else result = new CardinalityChecker(sequence, cardinality, role)
-      ExpressionTool.copyLocationInfo(sequence, result)
-      result
+  def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression = {
+    var result: Expression = null
+    if (sequence.isInstanceOf[Literal] && Cardinality.subsumes(cardinality, SequenceTool.getCardinality(sequence.asInstanceOf[Literal].getValue))) return sequence
+    if (sequence.isInstanceOf[Atomizer] && !Cardinality.allowsMany(cardinality)) {
+      val base = sequence.asInstanceOf[Atomizer].getBaseExpression
+      result = new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
     }
+    else result = new CardinalityChecker(sequence, cardinality, role)
+    ExpressionTool.copyLocationInfo(sequence, result)
+    result
+  }
 
   /**
    * Show the first couple of items in a sequence in an error message
@@ -62,12 +62,14 @@ object CardinalityChecker {
     val sb = new FastStringBuffer(FastStringBuffer.C64)
     var count = 0
     sb.append(" (")
-    var next:Item = null
-    while ( {
-      (next = seq.next) != null
-    }) {
+    var next: Item = null
+    while (({
+      next = seq.next
+      next
+    }) != null) {
       if ( {
-        count += 1; count - 1
+        count += 1;
+        count - 1
       } > 0) sb.append(", ")
       if (count > max) {
         sb.append("...) ")
@@ -84,21 +86,11 @@ object CardinalityChecker {
 }
 
 final class CardinalityChecker private(val sequence: Expression, val cardinality: Int, var role: RoleDiagnostic)
-
-/**
- * Private Constructor: use factory method
- *
- * @param sequence    the base sequence whose cardinality is to be checked
- * @param cardinality the required cardinality
- * @param role        information to be used in error reporting
- */
-//computeStaticProperties();
-//adoptChildExpression(sequence);
   extends UnaryExpression(sequence) {
-  requiredCardinality = cardinality
   private var requiredCardinality = -1
+  requiredCardinality = cardinality
 
-  override  def getOperandRole = OperandRole.SAME_FOCUS_ACTION
+  override def getOperandRole = OperandRole.SAME_FOCUS_ACTION
 
   /**
    * Get the required cardinality

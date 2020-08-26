@@ -165,7 +165,10 @@ object UType {
     val iter: UnfailingIterator = sequence.iterate()
     var item: Item = null
     var u: UType = UType.VOID
-    while ((item = iter.next()) != null) u = u.union(getUType(item))
+    while (({
+      item = iter.next()
+      item
+    }) != null) u = u.union(getUType(item))
     u
   }
 

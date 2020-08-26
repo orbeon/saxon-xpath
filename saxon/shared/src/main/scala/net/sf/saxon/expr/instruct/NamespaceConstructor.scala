@@ -136,7 +136,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
   private def checkPrefixAndUri(prefix: String,
                                 uri: String,
                                 context: XPathContext): Unit = {
-    if (prefix.==("xml") != uri == NamespaceConstant.XML) {
+    if ((prefix == ("xml")) != (uri == NamespaceConstant.XML)) {
       val errorCode: String = if (isXSLT) "XTDE0925" else "XQDY0101"
       val err: XPathException = new XPathException(
         "Namespace prefix 'xml' and namespace uri " + NamespaceConstant.XML +

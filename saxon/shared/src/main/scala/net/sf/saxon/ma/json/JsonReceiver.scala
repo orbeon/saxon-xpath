@@ -134,6 +134,7 @@ object JsonReceiver {
       if (c == '\\') {
         if ( {
           i += 1
+          i
         } == literal.length - 1) {
           throw new XPathException(
             "String '" + Err.wrap(literal) + "' ends in backslash ",
@@ -157,7 +158,7 @@ object JsonReceiver {
           case _ =>
             var next: Char = literal.charAt(i)
             var xx: String =
-              if (next < 256) next + ""
+              if (next < 256) next.toString + ""
               else "x" + java.lang.Integer.toHexString(next)
             throw new XPathException("Unknown escape sequence \\" + xx,
               "FOJS0007")

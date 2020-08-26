@@ -55,12 +55,12 @@ object JavaRegularExpression {
 class JavaRegularExpression(javaReg: CharSequence, flags: String)
     extends RegularExpression {
 
-  var pattern: Pattern =
-    Pattern.compile(this.javaRegex, flagBits & (~(Pattern.COMMENTS)))
-
   var javaRegex: String = javaReg.toString
 
   var flagBits: Int = JavaRegularExpression.setFlags(flags)
+
+  var pattern: Pattern =
+    Pattern.compile(this.javaRegex, flagBits & (~(Pattern.COMMENTS)))
 
   def getJavaRegularExpression(): String = javaRegex
 

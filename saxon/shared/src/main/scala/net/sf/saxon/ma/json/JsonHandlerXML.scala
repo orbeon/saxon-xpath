@@ -41,9 +41,9 @@ object JsonHandlerXML {
 }
 class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, flags: Int) extends JsonHandler {
 
-  private var out: Outputter = new ComplexContentOutputter(builder)
-
   private var builder: Builder = xpathContext.getController.makeBuilder
+
+  private var out: Outputter = new ComplexContentOutputter(builder)
 
   private var keys: Stack[String] = _
 

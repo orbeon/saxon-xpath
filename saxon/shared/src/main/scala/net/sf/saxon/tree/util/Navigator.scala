@@ -201,9 +201,9 @@ object Navigator {
         if (parent == null) node.getDisplayName
         else {
           pre = getPath(parent, context)
-          if (pre == "/") '/' + node.getDisplayName
-          else pre + '/' + node.getDisplayName + (if (streamed) ""
-          else "[" + getNumberSimple(node, context) + "]")
+          if (pre == "/") "/" + node.getDisplayName
+          else pre + "/" + node.getDisplayName + (if (streamed) ""
+          else "[" + getNumberSimple(node, context).toString + "]")
         }
       case Type.ATTRIBUTE =>
         getPath(parent, context) + "/@" + node.getDisplayName

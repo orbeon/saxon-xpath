@@ -20,16 +20,14 @@ class DocumentOrderIterator(base: SequenceIterator,
                             private var comparer: ItemOrderComparer)
   extends SequenceIterator {
 
-  private var iterator: SequenceIterator = new ListIterator(sequence)
-
-  private var sequence: List[NodeInfo] = new ArrayList(len)
-
-  private var current: NodeInfo = null
-
   val len: Int =
     if (base.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER))
       base.asInstanceOf[LastPositionFinder].getLength
     else 50
+  private var sequence: List[NodeInfo] = new ArrayList(len)
+  private var iterator: SequenceIterator = new ListIterator(sequence)
+
+  private var current: NodeInfo = null
 
   base.forEachOrFail((item) =>
     if (item.isInstanceOf[NodeInfo]) {

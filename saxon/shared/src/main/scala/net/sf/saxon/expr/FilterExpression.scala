@@ -103,7 +103,7 @@ object FilterExpression {
           }
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
-            args: _*)
+            args.toIndexedSeq: _*)
         }
         case Token.FLE => {
           val args: Array[Expression] = Array.ofDim[Expression](3)
@@ -112,7 +112,7 @@ object FilterExpression {
           args(2) = comparand
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
-            args: _*)
+            args.toIndexedSeq: _*)
         }
         case Token.FNE =>
           SystemFunction.makeCall("remove", start.getRetainedStaticContext, start, comparand)
@@ -135,7 +135,7 @@ object FilterExpression {
           }
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
-            args: _*)
+            args.toIndexedSeq: _*)
         }
         case Token.FGE => {
           val args: Array[Expression] = Array.ofDim[Expression](3)
@@ -143,7 +143,7 @@ object FilterExpression {
           args(1) = comparand
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
-            args: _*)
+            args.toIndexedSeq: _*)
         }
 
         case _ => throw new IllegalArgumentException("operator")
@@ -186,7 +186,7 @@ object FilterExpression {
           val subs: Expression = SystemFunction.makeCall(
             "subsequence",
             start.getRetainedStaticContext,
-            args: _*)
+            args.toIndexedSeq: _*)
           let.setAction(subs)
           let
         }
@@ -200,7 +200,7 @@ object FilterExpression {
             start.getRetainedStaticContext,
             Array(start,
               Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
-              floor): _*)
+              floor).toIndexedSeq: _*)
         }
         case Token.FNE => {
           val let: LetExpression = new LetExpression()

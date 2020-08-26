@@ -135,7 +135,7 @@ object SequenceTool {
     val iter: SequenceIterator = sequence.iterate()
     val first: Item = iter.next()
     if (first == null) {
-     return null
+      return null
     }
     if (iter.next() != null) {
       throw new XPathException("Sequence contains more than one item")
@@ -206,7 +206,10 @@ object SequenceTool {
         val iter: SequenceIterator = sequence.iterate()
         var item: Item = null
         breakable {
-          while ((item = iter.next()) != null) {
+          while (({
+            item = iter.next()
+            item
+          }) != null) {
             `type` =
               if (`type` == null) Type.getItemType(item, th)
               else
@@ -233,13 +236,17 @@ object SequenceTool {
       val iter: UnfailingIterator =
         sequence.asInstanceOf[GroundedValue].iterate()
       var item: Item = null
-      breakable { while ((item = iter.next()) != null) {
-        `type` = `type`.union(UType.getUType(item))
-        if (`type` == UType.ANY) {
-          break()
+      breakable {
+        while (({
+          item = iter.next()
+          item
+        }) != null) {
+          `type` = `type`.union(UType.getUType(item))
+          if (`type` == UType.ANY) {
+            break()
+          }
         }
       }
-    }
       `type`
     } else {
       UType.ANY

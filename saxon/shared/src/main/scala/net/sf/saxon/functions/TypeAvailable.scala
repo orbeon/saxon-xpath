@@ -74,7 +74,7 @@ class TypeAvailable extends SystemFunction {
       case e: XPathException => {}
 
     }
-    super.makeFunctionCall(arguments: _*)
+    super.makeFunctionCall(arguments.toIndexedSeq: _*)
   }
 
 }

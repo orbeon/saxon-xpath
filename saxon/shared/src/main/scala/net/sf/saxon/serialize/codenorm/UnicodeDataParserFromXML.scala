@@ -44,7 +44,10 @@ object UnicodeDataParserFromXML {
     val iter: AxisIterator =
       doc.getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
     var item: NodeInfo = null
-    while ((item = iter.next()) != null) item.getLocalPart match {
+    while (({
+      item = iter.next()
+      item
+    }) != null) item.getLocalPart match {
       case "CanonicalClassKeys" => canonicalClassKeys = item
       case "CanonicalClassValues" => canonicalClassValues = item
       case "DecompositionKeys" => decompositionKeys = item

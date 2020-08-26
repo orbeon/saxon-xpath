@@ -144,7 +144,10 @@ object TypeChecker {
     val iter: SequenceIterator = `val`.iterate()
     var count: Int = 0
     var item: Item = null
-    while ((item = iter.next()) != null) {
+    while ({
+      item = iter.next()
+      item
+    } != null) {
       { count += 1;}
       if (!reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {

@@ -3236,7 +3236,7 @@ class XQueryParser extends XPathParser {
           addStringComponent(components, avt, last, i2)
 
           if (i2 + 1 < avt.length && avt.charAt(i2 + 1) == terminator) {
-            components.add(new StringLiteral(terminator + ""))
+            components.add(new StringLiteral(terminator.toString + ""))
             last = i2 + 2
 
           }
@@ -3285,7 +3285,7 @@ class XQueryParser extends XPathParser {
     val args = new Array[Expression](components.size)
     components.toArray(args)
     val rsc = new RetainedStaticContext(env)
-    val fn = SystemFunction.makeCall("concat", rsc, args: _*)
+    val fn = SystemFunction.makeCall("concat", rsc, args.toIndexedSeq: _*)
     assert(fn != null)
     fn.setLocation(loc)
     fn
@@ -3637,7 +3637,7 @@ class XQueryParser extends XPathParser {
       }
     }
     val args = components.toArray(new Array[Expression](0))
-    val result = SystemFunction.makeCall("concat", env.makeRetainedStaticContext, args: _*)
+    val result = SystemFunction.makeCall("concat", env.makeRetainedStaticContext, args.toIndexedSeq: _*)
     setLocation(result, offset)
     result
   }

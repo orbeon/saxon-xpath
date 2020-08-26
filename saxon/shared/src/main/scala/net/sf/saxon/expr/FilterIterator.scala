@@ -18,8 +18,6 @@ import net.sf.saxon.value._
 import FilterIterator._
 
 
-
-
 object FilterIterator {
 
   def testPredicateValue(iterator: SequenceIterator,
@@ -86,9 +84,9 @@ object FilterIterator {
   class NonNumeric(base: SequenceIterator,
                    filter: Expression,
                    context: XPathContext)
-      extends FilterIterator(base, filter, context) {
+    extends FilterIterator(base, filter, context) {
 
-     override def matches(): Boolean =
+    override def matches(): Boolean =
       filter.effectiveBooleanValue(filterContext)
 
   }
@@ -96,13 +94,12 @@ object FilterIterator {
 }
 
 class FilterIterator(base: SequenceIterator,
-                      var filter: Expression,
+                     var filter: Expression,
                      context: XPathContext)
-    extends SequenceIterator {
+  extends SequenceIterator {
 
-   var base: FocusIterator = filterContext.trackFocus(base)
-
-   var filterContext: XPathContext = context.newMinorContext()
+  var filterContext: XPathContext = context.newMinorContext()
+  var base: FocusIterator = filterContext.trackFocus(base)
 
   def setSequence(base: SequenceIterator, context: XPathContext): Unit = {
     filterContext = context.newMinorContext()
@@ -111,26 +108,30 @@ class FilterIterator(base: SequenceIterator,
 
   def next(): Item = getNextMatchingItem
 
-   def getNextMatchingItem(): Item = {
+  def getNextMatchingItem(): Item = {
     var next: Item = null
-    while ((next = base.next()) != null) if (matches()) {
+    while (({
+      next = base.next()
+      next
+    }) != null) if (matches()) {
       next
     }
     null
   }
 
-   def matches(): Boolean = {
+  def matches(): Boolean = {
     val iterator: SequenceIterator = filter.iterate(filterContext)
     testPredicateValue(iterator, base.position(), filter)
   }
-// This code is carefully designed to avoid reading more items from the
-// iteration of the filter expression than are absolutely essential.
-// The code is almost identical to the code in ExpressionTool#effectiveBooleanValue
-// except for the handling of a numeric result
-// This code is carefully designed to avoid reading more items from the
-// iteration of the filter expression than are absolutely essential.
-// The code is almost identical to the code in ExpressionTool#effectiveBooleanValue
-// except for the handling of a numeric result
+
+  // This code is carefully designed to avoid reading more items from the
+  // iteration of the filter expression than are absolutely essential.
+  // The code is almost identical to the code in ExpressionTool#effectiveBooleanValue
+  // except for the handling of a numeric result
+  // This code is carefully designed to avoid reading more items from the
+  // iteration of the filter expression than are absolutely essential.
+  // The code is almost identical to the code in ExpressionTool#effectiveBooleanValue
+  // except for the handling of a numeric result
 
   override def close(): Unit = {
     base.close()
@@ -144,7 +145,7 @@ class FilterIterator(base: SequenceIterator,
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A FilterIterator filters an input sequence using a filter expression. Note that a FilterIterator
-  * is not used where the filter is a constant number (PositionFilter is used for this purpose instead),
-  * so this class does no optimizations for numeric predicates.
-  */
+ * A FilterIterator filters an input sequence using a filter expression. Note that a FilterIterator
+ * is not used where the filter is a constant number (PositionFilter is used for this purpose instead),
+ * so this class does no optimizations for numeric predicates.
+ */

@@ -600,7 +600,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       var item0: AtomicValue = null
       val boundComparer: AtomicComparer = comparer.provideContext(context)
-      while ((item0 = iter0.next().asInstanceOf[AtomicValue]) != null) if (GeneralComparison.compare(
+      while (({
+        item0 = iter0.next().asInstanceOf[AtomicValue]
+        item0
+      }) != null) if (GeneralComparison.compare(
         item0,
         singletonOperator,
         value1,

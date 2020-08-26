@@ -123,7 +123,7 @@ class ContextItemAccessorFunction extends ContextAccessorFunction {
     val args: Array[Expression] = Array(new ContextItemExpression())
     SystemFunction.makeCall(getFunctionName.getLocalPart,
       getRetainedStaticContext,
-      args: _*)
+      args.toIndexedSeq: _*)
   }
 
 }

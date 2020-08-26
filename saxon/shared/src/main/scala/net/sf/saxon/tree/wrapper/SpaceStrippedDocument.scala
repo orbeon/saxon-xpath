@@ -29,7 +29,10 @@ object SpaceStrippedDocument {
       val iter: AxisIterator =
         doc.getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
       var node: NodeInfo = null
-      while ((node = iter.next()) != null) {
+      while (({
+        node = iter.next()
+        node
+      }) != null) {
         val `val`: String =
           node.getAttributeValue(NamespaceConstant.XML, "space")
         if ("preserve" == `val`) {
