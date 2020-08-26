@@ -3614,19 +3614,20 @@ class XQueryParser extends XPathParser {
                 if (t.currentToken == Token.RCURLY) {
                   components.add(Literal.makeEmptySequence)
                   sb.setLength(0)
+                } else {
+                  inner.break()
                 }
-                else { return "".asInstanceOf[Expression] }
-              }
-              else if (penult == ']' && prior == '`' && c == '`') {
+              } else if (penult == ']' && prior == '`' && c == '`') {
                 sb.setLength(sb.length - 2)
                 components.add(new StringLiteral(sb))
                 t.lookAhead()
                 t.next()
                 outer.break()
+              } else {
+                sb.cat(c)
+                penult = prior
+                prior = c
               }
-              sb.cat(c)
-              penult = prior
-              prior = c
             }
           }
         catch {
