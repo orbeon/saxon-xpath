@@ -1,11 +1,9 @@
 package net.sf.saxon.s9api.streams
 
-import net.sf.saxon.s9api.XdmItem
-import java.util.function.Function
-import java.util.function.Predicate
+import java.util.function.{Function, Predicate}
 import java.util.stream.Stream
 
-import net.sf.saxon.om.Item
+import net.sf.saxon.s9api.XdmItem
 
 abstract class Step[T <: XdmItem] extends Function[XdmItem, Stream[_ <: T]] {
 
@@ -48,12 +46,11 @@ abstract class Step[T <: XdmItem] extends Function[XdmItem, Stream[_ <: T]] {
     (item: XdmItem) => base.apply(item).skip(index).limit(1)
   }
 
-  def then[U <: XdmItem](next: Step[U]): Step[U] = {
+  def thenDo[U <: XdmItem](next: Step[U]): Step[U] = {
     val me: Step[T] = this
     new Step[U]() {
       override def apply(item: XdmItem): Stream[_ <: U] =
         me.apply(item).flatMap(next)
     }
   }
-
 }
