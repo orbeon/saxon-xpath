@@ -137,7 +137,7 @@ class LookupExpression(start: Expression, step: Expression)
         "use of lookup expressions on external objects",
         -1)
       config
-        .makeObjectLookupExpression(getLhsExpression, getRhsExpression).asInstanceOf[Expression]
+        .makeObjectLookupExpression(getLhsExpression, getRhsExpression)
         .typeCheck(visitor, contextInfo)
     }
     isSingleContainer = getLhsExpression.getCardinality == StaticProperty.EXACTLY_ONE
@@ -428,7 +428,7 @@ class LookupExpression(start: Expression, step: Expression)
           }
           var key: String = rhs.getStringValue
           config
-            .externalObjectAsMap(baseItem.asInstanceOf[ObjectValue[_]], key).asInstanceOf[MapItem]
+            .externalObjectAsMap(baseItem.asInstanceOf[ObjectValue[_]], key)
             .get(rhs.asInstanceOf[StringValue])
             .iterate()
         } else {

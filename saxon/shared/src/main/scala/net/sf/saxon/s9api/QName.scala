@@ -220,7 +220,7 @@ class QName(prefix: String, uri: String, localName: String) {
     if (lexName.startsWith("{")) {
       lexName = "Q" + lexName
     }
-    val node: NodeInfo = element.getUnderlyingValue.asInstanceOf[NodeInfo]
+    val node: NodeInfo = element.getUnderlyingValue
     sqName = StructuredQName.fromLexicalQName(lexName,
       useDefault = true,
       allowEQName = true,

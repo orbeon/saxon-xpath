@@ -32,7 +32,7 @@ class ParameterSet(capacity: Int) {
     new Array[StructuredQName](capacity)
 
   private var values: Array[Sequence] =
-    new Array[Sequence](capacity).asInstanceOf[Array[Sequence]]
+    new Array[Sequence](capacity)
 
   private var typeChecked: Array[Boolean] = new Array[Boolean](capacity)
 

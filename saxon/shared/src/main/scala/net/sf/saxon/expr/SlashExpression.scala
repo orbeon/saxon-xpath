@@ -283,7 +283,7 @@ class SlashExpression(start: Expression, step: Expression)
     }
     if (visitor.isOptimizeForStreaming) {
       val rawStep: Expression =
-        ExpressionTool.unfilteredExpression(getStep, allowPositional = true).asInstanceOf[Expression]
+        ExpressionTool.unfilteredExpression(getStep, allowPositional = true)
       if (rawStep.isInstanceOf[CopyOf] &&
         rawStep
           .asInstanceOf[CopyOf]
@@ -356,12 +356,12 @@ class SlashExpression(start: Expression, step: Expression)
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
     val opt: Optimizer = visitor.obtainOptimizer()
-    val s1: Expression = ExpressionTool.unfilteredExpression(getStart, allowPositional = false).asInstanceOf[Expression]
+    val s1: Expression = ExpressionTool.unfilteredExpression(getStart, allowPositional = false)
     if (!(s1.isInstanceOf[AxisExpression] &&
       s1.asInstanceOf[AxisExpression].getAxis == AxisInfo.DESCENDANT)) {
       return null
     }
-    val s2: Expression = ExpressionTool.unfilteredExpression(getStep, allowPositional = false).asInstanceOf[Expression]
+    val s2: Expression = ExpressionTool.unfilteredExpression(getStep, allowPositional = false)
     if (!(s2.isInstanceOf[AxisExpression] &&
       s2.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD)) {
       return null

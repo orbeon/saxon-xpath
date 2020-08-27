@@ -132,7 +132,7 @@ class OrderByClause(flwor: FLWORExpression,
     var allKeysFixed: Boolean = true
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
     breakable {
-      for (sk <- sortKeys.asScala if !sk.isFixed.asInstanceOf[Boolean]) {
+      for (sk <- sortKeys.asScala if !sk.isFixed) {
         allKeysFixed = false
         break()
       }
@@ -143,7 +143,7 @@ class OrderByClause(flwor: FLWORExpression,
     var i: Int = 0
     val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(false)
     for (skd <- sortKeys.asScala) {
-      var sortKey: Expression = skd.getSortKey.asInstanceOf[Expression]
+      var sortKey: Expression = skd.getSortKey
       val role: RoleDiagnostic =
         new RoleDiagnostic(RoleDiagnostic.ORDER_BY, "", i)
       role.setErrorCode("XPTY0004")
@@ -153,7 +153,7 @@ class OrderByClause(flwor: FLWORExpression,
                                    visitor)
       skd.setSortKey(sortKey, setContext = false)
       skd.typeCheck(visitor, contextInfo)
-      if (skd.isFixed.asInstanceOf[Boolean]) {
+      if (skd.isFixed) {
         val comp: AtomicComparer = skd.makeComparator(
           visitor.getStaticContext.makeEarlyEvaluationContext())
         skd.setFinalComparator(comp)
@@ -169,7 +169,7 @@ class OrderByClause(flwor: FLWORExpression,
                    pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
     for (skd <- sortKeys.asScala) {
-      val sortKey: Expression = skd.getSortKey.asInstanceOf[Expression]
+      val sortKey: Expression = skd.getSortKey
       sortKey.addToPathMap(pathMap, pathMapNodeSet)
     }
   }
@@ -184,7 +184,7 @@ class OrderByClause(flwor: FLWORExpression,
     out.startElement("order-by")
     for (k <- getSortKeyDefinitions.asScala) {
       out.startSubsidiaryElement("key")
-      k.getSortKey.asInstanceOf[Expression].export(out)
+      k.getSortKey.export(out)
       out.endSubsidiaryElement()
     }
     out.endElement()
@@ -202,7 +202,7 @@ class OrderByClause(flwor: FLWORExpression,
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
     sortKeys
       .getSortKeyDefinition(n)
-      .getSortKey.asInstanceOf[Expression]
+      .getSortKey
       .evaluateItem(c)
       .asInstanceOf[AtomicValue]
   }

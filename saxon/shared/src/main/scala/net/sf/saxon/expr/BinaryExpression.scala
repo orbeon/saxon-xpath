@@ -241,7 +241,7 @@ abstract class BinaryExpression(p0: Expression,
   private def parenthesize(operand: Expression): String = {
     var operandStr: String = operand.toShortString()
     if (operand.isInstanceOf[BinaryExpression] &&
-      XPathParser.operatorPrecedence(operand.asInstanceOf[BinaryExpression].operator).asInstanceOf[Int] < XPathParser.operatorPrecedence(operator).asInstanceOf[Int]) {
+      XPathParser.operatorPrecedence(operand.asInstanceOf[BinaryExpression].operator) < XPathParser.operatorPrecedence(operator).asInstanceOf[Int]) {
       operandStr = "(" + operandStr + ")"
     }
     operandStr

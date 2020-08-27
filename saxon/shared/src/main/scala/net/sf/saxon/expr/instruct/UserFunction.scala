@@ -386,7 +386,7 @@ class UserFunction
       presenter.emitAttribute("line", getLineNumber.toString())
       presenter.emitAttribute("module", getSystemId)
       presenter.emitAttribute("eval",
-        getEvaluator.getEvaluationMode.asInstanceOf[EvaluationMode.EvaluationMode].getCode.toString())
+        getEvaluator.getEvaluationMode.getCode.toString)
     }
     var flags: String = ""
     if (determinism == Determinism.PROACTIVE) {

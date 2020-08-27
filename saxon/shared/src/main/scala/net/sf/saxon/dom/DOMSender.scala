@@ -186,7 +186,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
             var parentNamespaces: NamespaceMap = namespaces.peek()
             val childNamespaces: NamespaceMap = parentNamespaces.applyDifferences(gatherNamespaces(element))
             namespaces.push(childNamespaces)
-            outputElement(element, !childNamespaces.isEmpty.asInstanceOf[Boolean])
+            outputElement(element, !childNamespaces.isEmpty)
             namespaces.pop()
           case Node.ATTRIBUTE_NODE =>
           case Node.PROCESSING_INSTRUCTION_NODE =>

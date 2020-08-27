@@ -63,7 +63,7 @@ class XPathExecutable(private var exp: XPathExpression,
 
       def next(): QName =
         new QName(
-          varIterator.next().asInstanceOf[XPathVariable].getVariableQName)
+          varIterator.next().getVariableQName)
 
       override def remove(): Unit = {
         throw new UnsupportedOperationException("remove")

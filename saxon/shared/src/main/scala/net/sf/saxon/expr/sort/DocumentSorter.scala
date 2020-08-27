@@ -165,8 +165,8 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
       val exp: SlashExpression = operand.asInstanceOf[SlashExpression]
       var a: Expression = exp.getSelectExpression
       var b: Expression = exp.getActionExpression
-      a = ExpressionTool.unfilteredExpression(a, allowPositional = false).asInstanceOf[Expression]
-      b = ExpressionTool.unfilteredExpression(b, allowPositional = false).asInstanceOf[Expression]
+      a = ExpressionTool.unfilteredExpression(a, allowPositional = false)
+      b = ExpressionTool.unfilteredExpression(b, allowPositional = false)
       if (a.isInstanceOf[AxisExpression] &&
         (a.asInstanceOf[AxisExpression].getAxis == AxisInfo.DESCENDANT ||
           a.asInstanceOf[AxisExpression]

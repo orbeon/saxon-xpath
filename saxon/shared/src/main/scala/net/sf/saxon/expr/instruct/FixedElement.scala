@@ -89,7 +89,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
   private def removeRedundantNamespaces(
                                          visitor: ExpressionVisitor,
                                          parentNamespaces: NamespaceMap): Unit = {
-    if (namespaceBindings.isEmpty.asInstanceOf[Boolean]) {
+    if (namespaceBindings.isEmpty) {
       return
     }
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
@@ -403,7 +403,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       out.emitAttribute("flags", flags)
     }
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
-    if (!namespaceBindings.isEmpty.asInstanceOf[Boolean]) {
+    if (!namespaceBindings.isEmpty) {
       for (ns <- namespaceBindings.asScala) {
         val prefix: String = ns.getPrefix
         if (prefix.!=("xml")) {

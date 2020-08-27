@@ -288,11 +288,11 @@ object SequenceTool {
   }
 
   def makeSequenceArray(length: Int): Array[Sequence] =
-    Array.ofDim[Sequence](length).asInstanceOf[Array[Sequence]]
+    Array.ofDim[Sequence](length)
 
   def fromItems(items: Item*): Array[Sequence] = {
     val seq: Array[Sequence] =
-      Array.ofDim[Sequence](items.length).asInstanceOf[Array[Sequence]]
+      Array.ofDim[Sequence](items.length)
     System.arraycopy(items, 0, seq, 0, items.length)
     seq
   }

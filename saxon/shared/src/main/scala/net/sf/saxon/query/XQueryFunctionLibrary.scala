@@ -73,7 +73,7 @@ object XQueryFunctionLibrary {
       val args: Array[Sequence] = Array.ofDim[Sequence](arguments.length)
       for (i <- 0 until arguments.length) {
         args(i) =
-          arguments(i).iterate().asInstanceOf[SequenceIterator].materialize()
+          arguments(i).iterate().materialize()
       }
       function.call(context.newCleanContext(), args)
     }
@@ -235,7 +235,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
 
   def optimizeGlobalFunctions(topModule: QueryModule): Unit = {
     functions.values.forEach { fn =>
-      if (fn.getStaticContext.asInstanceOf[QueryModule].getTopLevelModule == topModule) {
+      if (fn.getStaticContext.getTopLevelModule == topModule) {
         fn.optimize()
       }
     }

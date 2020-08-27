@@ -120,8 +120,8 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
 
   private def tailCallDifferentFunction(userFunction: UserFunction,
                                         cm: XPathContextMajor): Sequence = {
-    cm.resetStackFrameMap(userFunction.getStackFrameMap, userFunction.getArity.asInstanceOf[Int])
-    try userFunction.getEvaluator.asInstanceOf[Evaluator].evaluate(userFunction.getBody, cm)
+    cm.resetStackFrameMap(userFunction.getStackFrameMap, userFunction.getArity)
+    try userFunction.getEvaluator.evaluate(userFunction.getBody, cm)
     catch {
       case err: XPathException => {
         err.maybeSetLocation(getLocation)

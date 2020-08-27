@@ -62,7 +62,7 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     }
     val currentItem: Item = context.getCurrentIterator.current()
     val mode: Mode = modeComponent.getActor
-    val rule: Rule = mode.getRule(currentItem, min, max, context).asInstanceOf[Rule]
+    val rule: Rule = mode.getRule(currentItem, min, max, context)
     if (rule == null) {
       mode.getBuiltInRuleSet.process(currentItem,
         params,

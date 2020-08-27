@@ -26,7 +26,7 @@ import net.sf.saxon.trans.XPathException
 class FoldLeftFn extends FoldingFunction {
 
   def getFold(context: XPathContext, arguments: Sequence*): Fold = {
-    val arg0: Sequence = arguments(0).asInstanceOf[Sequence]
+    val arg0: Sequence = arguments(0)
     new FoldLeftFold(context,
       arg0.materialize(),
       arguments(1).head().asInstanceOf[Function])

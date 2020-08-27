@@ -62,7 +62,7 @@ class NextMatch(var useTailRecursion: Boolean)
     }
     val mode: Mode = modeComponent.getActor
     val currentItem: Item = context.getCurrentIterator.current()
-    val rule: Rule = mode.getNextMatchRule(currentItem, currentRule, context).asInstanceOf[Rule]
+    val rule: Rule = mode.getNextMatchRule(currentItem, currentRule, context)
     if (rule == null) {
       mode.getBuiltInRuleSet.process(currentItem,
         params,

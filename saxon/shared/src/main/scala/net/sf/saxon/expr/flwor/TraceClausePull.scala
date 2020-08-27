@@ -17,11 +17,11 @@ class TraceClausePull(private var base: TuplePull,
     if (controller.isTracing) {
       val baseInfo: ClauseInfo = new ClauseInfo(baseClause)
       baseInfo.setNamespaceResolver(traceClause.getNamespaceResolver)
-      controller.getTraceListener.asInstanceOf[TraceListener].enter(baseInfo,
+      controller.getTraceListener.enter(baseInfo,
         Collections.emptyMap(),
         context)
       val b: Boolean = base.nextTuple(context)
-      controller.getTraceListener.asInstanceOf[TraceListener].leave(baseInfo)
+      controller.getTraceListener.leave(baseInfo)
       b
     } else {
       base.nextTuple(context)

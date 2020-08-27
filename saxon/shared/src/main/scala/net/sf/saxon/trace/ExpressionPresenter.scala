@@ -275,17 +275,17 @@ class ExpressionPresenter {
       !relocatable &&
       sc.getStaticBaseUri != null &&
       (parentSC == null || sc.getStaticBaseUri != parentSC.getStaticBaseUri)) {
-      emitAttribute("baseUri", sc.getStaticBaseUriString.asInstanceOf[String])
+      emitAttribute("baseUri", sc.getStaticBaseUriString)
     }
     if (sc.getDefaultCollationName != NamespaceConstant.CODEPOINT_COLLATION_URI &&
       (parentSC == null ||
         sc.getDefaultCollationName != parentSC.getDefaultCollationName)) {
-      emitAttribute("defaultCollation", sc.getDefaultCollationName.asInstanceOf[String])
+      emitAttribute("defaultCollation", sc.getDefaultCollationName)
     }
-    if (!sc.getDefaultElementNamespace.asInstanceOf[String].isEmpty &&
+    if (!sc.getDefaultElementNamespace.isEmpty &&
       (parentSC == null ||
         sc.getDefaultElementNamespace != parentSC.getDefaultElementNamespace)) {
-      emitAttribute("defaultElementNS", sc.getDefaultElementNamespace.asInstanceOf[String])
+      emitAttribute("defaultElementNS", sc.getDefaultElementNamespace)
     }
     if (NamespaceConstant.FN != sc.getDefaultFunctionNamespace) {
       emitAttribute("defaultFunctionNS", sc.getDefaultFunctionNamespace)
@@ -293,10 +293,10 @@ class ExpressionPresenter {
     if (!options.asInstanceOf[ExportOptions].suppressStaticContext &&
       (parentSC == null || !sc.declaresSameNamespaces(parentSC))) {
       val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
-      var iter: Iterator[String] = sc.iteratePrefixes.asInstanceOf[Iterator[String]]
+      var iter: Iterator[String] = sc.iteratePrefixes
       while (iter.hasNext) {
         val p: String = iter.next()
-        var uri: String = sc.getURIForPrefix(p, useDefault = true).asInstanceOf[String]
+        var uri: String = sc.getURIForPrefix(p, useDefault = true)
         fsb.append(p)
         fsb.append("=")
         if (Whitespace.containsWhitespace(uri)) {

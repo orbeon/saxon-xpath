@@ -328,7 +328,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   override def addToPathMap(
                              pathMap: PathMap,
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet =
-    pathMap.getPathForVariable(getBinding).asInstanceOf[PathMap.PathMapNodeSet]
+    pathMap.getPathForVariable(getBinding)
 
   override def iterate(c: XPathContext): SequenceIterator =
     try {

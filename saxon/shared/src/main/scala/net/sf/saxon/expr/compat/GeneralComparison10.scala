@@ -66,7 +66,7 @@ object GeneralComparison10 {
     val rules: ConversionRules = context.getConfiguration.getConversionRules
     val t0: BuiltInAtomicType = atomicVal0.getPrimitiveType
     val t1: BuiltInAtomicType = atomicVal1.getPrimitiveType
-    if (t0.isPrimitiveNumeric.asInstanceOf[Boolean] || t1.isPrimitiveNumeric.asInstanceOf[Boolean]) {
+    if (t0.isPrimitiveNumeric || t1.isPrimitiveNumeric) {
       val v0: DoubleValue = Number_1.convert(atomicVal0, context.getConfiguration)
       val v1: DoubleValue = Number_1.convert(atomicVal1, context.getConfiguration)
       ValueComparison.compare(v0, op, v1, atomicCom, checkTypes = false)

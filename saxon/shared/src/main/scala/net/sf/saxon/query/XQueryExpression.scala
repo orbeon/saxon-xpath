@@ -200,7 +200,7 @@ class XQueryExpression(var expression: Expression,
     val names: Array[StructuredQName] =
       Array.ofDim[StructuredQName](stackFrameMap.getNumberOfVariables)
     for (i <- 0 until names.length) {
-      names(i) = list.get(i).asInstanceOf[StructuredQName]
+      names(i) = list.get(i)
     }
     names
   }

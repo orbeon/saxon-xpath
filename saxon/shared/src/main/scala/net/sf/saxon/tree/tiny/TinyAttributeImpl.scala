@@ -48,7 +48,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   }
 
   override  def getSequenceNumber(): Long =
-    getParent.asInstanceOf[TinyNodeImpl].getSequenceNumber +
+    getParent.getSequenceNumber +
       0x8000 +
       (nodeNr - tree.alpha(tree.attParent(nodeNr)))
 

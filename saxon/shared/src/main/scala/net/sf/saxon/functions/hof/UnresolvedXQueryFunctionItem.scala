@@ -25,7 +25,7 @@ class UnresolvedXQueryFunctionItem(private val fd: XQueryFunction,
   override def getArity(): Int = fd.getNumberOfArguments
 
   override def call(context: XPathContext, args: Array[Sequence]): Sequence =
-    ref.evaluateItem(context).asInstanceOf[Function].call(context, args)
+    ref.evaluateItem(context).call(context, args)
 
   override def getDescription(): String = functionName.toString
 

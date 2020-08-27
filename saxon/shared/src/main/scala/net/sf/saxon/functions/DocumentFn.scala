@@ -460,7 +460,7 @@ object DocumentFn {
       }
     }
     val controller: Controller = c.getController
-    val doc: TreeInfo = controller.getDocumentPool.asInstanceOf[DocumentPool].find(documentKey)
+    val doc: TreeInfo = controller.getDocumentPool.find(documentKey)
     var source: Source = null
     if (doc != null) {
       source = doc.getRootNode

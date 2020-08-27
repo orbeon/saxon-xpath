@@ -283,7 +283,7 @@ class EvaluateInstr(xpath: Expression,
       } else {
         env.setNamespaceResolver(getRetainedStaticContext)
         env.setDefaultElementNamespace(
-          getRetainedStaticContext.getDefaultElementNamespace.asInstanceOf[String])
+          getRetainedStaticContext.getDefaultElementNamespace)
       }
       val libraryList0: FunctionLibraryList =
         getRetainedStaticContext.getPackageData
@@ -313,7 +313,7 @@ class EvaluateInstr(xpath: Expression,
         val allowAny: GroundedValue =
           options.get(new StringValue("allow-any-namespace"))
         if (allowAny != null && allowAny.effectiveBooleanValue()) {
-          env.setImportedSchemaNamespaces(config.getImportedNamespaces.asInstanceOf[util.Set[String]])
+          env.setImportedSchemaNamespaces(config.getImportedNamespaces)
         } else {
           env.setImportedSchemaNamespaces(importedSchemaNamespaces)
         }

@@ -3655,7 +3655,7 @@ class XQueryParser extends XPathParser {
   }
 
   override  def atStartOfRelativePath: Boolean = {
-    t.currentToken == Token.TAG || super.atStartOfRelativePath.asInstanceOf[Boolean]
+    t.currentToken == Token.TAG || super.atStartOfRelativePath
 
   }
 

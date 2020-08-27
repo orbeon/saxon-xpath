@@ -107,7 +107,7 @@ class SortedIterator ()
     if (position < count) {
       values({
         position += 1; position - 1
-      }).value.asInstanceOf[Item]
+      }).value
     } else {
       position = -1
       null

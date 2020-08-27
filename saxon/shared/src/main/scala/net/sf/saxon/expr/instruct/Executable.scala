@@ -128,7 +128,7 @@ class Executable(var config: Configuration) {
     }
     val miter: Iterator[QueryModule] = getQueryLibraryModules
     while (miter.hasNext) {
-      val sqc: QueryModule = miter.next().asInstanceOf[QueryModule]
+      val sqc: QueryModule = miter.next()
       val uri: String = sqc.getSystemId
       if (uri != null && uri == systemId) {
         sqc

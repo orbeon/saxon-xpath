@@ -75,7 +75,7 @@ class GDayValue() extends GDateValue {
 
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
-      toDateTime().adjustTimezone(tz).asInstanceOf[DateTimeValue]
+      toDateTime().adjustTimezone(tz)
     new GDayValue(dt.getDay, dt.getTimezoneInMinutes)
   }
 

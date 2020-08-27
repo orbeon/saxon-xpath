@@ -82,7 +82,7 @@ object RandomNumberGenerator {
   private class Permutation(var nextSeed: java.lang.Long) extends Callable {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val input: Sequence = arguments(0).asInstanceOf[Sequence]
+      val input: Sequence = arguments(0)
       val iterator: SequenceIterator = input.iterate()
       var item: Item = null
       val output: List[Item] = new LinkedList[Item]()

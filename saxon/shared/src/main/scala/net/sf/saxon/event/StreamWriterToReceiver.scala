@@ -61,7 +61,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
 
   private var config: Configuration = pipe.getConfiguration
 
-  private var charChecker: IntPredicate = pipe.getConfiguration.getValidCharacterChecker.asInstanceOf[IntPredicate]
+  private var charChecker: IntPredicate = pipe.getConfiguration.getValidCharacterChecker
 
   private var isChecking: Boolean = false
 

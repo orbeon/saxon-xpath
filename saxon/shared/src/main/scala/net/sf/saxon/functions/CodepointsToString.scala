@@ -52,7 +52,7 @@ class CodepointsToString extends SystemFunction with Callable {
     val chars: SequenceIterator = arguments(0).iterate()
     new StringValue(
       unicodeToString(chars,
-        context.getConfiguration.getValidCharacterChecker.asInstanceOf[IntPredicate]))
+        context.getConfiguration.getValidCharacterChecker))
   }
 
   override def getStreamerName(): String = "CodepointsToString"

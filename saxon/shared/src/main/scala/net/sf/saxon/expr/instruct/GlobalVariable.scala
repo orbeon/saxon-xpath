@@ -407,8 +407,8 @@ class GlobalVariable
   def evaluateVariable(context: XPathContext): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
-    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber).asInstanceOf[GroundedValue]
+    val b: Bindery = controller.getBindery(getPackageData)
+    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
       v
     } else {
@@ -420,11 +420,11 @@ class GlobalVariable
                        target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
+    val b: Bindery = controller.getBindery(getPackageData)
     if (b == null) {
       throw new AssertionError()
     }
-    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber).asInstanceOf[GroundedValue]
+    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
       if (v.isInstanceOf[Bindery.FailureValue]) {
         throw v.asInstanceOf[Bindery.FailureValue].getObject
@@ -439,8 +439,8 @@ class GlobalVariable
                                  target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
-    try {
+    val b: Bindery = controller.getBindery(getPackageData)
+     try {
       setDependencies(this, context)
       val go: Boolean = b.setExecuting(this)
       if (!go) {
@@ -452,8 +452,8 @@ class GlobalVariable
           .obtainOptimizer
           .makeIndexedValue(value.iterate())
       }
-      b.saveGlobalVariableValue(this, value).asInstanceOf[GroundedValue]
-    } catch {
+       b.saveGlobalVariableValue(this, value)
+     } catch {
       case err: XPathException => {
         b.setNotExecuting(this)
         if (err.isInstanceOf[XPathException.Circularity]) {

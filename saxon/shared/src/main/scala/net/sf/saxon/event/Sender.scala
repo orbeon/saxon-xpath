@@ -182,7 +182,7 @@ object Sender {
         send(newSource, next, parserOptions)
         return
       }
-      val externalObjectModels: List[_] = config.getExternalObjectModels.asInstanceOf[java.util.List[ExternalObjectModel]]
+      val externalObjectModels: List[_] = config.getExternalObjectModels
       for (externalObjectModel <- externalObjectModels.asScala) {
         val model: ExternalObjectModel =
           externalObjectModel.asInstanceOf[ExternalObjectModel]

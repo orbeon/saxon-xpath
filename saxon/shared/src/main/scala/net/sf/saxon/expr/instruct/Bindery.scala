@@ -27,7 +27,7 @@ class Bindery(pack: PackageData) {
 
   private def allocateGlobals(map: SlotManager): Unit = {
     val n: Int = map.getNumberOfVariables + 1
-    globals = Array.ofDim[GroundedValue](n).asInstanceOf[Array[GroundedValue]]
+    globals = Array.ofDim[GroundedValue](n)
     busy = Array.ofDim[Long](n)
     for (i <- 0 until n) {
       globals(i) = null

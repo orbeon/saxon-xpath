@@ -49,7 +49,7 @@ object GenericAtomicComparer {
 
       }
     }
-    if (type0.isPrimitiveNumeric.asInstanceOf[Boolean] && type1.isPrimitiveNumeric.asInstanceOf[Boolean]) {
+    if (type0.isPrimitiveNumeric && type1.isPrimitiveNumeric) {
       ComparableAtomicValueComparer.getInstance
     }
     if ((fp0 == StandardNames.XS_STRING || fp0 == StandardNames.XS_UNTYPED_ATOMIC ||

@@ -141,7 +141,7 @@ abstract class AtomicValue
         val err: ValidationFailure = stype.validateContent(
           getStringValueCS,
           null,
-          env.getConfiguration.getConversionRules.asInstanceOf[ConversionRules])
+          env.getConfiguration.getConversionRules)
         if (err != null) {
           throw err.makeException()
         }

@@ -638,7 +638,7 @@ class XPathParser() {
     if (exp == null) {
       qNameParser = new QNameParser(env.getNamespaceResolver).withAcceptEQName(allowXPath30Syntax).withErrorOnBadSyntax(if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340"
       else "XPST0003").withErrorOnUnresolvedPrefix("XPST0081")
-      charChecker = env.getConfiguration.getValidCharacterChecker.asInstanceOf[IntPredicate]
+      charChecker = env.getConfiguration.getValidCharacterChecker
       t = new Tokenizer
       t.languageLevel = env.getXPathVersion
       t.allowSaxonExtensions = env.getConfiguration.getBooleanProperty(Feature.ALLOW_SYNTAX_EXTENSIONS)
@@ -947,7 +947,7 @@ class XPathParser() {
       true
   }
 
-  private def getCurrentOperatorPrecedence: Int = XPathParser.operatorPrecedence(t.currentToken).asInstanceOf[Int]
+  private def getCurrentOperatorPrecedence: Int = XPathParser.operatorPrecedence(t.currentToken)
 
   @throws[XPathException]
   private def makeBinaryExpression(lhs: Expression, operator: Int, rhs: Expression): Expression = {
@@ -1776,7 +1776,7 @@ class XPathParser() {
         val start = new RootExpression
         setLocation(start)
         if (disallowedAtStartOfRelativePath) grumble("Operator '" + Token.tokens(t.currentToken) + "' is not allowed after '/'")
-        if (atStartOfRelativePath.asInstanceOf[Boolean]) {
+        if (atStartOfRelativePath) {
           val path = parseRemainingPath(start)
           setLocation(path, offset)
           path
