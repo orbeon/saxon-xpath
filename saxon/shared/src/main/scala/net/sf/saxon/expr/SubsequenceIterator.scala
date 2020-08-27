@@ -6,35 +6,31 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
-import net.sf.saxon.om.EnumSetTool
-import net.sf.saxon.om.GroundedValue
-import net.sf.saxon.om.Item
-import net.sf.saxon.om.SequenceIterator
+import net.sf.saxon.om.{GroundedValue, Item, SequenceIterator}
+import net.sf.saxon.om.SequenceIterator.Property
+import net.sf.saxon.om.SequenceIterator.Property.Property
+import net.sf.saxon.tree.iter.{ArrayIterator, LookaheadIterator}
 
 import scala.util.control.Breaks._
-import net.sf.saxon.tree.iter.ArrayIterator
-import net.sf.saxon.tree.iter.LookaheadIterator
-import java.util.EnumSet
-
-import net.sf.saxon.om.SequenceIterator.Property
-import net.sf.saxon.om.SequenceIterator.Property.{Property, _}
 
 object SubsequenceIterator {
 
   def make[T <: Item](base: SequenceIterator,
                       min: Int,
                       max: Int): SequenceIterator =
-    if (base.isInstanceOf[ArrayIterator[T]]) {
-      base.asInstanceOf[ArrayIterator[T]].makeSliceIterator(min, max)
-    } else if (max == java.lang.Integer.MAX_VALUE) {
-      TailIterator.make(base, min)
-    } else if (base.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
-      min > 4) {
-      var value: GroundedValue = base.materialize()
-      value = value.subsequence(min - 1, max - min + 1)
-      value.iterate()
-    } else {
-      new SubsequenceIterator(base, min, max)
+    base match {
+      case value: ArrayIterator[_] =>
+        value.makeSliceIterator(min, max)
+      case _ => if (max == java.lang.Integer.MAX_VALUE) {
+        TailIterator.make(base, min)
+      } else if (base.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
+        min > 4) {
+        var value: GroundedValue = base.materialize()
+        value = value.subsequence(min - 1, max - min + 1)
+        value.iterate()
+      } else {
+        new SubsequenceIterator(base, min, max)
+      }
     }
 
 }

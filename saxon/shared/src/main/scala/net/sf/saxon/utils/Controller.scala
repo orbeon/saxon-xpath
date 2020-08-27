@@ -968,7 +968,7 @@ class Controller extends ContextOriginator {
    *             for the key is removed.
    */
   def setUserData(key: Any, name: String, data: Any): Unit = { // System.err.println("setUserData " + name + " on object to " + data);
-    val keyVal: String = key.hashCode + " " + name
+    val keyVal: String = key.hashCode.toString + " " + name
     if (data == null)
       userDataTable -= keyVal
     else

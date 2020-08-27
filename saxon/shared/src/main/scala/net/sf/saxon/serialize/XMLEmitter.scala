@@ -290,7 +290,7 @@ class XMLEmitter extends Emitter {
       if (systemId != null) {
         quotedSystemId =
           if (systemId.contains("\"")) "'" + systemId + "'"
-          else '"' + systemId + '"'
+          else "\"" + systemId + "\""
       }
       if (systemId != null && publicId == null) {
         writer.write("  SYSTEM " + quotedSystemId + ">\n")
