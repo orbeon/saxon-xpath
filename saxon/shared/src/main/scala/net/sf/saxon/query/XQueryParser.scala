@@ -3236,7 +3236,7 @@ class XQueryParser extends XPathParser {
           addStringComponent(components, avt, last, i2)
 
           if (i2 + 1 < avt.length && avt.charAt(i2 + 1) == terminator) {
-            components.add(new StringLiteral(terminator.toString + ""))
+            components.add(new StringLiteral(terminator.toString))
             last = i2 + 2
 
           }

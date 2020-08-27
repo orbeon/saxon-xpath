@@ -246,7 +246,7 @@ class ExpressionPresenter {
     val lineNr: Int = expr.getLocation.getLineNumber
     if (parent == null ||
       (parent.getLocation.getLineNumber != lineNr && lineNr != -1)) {
-      emitAttribute("line", lineNr.toString + "")
+      emitAttribute("line", lineNr.toString)
     }
     n
   }

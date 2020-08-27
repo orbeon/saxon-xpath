@@ -91,7 +91,7 @@ class CompareToIntegerConstant(operand: Expression,
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("compareToInt", this)
     destination.emitAttribute("op", Token.tokens(operator))
-    destination.emitAttribute("val", comparand.toString + "")
+    destination.emitAttribute("val", comparand.toString)
     getLhsExpression.export(destination)
     destination.endElement()
   }

@@ -34,7 +34,7 @@ object SelectedElementsSpaceStrippingRule {
     else "p"
     presenter.startElement(which)
     presenter.emitAttribute("test", AlphaCode.fromItemType(rule.getPattern.getItemType))
-    presenter.emitAttribute("prec", rule.getPrecedence.toString + "")
+    presenter.emitAttribute("prec", rule.getPrecedence.toString)
     presenter.endElement
   }
 

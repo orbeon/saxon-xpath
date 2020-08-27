@@ -130,7 +130,7 @@ class RangeKey
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("range-key-map")
-    out.emitAttribute("size", size.toString + "")
+    out.emitAttribute("size", size.toString)
     out.endElement()
   }
 

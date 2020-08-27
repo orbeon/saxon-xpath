@@ -197,7 +197,7 @@ class IntArraySet extends IntSet {
     var i = 0
     while (i < contents.length) {
       if (i == contents.length - 1) {
-        sb.append(contents(i).toString + "")
+        sb.append(contents(i).toString)
       } else if (contents(i) + 1 != contents(i + 1)) {
         sb.append(contents(i) .toString+ ",")
       } else {

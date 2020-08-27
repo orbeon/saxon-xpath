@@ -56,7 +56,7 @@ class OriginalFunction(@BeanProperty var component: Component)
     out.startElement("origF")
     out.emitAttribute("name", getFunctionName)
     out.emitAttribute("arity", "" + getArity)
-    out.emitAttribute("pack", options.componentMap.get(component.getContainingPackage).toString + "")
+    out.emitAttribute("pack", options.componentMap.get(component.getContainingPackage).toString)
     out.endElement()
   }
 

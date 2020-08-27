@@ -383,10 +383,10 @@ class UserFunction
     presenter.startElement("function")
     if (getFunctionName != null) {
       presenter.emitAttribute("name", getFunctionName)
-      presenter.emitAttribute("line", getLineNumber.toString() + "")
+      presenter.emitAttribute("line", getLineNumber.toString())
       presenter.emitAttribute("module", getSystemId)
       presenter.emitAttribute("eval",
-        getEvaluator.getEvaluationMode.asInstanceOf[EvaluationMode.EvaluationMode].getCode.toString() + "")
+        getEvaluator.getEvaluationMode.asInstanceOf[EvaluationMode.EvaluationMode].getCode.toString())
     }
     var flags: String = ""
     if (determinism == Determinism.PROACTIVE) {
@@ -412,7 +412,7 @@ class UserFunction
     presenter.emitAttribute("flags", flags)
     presenter.emitAttribute("as", getDeclaredResultType.toAlphaCode)
     presenter.emitAttribute("slots",
-      getStackFrameMap.getNumberOfVariables.toString + "")
+      getStackFrameMap.getNumberOfVariables.toString)
     for (p <- parameterDefinitions) {
       presenter.startElement("arg")
       presenter.emitAttribute("name", p.getVariableQName)

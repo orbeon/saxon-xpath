@@ -139,15 +139,15 @@ class Rule {
     if (target.isInstanceOf[TemplateRule]) {
       template = target.asInstanceOf[TemplateRule]
       val s: Int = out.startElement("templateRule")
-      out.emitAttribute("prec", getPrecedence.toString + "")
-      out.emitAttribute("prio", getPriority.toString + "")
-      out.emitAttribute("seq", getSequence.toString + "")
+      out.emitAttribute("prec", getPrecedence.toString)
+      out.emitAttribute("prio", getPriority.toString)
+      out.emitAttribute("seq", getSequence.toString)
       if (part != 0) {
         out.emitAttribute("part", "" + part)
       }
       out.emitAttribute("rank", "" + getRank.toString)
-      out.emitAttribute("minImp", getMinImportPrecedence.toString + "")
-      out.emitAttribute("slots", template.getStackFrameMap.getNumberOfVariables.toString + "")
+      out.emitAttribute("minImp", getMinImportPrecedence.toString)
+      out.emitAttribute("slots", template.getStackFrameMap.getNumberOfVariables.toString)
       out.emitAttribute("matches", pattern.getItemType.getFullAlphaCode)
       template.explainProperties(out)
       exportOtherProperties(out)

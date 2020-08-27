@@ -70,7 +70,7 @@ class GYearMonthValue extends GDateValue {
         sb.cat('-')
       }
     }
-    appendString(sb, yr, (if (yr > 9999) (yr.toString + "").length else 4))
+    appendString(sb, yr, (if (yr > 9999) (yr.toString).length else 4))
     sb.cat('-')
     appendTwoDigits(sb, month)
     if (hasTimezone()) {

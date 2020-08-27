@@ -151,7 +151,7 @@ class LetClause extends Clause {
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("let")
     out.emitAttribute("var", getRangeVariable.getVariableQName)
-    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString + "")
+    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
     getSequence.export(out)
     out.endElement()
   }

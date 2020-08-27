@@ -251,7 +251,7 @@ class TemplateRule
     if (getRequiredType != SequenceType.ANY_SEQUENCE) {
       presenter.emitAttribute("as", getRequiredType.toAlphaCode)
     }
-    presenter.emitAttribute("line", getLineNumber.toString + "")
+    presenter.emitAttribute("line", getLineNumber.toString)
     presenter.emitAttribute("module", getSystemId)
     if (isDeclaredStreamable) {
       presenter.emitAttribute("streamable", "1")

@@ -136,7 +136,7 @@ class LargeStringBuffer extends AppendableCharSequence {
 
   def charAt(index: Int): Char = {
     if (index < 0 || index >= length) {
-      throw new IndexOutOfBoundsException(index.toString + "")
+      throw new IndexOutOfBoundsException(index.toString)
     }
     data(index >> BITS)(index & MASK)
   }
