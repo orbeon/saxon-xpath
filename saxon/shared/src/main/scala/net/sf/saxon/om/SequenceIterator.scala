@@ -23,33 +23,23 @@
  */
 package net.sf.saxon.om
 
-import SequenceIterator.Property.Property
-import net.sf.saxon.om.{FocusIterator, GroundedValue, Item, ItemConsumer}
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.value.SequenceExtent
 import java.io.Closeable
-import java.util.EnumSet
 
-import SequenceIterator._
 import net.sf.saxon.om.SequenceIterator.Property.Property
-import scala.jdk.CollectionConverters._
+import net.sf.saxon.value.SequenceExtent
 
 object SequenceIterator {
 
   object Property extends Enumeration {
 
     val GROUNDED: Property = new Property()
-
     val LAST_POSITION_FINDER: Property = new Property()
-
     val LOOKAHEAD: Property = new Property()
-
     val ATOMIZING: Property = new Property()
 
     class Property extends Val
 
     implicit def convertValue(v: Value): Property = v.asInstanceOf[Property]
-
   }
 
 }
@@ -66,10 +56,10 @@ trait SequenceIterator extends Closeable {
 
   def forEachOrFail(consumer: ItemConsumer[_ >: Item]): Unit = {
     var item: Item = null
-    while (({
+    while ({
       item = next()
       item
-    }) != null) consumer.accept(item)
+    } != null) consumer.accept(item)
   }
 
   def materialize(): GroundedValue = new SequenceExtent(this).reduce()

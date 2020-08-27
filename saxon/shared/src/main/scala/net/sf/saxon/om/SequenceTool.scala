@@ -1,35 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.om
 
-import net.sf.saxon.event.Outputter
-
-import net.sf.saxon.event.ReceiverOption
-
-import net.sf.saxon.expr.LastPositionFinder
-
-import net.sf.saxon.expr.RangeIterator
-
-import net.sf.saxon.expr.ReverseRangeIterator
-
-import net.sf.saxon.expr.StaticProperty
-
+import net.sf.saxon.event.{Outputter, ReceiverOption}
+import net.sf.saxon.expr.{LastPositionFinder, RangeIterator, ReverseRangeIterator, StaticProperty}
 import net.sf.saxon.functions.Count
-
 import net.sf.saxon.model._
-
 import net.sf.saxon.s9api.Location
-
 import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.tree.iter.EmptyIterator
-
-import net.sf.saxon.tree.iter.UnfailingIterator
-
+import net.sf.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
 import net.sf.saxon.tree.util.FastStringBuffer
-
 import net.sf.saxon.tree.wrapper.VirtualNode
-
 import net.sf.saxon.value._
+
 import scala.util.control.Breaks._
 
 object SequenceTool {
@@ -51,8 +38,8 @@ object SequenceTool {
 
   def toLazySequence(iterator: SequenceIterator): Sequence =
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
-      !(iterator.isInstanceOf[RangeIterator]) &&
-      !(iterator.isInstanceOf[ReverseRangeIterator])) {
+      !iterator.isInstanceOf[RangeIterator] &&
+      !iterator.isInstanceOf[ReverseRangeIterator]) {
       iterator.materialize()
     } else {
       new LazySequence(iterator)
@@ -60,8 +47,8 @@ object SequenceTool {
 
   def toLazySequence2(iterator: SequenceIterator): Sequence =
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
-      !(iterator.isInstanceOf[RangeIterator]) &&
-      !(iterator.isInstanceOf[ReverseRangeIterator])) {
+      !iterator.isInstanceOf[RangeIterator] &&
+      !iterator.isInstanceOf[ReverseRangeIterator]) {
       iterator.materialize()
     } else {
       new LazySequence(iterator)
@@ -73,15 +60,15 @@ object SequenceTool {
         !(seq.isInstanceOf[MemoClosure] || seq.isInstanceOf[SingletonClosure]))
 
   def getLength(sequence: Sequence): Int = {
-    if (sequence.isInstanceOf[GroundedValue]) {
-      sequence.asInstanceOf[GroundedValue].getLength
+    sequence match {
+      case value: GroundedValue => value.getLength
+      case _ =>
     }
     Count.count(sequence.iterate())
   }
 
   def hasLength(iter: SequenceIterator, length: Int): Boolean =
-    if (iter.getProperties.contains(
-      SequenceIterator.Property.LAST_POSITION_FINDER)) {
+    if (iter.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       iter.asInstanceOf[LastPositionFinder].getLength == length
     } else {
       var n: Int = 0
@@ -120,8 +107,9 @@ object SequenceTool {
     }
 
   def itemAt(sequence: Sequence, index: Int): Item = {
-    if (sequence.isInstanceOf[Item] && index == 0) {
-      sequence.asInstanceOf[Item]
+    sequence match {
+      case item: Item if index == 0 => return item
+      case _ =>
     }
     sequence.materialize().itemAt(index)
   }
@@ -129,8 +117,9 @@ object SequenceTool {
   /*@Nullable*/
 
   def asItem(sequence: Sequence): Item = {
-    if (sequence.isInstanceOf[Item]) {
-      sequence.asInstanceOf[Item]
+    sequence match {
+      case item: Item => return item
+      case _ =>
     }
     val iter: SequenceIterator = sequence.iterate()
     val first: Item = iter.next()
@@ -144,51 +133,51 @@ object SequenceTool {
   }
 
   def convertToJava(item: Item): Any =
-    if (item.isInstanceOf[NodeInfo]) {
-      var node: Any = item
-      while (node
-        .isInstanceOf[VirtualNode]) // strip off any layers of wrapping
-        node = node.asInstanceOf[VirtualNode].getRealNode
-      node
-    } else if (item.isInstanceOf[Function]) {
-      item
-    } else if (item.isInstanceOf[ExternalObject[AnyRef]]) {
-      item.asInstanceOf[ExternalObject[Any]].getObject()
-    } else {
-      val value: AtomicValue = item.asInstanceOf[AtomicValue]
-      value.getItemType.getPrimitiveType match {
-        case StandardNames.XS_STRING | StandardNames.XS_UNTYPED_ATOMIC |
-             StandardNames.XS_ANY_URI | StandardNames.XS_DURATION =>
-          value.getStringValue
-        case StandardNames.XS_BOOLEAN =>
-          if (value.asInstanceOf[BooleanValue].getBooleanValue) true else false
-        case StandardNames.XS_DECIMAL =>
-          value.asInstanceOf[BigDecimalValue].getDecimalValue
-        case StandardNames.XS_INTEGER =>
-          value.asInstanceOf[NumericValue].longValue()
-        case StandardNames.XS_DOUBLE =>
-          value.asInstanceOf[DoubleValue].getDoubleValue
-        case StandardNames.XS_FLOAT =>
-          value.asInstanceOf[FloatValue].getFloatValue
-        case StandardNames.XS_DATE_TIME =>
-          value.asInstanceOf[DateTimeValue].getCalendar.getTime
-        case StandardNames.XS_DATE =>
-          value.asInstanceOf[DateValue].getCalendar.getTime
-        case StandardNames.XS_TIME => value.getStringValue
-        case StandardNames.XS_BASE64_BINARY =>
-          value.asInstanceOf[Base64BinaryValue].getBinaryValue
-        case StandardNames.XS_HEX_BINARY =>
-          value.asInstanceOf[HexBinaryValue].getBinaryValue
-        case _ => item
+    item match {
+      case _: NodeInfo =>
+        var node: Any = item
+        while (node.isInstanceOf[VirtualNode]) // strip off any layers of wrapping
+          node = node.asInstanceOf[VirtualNode].getRealNode
+        node
+      case _: Function =>
+        item
+      case _: ExternalObject[AnyRef] =>
+        item.asInstanceOf[ExternalObject[Any]].getObject()
+      case _ =>
+        val value: AtomicValue = item.asInstanceOf[AtomicValue]
+        value.getItemType.getPrimitiveType match {
+          case StandardNames.XS_STRING | StandardNames.XS_UNTYPED_ATOMIC |
+               StandardNames.XS_ANY_URI | StandardNames.XS_DURATION =>
+            value.getStringValue
+          case StandardNames.XS_BOOLEAN =>
+            if (value.asInstanceOf[BooleanValue].getBooleanValue) true else false
+          case StandardNames.XS_DECIMAL =>
+            value.asInstanceOf[BigDecimalValue].getDecimalValue
+          case StandardNames.XS_INTEGER =>
+            value.asInstanceOf[NumericValue].longValue()
+          case StandardNames.XS_DOUBLE =>
+            value.asInstanceOf[DoubleValue].getDoubleValue
+          case StandardNames.XS_FLOAT =>
+            value.asInstanceOf[FloatValue].getFloatValue
+          case StandardNames.XS_DATE_TIME =>
+            value.asInstanceOf[DateTimeValue].getCalendar.getTime
+          case StandardNames.XS_DATE =>
+            value.asInstanceOf[DateValue].getCalendar.getTime
+          case StandardNames.XS_TIME => value.getStringValue
+          case StandardNames.XS_BASE64_BINARY =>
+            value.asInstanceOf[Base64BinaryValue].getBinaryValue
+          case StandardNames.XS_HEX_BINARY =>
+            value.asInstanceOf[HexBinaryValue].getBinaryValue
+          case _ => item
 
-      }
+        }
     }
 
   def getStringValue(sequence: Sequence): String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     sequence
       .iterate()
-      .forEachOrFail((item) => {
+      .forEachOrFail(item => {
         if (!fsb.isEmpty) {
           fsb.cat(' ')
         }
@@ -198,84 +187,91 @@ object SequenceTool {
   }
 
   def getItemType(sequence: Sequence, th: TypeHierarchy): ItemType =
-    if (sequence.isInstanceOf[Item]) {
-      Type.getItemType(sequence.asInstanceOf[Item], th)
-    } else if (sequence.isInstanceOf[GroundedValue]) {
-      try {
-        var `type`: ItemType = null
-        val iter: SequenceIterator = sequence.iterate()
+    sequence match {
+      case item: Item =>
+        Type.getItemType(item, th)
+      case _: GroundedValue =>
+        try {
+          var `type`: ItemType = null
+          val iter: SequenceIterator = sequence.iterate()
+          var item: Item = null
+          breakable {
+            while ( {
+              item = iter.next()
+              item
+            } != null) {
+              `type` =
+                if (`type` == null) Type.getItemType(item, th)
+                else
+                  Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
+              if (`type` == AnyItemType.getInstance) {
+                break()
+              }
+            }
+          }
+          if (`type` == null) ErrorType.getInstance else `type`
+        } catch {
+          case err: XPathException => AnyItemType.getInstance
+
+        }
+      case _ =>
+        AnyItemType.getInstance
+    }
+
+  def getUType(sequence: Sequence): UType =
+    sequence match {
+      case item: Item =>
+        UType.getUType(item)
+      case value: GroundedValue =>
+        var `type`: UType = UType.VOID
+        val iter: UnfailingIterator =
+          value.iterate()
         var item: Item = null
         breakable {
-          while (({
+          while ({
             item = iter.next()
             item
-          }) != null) {
-            `type` =
-              if (`type` == null) Type.getItemType(item, th)
-              else
-                Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
-            if (`type` == AnyItemType.getInstance) {
+          } != null) {
+            `type` = `type`.union(UType.getUType(item))
+            if (`type` == UType.ANY) {
               break()
             }
           }
         }
-        if (`type` == null) ErrorType.getInstance else `type`
-      } catch {
-        case err: XPathException => AnyItemType.getInstance
-
-      }
-    } else {
-      AnyItemType.getInstance
-    }
-
-  def getUType(sequence: Sequence): UType =
-    if (sequence.isInstanceOf[Item]) {
-      UType.getUType(sequence.asInstanceOf[Item])
-    } else if (sequence.isInstanceOf[GroundedValue]) {
-      var `type`: UType = UType.VOID
-      val iter: UnfailingIterator =
-        sequence.asInstanceOf[GroundedValue].iterate()
-      var item: Item = null
-      breakable {
-        while (({
-          item = iter.next()
-          item
-        }) != null) {
-          `type` = `type`.union(UType.getUType(item))
-          if (`type` == UType.ANY) {
-            break()
-          }
-        }
-      }
-      `type`
-    } else {
-      UType.ANY
+        `type`
+      case _ =>
+        UType.ANY
     }
 
   def getCardinality(sequence: Sequence): Int = {
-    if (sequence.isInstanceOf[Item]) {
-      StaticProperty.EXACTLY_ONE
+    sequence match {
+      case _: Item => return StaticProperty.EXACTLY_ONE
+      case _ =>
     }
-    if (sequence.isInstanceOf[GroundedValue]) {
-      val len: Int = sequence.asInstanceOf[GroundedValue].getLength
-      len match {
-        case 0 => StaticProperty.ALLOWS_ZERO
-        case 1 => StaticProperty.EXACTLY_ONE
-        case _ => StaticProperty.ALLOWS_ONE_OR_MORE
-
-      }
+    sequence match {
+      case value: GroundedValue =>
+        val len: Int = value.getLength
+        return len match {
+          case 0 => StaticProperty.ALLOWS_ZERO
+          case 1 => StaticProperty.EXACTLY_ONE
+          case _ => StaticProperty.ALLOWS_ONE_OR_MORE
+        }
+      case _ =>
     }
     try {
       val iter: SequenceIterator = sequence.iterate()
       var item: Item = iter.next()
       if (item == null) {
-        StaticProperty.ALLOWS_ZERO
+        return StaticProperty.ALLOWS_ZERO
       }
       item = iter.next()
-      if (item == null) StaticProperty.EXACTLY_ONE
-      else StaticProperty.ALLOWS_ONE_OR_MORE
+      if (item == null)
+        StaticProperty.EXACTLY_ONE
+      else
+        StaticProperty.ALLOWS_ONE_OR_MORE
     } catch {
-      case err: XPathException => StaticProperty.ALLOWS_ONE_OR_MORE
+      case _: XPathException =>
+        StaticProperty.ALLOWS_ONE_OR_MORE
 
     }
   }
@@ -283,7 +279,7 @@ object SequenceTool {
   def process(value: Sequence, output: Outputter, locationId: Location): Unit = {
     value
       .iterate()
-      .forEachOrFail((it) =>
+      .forEachOrFail(it =>
         output.append(it, locationId, ReceiverOption.ALL_NAMESPACES))
   }
 
@@ -296,11 +292,4 @@ object SequenceTool {
     System.arraycopy(items, 0, seq, 0, items.length)
     seq
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
