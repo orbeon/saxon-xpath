@@ -6,6 +6,8 @@ val ScalaTestVersion = "3.2.1"
 
 traceLevel in ThisBuild := 0
 
+lazy val DebugTest = config("debug-test") extend Test
+
 lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("saxon"))
   .settings(
       organization := "org.orbeon",
@@ -29,6 +31,13 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
 
       testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
+  .configs(DebugTest)
+  .jvmSettings(
+      fork              in DebugTest     := true, // "By default, tests executed in a forked JVM are executed sequentially"
+      sourceDirectory   in DebugTest     := (sourceDirectory in Test).value,
+      javaOptions       in DebugTest     += "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005",
+      parallelExecution in DebugTest     := false
+  )
 
 lazy val saxonJS  = saxon.js
-lazy val saxonJVM = saxon.jvm
+lazy val saxonJVM = saxon.jvm.configs(DebugTest)
