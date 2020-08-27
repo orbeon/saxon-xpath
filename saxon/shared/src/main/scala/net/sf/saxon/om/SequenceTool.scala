@@ -149,9 +149,9 @@ object SequenceTool {
       while (node
         .isInstanceOf[VirtualNode]) // strip off any layers of wrapping
         node = node.asInstanceOf[VirtualNode].getRealNode
-      return node
+      node
     } else if (item.isInstanceOf[Function]) {
-      return item
+      item
     } else if (item.isInstanceOf[ExternalObject[AnyRef]]) {
       item.asInstanceOf[ExternalObject[Any]].getObject()
     } else {
@@ -159,26 +159,26 @@ object SequenceTool {
       value.getItemType.getPrimitiveType match {
         case StandardNames.XS_STRING | StandardNames.XS_UNTYPED_ATOMIC |
              StandardNames.XS_ANY_URI | StandardNames.XS_DURATION =>
-          return value.getStringValue
+          value.getStringValue
         case StandardNames.XS_BOOLEAN =>
           if (value.asInstanceOf[BooleanValue].getBooleanValue) true else false
         case StandardNames.XS_DECIMAL =>
-          return value.asInstanceOf[BigDecimalValue].getDecimalValue
+          value.asInstanceOf[BigDecimalValue].getDecimalValue
         case StandardNames.XS_INTEGER =>
-          return value.asInstanceOf[NumericValue].longValue()
+          value.asInstanceOf[NumericValue].longValue()
         case StandardNames.XS_DOUBLE =>
-          return value.asInstanceOf[DoubleValue].getDoubleValue
+          value.asInstanceOf[DoubleValue].getDoubleValue
         case StandardNames.XS_FLOAT =>
-          return value.asInstanceOf[FloatValue].getFloatValue
+          value.asInstanceOf[FloatValue].getFloatValue
         case StandardNames.XS_DATE_TIME =>
-          return value.asInstanceOf[DateTimeValue].getCalendar.getTime
+          value.asInstanceOf[DateTimeValue].getCalendar.getTime
         case StandardNames.XS_DATE =>
-          return value.asInstanceOf[DateValue].getCalendar.getTime
+          value.asInstanceOf[DateValue].getCalendar.getTime
         case StandardNames.XS_TIME => value.getStringValue
         case StandardNames.XS_BASE64_BINARY =>
-          return value.asInstanceOf[Base64BinaryValue].getBinaryValue
+          value.asInstanceOf[Base64BinaryValue].getBinaryValue
         case StandardNames.XS_HEX_BINARY =>
-          return value.asInstanceOf[HexBinaryValue].getBinaryValue
+          value.asInstanceOf[HexBinaryValue].getBinaryValue
         case _ => item
 
       }
