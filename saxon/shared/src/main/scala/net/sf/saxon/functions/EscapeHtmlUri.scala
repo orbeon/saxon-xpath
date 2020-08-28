@@ -20,7 +20,7 @@ class EscapeHtmlUri extends ScalarSystemFunction {
     val s: CharSequence = arg.getStringValueCS
     StringValue.makeStringValue(
       HTMLURIEscaper
-        .escapeURL(s, false, getRetainedStaticContext.getConfiguration))
+        .escapeURL(s, normalize = false, getRetainedStaticContext.getConfiguration))
   }
 
   override def resultWhenEmpty(): ZeroOrOne[StringValue] = ZERO_LENGTH_STRING

@@ -43,7 +43,7 @@ object UnparsedTextFunction {
                output: CharSequenceConsumer,
                context: XPathContext): Unit = {
     val config: Configuration = context.getConfiguration
-    val checker: IntPredicate = config.getValidCharacterChecker.asInstanceOf[IntPredicate]
+    val checker: IntPredicate = config.getValidCharacterChecker
     var reader: Reader = null
     try reader = context.getController.getUnparsedTextURIResolver
       .resolve(absoluteURI, encoding, config)

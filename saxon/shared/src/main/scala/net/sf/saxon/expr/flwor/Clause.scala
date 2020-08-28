@@ -90,10 +90,10 @@ abstract class Clause {
    * @throws XPathException if any error is detected
    */
   def optimize(visitor: ExpressionVisitor,
-               contextItemType: ContextItemStaticInfo): Unit = {}
+               contextItemType: ContextItemStaticInfo): Unit = ()
 
   def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Unit = {}
+                contextInfo: ContextItemStaticInfo): Unit = ()
 
   def getPullStream(base: TuplePull, context: XPathContext): TuplePull
 
@@ -110,13 +110,13 @@ abstract class Clause {
 
   def gatherVariableReferences(visitor: ExpressionVisitor,
                                binding: Binding,
-                               refs: List[VariableReference]): Unit = {}
+                               refs: List[VariableReference]): Unit = ()
 
   def containsNonInlineableVariableReference(binding: Binding): Boolean = false
 
   def refineVariableType(visitor: ExpressionVisitor,
                          references: List[VariableReference],
-                         returnExpr: Expression): Unit = {}
+                         returnExpr: Expression): Unit = ()
 
   def addToPathMap(pathMap: PathMap,
                    pathMapNodeSet: PathMap.PathMapNodeSet): Unit

@@ -58,7 +58,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
     //System.err.println("ErrorHandler.error " + e.getMessage());
     errorCount += 1
     if (!silent) {
-      reportError(e, false)
+      reportError(e, isFatal = false)
     }
   }
 
@@ -66,7 +66,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
     //System.err.println("ErrorHandler.fatalError " + e.getMessage());
     fatalErrorCount += 1
     if (!silent) {
-      reportError(e, true)
+      reportError(e, isFatal = true)
     }
     throw e
   }

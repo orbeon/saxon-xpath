@@ -34,19 +34,19 @@ object NamedTimeZone {
     }
   }
 
-  tz("us", "America/New_York", true)
+  tz("us", "America/New_York", major = true)
 
-  tz("us", "America/Chicago", true)
+  tz("us", "America/Chicago", major = true)
 
-  tz("us", "America/Denver", true)
+  tz("us", "America/Denver", major = true)
 
-  tz("us", "America/Los_Angeles", true)
+  tz("us", "America/Los_Angeles", major = true)
 
-  tz("us", "America/Anchorage", true)
+  tz("us", "America/Anchorage", major = true)
 
-  tz("us", "America/Halifax", true)
+  tz("us", "America/Halifax", major = true)
 
-  tz("us", "Pacific/Honolulu", true)
+  tz("us", "Pacific/Honolulu", major = true)
 
   tz("ca", "Canada/Pacific")
 
@@ -58,13 +58,13 @@ object NamedTimeZone {
 
   tz("ca", "Canada/Atlantic")
 
-  tz("au", "Australia/Sydney", true)
+  tz("au", "Australia/Sydney", major = true)
 
-  tz("au", "Australia/Darwin", true)
+  tz("au", "Australia/Darwin", major = true)
 
-  tz("au", "Australia/Perth", true)
+  tz("au", "Australia/Perth", major = true)
 
-  tz("ru", "Europe/Moscow", true)
+  tz("ru", "Europe/Moscow", major = true)
 
   tz("ru", "Europe/Samara")
 
@@ -108,7 +108,7 @@ object NamedTimeZone {
 
   tz("bd", "Asia/Dhaka")
 
-  tz("be", "Europe/Brussels", true)
+  tz("be", "Europe/Brussels", major = true)
 
   tz("bf", "Africa/Ouagadougou")
 
@@ -216,9 +216,9 @@ object NamedTimeZone {
 
   tz("ie", "Europe/Dublin")
 
-  tz("il", "Asia/Tel_Aviv", true)
+  tz("il", "Asia/Tel_Aviv", major = true)
 
-  tz("in", "Asia/Calcutta", true)
+  tz("in", "Asia/Calcutta", major = true)
 
   tz("iq", "Asia/Baghdad")
 
@@ -232,7 +232,7 @@ object NamedTimeZone {
 
   tz("jo", "Asia/Amman")
 
-  tz("jp", "Asia/Tokyo", true)
+  tz("jp", "Asia/Tokyo", major = true)
 
   tz("ke", "Africa/Nairobi")
 
@@ -388,7 +388,7 @@ object NamedTimeZone {
 
   tz("ug", "Africa/Kampala")
 
-  tz("uk", "Europe/London", true)
+  tz("uk", "Europe/London", major = true)
 
   tz("uy", "America/Montevideo")
 

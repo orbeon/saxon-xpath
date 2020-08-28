@@ -86,7 +86,7 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
   def export(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.simPos")
     presenter.emitAttribute("test", AlphaCode.fromItemType(nodeTest))
-    presenter.emitAttribute("pos", position.toString + "")
+    presenter.emitAttribute("pos", position.toString)
     presenter.endElement()
   }
 

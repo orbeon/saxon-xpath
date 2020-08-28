@@ -66,7 +66,7 @@ abstract class Logger {
 
   def println(message: String, severity: Int): Unit
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
   def asStreamResult(): StreamResult
 

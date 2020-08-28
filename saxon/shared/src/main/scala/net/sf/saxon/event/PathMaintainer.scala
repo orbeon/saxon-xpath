@@ -83,7 +83,7 @@ class PathMaintainer(next: Receiver) extends ProxyReceiver(next) {
       }
       fsb.append(pe.name.getLocalPart)
       fsb.cat('[')
-      fsb.append(pe.index.toString + "")
+      fsb.append(pe.index.toString)
       fsb.cat(']')
     }
     fsb.toString

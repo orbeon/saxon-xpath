@@ -93,7 +93,7 @@ class SlashExpression(start: Expression, step: Expression)
       Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(startType, false)
+      config.makeContextItemStaticInfo(startType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
     getRhs.typeCheck(visitor, cit)
     val e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
@@ -211,7 +211,7 @@ class SlashExpression(start: Expression, step: Expression)
     val opt: Optimizer = visitor.obtainOptimizer()
     getLhs.optimize(visitor, contextItemType)
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getStart.getItemType, false)
+      .makeContextItemStaticInfo(getStart.getItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
     getRhs.optimize(visitor, cit)
     if (Literal.isEmptySequence(getStart) || Literal.isEmptySequence(getStep)) {
@@ -283,7 +283,7 @@ class SlashExpression(start: Expression, step: Expression)
     }
     if (visitor.isOptimizeForStreaming) {
       val rawStep: Expression =
-        ExpressionTool.unfilteredExpression(getStep, true).asInstanceOf[Expression]
+        ExpressionTool.unfilteredExpression(getStep, allowPositional = true)
       if (rawStep.isInstanceOf[CopyOf] &&
         rawStep
           .asInstanceOf[CopyOf]
@@ -356,24 +356,24 @@ class SlashExpression(start: Expression, step: Expression)
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
     val opt: Optimizer = visitor.obtainOptimizer()
-    val s1: Expression = ExpressionTool.unfilteredExpression(getStart, false).asInstanceOf[Expression]
+    val s1: Expression = ExpressionTool.unfilteredExpression(getStart, allowPositional = false)
     if (!(s1.isInstanceOf[AxisExpression] &&
       s1.asInstanceOf[AxisExpression].getAxis == AxisInfo.DESCENDANT)) {
       return null
     }
-    val s2: Expression = ExpressionTool.unfilteredExpression(getStep, false).asInstanceOf[Expression]
+    val s2: Expression = ExpressionTool.unfilteredExpression(getStep, allowPositional = false)
     if (!(s2.isInstanceOf[AxisExpression] &&
       s2.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD)) {
       return null
     }
     val x: Expression = getStart.copy(new RebindingMap())
     val ax: AxisExpression = ExpressionTool
-      .unfilteredExpression(x, false)
+      .unfilteredExpression(x, allowPositional = false)
       .asInstanceOf[AxisExpression]
     ax.setAxis(AxisInfo.PARENT)
     val y: Expression = getStep.copy(new RebindingMap())
     val ay: AxisExpression = ExpressionTool
-      .unfilteredExpression(y, false)
+      .unfilteredExpression(y, allowPositional = false)
       .asInstanceOf[AxisExpression]
     ay.setAxis(AxisInfo.DESCENDANT)
     var k: Expression = new FilterExpression(y, x)
@@ -482,13 +482,11 @@ class SlashExpression(start: Expression, step: Expression)
     } else {
       return true
     }
-    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) !=
-      0) {
+    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) != 0) {
       return true
     }
-    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) !=
-      0) {
-      true
+    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) != 0) {
+      return true
     }
     ((startProperties & StaticProperty.PEER_NODESET) != 0) &&
       ((stepProperties & StaticProperty.SUBTREE_NODESET) != 0)

@@ -337,13 +337,13 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       lhs.getCardinality)) {
       new SingletonIntersectExpression(lhs,
         op,
-        rhs.unordered(false, false))
+        rhs.unordered(retainAllNodes = false, forStreaming = false))
     }
     if (op == Token.INTERSECT && !Cardinality.allowsMany(
       rhs.getCardinality)) {
       new SingletonIntersectExpression(rhs,
         op,
-        lhs.unordered(false, false))
+        lhs.unordered(retainAllNodes = false, forStreaming = false))
     }
     if (operandsAreDisjoint(th)) {
       if (op == Token.INTERSECT) {

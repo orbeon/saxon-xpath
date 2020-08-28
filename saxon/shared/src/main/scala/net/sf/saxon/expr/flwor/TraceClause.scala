@@ -44,10 +44,10 @@ class TraceClause(expression: FLWORExpression, private var target: Clause)
                              context: XPathContext): TuplePush =
     new TraceClausePush(output, destination, this, target)
 
-  override def processOperands(processor: OperandProcessor): Unit = {}
+  override def processOperands(processor: OperandProcessor): Unit = ()
 
   override def addToPathMap(pathMap: PathMap,
-                            pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {}
+                            pathMapNodeSet: PathMap.PathMapNodeSet): Unit = ()
 
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("trace")

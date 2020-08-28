@@ -30,7 +30,7 @@ class InvalidityHandlerWrappingErrorListener(
     * @param systemId optional; may be used to represent the destination of any report produced
     * @throws XPathException if initialization of the invalidity handler fails for any reason
     */
-  def startReporting(systemId: String): Unit = {}
+  def startReporting(systemId: String): Unit = ()
 // no action
 // no action
 

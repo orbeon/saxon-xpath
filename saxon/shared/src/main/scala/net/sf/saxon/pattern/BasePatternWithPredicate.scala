@@ -55,7 +55,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
       predicateOp.setChildExpression(new LocalVariableReference(binding))
     } else if (ExpressionTool.callsFunction(predicate,
       Current.FN_CURRENT,
-      false)) {
+      sameFocusOnly = false)) {
       Pattern.replaceCurrent(predicate, binding)
     }
     getBasePattern.bindCurrent(binding)
@@ -117,7 +117,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
     basePatternOp.setChildExpression(
       getBasePattern.typeCheck(visitor, contextItemType))
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getBasePattern.getItemType, false)
+      .makeContextItemStaticInfo(getBasePattern.getItemType, maybeUndefined = false)
     predicateOp.setChildExpression(getPredicate.typeCheck(visitor, cit))
     this
   }
@@ -127,7 +127,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
     basePatternOp.setChildExpression(
       getBasePattern.optimize(visitor, contextInfo))
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getBasePattern.getItemType, false)
+      .makeContextItemStaticInfo(getBasePattern.getItemType, maybeUndefined = false)
     predicateOp.setChildExpression(getPredicate.optimize(visitor, cit))
     predicateOp.setChildExpression(
       visitor.obtainOptimizer().eliminateCommonSubexpressions(getPredicate))

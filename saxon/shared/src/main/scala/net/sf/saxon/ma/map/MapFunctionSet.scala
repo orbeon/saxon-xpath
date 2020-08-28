@@ -210,7 +210,7 @@ object MapFunctionSet {
       val key: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
       assert(key != null)
       val value: GroundedValue =
-        arguments(1).asInstanceOf[Sequence].iterate().materialize()
+        arguments(1).iterate().materialize()
       new SingleEntryMap(key, value)
     }
 
@@ -519,7 +519,7 @@ object MapFunctionSet {
       }
       val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
       val value: GroundedValue =
-        arguments(2).asInstanceOf[Sequence].materialize()
+        arguments(2).materialize()
       baseMap.addEntry(key, value)
     }
 

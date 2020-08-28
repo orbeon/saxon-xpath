@@ -14,17 +14,13 @@ class PrecedingIterator(private var doc: TinyTree,
                         private var includeAncestors: Boolean)
   extends AxisIterator {
 
-  private var tree: TinyTree = doc
-
+  private val tree: TinyTree = doc
   private var current: TinyNodeImpl = node
-
   private var nextAncestorDepth: Int = doc.depth(node.nodeNr) - 1
-
   private val matcher: IntPredicate = nodeTest.getMatcher(doc)
-
   private var pending: TinyNodeImpl = null
 
-  private var matchesTextNodes: Boolean =
+  private val matchesTextNodes: Boolean =
     nodeTest.getUType.overlaps(UType.TEXT)
 
   def next(): NodeInfo = {

@@ -82,7 +82,7 @@ object Steps {
     val tType: net.sf.saxon.model.ItemType =
       `type`.getUnderlyingItemType.getPrimitiveItemType
     val rules: ConversionRules = `type`.getConversionRules
-    atomize().then(new Step[XdmAtomicValue]() {
+    atomize().thenDo(new Step[XdmAtomicValue]() {
       def apply(xdmItem: XdmItem): Stream[_ <: XdmAtomicValue] = {
         val source: AtomicValue =
           xdmItem.asInstanceOf[XdmAtomicValue].getUnderlyingValue
@@ -303,9 +303,8 @@ object Steps {
     } else if (steps.size == 1) {
       steps.get(0)
     } else {
-      steps.get(0).then(pathFromList(steps.subList(1, steps.size)))
+      steps.get(0).thenDo(pathFromList(steps.subList(1, steps.size)))
     }
-
 
   def path(steps: String*): Step[_ <: XdmNode] = {
     val pathSteps: List[Step[_ <: XdmNode]] =
@@ -351,7 +350,7 @@ object Steps {
       }
       XdmNodeKind
       val target: NodeInfo =
-        doc.getUnderlyingNode.getTreeInfo.selectID(item.getStringValue, true)
+        doc.getUnderlyingNode.getTreeInfo.selectID(item.getStringValue, getParent = true)
       if (target == null) Stream.empty()
       else Stream.of(XdmValue.wrap(target).asInstanceOf[XdmNode])
     }

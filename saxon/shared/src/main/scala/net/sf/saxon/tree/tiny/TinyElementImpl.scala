@@ -54,7 +54,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
                              buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = {
     val parent: TinyNodeImpl = getParent
     if (parent != null && parent.getNodeKind == Type.ELEMENT) {
-      getAllNamespaces.getDifferences(parent.getAllNamespaces, false)
+      getAllNamespaces.getDifferences(parent.getAllNamespaces, addUndeclarations = false)
     } else {
       getAllNamespaces.getNamespaceBindings
     }

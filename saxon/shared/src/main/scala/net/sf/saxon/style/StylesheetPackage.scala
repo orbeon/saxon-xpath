@@ -135,7 +135,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def isJustInTimeCompilation(): Boolean = false
 
-  def setJustInTimeCompilation(justInTimeCompilation: Boolean): Unit = {}
+  def setJustInTimeCompilation(justInTimeCompilation: Boolean): Unit = ()
 
   def getSpaceStrippingRule(): SpaceStrippingRule = stripperRules
 
@@ -509,7 +509,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     this.functionLibrary = functionLibrary
   }
 
-  def addIxslFunctionLibrary(functionLibrary: FunctionLibraryList): Unit = {}
+  def addIxslFunctionLibrary(functionLibrary: FunctionLibraryList): Unit = ()
 
   /*def getPublicFunctions(): FunctionLibrary =
     new PublicStylesheetFunctionLibrary(functionLibrary)*/
@@ -654,6 +654,6 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def isFallbackToNonStreaming(): Boolean = true
 
-  def setFallbackToNonStreaming(): Unit = {}
+  def setFallbackToNonStreaming(): Unit = ()
 
 }

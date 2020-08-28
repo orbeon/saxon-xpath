@@ -74,7 +74,7 @@ object ArraySort {
   private def atomize(input: Sequence): GroundedValue = {
     val iterator: SequenceIterator = input.iterate()
     val mapper: SequenceIterator =
-      Atomizer.getAtomizingIterator(iterator, false)
+      Atomizer.getAtomizingIterator(iterator, oneToOne = false)
     mapper.materialize()
   }
 

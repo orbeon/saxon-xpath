@@ -73,28 +73,28 @@ class JsonHandler {
     *
     * @throws XPathException if any error occurs
     */
-  def startArray(): Unit = {}
+  def startArray(): Unit = ()
 
   /**
     * Close the current array
     *
     * @throws XPathException if any error occurs
     */
-  def endArray(): Unit = {}
+  def endArray(): Unit = ()
 
   /**
     * Start a new object/map
     *
     * @throws XPathException if any error occurs
     */
-  def startMap(): Unit = {}
+  def startMap(): Unit = ()
 
   /**
     * Close the current object/map
     *
     * @throws XPathException if any error occurs
     */
-  def endMap(): Unit = {}
+  def endMap(): Unit = ()
 
   /**
     * Write a numeric value
@@ -103,7 +103,7 @@ class JsonHandler {
     * @param asDouble the double representation of the value
     * @throws XPathException if any error occurs
     */
-  def writeNumeric(asString: String, asDouble: Double): Unit = {}
+  def writeNumeric(asString: String, asDouble: Double): Unit = ()
 
   /**
     * Write a string value
@@ -112,12 +112,12 @@ class JsonHandler {
     * options that were set)
     * @throws XPathException if any error occurs
     */
-  def writeString(`val`: String): Unit = {}
+  def writeString(`val`: String): Unit = ()
 
   def reEscape(`val`: String): String = {
     var escaped: CharSequence = null
     if (escape) {
-      escaped = JsonReceiver.escape(`val`, true, new IntPredicate() {
+      escaped = JsonReceiver.escape(`val`, forXml = true, new IntPredicate() {
         def test(value: Int): Boolean =
           (value >= 0 && value <= 0x1F) || (value >= 0x7F && value <= 0x9F) ||
             !charChecker.test(value) ||
@@ -136,14 +136,14 @@ class JsonHandler {
     * @param value the boolean value to be written
     * @throws XPathException if any error occurs
     */
-  def writeBoolean(value: Boolean): Unit = {}
+  def writeBoolean(value: Boolean): Unit = ()
 
   /**
     * Write a null value
     *
     * @throws XPathException if any error occurs
     */
-  def writeNull(): Unit = {}
+  def writeNull(): Unit = ()
 
   /**
     * Deal with invalid characters in the JSON string
@@ -182,7 +182,7 @@ class JsonHandler {
 //}
 //}
 
-   def markAsEscaped(escaped: CharSequence, isKey: Boolean): Unit = {}
+   def markAsEscaped(escaped: CharSequence, isKey: Boolean): Unit = ()
 // do nothing in this class
 // do nothing in this class
 

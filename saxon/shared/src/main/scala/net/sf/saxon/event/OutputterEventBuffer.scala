@@ -120,7 +120,7 @@ class OutputterEventBuffer extends Outputter {
     buffer.add(new OutputterEvent.Append(item, location, properties))
   }
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 
   def replay(out: Outputter): Unit = {
     for (event <- buffer.asScala) {

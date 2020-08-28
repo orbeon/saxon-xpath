@@ -336,7 +336,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       e.properties = master.properties
       e.argumentTypes = Array.ofDim[SequenceType](arity)
       e.resultIfEmpty =
-        Array.ofDim[Sequence](arity).asInstanceOf[Array[Sequence]]
+        Array.ofDim[Sequence](arity)
       e.usage = Array.ofDim[OperandUsage.OperandUsage](arity)
       for (i <- 0 until arity) {
         e.argumentTypes(i) = master.argumentTypes(i)

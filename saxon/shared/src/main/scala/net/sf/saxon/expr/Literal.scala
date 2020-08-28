@@ -46,7 +46,7 @@ object Literal {
     } else if (value.isInstanceOf[NodeInfo]) {
       out.startElement("node")
       val nodeKind: Int = value.asInstanceOf[NodeInfo].getNodeKind
-      out.emitAttribute("kind", nodeKind.toString + "")
+      out.emitAttribute("kind", nodeKind.toString)
       if (out.getOptions
         .asInstanceOf[ExpressionPresenter.ExportOptions]
         .explaining) {
@@ -118,7 +118,7 @@ object Literal {
       out.startElement("literal")
       if (value.isInstanceOf[GroundedValue]) {
         out.emitAttribute("count",
-          value.asInstanceOf[GroundedValue].getLength.toString + "")
+          value.asInstanceOf[GroundedValue].getLength.toString)
       }
       value.iterate().forEachOrFail((it) => exportValue(it, out))
       out.endElement()
@@ -237,7 +237,7 @@ object Literal {
 
 }
 
-class Literal extends Expression {
+class   Literal extends Expression {
 
   var value: GroundedValue = _
 

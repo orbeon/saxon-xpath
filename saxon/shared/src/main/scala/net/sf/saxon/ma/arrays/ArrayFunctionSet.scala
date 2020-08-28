@@ -148,7 +148,7 @@ object ArrayFunctionSet {
                       arguments: Array[Sequence]): Sequence = {
       val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
       assert(array != null)
-      var zero: Sequence = arguments(1).asInstanceOf[Sequence].head()
+      var zero: Sequence = arguments(1).head()
       val fn: Function = arguments(2).head().asInstanceOf[Function]
       var i: Int = 0
       i = array.arrayLength() - 1
@@ -443,7 +443,7 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem =
       SimpleArrayItem.makeSimpleArrayItem(
-        arguments(0).asInstanceOf[Sequence].iterate())
+        arguments(0).iterate())
 
     /**
       * Create the Fold object which is used to perform a streamed evaluation

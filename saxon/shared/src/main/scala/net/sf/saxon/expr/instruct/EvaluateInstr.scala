@@ -283,7 +283,7 @@ class EvaluateInstr(xpath: Expression,
       } else {
         env.setNamespaceResolver(getRetainedStaticContext)
         env.setDefaultElementNamespace(
-          getRetainedStaticContext.getDefaultElementNamespace.asInstanceOf[String])
+          getRetainedStaticContext.getDefaultElementNamespace)
       }
       val libraryList0: FunctionLibraryList =
         getRetainedStaticContext.getPackageData
@@ -313,7 +313,7 @@ class EvaluateInstr(xpath: Expression,
         val allowAny: GroundedValue =
           options.get(new StringValue("allow-any-namespace"))
         if (allowAny != null && allowAny.effectiveBooleanValue()) {
-          env.setImportedSchemaNamespaces(config.getImportedNamespaces.asInstanceOf[util.Set[String]])
+          env.setImportedSchemaNamespaces(config.getImportedNamespaces)
         } else {
           env.setImportedSchemaNamespaces(importedSchemaNamespaces)
         }
@@ -430,7 +430,7 @@ class EvaluateInstr(xpath: Expression,
         dynamicParams.get(new QNameValue(name, BuiltInAtomicType.QNAME)) ==
           null &&
         !isActualParam(name) &&
-        ExpressionTool.contains(expr, false, nameMatch)) {
+        ExpressionTool.contains(expr, sameFocusOnly = false, nameMatch)) {
         throw new XPathException(
           "No value has been supplied for variable " + name.getDisplayName,
           "XPST0008")
@@ -493,7 +493,7 @@ class EvaluateInstr(xpath: Expression,
       out.setChildRole("options")
       optionsOp.getChildExpression.export(out)
     }
-    WithParam.exportParameters(actualParams, out, false)
+    WithParam.exportParameters(actualParams, out, tunnel = false)
     if (dynamicParamsOp != null) {
       out.setChildRole("wp")
       getDynamicParams.export(out)

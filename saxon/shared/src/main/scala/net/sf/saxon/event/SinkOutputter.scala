@@ -15,39 +15,39 @@ import net.sf.saxon.trans.XPathException
 
 class SinkOutputter extends Outputter {
 
-  override def startDocument(properties: Int): Unit = {}
+  override def startDocument(properties: Int): Unit = ()
 
-  override def endDocument(): Unit = {}
+  override def endDocument(): Unit = ()
 
   override def startElement(elemName: NodeName,
                             typeCode: SchemaType,
                             location: Location,
-                            properties: Int): Unit = {}
+                            properties: Int): Unit = ()
 
   override def namespace(prefix: String,
                          namespaceUri: String,
-                         properties: Int): Unit = {}
+                         properties: Int): Unit = ()
 
   override def attribute(attName: NodeName,
                          typeCode: SimpleType,
                          value: CharSequence,
                          location: Location,
-                         properties: Int): Unit = {}
+                         properties: Int): Unit = ()
 
-  override def endElement(): Unit = {}
+  override def endElement(): Unit = ()
 
   override def characters(chars: CharSequence,
                           location: Location,
-                          properties: Int): Unit = {}
+                          properties: Int): Unit = ()
 
   override def processingInstruction(name: String,
                                      data: CharSequence,
                                      location: Location,
-                                     properties: Int): Unit = {}
+                                     properties: Int): Unit = ()
 
   override def comment(content: CharSequence,
                        location: Location,
-                       properties: Int): Unit = {}
+                       properties: Int): Unit = ()
 
 }
 

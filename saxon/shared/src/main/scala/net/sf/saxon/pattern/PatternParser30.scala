@@ -123,17 +123,17 @@ class PatternParser30 extends XPathParser with PatternParser {
       val visitor: ExpressionVisitor = ExpressionVisitor.make(env)
       visitor.setOptimizeForPatternMatching(true)
       val cit: ContextItemStaticInfo = visitor.getConfiguration
-        .makeContextItemStaticInfo(AnyNodeTest.getInstance, true)
+        .makeContextItemStaticInfo(AnyNodeTest.getInstance, maybeUndefined = true)
       var pat: Pattern = null
       try pat = PatternMaker.fromExpression(
         exp.simplify().typeCheck(visitor, cit),
         env.getConfiguration,
-        true)
+        is30 = true)
       catch {
         case e: XPathException =>
           pat = PatternMaker.fromExpression(exp.simplify(),
             env.getConfiguration,
-            true)
+            is30 = true)
 
       }
       if (exp.isInstanceOf[FilterExpression] &&
@@ -185,7 +185,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override def customizeTokenizer(t: Tokenizer): Unit = {}
+  override def customizeTokenizer(t: Tokenizer): Unit = ()
 
   override def parseExpression(): Expression = {
     val t: Tokenizer = getTokenizer

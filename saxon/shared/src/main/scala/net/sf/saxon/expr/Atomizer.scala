@@ -135,7 +135,7 @@ object Atomizer {
       EmptyAtomicSequence.getInstance
     } else {
       val iter: SequenceIterator =
-        getAtomizingIterator(sequence.iterate(), false)
+        getAtomizingIterator(sequence.iterate(), oneToOne = false)
       new AtomicArray(iter)
     }
 

@@ -50,7 +50,7 @@ class MessageWarner extends XMLEmitter {
     reporter.report(de)
   }
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 // do nothing
 // do nothing
 

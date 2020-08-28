@@ -73,7 +73,7 @@ class EventBuffer(pipe: PipelineConfiguration) extends SequenceReceiver(pipe) {
     buffer.add(new Event.Append(item, location, properties))
   }
 
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 
   def replay(out: Receiver): Unit = {
     for (event <- buffer.asScala) {

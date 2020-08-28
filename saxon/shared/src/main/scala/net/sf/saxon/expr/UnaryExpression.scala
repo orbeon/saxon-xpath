@@ -96,7 +96,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     out.endElement()
   }
 
-   def emitExtraAttributes(out: ExpressionPresenter): Unit = {}
+   def emitExtraAttributes(out: ExpressionPresenter): Unit = ()
 
    def displayOperator(config: Configuration): String = null
 

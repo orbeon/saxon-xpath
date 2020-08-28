@@ -20,39 +20,39 @@ import net.sf.saxon.trans.XPathException
 
 class Sink(pipe: PipelineConfiguration) extends SequenceReceiver(pipe) {
 
-  override def open(): Unit = {}
+  override def open(): Unit = ()
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
-  def startDocument(properties: Int): Unit = {}
+  def startDocument(properties: Int): Unit = ()
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def startElement(elemName: NodeName,
                    `type`: SchemaType,
                    attributes: AttributeMap,
                    namespaces: NamespaceMap,
                    location: Location,
-                   properties: Int): Unit = {}
+                   properties: Int): Unit = ()
 
-  def endElement(): Unit = {}
+  def endElement(): Unit = ()
 
   def characters(chars: CharSequence,
                  locationId: Location,
-                 properties: Int): Unit = {}
+                 properties: Int): Unit = ()
 
   def processingInstruction(target: String,
                             data: CharSequence,
                             locationId: Location,
-                            properties: Int): Unit = {}
+                            properties: Int): Unit = ()
 
   def comment(chars: CharSequence,
               locationId: Location,
-              properties: Int): Unit = {}
+              properties: Int): Unit = ()
 
-  override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = {}
+  override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = ()
 
-  override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {}
+  override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = ()
 
   override def usesTypeAnnotations(): Boolean = false
 

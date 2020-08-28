@@ -27,7 +27,7 @@ object TraceEventMulticaster {
    * @param a trace-listener-a
    * @param b trace-listener-b
    */
-    def add(a: TraceListener, b: TraceListener) = addInternal(a, b).asInstanceOf[TraceListener]
+    def add(a: TraceListener, b: TraceListener) = addInternal(a, b)
 
   /**
    * Removes the old trace-listener from trace-listener-l and
@@ -36,7 +36,7 @@ object TraceEventMulticaster {
    * @param l    trace-listener-l
    * @param oldl the trace-listener being removed
    */
-  def remove(l: TraceListener, oldl: TraceListener) = removeInternal(l, oldl).asInstanceOf[TraceListener]
+  def remove(l: TraceListener, oldl: TraceListener) = removeInternal(l, oldl)
 
   /**
    * Returns the resulting multicast listener from adding listener-a

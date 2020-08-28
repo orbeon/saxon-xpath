@@ -83,9 +83,9 @@ class AtomicSortComparer  (
     } else {
       val implicitTimezone: Int = context.getImplicitTimezone
       val ac: Comparable[AtomicValue] = a
-        .getXPathComparable(true, collator, implicitTimezone)
+        .getXPathComparable(ordered = true, collator, implicitTimezone)
         .asInstanceOf[Comparable[AtomicValue]]
-      val bc: AtomicValue= b.getXPathComparable(true, collator, implicitTimezone).asAtomic()
+      val bc: AtomicValue= b.getXPathComparable(ordered = true, collator, implicitTimezone).asAtomic()
       if (ac == null || bc == null) {
         compareNonComparables(a, b)
       } else {

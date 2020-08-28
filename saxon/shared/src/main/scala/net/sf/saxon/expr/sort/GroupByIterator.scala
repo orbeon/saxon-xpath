@@ -79,7 +79,7 @@ class GroupByIterator
           var comparisonKey: AtomicMatchKey = null
           comparisonKey =
             if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
-            else key.getXPathComparable(false, collator, implicitTimezone)
+            else key.getXPathComparable(ordered = false, collator, implicitTimezone)
           val g: List[Item] = index.get(comparisonKey)
           if (g == null) {
             val newGroup: List[Item] = new ArrayList[Item](20)
@@ -126,7 +126,7 @@ class GroupByIterator
           var comparisonKey: AtomicMatchKey = null
           comparisonKey =
             if (key.isNaN) AtomicMatchKey.NaN_MATCH_KEY
-            else key.getXPathComparable(false, collator, implicitTimezone)
+            else key.getXPathComparable(ordered = false, collator, implicitTimezone)
           ckList.add(comparisonKey)
         }
       }

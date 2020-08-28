@@ -140,12 +140,12 @@ class ForEach(select: Expression,
       Literal.makeEmptySequence()
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getSelect.getItemType, false)
+      .makeContextItemStaticInfo(getSelect.getItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getSelect)
     actionOp.typeCheck(visitor, cit)
     if (!Cardinality.allowsMany(getSelect.getCardinality)) {
       actionOp.setOperandRole(
-        actionOp.getOperandRole.modifyProperty(OperandRole.SINGLETON, true))
+        actionOp.getOperandRole.modifyProperty(OperandRole.SINGLETON, on = true))
     }
     this
   }
@@ -154,7 +154,7 @@ class ForEach(select: Expression,
                         contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.optimize(visitor, contextInfo)
     val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getSelect.getItemType, false)
+      .makeContextItemStaticInfo(getSelect.getItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getSelect)
     actionOp.optimize(visitor, cit)
     if (!visitor.isOptimizeForStreaming) {
@@ -230,7 +230,7 @@ class ForEach(select: Expression,
     ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD | ITEM_FEED_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
-    getAction.checkPermittedContents(parentType, false)
+    getAction.checkPermittedContents(parentType, whole = false)
   }
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
@@ -313,7 +313,7 @@ class ForEach(select: Expression,
     out.endElement()
   }
 
-  def explainThreads(out: ExpressionPresenter): Unit = {}
+  def explainThreads(out: ExpressionPresenter): Unit = ()
 
   override def toString(): String =
     ExpressionTool.parenthesize(getSelect) + " ! " + ExpressionTool

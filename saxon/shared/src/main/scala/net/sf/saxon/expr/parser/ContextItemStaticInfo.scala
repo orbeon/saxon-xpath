@@ -43,9 +43,9 @@ class ContextItemStaticInfo(@BeanProperty var itemType: ItemType,
 
   def isPossiblyAbsent(): Boolean = contextMaybeUndefined
 
-  def setContextPostureStriding(): Unit = {}
+  def setContextPostureStriding(): Unit = ()
 
-  def setContextPostureGrounded(): Unit = {}
+  def setContextPostureGrounded(): Unit = ()
 
   def isStrictStreamabilityRules(): Boolean = false
 

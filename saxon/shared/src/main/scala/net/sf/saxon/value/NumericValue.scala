@@ -24,7 +24,8 @@ object NumericValue {
 
   /*@NotNull*/
 
-  def parseNumber(in: String): NumericValue =
+  def parseNumber(in: String): NumericValue = {
+
     if (in.indexOf('e') >= 0 || in.indexOf('E') >= 0) {
       try new DoubleValue(java.lang.Double.parseDouble(in))
       catch {
@@ -32,7 +33,7 @@ object NumericValue {
 
       }
     } else if (in.indexOf('.') >= 0) {
-      val v: ConversionResult = BigDecimalValue.makeDecimalValue(in, true)
+      val v: ConversionResult = BigDecimalValue.makeDecimalValue(in, validate = true)
       if (v.isInstanceOf[ValidationFailure]) {
         DoubleValue.NaN
       } else {
@@ -46,6 +47,7 @@ object NumericValue {
         v.asInstanceOf[NumericValue]
       }
     }
+  }
 
   def isInteger(value: AtomicValue): Boolean = value.isInstanceOf[IntegerValue]
 

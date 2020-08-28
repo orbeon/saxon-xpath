@@ -22,7 +22,7 @@ trait CodeInjector {
 
   def inject(exp: Expression): Expression = exp
 
-  def process(component: TraceableComponent): Unit = {}
+  def process(component: TraceableComponent): Unit = ()
 
   def injectClause(expression: FLWORExpression, clause: Clause): Clause =
     clause

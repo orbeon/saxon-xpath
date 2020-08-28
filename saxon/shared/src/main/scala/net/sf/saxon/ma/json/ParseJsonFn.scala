@@ -69,7 +69,7 @@ object ParseJsonFn {
     val parser: JsonParser = new JsonParser()
     var flags: Int = 0
     if (options != null) {
-      flags = JsonParser.getFlags(options, context, false)
+      flags = JsonParser.getFlags(options, context, allowValidate = false)
     }
     val handler: JsonHandlerMap = new JsonHandlerMap(context, flags)
     if ((flags & JsonParser.DUPLICATES_RETAINED) != 0) {

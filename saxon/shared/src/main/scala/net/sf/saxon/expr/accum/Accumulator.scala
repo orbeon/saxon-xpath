@@ -103,7 +103,7 @@ class Accumulator extends Actor {
     //        }
     out.startElement("accumulator")
     out.emitAttribute("name", getObjectName)
-    out.emitAttribute("line", getLineNumber.toString + "")
+    out.emitAttribute("line", getLineNumber.toString)
     out.emitAttribute("module", getSystemId)
     out.emitAttribute("as", seqType.toAlphaCode)
     out.emitAttribute("streamable", if (streamable) "1" else "0")
@@ -141,11 +141,11 @@ class Accumulator extends Actor {
       }
     }
     out.startElement("pre")
-    out.emitAttribute("slots", preDescentRules.getStackFrameSlotsNeeded.toString + "")
+    out.emitAttribute("slots", preDescentRules.getStackFrameSlotsNeeded.toString)
     preDescentRules.processRules(action)
     out.endElement()
     out.startElement("post")
-    out.emitAttribute("slots", postDescentRules.getStackFrameSlotsNeeded.toString + "")
+    out.emitAttribute("slots", postDescentRules.getStackFrameSlotsNeeded.toString)
     postDescentRules.processRules(action)
     out.endElement()
     out.endElement()

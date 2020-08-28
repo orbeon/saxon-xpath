@@ -66,16 +66,16 @@ object GeneralComparison10 {
     val rules: ConversionRules = context.getConfiguration.getConversionRules
     val t0: BuiltInAtomicType = atomicVal0.getPrimitiveType
     val t1: BuiltInAtomicType = atomicVal1.getPrimitiveType
-    if (t0.isPrimitiveNumeric.asInstanceOf[Boolean] || t1.isPrimitiveNumeric.asInstanceOf[Boolean]) {
+    if (t0.isPrimitiveNumeric || t1.isPrimitiveNumeric) {
       val v0: DoubleValue = Number_1.convert(atomicVal0, context.getConfiguration)
       val v1: DoubleValue = Number_1.convert(atomicVal1, context.getConfiguration)
-      ValueComparison.compare(v0, op, v1, atomicCom, false)
+      ValueComparison.compare(v0, op, v1, atomicCom, checkTypes = false)
     }
     if (t0 == BuiltInAtomicType.STRING || t1 == BuiltInAtomicType.STRING ||
       (t0 == BuiltInAtomicType.UNTYPED_ATOMIC && t1 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       val s0: StringValue = StringValue.makeStringValue(atomicVal0.getStringValueCS)
       val s1: StringValue = StringValue.makeStringValue(atomicVal1.getStringValueCS)
-      ValueComparison.compare(s0, op, s1, atomicCom, false)
+      ValueComparison.compare(s0, op, s1, atomicCom, checkTypes = false)
     }
     if (t0 == BuiltInAtomicType.UNTYPED_ATOMIC) {
       atomicVal0 = t1
@@ -89,7 +89,7 @@ object GeneralComparison10 {
         .convert(atomicVal1.asInstanceOf[StringValue])
         .asAtomic()
     }
-    ValueComparison.compare(atomicVal0, op, atomicVal1, atomicCom, false)
+    ValueComparison.compare(atomicVal0, op, atomicVal1, atomicCom, checkTypes = false)
   }
 
 }
@@ -142,8 +142,8 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     val env: StaticContext = visitor.getStaticContext
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)
-    this.setLhsExpression(getLhsExpression.unordered(false, false))
-    this.setRhsExpression(getRhsExpression.unordered(false, false))
+    this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+    this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
       .isInstanceOf[Literal])) {
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
@@ -189,7 +189,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
           gc.setAtomicComparer(comparer)
           val binExp: Expression = visitor
             .obtainOptimizer()
-            .optimizeGeneralComparison(visitor, gc, false, contextInfo)
+            .optimizeGeneralComparison(visitor, gc, backwardsCompatible = false, contextInfo)
           ExpressionTool.copyLocationInfo(this, binExp)
           binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
         }
@@ -199,7 +199,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
         gc.setRetainedStaticContext(getRetainedStaticContext)
         val binExp: Expression = visitor
           .obtainOptimizer()
-          .optimizeGeneralComparison(visitor, gc, false, contextInfo)
+          .optimizeGeneralComparison(visitor, gc, backwardsCompatible = false, contextInfo)
         ExpressionTool.copyLocationInfo(this, binExp)
         binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
       }
@@ -274,10 +274,10 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       }
     }
     if (atomize0) {
-      seqItr0 = Atomizer.getAtomizingIterator(seqItr0, false)
+      seqItr0 = Atomizer.getAtomizingIterator(seqItr0, oneToOne = false)
     }
     if (atomize1) {
-      seqItr1 = Atomizer.getAtomizingIterator(seqItr1, false)
+      seqItr1 = Atomizer.getAtomizingIterator(seqItr1, oneToOne = false)
     }
     if (seqItr0.isInstanceOf[EmptyIterator] || seqItr1
       .isInstanceOf[EmptyIterator]) {

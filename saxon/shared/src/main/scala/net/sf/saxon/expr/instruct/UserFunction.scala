@@ -192,7 +192,7 @@ class UserFunction
   def computeEvaluationMode(): Unit = {
     evaluator =
       if (tailRecursive) ExpressionTool.eagerEvaluator(getBody)
-      else ExpressionTool.lazyEvaluator(getBody, true)
+      else ExpressionTool.lazyEvaluator(getBody, repeatable = true)
   }
 
   def isInlineable(): java.lang.Boolean = {
@@ -383,10 +383,10 @@ class UserFunction
     presenter.startElement("function")
     if (getFunctionName != null) {
       presenter.emitAttribute("name", getFunctionName)
-      presenter.emitAttribute("line", getLineNumber.toString() + "")
+      presenter.emitAttribute("line", getLineNumber.toString())
       presenter.emitAttribute("module", getSystemId)
       presenter.emitAttribute("eval",
-        getEvaluator.getEvaluationMode.asInstanceOf[EvaluationMode.EvaluationMode].getCode.toString() + "")
+        getEvaluator.getEvaluationMode.getCode.toString)
     }
     var flags: String = ""
     if (determinism == Determinism.PROACTIVE) {
@@ -412,7 +412,7 @@ class UserFunction
     presenter.emitAttribute("flags", flags)
     presenter.emitAttribute("as", getDeclaredResultType.toAlphaCode)
     presenter.emitAttribute("slots",
-      getStackFrameMap.getNumberOfVariables.toString + "")
+      getStackFrameMap.getNumberOfVariables.toString)
     for (p <- parameterDefinitions) {
       presenter.startElement("arg")
       presenter.emitAttribute("name", p.getVariableQName)
@@ -474,6 +474,6 @@ class UserFunction
 
   def getReferenceCount(): Int = refCount
 
-  def prepareForStreaming(): Unit = {}
+  def prepareForStreaming(): Unit = ()
 
 }

@@ -101,7 +101,7 @@ class QNameParser(private var resolver: NamespaceResolver) {
     if (parts(0).isEmpty) {
       new StructuredQName("", defaultNS, parts(1))
     }
-    val uri: String = resolver.getURIForPrefix(parts(0), false)
+    val uri: String = resolver.getURIForPrefix(parts(0), useDefault = false)
     if (uri == null) {
       throw new XPathException(
         "Namespace prefix '" + parts(0) + "' has not been declared",

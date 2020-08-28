@@ -134,7 +134,7 @@ object Event {
   */
 abstract class Event {
 
-  def replay(out: Receiver): Unit = {}
+  def replay(out: Receiver): Unit = ()
 
 }
 

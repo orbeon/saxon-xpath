@@ -69,7 +69,7 @@ class GYearValue() extends GDateValue {
         sb.cat('-')
       }
     }
-    appendString(sb, yr, (if (yr > 9999) (yr.toString + "").length else 4))
+    appendString(sb, yr, (if (yr > 9999) (yr.toString).length else 4))
     if (hasTimezone()) {
       appendTimezone(sb)
     }
@@ -85,7 +85,7 @@ class GYearValue() extends GDateValue {
 
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
-      toDateTime().adjustTimezone(tz).asInstanceOf[DateTimeValue]
+      toDateTime().adjustTimezone(tz)
     new GYearValue(dt.getYear, dt.getTimezoneInMinutes, hasNoYearZero)
   }
 

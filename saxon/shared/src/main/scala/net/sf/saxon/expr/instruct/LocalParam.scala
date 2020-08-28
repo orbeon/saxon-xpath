@@ -167,7 +167,7 @@ class LocalParam extends Instruction with LocalBinding {
     p2
   }
 
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {}
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
   def checkAgainstRequiredType(visitor: ExpressionVisitor): Unit = {
     val role: RoleDiagnostic = new RoleDiagnostic(RoleDiagnostic.VARIABLE,
@@ -339,7 +339,7 @@ class LocalParam extends Instruction with LocalBinding {
     flags
   }
 
-  override def setIndexedVariable(): Unit = {}
+  override def setIndexedVariable(): Unit = ()
 
   override def isIndexedVariable(): Boolean = false
 

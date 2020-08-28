@@ -334,7 +334,7 @@ object Converter {
         input.asInstanceOf[IntegerValue]
       }
       IntegerValue.makeIntegerValue(
-        input.asInstanceOf[BigDecimalValue].getDecimalValue.asInstanceOf[BigDecimal].toBigInteger())
+        input.asInstanceOf[BigDecimalValue].getDecimalValue.toBigInteger())
     }
 
   }
@@ -574,7 +574,7 @@ object Converter {
   class Base64BinaryToHexBinary extends UnfailingConverter {
 
     def convert(input: AtomicValue): HexBinaryValue =
-      new HexBinaryValue(input.asInstanceOf[Base64BinaryValue].getBinaryValue.asInstanceOf[Array[Byte]])
+      new HexBinaryValue(input.asInstanceOf[Base64BinaryValue].getBinaryValue)
 
   }
 

@@ -49,7 +49,7 @@ class UserFunctionParameter extends LocalBinding {
 
   def getIntegerBoundsForVariable(): Array[IntegerValue] = null
 
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {}
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
   def setIndexedVariable(indexed: Boolean): Unit = {
     isIndexed = indexed

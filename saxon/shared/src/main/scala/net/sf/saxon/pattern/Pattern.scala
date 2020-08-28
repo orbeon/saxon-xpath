@@ -35,7 +35,7 @@ object Pattern {
         env.asInstanceOf[ExpressionContext].getStyleElement.getLineNumber // class not exist
       else -1*/
     val parser: PatternParser = env.getConfiguration
-      .newExpressionParser("PATTERN", false, languageLevel)
+      .newExpressionParser("PATTERN", updating = false, languageLevel)
       .asInstanceOf[PatternParser]
     parser
       .asInstanceOf[XPathParser]
@@ -74,11 +74,11 @@ abstract class Pattern extends PseudoExpression {
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
-  def bindCurrent(binding: LocalBinding): Unit = {}
+  def bindCurrent(binding: LocalBinding): Unit = ()
 
   def matchesCurrentGroup(): Boolean = false
 
-  def setOriginalText(text: String): Unit = {}
+  def setOriginalText(text: String): Unit = ()
 
    def handleDynamicError(ex: XPathException,
                                    context: XPathContext): Unit = {

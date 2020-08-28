@@ -67,7 +67,7 @@ class RetainedStaticContext extends NamespaceResolver {
     this.packageData = sc.getPackageData
     if (sc.getStaticBaseURI != null) {
       staticBaseUriString = sc.getStaticBaseURI
-      try this.staticBaseUri = ExpressionTool.getBaseURI(sc, null, true)
+      try this.staticBaseUri = ExpressionTool.getBaseURI(sc, null, fail = true)
       catch {
         case e: XPathException => staticBaseUri = null
 
@@ -88,7 +88,7 @@ class RetainedStaticContext extends NamespaceResolver {
         while (it.hasNext) {
           val prefix: String = it.next()
           if (prefix.!=("xml")) {
-            map = map.put(prefix, resolver.getURIForPrefix(prefix, true))
+            map = map.put(prefix, resolver.getURIForPrefix(prefix, useDefault = true))
           }
         }
         namespaces = map

@@ -199,7 +199,7 @@ class SortKeyDefinition extends PseudoExpression {
 
   def copy(rm: RebindingMap): SortKeyDefinition = {
     val sk2: SortKeyDefinition = new SortKeyDefinition()
-    sk2.setSortKey(copy(sortKey.getChildExpression, rm), true)
+    sk2.setSortKey(copy(sortKey.getChildExpression, rm), setContext = true)
     sk2.setOrder(copy(order.getChildExpression, rm))
     sk2.setDataTypeExpression(
       if (dataTypeExpression == null) null
@@ -392,7 +392,7 @@ class SortKeyDefinition extends PseudoExpression {
         new StringLiteral(
           this.getDataTypeExpression.evaluateAsString(context)))
     }
-    newSKD.setSortKey(new ContextItemExpression(), true)
+    newSKD.setSortKey(new ContextItemExpression(), setContext = true)
     newSKD
   }
 

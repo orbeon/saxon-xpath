@@ -12,10 +12,10 @@
  */
 package net.sf.saxon.ma.trie
 
-import java.util.Iterator
-import java.util.NoSuchElementException
+import java.util.{Iterator, NoSuchElementException}
 
-import ImmutableList._
+import net.sf.saxon.ma.trie.ImmutableList._
+
 import scala.jdk.CollectionConverters._
 
 object ImmutableList {
@@ -27,8 +27,6 @@ object ImmutableList {
    */
   def empty[T](): ImmutableList[T] = new EmptyList()
 
-  private val EMPTY_LIST: EmptyList[_] = new EmptyList()
-
   private class EmptyList[T] extends ImmutableList[T] {
 
     override def head(): T =
@@ -38,17 +36,12 @@ object ImmutableList {
       throw new NoSuchElementException("head() called on empty list")
 
     override def isEmpty(): Boolean = true
-
   }
 
-  private class NonEmptyList[T](private val element: T,
-                                var tail: ImmutableList[T])
+  private class NonEmptyList[T](private val element: T, var tail: ImmutableList[T])
     extends ImmutableList[T] {
-
     override def head(): T = element
-
     override def isEmpty(): Boolean = false
-
   }
 
 }
@@ -110,7 +103,7 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
   override def toString(): String = {
     val builder: StringBuilder = new StringBuilder("[")
     var first: Boolean = true
-    for (elem: T <- this.asScala) {
+    for (elem <- this.asScala) {
       if (!first) {
         builder.append(", ")
       }

@@ -128,7 +128,7 @@ class Executable(var config: Configuration) {
     }
     val miter: Iterator[QueryModule] = getQueryLibraryModules
     while (miter.hasNext) {
-      val sqc: QueryModule = miter.next().asInstanceOf[QueryModule]
+      val sqc: QueryModule = miter.next()
       val uri: String = sqc.getSystemId
       if (uri != null && uri == systemId) {
         sqc
@@ -197,7 +197,7 @@ class Executable(var config: Configuration) {
   def getGlobalParameter(name: StructuredQName): GlobalParam =
     globalParams.get(name)
 
-  def checkSuppliedParameters(params: GlobalParameterSet): Unit = {}
+  def checkSuppliedParameters(params: GlobalParameterSet): Unit = ()
 
   def setCreatesSecondaryResult(flag: Boolean): Unit = {
     createsSecondaryResult = flag

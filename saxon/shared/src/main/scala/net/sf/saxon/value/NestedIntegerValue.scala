@@ -96,7 +96,7 @@ class NestedIntegerValue(v: String)
     for (i <- 0 until value.length - 1) {
       buffer.append(value(i).toString + ".")
     }
-    buffer.append(value(value.length - 1).toString + "")
+    buffer.append(value(value.length - 1).toString)
     buffer
   }
 

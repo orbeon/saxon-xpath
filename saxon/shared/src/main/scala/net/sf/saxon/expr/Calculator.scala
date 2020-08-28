@@ -190,7 +190,7 @@ object Calculator {
     val typeA: Int = typeFromCode(code.charAt(0))
     val typeB: Int = typeFromCode(code.charAt(2))
     val operator: Int = operatorFromCode(code.charAt(1))
-    getCalculator(typeA, typeB, operator, false)
+    getCalculator(typeA, typeB, operator, mustResolve = false)
   }
 
   private def typeFromCode(code: Char): Int = code match {
@@ -366,7 +366,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            PLUS,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for + operation (" + Type.displayTypeName(a) +
@@ -391,7 +391,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            MINUS,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for - operation (" + Type.displayTypeName(a) +
@@ -416,7 +416,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            TIMES,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for * operation (" + Type.displayTypeName(a) +
@@ -441,7 +441,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            DIV,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for div operation (" + Type.displayTypeName(a) +
@@ -466,7 +466,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            MOD,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for mod operation (" + Type.displayTypeName(a) +
@@ -491,7 +491,7 @@ object Calculator {
       val calc: Calculator = getCalculator(a.getItemType.getPrimitiveType,
                                            b.getItemType.getPrimitiveType,
                                            IDIV,
-                                           true)
+                                           mustResolve = true)
       if (calc == null) {
         throw new XPathException(
           "Unsuitable types for idiv operation (" + Type.displayTypeName(a) +

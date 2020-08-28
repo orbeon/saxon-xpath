@@ -338,7 +338,7 @@ abstract class Expression
     }
   }
 
-  def prepareForStreaming(): Unit = {}
+  def prepareForStreaming(): Unit = ()
 
   def getCost(): Double = {
     if (cost < 0) {
@@ -394,9 +394,9 @@ abstract class Expression
 
   def getIntegerBounds(): Array[IntegerValue] = null
 
-  def setFlattened(flattened: Boolean): Unit = {}
+  def setFlattened(flattened: Boolean): Unit = ()
 
-  def setFiltered(filtered: Boolean): Unit = {}
+  def setFiltered(filtered: Boolean): Unit = ()
 
   def evaluateItem(context: XPathContext): Item = iterate(context).next()
 
@@ -510,7 +510,7 @@ abstract class Expression
     ep.close()
   }
 
-  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {}
+  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = ()
 
   def adoptChildExpression(child: Expression): Unit = {
     if (child == null) {
@@ -614,7 +614,7 @@ abstract class Expression
 
   def copy(rebindings: RebindingMap): Expression
 
-  def suppressValidation(parentValidationMode: Int): Unit = {}
+  def suppressValidation(parentValidationMode: Int): Unit = ()
 
   def markTailFunctionCalls(qName: StructuredQName, arity: Int): Int =
     UserFunctionCall.NOT_TAIL_CALL

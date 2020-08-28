@@ -110,7 +110,7 @@ object DocumentInstr {
               component
                 .asInstanceOf[FixedElement]
                 .getContentExpression
-                .checkPermittedContents(decl.getType, true)
+                .checkPermittedContents(decl.getType, whole = true)
             }
           }
         }

@@ -28,17 +28,17 @@ trait TraceListener extends EventListener {
 
   def enter(instruction: Traceable,
             properties: Map[String, Any],
-            context: XPathContext): Unit = {}
+            context: XPathContext): Unit = ()
 
-  def leave(instruction: Traceable): Unit = {}
+  def leave(instruction: Traceable): Unit = ()
 
   def startCurrentItem(currentItem: Item): Unit
 
   def endCurrentItem(currentItem: Item): Unit
 
-  def startRuleSearch(): Unit = {}
+  def startRuleSearch(): Unit = ()
 
-  def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = {}
+  def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = ()
 
 }
 

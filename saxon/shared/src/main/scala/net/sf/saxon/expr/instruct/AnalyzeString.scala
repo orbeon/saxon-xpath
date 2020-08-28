@@ -128,12 +128,12 @@ class AnalyzeString(select: Expression,
     if (matchingOp != null) {
       matchingOp.typeCheck(
         visitor,
-        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, false))
+        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, maybeUndefined = false))
     }
     if (nonMatchingOp != null) {
       nonMatchingOp.typeCheck(
         visitor,
-        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, false))
+        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, maybeUndefined = false))
     }
     val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(false)
     var role: RoleDiagnostic = new RoleDiagnostic(RoleDiagnostic.INSTRUCTION,
@@ -161,12 +161,12 @@ class AnalyzeString(select: Expression,
     if (matchingOp != null) {
       matchingOp.optimize(
         visitor,
-        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, false))
+        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, maybeUndefined = false))
     }
     if (nonMatchingOp != null) {
       nonMatchingOp.optimize(
         visitor,
-        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, false))
+        config.makeContextItemStaticInfo(BuiltInAtomicType.STRING, maybeUndefined = false))
     }
     val warnings: List[String] = new ArrayList[String]()
     precomputeRegex(config, warnings)
@@ -230,10 +230,10 @@ class AnalyzeString(select: Expression,
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     if (getMatching != null) {
-      getMatching.checkPermittedContents(parentType, false)
+      getMatching.checkPermittedContents(parentType, whole = false)
     }
     if (getNonMatching != null) {
-      getNonMatching.checkPermittedContents(parentType, false)
+      getNonMatching.checkPermittedContents(parentType, whole = false)
     }
   }
 

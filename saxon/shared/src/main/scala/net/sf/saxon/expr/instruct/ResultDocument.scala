@@ -146,7 +146,7 @@ object ResultDocument {
                 err.setIsStaticError(true)
                 throw err
               } else if (nsResolver != null) {
-                val muri: String = nsResolver.getURIForPrefix(prefix, false)
+                val muri: String = nsResolver.getURIForPrefix(prefix, useDefault = false)
                 if (muri == null) {
                   val err: XPathException = new XPathException(
                     "Namespace prefix '" + prefix + "' has not been declared")
@@ -183,33 +183,33 @@ object ResultDocument {
             clarkName,
             valStr,
             nsResolver,
-            true,
-            prevalidated,
-            false)
+            useDefaultNS = true,
+            prevalidated = prevalidated,
+            allowStar = false)
         case "suppress-indentation" =>
           processListOfNodeNames(details,
             clarkName,
             valStr,
             nsResolver,
-            true,
-            prevalidated,
-            false)
+            useDefaultNS = true,
+            prevalidated = prevalidated,
+            allowStar = false)
         case SaxonOutputKeys.DOUBLE_SPACE =>
           processListOfNodeNames(details,
             clarkName,
             valStr,
             nsResolver,
-            true,
-            prevalidated,
-            false)
+            useDefaultNS = true,
+            prevalidated = prevalidated,
+            allowStar = false)
         case SaxonOutputKeys.ATTRIBUTE_ORDER =>
           processListOfNodeNames(details,
             clarkName,
             valStr,
             nsResolver,
-            false,
-            prevalidated,
-            true)
+            useDefaultNS = false,
+            prevalidated = prevalidated,
+            allowStar = true)
         case SaxonOutputKeys.NEXT_IN_CHAIN =>
         case _ =>
           if (clarkName.==("output-version")) {
@@ -270,7 +270,7 @@ object ResultDocument {
         local,
         `val`,
         resolver,
-        false,
+        prevalidated = false,
         c.getConfiguration)
     }
   }
@@ -610,7 +610,7 @@ class ResultDocument(private val globalProperties: Properties,
           }
 
         }
-        val uri: String = nsResolver.getURIForPrefix(parts(0), false)
+        val uri: String = nsResolver.getURIForPrefix(parts(0), useDefault = false)
         if (uri == null) {
           val err: XPathException = new XPathException(
             "The namespace prefix in the format name " + format +
@@ -642,7 +642,7 @@ class ResultDocument(private val globalProperties: Properties,
         qName.getLocalPart,
         localProperties.getProperty(key),
         nsResolver,
-        true,
+        prevalidated = true,
         config)
       catch {
         case e: XPathException => {
@@ -664,7 +664,7 @@ class ResultDocument(private val globalProperties: Properties,
           lname,
           valStr,
           nsResolver,
-          false,
+          prevalidated = false,
           config)
         catch {
           case e: XPathException => {

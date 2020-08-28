@@ -62,7 +62,7 @@ class NextMatch(var useTailRecursion: Boolean)
     }
     val mode: Mode = modeComponent.getActor
     val currentItem: Item = context.getCurrentIterator.current()
-    val rule: Rule = mode.getNextMatchRule(currentItem, currentRule, context).asInstanceOf[Rule]
+    val rule: Rule = mode.getNextMatchRule(currentItem, currentRule, context)
     if (rule == null) {
       mode.getBuiltInRuleSet.process(currentItem,
         params,
@@ -100,10 +100,10 @@ class NextMatch(var useTailRecursion: Boolean)
     }
     out.emitAttribute("flags", flags)
     if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, false)
+      WithParam.exportParameters(getActualParams, out, tunnel = false)
     }
     if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, true)
+      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

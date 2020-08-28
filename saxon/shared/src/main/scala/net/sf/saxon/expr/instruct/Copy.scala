@@ -331,7 +331,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
           this,
           outPutter,
           context,
-          false)
+          rejectDuplicates = false)
         catch {
           case err: NoOpenStartTagException => {
             err.setXPathContext(context)

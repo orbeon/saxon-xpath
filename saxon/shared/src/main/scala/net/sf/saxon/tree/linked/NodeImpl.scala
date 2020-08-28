@@ -361,7 +361,7 @@ abstract class NodeImpl
 
   def hasChildNodes(): Boolean = getFirstChild != null
 
-  def setTypeAnnotation(`type`: SchemaType): Unit = {}
+  def setTypeAnnotation(`type`: SchemaType): Unit = ()
 
   def delete(): Unit = {
     if (parent != null) {
@@ -382,16 +382,16 @@ abstract class NodeImpl
       "setAttributes() applies only to element nodes")
   }
 
-  def removeAttribute(attribute: NodeInfo): Unit = {}
+  def removeAttribute(attribute: NodeInfo): Unit = ()
 
   def addAttribute(name: NodeName,
                    attType: SimpleType,
                    value: CharSequence,
-                   properties: Int): Unit = {}
+                   properties: Int): Unit = ()
 
-  def rename(newNameCode: NodeName): Unit = {}
+  def rename(newNameCode: NodeName): Unit = ()
 
-  def addNamespace(nscode: NamespaceBinding): Unit = {}
+  def addNamespace(nscode: NamespaceBinding): Unit = ()
 
   def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit = {
     if (isDeleted) {
@@ -408,7 +408,7 @@ abstract class NodeImpl
 
   def insertChildren(source: Array[NodeInfo],
                      atStart: Boolean,
-                     inherit: Boolean): Unit = {}
+                     inherit: Boolean): Unit = ()
 
   def insertSiblings(source: Array[NodeInfo],
                      before: Boolean,
@@ -420,7 +420,7 @@ abstract class NodeImpl
     parent.insertChildrenAt(source, if (before) index else index + 1, inherit)
   }
 
-  def removeTypeAnnotation(): Unit = {}
+  def removeTypeAnnotation(): Unit = ()
 
   def newBuilder(): Builder = getPhysicalRoot.newBuilder()
 

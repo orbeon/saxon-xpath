@@ -8,7 +8,7 @@ import java.util.function.Predicate
 class PrecedingEnumeration(node: NodeImpl, nodeTest: Predicate[_ >: NodeInfo])
   extends TreeEnumeration(node, nodeTest) {
 
-  var nextAncestor: NodeImpl = node.getParent.asInstanceOf[NodeImpl]
+  var nextAncestor: NodeImpl = node.getParent
 
   advance()
 

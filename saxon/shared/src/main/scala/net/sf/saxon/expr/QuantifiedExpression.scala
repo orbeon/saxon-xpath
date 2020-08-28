@@ -43,7 +43,7 @@ class QuantifiedExpression extends Assignation {
     if (Literal.isEmptySequence(getSequence)) {
       Literal.makeLiteral(BooleanValue.get(operator != Token.SOME), this)
     }
-    this.setSequence(getSequence.unordered(false, false))
+    this.setSequence(getSequence.unordered(retainAllNodes = false, forStreaming = false))
     val decl: SequenceType = getRequiredType
     if (decl.getCardinality == StaticProperty.ALLOWS_ZERO) {
       val err: XPathException = new XPathException(
@@ -93,7 +93,7 @@ class QuantifiedExpression extends Assignation {
       this.setAction(ebv)
       adoptChildExpression(ebv)
     }
-    if (Literal.hasEffectiveBooleanValue(ebv, true)) {
+    if (Literal.hasEffectiveBooleanValue(ebv, value = true)) {
       if (getOperator == Token.SOME) {
         SystemFunction.makeCall("exists",
           getRetainedStaticContext,
@@ -103,7 +103,7 @@ class QuantifiedExpression extends Assignation {
         ExpressionTool.copyLocationInfo(this, e2)
         return e2
       }
-    } else if (Literal.hasEffectiveBooleanValue(ebv, false)) {
+    } else if (Literal.hasEffectiveBooleanValue(ebv, value = false)) {
       if (getOperator == Token.SOME) {
         val e2: Expression = new Literal(BooleanValue.FALSE)
         ExpressionTool.copyLocationInfo(this, e2)

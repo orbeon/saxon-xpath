@@ -1,43 +1,32 @@
 package net.sf.saxon.utils
 
+import java.net.{URI, URISyntaxException}
+import java.util
+
+import javax.xml.transform.{Source, URIResolver}
+import javax.xml.transform.sax.SAXSource
 import net.sf.saxon.event._
-import net.sf.saxon.expr.{ContextOriginator, PackageData, XPathContext, XPathContextMajor, instruct}
-import net.sf.saxon.expr.instruct.Bindery
-import net.sf.saxon.expr.instruct.Executable
-import net.sf.saxon.expr.instruct.GlobalParameterSet
-import net.sf.saxon.expr.instruct.GlobalVariable
+import net.sf.saxon.expr.instruct.{Bindery, Executable, GlobalParameterSet, GlobalVariable}
 import net.sf.saxon.expr.parser.PathMap
 import net.sf.saxon.expr.sort.GroupIterator
+import net.sf.saxon.expr._
 import net.sf.saxon.functions.AccessorFn
 import net.sf.saxon.lib._
-import net.sf.saxon.model.Type
-import net.sf.saxon.model.Untyped
+import net.sf.saxon.model.{Type, Untyped}
 import net.sf.saxon.om._
 import net.sf.saxon.regex.RegexIterator
-import net.sf.saxon.s9api.HostLanguage
-import net.sf.saxon.s9api.Location
+import net.sf.saxon.s9api.{HostLanguage, Location}
 import net.sf.saxon.trace.TraceEventMulticaster
 import net.sf.saxon.trans._
 import net.sf.saxon.tree.tiny.TinyBuilder
-import net.sf.saxon.tree.wrapper.SpaceStrippedDocument
-import net.sf.saxon.tree.wrapper.SpaceStrippedNode
-import net.sf.saxon.tree.wrapper.TypeStrippedDocument
-import net.sf.saxon.value.DateTimeValue
-import net.sf.saxon.value.SequenceType
+import net.sf.saxon.tree.wrapper.{SpaceStrippedDocument, SpaceStrippedNode}
+import net.sf.saxon.value.{DateTimeValue, SequenceType}
 import net.sf.saxon.z.IntHashMap
 import org.xml.sax.SAXParseException
-import javax.xml.transform.Source
-
-import scala.jdk.CollectionConverters._
-import javax.xml.transform.URIResolver
-import javax.xml.transform.sax.SAXSource
-import java.net.URI
-import java.net.URISyntaxException
-import java.util
-import java.util.function.Function
 
 import scala.collection.immutable.HashMap
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 
 /**
  * The Controller underpins Saxon's implementation of the JAXP Transformer class, and represents
@@ -192,8 +181,8 @@ class Controller extends ContextOriginator {
    */
   def reset(): Unit = {
     globalParameters = new GlobalParameterSet
-    focusTrackerFactory = config.getFocusTrackerFactory(executable, false)
-    multiThreadedFocusTrackerFactory = config.getFocusTrackerFactory(executable, true)
+    focusTrackerFactory = config.getFocusTrackerFactory(executable, multithreaded = false)
+    multiThreadedFocusTrackerFactory = config.getFocusTrackerFactory(executable, multithreaded = true)
     standardURIResolver = config.getSystemURIResolver
     userURIResolver = config.getURIResolver
     unparsedTextResolver = config.getUnparsedTextURIResolver
@@ -476,7 +465,7 @@ class Controller extends ContextOriginator {
    * @since 9.7. Changed in 9.9 to raise an exception if the context item is inappropriate.
    */
   @throws[XPathException]
-  def setGlobalContextItem(contextItem: Item): Unit = setGlobalContextItem(contextItem, false)
+  def setGlobalContextItem(contextItem: Item): Unit = setGlobalContextItem(contextItem, alreadyStripped = false)
 
   /**
    * Set the item used as the context for evaluating global variables. This value is used
@@ -980,8 +969,10 @@ class Controller extends ContextOriginator {
    */
   def setUserData(key: Any, name: String, data: Any): Unit = { // System.err.println("setUserData " + name + " on object to " + data);
     val keyVal: String = key.hashCode.toString + " " + name
-    if (data == null) userDataTable.-(keyVal)
-    else userDataTable += (keyVal -> data)
+    if (data == null)
+      userDataTable -= keyVal
+    else
+      userDataTable += (keyVal -> data)
   }
 
   /**

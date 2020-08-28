@@ -172,7 +172,7 @@ class MemoSequence extends Sequence {
       position = position + 1
       if (position < used) {
         assert(reservoir != null)
-        return reservoir(position).asInstanceOf[Item]
+        return reservoir(position)
       } else if (state == ALL_READ) {
         // someone else has read the input to completion in the meantime
         position = -2
@@ -193,7 +193,7 @@ class MemoSequence extends Sequence {
       }
     }
 
-    override def close(): Unit = {}
+    override def close(): Unit = ()
 
     def getLength(): Int =
       if (state == ALL_READ) {

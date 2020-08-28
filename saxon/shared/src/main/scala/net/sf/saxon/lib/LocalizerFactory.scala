@@ -11,7 +11,7 @@ import java.util.Properties
   */
 abstract class LocalizerFactory {
 
-  def setLanguageProperties(lang: String, properties: Properties): Unit = {}
+  def setLanguageProperties(lang: String, properties: Properties): Unit = ()
 // no action
 // no action
 

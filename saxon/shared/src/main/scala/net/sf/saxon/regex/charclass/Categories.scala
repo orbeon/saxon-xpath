@@ -94,7 +94,7 @@ object Categories {
     CATEGORIES = new HashMap(30)
     val in: InputStream = Configuration.locateResource("categories.xml",
       new ArrayList(),
-      new ArrayList()).asInstanceOf[InputStream]
+      new ArrayList())
     if (in == null) {
       throw new RuntimeException("Unable to read categories.xml file")
     }

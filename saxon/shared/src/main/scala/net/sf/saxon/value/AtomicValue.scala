@@ -48,7 +48,7 @@ abstract class AtomicValue
                          implicitTimezone: Int): AtomicMatchKey
 
   def asMapKey(): AtomicMatchKey =
-    getXPathComparable(false,
+    getXPathComparable(ordered = false,
                        CodepointCollator.getInstance,
                        CalendarValue.NO_TIMEZONE)
 
@@ -141,7 +141,7 @@ abstract class AtomicValue
         val err: ValidationFailure = stype.validateContent(
           getStringValueCS,
           null,
-          env.getConfiguration.getConversionRules.asInstanceOf[ConversionRules])
+          env.getConfiguration.getConversionRules)
         if (err != null) {
           throw err.makeException()
         }
@@ -160,7 +160,7 @@ abstract class AtomicValue
     }
   }
 
-  def checkValidInJavascript(): Unit = {}
+  def checkValidInJavascript(): Unit = ()
 // default - no action
 // default - no action
 

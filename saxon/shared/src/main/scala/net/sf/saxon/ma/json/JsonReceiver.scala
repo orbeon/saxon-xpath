@@ -204,19 +204,19 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   def getPipelineConfiguration(): PipelineConfiguration = pipe
 
-  def setSystemId(systemId: String): Unit = {}
+  def setSystemId(systemId: String): Unit = ()
 
   def open(): Unit = {
     output.open()
   }
 
-  def startDocument(properties: Int): Unit = {}
+  def startDocument(properties: Int): Unit = ()
 
-  def endDocument(): Unit = {}
+  def endDocument(): Unit = ()
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {}
+                        publicID: String): Unit = ()
 
   def startElement(elemName: NodeName,
                    `type`: SchemaType,
@@ -292,7 +292,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
           .effectiveBooleanValue()
       }
       key = (if (alreadyEscaped) handleEscapedString(key)
-      else escape(key, false, new ControlChar())).toString
+      else escape(key, forXml = false, new ControlChar())).toString
       val normalizedKey: String = if (alreadyEscaped) unescape(key) else key
       val added: Boolean = keyChecker.peek().add(normalizedKey)
       if (!added) {
@@ -380,7 +380,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
       if (escaped) {
         output.cat(handleEscapedString(str))
       } else {
-        output.cat(escape(str, false, new ControlChar()))
+        output.cat(escape(str, forXml = false, new ControlChar()))
       }
       output.cat("\"")
     } else if (!Whitespace.isWhite(textBuffer)) {
@@ -408,11 +408,11 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
   def processingInstruction(name: String,
                             data: CharSequence,
                             locationId: Location,
-                            properties: Int): Unit = {}
+                            properties: Int): Unit = ()
 
   def comment(content: CharSequence,
               locationId: Location,
-              properties: Int): Unit = {}
+              properties: Int): Unit = ()
 
   def close(): Unit = {
     if (output != null) {

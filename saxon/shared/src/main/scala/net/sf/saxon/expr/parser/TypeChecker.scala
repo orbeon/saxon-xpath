@@ -144,10 +144,10 @@ object TypeChecker {
     val iter: SequenceIterator = `val`.iterate()
     var count: Int = 0
     var item: Item = null
-    while (({
+    while ({
       item = iter.next()
       item
-    }) != null) {
+    } != null) {
       { count += 1;}
       if (!reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {
@@ -253,7 +253,7 @@ class TypeChecker {
                       role: RoleDiagnostic,
                       visitor: ExpressionVisitor): Expression = {
     if (supplied.implementsStaticTypeCheck()) {
-      supplied.staticTypeCheck(req, false, role, visitor)
+      supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
     }
     var exp: Expression = supplied
     val env: StaticContext = visitor.getStaticContext

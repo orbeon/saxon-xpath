@@ -619,7 +619,7 @@ object FormatDate {
           "s",
           java.lang.Integer.parseInt(reverseValue.toString),
           reverseFormat.toString,
-          false,
+          defaultFormat = false,
           numberer,
           context)
         var correctedResult: UnicodeString = reverse(
@@ -675,11 +675,11 @@ object FormatDate {
         primary = "1"
       }
       if ("N" == primary) {
-        s.toUpperCase()
+        return s.toUpperCase()
       } else if ("n" == primary) {
-        s.toLowerCase()
+        return s.toLowerCase()
       } else {
-        s
+        return s
       }
     }
     var picGroupFormat: NumericGroupFormatter = null
@@ -793,9 +793,9 @@ object FormatDate {
     }
     if (!value.hasTimezone()) {
       if (formatStr.==("Z")) {
-        "J"
+        return "J"
       } else {
-        ""
+        return ""
       }
     }
     if (formatStr.isEmpty && !widthModifier.isEmpty) {
@@ -813,7 +813,7 @@ object FormatDate {
     var tz: Int = value.getTimezoneInMinutes
     val useZforZero: Boolean = formatStr.endsWith("t")
     if (useZforZero && tz == 0) {
-      "Z"
+      return "Z"
     }
     if (useZforZero) {
       formatStr = formatStr.substring(0, formatStr.length - 1)
@@ -827,7 +827,6 @@ object FormatDate {
       if (java.lang.Character.isDigit(ch)) {
         {
           digits += 1;
-          digits - 1
         }
         if (zeroDigit < 0) {
           zeroDigit = Alphanumeric.getDigitFamily(ch)
@@ -835,7 +834,6 @@ object FormatDate {
       } else {
         {
           separators += 1;
-          separators - 1
         }
         separatorChar = ch
       }
@@ -920,7 +918,7 @@ object FormatDate {
         if (format.charAt(0) == 'n') {
           tzname = tzname.toLowerCase()
         }
-        tzname
+        return tzname
       } else {
         NamedTimeZone.getOlsenTimeZoneName(value, country)
       }
@@ -942,8 +940,8 @@ class FormatDate extends SystemFunction with Callable {
     try {
       val c: String = calendarVal.getStringValue
       cal = StructuredQName.fromLexicalQName(c,
-        false,
-        true,
+        useDefault = false,
+        allowEQName = true,
         getRetainedStaticContext)
     } catch {
       case e: XPathException => {

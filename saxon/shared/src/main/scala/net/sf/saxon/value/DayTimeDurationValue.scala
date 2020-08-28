@@ -25,7 +25,7 @@ import DayTimeDurationValue._
 object DayTimeDurationValue {
 
   def makeDayTimeDurationValue(s: CharSequence): ConversionResult = {
-    val d: ConversionResult = DurationValue.makeDuration(s, false, true)
+    val d: ConversionResult = DurationValue.makeDuration(s, allowYM = false, allowDT = true)
     if (d.isInstanceOf[ValidationFailure]) {
       return d
     }

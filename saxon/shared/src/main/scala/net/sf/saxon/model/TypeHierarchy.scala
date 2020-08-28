@@ -123,7 +123,7 @@ class TypeHierarchy(var config: Configuration) {
     val requiredItemType: ItemType = requiredType.getPrimaryType
     if (requiredItemType.isPlainType) {
       if (!suppliedItemType.isPlainType) {
-        try iterator = Atomizer.getAtomizingIterator(iterator, false)
+        try iterator = Atomizer.getAtomizingIterator(iterator, oneToOne = false)
         catch {
           case e: XPathException => {
             val vf: ValidationFailure = new ValidationFailure(

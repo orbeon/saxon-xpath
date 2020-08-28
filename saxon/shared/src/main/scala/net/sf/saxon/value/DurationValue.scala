@@ -43,7 +43,7 @@ object DurationValue {
   /*@NotNull*/
 
   def makeDuration(s: CharSequence): ConversionResult =
-    makeDuration(s, true, true)
+    makeDuration(s, allowYM = true, allowDT = true)
 
   /*@NotNull*/
 

@@ -42,7 +42,7 @@ class SiblingIterator(private var tree: TinyTree,
     parentNode = node
     nextNodeNr = node.nodeNr + 1
   } else {
-    parentNode = node.getParent.asInstanceOf[TinyNodeImpl]
+    parentNode = node.getParent
     if (parentNode == null) {
       nextNodeNr = -1
     } else {

@@ -44,11 +44,11 @@ class FollowingIterator(var doc: TinyTree,
             val nextSib: Int = tree.next(nodeNr)
             if (nextSib > nodeNr) {
               nodeNr = nextSib
-              break
+              break()
             } else if (tree.depth(nextSib) == 0) {
               current = null
               position = -1
-              null
+              return null
             } else {
               nodeNr = nextSib
             }
@@ -63,9 +63,7 @@ class FollowingIterator(var doc: TinyTree,
       else current.asInstanceOf[TinyNodeImpl]
       nodeNr = here.nodeNr + 1
     }
-    while ( {
-      true
-    }) {
+    while (true) {
       if (tree.depth(nodeNr) == 0) {
         current = null
         position = -1

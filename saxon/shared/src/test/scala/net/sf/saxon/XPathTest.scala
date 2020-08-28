@@ -26,7 +26,7 @@ class XPathTest extends AnyFunSpec {
       "'To be, or not to be, that is the question'" -> "To be, or not to be, that is the question",
       "let $a := 42 return $a" -> "42",
       "let $a := 1, $b := 2 return $a + $b" -> "3",
-//      "3.1415" -> "3.1415",
+      "3.1415" -> "3.1415",
 //      "concat('To be', ', or not to be')" -> "To be, or not to be",
 //      "'To be' || ', or not to be'" -> "To be, or not to be",
     )

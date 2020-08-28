@@ -262,7 +262,7 @@ class CopyOf(select: Expression,
       }
     } else {
       validation match {
-        case Validation.PRESERVE => in
+        case Validation.PRESERVE => return in
         case Validation.STRIP => {
           val th: TypeHierarchy = config.getTypeHierarchy
           val e: Affinity.Affinity = th.relationship(in, NodeKindTest.ELEMENT)
@@ -550,8 +550,8 @@ class CopyOf(select: Expression,
               var typeName: StructuredQName = null
               typeName = StructuredQName.fromLexicalQName(
                 xsitype,
-                true,
-                false,
+                useDefault = true,
+                allowEQName = false,
                 item.getAllNamespaces)
               `type` = config.getSchemaType(typeName)
               if (`type` == null) {
@@ -713,21 +713,21 @@ class CopyOf(select: Expression,
           }
         new ItemMappingIterator(getSelect.iterate(context), copier, true)
       } else if (validation == Validation.STRIP) {
-        val copier: ItemMappingFunction = (item) => {
-          if (!(item.isInstanceOf[NodeInfo])) {
+        val copier: ItemMappingFunction = item => {
+          if (! item.isInstanceOf[NodeInfo]) {
             item
+          } else {
+            val vc: VirtualCopy = VirtualUntypedCopy.makeVirtualUntypedTree(
+              item.asInstanceOf[NodeInfo],
+              item.asInstanceOf[NodeInfo])
+            vc.getTreeInfo.setCopyAccumulators(copyAccumulators)
+            vc.setDropNamespaces(!copyNamespaces)
+            if (item.asInstanceOf[NodeInfo].getNodeKind == Type.ELEMENT) {
+              vc.setSystemId(
+                computeNewBaseUri(item.asInstanceOf[NodeInfo], getStaticBaseURIString))
+            }
+            vc
           }
-          var vc: VirtualCopy = VirtualUntypedCopy.makeVirtualUntypedTree(
-            item.asInstanceOf[NodeInfo],
-            item.asInstanceOf[NodeInfo])
-          vc.getTreeInfo.setCopyAccumulators(copyAccumulators)
-          vc.setDropNamespaces(!copyNamespaces)
-          if (item.asInstanceOf[NodeInfo].getNodeKind == Type.ELEMENT) {
-            vc.setSystemId(
-              computeNewBaseUri(item.asInstanceOf[NodeInfo],
-                getStaticBaseURIString))
-          }
-          vc
         }
         new ItemMappingIterator(getSelect.iterate(context), copier, true)
       }

@@ -73,7 +73,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   }
 
 
-  def setNormalizer(normalizer: Normalizer): Unit = {}
+  def setNormalizer(normalizer: Normalizer): Unit = ()
 
   def setCharacterMap(map: CharacterMap): Unit = {
     this.characterMap = map
@@ -116,7 +116,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
           s = s.replace("\"", "\"\"")
         }
         if (characterMap != null) {
-          s = characterMap.map(s, false).toString
+          s = characterMap.map(s, insertNulls = false).toString
         }
         "\"" + s + "\""
       }

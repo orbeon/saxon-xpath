@@ -130,7 +130,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       var sortKey: Expression = sortKeyDef.getSortKey
       if (sortKeyDef.isSetContextForSortKey) {
         val cit: ContextItemStaticInfo = visitor.getConfiguration
-          .makeContextItemStaticInfo(sortedItemType, false)
+          .makeContextItemStaticInfo(sortedItemType, maybeUndefined = false)
         sortKey = sortKey.typeCheck(visitor, cit)
       } else {
         sortKey = sortKey.typeCheck(visitor, contextInfo)
@@ -173,14 +173,14 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     if (getSortKeyDefinition(0).isSetContextForSortKey) {
       val sortedItemType: ItemType = getSelect.getItemType
       cit = visitor.getConfiguration
-        .makeContextItemStaticInfo(sortedItemType, false)
+        .makeContextItemStaticInfo(sortedItemType, maybeUndefined = false)
     } else {
       cit = contextItemType
     }
     for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
       var sortKey: Expression = sortKeyDefinition.getSortKey
       sortKey = sortKey.optimize(visitor, cit)
-      sortKeyDefinition.setSortKey(sortKey, true)
+      sortKeyDefinition.setSortKey(sortKey, setContext = true)
     }
     if (Cardinality.allowsMany(getSelect.getCardinality)) {
       this

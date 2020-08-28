@@ -99,7 +99,7 @@ class GroupAdjacentIterator(private var select: Expression,
       comparisonKey =
         if (aKey.isNaN) AtomicMatchKey.NaN_MATCH_KEY
         else
-          aKey.getXPathComparable(false,
+          aKey.getXPathComparable(ordered = false,
             collator,
             keyContext.getImplicitTimezone)
       ckey.add(comparisonKey)

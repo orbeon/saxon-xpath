@@ -50,8 +50,8 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
     // Neither operand needs to be sorted
-    setLhsExpression(getLhsExpression.unordered(false, false))
-    setRhsExpression(getRhsExpression.unordered(false, false))
+    setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+    setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     val atomicType = SequenceType.OPTIONAL_ATOMIC
     val tc = config.getTypeChecker(false)
     val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "eq", 0)
@@ -76,8 +76,8 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
     if (t0 == BuiltInAtomicType.ANY_ATOMIC || t0 == BuiltInAtomicType.UNTYPED_ATOMIC || t1 == BuiltInAtomicType.ANY_ATOMIC || t1 == BuiltInAtomicType.UNTYPED_ATOMIC) {
       // then no static type checking is possible
     }
-    else if (Type.isGuaranteedComparable(pt0, pt1, false)) knownToBeComparable = true
-    else if (!Type.isPossiblyComparable(pt0, pt1, false)) {
+    else if (Type.isGuaranteedComparable(pt0, pt1, ordered = false)) knownToBeComparable = true
+    else if (!Type.isPossiblyComparable(pt0, pt1, ordered = false)) {
       env.issueWarning("Cannot compare " + t0.toString + " to " + t1.toString, getLocation)
       // This is not an error in a switch statement, but it means the branch will never be chosen
     }
@@ -159,7 +159,7 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
     val v1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
     if (v0 == null || v1 == null) return v0 eq v1
     val comp2 = comparer.provideContext(context)
-    (knownToBeComparable || Type.isGuaranteedComparable(v0.getPrimitiveType, v1.getPrimitiveType, false)) && comp2.comparesEqual(v0, v1)
+    (knownToBeComparable || Type.isGuaranteedComparable(v0.getPrimitiveType, v1.getPrimitiveType, ordered = false)) && comp2.comparesEqual(v0, v1)
   }
 
   /**

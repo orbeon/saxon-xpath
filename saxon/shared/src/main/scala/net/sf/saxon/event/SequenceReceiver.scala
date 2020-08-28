@@ -48,7 +48,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {}
+                        publicID: String): Unit = ()
 
   def open(): Unit = {
     previousAtomic = false

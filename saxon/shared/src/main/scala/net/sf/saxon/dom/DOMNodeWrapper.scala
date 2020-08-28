@@ -466,7 +466,7 @@ class DOMNodeWrapper(var node: Node,
   }
 
   def generateId(buffer: FastStringBuffer): Unit = {
-    Navigator.appendSequentialKey(this, buffer, true)
+    Navigator.appendSequentialKey(this, buffer, addDocNr = true)
   }
 
   override def getDeclaredNamespaces(

@@ -126,7 +126,7 @@ object AnyType extends Enumeration {
 
     def isSameType(other: SchemaType): Boolean = other.isInstanceOf[AnyType]
 
-    def analyzeContentExpression(expression: Expression, kind: Int): Unit = {}
+    def analyzeContentExpression(expression: Expression, kind: Int): Unit = ()
 //return;
 //return;
 

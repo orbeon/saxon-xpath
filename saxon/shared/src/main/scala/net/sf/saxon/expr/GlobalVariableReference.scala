@@ -87,7 +87,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
 
   def getFixedTarget(): Component = {
     val c: Component = getTarget
-    val v: Visibility.Visibility = c.getVisibility.asInstanceOf[Visibility.Visibility]
+    val v: Visibility.Visibility = c.getVisibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) {
       c
     } else {

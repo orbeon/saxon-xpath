@@ -62,7 +62,7 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     }
     val currentItem: Item = context.getCurrentIterator.current()
     val mode: Mode = modeComponent.getActor
-    val rule: Rule = mode.getRule(currentItem, min, max, context).asInstanceOf[Rule]
+    val rule: Rule = mode.getRule(currentItem, min, max, context)
     if (rule == null) {
       mode.getBuiltInRuleSet.process(currentItem,
         params,
@@ -90,10 +90,10 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     out.startElement("applyImports", this)
     out.emitAttribute("flags", "i")
     if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, false)
+      WithParam.exportParameters(getActualParams, out, tunnel = false)
     }
     if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, true)
+      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

@@ -154,7 +154,7 @@ class WithParam {
   }
 
   private def computeEvaluator(): Unit = {
-    evaluator = ExpressionTool.lazyEvaluator(selectOp.getChildExpression, true)
+    evaluator = ExpressionTool.lazyEvaluator(selectOp.getChildExpression, repeatable = true)
   }
 
   def getSelectValue(context: XPathContext): Sequence = {

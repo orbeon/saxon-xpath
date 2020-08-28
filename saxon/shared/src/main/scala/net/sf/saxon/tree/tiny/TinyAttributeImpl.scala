@@ -29,7 +29,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   this.nodeNr = nodeNrImpl
 
-  override def setSystemId(uri: String): Unit = {}
+  override def setSystemId(uri: String): Unit = ()
 
   override def getSystemId(): String = {
     val parent: NodeInfo = getParent
@@ -48,7 +48,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   }
 
   override  def getSequenceNumber(): Long =
-    getParent.asInstanceOf[TinyNodeImpl].getSequenceNumber +
+    getParent.getSequenceNumber +
       0x8000 +
       (nodeNr - tree.alpha(tree.attParent(nodeNr)))
 

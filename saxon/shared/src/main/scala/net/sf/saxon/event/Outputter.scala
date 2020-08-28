@@ -33,7 +33,7 @@ abstract class Outputter extends Receiver {
 
   def getSystemId(): String = systemId
 
-  def open(): Unit = {}
+  def open(): Unit = ()
 
   def startDocument(properties: Int): Unit
 
@@ -41,7 +41,7 @@ abstract class Outputter extends Receiver {
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {}
+                        publicID: String): Unit = ()
 
   def startElement(elemName: NodeName,
                    typeCode: SchemaType,
@@ -82,7 +82,7 @@ abstract class Outputter extends Receiver {
                 location: Location,
                 properties: Int): Unit
 
-  def startContent(): Unit = {}
+  def startContent(): Unit = ()
 
   def endElement(): Unit
 
@@ -123,7 +123,7 @@ abstract class Outputter extends Receiver {
       }
     }
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
   override def usesTypeAnnotations(): Boolean = false
 

@@ -574,7 +574,7 @@ class QueryModule extends StaticContext {
         executable.getGlobalContextRequirement
       if (gcr != null && gcr.getDefaultValue != null) {
         val info: ContextItemStaticInfo = getConfiguration
-          .makeContextItemStaticInfo(AnyItemType.getInstance, true)
+          .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
         gcr.setDefaultValue(gcr.getDefaultValue.typeCheck(visitor, info))
       }
     }
@@ -849,11 +849,11 @@ class QueryModule extends StaticContext {
       }
     }
     if (prefix.isEmpty) {
-      defaultElementNamespace
+      return defaultElementNamespace
     }
     var uri: String = explicitPrologNamespaces.get(prefix)
     if (uri != null) {
-      if (uri.isEmpty) return null else return uri
+      return if (uri.isEmpty)  null else uri
     }
     if (userQueryContext != null) {
       uri = userQueryContext.getNamespaceForPrefix(prefix)

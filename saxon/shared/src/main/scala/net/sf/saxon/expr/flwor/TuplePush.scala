@@ -21,7 +21,7 @@ abstract class TuplePush  (
 
   def processTuple(context: XPathContext): Unit
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 // default implementation takes no action
 // default implementation takes no action
 

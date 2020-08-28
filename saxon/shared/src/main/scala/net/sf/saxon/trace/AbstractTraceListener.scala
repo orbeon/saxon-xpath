@@ -185,8 +185,8 @@ abstract class AbstractTraceListener
 
   def getOutputDestination(): Logger = out
 
-  override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = {}
+  override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = ()
 
-  override def startRuleSearch(): Unit = {}
+  override def startRuleSearch(): Unit = ()
 
 }

@@ -144,7 +144,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
           if (getNamespaceExp == null) {
             val prefix: String = parts(0)
             val uri: String =
-              getNamespaceResolver.getURIForPrefix(prefix, true)
+              getNamespaceResolver.getURIForPrefix(prefix, useDefault = true)
             if (uri == null) {
               val se: XPathException = new XPathException(
                 "Prefix " + prefix + " has not been declared")
@@ -272,7 +272,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       throw dynamicError(getLocation.toString, err.toString, context)
     }
     if (getNamespaceExp == null && uri == null) {
-      uri = getRetainedStaticContext.getURIForPrefix(prefix, true).toString
+      uri = getRetainedStaticContext.getURIForPrefix(prefix, useDefault = true).toString
       if (uri == null) {
         val errorCode: String =
           if (isXSLT) "XTDE0830"
@@ -336,7 +336,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
 
   def outputNamespaceNodes(out: Outputter,
                            nodeName: NodeName,
-                           copiedNode: NodeInfo): Unit = {}
+                           copiedNode: NodeInfo): Unit = ()
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ELEMENT
 

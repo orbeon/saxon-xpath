@@ -638,7 +638,7 @@ class XPathParser() {
     if (exp == null) {
       qNameParser = new QNameParser(env.getNamespaceResolver).withAcceptEQName(allowXPath30Syntax).withErrorOnBadSyntax(if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340"
       else "XPST0003").withErrorOnUnresolvedPrefix("XPST0081")
-      charChecker = env.getConfiguration.getValidCharacterChecker.asInstanceOf[IntPredicate]
+      charChecker = env.getConfiguration.getValidCharacterChecker
       t = new Tokenizer
       t.languageLevel = env.getXPathVersion
       t.allowSaxonExtensions = env.getConfiguration.getBooleanProperty(Feature.ALLOW_SYNTAX_EXTENSIONS)
@@ -947,7 +947,7 @@ class XPathParser() {
       true
   }
 
-  private def getCurrentOperatorPrecedence: Int = XPathParser.operatorPrecedence(t.currentToken).asInstanceOf[Int]
+  private def getCurrentOperatorPrecedence: Int = XPathParser.operatorPrecedence(t.currentToken)
 
   @throws[XPathException]
   private def makeBinaryExpression(lhs: Expression, operator: Int, rhs: Expression): Expression = {
@@ -1007,10 +1007,10 @@ class XPathParser() {
     let.setRequiredType(SequenceType.ANY_SEQUENCE)
     val v1 = new LocalVariableReference(let.getVariableQName)
     v1.setBinding(let)
-    let.addReference(v1, false)
+    let.addReference(v1, isLoopingReference = false)
     val v2 = new LocalVariableReference(let.getVariableQName)
     v2.setBinding(let)
-    let.addReference(v2, false)
+    let.addReference(v2, isLoopingReference = false)
     val rsc = new RetainedStaticContext(env)
     val conditions = Array[Expression](SystemFunction.makeCall("exists", rsc, v1), Literal.makeLiteral(BooleanValue.TRUE, lhs))
     val actions = Array[Expression](v2, rhs)
@@ -1347,7 +1347,7 @@ class XPathParser() {
       var theClass: Class[_] = null
       try {
         val className = JavaExternalObjectType.localNameToClassName(local)
-        theClass = config.getConfClass(className, false, null)
+        theClass = config.getConfClass(className, tracing = false, null)
       } catch {
         case err: XPathException =>
           grumble("Unknown Java class " + local, "XPST0051")
@@ -1776,7 +1776,7 @@ class XPathParser() {
         val start = new RootExpression
         setLocation(start)
         if (disallowedAtStartOfRelativePath) grumble("Operator '" + Token.tokens(t.currentToken) + "' is not allowed after '/'")
-        if (atStartOfRelativePath.asInstanceOf[Boolean]) {
+        if (atStartOfRelativePath) {
           val path = parseRemainingPath(start)
           setLocation(path, offset)
           path
@@ -2505,7 +2505,7 @@ class XPathParser() {
               }
               else return elementDecl.makeSchemaNodeTest
             }
-            else return makeNameTest(Type.ELEMENT, nodeName, true)
+            else return makeNameTest(Type.ELEMENT, nodeName, useDefault = true)
           }
         }
         else if (t.currentToken == Token.COMMA) {
@@ -2792,7 +2792,8 @@ class XPathParser() {
     val sn = new SymbolicName.F(functionName, args.size)
     val reasons = new util.ArrayList[String]
     fcall = env.getFunctionLibrary.bind(sn, arguments, env, reasons)
-    if (fcall == null) return reportMissingFunction(offset, functionName, arguments, reasons)
+    if (fcall == null)
+      return reportMissingFunction(offset, functionName, arguments, reasons)
     if (language eq ParsedLanguage.XSLT_PATTERN) if (fcall.isCallOn(classOf[RegexGroup])) return Literal.makeEmptySequence
     else if (fcall.isInstanceOf[CurrentGroupCall]) {
       grumble("The current-group() function cannot be used in a pattern", "XTSE1060", offset)
@@ -2852,8 +2853,7 @@ class XPathParser() {
     else sb.append(". External function calls have been disabled")
     if (env.isInBackwardsCompatibleMode) { // treat this as a dynamic error to be reported only if the function call is executed
       new ErrorExpression(sb.toString, "XTDE1425", false)
-    }
-    else {
+    } else {
       grumble(sb.toString, "XPST0017", offset)
       null
     }

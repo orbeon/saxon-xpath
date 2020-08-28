@@ -8,7 +8,7 @@ import net.sf.saxon.trans.XPathException
 
 trait CharSequenceConsumer {
 
-  def open(): Unit = {}
+  def open(): Unit = ()
 // no action
 // no action
 
@@ -16,7 +16,7 @@ trait CharSequenceConsumer {
 
   def cat(c: Char): CharSequenceConsumer = cat("" + c)
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
 }
 

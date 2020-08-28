@@ -75,7 +75,7 @@ trait AttributeMap extends Iterable[AttributeInfo] {
     AttributeMap.fromList(list)
   }
 
-  def verify(): Unit = {}
+  def verify(): Unit = ()
 
   def apply(mapper: java.util.function.Function[AttributeInfo, AttributeInfo])
     : AttributeMap = {

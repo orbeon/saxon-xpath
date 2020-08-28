@@ -220,7 +220,7 @@ class XQueryFunction extends Declaration with Location {
     }
     if (opt.isOptionSet(OptimizerOptions.EXTRACT_GLOBALS)) {
       val exec: Executable =
-        getStaticContext.asInstanceOf[QueryModule].getExecutable
+        getStaticContext.getExecutable
       val manager: GlobalVariableManager = new GlobalVariableManager() {
         def addGlobalVariable(variable: GlobalVariable): Unit = {
           var pd: PackageData = staticContext.getPackageData

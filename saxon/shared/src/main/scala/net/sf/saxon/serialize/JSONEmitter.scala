@@ -134,11 +134,11 @@ class JSONEmitter(pipe: PipelineConfiguration,
             "SERE0020")
         }
       } else if (item.isInstanceOf[IntegerValue]) {
-        emit(num.longValue().toString + "")
+        emit(num.longValue().toString)
       } else if (num.isWholeNumber && !num.isNegativeZero && num
         .abs()
         .compareTo(1000000000000000000L) < 0) {
-        emit(num.longValue().toString + "")
+        emit(num.longValue().toString)
       } else {
         emit(num.getStringValue)
       }
@@ -229,7 +229,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     if (characterMap != null) {
       val out: FastStringBuffer = new FastStringBuffer(cs.length)
       var chSeq = cs
-      chSeq = characterMap.map(chSeq, true)
+      chSeq = characterMap.map(chSeq, insertNulls = true)
       val s: String = chSeq.toString
       var prev: Int = 0
       while (true) {
@@ -256,7 +256,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     }
     JsonReceiver.escape(
       chSeq,
-      false,
+      forXml = false,
       (c) => c < 31 || (c >= 127 && c <= 159) || !characterSet.inCharset(c))
   }
 
@@ -269,7 +269,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   }
 
   private def emit(c: Char): Unit = {
-    emit(c.toString + "")
+    emit(c.toString)
   }
 
   def close(): Unit = {

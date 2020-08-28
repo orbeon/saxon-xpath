@@ -298,7 +298,7 @@ class NamespaceNode(var element: NodeInfo,
     *
     * @param systemId The system identifier as a URL string.
     */
-  def setSystemId(systemId: String): Unit = {}
+  def setSystemId(systemId: String): Unit = ()
 // no action: namespace nodes have the same base URI as their parent
 // no action: namespace nodes have the same base URI as their parent
 

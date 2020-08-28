@@ -145,7 +145,7 @@ class EarlyEvaluationContext(private var config: Configuration)
 
   def newMinorContext(): XPathContextMinor = newContext().newMinorContext()
 
-  def setCaller(caller: XPathContext): Unit = {}
+  def setCaller(caller: XPathContext): Unit = ()
 // no-op
 // no-op
 
@@ -179,7 +179,7 @@ class EarlyEvaluationContext(private var config: Configuration)
     getCaller.waitForChildThreads()
   }
 
-  def setTemporaryOutputState(temporary: Int): Unit = {}
+  def setTemporaryOutputState(temporary: Int): Unit = ()
 // no action
 // no action
 
@@ -190,7 +190,7 @@ class EarlyEvaluationContext(private var config: Configuration)
     */
   def getTemporaryOutputState(): Int = 0
 
-  def setCurrentOutputUri(uri: String): Unit = {}
+  def setCurrentOutputUri(uri: String): Unit = ()
 // no action
 // no action
 

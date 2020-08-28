@@ -18,7 +18,7 @@ object ArithmeticExpression {
     val p0: Int = value0.getPrimitiveType.getFingerprint
     val p1: Int = value1.getPrimitiveType.getFingerprint
     val calculator: Calculator =
-      Calculator.getCalculator(p0, p1, operator, false)
+      Calculator.getCalculator(p0, p1, operator, mustResolve = false)
     calculator.compute(value0, value1, context)
   }
 

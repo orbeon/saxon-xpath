@@ -1,28 +1,12 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.expr.Expression
-
-import net.sf.saxon.expr.SystemFunctionCall
-
-import net.sf.saxon.expr.XPathContext
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
+import net.sf.saxon.expr.{Expression, SystemFunctionCall, XPathContext}
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
 import net.sf.saxon.expr.sort.CodepointCollator
-
+import net.sf.saxon.functions.EndsWith._
 import net.sf.saxon.lib.SubstringMatcher
-
 import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.BooleanValue
-
-import net.sf.saxon.value.StringValue
-
-import EndsWith._
+import net.sf.saxon.value.{BooleanValue, StringValue}
 
 object EndsWith {
 
@@ -31,10 +15,10 @@ object EndsWith {
                collator: SubstringMatcher): Boolean = {
     if (arg1 == null || arg1.isZeroLength ||
       collator.comparesEqual(arg1.getPrimitiveStringValue, "")) {
-      true
+      return true
     }
     if (arg0 == null || arg0.isZeroLength) {
-      false
+      return false
     }
     val s0: String = arg0.getStringValue
     val s1: String = arg1.getStringValue

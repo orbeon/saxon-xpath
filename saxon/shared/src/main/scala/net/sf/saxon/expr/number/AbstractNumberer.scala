@@ -111,17 +111,17 @@ object AbstractNumberer {
     } else if (nr == 10) {
       fsb.appendWideChar(0x5341)
     } else if (nr <= 99) {
-      toJapanese(nr / 10, fsb, true)
+      toJapanese(nr / 10, fsb, isInitial = true)
       fsb.appendWideChar(0x5341)
-      toJapanese(nr % 10, fsb, false)
+      toJapanese(nr % 10, fsb, isInitial = false)
     } else if (nr <= 999) {
-      toJapanese(nr / 100, fsb, true)
+      toJapanese(nr / 100, fsb, isInitial = true)
       fsb.appendWideChar(0x767e)
-      toJapanese(nr % 100, fsb, false)
+      toJapanese(nr % 100, fsb, isInitial = false)
     } else if (nr <= 9999) {
-      toJapanese(nr / 1000, fsb, true)
+      toJapanese(nr / 1000, fsb, isInitial = true)
       fsb.appendWideChar(0x5343)
-      toJapanese(nr % 1000, fsb, false)
+      toJapanese(nr % 1000, fsb, isInitial = false)
     }
   }
 
@@ -458,7 +458,7 @@ abstract class AbstractNumberer extends Numberer {
     if (number == 0) {
       fsb.appendWideChar(0x3007)
     } else if (number <= 9999) {
-      AbstractNumberer.toJapanese(number.toInt, fsb, false)
+      AbstractNumberer.toJapanese(number.toInt, fsb, isInitial = false)
     } else {
       fsb.append("" + number)
     }

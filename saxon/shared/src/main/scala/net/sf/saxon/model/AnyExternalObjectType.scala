@@ -25,7 +25,7 @@ class AnyExternalObjectType  () extends ItemType {
   override def isAtomicType(): Boolean = false
 
   override def matches(item: Item, th: TypeHierarchy): Boolean =
-    item.isInstanceOf[ObjectValue[Any]]
+    item.isInstanceOf[ObjectValue[_]]
 
   override def isPlainType(): Boolean = false
 

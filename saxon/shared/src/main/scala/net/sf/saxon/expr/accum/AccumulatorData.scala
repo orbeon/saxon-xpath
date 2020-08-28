@@ -108,9 +108,9 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
       context.getCurrentIterator
         .asInstanceOf[ManualIterator]
         .setContextItem(node)
-      var rule: Rule = accumulator.getPreDescentRules.getRule(node, context).asInstanceOf[Rule]
+      var rule: Rule = accumulator.getPreDescentRules.getRule(node, context)
       if (rule != null) {
-        seq = processRule(rule, node, false, seq, context)
+        seq = processRule(rule, node, isPostDescent = false, seq, context)
         logChange(node, seq, context, " BEFORE ")
       }
       for (kid <- node.children()) {
@@ -119,9 +119,9 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
       context.getCurrentIterator
         .asInstanceOf[ManualIterator]
         .setContextItem(node)
-      rule = accumulator.getPostDescentRules.getRule(node, context).asInstanceOf[Rule]
+      rule = accumulator.getPostDescentRules.getRule(node, context)
       if (rule != null) {
-        seq = processRule(rule, node, true, seq, context)
+        seq = processRule(rule, node, isPostDescent = true, seq, context)
         logChange(node, seq, context, " AFTER ")
       }
       seq

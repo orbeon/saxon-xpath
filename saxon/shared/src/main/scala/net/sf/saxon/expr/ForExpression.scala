@@ -136,7 +136,7 @@ class ForExpression extends Assignation {
       val step2: Expression = path2.getActionExpression
       if (start2.isInstanceOf[VariableReference] &&
         start2.asInstanceOf[VariableReference].getBinding == this &&
-        ExpressionTool.getReferenceCount(getAction, this, false) ==
+        ExpressionTool.getReferenceCount(getAction, this, inLoop = false) ==
           1 &&
         ((step2.getDependencies &
           (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST)) ==
@@ -260,7 +260,7 @@ class ForExpression extends Assignation {
   def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
-    getAction.checkPermittedContents(parentType, false)
+    getAction.checkPermittedContents(parentType, whole = false)
   }
 
   override def iterate(context: XPathContext): SequenceIterator = {
@@ -338,7 +338,7 @@ class ForExpression extends Assignation {
     out.endElement()
   }
 
-  def explainSpecializedAttributes(out: ExpressionPresenter): Unit = {}
+  def explainSpecializedAttributes(out: ExpressionPresenter): Unit = ()
 
   override def getStreamerName(): String = "ForExpression"
 

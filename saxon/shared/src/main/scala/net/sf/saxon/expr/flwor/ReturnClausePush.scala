@@ -36,7 +36,7 @@ class ReturnClausePush(outputter: Outputter,
   /**
     * Close the tuple stream, indicating that no more tuples will be supplied
     */
-  override def close(): Unit = {}
+  override def close(): Unit = ()
 // no action
 // no action
 

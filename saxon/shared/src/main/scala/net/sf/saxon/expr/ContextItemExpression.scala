@@ -44,7 +44,7 @@ class ContextItemExpression extends Expression {
   def copy(rebindings: RebindingMap): Expression = {
     val cie2: ContextItemExpression = new ContextItemExpression()
     cie2.staticInfo = staticInfo
-    cie2.setErrorCodeForUndefinedContext(errorCodeForAbsentContext, false)
+    cie2.setErrorCodeForUndefinedContext(errorCodeForAbsentContext, isTypeError = false)
     ExpressionTool.copyLocationInfo(this, cie2)
     cie2
   }

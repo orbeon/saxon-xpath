@@ -29,7 +29,7 @@ import YearMonthDurationValue._
 object YearMonthDurationValue {
 
   def makeYearMonthDurationValue(s: CharSequence): ConversionResult = {
-    val d: ConversionResult = DurationValue.makeDuration(s, true, false)
+    val d: ConversionResult = DurationValue.makeDuration(s, allowYM = true, allowDT = false)
     if (d.isInstanceOf[ValidationFailure]) {
       return d
     }

@@ -374,7 +374,7 @@ class UserFunctionCall extends FunctionCall
     getTargetComponent(context).getActor.asInstanceOf[UserFunction]
 
   override def evaluateArguments(c: XPathContext): Array[Sequence] =
-    evaluateArguments(c, false)
+    evaluateArguments(c, streamed = false)
 
   def evaluateArguments(c: XPathContext, streamed: Boolean): Array[Sequence] = {
     val numArgs: Int = getArity

@@ -74,53 +74,53 @@ object BigDecimalValue {
     for (i <- 0 until len) {
       val c = in.charAt(i)
       c match {
-        case ' ' =>
-        case '\t' =>
-        case '\r' =>
-        case '\n' =>
-          if (state != 0) state = 5
+        case ' ' | '\t' | '\r' | '\n' =>
+          if (state != 0)
+            state = 5
         case '+' =>
-          if (state != 0) throw new NumberFormatException("unexpected sign")
+          if (state != 0)
+            throw new NumberFormatException("unexpected sign")
           state = 1
         case '-' =>
-          if (state != 0) throw new NumberFormatException("unexpected sign")
+          if (state != 0)
+            throw new NumberFormatException("unexpected sign")
           state = 1
           digits.cat(c)
-        case '0' =>
-        case '1' =>
-        case '2' =>
-        case '3' =>
-        case '4' =>
-        case '5' =>
-        case '6' =>
-        case '7' =>
-        case '8' =>
-        case '9' =>
-          if (state == 0) state = 1
-          else if (state >= 3) scale += 1
-          if (state == 5) throw new NumberFormatException("contains embedded whitespace")
+        case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+          if (state == 0)
+            state = 1
+          else if (state >= 3)
+            scale += 1
+          if (state == 5)
+            throw new NumberFormatException("contains embedded whitespace")
           digits.cat(c)
           foundDigit = true
         case '.' =>
-          if (state == 5) throw new NumberFormatException("contains embedded whitespace")
-          if (state >= 3) throw new NumberFormatException("more than one decimal point")
+          if (state == 5)
+            throw new NumberFormatException("contains embedded whitespace")
+          if (state >= 3)
+            throw new NumberFormatException("more than one decimal point")
           state = 3
         case _ =>
           throw new NumberFormatException("invalid character '" + c + "'")
       }
     }
-    if (!foundDigit) throw new NumberFormatException("no digits in value")
+    if (! foundDigit)
+      throw new NumberFormatException("no digits in value")
 
     breakable {
-      while (scale > 0) if (digits.charAt(digits.length - 1) == '0') {
-        digits.setLength(digits.length - 1)
-        scale -= 1
-      }
-      else break()
+      while (scale > 0)
+        if (digits.charAt(digits.length - 1) == '0') {
+          digits.setLength(digits.length - 1)
+          scale -= 1
+        } else
+          break()
     }
-    if (digits.isEmpty || (digits.length == 1 && digits.charAt(0) == '-')) return BigDecimalValue.ZERO
+    if (digits.isEmpty || (digits.length == 1 && digits.charAt(0) == '-'))
+      return BigDecimalValue.ZERO
     val bigInt = new BigInteger(digits.toString)
     val bigDec = new BigDecimal(bigInt, scale)
+
     new BigDecimalValue(bigDec)
   }
 
@@ -214,7 +214,7 @@ object BigDecimalValue {
 
 final class BigDecimalValue extends DecimalValue {
   private var value: BigDecimal = null
-  private var doubleValue = .0
+  private var doubleValue: java.lang.Double = null
 
   /**
    * Constructor supplying a BigDecimal
@@ -241,7 +241,7 @@ final class BigDecimalValue extends DecimalValue {
     } catch {
       case err: NumberFormatException =>
         // Must be a special value such as NaN or infinity
-        val e = new ValidationFailure("Cannot convert double " + Err.wrap(in.toString + "", Err.VALUE) + " to decimal")
+        val e = new ValidationFailure("Cannot convert double " + Err.wrap(in.toString, Err.VALUE) + " to decimal")
         e.setErrorCode("FOCA0002")
         throw e.makeException
     }
@@ -285,12 +285,13 @@ final class BigDecimalValue extends DecimalValue {
    * @return A double representing this numeric value; NaN if it cannot be
    *         converted
    */
-  override def getDoubleValue = if (doubleValue == null) {
-    val d = value.doubleValue
-    doubleValue = d
-    d
-  }
-  else doubleValue
+  override def getDoubleValue =
+    if (doubleValue == null) {
+      val d = value.doubleValue
+      doubleValue = d
+      d
+    } else
+      doubleValue
 
   /**
    * Get the numeric value converted to a float

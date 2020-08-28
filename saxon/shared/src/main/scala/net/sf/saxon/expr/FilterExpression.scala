@@ -98,7 +98,7 @@ object FilterExpression {
               Calculator.getCalculator(StandardNames.XS_INTEGER,
                 StandardNames.XS_INTEGER,
                 Calculator.MINUS,
-                true))
+                mustResolve = true))
             args(2) = decrement
           }
           SystemFunction.makeCall("subsequence",
@@ -408,7 +408,7 @@ class FilterExpression(base: Expression, filter: Expression)
       getBase
     }
     val baseItemType: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(getSelectExpression.getItemType, false)
+      config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.setContextSettingExpression(getBase)
     getRhs.typeCheck(visitor, baseItemType)
     val filter2: Expression = ExpressionTool.unsortedIfHomogeneous(
@@ -442,7 +442,7 @@ class FilterExpression(base: Expression, filter: Expression)
     getLhs.optimize(visitor, contextItemType)
     getBase.setFiltered(true)
     val baseItemType: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(getSelectExpression.getItemType, false)
+      config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.setContextSettingExpression(getBase)
     getRhs.optimize(visitor, baseItemType)
     val filter2: Expression = ExpressionTool.unsortedIfHomogeneous(

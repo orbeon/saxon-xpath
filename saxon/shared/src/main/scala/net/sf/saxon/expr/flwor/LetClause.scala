@@ -36,7 +36,7 @@ class LetClause extends Clause {
 
   @BeanProperty
   var evaluator: Evaluator =
-    ExpressionTool.lazyEvaluator(getSequence, true)
+    ExpressionTool.lazyEvaluator(getSequence, repeatable = true)
 
   override def getClauseKey(): ClauseName = LET
 
@@ -108,7 +108,7 @@ class LetClause extends Clause {
       rangeVariable.getRequiredType,
       role,
       visitor.getStaticContext))
-    evaluator = ExpressionTool.lazyEvaluator(getSequence, true)
+    evaluator = ExpressionTool.lazyEvaluator(getSequence, repeatable = true)
   }
 
   override def gatherVariableReferences(
@@ -151,7 +151,7 @@ class LetClause extends Clause {
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("let")
     out.emitAttribute("var", getRangeVariable.getVariableQName)
-    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString + "")
+    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
     getSequence.export(out)
     out.endElement()
   }

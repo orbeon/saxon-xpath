@@ -161,6 +161,6 @@ class NumericType private()
 
   override def toString(): String = "xs:numeric"
 
-  def checkTypeDerivationIsOK(base: SchemaType, block: Int): Unit = {}
+  def checkTypeDerivationIsOK(base: SchemaType, block: Int): Unit = ()
 
 }

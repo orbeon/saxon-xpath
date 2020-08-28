@@ -46,7 +46,7 @@ object DocumentFn {
         null,
         context,
         locator,
-        false)
+        silent = false)
     }
 
   }
@@ -282,7 +282,7 @@ object DocumentFn {
     if (resolver == null) {
       resolver = controller.getStandardURIResolver
     }
-    computeDocumentKey(href, baseURI, packageData, resolver, true)
+    computeDocumentKey(href, baseURI, packageData, resolver, strip = true)
   }
 
   def computeDocumentKey(href: String,
@@ -460,7 +460,7 @@ object DocumentFn {
       }
     }
     val controller: Controller = c.getController
-    val doc: TreeInfo = controller.getDocumentPool.asInstanceOf[DocumentPool].find(documentKey)
+    val doc: TreeInfo = controller.getDocumentPool.find(documentKey)
     var source: Source = null
     if (doc != null) {
       source = doc.getRootNode
@@ -517,7 +517,7 @@ object DocumentFn {
         locator)
       doc.getRootNode
     }
-    doc.selectID(fragmentId, false)
+    doc.selectID(fragmentId, getParent = false)
   }
 
 }

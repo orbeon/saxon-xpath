@@ -38,7 +38,7 @@ object DistinctValues {
         }
         var key: AtomicMatchKey = null
         key = if (nextBase.isNaN) AtomicMatchKey.NaN_MATCH_KEY
-          else nextBase.getXPathComparable(false, collator, implicitTimezone)
+          else nextBase.getXPathComparable(ordered = false, collator, implicitTimezone)
         if (lookup.add(key)) return nextBase
       }
       null

@@ -506,7 +506,7 @@ class SerializerFactory {
     if (!("no" == props.getProperty(OutputKeys.INDENT))) target = newHTMLIndenter(target, props)
     target = new NamespaceDifferencer(target, props)
     target = injectUnicodeNormalizer(params, target)
-    target = injectCharacterMapExpander(params, target, true)
+    target = injectCharacterMapExpander(params, target, useNullMarkers = true)
     val cdataElements = props.getProperty(OutputKeys.CDATA_SECTION_ELEMENTS)
     if (cdataElements != null && !cdataElements.isEmpty) target = newCDATAFilter(target, props)
     if (SaxonOutputKeys.isHtmlVersion5(props)) target = addHtml5Component(target, props)
@@ -532,7 +532,7 @@ class SerializerFactory {
     val props = params.getProperties
     var target: Receiver = null
     target = injectUnicodeNormalizer(params, emitter)
-    target = injectCharacterMapExpander(params, target, false)
+    target = injectCharacterMapExpander(params, target, useNullMarkers = false)
     target = addTextOutputFilter(target, props)
     if (params.getValidationFactory != null) target = params.getValidationFactory.makeFilter(target)
     makeSequenceNormalizer(target, props)
@@ -588,7 +588,7 @@ class SerializerFactory {
     if (!("no" == props.getProperty(OutputKeys.INDENT))) target = newXHTMLIndenter(target, props)
     target = new NamespaceDifferencer(target, props)
     target = injectUnicodeNormalizer(params, target)
-    target = injectCharacterMapExpander(params, target, true)
+    target = injectCharacterMapExpander(params, target, useNullMarkers = true)
     val cdataElements = props.getProperty(OutputKeys.CDATA_SECTION_ELEMENTS)
     if (cdataElements != null && !cdataElements.isEmpty) target = newCDATAFilter(target, props)
     if (SaxonOutputKeys.isXhtmlHtmlVersion5(props)) target = addHtml5Component(target, props)
@@ -638,7 +638,7 @@ class SerializerFactory {
       target = newXML10ContentChecker(target, props)
     }
     target = injectUnicodeNormalizer(params, target)
-    if (!canonical) target = injectCharacterMapExpander(params, target, true)
+    if (!canonical) target = injectCharacterMapExpander(params, target, useNullMarkers = true)
     val cdataElements = props.getProperty(OutputKeys.CDATA_SECTION_ELEMENTS)
     if (cdataElements != null && !cdataElements.isEmpty && !canonical) target = newCDATAFilter(target, props)
     if (canonical) {

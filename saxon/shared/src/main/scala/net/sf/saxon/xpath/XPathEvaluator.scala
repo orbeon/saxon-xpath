@@ -98,7 +98,7 @@ class XPathEvaluator /**
     var exp: Expression = ExpressionTool.make(expr, staticContext, 0, -1, null)
     val visitor: ExpressionVisitor = ExpressionVisitor.make(staticContext)
     val contextItemType: ContextItemStaticInfo =
-      getConfiguration.makeContextItemStaticInfo(Type.ITEM_TYPE, true)
+      getConfiguration.makeContextItemStaticInfo(Type.ITEM_TYPE, maybeUndefined = true)
     exp = exp
       .typeCheck(visitor, contextItemType)
       .optimize(visitor, contextItemType)

@@ -74,7 +74,7 @@ class XQueryExpression(var expression: Expression,
       if (contextReq == null) AnyItemType.getInstance
       else contextReq.getRequiredItemType
     val cit: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(req, true)
+      config.makeContextItemStaticInfo(req, maybeUndefined = true)
     var e2: Expression = expression.typeCheck(visitor, cit)
     if (e2 != expression) {
       e2.setRetainedStaticContext(expression.getRetainedStaticContext)
@@ -176,7 +176,7 @@ class XQueryExpression(var expression: Expression,
 
   def getStackFrameMap(): SlotManager = stackFrameMap
 
-  def explainPathMap(): Unit = {}
+  def explainPathMap(): Unit = ()
 
   // No action (requires Saxon-EE)
   // No action (requires Saxon-EE)
@@ -200,7 +200,7 @@ class XQueryExpression(var expression: Expression,
     val names: Array[StructuredQName] =
       Array.ofDim[StructuredQName](stackFrameMap.getNumberOfVariables)
     for (i <- 0 until names.length) {
-      names(i) = list.get(i).asInstanceOf[StructuredQName]
+      names(i) = list.get(i)
     }
     names
   }

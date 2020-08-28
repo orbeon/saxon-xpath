@@ -49,7 +49,7 @@ class DocAvailable extends SystemFunction {
         null,
         context,
         null,
-        true)
+        silent = true)
       if (item != null) {
         true
       } else {

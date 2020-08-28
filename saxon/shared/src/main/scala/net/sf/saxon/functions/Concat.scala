@@ -1,36 +1,17 @@
 package net.sf.saxon.functions
 
+import java.util.Arrays
+
 import net.sf.saxon.event.Outputter
-
 import net.sf.saxon.expr._
-
 import net.sf.saxon.expr.oper.OperandArray
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.model.FunctionItemType
-
-import net.sf.saxon.model.SpecificFunctionType
-
-import net.sf.saxon.om.Item
-
-import net.sf.saxon.om.Sequence
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
+import net.sf.saxon.model.{BuiltInAtomicType, FunctionItemType, SpecificFunctionType}
+import net.sf.saxon.om.{Item, Sequence}
+import net.sf.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
+import net.sf.saxon.value.{SequenceType, StringValue}
 
 import scala.jdk.CollectionConverters._
-
-import net.sf.saxon.tree.util.CharSequenceConsumer
-
-import net.sf.saxon.tree.util.FastStringBuffer
-
-import net.sf.saxon.value.SequenceType
-
-import net.sf.saxon.value.StringValue
-
-import java.util.Arrays
 
 class Concat extends SystemFunction with PushableFunction {
 

@@ -134,7 +134,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getCurrentException(): XPathException = caller.getCurrentException
 
-  def getThreadManager(): XPathContextMajor.ThreadManager = caller.getThreadManager.asInstanceOf[XPathContextMajor.ThreadManager]
+  def getThreadManager(): XPathContextMajor.ThreadManager = caller.getThreadManager
 
   def getCurrentComponent(): Component = caller.getCurrentComponent
 
@@ -207,7 +207,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getCurrentDateTime(): DateTimeValue = controller.getCurrentDateTime
 
-  def getImplicitTimezone(): Int = controller.getImplicitTimezone.asInstanceOf[Int]
+  def getImplicitTimezone(): Int = controller.getImplicitTimezone
 
   def iterateStackFrames() = new ContextStackIterator(this).asInstanceOf[Iterator[AnyRef]]
 

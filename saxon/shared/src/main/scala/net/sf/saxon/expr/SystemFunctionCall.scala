@@ -178,7 +178,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       val details: BuiltInFunctionSet.Entry =
         sf.asInstanceOf[SystemFunctionCall].getTargetFunction.getDetails
       if ((details.properties & BuiltInFunctionSet.UO) != 0) {
-        setArg(0, getArg(0).unordered(true, visitor.isOptimizeForStreaming))
+        setArg(0, getArg(0).unordered(retainAllNodes = true, forStreaming = visitor.isOptimizeForStreaming))
       }
       if (getArity <= details.resultIfEmpty.length) {
         for (i <- 0 until getArity

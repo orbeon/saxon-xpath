@@ -748,7 +748,7 @@ object Navigator {
     }
     if (node.getNodeKind != Type.DOCUMENT) {
       val parent = node.getParent
-      if (parent != null) appendSequentialKey(parent.asInstanceOf[SiblingCountingNode], sb, false)
+      if (parent != null) appendSequentialKey(parent.asInstanceOf[SiblingCountingNode], sb, addDocNr = false)
       if (node.getNodeKind == Type.ATTRIBUTE) sb.cat('A')
     }
     sb.append(alphaKey(node.getSiblingPosition))

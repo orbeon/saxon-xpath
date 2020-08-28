@@ -62,7 +62,7 @@ class XdmDestination extends AbstractDestination {
     sn
   }
 
-  def close(): Unit = {}
+  def close(): Unit = ()
 
   def getXdmNode(): XdmNode = {
     if (builder == null) {

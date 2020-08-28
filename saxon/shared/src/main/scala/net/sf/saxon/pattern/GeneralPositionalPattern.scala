@@ -39,9 +39,9 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {
     val cit: ContextItemStaticInfo =
-      visitor.getConfiguration.makeContextItemStaticInfo(getItemType, false)
+      visitor.getConfiguration.makeContextItemStaticInfo(getItemType, maybeUndefined = false)
     positionExpr = positionExpr.typeCheck(visitor, cit)
-    positionExpr = ExpressionTool.unsortedIfHomogeneous(positionExpr, false)
+    positionExpr = ExpressionTool.unsortedIfHomogeneous(positionExpr, forStreaming = false)
     this
   }
 
@@ -49,11 +49,11 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
                         contextInfo: ContextItemStaticInfo): Pattern = {
     val config: Configuration = visitor.getConfiguration
     val cit: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(getItemType, false)
+      config.makeContextItemStaticInfo(getItemType, maybeUndefined = false)
     positionExpr = positionExpr.optimize(visitor, cit)
-    if (Literal.isConstantBoolean(positionExpr, true)) {
+    if (Literal.isConstantBoolean(positionExpr, value = true)) {
       new NodeTestPattern(nodeTest)
-    } else if (Literal.isConstantBoolean(positionExpr, false)) {
+    } else if (Literal.isConstantBoolean(positionExpr, value = false)) {
       new NodeTestPattern(ErrorType.getInstance)
     }
     if ((positionExpr.getDependencies & StaticProperty.DEPENDS_ON_POSITION) ==
@@ -71,7 +71,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
       val ae: AxisExpression = new AxisExpression(axis, nodeTest)
       val fe: FilterExpression = new FilterExpression(ae, positionExpr)
       PatternMaker
-        .fromExpression(fe, config, true)
+        .fromExpression(fe, config, is30 = true)
         .typeCheck(visitor, contextInfo)
     }
     this

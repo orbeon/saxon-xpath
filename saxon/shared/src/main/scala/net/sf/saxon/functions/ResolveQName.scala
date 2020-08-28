@@ -19,7 +19,7 @@ object ResolveQName {
   def resolveQName(lexicalQName: CharSequence, element: NodeInfo): QNameValue = {
     val resolver: NamespaceResolver = element.getAllNamespaces
     val qName: StructuredQName =
-      StructuredQName.fromLexicalQName(lexicalQName, true, false, resolver)
+      StructuredQName.fromLexicalQName(lexicalQName, useDefault = true, allowEQName = false, resolver)
     new QNameValue(qName, BuiltInAtomicType.QNAME)
   }
 

@@ -85,7 +85,7 @@ class AtomicSequenceConverter(sequence: Expression,
     if (converter != null) {
       return converter
     }
-    allocateConverter(context.getConfiguration, false)
+    allocateConverter(context.getConfiguration, allowNull = false)
   }
 
   def allocateConverter(config: Configuration,
@@ -151,7 +151,7 @@ class AtomicSequenceConverter(sequence: Expression,
         return operand
       }
       val config: Configuration = getConfiguration
-      allocateConverterStatically(config, true)
+      allocateConverterStatically(config, allowNull = true)
       if (converter != null) {
         val `val`: GroundedValue =
           iterate(new EarlyEvaluationContext(config)).materialize()
@@ -171,7 +171,7 @@ class AtomicSequenceConverter(sequence: Expression,
       operand
     } else {
       if (converter == null) {
-        allocateConverterStatically(config, true)
+        allocateConverterStatically(config, allowNull = true)
       }
       this
     }

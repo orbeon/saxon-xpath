@@ -19,11 +19,11 @@ class TraceClausePush(outputter: Outputter,
     if (controller.isTracing) {
       val baseInfo: ClauseInfo = new ClauseInfo(baseClause)
       baseInfo.setNamespaceResolver(traceClause.getNamespaceResolver)
-      controller.getTraceListener.asInstanceOf[TraceListener].enter(baseInfo,
+      controller.getTraceListener.enter(baseInfo,
         Collections.emptyMap(),
         context)
       destination.processTuple(context)
-      controller.getTraceListener.asInstanceOf[TraceListener].leave(baseInfo)
+      controller.getTraceListener.leave(baseInfo)
     } else {
       destination.processTuple(context)
     }

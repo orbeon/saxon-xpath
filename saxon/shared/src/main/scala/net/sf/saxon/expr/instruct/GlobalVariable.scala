@@ -245,7 +245,7 @@ class GlobalVariable
         getVariableQName.getDisplayName,
         0)
       val cit: ContextItemStaticInfo = getConfiguration
-        .makeContextItemStaticInfo(AnyItemType.getInstance, true)
+        .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
       var value2: Expression = TypeChecker.strictTypeCheck(
         value.simplify().typeCheck(visitor, cit),
         getRequiredType,
@@ -407,8 +407,8 @@ class GlobalVariable
   def evaluateVariable(context: XPathContext): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
-    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber).asInstanceOf[GroundedValue]
+    val b: Bindery = controller.getBindery(getPackageData)
+    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
       v
     } else {
@@ -420,11 +420,11 @@ class GlobalVariable
                        target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
+    val b: Bindery = controller.getBindery(getPackageData)
     if (b == null) {
       throw new AssertionError()
     }
-    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber).asInstanceOf[GroundedValue]
+    val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
       if (v.isInstanceOf[Bindery.FailureValue]) {
         throw v.asInstanceOf[Bindery.FailureValue].getObject
@@ -439,8 +439,8 @@ class GlobalVariable
                                  target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData).asInstanceOf[Bindery]
-    try {
+    val b: Bindery = controller.getBindery(getPackageData)
+     try {
       setDependencies(this, context)
       val go: Boolean = b.setExecuting(this)
       if (!go) {
@@ -452,8 +452,8 @@ class GlobalVariable
           .obtainOptimizer
           .makeIndexedValue(value.iterate())
       }
-      b.saveGlobalVariableValue(this, value).asInstanceOf[GroundedValue]
-    } catch {
+       b.saveGlobalVariableValue(this, value)
+     } catch {
       case err: XPathException => {
         b.setNotExecuting(this)
         if (err.isInstanceOf[XPathException.Circularity]) {
@@ -486,18 +486,18 @@ class GlobalVariable
       "global variable " + getVariableQName.getDisplayName
     }
 
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {}
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
   override def export(presenter: ExpressionPresenter): Unit = {
     val asParam: Boolean = this.isInstanceOf[GlobalParam] && !isStatic
     presenter.startElement(if (asParam) "globalParam" else "globalVariable")
     presenter.emitAttribute("name", getVariableQName)
     presenter.emitAttribute("as", getRequiredType.toAlphaCode)
-    presenter.emitAttribute("line", getLineNumber.toString + "")
+    presenter.emitAttribute("line", getLineNumber.toString)
     presenter.emitAttribute("module", getSystemId)
     if (getStackFrameMap != null) {
       presenter.emitAttribute("slots",
-        getStackFrameMap.getNumberOfVariables.toString + "")
+        getStackFrameMap.getNumberOfVariables.toString)
     }
     if (getDeclaringComponent != null) {
       val vis: Visibility.Visibility = getDeclaringComponent.getVisibility

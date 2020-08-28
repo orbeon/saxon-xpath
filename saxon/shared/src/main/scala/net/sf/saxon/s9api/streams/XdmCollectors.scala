@@ -21,9 +21,9 @@ object XdmCollectors {
    abstract class XdmCollector[R, I <: XdmItem]
     extends Collector[XdmItem, List[I], R] {
 
-     def onEmpty(): Unit = {}
+     def onEmpty(): Unit = ()
 
-     def onMultiple(): Unit = {}
+     def onMultiple(): Unit = ()
 
      def convert(item: XdmItem): I = item.asInstanceOf[I]
 
@@ -86,7 +86,7 @@ object XdmCollectors {
 
   def asOptionalNode(): XdmCollector[Optional[XdmNode], XdmNode] =
     new XdmCollector[Optional[XdmNode], XdmNode]() {
-       override def onEmpty(): Unit = {}
+       override def onEmpty(): Unit = ()
 
        override def onMultiple(): Unit = {
         throw new MultipleItemException()
@@ -102,9 +102,9 @@ object XdmCollectors {
 
   def asListOfNodes(): XdmCollector[List[XdmNode], XdmNode] =
     new XdmCollector[List[XdmNode], XdmNode]() {
-       override def onEmpty(): Unit = {}
+       override def onEmpty(): Unit = ()
 
-       override def onMultiple(): Unit = {}
+       override def onMultiple(): Unit = ()
 
        override def convert(item: XdmItem): XdmNode =
         item.asInstanceOf[XdmNode]
@@ -115,9 +115,9 @@ object XdmCollectors {
 
   def asListOfAtomic(): XdmCollector[List[XdmAtomicValue], XdmAtomicValue] =
     new XdmCollector[List[XdmAtomicValue], XdmAtomicValue]() {
-       override def onEmpty(): Unit = {}
+       override def onEmpty(): Unit = ()
 
-       override def onMultiple(): Unit = {}
+       override def onMultiple(): Unit = ()
 
        override def convert(item: XdmItem): XdmAtomicValue =
         item.asInstanceOf[XdmAtomicValue]
@@ -129,7 +129,7 @@ object XdmCollectors {
   def asOptionalAtomic()
   : XdmCollector[Optional[XdmAtomicValue], XdmAtomicValue] =
     new XdmCollector[Optional[XdmAtomicValue], XdmAtomicValue]() {
-       override def onEmpty(): Unit = {}
+       override def onEmpty(): Unit = ()
 
        override def onMultiple(): Unit = {
         throw new MultipleItemException()

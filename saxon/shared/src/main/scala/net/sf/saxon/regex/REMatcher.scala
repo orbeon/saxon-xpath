@@ -155,7 +155,7 @@ class REMatcher(val progrm: REProgram) {
 
   def anchoredMatch(search: UnicodeString) = {
     this.search = search
-    matchAt(0, true)
+    matchAt(0, anchored = true)
   }
 
 
@@ -166,16 +166,16 @@ class REMatcher(val progrm: REProgram) {
     captureState = new REMatcher.State
 
     if ((program.optimizationFlags & REProgram.OPT_HASBOL).equals(REProgram.OPT_HASBOL)) {
-      if (!program.flags.isMultiLine) return z == 0 && checkPreconditions(z) && matchAt(z, false)
+      if (!program.flags.isMultiLine) return z == 0 && checkPreconditions(z) && matchAt(z, anchored = false)
 
       var nl = z
-      if (matchAt(nl, false)) return true
+      if (matchAt(nl, anchored = false)) return true
       while ( {
         true
       }) {
         nl = search.uIndexOf('\n', nl) + 1
         if (nl >= search.uLength || nl <= 0) return false
-        else if (matchAt(nl, false)) return true
+        else if (matchAt(nl, anchored = false)) return true
       }
     }
 
@@ -188,7 +188,7 @@ class REMatcher(val progrm: REProgram) {
         while ( {
           !search.isEnd(i)
         }) {
-          if (pred.test(search.uCharAt(i))) if (matchAt(i, false)) return true
+          if (pred.test(search.uCharAt(i))) if (matchAt(i, anchored = false)) return true
           z += 1
         }
         return false
@@ -199,7 +199,7 @@ class REMatcher(val progrm: REProgram) {
       while ( {
         !search.isEnd(z - 1)
       }) {
-        if (matchAt(i, false)) return true
+        if (matchAt(i, anchored = false)) return true
         z += 1
       }
       false
@@ -242,7 +242,7 @@ class REMatcher(val progrm: REProgram) {
         }
 
         if (prefixOK) {
-          if (matchAt(z, false)) return true
+          if (matchAt(z, anchored = false)) return true
         }
         z += 1
       }

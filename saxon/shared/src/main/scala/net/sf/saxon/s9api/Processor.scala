@@ -96,7 +96,7 @@ object Processor {
           val args: Array[XdmValue] = Array.ofDim[XdmValue](arguments.length)
           for (i <- 0 until args.length) {
             val `val`: GroundedValue =
-              arguments(i).materialize().asInstanceOf[GroundedValue]
+              arguments(i).materialize()
             args(i) = XdmValue.wrap(`val`)
           }
           val result: XdmValue = function.call(args)

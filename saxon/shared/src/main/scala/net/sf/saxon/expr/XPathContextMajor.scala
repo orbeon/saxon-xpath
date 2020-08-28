@@ -276,7 +276,7 @@ class XPathContextMajor private()
   def resetStackFrameMap(map: SlotManager, numberOfParams: Int): Unit = {
     stackFrame.map = map
     if (stackFrame.slots.length != map.getNumberOfVariables) {
-      val v2 = new Array[Sequence](map.getNumberOfVariables).asInstanceOf[Array[Sequence]]
+      val v2 = new Array[Sequence](map.getNumberOfVariables)
       System.arraycopy(stackFrame.slots, 0, v2, 0, numberOfParams)
       stackFrame.slots = v2
     }
