@@ -44,11 +44,12 @@ import net.sf.saxon.query.QueryModule
 object ExpressionTool {
 
   @throws[XPathException]
-  def make(expression: String, env: StaticContext, start: Int, terminator: Int, codeInjector: CodeInjector) = {
+  def make(expression: String, env: StaticContext, start: Int, terminator: Int, codeInjector: CodeInjector): Expression = {
     var rTerminator = terminator
     val languageLevel = env.getXPathVersion
     val parser = env.getConfiguration.newExpressionParser("XP", updating = false, languageLevel)
-    if (codeInjector != null) parser.setCodeInjector(codeInjector)
+    if (codeInjector != null)
+      parser.setCodeInjector(codeInjector)
     if (terminator == -1)
       rTerminator = Token.EOF
     var exp = parser.parse(expression, start, terminator, env)

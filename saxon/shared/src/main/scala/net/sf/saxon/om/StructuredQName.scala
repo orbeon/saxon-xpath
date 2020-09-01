@@ -160,15 +160,11 @@ class StructuredQName private(var content: Array[Char],
     if (localNameStart != uri.length) {
       return false
     }
-    var i: Int = localNameStart - 1
+    var i = localNameStart - 1
     while (i >= 0) {
-      if (content(i) != uri.charAt(i)) {
+      if (content(i) != uri.charAt(i))
         return false
-      }
-      {
-        i -= 1;
-        i + 1
-      }
+        i -= 1
     }
     true
   }

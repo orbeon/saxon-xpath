@@ -1,20 +1,16 @@
 package net.sf.saxon.sxpath
 
-import net.sf.saxon.expr.Expression
-import net.sf.saxon.expr.PackageData
-import net.sf.saxon.expr.instruct.Executable
-import net.sf.saxon.expr.instruct.SlotManager
+import net.sf.saxon.expr.{Expression, PackageData}
+import net.sf.saxon.expr.instruct.{Executable, SlotManager}
 import net.sf.saxon.expr.parser._
-import net.sf.saxon.functions.FunctionLibrary
 import net.sf.saxon.functions.FunctionLibraryList
 import net.sf.saxon.functions.registry.ConstructorFunctionLibrary
-import net.sf.saxon.model.ItemType
 import net.sf.saxon.model.Type
 import net.sf.saxon.pattern.Pattern
 import net.sf.saxon.s9api.HostLanguage
 import net.sf.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 class XPathEvaluator(config: Configuration) {
 

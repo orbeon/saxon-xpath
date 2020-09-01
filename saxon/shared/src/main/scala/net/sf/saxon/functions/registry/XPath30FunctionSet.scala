@@ -1,4 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * Function signatures (and pointers to implementations) of the functions defined in XPath 3.0 without the
+  * Higher-Order-Functions feature
+  */
+
 package net.sf.saxon.functions.registry
 
 import net.sf.saxon.functions._
@@ -13,10 +23,8 @@ import net.sf.saxon.value.{BooleanValue, SequenceType, StringValue}
 
 object XPath30FunctionSet {
 
-  private var THE_INSTANCE: XPath30FunctionSet = new XPath30FunctionSet()
-
+  private val THE_INSTANCE: XPath30FunctionSet = new XPath30FunctionSet()
   def getInstance(): XPath30FunctionSet = THE_INSTANCE
-
 }
 
 class XPath30FunctionSet private () extends BuiltInFunctionSet {
@@ -429,13 +437,3 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
 //                .arg(1, BuiltInAtomicType.STRING, ONE, null);
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Function signatures (and pointers to implementations) of the functions defined in XPath 3.0 without the
-  * Higher-Order-Functions feature
-  */

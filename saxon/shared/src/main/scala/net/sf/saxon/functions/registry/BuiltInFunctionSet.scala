@@ -1,103 +1,45 @@
 package net.sf.saxon.functions.registry
 
-import net.sf.saxon.expr.Expression
+import java.util.{HashMap, List}
 
-import net.sf.saxon.expr.OperandUsage
-
-import net.sf.saxon.expr.StaticContext
-
-import net.sf.saxon.expr.StaticProperty
-
+import net.sf.saxon.expr.{Expression, OperandUsage, StaticContext, StaticProperty}
 import net.sf.saxon.expr.parser.RetainedStaticContext
-
-import net.sf.saxon.functions.FunctionLibrary
-
-import net.sf.saxon.functions.OptionsParameter
-
-import net.sf.saxon.functions.SystemFunction
-
+import net.sf.saxon.functions.{FunctionLibrary, OptionsParameter, SystemFunction}
+import net.sf.saxon.functions.registry.BuiltInFunctionSet._
 import net.sf.saxon.lib.NamespaceConstant
-
-import net.sf.saxon.model.ItemType
-
-import net.sf.saxon.model.PlainType
-
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.trans.SymbolicName
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.AtomicValue
-
-import net.sf.saxon.value.EmptySequence
-
-import net.sf.saxon.value.SequenceType
-
-import java.util.HashMap
-
-import java.util.List
-
-import BuiltInFunctionSet._
+import net.sf.saxon.model.{ItemType, PlainType}
+import net.sf.saxon.om.{Function, Sequence, StructuredQName}
+import net.sf.saxon.trans.{SymbolicName, XPathException}
+import net.sf.saxon.value.{AtomicValue, EmptySequence, SequenceType}
 
 object BuiltInFunctionSet {
 
-  var EMPTY: Sequence = EmptySequence.getInstance
-
+  val EMPTY: Sequence = EmptySequence.getInstance
   val ONE: Int = StaticProperty.ALLOWS_ONE
-
   val OPT: Int = StaticProperty.ALLOWS_ZERO_OR_ONE
-
   val STAR: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
-
   val PLUS: Int = StaticProperty.ALLOWS_ONE_OR_MORE
-
   val AS_ARG0: Int = 1
-
   val AS_PRIM_ARG0: Int = 2
-
   val CITEM: Int = 4
-
   val BASE: Int = 8
-
   val NS: Int = 16
-
   val DCOLL: Int = 32
-
   val DLANG: Int = 64
-
   val FILTER: Int = 256
-
   val LATE: Int = 512
-
   val UO: Int = 1024
-
   val POSN: Int = 1024 * 2
-
   val LAST: Int = 1024 * 4
-
   val SIDE: Int = 1024 * 8
-
   val CDOC: Int = 1024 * 16
-
   val CARD0: Int = 1024 * 32
-
   val NEW: Int = 1024 * 64
-
   val DEPENDS_ON_STATIC_CONTEXT: Int = BASE | NS | DCOLL
-
   val FOCUS: Int = CITEM | POSN | LAST | CDOC
-
   val INS: Int = 1 << 24
-
   val ABS: Int = 1 << 25
-
   val TRA: Int = 1 << 26
-
   val NAV: Int = 1 << 27
 
   private def pluralArguments(num: Int): String = {
@@ -113,23 +55,14 @@ object BuiltInFunctionSet {
   class Entry {
 
     var name: StructuredQName = _
-
     var implementationClass: Class[_] = _
-
     var arity: Int = _
-
     var itemType: ItemType = _
-
     var cardinality: Int = _
-
     var usage: Array[OperandUsage.OperandUsage] = _
-
     var argumentTypes: Array[SequenceType] = _
-
     var resultIfEmpty: Array[Sequence] = Array()
-
     var properties: Int = _
-
     var optionDetails: OptionsParameter = _
 
     def arg(a: Int, `type`: ItemType, options: Int, resultIfEmpty: Sequence): Entry = {
@@ -170,31 +103,30 @@ object BuiltInFunctionSet {
 
 abstract class BuiltInFunctionSet extends FunctionLibrary {
 
-  private var functionTable: HashMap[String, Entry] = new HashMap(200)
+  private val functionTable: HashMap[String, Entry] = new HashMap(200)
 
   def importFunctionSet(importee: BuiltInFunctionSet): Unit = {
-    if (importee.getNamespace != getNamespace) {
+    if (importee.getNamespace != getNamespace)
       throw new IllegalArgumentException(importee.getNamespace)
-    }
     functionTable.putAll(importee.functionTable)
   }
 
   def getFunctionDetails(name: String, arity: Int): Entry = {
     if (arity == -1) {
       for (i <- 0.until(20)) {
-        val found: Entry = getFunctionDetails(name, i)
+        val found = getFunctionDetails(name, i)
         if (found != null) {
           return found
         }
       }
       return null
     }
-    var key: String = name + "#" + arity
-    var entry: Entry = functionTable.get(key)
-    if (entry != null) {
+    var key = name + "#" + arity
+    var entry = functionTable.get(key)
+    if (entry ne null)
       return entry
-    }
-    if (name.==("concat") && arity >= 2 && getNamespace == NamespaceConstant.FN) {
+
+    if (name == "concat" && arity >= 2 && getNamespace == NamespaceConstant.FN) {
       key = "concat#-1"
       entry = functionTable.get(key)
       return entry
@@ -209,14 +141,13 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     val functionName: StructuredQName = symbolicName.getComponentName
     val arity: Int = symbolicName.getArity
     val localName: String = functionName.getLocalPart
-    if (functionName.hasURI(getNamespace) && getFunctionDetails(
-      localName,
-      arity) != null) {
-      val rsc: RetainedStaticContext = new RetainedStaticContext(env)
+
+    if (functionName.hasURI(getNamespace) && getFunctionDetails(localName, arity) != null) {
+      val rsc = new RetainedStaticContext(env)
       try {
-        val fn: SystemFunction = makeFunction(localName, arity)
+        val fn = makeFunction(localName, arity)
         fn.setRetainedStaticContext(rsc)
-        val f: Expression = fn.makeFunctionCall(staticArgs.toIndexedSeq: _*)
+        val f = fn.makeFunctionCall(staticArgs.toIndexedSeq: _*)
         f.setRetainedStaticContext(rsc)
         f
       } catch {
@@ -224,7 +155,6 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
           reasons.add(e.getMessage)
           null
         }
-
       }
     } else {
       null
@@ -232,15 +162,16 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   }
 
   def makeFunction(name: String, arity: Int): SystemFunction = {
-    val entry: Entry = getFunctionDetails(name, arity)
+    val entry = getFunctionDetails(name, arity)
     if (entry == null) {
-      val diagName: String =
-        if (getNamespace == NamespaceConstant.FN) "System function " + name
-        else "Function Q{" + getNamespace + "}" + name
+      val diagName =
+        if (getNamespace == NamespaceConstant.FN)
+          "System function " + name
+        else
+          "Function Q{" + getNamespace + "}" + name
       if (getFunctionDetails(name, -1) == null) {
         val err: XPathException = new XPathException(
-          diagName +
-            "() does not exist or is not available in this environment")
+          diagName + "() does not exist or is not available in this environment")
         err.setErrorCode("XPST0017")
         err.setIsStaticError(true)
         throw err

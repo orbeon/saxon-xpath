@@ -14,6 +14,7 @@ import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.stax.StAXSource
 import javax.xml.transform.stream.StreamSource
 import net.sf.saxon.event._
+import net.sf.saxon.expr._
 import net.sf.saxon.expr.accum.AccumulatorRegistry
 import net.sf.saxon.expr.compat.TypeChecker10
 import net.sf.saxon.expr.instruct._
@@ -21,7 +22,6 @@ import net.sf.saxon.expr.number.Numberer_en
 import net.sf.saxon.expr.parser.XPathParser.ParsedLanguage
 import net.sf.saxon.expr.parser._
 import net.sf.saxon.expr.sort.{AlphanumericCollator, CodepointCollator, HTML5CaseBlindCollator}
-import net.sf.saxon.expr._
 import net.sf.saxon.functions.registry._
 import net.sf.saxon.functions.{FunctionLibraryList, IntegratedFunctionLibrary, MathFunctionSet, ResolveURI}
 import net.sf.saxon.lib._

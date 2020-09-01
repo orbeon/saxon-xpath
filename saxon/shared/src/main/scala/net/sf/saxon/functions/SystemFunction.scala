@@ -1,34 +1,18 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser._
-
-import net.sf.saxon.functions.registry.BuiltInFunctionSet
-
-import net.sf.saxon.lib.NamespaceConstant
-
-import net.sf.saxon.model.FunctionItemType
-
-import net.sf.saxon.model.ItemType
-
-import net.sf.saxon.model.SpecificFunctionType
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.Cardinality
-
-import net.sf.saxon.value.IntegerValue
-
-import net.sf.saxon.value.SequenceType
-
 import java.util.Properties
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.parser._
+import net.sf.saxon.functions.registry.BuiltInFunctionSet
+import net.sf.saxon.lib.NamespaceConstant
+import net.sf.saxon.model.{FunctionItemType, ItemType, SpecificFunctionType}
+import net.sf.saxon.om._
+import net.sf.saxon.trace.ExpressionPresenter
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.value.{Cardinality, IntegerValue, SequenceType}
+
+import scala.beans.BeanProperty
 
 object SystemFunction {
 

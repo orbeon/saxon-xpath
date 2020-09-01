@@ -2,49 +2,20 @@
 package net.sf.saxon.functions.registry
 
 import net.sf.saxon.functions._
-
-import net.sf.saxon.functions.hof.LoadXqueryModule
-
-import net.sf.saxon.functions.hof.RandomNumberGenerator
-
-import net.sf.saxon.functions.hof.Sort_3
-
-import net.sf.saxon.ma.json.JsonDoc
-
-import net.sf.saxon.ma.json.JsonToXMLFn
-
-import net.sf.saxon.ma.json.ParseJsonFn
-
-import net.sf.saxon.ma.json.XMLToJsonFn
-
+import net.sf.saxon.functions.hof.{LoadXqueryModule, RandomNumberGenerator, Sort_3}
+import net.sf.saxon.functions.registry.BuiltInFunctionSet._
+import net.sf.saxon.ma.json.{JsonDoc, JsonToXMLFn, ParseJsonFn, XMLToJsonFn}
 import net.sf.saxon.ma.map.MapType
-
-import net.sf.saxon.model.AnyItemType
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.model.SpecificFunctionType
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.pattern.AnyNodeTest
-
-import net.sf.saxon.pattern.NodeKindTest
-
-import net.sf.saxon.value.SequenceType
-
-import net.sf.saxon.value.StringValue
-
-import XPath31FunctionSet._
-import BuiltInFunctionSet._
+import net.sf.saxon.model.{AnyItemType, BuiltInAtomicType, SpecificFunctionType, Type}
+import net.sf.saxon.pattern.{AnyNodeTest, NodeKindTest}
+import net.sf.saxon.value.{SequenceType, StringValue}
 
 
 object XPath31FunctionSet {
 
-  private var THE_INSTANCE: XPath31FunctionSet = new XPath31FunctionSet()
+  private val THE_INSTANCE: XPath31FunctionSet = new XPath31FunctionSet()
 
   def getInstance(): XPath31FunctionSet = THE_INSTANCE
-
 }
 
 class XPath31FunctionSet private() extends BuiltInFunctionSet {

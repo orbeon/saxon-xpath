@@ -1,55 +1,26 @@
 package net.sf.saxon.s9api
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.utils.Version
+import java.io.{File, OutputStream, Writer}
+import java.text.RuleBasedCollator
+import java.util.{Comparator, Objects}
 
 import net.sf.saxon.event._
-
 import net.sf.saxon.expr.XPathContext
-
 import net.sf.saxon.expr.parser.Loc
-
-import net.sf.saxon.expr.sort.RuleBasedSubstringMatcher
-
-import net.sf.saxon.expr.sort.SimpleCollation
-
+import net.sf.saxon.expr.sort.{RuleBasedSubstringMatcher, SimpleCollation}
 import net.sf.saxon.lib._
-
-import net.sf.saxon.om.GroundedValue
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.StructuredQName
-
+import net.sf.saxon.om.{GroundedValue, Sequence, StructuredQName}
+import net.sf.saxon.s9api.Processor._
 import net.sf.saxon.serialize.SerializationProperties
-
+import net.sf.saxon.utils.{Configuration, Version}
 import net.sf.saxon.value.SequenceType
 
-import javax.xml.transform.Source
-
-import java.io.File
-
-import java.io.OutputStream
-
-import java.io.Writer
-
-import java.text.RuleBasedCollator
-
-import java.util.Comparator
-
-import java.util.Objects
-
-import Processor._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 object Processor {
 
-  private class ExtensionFunctionDefinitionWrapper(
-                                                    private var function: ExtensionFunction)
+  private class ExtensionFunctionDefinitionWrapper(private var function: ExtensionFunction)
     extends ExtensionFunctionDefinition {
 
     override def getFunctionQName(): StructuredQName =
@@ -74,10 +45,8 @@ object Processor {
       types
     }
 
-    override def getResultType(
-                                suppliedArgumentTypes: Array[SequenceType]): SequenceType = {
-      val declaredResult: net.sf.saxon.s9api.SequenceType =
-        function.getResultType
+    override def getResultType(suppliedArgumentTypes: Array[SequenceType]): SequenceType = {
+      val declaredResult: net.sf.saxon.s9api.SequenceType = function.getResultType
       net.sf.saxon.value.SequenceType.makeSequenceType(
         declaredResult.getItemType.getUnderlyingItemType,
         declaredResult.getOccurrenceIndicator.getCardinality)
@@ -287,5 +256,4 @@ class Processor extends Configuration.ApiProvider {
     val manager: SchemaManager = null
     manager
   }
-
 }

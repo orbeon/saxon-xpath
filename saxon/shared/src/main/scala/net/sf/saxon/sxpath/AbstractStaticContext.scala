@@ -1,28 +1,17 @@
 package net.sf.saxon.sxpath
 
-import net.sf.saxon.expr.EarlyEvaluationContext
-import net.sf.saxon.expr.PackageData
-import net.sf.saxon.expr.StaticContext
-import net.sf.saxon.expr.XPathContext
-import net.sf.saxon.expr.parser.Loc
-import net.sf.saxon.expr.parser.RetainedStaticContext
-import net.sf.saxon.functions.FunctionLibrary
-import net.sf.saxon.functions.FunctionLibraryList
-import net.sf.saxon.functions.registry.{ConstructorFunctionLibrary, XPath20FunctionSet}
-import net.sf.saxon.lib.NamespaceConstant
-import net.sf.saxon.model.AnyItemType
-import net.sf.saxon.model.ItemType
-import net.sf.saxon.om.StructuredQName
-import net.sf.saxon.s9api.HostLanguage
-import net.sf.saxon.s9api.Location
-import net.sf.saxon.s9api.UnprefixedElementMatchingPolicy
-import net.sf.saxon.trans.DecimalFormatManager
-import net.sf.saxon.trans.SaxonErrorCode
-import net.sf.saxon.trans.XmlProcessingIncident
-import java.util.HashMap
-import java.util.Map
+import java.util.{HashMap, Map}
 import java.util.function.BiConsumer
 
+import net.sf.saxon.expr.{EarlyEvaluationContext, PackageData, StaticContext, XPathContext}
+import net.sf.saxon.expr.parser.{Loc, RetainedStaticContext}
+import net.sf.saxon.functions.{FunctionLibrary, FunctionLibraryList}
+import net.sf.saxon.functions.registry.{ConstructorFunctionLibrary, XPath20FunctionSet}
+import net.sf.saxon.lib.NamespaceConstant
+import net.sf.saxon.model.{AnyItemType, ItemType}
+import net.sf.saxon.om.StructuredQName
+import net.sf.saxon.s9api.{HostLanguage, Location, UnprefixedElementMatchingPolicy}
+import net.sf.saxon.trans.{DecimalFormatManager, SaxonErrorCode, XmlProcessingIncident}
 import net.sf.saxon.utils.Configuration
 
 import scala.beans.BeanProperty

@@ -1,28 +1,14 @@
 package net.sf.saxon.functions
 
-import net.sf.saxon.expr.Expression
+import java.util.{ArrayList, List}
 
-import net.sf.saxon.expr.StaticContext
-
+import net.sf.saxon.expr.{Expression, StaticContext}
 import net.sf.saxon.lib.Feature
-
-import net.sf.saxon.lib.Logger
-
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.query.XQueryFunction
-
-import net.sf.saxon.query.XQueryFunctionBinder
-
+import net.sf.saxon.om.{Function, StructuredQName}
+import net.sf.saxon.query.{XQueryFunction, XQueryFunctionBinder}
 import net.sf.saxon.trans.SymbolicName
 
 import scala.jdk.CollectionConverters._
-
-import java.util.ArrayList
-
-import java.util.List
 
 class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
 
@@ -47,24 +33,19 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
   }
 
   def isAvailable(functionName: SymbolicName.F): Boolean =
-    libraryList.asScala
-      .find(_.isAvailable(functionName))
-      .map(_ => true)
-      .getOrElse(false)
+    libraryList.asScala.exists(_.isAvailable(functionName))
 
   def bind(functionName: SymbolicName.F,
            staticArgs: Array[Expression],
            env: StaticContext,
            reasons: List[String]): Expression = {
-    val debug: Boolean =
-      env.getConfiguration.getBooleanProperty(Feature.TRACE_EXTERNAL_FUNCTIONS)
-    val err: Logger = env.getConfiguration.getLogger
-    if (debug) {
-      err.info(
-        "Looking for function " + functionName.getComponentName.getEQName +
-          "#" +
-          functionName.getArity)
-    }
+
+    val debug = env.getConfiguration.getBooleanProperty(Feature.TRACE_EXTERNAL_FUNCTIONS)
+
+    val err = env.getConfiguration.getLogger
+    if (debug)
+      err.info("Looking for function " + functionName.getComponentName.getEQName + "#" + functionName.getArity)
+
     for (lib <- libraryList.asScala) {
       if (debug)
         err.info("Trying " + lib.getClass.getName)

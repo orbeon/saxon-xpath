@@ -389,14 +389,9 @@ class ParserExtension {
       case e: XPathException => p.grumble(e.getMessage, "XPST0017", offset)
 
     }
-    if (functionName.hasURI(NamespaceConstant.FN) && fcf
-      .isInstanceOf[SystemFunction]) {
-      val details: BuiltInFunctionSet.Entry =
-        fcf.asInstanceOf[SystemFunction].getDetails
-      if (details != null &&
-        (details.properties &
-          (BuiltInFunctionSet.FOCUS | BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT)) !=
-          0) {
+    if (functionName.hasURI(NamespaceConstant.FN) && fcf.isInstanceOf[SystemFunction]) {
+      val details: BuiltInFunctionSet.Entry = fcf.asInstanceOf[SystemFunction].getDetails
+      if (details != null && (details.properties & (BuiltInFunctionSet.FOCUS | BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT)) != 0) {
         val lookup: SystemFunction =
           XPath31FunctionSet.getInstance.makeFunction("function-lookup", 2)
         lookup.setRetainedStaticContext(env.makeRetainedStaticContext())

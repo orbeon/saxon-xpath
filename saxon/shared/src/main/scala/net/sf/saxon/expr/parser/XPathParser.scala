@@ -966,7 +966,8 @@ class XPathParser() {
       case Token.TO =>
         new RangeExpression(lhs, rhs)
       case Token.CONCAT =>
-        if (!allowXPath30Syntax) grumble("Concatenation operator ('||') requires XPath 3.0 to be enabled")
+        if (! allowXPath30Syntax)
+          grumble("Concatenation operator ('||') requires XPath 3.0 to be enabled")
         val rsc = new RetainedStaticContext(env)
         if (lhs.isCallOn(classOf[Concat])) {
           val args = lhs.asInstanceOf[SystemFunctionCall].getArguments
@@ -2763,7 +2764,8 @@ class XPathParser() {
     val fname = t.currentTokenValue
     val offset = t.currentTokenStartOffset
     val args = new util.ArrayList[Expression](10)
-    if (prefixArgument != null) args.add(prefixArgument)
+    if (prefixArgument != null)
+      args.add(prefixArgument)
     val functionName = resolveFunctionName(fname)
     var placeMarkers: IntSet = null
     nextToken()
@@ -2777,32 +2779,43 @@ class XPathParser() {
             arg = Literal.makeEmptySequence
           }
           args.add(arg)
-          if (t.currentToken == Token.COMMA) nextToken()
-          else break()
+          if (t.currentToken == Token.COMMA)
+            nextToken()
+          else
+            break()
         }
       }
       expect(Token.RPAR)
     }
     nextToken()
-    if (scanOnly) return new StringLiteral(StringValue.EMPTY_STRING)
+    if (scanOnly)
+      return new StringLiteral(StringValue.EMPTY_STRING)
     val arguments = new Array[Expression](args.size)
     args.toArray(arguments)
-    if (placeMarkers != null) return parserExtension.makeCurriedFunction(this, offset, functionName, arguments, placeMarkers)
+
+    if (placeMarkers != null)
+      return parserExtension.makeCurriedFunction(this, offset, functionName, arguments, placeMarkers)
+
     var fcall: Expression = null
     val sn = new SymbolicName.F(functionName, args.size)
     val reasons = new util.ArrayList[String]
+
     fcall = env.getFunctionLibrary.bind(sn, arguments, env, reasons)
     if (fcall == null)
       return reportMissingFunction(offset, functionName, arguments, reasons)
-    if (language eq ParsedLanguage.XSLT_PATTERN) if (fcall.isCallOn(classOf[RegexGroup])) return Literal.makeEmptySequence
-    else if (fcall.isInstanceOf[CurrentGroupCall]) {
-      grumble("The current-group() function cannot be used in a pattern", "XTSE1060", offset)
-      return new ErrorExpression
-    }
-    else if (fcall.isInstanceOf[CurrentGroupingKeyCall]) {
-      grumble("The current-grouping-key() function cannot be used in a pattern", "XTSE1070", offset)
-      return new ErrorExpression
-    }
+
+    if (language eq ParsedLanguage.XSLT_PATTERN)
+      if (fcall.isCallOn(classOf[RegexGroup]))
+        return Literal.makeEmptySequence
+      else fcall match {
+        case _: CurrentGroupCall =>
+          grumble("The current-group() function cannot be used in a pattern", "XTSE1060", offset)
+          return new ErrorExpression
+        case _: CurrentGroupingKeyCall =>
+          grumble("The current-grouping-key() function cannot be used in a pattern", "XTSE1070", offset)
+          return new ErrorExpression
+        case _ =>
+      }
 //    else if (fcall.isCallOn(classOf[CurrentMergeGroup])) {
 //      grumble("The current-merge-group() function cannot be used in a pattern", "XTSE3470", offset)
 //      return new ErrorExpression
@@ -2812,13 +2825,13 @@ class XPathParser() {
 //      return new ErrorExpression
 //    }
     setLocation(fcall, offset)
-    for (argument <- arguments) {
-      if ((fcall ne argument) && !functionName.hasURI(NamespaceConstant.GLOBAL_JS)) { // avoid doing this when the function has already been optimized away, e.g. unordered()
+    for (argument <- arguments)
+      if ((fcall ne argument) && ! functionName.hasURI(NamespaceConstant.GLOBAL_JS))
+        // avoid doing this when the function has already been optimized away, e.g. unordered()
         // Also avoid doing this when a js: function is parsed into an ixsl:call()
         // TODO move the adoptChildExpression into individual function libraries
         fcall.adoptChildExpression(argument)
-      }
-    }
+
     makeTracer(fcall, functionName)
   }
 
@@ -2844,14 +2857,16 @@ class XPathParser() {
           }
         }
       }
-      if (existsWithDifferentArity) sb.append(". The namespace URI and local name are recognized, but the number of arguments is wrong")
+      if (existsWithDifferentArity)
+        sb.append(". The namespace URI and local name are recognized, but the number of arguments is wrong")
       else {
         val supplementary = XPathParser.getMissingFunctionExplanation(functionName, config)
         if (supplementary != null) sb.append(". ").append(supplementary)
       }
     }
     else sb.append(". External function calls have been disabled")
-    if (env.isInBackwardsCompatibleMode) { // treat this as a dynamic error to be reported only if the function call is executed
+    if (env.isInBackwardsCompatibleMode) {
+      // treat this as a dynamic error to be reported only if the function call is executed
       new ErrorExpression(sb.toString, "XTDE1425", false)
     } else {
       grumble(sb.toString, "XPST0017", offset)
@@ -2870,17 +2885,25 @@ class XPathParser() {
    */
   @throws[XPathException]
   def resolveFunctionName(fname: String): StructuredQName = {
-    if (scanOnly) return new StructuredQName("", NamespaceConstant.SAXON, "dummy")
-    var functionName: StructuredQName = null
-    try functionName = qNameParser.parse(fname, env.getDefaultFunctionNamespace)
-    catch {
-      case e: XPathException =>
-        grumble(e.getMessage, e.getErrorCodeLocalPart)
-        assert(false)
-    }
+
+    if (scanOnly)
+      return new StructuredQName("", NamespaceConstant.SAXON, "dummy")
+
+    val functionName =
+      try
+        qNameParser.parse(fname, env.getDefaultFunctionNamespace)
+      catch {
+        case e: XPathException =>
+          grumble(e.getMessage, e.getErrorCodeLocalPart)
+          assert(false)
+          null
+      }
+
     if (functionName.hasURI(NamespaceConstant.SCHEMA)) {
-      val t = Type.getBuiltInItemType(functionName.getURI, functionName.getLocalPart)
-      if (t.isInstanceOf[BuiltInAtomicType]) checkAllowedType(env, t.asInstanceOf[BuiltInAtomicType])
+      Type.getBuiltInItemType(functionName.getURI, functionName.getLocalPart) match {
+        case atomicType: BuiltInAtomicType => checkAllowedType(env, atomicType)
+        case _ =>
+      }
     }
     functionName
   }

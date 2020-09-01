@@ -28,10 +28,7 @@ class StaticFunctionCall(private var target: Function,
     with Callable {
 
   if (target.getArity != arguments.length) {
-    throw new IllegalArgumentException(
-      "Function call to " + target.getFunctionName + " with wrong number of arguments (" +
-        arguments.length +
-        ")")
+    throw new IllegalArgumentException("Function call to " + target.getFunctionName + " with wrong number of arguments (" + arguments.length + ")")
   }
 
   setOperanda(arguments, target.getOperandRoles)
