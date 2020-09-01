@@ -288,7 +288,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     h
   }
 
-  override def toString(): String = IntHashSet.toString(iterator())
+  override def toString: String = IntHashSet.toString(iterator())
 
   def diagnosticDump(): Unit = {
     System.err.println("Contents of IntHashSet")

@@ -468,7 +468,7 @@ class LetExpression extends Assignation with TailCallReturner {
     let.getAction.evaluatePendingUpdates(context, pul)
   }
 
-  override def toString(): String =
+  override def toString: String =
     "let $" + getVariableEQName + " := " + getSequence + " return " +
       ExpressionTool.parenthesize(getAction)
 

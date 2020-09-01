@@ -98,6 +98,6 @@ class NotationValue(prefix: String,
 
   }
 
-  override def toString(): String = "NOTATION(" + getClarkName + ')'
+  override def toString: String = "NOTATION(" + getClarkName + ')'
 
 }

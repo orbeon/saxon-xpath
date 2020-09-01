@@ -182,7 +182,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getBaseExpression) + "?*"
 
   override def toShortString(): String = getBaseExpression.toShortString() + "?*"

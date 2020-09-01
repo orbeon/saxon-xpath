@@ -100,7 +100,7 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     }
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val builder: StringBuilder = new StringBuilder("[")
     var first: Boolean = true
     for (elem <- this.asScala) {

@@ -74,7 +74,7 @@ class IntSetPredicate extends IntPredicate {
 
   def getIntSet(): IntSet = set
 
-  override def toString(): String = "in {" + set + "}"
+  override def toString: String = "in {" + set + "}"
 
 }
 

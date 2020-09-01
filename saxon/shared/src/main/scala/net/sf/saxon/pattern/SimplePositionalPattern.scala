@@ -81,7 +81,7 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
   /**
    * Get the original pattern text
    */
-  override def toString(): String = nodeTest.toString + "[" + position.toString + "]"
+  override def toString: String = nodeTest.toString + "[" + position.toString + "]"
 
   def export(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.simPos")

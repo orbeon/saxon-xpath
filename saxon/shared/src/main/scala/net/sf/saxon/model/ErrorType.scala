@@ -155,7 +155,7 @@ class ErrorType private()
 
   override def toExportString(): String = toString
 
-  override def toString(): String = "xs:error"
+  override def toString: String = "xs:error"
 
   def validate(primValue: AtomicValue,
                lexicalValue: CharSequence,

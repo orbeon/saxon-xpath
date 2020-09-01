@@ -81,7 +81,7 @@ class JavaExternalObjectType( var config: Configuration,
     false
   }
 
-  override def toString(): String =
+  override def toString: String =
     classNameToQName(javaClass.getName).getEQName
 
   def getDisplayName(): String = "java-type:" + javaClass.getName

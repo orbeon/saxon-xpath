@@ -185,7 +185,7 @@ class ContextItemExpression extends Expression {
     }
   }
 
-  override def toString(): String = "."
+  override def toString: String = "."
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("dot", this)

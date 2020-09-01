@@ -202,7 +202,7 @@ class FingerprintedQName
     other.isInstanceOf[NodeName] && (this eq other) &&
       this.getPrefix == other.asInstanceOf[NodeName].getPrefix
 
-  override def toString(): String = qName.getDisplayName
+  override def toString: String = qName.getDisplayName
 
 }
 

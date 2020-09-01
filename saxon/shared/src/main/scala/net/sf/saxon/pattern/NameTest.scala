@@ -125,7 +125,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     localName
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     nodeKind match {
       case Type.ELEMENT => "element(" + namePool.getEQName(fingerPrintInt) + ")"
       case Type.ATTRIBUTE =>

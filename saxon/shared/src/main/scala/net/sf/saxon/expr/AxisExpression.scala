@@ -920,7 +920,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     destination.endElement()
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
     fsb.append(AxisInfo.axisName(axis))
     fsb.append("::")

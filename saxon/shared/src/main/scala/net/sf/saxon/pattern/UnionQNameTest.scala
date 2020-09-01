@@ -19,7 +19,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
   def matches(qname: StructuredQName): Boolean =
     tests.asScala.find(_.matches(qname)).map(_ => true).getOrElse(false)
 
-  override def toString(): String = {
+  override def toString: String = {
     var started: Boolean = false
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     for (qt <- tests.asScala) {

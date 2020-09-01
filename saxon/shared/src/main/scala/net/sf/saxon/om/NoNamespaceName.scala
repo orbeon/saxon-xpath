@@ -113,7 +113,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
       obj.asInstanceOf[NodeName].getLocalPart == localName &&
       obj.asInstanceOf[NodeName].hasURI("")
 
-  override def toString(): String = localName
+  override def toString: String = localName
 
   /**
     * Determine whether two IdentityComparable objects are identical. This is a stronger

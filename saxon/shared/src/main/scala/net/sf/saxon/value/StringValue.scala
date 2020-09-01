@@ -311,7 +311,7 @@ class StringValue extends AtomicValue {
 
   /*@NotNull*/
 
-  override def toString(): String = "\"" + value + '\"'
+  override def toString: String = "\"" + value + '\"'
 
   override def toShortString(): String = {
     var s: String = value.toString

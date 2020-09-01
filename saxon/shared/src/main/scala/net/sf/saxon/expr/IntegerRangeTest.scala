@@ -160,7 +160,7 @@ override def typeCheck(visitor: ExpressionVisitor,
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getValue) + " = (" + ExpressionTool
       .parenthesize(getMin) +
       " to " +

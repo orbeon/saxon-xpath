@@ -26,7 +26,7 @@ class UniversalPattern extends Pattern {
 
   override def getFingerprint(): Int = -1
 
-  override def toString(): String = "."
+  override def toString: String = "."
 
   override def export(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.any")

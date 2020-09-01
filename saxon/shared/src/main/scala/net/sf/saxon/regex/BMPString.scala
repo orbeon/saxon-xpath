@@ -33,7 +33,7 @@ class BMPString /**
 
   def isEnd(pos: Int): Boolean = pos >= src.length
 
-  override def toString(): String = src.toString
+  override def toString: String = src.toString
 
   def getCharSequence(): CharSequence = src
 

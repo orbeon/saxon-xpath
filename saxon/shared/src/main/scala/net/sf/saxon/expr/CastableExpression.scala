@@ -81,7 +81,7 @@ class CastableExpression(source: Expression,
     this
   }
 
-  
+
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
@@ -91,7 +91,7 @@ class CastableExpression(source: Expression,
     }
     this
   }
-  
+
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
@@ -107,12 +107,12 @@ class CastableExpression(source: Expression,
 
   override def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
 
-  
+
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  
+
 
   def copy(rebindings: RebindingMap): Expression = {
     val ce: CastableExpression = new CastableExpression(
@@ -189,7 +189,7 @@ class CastableExpression(source: Expression,
 
   override def getExpressionName(): String = "castable"
 
-  override def toString(): String =
+  override def toString: String =
     getBaseExpression.toString + " castable as " + getTargetType.getEQName
 
   override def export(out: ExpressionPresenter): Unit = {

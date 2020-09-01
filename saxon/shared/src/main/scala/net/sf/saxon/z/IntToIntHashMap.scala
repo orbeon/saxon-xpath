@@ -164,7 +164,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     }
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val buffer: FastStringBuffer = new FastStringBuffer(256)
     buffer.append("{")
     val keys: IntIterator = keyIterator()

@@ -159,7 +159,7 @@ class ValidationFailure(@BeanProperty var message: String)
     *
     * @return the String representation of this Exception
     */
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer("ValidationException: ")
     val message: String = getMessage
     if (message != null) {

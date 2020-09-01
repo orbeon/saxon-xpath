@@ -95,7 +95,7 @@ class ValidationException(exception: Exception)
    *
    * @return the String representation of this Exception
    */
-  override def toString(): String = {
+  override def toString: String = {
     val sb: StringBuilder = new StringBuilder("ValidationException: ")
     val message: String = getMessage
     if (message != null) {

@@ -166,7 +166,7 @@ import scala.jdk.CollectionConverters._
     result
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(256)
     for (att <- this) {
       sb.cat(att.getNodeName.getDisplayName)

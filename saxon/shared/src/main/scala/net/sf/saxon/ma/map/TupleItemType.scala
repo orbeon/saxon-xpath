@@ -119,7 +119,7 @@ class TupleItemType(names: List[String],
     if (extensible) 0.5 + prio / 2 else prio
   }
 
-  override def toString(): String = makeString((seq: SequenceType) => seq.toString)
+  override def toString: String = makeString((seq: SequenceType) => seq.toString)
 
   override def toExportString(): String =
     makeString((seq: SequenceType) => seq.toExportString())

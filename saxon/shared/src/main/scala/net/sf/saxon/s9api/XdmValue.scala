@@ -163,7 +163,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
 
   def getUnderlyingValue(): GroundedValue = value
 
-  override def toString(): String =
+  override def toString: String =
     try {
       var config: Configuration = null
       val iter: SequenceIterator = value.iterate()

@@ -93,7 +93,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   override def getFingerprint(): Int = -1
 
-  override def toString(): String = ".[" + getPredicate + "]"
+  override def toString: String = ".[" + getPredicate + "]"
 
   override def equals(other: Any): Boolean =
     (other.isInstanceOf[BooleanExpressionPattern]) &&

@@ -55,7 +55,7 @@ class LatinString(src: CharSequence)
 
   def isEnd(pos: Int): Boolean = pos >= charArr.length
 
-  override def toString(): String = {
+  override def toString: String = {
     val expanded: Array[Char] = Array.ofDim[Char](charArr.length)
     for (i <- 0 until charArr.length) {
       expanded(i) = (charArr(i) & 0xff).toChar

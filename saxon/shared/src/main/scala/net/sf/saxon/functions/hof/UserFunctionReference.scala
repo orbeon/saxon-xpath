@@ -187,7 +187,7 @@ class UserFunctionReference
 
   override def getExpressionName(): String = "UserFunctionReference"
 
-  override def toString(): String = getFunctionName.getEQName + "#" + getArity
+  override def toString: String = getFunctionName.getEQName + "#" + getArity
 
   override def toShortString(): String = getFunctionName.getDisplayName + "#" + getArity
 

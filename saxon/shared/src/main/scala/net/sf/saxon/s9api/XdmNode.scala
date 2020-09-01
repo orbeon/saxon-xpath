@@ -147,7 +147,7 @@ class XdmNode extends XdmItem {
 
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val node: NodeInfo = getUnderlyingNode
     if (node.getNodeKind == Type.ATTRIBUTE) {
       val `val`: String = node.getStringValue

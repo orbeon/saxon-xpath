@@ -111,7 +111,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
     */
   def identityHashCode(): Int = hashCode ^ getPrefix.hashCode
 
-  override def toString(): String = getDisplayName
+  override def toString: String = getDisplayName
 
 }
 

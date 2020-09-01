@@ -125,7 +125,7 @@ class XdmAtomicValue extends XdmItem {
   override def getUnderlyingValue(): AtomicValue =
     super.getUnderlyingValue.asInstanceOf[AtomicValue]
 
-  override def toString(): String = getStringValue
+  override def toString: String = getStringValue
 
   def getPrimitiveTypeName(): QName = {
     val value: AtomicValue = getUnderlyingValue

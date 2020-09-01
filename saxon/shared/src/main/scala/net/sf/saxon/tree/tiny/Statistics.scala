@@ -63,7 +63,7 @@ class Statistics {
     }
   }
 
-  override def toString(): String =
+  override def toString: String =
     treesCreated.toString + "(" + averageNodes.toString + "," + averageAttributes.toString +
       "," +
       averageNamespaces.toString +

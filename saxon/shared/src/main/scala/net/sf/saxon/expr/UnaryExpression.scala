@@ -74,7 +74,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
   override def computeHashCode(): Int =
     ("UnaryExpression " + getClass).hashCode ^ getBaseExpression.hashCode
 
-  override def toString(): String =
+  override def toString: String =
     getExpressionName + "(" + getBaseExpression + ")"
 
   override def toShortString(): String =

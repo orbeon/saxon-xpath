@@ -33,7 +33,7 @@ class EmptyString private () extends UnicodeString {
 
   def isEnd(pos: Int): Boolean = pos >= 0
 
-  override def toString(): String = ""
+  override def toString: String = ""
 
   def length(): Int = 0
 

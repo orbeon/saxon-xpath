@@ -100,7 +100,7 @@ class OptimizerOptions(@BeanProperty var options: Int) {
   def except(other: OptimizerOptions): OptimizerOptions =
     new OptimizerOptions(options & ~other.options)
 
-  override def toString(): String = {
+  override def toString: String = {
     var result: String = ""
     if (isSet(BYTE_CODE)) {
       result += "c"

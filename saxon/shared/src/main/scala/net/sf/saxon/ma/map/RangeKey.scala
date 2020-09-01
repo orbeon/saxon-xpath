@@ -136,7 +136,7 @@ class RangeKey
 
   override def isTrustedResultType(): Boolean = false
 
-  override def toString(): String = MapItem.mapToString(this)
+  override def toString: String = MapItem.mapToString(this)
 
   private class RangeKeyIterator extends AtomicIterator[StringValue] {
 

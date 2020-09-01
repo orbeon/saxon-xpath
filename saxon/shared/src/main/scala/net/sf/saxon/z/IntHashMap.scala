@@ -353,6 +353,6 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     override def containsAll(other: IntSet): Boolean = copy().containsAll(other)
 
-    override def toString(): String = IntHashSet.toString(iterator())
+    override def toString: String = IntHashSet.toString(iterator())
   }
 }

@@ -88,7 +88,7 @@ class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
 
   override def getFingerprint(): Int = wrappedPattern.getFingerprint
 
-  override def toString(): String = wrappedPattern.toString
+  override def toString: String = wrappedPattern.toString
 
   override def getHostLanguage(): HostLanguage = wrappedPattern.getHostLanguage
 

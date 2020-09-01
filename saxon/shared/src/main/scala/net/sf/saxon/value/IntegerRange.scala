@@ -114,7 +114,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
       this
     }
 
-  override def toString(): String = "(" + start + " to " + end + ")"
+  override def toString: String = "(" + start + " to " + end + ")"
 
   def iterator(): Iterator[AtomicValue] = new Iterator[AtomicValue]() {
     var current: Long = start

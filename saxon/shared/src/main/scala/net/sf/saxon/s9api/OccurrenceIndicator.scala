@@ -36,7 +36,7 @@ object OccurrenceIndicator extends Enumeration {
     def subsumes(other: OccurrenceIndicator): Boolean =
       Cardinality.subsumes(getCardinality, other.getCardinality)
 
-    override def toString(): String = this match {
+    override def toString: String = this match {
       case ZERO => "0"
       case ZERO_OR_ONE => "?"
       case ZERO_OR_MORE => "*"

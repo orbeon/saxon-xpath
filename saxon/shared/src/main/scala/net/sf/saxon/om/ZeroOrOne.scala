@@ -102,7 +102,7 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
     *
     * @return a string representation of the object.
     */
-  override def toString(): String = if (item == null) "null" else item.toString
+  override def toString: String = if (item == null) "null" else item.toString
 
   /**
     * Reduce the sequence to its simplest form. If the value is an empty sequence, the result will be

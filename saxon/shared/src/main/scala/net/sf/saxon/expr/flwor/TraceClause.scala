@@ -54,6 +54,6 @@ class TraceClause(expression: FLWORExpression, private var target: Clause)
     out.endElement()
   }
 
-  override def toString(): String = "trace"
+  override def toString: String = "trace"
 
 }

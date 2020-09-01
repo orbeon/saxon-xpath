@@ -115,7 +115,7 @@ class SameNameTest(private var origin: NodeInfo)
 
   def getLocalPart(): String = origin.getLocalPart
 
-  override def toString(): String = origin.getNodeKind match {
+  override def toString: String = origin.getNodeKind match {
     case Type.ELEMENT =>
       "element(" +
         NameOfNode.makeName(origin).getStructuredQName.getEQName +

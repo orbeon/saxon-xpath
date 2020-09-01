@@ -446,7 +446,7 @@ class LookupExpression(start: Expression, step: Expression)
     destination.endElement()
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     var rhs: String = null
     if (getRhsExpression.isInstanceOf[Literal]) {
       val lit: Literal = getRhsExpression.asInstanceOf[Literal]

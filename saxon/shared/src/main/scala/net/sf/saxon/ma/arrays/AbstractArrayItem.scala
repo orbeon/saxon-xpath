@@ -154,7 +154,7 @@ abstract class AbstractArrayItem extends ArrayItem {
 
   def isTrustedResultType(): Boolean = false
 
-  override def toString(): String = {
+  override def toString: String = {
     val buffer: FastStringBuffer = new FastStringBuffer(256)
     buffer.append("[")
     for (seq <- members()) {

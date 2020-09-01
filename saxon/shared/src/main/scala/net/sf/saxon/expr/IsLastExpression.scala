@@ -109,7 +109,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
     *
     * @return a representation of the expression as a string
     */
-  override def toString(): String =
+  override def toString: String =
     if (condition) {
       "position() eq last()"
     } else {

@@ -58,7 +58,7 @@ class SpecificFunctionType extends AnyFunctionType {
     th.isSubType(BuiltInAtomicType.INTEGER, argType)
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)
     sb.append("(function(")
     for (i <- 0 until argTypes.length) {

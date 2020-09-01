@@ -67,7 +67,7 @@ class CompareToStringConstant(operand: Expression,
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getLhsExpression) + " " +
       Token.tokens(operator) +
       " \"" +

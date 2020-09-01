@@ -73,7 +73,7 @@ class TailExpression(base: Expression, var start: Int)
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     if (start == 2) {
       "tail(" + getBaseExpression + ")"
     } else {

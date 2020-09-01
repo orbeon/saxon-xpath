@@ -590,7 +590,7 @@ class SlashExpression(start: Expression, step: Expression)
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getStart) + "/" + ExpressionTool.parenthesize(
       getStep)
 

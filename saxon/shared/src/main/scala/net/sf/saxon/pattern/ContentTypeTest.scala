@@ -101,7 +101,7 @@ class ContentTypeTest(nodeKind: Int,
         .asInstanceOf[ComplexType]
         .getVariety == ComplexType.VARIETY_ELEMENT_ONLY)
 
-  override def toString(): String =
+  override def toString: String =
     (if (kind == Type.ELEMENT) "element(*, " else "attribute(*, ") +
       schemaType.getEQName +
       ')'

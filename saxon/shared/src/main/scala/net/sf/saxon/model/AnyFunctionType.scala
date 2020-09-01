@@ -51,7 +51,7 @@ class AnyFunctionType extends FunctionItemType {
 
   def getPrimitiveType(): Int = Type.FUNCTION
 
-  override def toString(): String = "function(*)"
+  override def toString: String = "function(*)"
 
   def getAtomizedItemType(): PlainType = null
 

@@ -80,7 +80,7 @@ class NamespaceBinding(prefStr: String,
 
   override def hashCode(): Int = prefix.hashCode ^ uri.hashCode
 
-  override def toString(): String = prefix + "=" + uri
+  override def toString: String = prefix + "=" + uri
 
 }
 

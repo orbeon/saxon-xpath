@@ -71,7 +71,7 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
 
   /*@NotNull*/
 
-  override def toString(): String = "node()"
+  override def toString: String = "node()"
 
   /**
     * Export the QNameTest as a string for use in a SEF file (typically in a catch clause).

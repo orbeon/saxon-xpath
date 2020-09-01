@@ -148,7 +148,7 @@ abstract class NumericValue
 
   override def hashCode(): Int
 
-  override def toString(): String = getStringValue
+  override def toString: String = getStringValue
 
 }
 

@@ -309,7 +309,7 @@ class ForExpression extends Assignation {
     Cardinality.multiply(c1, c2)
   }
 
-  override def toString(): String =
+  override def toString: String =
     "for $" + getVariableEQName + " in " +
       (if (getSequence == null) "(...)" else getSequence.toString) +
       " return " +

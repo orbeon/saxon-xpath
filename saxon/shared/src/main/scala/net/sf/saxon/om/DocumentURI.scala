@@ -49,7 +49,7 @@ class DocumentURI(uri: String) {
     throw new NullPointerException("uri")
   }
 
-  override def toString(): String = displayValue
+  override def toString: String = displayValue
 
   override def equals(obj: Any): Boolean = obj match {
     case obj: DocumentURI => normalizedValue == obj.normalizedValue

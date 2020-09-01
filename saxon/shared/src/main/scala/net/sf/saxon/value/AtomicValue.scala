@@ -168,7 +168,7 @@ abstract class AtomicValue
 
   def asAtomic(): AtomicValue = this
 
-  override def toString(): String =
+  override def toString: String =
     typeLabel.toString + "(\"" + getStringValueCS.toString + "\")"
 
   /**

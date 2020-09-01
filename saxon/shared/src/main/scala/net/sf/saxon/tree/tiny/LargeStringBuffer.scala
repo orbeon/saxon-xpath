@@ -173,7 +173,7 @@ class LargeStringBuffer extends AppendableCharSequence {
     }
   }
 
-  override def toString(): String = subSequence(0, length).toString
+  override def toString: String = subSequence(0, length).toString
 
   override def equals(other: Any): Boolean = other match {
     case other: CharSequence => toString == other.toString

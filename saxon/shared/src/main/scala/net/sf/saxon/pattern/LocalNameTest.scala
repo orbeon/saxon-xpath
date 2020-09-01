@@ -110,7 +110,7 @@ class LocalNameTest(pool: NamePool,
 
   override def getPrimitiveType(): Int = nodeKind
 
-  override def toString(): String = nodeKind match {
+  override def toString: String = nodeKind match {
     case Type.ELEMENT => "*:" + localName
     case Type.ATTRIBUTE => "@*:" + localName
     case _ => // should not be used

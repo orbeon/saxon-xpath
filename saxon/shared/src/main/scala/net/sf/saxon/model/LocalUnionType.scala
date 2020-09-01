@@ -127,7 +127,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
     result
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     fsb.append("union(")
     for (at <- memberTypes.asScala) {

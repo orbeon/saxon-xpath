@@ -229,7 +229,7 @@ abstract class SystemFunction extends AbstractFunction {
   override def toShortString(): String =
     getFunctionName.getDisplayName + '#' + getArity
 
-  override def toString(): String =
+  override def toString: String =
     getFunctionName.getDisplayName + '#' + getArity
 
 }

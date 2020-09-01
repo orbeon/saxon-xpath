@@ -296,6 +296,6 @@ class HashTrieMap extends MapItem {
     }
   }
 
-  override def toString(): String = MapItem.mapToString(this)
+  override def toString: String = MapItem.mapToString(this)
 
 }

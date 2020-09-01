@@ -157,7 +157,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     * @return a string representation of the type, in notation resembling but not necessarily
     *         identical to XPath syntax
     */
-  override def toString(): String =
+  override def toString: String =
     if (this == ANY_MAP_TYPE) {
       "map(*)"
     } else if (this == EMPTY_MAP_TYPE) {

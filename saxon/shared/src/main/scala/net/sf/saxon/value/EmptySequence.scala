@@ -77,7 +77,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
 
   /*@NotNull*/
 
-  override def toString(): String = "()"
+  override def toString: String = "()"
 
   /**
     * Reduce the sequence to its simplest form. If the value is an empty sequence, the result will be

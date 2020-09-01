@@ -97,7 +97,7 @@ class NamespaceTest(private var namePool: NamePool,
 
   def getNamespaceURI(): String = uri
 
-  override def toString(): String = nodeKind match {
+  override def toString: String = nodeKind match {
     case Type.ELEMENT => "Q{" + uri + "}*"
     case Type.ATTRIBUTE => "@Q{" + uri + "}*"
     case _ => // should not happen

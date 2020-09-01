@@ -145,7 +145,7 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
     fsb.toString
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("where ")
     fsb.append(getPredicate.toString)

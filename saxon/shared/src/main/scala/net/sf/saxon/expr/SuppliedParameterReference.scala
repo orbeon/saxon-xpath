@@ -129,7 +129,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
     destination.endElement()
   }
 
-  override def toString(): String = "suppliedParam(" + slotNumber + ")"
+  override def toString: String = "suppliedParam(" + slotNumber + ")"
 
 }
 

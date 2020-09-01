@@ -118,7 +118,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
 
   override def toShortString(): String = "@" + attributeName.getDisplayName
 
-  override def toString(): String =
+  override def toString: String =
     "data(@" + attributeName.getDisplayName + ")"
 
   override def equals(obj: Any): Boolean = obj match {

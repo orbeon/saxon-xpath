@@ -439,7 +439,7 @@ class   Literal extends Expression {
       super.computeHashCode()
     }
 
-  override def toString(): String = value.toString
+  override def toString: String = value.toString
 
   def export(out: ExpressionPresenter): Unit = {
     exportValue(value, out)

@@ -124,7 +124,7 @@ object Serializer {
 
     class Property(var name: String) extends Val {
 
-      override def toString(): String = name
+      override def toString: String = name
 
       def getQName(): QName = QName.fromClarkName(name)
 

@@ -567,7 +567,7 @@ class FLWORExpression extends Expression {
     sb.toString
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     for (c <- clauses.asScala) {
       sb.append(c.toString)

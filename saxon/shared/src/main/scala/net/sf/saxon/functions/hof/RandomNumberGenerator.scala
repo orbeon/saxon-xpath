@@ -97,7 +97,7 @@ object RandomNumberGenerator {
       new SequenceExtent(output)
     }
 
-    override def toString(): String = "random-number-generator.permute"
+    override def toString: String = "random-number-generator.permute"
 
   }
 
@@ -106,7 +106,7 @@ object RandomNumberGenerator {
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
       generator(nextSeed, context)
 
-    override def toString(): String = "random-number-generator.next"
+    override def toString: String = "random-number-generator.next"
 
   }
 

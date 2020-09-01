@@ -104,7 +104,7 @@ class CompareToIntegerConstant(operand: Expression,
     *
     * @return a representation of the expression as a string
     */
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getLhsExpression) + " " +
       Token.tokens(operator) +
       " " +

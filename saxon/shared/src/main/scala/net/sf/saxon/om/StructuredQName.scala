@@ -210,7 +210,7 @@ class StructuredQName private(var content: Array[Char],
     buff.toString
   }
 
-  override def toString(): String = getDisplayName
+  override def toString: String = getDisplayName
 
   override def equals(other: Any): Boolean =
     other match {

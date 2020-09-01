@@ -69,7 +69,7 @@ object PrimitiveUType extends Enumeration {
 
     def toUType(): UType = new UType(1 << bit)
 
-    override def toString(): String = this match {
+    override def toString: String = this match {
       case DOCUMENT => "document"
       case ELEMENT => "element"
       case ATTRIBUTE => "attribute"

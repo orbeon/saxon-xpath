@@ -429,7 +429,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       variableName.getEQName
     }
 
-  override def toString(): String = {
+  override def toString: String = {
     val d: String = getEQName
     "$" + (if (d == null) "$" else d)
   }

@@ -100,7 +100,7 @@ abstract class QualifiedNameValue extends AtomicValue with AtomicMatchKey {
 
   /*@NotNull*/
 
-  override def toString(): String =
+  override def toString: String =
     "QName(\"" + getNamespaceURI + "\", \"" + getLocalName +
       "\")"
 

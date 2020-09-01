@@ -74,7 +74,7 @@ class JAXPVariableReference(private var name: StructuredQName,
   override def iterate(context: XPathContext): SequenceIterator =
     call(context, null).iterate()
 
-  override def toString(): String = getExpressionName
+  override def toString: String = getExpressionName
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("jaxpVar", this)

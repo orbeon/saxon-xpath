@@ -441,7 +441,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   override def getExpressionName(): String = "data"
 
-  override def toString(): String = "data(" + getBaseExpression.toString + ")"
+  override def toString: String = "data(" + getBaseExpression.toString + ")"
 
   override def toShortString(): String = getBaseExpression.toShortString()
 

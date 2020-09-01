@@ -106,7 +106,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getBaseExpression) + "[" +
       getSubscript +
       "]"

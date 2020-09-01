@@ -1029,7 +1029,7 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def getStreamerName(): String = "FilterExpression"
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getBase) + "[" + getFilter +
       "]"
 

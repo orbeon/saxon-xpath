@@ -228,7 +228,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
    *
    * @return a representation of the expression as a string
    */
-  override def toString(): String = {
+  override def toString: String = {
     val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     val par: Boolean = getBaseExpression.operands().iterator().hasNext
     if (par) {

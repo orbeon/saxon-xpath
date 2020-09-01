@@ -98,7 +98,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
 
   override def getPrimitiveType(): Int = Type.DOCUMENT
 
-  override def toString(): String = "document-node(" + elementTest + ')'
+  override def toString: String = "document-node(" + elementTest + ')'
 
   override def hashCode(): Int = elementTest.hashCode ^ 12345
 

@@ -202,7 +202,7 @@ abstract class Pattern extends PseudoExpression {
 
   def getDefaultPriority(): Double = priority
 
-  override def toString(): String = "pattern matching " + getItemType
+  override def toString: String = "pattern matching " + getItemType
 
   def getHostLanguage(): HostLanguage = XSLT
 

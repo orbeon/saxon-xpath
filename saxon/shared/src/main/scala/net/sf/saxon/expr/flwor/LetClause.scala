@@ -165,7 +165,7 @@ class LetClause extends Clause {
     fsb.toString
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("let $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)

@@ -124,7 +124,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   }
 
-  override def toString(): String = makeString(false)
+  override def toString: String = makeString(false)
 
   private def makeString(forExport: Boolean): String =
     if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT) {

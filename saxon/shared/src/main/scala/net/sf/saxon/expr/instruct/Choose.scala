@@ -617,7 +617,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     result
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     sb.append("if (")
     for (i <- 0 until size) {

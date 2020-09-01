@@ -26,7 +26,7 @@ class ItemTypePattern(@BeanProperty var itemTyp: ItemType) extends Pattern {
 
   override def getUType(): UType = itemTyp.getUType
 
-  override def toString(): String = itemTyp.toString
+  override def toString: String = itemTyp.toString
 
   override def getItemType(): ItemType = itemTyp
 

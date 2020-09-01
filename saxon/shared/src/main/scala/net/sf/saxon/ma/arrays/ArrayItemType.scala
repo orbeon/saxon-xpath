@@ -72,7 +72,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
 
   override def getResultType(): SequenceType = memberType
 
-  override def toString(): String = makeString((seqType: SequenceType) => SequenceType.toString)
+  override def toString: String = makeString((seqType: SequenceType) => SequenceType.toString)
 
   private def makeString(show: Function1[SequenceType, String]): String =
     if (this == ANY_ARRAY_TYPE) {

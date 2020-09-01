@@ -146,7 +146,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
 
   override def hashCode(): Int = uncompress(null).hashCode
 
-  override def toString(): String = uncompress(null).toString
+  override def toString: String = uncompress(null).toString
 
   def write(writer: Writer): Unit = {
     val `val`: Long = value

@@ -192,7 +192,7 @@ class IntArraySet extends IntSet {
     return null
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(contents.length * 4)
     var i = 0
     while (i < contents.length) {

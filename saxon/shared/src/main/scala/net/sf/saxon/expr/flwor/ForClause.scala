@@ -341,7 +341,7 @@ class ForClause extends Clause {
     fsb.toString
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)

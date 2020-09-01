@@ -271,7 +271,7 @@ class QName(prefix: String, uri: String, localName: String) {
     }
   }
 
-  override def toString(): String = sqName.getDisplayName
+  override def toString: String = sqName.getDisplayName
 
   override def hashCode(): Int = sqName.hashCode
 

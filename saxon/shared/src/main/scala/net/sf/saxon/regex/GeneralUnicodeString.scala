@@ -56,7 +56,7 @@ class GeneralUnicodeString(var charSequence: CharSequence)
   def isEnd(pos: Int): Boolean = pos >= (end - start)
 
   @NotNull
-  override def toString(): String = {
+  override def toString: String = {
     obtainCharSequence()
     charSequence = charSequence.toString
     charSequence.asInstanceOf[String]

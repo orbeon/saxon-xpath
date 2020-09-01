@@ -198,7 +198,7 @@ class QuantifiedExpression extends Assignation {
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
-  override def toString(): String =
+  override def toString: String =
     (if (operator == Token.SOME) "some" else "every") + " $" +
       getVariableEQName +
       " in " +

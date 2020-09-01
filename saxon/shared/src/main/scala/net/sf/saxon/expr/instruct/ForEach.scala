@@ -315,7 +315,7 @@ class ForEach(select: Expression,
 
   def explainThreads(out: ExpressionPresenter): Unit = ()
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getSelect) + " ! " + ExpressionTool
       .parenthesize(getAction)
 

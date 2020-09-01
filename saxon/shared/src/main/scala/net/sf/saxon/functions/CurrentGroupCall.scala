@@ -125,7 +125,7 @@ class CurrentGroupCall extends Expression with Callable {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(iterate(context))
 
-  override def toString(): String = "current-group()"
+  override def toString: String = "current-group()"
 
   override def toShortString(): String = toString
 

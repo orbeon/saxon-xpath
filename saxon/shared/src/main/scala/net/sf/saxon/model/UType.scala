@@ -268,7 +268,7 @@ class UType(private var bits: Int) {
     result
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val components: Set[PrimitiveUType] = decompose()
     if (components.isEmpty) {
       return "U{}"

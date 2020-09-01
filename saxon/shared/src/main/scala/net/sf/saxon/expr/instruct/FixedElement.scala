@@ -424,7 +424,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     out.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     "<" + elementName.getStructuredQName.getDisplayName +
       " {" +
       getContentExpression.toString +

@@ -27,7 +27,7 @@ class Tuple2[T1, T2](val _1: T1, val _2: T2) {
     result
   }
 
-  override def toString(): String = "(" + _1 + ',' + _2 + ')'
+  override def toString: String = "(" + _1 + ',' + _2 + ')'
 
 }
 

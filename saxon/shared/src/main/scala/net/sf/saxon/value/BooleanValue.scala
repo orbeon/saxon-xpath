@@ -165,7 +165,7 @@ class BooleanValue private()
    *
    * @return a string representation of this value: "true()" or "false()"
    */
-  override def toString(): String = getStringValue + "()"
+  override def toString: String = getStringValue + "()"
 
 }
 

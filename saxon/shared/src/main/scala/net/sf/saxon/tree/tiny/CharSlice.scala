@@ -50,7 +50,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
   def subSequence(start: Int, end: Int): CharSequence =
     new CharSlice(array, offset + start, end - start)
 
-  override def toString(): String = new String(array, offset, count)
+  override def toString: String = new String(array, offset, count)
 
   override def equals(other: Any): Boolean = {
     if (other.isInstanceOf[CharSlice]) {

@@ -14,7 +14,7 @@ class XdmExternalObject extends XdmItem {
 
   def getExternalObject(): Any = getUnderlyingValue.asInstanceOf[ExternalObject[_]].getObject
 
-  override def toString(): String = getExternalObject.toString
+  override def toString: String = getExternalObject.toString
 
   override def equals(other: Any): Boolean = other match {
     case other: XdmExternalObject => getUnderlyingValue == other.getUnderlyingValue

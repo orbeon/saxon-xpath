@@ -159,7 +159,7 @@ class NumericType private()
 
   override def toExportString(): String = toString
 
-  override def toString(): String = "xs:numeric"
+  override def toString: String = "xs:numeric"
 
   def checkTypeDerivationIsOK(base: SchemaType, block: Int): Unit = ()
 

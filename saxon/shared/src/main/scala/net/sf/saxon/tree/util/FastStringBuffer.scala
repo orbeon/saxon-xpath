@@ -268,7 +268,7 @@ class FastStringBuffer(initialSize: Int)
   def indexOf(ch: Char): Int =
     (0 until used).find(array(_) == ch).getOrElse(-1)
 
-  override def toString(): String = {
+  override def toString: String = {
 // has side-effects which is nasty on the debugger!
     condense()
     new String(array, 0, used)

@@ -51,6 +51,6 @@ class ProtocolRestricter private(value: String) extends Predicate[URI] {
   override def test(uri: URI): Boolean =
     permitted.asScala.find(_.test(uri)).map(_ => true).getOrElse(false)
 
-  override def toString(): String = rule
+  override def toString: String = rule
 
 }

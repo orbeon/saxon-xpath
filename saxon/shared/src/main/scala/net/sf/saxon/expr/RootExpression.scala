@@ -146,7 +146,7 @@ class RootExpression extends Expression {
     pmnSet.createArc(AxisInfo.ANCESTOR_OR_SELF, NodeKindTest.DOCUMENT)
   }
 
-  override def toString(): String = "(/)"
+  override def toString: String = "(/)"
 
   override def getExpressionName(): String = "root"
 

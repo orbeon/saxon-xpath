@@ -91,7 +91,7 @@ class ConsumingOperand(subExpression: Expression)
     destination.endElement()
   }
 
-  override def toString(): String =
+  override def toString: String =
     "consume(" + getBaseExpression.toString + ")"
 
   override def toShortString(): String =

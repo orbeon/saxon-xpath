@@ -227,7 +227,7 @@ abstract class BinaryExpression(p0: Expression,
       getRhsExpression.hashCode
   }
 
-  override def toString(): String =
+  override def toString: String =
     ExpressionTool.parenthesize(getLhsExpression) + " " +
       displayOperator() +
       " " +

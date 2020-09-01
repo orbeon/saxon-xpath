@@ -190,7 +190,7 @@ class OrderByClause(flwor: FLWORExpression,
     out.endElement()
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("order by ... ")
     fsb.toString
