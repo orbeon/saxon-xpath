@@ -59,7 +59,7 @@ class OnNonEmptyExpr /**
     * @return a set of bit-significant flags identifying the "intrinsic"
     * dependencies. The flags are documented in class net.sf.saxon.value.StaticProperty
     */
-  override def getIntrinsicDependencies()
+  override def getIntrinsicDependencies
     : Int = // suppress optimizations such as loop-lifting
     StaticProperty.HAS_SIDE_EFFECTS
 
@@ -100,7 +100,7 @@ class OnNonEmptyExpr /**
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int = getBaseExpression.getImplementationMethod
+  override def getImplementationMethod: Int = getBaseExpression.getImplementationMethod
 
   override def process(output: Outputter, context: XPathContext): Unit = {
     getBaseExpression.process(output, context)
@@ -109,7 +109,7 @@ class OnNonEmptyExpr /**
   override def iterate(context: XPathContext): SequenceIterator =
     getBaseExpression.iterate(context)
 
-  override def getExpressionName(): String = "onNonEmpty"
+  override def getExpressionName: String = "onNonEmpty"
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("onNonEmpty", this)
@@ -123,7 +123,7 @@ class OnNonEmptyExpr /**
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "OnNonEmpty"
+  override def getStreamerName: String = "OnNonEmpty"
 
 }
 

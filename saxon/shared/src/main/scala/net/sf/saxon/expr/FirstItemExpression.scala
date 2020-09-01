@@ -59,7 +59,7 @@ class FirstItemExpression(base: Expression) extends SingleItemFilter(base) {
     }
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): Item = {
     val iter: SequenceIterator = getBaseExpression.iterate(context)
@@ -68,11 +68,11 @@ class FirstItemExpression(base: Expression) extends SingleItemFilter(base) {
     result
   }
 
-  override def getExpressionName(): String = "first"
+  override def getExpressionName: String = "first"
 
   override def toShortString: String =
     getBaseExpression.toShortString + "[1]"
 
-  override def getStreamerName(): String = "FirstItemExpression"
+  override def getStreamerName: String = "FirstItemExpression"
 
 }

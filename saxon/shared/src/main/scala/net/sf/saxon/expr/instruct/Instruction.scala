@@ -86,13 +86,13 @@ object Instruction {
 
 abstract class Instruction extends Expression with TailCallReturner {
 
-  def getImplementationMethod(): Int = Expression.PROCESS_METHOD
+  def getImplementationMethod: Int = Expression.PROCESS_METHOD
 
   override def isInstruction(): Boolean = true
 
   def getInstructionNameCode: Int = -1
 
-  override def getExpressionName(): String = {
+  override def getExpressionName: String = {
     val code: Int = getInstructionNameCode
     if (code >= 0 & code < 1024) {
       StandardNames.getDisplayName(code)

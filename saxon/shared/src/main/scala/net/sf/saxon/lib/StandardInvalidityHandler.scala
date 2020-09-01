@@ -37,7 +37,7 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
     val constraintReference = getConstraintReferenceMessage(failure)
     val validationLocation = failure.asInstanceOf[ValidationFailure].getValidationLocationText
     val contextLocation = failure.asInstanceOf[ValidationFailure].getContextLocationText
-    val finalMessage = "Validation error " + getLocationMessage(failure) + "\n  " + wordWrap(explanation) + //wordWrap(validationLocation.isEmpty() ? "" : "\n  " + validationLocation) +
+    val finalMessage = "Validation error " + getLocationMessage(failure) + "\n  " + wordWrap(explanation) + //wordWrap(validationLocation.isEmpty ? "" : "\n  " + validationLocation) +
       wordWrap(if (contextLocation.isEmpty) ""
       else "\n  " + contextLocation) + wordWrap(if (constraintReference == null) ""
     else "\n  " + constraintReference) + formatListOfOffendingNodes(failure.asInstanceOf[ValidationFailure])

@@ -32,7 +32,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    *
    * @return true if and only if the size of the map is zero
    */
-  override def isEmpty(): Boolean = false
+  override def isEmpty: Boolean = false
 
   /**
    * Get the set of all key values in the map.

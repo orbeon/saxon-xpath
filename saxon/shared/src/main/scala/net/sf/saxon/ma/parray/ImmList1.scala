@@ -13,7 +13,7 @@ class ImmList1[E](private var member: E) extends ImmList[E] {
 
   override def size(): Int = 1
 
-  override def isEmpty(): Boolean = false
+  override def isEmpty: Boolean = false
 
   override def replace(index: Int, member: E): ImmList[E] =
     if (index == 0) {

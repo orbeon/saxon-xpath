@@ -100,7 +100,7 @@ class CollatingFunctionFree extends SystemFunction {
     fixed.call(context, retainedArgs)
   }
 
-  override def getStreamerName(): String =
+  override def getStreamerName: String =
     bindCollation(NamespaceConstant.CODEPOINT_COLLATION_URI).getStreamerName
 
 }

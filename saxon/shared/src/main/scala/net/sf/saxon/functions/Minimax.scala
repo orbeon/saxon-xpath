@@ -318,6 +318,6 @@ abstract class Minimax extends CollatingFunctionFixed {
     }
   }
 
-  override def getStreamerName(): String = "Minimax"
+  override def getStreamerName: String = "Minimax"
 
 }

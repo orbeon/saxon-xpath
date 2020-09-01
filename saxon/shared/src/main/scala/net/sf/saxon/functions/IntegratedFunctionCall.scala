@@ -114,7 +114,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
 
   def computeCardinality(): Int = resultType.getCardinality
 
-  override def getIntrinsicDependencies(): Int = {
+  override def getIntrinsicDependencies: Int = {
     val definition = function.getDefinition
     if (definition.dependsOnFocus())
       StaticProperty.DEPENDS_ON_FOCUS

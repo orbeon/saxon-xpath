@@ -33,7 +33,7 @@ class QuantifiedExpression extends Assignation {
   @BeanProperty
   var operator: Int = _
 
-  override def getExpressionName(): String = Token.tokens(operator)
+  override def getExpressionName: String = Token.tokens(operator)
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
@@ -144,7 +144,7 @@ class QuantifiedExpression extends Assignation {
     this
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def checkForUpdatingSubexpressions(): Unit = {
     getSequence.checkForUpdatingSubexpressions()

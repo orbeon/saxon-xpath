@@ -81,7 +81,7 @@ class OuterForExpression extends ForExpression {
     }
   }
 
-  override def getExpressionName(): String = "outerFor"
+  override def getExpressionName: String = "outerFor"
 
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit = {

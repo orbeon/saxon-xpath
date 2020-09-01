@@ -68,7 +68,7 @@ class SortKeyDefinitionList(
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int = 0
+  override def getImplementationMethod: Int = 0
 
   override def export(out: ExpressionPresenter): Unit = {
     for (skd <- sortKeyDefinitions) {

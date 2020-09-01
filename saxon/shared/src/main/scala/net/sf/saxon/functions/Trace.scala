@@ -155,6 +155,6 @@ class Trace extends SystemFunction with Traceable {
 
   }
 
-  override def getStreamerName(): String = "Trace"
+  override def getStreamerName: String = "Trace"
 
 }

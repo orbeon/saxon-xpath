@@ -74,7 +74,7 @@ abstract class NodeTest
   def isAtomizable(th: TypeHierarchy): Boolean = true
 
   def getMatcher(tree: NodeVectorTree): IntPredicate =
-    (nodeNr) => test(tree.getNode(nodeNr))
+    nodeNr => test(tree.getNode(nodeNr))
 
   def matches(nodeKind: Int, name: NodeName, annotation: SchemaType): Boolean
 

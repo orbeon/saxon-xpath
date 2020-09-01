@@ -126,7 +126,7 @@ class ValueOf(select: Expression,
   def localTypeCheck(visitor: ExpressionVisitor,
                      contextItemType: ContextItemStaticInfo): Unit = ()
 
-  override def getIntrinsicDependencies(): Int = {
+  override def getIntrinsicDependencies: Int = {
     var d: Int = super.getIntrinsicDependencies
     if (isDisableOutputEscaping) {
       d |= StaticProperty.DEPENDS_ON_ASSIGNABLE_GLOBALS

@@ -72,7 +72,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
    *
    * @return true if and only if the size of the array is zero
    */
-  override def isEmpty(): Boolean = vector.isEmpty
+  override def isEmpty: Boolean = vector.isEmpty
 
   /**
    * Get the list of all members of the array

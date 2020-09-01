@@ -338,7 +338,7 @@ class FilterExpression(base: Expression, filter: Expression)
     this.setRhsExpression(filter)
   }
 
-  override def getExpressionName(): String = "filter"
+  override def getExpressionName: String = "filter"
 
   def getItemType: ItemType = {
     if (getFilter.isInstanceOf[InstanceOfExpression] &&
@@ -611,10 +611,10 @@ class FilterExpression(base: Expression, filter: Expression)
     this
   }
 
-  override def getCost(): Double =
+  override def getCost: Double =
     Math.max(getLhsExpression.getCost + 5 * getRhsExpression.getCost, MAX_COST)
 
-  override def getImplementationMethod(): Int = ITERATE_METHOD
+  override def getImplementationMethod: Int = ITERATE_METHOD
 
   override def getIntegerBounds(): Array[IntegerValue] =
     getBase.getIntegerBounds
@@ -1026,7 +1026,7 @@ class FilterExpression(base: Expression, filter: Expression)
     fe
   }
 
-  override def getStreamerName(): String = "FilterExpression"
+  override def getStreamerName: String = "FilterExpression"
 
   override def toString: String =
     ExpressionTool.parenthesize(getBase) + "[" + getFilter +

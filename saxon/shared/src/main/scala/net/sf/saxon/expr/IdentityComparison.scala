@@ -184,7 +184,7 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "nodeComparison"
+  override def getExpressionName: String = "nodeComparison"
 
 }
 

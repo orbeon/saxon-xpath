@@ -51,7 +51,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST
 
   /*@NotNull*/
@@ -70,7 +70,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   /**
     * Is this expression the same as another expression?
@@ -93,7 +93,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "isLast"
+  override def getExpressionName: String = "isLast"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("isLast", this)
@@ -122,7 +122,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "IsLastExpr"
+  override def getStreamerName: String = "IsLastExpr"
 
 }
 

@@ -137,6 +137,6 @@ class BooleanFn extends SystemFunction {
 
   override def getCompilerName(): String = "BooleanFnCompiler"
 
-  override def getStreamerName(): String = "BooleanFn"
+  override def getStreamerName: String = "BooleanFn"
 
 }

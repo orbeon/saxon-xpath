@@ -276,7 +276,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   override def computeHashCode(): Int =
     if (binding == null) 73619830 else binding.hashCode
 
-  override def getIntrinsicDependencies(): Int = {
+  override def getIntrinsicDependencies: Int = {
     var d: Int = 0
     if (binding == null) {
       d |= StaticProperty.DEPENDS_ON_LOCAL_VARIABLES | StaticProperty.DEPENDS_ON_ASSIGNABLE_GLOBALS |
@@ -294,7 +294,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     d
   }
 
-  def getImplementationMethod(): Int =
+  def getImplementationMethod: Int =
     (if (Cardinality.allowsMany(getCardinality)) 0 else EVALUATE_METHOD) |
       ITERATE_METHOD |
       PROCESS_METHOD
@@ -436,7 +436,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   override def toShortString: String = "$" + getDisplayName
 
-  override def getExpressionName(): String = "varRef"
+  override def getExpressionName: String = "varRef"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("varRef", this)
@@ -450,6 +450,6 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     destination.endElement()
   }
 
-  override def getStreamerName(): String = "VariableReference"
+  override def getStreamerName: String = "VariableReference"
 
 }

@@ -37,7 +37,7 @@ class ImmList2[E](private var left: ImmList[E],
       throw outOfBounds(index, imSize)
     }
 
-  override def isEmpty(): Boolean = false
+  override def isEmpty: Boolean = false
 
   override def replace(index: Int, member: E): ImmList[E] =
     if (index < 0) {

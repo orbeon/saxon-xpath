@@ -95,7 +95,7 @@ class RootExpression extends Expression {
 
   override def getStaticUType(contextItemType: UType): UType = UType.DOCUMENT
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def computeHashCode(): Int = "RootExpression".hashCode
 
@@ -122,7 +122,7 @@ class RootExpression extends Expression {
     null
   }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_CONTEXT_DOCUMENT
 
   def copy(rebindings: RebindingMap): Expression = {
@@ -148,7 +148,7 @@ class RootExpression extends Expression {
 
   override def toString: String = "(/)"
 
-  override def getExpressionName(): String = "root"
+  override def getExpressionName: String = "root"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("root", this)
@@ -163,6 +163,6 @@ class RootExpression extends Expression {
   override def effectiveBooleanValue(context: XPathContext): Boolean =
     getNode(context) != null
 
-  override def getStreamerName(): String = "RootExpression"
+  override def getStreamerName: String = "RootExpression"
 
 }

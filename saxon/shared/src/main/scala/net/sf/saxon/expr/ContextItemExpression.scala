@@ -37,7 +37,7 @@ class ContextItemExpression extends Expression {
 
   private var absentContextIsTypeError: Boolean = false
 
-  override def getExpressionName(): String = "dot"
+  override def getExpressionName: String = "dot"
 
   /*@NotNull*/
 
@@ -113,14 +113,14 @@ class ContextItemExpression extends Expression {
     p | StaticProperty.NO_NODES_NEWLY_CREATED | StaticProperty.CONTEXT_DOCUMENT_NODESET
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[ContextItemExpression]
 
   override def computeHashCode(): Int = "ContextItemExpression".hashCode
 
-  override def getIntrinsicDependencies(): Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
+  override def getIntrinsicDependencies: Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
   override def addToPathMap(
                              pathMap: PathMap,
@@ -153,7 +153,7 @@ class ContextItemExpression extends Expression {
    * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
    *         or null if there is no such class
    */
-  override def getStreamerName(): String = "ContextItemExpr"
+  override def getStreamerName: String = "ContextItemExpr"
 
   /*@NotNull*/
 

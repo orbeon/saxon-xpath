@@ -40,9 +40,9 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
 
   override def getProperties: collection.Iterator[String] = properties.keySet.iterator().asScala
 
-  override def getExpressionName(): String = "trace"
+  override def getExpressionName: String = "trace"
 
-  override def getStreamerName(): String = "TraceExpr"
+  override def getStreamerName: String = "TraceExpr"
 
   def copy(rebindings: RebindingMap): Expression = {
     val t: TraceExpression = new TraceExpression(getChild.copy(rebindings))
@@ -59,7 +59,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
     getChild.checkForUpdatingSubexpressions()
   }
 
-  override def getImplementationMethod(): Int = getChild.getImplementationMethod
+  override def getImplementationMethod: Int = getChild.getImplementationMethod
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController

@@ -128,7 +128,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
     this
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[TryCatch] &&
@@ -292,7 +292,7 @@ override  def iterate(c: XPathContext): SequenceIterator = {
     }
   }
 
-  override def getExpressionName(): String = "tryCatch"
+  override def getExpressionName: String = "tryCatch"
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("try", this)
@@ -328,6 +328,6 @@ override  def iterate(c: XPathContext): SequenceIterator = {
 
   }
 
-  override def getStreamerName(): String = "TryCatch"
+  override def getStreamerName: String = "TryCatch"
 
 }

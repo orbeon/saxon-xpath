@@ -399,7 +399,7 @@ class ResultDocument(private val globalProperties: Properties,
     this
   }
 
-  override def getIntrinsicDependencies(): Int = StaticProperty.HAS_SIDE_EFFECTS
+  override def getIntrinsicDependencies: Int = StaticProperty.HAS_SIDE_EFFECTS
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
@@ -748,7 +748,7 @@ class ResultDocument(private val globalProperties: Properties,
     writer.toString
   }
 
-  override def getStreamerName(): String = "ResultDocument"
+  override def getStreamerName: String = "ResultDocument"
 
   def getHref: Expression =
     if (hrefOp == null) null else hrefOp.getChildExpression

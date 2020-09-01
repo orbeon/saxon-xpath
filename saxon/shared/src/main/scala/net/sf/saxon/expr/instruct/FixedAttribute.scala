@@ -56,7 +56,7 @@ class FixedAttribute(private var nodeName: NodeName,
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ATTRIBUTE
 
-  override def getExpressionName(): String = "att"
+  override def getExpressionName: String = "att"
 
   def getAttributeName: NodeName = nodeName
 

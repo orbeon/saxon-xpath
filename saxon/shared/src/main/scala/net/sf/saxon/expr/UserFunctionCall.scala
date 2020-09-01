@@ -161,7 +161,7 @@ class UserFunctionCall extends FunctionCall
     f.getResultType.getPrimaryType.getUType
   }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_USER_FUNCTIONS
 
   override def isUpdatingExpression(): Boolean = function.isUpdating
@@ -253,7 +253,7 @@ class UserFunctionCall extends FunctionCall
     tailCall
   }
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     if (Cardinality.allowsMany(getCardinality)) {
       ITERATE_METHOD | PROCESS_METHOD
     } else {
@@ -425,7 +425,7 @@ class UserFunctionCall extends FunctionCall
     out.endElement()
   }
 
-  override def getExpressionName(): String = "userFunctionCall"
+  override def getExpressionName: String = "userFunctionCall"
 
   override def getProperty(name: String): AnyRef = {
     if (name.==("target")) {

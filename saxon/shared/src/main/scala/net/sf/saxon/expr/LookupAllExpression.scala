@@ -95,9 +95,9 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     this
   }
 
-  override def getCost(): Double = getBaseExpression.getCost + 1
+  override def getCost: Double = getBaseExpression.getCost + 1
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   def copy(rebindings: RebindingMap): LookupAllExpression =
     new LookupAllExpression(getBaseExpression.copy(rebindings))

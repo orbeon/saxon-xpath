@@ -72,7 +72,7 @@ class TupleExpression extends Expression {
     this
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
     if (!(other.isInstanceOf[TupleExpression])) {
@@ -127,7 +127,7 @@ class TupleExpression extends Expression {
     new Tuple(tuple)
   }
 
-  override def getExpressionName(): String = "tuple"
+  override def getExpressionName: String = "tuple"
 
   def setCurrentTuple(context: XPathContext, tuple: Tuple): Unit = {
     val members: Array[Sequence] = tuple.getMembers
@@ -140,6 +140,6 @@ class TupleExpression extends Expression {
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  override def getIntrinsicDependencies(): Int = 0
+  override def getIntrinsicDependencies: Int = 0
 
 }

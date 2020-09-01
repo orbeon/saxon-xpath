@@ -362,7 +362,7 @@ class   Literal extends Expression {
     }
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD | Expression.PROCESS_METHOD | Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD | Expression.PROCESS_METHOD | Expression.EVALUATE_METHOD
 
   override def evaluateAsString(context: XPathContext): CharSequence = {
     val value: AtomicValue = evaluateItem(context).asInstanceOf[AtomicValue]
@@ -445,7 +445,7 @@ class   Literal extends Expression {
     exportValue(value, out)
   }
 
-  override def getExpressionName(): String = "literal"
+  override def getExpressionName: String = "literal"
 
   override def toShortString: String =
     if (value.getLength == 0) {
@@ -459,6 +459,6 @@ class   Literal extends Expression {
 
   override def isSubtreeExpression: Boolean = true
 
-  override def getStreamerName(): String = "Literal"
+  override def getStreamerName: String = "Literal"
 
 }

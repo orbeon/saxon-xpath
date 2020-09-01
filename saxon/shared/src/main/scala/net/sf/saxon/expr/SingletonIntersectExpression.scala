@@ -105,7 +105,7 @@ class SingletonIntersectExpression(p1: Expression, op: Int, p2: Expression)
     m != null && containsNode(getRhsExpression.iterate(c), m)
   }
 
-  override def getExpressionName(): String = "singleton-intersect"
+  override def getExpressionName: String = "singleton-intersect"
 
   override def displayOperator(): String = "among"
 

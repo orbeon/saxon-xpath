@@ -153,7 +153,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
                            nodeName: NodeName,
                            copiedNode: NodeInfo): Unit
 
- override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
+ override def getImplementationMethod: Int = Expression.PROCESS_METHOD
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall =
     processLeavingTail(output, context, null)
@@ -233,6 +233,6 @@ abstract class ElementCreator extends ParentNodeConstructor {
     bequeathNamespacesToChildren = !flags.contains("C")
   }
 
-  override def getStreamerName(): String = "ElementCreator"
+  override def getStreamerName: String = "ElementCreator"
 
 }

@@ -37,7 +37,7 @@ class IntEmptySet private () extends IntSet {
 
   def size(): Int = 0
 
-  def isEmpty(): Boolean = true
+  def isEmpty: Boolean = true
 
   def contains(value: Int): Boolean = false
 

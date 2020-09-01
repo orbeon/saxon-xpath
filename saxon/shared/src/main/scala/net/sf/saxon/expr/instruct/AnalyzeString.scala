@@ -112,7 +112,7 @@ class AnalyzeString(select: Expression,
   override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, regexOp, flagsOp, matchingOp, nonMatchingOp)
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     Expression.PROCESS_METHOD | Expression.ITERATE_METHOD
 
   def getPatternExpression: RegularExpression = pattern
@@ -323,7 +323,7 @@ class AnalyzeString(select: Expression,
     new ContextMappingIterator(fn, c2)
   }
 
-  override def getExpressionName(): String = "analyzeString"
+  override def getExpressionName: String = "analyzeString"
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("analyzeString", this)

@@ -159,7 +159,7 @@ class Empty extends Aggregate {
    */
   override def getCompilerName(): String = "EmptyCompiler"
 
-  override def getStreamerName(): String = "Empty"
+  override def getStreamerName: String = "Empty"
 
 }
 

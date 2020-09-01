@@ -16,7 +16,7 @@ trait IntIterator {
    *
    * @return true if there are more integers to come
    */
-    def hasNext : Boolean
+    def hasNext: Boolean
 
   /**
    * Return the next integer in the sequence. The result is undefined unless hasNext() has been called
@@ -24,5 +24,5 @@ trait IntIterator {
    *
    * @return the next integer in the sequence
    */
-  def next  :Integer
+  def next():Integer
 }

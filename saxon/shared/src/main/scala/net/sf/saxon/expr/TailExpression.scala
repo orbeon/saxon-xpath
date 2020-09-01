@@ -37,7 +37,7 @@ class TailExpression(base: Expression, var start: Int)
     exp
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def getItemType: ItemType = getBaseExpression.getItemType
 
@@ -57,14 +57,14 @@ class TailExpression(base: Expression, var start: Int)
 
   override def computeHashCode(): Int = super.computeHashCode() ^ start
 
-  override def getStreamerName(): String = "TailExpression"
+  override def getStreamerName: String = "TailExpression"
 
   override def iterate(context: XPathContext): SequenceIterator = {
     val baseIter: SequenceIterator = getBaseExpression.iterate(context)
     TailIterator.make(baseIter, start)
   }
 
-  override def getExpressionName(): String = "tail"
+  override def getExpressionName: String = "tail"
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("tail", this)

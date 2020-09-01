@@ -85,6 +85,6 @@ class Subsequence_2 extends SystemFunction with Callable {
     super.makeFunctionCall(arguments.toIndexedSeq: _*)
   }
 
-  override def getStreamerName(): String = "Subsequence"
+  override def getStreamerName: String = "Subsequence"
 
 }

@@ -192,7 +192,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     this
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def computeSpecialProperties(): Int = {
     var p = super.computeSpecialProperties() | StaticProperty.NO_NODES_NEWLY_CREATED
@@ -203,7 +203,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     p
   }
 
-  override def getStreamerName(): String = "AtomicSequenceConverter"
+  override def getStreamerName: String = "AtomicSequenceConverter"
 
   def copy(rebindings: RebindingMap): Expression = {
     val atomicConverter: AtomicSequenceConverter = new AtomicSequenceConverter(
@@ -247,7 +247,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
   override def computeHashCode(): Int =
     super.computeHashCode() ^ requiredItemType.hashCode
 
-  override def getExpressionName(): String = "convert"
+  override def getExpressionName: String = "convert"
 
   override def displayOperator(config: Configuration): String =
     "convert"

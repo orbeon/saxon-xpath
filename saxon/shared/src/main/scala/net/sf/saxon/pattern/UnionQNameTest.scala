@@ -29,7 +29,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
     fsb.toString
   }
 
-  override def exportQNameTest(): String =
+  override def exportQNameTest: String =
     String.join(" ",
       tests
         .stream()

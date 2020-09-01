@@ -56,7 +56,7 @@ class XPathFunctionCall(var name: StructuredQName,
 
   override def preEvaluate(visitor: ExpressionVisitor): Expression = this
 
-  override def getIntrinsicDependencies(): Int = 0
+  override def getIntrinsicDependencies: Int = 0
 
   /*@NotNull*/
 

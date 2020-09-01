@@ -226,7 +226,7 @@ class ForEach(select: Expression,
     }
   }
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD | ITEM_FEED_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
@@ -322,8 +322,8 @@ class ForEach(select: Expression,
   override def toShortString: String =
     getSelect.toShortString + "!" + getAction.toShortString
 
-  override def getExpressionName(): String = "forEach"
+  override def getExpressionName: String = "forEach"
 
-  override def getStreamerName(): String = "ForEach"
+  override def getStreamerName: String = "ForEach"
 
 }

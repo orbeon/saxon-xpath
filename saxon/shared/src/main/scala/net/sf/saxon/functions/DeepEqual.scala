@@ -651,6 +651,6 @@ class DeepEqual extends CollatingFunctionFixed {
     BooleanValue.get(b)
   }
 
-  override def getStreamerName(): String = "DeepEqual"
+  override def getStreamerName: String = "DeepEqual"
 
 }

@@ -59,7 +59,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
       AnyItemType
     }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_LOCAL_VARIABLES
 
   def computeCardinality(): Int =
@@ -86,7 +86,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     Expression.EVALUATE_METHOD | Expression.ITERATE_METHOD
 
   def evaluateVariable(c: XPathContext): Sequence = {
@@ -121,7 +121,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "supplied"
+  override def getExpressionName: String = "supplied"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("supplied", this)

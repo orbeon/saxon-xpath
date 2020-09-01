@@ -103,6 +103,6 @@ class Outermost extends SystemFunction {
 
   }
 
-  override def getStreamerName(): String = "Outermost"
+  override def getStreamerName: String = "Outermost"
 
 }

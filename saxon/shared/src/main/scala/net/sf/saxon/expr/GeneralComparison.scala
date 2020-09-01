@@ -151,7 +151,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     this.comparer = comparer
   }
 
-  override def getExpressionName(): String = "GeneralComparison"
+  override def getExpressionName: String = "GeneralComparison"
 
   def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
@@ -330,7 +330,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     vc
   }
 
-  override def getIntrinsicDependencies(): Int = {
+  override def getIntrinsicDependencies: Int = {
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
     if (mayInvolveCastToQName(th, getLhsExpression, getRhsExpression) ||
       mayInvolveCastToQName(th, getRhsExpression, getLhsExpression)) {
@@ -703,7 +703,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     gc2
   }
 
-  override def getStreamerName(): String = "GeneralComparison"
+  override def getStreamerName: String = "GeneralComparison"
 
   override def tag(): String = "gc"
 

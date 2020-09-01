@@ -91,6 +91,6 @@ class Remove extends SystemFunction {
       new RemoveIterator(arguments(0).iterate(), pos))
   }
 
-  override def getStreamerName(): String = "Remove"
+  override def getStreamerName: String = "Remove"
 
 }

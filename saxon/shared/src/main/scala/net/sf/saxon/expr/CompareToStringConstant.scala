@@ -57,7 +57,7 @@ class CompareToStringConstant(operand: Expression,
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  override def getExpressionName(): String = "compareToString"
+  override def getExpressionName: String = "compareToString"
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("compareToString", this)

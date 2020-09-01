@@ -65,7 +65,7 @@ class WherePopulated(base: Expression)
   def copy(rebindings: RebindingMap): Expression =
     new WherePopulated(getBaseExpression.copy(rebindings))
 
-  override def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
+  override def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def computeCardinality(): Int =
     super.computeCardinality() | StaticProperty.ALLOWS_ZERO
@@ -80,7 +80,7 @@ class WherePopulated(base: Expression)
 
   def mapItem(item: Item): Item = if (isDeemedEmpty(item)) null else item
 
-  override def getExpressionName(): String = "wherePop"
+  override def getExpressionName: String = "wherePop"
 
  override def export(out: ExpressionPresenter): Unit = {
     out.startElement("condCont", this)
@@ -88,6 +88,6 @@ class WherePopulated(base: Expression)
     out.endElement()
   }
 
-  override def getStreamerName(): String = "WherePopulated"
+  override def getStreamerName: String = "WherePopulated"
 
 }

@@ -38,7 +38,7 @@ abstract class CompareToConstant(p0: Expression)
 
   def getComparisonOperator: Int = operator
 
-  def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def computeSpecialProperties(): Int = StaticProperty.NO_NODES_NEWLY_CREATED
 

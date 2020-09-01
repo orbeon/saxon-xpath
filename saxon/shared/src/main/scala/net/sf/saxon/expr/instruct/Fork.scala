@@ -57,7 +57,7 @@ class Fork extends Instruction {
     t1
   }
 
-  override def getStreamerName(): String = "Fork"
+  override def getStreamerName: String = "Fork"
 
   def copy(rebindings: RebindingMap): Expression = {
     val e2 = Array.ofDim[Expression](getSize)

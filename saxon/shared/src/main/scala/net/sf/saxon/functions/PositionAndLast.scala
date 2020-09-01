@@ -57,7 +57,7 @@ object PositionAndLast {
 
     override def getCompilerName(): String = "LastCompiler"
 
-    override def getStreamerName(): String = "Last"
+    override def getStreamerName: String = "Last"
 
   }
 

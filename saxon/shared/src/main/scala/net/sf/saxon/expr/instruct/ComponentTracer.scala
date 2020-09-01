@@ -42,9 +42,9 @@ class ComponentTracer(private var component: TraceableComponent)
 
   override def operands: java.lang.Iterable[Operand] = baseOp
 
-  override def getExpressionName(): String = "trace"
+  override def getExpressionName: String = "trace"
 
-  override def getStreamerName(): String = "TraceExpr"
+  override def getStreamerName: String = "TraceExpr"
 
   def copy(rebindings: RebindingMap): Expression = {
     val t: ComponentTracer = new ComponentTracer(component)
@@ -60,7 +60,7 @@ class ComponentTracer(private var component: TraceableComponent)
     getChild.checkForUpdatingSubexpressions()
   }
 
-  override def getImplementationMethod(): Int = getChild.getImplementationMethod
+  override def getImplementationMethod: Int = getChild.getImplementationMethod
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController

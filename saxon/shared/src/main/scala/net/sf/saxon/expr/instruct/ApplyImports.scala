@@ -98,6 +98,6 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     out.endElement()
   }
 
-  override def getStreamerName(): String = "ApplyImports"
+  override def getStreamerName: String = "ApplyImports"
 
 }

@@ -516,7 +516,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       .map(_ => false)
       .getOrElse(true)
 
-  override def getImplementationMethod(): Int = {
+  override def getImplementationMethod: Int = {
     var m: Int = Expression.PROCESS_METHOD | Expression.ITERATE_METHOD |
       Expression.WATCH_METHOD
     if (!Cardinality.allowsMany(getCardinality)) {
@@ -698,8 +698,8 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
   }
 
-  override def getExpressionName(): String = "choose"
+  override def getExpressionName: String = "choose"
 
-  override def getStreamerName(): String = "Choose"
+  override def getStreamerName: String = "Choose"
 
 }

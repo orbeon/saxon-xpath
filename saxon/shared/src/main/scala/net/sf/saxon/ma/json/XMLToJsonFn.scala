@@ -119,7 +119,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
     r.close()
   }
 
-  override def getStreamerName(): String = "XmlToJsonFn"
+  override def getStreamerName: String = "XmlToJsonFn"
 
 }
 

@@ -27,16 +27,16 @@ object IntHashSet {
       return false
     }
     if (two.isInstanceOf[IntUniversalSet]) {
-      !one.isEmpty
+      return ! one.isEmpty
     }
-    if (two.isInstanceOf[IntComplementSet]) {
-      !two.asInstanceOf[IntComplementSet].getExclusions.containsAll(one)
+    two match {
+      case set: IntComplementSet => return ! set.getExclusions.containsAll(one)
+      case _ =>
     }
-    val it: IntIterator = two.iterator()
+    val it = two.iterator()
     while (it.hasNext) {
-      if (one.contains(it.next)) {
-        true
-      }
+      if (one.contains(it.next))
+        return true
     }
     false
   }
@@ -145,7 +145,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   def size(): Int = _size
 
-  def isEmpty(): Boolean = _size == 0
+  def isEmpty: Boolean = _size == 0
 
   def getValues: Array[Int] = {
     var index: Int = 0
@@ -162,10 +162,9 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   def remove(value: Int): Boolean = {
     // Knuth, v. 3, 527, Algorithm R.
-    var i: Int = indexOf(value)
-    if (_values(i) == ndv) {
+    var i = indexOf(value)
+    if (_values(i) == ndv)
       return false
-    }
 
     while (true) {
       _values(i) = ndv
@@ -173,14 +172,13 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       var r: Int = 0
       do {
         i = (i - 1) & _mask
-        if (_values(i) == ndv) {
+        if (_values(i) == ndv)
           return true
-        }
         r = hash(_values(i))
       } while ((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r));
       _values(j) = _values(i)
     }
-    return false
+    false
   }
 
   def add(value: Int): Boolean = {

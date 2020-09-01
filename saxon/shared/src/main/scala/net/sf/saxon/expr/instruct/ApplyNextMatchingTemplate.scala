@@ -34,7 +34,7 @@ abstract class ApplyNextMatchingTemplate
   @BeanProperty
   var tunnelParams: Array[WithParam] = _
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD
 
   override def operands: java.lang.Iterable[Operand] = {
@@ -71,7 +71,7 @@ abstract class ApplyNextMatchingTemplate
     this
   }
 
-  override def getIntrinsicDependencies(): Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
+  override def getIntrinsicDependencies: Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
   override def mayCreateNewNodes(): Boolean = true
 

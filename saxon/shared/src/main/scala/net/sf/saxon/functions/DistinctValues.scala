@@ -54,7 +54,7 @@ object DistinctValues {
 
 class DistinctValues extends CollatingFunctionFixed {
 
-  override def getStreamerName(): String = "DistinctValues"
+  override def getStreamerName: String = "DistinctValues"
 
   def call(context: XPathContext,
            arguments: Array[Sequence]): ZeroOrMore[AtomicValue] = {

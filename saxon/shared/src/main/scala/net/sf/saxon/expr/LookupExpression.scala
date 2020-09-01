@@ -72,7 +72,7 @@ class LookupExpression(start: Expression, step: Expression)
   override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.INSPECT else OperandRole.ABSORB
 
-  override def getExpressionName(): String = "lookupExp"
+  override def getExpressionName: String = "lookupExp"
 
   /*@NotNull*/
 
@@ -212,7 +212,7 @@ class LookupExpression(start: Expression, step: Expression)
    *
    * @return a rough estimate of the cost of evaluation
    */
-  override def getCost(): Double =
+  override def getCost: Double =
     getLhsExpression.getCost * getRhsExpression.getCost
 
   /**
@@ -223,7 +223,7 @@ class LookupExpression(start: Expression, step: Expression)
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
    *         { @link #PROCESS_METHOD}
    */
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   /*@NotNull*/
 

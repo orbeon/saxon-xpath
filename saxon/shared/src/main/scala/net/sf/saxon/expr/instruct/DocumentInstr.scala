@@ -126,7 +126,7 @@ class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
 
   override def operands: java.lang.Iterable[Operand] = contentOp
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
    def checkContentSequence(env: StaticContext): Unit = {
     DocumentInstr.checkContentSequence(env, getContentOperand, getValidationOptions)
@@ -276,6 +276,6 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
     out.endElement()
   }
 
-  override def getStreamerName(): String = "DocumentInstr"
+  override def getStreamerName: String = "DocumentInstr"
 
 }

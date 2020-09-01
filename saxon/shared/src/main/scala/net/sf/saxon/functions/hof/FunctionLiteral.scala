@@ -89,7 +89,7 @@ class FunctionLiteral(value: Function) extends Literal(value) {
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "namedFunctionRef"
+  override def getExpressionName: String = "namedFunctionRef"
 
   override def export(out: ExpressionPresenter): Unit = {
     val f: Function = getValue

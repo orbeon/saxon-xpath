@@ -50,7 +50,7 @@ class EmptyTextNodeRemover(p0: Expression)
     e2
   }
 
-  def getImplementationMethod(): Int =
+  def getImplementationMethod: Int =
     ITERATE_METHOD | ITEM_FEED_METHOD | WATCH_METHOD
 
   /*@NotNull*/
@@ -75,9 +75,9 @@ class EmptyTextNodeRemover(p0: Expression)
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "EmptyTextNodeRemover"
+  override def getStreamerName: String = "EmptyTextNodeRemover"
 
-  override def getExpressionName(): String = "emptyTextNodeRemover"
+  override def getExpressionName: String = "emptyTextNodeRemover"
 
 }
 

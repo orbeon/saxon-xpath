@@ -84,12 +84,12 @@ class CurrentGroupCall extends Expression with Callable {
     itemType
   }
 
-  override def getIntrinsicDependencies(): Int = StaticProperty.DEPENDS_ON_CURRENT_GROUP
+  override def getIntrinsicDependencies: Int = StaticProperty.DEPENDS_ON_CURRENT_GROUP
 
    override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("currentGroup")
@@ -129,6 +129,6 @@ class CurrentGroupCall extends Expression with Callable {
 
   override def toShortString: String = toString
 
-  override def getStreamerName(): String = "CurrentGroup"
+  override def getStreamerName: String = "CurrentGroup"
 
 }

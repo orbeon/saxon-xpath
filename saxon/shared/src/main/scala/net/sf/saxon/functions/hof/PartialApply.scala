@@ -152,7 +152,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     if (o == null) null else o.getChildExpression
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   /**
    * Is this expression the same as another expression?
@@ -273,7 +273,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
    *         The name will always be in the form of a lexical XML QName, and should match the name used
    *         in export() output displaying the expression.
    */
-  override def getExpressionName(): String = "partialApply"
+  override def getExpressionName: String = "partialApply"
 
 
   /**

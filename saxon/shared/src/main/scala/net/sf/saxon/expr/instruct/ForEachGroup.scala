@@ -408,7 +408,7 @@ class ForEachGroup(select: Expression,
     (props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0
   }
 
-  override def getStreamerName(): String = "ForEachGroup"
+  override def getStreamerName: String = "ForEachGroup"
 
   override def addToPathMap(
                              pathMap: PathMap,

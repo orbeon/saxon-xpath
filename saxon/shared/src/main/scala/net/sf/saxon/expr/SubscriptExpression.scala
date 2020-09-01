@@ -49,7 +49,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
 
   def getSubscriptExpression: Expression = getSubscript
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[SubscriptExpression] &&
@@ -63,7 +63,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
 
   override def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_ONE
 
-  override def getStreamerName(): String = "SubscriptExpression"
+  override def getStreamerName: String = "SubscriptExpression"
 
   override def evaluateItem(context: XPathContext): Item = {
     val memoSequence = new MemoSequence()
@@ -97,7 +97,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
     }
   }
 
-  override def getExpressionName(): String = "subscript"
+  override def getExpressionName: String = "subscript"
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("subscript", this)

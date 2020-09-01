@@ -225,7 +225,7 @@ object MapFunctionSet {
           args(1).getCardinality))
     }
 
-    override def getStreamerName(): String = "MapEntry"
+    override def getStreamerName: String = "MapEntry"
 
   }
 
@@ -494,7 +494,7 @@ object MapFunctionSet {
       }
     }
 
-    override def getStreamerName(): String = "NewMap"
+    override def getStreamerName: String = "NewMap"
 
     override def exportAdditionalArguments(call: SystemFunctionCall,
                                            out: ExpressionPresenter): Unit = {

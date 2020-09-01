@@ -138,7 +138,7 @@ class RangeExpression(start: Expression, end: Expression)
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   /**
     * Get a name identifying the kind of expression, in terms meaningful to a user.
@@ -147,7 +147,7 @@ class RangeExpression(start: Expression, end: Expression)
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "range"
+  override def getExpressionName: String = "range"
 
   /**
     * Diagnostic print of expression structure. The abstract expression tree

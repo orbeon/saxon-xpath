@@ -53,7 +53,7 @@ class MonotonicIntSet extends IntSet {
 
   def size(): Int = used
 
-  def isEmpty(): Boolean = used == 0
+  def isEmpty: Boolean = used == 0
 
   def contains(value: Int): Boolean =
     Arrays.binarySearch(contents, 0, used, value) >= 0

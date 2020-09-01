@@ -35,7 +35,7 @@ class SlashExpression(start: Expression, step: Expression)
     this.setRhsExpression(step)
   }
 
-  override def getExpressionName(): String = "pathExpression"
+  override def getExpressionName: String = "pathExpression"
 
   def getSelectExpression(): Expression = getStart
 
@@ -315,7 +315,7 @@ class SlashExpression(start: Expression, step: Expression)
     null
   }
 
-  override def getCost(): Double = {
+  override def getCost: Double = {
     val factor: Int =
       if (Cardinality.allowsMany(getLhsExpression.getCardinality)) 5 else 1
     val lh: Double = getLhsExpression.getCost + 1
@@ -385,7 +385,7 @@ class SlashExpression(start: Expression, step: Expression)
     getStep.addToPathMap(pathMap, target)
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   def copy(rebindings: RebindingMap): Expression = {
     val exp: Expression = ExpressionTool.makePathExpression(
@@ -628,6 +628,6 @@ class SlashExpression(start: Expression, step: Expression)
   def isAbsolute: Boolean =
     getFirstStep.getItemType.getPrimitiveType == Type.DOCUMENT
 
-  override def getStreamerName(): String = "ForEach"
+  override def getStreamerName: String = "ForEach"
 
 }

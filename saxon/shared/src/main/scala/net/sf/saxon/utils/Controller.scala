@@ -533,7 +533,10 @@ class Controller extends ContextOriginator {
    */
   def setURIResolver(resolver: URIResolver) = {
     userURIResolver = resolver
-    if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(getConfiguration)
+    resolver match {
+      case resolver1: StandardURIResolver => resolver1.setConfiguration(getConfiguration)
+      case _ =>
+    }
   }
 
   /**

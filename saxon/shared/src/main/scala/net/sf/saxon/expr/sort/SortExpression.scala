@@ -57,7 +57,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
 
   adoptChildExpression(sortKeys)
 
-  override def getExpressionName(): String = "sort"
+  override def getExpressionName: String = "sort"
 
   def getBaseOperand: Operand = selectOp
 
@@ -231,7 +231,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     props
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator = {
     var iter: SequenceIterator = getSelect.iterate(context)
@@ -269,7 +269,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
   override def toShortString: String =
     "sort(" + getBaseExpression.toShortString + ")"
 
-  override def getStreamerName(): String = "SortExpression"
+  override def getStreamerName: String = "SortExpression"
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("sort", this)

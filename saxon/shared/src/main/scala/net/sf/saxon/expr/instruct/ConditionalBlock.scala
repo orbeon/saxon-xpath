@@ -33,7 +33,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
   override def operands: java.lang.Iterable[Operand] =
     Arrays.asList(operanda: _*)
 
-  override def getExpressionName(): String = "condSeq"
+  override def getExpressionName: String = "condSeq"
 
   override def computeSpecialProperties(): Int = {
 
@@ -269,7 +269,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     null
   }
 
-  override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
-  override def getStreamerName(): String = "ConditionalBlock"
+  override def getImplementationMethod: Int = Expression.PROCESS_METHOD
+  override def getStreamerName: String = "ConditionalBlock"
 
 }

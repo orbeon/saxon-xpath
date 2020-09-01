@@ -85,7 +85,7 @@ class Count extends SystemFunction {
 
   override def getCompilerName(): String = "CountCompiler"
 
-  override def getStreamerName(): String = "Count"
+  override def getStreamerName: String = "Count"
 
 }
 

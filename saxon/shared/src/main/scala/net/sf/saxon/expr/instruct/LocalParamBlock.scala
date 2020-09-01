@@ -26,7 +26,7 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
     operanda(i) = new Operand(this, params(i), OperandRole.NAVIGATE)
   }
 
-  override def getExpressionName(): String = "params"
+  override def getExpressionName: String = "params"
 
   override def operands: java.lang.Iterable[Operand] =
     Arrays.asList(operanda: _*)
@@ -77,6 +77,6 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
     null
   }
 
-  override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
+  override def getImplementationMethod: Int = Expression.PROCESS_METHOD
 
 }

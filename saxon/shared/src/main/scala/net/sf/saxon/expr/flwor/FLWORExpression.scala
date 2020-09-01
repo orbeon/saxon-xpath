@@ -161,7 +161,7 @@ class FLWORExpression extends Expression {
   override def isUpdatingExpression(): Boolean =
     getReturnClause.isUpdatingExpression
 
-  override def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
+  override def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def addToPathMap(
                              pathMap: PathMap,
@@ -557,7 +557,7 @@ class FLWORExpression extends Expression {
       pul)
   }
 
-  override def getExpressionName(): String = "FLWOR"
+  override def getExpressionName: String = "FLWOR"
 
   override def toShortString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)

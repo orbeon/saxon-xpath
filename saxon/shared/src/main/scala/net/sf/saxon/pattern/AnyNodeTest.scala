@@ -80,7 +80,7 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
     * a sequence of alternatives separated by vertical bars, where each alternative is one of '*',
     * '*:localname', 'Q{uri}*', or 'Q{uri}local'.
     */
-  override def exportQNameTest(): String = "*"
+  override def exportQNameTest: String = "*"
 
   /**
     * Generate Javascript code to test if a name matches the test.

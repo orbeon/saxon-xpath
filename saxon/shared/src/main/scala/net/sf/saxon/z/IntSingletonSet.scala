@@ -20,7 +20,7 @@ class IntSingletonSet(private var value: Int) extends IntSet {
 
   def size(): Int = 1
 
-  def isEmpty(): Boolean = false
+  def isEmpty: Boolean = false
 
   def contains(value: Int): Boolean = this.value == value
 

@@ -17,7 +17,7 @@ class ImmList0[E] private() extends ImmList[E] {
 
   override def size(): Int = 0
 
-  override def isEmpty(): Boolean = true
+  override def isEmpty: Boolean = true
 
   override def replace(index: Int, member: E): ImmList[E] =
     throw outOfBounds(index, 0)

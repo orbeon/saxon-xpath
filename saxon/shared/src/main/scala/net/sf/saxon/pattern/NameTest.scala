@@ -153,7 +153,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
   override def getFullAlphaCode(): String =
     getBasicAlphaCode + " n" + getMatchingNodeName.getEQName
 
-  override def exportQNameTest(): String = getMatchingNodeName.getEQName
+  override def exportQNameTest: String = getMatchingNodeName.getEQName
 
   def generateJavaScriptNameTest(targetVersion: Int): String = {
     computeUriAndLocal()

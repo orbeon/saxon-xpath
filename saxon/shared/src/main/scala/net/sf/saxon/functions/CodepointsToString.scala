@@ -55,6 +55,6 @@ class CodepointsToString extends SystemFunction with Callable {
         context.getConfiguration.getValidCharacterChecker))
   }
 
-  override def getStreamerName(): String = "CodepointsToString"
+  override def getStreamerName: String = "CodepointsToString"
 
 }

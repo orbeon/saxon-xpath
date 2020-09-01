@@ -333,7 +333,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     def size(): Int = _n
 
-    def isEmpty(): Boolean = _n == 0
+    def isEmpty: Boolean = _n == 0
 
     def contains(key: Int): Boolean = _value(indexOf(key)) != null
 

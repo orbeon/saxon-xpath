@@ -30,7 +30,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     this
   }
 
-  override def getExpressionName(): String = op match {
+  override def getExpressionName: String = op match {
     case Token.UNION => "union"
     case Token.INTERSECT => "intersect"
     case Token.EXCEPT => "except"
@@ -384,7 +384,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     exp
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override  def getOperandRole(arg: Int): OperandRole =
     OperandRole.SAME_FOCUS_ACTION
@@ -477,6 +477,6 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       super.effectiveBooleanValue(context)
     }
 
-  override def getStreamerName(): String = "VennExpression"
+  override def getStreamerName: String = "VennExpression"
 
 }

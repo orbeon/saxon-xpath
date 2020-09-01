@@ -143,7 +143,7 @@ class IndexOf extends CollatingFunctionFixed {
       new IndexIterator(seq, searchType, `val`, comparer))
   }
 
-  override def getStreamerName(): String = "IndexOf"
+  override def getStreamerName: String = "IndexOf"
 
 }
 

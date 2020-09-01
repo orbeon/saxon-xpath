@@ -117,7 +117,7 @@ class Block(children: Array[Expression]) extends Instruction {
     false
   }
 
-  override def getExpressionName(): String = "sequence"
+  override def getExpressionName: String = "sequence"
 
   override def computeSpecialProperties(): Int = {
     if (size == 0) {
@@ -571,7 +571,7 @@ class Block(children: Array[Expression]) extends Instruction {
     tc
   }
 
-  override def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
+  override def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator =
     if (size == 0)
@@ -588,5 +588,5 @@ class Block(children: Array[Expression]) extends Instruction {
       child.evaluatePendingUpdates(context, pul)
     }
 
-  override def getStreamerName(): String = "Block"
+  override def getStreamerName: String = "Block"
 }

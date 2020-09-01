@@ -39,7 +39,7 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
     this
   }
 
-  def getImplementationMethod(): Int =
+  def getImplementationMethod: Int =
     getBaseExpression.getImplementationMethod
 
    override def getOperandRole(): OperandRole =
@@ -134,6 +134,6 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
 
   override def getItemType: ItemType = getBaseExpression.getItemType
 
-  override def getExpressionName(): String = "tailCallLoop"
+  override def getExpressionName: String = "tailCallLoop"
 
 }

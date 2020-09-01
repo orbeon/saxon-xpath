@@ -33,7 +33,7 @@ class JAXPVariableReference(private var name: StructuredQName,
   extends Expression
     with Callable {
 
-  override def getExpressionName(): String = "$" + name.getDisplayName
+  override def getExpressionName: String = "$" + name.getDisplayName
 
   /*@NotNull*/
 
@@ -48,7 +48,7 @@ class JAXPVariableReference(private var name: StructuredQName,
 
   override def computeSpecialProperties(): Int = StaticProperty.NO_NODES_NEWLY_CREATED
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[JAXPVariableReference] &&

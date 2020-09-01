@@ -148,7 +148,7 @@ abstract class BinaryExpression(p0: Expression,
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     EVALUATE_METHOD | ITERATE_METHOD
 
   override def equals(other: Any): Boolean = {

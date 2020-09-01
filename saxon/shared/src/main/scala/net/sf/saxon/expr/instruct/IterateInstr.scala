@@ -186,9 +186,9 @@ class IterateInstr(select: Expression,
     false
   }
 
-  override def getStreamerName(): String = "Iterate"
+  override def getStreamerName: String = "Iterate"
 
-  override def getImplementationMethod(): Int = Expression.PROCESS_METHOD
+  override def getImplementationMethod: Int = Expression.PROCESS_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     getActionExpression.checkPermittedContents(parentType, whole = false)

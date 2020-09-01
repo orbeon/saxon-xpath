@@ -128,7 +128,7 @@ class ApplyTemplates  ()
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_APPLY_TEMPLATES
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD
 
   override def simplify(): Expression = {
@@ -184,7 +184,7 @@ override  def optimize(visitor: ExpressionVisitor,
     this
   }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     super.getIntrinsicDependencies |
       (if (useCurrentMode) StaticProperty.DEPENDS_ON_CURRENT_ITEM else 0)
 
@@ -344,6 +344,6 @@ override  def optimize(visitor: ExpressionVisitor,
     selectOp.setChildExpression(select)
   }
 
-  override def getStreamerName(): String = "ApplyTemplates"
+  override def getStreamerName: String = "ApplyTemplates"
 
 }

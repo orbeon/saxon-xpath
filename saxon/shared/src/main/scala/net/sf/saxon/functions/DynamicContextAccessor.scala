@@ -91,7 +91,7 @@ abstract class DynamicContextAccessor extends SystemFunction {
       override def evaluateItem(context: XPathContext): Item =
         evaluate(context)
 
-      override def getIntrinsicDependencies(): Int =
+      override def getIntrinsicDependencies: Int =
         StaticProperty.DEPENDS_ON_RUNTIME_ENVIRONMENT
     }
 

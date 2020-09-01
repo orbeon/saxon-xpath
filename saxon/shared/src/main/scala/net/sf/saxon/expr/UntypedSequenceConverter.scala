@@ -150,7 +150,7 @@ class UntypedSequenceConverter(sequence: Expression,
    override def displayOperator(config: Configuration): String =
     "convertUntyped"
 
-  override def getExpressionName(): String = "convertUntyped"
+  override def getExpressionName: String = "convertUntyped"
 
   override def toShortString: String = getBaseExpression.toShortString
 

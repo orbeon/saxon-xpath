@@ -436,6 +436,6 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       getContentExpression.toShortString +
       "}/>"
 
-  override def getExpressionName(): String = "element"
+  override def getExpressionName: String = "element"
 
 }

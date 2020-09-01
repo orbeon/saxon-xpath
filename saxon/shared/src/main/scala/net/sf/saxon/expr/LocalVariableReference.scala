@@ -66,5 +66,5 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
 
     }
 
-  override def getExpressionName(): String = "locVarRef"
+  override def getExpressionName: String = "locVarRef"
 }

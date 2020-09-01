@@ -90,7 +90,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
 
   private var needsRuntimeCheck: Boolean = _
 
-override  def getExpressionName(): String = "ValueComparison"
+override  def getExpressionName: String = "ValueComparison"
 
   def setAtomicComparer(comparer: AtomicComparer): Unit = {
     this.comparer = comparer

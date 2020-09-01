@@ -64,7 +64,7 @@ class ForExpression extends Assignation {
 
   private var actionCardinality: Int = StaticProperty.ALLOWS_MANY
 
-  override def getExpressionName(): String = "for"
+  override def getExpressionName: String = "for"
 
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getSequenceOp.typeCheck(visitor, contextInfo)
@@ -257,7 +257,7 @@ class ForExpression extends Assignation {
 
   override def isVacuousExpression(): Boolean = getAction.isVacuousExpression
 
-  def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
+  def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     getAction.checkPermittedContents(parentType, whole = false)
@@ -340,6 +340,6 @@ class ForExpression extends Assignation {
 
   def explainSpecializedAttributes(out: ExpressionPresenter): Unit = ()
 
-  override def getStreamerName(): String = "ForExpression"
+  override def getStreamerName: String = "ForExpression"
 
 }

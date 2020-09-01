@@ -49,7 +49,7 @@ class LetExpression extends Assignation with TailCallReturner {
     isInstruct = inst
   }
 
-  override def getExpressionName(): String = "let"
+  override def getExpressionName: String = "let"
 
   def setNeedsEagerEvaluation(req: Boolean): Unit = {
     if (req && needsLazyEvaluation) {}
@@ -277,7 +277,7 @@ class LetExpression extends Assignation with TailCallReturner {
     }
   }
 
-  override def getCost(): Double = getSequence.getCost + getAction.getCost
+  override def getCost: Double = getSequence.getCost + getAction.getCost
 
   private def allReferencesAreFlattened(): Boolean =
     references != null &&
@@ -292,7 +292,7 @@ class LetExpression extends Assignation with TailCallReturner {
   override def getIntegerBounds(): Array[IntegerValue] =
     getAction.getIntegerBounds
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     getAction.getImplementationMethod
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {

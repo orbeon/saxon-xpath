@@ -155,13 +155,13 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
 
   import Expression._
 
-  def getImplementationMethod(): Int = PROCESS_METHOD | ITERATE_METHOD | ITEM_FEED_METHOD | WATCH_METHOD
+  def getImplementationMethod: Int = PROCESS_METHOD | ITERATE_METHOD | ITEM_FEED_METHOD | WATCH_METHOD
 
-  override def getStreamerName(): String = "AdjacentTextNodeMerger"
+  override def getStreamerName: String = "AdjacentTextNodeMerger"
 
   override def iterate(context: XPathContext): SequenceIterator =
     new AdjacentTextNodeMergingIterator(getBaseExpression.iterate(context))
 
-  override def getExpressionName(): String = "mergeAdj"
+  override def getExpressionName: String = "mergeAdj"
 
 }

@@ -214,7 +214,7 @@ class NumberSequenceFormatter(value: Expression,
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
    *         { @link #PROCESS_METHOD}
    */
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): StringValue = {
     val value: Long = -1

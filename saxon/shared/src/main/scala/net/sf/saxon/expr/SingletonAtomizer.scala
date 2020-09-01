@@ -116,9 +116,9 @@ class SingletonAtomizer(sequence: Expression,
     e2
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
-  override def getStreamerName(): String = "SingletonAtomizer"
+  override def getStreamerName: String = "SingletonAtomizer"
 
   def getRole: RoleDiagnostic = roleDiagnostic
 
@@ -234,7 +234,7 @@ class SingletonAtomizer(sequence: Expression,
       StaticProperty.EXACTLY_ONE
     }
 
-  override def getExpressionName(): String = "atomizeSingleton"
+  override def getExpressionName: String = "atomizeSingleton"
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("atomSing", this)

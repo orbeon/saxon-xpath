@@ -91,7 +91,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
   override def getTargetFunction(): SystemFunction =
     super.getTargetFunction.asInstanceOf[SystemFunction]
 
-  override def getIntrinsicDependencies(): Int = {
+  override def getIntrinsicDependencies: Int = {
     val properties: Int = getTargetFunction.getDetails.properties
     var dep: Int = 0
     if ((properties & BuiltInFunctionSet.LATE) != 0) {
@@ -324,7 +324,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     }
   }
 
-  override def getExpressionName(): String = "sysFuncCall"
+  override def getExpressionName: String = "sysFuncCall"
 
   override def export(out: ExpressionPresenter): Unit = {
     if (getFunctionName.hasURI(NamespaceConstant.FN)) {

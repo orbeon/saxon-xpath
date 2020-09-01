@@ -102,6 +102,6 @@ class Subsequence_3 extends SystemFunction with Callable {
         arguments(2).head.asInstanceOf[NumericValue],
         context))
 
-  override def getStreamerName(): String = "Subsequence"
+  override def getStreamerName: String = "Subsequence"
 
 }

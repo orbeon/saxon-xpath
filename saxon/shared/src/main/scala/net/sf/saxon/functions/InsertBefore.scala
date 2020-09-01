@@ -94,6 +94,6 @@ class InsertBefore extends SystemFunction {
         Type.getCommonSuperType(getArg(0).getItemType, getArg(2).getItemType)
     }
 
-  override def getStreamerName(): String = "InsertBefore"
+  override def getStreamerName: String = "InsertBefore"
 
 }

@@ -22,7 +22,7 @@ class IntUniversalSet private() extends IntSet {
 
   def size(): Int = java.lang.Integer.MAX_VALUE
 
-  def isEmpty(): Boolean = false
+  def isEmpty: Boolean = false
 
   def contains(value: Int): Boolean = true
 

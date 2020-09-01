@@ -54,7 +54,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
   override def computeCardinality(): Int =
     getBaseExpression.getCardinality & ~StaticProperty.ALLOWS_MANY
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): NumericValue = {
     val v1: NumericValue =
@@ -74,7 +74,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
 
   override  def displayOperator(config: Configuration): String = "-"
 
-  override def getExpressionName(): String = "minus"
+  override def getExpressionName: String = "minus"
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("minus", this)

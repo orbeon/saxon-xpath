@@ -153,7 +153,7 @@ class UserFunctionReference
 
    override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def getItemType: ItemType = nominalTarget.getFunctionItemType
 
@@ -185,7 +185,7 @@ class UserFunctionReference
                     arguments: Array[Sequence]): Function =
     evaluateItem(context)
 
-  override def getExpressionName(): String = "UserFunctionReference"
+  override def getExpressionName: String = "UserFunctionReference"
 
   override def toString: String = getFunctionName.getEQName + "#" + getArity
 

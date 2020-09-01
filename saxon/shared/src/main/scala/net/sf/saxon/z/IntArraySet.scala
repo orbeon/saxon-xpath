@@ -79,7 +79,7 @@ class IntArraySet extends IntSet {
 
   def size(): Int = contents.length
 
-  def isEmpty(): Boolean = contents.length == 0
+  def isEmpty: Boolean = contents.length == 0
 
   def getValues: Array[Int] = contents
 

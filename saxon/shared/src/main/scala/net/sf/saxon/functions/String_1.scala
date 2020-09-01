@@ -54,6 +54,6 @@ class String_1 extends ScalarSystemFunction {
 
   override def getCompilerName(): String = "StringFnCompiler"
 
-  override def getStreamerName(): String = "StringFn"
+  override def getStreamerName: String = "StringFn"
 
 }

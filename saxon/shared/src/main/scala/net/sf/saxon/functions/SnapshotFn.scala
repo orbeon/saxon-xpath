@@ -151,6 +151,6 @@ class SnapshotFn extends SystemFunction {
     new LazySequence(iter)
   }
 
-  override def getStreamerName(): String = "SnapshotFn"
+  override def getStreamerName: String = "SnapshotFn"
 
 }

@@ -156,7 +156,7 @@ class SameNameTest(private var origin: NodeInfo)
     * a sequence of alternatives separated by vertical bars, where each alternative is one of '*',
     * '*:localname', 'Q{uri}*', or 'Q{uri}local'.
     */
-  override def exportQNameTest(): String = // Not applicable
+  override def exportQNameTest: String = // Not applicable
     ""
 
   /**

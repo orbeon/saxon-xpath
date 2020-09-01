@@ -105,7 +105,7 @@ abstract class SimpleNodeConstructor extends Instruction {
     this
   }
 
-  override def getStreamerName(): String = "SimpleNodeConstructor"
+  override def getStreamerName: String = "SimpleNodeConstructor"
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val value: CharSequence = getSelect.evaluateAsString(context)

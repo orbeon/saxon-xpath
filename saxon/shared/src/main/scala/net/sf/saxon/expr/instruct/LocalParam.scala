@@ -296,7 +296,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def mayCreateNewNodes(): Boolean = false
 
-  override def getExpressionName(): String = "param"
+  override def getExpressionName: String = "param"
 
   override def toShortString: String = "$" + getVariableQName.getDisplayName
 

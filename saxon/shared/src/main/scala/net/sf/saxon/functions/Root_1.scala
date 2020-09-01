@@ -27,7 +27,7 @@ class Root_1 extends SystemFunction {
     }
   }
 
-  override def getStreamerName(): String = "Root"
+  override def getStreamerName: String = "Root"
 
   override def getCompilerName(): String = "RootFunctionCompiler"
 

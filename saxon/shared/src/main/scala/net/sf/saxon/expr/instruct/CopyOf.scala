@@ -227,7 +227,7 @@ class CopyOf(select: Expression,
 
   def isDocumentOrElementRequired: Boolean = requireDocumentOrElement
 
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD
 
   def copy(rebindings: RebindingMap): Expression = {
@@ -458,7 +458,7 @@ class CopyOf(select: Expression,
     out.endElement()
   }
 
-  override def getStreamerName(): String = "CopyOf"
+  override def getStreamerName: String = "CopyOf"
 
   override def addToPathMap(
                              pathMap: PathMap,

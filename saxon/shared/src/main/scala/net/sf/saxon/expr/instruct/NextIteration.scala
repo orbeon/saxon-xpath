@@ -96,7 +96,7 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "NextIteration"
+  override def getStreamerName: String = "NextIteration"
 
   /*@Nullable*/
 

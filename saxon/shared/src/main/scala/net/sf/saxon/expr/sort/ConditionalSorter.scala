@@ -76,7 +76,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     getCondition.getSpecialProperties |
       StaticProperty.ORDERED_NODESET & ~StaticProperty.REVERSE_DOCUMENT_ORDER
 
-  def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression =
@@ -143,6 +143,6 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     }
   }
 
-  override def getExpressionName(): String = "conditionalSort"
+  override def getExpressionName: String = "conditionalSort"
 
 }

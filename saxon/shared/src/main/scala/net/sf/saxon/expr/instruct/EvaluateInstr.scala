@@ -132,7 +132,7 @@ class EvaluateInstr(xpath: Expression,
     throw new UnsupportedOperationException(
       "Cannot do document projection when xsl:evaluate is used")
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_FOCUS | StaticProperty.DEPENDS_ON_XSLT_CONTEXT
 
   override def operands: java.lang.Iterable[Operand] = {
@@ -162,7 +162,7 @@ class EvaluateInstr(xpath: Expression,
     sub
   }
 
-  def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   def copy(rebindings: RebindingMap): Expression = {
     val e2: EvaluateInstr = new EvaluateInstr(

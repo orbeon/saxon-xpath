@@ -92,7 +92,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
 
   def arrayLength(): Int = membersList.size
 
-  def isEmpty(): Boolean = membersList.isEmpty
+  def isEmpty: Boolean = membersList.isEmpty
 
   def members: Iterable[GroundedValue] = membersList.asScala.toList
 

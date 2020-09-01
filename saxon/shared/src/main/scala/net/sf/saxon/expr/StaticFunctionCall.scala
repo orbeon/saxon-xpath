@@ -75,7 +75,7 @@ class StaticFunctionCall(private var target: Function,
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     target.call(context, arguments)
 
-  override def getExpressionName(): String = "staticFunctionCall"
+  override def getExpressionName: String = "staticFunctionCall"
 
   override def export(out: ExpressionPresenter): Unit = {
     if (target.isInstanceOf[OriginalFunction]) {

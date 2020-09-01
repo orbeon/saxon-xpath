@@ -55,7 +55,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
 
   def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
 
-  override def getExpressionName(): String = "docOrder"
+  override def getExpressionName: String = "docOrder"
 
   override def simplify(): Expression = {
     val operand: Expression = getBaseExpression.simplify()
@@ -193,7 +193,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
   override def toPattern(config: Configuration): Pattern =
     getBaseExpression.toPattern(config)
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator =
     new DocumentOrderIterator(getBaseExpression.iterate(context), comparer)
@@ -210,6 +210,6 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     out.endElement()
   }
 
-  override def getStreamerName(): String = "DocumentSorterAdjunct"
+  override def getStreamerName: String = "DocumentSorterAdjunct"
 
 }

@@ -128,6 +128,6 @@ class Exists extends Aggregate {
 
   override def getCompilerName(): String = "ExistsCompiler"
 
-  override def getStreamerName(): String = "Exists"
+  override def getStreamerName: String = "Exists"
 
 }

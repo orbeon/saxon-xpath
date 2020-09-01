@@ -81,7 +81,7 @@ override def typeCheck(visitor: ExpressionVisitor,
     exp
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[IntegerRangeTest] &&
@@ -150,7 +150,7 @@ override def typeCheck(visitor: ExpressionVisitor,
     BooleanValue.FALSE
   }
 
-  override def getExpressionName(): String = "intRangeTest"
+  override def getExpressionName: String = "intRangeTest"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("intRangeTest", this)

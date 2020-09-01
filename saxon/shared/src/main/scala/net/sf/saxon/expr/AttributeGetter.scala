@@ -56,7 +56,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
    override def computeSpecialProperties(): Int =
     StaticProperty.NO_NODES_NEWLY_CREATED
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
   override def copy(rebindings: RebindingMap): AttributeGetter = {
@@ -79,7 +79,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
                                           getConfiguration.getNamePool))
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): Item = {
     val item: Item = context.getContextItem
@@ -114,7 +114,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
     }
   }
 
-  override def getExpressionName(): String = "attGetter"
+  override def getExpressionName: String = "attGetter"
 
   override def toShortString: String = "@" + attributeName.getDisplayName
 

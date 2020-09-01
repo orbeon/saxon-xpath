@@ -208,7 +208,7 @@ abstract class FunctionCall extends Expression {
     numArgs
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   def addExternalFunctionCallToPathMap(
                                         pathMap: PathMap,
@@ -222,7 +222,7 @@ abstract class FunctionCall extends Expression {
     result
   }
 
-  override def getExpressionName(): String = "functionCall"
+  override def getExpressionName: String = "functionCall"
 
   def getDisplayName: String = {
     val fName: StructuredQName = getFunctionName

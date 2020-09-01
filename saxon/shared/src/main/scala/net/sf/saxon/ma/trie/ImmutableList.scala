@@ -35,13 +35,13 @@ object ImmutableList {
     override def tail(): ImmutableList[T] =
       throw new NoSuchElementException("head() called on empty list")
 
-    override def isEmpty(): Boolean = true
+    override def isEmpty: Boolean = true
   }
 
   private class NonEmptyList[T](private val element: T, var tail: ImmutableList[T])
     extends ImmutableList[T] {
     override def head: T = element
-    override def isEmpty(): Boolean = false
+    override def isEmpty: Boolean = false
   }
 
 }

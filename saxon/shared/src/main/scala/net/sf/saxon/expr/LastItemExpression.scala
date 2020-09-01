@@ -35,7 +35,7 @@ class LastItemExpression(base: Expression) extends SingleItemFilter(base) {
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   /*@Nullable*/
 
@@ -58,7 +58,7 @@ class LastItemExpression(base: Expression) extends SingleItemFilter(base) {
     results
   }
 
-  override def getExpressionName(): String = "lastOf"
+  override def getExpressionName: String = "lastOf"
 
 }
 

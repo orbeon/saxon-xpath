@@ -39,6 +39,6 @@ class FilterFn extends SystemFunction {
     new ItemMappingIterator(base, map)
   }
 
-  override def getStreamerName(): String = "FilterFn"
+  override def getStreamerName: String = "FilterFn"
 
 }

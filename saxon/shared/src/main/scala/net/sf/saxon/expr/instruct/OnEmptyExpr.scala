@@ -55,7 +55,7 @@ class OnEmptyExpr /**
     * @return a set of bit-significant flags identifying the "intrinsic"
     * dependencies. The flags are documented in class net.sf.saxon.value.StaticProperty
     */
-  override def getIntrinsicDependencies()
+  override def getIntrinsicDependencies
     : Int = // suppress optimizations such as loop-lifting
     StaticProperty.HAS_SIDE_EFFECTS
 
@@ -89,9 +89,9 @@ class OnEmptyExpr /**
   def copy(rebindings: RebindingMap): Expression =
     new OnEmptyExpr(getBaseExpression.copy(rebindings))
 
-  override def getImplementationMethod(): Int = getBaseExpression.getImplementationMethod
+  override def getImplementationMethod: Int = getBaseExpression.getImplementationMethod
 
-  override def getExpressionName(): String = "onEmpty"
+  override def getExpressionName: String = "onEmpty"
 
   override def process(output: Outputter, context: XPathContext): Unit = {
     getBaseExpression.process(output, context)
@@ -112,7 +112,7 @@ class OnEmptyExpr /**
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "OnEmpty"
+  override def getStreamerName: String = "OnEmpty"
 
 }
 

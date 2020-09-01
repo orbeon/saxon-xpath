@@ -131,6 +131,6 @@ class NextMatch(var useTailRecursion: Boolean)
 
   }
 
-  override def getStreamerName(): String = "NextMatch"
+  override def getStreamerName: String = "NextMatch"
 
 }

@@ -37,7 +37,7 @@ class ConsumingOperand(subExpression: Expression)
 
   override def getItemType: ItemType = getBaseExpression.getItemType
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     getBaseExpression.getIntrinsicDependencies
 
   override def computeCardinality(): Int = getBaseExpression.getCardinality
@@ -59,7 +59,7 @@ class ConsumingOperand(subExpression: Expression)
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     EVALUATE_METHOD | ITERATE_METHOD
 
   def evaluate(c: XPathContext): Sequence =
@@ -83,7 +83,7 @@ class ConsumingOperand(subExpression: Expression)
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "consume"
+  override def getExpressionName: String = "consume"
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("consume", this)

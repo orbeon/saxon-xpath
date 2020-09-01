@@ -29,5 +29,5 @@ abstract class FoldingFunction extends SystemFunction {
     fold.result()
   }
 
-  override def getStreamerName(): String = "Fold"
+  override def getStreamerName: String = "Fold"
 }

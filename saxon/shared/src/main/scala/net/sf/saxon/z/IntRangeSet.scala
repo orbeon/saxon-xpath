@@ -86,7 +86,7 @@ class IntRangeSet extends IntSet {
 
   override def isMutable(): Boolean = false
 
-  def isEmpty(): Boolean = size == 0
+  def isEmpty: Boolean = size == 0
 
   def contains(value: Int): Boolean = {
     if (used == 0) {

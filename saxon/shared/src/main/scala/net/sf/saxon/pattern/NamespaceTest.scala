@@ -123,7 +123,7 @@ class NamespaceTest(private var namePool: NamePool,
     * a sequence of alternatives separated by vertical bars, where each alternative is one of '*',
     * '*:localname', 'Q{uri}*', or 'Q{uri}local'.
     */
-  override def exportQNameTest(): String = "Q{" + uri + "}*"
+  override def exportQNameTest: String = "Q{" + uri + "}*"
 
   def generateJavaScriptNameTest(targetVersion: Int): String =
     "q.uri==='" + ExpressionPresenter.jsEscape(uri) + "'"

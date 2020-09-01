@@ -49,9 +49,9 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   override def operands: java.lang.Iterable[Operand] = operanda.operands
 
-  override def getExpressionName(): String = "SquareArrayConstructor"
+  override def getExpressionName: String = "SquareArrayConstructor"
 
-  override def getStreamerName(): String = "ArrayBlock"
+  override def getStreamerName: String = "ArrayBlock"
 
   override def computeSpecialProperties(): Int = 0
 
@@ -175,7 +175,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
     }
   }
 
-  def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def evaluateItem(context: XPathContext): Item = {
     val value: List[GroundedValue] =

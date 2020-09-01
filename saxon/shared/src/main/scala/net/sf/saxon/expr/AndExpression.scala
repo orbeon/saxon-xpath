@@ -73,7 +73,7 @@ class AndExpression(p1: Expression, p2: Expression)
     this
   }
 
-  override def getCost(): Double =
+  override def getCost: Double =
     getLhsExpression.getCost + getRhsExpression.getCost / 2
 
   def copy(rebindings: RebindingMap): Expression = {

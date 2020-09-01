@@ -21,8 +21,7 @@ import scala.util.control.Breaks._
 
 object AxisExpression {
 
-  private def getDiagnosticName(name: StructuredQName,
-                                env: StaticContext): String = {
+  private def getDiagnosticName(name: StructuredQName, env: StaticContext): String = {
     val uri: String = name.getURI
     if (uri.==("")) {
       name.getLocalPart
@@ -67,7 +66,6 @@ object AxisExpression {
       true
     }
   }
-
 }
 
 class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
@@ -79,23 +77,21 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   private var doneTypeCheck: Boolean = false
   private var doneOptimize: Boolean = false
 
-  override def getExpressionName(): String = "axisStep"
+  override def getExpressionName: String = "axisStep"
 
   override def simplify(): Expression = {
-    val e2: Expression = super.simplify()
-    if (e2 != this) return e2
-    if ((test == null || test == AnyNodeTest.getInstance) &&
-      (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR)) {
+    val e2 = super.simplify()
+    if (e2 != this) 
+      return e2
+    if ((test == null || test == AnyNodeTest.getInstance) && (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR))
       test = MultipleNodeKindTest.PARENT_NODE
-    }
     this
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val contextItemType: ItemType = contextInfo.getItemType
-    val noWarnings: Boolean = doneOptimize ||
-      (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
+    val noWarnings: Boolean = doneOptimize || (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
     doneTypeCheck = true
     if (contextItemType == ErrorType) {
       val err = new XPathException(
@@ -153,9 +149,8 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val env: StaticContext = visitor.getStaticContext
     val config: Configuration = env.getConfiguration
     var contextType: ItemType = contextInfo.getItemType
-    if (!(contextType.isInstanceOf[NodeTest])) {
+    if (! contextType.isInstanceOf[NodeTest])
       contextType = AnyNodeTest.getInstance
-    }
     if (test != null &&
       !AxisInfo
         .getTargetUType(UType.ANY_NODE, axis)
@@ -168,14 +163,15 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       }
       Literal.makeEmptySequence()
     }
-    if (test.isInstanceOf[NameTest] && axis == AxisInfo.NAMESPACE &&
-      !test.asInstanceOf[NameTest].getNamespaceURI.isEmpty) {
-      if (warnings) {
-        visitor.issueWarning(
-          "The names of namespace nodes are never prefixed, so this axis step will never select anything",
-          getLocation)
-      }
-      Literal.makeEmptySequence()
+    test match {
+      case test1: NameTest if !test1.getNamespaceURI.isEmpty && axis == AxisInfo.NAMESPACE =>
+        if (warnings) {
+          visitor.issueWarning(
+            "The names of namespace nodes are never prefixed, so this axis step will never select anything",
+            getLocation)
+        }
+        Literal.makeEmptySequence()
+      case _ =>
     }
     val originUType: UType = contextType.getUType
     var targetUType: UType = AxisInfo.getTargetUType(originUType, axis)
@@ -232,73 +228,74 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           test)
     val origin: Int = contextType.getPrimitiveType
     if (test != null) {
-      if (contextType
-        .isInstanceOf[DocumentNodeTest] && kind == UType.ELEMENT) {
-        val elementTest: NodeTest =
-          contextType.asInstanceOf[DocumentNodeTest].getElementTest
-        val outermostElementNames: Optional[IntSet] =
-          elementTest.getRequiredNodeNames
-        if (outermostElementNames.isPresent) {
-          val selectedElementNames: Optional[IntSet] =
-            test.getRequiredNodeNames
-          if (selectedElementNames.isPresent) {
-            if (axis == AxisInfo.CHILD) {
-              if (selectedElementNames.get
-                .intersect(outermostElementNames.get)
-                .isEmpty) {
-                if (warnings) {
-                  visitor.issueWarning(
-                    "Starting at a document node, the step is selecting an element whose name " +
-                      "is not among the names of child elements permitted for this document node type",
-                    getLocation
-                  )
-                }
-                Literal.makeEmptySequence()
-              }
-              if (env.getPackageData.isSchemaAware && elementTest
-                .isInstanceOf[SchemaNodeTest] &&
-                outermostElementNames.get.size == 1) {
-                val oeni: IntIterator = outermostElementNames.get.iterator()
-                val outermostElementName: Int =
-                  if (oeni.hasNext) oeni.next else -1
-                val decl: SchemaDeclaration =
-                  config.getElementDeclaration(outermostElementName)
-                if (decl == null) {
+      contextType match {
+        case test1: DocumentNodeTest if kind == UType.ELEMENT =>
+          val elementTest: NodeTest =
+            test1.getElementTest
+          val outermostElementNames: Optional[IntSet] =
+            elementTest.getRequiredNodeNames
+          if (outermostElementNames.isPresent) {
+            val selectedElementNames: Optional[IntSet] =
+              test.getRequiredNodeNames
+            if (selectedElementNames.isPresent) {
+              if (axis == AxisInfo.CHILD) {
+                if (selectedElementNames.get
+                  .intersect(outermostElementNames.get)
+                  .isEmpty) {
                   if (warnings) {
-                    visitor.issueWarning("Element " + config.getNamePool
-                      .getEQName(outermostElementName) +
-                      " is not declared in the schema",
-                      getLocation)
+                    visitor.issueWarning(
+                      "Starting at a document node, the step is selecting an element whose name " +
+                        "is not among the names of child elements permitted for this document node type",
+                      getLocation
+                    )
                   }
-                  itemType = elementTest
-                } else {
-                  val contentType: SchemaType = decl.getType
-                  itemType = new CombinedNodeTest(
-                    elementTest,
-                    Token.INTERSECT,
-                    new ContentTypeTest(Type.ELEMENT,
-                      contentType,
-                      config,
-                      true))
+                  Literal.makeEmptySequence()
                 }
-              } else {
-                itemType = elementTest
-              }
-              return this
-            } else if (axis == AxisInfo.DESCENDANT) {
-              val canMatchOutermost: Boolean = !selectedElementNames.get
-                .intersect(outermostElementNames.get)
-                .isEmpty
-              if (!canMatchOutermost) {
-                val path: Expression = ExpressionTool.makePathExpression(
-                  new AxisExpression(AxisInfo.CHILD, elementTest),
-                  new AxisExpression(AxisInfo.DESCENDANT, test))
-                ExpressionTool.copyLocationInfo(this, path)
-                path.typeCheck(visitor, contextInfo)
+                if (env.getPackageData.isSchemaAware && elementTest
+                  .isInstanceOf[SchemaNodeTest] &&
+                  outermostElementNames.get.size == 1) {
+                  val oeni: IntIterator = outermostElementNames.get.iterator()
+                  val outermostElementName: Int =
+                    if (oeni.hasNext) oeni.next else -1
+                  val decl: SchemaDeclaration =
+                    config.getElementDeclaration(outermostElementName)
+                  if (decl == null) {
+                    if (warnings) {
+                      visitor.issueWarning("Element " + config.getNamePool
+                        .getEQName(outermostElementName) +
+                        " is not declared in the schema",
+                        getLocation)
+                    }
+                    itemType = elementTest
+                  } else {
+                    val contentType: SchemaType = decl.getType
+                    itemType = new CombinedNodeTest(
+                      elementTest,
+                      Token.INTERSECT,
+                      new ContentTypeTest(Type.ELEMENT,
+                        contentType,
+                        config,
+                        true))
+                  }
+                } else {
+                  itemType = elementTest
+                }
+                return this
+              } else if (axis == AxisInfo.DESCENDANT) {
+                val canMatchOutermost: Boolean = !selectedElementNames.get
+                  .intersect(outermostElementNames.get)
+                  .isEmpty
+                if (!canMatchOutermost) {
+                  val path: Expression = ExpressionTool.makePathExpression(
+                    new AxisExpression(AxisInfo.CHILD, elementTest),
+                    new AxisExpression(AxisInfo.DESCENDANT, test))
+                  ExpressionTool.copyLocationInfo(this, path)
+                  path.typeCheck(visitor, contextInfo)
+                }
               }
             }
           }
-        }
+        case _ =>
       }
       val contentType: SchemaType =
         contextType.asInstanceOf[NodeTest].getContentType
@@ -339,8 +336,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 else getStartingNodeDescription(contentType)),
               getLocation
             )
-          } else if (axis == AxisInfo.CHILD && kind == UType.TEXT && (getParentExpression
-            .isInstanceOf[Atomizer])) {
+          } else if (axis == AxisInfo.CHILD && kind == UType.TEXT && getParentExpression.isInstanceOf[Atomizer]) {
             visitor.issueWarning(
               "Selecting the text nodes of an element with simple content may give the " +
                 "wrong answer in the presence of comments or processing instructions. It is usually " +
@@ -370,8 +366,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                     found = true
                     break()
                   } catch {
-                    case e: SchemaException => {}
-
+                    case _: SchemaException =>
                   }
                 }
               }
@@ -465,7 +460,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 new ContentTypeTest(Type.ATTRIBUTE, schemaType, config, false))
             }
           } catch {
-            case e: SchemaException => {}
+            case _: SchemaException =>
 
           }
         }
@@ -552,13 +547,13 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               Literal.makeEmptySequence()
             }
             if (!Cardinality.allowsMany(computedCardinality) &&
-              !(getParentExpression.isInstanceOf[FirstItemExpression]) &&
+              !getParentExpression.isInstanceOf[FirstItemExpression] &&
               !visitor.isOptimizeForPatternMatching) {
               FirstItemExpression.makeFirstItemExpression(this)
             }
           }
         } catch {
-          case e: SchemaException => {}
+          case _: SchemaException =>
 
         }
       } else if (axis == AxisInfo.DESCENDANT && kind == UType.ELEMENT &&
@@ -592,14 +587,15 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               throw new AssertionError(
                 "Can't find type for child element " + c)
             }
-            if (st.isInstanceOf[ComplexType]) {
-              val subDescendants: IntHashSet = new IntHashSet()
-              st.asInstanceOf[ComplexType]
-                .gatherAllPermittedDescendants(subDescendants)
-              if (subDescendants.contains(targetfp)) {
-                usefulChildren.add(c)
-                considerDescendants = true
-              }
+            st match {
+              case complexType: ComplexType =>
+                val subDescendants: IntHashSet = new IntHashSet()
+                complexType.gatherAllPermittedDescendants(subDescendants)
+                if (subDescendants.contains(targetfp)) {
+                  usefulChildren.add(c)
+                  considerDescendants = true
+                }
+              case _ =>
             }
           }
           itemType = test
@@ -670,7 +666,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     this
   }
 
-  override def getCost(): Double = axis match {
+  override def getCost: Double = axis match {
     case AxisInfo.SELF | AxisInfo.PARENT | AxisInfo.ATTRIBUTE => 1
     case AxisInfo.CHILD | AxisInfo.FOLLOWING_SIBLING |
          AxisInfo.PRECEDING_SIBLING | AxisInfo.ANCESTOR |
@@ -744,32 +740,35 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     }
   }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
   def computeCardinality(): Int = {
     var originNodeType: NodeTest = null
     val nodeTest: NodeTest = test
     val contextItemType: ItemType = staticInfo.getItemType
-    if (contextItemType.isInstanceOf[NodeTest]) {
-      originNodeType = contextItemType.asInstanceOf[NodeTest]
-    } else if (contextItemType eq AnyItemType) {
-      originNodeType = AnyNodeTest.getInstance
-    } else {
-      StaticProperty.ALLOWS_ZERO_OR_MORE
+    contextItemType match {
+      case test1: NodeTest =>
+        originNodeType = test1
+      case _ => 
+        if (contextItemType eq AnyItemType)
+          originNodeType = AnyNodeTest.getInstance
+        else
+          StaticProperty.ALLOWS_ZERO_OR_MORE
     }
     if (axis == AxisInfo.ATTRIBUTE && nodeTest.isInstanceOf[NameTest]) {
       val contentType: SchemaType = originNodeType.getContentType
-      if (contentType.isInstanceOf[ComplexType]) {
-        try contentType
-          .asInstanceOf[ComplexType]
-          .getAttributeUseCardinality(nodeTest.getMatchingNodeName)
-        catch {
-          case err: SchemaException => StaticProperty.ALLOWS_ZERO_OR_ONE
-
-        }
-      } else if (contentType.isInstanceOf[SimpleType]) {
-        StaticProperty.EMPTY
+      contentType match {
+        case complexType: ComplexType =>
+          try
+           complexType.getAttributeUseCardinality(nodeTest.getMatchingNodeName)
+          catch {
+            case _: SchemaException => 
+              StaticProperty.ALLOWS_ZERO_OR_ONE
+          }
+        case _: SimpleType =>
+          StaticProperty.EMPTY
+        case _ =>
       }
       StaticProperty.ALLOWS_ZERO_OR_ONE
     } else if (axis == AxisInfo.DESCENDANT && nodeTest
@@ -852,7 +851,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     pat
   }
 
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator = {
     val item: Item = context.getContextItem
@@ -870,7 +869,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     } else {
       item.asInstanceOf[NodeInfo].iterateAxis(axis, test)
     } catch {
-      case cce: ClassCastException => {
+      case _: ClassCastException =>
         val err = new XPathException(
           "The context item for axis step " + this + " is not a node")
         err.setErrorCode("XPTY0020")
@@ -878,17 +877,16 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         err.setLocation(getLocation)
         err.setIsTypeError(true)
         throw err
-      }
 
       case err: UnsupportedOperationException =>
-        if (err.getCause.isInstanceOf[XPathException]) {
-          val ec: XPathException = err.getCause.asInstanceOf[XPathException]
-          ec.maybeSetLocation(getLocation)
-          ec.maybeSetContext(context)
-          throw ec
-        } else {
-          dynamicError(err.getMessage, "XPST0010", context)
-          null
+        err.getCause match {
+          case ec: XPathException =>
+            ec.maybeSetLocation(getLocation)
+            ec.maybeSetContext(context)
+            throw ec
+          case _ =>
+            dynamicError(err.getMessage, "XPST0010", context)
+            null
         }
 
     }
@@ -921,7 +919,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
   override def toShortString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
-    if (axis == AxisInfo.CHILD) {} else if (axis == AxisInfo.ATTRIBUTE) {
+    if (axis == AxisInfo.CHILD) {
+      // no action
+    } else if (axis == AxisInfo.ATTRIBUTE) {
       fsb.append("@")
     } else {
       fsb.append(AxisInfo.axisName(axis))
@@ -929,20 +929,19 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     }
     if (test == null) {
       fsb.append("node()")
-    } else if (test.isInstanceOf[NameTest]) {
-      if (test.asInstanceOf[NameTest].getNodeKind != AxisInfo
-        .principalNodeType(axis)) {
+    } else test match {
+      case test1: NameTest =>
+        if (test1.getNodeKind != AxisInfo.principalNodeType(axis))
+          fsb.append(test.toString)
+        else
+          fsb.append(test.getMatchingNodeName.getDisplayName)
+      case _ =>
         fsb.append(test.toString)
-      } else {
-        fsb.append(test.getMatchingNodeName.getDisplayName)
-      }
-    } else {
-      fsb.append(test.toString)
     }
     fsb.toString
   }
 
-  override def getStreamerName(): String = "AxisExpression"
+  override def getStreamerName: String = "AxisExpression"
 
   def getPreconditions: Set[Expression] = {
     val pre: HashSet[Expression] = new HashSet[Expression](1)
@@ -951,5 +950,4 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     pre.add(a)
     pre
   }
-
 }

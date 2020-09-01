@@ -62,7 +62,7 @@ class RangeKey
 
     }
 
-  def isEmpty(): Boolean = keys.next() == null
+  def isEmpty: Boolean = keys.next() == null
 
   def keys(): AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator()
 

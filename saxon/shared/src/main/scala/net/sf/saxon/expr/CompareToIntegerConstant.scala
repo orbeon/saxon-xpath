@@ -86,7 +86,7 @@ class CompareToIntegerConstant(operand: Expression,
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "compareToInt"
+  override def getExpressionName: String = "compareToInt"
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("compareToInt", this)

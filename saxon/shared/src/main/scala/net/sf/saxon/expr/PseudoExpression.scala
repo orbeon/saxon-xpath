@@ -31,7 +31,7 @@ abstract class PseudoExpression extends Expression {
     throw new XPathException("Cannot evaluate " + getClass.getName)
   }
 
-  override def getImplementationMethod(): Int = 0
+  override def getImplementationMethod: Int = 0
 
    override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE

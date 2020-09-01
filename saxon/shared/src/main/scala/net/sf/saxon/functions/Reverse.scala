@@ -67,6 +67,6 @@ class Reverse extends SystemFunction {
     super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
   }
 
-  override def getStreamerName(): String = "Reverse"
+  override def getStreamerName: String = "Reverse"
 
 }

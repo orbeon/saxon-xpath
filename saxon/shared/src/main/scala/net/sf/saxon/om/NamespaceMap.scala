@@ -212,7 +212,7 @@ class NamespaceMap() extends NamespaceBindingSet with NamespaceResolver {
       return true
     }
     else if (uri == NamespaceConstant.XML) throw new IllegalArgumentException("Invalid prefix for XML namespace")
-    //        if (uri.isEmpty() && !allowsNamespaceUndeclarations()) {
+    //        if (uri.isEmpty && !allowsNamespaceUndeclarations()) {
     //            throw new IllegalArgumentException("URI must not be zero-length");
     //        }
     false

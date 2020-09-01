@@ -36,7 +36,7 @@ class IntComplementSet extends IntSet {
 
   def size(): Int = java.lang.Integer.MAX_VALUE - exclusions.size
 
-  def isEmpty(): Boolean = size == 0
+  def isEmpty: Boolean = size == 0
 
   def contains(value: Int): Boolean = !exclusions.contains(value)
 

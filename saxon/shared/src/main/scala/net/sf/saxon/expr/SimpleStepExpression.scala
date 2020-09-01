@@ -99,7 +99,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
    *                                                        { @link #PROCESS_METHOD}
    */
-  override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
+  override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   /*@NotNull*/
 
@@ -125,7 +125,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
     getStep.asInstanceOf[AxisExpression].iterate(origin)
   }
 
-  override def getExpressionName(): String = "simpleStep"
+  override def getExpressionName: String = "simpleStep"
 
 }
 

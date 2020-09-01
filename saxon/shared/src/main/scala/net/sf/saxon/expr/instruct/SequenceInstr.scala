@@ -77,7 +77,7 @@ class SequenceInstr /**
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod(): Int =
+  override def getImplementationMethod: Int =
     getBaseExpression.getImplementationMethod
 
   /**
@@ -87,7 +87,7 @@ class SequenceInstr /**
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in export() output displaying the expression.
     */
-  override def getExpressionName(): String = "sequence"
+  override def getExpressionName: String = "sequence"
 
   /**
     * Process the instruction, without returning any tail calls
@@ -128,7 +128,7 @@ class SequenceInstr /**
     * @return the partial name of a class that can be instantiated to provide streaming support in Saxon-EE,
     * or null if there is no such class
     */
-  override def getStreamerName(): String = "SequenceInstr"
+  override def getStreamerName: String = "SequenceInstr"
 
 }
 

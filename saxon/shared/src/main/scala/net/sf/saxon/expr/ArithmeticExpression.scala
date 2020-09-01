@@ -39,7 +39,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
 
   private var itemType: PlainType = _
 
-  override def getExpressionName(): String = "arithmetic"
+  override def getExpressionName: String = "arithmetic"
 
   override def computeSpecialProperties(): Int = {
     val p: Int = super.computeSpecialProperties()

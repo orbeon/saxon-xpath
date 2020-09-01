@@ -35,7 +35,7 @@ class DictionaryMap extends MapItem {
 
   override def size(): Int = hashMap.size
 
-  override def isEmpty(): Boolean = hashMap.isEmpty
+  override def isEmpty: Boolean = hashMap.isEmpty
 
   override def keys(): AtomicIterator[StringValue] = {
     val base: Iterator[String] = hashMap.keySet.iterator()

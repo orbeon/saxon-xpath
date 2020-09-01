@@ -92,7 +92,7 @@ class CastableExpression(source: Expression,
     this
   }
 
-  override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
+  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[CastableExpression] &&
@@ -187,7 +187,7 @@ class CastableExpression(source: Expression,
     !(converter.convert(value).isInstanceOf[ValidationFailure])
   }
 
-  override def getExpressionName(): String = "castable"
+  override def getExpressionName: String = "castable"
 
   override def toString: String =
     getBaseExpression.toString + " castable as " + getTargetType.getEQName

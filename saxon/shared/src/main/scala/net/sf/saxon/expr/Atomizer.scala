@@ -158,7 +158,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
 
-  def getImplementationMethod(): Int = Expression.ITERATE_METHOD | Expression.WATCH_METHOD
+  def getImplementationMethod: Int = Expression.ITERATE_METHOD | Expression.WATCH_METHOD
 
   def setRoleDiagnostic(role: RoleDiagnostic): Unit = {
     this.roleDiagnostic = role
@@ -363,7 +363,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     copy
   }
 
-  override def getStreamerName(): String = "Atomizer"
+  override def getStreamerName: String = "Atomizer"
 
   override def iterate(context: XPathContext): SequenceIterator =
     try {
@@ -439,7 +439,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     null
   }
 
-  override def getExpressionName(): String = "data"
+  override def getExpressionName: String = "data"
 
   override def toString: String = "data(" + getBaseExpression.toString + ")"
 

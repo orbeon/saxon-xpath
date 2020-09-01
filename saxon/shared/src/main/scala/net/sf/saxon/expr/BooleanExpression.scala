@@ -41,7 +41,7 @@ abstract class BooleanExpression(p1: Expression, operator: Int, p2: Expression)
   extends BinaryExpression(p1, operator, p2)
     with Negatable {
 
-  override def getExpressionName(): String =
+  override def getExpressionName: String =
     Token.tokens(getOperator) + "-expression"
 
   override def typeCheck(visitor: ExpressionVisitor,

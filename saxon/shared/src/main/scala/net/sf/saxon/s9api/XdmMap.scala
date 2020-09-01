@@ -105,7 +105,7 @@ class XdmMap extends XdmFunctionItem {
 
       override def size(): Int = base.mapSize()
 
-      override def isEmpty(): Boolean = base.isEmpty
+      override def isEmpty: Boolean = base.isEmpty
 
       override def containsKey(key: AnyRef): Boolean =
         key.isInstanceOf[XdmAtomicValue] && base.containsKey(
@@ -142,7 +142,7 @@ class XdmMap extends XdmFunctionItem {
     throw new UnsupportedOperationException("XdmMap is immutable")
   }
 
-  override def isEmpty(): Boolean = getUnderlyingValue.isEmpty
+  override def isEmpty: Boolean = getUnderlyingValue.isEmpty
 
   def containsKey(key: XdmAtomicValue): Boolean =
     getUnderlyingValue.get(key.getUnderlyingValue) != null

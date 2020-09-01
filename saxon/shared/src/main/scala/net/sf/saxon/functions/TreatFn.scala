@@ -75,7 +75,7 @@ abstract class TreatFn extends SystemFunction with Callable {
     role
   }
 
-  override def getStreamerName(): String = "TreatFn"
+  override def getStreamerName: String = "TreatFn"
 
 }
 

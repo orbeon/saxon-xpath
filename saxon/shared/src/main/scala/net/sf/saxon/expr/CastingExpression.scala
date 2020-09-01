@@ -50,7 +50,7 @@ abstract class CastingExpression(source: Expression,
    *
    * @return the expression's dependencies.
    */
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     if (getTargetType.isNamespaceSensitive)
       StaticProperty.DEPENDS_ON_STATIC_CONTEXT
     else 0

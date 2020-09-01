@@ -196,7 +196,7 @@ class CallTemplate(private var template: NamedTemplate,
     ct
   }
 
-  override def getIntrinsicDependencies(): Int =
+  override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_XSLT_CONTEXT | StaticProperty.DEPENDS_ON_FOCUS
 
   override def mayCreateNewNodes(): Boolean = true
@@ -340,6 +340,6 @@ class CallTemplate(private var template: NamedTemplate,
     buff.toString
   }
 
-  override def getStreamerName(): String = "CallTemplate"
+  override def getStreamerName: String = "CallTemplate"
 
 }

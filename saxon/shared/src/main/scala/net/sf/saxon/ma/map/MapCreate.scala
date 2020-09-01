@@ -48,6 +48,6 @@ class MapCreate extends SystemFunction {
     }
   }
 
-  override def getStreamerName(): String = "NewMap"
+  override def getStreamerName: String = "NewMap"
 
 }

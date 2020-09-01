@@ -105,7 +105,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     selectItemType = `type`
   }
 
-  override def getIntrinsicDependencies(): Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
+  override def getIntrinsicDependencies: Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_COPY
 
@@ -393,7 +393,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     item
   }
 
-  override def getStreamerName(): String = "Copy"
+  override def getStreamerName: String = "Copy"
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("copy", this)

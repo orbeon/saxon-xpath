@@ -108,7 +108,7 @@ class HashTrieMap extends MapItem {
     entries
   }
 
-  def isEmpty(): Boolean = entries == 0 || !imap.iterator().hasNext
+  def isEmpty: Boolean = entries == 0 || !imap.iterator().hasNext
 
   override def conforms(requiredKeyType: AtomicType,
                         requiredValueType: SequenceType,
