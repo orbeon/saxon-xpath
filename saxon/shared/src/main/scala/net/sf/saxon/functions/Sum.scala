@@ -28,7 +28,7 @@ object Sum {
     try {
       val fold: SumFold = new SumFold(context, null)
       in.forEachOrFail(fold.processItem)
-      fold.result().head().asInstanceOf[AtomicValue]
+      fold.result().head.asInstanceOf[AtomicValue]
     } catch {
       case e: XPathException => {
         e.maybeSetLocation(locator)
@@ -157,7 +157,7 @@ class Sum extends FoldingFunction {
                        additionalArguments: Sequence*): Fold =
     if (additionalArguments.length > 0) {
       val z: AtomicValue =
-        additionalArguments(0).head().asInstanceOf[AtomicValue]
+        additionalArguments(0).head.asInstanceOf[AtomicValue]
       new SumFold(context, z)
     } else {
       new SumFold(context, Int64Value.ZERO)

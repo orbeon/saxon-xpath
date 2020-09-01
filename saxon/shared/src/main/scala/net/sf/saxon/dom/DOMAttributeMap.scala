@@ -25,7 +25,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
     excludeNamespaceUndeclarations = true
   }
 
-  private def getNamespaceDeltas(): Array[NamespaceBinding] = {
+  private def getNamespaceDeltas: Array[NamespaceBinding] = {
     val allNamespaces: NamespaceMap = element.getAllNamespaces
     var bindings: Array[NamespaceBinding] = null
     val parent: NodeInfo = element.getParent
@@ -95,16 +95,16 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
     null
   }
 
-  private def getNumberOfNamespaces(): Int = getNamespaceBindings.length
+  private def getNumberOfNamespaces: Int = getNamespaceBindings.length
 
-  private def getNamespaceBindings(): Array[NamespaceBinding] = {
+  private def getNamespaceBindings: Array[NamespaceBinding] = {
     if (namespaceDeltas == null) {
       namespaceDeltas = getNamespaceDeltas
     }
     namespaceDeltas
   }
 
-  def getLength(): Int = {
+  def getLength: Int = {
     var length: Int = 0
     val atts: AxisIterator = element.iterateAxis(AxisInfo.ATTRIBUTE)
     while (atts.next() != null) { length += 1; length - 1 }

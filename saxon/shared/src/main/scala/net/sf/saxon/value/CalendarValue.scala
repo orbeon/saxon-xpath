@@ -94,31 +94,31 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
 
   private var tzMinutes: Int = NO_TIMEZONE
 
-  def hasTimezone(): Boolean = tzMinutes != NO_TIMEZONE
+  def hasTimezone: Boolean = tzMinutes != NO_TIMEZONE
 
   def setTimezoneInMinutes(minutes: Int): Unit = {
     tzMinutes = minutes
   }
 
-  def toDateTime(): DateTimeValue
+  def toDateTime: DateTimeValue
 
-  def getTimezoneInMinutes(): Int = tzMinutes
+  def getTimezoneInMinutes: Int = tzMinutes
 
-  def getCalendar(): GregorianCalendar
+  def getCalendar: GregorianCalendar
 
-  def getXMLGregorianCalendar(): XMLGregorianCalendar =
+  def getXMLGregorianCalendar: XMLGregorianCalendar =
     new SaxonXMLGregorianCalendar(this)
 
   def add(duration: DurationValue): CalendarValue
 
   def subtract(other: CalendarValue,
                context: XPathContext): DayTimeDurationValue = {
-    var dt1: DateTimeValue = toDateTime()
-    var dt2: DateTimeValue = other.toDateTime()
+    var dt1: DateTimeValue = toDateTime
+    var dt2: DateTimeValue = other.toDateTime
     if (dt1.getTimezoneInMinutes != dt2.getTimezoneInMinutes) {
       var tz: Int = CalendarValue.NO_TIMEZONE
       if (context == null || ({
-        tz = context.getImplicitTimezone()
+        tz = context.getImplicitTimezone
         tz
       }) == CalendarValue.MISSING_TIMEZONE) {
         throw new NoDynamicContextException("Implicit timezone required");
@@ -126,8 +126,8 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
       dt1 = dt1.adjustToUTC(tz)
       dt2 = dt2.adjustToUTC(tz)
     }
-    val d1: BigDecimal = dt1.toJulianInstant()
-    val d2: BigDecimal = dt2.toJulianInstant()
+    val d1: BigDecimal = dt1.toJulianInstant
+    val d2: BigDecimal = dt2.toJulianInstant
     val difference: BigDecimal = d1.subtract(d2)
     DayTimeDurationValue.fromSeconds(difference)
   }
@@ -164,13 +164,13 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
     if (ordered && !(this.isInstanceOf[Comparable[_]])) {
       return null
     }
-    if (hasTimezone()) {
+    if (hasTimezone) {
       return this
     }
     if (implicitTimezone == MISSING_TIMEZONE) {
       throw new NoDynamicContextException("Unknown implicit timezone")
     }
-    if (hasTimezone()) this else adjustTimezone(implicitTimezone)
+    if (hasTimezone) this else adjustTimezone(implicitTimezone)
   }
 
   def getComparisonKey(context: XPathContext): AtomicMatchKey =
@@ -193,7 +193,7 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
   override def identityHashCode(): Int = hashCode ^ tzMinutes
 
   def appendTimezone(sb: FastStringBuffer): Unit = {
-    if (hasTimezone()) {
+    if (hasTimezone) {
       CalendarValue.appendTimezone(getTimezoneInMinutes, sb)
     }
   }
@@ -206,8 +206,8 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
       case obj: CalendarValueMapKey => {
         val a: CalendarValue = CalendarValue.this
         val b: CalendarValue = obj.asAtomic()
-        if (a.hasTimezone() == b.hasTimezone()) {
-          if (a.hasTimezone()) {
+        if (a.hasTimezone == b.hasTimezone) {
+          if (a.hasTimezone) {
             a.adjustTimezone(b.tzMinutes).isIdentical(b)
           } else {
             a.isIdentical(b)

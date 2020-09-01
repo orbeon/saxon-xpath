@@ -137,11 +137,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   var doneWarnings: Boolean = false
 
-  def getNeedsRuntimeCheck(): Boolean = needsRuntimeCheck
+  def getNeedsRuntimeCheck: Boolean = needsRuntimeCheck
 
   def setNeedsRuntimeCheck(runTimeCheck: Boolean): Unit = needsRuntimeCheck = runTimeCheck
 
-  def getComparisonCardinality(): ComparisonCardinality = comparisonCardinality
+  def getComparisonCardinality: ComparisonCardinality = comparisonCardinality
 
   def setComparisonCardinality(card: ComparisonCardinality): Unit = {
     comparisonCardinality = card
@@ -153,7 +153,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   override def getExpressionName(): String = "GeneralComparison"
 
-  def getNamespaceResolver(): NamespaceResolver = getRetainedStaticContext
+  def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
   def getAtomicComparer(): AtomicComparer = comparer
 
@@ -217,7 +217,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         pt0,
         pt1,
         Token.isOrderedOperator(singletonOperator))) {
-        val message: String = "In {" + toShortString() + "}: cannot compare " + t0 +
+        val message: String = "In {" + toShortString + "}: cannot compare " + t0 +
           " to " +
           t1
         if (Cardinality.allowsZero(c0) || Cardinality.allowsZero(c1)) {
@@ -487,7 +487,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         .asInstanceOf[ContextSwitchingExpression]
         .getActionExpression ==
         this) {
-      for (o <- operands().asScala
+      for (o <- operands.asScala
            if Cardinality.allowsMany(o.getChildExpression.getCardinality)
            if ExpressionTool.dependsOnFocus(o.getChildExpression)) {
         false
@@ -525,13 +525,13 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     comparisonCardinality match {
       case ONE_TO_ONE => {
-        val value0: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
-        val value1: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+        val value0: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
+        val value1: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateOneToOne(value0, value1, context))
       }
       case MANY_TO_ONE => {
         val iter0: SequenceIterator = arguments(0).iterate()
-        val value1: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+        val value1: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateManyToOne(iter0, value1, context))
       }
       case MANY_TO_MANY => {
@@ -690,11 +690,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
     }
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
-  def getInverseComparison(): GeneralComparison = {
+  def getInverseComparison: GeneralComparison = {
     val gc2: GeneralComparison20 = new GeneralComparison20(
       getRhsExpression,
       Token.inverse(op),

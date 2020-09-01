@@ -788,7 +788,7 @@ object StringConverter {
       try targetType
         .asInstanceOf[UnionType]
         .getTypedValue(input, null, rules)
-        .head()
+        .head
       catch {
         case err: ValidationException => err.getValidationFailure
 

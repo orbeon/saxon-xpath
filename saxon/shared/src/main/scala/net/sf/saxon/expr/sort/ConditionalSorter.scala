@@ -48,7 +48,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
 
   adoptChildExpression(sorter)
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(conditionOp, sorterOp)
 
   def setCondition(condition: Expression): Unit = {
@@ -59,9 +59,9 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     sorterOp.setChildExpression(documentSorter)
   }
 
-  def getCondition(): Expression = conditionOp.getChildExpression
+  def getCondition: Expression = conditionOp.getChildExpression
 
-  def getDocumentSorter(): DocumentSorter =
+  def getDocumentSorter: DocumentSorter =
     sorterOp.getChildExpression.asInstanceOf[DocumentSorter]
 
   override def simplify(): Expression = rewrite(res => res.simplify())
@@ -132,7 +132,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     out.endElement()
   }
 
-  def getItemType(): ItemType = getDocumentSorter.getItemType
+  def getItemType: ItemType = getDocumentSorter.getItemType
 
  override def iterate(context: XPathContext): SequenceIterator = {
     val b: Boolean = getCondition.effectiveBooleanValue(context)

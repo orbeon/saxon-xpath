@@ -82,7 +82,7 @@ object InsertBefore {
 class InsertBefore extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val n: NumericValue = arguments(1).head().asInstanceOf[NumericValue]
+    val n: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
     val pos: Int = n.longValue().toInt
     SequenceTool.toLazySequence(
       new InsertIterator(arguments(0).iterate(), arguments(2).iterate(), pos))
@@ -90,7 +90,7 @@ class InsertBefore extends SystemFunction {
 
   def makeFunctionCall(arguments: Array[Expression]): Expression =
     new SystemFunctionCall(this, arguments) {
-      override def getItemType(): ItemType =
+      override def getItemType: ItemType =
         Type.getCommonSuperType(getArg(0).getItemType, getArg(2).getItemType)
     }
 

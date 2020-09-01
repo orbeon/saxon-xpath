@@ -146,10 +146,10 @@ class StructuredQName private(var content: Array[Char],
     prefix.getChars(0, plen, content, ulen + llen)
   }
 
-  def getPrefix(): String =
+  def getPrefix: String =
     new String(content, prefixStart, content.length - prefixStart)
 
-  def getURI(): String = {
+  def getURI: String = {
     if (localNameStart == 0) {
       return ""
     }
@@ -169,10 +169,10 @@ class StructuredQName private(var content: Array[Char],
     true
   }
 
-  def getLocalPart(): String =
+  def getLocalPart: String =
     new String(content, localNameStart, prefixStart - localNameStart)
 
-  def getDisplayName(): String =
+  def getDisplayName: String =
     if (prefixStart == content.length) {
       getLocalPart
     } else {
@@ -184,9 +184,9 @@ class StructuredQName private(var content: Array[Char],
       buff.toString
     }
 
-  def getStructuredQName(): StructuredQName = this
+  def getStructuredQName: StructuredQName = this
 
-  def getClarkName(): String = {
+  def getClarkName: String = {
     val buff: FastStringBuffer = new FastStringBuffer(
       content.length - prefixStart + 2)
     if (localNameStart > 0) {
@@ -198,7 +198,7 @@ class StructuredQName private(var content: Array[Char],
     buff.toString
   }
 
-  def getEQName(): String = {
+  def getEQName: String = {
     val buff: FastStringBuffer = new FastStringBuffer(
       content.length - prefixStart + 2)
     buff.append("Q{")
@@ -248,10 +248,10 @@ class StructuredQName private(var content: Array[Char],
       cachedHashCode
     }
 
-  def toJaxpQName(): QName =
+  def toJaxpQName: QName =
     new javax.xml.namespace.QName(getURI, getLocalPart, getPrefix)
 
-  def getNamespaceBinding(): NamespaceBinding =
+  def getNamespaceBinding: NamespaceBinding =
     NamespaceBinding.makeNamespaceBinding(getPrefix, getURI)
 
   def isIdentical(other: IdentityComparable): Boolean = equals(other) && other.asInstanceOf[StructuredQName].getPrefix == getPrefix

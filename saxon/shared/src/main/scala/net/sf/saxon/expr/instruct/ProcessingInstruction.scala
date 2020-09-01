@@ -56,18 +56,18 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
   private var nameOp: Operand =
     new Operand(this, name, OperandRole.SINGLE_ATOMIC)
 
-  def getNameExp(): Expression = nameOp.getChildExpression
+  def getNameExp: Expression = nameOp.getChildExpression
 
   def setNameExp(nameExp: Expression): Unit = {
     nameOp.setChildExpression(nameExp)
   }
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, nameOp)
 
  override def getInstructionNameCode(): Int = StandardNames.XSL_PROCESSING_INSTRUCTION
 
- override def getItemType(): ItemType = NodeKindTest.PROCESSING_INSTRUCTION
+ override def getItemType: ItemType = NodeKindTest.PROCESSING_INSTRUCTION
 
  override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
 

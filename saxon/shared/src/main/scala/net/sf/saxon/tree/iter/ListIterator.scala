@@ -50,16 +50,16 @@ class ListIterator[T <: Item](var list: List[T])
     })
   }
 
-  def getLength(): Int = list.size
+  def getLength: Int = list.size
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD,
       Property.GROUNDED,
       Property.LAST_POSITION_FINDER)
 
   override def materialize(): GroundedValue = SequenceExtent.makeSequenceExtent(list)
 
-  override def getResidue(): GroundedValue = {
+  override def getResidue: GroundedValue = {
     var l2: List[T] = list
     if (index != 0) {
       l2 = l2.subList(index, l2.size)

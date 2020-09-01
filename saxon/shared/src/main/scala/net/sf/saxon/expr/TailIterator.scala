@@ -42,7 +42,7 @@ class TailIterator private(private var base: SequenceIterator,
 
   def hasNext(): Boolean = base.asInstanceOf[LookaheadIterator].hasNext
 
-  def getLength(): Int = {
+  def getLength: Int = {
     val bl: Int = base.asInstanceOf[LastPositionFinder].getLength - start + 1
     if (bl > 0) bl else 0
   }
@@ -50,5 +50,5 @@ class TailIterator private(private var base: SequenceIterator,
   override def close(): Unit =
     base.close()
 
-  override def getProperties(): Set[Property] = base.getProperties.intersect(Set(LAST_POSITION_FINDER, LOOKAHEAD))
+  override def getProperties: Set[Property] = base.getProperties.intersect(Set(LAST_POSITION_FINDER, LOOKAHEAD))
 }

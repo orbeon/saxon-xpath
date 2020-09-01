@@ -115,7 +115,7 @@ class GroupByClause(var config: Configuration) extends Clause {
     retainedTupleOp.setChildExpression(expr)
   }
 
-  def getRetainedTupleExpression(): TupleExpression =
+  def getRetainedTupleExpression: TupleExpression =
     retainedTupleOp.getChildExpression.asInstanceOf[TupleExpression]
 
   override def optimize(visitor: ExpressionVisitor,
@@ -124,7 +124,7 @@ class GroupByClause(var config: Configuration) extends Clause {
       new LinkedList[LocalVariableBinding](Arrays.asList(bindings: _*))
     val retainingExpr: LinkedList[LocalVariableReference] =
       new LinkedList[LocalVariableReference]()
-    for (o <- getRetainedTupleExpression.operands().asScala) {
+    for (o <- getRetainedTupleExpression.operands.asScala) {
       retainingExpr.add(
         o.getChildExpression.asInstanceOf[LocalVariableReference])
     }
@@ -148,7 +148,7 @@ class GroupByClause(var config: Configuration) extends Clause {
     groupingTupleOp.setChildExpression(expr)
   }
 
-  def getGroupingTupleExpression(): TupleExpression =
+  def getGroupingTupleExpression: TupleExpression =
     groupingTupleOp.getChildExpression.asInstanceOf[TupleExpression]
 
   def setVariableBindings(bindings: Array[LocalVariableBinding]): Unit = {
@@ -206,7 +206,7 @@ class GroupByClause(var config: Configuration) extends Clause {
    */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("group-by")
-    for (o <- getRetainedTupleExpression.operands().asScala) {
+    for (o <- getRetainedTupleExpression.operands.asScala) {
       val ref: LocalVariableReference =
         o.getChildExpression.asInstanceOf[LocalVariableReference]
       out.startSubsidiaryElement("by")
@@ -236,7 +236,7 @@ class GroupByClause(var config: Configuration) extends Clause {
       val concatenatedValue: List[Item] = new ArrayList[Item]()
       for (otbg <- group.asScala) {
         val `val`: Sequence =
-          otbg.retainedValues.getMembers()(j - groupingValues.length)
+          otbg.retainedValues.getMembers(j - groupingValues.length)
         val si: SequenceIterator = `val`.iterate()
         var it: Item = null
         while (({

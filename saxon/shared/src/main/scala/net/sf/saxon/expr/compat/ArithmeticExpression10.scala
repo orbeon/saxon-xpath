@@ -227,7 +227,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     let
   }
 
-  override def getItemType(): PlainType =
+  override def getItemType: PlainType =
     if (calculator == null) {
       BuiltInAtomicType.ANY_ATOMIC
     } else {
@@ -278,11 +278,11 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
 
   def call(context: XPathContext, arguments: Array[Sequence]): AtomicValue = {
     var calc: Calculator = calculator
-    val v1: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    val v1: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (v1 == null) {
       return DoubleValue.NaN
     }
-    val v2: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+    val v2: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
     if (v2 == null) {
       return DoubleValue.NaN
     }

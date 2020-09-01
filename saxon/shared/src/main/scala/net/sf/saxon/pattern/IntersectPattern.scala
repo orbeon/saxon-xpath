@@ -29,7 +29,7 @@ class IntersectPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
   /**
     * Get an ItemType that all the items matching this pattern must satisfy
     */
-  override def getItemType(): ItemType = p1.getItemType
+  override def getItemType: ItemType = p1.getItemType
 
   /**
     * Get a UType indicating which kinds of items this Pattern can match.
@@ -38,7 +38,7 @@ class IntersectPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
     */
   override def getUType(): UType = p1.getUType.intersection(p2.getUType)
 
-  override def getDefaultPriority(): Double = p1.getDefaultPriority
+  override def getDefaultPriority: Double = p1.getDefaultPriority
 
   def matches(item: Item, context: XPathContext): Boolean =
     p1.matches(item, context) && p2.matches(item, context)

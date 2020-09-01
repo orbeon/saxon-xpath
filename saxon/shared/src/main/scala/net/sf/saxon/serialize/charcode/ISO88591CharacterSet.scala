@@ -10,7 +10,7 @@ object ISO88591CharacterSet {
 
   private var theInstance: ISO88591CharacterSet = new ISO88591CharacterSet()
 
-  def getInstance(): ISO88591CharacterSet = theInstance
+  def getInstance: ISO88591CharacterSet = theInstance
 
 }
 

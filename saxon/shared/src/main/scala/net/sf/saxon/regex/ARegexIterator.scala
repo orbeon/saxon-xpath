@@ -108,7 +108,7 @@ class ARegexIterator(private var theString: UnicodeString,
   // indicates the last match was zero length
   private var skip: Boolean = false
 
-  override def getLength(): Int = {
+  override def getLength: Int = {
     val another: ARegexIterator =
       new ARegexIterator(theString, regex, new REMatcher(matcher.getProgram))
     var n: Int = 0
@@ -181,7 +181,7 @@ class ARegexIterator(private var theString: UnicodeString,
   private def currentStringValue(): StringValue =
     StringValue.makeStringValue(current)
 
-  def getRegExProperties(): Set[Property] = Set(Property.LAST_POSITION_FINDER)
+  def getRegExProperties: Set[Property] = Set(Property.LAST_POSITION_FINDER)
 
   def isMatching(): Boolean = nextSubStr == null && prevEnd >= 0
 

@@ -48,7 +48,7 @@ class TupleItemType(names: List[String],
     fields.put(names.get(i), types.get(i))
   }
 
-  override def getGenre(): Genre.Genre = Genre.MAP
+  override def getGenre: Genre.Genre = Genre.MAP
 
   override def isMapType(): Boolean = true
 
@@ -88,9 +88,9 @@ class TupleItemType(names: List[String],
     true
   }
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
-  override def getArgumentTypes(): Array[SequenceType] =
+  override def getArgumentTypes: Array[SequenceType] =
     Array(SequenceType.SINGLE_ATOMIC)
 
   override def getResultType(): SequenceType =
@@ -111,7 +111,7 @@ class TupleItemType(names: List[String],
         else StaticProperty.ALLOWS_ZERO_OR_ONE)
     }
 
-  override def getDefaultPriority(): Double = {
+  override def getDefaultPriority: Double = {
     var prio: Double = 1
     for (st <- fields.values.asScala) {
       prio *= st.getPrimaryType.getNormalizedDefaultPriority
@@ -122,9 +122,9 @@ class TupleItemType(names: List[String],
   override def toString: String = makeString((seq: SequenceType) => seq.toString)
 
   override def toExportString(): String =
-    makeString((seq: SequenceType) => seq.toExportString())
+    makeString((seq: SequenceType) => seq.toExportString)
 
-  override def getBasicAlphaCode(): String = "FM"
+  override def getBasicAlphaCode: String = "FM"
 
   private def makeString(show: Function[SequenceType, String]): String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)

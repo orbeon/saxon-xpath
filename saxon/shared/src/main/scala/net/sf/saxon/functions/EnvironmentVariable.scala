@@ -41,6 +41,6 @@ object EnvironmentVariable {
 
 class EnvironmentVariable extends SystemFunction {
 
-  def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[StringValue] = new ZeroOrOne(getVariable(arguments(0).head().asInstanceOf[StringValue], context))
+  def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[StringValue] = new ZeroOrOne(getVariable(arguments(0).head.asInstanceOf[StringValue], context))
 
 }

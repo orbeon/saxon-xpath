@@ -28,7 +28,7 @@ class TinyProcInstImpl() extends TinyNodeImpl {
     this.nodeNr = nodeNr
   }
 
-  def getStringValue(): String = {
+  def getStringValue: String = {
     val start: Int = tree.alpha(nodeNr)
     val len: Int = tree.beta(nodeNr)
     if (len == 0) {
@@ -53,11 +53,11 @@ class TinyProcInstImpl() extends TinyNodeImpl {
                               ReceiverOption.NONE)
   }
 
-  def getTarget(): String = getDisplayName
+  def getTarget: String = getDisplayName
 
   /*@NotNull*/
 
-  def getData(): String = getStringValue
+  def getData: String = getStringValue
 
 }
 

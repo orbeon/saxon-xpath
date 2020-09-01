@@ -90,7 +90,7 @@ abstract class Instruction extends Expression with TailCallReturner {
 
   override def isInstruction(): Boolean = true
 
-  def getInstructionNameCode(): Int = -1
+  def getInstructionNameCode: Int = -1
 
   override def getExpressionName(): String = {
     val code: Int = getInstructionNameCode
@@ -101,11 +101,11 @@ abstract class Instruction extends Expression with TailCallReturner {
     }
   }
 
-  def getItemType(): ItemType = Type.ITEM_TYPE
+  def getItemType: ItemType = Type.ITEM_TYPE
 
   def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def operands(): java.lang.Iterable[Operand] = super.operands()
+  override def operands: java.lang.Iterable[Operand] = super.operands
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall
 
@@ -123,7 +123,7 @@ abstract class Instruction extends Expression with TailCallReturner {
     }
   }
 
-  def getSourceLocator(): SourceLocator = getLocation
+  def getSourceLocator: SourceLocator = getLocation
 
   override def computeSpecialProperties(): Int = {
     var p: Int = super.computeSpecialProperties()
@@ -144,7 +144,7 @@ abstract class Instruction extends Expression with TailCallReturner {
   def alwaysCreatesNewNodes(): Boolean = false
 
   def someOperandCreatesNewNodes(): Boolean = {
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val child = o.getChildExpression
       val props: Int = child.getSpecialProperties
       if ((props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {
@@ -193,6 +193,6 @@ abstract class Instruction extends Expression with TailCallReturner {
     }
   }
 
-  def isXSLT(): Boolean = getPackageData.isXSLT
+  def isXSLT: Boolean = getPackageData.isXSLT
 
 }

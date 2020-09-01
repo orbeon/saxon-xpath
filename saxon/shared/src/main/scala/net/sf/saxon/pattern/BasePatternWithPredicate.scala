@@ -46,7 +46,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   def getPredicate(): Expression = predicateOp.getChildExpression
 
-  def getBasePattern(): Pattern =
+  def getBasePattern: Pattern =
     basePatternOp.getChildExpression.asInstanceOf[Pattern]
 
   override def bindCurrent(binding: LocalBinding): Unit = {
@@ -63,7 +63,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def matchesCurrentGroup(): Boolean = getBasePattern.matchesCurrentGroup()
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(basePatternOp, predicateOp)
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = {
@@ -108,7 +108,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def getFingerprint(): Int = getBasePattern.getFingerprint
 
-  override def getItemType(): ItemType = getBasePattern.getItemType
+  override def getItemType: ItemType = getBasePattern.getItemType
 
   override def getDependencies(): Int = getPredicate.getDependencies
 
@@ -145,8 +145,8 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def toString: String = getBasePattern.toString + "[" + getPredicate.toString + "]"
 
-  override def toShortString(): String =
-    getBasePattern.toShortString() + "[" + getPredicate.toShortString() +
+  override def toShortString: String =
+    getBasePattern.toShortString + "[" + getPredicate.toShortString +
       "]"
 
   def copy(rebindings: RebindingMap): Pattern = {

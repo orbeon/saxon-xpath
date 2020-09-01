@@ -123,7 +123,7 @@ class RandomNumberGenerator extends SystemFunction with Callable {
 // seed value must be repeatable within execution scope
       seed = context.getCurrentDateTime.getCalendar.getTimeInMillis
     } else {
-      val `val`: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+      val `val`: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
       seed =
         if (`val` == null)
           context.getCurrentDateTime.getCalendar.getTimeInMillis

@@ -55,7 +55,7 @@ class NestedIntegerValue(v: String)
     new NestedIntegerValue(v)
   }
 
-  def getStem(): NestedIntegerValue =
+  def getStem: NestedIntegerValue =
     if (value.length == 0) {
       null
     } else {
@@ -64,9 +64,9 @@ class NestedIntegerValue(v: String)
       new NestedIntegerValue(v)
     }
 
-  def getDepth(): Int = value.length
+  def getDepth: Int = value.length
 
-  def getLeaf(): Int =
+  def getLeaf: Int =
     if (value.length == 0) {
       -1
     } else {
@@ -83,7 +83,7 @@ class NestedIntegerValue(v: String)
     (o.isInstanceOf[NestedIntegerValue]) &&
       Arrays.equals(value, o.asInstanceOf[NestedIntegerValue].value)
 
-  override def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.STRING
+  override def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.STRING
 
   override def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: NestedIntegerValue = new NestedIntegerValue(value)

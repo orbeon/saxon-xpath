@@ -37,9 +37,9 @@ class TinyTextImpl() extends TinyNodeImpl {
     this.tree = tree
     this.nodeNr = nodeNr
   }
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-  override def getStringValueCS(): CharSequence = {
+  override def getStringValueCS: CharSequence = {
     val start: Int = tree.alpha(nodeNr)
     val len: Int = tree.beta(nodeNr)
     tree.charBuffer.subSequence(start, start + len)

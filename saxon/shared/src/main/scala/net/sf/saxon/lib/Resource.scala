@@ -22,11 +22,11 @@ import net.sf.saxon.trans.XPathException
   */
 trait Resource {
 
-  def getResourceURI(): String
+  def getResourceURI: String
 
   def getItem(context: XPathContext): Item
 
-  def getContentType(): String
+  def getContentType: String
 
 }
 

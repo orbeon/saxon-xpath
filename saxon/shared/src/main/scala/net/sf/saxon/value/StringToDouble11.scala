@@ -14,7 +14,7 @@ object StringToDouble11 {
 
   /*@NotNull*/
 
-  def getInstance(): StringToDouble11 = THE_INSTANCE
+  def getInstance: StringToDouble11 = THE_INSTANCE
 
 }
 

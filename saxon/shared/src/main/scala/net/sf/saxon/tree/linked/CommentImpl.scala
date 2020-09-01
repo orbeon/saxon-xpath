@@ -28,7 +28,7 @@ class CommentImpl(content: String) extends NodeImpl {
 
   var columnNumber: Int = -1
 
-  def getStringValue(): String = comment
+  def getStringValue: String = comment
 
   /*@NotNull*/
 

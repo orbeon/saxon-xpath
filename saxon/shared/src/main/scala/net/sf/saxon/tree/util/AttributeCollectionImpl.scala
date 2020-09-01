@@ -88,7 +88,7 @@ class AttributeCollectionImpl(private var config: Configuration,
     values(index) = value
   }
 
-  def getLength(): Int = if (values == null) 0 else used
+  def getLength: Int = if (values == null) 0 else used
 
   def getTypeAnnotation(index: Int): SimpleType = {
     if (types == null) {

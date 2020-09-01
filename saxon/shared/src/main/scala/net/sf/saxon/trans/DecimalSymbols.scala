@@ -118,27 +118,27 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
       if (language == HostLanguage.XQUERY) XQUERY_CODES else XSLT_CODES
   }
 
-  def getDecimalSeparator(): Int = intValues(DECIMAL_SEPARATOR)
+  def getDecimalSeparator: Int = intValues(DECIMAL_SEPARATOR)
 
-  def getGroupingSeparator(): Int = intValues(GROUPING_SEPARATOR)
+  def getGroupingSeparator: Int = intValues(GROUPING_SEPARATOR)
 
-  def getDigit(): Int = intValues(DIGIT)
+  def getDigit: Int = intValues(DIGIT)
 
-  def getMinusSign(): Int = intValues(MINUS_SIGN)
+  def getMinusSign: Int = intValues(MINUS_SIGN)
 
-  def getPercent(): Int = intValues(PERCENT)
+  def getPercent: Int = intValues(PERCENT)
 
-  def getPerMille(): Int = intValues(PER_MILLE)
+  def getPerMille: Int = intValues(PER_MILLE)
 
-  def getZeroDigit(): Int = intValues(ZERO_DIGIT)
+  def getZeroDigit: Int = intValues(ZERO_DIGIT)
 
-  def getExponentSeparator(): Int = intValues(EXPONENT_SEPARATOR)
+  def getExponentSeparator: Int = intValues(EXPONENT_SEPARATOR)
 
-  def getPatternSeparator(): Int = intValues(PATTERN_SEPARATOR)
+  def getPatternSeparator: Int = intValues(PATTERN_SEPARATOR)
 
-  def getInfinity(): String = infinityValue
+  def getInfinity: String = infinityValue
 
-  def getNaN(): String = NaNValue
+  def getNaN: String = NaNValue
 
   def setDecimalSeparator(value: String): Unit = {
     setProperty(DECIMAL_SEPARATOR, value, 0)

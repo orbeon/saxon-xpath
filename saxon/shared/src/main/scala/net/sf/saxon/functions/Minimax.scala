@@ -219,9 +219,9 @@ abstract class Minimax extends CollatingFunctionFixed {
   @BooleanBeanProperty
   var ignoreNaN: Boolean = false
 
-  def isMaxFunction(): Boolean
+  def isMaxFunction: Boolean
 
-  def getComparer(): AtomicComparer = getPreAllocatedAtomicComparer
+  def getComparer: AtomicComparer = getPreAllocatedAtomicComparer
 
   override def supplyTypeInformation(visitor: ExpressionVisitor,
                                      contextItemType: ContextItemStaticInfo,

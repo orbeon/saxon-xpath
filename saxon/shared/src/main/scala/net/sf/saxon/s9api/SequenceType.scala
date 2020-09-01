@@ -44,7 +44,7 @@ class SequenceType private (
   override def hashCode(): Int =
     getItemType.hashCode ^ (getOccurrenceIndicator.hashCode << 17)
 
-  def getUnderlyingSequenceType(): net.sf.saxon.value.SequenceType =
+  def getUnderlyingSequenceType: net.sf.saxon.value.SequenceType =
     net.sf.saxon.value.SequenceType.makeSequenceType(
       itemType.getUnderlyingItemType,
       occurrenceIndicator.getCardinality)

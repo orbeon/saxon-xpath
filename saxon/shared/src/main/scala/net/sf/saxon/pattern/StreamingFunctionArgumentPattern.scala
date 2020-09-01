@@ -31,7 +31,7 @@ object StreamingFunctionArgumentPattern {
   private var THE_INSTANCE: StreamingFunctionArgumentPattern =
     new StreamingFunctionArgumentPattern()
 
-  def getInstance(): StreamingFunctionArgumentPattern = THE_INSTANCE
+  def getInstance: StreamingFunctionArgumentPattern = THE_INSTANCE
 
 }
 
@@ -53,7 +53,7 @@ class StreamingFunctionArgumentPattern() extends Pattern {
                          contextItemType: ContextItemStaticInfo): Pattern = this
 
   def matches(item: Item, context: XPathContext): Boolean = {
-    val arg: Sequence = context.getStackFrame().getStackFrameValues()(0)
+    val arg: Sequence = context.getStackFrame.getStackFrameValues(0)
     val iter: SequenceIterator = arg.iterate()
     var j: Item = null
     while (({
@@ -65,7 +65,7 @@ class StreamingFunctionArgumentPattern() extends Pattern {
     false
   }
 
-  override def getItemType(): ItemType = AnyNodeTest.getInstance
+  override def getItemType: ItemType = AnyNodeTest.getInstance
 
   /*@NotNull*/
 

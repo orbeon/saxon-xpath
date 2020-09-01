@@ -39,15 +39,15 @@ class ContextItemStaticInfo(@BeanProperty var itemType: ItemType,
   @BooleanBeanProperty
   var parentless: Boolean = _
 
-  def getContextItemUType(): UType = itemType.getUType
+  def getContextItemUType: UType = itemType.getUType
 
-  def isPossiblyAbsent(): Boolean = contextMaybeUndefined
+  def isPossiblyAbsent: Boolean = contextMaybeUndefined
 
   def setContextPostureStriding(): Unit = ()
 
   def setContextPostureGrounded(): Unit = ()
 
-  def isStrictStreamabilityRules(): Boolean = false
+  def isStrictStreamabilityRules: Boolean = false
 
 }
 

@@ -33,7 +33,7 @@ object Axis extends Enumeration {
 
   class Axis (var number: Int) extends Val {
 
-    def getAxisNumber(): Int = number
+    def getAxisNumber: Int = number
 
   }
 

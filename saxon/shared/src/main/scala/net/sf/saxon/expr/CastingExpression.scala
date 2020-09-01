@@ -40,9 +40,9 @@ abstract class CastingExpression(source: Expression,
 
   def allowsEmpty(): Boolean = allowEmpty
 
-  def getConverter(): Converter = converter
+  def getConverter: Converter = converter
 
-  def getNamespaceResolver(): NamespaceResolver = getRetainedStaticContext
+  def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
   /**
    * Get the expression's dependencies. If the target type is namespace-sensitive, then the expression

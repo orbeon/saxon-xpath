@@ -77,7 +77,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
         true)
     } else {
       val callable: Callable = (context: XPathContext, arguments: Array[Sequence]) => {
-        var value: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+        var value: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
         if (value == null) {
           EmptySequence.getInstance
         }

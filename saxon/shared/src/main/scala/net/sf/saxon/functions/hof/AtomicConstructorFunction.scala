@@ -44,14 +44,14 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
       SequenceType.makeSequenceType(targetType,
         StaticProperty.ALLOWS_ZERO_OR_ONE))
 
-  def getFunctionName(): StructuredQName = targetType.getTypeName
+  def getFunctionName: StructuredQName = targetType.getTypeName
 
   def getDescription(): String = getFunctionName.getDisplayName
 
   def getArity(): Int = 1
 
   def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[AtomicValue] = {
-    val `val`: AtomicValue = args(0).head().asInstanceOf[AtomicValue]
+    val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     if (`val` == null) {
       ZeroOrOne.empty()
     }

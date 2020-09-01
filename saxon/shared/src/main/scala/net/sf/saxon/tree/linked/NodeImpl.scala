@@ -55,11 +55,11 @@ abstract class NodeImpl
 
   private var index: Int = _
 
-  override def head(): NodeImpl = this
+  override def head: NodeImpl = this
 
   def getTreeInfo(): TreeInfo = getPhysicalRoot
 
-  def getStringValueCS(): CharSequence = getStringValue
+  def getStringValueCS: CharSequence = getStringValue
 
   override def getSchemaType(): SchemaType = Untyped.getInstance
 
@@ -94,7 +94,7 @@ abstract class NodeImpl
 
   def equals(other: NodeInfo): Boolean = this eq other
 
-  def getNodeName(): NodeName = null
+  def getNodeName: NodeName = null
 
   override def hasFingerprint(): Boolean = true
 
@@ -126,7 +126,7 @@ abstract class NodeImpl
 
   def getBaseURI(): String = parent.getBaseURI
 
-  def getSequenceNumber(): Long = {
+  def getSequenceNumber: Long = {
     var prev: NodeImpl = this
     var i: Int = 0
     while (true) {
@@ -155,7 +155,7 @@ abstract class NodeImpl
 
   override def getConfiguration(): Configuration = getPhysicalRoot.getConfiguration
 
-  def getNamePool(): NamePool = getPhysicalRoot.getNamePool
+  def getNamePool: NamePool = getPhysicalRoot.getNamePool
 
   def getPrefix(): String = {
     val qName: NodeName = getNodeName
@@ -190,7 +190,7 @@ abstract class NodeImpl
     parent
   }
 
-  def getRawParent(): ParentNodeImpl = parent
+  def getRawParent: ParentNodeImpl = parent
 
   def setRawParent(parent: ParentNodeImpl): Unit = {
     this.parent = parent
@@ -212,7 +212,7 @@ abstract class NodeImpl
 
   def getFirstChild(): NodeImpl = null
 
-  def getLastChild(): NodeInfo = null
+  def getLastChild: NodeInfo = null
 
   override def iterateAxis(axisNumber: Int): AxisIterator =
     if (axisNumber == AxisInfo.CHILD) {
@@ -249,7 +249,7 @@ abstract class NodeImpl
           this
             .asInstanceOf[DocumentImpl]
             .getAllElements(nodeTest.asInstanceOf[NameTest].getFingerprint)
-        } else if (hasChildNodes()) {
+        } else if (hasChildNodes) {
           new SteppingNavigator.DescendantAxisIterator(this, false, nodeTest)
         } else {
           EmptyIterator.ofNodes()
@@ -292,7 +292,7 @@ abstract class NodeImpl
     }
   }
 
-  def getPhysicalRoot(): DocumentImpl = {
+  def getPhysicalRoot: DocumentImpl = {
     var up: ParentNodeImpl = parent
     while (up != null && !(up.isInstanceOf[DocumentImpl])) up = up.getRawParent
     up.asInstanceOf[DocumentImpl]
@@ -338,7 +338,7 @@ abstract class NodeImpl
     next
   }
 
-  def getPreviousInDocument(): NodeImpl = {
+  def getPreviousInDocument: NodeImpl = {
     val prev: NodeImpl = getPreviousSibling
     if (prev != null) {
       prev.getLastDescendantOrSelf
@@ -346,7 +346,7 @@ abstract class NodeImpl
     getParent
   }
 
-  private def getLastDescendantOrSelf(): NodeImpl = {
+  private def getLastDescendantOrSelf: NodeImpl = {
     val last: NodeImpl = getLastChild.asInstanceOf[NodeImpl]
     if (last == null) {
       return this
@@ -359,7 +359,7 @@ abstract class NodeImpl
 
   override def getAllNamespaces(): NamespaceMap = null
 
-  def hasChildNodes(): Boolean = getFirstChild != null
+  def hasChildNodes: Boolean = getFirstChild != null
 
   def setTypeAnnotation(`type`: SchemaType): Unit = ()
 

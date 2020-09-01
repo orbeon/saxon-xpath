@@ -6,23 +6,23 @@ package net.sf.saxon.om
 
 trait NodeName extends IdentityComparable {
 
-  def getPrefix(): String
+  def getPrefix: String
 
-  def getURI(): String
+  def getURI: String
 
-  def getLocalPart(): String
+  def getLocalPart: String
 
-  def getDisplayName(): String
+  def getDisplayName: String
 
-  def getStructuredQName(): StructuredQName
+  def getStructuredQName: StructuredQName
 
   def hasURI(ns: String): Boolean
 
-  def getNamespaceBinding(): NamespaceBinding
+  def getNamespaceBinding: NamespaceBinding
 
-  def hasFingerprint(): Boolean
+  def hasFingerprint: Boolean
 
-  def getFingerprint(): Int
+  def getFingerprint: Int
 
   def obtainFingerprint(namePool: NamePool): Int
 

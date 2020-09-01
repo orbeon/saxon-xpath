@@ -76,7 +76,7 @@ class AnalyzeStringFn extends RegexFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): NodeInfo = {
-    val inputItem: Item = arguments(0).head()
+    val inputItem: Item = arguments(0).head
     var input: CharSequence = null
     input = if (inputItem == null) "" else inputItem.getStringValueCS
     val re: RegularExpression = getRegularExpression(arguments)

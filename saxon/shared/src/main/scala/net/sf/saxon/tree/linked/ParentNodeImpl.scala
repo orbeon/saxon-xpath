@@ -50,7 +50,7 @@ abstract class ParentNodeImpl extends NodeImpl {
   override def getSequenceNumber(): Long =
     if (getRawSequenceNumber == -1) -1L else getRawSequenceNumber.toLong << 32
 
-  def getRawSequenceNumber(): Int = sequence
+  def getRawSequenceNumber: Int = sequence
 
   def setRawSequenceNumber(seq: Int): Unit = {
     sequence = seq
@@ -60,7 +60,7 @@ abstract class ParentNodeImpl extends NodeImpl {
     this.childrenImpl = children
   }
 
-  override def hasChildNodes(): Boolean = childrenImpl != null
+  override def hasChildNodes: Boolean = childrenImpl != null
 
   override def children(): Iterator[NodeImpl] =
     if (childrenImpl == null) {
@@ -71,7 +71,7 @@ abstract class ParentNodeImpl extends NodeImpl {
       Arrays.asList(childrenImpl.asInstanceOf[Array[NodeImpl]]: _*).iterator().asScala
     }
 
-  def getNumberOfChildren(): Int =
+  def getNumberOfChildren: Int =
     if (childrenImpl == null) {
       0
     } else if (childrenImpl.isInstanceOf[NodeImpl]) {
@@ -197,9 +197,9 @@ abstract class ParentNodeImpl extends NodeImpl {
     }
   }
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-  override def getStringValueCS(): CharSequence = {
+  override def getStringValueCS: CharSequence = {
     var sb: FastStringBuffer = null
     var next: NodeImpl = getFirstChild
     while (next != null) {

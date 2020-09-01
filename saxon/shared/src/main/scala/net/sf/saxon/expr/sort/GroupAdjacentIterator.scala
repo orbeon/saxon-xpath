@@ -65,7 +65,7 @@ class GroupAdjacentIterator(private var select: Expression,
     nextComparisonKey = getComparisonKey(nextKey, baseContext)
   }
 
-  override def getLength(): Int = {
+  override def getLength: Int = {
     val another: GroupAdjacentIterator = new GroupAdjacentIterator(
       select,
       keyExpression,
@@ -168,6 +168,6 @@ class GroupAdjacentIterator(private var select: Expression,
     population.close()
   }
 
-  override def getProperties(): Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
+  override def getProperties: Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
 
 }

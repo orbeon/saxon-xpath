@@ -128,7 +128,7 @@ class OutputterEventBuffer extends Outputter {
     }
   }
 
-  def isEmpty(): Boolean = buffer.isEmpty
+  def isEmpty: Boolean = buffer.isEmpty
 
   def reset(): Unit = {
     buffer.clear()

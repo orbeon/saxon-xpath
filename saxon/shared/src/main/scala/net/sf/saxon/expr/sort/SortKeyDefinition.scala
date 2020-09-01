@@ -96,17 +96,17 @@ class SortKeyDefinition extends PseudoExpression {
     setContextForSortKey = setContext
   }
 
-  def getSortKey(): Expression = sortKey.getChildExpression
+  def getSortKey: Expression = sortKey.getChildExpression
 
-  def getSortKeyOperand(): Operand = sortKey
+  def getSortKeyOperand: Operand = sortKey
 
-  def isSetContextForSortKey(): Boolean = setContextForSortKey
+  def isSetContextForSortKey: Boolean = setContextForSortKey
 
   def setOrder(exp: Expression): Unit = {
     order.setChildExpression(exp)
   }
 
-  def getOrder(): Expression = order.getChildExpression
+  def getOrder: Expression = order.getChildExpression
 
   def setDataTypeExpression(exp: Expression): Unit = {
     if (exp == null) {
@@ -119,7 +119,7 @@ class SortKeyDefinition extends PseudoExpression {
     }
   }
 
-  def getDataTypeExpression(): Expression =
+  def getDataTypeExpression: Expression =
     if (dataTypeExpression == null) null
     else dataTypeExpression.getChildExpression
 
@@ -127,13 +127,13 @@ class SortKeyDefinition extends PseudoExpression {
     caseOrder.setChildExpression(exp)
   }
 
-  def getCaseOrder(): Expression = caseOrder.getChildExpression
+  def getCaseOrder: Expression = caseOrder.getChildExpression
 
   def setLanguage(exp: Expression): Unit = {
     language.setChildExpression(exp)
   }
 
-  def getLanguage(): Expression = language.getChildExpression
+  def getLanguage: Expression = language.getChildExpression
 
   def setCollationNameExpression(collationNameExpr: Expression): Unit = {
     if (collationNameExpr == null) {
@@ -147,20 +147,20 @@ class SortKeyDefinition extends PseudoExpression {
     }
   }
 
-  def getCollationNameExpression(): Expression =
+  def getCollationNameExpression: Expression =
     if (collationName == null) null else collationName.getChildExpression
 
   def setCollation(collation: StringCollator): Unit = {
     this.collation = collation
   }
 
-  def getCollation(): StringCollator = collation
+  def getCollation: StringCollator = collation
 
   def setBaseURI(baseURI: String): Unit = {
     this.baseURI = baseURI
   }
 
-  def getBaseURI(): String = baseURI
+  def getBaseURI: String = baseURI
 
   def setStable(stableExpr: Expression): Unit = {
     var stableExpression = stableExpr
@@ -173,21 +173,21 @@ class SortKeyDefinition extends PseudoExpression {
     stable.setChildExpression(stableExpression)
   }
 
-  def getStable(): Expression = stable.getChildExpression
+  def getStable: Expression = stable.getChildExpression
 
   def setBackwardsCompatible(compatible: Boolean): Unit = {
     backwardsCompatible = compatible
   }
 
-  def isBackwardsCompatible(): Boolean = backwardsCompatible
+  def isBackwardsCompatible: Boolean = backwardsCompatible
 
   def setEmptyLeast(emptyLeast: Boolean): Unit = {
     this.emptyLeast = emptyLeast
   }
 
-  def getEmptyLeast(): Boolean = emptyLeast
+  def getEmptyLeast: Boolean = emptyLeast
 
-  def isFixed(): Boolean =
+  def isFixed: Boolean =
     order.getChildExpression.isInstanceOf[Literal] &&
       (dataTypeExpression == null ||
         dataTypeExpression.getChildExpression.isInstanceOf[Literal]) &&
@@ -225,7 +225,7 @@ class SortKeyDefinition extends PseudoExpression {
 
   override def typeCheck(visitor: ExpressionVisitor,
                 contextItemType: ContextItemStaticInfo): SortKeyDefinition = {
-    for (o <- checkedOperands().asScala if o.hasSameFocus()) {
+    for (o <- checkedOperands.asScala if o.hasSameFocus) {
       o.typeCheck(visitor, contextItemType)
     }
     val lang: Expression = getLanguage
@@ -242,7 +242,7 @@ class SortKeyDefinition extends PseudoExpression {
     this
   }
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand](8)
     list.add(sortKey)
     list.add(order)

@@ -5,7 +5,7 @@ import net.sf.saxon.query.{Annotation, AnnotationList}
 
 trait FunctionAnnotationHandler {
 
-  def getAssertionNamespace(): String
+  def getAssertionNamespace: String
 
   def check(annotations: AnnotationList, construct: String): Unit
 

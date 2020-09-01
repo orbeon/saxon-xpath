@@ -36,7 +36,7 @@ class RuleBasedSubstringMatcher(uri: String, collator: RuleBasedCollator)
   extends SimpleCollation(uri, collator.asInstanceOf[Comparator[CharSequence]])
     with SubstringMatcher {
 
-  private def getRuleBasedCollator(): RuleBasedCollator =
+  private def getRuleBasedCollator: RuleBasedCollator =
     getComparator.asInstanceOf[RuleBasedCollator]
 
   def contains(s1: String, s2: String): Boolean = {

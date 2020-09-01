@@ -37,7 +37,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   override def getPredicate(): Expression = expressionOp.getChildExpression
 
-  override def operands(): java.lang.Iterable[Operand] = expressionOp
+  override def operands: java.lang.Iterable[Operand] = expressionOp
 
   override def getUType(): UType =
     if (getPredicate.isInstanceOf[InstanceOfExpression]) {
@@ -80,7 +80,7 @@ class BooleanExpressionPattern(expression: Expression)
     }
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     if (getPredicate.isInstanceOf[InstanceOfExpression]) {
       val ioe: InstanceOfExpression =
         getPredicate.asInstanceOf[InstanceOfExpression]

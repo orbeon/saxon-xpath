@@ -49,7 +49,7 @@ class FunctionLiteral(value: Function) extends Literal(value) {
 
   /*@NotNull*/
 
-  override def getItemType(): FunctionItemType = getValue.getFunctionItemType
+  override def getItemType: FunctionItemType = getValue.getFunctionItemType
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 

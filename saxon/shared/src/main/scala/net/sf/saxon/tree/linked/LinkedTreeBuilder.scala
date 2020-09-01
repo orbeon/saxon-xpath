@@ -268,9 +268,9 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       locationId.getColumnNumber)
   }
 
-  def getCurrentParentNode(): ParentNodeImpl = currentNode
+  def getCurrentParentNode: ParentNodeImpl = currentNode
 
-  def getCurrentLeafNode(): NodeImpl = currentNode.getLastChild
+  def getCurrentLeafNode: NodeImpl = currentNode.getLastChild
 
   def graftElement(element: ElementImpl): Unit = {
     currentNode.addChild(element, { size(depth) += 1; size(depth) - 1 })

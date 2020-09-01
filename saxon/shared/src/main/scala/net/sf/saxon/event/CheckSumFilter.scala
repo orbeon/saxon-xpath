@@ -160,7 +160,7 @@ class CheckSumFilter(nextReceiver: Receiver)
     super.processingInstruction(target, data, locationId, properties)
   }
 
-  def isChecksumCorrect(): Boolean =
+  def isChecksumCorrect: Boolean =
     checksumCorrect || "skip" == System.getProperty("saxon-checksum")
 
   private def hash(s: CharSequence, sequence: Int): Int = {

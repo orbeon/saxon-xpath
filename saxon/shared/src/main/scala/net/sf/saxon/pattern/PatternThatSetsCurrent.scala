@@ -49,10 +49,10 @@ class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
       wrappedPattern,
       new LocalVariableBinding(Current.FN_CURRENT, SequenceType.SINGLE_ITEM))
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     new Operand(this, wrappedPattern, OperandRole.SINGLE_ATOMIC)
 
-  def getCurrentBinding(): LocalBinding = binding
+  def getCurrentBinding: LocalBinding = binding
 
   override def hasVariableBinding(binding: Binding): Boolean =
     binding == this.binding
@@ -71,7 +71,7 @@ class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
     wrappedPattern.matches(item, context)
   }
 
-  override def getItemType(): ItemType = wrappedPattern.getItemType
+  override def getItemType: ItemType = wrappedPattern.getItemType
 
   override def simplify(): Pattern = {
     wrappedPattern = wrappedPattern.simplify()

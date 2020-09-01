@@ -35,7 +35,7 @@ class FunctionArity extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): IntegerValue = {
-    val f: Function = arguments(0).head().asInstanceOf[Function]
+    val f: Function = arguments(0).head.asInstanceOf[Function]
     Int64Value.makeIntegerValue(f.getArity)
   }
 

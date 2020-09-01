@@ -15,10 +15,10 @@ trait IntSet {
 
   def copy(): IntSet
   def mutableCopy(): IntSet
-  def isMutable(): Boolean = true
+  def isMutable: Boolean = true
   def clear(): Unit
   def size(): Int
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
   def contains(value: Int): Boolean
   def remove(value: Int): Boolean
   def add(value: Int): Boolean

@@ -125,7 +125,7 @@ class ContentHandlerProxy extends Receiver {
     }
   }
 
-  def getUnderlyingContentHandler(): ContentHandler = handler
+  def getUnderlyingContentHandler: ContentHandler = handler
 
   def setLexicalHandler(handler: LexicalHandler): Unit = {
     lexicalHandler = handler
@@ -137,7 +137,7 @@ class ContentHandlerProxy extends Receiver {
 
   def getPipelineConfiguration(): PipelineConfiguration = pipe
 
-  def getConfiguration(): Configuration = pipe.getConfiguration
+  def getConfiguration: Configuration = pipe.getConfiguration
 
   def setUnparsedEntity(name: String,
                         systemID: String,

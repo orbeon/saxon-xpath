@@ -63,7 +63,7 @@ class SequenceCollector(pipe: PipelineConfiguration, estimatedSize: Int)
     list.add(item)
   }
 
-  def getSequence(): Sequence = list.size match {
+  def getSequence: Sequence = list.size match {
     case 0 => EmptySequence.getInstance
     case 1 => //noinspection unchecked
       list.get(0)
@@ -78,7 +78,7 @@ class SequenceCollector(pipe: PipelineConfiguration, estimatedSize: Int)
       new ListIterator(list)
     }
 
-  def getFirstItem(): Item =
+  def getFirstItem: Item =
     if (list.isEmpty) {
       null
     } else {

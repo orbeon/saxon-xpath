@@ -100,7 +100,7 @@ object SpaceStrippedNode {
         val t: SchemaType = p.getSchemaType
         if (t.isInstanceOf[ComplexType] && t
           .asInstanceOf[ComplexType]
-          .hasAssertions()) {
+          .hasAssertions) {
           return true
         }
         p = p.getParent
@@ -161,7 +161,7 @@ class SpaceStrippedNode()
       node.compareOrder(other)
     }
 
-  override def getStringValueCS()
+  override def getStringValueCS
   : CharSequence = // Might not be the same as the string value of the underlying node because of space stripping
     getNodeKind match {
       case Type.DOCUMENT | Type.ELEMENT =>

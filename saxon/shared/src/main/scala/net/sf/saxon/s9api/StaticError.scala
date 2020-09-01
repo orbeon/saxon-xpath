@@ -15,16 +15,16 @@ trait StaticError {
     *
     * @return QName
     */
-  def getErrorCode(): QName
+  def getErrorCode: QName
 
   /**
     * Return the error message  associated with this error
     *
     * @return String
     */
-  def getMessage(): String
+  def getMessage: String
 
-  def getLocation(): Location
+  def getLocation: Location
 
   /**
     * The URI of the query or stylesheet module in which the error was detected (as a string)
@@ -34,21 +34,21 @@ trait StaticError {
     *
     * @return String
     */
-  def getModuleUri(): String = getLocation.getSystemId
+  def getModuleUri: String = getLocation.getSystemId
 
   /**
     * The coloumn number locating the error within a query or stylesheet module
     *
     * @return int
     */
-  def getColumnNumber(): Int = getLocation.getColumnNumber
+  def getColumnNumber: Int = getLocation.getColumnNumber
 
   /**
     * The line number locating the error within a query or stylesheet module
     *
     * @return int
     */
-  def getLineNumber(): Int = getLocation.getLineNumber
+  def getLineNumber: Int = getLocation.getLineNumber
 
   /**
     * Get a name identifying the kind of instruction, in terms meaningful to a user. This method
@@ -58,7 +58,7 @@ trait StaticError {
     * The name will always be in the form of a lexical XML QName, and should match the name used
     * in explain() output displaying the instruction.
     */
-  def getInstructionName(): String = null
+  def getInstructionName: String = null
 
   /**
     * Indicate whether this error is being reported as a warning condition.
@@ -66,14 +66,14 @@ trait StaticError {
     *
     * @return boolean
     */
-  def isWarning(): Boolean
+  def isWarning: Boolean
 
   /**
     * Indicate whether this condition is a type error.
     *
     * @return boolean
     */
-  def isTypeError(): Boolean
+  def isTypeError: Boolean
 
   /**
     * Get the absolute XPath expression that identifies the node within its document
@@ -81,11 +81,11 @@ trait StaticError {
     *
     * @return String - a path expression
     */
-  def getPath(): String = null
+  def getPath: String = null
 
   def setFatal(message: String): Unit
 
-  def getFatalErrorMessage(): String
+  def getFatalErrorMessage: String
 
 }
 

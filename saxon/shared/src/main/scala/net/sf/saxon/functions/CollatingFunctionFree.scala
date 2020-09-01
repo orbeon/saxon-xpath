@@ -47,7 +47,7 @@ object CollatingFunctionFree {
 
 class CollatingFunctionFree extends SystemFunction {
 
-  private def getCollationArgument(): Int = getArity - 1
+  private def getCollationArgument: Int = getArity - 1
 
   override def makeOptimizedFunctionCall(
                                           visitor: ExpressionVisitor,
@@ -88,7 +88,7 @@ class CollatingFunctionFree extends SystemFunction {
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
     val c: Int = getCollationArgument
-    var collation: String = args(c).head().getStringValue
+    var collation: String = args(c).head.getStringValue
     collation =
       expandCollationURI(collation, getRetainedStaticContext.getStaticBaseUri)
     val fixed: CollatingFunctionFixed = bindCollation(collation)

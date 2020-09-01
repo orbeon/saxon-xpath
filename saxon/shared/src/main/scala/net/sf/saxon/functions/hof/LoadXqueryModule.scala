@@ -82,13 +82,13 @@ class LoadXqueryModule extends SystemFunction with Callable {
     var contextItemOption: Sequence = null
     var vendorOptionsOption: Sequence = null
     if (args.length == 2) {
-      val suppliedOptions: MapItem = args(1).head().asInstanceOf[MapItem]
+      val suppliedOptions: MapItem = args(1).head.asInstanceOf[MapItem]
       val checkedOptions: Map[String, Sequence] = getDetails.optionDetails
         .processSuppliedOptions(suppliedOptions, context)
       xqueryVersionOption = checkedOptions.get("xquery-version")
       if (xqueryVersionOption != null &&
         xqueryVersionOption
-          .head()
+          .head
           .asInstanceOf[DecimalValue]
           .getDoubleValue *
           10 >
@@ -105,7 +105,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
     var qv: Int = 31
     if (xqueryVersionOption != null) {
       val decimalVn: BigDecimal =
-        xqueryVersionOption.head().asInstanceOf[DecimalValue].getDecimalValue
+        xqueryVersionOption.head.asInstanceOf[DecimalValue].getDecimalValue
       if (decimalVn == new BigDecimal("1.0") || decimalVn == new BigDecimal(
         "3.0") ||
         decimalVn == new BigDecimal("3.1")) {
@@ -115,7 +115,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
           "FOQM0006")
       }
     }
-    val moduleUri: String = args(0).head().getStringValue
+    val moduleUri: String = args(0).head.getStringValue
     if (moduleUri.isEmpty) {
       throw new XPathException(
         "First argument of fn:load-xquery-module() must not be a zero length string",
@@ -189,7 +189,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
       context.getConfiguration)
     // Get the external variables and set parameters on DynamicQueryContext dqc
     if (variablesOption != null) {
-      val extVariables: MapItem = variablesOption.head().asInstanceOf[MapItem]
+      val extVariables: MapItem = variablesOption.head.asInstanceOf[MapItem]
       val iterator: AtomicIterator[_ <: AtomicValue] = extVariables.keys
       var key: AtomicValue = null
       while (({
@@ -201,7 +201,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
     }
     // Get the context item supplied, and set it on the new Controller
     if (contextItemOption != null) {
-      val contextItem: Item = contextItemOption.head()
+      val contextItem: Item = contextItemOption.head
       val gcr: GlobalContextRequirement =
         main.getExecutable.getGlobalContextRequirement
       if (gcr != null) {
@@ -211,7 +211,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
             "FOQM0005")
         }
       }
-      dqc.setContextItem(contextItemOption.head())
+      dqc.setContextItem(contextItemOption.head)
     }
     val newController: Controller = xqe.newController(dqc)
     val newContext: XPathContext = newController.newXPathContext
@@ -287,13 +287,13 @@ class LoadXqueryModule extends SystemFunction with Callable {
 
   // Set the vendor options (configuration features) -- at the moment none supported
   /*if (vendorOptionsOption != null) {
-            MapItem vendorOptions = (MapItem) options.get(new StringValue("vendor-options")).head();
+            MapItem vendorOptions = (MapItem) options.get(new StringValue("vendor-options")).head;
         }*/
 
   // Evaluate the global variables, and add values to the result.
   // Set the vendor options (configuration features) -- at the moment none supported
   /*if (vendorOptionsOption != null) {
-            MapItem vendorOptions = (MapItem) options.get(new StringValue("vendor-options")).head();
+            MapItem vendorOptions = (MapItem) options.get(new StringValue("vendor-options")).head;
         }*/
 
   // Evaluate the global variables, and add values to the result.

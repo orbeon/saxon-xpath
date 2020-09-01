@@ -66,7 +66,7 @@ class FocusTrackingIterator()
 
   private var siblingMemory: SiblingMemory = _
 
-  def getUnderlyingIterator(): SequenceIterator = base
+  def getUnderlyingIterator: SequenceIterator = base
 
   /**
    * Get the next item in the sequence. This method changes the state of the
@@ -120,7 +120,7 @@ class FocusTrackingIterator()
    */
   def position(): Int = pos
 
-  def getLength(): Int = {
+  def getLength: Int = {
     if (last == -1) {
       if (base.getProperties.contains(Property.LAST_POSITION_FINDER)) {
         last = base.asInstanceOf[LastPositionFinder].getLength
@@ -170,7 +170,7 @@ class FocusTrackingIterator()
    *                            which cause evaluation of expressions while materializing the value.
    * @throws ClassCastException if the iterator does not have the { @link net.sf.saxon.om.SequenceIterator.Property#GROUNDED} property.
    */
-  override def getResidue(): GroundedValue = new SequenceExtent(this)
+  override def getResidue: GroundedValue = new SequenceExtent(this)
 
   /**
    * Close the iterator. This indicates to the supplier of the data that the client
@@ -198,7 +198,7 @@ class FocusTrackingIterator()
    *         It is acceptable for the properties of the iterator to change depending on its state.
    * @since 8.6
    */
-  override def getProperties(): Set[Property] = base.getProperties
+  override def getProperties: Set[Property] = base.getProperties
 
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
     if (node.isInstanceOf[SiblingCountingNode] && nodeTest

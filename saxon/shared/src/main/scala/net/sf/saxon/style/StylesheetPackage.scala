@@ -131,15 +131,15 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     this.xsltVersion = version
   }
 
-  def getVersion(): Int = xsltVersion
+  def getVersion: Int = xsltVersion
 
-  def isJustInTimeCompilation(): Boolean = false
+  def isJustInTimeCompilation: Boolean = false
 
   def setJustInTimeCompilation(justInTimeCompilation: Boolean): Unit = ()
 
-  def getSpaceStrippingRule(): SpaceStrippingRule = stripperRules
+  def getSpaceStrippingRule: SpaceStrippingRule = stripperRules
 
-  def getStripperRules(): SpaceStrippingRule = stripperRules
+  def getStripperRules: SpaceStrippingRule = stripperRules
 
   def setStripperRules(stripperRules: SpaceStrippingRule): Unit = {
     this.stripperRules = stripperRules
@@ -157,7 +157,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   def getNamedOutputProperties(name: StructuredQName): Properties =
     namedOutputProperties.get(name)
 
-  def getSchemaNamespaces(): Set[String] = schemaIndex
+  def getSchemaNamespaces: Set[String] = schemaIndex
 
   def setContextItemRequirements(requirement: GlobalContextRequirement): Unit = {
     if (containsGlobalContextItemDeclaration) {
@@ -180,7 +180,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     globalContextRequirement = requirement
   }
 
-  def getContextItemRequirements(): GlobalContextRequirement =
+  def getContextItemRequirements: GlobalContextRequirement =
     globalContextRequirement
 
   def addCompletionAction(action: Action): Unit = {
@@ -238,7 +238,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     }
   }
 
-  def getMaxFunctionArity(): Int = {
+  def getMaxFunctionArity: Int = {
     if (maxFunctionArity == -1) {
       for (c <- componentIndex.values.asScala if c.getActor.isInstanceOf[UserFunction]
            if c.getActor
@@ -514,7 +514,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   /*def getPublicFunctions(): FunctionLibrary =
     new PublicStylesheetFunctionLibrary(functionLibrary)*/
 
-  def getXQueryFunctionLibrary(): XQueryFunctionLibrary = queryFunctions
+  def getXQueryFunctionLibrary: XQueryFunctionLibrary = queryFunctions
 
   def setFunctionLibraryDetails(
                                  library: FunctionLibraryList,
@@ -652,7 +652,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     }
   }
 
-  def isFallbackToNonStreaming(): Boolean = true
+  def isFallbackToNonStreaming: Boolean = true
 
   def setFallbackToNonStreaming(): Unit = ()
 

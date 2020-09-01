@@ -14,7 +14,7 @@ trait Numberer {
 
   def setCountry(country: String): Unit
 
-  def getCountry(): String
+  def getCountry: String
 
   /**
     * Whether this numberer has had its locale defaulted, i.e. it's not using the language requested

@@ -194,7 +194,7 @@ class QuantifiedExpression extends Assignation {
     !some
   }
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
@@ -206,11 +206,11 @@ class QuantifiedExpression extends Assignation {
       " satisfies " +
       ExpressionTool.parenthesize(getAction)
 
-  override def toShortString(): String =
+  override def toShortString: String =
     (if (operator == Token.SOME) "some" else "every") + " $" +
       getVariableName +
       " in " +
-      getSequence.toShortString() +
+      getSequence.toShortString +
       " satisfies ..."
 
   def export(out: ExpressionPresenter): Unit = {

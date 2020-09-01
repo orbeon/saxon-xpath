@@ -33,12 +33,12 @@ class StaticFunctionCall(private var target: Function,
 
   setOperanda(arguments, target.getOperandRoles)
 
-  def getTargetFunction(): Function = target
+  def getTargetFunction: Function = target
 
   override def getTargetFunction(context: XPathContext): Function =
     getTargetFunction
 
-  override def getFunctionName(): StructuredQName = target.getFunctionName
+  override def getFunctionName: StructuredQName = target.getFunctionName
 
   override def isCallOn(function: Class[_ <: SystemFunction]): Boolean =
     function.isAssignableFrom(target.getClass)
@@ -60,12 +60,12 @@ class StaticFunctionCall(private var target: Function,
    override def computeCardinality(): Int =
     target.getFunctionItemType.getResultType.getCardinality
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     target.getFunctionItemType.getResultType.getPrimaryType
 
   override def getStaticUType(contextItemType: UType): UType = {
     var result: UType = getItemType.getUType
-    for (o <- operands().asScala if o.getUsage == OperandUsage.TRANSMISSION) {
+    for (o <- operands.asScala if o.getUsage == OperandUsage.TRANSMISSION) {
       result = result.intersection(
         o.getChildExpression.getStaticUType(contextItemType))
     }
@@ -85,7 +85,7 @@ class StaticFunctionCall(private var target: Function,
       out.startElement("origFC", this)
       out.emitAttribute("name", pf.getFunctionName)
       out.emitAttribute("pack", options.componentMap.get(pf.getComponent.getContainingPackage).toString)
-      for (o <- operands().asScala) {
+      for (o <- operands.asScala) {
         o.getChildExpression.export(out)
       }
       out.endElement()
@@ -97,7 +97,7 @@ class StaticFunctionCall(private var target: Function,
         if (targetType.isInstanceOf[LocalUnionType]) {
           out.emitAttribute("to", AlphaCode.fromItemType(targetType))
         } else {
-          out.emitAttribute("as", targetType.toExportString())
+          out.emitAttribute("as", targetType.toExportString)
         }
         out.emitAttribute(
           "flags",
@@ -105,7 +105,7 @@ class StaticFunctionCall(private var target: Function,
             (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
               "e"
             else ""))
-        for (o <- operands().asScala) {
+        for (o <- operands.asScala) {
           o.getChildExpression.export(out)
         }
         out.endElement()
@@ -121,7 +121,7 @@ class StaticFunctionCall(private var target: Function,
           "l" +
             (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
             else ""))
-        for (o <- operands().asScala) {
+        for (o <- operands.asScala) {
           o.getChildExpression.export(out)
         }
         out.endElement()
@@ -132,7 +132,7 @@ class StaticFunctionCall(private var target: Function,
         if (targetType.isInstanceOf[LocalUnionType]) {
           out.emitAttribute("to", AlphaCode.fromItemType(targetType))
         } else {
-          out.emitAttribute("as", targetType.toExportString())
+          out.emitAttribute("as", targetType.toExportString)
         }
         out.emitAttribute(
           "flags",
@@ -140,7 +140,7 @@ class StaticFunctionCall(private var target: Function,
             (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
               "e"
             else ""))
-        for (o <- operands().asScala) {
+        for (o <- operands.asScala) {
           o.getChildExpression.export(out)
         }
         out.endElement()
@@ -156,7 +156,7 @@ class StaticFunctionCall(private var target: Function,
           "l" +
             (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
             else ""))
-        for (o <- operands().asScala) {
+        for (o <- operands.asScala) {
           o.getChildExpression.export(out)
         }
         out.endElement()

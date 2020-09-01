@@ -28,12 +28,12 @@ class UnparsedTextAvailable extends UnparsedTextFunction with Callable {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-    val hrefVal: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val hrefVal: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (hrefVal == null) {
       BooleanValue.FALSE
     }
     val encoding: String =
-      if (getArity == 2) arguments(1).head().getStringValue else null
+      if (getArity == 2) arguments(1).head.getStringValue else null
     BooleanValue.get(evalUnparsedTextAvailable(hrefVal, encoding, context))
   }
 

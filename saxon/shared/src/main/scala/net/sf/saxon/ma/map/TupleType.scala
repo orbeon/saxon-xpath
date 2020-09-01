@@ -21,11 +21,11 @@ import net.sf.saxon.value.SequenceType
   */
 trait TupleType extends FunctionItemType {
 
-  def getFieldNames(): java.lang.Iterable[String]
+  def getFieldNames: java.lang.Iterable[String]
 
   def getFieldType(field: String): SequenceType
 
-  def isExtensible(): Boolean
+  def isExtensible: Boolean
 
 }
 

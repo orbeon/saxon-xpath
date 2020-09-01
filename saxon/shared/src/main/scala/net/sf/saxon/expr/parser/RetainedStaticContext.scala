@@ -96,7 +96,7 @@ class RetainedStaticContext extends NamespaceResolver {
     }
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def getStaticBaseUriString: String = staticBaseUriString
 
@@ -111,7 +111,7 @@ class RetainedStaticContext extends NamespaceResolver {
     }
   }
 
-  def getStaticBaseUri(): URI = {
+  def getStaticBaseUri: URI = {
     if (staticBaseUri == null) {
       if (staticBaseUriString == null) {
         return null
@@ -123,7 +123,7 @@ class RetainedStaticContext extends NamespaceResolver {
     staticBaseUri
   }
 
-  def getDefaultElementNamespace(): String =
+  def getDefaultElementNamespace: String =
     if (defaultElementNamespace == null) "" else defaultElementNamespace
 
   def setDefaultElementNamespace(ns: String): Unit = {

@@ -37,8 +37,8 @@ object SchemaComponent {
   */
 trait SchemaComponent {
 
-  def getValidationStatus(): ValidationStatus
-  def getRedefinitionLevel(): Int
+  def getValidationStatus: ValidationStatus
+  def getRedefinitionLevel: Int
 
   // ORBEON: This is unused and causes unwanted recursion during initialization.
 //  var COMPONENT_FUNCTION_TYPE: FunctionItemType = new SpecificFunctionType(

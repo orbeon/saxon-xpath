@@ -30,7 +30,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   def size(): Int = operanda.length
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     Arrays.asList(operanda: _*)
 
   override def getExpressionName(): String = "condSeq"
@@ -48,7 +48,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     var allChildAxis: Boolean = true
     var allSubtreeAxis: Boolean = true
     breakable {
-      for (o <- operands().asScala) {
+      for (o <- operands.asScala) {
         val child = o.getChildExpression
         if (! child.isInstanceOf[AxisExpression]) {
           allAxisExpressions = false
@@ -98,7 +98,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     b2
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
 
     if (size == 0)
       return ErrorType
@@ -213,22 +213,22 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
   }
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val child = o.getChildExpression
       child.checkPermittedContents(parentType, whole = false)
     }
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("condSeq", this)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val child = o.getChildExpression
       child.export(out)
     }
     out.endElement()
   }
 
-  override def toShortString(): String =
-    "(" + getChildExpression(0).toShortString() + ", ...)"
+  override def toShortString: String =
+    "(" + getChildExpression(0).toShortString + ", ...)"
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val onNonEmptyPending = new ArrayList[OnNonEmptyExpr]()
@@ -239,7 +239,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     val significantItemDetector =
       new SignificantItemDetector(output, action)
 
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val child = o.getChildExpression
       try child match {
         case _: OnEmptyExpr =>
@@ -260,7 +260,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
       }
     }
     if (significantItemDetector.isEmpty)
-      for (o <- operands().asScala) {
+      for (o <- operands.asScala) {
         val child = o.getChildExpression
         if (child.isInstanceOf[OnEmptyExpr]) {
           child.process(output, context)

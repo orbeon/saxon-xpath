@@ -25,13 +25,13 @@ import net.sf.saxon.value.SequenceType
   */
 abstract class ExtensionFunctionDefinition {
 
-  def getFunctionQName(): StructuredQName
+  def getFunctionQName: StructuredQName
 
-  def getMinimumNumberOfArguments(): Int = getArgumentTypes.length
+  def getMinimumNumberOfArguments: Int = getArgumentTypes.length
 
-  def getMaximumNumberOfArguments(): Int = getMinimumNumberOfArguments
+  def getMaximumNumberOfArguments: Int = getMinimumNumberOfArguments
 
-  def getArgumentTypes(): Array[SequenceType]
+  def getArgumentTypes: Array[SequenceType]
 
   def getResultType(suppliedArgumentTypes: Array[SequenceType]): SequenceType
 
@@ -39,7 +39,7 @@ abstract class ExtensionFunctionDefinition {
 
   def dependsOnFocus(): Boolean = false
 
-  def hasSideEffects(): Boolean = false
+  def hasSideEffects: Boolean = false
 
   def makeCallExpression(): ExtensionFunctionCall
 
@@ -70,7 +70,7 @@ abstract class ExtensionFunctionDefinition {
       *
       * @return the function name, or null for an anonymous inline function
       */
-    override def getFunctionName(): StructuredQName = getFunctionQName
+    override def getFunctionName: StructuredQName = getFunctionQName
 
     /**
       * Get the arity of the function

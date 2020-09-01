@@ -118,7 +118,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     requiredType = `type`
   }
 
-  def getRequiredType(): SequenceType =
+  def getRequiredType: SequenceType =
     if (requiredType == null) {
       SequenceType.ANY_SEQUENCE
     } else {

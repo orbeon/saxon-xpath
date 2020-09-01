@@ -24,7 +24,7 @@ class TraceClause(expression: FLWORExpression, private var target: Clause)
   private var nsResolver: NamespaceResolver =
     expression.getRetainedStaticContext
 
-  def getNamespaceResolver(): NamespaceResolver = nsResolver
+  def getNamespaceResolver: NamespaceResolver = nsResolver
 
   def setNamespaceResolver(nsResolver: NamespaceResolver): Unit = {
     this.nsResolver = nsResolver

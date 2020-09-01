@@ -58,7 +58,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    * @return the new map containing the additional entry
    */
   override def addEntry(key: AtomicValue, value: GroundedValue): MapItem =
-    toHashTrieMap().addEntry(key, value)
+    toHashTrieMap.addEntry(key, value)
 
   /**
    * Remove an entry from the map
@@ -104,7 +104,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    */
   override def getKeyUType(): UType = key.getUType
 
-  private def toHashTrieMap(): HashTrieMap = {
+  private def toHashTrieMap: HashTrieMap = {
     val target: HashTrieMap = new HashTrieMap()
     target.initialPut(key, value)
     target

@@ -36,7 +36,7 @@ abstract class CompareToConstant(p0: Expression)
   def getRhs(): Operand =
     new Operand(this, getRhsExpression, OperandRole.SINGLE_ATOMIC)
 
-  def getComparisonOperator(): Int = operator
+  def getComparisonOperator: Int = operator
 
   def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
@@ -58,7 +58,7 @@ abstract class CompareToConstant(p0: Expression)
 
   /*@NotNull*/
 
-  override def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  override def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   def getSingletonOperator(): Int = operator
 

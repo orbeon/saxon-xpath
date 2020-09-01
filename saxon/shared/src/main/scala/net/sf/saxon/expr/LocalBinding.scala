@@ -10,11 +10,11 @@ package net.sf.saxon.expr
   */
 trait LocalBinding extends Binding {
 
-  def getLocalSlotNumber(): Int
+  def getLocalSlotNumber: Int
 
   def setIndexedVariable(): Unit
 
-  def isIndexedVariable(): Boolean
+  def isIndexedVariable: Boolean
 
 }
 

@@ -19,10 +19,8 @@ import net.sf.saxon.om.{Function, GroundedValue, Item, Sequence}
 class FoldLeftFn extends FoldingFunction {
 
   def getFold(context: XPathContext, arguments: Sequence*): Fold = {
-    val arg0: Sequence = arguments(0)
-    new FoldLeftFold(context,
-      arg0.materialize(),
-      arguments(1).head().asInstanceOf[Function])
+    val arg0 = arguments(0)
+    new FoldLeftFold(context, arg0.materialize(), arguments(1).head.asInstanceOf[Function])
   }
 
   class FoldLeftFold(private var context: XPathContext,
@@ -31,19 +29,21 @@ class FoldLeftFn extends FoldingFunction {
     extends Fold {
 
     private var data: Sequence = zero
-
     private var counter: Int = 0
 
     def processItem(item: Item): Unit = {
-      val args: Array[Sequence] = Array.ofDim[Sequence](2)
+
+      val args = Array.ofDim[Sequence](2)
       args(0) = data
       args(1) = item
+
       // sequence. We don't want to do this every time because it involves allocating memory.
-      val result: Sequence = SystemFunction.dynamicCall(function, context, args)
-      data = if ( {
-        counter += 1; counter - 1
-      } % 32 == 0) result.materialize()
-      else result
+      val result = SystemFunction.dynamicCall(function, context, args)
+      data =
+        if ( {counter += 1; counter - 1} % 32 == 0)
+          result.materialize()
+        else
+          result
     }
 
     // The result can be returned as a LazySequence. Since we are passing it to a user-defined
@@ -56,9 +56,7 @@ class FoldLeftFn extends FoldingFunction {
     // takes place; so to avoid this, we periodically ground the value as a real in-memory concrete
 
     def isFinished(): Boolean = false
-
     def result(): Sequence = data
-
   }
 
   /**
@@ -72,16 +70,13 @@ class FoldLeftFn extends FoldingFunction {
     val functionArgType: ItemType = args(2).getItemType
     if (functionArgType.isInstanceOf[AnyFunctionType]) {
       // will always be true once the query has been successfully type-checked
-      args(2).getItemType
-        .asInstanceOf[AnyFunctionType]
-        .getResultType
-        .getPrimaryType
+      args(2).getItemType.asInstanceOf[AnyFunctionType].getResultType.getPrimaryType
     } else {
       AnyItemType
     }
   }
 
-  override def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context, args)
+  def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context, args)
 }
 
 

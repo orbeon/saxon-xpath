@@ -27,7 +27,7 @@ import java.util.Collections
   */
 class BreakInstr extends Instruction with TailCallLoop.TailCallInfo {
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     Collections.emptyList()
 
   /*@NotNull*/

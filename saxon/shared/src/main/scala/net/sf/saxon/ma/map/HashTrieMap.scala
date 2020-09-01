@@ -123,7 +123,7 @@ class HashTrieMap extends MapItem {
     }
     var needFullCheck: Boolean = false
     if (requiredKeyType != BuiltInAtomicType.ANY_ATOMIC) {
-      val upperBoundKeyType: ItemType = keyUType.toItemType()
+      val upperBoundKeyType: ItemType = keyUType.toItemType
       val rel: Affinity.Affinity = th.relationship(requiredKeyType, upperBoundKeyType)
       if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT) {
         return false
@@ -133,7 +133,7 @@ class HashTrieMap extends MapItem {
     }
     val requiredValueItemType: ItemType = requiredValueType.getPrimaryType
     if (requiredValueItemType != BuiltInAtomicType.ANY_ATOMIC) {
-      val upperBoundValueType: ItemType = valueUType.toItemType()
+      val upperBoundValueType: ItemType = valueUType.toItemType
       val rel: Affinity.Affinity =
         th.relationship(requiredValueItemType, upperBoundValueType)
       if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT) {

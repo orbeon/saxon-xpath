@@ -25,7 +25,7 @@ class ContentTypeTest(nodeKind: Int,
   def getUType(): UType =
     if (kind == Type.ELEMENT) UType.ELEMENT else UType.ATTRIBUTE
 
-  def getNodeKind(): Int = kind
+  def getNodeKind: Int = kind
 
   override def matches(nodeKind: Int,
                        name: NodeName,
@@ -59,13 +59,13 @@ class ContentTypeTest(nodeKind: Int,
     r == Affinity.SAME_TYPE || r == Affinity.SUBSUMED_BY
   }
 
-  def getDefaultPriority(): Double = 0
+  def getDefaultPriority: Double = 0
 
-  override def getPrimitiveType(): Int = kind
+  override def getPrimitiveType: Int = kind
 
   override def getContentType(): SchemaType = schemaType
 
-  override def getAtomizedItemType(): AtomicType = {
+  override def getAtomizedItemType: AtomicType = {
     val `type`: SchemaType = schemaType
     try if (`type`.isAtomicType) {
       `type`.asInstanceOf[AtomicType]

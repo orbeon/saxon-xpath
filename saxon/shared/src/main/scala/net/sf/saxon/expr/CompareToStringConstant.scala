@@ -74,8 +74,8 @@ class CompareToStringConstant(operand: Expression,
       comparand +
       "\""
 
-  override def toShortString(): String =
-    getLhsExpression.toShortString() + " " + Token.tokens(operator) +
+  override def toShortString: String =
+    getLhsExpression.toShortString + " " + Token.tokens(operator) +
       " \"" +
       comparand +
       "\""

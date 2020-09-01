@@ -13,7 +13,7 @@ trait SiblingCountingNode extends NodeInfo {
     *
     * @return 0 for the first child, 1 for the second child, etc.
     */
-  def getSiblingPosition(): Int
+  def getSiblingPosition: Int
 
 }
 

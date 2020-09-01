@@ -46,7 +46,7 @@ class XPathEvaluator /**
 
   def this() = this(Configuration.newConfiguration)
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def reset(): Unit = {
     staticContext = new JAXPXPathStaticContext(config)

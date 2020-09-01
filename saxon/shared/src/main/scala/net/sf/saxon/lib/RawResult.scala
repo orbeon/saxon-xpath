@@ -29,7 +29,7 @@ class RawResult extends Result {
     content.add(item)
   }
 
-  def getResultSequence(): Sequence = new SequenceExtent(content)
+  def getResultSequence: Sequence = new SequenceExtent(content)
 
 }
 

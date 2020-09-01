@@ -18,7 +18,7 @@ class HeadFn extends SystemFunction {
     FirstItemExpression.makeFirstItemExpression(arguments(0))
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
-    val head: Item = arguments(0).head()
+    val head: Item = arguments(0).head
     new ZeroOrOne(head)
   }
 

@@ -64,7 +64,7 @@ class XQueryFunction extends Declaration with Location {
 
   var annotations: AnnotationList = AnnotationList.EMPTY
 
-  def getPackageData(): PackageData = staticContext.getPackageData
+  def getPackageData: PackageData = staticContext.getPackageData
 
   def addArgument(argument: UserFunctionParameter): Unit = {
     arguments.add(argument)
@@ -74,12 +74,12 @@ class XQueryFunction extends Declaration with Location {
     this.location = location
   }
 
-  def getDisplayName(): String = functionName.getDisplayName
+  def getDisplayName: String = functionName.getDisplayName
 
-  def getIdentificationKey(): SymbolicName =
+  def getIdentificationKey: SymbolicName =
     new SymbolicName.F(functionName, arguments.size)
 
-  def getArgumentTypes(): Array[SequenceType] = {
+  def getArgumentTypes: Array[SequenceType] = {
     val types: Array[SequenceType] = Array.ofDim[SequenceType](arguments.size)
     for (i <- 0 until arguments.size) {
       types(i) = arguments.get(i).getRequiredType
@@ -87,13 +87,13 @@ class XQueryFunction extends Declaration with Location {
     types
   }
 
-  def getParameterDefinitions(): Array[UserFunctionParameter] = {
+  def getParameterDefinitions: Array[UserFunctionParameter] = {
     val params: Array[UserFunctionParameter] =
       Array.ofDim[UserFunctionParameter](arguments.size)
     arguments.toArray(params)
   }
 
-  def getNumberOfArguments(): Int = arguments.size
+  def getNumberOfArguments: Int = arguments.size
 
   def registerReference(ufc: UserFunctionResolvable): Unit = {
     references.add(ufc)
@@ -118,7 +118,7 @@ class XQueryFunction extends Declaration with Location {
   def hasAnnotation(name: StructuredQName): Boolean =
     annotations.includes(name)
 
-  def isPrivate(): Boolean = hasAnnotation(Annotation.PRIVATE)
+  def isPrivate: Boolean = hasAnnotation(Annotation.PRIVATE)
 
   def compile(): Unit = {
     val config: Configuration = staticContext.getConfiguration
@@ -312,9 +312,9 @@ class XQueryFunction extends Declaration with Location {
     out.endElement()
   }
 
-  def getUserFunction(): UserFunction = compiledFunction
+  def getUserFunction: UserFunction = compiledFunction
 
-  def getObjectName(): StructuredQName = functionName
+  def getObjectName: StructuredQName = functionName
 
   def getSystemId(): String = location.getSystemId
 
@@ -335,8 +335,8 @@ class XQueryFunction extends Declaration with Location {
       null
     }
 
-  def getProperties(): Iterator[String] = new PairIterator("name", "as")
+  def getProperties: Iterator[String] = new PairIterator("name", "as")
 
-  def getHostLanguage(): HostLanguage = XQUERY
+  def getHostLanguage: HostLanguage = XQUERY
 
 }

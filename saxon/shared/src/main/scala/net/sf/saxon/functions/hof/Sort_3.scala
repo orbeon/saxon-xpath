@@ -18,7 +18,7 @@ class Sort_3 extends Sort_2 {
     val input: Sequence = arguments(0)
     val inputList: List[ItemToBeSorted] = new ArrayList[ItemToBeSorted]()
     var i: Int = 0
-    val key: Function = arguments(2).head().asInstanceOf[Function]
+    val key: Function = arguments(2).head.asInstanceOf[Function]
     val iterator: SequenceIterator = input.iterate()
     var item: Item = null
     while (({

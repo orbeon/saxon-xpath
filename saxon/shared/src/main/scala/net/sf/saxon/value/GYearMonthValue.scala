@@ -59,7 +59,7 @@ class GYearMonthValue extends GDateValue {
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.G_YEAR_MONTH
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_YEAR_MONTH
 
   def getPrimitiveStringValue(): CharSequence = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -73,7 +73,7 @@ class GYearMonthValue extends GDateValue {
     appendString(sb, yr, (if (yr > 9999) (yr.toString).length else 4))
     sb.cat('-')
     appendTwoDigits(sb, month)
-    if (hasTimezone()) {
+    if (hasTimezone) {
       appendTimezone(sb)
     }
     sb
@@ -88,7 +88,7 @@ class GYearMonthValue extends GDateValue {
 
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
-      toDateTime().adjustTimezone(tz)
+      toDateTime.adjustTimezone(tz)
     new GYearMonthValue(dt.getYear,
       dt.getMonth,
       dt.getTimezoneInMinutes,

@@ -21,7 +21,7 @@ import java.util.Calendar
 
 class SaxonDuration(private var duration: DurationValue) extends Duration {
 
-  def getDurationValue(): DurationValue = duration
+  def getDurationValue: DurationValue = duration
 
   override def getXMLSchemaType(): QName =
     if (duration.isInstanceOf[DayTimeDurationValue]) {

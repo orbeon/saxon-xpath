@@ -87,7 +87,7 @@ class BooleanValue private()
     v
   }
 
-  def getBooleanValue(): Boolean = value
+  def getBooleanValue: Boolean = value
 
   /**
    * Get the effective boolean value of this expression
@@ -96,7 +96,7 @@ class BooleanValue private()
    */
   override def effectiveBooleanValue(): Boolean = value
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
 
   def getPrimitiveStringValue(): String = if (value) "true" else "false"
 

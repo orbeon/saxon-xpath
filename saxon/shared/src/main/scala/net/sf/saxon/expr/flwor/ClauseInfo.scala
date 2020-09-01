@@ -38,7 +38,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     }
   }
 
-  def getNamespaceResolver(): NamespaceResolver = nsResolver
+  def getNamespaceResolver: NamespaceResolver = nsResolver
 
   def setNamespaceResolver(nsResolver: NamespaceResolver): Unit = {
     this.nsResolver = nsResolver
@@ -53,7 +53,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     *
     * @return the URI of the containing module
     */
-  def getSystemId(): String = clause.getLocation.getSystemId
+  def getSystemId: String = clause.getLocation.getSystemId
 
   /**
     * Get the line number of the instruction in the source stylesheet module.
@@ -62,7 +62,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     *
     * @return the line number of the expression within the containing module
     */
-  def getLineNumber(): Int = clause.getLocation.getLineNumber
+  def getLineNumber: Int = clause.getLocation.getLineNumber
 
   /**
     * Return the public identifier for the current document event.
@@ -74,7 +74,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     *         null if none is available.
     * @see #getSystemId
     */
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   /**
     * Return the column number where the current document event ends.
@@ -97,7 +97,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     * @return The column number, or -1 if none is available.
     * @see #getLineNumber
     */
-  def getColumnNumber(): Int = -1
+  def getColumnNumber: Int = -1
 
 }
 

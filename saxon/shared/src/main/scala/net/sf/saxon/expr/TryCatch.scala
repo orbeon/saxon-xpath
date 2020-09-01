@@ -49,17 +49,11 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 object TryCatch {
-
   class CatchClause {
-
     var slotNumber: Int = -1
-
     var catchOp: Operand = _
-
     var nameTest: QNameTest = _
-
   }
-
 }
 
 class TryCatch(tryExpr: Expression) extends Expression {
@@ -81,9 +75,9 @@ class TryCatch(tryExpr: Expression) extends Expression {
     catchClauses.add(clause)
   }
 
-  def getTryOperand(): Operand = tryOp
+  def getTryOperand: Operand = tryOp
 
-  def getTryExpr(): Expression = tryOp.getChildExpression
+  def getTryExpr: Expression = tryOp.getChildExpression
 
   override def isInstruction(): Boolean = true
 
@@ -99,7 +93,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
     card
   }
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     var `type`: ItemType = getTryExpr.getItemType
     for (catchClause <- catchClauses.asScala) {
       `type` = Type.getCommonSuperType(
@@ -109,7 +103,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
     `type`
   }
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand]()
     list.add(tryOp)
     for (cc <- catchClauses.asScala) {
@@ -166,7 +160,7 @@ override  def computeHashCode(): Int = {
 
 override  def evaluateItem(c: XPathContext): Item = {
     val c1: XPathContext = c.newMinorContext()
-    try ExpressionTool.eagerEvaluate(tryOp.getChildExpression, c1).head()
+    try ExpressionTool.eagerEvaluate(tryOp.getChildExpression, c1).head
     catch {
       case err: XPathException => {
         if (err.isGlobalError) {
@@ -269,7 +263,7 @@ override  def iterate(c: XPathContext): SequenceIterator = {
           for (clause <- catchClauses.asScala if clause.nameTest.matches(code)) {
             if (o2.isInstanceOf[EventMonitor] && o2
               .asInstanceOf[EventMonitor]
-              .hasBeenWrittenTo()) {
+              .hasBeenWrittenTo) {
               val message: String = err.getMessage +
                 ". The error could not be caught, because rollback-output=no was specified, and output was already written to the result tree"
               val xe: XPathException = new XPathException(message, "XTDE3530")
@@ -308,7 +302,7 @@ override  def iterate(c: XPathContext): SequenceIterator = {
     tryOp.getChildExpression.export(out)
     for (clause <- catchClauses.asScala) {
       out.startElement("catch")
-      out.emitAttribute("errors", clause.nameTest.exportQNameTest())
+      out.emitAttribute("errors", clause.nameTest.exportQNameTest)
       clause.catchOp.getChildExpression.export(out)
       out.endElement()
     }

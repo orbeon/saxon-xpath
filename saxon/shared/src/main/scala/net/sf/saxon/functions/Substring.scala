@@ -135,15 +135,15 @@ class Substring extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <:Item] = {
-    val arg0: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (arg0 == null) {
       One.string("")
     }
-    val arg1: NumericValue = arguments(1).head().asInstanceOf[NumericValue]
+    val arg1: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
     if (arguments.length == 2) {
       new ZeroOrOne(StringValue.makeStringValue(substring(arg0, arg1)))
     } else {
-      val arg2: NumericValue = arguments(2).head().asInstanceOf[NumericValue]
+      val arg2: NumericValue = arguments(2).head.asInstanceOf[NumericValue]
       new ZeroOrOne(StringValue.makeStringValue(substring(arg0, arg1, arg2)))
     }
   }

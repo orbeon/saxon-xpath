@@ -14,7 +14,7 @@ trait GroundedIterator extends SequenceIterator {
 
   def materialize(): GroundedValue
 
-  def getResidue(): GroundedValue
+  def getResidue: GroundedValue
 
 }
 

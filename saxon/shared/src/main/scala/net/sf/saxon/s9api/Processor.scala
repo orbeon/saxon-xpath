@@ -32,7 +32,7 @@ object Processor {
     override def getMaximumNumberOfArguments(): Int =
       function.getArgumentTypes.length
 
-    override def getArgumentTypes(): Array[net.sf.saxon.value.SequenceType] = {
+    override def getArgumentTypes: Array[net.sf.saxon.value.SequenceType] = {
       val declaredArgs: Array[net.sf.saxon.s9api.SequenceType] =
         function.getArgumentTypes
       val types: Array[net.sf.saxon.value.SequenceType] =
@@ -163,12 +163,12 @@ class Processor extends Configuration.ApiProvider {
     config.registerExtensionFunction(function)
   }
 
-  def isSchemaAware(): Boolean =
+  def isSchemaAware: Boolean =
     config.isLicensedFeature(Configuration.LicenseFeature.SCHEMA_VALIDATION)
 
-  def getSaxonProductVersion(): String = Version.getProductVersion
+  def getSaxonProductVersion: String = Version.getProductVersion
 
-  def getSaxonEdition(): String = config.getEditionCode
+  def getSaxonEdition: String = config.getEditionCode
 
   def setXmlVersion(version: String): Unit = {
     version match {
@@ -179,7 +179,7 @@ class Processor extends Configuration.ApiProvider {
     }
   }
 
-  def getXmlVersion(): String =
+  def getXmlVersion: String =
     if (config.getXMLVersion == Configuration.XML10) {
       "1.0"
     } else {
@@ -227,7 +227,7 @@ class Processor extends Configuration.ApiProvider {
     config.registerCollation(uri, saxonCollation)
   }
 
-  def getUnderlyingConfiguration(): Configuration = config
+  def getUnderlyingConfiguration: Configuration = config
 
   def writeXdmValue(value: XdmValue, destination: Destination): Unit = {
     Objects.requireNonNull(value)

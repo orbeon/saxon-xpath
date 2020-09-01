@@ -47,7 +47,7 @@ object XdmValue {
     if (gv.getLength == 0) {
       XdmEmptySequence.getInstance
     } else if (gv.getLength == 1) {
-      val first: Item = gv.head()
+      val first: Item = gv.head
       if (first.isInstanceOf[NodeInfo]) {
         new XdmNode(first.asInstanceOf[NodeInfo])
       } else if (first.isInstanceOf[AtomicValue]) {
@@ -71,7 +71,7 @@ object XdmValue {
 
   def wrap(value: AtomicSequence): XdmValue = value.getLength match {
     case 0 => XdmEmptySequence.getInstance
-    case 1 => new XdmAtomicValue(value.head(), true)
+    case 1 => new XdmAtomicValue(value.head, true)
     case _ => fromGroundedValue(value)
 
   }
@@ -146,7 +146,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
 
   def size(): Int = value.getLength
 
-  def isEmpty(): Boolean = value.head() == null
+  def isEmpty: Boolean = value.head == null
 
   def itemAt(n: Int): XdmItem = {
     if (n < 0 || n >= size) {
@@ -161,7 +161,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
     new XdmSequenceIterator(v.iterate())
   }
 
-  def getUnderlyingValue(): GroundedValue = value
+  def getUnderlyingValue: GroundedValue = value
 
   override def toString: String =
     try {

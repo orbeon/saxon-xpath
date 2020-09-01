@@ -16,7 +16,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
   private var subscriptOp: Operand =
     new Operand(this, subscript, OperandRole.SINGLE_ATOMIC)
 
-  def getSubscript(): Expression = subscriptOp.getChildExpression
+  def getSubscript: Expression = subscriptOp.getChildExpression
 
   def setSubscript(subscript: Expression): Unit = {
     subscriptOp.setChildExpression(subscript)
@@ -45,9 +45,9 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
     exp
   }
 
-  override def operands(): java.lang.Iterable[Operand] = operandList(getOperand, subscriptOp)
+  override def operands: java.lang.Iterable[Operand] = operandList(getOperand, subscriptOp)
 
-  def getSubscriptExpression(): Expression = getSubscript
+  def getSubscriptExpression: Expression = getSubscript
 
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
@@ -111,9 +111,9 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
       getSubscript +
       "]"
 
-  override def toShortString(): String =
+  override def toShortString: String =
     ExpressionTool.parenthesize(getBaseExpression) + "[" +
-      getSubscript.toShortString() +
+      getSubscript.toShortString +
       "]"
 
 }

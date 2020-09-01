@@ -63,7 +63,7 @@ abstract class NodeOverNodeInfo extends Node {
 
   var node: NodeInfo = _
 
-  def getUnderlyingNodeInfo(): NodeInfo = node
+  def getUnderlyingNodeInfo: NodeInfo = node
 
   def isSameNode(other: Node): Boolean =
     other.isInstanceOf[NodeOverNodeInfo] && node == other
@@ -112,7 +112,7 @@ abstract class NodeOverNodeInfo extends Node {
 
   }
 
-  def hasChildNodes(): Boolean = node.hasChildNodes()
+  def hasChildNodes: Boolean = node.hasChildNodes
 
   def hasAttributes(): Boolean = true
 

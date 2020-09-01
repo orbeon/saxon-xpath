@@ -221,7 +221,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
               return
             }
           case Type.DOCUMENT =>
-            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes()) {
+            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
               return
             }
           case Type.ATTRIBUTE =>
@@ -261,7 +261,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
               return
             }
           case Type.DOCUMENT =>
-            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes()) {
+            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
               return
             }
           case Type.ATTRIBUTE =>

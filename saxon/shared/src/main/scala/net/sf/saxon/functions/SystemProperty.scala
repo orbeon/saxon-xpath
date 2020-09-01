@@ -103,7 +103,7 @@ class SystemProperty extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val name: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val name: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val qName: StructuredQName = StructuredQName.fromLexicalQName(
       name.getStringValue,
       useDefault = false,
@@ -115,7 +115,7 @@ class SystemProperty extends SystemFunction with Callable {
 
   private def allowsEarlyEvaluation(arguments: Array[Sequence],
                                     context: XPathContext): Boolean = {
-    val name: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val name: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val qName: StructuredQName = StructuredQName.fromLexicalQName(
       name.getStringValue,
       useDefault = false,

@@ -80,9 +80,9 @@ class GlobalParameterSet {
     params.clear()
   }
 
-  def getKeys(): Collection[StructuredQName] = params.keySet
+  def getKeys: Collection[StructuredQName] = params.keySet
 
-  def getNumberOfKeys(): Int = params.size
+  def getNumberOfKeys: Int = params.size
 
 }
 

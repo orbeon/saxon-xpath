@@ -34,7 +34,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     env.setBackwardsCompatibilityMode(option)
   }
 
-  def isBackwardsCompatible(): Boolean = env.isInBackwardsCompatibleMode
+  def isBackwardsCompatible: Boolean = env.isInBackwardsCompatibleMode
 
   def setSchemaAware(schemaAware: Boolean): Unit = {
     if (schemaAware &&
@@ -46,7 +46,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     env.setSchemaAware(schemaAware)
   }
 
-  def isSchemaAware(): Boolean = env.getPackageData.isSchemaAware
+  def isSchemaAware: Boolean = env.getPackageData.isSchemaAware
 
   def setLanguageVersion(value: String): Unit = {
     if (cache != null) {
@@ -69,7 +69,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     env.setDefaultFunctionLibrary(version)
   }
 
-  def getLanguageVersion(): String =
+  def getLanguageVersion: String =
     if (env.getXPathVersion == 20) {
       "2.0"
     } else if (env.getXPathVersion == 30) {
@@ -96,7 +96,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def getBaseURI(): URI = new URI(env.getStaticBaseURI)
+  def getBaseURI: URI = new URI(env.getStaticBaseURI)
 
   def setWarningHandler(reporter: ErrorReporter): Unit = {
     env.setWarningHandler(
@@ -128,7 +128,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     env.setAllowUndeclaredVariables(allow)
   }
 
-  def isAllowUndeclaredVariables(): Boolean = env.isAllowUndeclaredVariables
+  def isAllowUndeclaredVariables: Boolean = env.isAllowUndeclaredVariables
 
   def declareVariable(qname: QName): Unit = {
     if (cache != null) {
@@ -186,7 +186,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def isCaching(): Boolean = cache != null
+  def isCaching: Boolean = cache != null
 
   def setFastCompilation(fast: Boolean): Unit = {
     if (fast) {
@@ -197,7 +197,7 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def isFastCompilation(): Boolean = env.getOptimizerOptions.getOptions == 0
+  def isFastCompilation: Boolean = env.getOptimizerOptions.getOptions == 0
 
   def compile(source: String): XPathExecutable = {
     Objects.requireNonNull(source)
@@ -288,6 +288,6 @@ class XPathCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def getUnderlyingStaticContext(): StaticContext = env
+  def getUnderlyingStaticContext: StaticContext = env
 
 }

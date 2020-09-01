@@ -19,7 +19,7 @@ object CodepointCollatingComparer {
   private var THE_INSTANCE: CodepointCollatingComparer =
     new CodepointCollatingComparer()
 
-  def getInstance(): CodepointCollatingComparer = THE_INSTANCE
+  def getInstance: CodepointCollatingComparer = THE_INSTANCE
 
 }
 
@@ -43,11 +43,11 @@ class CodepointCollatingComparer private() extends AtomicComparer {
 
   //} else {
   // optimize to use UTF-16 binary comparison
-  //    return as.getStringValue().compareTo(bs.getStringValue());
+  //    return as.getStringValue.compareTo(bs.getStringValue);
   //}
   //} else {
   // optimize to use UTF-16 binary comparison
-  //    return as.getStringValue().compareTo(bs.getStringValue());
+  //    return as.getStringValue.compareTo(bs.getStringValue);
   //}
 
   def comparesEqual(a: AtomicValue, b: AtomicValue): Boolean =

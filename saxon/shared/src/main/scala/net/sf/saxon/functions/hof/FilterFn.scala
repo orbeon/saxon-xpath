@@ -18,7 +18,7 @@ class FilterFn extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(
-      evalFilter(arguments(1).head().asInstanceOf[Function],
+      evalFilter(arguments(1).head.asInstanceOf[Function],
         arguments(0).iterate(),
         context))
 
@@ -31,7 +31,7 @@ class FilterFn extends SystemFunction {
       def mapItem(item: Item): Item = {
         args(0) = item
         var result: BooleanValue = SystemFunction.dynamicCall(function, context, args)
-          .head()
+          .head
           .asInstanceOf[BooleanValue]
         if (result.getBooleanValue) item else null
       }

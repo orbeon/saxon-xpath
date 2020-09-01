@@ -40,7 +40,7 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
 
   override def getClauseKey(): Clause.ClauseName.ClauseName = WHERE
 
-  def getPredicate(): Expression = predicateOp.getChildExpression
+  def getPredicate: Expression = predicateOp.getChildExpression
 
   def setPredicate(predicate: Expression): Unit = {
     predicateOp.setChildExpression(predicate)
@@ -138,10 +138,10 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
     out.endElement()
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("where ")
-    fsb.append(getPredicate.toShortString())
+    fsb.append(getPredicate.toShortString)
     fsb.toString
   }
 

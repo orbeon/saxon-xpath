@@ -33,25 +33,25 @@ object ArrayItemType {
 class ArrayItemType(@BeanProperty var memberType: SequenceType)
   extends AnyFunctionType {
 
-  override def getGenre(): Genre = Genre.ARRAY
+  override def getGenre: Genre = Genre.ARRAY
 
   override def isMapType(): Boolean = false
 
   override def isArrayType(): Boolean = true
 
-  override def getBasicAlphaCode(): String = "FA"
+  override def getBasicAlphaCode: String = "FA"
 
   override def isAtomizable(th: TypeHierarchy): Boolean = true
 
-  override def getAtomizedItemType(): PlainType =
+  override def getAtomizedItemType: PlainType =
     memberType.getPrimaryType.getAtomizedItemType
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
-  override def getArgumentTypes(): Array[SequenceType] =
+  override def getArgumentTypes: Array[SequenceType] =
     Array(BuiltInAtomicType.INTEGER.one())
 
-  override def getDefaultPriority(): Double =
+  override def getDefaultPriority: Double =
     memberType.getPrimaryType.getNormalizedDefaultPriority
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {

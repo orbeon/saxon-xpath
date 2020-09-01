@@ -31,7 +31,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
 
   override def getOperandRole(): OperandRole = OperandRole.INSPECT
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     val base: ItemType = getBaseExpression.getItemType
     if (base.isInstanceOf[MapType]) {
       base.asInstanceOf[MapType].getValueType.getPrimaryType
@@ -83,7 +83,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     }
     if (getBaseExpression.isInstanceOf[SquareArrayConstructor]) {
       val children: List[Expression] = new ArrayList[Expression]()
-      for (o <- getBaseExpression.operands().asScala) {
+      for (o <- getBaseExpression.operands.asScala) {
         children.add(o.getChildExpression.copy(new RebindingMap()))
       }
       val childExpressions: Array[Expression] =
@@ -185,6 +185,6 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
   override def toString: String =
     ExpressionTool.parenthesize(getBaseExpression) + "?*"
 
-  override def toShortString(): String = getBaseExpression.toShortString() + "?*"
+  override def toShortString: String = getBaseExpression.toShortString + "?*"
 
 }

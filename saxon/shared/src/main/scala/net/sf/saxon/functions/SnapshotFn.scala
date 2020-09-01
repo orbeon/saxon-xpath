@@ -48,7 +48,7 @@ object SnapshotFn {
                        context: XPathContext): SequenceIterator =
     new ItemMappingIterator(nodes, getMappingFunction)
 
-  def getMappingFunction(): ItemMappingFunction = SnapshotFn.snapshotSingle
+  def getMappingFunction: ItemMappingFunction = SnapshotFn.snapshotSingle
 
   def snapshotSingle(origin: Item): Item =
     if (origin.isInstanceOf[NodeInfo]) {

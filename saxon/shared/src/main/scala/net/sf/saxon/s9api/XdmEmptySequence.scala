@@ -14,7 +14,7 @@ object XdmEmptySequence {
 
   /*@NotNull*/
 
-  def getInstance(): XdmEmptySequence = THE_INSTANCE
+  def getInstance: XdmEmptySequence = THE_INSTANCE
 
 }
 

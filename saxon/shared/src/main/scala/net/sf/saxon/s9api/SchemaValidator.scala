@@ -21,19 +21,19 @@ abstract class SchemaValidator extends AbstractDestination {
 
   def setLax(lax: Boolean): Unit
 
-  def isLax(): Boolean
+  def isLax: Boolean
 
   def setErrorListener(listener: ErrorListener): Unit
 
-  def getErrorListener(): ErrorListener
+  def getErrorListener: ErrorListener
 
   def setInvalidityHandler(handler: InvalidityHandler): Unit
 
-  def getInvalidityHandler(): InvalidityHandler
+  def getInvalidityHandler: InvalidityHandler
 
   def setCollectStatistics(collect: Boolean): Unit
 
-  def isCollectStatistics(): Boolean
+  def isCollectStatistics: Boolean
 
   def reportValidationStatistics(destination: Destination): Unit
 
@@ -41,25 +41,25 @@ abstract class SchemaValidator extends AbstractDestination {
 
   def setUseXsiSchemaLocation(recognize: Boolean): Unit
 
-  def isUseXsiSchemaLocation(): Boolean
+  def isUseXsiSchemaLocation: Boolean
 
   def setDestination(destination: Destination): Unit
 
-  def getDestination(): Destination
+  def getDestination: Destination
 
   def setDocumentElementName(name: QName): Unit
 
-  def getDocumentElementName(): QName
+  def getDocumentElementName: QName
 
   def setDocumentElementTypeName(name: QName): Unit
 
-  def getDocumentElementTypeName(): QName
+  def getDocumentElementTypeName: QName
 
-  def getDocumentElementType(): SchemaType
+  def getDocumentElementType: SchemaType
 
   def setExpandAttributeDefaults(expand: Boolean): Unit
 
-  def isExpandAttributeDefaults(): Boolean
+  def isExpandAttributeDefaults: Boolean
 
   def setParameter(name: QName, value: XdmValue): Unit
 

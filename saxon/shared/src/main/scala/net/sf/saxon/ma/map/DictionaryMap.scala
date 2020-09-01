@@ -1,17 +1,11 @@
 package net.sf.saxon.ma.map
 
-import java.lang.Iterable
+import java.util._
 
 import net.sf.saxon.model._
-import net.sf.saxon.om.GroundedValue
-import net.sf.saxon.om.SequenceTool
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.om.{GroundedValue, SequenceTool}
 import net.sf.saxon.tree.iter.AtomicIterator
-import net.sf.saxon.value.AtomicValue
-import net.sf.saxon.value.Cardinality
-import net.sf.saxon.value.SequenceType
-import net.sf.saxon.value.StringValue
-import java.util._
+import net.sf.saxon.value.{AtomicValue, Cardinality, SequenceType, StringValue}
 
 import scala.jdk.CollectionConverters._
 
@@ -57,9 +51,9 @@ class DictionaryMap extends MapItem {
   }
 
   override def addEntry(key: AtomicValue, value: GroundedValue): MapItem =
-    toHashTrieMap().addEntry(key, value)
+    toHashTrieMap.addEntry(key, value)
 
-  override def remove(key: AtomicValue): MapItem = toHashTrieMap().remove(key)
+  override def remove(key: AtomicValue): MapItem = toHashTrieMap.remove(key)
 
   override def conforms(keyType: AtomicType,
                         valueType: SequenceType,
@@ -109,7 +103,7 @@ class DictionaryMap extends MapItem {
   override def getKeyUType(): UType =
     if (hashMap.isEmpty) UType.VOID else UType.STRING
 
-  private def toHashTrieMap(): HashTrieMap = {
+  private def toHashTrieMap: HashTrieMap = {
     val target: HashTrieMap = new HashTrieMap()
     hashMap.forEach((k, v) => target.initialPut(new StringValue(k), v))
     target

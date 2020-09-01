@@ -57,7 +57,7 @@ class DocumentBuilderImpl extends DocumentBuilder {
     this.config = config
   }
 
-  def getConfiguration(): Configuration = {
+  def getConfiguration: Configuration = {
     if (config == null) {
       config = new Configuration()
     }
@@ -135,7 +135,7 @@ class DocumentBuilderImpl extends DocumentBuilder {
     }
   }
 
-  def getStripSpace(): Int = {
+  def getStripSpace: Int = {
     val rule: SpaceStrippingRule = parseOptions.getSpaceStrippingRule
     if (rule == AllElementsSpaceStrippingRule.getInstance) {
       Whitespace.ALL

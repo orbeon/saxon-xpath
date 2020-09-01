@@ -23,7 +23,7 @@ object DOMEnvelope {
 
   private var THE_INSTANCE: DOMEnvelope = new DOMEnvelope()
 
-  def getInstance(): DOMEnvelope = THE_INSTANCE
+  def getInstance: DOMEnvelope = THE_INSTANCE
 
 }
 
@@ -31,7 +31,7 @@ class DOMEnvelope extends ExternalObjectModel {
 
   def getDocumentClassName(): String = "org.w3c.dom.Document"
 
-  def getIdentifyingURI(): String = XPathConstants.DOM_OBJECT_MODEL
+  def getIdentifyingURI: String = XPathConstants.DOM_OBJECT_MODEL
 
   def getPJConverter(targetClass: Class[_]): PJConverter =
     if (classOf[NodeOverNodeInfo].isAssignableFrom(targetClass)) {
@@ -59,7 +59,7 @@ class DOMEnvelope extends ExternalObjectModel {
         def convert(`object`: AnyRef, context: XPathContext): Sequence =
           convertObjectToXPathValue(`object`)
 
-        def getItemType(): ItemType = AnyNodeTest.getInstance
+        def getItemType: ItemType = AnyNodeTest.getInstance
       }
     } else {
       null

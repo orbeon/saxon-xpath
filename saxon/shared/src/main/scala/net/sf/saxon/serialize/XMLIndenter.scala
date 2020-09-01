@@ -262,10 +262,10 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
     super.endDocument()
   }
 
-   def getIndentation(): Int = 3
+   def getIndentation: Int = 3
 
    def isDoubleSpaced(name: NodeName): Boolean = false
 
-   def getLineLength(): Int = 80
+   def getLineLength: Int = 80
 
 }

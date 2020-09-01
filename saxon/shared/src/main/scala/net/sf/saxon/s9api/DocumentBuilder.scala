@@ -61,13 +61,13 @@ class DocumentBuilder (var config: Configuration) {
     dtdValidation = option
   }
 
-  def isDTDValidation(): Boolean = dtdValidation
+  def isDTDValidation: Boolean = dtdValidation
 
   def setWhitespaceStrippingPolicy(policy: WhitespaceStrippingPolicy): Unit = {
     whitespacePolicy = policy
   }
 
-  def getWhitespaceStrippingPolicy(): WhitespaceStrippingPolicy =
+  def getWhitespaceStrippingPolicy: WhitespaceStrippingPolicy =
     whitespacePolicy
 
   def setBaseURI(uri: URI): Unit = {
@@ -81,7 +81,7 @@ class DocumentBuilder (var config: Configuration) {
     this.projectionQuery = query
   }
 
-  def getDocumentProjectionQuery(): XQueryExecutable = this.projectionQuery
+  def getDocumentProjectionQuery: XQueryExecutable = this.projectionQuery
 
   def build(source: Source): XdmNode = {
     if (source == null) {

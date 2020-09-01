@@ -324,7 +324,7 @@ abstract class IntegerValue extends DecimalValue {
 
   /*@NotNull*/
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.INTEGER
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.INTEGER
 
   def getDecimalValue(): BigDecimal
 

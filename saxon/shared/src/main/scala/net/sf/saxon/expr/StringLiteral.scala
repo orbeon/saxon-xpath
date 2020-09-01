@@ -28,7 +28,7 @@ class StringLiteral(value: StringValue)
   override def getValue(): StringValue =
     super.getValue.asInstanceOf[StringValue]
 
-  def getStringValue(): String = getValue.getStringValue
+  def getStringValue: String = getValue.getStringValue
 
   /*@NotNull*/
 

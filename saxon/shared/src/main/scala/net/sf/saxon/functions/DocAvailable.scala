@@ -25,7 +25,7 @@ class DocAvailable extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     BooleanValue.get(
-      isDocAvailable(arguments(0).head().asInstanceOf[AtomicValue], context))
+      isDocAvailable(arguments(0).head.asInstanceOf[AtomicValue], context))
 
   def docAvailable(href: String, context: XPathContext): Boolean =
     try {

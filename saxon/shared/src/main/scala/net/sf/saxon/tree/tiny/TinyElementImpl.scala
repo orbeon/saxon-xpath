@@ -62,7 +62,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
 
   override def getAllNamespaces(): NamespaceMap = tree.namespaceMaps(tree.beta(nodeNr))
 
-  def hasUniformNamespaces(): Boolean = false
+  def hasUniformNamespaces: Boolean = false
 
   override def getAttributeValue(uri: String, local: String): String = {
     var a: Int = tree.alpha(nodeNr)

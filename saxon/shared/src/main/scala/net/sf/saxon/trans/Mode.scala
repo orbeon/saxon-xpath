@@ -102,21 +102,21 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   private var accumulators: Set[_ <: Accumulator] = _
 
-  def getBuiltInRuleSet(): BuiltInRuleSet
+  def getBuiltInRuleSet: BuiltInRuleSet
 
-  def isUnnamedMode(): Boolean = modeName == UNNAMED_MODE_NAME
+  def isUnnamedMode: Boolean = modeName == UNNAMED_MODE_NAME
 
-  def getModeName(): StructuredQName = modeName
+  def getModeName: StructuredQName = modeName
 
-  def getActivePart(): SimpleMode
+  def getActivePart: SimpleMode
 
-  def getMaxPrecedence(): Int
+  def getMaxPrecedence: Int
 
-  def getMaxRank(): Int
+  def getMaxRank: Int
 
   def computeRankings(start: Int): Unit
 
-  def getModeTitle(): String =
+  def getModeTitle: String =
     if (isUnnamedMode) "The unnamed mode"
     else "Mode " + getModeName.getDisplayName
 
@@ -124,9 +124,9 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     this.modeTracing = tracing
   }
 
-  def isModeTracing(): Boolean = modeTracing
+  def isModeTracing: Boolean = modeTracing
 
-  def getAccumulators(): Set[_ <: Accumulator] =
+  def getAccumulators: Set[_ <: Accumulator] =
     if (accumulators == null) Collections.emptySet() else accumulators
 
   def setAccumulators(accumulators: Set[_ <: Accumulator]): Unit = {
@@ -136,9 +136,9 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
   override def getSymbolicName(): SymbolicName =
     new SymbolicName(StandardNames.XSL_MODE, getModeName)
 
-  def getObjectName(): StructuredQName = getModeName
+  def getObjectName: StructuredQName = getModeName
 
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
 
   def setHasRules(hasRules: Boolean): Unit = {
     this.hasRules = hasRules
@@ -148,7 +148,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     this.streamable = streamable
   }
 
-  def isDeclaredStreamable(): Boolean = streamable
+  def isDeclaredStreamable: Boolean = streamable
 
   def getExplicitNamespaces(pool: NamePool): Set[String]
 
@@ -156,7 +156,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     defaultResultType = `type`
   }
 
-  def getDefaultResultType(): SequenceType = defaultResultType
+  def getDefaultResultType: SequenceType = defaultResultType
 
   def processRules(action: RuleAction): Unit
 
@@ -321,7 +321,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     tc
   }
 
-  def getStackFrameSlotsNeeded(): Int
+  def getStackFrameSlotsNeeded: Int
 
   def getCodeForBuiltInRuleSet(builtInRuleSet: BuiltInRuleSet): String =
     if (builtInRuleSet.isInstanceOf[ShallowCopyRuleSet]) {
@@ -410,7 +410,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   def exportUseAccumulators(presenter: ExpressionPresenter): Unit = ()
 
-  def isMustBeTyped(): Boolean = mustBeTyped
+  def isMustBeTyped: Boolean = mustBeTyped
 
   def explain(presenter: ExpressionPresenter): Unit = {
     val s: Int = presenter.startElement("mode")

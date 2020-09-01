@@ -80,15 +80,15 @@ class TextFragmentValue(config: Configuration,
 
   this.treeInfo.setRootNode(this)
 
-  def getRootNode(): NodeInfo = this
+  def getRootNode: NodeInfo = this
 
-  def isTyped(): Boolean = false
+  def isTyped: Boolean = false
 
   def getNodeKind(): Int = Type.DOCUMENT
 
-  def getStringValue(): String = text.toString
+  def getStringValue: String = text.toString
 
-  def getStringValueCS(): CharSequence = text
+  def getStringValueCS: CharSequence = text
 
   override def equals(other: Any): Boolean =
     other match {
@@ -126,7 +126,7 @@ class TextFragmentValue(config: Configuration,
 
   def getLocalPart(): String = ""
 
-  def hasChildNodes(): Boolean = text.length != 0
+  def hasChildNodes: Boolean = text.length != 0
 
   def saveLocation(): Location = this
 
@@ -204,7 +204,7 @@ class TextFragmentValue(config: Configuration,
 
   def selectID(id: String, getParent: Boolean): NodeInfo = null
 
-  def getUnparsedEntityNames(): Iterator[String] = Collections.emptyIterator()
+  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator()
 
   def getUnparsedEntity(name: String): Array[String] = null
 
@@ -218,9 +218,9 @@ class TextFragmentValue(config: Configuration,
 
     def getNodeKind(): Int = Type.TEXT
 
-    def getStringValue(): String = text.toString
+    def getStringValue: String = text.toString
 
-    def getStringValueCS(): CharSequence = text
+    def getStringValueCS: CharSequence = text
 
      def equals(other: NodeInfo): Boolean = this eq other
 
@@ -251,7 +251,7 @@ class TextFragmentValue(config: Configuration,
 
     def getLocalPart(): String = ""
 
-    def hasChildNodes(): Boolean = false
+    def hasChildNodes: Boolean = false
 
     def getAttributeValue(uri: String, local: String): String = null
 

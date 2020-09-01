@@ -112,7 +112,7 @@ object ForEachGroup {
         }
       }
     } else {
-      for (o <- exp.operands().asScala) {
+      for (o <- exp.operands.asScala) {
         fixupGroupReferences(o.getChildExpression,
           feg,
           selectedItemType,
@@ -182,30 +182,30 @@ class ForEachGroup(select: Expression,
     sortKeysOp = new Operand(this, sortKeys, OperandRole.SINGLE_ATOMIC)
   }
 
-  for (o <- operands().asScala) {
+  for (o <- operands.asScala) {
     adoptChildExpression(o.getChildExpression)
   }
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_FOR_EACH_GROUP
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, actionOp, keyOp, collationOp, sortKeysOp)
 
   def getSelectExpression(): Expression = selectOp.getChildExpression
 
   def getActionExpression(): Expression = actionOp.getChildExpression
 
-  def getGroupingKey(): Expression = keyOp.getChildExpression
+  def getGroupingKey: Expression = keyOp.getChildExpression
 
-  def getSortKeyDefinitions(): SortKeyDefinitionList =
+  def getSortKeyDefinitions: SortKeyDefinitionList =
     if (sortKeysOp == null) null
     else sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
 
-  def getSortKeyComparators(): Array[AtomicComparer] = sortComparators
+  def getSortKeyComparators: Array[AtomicComparer] = sortComparators
 
-  def getCollation(): StringCollator = collator
+  def getCollation: StringCollator = collator
 
-  def getBaseURI(): URI =
+  def getBaseURI: URI =
     try getRetainedStaticContext.getStaticBaseUri
     catch {
       case err: XPathException => null
@@ -228,7 +228,7 @@ class ForEachGroup(select: Expression,
     if (selectedItemType == ErrorType) {
       Literal.makeEmptySequence()
     }
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       fixupGroupReferences(this, this, selectedItemType, isInLoop = false)
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration
@@ -366,7 +366,7 @@ class ForEachGroup(select: Expression,
     feg
   }
 
-  override def getItemType(): ItemType = getActionExpression.getItemType
+  override def getItemType: ItemType = getActionExpression.getItemType
 
   override def computeDependencies(): Int = {
     var dependencies: Int = 0
@@ -481,7 +481,7 @@ class ForEachGroup(select: Expression,
     null
   }
 
-  def getCollationNameExpression(): Expression =
+  def getCollationNameExpression: Expression =
     if (collationOp == null) null else collationOp.getChildExpression
 
   private def getCollator(context: XPathContext): StringCollator =
@@ -581,7 +581,7 @@ class ForEachGroup(select: Expression,
       .evaluateItem(c)
       .asInstanceOf[AtomicValue]
 
-  def getSortKeyDefinitionList(): SortKeyDefinitionList = {
+  def getSortKeyDefinitionList: SortKeyDefinitionList = {
     if (sortKeysOp == null) return null
     sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
   }

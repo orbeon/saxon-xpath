@@ -23,10 +23,10 @@ object FunctionStreamability extends Enumeration {
 
   class FunctionStreamability(var streamabilityStr: String) extends Val {
 
-    def isConsuming(): Boolean =
+    def isConsuming: Boolean =
       this == ABSORBING || this == SHALLOW_DESCENT || this == DEEP_DESCENT
 
-    def isStreaming(): Boolean = this != UNCLASSIFIED
+    def isStreaming: Boolean = this != UNCLASSIFIED
 
   }
 

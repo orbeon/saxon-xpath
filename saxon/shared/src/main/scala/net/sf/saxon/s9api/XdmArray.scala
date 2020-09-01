@@ -125,7 +125,7 @@ class XdmArray extends XdmFunctionItem {
     result
   }
 
-  override def getUnderlyingValue(): ArrayItem =
+  override def getUnderlyingValue: ArrayItem =
     super.getUnderlyingValue.asInstanceOf[ArrayItem]
 
 }

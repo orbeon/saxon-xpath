@@ -23,9 +23,9 @@ import scala.beans.BeanProperty
 class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
                          @BeanProperty var itemTyp: NodeTest) extends Pattern {
 
-  override def getItemType(): ItemType = itemTyp
+  override def getItemType: ItemType = itemTyp
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     new Operand(this, equivalentExpr, OperandRole.SAME_FOCUS_ACTION)
 
   override def isMotionless(): Boolean = false
@@ -50,7 +50,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
         .fromExpression(equivalentExpr, config, is30 = true)
         .typeCheck(visitor, defaultInfo)
       catch {
-        case err: XPathException => {}
+        case _: XPathException =>
 
       }
     }

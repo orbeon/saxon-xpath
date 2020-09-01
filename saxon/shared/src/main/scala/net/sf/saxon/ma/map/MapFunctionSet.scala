@@ -52,13 +52,13 @@ object MapFunctionSet {
 
   var THE_INSTANCE: MapFunctionSet = new MapFunctionSet()
 
-  def getInstance(): MapFunctionSet = THE_INSTANCE
+  def getInstance: MapFunctionSet = THE_INSTANCE
 
   class MapContains extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-      val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
-      val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
+      val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
       BooleanValue.get(map.get(key) != null)
     }
 
@@ -160,9 +160,9 @@ object MapFunctionSet {
     }
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
+      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
       assert(map != null)
-      val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+      val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
       val value: Sequence = map.get(key)
       if (value == null) {
         EmptySequence.getInstance
@@ -177,7 +177,7 @@ object MapFunctionSet {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
       val result: List[GroundedValue] = new ArrayList[GroundedValue]()
-      val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+      val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
       processSequence(arguments(0), key, result)
       new SimpleArrayItem(result)
     }
@@ -207,7 +207,7 @@ object MapFunctionSet {
   class MapEntry extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val key: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+      val key: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
       assert(key != null)
       val value: GroundedValue =
         arguments(1).iterate().materialize()
@@ -232,8 +232,8 @@ object MapFunctionSet {
   class MapForEach extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
-      val fn: Function = arguments(1).head().asInstanceOf[Function]
+      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
+      val fn: Function = arguments(1).head.asInstanceOf[Function]
       val results: List[GroundedValue] = new ArrayList[GroundedValue]()
       for (pair <- map.keyValuePairs().asScala) {
         val seq: Sequence =
@@ -248,7 +248,7 @@ object MapFunctionSet {
   class MapKeys extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
+      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
       assert(map != null)
       SequenceTool.toLazySequence(map.keys)
     }
@@ -287,7 +287,7 @@ object MapFunctionSet {
         val options: MapItem = arguments(1)
           .asInstanceOf[Literal]
           .getValue
-          .head()
+          .head
           .asInstanceOf[MapItem]
         val values: Map[String, Sequence] =
           getDetails.optionDetails.processSuppliedOptions(
@@ -329,7 +329,7 @@ object MapFunctionSet {
           maybeCombined = false
         } else if (args(1).isInstanceOf[Literal]) {
           val options: MapItem =
-            args(1).asInstanceOf[Literal].getValue.head().asInstanceOf[MapItem]
+            args(1).asInstanceOf[Literal].getValue.head.asInstanceOf[MapItem]
           val dupes: GroundedValue = options.get(new StringValue("duplicates"))
           try if (dupes != null && "combine" != dupes.getStringValue) {
             maybeCombined = false
@@ -362,7 +362,7 @@ object MapFunctionSet {
       var treatAsFinal: Boolean = this.treatAsFinal
       var onDuplicates: Function = this.onDuplicates
       if (arguments.length > 1) {
-        val options: MapItem = arguments(1).head().asInstanceOf[MapItem]
+        val options: MapItem = arguments(1).head.asInstanceOf[MapItem]
         val values: Map[String, Sequence] =
           getDetails.optionDetails.processSuppliedOptions(options, context)
         duplicates =
@@ -513,11 +513,11 @@ object MapFunctionSet {
   class MapPut extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): MapItem = {
-      var baseMap: MapItem = arguments(0).head().asInstanceOf[MapItem]
+      var baseMap: MapItem = arguments(0).head.asInstanceOf[MapItem]
       if (!(baseMap.isInstanceOf[HashTrieMap])) {
         baseMap = HashTrieMap.copy(baseMap)
       }
-      val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+      val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
       val value: GroundedValue =
         arguments(2).materialize()
       baseMap.addEntry(key, value)
@@ -528,7 +528,7 @@ object MapFunctionSet {
   class MapRemove extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): MapItem = {
-      var map: MapItem = arguments(0).head().asInstanceOf[MapItem]
+      var map: MapItem = arguments(0).head.asInstanceOf[MapItem]
       val iter: SequenceIterator = arguments(1).iterate()
       var key: AtomicValue = null
       while (({
@@ -544,7 +544,7 @@ object MapFunctionSet {
   class MapSize extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): IntegerValue = {
-      val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
+      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
       new Int64Value(map.size)
     }
 

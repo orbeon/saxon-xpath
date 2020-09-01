@@ -81,7 +81,7 @@ class IntArraySet extends IntSet {
 
   def isEmpty(): Boolean = contents.length == 0
 
-  def getValues(): Array[Int] = contents
+  def getValues: Array[Int] = contents
 
   def contains(value: Int): Boolean = Arrays.binarySearch(contents, value) >= 0
 
@@ -125,7 +125,7 @@ class IntArraySet extends IntSet {
     true
   }
 
-  def getFirst(): Int = contents(0)
+  def getFirst: Int = contents(0)
 
   def iterator(): IntIterator = new IntArrayIterator(contents, contents.length)
 

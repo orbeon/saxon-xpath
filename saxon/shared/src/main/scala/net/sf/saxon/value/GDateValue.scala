@@ -224,14 +224,14 @@ abstract class GDateValue extends CalendarValue {
 
   var hasNoYearZero: Boolean = _
 
-  def getYear(): Int = year
+  def getYear: Int = year
 
-  def getMonth(): Byte = month
+  def getMonth: Byte = month
 
-  def getDay(): Byte = day
+  def getDay: Byte = day
 
   def getCalendar(): GregorianCalendar = {
-    val tz: Int = if (hasTimezone()) getTimezoneInMinutes * 60000 else 0
+    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
     val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
     val calendar: GregorianCalendar = new GregorianCalendar(zone)
     calendar.setGregorianChange(new Date(java.lang.Long.MIN_VALUE))
@@ -262,8 +262,8 @@ abstract class GDateValue extends CalendarValue {
   override def equals(o: Any): Boolean = o match {
     case o: GDateValue => {
       val gdv: GDateValue = o
-      getPrimitiveType == gdv.getPrimitiveType && toDateTime() == gdv
-        .toDateTime()
+      getPrimitiveType == gdv.getPrimitiveType && toDateTime == gdv
+        .toDateTime
     }
     case _ => false
 
@@ -296,10 +296,10 @@ abstract class GDateValue extends CalendarValue {
       }
       return 0
     }
-    toDateTime().compareTo(other.toDateTime(), implicitTimezone)
+    toDateTime.compareTo(other.toDateTime, implicitTimezone)
   }
 
-  def toDateTime(): DateTimeValue =
+  def toDateTime: DateTimeValue =
     new DateTimeValue(year,
       month,
       day,
@@ -321,7 +321,7 @@ abstract class GDateValue extends CalendarValue {
       case MONTH => Int64Value.makeIntegerValue(month)
       case DAY => Int64Value.makeIntegerValue(day)
       case TIMEZONE =>
-        if (hasTimezone()) {
+        if (hasTimezone) {
           DayTimeDurationValue.fromMilliseconds(60000L * getTimezoneInMinutes)
         } else {
           null
@@ -344,9 +344,9 @@ abstract class GDateValue extends CalendarValue {
             .getPrimitiveType) {
           SequenceTool.INDETERMINATE_ORDERING
         }
-        val dt0: DateTimeValue = GDateValue.this.toDateTime()
+        val dt0: DateTimeValue = GDateValue.this.toDateTime
         val dt1: DateTimeValue =
-          o.asInstanceOf[GDateComparable].asGDateValue().toDateTime()
+          o.asInstanceOf[GDateComparable].asGDateValue().toDateTime
         dt0.getSchemaComparable.compareTo(dt1.getSchemaComparable.asInstanceOf)
       } else {
         SequenceTool.INDETERMINATE_ORDERING
@@ -355,7 +355,7 @@ abstract class GDateValue extends CalendarValue {
     override def equals(o: Any): Boolean = compareTo(o.asInstanceOf[AnyRef]) == 0
 
     override def hashCode(): Int =
-      GDateValue.this.toDateTime().getSchemaComparable.hashCode
+      GDateValue.this.toDateTime.getSchemaComparable.hashCode
 
   }
 

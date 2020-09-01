@@ -29,7 +29,7 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
   def matches(item: Item, context: XPathContext): Boolean =
     item.isInstanceOf[NodeInfo] && nodeTest.test(item.asInstanceOf[NodeInfo])
 
-  override def getItemType(): NodeTest = nodeTest
+  override def getItemType: NodeTest = nodeTest
 
   override def getUType(): UType = nodeTest.getUType
 
@@ -37,7 +37,7 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
 
   override def toString: String = nodeTest.toString
 
-  override def toShortString(): String = nodeTest.toShortString()
+  override def toShortString: String = nodeTest.toShortString
 
   override def equals(other: Any): Boolean =
     (other.isInstanceOf[NodeTestPattern]) &&

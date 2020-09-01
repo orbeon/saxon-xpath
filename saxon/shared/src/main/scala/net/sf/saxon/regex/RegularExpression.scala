@@ -22,6 +22,6 @@ trait RegularExpression {
                    input: CharSequence,
                    replacement: Function[CharSequence, CharSequence]): CharSequence
 
-  def getFlags(): String
+  def getFlags: String
 
 }

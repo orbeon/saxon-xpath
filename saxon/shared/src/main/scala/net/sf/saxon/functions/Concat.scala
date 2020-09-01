@@ -49,7 +49,7 @@ class Concat extends SystemFunction with PushableFunction {
     new SystemFunctionCall.Optimized(this, arguments.toArray) {
       override def evaluateAsString(context: XPathContext): CharSequence = {
         val buffer: FastStringBuffer = new FastStringBuffer(256)
-        for (o <- operands().asScala) {
+        for (o <- operands.asScala) {
           val it: Item = o.getChildExpression.evaluateItem(context)
           if (it != null) {
             buffer.cat(it.getStringValueCS)
@@ -69,7 +69,7 @@ class Concat extends SystemFunction with PushableFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     for (arg <- arguments) {
-      val item: Item = arg.head()
+      val item: Item = arg.head
       if (item != null) {
         fsb.cat(item.getStringValueCS)
       }
@@ -83,7 +83,7 @@ class Concat extends SystemFunction with PushableFunction {
     val output: CharSequenceConsumer = destination.getStringReceiver(false)
     output.open()
     for (arg <- arguments) {
-      val item: Item = arg.head()
+      val item: Item = arg.head
       if (item != null) {
         output.cat(item.getStringValueCS)
       }

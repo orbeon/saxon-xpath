@@ -55,7 +55,7 @@ class ContextItemExpression extends Expression {
     absentContextIsTypeError = isTypeError
   }
 
-  def getErrorCodeForUndefinedContext(): String = errorCodeForAbsentContext
+  def getErrorCodeForUndefinedContext: String = errorCodeForAbsentContext
 
   def setStaticInfo(info: ContextItemStaticInfo): Unit = {
     staticInfo = info
@@ -100,11 +100,11 @@ class ContextItemExpression extends Expression {
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = staticInfo.getItemType
+  def getItemType: ItemType = staticInfo.getItemType
 
   override def getStaticUType(contextItemType: UType): UType = contextItemType
 
-  def isContextPossiblyUndefined(): Boolean = staticInfo.isPossiblyAbsent
+  def isContextPossiblyUndefined: Boolean = staticInfo.isPossiblyAbsent
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
@@ -132,7 +132,7 @@ class ContextItemExpression extends Expression {
     pmnSet
   }
 
-  override def isSubtreeExpression(): Boolean = true
+  override def isSubtreeExpression: Boolean = true
 
   override def getNetCost(): Int = 0
 
@@ -201,7 +201,7 @@ class ContextItemExpression extends Expression {
     destination.endElement()
   }
 
-  override def toShortString(): String = "."
+  override def toShortString: String = "."
 
 }
 

@@ -239,10 +239,10 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue =
     formatInteger(
-      arguments(0).head().asInstanceOf[IntegerValue],
-      arguments(1).head().asInstanceOf[StringValue],
+      arguments(0).head.asInstanceOf[IntegerValue],
+      arguments(1).head.asInstanceOf[StringValue],
       if (arguments.length == 2) null
-      else arguments(2).head().asInstanceOf[StringValue],
+      else arguments(2).head.asInstanceOf[StringValue],
       context
     )
 

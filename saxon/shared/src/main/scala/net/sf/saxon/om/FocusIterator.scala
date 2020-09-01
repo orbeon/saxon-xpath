@@ -44,7 +44,7 @@ trait FocusIterator extends SequenceIterator {
     */
   def position(): Int
 
-  def getLength(): Int
+  def getLength: Int
 
 }
 

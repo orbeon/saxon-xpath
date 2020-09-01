@@ -8,11 +8,11 @@ import net.sf.saxon.expr.Expression
 
 trait TraceableComponent extends Traceable {
 
-  def getBody(): Expression
+  def getBody: Expression
 
   def setBody(expression: Expression): Unit
 
-  def getTracingTag(): String
+  def getTracingTag: String
 
 }
 

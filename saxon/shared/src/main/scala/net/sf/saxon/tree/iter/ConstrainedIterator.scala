@@ -26,7 +26,7 @@ trait ConstrainedIterator[T <: Item]
 
   def next(): T
 
-  def getLength(): Int
+  def getLength: Int
 
   /*@NotNull*/
 

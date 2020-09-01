@@ -112,13 +112,13 @@ abstract class TreeModel {
 
   def makeBuilder(pipe: PipelineConfiguration): Builder
 
-  def getSymbolicValue(): Int = Builder.UNSPECIFIED_TREE_MODEL
+  def getSymbolicValue: Int = Builder.UNSPECIFIED_TREE_MODEL
 
-  def isMutable(): Boolean = false
+  def isMutable: Boolean = false
 
-  def isSchemaAware(): Boolean = false
+  def isSchemaAware: Boolean = false
 
-  def getName(): String = toString
+  def getName: String = toString
 
 }
 

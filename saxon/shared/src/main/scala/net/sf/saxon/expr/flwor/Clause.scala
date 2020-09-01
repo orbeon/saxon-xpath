@@ -78,7 +78,7 @@ abstract class Clause {
 
   def isRepeated: Boolean = repeated
 
-  def getConfiguration(): Configuration = packageData.getConfiguration
+  def getConfiguration: Configuration = packageData.getConfiguration
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): Clause
 
@@ -105,7 +105,7 @@ abstract class Clause {
 
   def explain(out: ExpressionPresenter): Unit
 
-  def getRangeVariables(): Array[LocalVariableBinding] =
+  def getRangeVariables: Array[LocalVariableBinding] =
     Array.ofDim[LocalVariableBinding](0)
 
   def gatherVariableReferences(visitor: ExpressionVisitor,
@@ -121,8 +121,8 @@ abstract class Clause {
   def addToPathMap(pathMap: PathMap,
                    pathMapNodeSet: PathMap.PathMapNodeSet): Unit
 
-  def getClauseKey(): ClauseName.ClauseName
+  def getClauseKey: ClauseName.ClauseName
 
-  def toShortString(): String = toString
+  def toShortString: String = toString
 
 }

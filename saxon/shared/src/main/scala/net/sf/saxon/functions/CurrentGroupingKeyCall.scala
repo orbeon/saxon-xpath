@@ -32,7 +32,7 @@ class CurrentGroupingKeyCall extends Expression with Callable {
 
   override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
 
-  override def getItemType(): ItemType = BuiltInAtomicType.ANY_ATOMIC
+  override def getItemType: ItemType = BuiltInAtomicType.ANY_ATOMIC
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("currentGroupingKey")

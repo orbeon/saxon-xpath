@@ -91,11 +91,11 @@ class NamespaceTest(private var namePool: NamePool,
 
   def matches(qname: StructuredQName): Boolean = qname.hasURI(uri)
 
-  def getDefaultPriority(): Double = -0.25
+  def getDefaultPriority: Double = -0.25
 
-  override def getPrimitiveType(): Int = nodeKind
+  override def getPrimitiveType: Int = nodeKind
 
-  def getNamespaceURI(): String = uri
+  def getNamespaceURI: String = uri
 
   override def toString: String = nodeKind match {
     case Type.ELEMENT => "Q{" + uri + "}*"

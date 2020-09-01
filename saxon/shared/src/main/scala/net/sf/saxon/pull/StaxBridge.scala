@@ -102,9 +102,9 @@ class StaxBridge extends PullProvider {
 
   def getPipelineConfiguration(): PipelineConfiguration = pipe
 
-  def getXMLStreamReader(): XMLStreamReader = reader
+  def getXMLStreamReader: XMLStreamReader = reader
 
-  def getNamePool(): NamePool = pipe.getConfiguration.getNamePool
+  def getNamePool: NamePool = pipe.getConfiguration.getNamePool
 
   def next(): Event = {
     if (currentEvent == START_OF_INPUT) {
@@ -305,7 +305,7 @@ class StaxBridge extends PullProvider {
       throw new IllegalStateException()
     }
 
-  def getStringValue(): CharSequence = currentEvent match {
+  def getStringValue: CharSequence = currentEvent match {
     case TEXT =>
       var cs: CharSlice = new CharSlice(reader.getTextCharacters,
         reader.getTextStart,
@@ -351,7 +351,7 @@ class StaxBridge extends PullProvider {
       null
     case _ =>
       throw new IllegalStateException(
-        "getStringValue() called when current event is " + currentEvent)
+        "getStringValue called when current event is " + currentEvent)
 
   }
 

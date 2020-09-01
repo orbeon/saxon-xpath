@@ -156,7 +156,7 @@ class BigIntegerValue() extends IntegerValue {
 
   def asBigInteger(): BigInteger = value
 
-  def isWithinLongRange(): Boolean =
+  def isWithinLongRange: Boolean =
     value.compareTo(MIN_LONG) >= 0 && value.compareTo(MAX_LONG) <= 0
 
   /*@NotNull*/

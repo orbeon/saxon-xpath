@@ -17,9 +17,9 @@ object EmptyCharacterClass {
   private val COMPLEMENT: InverseCharacterClass = new InverseCharacterClass(
     THE_INSTANCE)
 
-  def getInstance(): EmptyCharacterClass = THE_INSTANCE
+  def getInstance: EmptyCharacterClass = THE_INSTANCE
 
-  def getComplement(): CharacterClass = COMPLEMENT
+  def getComplement: CharacterClass = COMPLEMENT
 
 }
 

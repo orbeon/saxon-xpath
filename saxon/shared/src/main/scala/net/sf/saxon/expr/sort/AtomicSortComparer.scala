@@ -58,7 +58,7 @@ class AtomicSortComparer  (
   def provideContext(context: XPathContext): AtomicComparer =
     new AtomicSortComparer(collator, itemType, context)
 
-  def getStringCollator(): StringCollator = collator
+  def getStringCollator: StringCollator = collator
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {

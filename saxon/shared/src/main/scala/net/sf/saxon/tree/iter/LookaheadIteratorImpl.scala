@@ -39,6 +39,6 @@ class LookaheadIteratorImpl private (private var base: SequenceIterator)
     base.close()
   }
 
-  override def getProperties(): Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
 
 }

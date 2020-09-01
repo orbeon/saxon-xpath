@@ -382,15 +382,15 @@ object ItemType {
 
 abstract class ItemType {
 
-  def getConversionRules(): ConversionRules = defaultConversionRules
+  def getConversionRules: ConversionRules = defaultConversionRules
 
   def matches(item: XdmItem): Boolean
 
   def subsumes(other: ItemType): Boolean
 
-  def getUnderlyingItemType(): net.sf.saxon.model.ItemType
+  def getUnderlyingItemType: net.sf.saxon.model.ItemType
 
-  def getTypeName(): QName = {
+  def getTypeName: QName = {
     val `type`: net.sf.saxon.model.ItemType = getUnderlyingItemType
     if (`type`.isInstanceOf[SchemaType]) {
       val name: StructuredQName =

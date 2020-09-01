@@ -108,7 +108,7 @@ class JAXPXPathStaticContext(config: Configuration)
     this.variableResolver = resolver
   }
 
-  def getXPathVariableResolver(): XPathVariableResolver = variableResolver
+  def getXPathVariableResolver: XPathVariableResolver = variableResolver
 
   def setXPathFunctionResolver(
                                 xPathFunctionResolver: XPathFunctionResolver): Unit = {
@@ -117,7 +117,7 @@ class JAXPXPathStaticContext(config: Configuration)
     }
   }
 
-  def getXPathFunctionResolver(): XPathFunctionResolver =
+  def getXPathFunctionResolver: XPathFunctionResolver =
     if (xpathFunctionLibrary != null) {
       xpathFunctionLibrary.getXPathFunctionResolver
     } else {

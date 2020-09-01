@@ -16,19 +16,19 @@ import net.sf.saxon.pattern.NodeTest
   */
 trait SchemaDeclaration {
 
-  def getFingerprint(): Int
+  def getFingerprint: Int
 
-  def getComponentName(): StructuredQName
+  def getComponentName: StructuredQName
 
-  def getType(): SchemaType
+  def getType: SchemaType
 
   def makeSchemaNodeTest(): NodeTest
 
-  def isNillable(): Boolean
+  def isNillable: Boolean
 
-  def isAbstract(): Boolean
+  def isAbstract: Boolean
 
-  def hasTypeAlternatives(): Boolean
+  def hasTypeAlternatives: Boolean
 
 }
 

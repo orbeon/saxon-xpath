@@ -37,7 +37,7 @@ class SimpleCollation(private var uri: String,
   def getCollationKey(s: CharSequence): AtomicMatchKey =
     platform.getCollationKey(this, s.toString)
 
-  def getSubstringMatcher(): SubstringMatcher = {
+  def getSubstringMatcher: SubstringMatcher = {
     if (comparator.isInstanceOf[SubstringMatcher]) {
       comparator.asInstanceOf[SubstringMatcher]
     }

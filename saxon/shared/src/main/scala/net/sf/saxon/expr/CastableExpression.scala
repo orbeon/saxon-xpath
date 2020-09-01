@@ -105,7 +105,7 @@ class CastableExpression(source: Expression,
 
   override def computeHashCode(): Int = super.computeHashCode() ^ 0x5555
 
-  override def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  override def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
@@ -144,7 +144,7 @@ class CastableExpression(source: Expression,
         return false
       }
       if (length != 0) {
-        val av: AtomicValue = atomizedValue.head()
+        val av: AtomicValue = atomizedValue.head
         if (!isCastable(av, getTargetType, context)) {
           false
         }

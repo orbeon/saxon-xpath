@@ -37,7 +37,7 @@ object Nilled_1 {
 class Nilled_1 extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[BooleanValue] = {
-    val node: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val node: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (node == null || node.getNodeKind != Type.ELEMENT) {
       ZeroOrOne.empty()
     }

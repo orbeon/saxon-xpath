@@ -114,41 +114,41 @@ trait SchemaType extends SchemaComponent {
 
   /*@Nullable*/
 
-  def getName(): String
+  def getName: String
 
   /*@Nullable*/
 
-  def getTargetNamespace(): String
+  def getTargetNamespace: String
 
-  def getFingerprint(): Int
+  def getFingerprint: Int
 
-  def getDisplayName(): String
+  def getDisplayName: String
 
-  def getStructuredQName(): StructuredQName
+  def getStructuredQName: StructuredQName
 
-  def getEQName(): String
+  def getEQName: String
 
-  def isComplexType(): Boolean
+  def isComplexType: Boolean
 
-  def isSimpleType(): Boolean
+  def isSimpleType: Boolean
 
-  def isAtomicType(): Boolean
+  def isAtomicType: Boolean
 
-  def isAnonymousType(): Boolean
+  def isAnonymousType: Boolean
 
-  def getBlock(): Int
+  def getBlock: Int
 
-  def getBaseType(): SchemaType
+  def getBaseType: SchemaType
 
-  def getNearestNamedType(): SchemaType = {
+  def getNearestNamedType: SchemaType = {
     var `type`: SchemaType = this
     while (`type`.isAnonymousType) `type` = `type`.getBaseType
     `type`
   }
 
-  def getDerivationMethod(): Int
+  def getDerivationMethod: Int
 
-  def getFinalProhibitions(): Int
+  def getFinalProhibitions: Int
 
   def allowsDerivation(derivation: Int): Boolean
 
@@ -158,17 +158,17 @@ trait SchemaType extends SchemaComponent {
 
   def isSameType(other: SchemaType): Boolean
 
-  def getDescription(): String
+  def getDescription: String
 
   def checkTypeDerivationIsOK(base: SchemaType, block: Int): Unit
 
   /*@Nullable*/
 
-  def getSystemId(): String
+  def getSystemId: String
 
-  def isIdType(): Boolean
+  def isIdType: Boolean
 
-  def isIdRefType(): Boolean
+  def isIdRefType: Boolean
 
 }
 

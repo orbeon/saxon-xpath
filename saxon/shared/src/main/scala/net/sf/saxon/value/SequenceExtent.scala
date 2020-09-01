@@ -80,15 +80,15 @@ class SequenceExtent extends GroundedValue {
     value = list
   }
 
-  def getStringValue(): String = SequenceTool.getStringValue(this)
+  def getStringValue: String = SequenceTool.getStringValue(this)
 
-  def getStringValueCS(): CharSequence = SequenceTool.getStringValue(this)
+  def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)
 
-  def head(): Item = itemAt(0)
+  def head: Item = itemAt(0)
 
-  def getLength(): Int = value.size
+  def getLength: Int = value.size
 
-  def getCardinality(): Int = value.size match {
+  def getCardinality: Int = value.size match {
     case 0 => StaticProperty.EMPTY
     case 1 => StaticProperty.EXACTLY_ONE
     case _ => StaticProperty.ALLOWS_ONE_OR_MORE

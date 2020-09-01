@@ -40,7 +40,7 @@ object Remove {
       base.close()
     }
 
-    def getLength(): Int =
+    def getLength: Int =
       if (base.isInstanceOf[LastPositionFinder]) {
         val x: Int = base.asInstanceOf[LastPositionFinder].getLength
         if (removePosition >= 1 && removePosition <= x) {
@@ -53,7 +53,7 @@ object Remove {
           "base of removeIterator is not a LastPositionFinder")
       }
 
-    override def getProperties(): Set[Property] = base.getProperties.intersect(Set(LAST_POSITION_FINDER))
+    override def getProperties: Set[Property] = base.getProperties.intersect(Set(LAST_POSITION_FINDER))
 
   }
 
@@ -73,7 +73,7 @@ class Remove extends SystemFunction {
             new TailExpression(arguments(0), 2)
           }
         } catch {
-          case err: XPathException => {}
+          case _: XPathException =>
 
         }
       }
@@ -82,7 +82,7 @@ class Remove extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val n: NumericValue = arguments(1).head().asInstanceOf[NumericValue]
+    val n: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
     val pos: Int = n.longValue().toInt
     if (pos < 1) {
       arguments(0)

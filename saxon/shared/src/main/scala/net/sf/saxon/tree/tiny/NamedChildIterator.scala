@@ -87,7 +87,7 @@ class NamedChildIterator(private var tree: TinyTree,
     }
   }
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD, Property.ATOMIZING)
 
 }

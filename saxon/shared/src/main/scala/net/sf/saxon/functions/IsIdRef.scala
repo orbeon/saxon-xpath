@@ -60,7 +60,7 @@ class IsIdRef extends ExtensionFunctionDefinition {
 
   override def getMaximumNumberOfArguments(): Int = 0
 
-  def getArgumentTypes(): Array[SequenceType] = Array()
+  def getArgumentTypes: Array[SequenceType] = Array()
 
   def getResultType(suppliedArgumentTypes: Array[SequenceType]): SequenceType =
     SequenceType.SINGLE_BOOLEAN

@@ -22,7 +22,7 @@ class SaplingText(private var value: String) extends SaplingNode {
 
   override def getNodeKind(): Int = Type.TEXT
 
-  def getStringValue(): String = value
+  def getStringValue: String = value
 
    override def sendTo(receiver: Receiver): Unit = {
     receiver.characters(value, Loc.NONE, ReceiverOption.NONE)

@@ -73,7 +73,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return the Genre to which this type belongs, specifically {@link Genre#MAP}
     */
-  override def getGenre(): Genre = Genre.MAP
+  override def getGenre: Genre = Genre.MAP
 
   /**
     * Ask whether this function item type is a map type. In this case function coercion (to the map type)
@@ -98,7 +98,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return the alphacode for the nearest containing built-in type
     */
-  override def getBasicAlphaCode(): String = "FM"
+  override def getBasicAlphaCode: String = "FM"
 
   override def isAtomizable(th: TypeHierarchy): Boolean = false
 
@@ -107,7 +107,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return the default priority
     */
-  override def getDefaultPriority(): Double =
+  override def getDefaultPriority: Double =
     keyType.getNormalizedDefaultPriority *
       valueType.getPrimaryType.getNormalizedDefaultPriority
 
@@ -134,9 +134,9 @@ class MapType(@BeanProperty var keyType: AtomicType,
     }
   }
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
-  override def getArgumentTypes(): Array[SequenceType] =
+  override def getArgumentTypes: Array[SequenceType] =
     Array(
       SequenceType.makeSequenceType(BuiltInAtomicType.ANY_ATOMIC,
         StaticProperty.EXACTLY_ONE))
@@ -189,9 +189,9 @@ class MapType(@BeanProperty var keyType: AtomicType,
     } else {
       val sb: FastStringBuffer = new FastStringBuffer(100)
       sb.append("map(")
-      sb.append(keyType.toExportString())
+      sb.append(keyType.toExportString)
       sb.append(", ")
-      sb.append(valueType.toExportString())
+      sb.append(valueType.toExportString)
       sb.append(")")
       sb.toString
     }

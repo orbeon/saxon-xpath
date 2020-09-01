@@ -84,7 +84,7 @@ object MapItem {
 
   def getItemTypeOfSequence(`val`: Sequence): ItemType =
     try {
-      val first: Item = `val`.head()
+      val first: Item = `val`.head
       if (first == null) {
         AnyItemType
       } else {
@@ -130,7 +130,7 @@ trait MapItem extends Function {
 
   def size(): Int
 
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
 
   def keys(): AtomicIterator[_ <: AtomicValue]
 
@@ -146,9 +146,9 @@ trait MapItem extends Function {
 
   def getItemType(th: TypeHierarchy): ItemType
 
-  def getKeyUType(): UType
+  def getKeyUType: UType
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val sb: StringBuilder = new StringBuilder()
     sb.append("map{")
     val sizeInt: Int = size
@@ -174,7 +174,7 @@ trait MapItem extends Function {
     sb.toString
   }
 
-  override def getGenre(): Genre.Genre = Genre.MAP
+  override def getGenre: Genre.Genre = Genre.MAP
 
   def isArray(): Boolean = false
 
@@ -183,14 +183,14 @@ trait MapItem extends Function {
   override def getAnnotations(): AnnotationList = AnnotationList.EMPTY
 
   def atomize(): AtomicSequence =
-    throw new XPathException("Cannot atomize a map (" + toShortString() + ")",
+    throw new XPathException("Cannot atomize a map (" + toShortString + ")",
       "FOTY0013")
 
   def getOperandRoles(): Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
 
   def getFunctionItemType(): FunctionItemType = MapType.ANY_MAP_TYPE
 
-  def getFunctionName(): StructuredQName = null
+  def getFunctionName: StructuredQName = null
 
   def getDescription(): String = "map"
 
@@ -201,7 +201,7 @@ trait MapItem extends Function {
     callingContext
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
-    val key: AtomicValue = args(0).head().asInstanceOf[AtomicValue]
+    val key: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     val value: Sequence = get(key)
     if (value == null) {
       EmptySequence.getInstance
@@ -210,13 +210,13 @@ trait MapItem extends Function {
     }
   }
 
-  def getStringValue(): String =
+  def getStringValue: String =
     throw new UnsupportedOperationException("A map has no string value")
 
-  def getStringValueCS(): CharSequence =
+  def getStringValueCS: CharSequence =
     throw new UnsupportedOperationException("A map has no string value")
 
-  def getTypedValue(): SequenceIterator =
+  def getTypedValue: SequenceIterator =
     throw new XPathException("A map has no typed value")
 
   def deepEquals(other: Function,

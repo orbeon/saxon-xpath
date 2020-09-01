@@ -505,7 +505,7 @@ object Navigator {
     //                SimpleType annotation = (copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0 ?
     //                        (SimpleType) node.getSchemaType() :
     //                        BuiltInAtomicType.UNTYPED_ATOMIC;
-    //                ((ComplexContentOutputter)out).attribute(NameOfNode.makeName(node), annotation, node.getStringValueCS(), locationId, ReceiverOption.NONE);
+    //                ((ComplexContentOutputter)out).attribute(NameOfNode.makeName(node), annotation, node.getStringValueCS, locationId, ReceiverOption.NONE);
     //                return;
     case Type.TEXT =>
       val value = node.getStringValueCS
@@ -518,7 +518,7 @@ object Navigator {
       out.processingInstruction(node.getLocalPart, node.getStringValueCS, locationId, ReceiverOption.NONE)
     case Type.NAMESPACE =>
       throw new IllegalArgumentException("Cannot copy namespace to Receiver")
-    //                out.namespacesOLD(NamespaceMap.of(node.getLocalPart(), node.getStringValue()), ReceiverOption.NONE);
+    //                out.namespacesOLD(NamespaceMap.of(node.getLocalPart(), node.getStringValue), ReceiverOption.NONE);
     case _ =>
   }
 

@@ -1,31 +1,21 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
+import java.lang.reflect.{Array, Constructor, ParameterizedType}
+import java.math.{BigDecimal, BigInteger}
+import java.net.{URI, URL}
+import java.time._
+import java.util.{ArrayList, Collection, HashMap, List}
+
 import net.sf.saxon.lib.ExternalObjectModel
-import net.sf.saxon.ma.map.MapItem
-import net.sf.saxon.ma.map.MapType
+import net.sf.saxon.ma.map.{MapItem, MapType}
 import net.sf.saxon.model._
 import net.sf.saxon.om._
 import net.sf.saxon.pattern.NodeTest
-import net.sf.saxon.trans.SaxonErrorCode
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.trans.{SaxonErrorCode, XPathException}
 import net.sf.saxon.tree.wrapper.VirtualNode
+import net.sf.saxon.utils.Configuration
 import net.sf.saxon.value._
-import java.lang.reflect.Array
-import java.lang.reflect.Constructor
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.ParameterizedType
-import java.math.BigDecimal
-import java.math.BigInteger
-import java.net.MalformedURLException
-import java.net.URI
-import java.net.URISyntaxException
-import java.net.URL
-import java.time._
-import java.util.ArrayList
-import java.util.Collection
-import java.util.HashMap
-import java.util.List
+
 import scala.jdk.CollectionConverters._
 
 object PJConverter {
@@ -254,7 +244,7 @@ object PJConverter {
               def convert(value: Sequence,
                           targetClass: Class[_],
                           context: XPathContext): Any =
-                constructor.newInstance(value.head().getStringValue)
+                constructor.newInstance(value.head.getStringValue)
             }
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.BOOLEAN)) {
@@ -645,7 +635,7 @@ object PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
-                context: XPathContext): One[_ <: Item] = new One(value.head())
+                context: XPathContext): One[_ <: Item] = new One(value.head)
 
   }
 
@@ -659,7 +649,7 @@ object PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
-                context: XPathContext): ZeroOrOne[_ <: Item] = new ZeroOrOne(value.head())
+                context: XPathContext): ZeroOrOne[_ <: Item] = new ZeroOrOne(value.head)
 
   }
 
@@ -709,7 +699,7 @@ object PJConverter {
         seqVal = seqVal.asInstanceOf[Closure].reduce()
       }
       if (seqVal.isInstanceOf[ZeroOrOne[_ <: Item]]) {
-        seqVal = seqVal.asInstanceOf[ZeroOrOne[_ <: Item]].head()
+        seqVal = seqVal.asInstanceOf[ZeroOrOne[_ <: Item]].head
       }
       if (seqVal.isInstanceOf[VirtualNode]) {
         val obj: AnyRef = seqVal.asInstanceOf[VirtualNode].getRealNode
@@ -755,7 +745,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      var head: Item = value.head()
+      var head: Item = value.head
       if (head == null) {
         return null
       }
@@ -793,7 +783,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): String = {
-      val first: Item = value.head()
+      val first: Item = value.head
       if (first == null) null else first.getStringValue
     }
 
@@ -810,7 +800,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val first: Item = value.head()
+      val first: Item = value.head
       if (first == null) {
         return null
       }
@@ -839,7 +829,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val bv: BooleanValue = value.head().asInstanceOf[BooleanValue]
+      val bv: BooleanValue = value.head.asInstanceOf[BooleanValue]
       assert(bv != null)
       bv.getBooleanValue
     }
@@ -857,7 +847,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val `val`: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val `val`: IntegerValue = value.head.asInstanceOf[IntegerValue]
       if (`val` == null) null else `val`.asBigInteger()
     }
 
@@ -874,7 +864,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val iv: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
       iv.longValue()
     }
@@ -892,7 +882,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val iv: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
       iv.longValue().toInt
     }
@@ -910,7 +900,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val iv: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
       iv.longValue().toShort
     }
@@ -928,7 +918,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val iv: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
       iv.longValue().toByte
     }
@@ -946,7 +936,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val iv: IntegerValue = value.head().asInstanceOf[IntegerValue]
+      val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
       iv.longValue().toChar
     }
@@ -964,7 +954,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val nv: NumericValue = value.head().asInstanceOf[NumericValue]
+      val nv: NumericValue = value.head.asInstanceOf[NumericValue]
       if (nv == null) null else nv.getDecimalValue
     }
 
@@ -981,7 +971,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val nv: NumericValue = value.head().asInstanceOf[NumericValue]
+      val nv: NumericValue = value.head.asInstanceOf[NumericValue]
       assert(nv != null)
       nv.getDoubleValue
     }
@@ -999,7 +989,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val nv: NumericValue = value.head().asInstanceOf[NumericValue]
+      val nv: NumericValue = value.head.asInstanceOf[NumericValue]
       assert(nv != null)
       nv.getFloatValue
     }
@@ -1017,7 +1007,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val av: AnyURIValue = value.head().asInstanceOf[AnyURIValue]
+      val av: AnyURIValue = value.head.asInstanceOf[AnyURIValue]
       if (av == null) null
       else new URI(value.asInstanceOf[AnyURIValue].getStringValue)
     }
@@ -1035,7 +1025,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val av: AnyURIValue = value.head().asInstanceOf[AnyURIValue]
+      val av: AnyURIValue = value.head.asInstanceOf[AnyURIValue]
       if (av == null) null
       else new URL(value.asInstanceOf[AnyURIValue].getStringValue)
     }
@@ -1054,8 +1044,8 @@ object PJConverter {
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
       val qv: QualifiedNameValue =
-        value.head().asInstanceOf[QualifiedNameValue]
-      if (qv == null) null else qv.toJaxpQName()
+        value.head.asInstanceOf[QualifiedNameValue]
+      if (qv == null) null else qv.toJaxpQName
     }
 
   }
@@ -1071,8 +1061,8 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.toDateTime().toJavaInstant()
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
+      if (cv == null) null else cv.toDateTime.toJavaInstant
     }
 
   }
@@ -1089,8 +1079,8 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.toDateTime().toZonedDateTime()
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
+      if (cv == null) null else cv.toDateTime.toZonedDateTime
     }
 
   }
@@ -1107,8 +1097,8 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.toDateTime().toOffsetDateTime()
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
+      if (cv == null) null else cv.toDateTime.toOffsetDateTime
     }
 
   }
@@ -1125,8 +1115,8 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.toDateTime().toLocalDateTime()
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
+      if (cv == null) null else cv.toDateTime.toLocalDateTime
     }
 
   }
@@ -1142,16 +1132,13 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
       if (cv == null) null else cv.getCalendar.getTime
     }
-
   }
 
   object DateValueToLocalDate {
-
     val INSTANCE: DateValueToLocalDate = new DateValueToLocalDate()
-
   }
 
   class DateValueToLocalDate extends PJConverter {
@@ -1159,16 +1146,13 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: DateValue = value.head().asInstanceOf[DateValue]
-      if (cv == null) null else cv.toLocalDate()
+      val cv: DateValue = value.head.asInstanceOf[DateValue]
+      if (cv == null) null else cv.toLocalDate
     }
-
   }
 
   object CalendarValueToCalendar {
-
     val INSTANCE: CalendarValueToCalendar = new CalendarValueToCalendar()
-
   }
 
   class CalendarValueToCalendar extends PJConverter {
@@ -1176,16 +1160,13 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head().asInstanceOf[CalendarValue]
+      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
       if (cv == null) null else cv.getCalendar
     }
-
   }
 
   object Atomic {
-
     val INSTANCE: Atomic = new Atomic()
-
   }
 
   class Atomic extends PJConverter {
@@ -1193,7 +1174,7 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): Any = {
-      val item: AtomicValue = value.head().asInstanceOf[AtomicValue]
+      val item: AtomicValue = value.head.asInstanceOf[AtomicValue]
       if (item == null) {
         return null
       }
@@ -1204,13 +1185,10 @@ object PJConverter {
         targetClass)
       converter.convert(item, targetClass, context)
     }
-
   }
 
   object General {
-
     val INSTANCE: General = new General()
-
   }
 
   class General extends PJConverter {
@@ -1230,15 +1208,9 @@ object PJConverter {
       }
       converter.convert(gv, targetClass, context)
     }
-
   }
-
 }
 
 abstract class PJConverter {
-
-  def convert(value: Sequence,
-              targetClass: Class[_],
-              context: XPathContext): Any
-
+  def convert(value: Sequence, targetClass: Class[_], context: XPathContext): Any
 }

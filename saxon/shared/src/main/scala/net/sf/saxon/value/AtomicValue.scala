@@ -1,26 +1,35 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * The AtomicValue class corresponds to the concept of an atomic value in the
+  * XPath 2.0 data model. Atomic values belong to one of the 19 primitive types
+  * defined in XML Schema; or they are of type xs:untypedAtomic; or they are
+  * "external objects", representing a Saxon extension to the XPath 2.0 type system.
+  * <p>The AtomicValue class contains some methods that are suitable for applications
+  * to use, and many others that are designed for internal use by Saxon itself.
+  * These have not been fully classified. At present, therefore, none of the methods on this
+  * class should be considered to be part of the public Saxon API.</p>
+  *
+  * @author Michael H. Kay
+  */
+
 package net.sf.saxon.value
 
 import java.util
 
-import net.sf.saxon.expr.StaticContext
-import net.sf.saxon.expr.StaticProperty
-import net.sf.saxon.expr.sort.AtomicMatchKey
-import net.sf.saxon.expr.sort.CodepointCollator
-import net.sf.saxon.functions.AccessorFn
-import net.sf.saxon.lib.{ConversionRules, StringCollator}
+import net.sf.saxon.expr.{StaticContext, StaticProperty}
+import net.sf.saxon.expr.sort.{AtomicMatchKey, CodepointCollator}
+import net.sf.saxon.functions.AccessorFn.Component.Component
+import net.sf.saxon.lib.StringCollator
 import net.sf.saxon.model._
 import net.sf.saxon.om._
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.NoDynamicContextException
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.trans.{Err, XPathException}
 import net.sf.saxon.tree.iter.SingleAtomicIterator
 import net.sf.saxon.tree.jiter.MonoIterator
-
-import scala.jdk.CollectionConverters._
-import net.sf.saxon.functions.AccessorFn.Component.Component
-
-
 
 
 abstract class AtomicValue
@@ -29,19 +38,18 @@ abstract class AtomicValue
     with ConversionResult
     with IdentityComparable {
 
-   var typeLabel: AtomicType = _
+  var typeLabel: AtomicType = _
 
   def atomize(): AtomicSequence = this
 
-  override def head(): AtomicValue = this
-
-  override def getLength(): Int = 1
+  override def head: AtomicValue = this
+  override def getLength: Int = 1
 
   def setTypeLabel(`type`: AtomicType): Unit = {
     typeLabel = `type`
   }
 
-  def getSchemaComparable(): Comparable[AnyRef]
+  def getSchemaComparable: Comparable[AnyRef]
 
   def getXPathComparable(ordered: Boolean,
                          collator: StringCollator,
@@ -70,7 +78,7 @@ abstract class AtomicValue
     : Int = // default implementation, which presumes that if two objects are identical then they are equal.
     hashCode
 
-  def getStringValueCS(): CharSequence = {
+  def getStringValueCS: CharSequence = {
     val cs: CharSequence = getPrimitiveStringValue
     try typeLabel.postprocess(cs)
     catch {
@@ -86,29 +94,29 @@ abstract class AtomicValue
     * @return the canonical lexical representation if defined in XML Schema; otherwise, the result
     *         of casting to string according to the XPath 2.0 rules
     */
-  def getCanonicalLexicalRepresentation(): CharSequence = getStringValueCS
+  def getCanonicalLexicalRepresentation: CharSequence = getStringValueCS
 
   /*@Nullable*/
 
-  override def itemAt(n: Int): AtomicValue = if (n == 0) head() else null
+  override def itemAt(n: Int): AtomicValue = if (n == 0) head else null
 
   /*@NotNull*/
 
-  def getItemType(): AtomicType = typeLabel
+  def getItemType: AtomicType = typeLabel
 
-  def getPrimitiveType(): BuiltInAtomicType
+  def getPrimitiveType: BuiltInAtomicType
 
-  def getUType(): UType = getItemType.getUType
+  def getUType: UType = getItemType.getUType
 
-  def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue
 
-  def isNaN(): Boolean = false
+  def isNaN: Boolean = false
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-   def getPrimitiveStringValue(): CharSequence
+   def getPrimitiveStringValue: CharSequence
 
   override def effectiveBooleanValue(): Boolean = {
     val err = new XPathException(
@@ -130,11 +138,12 @@ abstract class AtomicValue
                              whole: Boolean): Unit = {
     if (whole) {
       var stype: SimpleType = null
-      if (parentType.isInstanceOf[SimpleType]) {
-        stype = parentType.asInstanceOf[SimpleType]
-      } else if (parentType.isInstanceOf[ComplexType] &&
-                 parentType.asInstanceOf[ComplexType].isSimpleContent) {
-        stype = parentType.asInstanceOf[ComplexType].getSimpleContentType
+      parentType match {
+        case simpleType: SimpleType =>
+          stype = simpleType
+        case complexType: ComplexType if complexType.isSimpleContent =>
+          stype = complexType.getSimpleContentType
+        case _ =>
       }
       if (stype != null && !stype.isNamespaceSensitive) {
 // Can't validate namespace-sensitive content statically
@@ -148,15 +157,14 @@ abstract class AtomicValue
         return
       }
     }
-    if (parentType.isInstanceOf[ComplexType] &&
-        !parentType.asInstanceOf[ComplexType].isSimpleContent &&
-        !parentType.asInstanceOf[ComplexType].isMixedContent &&
-        !Whitespace.isWhite(getStringValueCS)) {
-      val err = new XPathException(
-        "Complex type " + parentType.getDescription + " does not allow text content " +
-          Err.wrap(getStringValueCS))
-      err.setIsTypeError(true)
-      throw err
+    parentType match {
+      case complexType: ComplexType if !Whitespace.isWhite(getStringValueCS) && !complexType.isMixedContent && !complexType.isSimpleContent =>
+        val err = new XPathException(
+          "Complex type " + parentType.getDescription + " does not allow text content " +
+            Err.wrap(getStringValueCS))
+        err.setIsTypeError(true)
+        throw err
+      case _ =>
     }
   }
 
@@ -186,24 +194,7 @@ abstract class AtomicValue
     *
     * @return the genre: specifically, {@link Genre#ATOMIC};
     */
-  override def getGenre():Genre.Genre = Genre.ATOMIC
+  def getGenre:Genre.Genre = Genre.ATOMIC
 
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * The AtomicValue class corresponds to the concept of an atomic value in the
-  * XPath 2.0 data model. Atomic values belong to one of the 19 primitive types
-  * defined in XML Schema; or they are of type xs:untypedAtomic; or they are
-  * "external objects", representing a Saxon extension to the XPath 2.0 type system.
-  * <p>The AtomicValue class contains some methods that are suitable for applications
-  * to use, and many others that are designed for internal use by Saxon itself.
-  * These have not been fully classified. At present, therefore, none of the methods on this
-  * class should be considered to be part of the public Saxon API.</p>
-  *
-  * @author Michael H. Kay
-  */

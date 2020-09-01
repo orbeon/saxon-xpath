@@ -83,7 +83,7 @@ class RootExpression extends Expression {
       StaticProperty.SINGLE_DOCUMENT_NODESET |
       StaticProperty.NO_NODES_NEWLY_CREATED
 
-  def isContextPossiblyUndefined(): Boolean = contextMaybeUndefined
+  def isContextPossiblyUndefined: Boolean = contextMaybeUndefined
 
   def noContextMessage(): String = "Leading '/' selects nothing"
 
@@ -91,7 +91,7 @@ class RootExpression extends Expression {
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  def getItemType(): ItemType = NodeKindTest.DOCUMENT
+  def getItemType: ItemType = NodeKindTest.DOCUMENT
 
   override def getStaticUType(contextItemType: UType): UType = UType.DOCUMENT
 

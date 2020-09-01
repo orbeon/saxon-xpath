@@ -21,7 +21,7 @@ object NoElementsSpaceStrippingRule {
   private val THE_INSTANCE: NoElementsSpaceStrippingRule =
     new NoElementsSpaceStrippingRule()
 
-  def getInstance(): NoElementsSpaceStrippingRule = THE_INSTANCE
+  def getInstance: NoElementsSpaceStrippingRule = THE_INSTANCE
 
 }
 

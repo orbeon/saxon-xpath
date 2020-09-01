@@ -8,7 +8,7 @@ import net.sf.saxon.om.SequenceIterator
 
 trait LookaheadIterator extends SequenceIterator {
 
-  def hasNext(): Boolean
+  def hasNext: Boolean
 
 }
 

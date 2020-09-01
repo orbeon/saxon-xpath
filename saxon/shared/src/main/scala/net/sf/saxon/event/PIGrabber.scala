@@ -126,7 +126,7 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 
   /*@Nullable*/
 
-  def getAssociatedStylesheets(): Array[Source] = {
+  def getAssociatedStylesheets: Array[Source] = {
     if (stylesheets.isEmpty)
       return null
     if (uriResolver == null) {

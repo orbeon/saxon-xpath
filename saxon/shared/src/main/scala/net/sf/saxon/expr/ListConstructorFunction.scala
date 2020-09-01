@@ -31,11 +31,11 @@ class ListConstructorFunction( var targetType: ListType,
 
    var memberType: SimpleType = targetType.getItemType
 
-  def getTargetType(): ListType = targetType
+  def getTargetType: ListType = targetType
 
-  def getMemberType(): SimpleType = memberType
+  def getMemberType: SimpleType = memberType
 
-  def isAllowEmpty(): Boolean = allowEmpty
+  def isAllowEmpty: Boolean = allowEmpty
 
   /**
     * Get the item type of the function item
@@ -61,7 +61,7 @@ class ListConstructorFunction( var targetType: ListType,
     *
     * @return the function name, or null for an anonymous inline function
     */
-  def getFunctionName(): StructuredQName = targetType.getStructuredQName
+  def getFunctionName: StructuredQName = targetType.getStructuredQName
 
   /**
     * Get a description of this function for use in error messages. For named functions, the description
@@ -89,7 +89,7 @@ class ListConstructorFunction( var targetType: ListType,
     *          if a dynamic error occurs within the function
     */
   def call(context: XPathContext, args: Array[Sequence]): AtomicSequence = {
-    val `val`: AtomicValue = args(0).head().asInstanceOf[AtomicValue]
+    val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     if (`val` == null) {
       if (allowEmpty) {
         EmptyAtomicSequence.getInstance

@@ -28,7 +28,7 @@ class ItemTypePattern(@BeanProperty var itemTyp: ItemType) extends Pattern {
 
   override def toString: String = itemTyp.toString
 
-  override def getItemType(): ItemType = itemTyp
+  override def getItemType: ItemType = itemTyp
 
   override def equals(other: Any): Boolean =
     (other.isInstanceOf[ItemTypePattern]) &&

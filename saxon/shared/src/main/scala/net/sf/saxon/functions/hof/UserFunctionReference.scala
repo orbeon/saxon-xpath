@@ -30,7 +30,7 @@ object UserFunctionReference {
     extends AbstractFunction
       with ContextOriginator {
 
-    def getTargetFunction(): Function = function
+    def getTargetFunction: Function = function
 
     override def makeNewContext(oldContext: XPathContext,
                                 originator: ContextOriginator): XPathContext = {
@@ -60,7 +60,7 @@ object UserFunctionReference {
 
     override def getAnnotations(): AnnotationList = function.getAnnotations
 
-    def getFunctionName(): StructuredQName = function.getFunctionName
+    def getFunctionName: StructuredQName = function.getFunctionName
 
     def getArity(): Int = function.getArity
 
@@ -147,15 +147,15 @@ class UserFunctionReference
   def getFunctionItemType(th: TypeHierarchy): FunctionItemType =
     nominalTarget.getFunctionItemType
 
-  def getFunctionName(): StructuredQName = nominalTarget.getFunctionName
+  def getFunctionName: StructuredQName = nominalTarget.getFunctionName
 
-  def getArity(): Int = nominalTarget.getArity
+  def getArity: Int = nominalTarget.getArity
 
    override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
-  override def getItemType(): ItemType = nominalTarget.getFunctionItemType
+  override def getItemType: ItemType = nominalTarget.getFunctionItemType
 
   override def getStaticUType(contextItemType: UType): UType = UType.FUNCTION
 
@@ -189,7 +189,7 @@ class UserFunctionReference
 
   override def toString: String = getFunctionName.getEQName + "#" + getArity
 
-  override def toShortString(): String = getFunctionName.getDisplayName + "#" + getArity
+  override def toShortString: String = getFunctionName.getDisplayName + "#" + getArity
 
 
   override def setBindingSlot(slot: Int) = bindingSlot = slot
@@ -217,7 +217,7 @@ class UserFunctionReference
           containingPackage))) {
         throw new XPathException(
           "Cannot export a package containing a reference to a user-defined function (" +
-            toShortString() +
+            toShortString +
             ") that is not present in the package being exported")
       }
       out.startElement("ufRef")

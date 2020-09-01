@@ -173,7 +173,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
 
   private def walkNode(node: Node): Unit = {
     val loc: Location = Loc.NONE
-    if (node.hasChildNodes()) {
+    if (node.hasChildNodes) {
       val nit: NodeList = node.getChildNodes
       val len: Int = nit.getLength
       for (i <- 0 until len) {

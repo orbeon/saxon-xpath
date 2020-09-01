@@ -30,7 +30,7 @@ class Tokenize_1 extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val sv: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    val sv: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (sv == null) {
       EmptySequence.getInstance
     }

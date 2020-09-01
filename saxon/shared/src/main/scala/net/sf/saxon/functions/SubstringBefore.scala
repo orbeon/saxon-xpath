@@ -51,11 +51,11 @@ class SubstringBefore extends CollatingFunctionFixed {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val arg1: StringValue = arguments(1).head().asInstanceOf[StringValue]
+    val arg1: StringValue = arguments(1).head.asInstanceOf[StringValue]
     if (arg1 == null || arg1.isZeroLength) {
       StringValue.EMPTY_STRING
     }
-    val arg0: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (arg0 == null || arg0.isZeroLength) {
       StringValue.EMPTY_STRING
     }

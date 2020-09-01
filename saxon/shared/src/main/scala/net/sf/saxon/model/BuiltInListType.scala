@@ -81,7 +81,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getBaseType(): SchemaType = AnySimpleType
 
-  def isAtomicType(): Boolean = false
+  def isAtomicType: Boolean = false
 
   def isIdType(): Boolean = false
 
@@ -111,7 +111,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getBlock(): Int = 0
 
-  def getKnownBaseType(): SchemaType = AnySimpleType
+  def getKnownBaseType: SchemaType = AnySimpleType
 
   def getDerivationMethod(): Int = DERIVATION_LIST
 
@@ -131,7 +131,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
 
-  def getLocalName(): String = StandardNames.getLocalName(fingerprint)
+  def getLocalName: String = StandardNames.getLocalName(fingerprint)
 
   def getStructuredQName(): StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, getLocalName)

@@ -54,7 +54,7 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
     this.logger = logger
   }
 
-  def getLogger(): Logger = logger
+  def getLogger: Logger = logger
 
   def setMaxOrdinaryCharacter(max: Int): Unit = {
     maxOrdinaryCharacter = max
@@ -92,7 +92,7 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
     }
   }
 
-  def isReportingWarnings(): Boolean =
+  def isReportingWarnings: Boolean =
     warningCount < getMaximumNumberOfWarnings
 
    def error(error: XmlProcessingError): Unit = {
@@ -194,7 +194,7 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
       if (failingExpression.isCallOn(classOf[net.sf.saxon.functions.Error])) {
         "signaled by call to error() "
       } else {
-        "evaluating (" + failingExpression.toShortString() + ") "
+        "evaluating (" + failingExpression.toShortString + ") "
       }
     } else if (nearBy != null && !nearBy.isEmpty) {
       (if (nearBy.startsWith("...")) "near" else "in") + ' ' +

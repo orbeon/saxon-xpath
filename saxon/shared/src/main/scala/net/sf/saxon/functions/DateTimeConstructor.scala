@@ -17,8 +17,8 @@ import net.sf.saxon.value.TimeValue
 class DateTimeConstructor extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[DateTimeValue] = {
-    val arg0: DateValue = arguments(0).head().asInstanceOf[DateValue]
-    val arg1: TimeValue = arguments(1).head().asInstanceOf[TimeValue]
+    val arg0: DateValue = arguments(0).head.asInstanceOf[DateValue]
+    val arg1: TimeValue = arguments(1).head.asInstanceOf[TimeValue]
     if (arg0 == null || arg1 == null) {
       return ZeroOrOne.empty().asInstanceOf[ZeroOrOne[DateTimeValue]]
     }

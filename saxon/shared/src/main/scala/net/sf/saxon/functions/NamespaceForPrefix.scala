@@ -40,8 +40,8 @@ class NamespaceForPrefix extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[AnyURIValue] = {
     val result: AnyURIValue = namespaceUriForPrefix(
-      arguments(0).head().asInstanceOf[StringValue],
-      arguments(1).head().asInstanceOf[NodeInfo])
+      arguments(0).head.asInstanceOf[StringValue],
+      arguments(1).head.asInstanceOf[NodeInfo])
     new ZeroOrOne(result)
   }
 

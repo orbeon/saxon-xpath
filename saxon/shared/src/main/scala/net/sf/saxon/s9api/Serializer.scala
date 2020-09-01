@@ -126,7 +126,7 @@ object Serializer {
 
       override def toString: String = name
 
-      def getQName(): QName = QName.fromClarkName(name)
+      def getQName: QName = QName.fromClarkName(name)
 
     }
 
@@ -314,7 +314,7 @@ class Serializer(@BeanProperty var processor: Processor)
       getLocallyDefinedProperties)
   }
 
-  def getXMLStreamWriter(): StreamWriterToReceiver = {
+  def getXMLStreamWriter: StreamWriterToReceiver = {
     val pipe: PipelineConfiguration =
       processor.getUnderlyingConfiguration.makePipelineConfiguration
     var r: Receiver = getReceiver(pipe, getSerializationProperties)
@@ -322,7 +322,7 @@ class Serializer(@BeanProperty var processor: Processor)
     new StreamWriterToReceiver(r)
   }
 
-  def getContentHandler(): org.xml.sax.ContentHandler = {
+  def getContentHandler: org.xml.sax.ContentHandler = {
     val pipe: PipelineConfiguration =
       processor.getUnderlyingConfiguration.makePipelineConfiguration
     var r: Receiver = getReceiver(pipe, getSerializationProperties)
@@ -333,7 +333,7 @@ class Serializer(@BeanProperty var processor: Processor)
     rch
   }
 
-  def getOutputDestination(): AnyRef = {
+  def getOutputDestination: AnyRef = {
     if (result.getOutputStream != null) {
       result.getOutputStream
     }
@@ -383,7 +383,7 @@ class Serializer(@BeanProperty var processor: Processor)
     props
   }
 
-   def getLocallyDefinedProperties(): Properties = {
+   def getLocallyDefinedProperties: Properties = {
     val props: Properties = new Properties()
     for (p <- properties.keySet.asScala) {
       val value: String = properties.get(p)
@@ -392,7 +392,7 @@ class Serializer(@BeanProperty var processor: Processor)
     props
   }
 
-  def getSerializationProperties(): SerializationProperties =
+  def getSerializationProperties: SerializationProperties =
     new SerializationProperties(getLocallyDefinedProperties, characterMap)
 
   def close(): Unit = {
@@ -408,6 +408,6 @@ class Serializer(@BeanProperty var processor: Processor)
     }
   }
 
-  def isMustCloseAfterUse(): Boolean = mustClose
+  def isMustCloseAfterUse: Boolean = mustClose
 
 }

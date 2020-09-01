@@ -8,7 +8,7 @@ trait CharacterSet {
 
   def inCharset(ch: Int): Boolean
 
-  def getCanonicalName(): String
+  def getCanonicalName: String
 
 }
 

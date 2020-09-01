@@ -105,6 +105,6 @@ class XPathExpression(private var env: StaticContext,
   def effectiveBooleanValue(context: XPathDynamicContext): Boolean =
     expression.effectiveBooleanValue(context.getXPathContextObject)
 
-  def getInternalExpression(): Expression = expression
+  def getInternalExpression: Expression = expression
 
 }

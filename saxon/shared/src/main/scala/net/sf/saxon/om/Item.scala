@@ -1,34 +1,41 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * An Item is an object that can occur as a member of a sequence.
+  * It corresponds directly to the concept of an item in the XPath 2.0 data model.
+  * There are four kinds of Item: atomic values, nodes, function items, and external objects.
+  * <p>This interface is part of the public Saxon API. As such (starting from Saxon 8.4),
+  * methods that form part of the stable API are labelled with a JavaDoc "since" tag
+  * to identify the Saxon release at which they were introduced.</p>
+  * <p>Note: there is no method getItemType(). This is to avoid having to implement it
+  * on every implementation of NodeInfo. Instead, use the static method Type.getItemType(Item).</p>
+  *
+  */
+
 package net.sf.saxon.om
 
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.om.Genre.Genre
 import net.sf.saxon.tree.iter.SingletonIterator
 import net.sf.saxon.value.EmptySequence
-import Item._
-import net.sf.saxon.om.Genre.Genre
-
-
 
 
 object Item {
-
   def toGroundedValue(item: Item): GroundedValue = item.reduce()
-
 }
 
 trait Item extends GroundedValue {
 
-  def getGenre(): Genre
-
-  def head(): Item = this
-
-  def getStringValue(): String
-
-  def getStringValueCS(): CharSequence
-
+  def getGenre: Genre
+  def head: Item = this
+  def getStringValue: String
+  def getStringValueCS: CharSequence
   def atomize(): AtomicSequence
 
-  override def toShortString(): String = toString
+  override def toShortString: String = toString
 
   /**
     * Get the n'th item in the value, counting from 0
@@ -36,7 +43,7 @@ trait Item extends GroundedValue {
     * @param n the index of the required item, with 0 representing the first item in the sequence
     * @return the n'th item if it exists, or null otherwise
     */
-  def itemAt(n: Int): Item = if (n == 0) head() else null
+  def itemAt(n: Int): Item = if (n == 0) head else null
 
   /**
     * Get a subsequence of the value
@@ -59,7 +66,7 @@ trait Item extends GroundedValue {
     * @return the number of items in the sequence. Note that for a single item, including a map or array,
     * the result is always 1 (one).
     */
-  def getLength(): Int = 1
+  def getLength: Int = 1
 
   /**
     * Get an iterator over all the items in the sequence
@@ -78,23 +85,6 @@ trait Item extends GroundedValue {
     */
   override def reduce(): GroundedValue = this
 
-  def isStreamed(): Boolean = false
+  def isStreamed: Boolean = false
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An Item is an object that can occur as a member of a sequence.
-  * It corresponds directly to the concept of an item in the XPath 2.0 data model.
-  * There are four kinds of Item: atomic values, nodes, function items, and external objects.
-  * <p>This interface is part of the public Saxon API. As such (starting from Saxon 8.4),
-  * methods that form part of the stable API are labelled with a JavaDoc "since" tag
-  * to identify the Saxon release at which they were introduced.</p>
-  * <p>Note: there is no method getItemType(). This is to avoid having to implement it
-  * on every implementation of NodeInfo. Instead, use the static method Type.getItemType(Item).</p>
-  *
-  */

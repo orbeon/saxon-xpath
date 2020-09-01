@@ -137,7 +137,7 @@ class AnyURIValue() extends StringValue {
     v
   }
 
-  override def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.ANY_URI
+  override def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.ANY_URI
 
 }
 

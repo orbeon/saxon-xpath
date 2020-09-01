@@ -550,7 +550,7 @@ class DocumentFn extends SystemFunction with Callable {
     val hrefSequence: SequenceIterator = arguments(0).iterate()
     var baseURI: String = null
     if (numArgs == 2) {
-      val base: NodeInfo = arguments(1).head().asInstanceOf[NodeInfo]
+      val base: NodeInfo = arguments(1).head.asInstanceOf[NodeInfo]
       baseURI = base.getBaseURI
       if (baseURI == null) {
         throw new XPathException(

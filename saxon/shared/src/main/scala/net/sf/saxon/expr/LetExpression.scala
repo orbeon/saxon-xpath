@@ -178,7 +178,7 @@ class LetExpression extends Assignation with TailCallReturner {
           while (parent != null && parent != this) {
             val operand: Operand = ExpressionTool.findOperand(parent, child)
             assert(operand != null)
-            if (!operand.hasSameFocus()) {
+            if (! operand.hasSameFocus) {
               considerRemoval = false
               break()
             }
@@ -388,7 +388,7 @@ class LetExpression extends Assignation with TailCallReturner {
     let.getAction.process(output, context)
   }
 
-  def getItemType(): ItemType = getAction.getItemType
+  def getItemType: ItemType = getAction.getItemType
 
   override def getStaticUType(contextItemType: UType): UType = {
     if (isInstruction) {
@@ -472,7 +472,7 @@ class LetExpression extends Assignation with TailCallReturner {
     "let $" + getVariableEQName + " := " + getSequence + " return " +
       ExpressionTool.parenthesize(getAction)
 
-  override def toShortString(): String = "let $" + getVariableName + " := ..."
+  override def toShortString: String = "let $" + getVariableName + " := ..."
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("let", this)

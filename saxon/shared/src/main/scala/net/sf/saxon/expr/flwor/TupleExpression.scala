@@ -34,7 +34,7 @@ class TupleExpression extends Expression {
   @BeanProperty
    var operanda: OperandArray = _
 
-  override def operands(): java.lang.Iterable[Operand] = operanda.operands()
+  override def operands: java.lang.Iterable[Operand] = operanda.operands
 
   def setVariables(refs: List[LocalVariableReference]): Unit = {
     val e: Array[Expression] = Array.ofDim[Expression](refs.size)
@@ -44,7 +44,7 @@ class TupleExpression extends Expression {
     this.operanda = new OperandArray(this, e, OperandRole.SAME_FOCUS_ACTION)
   }
 
-  def getSize(): Int = getOperanda.getNumberOfOperands
+  def getSize: Int = getOperanda.getNumberOfOperands
 
   def getSlot(i: Int): LocalVariableReference =
     getOperanda.getOperandExpression(i).asInstanceOf[LocalVariableReference]
@@ -54,14 +54,14 @@ class TupleExpression extends Expression {
   }
 
   def includesBinding(binding: Binding): Boolean =
-    operands().asScala
+    operands.asScala
       .find(
         _.getChildExpression.asInstanceOf[LocalVariableReference].getBinding ==
           binding)
       .map(_ => true)
       .getOrElse(false)
 
-  def getItemType(): ItemType =
+  def getItemType: ItemType =
     getConfiguration.getJavaExternalObjectType(classOf[AnyRef])
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -90,7 +90,7 @@ class TupleExpression extends Expression {
 
   override def computeHashCode(): Int = {
     var h: Int = 77
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       h ^= o.getChildExpression.hashCode
     }
     h
@@ -112,7 +112,7 @@ class TupleExpression extends Expression {
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("tuple", this)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       o.getChildExpression.export(out)
     }
     out.endElement()

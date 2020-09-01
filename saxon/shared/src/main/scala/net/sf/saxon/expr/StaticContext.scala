@@ -25,28 +25,28 @@ import scala.collection.Set
 
 trait StaticContext {
 
-  def getConfiguration(): Configuration
-  def getPackageData(): PackageData
+  def getConfiguration: Configuration
+  def getPackageData: PackageData
   def makeEarlyEvaluationContext(): XPathContext
   def makeRetainedStaticContext(): RetainedStaticContext
-  def getContainingLocation(): Location
+  def getContainingLocation: Location
   def issueWarning(message: String, locator: Location): Unit
-  def getSystemId(): String
-  def getStaticBaseURI(): String
+  def getSystemId: String
+  def getStaticBaseURI: String
   def bindVariable(qName: StructuredQName): Expression
-  def getFunctionLibrary(): FunctionLibrary
-  def getDefaultCollationName(): String
-  def getDefaultElementNamespace(): String
-  def getUnprefixedElementMatchingPolicy(): UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
-  def getDefaultFunctionNamespace(): String
-  def isInBackwardsCompatibleMode(): Boolean
+  def getFunctionLibrary: FunctionLibrary
+  def getDefaultCollationName: String
+  def getDefaultElementNamespace: String
+  def getUnprefixedElementMatchingPolicy: UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
+  def getDefaultFunctionNamespace: String
+  def isInBackwardsCompatibleMode: Boolean
   def isImportedSchema(namespace: String): Boolean
-  def getImportedSchemaNamespaces(): Set[String]
-  def getNamespaceResolver(): NamespaceResolver
-  def getRequiredContextItemType(): ItemType
-  def getDecimalFormatManager(): DecimalFormatManager
-  def getXPathVersion(): Int
+  def getImportedSchemaNamespaces: Set[String]
+  def getNamespaceResolver: NamespaceResolver
+  def getRequiredContextItemType: ItemType
+  def getDecimalFormatManager: DecimalFormatManager
+  def getXPathVersion: Int
   /*def getKeyManager(): KeyManager*/ // KeyManager class not found
   def resolveTypeAlias(typeName: StructuredQName): ItemType
-  def getOptimizerOptions(): OptimizerOptions = getConfiguration.getOptimizerOptions
+  def getOptimizerOptions: OptimizerOptions = getConfiguration.getOptimizerOptions
 }

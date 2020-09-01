@@ -176,7 +176,7 @@ class StaticQueryContext() {
     namePool = config.getNamePool
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def makeExecutable(): Executable = {
     val executable: Executable = new Executable(config)
@@ -192,7 +192,7 @@ class StaticQueryContext() {
     }
   }
 
-  def isSchemaAware(): Boolean = false
+  def isSchemaAware: Boolean = false
 
   def setStreaming(option: Boolean): Unit = {
     if (option) {
@@ -200,7 +200,7 @@ class StaticQueryContext() {
     }
   }
 
-  def isStreaming(): Boolean = false
+  def isStreaming: Boolean = false
 
   def setLanguageVersion(version: Int): Unit = {
     if (version == 10 || version == 30 || version == 31) {} else {
@@ -208,14 +208,14 @@ class StaticQueryContext() {
     }
   }
 
-  def getLanguageVersion(): Int = {
+  def getLanguageVersion: Int = {
     val langVersion: java.lang.Integer = 31
     langVersion
   }
 
-  def getExtensionFunctionLibrary(): FunctionLibrary = null
+  def getExtensionFunctionLibrary: FunctionLibrary = null
 
-  def isCompileWithTracing(): Boolean =
+  def isCompileWithTracing: Boolean =
     codeInjector.isInstanceOf[TraceCodeInjector]
 
   def setCompileWithTracing(trace: Boolean): Unit = {
@@ -278,7 +278,7 @@ class StaticQueryContext() {
 
   def getCompiledLibrary(namespace: String): QueryLibrary = null
 
-  def getCompiledLibraries(): Collection[QueryLibrary] = Collections.emptySet()
+  def getCompiledLibraries: Collection[QueryLibrary] = Collections.emptySet()
 
   def declareNamespace(prefix: String, uri: String): Unit = {
     if (prefix == null) {
@@ -381,25 +381,25 @@ class StaticQueryContext() {
     this.defaultCollationName = name
   }
 
-  def getSystemId(): String = baseURI
+  def getSystemId: String = baseURI
 
   def setPreserveBoundarySpace(preserve: Boolean): Unit = {
     preserveSpace = preserve
   }
 
-  def isPreserveBoundarySpace(): Boolean = preserveSpace
+  def isPreserveBoundarySpace: Boolean = preserveSpace
 
   def setEmptyLeast(least: Boolean): Unit = {
     defaultEmptyLeast = least
   }
 
-  def isEmptyLeast(): Boolean = defaultEmptyLeast
+  def isEmptyLeast: Boolean = defaultEmptyLeast
 
   def setErrorListener(listener: ErrorListener): Unit = {
     this.errorReporter = new ErrorReporterToListener(listener)
   }
 
-  def getErrorListener(): ErrorListener =
+  def getErrorListener: ErrorListener =
     if (errorReporter.isInstanceOf[ErrorReporterToListener]) {
       errorReporter.asInstanceOf[ErrorReporterToListener].getErrorListener
     } else {
@@ -410,6 +410,6 @@ class StaticQueryContext() {
     isUpdating = updating
   }
 
-  def isUpdatingEnabled(): Boolean = isUpdating
+  def isUpdatingEnabled: Boolean = isUpdating
 
 }

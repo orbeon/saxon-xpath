@@ -11,7 +11,7 @@ import java.util.List
 class DOMNodeList(private var sequence: List[Node])
     extends org.w3c.dom.NodeList {
 
-  def getLength(): Int = sequence.size
+  def getLength: Int = sequence.size
 
   /*@Nullable*/
 

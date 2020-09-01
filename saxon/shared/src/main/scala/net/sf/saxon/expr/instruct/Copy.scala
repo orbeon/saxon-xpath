@@ -109,9 +109,9 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_COPY
 
-  override def operands(): java.lang.Iterable[Operand] = contentOp
+  override def operands: java.lang.Iterable[Operand] = contentOp
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     if (resultItemType != null) {
       resultItemType
     } else {

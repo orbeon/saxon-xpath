@@ -15,7 +15,7 @@ import java.util.Set
   */
 trait EnvironmentVariableResolver {
 
-  def getAvailableEnvironmentVariables(): Set[String]
+  def getAvailableEnvironmentVariables: Set[String]
 
   def getEnvironmentVariable(name: String): String
 

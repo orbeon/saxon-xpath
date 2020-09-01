@@ -98,7 +98,7 @@ class NamespaceNode(var element: NodeInfo,
     */
   def getTreeInfo(): TreeInfo = element.getTreeInfo
 
-  override def head(): NodeInfo = this
+  override def head: NodeInfo = this
 
   def getNodeKind(): Int = Type.NAMESPACE
 
@@ -150,9 +150,9 @@ class NamespaceNode(var element: NodeInfo,
       element.compareOrder(other)
     }
 
-  def getStringValue(): String = nsBinding.getURI
+  def getStringValue: String = nsBinding.getURI
 
-  def getStringValueCS(): CharSequence = getStringValue
+  def getStringValueCS: CharSequence = getStringValue
 
   /**
     * Ask whether this NodeInfo implementation holds a fingerprint identifying the name of the
@@ -193,7 +193,7 @@ class NamespaceNode(var element: NodeInfo,
 
   override def getConfiguration(): Configuration = element.getConfiguration
 
-  def getNamePool(): NamePool = getConfiguration.getNamePool
+  def getNamePool: NamePool = getConfiguration.getNamePool
 
   /**
     * Get the type annotation of this node, if any. The type annotation is represented as
@@ -260,7 +260,7 @@ class NamespaceNode(var element: NodeInfo,
 
   def getRoot(): NodeInfo = element.getRoot
 
-  def hasChildNodes(): Boolean = false
+  def hasChildNodes: Boolean = false
 
   def generateId(buffer: FastStringBuffer): Unit = {
     element.generateId(buffer)

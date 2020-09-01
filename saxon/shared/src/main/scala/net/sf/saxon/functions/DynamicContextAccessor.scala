@@ -44,7 +44,7 @@ object DynamicContextAccessor {
 
     override def evaluate(context: XPathContext): AtomicValue = {
       val now: DateTimeValue = DateTimeValue.getCurrentDateTime(context)
-      now.toDateValue()
+      now.toDateValue
     }
 
   }
@@ -53,7 +53,7 @@ object DynamicContextAccessor {
 
     override def evaluate(context: XPathContext): AtomicValue = {
       val now: DateTimeValue = DateTimeValue.getCurrentDateTime(context)
-      now.toTimeValue()
+      now.toTimeValue
     }
 
   }

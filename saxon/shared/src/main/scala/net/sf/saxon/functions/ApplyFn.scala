@@ -48,7 +48,7 @@ class ApplyFn extends SystemFunction {
     dynamicFunctionCall = fnExpr
   }
 
-  def isDynamicFunctionCall(): Boolean = dynamicFunctionCall != null
+  def isDynamicFunctionCall: Boolean = dynamicFunctionCall != null
 
   override def getResultItemType(args: Array[Expression]): ItemType = {
     val fnType: ItemType = args(0).getItemType
@@ -104,8 +104,8 @@ class ApplyFn extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val function: Function = arguments(0).head().asInstanceOf[Function]
-    val args: ArrayItem = arguments(1).head().asInstanceOf[ArrayItem]
+    val function: Function = arguments(0).head.asInstanceOf[Function]
+    val args: ArrayItem = arguments(1).head.asInstanceOf[ArrayItem]
     if (function.getArity != args.arrayLength()) {
       val errorCode: String =
         if (isDynamicFunctionCall) "XPTY0004" else "FOAP0001"
@@ -131,7 +131,7 @@ class ApplyFn extends SystemFunction {
       }
     } else {
       for (i <- 0 until argArray.length) {
-        val expected: SequenceType = fit.getArgumentTypes()(i)
+        val expected: SequenceType = fit.getArgumentTypes(i)
         var role: RoleDiagnostic = null
         role =
           if (isDynamicFunctionCall)

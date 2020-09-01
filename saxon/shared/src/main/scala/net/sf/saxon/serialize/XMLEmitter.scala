@@ -437,7 +437,7 @@ class XMLEmitter extends Emitter {
     writeAttribute(elementCode, displayName, value, properties)
   }
 
-  def getAttributeIndentString(): String =
+  def getAttributeIndentString: String =
     if (indentForNextAttribute < 0) {
       " "
     } else {

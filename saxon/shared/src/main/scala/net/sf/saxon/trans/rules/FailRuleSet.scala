@@ -26,7 +26,7 @@ object FailRuleSet {
 
   private var THE_INSTANCE: FailRuleSet = new FailRuleSet()
 
-  def getInstance(): FailRuleSet = THE_INSTANCE
+  def getInstance: FailRuleSet = THE_INSTANCE
 
 }
 

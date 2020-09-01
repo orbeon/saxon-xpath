@@ -23,7 +23,7 @@ object AnyNodeTest {
 
   private var THE_INSTANCE: AnyNodeTest = new AnyNodeTest()
 
-  def getInstance(): AnyNodeTest = THE_INSTANCE
+  def getInstance: AnyNodeTest = THE_INSTANCE
 
 }
 
@@ -67,7 +67,7 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
 
   def matches(qname: StructuredQName): Boolean = true
 
-  def getDefaultPriority(): Double = -0.5
+  def getDefaultPriority: Double = -0.5
 
   /*@NotNull*/
 

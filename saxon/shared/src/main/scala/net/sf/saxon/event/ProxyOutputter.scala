@@ -26,7 +26,7 @@ class ProxyOutputter(private var next: Outputter) extends Outputter {
 
   this.systemId = next.getSystemId
 
-  def getNextOutputter(): Outputter = next
+  def getNextOutputter: Outputter = next
 
   /**
     * Notify the start of the event stream

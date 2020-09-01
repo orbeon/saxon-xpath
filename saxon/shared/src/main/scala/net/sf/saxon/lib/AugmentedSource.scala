@@ -48,49 +48,49 @@ class AugmentedSource private (private var source: Source) extends Source {
     options.addFilter(filter)
   }
 
-  def getFilters(): List[FilterFactory] = options.getFilters
+  def getFilters: List[FilterFactory] = options.getFilters
 
-  def getContainedSource(): Source = source
+  def getContainedSource: Source = source
 
-  def getParseOptions(): ParseOptions = options
+  def getParseOptions: ParseOptions = options
 
   def setModel(model: TreeModel): Unit = {
     options.setModel(model)
   }
 
-  def getModel(): TreeModel = options.getModel
+  def getModel: TreeModel = options.getModel
 
   def setSchemaValidationMode(option: Int): Unit = {
     options.setSchemaValidationMode(option)
   }
 
-  def getSchemaValidation(): Int = options.getSchemaValidationMode
+  def getSchemaValidation: Int = options.getSchemaValidationMode
 
   def setTopLevelElement(elementName: StructuredQName): Unit = {
     options.setTopLevelElement(elementName)
   }
 
-  def getTopLevelElement(): StructuredQName = options.getTopLevelElement
+  def getTopLevelElement: StructuredQName = options.getTopLevelElement
 
   def setTopLevelType(`type`: SchemaType): Unit = {
     options.setTopLevelType(`type`)
   }
 
-  def getTopLevelType(): SchemaType = options.getTopLevelType
+  def getTopLevelType: SchemaType = options.getTopLevelType
 
   def setDTDValidationMode(option: Int): Unit = {
     options.setDTDValidationMode(option)
   }
 
-  def getDTDValidation(): Int = options.getDTDValidationMode
+  def getDTDValidation: Int = options.getDTDValidationMode
 
   def setLineNumbering(lineNumbering: Boolean): Unit = {
     options.setLineNumbering(lineNumbering)
   }
 
-  def isLineNumbering(): Boolean = options.isLineNumbering
+  def isLineNumbering: Boolean = options.isLineNumbering
 
-  def isLineNumberingSet(): Boolean = options.isLineNumberingSet
+  def isLineNumberingSet: Boolean = options.isLineNumberingSet
 
   def setXMLReader(parser: XMLReader): Unit = {
     options.setXMLReader(parser)
@@ -101,7 +101,7 @@ class AugmentedSource private (private var source: Source) extends Source {
 
   /*@Nullable*/
 
-  def getXMLReader(): XMLReader = {
+  def getXMLReader: XMLReader = {
     val parser: XMLReader = options.getXMLReader
     if (parser != null) {
       parser
@@ -116,7 +116,7 @@ class AugmentedSource private (private var source: Source) extends Source {
     options.setWrapDocument(wrap)
   }
 
-  def getWrapDocument(): java.lang.Boolean = options.getWrapDocument
+  def getWrapDocument: java.lang.Boolean = options.getWrapDocument
 
   def setSystemId(id: String): Unit = {
     systemID = id
@@ -140,27 +140,27 @@ class AugmentedSource private (private var source: Source) extends Source {
     options.setXIncludeAware(state)
   }
 
-  def isXIncludeAwareSet(): Boolean = options.isXIncludeAwareSet
+  def isXIncludeAwareSet: Boolean = options.isXIncludeAwareSet
 
-  def isXIncludeAware(): Boolean = options.isXIncludeAware
+  def isXIncludeAware: Boolean = options.isXIncludeAware
 
   def setEntityResolver(resolver: EntityResolver): Unit = {
     options.setEntityResolver(resolver)
   }
 
-  def getEntityResolver(): EntityResolver = options.getEntityResolver
+  def getEntityResolver: EntityResolver = options.getEntityResolver
 
   def setErrorReporter(listener: ErrorReporter): Unit = {
     options.setErrorReporter(listener)
   }
 
-  def getErrorReporter(): ErrorReporter = options.getErrorReporter
+  def getErrorReporter: ErrorReporter = options.getErrorReporter
 
   def setPleaseCloseAfterUse(close: Boolean): Unit = {
     options.setPleaseCloseAfterUse(close)
   }
 
-  def isPleaseCloseAfterUse(): Boolean = options.isPleaseCloseAfterUse
+  def isPleaseCloseAfterUse: Boolean = options.isPleaseCloseAfterUse
 
   def close(): Unit = {
     ParseOptions.close(source)

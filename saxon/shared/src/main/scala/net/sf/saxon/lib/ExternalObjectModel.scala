@@ -22,9 +22,9 @@ import javax.xml.transform.Source
 
 trait ExternalObjectModel {
 
-  def getDocumentClassName(): String
+  def getDocumentClassName: String
 
-  def getIdentifyingURI(): String
+  def getIdentifyingURI: String
 
   def getPJConverter(targetClass: Class[_]): PJConverter
 

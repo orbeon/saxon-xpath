@@ -46,7 +46,7 @@ class LocalVariableBinding(private var variableName: StructuredQName,
     */
   def getIntegerBoundsForVariable(): Array[IntegerValue] = null
 
-  def getNominalReferenceCount(): Int = refCount
+  def getNominalReferenceCount: Int = refCount
 
   def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {
     if (refCount != FilterExpression.FILTERED) {

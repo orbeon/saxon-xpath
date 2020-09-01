@@ -39,7 +39,7 @@ class CurriedFunction(private var targetFunction: Function,
         var j = 0
         for (i <- 0 until boundValues.length if boundValues(i) == null) {
           j += 1
-          argTypes(j) = baseItemType.getArgumentTypes()(i)
+          argTypes(j) = baseItemType.getArgumentTypes(i)
         }
       } else {
         Arrays.fill(argTypes.asInstanceOf[Array[AnyRef]], SequenceType.ANY_SEQUENCE)
@@ -49,7 +49,7 @@ class CurriedFunction(private var targetFunction: Function,
     functionType
   }
 
-  def getFunctionName(): StructuredQName = null
+  def getFunctionName: StructuredQName = null
 
   def getDescription(): String =
     "partially-applied function " + targetFunction.getDescription

@@ -233,9 +233,9 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     if (this.hashCode < other.hashCode) -1 else +1
   }
 
-  def getStringValue(): String = stringValue.toString
+  def getStringValue: String = stringValue.toString
 
-  def getStringValueCS(): CharSequence = stringValue
+  def getStringValueCS: CharSequence = stringValue
 
   def getLocalPart(): String =
     if (nodeName == null) {
@@ -320,7 +320,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   def getRoot(): NodeInfo = this
 
-  def hasChildNodes(): Boolean = false
+  def hasChildNodes: Boolean = false
 
   def generateId(buffer: FastStringBuffer): Unit = {
     buffer.cat('Q')
@@ -350,7 +350,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   override def isIdref(): Boolean = isOption(ReceiverOption.IS_IDREF)
 
-  def isDisableOutputEscaping(): Boolean =
+  def isDisableOutputEscaping: Boolean =
     isOption(ReceiverOption.DISABLE_ESCAPING)
 
   def insertChildren(source: Array[NodeInfo],

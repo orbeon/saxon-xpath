@@ -60,7 +60,7 @@ class LetClause extends Clause {
     sequenceOp.setChildExpression(sequence)
   }
 
-  def getSequence(): Expression = sequenceOp.getChildExpression
+  def getSequence: Expression = sequenceOp.getChildExpression
 
   /**
    * Get the number of variables bound by this clause
@@ -156,12 +156,12 @@ class LetClause extends Clause {
     out.endElement()
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("let $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.append(" := ")
-    fsb.append(getSequence.toShortString())
+    fsb.append(getSequence.toShortString)
     fsb.toString
   }
 

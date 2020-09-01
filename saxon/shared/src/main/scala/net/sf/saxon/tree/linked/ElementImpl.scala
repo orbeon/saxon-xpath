@@ -36,7 +36,7 @@ object ElementImpl {
       try for (av <- node.atomize().asScala if av.getItemType.isIdRefType) {
         true
       } catch {
-        case err: XPathException => {}
+        case _: XPathException =>
 
       }
     } catch {
@@ -427,7 +427,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
-    if (hasChildNodes()) {
+    if (hasChildNodes) {
       val parent: NodeInfo = this
       (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator() .iterator.to(Iterable)
     } else {

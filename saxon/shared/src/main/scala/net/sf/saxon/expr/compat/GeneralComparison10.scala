@@ -352,7 +352,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     gc
   }
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def explainExtraAttributes(out: ExpressionPresenter): Unit = {
     out.emitAttribute("cardinality", "many-to-many (1.0)")

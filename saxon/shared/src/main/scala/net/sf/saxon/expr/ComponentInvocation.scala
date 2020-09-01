@@ -13,13 +13,13 @@ import net.sf.saxon.trans.SymbolicName
   */
 trait ComponentInvocation {
 
-  def getFixedTarget(): Component
+  def getFixedTarget: Component
 
   def setBindingSlot(slot: Int): Unit
 
-  def getBindingSlot(): Int
+  def getBindingSlot: Int
 
-  def getSymbolicName(): SymbolicName
+  def getSymbolicName: SymbolicName
 
 }
 

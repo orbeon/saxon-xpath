@@ -11,17 +11,17 @@ import net.sf.saxon.expr.sort.AtomicComparer
   */
 trait ComparisonExpression {
 
-  def getAtomicComparer(): AtomicComparer
+  def getAtomicComparer: AtomicComparer
 
-  def getSingletonOperator(): Int
+  def getSingletonOperator: Int
 
-  def getLhs(): Operand
+  def getLhs: Operand
 
-  def getRhs(): Operand
+  def getRhs: Operand
 
-  def getLhsExpression(): Expression
+  def getLhsExpression: Expression
 
-  def getRhsExpression(): Expression
+  def getRhsExpression: Expression
 
   def convertsUntypedToOther(): Boolean
 

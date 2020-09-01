@@ -192,7 +192,7 @@ class OptionsParameter {
     result
   }
 
-  def getDefaultOptions(): Map[String, Sequence] = {
+  def getDefaultOptions: Map[String, Sequence] = {
     val result: Map[String, Sequence] = new HashMap[String, Sequence]()
     for ((key, value) <- defaultValues.asScala) {
       result.put(key, value)

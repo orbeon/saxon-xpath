@@ -48,13 +48,13 @@ class PackageData(var config: Configuration) {
     throw new NullPointerException()
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def setConfiguration(configuration: Configuration): Unit = {
     this.config = configuration
   }
 
-  def isXSLT(): Boolean = hostLanguage == HostLanguage.XSLT
+  def isXSLT: Boolean = hostLanguage == HostLanguage.XSLT
 
   def setSchemaAware(schemaAware: Boolean): Unit = {
     isSchemaAware = schemaAware
@@ -86,7 +86,7 @@ class PackageData(var config: Configuration) {
     globalVariables.add(variable)
   }
 
-  def getGlobalVariableList(): List[GlobalVariable] = globalVariables
+  def getGlobalVariableList: List[GlobalVariable] = globalVariables
 
   def setTypeAliasManager(manager: TypeAliasManager): Unit = {
     this.typeAliasManager = manager

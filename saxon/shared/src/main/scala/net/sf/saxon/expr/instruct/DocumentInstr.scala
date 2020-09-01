@@ -124,7 +124,7 @@ class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
                     @BeanProperty var constantText: String)
   extends ParentNodeConstructor {
 
-  override def operands(): java.lang.Iterable[Operand] = contentOp
+  override def operands: java.lang.Iterable[Operand] = contentOp
 
   override def getImplementationMethod(): Int = Expression.EVALUATE_METHOD
 
@@ -141,7 +141,7 @@ class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
     p
   }
 
-  def getStringValueExpression(): Expression =
+  def getStringValueExpression: Expression =
     if (textOnly) {
       if (constantText != null) {
         new StringLiteral(new UntypedAtomicValue(constantText))
@@ -171,7 +171,7 @@ class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
     doc
   }
 
-override  def getItemType(): ItemType = NodeKindTest.DOCUMENT
+override  def getItemType: ItemType = NodeKindTest.DOCUMENT
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall =
     if (preservingTypes && !textOnly) {

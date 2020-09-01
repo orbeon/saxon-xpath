@@ -14,7 +14,7 @@ object CodepointCollator {
 
   private var theInstance: CodepointCollator = new CodepointCollator()
 
-  def getInstance(): CodepointCollator = theInstance
+  def getInstance: CodepointCollator = theInstance
 
   def compareCS(a: CharSequence, b: CharSequence): Int =
     if (a.isInstanceOf[UnicodeString] && b.isInstanceOf[UnicodeString]) {

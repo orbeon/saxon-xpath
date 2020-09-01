@@ -149,15 +149,15 @@ class ReceivingContentHandler
     lineNumbering = pipe.getParseOptions.isLineNumbering
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipe
+  def getPipelineConfiguration: PipelineConfiguration = pipe
 
-  def getConfiguration(): Configuration = pipe.getConfiguration
+  def getConfiguration: Configuration = pipe.getConfiguration
 
   def setIgnoreIgnorableWhitespace(ignore: Boolean): Unit = {
     ignoreIgnorable = ignore
   }
 
-  def isIgnoringIgnorableWhitespace(): Boolean = ignoreIgnorable
+  def isIgnoringIgnorableWhitespace: Boolean = ignoreIgnorable
 
   def startDocument(): Unit = {
     //        System.err.println("ReceivingContentHandler#startDocument");
@@ -304,10 +304,10 @@ class ReceivingContentHandler
   }
 
   //System.err.println("ReceivingContentHandler#startElement " + localname + " (depth=" + namespaceStack.size() + ")");
-  //for (int a=0; a<atts.getLength(); a++) {
+  //for (int a=0; a<atts.getLength; a++) {
   //     System.err.println("  Attribute " + atts.getURI(a) + "/" + atts.getLocalName(a) + "/" + atts.getQName(a));
   //System.err.println("ReceivingContentHandler#startElement " + localname + " (depth=" + namespaceStack.size() + ")");
-  //for (int a=0; a<atts.getLength(); a++) {
+  //for (int a=0; a<atts.getLength; a++) {
   //     System.err.println("  Attribute " + atts.getURI(a) + "/" + atts.getLocalName(a) + "/" + atts.getQName(a));
 
   private def makeAttributeMap(atts: Attributes,

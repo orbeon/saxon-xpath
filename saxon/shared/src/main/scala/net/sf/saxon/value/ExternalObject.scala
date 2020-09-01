@@ -12,7 +12,7 @@ import net.sf.saxon.om.Item
 
 trait ExternalObject[T] extends Item {
 
-  def getObject(): T
+  def getObject: T
 
   def getItemType(th: TypeHierarchy): ItemType
 

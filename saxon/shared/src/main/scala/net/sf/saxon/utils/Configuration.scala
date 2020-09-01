@@ -81,9 +81,10 @@ object Configuration {
    * @return a Configuration object of the class appropriate to the Saxon edition in use.
    * @since 9.2
    */
-  def newConfiguration = {
+  def newConfiguration: Configuration = {
     val configurationClass = classOf[Configuration]
-    try configurationClass.newInstance
+    try
+      configurationClass.newInstance
     catch {
       case e: Exception =>
         e.printStackTrace()
@@ -299,7 +300,7 @@ object Configuration {
    * @param context the XPath dynamic context
    * @return the Saxon Configuration for a given XPath dynamic context
    */
-  def getConfiguration(context: XPathContext): Configuration = context.getConfiguration()
+  def getConfiguration(context: XPathContext): Configuration = context.getConfiguration
 
   /**
    * Validate a property value where the required type is boolean
@@ -1759,7 +1760,7 @@ class Configuration() extends SourceResolver with NotationSet {
    * @param handler a function annotation handler to be invoked in respect of function
    *                annotations in the relevant namespace
    */
-  def registerFunctionAnnotationHandler(handler: FunctionAnnotationHandler) = functionAnnotationHandlers.put(handler.getAssertionNamespace(), handler)
+  def registerFunctionAnnotationHandler(handler: FunctionAnnotationHandler) = functionAnnotationHandlers.put(handler.getAssertionNamespace, handler)
 
   /**
    * Get the FunctionAnnotationHandler used to handle XQuery function annotations
@@ -2805,7 +2806,7 @@ class Configuration() extends SourceResolver with NotationSet {
    *              <p>This method is intended for advanced users only, and is subject to change.</p>
    */
   def registerExternalObjectModel(model: ExternalObjectModel): Unit = {
-    try getConfClass(model.getDocumentClassName(), tracing = false, null)
+    try getConfClass(model.getDocumentClassName, tracing = false, null)
     catch {
       case _: XPathException =>
         // If the model can't be loaded, do nothing
@@ -2820,7 +2821,7 @@ class Configuration() extends SourceResolver with NotationSet {
 
   def getExternalObjectModel(uri: String): ExternalObjectModel = {
     for (model <- externalObjectModels.asScala) {
-      if (model.getIdentifyingURI().equals(uri)) return model
+      if (model.getIdentifyingURI.equals(uri)) return model
     }
     null
   }
@@ -3108,11 +3109,11 @@ class Configuration() extends SourceResolver with NotationSet {
       Sender.send(src, builder, options)
       // Get the constructed document
       val newdoc = builder.getCurrentRoot
-      if (newdoc.getNodeKind() != Type.DOCUMENT) throw new XPathException("Source object represents a node other than a document node")
+      if (newdoc.getNodeKind != Type.DOCUMENT) throw new XPathException("Source object represents a node other than a document node")
       // Reset the builder, detaching it from the constructed document
       builder.reset()
       // Return the constructed document
-      newdoc.getTreeInfo()
+      newdoc.getTreeInfo
     } finally {
       // If requested, close the input stream
       if (finallyClose) {

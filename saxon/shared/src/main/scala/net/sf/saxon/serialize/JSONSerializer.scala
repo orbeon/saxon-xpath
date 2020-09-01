@@ -154,7 +154,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
       emitter.writeAtomicValue(null)
     } else if (len == 1) {
       level += 1
-      write(seq.head())
+      write(seq.head)
       level -= 1
     } else {
       throw new XPathException(

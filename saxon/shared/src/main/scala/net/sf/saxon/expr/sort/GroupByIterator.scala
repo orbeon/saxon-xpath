@@ -155,7 +155,7 @@ class GroupByIterator
   def iterateCurrentGroup(): SequenceIterator =
     new ListIterator(groups.get(position - 1))
 
-  def getCurrentGroup(): List[_] = groups.get(position - 1)
+  def getCurrentGroup: List[_] = groups.get(position - 1)
 
   def hasNext(): Boolean = position < groups.size
 
@@ -175,8 +175,8 @@ class GroupByIterator
     groups.get(position - 1).get(0)
   }
 
-  override def getProperties(): Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
+  override def getProperties: Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
 
-  def getLength(): Int = groups.size
+  def getLength: Int = groups.size
 
 }

@@ -60,7 +60,7 @@ class TypeAvailable extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-    val lexicalQName: String = arguments(0).head().getStringValue
+    val lexicalQName: String = arguments(0).head.getStringValue
     BooleanValue.get(typeAvailable(lexicalQName, context.getConfiguration))
   }
 

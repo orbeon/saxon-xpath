@@ -106,9 +106,9 @@ class LocalNameTest(pool: NamePool,
   def matches(qname: StructuredQName): Boolean =
     localName == qname.getLocalPart
 
-  def getDefaultPriority(): Double = -0.25
+  def getDefaultPriority: Double = -0.25
 
-  override def getPrimitiveType(): Int = nodeKind
+  override def getPrimitiveType: Int = nodeKind
 
   override def toString: String = nodeKind match {
     case Type.ELEMENT => "*:" + localName

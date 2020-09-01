@@ -11,7 +11,7 @@ import net.sf.saxon.expr.Expression
   */
 trait PatternWithPredicate {
 
-  def getPredicate(): Expression
+  def getPredicate: Expression
 
 }
 

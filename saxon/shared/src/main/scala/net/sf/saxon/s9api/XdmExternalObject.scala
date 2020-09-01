@@ -9,10 +9,10 @@ class XdmExternalObject extends XdmItem {
     if (value.isInstanceOf[ObjectValue[_]])
       new ObjectValue[Any](value)
     else
-      new ObjectValue[Any]()
+      new ObjectValue[Any]
   }
 
-  def getExternalObject(): Any = getUnderlyingValue.asInstanceOf[ExternalObject[_]].getObject
+  def getExternalObject: Any = getUnderlyingValue.asInstanceOf[ExternalObject[_]].getObject
 
   override def toString: String = getExternalObject.toString
 

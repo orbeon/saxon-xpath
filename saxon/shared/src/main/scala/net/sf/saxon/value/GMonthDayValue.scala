@@ -56,7 +56,7 @@ class GMonthDayValue() extends GDateValue {
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.G_MONTH_DAY
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_MONTH_DAY
 
   def getPrimitiveStringValue(): CharSequence = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -64,7 +64,7 @@ class GMonthDayValue() extends GDateValue {
     appendTwoDigits(sb, month)
     sb.cat('-')
     appendTwoDigits(sb, day)
-    if (hasTimezone()) {
+    if (hasTimezone) {
       appendTimezone(sb)
     }
     sb
@@ -79,7 +79,7 @@ class GMonthDayValue() extends GDateValue {
 
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
-      toDateTime().adjustTimezone(tz)
+      toDateTime.adjustTimezone(tz)
     new GMonthDayValue(dt.getMonth, dt.getDay, dt.getTimezoneInMinutes)
   }
 

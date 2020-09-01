@@ -84,7 +84,7 @@ abstract class ParentNodeConstructor
   def getContentExpression(): Expression =
     if (contentOp == null) null else contentOp.getChildExpression
 
-  def getContentOperand(): Operand = contentOp
+  def getContentOperand: Operand = contentOp
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
@@ -151,8 +151,8 @@ abstract class ParentNodeConstructor
     new PathMap.PathMapNodeSet(pathMap.makeNewRoot(this))
   }
 
-  def isPreservingTypes(): Boolean = preservingTypes
+  def isPreservingTypes: Boolean = preservingTypes
 
-  def isLocal(): Boolean = ExpressionTool.isLocalConstructor(this)
+  def isLocal: Boolean = ExpressionTool.isLocalConstructor(this)
 
 }

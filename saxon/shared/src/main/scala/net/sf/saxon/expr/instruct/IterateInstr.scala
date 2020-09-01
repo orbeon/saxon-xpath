@@ -46,7 +46,7 @@ object IterateInstr {
       var found: Boolean = false
       val inTryCatch: Boolean = withinTryCatch || exp.isInstanceOf[TryCatch]
       breakable {
-        for (o <- exp.operands().asScala
+        for (o <- exp.operands.asScala
              if containsBreakOrNextIterationWithinTryCatch(o.getChildExpression,
                inTryCatch)) {
           found = true
@@ -91,7 +91,7 @@ class IterateInstr(select: Expression,
     selectOp.setChildExpression(select)
   }
 
-  def getInitiallyExp(): LocalParamBlock =
+  def getInitiallyExp: LocalParamBlock =
     initiallyOp.getChildExpression.asInstanceOf[LocalParamBlock]
 
   def setInitiallyExp(initiallyExp: LocalParamBlock): Unit = {
@@ -102,13 +102,13 @@ class IterateInstr(select: Expression,
     actionOp.setChildExpression(action)
   }
 
-  def getOnCompletion(): Expression = onCompletionOp.getChildExpression
+  def getOnCompletion: Expression = onCompletionOp.getChildExpression
 
   def setOnCompletion(onCompletion: Expression): Unit = {
     onCompletionOp.setChildExpression(onCompletion)
   }
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, actionOp, initiallyOp, onCompletionOp)
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ITERATE
@@ -157,10 +157,10 @@ class IterateInstr(select: Expression,
     this
   }
 
-  def isCompilable(): Boolean =
+  def isCompilable: Boolean =
     !containsBreakOrNextIterationWithinTryCatch(this, withinTryCatch = false)
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     if (Literal.isEmptySequence(getOnCompletion)) {
       getActionExpression.getItemType
     } else {
@@ -177,7 +177,7 @@ class IterateInstr(select: Expression,
 
   override def hasVariableBinding(binding: Binding): Boolean = {
     val paramBlock: LocalParamBlock = getInitiallyExp
-    for (o <- paramBlock.operands().asScala) {
+    for (o <- paramBlock.operands.asScala) {
       val setter: LocalParam = o.getChildExpression.asInstanceOf[LocalParam]
       if (setter == binding) {
         true

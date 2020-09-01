@@ -110,7 +110,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
       case e: XPathException =>
         if ("XPDY0002" == e.getErrorCodeLocalPart && !e.hasBeenReported) {
           throw new XPathException(
-            "The context item for axis step " + toShortString() +
+            "The context item for axis step " + toShortString +
               " is absent",
             "XPDY0002",
             getLocation)

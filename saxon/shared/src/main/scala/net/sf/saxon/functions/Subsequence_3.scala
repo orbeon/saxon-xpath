@@ -98,8 +98,8 @@ class Subsequence_3 extends SystemFunction with Callable {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(
       subSequence(arguments(0).iterate(),
-        arguments(1).head().asInstanceOf[NumericValue],
-        arguments(2).head().asInstanceOf[NumericValue],
+        arguments(1).head.asInstanceOf[NumericValue],
+        arguments(2).head.asInstanceOf[NumericValue],
         context))
 
   override def getStreamerName(): String = "Subsequence"

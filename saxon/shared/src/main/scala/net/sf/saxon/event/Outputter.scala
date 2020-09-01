@@ -24,7 +24,7 @@ abstract class Outputter extends Receiver {
 
   def getPipelineConfiguration(): PipelineConfiguration = pipelineConfiguration
 
-  def getConfiguration(): Configuration =
+  def getConfiguration: Configuration =
     pipelineConfiguration.getConfiguration
 
   def setSystemId(systemId: String): Unit = {

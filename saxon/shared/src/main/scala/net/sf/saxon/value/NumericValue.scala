@@ -64,11 +64,11 @@ abstract class NumericValue
     * @return A double representing this numeric value; NaN if it cannot be
     *         converted
     */
-  def getDoubleValue(): Double
+  def getDoubleValue: Double
 
-  def getFloatValue(): Float
+  def getFloatValue: Float
 
-  def getDecimalValue(): BigDecimal
+  def getDecimalValue: BigDecimal
 
   /**
     * Get the effective boolean value of the value. This override of this method throws no exceptions.
@@ -104,9 +104,9 @@ abstract class NumericValue
 
   def signum(): Int
 
-  def isNegativeZero(): Boolean = false
+  def isNegativeZero: Boolean = false
 
-  def isWholeNumber(): Boolean
+  def isWholeNumber: Boolean
 
   def asSubscript(): Int
 

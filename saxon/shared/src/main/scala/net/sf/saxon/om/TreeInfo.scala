@@ -12,25 +12,25 @@ import java.util.Iterator
 
 trait TreeInfo extends Source {
 
-  def getRootNode(): NodeInfo
+  def getRootNode: NodeInfo
 
-  def getConfiguration(): Configuration
+  def getConfiguration: Configuration
 
-  def getDocumentNumber(): Long
+  def getDocumentNumber: Long
 
-  def isTyped(): Boolean = false
+  def isTyped: Boolean = false
 
-  def isMutable(): Boolean = false
+  def isMutable: Boolean = false
 
   def selectID(id: String, getParent: Boolean): NodeInfo
 
-  def getUnparsedEntityNames(): Iterator[String]
+  def getUnparsedEntityNames: Iterator[String]
 
   def getUnparsedEntity(name: String): Array[String]
 
   def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit
 
-  def getSpaceStrippingRule(): SpaceStrippingRule
+  def getSpaceStrippingRule: SpaceStrippingRule
 
   def setUserData(key: String, value: Any): Unit
 

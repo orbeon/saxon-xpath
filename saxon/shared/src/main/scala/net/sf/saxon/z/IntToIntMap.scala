@@ -4,7 +4,7 @@ trait IntToIntMap {
 
   def setDefaultValue(defaultValue: Int): Unit
 
-  def getDefaultValue(): Int
+  def getDefaultValue: Int
 
   def clear(): Unit
 

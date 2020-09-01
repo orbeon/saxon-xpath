@@ -36,7 +36,7 @@ class FunctionName extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_] = {
-    val f: Function = arguments(0).head().asInstanceOf[Function]
+    val f: Function = arguments(0).head.asInstanceOf[Function]
     assert(f != null)
     val name: StructuredQName = f.getFunctionName
     if (name == null) {

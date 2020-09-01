@@ -405,7 +405,7 @@ object NamedTimeZone {
   tz("zw", "Africa/Harare")
 
   def getTimeZoneNameForDate(date: DateTimeValue, place: String): String = {
-    if (!date.hasTimezone()) {
+    if (!date.hasTimezone) {
       return ""
     }
     if (place == null) {
@@ -463,7 +463,7 @@ object NamedTimeZone {
   }
 
   def getOlsenTimeZoneName(date: DateTimeValue, country: String): String = {
-    if (!date.hasTimezone()) {
+    if (!date.hasTimezone) {
       return ""
     }
     val possibleIds: List[String] = idForCountry.get(country.toLowerCase())

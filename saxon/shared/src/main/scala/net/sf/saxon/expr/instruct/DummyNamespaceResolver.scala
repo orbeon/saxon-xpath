@@ -19,7 +19,7 @@ object DummyNamespaceResolver {
   private val THE_INSTANCE: DummyNamespaceResolver =
     new DummyNamespaceResolver()
 
-  def getInstance(): DummyNamespaceResolver = THE_INSTANCE
+  def getInstance: DummyNamespaceResolver = THE_INSTANCE
 
 }
 

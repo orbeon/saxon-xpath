@@ -1,27 +1,19 @@
 package net.sf.saxon.model
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.expr.Expression
-import net.sf.saxon.expr.StaticProperty
+import java.util.{Objects, Optional}
+
+import net.sf.saxon.expr.{Expression, StaticProperty}
 import net.sf.saxon.expr.parser.RoleDiagnostic
 import net.sf.saxon.functions.hof.FunctionSequenceCoercer
-import net.sf.saxon.ma.arrays.ArrayItem
-import net.sf.saxon.ma.arrays.ArrayItemType
-import net.sf.saxon.ma.map.KeyValuePair
-import net.sf.saxon.ma.map.MapItem
-import net.sf.saxon.ma.map.MapType
-import net.sf.saxon.om.Function
-import net.sf.saxon.om.Item
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.tree.util.FastStringBuffer
-import net.sf.saxon.value.SequenceType
-import java.util.Objects
-import java.util.Optional
-
+import net.sf.saxon.ma.arrays.{ArrayItem, ArrayItemType}
+import net.sf.saxon.ma.map.{MapItem, MapType}
+import net.sf.saxon.om.{Function, Item}
 import net.sf.saxon.query.AnnotationList
+import net.sf.saxon.trans.{Err, XPathException}
+import net.sf.saxon.tree.util.FastStringBuffer
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.SequenceType
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 class SpecificFunctionType extends AnyFunctionType {
@@ -44,9 +36,9 @@ class SpecificFunctionType extends AnyFunctionType {
     this.annotations = Objects.requireNonNull(annotationList)
   }
 
-  def getArity(): Int = argTypes.length
+  def getArity: Int = argTypes.length
 
-  override def getArgumentTypes(): Array[SequenceType] = argTypes
+  override def getArgumentTypes: Array[SequenceType] = argTypes
 
   override def getAnnotationAssertions(): AnnotationList = annotations
 
@@ -54,18 +46,17 @@ class SpecificFunctionType extends AnyFunctionType {
     if (getArity != 1) {
       return      false
     }
-    val argType: ItemType = getArgumentTypes()(0).getPrimaryType
+    val argType: ItemType = getArgumentTypes(0).getPrimaryType
     th.isSubType(BuiltInAtomicType.INTEGER, argType)
   }
 
   override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)
     sb.append("(function(")
-    for (i <- 0 until argTypes.length) {
+    for (i <- argTypes.indices) {
       sb.append(argTypes(i).toString)
-      if (i < argTypes.length - 1) {
+      if (i < argTypes.length - 1)
         sb.append(", ")
-      }
     }
     sb.append(") as ")
     sb.append(resultType.toString)
@@ -76,43 +67,38 @@ class SpecificFunctionType extends AnyFunctionType {
   override def toExportString(): String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)
     sb.append("(function(")
-    for (i <- 0 until argTypes.length) {
-      sb.append(argTypes(i).toExportString())
-      if (i < argTypes.length - 1) {
+    for (i <- argTypes.indices) {
+      sb.append(argTypes(i).toExportString)
+      if (i < argTypes.length - 1)
         sb.append(", ")
-      }
     }
     sb.append(") as ")
-    sb.append(resultType.toExportString())
+    sb.append(resultType.toExportString)
     sb.cat(')')
     sb.toString
   }
 
   override def equals(other: Any): Boolean = {
-    if (other.isInstanceOf[SpecificFunctionType]) {
-      val f2: SpecificFunctionType = other.asInstanceOf[SpecificFunctionType]
-      if (resultType != f2.resultType) {
-        return        false
-      }
-      if (argTypes.length != f2.argTypes.length) {
-        return false
-      }
-      for (i <- 0 until argTypes.length if argTypes(i) != f2.argTypes(i)) {
-        return false
-      }
-      if (getAnnotationAssertions != f2.getAnnotationAssertions) {
-        return        false
-      }
-      return true
+    other match {
+      case f2: SpecificFunctionType =>
+        if (resultType != f2.resultType)
+          return false
+        if (argTypes.length != f2.argTypes.length)
+          return false
+        for (i <- argTypes.indices if argTypes(i) != f2.argTypes(i))
+          return false
+        if (getAnnotationAssertions != f2.getAnnotationAssertions)
+          return false
+        return true
+      case _ =>
     }
     false
   }
 
   override def hashCode(): Int = {
-    var h: Int = resultType.hashCode ^ argTypes.length
-    for (argType <- argTypes) {
+    var h = resultType.hashCode ^ argTypes.length
+    for (argType <- argTypes)
       h ^= argType.hashCode
-    }
     h
   }
   import Affinity._
@@ -138,9 +124,8 @@ class SpecificFunctionType extends AnyFunctionType {
       }
       var wider: Boolean = false
       var narrower: Boolean = false
-      for (i <- 0 until argTypes.length) {
-        val argRel: Affinity =
-          th.sequenceTypeRelationship(argTypes(i), other.getArgumentTypes()(i))
+      for (i <- argTypes.indices) {
+        val argRel = th.sequenceTypeRelationship(argTypes(i), other.getArgumentTypes(i))
         argRel match {
           case DISJOINT => Affinity.DISJOINT
           case SUBSUMES => narrower = true
@@ -149,11 +134,9 @@ class SpecificFunctionType extends AnyFunctionType {
             wider = true
             narrower = true
           case _ =>
-
         }
       }
-      val resRel: Affinity =
-        th.sequenceTypeRelationship(resultType, other.getResultType)
+      val resRel = th.sequenceTypeRelationship(resultType, other.getResultType)
       resRel match {
         case DISJOINT => Affinity.DISJOINT
         case SUBSUMES => wider = true
@@ -179,7 +162,7 @@ class SpecificFunctionType extends AnyFunctionType {
       }
     }
 
-  override def getDefaultPriority(): Double = {
+  override def getDefaultPriority: Double = {
     var prio: Double = 1
     for (st <- getArgumentTypes) {
       prio *= st.getPrimaryType.getNormalizedDefaultPriority
@@ -334,13 +317,13 @@ class SpecificFunctionType extends AnyFunctionType {
     }
     for (j <- 0 until getArity) {
       rel =
-        th.sequenceTypeRelationship(argTypes(j), other.getArgumentTypes()(j))
+        th.sequenceTypeRelationship(argTypes(j), other.getArgumentTypes(j))
       if (rel != Affinity.SAME_TYPE && rel != Affinity.SUBSUMED_BY) {
         val s: String = "The type of the " + RoleDiagnostic.ordinal(j + 1) + " argument of the required function is " +
           argTypes(j) +
           " but the declared" +
           "type of the corresponding argument of the supplied function is " +
-          other.getArgumentTypes()(j)
+          other.getArgumentTypes(j)
         Optional.of(s)
       }
     }

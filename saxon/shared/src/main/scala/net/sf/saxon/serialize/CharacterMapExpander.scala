@@ -34,7 +34,7 @@ class CharacterMapExpander(next: Receiver) extends ProxyReceiver(next) {
     charMap = map
   }
 
-  def getCharacterMap(): CharacterMap = charMap
+  def getCharacterMap: CharacterMap = charMap
 
   def setUseNullMarkers(use: Boolean): Unit = {
     useNullMarkers = use

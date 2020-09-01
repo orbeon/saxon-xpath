@@ -24,7 +24,7 @@ import net.sf.saxon.value.{BooleanValue, SequenceType, StringValue}
 object XPath30FunctionSet {
 
   private val THE_INSTANCE: XPath30FunctionSet = new XPath30FunctionSet()
-  def getInstance(): XPath30FunctionSet = THE_INSTANCE
+  def getInstance: XPath30FunctionSet = THE_INSTANCE
 }
 
 class XPath30FunctionSet private () extends BuiltInFunctionSet {

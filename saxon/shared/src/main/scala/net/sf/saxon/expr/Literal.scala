@@ -33,7 +33,7 @@ object Literal {
   }
 
   def exportValue(value: Sequence, out: ExpressionPresenter): Unit = {
-    if (value.head() == null) {
+    if (value.head == null) {
       out.startElement("empty")
       out.endElement()
     } else if (value.isInstanceOf[AtomicValue]) {
@@ -258,7 +258,7 @@ class   Literal extends Expression {
 
   override def getNetCost(): Int = 0
 
-  def getItemType(): ItemType =
+  def getItemType: ItemType =
     if (value.isInstanceOf[AtomicValue]) {
       value.asInstanceOf[AtomicValue].getItemType
     } else if (value.getLength == 0) {
@@ -347,7 +347,7 @@ class   Literal extends Expression {
 
   def iterate(): SequenceIterator = value.iterate()
 
-  override def evaluateItem(context: XPathContext): Item = value.head()
+  override def evaluateItem(context: XPathContext): Item = value.head
 
   override def process(output: Outputter, context: XPathContext): Unit = {
     if (value.isInstanceOf[Item]) {
@@ -447,17 +447,17 @@ class   Literal extends Expression {
 
   override def getExpressionName(): String = "literal"
 
-  override def toShortString(): String =
+  override def toShortString: String =
     if (value.getLength == 0) {
       "()"
     } else if (value.getLength == 1) {
-      value.toShortString()
+      value.toShortString
     } else {
-      "(" + value.head().toShortString() + ", ...{" + value.getLength +
+      "(" + value.head.toShortString + ", ...{" + value.getLength +
         "})"
     }
 
-  override def isSubtreeExpression(): Boolean = true
+  override def isSubtreeExpression: Boolean = true
 
   override def getStreamerName(): String = "Literal"
 

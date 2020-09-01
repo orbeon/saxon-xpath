@@ -243,7 +243,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
   }
 
-  def getPrefixPool(): PrefixPool = prefixPool
+  def getPrefixPool: PrefixPool = prefixPool
 
   def addDocumentNode(doc: TinyDocumentImpl): Int = {
     this.setRootNode(doc)
@@ -625,7 +625,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
   }
 
-  def hasXmlSpacePreserveAttribute(): Boolean =
+  def hasXmlSpacePreserveAttribute: Boolean =
     (0 until numberOfAttributes)
       .find(i =>
         (attCode(i) & NamePool.FP_MASK) == StandardNames.XML_SPACE &&
@@ -772,7 +772,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
                if av.getItemType.isIdRefType) {
         true
       } catch {
-        case err: XPathException => {}
+        case _: XPathException =>
 
       }
     } catch {
@@ -918,7 +918,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     entityTable.get(name)
   }
 
-  def getNamePool(): NamePool = getConfiguration.getNamePool
+  def getNamePool: NamePool = getConfiguration.getNamePool
 
   def markTopWithinEntity(nodeNr: Int): Unit = {
     if (topWithinEntity == null) {
@@ -977,55 +977,55 @@ class TinyTree(config: Configuration, statistics: Statistics)
    *
    * @return true if the document contains elements whose type is other than UNTYPED
    */
-  override def isTyped(): Boolean = typeArray != null
+  override def isTyped: Boolean = typeArray != null
 
-  def getNumberOfNodes(): Int = numberOfNodes
+  def getNumberOfNodes: Int = numberOfNodes
 
-  def getNumberOfAttributes(): Int = numberOfAttributes
+  def getNumberOfAttributes: Int = numberOfAttributes
 
-  def getNumberOfNamespaces(): Int = numberOfNamespaces
+  def getNumberOfNamespaces: Int = numberOfNamespaces
 
   def getNodeKindArray(): Array[Byte] = nodeKind
 
-  def getNodeDepthArray(): Array[Short] = depth
+  def getNodeDepthArray: Array[Short] = depth
 
   def getNameCodeArray(): Array[Int] = nameCode
 
   /*@Nullable*/
 
-  def getTypeArray(): Array[SchemaType] = typeArray
+  def getTypeArray: Array[SchemaType] = typeArray
 
-  def getNextPointerArray(): Array[Int] = next
+  def getNextPointerArray: Array[Int] = next
 
-  def getAlphaArray(): Array[Int] = alpha
+  def getAlphaArray: Array[Int] = alpha
 
-  def getBetaArray(): Array[Int] = beta
+  def getBetaArray: Array[Int] = beta
 
-  def getCharacterBuffer(): AppendableCharSequence = charBuffer
-
-  /*@Nullable*/
-
-  def getCommentBuffer(): CharSequence = commentBuffer
-
-  def getAttributeNameCodeArray(): Array[Int] = attCode
+  def getCharacterBuffer: AppendableCharSequence = charBuffer
 
   /*@Nullable*/
 
-  def getAttributeTypeArray(): Array[SimpleType] = attType
+  def getCommentBuffer: CharSequence = commentBuffer
 
-  def getAttributeParentArray(): Array[Int] = attParent
+  def getAttributeNameCodeArray: Array[Int] = attCode
 
-  def getAttributeValueArray(): Array[CharSequence] = attValue
+  /*@Nullable*/
 
-  def getNamespaceBindings(): Array[NamespaceBinding] =
+  def getAttributeTypeArray: Array[SimpleType] = attType
+
+  def getAttributeParentArray: Array[Int] = attParent
+
+  def getAttributeValueArray: Array[CharSequence] = attValue
+
+  def getNamespaceBindings: Array[NamespaceBinding] =
     throw new UnsupportedOperationException()
 
-  def getNamespaceMaps(): Array[NamespaceMap] = namespaceMaps
+  def getNamespaceMaps: Array[NamespaceMap] = namespaceMaps
 
-  def getNamespaceParentArray(): Array[Int] =
+  def getNamespaceParentArray: Array[Int] =
     throw new UnsupportedOperationException()
 
-  def isUsesNamespaces(): Boolean = usesNamespaces
+  def isUsesNamespaces: Boolean = usesNamespaces
 
   def bulkCopy(source: TinyTree,
                nodeNr: Int,
@@ -1192,7 +1192,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     numberOfNodes += length
   }
 
-  def getLocalNameIndex(): Map[String, IntSet] = synchronized {
+  def getLocalNameIndex: Map[String, IntSet] = synchronized {
     if (localNameIndex == null) {
       localNameIndex = new HashMap()
       val indexed: IntHashSet = new IntHashSet()

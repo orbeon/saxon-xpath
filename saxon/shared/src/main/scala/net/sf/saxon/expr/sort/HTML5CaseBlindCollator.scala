@@ -15,7 +15,7 @@ object HTML5CaseBlindCollator {
   private var theInstance: HTML5CaseBlindCollator =
     new HTML5CaseBlindCollator()
 
-  def getInstance(): HTML5CaseBlindCollator = theInstance
+  def getInstance: HTML5CaseBlindCollator = theInstance
 
 }
 

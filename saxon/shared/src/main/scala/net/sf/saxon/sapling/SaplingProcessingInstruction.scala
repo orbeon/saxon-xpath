@@ -26,7 +26,7 @@ class SaplingProcessingInstruction(@BeanProperty var name: String,
 
   Objects.requireNonNull(value)
 
-  def getStringValue(): String = value
+  def getStringValue: String = value
 
   override def getNodeKind(): Int = Type.PROCESSING_INSTRUCTION
 

@@ -30,7 +30,7 @@ object AnchorPattern {
 
   private var THE_INSTANCE: AnchorPattern = new AnchorPattern()
 
-  def getInstance(): AnchorPattern = THE_INSTANCE
+  def getInstance: AnchorPattern = THE_INSTANCE
 
 }
 
@@ -66,7 +66,7 @@ class AnchorPattern  () extends Pattern {
   def matches(item: Item, context: XPathContext): Boolean =
     throw new AssertionError()
 
-  override def getItemType(): ItemType = AnyNodeTest.getInstance
+  override def getItemType: ItemType = AnyNodeTest.getInstance
 
   /*@NotNull*/
 

@@ -118,7 +118,7 @@ class ApplyTemplates  ()
     this.mode = target
   }
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val operanda: List[Operand] = new ArrayList[Operand]()
     operanda.add(selectOp)
     WithParam.gatherOperands(this, getActualParams, operanda)
@@ -284,15 +284,15 @@ override  def optimize(visitor: ExpressionVisitor,
     targetMode
   }
 
-  def getSelectExpression(): Expression = getSelect
+  def getSelectExpression: Expression = getSelect
 
-  def isImplicitSelect(): Boolean = implicitSelect
+  def isImplicitSelect: Boolean = implicitSelect
 
   def useTailRecursion(): Boolean = useTailRecur
 
   def usesCurrentMode(): Boolean = useCurrentMode
 
-  def getMode(): Mode = mode
+  def getMode: Mode = mode
 
   def getFixedTarget(): Component = mode.getDeclaringComponent
 
@@ -338,7 +338,7 @@ override  def optimize(visitor: ExpressionVisitor,
     out.endElement()
   }
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
   def setSelect(select: Expression): Unit = {
     selectOp.setChildExpression(select)

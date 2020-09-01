@@ -38,31 +38,31 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def getBaseURI(): URI = new URI(staticQueryContext.getBaseURI)
+  def getBaseURI: URI = new URI(staticQueryContext.getBaseURI)
 
   def setErrorListener(listener: ErrorListener): Unit = {
     staticQueryContext.setErrorListener(listener)
   }
 
-  def getErrorListener(): ErrorListener = staticQueryContext.getErrorListener
+  def getErrorListener: ErrorListener = staticQueryContext.getErrorListener
 
   def setErrorReporter(reporter: ErrorReporter): Unit = {
     staticQueryContext.setErrorReporter(reporter)
   }
 
-  def getErrorReporter(): ErrorReporter = staticQueryContext.getErrorReporter
+  def getErrorReporter: ErrorReporter = staticQueryContext.getErrorReporter
 
   def setCompileWithTracing(option: Boolean): Unit = {
     staticQueryContext.setCompileWithTracing(option)
   }
 
-  def isCompileWithTracing(): Boolean = staticQueryContext.isCompileWithTracing
+  def isCompileWithTracing: Boolean = staticQueryContext.isCompileWithTracing
 
   def setModuleURIResolver(resolver: ModuleURIResolver): Unit = {
     staticQueryContext.setModuleURIResolver(resolver)
   }
 
-  def getModuleURIResolver(): ModuleURIResolver =
+  def getModuleURIResolver: ModuleURIResolver =
     staticQueryContext.getModuleURIResolver
 
   def setUpdatingEnabled(updating: Boolean): Unit = {
@@ -75,7 +75,7 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
     staticQueryContext.setUpdatingEnabled(updating)
   }
 
-  def isUpdatingEnabled(): Boolean = staticQueryContext.isUpdatingEnabled
+  def isUpdatingEnabled: Boolean = staticQueryContext.isUpdatingEnabled
 
   def setSchemaAware(schemaAware: Boolean): Unit = {
     if (schemaAware &&
@@ -87,7 +87,7 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
     staticQueryContext.setSchemaAware(schemaAware)
   }
 
-  def isSchemaAware(): Boolean = staticQueryContext.isSchemaAware
+  def isSchemaAware: Boolean = staticQueryContext.isSchemaAware
 
   def setStreaming(option: Boolean): Unit = {
     staticQueryContext.setStreaming(option)
@@ -103,9 +103,9 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def isStreaming(): Boolean = staticQueryContext.isStreaming
+  def isStreaming: Boolean = staticQueryContext.isStreaming
 
-  def getLanguageVersion(): String = "3.1"
+  def getLanguageVersion: String = "3.1"
 
   def declareNamespace(prefix: String, uri: String): Unit = {
     staticQueryContext.declareNamespace(prefix, uri)
@@ -129,7 +129,7 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
     }
   }
 
-  def isFastCompilation(): Boolean =
+  def isFastCompilation: Boolean =
     staticQueryContext.getOptimizerOptions.getOptions == 0
 
   def compileLibrary(query: String): Unit = {
@@ -176,7 +176,7 @@ class XQueryCompiler(@BeanProperty var processor: Processor) {
   def compile(query: Reader): XQueryExecutable =
     new XQueryExecutable(processor, staticQueryContext.compileQuery(query))
 
-  def getUnderlyingStaticContext(): StaticQueryContext = staticQueryContext
+  def getUnderlyingStaticContext: StaticQueryContext = staticQueryContext
 
   def setErrorList(errorList: List[_ >: StaticError]): Unit = {
     this.setErrorReporter((err: StaticError) => errorList.add(err))

@@ -37,14 +37,15 @@ object DateValue {
   }
 
   def parse(s: CharSequence): DateValue = {
-    val result: ConversionResult = makeDateValue(s, ConversionRules.DEFAULT)
-    if (result.isInstanceOf[ValidationFailure]) {
-      throw new DateTimeParseException(
-        result.asInstanceOf[ValidationFailure].getMessage,
-        s,
-        0)
-    } else {
-      result.asInstanceOf[DateValue]
+    val result = makeDateValue(s, ConversionRules.DEFAULT)
+    result match {
+      case failure: ValidationFailure =>
+        throw new DateTimeParseException(
+          failure.getMessage,
+          s,
+          0)
+      case _ =>
+        result.asInstanceOf[DateValue]
     }
   }
 
@@ -215,7 +216,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
     typeLabel = BuiltInAtomicType.DATE
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.DATE
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DATE
 
   def getPrimitiveStringValue(): CharSequence = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -232,7 +233,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
     appendTwoDigits(sb, month)
     sb.cat('-')
     appendTwoDigits(sb, day)
-    if (hasTimezone()) {
+    if (hasTimezone) {
       appendTimezone(sb)
     }
     sb
@@ -240,7 +241,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
     var target: DateValue = this
-    if (hasTimezone()) {
+    if (hasTimezone) {
       if (getTimezoneInMinutes > 12 * 60) {
         target = adjustTimezone(getTimezoneInMinutes - 24 * 60)
       } else if (getTimezoneInMinutes <= -12 * 60) {
@@ -259,7 +260,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   }
 
   def adjustTimezone(timezone: Int): DateValue = {
-    val dt: DateTimeValue = toDateTime().adjustTimezone(timezone)
+    val dt: DateTimeValue = toDateTime.adjustTimezone(timezone)
     new DateValue(dt.getYear,
       dt.getMonth,
       dt.getDay,
@@ -268,45 +269,41 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   }
 
   def add(duration: DurationValue): DateValue =
-    if (duration.isInstanceOf[DayTimeDurationValue]) {
-      var microseconds: Long =
-        duration.asInstanceOf[DayTimeDurationValue].getLengthInMicroseconds
-      val negative: Boolean = microseconds < 0
-      microseconds = Math.abs(microseconds)
-      val days: Int =
-        Math.floor(microseconds.toDouble / (1000000L * 60L * 60L * 24L)).toInt
-      val partDay: Boolean = (microseconds % (1000000L * 60L * 60L * 24L)) > 0
-      val julian: Int = getJulianDayNumberImpl()
-      var d: DateValue = dateFromJulianDayNumber(
-        julian + (if (negative) -days else days))
-      if (partDay) {
-        if (negative) {
-          d = yesterday(d.year, d.month, d.day)
+    duration match {
+      case value: DayTimeDurationValue =>
+        var microseconds = value.getLengthInMicroseconds
+        val negative: Boolean = microseconds < 0
+        microseconds = Math.abs(microseconds)
+        val days =
+          Math.floor(microseconds.toDouble / (1000000L * 60L * 60L * 24L)).toInt
+        val partDay = (microseconds % (1000000L * 60L * 60L * 24L)) > 0
+        val julian = getJulianDayNumberImpl
+        var d = dateFromJulianDayNumber(julian + (if (negative) -days else days))
+        if (partDay)
+          if (negative)
+            d = yesterday(d.year, d.month, d.day)
+        d.setTimezoneInMinutes(getTimezoneInMinutes)
+        d.hasNoYearZero = this.hasNoYearZero
+        d
+      case value: YearMonthDurationValue =>
+        val months = value.getLengthInMonths
+        var m = (month - 1) + months
+        var y = year + m / 12
+        m = m % 12
+        if (m < 0) {
+          m += 12
+          y -= 1
         }
-      }
-      d.setTimezoneInMinutes(getTimezoneInMinutes)
-      d.hasNoYearZero = this.hasNoYearZero
-      d
-    } else if (duration.isInstanceOf[YearMonthDurationValue]) {
-      val months: Int =
-        duration.asInstanceOf[YearMonthDurationValue].getLengthInMonths
-      var m: Int = (month - 1) + months
-      var y: Int = year + m / 12
-      m = m % 12
-      if (m < 0) {
-        m += 12
-        y -= 1
-      }
-      m += 1
-      var d: Int = day
-      while (!isValidDate(y, m, d)) d -= 1
-      new DateValue(y, m.toByte, d.toByte, getTimezoneInMinutes, hasNoYearZero)
-    } else {
-      val err = new XPathException(
-        "Date arithmetic is not available for xs:duration, only for its subtypes")
-      err.setIsTypeError(true)
-      err.setErrorCode("XPTY0004")
-      throw err
+        m += 1
+        var d = day
+        while (! isValidDate(y, m, d))
+          d = (d - 1).toByte
+        new DateValue(y, m.toByte, d, getTimezoneInMinutes, hasNoYearZero)
+      case _ =>
+        val err = new XPathException("Date arithmetic is not available for xs:duration, only for its subtypes")
+        err.setIsTypeError(true)
+        err.setErrorCode("XPTY0004")
+        throw err
     }
 
   override def subtract(other: CalendarValue,
@@ -324,15 +321,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   def compareTo(v2: AnyRef): Int =
     compareTo(v2.asInstanceOf[DateValue], MISSING_TIMEZONE)
 
-  def getJulianDayNumberImpl(): Int = getJulianDayNumber(year, month, day)
+  def getJulianDayNumberImpl: Int = getJulianDayNumber(year, month, day)
 
-  def toLocalDate(): LocalDate = LocalDate.of(getYear, getMonth, getDay)
-
+  def toLocalDate: LocalDate = LocalDate.of(getYear, getMonth, getDay)
 }
-
-
-
-
-
-
-

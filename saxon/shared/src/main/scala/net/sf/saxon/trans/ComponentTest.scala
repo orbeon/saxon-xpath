@@ -22,9 +22,9 @@ class ComponentTest(@BeanProperty var componentKind: Int,
                     private var nameTest: QNameTest,
                     @BeanProperty var arity: Int) {
 
-  def getQNameTest(): QNameTest = nameTest
+  def getQNameTest: QNameTest = nameTest
 
-  def isPartialWildcard(): Boolean =
+  def isPartialWildcard: Boolean =
     nameTest.isInstanceOf[LocalNameTest] || nameTest
       .isInstanceOf[NamespaceTest]
 
@@ -36,7 +36,7 @@ class ComponentTest(@BeanProperty var componentKind: Int,
       !((componentKind == StandardNames.XSL_FUNCTION) && arity != -1 &&
         arity != sn.asInstanceOf[SymbolicName.F].getArity)
 
-  def getSymbolicNameIfExplicit(): SymbolicName =
+  def getSymbolicNameIfExplicit: SymbolicName =
     if (nameTest.isInstanceOf[NameTest]) {
       if (componentKind == StandardNames.XSL_FUNCTION) {
         new SymbolicName.F(nameTest.asInstanceOf[NameTest].getMatchingNodeName,

@@ -41,7 +41,7 @@ class JRegexIterator(private var theString: String,
 
   private var nestingTable: IntToIntHashMap = null
 
-  override def getLength(): Int = {
+  override def getLength: Int = {
     val another: JRegexIterator = new JRegexIterator(theString, pattern)
     Count.steppingCount(another)
   }
@@ -89,7 +89,7 @@ class JRegexIterator(private var theString: String,
     StringValue.makeStringValue(current)
   }
 
-  def getRegexProperties(): Set[Property] = Set(Property.LAST_POSITION_FINDER)
+  def getRegexProperties: Set[Property] = Set(Property.LAST_POSITION_FINDER)
 
   def isMatching(): Boolean = next1 == null && prevEnd >= 0
 

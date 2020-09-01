@@ -19,7 +19,7 @@ class Root_1 extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
-    val node: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val node: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (node == null) {
       ZeroOrOne.empty().asInstanceOf[ZeroOrOne[NodeInfo]]
     } else {

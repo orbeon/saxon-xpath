@@ -16,21 +16,21 @@ object EmptyAtomicSequence extends Enumeration {
 
   class EmptyAtomicSequence extends Val with AtomicSequence {
 
-    def head(): AtomicValue = null
+    def head: AtomicValue = null
 
     def iterate(): AtomicIterator[AtomicValue] = EmptyIterator.ofAtomic()
 
     def itemAt(n: Int): AtomicValue = null
 
-    def getLength(): Int = 0
+    def getLength: Int = 0
 
     def getCanonicalLexicalRepresentation(): CharSequence = ""
 
     def getSchemaComparable(): Comparable[_] = null
 
-    def getStringValueCS(): CharSequence = ""
+    def getStringValueCS: CharSequence = ""
 
-    def getStringValue(): String = ""
+    def getStringValue: String = ""
 
     def subsequence(start: Int, length: Int): EmptyAtomicSequence = this
 
@@ -43,7 +43,7 @@ object EmptyAtomicSequence extends Enumeration {
 
   }
 
-  def getInstance(): EmptyAtomicSequence = INSTANCE
+  def getInstance: EmptyAtomicSequence = INSTANCE
 
   implicit def convertValue(v: Value): EmptyAtomicSequence =
     v.asInstanceOf[EmptyAtomicSequence]

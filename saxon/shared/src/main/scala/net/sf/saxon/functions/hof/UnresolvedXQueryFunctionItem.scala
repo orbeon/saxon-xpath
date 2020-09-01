@@ -19,7 +19,7 @@ class UnresolvedXQueryFunctionItem(private val fd: XQueryFunction,
   override def getFunctionItemType(): FunctionItemType =
     new SpecificFunctionType(fd.getArgumentTypes, fd.getResultType)
 
-  override def getFunctionName(): StructuredQName =
+  override def getFunctionName: StructuredQName =
     functionName.getComponentName
 
   override def getArity(): Int = fd.getNumberOfArguments
@@ -29,6 +29,6 @@ class UnresolvedXQueryFunctionItem(private val fd: XQueryFunction,
 
   override def getDescription(): String = functionName.toString
 
-  def getFunctionReference(): UserFunctionReference = ref
+  def getFunctionReference: UserFunctionReference = ref
 
 }

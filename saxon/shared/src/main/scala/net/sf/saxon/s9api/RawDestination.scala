@@ -48,7 +48,7 @@ class RawDestination extends AbstractDestination {
     closed = true
   }
 
-  def getXdmValue(): XdmValue = {
+  def getXdmValue: XdmValue = {
     if (!closed) {
       throw new IllegalStateException(
         "The result sequence has not yet been closed")

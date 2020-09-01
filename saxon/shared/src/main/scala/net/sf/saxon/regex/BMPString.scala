@@ -35,7 +35,7 @@ class BMPString /**
 
   override def toString: String = src.toString
 
-  def getCharSequence(): CharSequence = src
+  def getCharSequence: CharSequence = src
 
   /**
     * Returns the length of this character sequence.  The length is the number

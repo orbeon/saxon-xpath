@@ -36,9 +36,9 @@ class SequenceSlice(private var value: List[_ <: Item],
     throw new IndexOutOfBoundsException()
   }
 
-  def getStringValue(): String = SequenceTool.getStringValue(this)
+  def getStringValue: String = SequenceTool.getStringValue(this)
 
-  def getStringValueCS(): CharSequence = SequenceTool.getStringValue(this)
+  def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)
 
   /**
    * Get the first item in the sequence.
@@ -46,9 +46,9 @@ class SequenceSlice(private var value: List[_ <: Item],
    * @return the first item in the sequence if there is one, or null if the sequence
    *         is empty
    */
-  def head(): Item = itemAt(0)
+  def head: Item = itemAt(0)
 
-  def getCardinality(): Int = getLength match {
+  def getCardinality: Int = getLength match {
     case 0 => StaticProperty.EMPTY
     case 1 => StaticProperty.EXACTLY_ONE
     case _ => StaticProperty.ALLOWS_ONE_OR_MORE

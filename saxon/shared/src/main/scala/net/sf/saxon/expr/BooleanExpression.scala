@@ -27,7 +27,7 @@ object BooleanExpression {
   def listAndComponents(exp: Expression, list: List[Expression]): Unit = {
     if (exp.isInstanceOf[BooleanExpression] &&
       exp.asInstanceOf[BooleanExpression].getOperator == Token.AND) {
-      for (o <- exp.operands().asScala) {
+      for (o <- exp.operands.asScala) {
         listAndComponents(o.getChildExpression, list)
       }
     } else {
@@ -127,7 +127,7 @@ abstract class BooleanExpression(p1: Expression, operator: Int, p2: Expression)
 
   def effectiveBooleanValue(c: XPathContext): Boolean
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 

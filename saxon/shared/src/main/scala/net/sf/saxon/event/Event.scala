@@ -64,7 +64,7 @@ object Event {
                        newProps)
     }
 
-    def getProperties(): Int = properties
+    def getProperties: Int = properties
 
   }
 

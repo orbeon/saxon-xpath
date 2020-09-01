@@ -52,9 +52,9 @@ object XQueryFunctionLibrary {
 
     var function: UserFunction = _
 
-    def getFunctionName(): StructuredQName = symbolicName.getComponentName
+    def getFunctionName: StructuredQName = symbolicName.getComponentName
 
-    def getArity(): Int = symbolicName.getArity
+    def getArity: Int = symbolicName.getArity
 
     /**
       * Evaluate the expression
@@ -82,7 +82,7 @@ object XQueryFunctionLibrary {
       this.function = function
     }
 
-    def getFunction(): UserFunction = function
+    def getFunction: UserFunction = function
 
   }
 
@@ -101,7 +101,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
     this.config = config
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def declareFunction(function: XQueryFunction): Unit = {
     val keyObj: SymbolicName = function.getIdentificationKey
@@ -220,7 +220,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
   def getDeclarationByKey(functionKey: SymbolicName): XQueryFunction =
     functions.get(functionKey)
 
-  def getFunctionDefinitions(): Iterator[XQueryFunction] =
+  def getFunctionDefinitions: Iterator[XQueryFunction] =
     functions.values.iterator()
 
   def fixupGlobalFunctions(env: QueryModule): Unit = {

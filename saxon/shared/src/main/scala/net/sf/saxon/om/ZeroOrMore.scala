@@ -38,7 +38,7 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
     iter.forEachOrFail((item) => content.add(item.asInstanceOf[T]))
   }
 
-  def head(): T = if (content.isEmpty) null.asInstanceOf[T] else content.get(0)
+  def head: T = if (content.isEmpty) null.asInstanceOf[T] else content.get(0)
 
   def iterate(): ListIterator[T] = new ListIterator(content)
 
@@ -63,14 +63,14 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
     new ZeroOrMore(content.subList(startInt, startInt + len))
   }
 
-  def getLength(): Int = content.size
+  def getLength: Int = content.size
 
   override def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
-  def getStringValue(): String = SequenceTool.getStringValue(this)
+  def getStringValue: String = SequenceTool.getStringValue(this)
 
-  def getStringValueCS(): CharSequence = SequenceTool.getStringValue(this)
+  def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)
 
   override def reduce(): GroundedValue = {
     if (content.isEmpty) {

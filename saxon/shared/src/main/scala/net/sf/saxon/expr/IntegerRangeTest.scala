@@ -31,22 +31,22 @@ class IntegerRangeTest(value: Expression, min: Expression, max: Expression)
   private var maxOp: Operand =
     new Operand(this, max, OperandRole.SINGLE_ATOMIC)
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(valueOp, minOp, maxOp)
 
-  def getValue(): Expression = valueOp.getChildExpression
+  def getValue: Expression = valueOp.getChildExpression
 
   def setValue(value: Expression): Unit = {
     valueOp.setChildExpression(value)
   }
 
-  def getMin(): Expression = minOp.getChildExpression
+  def getMin: Expression = minOp.getChildExpression
 
   def setMin(min: Expression): Unit = {
     minOp.setChildExpression(min)
   }
 
-  def getMax(): Expression = maxOp.getChildExpression
+  def getMax: Expression = maxOp.getChildExpression
 
   def setMax(max: Expression): Unit = {
     maxOp.setChildExpression(max)
@@ -69,7 +69,7 @@ override def typeCheck(visitor: ExpressionVisitor,
     this
   }
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 

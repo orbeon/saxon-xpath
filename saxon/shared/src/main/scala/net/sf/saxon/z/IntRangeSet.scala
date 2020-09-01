@@ -317,7 +317,7 @@ class IntRangeSet extends IntSet {
     }
   }
 
-  def getNumberOfRanges(): Int = used
+  def getNumberOfRanges: Int = used
 
   private class IntRangeSetIterator extends IntIterator {
 

@@ -13,7 +13,7 @@ import net.sf.saxon.expr.Expression
   */
 trait InstructionWithComplexContent {
 
-  def getContentExpression(): Expression
+  def getContentExpression: Expression
 
 }
 

@@ -59,7 +59,7 @@ class SingletonClosure(exp: Expression, context: XPathContext)
     asItem()
   }
 
-  def getLength(): Int = if (asItem() == null) 0 else 1
+  def getLength: Int = if (asItem() == null) 0 else 1
 
   override def materialize(): ZeroOrOne[Item] = new ZeroOrOne(asItem())
 

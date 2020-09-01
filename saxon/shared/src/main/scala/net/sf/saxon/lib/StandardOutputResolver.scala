@@ -27,7 +27,7 @@ object StandardOutputResolver {
   private var theInstance: StandardOutputResolver =
     new StandardOutputResolver()
 
-  def getInstance(): StandardOutputResolver = theInstance
+  def getInstance: StandardOutputResolver = theInstance
 
 }
 

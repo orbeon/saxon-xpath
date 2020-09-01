@@ -47,7 +47,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   def getOperand(i: Int): Operand = operanda.getOperand(i)
 
-  override def operands(): java.lang.Iterable[Operand] = operanda.operands()
+  override def operands: java.lang.Iterable[Operand] = operanda.operands
 
   override def getExpressionName(): String = "SquareArrayConstructor"
 
@@ -73,7 +73,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   override def computeHashCode(): Int = {
     var h: Int = 0x878b92a0
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       h ^= o.getChildExpression.hashCode
     }
     h
@@ -99,7 +99,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   private def preEvaluate(visitor: ExpressionVisitor): Expression = {
     val allFixed: Boolean = false
-    for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
+    for (o <- operands.asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
       this
     }
     try Literal.makeLiteral(evaluateItem(visitor.makeDynamicContext()), this)
@@ -112,7 +112,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
   def copy(rebindings: RebindingMap): Expression = {
     val m2: List[Expression] =
       new ArrayList[Expression](getOperanda.getNumberOfOperands)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       m2.add(o.getChildExpression.copy(rebindings))
     }
     val b2: SquareArrayConstructor = new SquareArrayConstructor(m2)
@@ -120,7 +120,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
     b2
   }
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     var contentType: ItemType = null
     var contentCardinality: Int = StaticProperty.EXACTLY_ONE
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
@@ -147,29 +147,29 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("arrayBlock", this)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       o.getChildExpression.export(out)
     }
     out.endElement()
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val n: Int = getOperanda.getNumberOfOperands
     n match {
       case 0 => "[]"
       case 1 =>
         "[" +
-          getOperanda.getOperand(0).getChildExpression.toShortString() +
+          getOperanda.getOperand(0).getChildExpression.toShortString +
           "]"
       case 2 =>
         "[" +
-          getOperanda.getOperand(0).getChildExpression.toShortString() +
+          getOperanda.getOperand(0).getChildExpression.toShortString +
           ", " +
-          getOperanda.getOperand(1).getChildExpression.toShortString() +
+          getOperanda.getOperand(1).getChildExpression.toShortString +
           "]"
       case _ =>
         "[" +
-          getOperanda.getOperand(0).getChildExpression.toShortString() +
+          getOperanda.getOperand(0).getChildExpression.toShortString +
           ", ...]"
 
     }
@@ -180,7 +180,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
   override def evaluateItem(context: XPathContext): Item = {
     val value: List[GroundedValue] =
       new ArrayList[GroundedValue](getOperanda.getNumberOfOperands)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val s: GroundedValue =
         ExpressionTool.eagerEvaluate(o.getChildExpression, context)
       value.add(s)

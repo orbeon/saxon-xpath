@@ -22,14 +22,14 @@ object AnyExternalObjectType {
   */
 class AnyExternalObjectType  () extends ItemType {
 
-  override def isAtomicType(): Boolean = false
+  override def isAtomicType: Boolean = false
 
   override def matches(item: Item, th: TypeHierarchy): Boolean =
     item.isInstanceOf[ObjectValue[_]]
 
-  override def isPlainType(): Boolean = false
+  override def isPlainType: Boolean = false
 
-  override def getPrimitiveType(): Int = -1
+  override def getPrimitiveType: Int = -1
 
   /**
     * Get an alphabetic code representing the type, or at any rate, the nearest built-in type
@@ -38,24 +38,24 @@ class AnyExternalObjectType  () extends ItemType {
     *
     * @return the alphacode for the nearest containing built-in type
     */
-  override def getBasicAlphaCode(): String = "X"
+  override def getBasicAlphaCode: String = "X"
 
-  override def getPrimitiveItemType(): ItemType = this
+  override def getPrimitiveItemType: ItemType = this
 
   override def getUType(): UType = UType.EXTENSION
 
-  override def getAtomizedItemType(): AtomicType = BuiltInAtomicType.STRING
+  override def getAtomizedItemType: AtomicType = BuiltInAtomicType.STRING
 
   override def isAtomizable(th: TypeHierarchy): Boolean = true
 
-  override def getGenre(): Genre = Genre.EXTERNAL
+  override def getGenre: Genre = Genre.EXTERNAL
 
   /**
     * Get the default priority when this ItemType is used as an XSLT pattern
     *
     * @return the default priority
     */
-  override def getDefaultPriority(): Double = -1
+  override def getDefaultPriority: Double = -1
 
 }
 

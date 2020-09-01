@@ -238,7 +238,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
 
   def getTimezone(): Int = tzOffset
 
-  def getMicrosecond(): Int = {
+  def getMicrosecond: Int = {
     val fractionalSeconds: BigDecimal = getFractionalSecond
     if (fractionalSeconds == null) {
       DatatypeConstants.FIELD_UNDEFINED
@@ -254,16 +254,16 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
   }
 
   def compare(xmlGregorianCalendar: XMLGregorianCalendar): Int =
-    toCalendarValue().getSchemaComparable.compareTo(
+    toCalendarValue.getSchemaComparable.compareTo(
       xmlGregorianCalendar
         .asInstanceOf[SaxonXMLGregorianCalendar]
-        .toCalendarValue()
+        .toCalendarValue
         .getSchemaComparable.asInstanceOf[Item])
 
   def normalize(): XMLGregorianCalendar =
-    new SaxonXMLGregorianCalendar(toCalendarValue().adjustTimezone(0))
+    new SaxonXMLGregorianCalendar(toCalendarValue.adjustTimezone(0))
 
-  def toXMLFormat(): String = toCalendarValue().getStringValue
+  def toXMLFormat(): String = toCalendarValue.getStringValue
 
   def getXMLSchemaType(): QName =
     if (second == DatatypeConstants.FIELD_UNDEFINED) {
@@ -292,12 +292,12 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
   def isValid(): Boolean = true
 
   def add(duration: Duration): Unit = {
-    val cv: CalendarValue = toCalendarValue().add(
+    val cv: CalendarValue = toCalendarValue.add(
       duration.asInstanceOf[SaxonDuration].getDurationValue)
     this.calendarValue = cv
   }
 
-  def toGregorianCalendar(): GregorianCalendar = toCalendarValue().getCalendar
+  def toGregorianCalendar(): GregorianCalendar = toCalendarValue.getCalendar
 
   def toGregorianCalendar(
                            timezone: TimeZone,
@@ -356,7 +356,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
     s
   }
 
-  def toCalendarValue(): CalendarValue = {
+  def toCalendarValue: CalendarValue = {
     if (calendarValue != null) {
       return calendarValue
     }

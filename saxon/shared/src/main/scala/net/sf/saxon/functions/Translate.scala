@@ -127,15 +127,15 @@ class Translate
     * @throws net.sf.saxon.trans.XPathException if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val sv0: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val sv0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (sv0 == null) {
       StringValue.EMPTY_STRING
     }
     if (staticMap != null) {
       new StringValue(translateUsingMap(sv0, staticMap))
     } else {
-      val sv1: StringValue = arguments(1).head().asInstanceOf[StringValue]
-      val sv2: StringValue = arguments(2).head().asInstanceOf[StringValue]
+      val sv1: StringValue = arguments(1).head.asInstanceOf[StringValue]
+      val sv2: StringValue = arguments(2).head.asInstanceOf[StringValue]
       new StringValue(translate(sv0, sv1, sv2))
     }
   }

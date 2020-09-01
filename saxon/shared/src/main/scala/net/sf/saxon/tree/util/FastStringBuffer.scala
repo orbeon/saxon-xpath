@@ -179,7 +179,7 @@ class FastStringBuffer(initialSize: Int)
     */
   def length(): Int = used
 
-  def isEmpty(): Boolean = used == 0
+  def isEmpty: Boolean = used == 0
 
   /**
     * Returns the <code>char</code> value at the specified index.  An index ranges from zero
@@ -289,7 +289,7 @@ class FastStringBuffer(initialSize: Int)
     h
   }
 
-  def toCharArray(): Array[Char] =
+  def toCharArray: Array[Char] =
     if (used == array.length) {
       array
     } else {

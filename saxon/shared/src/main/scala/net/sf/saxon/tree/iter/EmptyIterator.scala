@@ -13,7 +13,7 @@ object EmptyIterator {
 
   private val theInstance: EmptyIterator = new EmptyIterator()
 
-  def getInstance(): EmptyIterator = theInstance
+  def getInstance: EmptyIterator = theInstance
 
   def emptyIterator(): EmptyIterator = theInstance
 
@@ -61,11 +61,11 @@ class EmptyIterator  ()
 
   def next(): Item = null
 
-  def getLength(): Int = 0
+  def getLength: Int = 0
 
   def getReverseIterator(): EmptyIterator = this
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD,
       Property.GROUNDED,
       Property.LAST_POSITION_FINDER,
@@ -73,7 +73,7 @@ class EmptyIterator  ()
 
   override def materialize(): GroundedValue = EmptySequence.getInstance
 
-  override def getResidue(): GroundedValue = EmptySequence.getInstance
+  override def getResidue: GroundedValue = EmptySequence.getInstance
 
   def hasNext(): Boolean = false
 

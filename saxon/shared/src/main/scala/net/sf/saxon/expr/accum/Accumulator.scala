@@ -66,7 +66,7 @@ class Accumulator extends Actor {
   override def getSymbolicName(): SymbolicName =
     new SymbolicName(StandardNames.XSL_ACCUMULATOR, getAccumulatorName)
 
-  def isDeclaredStreamable(): Boolean = streamable
+  def isDeclaredStreamable: Boolean = streamable
 
   def setDeclaredStreamable(streamable: Boolean): Unit = {
     this.streamable = streamable
@@ -86,7 +86,7 @@ class Accumulator extends Actor {
    *
    * @return the QName of the object declared or manipulated by this instruction or expression
    */
-  def getObjectName(): StructuredQName = accumulatorName
+  def getObjectName: StructuredQName = accumulatorName
 
   /**
    * Export expression structure. The abstract expression tree

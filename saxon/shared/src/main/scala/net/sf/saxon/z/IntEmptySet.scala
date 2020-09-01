@@ -16,7 +16,7 @@ object IntEmptySet {
 
   private var THE_INSTANCE: IntEmptySet = new IntEmptySet()
 
-  def getInstance(): IntEmptySet = THE_INSTANCE
+  def getInstance: IntEmptySet = THE_INSTANCE
 
 }
 

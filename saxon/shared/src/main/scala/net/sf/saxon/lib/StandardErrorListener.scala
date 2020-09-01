@@ -50,7 +50,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     this.logger = logger
   }
 
-  def getLogger(): Logger = logger
+  def getLogger: Logger = logger
 
   def setMaxOrdinaryCharacter(max: Int): Unit = {
     maxOrdinaryCharacter = max
@@ -79,7 +79,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     }
   }
 
-  def isReportingWarnings(): Boolean = true
+  def isReportingWarnings: Boolean = true
 
   def error(exception: TransformerException): Unit = {
     if (logger == null) {
@@ -211,7 +211,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     } else {
       kind +
         (if (failingExpression != null)
-          "evaluating (" + failingExpression.toShortString() + ") "
+          "evaluating (" + failingExpression.toShortString + ") "
         else "") +
         getLocationMessage(exception)
     }
@@ -223,7 +223,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       if (failingExpression.isCallOn(classOf[net.sf.saxon.functions.Error])) {
         "signaled by call to error() "
       } else {
-        "evaluating (" + failingExpression.toShortString() + ") "
+        "evaluating (" + failingExpression.toShortString + ") "
       }
     } else if (nearBy != null && !nearBy.isEmpty) {
       (if (nearBy.startsWith("...")) "near" else "in") + ' ' +

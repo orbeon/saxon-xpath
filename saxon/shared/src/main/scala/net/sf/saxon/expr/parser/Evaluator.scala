@@ -239,6 +239,6 @@ abstract class Evaluator {
 
   def evaluate(expr: Expression, context: XPathContext): Sequence
 
-  def getEvaluationMode(): EvaluationMode
+  def getEvaluationMode: EvaluationMode
 
 }

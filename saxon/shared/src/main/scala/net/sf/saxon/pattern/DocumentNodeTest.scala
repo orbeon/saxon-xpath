@@ -94,9 +94,9 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
   // The match is true if there is exactly one element node child, no text node
   // The match is true if there is exactly one element node child, no text node
 
-  def getDefaultPriority(): Double = elementTest.getDefaultPriority
+  def getDefaultPriority: Double = elementTest.getDefaultPriority
 
-  override def getPrimitiveType(): Int = Type.DOCUMENT
+  override def getPrimitiveType: Int = Type.DOCUMENT
 
   override def toString: String = "document-node(" + elementTest + ')'
 

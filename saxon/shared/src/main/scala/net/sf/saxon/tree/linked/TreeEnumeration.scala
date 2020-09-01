@@ -45,6 +45,6 @@ abstract class TreeEnumeration(
       current
     }
 
-  override def getProperties(): Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
 
 }

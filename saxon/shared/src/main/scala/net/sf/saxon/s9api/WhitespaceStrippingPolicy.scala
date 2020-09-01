@@ -83,7 +83,7 @@ class WhitespaceStrippingPolicy(private var policy: Int) {
 
    def ordinal(): Int = policy
 
-   def getSpaceStrippingRule(): SpaceStrippingRule = stripperRules
+   def getSpaceStrippingRule: SpaceStrippingRule = stripperRules
 
    def makeStripper(): FilterFactory = new FilterFactory() {
     def makeFilter(next: Receiver): ProxyReceiver =

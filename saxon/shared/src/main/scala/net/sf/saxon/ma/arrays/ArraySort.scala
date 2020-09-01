@@ -84,7 +84,7 @@ class ArraySort extends SystemFunction {
 
   override def call(context: XPathContext,
                     arguments: Array[Sequence]): ArrayItem = {
-    val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+    val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
     val inputList: List[MemberToBeSorted] =
       new ArrayList[MemberToBeSorted](array.arrayLength())
     var i: Int = 0
@@ -93,7 +93,7 @@ class ArraySort extends SystemFunction {
       collation = context.getConfiguration.getCollation(
         getRetainedStaticContext.getDefaultCollationName)
     } else {
-      val collName: StringValue = arguments(1).head().asInstanceOf[StringValue]
+      val collName: StringValue = arguments(1).head.asInstanceOf[StringValue]
       collation =
         if (collName == null)
           context.getConfiguration.getCollation(
@@ -104,7 +104,7 @@ class ArraySort extends SystemFunction {
     }
     var key: Function = null
     if (arguments.length == 3) {
-      key = arguments(2).head().asInstanceOf[Function]
+      key = arguments(2).head.asInstanceOf[Function]
     }
     for (seq <- array.members()) {
       val member: MemberToBeSorted = new MemberToBeSorted()

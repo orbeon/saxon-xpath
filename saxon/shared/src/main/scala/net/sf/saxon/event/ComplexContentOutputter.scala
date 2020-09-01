@@ -106,7 +106,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     this.nextReceiver = receiver
   }
 
-  def getReceiver(): Receiver = nextReceiver
+  def getReceiver: Receiver = nextReceiver
 
   override def open(): Unit = {
     nextReceiver.open()
@@ -606,7 +606,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     }
   }
 
-  def getErrorCodeForDecomposingFunctionItems(): String =
+  def getErrorCodeForDecomposingFunctionItems: String =
     if (getPipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
 
 }

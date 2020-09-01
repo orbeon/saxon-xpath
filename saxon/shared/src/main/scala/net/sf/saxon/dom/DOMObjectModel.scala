@@ -25,7 +25,7 @@ object DOMObjectModel {
 
   private var factory: DocumentBuilderFactory = null
 
-  def getInstance(): DOMObjectModel = THE_INSTANCE
+  def getInstance: DOMObjectModel = THE_INSTANCE
 
   def sendDOMSource(source: DOMSource, receiver: Receiver): Unit = {
     val startNode: Node = source.getNode
@@ -114,7 +114,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
 
   def getDocumentClassName(): String = "org.w3c.dom.Document"
 
-  def getIdentifyingURI(): String = XPathConstants.DOM_OBJECT_MODEL
+  def getIdentifyingURI: String = XPathConstants.DOM_OBJECT_MODEL
 
   override def getName(): String = "DOM"
 
@@ -146,7 +146,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
         def convert(obj: AnyRef, context: XPathContext): Sequence =
           wrapOrUnwrapNode(obj.asInstanceOf[Node], context.getConfiguration)
 
-        def getItemType(): ItemType = AnyNodeTest.getInstance
+        def getItemType: ItemType = AnyNodeTest.getInstance
       }
     } else if (classOf[NodeList].isAssignableFrom(sourceClass)) {
       new JPConverter() {
@@ -161,7 +161,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
           new SequenceExtent(nodes.asInstanceOf[Array[Item]])
         }
 
-        def getItemType(): ItemType = AnyNodeTest.getInstance
+        def getItemType: ItemType = AnyNodeTest.getInstance
 
         override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
       }
@@ -170,14 +170,14 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
         def convert(obj: AnyRef, context: XPathContext): Sequence =
           unravel(obj.asInstanceOf[DOMSource], context.getConfiguration)
 
-        def getItemType(): ItemType = AnyNodeTest.getInstance
+        def getItemType: ItemType = AnyNodeTest.getInstance
       }
     } else if (classOf[DocumentWrapper] == sourceClass) {
       new JPConverter() {
         def convert(obj: AnyRef, context: XPathContext): Sequence =
           obj.asInstanceOf[DocumentWrapper].getRootNode
 
-        def getItemType(): ItemType = AnyNodeTest.getInstance
+        def getItemType: ItemType = AnyNodeTest.getInstance
       }
     } else {
       null

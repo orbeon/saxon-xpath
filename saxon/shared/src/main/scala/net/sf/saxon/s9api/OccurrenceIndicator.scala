@@ -19,7 +19,7 @@ object OccurrenceIndicator extends Enumeration {
 
   class OccurrenceIndicator extends Val {
 
-     def getCardinality(): Int = this match {
+     def getCardinality: Int = this match {
       case ZERO => StaticProperty.EMPTY
       case ZERO_OR_ONE => StaticProperty.ALLOWS_ZERO_OR_ONE
       case ZERO_OR_MORE => StaticProperty.ALLOWS_ZERO_OR_MORE

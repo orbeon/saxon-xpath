@@ -62,7 +62,7 @@ object ContextStackFrame {
 
     var functionName: StructuredQName = _
 
-    def getFunctionName(): StructuredQName = functionName
+    def getFunctionName: StructuredQName = functionName
 
     def setFunctionName(functionName: StructuredQName): Unit = {
       this.functionName = functionName
@@ -94,7 +94,7 @@ object ContextStackFrame {
 
   class CallTemplate extends ContextStackFrame {
 
-    def getTemplateName(): StructuredQName = templateName
+    def getTemplateName: StructuredQName = templateName
 
     def setTemplateName(templateName: StructuredQName): Unit = {
       this.templateName = templateName
@@ -113,7 +113,7 @@ object ContextStackFrame {
 
   class VariableEvaluation extends ContextStackFrame {
 
-    def getVariableName(): StructuredQName = variableName
+    def getVariableName: StructuredQName = variableName
 
     def setVariableName(variableName: StructuredQName): Unit = {
       this.variableName = variableName
@@ -177,9 +177,9 @@ abstract class ContextStackFrame {
     this.location = loc
   }
 
-  def getSystemId(): String = location.getSystemId
+  def getSystemId: String = location.getSystemId
 
-  def getLineNumber(): Int = location.getLineNumber
+  def getLineNumber: Int = location.getLineNumber
 
   def setComponent(container: AnyRef): Unit = {
     this.container = container

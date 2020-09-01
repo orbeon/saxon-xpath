@@ -67,25 +67,25 @@ class AnalyzeString(select: Expression,
     nonMatchingOp = new Operand(this, nonMatching, ACTION)
   }
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
   def setSelect(selExp: Expression): Unit = {
     selectOp.setChildExpression(selExp)
   }
 
-  def getRegex(): Expression = regexOp.getChildExpression
+  def getRegex: Expression = regexOp.getChildExpression
 
   def setRegex(regExp: Expression): Unit = {
     regexOp.setChildExpression(regExp)
   }
 
-  def getFlags(): Expression = flagsOp.getChildExpression
+  def getFlags: Expression = flagsOp.getChildExpression
 
   def setFlags(flagExp: Expression): Unit = {
     flagsOp.setChildExpression(flagExp)
   }
 
-  def getMatching(): Expression =
+  def getMatching: Expression =
     if (matchingOp == null) null else matchingOp.getChildExpression
 
   def setMatching(matching: Expression): Unit = {
@@ -96,7 +96,7 @@ class AnalyzeString(select: Expression,
     }
   }
 
-  def getNonMatching(): Expression =
+  def getNonMatching: Expression =
     if (nonMatchingOp == null) null else nonMatchingOp.getChildExpression
 
   def setNonMatching(nonMatching: Expression): Unit = {
@@ -109,13 +109,13 @@ class AnalyzeString(select: Expression,
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ANALYZE_STRING
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, regexOp, flagsOp, matchingOp, nonMatchingOp)
 
   override def getImplementationMethod(): Int =
     Expression.PROCESS_METHOD | Expression.ITERATE_METHOD
 
-  def getPatternExpression(): RegularExpression = pattern
+  def getPatternExpression: RegularExpression = pattern
 
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
@@ -237,7 +237,7 @@ class AnalyzeString(select: Expression,
     }
   }
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     if (getMatching != null) {
       if (getNonMatching != null) {
         val th: TypeHierarchy = getConfiguration.getTypeHierarchy

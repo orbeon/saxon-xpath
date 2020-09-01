@@ -258,9 +258,9 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     typeLabel = BuiltInAtomicType.TIME
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.TIME
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.TIME
 
-  def getMicrosecond(): Int = nanosecond / 1000
+  def getMicrosecond: Int = nanosecond / 1000
 
   def getPrimitiveStringValue(): CharSequence = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -280,20 +280,20 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
         div /= 10
       }
     }
-    if (hasTimezone()) {
+    if (hasTimezone) {
       appendTimezone(sb)
     }
     sb
   }
 
   override def getCanonicalLexicalRepresentation(): CharSequence =
-    if (hasTimezone() && getTimezoneInMinutes != 0) {
+    if (hasTimezone && getTimezoneInMinutes != 0) {
       adjustTimezone(0).getStringValueCS
     } else {
       getStringValueCS
     }
 
-  def toDateTime(): DateTimeValue =
+  def toDateTime: DateTimeValue =
     new DateTimeValue(1972,
       12.toByte,
       31.toByte,
@@ -304,7 +304,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
       getTimezoneInMinutes)
 
   def getCalendar(): GregorianCalendar = {
-    val tz: Int = if (hasTimezone()) getTimezoneInMinutes * 60000 else 0
+    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
     val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
     val calendar: GregorianCalendar = new GregorianCalendar(zone)
     calendar.setLenient(false)
@@ -328,7 +328,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
   }
 
   def adjustTimezone(timezone: Int): TimeValue = {
-    val dt: DateTimeValue = toDateTime().adjustTimezone(timezone)
+    val dt: DateTimeValue = toDateTime.adjustTimezone(timezone)
     new TimeValue(dt.getHour,
       dt.getMinute,
       dt.getSecond,
@@ -352,7 +352,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
       case MICROSECONDS => new Int64Value(nanosecond / 1000)
       case NANOSECONDS => new Int64Value(nanosecond)
       case TIMEZONE =>
-        if (hasTimezone()) {
+        if (hasTimezone) {
           DayTimeDurationValue.fromMilliseconds(60000L * getTimezoneInMinutes)
         } else {
           null
@@ -378,7 +378,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
         0
       }
     } else {
-      toDateTime().compareTo(otherTime.toDateTime())
+      toDateTime.compareTo(otherTime.toDateTime)
     }
   }
 
@@ -391,7 +391,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     if (getTimezoneInMinutes == otherTime.getTimezoneInMinutes) {
       compareTo(other)
     } else {
-      toDateTime().compareTo(otherTime.toDateTime(), implicitTimezone)
+      toDateTime.compareTo(otherTime.toDateTime, implicitTimezone)
     }
   }
 
@@ -403,9 +403,9 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
     def compareTo(o: AnyRef): Int =
       if (o.isInstanceOf[TimeComparable]) {
-        val dt0: DateTimeValue = asTimeValue().toDateTime()
+        val dt0: DateTimeValue = asTimeValue().toDateTime
         val dt1: DateTimeValue =
-          o.asInstanceOf[TimeComparable].asTimeValue().toDateTime()
+          o.asInstanceOf[TimeComparable].asTimeValue().toDateTime
         dt0.getSchemaComparable.compareTo(dt1.getSchemaComparable.asInstanceOf)
       } else {
         SequenceTool.INDETERMINATE_ORDERING
@@ -414,7 +414,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     override def equals(o: Any): Boolean = return compareTo(o.asInstanceOf) == 0
 
     override def hashCode(): Int =
-      TimeValue.this.toDateTime().getSchemaComparable.hashCode
+      TimeValue.this.toDateTime.getSchemaComparable.hashCode
 
   }
 
@@ -436,7 +436,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
   def add(duration: DurationValue): TimeValue =
     if (duration.isInstanceOf[DayTimeDurationValue]) {
-      val dt: DateTimeValue = toDateTime().add(duration)
+      val dt: DateTimeValue = toDateTime.add(duration)
       new TimeValue(dt.getHour,
         dt.getMinute,
         dt.getSecond,

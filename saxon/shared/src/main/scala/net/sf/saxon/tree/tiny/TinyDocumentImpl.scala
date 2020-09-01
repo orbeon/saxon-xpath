@@ -54,7 +54,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   override def getTree(): TinyTree = tree
 
-  def getRootNode(): NodeInfo = this
+  def getRootNode: NodeInfo = this
 
   override def getConfiguration(): Configuration = tree.getConfiguration
 
@@ -77,7 +77,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   override def getLineNumber(): Int = 0
 
-  def isTyped(): Boolean = tree.getTypeArray != null
+  def isTyped: Boolean = tree.getTypeArray != null
 
   def getNodeKind(): Int = Type.DOCUMENT
 

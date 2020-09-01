@@ -8,7 +8,7 @@ trait ListType extends SimpleType with CastingTarget {
 
   /*@NotNull*/
 
-  def getItemType(): SimpleType
+  def getItemType: SimpleType
 
 }
 

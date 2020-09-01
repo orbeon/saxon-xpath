@@ -72,7 +72,7 @@ class IntSetPredicate extends IntPredicate {
       super.or(other)
     }
 
-  def getIntSet(): IntSet = set
+  def getIntSet: IntSet = set
 
   override def toString: String = "in {" + set + "}"
 

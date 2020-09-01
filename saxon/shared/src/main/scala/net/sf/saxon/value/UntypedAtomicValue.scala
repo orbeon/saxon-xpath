@@ -31,11 +31,11 @@ class UntypedAtomicValue(var value1: CharSequence) extends StringValue {
 
   /*@NotNull*/
 
-  override def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.UNTYPED_ATOMIC
+  override def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.UNTYPED_ATOMIC
 
-  override def getStringValueCS(): CharSequence = value1
+  override def getStringValueCS: CharSequence = value1
 
-  override def toShortString(): String = "u" + super.toShortString()
+  override def toShortString: String = "u" + super.toShortString
 
 }
 

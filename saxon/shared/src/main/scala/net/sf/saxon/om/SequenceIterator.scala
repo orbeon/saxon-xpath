@@ -52,7 +52,7 @@ trait SequenceIterator extends Closeable {
 
   def close(): Unit = ()
 
-  def getProperties(): Set[Property] = Set()
+  def getProperties: Set[Property] = Set()
 
   def forEachOrFail(consumer: ItemConsumer[_ >: Item]): Unit = {
     var item: Item = null

@@ -77,7 +77,7 @@ class UriCollection extends SystemFunction {
     if (arguments.length == 0) {
       getDefaultUriCollection(context)
     } else {
-      val arg: Item = arguments(0).head()
+      val arg: Item = arguments(0).head
       if (arg == null) {
         getDefaultUriCollection(context)
       }

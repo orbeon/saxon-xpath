@@ -14,7 +14,7 @@ import net.sf.saxon.value.ObjectValue
 class Tuple(members: Array[Sequence])
     extends ObjectValue[Array[Sequence]](members) {
 
-  def getMembers(): Array[Sequence] = getObject
+  def getMembers: Array[Sequence] = getObject
 
 }
 

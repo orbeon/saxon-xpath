@@ -17,7 +17,7 @@ class PullSource(private var provider: PullProvider) extends Source {
     systemId = provider.getSourceLocator.getSystemId
   }
 
-  def getPullProvider(): PullProvider = provider
+  def getPullProvider: PullProvider = provider
 
 }
 

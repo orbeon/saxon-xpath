@@ -35,7 +35,7 @@ class GroupEndingIterator(select: Expression,
 
   nextItem = population.next()
 
-  override def getLength(): Int = {
+  override def getLength: Int = {
     val another: GroupEndingIterator =
       new GroupEndingIterator(expSelect, pattern, baseContext)
     Count.steppingCount(another)

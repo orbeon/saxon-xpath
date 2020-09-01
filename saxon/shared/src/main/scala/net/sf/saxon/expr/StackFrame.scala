@@ -17,9 +17,9 @@ class StackFrame(var map: SlotManager, var slots: Array[Sequence]) {
    var seqArray: Array[Sequence] = slots
    var dynamicStack: Stack[Sequence] = _
 
-  def getStackFrameMap(): SlotManager = map
+  def getStackFrameMap: SlotManager = map
 
-  def getStackFrameValues(): Array[Sequence] = seqArray
+  def getStackFrameValues: Array[Sequence] = seqArray
 
   def setStackFrameValues(values: Array[Sequence]): Unit = {
     seqArray = values

@@ -65,19 +65,19 @@ abstract class BinaryExpression(p0: Expression,
 
   adoptChildExpression(p1)
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     () => new PairIterator(lhs, rhs)
 
   def getOperandRole(arg: Int): OperandRole =
     OperandRole.SINGLE_ATOMIC
 
-  def getLhsExpression(): Expression = lhs.getChildExpression
+  def getLhsExpression: Expression = lhs.getChildExpression
 
   def setLhsExpression(child: Expression): Unit = {
     lhs.setChildExpression(child)
   }
 
-  def getRhsExpression(): Expression = rhs.getChildExpression
+  def getRhsExpression: Expression = rhs.getChildExpression
 
   def setRhsExpression(child: Expression): Unit = {
     rhs.setChildExpression(child)
@@ -94,7 +94,7 @@ abstract class BinaryExpression(p0: Expression,
         visitor.getStaticContext.makeEarlyEvaluationContext()).materialize()
       Literal.makeLiteral(v, this)
     } catch {
-      case err: XPathException => {}
+      case _: XPathException =>
 
     }
     this
@@ -117,7 +117,7 @@ abstract class BinaryExpression(p0: Expression,
         }
       }
     } catch {
-      case err: XPathException => {}
+      case _: XPathException =>
 
     }
     this
@@ -128,7 +128,7 @@ abstract class BinaryExpression(p0: Expression,
     getRhsExpression.setFlattened(flattened)
   }
 
-  def getOperator(): Int = operator
+  def getOperator: Int = operator
 
   def computeCardinality(): Int = {
     val lhs: Expression = getLhsExpression
@@ -233,13 +233,13 @@ abstract class BinaryExpression(p0: Expression,
       " " +
       ExpressionTool.parenthesize(getRhsExpression)
 
-  override def toShortString(): String =
+  override def toShortString: String =
     parenthesize(getLhsExpression) + " " + displayOperator() +
       " " +
       parenthesize(getRhsExpression)
 
   private def parenthesize(operand: Expression): String = {
-    var operandStr: String = operand.toShortString()
+    var operandStr: String = operand.toShortString
     if (operand.isInstanceOf[BinaryExpression] &&
       XPathParser.operatorPrecedence(operand.asInstanceOf[BinaryExpression].operator) < XPathParser.operatorPrecedence(operator).asInstanceOf[Int]) {
       operandStr = "(" + operandStr + ")"

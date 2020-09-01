@@ -32,7 +32,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     *
     * @return the Genre to which this type belongs, specifically {@link Genre#ATOMIC}
     */
-  override def getGenre(): Genre = Genre.ATOMIC
+  override def getGenre: Genre = Genre.ATOMIC
 
   def validate(primValue: AtomicValue,
                lexicalValue: CharSequence,
@@ -40,9 +40,9 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
 
   def isOrdered(optimistic: Boolean): Boolean
 
-  def isAbstract(): Boolean
+  def isAbstract: Boolean
 
-  def isPrimitiveType(): Boolean
+  def isPrimitiveType: Boolean
 
   def isIdType(): Boolean
 
@@ -81,7 +81,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     * xs:anyAtomicType, 0.5 for a primitive type such as xs:date, and between 0.5 and
     * 1.0 for derived atomic types.
     */
-  override def getDefaultPriority(): Double = {
+  override def getDefaultPriority: Double = {
     if (this == BuiltInAtomicType.ANY_ATOMIC) {
       return 0
     }

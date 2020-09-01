@@ -67,7 +67,7 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
     null
   }
 
-  def getLibraryList(): List[FunctionLibrary] = libraryList
+  def getLibraryList: List[FunctionLibrary] = libraryList
 
   def copy(): FunctionLibrary = {
     val fll = new FunctionLibraryList()

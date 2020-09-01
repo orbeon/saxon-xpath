@@ -129,7 +129,7 @@ class Stripper( var rule: SpaceStrippingRule, next: Receiver)
       }
       if (`type`.isInstanceOf[ComplexType] && `type`
         .asInstanceOf[ComplexType]
-        .hasAssertions()) {
+        .hasAssertions) {
         preserve = (preserve | ASSERTIONS_EXIST).toByte
       }
     }

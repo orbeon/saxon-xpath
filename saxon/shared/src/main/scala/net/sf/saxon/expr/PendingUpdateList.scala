@@ -20,7 +20,7 @@ trait PendingUpdateList {
 
   def apply(context: XPathContext, validationMode: Int): Unit
 
-  def getAffectedTrees(): Set[MutableNodeInfo]
+  def getAffectedTrees: Set[MutableNodeInfo]
 
   def addPutAction(node: NodeInfo, uri: String, originator: Expression): Unit
 

@@ -28,7 +28,7 @@ class SameNameTest(private var origin: NodeInfo)
     extends NodeTest
     with QNameTest {
 
-  def getNodeKind(): Int = origin.getNodeKind
+  def getNodeKind: Int = origin.getNodeKind
 
   /**
     * Get the corresponding {@link net.sf.saxon.model.UType}. A UType is a union of primitive item
@@ -59,7 +59,7 @@ class SameNameTest(private var origin: NodeInfo)
     if (nodeKind != origin.getNodeKind) {
       return      false
     }
-    if (name.hasFingerprint() && origin.hasFingerprint()) {
+    if (name.hasFingerprint && origin.hasFingerprint) {
       name.getFingerprint == origin.getFingerprint
     } else {
       name.hasURI(origin.getURI) && name.getLocalPart == origin.getLocalPart
@@ -77,7 +77,7 @@ class SameNameTest(private var origin: NodeInfo)
         }
         if (k != origin.getNodeKind) {
           false
-        } else if (origin.hasFingerprint()) {
+        } else if (origin.hasFingerprint) {
           (nameCodeArray(nodeNr) & 0xfffff) == origin.getFingerprint
         } else {
           Navigator.haveSameName(tree.getNode(nodeNr), origin)
@@ -94,26 +94,26 @@ class SameNameTest(private var origin: NodeInfo)
   def matches(qname: StructuredQName): Boolean =
     NameOfNode.makeName(origin).getStructuredQName == qname
 
-  def getDefaultPriority(): Double = 0.0
+  def getDefaultPriority: Double = 0.0
 
   override def getFingerprint(): Int =
-    if (origin.hasFingerprint()) {
+    if (origin.hasFingerprint) {
       origin.getFingerprint
     } else {
       val pool: NamePool = origin.getConfiguration.getNamePool
       pool.allocateFingerprint(origin.getURI, origin.getLocalPart)
     }
 
-  override def getPrimitiveType(): Int = origin.getNodeKind
+  override def getPrimitiveType: Int = origin.getNodeKind
 
   /*@NotNull*/
 
   override def getRequiredNodeNames(): Optional[IntSet] =
     Optional.of(new IntSingletonSet(getFingerprint))
 
-  def getNamespaceURI(): String = origin.getURI
+  def getNamespaceURI: String = origin.getURI
 
-  def getLocalPart(): String = origin.getLocalPart
+  def getLocalPart: String = origin.getLocalPart
 
   override def toString: String = origin.getNodeKind match {
     case Type.ELEMENT =>
@@ -143,7 +143,7 @@ class SameNameTest(private var origin: NodeInfo)
 
   }
 
-  def getEquivalentNameTest(): NameTest =
+  def getEquivalentNameTest: NameTest =
     new NameTest(origin.getNodeKind,
                  origin.getURI,
                  origin.getLocalPart,

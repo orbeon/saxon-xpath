@@ -556,7 +556,7 @@ object Operation {
                  var greedy: Boolean)
     extends Operation {
 
-    def getRepeatedOperation(): Operation = op
+    def getRepeatedOperation: Operation = op
 
     override def matchesEmptyString(): Int = {
       if (min == 0) {
@@ -1023,9 +1023,9 @@ abstract class Operation {
 
   def iterateMatches(matcher: REMatcher, position: Int): IntIterator
 
-  def getMatchLength(): Int = -1
+  def getMatchLength: Int = -1
 
-  def getMinimumMatchLength(): Int = {
+  def getMinimumMatchLength: Int = {
     val fixed: Int = getMatchLength
     if (fixed < 0) 0 else fixed
   }

@@ -91,7 +91,7 @@ abstract class AttributeCreator
 
   /*@NotNull*/
 
-  override def getItemType(): ItemType = NodeKindTest.ATTRIBUTE
+  override def getItemType: ItemType = NodeKindTest.ATTRIBUTE
 
   def processValue(value: CharSequence,
                    output: Outputter,

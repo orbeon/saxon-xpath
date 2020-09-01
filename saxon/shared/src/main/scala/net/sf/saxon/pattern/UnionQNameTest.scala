@@ -1,14 +1,10 @@
 package net.sf.saxon.pattern
 
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.tree.util.FastStringBuffer
-
-import java.util.ArrayList
-
-import java.util.List
-
+import java.util.{ArrayList, List}
 import java.util.stream.Collectors
+
+import net.sf.saxon.om.StructuredQName
+import net.sf.saxon.tree.util.FastStringBuffer
 
 import scala.jdk.CollectionConverters._
 
@@ -17,7 +13,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
   var tests: List[QNameTest] = new ArrayList[QNameTest](testList)
 
   def matches(qname: StructuredQName): Boolean =
-    tests.asScala.find(_.matches(qname)).map(_ => true).getOrElse(false)
+    tests.asScala.exists(_.matches(qname))
 
   override def toString: String = {
     var started: Boolean = false
@@ -37,7 +33,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
     String.join(" ",
       tests
         .stream()
-        .map((res: QNameTest) => res.exportQNameTest())
+        .map((res: QNameTest) => res.exportQNameTest)
         .collect(Collectors.toList()))
 
   override def generateJavaScriptNameTest(targetVersion: Int): String = {

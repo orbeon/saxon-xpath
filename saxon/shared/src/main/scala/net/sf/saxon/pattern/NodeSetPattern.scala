@@ -51,9 +51,9 @@ class NodeSetPattern /**
     *
     * @return an iterator containing the sub-expressions of this expression
     */
-  override def operands(): java.lang.Iterable[Operand] = selectionOp
+  override def operands: java.lang.Iterable[Operand] = selectionOp
 
-  def getSelectionExpression(): Expression = selectionOp.getChildExpression
+  def getSelectionExpression: Expression = selectionOp.getChildExpression
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {
@@ -128,7 +128,7 @@ class NodeSetPattern /**
     */
   override def getUType(): UType = getItemType.getUType
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     if (itemType == null) {
       itemType = getSelectionExpression.getItemType
     }

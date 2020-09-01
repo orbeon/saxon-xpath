@@ -68,7 +68,7 @@ class ConversionRules {
     this.stringToDouble = converter
   }
 
-  def getStringToDoubleConverter(): StringToDouble = stringToDouble
+  def getStringToDoubleConverter: StringToDouble = stringToDouble
 
   def setNotationSet(notations: NotationSet): Unit = {
     this.notationSet = notations

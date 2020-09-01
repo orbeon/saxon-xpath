@@ -29,10 +29,10 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   def getPipelineConfiguration(): PipelineConfiguration = pipe
 
-  def getNamePool(): NamePool =
+  def getNamePool: NamePool =
     getPipelineConfiguration.getConfiguration.getNamePool
 
-  def getUnderlyingProvider(): PullProvider = base
+  def getUnderlyingProvider: PullProvider = base
 
   def next(): Event = base.next()
 
@@ -51,7 +51,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   def getNodeName(): NodeName = base.getNodeName
 
-  def getStringValue(): CharSequence = base.getStringValue
+  def getStringValue: CharSequence = base.getStringValue
 
   def getAtomicValue(): AtomicValue = base.getAtomicValue
 

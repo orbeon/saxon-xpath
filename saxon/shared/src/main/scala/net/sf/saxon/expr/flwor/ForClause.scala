@@ -56,7 +56,7 @@ class ForClause extends Clause {
     sequenceOp.setChildExpression(sequence)
   }
 
-  def getSequence(): Expression = sequenceOp.getChildExpression
+  def getSequence: Expression = sequenceOp.getChildExpression
 
   override def getRangeVariables(): Array[LocalVariableBinding] =
     if (positionVariable == null) {
@@ -69,7 +69,7 @@ class ForClause extends Clause {
     allowsEmpty = option
   }
 
-  def isAllowingEmpty(): Boolean = allowsEmpty
+  def isAllowingEmpty: Boolean = allowsEmpty
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Unit = {
@@ -305,7 +305,7 @@ class ForClause extends Clause {
     out.endElement()
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
@@ -317,7 +317,7 @@ class ForClause extends Clause {
       fsb.cat(' ')
     }
     fsb.append("in ")
-    fsb.append(getSequence.toShortString())
+    fsb.append(getSequence.toShortString)
     fsb.toString
   }
 

@@ -53,30 +53,30 @@ trait PullProvider {
 
   def setPipelineConfiguration(pipe: PipelineConfiguration): Unit
 
-  def getPipelineConfiguration(): PipelineConfiguration
+  def getPipelineConfiguration: PipelineConfiguration
 
   def next(): Event
 
   def current(): Event
 
-  def getAttributes(): AttributeMap
+  def getAttributes: AttributeMap
 
-  def getNamespaceDeclarations(): Array[NamespaceBinding]
+  def getNamespaceDeclarations: Array[NamespaceBinding]
 
   def skipToMatchingEnd(): Event
 
   def close(): Unit
 
-  def getNodeName(): NodeName
+  def getNodeName: NodeName
 
-  def getStringValue(): CharSequence
+  def getStringValue: CharSequence
 
-  def getSchemaType(): SchemaType
+  def getSchemaType: SchemaType
 
-  def getAtomicValue(): AtomicValue
+  def getAtomicValue: AtomicValue
 
-  def getSourceLocator(): Location
+  def getSourceLocator: Location
 
-  def getUnparsedEntities(): List[UnparsedEntity]
+  def getUnparsedEntities: List[UnparsedEntity]
 
 }

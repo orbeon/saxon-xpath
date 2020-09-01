@@ -68,7 +68,7 @@ class OperandArray extends java.lang.Iterable[Operand] {
 
   def copy(): Array[Operand] = Arrays.copyOf(operandArray, operandArray.length)
 
-  def getRoles(): Array[OperandRole] = {
+  def getRoles: Array[OperandRole] = {
     val or: Array[OperandRole] = Array.ofDim[OperandRole](operandArray.length)
     for (i <- 0 until or.length) {
       or(i) = operandArray(i).getOperandRole
@@ -81,11 +81,11 @@ class OperandArray extends java.lang.Iterable[Operand] {
   def getOperandExpression(n: Int): Expression =
     operandArray(n).getChildExpression
 
-  def operands(): java.lang.Iterable[Operand] = Arrays.asList(operandArray: _*)
+  def operands: java.lang.Iterable[Operand] = Arrays.asList(operandArray: _*)
 
   def operandExpressions(): java.lang.Iterable[Expression] = {
     val list: List[Expression] = new ArrayList[Expression](operandArray.length)
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       list.add(o.getChildExpression)
     }
     list
@@ -97,6 +97,6 @@ class OperandArray extends java.lang.Iterable[Operand] {
     }
   }
 
-  def getNumberOfOperands(): Int = operandArray.length
+  def getNumberOfOperands: Int = operandArray.length
 
 }

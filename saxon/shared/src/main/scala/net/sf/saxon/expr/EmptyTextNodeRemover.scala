@@ -33,7 +33,7 @@ class EmptyTextNodeRemover(p0: Expression)
 
   /*@NotNull*/
 
-  override def getItemType(): ItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   override def computeCardinality(): Int =
     getBaseExpression.getCardinality | StaticProperty.ALLOWS_ZERO

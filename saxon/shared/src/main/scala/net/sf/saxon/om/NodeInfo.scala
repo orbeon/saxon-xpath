@@ -54,11 +54,11 @@ import scala.jdk.CollectionConverters._
   */
 trait NodeInfo extends Source with Item with Location {
 
-  def getTreeInfo(): TreeInfo
+  def getTreeInfo: TreeInfo
 
-  def getConfiguration(): Configuration = getTreeInfo.getConfiguration
+  def getConfiguration: Configuration = getTreeInfo.getConfiguration
 
-  def getNodeKind(): Int
+  def getNodeKind: Int
 
   def isSameNodeInfo(other: NodeInfo): Boolean = equals(other)
 
@@ -72,7 +72,7 @@ trait NodeInfo extends Source with Item with Location {
 
   def getPublicId(): String = null
 
-  def getBaseURI(): String
+  def getBaseURI: String
 
   def getLineNumber(): Int = -1
 
@@ -80,21 +80,21 @@ trait NodeInfo extends Source with Item with Location {
 
   def compareOrder(other: NodeInfo): Int
 
-  def getStringValue(): String
+  def getStringValue: String
 
-  def hasFingerprint(): Boolean
+  def hasFingerprint: Boolean
 
-  def getFingerprint(): Int
+  def getFingerprint: Int
 
-  def getLocalPart(): String
+  def getLocalPart: String
 
-  def getURI(): String
+  def getURI: String
 
-  def getDisplayName(): String
+  def getDisplayName: String
 
-  def getPrefix(): String
+  def getPrefix: String
 
-  def getSchemaType(): SchemaType = getNodeKind match {
+  def getSchemaType: SchemaType = getNodeKind match {
     case Type.ATTRIBUTE => BuiltInAtomicType.UNTYPED_ATOMIC
     case Type.DOCUMENT | Type.ELEMENT => Untyped.getInstance
     case _ => null
@@ -109,7 +109,7 @@ trait NodeInfo extends Source with Item with Location {
 
   /*@Nullable*/
 
-  def getParent(): NodeInfo
+  def getParent: NodeInfo
 
   def iterateAxis(axisNumber: Int): AxisIterator =
     iterateAxis(axisNumber, AnyNodeTest.getInstance)
@@ -121,12 +121,12 @@ trait NodeInfo extends Source with Item with Location {
 
   def getAttributeValue(uri: String, local: String): String
 
-  def getRoot(): NodeInfo
+  def getRoot: NodeInfo
 
-  def hasChildNodes(): Boolean
+  def hasChildNodes: Boolean
 
   def children(): Iterator[NodeInfo] = {
-    if (hasChildNodes()) {
+    if (hasChildNodes) {
       val parent: NodeInfo = this
       parent.iterateAxis(AxisInfo.CHILD).asIterator()
     } else {
@@ -135,7 +135,7 @@ trait NodeInfo extends Source with Item with Location {
   }
 
   def children(filter: Predicate[_ >: NodeInfo]): Iterable[_ <: NodeInfo] =
-    if (hasChildNodes()) {
+    if (hasChildNodes) {
       val parent: NodeInfo = this
       (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator().iterator.to(Iterable)
     } else {
@@ -169,17 +169,17 @@ trait NodeInfo extends Source with Item with Location {
   def getDeclaredNamespaces(
       buffer: Array[NamespaceBinding]): Array[NamespaceBinding]
 
-  def getAllNamespaces(): NamespaceMap
+  def getAllNamespaces: NamespaceMap
 
-  def isId(): Boolean = false
+  def isId: Boolean = false
 
-  def isIdref(): Boolean = false
+  def isIdref: Boolean = false
 
-  def isNilled(): Boolean = false
+  def isNilled: Boolean = false
 
   override def isStreamed(): Boolean = false
 
-  override def toShortString(): String = getNodeKind match {
+  override def toShortString: String = getNodeKind match {
     case Type.DOCUMENT => "document-node()"
     case Type.ELEMENT => "<" + getDisplayName + "/>"
     case Type.ATTRIBUTE => "@" + getDisplayName
@@ -202,5 +202,5 @@ trait NodeInfo extends Source with Item with Location {
     * @return the genre: specifically, {@link Genre#NODE}. The default implementation (which should not
     * be overridden) returns {@link Genre#NODE}.
     */
-  override def getGenre(): Genre = Genre.NODE
+  override def getGenre: Genre = Genre.NODE
 }

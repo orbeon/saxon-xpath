@@ -63,14 +63,14 @@ class JsonToXMLFn extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val arg0: Item = arguments(0).head()
+    val arg0: Item = arguments(0).head
     if (arg0 == null) {
       EmptySequence.getInstance
     }
     val input: String = arg0.getStringValue
     var options: MapItem = null
     if (getArity == 2) {
-      options = arguments(1).head().asInstanceOf[MapItem]
+      options = arguments(1).head.asInstanceOf[MapItem]
     }
     val result: Item = eval(input, options, context)
     if (result == null) EmptySequence.getInstance else result

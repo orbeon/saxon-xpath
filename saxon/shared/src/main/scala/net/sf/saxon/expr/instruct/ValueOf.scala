@@ -85,13 +85,13 @@ class ValueOf(select: Expression,
     isNumberingInstruction = true
   }
 
-  override def toShortString(): String =
+  override def toShortString: String =
     if (getSelect.isInstanceOf[StringLiteral]) {
       "text{" +
         Err.depict(getSelect.asInstanceOf[StringLiteral].getValue) +
         "}"
     } else {
-      super.toShortString()
+      super.toShortString
     }
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
@@ -111,10 +111,10 @@ class ValueOf(select: Expression,
       StandardNames.XSL_VALUE_OF
     }
 
-  def isDisableOutputEscaping(): Boolean =
+  def isDisableOutputEscaping: Boolean =
     ReceiverOption.contains(options, ReceiverOption.DISABLE_ESCAPING)
 
-  override def getItemType(): ItemType = NodeKindTest.TEXT
+  override def getItemType: ItemType = NodeKindTest.TEXT
 
   override def computeCardinality(): Int =
     if (noNodeIfEmpty) {

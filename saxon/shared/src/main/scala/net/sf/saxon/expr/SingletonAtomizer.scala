@@ -71,7 +71,7 @@ class SingletonAtomizer(sequence: Expression,
       var err: XPathException = null
       err =
         if (operandType.isInstanceOf[MapType])
-          new XPathException("Cannot atomize a map (" + toShortString() + ")",
+          new XPathException("Cannot atomize a map (" + toShortString + ")",
             "FOTY0013")
         else if (operandType.isInstanceOf[FunctionItemType])
           new XPathException("Cannot atomize a function item", "FOTY0013")
@@ -120,7 +120,7 @@ class SingletonAtomizer(sequence: Expression,
 
   override def getStreamerName(): String = "SingletonAtomizer"
 
-  def getRole(): RoleDiagnostic = roleDiagnostic
+  def getRole: RoleDiagnostic = roleDiagnostic
 
   override def addToPathMap(
                              pathMap: PathMap,
@@ -180,7 +180,7 @@ class SingletonAtomizer(sequence: Expression,
         )
       }
       if (found == 1) {
-        result = seq.head()
+        result = seq.head
       }
     }
     if (found == 0 && !allowEmpty) {
@@ -192,7 +192,7 @@ class SingletonAtomizer(sequence: Expression,
     result
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     var isSchemaAware: Boolean = true
     try isSchemaAware = getPackageData.isSchemaAware
     catch {
@@ -246,6 +246,6 @@ class SingletonAtomizer(sequence: Expression,
     out.endElement()
   }
 
-  override def toShortString(): String = getBaseExpression.toShortString()
+  override def toShortString: String = getBaseExpression.toShortString
 
 }

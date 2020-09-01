@@ -31,21 +31,18 @@ abstract class NodeTest
     with ItemType.WithSequenceTypeCache {
 
   private var _one: SequenceType = _
-
   private var _oneOrMore: SequenceType = _
-
   private var _zeroOrOne: SequenceType = _
-
   private var _zeroOrMore: SequenceType = _
 
-  override def getGenre(): Genre.Genre = Genre.NODE
+  def getGenre: Genre.Genre = Genre.NODE
 
-  def getDefaultPriority(): Double
+  def getDefaultPriority: Double
 
   def matches(item: Item, th: TypeHierarchy): Boolean =
     item.isInstanceOf[NodeInfo] && test(item.asInstanceOf[NodeInfo])
 
-  def getPrimitiveItemType(): ItemType = {
+  def getPrimitiveItemType: ItemType = {
     val p: Int = getPrimitiveType
     if (p == Type.NODE) {
       AnyNodeTest.getInstance
@@ -54,13 +51,11 @@ abstract class NodeTest
     }
   }
 
-  def getPrimitiveType(): Int = Type.NODE
+  def getPrimitiveType: Int = Type.NODE
+  def getFingerprint: Int = -1
+  def getMatchingNodeName: StructuredQName = null
 
-  def getFingerprint(): Int = -1
-
-  def getMatchingNodeName(): StructuredQName = null
-
-  override def getBasicAlphaCode(): String = getPrimitiveType match {
+  override def getBasicAlphaCode: String = getPrimitiveType match {
     case Type.NODE => "N"
     case Type.ELEMENT => "NE"
     case Type.ATTRIBUTE => "NA"
@@ -73,12 +68,9 @@ abstract class NodeTest
 
   }
 
-  def isAtomicType(): Boolean = false
-
-  def isPlainType(): Boolean = false
-
-  def getAtomizedItemType(): AtomicType = BuiltInAtomicType.ANY_ATOMIC
-
+  def isAtomicType: Boolean = false
+  def isPlainType: Boolean = false
+  def getAtomizedItemType: AtomicType = BuiltInAtomicType.ANY_ATOMIC
   def isAtomizable(th: TypeHierarchy): Boolean = true
 
   def getMatcher(tree: NodeVectorTree): IntPredicate =
@@ -89,7 +81,7 @@ abstract class NodeTest
   def test(node: NodeInfo): Boolean =
     matches(node.getNodeKind, NameOfNode.makeName(node), node.getSchemaType)
 
-  def getContentType(): SchemaType = {
+  def getContentType: SchemaType = {
     val m: Set[PrimitiveUType.PrimitiveUType] = getUType.decompose()
     val it: Iterator[PrimitiveUType.PrimitiveUType] = m.iterator()
     if (m.size == 1 && it.hasNext) {
@@ -108,10 +100,10 @@ abstract class NodeTest
     AnyType.getInstance
   }
 
-  def getRequiredNodeNames(): Optional[IntSet] =
+  def getRequiredNodeNames: Optional[IntSet] =
     Optional.of(IntUniversalSet.getInstance)
 
-  def isNillable(): Boolean = true
+  def isNillable: Boolean = true
 
   def copy(): NodeTest = this
 
@@ -150,13 +142,13 @@ abstract class NodeTest
       if (!getUType.overlaps(actualKind)) {
         Optional.of(
           "The supplied value is " + actualKind
-            .toStringWithIndefiniteArticle())
+            .toStringWithIndefiniteArticle)
       }
       Optional.empty()
     } else {
       Optional.of("The supplied value is " + item.getGenre.getDescription)
     }
 
-  def toShortString(): String = toString
+  def toShortString: String = toString
 
 }

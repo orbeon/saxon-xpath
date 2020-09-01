@@ -363,7 +363,7 @@ class SequenceType {
    *
    * @return the string representation as an instance of the XPath SequenceType construct
    */
-  def toExportString(): String = {
+  def toExportString: String = {
     if (cardinality == StaticProperty.ALLOWS_ZERO) {
       return "empty-sequence()"
     }

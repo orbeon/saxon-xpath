@@ -58,9 +58,9 @@ class FLWORExpression extends Expression {
       if (looping) REPEATED_RETURN else SINGLE_RETURN)
   }
 
-  def getClauseList(): List[Clause] = clauses
+  def getClauseList: List[Clause] = clauses
 
-  def getReturnClause(): Expression = returnClauseOp.getChildExpression
+  def getReturnClause: Expression = returnClauseOp.getChildExpression
 
   override def hasVariableBinding(binding: Binding): Boolean =
     clauses.asScala.find(clauseHasBinding(_, binding)).map(_ => true).getOrElse(false)
@@ -125,12 +125,12 @@ class FLWORExpression extends Expression {
     this
   }
 
-  override def getItemType(): ItemType = getReturnClause.getItemType
+  override def getItemType: ItemType = getReturnClause.getItemType
 
   override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand](5)
     var repeatable: Boolean = false
     for (c <- clauses.asScala) {
@@ -559,11 +559,11 @@ class FLWORExpression extends Expression {
 
   override def getExpressionName(): String = "FLWOR"
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
-    sb.append(clauses.get(0).toShortString())
+    sb.append(clauses.get(0).toShortString)
     sb.append(" ... return ")
-    sb.append(getReturnClause.toShortString())
+    sb.append(getReturnClause.toShortString)
     sb.toString
   }
 

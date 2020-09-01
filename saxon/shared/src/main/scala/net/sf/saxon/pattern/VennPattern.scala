@@ -30,7 +30,7 @@ abstract class VennPattern( var p1: Pattern,
 
   adoptChildExpression(p2)
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(new Operand(this, p1, OperandRole.SAME_FOCUS_ACTION),
       new Operand(this, p2, OperandRole.SAME_FOCUS_ACTION))
 
@@ -92,9 +92,9 @@ abstract class VennPattern( var p1: Pattern,
 
   override def getDependencies(): Int = p1.getDependencies | p2.getDependencies
 
-  def getLHS(): Pattern = p1
+  def getLHS: Pattern = p1
 
-  def getRHS(): Pattern = p2
+  def getRHS: Pattern = p2
 
   override def matchesCurrentGroup(): Boolean =
     p1.matchesCurrentGroup() || p2.matchesCurrentGroup()
@@ -113,7 +113,7 @@ abstract class VennPattern( var p1: Pattern,
 
   override def computeHashCode(): Int = 0x9bd723a6 ^ p1.hashCode ^ p2.hashCode
 
-   def getOperatorName(): String
+   def getOperatorName: String
 
   override def toString: String = p1.toString + " " + getOperatorName + " " + p2.toString
 

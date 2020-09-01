@@ -42,7 +42,7 @@ class JAXPVariableReference(private var name: StructuredQName,
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = AnyItemType
+  def getItemType: ItemType = AnyItemType
 
   def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 
@@ -60,7 +60,7 @@ class JAXPVariableReference(private var name: StructuredQName,
   override def call(context: XPathContext,
                     arguments: Array[Sequence]): Sequence = {
     val config: Configuration = context.getConfiguration
-    val value: AnyRef = resolver.resolveVariable(name.toJaxpQName())
+    val value: AnyRef = resolver.resolveVariable(name.toJaxpQName)
     if (value == null) {
       EmptySequence.getInstance
     }

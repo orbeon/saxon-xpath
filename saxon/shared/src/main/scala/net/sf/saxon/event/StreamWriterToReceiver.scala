@@ -89,7 +89,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     this.isChecking = check
   }
 
-  def isCheckValues(): Boolean = this.isChecking
+  def isCheckValues: Boolean = this.isChecking
 
   private def flushStartTag(): Unit = {
     if (depth == -1) {
@@ -183,7 +183,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     }
   }
 
-  private def getDefaultNamespace(): String =
+  private def getDefaultNamespace: String =
     pendingTag.namespaces.asScala
       .find(t => t.prefix == null || t.prefix.isEmpty)
       .map(_.uri)

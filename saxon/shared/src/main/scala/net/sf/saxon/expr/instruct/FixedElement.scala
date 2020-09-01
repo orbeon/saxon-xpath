@@ -57,7 +57,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
 
   preservingTypes = schemaType == null && validation == Validation.PRESERVE
 
-  override def operands(): java.lang.Iterable[Operand] = contentOp
+  override def operands: java.lang.Iterable[Operand] = contentOp
 
   override def simplify(): Expression = {
     preservingTypes |= !getPackageData.isSchemaAware
@@ -100,7 +100,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       if (getContentExpression.isInstanceOf[Block]) {
         ok = true
         breakable {
-          for (o <- getContentExpression.operands().asScala) {
+          for (o <- getContentExpression.operands.asScala) {
             val exp: Expression = o.getChildExpression
             if (exp.isInstanceOf[FixedAttribute]) {
               if (!exp
@@ -182,7 +182,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           new NameTest(Type.ELEMENT, fp, env.getConfiguration.getNamePool),
           Token.INTERSECT,
           new ContentTypeTest(Type.ELEMENT, schTyp, config, false))
-        if (xsiType != null || !decl.hasTypeAlternatives()) {
+        if (xsiType != null || ! decl.hasTypeAlternatives) {
           instr.getValidationOptions.setTopLevelType(schTyp)
           try schTyp.analyzeContentExpression(content, Type.ELEMENT)
           catch {
@@ -272,7 +272,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     itemType
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     if (itemType == null) {
       super.getItemType
     }
@@ -293,7 +293,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     if (getContentExpression.isInstanceOf[FixedAttribute]) {
       testForXSIType(getContentExpression.asInstanceOf[FixedAttribute], env)
     } else if (getContentExpression.isInstanceOf[Block]) {
-      for (o <- getContentExpression.operands().asScala) {
+      for (o <- getContentExpression.operands.asScala) {
         val exp: Expression = o.getChildExpression
         if (exp.isInstanceOf[FixedAttribute]) {
           val `type`: SchemaType =
@@ -386,7 +386,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     }
   }
 
-  def getActiveNamespaces(): NamespaceMap = namespaceBindings
+  def getActiveNamespaces: NamespaceMap = namespaceBindings
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("elem", this)
@@ -430,10 +430,10 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       getContentExpression.toString +
       "}/>"
 
-  override def toShortString(): String =
+  override def toShortString: String =
     "<" + elementName.getStructuredQName.getDisplayName +
       " {" +
-      getContentExpression.toShortString() +
+      getContentExpression.toShortString +
       "}/>"
 
   override def getExpressionName(): String = "element"

@@ -24,7 +24,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
 
   private var usesPosition: Boolean = true
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     new Operand(this, positionExpr, OperandRole.FOCUS_CONTROLLED_ACTION)
 
   def setUsesPosition(usesPosition: Boolean): Unit = {
@@ -155,7 +155,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
 
   override def getFingerprint(): Int = nodeTest.getFingerprint
 
-  override def getItemType(): ItemType = nodeTest
+  override def getItemType: ItemType = nodeTest
 
   override def equals(other: Any): Boolean = other match {
     case other: GeneralPositionalPattern => {

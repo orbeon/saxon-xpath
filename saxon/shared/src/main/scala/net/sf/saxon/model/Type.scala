@@ -329,7 +329,7 @@ object Type {
     } else if (r == Affinity.SUBSUMES) {
       t1
     } else {
-      t1.getUType.union(t2.getUType).toItemType()
+      t1.getUType.union(t2.getUType).toItemType
     }
   }
 

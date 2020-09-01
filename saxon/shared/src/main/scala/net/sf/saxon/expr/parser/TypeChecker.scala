@@ -77,7 +77,7 @@ object TypeChecker {
           val msg = "Required item type of " + role.getMessage + " is " +
             reqItemType +
             "; supplied value (" +
-            supplied.toShortString() +
+            supplied.toShortString +
             ") has item type " +
             suppliedItemType +
             ". The expression can succeed only if the supplied value is an empty sequence."

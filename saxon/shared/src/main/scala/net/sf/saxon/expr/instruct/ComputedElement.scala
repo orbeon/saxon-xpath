@@ -61,9 +61,9 @@ class ComputedElement(elementName: Expression,
 
   this.bequeathNamespacesToChildren = inheritNamespaces
 
-  def getNameExp(): Expression = nameOp.getChildExpression
+  def getNameExp: Expression = nameOp.getChildExpression
 
-  def getNamespaceExp(): Expression =
+  def getNamespaceExp: Expression =
     if (namespaceOp == null) null else namespaceOp.getChildExpression
 
    def setNameExp(elementName: Expression): Unit = {
@@ -78,10 +78,10 @@ class ComputedElement(elementName: Expression,
     }
   }
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandSparseList(contentOp, nameOp, namespaceOp)
 
-  def getNamespaceResolver(): NamespaceResolver = getRetainedStaticContext
+  def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
  override def simplify(): Expression = {
     setNameExp(getNameExp.simplify())
@@ -187,7 +187,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
     ce
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     if (itemType == null) {
       super.getItemType
     }

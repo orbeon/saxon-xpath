@@ -70,7 +70,7 @@ abstract class SystemFunction extends AbstractFunction {
     e
   }
 
-  def getNetCost(): Int = 1
+  def getNetCost: Int = 1
 
   def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
                                 contextInfo: ContextItemStaticInfo,
@@ -98,7 +98,7 @@ abstract class SystemFunction extends AbstractFunction {
       (BuiltInFunctionSet.CITEM | BuiltInFunctionSet.CDOC)) !=
       0
 
-  def getFunctionName(): StructuredQName = details.name
+  def getFunctionName: StructuredQName = details.name
 
   def getDescription(): String = details.name.getDisplayName
 
@@ -114,7 +114,7 @@ abstract class SystemFunction extends AbstractFunction {
     roles
   }
 
-  def getIntegerBounds(): Array[IntegerValue] = null
+  def getIntegerBounds: Array[IntegerValue] = null
 
   def supplyTypeInformation(visitor: ExpressionVisitor,
                             contextItemType: ContextItemStaticInfo,
@@ -123,7 +123,7 @@ abstract class SystemFunction extends AbstractFunction {
   override def equals(o: Any): Boolean =
     (o.isInstanceOf[SystemFunction]) && this == o
 
-  def getErrorCodeForTypeErrors(): String = "XPTY0004"
+  def getErrorCodeForTypeErrors: String = "XPTY0004"
 
   def getRequiredType(arg: Int): SequenceType = {
     if (details == null) {
@@ -132,7 +132,7 @@ abstract class SystemFunction extends AbstractFunction {
     details.argumentTypes(arg)
   }
 
-  def getResultItemType(): ItemType = details.itemType
+  def getResultItemType: ItemType = details.itemType
 
   def getFunctionItemType(): FunctionItemType = {
     val resultType: SequenceType =
@@ -212,7 +212,7 @@ abstract class SystemFunction extends AbstractFunction {
 
   override def isTrustedResultType(): Boolean = true
 
-  def getStaticBaseUriString(): String =
+  def getStaticBaseUriString: String =
     getRetainedStaticContext.getStaticBaseUriString
 
   def exportAttributes(out: ExpressionPresenter): Unit = ()
@@ -222,11 +222,11 @@ abstract class SystemFunction extends AbstractFunction {
 
   def importAttributes(attributes: Properties): Unit = ()
 
-  def getCompilerName(): String = null
+  def getCompilerName: String = null
 
-  def getStreamerName(): String = null
+  def getStreamerName: String = null
 
-  override def toShortString(): String =
+  override def toShortString: String =
     getFunctionName.getDisplayName + '#' + getArity
 
   override def toString: String =

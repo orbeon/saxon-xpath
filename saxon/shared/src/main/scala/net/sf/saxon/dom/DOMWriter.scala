@@ -202,6 +202,6 @@ class DOMWriter extends Builder {
   override def getCurrentRoot(): NodeInfo =
     new DocumentWrapper(document, systemIdStr, config).getRootNode
 
-   def getDOMDocumentNode(): Document = document
+   def getDOMDocumentNode: Document = document
 
 }

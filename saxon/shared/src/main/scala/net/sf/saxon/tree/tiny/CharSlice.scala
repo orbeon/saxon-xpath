@@ -11,9 +11,9 @@ object CharSlice {
     if (in.isInstanceOf[String]) {
       in.asInstanceOf[String].toCharArray()
     } else if (in.isInstanceOf[CharSlice]) {
-      in.asInstanceOf[CharSlice].toCharArray()
+      in.asInstanceOf[CharSlice].toCharArray
     } else if (in.isInstanceOf[FastStringBuffer]) {
-      in.asInstanceOf[FastStringBuffer].toCharArray()
+      in.asInstanceOf[FastStringBuffer].toCharArray
     } else {
       in.toString.toCharArray()
     }
@@ -109,7 +109,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
       end - start)
   }
 
-  def toCharArray(): Array[Char] = {
+  def toCharArray: Array[Char] = {
     val chars: Array[Char] = Array.ofDim[Char](count)
     System.arraycopy(array, offset, chars, 0, count)
     chars

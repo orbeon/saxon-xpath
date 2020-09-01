@@ -195,7 +195,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
 
   override def isVacuousExpression(): Boolean = isCallOn(classOf[Error])
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     getTargetFunction.getResultItemType(getArguments)
 
   override def copy(rebindings: RebindingMap): Expression = {
@@ -331,7 +331,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       out.startElement("fn", this)
       out.emitAttribute("name", getFunctionName.getLocalPart)
       getTargetFunction.exportAttributes(out)
-      for (o <- operands().asScala) {
+      for (o <- operands.asScala) {
         o.getChildExpression.export(out)
       }
       getTargetFunction.exportAdditionalArguments(this, out)
@@ -343,7 +343,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         "type",
         getTargetFunction.getFunctionItemType.getResultType.toAlphaCode)
       getTargetFunction.exportAttributes(out)
-      for (o <- operands().asScala) {
+      for (o <- operands.asScala) {
         o.getChildExpression.export(out)
       }
       getTargetFunction.exportAdditionalArguments(this, out)

@@ -61,7 +61,7 @@ class StringJoin extends FoldingFunction with PushableFunction {
                        additionalArguments: Sequence*): Fold = {
     var separator: CharSequence = ""
     if (additionalArguments.length > 0) {
-      separator = additionalArguments(0).head().getStringValueCS
+      separator = additionalArguments(0).head.getStringValueCS
     }
     new StringJoinFold(separator)
   }
@@ -70,7 +70,7 @@ class StringJoin extends FoldingFunction with PushableFunction {
                        context: XPathContext,
                        arguments: Array[Sequence]): Unit = {
     val separator: CharSequence =
-      if (arguments.length > 1) arguments(1).head().getStringValueCS else ""
+      if (arguments.length > 1) arguments(1).head.getStringValueCS else ""
     val output: CharSequenceConsumer = destination.getStringReceiver(false)
     output.open()
     var first: Boolean = true

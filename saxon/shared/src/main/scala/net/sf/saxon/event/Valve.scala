@@ -38,7 +38,7 @@ class Valve(private var testNamespace: String,
         alternativeReceiver.startDocument(ReceiverOption.NONE)
         try getNextReceiver.close()
         catch {
-          case err: XPathException => {}
+          case _: XPathException =>
 
         }
         super.setUnderlyingReceiver(alternativeReceiver)

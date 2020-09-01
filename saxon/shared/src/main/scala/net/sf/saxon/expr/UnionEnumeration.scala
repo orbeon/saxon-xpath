@@ -67,6 +67,6 @@ class UnionEnumeration(p1: SequenceIterator,
     e2.close()
   }
 
-  override def getProperties(): Set[Property] = Set(LOOKAHEAD)
+  override def getProperties: Set[Property] = Set(LOOKAHEAD)
 
 }

@@ -26,15 +26,15 @@ import net.sf.saxon.om.Genre.ATOMIC
 
 trait UnionType extends ItemType with CastingTarget {
 
-  def getTypeName(): StructuredQName
+  def getTypeName: StructuredQName
 
-  def getStructuredQName(): StructuredQName = getTypeName
+  def getStructuredQName: StructuredQName = getTypeName
 
   def containsListType(): Boolean
 
-  def getPlainMemberTypes(): Iterable[_ <: PlainType]
+  def getPlainMemberTypes: Iterable[_ <: PlainType]
 
-  def getResultTypeOfCast(): SequenceType
+  def getResultTypeOfCast: SequenceType
 
   def getTypedValue(value: CharSequence,
                     resolver: NamespaceResolver,
@@ -75,7 +75,7 @@ trait UnionType extends ItemType with CastingTarget {
       Optional.empty()
     }
 
-  def getDescription(): String =
+  def getDescription: String =
     if (this.isInstanceOf[SimpleType]) {
       this.asInstanceOf[SimpleType].getDescription
     } else {

@@ -118,7 +118,7 @@ class CollectionFn extends SystemFunction with Callable {
 // No arguments supplied: this gets the default collection
       href = context.getController.getDefaultCollection
     } else {
-      val arg: Item = arguments(0).head()
+      val arg: Item = arguments(0).head
       href =
         if (arg == null) context.getController.getDefaultCollection
         else arg.getStringValue

@@ -1,39 +1,29 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.value
 
-import net.sf.saxon.om.GroundedValue
-
-import net.sf.saxon.om.Item
-
-import net.sf.saxon.tree.iter.EmptyIterator
-
-import net.sf.saxon.tree.iter.UnfailingIterator
-
 import java.util.Collections
 
-import EmptySequence._
+import net.sf.saxon.om.{GroundedValue, Item}
+import net.sf.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
 
 
 
 
 object EmptySequence {
-
-  /*@NotNull*/
-
   private var THE_INSTANCE: EmptySequence[Item] = new EmptySequence()
 
-  def getInstance[T <: Item](): EmptySequence[T] =
+  def getInstance[T <: Item]: EmptySequence[T] =
     THE_INSTANCE.asInstanceOf[EmptySequence[T]]
 
 }
 
 class EmptySequence[T <: Item] private () extends GroundedValue {
 
-  def getStringValue(): String = ""
+  def getStringValue: String = ""
 
   var a: Collections = _
 
-  def getStringValueCS(): CharSequence = ""
+  def getStringValueCS: CharSequence = ""
 
   /**
     * Get the first item in the sequence.
@@ -41,7 +31,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
     * @return the first item in the sequence if there is one, or null if the sequence
     *         is empty
     */
-  def head() = null
+  def head = null
 
   /*@NotNull*/
 
@@ -51,7 +41,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
 
   def asItem(): Item = null
 
-  def getLength(): Int = 0
+  def getLength: Int = 0
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[GroundedValue] && other

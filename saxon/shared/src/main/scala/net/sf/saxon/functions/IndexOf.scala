@@ -137,7 +137,7 @@ class IndexOf extends CollatingFunctionFixed {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val comparer: AtomicComparer = getAtomicComparer(context)
     val seq: SequenceIterator = arguments(0).iterate()
-    val `val`: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+    val `val`: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
     val searchType: BuiltInAtomicType = `val`.getPrimitiveType
     SequenceTool.toLazySequence(
       new IndexIterator(seq, searchType, `val`, comparer))

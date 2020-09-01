@@ -38,7 +38,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
 
   }
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     val t1: ItemType = getLhsExpression.getItemType
     if (op == Token.UNION) {
       val t2: ItemType = getRhsExpression.getItemType

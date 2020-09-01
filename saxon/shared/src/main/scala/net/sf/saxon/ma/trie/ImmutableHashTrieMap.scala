@@ -104,9 +104,9 @@ object ImmutableHashTrieMap {
     override def put(shift: Int,
                      key: K,
                      value: V): ImmutableHashTrieMap[K, V] = {
-      if (entries.head()._1.hashCode != key.hashCode) {
+      if (entries.head._1.hashCode != key.hashCode) {
         newArrayHashNode(shift,
-          entries.head()._1.hashCode,
+          entries.head._1.hashCode,
           this,
           key.hashCode,
           new EntryHashNode(key, value))
@@ -135,7 +135,7 @@ object ImmutableHashTrieMap {
         size += 1
       }
       if (size == 1) {
-        val entry: Tuple2[K, V] = newList.head()
+        val entry: Tuple2[K, V] = newList.head
         new EntryHashNode(entry._1, entry._2)
       }
       new ListHashNode(newList)
@@ -153,7 +153,7 @@ object ImmutableHashTrieMap {
       def hasNext(): Boolean = !curList.isEmpty
 
       def next(): Tuple2[K, V] = {
-        val retVal: Tuple2[K, V] = curList.head()
+        val retVal: Tuple2[K, V] = curList.head
         curList = curList.tail()
         retVal
       }
@@ -361,6 +361,6 @@ abstract class ImmutableHashTrieMap[K, V]
 
   def get(shift: Int, key: K): V
 
-  def isArrayNode(): Boolean
+  def isArrayNode: Boolean
 
 }

@@ -50,7 +50,7 @@ class XPathExpressionImpl (private var expression: Expression,
   @BeanProperty
   var stackFrameMap: SlotManager = _
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   /*@Nullable*/
 
@@ -58,7 +58,7 @@ class XPathExpressionImpl (private var expression: Expression,
     var contextItem: Item = null
     var node1:AnyRef = node
     if (node1.isInstanceOf[ZeroOrOne[_ <: Item]]) {
-      node1 = node1.asInstanceOf[ZeroOrOne[_ <: Item]].head()
+      node1 = node1.asInstanceOf[ZeroOrOne[_ <: Item]].head
     }
     if (node1.isInstanceOf[TreeInfo]) {
       node1 = node1.asInstanceOf[TreeInfo].getRootNode
@@ -183,7 +183,7 @@ class XPathExpressionImpl (private var expression: Expression,
     evaluate(doc, XPathConstants.STRING).asInstanceOf[String]
   }
 
-  def getInternalExpression(): Expression = expression
+  def getInternalExpression: Expression = expression
 
 }
 

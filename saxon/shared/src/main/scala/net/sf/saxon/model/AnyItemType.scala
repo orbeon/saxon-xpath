@@ -27,7 +27,7 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
     *
     * @return the Genre to which this type belongs, specifically {@link Genre#ANY}
     */
-  override def getGenre(): Genre.Genre = Genre.ANY
+  override def getGenre: Genre.Genre = Genre.ANY
 
   /**
     * Get the corresponding {@link net.sf.saxon.model.UType}. A UType is a union of primitive item
@@ -42,7 +42,7 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
     *
     * @return true if this is ANY_ATOMIC_TYPE or a subtype thereof
     */
-  def isAtomicType(): Boolean = false
+  def isAtomicType: Boolean = false
 
   /**
     * Get an alphabetic code representing the type, or at any rate, the nearest built-in type
@@ -51,9 +51,9 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
     *
     * @return the alphacode for the nearest containing built-in type
     */
-  override def getBasicAlphaCode(): String = ""
+  override def getBasicAlphaCode: String = ""
 
-  def isPlainType(): Boolean = false
+  def isPlainType: Boolean = false
 
   /**
     * Test whether a given item conforms to this type
@@ -68,17 +68,17 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
 
   /*@NotNull*/
 
-  def getPrimitiveItemType(): ItemType = this
+  def getPrimitiveItemType: ItemType = this
 
-  def getPrimitiveType(): Int = Type.ITEM
+  def getPrimitiveType: Int = Type.ITEM
 
   /*@NotNull*/
 
-  def getAtomizedItemType(): AtomicType = BuiltInAtomicType.ANY_ATOMIC
+  def getAtomizedItemType: AtomicType = BuiltInAtomicType.ANY_ATOMIC
 
   def isAtomizable(th: TypeHierarchy): Boolean = true
 
-  def getDefaultPriority(): Double = -2
+  def getDefaultPriority: Double = -2
 
   /*@NotNull*/
 

@@ -110,21 +110,21 @@ class OperandRole(var properties: Int, @BeanProperty var usage: OperandUsage) {
 
   def setsNewFocus(): Boolean = (properties & SETS_NEW_FOCUS) != 0
 
-  def hasSameFocus(): Boolean =
+  def hasSameFocus: Boolean =
     (properties & (USES_NEW_FOCUS | HAS_SPECIAL_FOCUS_RULES)) ==
       0
 
-  def hasSpecialFocusRules(): Boolean =
+  def hasSpecialFocusRules: Boolean =
     (properties & HAS_SPECIAL_FOCUS_RULES) != 0
 
-  def isHigherOrder(): Boolean = (properties & HIGHER_ORDER) != 0
+  def isHigherOrder: Boolean = (properties & HIGHER_ORDER) != 0
 
-  def isEvaluatedRepeatedly(): Boolean =
+  def isEvaluatedRepeatedly: Boolean =
     ((properties & HIGHER_ORDER) != 0) && ((properties & SINGLETON) == 0)
 
-  def isConstrainedClass(): Boolean = (properties & CONSTRAINED_CLASS) != 0
+  def isConstrainedClass: Boolean = (properties & CONSTRAINED_CLASS) != 0
 
-  def isInChoiceGroup(): Boolean = (properties & IN_CHOICE_GROUP) != 0
+  def isInChoiceGroup: Boolean = (properties & IN_CHOICE_GROUP) != 0
 
   def modifyProperty(property: Int, on: Boolean): OperandRole = {
     val newProp: Int =
@@ -132,7 +132,7 @@ class OperandRole(var properties: Int, @BeanProperty var usage: OperandUsage) {
     new OperandRole(newProp, usage, requiredType)
   }
 
-  def getProperties(): Int = properties
+  def getProperties: Int = properties
 
 }
 

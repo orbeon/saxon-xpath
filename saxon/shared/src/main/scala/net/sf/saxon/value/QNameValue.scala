@@ -71,7 +71,7 @@ class QNameValue(prefix: String,
   def copyAsSubType(typeLabel: AtomicType): AtomicValue =
     new QNameValue(qName, typeLabel)
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.QNAME
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.QNAME
 
   override def getComponent(part: Component): AtomicValue = part match {
     case LOCALNAME => new StringValue(getLocalName, BuiltInAtomicType.NCNAME)
@@ -99,7 +99,7 @@ class QNameValue(prefix: String,
 
   class QNameComparable extends Comparable[AnyRef] {
 
-    def getQNameValue(): QNameValue = QNameValue.this
+    def getQNameValue: QNameValue = QNameValue.this
 
     def compareTo(o: AnyRef): Int =
       if (equals(0)) 0 else SequenceTool.INDETERMINATE_ORDERING

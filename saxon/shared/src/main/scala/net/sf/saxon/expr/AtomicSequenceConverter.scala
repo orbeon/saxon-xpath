@@ -112,9 +112,9 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
 
   def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
 
-  def getRequiredItemType(): PlainType = requiredItemType
+  def getRequiredItemType: PlainType = requiredItemType
 
-  def getConverter(): Converter = converter
+  def getConverter: Converter = converter
 
   def setConverter(converter: Converter): Unit =
     this.converter = converter
@@ -240,7 +240,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     result.asAtomic()
   }
 
-  override def getItemType(): ItemType = requiredItemType
+  override def getItemType: ItemType = requiredItemType
 
   override def computeCardinality(): Int = getBaseExpression.getCardinality
 

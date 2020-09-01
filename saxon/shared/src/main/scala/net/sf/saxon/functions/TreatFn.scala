@@ -54,9 +54,9 @@ object TreatFn {
 
 abstract class TreatFn extends SystemFunction with Callable {
 
-  def getErrorCodeForTypeErrors(): String
+  def getErrorCodeForTypeErrors: String
 
-  def getRequiredCardinality(): Int
+  def getRequiredCardinality: Int
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     var iterator: SequenceIterator = arguments(0).iterate()

@@ -26,7 +26,7 @@ class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
 
   def iterator(): Iterator[CharacterMap] = index.values.iterator()
 
-  def isEmpty(): Boolean = index.isEmpty
+  def isEmpty: Boolean = index.isEmpty
 
   def copy(): CharacterMapIndex = {
     val copy: CharacterMapIndex = new CharacterMapIndex()

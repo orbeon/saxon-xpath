@@ -48,8 +48,8 @@ class SubstringAfter extends CollatingFunctionFixed {
   override def isSubstringMatchingFunction(): Boolean = true
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val arg1: StringValue = arguments(0).head().asInstanceOf[StringValue]
-    val arg2: StringValue = arguments(1).head().asInstanceOf[StringValue]
+    val arg1: StringValue = arguments(0).head.asInstanceOf[StringValue]
+    val arg2: StringValue = arguments(1).head.asInstanceOf[StringValue]
     substringAfter(arg1,
       arg2,
       getStringCollator.asInstanceOf[SubstringMatcher])

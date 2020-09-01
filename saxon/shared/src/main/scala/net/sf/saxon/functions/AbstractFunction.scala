@@ -32,11 +32,11 @@ abstract class AbstractFunction extends Function {
 
   def isMap(): Boolean = false
 
-  def getStringValue(): String =
+  def getStringValue: String =
     throw new UnsupportedOperationException(
       "The string value of a function is not defined")
 
-  def getStringValueCS(): CharSequence =
+  def getStringValueCS: CharSequence =
     throw new UnsupportedOperationException(
       "The string value of a function is not defined")
 

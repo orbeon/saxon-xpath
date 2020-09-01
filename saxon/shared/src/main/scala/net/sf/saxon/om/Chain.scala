@@ -1,36 +1,29 @@
 package net.sf.saxon.om
 
-import net.sf.saxon.expr.parser.ExpressionTool
-import net.sf.saxon.tree.iter.GroundedIterator
-import net.sf.saxon.tree.iter.UnfailingIterator
-import net.sf.saxon.value.EmptySequence
-import net.sf.saxon.value.SequenceExtent
 import java.util._
 
-import Chain._
+import net.sf.saxon.expr.parser.ExpressionTool
 import net.sf.saxon.om.Chain.ChainIterator.ChainPosition
-
-import scala.jdk.CollectionConverters._
+import net.sf.saxon.om.Chain._
 import net.sf.saxon.om.SequenceIterator.Property._
+import net.sf.saxon.tree.iter.{GroundedIterator, UnfailingIterator}
+import net.sf.saxon.value.{EmptySequence, SequenceExtent}
 
-import scala.collection
-import scala.collection.{immutable, mutable}
+import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 object Chain {
 
   object ChainIterator {
-
     private class ChainPosition(var chain: Chain, var offset: Int)
-
   }
 
   private class ChainIterator(private var thisChain: Chain)
     extends UnfailingIterator
       with GroundedIterator {
 
-    private var queue: Queue[UnfailingIterator] = new LinkedList()
-
-    private var stack: Stack[ChainPosition] = new Stack()
+    private val queue: Queue[UnfailingIterator] = new LinkedList()
+    private val stack: Stack[ChainPosition] = new Stack()
 
     stack.push(new ChainPosition(thisChain, 0))
 
@@ -54,26 +47,25 @@ object Chain {
           //continue
         }
         val gv: GroundedValue = cp.chain.children.get({
-          cp.offset += 1;
+          cp.offset += 1
           cp.offset - 1
         })
-        if (gv.isInstanceOf[Chain]) {
-          stack.push(new ChainPosition(gv.asInstanceOf[Chain], 0))
-        } else if (gv.isInstanceOf[Item]) {
-          gv.asInstanceOf[Item]
-        } else {
-          queue.offer(gv.iterate())
-          next()
+        gv match {
+          case chain: Chain =>
+            stack.push(new ChainPosition(chain, 0))
+          case item: Item =>
+            item
+          case _ =>
+            queue.offer(gv.iterate())
+            next()
         }
       }
       null
     }
 
-    override def getProperties(): immutable.Set[Property] = immutable.Set(GROUNDED)
-
+    override def getProperties: immutable.Set[Property] = immutable.Set(GROUNDED)
     override def materialize(): GroundedValue = thisChain
-
-    def getResidue(): GroundedValue = new SequenceExtent(this)
+    def getResidue: GroundedValue = new SequenceExtent(this)
 
   }
 
@@ -121,11 +113,11 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
     }
   }
 
-  def head(): Item = {
+  def head: Item = {
     if (extent != null)
       return if (extent.isEmpty) null else extent.get(0)
     for (seq <- children.asScala) {
-      val head: Item = seq.head()
+      val head: Item = seq.head
       if (head != null) {
         head
       }
@@ -149,15 +141,13 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
     }
   }
 
-  private def consolidate(): Unit = {
-    if (extent == null) {
-      extent = iterate().toList()
-    }
-  }
+  private def consolidate(): Unit =
+    if (extent == null)
+      extent = iterate().toList
 
   def itemAt(n: Int): Item =
     if (n == 0) {
-      head()
+      head
     } else {
       consolidate()
       if (n >= 0 && n < extent.size) {
@@ -191,7 +181,7 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
     new SequenceExtent(extent.subList(newStart, newEnd))
   }
 
-  def getLength(): Int =
+  def getLength: Int =
     if (extent != null) {
       extent.size
     } else {
@@ -205,13 +195,11 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
   override def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
-  def getStringValue(): String = SequenceTool.getStringValue(this)
-
-  def getStringValueCS(): CharSequence = SequenceTool.getStringValue(this)
+  def getStringValue: String = SequenceTool.getStringValue(this)
+  def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)
 
   override def reduce(): GroundedValue = {
     consolidate()
     SequenceExtent.makeSequenceExtent(extent)
   }
-
 }

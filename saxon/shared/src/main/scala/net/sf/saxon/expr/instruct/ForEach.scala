@@ -70,19 +70,19 @@ class ForEach(select: Expression,
 
   override def isInstruction(): Boolean = isInstr
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
   def setSelect(select: Expression): Unit = {
     selectOp.setChildExpression(select)
   }
 
-  def getAction(): Expression = actionOp.getChildExpression
+  def getAction: Expression = actionOp.getChildExpression
 
   def setAction(action: Expression): Unit = {
     actionOp.setChildExpression(action)
   }
 
-  def getThreads(): Expression =
+  def getThreads: Expression =
     if (threadsOp == null) null else threadsOp.getChildExpression
 
   def setThreads(threads: Expression): Unit = {
@@ -95,7 +95,7 @@ class ForEach(select: Expression,
     }
   }
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     if (threadsOp == null) {
       operandList(selectOp, actionOp)
     } else {
@@ -116,9 +116,9 @@ class ForEach(select: Expression,
 
   def getActionExpression(): Expression = getAction
 
-  def getNumberOfThreadsExpression(): Expression = getThreads
+  def getNumberOfThreadsExpression: Expression = getThreads
 
-  override def getItemType(): ItemType = getAction.getItemType
+  override def getItemType: ItemType = getAction.getItemType
 
   override def getStaticUType(contextItemType: UType): UType =
     if (isInstruction) {
@@ -319,8 +319,8 @@ class ForEach(select: Expression,
     ExpressionTool.parenthesize(getSelect) + " ! " + ExpressionTool
       .parenthesize(getAction)
 
-  override def toShortString(): String =
-    getSelect.toShortString() + "!" + getAction.toShortString()
+  override def toShortString: String =
+    getSelect.toShortString + "!" + getAction.toShortString
 
   override def getExpressionName(): String = "forEach"
 

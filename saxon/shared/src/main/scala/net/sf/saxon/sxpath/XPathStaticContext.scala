@@ -28,9 +28,9 @@ trait XPathStaticContext extends StaticContext {
 
   def declareVariable(namespaceURI: String, localName: String): XPathVariable
 
-  def getStackFrameMap(): SlotManager
+  def getStackFrameMap: SlotManager
 
-  def isContextItemParentless(): Boolean
+  def isContextItemParentless: Boolean
 
 }
 

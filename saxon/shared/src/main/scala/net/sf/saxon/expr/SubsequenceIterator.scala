@@ -86,12 +86,12 @@ class SubsequenceIterator private(private var base: SequenceIterator,
     base.close()
   }
 
-  override def getProperties(): Set[Property] = {
+  override def getProperties: Set[Property] = {
     val intersectSet: Set[Property] = base.getProperties.intersect(Set(Property.LAST_POSITION_FINDER))
     intersectSet.union(Set(Property.LOOKAHEAD))
   }
 
-  def getLength(): Int = {
+  def getLength: Int = {
     val lastBase: Int = base.asInstanceOf[LastPositionFinder].getLength
     val z: Int = Math.min(lastBase, max)
     Math.max(z - min + 1, 0)

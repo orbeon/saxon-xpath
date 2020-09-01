@@ -14,11 +14,11 @@ trait SteppingNode[N <: SteppingNode[N]] extends NodeInfo {
 
   def getParent(): N
 
-  def getNextSibling(): N
+  def getNextSibling: N
 
-  def getPreviousSibling(): N
+  def getPreviousSibling: N
 
-  def getFirstChild(): N
+  def getFirstChild: N
 
   def getSuccessorElement(anchor: N, uri: String, local: String): N
 

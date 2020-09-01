@@ -12,7 +12,7 @@ object EmptyIntIterator {
 
   /*@NotNull*/
 
-  def getInstance(): EmptyIntIterator = THE_INSTANCE
+  def getInstance: EmptyIntIterator = THE_INSTANCE
 
 }
 

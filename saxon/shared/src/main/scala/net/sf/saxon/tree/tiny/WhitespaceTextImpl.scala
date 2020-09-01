@@ -59,9 +59,9 @@ class WhitespaceTextImpl() extends TinyNodeImpl {
     this.nodeNr = nodeNr
   }
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-  override def getStringValueCS(): CharSequence = {
+  override def getStringValueCS: CharSequence = {
     val value: Long = (tree.alpha(nodeNr).toLong << 32) | (tree
         .beta(nodeNr)
         .toLong & 0xffffffffL)

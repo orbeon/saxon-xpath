@@ -10,7 +10,7 @@ object DecimalSortComparer {
 
   private var THE_INSTANCE: DecimalSortComparer = new DecimalSortComparer()
 
-  def getDecimalSortComparerInstance(): DecimalSortComparer = THE_INSTANCE
+  def getDecimalSortComparerInstance: DecimalSortComparer = THE_INSTANCE
 
 }
 

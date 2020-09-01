@@ -474,7 +474,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
       new DurationValue(0, months, 0, 0, 0, seconds, nanoseconds, typeLabel)
     }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.DURATION
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DURATION
 
   def signum(): Int = {
     if (negative) return -1
@@ -482,27 +482,27 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
     +1
   }
 
-  def getYears(): Int = months / 12
+  def getYears: Int = months / 12
 
-  def getMonths(): Int = months % 12
+  def getMonths: Int = months % 12
 
-  def getDays()
+  def getDays
   : Int = //        System.err.println("days (int) = " + (int)(seconds / (24L*60L*60L)));
     (seconds / (24L * 60L * 60L)).toInt
 
-  def getHours(): Int = (seconds % (24L * 60L * 60L) / (60L * 60L)).toInt
+  def getHours: Int = (seconds % (24L * 60L * 60L) / (60L * 60L)).toInt
 
-  def getMinutes(): Int = (seconds % (60L * 60L) / 60L).toInt
+  def getMinutes: Int = (seconds % (60L * 60L) / 60L).toInt
 
-  def getSeconds(): Int = (seconds % 60L).toInt
+  def getSeconds: Int = (seconds % 60L).toInt
 
-  def getMicroseconds(): Int = nanoseconds / 1000
+  def getMicroseconds: Int = nanoseconds / 1000
 
-  def getNanoseconds(): Int = nanoseconds
+  def getNanoseconds: Int = nanoseconds
 
-  def getTotalMonths(): Int = if (negative) -months else months
+  def getTotalMonths: Int = if (negative) -months else months
 
-  def getTotalSeconds(): BigDecimal = {
+  def getTotalSeconds: BigDecimal = {
     var dec: BigDecimal = new BigDecimal(if (negative) -seconds else seconds)
     if (nanoseconds != 0) {
       dec = dec.add(
@@ -548,7 +548,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   // Note, Schema does not define a canonical representation. We omit all zero components, unless
   // the duration is zero-length, in which case we output PT0S.
 
-  def getLengthInSeconds(): Double = {
+  def getLengthInSeconds: Double = {
     val a: Double = months * (365.242199 / 12.0) * 24 * 60 * 60 + seconds +
       (nanoseconds.toDouble / 1000000000)
     if (negative) -a else a

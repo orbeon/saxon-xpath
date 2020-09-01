@@ -66,7 +66,7 @@ class FloatValue() extends NumericValue {
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.FLOAT
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.FLOAT
 
   def getFloatValue(): Float = value
 

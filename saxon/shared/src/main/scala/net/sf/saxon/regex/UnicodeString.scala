@@ -174,7 +174,7 @@ abstract class UnicodeString
     return 0
   }
 
-  private def getCodepointCollationKey(): Array[Byte] = {
+  private def getCodepointCollationKey: Array[Byte] = {
     val len: Int = uLength()
     val result: Array[Byte] = Array.ofDim[Byte](len * 3)
     var j: Int =0

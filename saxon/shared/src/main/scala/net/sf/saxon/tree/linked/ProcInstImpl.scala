@@ -37,7 +37,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
     */
   override def getNodeName(): NodeName = new NoNamespaceName(name)
 
-  def getStringValue(): String = content
+  def getStringValue: String = content
 
   /*@NotNull*/
 

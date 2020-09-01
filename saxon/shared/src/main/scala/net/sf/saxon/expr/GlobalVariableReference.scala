@@ -82,7 +82,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
     binding = target.getActor.asInstanceOf[GlobalVariable]
   }
 
-  def getTarget(): Component =
+  def getTarget: Component =
     binding.asInstanceOf[GlobalVariable].getDeclaringComponent
 
   def getFixedTarget(): Component = {
@@ -131,7 +131,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
     out.endElement()
   }
 
-  def getPreconditions(): Set[Expression] = {
+  def getPreconditions: Set[Expression] = {
     val pre: Set[Expression] = new HashSet[Expression]()
     //pre.add(this.copy());
     pre

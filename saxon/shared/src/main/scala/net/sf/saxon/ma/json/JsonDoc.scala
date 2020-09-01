@@ -27,7 +27,7 @@ class JsonDoc extends SystemFunction {
     * @return the result of the evaluation, in the form of a SequenceIterator
     */
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val arg0: Item = arguments(0).head()
+    val arg0: Item = arguments(0).head
     if (arg0 == null) {
       EmptySequence.getInstance
     }
@@ -67,7 +67,7 @@ class JsonDoc extends SystemFunction {
     }
     var checkedOptions: Map[String, Sequence] = null
     if (getArity == 2) {
-      val options: MapItem = arguments(1).head().asInstanceOf[MapItem]
+      val options: MapItem = arguments(1).head.asInstanceOf[MapItem]
       checkedOptions =
         getDetails.optionDetails.processSuppliedOptions(options, context)
     } else {

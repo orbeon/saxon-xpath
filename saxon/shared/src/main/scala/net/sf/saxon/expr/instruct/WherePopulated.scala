@@ -37,7 +37,7 @@ object WherePopulated {
       val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
       kind match {
         case Type.DOCUMENT | Type.ELEMENT =>
-          !item.asInstanceOf[NodeInfo].hasChildNodes()
+          !item.asInstanceOf[NodeInfo].hasChildNodes
         case _ => item.getStringValueCS.length == 0
 
       }

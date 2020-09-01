@@ -47,7 +47,7 @@ class CollationKeyFn extends CollatingFunctionFixed {
     *                  to a {@link net.sf.saxon.om.GroundedValue} by calling the utility methd
     *                  SequenceTool.toGroundedValue().</p>
     *                  <p>If the expected value is a single item, the item should be obtained by calling
-    *                  Sequence.head(): it cannot be assumed that the item will be passed as an instance of
+    *                  Sequence.head: it cannot be assumed that the item will be passed as an instance of
     *                  {@link net.sf.saxon.om.Item} or {@link net.sf.saxon.value.AtomicValue}.</p>
     *                  <p>It is the caller's responsibility to perform any type conversions required
     *                  to convert arguments to the type expected by the callee. An exception is where
@@ -60,7 +60,7 @@ class CollationKeyFn extends CollatingFunctionFixed {
     */
   def call(context: XPathContext,
            arguments: Array[Sequence]): Base64BinaryValue = {
-    val in: String = arguments(0).head().getStringValue
+    val in: String = arguments(0).head.getStringValue
     val collator: StringCollator = getStringCollator
     getCollationKey(in, collator)
   }

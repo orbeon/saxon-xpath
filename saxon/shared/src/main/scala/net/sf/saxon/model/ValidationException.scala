@@ -80,7 +80,7 @@ class ValidationException(exception: Exception)
       this.message
     }
 
-  def getValidationFailure(): ValidationFailure =
+  def getValidationFailure: ValidationFailure =
     if (failure != null) {
       failure
     } else {
@@ -106,7 +106,7 @@ class ValidationException(exception: Exception)
 
   /*@Nullable*/
 
-  def getNode(): NodeInfo =
+  def getNode: NodeInfo =
     if (failure != null) {
       failure.getInvalidNode
     } else {
@@ -115,7 +115,7 @@ class ValidationException(exception: Exception)
 
   /*@Nullable*/
 
-  def getPath(): String = {
+  def getPath: String = {
     val ap: AbsolutePath = getAbsolutePath
     if (ap == null) {
       val node: NodeInfo = getNode
@@ -129,7 +129,7 @@ class ValidationException(exception: Exception)
     }
   }
 
-  def getAbsolutePath(): AbsolutePath =
+  def getAbsolutePath: AbsolutePath =
     if (failure != null) {
       failure.getPath
     } else {

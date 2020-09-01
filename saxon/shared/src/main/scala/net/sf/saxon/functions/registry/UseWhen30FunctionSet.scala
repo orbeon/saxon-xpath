@@ -21,7 +21,7 @@ object UseWhen30FunctionSet {
 
   private var THE_INSTANCE: UseWhen30FunctionSet = new UseWhen30FunctionSet()
 
-  def getInstance(): UseWhen30FunctionSet = THE_INSTANCE
+  def getInstance: UseWhen30FunctionSet = THE_INSTANCE
 
 }
 

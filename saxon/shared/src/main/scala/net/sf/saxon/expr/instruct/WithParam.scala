@@ -140,13 +140,13 @@ class WithParam {
     selectOp = new Operand(parent, select, OperandRole.NAVIGATE)
   }
 
-  def getSelectOperand(): Operand = selectOp
+  def getSelectOperand: Operand = selectOp
 
-  def getSelectExpression(): Expression = selectOp.getChildExpression
+  def getSelectExpression: Expression = selectOp.getChildExpression
 
-  def getInstructionNameCode(): Int = StandardNames.XSL_WITH_PARAM
+  def getInstructionNameCode: Int = StandardNames.XSL_WITH_PARAM
 
-  def getEvaluationMode(): EvaluationMode.EvaluationMode = {
+  def getEvaluationMode: EvaluationMode.EvaluationMode = {
     if (evaluator == null) {
       computeEvaluator()
     }

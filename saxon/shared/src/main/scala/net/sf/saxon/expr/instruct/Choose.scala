@@ -104,7 +104,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   def size(): Int = conditionOps.length
 
-  def getNumberOfConditions(): Int = size()
+  def getNumberOfConditions: Int = size()
 
   def getCondition(i: Int): Expression = conditionOps(i).getChildExpression
 
@@ -125,7 +125,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   def actions(): java.lang.Iterable[Operand] = Arrays.asList(actionOps: _*)
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val operanda: List[Operand] = new ArrayList[Operand](size * 2)
     for (i <- 0 until size) {
       operanda.add(conditionOps(i))
@@ -535,7 +535,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     result
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
     var `type`: ItemType = getAction(0).getItemType
     for (i <- 1 until size) {
@@ -633,8 +633,8 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     sb.toString
   }
 
-  override def toShortString(): String =
-    "if(" + getCondition(0).toShortString() + ") then ... else ..."
+  override def toShortString: String =
+    "if(" + getCondition(0).toShortString + ") then ... else ..."
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("choose", this)

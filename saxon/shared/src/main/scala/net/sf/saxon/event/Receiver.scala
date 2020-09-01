@@ -28,7 +28,7 @@ trait Receiver extends Result {
 
   /*@NotNull*/
 
-  def getPipelineConfiguration(): PipelineConfiguration
+  def getPipelineConfiguration: PipelineConfiguration
 
   def setSystemId(systemId: String): Unit
 

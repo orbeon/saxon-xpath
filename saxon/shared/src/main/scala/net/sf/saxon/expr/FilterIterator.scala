@@ -64,7 +64,7 @@ object FilterIterator {
           "a sequence starting with an atomic value of type " +
             first.asInstanceOf[AtomicValue].getPrimitiveType.getDisplayName +
             " (" +
-            first.toShortString() +
+            first.toShortString +
             ")",
           filter
         )
@@ -73,7 +73,7 @@ object FilterIterator {
         ExpressionTool.ebvError(
           "a sequence starting with " + first.getGenre.getDescription +
             " (" +
-            first.toShortString() +
+            first.toShortString +
             ")",
           filter)
         false
@@ -108,7 +108,7 @@ class FilterIterator(base: SequenceIterator,
 
   def next(): Item = getNextMatchingItem
 
-  def getNextMatchingItem(): Item = {
+  def getNextMatchingItem: Item = {
     var next: Item = null
     while (({
       next = base.next()

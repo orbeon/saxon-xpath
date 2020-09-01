@@ -92,7 +92,7 @@ object AnySimpleType extends SimpleType {
       "Cannot derive xs:anySimpleType from another type")
   }
 
-  def isAtomicType(): Boolean = false
+  def isAtomicType: Boolean = false
 
   def isAnonymousType(): Boolean = false
 
@@ -160,7 +160,7 @@ object AnySimpleType extends SimpleType {
 
   /*@NotNull*/
 
-  def getInstance(): AnySimpleType.type = AnySimpleType
+  def getInstance: AnySimpleType.type = AnySimpleType
 
   val NAME: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "anySimpleType")

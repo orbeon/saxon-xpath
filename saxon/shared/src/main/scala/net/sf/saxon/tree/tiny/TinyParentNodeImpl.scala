@@ -62,13 +62,13 @@ object TinyParentNodeImpl {
 
 abstract class TinyParentNodeImpl extends TinyNodeImpl {
 
-  override def hasChildNodes(): Boolean =
+  override def hasChildNodes: Boolean =
     nodeNr + 1 < tree.numberOfNodes && tree.depth(nodeNr + 1) > tree.depth(
       nodeNr)
 
-  def getStringValue(): String = TinyParentNodeImpl.getStringValueCS(tree, nodeNr).toString
+  def getStringValue: String = TinyParentNodeImpl.getStringValueCS(tree, nodeNr).toString
 
-  override def getStringValueCS(): CharSequence = TinyParentNodeImpl.getStringValueCS(tree, nodeNr)
+  override def getStringValueCS: CharSequence = TinyParentNodeImpl.getStringValueCS(tree, nodeNr)
 
 }
 

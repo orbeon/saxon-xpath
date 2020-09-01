@@ -33,7 +33,7 @@ object Actor {
         exp.asInstanceOf[ComponentInvocation],
         bindings)
     }
-    for (o <- exp.operands().asScala) {
+    for (o <- exp.operands.asScala) {
       allocateBindingSlotsRecursive(pack, p, o.getChildExpression, bindings)
     }
   }
@@ -64,11 +64,11 @@ abstract class Actor extends ExpressionOwner with Location {
   @BeanProperty
   var retainedStaticContext: RetainedStaticContext = _
 
-  def getSymbolicName(): SymbolicName
+  def getSymbolicName: SymbolicName
 
-  def getComponentName(): StructuredQName = getSymbolicName.getComponentName
+  def getComponentName: StructuredQName = getSymbolicName.getComponentName
 
-  def getTracingTag(): String =
+  def getTracingTag: String =
     StandardNames.getLocalName(getSymbolicName.getComponentKind)
 
   def makeDeclaringComponent(
@@ -150,11 +150,11 @@ abstract class Actor extends ExpressionOwner with Location {
     }
   }
 
-  def getBody(): Expression = body
+  def getBody: Expression = body
 
   def getChildExpression(): Expression = getBody
 
-  def getLocation(): Location = this.asInstanceOf[Location]
+  def getLocation: Location = this.asInstanceOf[Location]
 
   def getColumnNumber(): Int = -1
 
@@ -164,14 +164,14 @@ abstract class Actor extends ExpressionOwner with Location {
 
   def getProperty(name: String): AnyRef = null
 
-  def getProperties(): Iterator[String] = {
+  def getProperties: Iterator[String] = {
     val list: List[String] = Collections.emptyList()
     list.iterator()
   }
 
   def export(presenter: ExpressionPresenter): Unit
 
-  def isExportable(): Boolean = true
+  def isExportable: Boolean = true
 
   def setChildExpression(expr: Expression): Unit = {
     this.body = expr

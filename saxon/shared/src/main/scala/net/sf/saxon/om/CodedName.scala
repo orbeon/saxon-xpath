@@ -90,7 +90,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
   override def equals(obj: Any): Boolean = obj match {
     case obj: NodeName => {
       val n: NodeName = obj
-      if (n.hasFingerprint()) {
+      if (n.hasFingerprint) {
         getFingerprint == n.getFingerprint
       } else {
         n.getLocalPart == getLocalPart && n.hasURI(getURI)

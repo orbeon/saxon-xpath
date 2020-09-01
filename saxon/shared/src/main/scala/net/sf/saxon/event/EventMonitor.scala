@@ -89,7 +89,7 @@ class EventMonitor(private var next: Outputter) extends Outputter {
     next.endDocument()
   }
 
-  def hasBeenWrittenTo(): Boolean = written
+  def hasBeenWrittenTo: Boolean = written
 
 }
 

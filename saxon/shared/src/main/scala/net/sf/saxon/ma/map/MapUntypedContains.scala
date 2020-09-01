@@ -24,12 +24,12 @@ class MapUntypedContains extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val rules: ConversionRules = context.getConfiguration.getConversionRules
-    val map: MapItem = arguments(0).head().asInstanceOf[MapItem]
-    val key: AtomicValue = arguments(1).head().asInstanceOf[AtomicValue]
+    val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
+    val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
     if (key.isInstanceOf[UntypedAtomicValue]) {
       for (prim <- map.getKeyUType.decompose().asScala) {
         val t: BuiltInAtomicType =
-          prim.toItemType().asInstanceOf[BuiltInAtomicType]
+          prim.toItemType.asInstanceOf[BuiltInAtomicType]
         var converter: StringConverter = t.getStringConverter(rules)
         var av: ConversionResult = converter.convert(key)
         if (av.isInstanceOf[ValidationFailure]) {

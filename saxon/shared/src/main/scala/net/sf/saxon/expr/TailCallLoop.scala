@@ -31,7 +31,7 @@ object TailCallLoop {
 class TailCallLoop(var containingFunction: UserFunction, body: Expression)
   extends UnaryExpression(body) {
 
-  def getContainingFunction(): UserFunction = containingFunction
+  def getContainingFunction: UserFunction = containingFunction
 
  override def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Expression = {
@@ -78,7 +78,7 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
       } else {
         val target: UserFunction = establishTargetFunction(tail, cm)
         if (target != containingFunction) {
-          itemRes= tailCallDifferentFunction(target, cm).head()
+          itemRes= tailCallDifferentFunction(target, cm).head
         }
       }
     }
@@ -132,7 +132,7 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
     }
   }
 
-  override def getItemType(): ItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   override def getExpressionName(): String = "tailCallLoop"
 

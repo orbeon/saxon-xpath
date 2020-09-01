@@ -11,7 +11,7 @@ import net.sf.saxon.s9api.Location
   */
 trait Locatable {
 
-  def getLocation(): Location
+  def getLocation: Location
 
 }
 

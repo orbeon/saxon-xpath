@@ -10,7 +10,7 @@ object ASCIICharacterSet {
 
   val theInstance: ASCIICharacterSet = new ASCIICharacterSet()
 
-  def getInstance(): ASCIICharacterSet = theInstance
+  def getInstance: ASCIICharacterSet = theInstance
 
 }
 

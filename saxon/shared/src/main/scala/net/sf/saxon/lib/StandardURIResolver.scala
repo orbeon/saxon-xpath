@@ -81,7 +81,7 @@ class StandardURIResolver(private var config: Configuration)
     this.allowedUriTest = test
   }
 
-  def getAllowedUriTest(): Predicate[URI] =
+  def getAllowedUriTest: Predicate[URI] =
     if (allowedUriTest == null) {
       if (config == null) {
         var predicae : Predicate[URI] = new Predicate[URI]() {
@@ -95,13 +95,13 @@ class StandardURIResolver(private var config: Configuration)
     else allowedUriTest
 
 
-   def getPlatform(): Platform = Version.platform
+   def getPlatform: Platform = Version.platform
 
   def setConfiguration(config: Configuration): Unit = {
     this.config = config
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def resolve(href: String, base: String): Source = {
     if (config != null && config.isTiming) {

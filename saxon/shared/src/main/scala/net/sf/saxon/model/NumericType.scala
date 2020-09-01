@@ -13,7 +13,7 @@ object NumericType {
 
   private var THE_INSTANCE: NumericType = _
 
-  def getInstance(): NumericType = classOf[NumericType].synchronized {
+  def getInstance: NumericType = classOf[NumericType].synchronized {
     if (THE_INSTANCE == null) {
       THE_INSTANCE = new NumericType()
       BuiltInType.register(StandardNames.XS_NUMERIC, THE_INSTANCE)
@@ -38,9 +38,9 @@ class NumericType private()
   override def getTypeName(): StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "numeric")
 
-  override def getGenre(): Genre.Genre = Genre.ATOMIC
+  override def getGenre: Genre.Genre = Genre.ATOMIC
 
-  override def getBasicAlphaCode(): String = "A"
+  override def getBasicAlphaCode: String = "A"
 
   override def containsListType(): Boolean = false
 
@@ -50,24 +50,24 @@ class NumericType private()
 
   override def getResultTypeOfCast(): SequenceType = SequenceType.ATOMIC_SEQUENCE
 
-  override def isPlainType(): Boolean = true
+  override def isPlainType: Boolean = true
 
-  override def getDefaultPriority(): Double = 0.125
+  override def getDefaultPriority: Double = 0.125
 
   override def matches(item: Item, th: TypeHierarchy): Boolean =
     item.isInstanceOf[NumericValue]
 
-  override def getPrimitiveItemType(): AtomicType = BuiltInAtomicType.ANY_ATOMIC
+  override def getPrimitiveItemType: AtomicType = BuiltInAtomicType.ANY_ATOMIC
 
-  override def getPrimitiveType(): Int = BuiltInAtomicType.ANY_ATOMIC.getFingerprint
+  override def getPrimitiveType: Int = BuiltInAtomicType.ANY_ATOMIC.getFingerprint
 
   override def getUType(): UType = UType.NUMERIC
 
-  override def getAtomizedItemType(): PlainType = this
+  override def getAtomizedItemType: PlainType = this
 
   override def isAtomizable(th: TypeHierarchy): Boolean = true
 
-  override def isAtomicType(): Boolean = false
+  override def isAtomicType: Boolean = false
 
   override def isListType(): Boolean = false
 

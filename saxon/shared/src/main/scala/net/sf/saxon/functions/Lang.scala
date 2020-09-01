@@ -50,9 +50,9 @@ class Lang extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     var target: NodeInfo = null
     target =
-      if (arguments.length > 1) arguments(1).head().asInstanceOf[NodeInfo]
+      if (arguments.length > 1) arguments(1).head.asInstanceOf[NodeInfo]
       else getAndCheckContextItem(context)
-    val arg0Val: Item = arguments(0).head()
+    val arg0Val: Item = arguments(0).head
     val testLang: String = if (arg0Val == null) "" else arg0Val.getStringValue
     BooleanValue.get(isLang(testLang, target))
   }

@@ -141,7 +141,7 @@ class SiblingIterator(private var tree: TinyTree,
     n != -1
   }
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD, Property.ATOMIZING)
 
 }

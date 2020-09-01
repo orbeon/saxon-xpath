@@ -53,7 +53,7 @@ class ForEachFn extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(
-      evalMap(arguments(1).head().asInstanceOf[Function],
+      evalMap(arguments(1).head.asInstanceOf[Function],
               arguments(0).iterate(),
               context))
 

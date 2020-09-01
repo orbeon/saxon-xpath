@@ -80,7 +80,7 @@ class VirtualCopy(var original: NodeInfo,
     vc
   }
 
-  def getOriginalNode(): NodeInfo = original
+  def getOriginalNode: NodeInfo = original
 
   /**
    * Get information about the tree to which this NodeInfo belongs
@@ -145,7 +145,7 @@ class VirtualCopy(var original: NodeInfo,
    * @return true if the implementation of this node provides fingerprints.
    * @since 9.8; previously Saxon relied on using <code>FingerprintedNode</code> as a marker interface.
    */
-  override def hasFingerprint(): Boolean = original.hasFingerprint()
+  override def hasFingerprint(): Boolean = original.hasFingerprint
 
   def getNodeKind(): Int = original.getNodeKind
 
@@ -187,9 +187,9 @@ class VirtualCopy(var original: NodeInfo,
       other.compareOrder(original)
     }
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-  def getStringValueCS(): CharSequence = original.getStringValueCS
+  def getStringValueCS: CharSequence = original.getStringValueCS
 
   def getLocalPart(): String = original.getLocalPart
 
@@ -298,7 +298,7 @@ class VirtualCopy(var original: NodeInfo,
     n
   }
 
-  def hasChildNodes(): Boolean = original.hasChildNodes()
+  def hasChildNodes: Boolean = original.hasChildNodes
 
   def generateId(buffer: FastStringBuffer): Unit = {
     buffer.append("d")

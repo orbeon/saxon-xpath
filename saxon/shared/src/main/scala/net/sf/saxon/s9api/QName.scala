@@ -247,13 +247,13 @@ class QName(prefix: String, uri: String, localName: String) {
     NameChecker.isValidNCName(getLocalName)
   }
 
-  def getPrefix(): String = sqName.getPrefix
+  def getPrefix: String = sqName.getPrefix
 
-  def getNamespaceURI(): String = sqName.getURI
+  def getNamespaceURI: String = sqName.getURI
 
-  def getLocalName(): String = sqName.getLocalPart
+  def getLocalName: String = sqName.getLocalPart
 
-  def getClarkName(): String = {
+  def getClarkName: String = {
     val uri: String = getNamespaceURI
     if (uri.isEmpty) {
       getLocalName
@@ -262,7 +262,7 @@ class QName(prefix: String, uri: String, localName: String) {
     }
   }
 
-  def getEQName(): String = {
+  def getEQName: String = {
     val uri: String = getNamespaceURI
     if (uri.length == 0) {
       getLocalName
@@ -281,6 +281,6 @@ class QName(prefix: String, uri: String, localName: String) {
 
   }
 
-  def getStructuredQName(): StructuredQName = sqName
+  def getStructuredQName: StructuredQName = sqName
 
 }

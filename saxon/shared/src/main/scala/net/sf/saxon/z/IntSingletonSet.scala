@@ -2,7 +2,7 @@ package net.sf.saxon.z
 
 class IntSingletonSet(private var value: Int) extends IntSet {
 
-  def getMember(): Int = value
+  def getMember: Int = value
 
   def clear(): Unit = {
     throw new UnsupportedOperationException("IntSingletonSet is immutable")

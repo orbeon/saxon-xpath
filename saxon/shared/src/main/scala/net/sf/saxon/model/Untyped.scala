@@ -83,7 +83,7 @@ object Untyped extends Enumeration {
 
     /*@NotNull*/
 
-    def getKnownBaseType(): SchemaType = AnyType.getInstance
+    def getKnownBaseType: SchemaType = AnyType.getInstance
 
     def isSameType(other: SchemaType): Boolean = other == INSTANCE
 
@@ -95,7 +95,7 @@ object Untyped extends Enumeration {
 
     def isSimpleType(): Boolean = false
 
-    def isAtomicType(): Boolean = false
+    def isAtomicType: Boolean = false
 
     def isIdType(): Boolean = false
 
@@ -190,7 +190,7 @@ object Untyped extends Enumeration {
 
   /*@NotNull*/
 
-  def getInstance(): Untyped = INSTANCE
+  def getInstance: Untyped = INSTANCE
 
   val NAME: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "untyped")

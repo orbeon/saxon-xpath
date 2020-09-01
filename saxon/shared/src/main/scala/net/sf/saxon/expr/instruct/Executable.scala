@@ -59,7 +59,7 @@ class Executable(var config: Configuration) {
     this.config = config
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def addPackage(data: PackageData): Unit = {
     packages.add(data)
@@ -73,7 +73,7 @@ class Executable(var config: Configuration) {
     defaultOutputProperties = properties
   }
 
-  def getPrimarySerializationProperties(): SerializationProperties = {
+  def getPrimarySerializationProperties: SerializationProperties = {
     if (defaultOutputProperties == null) {
       defaultOutputProperties = new Properties()
     }
@@ -89,7 +89,7 @@ class Executable(var config: Configuration) {
     outputDeclarations.put(qName, properties)
   }
 
-  def getOutputProperties(): Properties =
+  def getOutputProperties: Properties =
     new Properties(defaultOutputProperties)
 
   def getOutputProperties(qName: StructuredQName): Properties =
@@ -137,7 +137,7 @@ class Executable(var config: Configuration) {
     null
   }
 
-  def getQueryLibraryModules(): Iterator[QueryModule] =
+  def getQueryLibraryModules: Iterator[QueryModule] =
     if (queryLibraryModules == null) {
       Collections.emptyIterator[QueryModule]()
     } else {
@@ -192,7 +192,7 @@ class Executable(var config: Configuration) {
     globalParams.put(param.getVariableQName, param)
   }
 
-  def getGlobalParameters(): Map[StructuredQName, GlobalParam] = globalParams
+  def getGlobalParameters: Map[StructuredQName, GlobalParam] = globalParams
 
   def getGlobalParameter(name: StructuredQName): GlobalParam =
     globalParams.get(name)
@@ -270,7 +270,7 @@ class Executable(var config: Configuration) {
     schemaAware = aware
   }
 
-  def isSchemaAware(): Boolean = schemaAware
+  def isSchemaAware: Boolean = schemaAware
 
   def getCharacterMapIndex = {
     if (characterMapIndex == null) characterMapIndex = new CharacterMapIndex

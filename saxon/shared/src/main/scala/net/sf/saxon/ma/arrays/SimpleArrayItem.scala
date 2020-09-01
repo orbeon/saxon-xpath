@@ -119,7 +119,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
     a2.concat(other)
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val size: Int = getLength
     if (size == 0) {
       "[]"

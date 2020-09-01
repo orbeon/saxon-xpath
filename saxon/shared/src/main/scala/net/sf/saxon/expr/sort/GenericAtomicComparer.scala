@@ -78,7 +78,7 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
   def provideContext(context: XPathContext): GenericAtomicComparer =
     new GenericAtomicComparer(collator, context)
 
-  def getStringCollator(): StringCollator = collator
+  def getStringCollator: StringCollator = collator
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {

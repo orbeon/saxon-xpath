@@ -12,13 +12,13 @@ abstract class NumericGroupFormatter {
 
    var adjustedPicture: UnicodeString = _
 
-  def getAdjustedPicture(): UnicodeString = adjustedPicture
+  def getAdjustedPicture: UnicodeString = adjustedPicture
 
   def format(value: FastStringBuffer): String
 
   /*@Nullable*/
 
-  def getSeparator(): String
+  def getSeparator: String
 
 }
 

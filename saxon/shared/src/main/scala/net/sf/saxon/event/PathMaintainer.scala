@@ -89,6 +89,6 @@ class PathMaintainer(next: Receiver) extends ProxyReceiver(next) {
     fsb.toString
   }
 
-  def getAbsolutePath(): AbsolutePath = new AbsolutePath(path)
+  def getAbsolutePath: AbsolutePath = new AbsolutePath(path)
 
 }

@@ -42,7 +42,7 @@ class XPathFunctionCall(var name: StructuredQName,
    *
    * @return the qualified name
    */
-  override def getFunctionName(): StructuredQName = name
+  override def getFunctionName: StructuredQName = name
 
   /**
    * Get the target function to be called

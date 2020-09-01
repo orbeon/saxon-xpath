@@ -94,9 +94,9 @@ class Rule {
     r2
   }
 
-  def getSequence(): Int = sequence
+  def getSequence: Int = sequence
 
-  def getPartNumber(): Int = part
+  def getPartNumber: Int = part
 
   def setAction(action: RuleTarget): Unit = {
     this.action = action
@@ -104,11 +104,11 @@ class Rule {
 
   /*@NotNull*/
 
-  def getAction(): RuleTarget = action
+  def getAction: RuleTarget = action
 
   /*@Nullable*/
 
-  def getNext(): Rule = next
+  def getNext: Rule = next
 
   def setNext(next: Rule): Unit = {
     this.next = next
@@ -116,17 +116,17 @@ class Rule {
 
   /*@NotNull*/
 
-  def getPattern(): Pattern = pattern
+  def getPattern: Pattern = pattern
 
   def setPattern(pattern: Pattern): Unit = {
     this.pattern = pattern
   }
 
-  def getPrecedence(): Int = precedence
+  def getPrecedence: Int = precedence
 
-  def getMinImportPrecedence(): Int = minImportPrecedence
+  def getMinImportPrecedence: Int = minImportPrecedence
 
-  def getPriority(): Double = priority
+  def getPriority: Double = priority
 
   /**
     * Export this rule

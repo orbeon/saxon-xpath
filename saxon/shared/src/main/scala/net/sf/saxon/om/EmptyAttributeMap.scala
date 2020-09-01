@@ -15,7 +15,7 @@ object EmptyAttributeMap {
 
   private var THE_INSTANCE: EmptyAttributeMap = new EmptyAttributeMap()
 
-  def getInstance(): EmptyAttributeMap = THE_INSTANCE
+  def getInstance: EmptyAttributeMap = THE_INSTANCE
 
 }
 

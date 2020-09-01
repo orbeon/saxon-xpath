@@ -11,7 +11,7 @@ object ComparableAtomicValueComparer {
   private var THE_INSTANCE: ComparableAtomicValueComparer =
     new ComparableAtomicValueComparer()
 
-  def getInstance(): ComparableAtomicValueComparer = THE_INSTANCE
+  def getInstance: ComparableAtomicValueComparer = THE_INSTANCE
 
 }
 

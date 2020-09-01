@@ -17,7 +17,7 @@ class XPathEvaluator(config: Configuration) {
   @BeanProperty
   var staticContext: XPathStaticContext = new IndependentContext(config)
 
-  def getConfiguration(): Configuration = staticContext.getConfiguration
+  def getConfiguration: Configuration = staticContext.getConfiguration
 
   def createExpression(expression: String): XPathExpression = {
     val config  = getConfiguration

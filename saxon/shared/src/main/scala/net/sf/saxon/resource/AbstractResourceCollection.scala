@@ -72,7 +72,7 @@ object AbstractResourceCollection {
 
     var onError: Int = URIQueryParameters.ON_ERROR_FAIL
 
-    def getInputStream(): InputStream = {
+    def getInputStream: InputStream = {
       val url: URL = new URL(resourceUri)
       val connection: URLConnection = url.openConnection()
       connection.getInputStream
@@ -185,11 +185,11 @@ abstract class AbstractResourceCollection(var config: Configuration)
     }
     // If the URI requested suppression of errors, or that errors should be treated
     // as warnings, we set up a special ErrorListener to achieve this
-    //        final PipelineConfiguration oldPipe = context.getConfiguration().makePipelineConfiguration();
+    //        final PipelineConfiguration oldPipe = context.getConfiguration.makePipelineConfiguration();
     //        oldPipe.setController(context.getController());
     // If the URI requested suppression of errors, or that errors should be treated
     // as warnings, we set up a special ErrorListener to achieve this
-    //        final PipelineConfiguration oldPipe = context.getConfiguration().makePipelineConfiguration();
+    //        final PipelineConfiguration oldPipe = context.getConfiguration.makePipelineConfiguration();
     //        oldPipe.setController(context.getController());
     options
   }

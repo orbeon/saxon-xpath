@@ -12,7 +12,7 @@ trait CharacterClass extends IntPredicate {
 
   def isDisjoint(other: CharacterClass): Boolean
 
-  def getIntSet(): IntSet
+  def getIntSet: IntSet
 
 }
 

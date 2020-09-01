@@ -34,7 +34,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   def getRealNode(): AnyRef = getUnderlyingNode
 
-  def getNamePool(): NamePool = getConfiguration.getNamePool
+  def getNamePool: NamePool = getConfiguration.getNamePool
 
   def atomize(): AtomicSequence = getNodeKind match {
     case Type.COMMENT | Type.PROCESSING_INSTRUCTION =>
@@ -92,7 +92,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   def saveLocation(): Location = this
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
   def getDisplayName(): String = {
     val prefix: String = getPrefix
@@ -227,7 +227,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     null
   }
 
-  def hasChildNodes(): Boolean = getNodeKind match {
+  def hasChildNodes: Boolean = getNodeKind match {
     case Type.DOCUMENT | Type.ELEMENT =>
       iterateAxis(AxisInfo.CHILD).next() != null
     case _ => false

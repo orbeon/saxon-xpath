@@ -108,12 +108,12 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
     receiver.endElement()
   }
 
-  override def hasChildNodes(): Boolean = true
+  override def hasChildNodes: Boolean = true
 
-  override def getStringValueCS(): CharSequence =
+  override def getStringValueCS: CharSequence =
     TinyTextImpl.getStringValue(tree, nodeNr)
 
-  override def getStringValue(): String =
+  override def getStringValue: String =
     TinyTextImpl.getStringValue(tree, nodeNr).toString
 
   override def iterateAxis(axisNumber: Int): AxisIterator = axisNumber match {
@@ -160,9 +160,9 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getNodeKind(): Int = Type.TEXT
 
-    def getStringValue(): String = getStringValueCS.toString
+    def getStringValue: String = getStringValueCS.toString
 
-    def getStringValueCS(): CharSequence =
+    def getStringValueCS: CharSequence =
       TinyTextualElement.this.getStringValueCS
 
     override def equals(other: Any): Boolean = other match {
@@ -199,7 +199,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getLocalPart(): String = ""
 
-    def hasChildNodes(): Boolean = false
+    def hasChildNodes: Boolean = false
 
     def getAttributeValue(uri: String, local: String): String = null
 

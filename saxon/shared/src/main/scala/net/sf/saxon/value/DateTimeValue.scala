@@ -61,10 +61,10 @@ object DateTimeValue {
     fromJavaInstant(instant.getEpochSecond, instant.getNano)
 
   def fromZonedDateTime(zonedDateTime: ZonedDateTime): DateTimeValue =
-    fromOffsetDateTime(zonedDateTime.toOffsetDateTime())
+    fromOffsetDateTime(zonedDateTime.toOffsetDateTime)
 
   def fromOffsetDateTime(offsetDateTime: OffsetDateTime): DateTimeValue = {
-    val ldt: LocalDateTime = offsetDateTime.toLocalDateTime()
+    val ldt: LocalDateTime = offsetDateTime.toLocalDateTime
     val zo: ZoneOffset = offsetDateTime.getOffset
     val tz: Int = zo.getTotalSeconds / 60
     val dtv: DateTimeValue = new DateTimeValue(ldt.getYear,
@@ -117,7 +117,7 @@ object DateTimeValue {
       err.setErrorCode("FORG0008")
       throw err
     }
-    val v: DateTimeValue = date.toDateTime()
+    val v: DateTimeValue = date.toDateTime
     v.hour = time.getHour
     v.minute = time.getMinute
     v.second = time.getSecond
@@ -592,13 +592,13 @@ class DateTimeValue extends CalendarValue
     typeLabel = BuiltInAtomicType.DATE_TIME
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.DATE_TIME
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DATE_TIME
 
-  def getMicrosecond(): Int = nanosecond / 1000
+  def getMicrosecond: Int = nanosecond / 1000
 
-  def toDateTime(): DateTimeValue = this
+  def toDateTime: DateTimeValue = this
 
-  def isXsd10Rules(): Boolean = hasNoYearZero
+  def isXsd10Rules: Boolean = hasNoYearZero
 
   override def checkValidInJavascript(): Unit = {
     if (year <= 0 || year > 9999) {
@@ -607,7 +607,7 @@ class DateTimeValue extends CalendarValue
   }
 
   def adjustToUTC(implicitTimezone: Int): DateTimeValue =
-    if (hasTimezone()) {
+    if (hasTimezone) {
       adjustTimezone(0)
     } else {
       if (implicitTimezone == CalendarValue.MISSING_TIMEZONE || implicitTimezone == CalendarValue.NO_TIMEZONE) {
@@ -619,7 +619,7 @@ class DateTimeValue extends CalendarValue
       dt.adjustTimezone(0)
     }
 
-  def toJulianInstant(): BigDecimal = {
+  def toJulianInstant: BigDecimal = {
     val julianDay: Int = DateValue.getJulianDayNumber(year, month, day)
     var julianSecond: Long = julianDay * 24L * 60L * 60L
     julianSecond += ((hour * 60L + minute) * 60L) + second
@@ -637,7 +637,7 @@ class DateTimeValue extends CalendarValue
   }
 
   def getCalendar(): GregorianCalendar = {
-    val tz: Int = if (hasTimezone()) getTimezoneInMinutes * 60000 else 0
+    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
     val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
     val calendar: GregorianCalendar = new GregorianCalendar(zone)
     if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar
@@ -658,23 +658,23 @@ class DateTimeValue extends CalendarValue
     calendar
   }
 
-  def toJavaInstant(): Instant = Instant.from(this)
+  def toJavaInstant: Instant = Instant.from(this)
 
-  def toZonedDateTime(): ZonedDateTime =
-    if (hasTimezone()) {
+  def toZonedDateTime: ZonedDateTime =
+    if (hasTimezone) {
       ZonedDateTime.from(this)
     } else {
       ZonedDateTime.from(adjustToUTC(0))
     }
 
-  def toOffsetDateTime(): OffsetDateTime =
-    if (hasTimezone()) {
+  def toOffsetDateTime: OffsetDateTime =
+    if (hasTimezone) {
       OffsetDateTime.from(this)
     } else {
       OffsetDateTime.from(adjustToUTC(0))
     }
 
-  def toLocalDateTime(): LocalDateTime = LocalDateTime.from(this)
+  def toLocalDateTime: LocalDateTime = LocalDateTime.from(this)
 
   def getPrimitiveStringValue(): CharSequence = {
     val sb: FastStringBuffer = new FastStringBuffer(30)
@@ -707,20 +707,20 @@ class DateTimeValue extends CalendarValue
         div /= 10
       }
     }
-    if (hasTimezone()) {
+    if (hasTimezone) {
       appendTimezone(sb)
     }
     sb
   }
 
-  def toDateValue(): DateValue =
+  def toDateValue: DateValue =
     new DateValue(year, month, day, getTimezoneInMinutes, hasNoYearZero)
 
-  def toTimeValue(): TimeValue =
+  def toTimeValue: TimeValue =
     new TimeValue(hour, minute, second, nanosecond, getTimezoneInMinutes, "")
 
   override def getCanonicalLexicalRepresentation(): CharSequence =
-    if (hasTimezone() && getTimezoneInMinutes != 0) {
+    if (hasTimezone && getTimezoneInMinutes != 0) {
       adjustTimezone(0).getStringValueCS
     } else {
       getStringValueCS
@@ -741,7 +741,7 @@ class DateTimeValue extends CalendarValue
   }
 
   def adjustTimezone(timezone: Int): DateTimeValue = {
-    if (!hasTimezone()) {
+    if (!hasTimezone) {
       val in: DateTimeValue = copyAsSubType(typeLabel)
       in.setTimezoneInMinutes(timezone)
       return in
@@ -805,7 +805,7 @@ class DateTimeValue extends CalendarValue
     if (duration.isInstanceOf[DayTimeDurationValue]) {
       val seconds: BigDecimal =
         duration.asInstanceOf[DayTimeDurationValue].getTotalSeconds
-      var julian: BigDecimal = toJulianInstant()
+      var julian: BigDecimal = toJulianInstant
       julian = julian.add(seconds)
       val dt: DateTimeValue = fromJulianInstant(julian)
       dt.setTimezoneInMinutes(getTimezoneInMinutes)
@@ -856,8 +856,8 @@ class DateTimeValue extends CalendarValue
 
   def secondsSinceEpoch(): BigDecimal = {
     val dtv: DateTimeValue = adjustToUTC(0)
-    val d1: BigDecimal = dtv.toJulianInstant()
-    val d2: BigDecimal = EPOCH.toJulianInstant()
+    val d1: BigDecimal = dtv.toJulianInstant
+    val d2: BigDecimal = EPOCH.toJulianInstant
     d1.subtract(d2)
   }
 
@@ -882,7 +882,7 @@ class DateTimeValue extends CalendarValue
       case MICROSECONDS => new Int64Value(nanosecond / 1000)
       case NANOSECONDS => new Int64Value(nanosecond)
       case TIMEZONE =>
-        if (hasTimezone()) {
+        if (hasTimezone) {
           DayTimeDurationValue.fromMilliseconds(60000L * getTimezoneInMinutes)
         } else {
           null
@@ -1006,8 +1006,8 @@ class DateTimeValue extends CalendarValue
         var dt0: DateTimeValue = DateTimeValue.this
         var dt1: DateTimeValue =
           o.asInstanceOf[DateTimeComparable].asDateTimeValue()
-        if (dt0.hasTimezone()) {
-          if (dt1.hasTimezone()) {
+        if (dt0.hasTimezone) {
+          if (dt1.hasTimezone) {
             dt0 = dt0.adjustTimezone(0)
             dt1 = dt1.adjustTimezone(0)
             dt0.compareTo(dt1)
@@ -1023,7 +1023,7 @@ class DateTimeValue extends CalendarValue
             SequenceTool.INDETERMINATE_ORDERING
           }
         } else {
-          if (dt1.hasTimezone()) {
+          if (dt1.hasTimezone) {
             val dt0min: DateTimeValue = dt0.adjustTimezone(-14 * 60)
             if (dt0min.compareTo(dt1) < 0) {
               return -1
@@ -1045,8 +1045,8 @@ class DateTimeValue extends CalendarValue
 
     override def equals(o: Any): Boolean =
       o.isInstanceOf[DateTimeComparable] &&
-        DateTimeValue.this.hasTimezone() ==
-          o.asInstanceOf[DateTimeComparable].asDateTimeValue().hasTimezone() &&
+        DateTimeValue.this.hasTimezone ==
+          o.asInstanceOf[DateTimeComparable].asDateTimeValue().hasTimezone &&
         compareTo(o.asInstanceOf[AnyRef]) == 0
 
     override def hashCode(): Int = {

@@ -46,18 +46,18 @@ abstract class FunctionCall extends Expression {
   @BeanProperty
   var operanda: OperandArray = _
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     if (operanda != null) {
-      operanda.operands()
+      operanda.operands
     } else {
       Collections.emptyList()
     }
 
   def getTargetFunction(context: XPathContext): Function
 
-  def getFunctionName(): StructuredQName
+  def getFunctionName: StructuredQName
 
-  def getArity(): Int = getOperanda.getNumberOfOperands
+  def getArity: Int = getOperanda.getNumberOfOperands
 
   def setArguments(args: Array[Expression]): Unit = {
     this.operanda = new OperandArray(this, args)
@@ -68,10 +68,10 @@ abstract class FunctionCall extends Expression {
     this.operanda = new OperandArray(this, args, roles)
   }
 
-  def getArguments(): Array[Expression] = {
+  def getArguments: Array[Expression] = {
     val result: Array[Expression] = Array.ofDim[Expression](getArity)
     var i: Int = 0
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       result(i) = o.getChildExpression
       i += 1
     }
@@ -86,7 +86,7 @@ abstract class FunctionCall extends Expression {
   }
 
   def simplifyArguments(env: StaticContext): Expression = {
-    for (i <- 0 until getArguments.length) {
+    for (i <- getArguments.indices) {
       val exp: Expression = getArg(i).simplify()
       if (exp != getArg(i)) {
         adoptChildExpression(exp)
@@ -106,15 +106,16 @@ abstract class FunctionCall extends Expression {
   def preEvaluateIfConstant(visitor: ExpressionVisitor): Expression = {
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
-      var fixed: Boolean = true
-      for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
-        fixed = false
-      }
-      if (fixed) {
-        try preEvaluate(visitor)
-        catch {
-          case err: NoDynamicContextException => return this
 
+      var fixed = true
+      for (o <- operands.asScala if ! o.getChildExpression.isInstanceOf[Literal])
+        fixed = false
+
+      if (fixed) {
+        try
+          preEvaluate(visitor)
+        catch {
+          case _: NoDynamicContextException => return this
         }
       }
     }
@@ -143,7 +144,7 @@ abstract class FunctionCall extends Expression {
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       var fixed: Boolean = true
       breakable {
-        for (o <- operands().asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
+        for (o <- operands.asScala if !o.getChildExpression.isInstanceOf[Literal]) {
           fixed = false
           break()
         }
@@ -168,7 +169,7 @@ abstract class FunctionCall extends Expression {
           .materialize(),
         this)
       Optimizer.trace(visitor.getConfiguration,
-        "Pre-evaluated function call " + toShortString(),
+        "Pre-evaluated function call " + toShortString,
         lit)
       lit
     } catch {
@@ -213,7 +214,7 @@ abstract class FunctionCall extends Expression {
                                         pathMap: PathMap,
                                         pathMapNodes: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val result: PathMap.PathMapNodeSet = new PathMap.PathMapNodeSet()
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       result.addNodeSet(
         o.getChildExpression.addToPathMap(pathMap, pathMapNodes))
     }
@@ -223,7 +224,7 @@ abstract class FunctionCall extends Expression {
 
   override def getExpressionName(): String = "functionCall"
 
-  def getDisplayName(): String = {
+  def getDisplayName: String = {
     val fName: StructuredQName = getFunctionName
     if (fName == null) "(anonymous)" else fName.getDisplayName
   }
@@ -238,7 +239,7 @@ abstract class FunctionCall extends Expression {
       else fName.getEQName
     buff.append(f)
     var first: Boolean = true
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       buff.append(if (first) "(" else ", ")
       buff.append(o.getChildExpression.toString)
       first = false
@@ -247,7 +248,7 @@ abstract class FunctionCall extends Expression {
     buff.toString
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val fName: StructuredQName = getFunctionName
     (if (fName == null) "$anonFn" else fName.getDisplayName) +
       "(" +
@@ -262,14 +263,14 @@ abstract class FunctionCall extends Expression {
     } else {
       out.emitAttribute("name", getFunctionName.getDisplayName)
     }
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       o.getChildExpression.export(out)
     }
     out.endElement()
   }
 
   override def equals(o: Any): Boolean = {
-    if (!(o.isInstanceOf[FunctionCall])) {
+    if (!o.isInstanceOf[FunctionCall]) {
       return false
     }
     if (getFunctionName == null) {

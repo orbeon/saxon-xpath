@@ -1,39 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.expr
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.IntegerValue
-
-import net.sf.saxon.value.SequenceType
-
-
-
-
-trait Binding {
-
-  def getRequiredType(): SequenceType
-
-  /*@Nullable*/
-
-  def getIntegerBoundsForVariable(): Array[IntegerValue]
-
-  def evaluateVariable(context: XPathContext): Sequence
-
-  def isGlobal(): Boolean
-
-  def isAssignable(): Boolean
-
-  def getVariableQName(): StructuredQName
-
-  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -44,3 +9,20 @@ trait Binding {
   * associated with a variable: specifically, a method to get the value
   * of the variable.
   */
+
+package net.sf.saxon.expr
+
+import net.sf.saxon.om.{Sequence, StructuredQName}
+import net.sf.saxon.value.{IntegerValue, SequenceType}
+
+
+trait Binding {
+  def getRequiredType: SequenceType
+  /*@Nullable*/
+  def getIntegerBoundsForVariable: Array[IntegerValue]
+  def evaluateVariable(context: XPathContext): Sequence
+  def isGlobal: Boolean
+  def isAssignable: Boolean
+  def getVariableQName: StructuredQName
+  def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit
+}

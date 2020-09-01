@@ -189,7 +189,7 @@ object JPConverter {
       instanceConverter.convert(o, context)
     }
 
-    def getItemType(): ItemType = AnyItemType
+    def getItemType: ItemType = AnyItemType
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -199,7 +199,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): Sequence =
       o.asInstanceOf[SequenceIterator].materialize()
 
-    def getItemType(): ItemType = AnyItemType
+    def getItemType: ItemType = AnyItemType
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -211,7 +211,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): Sequence =
       o.asInstanceOf[XdmValue].getUnderlyingValue
 
-    def getItemType(): ItemType = resultType
+    def getItemType: ItemType = resultType
   }
 
   object FromSequenceOfAny extends FromSequence(AnyItemType, StaticProperty.ALLOWS_ZERO_OR_MORE)
@@ -224,7 +224,7 @@ object JPConverter {
         case _                => o.asInstanceOf[Sequence]
       }
 
-    def getItemType(): ItemType = resultType
+    def getItemType: ItemType = resultType
   }
 
   object FromString extends JPConverter {
@@ -232,7 +232,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): StringValue =
       new StringValue(o.asInstanceOf[String])
 
-    def getItemType(): ItemType = BuiltInAtomicType.STRING
+    def getItemType: ItemType = BuiltInAtomicType.STRING
   }
 
   object FromBoolean extends JPConverter {
@@ -240,7 +240,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): BooleanValue =
       BooleanValue.get(o.asInstanceOf[java.lang.Boolean])
 
-    def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+    def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
   }
 
   object  FromDouble extends JPConverter {
@@ -248,7 +248,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DoubleValue =
       new DoubleValue(o.asInstanceOf[java.lang.Double])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DOUBLE
+    def getItemType: ItemType = BuiltInAtomicType.DOUBLE
   }
 
   object FromFloat extends JPConverter {
@@ -256,7 +256,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): FloatValue =
       new FloatValue(o.asInstanceOf[java.lang.Float])
 
-    def getItemType(): ItemType = BuiltInAtomicType.FLOAT
+    def getItemType: ItemType = BuiltInAtomicType.FLOAT
   }
 
   object FromBigDecimal extends JPConverter {
@@ -264,7 +264,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): BigDecimalValue =
       new BigDecimalValue(o.asInstanceOf[BigDecimal])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DECIMAL
+    def getItemType: ItemType = BuiltInAtomicType.DECIMAL
   }
 
   object FromBigInteger extends JPConverter {
@@ -272,7 +272,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): IntegerValue =
       IntegerValue.makeIntegerValue(o.asInstanceOf[BigInteger])
 
-    def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+    def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
 
   object FromLong extends JPConverter {
@@ -280,14 +280,14 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): Int64Value =
       new Int64Value(o.asInstanceOf[java.lang.Long])
 
-    def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+    def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
 
   object FromInt extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Int64Value = new Int64Value(o.asInstanceOf[Long])
 
-    def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+    def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
 
   object FromShort extends JPConverter {
@@ -295,7 +295,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): Int64Value =
       new Int64Value(o.asInstanceOf[java.lang.Short].intValue())
 
-    def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+    def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
 
   object FromByte extends JPConverter {
@@ -303,7 +303,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): Int64Value =
       new Int64Value(o.asInstanceOf[java.lang.Byte].intValue())
 
-    def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+    def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
 
   object FromCharacter extends JPConverter {
@@ -311,7 +311,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): StringValue =
       new StringValue(o.toString)
 
-    def getItemType(): ItemType = BuiltInAtomicType.STRING
+    def getItemType: ItemType = BuiltInAtomicType.STRING
   }
 
 
@@ -323,7 +323,7 @@ object JPConverter {
       new QNameValue(qn.getPrefix, qn.getNamespaceURI, qn.getLocalPart)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.QNAME
+    def getItemType: ItemType = BuiltInAtomicType.QNAME
   }
 
   object FromURI extends JPConverter {
@@ -331,7 +331,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): AnyURIValue =
       new AnyURIValue(o.toString)
 
-    def getItemType(): ItemType = BuiltInAtomicType.ANY_URI
+    def getItemType: ItemType = BuiltInAtomicType.ANY_URI
   }
 
   object FromDate extends JPConverter {
@@ -339,7 +339,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateTimeValue =
       DateTimeValue.fromJavaDate(o.asInstanceOf[ju.Date])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   object FromInstant extends JPConverter {
@@ -347,7 +347,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateTimeValue =
       DateTimeValue.fromJavaInstant(o.asInstanceOf[Instant])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   object FromZonedDateTime extends JPConverter {
@@ -355,7 +355,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateTimeValue =
       DateTimeValue.fromZonedDateTime(o.asInstanceOf[ZonedDateTime])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   object FromOffsetDateTime extends JPConverter {
@@ -363,7 +363,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateTimeValue =
       DateTimeValue.fromOffsetDateTime(o.asInstanceOf[OffsetDateTime])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   object FromLocalDateTime extends JPConverter {
@@ -371,7 +371,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateTimeValue =
       DateTimeValue.fromLocalDateTime(o.asInstanceOf[LocalDateTime])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   object FromLocalDate extends JPConverter {
@@ -379,7 +379,7 @@ object JPConverter {
     def convert(o: AnyRef, context: XPathContext): DateValue =
       new DateValue(o.asInstanceOf[LocalDate])
 
-    def getItemType(): ItemType = BuiltInAtomicType.DATE_TIME
+    def getItemType: ItemType = BuiltInAtomicType.DATE_TIME
   }
 
   class ExternalObjectWrapper(var resultType: JavaExternalObjectType)
@@ -398,13 +398,13 @@ object JPConverter {
           "XPTY0004")
       }
 
-    def getItemType(): JavaExternalObjectType = resultType
+    def getItemType: JavaExternalObjectType = resultType
 
   }
 
   object VoidConverter extends JPConverter {
     def convert(o: AnyRef, context: XPathContext): EmptySequence[_ <: Item] = EmptySequence.getInstance
-    def getItemType(): ItemType = AnyItemType
+    def getItemType: ItemType = AnyItemType
   }
 
   object FromCollection extends JPConverter {
@@ -420,7 +420,7 @@ object JPConverter {
       new SequenceExtent(list)
     }
 
-    def getItemType(): ItemType = AnyItemType
+    def getItemType: ItemType = AnyItemType
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -438,7 +438,7 @@ object JPConverter {
         .getRootNode
     }
 
-    def getItemType(): ItemType = AnyNodeTest.getInstance
+    def getItemType: ItemType = AnyNodeTest.getInstance
   }
 
   object FromLongArray extends JPConverter {
@@ -454,7 +454,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.LONG
+    def getItemType: ItemType = BuiltInAtomicType.LONG
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -471,7 +471,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.INT
+    def getItemType: ItemType = BuiltInAtomicType.INT
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -489,7 +489,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.SHORT
+    def getItemType: ItemType = BuiltInAtomicType.SHORT
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -507,7 +507,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.UNSIGNED_BYTE
+    def getItemType: ItemType = BuiltInAtomicType.UNSIGNED_BYTE
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -518,7 +518,7 @@ object JPConverter {
       StringValue.makeStringValue(
         new String(o.asInstanceOf[Array[Char]]))
 
-    def getItemType(): ItemType = BuiltInAtomicType.STRING
+    def getItemType: ItemType = BuiltInAtomicType.STRING
   }
 
   object FromDoubleArray extends JPConverter {
@@ -532,7 +532,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.DOUBLE
+    def getItemType: ItemType = BuiltInAtomicType.DOUBLE
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -548,7 +548,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.FLOAT
+    def getItemType: ItemType = BuiltInAtomicType.FLOAT
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -562,7 +562,7 @@ object JPConverter {
       new SequenceExtent(array)
     }
 
-    def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+    def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -588,7 +588,7 @@ object JPConverter {
       new SequenceExtent(newArray)
     }
 
-    def getItemType(): ItemType = itemConverter.getItemType
+    def getItemType: ItemType = itemConverter.getItemType
 
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -596,6 +596,6 @@ object JPConverter {
 
 abstract class JPConverter {
   def convert(o: AnyRef, context: XPathContext): Sequence
-  def getItemType(): ItemType
-  def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  def getItemType: ItemType
+  def getCardinality: Int = StaticProperty.EXACTLY_ONE
 }

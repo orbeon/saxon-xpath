@@ -154,7 +154,7 @@ abstract class Emitter
     }
   }
 
-  def getWriter(): Writer = writer
+  def getWriter: Writer = writer
 
   def setOutputStream(stream: OutputStream): Unit = {
     outputStream = stream
@@ -216,7 +216,7 @@ abstract class Emitter
     }
   }
 
-  def getOutputStream(): OutputStream = outputStream
+  def getOutputStream: OutputStream = outputStream
 
   override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = ()
 

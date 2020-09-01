@@ -30,8 +30,8 @@ object Compare {
 class Compare extends CollatingFunctionFixed {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
-    val arg0: StringValue = arguments(0).head().asInstanceOf[StringValue]
-    val arg1: StringValue = arguments(1).head().asInstanceOf[StringValue]
+    val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
+    val arg1: StringValue = arguments(1).head.asInstanceOf[StringValue]
     val comparer: GenericAtomicComparer =
       new GenericAtomicComparer(getStringCollator, context)
     val result: Int64Value = compare(arg0, arg1, comparer)

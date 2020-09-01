@@ -8,20 +8,20 @@ trait AtomicSequence
     extends GroundedValue
     with java.lang.Iterable[AtomicValue] {
 
-  def head(): AtomicValue
+  def head: AtomicValue
 
   def iterate(): AtomicIterator[_]
 
   def itemAt(n: Int): AtomicValue
 
-  def getLength(): Int
+  def getLength: Int
 
-  def getCanonicalLexicalRepresentation(): CharSequence
+  def getCanonicalLexicalRepresentation: CharSequence
 
-  def getSchemaComparable(): Comparable[_]
+  def getSchemaComparable: Comparable[_]
 
-  def getStringValueCS(): CharSequence
+  def getStringValueCS: CharSequence
 
-  def getStringValue(): String
+  def getStringValue: String
 
 }

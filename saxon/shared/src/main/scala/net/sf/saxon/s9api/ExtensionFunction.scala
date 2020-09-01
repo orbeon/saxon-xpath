@@ -20,11 +20,11 @@ trait ExtensionFunction {
     *
     * @return the name of the function, as a QName.
     */
-  def getName(): QName
+  def getName: QName
 
-  def getResultType(): SequenceType = SequenceType.ANY
+  def getResultType: SequenceType = SequenceType.ANY
 
-  def getArgumentTypes(): Array[SequenceType]
+  def getArgumentTypes: Array[SequenceType]
 
   /*@NotNull*/
 

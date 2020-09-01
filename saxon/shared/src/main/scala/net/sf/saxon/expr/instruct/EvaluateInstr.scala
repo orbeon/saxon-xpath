@@ -122,7 +122,7 @@ class EvaluateInstr(xpath: Expression,
     this
   }
 
-  def getItemType(): ItemType = requiredType.getPrimaryType
+  def getItemType: ItemType = requiredType.getPrimaryType
 
    def computeCardinality(): Int = requiredType.getCardinality
 
@@ -135,7 +135,7 @@ class EvaluateInstr(xpath: Expression,
   override def getIntrinsicDependencies(): Int =
     StaticProperty.DEPENDS_ON_FOCUS | StaticProperty.DEPENDS_ON_XSLT_CONTEXT
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val sub: List[Operand] = new ArrayList[Operand](8)
     if (xpathOp != null) {
       sub.add(xpathOp)
@@ -321,7 +321,7 @@ class EvaluateInstr(xpath: Expression,
       val defaultCollation: GroundedValue =
         options.get(new StringValue("default-collation"))
       if (defaultCollation != null) {
-        env.setDefaultCollationName(defaultCollation.head().getStringValue)
+        env.setDefaultCollationName(defaultCollation.head.getStringValue)
       }
       val locals: Map[StructuredQName, Integer] =
         new HashMap[StructuredQName, Integer]()
@@ -501,7 +501,7 @@ class EvaluateInstr(xpath: Expression,
     out.endElement()
   }
 
-  def getXpath(): Expression = xpathOp.getChildExpression
+  def getXpath: Expression = xpathOp.getChildExpression
 
   def setXpath(xpath: Expression): Unit = {
     if (xpathOp == null) {
@@ -511,7 +511,7 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def getContextItemExpr(): Expression =
+  def getContextItemExpr: Expression =
     if (contextItemOp == null) null else contextItemOp.getChildExpression
 
   def setContextItemExpr(contextItemExpr: Expression): Unit = {
@@ -522,7 +522,7 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def getBaseUriExpr(): Expression =
+  def getBaseUriExpr: Expression =
     if (baseUriOp == null) null else baseUriOp.getChildExpression
 
   def setBaseUriExpr(baseUriExpr: Expression): Unit = {
@@ -533,7 +533,7 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def getNamespaceContextExpr(): Expression =
+  def getNamespaceContextExpr: Expression =
     if (namespaceContextOp == null) null
     else namespaceContextOp.getChildExpression
 
@@ -546,7 +546,7 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def getSchemaAwareExpr(): Expression =
+  def getSchemaAwareExpr: Expression =
     if (schemaAwareOp == null) null else schemaAwareOp.getChildExpression
 
   def setSchemaAwareExpr(schemaAwareExpr: Expression): Unit = {
@@ -572,6 +572,6 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def getDynamicParams(): Expression = dynamicParamsOp.getChildExpression
+  def getDynamicParams: Expression = dynamicParamsOp.getChildExpression
 
 }

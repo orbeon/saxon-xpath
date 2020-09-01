@@ -16,7 +16,7 @@ abstract class BuilderMonitor(next: Receiver) extends ProxyReceiver(next) {
 
   def markNextNode(nodeKind: Int): Unit
 
-  def getMarkedNode(): NodeInfo
+  def getMarkedNode: NodeInfo
 
 }
 

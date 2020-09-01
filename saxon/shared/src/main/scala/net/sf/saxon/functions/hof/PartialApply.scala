@@ -44,13 +44,13 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     adoptChildExpression(boundArguments(i))
   }
 
-  def getBaseExpression(): Expression = baseOp.getChildExpression
+  def getBaseExpression: Expression = baseOp.getChildExpression
 
   def setBaseExpression(base: Expression): Unit = {
     baseOp.setChildExpression(base)
   }
 
-  def getNumberOfPlaceHolders(): Int = {
+  def getNumberOfPlaceHolders: Int = {
     var n: Int = 0
     for (o <- boundArgumentsOp if o == null) {
       {
@@ -81,7 +81,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
           val role: RoleDiagnostic =
             new RoleDiagnostic(RoleDiagnostic.FUNCTION, "saxon:call", i)
           val requiredArgType: SequenceType =
-            baseType.asInstanceOf[SpecificFunctionType].getArgumentTypes()(i)
+            baseType.asInstanceOf[SpecificFunctionType].getArgumentTypes(i)
           argTypes(i) = requiredArgType
           val a3: Expression =
             tc.staticTypeCheck(arg, requiredArgType, role, visitor)
@@ -110,7 +110,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
 
   /*@NotNull*/
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     val baseItemType: ItemType = getBaseExpression.getItemType
     var resultType: SequenceType = SequenceType.ANY_SEQUENCE
     if (baseItemType.isInstanceOf[SpecificFunctionType]) {
@@ -126,7 +126,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
         argTypes({
           j
         }) =
-          baseItemType.asInstanceOf[SpecificFunctionType].getArgumentTypes()(i)
+          baseItemType.asInstanceOf[SpecificFunctionType].getArgumentTypes(i)
         j = j + 1
       }
     } else {
@@ -135,7 +135,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     new SpecificFunctionType(argTypes, resultType)
   }
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val operanda: List[Operand] =
       new ArrayList[Operand](boundArgumentsOp.length + 1)
     operanda.add(baseOp)
@@ -145,7 +145,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     operanda
   }
 
-  def getNumberOfArguments(): Int = boundArgumentsOp.length
+  def getNumberOfArguments: Int = boundArgumentsOp.length
 
   def getArgument(n: Int): Expression = {
     val o: Operand = boundArgumentsOp(n)
@@ -230,7 +230,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
    */
   override def toString: String = {
     val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
-    val par: Boolean = getBaseExpression.operands().iterator().hasNext
+    val par: Boolean = getBaseExpression.operands.iterator().hasNext
     if (par) {
       buff.append("(" + getBaseExpression.toString + ")")
     } else {

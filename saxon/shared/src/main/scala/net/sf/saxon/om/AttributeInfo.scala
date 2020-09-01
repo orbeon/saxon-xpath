@@ -35,7 +35,7 @@ class AttributeInfo(@BeanProperty var nodeName: NodeName,
                     @BeanProperty var location: Location,
                     @BeanProperty var properties: Int) {
 
-  def isId(): Boolean =
+  def isId: Boolean =
     try StandardNames.XML_ID_NAME == nodeName ||
       ReceiverOption.contains(getProperties, ReceiverOption.IS_ID) ||
       getType.isIdType

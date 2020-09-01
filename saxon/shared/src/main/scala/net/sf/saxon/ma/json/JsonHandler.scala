@@ -54,7 +54,7 @@ class JsonHandler {
 
   private var fallbackFunction: Function = null
 
-  def getResult(): Sequence = null
+  def getResult: Sequence = null
 
   /**
     * Set the key to be written for the next entry in an object/map
@@ -239,8 +239,8 @@ class JsonHandler {
       val args: Array[Sequence] = Array.ofDim[Sequence](1)
       args(0) = new StringValue(s)
       val result: Sequence =
-        SystemFunction.dynamicCall(fallbackFunction, context, args).head()
-      val first: Item = result.head()
+        SystemFunction.dynamicCall(fallbackFunction, context, args).head
+      val first: Item = result.head
       if (first == null) "" else first.getStringValue
     } else {
       REPLACEMENT
@@ -250,7 +250,7 @@ class JsonHandler {
                           context: XPathContext): Unit = {
     val `val`: Sequence = options.get("fallback")
     if (`val` != null) {
-      val fn: Item = `val`.head()
+      val fn: Item = `val`.head
       if (fn.isInstanceOf[Function]) {
         fallbackFunction = fn.asInstanceOf[Function]
         if (fallbackFunction.getArity != 1) {

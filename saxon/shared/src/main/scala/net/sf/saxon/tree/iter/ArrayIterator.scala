@@ -75,13 +75,13 @@ class ArrayIterator[T <: Item]( var items: Array[T])
     items({ index += 1; index - 1 })
   }
 
-  def getLength(): Int = end - start
+  def getLength: Int = end - start
 
-  def getArray(): Array[T] = items
+  def getArray: Array[T] = items
 
-  def getStartPosition(): Int = start
+  def getStartPosition: Int = start
 
-  def getEndPosition(): Int = end
+  def getEndPosition: Int = end
 
   override def materialize(): GroundedValue = {
     var seq: SequenceExtent = null
@@ -94,7 +94,7 @@ class ArrayIterator[T <: Item]( var items: Array[T])
     seq.reduce()
   }
 
-  override def getResidue(): GroundedValue = {
+  override def getResidue: GroundedValue = {
     var seq: SequenceExtent = null
     if (start == 0 && index == 0 && end == items.length) {
       seq = new SequenceExtent(items.asInstanceOf[Array[Item]])
@@ -106,7 +106,7 @@ class ArrayIterator[T <: Item]( var items: Array[T])
     seq.reduce()
   }
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.GROUNDED,
       Property.LAST_POSITION_FINDER,
       Property.LOOKAHEAD)

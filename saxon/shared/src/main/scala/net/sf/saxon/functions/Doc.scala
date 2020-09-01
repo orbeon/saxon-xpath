@@ -34,7 +34,7 @@ object Doc {
             } else if (firstArg.getLength > 1) {
               return this
             }
-            val href: String = firstArg.head().getStringValue
+            val href: String = firstArg.head.getStringValue
             if (href.indexOf('#') >= 0) {
               return this
             }
@@ -83,7 +83,7 @@ class Doc extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
-    val hrefVal: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    val hrefVal: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (hrefVal == null) {
       return ZeroOrOne.empty().asInstanceOf[ZeroOrOne[NodeInfo]]
     }

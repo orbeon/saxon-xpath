@@ -73,7 +73,7 @@ object SequenceTool {
     } else {
       var n: Int = 0
       while (iter.next() != null) if ( {
-        n += 1;
+        n += 1
         n - 1
       } == length) {
         iter.close()
@@ -142,7 +142,7 @@ object SequenceTool {
       case _: Function =>
         item
       case _: ExternalObject[_] =>
-        item.asInstanceOf[ExternalObject[_]].getObject()
+        item.asInstanceOf[ExternalObject[_]].getObject
       case _ =>
         val value: AtomicValue = item.asInstanceOf[AtomicValue]
         value.getItemType.getPrimitiveType match {

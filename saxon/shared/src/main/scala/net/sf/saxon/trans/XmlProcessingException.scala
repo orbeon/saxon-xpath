@@ -19,7 +19,7 @@ class XmlProcessingException(private var exception: XPathException)
   @BeanProperty
   var fatalErrorMessage: String = _
 
-  def getXPathException(): XPathException = exception
+  def getXPathException: XPathException = exception
 
   override def getHostLanguage(): HostLanguage = {
     val loc: Location = getLocation

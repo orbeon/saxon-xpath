@@ -101,7 +101,7 @@ class DocumentImpl
     builder
   }
 
-  override def isTyped(): Boolean =
+  override def isTyped: Boolean =
     documentElement != null &&
       documentElement.getSchemaType != Untyped.getInstance
 

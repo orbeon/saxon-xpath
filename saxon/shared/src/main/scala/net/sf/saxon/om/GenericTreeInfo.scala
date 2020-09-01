@@ -73,7 +73,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * @return null (always)
     * @since 9.7
     */
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   def getDocumentNumber(): Long = {
     if (documentNumber == -1) {
@@ -164,7 +164,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
       userData.get(key)
     }
 
-  def isStreamed(): Boolean = false
+  def isStreamed: Boolean = false
 
   override def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule;
 

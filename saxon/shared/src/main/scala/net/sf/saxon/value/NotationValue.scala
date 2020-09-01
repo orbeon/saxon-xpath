@@ -73,7 +73,7 @@ class NotationValue(prefix: String,
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.NOTATION
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.NOTATION
 
   override def equals(other: Any): Boolean = other match {
     case other: NotationValue => qName == other.qName
@@ -85,7 +85,7 @@ class NotationValue(prefix: String,
 
   private class NotationComparable extends Comparable[AnyRef] {
 
-    def getNotationValue(): NotationValue = NotationValue.this
+    def getNotationValue: NotationValue = NotationValue.this
 
     def compareTo(o: AnyRef): Int =
       if (this == o) 0 else SequenceTool.INDETERMINATE_ORDERING

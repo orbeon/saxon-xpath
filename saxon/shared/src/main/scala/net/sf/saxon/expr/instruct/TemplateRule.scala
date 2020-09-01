@@ -55,7 +55,7 @@ object TemplateRule {
     if (exp.isInstanceOf[LocalParam]) {
       result.add(exp.asInstanceOf[LocalParam])
     } else {
-      for (o <- exp.operands().asScala) {
+      for (o <- exp.operands.asScala) {
         gatherLocalParams(o.getChildExpression, result)
       }
     }
@@ -115,7 +115,7 @@ class TemplateRule
   def getLocation(): Location = this
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
-    consumer.accept("match", getMatchPattern.toShortString())
+    consumer.accept("match", getMatchPattern.toShortString)
   }
 
   def setContextItemRequirements(`type`: ItemType,
@@ -124,9 +124,9 @@ class TemplateRule
     this.absentFocus = absentFocus
   }
 
-  def getComponentKind(): Int = StandardNames.XSL_TEMPLATE
+  def getComponentKind: Int = StandardNames.XSL_TEMPLATE
 
-  def getMatchPattern(): Pattern = matchPattern
+  def getMatchPattern: Pattern = matchPattern
 
   def setBody(body: Expression): Unit = {
     this.body = body
@@ -141,7 +141,7 @@ class TemplateRule
     requiredType = `type`
   }
 
-  def getRequiredType(): SequenceType =
+  def getRequiredType: SequenceType =
     if (requiredType == null) {
       SequenceType.ANY_SEQUENCE
     } else {
@@ -152,7 +152,7 @@ class TemplateRule
     rules.add(rule)
   }
 
-  def getContainerGranularity(): Int = 0
+  def getContainerGranularity: Int = 0
 
   def getPublicId(): String = null
 
@@ -160,7 +160,7 @@ class TemplateRule
 
   def saveLocation(): Location = this
 
-  def getLocalParams(): List[LocalParam] = {
+  def getLocalParams: List[LocalParam] = {
     val result: List[LocalParam] = new ArrayList[LocalParam]()
     gatherLocalParams(getInterpretedBody, result)
     result
@@ -234,7 +234,7 @@ class TemplateRule
 
   def setDeclaredStreamable(streamable: Boolean): Unit = ()
 
-  def isDeclaredStreamable(): Boolean = false
+  def isDeclaredStreamable: Boolean = false
 
   def explainProperties(presenter: ExpressionPresenter): Unit = {
     if (getRequiredContextItemType != AnyItemType) {
@@ -258,7 +258,7 @@ class TemplateRule
     }
   }
 
-  def getInterpretedBody(): Expression = body.getInterpretedExpression
+  def getInterpretedBody: Expression = body.getInterpretedExpression
 
   def copy(): TemplateRule = {
     val tr: TemplateRule = new TemplateRule()

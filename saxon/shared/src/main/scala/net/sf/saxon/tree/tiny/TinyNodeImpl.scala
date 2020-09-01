@@ -73,7 +73,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     *
     * @return the genre
     */
-  override def getGenre(): Genre = Genre.NODE
+  override def getGenre: Genre = Genre.NODE
 
   /**
     * Get information about the tree to which this NodeInfo belongs
@@ -83,9 +83,9 @@ abstract class TinyNodeImpl extends NodeInfo {
     */
   def getTreeInfo(): TreeInfo = tree
 
-  override def head(): NodeInfo = this
+  override def head: NodeInfo = this
 
-  def getStringValueCS(): CharSequence = getStringValue
+  def getStringValueCS: CharSequence = getStringValue
 
   /**
     * Get the type annotation of this node, if any. The type annotation is represented as
@@ -142,7 +142,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     */
   def saveLocation(): Location = this
 
-  def getSequenceNumber(): Long = nodeNr.toLong << 32
+  def getSequenceNumber: Long = nodeNr.toLong << 32
 
   def compareOrder(other: NodeInfo): Int = {
     val a: Long = getSequenceNumber
@@ -216,7 +216,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   override def iterateAxis(axisNumber: Int): AxisIterator =
     if (axisNumber == AxisInfo.CHILD) {
-      if (hasChildNodes()) {
+      if (hasChildNodes) {
         new SiblingIterator(tree, this, null, true)
       } else {
         EmptyIterator.ofNodes()
@@ -248,7 +248,7 @@ abstract class TinyNodeImpl extends NodeInfo {
           }
           new AttributeIterator(tree, nodeNr, nodeTest)
         case AxisInfo.CHILD =>
-          if (hasChildNodes()) {
+          if (hasChildNodes) {
             if (nodeTest.isInstanceOf[NameTest] &&
               nodeTest.asInstanceOf[NameTest].getNodeKind == Type.ELEMENT) {
               // fast path for common case
@@ -265,7 +265,7 @@ abstract class TinyNodeImpl extends NodeInfo {
             this
               .asInstanceOf[TinyDocumentImpl]
               .getAllElements(nodeTest.getFingerprint)
-          } else if (hasChildNodes()) {
+          } else if (hasChildNodes) {
             if (nodeTest.getUType.overlaps(UType.TEXT)) {
               new DescendantIterator(tree, this, nodeTest)
             } else {
@@ -358,7 +358,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     null
   }
 
-  def hasChildNodes(): Boolean = false
+  def hasChildNodes: Boolean = false
 
   def getAttributeValue(uri: String, local: String): String = null
 
@@ -366,7 +366,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   override def getConfiguration(): Configuration = tree.getConfiguration
 
-  def getNamePool(): NamePool = tree.getNamePool
+  def getNamePool: NamePool = tree.getNamePool
 
   /*@Nullable*/
 
@@ -448,9 +448,9 @@ abstract class TinyNodeImpl extends NodeInfo {
     */
   override def isStreamed(): Boolean = false
 
-  def getTree(): TinyTree = tree
+  def getTree: TinyTree = tree
 
-  def getNodeNumber(): Int = nodeNr
+  def getNodeNumber: Int = nodeNr
 
 }
 

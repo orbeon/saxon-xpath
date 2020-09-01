@@ -77,7 +77,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   var uType: UType = UType.fromTypeCode(kind)
 
-  def getNodeKind(): Int = kind
+  def getNodeKind: Int = kind
 
   def getUType(): UType = uType
 
@@ -103,9 +103,9 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   override def test(node: NodeInfo): Boolean = node.getNodeKind == kind
 
-  def getDefaultPriority(): Double = -0.5
+  def getDefaultPriority: Double = -0.5
 
-  override def getPrimitiveType(): Int = kind
+  override def getPrimitiveType: Int = kind
 
   override def getContentType(): SchemaType = kind match {
     case Type.DOCUMENT => AnyType.getInstance
@@ -119,7 +119,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   }
 
-  override def getAtomizedItemType(): AtomicType = kind match {
+  override def getAtomizedItemType: AtomicType = kind match {
     case Type.DOCUMENT => BuiltInAtomicType.UNTYPED_ATOMIC
     case Type.ELEMENT => BuiltInAtomicType.ANY_ATOMIC
     case Type.ATTRIBUTE => BuiltInAtomicType.ANY_ATOMIC
@@ -152,7 +152,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
       if (!getUType.overlaps(actualKind)) {
         Optional.of(
           "The supplied value is " + actualKind
-            .toStringWithIndefiniteArticle())
+            .toStringWithIndefiniteArticle)
       } else {
         Optional.empty()
       }
@@ -161,7 +161,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
     }
   }
 
-  override def toShortString(): String = getNodeKind match {
+  override def toShortString: String = getNodeKind match {
     case Type.ELEMENT => "*"
     case Type.ATTRIBUTE => "@*"
     case Type.DOCUMENT => "/"

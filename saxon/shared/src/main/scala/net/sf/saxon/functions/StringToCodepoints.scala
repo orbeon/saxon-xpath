@@ -39,7 +39,7 @@ class StringToCodepoints extends SystemFunction {
     Array(Int64Value.PLUS_ONE, Int64Value.makeIntegerValue(1114111))
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val `val`: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val `val`: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (`val` == null) {
       EmptySequence.getInstance
     }

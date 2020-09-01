@@ -199,13 +199,13 @@ class CopyOf(select: Expression,
 
   private var isSchemaAware: Boolean = true
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
   def setSelect(select: Expression): Unit = {
     selectOp.setChildExpression(select)
   }
 
-  override def operands(): java.lang.Iterable[Operand] = selectOp
+  override def operands: java.lang.Iterable[Operand] = selectOp
 
   def getValidationAction(): Int = validation
 
@@ -225,7 +225,7 @@ class CopyOf(select: Expression,
     this.requireDocumentOrElement = requireDocumentOrElement
   }
 
-  def isDocumentOrElementRequired(): Boolean = requireDocumentOrElement
+  def isDocumentOrElementRequired: Boolean = requireDocumentOrElement
 
   override def getImplementationMethod(): Int =
     ITERATE_METHOD | PROCESS_METHOD | WATCH_METHOD
@@ -244,7 +244,7 @@ class CopyOf(select: Expression,
     c
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     val in: ItemType = getSelect.getItemType
     if (!isSchemaAware) {
       return in

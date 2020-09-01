@@ -55,7 +55,7 @@ abstract class RegexFunction
           staticRegex = null
         }
       } catch {
-        case err: XPathException => {}
+        case _: XPathException =>
 
       }
     }
@@ -91,9 +91,9 @@ abstract class RegexFunction
       return staticRegex
     }
     val config: Configuration = getRetainedStaticContext.getConfiguration
-    val regexArg: StringValue = args(1).head().asInstanceOf[StringValue]
+    val regexArg: StringValue = args(1).head.asInstanceOf[StringValue]
     val re: String = regexArg.getStringValue
-    val flags: String = args(args.length - 1).head().getStringValue
+    val flags: String = args(args.length - 1).head.getStringValue
     var hostLang: String = "XP30"
     if (config.getXsdVersion == Configuration.XSD11) {
       hostLang += "/XSD11"

@@ -20,7 +20,7 @@ object NumericComparer {
 
   private var THE_INSTANCE: NumericComparer = new NumericComparer()
 
-  def getInstance(): NumericComparer = THE_INSTANCE
+  def getInstance: NumericComparer = THE_INSTANCE
 
 }
 

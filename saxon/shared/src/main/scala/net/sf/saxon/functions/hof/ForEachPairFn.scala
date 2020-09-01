@@ -64,7 +64,7 @@ class ForEachPairFn extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(
-      evalMapPairs(arguments(2).head().asInstanceOf[Function],
+      evalMapPairs(arguments(2).head.asInstanceOf[Function],
         arguments(0).iterate(),
         arguments(1).iterate(),
         context))

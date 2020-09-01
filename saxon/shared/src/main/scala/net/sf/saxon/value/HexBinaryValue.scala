@@ -74,7 +74,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.HEX_BINARY
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.HEX_BINARY
 
   private def fromHex(c: Char): Int = {
     var d: Int = "0123456789ABCDEFabcdef".indexOf(c)
@@ -100,14 +100,14 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
     sb
   }
 
-  def getLengthInOctets(): Int = binaryValue.length
+  def getLengthInOctets: Int = binaryValue.length
 
   def getSchemaComparable(): Comparable[AnyRef] =
     new HexBinaryComparable().asInstanceOf[Comparable[AnyRef]]
 
   class HexBinaryComparable extends Comparable[HexBinaryComparable] {
 
-    def getHexBinaryValue(): HexBinaryValue = HexBinaryValue.this
+    def getHexBinaryValue: HexBinaryValue = HexBinaryValue.this
 
     def compareTo(o: HexBinaryComparable): Int =
       if (Arrays.equals(getHexBinaryValue.binaryValue,

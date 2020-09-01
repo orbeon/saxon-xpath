@@ -66,8 +66,8 @@ class QNameFn extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): QNameValue =
-    expandedQName(arguments(0).head().asInstanceOf[StringValue],
-                  arguments(1).head().asInstanceOf[StringValue])
+    expandedQName(arguments(0).head.asInstanceOf[StringValue],
+                  arguments(1).head.asInstanceOf[StringValue])
 
   override def getCompilerName(): String = "QNameFnCompiler"
 

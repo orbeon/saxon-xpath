@@ -80,7 +80,7 @@ class ParameterSet(capacity: Int) {
     }) = value
   }
 
-  def getParameterNames(): Array[StructuredQName] = keys
+  def getParameterNames: Array[StructuredQName] = keys
 
   def getIndex(id: StructuredQName): Int =
     (0 until used).find(keys(_) == id).getOrElse(-1)

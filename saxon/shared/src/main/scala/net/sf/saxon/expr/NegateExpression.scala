@@ -48,7 +48,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
     this
   }
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     getBaseExpression.getItemType.getPrimitiveItemType
 
   override def computeCardinality(): Int =

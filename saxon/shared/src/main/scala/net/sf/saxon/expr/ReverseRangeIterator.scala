@@ -31,11 +31,11 @@ class ReverseRangeIterator(var start: Long, var limit: Long)
     Int64Value.makeIntegerValue(currentValue)
   }
 
-  def getLength(): Int = ((start - limit) + 1).toInt
+  def getLength: Int = ((start - limit) + 1).toInt
 
   import net.sf.saxon.om.SequenceIterator.Property._
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(LOOKAHEAD, LAST_POSITION_FINDER)
 
   def getReverseIterator(): AtomicIterator[_ <: AtomicValue] = new RangeIterator(limit, start)

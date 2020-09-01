@@ -129,7 +129,7 @@ class ValidationFailure(@BeanProperty var message: String)
 
   /*@Nullable*/
 
-  def getConstraintReferenceMessage(): String = {
+  def getConstraintReferenceMessage: String = {
     if (schemaPart == -1) {
       return null
     }
@@ -147,7 +147,7 @@ class ValidationFailure(@BeanProperty var message: String)
     offendingNodes.add(node)
   }
 
-  def getOffendingNodes(): List[NodeInfo] =
+  def getOffendingNodes: List[NodeInfo] =
     if (offendingNodes == null) {
       Collections.emptyList()
     } else {
@@ -247,7 +247,7 @@ class ValidationFailure(@BeanProperty var message: String)
 
   /*@NotNull*/
 
-  def getLocator(): Location = this
+  def getLocator: Location = this
 
   def setErrorCode(errorCode: String): Unit = {
     this.errorCode =
@@ -277,7 +277,7 @@ class ValidationFailure(@BeanProperty var message: String)
 
   /*@Nullable*/
 
-  def getErrorCodeQName(): StructuredQName = errorCode
+  def getErrorCodeQName: StructuredQName = errorCode
 
   /*@NotNull*/
 
@@ -308,7 +308,7 @@ class ValidationFailure(@BeanProperty var message: String)
     }
   }
 
-  def getValidationLocationText(): String = {
+  def getValidationLocationText: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val valPath: AbsolutePath = getAbsolutePath
     if (valPath != null) {
@@ -322,7 +322,7 @@ class ValidationFailure(@BeanProperty var message: String)
     fsb.toString
   }
 
-  def getContextLocationText(): String = {
+  def getContextLocationText: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val contextPath: AbsolutePath = getContextPath
     if (contextPath != null) {
@@ -336,7 +336,7 @@ class ValidationFailure(@BeanProperty var message: String)
     fsb.toString
   }
 
-  def getAbsolutePath(): AbsolutePath =
+  def getAbsolutePath: AbsolutePath =
     if (path != null) {
       path
     } else {

@@ -39,7 +39,7 @@ class TailExpression(base: Expression, var start: Int)
 
   override def getImplementationMethod(): Int = Expression.ITERATE_METHOD
 
-  override def getItemType(): ItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   override def computeCardinality(): Int =
     getBaseExpression.getCardinality | StaticProperty.ALLOWS_ZERO
@@ -47,7 +47,7 @@ class TailExpression(base: Expression, var start: Int)
    override def getOperandRole(): OperandRole =
     OperandRole.SAME_FOCUS_ACTION
 
-  def getStart(): Int = start
+  def getStart: Int = start
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[TailExpression] &&
@@ -82,11 +82,11 @@ class TailExpression(base: Expression, var start: Int)
         "]"
     }
 
-  override def toShortString(): String =
+  override def toShortString: String =
     if (start == 2) {
-      "tail(" + getBaseExpression.toShortString() + ")"
+      "tail(" + getBaseExpression.toShortString + ")"
     } else {
-      getBaseExpression.toShortString() + "[position() ge " +
+      getBaseExpression.toShortString + "[position() ge " +
         start +
         "]"
     }

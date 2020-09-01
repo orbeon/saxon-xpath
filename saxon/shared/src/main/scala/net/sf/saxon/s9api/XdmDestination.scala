@@ -29,13 +29,13 @@ class XdmDestination extends AbstractDestination {
     this.setDestinationBaseURI(baseURI)
   }
 
-  def getBaseURI(): URI = getDestinationBaseURI
+  def getBaseURI: URI = getDestinationBaseURI
 
   def setTreeModel(model: TreeModel): Unit = {
     this.treeModel = model
   }
 
-  def getTreeModel(): TreeModel = treeModel
+  def getTreeModel: TreeModel = treeModel
 
   def getReceiver(pipe: PipelineConfiguration,
                   params: SerializationProperties): Receiver = {
@@ -64,7 +64,7 @@ class XdmDestination extends AbstractDestination {
 
   def close(): Unit = ()
 
-  def getXdmNode(): XdmNode = {
+  def getXdmNode: XdmNode = {
     if (builder == null) {
       throw new IllegalStateException("The document has not yet been built")
     }

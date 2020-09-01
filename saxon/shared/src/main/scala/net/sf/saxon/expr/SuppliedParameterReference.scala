@@ -34,7 +34,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
 
   var `type`: SequenceType = _
 
-  def getSlotNumber(): Int = slotNumber
+  def getSlotNumber: Int = slotNumber
 
   def setSuppliedType(`type`: SequenceType): Unit = {
     this.`type` = `type`
@@ -52,7 +52,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
 
   /*@NotNull*/
 
-  def getItemType(): ItemType =
+  def getItemType: ItemType =
     if (`type` != null) {
       `type`.getPrimaryType
     } else {
@@ -112,7 +112,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
     evaluateVariable(context).iterate()
 
   override def evaluateItem(context: XPathContext): Item =
-    evaluateVariable(context).head()
+    evaluateVariable(context).head
 
   /**
     * Get a name identifying the kind of expression, in terms meaningful to a user.

@@ -50,7 +50,7 @@ class AtomicArray extends AtomicSequence {
     content = list
   }
 
-  def head(): AtomicValue = if (content.isEmpty) null else content.get(0)
+  def head: AtomicValue = if (content.isEmpty) null else content.get(0)
 
   def iterate(): AtomicIterator[_ <: AtomicValue] = new ListIterator.Atomic(content)
 
@@ -61,7 +61,7 @@ class AtomicArray extends AtomicSequence {
       null
     }
 
-  def getLength(): Int = content.size
+  def getLength: Int = content.size
 
   def subsequence(start: Int, length: Int): AtomicArray = {
     var startInt = start
@@ -77,7 +77,7 @@ class AtomicArray extends AtomicSequence {
 
   def getCanonicalLexicalRepresentation(): CharSequence = getStringValueCS
 
-  def getStringValueCS(): CharSequence = {
+  def getStringValueCS: CharSequence = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     var first: Boolean = true
     for (av <- content.asScala) {
@@ -91,7 +91,7 @@ class AtomicArray extends AtomicSequence {
     fsb.condense()
   }
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
   override def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
@@ -106,7 +106,7 @@ class AtomicArray extends AtomicSequence {
   private class ValueSchemaComparable
     extends Comparable[ValueSchemaComparable] {
 
-    def getValue(): AtomicArray = AtomicArray.this
+    def getValue: AtomicArray = AtomicArray.this
 
     def compareTo(obj: ValueSchemaComparable): Int = {
       val iter1: UnfailingIterator = getValue.iterate()

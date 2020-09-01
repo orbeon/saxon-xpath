@@ -45,7 +45,7 @@ object LookupExpression {
   def mustBeArrayOrMap(exp: Expression, baseItem: Item): Unit = {
     val exception: XPathException = new XPathException(
       "The items on the LHS of the '?' operator must be maps or arrays; but value (" +
-        baseItem.toShortString() +
+        baseItem.toShortString +
         ") was supplied",
       "XPTY0004")
     exception.setIsTypeError(true)
@@ -76,7 +76,7 @@ class LookupExpression(start: Expression, step: Expression)
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     if (isClassified) {
       if (isArrayLookup) {
         val arrayType: ItemType = getLhsExpression.getItemType
@@ -390,7 +390,7 @@ class LookupExpression(start: Expression, step: Expression)
             } else {
               var exception: XPathException = new XPathException(
                 "An item on the LHS of the '?' operator is an array, but a value on the RHS of the operator (" +
-                  baseItem.toShortString() +
+                  baseItem.toShortString +
                   ") is not an integer",
                 "XPTY0004"
               )
@@ -417,7 +417,7 @@ class LookupExpression(start: Expression, step: Expression)
           if (!rhs.isInstanceOf[StringValue]) {
             var exception: XPathException = new XPathException(
               "An item on the LHS of the '?' operator is an external object, but a value on the RHS of the operator (" +
-                baseItem.toShortString() +
+                baseItem.toShortString +
                 ") is not a singleton string",
               "XPTY0004"
             )

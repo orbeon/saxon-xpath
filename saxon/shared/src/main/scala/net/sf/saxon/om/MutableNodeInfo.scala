@@ -41,7 +41,7 @@ trait MutableNodeInfo extends NodeInfo {
 
   def delete(): Unit
 
-  def isDeleted(): Boolean
+  def isDeleted: Boolean
 
   def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit
 

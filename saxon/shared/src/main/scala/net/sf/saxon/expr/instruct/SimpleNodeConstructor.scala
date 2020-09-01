@@ -40,9 +40,9 @@ abstract class SimpleNodeConstructor extends Instruction {
     selectOp.setChildExpression(select)
   }
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
-  override def operands(): java.lang.Iterable[Operand] = selectOp
+  override def operands: java.lang.Iterable[Operand] = selectOp
 
   override def mayCreateNewNodes(): Boolean = true
 
@@ -148,6 +148,6 @@ abstract class SimpleNodeConstructor extends Instruction {
   override def iterate(context: XPathContext): SequenceIterator =
     SingletonIterator.makeIterator(evaluateItem(context))
 
-  def isLocal(): Boolean = ExpressionTool.isLocalConstructor(this)
+  def isLocal: Boolean = ExpressionTool.isLocalConstructor(this)
 
 }

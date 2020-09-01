@@ -115,8 +115,8 @@ class CompareToIntegerConstant(operand: Expression,
     *
     * @return a short string, sufficient to identify the expression
     */
-  override def toShortString(): String =
-    getLhsExpression.toShortString() + " " + Token.tokens(operator) +
+  override def toShortString: String =
+    getLhsExpression.toShortString + " " + Token.tokens(operator) +
       " " +
       comparand
 

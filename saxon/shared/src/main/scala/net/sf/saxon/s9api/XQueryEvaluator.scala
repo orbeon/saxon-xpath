@@ -50,7 +50,7 @@ class XQueryEvaluator(var processor: Processor,
     }
   }
 
-  def getSchemaValidationMode(): ValidationMode =
+  def getSchemaValidationMode: ValidationMode =
     ValidationMode.get(context.getSchemaValidationMode)
 
   def setSource(source: Source): Unit = {
@@ -75,7 +75,7 @@ class XQueryEvaluator(var processor: Processor,
     }
   }
 
-  def getContextItem(): XdmItem = {
+  def getContextItem: XdmItem = {
     val item: Item = context.getContextItem
     if (item == null) {
       return null
@@ -102,25 +102,25 @@ class XQueryEvaluator(var processor: Processor,
     context.setURIResolver(resolver)
   }
 
-  def getURIResolver(): URIResolver = context.getURIResolver
+  def getURIResolver: URIResolver = context.getURIResolver
 
   def setErrorListener(listener: ErrorListener): Unit = {
     context.setErrorListener(listener)
   }
 
-  def getErrorListener(): ErrorListener = context.getErrorListener
+  def getErrorListener: ErrorListener = context.getErrorListener
 
   def setTraceListener(listener: TraceListener): Unit = {
     context.setTraceListener(listener)
   }
 
-  def getTraceListener(): TraceListener = context.getTraceListener
+  def getTraceListener: TraceListener = context.getTraceListener
 
   def setTraceFunctionDestination(stream: Logger): Unit = {
     context.setTraceFunctionDestination(stream)
   }
 
-  def getTraceFunctionDestination(): Logger =
+  def getTraceFunctionDestination: Logger =
     context.getTraceFunctionDestination
 
   def setDestination(destination: Destination): Unit = {
@@ -244,7 +244,7 @@ class XQueryEvaluator(var processor: Processor,
 
   def close(): Unit = ()
 
-  def getUpdatedDocuments(): Iterator[XdmNode] = updatedDocuments.iterator()
+  def getUpdatedDocuments: Iterator[XdmNode] = updatedDocuments.iterator()
 
   def callFunction(function: QName, arguments: Array[XdmValue]): XdmValue = {
     val fn: UserFunction = expression.getMainModule.getUserDefinedFunction(
@@ -281,6 +281,6 @@ class XQueryEvaluator(var processor: Processor,
     XdmValue.wrap(result)
   }
 
-  def getUnderlyingQueryContext(): DynamicQueryContext = context
+  def getUnderlyingQueryContext: DynamicQueryContext = context
 
 }

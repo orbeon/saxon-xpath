@@ -253,7 +253,7 @@ class HTMLIndenter(next: Receiver, method: String) extends ProxyReceiver(next) {
     afterEndElement = false
   }
 
-   def getLineLength(): Int = 80
+   def getLineLength: Int = 80
 
   private def indent(): Unit = {
     val spaces: Int = level * getIndentation
@@ -273,6 +273,6 @@ class HTMLIndenter(next: Receiver, method: String) extends ProxyReceiver(next) {
     sameLine = false
   }
 
-   def getIndentation(): Int = 3
+   def getIndentation: Int = 3
 
 }

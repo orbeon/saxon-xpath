@@ -34,9 +34,9 @@ class ItemMappingIterator(var base: SequenceIterator,
     this.oneToOne = oneToOne
   }
 
-   def getBaseIterator(): SequenceIterator = base
+   def getBaseIterator: SequenceIterator = base
 
-   def getMappingFunction(): ItemMappingFunction = action
+   def getMappingFunction: ItemMappingFunction = action
 
   def hasNext(): Boolean = // is a lookahead iterator and one-to-one is true
     base.asInstanceOf[LookaheadIterator].hasNext
@@ -64,10 +64,10 @@ class ItemMappingIterator(var base: SequenceIterator,
     base.close()
   }
 
-  def getLength(): Int = // is a last-position-finder iterator and one-to-one is true
+  def getLength: Int = // is a last-position-finder iterator and one-to-one is true
     base.asInstanceOf[LastPositionFinder].getLength
 
-  override def getProperties(): Set[Property] = {
+  override def getProperties: Set[Property] = {
     var propSet : Set[Property] = Set()
     val resultsSet: Set[Property] = Set(LAST_POSITION_FINDER, LOOKAHEAD)
     if (oneToOne) {

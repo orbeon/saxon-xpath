@@ -34,7 +34,7 @@ import net.sf.saxon.trans.XPathException
 class ErrorReporterToListener (var listener: ErrorListener)
     extends ErrorReporter {
 
-  def getErrorListener(): ErrorListener = listener
+  def getErrorListener: ErrorListener = listener
 
   override def report(error: XmlProcessingError): Unit = {
     if (!error.isAlreadyReported) {

@@ -114,10 +114,10 @@ class RoleDiagnostic(private var kind: Int,
 
   def getErrorCode: String = errorCode
 
-  def isTypeError(): Boolean =
+  def isTypeError: Boolean =
     !errorCode.startsWith("FORG") && errorCode.!=("XPDY0050")
 
-  def getMessage(): String = {
+  def getMessage: String = {
     var name: String = operation
     kind match {
       case FUNCTION =>
@@ -201,7 +201,7 @@ class RoleDiagnostic(private var kind: Int,
       return s
     }
     composeRequiredMessage(requiredItemType) + ", but the supplied expression {" +
-      supplied.toShortString() +
+      supplied.toShortString +
       "} has item type " +
       supplied.getItemType
   }

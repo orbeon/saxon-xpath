@@ -22,7 +22,7 @@ class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
 
   /*@Nullable*/
 
-  def getContextItemStack(): Stack[Item] = {
+  def getContextItemStack: Stack[Item] = {
     val traceListener: ContentHandlerProxy.ContentHandlerProxyTraceListener =
       parent.getTraceListener
     if (traceListener == null) {

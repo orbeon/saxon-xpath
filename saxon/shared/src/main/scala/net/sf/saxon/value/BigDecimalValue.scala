@@ -273,7 +273,7 @@ final class BigDecimalValue extends DecimalValue {
 
   /**
    * Determine the primitive type of the value. This delivers the same answer as
-   * getItemType().getPrimitiveItemType(). The primitive types are
+   * getItemType().getPrimitiveItemType. The primitive types are
    * the 19 primitive types of XML Schema, plus xs:integer, xs:dayTimeDuration and xs:yearMonthDuration,
    * and xs:untypedAtomic. For external objects, the result is AnyAtomicType.
    */

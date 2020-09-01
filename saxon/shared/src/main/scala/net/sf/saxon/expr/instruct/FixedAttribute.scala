@@ -58,7 +58,7 @@ class FixedAttribute(private var nodeName: NodeName,
 
   override def getExpressionName(): String = "att"
 
-  def getAttributeName(): NodeName = nodeName
+  def getAttributeName: NodeName = nodeName
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
     consumer.accept("name", getAttributeName)
@@ -146,7 +146,7 @@ class FixedAttribute(private var nodeName: NodeName,
     }
   }
 
-  def getAttributeFingerprint(): Int = nodeName.getFingerprint
+  def getAttributeFingerprint: Int = nodeName.getFingerprint
 
   override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
 
@@ -232,7 +232,7 @@ class FixedAttribute(private var nodeName: NodeName,
     out.endElement()
   }
 
-  override def toShortString(): String =
+  override def toShortString: String =
     "attr{" + nodeName.getDisplayName + "=...}"
 
 }

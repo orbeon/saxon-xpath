@@ -51,7 +51,7 @@ class Annotation(name: StructuredQName) {
   @BeanProperty
   var annotationParameters: List[AtomicValue] = new ArrayList()
 
-  def getAnnotationQName(): StructuredQName = qName
+  def getAnnotationQName: StructuredQName = qName
 
   def addAnnotationParameter(value: AtomicValue): Unit = {
     if (annotationParameters == null) {

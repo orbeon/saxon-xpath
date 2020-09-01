@@ -47,7 +47,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 

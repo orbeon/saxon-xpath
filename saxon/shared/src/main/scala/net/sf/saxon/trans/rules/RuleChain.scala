@@ -18,7 +18,7 @@ class RuleChain {
     this.head = head
   }
 
-  def getLength(): Int = {
+  def getLength: Int = {
     var i: Int = 0
     var r: Rule = head
     while (r != null) {

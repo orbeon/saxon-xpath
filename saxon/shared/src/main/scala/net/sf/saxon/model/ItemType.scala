@@ -43,22 +43,22 @@ object ItemType {
 
 trait ItemType {
 
-  def getGenre(): Genre
-  def isAtomicType(): Boolean
-  def isPlainType(): Boolean
-  def isTrueItemType(): Boolean = true
+  def getGenre: Genre
+  def isAtomicType: Boolean
+  def isPlainType: Boolean
+  def isTrueItemType: Boolean = true
   def matches(item: Item, th: TypeHierarchy): Boolean
 
   /*@NotNull*/
-  def getPrimitiveItemType(): ItemType
-  def getPrimitiveType(): Int
-  def getUType(): UType
-  def getDefaultPriority(): Double
-  def getNormalizedDefaultPriority(): Double = (getDefaultPriority + 1) / 2
-  def getAtomizedItemType(): PlainType
+  def getPrimitiveItemType: ItemType
+  def getPrimitiveType: Int
+  def getUType: UType
+  def getDefaultPriority: Double
+  def getNormalizedDefaultPriority: Double = (getDefaultPriority + 1) / 2
+  def getAtomizedItemType: PlainType
   def isAtomizable(th: TypeHierarchy): Boolean
-  def getBasicAlphaCode(): String
-  def getFullAlphaCode(): String = getBasicAlphaCode
+  def getBasicAlphaCode: String
+  def getFullAlphaCode: String = getBasicAlphaCode
 
   /**
     * Return a string representation of this ItemType suitable for use in stylesheet
@@ -69,7 +69,7 @@ trait ItemType {
     *
     * @return the string representation as an instance of the XPath SequenceType construct
     */
-  def toExportString(): String = toString
-  def toString(): String
+  def toExportString: String = toString
+  def toString: String
   def explainMismatch(item: Item, th: TypeHierarchy): Optional[String] = Optional.empty()
 }

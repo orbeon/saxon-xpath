@@ -70,8 +70,8 @@ class FirstItemExpression(base: Expression) extends SingleItemFilter(base) {
 
   override def getExpressionName(): String = "first"
 
-  override def toShortString(): String =
-    getBaseExpression.toShortString() + "[1]"
+  override def toShortString: String =
+    getBaseExpression.toShortString + "[1]"
 
   override def getStreamerName(): String = "FirstItemExpression"
 

@@ -39,7 +39,7 @@ class RebasedDocument(
     *
     * @return true if the document contains elements whose type is other than UNTYPED
     */
-  override def isTyped(): Boolean = underlyingTree.isTyped
+  override def isTyped: Boolean = underlyingTree.isTyped
 
   /*@Nullable*/
 

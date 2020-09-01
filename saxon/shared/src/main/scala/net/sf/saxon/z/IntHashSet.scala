@@ -147,7 +147,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   def isEmpty(): Boolean = _size == 0
 
-  def getValues(): Array[Int] = {
+  def getValues: Array[Int] = {
     var index: Int = 0
     val values: Array[Int] = Array.ofDim[Int](_size)
     for (_value <- _values if _value != ndv) {

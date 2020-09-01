@@ -29,7 +29,7 @@ object ImmutableList {
 
   private class EmptyList[T] extends ImmutableList[T] {
 
-    override def head(): T =
+    override def head: T =
       throw new NoSuchElementException("head() called on empty list")
 
     override def tail(): ImmutableList[T] =
@@ -40,7 +40,7 @@ object ImmutableList {
 
   private class NonEmptyList[T](private val element: T, var tail: ImmutableList[T])
     extends ImmutableList[T] {
-    override def head(): T = element
+    override def head: T = element
     override def isEmpty(): Boolean = false
   }
 
@@ -53,11 +53,11 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
    *
    * @return the first item in the list
    */
-  def head(): T
+  def head: T
 
   def tail(): ImmutableList[T]
 
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
 
   def size(): Int = {
     var input: ImmutableList[T] = this
@@ -94,7 +94,7 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     def hasNext(): Boolean = !list.isEmpty
 
     def next(): T = {
-      val element: T = list.head()
+      val element: T = list.head
       list = list.tail()
       element
     }

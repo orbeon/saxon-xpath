@@ -18,7 +18,7 @@ object Feature {
 
   def byName(name: String): Feature[_] = index.get(name).orNull
 
-  def getNames(): ju.Iterator[String] = index.keySet.iterator.asJava
+  def getNames: ju.Iterator[String] = index.keySet.iterator.asJava
 
   val ALLOW_EXTERNAL_FUNCTIONS: Feature[Boolean] = new Feature[Boolean](
     "http://saxon.sf.net/feature/allow-external-functions",

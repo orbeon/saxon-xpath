@@ -62,7 +62,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     if (nodeKind != this.nodeKind) {
       return false
     }
-    if (name.hasFingerprint()) {
+    if (name.hasFingerprint) {
       name.getFingerprint == this.fingerPrintInt
     } else {
       computeUriAndLocal()
@@ -82,7 +82,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     if (node.getNodeKind != nodeKind) {
       return false
     }
-    if (node.hasFingerprint()) {
+    if (node.hasFingerprint) {
       node.getFingerprint == fingerPrintInt
     } else {
       computeUriAndLocal()
@@ -103,24 +103,24 @@ class NameTest(@BeanProperty var nodeKind: Int,
     qname.getLocalPart == localName && qname.hasURI(uri)
   }
 
-  def getDefaultPriority(): Double = 0.0
+  def getDefaultPriority: Double = 0.0
 
   override def getMatchingNodeName(): StructuredQName = {
     computeUriAndLocal()
     new StructuredQName("", uri, localName)
   }
 
-  override def getPrimitiveType(): Int = nodeKind
+  override def getPrimitiveType: Int = nodeKind
 
   override def getRequiredNodeNames(): Optional[IntSet] =
     Optional.of(new IntSingletonSet(fingerPrintInt))
 
-  def getNamespaceURI(): String = {
+  def getNamespaceURI: String = {
     computeUriAndLocal()
     uri
   }
 
-  def getLocalPart(): String = {
+  def getLocalPart: String = {
     computeUriAndLocal()
     localName
   }
@@ -171,7 +171,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     Optional.of("The node has the wrong name")
   }
 
-  override def toShortString(): String = nodeKind match {
+  override def toShortString: String = nodeKind match {
     case Type.ELEMENT =>
       if (getNamespaceURI.isEmpty) namePool.getLocalName(getFingerprint)
       else toString

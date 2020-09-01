@@ -23,7 +23,7 @@ object VendorFunctionSetHE {
 
   private var THE_INSTANCE: VendorFunctionSetHE = new VendorFunctionSetHE()
 
-  def getInstance(): VendorFunctionSetHE = THE_INSTANCE
+  def getInstance: VendorFunctionSetHE = THE_INSTANCE
 
   class IsWholeNumberFn extends SystemFunction {
 
@@ -49,7 +49,7 @@ object VendorFunctionSetHE {
     }
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val `val`: NumericValue = arguments(0).head().asInstanceOf[NumericValue]
+      val `val`: NumericValue = arguments(0).head.asInstanceOf[NumericValue]
       BooleanValue.get(`val` != null && `val`.isWholeNumber)
     }
 
@@ -58,7 +58,7 @@ object VendorFunctionSetHE {
   class HasLocalNamespaces extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-      val child: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+      val child: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
       val parent: NodeInfo = child.getParent
       BooleanValue.get(
         parent == null || parent.getNodeKind == Type.DOCUMENT ||
@@ -70,15 +70,14 @@ object VendorFunctionSetHE {
   class HasUniformNamespaces extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-      val `val`: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
-      if (`val`.isInstanceOf[TinyElementImpl]) {
-        BooleanValue.get(
-          `val`.asInstanceOf[TinyElementImpl].hasUniformNamespaces())
-      } else {
-        BooleanValue.FALSE
+      val `val` = arguments(0).head.asInstanceOf[NodeInfo]
+      `val` match {
+        case impl: TinyElementImpl =>
+          BooleanValue.get(impl.hasUniformNamespaces)
+        case _ =>
+          BooleanValue.FALSE
       }
     }
-
   }
 
   class DynamicErrorInfoFn extends SystemFunction {
@@ -94,7 +93,7 @@ object VendorFunctionSetHE {
       0
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val `var`: String = arguments(0).head().getStringValue
+      val `var`: String = arguments(0).head.getStringValue
       val error: XPathException = context.getCurrentException
       if (error == null) {
         EmptySequence.getInstance

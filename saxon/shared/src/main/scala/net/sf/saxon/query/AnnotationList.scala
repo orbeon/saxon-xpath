@@ -57,7 +57,7 @@ class AnnotationList(var list: List[Annotation])
 
   override def iterator(): Iterator[Annotation] = list.iterator()
 
-  def isEmpty(): Boolean = list.isEmpty
+  def isEmpty: Boolean = list.isEmpty
 
   def size(): Int = list.size
 

@@ -85,9 +85,9 @@ class KeyIndex(isRangeKey: Boolean) {
   @BeanProperty
   var status: Status.Status = Status.UNDER_CONSTRUCTION
 
-  def getUnderlyingMap(): util.Map[AtomicMatchKey, Any] = index
+  def getUnderlyingMap: util.Map[AtomicMatchKey, Any] = index
 
-  def isCreatedInThisThread(): Boolean =
+  def isCreatedInThisThread: Boolean =
     creatingThread == Thread.currentThread().getId
 
   def buildIndex(/*keySet: KeyDefinitionSet, */
@@ -234,7 +234,7 @@ class KeyIndex(isRangeKey: Boolean) {
     }
   }
 
-  def isEmpty(): Boolean = index.isEmpty
+  def isEmpty: Boolean = index.isEmpty
 
   def getNodes(soughtValue: AtomicValue): SequenceIterator = {
     if (untypedKeys != null &&

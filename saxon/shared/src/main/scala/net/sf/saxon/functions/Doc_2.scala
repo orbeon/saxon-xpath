@@ -57,7 +57,7 @@ class Doc_2 extends SystemFunction with Callable {
       context.getConfiguration.getParseOptions)
     var value: Sequence = checkedOptions.get("validation")
     if (value != null) {
-      var valStr: String = value.head().getStringValue
+      var valStr: String = value.head.getStringValue
       if ("skip" == valStr) {
         valStr = "strip"
       }
@@ -70,14 +70,14 @@ class Doc_2 extends SystemFunction with Callable {
     }
     value = checkedOptions.get("type")
     if (value != null) {
-      val qval: QNameValue = value.head().asInstanceOf[QNameValue]
+      val qval: QNameValue = value.head.asInstanceOf[QNameValue]
       result.setTopLevelType(
         context.getConfiguration.getSchemaType(qval.getStructuredQName))
       result.setSchemaValidationMode(Validation.BY_TYPE)
     }
     value = checkedOptions.get("strip-space")
     if (value != null) {
-      val s: String = value.head().getStringValue
+      val s: String = value.head.getStringValue
       s match {
         case "all" =>
           result.setSpaceStrippingRule(
@@ -97,7 +97,7 @@ class Doc_2 extends SystemFunction with Callable {
     value = checkedOptions.get("dtd-validation")
     if (value != null) {
       result.setDTDValidationMode(
-        if (value.head().asInstanceOf[BooleanValue].getBooleanValue)
+        if (value.head.asInstanceOf[BooleanValue].getBooleanValue)
           Validation.STRICT
         else Validation.SKIP)
     }
@@ -121,18 +121,18 @@ class Doc_2 extends SystemFunction with Callable {
     value = checkedOptions.get("use-xsi-schema-location")
     if (value != null) {
       result.setUseXsiSchemaLocation(
-        value.head().asInstanceOf[BooleanValue].getBooleanValue)
+        value.head.asInstanceOf[BooleanValue].getBooleanValue)
     }
     result
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
-    val hrefVal: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    val hrefVal: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (hrefVal == null) {
       ZeroOrOne.empty()
     }
     val href: String = hrefVal.getStringValue
-    val param: Item = arguments(1).head()
+    val param: Item = arguments(1).head
     val checkedOptions: Map[String, Sequence] = getDetails.optionDetails
       .processSuppliedOptions(param.asInstanceOf[MapItem], context)
     val parseOptions: ParseOptions = setParseOptions(checkedOptions, context)

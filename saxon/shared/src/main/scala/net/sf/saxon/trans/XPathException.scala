@@ -164,7 +164,7 @@ class XPathException(message: String) extends TransformerException(message) {
     }
   }
 
-  def getXPathContext(): XPathContext = context
+  def getXPathContext: XPathContext = context
 
   def setIsStaticError(is: Boolean): Unit = {
     isStaticError = is
@@ -214,16 +214,16 @@ class XPathException(message: String) extends TransformerException(message) {
 
   /*@Nullable*/
 
-  def getErrorCodeQName(): StructuredQName = errorCode
+  def getErrorCodeQName: StructuredQName = errorCode
 
   /*@Nullable*/
 
-  def getErrorCodeLocalPart(): String =
+  def getErrorCodeLocalPart: String =
     if (errorCode == null) null else errorCode.getLocalPart
 
   /*@Nullable*/
 
-  def getErrorCodeNamespace(): String =
+  def getErrorCodeNamespace: String =
     if (errorCode == null) null else errorCode.getURI
 
   def setHasBeenReported(reported: Boolean): Unit = {
@@ -246,7 +246,7 @@ class XPathException(message: String) extends TransformerException(message) {
     if (getXPathContext == null) setXPathContext(context)
   }
 
-  def isReportableStatically(): Boolean = {
+  def isReportableStatically: Boolean = {
     if (isStaticError || isTypeError) {
       return true
     }

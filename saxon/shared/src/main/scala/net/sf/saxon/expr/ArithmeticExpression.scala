@@ -50,7 +50,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     this.calculator = calculator
   }
 
-  def getCalculator(): Calculator = calculator
+  def getCalculator: Calculator = calculator
 
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
 
@@ -273,7 +273,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     ae
   }
 
-  def getItemType(): PlainType = {
+  def getItemType: PlainType = {
     if (itemType != null) {
       return itemType
     }

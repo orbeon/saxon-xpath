@@ -21,7 +21,7 @@ object AllElementsSpaceStrippingRule {
   private val THE_INSTANCE: AllElementsSpaceStrippingRule =
     new AllElementsSpaceStrippingRule()
 
-  def getInstance(): AllElementsSpaceStrippingRule = THE_INSTANCE
+  def getInstance: AllElementsSpaceStrippingRule = THE_INSTANCE
 
 }
 

@@ -62,7 +62,7 @@ class Comment extends SimpleNodeConstructor {
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_COMMENT
 
-  override def getItemType(): ItemType = NodeKindTest.COMMENT
+  override def getItemType: ItemType = NodeKindTest.COMMENT
 
   override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
 

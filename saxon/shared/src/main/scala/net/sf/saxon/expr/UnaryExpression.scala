@@ -15,31 +15,29 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
 
   ExpressionTool.copyLocationInfo(p0, this)
 
-  def getBaseExpression(): Expression = operand.getChildExpression
+  def getBaseExpression: Expression = operand.getChildExpression
 
   def setBaseExpression(child: Expression): Unit = {
     operand.setChildExpression(child)
   }
 
-  def getOperand(): Operand = operand
+  def getOperand: Operand = operand
 
-  override def operands(): java.lang.Iterable[Operand] = new MonoIterator(operand).next()
+  override def operands: java.lang.Iterable[Operand] = new MonoIterator(operand).next()
 
-   def getOperandRole(): OperandRole
+   def getOperandRole: OperandRole
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     operand.typeCheck(visitor, contextInfo)
-    try if (getBaseExpression.isInstanceOf[Literal]) {
-      val e2: Expression = Literal.makeLiteral(
-        iterate(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize(),
-        this)
-      ExpressionTool.copyLocationInfo(this, e2)
-      return e2
-    } catch {
-      case err: Exception => {}
-
+    try
+      if (getBaseExpression.isInstanceOf[Literal]) {
+        val e2 = Literal.makeLiteral(iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize(), this)
+        ExpressionTool.copyLocationInfo(this, e2)
+        return e2
+      }
+    catch {
+      case _: Exception =>
     }
     this
   }
@@ -54,8 +52,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
           .materialize(),
         this)
     } catch {
-      case err: XPathException => {}
-
+      case _: XPathException =>
     }
     this
   }
@@ -64,7 +61,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
 
   def computeCardinality(): Int = getBaseExpression.getCardinality
 
-  def getItemType(): ItemType = getBaseExpression.getItemType
+  def getItemType: ItemType = getBaseExpression.getItemType
 
   override def equals(other: Any): Boolean =
     other != null && this.getClass == other.getClass &&
@@ -77,8 +74,8 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
   override def toString: String =
     getExpressionName + "(" + getBaseExpression + ")"
 
-  override def toShortString(): String =
-    getExpressionName + "(" + getBaseExpression.toShortString() + ")"
+  override def toShortString: String =
+    getExpressionName + "(" + getBaseExpression.toShortString + ")"
 
   def export(out: ExpressionPresenter): Unit = {
     val name: String = getExpressionName

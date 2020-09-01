@@ -154,7 +154,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   override def toExportString(): String = makeString(true)
 
-  def getContentTypeForAlphaCode(): String =
+  def getContentTypeForAlphaCode: String =
     if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT &&
       nodetest2.isInstanceOf[ContentTypeTest]) {
       CombinedNodeTest.getContentTypeForAlphaCode(nodetest1.asInstanceOf[NameTest],
@@ -185,7 +185,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     }
   }
 
-  override def getPrimitiveType(): Int = {
+  override def getPrimitiveType: Int = {
     val mask: UType = getUType
     if (mask == UType.ELEMENT) {
       Type.ELEMENT
@@ -236,7 +236,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     AnyType.getInstance
   }
 
-  override def getAtomizedItemType(): AtomicType = {
+  override def getAtomizedItemType: AtomicType = {
     val type1: AtomicType = nodetest1.getAtomizedItemType
     val type2: AtomicType = nodetest2.getAtomizedItemType
     if (type1.isSameType(type2)) {
@@ -303,14 +303,14 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
       other.asInstanceOf[CombinedNodeTest].nodetest2 == nodetest2 &&
       other.asInstanceOf[CombinedNodeTest].operator == operator
 
-  def getDefaultPriority(): Double =
+  def getDefaultPriority: Double =
     if (operator == Token.UNION) {
       nodetest1.getDefaultPriority
     } else {
       if (nodetest1.isInstanceOf[NameTest]) 0.25 else 0.125
     }
 
-  def getComponentNodeTests(): Array[NodeTest] = Array(nodetest1, nodetest2)
+  def getComponentNodeTests: Array[NodeTest] = Array(nodetest1, nodetest2)
 
   def getOperand(which: Int): NodeTest =
     if (which == 0) nodetest1 else nodetest2

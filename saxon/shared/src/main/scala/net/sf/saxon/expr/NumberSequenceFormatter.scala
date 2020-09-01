@@ -149,7 +149,7 @@ class NumberSequenceFormatter(value: Expression,
     // else we allocate a numberer at run-time
   }
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandSparseList(valueOp,
       formatOp,
       groupSizeOp,
@@ -162,13 +162,13 @@ class NumberSequenceFormatter(value: Expression,
   private def isFixed(op: Operand): Boolean =
     op == null || op.getChildExpression.isInstanceOf[Literal]
 
-  private def hasFixedOperands(): Boolean =
-    operands().asScala.find(!isFixed(_)).map(_ => false).getOrElse(true)
+  private def hasFixedOperands: Boolean =
+    operands.asScala.find(!isFixed(_)).map(_ => false).getOrElse(true)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextInfo)
-    if (hasFixedOperands()) {
+    if (hasFixedOperands) {
       val `val`: StringValue = evaluateItem(visitor.makeDynamicContext())
       val literal: StringLiteral = new StringLiteral(`val`)
       ExpressionTool.copyLocationInfo(this, literal)
@@ -202,7 +202,7 @@ class NumberSequenceFormatter(value: Expression,
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = BuiltInAtomicType.STRING
+  def getItemType: ItemType = BuiltInAtomicType.STRING
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 

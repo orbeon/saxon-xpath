@@ -37,14 +37,14 @@ class ValueTailIterator(private var baseValue: GroundedValue,
       baseValue.subsequence(start, java.lang.Integer.MAX_VALUE)
     }
 
-  override def getResidue(): GroundedValue =
+  override def getResidue: GroundedValue =
     if (start == 0 && pos == 0) {
       baseValue
     } else {
       baseValue.subsequence(start + pos, java.lang.Integer.MAX_VALUE)
     }
 
-  override def getProperties(): Set[Property] = Set(LOOKAHEAD, GROUNDED)
+  override def getProperties: Set[Property] = Set(LOOKAHEAD, GROUNDED)
 
 }
 

@@ -4,7 +4,7 @@ import net.sf.saxon.expr.sort.AtomicMatchKey
 
 trait StringCollator {
 
-  def getCollationURI(): String
+  def getCollationURI: String
 
   def compareStrings(o1: CharSequence, o2: CharSequence): Int
 

@@ -64,7 +64,7 @@ class YearMonthDurationValue private ()
     v
   }
 
-  override def getPrimitiveType(): BuiltInAtomicType =
+  override def getPrimitiveType: BuiltInAtomicType =
     BuiltInAtomicType.YEAR_MONTH_DURATION
 
   override def getPrimitiveStringValue(): CharSequence = {
@@ -86,7 +86,7 @@ class YearMonthDurationValue private ()
 // The canonical representation has months in the range 0-11
 // The canonical representation has months in the range 0-11
 
-  def getLengthInMonths(): Int = months * (if (negative) -1 else +1)
+  def getLengthInMonths: Int = months * (if (negative) -1 else +1)
 
   override def multiply(factor: Long): YearMonthDurationValue = // Fast path for simple cases
     if (Math.abs(factor) < 30000 && Math.abs(months) < 30000) {

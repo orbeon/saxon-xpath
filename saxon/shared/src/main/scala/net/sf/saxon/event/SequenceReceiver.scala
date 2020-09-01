@@ -37,7 +37,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
     this.pipelineConfiguration = pipelineConfiguration
   }
 
-  def getConfiguration(): Configuration =
+  def getConfiguration: Configuration =
     pipelineConfiguration.getConfiguration
 
   def setSystemId(systemId: String): Unit = {
@@ -60,7 +60,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
     append(item, Loc.NONE, ReceiverOption.ALL_NAMESPACES)
   }
 
-  def getNamePool(): NamePool =
+  def getNamePool: NamePool =
     pipelineConfiguration.getConfiguration.getNamePool
 
    def flatten(array: ArrayItem,
@@ -138,7 +138,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
     }
   }
 
-   def getErrorCodeForDecomposingFunctionItems(): String =
+   def getErrorCodeForDecomposingFunctionItems: String =
     if (getPipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
 
   override def handlesAppend(): Boolean = true

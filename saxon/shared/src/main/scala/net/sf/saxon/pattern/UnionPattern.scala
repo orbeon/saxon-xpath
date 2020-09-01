@@ -24,7 +24,7 @@ class UnionPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
 
   this.priority = java.lang.Double.NaN
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     val t1: ItemType = p1.getItemType
     val t2: ItemType = p2.getItemType
     Type.getCommonSuperType(t1, t2)

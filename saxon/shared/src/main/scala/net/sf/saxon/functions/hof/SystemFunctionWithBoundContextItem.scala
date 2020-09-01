@@ -74,7 +74,7 @@ class SystemFunctionWithBoundContextItem(private var target: SystemFunction,
     *
     * @return the function name, or null for an anonymous inline function
     */
-  override def getFunctionName(): StructuredQName = target.getFunctionName
+  override def getFunctionName: StructuredQName = target.getFunctionName
 
   /**
     * Get a description of this function for use in error messages. For named functions, the description

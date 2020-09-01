@@ -27,9 +27,9 @@ class ReverseListIterator[T <: Item](private val items: List[T])
       return null.asInstanceOf[T]
     }
 
-  def getLength(): Int = items.size
+  def getLength: Int = items.size
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LAST_POSITION_FINDER)
 
   def getReverseIterator(): SequenceIterator = new ListIterator(items)

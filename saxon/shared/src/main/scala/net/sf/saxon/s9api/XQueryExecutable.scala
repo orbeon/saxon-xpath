@@ -11,17 +11,17 @@ class XQueryExecutable(var processor: Processor,
 
   def load(): XQueryEvaluator = new XQueryEvaluator(processor, exp)
 
-  def getResultItemType(): ItemType = {
+  def getResultItemType: ItemType = {
     val it: net.sf.saxon.model.ItemType = exp.getExpression.getItemType
     new ConstructedItemType(it, processor)
   }
 
-  def getResultCardinality(): OccurrenceIndicator = {
+  def getResultCardinality: OccurrenceIndicator = {
     val card: Int = exp.getExpression.getCardinality
     OccurrenceIndicator.getOccurrenceIndicator(card)
   }
 
-  def isUpdateQuery(): Boolean = exp.isUpdateQuery
+  def isUpdateQuery: Boolean = exp.isUpdateQuery
 
   def explain(destination: Destination): Unit = {
     val config: Configuration = processor.getUnderlyingConfiguration
@@ -33,6 +33,6 @@ class XQueryExecutable(var processor: Processor,
           .getReceiver(pipe, config.obtainDefaultSerializationProperties)))
   }
 
-  def getUnderlyingCompiledQuery(): XQueryExpression = exp
+  def getUnderlyingCompiledQuery: XQueryExpression = exp
 
 }

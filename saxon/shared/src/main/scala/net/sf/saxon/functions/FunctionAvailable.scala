@@ -117,10 +117,10 @@ class FunctionAvailable extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-    val lexicalQName: String = arguments(0).head().getStringValue
+    val lexicalQName: String = arguments(0).head.getStringValue
     var arity: Int = -1
     if (arguments.length == 2) {
-      arity = arguments(1).head().asInstanceOf[NumericValue].longValue().toInt
+      arity = arguments(1).head.asInstanceOf[NumericValue].longValue().toInt
     }
     BooleanValue.get(
       isFunctionAvailable(

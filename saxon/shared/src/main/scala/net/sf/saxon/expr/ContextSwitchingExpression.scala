@@ -9,9 +9,9 @@ package net.sf.saxon.expr
   */
 trait ContextSwitchingExpression extends ContextOriginator {
 
-  def getSelectExpression(): Expression
+  def getSelectExpression: Expression
 
-  def getActionExpression(): Expression
+  def getActionExpression: Expression
 
 }
 

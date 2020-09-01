@@ -42,7 +42,7 @@ abstract class AbstractTraceListener
 
   var out: Logger = new StandardLogger()
 
-  def getCodeInjector(): CodeInjector = new TraceCodeInjector()
+  def getCodeInjector: CodeInjector = new TraceCodeInjector()
 
   def setLevelOfDetail(level: Int): Unit = {
     this.detail = level
@@ -57,7 +57,7 @@ abstract class AbstractTraceListener
     indent += 1
   }
 
-  def getOpeningAttributes(): String
+  def getOpeningAttributes: String
 
   def close(): Unit = {
     indent -= 1
@@ -183,7 +183,7 @@ abstract class AbstractTraceListener
     out = stream
   }
 
-  def getOutputDestination(): Logger = out
+  def getOutputDestination: Logger = out
 
   override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = ()
 

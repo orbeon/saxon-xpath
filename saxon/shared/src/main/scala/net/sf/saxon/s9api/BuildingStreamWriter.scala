@@ -8,11 +8,11 @@ import javax.xml.stream.XMLStreamWriter
 
 trait BuildingStreamWriter extends XMLStreamWriter {
 
-  def getDocumentNode(): XdmNode
+  def getDocumentNode: XdmNode
 
   def setCheckValues(check: Boolean): Unit
 
-  def isCheckValues(): Boolean
+  def isCheckValues: Boolean
 
 }
 

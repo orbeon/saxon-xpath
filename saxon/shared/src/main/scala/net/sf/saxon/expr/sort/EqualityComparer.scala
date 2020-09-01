@@ -16,7 +16,7 @@ object EqualityComparer {
 
   var THE_INSTANCE: EqualityComparer = new EqualityComparer()
 
-  def getInstance(): EqualityComparer = THE_INSTANCE
+  def getInstance: EqualityComparer = THE_INSTANCE
 
 }
 

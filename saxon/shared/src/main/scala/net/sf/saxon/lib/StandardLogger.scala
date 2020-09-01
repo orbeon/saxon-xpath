@@ -38,7 +38,7 @@ class StandardLogger extends Logger {
     out = stream
   }
 
-  def getPrintStream(): PrintStream = out
+  def getPrintStream: PrintStream = out
 
   /**
     * Get a JAXP Result object allowing serialized XML to be written to this Logger

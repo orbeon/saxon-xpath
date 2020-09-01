@@ -26,7 +26,7 @@ object XPath20FunctionSet {
 
   private var THE_INSTANCE: XPath20FunctionSet = new XPath20FunctionSet()
 
-  def getInstance(): XPath20FunctionSet = THE_INSTANCE
+  def getInstance: XPath20FunctionSet = THE_INSTANCE
 
 }
 

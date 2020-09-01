@@ -32,7 +32,7 @@ object DeepSkipRuleSet {
 
   private var THE_INSTANCE: DeepSkipRuleSet = new DeepSkipRuleSet()
 
-  def getInstance(): DeepSkipRuleSet = THE_INSTANCE
+  def getInstance: DeepSkipRuleSet = THE_INSTANCE
 
 }
 

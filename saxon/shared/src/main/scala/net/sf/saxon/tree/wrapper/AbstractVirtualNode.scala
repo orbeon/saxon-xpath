@@ -29,13 +29,13 @@ abstract class AbstractVirtualNode extends VirtualNode {
   def getUnderlyingNode(): NodeInfo = node
 
   override def getFingerprint(): Int =
-    if (node.hasFingerprint()) {
+    if (node.hasFingerprint) {
       node.getFingerprint
     } else {
       throw new UnsupportedOperationException()
     }
 
-  override def hasFingerprint(): Boolean = node.hasFingerprint()
+  override def hasFingerprint(): Boolean = node.hasFingerprint
 
   def getRealNode(): AnyRef = {
     var u: AnyRef = this
@@ -80,9 +80,9 @@ abstract class AbstractVirtualNode extends VirtualNode {
       node.compareOrder(other)
     }
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
-  def getStringValueCS(): CharSequence = node.getStringValueCS
+  def getStringValueCS: CharSequence = node.getStringValueCS
 
   def getLocalPart(): String = node.getLocalPart
 
@@ -110,7 +110,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
     null
   }
 
-  def hasChildNodes(): Boolean = node.hasChildNodes()
+  def hasChildNodes: Boolean = node.hasChildNodes
 
   def generateId(buffer: FastStringBuffer): Unit = {
     node.generateId(buffer)

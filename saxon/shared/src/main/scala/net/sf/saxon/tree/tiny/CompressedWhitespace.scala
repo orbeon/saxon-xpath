@@ -95,7 +95,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     lBuffer
   }
 
-  def getCompressedValue(): Long = value
+  def getCompressedValue: Long = value
 
   def length(): Int = {
     var count: Int = 0

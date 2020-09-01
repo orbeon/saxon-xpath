@@ -198,7 +198,7 @@ object AccessorFn {
 
 abstract class AccessorFn extends ScalarSystemFunction {
 
-  def getComponentId(): AccessorFn.Component.Component
+  def getComponentId: AccessorFn.Component.Component
 
   override  def getIntegerBounds(): Array[IntegerValue] = getComponentId match {
     case AccessorFn.Component.YEAR =>
@@ -218,7 +218,7 @@ abstract class AccessorFn extends ScalarSystemFunction {
 
   }
 
-  def getRequiredComponent(): Int = getComponentId.id
+  def getRequiredComponent: Int = getComponentId.id
 
   def evaluate(item: Item, context: XPathContext): AtomicValue =
     item.asInstanceOf[AtomicValue].getComponent(getComponentId)

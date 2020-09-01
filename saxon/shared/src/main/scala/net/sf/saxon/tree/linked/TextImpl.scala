@@ -20,7 +20,7 @@ class TextImpl(private var content: String) extends NodeImpl {
     this.content = this.content + content
   }
 
-  def getStringValue(): String = content
+  def getStringValue: String = content
 
   def getNodeKind(): Int = Type.TEXT
 

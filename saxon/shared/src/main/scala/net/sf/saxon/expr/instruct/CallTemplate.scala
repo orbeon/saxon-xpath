@@ -108,7 +108,7 @@ class CallTemplate(private var template: NamedTemplate,
     if (calledTemplateName == null) null
     else new SymbolicName(StandardNames.XSL_TEMPLATE, calledTemplateName)
 
-  def getTarget(): Component = template.getDeclaringComponent
+  def getTarget: Component = template.getDeclaringComponent
 
   def getFixedTarget(): Component = {
     val c: Component = getTarget
@@ -124,7 +124,7 @@ class CallTemplate(private var template: NamedTemplate,
     this.template = target
   }
 
-  def getTargetTemplate(): NamedTemplate = template
+  def getTargetTemplate: NamedTemplate = template
 
   def usesTailRecursion(): Boolean = useTailRecursion
 
@@ -177,7 +177,7 @@ class CallTemplate(private var template: NamedTemplate,
       template.getRequiredType.getCardinality
     }
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     if (template == null) {
       AnyItemType
     } else {
@@ -201,7 +201,7 @@ class CallTemplate(private var template: NamedTemplate,
 
   override def mayCreateNewNodes(): Boolean = true
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: ArrayList[Operand] = new ArrayList[Operand](10)
     WithParam.gatherOperands(this, actualParams, list)
     WithParam.gatherOperands(this, tunnelParams, list)
@@ -333,7 +333,7 @@ class CallTemplate(private var template: NamedTemplate,
     buff.toString
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     buff.append("CallTemplate#")
     buff.append(template.getObjectName.getDisplayName)

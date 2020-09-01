@@ -34,14 +34,14 @@ abstract class XdmItem extends XdmValue {
     this.setValue(item)
   }
 
-  override def getUnderlyingValue(): Item =
+  override def getUnderlyingValue: Item =
     super.getUnderlyingValue.asInstanceOf[Item]
 
-  def getStringValue(): String = getUnderlyingValue.getStringValue
+  def getStringValue: String = getUnderlyingValue.getStringValue
 
-  def isNode(): Boolean = getUnderlyingValue.isInstanceOf[NodeInfo]
+  def isNode: Boolean = getUnderlyingValue.isInstanceOf[NodeInfo]
 
-  def isAtomicValue(): Boolean = getUnderlyingValue.isInstanceOf[AtomicValue]
+  def isAtomicValue: Boolean = getUnderlyingValue.isInstanceOf[AtomicValue]
 
   override def size(): Int = 1
 

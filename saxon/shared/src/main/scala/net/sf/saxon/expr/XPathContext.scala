@@ -46,45 +46,45 @@ trait XPathContext {
 
   def newMinorContext(): XPathContextMinor
 
-  def getLocalParameters(): ParameterSet
+  def getLocalParameters: ParameterSet
 
-  def getTunnelParameters(): ParameterSet
+  def getTunnelParameters: ParameterSet
 
   /*@Nullable*/
 
-  def getController(): Controller
+  def getController: Controller
 
-  def getConfiguration(): Configuration
+  def getConfiguration: Configuration
 
-  def getNamePool(): NamePool
+  def getNamePool: NamePool
 
   def setCaller(caller: XPathContext): Unit
 
-  def getCaller(): XPathContext
+  def getCaller: XPathContext
 
   def trackFocus(iter: SequenceIterator): FocusIterator
 
   def setCurrentIterator(iter: FocusIterator): Unit
 
-  def getCurrentIterator(): FocusIterator
+  def getCurrentIterator: FocusIterator
 
-  def getContextItem(): Item
+  def getContextItem: Item
 
-  def getLast(): Int
+  def getLast: Int
 
-  def isAtLast(): Boolean
+  def isAtLast: Boolean
 
-  def getURIResolver(): URIResolver
+  def getURIResolver: URIResolver
 
-  def getErrorReporter(): ErrorReporter
+  def getErrorReporter: ErrorReporter
 
-  def getCurrentComponent(): Component
+  def getCurrentComponent: Component
 
   def useLocalParameter(parameterId: StructuredQName,
                         slotNumber: Int,
                         isTunnel: Boolean): Int
 
-  def getStackFrame(): StackFrame
+  def getStackFrame: StackFrame
 
   def evaluateLocalVariable(slotnumber: Int): Sequence
 
@@ -97,31 +97,31 @@ trait XPathContext {
     *
     * @return non-zero if in temporary output state (integer identifies the state); zero if in final output state
     */
-  def getTemporaryOutputState(): Int
+  def getTemporaryOutputState: Int
 
   def setCurrentOutputUri(uri: String): Unit
 
-  def getCurrentOutputUri(): String
+  def getCurrentOutputUri: String
 
-  def getCurrentMode(): Component.M
+  def getCurrentMode: Component.M
 
-  def getCurrentTemplateRule(): Rule
+  def getCurrentTemplateRule: Rule
 
-  def getCurrentGroupIterator(): GroupIterator
+  def getCurrentGroupIterator: GroupIterator
 
-  def getCurrentMergeGroupIterator(): GroupIterator
+  def getCurrentMergeGroupIterator: GroupIterator
 
-  def getCurrentRegexIterator(): RegexIterator
+  def getCurrentRegexIterator: RegexIterator
 
-  def getCurrentDateTime(): DateTimeValue
+  def getCurrentDateTime: DateTimeValue
 
-  def getImplicitTimezone(): Int
+  def getImplicitTimezone: Int
 
   def iterateStackFrames(): Iterator[AnyRef]
 
-  def getCurrentException(): XPathException
+  def getCurrentException: XPathException
 
-  def getThreadManager(): XPathContextMajor.ThreadManager
+  def getThreadManager: XPathContextMajor.ThreadManager
 
   def waitForChildThreads(): Unit
 

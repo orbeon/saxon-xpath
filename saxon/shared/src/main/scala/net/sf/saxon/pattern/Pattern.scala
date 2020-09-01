@@ -47,7 +47,7 @@ object Pattern {
   }
 
    def replaceCurrent(exp: Expression, binding: LocalBinding): Unit = {
-    for (o <- exp.operands().asScala) {
+    for (o <- exp.operands.asScala) {
       val child = o.getChildExpression
       if (child.isCallOn(classOf[Current])) {
         val ref: LocalVariableReference = new LocalVariableReference(binding)
@@ -106,7 +106,7 @@ abstract class Pattern extends PseudoExpression {
 
   def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = nextFree
 
-  def isMotionless(): Boolean = true
+  def isMotionless: Boolean = true
 
   override def effectiveBooleanValue(context: XPathContext): Boolean =
     matches(context.getContextItem, context)
@@ -190,21 +190,21 @@ abstract class Pattern extends PseudoExpression {
     }
   }
 
-  def getUType(): UType
+  def getUType: UType
 
-  def getFingerprint(): Int = -1
+  def getFingerprint: Int = -1
 
-  def getItemType(): ItemType
+  def getItemType: ItemType
 
   def setPriority(priority: Double): Unit = {
     this.priority = priority
   }
 
-  def getDefaultPriority(): Double = priority
+  def getDefaultPriority: Double = priority
 
   override def toString: String = "pattern matching " + getItemType
 
-  def getHostLanguage(): HostLanguage = XSLT
+  def getHostLanguage: HostLanguage = XSLT
 
   def convertToTypedPattern(`val`: String): Pattern = null
 
@@ -217,6 +217,6 @@ abstract class Pattern extends PseudoExpression {
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Pattern = this
 
-  override def toShortString(): String = toString
+  override def toShortString: String = toString
 
 }

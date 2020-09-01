@@ -54,11 +54,11 @@ class NamespaceBinding(prefStr: String,
   override def getURI(prefix: String): String =
     if (prefix == this.prefix) uri else null
 
-  def getURI(): String = uri
+  def getURI: String = uri
 
-  def isXmlNamespace(): Boolean = prefix.==("xml")
+  def isXmlNamespace: Boolean = prefix.==("xml")
 
-  def isDefaultUndeclaration(): Boolean = prefix.isEmpty && uri.isEmpty
+  def isDefaultUndeclaration: Boolean = prefix.isEmpty && uri.isEmpty
 
   /**
     * Returns an iterator over this singleton set of namespace bindings.

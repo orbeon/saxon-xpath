@@ -63,7 +63,7 @@ class Component private () {
   @BeanProperty
   var baseComponent: Component = _
 
-  def getComponentBindings(): List[ComponentBinding] = bindings
+  def getComponentBindings: List[ComponentBinding] = bindings
 
   def setComponentBindings(bindings: List[ComponentBinding]): Unit = {
     this.bindings = bindings
@@ -75,13 +75,13 @@ class Component private () {
     this.provenance = provenance
   }
 
-  def getVisibilityProvenance(): VisibilityProvenance = provenance
+  def getVisibilityProvenance: VisibilityProvenance = provenance
 
-  def isHiddenAbstractComponent(): Boolean =
+  def isHiddenAbstractComponent: Boolean =
     visibility == Visibility.HIDDEN && baseComponent != null &&
       baseComponent.getVisibility == Visibility.ABSTRACT
 
-  def getActor(): Actor = actor
+  def getActor: Actor = actor
 
   def export(out: ExpressionPresenter,
              componentIdMap: Map[Component, Integer],
@@ -129,7 +129,7 @@ class Component private () {
     id
   }
 
-  def getComponentKind(): Int =
+  def getComponentKind: Int =
     if (actor.isInstanceOf[NamedTemplate]) {
       StandardNames.XSL_TEMPLATE
     } else if (actor.isInstanceOf[GlobalVariable]) {

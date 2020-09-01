@@ -166,7 +166,7 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   /**
     * Get the static type of the expression as a UType, following precisely the type

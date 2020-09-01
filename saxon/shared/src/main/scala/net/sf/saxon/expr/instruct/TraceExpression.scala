@@ -26,11 +26,11 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
 
   child.gatherProperties((k, v) => properties.put(k, v))
 
-  def getChild(): Expression = baseOp.getChildExpression
+  def getChild: Expression = baseOp.getChildExpression
 
-  def getBody(): Expression = baseOp.getChildExpression
+  def getBody: Expression = baseOp.getChildExpression
 
-  override def operands(): java.lang.Iterable[Operand] = baseOp
+  override def operands: java.lang.Iterable[Operand] = baseOp
 
   def setProperty(name: String, value: AnyRef): Unit = {
     properties.put(name, value)
@@ -38,7 +38,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
 
   override def getProperty(name: String): AnyRef = properties.get(name).asInstanceOf[AnyRef]
 
-  override def getProperties(): collection.Iterator[String] = properties.keySet.iterator().asScala
+  override def getProperties: collection.Iterator[String] = properties.keySet.iterator().asScala
 
   override def getExpressionName(): String = "trace"
 
@@ -77,7 +77,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
     null
   }
 
-  override def getItemType(): ItemType = getChild.getItemType
+  override def getItemType: ItemType = getChild.getItemType
 
   override def getCardinality(): Int = getChild.getCardinality
 
@@ -143,6 +143,6 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
     }
   }
 
-  override def toShortString(): String = getChild.toShortString()
+  override def toShortString: String = getChild.toShortString
 
 }

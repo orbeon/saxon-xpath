@@ -31,12 +31,12 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
     this.item =item
   }
 
-  def getStringValueCS(): CharSequence =
+  def getStringValueCS: CharSequence =
     if (item == null) "" else item.getStringValueCS
 
   /*@NotNull*/
 
-  def getStringValue(): String = if (item == null) "" else item.getStringValue
+  def getStringValue: String = if (item == null) "" else item.getStringValue
 
   /**
     * Get the first item in the sequence.
@@ -44,9 +44,9 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
     * @return the first item in the sequence if there is one, or null if the sequence
     *         is empty
     */
-  def head(): T = item
+  def head: T = item
 
-  def getLength(): Int = if (item == null) 0 else 1
+  def getLength: Int = if (item == null) 0 else 1
 
   /*@Nullable*/
 
@@ -83,12 +83,12 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
           item
         }
 
-      override def getLength(): Int = if (item == null) 0 else 1
+      override def getLength: Int = if (item == null) 0 else 1
 
       override def materialize(): GroundedValue =
         if (item == null) EmptySequence.getInstance else item
 
-      override def getResidue(): GroundedValue =
+      override def getResidue: GroundedValue =
         if (gone) EmptySequence.getInstance else item
 
       override def getReverseIterator(): SequenceIterator = iterate()

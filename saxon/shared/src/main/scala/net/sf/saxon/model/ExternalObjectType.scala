@@ -12,12 +12,12 @@ import net.sf.saxon.om.StructuredQName
   */
 abstract class ExternalObjectType extends AnyExternalObjectType {
 
-  def getName(): String
+  def getName: String
 
-  def getTargetNamespace(): String
+  def getTargetNamespace: String
 
-  def getTypeName(): StructuredQName
+  def getTypeName: StructuredQName
 
-  override def isPlainType(): Boolean = false
+  override def isPlainType: Boolean = false
 
 }

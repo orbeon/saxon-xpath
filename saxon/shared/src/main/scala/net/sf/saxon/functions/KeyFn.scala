@@ -77,7 +77,7 @@ object KeyFn {
 
   private def getOrigin(context: XPathContext, argument2: Sequence): Item = {
     var arg2: Item = null
-    try arg2 = argument2.head()
+    try arg2 = argument2.head
     catch {
       case e: XPathException => {
         val code: String = e.getErrorCodeLocalPart
@@ -162,7 +162,7 @@ class KeyFn extends SystemFunction with StatefulSystemFunction {
    def getKeyManager(): KeyManager =
      getRetainedStaticContext.getPackageData.getKeyManager*/
 
-  def getNamespaceResolver(): NamespaceResolver = getRetainedStaticContext
+  def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
   override def getSpecialProperties(arguments: Array[Expression]): Int = {
     var prop: Int = StaticProperty.ORDERED_NODESET | StaticProperty.SINGLE_DOCUMENT_NODESET |
@@ -239,7 +239,7 @@ class KeyFn extends SystemFunction with StatefulSystemFunction {
     val keyManager: KeyManager = getKeyManager
     if (selectedKeySet == null) {
       selectedKeySet =
-        getKeyDefinitionSet(keyManager, arguments(0).head().getStringValue)
+        getKeyDefinitionSet(keyManager, arguments(0).head.getStringValue)
     }*/
     //search(keyManager, context, arguments(1), origin, selectedKeySet)
     null

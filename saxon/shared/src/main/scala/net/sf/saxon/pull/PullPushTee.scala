@@ -24,7 +24,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
 
   private var nsStack: Stack[NamespaceMap] = new Stack()
 
-  def getReceiver(): Receiver = branch
+  def getReceiver: Receiver = branch
 
   override def next(): Event = {
     currentEvent = super.next()

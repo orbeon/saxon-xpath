@@ -20,7 +20,7 @@ import java.util.Iterator
   */
 trait ResourceCollection {
 
-  def getCollectionURI(): String
+  def getCollectionURI: String
 
   def getResourceURIs(context: XPathContext): Iterator[String]
 

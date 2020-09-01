@@ -94,7 +94,7 @@ class ForExpression extends Assignation {
     this
   }
 
-  def getRangeVariableCardinality(): Int = StaticProperty.EXACTLY_ONE
+  def getRangeVariableCardinality: Int = StaticProperty.EXACTLY_ONE
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
@@ -298,7 +298,7 @@ class ForExpression extends Assignation {
       })
   }
 
-  def getItemType(): ItemType = getAction.getItemType
+  def getItemType: ItemType = getAction.getItemType
 
   override def getStaticUType(contextItemType: UType): UType =
     getAction.getStaticUType(contextItemType)
@@ -316,11 +316,11 @@ class ForExpression extends Assignation {
       (if (getAction == null) "(...)"
       else ExpressionTool.parenthesize(getAction))
 
-  override def toShortString(): String =
+  override def toShortString: String =
     "for $" + getVariableQName.getDisplayName + " in " +
-      (if (getSequence == null) "(...)" else getSequence.toShortString()) +
+      (if (getSequence == null) "(...)" else getSequence.toShortString) +
       " return " +
-      (if (getAction == null) "(...)" else getAction.toShortString())
+      (if (getAction == null) "(...)" else getAction.toShortString)
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("for", this)

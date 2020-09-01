@@ -27,7 +27,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
 
   this.setSiblingPosition(index)
 
-  private def getAttributeInfo(): AttributeInfo =
+  private def getAttributeInfo: AttributeInfo =
     getRawParent.attributes().itemAt(getSiblingPosition)
 
   override def getNodeName(): NodeName = {
@@ -73,7 +73,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
 
   def getNodeKind(): Int = Type.ATTRIBUTE
 
-  def getStringValue(): String = getAttributeInfo.getValue
+  def getStringValue: String = getAttributeInfo.getValue
 
   override def getNextSibling(): NodeImpl = null
 

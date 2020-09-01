@@ -189,7 +189,7 @@ object StringValue {
 
     override def cat(c: Char): CharSequenceConsumer = buffer.cat(c)
 
-    def getStringValue(): StringValue = new StringValue(buffer.condense())
+    def getStringValue: StringValue = new StringValue(buffer.condense())
 
   }
 
@@ -229,7 +229,7 @@ class StringValue extends AtomicValue {
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.STRING
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.STRING
 
   def getPrimitiveStringValue(): CharSequence = value
 
@@ -237,14 +237,14 @@ class StringValue extends AtomicValue {
     this.value = value
   }
 
-  def getStringLength(): Int = synchronized {
+  def getStringLength: Int = synchronized {
     if (!(value.isInstanceOf[UnicodeString])) {
       makeUnicodeString()
     }
     value.asInstanceOf[UnicodeString].uLength()
   }
 
-  def getStringLengthUpperBound(): Int = synchronized {
+  def getStringLengthUpperBound: Int = synchronized {
     if (value.isInstanceOf[UnicodeString]) {
       value.asInstanceOf[UnicodeString].uLength()
     } else {
@@ -252,7 +252,7 @@ class StringValue extends AtomicValue {
     }
   }
 
-  def getUnicodeString(): UnicodeString = synchronized {
+  def getUnicodeString: UnicodeString = synchronized {
     if (!(value.isInstanceOf[UnicodeString])) {
       makeUnicodeString()
     }
@@ -263,12 +263,12 @@ class StringValue extends AtomicValue {
     value = UnicodeString.makeUnicodeString(value)
   }
 
-  def isZeroLength(): Boolean = value.length == 0
+  def isZeroLength: Boolean = value.length == 0
 
   def containsSurrogatePairs(): Boolean =
     UnicodeString.containsSurrogatePairs(value)
 
-  def isKnownToContainNoSurrogates(): Boolean =
+  def isKnownToContainNoSurrogates: Boolean =
     value.isInstanceOf[BMPString] || value.isInstanceOf[LatinString] ||
       value.isInstanceOf[EmptyString]
 
@@ -313,7 +313,7 @@ class StringValue extends AtomicValue {
 
   override def toString: String = "\"" + value + '\"'
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     var s: String = value.toString
     if (s.length > 40) {
       s = s.substring(0, 35) + "..."

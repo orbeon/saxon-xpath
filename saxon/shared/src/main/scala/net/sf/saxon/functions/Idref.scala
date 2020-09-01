@@ -65,7 +65,7 @@ class Idref extends SystemFunction {
            arguments: Array[Sequence]): ZeroOrMore[NodeInfo] = {
     val start: NodeInfo =
       if (arguments.length == 1) getContextNode(context)
-      else arguments(1).head().asInstanceOf[NodeInfo]
+      else arguments(1).head.asInstanceOf[NodeInfo]
     val arg2: NodeInfo = start.getRoot
     if (arg2.getNodeKind != Type.DOCUMENT) {
       throw new XPathException(

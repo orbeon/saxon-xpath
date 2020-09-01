@@ -39,7 +39,7 @@ class ListCastableFunction(targetType: ListType,
     *
     * @return the function name, or null for an anonymous inline function
     */
-  override def getFunctionName(): StructuredQName = null
+  override def getFunctionName: StructuredQName = null
 
   override def call(context: XPathContext, args: Array[Sequence]): BooleanValue = {
     val iter: SequenceIterator = args(0).iterate()

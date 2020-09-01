@@ -22,7 +22,7 @@ abstract class ScalarSystemFunction extends SystemFunction {
   def resultWhenEmpty(): ZeroOrOne[_] = ZeroOrOne.empty()
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[AtomicValue] = {
-    val val0: Item = arguments(0).head()
+    val val0: Item = arguments(0).head
     if (val0 == null) {
       return resultWhenEmpty().asInstanceOf[ZeroOrOne[AtomicValue]]
     }
@@ -33,7 +33,7 @@ abstract class ScalarSystemFunction extends SystemFunction {
     val call: SystemFunctionCall = new SystemFunctionCall(this, arguments) {
       override def evaluateItem(context: XPathContext): AtomicValue = {
         var `val`: Item = getArg(0).evaluateItem(context)
-        if (`val` == null) resultWhenEmpty().head().asInstanceOf[AtomicValue]
+        if (`val` == null) resultWhenEmpty().head.asInstanceOf[AtomicValue]
         else evaluate(`val`, context)
       }
     }

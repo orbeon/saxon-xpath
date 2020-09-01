@@ -55,7 +55,7 @@ trait Destination {
 
   def setDestinationBaseURI(baseURI: URI): Unit
 
-  def getDestinationBaseURI(): URI
+  def getDestinationBaseURI: URI
 
   def getReceiver(pipe: PipelineConfiguration,
                   params: SerializationProperties): Receiver

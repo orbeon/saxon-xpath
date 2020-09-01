@@ -61,7 +61,7 @@ class AttributeIterator(private val tree: TinyTree,
       null
     }
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.ATOMIZING)
 
 }

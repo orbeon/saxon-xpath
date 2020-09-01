@@ -14,13 +14,13 @@ trait InstructionInfo extends Location {
 
   /*@Nullable*/
 
-  def getObjectName(): StructuredQName
+  def getObjectName: StructuredQName
 
   /*@Nullable*/
 
   def getProperty(name: String): AnyRef
 
-  def getProperties(): Iterator[String]
+  def getProperties: Iterator[String]
 
 }
 

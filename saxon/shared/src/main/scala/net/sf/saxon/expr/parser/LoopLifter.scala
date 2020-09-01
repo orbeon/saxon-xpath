@@ -109,7 +109,7 @@ class LoopLifter(@BeanProperty var root: Expression,
     if (choose != null) {
       markDependencies(exp, choose)
     }
-    for (o <- exp.operands().asScala) {
+    for (o <- exp.operands.asScala) {
       gatherInfo(o.getChildExpression,
         level + 1,
         if (o.isEvaluatedRepeatedly) loopLevel + 1 else loopLevel,
@@ -194,7 +194,7 @@ class LoopLifter(@BeanProperty var root: Expression,
           }
         }
       }
-      for (o <- exp.operands().asScala if !o.getOperandRole.isConstrainedClass) {
+      for (o <- exp.operands.asScala if !o.getOperandRole.isConstrainedClass) {
         loopLift(o.getChildExpression)
       }
     }
@@ -259,8 +259,8 @@ class LoopLifter(@BeanProperty var root: Expression,
         "OPT : At line " + child.getLocation.getLineNumber + " of " +
           child.getLocation.getSystemId)
       err.info(
-        "OPT : Lifted (" + child.toShortString() + ") above (" +
-          newAction.toShortString() +
+        "OPT : Lifted (" + child.toShortString + ") above (" +
+          newAction.toShortString +
           ") on line " +
           newAction.getLocation.getLineNumber)
       err.info("OPT : Expression after rewrite: " + let)

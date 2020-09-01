@@ -93,19 +93,19 @@ abstract class Assignation() extends Expression with LocalBinding {
    *
    * @return the declared type
    */
-  override def getRequiredType = requiredType
+  def getRequiredType = requiredType
 
   /**
    * If the variable is bound to an integer, get the minimum and maximum possible values.
    * Return null if unknown or not applicable
    */
-  override def getIntegerBoundsForVariable = getSequence.getIntegerBounds
+  def getIntegerBoundsForVariable = getSequence.getIntegerBounds
 
   /**
    * If this is a local variable held on the local stack frame, return the corresponding slot number.
    * In other cases, return -1.
    */
-  override def getLocalSlotNumber = slotNumber
+  def getLocalSlotNumber = slotNumber
 
   /**
    * Compute the dependencies of an expression, as the union of the
@@ -286,8 +286,11 @@ abstract class Assignation() extends Expression with LocalBinding {
    * @return the lexical QName of the range variable. For system allocated
    *         variables, the conventional namespace prefix "zz" is used.
    */
-  def getVariableName = if (variableName == null) "zz:var" + computeHashCode
-  else variableName.getDisplayName
+  def getVariableName =
+    if (variableName == null)
+      "zz:var" + computeHashCode
+    else
+      variableName.getDisplayName
 
   /**
    * Get the name of the range variable as a Name or EQName.
@@ -296,9 +299,13 @@ abstract class Assignation() extends Expression with LocalBinding {
    *         variables, the namespace "http://ns.saxonica.com/anonymous-var"
    *         is used. For names in no namespace, the local name alone is used
    */
-  def getVariableEQName = if (variableName == null) "Q{http://ns.saxonica.com/anonymous-var}var" + computeHashCode
-  else if (variableName.hasURI("")) variableName.getLocalPart
-  else variableName.getEQName
+  def getVariableEQName =
+    if (variableName == null)
+      "Q{http://ns.saxonica.com/anonymous-var}var" + computeHashCode
+    else if (variableName.hasURI(""))
+      variableName.getLocalPart
+    else
+      variableName.getEQName
 
   /**
    * Refine the type information associated with this variable declaration. This is useful when the
@@ -314,9 +321,14 @@ abstract class Assignation() extends Expression with LocalBinding {
    * @throws XPathException if things go wrong
    */
   @throws[XPathException]
-  def refineTypeInformation(`type`: ItemType, cardinality: Int, constantValue: GroundedValue, properties: Int, currentExpression: Assignation) = ExpressionTool.processExpressionTree(currentExpression.getAction, null, (exp: Expression, result: Any) => {
+  def refineTypeInformation(`type`: ItemType, cardinality: Int, constantValue: GroundedValue, properties: Int, currentExpression: Assignation) =
+    ExpressionTool.processExpressionTree(currentExpression.getAction, null, (exp: Expression, result: Any) => {
     def foo(exp: Expression, result: Any) = {
-      if (exp.isInstanceOf[VariableReference] && (exp.asInstanceOf[VariableReference].getBinding eq currentExpression)) exp.asInstanceOf[VariableReference].refineVariableType(`type`, cardinality, constantValue, properties)
+      exp match {
+        case varRef: VariableReference if varRef.getBinding eq currentExpression =>
+          varRef.refineVariableType(`type`, cardinality, constantValue, properties)
+        case _ =>
+      }
       false
     }
 
@@ -332,11 +344,13 @@ abstract class Assignation() extends Expression with LocalBinding {
    */
   override def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {
     hasLoopingReference |= isLoopingReference
-    if (references == null) references = new util.ArrayList[VariableReference]()
+    if (references == null)
+      references = new util.ArrayList[VariableReference]()
 
-    for (vr <- references.asScala) {
-      if (vr eq ref) return
-    }
+    for (vr <- references.asScala)
+      if (vr eq ref)
+        return
+
     references.add(ref)
   }
 
@@ -348,9 +362,13 @@ abstract class Assignation() extends Expression with LocalBinding {
    *         or the special value @link RangeVariable#FILTERED} if there are any references
    *         in filter expressions that require searching.
    */
-  def getNominalReferenceCount = if (isIndexedVariable) FilterExpression.FILTERED
-  else if (references == null || hasLoopingReference) 10
-  else references.size
+  def getNominalReferenceCount =
+    if (isIndexedVariable)
+      FilterExpression.FILTERED
+    else if (references == null || hasLoopingReference)
+      10
+    else
+      references.size
 
   /**
    * Remove dead references from the reference list of the variable; at the same time, check whether
@@ -423,5 +441,5 @@ abstract class Assignation() extends Expression with LocalBinding {
    * Indicate that the variable bound by this let expression should be indexable
    * (because it is used in an appropriate filter expression)
    */
-  override def setIndexedVariable() = isIndexedVariable = true
+  def setIndexedVariable() = isIndexedVariable = true
 }

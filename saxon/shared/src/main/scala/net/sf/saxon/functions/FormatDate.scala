@@ -87,11 +87,11 @@ object FormatDate {
     if (placeStr == null) {
       placeStr = config.getDefaultCountry
     }
-    if (calVal.hasTimezone() && placeStr.contains("/")) {
+    if (calVal.hasTimezone && placeStr.contains("/")) {
       val tz: TimeZone = TimeZone.getTimeZone(placeStr)
       if (tz != null) {
         val milliOffset: Int =
-          tz.getOffset(calVal.toDateTime().getCalendar.getTime.getTime)
+          tz.getOffset(calVal.toDateTime.getCalendar.getTime.getTime)
         calVal = calVal.adjustTimezone(milliOffset / 60000)
       }
     }
@@ -163,7 +163,7 @@ object FormatDate {
                               context: XPathContext): CharSequence = {
     val ignoreDate: Boolean = value.isInstanceOf[TimeValue]
     val ignoreTime: Boolean = value.isInstanceOf[DateValue]
-    val dtvalue: DateTimeValue = value.toDateTime()
+    val dtvalue: DateTimeValue = value.toDateTime
     val matcher: Matcher = componentPattern.matcher(specifier)
     if (!matcher.matches()) {
       val error: XPathException = new XPathException(
@@ -421,10 +421,10 @@ object FormatDate {
               tzoffset,
               false)
           }
-          dtv = DateTimeValue.makeDateTimeValue(baseDate.toDateValue(),
+          dtv = DateTimeValue.makeDateTimeValue(baseDate.toDateValue,
             value.asInstanceOf[TimeValue])
         } else {
-          dtv = value.toDateTime()
+          dtv = value.toDateTime
         }
         formatTimeZone(dtv, component.charAt(0), format, country)
       case 'F' =>
@@ -791,7 +791,7 @@ object FormatDate {
       widthModifier = formatStr.substring(comma)
       formatStr = formatStr.substring(0, comma)
     }
-    if (!value.hasTimezone()) {
+    if (!value.hasTimezone) {
       if (formatStr.==("Z")) {
         return "J"
       } else {
@@ -972,29 +972,29 @@ class FormatDate extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[StringValue] = {
-    var value: CalendarValue = arguments(0).head().asInstanceOf[CalendarValue]
+    var value: CalendarValue = arguments(0).head.asInstanceOf[CalendarValue]
     if (value == null) {
       ZeroOrOne.empty()
     }
-    val format: String = arguments(1).head().getStringValue
+    val format: String = arguments(1).head.getStringValue
     var calendarVal: StringValue = null
     var countryVal: StringValue = null
     var languageVal: StringValue = null
     if (getArity > 2) {
-      languageVal = arguments(2).head().asInstanceOf[StringValue]
-      calendarVal = arguments(3).head().asInstanceOf[StringValue]
-      countryVal = arguments(4).head().asInstanceOf[StringValue]
+      languageVal = arguments(2).head.asInstanceOf[StringValue]
+      calendarVal = arguments(3).head.asInstanceOf[StringValue]
+      countryVal = arguments(4).head.asInstanceOf[StringValue]
     }
     val language: String =
       if (languageVal == null) null else languageVal.getStringValue
     val place: String =
       if (countryVal == null) null else countryVal.getStringValue
-    if (place != null && place.contains("/") && value.hasTimezone() &&
+    if (place != null && place.contains("/") && value.hasTimezone &&
       !(value.isInstanceOf[TimeValue])) {
       val zone: TimeZone = NamedTimeZone.getNamedTimeZone(place)
       if (zone != null) {
         val offset: Int =
-          zone.getOffset(value.toDateTime().getCalendar.getTimeInMillis)
+          zone.getOffset(value.toDateTime.getCalendar.getTimeInMillis)
         value = value.adjustTimezone(offset / 60000)
       }
     }

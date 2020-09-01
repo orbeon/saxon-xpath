@@ -74,6 +74,6 @@ abstract class GroupMatchingIterator
     population.close()
   }
 
-  override def getProperties(): Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
+  override def getProperties: Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
 
 }

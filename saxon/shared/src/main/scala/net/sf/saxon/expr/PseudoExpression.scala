@@ -36,7 +36,7 @@ abstract class PseudoExpression extends Expression {
    override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def getItemType(): ItemType = AnyItemType
+  override def getItemType: ItemType = AnyItemType
 
   override def evaluateItem(context: XPathContext): Item = {
     cannotEvaluate()

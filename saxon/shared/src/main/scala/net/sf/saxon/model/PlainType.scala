@@ -10,16 +10,16 @@ import net.sf.saxon.om.StructuredQName
 
 trait PlainType extends ItemType {
 
-  def getTypeName(): StructuredQName
+  def getTypeName: StructuredQName
 
-  def isNamespaceSensitive(): Boolean
+  def isNamespaceSensitive: Boolean
 
-  def getPlainMemberTypes(): Iterable[_ <: PlainType]
+  def getPlainMemberTypes: Iterable[_ <: PlainType]
 
   def matches(item: Item, th: TypeHierarchy): Boolean
 
   /**
-    * Redeclare getPrimitiveItemType() to return a more specific result type
+    * Redeclare getPrimitiveItemType to return a more specific result type
     * Get the primitive item type corresponding to this item type.
     * For anyAtomicValue and union types it is Type.ATOMIC_VALUE. For numeric it is Type.NUMBER.
     * For other atomic types it is the primitive type as defined in XML Schema,
@@ -30,7 +30,7 @@ trait PlainType extends ItemType {
     * except where this type is xs:error. The class ErrorType does not inherit from BuiltInAtomicType
     * because of multiple inheritance problems).
     */
-  def getPrimitiveItemType(): AtomicType
+  def getPrimitiveItemType: AtomicType
 
 }
 

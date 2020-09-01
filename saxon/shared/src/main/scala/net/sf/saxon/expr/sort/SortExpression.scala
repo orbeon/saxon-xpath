@@ -59,11 +59,11 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
 
   override def getExpressionName(): String = "sort"
 
-  def getBaseOperand(): Operand = selectOp
+  def getBaseOperand: Operand = selectOp
 
-  def getBaseExpression(): Expression = getSelect
+  def getBaseExpression: Expression = getSelect
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, sortOp)
 
   override def addToPathMap(
@@ -215,7 +215,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
 
   def computeCardinality(): Int = getSelect.getCardinality
 
-  def getItemType(): ItemType = getSelect.getItemType
+  def getItemType: ItemType = getSelect.getItemType
 
   override def computeSpecialProperties(): Int = {
     var props: Int = 0
@@ -266,8 +266,8 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       .evaluateItem(c)
       .asInstanceOf[AtomicValue]
 
-  override def toShortString(): String =
-    "sort(" + getBaseExpression.toShortString() + ")"
+  override def toShortString: String =
+    "sort(" + getBaseExpression.toShortString + ")"
 
   override def getStreamerName(): String = "SortExpression"
 
@@ -279,13 +279,13 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     out.endElement()
   }
 
-  def getSelect(): Expression = selectOp.getChildExpression
+  def getSelect: Expression = selectOp.getChildExpression
 
   def setSelect(select: Expression): Unit = {
     selectOp.setChildExpression(select)
   }
 
-  def getSortKeyDefinitionList(): SortKeyDefinitionList =
+  def getSortKeyDefinitionList: SortKeyDefinitionList =
     sortOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
 
   def getSortKeyDefinition(i: Int): SortKeyDefinition =

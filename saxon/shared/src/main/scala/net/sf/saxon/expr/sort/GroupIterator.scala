@@ -14,7 +14,7 @@ trait GroupIterator extends SequenceIterator {
 
   /*@Nullable*/
 
-  def getCurrentGroupingKey(): AtomicSequence
+  def getCurrentGroupingKey: AtomicSequence
 
   def iterateCurrentGroup(): SequenceIterator
 

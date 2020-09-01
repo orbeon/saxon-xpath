@@ -64,7 +64,7 @@ class XdmMap extends XdmFunctionItem {
     this.setValue(`val`)
   }
 
-  override def getUnderlyingValue(): MapItem =
+  override def getUnderlyingValue: MapItem =
     super.getUnderlyingValue.asInstanceOf[MapItem]
 
   def mapSize(): Int = getUnderlyingValue.size

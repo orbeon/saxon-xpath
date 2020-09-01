@@ -178,7 +178,7 @@ class IndependentContext(config: Configuration)
     autoDeclare = allow
   }
 
-  def isAllowUndeclaredVariables(): Boolean = autoDeclare
+  def isAllowUndeclaredVariables: Boolean = autoDeclare
 
   def declareVariable(qname: QNameValue): XPathVariable =
     declareVariable(qname.getStructuredQName)
@@ -267,7 +267,7 @@ class IndependentContext(config: Configuration)
     map
   }
 
-  def getDeclaredVariables(): Collection[XPathVariable] = variables.values
+  def getDeclaredVariables: Collection[XPathVariable] = variables.values
 
   def isImportedSchema(namespace: String): Boolean =
     importedSchemaNamespaces.contains(namespace)
@@ -297,13 +297,13 @@ class IndependentContext(config: Configuration)
     executable = exec
   }
 
-  def getExecutable(): Executable = executable
+  def getExecutable: Executable = executable
 
-  def getColumnNumber(): Int = -1
+  def getColumnNumber: Int = -1
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
-  def getLineNumber(): Int = -1
+  def getLineNumber: Int = -1
 
   override def isContextItemParentless(): Boolean = parentlessContextItem
 

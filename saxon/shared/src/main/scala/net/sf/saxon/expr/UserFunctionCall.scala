@@ -91,11 +91,11 @@ class UserFunctionCall extends FunctionCall
     }
   }
 
-  def isTailCall(): Boolean = tailCall != NOT_TAIL_CALL
+  def isTailCall: Boolean = tailCall != NOT_TAIL_CALL
 
-  def isRecursiveTailCall(): Boolean = tailCall == SELF_TAIL_CALL
+  def isRecursiveTailCall: Boolean = tailCall == SELF_TAIL_CALL
 
-  def getFunctionName(): StructuredQName =
+  def getFunctionName: StructuredQName =
     if (name == null) {
       function.getFunctionName
     } else {
@@ -105,7 +105,7 @@ class UserFunctionCall extends FunctionCall
   def getSymbolicName(): SymbolicName =
     new SymbolicName.F(getFunctionName, getArity)
 
-  def getTarget(): Component = function.getDeclaringComponent
+  def getTarget: Component = function.getDeclaringComponent
 
   def setArgumentEvaluationModes(evalModes: Array[EvaluationMode.EvaluationMode]): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](evalModes.length)
@@ -117,12 +117,12 @@ class UserFunctionCall extends FunctionCall
   def allocateArgumentEvaluators(): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](getArity)
     var i: Int = 0
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       val arg: Expression = o.getChildExpression
       val required: SequenceType = function.getArgumentType(i)
       val cardinality: Int = required.getCardinality
       argumentEvaluators(i) =
-        if (i == 0 && function.getDeclaredStreamability.isConsuming())
+        if (i == 0 && function.getDeclaredStreamability.isConsuming)
           Evaluator.STREAMING_ARGUMENT
         else if (function.getParameterDefinitions()(i).isIndexedVariable)
           Evaluator.MAKE_INDEXED_VARIABLE
@@ -146,7 +146,7 @@ class UserFunctionCall extends FunctionCall
 
   override def preEvaluate(visitor: ExpressionVisitor): Expression = this
 
-  def getItemType(): ItemType =
+  def getItemType: ItemType =
     if (staticType == null) {
       AnyItemType
     } else {
@@ -260,7 +260,7 @@ class UserFunctionCall extends FunctionCall
       EVALUATE_METHOD
     }
 
-  override def evaluateItem(c: XPathContext): Item = callFunction(c).head()
+  override def evaluateItem(c: XPathContext): Item = callFunction(c).head
 
   override def iterate(c: XPathContext): SequenceIterator = callFunction(c).iterate()
 
@@ -414,7 +414,7 @@ class UserFunctionCall extends FunctionCall
       }
       out.emitAttribute("eval", Whitespace.trim(fsb))
     }
-    for (o <- operands().asScala) {
+    for (o <- operands.asScala) {
       o.getChildExpression.export(out)
     }
     if (getFunctionName == null) {

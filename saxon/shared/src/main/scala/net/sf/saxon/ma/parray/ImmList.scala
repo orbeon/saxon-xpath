@@ -48,11 +48,11 @@ abstract class ImmList[E] extends Iterable[E] {
 
   def get(index: Int): E
 
-  override def head(): E = get(0)
+  override def head: E = get(0)
 
   def size(): Int
 
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
 
   def replace(index: Int, member: E): ImmList[E]
 

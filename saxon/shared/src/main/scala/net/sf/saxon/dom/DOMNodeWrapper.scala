@@ -176,7 +176,7 @@ object DOMNodeWrapper {
   }
 
   private def getSuccessorNode(start: Node, anchor: Node): Node = {
-    if (start.hasChildNodes()) return start.getFirstChild
+    if (start.hasChildNodes) return start.getFirstChild
 
     if (anchor != null && start.isSameNode(anchor)) return null
     var p: Node = start
@@ -264,7 +264,7 @@ class DOMNodeWrapper(var node: Node,
     }
   }
 
-  def getStringValueCS(): CharSequence = docWrapper.docNode.synchronized {
+  def getStringValueCS: CharSequence = docWrapper.docNode.synchronized {
     nodeKind match {
       case Type.DOCUMENT | Type.ELEMENT =>
         var children1: NodeList = node.getChildNodes
@@ -461,8 +461,8 @@ class DOMNodeWrapper(var node: Node,
 
   override def getRoot(): NodeInfo = docWrapper.getRootNode
 
-  override def hasChildNodes(): Boolean = docWrapper.docNode.synchronized {
-    node.getNodeType != Node.ATTRIBUTE_NODE && node.hasChildNodes()
+  override def hasChildNodes: Boolean = docWrapper.docNode.synchronized {
+    node.getNodeType != Node.ATTRIBUTE_NODE && node.hasChildNodes
   }
 
   def generateId(buffer: FastStringBuffer): Unit = {
@@ -700,7 +700,7 @@ class DOMNodeWrapper(var node: Node,
       current
     }
 
-    override def getProperties(): Set[Property] = {
+    override def getProperties: Set[Property] = {
       enumSet(LAST_POSITION_FINDER)
       enumSet
     }
@@ -850,7 +850,7 @@ class DOMNodeWrapper(var node: Node,
       null
     }
 
-    override def getProperties(): Set[Property] = {
+    override def getProperties: Set[Property] = {
       val enumSet = Set[Property]()
       enumSet(LOOKAHEAD)
       enumSet

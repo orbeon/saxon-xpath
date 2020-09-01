@@ -80,7 +80,7 @@ class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
 
   def getResourceURI(): String = href
 
-  def getContent(): String = {
+  def getContent: String = {
     if (unparsedText == null) {
       val url: URL = new URL(href)
       val connection: URLConnection = url.openConnection()

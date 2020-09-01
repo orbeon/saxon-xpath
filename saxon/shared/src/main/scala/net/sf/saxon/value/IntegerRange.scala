@@ -31,9 +31,9 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
       "Maximum length of sequence in Saxon is " + java.lang.Integer.MAX_VALUE)
   }
 
-  def getStart(): Long = start
+  def getStart: Long = start
 
-  def getEnd(): Long = end
+  def getEnd: Long = end
 
   /*@NotNull*/
 
@@ -66,9 +66,9 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
     }
   }
 
-  def getLength(): Int = (end - start + 1).toInt
+  def getLength: Int = (end - start + 1).toInt
 
-  def head(): IntegerValue = new Int64Value(start)
+  def head: IntegerValue = new Int64Value(start)
 
   /**
    * Get the canonical lexical representation as defined in XML Schema. This is not always the same
@@ -92,9 +92,9 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
   def getSchemaComparable(): Comparable[_] =
     new AtomicArray(iterate()).getSchemaComparable
 
-  def getStringValueCS(): CharSequence = SequenceTool.getStringValue(this)
+  def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)
 
-  def getStringValue(): String = getStringValueCS.toString
+  def getStringValue: String = getStringValueCS.toString
 
   override def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())

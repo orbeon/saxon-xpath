@@ -17,7 +17,7 @@ class SaxonApiException(cause: Throwable) extends Exception(cause) {
 
   override def getMessage(): String = getCause.getMessage
 
-  def getErrorCode(): QName = {
+  def getErrorCode: QName = {
     val cause: Throwable = getCause
     if (cause.isInstanceOf[XPathException]) {
       val code: StructuredQName =
@@ -28,7 +28,7 @@ class SaxonApiException(cause: Throwable) extends Exception(cause) {
     }
   }
 
-  def getLineNumber(): Int = {
+  def getLineNumber: Int = {
     val cause: Throwable = getCause
     if (cause.isInstanceOf[XPathException]) {
       val loc: Location = cause.asInstanceOf[XPathException].getLocator
@@ -38,7 +38,7 @@ class SaxonApiException(cause: Throwable) extends Exception(cause) {
     }
   }
 
-  def getSystemId(): String = {
+  def getSystemId: String = {
     val cause: Throwable = getCause
     if (cause.isInstanceOf[XPathException]) {
       val loc: Location = cause.asInstanceOf[XPathException].getLocator

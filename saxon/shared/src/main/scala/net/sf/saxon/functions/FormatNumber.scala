@@ -753,7 +753,7 @@ class FormatNumber extends SystemFunction with Callable {
     val dfm: DecimalFormatManager =
       getRetainedStaticContext.getDecimalFormatManager
     var dfs: DecimalSymbols = null
-    var av0: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    var av0: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (av0 == null) {
       av0 = DoubleValue.NaN
     }
@@ -766,7 +766,7 @@ class FormatNumber extends SystemFunction with Callable {
       if (numArgs == 2) {
         dfs = dfm.getDefaultDecimalFormat
       } else {
-        val arg2: Item = arguments(2).head()
+        val arg2: Item = arguments(2).head
         if (arg2 == null) {
           dfs = dfm.getDefaultDecimalFormat
         } else {
@@ -774,7 +774,7 @@ class FormatNumber extends SystemFunction with Callable {
           dfs = getNamedDecimalFormat(dfm, lexicalName)
         }
       }
-      val format: String = arguments(1).head().getStringValue
+      val format: String = arguments(1).head.getStringValue
       val pics: Array[SubPicture] = getSubPictures(format, dfs)
       new StringValue(formatNumber(number, pics, dfs))
     }

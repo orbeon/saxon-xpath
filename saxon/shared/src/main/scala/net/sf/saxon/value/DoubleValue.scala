@@ -1,39 +1,29 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * A numeric (double precision floating point) value
+  */
+
 package net.sf.saxon.value
 
-import net.sf.saxon.expr.sort.AtomicMatchKey
+import java.math.{BigDecimal, RoundingMode}
 
-import net.sf.saxon.expr.sort.AtomicSortComparer
-
-import net.sf.saxon.expr.sort.DoubleSortComparer
-
-import net.sf.saxon.model.AtomicType
-
-import net.sf.saxon.model.BuiltInAtomicType
-
-import net.sf.saxon.model.ValidationException
-
+import net.sf.saxon.expr.sort.{AtomicMatchKey, AtomicSortComparer, DoubleSortComparer}
+import net.sf.saxon.model.{AtomicType, BuiltInAtomicType, ValidationException}
 import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.tree.util.FastStringBuffer
-
-import java.math.BigDecimal
-
-import java.math.RoundingMode
-
-import DoubleValue._
-
-
+import net.sf.saxon.value.DoubleValue._
 
 
 object DoubleValue {
 
   val ZERO: DoubleValue = new DoubleValue(0.0)
-
   val NEGATIVE_ZERO: DoubleValue = new DoubleValue(-0.0)
-
   val ONE: DoubleValue = new DoubleValue(1.0)
-
   val NaN: DoubleValue = new DoubleValue(java.lang.Double.NaN)
 
   def makeDoubleValue(value: Double): DoubleValue = new DoubleValue(value)
@@ -69,16 +59,16 @@ class DoubleValue() extends NumericValue {
     v
   }
 
-  def getPrimitiveType(): BuiltInAtomicType = BuiltInAtomicType.DOUBLE
+  def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DOUBLE
 
-  def getDoubleValue(): Double = value
+  def getDoubleValue: Double = value
 
   /**
     * Get the numeric value converted to a float
     *
     * @return a float representing this numeric value; NaN if it cannot be converted
     */
-  override def getFloatValue(): Float = value.toFloat
+  override def getFloatValue: Float = value.toFloat
 
   /**
     * Get the numeric value converted to a decimal
@@ -87,7 +77,7 @@ class DoubleValue() extends NumericValue {
     * @throws ValidationException
     *          if the value cannot be converted, for example if it is NaN or infinite
     */
-  override def getDecimalValue(): BigDecimal = new BigDecimal(value)
+  override def getDecimalValue: BigDecimal = new BigDecimal(value)
 
   /**
     * Return the numeric value as a Java long.
@@ -106,7 +96,7 @@ class DoubleValue() extends NumericValue {
       java.lang.Double.valueOf(value).hashCode
     }
 
-  override def isNaN(): Boolean = java.lang.Double.isNaN(value)
+  override def isNaN: Boolean = java.lang.Double.isNaN(value)
 
   /**
     * Get the effective boolean value
@@ -121,7 +111,7 @@ class DoubleValue() extends NumericValue {
     *
     * @return the string value
     */
-  def getPrimitiveStringValue(): CharSequence = doubleToString(value)
+  def getPrimitiveStringValue: CharSequence = doubleToString(value)
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
@@ -229,13 +219,13 @@ class DoubleValue() extends NumericValue {
     *
     * @return true if this value is float or double negative zero
     */
-  override def isNegativeZero(): Boolean =
+  override def isNegativeZero: Boolean =
     value == 0.0 &&
       (java.lang.Double
         .doubleToLongBits(value) & FloatingPointConverter.DOUBLE_SIGN_MASK) !=
         0
 
-  def isWholeNumber(): Boolean =
+  def isWholeNumber: Boolean =
     value == Math.floor(value) && !java.lang.Double.isInfinite(value)
 
   /**
@@ -266,7 +256,7 @@ class DoubleValue() extends NumericValue {
     if (value < otherDouble) -1 else +1
   }
 
-  def getSchemaComparable(): Comparable[AnyRef] = // that ensures NaN != NaN.
+  def getSchemaComparable: Comparable[AnyRef] = // that ensures NaN != NaN.
     if (value == 0.0) 0.0.asInstanceOf else value.asInstanceOf
 
   override def asMapKey(): AtomicMatchKey =
@@ -283,12 +273,3 @@ class DoubleValue() extends NumericValue {
       DoubleSortComparer.getInstance.comparesEqual(this, v)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A numeric (double precision floating point) value
-  */

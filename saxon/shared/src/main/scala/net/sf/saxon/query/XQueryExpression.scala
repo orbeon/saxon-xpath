@@ -121,7 +121,7 @@ class XQueryExpression(var expression: Expression,
 
   executable.setConfiguration(config)
 
-  def getExpression(): Expression = expression
+  def getExpression: Expression = expression
 
   def getBody(): Expression = getExpression
 
@@ -147,14 +147,14 @@ class XQueryExpression(var expression: Expression,
    * Get data about the unit of compilation (XQuery module, XSLT package) to which this
    * container belongs
    */
-  def getPackageData(): PackageData = mainModule.getPackageData
+  def getPackageData: PackageData = mainModule.getPackageData
 
   /**
    * Get the Configuration to which this Container belongs
    *
    * @return the Configuration
    */
-  def getConfiguration(): Configuration = mainModule.getConfiguration
+  def getConfiguration: Configuration = mainModule.getConfiguration
 
   def usesContextItem(): Boolean = {
     if (ExpressionTool.dependsOnFocus(expression)) {
@@ -172,9 +172,9 @@ class XQueryExpression(var expression: Expression,
     false
   }
 
-  def isUpdateQuery(): Boolean = false
+  def isUpdateQuery: Boolean = false
 
-  def getStackFrameMap(): SlotManager = stackFrameMap
+  def getStackFrameMap: SlotManager = stackFrameMap
 
   def explainPathMap(): Unit = ()
 
@@ -191,11 +191,11 @@ class XQueryExpression(var expression: Expression,
    * @return the QueryModule object representing the static context of the main module of the query.
    *         This is available for inspection, but must not be modified or reused by the application.
    */
-  def getMainModule(): QueryModule = mainModule
+  def getMainModule: QueryModule = mainModule
 
   /*@NotNull*/
 
-  def getExternalVariableNames(): Array[StructuredQName] = {
+  def getExternalVariableNames: Array[StructuredQName] = {
     val list: List[StructuredQName] = stackFrameMap.getVariableMap
     val names: Array[StructuredQName] =
       Array.ofDim[StructuredQName](stackFrameMap.getNumberOfVariables)
@@ -448,7 +448,7 @@ class XQueryExpression(var expression: Expression,
     out.close()
   }
 
-  def getExecutable(): Executable = executable
+  def getExecutable: Executable = executable
 
   def setAllowDocumentProjection(allowed: Boolean): Unit = {
     if (allowed) {
@@ -457,7 +457,7 @@ class XQueryExpression(var expression: Expression,
     }
   }
 
-  def isDocumentProjectionAllowed(): Boolean = false
+  def isDocumentProjectionAllowed: Boolean = false
 
   /*@Nullable*/
 
@@ -504,7 +504,7 @@ class XQueryExpression(var expression: Expression,
    */
   def saveLocation(): Location = this
 
-  def getHostLanguage(): HostLanguage = HostLanguage.XQUERY
+  def getHostLanguage: HostLanguage = HostLanguage.XQUERY
 
   def setChildExpression(expr: Expression): Unit = {
     expression = expr

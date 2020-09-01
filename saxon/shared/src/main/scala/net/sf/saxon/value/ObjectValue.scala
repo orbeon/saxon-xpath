@@ -9,23 +9,18 @@ import net.sf.saxon.trans.Err
 
 
 object ObjectValue {
-
   def displayTypeName(value: AnyRef): String =
     "java-type:" + value.getClass.getName
-
 }
 
-class ObjectValue[T](`object`: T) extends ExternalObject[T] {
+class ObjectValue[T](obj: T) extends ExternalObject[T] {
 
   private val value: T =
-    Objects.requireNonNull(`object`, "External object cannot wrap a Java null")
+    Objects.requireNonNull(obj, "External object cannot wrap a Java null")
 
-  override def getGenre(): Genre = Genre.EXTERNAL
-
-  def getStringValue(): String = value.toString
-
-  def getStringValueCS(): CharSequence = value.toString
-
+  def getGenre: Genre = Genre.EXTERNAL
+  def getStringValue: String = value.toString
+  def getStringValueCS: CharSequence = value.toString
   def atomize(): StringValue = new StringValue(getStringValue)
 
   def getItemType(th: TypeHierarchy): ItemType =
@@ -33,26 +28,20 @@ class ObjectValue[T](`object`: T) extends ExternalObject[T] {
 
   override def effectiveBooleanValue(): Boolean = true
 
-  override def getObject(): T = value
+  def getObject: T = value
 
   override def equals(other: Any): Boolean = other match {
-    case other: ObjectValue[_] => {
-      val o: Any = other.value
-      value == o
-    }
+    case other: ObjectValue[_] => value == other.value
     case _ => false
-
   }
 
   override def hashCode(): Int = value.hashCode
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val v: String = value.toString
-    if (v.startsWith(value.getClass.getName)) {
+    if (v.startsWith(value.getClass.getName))
       v
-    } else {
+    else
       "(" + value.getClass.getSimpleName + ")" + Err.truncate30(value.toString)
-    }
   }
-
 }

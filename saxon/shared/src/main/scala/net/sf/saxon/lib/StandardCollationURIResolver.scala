@@ -25,7 +25,7 @@ object StandardCollationURIResolver {
   private val theInstance: StandardCollationURIResolver =
     new StandardCollationURIResolver()
 
-  def getInstance(): StandardCollationURIResolver = theInstance
+  def getInstance: StandardCollationURIResolver = theInstance
 
 }
 

@@ -96,13 +96,13 @@ class Closure extends Sequence with ContextOriginator {
     *          in the situation where the sequence is evaluated lazily, and
     *          evaluation of the first item causes a dynamic error.
     */
-  def head(): Item = iterate().next()
+  def head: Item = iterate().next()
 
-  def getExpression(): Expression = expression
+  def getExpression: Expression = expression
 
   /*@Nullable*/
 
-  def getSavedXPathContext(): XPathContextMajor = savedXPathContext
+  def getSavedXPathContext: XPathContextMajor = savedXPathContext
 
   def setExpression(expression: Expression): Unit = {
     this.expression = expression

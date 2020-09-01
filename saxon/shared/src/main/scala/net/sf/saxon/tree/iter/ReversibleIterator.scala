@@ -8,7 +8,7 @@ import net.sf.saxon.om.SequenceIterator
 
 trait ReversibleIterator extends SequenceIterator {
 
-  def getReverseIterator(): SequenceIterator
+  def getReverseIterator: SequenceIterator
 
 }
 

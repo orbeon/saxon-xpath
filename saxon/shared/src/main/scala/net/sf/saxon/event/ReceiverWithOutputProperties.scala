@@ -8,7 +8,7 @@ import java.util.Properties
 
 trait ReceiverWithOutputProperties extends Receiver {
 
-  def getOutputProperties(): Properties
+  def getOutputProperties: Properties
 
 }
 

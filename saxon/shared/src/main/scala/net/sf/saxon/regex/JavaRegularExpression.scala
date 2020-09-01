@@ -62,9 +62,9 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
   var pattern: Pattern =
     Pattern.compile(this.javaRegex, flagBits & (~(Pattern.COMMENTS)))
 
-  def getJavaRegularExpression(): String = javaRegex
+  def getJavaRegularExpression: String = javaRegex
 
-  def getFlagBits(): Int = flagBits
+  def getFlagBits: Int = flagBits
 
   def analyze(input: CharSequence): RegexIterator =
     new JRegexIterator(input.toString, pattern)
@@ -79,7 +79,7 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
     matcher.replaceAll(replacement.toString)
   }
 
-  
+
   override def replaceWith(
       input: CharSequence,
       replacement: Function[CharSequence, CharSequence]): CharSequence =
@@ -93,7 +93,7 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
     new JTokenIterator(input, pattern)
   }
 
-  
+
   override def getFlags(): String = {
     var flags: String = ""
     if ((flagBits & Pattern.UNIX_LINES) != 0) {

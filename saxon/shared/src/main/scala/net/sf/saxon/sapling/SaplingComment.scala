@@ -22,7 +22,7 @@ class SaplingComment(private var value: String) extends SaplingNode {
 
   override def getNodeKind(): Int = Type.COMMENT
 
-  def getStringValue(): String = value
+  def getStringValue: String = value
 
    override def sendTo(receiver: Receiver): Unit = {
     receiver.comment(value, Loc.NONE, ReceiverOption.NONE)

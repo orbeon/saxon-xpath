@@ -59,7 +59,7 @@ class DynamicQueryContext(private var config: Configuration) {
 
   private var applyConversionRules: Boolean = true
 
-  def getSchemaValidationMode(): Int = validationMode
+  def getSchemaValidationMode: Int = validationMode
 
   def setSchemaValidationMode(validationMode: Int): Unit = {
     this.validationMode = validationMode
@@ -70,7 +70,7 @@ class DynamicQueryContext(private var config: Configuration) {
     applyConversionRules = convert
   }
 
-  def isApplyFunctionConversionRulesToExternalVariables(): Boolean =
+  def isApplyFunctionConversionRulesToExternalVariables: Boolean =
     applyConversionRules
 
   def setContextItem(item: Item): Unit = {
@@ -111,7 +111,7 @@ class DynamicQueryContext(private var config: Configuration) {
     parameters.get(expandedName)
   }
 
-  def getParameters(): GlobalParameterSet =
+  def getParameters: GlobalParameterSet =
     if (parameters == null) {
       new GlobalParameterSet()
     } else {
@@ -123,13 +123,13 @@ class DynamicQueryContext(private var config: Configuration) {
     uriResolver = resolver
   }
 
-  def getURIResolver(): URIResolver = uriResolver
+  def getURIResolver: URIResolver = uriResolver
 
   def setErrorListener(listener: ErrorListener): Unit = {
     errorReporter = new ErrorReporterToListener(listener)
   }
 
-  def getErrorListener(): ErrorListener = {
+  def getErrorListener: ErrorListener = {
     val uel: ErrorReporter = getErrorReporter
     if (uel.isInstanceOf[ErrorReporterToListener]) {
       uel.asInstanceOf[ErrorReporterToListener].getErrorListener
@@ -146,7 +146,7 @@ class DynamicQueryContext(private var config: Configuration) {
     }
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def initializeController(controller: Controller): Unit = {
     controller.setURIResolver(getURIResolver)

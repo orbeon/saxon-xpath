@@ -140,9 +140,9 @@ class UnparsedText extends UnparsedTextFunction with PushableFunction {
 
   def call(context: XPathContext,
            arguments: Array[Sequence]): ZeroOrOne[StringValue] = {
-    val hrefVal: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val hrefVal: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val encoding: String =
-      if (getArity == 2) arguments(1).head().getStringValue else null
+      if (getArity == 2) arguments(1).head.getStringValue else null
     try new ZeroOrOne(
       evalUnparsedText(hrefVal, getStaticBaseUriString, encoding, context))
     catch {
@@ -163,16 +163,16 @@ class UnparsedText extends UnparsedTextFunction with PushableFunction {
       context.getConfiguration.getBooleanProperty(Feature.STABLE_UNPARSED_TEXT)
     if (stable) {
       val result: ZeroOrOne[StringValue] = call(context, arguments)
-      val value: StringValue = result.head()
+      val value: StringValue = result.head
       if (value != null) {
         destination.append(value, Loc.NONE, ReceiverOption.NONE)
       }
     } else {
-      val href: StringValue = arguments(0).head().asInstanceOf[StringValue]
+      val href: StringValue = arguments(0).head.asInstanceOf[StringValue]
       val absoluteURI: URI =
         UnparsedTextFunction.getAbsoluteURI(href.getStringValue, getStaticBaseUriString, context)
       val encoding: String =
-        if (getArity == 2) arguments(1).head().getStringValue else null
+        if (getArity == 2) arguments(1).head.getStringValue else null
       val consumer: CharSequenceConsumer = destination.getStringReceiver(false)
       consumer.open()
       try {

@@ -54,13 +54,13 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   def getNodeKind(): Int = Type.ATTRIBUTE
 
-  override def getStringValueCS(): CharSequence = tree.attValue(nodeNr)
+  override def getStringValueCS: CharSequence = tree.attValue(nodeNr)
 
-  def getStringValue(): String = tree.attValue(nodeNr).toString
+  def getStringValue: String = tree.attValue(nodeNr).toString
 
   override def getFingerprint(): Int = tree.attCode(nodeNr) & 0xfffff
 
-  def getNameCode(): Int = tree.attCode(nodeNr)
+  def getNameCode: Int = tree.attCode(nodeNr)
 
   override def getPrefix(): String = {
     val code: Int = tree.attCode(nodeNr)
@@ -120,7 +120,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   override def isIdref(): Boolean = tree.isIdrefAttribute(nodeNr)
 
-  def isDefaultedAttribute(): Boolean = tree.isDefaultedAttribute(nodeNr)
+  def isDefaultedAttribute: Boolean = tree.isDefaultedAttribute(nodeNr)
 
   override def hashCode(): Int =
     ((tree.getDocumentNumber & 0x3ff).toInt << 20) ^ nodeNr ^

@@ -13,7 +13,7 @@ class LazySequence(var iterator: SequenceIterator) extends Sequence {
 
   var used: Boolean = false
 
-  def head(): Item = iterate().next()
+  def head: Item = iterate().next()
 
   def iterate(): SequenceIterator = synchronized {
     if (used) {

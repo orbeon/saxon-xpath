@@ -210,7 +210,7 @@ class StandardDiagnostics {
               val sb: StringBuilder = new StringBuilder()
               val loc: Location = rule.getPattern.getLocation
               sb.append("  In template rule with match=\"")
-                .append(rule.getPattern.toShortString())
+                .append(rule.getPattern.toShortString)
                 .append("\" ")
               if (loc != null && loc.getLineNumber != -1) {
                 sb.append("on line ").append(loc.getLineNumber).append(" ")

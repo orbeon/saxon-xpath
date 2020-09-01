@@ -28,15 +28,14 @@ object AxisExpression {
       name.getLocalPart
     } else {
       val resolver: NamespaceResolver = env.getNamespaceResolver
-      var it: Iterator[String] = resolver.iteratePrefixes()
+      val it = resolver.iteratePrefixes()
       while (it.hasNext) {
-        val prefix: String = it.next()
+        val prefix = it.next()
         if (uri == resolver.getURIForPrefix(prefix, useDefault = true)) {
-          if (prefix.isEmpty) {
+          if (prefix.isEmpty)
             "Q{" + uri + "}" + name.getLocalPart
-          } else {
+          else
             prefix + ":" + name.getLocalPart
-          }
         }
       }
     }
@@ -44,7 +43,7 @@ object AxisExpression {
   }
 
   private def getStartingNodeDescription(`type`: SchemaType): String = {
-    val s: String = `type`.getDescription
+    val s = `type`.getDescription
     if (s.startsWith("of element")) {
       "a valid element named" + s.substring("of element".length)
     } else if (s.startsWith("of attribute")) {
@@ -57,10 +56,9 @@ object AxisExpression {
   }
 
   private def isPeerNodeTest(test: NodeTest): Boolean = {
-    if (test == null) {
+    if (test == null)
       return false
-    }
-    val uType: UType = test.getUType
+    val uType = test.getUType
     if (uType.overlaps(UType.ELEMENT)) {
       false
     } else if (uType.overlaps(UType.DOCUMENT)) {
@@ -76,13 +74,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   extends Expression {
 
   private var test: NodeTest = nodeTest
-
   private var itemType: ItemType = null
-
   private var staticInfo: ContextItemStaticInfo = ContextItemStaticInfo.DEFAULT
-
   private var doneTypeCheck: Boolean = false
-
   private var doneOptimize: Boolean = false
 
   override def getExpressionName(): String = "axisStep"
@@ -169,7 +163,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (warnings) {
         visitor.issueWarning(
           "The " + AxisInfo.axisName(axis) + " axis will never select " +
-            test.getUType.toStringWithIndefiniteArticle(),
+            test.getUType.toStringWithIndefiniteArticle,
           getLocation)
       }
       Literal.makeEmptySequence()
@@ -190,7 +184,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (warnings) {
         visitor.issueWarning(
           "The " + AxisInfo.axisName(axis) + " axis starting at " +
-            originUType.toStringWithIndefiniteArticle() +
+            originUType.toStringWithIndefiniteArticle +
             " will never select anything",
           getLocation)
       }
@@ -210,9 +204,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (warnings) {
         visitor.issueWarning(
           "The " + AxisInfo.axisName(axis) + " axis starting at " +
-            originUType.toStringWithIndefiniteArticle() +
+            originUType.toStringWithIndefiniteArticle +
             " will never select " +
-            test.getUType.toStringWithIndefiniteArticle(),
+            test.getUType.toStringWithIndefiniteArticle,
           getLocation
         )
       }
@@ -227,7 +221,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         targetUType = AxisInfo.getTargetUType(originUType, axis)
       }
     }
-    val target: ItemType = targetUType.toItemType()
+    val target: ItemType = targetUType.toItemType
     itemType =
       if (test == null || test.isInstanceOf[AnyNodeTest]) target
       else if (target.isInstanceOf[AnyNodeTest] || targetUType.subsumes(
@@ -414,7 +408,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       } else if (contentType.asInstanceOf[ComplexType].isEmptyContent &&
         (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT ||
           axis == AxisInfo.DESCENDANT_OR_SELF)) {
-        var iter: util.Iterator[_ <: SchemaType] = config.getExtensionsOfType(contentType)
+        val iter: util.Iterator[_ <: SchemaType] = config.getExtensionsOfType(contentType)
         while (iter.hasNext) {
           val extension: ComplexType = iter.next().asInstanceOf[ComplexType]
           if (!extension.isEmptyContent) {
@@ -667,7 +661,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     test
   }
 
-  def getContextItemType(): ItemType = staticInfo.getItemType
+  def getContextItemType: ItemType = staticInfo.getItemType
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
@@ -724,7 +718,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         StaticProperty.ATTRIBUTE_NS_NODESET
       else 0)
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     if (itemType != null) {
       return itemType
     }
@@ -782,16 +776,14 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       .isInstanceOf[NameTest] &&
       nodeTest.getPrimitiveType == Type.ELEMENT) {
       val contentType: SchemaType = originNodeType.getContentType
-      if (contentType.isInstanceOf[ComplexType]) {
-        try contentType
-          .asInstanceOf[ComplexType]
-          .getDescendantElementCardinality(nodeTest.getFingerprint)
-        catch {
-          case err: SchemaException => StaticProperty.ALLOWS_ZERO_OR_MORE
-
-        }
-      } else {
-        StaticProperty.EMPTY
+      contentType match {
+        case complexType: ComplexType =>
+          try complexType.getDescendantElementCardinality(nodeTest.getFingerprint)
+          catch {
+            case _: SchemaException => StaticProperty.ALLOWS_ZERO_OR_MORE
+          }
+        case _ =>
+          StaticProperty.EMPTY
       }
     } else if (axis == AxisInfo.SELF) {
       StaticProperty.ALLOWS_ZERO_OR_ONE
@@ -800,12 +792,11 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     }
   }
 
-  override def isSubtreeExpression(): Boolean = AxisInfo.isSubtreeAxis(axis)
+  override def isSubtreeExpression: Boolean = AxisInfo.isSubtreeAxis(axis)
 
-  def getNodeTest(): NodeTest = test
+  def getNodeTest: NodeTest = test
 
-  override def addToPathMap(
-                             pathMap: PathMap,
+  override def addToPathMap(pathMap: PathMap,
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     var pmnSet = pathMapNodeSet
     if (pmnSet == null) {
@@ -817,9 +808,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (test == null) AnyNodeTest.getInstance else test)
   }
 
-  def isContextPossiblyUndefined(): Boolean = staticInfo.isPossiblyAbsent
+  def isContextPossiblyUndefined: Boolean = staticInfo.isPossiblyAbsent
 
-  def getContextItemStaticInfo(): ContextItemStaticInfo = staticInfo
+  def getContextItemStaticInfo: ContextItemStaticInfo = staticInfo
 
   override def toPattern(config: Configuration): Pattern = {
     var test: NodeTest = getNodeTest
@@ -928,7 +919,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     fsb.toString
   }
 
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
     if (axis == AxisInfo.CHILD) {} else if (axis == AxisInfo.ATTRIBUTE) {
       fsb.append("@")
@@ -953,7 +944,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
   override def getStreamerName(): String = "AxisExpression"
 
-  def getPreconditions(): Set[Expression] = {
+  def getPreconditions: Set[Expression] = {
     val pre: HashSet[Expression] = new HashSet[Expression](1)
     val a: Expression = this.copy(new RebindingMap())
     a.setRetainedStaticContext(getRetainedStaticContext)

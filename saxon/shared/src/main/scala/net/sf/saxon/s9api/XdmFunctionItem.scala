@@ -35,13 +35,13 @@ class XdmFunctionItem extends XdmItem {
     this.setValue(fi)
   }
 
-  def getName(): QName = {
+  def getName: QName = {
     val fi: Function = getUnderlyingValue.asInstanceOf[Function]
     val sq: StructuredQName = fi.getFunctionName
     if (sq == null) null else new QName(sq)
   }
 
-  def getArity(): Int = {
+  def getArity: Int = {
     val fi: Function = getUnderlyingValue.asInstanceOf[Function]
     fi.getArity
   }
@@ -78,7 +78,7 @@ class XdmFunctionItem extends XdmItem {
       processor.getUnderlyingConfiguration.getTypeHierarchy
     for (i <- 0 until arguments.length) {
       val required: net.sf.saxon.value.SequenceType =
-        `type`.getArgumentTypes()(i)
+        `type`.getArgumentTypes(i)
       var `val`: Sequence = arguments(i).getUnderlyingValue
       if (!required.matches(`val`, th)) {
         val role: RoleDiagnostic =

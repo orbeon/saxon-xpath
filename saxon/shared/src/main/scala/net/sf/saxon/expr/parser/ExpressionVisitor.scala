@@ -51,7 +51,7 @@ class ExpressionVisitor(private var config: Configuration) {
     * Get the Configuration
     * @return the configuration
     */
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def issueWarning(message: String, locator: Location): Unit = {
     if (!isSuppressWarnings) {
@@ -69,7 +69,7 @@ class ExpressionVisitor(private var config: Configuration) {
     optimizer
   }
 
-  def getTargetEdition(): String =
+  def getTargetEdition: String =
     staticContext.getPackageData.getTargetEdition
 
   def incrementAndTestDepth(): Boolean = { depth += 1; depth - 1 } < MAX_DEPTH

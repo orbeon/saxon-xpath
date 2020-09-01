@@ -412,7 +412,7 @@ class Int64Value extends IntegerValue {
       new BigIntegerValue(value).idiv(other)
     }
 
-  private def isLong(): Boolean = {
+  private def isLong: Boolean = {
     val top: Long = value >> 31
     top != 0
   }

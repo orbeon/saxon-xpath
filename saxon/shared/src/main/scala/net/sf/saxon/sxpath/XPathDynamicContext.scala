@@ -64,7 +64,7 @@ class XPathDynamicContext(
     contextObject.setCurrentIterator(iter)
   }
 
-  def getContextItem(): Item = contextObject.getContextItem
+  def getContextItem: Item = contextObject.getContextItem
 
   def setVariable(variable: XPathVariable, value: Sequence): Unit = {
     val requiredType: SequenceType = variable.getRequiredType
@@ -105,9 +105,9 @@ class XPathDynamicContext(
     contextObject.setURIResolver(resolver)
   }
 
-  def getURIResolver(): URIResolver = contextObject.getURIResolver
+  def getURIResolver: URIResolver = contextObject.getURIResolver
 
-  def getCollectionFinder(): CollectionFinder =
+  def getCollectionFinder: CollectionFinder =
     contextObject.getController.getCollectionFinder
 
   def setCollectionFinder(cf: CollectionFinder): Unit = {
@@ -118,15 +118,15 @@ class XPathDynamicContext(
     contextObject.setErrorReporter(listener)
   }
 
-  def getErrorReporter(): ErrorReporter = contextObject.getErrorReporter
+  def getErrorReporter: ErrorReporter = contextObject.getErrorReporter
 
-  def getXPathContextObject(): XPathContext = contextObject
+  def getXPathContextObject: XPathContext = contextObject
 
   def setUnparsedTextURIResolver(resolver: UnparsedTextURIResolver): Unit = {
     contextObject.getController.setUnparsedTextURIResolver(resolver)
   }
 
-  def getUnparsedTextURIResolver(): UnparsedTextURIResolver =
+  def getUnparsedTextURIResolver: UnparsedTextURIResolver =
     contextObject.getController.getUnparsedTextURIResolver
 
   def checkExternalVariables(stackFrameMap: SlotManager,

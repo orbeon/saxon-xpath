@@ -6,9 +6,9 @@ import net.sf.saxon.s9api.HostLanguage.HostLanguage
 
 trait XmlProcessingError extends StaticError {
 
-  def getHostLanguage(): HostLanguage
+  def getHostLanguage: HostLanguage
 
-  def isStaticError(): Boolean
+  def isStaticError: Boolean
 
   def isTypeError(): Boolean
 
@@ -22,13 +22,13 @@ trait XmlProcessingError extends StaticError {
 
   def isWarning(): Boolean
 
-  def getPath(): String
+  def getPath: String
 
-  def getCause(): Throwable
+  def getCause: Throwable
 
   def asWarning(): XmlProcessingError
 
-  def isAlreadyReported(): Boolean
+  def isAlreadyReported: Boolean
 
   def setAlreadyReported(reported: Boolean): Unit
 

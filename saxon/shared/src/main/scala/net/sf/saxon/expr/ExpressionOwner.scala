@@ -6,7 +6,7 @@ package net.sf.saxon.expr
 
 trait ExpressionOwner {
 
-  def getChildExpression(): Expression
+  def getChildExpression: Expression
 
   def setChildExpression(expr: Expression): Unit
 

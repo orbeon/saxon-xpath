@@ -14,7 +14,7 @@ object NumericComparer11 {
 
   /*@NotNull*/
 
-  def getInstance(): NumericComparer = THE_INSTANCE
+  def getInstance: NumericComparer = THE_INSTANCE
 
 }
 

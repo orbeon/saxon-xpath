@@ -48,7 +48,7 @@ class GlobalContextRequirement {
   @BeanProperty
   var defaultValue: Expression = null
 
-  def getRequiredItemType(): ItemType =
+  def getRequiredItemType: ItemType =
     if (requiredItemTypes.isEmpty) {
       AnyItemType
     } else {
@@ -65,7 +65,7 @@ class GlobalContextRequirement {
     use = if (isMayBeOmitted) if (isAbsentFocus) "pro" else "opt" else "req"
     out.emitAttribute("use", use)
     if (getRequiredItemType != AnyItemType) {
-      out.emitAttribute("type", getRequiredItemType.toExportString())
+      out.emitAttribute("type", getRequiredItemType.toExportString)
     }
     out.endElement()
   }

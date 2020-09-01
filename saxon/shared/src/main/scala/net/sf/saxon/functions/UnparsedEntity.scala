@@ -46,7 +46,7 @@ object UnparsedEntity {
 
 abstract class UnparsedEntity extends SystemFunction with Callable {
 
-  def getOp(): Int
+  def getOp: Int
 
   /**
     * Evaluate the expression
@@ -59,7 +59,7 @@ abstract class UnparsedEntity extends SystemFunction with Callable {
     */
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val operation: Int = getOp
-    val arg0: String = arguments(0).head().getStringValue
+    val arg0: String = arguments(0).head.getStringValue
     var doc: NodeInfo = null
     if (getArity == 1) {
       val it: Item = context.getContextItem
@@ -75,7 +75,7 @@ abstract class UnparsedEntity extends SystemFunction with Callable {
           context)
       }
     } else {
-      doc = arguments(1).head().asInstanceOf[NodeInfo]
+      doc = arguments(1).head.asInstanceOf[NodeInfo]
       if (doc != null) {
         doc = doc.getRoot
       }

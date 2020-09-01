@@ -28,7 +28,7 @@ class TextOverNodeInfo extends NodeOverNodeInfo with Text with Comment {
     disallowUpdate()
   }
 
-  def getLength(): Int = node.getStringValue.length
+  def getLength: Int = node.getStringValue.length
 
   def substringData(offset: Int, count: Int): String =
     node.getStringValue.substring(offset, offset + count)

@@ -37,7 +37,7 @@ object StandardResultDocumentResolver {
   private var theInstance: StandardResultDocumentResolver =
     new StandardResultDocumentResolver()
 
-  def getInstance(): StandardResultDocumentResolver = theInstance
+  def getInstance: StandardResultDocumentResolver = theInstance
 
   def makeOutputFile(absoluteURI: URI): StreamResult = synchronized {
     val outputFile: File = new File(absoluteURI)

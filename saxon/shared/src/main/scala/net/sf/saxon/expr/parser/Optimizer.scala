@@ -63,7 +63,7 @@ class Optimizer( var config: Configuration) {
    var tracing: Boolean =
     config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def isOptionSet(option: Int): Boolean = optimizerOptions.isSet(option)
 
@@ -161,7 +161,7 @@ class Optimizer( var config: Configuration) {
       isVariableReplaceableByDot(start, binding) && !ExpressionTool
         .dependsOnVariable(step, binding)
     } else {
-      for (op <- exp.operands().asScala) if (!isVariableReplaceableByDot(op.getChildExpression, binding)) false
+      for (op <- exp.operands.asScala) if (!isVariableReplaceableByDot(op.getChildExpression, binding)) false
       true
     }
 

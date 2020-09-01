@@ -72,7 +72,7 @@ class LocalParam extends Instruction with LocalBinding {
     evaluator = null
   }
 
-  def getSelectExpression(): Expression =
+  def getSelectExpression: Expression =
     if (selectOp == null) null else selectOp.getChildExpression
 
   def setRequiredParam(requiredParam: Boolean): Unit = {
@@ -111,12 +111,12 @@ class LocalParam extends Instruction with LocalBinding {
 
   def getLocalSlotNumber(): Int = slotNumber
 
-  def isRequiredParam(): Boolean = (properties & REQUIRED) != 0
+  def isRequiredParam: Boolean = (properties & REQUIRED) != 0
 
-  def isImplicitlyRequiredParam(): Boolean =
+  def isImplicitlyRequiredParam: Boolean =
     (properties & IMPLICITLY_REQUIRED) != 0
 
-  def isTunnelParam(): Boolean = (properties & TUNNEL) != 0
+  def isTunnelParam: Boolean = (properties & TUNNEL) != 0
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Expression = {
@@ -200,7 +200,7 @@ class LocalParam extends Instruction with LocalBinding {
     }
   }
 
-  def getSlotNumber(): Int = slotNumber
+  def getSlotNumber: Int = slotNumber
 
   def setSlotNumber(s: Int): Unit = {
     slotNumber = s
@@ -223,15 +223,15 @@ class LocalParam extends Instruction with LocalBinding {
     }
   }
 
-  def getConversion(): Expression =
+  def getConversion: Expression =
     if (conversionOp == null) null else conversionOp.getChildExpression
 
-  def getConversionEvaluationMode(): EvaluationMode.EvaluationMode =
+  def getConversionEvaluationMode: EvaluationMode.EvaluationMode =
     conversionEvaluator.getEvaluationMode
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_PARAM
 
-  override def operands(): java.lang.Iterable[Operand] =
+  override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, conversionOp)
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
@@ -287,7 +287,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def hasVariableBinding(binding: Binding): Boolean = this == binding
 
-  override def getItemType(): ItemType = ErrorType
+  override def getItemType: ItemType = ErrorType
 
   override def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 
@@ -298,7 +298,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def getExpressionName(): String = "param"
 
-  override def toShortString(): String = "$" + getVariableQName.getDisplayName
+  override def toShortString: String = "$" + getVariableQName.getDisplayName
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("param", this)
@@ -325,7 +325,7 @@ class LocalParam extends Instruction with LocalBinding {
     out.endElement()
   }
 
-  private def getFlags(): String = {
+  private def getFlags: String = {
     var flags: String = ""
     if (isTunnelParam) {
       flags += "t"

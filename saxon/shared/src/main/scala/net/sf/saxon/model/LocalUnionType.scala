@@ -26,31 +26,31 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
   extends PlainType
     with UnionType {
 
-  override def getGenre(): Genre.Genre = Genre.ATOMIC
+  override def getGenre: Genre.Genre = Genre.ATOMIC
 
   def getTypeName(): StructuredQName =
     new StructuredQName("", NamespaceConstant.ANONYMOUS, "U" + hashCode)
 
-  def isAtomicType(): Boolean = false
+  def isAtomicType: Boolean = false
 
   def containsListType(): Boolean = false
 
-  def isPlainType(): Boolean = true
+  def isPlainType: Boolean = true
 
   override def isTrueItemType(): Boolean = true
 
   def getResultTypeOfCast(): SequenceType =
     SequenceType.makeSequenceType(this, StaticProperty.ALLOWS_ZERO_OR_ONE)
 
-  def isIdType(): Boolean = memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isIdType)
+  def isIdType: Boolean = memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isIdType)
 
-  def isIdRefType(): Boolean = memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isIdType)
+  def isIdRefType: Boolean = memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isIdType)
 
-  def isBuiltInType(): Boolean = false
+  def isBuiltInType: Boolean = false
 
-  def isListType(): Boolean = false
+  def isListType: Boolean = false
 
-  def isUnionType(): Boolean = true
+  def isUnionType: Boolean = true
 
   def getUType(): UType = {
     var u: UType = UType.VOID
@@ -60,7 +60,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
     u
   }
 
-  override def getBasicAlphaCode(): String = "A"
+  override def getBasicAlphaCode: String = "A"
 
   def isNamespaceSensitive(): Boolean =
     memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isNamespaceSensitive)
@@ -109,17 +109,17 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
       false
     }
 
-  def getPrimitiveItemType(): AtomicType = BuiltInAtomicType.ANY_ATOMIC
+  def getPrimitiveItemType: AtomicType = BuiltInAtomicType.ANY_ATOMIC
 
-  def getPrimitiveType(): Int = StandardNames.XS_ANY_ATOMIC_TYPE
+  def getPrimitiveType: Int = StandardNames.XS_ANY_ATOMIC_TYPE
 
-  def getAtomizedItemType(): PlainType = this
+  def getAtomizedItemType: PlainType = this
 
   def isAtomizable(th: TypeHierarchy): Boolean = true
 
   def getPlainMemberTypes(): Iterable[AtomicType] = memberTypes.asScala
 
-  override def getDefaultPriority(): Double = {
+  override def getDefaultPriority: Double = {
     var result: Double = 1
     for (t <- memberTypes.asScala) {
       result *= t.getDefaultPriority
@@ -144,7 +144,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     fsb.append("union(")
     for (at <- memberTypes.asScala) {
-      fsb.append(at.toExportString())
+      fsb.append(at.toExportString)
       fsb.append(", ")
     }
     fsb.setLength(fsb.length - 2)

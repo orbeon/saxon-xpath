@@ -35,15 +35,15 @@ class SerializationProperties {
 
   def getProperty(name: String): String = getProperties.getProperty(name)
 
-  def getProperties(): Properties = properties
+  def getProperties: Properties = properties
 
-  def getCharacterMapIndex(): CharacterMapIndex = charMapIndex
+  def getCharacterMapIndex: CharacterMapIndex = charMapIndex
 
   def setValidationFactory(validationFactory: FilterFactory): Unit = {
     this.validationFactory = validationFactory
   }
 
-  def getValidationFactory(): FilterFactory = validationFactory
+  def getValidationFactory: FilterFactory = validationFactory
 
   def makeSequenceNormalizer(next: Receiver): SequenceNormalizer = {
     var nextRec = next

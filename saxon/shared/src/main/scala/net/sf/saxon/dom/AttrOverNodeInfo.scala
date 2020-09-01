@@ -40,7 +40,7 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   def getValue(): String = node.getStringValue
 
-  override def hasChildNodes(): Boolean = true
+  override def hasChildNodes: Boolean = true
 
   override def getFirstChild(): Node = new TextOverAttrInfo(this)
 

@@ -14,7 +14,7 @@ import net.sf.saxon.value.AtomicValue
 
 trait AtomicComparer {
 
-  def getCollator(): StringCollator
+  def getCollator: StringCollator
 
   def provideContext(context: XPathContext): AtomicComparer
 

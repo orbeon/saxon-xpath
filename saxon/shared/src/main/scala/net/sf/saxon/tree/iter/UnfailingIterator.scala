@@ -22,7 +22,7 @@ trait UnfailingIterator extends SequenceIterator {
     }) != null) consumer.accept(item)
   }
 
-  def toList(): List[Item] = {
+  def toList: List[Item] = {
     val list: List[Item] = new ArrayList[Item]()
     forEach((res: Item) => list.add(res))
     list

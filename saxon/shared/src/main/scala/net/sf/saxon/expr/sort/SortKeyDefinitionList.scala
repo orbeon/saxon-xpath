@@ -34,7 +34,7 @@ class SortKeyDefinitionList(
     extends PseudoExpression
     with java.lang.Iterable[SortKeyDefinition] {
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand](size)
     for (skd <- sortKeyDefinitions) {
       list.add(new Operand(this, skd, OperandRole.INSPECT))

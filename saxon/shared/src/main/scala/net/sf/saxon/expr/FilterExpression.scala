@@ -49,9 +49,8 @@ object FilterExpression {
     SequenceType.ANY_SEQUENCE)
 
   private def forceToBoolean(in: Expression): Expression = {
-    if (in.getItemType.getPrimitiveType == StandardNames.XS_BOOLEAN) {
+    if (in.getItemType.getPrimitiveType == StandardNames.XS_BOOLEAN)
       return in
-    }
     SystemFunction.makeCall("boolean", in.getRetainedStaticContext, in)
   }
 
@@ -327,13 +326,13 @@ class FilterExpression(base: Expression, filter: Expression)
   override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.SAME_FOCUS_ACTION else FILTER_PREDICATE
 
-  def getBase(): Expression = getLhsExpression
+  def getBase: Expression = getLhsExpression
 
   def setBase(baseExp: Expression): Unit = {
     this.setLhsExpression(baseExp)
   }
 
-  def getFilter(): Expression = getRhsExpression
+  def getFilter: Expression = getRhsExpression
 
   def setFilter(filter: Expression): Unit = {
     this.setRhsExpression(filter)
@@ -341,7 +340,7 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def getExpressionName(): String = "filter"
 
-  def getItemType(): ItemType = {
+  def getItemType: ItemType = {
     if (getFilter.isInstanceOf[InstanceOfExpression] &&
       getFilter
         .asInstanceOf[InstanceOfExpression]
@@ -362,9 +361,9 @@ class FilterExpression(base: Expression, filter: Expression)
   def isPositional(th: TypeHierarchy): Boolean =
     isPositionalFilter(getFilter, th)
 
-  def isSimpleBooleanFilter(): Boolean = filterIsSingletonBoolean
+  def isSimpleBooleanFilter: Boolean = filterIsSingletonBoolean
 
-  def isIndependentFilter(): Boolean = filterIsIndependent
+  def isIndependentFilter: Boolean = filterIsIndependent
 
   override def simplify(): Expression = {
     baseExp = getBase.simplify()
@@ -1033,9 +1032,8 @@ class FilterExpression(base: Expression, filter: Expression)
     ExpressionTool.parenthesize(getBase) + "[" + getFilter +
       "]"
 
-  override def toShortString(): String =
-    getBase.toShortString() + "[" + getFilter.toShortString() +
-      "]"
+  override def toShortString: String =
+    getBase.toShortString + "[" + getFilter.toShortString + "]"
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("filter", this)

@@ -44,13 +44,13 @@ class Doctype(content: Expression) extends Instruction {
   private var contentOp: Operand =
     new Operand(this, content, OperandRole.SINGLE_ATOMIC)
 
-  def getContent(): Expression = contentOp.getChildExpression
+  def getContent: Expression = contentOp.getChildExpression
 
   def setContent(content: Expression): Unit = {
     contentOp.setChildExpression(content)
   }
 
-  override def operands(): java.lang.Iterable[Operand] = contentOp
+  override def operands: java.lang.Iterable[Operand] = contentOp
 
   def copy(rebindings: RebindingMap): Expression =
     throw new UnsupportedOperationException("Doctype.copy()")

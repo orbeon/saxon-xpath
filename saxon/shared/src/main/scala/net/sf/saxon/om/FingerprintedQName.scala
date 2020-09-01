@@ -176,7 +176,7 @@ class FingerprintedQName
 
   override def equals(other: Any): Boolean = other match {
     case other: NodeName =>
-      if (fingerprint != -1 && other.hasFingerprint()) {
+      if (fingerprint != -1 && other.hasFingerprint) {
         getFingerprint == other.getFingerprint
       } else {
         getLocalPart == other.getLocalPart && hasURI(other.getURI)

@@ -8,27 +8,27 @@ import net.sf.saxon.z.IntHashSet
 
 trait ComplexType extends SchemaType {
 
-  def getVariety(): Int
+  def getVariety: Int
 
-  def isAbstract(): Boolean
+  def isAbstract: Boolean
 
-  def isComplexContent(): Boolean
+  def isComplexContent: Boolean
 
-  def isSimpleContent(): Boolean
+  def isSimpleContent: Boolean
 
-  def isAllContent(): Boolean
+  def isAllContent: Boolean
 
   /*@Nullable*/
 
-  def getSimpleContentType(): SimpleType
+  def getSimpleContentType: SimpleType
 
-  def isRestricted(): Boolean
+  def isRestricted: Boolean
 
-  def isEmptyContent(): Boolean
+  def isEmptyContent: Boolean
 
-  def isEmptiable(): Boolean
+  def isEmptiable: Boolean
 
-  def isMixedContent(): Boolean
+  def isMixedContent: Boolean
 
   /*@Nullable*/
 
@@ -59,7 +59,7 @@ trait ComplexType extends SchemaType {
 
   def containsElementWildcard(): Boolean
 
-  def hasAssertions(): Boolean
+  def hasAssertions: Boolean
 
 }
 

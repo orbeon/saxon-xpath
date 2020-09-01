@@ -94,7 +94,7 @@ class RangeExpression(start: Expression, end: Expression)
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = BuiltInAtomicType.INTEGER
+  def getItemType: ItemType = BuiltInAtomicType.INTEGER
 
   /**
     * Get the static type of the expression as a UType, following precisely the type

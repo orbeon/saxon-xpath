@@ -23,13 +23,13 @@ class SlashExpression(start: Expression, step: Expression)
     if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT
     else OperandRole.FOCUS_CONTROLLED_ACTION
 
-  def getStart(): Expression = getLhsExpression
+  def getStart: Expression = getLhsExpression
 
   def setStart(start: Expression): Unit = {
     this.setLhsExpression(start)
   }
 
-  def getStep(): Expression = getRhsExpression
+  def getStep: Expression = getRhsExpression
 
   def setStep(step: Expression): Unit = {
     this.setRhsExpression(step)
@@ -41,7 +41,7 @@ class SlashExpression(start: Expression, step: Expression)
 
   def getActionExpression(): Expression = getStep
 
-  def getItemType(): ItemType = getStep.getItemType
+  def getItemType: ItemType = getStep.getItemType
 
   override def getStaticUType(contextItemType: UType): UType =
     getStep.getStaticUType(getStart.getStaticUType(contextItemType))
@@ -520,7 +520,7 @@ class SlashExpression(start: Expression, step: Expression)
     new AncestorQualifiedPattern(tailPattern, headPattern, axis)
   }
 
-  def isContextFree(): Boolean = contextFree
+  def isContextFree: Boolean = contextFree
 
   def setContextFree(free: Boolean): Unit = {
     this.contextFree = free
@@ -565,17 +565,17 @@ class SlashExpression(start: Expression, step: Expression)
   override def toString: String =
     ExpressionTool.parenthesize(getStart) + "/" + ExpressionTool.parenthesize(getStep)
 
-  override def toShortString(): String =
+  override def toShortString: String =
     ExpressionTool.parenthesizeShort(getStart) + "/" + ExpressionTool.parenthesizeShort(getStep)
 
-  def getFirstStep(): Expression =
+  def getFirstStep: Expression =
     if (getStart.isInstanceOf[SlashExpression]) {
       getStart.asInstanceOf[SlashExpression].getFirstStep
     } else {
       getStart
     }
 
-  def getRemainingSteps(): Expression =
+  def getRemainingSteps: Expression =
     if (getStart.isInstanceOf[SlashExpression]) {
       val list: List[Expression] = new ArrayList[Expression](8)
       gatherSteps(list)
@@ -607,14 +607,14 @@ class SlashExpression(start: Expression, step: Expression)
         rebuildSteps(list.subList(1, list.size)))
     }
 
-  def getLastStep(): Expression =
+  def getLastStep: Expression =
     if (getStep.isInstanceOf[SlashExpression]) {
       getStep.asInstanceOf[SlashExpression].getLastStep
     } else {
       getStep
     }
 
-  def getLeadingSteps(): Expression =
+  def getLeadingSteps: Expression =
     if (getStep.isInstanceOf[SlashExpression]) {
       val list: List[Expression] = new ArrayList[Expression](8)
       gatherSteps(list)
@@ -625,7 +625,7 @@ class SlashExpression(start: Expression, step: Expression)
       getStart
     }
 
-  def isAbsolute(): Boolean =
+  def isAbsolute: Boolean =
     getFirstStep.getItemType.getPrimitiveType == Type.DOCUMENT
 
   override def getStreamerName(): String = "ForEach"

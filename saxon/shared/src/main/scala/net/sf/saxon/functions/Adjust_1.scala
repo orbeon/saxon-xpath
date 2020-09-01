@@ -9,7 +9,7 @@ import net.sf.saxon.value.CalendarValue
 class Adjust_1 extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
-    val in: CalendarValue = arguments(0).head().asInstanceOf[CalendarValue]
+    val in: CalendarValue = arguments(0).head.asInstanceOf[CalendarValue]
     if (in == null) {
       ZeroOrOne.empty().asInstanceOf[ZeroOrOne[Item]]
     } else {

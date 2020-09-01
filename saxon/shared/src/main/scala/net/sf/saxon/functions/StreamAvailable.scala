@@ -56,7 +56,7 @@ class StreamAvailable extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val result: Boolean =
-      isAvailable(arguments(0).head().getStringValue, context)
+      isAvailable(arguments(0).head.getStringValue, context)
     BooleanValue.get(result)
   }
 

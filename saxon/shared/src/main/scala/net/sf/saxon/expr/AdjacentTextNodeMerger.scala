@@ -138,7 +138,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
     this
   }
 
-  override def getItemType(): ItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   override def getStaticUType(contextItemType: UType): UType =
     getBaseExpression.getStaticUType(contextItemType)

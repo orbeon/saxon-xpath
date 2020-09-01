@@ -77,7 +77,7 @@ class CurrentGroupCall extends Expression with Callable {
     this.itemType = AnyItemType
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     if (itemType == AnyItemType && controllingInstruction != null) {
       itemType = controllingInstruction.getSelectExpression.getItemType
     }
@@ -127,7 +127,7 @@ class CurrentGroupCall extends Expression with Callable {
 
   override def toString: String = "current-group()"
 
-  override def toShortString(): String = toString
+  override def toShortString: String = toString
 
   override def getStreamerName(): String = "CurrentGroup"
 

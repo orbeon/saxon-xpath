@@ -87,7 +87,7 @@ class REProgram /**
     this.backtrackingLimit = limit
   }
 
-  def getBacktrackingLimit(): Int = backtrackingLimit
+  def getBacktrackingLimit: Int = backtrackingLimit
 
   private def addPrecondition(op: Operation,
                               fixedPosition: Int,
@@ -136,7 +136,7 @@ class REProgram /**
     }
   }
 
-  def isNullable(): Boolean = {
+  def isNullable: Boolean = {
     val m: Int = operation.matchesEmptyString()
     (m & Operation.MATCHES_ZLS_ANYWHERE) != 0
   }
@@ -148,7 +148,7 @@ class REProgram /**
     *
     * @return A copy of the prefix of current compiled RE program
     */
-  def getPrefix(): UnicodeString = prefix
+  def getPrefix: UnicodeString = prefix
 
 }
 

@@ -1,95 +1,54 @@
 package net.sf.saxon.model
 
+import java.util.{HashSet, Iterator, Set}
+
+import net.sf.saxon.model.PrimitiveUType.PrimitiveUType
+import net.sf.saxon.model.UType._
 import net.sf.saxon.om._
 import net.sf.saxon.pattern.AnyNodeTest
 import net.sf.saxon.tree.iter.UnfailingIterator
 import net.sf.saxon.tree.util.FastStringBuffer
-import net.sf.saxon.value.AtomicValue
-import net.sf.saxon.value.ObjectValue
-import java.util.HashSet
-import java.util.Iterator
-import java.util.Set
-
-import UType._
-import net.sf.saxon.model.PrimitiveUType.PrimitiveUType
+import net.sf.saxon.value.{AtomicValue, ObjectValue}
 
 object UType {
 
   val VOID: UType = new UType(0)
-
-  val DOCUMENT: UType = PrimitiveUType.DOCUMENT.toUType()
-
-  val ELEMENT: UType = PrimitiveUType.ELEMENT.toUType()
-
-  val ATTRIBUTE: UType = PrimitiveUType.ATTRIBUTE.toUType()
-
-  val TEXT: UType = PrimitiveUType.TEXT.toUType()
-
-  val COMMENT: UType = PrimitiveUType.COMMENT.toUType()
-
-  val PI: UType = PrimitiveUType.PI.toUType()
-
-  val NAMESPACE: UType = PrimitiveUType.NAMESPACE.toUType()
-
-  val FUNCTION: UType = PrimitiveUType.FUNCTION.toUType()
-
-  val STRING: UType = PrimitiveUType.STRING.toUType()
-
-  val BOOLEAN: UType = PrimitiveUType.BOOLEAN.toUType()
-
-  val DECIMAL: UType = PrimitiveUType.DECIMAL.toUType()
-
-  val FLOAT: UType = PrimitiveUType.FLOAT.toUType()
-
-  val DOUBLE: UType = PrimitiveUType.DOUBLE.toUType()
-
-  val DURATION: UType = PrimitiveUType.DURATION.toUType()
-
-  val DATE_TIME: UType = PrimitiveUType.DATE_TIME.toUType()
-
-  val TIME: UType = PrimitiveUType.TIME.toUType()
-
-  val DATE: UType = PrimitiveUType.DATE.toUType()
-
-  val G_YEAR_MONTH: UType = PrimitiveUType.G_YEAR_MONTH.toUType()
-
-  val G_YEAR: UType = PrimitiveUType.G_YEAR.toUType()
-
-  val G_MONTH_DAY: UType = PrimitiveUType.G_MONTH_DAY.toUType()
-
-  val G_DAY: UType = PrimitiveUType.G_DAY.toUType()
-
-  val G_MONTH: UType = PrimitiveUType.G_MONTH.toUType()
-
-  val HEX_BINARY: UType = PrimitiveUType.HEX_BINARY.toUType()
-
-  val BASE64_BINARY: UType = PrimitiveUType.BASE64_BINARY.toUType()
-
-  val ANY_URI: UType = PrimitiveUType.ANY_URI.toUType()
-
-  val QNAME: UType = PrimitiveUType.QNAME.toUType()
-
-  val NOTATION: UType = PrimitiveUType.NOTATION.toUType()
-
-  val UNTYPED_ATOMIC: UType = PrimitiveUType.UNTYPED_ATOMIC.toUType()
-
-  val EXTENSION: UType = PrimitiveUType.EXTENSION.toUType()
-
+  val DOCUMENT: UType = PrimitiveUType.DOCUMENT.toUType
+  val ELEMENT: UType = PrimitiveUType.ELEMENT.toUType
+  val ATTRIBUTE: UType = PrimitiveUType.ATTRIBUTE.toUType
+  val TEXT: UType = PrimitiveUType.TEXT.toUType
+  val COMMENT: UType = PrimitiveUType.COMMENT.toUType
+  val PI: UType = PrimitiveUType.PI.toUType
+  val NAMESPACE: UType = PrimitiveUType.NAMESPACE.toUType
+  val FUNCTION: UType = PrimitiveUType.FUNCTION.toUType
+  val STRING: UType = PrimitiveUType.STRING.toUType
+  val BOOLEAN: UType = PrimitiveUType.BOOLEAN.toUType
+  val DECIMAL: UType = PrimitiveUType.DECIMAL.toUType
+  val FLOAT: UType = PrimitiveUType.FLOAT.toUType
+  val DOUBLE: UType = PrimitiveUType.DOUBLE.toUType
+  val DURATION: UType = PrimitiveUType.DURATION.toUType
+  val DATE_TIME: UType = PrimitiveUType.DATE_TIME.toUType
+  val TIME: UType = PrimitiveUType.TIME.toUType
+  val DATE: UType = PrimitiveUType.DATE.toUType
+  val G_YEAR_MONTH: UType = PrimitiveUType.G_YEAR_MONTH.toUType
+  val G_YEAR: UType = PrimitiveUType.G_YEAR.toUType
+  val G_MONTH_DAY: UType = PrimitiveUType.G_MONTH_DAY.toUType
+  val G_DAY: UType = PrimitiveUType.G_DAY.toUType
+  val G_MONTH: UType = PrimitiveUType.G_MONTH.toUType
+  val HEX_BINARY: UType = PrimitiveUType.HEX_BINARY.toUType
+  val BASE64_BINARY: UType = PrimitiveUType.BASE64_BINARY.toUType
+  val ANY_URI: UType = PrimitiveUType.ANY_URI.toUType
+  val QNAME: UType = PrimitiveUType.QNAME.toUType
+  val NOTATION: UType = PrimitiveUType.NOTATION.toUType
+  val UNTYPED_ATOMIC: UType = PrimitiveUType.UNTYPED_ATOMIC.toUType
+  val EXTENSION: UType = PrimitiveUType.EXTENSION.toUType
   val NUMERIC: UType = DOUBLE.union(FLOAT).union(DECIMAL)
-
   val STRING_LIKE: UType = STRING.union(ANY_URI).union(UNTYPED_ATOMIC)
-
   val CHILD_NODE_KINDS: UType = ELEMENT.union(TEXT).union(COMMENT).union(PI)
-
   val PARENT_NODE_KINDS: UType = DOCUMENT.union(ELEMENT)
-
   val ELEMENT_OR_ATTRIBUTE: UType = ELEMENT.union(ATTRIBUTE)
-
-  val ANY_NODE: UType =
-    CHILD_NODE_KINDS.union(DOCUMENT).union(ATTRIBUTE).union(NAMESPACE)
-
+  val ANY_NODE: UType = CHILD_NODE_KINDS.union(DOCUMENT).union(ATTRIBUTE).union(NAMESPACE)
   val ANY_ATOMIC: UType = new UType(0x0FFFFF00)
-
   val ANY: UType = ANY_NODE.union(ANY_ATOMIC).union(FUNCTION).union(EXTENSION)
 
   def fromTypeCode(code: Int): UType = code match {
@@ -286,7 +245,7 @@ class UType(private var bits: Int) {
     sb.toString
   }
 
-  def toStringWithIndefiniteArticle(): String = {
+  def toStringWithIndefiniteArticle: String = {
     val s: String = toString
     if ("aeiouxy".indexOf(s.charAt(0)) >= 0) {
       "an " + s + " node"
@@ -299,12 +258,12 @@ class UType(private var bits: Int) {
 
   def subsumes(other: UType): Boolean = (bits & other.bits) == other.bits
 
-  def toItemType(): ItemType = {
+  def toItemType: ItemType = {
     val p: Set[PrimitiveUType] = decompose()
     if (p.isEmpty) {
       ErrorType
     } else if (p.size == 1) {
-      p.toArray(Array.ofDim[PrimitiveUType](1))(0).toItemType()
+      p.toArray(Array.ofDim[PrimitiveUType](1))(0).toItemType
     } else if (ANY_NODE.subsumes(this)) {
       AnyNodeTest.getInstance
     } else if (equals(NUMERIC)) {
@@ -317,5 +276,4 @@ class UType(private var bits: Int) {
   }
 
   def matches(item: Item): Boolean = subsumes(getUType(item))
-
 }

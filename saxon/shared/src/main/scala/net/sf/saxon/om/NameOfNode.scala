@@ -80,7 +80,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     * @return true if the methods getFingerprint() and getNameCode() will
     *         return a result other than -1
     */
-  def hasFingerprint(): Boolean = node.hasFingerprint()
+  def hasFingerprint(): Boolean = node.hasFingerprint
 
   /**
     * Get the fingerprint of this name if known. This method should not to any work to allocate
@@ -102,7 +102,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     * @return a nameCode for this name, newly allocated if necessary
     */
   def obtainFingerprint(namePool: NamePool): Int =
-    if (node.hasFingerprint()) {
+    if (node.hasFingerprint) {
       node.getFingerprint
     } else {
       namePool.allocateFingerprint(node.getURI, node.getLocalPart)
@@ -120,7 +120,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
   override def equals(obj: Any): Boolean = obj match {
     case obj: NodeName => {
       val n: NodeName = obj
-      if (node.hasFingerprint() && n.hasFingerprint()) {
+      if (node.hasFingerprint && n.hasFingerprint) {
         node.getFingerprint == n.getFingerprint
       } else {
         n.getLocalPart == node.getLocalPart && n.hasURI(node.getURI)

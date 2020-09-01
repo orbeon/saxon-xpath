@@ -9,7 +9,7 @@ import net.sf.saxon.value.AnyURIValue
 class BaseUri_1 extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
-    val node: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val node: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (node == null) return ZeroOrOne.empty().asInstanceOf[ZeroOrOne[Item]]
     val s: String = node.getBaseURI
     if (s == null) return ZeroOrOne.empty().asInstanceOf[ZeroOrOne[Item]]

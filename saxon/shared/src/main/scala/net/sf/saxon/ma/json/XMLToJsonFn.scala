@@ -64,7 +64,7 @@ object XMLToJsonFn {
 class XMLToJsonFn extends SystemFunction with PushableFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val xml: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val xml: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (xml == null) {
       EmptySequence.getInstance
     }
@@ -80,10 +80,10 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
   private def isindentingRequested(context: XPathContext,
                                    arguments: Array[Sequence]): Boolean = {
     if (getArity > 1) {
-      val suppliedOptions: MapItem = arguments(1).head().asInstanceOf[MapItem]
+      val suppliedOptions: MapItem = arguments(1).head.asInstanceOf[MapItem]
       val options: Map[String, Sequence] = getDetails.optionDetails
         .processSuppliedOptions(suppliedOptions, context)
-      options.get("indent").head().asInstanceOf[BooleanValue].getBooleanValue
+      options.get("indent").head.asInstanceOf[BooleanValue].getBooleanValue
     }
     false
   }
@@ -91,7 +91,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
   override def process(destination: Outputter,
                        context: XPathContext,
                        arguments: Array[Sequence]): Unit = {
-    val xml: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val xml: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (xml != null) {
       val indent: Boolean = isindentingRequested(context, arguments)
       val pipe: PipelineConfiguration =

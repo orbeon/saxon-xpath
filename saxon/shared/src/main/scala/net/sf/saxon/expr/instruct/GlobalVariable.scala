@@ -133,10 +133,10 @@ class GlobalVariable
     isStatic = declaredStatic
   }
 
-  private def getConfiguration(): Configuration =
+  private def getConfiguration: Configuration =
     getPackageData.getConfiguration
 
-  def getUltimateOriginalVariable(): GlobalVariable =
+  def getUltimateOriginalVariable: GlobalVariable =
     if (originalVariable == null) {
       this
     } else {
@@ -149,7 +149,7 @@ class GlobalVariable
 
   def getBinderySlotNumber: Int = binderySlotNumber
 
-  def isUnused(): Boolean = this.binderySlotNumber == -9234
+  def isUnused: Boolean = this.binderySlotNumber == -9234
 
   def setPrivate(b: Boolean): Unit = {
     isPrivate = b
@@ -163,18 +163,18 @@ class GlobalVariable
 
   override def getProperty(name: String): AnyRef = null
 
-  override def getProperties(): Iterator[String] = {
+  override def getProperties: Iterator[String] = {
     val list: List[String] = Collections.emptyList()
     list.iterator()
   }
 
-  def getHostLanguage(): HostLanguage.HostLanguage = getPackageData.getHostLanguage
+  def getHostLanguage: HostLanguage.HostLanguage = getPackageData.getHostLanguage
 
   def setIndexedVariable(): Unit = {
     indexed = true
   }
 
-  def isIndexedVariable(): Boolean = indexed
+  def isIndexedVariable: Boolean = indexed
 
   def setContainsLocals(map: SlotManager): Unit = {
     this.stackFrameMap = map
@@ -475,12 +475,12 @@ class GlobalVariable
   def getIntegerBoundsForVariable(): Array[IntegerValue] =
     if (getBody == null) null else getBody.getIntegerBounds
 
-  def getLocalSlotNumber(): Int = 0
+  def getLocalSlotNumber: Int = 0
 
-  def getDescription(): String =
+  def getDescription: String =
     if (variableQName.hasURI(NamespaceConstant.SAXON_GENERATED_VARIABLE)) {
       "optimizer-generated global variable select=\"" + getBody
-        .toShortString() +
+        .toShortString +
         '"'
     } else {
       "global variable " + getVariableQName.getDisplayName
@@ -515,7 +515,7 @@ class GlobalVariable
     presenter.endElement()
   }
 
-   def getFlags(): String = {
+   def getFlags: String = {
     var flags: String = ""
     if (isAssignable) {
       flags += "a"

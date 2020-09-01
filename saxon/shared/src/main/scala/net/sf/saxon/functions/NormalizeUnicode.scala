@@ -63,13 +63,13 @@ object NormalizeUnicode {
 class NormalizeUnicode extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val sv: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val sv: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (sv == null) {
       StringValue.EMPTY_STRING
     }
     val nf: String =
       if (arguments.length == 1) "NFC"
-      else Whitespace.trim(arguments(1).head().getStringValue)
+      else Whitespace.trim(arguments(1).head.getStringValue)
     normalize(sv, nf, context)
   }
 

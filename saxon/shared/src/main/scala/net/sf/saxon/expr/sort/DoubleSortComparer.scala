@@ -18,7 +18,7 @@ object DoubleSortComparer {
 
   private var THE_INSTANCE: DoubleSortComparer = new DoubleSortComparer()
 
-  def getInstance(): DoubleSortComparer = THE_INSTANCE
+  def getInstance: DoubleSortComparer = THE_INSTANCE
 
 }
 

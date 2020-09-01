@@ -354,7 +354,7 @@ class ResultDocument(private val globalProperties: Properties,
     if (validationOptions == null) Validation.PRESERVE
     else validationOptions.getSchemaValidationMode
 
-  def getFormatExpression(): Expression =
+  def getFormatExpression: Expression =
     if (formatOp == null) null else formatOp.getChildExpression
 
   def setUseStaticBaseUri(staticBase: Boolean): Unit = {
@@ -365,7 +365,7 @@ class ResultDocument(private val globalProperties: Properties,
     this.async = async
   }
 
-  def isAsynchronous(): Boolean = async
+  def isAsynchronous: Boolean = async
 
   override def isMultiThreaded(config: Configuration): Boolean =
     isAsynchronous &&
@@ -445,9 +445,9 @@ class ResultDocument(private val globalProperties: Properties,
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_RESULT_DOCUMENT
 
-  override def getItemType(): ItemType = ErrorType
+  override def getItemType: ItemType = ErrorType
 
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: ArrayList[Operand] = new ArrayList[Operand](6)
     list.add(contentOp)
     if (hrefOp != null) {
@@ -750,7 +750,7 @@ class ResultDocument(private val globalProperties: Properties,
 
   override def getStreamerName(): String = "ResultDocument"
 
-  def getHref(): Expression =
+  def getHref: Expression =
     if (hrefOp == null) null else hrefOp.getChildExpression
 
   def setHref(href: Expression): Unit = {

@@ -62,21 +62,21 @@ abstract class QualifiedNameValue extends AtomicValue with AtomicMatchKey {
 
   def getPrimitiveStringValue(): String = qName.getDisplayName
 
-  def getClarkName(): String = qName.getClarkName
+  def getClarkName: String = qName.getClarkName
 
-  def getEQName(): String = qName.getEQName
-
-  /*@NotNull*/
-
-  def getLocalName(): String = qName.getLocalPart
+  def getEQName: String = qName.getEQName
 
   /*@NotNull*/
 
-  def getNamespaceURI(): String = qName.getURI
+  def getLocalName: String = qName.getLocalPart
 
   /*@NotNull*/
 
-  def getPrefix(): String = qName.getPrefix
+  def getNamespaceURI: String = qName.getURI
+
+  /*@NotNull*/
+
+  def getPrefix: String = qName.getPrefix
 
   /*@Nullable*/
 
@@ -104,11 +104,11 @@ abstract class QualifiedNameValue extends AtomicValue with AtomicMatchKey {
     "QName(\"" + getNamespaceURI + "\", \"" + getLocalName +
       "\")"
 
-  def toJaxpQName(): QName = qName.toJaxpQName()
+  def toJaxpQName: QName = qName.toJaxpQName
 
   /*@NotNull*/
 
-  def getStructuredQName(): StructuredQName = qName
+  def getStructuredQName: StructuredQName = qName
 
 }
 

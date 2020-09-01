@@ -283,7 +283,7 @@ class QueryModule extends StaticContext {
       functionLibraryList.addFunctionLibrary(new UnboundFunctionLibrary())
   }
 
-  def getBuiltInFunctionSet(): BuiltInFunctionSet =
+  def getBuiltInFunctionSet: BuiltInFunctionSet =
     if (isUpdating) {
       config.getXQueryUpdateFunctionSet
     } else {
@@ -292,7 +292,7 @@ class QueryModule extends StaticContext {
 
   def getConfiguration(): Configuration = config
 
-  def isTopLevelModule(): Boolean = this == topModule
+  def isTopLevelModule: Boolean = this == topModule
 
   def setIsMainModule(main: Boolean): Unit = {
     isMainModule = main
@@ -311,7 +311,7 @@ class QueryModule extends StaticContext {
     true
   }
 
-  def isSchemaAware(): Boolean = executable.isSchemaAware
+  def isSchemaAware: Boolean = executable.isSchemaAware
 
   def makeRetainedStaticContext(): RetainedStaticContext =
     if (activeNamespaces.empty()) {
@@ -327,15 +327,15 @@ class QueryModule extends StaticContext {
     preserveSpace = preserve
   }
 
-  def isPreserveBoundarySpace(): Boolean = preserveSpace
+  def isPreserveBoundarySpace: Boolean = preserveSpace
 
   def setEmptyLeast(least: Boolean): Unit = {
     defaultEmptyLeast = least
   }
 
-  def isEmptyLeast(): Boolean = defaultEmptyLeast
+  def isEmptyLeast: Boolean = defaultEmptyLeast
 
-  def getImportedFunctionLibrary(): ImportedFunctionLibrary =
+  def getImportedFunctionLibrary: ImportedFunctionLibrary =
     functionLibraryList
       .get(importedFunctionLibraryNr)
       .asInstanceOf[ImportedFunctionLibrary]
@@ -351,7 +351,7 @@ class QueryModule extends StaticContext {
   def importsNamespace(uri: String): Boolean =
     importedModuleNamespaces != null && importedModuleNamespaces.contains(uri)
 
-  def getTopLevelModule(): QueryModule = topModule
+  def getTopLevelModule: QueryModule = topModule
 
   def getContainingLocation(): Location = moduleLocation
 
@@ -369,7 +369,7 @@ class QueryModule extends StaticContext {
 
   def getStaticBaseURI(): String = baseURI
 
-  def getGlobalStackFrameMap(): SlotManager =
+  def getGlobalStackFrameMap: SlotManager =
     getPackageData.getGlobalSlotManager
 
   def declareVariable(`var`: GlobalVariable): Unit = {
@@ -416,7 +416,7 @@ class QueryModule extends StaticContext {
     }
   }
 
-  def getGlobalVariables(): java.lang.Iterable[GlobalVariable] =
+  def getGlobalVariables: java.lang.Iterable[GlobalVariable] =
     libraryVariables.values
 
   def fixupGlobalVariables(
@@ -545,7 +545,7 @@ class QueryModule extends StaticContext {
     }
   }
 
-  def getModuleVariables(): Iterator[GlobalVariable] =
+  def getModuleVariables: Iterator[GlobalVariable] =
     variables.values.iterator()
 
   def checkForCircularities(
@@ -638,7 +638,7 @@ class QueryModule extends StaticContext {
 
   def getFunctionLibrary(): FunctionLibrary = functionLibraryList
 
-  def getLocalFunctionLibrary(): XQueryFunctionLibrary =
+  def getLocalFunctionLibrary: XQueryFunctionLibrary =
     functionLibraryList
       .get(localFunctionLibraryNr)
       .asInstanceOf[XQueryFunctionLibrary]
@@ -826,7 +826,7 @@ class QueryModule extends StaticContext {
     activeNamespaces.pop()
   }
 
-  def getLiveNamespaceResolver(): NamespaceResolver = new NamespaceResolver() {
+  def getLiveNamespaceResolver: NamespaceResolver = new NamespaceResolver() {
     def getURIForPrefix(prefix: String, useDefault: Boolean): String =
       checkURIForPrefix(prefix)
 
@@ -881,7 +881,7 @@ class QueryModule extends StaticContext {
 
   def getRevalidationMode: Int = revalidationMode
 
-  def getActiveNamespaceBindings(): NamespaceMap = {
+  def getActiveNamespaceBindings: NamespaceMap = {
     if (activeNamespaces == null) {
       return NamespaceMap.emptyMap
     }

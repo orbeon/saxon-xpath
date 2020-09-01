@@ -30,24 +30,24 @@ trait GroundedValue extends Sequence {
 
   def itemAt(n: Int): Item
 
-  def head(): Item
+  def head: Item
 
   def subsequence(start: Int, length: Int): GroundedValue
 
-  def getLength(): Int
+  def getLength: Int
 
   def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
-  def getStringValue(): String
+  def getStringValue: String
 
-  def getStringValueCS(): CharSequence
+  def getStringValueCS: CharSequence
 
   def reduce(): GroundedValue = this
 
   override def materialize(): GroundedValue = this
 
-  def toShortString(): String = Err.depictSequence(this).toString
+  def toShortString: String = Err.depictSequence(this).toString
 
   def asIterable(): java.lang.Iterable[_ <: Item] = () => {
     val base: UnfailingIterator = iterate()

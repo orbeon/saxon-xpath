@@ -79,13 +79,13 @@ class UnionConstructorFunction( var targetType: UnionType,
                                 var allowEmpty: Boolean)
   extends AbstractFunction {
 
-   def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC
+   def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
 
-  def isAllowEmpty(): Boolean = allowEmpty
+  def isAllowEmpty: Boolean = allowEmpty
 
-  def getTargetType(): UnionType = targetType
+  def getTargetType: UnionType = targetType
 
-  def getNamespaceResolver(): NamespaceResolver = resolver
+  def getNamespaceResolver: NamespaceResolver = resolver
 
   def getFunctionItemType(): FunctionItemType = {
     val resultType: SequenceType = targetType.getResultTypeOfCast
@@ -95,7 +95,7 @@ class UnionConstructorFunction( var targetType: UnionType,
     new SpecificFunctionType(Array(argType), resultType)
   }
 
-  def getFunctionName(): StructuredQName = targetType.getTypeName
+  def getFunctionName: StructuredQName = targetType.getTypeName
 
   def getDescription(): String = getFunctionName.getDisplayName
 
@@ -161,7 +161,7 @@ class UnionConstructorFunction( var targetType: UnionType,
   }
 
   def call(context: XPathContext, args: Array[Sequence]): AtomicSequence = {
-    val `val`: AtomicValue = args(0).head().asInstanceOf[AtomicValue]
+    val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     if (`val` == null) {
       if (allowEmpty) {
         EmptyAtomicSequence.getInstance

@@ -100,9 +100,9 @@ object WindowClause {
 
     var isDespatched: Boolean = false
 
-    def isFinished(): Boolean = endPosition > 0
+    def isFinished: Boolean = endPosition > 0
 
-    def getIsDespatched(): Boolean = isDespatched
+    def getIsDespatched: Boolean = isDespatched
 
   }
 
@@ -135,9 +135,9 @@ class WindowClause extends Clause {
     this.sliding = sliding
   }
 
-  def isSlidingWindow(): Boolean = sliding
+  def isSlidingWindow: Boolean = sliding
 
-  def isTumblingWindow(): Boolean = !sliding
+  def isTumblingWindow: Boolean = !sliding
 
   def initSequence(flwor: FLWORExpression, sequence: Expression): Unit = {
     sequenceOp = new Operand(flwor, sequence, OperandRole.INSPECT)
@@ -147,7 +147,7 @@ class WindowClause extends Clause {
     sequenceOp.setChildExpression(sequence)
   }
 
-  def getSequence(): Expression = sequenceOp.getChildExpression
+  def getSequence: Expression = sequenceOp.getChildExpression
 
   def initStartCondition(flwor: FLWORExpression,
                          startCondition: Expression): Unit = {
@@ -158,7 +158,7 @@ class WindowClause extends Clause {
     startConditionOp.setChildExpression(startCondition)
   }
 
-  def getStartCondition(): Expression = startConditionOp.getChildExpression
+  def getStartCondition: Expression = startConditionOp.getChildExpression
 
   def initEndCondition(flwor: FLWORExpression,
                        endCondition: Expression): Unit = {
@@ -169,7 +169,7 @@ class WindowClause extends Clause {
     endConditionOp.setChildExpression(endCondition)
   }
 
-  def getEndCondition(): Expression =
+  def getEndCondition: Expression =
     if (endConditionOp == null) null else endConditionOp.getChildExpression
 
   def setVariableBinding(role: Int, binding: LocalVariableBinding): Unit = {

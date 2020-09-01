@@ -122,24 +122,24 @@ class XdmAtomicValue extends XdmItem {
     this.setValue(converter.convertString(lexicalForm).asAtomic())
   }
 
-  override def getUnderlyingValue(): AtomicValue =
+  override def getUnderlyingValue: AtomicValue =
     super.getUnderlyingValue.asInstanceOf[AtomicValue]
 
   override def toString: String = getStringValue
 
-  def getPrimitiveTypeName(): QName = {
+  def getPrimitiveTypeName: QName = {
     val value: AtomicValue = getUnderlyingValue
     val `type`: BuiltInAtomicType = value.getPrimitiveType
     new QName(`type`.getStructuredQName)
   }
 
-  def getTypeName(): QName = {
+  def getTypeName: QName = {
     val value: AtomicValue = getUnderlyingValue
     val `type`: AtomicType = value.getItemType
     new QName(`type`.getStructuredQName)
   }
 
-  def getValue(): Any = {
+  def getValue: Any = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[StringValue]) {
       av.getStringValue
@@ -154,13 +154,13 @@ class XdmAtomicValue extends XdmItem {
     } else if (av.isInstanceOf[BigDecimalValue]) {
       av.asInstanceOf[BigDecimalValue].getDecimalValue
     } else if (av.isInstanceOf[DateTimeValue]) {
-      if (av.asInstanceOf[DateTimeValue].hasTimezone()) {
-        av.asInstanceOf[DateTimeValue].toZonedDateTime()
+      if (av.asInstanceOf[DateTimeValue].hasTimezone) {
+        av.asInstanceOf[DateTimeValue].toZonedDateTime
       } else {
-        av.asInstanceOf[DateTimeValue].toLocalDateTime()
+        av.asInstanceOf[DateTimeValue].toLocalDateTime
       }
     } else if (av.isInstanceOf[DateValue]) {
-      av.asInstanceOf[DateValue].toLocalDate()
+      av.asInstanceOf[DateValue].toLocalDate
     } else if (av.isInstanceOf[QNameValue]) {
       val q: QNameValue = av.asInstanceOf[QNameValue]
       new QName(q.getPrefix, q.getNamespaceURI, q.getLocalName)
@@ -169,7 +169,7 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getBooleanValue(): Boolean = {
+  def getBooleanValue: Boolean = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[BooleanValue]) {
       av.asInstanceOf[BooleanValue].getBooleanValue
@@ -183,7 +183,7 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getLongValue(): Long = {
+  def getLongValue: Long = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[BooleanValue]) {
       if (av.asInstanceOf[BooleanValue].getBooleanValue) 0L else 1L
@@ -197,7 +197,7 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getDoubleValue(): Double = {
+  def getDoubleValue: Double = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[BooleanValue]) {
       if (av.asInstanceOf[BooleanValue].getBooleanValue) 0.0 else 1.0
@@ -211,7 +211,7 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getDecimalValue(): BigDecimal = {
+  def getDecimalValue: BigDecimal = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[BooleanValue]) {
       if (av.asInstanceOf[BooleanValue].getBooleanValue) BigDecimal.ZERO
@@ -225,7 +225,7 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getQNameValue(): QName = {
+  def getQNameValue: QName = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[QualifiedNameValue]) {
       new QName(av.asInstanceOf[QualifiedNameValue].getStructuredQName)
@@ -234,52 +234,52 @@ class XdmAtomicValue extends XdmItem {
     }
   }
 
-  def getInstant(): Instant = {
+  def getInstant: Instant = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[DateTimeValue] && av
       .asInstanceOf[DateTimeValue]
-      .hasTimezone()) {
-      av.asInstanceOf[DateTimeValue].toJavaInstant()
+      .hasTimezone) {
+      av.asInstanceOf[DateTimeValue].toJavaInstant
     } else {
       null
     }
   }
 
-  def getZonedDateTime(): ZonedDateTime = {
+  def getZonedDateTime: ZonedDateTime = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[DateTimeValue] && av
       .asInstanceOf[DateTimeValue]
-      .hasTimezone()) {
-      av.asInstanceOf[DateTimeValue].toZonedDateTime()
+      .hasTimezone) {
+      av.asInstanceOf[DateTimeValue].toZonedDateTime
     } else {
       null
     }
   }
 
-  def getOffsetDateTime(): OffsetDateTime = {
+  def getOffsetDateTime: OffsetDateTime = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[DateTimeValue] && av
       .asInstanceOf[DateTimeValue]
-      .hasTimezone()) {
-      av.asInstanceOf[DateTimeValue].toOffsetDateTime()
+      .hasTimezone) {
+      av.asInstanceOf[DateTimeValue].toOffsetDateTime
     } else {
       null
     }
   }
 
-  def getLocalDateTime(): LocalDateTime = {
+  def getLocalDateTime: LocalDateTime = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[DateTimeValue]) {
-      av.asInstanceOf[DateTimeValue].toLocalDateTime()
+      av.asInstanceOf[DateTimeValue].toLocalDateTime
     } else {
       null
     }
   }
 
-  def getLocalDate(): LocalDate = {
+  def getLocalDate: LocalDate = {
     val av: AtomicValue = getUnderlyingValue
     if (av.isInstanceOf[DateValue]) {
-      av.asInstanceOf[DateValue].toLocalDate()
+      av.asInstanceOf[DateValue].toLocalDate
     } else {
       null
     }

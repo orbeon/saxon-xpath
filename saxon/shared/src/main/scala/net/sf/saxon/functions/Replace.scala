@@ -73,9 +73,9 @@ class Replace extends RegexFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val arg0: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val input: CharSequence = if (arg0 == null) "" else arg0.getStringValueCS
-    val arg2: StringValue = arguments(2).head().asInstanceOf[StringValue]
+    val arg2: StringValue = arguments(2).head.asInstanceOf[StringValue]
     val replacement: CharSequence = arg2.getStringValueCS
     val re: RegularExpression = getRegularExpression(arguments)
     if (!re.getFlags.contains("q")) {

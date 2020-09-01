@@ -20,7 +20,7 @@ object ArrayFunctionSet {
 
   var THE_INSTANCE: ArrayFunctionSet = new ArrayFunctionSet()
 
-  def getInstance(): ArrayFunctionSet = THE_INSTANCE
+  def getInstance: ArrayFunctionSet = THE_INSTANCE
 
   def checkSubscript(subscript: IntegerValue, limit: Int): Int = {
     val index: Int = subscript.asSubscript()
@@ -56,7 +56,7 @@ object ArrayFunctionSet {
   class ArrayAppend extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       ArrayAppend.append(array, arguments(1))
     }
@@ -70,15 +70,15 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
-      val fn: Function = arguments(1).head().asInstanceOf[Function]
+      val fn: Function = arguments(1).head.asInstanceOf[Function]
       val list: List[GroundedValue] = new ArrayList[GroundedValue](1)
       var i: Int = 0
       i = 0
       while (i < array.arrayLength()) {
         if (SystemFunction.dynamicCall(fn, context, Array(array.get(i)))
-          .head()
+          .head
           .asInstanceOf[BooleanValue]
           .getBooleanValue) {
           list.add(array.get(i))
@@ -123,11 +123,11 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): Sequence = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       val arraySize: Int = array.arrayLength()
-      var zero: Sequence = arguments(1).head()
-      val fn: Function = arguments(2).head().asInstanceOf[Function]
+      var zero: Sequence = arguments(1).head
+      val fn: Function = arguments(2).head.asInstanceOf[Function]
       var i: Int = 0
       i = 0
       while (i < arraySize) {
@@ -146,10 +146,10 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): Sequence = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
-      var zero: Sequence = arguments(1).head()
-      val fn: Function = arguments(2).head().asInstanceOf[Function]
+      var zero: Sequence = arguments(1).head
+      val fn: Function = arguments(2).head.asInstanceOf[Function]
       var i: Int = 0
       i = array.arrayLength() - 1
       while (i >= 0) {
@@ -168,9 +168,9 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
-      val fn: Function = arguments(1).head().asInstanceOf[Function]
+      val fn: Function = arguments(1).head.asInstanceOf[Function]
       val list: List[GroundedValue] = new ArrayList[GroundedValue](1)
       var i: Int = 0
       i = 0
@@ -191,11 +191,11 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): ArrayItem = {
-      val array1: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array1: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array1 != null)
-      val array2: ArrayItem = arguments(1).head().asInstanceOf[ArrayItem]
+      val array2: ArrayItem = arguments(1).head.asInstanceOf[ArrayItem]
       assert(array2 != null)
-      val fn: Function = arguments(2).head().asInstanceOf[Function]
+      val fn: Function = arguments(2).head.asInstanceOf[Function]
       val list: List[GroundedValue] = new ArrayList[GroundedValue](1)
       var i: Int = 0
       i = 0
@@ -216,8 +216,8 @@ object ArrayFunctionSet {
   class ArrayGet extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
-      val index: IntegerValue = arguments(1).head().asInstanceOf[IntegerValue]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
+      val index: IntegerValue = arguments(1).head.asInstanceOf[IntegerValue]
       array.get(checkSubscript(index, array.arrayLength()) - 1)
     }
 
@@ -229,7 +229,7 @@ object ArrayFunctionSet {
   class ArrayHead extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       if (array.arrayLength() == 0) {
         throw new XPathException("Argument to array:head is an empty array",
@@ -246,10 +246,10 @@ object ArrayFunctionSet {
   class ArrayInsertBefore extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       val index: Int = checkSubscript(
-        arguments(1).head().asInstanceOf[IntegerValue],
+        arguments(1).head.asInstanceOf[IntegerValue],
         array.arrayLength() + 1) -
         1
       if (index < 0 || index > array.arrayLength()) {
@@ -289,9 +289,9 @@ object ArrayFunctionSet {
 
     override def call(context: XPathContext,
                       arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       val index: Int = checkSubscript(
-        arguments(1).head().asInstanceOf[IntegerValue],
+        arguments(1).head.asInstanceOf[IntegerValue],
         array.arrayLength()) -
         1
       val newVal: GroundedValue = arguments(2).materialize()
@@ -306,7 +306,7 @@ object ArrayFunctionSet {
   class ArrayRemove extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       if (arguments(1).isInstanceOf[IntegerValue]) {
         val index: Int = checkSubscript(
           arguments(1).asInstanceOf[IntegerValue],
@@ -333,7 +333,7 @@ object ArrayFunctionSet {
   class ArrayReverse extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       val list: List[GroundedValue] = new ArrayList[GroundedValue](1)
       var i: Int = 0
@@ -353,7 +353,7 @@ object ArrayFunctionSet {
   class ArraySize extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): IntegerValue = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       new Int64Value(array.arrayLength())
     }
@@ -366,14 +366,14 @@ object ArrayFunctionSet {
   class ArraySubarray extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       val start: Int = checkSubscript(
-        arguments(1).head().asInstanceOf[IntegerValue],
+        arguments(1).head.asInstanceOf[IntegerValue],
         array.arrayLength() + 1)
       var length: Int = 0
       if (arguments.length == 3) {
-        val len: IntegerValue = arguments(2).head().asInstanceOf[IntegerValue]
+        val len: IntegerValue = arguments(2).head.asInstanceOf[IntegerValue]
         val signum: Int = len.signum()
         if (signum < 0) {
           throw new XPathException(
@@ -407,7 +407,7 @@ object ArrayFunctionSet {
   class ArrayTail extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       assert(array != null)
       if (array.arrayLength() < 1) {
         throw new XPathException("Argument to array:tail is an empty array",
@@ -433,7 +433,7 @@ object ArrayFunctionSet {
   class ArrayToSequence extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val array: ArrayItem = arguments(0).head().asInstanceOf[ArrayItem]
+      val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
       toSequence(array)
     }
 

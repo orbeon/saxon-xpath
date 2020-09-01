@@ -25,7 +25,7 @@ import java.util.List
 class InScopePrefixes extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val element: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val element: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     val prefixes: Array[String] = element.getAllNamespaces.getPrefixArray
     val result: List[Item] = new ArrayList[Item]()
     for (s <- prefixes) {

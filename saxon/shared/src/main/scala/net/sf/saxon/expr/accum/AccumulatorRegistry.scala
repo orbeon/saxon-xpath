@@ -65,7 +65,7 @@ class AccumulatorRegistry {
   def getAccumulator(name: StructuredQName): Accumulator =
     accumulatorsByName.get(name)
 
-  def getAllAccumulators(): java.lang.Iterable[Accumulator] =
+  def getAllAccumulators: java.lang.Iterable[Accumulator] =
     accumulatorsByName.values
 
 //  def getStreamingAccumulatorValue(node: NodeInfo,

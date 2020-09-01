@@ -26,7 +26,7 @@ trait ArrayItem extends Function {
 
   def arrayLength(): Int
 
-  def isEmpty(): Boolean
+  def isEmpty: Boolean
 
   def members(): Iterable[GroundedValue]
 
@@ -48,7 +48,7 @@ trait ArrayItem extends Function {
    *
    * @return a depiction of the item suitable for use in error messages
    */
-  override def toShortString(): String = {
+  override def toShortString: String = {
     val sb: StringBuilder = new StringBuilder()
     sb.append("array{")
     var count: Int = 0
@@ -61,7 +61,7 @@ trait ArrayItem extends Function {
           sb.append(" ...")
           break()
         }
-        sb.append(member.toShortString())
+        sb.append(member.toShortString)
         sb.append(", ")
       }
     }
@@ -74,7 +74,7 @@ trait ArrayItem extends Function {
    *
    * @return the genre: specifically, { @link Genre#ARRAY}.
    */
-  override def getGenre(): Genre = Genre.ARRAY
+  override def getGenre: Genre = Genre.ARRAY
 
 }
 

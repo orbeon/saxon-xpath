@@ -41,7 +41,7 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
     this.actualParams = actualParams
   }
 
-  def getParameters(): Array[WithParam] = actualParams
+  def getParameters: Array[WithParam] = actualParams
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
@@ -84,7 +84,7 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
     *
     * @return an iterator containing the sub-expressions of this expression
     */
-  override def operands(): java.lang.Iterable[Operand] = {
+  override def operands: java.lang.Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand]()
     WithParam.gatherOperands(this, actualParams, list)
     list

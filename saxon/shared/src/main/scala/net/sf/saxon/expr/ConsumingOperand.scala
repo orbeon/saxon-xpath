@@ -35,7 +35,7 @@ class ConsumingOperand(subExpression: Expression)
 
   /*@NotNull*/
 
-  override def getItemType(): ItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   override def getIntrinsicDependencies(): Int =
     getBaseExpression.getIntrinsicDependencies
@@ -74,7 +74,7 @@ class ConsumingOperand(subExpression: Expression)
   override def iterate(context: XPathContext): SequenceIterator =
     evaluate(context).iterate()
 
-  override def evaluateItem(context: XPathContext): Item = evaluate(context).head()
+  override def evaluateItem(context: XPathContext): Item = evaluate(context).head
 
   /**
     * Get a name identifying the kind of expression, in terms meaningful to a user.
@@ -94,8 +94,8 @@ class ConsumingOperand(subExpression: Expression)
   override def toString: String =
     "consume(" + getBaseExpression.toString + ")"
 
-  override def toShortString(): String =
-    "consume(" + getBaseExpression.toShortString() + ")"
+  override def toShortString: String =
+    "consume(" + getBaseExpression.toShortString + ")"
 
 }
 

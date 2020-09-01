@@ -198,7 +198,7 @@ class DayTimeDurationValue
     v
   }
 
-  override def getPrimitiveType(): BuiltInAtomicType =
+  override def getPrimitiveType: BuiltInAtomicType =
     BuiltInAtomicType.DAY_TIME_DURATION
 
   override def getPrimitiveStringValue(): CharSequence = {
@@ -242,7 +242,7 @@ class DayTimeDurationValue
     if (negative) -a else a
   }
 
-  def getLengthInMicroseconds(): Long = {
+  def getLengthInMicroseconds: Long = {
     if (seconds > java.lang.Long.MAX_VALUE / 1000000L) {
       throw new ArithmeticException(
         "Value is too large to be expressed in microseconds")
@@ -251,7 +251,7 @@ class DayTimeDurationValue
     if (negative) -a else a
   }
 
-  def getLengthInNanoseconds(): Long = {
+  def getLengthInNanoseconds: Long = {
     if (seconds > java.lang.Long.MAX_VALUE / 1000000000L) {
       throw new ArithmeticException(
         "Value is too large to be expressed in nanoseconds")
@@ -260,7 +260,7 @@ class DayTimeDurationValue
     if (negative) -a else a
   }
 
-  def toJavaDuration(): java.time.Duration =
+  def toJavaDuration: java.time.Duration =
     if (negative) {
       java.time.Duration.ofSeconds(-seconds, -nanoseconds)
     } else {

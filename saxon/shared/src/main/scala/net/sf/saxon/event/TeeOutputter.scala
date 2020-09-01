@@ -29,9 +29,9 @@ class TeeOutputter(private var seq1: Receiver, private var seq2: Receiver)
     this.seq2 = seq2
   }
 
-   def getFirstDestination(): Receiver = seq1
+   def getFirstDestination: Receiver = seq1
 
-   def getSecondDestination(): Receiver = seq2
+   def getSecondDestination: Receiver = seq2
 
   override def setUnparsedEntity(name: String,
                                  systemID: String,

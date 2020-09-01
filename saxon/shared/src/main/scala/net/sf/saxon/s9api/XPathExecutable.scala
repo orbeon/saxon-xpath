@@ -46,12 +46,12 @@ class XPathExecutable(private var exp: XPathExpression,
     }
   }
 
-  def getResultItemType(): ItemType = {
+  def getResultItemType: ItemType = {
     val it: net.sf.saxon.model.ItemType = exp.getInternalExpression.getItemType
     new ConstructedItemType(it, processor)
   }
 
-  def getResultCardinality(): OccurrenceIndicator = {
+  def getResultCardinality: OccurrenceIndicator = {
     val card: Int = exp.getInternalExpression.getCardinality
     OccurrenceIndicator.getOccurrenceIndicator(card)
   }
@@ -92,8 +92,8 @@ class XPathExecutable(private var exp: XPathExpression,
     }
   }
 
-  def getUnderlyingExpression(): XPathExpression = exp
+  def getUnderlyingExpression: XPathExpression = exp
 
-  def getUnderlyingStaticContext(): StaticContext = env
+  def getUnderlyingStaticContext: StaticContext = env
 
 }

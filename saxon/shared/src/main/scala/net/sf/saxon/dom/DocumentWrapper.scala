@@ -53,7 +53,7 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
     domLevel3 = level == 3
   }
 
-  def getDOMLevel(): Int = if (domLevel3) 3 else 2
+  def getDOMLevel: Int = if (domLevel3) 3 else 2
 
   override def selectID(id: String, getParent: Boolean): NodeInfo =
     docNode.synchronized {

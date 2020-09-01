@@ -11,7 +11,7 @@ import net.sf.saxon.om.StructuredQName
   */
 trait SchemaNodeTest {
 
-  def getNodeName(): StructuredQName
+  def getNodeName: StructuredQName
 
 }
 

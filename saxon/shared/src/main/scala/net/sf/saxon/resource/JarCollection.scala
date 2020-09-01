@@ -102,7 +102,7 @@ class JarCollection(private var context: XPathContext,
     result.iterator()
   }
 
-  private def getZipInputStream(): ZipInputStream = {
+  private def getZipInputStream: ZipInputStream = {
     var url: URL = null
     url = new URL(collectionUri)
     var connection: URLConnection = null
@@ -147,7 +147,7 @@ class JarCollection(private var context: XPathContext,
 
     val metadataParam: java.lang.Boolean =
       if (params == null) null else params.getMetaData
-    
+
     private var options: ParseOptions =
       optionsFromQueryParameters(params, context)
 
@@ -285,7 +285,7 @@ class JarCollection(private var context: XPathContext,
     map.put("size", new Int64Value(entry.getSize))
     try map.put("last-modified", DateTimeValue.fromJavaTime(entry.getTime))
     catch {
-      case err: XPathException => {}
+      case _: XPathException =>
 
     }
     map

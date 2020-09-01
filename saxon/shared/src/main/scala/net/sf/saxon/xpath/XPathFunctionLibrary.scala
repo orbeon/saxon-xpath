@@ -44,7 +44,7 @@ class XPathFunctionLibrary extends FunctionLibrary {
     this.resolver = resolver
   }
 
-  def getXPathFunctionResolver(): XPathFunctionResolver = resolver
+  def getXPathFunctionResolver: XPathFunctionResolver = resolver
 
   /*@Nullable*/
 

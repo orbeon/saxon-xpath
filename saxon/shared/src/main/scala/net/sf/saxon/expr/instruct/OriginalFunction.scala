@@ -41,13 +41,13 @@ class OriginalFunction(@BeanProperty var component: Component)
   def getFunctionItemType(): FunctionItemType =
     userFunction.getFunctionItemType
 
-  def getFunctionName(): StructuredQName = userFunction.getFunctionName
+  def getFunctionName: StructuredQName = userFunction.getFunctionName
 
   def getArity(): Int = userFunction.getArity
 
   def getDescription(): String = userFunction.getDescription
 
-  def getContainingPackageName(): String =
+  def getContainingPackageName: String =
     component.getContainingPackage.getPackageName
 
   override def export(out: ExpressionPresenter): Unit = {

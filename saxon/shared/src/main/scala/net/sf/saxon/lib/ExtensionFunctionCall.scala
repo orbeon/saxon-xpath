@@ -45,7 +45,7 @@ abstract class ExtensionFunctionCall extends Callable {
     this.definition = definition
   }
 
-  def getDefinition(): ExtensionFunctionDefinition = definition
+  def getDefinition: ExtensionFunctionDefinition = definition
 
   def supplyStaticContext(context: StaticContext,
                           locationId: Int,
@@ -69,7 +69,7 @@ abstract class ExtensionFunctionCall extends Callable {
                             arguments: Array[Sequence]): Boolean =
     ExpressionTool.effectiveBooleanValue(call(context, arguments).iterate())
 
-  def getStreamingImplementation(): AnyRef = null
+  def getStreamingImplementation: AnyRef = null
 
 }
 

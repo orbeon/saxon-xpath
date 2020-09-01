@@ -122,17 +122,17 @@ abstract class Builder extends Receiver {
 
   /*@NotNull*/
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   /*@Nullable*/
 
-  def getBuilderMonitor(): BuilderMonitor = null
+  def getBuilderMonitor: BuilderMonitor = null
 
   def setUseEventLocation(useEventLocation: Boolean): Unit = {
     this.useEventLocation = useEventLocation
   }
 
-  def isUseEventLocation(): Boolean = useEventLocation
+  def isUseEventLocation: Boolean = useEventLocation
 
   def setSystemId(systemId: String): Unit = {
     this.systemId = systemId
@@ -148,7 +148,7 @@ abstract class Builder extends Receiver {
 
   /*@Nullable*/
 
-  def getBaseURI(): String = baseURI
+  def getBaseURI: String = baseURI
 
   def setLineNumbering(lineNumbering: Boolean): Unit = {
     this.lineNumbering = lineNumbering
@@ -158,7 +158,7 @@ abstract class Builder extends Receiver {
     timing = on
   }
 
-  def isTiming(): Boolean = timing
+  def isTiming: Boolean = timing
 
   def open(): Unit = {
     if (timing && !isOpen) {
@@ -187,7 +187,7 @@ abstract class Builder extends Receiver {
 
   /*@Nullable*/
 
-  def getCurrentRoot(): NodeInfo = currentRoot
+  def getCurrentRoot: NodeInfo = currentRoot
 
   def reset(): Unit = {
     systemId = null

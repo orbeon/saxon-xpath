@@ -39,9 +39,9 @@ trait RegexIterator extends SequenceIterator {
     */
   override def next(): StringValue
 
-  def isMatching(): Boolean
+  def isMatching: Boolean
 
-  def getNumberOfGroups(): Int
+  def getNumberOfGroups: Int
 
   /*@Nullable*/
 

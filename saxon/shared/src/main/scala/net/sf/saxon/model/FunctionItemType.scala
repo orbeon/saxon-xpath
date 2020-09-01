@@ -12,21 +12,21 @@ import net.sf.saxon.value.SequenceType
 
 trait FunctionItemType extends ItemType {
 
-  override def getGenre(): Genre = Genre.FUNCTION
+  override def getGenre: Genre = Genre.FUNCTION
 
-  def getArgumentTypes(): Array[SequenceType]
+  def getArgumentTypes: Array[SequenceType]
 
-  def getResultType(): SequenceType
+  def getResultType: SequenceType
 
   def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity
 
-  def getAnnotationAssertions(): AnnotationList
+  def getAnnotationAssertions: AnnotationList
 
   def makeFunctionSequenceCoercer(exp: Expression,
                                   role: RoleDiagnostic): Expression
 
-  def isMapType(): Boolean
+  def isMapType: Boolean
 
-  def isArrayType(): Boolean
+  def isArrayType: Boolean
 
 }

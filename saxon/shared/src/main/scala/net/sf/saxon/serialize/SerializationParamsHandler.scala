@@ -198,7 +198,7 @@ class SerializationParamsHandler {
     }
   }
 
-  def getSerializationProperties(): SerializationProperties = {
+  def getSerializationProperties: SerializationProperties = {
     val index: CharacterMapIndex = new CharacterMapIndex()
     if (characterMap != null) {
       index.putCharacterMap(new StructuredQName("", "", "charMap"),
@@ -208,6 +208,6 @@ class SerializationParamsHandler {
     new SerializationProperties(properties, index)
   }
 
-  def getCharacterMap(): CharacterMap = characterMap
+  def getCharacterMap: CharacterMap = characterMap
 
 }

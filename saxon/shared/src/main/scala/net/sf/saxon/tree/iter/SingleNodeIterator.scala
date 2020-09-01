@@ -44,18 +44,18 @@ class SingleNodeIterator private (value: NodeInfo)
       null
     }
 
-  def getLength(): Int = 1
+  def getLength: Int = 1
 
   def getReverseIterator(): SequenceIterator = new SingleNodeIterator(item)
 
-  def getValue(): NodeInfo = item
+  def getValue: NodeInfo = item
 
   override def materialize(): GroundedValue = new ZeroOrOne(item)
 
-  override def getResidue(): GroundedValue =
+  override def getResidue: GroundedValue =
     if (item == null) EmptySequence.getInstance else new One(item)
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD,
       Property.LAST_POSITION_FINDER,
       Property.GROUNDED)

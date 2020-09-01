@@ -99,7 +99,7 @@ class CoercedFunction extends AbstractFunction {
 
   def getFunctionItemType(): FunctionItemType = requiredType
 
-  def getFunctionName(): StructuredQName = targetFunction.getFunctionName
+  def getFunctionName: StructuredQName = targetFunction.getFunctionName
 
   def getDescription(): String = "coerced " + targetFunction.getDescription
 
@@ -142,7 +142,7 @@ class CoercedFunction extends AbstractFunction {
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("coercedFn")
-    out.emitAttribute("type", requiredType.toExportString())
+    out.emitAttribute("type", requiredType.toExportString)
     new FunctionLiteral(targetFunction).export(out)
     out.endElement()
   }

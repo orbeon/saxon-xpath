@@ -51,7 +51,7 @@ class MemoSequence extends Sequence {
 
   var state: State = State.UNREAD
 
-  def head(): Item = iterate().next()
+  def head: Item = iterate().next()
 
   def iterate(): SequenceIterator = synchronized {
     state match {
@@ -159,7 +159,7 @@ class MemoSequence extends Sequence {
     // zero-based position in the reservoir of the
     var position: Int = -1
 
-    def getMemoSequence(): MemoSequence = MemoSequence.this
+    def getMemoSequence: MemoSequence = MemoSequence.this
 
     /*@Nullable*/
 
@@ -195,7 +195,7 @@ class MemoSequence extends Sequence {
 
     override def close(): Unit = ()
 
-    def getLength(): Int =
+    def getLength: Int =
       if (state == ALL_READ) {
         used
       } else if (state == EMPTY) {
@@ -244,7 +244,7 @@ class MemoSequence extends Sequence {
         }
       }
 
-    override def getResidue(): GroundedValue =
+    override def getResidue: GroundedValue =
       if (state == EMPTY || position >= used || position == -2) {
         EmptySequence.getInstance
       } else if (state == ALL_READ) {
@@ -261,7 +261,7 @@ class MemoSequence extends Sequence {
           Seq(reservoir.toIndexedSeq: _*).slice(position + 1, used).toList.asInstanceOf[util.List[Item]])
       }
 
-    override def getProperties(): Set[Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)
+    override def getProperties: Set[Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)
 
   }
 

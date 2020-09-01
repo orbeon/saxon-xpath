@@ -68,13 +68,13 @@ class PipelineConfiguration {
 
   /*@NotNull*/
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def setConfiguration(config: Configuration): Unit = {
     this.config = config
   }
 
-  def getErrorReporter(): ErrorReporter = {
+  def getErrorReporter: ErrorReporter = {
     var reporter: ErrorReporter = parseOptions.getErrorReporter
     if (reporter == null) {
       reporter = config.makeErrorReporter
@@ -86,7 +86,7 @@ class PipelineConfiguration {
     parseOptions.setErrorReporter(errorReporter)
   }
 
-  def getURIResolver(): URIResolver = uriResolver
+  def getURIResolver: URIResolver = uriResolver
 
   def setURIResolver(uriResolver: URIResolver): Unit = {
     this.uriResolver = uriResolver
@@ -100,10 +100,10 @@ class PipelineConfiguration {
     parseOptions.setContinueAfterValidationErrors(recover)
   }
 
-  def isRecoverFromValidationErrors(): Boolean =
+  def isRecoverFromValidationErrors: Boolean =
     parseOptions.isContinueAfterValidationErrors
 
-  def isXSLT(): Boolean = hostLanguage == HostLanguage.XSLT
+  def isXSLT: Boolean = hostLanguage == HostLanguage.XSLT
 
   def setExpandAttributeDefaults(expand: Boolean): Unit = {
     parseOptions.setExpandAttributeDefaults(expand)
@@ -122,6 +122,6 @@ class PipelineConfiguration {
     this.context = context
   }
 
-  def getXPathContext(): XPathContext = context
+  def getXPathContext: XPathContext = context
 
 }

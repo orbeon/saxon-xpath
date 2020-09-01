@@ -188,7 +188,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     setStaticType(seqType, constantValue, properties)
   }
 
-  def getItemType(): ItemType =
+  def getItemType: ItemType =
     if (staticType == null ||
       staticType.getPrimaryType == AnyItemType) {
       if (binding != null) {
@@ -371,7 +371,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     try {
       val actual = evaluateVariable(c)
       assert(actual != null)
-      actual.head()
+      actual.head
     } catch {
       case err: XPathException => {
         err.maybeSetLocation(getLocation)
@@ -408,16 +408,16 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
     }
 
-  def getBinding(): Binding = binding
+  def getBinding: Binding = binding
 
-  def getDisplayName(): String =
+  def getDisplayName: String =
     if (binding != null) {
       binding.getVariableQName.getDisplayName
     } else {
       variableName.getDisplayName
     }
 
-  def getEQName(): String =
+  def getEQName: String =
     if (binding != null) {
       val q: StructuredQName = binding.getVariableQName
       if (q.hasURI("")) {
@@ -434,7 +434,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     "$" + (if (d == null) "$" else d)
   }
 
-  override def toShortString(): String = "$" + getDisplayName
+  override def toShortString: String = "$" + getDisplayName
 
   override def getExpressionName(): String = "varRef"
 

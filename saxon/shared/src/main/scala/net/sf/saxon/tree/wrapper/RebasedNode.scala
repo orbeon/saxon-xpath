@@ -45,10 +45,10 @@ class RebasedNode  ()
     wrapper
   }
 
-  private def getBaseUriMappingFunction(): Function[NodeInfo, String] =
+  private def getBaseUriMappingFunction: Function[NodeInfo, String] =
     docWrapper.asInstanceOf[RebasedDocument].getBaseUriMapper
 
-  private def getSystemIdMappingFunction(): Function[NodeInfo, String] =
+  private def getSystemIdMappingFunction: Function[NodeInfo, String] =
     docWrapper.asInstanceOf[RebasedDocument].getSystemIdMapper
 
   /**

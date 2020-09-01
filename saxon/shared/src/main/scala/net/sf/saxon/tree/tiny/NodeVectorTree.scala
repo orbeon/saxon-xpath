@@ -21,7 +21,7 @@ trait NodeVectorTree {
     * Ask whether the tree contains non-trivial type information (from schema validation)
     * @return true if type information is present
     */
-  def isTyped(): Boolean = false
+  def isTyped: Boolean = false
 
   def getNode(nodeNr: Int): NodeInfo
 
@@ -29,9 +29,9 @@ trait NodeVectorTree {
 
   def getFingerprint(nodeNr: Int): Int
 
-  def getNodeKindArray(): Array[Byte]
+  def getNodeKindArray: Array[Byte]
 
-  def getNameCodeArray(): Array[Int]
+  def getNameCodeArray: Array[Int]
 
 }
 

@@ -12,22 +12,22 @@ import net.sf.saxon.om.NamespaceResolver
 
 trait SimpleType extends SchemaType {
 
-  def isAtomicType(): Boolean
+  def isAtomicType: Boolean
 
   /**
     * Test whether this Simple Type is a list type
     *
     * @return true if this is a list type
     */
-  def isListType(): Boolean
+  def isListType: Boolean
 
-  def isUnionType(): Boolean
+  def isUnionType: Boolean
 
-  def isBuiltInType(): Boolean
+  def isBuiltInType: Boolean
 
   /*@Nullable*/
 
-  def getBuiltInBaseType(): SchemaType
+  def getBuiltInBaseType: SchemaType
 
   def getTypedValue(value: CharSequence,
                     resolver: NamespaceResolver,
@@ -39,9 +39,9 @@ trait SimpleType extends SchemaType {
                       nsResolver: NamespaceResolver,
                       rules: ConversionRules): ValidationFailure
 
-  def isNamespaceSensitive(): Boolean
+  def isNamespaceSensitive: Boolean
 
-  def getWhitespaceAction(): Int
+  def getWhitespaceAction: Int
 
   def preprocess(input: CharSequence): CharSequence
 

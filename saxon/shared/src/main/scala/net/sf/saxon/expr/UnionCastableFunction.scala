@@ -25,7 +25,7 @@ class UnionCastableFunction(targetType: UnionType,
     new SpecificFunctionType(Array(SequenceType.ANY_SEQUENCE),
       SequenceType.SINGLE_BOOLEAN)
 
-  override def getFunctionName(): StructuredQName = null
+  override def getFunctionName: StructuredQName = null
 
   private def effectiveBooleanValue(iter: SequenceIterator,
                                     context: XPathContext): Boolean = {
@@ -42,7 +42,7 @@ class UnionCastableFunction(targetType: UnionType,
         return false
       }
       if (length != 0) {
-        val av: AtomicValue = atomizedValue.head()
+        val av: AtomicValue = atomizedValue.head
         if (!castable(av, context)) {
           false
         }

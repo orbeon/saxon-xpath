@@ -23,11 +23,11 @@ import javax.xml.transform.SourceLocator
   */
 trait Invalidity extends SourceLocator {
 
-  def getSchemaPart(): Int
+  def getSchemaPart: Int
 
-  def getConstraintName(): String
+  def getConstraintName: String
 
-  def getConstraintClauseNumber(): String
+  def getConstraintClauseNumber: String
 
   /**
     * Get the constraint name and clause in the format defined in XML Schema Part 1 Appendix C (Outcome Tabulations).
@@ -36,17 +36,17 @@ trait Invalidity extends SourceLocator {
     * @return the constraint reference, for example "cos-ct-extends.1.2"; or null if the reference
     * is not known.
     */
-  def getConstraintReference(): String
+  def getConstraintReference: String
 
-  def getInvalidNode(): NodeInfo
+  def getInvalidNode: NodeInfo
 
-  def getPath(): AbsolutePath
+  def getPath: AbsolutePath
 
-  def getContextPath(): AbsolutePath
+  def getContextPath: AbsolutePath
 
-  def getMessage(): String
+  def getMessage: String
 
-  def getErrorCode(): String
+  def getErrorCode: String
 
 }
 

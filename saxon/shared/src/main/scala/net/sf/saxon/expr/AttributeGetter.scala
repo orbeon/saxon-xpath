@@ -49,7 +49,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
   @BeanProperty
   var requiredChecks: Int = CHECK_CONTEXT_ITEM_IS_NODE
 
-  override def getItemType(): ItemType = BuiltInAtomicType.UNTYPED_ATOMIC
+  override def getItemType: ItemType = BuiltInAtomicType.UNTYPED_ATOMIC
 
   override def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_ONE
 
@@ -116,7 +116,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
 
   override def getExpressionName(): String = "attGetter"
 
-  override def toShortString(): String = "@" + attributeName.getDisplayName
+  override def toShortString: String = "@" + attributeName.getDisplayName
 
   override def toString: String =
     "data(@" + attributeName.getDisplayName + ")"

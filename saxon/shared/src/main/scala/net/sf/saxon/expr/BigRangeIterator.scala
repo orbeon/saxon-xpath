@@ -44,7 +44,7 @@ class BigRangeIterator(var start: BigInteger, var limit: BigInteger)
     IntegerValue.makeIntegerValue(currentValue)
   }
 
-  def getLength(): Int = {
+  def getLength: Int = {
     val len: BigInteger = limit.subtract(start).add(BigInteger.valueOf(1))
     if (len.compareTo(BigInteger.valueOf(java.lang.Integer.MAX_VALUE)) >
       0) {
@@ -54,7 +54,7 @@ class BigRangeIterator(var start: BigInteger, var limit: BigInteger)
     len.intValue()
   }
 
-  override def getProperties(): Set[Property] = {
+  override def getProperties: Set[Property] = {
     val enumSet: Set[Property] = Set(LOOKAHEAD, LAST_POSITION_FINDER)
     enumSet
   }

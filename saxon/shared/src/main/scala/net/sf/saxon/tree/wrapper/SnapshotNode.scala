@@ -53,7 +53,7 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
     vc
   }
 
-  override def getStringValueCS(): CharSequence =
+  override def getStringValueCS: CharSequence =
     if (Navigator.isAncestorOrSelf(original, pivot)) {
       pivot.getStringValueCS
     } else {
@@ -130,7 +130,7 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
 
     }
 
-  private def getChildOfAncestorNode(): NodeInfo = {
+  private def getChildOfAncestorNode: NodeInfo = {
     val pivotKind: Int = pivot.getNodeKind
     var p: SnapshotNode = wrap(pivot)
     if ((pivotKind == Type.ATTRIBUTE || pivotKind == Type.NAMESPACE) &&

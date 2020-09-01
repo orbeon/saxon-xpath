@@ -22,7 +22,7 @@ import javax.xml.transform.Source
 
 abstract class SaplingNode {
 
-  def getNodeKind(): Int
+  def getNodeKind: Int
 
   def sendTo(receiver: Receiver): Unit
 

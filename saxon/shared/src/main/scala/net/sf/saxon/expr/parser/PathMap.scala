@@ -71,13 +71,13 @@ object PathMap {
       arcs.add(arc)
     }
 
-    def getArcs(): Array[PathMapArc] =
+    def getArcs: Array[PathMapArc] =
       arcs.toArray(Array.ofDim[PathMapArc](arcs.size))
 
-    def hasReachableReturnables(): Boolean = {
+    def hasReachableReturnables: Boolean = {
       if (isReturnable)
         return true
-      for (arc <- arcs.asScala if arc.getTarget.hasReachableReturnables()) {
+      for (arc <- arcs.asScala if arc.getTarget.hasReachableReturnables) {
         true
       }
       false
@@ -133,7 +133,7 @@ object PathMap {
                    var test: NodeTest,
                    @BeanProperty var target: PathMapNode) {
 
-    def getNodeTest(): NodeTest = test
+    def getNodeTest: NodeTest = test
 
   }
 
@@ -172,8 +172,8 @@ object PathMap {
       }
     }
 
-    def hasReachableReturnables(): Boolean =
-      this.asScala.find(_.hasReachableReturnables()).map(_ => true).getOrElse(false)
+    def hasReachableReturnables: Boolean =
+      this.asScala.find(_.hasReachableReturnables).map(_ => true).getOrElse(false)
 
     def allPathsAreWithinStreamableSnapshot(): Boolean =
       this.asScala
@@ -221,7 +221,7 @@ class PathMap(exp: Expression) {
     root
   }
 
-  def getPathMapRoots(): Array[PathMapRoot] =
+  def getPathMapRoots: Array[PathMapRoot] =
     pathMapRoots.toArray(Array.ofDim[PathMapRoot](pathMapRoots.size))
 
   def registerPathForVariable(binding: Binding,
@@ -232,7 +232,7 @@ class PathMap(exp: Expression) {
   def getPathForVariable(binding: Binding): PathMapNodeSet =
     pathsForVariables.get(binding)
 
-  def getContextDocumentRoot(): PathMapRoot = {
+  def getContextDocumentRoot: PathMapRoot = {
     val roots: Array[PathMap.PathMapRoot] = getPathMapRoots
     var contextRoot: PathMapRoot = null
     for (root <- roots) {
@@ -249,7 +249,7 @@ class PathMap(exp: Expression) {
     contextRoot
   }
 
-  def getContextItemRoot(): PathMapRoot = {
+  def getContextItemRoot: PathMapRoot = {
     val roots: Array[PathMap.PathMapRoot] = getPathMapRoots
     var contextRoot: PathMapRoot = null
     for (root <- roots

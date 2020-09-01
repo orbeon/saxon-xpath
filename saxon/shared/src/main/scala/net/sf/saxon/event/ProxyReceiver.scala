@@ -9,7 +9,7 @@ import net.sf.saxon.s9api.Location
 class ProxyReceiver(receiver: Receiver) extends SequenceReceiver(receiver.getPipelineConfiguration) {
   var nextReceiver = receiver
 
-  setPipelineConfiguration(nextReceiver.getPipelineConfiguration())
+  setPipelineConfiguration(nextReceiver.getPipelineConfiguration)
 
   def setUnderlyingReceiver(receiver: Receiver) = nextReceiver = receiver
 
@@ -20,7 +20,7 @@ class ProxyReceiver(receiver: Receiver) extends SequenceReceiver(receiver.getPip
     }
   }
 
-  def getNextReceiver(): Receiver = nextReceiver
+  def getNextReceiver: Receiver = nextReceiver
 
   override def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
     if (pipelineConfiguration != pipe) {

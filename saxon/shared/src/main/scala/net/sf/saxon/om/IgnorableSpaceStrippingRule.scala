@@ -27,7 +27,7 @@ object IgnorableSpaceStrippingRule {
   private val THE_INSTANCE: IgnorableSpaceStrippingRule =
     new IgnorableSpaceStrippingRule()
 
-  def getInstance(): IgnorableSpaceStrippingRule = THE_INSTANCE
+  def getInstance: IgnorableSpaceStrippingRule = THE_INSTANCE
 
 }
 

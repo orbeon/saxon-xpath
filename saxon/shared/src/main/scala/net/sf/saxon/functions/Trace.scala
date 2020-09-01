@@ -54,7 +54,7 @@ object Trace {
             .displayTypeName(`val`) + ": " + `val`.getStringValue)
       } else if (`val`.isInstanceOf[ArrayItem] || `val`
         .isInstanceOf[MapItem]) {
-        out.info(label + ": " + `val`.toShortString())
+        out.info(label + ": " + `val`.toShortString)
       } else if (`val`.isInstanceOf[Function]) {
         val name: StructuredQName =
           `val`.asInstanceOf[Function].getFunctionName
@@ -69,7 +69,7 @@ object Trace {
           label + ": " + obj.getClass.getName + " = " + Err.truncate30(
             obj.toString))
       } else {
-        out.info(label + ": " + `val`.toShortString())
+        out.info(label + ": " + `val`.toShortString)
       }
     }
   }
@@ -108,7 +108,7 @@ class Trace extends SystemFunction with Traceable {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val controller: Controller = context.getController
     val label: String =
-      if (arguments.length == 1) "*" else arguments(1).head().getStringValue
+      if (arguments.length == 1) "*" else arguments(1).head.getStringValue
     if (controller.isTracing) {
       val value: Sequence = arguments(0).iterate().materialize()
       notifyListener(label, value, context)

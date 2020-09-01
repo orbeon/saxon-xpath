@@ -24,10 +24,10 @@ import javax.xml.transform.stream.StreamSource
 trait Platform {
 
   def initialize(config: Configuration): Unit
-  def isJava(): Boolean
-  def isDotNet(): Boolean
-  def getPlatformVersion(): String
-  def getPlatformSuffix(): String
+  def isJava: Boolean
+  def isDotNet: Boolean
+  def getPlatformVersion: String
+  def getPlatformSuffix: String
   def loadParser(): XMLReader
   def loadParserForXmlFragments(): XMLReader
 
@@ -51,14 +51,14 @@ trait Platform {
    *
    * @return true if the ICU library class for collations appears to be loaded
    */
-  def hasICUCollator(): Boolean
+  def hasICUCollator: Boolean
 
   /**
    * Indicate whether the ICU library is available and supports Numberers
    *
    * @return true if the ICU library class for rule-based numbering appears to be loaded
    */
-  def hasICUNumberer(): Boolean
+  def hasICUNumberer: Boolean
 
   def makeUcaCollator(uri: String, config: Configuration): StringCollator
 

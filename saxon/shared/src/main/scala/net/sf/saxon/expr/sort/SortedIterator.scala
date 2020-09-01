@@ -114,14 +114,14 @@ class SortedIterator ()
     }
   }
 
-  def getLength(): Int = {
+  def getLength: Int = {
     if (count < 0) {
       doSort()
     }
     count
   }
 
-  override def getProperties(): Set[Property] = Set(LAST_POSITION_FINDER)
+  override def getProperties: Set[Property] = Set(LAST_POSITION_FINDER)
 
    def buildArray(): Unit = {
     var allocated: Int = 0

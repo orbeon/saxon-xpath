@@ -17,7 +17,7 @@ class Sort_2 extends Sort_1 {
 
    def getCollation(context: XPathContext,
                              collationArg: Sequence): StringCollator = {
-    val secondArg: StringValue = collationArg.head().asInstanceOf[StringValue]
+    val secondArg: StringValue = collationArg.head.asInstanceOf[StringValue]
     if (secondArg == null) {
       context.getConfiguration.getCollation(
         getRetainedStaticContext.getDefaultCollationName)

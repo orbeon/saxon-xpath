@@ -32,7 +32,7 @@ class DecimalFormatManager(var language: HostLanguage,
   private var formatTable: HashMap[StructuredQName, DecimalSymbols] =
     new HashMap(10)
 
-  def getDefaultDecimalFormat(): DecimalSymbols = defaultDFS
+  def getDefaultDecimalFormat: DecimalSymbols = defaultDFS
 
   /*@Nullable*/
 
@@ -59,7 +59,7 @@ class DecimalFormatManager(var language: HostLanguage,
     ds
   }
 
-  def getDecimalFormatNames(): java.lang.Iterable[StructuredQName] =
+  def getDecimalFormatNames: java.lang.Iterable[StructuredQName] =
     formatTable.keySet
 
   def checkConsistency(): Unit = {

@@ -452,10 +452,10 @@ class ExpressionPresenter {
     }
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
-  def getNamePool(): NamePool = config.getNamePool
+  def getNamePool: NamePool = config.getNamePool
 
-  def getTypeHierarchy(): TypeHierarchy = config.getTypeHierarchy
+  def getTypeHierarchy: TypeHierarchy = config.getTypeHierarchy
 
 }

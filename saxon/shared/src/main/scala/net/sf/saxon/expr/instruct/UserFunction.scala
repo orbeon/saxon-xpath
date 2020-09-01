@@ -51,7 +51,7 @@ object UserFunction {
     if (exp.isInstanceOf[UserFunctionCall]) {
       return true
     }
-    for (o <- exp.operands().asScala
+    for (o <- exp.operands.asScala
          if containsUserFunctionCalls(o.getChildExpression)) {
       true
     }
@@ -122,7 +122,7 @@ class UserFunction
       if (body == null) {
         sb.append("...")
       } else {
-        sb.append(body.toShortString())
+        sb.append(body.toShortString)
       }
       sb.append("}")
       sb.toString
@@ -195,7 +195,7 @@ class UserFunction
       else ExpressionTool.lazyEvaluator(getBody, repeatable = true)
   }
 
-  def isInlineable(): java.lang.Boolean = {
+  def isInlineable: java.lang.Boolean = {
     if (inlineable != -1) {
       return inlineable > 0 && inliningCount < MAX_INLININGS
     }
@@ -249,7 +249,7 @@ class UserFunction
     this.isUpdating = isUpdating
   }
 
-  def getResultType(): SequenceType = {
+  def getResultType: SequenceType = {
     if (resultType == SequenceType.ANY_SEQUENCE && getBody != null) {
       if (!containsUserFunctionCalls(getBody)) {
         resultType = SequenceType.makeSequenceType(getBody.getItemType,
@@ -262,7 +262,7 @@ class UserFunction
   def getArgumentType(n: Int): SequenceType =
     parameterDefinitions(n).getRequiredType
 
-  def getEvaluator(): Evaluator = {
+  def getEvaluator: Evaluator = {
     if (evaluator == null) {
       computeEvaluationMode()
     }
@@ -275,7 +275,7 @@ class UserFunction
 
   def getArity(): Int = parameterDefinitions.length
 
-  def isMemoFunction(): Boolean = false
+  def isMemoFunction: Boolean = false
 
   def typeCheck(visitor: ExpressionVisitor): Unit = {
     val exp: Expression = getBody
@@ -452,19 +452,19 @@ class UserFunction
   override def subsequence(start: Int, length: Int): GroundedValue =
     if (start <= 0 && (start + length) > 0) this else EmptySequence.getInstance
 
-  override def getLength(): Int = 1
+  override def getLength: Int = 1
 
   override def effectiveBooleanValue(): Boolean =
     ExpressionTool.effectiveBooleanValue(this)
 
   override def reduce(): UserFunction = this
 
-  override def head(): UserFunction = this
+  override def head: UserFunction = this
 
-  def getStringValue(): String =
+  def getStringValue: String =
     throw new UnsupportedOperationException("A function has no string value")
 
-  def getStringValueCS(): CharSequence = getStringValue
+  def getStringValueCS: CharSequence = getStringValue
 
   def atomize(): AtomicSequence =
     throw new XPathException("Functions cannot be atomized", "FOTY0013")
@@ -472,7 +472,7 @@ class UserFunction
   def incrementReferenceCount(): Unit = refCount += 1
 
 
-  def getReferenceCount(): Int = refCount
+  def getReferenceCount: Int = refCount
 
   def prepareForStreaming(): Unit = ()
 

@@ -31,7 +31,7 @@ trait BuiltInRuleSet extends ContextOriginator {
               context: XPathContext,
               locationId: Location): Unit
 
-  def getName(): String
+  def getName: String
 
   def getActionForParentNodes(nodeKind: Int): Array[Int]
 

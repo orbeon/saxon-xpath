@@ -19,7 +19,7 @@ object StandardURIChecker {
 
   private val THE_INSTANCE: StandardURIChecker = new StandardURIChecker()
 
-  def getInstance(): StandardURIChecker = THE_INSTANCE
+  def getInstance: StandardURIChecker = THE_INSTANCE
 
   /*@NotNull*/
 

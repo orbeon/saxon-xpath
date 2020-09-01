@@ -55,11 +55,11 @@ class RangeIterator(var start: Long, var limit: Long)
     Int64Value.makeIntegerValue(currentValue)
   }
 
-  def getLength(): Int = ((limit - start) + 1).toInt
+  def getLength: Int = ((limit - start) + 1).toInt
 
   import SequenceIterator.Property._
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(LOOKAHEAD, LAST_POSITION_FINDER, GROUNDED)
 
   def getReverseIterator(): AtomicIterator[IntegerValue] =
@@ -67,7 +67,7 @@ class RangeIterator(var start: Long, var limit: Long)
 
   override def materialize(): GroundedValue = new IntegerRange(start, limit)
 
-  override def getResidue(): GroundedValue =
+  override def getResidue: GroundedValue =
     new IntegerRange(currentValue, limit)
 
 }

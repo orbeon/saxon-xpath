@@ -15,7 +15,7 @@ import net.sf.saxon.trans.XPathException
   */
 trait IAccumulatorData {
 
-  def getAccumulator(): Accumulator
+  def getAccumulator: Accumulator
 
   def getValue(node: NodeInfo, postDescent: Boolean): Sequence
 

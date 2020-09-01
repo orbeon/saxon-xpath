@@ -8,9 +8,9 @@ import net.sf.saxon.om.NodeInfo
 
 trait VirtualNode extends NodeInfo {
 
-  def getUnderlyingNode(): AnyRef
+  def getUnderlyingNode: AnyRef
 
-  def getRealNode(): AnyRef
+  def getRealNode: AnyRef
 
 }
 

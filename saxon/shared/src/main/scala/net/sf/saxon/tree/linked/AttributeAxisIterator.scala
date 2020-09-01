@@ -55,6 +55,6 @@ class AttributeAxisIterator(node: ElementImpl,
     }
   }
 
-  override def getProperties(): Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
 
 }

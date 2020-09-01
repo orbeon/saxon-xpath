@@ -42,7 +42,7 @@ object ErrorType
 
   def getBaseType(): SchemaType = AnySimpleType
 
-  def getKnownBaseType(): SchemaType = getBaseType
+  def getKnownBaseType: SchemaType = getBaseType
 
   def isComplexType(): Boolean = false
 
@@ -73,7 +73,7 @@ object ErrorType
       "Type xs:error is not validly derived from " + `type`.getDescription)
   }
 
-  override def isAtomicType(): Boolean = false
+  override def isAtomicType: Boolean = false
 
   def isIdType(): Boolean = false
 
@@ -123,7 +123,7 @@ object ErrorType
 
   def postprocess(input: CharSequence): CharSequence = input
 
-  override def isPlainType(): Boolean = true
+  override def isPlainType: Boolean = true
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = false
 
@@ -131,13 +131,13 @@ object ErrorType
                        name: NodeName,
                        annotation: SchemaType): Boolean = false
 
-  override def getPrimitiveItemType(): AtomicType = this
+  override def getPrimitiveItemType: AtomicType = this
 
-  override def getPrimitiveType(): Int = Type.ITEM
+  override def getPrimitiveType: Int = Type.ITEM
 
-  override def getDefaultPriority(): Double = -1000
+  override def getDefaultPriority: Double = -1000
 
-  override def getAtomizedItemType(): AtomicType = BuiltInAtomicType.UNTYPED_ATOMIC
+  override def getAtomizedItemType: AtomicType = BuiltInAtomicType.UNTYPED_ATOMIC
 
   override def isAtomizable(th: TypeHierarchy): Boolean = false
 

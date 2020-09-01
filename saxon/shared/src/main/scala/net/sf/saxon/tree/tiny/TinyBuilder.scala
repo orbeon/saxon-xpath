@@ -340,7 +340,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   //System.err.println(this + " end element " + currentDepth);
   //System.err.println(this + " end element " + currentDepth);
 
-  def getLastCompletedElement(): TinyNodeImpl = {
+  def getLastCompletedElement: TinyNodeImpl = {
     if (tree == null) {
       return null
     }

@@ -6,7 +6,7 @@ object UTF16CharacterSet {
 
   private var theInstance: UTF16CharacterSet = new UTF16CharacterSet()
 
-  def getInstance(): UTF16CharacterSet = theInstance
+  def getInstance: UTF16CharacterSet = theInstance
 
   val NONBMP_MIN: Int = 0x10000
 

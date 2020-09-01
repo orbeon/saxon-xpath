@@ -32,7 +32,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def getNodeName(): NodeName
 
-  def getStringValue(): CharSequence
+  def getStringValue: CharSequence
 
   def getSchemaType(): SchemaType
 

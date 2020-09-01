@@ -65,7 +65,7 @@ object ContextItemAccessorFunction {
       val `val`: AtomicSequence = item.atomize()
       `val`.getLength match {
         case 0 => DoubleValue.NaN
-        case 1 => f.call(context, Array(`val`.head())).materialize()
+        case 1 => f.call(context, Array(`val`.head)).materialize()
         case _ =>
           var err: XPathException = new XPathException(
             "When number() is called with no arguments, the atomized value of the context node must " +

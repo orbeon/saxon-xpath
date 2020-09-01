@@ -22,7 +22,7 @@ class GlobalParam extends GlobalVariable {
     this.implicitlyRequired = requiredParam
   }
 
-  def isImplicitlyRequiredParam(): Boolean = this.implicitlyRequired
+  def isImplicitlyRequiredParam: Boolean = this.implicitlyRequired
 
   override def getTracingTag(): String = "xsl:param"
 

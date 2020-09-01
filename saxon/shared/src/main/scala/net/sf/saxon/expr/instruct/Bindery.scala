@@ -88,6 +88,6 @@ class Bindery(pack: PackageData) {
 
   def getGlobalVariable(slot: Int): GroundedValue = globals(slot)
 
-  def getGlobalVariables(): Array[GroundedValue] = globals
+  def getGlobalVariables: Array[GroundedValue] = globals
 
 }

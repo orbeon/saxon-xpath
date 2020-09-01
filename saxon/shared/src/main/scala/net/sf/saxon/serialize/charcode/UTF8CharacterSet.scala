@@ -10,7 +10,7 @@ object UTF8CharacterSet {
 
   private var theInstance: UTF8CharacterSet = new UTF8CharacterSet()
 
-  def getInstance(): UTF8CharacterSet = theInstance
+  def getInstance: UTF8CharacterSet = theInstance
 
   def getUTF8Encoding(in: Char, in2: Char, out: Array[Byte]): Int = {
 // See Tony Graham, "Unicode, a Primer", page 92

@@ -73,7 +73,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
     }
   }
 
-  def getOperandRole(): OperandRole = role
+  def getOperandRole: OperandRole = role
 
   def setOperandRole(role: OperandRole): Unit = {
     this.role = role
@@ -86,14 +86,14 @@ class Operand(@BeanProperty val parentExpression: Expression,
     */
   def setsNewFocus(): Boolean = role.setsNewFocus()
 
-  def hasSpecialFocusRules(): Boolean = role.hasSpecialFocusRules()
+  def hasSpecialFocusRules: Boolean = role.hasSpecialFocusRules
 
   /**
     * Ask whether the child expression is evaluated with the same focus as its parent expression
     *
     * @return true if the child expression is evaluated with the same focus as its parent expression
     */
-  def hasSameFocus(): Boolean = role.hasSameFocus()
+  def hasSameFocus: Boolean = role.hasSameFocus
 
   /**
     * Ask whether the operand is a higher-order operand,: typically this means that the child expression
@@ -103,7 +103,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
     *
     * @return true if the operand is higher-order
     */
-  def isHigherOrder(): Boolean = role.isHigherOrder
+  def isHigherOrder: Boolean = role.isHigherOrder
 
   /**
     * Ask whether the operand is is evaluated repeatedly during a single evaluation of the parent
@@ -112,14 +112,14 @@ class Operand(@BeanProperty val parentExpression: Expression,
     *
     * @return true if the operand is higher-order
     */
-  def isEvaluatedRepeatedly(): Boolean = role.isEvaluatedRepeatedly
+  def isEvaluatedRepeatedly: Boolean = role.isEvaluatedRepeatedly
 
   /**
     * Get the usage of the operand
     *
     * @return the usage
     */
-  def getUsage(): OperandUsage = role.getUsage
+  def getUsage: OperandUsage = role.getUsage
 
   def setUsage(usage: OperandUsage): Unit = {
     role = new OperandRole(role.properties, usage, role.getRequiredType)
@@ -130,9 +130,9 @@ class Operand(@BeanProperty val parentExpression: Expression,
     *
     * @return the required type
     */
-  def getRequiredType(): SequenceType = role.getRequiredType
+  def getRequiredType: SequenceType = role.getRequiredType
 
-  def isInChoiceGroup(): Boolean = role.isInChoiceGroup
+  def isInChoiceGroup: Boolean = role.isInChoiceGroup
 
   def iterator(): Iterator[Operand] = new MonoIterator(this).asInstanceOf[Iterator[Operand]]
 

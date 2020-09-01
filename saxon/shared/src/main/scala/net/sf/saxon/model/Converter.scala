@@ -67,7 +67,7 @@ object Converter {
 
     this.conversionRules = rules
 
-    def getTargetType(): AtomicType = newType
+    def getTargetType: AtomicType = newType
 
     def convert(input: AtomicValue): ConversionResult =
       convert(input, input.getCanonicalLexicalRepresentation)
@@ -422,15 +422,13 @@ object Converter {
   }
 
   object DateToDateTime {
-
-    val INSTANCE: DateToDateTime = new DateToDateTime()
-
+    val INSTANCE: DateToDateTime = new DateToDateTime
   }
 
   class DateToDateTime extends UnfailingConverter {
 
     def convert(input: AtomicValue): DateTimeValue =
-      input.asInstanceOf[DateValue].toDateTime()
+      input.asInstanceOf[DateValue].toDateTime
 
   }
 
@@ -686,10 +684,10 @@ abstract class Converter {
 
   def convert(input: AtomicValue): ConversionResult
 
-  def isAlwaysSuccessful(): Boolean = false
+  def isAlwaysSuccessful: Boolean = false
 
   def setNamespaceResolver(resolver: NamespaceResolver): Converter = this
 
-  def getNamespaceResolver(): NamespaceResolver = null
+  def getNamespaceResolver: NamespaceResolver = null
 
 }

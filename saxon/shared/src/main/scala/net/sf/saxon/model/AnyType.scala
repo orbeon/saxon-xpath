@@ -44,7 +44,7 @@ object AnyType extends Enumeration {
 
     /*@Nullable*/
 
-    def getKnownBaseType(): SchemaType = null
+    def getKnownBaseType: SchemaType = null
 
     def getDerivationMethod(): Int = 0
 
@@ -66,7 +66,7 @@ object AnyType extends Enumeration {
 
     def isSimpleType(): Boolean = false
 
-    def isAtomicType(): Boolean = false
+    def isAtomicType: Boolean = false
 
     def isIdType(): Boolean = false
 
@@ -189,7 +189,7 @@ object AnyType extends Enumeration {
 
   /*@NotNull*/
 
-  def getInstance(): AnyType = INSTANCE
+  def getInstance: AnyType = INSTANCE
 
   val QNAME: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "anyType")

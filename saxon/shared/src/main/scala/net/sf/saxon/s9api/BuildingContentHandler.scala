@@ -14,7 +14,7 @@ import org.xml.sax.ContentHandler
   */
 trait BuildingContentHandler extends ContentHandler {
 
-  def getDocumentNode(): XdmNode
+  def getDocumentNode: XdmNode
 
 }
 

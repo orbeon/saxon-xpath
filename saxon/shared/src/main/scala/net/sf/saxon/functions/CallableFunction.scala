@@ -54,7 +54,7 @@ class CallableFunction extends AbstractFunction {
     `type`
   }
 
-  def getFunctionName(): StructuredQName = name.getComponentName
+  def getFunctionName: StructuredQName = name.getComponentName
 
   def getDescription(): String = callable.toString
 

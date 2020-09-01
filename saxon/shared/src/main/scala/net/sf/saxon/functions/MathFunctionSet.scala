@@ -16,7 +16,7 @@ object MathFunctionSet {
 
   private var THE_INSTANCE: MathFunctionSet = new MathFunctionSet()
 
-  def getInstance(): MathFunctionSet = THE_INSTANCE
+  def getInstance: MathFunctionSet = THE_INSTANCE
 
   class PiFn extends SystemFunction {
 
@@ -33,7 +33,7 @@ object MathFunctionSet {
      def compute(input: Double): Double
 
     def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[_ <: Item] = {
-      val in: DoubleValue = args(0).head().asInstanceOf[DoubleValue]
+      val in: DoubleValue = args(0).head.asInstanceOf[DoubleValue]
       if (in == null) {
         ZeroOrOne.empty()
       } else {
@@ -113,7 +113,7 @@ object MathFunctionSet {
 
     override def call(context: XPathContext,
                       args: Array[Sequence]): ZeroOrOne[DoubleValue] = {
-      val x: DoubleValue = args(0).head().asInstanceOf[DoubleValue]
+      val x: DoubleValue = args(0).head.asInstanceOf[DoubleValue]
       var result: DoubleValue = null
       if (x == null) {
         result = null
@@ -122,7 +122,7 @@ object MathFunctionSet {
         if (dx == 1) {
           result = x
         } else {
-          val y: NumericValue = args(1).head().asInstanceOf[NumericValue]
+          val y: NumericValue = args(1).head.asInstanceOf[NumericValue]
           assert(y != null)
           val dy: Double = y.getDoubleValue
           result =
@@ -139,9 +139,9 @@ object MathFunctionSet {
   class Atan2Fn extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): DoubleValue = {
-      val y: DoubleValue = arguments(0).head().asInstanceOf[DoubleValue]
+      val y: DoubleValue = arguments(0).head.asInstanceOf[DoubleValue]
       assert(y != null)
-      val x: DoubleValue = arguments(1).head().asInstanceOf[DoubleValue]
+      val x: DoubleValue = arguments(1).head.asInstanceOf[DoubleValue]
       assert(x != null)
       val result: Double = Math.atan2(y.getDoubleValue, x.getDoubleValue)
       new DoubleValue(result)

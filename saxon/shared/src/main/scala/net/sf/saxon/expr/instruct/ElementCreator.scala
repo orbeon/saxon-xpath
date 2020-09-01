@@ -40,7 +40,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
 
   var inheritNamespacesFromParent: Boolean = true
 
-  override def getItemType(): ItemType = NodeKindTest.ELEMENT
+  override def getItemType: ItemType = NodeKindTest.ELEMENT
 
   override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
 
@@ -48,13 +48,13 @@ abstract class ElementCreator extends ParentNodeConstructor {
     bequeathNamespacesToChildren = inherit
   }
 
-  def isBequeathNamespacesToChildren(): Boolean = bequeathNamespacesToChildren
+  def isBequeathNamespacesToChildren: Boolean = bequeathNamespacesToChildren
 
   def setInheritNamespacesFromParent(inherit: Boolean): Unit = {
     inheritNamespacesFromParent = inherit
   }
 
-  def isInheritNamespacesFromParent(): Boolean = inheritNamespacesFromParent
+  def isInheritNamespacesFromParent: Boolean = inheritNamespacesFromParent
 
   override def computeSpecialProperties(): Int = {
     var p: Int = super
@@ -217,7 +217,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
     }
   }
 
-  def getInheritanceFlags(): String = {
+  def getInheritanceFlags: String = {
     var flags: String = ""
     if (!inheritNamespacesFromParent) {
       flags += "P"

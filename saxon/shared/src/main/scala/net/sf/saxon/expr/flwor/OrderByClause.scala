@@ -72,12 +72,12 @@ class OrderByClause(flwor: FLWORExpression,
     obc
   }
 
-  def getSortKeyDefinitions(): SortKeyDefinitionList =
+  def getSortKeyDefinitions: SortKeyDefinitionList =
     sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
 
-  def getAtomicComparers(): Array[AtomicComparer] = comparators
+  def getAtomicComparers: Array[AtomicComparer] = comparators
 
-  def getTupleExpression(): TupleExpression =
+  def getTupleExpression: TupleExpression =
     tupleOp.getChildExpression.asInstanceOf[TupleExpression]
 
   /**

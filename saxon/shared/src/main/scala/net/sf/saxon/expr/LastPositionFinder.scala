@@ -1,18 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.expr
-
-import net.sf.saxon.trans.XPathException
-
-
-
-
-@FunctionalInterface
-trait LastPositionFinder {
-
-  def getLength(): Int
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -22,3 +8,11 @@ trait LastPositionFinder {
   * A LastPositionFinder is an interface implemented by any SequenceIterator that is
   * able to return the position of the last item in the sequence.
   */
+
+package net.sf.saxon.expr
+
+
+@FunctionalInterface
+trait LastPositionFinder {
+  def getLength(): Int
+}

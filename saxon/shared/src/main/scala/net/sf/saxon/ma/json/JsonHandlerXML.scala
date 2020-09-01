@@ -213,7 +213,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
   private def containsEscape(literal: String): Boolean =
     literal.indexOf('\\') >= 0
 
-  private def isInMap(): Boolean = !inMap.isEmpty && inMap.peek()
+  private def isInMap: Boolean = !inMap.isEmpty && inMap.peek()
 
   private def startElement(qn: FingerprintedQName, typeName: String): Unit = {
     startElement(qn, types.get(typeName))

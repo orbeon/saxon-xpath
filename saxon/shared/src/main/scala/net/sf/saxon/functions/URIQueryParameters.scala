@@ -184,25 +184,25 @@ class URIQueryParameters(query: String, config: Configuration) {
     }
   }
 
-  def getSpaceStrippingRule(): SpaceStrippingRule = strippingRule
+  def getSpaceStrippingRule: SpaceStrippingRule = strippingRule
 
-  def getValidationMode(): java.lang.Integer = validation
+  def getValidationMode: java.lang.Integer = validation
 
-  def getFilenameFilter(): FilenameFilter = filter
+  def getFilenameFilter: FilenameFilter = filter
 
-  def getRecurse(): java.lang.Boolean = recurse
+  def getRecurse: java.lang.Boolean = recurse
 
-  def getOnError(): java.lang.Integer = onError
+  def getOnError: java.lang.Integer = onError
 
-  def getXInclude(): java.lang.Boolean = xinclude
+  def getXInclude: java.lang.Boolean = xinclude
 
-  def getMetaData(): java.lang.Boolean = metadata
+  def getMetaData: java.lang.Boolean = metadata
 
-  def getContentType(): String = contentType
+  def getContentType: String = contentType
 
-  def getStable(): java.lang.Boolean = stable
+  def getStable: java.lang.Boolean = stable
 
-  def getXMLReaderMaker(): Maker[XMLReader] = parserMaker
+  def getXMLReaderMaker: Maker[XMLReader] = parserMaker
 
 }
 

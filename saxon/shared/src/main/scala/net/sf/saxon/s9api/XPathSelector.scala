@@ -36,7 +36,7 @@ class XPathSelector(private var exp: XPathExpression,
       throw new NullPointerException("contextItem")
     }
     if (!exp.getInternalExpression.getPackageData.isSchemaAware) {
-      val it: Item = item.getUnderlyingValue.head()
+      val it: Item = item.getUnderlyingValue.head
       if (it.isInstanceOf[NodeInfo] && it
         .asInstanceOf[NodeInfo]
         .getTreeInfo
@@ -48,7 +48,7 @@ class XPathSelector(private var exp: XPathExpression,
     dynamicContext.setContextItem(item.getUnderlyingValue)
   }
 
-  def getContextItem(): XdmItem =
+  def getContextItem: XdmItem =
     XdmItem.wrapItem(dynamicContext.getContextItem)
 
   def setVariable(name: QName, value: XdmValue): Unit = {
@@ -65,7 +65,7 @@ class XPathSelector(private var exp: XPathExpression,
     dynamicContext.setURIResolver(resolver)
   }
 
-  def getURIResolver(): URIResolver = dynamicContext.getURIResolver
+  def getURIResolver: URIResolver = dynamicContext.getURIResolver
 
   def setErrorReporter(reporter: ErrorReporter): Unit = {
     dynamicContext.setErrorReporter(reporter)
@@ -93,6 +93,6 @@ class XPathSelector(private var exp: XPathExpression,
   def effectiveBooleanValue(): Boolean =
     exp.effectiveBooleanValue(dynamicContext)
 
-  def getUnderlyingXPathContext(): XPathDynamicContext = dynamicContext
+  def getUnderlyingXPathContext: XPathDynamicContext = dynamicContext
 
 }

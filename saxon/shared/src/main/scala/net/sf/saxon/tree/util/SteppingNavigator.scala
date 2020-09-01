@@ -101,7 +101,7 @@ object SteppingNavigator {
       if (test.asInstanceOf[NameTest].getPrimitiveType == Type.ELEMENT) {
         val nt: NameTest = test.asInstanceOf[NameTest]
         stepper =
-          if (start.hasFingerprint())
+          if (start.hasFingerprint)
             new FollowingFingerprintedElementStepper(start, nt.getFingerprint)
           else
             new FollowingElementStepper(start,

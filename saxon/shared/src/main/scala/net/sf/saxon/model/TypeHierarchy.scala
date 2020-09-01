@@ -157,7 +157,7 @@ class TypeHierarchy(var config: Configuration) {
               try requiredItemType
                 .asInstanceOf[SimpleType]
                 .getTypedValue(item.getStringValueCS, null, rules)
-                .head()
+                .head
               catch {
                 case ve: ValidationException => {
                   ve.setErrorCode("XPTY0004")
@@ -268,7 +268,7 @@ class TypeHierarchy(var config: Configuration) {
         iterator
     }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def isSubType(subtype: ItemType, supertype: ItemType): Boolean = {
     val relation: Affinity = relationship(subtype, supertype)
@@ -710,5 +710,5 @@ class TypeHierarchy(var config: Configuration) {
     }
   }
 
-  def getGenericFunctionItemType(): ItemType = AnyItemType
+  def getGenericFunctionItemType: ItemType = AnyItemType
 }

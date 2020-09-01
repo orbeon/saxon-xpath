@@ -63,7 +63,7 @@ class Matches extends RegexFunction {
    */
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val re: RegularExpression = getRegularExpression(arguments)
-    val arg: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val arg: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val in: CharSequence = if (arg == null) "" else arg.getStringValueCS
     val result: Boolean = re.containsMatch(in)
     BooleanValue.get(result)

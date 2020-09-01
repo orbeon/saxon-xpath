@@ -26,11 +26,11 @@ class HasChildren_1 extends SystemFunction {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-    val arg: NodeInfo = arguments(0).head().asInstanceOf[NodeInfo]
+    val arg: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (arg == null) {
       BooleanValue.FALSE
     }
-    BooleanValue.get(arg.hasChildNodes())
+    BooleanValue.get(arg.hasChildNodes)
   }
 
 }

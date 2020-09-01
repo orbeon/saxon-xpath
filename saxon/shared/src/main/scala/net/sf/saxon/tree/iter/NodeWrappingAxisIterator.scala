@@ -13,9 +13,9 @@ class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
   extends AxisIterator
     with LookaheadIterator {
 
-  def getBaseIterator(): Iterator[_ <: B] = base
+  def getBaseIterator: Iterator[_ <: B] = base
 
-  def getNodeWrappingFunction(): NodeWrappingFunction[_ >: B, NodeInfo] =
+  def getNodeWrappingFunction: NodeWrappingFunction[_ >: B, NodeInfo] =
     wrappingFunction
 
   def hasNext(): Boolean = base.hasNext
@@ -32,6 +32,6 @@ class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
 
   def isIgnorable(node: B): Boolean = false
 
-  override def getProperties(): Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
 
 }

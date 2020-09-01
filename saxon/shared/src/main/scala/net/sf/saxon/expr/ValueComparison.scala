@@ -180,7 +180,7 @@ override  def getExpressionName(): String = "ValueComparison"
           getLocation)
         needsRuntimeCheck = true
       } else {
-        val message: String = "In {" + toShortString() + "}: cannot compare " + t0.toString +
+        val message: String = "In {" + toShortString + "}: cannot compare " + t0.toString +
           " to " +
           t1.toString
         val err = new XPathException(message)
@@ -318,7 +318,7 @@ override  def effectiveBooleanValue(context: XPathContext): Boolean =
 
   override def equals(other: Any) = other.isInstanceOf[ValueComparison] && super.equals(other) && comparer == other.asInstanceOf[ValueComparison].comparer
 
-  def getItemType(): ItemType = BuiltInAtomicType.BOOLEAN
+  def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 

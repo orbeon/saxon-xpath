@@ -28,12 +28,12 @@ object ResolveQName {
 class ResolveQName extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[QNameValue] = {
-    val lex: AtomicValue = arguments(0).head().asInstanceOf[AtomicValue]
+    val lex: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     new ZeroOrOne(
       if (lex == null) null
       else
         resolveQName(lex.getStringValueCS,
-          arguments(1).head().asInstanceOf[NodeInfo]))
+          arguments(1).head.asInstanceOf[NodeInfo]))
   }
 
 }

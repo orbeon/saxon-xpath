@@ -71,7 +71,7 @@ class ContainsToken extends CollatingFunctionFixed {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     BooleanValue.get(
       containsToken(arguments(0).iterate(),
-        arguments(1).head().asInstanceOf[StringValue],
+        arguments(1).head.asInstanceOf[StringValue],
         getStringCollator))
 
 }

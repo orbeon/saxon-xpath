@@ -33,13 +33,13 @@ class InvalidityReportGenerator(config: Configuration) extends StandardInvalidit
 
   def setSchemaName(name: String): Unit = ()
 
-  def getErrorCount(): Int = 0
+  def getErrorCount: Int = 0
 
-  def getWarningCount(): Int = 0
+  def getWarningCount: Int = 0
 
   def setXsdVersion(version: String): Unit = ()
 
-  def getWriter(): XMLStreamWriter = null
+  def getWriter: XMLStreamWriter = null
 
   override def reportInvalidity(failure: Invalidity): Unit = ()
 

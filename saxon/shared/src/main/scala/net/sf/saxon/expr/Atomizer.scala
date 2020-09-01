@@ -188,7 +188,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           } else if (i.asInstanceOf[Function].isMap) {
             val err = new XPathException(
               expandMessage(
-                "Cannot atomize a map (" + i.toShortString() + ")"),
+                "Cannot atomize a map (" + i.toShortString + ")"),
               "FOTY0013")
             err.setIsTypeError(true)
             err.setLocation(getLocation)
@@ -391,11 +391,11 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     if (i == null) {
       null
     } else {
-      i.atomize().head()
+      i.atomize().head
     }
   }
 
-  override def getItemType(): ItemType = {
+  override def getItemType: ItemType = {
     operandItemType = getBaseExpression.getItemType
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
     getAtomizedItemType(getBaseExpression, untyped, th)
@@ -443,7 +443,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   override def toString: String = "data(" + getBaseExpression.toString + ")"
 
-  override def toShortString(): String = getBaseExpression.toShortString()
+  override def toShortString: String = getBaseExpression.toShortString
 
   override def emitExtraAttributes(out: ExpressionPresenter): Unit = {
     if (roleDiagnostic != null) {

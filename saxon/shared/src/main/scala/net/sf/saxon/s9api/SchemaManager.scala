@@ -32,21 +32,21 @@ abstract class SchemaManager {
 
   def setXsdVersion(version: String): Unit
 
-  def getXsdVersion(): String
+  def getXsdVersion: String
 
   def setErrorListener(listener: ErrorListener): Unit
 
   /*@Nullable*/
 
-  def getErrorListener(): ErrorListener
+  def getErrorListener: ErrorListener
 
   def setErrorReporter(reporter: ErrorReporter): Unit
 
-  def getErrorReporter(): ErrorReporter
+  def getErrorReporter: ErrorReporter
 
   def setSchemaURIResolver(resolver: SchemaURIResolver): Unit
 
-  def getSchemaURIResolver(): SchemaURIResolver
+  def getSchemaURIResolver: SchemaURIResolver
 
   def load(source: Source): Unit
 

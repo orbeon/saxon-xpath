@@ -64,7 +64,7 @@ class ManualIterator
 
   def current(): Item = item
 
-  def getLength(): Int =
+  def getLength: Int =
     if (lastPositionFinder == null) {
       throw new XPathException(
         "Saxon streaming restriction: last() cannot be used when consuming a sequence of streamed nodes, even if the items being processed are grounded")
@@ -76,9 +76,9 @@ class ManualIterator
 
   override def materialize(): GroundedValue = item
 
-  override def getResidue(): GroundedValue = materialize()
+  override def getResidue: GroundedValue = materialize()
 
-  override def getProperties(): Set[Property] =
+  override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD,
       Property.GROUNDED,
       Property.LAST_POSITION_FINDER)

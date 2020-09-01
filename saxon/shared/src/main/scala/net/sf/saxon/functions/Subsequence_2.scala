@@ -60,7 +60,7 @@ class Subsequence_2 extends SystemFunction with Callable {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     SequenceTool.toLazySequence(
       subSequence(arguments(0).iterate(),
-        arguments(1).head().asInstanceOf[NumericValue]))
+        arguments(1).head.asInstanceOf[NumericValue]))
 
   def makeFunctionCall(arguments: Array[Expression]): Expression = {
     try if (Literal.isAtomic(arguments(1)) && !(arguments(0)

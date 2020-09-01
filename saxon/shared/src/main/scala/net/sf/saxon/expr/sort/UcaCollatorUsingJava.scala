@@ -67,7 +67,7 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
 
   this.setProps(parseProps(uri))
 
-  def getRuleBasedCollator(): RuleBasedCollator = uca
+  def getRuleBasedCollator: RuleBasedCollator = uca
 
   private def error(field: String, allowed: String): Unit = {
     error("value of " + field + " must be " + allowed)
@@ -176,7 +176,7 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
     uca.setStrength(newStrength)
   }
 
-  def getStrength(): Int = uca.getStrength
+  def getStrength: Int = uca.getStrength
 
   override def comparesEqual(s1: CharSequence, s2: CharSequence): Boolean =
     uca.compare(s1, s2) == 0

@@ -26,19 +26,19 @@ object Function {
 
 trait Function extends Item with Callable with GroundedValue {
 
-  def isMap(): Boolean
+  def isMap: Boolean
 
-  def isArray(): Boolean
+  def isArray: Boolean
 
-  def getFunctionItemType(): FunctionItemType
+  def getFunctionItemType: FunctionItemType
 
-  def getFunctionName(): StructuredQName
+  def getFunctionName: StructuredQName
 
-  def getArity(): Int
+  def getArity: Int
 
-  def getOperandRoles(): Array[OperandRole]
+  def getOperandRoles: Array[OperandRole]
 
-  def getAnnotations(): AnnotationList
+  def getAnnotations: AnnotationList
 
   def makeNewContext(callingContext: XPathContext,
                      originator: ContextOriginator): XPathContext
@@ -50,11 +50,11 @@ trait Function extends Item with Callable with GroundedValue {
                  comparer: AtomicComparer,
                  flags: Int): Boolean
 
-  def getDescription(): String
+  def getDescription: String
 
   def export(out: ExpressionPresenter): Unit
 
-  def isTrustedResultType(): Boolean
+  def isTrustedResultType: Boolean
 
   /**
     * Provide a short string showing the contents of the item, suitable
@@ -62,14 +62,14 @@ trait Function extends Item with Callable with GroundedValue {
     *
     * @return a depiction of the item suitable for use in error messages
     */
-  override def toShortString(): String = getDescription
+  override def toShortString: String = getDescription
 
   /**
     * Get the genre of this item
     *
     * @return the genre: specifically, {@link Genre#FUNCTION}. Overridden for maps and arrays.
     */
-  override def getGenre(): Genre = Genre.FUNCTION
+  override def getGenre: Genre = Genre.FUNCTION
 
 }
 

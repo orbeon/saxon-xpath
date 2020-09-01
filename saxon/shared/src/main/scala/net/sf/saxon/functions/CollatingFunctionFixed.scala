@@ -45,7 +45,7 @@ abstract class CollatingFunctionFixed
 
   private var atomicComparer: AtomicComparer = null
 
-  def isSubstringMatchingFunction(): Boolean = false
+  def isSubstringMatchingFunction: Boolean = false
 
   override def setRetainedStaticContext(retainedStaticContext: RetainedStaticContext): Unit = {
     super.setRetainedStaticContext(retainedStaticContext)
@@ -100,7 +100,7 @@ abstract class CollatingFunctionFixed
     )
   }
 
-  def getPreAllocatedAtomicComparer(): AtomicComparer = atomicComparer
+  def getPreAllocatedAtomicComparer: AtomicComparer = atomicComparer
 
   def getAtomicComparer(context: XPathContext): AtomicComparer =
     if (atomicComparer != null) {

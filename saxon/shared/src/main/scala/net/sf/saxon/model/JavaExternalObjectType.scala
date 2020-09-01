@@ -45,7 +45,7 @@ class JavaExternalObjectType( var config: Configuration,
                               var javaClass: Class[_])
   extends ExternalObjectType {
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def getName(): String = javaClass.getName
 
@@ -53,7 +53,7 @@ class JavaExternalObjectType( var config: Configuration,
 
   def getTypeName(): StructuredQName = classNameToQName(javaClass.getName)
 
-  override def getPrimitiveItemType(): ItemType =
+  override def getPrimitiveItemType: ItemType =
     config.getJavaExternalObjectType(classOf[AnyRef])
 
   def getRelationship(other: JavaExternalObjectType): Affinity.Affinity = {
@@ -71,7 +71,7 @@ class JavaExternalObjectType( var config: Configuration,
     }
   }
 
-  def getJavaClass(): Class[_] = javaClass
+  def getJavaClass: Class[_] = javaClass
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
     if (item.isInstanceOf[ObjectValue[_]]) {
@@ -84,7 +84,7 @@ class JavaExternalObjectType( var config: Configuration,
   override def toString: String =
     classNameToQName(javaClass.getName).getEQName
 
-  def getDisplayName(): String = "java-type:" + javaClass.getName
+  def getDisplayName: String = "java-type:" + javaClass.getName
 
   override def hashCode(): Int = javaClass.hashCode
 

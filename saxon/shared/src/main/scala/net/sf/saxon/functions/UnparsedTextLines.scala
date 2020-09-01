@@ -31,9 +31,9 @@ import java.net.URI
 class UnparsedTextLines extends UnparsedTextFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val hrefVal: StringValue = arguments(0).head().asInstanceOf[StringValue]
+    val hrefVal: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val encoding: String =
-      if (getArity == 2) arguments(1).head().getStringValue else null
+      if (getArity == 2) arguments(1).head.getStringValue else null
     try SequenceTool.toLazySequence(
       evalUnparsedTextLines(hrefVal, encoding, context))
     catch {

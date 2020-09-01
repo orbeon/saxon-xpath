@@ -36,7 +36,7 @@ object ShallowSkipRuleSet {
 
   private var THE_INSTANCE: ShallowSkipRuleSet = new ShallowSkipRuleSet()
 
-  def getInstance(): ShallowSkipRuleSet = THE_INSTANCE
+  def getInstance: ShallowSkipRuleSet = THE_INSTANCE
 
 }
 

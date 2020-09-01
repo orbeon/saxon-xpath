@@ -67,7 +67,7 @@ object PrimitiveUType extends Enumeration {
 
   class PrimitiveUType (@BeanProperty val bit: Int) extends Val {
 
-    def toUType(): UType = new UType(1 << bit)
+    def toUType: UType = new UType(1 << bit)
 
     override def toString: String = this match {
       case DOCUMENT => "document"
@@ -103,7 +103,7 @@ object PrimitiveUType extends Enumeration {
 
     }
 
-    def toItemType(): ItemType = this match {
+    def toItemType: ItemType = this match {
       case DOCUMENT => NodeKindTest.DOCUMENT
       case ELEMENT => NodeKindTest.ELEMENT
       case ATTRIBUTE => NodeKindTest.ATTRIBUTE

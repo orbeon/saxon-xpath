@@ -31,7 +31,7 @@ class MessageListenerProxy  (private var listener: MessageListener,
 // also because we store several messages in a single TinyTree; and because we fail to condense the tree.
   this.treeModel = TreeModel.LINKED_TREE
 
-  def getMessageListener(): MessageListener = listener
+  def getMessageListener: MessageListener = listener
 
   override def startDocument(properties: Int): Unit = {
     terminate = ReceiverOption.contains(properties, ReceiverOption.TERMINATE)

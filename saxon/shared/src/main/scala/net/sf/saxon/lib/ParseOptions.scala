@@ -335,7 +335,7 @@ class ParseOptions {
    */
   def getParserProperty(name: String): Any = parserProperties.get(name)
 
-  def getTreeModel(): Int = {
+  def getTreeModel: Int = {
     if (treeModel == null) {
       Builder.UNSPECIFIED_TREE_MODEL
     }
@@ -346,14 +346,14 @@ class ParseOptions {
     treeModel = model
   }
 
-  def getModel(): TreeModel =
+  def getModel: TreeModel =
     if (treeModel == null) TreeModel.TINY_TREE else treeModel
 
   def setSchemaValidationMode(option: Int): Unit = {
     schemaValidation = option
   }
 
-  def getSchemaValidationMode(): Int = schemaValidation
+  def getSchemaValidationMode: Int = schemaValidation
 
   def setDTDValidationMode(option: Int): Unit = {
     dtdValidation = option
@@ -361,15 +361,15 @@ class ParseOptions {
       option == Validation.STRICT || option == Validation.LAX)
   }
 
-  def getDTDValidationMode(): Int = dtdValidation
+  def getDTDValidationMode: Int = dtdValidation
 
   def setLineNumbering(lineNumbering: Boolean): Unit = {
     this.lineNumbering = lineNumbering
   }
 
-  def isLineNumbering(): Boolean = lineNumbering != null && lineNumbering
+  def isLineNumbering: Boolean = lineNumbering != null && lineNumbering
 
-  def isLineNumberingSet(): Boolean = lineNumbering != null
+  def isLineNumberingSet: Boolean = lineNumbering != null
 
   def setXMLReader(parser: XMLReader): Unit = {
     this.parser = parser
@@ -377,7 +377,7 @@ class ParseOptions {
 
   /*@Nullable*/
 
-  def getXMLReader(): XMLReader = parser
+  def getXMLReader: XMLReader = parser
 
   def setXMLReaderMaker(parserMaker: Maker[XMLReader]): Unit = {
     this.parserMaker = parserMaker
@@ -385,7 +385,7 @@ class ParseOptions {
 
   /*@Nullable*/
 
-  def getXMLReaderMaker(): Maker[XMLReader] = parserMaker
+  def getXMLReaderMaker: Maker[XMLReader] = parserMaker
 
   def obtainXMLReader(): XMLReader =
     if (parserMaker != null) {
@@ -411,11 +411,11 @@ class ParseOptions {
     addParserFeature("http://apache.org/xml/features/xinclude", state)
   }
 
-  def isXIncludeAwareSet(): Boolean =
+  def isXIncludeAwareSet: Boolean =
     parserFeatures != null &&
       parserFeatures.get("http://apache.org/xml/features/xinclude") ne null
 
-  def isXIncludeAware(): Boolean =
+  def isXIncludeAware: Boolean =
     if (parserFeatures == null) {
       false
     } else {
@@ -438,7 +438,7 @@ class ParseOptions {
     pleaseClose = close
   }
 
-  def isPleaseCloseAfterUse(): Boolean = pleaseClose
+  def isPleaseCloseAfterUse: Boolean = pleaseClose
 
 }
 

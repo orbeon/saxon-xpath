@@ -126,7 +126,7 @@ class UntypedSequenceConverter(sequence: Expression,
     atomicConverter
   }
 
-  override def getItemType(): ItemType =
+  override def getItemType: ItemType =
     if (getBaseExpression.getItemType == BuiltInAtomicType.UNTYPED_ATOMIC) {
       getRequiredItemType
     } else {
@@ -152,7 +152,7 @@ class UntypedSequenceConverter(sequence: Expression,
 
   override def getExpressionName(): String = "convertUntyped"
 
-  override def toShortString(): String = getBaseExpression.toShortString()
+  override def toShortString: String = getBaseExpression.toShortString
 
   override def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("cvUntyped", this)

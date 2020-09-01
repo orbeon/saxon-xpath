@@ -265,11 +265,11 @@ class Controller extends ContextOriginator {
       // URI, and the absolute URI does not already exist in the document pool, then register it in the document
       // pool, so that the document-uri() function will find it there, and so that a call on doc() will not
       // reload it.
-      if (`val`.isInstanceOf[NodeInfo] && `val`.asInstanceOf[NodeInfo].getNodeKind() == Type.DOCUMENT) {
-        val systemId = `val`.asInstanceOf[NodeInfo].getRoot().getSystemId
+      if (`val`.isInstanceOf[NodeInfo] && `val`.asInstanceOf[NodeInfo].getNodeKind == Type.DOCUMENT) {
+        val systemId = `val`.asInstanceOf[NodeInfo].getRoot.getSystemId
         try if (systemId != null && new URI(systemId).isAbsolute) {
           val pool = getDocumentPool
-          if (pool.find(systemId) == null) pool.add(`val`.asInstanceOf[NodeInfo].getTreeInfo(), systemId)
+          if (pool.find(systemId) == null) pool.add(`val`.asInstanceOf[NodeInfo].getTreeInfo, systemId)
         }
         catch {
           case err: URISyntaxException =>
@@ -495,7 +495,7 @@ class Controller extends ContextOriginator {
       }
       if (!startNode.getConfiguration.isCompatible(executable.getConfiguration))
         throw new XPathException("Source document and stylesheet must use the same or compatible Configurations", SaxonErrorCode.SXXP0004)
-      if (startNode.getTreeInfo().isTyped && !executable.isSchemaAware)
+      if (startNode.getTreeInfo.isTyped && !executable.isSchemaAware)
         throw new XPathException("Cannot use a schema-validated source document unless the stylesheet is schema-aware")
     }
     this.globalContextItem = conItem
@@ -786,7 +786,7 @@ class Controller extends ContextOriginator {
    */
   @throws[XPathException]
   def registerDocument(doc: TreeInfo, uri: DocumentURI): Unit = {
-    if (!getExecutable.isSchemaAware && !Untyped.getInstance.equals(doc.getRootNode().getSchemaType)) {
+    if (!getExecutable.isSchemaAware && !Untyped.getInstance.equals(doc.getRootNode.getSchemaType)) {
       val isXSLT = getExecutable.getHostLanguage eq HostLanguage.XSLT
       var message: String = null
       if (isXSLT) message = "The source document has been schema-validated, but" + " the stylesheet is not schema-aware. A stylesheet is schema-aware if" + " either (a) it contains an xsl:import-schema declaration, or (b) the stylesheet compiler" + " was configured to be schema-aware."
@@ -1057,8 +1057,8 @@ class Controller extends ContextOriginator {
     val doc = sourceBuilder.getCurrentRoot
     //globalContextItem = doc;
     sourceBuilder.reset()
-    if (source.getSystemId != null) registerDocument(doc.getTreeInfo(), new DocumentURI(source.getSystemId))
-    doc.getTreeInfo().setSpaceStrippingRule(spaceStrippingRule)
+    if (source.getSystemId != null) registerDocument(doc.getTreeInfo, new DocumentURI(source.getSystemId))
+    doc.getTreeInfo.setSpaceStrippingRule(spaceStrippingRule)
     doc
   }
 
@@ -1079,19 +1079,19 @@ class Controller extends ContextOriginator {
     var start = getConfiguration.unravel(source)
     // Stripping type annotations happens before stripping of whitespace
     /* if (false) {
-       val docInfo = start.getTreeInfo()
+       val docInfo = start.getTreeInfo
        if (docInfo.isTyped) {
          val strippedDoc = new TypeStrippedDocument(docInfo)
          start = strippedDoc.wrap(start)
        }
      }*/
     if (stripSourceTrees && isStylesheetContainingStripSpace) {
-      val docInfo = start.getTreeInfo()
+      val docInfo = start.getTreeInfo
       val spaceStrippingRule = getSpaceStrippingRule
-      if (docInfo.getSpaceStrippingRule() != spaceStrippingRule) { // if not already space-stripped
+      if (docInfo.getSpaceStrippingRule != spaceStrippingRule) { // if not already space-stripped
         val strippedDoc = new SpaceStrippedDocument(docInfo, spaceStrippingRule)
         // Edge case: the global context item might itself be a whitespace text node that is stripped
-        if (!SpaceStrippedNode.isPreservedNode(start, strippedDoc, start.getParent())) return null
+        if (!SpaceStrippedNode.isPreservedNode(start, strippedDoc, start.getParent)) return null
         start = strippedDoc.wrap(start)
       }
     }

@@ -73,7 +73,7 @@ abstract class AbstractArrayItem extends ArrayItem {
 
   def getFunctionItemType(): FunctionItemType = ArrayItemType.ANY_ARRAY_TYPE
 
-  def getFunctionName(): StructuredQName = null
+  def getFunctionName: StructuredQName = null
 
   /**
    * Get a description of this function for use in error messages. For named functions, the description
@@ -99,7 +99,7 @@ abstract class AbstractArrayItem extends ArrayItem {
     callingContext
 
   def call(context: XPathContext, args: Array[Sequence]): GroundedValue = {
-    val subscript: IntegerValue = args(0).head().asInstanceOf[IntegerValue]
+    val subscript: IntegerValue = args(0).head.asInstanceOf[IntegerValue]
     get(
       ArrayFunctionSet.checkSubscript(subscript, arrayLength()) -
         1)
@@ -132,11 +132,11 @@ abstract class AbstractArrayItem extends ArrayItem {
       "Effective boolean value is not defined for arrays",
       "FORG0006")
 
-  def getStringValue(): String =
+  def getStringValue: String =
     throw new UnsupportedOperationException(
       "An array does not have a string value")
 
-  def getStringValueCS(): CharSequence =
+  def getStringValueCS: CharSequence =
     throw new UnsupportedOperationException(
       "An array does not have a string value")
 

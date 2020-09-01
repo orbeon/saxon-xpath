@@ -13,9 +13,9 @@ trait ValidatingInstruction {
 
   /*@Nullable*/
 
-  def getSchemaType(): SchemaType
+  def getSchemaType: SchemaType
 
-  def getValidationAction(): Int
+  def getValidationAction: Int
 
 }
 

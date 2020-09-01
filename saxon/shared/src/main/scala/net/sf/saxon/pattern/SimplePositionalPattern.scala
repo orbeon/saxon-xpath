@@ -41,7 +41,7 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
 
   override def getFingerprint(): Int = nodeTest.getFingerprint
 
-  override def getItemType(): ItemType = nodeTest.getPrimitiveItemType
+  override def getItemType: ItemType = nodeTest.getPrimitiveItemType
 
   override def equals(other: Any): Boolean = other match {
     case other: SimplePositionalPattern => {

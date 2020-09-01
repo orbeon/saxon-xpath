@@ -89,7 +89,7 @@ object SuperId {
 
 abstract class SuperId extends SystemFunction {
 
-  def getOp(): Int
+  def getOp: Int
 
   override def getSpecialProperties(arguments: Array[Expression]): Int = {
     var prop: Int = StaticProperty.ORDERED_NODESET | StaticProperty.SINGLE_DOCUMENT_NODESET |
@@ -105,7 +105,7 @@ abstract class SuperId extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val start: NodeInfo =
       if (arguments.length == 1) getContextNode(context)
-      else arguments(1).head().asInstanceOf[NodeInfo]
+      else arguments(1).head.asInstanceOf[NodeInfo]
     val arg1: NodeInfo = start.getRoot
     if (arg1.getNodeKind != Type.DOCUMENT) {
       throw new XPathException(

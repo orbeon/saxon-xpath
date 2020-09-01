@@ -26,7 +26,7 @@ class XdmNode extends XdmItem {
     this.setValue(node)
   }
 
-  def getNodeKind(): XdmNodeKind = getUnderlyingNode.getNodeKind match {
+  def getNodeKind: XdmNodeKind = getUnderlyingNode.getNodeKind match {
     case Type.DOCUMENT => XdmNodeKind.DOCUMENT
     case Type.ELEMENT => XdmNodeKind.ELEMENT
     case Type.ATTRIBUTE => XdmNodeKind.ATTRIBUTE
@@ -38,7 +38,7 @@ class XdmNode extends XdmItem {
 
   }
 
-  def getProcessor(): Processor = {
+  def getProcessor: Processor = {
     val config: Configuration = getUnderlyingNode.getConfiguration
     val originator: AnyRef = config.getProcessor
     if (originator.isInstanceOf[Processor]) {
@@ -48,10 +48,10 @@ class XdmNode extends XdmItem {
     }
   }
 
-  override def getUnderlyingValue(): NodeInfo =
+  override def getUnderlyingValue: NodeInfo =
     super.getUnderlyingValue.asInstanceOf[NodeInfo]
 
-  def getNodeName(): QName = {
+  def getNodeName: QName = {
     val n: NodeInfo = getUnderlyingNode
     n.getNodeKind match {
       case Type.DOCUMENT | Type.TEXT | Type.COMMENT => null
@@ -63,14 +63,14 @@ class XdmNode extends XdmItem {
     }
   }
 
-  def getTypedValue(): XdmValue = {
+  def getTypedValue: XdmValue = {
     val v: AtomicSequence = getUnderlyingNode.atomize()
     XdmValue.wrap(v)
   }
 
-  def getLineNumber(): Int = getUnderlyingNode.getLineNumber
+  def getLineNumber: Int = getUnderlyingNode.getLineNumber
 
-  def getColumnNumber(): Int = getUnderlyingNode.getColumnNumber
+  def getColumnNumber: Int = getUnderlyingNode.getColumnNumber
 
   def asSource(): Source = getUnderlyingNode
 
@@ -108,12 +108,12 @@ class XdmNode extends XdmItem {
     XdmSequenceIterator.ofNodes(base)
   }
 
-  def getParent(): XdmNode = {
+  def getParent: XdmNode = {
     val p: NodeInfo = getUnderlyingNode.getParent
     if (p == null) null else XdmValue.wrap(p).asInstanceOf[XdmNode]
   }
 
-  def getRoot(): XdmNode = {
+  def getRoot: XdmNode = {
     val p: NodeInfo = getUnderlyingNode.getRoot
     if (p == null) null else XdmValue.wrap(p).asInstanceOf[XdmNode]
   }
@@ -126,7 +126,7 @@ class XdmNode extends XdmItem {
   def attribute(name: String): String =
     getUnderlyingNode.getAttributeValue("", name)
 
-  def getBaseURI(): URI = {
+  def getBaseURI: URI = {
     val uri: String = getUnderlyingNode.getBaseURI
     if (uri == null) {
       return null
@@ -134,7 +134,7 @@ class XdmNode extends XdmItem {
     new URI(uri)
   }
 
-  def getDocumentURI(): URI = {
+  def getDocumentURI: URI = {
     val systemId: String = getUnderlyingNode.getSystemId
     if (systemId == null || systemId.isEmpty) null else new URI(systemId)
   }
@@ -172,9 +172,9 @@ class XdmNode extends XdmItem {
     QueryResult.serialize(node).trim()
   }
 
-  def getUnderlyingNode(): NodeInfo = getUnderlyingValue
+  def getUnderlyingNode: NodeInfo = getUnderlyingValue
 
-  def getExternalNode(): AnyRef = {
+  def getExternalNode: AnyRef = {
     val saxonNode: NodeInfo = getUnderlyingNode
     if (saxonNode.isInstanceOf[VirtualNode]) {
       val externalNode: AnyRef =

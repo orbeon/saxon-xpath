@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,23 +6,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
-import net.sf.saxon.event.Outputter
-import net.sf.saxon.event.TypeCheckingFilter
+import net.sf.saxon.event.{Outputter, TypeCheckingFilter}
+import net.sf.saxon.expr.Expression._
 import net.sf.saxon.expr.parser._
-import Expression._
-import net.sf.saxon.model.Type
-import net.sf.saxon.om.Item
-import net.sf.saxon.om.SequenceIterator
-import net.sf.saxon.om.SequenceTool
+import net.sf.saxon.model.{ItemType, Type}
+import net.sf.saxon.om.{Item, SequenceIterator, SequenceTool}
 import net.sf.saxon.pattern.DocumentNodeTest
 import net.sf.saxon.s9api.Location
 import net.sf.saxon.trace.ExpressionPresenter
-import net.sf.saxon.trans.Err
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.trans.{Err, XPathException}
 import net.sf.saxon.tree.iter.ArrayIterator
 import net.sf.saxon.tree.util.FastStringBuffer
-import net.sf.saxon.value.Cardinality
-import net.sf.saxon.value.IntegerValue
+import net.sf.saxon.value.{Cardinality, IntegerValue}
 
 /**
  * A CardinalityChecker implements the cardinality checking of "treat as": that is,
@@ -41,12 +35,17 @@ object CardinalityChecker {
    */
   def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression = {
     var result: Expression = null
-    if (sequence.isInstanceOf[Literal] && Cardinality.subsumes(cardinality, SequenceTool.getCardinality(sequence.asInstanceOf[Literal].getValue))) return sequence
-    if (sequence.isInstanceOf[Atomizer] && !Cardinality.allowsMany(cardinality)) {
-      val base = sequence.asInstanceOf[Atomizer].getBaseExpression
-      result = new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
+    sequence match {
+      case literal: Literal if Cardinality.subsumes(cardinality, SequenceTool.getCardinality(literal.getValue)) => return sequence
+      case _ =>
     }
-    else result = new CardinalityChecker(sequence, cardinality, role)
+    sequence match {
+      case atomizer: Atomizer if !Cardinality.allowsMany(cardinality) =>
+        val base = atomizer.getBaseExpression
+        result = new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
+      case _ =>
+        result = new CardinalityChecker(sequence, cardinality, role)
+    }
     ExpressionTool.copyLocationInfo(sequence, result)
     result
   }
@@ -63,12 +62,12 @@ object CardinalityChecker {
     var count = 0
     sb.append(" (")
     var next: Item = null
-    while (({
-      next = seq.next
+    while ({
+      next = seq.next()
       next
-    }) != null) {
+    } != null) {
       if ( {
-        count += 1;
+        count += 1
         count - 1
       } > 0) sb.append(", ")
       if (count > max) {
@@ -90,14 +89,14 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
   private var requiredCardinality = -1
   requiredCardinality = cardinality
 
-  override def getOperandRole = OperandRole.SAME_FOCUS_ACTION
+  override def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   /**
    * Get the required cardinality
    *
    * @return the cardinality required by this checker
    */
-  def getRequiredCardinality = requiredCardinality
+  def getRequiredCardinality: Int = requiredCardinality
 
   /**
    * Type-check the expression
@@ -128,7 +127,8 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
   override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.optimize(visitor, contextInfo)
     val base = getBaseExpression
-    if (requiredCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE || Cardinality.subsumes(requiredCardinality, base.getCardinality)) return base
+    if (requiredCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE || Cardinality.subsumes(requiredCardinality, base.getCardinality))
+      return base
     if ((base.getCardinality & requiredCardinality) == 0) {
       val err = new XPathException("The " + role.getMessage + " does not satisfy the cardinality constraints", role.getErrorCode)
       err.setLocation(getLocation)
@@ -136,14 +136,15 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
       throw err
     }
     // do cardinality checking before item checking (may avoid the need for a mapping iterator)
-    if (base.isInstanceOf[ItemChecker]) {
-      val checker = base.asInstanceOf[ItemChecker]
-      val other = checker.getBaseExpression
-      // change this -> checker -> other to checker -> this -> other
-      setBaseExpression(other)
-      checker.setBaseExpression(this)
-      checker.setParentExpression(null)
-      return checker
+    base match {
+      case checker: ItemChecker =>
+        val other = checker.getBaseExpression
+        // change this -> checker -> other to checker -> this -> other
+        setBaseExpression(other)
+        checker.setBaseExpression(this)
+        checker.setParentExpression(null)
+        return checker
+      case _ =>
     }
     this
   }
@@ -154,21 +155,21 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    *
    * @param code the error code to be used
    */
-  def setErrorCode(code: String) = role.setErrorCode(code)
+  def setErrorCode(code: String): Unit = role.setErrorCode(code)
 
   /**
    * Get the RoleLocator, which contains diagnostic information for use if the cardinality check fails
    *
    * @return the diagnostic information
    */
-  def getRoleLocator = role
+  def getRoleLocator: RoleDiagnostic = role
 
   /**
    * An implementation of Expression must provide at least one of the methods evaluateItem(), iterate(), or process().
    * This method indicates which of these methods is provided. This implementation provides both iterate() and
    * process() methods natively.
    */
-  override def getImplementationMethod = {
+  override def getImplementationMethod: Int = {
     var m = ITERATE_METHOD | PROCESS_METHOD | ITEM_FEED_METHOD
     if (!Cardinality.allowsMany(requiredCardinality)) m |= EVALUATE_METHOD
     m
@@ -187,7 +188,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * @return the lower and upper bounds of integer values in the result, or null to indicate
    *         unknown or not applicable.
    */
-  override def getIntegerBounds = getBaseExpression.getIntegerBounds
+  override def getIntegerBounds: Array[IntegerValue] = getBaseExpression.getIntegerBounds
 
   /**
    * Iterate over the sequence of values
@@ -197,7 +198,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
     val base = getBaseExpression.iterate(context)
     // If the base iterator knows how many items there are, then check it now rather than wasting time
     if (base.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
-      val count = base.asInstanceOf[LastPositionFinder].getLength()
+      val count = base.asInstanceOf[LastPositionFinder].getLength
       if (count == 0 && !Cardinality.allowsZero(requiredCardinality)) typeError("An empty sequence is not allowed as the " + role.getMessage, role.getErrorCode, context)
       else if (count == 1 && requiredCardinality == StaticProperty.EMPTY) typeError("The only value allowed for the " + role.getMessage + " is an empty sequence", role.getErrorCode, context)
       else if (count > 1 && !Cardinality.allowsMany(requiredCardinality)) typeError("A sequence of more than one item is not allowed as the " + role.getMessage + CardinalityChecker.depictSequenceStart(base, 2), role.getErrorCode, context)
@@ -214,17 +215,18 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
   /*@Nullable*/ @throws[XPathException]
   override def evaluateItem(context: XPathContext): Item = {
     val iter = getBaseExpression.iterate(context)
-    val first = iter.next
+    val first = iter.next()
     if (first == null) {
-      if (!Cardinality.allowsZero(requiredCardinality)) typeError("An empty sequence is not allowed as the " + role.getMessage, role.getErrorCode, context)
-      return null
+      if (!Cardinality.allowsZero(requiredCardinality))
+        typeError("An empty sequence is not allowed as the " + role.getMessage, role.getErrorCode, context)
+        return null
     }
     else {
       if (requiredCardinality == StaticProperty.EMPTY) {
         typeError("An empty sequence is required as the " + role.getMessage, role.getErrorCode, context)
         return null
       }
-      val second = iter.next
+      val second = iter.next()
       if (second != null) {
         val leaders = Array[Item](first, second)
         typeError("A sequence of more than one item is not allowed as the " + role.getMessage + CardinalityChecker.depictSequenceStart(new ArrayIterator[Item](leaders), 2), role.getErrorCode, context)
@@ -241,25 +243,28 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * @param context The dynamic context, giving access to the current node,
    */
   @throws[XPathException]
-  override def process(output: Outputter, context: XPathContext) = {
+  override def process(output: Outputter, context: XPathContext): Unit = {
     var next = getBaseExpression
     var `type` = Type.ITEM_TYPE
-    if (next.isInstanceOf[ItemChecker]) {
-      `type` = next.asInstanceOf[ItemChecker].getRequiredType
-      next = next.asInstanceOf[ItemChecker].getBaseExpression
+    next match {
+      case checker: ItemChecker =>
+        `type` = checker.getRequiredType
+        next = checker.getBaseExpression
+      case _ =>
     }
     if ((next.getImplementationMethod & PROCESS_METHOD) != 0 && !`type`.isInstanceOf[DocumentNodeTest]) {
       val filter = new TypeCheckingFilter(output)
       filter.setRequiredType(`type`, requiredCardinality, role, getLocation)
       next.process(filter, context)
-      try filter.finalCheck()
+      try
+        filter.finalCheck()
       catch {
         case e: XPathException =>
           e.maybeSetLocation(getLocation)
           throw e
       }
-    }
-    else { // Force pull-mode evaluation
+    } else {
+      // Force pull-mode evaluation
       super.process(output, context)
     }
   }
@@ -270,19 +275,19 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * @return a value such as Type.STRING, Type.BOOLEAN, Type.NUMBER, Type.NODE,
    *         or Type.ITEM (meaning not known in advance)
    */
-  override def getItemType = getBaseExpression.getItemType
+  override def getItemType: ItemType = getBaseExpression.getItemType
 
   /**
    * Determine the static cardinality of the expression
    */
-  override def computeCardinality = requiredCardinality
+  override def computeCardinality: Int = requiredCardinality
 
   /**
    * Get the static properties of this expression (other than its type). The result is
    * bit-signficant. These properties are used for optimizations. In general, if
    * property bit is set, it is true, but if it is unset, the value is unknown.
    */
-  override def computeSpecialProperties = getBaseExpression.getSpecialProperties
+  override def computeSpecialProperties: Int = getBaseExpression.getSpecialProperties
 
   /**
    * Copy an expression. This makes a deep copy.
@@ -290,7 +295,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * @return the copy of the original expression
    * @param rebindings variable bindings that need to be changed
    */
-  override def copy(rebindings: RebindingMap) = {
+  override def copy(rebindings: RebindingMap): Expression = {
     val c2 = new CardinalityChecker(getBaseExpression.copy(rebindings), requiredCardinality, role)
     ExpressionTool.copyLocationInfo(this, c2)
     c2
@@ -299,20 +304,20 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
   /**
    * Is this expression the same as another expression?
    */
-  override def equals(other: Any) = super.equals(other) && requiredCardinality == other.asInstanceOf[CardinalityChecker].requiredCardinality
+  override def equals(other: Any): Boolean = super.equals(other) && requiredCardinality == other.asInstanceOf[CardinalityChecker].requiredCardinality
 
   /**
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode = super.computeHashCode ^ requiredCardinality
+  override def computeHashCode: Int = super.computeHashCode ^ requiredCardinality
 
   /**
    * Diagnostic print of expression structure. The abstract expression tree
    * is written to the supplied output destination.
    */
   @throws[XPathException]
-  override def `export`(out: ExpressionPresenter) = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("check", this)
     var occ = Cardinality.getOccurrenceIndicator(requiredCardinality)
     if (occ == "") occ = "1"
@@ -327,7 +332,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * in an XPath-like form. For subclasses of Expression that represent XPath expressions, the result should always
    * be a string that parses as an XPath 3.0 expression.
    */
-  override def toString = {
+  override def toString: String = {
     val operand = getBaseExpression
     requiredCardinality match {
       case StaticProperty.ALLOWS_ONE =>
@@ -351,10 +356,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    *         in explain() output displaying the expression.
    */
   override def getExpressionName = "CheckCardinality"
-
-  override def toShortString = getBaseExpression.toShortString
-
+  override def toShortString: String = getBaseExpression.toShortString
   override def getStreamerName = "CardinalityChecker"
-
-  override def setLocation(id: Location) = super.setLocation(id)
+  override def setLocation(id: Location): Unit = super.setLocation(id)
 }

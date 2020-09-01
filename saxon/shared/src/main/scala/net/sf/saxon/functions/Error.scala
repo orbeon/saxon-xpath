@@ -42,7 +42,7 @@ class Error extends SystemFunction with Callable {
   override def getSpecialProperties(arguments: Array[Expression]): Int =
     super.getSpecialProperties(arguments) & ~StaticProperty.NO_NODES_NEWLY_CREATED
 
-  def isVacuousExpression(): Boolean = true
+  def isVacuousExpression: Boolean = true
 
   def error(context: XPathContext,
             errorCode: QNameValue,
@@ -69,7 +69,7 @@ class Error extends SystemFunction with Callable {
     if (getArity > 2 && errObject != null) {
       val errorObject: Sequence = errObject.materialize()
       if (errorObject.isInstanceOf[ZeroOrOne[_ <: Item]]) {
-        val root: Item = errorObject.asInstanceOf[ZeroOrOne[_ <: Item]].head()
+        val root: Item = errorObject.asInstanceOf[ZeroOrOne[_ <: Item]].head
         if ((root.isInstanceOf[NodeInfo]) &&
           root.asInstanceOf[NodeInfo].getNodeKind == Type.DOCUMENT) {
           val iter: AxisIterator = root
@@ -105,20 +105,20 @@ class Error extends SystemFunction with Callable {
     len match {
       case 0 => error(context, null, null, null)
       case 1 =>
-        var arg0: QNameValue = arguments(0).head().asInstanceOf[QNameValue]
+        var arg0: QNameValue = arguments(0).head.asInstanceOf[QNameValue]
         if (arg0 == null) {
           arg0 = new QNameValue("err", NamespaceConstant.ERR, "FOER0000")
         }
         error(context, arg0, null, null)
       case 2 =>
         error(context,
-          arguments(0).head().asInstanceOf[QNameValue],
-          arguments(1).head().asInstanceOf[StringValue],
+          arguments(0).head.asInstanceOf[QNameValue],
+          arguments(1).head.asInstanceOf[StringValue],
           null)
       case 3 =>
         error(context,
-          arguments(0).head().asInstanceOf[QNameValue],
-          arguments(1).head().asInstanceOf[StringValue],
+          arguments(0).head.asInstanceOf[QNameValue],
+          arguments(1).head.asInstanceOf[StringValue],
           arguments(2).iterate())
       case _ => null
 

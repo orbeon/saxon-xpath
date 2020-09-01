@@ -83,7 +83,7 @@ object ParseJsonFn {
       handler.setFallbackFunction(options, context)
     }
     parser.parse(input, flags, handler, context)
-    handler.getResult.head()
+    handler.getResult.head
   }
 
 }

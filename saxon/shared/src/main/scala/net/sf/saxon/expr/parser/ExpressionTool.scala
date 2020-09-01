@@ -41,8 +41,8 @@ object ExpressionTool {
     if (terminator == -1)
       rTerminator = Token.EOF
     var exp = parser.parse(expression, start, terminator, env)
-    setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext)
-    exp = exp.simplify
+    setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext())
+    exp = exp.simplify()
     exp
   }
 
@@ -156,7 +156,7 @@ object ExpressionTool {
   @throws[XPathException]
   def eagerEvaluate(exp: Expression, context: XPathContext): GroundedValue = {
     val evaluator = eagerEvaluator(exp)
-    evaluator.evaluate(exp, context).materialize
+    evaluator.evaluate(exp, context).materialize()
   }
 
   def markTailFunctionCalls(exp: Expression, qName: StructuredQName, arity: Int): Int =
@@ -374,7 +374,7 @@ object ExpressionTool {
         val count = assignation.getRequiredSlots
         nextFreeCount += count
         if (frame != null)
-          frame.allocateSlotNumber(assignation.getVariableQName())
+          frame.allocateSlotNumber(assignation.getVariableQName)
       case _ =>
     }
     exp match {
@@ -402,9 +402,9 @@ object ExpressionTool {
         val binding = varRef.getBinding
 
         if (exp.isInstanceOf[LocalVariableReference])
-          varRef.asInstanceOf[LocalVariableReference].setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber())
+          varRef.asInstanceOf[LocalVariableReference].setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber)
         binding match {
-          case decl: Assignation if binding.asInstanceOf[LocalBinding].getLocalSlotNumber() < 0 =>
+          case decl: Assignation if binding.asInstanceOf[LocalBinding].getLocalSlotNumber < 0 =>
 
 
             var err: Logger = null
@@ -577,7 +577,7 @@ object ExpressionTool {
     getFunctionName.getLocalPart
 
   def callsFunction(exp: Expression, qName: StructuredQName, sameFocusOnly: Boolean): Boolean =
-    contains(exp, sameFocusOnly, (e: Expression) => e.isInstanceOf[FunctionCall] && qName == e.asInstanceOf[FunctionCall].getFunctionName())
+    contains(exp, sameFocusOnly, (e: Expression) => e.isInstanceOf[FunctionCall] && qName == e.asInstanceOf[FunctionCall].getFunctionName)
 
   def containsSubexpression(exp: Expression, subClass: Class[_ <: Expression]): Boolean = contains(exp, sameFocusOnly = false,
     (e: Expression) => subClass.isAssignableFrom(e.getClass))

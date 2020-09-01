@@ -65,8 +65,8 @@ class Contains extends CollatingFunctionFixed {
   override def isSubstringMatchingFunction(): Boolean = true
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
-    val s0: StringValue = arguments(0).head().asInstanceOf[StringValue]
-    val s1: StringValue = arguments(1).head().asInstanceOf[StringValue]
+    val s0: StringValue = arguments(0).head.asInstanceOf[StringValue]
+    val s1: StringValue = arguments(1).head.asInstanceOf[StringValue]
     BooleanValue.get(
       contains(s0, s1, getStringCollator.asInstanceOf[SubstringMatcher]))
   }

@@ -128,7 +128,7 @@ object Err {
 
       }
     } else {
-      item.toShortString()
+      item.toShortString
     }
 
   def depictSequence(seq: Sequence): CharSequence = {
@@ -140,7 +140,7 @@ object Err {
       if (`val`.getLength == 0) {
         "()"
       } else if (`val`.getLength == 1) {
-        depict(seq.head())
+        depict(seq.head)
       } else {
         depictSequenceStart(`val`.iterate(), 3, `val`.getLength)
       }

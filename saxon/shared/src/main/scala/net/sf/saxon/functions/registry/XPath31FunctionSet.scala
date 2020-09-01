@@ -15,7 +15,7 @@ object XPath31FunctionSet {
 
   private val THE_INSTANCE: XPath31FunctionSet = new XPath31FunctionSet()
 
-  def getInstance(): XPath31FunctionSet = THE_INSTANCE
+  def getInstance: XPath31FunctionSet = THE_INSTANCE
 }
 
 class XPath31FunctionSet private() extends BuiltInFunctionSet {
