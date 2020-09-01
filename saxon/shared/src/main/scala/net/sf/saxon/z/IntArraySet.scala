@@ -1,16 +1,15 @@
 package net.sf.saxon.z
 
-import net.sf.saxon.tree.util.FastStringBuffer
 import java.util.Arrays
 
-import IntArraySet._
+import net.sf.saxon.tree.util.FastStringBuffer
+import net.sf.saxon.z.IntArraySet._
 
 import scala.util.control.Breaks._
 
 object IntArraySet {
 
-
-  val EMPTY_INT_ARRAY: Array[Int] = new Array[Int](0)
+  val EMPTY_INT_ARRAY = new Array[Int](0)
 
   def make(in: Array[Int], size: Int): IntArraySet = {
     var out: Array[Int] = null
@@ -35,37 +34,28 @@ object IntArraySet {
       i += 1;
       i - 1
     })
-
   }
-
 }
 
-class IntArraySet extends IntSet {
-
-  private var contents: Array[Int] = _
+class IntArraySet(private var contents: Array[Int]) extends IntSet {
 
   private var hashCodeVar: Int = -1
 
+  def this() =
+    this(EMPTY_INT_ARRAY)
+
   def this(input: IntHashSet) = {
-    this()
-    contents = input.getValues
+    this(input.getValues)
     Arrays.sort(contents)
   }
 
-  def this(content: Array[Int]) {
-    this()
-    contents = content
-  }
-
   def this(input: IntArraySet) = {
-    this()
-    contents = Array.ofDim[Int](input.contents.length)
+    this(Array.ofDim[Int](input.contents.length))
     System.arraycopy(input.contents, 0, contents, 0, contents.length)
   }
 
   def copy(): IntSet = {
-    val i2: IntArraySet = new IntArraySet()
-    i2.contents = Array.ofDim[Int](contents.length)
+    val i2 = new IntArraySet(Array.ofDim[Int](contents.length))
     System.arraycopy(contents, 0, i2.contents, 0, contents.length)
     i2
   }
@@ -218,20 +208,21 @@ class IntArraySet extends IntSet {
   }
 
   override def equals(other: Any): Boolean =
-    if (other.isInstanceOf[IntArraySet]) {
-      val s: IntArraySet = other.asInstanceOf[IntArraySet]
-      hashCode == other.hashCode && Arrays.equals(contents, s.contents)
-    } else
-      other.isInstanceOf[IntSet] && contents.length == other
-        .asInstanceOf[IntSet]
-        .size &&
-        containsAll(other.asInstanceOf[IntSet])
+    other match {
+      case s: IntArraySet =>
+        hashCode == other.hashCode && Arrays.equals(contents, s.contents)
+      case _ =>
+        other.isInstanceOf[IntSet]                           &&
+          contents.length == other.asInstanceOf[IntSet].size &&
+          containsAll(other.asInstanceOf[IntSet])
+    }
 
   override def hashCode(): Int = {
     if (hashCodeVar == -1) {
-      var h: Int = 936247625
-      val it: IntIterator = iterator()
-      while (it.hasNext) h += it.next
+      var h = 936247625
+      val it = iterator()
+      while (it.hasNext)
+        h += it.next
       return h
     }
     hashCodeVar

@@ -1,38 +1,14 @@
 package net.sf.saxon.functions.hof
 
-import net.sf.saxon.expr.FunctionCall
-
-import net.sf.saxon.expr.XPathContext
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
-import net.sf.saxon.expr.parser.Loc
-
-import net.sf.saxon.expr.parser.RoleDiagnostic
-
+import net.sf.saxon.expr.{FunctionCall, XPathContext}
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, Loc, RoleDiagnostic}
 import net.sf.saxon.functions.AbstractFunction
-
-import net.sf.saxon.model.FunctionItemType
-
-import net.sf.saxon.model.SpecificFunctionType
-
-import net.sf.saxon.model.TypeHierarchy
-
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.StructuredQName
-
+import net.sf.saxon.functions.hof.CoercedFunction._
+import net.sf.saxon.model.{FunctionItemType, SpecificFunctionType, TypeHierarchy}
+import net.sf.saxon.om.{Function, Sequence, StructuredQName}
 import net.sf.saxon.trace.ExpressionPresenter
-
 import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.value.SequenceType
-
-import CoercedFunction._
 
 object CoercedFunction {
 
@@ -58,26 +34,13 @@ object CoercedFunction {
 
 }
 
-class CoercedFunction extends AbstractFunction {
-  private var targetFunction: Function = _
-  private var requiredType: SpecificFunctionType = _
+class CoercedFunction(private var targetFunction: Function, private val requiredType: SpecificFunctionType) extends AbstractFunction {
 
-  if (targetFunction.getArity != requiredType.getArity) {
-    throw new XPathException(
-      wrongArityMessage(targetFunction, requiredType.getArity),
-      "XPTY0004")
-  }
+  if (targetFunction.getArity != requiredType.getArity)
+    throw new XPathException(wrongArityMessage(targetFunction, requiredType.getArity), "XPTY0004")
 
-  def this(targetFunc: Function, requiredTyp: SpecificFunctionType) {
-    this()
-    this.requiredType = requiredTyp
-    this.targetFunction = targetFunc
-  }
-
-  def this(requiredType: SpecificFunctionType) = {
-    this()
-    this.requiredType = requiredType
-  }
+  def this(requiredType: SpecificFunctionType) =
+    this(null, requiredType)
 
   def setTargetFunction(targetFunction: Function): Unit = {
     if (targetFunction.getArity != requiredType.getArity) {
@@ -98,11 +61,8 @@ class CoercedFunction extends AbstractFunction {
   }
 
   def getFunctionItemType(): FunctionItemType = requiredType
-
   def getFunctionName: StructuredQName = targetFunction.getFunctionName
-
   def getDescription(): String = "coerced " + targetFunction.getDescription
-
   def getArity(): Int = targetFunction.getArity
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {

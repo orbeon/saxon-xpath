@@ -38,8 +38,8 @@ class CurriedFunction(private var targetFunction: Function,
       if (baseItemType.isInstanceOf[SpecificFunctionType]) {
         var j = 0
         for (i <- 0 until boundValues.length if boundValues(i) == null) {
-          j += 1
           argTypes(j) = baseItemType.getArgumentTypes(i)
+          j += 1
         }
       } else {
         Arrays.fill(argTypes.asInstanceOf[Array[AnyRef]], SequenceType.ANY_SEQUENCE)
@@ -68,11 +68,11 @@ class CurriedFunction(private var targetFunction: Function,
   override def getAnnotations(): AnnotationList = targetFunction.getAnnotations
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
-    val newArgs: Array[Sequence] = Array.ofDim[Sequence](boundValues.length)
+    val newArgs = Array.ofDim[Sequence](boundValues.length)
     var j = 0
-    for (i <- 0 until newArgs.length) {
-      j += 1
+    for (i <- newArgs.indices) {
       newArgs(i) = if (boundValues(i) == null) args(j) else boundValues(i)
+      j += 1
     }
     val c2: XPathContext = targetFunction.makeNewContext(context, null)
     if (targetFunction.isInstanceOf[UserFunction]) {
