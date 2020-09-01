@@ -10,39 +10,28 @@
   */
 package net.sf.saxon.om
 
-import net.sf.saxon.expr.{Callable, ContextOriginator, OperandRole, XPathContext}
 import net.sf.saxon.expr.sort.AtomicComparer
+import net.sf.saxon.expr.{Callable, ContextOriginator, OperandRole, XPathContext}
 import net.sf.saxon.model.FunctionItemType
 import net.sf.saxon.om.Genre.Genre
 import net.sf.saxon.query.AnnotationList
 import net.sf.saxon.trace.ExpressionPresenter
 
 object Function {
-
   @SafeVarargs
   def argumentArray(args: Sequence*): Seq[Sequence] = args
-
 }
 
 trait Function extends Item with Callable with GroundedValue {
 
   def isMap: Boolean
-
   def isArray: Boolean
-
   def getFunctionItemType: FunctionItemType
-
   def getFunctionName: StructuredQName
-
   def getArity: Int
-
   def getOperandRoles: Array[OperandRole]
-
   def getAnnotations: AnnotationList
-
-  def makeNewContext(callingContext: XPathContext,
-                     originator: ContextOriginator): XPathContext
-
+  def makeNewContext(callingContext: XPathContext, originator: ContextOriginator): XPathContext
   def call(context: XPathContext, args: Array[Sequence]): Sequence
 
   def deepEquals(other: Function,
@@ -51,9 +40,7 @@ trait Function extends Item with Callable with GroundedValue {
                  flags: Int): Boolean
 
   def getDescription: String
-
   def export(out: ExpressionPresenter): Unit
-
   def isTrustedResultType: Boolean
 
   /**
@@ -70,7 +57,4 @@ trait Function extends Item with Callable with GroundedValue {
     * @return the genre: specifically, {@link Genre#FUNCTION}. Overridden for maps and arrays.
     */
   override def getGenre: Genre = Genre.FUNCTION
-
 }
-
-

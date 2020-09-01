@@ -236,23 +236,26 @@ object SequenceType {
    * @return the SequenceType (either a newly created object, or an existing one from the cache)
    */
   def makeSequenceType(primaryType: ItemType, cardinality: Int): SequenceType = {
-    if (primaryType.isInstanceOf[ItemType.WithSequenceTypeCache]) {
-      val bat = primaryType.asInstanceOf[ItemType.WithSequenceTypeCache]
-      cardinality match {
-        case StaticProperty.EXACTLY_ONE =>
-          return bat.one
-        case StaticProperty.ALLOWS_ZERO_OR_ONE =>
-          return bat.zeroOrOne
-        case StaticProperty.ALLOWS_ZERO_OR_MORE =>
-          return bat.zeroOrMore
-        case StaticProperty.ALLOWS_ONE_OR_MORE =>
-          return bat.oneOrMore
-        case _ =>
-        // fall through
-      }
+    primaryType match {
+      case bat: ItemType.WithSequenceTypeCache =>
+        cardinality match {
+          case StaticProperty.EXACTLY_ONE =>
+            return bat.one
+          case StaticProperty.ALLOWS_ZERO_OR_ONE =>
+            return bat.zeroOrOne
+          case StaticProperty.ALLOWS_ZERO_OR_MORE =>
+            return bat.zeroOrMore
+          case StaticProperty.ALLOWS_ONE_OR_MORE =>
+            return bat.oneOrMore
+          case _ =>
+          // fall through
+        }
+      case _ =>
     }
-    if (cardinality == StaticProperty.ALLOWS_ZERO) return SequenceType.EMPTY_SEQUENCE
-    new SequenceType(primaryType, cardinality)
+    if (cardinality == StaticProperty.ALLOWS_ZERO)
+      SequenceType.EMPTY_SEQUENCE
+    else
+      new SequenceType(primaryType, cardinality)
   }
 }
 
