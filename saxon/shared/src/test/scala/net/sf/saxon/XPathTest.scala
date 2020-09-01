@@ -30,6 +30,15 @@ class XPathTest extends AnyFunSpec {
       "3.1415"                                      -> "3.1415",
       "fn:concat('To be', ', or not to be')"        -> "To be, or not to be",
       "'To be' || ', or not to be'"                 -> "To be, or not to be",
+//      """
+//        let $f :=
+//          function ($seq, $delim) {
+//            fn:fold-left($seq, '', fn:concat(?, $delim, ?))
+//          },
+//          $paf := $f(?, ".")
+//        return
+//          $paf(1 to 5)
+//        """ -> "TODO",
     )
 
     for ((in, out) <- Expected)
