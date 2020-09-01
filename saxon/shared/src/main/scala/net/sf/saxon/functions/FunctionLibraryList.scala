@@ -66,19 +66,15 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
           functionName.getArity)
     }
     for (lib <- libraryList.asScala) {
-      if (debug) {
+      if (debug)
         err.info("Trying " + lib.getClass.getName)
-      }
-      val func: Expression = lib.bind(functionName, staticArgs, env, reasons)
-      if (func != null) {
-        func
-      }
+
+      val func = lib.bind(functionName, staticArgs, env, reasons)
+      if (func != null)
+        return func
     }
-    if (debug) {
-      err.info(
-        "Function " + functionName.getComponentName.getEQName +
-          " not found!")
-    }
+    if (debug)
+      err.info("Function " + functionName.getComponentName.getEQName + " not found!")
     null
   }
 

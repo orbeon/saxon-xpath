@@ -72,8 +72,8 @@ abstract class FunctionCall extends Expression {
     val result: Array[Expression] = Array.ofDim[Expression](getArity)
     var i: Int = 0
     for (o <- operands().asScala) {
-      i += 1
       result(i) = o.getChildExpression
+      i += 1
     }
     result
   }

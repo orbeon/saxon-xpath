@@ -9,6 +9,7 @@ class XPathTest extends AnyFunSpec {
   def compileAndRunExpression(xpath: String): XdmItem = {
     val p = new s9api.Processor
     val c = p.newXPathCompiler()
+    c.declareNamespace("fn", "http://www.w3.org/2005/xpath-functions")
     val executable = c.compile(xpath)
     val selector = executable.load()
     selector.setContextItem(new XdmAtomicValue(2020))
@@ -27,7 +28,7 @@ class XPathTest extends AnyFunSpec {
       "let $a := 42 return $a" -> "42",
       "let $a := 1, $b := 2 return $a + $b" -> "3",
       "3.1415" -> "3.1415",
-//      "concat('To be', ', or not to be')" -> "To be, or not to be",
+      "fn:concat('To be', ', or not to be')" -> "To be, or not to be",
 //      "'To be' || ', or not to be'" -> "To be, or not to be",
     )
 
