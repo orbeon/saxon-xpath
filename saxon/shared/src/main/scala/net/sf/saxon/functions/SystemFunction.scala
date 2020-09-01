@@ -35,11 +35,10 @@ object SystemFunction {
   def makeCall(name: String,
                rsc: RetainedStaticContext,
                arguments: Expression*): Expression = {
-    val f: SystemFunction = makeFunction(name, rsc, arguments.length)
-    if (f == null) {
+    val f = makeFunction(name, rsc, arguments.length)
+    if (f == null)
       return null
-    }
-    val expr: Expression = f.makeFunctionCall(arguments: _*)
+    val expr = f.makeFunctionCall(arguments: _*)
     expr.setRetainedStaticContext(rsc)
     expr
   }
@@ -50,10 +49,9 @@ object SystemFunction {
     if (rsc == null) {
       throw new NullPointerException()
     }
-    val fn: SystemFunction = new CollationKeyFn().asInstanceOf[SystemFunction]
-      //rsc.getConfiguration.makeSystemFunction(name, arity) // need changes in Configuration file
+    val fn = rsc.getConfiguration.makeSystemFunction(name, arity)
     if (fn == null) {
-      //rsc.getConfiguration.makeSystemFunction(name, arity) //  need changes in Configuration file
+      rsc.getConfiguration.makeSystemFunction(name, arity)
       throw new IllegalStateException(name)
     }
     fn.setRetainedStaticContext(rsc)

@@ -1202,7 +1202,7 @@ class Configuration() extends SourceResolver with NotationSet {
     throw new XPathException("Class " + className + " is not a TraceListener")
   }
 
-  // def getXSLT30FunctionSet = XSLT30FunctionSet.getInstance
+//   def getXSLT30FunctionSet = XSLT30FunctionSet.getInstance
 
   def getUseWhenFunctionSet: UseWhen30FunctionSet = UseWhen30FunctionSet.getInstance
 
@@ -1217,11 +1217,13 @@ class Configuration() extends SourceResolver with NotationSet {
    *
    * @return the function
    */
-  //  def makeSystemFunction(localName: String, arity: Int) = try getXSLT30FunctionSet.makeFunction(localName, arity)
-  //  catch {
-  //    case e: XPathException =>
-  //      null
-  //  }
+    def makeSystemFunction(localName: String, arity: Int) =
+      try
+        getXPath31FunctionSet.makeFunction(localName, arity)
+      catch {
+        case _: XPathException =>
+          null
+      }
 
   /**
    * Register an extension function that is to be made available within any stylesheet, query,
