@@ -28,94 +28,69 @@ class XdmStream[T <: XdmItem] extends ProxyStream[T] {
     this.base = input.map((s: T) => Stream.of(s)).orElseGet(Stream.empty[T]().asInstanceOf[Supplier[Stream[T]]])
   }
 
-  override def filter(predicate: Predicate[_ >: T]): XdmStream[T] = new XdmStream(base.filter(predicate))
-
-  override def map[R](mapper: Function[_ >: T, _ <: R]): Stream[R] = base.map(mapper)
-
-  override def mapToInt(mapper: ToIntFunction[_ >: T]): IntStream = base.mapToInt(mapper)
-
-  override def mapToLong(mapper: ToLongFunction[_ >: T]): LongStream = base.mapToLong(mapper)
-
-  override def mapToDouble(mapper: ToDoubleFunction[_ >: T]): DoubleStream = base.mapToDouble(mapper)
-
-  override def flatMap[R](function: Function[_ >: T, _ <: Stream[_ <: R]]): Stream[R] = base.flatMap(function)
-
+  def filter(predicate: Predicate[_ >: T]): XdmStream[T] = new XdmStream(base.filter(predicate))
+  def map[R](mapper: Function[_ >: T, _ <: R]): Stream[R] = base.map(mapper)
+  def mapToInt(mapper: ToIntFunction[_ >: T]): IntStream = base.mapToInt(mapper)
+  def mapToLong(mapper: ToLongFunction[_ >: T]): LongStream = base.mapToLong(mapper)
+  def mapToDouble(mapper: ToDoubleFunction[_ >: T]): DoubleStream = base.mapToDouble(mapper)
+  def flatMap[R](function: Function[_ >: T, _ <: Stream[_ <: R]]): Stream[R] = base.flatMap(function)
   def flatMapToXdm[U <: XdmItem](mapper: Step[U]): XdmStream[U] = new XdmStream(base.flatMap(mapper))
+  def flatMapToInt(mapper: Function[_ >: T, _ <: IntStream]): IntStream = base.flatMapToInt(mapper)
+  def flatMapToLong(mapper: Function[_ >: T, _ <: LongStream]): LongStream = base.flatMapToLong(mapper)
+  def flatMapToDouble(mapper: Function[_ >: T, _ <: DoubleStream]): DoubleStream = base.flatMapToDouble(mapper)
+  def distinct(): XdmStream[T] = new XdmStream(base.distinct())
+  def sorted(): XdmStream[T] = new XdmStream(base.sorted())
+  def sorted(comparator: Comparator[_ >: T]): XdmStream[T] = new XdmStream(base.sorted(comparator))
+  def peek(action: Consumer[_ >: T]): XdmStream[T] = new XdmStream(base.peek(action))
+  def limit(maxSize: Long): XdmStream[T] = new XdmStream(base.limit(maxSize))
+  def skip(n: Long): XdmStream[T] = new XdmStream(base.skip(n))
+  def forEach(action: Consumer[_ >: T]): Unit = base.forEach(action)
+  def forEachOrdered(action: Consumer[_ >: T]): Unit = base.forEachOrdered(action)
+  def toArray: Array[AnyRef] = base.toArray()
 
-  override def flatMapToInt(mapper: Function[_ >: T, _ <: IntStream]): IntStream = base.flatMapToInt(mapper)
-
-  override def flatMapToLong(mapper: Function[_ >: T, _ <: LongStream]): LongStream = base.flatMapToLong(mapper)
-
-  override def flatMapToDouble(mapper: Function[_ >: T, _ <: DoubleStream]): DoubleStream = base.flatMapToDouble(mapper)
-
-  override def distinct(): XdmStream[T] = new XdmStream(base.distinct())
-
-  override def sorted(): XdmStream[T] = new XdmStream(base.sorted())
-
-  override def sorted(comparator: Comparator[_ >: T]): XdmStream[T] =
-    new XdmStream(base.sorted(comparator))
-
-  override def peek(action: Consumer[_ >: T]): XdmStream[T] =
-    new XdmStream(base.peek(action))
-
-  override def limit(maxSize: Long): XdmStream[T] =
-    new XdmStream(base.limit(maxSize))
-
-  override def skip(n: Long): XdmStream[T] = new XdmStream(base.skip(n))
-
-  override def forEach(action: Consumer[_ >: T]): Unit = {
-    base.forEach(action)
-  }
-
-  override def forEachOrdered(action: Consumer[_ >: T]): Unit = {
-    base.forEachOrdered(action)
-  }
-
-  override def toArray(): Array[AnyRef] = base.toArray()
-
-/*  override def toArray[A >: AnyRef](generator: IntFunction[Array[A]]): Array[AnyRef] =
+/*  def toArray[A >: AnyRef](generator: IntFunction[Array[A]]): Array[AnyRef] =
     base.toArray(generator)*/
 
 
-  override def reduce(identity: T, accumulator: BinaryOperator[T]): T =
+  def reduce(identity: T, accumulator: BinaryOperator[T]): T =
     base.reduce(identity, accumulator)
 
-  override def reduce(accumulator: BinaryOperator[T]): Optional[T] =
+  def reduce(accumulator: BinaryOperator[T]): Optional[T] =
     base.reduce(accumulator)
 
-  override def reduce[U](identity: U,
+  def reduce[U](identity: U,
                          accumulator: BiFunction[U, _ >: T, U],
                          combiner: BinaryOperator[U]): U =
     base.reduce(identity, accumulator, combiner)
 
-  override def collect[R](supplier: Supplier[R],
+  def collect[R](supplier: Supplier[R],
                           accumulator: BiConsumer[R, _ >: T],
                           combiner: BiConsumer[R, R]): R =
     base.collect(supplier, accumulator, combiner)
 
-  override def collect[R, A](collector: Collector[_ >: T, A, R]): R =
+  def collect[R, A](collector: Collector[_ >: T, A, R]): R =
     base.collect(collector)
 
-  override def min(comparator: Comparator[_ >: T]): Optional[T] =
+  def min(comparator: Comparator[_ >: T]): Optional[T] =
     base.min(comparator)
 
-  override def max(comparator: Comparator[_ >: T]): Optional[T] =
+  def max(comparator: Comparator[_ >: T]): Optional[T] =
     base.max(comparator)
 
-  override def count(): Long = base.count()
+  def count(): Long = base.count()
 
-  override def anyMatch(predicate: Predicate[_ >: T]): Boolean =
+  def anyMatch(predicate: Predicate[_ >: T]): Boolean =
     base.anyMatch(predicate)
 
-  override def allMatch(predicate: Predicate[_ >: T]): Boolean =
+  def allMatch(predicate: Predicate[_ >: T]): Boolean =
     base.allMatch(predicate)
 
-  override def noneMatch(predicate: Predicate[_ >: T]): Boolean =
+  def noneMatch(predicate: Predicate[_ >: T]): Boolean =
     base.noneMatch(predicate)
 
-  override def findFirst(): Optional[T] = base.findFirst()
+  def findFirst(): Optional[T] = base.findFirst()
 
-  override def findAny(): Optional[T] = base.findAny()
+  def findAny(): Optional[T] = base.findAny()
 
   def iterator(): Iterator[T] = base.iterator()
 
