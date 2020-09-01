@@ -31,7 +31,7 @@ object JPConverter {
       classOf[XdmItem]               -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ONE),
       classOf[XdmAtomicValue]        -> new FromXdmValue(BuiltInAtomicType.ANY_ATOMIC, StaticProperty.ALLOWS_ONE),
       classOf[XdmNode]               -> new FromXdmValue(AnyNodeTest.getInstance,      StaticProperty.ALLOWS_ONE),
-      classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType.getInstance,  StaticProperty.ALLOWS_ONE),
+      classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType,  StaticProperty.ALLOWS_ONE),
       classOf[XdmMap]                -> new FromXdmValue(MapType.ANY_MAP_TYPE,         StaticProperty.ALLOWS_ONE),
       classOf[XdmArray]              -> new FromXdmValue(ArrayItemType.ANY_ARRAY_TYPE, StaticProperty.ALLOWS_ONE),
       classOf[XdmEmptySequence]      -> new FromXdmValue(ErrorType,        StaticProperty.ALLOWS_ZERO),
@@ -106,7 +106,7 @@ object JPConverter {
     classOf[TreeInfo]                -> NodeKindTest.DOCUMENT,
     classOf[MapItem]                 -> MapType.EMPTY_MAP_TYPE,
     classOf[ArrayItem]               -> ArrayItemType.ANY_ARRAY_TYPE,
-    classOf[Function]                -> AnyFunctionType.getInstance,
+    classOf[Function]                -> AnyFunctionType,
     classOf[AtomicValue]             -> BuiltInAtomicType.ANY_ATOMIC,
     classOf[UntypedAtomicValue]      -> BuiltInAtomicType.UNTYPED_ATOMIC,
   )

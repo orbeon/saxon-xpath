@@ -40,7 +40,7 @@ class SpecificFunctionType extends AnyFunctionType {
 
   override def getArgumentTypes: Array[SequenceType] = argTypes
 
-  override def getAnnotationAssertions(): AnnotationList = annotations
+  override def getAnnotationAssertions: AnnotationList = annotations
 
   override def isAtomizable(th: TypeHierarchy): Boolean = {
     if (getArity != 1) {
@@ -64,7 +64,7 @@ class SpecificFunctionType extends AnyFunctionType {
     sb.toString
   }
 
-  override def toExportString(): String = {
+  override def toExportString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)
     sb.append("(function(")
     for (i <- argTypes.indices) {
@@ -104,7 +104,7 @@ class SpecificFunctionType extends AnyFunctionType {
   import Affinity._
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity =
-    if (other == AnyFunctionType.getInstance || other
+    if (other == AnyFunctionType || other
       .isInstanceOf[AnyFunctionTypeWithAssertions]) {
       Affinity.SUBSUMED_BY
     } else if (equals(other)) {

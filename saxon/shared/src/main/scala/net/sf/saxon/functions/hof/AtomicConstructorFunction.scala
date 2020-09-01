@@ -38,7 +38,7 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
 
   private var nsResolver: NamespaceResolver = resolver
 
-  def getFunctionItemType(): FunctionItemType =
+  def getFunctionItemType: FunctionItemType =
     new SpecificFunctionType(
       Array(SequenceType.OPTIONAL_ATOMIC),
       SequenceType.makeSequenceType(targetType,
@@ -46,9 +46,9 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
 
   def getFunctionName: StructuredQName = targetType.getTypeName
 
-  def getDescription(): String = getFunctionName.getDisplayName
+  def getDescription: String = getFunctionName.getDisplayName
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
   def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[AtomicValue] = {
     val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]

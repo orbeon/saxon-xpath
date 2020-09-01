@@ -83,11 +83,8 @@ object BuiltInFunctionSet {
         this.resultIfEmpty(a) = resultIfEmpty
         this.usage(a) = usage
       } catch {
-        case err: ArrayIndexOutOfBoundsException =>
-          System.err.println(
-            "Internal Saxon error: Can't set argument " + a + " of " +
-              name)
-
+        case _: ArrayIndexOutOfBoundsException =>
+          System.err.println("Internal Saxon error: Can't set argument " + a + " of " + name)
       }
       this
     }
@@ -209,16 +206,14 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
 
   override def copy(): FunctionLibrary = this
 
-  override def getFunctionItem(symbolicName: SymbolicName.F,
-                               staticContext: StaticContext): Function = {
-    val functionName: StructuredQName = symbolicName.getComponentName
-    val arity: Int = symbolicName.getArity
-    if (functionName.hasURI(getNamespace) &&
-      getFunctionDetails(functionName.getLocalPart, arity) !=
-        null) {
-      val rsc: RetainedStaticContext =
-        staticContext.makeRetainedStaticContext()
-      val fn: SystemFunction = makeFunction(functionName.getLocalPart, arity)
+  override def getFunctionItem(symbolicName: SymbolicName.F, staticContext: StaticContext): Function = {
+
+    val functionName = symbolicName.getComponentName
+    val arity = symbolicName.getArity
+
+    if (functionName.hasURI(getNamespace) && getFunctionDetails(functionName.getLocalPart, arity) != null) {
+      val rsc = staticContext.makeRetainedStaticContext()
+      val fn = makeFunction(functionName.getLocalPart, arity)
       fn.setRetainedStaticContext(rsc)
       fn
     } else {

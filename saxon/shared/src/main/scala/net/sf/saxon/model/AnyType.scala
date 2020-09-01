@@ -114,7 +114,7 @@ object AnyType extends Enumeration {
 
     /*@NotNull*/
 
-    def getDescription(): String = "xs:anyType"
+    def getDescription: String = "xs:anyType"
 
     /*@NotNull*/
 

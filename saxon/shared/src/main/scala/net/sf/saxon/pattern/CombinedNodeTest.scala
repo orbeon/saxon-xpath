@@ -60,7 +60,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
                        private var nodetest2: NodeTest)
   extends NodeTest {
 
-  def getUType(): UType = {
+  def getUType: UType = {
     val u1: UType = nodetest1.getUType
     val u2: UType = nodetest2.getUType
     operator match {
@@ -152,7 +152,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
         ")"
     }
 
-  override def toExportString(): String = makeString(true)
+  override def toExportString: String = makeString(true)
 
   def getContentTypeForAlphaCode: String =
     if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT &&

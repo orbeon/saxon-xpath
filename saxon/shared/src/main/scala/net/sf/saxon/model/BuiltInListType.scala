@@ -127,7 +127,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
   def isSameType(other: SchemaType): Boolean =
     other.getFingerprint == getFingerprint
 
-  def getDescription(): String = getDisplayName
+  def getDescription: String = getDisplayName
 
   def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
 

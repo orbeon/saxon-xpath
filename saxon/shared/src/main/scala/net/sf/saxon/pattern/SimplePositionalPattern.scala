@@ -37,7 +37,7 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
    *
    * @return a UType indicating all the primitive types of item that the pattern can match.
    */
-  override def getUType(): UType = nodeTest.getUType
+  override def getUType: UType = nodeTest.getUType
 
   override def getFingerprint(): Int = nodeTest.getFingerprint
 

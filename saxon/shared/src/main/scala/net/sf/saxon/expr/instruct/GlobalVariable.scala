@@ -120,7 +120,7 @@ class GlobalVariable
     this.body = select
   }
 
-  override def getSymbolicName(): SymbolicName =
+  override def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_VARIABLE, variableQName)
 
   override def getTracingTag(): String = "xsl:variable"

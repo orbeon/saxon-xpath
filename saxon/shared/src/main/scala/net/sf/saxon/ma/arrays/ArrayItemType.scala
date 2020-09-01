@@ -35,9 +35,9 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
 
   override def getGenre: Genre = Genre.ARRAY
 
-  override def isMapType(): Boolean = false
+  override def isMapType: Boolean = false
 
-  override def isArrayType(): Boolean = true
+  override def isArrayType: Boolean = true
 
   override def getBasicAlphaCode: String = "FA"
 
@@ -70,7 +70,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
     }
   }
 
-  override def getResultType(): SequenceType = memberType
+  override def getResultType: SequenceType = memberType
 
   override def toString: String = makeString((seqType: SequenceType) => SequenceType.toString)
 
@@ -85,8 +85,8 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
       sb.toString
     }
 
-  override def toExportString(): String =
-    makeString((seqType: SequenceType) => toExportString())
+  override def toExportString: String =
+    makeString((seqType: SequenceType) => toExportString)
 
   override def equals(other: Any): Boolean =
     other match {
@@ -98,7 +98,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
   override def hashCode(): Int = memberType.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity =
-    if (other == AnyFunctionType.getInstance) {
+    if (other == AnyFunctionType) {
       Affinity.SUBSUMED_BY
     } else if (equals(other)) {
       Affinity.SAME_TYPE

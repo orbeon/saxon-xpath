@@ -22,7 +22,7 @@ class ContentTypeTest(nodeKind: Int,
 
   private var kind: Int = nodeKind
 
-  def getUType(): UType =
+  def getUType: UType =
     if (kind == Type.ELEMENT) UType.ELEMENT else UType.ATTRIBUTE
 
   def getNodeKind: Int = kind
@@ -106,7 +106,7 @@ class ContentTypeTest(nodeKind: Int,
       schemaType.getEQName +
       ')'
 
-  override def toExportString(): String =
+  override def toExportString: String =
     (if (kind == Type.ELEMENT) "element(*, " else "attribute(*, ") +
       schemaType.getNearestNamedType.getEQName +
       ')'

@@ -47,7 +47,7 @@ class StreamingFunctionArgumentPattern() extends Pattern {
    *
    * @return a UType indicating all the primitive types of item that the pattern can match.
    */
-  override def getUType(): UType = UType.ANY_NODE
+  override def getUType: UType = UType.ANY_NODE
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = this

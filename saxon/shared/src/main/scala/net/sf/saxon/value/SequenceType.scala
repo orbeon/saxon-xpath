@@ -204,15 +204,15 @@ object SequenceType {
   /**
    * A type that allows a single function item
    */
-  val SINGLE_FUNCTION = makeSequenceType(AnyFunctionType.ANY_FUNCTION, StaticProperty.EXACTLY_ONE)
+  val SINGLE_FUNCTION = makeSequenceType(AnyFunctionType, StaticProperty.EXACTLY_ONE)
   /**
    * A type that allows a sequence of zero or one function items
    */
-  val OPTIONAL_FUNCTION_ITEM = makeSequenceType(AnyFunctionType.getInstance, StaticProperty.ALLOWS_ZERO_OR_ONE)
+  val OPTIONAL_FUNCTION_ITEM = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_ONE)
   /**
    * A type that allows a sequence of zero or mode function items
    */
-  val FUNCTION_ITEM_SEQUENCE = makeSequenceType(AnyFunctionType.getInstance, StaticProperty.ALLOWS_ZERO_OR_MORE)
+  val FUNCTION_ITEM_SEQUENCE = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_MORE)
   /**
    * A type that only permits the empty sequence
    */

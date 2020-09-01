@@ -42,7 +42,7 @@ class ListConstructorFunction( var targetType: ListType,
     *
     * @return the function item's type
     */
-  def getFunctionItemType(): FunctionItemType = {
+  def getFunctionItemType: FunctionItemType = {
     var resultType: AtomicType = BuiltInAtomicType.ANY_ATOMIC
     if (memberType.isAtomicType) {
       resultType = memberType.asInstanceOf[AtomicType]
@@ -70,14 +70,14 @@ class ListConstructorFunction( var targetType: ListType,
     *
     * @return a description of the function for use in error messages
     */
-  def getDescription(): String = getFunctionName.getDisplayName
+  def getDescription: String = getFunctionName.getDisplayName
 
   /**
     * Get the arity of the function
     *
     * @return the number of arguments in the function signature
     */
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
   /**
     * Invoke the function

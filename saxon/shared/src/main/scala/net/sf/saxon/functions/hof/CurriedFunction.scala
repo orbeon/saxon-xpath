@@ -16,25 +16,21 @@ import java.util.Arrays
 
 import net.sf.saxon.query.AnnotationList
 
-class CurriedFunction(private var targetFunction: Function,
-                      private var boundValues: Array[Sequence])
+class CurriedFunction(private var targetFunction: Function, private var boundValues: Array[Sequence])
   extends AbstractFunction {
 
   private var functionType: FunctionItemType = _
 
-  def getFunctionItemType(): FunctionItemType = {
+  def getFunctionItemType: FunctionItemType = {
     if (functionType == null) {
-      val baseItemType: FunctionItemType = targetFunction.getFunctionItemType
-      var resultType: SequenceType = SequenceType.ANY_SEQUENCE
-      if (baseItemType.isInstanceOf[SpecificFunctionType]) {
+      val baseItemType = targetFunction.getFunctionItemType
+      var resultType = SequenceType.ANY_SEQUENCE
+      if (baseItemType.isInstanceOf[SpecificFunctionType])
         resultType = baseItemType.getResultType
-      }
-      var placeholders: Int = 0
-      for (boundArgument <- boundValues if boundArgument == null) {
+      var placeholders = 0
+      for (boundArgument <- boundValues if boundArgument == null)
         placeholders += 1
-      }
-      val argTypes: Array[SequenceType] =
-        Array.ofDim[SequenceType](placeholders)
+      val argTypes = Array.ofDim[SequenceType](placeholders)
       if (baseItemType.isInstanceOf[SpecificFunctionType]) {
         var j = 0
         for (i <- 0 until boundValues.length if boundValues(i) == null) {
@@ -51,17 +47,13 @@ class CurriedFunction(private var targetFunction: Function,
 
   def getFunctionName: StructuredQName = null
 
-  def getDescription(): String =
+  def getDescription: String =
     "partially-applied function " + targetFunction.getDescription
 
-  def getArity(): Int = {
-    var count: Int = 0
-    for (v <- boundValues if v == null) {
-      {
-        count += 1;
-        count - 1
-      }
-    }
+  def getArity: Int = {
+    var count = 0
+    for (v <- boundValues if v == null)
+      count += 1
     count
   }
 
@@ -74,11 +66,10 @@ class CurriedFunction(private var targetFunction: Function,
       newArgs(i) = if (boundValues(i) == null) args(j) else boundValues(i)
       j += 1
     }
-    val c2: XPathContext = targetFunction.makeNewContext(context, null)
-    if (targetFunction.isInstanceOf[UserFunction]) {
-      c2.asInstanceOf[XPathContextMajor]
-        .setCurrentComponent(
-          targetFunction.asInstanceOf[UserFunction].getDeclaringComponent)
+    val c2 = targetFunction.makeNewContext(context, null)
+    targetFunction match {
+      case fn: UserFunction => c2.asInstanceOf[XPathContextMajor].setCurrentComponent(fn.getDeclaringComponent)
+      case _ =>
     }
     targetFunction.call(c2, newArgs)
   }
@@ -98,5 +89,4 @@ class CurriedFunction(private var targetFunction: Function,
     out.endElement()
     out.endElement()
   }
-
 }

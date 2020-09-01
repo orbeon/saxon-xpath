@@ -78,11 +78,11 @@ class XPathFunctionLibrary extends FunctionLibrary {
    * @return if a function of this name and arity is available for calling, then a corresponding
    *         function item; or null if the function does not exist
    */
-  def getFunctionItem(symbolicName: SymbolicName.F,
-                      staticContext: StaticContext): Function = {
-    if (resolver == null) {
+  def getFunctionItem(symbolicName: SymbolicName.F, staticContext: StaticContext): Function = {
+
+    if (resolver == null)
       return null
-    }
+
     val functionName: StructuredQName = symbolicName.getComponentName
     val arity: Int = symbolicName.getArity
     val name: QName = new QName(functionName.getURI, functionName.getLocalPart)

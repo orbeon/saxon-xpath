@@ -33,7 +33,7 @@ object AnyFunctionTypeWithAssertions {
 class AnyFunctionTypeWithAssertions(private var assertions: AnnotationList,
                                     private var config: Configuration) extends AnyFunctionType {
 
-  override def getAnnotationAssertions(): AnnotationList = assertions
+  override def getAnnotationAssertions: AnnotationList = assertions
 
   override def matches(item: Item, th: TypeHierarchy): Boolean =
     item.isInstanceOf[Function] &&

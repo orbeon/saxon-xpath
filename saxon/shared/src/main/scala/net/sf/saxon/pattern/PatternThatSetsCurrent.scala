@@ -84,7 +84,7 @@ class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
     this
   }
 
-  override def getUType(): UType = wrappedPattern.getUType
+  override def getUType: UType = wrappedPattern.getUType
 
   override def getFingerprint(): Int = wrappedPattern.getFingerprint
 

@@ -57,7 +57,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     if (!isArrayLookup && !isMapLookup) {
       if (th.relationship(containerType, MapType.ANY_MAP_TYPE) ==
         Affinity.DISJOINT &&
-        th.relationship(containerType, AnyFunctionType.getInstance) ==
+        th.relationship(containerType, AnyFunctionType) ==
           Affinity.DISJOINT) {
         val err = new XPathException(
           "The left-hand operand of '?' must be a map or an array; the supplied expression is of type " +

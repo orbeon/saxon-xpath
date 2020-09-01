@@ -59,14 +59,14 @@ class SystemFunctionWithBoundContextItem(private var target: SystemFunction,
     *
     * @return the number of arguments in the function signature
     */
-  override def getArity(): Int = target.getArity
+  override def getArity: Int = target.getArity
 
   /**
     * Get the item type of the function item
     *
     * @return the function item's type
     */
-  override def getFunctionItemType(): FunctionItemType =
+  override def getFunctionItemType: FunctionItemType =
     target.getFunctionItemType
 
   /**
@@ -83,7 +83,7 @@ class SystemFunctionWithBoundContextItem(private var target: SystemFunction,
     *
     * @return a description of the function for use in error messages
     */
-  override def getDescription(): String = target.getDescription
+  override def getDescription: String = target.getDescription
 
 }
 

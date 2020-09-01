@@ -162,7 +162,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
     false
   }
 
-  override def getUType(): UType = basePattern.getUType
+  override def getUType: UType = basePattern.getUType
 
   override def getFingerprint(): Int = basePattern.getFingerprint
 

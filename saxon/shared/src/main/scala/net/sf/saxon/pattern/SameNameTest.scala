@@ -36,7 +36,7 @@ class SameNameTest(private var origin: NodeInfo)
     *
     * @return the smallest UType that subsumes this item type
     */
-  def getUType(): UType = UType.fromTypeCode(origin.getNodeKind)
+  def getUType: UType = UType.fromTypeCode(origin.getNodeKind)
 
   /**
     * Test whether this node test is satisfied by a given node. This method is only

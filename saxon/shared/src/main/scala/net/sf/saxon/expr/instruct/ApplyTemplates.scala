@@ -86,7 +86,7 @@ class ApplyTemplates  ()
 
   def setBindingSlot(slot: Int): Unit = this.bindingSlot = slot
 
-  def getBindingSlot(): Int = bindingSlot
+  def getBindingSlot: Int = bindingSlot
 
   def this(select: Expression,
            useCurrentMode: Boolean,
@@ -294,9 +294,9 @@ override  def optimize(visitor: ExpressionVisitor,
 
   def getMode: Mode = mode
 
-  def getFixedTarget(): Component = mode.getDeclaringComponent
+  def getFixedTarget: Component = mode.getDeclaringComponent
 
-  def getSymbolicName(): SymbolicName =
+  def getSymbolicName: SymbolicName =
     if (mode == null) null else mode.getSymbolicName
 
   override def addToPathMap(

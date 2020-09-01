@@ -50,9 +50,9 @@ class TupleItemType(names: List[String],
 
   override def getGenre: Genre.Genre = Genre.MAP
 
-  override def isMapType(): Boolean = true
+  override def isMapType: Boolean = true
 
-  override def isArrayType(): Boolean = false
+  override def isArrayType: Boolean = false
 
   override def getFieldNames(): java.lang.Iterable[String] = fields.keySet
 
@@ -93,7 +93,7 @@ class TupleItemType(names: List[String],
   override def getArgumentTypes: Array[SequenceType] =
     Array(SequenceType.SINGLE_ATOMIC)
 
-  override def getResultType(): SequenceType =
+  override def getResultType: SequenceType =
     if (extensible) {
       SequenceType.ANY_SEQUENCE
     } else {
@@ -121,7 +121,7 @@ class TupleItemType(names: List[String],
 
   override def toString: String = makeString((seq: SequenceType) => seq.toString)
 
-  override def toExportString(): String =
+  override def toExportString: String =
     makeString((seq: SequenceType) => seq.toExportString)
 
   override def getBasicAlphaCode: String = "FM"
@@ -157,7 +157,7 @@ class TupleItemType(names: List[String],
   override def hashCode(): Int = fields.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity.Affinity =
-    if (other == AnyFunctionType.getInstance) {
+    if (other == AnyFunctionType) {
       Affinity.SUBSUMED_BY
     } else if (other.isInstanceOf[TupleItemType]) {
       tupleTypeRelationship(other.asInstanceOf[TupleItemType], th)

@@ -61,7 +61,7 @@ class NumericType private()
 
   override def getPrimitiveType: Int = BuiltInAtomicType.ANY_ATOMIC.getFingerprint
 
-  override def getUType(): UType = UType.NUMERIC
+  override def getUType: UType = UType.NUMERIC
 
   override def getAtomizedItemType: PlainType = this
 
@@ -145,7 +145,7 @@ class NumericType private()
 
   def isSameType(other: SchemaType): Boolean = other.isInstanceOf[NumericType]
 
-  override def getDescription(): String = "xs:numeric"
+  override def getDescription: String = "xs:numeric"
 
   def getSystemId(): String = null
 
@@ -157,7 +157,7 @@ class NumericType private()
 
   def getRedefinitionLevel(): Int = 0
 
-  override def toExportString(): String = toString
+  override def toExportString: String = toString
 
   override def toString: String = "xs:numeric"
 

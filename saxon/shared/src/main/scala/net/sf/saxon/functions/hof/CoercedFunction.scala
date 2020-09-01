@@ -51,19 +51,17 @@ class CoercedFunction(private var targetFunction: Function, private val required
     this.targetFunction = targetFunction
   }
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextItemType: ContextItemStaticInfo): Unit = {
-    if (targetFunction.isInstanceOf[AbstractFunction]) {
-      targetFunction
-        .asInstanceOf[AbstractFunction]
-        .typeCheck(visitor, contextItemType)
+  override def typeCheck(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo): Unit =
+    targetFunction match {
+      case function: AbstractFunction =>
+        function.typeCheck(visitor, contextItemType)
+      case _ =>
     }
-  }
 
-  def getFunctionItemType(): FunctionItemType = requiredType
+  def getFunctionItemType: FunctionItemType = requiredType
   def getFunctionName: StructuredQName = targetFunction.getFunctionName
-  def getDescription(): String = "coerced " + targetFunction.getDescription
-  def getArity(): Int = targetFunction.getArity
+  def getDescription: String = "coerced " + targetFunction.getDescription
+  def getArity: Int = targetFunction.getArity
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
     val req: SpecificFunctionType = requiredType
@@ -71,7 +69,7 @@ class CoercedFunction(private var targetFunction: Function, private val required
       targetFunction.getFunctionItemType.getArgumentTypes
     val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
     val targetArgs: Array[Sequence] = Array.ofDim[Sequence](args.length)
-    for (i <- 0 until args.length) {
+    for (i <- args.indices) {
       args(i) = args(i).materialize()
       if (argTypes(i).matches(args(i), th)) {
         targetArgs(i) = args(i)

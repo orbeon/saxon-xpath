@@ -39,7 +39,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   override def operands: java.lang.Iterable[Operand] = expressionOp
 
-  override def getUType(): UType =
+  override def getUType: UType =
     if (getPredicate.isInstanceOf[InstanceOfExpression]) {
       getPredicate
         .asInstanceOf[InstanceOfExpression]

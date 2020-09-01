@@ -41,8 +41,8 @@ class CallableFunction extends AbstractFunction {
     this.`type` = `type`
   }
 
-  override def getFunctionItemType(): FunctionItemType = {
-    if (`type` == AnyFunctionType.getInstance &&
+  override def getFunctionItemType: FunctionItemType = {
+    if (`type` == AnyFunctionType &&
       callable.isInstanceOf[XQueryFunctionLibrary.UnresolvedCallable]) {
       val uf: UserFunction = callable
         .asInstanceOf[XQueryFunctionLibrary.UnresolvedCallable]
@@ -56,9 +56,9 @@ class CallableFunction extends AbstractFunction {
 
   def getFunctionName: StructuredQName = name.getComponentName
 
-  def getDescription(): String = callable.toString
+  def getDescription: String = callable.toString
 
-  def getArity(): Int = name.getArity
+  def getArity: Int = name.getArity
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence =
     callable.call(context, args)

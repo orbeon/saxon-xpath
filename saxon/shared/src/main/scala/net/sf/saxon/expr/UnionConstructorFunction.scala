@@ -87,7 +87,7 @@ class UnionConstructorFunction( var targetType: UnionType,
 
   def getNamespaceResolver: NamespaceResolver = resolver
 
-  def getFunctionItemType(): FunctionItemType = {
+  def getFunctionItemType: FunctionItemType = {
     val resultType: SequenceType = targetType.getResultTypeOfCast
     val argType: SequenceType =
       if (allowEmpty) SequenceType.OPTIONAL_ATOMIC
@@ -97,9 +97,9 @@ class UnionConstructorFunction( var targetType: UnionType,
 
   def getFunctionName: StructuredQName = targetType.getTypeName
 
-  def getDescription(): String = getFunctionName.getDisplayName
+  def getDescription: String = getFunctionName.getDisplayName
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
   def cast(value: AtomicValue, context: XPathContext): AtomicSequence = {
     val rules: ConversionRules = context.getConfiguration.getConversionRules

@@ -61,7 +61,7 @@ abstract class ExtensionFunctionDefinition {
       *
       * @return the function item's type
       */
-    override def getFunctionItemType(): FunctionItemType =
+    override def getFunctionItemType: FunctionItemType =
       new SpecificFunctionType(getArgumentTypes,
                                getResultType(getArgumentTypes))
 
@@ -77,7 +77,7 @@ abstract class ExtensionFunctionDefinition {
       *
       * @return the number of arguments in the function signature
       */
-    override def getArity(): Int = getArgumentTypes.length
+    override def getArity: Int = getArgumentTypes.length
 
     /**
       * Get a description of this function for use in error messages. For named functions, the description
@@ -86,7 +86,7 @@ abstract class ExtensionFunctionDefinition {
       *
       * @return a description of the function for use in error messages
       */
-    override def getDescription(): String = getFunctionQName.getDisplayName
+    override def getDescription: String = getFunctionQName.getDisplayName
 
     /**
       * Ask whether the result of the function should be checked against the declared return type

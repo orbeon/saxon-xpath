@@ -63,7 +63,7 @@ class Accumulator extends Actor {
    *
    * @return the symbolic name
    */
-  override def getSymbolicName(): SymbolicName =
+  override def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_ACCUMULATOR, getAccumulatorName)
 
   def isDeclaredStreamable: Boolean = streamable

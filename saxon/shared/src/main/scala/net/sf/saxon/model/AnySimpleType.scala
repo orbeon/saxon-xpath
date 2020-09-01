@@ -71,7 +71,7 @@ object AnySimpleType extends SimpleType {
 
   /*@NotNull*/
 
-  def getDescription(): String = "xs:anySimpleType"
+  def getDescription: String = "xs:anySimpleType"
 
   /*@NotNull*/
 

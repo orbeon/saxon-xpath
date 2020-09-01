@@ -30,6 +30,7 @@ import net.sf.saxon.value._
 import net.sf.saxon.z.{IntArraySet, IntSet}
 
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 /**
@@ -434,11 +435,13 @@ class XPathParser() {
    * @throws XPathException if an invalid token is found
    */
   @throws[XPathException]
-  def nextToken(): Unit = try t.next()
-  catch {
-    case e: XPathException =>
-      grumble(e.getMessage)
-  }
+  def nextToken(): Unit =
+    try
+      t.next()
+    catch {
+      case e: XPathException =>
+        grumble(e.getMessage)
+    }
 
   /**
    * Expect a given token; fail if the current token is different. Note that this method
@@ -449,7 +452,9 @@ class XPathParser() {
    *                        token
    */
   @throws[XPathException]
-  def expect(token: Int): Unit = if (t.currentToken != token) grumble("expected \"" + Token.tokens(token) + "\", found " + currentTokenDisplay)
+  def expect(token: Int): Unit =
+    if (t.currentToken != token)
+      grumble("expected \"" + Token.tokens(token) + "\", found " + currentTokenDisplay)
 
   /**
    * Report a syntax error (a static error with error code XPST0003)
@@ -2004,6 +2009,7 @@ class XPathParser() {
    */
   @throws[XPathException]
   def parseBasicStep(firstInPattern: Boolean): Expression = {
+
     t.currentToken match {
       case Token.DOLLAR =>
         return parseVariableReference
@@ -2774,7 +2780,8 @@ class XPathParser() {
         while (true) {
           var arg = parseFunctionArgument
           if (arg == null) {
-            if (placeMarkers == null) placeMarkers = new IntArraySet
+            if (placeMarkers == null)
+              placeMarkers = new IntArraySet
             placeMarkers.add(args.size)
             arg = Literal.makeEmptySequence
           }
@@ -2836,14 +2843,19 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def reportMissingFunction(offset: Int, functionName: StructuredQName, arguments: Array[Expression], reasons: util.List[String]): ErrorExpression = {
+  def reportMissingFunction(
+    offset       : Int,
+    functionName : StructuredQName,
+    arguments    : Array[Expression],
+    reasons      : util.List[String]
+ ): ErrorExpression = {
     val sb = new StringBuilder
     sb.append("Cannot find a ").append(arguments.length).append("-argument function named ").append(functionName.getEQName).append("()")
     val config = env.getConfiguration
-    import scala.jdk.CollectionConverters._
-    for (reason <- reasons.asScala) {
+
+    for (reason <- reasons.asScala)
       sb.append(". ").append(reason)
-    }
+
     if (config.getBooleanProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS)) {
       var existsWithDifferentArity = false
       breakable {
@@ -2929,7 +2941,8 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def parseNamedFunctionReference: Expression = parserExtension.parseNamedFunctionReference(this)
+  def parseNamedFunctionReference: Expression =
+    parserExtension.parseNamedFunctionReference(this)
 
   @throws[XPathException]
   def parseAnnotationsList: AnnotationList = {
@@ -2938,7 +2951,8 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  def parseInlineFunction(annotations: AnnotationList): Expression = parserExtension.parseInlineFunction(this, annotations)
+  def parseInlineFunction(annotations: AnnotationList): Expression =
+    parserExtension.parseInlineFunction(this, annotations)
 
   /**
    * Process a function call in which one or more of the argument positions are

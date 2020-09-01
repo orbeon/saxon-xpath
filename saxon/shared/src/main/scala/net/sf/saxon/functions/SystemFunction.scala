@@ -100,7 +100,7 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getFunctionName: StructuredQName = details.name
 
-  def getDescription(): String = details.name.getDisplayName
+  def getDescription: String = details.name.getDisplayName
 
   override def getOperandRoles(): Array[OperandRole] = {
     val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
@@ -134,7 +134,7 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getResultItemType: ItemType = details.itemType
 
-  def getFunctionItemType(): FunctionItemType = {
+  def getFunctionItemType: FunctionItemType = {
     val resultType: SequenceType =
       SequenceType.makeSequenceType(getResultItemType, details.cardinality)
     new SpecificFunctionType(details.argumentTypes, resultType)

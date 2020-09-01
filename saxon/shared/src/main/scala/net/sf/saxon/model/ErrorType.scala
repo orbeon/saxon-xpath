@@ -19,7 +19,7 @@ object ErrorType
     with UnionType
     with PlainType {
 
-  def getUType(): UType = UType.VOID
+  def getUType: UType = UType.VOID
 
   def getName(): String = "error"
 
@@ -56,7 +56,7 @@ object ErrorType
   def getTypeName(): StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "error")
 
-  override def getDescription(): String = "xs:error"
+  override def getDescription: String = "xs:error"
 
   def getDisplayName(): String = "xs:error"
 
@@ -143,7 +143,7 @@ object ErrorType
 
   def getResultTypeOfCast(): SequenceType = SequenceType.OPTIONAL_ITEM
 
-  override def toExportString(): String = toString
+  override def toExportString: String = toString
 
   override def toString: String = "xs:error"
 

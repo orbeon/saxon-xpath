@@ -30,7 +30,7 @@ class UnionPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
     Type.getCommonSuperType(t1, t2)
   }
 
-  override def getUType(): UType = p1.getUType.union(p2.getUType)
+  override def getUType: UType = p1.getUType.union(p2.getUType)
 
   def matches(item: Item, context: XPathContext): Boolean =
     p1.matches(item, context) || p2.matches(item, context)

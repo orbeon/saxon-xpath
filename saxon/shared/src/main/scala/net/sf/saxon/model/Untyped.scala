@@ -131,7 +131,7 @@ object Untyped extends Enumeration {
 
     /*@NotNull*/
 
-    def getDescription(): String = "xs:untyped"
+    def getDescription: String = "xs:untyped"
 
     def analyzeContentExpression(expression: Expression, kind: Int): Unit = ()
 //return;

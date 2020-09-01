@@ -79,7 +79,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   def getNodeKind: Int = kind
 
-  def getUType(): UType = uType
+  def getUType: UType = uType
 
   override def matches(item: Item, th: TypeHierarchy): Boolean =
     item.isInstanceOf[NodeInfo] && kind == item

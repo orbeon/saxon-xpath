@@ -112,10 +112,10 @@ class RangeKey
   override def getItemType(th: TypeHierarchy): MapType =
     new MapType(BuiltInAtomicType.STRING, SequenceType.NODE_SEQUENCE)
 
-  override def getFunctionItemType(): MapType =
+  override def getFunctionItemType: MapType =
     new MapType(BuiltInAtomicType.STRING, SequenceType.NODE_SEQUENCE)
 
-  override def getDescription(): String = "range key"
+  override def getDescription: String = "range key"
 
   override def deepEquals(other: Function,
                           context: XPathContext,

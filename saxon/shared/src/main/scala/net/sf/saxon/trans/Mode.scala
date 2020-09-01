@@ -133,7 +133,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     this.accumulators = accumulators
   }
 
-  override def getSymbolicName(): SymbolicName =
+  override def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_MODE, getModeName)
 
   def getObjectName: StructuredQName = getModeName

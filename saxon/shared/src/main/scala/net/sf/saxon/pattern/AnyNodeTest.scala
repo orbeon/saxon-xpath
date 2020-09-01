@@ -35,7 +35,7 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
     *
     * @return the smallest UType that subsumes this item type
     */
-  def getUType(): UType = UType.ANY_NODE
+  def getUType: UType = UType.ANY_NODE
 
   /**
     * Test whether this node test is satisfied by a given node. This method is only

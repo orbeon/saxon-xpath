@@ -20,7 +20,7 @@ class UniversalPattern extends Pattern {
 
   def matches(item: Item, context: XPathContext): Boolean = true
 
-  override def getUType(): UType = UType.ANY
+  override def getUType: UType = UType.ANY
 
   override def getItemType: ItemType = AnyItemType
 

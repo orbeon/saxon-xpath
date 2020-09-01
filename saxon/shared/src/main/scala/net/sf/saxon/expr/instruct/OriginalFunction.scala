@@ -38,14 +38,14 @@ class OriginalFunction(@BeanProperty var component: Component)
     userFunction.call(c2, args)
   }
 
-  def getFunctionItemType(): FunctionItemType =
+  def getFunctionItemType: FunctionItemType =
     userFunction.getFunctionItemType
 
   def getFunctionName: StructuredQName = userFunction.getFunctionName
 
-  def getArity(): Int = userFunction.getArity
+  def getArity: Int = userFunction.getArity
 
-  def getDescription(): String = userFunction.getDescription
+  def getDescription: String = userFunction.getDescription
 
   def getContainingPackageName: String =
     component.getContainingPackage.getPackageName

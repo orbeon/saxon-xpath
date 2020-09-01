@@ -141,7 +141,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     }
   }
 
-  override def getUType(): UType = itemTyp.getUType
+  override def getUType: UType = itemTyp.getUType
 
   override def getFingerprint(): Int = itemTyp.getFingerprint
 

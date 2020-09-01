@@ -35,7 +35,7 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
     *
     * @return the smallest UType that subsumes this item type
     */
-  def getUType(): UType = UType.ANY
+  def getUType: UType = UType.ANY
 
   /**
     * Determine whether this item type is an atomic type

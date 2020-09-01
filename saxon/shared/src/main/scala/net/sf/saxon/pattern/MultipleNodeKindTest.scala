@@ -72,7 +72,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
     nodeKindMask |= 1 << Type.NAMESPACE
   }
 
-  def getUType(): UType = uType
+  def getUType: UType = uType
 
   override def matches(nodeKind: Int,
                        name: NodeName,
@@ -106,7 +106,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
     fsb.toString
   }
 
-  override def toExportString(): String = {
+  override def toExportString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
     val types: LinkedList[PrimitiveUType] =
       new LinkedList[PrimitiveUType](uType.decompose())

@@ -81,7 +81,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return true if this FunctionItemType is a map type
     */
-  override def isMapType(): Boolean = true
+  override def isMapType: Boolean = true
 
   /**
     * Ask whether this function item type is an array type. In this case function coercion (to the array type)
@@ -89,7 +89,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return true if this FunctionItemType is an array type
     */
-  override def isArrayType(): Boolean = false
+  override def isArrayType: Boolean = false
 
   /**
     * Get an alphabetic code representing the type, or at any rate, the nearest built-in type
@@ -119,19 +119,17 @@ class MapType(@BeanProperty var keyType: AtomicType,
     * @return true if the item is an instance of this type; false otherwise
     */
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (!(item.isInstanceOf[MapItem])) {
-      return      false
-    }
+    if (! item.isInstanceOf[MapItem])
+      return false
     if (item.asInstanceOf[MapItem].isEmpty) {
       return true
     } else if (mustBeEmpty) {
       return false
     }
-    if (this == ANY_MAP_TYPE) {
+    if (this == ANY_MAP_TYPE)
       true
-    } else {
+    else
       item.asInstanceOf[MapItem].conforms(keyType, valueType, th)
-    }
   }
 
   def getArity: Int = 1
@@ -141,7 +139,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
       SequenceType.makeSequenceType(BuiltInAtomicType.ANY_ATOMIC,
         StaticProperty.EXACTLY_ONE))
 
-  override def getResultType(): SequenceType =
+  override def getResultType: SequenceType =
     if (Cardinality.allowsZero(valueType.getCardinality)) {
       valueType
     } else {
@@ -181,7 +179,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     *
     * @return the string representation as an instance of the XPath SequenceType construct
     */
-  override def toExportString(): String =
+  override def toExportString: String =
     if (this == ANY_MAP_TYPE) {
       "map(*)"
     } else if (this == EMPTY_MAP_TYPE) {
@@ -209,7 +207,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
   override def hashCode(): Int = keyType.hashCode ^ valueType.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity =
-    if (other == AnyFunctionType.getInstance) {
+    if (other == AnyFunctionType) {
       Affinity.SUBSUMED_BY
     } else if (equals(other)) {
       Affinity.SAME_TYPE

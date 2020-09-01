@@ -21,7 +21,7 @@ class UnionCastableFunction(targetType: UnionType,
                             allowEmpty: Boolean)
   extends UnionConstructorFunction(targetType, resolver, allowEmpty) {
 
-  override def getFunctionItemType(): FunctionItemType =
+  override def getFunctionItemType: FunctionItemType =
     new SpecificFunctionType(Array(SequenceType.ANY_SEQUENCE),
       SequenceType.SINGLE_BOOLEAN)
 

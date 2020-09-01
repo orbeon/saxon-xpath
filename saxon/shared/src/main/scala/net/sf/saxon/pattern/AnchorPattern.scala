@@ -53,7 +53,7 @@ class AnchorPattern  () extends Pattern {
     *
     * @return a UType indicating all the primitive types of item that the pattern can match.
     */
-  override def getUType(): UType = UType.PARENT_NODE_KINDS
+  override def getUType: UType = UType.PARENT_NODE_KINDS
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = this

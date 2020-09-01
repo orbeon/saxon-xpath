@@ -30,7 +30,7 @@ class ListCastableFunction(targetType: ListType,
     *
     * @return the function item's type
     */
-  override def getFunctionItemType(): FunctionItemType =
+  override def getFunctionItemType: FunctionItemType =
     new SpecificFunctionType(Array(SequenceType.ANY_SEQUENCE),
                              SequenceType.SINGLE_BOOLEAN)
 

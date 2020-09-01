@@ -36,7 +36,7 @@ class IntersectPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
     *
     * @return a UType indicating all the primitive types of item that the pattern can match.
     */
-  override def getUType(): UType = p1.getUType.intersection(p2.getUType)
+  override def getUType: UType = p1.getUType.intersection(p2.getUType)
 
   override def getDefaultPriority: Double = p1.getDefaultPriority
 

@@ -532,7 +532,7 @@ object AlphaCode {
     else {
       val returnType = tree.resultType
       val argTypes = tree.argTypes
-      if (argTypes == null) itemType = AnyFunctionType.getInstance
+      if (argTypes == null) itemType = AnyFunctionType
       else {
         var r: SequenceType = null
         if (returnType == null) r = SequenceType.ANY_SEQUENCE

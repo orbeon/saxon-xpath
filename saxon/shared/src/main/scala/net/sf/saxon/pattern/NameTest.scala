@@ -54,7 +54,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     this.uType = UType.fromTypeCode(nodeKind)
   }
 
-  def getUType(): UType = uType
+  def getUType: UType = uType
 
   override def matches(nodeKind: Int,
                        name: NodeName,

@@ -126,7 +126,7 @@ class NodeSetPattern /**
     *
     * @return a UType indicating all the primitive types of item that the pattern can match.
     */
-  override def getUType(): UType = getItemType.getUType
+  override def getUType: UType = getItemType.getUType
 
   override def getItemType: ItemType = {
     if (itemType == null) {

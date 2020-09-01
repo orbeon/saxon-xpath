@@ -95,7 +95,7 @@ object MapItem {
           else if (first.isInstanceOf[NodeInfo])
             NodeKindTest.makeNodeKindTest(
               first.asInstanceOf[NodeInfo].getNodeKind)
-          else AnyFunctionType.getInstance
+          else AnyFunctionType
         if (isKnownToConform(`val`, `type`)) {
           `type`
         } else {
@@ -188,13 +188,13 @@ trait MapItem extends Function {
 
   def getOperandRoles(): Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
 
-  def getFunctionItemType(): FunctionItemType = MapType.ANY_MAP_TYPE
+  def getFunctionItemType: FunctionItemType = MapType.ANY_MAP_TYPE
 
   def getFunctionName: StructuredQName = null
 
-  def getDescription(): String = "map"
+  def getDescription: String = "map"
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
   def makeNewContext(callingContext: XPathContext,
                      originator: ContextOriginator): XPathContext =

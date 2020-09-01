@@ -26,7 +26,7 @@ class Concat extends SystemFunction with PushableFunction {
     roles
   }
 
-  override def getFunctionItemType(): FunctionItemType = {
+  override def getFunctionItemType: FunctionItemType = {
     val argTypes: Array[SequenceType] = Array.ofDim[SequenceType](getArity)
     Arrays.fill(argTypes.asInstanceOf[Array[AnyRef]], SequenceType.OPTIONAL_ATOMIC.asInstanceOf[AnyRef])
     new SpecificFunctionType(argTypes, SequenceType.SINGLE_STRING)

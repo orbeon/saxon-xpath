@@ -4,6 +4,7 @@ import net.sf.saxon.value.{ExternalObject, ObjectValue}
 
 class XdmExternalObject extends XdmItem {
 
+  //ORBEON: FIXME
   def this(value: Any) {
     this()
     if (value.isInstanceOf[ObjectValue[_]])

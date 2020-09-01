@@ -51,7 +51,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
       .arg(2, BuiltInAtomicType.STRING, ONE, null)
     register("apply", 2, classOf[ApplyFn], AnyItemType, STAR, LATE)
-      .arg(0, AnyFunctionType.getInstance, OPT, null)
+      .arg(0, AnyFunctionType, OPT, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE, null)
     register("available-environment-variables",
              0,
@@ -245,11 +245,11 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              classOf[FunctionArity],
              BuiltInAtomicType.INTEGER,
              ONE,
-             0).arg(0, AnyFunctionType.getInstance, ONE, null)
+             0).arg(0, AnyFunctionType, ONE, null)
     register("function-lookup",
              2,
              classOf[FunctionLookup],
-             AnyFunctionType.getInstance,
+             AnyFunctionType,
              OPT,
              FOCUS | DEPENDS_ON_STATIC_CONTEXT | LATE)
       .arg(0, BuiltInAtomicType.QNAME, ONE, null)
@@ -259,7 +259,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              classOf[FunctionName],
              BuiltInAtomicType.QNAME,
              OPT,
-             0).arg(0, AnyFunctionType.getInstance, ONE, null)
+             0).arg(0, AnyFunctionType, ONE, null)
     register("generate-id",
              0,
              classOf[ContextItemAccessorFunction],

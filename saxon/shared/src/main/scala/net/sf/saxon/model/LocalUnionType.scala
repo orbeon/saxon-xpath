@@ -52,7 +52,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
 
   def isUnionType: Boolean = true
 
-  def getUType(): UType = {
+  def getUType: UType = {
     var u: UType = UType.VOID
     for (at <- memberTypes.asScala) {
       u = u.union(at.getUType)
@@ -140,7 +140,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
     fsb.toString
   }
 
-  override def toExportString(): String = {
+  override def toExportString: String = {
     val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     fsb.append("union(")
     for (at <- memberTypes.asScala) {

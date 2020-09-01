@@ -71,7 +71,7 @@ abstract class AbstractArrayItem extends ArrayItem {
 
   override def getAnnotations(): AnnotationList = AnnotationList.EMPTY
 
-  def getFunctionItemType(): FunctionItemType = ArrayItemType.ANY_ARRAY_TYPE
+  def getFunctionItemType: FunctionItemType = ArrayItemType.ANY_ARRAY_TYPE
 
   def getFunctionName: StructuredQName = null
 
@@ -82,9 +82,9 @@ abstract class AbstractArrayItem extends ArrayItem {
    *
    * @return a description of the function for use in error messages
    */
-  def getDescription(): String = "array"
+  def getDescription: String = "array"
 
-  def getArity(): Int = 1
+  def getArity: Int = 1
 
   /**
    * Prepare an XPathContext object for evaluating the function

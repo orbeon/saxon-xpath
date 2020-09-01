@@ -104,13 +104,13 @@ class CallTemplate(private var template: NamedTemplate,
     }
   }
 
-  def getSymbolicName(): SymbolicName =
+  def getSymbolicName: SymbolicName =
     if (calledTemplateName == null) null
     else new SymbolicName(StandardNames.XSL_TEMPLATE, calledTemplateName)
 
   def getTarget: Component = template.getDeclaringComponent
 
-  def getFixedTarget(): Component = {
+  def getFixedTarget: Component = {
     val c: Component = getTarget
     val v: Visibility.Visibility = c.getVisibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) {

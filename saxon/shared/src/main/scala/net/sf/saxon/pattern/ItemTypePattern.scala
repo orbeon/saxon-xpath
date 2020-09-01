@@ -24,7 +24,7 @@ class ItemTypePattern(@BeanProperty var itemTyp: ItemType) extends Pattern {
   def matches(item: Item, context: XPathContext): Boolean =
     itemTyp.matches(item, context.getConfiguration.getTypeHierarchy)
 
-  override def getUType(): UType = itemTyp.getUType
+  override def getUType: UType = itemTyp.getUType
 
   override def toString: String = itemTyp.toString
 

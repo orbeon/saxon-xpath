@@ -63,7 +63,7 @@ class UnboundFunctionLibrary extends FunctionLibrary {
     correspondingStaticContext.add(null)
     correspondingReasons.add(new ArrayList())
     val fi: CallableFunction =
-      new CallableFunction(functionName, uc, AnyFunctionType.getInstance)
+      new CallableFunction(functionName, uc, AnyFunctionType)
     fi
   }
 

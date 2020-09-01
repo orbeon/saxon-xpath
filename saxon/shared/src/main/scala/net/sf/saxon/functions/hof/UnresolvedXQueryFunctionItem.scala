@@ -16,18 +16,18 @@ class UnresolvedXQueryFunctionItem(private val fd: XQueryFunction,
                                    private val ref: UserFunctionReference)
   extends AbstractFunction {
 
-  override def getFunctionItemType(): FunctionItemType =
+  override def getFunctionItemType: FunctionItemType =
     new SpecificFunctionType(fd.getArgumentTypes, fd.getResultType)
 
   override def getFunctionName: StructuredQName =
     functionName.getComponentName
 
-  override def getArity(): Int = fd.getNumberOfArguments
+  override def getArity: Int = fd.getNumberOfArguments
 
   override def call(context: XPathContext, args: Array[Sequence]): Sequence =
     ref.evaluateItem(context).call(context, args)
 
-  override def getDescription(): String = functionName.toString
+  override def getDescription: String = functionName.toString
 
   def getFunctionReference: UserFunctionReference = ref
 

@@ -187,7 +187,7 @@ class VendorFunctionSetHE private () extends BuiltInFunctionSet {
              FOCUS | LATE | SIDE).arg(0, BuiltInAtomicType.STRING, ONE, null)
 // saxon:apply is the same as fn:apply, but does not require the HOF feature
     register("apply", 2, classOf[ApplyFn], AnyItemType, STAR, LATE)
-      .arg(0, AnyFunctionType.getInstance, ONE, null)
+      .arg(0, AnyFunctionType, ONE, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE, null)
 // Create a map according to the semantics of the XPath map constructor and XSLT xsl:map instruction
     register("create-map", 1, classOf[MapCreate], MapType.ANY_MAP_TYPE, ONE, 0)

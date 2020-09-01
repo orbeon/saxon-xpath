@@ -29,7 +29,7 @@ object ItemType {
   val ANY_FUNCTION: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = item.getUnderlyingValue.isInstanceOf[Function]
     def subsumes(other: ItemType): Boolean = other.getUnderlyingItemType.isInstanceOf[FunctionItemType]
-    def getUnderlyingItemType(): net.sf.saxon.model.ItemType = AnyFunctionType.getInstance
+    def getUnderlyingItemType(): net.sf.saxon.model.ItemType = AnyFunctionType
   }
 
   val ANY_NODE: ItemType = new ItemType {

@@ -1,25 +1,20 @@
 package net.sf.saxon.functions.hof
 
-import net.sf.saxon.utils.Controller
 import net.sf.saxon.expr._
-import net.sf.saxon.expr.instruct.SlotManager
 import net.sf.saxon.expr.instruct.UserFunction
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-import net.sf.saxon.expr.parser.ExpressionTool
-import net.sf.saxon.expr.parser.ExpressionVisitor
-import net.sf.saxon.expr.parser.RebindingMap
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
 import net.sf.saxon.functions.AbstractFunction
+import net.sf.saxon.functions.hof.UserFunctionReference._
 import net.sf.saxon.lib.NamespaceConstant
 import net.sf.saxon.model._
 import net.sf.saxon.om._
+import net.sf.saxon.query.AnnotationList
 import net.sf.saxon.style.StylesheetPackage
 import net.sf.saxon.trace.ExpressionPresenter
-import net.sf.saxon.trans.SymbolicName
-import net.sf.saxon.trans.XPathException
-import UserFunctionReference._
-import net.sf.saxon.query.AnnotationList
+import net.sf.saxon.trans.{SymbolicName, XPathException}
+import net.sf.saxon.utils.Controller
 
-import scala.beans.{BeanProperty}
+import scala.beans.BeanProperty
 
 object UserFunctionReference {
 
@@ -50,51 +45,44 @@ object UserFunctionReference {
 
     def call(context: XPathContext, args: Array[Sequence]): Sequence = {
       val c2: XPathContext = function.makeNewContext(context, this)
-      if (c2.isInstanceOf[XPathContextMajor] && component != null) {
-        c2.asInstanceOf[XPathContextMajor].setCurrentComponent(component)
+      c2 match {
+        case major: XPathContextMajor if component != null =>
+          major.setCurrentComponent(component)
+        case _ =>
       }
       function.call(c2, args)
     }
 
-    def getFunctionItemType(): FunctionItemType = function.getFunctionItemType
-
+    def getFunctionItemType: FunctionItemType = function.getFunctionItemType
     override def getAnnotations(): AnnotationList = function.getAnnotations
-
     def getFunctionName: StructuredQName = function.getFunctionName
+    def getArity: Int = function.getArity
+    def getDescription: String = function.getDescription
 
-    def getArity(): Int = function.getArity
-
-    def getDescription(): String = function.getDescription
-
-    override def export(out: ExpressionPresenter): Unit = {
+    override def export(out: ExpressionPresenter): Unit =
       agent.export(out)
-    }
-
   }
 
 }
 
-class UserFunctionReference
+class UserFunctionReference()
   extends Expression
     with ComponentInvocation
     with UserFunctionResolvable
     with Callable {
 
-  private var userFunctionTarget: UserFunction = _
-
-  private var functionName: SymbolicName = userFunctionTarget.getSymbolicName
-
-  private var nominalTarget: UserFunction = userFunctionTarget
+  private var functionName: SymbolicName = _
+  private var nominalTarget: UserFunction = _
 
   var bindingSlot: Int = -1
 
   private var optimizeCounter: Int = 0
-
   private var typeCheckCounter: Int = 0
 
   def this(target: UserFunction) {
     this()
-    this.userFunctionTarget = target
+    this.nominalTarget = target
+    this.functionName = target.getSymbolicName
   }
 
   def this(name: SymbolicName) = {
@@ -103,16 +91,14 @@ class UserFunctionReference
   }
 
   def setFunction(function: UserFunction): Unit = {
-    if (function.getSymbolicName != functionName) {
+    if (function.getSymbolicName != functionName)
       throw new IllegalArgumentException("Function name does not match")
-    }
     this.nominalTarget = function
   }
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && {
-      typeCheckCounter += 1;
+      typeCheckCounter += 1
       typeCheckCounter - 1
     } < 10) {
       nominalTarget.typeCheck(visitor)
@@ -120,46 +106,34 @@ class UserFunctionReference
     this
   }
 
-  override def optimize(visitor: ExpressionVisitor,
-                        contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && {
-      optimizeCounter += 1;
+      optimizeCounter += 1
       optimizeCounter - 1
     } < 10) {
       var o: Expression = null
       o = nominalTarget.getBody.optimize(visitor, ContextItemStaticInfo.ABSENT)
       nominalTarget.setBody(o)
-      val slotManager: SlotManager = visitor.getConfiguration.makeSlotManager
-      for (i <- 0 until getArity) {
-        slotManager.allocateSlotNumber(
-          nominalTarget.getParameterDefinitions()(i).getVariableQName)
-      }
+      val slotManager = visitor.getConfiguration.makeSlotManager
+      for (i <- 0 until getArity)
+        slotManager.allocateSlotNumber(nominalTarget.getParameterDefinitions()(i).getVariableQName)
       ExpressionTool.allocateSlots(o, getArity, slotManager)
       nominalTarget.setStackFrameMap(slotManager)
     }
     this
   }
 
-  def getFixedTarget(): Component = nominalTarget.getDeclaringComponent
-
-  def getSymbolicName(): SymbolicName = functionName
-
-  def getFunctionItemType(th: TypeHierarchy): FunctionItemType =
-    nominalTarget.getFunctionItemType
-
+  def getFixedTarget: Component = nominalTarget.getDeclaringComponent
+  def getSymbolicName: SymbolicName = functionName
+  def getFunctionItemType(th: TypeHierarchy): FunctionItemType = nominalTarget.getFunctionItemType
   def getFunctionName: StructuredQName = nominalTarget.getFunctionName
-
   def getArity: Int = nominalTarget.getArity
-
-   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
-
-  override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
-
-  override def getItemType: ItemType = nominalTarget.getFunctionItemType
-
+  def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
+  def getImplementationMethod: Int = Expression.EVALUATE_METHOD
+  def getItemType: ItemType = nominalTarget.getFunctionItemType
   override def getStaticUType(contextItemType: UType): UType = UType.FUNCTION
 
-  override def copy(rebindings: RebindingMap): Expression = {
+  def copy(rebindings: RebindingMap): Expression = {
     val ref: UserFunctionReference = new UserFunctionReference(nominalTarget)
     ref.optimizeCounter = optimizeCounter
     ref.typeCheckCounter = typeCheckCounter
@@ -181,20 +155,15 @@ class UserFunctionReference
         context.getController)
     }
 
-  override def call(context: XPathContext,
-                    arguments: Array[Sequence]): Function =
+  def call(context: XPathContext, arguments: Array[Sequence]): Function =
     evaluateItem(context)
 
   override def getExpressionName: String = "UserFunctionReference"
-
   override def toString: String = getFunctionName.getEQName + "#" + getArity
-
   override def toShortString: String = getFunctionName.getDisplayName + "#" + getArity
 
-
-  override def setBindingSlot(slot: Int) = bindingSlot = slot
-
-  override def getBindingSlot(): Int = bindingSlot
+  def setBindingSlot(slot: Int): Unit = bindingSlot = slot
+  def getBindingSlot: Int = bindingSlot
 
   def export(out: ExpressionPresenter): Unit = {
     val options: ExpressionPresenter.ExportOptions = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]

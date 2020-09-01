@@ -254,7 +254,7 @@ class TypeHierarchy(var config: Configuration) {
                             locator: Location): SequenceIterator =
     requiredItemType match {
       case itemType: FunctionItemType if !(relationship(requiredItemType, suppliedItemType) == Affinity.SUBSUMES) && !itemType.isArrayType && !itemType.isMapType =>
-        if (requiredItemType == AnyFunctionType.getInstance) {
+        if (requiredItemType == AnyFunctionType) {
           iterator
         } else {
           val coercer: FunctionSequenceCoercer.Coercer =

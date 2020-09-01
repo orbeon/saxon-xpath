@@ -68,14 +68,14 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
    * @return the offset in the binding vector of the containing package where the target component
    *         can be found.
    */
-  def getBindingSlot(): Int = bindingSlot
+  def getBindingSlot: Int = bindingSlot
 
   /**
    * Get the symbolic name of the component that this invocation references
    *
    * @return the symbolic name of the target component
    */
-  def getSymbolicName(): SymbolicName =
+  def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_VARIABLE, getVariableName)
 
   def setTarget(target: Component): Unit = {
@@ -85,7 +85,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
   def getTarget: Component =
     binding.asInstanceOf[GlobalVariable].getDeclaringComponent
 
-  def getFixedTarget(): Component = {
+  def getFixedTarget: Component = {
     val c: Component = getTarget
     val v: Visibility.Visibility = c.getVisibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) {

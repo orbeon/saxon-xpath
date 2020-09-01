@@ -42,7 +42,7 @@ class AnyExternalObjectType  () extends ItemType {
 
   override def getPrimitiveItemType: ItemType = this
 
-  override def getUType(): UType = UType.EXTENSION
+  override def getUType: UType = UType.EXTENSION
 
   override def getAtomizedItemType: AtomicType = BuiltInAtomicType.STRING
 

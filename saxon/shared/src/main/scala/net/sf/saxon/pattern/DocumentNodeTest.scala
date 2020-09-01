@@ -35,7 +35,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
    *
    * @return the smallest UType that subsumes this item type
    */
-  def getUType(): UType = UType.DOCUMENT
+  def getUType: UType = UType.DOCUMENT
 
   /**
    * Test whether this node test is satisfied by a given node. This method is only

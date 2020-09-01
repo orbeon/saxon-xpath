@@ -51,17 +51,16 @@ class ApplyFn extends SystemFunction {
   def isDynamicFunctionCall: Boolean = dynamicFunctionCall != null
 
   override def getResultItemType(args: Array[Expression]): ItemType = {
-    val fnType: ItemType = args(0).getItemType
-    if (fnType.isInstanceOf[MapType]) {
-      fnType.asInstanceOf[MapType].getValueType.getPrimaryType
-    } else if (fnType.isInstanceOf[ArrayItemType]) {
-      fnType.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
-    } else if (fnType.isInstanceOf[FunctionItemType]) {
-      fnType.asInstanceOf[FunctionItemType].getResultType.getPrimaryType
-    } else if (fnType.isInstanceOf[AnyFunctionType]) {
-      AnyItemType
-    } else {
-      AnyItemType
+    val fnType = args(0).getItemType
+    fnType match {
+      case mapType: MapType =>
+        mapType.getValueType.getPrimaryType
+      case itemType: ArrayItemType =>
+        itemType.getMemberType.getPrimaryType
+      case itemType: FunctionItemType =>
+        itemType.getResultType.getPrimaryType
+      case _ =>
+        AnyItemType
     }
   }
 
@@ -69,19 +68,20 @@ class ApplyFn extends SystemFunction {
                                  visitor: ExpressionVisitor,
                                  contextInfo: ContextItemStaticInfo,
                                  arguments: Expression*): Expression = {
-    if (arguments.length == 2 && arguments(1)
-      .isInstanceOf[SquareArrayConstructor]) {
+    if (arguments.length == 2 && arguments(1).isInstanceOf[SquareArrayConstructor]) {
       val target: Expression = arguments(0)
-      if (target.getItemType.isInstanceOf[MapType]) {
-        makeGetCall(visitor,
-          MapFunctionSet.getInstance,
-          contextInfo,
-          arguments.toArray)
-      } else if (target.getItemType.isInstanceOf[ArrayItemType]) {
-        makeGetCall(visitor,
-          ArrayFunctionSet.getInstance,
-          contextInfo,
-          arguments.toArray)
+      target.getItemType match {
+        case _: MapType =>
+          makeGetCall(visitor,
+            MapFunctionSet.getInstance,
+            contextInfo,
+            arguments.toArray)
+        case _: ArrayItemType =>
+          makeGetCall(visitor,
+            ArrayFunctionSet.getInstance,
+            contextInfo,
+            arguments.toArray)
+        case _ =>
       }
     }
     null
@@ -125,12 +125,11 @@ class ApplyFn extends SystemFunction {
     val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
     val fit: FunctionItemType = function.getFunctionItemType
     val argArray: Array[Sequence] = Array.ofDim[Sequence](args.arrayLength())
-    if (fit == AnyFunctionType.ANY_FUNCTION) {
-      for (i <- 0 until argArray.length) {
+    if (fit == AnyFunctionType) {
+      for (i <- argArray.indices)
         argArray(i) = args.get(i)
-      }
     } else {
-      for (i <- 0 until argArray.length) {
+      for (i <- argArray.indices) {
         val expected: SequenceType = fit.getArgumentTypes(i)
         var role: RoleDiagnostic = null
         role =

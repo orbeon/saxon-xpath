@@ -151,7 +151,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
     Navigator.getSiblingPosition(node, nodeTest, max)
   }
 
-  override def getUType(): UType = nodeTest.getUType
+  override def getUType: UType = nodeTest.getUType
 
   override def getFingerprint(): Int = nodeTest.getFingerprint
 

@@ -40,7 +40,7 @@ class NamespaceTest(private var namePool: NamePool,
     *
     * @return the smallest UType that subsumes this item type
     */
-  def getUType(): UType = uType
+  def getUType: UType = uType
 
   /**
     * Get the set of node names allowed by this NodeTest. Return no result, because the

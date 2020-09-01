@@ -104,7 +104,7 @@ class UserFunction
 
   private var refCount: Int = 0
 
-  def getDescription(): String = {
+  def getDescription: String = {
     val name: StructuredQName = getFunctionName
     if (name.hasURI(NamespaceConstant.ANONYMOUS)) {
       var first: Boolean = true
@@ -140,10 +140,10 @@ class UserFunction
 
   def getObjectName(): StructuredQName = functionName
 
-  def getSymbolicName(): SymbolicName.F =
+  def getSymbolicName: SymbolicName.F =
     new SymbolicName.F(functionName, getArity)
 
-  def getFunctionItemType(): FunctionItemType = {
+  def getFunctionItemType: FunctionItemType = {
     val argTypes: Array[SequenceType] =
       Array.ofDim[SequenceType](parameterDefinitions.length)
     for (i <- 0 until parameterDefinitions.length) {
@@ -273,7 +273,7 @@ class UserFunction
     evaluator = mode.getEvaluator
   }
 
-  def getArity(): Int = parameterDefinitions.length
+  def getArity: Int = parameterDefinitions.length
 
   def isMemoFunction: Boolean = false
 

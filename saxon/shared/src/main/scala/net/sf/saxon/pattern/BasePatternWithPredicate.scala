@@ -104,7 +104,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
     getBasePattern.matchesBeneathAnchor(node, anchor, context) &&
       matchesPredicate(node, context)
 
-  override def getUType(): UType = getBasePattern.getUType
+  override def getUType: UType = getBasePattern.getUType
 
   override def getFingerprint(): Int = getBasePattern.getFingerprint
 

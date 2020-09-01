@@ -111,7 +111,7 @@ object PrimitiveUType extends Enumeration {
       case COMMENT => NodeKindTest.COMMENT
       case PI => NodeKindTest.PROCESSING_INSTRUCTION
       case NAMESPACE => NodeKindTest.NAMESPACE
-      case FUNCTION => AnyFunctionType.getInstance
+      case FUNCTION => AnyFunctionType
       case STRING => BuiltInAtomicType.STRING
       case BOOLEAN => BuiltInAtomicType.BOOLEAN
       case DECIMAL => BuiltInAtomicType.DECIMAL

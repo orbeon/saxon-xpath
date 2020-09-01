@@ -82,7 +82,7 @@ class UserFunctionCall extends FunctionCall
     staticType = `type`
   }
 
-  def getFixedTarget(): Component = {
+  def getFixedTarget: Component = {
     val v: Visibility.Visibility = function.getDeclaringComponent.getVisibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) {
       function.getDeclaringComponent
@@ -102,7 +102,7 @@ class UserFunctionCall extends FunctionCall
       name
     }
 
-  def getSymbolicName(): SymbolicName =
+  def getSymbolicName: SymbolicName =
     new SymbolicName.F(getFunctionName, getArity)
 
   def getTarget: Component = function.getDeclaringComponent

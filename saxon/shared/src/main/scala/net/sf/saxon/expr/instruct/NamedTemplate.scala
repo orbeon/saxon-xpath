@@ -90,7 +90,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     this.absentFocus = absentFocus
   }
 
-  def getSymbolicName(): SymbolicName =
+  def getSymbolicName: SymbolicName =
     if (getTemplateName == null) {
       null
     } else {

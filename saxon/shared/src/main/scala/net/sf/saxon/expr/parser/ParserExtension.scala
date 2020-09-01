@@ -417,7 +417,7 @@ class ParserExtension {
       p.expect(Token.RPAR)
       p.nextToken()
       if (annotations.isEmpty) {
-        AnyFunctionType.getInstance
+        AnyFunctionType
       } else {
         new AnyFunctionTypeWithAssertions(annotations,
           p.getStaticContext.getConfiguration)
@@ -477,52 +477,47 @@ class ParserExtension {
 
   def makeArgumentPlaceMarker(p: XPathParser): Expression = null
 
-  def parseInlineFunction(
-                           p: XPathParser,
-                           annotations: AnnotationList): Expression = {
-    val t: Tokenizer = p.getTokenizer
-    val offset: Int = t.currentTokenStartOffset
-    val details: InlineFunctionDetails = new InlineFunctionDetails()
-    details.outerVariables = new Stack().asInstanceOf[mutable.Stack[LocalBinding]]
-    for (lb <- p.getRangeVariables) {
+  def parseInlineFunction(p: XPathParser, annotations: AnnotationList): Expression = {
+    val t = p.getTokenizer
+    val offset = t.currentTokenStartOffset
+    val details = new InlineFunctionDetails()
+
+    details.outerVariables = new mutable.Stack[LocalBinding]
+    for (lb <- p.getRangeVariables)
       details.outerVariables.push(lb)
-    }
     details.outerVariablesUsed = new ArrayList(4)
     details.implicitParams = new ArrayList(4)
+
     inlineFunctionStack.push(details)
-    p.setRangeVariables(new Stack().asInstanceOf[mutable.Stack[LocalBinding]])
+
+    p.setRangeVariables(new mutable.Stack[LocalBinding])
     p.nextToken()
-    val paramNames: HashSet[StructuredQName] = new HashSet[StructuredQName](8)
-    val params: List[UserFunctionParameter] =
-      new ArrayList[UserFunctionParameter](8)
-    var resultType: SequenceType = SequenceType.ANY_SEQUENCE
-    var paramSlot: Int = 0
+    val paramNames = new HashSet[StructuredQName](8)
+    val params = new ArrayList[UserFunctionParameter](8)
+    var resultType = SequenceType.ANY_SEQUENCE
+    var paramSlot = 0
     breakable {
       while (t.currentToken != Token.RPAR) {
         p.expect(Token.DOLLAR)
         p.nextToken()
         p.expect(Token.NAME)
+
         val argName: String = t.currentTokenValue
-        val argQName: StructuredQName = p.makeStructuredQName(argName, "")
-        if (paramNames.contains(argQName)) {
-          p.grumble("Duplicate parameter name " + Err.wrap(t.currentTokenValue,
-            Err.VARIABLE),
-            "XQST0039")
-        }
+        val argQName = p.makeStructuredQName(argName, "")
+        if (paramNames.contains(argQName))
+          p.grumble("Duplicate parameter name " + Err.wrap(t.currentTokenValue, Err.VARIABLE), "XQST0039")
         paramNames.add(argQName)
-        var paramType: SequenceType = SequenceType.ANY_SEQUENCE
+        var paramType = SequenceType.ANY_SEQUENCE
         p.nextToken()
         if (t.currentToken == Token.AS) {
           p.nextToken()
           paramType = p.parseSequenceType
         }
-        val arg: UserFunctionParameter = new UserFunctionParameter()
+        val arg = new UserFunctionParameter()
         arg.setRequiredType(paramType)
         arg.setVariableQName(argQName)
-        arg.setSlotNumber({
-          paramSlot += 1;
-          paramSlot - 1
-        })
+        arg.setSlotNumber(paramSlot)
+        paramSlot += 1
         params.add(arg)
         p.declareRangeVariable(arg)
         if (t.currentToken == Token.RPAR) {
@@ -530,10 +525,7 @@ class ParserExtension {
         } else if (t.currentToken == Token.COMMA) {
           p.nextToken()
         } else {
-          p.grumble(
-            "Expected ',' or ')' after function argument, found '" +
-              Token.tokens(t.currentToken) +
-              '\'')
+          p.grumble("Expected ',' or ')' after function argument, found '" + Token.tokens(t.currentToken) + '\'')
         }
       }
     }
@@ -547,32 +539,36 @@ class ParserExtension {
     p.expect(Token.LCURLY)
     t.setState(Tokenizer.DEFAULT_STATE)
     p.nextToken()
-    var body: Expression = null
-    if (t.currentToken == Token.RCURLY && p.isAllowXPath31Syntax) {
-      t.lookAhead()
-      p.nextToken()
-      body = Literal.makeEmptySequence()
-    } else {
-      body = p.parseExpression
-      p.expect(Token.RCURLY)
-      t.lookAhead()
-      p.nextToken()
-    }
-    ExpressionTool.setDeepRetainedStaticContext(
-      body,
-      p.getStaticContext.makeRetainedStaticContext())
-    val arity: Int = paramNames.size
-    for (i <- 0 until arity) {
+    val body =
+      if (t.currentToken == Token.RCURLY && p.isAllowXPath31Syntax) {
+        t.lookAhead()
+        p.nextToken()
+        Literal.makeEmptySequence()
+      } else {
+        val body = p.parseExpression
+        p.expect(Token.RCURLY)
+        t.lookAhead()
+        p.nextToken()
+        body
+      }
+
+    ExpressionTool.setDeepRetainedStaticContext(body, p.getStaticContext.makeRetainedStaticContext())
+
+    val arity = paramNames.size
+    for (_ <- 0 until arity)
       p.undeclareRangeVariable()
-    }
-    val result: Expression = makeInlineFunctionValue(p,
-      annotations,
-      details,
-      params,
-      resultType,
-      body)
+
+    val result =
+      makeInlineFunctionValue(p,
+        annotations,
+        details,
+        params,
+        resultType,
+        body
+      )
     p.setLocation(result, offset)
     p.setRangeVariables(details.outerVariables)
+
     inlineFunctionStack.pop()
     result
   }
@@ -597,14 +593,16 @@ class ParserExtension {
                           name: StructuredQName,
                           args: Array[Expression],
                           placeMarkers: IntSet): Expression = {
-    val env: StaticContext = parser.getStaticContext
-    val lib: FunctionLibrary = env.getFunctionLibrary
-    val sn: SymbolicName.F = new SymbolicName.F(name, args.length)
-    val target: Function = lib.getFunctionItem(sn, env)
-    if (target == null) {
-      parser.reportMissingFunction(offset, name, args, new ArrayList())
-    }
-    val targetExp: Expression = makeNamedFunctionReference(name, target)
+
+    val env = parser.getStaticContext
+    val lib = env.getFunctionLibrary
+    val sn = new SymbolicName.F(name, args.length)
+
+    val target = lib.getFunctionItem(sn, env)
+    if (target == null)
+      parser.reportMissingFunction(offset, name, args, new ArrayList)
+
+    val targetExp = makeNamedFunctionReference(name, target)
     parser.setLocation(targetExp, offset)
     curryFunction(targetExp, args, placeMarkers)
   }
