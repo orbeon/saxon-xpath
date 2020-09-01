@@ -369,7 +369,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   override def evaluateItem(c: XPathContext): Item =
     try {
-      val actual: Sequence = evaluateVariable(c)
+      val actual = evaluateVariable(c)
       assert(actual != null)
       actual.head()
     } catch {

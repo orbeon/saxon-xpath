@@ -46,7 +46,7 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
   override def evaluateVariable(c: XPathContext): Sequence =
     try c.getStackFrame().getStackFrameValues()(slotNumber)
     catch {
-      case err: ArrayIndexOutOfBoundsException =>
+      case _: ArrayIndexOutOfBoundsException =>
         if (slotNumber == -999) {
           if (binding != null) {
             try {

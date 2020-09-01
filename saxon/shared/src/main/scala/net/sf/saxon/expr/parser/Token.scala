@@ -1,9 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * This class holds static constants and methods defining the lexical tokens used in
+  * XPath and XQuery, and associated keywords.
+  */
+
 package net.sf.saxon.expr.parser
 
 import java.util.HashMap
-
-
 
 
 object Token {
@@ -965,196 +973,101 @@ object Token {
   val tokens: Array[String] = new Array[String](300)
 
   tokens(EOF) = "<eof>"
-
   tokens(UNION) = "|"
-
   tokens(SLASH) = "/"
-
   tokens(AT) = "@"
-
   tokens(LSQB) = "["
-
   tokens(LPAR) = "("
-
   tokens(EQUALS) = "="
-
   tokens(COMMA) = ","
-
   tokens(SLASH_SLASH) = "//"
-
   tokens(OR) = "or"
-
   tokens(AND) = "and"
-
   tokens(GT) = ">"
-
   tokens(LT) = "<"
-
   tokens(GE) = ">="
-
   tokens(LE) = "<="
-
   tokens(PLUS) = "+"
-
   tokens(MINUS) = "-"
-
   tokens(MULT) = "*"
-
   tokens(DIV) = "div"
-
   tokens(MOD) = "mod"
-
   tokens(IS) = "is"
-
   tokens(DOLLAR) = "$"
-
   tokens(NE) = "!="
-
   tokens(BANG) = "!"
-
   tokens(CONCAT) = "||"
-
   tokens(INTERSECT) = "intersect"
-
   tokens(EXCEPT) = "except"
-
   tokens(RETURN) = "return"
-
   tokens(THEN) = "then"
-
   tokens(ELSE) = "else"
-
   tokens(TO) = "to"
-
   tokens(IN) = "in"
-
   tokens(SOME) = "some"
-
   tokens(EVERY) = "every"
-
   tokens(SATISFIES) = "satisfies"
-
   tokens(FUNCTION) = "<function>("
-
   tokens(AXIS) = "<axis>"
-
   tokens(IF) = "if("
-
   tokens(PRECEDES) = "<<"
-
   tokens(FOLLOWS) = ">>"
-
   tokens(COLONCOLON) = "::"
-
   tokens(COLONSTAR) = ":*"
-
   tokens(HASH) = "#"
-
   tokens(INSTANCE_OF) = "instance of"
-
   tokens(CAST_AS) = "cast as"
-
   tokens(TREAT_AS) = "treat as"
-
   tokens(FEQ) = "eq"
-
   tokens(FNE) = "ne"
-
   tokens(FGT) = "gt"
-
   tokens(FGE) = "ge"
-
   tokens(FLT) = "lt"
-
   tokens(FLE) = "le"
-
   tokens(IDIV) = "idiv"
-
   tokens(CASTABLE_AS) = "castable as"
-
   tokens(ASSIGN) = ":="
-
   tokens(SWITCH) = "switch"
-
   tokens(TYPESWITCH) = "typeswitch"
-
   tokens(CASE) = "case"
-
   tokens(DEFAULT) = "default"
-
 //tokens [ AS_LAST ] = "as last";
   tokens(AFTER) = "after"
-
   tokens(BEFORE) = "before"
-
   tokens(INTO) = "into"
-
   tokens(WITH) = "with"
-
   tokens(MODIFY) = "modify"
-
   tokens(AS) = "as"
-
   tokens(COLON) = ":"
-
   tokens(ARROW) = "=>"
-
   tokens(AND_ALSO) = "andAlso"
-
   tokens(OR_ELSE) = "orElse"
-
   tokens(STRING_CONSTRUCTOR_INITIAL) = "``[<string>`{"
-
   tokens(STRING_LITERAL_BACKTICKED) = "``[<string>]``"
-
   tokens(OTHERWISE) = "otherwise"
-
   tokens(NAME) = "<name>"
-
   tokens(STRING_LITERAL) = "<string-literal>"
-
   tokens(RSQB) = "]"
-
   tokens(RPAR) = ")"
-
   tokens(DOT) = "."
-
   tokens(DOTDOT) = ".."
-
   tokens(STAR) = "*"
-
   tokens(PREFIX) = "<prefix:*>"
-
   tokens(NUMBER) = "<numeric-literal>"
-
   tokens(NODEKIND) = "<node-type>()"
-
   tokens(FOR) = "for"
-
   tokens(SUFFIX) = "<*:local-name>"
-
   tokens(QMARK) = "?"
-
   tokens(LCURLY) = "{"
-
   tokens(KEYWORD_CURLY) = "<keyword> {"
-
   tokens(RCURLY) = "}"
-
   tokens(LET) = "let"
-
   tokens(VALIDATE) = "validate {"
-
   tokens(TAG) = "<element>"
-
   tokens(PRAGMA) = "(# ... #)"
-
   tokens(SEMICOLON) = ";"
-
   tokens(COPY) = "copy"
-
   tokens(NEGATE) = "-"
-
   tokens(PERCENT) = "%"
 
   /**
@@ -1172,86 +1085,46 @@ object Token {
   val UNKNOWN: Int = -1
 
   mapDouble("instance of", INSTANCE_OF)
-
   mapDouble("cast as", CAST_AS)
-
   mapDouble("treat as", TREAT_AS)
-
   mapDouble("castable as", CASTABLE_AS)
-
   mapDouble("group by", GROUP_BY)
-
   mapDouble("for tumbling", FOR_TUMBLING)
-
   mapDouble("for sliding", FOR_SLIDING)
-
   mapDouble("for member", FOR_MEMBER)
-
   mapDouble("xquery version", XQUERY_VERSION)
-
   mapDouble("xquery encoding", XQUERY_ENCODING)
-
   mapDouble("declare namespace", DECLARE_NAMESPACE)
-
   mapDouble("declare default", DECLARE_DEFAULT)
-
   mapDouble("declare construction", DECLARE_CONSTRUCTION)
-
   mapDouble("declare base-uri", DECLARE_BASEURI)
-
   mapDouble("declare boundary-space", DECLARE_BOUNDARY_SPACE)
-
   mapDouble("declare decimal-format", DECLARE_DECIMAL_FORMAT)
-
   mapDouble("declare ordering", DECLARE_ORDERING)
-
   mapDouble("declare copy-namespaces", DECLARE_COPY_NAMESPACES)
-
   mapDouble("declare option", DECLARE_OPTION)
-
   mapDouble("declare revalidation", DECLARE_REVALIDATION)
-
 // Saxon extension
   mapDouble("declare type", DECLARE_TYPE)
-
   mapDouble("import schema", IMPORT_SCHEMA)
-
   mapDouble("import module", IMPORT_MODULE)
-
   mapDouble("declare variable", DECLARE_VARIABLE)
-
   mapDouble("declare context", DECLARE_CONTEXT)
-
   mapDouble("declare function", DECLARE_FUNCTION)
-
   mapDouble("declare updating", DECLARE_UPDATING)
-
   mapDouble("module namespace", MODULE_NAMESPACE)
-
   mapDouble("validate strict", VALIDATE_STRICT)
-
   mapDouble("validate lax", VALIDATE_LAX)
-
   mapDouble("validate type", VALIDATE_TYPE)
-
   mapDouble("insert node", INSERT_NODE)
-
   mapDouble("insert nodes", INSERT_NODE)
-
   mapDouble("delete node", DELETE_NODE)
-
   mapDouble("delete nodes", DELETE_NODE)
-
   mapDouble("replace node", REPLACE_NODE)
-
   mapDouble("replace value", REPLACE_VALUE)
-
   mapDouble("rename node", RENAME_NODE)
-
   mapDouble("rename nodes", RENAME_NODE)
-
   mapDouble("first into", FIRST_INTO)
-
   mapDouble("last into", LAST_INTO)
 
   private def mapDouble(doubleKeyword: String, token: Int): Unit = {
@@ -1288,13 +1161,3 @@ object Token {
     operator != FEQ && operator != FNE
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class holds static constants and methods defining the lexical tokens used in
-  * XPath and XQuery, and associated keywords.
-  */

@@ -10,17 +10,10 @@
 // Copyright (c) 2013-2020 Saxonica Limited
 package net.sf.saxon.functions.hof
 
-import net.sf.saxon.expr.Expression
-import net.sf.saxon.expr.XPathContext
+import net.sf.saxon.expr.{Expression, XPathContext}
 import net.sf.saxon.functions.{Fold, FoldingFunction, SystemFunction}
-import net.sf.saxon.model.AnyFunctionType
-import net.sf.saxon.model.AnyItemType
-import net.sf.saxon.model.ItemType
-import net.sf.saxon.om.Function
-import net.sf.saxon.om.GroundedValue
-import net.sf.saxon.om.Item
-import net.sf.saxon.om.Sequence
-import net.sf.saxon.trans.XPathException
+import net.sf.saxon.model.{AnyFunctionType, AnyItemType, ItemType}
+import net.sf.saxon.om.{Function, GroundedValue, Item, Sequence}
 
 
 class FoldLeftFn extends FoldingFunction {

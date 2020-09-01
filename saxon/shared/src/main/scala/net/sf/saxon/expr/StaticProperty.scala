@@ -1,90 +1,61 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * This class contains constants identifying dependencies that an XPath expression
+  * might have on its context.
+  */
+
 package net.sf.saxon.expr
 
 import net.sf.saxon.tree.util.FastStringBuffer
-
 import net.sf.saxon.value.Cardinality
-
-
 
 
 object StaticProperty {
 
   val DEPENDS_ON_CURRENT_ITEM: Int = 1
-
   val DEPENDS_ON_CONTEXT_ITEM: Int = 1 << 1
-
   val DEPENDS_ON_POSITION: Int = 1 << 2
-
   val DEPENDS_ON_LAST: Int = 1 << 3
-
   val DEPENDS_ON_CONTEXT_DOCUMENT: Int = 1 << 4
-
   val DEPENDS_ON_CURRENT_GROUP: Int = 1 << 5
-
   val DEPENDS_ON_REGEX_GROUP: Int = 1 << 6
-
   val DEPENDS_ON_LOCAL_VARIABLES: Int = 1 << 7
-
   val DEPENDS_ON_USER_FUNCTIONS: Int = 1 << 8
-
   val DEPENDS_ON_ASSIGNABLE_GLOBALS: Int = 1 << 9
-
   val DEPENDS_ON_RUNTIME_ENVIRONMENT: Int = 1 << 10
-
   val DEPENDS_ON_STATIC_CONTEXT: Int = 1 << 11
-
-  val DEPENDS_ON_XSLT_CONTEXT: Int = DEPENDS_ON_CURRENT_ITEM | DEPENDS_ON_CURRENT_GROUP | DEPENDS_ON_REGEX_GROUP |
-      DEPENDS_ON_ASSIGNABLE_GLOBALS
-
-  val DEPENDS_ON_FOCUS: Int = DEPENDS_ON_CONTEXT_ITEM | DEPENDS_ON_POSITION | DEPENDS_ON_LAST |
-      DEPENDS_ON_CONTEXT_DOCUMENT
-
+  val DEPENDS_ON_XSLT_CONTEXT: Int = DEPENDS_ON_CURRENT_ITEM | DEPENDS_ON_CURRENT_GROUP | DEPENDS_ON_REGEX_GROUP | DEPENDS_ON_ASSIGNABLE_GLOBALS
+  val DEPENDS_ON_FOCUS: Int = DEPENDS_ON_CONTEXT_ITEM | DEPENDS_ON_POSITION | DEPENDS_ON_LAST | DEPENDS_ON_CONTEXT_DOCUMENT
   val DEPENDS_ON_NON_DOCUMENT_FOCUS: Int = DEPENDS_ON_CONTEXT_ITEM | DEPENDS_ON_POSITION | DEPENDS_ON_LAST
-
   val ALLOWS_ZERO: Int = 1 << 13
-
   val ALLOWS_ONE: Int = 1 << 14
-
   val ALLOWS_MANY: Int = 1 << 15
-
   val CARDINALITY_MASK: Int = ALLOWS_ZERO | ALLOWS_ONE | ALLOWS_MANY
-
   val ALLOWS_ONE_OR_MORE: Int = ALLOWS_ONE | ALLOWS_MANY
-
   val ALLOWS_ZERO_OR_MORE: Int = ALLOWS_ZERO | ALLOWS_ONE | ALLOWS_MANY
-
   val ALLOWS_ZERO_OR_ONE: Int = ALLOWS_ZERO | ALLOWS_ONE
-
   val EXACTLY_ONE: Int = ALLOWS_ONE
-
   val EMPTY: Int = ALLOWS_ZERO
 
   def getCardinalityCode(cardinality: Int): Int =
     (cardinality & CARDINALITY_MASK) >> 13
 
   val CONTEXT_DOCUMENT_NODESET: Int = 1 << 16
-
   val ORDERED_NODESET: Int = 1 << 17
-
   val REVERSE_DOCUMENT_ORDER: Int = 1 << 18
-
   val PEER_NODESET: Int = 1 << 19
-
   val SUBTREE_NODESET: Int = 1 << 20
-
   val ATTRIBUTE_NS_NODESET: Int = 1 << 21
-
   val ALL_NODES_NEWLY_CREATED: Int = 1 << 22
-
   val NO_NODES_NEWLY_CREATED: Int = 1 << 23
-
   val SINGLE_DOCUMENT_NODESET: Int = 1 << 24
-
   val HAS_SIDE_EFFECTS: Int = 1 << 25
-
   val NOT_UNTYPED_ATOMIC: Int = 1 << 26
-
   val ALL_NODES_UNTYPED: Int = 1 << 27
 
   val DEPENDENCY_MASK: Int = DEPENDS_ON_CONTEXT_DOCUMENT | DEPENDS_ON_CONTEXT_ITEM |
@@ -191,15 +162,4 @@ object StaticProperty {
     s.append(")")
     s.toString
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class contains constants identifying dependencies that an XPath expression
-  * might have on its context.
-  */
