@@ -14,55 +14,35 @@ package net.sf.saxon.z
 trait IntSet {
 
   def copy(): IntSet
-
   def mutableCopy(): IntSet
-
   def isMutable(): Boolean = true
-
-  /**
-   * Clear the contents of the IntSet (making it an empty set)
-   */
   def clear(): Unit
-
   def size(): Int
-
   def isEmpty(): Boolean
-
   def contains(value: Int): Boolean
-
   def remove(value: Int): Boolean
-
   def add(value: Int): Boolean
-
   def iterator(): IntIterator
 
   def containsAll(other: IntSet): Boolean = {
-    if (other == IntUniversalSet.getInstance || (other
-      .isInstanceOf[IntComplementSet])) {
+    if (other == IntUniversalSet.getInstance || other.isInstanceOf[IntComplementSet])
       return false
-    }
-    val it: IntIterator = other.iterator()
-    while (it.hasNext) {
-      if (!contains(it.next)) {
+    val it = other.iterator()
+    while (it.hasNext)
+      if (! contains(it.next))
         return false
-      }
-    }
     true
   }
 
   def union(other: IntSet): IntSet = {
-    if (other == IntUniversalSet.getInstance) {
+    if (other == IntUniversalSet.getInstance)
       return other
-    }
-    if (this.isEmpty) {
-      other.copy()
-    }
-    if (other.isEmpty) {
-      this.copy()
-    }
-    if (other.isInstanceOf[IntComplementSet]) {
-      other.union(this)
-    }
+    if (this.isEmpty)
+      return other.copy()
+    if (other.isEmpty)
+      return this.copy()
+    if (other.isInstanceOf[IntComplementSet])
+      return other.union(this)
     val n = new IntHashSet(this.size + other.size)
     var it: IntIterator = iterator()
     while (it.hasNext) {
@@ -76,31 +56,26 @@ trait IntSet {
   }
 
   def intersect(other: IntSet): IntSet = {
-    if (this.isEmpty || other.isEmpty) {
-      IntEmptySet.getInstance
-    }
-    val n: IntHashSet = new IntHashSet(size)
-    val it: IntIterator = iterator()
+    if (this.isEmpty || other.isEmpty)
+      return IntEmptySet.getInstance
+    val n = new IntHashSet(size)
+    val it = iterator()
     while (it.hasNext) {
-      val v: Int = it.next
-      if (other.contains(v)) {
+      val v = it.next
+      if (other.contains(v))
         n.add(v)
-      }
     }
     n
   }
 
   def except(other: IntSet): IntSet = {
-    val n: IntHashSet = new IntHashSet(size)
-    val it: IntIterator = iterator()
+    val n = new IntHashSet(size)
+    val it = iterator()
     while (it.hasNext) {
-      val v: Int = it.next
-      if (!other.contains(v)) {
+      val v = it.next
+      if (! other.contains(v))
         n.add(v)
-      }
     }
     n
   }
-
 }
-

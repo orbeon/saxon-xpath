@@ -21,13 +21,11 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
 
   def get(n: Int): FunctionLibrary = libraryList.get(n)
 
-  def getFunctionItem(functionName: SymbolicName.F,
-                      staticContext: StaticContext): Function = {
+  def getFunctionItem(functionName: SymbolicName.F, staticContext: StaticContext): Function = {
     for (lib <- libraryList.asScala) {
-      val fi: Function = lib.getFunctionItem(functionName, staticContext)
-      if (fi != null) {
-        fi
-      }
+      val fi = lib.getFunctionItem(functionName, staticContext)
+      if (fi ne null)
+        return fi
     }
     null
   }
@@ -62,12 +60,9 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
   def getDeclaration(functionName: StructuredQName,
                      staticArgs: Int): XQueryFunction = {
     for (lib <- libraryList.asScala if lib.isInstanceOf[XQueryFunctionBinder]) {
-      val func: XQueryFunction = lib
-        .asInstanceOf[XQueryFunctionBinder]
-        .getDeclaration(functionName, staticArgs)
-      if (func != null) {
-        func
-      }
+      val func = lib.asInstanceOf[XQueryFunctionBinder].getDeclaration(functionName, staticArgs)
+      if (func != null)
+        return func
     }
     null
   }
@@ -75,12 +70,10 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
   def getLibraryList(): List[FunctionLibrary] = libraryList
 
   def copy(): FunctionLibrary = {
-    val fll: FunctionLibraryList = new FunctionLibraryList()
+    val fll = new FunctionLibraryList()
     fll.libraryList = new ArrayList(libraryList.size)
-    for (i <- 0 until libraryList.size) {
+    for (i <- 0 until libraryList.size)
       fll.libraryList.add(libraryList.get(i).copy())
-    }
     fll
   }
-
 }
