@@ -38,7 +38,7 @@ class RootExpression extends Expression {
                          contextInfo: ContextItemStaticInfo): Expression = {
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     if (contextInfo == null || contextInfo.getItemType == null ||
-      contextInfo.getItemType == ErrorType.getInstance) {
+      contextInfo.getItemType == ErrorType) {
       val err = new XPathException(
         noContextMessage() + ": the context item is absent")
       err.setErrorCode("XPDY0002")

@@ -65,7 +65,7 @@ class ContextItemExpression extends Expression {
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    if (contextInfo.getItemType == ErrorType.getInstance) {
+    if (contextInfo.getItemType == ErrorType) {
       visitor.issueWarning(
         "Evaluation will always fail: there is no context item",
         getLocation)

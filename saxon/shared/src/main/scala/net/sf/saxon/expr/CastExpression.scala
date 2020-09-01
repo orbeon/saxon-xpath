@@ -46,15 +46,19 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     val tc = config.getTypeChecker(false)
     val operand = tc.staticTypeCheck(getBaseExpression, atomicType, role, visitor)
     setBaseExpression(operand)
+
     sourceItemType = operand.getItemType
-    if (sourceItemType.isInstanceOf[ErrorType]) if (allowsEmpty) return Literal.makeEmptySequence
-    else {
-      val err = new XPathException("Cast does not allow an empty sequence as input")
-      err.setErrorCode("XPTY0004")
-      err.setLocation(getLocation)
-      err.setIsTypeError(true)
-      throw err
-    }
+    if (sourceItemType eq ErrorType)
+      if (allowsEmpty)
+        return Literal.makeEmptySequence
+      else {
+        val err = new XPathException("Cast does not allow an empty sequence as input")
+        err.setErrorCode("XPTY0004")
+        err.setLocation(getLocation)
+        err.setIsTypeError(true)
+        throw err
+      }
+
     val sourceType = sourceItemType.asInstanceOf[PlainType]
     val r = th.relationship(sourceType, getTargetType)
     if (r eq Affinity.SAME_TYPE) return operand

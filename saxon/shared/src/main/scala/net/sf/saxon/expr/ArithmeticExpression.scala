@@ -71,7 +71,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
 
     val itemType0 = getLhsExpression.getItemType
-    if (itemType0.isInstanceOf[ErrorType])
+    if (itemType0 eq ErrorType)
       return Literal.makeEmptySequence()
 
     var type0 =
@@ -101,7 +101,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     setRhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
 
     val itemType1 = getRhsExpression.getItemType
-    if (itemType1.isInstanceOf[ErrorType])
+    if (itemType1 eq ErrorType)
       return Literal.makeEmptySequence()
 
     var type1 =

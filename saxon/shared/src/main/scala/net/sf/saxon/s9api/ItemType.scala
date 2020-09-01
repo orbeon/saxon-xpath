@@ -1,76 +1,38 @@
 package net.sf.saxon.s9api
 
-import net.sf.saxon.lib.ConversionRules
-
-import net.sf.saxon.lib.NamespaceConstant
-
-import net.sf.saxon.lib.StandardURIChecker
-
-import net.sf.saxon.ma.arrays.ArrayItem
-
-import net.sf.saxon.ma.arrays.ArrayItemType
-
-import net.sf.saxon.ma.map.MapItem
-
-import net.sf.saxon.ma.map.MapType
-
+import net.sf.saxon.lib.{ConversionRules, NamespaceConstant, StandardURIChecker}
+import net.sf.saxon.ma.arrays.{ArrayItem, ArrayItemType}
+import net.sf.saxon.ma.map.{MapItem, MapType}
 import net.sf.saxon.model._
+import net.sf.saxon.om.{Function, Item, NodeInfo, StructuredQName}
+import net.sf.saxon.pattern.{AnyNodeTest, NodeKindTest, NodeTest}
+import net.sf.saxon.s9api.ItemType._
+import net.sf.saxon.value.{AtomicValue, NumericValue}
 
-import net.sf.saxon.om.Function
-
-import net.sf.saxon.om.Item
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.StructuredQName
-
-import net.sf.saxon.pattern.AnyNodeTest
-
-import net.sf.saxon.pattern.NodeKindTest
-
-import net.sf.saxon.pattern.NodeTest
-
-import net.sf.saxon.value.AtomicValue
-
-import net.sf.saxon.value.NumericValue
-
-import ItemType._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object ItemType {
 
-  private var defaultConversionRules: ConversionRules = new ConversionRules()
+  private val defaultConversionRules: ConversionRules = new ConversionRules()
 
   defaultConversionRules.setStringToDoubleConverter(StringToDouble.getInstance)
-
   defaultConversionRules.setNotationSet(null)
-
   defaultConversionRules.setURIChecker(StandardURIChecker.getInstance)
 
-  var ANY_ITEM: ItemType = new ItemType() {
+  val ANY_ITEM: ItemType = new ItemType {
     override def getConversionRules(): ConversionRules = defaultConversionRules
-
     def matches(item: XdmItem): Boolean = true
-
     def subsumes(other: ItemType): Boolean = true
-
-    def getUnderlyingItemType(): net.sf.saxon.model.ItemType =
-      AnyItemType
+    def getUnderlyingItemType(): net.sf.saxon.model.ItemType = AnyItemType
   }
 
-  var ANY_FUNCTION: ItemType = new ItemType() {
-    def matches(item: XdmItem): Boolean =
-      item.getUnderlyingValue.isInstanceOf[Function]
-
-    def subsumes(other: ItemType): Boolean =
-      other.getUnderlyingItemType.isInstanceOf[FunctionItemType]
-
-    def getUnderlyingItemType(): net.sf.saxon.model.ItemType =
-      AnyFunctionType.getInstance
+  val ANY_FUNCTION: ItemType = new ItemType {
+    def matches(item: XdmItem): Boolean = item.getUnderlyingValue.isInstanceOf[Function]
+    def subsumes(other: ItemType): Boolean = other.getUnderlyingItemType.isInstanceOf[FunctionItemType]
+    def getUnderlyingItemType(): net.sf.saxon.model.ItemType = AnyFunctionType.getInstance
   }
 
-  val ANY_NODE: ItemType = new ItemType() {
+  val ANY_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean =
       item.getUnderlyingValue.isInstanceOf[NodeInfo]
 
@@ -81,7 +43,7 @@ object ItemType {
       AnyNodeTest.getInstance
   }
 
-  val ATTRIBUTE_NODE: ItemType = new ItemType() {
+  val ATTRIBUTE_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -95,7 +57,7 @@ object ItemType {
       NodeKindTest.ATTRIBUTE
   }
 
-  val COMMENT_NODE: ItemType = new ItemType() {
+  val COMMENT_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -109,7 +71,7 @@ object ItemType {
       NodeKindTest.COMMENT
   }
 
-  val TEXT_NODE: ItemType = new ItemType() {
+  val TEXT_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] && it
@@ -124,7 +86,7 @@ object ItemType {
       NodeKindTest.TEXT
   }
 
-  val ELEMENT_NODE: ItemType = new ItemType() {
+  val ELEMENT_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -138,7 +100,7 @@ object ItemType {
       NodeKindTest.ELEMENT
   }
 
-  val DOCUMENT_NODE: ItemType = new ItemType() {
+  val DOCUMENT_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -152,7 +114,7 @@ object ItemType {
       NodeKindTest.DOCUMENT
   }
 
-  val NAMESPACE_NODE: ItemType = new ItemType() {
+  val NAMESPACE_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -166,7 +128,7 @@ object ItemType {
       NodeKindTest.NAMESPACE
   }
 
-  val PROCESSING_INSTRUCTION_NODE: ItemType = new ItemType() {
+  val PROCESSING_INSTRUCTION_NODE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = {
       val it: Item = item.getUnderlyingValue
       it.isInstanceOf[NodeInfo] &&
@@ -180,7 +142,7 @@ object ItemType {
       NodeKindTest.PROCESSING_INSTRUCTION
   }
 
-  val ANY_MAP: ItemType = new ItemType() {
+  val ANY_MAP: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean =
       item.getUnderlyingValue.isInstanceOf[MapItem]
 
@@ -191,7 +153,7 @@ object ItemType {
       MapType.ANY_MAP_TYPE
   }
 
-  val ANY_ARRAY: ItemType = new ItemType() {
+  val ANY_ARRAY: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean =
       item.getUnderlyingValue.isInstanceOf[ArrayItem]
 
@@ -202,7 +164,7 @@ object ItemType {
       ArrayItemType.ANY_ARRAY_TYPE
   }
 
-  val ANY_ATOMIC_VALUE: ItemType = new ItemType() {
+  val ANY_ATOMIC_VALUE: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean =
       item.getUnderlyingValue.isInstanceOf[AtomicValue]
 
@@ -213,14 +175,14 @@ object ItemType {
       BuiltInAtomicType.ANY_ATOMIC
   }
 
-  val ERROR: ItemType = new ItemType() {
+  val ERROR: ItemType = new ItemType {
     def matches(item: XdmItem): Boolean = false
 
     def subsumes(other: ItemType): Boolean =
-      other.getUnderlyingItemType.isInstanceOf[ErrorType]
+      other.getUnderlyingItemType eq ErrorType
 
     def getUnderlyingItemType(): net.sf.saxon.model.ItemType =
-      ErrorType.getInstance
+      ErrorType
   }
 
   object BuiltInAtomicItemType {
@@ -402,7 +364,7 @@ object ItemType {
                      conversionRules: ConversionRules): ItemType =
     new BuiltInAtomicItemType(underlyingType, conversionRules)
 
-  val NUMERIC: ItemType = new ItemType() {
+  val NUMERIC: ItemType = new ItemType {
     override def getConversionRules(): ConversionRules = defaultConversionRules
 
     override def matches(item: XdmItem): Boolean =

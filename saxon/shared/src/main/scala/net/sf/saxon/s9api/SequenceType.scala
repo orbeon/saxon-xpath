@@ -1,9 +1,8 @@
 package net.sf.saxon.s9api
 
-import SequenceType._
 import net.sf.saxon.s9api.OccurrenceIndicator.OccurrenceIndicator
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
 object SequenceType {

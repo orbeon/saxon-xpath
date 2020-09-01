@@ -54,7 +54,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
     if (Literal.isConstantBoolean(positionExpr, value = true)) {
       new NodeTestPattern(nodeTest)
     } else if (Literal.isConstantBoolean(positionExpr, value = false)) {
-      new NodeTestPattern(ErrorType.getInstance)
+      new NodeTestPattern(ErrorType)
     }
     if ((positionExpr.getDependencies & StaticProperty.DEPENDS_ON_POSITION) ==
       0) {

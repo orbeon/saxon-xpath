@@ -34,40 +34,39 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
+
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
-    val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
-    if (Literal.isEmptySequence(getLhsExpression)) {
+
+    val config = visitor.getConfiguration
+    val th = config.getTypeHierarchy
+
+    if (Literal.isEmptySequence(getLhsExpression))
       Literal.makeLiteral(DoubleValue.NaN, this)
-    }
-    if (Literal.isEmptySequence(getRhsExpression)) {
+    if (Literal.isEmptySequence(getRhsExpression))
       Literal.makeLiteral(DoubleValue.NaN, this)
-    }
-    val oldOp0: Expression = getLhsExpression
-    val oldOp1: Expression = getRhsExpression
-    val atomicType: SequenceType = SequenceType.OPTIONAL_ATOMIC
-    val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(true)
-    val role0: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 0)
-    this.setLhsExpression(
-      tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
-    val role1: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 1)
-    this.setRhsExpression(
-      tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
-    val itemType0: ItemType = getLhsExpression.getItemType
-    if (itemType0.isInstanceOf[ErrorType]) {
+
+    val oldOp0 = getLhsExpression
+    val oldOp1 = getRhsExpression
+
+    val atomicType = SequenceType.OPTIONAL_ATOMIC
+    val tc = visitor.getConfiguration.getTypeChecker(true)
+    val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 0)
+    this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
+    val role1 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(operator), 1)
+    this.setRhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
+
+    val itemType0 = getLhsExpression.getItemType
+    if (itemType0 eq ErrorType)
       Literal.makeLiteral(DoubleValue.NaN, this)
-    }
-    var type0: AtomicType =
-      itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
-    val itemType1: ItemType = getRhsExpression.getItemType
-    if (itemType1.isInstanceOf[ErrorType]) {
+
+    var type0 = itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
+    val itemType1 = getRhsExpression.getItemType
+    if (itemType1 eq ErrorType)
       Literal.makeLiteral(DoubleValue.NaN, this)
-    }
-    var type1: AtomicType =
-      itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
+
+    var type1 = itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
+
     if (th.isSubType(type0, BuiltInAtomicType.INTEGER) && th.isSubType(
       type1,
       BuiltInAtomicType.INTEGER) &&
@@ -97,11 +96,15 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       adoptChildExpression(getRhsExpression)
     }
     if (operator == Token.NEGATE) {
-      if (getRhsExpression.isInstanceOf[Literal]) {
-        val v: GroundedValue = getRhsExpression.asInstanceOf[Literal].getValue
-        if (v.isInstanceOf[NumericValue]) {
-          Literal.makeLiteral(v.asInstanceOf[NumericValue].negate(), this)
-        }
+      getRhsExpression match {
+        case literal: Literal =>
+          val v: GroundedValue = literal.getValue
+          v match {
+            case value: NumericValue =>
+              Literal.makeLiteral(value.negate(), this)
+            case _ =>
+          }
+        case _ =>
       }
       val ne: NegateExpression = new NegateExpression(getRhsExpression)
       ne.setBackwardsCompatible(true)
@@ -112,15 +115,15 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
         type0 == NumericType.getInstance ||
         type1 == NumericType.getInstance)
     calculator = assignCalculator(type0, type1, mustResolve)
-    try if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
-      .isInstanceOf[Literal])) {
-      Literal.makeLiteral(
-        evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize(),
-        this)
-    } catch {
-      case err: XPathException => {}
-
+    try
+      if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
+        Literal.makeLiteral(
+          evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
+            .materialize(),
+          this)
+      }
+    catch {
+      case _: XPathException =>
     }
     this
   }
@@ -229,11 +232,11 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       BuiltInAtomicType.ANY_ATOMIC
     } else {
       var t1: ItemType = getLhsExpression.getItemType
-      if (!(t1.isInstanceOf[AtomicType])) {
+      if (!t1.isInstanceOf[AtomicType]) {
         t1 = t1.getAtomizedItemType
       }
       var t2: ItemType = getRhsExpression.getItemType
-      if (!(t2.isInstanceOf[AtomicType])) {
+      if (!t2.isInstanceOf[AtomicType]) {
         t2 = t2.getAtomizedItemType
       }
       calculator.getResultType(

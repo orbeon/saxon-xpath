@@ -287,7 +287,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def hasVariableBinding(binding: Binding): Boolean = this == binding
 
-  override def getItemType(): ItemType = ErrorType.getInstance
+  override def getItemType(): ItemType = ErrorType
 
   override def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 

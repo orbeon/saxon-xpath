@@ -7,18 +7,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
 import net.sf.saxon.expr.parser._
-import net.sf.saxon.expr.sort.AtomicComparer
-import net.sf.saxon.expr.sort.CodepointCollator
-import net.sf.saxon.lib.StringCollator
+import net.sf.saxon.expr.sort.{AtomicComparer, CodepointCollator}
 import net.sf.saxon.model._
-import net.sf.saxon.om.GroundedValue
 import net.sf.saxon.trace.ExpressionPresenter
 import net.sf.saxon.trans.XPathException
-import net.sf.saxon.value.AtomicValue
-import net.sf.saxon.value.BooleanValue
-import net.sf.saxon.value.SequenceType
+import net.sf.saxon.value.{AtomicValue, BooleanValue, SequenceType}
 
 /**
  * Class to handle equivalence comparisons of singletons. This only handles equality comparison.
@@ -62,8 +56,10 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
     if (getRhsExpression ne oldOp1) adoptChildExpression(getRhsExpression)
     var t0 = getLhsExpression.getItemType // this is always an atomic type or empty-sequence()
     var t1 = getRhsExpression.getItemType
-    if (t0.isInstanceOf[ErrorType]) t0 = BuiltInAtomicType.ANY_ATOMIC
-    if (t1.isInstanceOf[ErrorType]) t1 = BuiltInAtomicType.ANY_ATOMIC
+    if (t0 eq ErrorType)
+      t0 = BuiltInAtomicType.ANY_ATOMIC
+    if (t1 eq ErrorType)
+      t1 = BuiltInAtomicType.ANY_ATOMIC
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
       val err = new XPathException("Cannot perform comparisons involving external objects")
       err.setIsTypeError(true)

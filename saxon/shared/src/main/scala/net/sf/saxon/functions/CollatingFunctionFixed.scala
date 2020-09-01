@@ -88,7 +88,7 @@ abstract class CollatingFunctionFixed
                                     type1: AtomicType,
                                     env: StaticContext): Unit = {
     val collation: StringCollator = getStringCollator
-    if (type0 == ErrorType.getInstance || type1 == ErrorType.getInstance) {
+    if (type0 == ErrorType || type1 == ErrorType) {
       atomicComparer = EqualityComparer.getInstance
       return
     }

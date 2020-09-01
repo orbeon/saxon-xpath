@@ -53,7 +53,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
                          contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.typeCheck(visitor, contextInfo)
     val selectType: ItemType = getStart.getItemType
-    if (selectType == ErrorType.getInstance) {
+    if (selectType == ErrorType) {
       Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo =

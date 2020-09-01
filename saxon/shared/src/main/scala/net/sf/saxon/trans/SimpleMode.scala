@@ -7,33 +7,28 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.trans
 
-import net.sf.saxon.expr.ComponentBinding
-import net.sf.saxon.expr.XPathContext
-import net.sf.saxon.expr.XPathContextMajor
+import net.sf.saxon.expr.{ComponentBinding, XPathContext, XPathContextMajor}
 import net.sf.saxon.expr.instruct.{Actor, SlotManager, TemplateRule}
-import net.sf.saxon.model.ErrorType
-
-import scala.util.control.Breaks._
-import net.sf.saxon.model.Type
-import net.sf.saxon.model.UType
+import net.sf.saxon.model.{ErrorType, Type, UType}
 import net.sf.saxon.om._
 import net.sf.saxon.pattern._
-import RecoveryPolicy._
 import net.sf.saxon.trans.Mode.RuleAction
+import net.sf.saxon.trans.RecoveryPolicy._
 
-import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
 
 /*import net.sf.saxon.style.StylesheetModule*/
 // StylesheetModule not exist
+import java.util._
+
 import net.sf.saxon.style.StylesheetPackage
 import net.sf.saxon.trace.ExpressionPresenter
 import net.sf.saxon.trans.rules._
 import net.sf.saxon.tree.util.Navigator
-import net.sf.saxon.value.AtomicValue
-import net.sf.saxon.value.Whitespace
+import net.sf.saxon.value.{AtomicValue, Whitespace}
 import net.sf.saxon.z.IntHashMap
+
 import scala.jdk.CollectionConverters._
-import java.util._
 
 /**
  * A Mode is a collection of rules; the selection of a rule to apply to a given element
@@ -360,7 +355,8 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
   def addRule(pattern: Pattern, action: RuleTarget /*, module: StylesheetModule*/ , precedence: Int, priority: Double, position: Int, part: Int): Unit = {
     hasRules = true
     // Ignore a pattern that will never match, e.g. "@comment"
-    if (pattern.getItemType.isInstanceOf[ErrorType]) return
+    if (pattern.getItemType eq ErrorType)
+      return
     // for fast lookup, we maintain one list for each element name for patterns that can only
     // match elements of a given name, one list for each node type for patterns that can only
     // match one kind of non-element node, and one generic list.
@@ -381,11 +377,14 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     val newRule = makeRule(pattern, action, precedence, 0, priority, position, part)
     if (pattern.isInstanceOf[NodeTestPattern]) {
       val test = pattern.getItemType
-      if (test.isInstanceOf[AnyNodeTest]) newRule.setAlwaysMatches(true)
-      else if (test.isInstanceOf[NodeKindTest]) newRule.setAlwaysMatches(true)
-      else if (test.isInstanceOf[NameTest]) {
-        val kind = test.getPrimitiveType
-        if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) newRule.setAlwaysMatches(true)
+      test match {
+        case _: AnyNodeTest => newRule.setAlwaysMatches(true)
+        case _: NodeKindTest => newRule.setAlwaysMatches(true)
+        case _: NameTest =>
+          val kind = test.getPrimitiveType
+          if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE)
+            newRule.setAlwaysMatches(true)
+        case _ =>
       }
     }
     mostRecentRule = newRule

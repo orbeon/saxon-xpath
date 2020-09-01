@@ -1,38 +1,16 @@
 package net.sf.saxon.expr.parser
 
-import net.sf.saxon.utils.Configuration
-
 import net.sf.saxon.expr._
-
+import net.sf.saxon.expr.parser.TypeChecker._
 import net.sf.saxon.lib.ConversionRules
-
-import net.sf.saxon.ma.map.MapType
-
-import net.sf.saxon.ma.map.TupleType
-
-import net.sf.saxon.model._
-
-import net.sf.saxon.om.Item
-
-import net.sf.saxon.om.Sequence
-
-import net.sf.saxon.om.SequenceIterator
-
-import net.sf.saxon.om.StandardNames
-
-import net.sf.saxon.pattern.NodeTest
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.AtomicValue
-
-import net.sf.saxon.value.Cardinality
-
-import net.sf.saxon.value.SequenceType
-
+import net.sf.saxon.ma.map.{MapType, TupleType}
 import net.sf.saxon.model.Affinity._
-
-import TypeChecker._
+import net.sf.saxon.model._
+import net.sf.saxon.om.{Item, Sequence, SequenceIterator, StandardNames}
+import net.sf.saxon.pattern.NodeTest
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.{AtomicValue, Cardinality, SequenceType}
 
 object TypeChecker {
 
@@ -46,12 +24,12 @@ object TypeChecker {
                       req: SequenceType,
                       role: RoleDiagnostic,
                       env: StaticContext): Expression = {
-    var exp: Expression = supplied
-    val th: TypeHierarchy = env.getConfiguration.getTypeHierarchy
-    val reqItemType: ItemType = req.getPrimaryType
-    val reqCard: Int = req.getCardinality
+    var exp = supplied
+    val th = env.getConfiguration.getTypeHierarchy
+    val reqItemType = req.getPrimaryType
+    val reqCard = req.getCardinality
     var suppliedItemType: ItemType = null
-    var suppliedCard: Int = -1
+    var suppliedCard = -1
 
     var cardOK = reqCard == StaticProperty.ALLOWS_ZERO_OR_MORE
     if (! cardOK) {
@@ -64,21 +42,22 @@ object TypeChecker {
       val relation = th.relationship(reqItemType, suppliedItemType)
       itemTypeOK = relation == SAME_TYPE || relation == SUBSUMES
     }
-    if (itemTypeOK && cardOK) {
+
+    if (itemTypeOK && cardOK)
       return exp
-    }
+
     if (suppliedCard == -1) {
       suppliedCard =
-        if (suppliedItemType.isInstanceOf[ErrorType])
+        if (suppliedItemType eq ErrorType)
           StaticProperty.EMPTY
         else
           exp.getCardinality
       if (! cardOK)
         cardOK = Cardinality.subsumes(reqCard, suppliedCard)
     }
-    if (cardOK && suppliedCard == StaticProperty.EMPTY) {
+
+    if (cardOK && suppliedCard == StaticProperty.EMPTY)
       return exp
-    }
 
     if (suppliedItemType == null)
       suppliedItemType = exp.getItemType

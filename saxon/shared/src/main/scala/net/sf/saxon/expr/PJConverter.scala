@@ -228,7 +228,7 @@ object PJConverter {
     }
     if (!Cardinality.allowsMany(cardinality)) {
       if (itemType.isPlainType) {
-        if (itemType == ErrorType.getInstance) {
+        if (itemType == ErrorType) {
           StringValueToString.INSTANCE
         } else if (th.isSubType(itemType, BuiltInAtomicType.STRING)) {
           if (targetClass == classOf[AnyRef] || targetClass == classOf[String] ||
@@ -469,7 +469,7 @@ object PJConverter {
         }
       } else if (itemType.isInstanceOf[JavaExternalObjectType]) {
         UnwrapExternalObject.INSTANCE
-      } else if (itemType.isInstanceOf[ErrorType]) {
+      } else if (itemType eq ErrorType) {
         ToNull.INSTANCE
       } else if (itemType.isInstanceOf[NodeTest]) {
         if (classOf[NodeInfo].isAssignableFrom(targetClass)) {
@@ -561,7 +561,8 @@ object PJConverter {
       if (targetClass.isAssignableFrom(classOf[ArrayList[_]])) {
         list = new ArrayList(100)
       } else {
-        try list = targetClass.newInstance().asInstanceOf[Collection[Any]]
+        try
+          list = targetClass.newInstance().asInstanceOf[Collection[Any]]
         catch {
           case e: InstantiationException => {
             val de: XPathException = new XPathException(

@@ -445,7 +445,7 @@ class ResultDocument(private val globalProperties: Properties,
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_RESULT_DOCUMENT
 
-  override def getItemType(): ItemType = ErrorType.getInstance
+  override def getItemType(): ItemType = ErrorType
 
   override def operands(): java.lang.Iterable[Operand] = {
     val list: ArrayList[Operand] = new ArrayList[Operand](6)

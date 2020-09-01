@@ -216,7 +216,7 @@ object SequenceType {
   /**
    * A type that only permits the empty sequence
    */
-  val EMPTY_SEQUENCE = new SequenceType(ErrorType.getInstance, StaticProperty.EMPTY)
+  val EMPTY_SEQUENCE = new SequenceType(ErrorType, StaticProperty.EMPTY)
   /**
    * A type that only permits a non-empty sequence
    */
@@ -224,7 +224,7 @@ object SequenceType {
   /**
    * A type that has no instances
    */
-  val VOID = makeSequenceType(ErrorType.getInstance, StaticProperty.ALLOWS_MANY)
+  val VOID = makeSequenceType(ErrorType, StaticProperty.ALLOWS_MANY)
 
   /**
    * Construct an instance of SequenceType. This is a factory method: it maintains a
@@ -263,8 +263,10 @@ class SequenceType {
     this()
     this.primaryType = primaryType;
     this.cardinality = cardinalityVar
-    if (primaryType.isInstanceOf[ErrorType] && Cardinality.allowsZero(cardinalityVar)) this.cardinality = StaticProperty.EMPTY
-    else this.cardinality = cardinalityVar
+    if ((primaryType eq ErrorType) && Cardinality.allowsZero(cardinalityVar))
+      this.cardinality = StaticProperty.EMPTY
+    else
+      this.cardinality = cardinalityVar
   }
 
   var primaryType: ItemType = _ // the primary type of the item, e.g. "element", "comment", or "integer"

@@ -251,7 +251,7 @@ class AnalyzeString(select: Expression,
       if (getNonMatching != null) {
         getNonMatching.getItemType
       } else {
-        ErrorType.getInstance
+        ErrorType
       }
     }
 

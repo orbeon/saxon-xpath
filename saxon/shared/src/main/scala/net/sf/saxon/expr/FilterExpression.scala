@@ -530,7 +530,7 @@ class FilterExpression(base: Expression, filter: Expression)
       val isIndexable: Int = opt.isIndexableFilter(getFilter)
       if (isIndexable != 0) {
         val contextIsDoc: Boolean = contextItemType != null &&
-          contextItemType.getItemType != ErrorType.getInstance &&
+          contextItemType.getItemType != ErrorType &&
           th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)
         val f: Expression =
           opt.tryIndexedFilter(this, visitor, isIndexable > 0, contextIsDoc)

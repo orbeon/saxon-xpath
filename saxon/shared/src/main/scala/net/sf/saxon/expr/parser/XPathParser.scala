@@ -1029,7 +1029,7 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  private def makeSingleTypeExpression(lhs: Expression, operator: Int, `type`: CastingTarget, allowEmpty: Boolean): Expression = if (`type`.isInstanceOf[AtomicType] && !(`type` eq ErrorType.getInstance)) operator match {
+  private def makeSingleTypeExpression(lhs: Expression, operator: Int, `type`: CastingTarget, allowEmpty: Boolean): Expression = if (`type`.isInstanceOf[AtomicType] && !(`type` eq ErrorType)) operator match {
     case Token.CASTABLE_AS =>
       val castable = new CastableExpression(lhs, `type`.asInstanceOf[AtomicType], allowEmpty)
       if (lhs.isInstanceOf[StringLiteral]) castable.setOperandIsStringLiteral(true)
@@ -1538,7 +1538,7 @@ class XPathParser() {
           nextToken()
           expect(Token.RPAR)
           nextToken()
-          primaryType = ErrorType.getInstance
+          primaryType = ErrorType
         case _ =>
           primaryType = parseKindTest
       }

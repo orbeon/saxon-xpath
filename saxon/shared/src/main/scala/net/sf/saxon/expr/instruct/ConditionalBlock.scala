@@ -101,7 +101,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
   override def getItemType(): ItemType = {
 
     if (size == 0)
-      return ErrorType.getInstance
+      return ErrorType
 
     var t1 = getChildExpression(0).getItemType
     val th = getConfiguration.getTypeHierarchy

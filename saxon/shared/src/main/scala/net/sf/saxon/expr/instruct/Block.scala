@@ -282,7 +282,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def getItemType(): ItemType = {
 
     if (size == 0)
-      return ErrorType.getInstance
+      return ErrorType
 
     var t1: ItemType = null
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
@@ -301,7 +301,7 @@ class Block(children: Array[Expression]) extends Instruction {
       // }
     }
     if (t1 == null)
-      ErrorType.getInstance
+      ErrorType
     else
       t1
   }

@@ -94,7 +94,7 @@ class LookupExpression(start: Expression, step: Expression)
           if (fieldType == null) {
             if (mapType.asInstanceOf[TupleItemType].isExtensible)
               AnyItemType
-            else ErrorType.getInstance
+            else ErrorType
           } else {
             fieldType.getPrimaryType
           }

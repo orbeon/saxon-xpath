@@ -1,44 +1,17 @@
 package net.sf.saxon.expr
 
-import net.sf.saxon.utils.Configuration
+import java.util.{ArrayList, List, Stack}
 
 import net.sf.saxon.expr.instruct.CopyOf
-
 import net.sf.saxon.expr.parser._
-
 import net.sf.saxon.expr.sort.DocumentSorter
-
-import net.sf.saxon.functions.Doc
-
-import net.sf.saxon.functions.DocumentFn
-
-import net.sf.saxon.functions.KeyFn
-
+import net.sf.saxon.functions.{Doc, DocumentFn, KeyFn}
 import net.sf.saxon.model._
-
-import net.sf.saxon.om.AxisInfo
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.om.SequenceIterator
-
+import net.sf.saxon.om.{AxisInfo, NodeInfo, SequenceIterator}
 import net.sf.saxon.pattern._
-
 import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.value.Cardinality
-
-import net.sf.saxon.value.IntegerValue
-
-import net.sf.saxon.value.SequenceType
-
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.Stack
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
 class SlashExpression(start: Expression, step: Expression)
   extends BinaryExpression(start, Token.SLASH, step)
@@ -89,7 +62,7 @@ class SlashExpression(start: Expression, step: Expression)
     role0.setErrorCode("XPTY0019")
     setStart(tc.staticTypeCheck(getStart, SequenceType.NODE_SEQUENCE, role0, visitor))
     val startType: ItemType = getStart.getItemType
-    if (startType == ErrorType.getInstance) {
+    if (startType == ErrorType) {
       Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo =
@@ -127,7 +100,7 @@ class SlashExpression(start: Expression, step: Expression)
       underlyingStep =
         underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
     }
-    if (!(underlyingStep.isInstanceOf[AxisExpression])) {
+    if (!underlyingStep.isInstanceOf[AxisExpression]) {
       return null
     }
     var st: Expression = getStart
@@ -142,11 +115,11 @@ class SlashExpression(start: Expression, step: Expression)
         ExpressionTool.makePathExpression(cie, stax.copy(new RebindingMap()))
       ExpressionTool.copyLocationInfo(this, st)
     }
-    if (!(st.isInstanceOf[SlashExpression])) {
+    if (!st.isInstanceOf[SlashExpression]) {
       return null
     }
     val startPath: SlashExpression = st.asInstanceOf[SlashExpression]
-    if (!(startPath.getStep.isInstanceOf[AxisExpression])) {
+    if (!startPath.getStep.isInstanceOf[AxisExpression]) {
       return null
     }
     val mid: AxisExpression = startPath.getStep.asInstanceOf[AxisExpression]
@@ -182,7 +155,7 @@ class SlashExpression(start: Expression, step: Expression)
       }
       val newPath: Expression =
         ExpressionTool.makePathExpression(startPath.getStart, newStep)
-      if (!(newPath.isInstanceOf[SlashExpression])) {
+      if (!newPath.isInstanceOf[SlashExpression]) {
         return null
       }
       ExpressionTool.copyLocationInfo(this, newPath)
@@ -195,7 +168,7 @@ class SlashExpression(start: Expression, step: Expression)
       val e2: Expression =
         ExpressionTool.makePathExpression(startPath.getStart, newStep)
       val e3: Expression = ExpressionTool.makePathExpression(e2, getStep)
-      if (!(e3.isInstanceOf[SlashExpression])) {
+      if (!e3.isInstanceOf[SlashExpression]) {
         return null
       }
       ExpressionTool.copyLocationInfo(this, e3)
@@ -312,7 +285,7 @@ class SlashExpression(start: Expression, step: Expression)
         val path: Expression = ExpressionTool.makePathExpression(
           root,
           this.copy(new RebindingMap()))
-        if (!(path.isInstanceOf[SlashExpression])) {
+        if (!path.isInstanceOf[SlashExpression]) {
           return null
         }
         ExpressionTool.copyLocationInfo(this, path)
@@ -492,15 +465,13 @@ class SlashExpression(start: Expression, step: Expression)
       ((stepProperties & StaticProperty.SUBTREE_NODESET) != 0)
   }
 
-  private def testNaturallyReverseSorted(): Boolean = {
-    if (!Cardinality.allowsMany(getStart.getCardinality) && (getStep
-      .isInstanceOf[AxisExpression])) {
-      !AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis)
-    }
-    !Cardinality.allowsMany(getStep.getCardinality) && (getStart
-      .isInstanceOf[AxisExpression]) &&
-      !AxisInfo.isForwards(getStart.asInstanceOf[AxisExpression].getAxis)
-  }
+  private def testNaturallyReverseSorted(): Boolean =
+    if (! Cardinality.allowsMany(getStart.getCardinality) && getStep.isInstanceOf[AxisExpression]) {
+      ! AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis)
+    } else
+      ! Cardinality.allowsMany(getStep.getCardinality) &&
+        getStart.isInstanceOf[AxisExpression] &&
+        ! AxisInfo.isForwards(getStart.asInstanceOf[AxisExpression].getAxis)
 
   override def computeCardinality(): Int = {
     val c1: Int = getStart.getCardinality
@@ -511,35 +482,36 @@ class SlashExpression(start: Expression, step: Expression)
   override def toPattern(config: Configuration): Pattern = {
     val head: Expression = getLeadingSteps
     val tail: Expression = getLastStep
-    if (head.isInstanceOf[ItemChecker]) {
-      val checker: ItemChecker = head.asInstanceOf[ItemChecker]
-      if (checker.getBaseExpression.isInstanceOf[ContextItemExpression]) {
-        tail.toPattern(config)
-      }
+    head match {
+      case checker: ItemChecker =>
+        if (checker.getBaseExpression.isInstanceOf[ContextItemExpression])
+          return tail.toPattern(config)
+      case _ =>
     }
-    val tailPattern: Pattern = tail.toPattern(config)
-    if (tailPattern.isInstanceOf[NodeTestPattern]) {
-      if (tailPattern.getItemType.isInstanceOf[ErrorType]) {
-        return tailPattern
-      }
-    } else if (tailPattern.isInstanceOf[GeneralNodePattern]) {
-      new GeneralNodePattern(this,
-        tailPattern.getItemType.asInstanceOf[NodeTest])
+
+    val tailPattern = tail.toPattern(config)
+    tailPattern match {
+      case _: NodeTestPattern =>
+        if (tailPattern.getItemType eq ErrorType)
+          return tailPattern
+      case _: GeneralNodePattern =>
+        return new GeneralNodePattern(this, tailPattern.getItemType.asInstanceOf[NodeTest])
+      case _ =>
     }
-    var axis: Int = AxisInfo.PARENT
+
+    var axis = AxisInfo.PARENT
     var headPattern: Pattern = null
-    if (head.isInstanceOf[SlashExpression]) {
-      val start: SlashExpression = head.asInstanceOf[SlashExpression]
-      if (start.getActionExpression.isInstanceOf[AxisExpression]) {
-        val mid: AxisExpression =
-          start.getActionExpression.asInstanceOf[AxisExpression]
-        if (mid.getAxis == AxisInfo.DESCENDANT_OR_SELF &&
-          (mid.getNodeTest == null || mid.getNodeTest
-            .isInstanceOf[AnyNodeTest])) {
-          axis = AxisInfo.ANCESTOR
-          headPattern = start.getSelectExpression.toPattern(config)
+    head match {
+      case start: SlashExpression =>
+        start.getActionExpression match {
+          case mid: AxisExpression =>
+            if (mid.getAxis == AxisInfo.DESCENDANT_OR_SELF && (mid.getNodeTest == null || mid.getNodeTest.isInstanceOf[AnyNodeTest])) {
+              axis = AxisInfo.ANCESTOR
+              headPattern = start.getSelectExpression.toPattern(config)
+            }
+          case _ =>
         }
-      }
+      case _ =>
     }
     if (headPattern == null) {
       axis = PatternMaker.getAxisForPathStep(tail)
@@ -555,7 +527,7 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   override def equals(other: Any): Boolean = {
-    if (!(other.isInstanceOf[SlashExpression])) {
+    if (!other.isInstanceOf[SlashExpression]) {
       return false
     }
     val p: SlashExpression = other.asInstanceOf[SlashExpression]
@@ -591,12 +563,10 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   override def toString: String =
-    ExpressionTool.parenthesize(getStart) + "/" + ExpressionTool.parenthesize(
-      getStep)
+    ExpressionTool.parenthesize(getStart) + "/" + ExpressionTool.parenthesize(getStep)
 
   override def toShortString(): String =
-    ExpressionTool.parenthesizeShort(getStart) + "/" + ExpressionTool
-      .parenthesizeShort(getStep)
+    ExpressionTool.parenthesizeShort(getStart) + "/" + ExpressionTool.parenthesizeShort(getStep)
 
   def getFirstStep(): Expression =
     if (getStart.isInstanceOf[SlashExpression]) {

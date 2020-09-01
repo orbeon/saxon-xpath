@@ -24,7 +24,7 @@ object ContextItemStaticInfo {
     new ContextItemStaticInfo(AnyItemType, true)
 
   val ABSENT: ContextItemStaticInfo =
-    new ContextItemStaticInfo(ErrorType.getInstance, true)
+    new ContextItemStaticInfo(ErrorType, true)
 
 }
 

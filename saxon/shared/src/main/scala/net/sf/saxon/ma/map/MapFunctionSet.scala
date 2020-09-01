@@ -321,7 +321,7 @@ object MapFunctionSet {
 
     override def getResultItemType(args: Array[Expression]): ItemType = {
       val it: ItemType = args(0).getItemType
-      if (it == ErrorType.getInstance) {
+      if (it == ErrorType) {
         MapType.EMPTY_MAP_TYPE
       } else if (it.isInstanceOf[MapType]) {
         var maybeCombined: Boolean = true

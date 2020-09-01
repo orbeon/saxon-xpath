@@ -48,7 +48,7 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
     new LocalParamBlock(lps2)
   }
 
-  override def getItemType(): ItemType = ErrorType.getInstance
+  override def getItemType(): ItemType = ErrorType
 
   override def getCardinality(): Int = StaticProperty.EMPTY
 

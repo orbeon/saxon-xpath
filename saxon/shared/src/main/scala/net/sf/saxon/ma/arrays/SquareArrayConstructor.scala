@@ -135,7 +135,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
       }
     }
     if (contentType == null) {
-      contentType = ErrorType.getInstance
+      contentType = ErrorType
     }
     new ArrayItemType(
       SequenceType.makeSequenceType(contentType, contentCardinality))

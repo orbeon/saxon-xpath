@@ -34,7 +34,7 @@ object JPConverter {
       classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType.getInstance,  StaticProperty.ALLOWS_ONE),
       classOf[XdmMap]                -> new FromXdmValue(MapType.ANY_MAP_TYPE,         StaticProperty.ALLOWS_ONE),
       classOf[XdmArray]              -> new FromXdmValue(ArrayItemType.ANY_ARRAY_TYPE, StaticProperty.ALLOWS_ONE),
-      classOf[XdmEmptySequence]      -> new FromXdmValue(ErrorType.getInstance,        StaticProperty.ALLOWS_ZERO),
+      classOf[XdmEmptySequence]      -> new FromXdmValue(ErrorType,        StaticProperty.ALLOWS_ZERO),
       classOf[SequenceIterator]      -> FromSequenceIterator,
       classOf[Sequence]              -> FromSequenceOfAny,
       classOf[OneOrMore[_ <: Item]]  -> FromSequenceOfAny,

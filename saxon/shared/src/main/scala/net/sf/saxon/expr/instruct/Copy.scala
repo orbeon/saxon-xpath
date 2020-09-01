@@ -58,7 +58,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     var selectItemType: ItemType = contextInfo.getItemType
     typeCheckChildren(visitor, contextInfo)
     selectItemType = contextInfo.getItemType
-    if (selectItemType == ErrorType.getInstance) {
+    if (selectItemType == ErrorType) {
       val err =
         new XPathException("No context item supplied for xsl:copy", "XTTE0945")
       err.setIsTypeError(true)

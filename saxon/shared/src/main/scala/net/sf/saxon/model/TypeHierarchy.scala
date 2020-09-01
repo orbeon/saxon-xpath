@@ -299,19 +299,20 @@ class TypeHierarchy(var config: Configuration) {
         } else {
           DISJOINT
         }
-      case _: ErrorType =>
+      case ErrorType =>
         SUBSUMED_BY
-      case _ => if (itmTyp2.isInstanceOf[ErrorType]) {
-        SUBSUMES
-      } else {
-        val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
-        var result: Affinity = map.get(pair)
-        if (result == null) {
-          result = computeRelationship(itmTyp1, itmTyp2)
-          map.put(pair, result)
+      case _ =>
+        if (itmTyp2 eq ErrorType) {
+          SUBSUMES
+        } else {
+          val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
+          var result: Affinity = map.get(pair)
+          if (result == null) {
+            result = computeRelationship(itmTyp1, itmTyp2)
+            map.put(pair, result)
+          }
+          result
         }
-        result
-      }
     }
   }
 
@@ -410,12 +411,12 @@ class TypeHierarchy(var config: Configuration) {
             }
           } else if (t2.isInstanceOf[AnyNodeTest]) {
             SUBSUMED_BY
-          } else if (t2.isInstanceOf[ErrorType]) {
+          } else if (t2 eq ErrorType) {
             DISJOINT
           } else {
             var nodeKindRelationship: Affinity = null
-            val m1: UType = t1.getUType
-            val m2: UType = t2.getUType
+            val m1 = t1.getUType
+            val m2 = t2.getUType
             if (!m1.overlaps(m2)) {
               return DISJOINT
             } else

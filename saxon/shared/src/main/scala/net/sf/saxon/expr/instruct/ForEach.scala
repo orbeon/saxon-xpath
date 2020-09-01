@@ -136,7 +136,7 @@ class ForEach(select: Expression,
                          contextInfo: ContextItemStaticInfo): Expression = {
     selectOp.typeCheck(visitor, contextInfo)
     val selectType: ItemType = getSelect.getItemType
-    if (selectType == ErrorType.getInstance) {
+    if (selectType == ErrorType) {
       Literal.makeEmptySequence()
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration

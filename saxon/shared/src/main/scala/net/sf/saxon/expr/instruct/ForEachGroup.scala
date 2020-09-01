@@ -225,7 +225,7 @@ class ForEachGroup(select: Expression,
       collationOp.typeCheck(visitor, contextInfo)
     }
     val selectedItemType: ItemType = getSelectExpression.getItemType
-    if (selectedItemType == ErrorType.getInstance) {
+    if (selectedItemType == ErrorType) {
       Literal.makeEmptySequence()
     }
     for (o <- operands().asScala) {

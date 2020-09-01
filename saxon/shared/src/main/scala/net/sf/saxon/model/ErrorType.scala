@@ -1,29 +1,19 @@
 package net.sf.saxon.model
 
+import java.util.{Collections, Optional}
+
 import net.sf.saxon.expr.Expression
-import net.sf.saxon.lib.ConversionRules
-import net.sf.saxon.lib.NamespaceConstant
+import net.sf.saxon.lib.{ConversionRules, NamespaceConstant}
+import net.sf.saxon.model.SchemaComponent.ValidationStatus.{VALIDATED, ValidationStatus}
 import net.sf.saxon.om._
 import net.sf.saxon.pattern.NodeTest
 import net.sf.saxon.trans.XPathException
-import net.sf.saxon.value.AtomicValue
-import net.sf.saxon.value.SequenceType
-import net.sf.saxon.value.UntypedAtomicValue
-import net.sf.saxon.value.Whitespace
-import java.util.Collections
-import java.util.Optional
+import net.sf.saxon.value.{AtomicValue, SequenceType, UntypedAtomicValue, Whitespace}
+
 import scala.jdk.CollectionConverters._
-import net.sf.saxon.model.SchemaComponent.ValidationStatus.{VALIDATED, ValidationStatus}
 
-object ErrorType {
 
-  private var theInstance: ErrorType = new ErrorType()
-
-  def getInstance(): ErrorType = theInstance
-
-}
-
-class ErrorType private()
+object ErrorType
   extends NodeTest
     with AtomicType
     with UnionType
@@ -70,7 +60,7 @@ class ErrorType private()
 
   def getDisplayName(): String = "xs:error"
 
-  def isSameType(other: SchemaType): Boolean = other.isInstanceOf[ErrorType]
+  def isSameType(other: SchemaType): Boolean = other eq ErrorType
 
   def atomize(node: NodeInfo): AtomicSequence =
     new UntypedAtomicValue(node.getStringValueCS)

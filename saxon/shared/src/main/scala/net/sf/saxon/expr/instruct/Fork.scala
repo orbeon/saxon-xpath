@@ -45,7 +45,7 @@ class Fork extends Instruction {
   override def getItemType(): ItemType = {
 
     if (getSize == 0)
-      return ErrorType.getInstance
+      return ErrorType
 
     var t1: ItemType = null
     for (o <- operands().asScala) {

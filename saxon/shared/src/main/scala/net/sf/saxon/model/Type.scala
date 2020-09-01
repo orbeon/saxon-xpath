@@ -280,47 +280,48 @@ object Type {
   def getCommonSuperType(t1: ItemType,
                          t2: ItemType,
                          th: TypeHierarchy): ItemType = {
-    if (t1 == t2) {
+    if (t1 == t2)
       return t1
-    }
-    if (t1.isInstanceOf[ErrorType]) {
+
+    if (t1 eq ErrorType)
       return t2
-    }
-    if (t2.isInstanceOf[ErrorType]) {
+
+    if (t2 eq ErrorType)
       return t1
+
+    t1 match {
+      case objectType: JavaExternalObjectType if t2.isInstanceOf[JavaExternalObjectType] =>
+        val config = objectType.getConfiguration
+        val c1 = objectType.getJavaClass
+        val c2 = t2.asInstanceOf[JavaExternalObjectType].getJavaClass
+        config.getJavaExternalObjectType(leastCommonSuperClass(c1, c2))
+      case _ =>
     }
-    if (t1.isInstanceOf[JavaExternalObjectType] && t2
-      .isInstanceOf[JavaExternalObjectType]) {
-      val config: Configuration =
-        t1.asInstanceOf[JavaExternalObjectType].getConfiguration
-      val c1: Class[_] = t1.asInstanceOf[JavaExternalObjectType].getJavaClass
-      val c2: Class[_] = t2.asInstanceOf[JavaExternalObjectType].getJavaClass
-      config.getJavaExternalObjectType(leastCommonSuperClass(c1, c2))
+    t1 match {
+      case mapType: MapType if t2.isInstanceOf[MapType] =>
+        if (t1 == MapType.EMPTY_MAP_TYPE)
+          return t2
+
+        if (t2 == MapType.EMPTY_MAP_TYPE)
+          return t1
+
+        val keyType = getCommonSuperType(mapType.getKeyType, t2.asInstanceOf[MapType].getKeyType)
+        val k =
+          keyType match {
+            case atomicType: AtomicType => atomicType
+            case _ => keyType.getAtomizedItemType.getPrimitiveItemType
+          }
+        val v = SequenceType.makeSequenceType(
+          getCommonSuperType(
+            mapType.getValueType.getPrimaryType,
+            t2.asInstanceOf[MapType].getValueType.getPrimaryType),
+          Cardinality.union(mapType.getValueType.getCardinality,
+            t2.asInstanceOf[MapType].getValueType.getCardinality)
+        )
+        new MapType(k, v)
+      case _ =>
     }
-    if (t1.isInstanceOf[MapType] && t2.isInstanceOf[MapType]) {
-      if (t1 == MapType.EMPTY_MAP_TYPE) {
-        return t2
-      }
-      if (t2 == MapType.EMPTY_MAP_TYPE) {
-        return t1
-      }
-      val keyType: ItemType = getCommonSuperType(
-        t1.asInstanceOf[MapType].getKeyType,
-        t2.asInstanceOf[MapType].getKeyType)
-      var k: AtomicType = null
-      k =
-        if (keyType.isInstanceOf[AtomicType]) keyType.asInstanceOf[AtomicType]
-        else keyType.getAtomizedItemType.getPrimitiveItemType
-      val v: SequenceType = SequenceType.makeSequenceType(
-        getCommonSuperType(
-          t1.asInstanceOf[MapType].getValueType.getPrimaryType,
-          t2.asInstanceOf[MapType].getValueType.getPrimaryType),
-        Cardinality.union(t1.asInstanceOf[MapType].getValueType.getCardinality,
-          t2.asInstanceOf[MapType].getValueType.getCardinality)
-      )
-      new MapType(k, v)
-    }
-    val r: Affinity = th.relationship(t1, t2)
+    val r = th.relationship(t1, t2)
     if (r == Affinity.SAME_TYPE) {
       t1
     } else if (r == Affinity.SUBSUMED_BY) {
@@ -335,47 +336,48 @@ object Type {
   /*@NotNull*/
 
   def getCommonSuperType(t1: ItemType, t2: ItemType): ItemType = {
-    if (t1 == t2) {
+    if (t1 == t2)
       return t1
-    }
-    if (t1.isInstanceOf[ErrorType]) {
+
+    if (t1 eq ErrorType)
       return t2
-    }
-    if (t2.isInstanceOf[ErrorType]) {
+
+    if (t2 eq ErrorType)
       return t1
-    }
-    if (t1 == AnyItemType || t2 == AnyItemType) {
-      AnyItemType
-    }
-    val p1: ItemType = t1.getPrimitiveItemType
-    val p2: ItemType = t2.getPrimitiveItemType
+
+    if (t1 == AnyItemType || t2 == AnyItemType)
+      return AnyItemType
+
+    val p1 = t1.getPrimitiveItemType
+    val p2 = t2.getPrimitiveItemType
     if (p1 == p2) {
       return p1
     }
+
     if ((p1 == DECIMAL && p2 == INTEGER) ||
       (p2 == DECIMAL && p1 == INTEGER)) {
       return DECIMAL
     }
-    if (p1.isInstanceOf[BuiltInAtomicType] && p1
-      .asInstanceOf[BuiltInAtomicType]
-      .isNumericType &&
-      p2.isInstanceOf[BuiltInAtomicType] &&
-      p2.asInstanceOf[BuiltInAtomicType].isNumericType) {
-      NumericType.getInstance
+
+    p1 match {
+      case atomicType: BuiltInAtomicType if p2.asInstanceOf[BuiltInAtomicType].isNumericType && p2.isInstanceOf[BuiltInAtomicType] && atomicType.isNumericType =>
+        return NumericType.getInstance
+      case _ =>
     }
-    if (t1.isAtomicType && t2.isAtomicType) {
+
+    if (t1.isAtomicType && t2.isAtomicType)
       return ANY_ATOMIC
-    }
-    if (t1.isInstanceOf[NodeTest] && t2.isInstanceOf[NodeTest]) {
-      AnyNodeTest.getInstance
-    }
-    if (t1.isInstanceOf[JavaExternalObjectType] && t2
-      .isInstanceOf[JavaExternalObjectType]) {
-      val config: Configuration =
-        t1.asInstanceOf[JavaExternalObjectType].getConfiguration
-      val c1: Class[_] = t1.asInstanceOf[JavaExternalObjectType].getJavaClass
-      val c2: Class[_] = t2.asInstanceOf[JavaExternalObjectType].getJavaClass
-      config.getJavaExternalObjectType(leastCommonSuperClass(c1, c2))
+
+    if (t1.isInstanceOf[NodeTest] && t2.isInstanceOf[NodeTest])
+      return AnyNodeTest.getInstance
+
+    t1 match {
+      case objectType: JavaExternalObjectType if t2.isInstanceOf[JavaExternalObjectType] =>
+        val config = objectType.getConfiguration
+        val c1 = objectType.getJavaClass
+        val c2 = t2.asInstanceOf[JavaExternalObjectType].getJavaClass
+        return config.getJavaExternalObjectType(leastCommonSuperClass(c1, c2))
+      case _ =>
     }
     AnyItemType
   }
@@ -391,21 +393,21 @@ object Type {
 
   private def leastCommonSuperClass(class1: Class[_],
                                     class2: Class[_]): Class[_] = {
-    if (class1 == class2) {
+    if (class1 == class2)
       return class1
-    }
-    if (class1 == null || class2 == null) {
+
+    if (class1 == null || class2 == null)
       return null
-    }
-    if (!class1.isArray && class1.isAssignableFrom(class2)) {
+
+    if (!class1.isArray && class1.isAssignableFrom(class2))
       return class1
-    }
-    if (!class2.isArray && class2.isAssignableFrom(class1)) {
+
+    if (!class2.isArray && class2.isAssignableFrom(class1))
       return class2
-    }
-    if (class1.isInterface || class2.isInterface) {
-      classOf[AnyRef]
-    }
+
+    if (class1.isInterface || class2.isInterface)
+      return classOf[AnyRef]
+
     leastCommonSuperClass(class1.getSuperclass, class2.getSuperclass)
   }
 

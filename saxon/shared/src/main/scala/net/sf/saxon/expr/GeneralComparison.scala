@@ -167,8 +167,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
     val th: TypeHierarchy = config.getTypeHierarchy
-    val oldOp0: Expression = getLhsExpression
-    val oldOp1: Expression = getRhsExpression
+    val oldOp0 = getLhsExpression
+    val oldOp1 = getRhsExpression
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
@@ -178,24 +178,21 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     val atomicType: SequenceType = SequenceType.ATOMIC_SEQUENCE
-    val tc: TypeChecker = config.getTypeChecker(false)
-    val role0: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
+    val tc = config.getTypeChecker(false)
+    val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
     this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
-    val role1: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
+    val role1 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
     this.setRhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
-    if (getLhsExpression != oldOp0) {
+    if (getLhsExpression != oldOp0)
       adoptChildExpression(getLhsExpression)
-    }
-    if (getRhsExpression != oldOp1) {
+    if (getRhsExpression != oldOp1)
       adoptChildExpression(getRhsExpression)
-    }
-    val t0: ItemType = getLhsExpression.getItemType
-    val t1: ItemType = getRhsExpression.getItemType
-    if (t0.isInstanceOf[ErrorType] || t1.isInstanceOf[ErrorType]) {
+
+    val t0 = getLhsExpression.getItemType
+    val t1 = getRhsExpression.getItemType
+    if ((t0 eq ErrorType) || (t1 eq ErrorType))
       Literal.makeLiteral(BooleanValue.FALSE, this)
-    }
+
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
       val err = new XPathException(
         "Cannot perform comparisons involving external objects")

@@ -209,7 +209,7 @@ object SequenceTool {
               }
             }
           }
-          if (`type` == null) ErrorType.getInstance else `type`
+          if (`type` == null) ErrorType else `type`
         } catch {
           case err: XPathException => AnyItemType
 

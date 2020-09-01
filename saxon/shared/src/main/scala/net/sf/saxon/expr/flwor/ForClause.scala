@@ -1,42 +1,21 @@
 package net.sf.saxon.expr.flwor
 
-import net.sf.saxon.utils.Configuration
+import java.util.{ArrayList, List}
 
 import net.sf.saxon.event.Outputter
-
 import net.sf.saxon.expr._
-
+import net.sf.saxon.expr.flwor.Clause.ClauseName.{ClauseName, FOR}
 import net.sf.saxon.expr.parser._
-
-import net.sf.saxon.functions.KeyFn
-
-import net.sf.saxon.functions.SystemFunction
-
+import net.sf.saxon.functions.{KeyFn, SystemFunction}
 import net.sf.saxon.lib.Feature
-
 import net.sf.saxon.model._
-
 import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.tree.util.FastStringBuffer
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.{Cardinality, SequenceType}
 
-import net.sf.saxon.value.Cardinality
-
-import net.sf.saxon.value.SequenceType
-
-import java.util.ArrayList
-
-import java.util.List
-
-import net.sf.saxon.expr.flwor.Clause.ClauseName.FOR
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-
-import Clause.ClauseName.ClauseName
 import scala.util.control.Breaks._
 
 class ForClause extends Clause {
@@ -292,23 +271,24 @@ class ForClause extends Clause {
   override def refineVariableType(visitor: ExpressionVisitor,
                                   references: List[VariableReference],
                                   returnExpr: Expression): Unit = {
-    var actualItemType: ItemType = getSequence.getItemType
-    if (actualItemType.isInstanceOf[ErrorType]) {
+
+    var actualItemType = getSequence.getItemType
+    if (actualItemType eq ErrorType)
       actualItemType = AnyItemType
-    }
+
     for (ref <- references.asScala) {
       ref.refineVariableType(actualItemType,
         if (allowsEmpty) StaticProperty.ALLOWS_ZERO_OR_ONE
         else StaticProperty.EXACTLY_ONE,
         null,
-        getSequence.getSpecialProperties)
+        getSequence.getSpecialProperties
+      )
     }
   }
 
   override def addToPathMap(pathMap: PathMap,
                             pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {
-    val varPath: PathMap.PathMapNodeSet =
-      getSequence.addToPathMap(pathMap, pathMapNodeSet)
+    val varPath = getSequence.addToPathMap(pathMap, pathMapNodeSet)
     pathMap.registerPathForVariable(rangeVariable, varPath)
   }
 

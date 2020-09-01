@@ -302,7 +302,7 @@ class UType(private var bits: Int) {
   def toItemType(): ItemType = {
     val p: Set[PrimitiveUType] = decompose()
     if (p.isEmpty) {
-      ErrorType.getInstance
+      ErrorType
     } else if (p.size == 1) {
       p.toArray(Array.ofDim[PrimitiveUType](1))(0).toItemType()
     } else if (ANY_NODE.subsumes(this)) {

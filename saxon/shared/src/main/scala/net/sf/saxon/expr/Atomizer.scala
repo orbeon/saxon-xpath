@@ -90,9 +90,9 @@ object Atomizer {
         .getMemberType
         .getPrimaryType
         .getAtomizedItemType
-      if (ait == null) return ErrorType.getInstance else return ait
+      if (ait == null) return ErrorType else return ait
     } else if (in.isInstanceOf[FunctionItemType]) {
-      ErrorType.getInstance
+      ErrorType
     }
     BuiltInAtomicType.ANY_ATOMIC
   }

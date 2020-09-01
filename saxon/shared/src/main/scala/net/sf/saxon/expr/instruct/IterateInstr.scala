@@ -122,7 +122,7 @@ class IterateInstr(select: Expression,
     selectOp.typeCheck(visitor, contextInfo)
     initiallyOp.typeCheck(visitor, contextInfo)
     var selectType: ItemType = getSelectExpression.getItemType
-    if (selectType == ErrorType.getInstance) {
+    if (selectType == ErrorType) {
       selectType = AnyItemType
     }
     val cit: ContextItemStaticInfo =

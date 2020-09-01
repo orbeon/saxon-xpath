@@ -103,7 +103,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val noWarnings: Boolean = doneOptimize ||
       (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
     doneTypeCheck = true
-    if (contextItemType == ErrorType.getInstance) {
+    if (contextItemType == ErrorType) {
       val err = new XPathException(
         "Axis step " + this + " cannot be used here: the context item is absent")
       err.setErrorCode("XPDY0002")
@@ -839,19 +839,19 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       pat =
         if (kind == Type.NODE) new NodeTestPattern(NodeKindTest.ATTRIBUTE)
         else if (!AxisInfo.containsNodeKind(axis, kind))
-          new NodeTestPattern(ErrorType.getInstance)
+          new NodeTestPattern(ErrorType)
         else new NodeTestPattern(test)
     } else if (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT ||
       axis == AxisInfo.DESCENDANT_OR_SELF) {
       pat =
         if (kind != Type.NODE && !AxisInfo.containsNodeKind(axis, kind))
-          new NodeTestPattern(ErrorType.getInstance)
+          new NodeTestPattern(ErrorType)
         else new NodeTestPattern(test)
     } else if (axis == AxisInfo.NAMESPACE) {
       pat =
         if (kind == Type.NODE) new NodeTestPattern(NodeKindTest.NAMESPACE)
         else if (!AxisInfo.containsNodeKind(axis, kind))
-          new NodeTestPattern(ErrorType.getInstance)
+          new NodeTestPattern(ErrorType)
         else new NodeTestPattern(test)
     } else {
       throw new XPathException("Only downwards axes are allowed in a pattern",

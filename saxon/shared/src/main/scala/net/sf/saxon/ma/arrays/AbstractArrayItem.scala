@@ -171,7 +171,7 @@ abstract class AbstractArrayItem extends ArrayItem {
     //try {
     if (memberType == null) {
       if (isEmpty) {
-        memberType = SequenceType.makeSequenceType(ErrorType.getInstance,
+        memberType = SequenceType.makeSequenceType(ErrorType,
           StaticProperty.EXACTLY_ONE)
       } else {
         var contentType: ItemType = null

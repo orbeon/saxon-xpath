@@ -262,7 +262,7 @@ class   Literal extends Expression {
     if (value.isInstanceOf[AtomicValue]) {
       value.asInstanceOf[AtomicValue].getItemType
     } else if (value.getLength == 0) {
-      ErrorType.getInstance
+      ErrorType
     } else {
       val th: TypeHierarchy = getConfiguration.getTypeHierarchy
       SequenceTool.getItemType(value, th)
@@ -331,7 +331,7 @@ class   Literal extends Expression {
 
   override def toPattern(config: Configuration): Pattern =
     if (isEmptySequence(this)) {
-      new NodeTestPattern(ErrorType.getInstance)
+      new NodeTestPattern(ErrorType)
     } else {
       super.toPattern(config)
     }

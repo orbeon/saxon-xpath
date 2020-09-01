@@ -25,7 +25,7 @@ object BuiltInType {
 
   register(StandardNames.XS_UNTYPED, Untyped.getInstance)
 
-  register(StandardNames.XS_ERROR, ErrorType.getInstance)
+  register(StandardNames.XS_ERROR, ErrorType)
 
   def getSchemaType(fingerprint: Int): SchemaType = {
     var st: SchemaType = lookup.get(fingerprint)

@@ -464,7 +464,7 @@ object Navigator {
     val itemType = pattern.getItemType
     if (itemType.isInstanceOf[NodeTest]) itemType.asInstanceOf[NodeTest]
     else if (pattern.getUType.overlaps(UType.ANY_NODE)) AnyNodeTest.getInstance
-    else ErrorType.getInstance
+    else ErrorType
   }
 
   /**

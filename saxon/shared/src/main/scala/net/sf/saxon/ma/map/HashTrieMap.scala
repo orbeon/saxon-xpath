@@ -59,9 +59,9 @@ class HashTrieMap extends MapItem {
 
   private var valueUType: UType = UType.VOID
 
-  private var keyAtomicType: AtomicType = ErrorType.getInstance
+  private var keyAtomicType: AtomicType = ErrorType
 
-  private var valueItemType: ItemType = ErrorType.getInstance
+  private var valueItemType: ItemType = ErrorType
 
   private var valueCardinality: Int = 0
 
