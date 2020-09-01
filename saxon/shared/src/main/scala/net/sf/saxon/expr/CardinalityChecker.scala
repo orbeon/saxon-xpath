@@ -151,7 +151,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
 
   /**
    * Set the error code to be returned (this is used when evaluating the functions such
-   * as exactly-one() which have their own error codes)
+   * as exactly-one which have their own error codes)
    *
    * @param code the error code to be used
    */

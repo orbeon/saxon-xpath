@@ -49,7 +49,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
   def getArity: Int = 1
 
   override def getArgumentTypes: Array[SequenceType] =
-    Array(BuiltInAtomicType.INTEGER.one())
+    Array(BuiltInAtomicType.INTEGER.one)
 
   override def getDefaultPriority: Double =
     memberType.getPrimaryType.getNormalizedDefaultPriority

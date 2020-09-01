@@ -86,25 +86,25 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
 
   override def hashCode(): Int = "AnyItemType".hashCode
 
-  def one(): SequenceType = {
+  def one: SequenceType = {
     if (_one == null)
       _one = new SequenceType(this, StaticProperty.EXACTLY_ONE)
     _one
   }
 
-  def zeroOrOne(): SequenceType = {
+  def zeroOrOne: SequenceType = {
     if (_zeroOrOne == null)
       _zeroOrOne = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_ONE)
     _zeroOrOne
   }
 
-  def oneOrMore(): SequenceType = {
+  def oneOrMore: SequenceType = {
     if (_oneOrMore == null)
       _oneOrMore = new SequenceType(this, StaticProperty.ALLOWS_ONE_OR_MORE)
     _oneOrMore
   }
 
-  def zeroOrMore(): SequenceType = {
+  def zeroOrMore: SequenceType = {
     if (_zeroOrMore == null)
       _zeroOrMore = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_MORE)
     _zeroOrMore

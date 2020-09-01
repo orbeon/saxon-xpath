@@ -25,194 +25,194 @@ object SequenceType {
   /**
    * A type that allows any sequence of items
    */
-  val ANY_SEQUENCE = AnyItemType.zeroOrMore
+  val ANY_SEQUENCE: SequenceType = AnyItemType.zeroOrMore
   /**
    * A type that allows exactly one item, of any kind
    */
-  val SINGLE_ITEM = AnyItemType.one
+  val SINGLE_ITEM: SequenceType = AnyItemType.one
   /**
    * A type that allows zero or one items, of any kind
    */
-  val OPTIONAL_ITEM = AnyItemType.zeroOrOne
+  val OPTIONAL_ITEM: SequenceType = AnyItemType.zeroOrOne
   /**
    * A type that allows exactly one atomic value
    */
-  val SINGLE_ATOMIC = BuiltInAtomicType.ANY_ATOMIC.one
+  val SINGLE_ATOMIC: SequenceType = BuiltInAtomicType.ANY_ATOMIC.one
   /**
    * A type that allows zero or one atomic values
    */
-  val OPTIONAL_ATOMIC = BuiltInAtomicType.ANY_ATOMIC.zeroOrOne
-  val ATOMIC_SEQUENCE = BuiltInAtomicType.ANY_ATOMIC.zeroOrMore
+  val OPTIONAL_ATOMIC: SequenceType = BuiltInAtomicType.ANY_ATOMIC.zeroOrOne
+  val ATOMIC_SEQUENCE: SequenceType = BuiltInAtomicType.ANY_ATOMIC.zeroOrMore
   /**
    * A type that allows a single string
    */
-  val SINGLE_STRING = BuiltInAtomicType.STRING.one
+  val SINGLE_STRING: SequenceType = BuiltInAtomicType.STRING.one
   /**
    * A type that allows a single untyped atomic
    */
-  val SINGLE_UNTYPED_ATOMIC = BuiltInAtomicType.UNTYPED_ATOMIC.one
+  val SINGLE_UNTYPED_ATOMIC: SequenceType = BuiltInAtomicType.UNTYPED_ATOMIC.one
   /**
    * A type that allows a single optional string
    */
-  val OPTIONAL_STRING = BuiltInAtomicType.STRING.zeroOrOne
+  val OPTIONAL_STRING: SequenceType = BuiltInAtomicType.STRING.zeroOrOne
   /**
    * A type that allows a single boolean
    */
-  val SINGLE_BOOLEAN = BuiltInAtomicType.BOOLEAN.one
+  val SINGLE_BOOLEAN: SequenceType = BuiltInAtomicType.BOOLEAN.one
   /**
    * A type that allows a single optional boolean
    */
-  val OPTIONAL_BOOLEAN = BuiltInAtomicType.BOOLEAN.zeroOrOne
+  val OPTIONAL_BOOLEAN: SequenceType = BuiltInAtomicType.BOOLEAN.zeroOrOne
   /**
    * A type that allows a single integer
    */
-  val SINGLE_INTEGER = BuiltInAtomicType.INTEGER.one
+  val SINGLE_INTEGER: SequenceType = BuiltInAtomicType.INTEGER.one
   /**
    * A type that allows a single decimal
    */
-  val SINGLE_DECIMAL = BuiltInAtomicType.DECIMAL.one
+  val SINGLE_DECIMAL: SequenceType = BuiltInAtomicType.DECIMAL.one
   /**
    * A type that allows a single optional integer
    */
-  val OPTIONAL_INTEGER = BuiltInAtomicType.INTEGER.zeroOrOne
+  val OPTIONAL_INTEGER: SequenceType = BuiltInAtomicType.INTEGER.zeroOrOne
   /**
    * A type that allows a single short
    */
-  val SINGLE_SHORT = BuiltInAtomicType.SHORT.one
+  val SINGLE_SHORT: SequenceType = BuiltInAtomicType.SHORT.one
   /**
    * A type that allows a single optional short
    */
-  val OPTIONAL_SHORT = BuiltInAtomicType.SHORT.zeroOrOne
-  val SINGLE_BYTE = BuiltInAtomicType.BYTE.one
+  val OPTIONAL_SHORT: SequenceType = BuiltInAtomicType.SHORT.zeroOrOne
+  val SINGLE_BYTE: SequenceType = BuiltInAtomicType.BYTE.one
   /**
    * A type that allows a single optional byte
    */
-  val OPTIONAL_BYTE = BuiltInAtomicType.BYTE.zeroOrOne
+  val OPTIONAL_BYTE: SequenceType = BuiltInAtomicType.BYTE.zeroOrOne
   /**
    * A type that allows a single double
    */
-  val SINGLE_DOUBLE = BuiltInAtomicType.DOUBLE.one
+  val SINGLE_DOUBLE: SequenceType = BuiltInAtomicType.DOUBLE.one
   /**
    * A type that allows a single optional double
    */
-  val OPTIONAL_DOUBLE = BuiltInAtomicType.DOUBLE.zeroOrOne
+  val OPTIONAL_DOUBLE: SequenceType = BuiltInAtomicType.DOUBLE.zeroOrOne
   /**
    * A type that allows a single float
    */
-  val SINGLE_FLOAT = BuiltInAtomicType.FLOAT.one
+  val SINGLE_FLOAT: SequenceType = BuiltInAtomicType.FLOAT.one
   /**
    * A type that allows a single optional float
    */
-  val OPTIONAL_FLOAT = BuiltInAtomicType.FLOAT.zeroOrOne
+  val OPTIONAL_FLOAT: SequenceType = BuiltInAtomicType.FLOAT.zeroOrOne
   /**
    * A type that allows a single optional decimal
    */
-  val OPTIONAL_DECIMAL = BuiltInAtomicType.DECIMAL.zeroOrOne
+  val OPTIONAL_DECIMAL: SequenceType = BuiltInAtomicType.DECIMAL.zeroOrOne
   /**
    * A type that allows a single optional anyURI
    */
-  val OPTIONAL_ANY_URI = BuiltInAtomicType.ANY_URI.zeroOrOne
+  val OPTIONAL_ANY_URI: SequenceType = BuiltInAtomicType.ANY_URI.zeroOrOne
   /**
    * A type that allows a single optional date
    */
-  val OPTIONAL_DATE = BuiltInAtomicType.DATE.zeroOrOne
+  val OPTIONAL_DATE: SequenceType = BuiltInAtomicType.DATE.zeroOrOne
   /**
    * A type that allows a single optional time
    */
-  val OPTIONAL_TIME = BuiltInAtomicType.TIME.zeroOrOne
+  val OPTIONAL_TIME: SequenceType = BuiltInAtomicType.TIME.zeroOrOne
   /**
    * A type that allows a single optional gYear
    */
-  val OPTIONAL_G_YEAR = BuiltInAtomicType.G_YEAR.zeroOrOne
+  val OPTIONAL_G_YEAR: SequenceType = BuiltInAtomicType.G_YEAR.zeroOrOne
   /**
    * A type that allows a single optional gYearMonth
    */
-  val OPTIONAL_G_YEAR_MONTH = BuiltInAtomicType.G_YEAR_MONTH.zeroOrOne
+  val OPTIONAL_G_YEAR_MONTH: SequenceType = BuiltInAtomicType.G_YEAR_MONTH.zeroOrOne
   /**
    * A type that allows a single optional gMonth
    */
-  val OPTIONAL_G_MONTH = BuiltInAtomicType.G_MONTH.zeroOrOne
+  val OPTIONAL_G_MONTH: SequenceType = BuiltInAtomicType.G_MONTH.zeroOrOne
   /**
    * A type that allows a single optional gMonthDay
    */
-  val OPTIONAL_G_MONTH_DAY = BuiltInAtomicType.G_MONTH_DAY.zeroOrOne
+  val OPTIONAL_G_MONTH_DAY: SequenceType = BuiltInAtomicType.G_MONTH_DAY.zeroOrOne
   /**
    * A type that allows a single optional gDay
    */
-  val OPTIONAL_G_DAY = BuiltInAtomicType.G_DAY.zeroOrOne
+  val OPTIONAL_G_DAY: SequenceType = BuiltInAtomicType.G_DAY.zeroOrOne
   /**
    * A type that allows a single optional dateTime
    */
-  val OPTIONAL_DATE_TIME = BuiltInAtomicType.DATE_TIME.zeroOrOne
+  val OPTIONAL_DATE_TIME: SequenceType = BuiltInAtomicType.DATE_TIME.zeroOrOne
   /**
    * A type that allows a single optional duration
    */
-  val OPTIONAL_DURATION = BuiltInAtomicType.DURATION.zeroOrOne
+  val OPTIONAL_DURATION: SequenceType = BuiltInAtomicType.DURATION.zeroOrOne
   /**
    * A type that allows a single optional yearMonthDuration
    */
-  val OPTIONAL_YEAR_MONTH_DURATION = BuiltInAtomicType.YEAR_MONTH_DURATION.zeroOrOne
+  val OPTIONAL_YEAR_MONTH_DURATION: SequenceType = BuiltInAtomicType.YEAR_MONTH_DURATION.zeroOrOne
   /**
    * A type that allows a single optional dayTimeDuration
    */
-  val OPTIONAL_DAY_TIME_DURATION = BuiltInAtomicType.DAY_TIME_DURATION.zeroOrOne
+  val OPTIONAL_DAY_TIME_DURATION: SequenceType = BuiltInAtomicType.DAY_TIME_DURATION.zeroOrOne
   /**
    * A type that allows a single xs:QName
    */
-  val SINGLE_QNAME = BuiltInAtomicType.QNAME.one
+  val SINGLE_QNAME: SequenceType = BuiltInAtomicType.QNAME.one
   /**
    * A type that allows a single optional xs:QName
    */
-  val OPTIONAL_QNAME = BuiltInAtomicType.QNAME.zeroOrOne
+  val OPTIONAL_QNAME: SequenceType = BuiltInAtomicType.QNAME.zeroOrOne
   /**
    * A type that allows a single optional xs:NOTATION
    */
-  val OPTIONAL_NOTATION = BuiltInAtomicType.NOTATION.zeroOrOne
+  val OPTIONAL_NOTATION: SequenceType = BuiltInAtomicType.NOTATION.zeroOrOne
   /**
    * A type that allows a single optional xs:Base64Binary
    */
-  val OPTIONAL_BASE64_BINARY = BuiltInAtomicType.BASE64_BINARY.zeroOrOne
+  val OPTIONAL_BASE64_BINARY: SequenceType = BuiltInAtomicType.BASE64_BINARY.zeroOrOne
   /**
    * A type that allows a single optional xs:hexBinary
    */
-  val OPTIONAL_HEX_BINARY = BuiltInAtomicType.HEX_BINARY.zeroOrOne
+  val OPTIONAL_HEX_BINARY: SequenceType = BuiltInAtomicType.HEX_BINARY.zeroOrOne
   /**
    * A type that allows an optional numeric value
    */
-  val OPTIONAL_NUMERIC = makeSequenceType(NumericType.getInstance, StaticProperty.ALLOWS_ZERO_OR_ONE)
-  val SINGLE_NUMERIC = makeSequenceType(NumericType.getInstance, StaticProperty.EXACTLY_ONE)
+  val OPTIONAL_NUMERIC: SequenceType = makeSequenceType(NumericType.getInstance, StaticProperty.ALLOWS_ZERO_OR_ONE)
+  val SINGLE_NUMERIC: SequenceType = makeSequenceType(NumericType.getInstance, StaticProperty.EXACTLY_ONE)
   /**
    * A type that allows zero or one nodes
    */
-  val OPTIONAL_NODE = AnyNodeTest.getInstance.zeroOrOne
+  val OPTIONAL_NODE: SequenceType = AnyNodeTest.getInstance.zeroOrOne
   /**
    * A type that allows a single node
    */
-  val SINGLE_NODE = AnyNodeTest.getInstance.one
+  val SINGLE_NODE: SequenceType = AnyNodeTest.getInstance.one
   /**
    * A type that allows a single document node
    */
-  val OPTIONAL_DOCUMENT_NODE = NodeKindTest.DOCUMENT.zeroOrOne
+  val OPTIONAL_DOCUMENT_NODE: SequenceType = NodeKindTest.DOCUMENT.zeroOrOne
   /**
    * A type that allows a sequence of zero or more nodes
    */
-  val NODE_SEQUENCE = AnyNodeTest.getInstance.zeroOrMore
+  val NODE_SEQUENCE: SequenceType = AnyNodeTest.getInstance.zeroOrMore
   /**
    * A type that allows a sequence of zero or more string values
    */
-  val STRING_SEQUENCE = BuiltInAtomicType.STRING.zeroOrMore
+  val STRING_SEQUENCE: SequenceType = BuiltInAtomicType.STRING.zeroOrMore
   /**
    * A type that allows a single function item
    */
-  val SINGLE_FUNCTION = makeSequenceType(AnyFunctionType, StaticProperty.EXACTLY_ONE)
+  val SINGLE_FUNCTION: SequenceType = makeSequenceType(AnyFunctionType, StaticProperty.EXACTLY_ONE)
   /**
    * A type that allows a sequence of zero or one function items
    */
-  val OPTIONAL_FUNCTION_ITEM = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_ONE)
+  val OPTIONAL_FUNCTION_ITEM: SequenceType = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_ONE)
   /**
    * A type that allows a sequence of zero or mode function items
    */
-  val FUNCTION_ITEM_SEQUENCE = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_MORE)
+  val FUNCTION_ITEM_SEQUENCE: SequenceType = makeSequenceType(AnyFunctionType, StaticProperty.ALLOWS_ZERO_OR_MORE)
   /**
    * A type that only permits the empty sequence
    */
@@ -220,11 +220,11 @@ object SequenceType {
   /**
    * A type that only permits a non-empty sequence
    */
-  val NON_EMPTY_SEQUENCE = makeSequenceType(AnyItemType, StaticProperty.ALLOWS_ONE_OR_MORE)
+  val NON_EMPTY_SEQUENCE: SequenceType = makeSequenceType(AnyItemType, StaticProperty.ALLOWS_ONE_OR_MORE)
   /**
    * A type that has no instances
    */
-  val VOID = makeSequenceType(ErrorType, StaticProperty.ALLOWS_MANY)
+  val VOID: SequenceType = makeSequenceType(ErrorType, StaticProperty.ALLOWS_MANY)
 
   /**
    * Construct an instance of SequenceType. This is a factory method: it maintains a
@@ -277,7 +277,7 @@ class SequenceType {
    *
    * @return The item type code of the primary type
    */
-  def getPrimaryType = primaryType
+  def getPrimaryType: ItemType = primaryType
 
   /**
    * Get the cardinality component of this SequenceType. This is one of the constants {@link StaticProperty#EXACTLY_ONE},
@@ -286,7 +286,7 @@ class SequenceType {
    * @return the required cardinality
    * @see net.sf.saxon.value.Cardinality
    */
-  def getCardinality = cardinality
+  def getCardinality: Int = cardinality
 
   /**
    * Determine whether a given value is a valid instance of this SequenceType
@@ -352,7 +352,7 @@ class SequenceType {
    * @return the string representation as an instance of the XPath
    *         SequenceType construct
    */
-  override def toString = if (cardinality == StaticProperty.ALLOWS_ZERO) "empty-sequence()"
+  override def toString: String = if (cardinality == StaticProperty.ALLOWS_ZERO) "empty-sequence()"
   else primaryType.toString + Cardinality.getOccurrenceIndicator(cardinality).toString
 
   /**
@@ -382,7 +382,7 @@ class SequenceType {
   /**
    * Indicates whether some other object is "equal to" this one.
    */
-  override def equals(/*@NotNull*/ obj: Any) = obj.isInstanceOf[SequenceType] && this.primaryType == obj.asInstanceOf[SequenceType].primaryType && this.cardinality == obj.asInstanceOf[SequenceType].cardinality
+  override def equals(/*@NotNull*/ obj: Any): Boolean = obj.isInstanceOf[SequenceType] && this.primaryType == obj.asInstanceOf[SequenceType].primaryType && this.cardinality == obj.asInstanceOf[SequenceType].cardinality
 
-  def isSameType(other: SequenceType, th: TypeHierarchy) = cardinality == other.cardinality && (th.relationship(primaryType, other.primaryType) eq Affinity.SAME_TYPE)
+  def isSameType(other: SequenceType, th: TypeHierarchy): Boolean = cardinality == other.cardinality && (th.relationship(primaryType, other.primaryType) eq Affinity.SAME_TYPE)
 }

@@ -132,7 +132,7 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
     DayTimeDurationValue.fromSeconds(difference)
   }
 
-  def removeTimezone(): CalendarValue = {
+  def removeTimezone: CalendarValue = {
     val c: CalendarValue = copyAsSubType(typeLabel).asInstanceOf[CalendarValue]
     c.tzMinutes = NO_TIMEZONE
     c

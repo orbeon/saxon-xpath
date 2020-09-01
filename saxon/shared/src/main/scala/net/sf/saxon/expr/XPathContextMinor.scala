@@ -207,7 +207,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getCurrentDateTime(): DateTimeValue = controller.getCurrentDateTime
 
-  def getImplicitTimezone(): Int = controller.getImplicitTimezone
+  def getImplicitTimezone: Int = controller.getImplicitTimezone
 
   def iterateStackFrames() = new ContextStackIterator(this).asInstanceOf[Iterator[AnyRef]]
 

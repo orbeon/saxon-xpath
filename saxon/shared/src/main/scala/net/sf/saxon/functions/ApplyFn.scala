@@ -107,8 +107,7 @@ class ApplyFn extends SystemFunction {
     val function: Function = arguments(0).head.asInstanceOf[Function]
     val args: ArrayItem = arguments(1).head.asInstanceOf[ArrayItem]
     if (function.getArity != args.arrayLength()) {
-      val errorCode: String =
-        if (isDynamicFunctionCall) "XPTY0004" else "FOAP0001"
+      val errorCode = if (isDynamicFunctionCall) "XPTY0004" else "FOAP0001"
       val err = new XPathException(
         "Number of arguments required for dynamic call to " +
           function.getDescription +
@@ -165,5 +164,4 @@ class ApplyFn extends SystemFunction {
   override def importAttributes(attributes: Properties): Unit = {
     dynamicFunctionCall = attributes.getProperty("dyn")
   }
-
 }

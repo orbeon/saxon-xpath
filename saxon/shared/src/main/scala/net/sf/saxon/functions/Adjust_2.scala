@@ -16,7 +16,7 @@ class Adjust_2 extends SystemFunction {
       val tz: DayTimeDurationValue =
         arguments(1).head.asInstanceOf[DayTimeDurationValue]
       if (tz == null) {
-        new ZeroOrOne(in.removeTimezone())
+        new ZeroOrOne(in.removeTimezone)
       } else {
         new ZeroOrOne(in.adjustTimezone(tz))
       }

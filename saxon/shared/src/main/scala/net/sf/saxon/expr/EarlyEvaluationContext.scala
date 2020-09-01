@@ -169,7 +169,7 @@ class EarlyEvaluationContext(private var config: Configuration)
   def getCurrentDateTime(): DateTimeValue =
     throw new NoDynamicContextException("current-dateTime")
 
-  def getImplicitTimezone(): Int = CalendarValue.MISSING_TIMEZONE
+  def getImplicitTimezone: Int = CalendarValue.MISSING_TIMEZONE
 
   def iterateStackFrames(): Iterator[AnyRef] = Collections.EMPTY_LIST.iterator().asInstanceOf[Iterator[AnyRef]]
 

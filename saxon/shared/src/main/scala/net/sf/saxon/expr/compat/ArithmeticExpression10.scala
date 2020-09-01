@@ -195,23 +195,23 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     let.setSequence(expr)
     var `var`: LocalVariableReference = new LocalVariableReference(let)
     val isDouble: Expression =
-      new InstanceOfExpression(`var`, BuiltInAtomicType.DOUBLE.zeroOrOne())
+      new InstanceOfExpression(`var`, BuiltInAtomicType.DOUBLE.zeroOrOne)
     `var` = new LocalVariableReference(let)
     val isDecimal: Expression =
-      new InstanceOfExpression(`var`, BuiltInAtomicType.DECIMAL.zeroOrOne())
+      new InstanceOfExpression(`var`, BuiltInAtomicType.DECIMAL.zeroOrOne)
     `var` = new LocalVariableReference(let)
     val isFloat: Expression =
-      new InstanceOfExpression(`var`, BuiltInAtomicType.FLOAT.zeroOrOne())
+      new InstanceOfExpression(`var`, BuiltInAtomicType.FLOAT.zeroOrOne)
     `var` = new LocalVariableReference(let)
     val isString: Expression =
-      new InstanceOfExpression(`var`, BuiltInAtomicType.STRING.zeroOrOne())
+      new InstanceOfExpression(`var`, BuiltInAtomicType.STRING.zeroOrOne)
     `var` = new LocalVariableReference(let)
     val isUntypedAtomic: Expression = new InstanceOfExpression(
       `var`,
-      BuiltInAtomicType.UNTYPED_ATOMIC.zeroOrOne())
+      BuiltInAtomicType.UNTYPED_ATOMIC.zeroOrOne)
     `var` = new LocalVariableReference(let)
     val isBoolean: Expression =
-      new InstanceOfExpression(`var`, BuiltInAtomicType.BOOLEAN.zeroOrOne())
+      new InstanceOfExpression(`var`, BuiltInAtomicType.BOOLEAN.zeroOrOne)
     var condition: Expression = new OrExpression(isDouble, isDecimal)
     condition = new OrExpression(condition, isFloat)
     condition = new OrExpression(condition, isString)

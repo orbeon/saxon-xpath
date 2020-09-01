@@ -236,7 +236,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
 
   def getEonAndYear(): BigInteger = year
 
-  def getTimezone(): Int = tzOffset
+  def getTimezone: Int = tzOffset
 
   def getMicrosecond: Int = {
     val fractionalSeconds: BigDecimal = getFractionalSecond
@@ -343,7 +343,7 @@ class SaxonXMLGregorianCalendar(value: CalendarValue)
       new SimpleTimeZone(tzOffset * 60000, "XXX")
     }
 
-  override def clone(): AnyRef = {
+  override def clone: AnyRef = {
     val s: SaxonXMLGregorianCalendar = new SaxonXMLGregorianCalendar(null)
     s.setYear(year)
     s.setMonth(month)

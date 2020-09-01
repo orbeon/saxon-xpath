@@ -162,9 +162,9 @@ class LookupExpression(start: Expression, step: Expression)
     val role: RoleDiagnostic =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "?", 1)
     val tc: TypeChecker = config.getTypeChecker(false)
-    var req: SequenceType = BuiltInAtomicType.ANY_ATOMIC.zeroOrMore()
+    var req: SequenceType = BuiltInAtomicType.ANY_ATOMIC.zeroOrMore
     if (isArrayLookup) {
-      req = BuiltInAtomicType.INTEGER.zeroOrMore()
+      req = BuiltInAtomicType.INTEGER.zeroOrMore
     }
     this.setRhsExpression(
       tc.staticTypeCheck(getRhsExpression, req, role, visitor))

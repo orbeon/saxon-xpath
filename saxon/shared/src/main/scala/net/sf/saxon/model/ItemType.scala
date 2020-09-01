@@ -34,10 +34,10 @@ import net.sf.saxon.value.SequenceType
 
 object ItemType {
   trait WithSequenceTypeCache extends ItemType {
-    def one(): SequenceType
-    def zeroOrOne(): SequenceType
-    def oneOrMore(): SequenceType
-    def zeroOrMore(): SequenceType
+    def one: SequenceType
+    def zeroOrOne: SequenceType
+    def oneOrMore: SequenceType
+    def zeroOrMore: SequenceType
   }
 }
 

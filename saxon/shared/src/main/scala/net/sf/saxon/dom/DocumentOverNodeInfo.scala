@@ -149,7 +149,7 @@ class DocumentOverNodeInfo extends NodeOverNodeInfo with Document {
 
   def getXmlEncoding(): String = null
 
-  def getXmlStandalone(): Boolean = false
+  def getXmlStandalone: Boolean = false
 
   def setXmlStandalone(xmlStandalone: Boolean): Unit = {
     disallowUpdate()
