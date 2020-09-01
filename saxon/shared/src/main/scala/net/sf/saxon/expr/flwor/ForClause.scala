@@ -294,7 +294,7 @@ class ForClause extends Clause {
                                   returnExpr: Expression): Unit = {
     var actualItemType: ItemType = getSequence.getItemType
     if (actualItemType.isInstanceOf[ErrorType]) {
-      actualItemType = AnyItemType.getInstance
+      actualItemType = AnyItemType
     }
     for (ref <- references.asScala) {
       ref.refineVariableType(actualItemType,

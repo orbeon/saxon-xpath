@@ -127,7 +127,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
       seq
     } catch {
       case e: StackOverflowError => {
-        val err: XPathException = new XPathException.StackOverflow(
+        val err = new XPathException.StackOverflow(
           "Too many nested accumulator evaluations. The accumulator definition may have cyclic dependencies",
           "XTDE3400",
           accumulator)

@@ -57,14 +57,14 @@ object QueryModule {
     qp.parseLibraryModule(query, module)
     val namespace: String = module.getModuleNamespace
     if (namespace == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Imported module must be a library module")
       err.setErrorCode("XQST0059")
       err.setIsStaticError(true)
       throw err
     }
     if (namespace != namespaceURI) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Imported module's namespace does not match requested namespace")
       err.setErrorCode("XQST0059")
       err.setIsStaticError(true)
@@ -161,7 +161,7 @@ class QueryModule extends StaticContext {
   var isUpdating: Boolean = false
 
   @BeanProperty
-  var requiredContextItemType: ItemType = AnyItemType.getInstance
+  var requiredContextItemType: ItemType = AnyItemType
 
   @BeanProperty
   lazy val decimalFormatManager: DecimalFormatManager =
@@ -384,7 +384,7 @@ class QueryModule extends StaticContext {
           oldloc += " in module " + old.getSystemId
         }
         oldloc += ")"
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Duplicate definition of global variable " + `var`.getVariableQName.getDisplayName +
             oldloc)
         err.setErrorCode("XQST0049")
@@ -399,7 +399,7 @@ class QueryModule extends StaticContext {
       getTopLevelModule.libraryVariables
     val old: GlobalVariable = libVars.get(key)
     if (old == null || old == `var`) {} else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Duplicate definition of global variable " + `var`.getVariableQName.getDisplayName +
           " (see line " +
           old.getLineNumber +
@@ -461,7 +461,7 @@ class QueryModule extends StaticContext {
         }
       }
       message.append('.')
-      val err: XPathException = new XPathException(message.toString)
+      val err = new XPathException(message.toString)
       err.setErrorCode("XQST0093")
       err.setIsStaticError(true)
       val loc: Loc = new Loc(getSystemId, lineNumber, -1)
@@ -574,7 +574,7 @@ class QueryModule extends StaticContext {
         executable.getGlobalContextRequirement
       if (gcr != null && gcr.getDefaultValue != null) {
         val info: ContextItemStaticInfo = getConfiguration
-          .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
+          .makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
         gcr.setDefaultValue(gcr.getDefaultValue.typeCheck(visitor, info))
       }
     }
@@ -605,7 +605,7 @@ class QueryModule extends StaticContext {
           }
         } else {
           if (`var`.isPrivate) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Variable $" + qName.getDisplayName + " is private")
             err.setErrorCode("XPST0008")
             err.setIsStaticError(true)
@@ -613,7 +613,7 @@ class QueryModule extends StaticContext {
           }
         }
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Variable $" + qName.getDisplayName + " has not been declared")
         err.setErrorCode("XPST0008")
         err.setIsStaticError(true)
@@ -626,7 +626,7 @@ class QueryModule extends StaticContext {
         if (`var`.getSystemId == null) {
           message += " (no base URI known)"
         }
-        val err: XPathException = new XPathException(message, "XPST0008")
+        val err = new XPathException(message, "XPST0008")
         err.setIsStaticError(true)
         throw err
       }
@@ -649,7 +649,7 @@ class QueryModule extends StaticContext {
       val name: StructuredQName = function.getFunctionName
       val t: SchemaType = config.getSchemaType(name)
       if (t != null && t.isAtomicType) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Function name " + function.getDisplayName +
             " clashes with the name of the constructor function for an atomic type")
         err.setErrorCode("XQST0034")
@@ -699,13 +699,13 @@ class QueryModule extends StaticContext {
         }
       }
       if (`var` == null) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Unresolved reference to variable $" + uv.getVariableQName.getDisplayName)
         err.setErrorCode("XPST0008")
         err.setIsStaticError(true)
         throw err
       } else if (`var`.isPrivate && `var`.getSystemId != getSystemId) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot reference a private variable in a different module")
         err.setErrorCode("XPST0008")
         err.setIsStaticError(true)
@@ -791,14 +791,14 @@ class QueryModule extends StaticContext {
         "Null namespace URI supplied to declarePrologNamespace()")
     }
     if ((prefix == "xml") != (uri == NamespaceConstant.XML)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Invalid declaration of the XML namespace")
       err.setErrorCode("XQST0070")
       err.setIsStaticError(true)
       throw err
     }
     if (explicitPrologNamespaces.get(prefix) != null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Duplicate declaration of namespace prefix \"" + prefix +
           '"')
       err.setErrorCode("XQST0033")

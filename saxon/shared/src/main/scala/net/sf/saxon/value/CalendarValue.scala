@@ -143,14 +143,14 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
   def adjustTimezone(tz: DayTimeDurationValue): CalendarValue = {
     val microseconds: Long = tz.getLengthInMicroseconds
     if (microseconds % 60000000 != 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Timezone is not an integral number of minutes")
       err.setErrorCode("FODT0003")
       throw err
     }
     val tzminutes: Int = (microseconds / 60000000).toInt
     if (Math.abs(tzminutes) > 14 * 60) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Timezone out of range (-14:00 to +14:00)")
       err.setErrorCode("FODT0003")
       throw err

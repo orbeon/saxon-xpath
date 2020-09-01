@@ -42,7 +42,7 @@ class JAXPVariableReference(private var name: StructuredQName,
 
   /*@NotNull*/
 
-  def getItemType(): ItemType = AnyItemType.getInstance
+  def getItemType(): ItemType = AnyItemType
 
   def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 

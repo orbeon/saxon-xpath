@@ -1,13 +1,11 @@
 package net.sf.saxon.value
 
-import net.sf.saxon.model.ItemType
-import net.sf.saxon.model.TypeHierarchy
-import net.sf.saxon.om.Genre
-import net.sf.saxon.trans.Err
 import java.util.Objects
 
-import ObjectValue._
+import net.sf.saxon.model.{ItemType, TypeHierarchy}
+import net.sf.saxon.om.Genre
 import net.sf.saxon.om.Genre.Genre
+import net.sf.saxon.trans.Err
 
 
 object ObjectValue {
@@ -19,7 +17,7 @@ object ObjectValue {
 
 class ObjectValue[T](`object`: T) extends ExternalObject[T] {
 
-  private var value: T =
+  private val value: T =
     Objects.requireNonNull(`object`, "External object cannot wrap a Java null")
 
   override def getGenre(): Genre = Genre.EXTERNAL

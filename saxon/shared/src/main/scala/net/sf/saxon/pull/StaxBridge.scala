@@ -166,7 +166,7 @@ class StaxBridge extends PullProvider {
             message = message.substring(c + 10)
           }
         }
-        val err: XPathException =
+        val err =
           new XPathException("Error reported by XML parser: " + message, e)
         err.setErrorCode(SaxonErrorCode.SXXP0003)
         err.setLocator(translateLocation(e.getLocation))

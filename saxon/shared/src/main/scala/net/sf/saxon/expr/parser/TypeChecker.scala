@@ -52,15 +52,16 @@ object TypeChecker {
     val reqCard: Int = req.getCardinality
     var suppliedItemType: ItemType = null
     var suppliedCard: Int = -1
-    var cardOK: Boolean = reqCard == StaticProperty.ALLOWS_ZERO_OR_MORE
-    if (!cardOK) {
+
+    var cardOK = reqCard == StaticProperty.ALLOWS_ZERO_OR_MORE
+    if (! cardOK) {
       suppliedCard = exp.getCardinality
       cardOK = Cardinality.subsumes(reqCard, suppliedCard)
     }
-    var itemTypeOK: Boolean = req.getPrimaryType.isInstanceOf[AnyItemType]
-    if (!itemTypeOK) {
+    var itemTypeOK = req.getPrimaryType eq AnyItemType
+    if (! itemTypeOK) {
       suppliedItemType = exp.getItemType
-      val relation: Affinity = th.relationship(reqItemType, suppliedItemType)
+      val relation = th.relationship(reqItemType, suppliedItemType)
       itemTypeOK = relation == SAME_TYPE || relation == SUBSUMES
     }
     if (itemTypeOK && cardOK) {
@@ -68,32 +69,33 @@ object TypeChecker {
     }
     if (suppliedCard == -1) {
       suppliedCard =
-        if (suppliedItemType.isInstanceOf[ErrorType]) StaticProperty.EMPTY
-        else exp.getCardinality
-      if (!cardOK) {
+        if (suppliedItemType.isInstanceOf[ErrorType])
+          StaticProperty.EMPTY
+        else
+          exp.getCardinality
+      if (! cardOK)
         cardOK = Cardinality.subsumes(reqCard, suppliedCard)
-      }
     }
     if (cardOK && suppliedCard == StaticProperty.EMPTY) {
       return exp
     }
-    if (suppliedItemType == null) {
+
+    if (suppliedItemType == null)
       suppliedItemType = exp.getItemType
-    }
+
     if (suppliedCard == StaticProperty.EMPTY && ((reqCard & StaticProperty.ALLOWS_ZERO) == 0)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "An empty sequence is not allowed as the " + role.getMessage,
         role.getErrorCode,
         supplied.getLocation)
       err.setIsTypeError(role.isTypeError)
       throw err
     }
-    val relation: Affinity = th.relationship(suppliedItemType, reqItemType)
+    val relation = th.relationship(suppliedItemType, reqItemType)
     if (relation == DISJOINT) {
-      if (Cardinality.allowsZero(suppliedCard) && Cardinality.allowsZero(
-        reqCard)) {
+      if (Cardinality.allowsZero(suppliedCard) && Cardinality.allowsZero(reqCard)) {
         if (suppliedCard != StaticProperty.EMPTY) {
-          val msg: String = "Required item type of " + role.getMessage + " is " +
+          val msg = "Required item type of " + role.getMessage + " is " +
             reqItemType +
             "; supplied value (" +
             supplied.toShortString() +
@@ -103,21 +105,21 @@ object TypeChecker {
           env.issueWarning(msg, supplied.getLocation)
         }
       } else {
-        val msg: String = role.composeErrorMessage(reqItemType, supplied, th)
-        val err: XPathException =
+        val msg = role.composeErrorMessage(reqItemType, supplied, th)
+        val err =
           new XPathException(msg, role.getErrorCode, supplied.getLocation)
         err.setIsTypeError(role.isTypeError)
         throw err
       }
     }
-    if (!(relation == SAME_TYPE || relation == SUBSUMED_BY)) {
-      val cexp: Expression = new ItemChecker(exp, reqItemType, role)
+    if (! (relation == SAME_TYPE || relation == SUBSUMED_BY)) {
+      val cexp = new ItemChecker(exp, reqItemType, role)
       cexp.adoptChildExpression(exp)
       exp = cexp
     }
-    if (!cardOK) {
+    if (! cardOK) {
       if (exp.isInstanceOf[Literal]) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Required cardinality of " + role.getMessage + " is " +
             Cardinality.toString(reqCard) +
             "; supplied value has cardinality " +
@@ -128,8 +130,7 @@ object TypeChecker {
         err.setIsTypeError(role.isTypeError)
         throw err
       } else {
-        val cexp: Expression =
-          CardinalityChecker.makeCardinalityChecker(exp, reqCard, role)
+        val cexp = CardinalityChecker.makeCardinalityChecker(exp, reqCard, role)
         cexp.adoptChildExpression(exp)
         exp = cexp
       }
@@ -149,9 +150,9 @@ object TypeChecker {
       item
     } != null) {
       { count += 1;}
-      if (!reqItemType.matches(item,
+      if (! reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Required type is " + reqItemType + "; supplied value has type " +
             UType.getUType(`val`.materialize()))
         err.setIsTypeError(true)
@@ -161,14 +162,14 @@ object TypeChecker {
     }
     val reqCardinality: Int = requiredType.getCardinality
     if (count == 0 && !Cardinality.allowsZero(reqCardinality)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Required type does not allow empty sequence, but supplied value is empty")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
       return err
     }
     if (count > 1 && !Cardinality.allowsMany(reqCardinality)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Required type requires a singleton sequence; supplied value contains " +
           count +
           " items")
@@ -177,7 +178,7 @@ object TypeChecker {
       return err
     }
     if (count > 0 && reqCardinality == StaticProperty.EMPTY) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Required type requires an empty sequence, but supplied value is non-empty")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
@@ -198,8 +199,8 @@ object TypeChecker {
       th.relationship(t, BuiltInAtomicType.UNTYPED_ATOMIC) ==
         DISJOINT &&
       th.relationship(t, NumericType.getInstance) == DISJOINT &&
-      !(t.isInstanceOf[JavaExternalObjectType])) {
-      val err: XPathException = new XPathException(
+      !t.isInstanceOf[JavaExternalObjectType]) {
+      val err = new XPathException(
         "Effective boolean value is defined only for sequences containing " +
           "booleans, strings, numbers, URIs, or nodes")
       err.setErrorCode("FORG0006")
@@ -227,16 +228,17 @@ object TypeChecker {
                            `type`: BuiltInAtomicType): Expression = {
     val rules: ConversionRules = exp.getConfiguration.getConversionRules
     converter.setConversionRules(rules)
-    if (exp.isInstanceOf[Literal] &&
-      exp.asInstanceOf[Literal].value.isInstanceOf[AtomicValue]) {
-      val result: ConversionResult = converter.convert(
-        exp.asInstanceOf[Literal].value.asInstanceOf[AtomicValue])
-      if (result.isInstanceOf[AtomicValue]) {
-        val converted: Literal =
-          Literal.makeLiteral(result.asInstanceOf[AtomicValue], exp)
-        ExpressionTool.copyLocationInfo(exp, converted)
-        return converted
-      }
+    exp match {
+      case literal: Literal if literal.value.isInstanceOf[AtomicValue] =>
+        val result = converter.convert(literal.value.asInstanceOf[AtomicValue])
+        result match {
+          case atomicValue: AtomicValue =>
+            val converted = Literal.makeLiteral(atomicValue, exp)
+            ExpressionTool.copyLocationInfo(exp, converted)
+            return converted
+          case _ =>
+        }
+      case _ =>
     }
     val asc: AtomicSequenceConverter = new AtomicSequenceConverter(exp, `type`)
     asc.setConverter(converter)
@@ -271,32 +273,33 @@ class TypeChecker {
       suppliedCard = exp.getCardinality
       cardOK = Cardinality.subsumes(reqCard, suppliedCard)
     }
-    var itemTypeOK: Boolean = reqItemType.isInstanceOf[AnyItemType]
-    if (reqCard == StaticProperty.ALLOWS_ZERO) {
+
+    var itemTypeOK = reqItemType eq AnyItemType
+    if (reqCard == StaticProperty.ALLOWS_ZERO)
       itemTypeOK = true
-    }
-    if (!itemTypeOK) {
+
+    if (! itemTypeOK) {
       suppliedItemType = exp.getItemType
       if (reqItemType == null || suppliedItemType == null) {
         throw new NullPointerException()
       }
-      val relation: Affinity = th.relationship(reqItemType, suppliedItemType)
+      val relation = th.relationship(reqItemType, suppliedItemType)
       itemTypeOK = relation == Affinity.SAME_TYPE || relation == Affinity.SUBSUMES
     }
-    if (!itemTypeOK) {
+    if (! itemTypeOK) {
       if (reqItemType.isPlainType) {
         if (!suppliedItemType.isPlainType && !(suppliedCard == StaticProperty.EMPTY)) {
           if (!suppliedItemType.isAtomizable(th)) {
             var shortItemType: String = null
             shortItemType =
-              if (suppliedItemType.isInstanceOf[TupleType]) "a tuple type"
-              else if (suppliedItemType.isInstanceOf[MapType]) "a map type"
-              else if (suppliedItemType.isInstanceOf[FunctionItemType])
-                "a function type"
-              else if (suppliedItemType.isInstanceOf[NodeTest])
-                "an element type with element-only content"
-              else suppliedItemType.toString
-            val err: XPathException = new XPathException(
+              suppliedItemType match {
+                case _: TupleType => "a tuple type"
+                case _: MapType => "a map type"
+                case _: FunctionItemType => "a function type"
+                case _: NodeTest => "an element type with element-only content"
+                case _ => suppliedItemType.toString
+              }
+            val err = new XPathException(
               "An atomic value is required for the " + role.getMessage +
                 ", but the supplied type is " +
                 shortItemType +
@@ -325,7 +328,7 @@ class TypeChecker {
         if (suppliedItemType == BuiltInAtomicType.UNTYPED_ATOMIC &&
           !(reqItemType == BuiltInAtomicType.UNTYPED_ATOMIC || reqItemType == BuiltInAtomicType.ANY_ATOMIC)) {
           if (reqItemType.asInstanceOf[PlainType].isNamespaceSensitive) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "An untyped atomic value cannot be converted to a QName or NOTATION as required for the " +
                 role.getMessage,
               "XPTY0117",
@@ -398,111 +401,109 @@ class TypeChecker {
 
           }
         }
-        if (reqItemType.isInstanceOf[AtomicType]) {
-          val rt: Int = reqItemType.asInstanceOf[AtomicType].getFingerprint
-          if (rt == StandardNames.XS_DOUBLE &&
-            th.relationship(suppliedItemType, NumericType.getInstance) !=
-              DISJOINT) {
-            val cexp: Expression = makePromoterToDouble(exp)
-            if (cexp.isInstanceOf[AtomicSequenceConverter]) {
-              cexp
-                .asInstanceOf[AtomicSequenceConverter]
-                .setRoleDiagnostic(role)
-            }
-            ExpressionTool.copyLocationInfo(exp, cexp)
-            exp = cexp
-            try exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
-            catch {
-              case err: XPathException => {
-                err.maybeSetLocation(exp.getLocation)
-                err.setIsStaticError(true)
-                throw err
+        reqItemType match {
+          case atomicType: AtomicType =>
+            val rt = atomicType.getFingerprint
+            if (rt == StandardNames.XS_DOUBLE &&
+              th.relationship(suppliedItemType, NumericType.getInstance) != DISJOINT) {
+              val cexp = makePromoterToDouble(exp)
+              cexp match {
+                case converter: AtomicSequenceConverter =>
+                  converter.setRoleDiagnostic(role)
+                case _ =>
               }
-
-            }
-            suppliedItemType = BuiltInAtomicType.DOUBLE
-            suppliedCard = -1
-          } else if (rt == StandardNames.XS_FLOAT &&
-            th.relationship(suppliedItemType, NumericType.getInstance) !=
-              DISJOINT &&
-            !th.isSubType(suppliedItemType, BuiltInAtomicType.DOUBLE)) {
-            val cexp: Expression = makePromoterToFloat(exp)
-            if (cexp.isInstanceOf[AtomicSequenceConverter]) {
-              cexp
-                .asInstanceOf[AtomicSequenceConverter]
-                .setRoleDiagnostic(role)
-            }
-            ExpressionTool.copyLocationInfo(exp, cexp)
-            exp = cexp
-            try exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
-            catch {
-              case err: XPathException => {
-                err.maybeSetLocation(exp.getLocation)
-                err.setFailingExpression(supplied)
-                err.setIsStaticError(true)
-                throw err
+              ExpressionTool.copyLocationInfo(exp, cexp)
+              exp = cexp
+              try
+                exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
+              catch {
+                case err: XPathException => {
+                  err.maybeSetLocation(exp.getLocation)
+                  err.setIsStaticError(true)
+                  throw err
+                }
               }
+              suppliedItemType = BuiltInAtomicType.DOUBLE
+              suppliedCard = -1
+            } else if (rt == StandardNames.XS_FLOAT &&
+              th.relationship(suppliedItemType, NumericType.getInstance) !=
+                DISJOINT &&
+              !th.isSubType(suppliedItemType, BuiltInAtomicType.DOUBLE)) {
+              val cexp: Expression = makePromoterToFloat(exp)
+              if (cexp.isInstanceOf[AtomicSequenceConverter]) {
+                cexp
+                  .asInstanceOf[AtomicSequenceConverter]
+                  .setRoleDiagnostic(role)
+              }
+              ExpressionTool.copyLocationInfo(exp, cexp)
+              exp = cexp
+              try exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
+              catch {
+                case err: XPathException => {
+                  err.maybeSetLocation(exp.getLocation)
+                  err.setFailingExpression(supplied)
+                  err.setIsStaticError(true)
+                  throw err
+                }
 
+              }
+              suppliedItemType = BuiltInAtomicType.FLOAT
+              suppliedCard = -1
             }
-            suppliedItemType = BuiltInAtomicType.FLOAT
-            suppliedCard = -1
-          }
-          if (rt == StandardNames.XS_STRING &&
-            th.isSubType(suppliedItemType, BuiltInAtomicType.ANY_URI)) {
+            if (rt == StandardNames.XS_STRING &&
+              th.isSubType(suppliedItemType, BuiltInAtomicType.ANY_URI)) {
+              itemTypeOK = true
+              val cexp: Expression = makePromoterToString(exp)
+              cexp match {
+                case converter: AtomicSequenceConverter =>
+                  converter.setRoleDiagnostic(role)
+                case _ =>
+              }
+              ExpressionTool.copyLocationInfo(exp, cexp)
+              exp = cexp
+              try
+                exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
+              catch {
+                case err: XPathException => {
+                  err.maybeSetLocation(exp.getLocation)
+                  err.setFailingExpression(supplied)
+                  err.setIsStaticError(true)
+                  throw err
+                }
+
+              }
+              suppliedItemType = BuiltInAtomicType.STRING
+              suppliedCard = -1
+            }
+          case _ =>
+        }
+      } else reqItemType match {
+        case itemType: FunctionItemType if ! itemType.isArrayType && ! itemType.isMapType =>
+          val r = th.relationship(suppliedItemType, th.getGenericFunctionItemType)
+          if (r != DISJOINT) {
+            if (! suppliedItemType.isInstanceOf[FunctionItemType]) {
+              exp = new ItemChecker(exp, th.getGenericFunctionItemType, role)
+              suppliedItemType = th.getGenericFunctionItemType
+            }
+            exp = makeFunctionSequenceCoercer(
+              exp,
+              itemType,
+              visitor,
+              role)
             itemTypeOK = true
-            val cexp: Expression = makePromoterToString(exp)
-            if (cexp.isInstanceOf[AtomicSequenceConverter]) {
-              cexp
-                .asInstanceOf[AtomicSequenceConverter]
-                .setRoleDiagnostic(role)
-            }
-            ExpressionTool.copyLocationInfo(exp, cexp)
-            exp = cexp
-            try exp = exp.simplify().typeCheck(visitor, defaultContextInfo)
-            catch {
-              case err: XPathException => {
-                err.maybeSetLocation(exp.getLocation)
-                err.setFailingExpression(supplied)
-                err.setIsStaticError(true)
-                throw err
-              }
-
-            }
-            suppliedItemType = BuiltInAtomicType.STRING
-            suppliedCard = -1
           }
-        }
-      } else if (reqItemType.isInstanceOf[FunctionItemType] &&
-        !reqItemType.asInstanceOf[FunctionItemType].isMapType &&
-        !reqItemType.asInstanceOf[FunctionItemType].isArrayType) {
-        val r: Affinity =
-          th.relationship(suppliedItemType, th.getGenericFunctionItemType)
-        if (r != DISJOINT) {
-          if (!(suppliedItemType.isInstanceOf[FunctionItemType])) {
-            exp = new ItemChecker(exp, th.getGenericFunctionItemType, role)
-            suppliedItemType = th.getGenericFunctionItemType
-          }
-          exp = makeFunctionSequenceCoercer(
-            exp,
-            reqItemType.asInstanceOf[FunctionItemType],
-            visitor,
-            role)
-          itemTypeOK = true
-        }
-      } else if (reqItemType
-        .isInstanceOf[JavaExternalObjectType] && reqCard == StaticProperty.EXACTLY_ONE) {
-        if (classOf[Sequence].isAssignableFrom(
-          reqItemType.asInstanceOf[JavaExternalObjectType].getJavaClass)) {
-          itemTypeOK = true
-        } else if (supplied.isInstanceOf[FunctionCall]) {
-          if (supplied
-            .asInstanceOf[FunctionCall]
-            .adjustRequiredType(
-              reqItemType.asInstanceOf[JavaExternalObjectType])) {
+        case objectType: JavaExternalObjectType if reqCard == StaticProperty.EXACTLY_ONE =>
+          if (classOf[Sequence].isAssignableFrom(objectType.getJavaClass)) {
             itemTypeOK = true
-            cardOK = true
+          } else supplied match {
+            case call: FunctionCall =>
+              if (call.adjustRequiredType(objectType)) {
+                itemTypeOK = true
+                cardOK = true
+              }
+            case _ =>
           }
-        }
+        case _ =>
       }
     }
     if (itemTypeOK && cardOK) {
@@ -518,7 +519,7 @@ class TypeChecker {
       return exp
     }
     if (suppliedCard == StaticProperty.EMPTY && ((reqCard & StaticProperty.ALLOWS_ZERO) == 0)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "An empty sequence is not allowed as the " + role.getMessage,
         role.getErrorCode,
         supplied.getLocation)
@@ -527,22 +528,23 @@ class TypeChecker {
       throw err
     }
     var relation: Affinity =
-      if (itemTypeOK) SUBSUMED_BY
-      else th.relationship(suppliedItemType, reqItemType)
+      if (itemTypeOK)
+        SUBSUMED_BY
+      else
+        th.relationship(suppliedItemType, reqItemType)
     if (reqCard == StaticProperty.ALLOWS_ZERO) {
       relation = SAME_TYPE
     }
     if (relation == DISJOINT) {
-      if (Cardinality.allowsZero(suppliedCard) && Cardinality.allowsZero(
-        reqCard)) {
+      if (Cardinality.allowsZero(suppliedCard) && Cardinality.allowsZero(reqCard)) {
         if (suppliedCard != StaticProperty.EMPTY) {
           var msg: String = role.composeErrorMessage(reqItemType, supplied, th)
           msg += ". The expression can succeed only if the supplied value is an empty sequence."
           visitor.issueWarning(msg, supplied.getLocation)
         }
       } else {
-        val msg: String = role.composeErrorMessage(reqItemType, supplied, th)
-        val err: XPathException =
+        val msg = role.composeErrorMessage(reqItemType, supplied, th)
+        val err =
           new XPathException(msg, role.getErrorCode, supplied.getLocation)
         err.setIsTypeError(role.isTypeError)
         err.setFailingExpression(supplied)
@@ -550,24 +552,23 @@ class TypeChecker {
       }
     }
     if (!(relation == SAME_TYPE || relation == SUBSUMED_BY)) {
-      if (exp.isInstanceOf[Literal]) {
-        if (req.matches(exp.asInstanceOf[Literal].value, th)) {
-          return exp
-        }
-        val msg: String = role.composeErrorMessage(reqItemType, supplied, th)
-        val err: XPathException =
-          new XPathException(msg, role.getErrorCode, supplied.getLocation)
-        err.setIsTypeError(role.isTypeError)
-        throw err
-      } else {
-        val cexp: Expression = new ItemChecker(exp, reqItemType, role)
-        ExpressionTool.copyLocationInfo(exp, cexp)
-        exp = cexp
+      exp match {
+        case literal: Literal =>
+          if (req.matches(literal.value, th))
+            return exp
+          val msg = role.composeErrorMessage(reqItemType, supplied, th)
+          val err = new XPathException(msg, role.getErrorCode, supplied.getLocation)
+          err.setIsTypeError(role.isTypeError)
+          throw err
+        case _ =>
+          val cexp = new ItemChecker(exp, reqItemType, role)
+          ExpressionTool.copyLocationInfo(exp, cexp)
+          exp = cexp
       }
     }
     if (!cardOK) {
       if (exp.isInstanceOf[Literal]) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Required cardinality of " + role.getMessage + " is " +
             Cardinality.toString(reqCard) +
             "; supplied value has cardinality " +
@@ -599,5 +600,4 @@ class TypeChecker {
 
   def processValueOf(select: Expression, config: Configuration): Expression =
     select
-
 }

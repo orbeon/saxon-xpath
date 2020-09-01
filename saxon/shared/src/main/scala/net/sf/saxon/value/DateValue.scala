@@ -302,7 +302,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
       while (!isValidDate(y, m, d)) d -= 1
       new DateValue(y, m.toByte, d.toByte, getTimezoneInMinutes, hasNoYearZero)
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Date arithmetic is not available for xs:duration, only for its subtypes")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
@@ -312,7 +312,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   override def subtract(other: CalendarValue,
                         context: XPathContext): DayTimeDurationValue = {
     if (!(other.isInstanceOf[DateValue])) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "First operand of '-' is a date, but the second is not")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")

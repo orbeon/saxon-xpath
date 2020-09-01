@@ -39,7 +39,7 @@ class IndependentContext(config: Configuration)
 
    var externalResolver: NamespaceResolver = null
 
-   var requiredContextItemType: ItemType = AnyItemType.getInstance
+   var requiredContextItemType: ItemType = AnyItemType
 
   var importedSchemaNamespaces: Set[String] = new HashSet()
 

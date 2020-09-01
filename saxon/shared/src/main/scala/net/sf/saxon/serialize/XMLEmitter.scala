@@ -215,7 +215,7 @@ class XMLEmitter extends Emitter {
         if (unfailing) {
           version = "1.0"
         } else {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "XML version must be 1.0 or 1.1")
           err.setErrorCode("SESU0013")
           throw err
@@ -225,7 +225,7 @@ class XMLEmitter extends Emitter {
         outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM) !=
           null) {
         if (!unfailing) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Values of 'version', 'omit-xml-declaration', and 'doctype-system' conflict")
           err.setErrorCode("SEPM0009")
           throw err
@@ -241,7 +241,7 @@ class XMLEmitter extends Emitter {
       if (unfailing) {
         undeclareNamespaces = false
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot undeclare namespaces with XML version 1.0")
         err.setErrorCode("SEPM0010")
         throw err
@@ -255,7 +255,7 @@ class XMLEmitter extends Emitter {
     if (standalone != null) {
       requireWellFormed = true
       if (omitXMLDeclaration.==("yes") && !unfailing) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Values of 'standalone' and 'omit-xml-declaration' conflict")
         err.setErrorCode("SEPM0009")
         throw err
@@ -323,7 +323,7 @@ class XMLEmitter extends Emitter {
       openDocument()
     } else if (requireWellFormed && elementStack.isEmpty && startedElement &&
       !unfailing) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "When 'standalone' or 'doctype-system' is specified, " +
           "the document must be well-formed; but this document contains more than one top-level element")
       err.setErrorCode("SEPM0004")
@@ -334,7 +334,7 @@ class XMLEmitter extends Emitter {
     if (!allCharactersEncodable) {
       val badchar: Int = testCharacters(displayName)
       if (badchar != 0) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Element name contains a character (decimal + " + badchar +
             ") not available in the selected encoding")
         err.setErrorCode("SERE0008")
@@ -393,7 +393,7 @@ class XMLEmitter extends Emitter {
     } else if (nsprefix.==("xml")) {} else {
       val badchar: Int = testCharacters(nsprefix)
       if (badchar != 0) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Namespace prefix contains a character (decimal + " +
             badchar +
             ") not available in the selected encoding")
@@ -425,7 +425,7 @@ class XMLEmitter extends Emitter {
         if (unfailing) {
           displayName = convertToAscii(displayName)
         } else {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Attribute name contains a character (decimal + " + badchar +
               ") not available in the selected encoding")
           err.setErrorCode("SERE0008")
@@ -538,7 +538,7 @@ class XMLEmitter extends Emitter {
     }
     if (requireWellFormed && elementStack.isEmpty && !Whitespace.isWhite(chars) &&
       !unfailing) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "When 'standalone' or 'doctype-system' is specified, " +
           "the document must be well-formed; but this document contains a top-level text node")
       err.setErrorCode("SEPM0004")
@@ -630,7 +630,7 @@ class XMLEmitter extends Emitter {
       if (unfailing) {
         targetVar = convertToAscii(targetVar)
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Character in processing instruction name cannot be represented " +
             "in the selected encoding (code " +
             x +
@@ -644,7 +644,7 @@ class XMLEmitter extends Emitter {
       if (unfailing) {
         dataVar = convertToAscii(dataVar)
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Character in processing instruction data cannot be represented " +
             "in the selected encoding (code " +
             x +
@@ -793,7 +793,7 @@ class XMLEmitter extends Emitter {
       if (unfailing) {
         charsVar = convertToAscii(charsVar)
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Character in comment cannot be represented " + "in the selected encoding (code " +
             x +
             ')')

@@ -76,7 +76,7 @@ class XML10ContentChecker(next: Receiver) extends ProxyReceiver(next) {
         ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
       }
       if (!XMLCharacterData.isValid10(ch32)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The result tree contains a character not allowed by XML 1.0 (hex " +
             java.lang.Integer.toHexString(ch32) +
             ')')

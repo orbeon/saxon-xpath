@@ -145,7 +145,7 @@ abstract class Instruction extends Expression with TailCallReturner {
 
   def someOperandCreatesNewNodes(): Boolean = {
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       val props: Int = child.getSpecialProperties
       if ((props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {
         true

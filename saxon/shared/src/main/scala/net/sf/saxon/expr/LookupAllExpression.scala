@@ -38,7 +38,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     } else if (base.isInstanceOf[ArrayItemType]) {
       base.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 
@@ -59,7 +59,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
         Affinity.DISJOINT &&
         th.relationship(containerType, AnyFunctionType.getInstance) ==
           Affinity.DISJOINT) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The left-hand operand of '?' must be a map or an array; the supplied expression is of type " +
             containerType,
           "XPTY0004")

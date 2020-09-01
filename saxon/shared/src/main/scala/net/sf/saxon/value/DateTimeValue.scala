@@ -112,7 +112,7 @@ object DateTimeValue {
     val tz1: Int = date.getTimezoneInMinutes
     val tz2: Int = time.getTimezoneInMinutes
     if (tz1 != NO_TIMEZONE && tz2 != NO_TIMEZONE && tz1 != tz2) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Supplied date and time are in different timezones")
       err.setErrorCode("FORG0008")
       throw err
@@ -835,7 +835,7 @@ class DateTimeValue extends CalendarValue
       dtv.hasNoYearZero = hasNoYearZero
       dtv
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "DateTime arithmetic is not supported on xs:duration, only on its subtypes")
       err.setErrorCode("XPTY0004")
       err.setIsTypeError(true)
@@ -845,7 +845,7 @@ class DateTimeValue extends CalendarValue
   override def subtract(other: CalendarValue,
                         context: XPathContext): DayTimeDurationValue = {
     if (!(other.isInstanceOf[DateTimeValue])) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "First operand of '-' is a dateTime, but the second is not")
       err.setErrorCode("XPTY0004")
       err.setIsTypeError(true)

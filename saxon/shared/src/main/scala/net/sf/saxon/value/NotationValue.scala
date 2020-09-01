@@ -17,7 +17,7 @@ class NotationValue(prefix: String,
   var lUri = uri
 
   if (check && !NameChecker.isValidNCName(localName)) {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Malformed local name in NOTATION: '" + localName + '\'')
     err.setErrorCode("FORG0001")
     throw err
@@ -28,7 +28,7 @@ class NotationValue(prefix: String,
   lUri = if (lUri == null) "" else lUri
 
   if (check && uri.isEmpty && lPrefix.length != 0) {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "NOTATION has null namespace but non-empty lPrefix")
     err.setErrorCode("FOCA0002")
     throw err

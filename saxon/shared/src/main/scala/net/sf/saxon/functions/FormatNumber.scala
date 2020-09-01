@@ -42,7 +42,7 @@ object FormatNumber {
     val picture4: Array[Int] = StringValue.expand(picture)
     val pics: Array[SubPicture] = Array.ofDim[SubPicture](2)
     if (picture4.length == 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "format-number() picture is zero-length")
       err.setErrorCode("FODF1310")
       throw err
@@ -724,7 +724,7 @@ class FormatNumber extends SystemFunction with Callable {
             getRetainedStaticContext)
         } catch {
           case e: XPathException => {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Invalid decimal format name. " + e.getMessage)
             err.setErrorCode("FODF1280")
             throw err
@@ -790,7 +790,7 @@ class FormatNumber extends SystemFunction with Callable {
       getRetainedStaticContext)
     catch {
       case e: XPathException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Invalid decimal format name. " + e.getMessage)
         err.setErrorCode("FODF1280")
         throw err
@@ -799,7 +799,7 @@ class FormatNumber extends SystemFunction with Callable {
     }
     dfs = dfm.getNamedDecimalFormat(qName)
     if (dfs == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "format-number function: decimal-format '" + lexicalName +
           "' is not defined")
       err.setErrorCode("FODF1280")

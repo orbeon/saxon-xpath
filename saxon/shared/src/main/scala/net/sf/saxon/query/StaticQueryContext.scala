@@ -75,7 +75,7 @@ class StaticQueryContext() {
   var default_ElementNamespace: String = NamespaceConstant.NULL
 
   @BeanProperty
-  var requiredContextItemType: ItemType = AnyItemType.getInstance
+  var requiredContextItemType: ItemType = AnyItemType
 
   private var preserveSpace: Boolean = false
 
@@ -157,7 +157,7 @@ class StaticQueryContext() {
       else Validation.STRIP
     preserveSpace = false
     defaultEmptyLeast = true
-    requiredContextItemType = AnyItemType.getInstance
+    requiredContextItemType = AnyItemType
     defaultFunctionNamespace = NamespaceConstant.FN
     default_ElementNamespace = NamespaceConstant.NULL
     moduleURIResolver = null

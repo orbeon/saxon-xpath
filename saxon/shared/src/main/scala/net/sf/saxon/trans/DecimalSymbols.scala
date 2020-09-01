@@ -258,7 +258,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
   private def singleChar(name: String, value: String): Int = {
     val us: UnicodeString = UnicodeString.makeUnicodeString(value)
     if (us.uLength() != 1) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Attribute " + name + " should be a single character",
         errorCodes(ERR_NOT_SINGLE_CHAR))
       err.setIsStaticError(true)
@@ -269,7 +269,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
 
   def checkConsistency(name: StructuredQName): Unit = {
     for (i <- 0.until(10) if inconsistent(i)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Inconsistency in " +
           (if (name == null) "unnamed decimal format. "
           else "decimal format " + name.getDisplayName + ". ") +
@@ -308,7 +308,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
     map.put(getExponentSeparator, "exponent-separator")
     val zero: Int = getZeroDigit
     for (i <- zero until zero + 10 if map.get(i) != null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Inconsistent properties in " +
           (if (name == null) "unnamed decimal format. "
           else "decimal format " + name.getDisplayName + ". ") +
@@ -324,7 +324,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
   private def duplicate(role1: String,
                         role2: String,
                         name: StructuredQName): Unit = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Inconsistent properties in " +
         (if (name == null) "unnamed decimal format. "
         else "decimal format " + name.getDisplayName + ". ") +

@@ -25,15 +25,15 @@ object SequenceType {
   /**
    * A type that allows any sequence of items
    */
-  val ANY_SEQUENCE = AnyItemType.getInstance.zeroOrMore
+  val ANY_SEQUENCE = AnyItemType.zeroOrMore
   /**
    * A type that allows exactly one item, of any kind
    */
-  val SINGLE_ITEM = AnyItemType.getInstance.one
+  val SINGLE_ITEM = AnyItemType.one
   /**
    * A type that allows zero or one items, of any kind
    */
-  val OPTIONAL_ITEM = AnyItemType.getInstance.zeroOrOne
+  val OPTIONAL_ITEM = AnyItemType.zeroOrOne
   /**
    * A type that allows exactly one atomic value
    */
@@ -220,7 +220,7 @@ object SequenceType {
   /**
    * A type that only permits a non-empty sequence
    */
-  val NON_EMPTY_SEQUENCE = makeSequenceType(AnyItemType.getInstance, StaticProperty.ALLOWS_ONE_OR_MORE)
+  val NON_EMPTY_SEQUENCE = makeSequenceType(AnyItemType, StaticProperty.ALLOWS_ONE_OR_MORE)
   /**
    * A type that has no instances
    */

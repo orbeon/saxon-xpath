@@ -123,7 +123,7 @@ object CopyOf {
     var annotation: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
     if (schemaType != null) {
       if (schemaType.isNamespaceSensitive) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot create a parentless attribute whose " + "type is namespace-sensitive (such as xs:QName)")
         err.setErrorCode("XTTE1545")
         throw err
@@ -147,7 +147,7 @@ object CopyOf {
         validation)
       catch {
         case e: ValidationException => {
-          val err: XPathException = XPathException.makeXPathException(e)
+          val err = XPathException.makeXPathException(e)
           err.setErrorCodeQName(e.getErrorCodeQName)
           err.setIsTypeError(true)
           throw err
@@ -157,7 +157,7 @@ object CopyOf {
     } else if (validation == Validation.PRESERVE) {
       annotation = source.getSchemaType.asInstanceOf[SimpleType]
       if (annotation != BuiltInAtomicType.UNTYPED_ATOMIC && annotation.isNamespaceSensitive) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot preserve type annotation when copying an attribute with namespace-sensitive content")
         err.setErrorCode(
           if (context.getController.getExecutable.getHostLanguage ==
@@ -281,7 +281,7 @@ class CopyOf(select: Expression,
           }
           if (e != Affinity.DISJOINT || a != Affinity.DISJOINT) {
             if (in.isInstanceOf[NodeTest]) AnyNodeTest.getInstance
-            else AnyItemType.getInstance
+            else AnyItemType
           } else {
             return in
           }
@@ -351,7 +351,7 @@ class CopyOf(select: Expression,
           } else if (in.isInstanceOf[AtomicType]) {
             return in
           } else {
-            AnyItemType.getInstance
+            AnyItemType
           }
 
       }

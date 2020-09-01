@@ -46,7 +46,7 @@ class FailRuleSet private () extends BuiltInRuleSet {
       (if (item.isInstanceOf[NodeInfo])
          "the node " + Navigator.getPath(item.asInstanceOf[NodeInfo])
        else "the atomic value " + item.getStringValue)
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "No user-defined template rule matches " + id,
       "XTDE0555")
     err.setLocator(locationId.saveLocation())

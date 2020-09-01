@@ -32,7 +32,7 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
   /*@NotNull*/
 
   private def reportMixedItems(): XPathException = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Cannot mix nodes and atomic values in the result of a path expression")
     err.setErrorCode("XPTY0018")
     err.setLocator(loc)

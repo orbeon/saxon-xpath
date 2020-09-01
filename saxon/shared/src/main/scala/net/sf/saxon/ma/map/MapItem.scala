@@ -43,7 +43,7 @@ import scala.jdk.CollectionConverters._
 object MapItem {
 
   def isKnownToConform(value: Sequence, itemType: ItemType): Boolean = {
-    if (itemType == AnyItemType.getInstance) {
+    if (itemType == AnyItemType) {
       return true
     }
     try {
@@ -86,7 +86,7 @@ object MapItem {
     try {
       val first: Item = `val`.head()
       if (first == null) {
-        AnyItemType.getInstance
+        AnyItemType
       } else {
         var `type`: ItemType = null
         `type` =
@@ -99,11 +99,11 @@ object MapItem {
         if (isKnownToConform(`val`, `type`)) {
           `type`
         } else {
-          AnyItemType.getInstance
+          AnyItemType
         }
       }
     } catch {
-      case e: XPathException => AnyItemType.getInstance
+      case e: XPathException => AnyItemType
 
     }
 

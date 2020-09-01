@@ -110,7 +110,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
       return
     }
     if (existing != null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Duplicate definition of function " + function.getDisplayName +
           " (see line " +
           existing.getLineNumber +

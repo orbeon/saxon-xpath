@@ -38,7 +38,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
            validation: Int)
   extends ElementCreator {
 
-  private var selectItemType: ItemType = AnyItemType.getInstance
+  private var selectItemType: ItemType = AnyItemType
 
   private var resultItemType: ItemType = _
 
@@ -59,7 +59,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     typeCheckChildren(visitor, contextInfo)
     selectItemType = contextInfo.getItemType
     if (selectItemType == ErrorType.getInstance) {
-      val err: XPathException =
+      val err =
         new XPathException("No context item supplied for xsl:copy", "XTTE0945")
       err.setIsTypeError(true)
       err.setLocation(getLocation)
@@ -234,7 +234,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
           } else if (selectItemType.isInstanceOf[AtomicType]) {
             selectItemType
           } else {
-            AnyItemType.getInstance
+            AnyItemType
           }
         case _ => throw new IllegalStateException()
 

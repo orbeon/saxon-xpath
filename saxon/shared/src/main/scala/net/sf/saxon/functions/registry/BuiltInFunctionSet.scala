@@ -170,13 +170,13 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
         else
           "Function Q{" + getNamespace + "}" + name
       if (getFunctionDetails(name, -1) == null) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           diagName + "() does not exist or is not available in this environment")
         err.setErrorCode("XPST0017")
         err.setIsStaticError(true)
         throw err
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           diagName + "() cannot be called with " + pluralArguments(arity))
         err.setErrorCode("XPST0017")
         err.setIsStaticError(true)

@@ -32,7 +32,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
     val s: CharSequence = Whitespace.trimWhitespace(in)
 
     if ((s.length & 1) != 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "A hexBinary value must contain an even number of characters")
       err.setErrorCode("FORG0001")
       throw err
@@ -82,7 +82,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
       d = d - 6
     }
     if (d < 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Invalid hexadecimal digit '" + c + "'")
       err.setErrorCode("FORG0001")
       throw err

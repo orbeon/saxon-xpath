@@ -192,7 +192,7 @@ class XQueryFunction extends Declaration with Location {
     body.checkForUpdatingSubexpressions()
     if (isUpdating) {
       if (ExpressionTool.isNotAllowedInUpdatingContext(body)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The body of an updating function must be an updating expression",
           "XUST0002")
         err.setLocator(body.getLocation)
@@ -200,7 +200,7 @@ class XQueryFunction extends Declaration with Location {
       }
     } else {
       if (body.isUpdatingExpression) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The body of a non-updating function must be a non-updating expression",
           "XUST0001")
         err.setLocator(body.getLocation)

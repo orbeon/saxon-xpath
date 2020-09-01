@@ -183,7 +183,7 @@ object UnparsedTextFunction {
             }
           }
           if (!checker.test(ch32)) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "The text file contains a character that is illegal in XML (line=" +
                 line +
                 " column=" +

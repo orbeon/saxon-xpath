@@ -59,9 +59,9 @@ class ApplyFn extends SystemFunction {
     } else if (fnType.isInstanceOf[FunctionItemType]) {
       fnType.asInstanceOf[FunctionItemType].getResultType.getPrimaryType
     } else if (fnType.isInstanceOf[AnyFunctionType]) {
-      AnyItemType.getInstance
+      AnyItemType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 
@@ -109,7 +109,7 @@ class ApplyFn extends SystemFunction {
     if (function.getArity != args.arrayLength()) {
       val errorCode: String =
         if (isDynamicFunctionCall) "XPTY0004" else "FOAP0001"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Number of arguments required for dynamic call to " +
           function.getDescription +
           " is " +

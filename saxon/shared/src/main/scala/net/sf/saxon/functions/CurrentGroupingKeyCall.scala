@@ -49,7 +49,7 @@ class CurrentGroupingKeyCall extends Expression with Callable {
     val result: AtomicSequence =
       if (gi == null) null else gi.getCurrentGroupingKey
     if (result == null) {
-      val err: XPathException =
+      val err =
         new XPathException("There is no current grouping key", "XTDE1071")
       err.setLocation(getLocation)
       throw err

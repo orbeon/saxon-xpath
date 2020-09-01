@@ -142,7 +142,7 @@ object Evaluator {
         val subsequences: List[GroundedValue] =
           new ArrayList[GroundedValue](children.length)
         for (o <- children) {
-          val child: Expression = o.getChildExpression
+          val child = o.getChildExpression
           if (Cardinality.allowsMany(child.getCardinality)) {
             subsequences.add(child.iterate(context).materialize())
           } else {

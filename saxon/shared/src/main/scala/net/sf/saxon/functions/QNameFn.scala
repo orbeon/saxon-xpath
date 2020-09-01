@@ -32,7 +32,7 @@ object QNameFn {
       val parts: Array[String] = NameChecker.getQNameParts(lex)
 // The QNameValue constructor does not check the prefix
       if (!parts(0).isEmpty && !NameChecker.isValidNCName(parts(0))) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Malformed prefix in QName: '" + parts(0) + '\'')
         err.setErrorCode("FOCA0002")
         throw err

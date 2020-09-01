@@ -133,7 +133,7 @@ class ErrorExpression(var exception: XmlProcessingError)
    *
    * @return Type.ITEM (meaning not known in advance)
    */
-  override def getItemType = AnyItemType.getInstance
+  override def getItemType = AnyItemType
 
   /**
    * Determine the static cardinality

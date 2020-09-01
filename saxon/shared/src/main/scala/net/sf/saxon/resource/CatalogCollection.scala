@@ -103,7 +103,7 @@ class CatalogCollection //TODO we might know the catalog File already
       context.getConfiguration.buildDocumentTree(source, options)
     if (catalog == null) {
 // we failed to read the catalogue
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Failed to load collection catalog " + href)
       err.setErrorCode("FODC0004")
       err.setXPathContext(context)
@@ -124,7 +124,7 @@ class CatalogCollection //TODO we might know the catalog File already
             "}" +
             top.getLocalPart +
             ")"
-      val err: XPathException = new XPathException(message)
+      val err = new XPathException(message)
       err.setErrorCode("FODC0004")
       err.setXPathContext(context)
       throw err
@@ -137,7 +137,7 @@ class CatalogCollection //TODO we might know the catalog File already
       } else if ("false" == stableAtt) {
         stable = false
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The 'stable' attribute of element <collection> must be true or false")
         err.setErrorCode("FODC0004")
         err.setXPathContext(context)
@@ -153,7 +153,7 @@ class CatalogCollection //TODO we might know the catalog File already
       item
     }) != null) {
       if (!("doc" == item.getLocalPart && item.getURI.isEmpty)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Children of <collection> element must be <doc> elements")
         err.setErrorCode("FODC0004")
         err.setXPathContext(context)
@@ -161,7 +161,7 @@ class CatalogCollection //TODO we might know the catalog File already
       }
       val hrefAtt: String = item.getAttributeValue("", "href")
       if (hrefAtt == null) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "A <doc> element in the collection catalog has no @href attribute")
         err.setErrorCode("FODC0004")
         err.setXPathContext(context)
@@ -171,7 +171,7 @@ class CatalogCollection //TODO we might know the catalog File already
       try uri = new URI(item.getBaseURI).resolve(hrefAtt).toString
       catch {
         case e: URISyntaxException => {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Invalid base URI or href URI in collection catalog: (" +
               item.getBaseURI +
               ", " +

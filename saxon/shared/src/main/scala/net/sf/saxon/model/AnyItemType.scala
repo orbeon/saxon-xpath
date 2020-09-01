@@ -1,4 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * An implementation of ItemType that matches any item (node or atomic value)
+  */
+
 package net.sf.saxon.model
 
 import net.sf.saxon.expr.StaticProperty
@@ -6,26 +15,11 @@ import net.sf.saxon.om.{Genre, Item}
 import net.sf.saxon.value.SequenceType
 
 
-object AnyItemType {
-
-  /*@NotNull*/
-
-  private var theInstance: AnyItemType = new AnyItemType()
-
-  /*@NotNull*/
-
-  def getInstance(): AnyItemType = theInstance
-
-}
-
-class AnyItemType private () extends ItemType.WithSequenceTypeCache {
+object AnyItemType extends ItemType.WithSequenceTypeCache {
 
   private var _one: SequenceType = _
-
   private var _oneOrMore: SequenceType = _
-
   private var _zeroOrOne: SequenceType = _
-
   private var _zeroOrMore: SequenceType = _
 
   /**
@@ -93,40 +87,26 @@ class AnyItemType private () extends ItemType.WithSequenceTypeCache {
   override def hashCode(): Int = "AnyItemType".hashCode
 
   def one(): SequenceType = {
-    if (_one == null) {
+    if (_one == null)
       _one = new SequenceType(this, StaticProperty.EXACTLY_ONE)
-    }
     _one
   }
 
   def zeroOrOne(): SequenceType = {
-    if (_zeroOrOne == null) {
+    if (_zeroOrOne == null)
       _zeroOrOne = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_ONE)
-    }
     _zeroOrOne
   }
 
   def oneOrMore(): SequenceType = {
-    if (_oneOrMore == null) {
+    if (_oneOrMore == null)
       _oneOrMore = new SequenceType(this, StaticProperty.ALLOWS_ONE_OR_MORE)
-    }
     _oneOrMore
   }
 
   def zeroOrMore(): SequenceType = {
-    if (_zeroOrMore == null) {
+    if (_zeroOrMore == null)
       _zeroOrMore = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_MORE)
-    }
     _zeroOrMore
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An implementation of ItemType that matches any item (node or atomic value)
-  */

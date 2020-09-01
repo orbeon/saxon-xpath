@@ -133,7 +133,7 @@ object PrimitiveUType extends Enumeration {
       case NOTATION => BuiltInAtomicType.NOTATION
       case UNTYPED_ATOMIC => BuiltInAtomicType.UNTYPED_ATOMIC
       case EXTENSION => //return JavaExternalObjectType.EXTERNAL_OBJECT_TYPE;
-        AnyItemType.getInstance
+        AnyItemType
       case _ => throw new IllegalArgumentException()
 
     }

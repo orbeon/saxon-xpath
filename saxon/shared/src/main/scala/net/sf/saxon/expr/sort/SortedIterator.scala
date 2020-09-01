@@ -176,7 +176,7 @@ class SortedIterator ()
     )
     catch {
       case e: ClassCastException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Non-comparable types found while sorting: " + e.getMessage)
         if (hostLanguage == HostLanguage.XSLT) {
           err.setErrorCode("XTDE1030")

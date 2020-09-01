@@ -32,7 +32,7 @@ object StandardCollectionFinder {
 
   def checkNotNull(collectionURI: String, context: XPathContext): Unit = {
     if (collectionURI == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "No default collection has been defined")
       err.setErrorCode("FODC0002")
       err.setXPathContext(context)
@@ -44,7 +44,7 @@ object StandardCollectionFinder {
                       resolvedURI: URI,
                       context: XPathContext): Unit = {
     if (!file.exists()) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The file or directory " + resolvedURI + " does not exist")
       err.setErrorCode("FODC0002")
       err.setXPathContext(context)
@@ -86,7 +86,7 @@ class StandardCollectionFinder extends CollectionFinder {
       }
     } catch {
       case e: URISyntaxException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Invalid relative URI " + Err.wrap(collectionURI1, Err.VALUE) +
             " passed to collection() function")
         err.setErrorCode("FODC0004")

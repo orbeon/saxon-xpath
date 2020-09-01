@@ -68,7 +68,7 @@ class OrderByClausePush(outputter: Outputter,
     })
     catch {
       case e: ClassCastException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Non-comparable types found while sorting: " + e.getMessage)
         err.setErrorCode("XPTY0004")
         throw err

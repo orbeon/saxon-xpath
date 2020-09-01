@@ -71,7 +71,7 @@ class XQueryExpression(var expression: Expression,
     expression.checkForUpdatingSubexpressions()
     val contextReq: GlobalContextRequirement = exec.getGlobalContextRequirement
     val req: ItemType =
-      if (contextReq == null) AnyItemType.getInstance
+      if (contextReq == null) AnyItemType
       else contextReq.getRequiredItemType
     val cit: ContextItemStaticInfo =
       config.makeContextItemStaticInfo(req, maybeUndefined = true)

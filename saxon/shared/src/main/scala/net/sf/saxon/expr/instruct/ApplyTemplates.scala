@@ -148,13 +148,13 @@ class ApplyTemplates  ()
         if (implicitSelect) {
           val code: String = e.getErrorCodeLocalPart
           if ("XPTY0020" == code || "XPTY0019" == code) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Cannot apply-templates to child nodes when the context item is an atomic value")
             err.setErrorCode("XTTE0510")
             err.setIsTypeError(true)
             throw err
           } else if ("XPDY0002" == code) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Cannot apply-templates to child nodes when the context item is absent")
             err.setErrorCode("XTTE0510")
             err.setIsTypeError(true)
@@ -253,7 +253,7 @@ override  def optimize(visitor: ExpressionVisitor,
       while (tc != null) tc = tc.processLeavingTail()
     } catch {
       case e: StackOverflowError => {
-        val err: XPathException = new XPathException.StackOverflow(
+        val err = new XPathException.StackOverflow(
           "Too many nested apply-templates calls. The stylesheet may be looping.",
           SaxonErrorCode.SXLM0001,
           getLocation)

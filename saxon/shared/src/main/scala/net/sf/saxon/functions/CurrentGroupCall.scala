@@ -55,7 +55,7 @@ class CurrentGroupCall extends Expression with Callable {
 
   var isInHigherOrderOperand: Boolean = false
 
-  private var itemType: ItemType = AnyItemType.getInstance
+  private var itemType: ItemType = AnyItemType
 
   @BeanProperty
   var controllingInstruction: ForEachGroup = findControllingInstruction(this)
@@ -74,11 +74,11 @@ class CurrentGroupCall extends Expression with Callable {
   override def resetLocalStaticProperties(): Unit = {
     super.resetLocalStaticProperties()
     this.controllingInstruction = null
-    this.itemType = AnyItemType.getInstance
+    this.itemType = AnyItemType
   }
 
   override def getItemType(): ItemType = {
-    if (itemType == AnyItemType.getInstance && controllingInstruction != null) {
+    if (itemType == AnyItemType && controllingInstruction != null) {
       itemType = controllingInstruction.getSelectExpression.getItemType
     }
     itemType
@@ -114,7 +114,7 @@ class CurrentGroupCall extends Expression with Callable {
  override def iterate(c: XPathContext): SequenceIterator = {
     val gi: GroupIterator = c.getCurrentGroupIterator
     if (gi == null) {
-      val err: XPathException =
+      val err =
         new XPathException("There is no current group", "XTDE1061")
       err.setLocation(getLocation)
       throw err

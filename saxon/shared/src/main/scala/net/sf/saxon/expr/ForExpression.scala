@@ -327,7 +327,7 @@ class ForExpression extends Assignation {
     explainSpecializedAttributes(out)
     out.emitAttribute("var", getVariableQName)
     val varType: ItemType = getSequence.getItemType
-    if (varType != AnyItemType.getInstance) {
+    if (varType != AnyItemType) {
       out.emitAttribute("as", AlphaCode.fromItemType(varType))
     }
     out.emitAttribute("slot", "" + getLocalSlotNumber)

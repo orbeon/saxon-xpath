@@ -50,9 +50,10 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    *
    */
   /*@NotNull*/ @throws[XPathException]
-  override def simplify: Expression = {
-    val operand = getBaseExpression.simplify
-    if (requiredItemType.isInstanceOf[AnyItemType]) return operand
+  override def simplify(): Expression = {
+    val operand = getBaseExpression.simplify()
+    if (requiredItemType eq AnyItemType)
+      return operand
     setBaseExpression(operand)
     this
   }

@@ -1352,7 +1352,7 @@ class XPathParser() {
       } catch {
         case err: XPathException =>
           grumble("Unknown Java class " + local, "XPST0051")
-          return AnyItemType.getInstance
+          return AnyItemType
       }
       return config.getJavaExternalObjectType(theClass)
     }
@@ -1525,7 +1525,7 @@ class XPathParser() {
           nextToken()
           expect(Token.RPAR)
           nextToken()
-          primaryType = AnyItemType.getInstance
+          primaryType = AnyItemType
         case "function" =>
           checkLanguageVersion30()
           val annotations = AnnotationList.EMPTY

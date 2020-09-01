@@ -124,7 +124,7 @@ class AtomicSortComparer  (
 // End of fix for 3450
 
    def compareNonComparables(a: AtomicValue, b: AtomicValue): Int = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Values are not comparable (" + Type.displayTypeName(a) +
         ", " +
         Type.displayTypeName(b) +

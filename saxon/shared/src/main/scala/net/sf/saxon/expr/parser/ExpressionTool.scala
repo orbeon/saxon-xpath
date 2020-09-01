@@ -79,7 +79,7 @@ object ExpressionTool {
   @throws[XPathException]
   def unsortedIfHomogeneous(exp: Expression, forStreaming: Boolean): Expression = {
     if (exp.isInstanceOf[Literal]) return exp
-    if (exp.getItemType.isInstanceOf[AnyItemType]) exp
+    if (exp.getItemType eq AnyItemType) exp
     else exp.unordered(retainAllNodes = false, forStreaming = forStreaming)
   }
 

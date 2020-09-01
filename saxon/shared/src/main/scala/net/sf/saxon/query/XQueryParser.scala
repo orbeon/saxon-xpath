@@ -308,7 +308,7 @@ class XQueryParser extends XPathParser {
     }
     val requirement = exec.getGlobalContextRequirement
     if (requirement != null) requirement.addRequiredItemType(mainModule.getRequiredContextItemType)
-    else if (mainModule.getRequiredContextItemType != null && (mainModule.getRequiredContextItemType ne AnyItemType.getInstance)) {
+    else if (mainModule.getRequiredContextItemType != null && (mainModule.getRequiredContextItemType ne AnyItemType)) {
       val req = new GlobalContextRequirement
       req.setExternal(true)
       req.addRequiredItemType(mainModule.getRequiredContextItemType)
@@ -1406,7 +1406,7 @@ class XQueryParser extends XPathParser {
     req.setAbsentFocus(false)
     t.setState(Tokenizer.BARE_NAME_STATE)
     nextToken()
-    var requiredType: ItemType = AnyItemType.getInstance
+    var requiredType: ItemType = AnyItemType
     if (t.currentToken == Token.AS) {
       t.setState(Tokenizer.SEQUENCE_TYPE_STATE)
       nextToken()
@@ -1423,7 +1423,7 @@ class XQueryParser extends XPathParser {
       exp = CardinalityChecker.makeCardinalityChecker(exp, StaticProperty.EXACTLY_ONE, role)
       val visitor = ExpressionVisitor.make(env)
       exp = exp.simplify
-      val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
+      val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
       exp.setRetainedStaticContext(env.makeRetainedStaticContext)
       exp = exp.typeCheck(visitor, info)
       req.setDefaultValue(exp)
@@ -1451,7 +1451,7 @@ class XQueryParser extends XPathParser {
       if (gcr.getDefaultValue == null && req.getDefaultValue != null) gcr.setDefaultValue(req.getDefaultValue)
 
       for (otherType <- gcr.getRequiredItemTypes.asScala) {
-        if (otherType ne AnyItemType.getInstance) {
+        if (otherType ne AnyItemType) {
           val th = env.getConfiguration.getTypeHierarchy
           val rel = th.relationship(requiredType, otherType)
           if (rel eq Affinity.DISJOINT) {

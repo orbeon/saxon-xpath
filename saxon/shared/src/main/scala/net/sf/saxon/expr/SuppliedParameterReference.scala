@@ -56,7 +56,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
     if (`type` != null) {
       `type`.getPrimaryType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
 
   override def getIntrinsicDependencies(): Int =

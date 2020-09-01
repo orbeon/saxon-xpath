@@ -172,7 +172,7 @@ class ValueOf(select: Expression,
         !parentType.asInstanceOf[ComplexType].isSimpleContent &&
         !parentType.asInstanceOf[ComplexType].isMixedContent &&
         !Whitespace.isWhite(selectValue.getStringValue)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The containing element must be of type " + parentType.getDescription +
             ", which does not allow text content " +
             Err.wrap(selectValue.getStringValue))

@@ -64,7 +64,7 @@ object Sum {
           data = next
           return
         } else {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Input to sum() contains a value of type " + next.getPrimitiveType.getDisplayName +
               " which is neither numeric, nor a duration")
           err.setXPathContext(context)
@@ -76,7 +76,7 @@ object Sum {
         if (next.isInstanceOf[UntypedAtomicValue]) {
           next = toDouble.convert(next).asAtomic()
         } else if (!(next.isInstanceOf[NumericValue])) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Input to sum() contains a mix of numeric and non-numeric values")
           err.setXPathContext(context)
           err.setErrorCode("FORG0006")
@@ -87,14 +87,14 @@ object Sum {
       } else if (data.isInstanceOf[DurationValue]) {
         if (!((data.isInstanceOf[DayTimeDurationValue]) || (data
           .isInstanceOf[YearMonthDurationValue]))) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Input to sum() contains a duration that is neither a dayTimeDuration nor a yearMonthDuration")
           err.setXPathContext(context)
           err.setErrorCode("FORG0006")
           throw err
         }
         if (!(next.isInstanceOf[DurationValue])) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Input to sum() contains a mix of duration and non-duration values")
           err.setXPathContext(context)
           err.setErrorCode("FORG0006")
@@ -104,7 +104,7 @@ object Sum {
           .asInstanceOf[DurationValue]
           .add(next.asInstanceOf[DurationValue])
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Input to sum() contains a value of type " + data.getPrimitiveType.getDisplayName +
             " which is neither numeric, nor a duration")
         err.setXPathContext(context)

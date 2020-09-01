@@ -65,7 +65,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
     val controller: Controller = context.getController
     assert(controller != null)
     val listener: TraceListener = controller.getTraceListener
-    val child: Expression = getChild
+    val child = getChild
     if (controller.isTracing) {
       assert(listener != null)
       listener.enter(child, properties, context)
@@ -91,7 +91,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
   override def evaluateItem(context: XPathContext): Item = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val child: Expression = getChild
+    val child = getChild
     if (controller.isTracing) {
       val listener: TraceListener = controller.getTraceListener
       listener.enter(child, properties, context)
@@ -106,7 +106,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
   override def iterate(context: XPathContext): SequenceIterator = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val child: Expression = getChild
+    val child = getChild
     if (controller.isTracing) {
       val listener: TraceListener = controller.getTraceListener
       listener.enter(child, properties, context)

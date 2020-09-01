@@ -78,7 +78,7 @@ object ResultDocument {
   //    assert(controller != null)
   //    if (uri != null) {
   //      if (controller.getDocumentPool.find(uri) != null) {
-  //        val err: XPathException = new XPathException(
+  //        val err = new XPathException(
   //          "Cannot write to a URI that has already been read: " +
   //            (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
   //              "(implicit output URI)"
@@ -90,7 +90,7 @@ object ResultDocument {
   //      val documentKey: DocumentURI = new DocumentURI(uri)
   //      controller.synchronized {
   //        if (!controller.checkUniqueOutputDestination(documentKey)) {
-  //          val err: XPathException = new XPathException(
+  //          val err = new XPathException(
   //            "Cannot write more than one result document to the same URI: " +
   //              (if (uri == Controller.ANONYMOUS_PRINCIPAL_OUTPUT_URI)
   //                "(implicit output URI)"
@@ -140,7 +140,7 @@ object ResultDocument {
               parts = NameChecker.getQNameParts(valStr)
               val prefix: String = parts(0)
               if (prefix.isEmpty) {
-                val err: XPathException = new XPathException(
+                val err = new XPathException(
                   "method must be xml, html, xhtml, text, json, adaptive, or a prefixed name")
                 err.setErrorCode("SEPM0016")
                 err.setIsStaticError(true)
@@ -148,7 +148,7 @@ object ResultDocument {
               } else if (nsResolver != null) {
                 val muri: String = nsResolver.getURIForPrefix(prefix, useDefault = false)
                 if (muri == null) {
-                  val err: XPathException = new XPathException(
+                  val err = new XPathException(
                     "Namespace prefix '" + prefix + "' has not been declared")
                   err.setErrorCode("SEPM0016")
                   err.setIsStaticError(true)
@@ -161,7 +161,7 @@ object ResultDocument {
               }
             } catch {
               case e: QNameException => {
-                val err: XPathException = new XPathException(
+                val err = new XPathException(
                   "Invalid method name. " + e.getMessage)
                 err.setErrorCode("SEPM0016")
                 err.setIsStaticError(true)
@@ -573,7 +573,7 @@ class ResultDocument(private val globalProperties: Properties,
 
   private def checkNotTemporaryOutputState(context: XPathContext): Unit = {
     if (context.getTemporaryOutputState != 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot execute xsl:result-document while evaluating xsl:" +
           context.getNamePool.getLocalName(context.getTemporaryOutputState))
       err.setErrorCode("XTDE1480")
@@ -600,7 +600,7 @@ class ResultDocument(private val globalProperties: Properties,
         try parts = NameChecker.getQNameParts(format)
         catch {
           case e: QNameException => {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "The requested output format " + Err
                 .wrap(format) + " is not a valid QName")
             err.maybeSetLocation(getFormatExpression.getLocation)
@@ -612,7 +612,7 @@ class ResultDocument(private val globalProperties: Properties,
         }
         val uri: String = nsResolver.getURIForPrefix(parts(0), useDefault = false)
         if (uri == null) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "The namespace prefix in the format name " + format +
               " is undeclared")
           err.maybeSetLocation(getFormatExpression.getLocation)
@@ -626,7 +626,7 @@ class ResultDocument(private val globalProperties: Properties,
         .asInstanceOf[StylesheetPackage]
         .getNamedOutputProperties(qName)
       if (computedGlobalProps == null) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "There is no xsl:output format named " + format)
         err.setErrorCode("XTDE1460")
         err.setXPathContext(context)

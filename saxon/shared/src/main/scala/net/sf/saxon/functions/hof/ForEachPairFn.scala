@@ -58,7 +58,7 @@ class ForEachPairFn extends SystemFunction {
     if (fnType.isInstanceOf[SpecificFunctionType]) {
       fnType.asInstanceOf[SpecificFunctionType].getResultType.getPrimaryType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 

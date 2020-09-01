@@ -109,7 +109,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
       }
       val target: Component = c.getTargetComponent(bindingSlot)
       if (target.isHiddenAbstractComponent) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot evaluate an abstract variable (" + getVariableName.getDisplayName +
             ") with no overriding declaration",
           "XTDE3052")

@@ -63,7 +63,7 @@ abstract class CastingExpression(source: Expression,
         getPackageData,
         targetType.asInstanceOf[BuiltInAtomicType])
       if (s != null) {
-        val err: XPathException =
+        val err =
           new XPathException(s, "XPST0080", this.getLocation)
         err.setIsStaticError(true)
         throw err

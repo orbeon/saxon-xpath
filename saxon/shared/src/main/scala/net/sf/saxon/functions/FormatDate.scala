@@ -945,7 +945,7 @@ class FormatDate extends SystemFunction with Callable {
         getRetainedStaticContext)
     } catch {
       case e: XPathException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Invalid calendar name. " + e.getMessage)
         err.setErrorCode("FOFD1340")
         err.setXPathContext(context)
@@ -959,7 +959,7 @@ class FormatDate extends SystemFunction with Callable {
       else if (Arrays.binarySearch(knownCalendars.asInstanceOf[Array[AnyRef]], calLocal.asInstanceOf[AnyRef]) >= 0) {
         charSeqResult = "[Calendar: AD]" + charSeqResult
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Unknown no-namespace calendar: " + calLocal)
         err.setErrorCode("FOFD1340")
         err.setXPathContext(context)

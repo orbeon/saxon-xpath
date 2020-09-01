@@ -175,13 +175,13 @@ abstract class SystemFunction extends AbstractFunction {
    def getContextNode(context: XPathContext): NodeInfo = {
     val item: Item = context.getContextItem
     if (item == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Context item for " + getFunctionName + "() is absent",
         "XPDY0002")
       err.maybeSetContext(context)
       throw err
     } else if (!(item.isInstanceOf[NodeInfo])) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Context item for " + getFunctionName + "() is not a node",
         "XPTY0004")
       err.maybeSetContext(context)

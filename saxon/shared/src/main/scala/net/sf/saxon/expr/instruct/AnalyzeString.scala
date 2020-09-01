@@ -209,7 +209,7 @@ class AnalyzeString(select: Expression,
 
   private def invalidRegex(message: String, errorCode: String): Unit = {
     pattern = null
-    val err: XPathException = new XPathException(message, errorCode)
+    val err = new XPathException(message, errorCode)
     err.setLocation(getLocation)
     throw err
   }

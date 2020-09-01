@@ -218,7 +218,7 @@ class ForEach(select: Expression,
 
   override def checkForUpdatingSubexpressions(): Unit = {
     if (getSelect.isUpdatingExpression) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Updating expression appears in a context where it is not permitted",
         "XUST0001")
       err.setLocation(getSelect.getLocation)

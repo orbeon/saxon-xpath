@@ -245,7 +245,7 @@ class GlobalVariable
         getVariableQName.getDisplayName,
         0)
       val cit: ContextItemStaticInfo = getConfiguration
-        .makeContextItemStaticInfo(AnyItemType.getInstance, maybeUndefined = true)
+        .makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
       var value2: Expression = TypeChecker.strictTypeCheck(
         value.simplify().typeCheck(visitor, cit),
         getRequiredType,
@@ -316,7 +316,7 @@ class GlobalVariable
       }
       var message: String = messageBuilder.toString
       message += '.'
-      val err: XPathException = new XPathException(message)
+      val err = new XPathException(message)
       var errorCode: String = null
       errorCode =
         if (getPackageData.isXSLT) "XTDE0640"

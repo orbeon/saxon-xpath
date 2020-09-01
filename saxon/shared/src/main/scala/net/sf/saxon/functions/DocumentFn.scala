@@ -102,7 +102,7 @@ object DocumentFn {
       //          .asInstanceOf[XsltController]
       //          .checkUniqueOutputDestination(documentKey)) {
       //        pool.markUnavailable(documentKey)
-      //        val err: XPathException = new XPathException(
+      //        val err = new XPathException(
       //          "Cannot read a document that was written during the same transformation: " +
       //            documentKey)
       //        err.setXPathContext(c)
@@ -111,7 +111,7 @@ object DocumentFn {
       //        throw err
       //      }
       if (pool.isMarkedUnavailable(documentKey)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Document has been marked not available: " + documentKey)
         err.setXPathContext(c)
         err.setErrorCode("FODC0002")

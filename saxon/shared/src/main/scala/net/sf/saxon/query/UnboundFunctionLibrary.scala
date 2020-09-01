@@ -104,7 +104,7 @@ class UnboundFunctionLibrary extends FunctionLibrary {
               sb.append(". ").append(supplementary)
             }
           }
-          val err: XPathException =
+          val err =
             new XPathException(sb.toString, "XPST0017", ufc.getLocation)
           err.setIsStaticError(true)
           throw err
@@ -124,7 +124,7 @@ class UnboundFunctionLibrary extends FunctionLibrary {
           if (!config.getBooleanProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS)) {
             msg += ". Note: external function calls have been disabled"
           }
-          val err: XPathException = new XPathException(msg)
+          val err = new XPathException(msg)
           err.setErrorCode("XPST0017")
           err.setIsStaticError(true)
           throw err

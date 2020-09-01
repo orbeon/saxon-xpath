@@ -128,7 +128,7 @@ abstract class AbstractStaticContext extends StaticContext {
     getPackageData.setDecimalFormatManager(manager)
   }
 
-  def getRequiredContextItemType(): ItemType = AnyItemType.getInstance
+  def getRequiredContextItemType(): ItemType = AnyItemType
 
   def getDecimalFormatManager(): DecimalFormatManager = {
     var manager: DecimalFormatManager = getPackageData.getDecimalFormatManager

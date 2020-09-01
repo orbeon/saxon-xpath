@@ -88,7 +88,7 @@ class BooleanExpressionPattern(expression: Expression)
         ioe.getRequiredItemType
       }
     }
-    AnyItemType.getInstance
+    AnyItemType
   }
 
   override def getFingerprint(): Int = -1

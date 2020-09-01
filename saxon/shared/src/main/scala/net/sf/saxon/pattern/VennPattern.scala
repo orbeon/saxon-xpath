@@ -53,7 +53,7 @@ abstract class VennPattern( var p1: Pattern,
     if (p.isInstanceOf[NodeTestPattern]) {
       val it: ItemType = p.getItemType
       if (!(it.isInstanceOf[NodeTest])) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The operands of a union, intersect, or except pattern " +
             "must be patterns that match nodes",
           "XPTY0004")

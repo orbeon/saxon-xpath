@@ -609,7 +609,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
     java.lang.Double.valueOf(getLengthInSeconds).hashCode
 
   def add(other: DurationValue): DurationValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Only subtypes of xs:duration can be added")
     err.setErrorCode("XPTY0004")
     err.setIsTypeError(true)
@@ -617,7 +617,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   }
 
   def subtract(other: DurationValue): DurationValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Only subtypes of xs:duration can be subtracted")
     err.setErrorCode("XPTY0004")
     err.setIsTypeError(true)
@@ -634,7 +634,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   def multiply(factor: Long): DurationValue = multiply(factor.toDouble)
 
   def multiply(factor: Double): DurationValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Only subtypes of xs:duration can be multiplied by a number")
     err.setErrorCode("XPTY0004")
     err.setIsTypeError(true)
@@ -642,7 +642,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   }
 
   def divide(factor: Double): DurationValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Only subtypes of xs:duration can be divided by a number")
     err.setErrorCode("XPTY0004")
     err.setIsTypeError(true)
@@ -650,7 +650,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
   }
 
   def divide(other: DurationValue): BigDecimalValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Only subtypes of xs:duration can be divided by another duration")
     err.setErrorCode("XPTY0004")
     err.setIsTypeError(true)

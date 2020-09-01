@@ -111,7 +111,7 @@ abstract class AtomicValue
    def getPrimitiveStringValue(): CharSequence
 
   override def effectiveBooleanValue(): Boolean = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Effective boolean value is not defined for an atomic value of type " +
         Type.displayTypeName(this))
     err.setIsTypeError(true)
@@ -152,7 +152,7 @@ abstract class AtomicValue
         !parentType.asInstanceOf[ComplexType].isSimpleContent &&
         !parentType.asInstanceOf[ComplexType].isMixedContent &&
         !Whitespace.isWhite(getStringValueCS)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Complex type " + parentType.getDescription + " does not allow text content " +
           Err.wrap(getStringValueCS))
       err.setIsTypeError(true)

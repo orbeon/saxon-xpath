@@ -357,7 +357,7 @@ class SortKeyDefinition extends PseudoExpression {
       if (s.equals("yes") || s.equals("no") || s.equals("true") || s.equals("false") ||
         s.equals("1") ||
         s.equals("0")) {} else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Value of 'stable' on xsl:sort must be yes|no|true|false|1|0")
         err.setErrorCode("XTDE0030")
         throw err

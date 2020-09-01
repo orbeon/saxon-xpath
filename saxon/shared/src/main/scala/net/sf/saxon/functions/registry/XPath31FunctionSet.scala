@@ -60,15 +60,15 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
     register("copy-of",
       0,
       classOf[CopyOfFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
       NEW)
     register("copy-of",
       1,
       classOf[CopyOfFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
-      NEW).arg(0, AnyItemType.getInstance, STAR | ABS, EMPTY)
+      NEW).arg(0, AnyItemType, STAR | ABS, EMPTY)
     register("default-language",
       0,
       classOf[DynamicContextAccessor.DefaultLanguage],
@@ -99,8 +99,8 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       BuiltInAtomicType.BOOLEAN,
       OPT,
       0).arg(0, AnyNodeTest.getInstance, OPT | INS, null)
-    register("head", 1, classOf[HeadFn], AnyItemType.getInstance, OPT, FILTER)
-      .arg(0, AnyItemType.getInstance, STAR | TRA, null)
+    register("head", 1, classOf[HeadFn], AnyItemType, OPT, FILTER)
+      .arg(0, AnyItemType, STAR | TRA, null)
     register("innermost",
       1,
       classOf[Innermost],
@@ -110,13 +110,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
     register("json-doc",
       1,
       classOf[JsonDoc],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       LATE).arg(0, BuiltInAtomicType.STRING, OPT, null)
     register("json-doc",
       2,
       classOf[JsonDoc],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       LATE)
       .arg(0, BuiltInAtomicType.STRING, OPT, null)
@@ -125,13 +125,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
     register("json-to-xml",
       1,
       classOf[JsonToXMLFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, null)
     register("json-to-xml",
       2,
       classOf[JsonToXMLFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       LATE | NEW)
       .arg(0, BuiltInAtomicType.STRING, OPT, null)
@@ -161,13 +161,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
     register("parse-json",
       1,
       classOf[ParseJsonFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       0).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("parse-json",
       2,
       classOf[ParseJsonFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       OPT,
       0)
       .arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
@@ -203,13 +203,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       BuiltInAtomicType.STRING,
       ONE,
       0)
-      .arg(0, AnyItemType.getInstance, STAR, null)
+      .arg(0, AnyItemType, STAR, null)
       .arg(1, Type.ITEM_TYPE, OPT, null)
       .optionDetails(Serialize.makeOptionsParameter)
     register("snapshot",
       0,
       classOf[ContextItemAccessorFunction],
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
       CITEM | LATE | NEW)
     register("snapshot",
@@ -217,19 +217,19 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       classOf[SnapshotFn],
       AnyNodeTest.getInstance,
       STAR,
-      NEW).arg(0, AnyItemType.getInstance, STAR | ABS, EMPTY)
-    register("sort", 1, classOf[Sort_1], AnyItemType.getInstance, STAR, 0).arg(
+      NEW).arg(0, AnyItemType, STAR | ABS, EMPTY)
+    register("sort", 1, classOf[Sort_1], AnyItemType, STAR, 0).arg(
       0,
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
       null)
-    register("sort", 2, classOf[Sort_2], AnyItemType.getInstance, STAR, 0)
-      .arg(0, AnyItemType.getInstance, STAR, null)
+    register("sort", 2, classOf[Sort_2], AnyItemType, STAR, 0)
+      .arg(0, AnyItemType, STAR, null)
       .arg(1, BuiltInAtomicType.STRING, OPT, null)
     ft = new SpecificFunctionType(Array(SequenceType.SINGLE_ITEM),
       SequenceType.ATOMIC_SEQUENCE)
-    register("sort", 3, classOf[Sort_3], AnyItemType.getInstance, STAR, 0)
-      .arg(0, AnyItemType.getInstance, STAR, null)
+    register("sort", 3, classOf[Sort_3], AnyItemType, STAR, 0)
+      .arg(0, AnyItemType, STAR, null)
       .arg(1, BuiltInAtomicType.STRING, OPT, null)
       .arg(2, ft, ONE, null)
     register(

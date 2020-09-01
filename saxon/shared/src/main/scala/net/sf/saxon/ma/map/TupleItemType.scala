@@ -183,7 +183,7 @@ class TupleItemType(names: List[String],
     if (keyRel == Affinity.DISJOINT) {
       Affinity.DISJOINT
     }
-    if (other.getValueType.getPrimaryType == AnyItemType.getInstance &&
+    if (other.getValueType.getPrimaryType == AnyItemType &&
       other.getValueType.getCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE) {
       if (keyRel == Affinity.SUBSUMED_BY || keyRel == Affinity.SAME_TYPE) {
         Affinity.SUBSUMED_BY

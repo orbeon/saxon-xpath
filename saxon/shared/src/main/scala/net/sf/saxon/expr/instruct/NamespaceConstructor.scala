@@ -88,7 +88,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     }
     if (!(value.isInstanceOf[net.sf.saxon.value.StringValue]) ||
       value.isInstanceOf[AnyURIValue]) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Namespace prefix is not an xs:string or xs:untypedAtomic",
         "XPTY0004",
         getLocation)
@@ -98,7 +98,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     val prefix: String = Whitespace.trim(value.getStringValueCS)
     if (!(prefix.isEmpty || NameChecker.isValidNCName(prefix))) {
       val errorCode: String = if (isXSLT) "XTDE0920" else "XQDY0074"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Namespace prefix is invalid: " + prefix,
         errorCode,
         getLocation)
@@ -106,7 +106,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     }
     if (prefix.==("xmlns")) {
       val errorCode: String = if (isXSLT) "XTDE0920" else "XQDY0101"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Namespace prefix 'xmlns' is not allowed",
         errorCode,
         getLocation)
@@ -138,7 +138,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
                                 context: XPathContext): Unit = {
     if ((prefix == ("xml")) != (uri == NamespaceConstant.XML)) {
       val errorCode: String = if (isXSLT) "XTDE0925" else "XQDY0101"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Namespace prefix 'xml' and namespace uri " + NamespaceConstant.XML +
           " must only be used together",
         errorCode,
@@ -147,7 +147,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     }
     if (uri.isEmpty) {
       val errorCode: String = if (isXSLT) "XTDE0930" else "XQDY0101"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Namespace URI is an empty string",
         errorCode,
         getLocation)
@@ -155,7 +155,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     }
     if (uri == NamespaceConstant.XMLNS) {
       val errorCode: String = if (isXSLT) "XTDE0905" else "XQDY0101"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "A namespace node cannot have the reserved namespace " +
           NamespaceConstant.XMLNS,
         errorCode,

@@ -1,41 +1,22 @@
 package net.sf.saxon.expr.instruct
 
-import net.sf.saxon.event.Outputter
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser._
-
-import net.sf.saxon.model._
-
-import net.sf.saxon.om.AxisInfo
-
-import net.sf.saxon.om.Item
-
-import net.sf.saxon.om.SequenceIterator
-
-import net.sf.saxon.pattern.NodeKindTest
-
-import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.tree.iter.EmptyIterator
-
-import net.sf.saxon.tree.iter.ListIterator
-
-import net.sf.saxon.value._
-
 import java.util._
 
-import Block._
+import net.sf.saxon.event.Outputter
+import net.sf.saxon.expr.Expression._
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.instruct.Block._
+import net.sf.saxon.expr.parser._
+import net.sf.saxon.model._
+import net.sf.saxon.om.{AxisInfo, Item, SequenceIterator}
+import net.sf.saxon.pattern.NodeKindTest
+import net.sf.saxon.trace.ExpressionPresenter
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.tree.iter.{EmptyIterator, ListIterator}
+import net.sf.saxon.value._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-
-import Expression._
-
 import scala.util.control.Breaks._
 
 object Block {
@@ -151,7 +132,7 @@ class Block(children: Array[Expression]) extends Instruction {
     var allSubtreeAxis: Boolean = true
     breakable {
       for (o <- operands().asScala) {
-        val child: Expression = o.getChildExpression
+        val child = o.getChildExpression
         if (!(child.isInstanceOf[AxisExpression])) {
           allAxisExpressions = false
           allChildAxis = false
@@ -219,7 +200,7 @@ class Block(children: Array[Expression]) extends Instruction {
     val suppliedCard: Int = b2.getCardinality
     if (!Cardinality.subsumes(req.getCardinality, suppliedCard)) {
       if ((reqCard & suppliedCard) == 0) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The required cardinality of the " + role.getMessage +
             " is " +
             Cardinality.toString(reqCard) +
@@ -299,38 +280,44 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   override def getItemType(): ItemType = {
-    if (size == 0) {
-      ErrorType.getInstance
-    }
+
+    if (size == 0)
+      return ErrorType.getInstance
+
     var t1: ItemType = null
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
     for (i <- 0 until size) {
       val child1: Expression = child(i)
       /*if (!(child1.isInstanceOf[Message])) {*/
       // Message class does not exist
-      val t: ItemType = child1.getItemType
-      t1 = if (t1 == null) t else Type.getCommonSuperType(t1, t, th)
-      if (t1.isInstanceOf[AnyItemType]) {
-        t1
+      val t = child1.getItemType
+      t1 =
+        if (t1 == null)
+          t
+        else Type.getCommonSuperType(t1, t, th)
+      if (t1 eq AnyItemType) {
+        return t1 // no point going any further
       }
       // }
     }
-    if (t1 == null) ErrorType.getInstance else t1
+    if (t1 == null)
+      ErrorType.getInstance
+    else
+      t1
   }
 
   override def getStaticUType(contextItemType: UType): UType =
     if (isInstruction) {
       super.getStaticUType(contextItemType)
     } else {
-      if (size == 0) {
-        UType.VOID
-      }
-      var t1: UType = child(0).getStaticUType(contextItemType)
+      if (size == 0)
+        return UType.VOID
+
+      var t1 = child(0).getStaticUType(contextItemType)
       for (i <- 1 until size) {
         t1 = t1.union(child(i).getStaticUType(contextItemType))
-        if (t1 == UType.ANY) {
-          t1
-        }
+        if (t1 == UType.ANY)
+          return t1
       }
       t1
     }
@@ -360,10 +347,10 @@ class Block(children: Array[Expression]) extends Instruction {
     var updating: Boolean = false
     var nonUpdating: Boolean = false
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       if (ExpressionTool.isNotAllowedInUpdatingContext(child)) {
         if (updating) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "If any subexpression is updating, then all must be updating",
             "XUST0001")
           err.setLocation(child.getLocation)
@@ -373,7 +360,7 @@ class Block(children: Array[Expression]) extends Instruction {
       }
       if (child.isUpdatingExpression) {
         if (nonUpdating) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "If any subexpression is updating, then all must be updating",
             "XUST0001")
           err.setLocation(child.getLocation)
@@ -386,10 +373,9 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def isVacuousExpression(): Boolean = {
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
-      if (!child.isVacuousExpression) {
-        false
-      }
+      val child = o.getChildExpression
+      if (! child.isVacuousExpression)
+        return false
     }
     true
   }
@@ -447,7 +433,7 @@ class Block(children: Array[Expression]) extends Instruction {
   private def flatten(targetList: List[Expression]): Unit = {
     var currentLiteralList: List[Item] = null
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       if (Literal.isEmptySequence(child)) {} else if (child
         .isInstanceOf[Block]) {
         flushCurrentLiteralList(currentLiteralList, targetList)
@@ -464,10 +450,10 @@ class Block(children: Array[Expression]) extends Instruction {
           currentLiteralList = new ArrayList(10)
         }
         var item: Item = null
-        while (({
+        while ({
           item = iterator.next()
           item
-        }) != null) currentLiteralList.add(item)
+        } != null) currentLiteralList.add(item)
       } else {
         flushCurrentLiteralList(currentLiteralList, targetList)
         currentLiteralList = null
@@ -478,19 +464,18 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   private def flushCurrentLiteralList(currentLiteralList: List[Item],
-                                      list: List[Expression]): Unit = {
+                                      list: List[Expression]): Unit =
     if (currentLiteralList != null) {
       val iter: ListIterator[Item] = new ListIterator[Item](currentLiteralList)
       val lit: Literal = Literal.makeLiteral(iter.materialize(), this)
       list.add(lit)
     }
-  }
 
   def isCandidateForSharedAppend(): Boolean = {
     for (o <- operands().asScala) {
       val exp: Expression = o.getChildExpression
       if (exp.isInstanceOf[VariableReference] || exp.isInstanceOf[Literal]) {
-        true
+        return true
       }
     }
     false
@@ -514,7 +499,7 @@ class Block(children: Array[Expression]) extends Instruction {
     var prevLiteral: Boolean = false
     breakable {
       for (o <- operands().asScala) {
-        val child: Expression = o.getChildExpression
+        val child = o.getChildExpression
         if (child.isInstanceOf[Block]) {
           canSimplify = true
           break()
@@ -547,17 +532,16 @@ class Block(children: Array[Expression]) extends Instruction {
     }
   }
 
-  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       child.checkPermittedContents(parentType, whole = false)
     }
-  }
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("sequence", this)
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       child.export(out)
     }
     out.endElement()
@@ -569,21 +553,19 @@ class Block(children: Array[Expression]) extends Instruction {
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     var tc: TailCall = null
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
-      try if (child.isInstanceOf[TailCallReturner]) {
-        tc = child
-          .asInstanceOf[TailCallReturner]
-          .processLeavingTail(output, context)
-      } else {
-        child.process(output, context)
-        tc = null
+      val child = o.getChildExpression
+      try child match {
+        case returner: TailCallReturner =>
+          tc = returner.processLeavingTail(output, context)
+        case _ =>
+          child.process(output, context)
+          tc = null
       } catch {
         case e: XPathException => {
           e.maybeSetLocation(child.getLocation)
           e.maybeSetContext(context)
           throw e
         }
-
       }
     }
     tc
@@ -592,22 +574,19 @@ class Block(children: Array[Expression]) extends Instruction {
   override def getImplementationMethod(): Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator =
-    if (size == 0) {
+    if (size == 0)
       EmptyIterator.emptyIterator()
-    } else if (size == 1) {
+    else if (size == 1)
       child(0).iterate(context)
-    } else {
+    else
       new BlockIterator(operanda, context)
-    }
 
   override def evaluatePendingUpdates(context: XPathContext,
-                                      pul: PendingUpdateList): Unit = {
+                                      pul: PendingUpdateList): Unit =
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       child.evaluatePendingUpdates(context, pul)
     }
-  }
 
   override def getStreamerName(): String = "Block"
-
 }

@@ -179,7 +179,7 @@ class CallTemplate(private var template: NamedTemplate,
 
   override def getItemType(): ItemType =
     if (template == null) {
-      AnyItemType.getInstance
+      AnyItemType
     } else {
       template.getRequiredType.getPrimaryType
     }
@@ -214,7 +214,7 @@ class CallTemplate(private var template: NamedTemplate,
     if (bindingSlot >= 0) {
       target = context.getTargetComponent(bindingSlot)
       if (target.isHiddenAbstractComponent) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot call an abstract template (" + calledTemplateName.getDisplayName +
             ") with no implementation",
           "XTDE3052")
@@ -238,7 +238,7 @@ class CallTemplate(private var template: NamedTemplate,
       while (tc != null) tc = tc.processLeavingTail()
     } catch {
       case e: StackOverflowError => {
-        val err: XPathException = new XPathException.StackOverflow(
+        val err = new XPathException.StackOverflow(
           "Too many nested template or function calls. The stylesheet may be looping.",
           SaxonErrorCode.SXLM0001,
           getLocation)

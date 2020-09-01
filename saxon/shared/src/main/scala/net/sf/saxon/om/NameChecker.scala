@@ -84,7 +84,7 @@ object NameChecker {
       parts
     } catch {
       case e: QNameException => {
-        val err: XPathException = new XPathException(e.getMessage)
+        val err = new XPathException(e.getMessage)
         err.setErrorCode("FORG0001")
         throw err
       }

@@ -213,7 +213,7 @@ class EvaluateInstr(xpath: Expression,
       "0" == schemaAwareAttr) {
       isSchemaAware = false
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The schema-aware attribute of xsl:evaluate must be yes|no|true|false|0|1")
       err.setErrorCode("XTDE0030")
       err.setLocation(getLocation)
@@ -328,7 +328,7 @@ class EvaluateInstr(xpath: Expression,
       if (dynamicParams != null) {
         dynamicParams.keys.forEachOrFail((paramName) => {
           if (!(paramName.isInstanceOf[QNameValue])) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Parameter names supplied to xsl:evaluate must have type xs:QName, not " +
                 paramName
                   .asInstanceOf[AtomicValue]
@@ -358,7 +358,7 @@ class EvaluateInstr(xpath: Expression,
       try expr = ExpressionTool.make(exprText, env, 0, Token.EOF, null)
       catch {
         case e: XPathException => {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Static error in XPath expression supplied to xsl:evaluate: " +
               e.getMessage +
               ". Expression: {" +

@@ -33,8 +33,8 @@ object NormalizeUnicode {
     } else if (form.isEmpty) {
       return sv
     } else {
-      val msg: String = "Normalization form " + form + " is not supported"
-      val err: XPathException = new XPathException(msg)
+      val msg = "Normalization form " + form + " is not supported"
+      val err = new XPathException(msg)
       err.setErrorCode("FOCH0003")
       err.setXPathContext(c)
       throw err

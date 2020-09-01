@@ -123,7 +123,7 @@ abstract class Expression
   def checkedOperands(): java.lang.Iterable[Operand] = {
     val ops: java.lang.Iterable[Operand] = operands()
     for (o <- ops.asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       val badOperand: Boolean = o.getParentExpression != this
       val badExpression: Boolean = child.getParentExpression != this
       if (badOperand || badExpression) {
@@ -193,7 +193,7 @@ abstract class Expression
 
   def restoreParentPointers(): Unit = {
     for (o <- operands().asScala) {
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       child.setParentExpression(Expression.this)
       child.restoreParentPointers()
     }
@@ -250,7 +250,7 @@ abstract class Expression
     if (rsc != null) {
       retainedStaticContext = rsc
       for (o <- operands().asScala if o != null) {
-        val child: Expression = o.getChildExpression
+        val child = o.getChildExpression
         if (child != null && child.retainedStaticContext == null) {
           child.setRetainedStaticContext(rsc)
         }
@@ -263,7 +263,7 @@ abstract class Expression
     if (rscVar != null) {
       retainedStaticContext = rscVar
       for (o <- operands().asScala if o != null) {
-        val child: Expression = o.getChildExpression
+        val child = o.getChildExpression
         if (child != null) {
           if (child.getLocalRetainedStaticContext == null) {
             child.setRetainedStaticContextThoroughly(rsc)
@@ -595,7 +595,7 @@ abstract class Expression
       }
       sub.checkForUpdatingSubexpressions()
       if (sub.isUpdatingExpression) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Updating expression appears in a context where it is not permitted",
           "XUST0001")
         err.setLocation(sub.getLocation)
@@ -655,7 +655,7 @@ abstract class Expression
   def dynamicError(message: String,
                    code: String,
                    context: XPathContext): Throwable = {
-    val err: XPathException = new XPathException(message, code, getLocation)
+    val err = new XPathException(message, code, getLocation)
     err.setXPathContext(context)
     err.setFailingExpression(this)
     throw err
@@ -702,7 +702,7 @@ abstract class Expression
     val result: PathMap.PathMapNodeSet = new PathMap.PathMapNodeSet()
     for (o <- operands().asScala) {
       val usage: OperandUsage = o.getUsage
-      val child: Expression = o.getChildExpression
+      val child = o.getChildExpression
       var target: PathMap.PathMapNodeSet =
         child.addToPathMap(pathMap, attachmentPoint)
       if (usage == OperandUsage.NAVIGATION) {

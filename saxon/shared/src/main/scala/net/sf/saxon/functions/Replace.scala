@@ -80,7 +80,7 @@ class Replace extends RegexFunction {
     val re: RegularExpression = getRegularExpression(arguments)
     if (!re.getFlags.contains("q")) {
       if (!replacementChecked) {
-        val msg: String = checkReplacement(replacement)
+        val msg = checkReplacement(replacement)
         if (msg != null) {
           throw new XPathException(msg, "FORX0004", context)
         }

@@ -126,7 +126,7 @@ class Int64Value extends IntegerValue {
     value = `val`
     typeLabel = `type`
     if (check && !IntegerValue.checkRange(value, `type`)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Integer value " + `val` + " is out of range for the requested type " +
           `type`.getDescription)
       err.setErrorCode("XPTY0004")

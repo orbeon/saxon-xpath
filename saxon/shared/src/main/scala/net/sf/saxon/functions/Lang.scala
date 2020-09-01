@@ -61,14 +61,14 @@ class Lang extends SystemFunction {
     var target: NodeInfo = null
     val current: Item = context.getContextItem
     if (current == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The context item for lang() is absent")
       err.setErrorCode("XPDY0002")
       err.setXPathContext(context)
       throw err
     }
     if (!(current.isInstanceOf[NodeInfo])) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The context item for lang() is not a node")
       err.setErrorCode("XPTY0004")
       err.setXPathContext(context)

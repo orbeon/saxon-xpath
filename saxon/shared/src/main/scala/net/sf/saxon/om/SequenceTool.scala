@@ -204,18 +204,18 @@ object SequenceTool {
                 if (`type` == null) Type.getItemType(item, th)
                 else
                   Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
-              if (`type` == AnyItemType.getInstance) {
+              if (`type` == AnyItemType) {
                 break()
               }
             }
           }
           if (`type` == null) ErrorType.getInstance else `type`
         } catch {
-          case err: XPathException => AnyItemType.getInstance
+          case err: XPathException => AnyItemType
 
         }
       case _ =>
-        AnyItemType.getInstance
+        AnyItemType
     }
 
   def getUType(sequence: Sequence): UType =

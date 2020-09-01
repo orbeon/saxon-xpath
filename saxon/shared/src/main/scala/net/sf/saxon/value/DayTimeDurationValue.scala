@@ -281,13 +281,13 @@ class DayTimeDurationValue
 
   override def multiply(n: Double): DayTimeDurationValue = {
     if (java.lang.Double.isNaN(n)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot multiply a duration by NaN")
       err.setErrorCode("FOCA0005")
       throw err
     }
     if (java.lang.Double.isInfinite(n)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot multiply a duration by infinity")
       err.setErrorCode("FODT0002")
       throw err
@@ -317,13 +317,13 @@ class DayTimeDurationValue
 
   override def divide(n: Double): DurationValue = {
     if (java.lang.Double.isNaN(n)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot divide a duration by NaN")
       err.setErrorCode("FOCA0005")
       throw err
     }
     if (n == 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot divide a duration by zero")
       err.setErrorCode("FODT0002")
       throw err
@@ -358,14 +358,14 @@ class DayTimeDurationValue
       val v1: BigDecimal = getTotalSeconds
       val v2: BigDecimal = other.getTotalSeconds
       if (v2.signum() == 0) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Divide by zero (durations)")
         err.setErrorCode("FOAR0001")
         throw err
       }
       new BigDecimalValue(v1.divide(v2, 20, RoundingMode.HALF_EVEN))
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot divide two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err
@@ -382,7 +382,7 @@ class DayTimeDurationValue
           fromSeconds(v1.add(v2))
         } catch {
           case e: IllegalArgumentException => {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Overflow when adding two durations")
             err.setErrorCode("FODT0002")
             throw err
@@ -395,7 +395,7 @@ class DayTimeDurationValue
           getLengthInNanoseconds + d2.getLengthInNanoseconds)
       }
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot add two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err
@@ -412,7 +412,7 @@ class DayTimeDurationValue
           fromSeconds(v1.subtract(v2))
         } catch {
           case e: IllegalArgumentException => {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Overflow when subtracting two durations")
             err.setErrorCode("FODT0002")
             throw err
@@ -425,7 +425,7 @@ class DayTimeDurationValue
           getLengthInNanoseconds - d2.getLengthInNanoseconds)
       }
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot subtract two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err

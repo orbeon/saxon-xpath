@@ -190,14 +190,14 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   def getItemType(): ItemType =
     if (staticType == null ||
-      staticType.getPrimaryType == AnyItemType.getInstance) {
+      staticType.getPrimaryType == AnyItemType) {
       if (binding != null) {
         val st: SequenceType = binding.getRequiredType
         if (st != null) {
           st.getPrimaryType
         }
       }
-      AnyItemType.getInstance
+      AnyItemType
     } else {
       staticType.getPrimaryType
     }
@@ -343,7 +343,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
       case err: NullPointerException => {
         err.printStackTrace()
-        val msg: String = "Internal error: no value for variable $" + getDisplayName +
+        val msg = "Internal error: no value for variable $" + getDisplayName +
           " at line " +
           getLocation.getLineNumber +
           (if (getLocation.getSystemId == null) ""
@@ -355,7 +355,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
       case err: AssertionError => {
         err.printStackTrace()
-        val msg: String = err.getMessage + ". Variable reference $" + getDisplayName +
+        val msg = err.getMessage + ". Variable reference $" + getDisplayName +
           " at line " +
           getLocation.getLineNumber +
           (if (getLocation.getSystemId == null) ""

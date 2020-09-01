@@ -320,7 +320,7 @@ class CommandLineOptions {
             } else {
               val prop: Int = recognizedOptions.get(option)
               if ((prop & VALUE_PROHIBITED) != 0) {
-                val msg: String = "Command line option -" + option + " does not expect a value"
+                val msg = "Command line option -" + option + " does not expect a value"
                 throw new XPathException(msg)
               }
             }

@@ -271,7 +271,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     for (i <- 0 until size) {
       conditionOps(i).typeCheck(visitor, contextInfo)
-      val err: XPathException = TypeChecker.ebvError(getCondition(i), th)
+      val err = TypeChecker.ebvError(getCondition(i), th)
       if (err != null) {
         err.setLocator(getCondition(i).getLocation)
         err.maybeSetFailingExpression(getCondition(i))
@@ -469,7 +469,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       val condition: Expression = o.getChildExpression
       condition.checkForUpdatingSubexpressions()
       if (condition.isUpdatingExpression) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Updating expression appears in a context where it is not permitted",
           "XUST0001")
         err.setLocator(condition.getLocation)
@@ -483,7 +483,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       act.checkForUpdatingSubexpressions()
       if (ExpressionTool.isNotAllowedInUpdatingContext(act)) {
         if (updating) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "If any branch of a conditional is an updating expression, then all must be updating expressions (or vacuous)",
             "XUST0001")
           err.setLocator(act.getLocation)
@@ -493,7 +493,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
       if (act.isUpdatingExpression) {
         if (nonUpdating) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "If any branch of a conditional is an updating expression, then all must be updating expressions (or vacuous)",
             "XUST0001")
           err.setLocator(act.getLocation)

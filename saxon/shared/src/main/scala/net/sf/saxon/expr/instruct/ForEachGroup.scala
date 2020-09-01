@@ -321,7 +321,7 @@ class ForEachGroup(select: Expression,
           cnExpression = new StringLiteral(collationNameString)
           collator = visitor.getConfiguration.getCollation(collationNameString)
           if (collator == null) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               "Unknown collation " + Err.wrap(collationURI.toString, Err.URI))
             err.setErrorCode("XTDE1110")
             err.setLocation(getLocation)

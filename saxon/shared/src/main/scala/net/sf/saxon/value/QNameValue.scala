@@ -39,7 +39,7 @@ class QNameValue(prefix: String,
     var lUri: String = uri
 
     if (!NameChecker.isValidNCName(localName)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Malformed local name in QName: '" + localName + '\'')
       err.setErrorCode("FORG0001")
       throw err
@@ -47,7 +47,7 @@ class QNameValue(prefix: String,
     lPrefix = if (lPrefix == null) "" else lPrefix
     lUri = if ("" == lUri) null else lUri
     if (check && lUri == null && lPrefix.length != 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "QName has null namespace but non-empty prefix")
       err.setErrorCode("FOCA0002")
       throw err

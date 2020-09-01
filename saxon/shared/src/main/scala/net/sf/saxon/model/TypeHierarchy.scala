@@ -1,28 +1,24 @@
 package net.sf.saxon.model
 
-import net.sf.saxon.utils.Configuration
-import net.sf.saxon.expr._
-import net.sf.saxon.expr.parser.RoleDiagnostic
-import net.sf.saxon.functions.hof.FunctionSequenceCoercer
-import net.sf.saxon.lib.ConversionRules
-import net.sf.saxon.lib.FunctionAnnotationHandler
-import net.sf.saxon.ma.map.MapType
-import net.sf.saxon.om.Sequence
-import net.sf.saxon.om.SequenceIterator
-import net.sf.saxon.om.SequenceTool
-import net.sf.saxon.pattern._
-import net.sf.saxon.s9api.Location
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.value._
-import net.sf.saxon.z.IntHashSet
-import net.sf.saxon.z.IntSet
-import net.sf.saxon.z.IntUniversalSet
+import java.util
 import java.util._
 import java.util.concurrent.ConcurrentHashMap
 
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.parser.RoleDiagnostic
+import net.sf.saxon.functions.hof.FunctionSequenceCoercer
+import net.sf.saxon.lib.FunctionAnnotationHandler
+import net.sf.saxon.ma.map.MapType
 import net.sf.saxon.model.Affinity._
-import TypeHierarchy._
+import net.sf.saxon.model.TypeHierarchy._
+import net.sf.saxon.om.{Sequence, SequenceIterator, SequenceTool}
+import net.sf.saxon.pattern._
 import net.sf.saxon.query.AnnotationList
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value._
+import net.sf.saxon.z.{IntHashSet, IntSet, IntUniversalSet}
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
@@ -30,36 +26,43 @@ import scala.util.control.Breaks._
 object TypeHierarchy {
 
   private def stabilize(in: ItemType): ItemType =
-    if (in.isInstanceOf[SameNameTest]) {
-      in.asInstanceOf[SameNameTest].getEquivalentNameTest
-    } else {
-      in
+    in match {
+      case test: SameNameTest =>
+        test.getEquivalentNameTest
+      case _ =>
+        in
     }
 
   private def requireTrueItemType(t: ItemType): Unit = {
     Objects.requireNonNull(t)
-    if (!t.isTrueItemType) {
+    if (! t.isTrueItemType)
       throw new AssertionError(s"$t is a non-pure union type")
-    }
   }
 
   private def nameTestRelationship(t1: QNameTest, t2: QNameTest): Affinity =
     if (t1 == t2) {
       SAME_TYPE
-    } else if (t2.isInstanceOf[NameTest]) {
-      if (t1.matches(t2.asInstanceOf[NameTest].getMatchingNodeName)) SUBSUMES else DISJOINT
-    } else if (t1.isInstanceOf[NameTest]) {
-      if (t2.matches(t1.asInstanceOf[NameTest].getMatchingNodeName)) SUBSUMED_BY else DISJOINT
-    } else if (t2.isInstanceOf[SameNameTest]) {
-      if (t1.matches(t2.asInstanceOf[SameNameTest].getMatchingNodeName)) SUBSUMES else DISJOINT
-    } else if (t1.isInstanceOf[SameNameTest]) {
-      if (t2.matches(t1.asInstanceOf[SameNameTest].getMatchingNodeName)) SUBSUMED_BY else DISJOINT
-    } else if (t1.isInstanceOf[NamespaceTest] && t2.isInstanceOf[NamespaceTest]) {
-      DISJOINT
-    } else if (t1.isInstanceOf[LocalNameTest] && t2.isInstanceOf[LocalNameTest]) {
-      DISJOINT
-    } else {
-      OVERLAPS
+    } else t2 match {
+      case test: NameTest =>
+        if (t1.matches(test.getMatchingNodeName)) SUBSUMES else DISJOINT
+      case _ => t1 match {
+        case test: NameTest =>
+          if (t2.matches(test.getMatchingNodeName)) SUBSUMED_BY else DISJOINT
+        case _ => t2 match {
+          case test: SameNameTest =>
+            if (t1.matches(test.getMatchingNodeName)) SUBSUMES else DISJOINT
+          case _ => t1 match {
+            case test: SameNameTest =>
+              if (t2.matches(test.getMatchingNodeName)) SUBSUMED_BY else DISJOINT
+            case _: NamespaceTest if t2.isInstanceOf[NamespaceTest] =>
+              DISJOINT
+            case _: LocalNameTest if t2.isInstanceOf[LocalNameTest] =>
+              DISJOINT
+            case _ =>
+              OVERLAPS
+          }
+        }
+      }
     }
 
   private def combineRelationships(rel1: Affinity, rel2: Affinity): Affinity =
@@ -76,10 +79,9 @@ object TypeHierarchy {
     }
 
   private def toSet[X](in: Iterable[X]): Set[X] = {
-    val s: Set[X] = new HashSet[X]()
-    for (x <- in) {
+    val s = new HashSet[X]()
+    for (x <- in)
       s.add(x)
-    }
     s
   }
 
@@ -98,16 +100,10 @@ object TypeHierarchy {
     override def hashCode(): Int = s.hashCode ^ t.hashCode
 
     override def equals(obj: Any): Boolean = obj match {
-      case obj: ItemTypePair => {
-        val pair: ItemTypePair = obj
-        s == pair.s && t == pair.t
-      }
-      case _ => false
-
+      case pair: ItemTypePair => s == pair.s && t == pair.t
+      case _                  => false
     }
-
   }
-
 }
 
 class TypeHierarchy(var config: Configuration) {
@@ -118,44 +114,45 @@ class TypeHierarchy(var config: Configuration) {
                                    requiredType: SequenceType,
                                    role: RoleDiagnostic,
                                    locator: Location): Sequence = {
-    var suppliedItemType: ItemType = SequenceTool.getItemType(value, this)
-    var iterator: SequenceIterator = value.iterate()
-    val requiredItemType: ItemType = requiredType.getPrimaryType
+    var suppliedItemType = SequenceTool.getItemType(value, this)
+    var iterator         = value.iterate()
+    val requiredItemType = requiredType.getPrimaryType
+
+    // step 1: apply atomization if necessary
     if (requiredItemType.isPlainType) {
-      if (!suppliedItemType.isPlainType) {
-        try iterator = Atomizer.getAtomizingIterator(iterator, oneToOne = false)
+      if (! suppliedItemType.isPlainType) {
+        try
+          iterator = Atomizer.getAtomizingIterator(iterator, oneToOne = false)
         catch {
-          case e: XPathException => {
+          case e: XPathException =>
             val vf: ValidationFailure = new ValidationFailure(
               "Failed to atomize the " + role.getMessage + ": " + e.getMessage)
             vf.setErrorCode("XPTY0117")
             throw vf.makeException()
-          }
-
         }
         suppliedItemType = suppliedItemType.getAtomizedItemType
       }
-      if (relationship(suppliedItemType, BuiltInAtomicType.UNTYPED_ATOMIC) !=
-        DISJOINT &&
-        !isSubType(BuiltInAtomicType.UNTYPED_ATOMIC, requiredItemType)) {
-        val nsSensitive: Boolean =
-          requiredItemType.asInstanceOf[SimpleType].isNamespaceSensitive
+
+      // step 2: convert untyped atomic values to target item type
+      if (relationship(suppliedItemType, BuiltInAtomicType.UNTYPED_ATOMIC) != DISJOINT &&
+        ! isSubType(BuiltInAtomicType.UNTYPED_ATOMIC, requiredItemType)) {
+        val nsSensitive = requiredItemType.asInstanceOf[SimpleType].isNamespaceSensitive
         var converter: ItemMappingFunction = null
         if (nsSensitive) {
-          converter = (item) =>
+          converter = item =>
             if (item.isInstanceOf[UntypedAtomicValue]) {
-              var vf: ValidationFailure = new ValidationFailure(
+              val vf = new ValidationFailure(
                 "Failed to convert the " + role.getMessage + ": " + "Implicit conversion of untypedAtomic value to " +
                   requiredItemType +
                   " is not allowed")
               vf.setErrorCode("XPTY0117")
               throw vf.makeException()
             } else {
-              item
+              return item
             }
         } else if (requiredItemType.asInstanceOf[SimpleType].isUnionType) {
-          val rules: ConversionRules = config.getConversionRules
-          converter = (item) =>
+          val rules = config.getConversionRules
+          converter = item =>
             if (item.isInstanceOf[UntypedAtomicValue]) {
               try requiredItemType
                 .asInstanceOf[SimpleType]
@@ -166,46 +163,49 @@ class TypeHierarchy(var config: Configuration) {
                   ve.setErrorCode("XPTY0004")
                   throw ve
                 }
-
               }
             } else {
-              item
+              return item
             }
         } else {
-          converter = (item) =>
-            if (item.isInstanceOf[UntypedAtomicValue]) {
-              Converter.convert(item.asInstanceOf[UntypedAtomicValue],
-                requiredItemType.asInstanceOf[AtomicType],
-                config.getConversionRules)
-            } else {
-              item
+          converter = item =>
+            item match {
+              case atomicValue: UntypedAtomicValue =>
+                Converter.convert(atomicValue,
+                  requiredItemType.asInstanceOf[AtomicType],
+                  config.getConversionRules)
+              case _ =>
+                return item
             }
         }
         iterator = new ItemMappingIterator(iterator, converter, true)
       }
+
+      // step 3: apply numeric promotion
       if (requiredItemType == BuiltInAtomicType.DOUBLE) {
-        val promoter: ItemMappingFunction = (item) =>
-          if (item.isInstanceOf[NumericValue]) {
-            Converter
-              .convert(item.asInstanceOf[NumericValue],
-                BuiltInAtomicType.DOUBLE,
-                config.getConversionRules)
-              .asAtomic()
-              .asInstanceOf[DoubleValue]
-          } else {
-            throw new XPathException(
-              "Failed to convert the " + role.getMessage + ": " + "Cannot promote non-numeric value to xs:double",
-              "XPTY0004")
+        val promoter: ItemMappingFunction = item =>
+          item match {
+            case numericValue: NumericValue =>
+              return Converter
+                .convert(numericValue,
+                  BuiltInAtomicType.DOUBLE,
+                  config.getConversionRules)
+                .asAtomic()
+                .asInstanceOf[DoubleValue]
+            case _ =>
+              throw new XPathException(
+                "Failed to convert the " + role.getMessage + ": " + "Cannot promote non-numeric value to xs:double",
+                "XPTY0004")
           }
         iterator = new ItemMappingIterator(iterator, promoter, true)
       } else if (requiredItemType == BuiltInAtomicType.FLOAT) {
-        val promoter: ItemMappingFunction = (item) =>
+        val promoter: ItemMappingFunction = item =>
           if (item.isInstanceOf[DoubleValue]) {
             throw new XPathException(
               "Failed to convert the " + role.getMessage + ": " + "Cannot promote xs:double value to xs:float",
               "XPTY0004")
           } else if (item.isInstanceOf[NumericValue]) {
-            Converter
+            return Converter
               .convert(item.asInstanceOf[NumericValue],
                 BuiltInAtomicType.FLOAT,
                 config.getConversionRules)
@@ -218,34 +218,33 @@ class TypeHierarchy(var config: Configuration) {
           }
         iterator = new ItemMappingIterator(iterator, promoter, true)
       }
+
+      // step 4: apply URI-to-string promotion
       if (requiredItemType == BuiltInAtomicType.STRING &&
-        relationship(suppliedItemType, BuiltInAtomicType.ANY_URI) !=
-          DISJOINT) {
-        val promoter: ItemMappingFunction = (item) =>
-          if (item.isInstanceOf[AnyURIValue]) {
-            new StringValue(item.getStringValueCS)
-          } else {
-            item
+        relationship(suppliedItemType, BuiltInAtomicType.ANY_URI) != DISJOINT) {
+        val promoter: ItemMappingFunction = item =>
+          return {
+            if (item.isInstanceOf[AnyURIValue])
+              new StringValue(item.getStringValueCS)
+            else
+              item
           }
         iterator = new ItemMappingIterator(iterator, promoter, true)
       }
     }
-    iterator = applyFunctionCoercion(iterator,
-      suppliedItemType,
-      requiredItemType,
-      locator)
-    val relation: Affinity = relationship(suppliedItemType, requiredItemType)
-    if (!(relation == SAME_TYPE || relation == SUBSUMED_BY)) {
-      val itemChecker: ItemTypeCheckingFunction =
-        new ItemTypeCheckingFunction(requiredItemType, role, locator, config)
+
+    // step 5: apply function coercion
+    iterator = applyFunctionCoercion(iterator, suppliedItemType, requiredItemType, locator)
+
+    // Add a check that the values conform to the required type
+    val relation = relationship(suppliedItemType, requiredItemType)
+    if (! (relation == SAME_TYPE || relation == SUBSUMED_BY)) {
+      val itemChecker = new ItemTypeCheckingFunction(requiredItemType, role, locator, config)
       iterator = new ItemMappingIterator(iterator, itemChecker, true)
     }
-    if (requiredType.getCardinality != StaticProperty.ALLOWS_ZERO_OR_MORE) {
-      iterator = new CardinalityCheckingIterator(iterator,
-        requiredType.getCardinality,
-        role,
-        locator)
-    }
+
+    if (requiredType.getCardinality != StaticProperty.ALLOWS_ZERO_OR_MORE)
+      iterator = new CardinalityCheckingIterator(iterator, requiredType.getCardinality, role, locator)
     SequenceTool.toMemoSequence(iterator)
   }
 
@@ -253,22 +252,20 @@ class TypeHierarchy(var config: Configuration) {
                             suppliedItemType: ItemType,
                             requiredItemType: ItemType,
                             locator: Location): SequenceIterator =
-    if (requiredItemType.isInstanceOf[FunctionItemType] &&
-      !requiredItemType.asInstanceOf[FunctionItemType].isMapType &&
-      !requiredItemType.asInstanceOf[FunctionItemType].isArrayType &&
-      !(relationship(requiredItemType, suppliedItemType) == Affinity.SUBSUMES)) {
-      if (requiredItemType == AnyFunctionType.getInstance) {
+    requiredItemType match {
+      case itemType: FunctionItemType if !(relationship(requiredItemType, suppliedItemType) == Affinity.SUBSUMES) && !itemType.isArrayType && !itemType.isMapType =>
+        if (requiredItemType == AnyFunctionType.getInstance) {
+          iterator
+        } else {
+          val coercer: FunctionSequenceCoercer.Coercer =
+            new FunctionSequenceCoercer.Coercer(
+              requiredItemType.asInstanceOf[SpecificFunctionType],
+              config,
+              locator)
+          new ItemMappingIterator(iterator, coercer, true)
+        }
+      case _ =>
         iterator
-      } else {
-        val coercer: FunctionSequenceCoercer.Coercer =
-          new FunctionSequenceCoercer.Coercer(
-            requiredItemType.asInstanceOf[SpecificFunctionType],
-            config,
-            locator)
-        new ItemMappingIterator(iterator, coercer, true)
-      }
-    } else {
-      iterator
     }
 
   def getConfiguration(): Configuration = config
@@ -288,31 +285,33 @@ class TypeHierarchy(var config: Configuration) {
 
     if (itmTyp1 == itmTyp2) {
       SAME_TYPE
-    } else if (itmTyp2.isInstanceOf[AnyItemType]) {
+    } else if (itmTyp2 eq AnyItemType) {
       SUBSUMED_BY
-    } else if (itmTyp1.isInstanceOf[AnyItemType]) {
+    } else if (itmTyp1 eq AnyItemType) {
       SUBSUMES
-    } else if (itmTyp1.isInstanceOf[BuiltInAtomicType] && itmTyp2
-      .isInstanceOf[BuiltInAtomicType]) {
-      if (itmTyp1.getBasicAlphaCode.startsWith(itmTyp2.getBasicAlphaCode)) {
+    } else itmTyp1 match {
+      case _: BuiltInAtomicType if itmTyp2
+        .isInstanceOf[BuiltInAtomicType] =>
+        if (itmTyp1.getBasicAlphaCode.startsWith(itmTyp2.getBasicAlphaCode)) {
+          SUBSUMED_BY
+        } else if (itmTyp2.getBasicAlphaCode.startsWith(itmTyp1.getBasicAlphaCode)) {
+          SUBSUMES
+        } else {
+          DISJOINT
+        }
+      case _: ErrorType =>
         SUBSUMED_BY
-      } else if (itmTyp2.getBasicAlphaCode.startsWith(itmTyp1.getBasicAlphaCode)) {
+      case _ => if (itmTyp2.isInstanceOf[ErrorType]) {
         SUBSUMES
       } else {
-        DISJOINT
+        val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
+        var result: Affinity = map.get(pair)
+        if (result == null) {
+          result = computeRelationship(itmTyp1, itmTyp2)
+          map.put(pair, result)
+        }
+        result
       }
-    } else if (itmTyp1.isInstanceOf[ErrorType]) {
-      SUBSUMED_BY
-    } else if (itmTyp2.isInstanceOf[ErrorType]) {
-      SUBSUMES
-    } else {
-      val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
-      var result: Affinity = map.get(pair)
-      if (result == null) {
-        result = computeRelationship(itmTyp1, itmTyp2)
-        map.put(pair, result)
-      }
-      result
     }
   }
 
@@ -322,13 +321,13 @@ class TypeHierarchy(var config: Configuration) {
     try {
       if (t1 == t2) {
         SAME_TYPE
-      } else if (t1.isInstanceOf[AnyItemType]) {
-        if (t2.isInstanceOf[AnyItemType]) {
+      } else if (t1 eq AnyItemType) {
+        if (t2 eq AnyItemType) {
           SAME_TYPE
         } else {
           SUBSUMES
         }
-      } else if (t2.isInstanceOf[AnyItemType]) {
+      } else if (t2 eq AnyItemType) {
         SUBSUMED_BY
       } else if (t1.isPlainType) {
         if (t2.isInstanceOf[NodeTest] || t2.isInstanceOf[FunctionItemType] || t2.isInstanceOf[JavaExternalObjectType]) {
@@ -430,30 +429,35 @@ class TypeHierarchy(var config: Configuration) {
               t1.asInstanceOf[NodeTest].getRequiredNodeNames
             val on2: Optional[IntSet] =
               t2.asInstanceOf[NodeTest].getRequiredNodeNames
-            if (t1.isInstanceOf[QNameTest] && t2.isInstanceOf[QNameTest]) {
-              nodeNameRelationship = nameTestRelationship(
-                t1.asInstanceOf[QNameTest],
-                t2.asInstanceOf[QNameTest])
-            } else if (on1.isPresent && on1.get
-              .isInstanceOf[IntUniversalSet]) {
-              nodeNameRelationship =
-                if (on2.isPresent && on2.get.isInstanceOf[IntUniversalSet])
-                  SAME_TYPE
-                else SUBSUMES
-            } else if (on2.isPresent && on2.get
-              .isInstanceOf[IntUniversalSet]) {
-              nodeNameRelationship = SUBSUMED_BY
-            } else if (!(on1.isPresent && on2.isPresent)) {
-              nodeNameRelationship = if (t1 == t2) SAME_TYPE else OVERLAPS
-            } else {
-              val n1: IntSet = on1.get
-              val n2: IntSet = on2.get
-              nodeNameRelationship =
-                if (n1.containsAll(n2))
-                  if (n1.size == n2.size) SAME_TYPE else SUBSUMES
-                else if (n2.containsAll(n1)) SUBSUMED_BY
-                else if (IntHashSet.containsSome(n1, n2)) OVERLAPS
-                else DISJOINT
+            t1 match {
+              case test: QNameTest if t2.isInstanceOf[QNameTest] =>
+                nodeNameRelationship = nameTestRelationship(test, t2.asInstanceOf[QNameTest])
+              case _ => if (on1.isPresent && on1.get.isInstanceOf[IntUniversalSet]) {
+                nodeNameRelationship =
+                  if (on2.isPresent && on2.get.isInstanceOf[IntUniversalSet])
+                    SAME_TYPE
+                  else
+                    SUBSUMES
+              } else if (on2.isPresent && on2.get.isInstanceOf[IntUniversalSet]) {
+                nodeNameRelationship = SUBSUMED_BY
+              } else if (!(on1.isPresent && on2.isPresent)) {
+                nodeNameRelationship = if (t1 == t2) SAME_TYPE else OVERLAPS
+              } else {
+                val n1 = on1.get
+                val n2 = on2.get
+                nodeNameRelationship =
+                  if (n1.containsAll(n2))
+                    if (n1.size == n2.size)
+                      SAME_TYPE
+                    else
+                      SUBSUMES
+                  else if (n2.containsAll(n1))
+                    SUBSUMED_BY
+                  else if (IntHashSet.containsSome(n1, n2))
+                    OVERLAPS
+                  else
+                    DISJOINT
+              }
             }
             val contentRelationship: Affinity =
               computeContentRelationship(t1, t2, on1, on2)
@@ -475,96 +479,103 @@ class TypeHierarchy(var config: Configuration) {
             }
           }
         }
-      } else if (t1.isInstanceOf[AnyExternalObjectType]) {
-        if (!(t2.isInstanceOf[AnyExternalObjectType])) {
-          return DISJOINT
-        }
-        if (t1.isInstanceOf[JavaExternalObjectType]) {
-          if (t2 == AnyExternalObjectType.THE_INSTANCE) {
-            SUBSUMED_BY
-          } else if (t2.isInstanceOf[JavaExternalObjectType]) {
-            t1.asInstanceOf[JavaExternalObjectType]
-              .getRelationship(t2.asInstanceOf[JavaExternalObjectType])
-          } else {
-            DISJOINT
+      } else t2 match {
+        case _: FunctionItemType if t1.isInstanceOf[AnyExternalObjectType] =>
+          if (!(t2.isInstanceOf[AnyExternalObjectType])) {
+            return DISJOINT
           }
-        } else if (t2.isInstanceOf[JavaExternalObjectType]) {
-          SUBSUMES
-        } else {
-          DISJOINT
-        }
-      } else {
-        if (t1.isInstanceOf[MapType] && t2.isInstanceOf[MapType]) {
-          if (t1 == MapType.EMPTY_MAP_TYPE) {
-            return SUBSUMED_BY
-          } else if (t2 == MapType.EMPTY_MAP_TYPE) {
-            return SUBSUMES
-          } else if (t1 == MapType.ANY_MAP_TYPE) {
-            return SUBSUMES
-          } else if (t2 == MapType.ANY_MAP_TYPE) {
-            return SUBSUMED_BY
-          }
-
-          val k1: AtomicType = t1.asInstanceOf[MapType].getKeyType
-          val k2: AtomicType = t2.asInstanceOf[MapType].getKeyType
-          val v1: SequenceType = t1.asInstanceOf[MapType].getValueType
-          val v2: SequenceType = t2.asInstanceOf[MapType].getValueType
-          val keyRel: Affinity = relationship(k1, k2)
-          val valueRel: Affinity = sequenceTypeRelationship(v1, v2)
-          val rel: Affinity = combineRelationships(keyRel, valueRel)
-          if (rel == SAME_TYPE || rel == SUBSUMES || rel == SUBSUMED_BY) {
-            return rel
-          }
-        }
-        if (t2.isInstanceOf[FunctionItemType]) {
-
-          val signatureRelationship =
-            t1.asInstanceOf[FunctionItemType].relationship(t2.asInstanceOf[FunctionItemType], this)
-
-          if (signatureRelationship == DISJOINT) {
-            DISJOINT
-          } else {
-            var assertionRelationship = SAME_TYPE
-            val first =
-              t1.asInstanceOf[FunctionItemType].getAnnotationAssertions
-            val second =
-              t2.asInstanceOf[FunctionItemType].getAnnotationAssertions
-            val namespaces: Set[String] = new HashSet[String]()
-            for (a <- first.asScala) {
-              namespaces.add(a.getAnnotationQName.getURI)
-            }
-            for (a <- second.asScala) {
-              namespaces.add(a.getAnnotationQName.getURI)
-            }
-            for (ns <- namespaces.asScala) {
-              val handler: FunctionAnnotationHandler =
-                config.getFunctionAnnotationHandler(ns)
-              if (handler != null) {
-                var localRel: Affinity = SAME_TYPE
-                val firstFiltered: AnnotationList = first.filterByNamespace(ns)
-                val secondFiltered: AnnotationList =
-                  second.filterByNamespace(ns)
-                if (firstFiltered.isEmpty) {
-                  if (secondFiltered.isEmpty) {} else {
-                    localRel = SUBSUMES
-                  }
-                } else {
-                  localRel =
-                    if (secondFiltered.isEmpty) SUBSUMED_BY
-                    else handler.relationship(firstFiltered, secondFiltered)
-                }
-                assertionRelationship =
-                  combineRelationships(assertionRelationship, localRel)
+          t1 match {
+            case objectType: JavaExternalObjectType =>
+              if (t2 == AnyExternalObjectType.THE_INSTANCE) {
+                SUBSUMED_BY
+              } else t2 match {
+                case objectType1: JavaExternalObjectType =>
+                  objectType.getRelationship(objectType1)
+                case _ =>
+                  DISJOINT
               }
+            case _ => if (t2.isInstanceOf[JavaExternalObjectType]) {
+              SUBSUMES
+            } else {
+              DISJOINT
             }
-            combineRelationships(signatureRelationship, assertionRelationship)
           }
-        } else {
-          DISJOINT
-        }
+        case _ =>
+          t1 match {
+            case mapType: MapType if t2.isInstanceOf[MapType] =>
+              if (t1 == MapType.EMPTY_MAP_TYPE) {
+                return SUBSUMED_BY
+              } else if (t2 == MapType.EMPTY_MAP_TYPE) {
+                return SUBSUMES
+              } else if (t1 == MapType.ANY_MAP_TYPE) {
+                return SUBSUMES
+              } else if (t2 == MapType.ANY_MAP_TYPE) {
+                return SUBSUMED_BY
+              }
+
+              val k1: AtomicType = mapType.getKeyType
+              val k2: AtomicType = t2.asInstanceOf[MapType].getKeyType
+              val v1: SequenceType = mapType.getValueType
+              val v2: SequenceType = t2.asInstanceOf[MapType].getValueType
+              val keyRel: Affinity = relationship(k1, k2)
+              val valueRel: Affinity = sequenceTypeRelationship(v1, v2)
+              val rel: Affinity = combineRelationships(keyRel, valueRel)
+              if (rel == SAME_TYPE || rel == SUBSUMES || rel == SUBSUMED_BY) {
+                return rel
+              }
+            case _ =>
+          }
+          t2 match {
+            case itemType: FunctionItemType =>
+
+              val signatureRelationship =
+                t1.asInstanceOf[FunctionItemType].relationship(itemType, this)
+
+              if (signatureRelationship == DISJOINT) {
+                DISJOINT
+              } else {
+                var assertionRelationship = SAME_TYPE
+                val first =
+                  t1.asInstanceOf[FunctionItemType].getAnnotationAssertions
+                val second =
+                  itemType.getAnnotationAssertions
+                val namespaces = new util.HashSet[String]()
+                for (a <- first.asScala)
+                  namespaces.add(a.getAnnotationQName.getURI)
+                for (a <- second.asScala)
+                  namespaces.add(a.getAnnotationQName.getURI)
+                for (ns <- namespaces.asScala) {
+                  val handler: FunctionAnnotationHandler =
+                    config.getFunctionAnnotationHandler(ns)
+                  if (handler != null) {
+                    var localRel: Affinity = SAME_TYPE
+                    val firstFiltered: AnnotationList = first.filterByNamespace(ns)
+                    val secondFiltered: AnnotationList =
+                      second.filterByNamespace(ns)
+                    if (firstFiltered.isEmpty) {
+                      if (secondFiltered.isEmpty) {} else {
+                        localRel = SUBSUMES
+                      }
+                    } else {
+                      localRel =
+                        if (secondFiltered.isEmpty)
+                          SUBSUMED_BY
+                        else
+                          handler.relationship(firstFiltered, secondFiltered)
+                    }
+                    assertionRelationship =
+                      combineRelationships(assertionRelationship, localRel)
+                  }
+                }
+                combineRelationships(signatureRelationship, assertionRelationship)
+              }
+            case _ =>
+              DISJOINT
+          }
       }
     } catch {
-      case _: MissingComponentException => OVERLAPS
+      case _: MissingComponentException =>
+        OVERLAPS
     }
   }
 
@@ -574,16 +585,15 @@ class TypeHierarchy(var config: Configuration) {
       var t2isSubsumed: Boolean = false
       breakable {
         for (t1 <- s1.asScala) {
-          val rel: Affinity = relationship(t1, t2)
+          val rel = relationship(t1, t2)
           if (rel == SUBSUMES || rel == SAME_TYPE) {
             t2isSubsumed = true
             break()
           }
         }
       }
-      if (!t2isSubsumed) {
-        false
-      }
+      if (! t2isSubsumed)
+        return false
     }
     true
   }
@@ -592,9 +602,8 @@ class TypeHierarchy(var config: Configuration) {
                             s2: Set[_ <: PlainType]): Boolean = {
     for (t2 <- s2.asScala; t1 <- s1.asScala) {
       val rel: Affinity = relationship(t1, t2)
-      if (rel != DISJOINT) {
-        true
-      }
+      if (rel != DISJOINT)
+        return true
     }
     false
   }
@@ -604,44 +613,43 @@ class TypeHierarchy(var config: Configuration) {
                                  n1: Optional[IntSet],
                                  n2: Optional[IntSet]): Affinity = {
     var contentRelationship: Affinity = null
-    if (t1.isInstanceOf[DocumentNodeTest]) {
-      contentRelationship =
-        if (t2.isInstanceOf[DocumentNodeTest])
-          relationship(t1.asInstanceOf[DocumentNodeTest].getElementTest,
-            t2.asInstanceOf[DocumentNodeTest].getElementTest)
-        else SUBSUMED_BY
-    } else if (t2.isInstanceOf[DocumentNodeTest]) {
-      contentRelationship = SUBSUMES
-    } else {
-      val s1: SchemaType = t1.asInstanceOf[NodeTest].getContentType
-      val s2: SchemaType = t2.asInstanceOf[NodeTest].getContentType
-      contentRelationship = schemaTypeRelationship(s1, s2)
+    t1 match {
+      case test: DocumentNodeTest =>
+        contentRelationship =
+          t2 match {
+            case test1: DocumentNodeTest => relationship(test.getElementTest, test1.getElementTest)
+            case _ => SUBSUMED_BY
+          }
+      case _ =>
+        if (t2.isInstanceOf[DocumentNodeTest]) {
+          contentRelationship = SUBSUMES
+        } else {
+          val s1 = t1.asInstanceOf[NodeTest].getContentType
+          val s2 = t2.asInstanceOf[NodeTest].getContentType
+          contentRelationship = schemaTypeRelationship(s1, s2)
+        }
     }
-    val nillable1: Boolean = t1.asInstanceOf[NodeTest].isNillable
-    val nillable2: Boolean = t2.asInstanceOf[NodeTest].isNillable
-    if (nillable1 != nillable2) {
+    val nillable1 = t1.asInstanceOf[NodeTest].isNillable
+    val nillable2 = t2.asInstanceOf[NodeTest].isNillable
+    if (nillable1 != nillable2)
       contentRelationship match {
         case SUBSUMES =>
-          if (nillable2) {
+          if (nillable2)
             contentRelationship = OVERLAPS
-          }
         case SUBSUMED_BY =>
-          if (nillable1) {
+          if (nillable1)
             contentRelationship = OVERLAPS
-          }
         case SAME_TYPE =>
           contentRelationship = if (nillable1) SUBSUMES else SUBSUMED_BY
         case _ =>
-
       }
-    }
     contentRelationship
   }
 
   def sequenceTypeRelationship(s1: SequenceType, s2: SequenceType): Affinity = {
-    val c1: Int = s1.getCardinality
-    val c2: Int = s2.getCardinality
-    var cardRel =
+    val c1 = s1.getCardinality
+    val c2 = s2.getCardinality
+    val cardRel =
       if (c1 == c2) {
         SAME_TYPE
       } else if (Cardinality.subsumes(c1, c2)) {
@@ -678,30 +686,28 @@ class TypeHierarchy(var config: Configuration) {
       OVERLAPS
     } else if (s2.isInstanceOf[Untyped.Untyped] && (s1 == BuiltInAtomicType.ANY_ATOMIC || s1 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       OVERLAPS
-    } else if (s1.isInstanceOf[PlainType] && s1.asInstanceOf[PlainType].isPlainType && s2.isInstanceOf[PlainType] && s2.asInstanceOf[PlainType].isPlainType) {
-      relationship(s1.asInstanceOf[ItemType], s2.asInstanceOf[ItemType])
-    } else {
-      var t1 = s1
-      while (({
-        t1 = t1.getBaseType
-        t1
-      }) != null)
-        if (t1.isSameType(s2)) {
-          return SUBSUMED_BY
-        }
-      var t2 = s2
-      while (({
-        t2 = t2.getBaseType
-        t2
-      }) != null)
-        if (t2.isSameType(s1)) {
-          return SUBSUMES
-        }
+    } else s1 match {
+      case plainType: PlainType if s2.asInstanceOf[PlainType].isPlainType && s2.isInstanceOf[PlainType] && plainType.isPlainType =>
+        relationship(s1.asInstanceOf[ItemType], s2.asInstanceOf[ItemType])
+      case _ =>
+        var t1 = s1
+        while ({
+          t1 = t1.getBaseType
+          t1
+        } != null)
+          if (t1.isSameType(s2))
+            return SUBSUMED_BY
+        var t2 = s2
+        while ({
+          t2 = t2.getBaseType
+          t2
+        } != null)
+          if (t2.isSameType(s1))
+            return SUBSUMES
 
-      DISJOINT
+        DISJOINT
     }
   }
 
-  def getGenericFunctionItemType(): ItemType = AnyItemType.getInstance
-
+  def getGenericFunctionItemType(): ItemType = AnyItemType
 }

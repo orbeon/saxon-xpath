@@ -130,7 +130,7 @@ class GroupAdjacentIterator(private var select: Expression,
           case e: ClassCastException => {
             val message: String =
               "Grouping key values are of non-comparable types"
-            val err: XPathException = new XPathException(message)
+            val err = new XPathException(message)
             err.setIsTypeError(true)
             err.setXPathContext(runningContext)
             throw err

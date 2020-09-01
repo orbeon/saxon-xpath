@@ -1,9 +1,9 @@
 package net.sf.saxon.expr
 
-import AxisExpression._
 import java.util
+import java.util._
 
-import net.sf.saxon.utils.Configuration
+import net.sf.saxon.expr.AxisExpression._
 import net.sf.saxon.expr.parser._
 import net.sf.saxon.model._
 import net.sf.saxon.om._
@@ -12,16 +12,11 @@ import net.sf.saxon.trace.ExpressionPresenter
 import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.iter.AxisIterator
 import net.sf.saxon.tree.util.FastStringBuffer
+import net.sf.saxon.utils.Configuration
 import net.sf.saxon.value.Cardinality
-import net.sf.saxon.z.IntHashSet
-import net.sf.saxon.z.IntIterator
-import net.sf.saxon.z.IntSet
-import java.util._
+import net.sf.saxon.z.{IntHashSet, IntIterator, IntSet}
 
-import AxisExpression._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-import scala.jdk.CollectionConverters._
+import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
 object AxisExpression {
@@ -109,7 +104,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
     doneTypeCheck = true
     if (contextItemType == ErrorType.getInstance) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Axis step " + this + " cannot be used here: the context item is absent")
       err.setErrorCode("XPDY0002")
       err.setLocation(getLocation)
@@ -123,7 +118,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       val relation: Affinity.Affinity =
         th.relationship(contextItemType, AnyNodeTest.getInstance)
       if (relation == Affinity.DISJOINT) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Axis step " + this +
             " cannot be used here: the context item is not a node")
         err.setIsTypeError(true)
@@ -764,7 +759,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val contextItemType: ItemType = staticInfo.getItemType
     if (contextItemType.isInstanceOf[NodeTest]) {
       originNodeType = contextItemType.asInstanceOf[NodeTest]
-    } else if (contextItemType.isInstanceOf[AnyItemType]) {
+    } else if (contextItemType eq AnyItemType) {
       originNodeType = AnyNodeTest.getInstance
     } else {
       StaticProperty.ALLOWS_ZERO_OR_MORE
@@ -871,7 +866,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   override def iterate(context: XPathContext): SequenceIterator = {
     val item: Item = context.getContextItem
     if (item == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The context item for axis step " + this + " is absent")
       err.setErrorCode("XPDY0002")
       err.setXPathContext(context)
@@ -885,7 +880,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       item.asInstanceOf[NodeInfo].iterateAxis(axis, test)
     } catch {
       case cce: ClassCastException => {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The context item for axis step " + this + " is not a node")
         err.setErrorCode("XPTY0020")
         err.setXPathContext(context)

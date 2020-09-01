@@ -203,7 +203,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       val elementIsInNullNamespace: Boolean = pendingStartTag.hasURI("")
       if (prefix.isEmpty && !namespaceUri.isEmpty) {
         if (elementIsInNullNamespace) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Cannot output a namespace node for the default namespace (" +
               namespaceUri +
               ") when the element is in no namespace")
@@ -217,7 +217,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       if (rejectDuplicates) {
         val uri: String = pendingNSMap.getURI(prefix)
         if (uri != null && uri != namespaceUri) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Cannot create two namespace nodes with the same prefix " +
               "mapped to different URIs (prefix=\"" +
               prefix +
@@ -257,7 +257,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
                 locationId: Location,
                 properties: Int): Unit = {
     if (level >= 0 && state != StartTag) {
-      val err: XPathException =
+      val err =
         NoOpenStartTagException.makeNoOpenStartTagException(
           Type.ATTRIBUTE,
           attName.getDisplayName,
@@ -280,7 +280,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
           pendingAttributes.set(a, attInfo)
           return
         } else {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Cannot create an element having two attributes with the same name: " +
               Err.wrap(attName.getDisplayName, Err.ATTRIBUTE))
           err.setErrorCode("XQDY0025")
@@ -291,7 +291,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     if (level == 0 && typeCode != BuiltInAtomicType.UNTYPED_ATOMIC &&
       currentLevelIsDocument(0)) {
       if (typeCode.isNamespaceSensitive) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Cannot copy attributes whose type is namespace-sensitive (QName or NOTATION): " +
             Err.wrap(attName.getDisplayName, Err.ATTRIBUTE))
         err.setErrorCode(
@@ -569,7 +569,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
             if (node.getSchemaType
               .asInstanceOf[SimpleType]
               .isNamespaceSensitive) {
-              val err: XPathException = new XPathException(
+              val err = new XPathException(
                 "Cannot copy attributes whose type is namespace-sensitive (QName or NOTATION): " +
                   Err.wrap(node.getDisplayName, Err.ATTRIBUTE))
               err.setErrorCode(

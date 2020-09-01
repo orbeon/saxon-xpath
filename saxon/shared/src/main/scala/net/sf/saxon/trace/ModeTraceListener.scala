@@ -34,7 +34,7 @@ class ModeTraceListener extends AbstractTraceListener {
   def enter(info: Traceable, context: XPathContext): Unit = {
     if (info.isInstanceOf[TemplateRule]) {
       val file: String = abbreviateLocationURI(info.getLocation.getSystemId)
-      val msg: String = AbstractTraceListener.spaces(indent) + "<rule match=\"" +
+      val msg = AbstractTraceListener.spaces(indent) + "<rule match=\"" +
         escape(info.asInstanceOf[TemplateRule].getMatchPattern.toString) +
         '"' +
         " line=\"" +

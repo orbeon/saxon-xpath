@@ -97,7 +97,7 @@ class YearMonthDurationValue private ()
 
   override def multiply(n: Double): YearMonthDurationValue = {
     if (java.lang.Double.isNaN(n)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot multiply a duration by NaN")
       err.setErrorCode("FOCA0005")
       throw err
@@ -106,7 +106,7 @@ class YearMonthDurationValue private ()
     val product: Double = n * m
     if (java.lang.Double.isInfinite(product) || product > java.lang.Integer.MAX_VALUE ||
         product < java.lang.Integer.MIN_VALUE) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Overflow when multiplying a duration by a number")
       err.setErrorCode("FODT0002")
       throw err
@@ -116,7 +116,7 @@ class YearMonthDurationValue private ()
 
   override def divide(n: Double): DurationValue = {
     if (java.lang.Double.isNaN(n)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot divide a duration by NaN")
       err.setErrorCode("FOCA0005")
       throw err
@@ -125,7 +125,7 @@ class YearMonthDurationValue private ()
     val product: Double = m / n
     if (java.lang.Double.isInfinite(product) || product > java.lang.Integer.MAX_VALUE ||
         product < java.lang.Integer.MIN_VALUE) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Overflow when dividing a duration by a number")
       err.setErrorCode("FODT0002")
       throw err
@@ -139,14 +139,14 @@ class YearMonthDurationValue private ()
       val v2: BigDecimal = BigDecimal.valueOf(
         other.asInstanceOf[YearMonthDurationValue].getLengthInMonths)
       if (v2.signum() == 0) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Divide by zero (durations)")
         err.setErrorCode("FOAR0001")
         throw err
       }
       new BigDecimalValue(v1.divide(v2, 20, RoundingMode.HALF_EVEN))
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot divide two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err
@@ -158,7 +158,7 @@ class YearMonthDurationValue private ()
         getLengthInMonths +
           other.asInstanceOf[YearMonthDurationValue].getLengthInMonths)
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot add two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err
@@ -170,7 +170,7 @@ class YearMonthDurationValue private ()
         getLengthInMonths -
           other.asInstanceOf[YearMonthDurationValue].getLengthInMonths)
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot subtract two durations of different type")
       err.setErrorCode("XPTY0004")
       throw err

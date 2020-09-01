@@ -46,7 +46,7 @@ class QuantifiedExpression extends Assignation {
     this.setSequence(getSequence.unordered(retainAllNodes = false, forStreaming = false))
     val decl: SequenceType = getRequiredType
     if (decl.getCardinality == StaticProperty.ALLOWS_ZERO) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Range variable will never satisfy the type empty-sequence()",
         "XPTY0004")
       err.setIsTypeError(true)
@@ -71,7 +71,7 @@ class QuantifiedExpression extends Assignation {
       getSequence.getSpecialProperties,
       this)
     getActionOp.typeCheck(visitor, contextInfo)
-    val err: XPathException = TypeChecker.ebvError(
+    val err = TypeChecker.ebvError(
       getAction,
       visitor.getConfiguration.getTypeHierarchy)
     if (err != null) {

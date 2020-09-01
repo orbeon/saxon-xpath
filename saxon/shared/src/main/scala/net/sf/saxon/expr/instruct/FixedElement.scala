@@ -158,7 +158,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       if (validation == Validation.STRICT) {
         val decl: SchemaDeclaration = config.getElementDeclaration(fp)
         if (decl == null) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "There is no global element declaration for " + elementName.getStructuredQName.getEQName +
               ", so strict validation will fail")
           err.setErrorCode(if (instr.isXSLT) "XTTE1512" else "XQDY0084")
@@ -167,7 +167,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           throw err
         }
         if (decl.isAbstract) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "The element declaration for " + elementName.getStructuredQName.getEQName +
               " is abstract, so strict validation will fail")
           err.setErrorCode(if (instr.isXSLT) "XTTE1512" else "XQDY0027")
@@ -330,7 +330,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
     if (parentType.isInstanceOf[SimpleType]) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Element " + elementName.getDisplayName +
           " is not permitted here: the containing element is of simple type " +
           parentType.getDescription)
@@ -338,7 +338,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       err.setLocation(getLocation)
       throw err
     } else if (parentType.asInstanceOf[ComplexType].isSimpleContent) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Element " + elementName.getDisplayName +
           " is not permitted here: the containing element has a complex type with simple content")
       err.setIsTypeError(true)
@@ -356,7 +356,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     `type` =
       parentType.asInstanceOf[ComplexType].getElementParticleType(fp, considerExtensions = true)
     if (`type` == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Element " + elementName.getDisplayName +
           " is not permitted in the content model of the complex type " +
           parentType.getDescription)

@@ -444,7 +444,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
         getTimezoneInMinutes,
         "")
     } else {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Time+Duration arithmetic is supported only for xs:dayTimeDuration")
       err.setErrorCode("XPTY0004")
       err.setIsTypeError(true)
@@ -454,7 +454,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
   override def subtract(other: CalendarValue,
                         context: XPathContext): DayTimeDurationValue = {
     if (!(other.isInstanceOf[TimeValue])) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "First operand of '-' is a time, but the second is not")
       err.setIsTypeError(true)
       throw err

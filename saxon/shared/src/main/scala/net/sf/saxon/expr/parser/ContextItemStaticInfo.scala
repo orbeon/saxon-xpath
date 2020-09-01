@@ -21,7 +21,7 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 object ContextItemStaticInfo {
 
   val DEFAULT: ContextItemStaticInfo =
-    new ContextItemStaticInfo(AnyItemType.getInstance, true)
+    new ContextItemStaticInfo(AnyItemType, true)
 
   val ABSENT: ContextItemStaticInfo =
     new ContextItemStaticInfo(ErrorType.getInstance, true)

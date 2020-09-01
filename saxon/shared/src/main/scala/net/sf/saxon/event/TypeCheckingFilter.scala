@@ -239,7 +239,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
 
   def finalCheck(): Unit = {
     if (count == 0 && !Cardinality.allowsZero(cardinality)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "An empty sequence is not allowed as the " + role.getMessage)
       val errorCode: String = role.getErrorCode
       err.setErrorCode(errorCode)
@@ -312,7 +312,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
       if (item == null) role.composeErrorMessage(itemType, suppliedType)
       else role.composeErrorMessage(itemType, item, typeHierarchy)
     val errorCode: String = role.getErrorCode
-    val err: XPathException = new XPathException(message)
+    val err = new XPathException(message)
     err.setErrorCode(errorCode)
     if ("XPDY0050" != errorCode) {
       err.setIsTypeError(true)
@@ -327,7 +327,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
 
   private def checkAllowsMany(locationId: Location): Unit = {
     if (!Cardinality.allowsMany(cardinality)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "A sequence of more than one item is not allowed as the " +
           role.getMessage)
       val errorCode: String = role.getErrorCode

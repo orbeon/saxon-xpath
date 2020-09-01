@@ -93,7 +93,7 @@ class LookupExpression(start: Expression, step: Expression)
             mapType.asInstanceOf[TupleItemType].getFieldType(fieldName)
           if (fieldType == null) {
             if (mapType.asInstanceOf[TupleItemType].isExtensible)
-              AnyItemType.getInstance
+              AnyItemType
             else ErrorType.getInstance
           } else {
             fieldType.getPrimaryType
@@ -103,7 +103,7 @@ class LookupExpression(start: Expression, step: Expression)
         }
       }
     }
-    AnyItemType.getInstance
+    AnyItemType
   }
 
   /**
@@ -144,11 +144,11 @@ class LookupExpression(start: Expression, step: Expression)
     if (!isArrayLookup && !isMapLookup) {
       if (th.relationship(containerType, MapType.ANY_MAP_TYPE) ==
         Affinity.DISJOINT &&
-        th.relationship(containerType, AnyItemType.getInstance) ==
+        th.relationship(containerType, AnyItemType) ==
           Affinity.DISJOINT &&
         th.relationship(containerType, AnyExternalObjectType.THE_INSTANCE) ==
           Affinity.DISJOINT) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The left-hand operand of '?' must be a map or an array; the supplied expression is of type " +
             containerType,
           "XPTY0004")
@@ -177,7 +177,7 @@ class LookupExpression(start: Expression, step: Expression)
         val fieldName: String =
           getRhsExpression.asInstanceOf[StringLiteral].getStringValue
         if (tt.getFieldType(fieldName) == null) {
-          val err: XPathException = new XPathException(
+          val err = new XPathException(
             "Field " + fieldName + " is not defined in the tuple type",
             "XPTY0004")
           err.setIsTypeError(true)

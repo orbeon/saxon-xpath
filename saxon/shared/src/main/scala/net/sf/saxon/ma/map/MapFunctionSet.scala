@@ -109,7 +109,7 @@ object MapFunctionSet {
         val valueType: SequenceType = tit.getFieldType(key)
         if (valueType == null) {
           warning("Field " + key + " is not defined in tuple type")
-          AnyItemType.getInstance
+          AnyItemType
         } else {
           valueType.getPrimaryType
         }
@@ -600,17 +600,17 @@ class MapFunctionSet extends BuiltInFunctionSet {
       .optionDetails(mergeOptionDetails)
     register("entry", 2, classOf[MapEntry], MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-      .arg(1, AnyItemType.getInstance, STAR | NAV, null)
+      .arg(1, AnyItemType, STAR | NAV, null)
     register("find", 2, classOf[MapFind], ArrayItemType.ANY_ARRAY_TYPE, ONE, 0)
-      .arg(0, AnyItemType.getInstance, STAR | INS, null)
+      .arg(0, AnyItemType, STAR | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-    register("get", 2, classOf[MapGet], AnyItemType.getInstance, STAR, 0)
+    register("get", 2, classOf[MapGet], AnyItemType, STAR, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
     register("put", 3, classOf[MapPut], MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-      .arg(2, AnyItemType.getInstance, STAR | NAV, null)
+      .arg(2, AnyItemType, STAR | NAV, null)
     register("contains",
       2,
       classOf[MapContains],
@@ -636,7 +636,7 @@ class MapFunctionSet extends BuiltInFunctionSet {
     register("for-each",
       2,
       classOf[MapForEach],
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
       0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)

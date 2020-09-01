@@ -197,7 +197,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       Literal.makeLiteral(BooleanValue.FALSE, this)
     }
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot perform comparisons involving external objects")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
@@ -239,7 +239,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               getLocation)
           }
         } else {
-          val err: XPathException = new XPathException(message)
+          val err = new XPathException(message)
           err.setErrorCode("XPTY0004")
           err.setIsTypeError(true)
           err.setLocator(getLocation)

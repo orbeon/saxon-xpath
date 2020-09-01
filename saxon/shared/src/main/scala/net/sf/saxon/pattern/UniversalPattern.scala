@@ -22,7 +22,7 @@ class UniversalPattern extends Pattern {
 
   override def getUType(): UType = UType.ANY
 
-  override def getItemType(): ItemType = AnyItemType.getInstance
+  override def getItemType(): ItemType = AnyItemType
 
   override def getFingerprint(): Int = -1
 

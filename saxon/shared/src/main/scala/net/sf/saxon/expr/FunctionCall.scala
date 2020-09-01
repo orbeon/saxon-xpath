@@ -199,7 +199,7 @@ abstract class FunctionCall extends Expression {
         pluralArguments(max)
     }
     if (msg != null) {
-      val err: XPathException = new XPathException(msg, "XPST0017")
+      val err = new XPathException(msg, "XPST0017")
       err.setIsStaticError(true)
       err.setLocation(getLocation)
       throw err

@@ -182,7 +182,7 @@ class UserFunction
   def acceptsNodesWithoutAtomization(): Boolean = {
     for (i <- 0 until getArity) {
       val `type`: ItemType = getArgumentType(i).getPrimaryType
-      if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType.getInstance) {
+      if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType) {
         true
       }
     }
@@ -439,7 +439,7 @@ class UserFunction
                  context: XPathContext,
                  comparer: AtomicComparer,
                  flags: Int): Boolean = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Cannot compare functions using deep-equal",
       "FOTY0015")
     err.setIsTypeError(true)

@@ -55,7 +55,7 @@ class FoldRightFn extends SystemFunction {
         .getResultType
         .getPrimaryType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 

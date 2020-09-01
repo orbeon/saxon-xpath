@@ -71,7 +71,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   private var requiredType: SequenceType = _
 
   @BeanProperty
-  var requiredContextItemType: ItemType = AnyItemType.getInstance
+  var requiredContextItemType: ItemType = AnyItemType
 
   @BooleanBeanProperty
   var mayOmitContextItem: Boolean = true
@@ -138,7 +138,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     val contextItem: Item = context.getContextItem
     if (contextItem == null) {
       if (!mayOmitContextItem) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The template requires a context item, but none has been supplied",
           "XTTE3090")
         err.setLocation(getLocation)
@@ -147,7 +147,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
       }
     } else {
       val th: TypeHierarchy = contxt.getConfiguration.getTypeHierarchy
-      if (requiredContextItemType != AnyItemType.getInstance && !requiredContextItemType
+      if (requiredContextItemType != AnyItemType && !requiredContextItemType
         .matches(contextItem, th)) {
         val role: RoleDiagnostic = new RoleDiagnostic(
           RoleDiagnostic.MISC,
@@ -155,7 +155,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
           0)
         val message: String =
           role.composeErrorMessage(requiredContextItemType, contextItem, th)
-        val err: XPathException = new XPathException(message, "XTTE0590")
+        val err = new XPathException(message, "XTTE0590")
         err.setLocation(getLocation)
         err.setIsTypeError(true)
         throw err
@@ -187,7 +187,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   }
 
   def explainProperties(presenter: ExpressionPresenter): Unit = {
-    if (getRequiredContextItemType != AnyItemType.getInstance) {
+    if (getRequiredContextItemType != AnyItemType) {
       val st: SequenceType = SequenceType.makeSequenceType(
         getRequiredContextItemType,
         StaticProperty.EXACTLY_ONE)

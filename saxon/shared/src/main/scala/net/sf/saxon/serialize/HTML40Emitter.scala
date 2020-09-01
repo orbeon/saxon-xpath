@@ -67,7 +67,7 @@ class HTML40Emitter extends HTMLEmitter {
       if (versionProperty.==("4.0") || versionProperty.==("4.01")) {
         version = 4
       } else {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Unsupported HTML version: " + versionProperty)
         err.setErrorCode("SESU0013")
         throw err

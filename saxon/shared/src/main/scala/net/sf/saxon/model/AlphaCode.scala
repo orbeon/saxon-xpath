@@ -369,7 +369,7 @@ object AlphaCode {
   private def sequenceTypeFromTree(tree: AlphaCodeTree, config: Configuration): SequenceType = {
     val principal = tree.principal
     var itemType: ItemType = null
-    if (principal.isEmpty) itemType = AnyItemType.getInstance
+    if (principal.isEmpty) itemType = AnyItemType
     else if (principal.startsWith("A")) {
       val builtIn = BuiltInAtomicType.fromAlphaCode(principal)
       if (builtIn == null) throw new IllegalArgumentException("Unknown type " + principal)

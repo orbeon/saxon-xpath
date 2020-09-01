@@ -77,7 +77,7 @@ class FoldLeftFn extends FoldingFunction {
         .getResultType
         .getPrimaryType
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 

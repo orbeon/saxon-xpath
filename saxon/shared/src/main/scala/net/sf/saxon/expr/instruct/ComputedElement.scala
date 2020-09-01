@@ -208,7 +208,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       } else {
         msg += "has a complex type with simple content"
       }
-      val err: XPathException = new XPathException(msg)
+      val err = new XPathException(msg)
       err.setIsTypeError(true)
       err.setLocation(getLocation)
       throw err
@@ -256,7 +256,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       uri = nameValue.asInstanceOf[QNameValue].getNamespaceURI
       prefix = nameValue.asInstanceOf[QNameValue].getPrefix
       if (prefix.==("xmlns")) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Computed element name has prefix xmlns",
           "XQDY0096",
           getLocation)
@@ -264,7 +264,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       }
     } else {
       val errorCode: String = if (isXSLT) "XTDE0820" else "XPTY0004"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Computed element name has incorrect type",
         errorCode,
         getLocation)
@@ -278,7 +278,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
           if (isXSLT) "XTDE0830"
           else if (prefix.==("xmlns")) "XQDY0096"
           else "XQDY0074"
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "Undeclared prefix in element name: " + prefix,
           errorCode,
           getLocation)
@@ -308,7 +308,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
     }
     if (uri == NamespaceConstant.XMLNS) {
       val errorCode: String = if (isXSLT) "XTDE0835" else "XQDY0096"
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot create element in namespace " + uri,
         errorCode,
         getLocation)
@@ -324,7 +324,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
           "When the namespace URI is " + NamespaceConstant.XML +
             ", the prefix must be 'xml'"
       val errorCode: String = if (isXSLT) "XTDE0835" else "XQDY0096"
-      val err: XPathException =
+      val err =
         new XPathException(message, errorCode, getLocation)
       throw dynamicError(getLocation.toString, err.toString, context)
     }

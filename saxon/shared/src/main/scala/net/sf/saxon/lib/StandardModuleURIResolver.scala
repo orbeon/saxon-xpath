@@ -41,7 +41,7 @@ class StandardModuleURIResolver extends ModuleURIResolver {
               baseURI: String,
               locations: Array[String]): Array[StreamSource] =
     if (locations.length == 0) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot locate module for namespace " + moduleURI)
       err.setErrorCode("XQST0059")
       err.setIsStaticError(true)

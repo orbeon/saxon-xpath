@@ -129,7 +129,7 @@ abstract class Emitter
     } catch {
       case fnf@(_: FileNotFoundException | _: URISyntaxException |
                 _: IllegalArgumentException) => {
-        val err: XPathException =
+        val err =
           new XPathException("Unable to write to output destination", fnf)
         err.setErrorCode(SaxonErrorCode.SXRD0004)
         throw err

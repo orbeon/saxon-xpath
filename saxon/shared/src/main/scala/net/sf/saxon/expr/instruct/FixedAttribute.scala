@@ -169,7 +169,7 @@ class FixedAttribute(private var nodeName: NodeName,
       return
     }
     if (parentType.isInstanceOf[SimpleType]) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Attribute " + nodeName.getDisplayName +
           " is not permitted in the content model of the simple type " +
           parentType.getDescription)
@@ -183,7 +183,7 @@ class FixedAttribute(private var nodeName: NodeName,
       .asInstanceOf[ComplexType]
       .getAttributeUseType(nodeName.getStructuredQName)
     if (`type` == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Attribute " + nodeName.getDisplayName +
           " is not permitted in the content model of the complex type " +
           parentType.getDescription)

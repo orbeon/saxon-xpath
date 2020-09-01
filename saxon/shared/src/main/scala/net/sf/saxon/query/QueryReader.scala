@@ -68,7 +68,7 @@ object QueryReader {
       readQueryFromReader(reader, nameChecker)
     } catch {
       case encErr: UnsupportedEncodingException => {
-        val err: XPathException =
+        val err =
           new XPathException("Unknown encoding " + Err.wrap(encodeStr), encErr)
         err.setErrorCode("XQST0087")
         throw err

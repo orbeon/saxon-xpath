@@ -50,7 +50,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
       .arg(0, BuiltInAtomicType.STRING, OPT, null)
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
       .arg(2, BuiltInAtomicType.STRING, ONE, null)
-    register("apply", 2, classOf[ApplyFn], AnyItemType.getInstance, STAR, LATE)
+    register("apply", 2, classOf[ApplyFn], AnyItemType, STAR, LATE)
       .arg(0, AnyFunctionType.getInstance, OPT, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE, null)
     register("available-environment-variables",
@@ -97,10 +97,10 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("filter",
              2,
              classOf[FilterFn],
-             AnyItemType.getInstance,
+             AnyItemType,
              STAR,
              AS_ARG0 | LATE)
-      .arg(0, AnyItemType.getInstance, STAR | TRA, EMPTY)
+      .arg(0, AnyItemType, STAR | TRA, EMPTY)
       .arg(1, predicate, ONE, null)
     val foldLeftArg: SpecificFunctionType = new SpecificFunctionType(
       Array(SequenceType.ANY_SEQUENCE, SequenceType.SINGLE_ITEM),
@@ -108,11 +108,11 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("fold-left",
              3,
              classOf[FoldLeftFn],
-             AnyItemType.getInstance,
+             AnyItemType,
              STAR,
              LATE)
-      .arg(0, AnyItemType.getInstance, STAR, null)
-      .arg(1, AnyItemType.getInstance, STAR, null)
+      .arg(0, AnyItemType, STAR, null)
+      .arg(1, AnyItemType, STAR, null)
       .arg(2, foldLeftArg, ONE, null)
     val foldRightArg: SpecificFunctionType = new SpecificFunctionType(
       Array(SequenceType.SINGLE_ITEM, SequenceType.ANY_SEQUENCE),
@@ -120,11 +120,11 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("fold-right",
              3,
              classOf[FoldRightFn],
-             AnyItemType.getInstance,
+             AnyItemType,
              STAR,
              LATE)
-      .arg(0, AnyItemType.getInstance, STAR, null)
-      .arg(1, AnyItemType.getInstance, STAR, null)
+      .arg(0, AnyItemType, STAR, null)
+      .arg(1, AnyItemType, STAR, null)
       .arg(2, foldRightArg, ONE, null)
     val forEachArg: SpecificFunctionType = new SpecificFunctionType(
       Array(SequenceType.SINGLE_ITEM),
@@ -132,10 +132,10 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("for-each",
              2,
              classOf[ForEachFn],
-             AnyItemType.getInstance,
+             AnyItemType,
              STAR,
              LATE)
-      .arg(0, AnyItemType.getInstance, STAR, EMPTY)
+      .arg(0, AnyItemType, STAR, EMPTY)
       .arg(1, forEachArg, ONE, null)
     val forEachPairArg: SpecificFunctionType = new SpecificFunctionType(
       Array(SequenceType.SINGLE_ITEM, SequenceType.SINGLE_ITEM),
@@ -143,11 +143,11 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("for-each-pair",
              3,
              classOf[ForEachPairFn],
-             AnyItemType.getInstance,
+             AnyItemType,
              STAR,
              LATE)
-      .arg(0, AnyItemType.getInstance, STAR, EMPTY)
-      .arg(1, AnyItemType.getInstance, STAR, EMPTY)
+      .arg(0, AnyItemType, STAR, EMPTY)
+      .arg(1, AnyItemType, STAR, EMPTY)
       .arg(2, forEachPairArg, ONE, null)
     register("format-date",
              2,
@@ -190,7 +190,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("format-integer",
              2,
              classOf[FormatInteger],
-             AnyItemType.getInstance,
+             AnyItemType,
              ONE,
              0)
       .arg(0, BuiltInAtomicType.INTEGER, OPT, null)
@@ -198,7 +198,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
     register("format-integer",
              3,
              classOf[FormatInteger],
-             AnyItemType.getInstance,
+             AnyItemType,
              ONE,
              0)
       .arg(0, BuiltInAtomicType.INTEGER, OPT, null)
@@ -284,8 +284,8 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              BuiltInAtomicType.BOOLEAN,
              OPT,
              0).arg(0, AnyNodeTest.getInstance, OPT | INS, null)
-    register("head", 1, classOf[HeadFn], AnyItemType.getInstance, OPT, FILTER)
-      .arg(0, AnyItemType.getInstance, STAR | TRA, null)
+    register("head", 1, classOf[HeadFn], AnyItemType, OPT, FILTER)
+      .arg(0, AnyItemType, STAR | TRA, null)
     register("innermost",
              1,
              classOf[Innermost],
@@ -347,10 +347,10 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              classOf[Serialize],
              BuiltInAtomicType.STRING,
              ONE,
-             0).arg(0, AnyItemType.getInstance, STAR, null)
-    register("sort", 1, classOf[Sort_1], AnyItemType.getInstance, STAR, 0).arg(
+             0).arg(0, AnyItemType, STAR, null)
+    register("sort", 1, classOf[Sort_1], AnyItemType, STAR, 0).arg(
       0,
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
       null)
     register(
@@ -364,9 +364,9 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
       "tail",
       1,
       classOf[TailFn],
-      AnyItemType.getInstance,
+      AnyItemType,
       STAR,
-      AS_ARG0 | FILTER).arg(0, AnyItemType.getInstance, STAR | TRA, null)
+      AS_ARG0 | FILTER).arg(0, AnyItemType, STAR | TRA, null)
     register("unparsed-text",
              1,
              classOf[UnparsedText],
@@ -424,13 +424,13 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              LATE).arg(0, BuiltInAtomicType.STRING, OPT, null)
   }
 //        register("serialize", 2, Serialize.class, BuiltInAtomicType.STRING, ONE, XPATH30, 0)
-//                .arg(0, AnyItemType.getInstance(), STAR, null)
+//                .arg(0, AnyItemType(), STAR, null)
 //                .arg(1, NodeKindTest.ELEMENT, OPT, null);
 //        register("string-join", 2, StringJoin.class, BuiltInAtomicType.STRING, ONE, CORE, 0)
 //                .arg(0, BuiltInAtomicType.ANY_ATOMIC, STAR, StringValue.EMPTY_STRING)
 //                .arg(1, BuiltInAtomicType.STRING, ONE, null);
 //        register("serialize", 2, Serialize.class, BuiltInAtomicType.STRING, ONE, XPATH30, 0)
-//                .arg(0, AnyItemType.getInstance(), STAR, null)
+//                .arg(0, AnyItemType(), STAR, null)
 //                .arg(1, NodeKindTest.ELEMENT, OPT, null);
 //        register("string-join", 2, StringJoin.class, BuiltInAtomicType.STRING, ONE, CORE, 0)
 //                .arg(0, BuiltInAtomicType.ANY_ATOMIC, STAR, StringValue.EMPTY_STRING)

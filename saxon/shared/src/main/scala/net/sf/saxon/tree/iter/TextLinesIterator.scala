@@ -107,7 +107,7 @@ abstract class TextLinesIterator  () extends SequenceIterator {
         ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
       }
       if (!checker.test(ch32)) {
-        val err: XPathException = new XPathException(
+        val err = new XPathException(
           "The unparsed-text file contains a character that is illegal in XML (line=" +
             position +
             " column=" +

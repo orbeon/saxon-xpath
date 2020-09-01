@@ -186,7 +186,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           if (i.asInstanceOf[Function].isArray) {
             this
           } else if (i.asInstanceOf[Function].isMap) {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               expandMessage(
                 "Cannot atomize a map (" + i.toShortString() + ")"),
               "FOTY0013")
@@ -194,7 +194,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
             err.setLocation(getLocation)
             throw err
           } else {
-            val err: XPathException = new XPathException(
+            val err = new XPathException(
               expandMessage("Cannot atomize a function item"),
               "FOTY0013")
             err.setIsTypeError(true)

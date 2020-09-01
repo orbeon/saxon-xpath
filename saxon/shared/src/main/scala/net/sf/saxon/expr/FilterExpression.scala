@@ -292,8 +292,7 @@ object FilterExpression {
     if (`type` == BuiltInAtomicType.BOOLEAN) {
       isExplicitlyPositional(exp)
     }
-    `type` == BuiltInAtomicType.ANY_ATOMIC || `type`
-      .isInstanceOf[AnyItemType] ||
+    `type` == BuiltInAtomicType.ANY_ATOMIC || (`type` eq AnyItemType) ||
       `type` == BuiltInAtomicType.INTEGER ||
       `type` == NumericType.getInstance ||
       NumericType.isNumericType(`type`) ||

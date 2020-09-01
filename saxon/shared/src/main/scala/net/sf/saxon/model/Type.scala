@@ -105,7 +105,7 @@ object Type {
 
   /*@NotNull*/
 
-  val ITEM_TYPE: ItemType = AnyItemType.getInstance
+  val ITEM_TYPE: ItemType = AnyItemType
 
   val FUNCTION: Short = 99
 
@@ -116,7 +116,7 @@ object Type {
   def getItemType(item: Item, thVar: TypeHierarchy): ItemType = {
     var th: TypeHierarchy = thVar;
     if (item == null) {
-      AnyItemType.getInstance
+      AnyItemType
     } else if (item.isInstanceOf[AtomicValue]) {
       item.asInstanceOf[AtomicValue].getItemType
     } else if (item.isInstanceOf[NodeInfo]) {
@@ -344,8 +344,8 @@ object Type {
     if (t2.isInstanceOf[ErrorType]) {
       return t1
     }
-    if (t1 == AnyItemType.getInstance || t2 == AnyItemType.getInstance) {
-      AnyItemType.getInstance
+    if (t1 == AnyItemType || t2 == AnyItemType) {
+      AnyItemType
     }
     val p1: ItemType = t1.getPrimitiveItemType
     val p2: ItemType = t2.getPrimitiveItemType
@@ -377,7 +377,7 @@ object Type {
       val c2: Class[_] = t2.asInstanceOf[JavaExternalObjectType].getJavaClass
       config.getJavaExternalObjectType(leastCommonSuperClass(c1, c2))
     }
-    AnyItemType.getInstance
+    AnyItemType
   }
 
   def getCommonSuperType(t1: SequenceType, t2: SequenceType): SequenceType =

@@ -66,7 +66,7 @@ class GlobalParameterSet {
           role,
           Loc.NONE)
       } else {
-        val err: XPathException =
+        val err =
           TypeChecker.testConformance(`val`, requiredType, context)
         if (err != null) {
           throw err

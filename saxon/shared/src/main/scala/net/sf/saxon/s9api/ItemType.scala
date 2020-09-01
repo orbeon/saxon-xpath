@@ -56,7 +56,7 @@ object ItemType {
     def subsumes(other: ItemType): Boolean = true
 
     def getUnderlyingItemType(): net.sf.saxon.model.ItemType =
-      AnyItemType.getInstance
+      AnyItemType
   }
 
   var ANY_FUNCTION: ItemType = new ItemType() {

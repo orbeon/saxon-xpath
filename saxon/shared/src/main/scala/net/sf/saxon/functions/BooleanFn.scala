@@ -83,7 +83,7 @@ class BooleanFn extends SystemFunction {
   override def supplyTypeInformation(visitor: ExpressionVisitor,
                                      contextItemType: ContextItemStaticInfo,
                                      arguments: Array[Expression]): Unit = {
-    val err: XPathException = TypeChecker.ebvError(
+    val err = TypeChecker.ebvError(
       arguments(0),
       visitor.getConfiguration.getTypeHierarchy)
     if (err != null) {

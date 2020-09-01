@@ -82,7 +82,7 @@ class TemplateRule
   private var declaredStreamable: Boolean = _
 
   @BeanProperty
-  var requiredContextItemType: ItemType = AnyItemType.getInstance
+  var requiredContextItemType: ItemType = AnyItemType
 
   @BooleanBeanProperty
   var absentFocus: Boolean = _
@@ -180,7 +180,7 @@ class TemplateRule
   def applyLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     var XPathCont = context
     val th: TypeHierarchy = XPathCont.getConfiguration.getTypeHierarchy
-    if (requiredContextItemType != AnyItemType.getInstance &&
+    if (requiredContextItemType != AnyItemType &&
       !requiredContextItemType.matches(XPathCont.getContextItem, th)) {
       val role: RoleDiagnostic = new RoleDiagnostic(
         RoleDiagnostic.MISC,
@@ -189,7 +189,7 @@ class TemplateRule
       val message: String = role.composeErrorMessage(requiredContextItemType,
         XPathCont.getContextItem,
         th)
-      val err: XPathException = new XPathException(message, "XTTE0590")
+      val err = new XPathException(message, "XTTE0590")
       err.setLocation(this)
       err.setIsTypeError(true)
       throw err
@@ -237,7 +237,7 @@ class TemplateRule
   def isDeclaredStreamable(): Boolean = false
 
   def explainProperties(presenter: ExpressionPresenter): Unit = {
-    if (getRequiredContextItemType != AnyItemType.getInstance) {
+    if (getRequiredContextItemType != AnyItemType) {
       val st: SequenceType = SequenceType.makeSequenceType(
         getRequiredContextItemType,
         StaticProperty.EXACTLY_ONE)

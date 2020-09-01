@@ -128,7 +128,7 @@ abstract class AttributeCreator
           validateAction)
       } catch {
         case e: ValidationException => {
-          val err: XPathException = XPathException.makeXPathException(e)
+          val err = XPathException.makeXPathException(e)
           err.maybeSetErrorCode(
             if (validateAction == Validation.STRICT) "XTTE1510"
             else "XTTE1515")
@@ -193,7 +193,7 @@ abstract class AttributeCreator
         orphan.setTypeAnnotation(ann)
       } catch {
         case e: ValidationException => {
-          val err: XPathException = XPathException.makeXPathException(e)
+          val err = XPathException.makeXPathException(e)
           err.setErrorCodeQName(e.getErrorCodeQName)
           err.setXPathContext(context)
           err.setLocation(getLocation)

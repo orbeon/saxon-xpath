@@ -148,7 +148,7 @@ class UserFunctionCall extends FunctionCall
 
   def getItemType(): ItemType =
     if (staticType == null) {
-      AnyItemType.getInstance
+      AnyItemType
     } else {
       staticType.getPrimaryType
     }

@@ -134,7 +134,7 @@ override  def getExpressionName(): String = "ValueComparison"
     val t0: PlainType = getLhsExpression.getItemType.getAtomizedItemType
     val t1: PlainType = getRhsExpression.getItemType.getAtomizedItemType
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Cannot perform comparisons involving external objects")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
@@ -183,7 +183,7 @@ override  def getExpressionName(): String = "ValueComparison"
         val message: String = "In {" + toShortString() + "}: cannot compare " + t0.toString +
           " to " +
           t1.toString
-        val err: XPathException = new XPathException(message)
+        val err = new XPathException(message)
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
         err.setLocation(getLocation)
@@ -211,7 +211,7 @@ override  def getExpressionName(): String = "ValueComparison"
 
   private def mustBeOrdered(t1: PlainType, p1: BuiltInAtomicType): Unit = {
     if (!p1.isOrdered(true)) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "Type " + t1.toString + " is not an ordered type")
       err.setErrorCode("XPTY0004")
       err.setIsTypeError(true)

@@ -105,7 +105,7 @@ class EarlyEvaluationContext(private var config: Configuration)
   def getCurrentTemplateRule(): Rule = null
 
   def getLast(): Int = {
-    val err: XPathException = new XPathException("The context item is absent")
+    val err = new XPathException("The context item is absent")
     err.setErrorCode("XPDY0002")
     throw err
   }
@@ -128,7 +128,7 @@ class EarlyEvaluationContext(private var config: Configuration)
   }
 
   def isAtLast(): Boolean = {
-    val err: XPathException = new XPathException("The context item is absent")
+    val err = new XPathException("The context item is absent")
     err.setErrorCode("XPDY0002")
     throw err
   }

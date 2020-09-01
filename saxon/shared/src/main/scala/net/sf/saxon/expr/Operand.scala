@@ -31,7 +31,7 @@ object Operand {
   def typeDeterminedUsage(`type`: net.sf.saxon.model.ItemType): OperandUsage =
     if (`type`.isPlainType) {
       OperandUsage.ABSORPTION
-    } else if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType.getInstance) {
+    } else if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType) {
       OperandUsage.NAVIGATION
     } else {
       OperandUsage.INSPECTION

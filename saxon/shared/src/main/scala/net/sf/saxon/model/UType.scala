@@ -312,7 +312,7 @@ class UType(private var bits: Int) {
     } else if (ANY_ATOMIC.subsumes(this)) {
       BuiltInAtomicType.ANY_ATOMIC
     } else {
-      AnyItemType.getInstance
+      AnyItemType
     }
   }
 

@@ -40,7 +40,7 @@ class UriCollection extends SystemFunction {
         .findCollection(context, href)
     if (rCollection == null) {
 // Should not happen, we're calling user code so we check for it.
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "No collection has been defined for href: " + (if (href == null) ""
                                                        else href))
       err.setErrorCode("FODC0002")

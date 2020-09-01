@@ -85,7 +85,7 @@ class ContextItemExpression extends Expression {
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     if (contextItemType == null) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         "The context item is undefined at this point")
       err.setErrorCode(getErrorCodeForUndefinedContext)
       err.setIsTypeError(absentContextIsTypeError)
@@ -190,7 +190,7 @@ class ContextItemExpression extends Expression {
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("dot", this)
     val `type`: ItemType = getItemType
-    if (!(`type` == AnyItemType.getInstance)) {
+    if (!(`type` == AnyItemType)) {
       val st: SequenceType =
         SequenceType.makeSequenceType(`type`, StaticProperty.EXACTLY_ONE)
       destination.emitAttribute("type", st.toAlphaCode)

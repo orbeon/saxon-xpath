@@ -39,7 +39,7 @@ class ErrorReporterToListener (var listener: ErrorListener)
   override def report(error: XmlProcessingError): Unit = {
     if (!error.isAlreadyReported) {
       try {
-        val err: XPathException = XPathException.fromXmlProcessingError(error)
+        val err = XPathException.fromXmlProcessingError(error)
         if (error.isWarning) {
           listener.warning(err)
         } else {

@@ -308,7 +308,7 @@ class ContentHandlerProxy extends Receiver {
   }
 
   def notifyNotWellFormed(): Unit = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "The result tree cannot be supplied to the ContentHandler because it is not well-formed XML")
     err.setErrorCode(SaxonErrorCode.SXCH0002)
     throw err

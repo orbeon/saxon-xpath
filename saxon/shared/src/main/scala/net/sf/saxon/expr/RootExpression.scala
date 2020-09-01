@@ -39,7 +39,7 @@ class RootExpression extends Expression {
     val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
     if (contextInfo == null || contextInfo.getItemType == null ||
       contextInfo.getItemType == ErrorType.getInstance) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         noContextMessage() + ": the context item is absent")
       err.setErrorCode("XPDY0002")
       err.setIsTypeError(true)
@@ -64,7 +64,7 @@ class RootExpression extends Expression {
     val relation: Affinity.Affinity =
       th.relationship(contextInfo.getItemType, AnyNodeTest.getInstance)
     if (relation == Affinity.DISJOINT) {
-      val err: XPathException = new XPathException(
+      val err = new XPathException(
         noContextMessage() + ": the context item is not a node")
       err.setErrorCode("XPTY0020")
       err.setIsTypeError(true)

@@ -50,7 +50,7 @@ class GlobalContextRequirement {
 
   def getRequiredItemType(): ItemType =
     if (requiredItemTypes.isEmpty) {
-      AnyItemType.getInstance
+      AnyItemType
     } else {
       requiredItemTypes.get(0)
     }
@@ -64,7 +64,7 @@ class GlobalContextRequirement {
     var use: String = null
     use = if (isMayBeOmitted) if (isAbsentFocus) "pro" else "opt" else "req"
     out.emitAttribute("use", use)
-    if (getRequiredItemType != AnyItemType.getInstance) {
+    if (getRequiredItemType != AnyItemType) {
       out.emitAttribute("type", getRequiredItemType.toExportString())
     }
     out.endElement()

@@ -204,7 +204,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
           new CardinalityCheckingIterator(result, card, role, getLocation)
       }
       val `type`: ItemType = resultType.getPrimaryType
-      if (`type` != AnyItemType.getInstance) {
+      if (`type` != AnyItemType) {
         result = new ItemMappingIterator(
           result,
           (item) => {

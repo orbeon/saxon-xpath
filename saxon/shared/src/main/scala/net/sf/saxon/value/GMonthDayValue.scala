@@ -71,7 +71,7 @@ class GMonthDayValue() extends GDateValue {
   }
 
   def add(duration: DurationValue): CalendarValue = {
-    val err: XPathException = new XPathException(
+    val err = new XPathException(
       "Cannot add a duration to an xs:gMonthDay")
     err.setErrorCode("XPTY0004")
     throw err

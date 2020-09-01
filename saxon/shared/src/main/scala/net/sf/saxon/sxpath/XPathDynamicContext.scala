@@ -69,7 +69,7 @@ class XPathDynamicContext(
   def setVariable(variable: XPathVariable, value: Sequence): Unit = {
     val requiredType: SequenceType = variable.getRequiredType
     if (requiredType != SequenceType.ANY_SEQUENCE) {
-      val err: XPathException =
+      val err =
         TypeChecker.testConformance(value, requiredType, contextObject)
       if (err != null) {
         throw err
