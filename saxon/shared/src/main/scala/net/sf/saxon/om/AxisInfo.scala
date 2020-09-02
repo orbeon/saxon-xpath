@@ -1,16 +1,37 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * An axis, that is a direction of navigation in the document structure.
+  */
+/*
+    // a list for any future cut-and-pasting...
+    ANCESTOR
+    ANCESTOR_OR_SELF;
+    ATTRIBUTE;
+    CHILD;
+    DESCENDANT;
+    DESCENDANT_OR_SELF;
+    FOLLOWING;
+    FOLLOWING_SIBLING;
+    NAMESPACE;
+    PARENT;
+    PRECEDING;
+    PRECEDING_SIBLING;
+    SELF;
+ */
+
 package net.sf.saxon.om
 
-import net.sf.saxon.model.PrimitiveUType
-import net.sf.saxon.model.Type
-import net.sf.saxon.model.UType
+import net.sf.saxon.model.PrimitiveUType.PrimitiveUType
+import net.sf.saxon.model.{PrimitiveUType, Type, UType}
 import net.sf.saxon.trans.XPathException
 import net.sf.saxon.z.IntHashMap
-import java.util.Set
 
-import net.sf.saxon.model.PrimitiveUType.PrimitiveUType
-
-
+import scala.jdk.CollectionConverters._
 
 
 object AxisInfo {
@@ -189,20 +210,14 @@ object AxisInfo {
   }
 
   private val DOC: Int = 1 << Type.DOCUMENT
-
   private val ELE: Int = 1 << Type.ELEMENT
-
   private val ATT: Int = 1 << Type.ATTRIBUTE
-
   private val TEX: Int = 1 << Type.TEXT
-
   private val PIN: Int = 1 << Type.PROCESSING_INSTRUCTION
-
   private val COM: Int = 1 << Type.COMMENT
-
   private val NAM: Int = 1 << Type.NAMESPACE
 
-  private var voidAxisTable: Array[Int] = Array(
+  private val voidAxisTable: Array[Int] = Array(
     DOC,
     0, // ATTRIBUTE;
     DOC | ATT | TEX | PIN | COM | NAM, // CHILD;
@@ -221,7 +236,7 @@ object AxisInfo {
   def isAlwaysEmpty(axis: Int, nodeKind: Int): Boolean =
     (voidAxisTable(axis) & (1 << nodeKind)) != 0
 
-  private var nodeKindTable: Array[Int] = Array( // ANCESTOR
+  private val nodeKindTable: Array[Int] = Array( // ANCESTOR
     DOC | ELE, // ANCESTOR_OR_SELF;
     DOC | ELE | ATT | TEX | PIN | COM | NAM,
     ATT, // CHILD;
@@ -240,48 +255,47 @@ object AxisInfo {
   def containsNodeKind(axis: Int, nodeKind: Int): Boolean =
     nodeKind == Type.NODE || (nodeKindTable(axis) & (1 << nodeKind)) != 0
 
-  var inverseAxis: Array[Int] = Array(DESCENDANT,
-                                      DESCENDANT_OR_SELF,
-                                      PARENT,
-                                      PARENT,
-                                      ANCESTOR,
-                                      ANCESTOR_OR_SELF,
-                                      PRECEDING,
-                                      PRECEDING_SIBLING,
-                                      PARENT,
-                                      CHILD,
-                                      FOLLOWING,
-                                      FOLLOWING_SIBLING,
-                                      SELF)
+  val inverseAxis: Array[Int] = Array(DESCENDANT,
+    DESCENDANT_OR_SELF,
+    PARENT,
+    PARENT,
+    ANCESTOR,
+    ANCESTOR_OR_SELF,
+    PRECEDING,
+    PRECEDING_SIBLING,
+    PARENT,
+    CHILD,
+    FOLLOWING,
+    FOLLOWING_SIBLING,
+    SELF)
 
-  var excludeSelfAxis: Array[Int] = Array(ANCESTOR,
-                                          ANCESTOR,
-                                          ATTRIBUTE,
-                                          CHILD,
-                                          DESCENDANT,
-                                          DESCENDANT,
-                                          FOLLOWING,
-                                          FOLLOWING_SIBLING,
-                                          NAMESPACE,
-                                          PARENT,
-                                          PRECEDING,
-                                          PRECEDING_SIBLING,
-                                          SELF)
+  val excludeSelfAxis: Array[Int] = Array(ANCESTOR,
+    ANCESTOR,
+    ATTRIBUTE,
+    CHILD,
+    DESCENDANT,
+    DESCENDANT,
+    FOLLOWING,
+    FOLLOWING_SIBLING,
+    NAMESPACE,
+    PARENT,
+    PRECEDING,
+    PRECEDING_SIBLING,
+    SELF)
 
-  private var axisTransitions: IntHashMap[UType] = new IntHashMap(50)
+  private val axisTransitions: IntHashMap[UType] = new IntHashMap(50)
 
-  private def e(origin: PrimitiveUType, axis: Int, target: UType): Unit = {
+  private def e(origin: PrimitiveUType, axis: Int, target: UType): Unit =
     axisTransitions.put(makeKey(origin, axis), target)
-  }
 
   private def makeKey(origin: PrimitiveUType, axis: Int): Int =
     origin.getBit << 16 | axis
-import scala.jdk.CollectionConverters._
+
   def getTargetUType(origin: UType, axis: Int): UType = {
-    var resultType: UType = UType.VOID
-    val origins: Set[PrimitiveUType] = origin.intersection(UType.ANY_NODE).decompose()
+    var resultType = UType.VOID
+    val origins = origin.intersection(UType.ANY_NODE).decompose()
     for (u <- origins.asScala) {
-      val r: UType = axisTransitions.get(makeKey(u, axis))
+      val r = axisTransitions.get(makeKey(u, axis))
       if (r == null) {
         System.err.println(
           "Unknown transitions for primitive type " + u.toString +
@@ -294,222 +308,94 @@ import scala.jdk.CollectionConverters._
   }
 
   e(PrimitiveUType.DOCUMENT, ANCESTOR, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, ANCESTOR_OR_SELF, UType.DOCUMENT)
-
   e(PrimitiveUType.DOCUMENT, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, CHILD, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.DOCUMENT, DESCENDANT, UType.CHILD_NODE_KINDS)
-
-  e(PrimitiveUType.DOCUMENT,
-    DESCENDANT_OR_SELF,
-    UType.DOCUMENT.union(UType.CHILD_NODE_KINDS))
-
+  e(PrimitiveUType.DOCUMENT, DESCENDANT_OR_SELF, UType.DOCUMENT.union(UType.CHILD_NODE_KINDS))
   e(PrimitiveUType.DOCUMENT, FOLLOWING, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, FOLLOWING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, PARENT, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, PRECEDING, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, PRECEDING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.DOCUMENT, SELF, UType.DOCUMENT)
-
   e(PrimitiveUType.ELEMENT, ANCESTOR, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, ANCESTOR_OR_SELF, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, ATTRIBUTE, UType.ATTRIBUTE)
-
   e(PrimitiveUType.ELEMENT, CHILD, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, DESCENDANT, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, DESCENDANT_OR_SELF, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, FOLLOWING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, NAMESPACE, UType.NAMESPACE)
-
   e(PrimitiveUType.ELEMENT, PARENT, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, PRECEDING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ELEMENT, SELF, UType.ELEMENT)
-
   e(PrimitiveUType.ATTRIBUTE, ANCESTOR, UType.PARENT_NODE_KINDS)
-
-  e(PrimitiveUType.ATTRIBUTE,
-    ANCESTOR_OR_SELF,
-    UType.ATTRIBUTE.union(UType.PARENT_NODE_KINDS))
-
+  e(PrimitiveUType.ATTRIBUTE, ANCESTOR_OR_SELF, UType.ATTRIBUTE.union(UType.PARENT_NODE_KINDS))
   e(PrimitiveUType.ATTRIBUTE, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, CHILD, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, DESCENDANT, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, DESCENDANT_OR_SELF, UType.ATTRIBUTE)
-
   e(PrimitiveUType.ATTRIBUTE, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ATTRIBUTE, FOLLOWING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, PARENT, UType.ELEMENT)
-
   e(PrimitiveUType.ATTRIBUTE, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.ATTRIBUTE, PRECEDING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.ATTRIBUTE, SELF, UType.ATTRIBUTE)
-
   e(PrimitiveUType.TEXT, ANCESTOR, UType.PARENT_NODE_KINDS)
-
-  e(PrimitiveUType.TEXT,
-    ANCESTOR_OR_SELF,
-    UType.TEXT.union(UType.PARENT_NODE_KINDS))
-
+  e(PrimitiveUType.TEXT, ANCESTOR_OR_SELF, UType.TEXT.union(UType.PARENT_NODE_KINDS))
   e(PrimitiveUType.TEXT, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.TEXT, CHILD, UType.VOID)
-
   e(PrimitiveUType.TEXT, DESCENDANT, UType.VOID)
-
   e(PrimitiveUType.TEXT, DESCENDANT_OR_SELF, UType.TEXT)
-
   e(PrimitiveUType.TEXT, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.TEXT, FOLLOWING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.TEXT, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.TEXT, PARENT, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.TEXT, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.TEXT, PRECEDING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.TEXT, SELF, UType.TEXT)
-
   e(PrimitiveUType.PI, ANCESTOR, UType.PARENT_NODE_KINDS)
-
-  e(PrimitiveUType.PI,
-    ANCESTOR_OR_SELF,
-    UType.PI.union(UType.PARENT_NODE_KINDS))
-
+  e(PrimitiveUType.PI, ANCESTOR_OR_SELF, UType.PI.union(UType.PARENT_NODE_KINDS))
   e(PrimitiveUType.PI, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.PI, CHILD, UType.VOID)
-
   e(PrimitiveUType.PI, DESCENDANT, UType.VOID)
-
   e(PrimitiveUType.PI, DESCENDANT_OR_SELF, UType.PI)
-
   e(PrimitiveUType.PI, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.PI, FOLLOWING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.PI, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.PI, PARENT, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.PI, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.PI, PRECEDING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.PI, SELF, UType.PI)
-
   e(PrimitiveUType.COMMENT, ANCESTOR, UType.PARENT_NODE_KINDS)
-
-  e(PrimitiveUType.COMMENT,
-    ANCESTOR_OR_SELF,
-    UType.COMMENT.union(UType.PARENT_NODE_KINDS))
-
+  e(PrimitiveUType.COMMENT, ANCESTOR_OR_SELF, UType.COMMENT.union(UType.PARENT_NODE_KINDS))
   e(PrimitiveUType.COMMENT, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.COMMENT, CHILD, UType.VOID)
-
   e(PrimitiveUType.COMMENT, DESCENDANT, UType.VOID)
-
   e(PrimitiveUType.COMMENT, DESCENDANT_OR_SELF, UType.COMMENT)
-
   e(PrimitiveUType.COMMENT, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.COMMENT, FOLLOWING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.COMMENT, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.COMMENT, PARENT, UType.PARENT_NODE_KINDS)
-
   e(PrimitiveUType.COMMENT, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.COMMENT, PRECEDING_SIBLING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.COMMENT, SELF, UType.COMMENT)
-
   e(PrimitiveUType.NAMESPACE, ANCESTOR, UType.PARENT_NODE_KINDS)
-
-  e(PrimitiveUType.NAMESPACE,
-    ANCESTOR_OR_SELF,
-    UType.NAMESPACE.union(UType.PARENT_NODE_KINDS))
-
+  e(PrimitiveUType.NAMESPACE, ANCESTOR_OR_SELF, UType.NAMESPACE.union(UType.PARENT_NODE_KINDS))
   e(PrimitiveUType.NAMESPACE, ATTRIBUTE, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, CHILD, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, DESCENDANT, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, DESCENDANT_OR_SELF, UType.NAMESPACE)
-
   e(PrimitiveUType.NAMESPACE, FOLLOWING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.NAMESPACE, FOLLOWING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, NAMESPACE, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, PARENT, UType.ELEMENT)
-
   e(PrimitiveUType.NAMESPACE, PRECEDING, UType.CHILD_NODE_KINDS)
-
   e(PrimitiveUType.NAMESPACE, PRECEDING_SIBLING, UType.VOID)
-
   e(PrimitiveUType.NAMESPACE, SELF, UType.NAMESPACE)
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An axis, that is a direction of navigation in the document structure.
-  */
-/*
-    // a list for any future cut-and-pasting...
-    ANCESTOR
-    ANCESTOR_OR_SELF;
-    ATTRIBUTE;
-    CHILD;
-    DESCENDANT;
-    DESCENDANT_OR_SELF;
-    FOLLOWING;
-    FOLLOWING_SIBLING;
-    NAMESPACE;
-    PARENT;
-    PRECEDING;
-    PRECEDING_SIBLING;
-    SELF;
- */

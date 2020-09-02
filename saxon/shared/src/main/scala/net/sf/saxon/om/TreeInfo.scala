@@ -1,43 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.om
-
-import net.sf.saxon.utils.Configuration
-
-import javax.xml.transform.Source
-
-import java.util.Iterator
-
-
-
-
-trait TreeInfo extends Source {
-
-  def getRootNode: NodeInfo
-
-  def getConfiguration: Configuration
-
-  def getDocumentNumber: Long
-
-  def isTyped: Boolean = false
-
-  def isMutable: Boolean = false
-
-  def selectID(id: String, getParent: Boolean): NodeInfo
-
-  def getUnparsedEntityNames: Iterator[String]
-
-  def getUnparsedEntity(name: String): Array[String]
-
-  def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit
-
-  def getSpaceStrippingRule: SpaceStrippingRule
-
-  def setUserData(key: String, value: Any): Unit
-
-  def getUserData(key: String): Any
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -61,3 +22,26 @@ trait TreeInfo extends Source {
   * the document node at the root of a document, but which did not apply to trees rooted at a node other
   * than a document node.
   */
+
+package net.sf.saxon.om
+
+import java.util.Iterator
+
+import javax.xml.transform.Source
+import net.sf.saxon.utils.Configuration
+
+
+trait TreeInfo extends Source {
+  def getRootNode: NodeInfo
+  def getConfiguration: Configuration
+  def getDocumentNumber: Long
+  def isTyped: Boolean = false
+  def isMutable: Boolean = false
+  def selectID(id: String, getParent: Boolean): NodeInfo
+  def getUnparsedEntityNames: Iterator[String]
+  def getUnparsedEntity(name: String): Array[String]
+  def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit
+  def getSpaceStrippingRule: SpaceStrippingRule
+  def setUserData(key: String, value: Any): Unit
+  def getUserData(key: String): Any
+}

@@ -20,8 +20,6 @@ import net.sf.saxon.tree.util.DocumentNumberAllocator
 import scala.beans.BeanProperty
 
 
-
-
 class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   private var root: NodeInfo = _
@@ -87,11 +85,10 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     documentNumber
   }
 
-  def setDocumentNumber(documentNumber: Long): Unit = {
+  def setDocumentNumber(documentNumber: Long): Unit =
     synchronized {
       this.documentNumber = documentNumber
     }
-  }
 
   /**
     * Get the element with a given ID, if any
@@ -116,8 +113,8 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * @since 9.1
     */
   def getUnparsedEntityNames(): Iterator[String] = {
-    val e: List[String] = Collections.emptyList()
-    e.iterator()
+    val e = Collections.emptyList[String]
+    e.iterator
   }
 
   /**
@@ -144,9 +141,8 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * @param value The value to be set for the property. May be null, which effectively
     */
   def setUserData(key: String, value: Any): Unit = {
-    if (userData == null) {
+    if (userData == null)
       userData = new HashMap[String, Any]()
-    }
     userData.put(key, value)
   }
 
@@ -158,15 +154,12 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * @return the value of the property, or null if the property has not been defined.
     */
   def getUserData(key: String): Any =
-    if (userData == null) {
+    if (userData == null)
       userData
-    } else {
+    else
       userData.get(key)
-    }
 
   def isStreamed: Boolean = false
-
-  override def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule;
-
-  override def getSpaceStrippingRule(): SpaceStrippingRule = this.spaceStrippingRule
+  def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule;
+  def getSpaceStrippingRule(): SpaceStrippingRule = this.spaceStrippingRule
 }

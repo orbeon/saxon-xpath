@@ -53,62 +53,36 @@ import scala.jdk.CollectionConverters._
   * a new implementation of this interface.
   */
 trait NodeInfo extends Source with Item with Location {
-
   def getTreeInfo: TreeInfo
-
   def getConfiguration: Configuration = getTreeInfo.getConfiguration
-
   def getNodeKind: Int
-
   def isSameNodeInfo(other: NodeInfo): Boolean = equals(other)
-
   def equals(other: Any): Boolean
-
   def hashCode(): Int
-
   /*@Nullable*/
-
   def getSystemId(): String
-
   def getPublicId(): String = null
-
   def getBaseURI: String
-
   def getLineNumber(): Int = -1
-
   def getColumnNumber(): Int = -1
-
   def compareOrder(other: NodeInfo): Int
-
   def getStringValue: String
-
   def hasFingerprint: Boolean
-
   def getFingerprint: Int
-
   def getLocalPart: String
-
   def getURI: String
-
   def getDisplayName: String
-
   def getPrefix: String
-
   def getSchemaType: SchemaType = getNodeKind match {
     case Type.ATTRIBUTE => BuiltInAtomicType.UNTYPED_ATOMIC
     case Type.DOCUMENT | Type.ELEMENT => Untyped.getInstance
     case _ => null
-
   }
-
   var IS_DTD_TYPE: Int = 1 << 30
-
   var IS_NILLED: Int = 1 << 29
-
   def atomize(): AtomicSequence
 
   /*@Nullable*/
-
   def getParent: NodeInfo
 
   def iterateAxis(axisNumber: Int): AxisIterator =
@@ -120,11 +94,8 @@ trait NodeInfo extends Source with Item with Location {
   /*@Nullable*/
 
   def getAttributeValue(uri: String, local: String): String
-
   def getRoot: NodeInfo
-
   def hasChildNodes: Boolean
-
   def children(): Iterator[NodeInfo] = {
     if (hasChildNodes) {
       val parent: NodeInfo = this
@@ -162,19 +133,13 @@ trait NodeInfo extends Source with Item with Location {
 
   def generateId(buffer: FastStringBuffer): Unit
 
-  def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+  def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
     Navigator.copy(this, out, copyOptions, locationId)
-  }
 
-  def getDeclaredNamespaces(
-      buffer: Array[NamespaceBinding]): Array[NamespaceBinding]
-
+  def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding]
   def getAllNamespaces: NamespaceMap
-
   def isId: Boolean = false
-
   def isIdref: Boolean = false
-
   def isNilled: Boolean = false
 
   override def isStreamed(): Boolean = false
@@ -187,13 +152,12 @@ trait NodeInfo extends Source with Item with Location {
     case Type.COMMENT => "<!--" + Err.truncate30(getStringValue) + "-->"
     case Type.PROCESSING_INSTRUCTION => "<?" + getDisplayName + "?>"
     case Type.NAMESPACE =>
-      var prefix: String = getLocalPart
+      val prefix: String = getLocalPart
       "xmlns" + (if (prefix.==("")) "" else ":" + prefix) +
         "=\"" +
         getStringValue +
         '"'
     case _ => ""
-
   }
 
   /**
