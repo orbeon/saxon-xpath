@@ -1,26 +1,14 @@
 package net.sf.saxon.dom
 
-import net.sf.saxon.utils.Configuration
+import java.net.{URI, URISyntaxException}
+import java.util
+import java.util._
 
 import net.sf.saxon.lib.NamespaceConstant
-
-import net.sf.saxon.om.AxisInfo
-
-import net.sf.saxon.om.GenericTreeInfo
-
-import net.sf.saxon.om.NodeInfo
-
+import net.sf.saxon.om.{AxisInfo, GenericTreeInfo, NodeInfo}
 import net.sf.saxon.pattern.NodeKindTest
-
-import net.sf.saxon.tree.iter.AxisIterator
-
+import net.sf.saxon.utils.Configuration
 import org.w3c.dom._
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util._
 
 class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends GenericTreeInfo(config) {
 
@@ -58,27 +46,27 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
   override def selectID(id: String, getParent: Boolean): NodeInfo =
     docNode.synchronized {
       val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-      if (node.isInstanceOf[Document]) {
-        val el: Node = node.asInstanceOf[Document].getElementById(id)
-        if (el != null) {
-          wrap(el)
-        }
+      node match {
+        case document: Document =>
+          val el = document.getElementById(id)
+          if (el != null) {
+            return wrap(el)
+          }
+        case _ =>
       }
       if (idIndex != null) {
         idIndex.get(id)
       } else {
         idIndex = new HashMap()
-        val iter: AxisIterator =
-          getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
+        val iter = getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
         var e: NodeInfo = null
-        while (({
+        while ({
           e = iter.next()
           e
-        }) != null) {
-          val xmlId: String = e.getAttributeValue(NamespaceConstant.XML, "id")
-          if (xmlId != null) {
+        } != null) {
+          val xmlId = e.getAttributeValue(NamespaceConstant.XML, "id")
+          if (xmlId != null)
             idIndex.put(xmlId, e)
-          }
         }
         idIndex.get(id)
       }
@@ -86,63 +74,61 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
 
   override def getUnparsedEntityNames: Iterator[String] = docNode.synchronized {
     val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-    if (node.isInstanceOf[Document]) {
-      val docType: DocumentType = node.asInstanceOf[Document].getDoctype
-      if (docType == null) {
-        val ls: List[String] = Collections.emptyList()
-        ls.iterator()
-      }
-      val map: NamedNodeMap = docType.getEntities
-      if (map == null) {
-        val ls: List[String] = Collections.emptyList()
-        ls.iterator()
-      }
-      val names: List[String] = new ArrayList[String](map.getLength)
-      for (i <- 0 until map.getLength) {
-        val e: Entity = map.item(i).asInstanceOf[Entity]
-        if (e.getNotationName != null) {
-          names.add(e.getLocalName)
+    node match {
+      case document: Document =>
+        val docType = document.getDoctype
+        if (docType == null) {
+          val ls: util.List[String] = Collections.emptyList()
+          ls.iterator()
         }
-      }
-      names.iterator()
-    } else {
-      null
+        val map = docType.getEntities
+        if (map == null) {
+          val ls: util.List[String] = Collections.emptyList()
+          ls.iterator()
+        }
+        val names = new util.ArrayList[String](map.getLength)
+        for (i <- 0 until map.getLength) {
+          val e = map.item(i).asInstanceOf[Entity]
+          if (e.getNotationName != null)
+            names.add(e.getLocalName)
+        }
+        names.iterator()
+      case _ =>
+        null
     }
   }
 
   override def getUnparsedEntity(name: String): Array[String] = docNode.synchronized {
     val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-    if (node.isInstanceOf[Document]) {
-      val docType: DocumentType = node.asInstanceOf[Document].getDoctype
-      if (docType == null) {
-       return null
-      }
-      val map: NamedNodeMap = docType.getEntities
-      if (map == null) {
-        return null
-      }
-      val entity: Entity = map.getNamedItem(name).asInstanceOf[Entity]
-      if (entity == null || entity.getNotationName == null) {
-        return null
-      }
-      var systemId: String = entity.getSystemId
-      try {
-        var systemIdURI: URI = new URI(systemId)
-        if (!systemIdURI.isAbsolute) {
-          val base: String = getRootNode.getBaseURI
-          if (base != null) {
-            systemIdURI = new URI(base).resolve(systemIdURI)
-            systemId = systemIdURI.toString
-          } else {}
-        }
-      } catch {
-        case err: URISyntaxException => {}
+    node match {
+      case document: Document =>
+        val docType = document.getDoctype
+        if (docType == null)
+          return null
+        val map = docType.getEntities
+        if (map == null)
+          return null
+        val entity = map.getNamedItem(name).asInstanceOf[Entity]
+        if (entity == null || entity.getNotationName == null)
+          return null
+        var systemId = entity.getSystemId
+        try {
+          var systemIdURI = new URI(systemId)
+          if (! systemIdURI.isAbsolute) {
+            val base = getRootNode.getBaseURI
+            if (base != null) {
+              systemIdURI = new URI(base).resolve(systemIdURI)
+              systemId = systemIdURI.toString
+            } else {
 
-      }
-      Array(systemId, entity.getPublicId)
-    } else {
-      null
+            }
+          }
+        } catch {
+          case _: URISyntaxException =>
+        }
+        Array(systemId, entity.getPublicId)
+      case _ =>
+        null
     }
   }
-
 }
