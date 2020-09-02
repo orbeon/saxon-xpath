@@ -122,7 +122,7 @@ class AugmentedSource private (private var source: Source) extends Source {
     systemID = id
   }
 
-  def getSystemId(): String =
+  def getSystemId: String =
     if (systemID != null) systemID else source.getSystemId
 
   /**

@@ -44,7 +44,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
     this.systemId = systemId
   }
 
-  def getSystemId(): String = systemId
+  def getSystemId: String = systemId
 
   def setUnparsedEntity(name: String,
                         systemID: String,
@@ -113,7 +113,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
           previousAtomic = false
         } else if (kind == Type.DOCUMENT) {
           startDocument(ReceiverOption.NONE)
-          for (child <- node.children()) {
+          for (child <- node.children) {
             append(child, locationId, copyNamespaces)
           }
           previousAtomic = false

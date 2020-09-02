@@ -22,7 +22,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def current(): Event
 
-  def getAttributes(): AttributeMap
+  def getAttributes: AttributeMap
 
   def getNamespaceDeclarations(): Array[NamespaceBinding]
 
@@ -30,7 +30,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def close(): Unit
 
-  def getNodeName(): NodeName
+  def getNodeName: NodeName
 
   def getStringValue: CharSequence
 

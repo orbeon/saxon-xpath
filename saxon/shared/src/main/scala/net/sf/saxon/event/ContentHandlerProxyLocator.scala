@@ -14,7 +14,7 @@ class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
 
   def getPublicId(): String = null
 
-  def getSystemId(): String = parent.getCurrentLocation.getSystemId
+  def getSystemId: String = parent.getCurrentLocation.getSystemId
 
   def getLineNumber(): Int = parent.getCurrentLocation.getLineNumber
 

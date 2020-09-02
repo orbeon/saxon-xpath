@@ -60,7 +60,7 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
       original.getStringValueCS
     }
 
-  override def getParent(): NodeInfo = {
+  override def getParent: NodeInfo = {
     if (parent == null) {
       val basep: NodeInfo = original.getParent
       if (basep == null) {

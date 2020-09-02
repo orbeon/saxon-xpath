@@ -113,7 +113,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
         seq = processRule(rule, node, isPostDescent = false, seq, context)
         logChange(node, seq, context, " BEFORE ")
       }
-      for (kid <- node.children()) {
+      for (kid <- node.children) {
         seq = visit(kid, seq, context)
       }
       context.getCurrentIterator

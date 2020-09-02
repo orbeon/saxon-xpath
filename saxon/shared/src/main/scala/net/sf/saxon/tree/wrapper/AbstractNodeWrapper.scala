@@ -53,7 +53,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   override def hashCode(): Int = getUnderlyingNode.hashCode
 
-  def getSystemId(): String =
+  def getSystemId: String =
     if (treeInfo.isInstanceOf[GenericTreeInfo]) {
       treeInfo.asInstanceOf[GenericTreeInfo].getSystemId
     } else {
@@ -68,7 +68,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     }
   }
 
-  def getBaseURI(): String = {
+  def getBaseURI: String = {
     if (getNodeKind == Type.NAMESPACE) {
       return null
     }
@@ -94,7 +94,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
 
   def getStringValue: String = getStringValueCS.toString
 
-  def getDisplayName(): String = {
+  def getDisplayName: String = {
     val prefix: String = getPrefix
     val local: String = getLocalPart
     if (prefix.isEmpty) {
@@ -237,6 +237,6 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
   override def getFingerprint(): Int =
     throw new UnsupportedOperationException()
 
-  override def hasFingerprint(): Boolean = false
+  override def hasFingerprint: Boolean = false
 
 }

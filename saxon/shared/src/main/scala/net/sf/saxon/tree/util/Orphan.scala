@@ -65,7 +65,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * containing the node, or null if not known or not applicable.
     * @since 8.4
     */
-  override def getSystemId(): String = treeInfo.getSystemId
+  override def getSystemId: String = treeInfo.getSystemId
 
   /**
     * Get the Public ID of the entity containing the node.
@@ -135,7 +135,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     setOption(ReceiverOption.DISABLE_ESCAPING, doe)
   }
 
-  def getNodeKind(): Int = kind
+  def getNodeKind: Int = kind
 
   /**
     * Get fingerprint. The fingerprint is a coded form of the expanded name
@@ -148,7 +148,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * the same expanded QName. For unnamed nodes (text nodes, comments, document nodes,
     * and namespace nodes for the default namespace), returns -1.
     * @throws UnsupportedOperationException if this kind of node does not hold
-    *                                       namepool fingerprints (specifically, if {@link #hasFingerprint()} returns false).
+    *                                       namepool fingerprints (specifically, if {@link #hasFingerprint} returns false).
     * @since 8.4 (moved into FingerprintedNode at some stage; then back into NodeInfo at 9.8).
     */
   override def getFingerprint(): Int =
@@ -165,7 +165,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * @return true if the implementation of this node provides fingerprints.
     * @since 9.8; previously Saxon relied on using <code>FingerprintedNode</code> as a marker interface.
     */
-  override def hasFingerprint(): Boolean = false
+  override def hasFingerprint: Boolean = false
 
   def atomize(): AtomicSequence = getNodeKind match {
     case Type.COMMENT | Type.PROCESSING_INSTRUCTION =>
@@ -211,7 +211,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   /*@Nullable*/
 
-  def getBaseURI(): String =
+  def getBaseURI: String =
     if (kind == Type.PROCESSING_INSTRUCTION) {
       getSystemId
     } else {
@@ -237,28 +237,28 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   def getStringValueCS: CharSequence = stringValue
 
-  def getLocalPart(): String =
+  def getLocalPart: String =
     if (nodeName == null) {
       ""
     } else {
       nodeName.getLocalPart
     }
 
-  def getURI(): String =
+  def getURI: String =
     if (nodeName == null) {
       ""
     } else {
       nodeName.getURI
     }
 
-  def getPrefix(): String =
+  def getPrefix: String =
     if (nodeName == null) {
       ""
     } else {
       nodeName.getPrefix
     }
 
-  def getDisplayName(): String =
+  def getDisplayName: String =
     if (nodeName == null) {
       ""
     } else {
@@ -267,7 +267,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   /*@Nullable*/
 
-  def getParent(): NodeInfo = null
+  def getParent: NodeInfo = null
 
   /*@NotNull*/
 

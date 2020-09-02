@@ -53,7 +53,7 @@ class FailRuleSet private () extends BuiltInRuleSet {
     throw err
   }
 
-  override def getName(): String = "fail"
+  override def getName: String = "fail"
 
   /**
     * Get the default action for unmatched nodes

@@ -45,7 +45,7 @@ class TinyTextImpl() extends TinyNodeImpl {
     tree.charBuffer.subSequence(start, start + len)
   }
 
-  def getNodeKind(): Int = Type.TEXT
+  def getNodeKind: Int = Type.TEXT
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.characters(getStringValueCS, locationId, ReceiverOption.NONE)

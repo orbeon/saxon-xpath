@@ -290,7 +290,7 @@ class QueryModule extends StaticContext {
       config.getXPath31FunctionSet
     }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def isTopLevelModule: Boolean = this == topModule
 
@@ -360,7 +360,7 @@ class QueryModule extends StaticContext {
     moduleLocation = new Loc(location_URI.toString, 1, -1)
   }
 
-  def getSystemId(): String =
+  def getSystemId: String =
     if (location_URI == null) null else location_URI.toString
 
   def setBaseURI(uri: String): Unit = {

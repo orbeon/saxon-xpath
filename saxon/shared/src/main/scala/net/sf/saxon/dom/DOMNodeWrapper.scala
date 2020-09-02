@@ -215,7 +215,7 @@ class DOMNodeWrapper(var node: Node,
 
   def getUnderlyingNode(): Node = node
 
-  def getNodeKind(): Int = nodeKind
+  def getNodeKind: Int = nodeKind
 
   override def equals(other: Any): Boolean = {
     if (!(other.isInstanceOf[DOMNodeWrapper])) {
@@ -292,7 +292,7 @@ class DOMNodeWrapper(var node: Node,
     }
   }
 
-  def getLocalPart(): String = docWrapper.docNode.synchronized {
+  def getLocalPart: String = docWrapper.docNode.synchronized {
     getNodeKind match {
       case Type.ELEMENT | Type.ATTRIBUTE => getLocalName(node)
       case Type.PROCESSING_INSTRUCTION => node.getNodeName
@@ -301,7 +301,7 @@ class DOMNodeWrapper(var node: Node,
     }
   }
 
-  def getURI(): String = docWrapper.docNode.synchronized {
+  def getURI: String = docWrapper.docNode.synchronized {
     if (nodeKind == Type.ELEMENT) {
       getElementURI(node.asInstanceOf[Element])
     } else if (nodeKind == Type.ATTRIBUTE) {
@@ -310,7 +310,7 @@ class DOMNodeWrapper(var node: Node,
     ""
   }
 
-  def getPrefix(): String = docWrapper.docNode.synchronized {
+  def getPrefix: String = docWrapper.docNode.synchronized {
     val kind: Int = getNodeKind
     if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
       val name: String = node.getNodeName
@@ -324,7 +324,7 @@ class DOMNodeWrapper(var node: Node,
     ""
   }
 
-  override def getDisplayName(): String = nodeKind match {
+  override def getDisplayName: String = nodeKind match {
     case Type.ELEMENT | Type.ATTRIBUTE | Type.PROCESSING_INSTRUCTION =>
       docWrapper.docNode.synchronized {
         node.getNodeName
@@ -333,7 +333,7 @@ class DOMNodeWrapper(var node: Node,
 
   }
 
-  def getParent(): DOMNodeWrapper = {
+  def getParent: DOMNodeWrapper = {
     if (parent == null) {
       docWrapper.docNode.synchronized {
         getNodeKind match {
@@ -565,7 +565,7 @@ class DOMNodeWrapper(var node: Node,
     (node.isInstanceOf[Attr]) && node.asInstanceOf[Attr].isId
   }
 
-  def getNextSibling(): DOMNodeWrapper = docWrapper.docNode.synchronized {
+  def getNextSibling: DOMNodeWrapper = docWrapper.docNode.synchronized {
     var currNode: Node = node
     for (i <- 0 until span) {
       currNode = currNode.getNextSibling
@@ -602,7 +602,7 @@ class DOMNodeWrapper(var node: Node,
     spannedText
   }
 
-  def getFirstChild(): DOMNodeWrapper = docWrapper.docNode.synchronized {
+  def getFirstChild: DOMNodeWrapper = docWrapper.docNode.synchronized {
     var currNode: Node = node.getFirstChild
     if (currNode != null) {
       if (currNode.getNodeType == Node.DOCUMENT_TYPE_NODE) {
@@ -616,7 +616,7 @@ class DOMNodeWrapper(var node: Node,
     null
   }
 
-  def getPreviousSibling(): DOMNodeWrapper = docWrapper.docNode.synchronized {
+  def getPreviousSibling: DOMNodeWrapper = docWrapper.docNode.synchronized {
     var currNode: Node = node.getPreviousSibling
     if (currNode != null) {
       val `type`: Short = currNode.getNodeType

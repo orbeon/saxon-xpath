@@ -177,7 +177,7 @@ class ValidationFailure(@BeanProperty var message: String)
     }
   }
 
-  def getSystemId(): String = {
+  def getSystemId: String = {
     val loc: SourceLocator = getLocator
     if (systemId == null && loc != null && loc != this) {
       loc.getSystemId

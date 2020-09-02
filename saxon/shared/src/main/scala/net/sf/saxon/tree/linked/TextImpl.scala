@@ -22,7 +22,7 @@ class TextImpl(private var content: String) extends NodeImpl {
 
   def getStringValue: String = content
 
-  def getNodeKind(): Int = Type.TEXT
+  def getNodeKind: Int = Type.TEXT
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.characters(content, locationId, ReceiverOption.NONE)

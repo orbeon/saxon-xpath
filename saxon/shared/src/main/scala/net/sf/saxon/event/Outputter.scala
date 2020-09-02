@@ -31,7 +31,7 @@ abstract class Outputter extends Receiver {
     this.systemId = systemId
   }
 
-  def getSystemId(): String = systemId
+  def getSystemId: String = systemId
 
   def open(): Unit = ()
 

@@ -62,7 +62,7 @@ abstract class ParentNodeImpl extends NodeImpl {
 
   override def hasChildNodes: Boolean = childrenImpl != null
 
-  override def children(): Iterator[NodeImpl] =
+  override def children: Iterator[NodeImpl] =
     if (childrenImpl == null) {
       Collections.emptyList().iterator().asScala
     } else if (childrenImpl.isInstanceOf[NodeImpl]) {
@@ -100,7 +100,7 @@ abstract class ParentNodeImpl extends NodeImpl {
 
   /*@Nullable*/
 
-  override def getFirstChild(): NodeImpl =
+  override def getFirstChild: NodeImpl =
     if (childrenImpl == null) {
       null
     } else if (childrenImpl.isInstanceOf[NodeImpl]) {
@@ -111,7 +111,7 @@ abstract class ParentNodeImpl extends NodeImpl {
 
   /*@Nullable*/
 
-  override def getLastChild(): NodeImpl = {
+  override def getLastChild: NodeImpl = {
     if (childrenImpl == null) {
       return null
     }

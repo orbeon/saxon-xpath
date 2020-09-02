@@ -21,7 +21,7 @@ object ErrorType
 
   def getUType: UType = UType.VOID
 
-  def getName(): String = "error"
+  def getName: String = "error"
 
   def getTargetNamespace(): String = NamespaceConstant.SCHEMA
 
@@ -36,7 +36,7 @@ object ErrorType
 
   def getRedefinitionLevel(): Int = 0
 
-  def getSystemId(): String = null
+  def getSystemId: String = null
 
   def getValidationStatus(): ValidationStatus = VALIDATED
 
@@ -58,7 +58,7 @@ object ErrorType
 
   override def getDescription: String = "xs:error"
 
-  def getDisplayName(): String = "xs:error"
+  def getDisplayName: String = "xs:error"
 
   def isSameType(other: SchemaType): Boolean = other eq ErrorType
 
@@ -158,7 +158,7 @@ object ErrorType
 
   def isPrimitiveType(): Boolean = false
 
-  override def getStructuredQName(): StructuredQName =
+  override def getStructuredQName: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "error")
 
   override def checkAgainstFacets(value: AtomicValue,

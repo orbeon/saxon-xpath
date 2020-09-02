@@ -129,7 +129,7 @@ object Type {
           // Need to know whether the document is well-formed and if so what the element type is
           var elementType: ItemType = null
           breakable {
-            for (n <- node.children()) {
+            for (n <- node.children) {
               val kind: Int = n.getNodeKind
               if (kind == Type.TEXT) {
                 elementType = null

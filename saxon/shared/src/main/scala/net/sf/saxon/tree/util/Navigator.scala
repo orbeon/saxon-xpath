@@ -144,7 +144,7 @@ object Navigator {
           else isTopWithinEntity = !(startSystemId == parentSystemId)
           val base = new URI(if (isTopElementWithinEntity.test(node)) startSystemId
           else parent.getBaseURI)
-          //URI base = new URI(parent.getBaseURI());  //bug 3530
+          //URI base = new URI(parent.getBaseURI);  //bug 3530
           baseURI = if (xmlBase.isEmpty) base
           else base.resolve(baseURI)
         }
@@ -518,7 +518,7 @@ object Navigator {
       out.processingInstruction(node.getLocalPart, node.getStringValueCS, locationId, ReceiverOption.NONE)
     case Type.NAMESPACE =>
       throw new IllegalArgumentException("Cannot copy namespace to Receiver")
-    //                out.namespacesOLD(NamespaceMap.of(node.getLocalPart(), node.getStringValue), ReceiverOption.NONE);
+    //                out.namespacesOLD(NamespaceMap.of(node.getLocalPart, node.getStringValue), ReceiverOption.NONE);
     case _ =>
   }
 
@@ -988,7 +988,7 @@ object Navigator {
           siblingEnum = start.iterateAxis(AxisInfo.FOLLOWING_SIBLING)
         case Type.ATTRIBUTE =>
         case Type.NAMESPACE =>
-          //siblingEnum = new NodeWrapper.ChildEnumeration((NodeWrapper)start.getParent(), true, true);
+          //siblingEnum = new NodeWrapper.ChildEnumeration((NodeWrapper)start.getParent, true, true);
           // gets children of the attribute's parent node
           val parent = start.getParent
           if (parent == null) siblingEnum = EmptyIterator.ofNodes

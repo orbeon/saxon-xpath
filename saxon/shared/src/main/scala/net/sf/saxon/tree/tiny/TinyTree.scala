@@ -802,7 +802,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     systemIdMap.getSystemId(seq)
   }
 
-  override def getRootNode(): NodeInfo =
+  override def getRootNode: NodeInfo =
     if (getNodeKind(0) == Type.DOCUMENT) {
       if (root != null) {
         root
@@ -901,7 +901,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     entityTable.put(name, ids)
   }
 
-  override def getUnparsedEntityNames(): Iterator[String] =
+  override def getUnparsedEntityNames: Iterator[String] =
     if (entityTable == null) {
       val emptyList: List[String] = Collections.emptyList()
       emptyList.iterator()

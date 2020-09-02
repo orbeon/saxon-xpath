@@ -28,7 +28,7 @@ class SaplingProcessingInstruction(@BeanProperty var name: String,
 
   def getStringValue: String = value
 
-  override def getNodeKind(): Int = Type.PROCESSING_INSTRUCTION
+  override def getNodeKind: Int = Type.PROCESSING_INSTRUCTION
 
    override def sendTo(receiver: Receiver): Unit = {
     receiver.processingInstruction(name, value, Loc.NONE, ReceiverOption.NONE)

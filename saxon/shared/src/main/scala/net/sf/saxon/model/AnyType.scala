@@ -18,7 +18,7 @@ object AnyType extends Enumeration {
 
     /*@NotNull*/
 
-    def getName(): String = "anyType"
+    def getName: String = "anyType"
 
     /**
       * Get the name of this type as an EQName, that is, a string in the format Q{uri}local.
@@ -110,7 +110,7 @@ object AnyType extends Enumeration {
       * @return a StructuredQName identifying the type.  In the case of an anonymous type, an internally-generated
       * name is returned
       */
-    def getStructuredQName(): StructuredQName = QNAME
+    def getStructuredQName: StructuredQName = QNAME
 
     /*@NotNull*/
 
@@ -118,11 +118,11 @@ object AnyType extends Enumeration {
 
     /*@NotNull*/
 
-    def getDisplayName(): String = "xs:anyType"
+    def getDisplayName: String = "xs:anyType"
 
     /*@Nullable*/
 
-    def getSystemId(): String = null
+    def getSystemId: String = null
 
     def isSameType(other: SchemaType): Boolean = other.isInstanceOf[AnyType]
 

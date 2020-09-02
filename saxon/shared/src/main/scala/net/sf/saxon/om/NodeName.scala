@@ -1,33 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.om
-
-
-
-
-trait NodeName extends IdentityComparable {
-
-  def getPrefix: String
-
-  def getURI: String
-
-  def getLocalPart: String
-
-  def getDisplayName: String
-
-  def getStructuredQName: StructuredQName
-
-  def hasURI(ns: String): Boolean
-
-  def getNamespaceBinding: NamespaceBinding
-
-  def hasFingerprint: Boolean
-
-  def getFingerprint: Int
-
-  def obtainFingerprint(namePool: NamePool): Int
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -51,3 +22,19 @@ trait NodeName extends IdentityComparable {
   * objects in structures such as maps and sets is generally a bad idea: it's better to use either the
   * StructuredQName or the fingerprint as the key.</p>
   */
+
+package net.sf.saxon.om
+
+
+trait NodeName extends IdentityComparable {
+  def getPrefix: String
+  def getURI: String
+  def getLocalPart: String
+  def getDisplayName: String
+  def getStructuredQName: StructuredQName
+  def hasURI(ns: String): Boolean
+  def getNamespaceBinding: NamespaceBinding
+  def hasFingerprint: Boolean
+  def getFingerprint: Int
+  def obtainFingerprint(namePool: NamePool): Int
+}

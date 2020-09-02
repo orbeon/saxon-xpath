@@ -37,7 +37,7 @@ class TinyCommentImpl() extends TinyNodeImpl {
 
   def atomize(): AtomicSequence = new StringValue(getStringValue)
 
-  def getNodeKind(): Int = Type.COMMENT
+  def getNodeKind: Int = Type.COMMENT
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.comment(getStringValue, locationId, ReceiverOption.NONE)

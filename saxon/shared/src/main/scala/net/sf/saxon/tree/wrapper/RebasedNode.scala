@@ -55,7 +55,7 @@ class RebasedNode  ()
     * Get the Base URI for the node, that is, the URI used for resolving a relative URI contained
     * in the node.
     */
-  override def getBaseURI(): String = getBaseUriMappingFunction.apply(node)
+  override def getBaseURI: String = getBaseUriMappingFunction.apply(node)
 
   /**
     * Get the System ID for the node.
@@ -64,7 +64,7 @@ class RebasedNode  ()
     * or null if not known. Note this is not the same as the base URI: the base URI can be
     * modified by xml:base, but the system ID cannot.
     */
-  override def getSystemId(): String = getSystemIdMappingFunction.apply(node)
+  override def getSystemId: String = getSystemIdMappingFunction.apply(node)
 
   override def equals(other: Any): Boolean = other match {
     case other: RebasedNode => node == other.node
@@ -81,7 +81,7 @@ class RebasedNode  ()
 
   /*@Nullable*/
 
-  def getParent(): NodeInfo = {
+  def getParent: NodeInfo = {
     if (parent == null) {
       val realParent: NodeInfo = node.getParent
       if (realParent != null) {

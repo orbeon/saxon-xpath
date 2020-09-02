@@ -20,7 +20,7 @@ class SaplingComment(private var value: String) extends SaplingNode {
 
   Objects.requireNonNull(value)
 
-  override def getNodeKind(): Int = Type.COMMENT
+  override def getNodeKind: Int = Type.COMMENT
 
   def getStringValue: String = value
 

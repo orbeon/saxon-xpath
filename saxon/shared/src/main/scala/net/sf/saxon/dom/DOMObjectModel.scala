@@ -116,7 +116,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
 
   def getIdentifyingURI: String = XPathConstants.DOM_OBJECT_MODEL
 
-  override def getName(): String = "DOM"
+  override def getName: String = "DOM"
 
   def getPJConverter(targetClass: Class[_]): PJConverter =
     if (classOf[Node].isAssignableFrom(targetClass) &&

@@ -200,7 +200,7 @@ class Doctype(content: Expression) extends Instruction {
         if (notation != null) {
           write(out, "NDATA " + notation + ' ')
         }
-        for (content <- child.children()) {
+        for (content <- child.children) {
           content.copy(out, 0, getLocation)
         }
         write(out, ">")

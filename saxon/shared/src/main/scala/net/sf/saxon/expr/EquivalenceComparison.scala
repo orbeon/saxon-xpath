@@ -88,7 +88,7 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
       // not be needed at run-time
     }
     //        comparer = GenericAtomicComparer.makeAtomicComparer(
-    //                    pt0, pt1, collation, getConfiguration().getConversionContext());
+    //                    pt0, pt1, collation, getConfiguration.getConversionContext());
     this
   }
 

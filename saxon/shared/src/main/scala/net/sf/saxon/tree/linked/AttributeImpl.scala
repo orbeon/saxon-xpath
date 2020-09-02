@@ -30,7 +30,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   private def getAttributeInfo: AttributeInfo =
     getRawParent.attributes().itemAt(getSiblingPosition)
 
-  override def getNodeName(): NodeName = {
+  override def getNodeName: NodeName = {
     if (getRawParent == null || getSiblingPosition == -1) {
       return null
     }
@@ -71,13 +71,13 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     (if (parseq == -1L) parseq else parseq + 0x8000 + getSiblingPosition)
   }
 
-  def getNodeKind(): Int = Type.ATTRIBUTE
+  def getNodeKind: Int = Type.ATTRIBUTE
 
   def getStringValue: String = getAttributeInfo.getValue
 
-  override def getNextSibling(): NodeImpl = null
+  override def getNextSibling: NodeImpl = null
 
-  override def getPreviousSibling(): NodeImpl = null
+  override def getPreviousSibling: NodeImpl = null
 
   override def getPreviousInDocument(): NodeImpl = getParent
 

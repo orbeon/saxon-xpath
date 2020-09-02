@@ -28,7 +28,7 @@ object Untyped extends Enumeration {
 
     /*@NotNull*/
 
-    def getName(): String = "untyped"
+    def getName: String = "untyped"
 
     /**
       * Get the name of this type as an EQName, that is, a string in the format Q{uri}local.
@@ -45,7 +45,7 @@ object Untyped extends Enumeration {
 
     /*@Nullable*/
 
-    def getSystemId(): String = null
+    def getSystemId: String = null
 
     def getBlock(): Int = 0
 
@@ -67,7 +67,7 @@ object Untyped extends Enumeration {
 
     /*@NotNull*/
 
-    def getDisplayName(): String = "xs:untyped"
+    def getDisplayName: String = "xs:untyped"
 
     /**
       * Get the name of the type as a StructuredQName
@@ -75,7 +75,7 @@ object Untyped extends Enumeration {
       * @return a StructuredQName identifying the type.  In the case of an anonymous type, an internally-generated
       * name is returned
       */
-    def getStructuredQName(): StructuredQName = NAME
+    def getStructuredQName: StructuredQName = NAME
 
     def isComplexType(): Boolean = true
 

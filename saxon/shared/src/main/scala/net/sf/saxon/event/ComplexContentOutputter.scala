@@ -588,7 +588,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
               ReceiverOption.NONE)
           case Type.DOCUMENT =>
             startDocument(ReceiverOption.NONE)
-            for (child <- node.children()) {
+            for (child <- node.children) {
               append(child, locationId, copyNamespaces)
             }
             endDocument()

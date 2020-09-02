@@ -79,7 +79,7 @@ class DocumentImpl
 
   this.setRawParent(null)
 
-  def getRootNode(): NodeInfo = this
+  def getRootNode: NodeInfo = this
 
   override def setSpaceStrippingRule(rule: SpaceStrippingRule) = this.spaceStrippingRule = rule
 
@@ -90,7 +90,7 @@ class DocumentImpl
     documentNumber = config.getDocumentNumberAllocator.allocateDocumentNumber()
   }
 
-  override def getConfiguration(): Configuration = config
+  override def getConfiguration: Configuration = config
 
   override def getNamePool(): NamePool = config.getNamePool
 
@@ -118,13 +118,13 @@ class DocumentImpl
     systemIdMap.setSystemId(getRawSequenceNumber, lUri)
   }
 
-  override def getSystemId(): String = systemIdMap.getSystemId(getRawSequenceNumber)
+  override def getSystemId: String = systemIdMap.getSystemId(getRawSequenceNumber)
 
   def setBaseURI(uri: String): Unit = {
     baseURI = uri
   }
 
-  override def getBaseURI(): String = {
+  override def getBaseURI: String = {
     if (baseURI != null) {
       return baseURI
     }
@@ -189,11 +189,11 @@ class DocumentImpl
 
   override def getLineNumber(): Int = 0
 
-  def getNodeKind(): Int = Type.DOCUMENT
+  def getNodeKind: Int = Type.DOCUMENT
 
-  override def getNextSibling(): NodeImpl = null
+  override def getNextSibling: NodeImpl = null
 
-  override def getPreviousSibling(): NodeImpl = null
+  override def getPreviousSibling: NodeImpl = null
 
   override def getRoot(): NodeInfo = this
 
@@ -305,7 +305,7 @@ class DocumentImpl
     entityTable.put(name, ids)
   }
 
-  def getUnparsedEntityNames(): Iterator[String] =
+  def getUnparsedEntityNames: Iterator[String] =
     if (entityTable == null) {
       val ls: List[String] = Collections.emptyList()
       ls.iterator()

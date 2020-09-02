@@ -22,35 +22,35 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     *
     * @return the prefix. Returns the empty string if the name is unprefixed.
     */
-  def getPrefix(): String = ""
+  def getPrefix: String = ""
 
   /**
     * Get the namespace URI of the QName.
     *
     * @return the URI. Returns the empty string to represent the no-namespace
     */
-  def getURI(): String = ""
+  def getURI: String = ""
 
   /**
     * Get the local part of the QName
     *
     * @return the local part of the QName
     */
-  def getLocalPart(): String = localName
+  def getLocalPart: String = localName
 
   /**
     * Get the display name, that is the lexical QName in the form [prefix:]local-part
     *
     * @return the lexical QName
     */
-  def getDisplayName(): String = localName
+  def getDisplayName: String = localName
 
   /**
     * Get the name in the form of a StructuredQName
     *
     * @return the name in the form of a StructuredQName
     */
-  def getStructuredQName(): StructuredQName =
+  def getStructuredQName: StructuredQName =
     new StructuredQName("", "", getLocalPart)
 
   /**
@@ -67,7 +67,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     *
     * @return the corresponding NamespaceBinding
     */
-  def getNamespaceBinding(): NamespaceBinding =
+  def getNamespaceBinding: NamespaceBinding =
     NamespaceBinding.DEFAULT_UNDECLARATION
 
   /**
@@ -76,7 +76,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     * @return true if the methods getFingerprint() and getNameCode() will
     *         return a result other than -1
     */
-  def hasFingerprint(): Boolean = nameCode != -1
+  def hasFingerprint: Boolean = nameCode != -1
 
   /**
     * Get the fingerprint of this name if known. This method should not to any work to allocate

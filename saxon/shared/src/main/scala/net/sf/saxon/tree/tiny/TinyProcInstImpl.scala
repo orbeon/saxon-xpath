@@ -42,9 +42,9 @@ class TinyProcInstImpl() extends TinyNodeImpl {
 
   def atomize(): AtomicSequence = new StringValue(getStringValue)
 
-  def getNodeKind(): Int = Type.PROCESSING_INSTRUCTION
+  def getNodeKind: Int = Type.PROCESSING_INSTRUCTION
 
-  override def getBaseURI(): String = Navigator.getBaseURI(this)
+  override def getBaseURI: String = Navigator.getBaseURI(this)
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.processingInstruction(getDisplayName,

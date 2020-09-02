@@ -66,7 +66,7 @@ class DeepSkipRuleSet private () extends BuiltInRuleSet {
 // otherwise, do nothing
 // otherwise, do nothing
 
-  override def getName(): String = "deep-skip"
+  override def getName: String = "deep-skip"
 
   /**
     * Get the default action for unmatched nodes

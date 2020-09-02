@@ -97,12 +97,12 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     }
   }
 
-  override def getSystemId(): String = {
+  override def getSystemId: String = {
     val root: DocumentImpl = getPhysicalRoot
     if (root == null) null else root.getSystemId(getRawSequenceNumber)
   }
 
-  override def getBaseURI(): String =
+  override def getBaseURI: String =
     Navigator.getBaseURI(
       this.asInstanceOf[NodeInfo],
       (n: NodeInfo) => getPhysicalRoot.isTopWithinEntity(n.asInstanceOf[ElementImpl]))
@@ -150,7 +150,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     }
   }
 
-  def getNodeKind(): Int = Type.ELEMENT
+  def getNodeKind: Int = Type.ELEMENT
 
   override def attributes(): AttributeMap = attributeMap
 

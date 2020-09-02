@@ -26,7 +26,7 @@ import java.util.List
 
 class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
-  def getName(): String = {
+  def getName: String = {
     if (node.getNodeKind == Type.NAMESPACE) {
       val local: String = node.getLocalPart
       if (local.==("")) {
@@ -42,11 +42,11 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   override def hasChildNodes: Boolean = true
 
-  override def getFirstChild(): Node = new TextOverAttrInfo(this)
+  override def getFirstChild: Node = new TextOverAttrInfo(this)
 
-  override def getLastChild(): Node = getFirstChild
+  override def getLastChild: Node = getFirstChild
 
-  override def getChildNodes(): NodeList = {
+  override def getChildNodes: NodeList = {
     val list: List[Node] = new ArrayList[Node](1)
     list.add(getFirstChild)
     new DOMNodeList(list)

@@ -59,7 +59,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def isBuiltInType(): Boolean = true
 
-  def getSystemId(): String = null
+  def getSystemId: String = null
 
   def getRedefinitionLevel(): Int = 0
 
@@ -97,13 +97,13 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def isNamespaceSensitive(): Boolean = false
 
-  def getName(): String = StandardNames.getLocalName(fingerprint)
+  def getName: String = StandardNames.getLocalName(fingerprint)
 
   def getTargetNamespace(): String = NamespaceConstant.SCHEMA
 
   def getEQName(): String = "Q{" + NamespaceConstant.SCHEMA + "}" + getName
 
-  def getDisplayName(): String = StandardNames.getDisplayName(fingerprint)
+  def getDisplayName: String = StandardNames.getDisplayName(fingerprint)
 
   def isComplexType(): Boolean = false
 
@@ -133,7 +133,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   def getLocalName: String = StandardNames.getLocalName(fingerprint)
 
-  def getStructuredQName(): StructuredQName =
+  def getStructuredQName: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, getLocalName)
 
   def applyWhitespaceNormalization(value: String): String =

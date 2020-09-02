@@ -37,7 +37,7 @@ class ElementOverNodeInfo extends NodeOverNodeInfo with Element {
                              localName: String): NodeList =
     DocumentOverNodeInfo.getElementsByTagNameNS(node, namespaceURI, localName)
 
-  override def getAttributes(): NamedNodeMap = {
+  override def getAttributes: NamedNodeMap = {
     if (attributeMap == null) {
       attributeMap = new DOMAttributeMap(node)
     }

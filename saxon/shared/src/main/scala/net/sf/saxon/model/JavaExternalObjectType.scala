@@ -47,7 +47,7 @@ class JavaExternalObjectType( var config: Configuration,
 
   def getConfiguration: Configuration = config
 
-  def getName(): String = javaClass.getName
+  def getName: String = javaClass.getName
 
   def getTargetNamespace(): String = NamespaceConstant.JAVA_TYPE
 

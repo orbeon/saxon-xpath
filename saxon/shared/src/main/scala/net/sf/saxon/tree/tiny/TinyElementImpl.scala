@@ -23,9 +23,9 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
 
   this.nodeNr = nodeNrImpl
 
-  def getNodeKind(): Int = Type.ELEMENT
+  def getNodeKind: Int = Type.ELEMENT
 
-  override def getBaseURI(): String = {
+  override def getBaseURI: String = {
     if (tree.getUniformBaseUri != null) {
       tree.getUniformBaseUri
     }

@@ -20,7 +20,7 @@ class SaplingText(private var value: String) extends SaplingNode {
 
   Objects.requireNonNull(value)
 
-  override def getNodeKind(): Int = Type.TEXT
+  override def getNodeKind: Int = Type.TEXT
 
   def getStringValue: String = value
 

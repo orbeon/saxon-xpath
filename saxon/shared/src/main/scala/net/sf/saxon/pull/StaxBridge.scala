@@ -282,7 +282,7 @@ class StaxBridge extends PullProvider {
     }
   }
 
-  def getNodeName(): NodeName =
+  def getNodeName: NodeName =
     if (currentEvent == START_ELEMENT || currentEvent == END_ELEMENT) {
       val local: String = reader.getLocalName
       val uri: String = reader.getNamespaceURI

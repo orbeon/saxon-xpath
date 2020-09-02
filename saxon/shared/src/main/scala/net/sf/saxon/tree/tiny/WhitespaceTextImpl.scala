@@ -70,7 +70,7 @@ class WhitespaceTextImpl() extends TinyNodeImpl {
 
   def atomize(): AtomicSequence = new UntypedAtomicValue(getStringValueCS)
 
-  def getNodeKind(): Int = Type.TEXT
+  def getNodeKind: Int = Type.TEXT
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.characters(getStringValueCS, locationId, ReceiverOption.NONE)

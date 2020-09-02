@@ -107,7 +107,7 @@ class ShallowSkipRuleSet private () extends BuiltInRuleSet {
     } else {}
   }
 
-  override def getName(): String = "shallow-skip"
+  override def getName: String = "shallow-skip"
 
   /**
     * Get the default action for unmatched nodes

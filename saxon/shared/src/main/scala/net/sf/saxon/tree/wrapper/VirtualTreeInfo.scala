@@ -35,7 +35,7 @@ class VirtualTreeInfo(config: Configuration) extends GenericTreeInfo(config) {
     * information is not available then an empty iterator is returned
     * @since 9.1
     */
-  override def getUnparsedEntityNames(): Iterator[String] =
+  override def getUnparsedEntityNames: Iterator[String] =
     getRootNode
       .asInstanceOf[VirtualCopy]
       .getOriginalNode

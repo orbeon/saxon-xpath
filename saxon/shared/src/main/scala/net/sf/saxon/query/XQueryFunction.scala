@@ -316,7 +316,7 @@ class XQueryFunction extends Declaration with Location {
 
   def getObjectName: StructuredQName = functionName
 
-  def getSystemId(): String = location.getSystemId
+  def getSystemId: String = location.getSystemId
 
   def getLineNumber(): Int = location.getLineNumber
 

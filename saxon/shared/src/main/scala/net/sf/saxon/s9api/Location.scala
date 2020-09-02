@@ -10,7 +10,7 @@ import javax.xml.transform.SourceLocator
 
 trait Location extends SourceLocator with Locator {
 
-  def getSystemId(): String
+  def getSystemId: String
 
   def getPublicId(): String
 

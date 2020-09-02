@@ -129,7 +129,7 @@ class VirtualCopy(var original: NodeInfo,
    *         the same expanded QName. For unnamed nodes (text nodes, comments, document nodes,
    *         and namespace nodes for the default namespace), returns -1.
    * @throws UnsupportedOperationException if this kind of node does not hold
-   *                                       namepool fingerprints (specifically, if { @link #hasFingerprint()} returns false).
+   *                                       namepool fingerprints (specifically, if { @link #hasFingerprint} returns false).
    * @since 8.4 (moved into FingerprintedNode at some stage; then back into NodeInfo at 9.8).
    */
   override def getFingerprint(): Int = original.getFingerprint
@@ -145,9 +145,9 @@ class VirtualCopy(var original: NodeInfo,
    * @return true if the implementation of this node provides fingerprints.
    * @since 9.8; previously Saxon relied on using <code>FingerprintedNode</code> as a marker interface.
    */
-  override def hasFingerprint(): Boolean = original.hasFingerprint
+  override def hasFingerprint: Boolean = original.hasFingerprint
 
-  def getNodeKind(): Int = original.getNodeKind
+  def getNodeKind: Int = original.getNodeKind
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[VirtualCopy] &&
@@ -158,11 +158,11 @@ class VirtualCopy(var original: NodeInfo,
     original.hashCode ^
       ((getTreeInfo.getDocumentNumber & 0x7fffffff).toInt << 19)
 
-  def getSystemId(): String = systemIdSupplier.get
+  def getSystemId: String = systemIdSupplier.get
 
   /*@Nullable*/
 
-  override def getBaseURI(): String = Navigator.getBaseURI(this)
+  override def getBaseURI: String = Navigator.getBaseURI(this)
 
   override def getLineNumber(): Int = original.getLineNumber
 
@@ -191,15 +191,15 @@ class VirtualCopy(var original: NodeInfo,
 
   def getStringValueCS: CharSequence = original.getStringValueCS
 
-  def getLocalPart(): String = original.getLocalPart
+  def getLocalPart: String = original.getLocalPart
 
-  def getURI(): String = original.getURI
+  def getURI: String = original.getURI
 
-  def getPrefix(): String = original.getPrefix
+  def getPrefix: String = original.getPrefix
 
-  def getDisplayName(): String = original.getDisplayName
+  def getDisplayName: String = original.getDisplayName
 
-  override def getConfiguration(): Configuration = original.getConfiguration
+  override def getConfiguration: Configuration = original.getConfiguration
 
   /**
    * Get the type annotation of this node, if any. The type annotation is represented as
@@ -217,7 +217,7 @@ class VirtualCopy(var original: NodeInfo,
 
   /*@Nullable*/
 
-  def getParent(): NodeInfo = {
+  def getParent: NodeInfo = {
     if (original == root) {
       return null
     }
@@ -239,7 +239,7 @@ class VirtualCopy(var original: NodeInfo,
       case AxisInfo.SELF | AxisInfo.PRECEDING_SIBLING |
            AxisInfo.FOLLOWING_SIBLING =>
         newParent = parent
-      // that relies on getParent() to escape from the subtree
+      // that relies on getParent to escape from the subtree
       case AxisInfo.ANCESTOR =>
         new Navigator.AxisFilter(
           new Navigator.AncestorEnumeration(this, false),

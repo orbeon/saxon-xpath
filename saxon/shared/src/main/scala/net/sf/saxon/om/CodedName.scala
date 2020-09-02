@@ -1,9 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package net.sf.saxon.om
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
+import scala.beans.BeanProperty
 
 
 /**
@@ -20,21 +24,21 @@ class CodedName(@BeanProperty var fingerprint: Int,
     *
     * @return the URI. Returns the empty string to represent the no-namespace
     */
-  def getURI(): String = pool.getURI(fingerprint)
+  def getURI: String = pool.getURI(fingerprint)
 
   /**
     * Get the local part of the QName
     *
     * @return the local part of the QName
     */
-  def getLocalPart(): String = pool.getLocalName(fingerprint)
+  def getLocalPart: String = pool.getLocalName(fingerprint)
 
   /**
     * Get the display name, that is the lexical QName in the form [prefix:]local-part
     *
     * @return the lexical QName
     */
-  def getDisplayName(): String =
+  def getDisplayName: String =
     if (prefix.isEmpty) getLocalPart else prefix + ":" + getLocalPart
 
   /**
@@ -42,13 +46,12 @@ class CodedName(@BeanProperty var fingerprint: Int,
     *
     * @return the name in the form of a StructuredQName
     */
-  def getStructuredQName(): StructuredQName = {
-    val qn: StructuredQName = pool.getUnprefixedQName(fingerprint)
-    if (prefix.isEmpty) {
+  def getStructuredQName: StructuredQName = {
+    val qn = pool.getUnprefixedQName(fingerprint)
+    if (prefix.isEmpty)
       qn
-    } else {
+    else
       new StructuredQName(prefix, qn.getURI, qn.getLocalPart)
-    }
   }
 
   /**
@@ -59,7 +62,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
     */
   def hasURI(ns: String): Boolean = getURI == ns
 
-  def getNamespaceBinding(): NamespaceBinding =
+  def getNamespaceBinding: NamespaceBinding =
     new NamespaceBinding(prefix, pool.getURI(fingerprint))
 
   /**
@@ -68,7 +71,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
     * @return true if the method getFingerprint() will
     *         return a result other than -1
     */
-  def hasFingerprint(): Boolean = true
+  def hasFingerprint: Boolean = true
 
   /**
     * Get the nameCode of this name, allocating a new code from the namepool if necessary
@@ -88,16 +91,13 @@ class CodedName(@BeanProperty var fingerprint: Int,
     * Indicates whether some other object is "equal to" this one.
     */
   override def equals(obj: Any): Boolean = obj match {
-    case obj: NodeName => {
+    case obj: NodeName =>
       val n: NodeName = obj
-      if (n.hasFingerprint) {
+      if (n.hasFingerprint)
         getFingerprint == n.getFingerprint
-      } else {
+      else
         n.getLocalPart == getLocalPart && n.hasURI(getURI)
-      }
-    }
     case _ => false
-
   }
 
   def isIdentical(other: IdentityComparable): Boolean =
@@ -112,11 +112,4 @@ class CodedName(@BeanProperty var fingerprint: Int,
   def identityHashCode(): Int = hashCode ^ getPrefix.hashCode
 
   override def toString: String = getDisplayName
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

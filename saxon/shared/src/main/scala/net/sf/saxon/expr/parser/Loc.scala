@@ -56,7 +56,7 @@ class Loc extends Location {
    */
   def saveLocation(): Location = this
 
-  override def getSystemId(): String = systemId
+  override def getSystemId: String = systemId
 
   override def getLineNumber(): Int = lineNumber
 

@@ -23,7 +23,7 @@ object AnySimpleType extends SimpleType {
 
   /*@NotNull*/
 
-  def getName(): String = "anySimpleType"
+  def getName: String = "anySimpleType"
 
   def getTargetNamespace(): String = NamespaceConstant.SCHEMA
 
@@ -46,7 +46,7 @@ object AnySimpleType extends SimpleType {
 
   /*@Nullable*/
 
-  def getSystemId(): String = null
+  def getSystemId: String = null
 
   /**
     * Get the validation status - always valid
@@ -67,7 +67,7 @@ object AnySimpleType extends SimpleType {
     * @return a StructuredQName identifying the type.  In the case of an anonymous type, an internally-generated
     * name is returned
     */
-  def getStructuredQName(): StructuredQName = NAME
+  def getStructuredQName: StructuredQName = NAME
 
   /*@NotNull*/
 
@@ -75,7 +75,7 @@ object AnySimpleType extends SimpleType {
 
   /*@NotNull*/
 
-  def getDisplayName(): String = "xs:anySimpleType"
+  def getDisplayName: String = "xs:anySimpleType"
 
   def isSameType(other: SchemaType): Boolean = other == AnySimpleType
 

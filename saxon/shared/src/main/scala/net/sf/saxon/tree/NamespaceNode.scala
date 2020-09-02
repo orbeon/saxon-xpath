@@ -100,7 +100,7 @@ class NamespaceNode(var element: NodeInfo,
 
   override def head: NodeInfo = this
 
-  def getNodeKind(): Int = Type.NAMESPACE
+  def getNodeKind: Int = Type.NAMESPACE
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[NamespaceNode] &&
@@ -111,7 +111,7 @@ class NamespaceNode(var element: NodeInfo,
 
   /*@Nullable*/
 
-  def getSystemId(): String = element.getSystemId
+  def getSystemId: String = element.getSystemId
 
   /**
     * Get the Public ID of the entity containing the node.
@@ -124,7 +124,7 @@ class NamespaceNode(var element: NodeInfo,
 
   /*@Nullable*/
 
-  def getBaseURI()
+  def getBaseURI
     : String = // the base URI of a namespace node is the empty sequence
     null
 
@@ -165,7 +165,7 @@ class NamespaceNode(var element: NodeInfo,
     * @return true if the implementation of this node provides fingerprints.
     * @since 9.8; previously Saxon relied on using <code>FingerprintedNode</code> as a marker interface.
     */
-  override def hasFingerprint(): Boolean = true
+  override def hasFingerprint: Boolean = true
 
   def getFingerprint(): Int = {
     if (fingerprint == -1) {
@@ -179,19 +179,19 @@ class NamespaceNode(var element: NodeInfo,
     fingerprint
   }
 
-  def getLocalPart(): String = nsBinding.getPrefix
+  def getLocalPart: String = nsBinding.getPrefix
 
   /*@NotNull*/
 
-  def getURI(): String = ""
+  def getURI: String = ""
 
-  def getDisplayName(): String = getLocalPart
+  def getDisplayName: String = getLocalPart
 
   /*@NotNull*/
 
-  def getPrefix(): String = ""
+  def getPrefix: String = ""
 
-  override def getConfiguration(): Configuration = element.getConfiguration
+  override def getConfiguration: Configuration = element.getConfiguration
 
   def getNamePool: NamePool = getConfiguration.getNamePool
 
@@ -209,7 +209,7 @@ class NamespaceNode(var element: NodeInfo,
     */
   override def getSchemaType(): SchemaType = BuiltInAtomicType.STRING
 
-  def getParent(): NodeInfo = element
+  def getParent: NodeInfo = element
 
   def iterateAxis(axisNumber: Int,
                   nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =

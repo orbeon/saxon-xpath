@@ -49,7 +49,7 @@ class SaplingElement(name: String) extends SaplingNode {
     this.nodeName = name
   }
 
-  override def getNodeKind(): Int = Type.ELEMENT
+  override def getNodeKind: Int = Type.ELEMENT
 
   private def copy(): SaplingElement = {
     val e2: SaplingElement = new SaplingElement(nodeName)

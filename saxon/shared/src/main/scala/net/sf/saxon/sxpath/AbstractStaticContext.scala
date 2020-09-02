@@ -67,7 +67,7 @@ abstract class AbstractStaticContext extends StaticContext {
     this.defaultCollationName = config.getDefaultCollationName
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def setSchemaAware(aware: Boolean): Unit = {
     getPackageData.setSchemaAware(aware)
@@ -110,7 +110,7 @@ abstract class AbstractStaticContext extends StaticContext {
     getWarningHandler.accept(s, locator)
   }
 
-  def getSystemId(): String = ""
+  def getSystemId: String = ""
 
   def setXPathLanguageLevel(level: Int): Unit = {
     xpathLanguageLevel = level

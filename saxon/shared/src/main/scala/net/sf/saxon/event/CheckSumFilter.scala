@@ -171,7 +171,7 @@ class CheckSumFilter(nextReceiver: Receiver)
     h
   }
 
-  private def hash(n: NodeName, sequence: Int): Int = //System.err.println("hash(" + n.getLocalPart() + ") " + hash(n.getLocalPart(), sequence) + "/" + hash(n.getURI(), sequence));
+  private def hash(n: NodeName, sequence: Int): Int = //System.err.println("hash(" + n.getLocalPart + ") " + hash(n.getLocalPart, sequence) + "/" + hash(n.getURI, sequence));
     hash(n.getLocalPart, sequence) ^ hash(n.getURI, sequence)
 
 }

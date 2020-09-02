@@ -74,7 +74,7 @@ class XdmNode extends XdmItem {
 
   def asSource(): Source = getUnderlyingNode
 
-  def children(): java.lang.Iterable[XdmNode] =
+  def children: java.lang.Iterable[XdmNode] =
     select(Steps.child()).asListOfNodes()
 
   def children(localName: String): java.lang.Iterable[XdmNode] =

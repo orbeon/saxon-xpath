@@ -465,7 +465,7 @@ class XQueryExpression(var expression: Expression,
 
   /*@Nullable*/
 
-  def getSystemId(): String = mainModule.getSystemId
+  def getSystemId: String = mainModule.getSystemId
 
   /**
    * Return the line number where the current document event ends.

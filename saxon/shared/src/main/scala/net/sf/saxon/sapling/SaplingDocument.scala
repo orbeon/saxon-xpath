@@ -28,9 +28,9 @@ class SaplingDocument extends SaplingNode with Source {
     throw new UnsupportedOperationException()
   }
 
-  override def getSystemId(): String = baseUri
+  override def getSystemId: String = baseUri
 
-  override def getNodeKind(): Int = Type.DOCUMENT
+  override def getNodeKind: Int = Type.DOCUMENT
 
   private def copy(): SaplingDocument = {
     val d2: SaplingDocument = new SaplingDocument(baseUri)

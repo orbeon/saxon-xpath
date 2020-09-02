@@ -96,7 +96,7 @@ abstract class NodeImpl
 
   def getNodeName: NodeName = null
 
-  override def hasFingerprint(): Boolean = true
+  override def hasFingerprint: Boolean = true
 
   def getFingerprint(): Int = {
     val name: NodeName = getNodeName
@@ -122,9 +122,9 @@ abstract class NodeImpl
     }
   }
 
-  def getSystemId(): String = parent.getSystemId
+  def getSystemId: String = parent.getSystemId
 
-  def getBaseURI(): String = parent.getBaseURI
+  def getBaseURI: String = parent.getBaseURI
 
   def getSequenceNumber: Long = {
     var prev: NodeImpl = this
@@ -153,26 +153,26 @@ abstract class NodeImpl
     java.lang.Long.compare(a, b)
   }
 
-  override def getConfiguration(): Configuration = getPhysicalRoot.getConfiguration
+  override def getConfiguration: Configuration = getPhysicalRoot.getConfiguration
 
   def getNamePool: NamePool = getPhysicalRoot.getNamePool
 
-  def getPrefix(): String = {
+  def getPrefix: String = {
     val qName: NodeName = getNodeName
     if (qName == null) "" else qName.getPrefix
   }
 
-  def getURI(): String = {
+  def getURI: String = {
     val qName: NodeName = getNodeName
     if (qName == null) "" else qName.getURI
   }
 
-  def getDisplayName(): String = {
+  def getDisplayName: String = {
     val qName: NodeName = getNodeName
     if (qName == null) "" else qName.getDisplayName
   }
 
-  def getLocalPart(): String = {
+  def getLocalPart: String = {
     val qName: NodeName = getNodeName
     if (qName == null) "" else qName.getLocalPart
   }
@@ -181,7 +181,7 @@ abstract class NodeImpl
 
   def saveLocation(): Location = this
 
-  def getParent(): NodeImpl = {
+  def getParent: NodeImpl = {
     if (parent.isInstanceOf[DocumentImpl] && parent
       .asInstanceOf[DocumentImpl]
       .isImaginary) {
@@ -196,21 +196,21 @@ abstract class NodeImpl
     this.parent = parent
   }
 
-  def getPreviousSibling(): NodeImpl = {
+  def getPreviousSibling: NodeImpl = {
     if (parent == null) {
       return null
     }
     parent.getNthChild(index - 1)
   }
 
-  def getNextSibling(): NodeImpl = {
+  def getNextSibling: NodeImpl = {
     if (parent == null) {
       return null
     }
     parent.getNthChild(index + 1)
   }
 
-  def getFirstChild(): NodeImpl = null
+  def getFirstChild: NodeImpl = null
 
   def getLastChild: NodeInfo = null
 

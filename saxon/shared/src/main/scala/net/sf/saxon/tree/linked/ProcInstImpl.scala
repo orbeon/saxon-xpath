@@ -35,7 +35,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
     *
     * @return the name of the node
     */
-  override def getNodeName(): NodeName = new NoNamespaceName(name)
+  override def getNodeName: NodeName = new NoNamespaceName(name)
 
   def getStringValue: String = content
 
@@ -43,7 +43,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
 
   override def atomize(): AtomicSequence = new StringValue(getStringValue)
 
-  def getNodeKind(): Int = Type.PROCESSING_INSTRUCTION
+  def getNodeKind: Int = Type.PROCESSING_INSTRUCTION
 
   def setLocation(uri: String, lineNumber: Int, columnNumber: Int): Unit = {
     this.systemId = uri
@@ -51,7 +51,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
     this.columnNumber = columnNumber
   }
 
-  override def getSystemId(): String = systemId
+  override def getSystemId: String = systemId
 
   override def getLineNumber(): Int = lineNumber
 

@@ -60,7 +60,7 @@ trait NodeInfo extends Source with Item with Location {
   def equals(other: Any): Boolean
   def hashCode(): Int
   /*@Nullable*/
-  def getSystemId(): String
+  def getSystemId: String
   def getPublicId(): String = null
   def getBaseURI: String
   def getLineNumber(): Int = -1
@@ -96,7 +96,7 @@ trait NodeInfo extends Source with Item with Location {
   def getAttributeValue(uri: String, local: String): String
   def getRoot: NodeInfo
   def hasChildNodes: Boolean
-  def children(): Iterator[NodeInfo] = {
+  def children: Iterator[NodeInfo] = {
     if (hasChildNodes) {
       val parent: NodeInfo = this
       parent.iterateAxis(AxisInfo.CHILD).asIterator()
@@ -108,7 +108,7 @@ trait NodeInfo extends Source with Item with Location {
   def children(filter: Predicate[_ >: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator().iterator.to(Iterable)
+      parent.iterateAxis(AxisInfo.CHILD, nodeTest = filter).asIterator().iterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }
@@ -118,10 +118,10 @@ trait NodeInfo extends Source with Item with Location {
     if (getNodeKind == Type.ELEMENT) {
       val iter: AxisIterator = iterateAxis(AxisInfo.ATTRIBUTE)
       var attr: NodeInfo = null
-      while (({
+      while ({
         attr = iter.next()
         attr
-      }) != null) atts = atts.put(
+      } != null) atts = atts.put(
         new AttributeInfo(NameOfNode.makeName(attr),
                           attr.getSchemaType.asInstanceOf[SimpleType],
                           attr.getStringValue,

@@ -38,7 +38,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   def current(): Event = currentEvent
 
-  def getAttributes(): AttributeMap = base.getAttributes
+  def getAttributes: AttributeMap = base.getAttributes
 
   def getNamespaceDeclarations(): Array[NamespaceBinding] =
     base.getNamespaceDeclarations
@@ -49,7 +49,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
     base.close()
   }
 
-  def getNodeName(): NodeName = base.getNodeName
+  def getNodeName: NodeName = base.getNodeName
 
   def getStringValue: CharSequence = base.getStringValue
 

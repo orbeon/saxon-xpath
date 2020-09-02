@@ -48,7 +48,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     *
     * @return the configuration
     */
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def setRootNode(root: NodeInfo): Unit = {
     if (root.getParent != null) {
@@ -63,7 +63,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     *
     * @return the root node
     */
-  def getRootNode(): NodeInfo = root
+  def getRootNode: NodeInfo = root
 
   /**
     * Get the Public ID of the entity containing the node.
@@ -73,7 +73,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     */
   def getPublicId: String = null
 
-  def getDocumentNumber(): Long = {
+  def getDocumentNumber: Long = {
     if (documentNumber == -1) {
       val dna: DocumentNumberAllocator = config.getDocumentNumberAllocator
       this.synchronized {
@@ -112,7 +112,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * information is not available then an empty iterator is returned
     * @since 9.1
     */
-  def getUnparsedEntityNames(): Iterator[String] = {
+  def getUnparsedEntityNames: Iterator[String] = {
     val e = Collections.emptyList[String]
     e.iterator
   }
@@ -161,5 +161,5 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   def isStreamed: Boolean = false
   def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule;
-  def getSpaceStrippingRule(): SpaceStrippingRule = this.spaceStrippingRule
+  def getSpaceStrippingRule: SpaceStrippingRule = this.spaceStrippingRule
 }

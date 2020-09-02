@@ -12,7 +12,7 @@ import net.sf.saxon.om.NodeInfo
 
 trait SteppingNode[N <: SteppingNode[N]] extends NodeInfo {
 
-  def getParent(): N
+  def getParent: N
 
   def getNextSibling: N
 

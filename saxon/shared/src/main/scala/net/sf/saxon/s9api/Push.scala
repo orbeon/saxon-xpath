@@ -87,7 +87,7 @@ trait Push {
   * for (Employee emp : employees) {
   *     top.element("emp")
   *        .attribute("ssn", emp.getSSN())
-  *        .text(emp.getName());
+  *        .text(emp.getName);
   * }
   * doc.close();
   * }</pre>

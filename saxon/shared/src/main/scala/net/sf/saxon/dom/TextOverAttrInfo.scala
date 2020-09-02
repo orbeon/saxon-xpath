@@ -28,7 +28,7 @@ class TextOverAttrInfo(private var attr: AttrOverNodeInfo)
     */
   override def isElementContentWhitespace(): Boolean = false
 
-  override def getNodeType(): Short = Type.TEXT
+  override def getNodeType: Short = Type.TEXT
 
   override def compareDocumentPosition(other: Node): Short = {
     val DOCUMENT_POSITION_FOLLOWING: Short = 0x04
@@ -46,7 +46,7 @@ class TextOverAttrInfo(private var attr: AttrOverNodeInfo)
     attr.compareDocumentPosition(other)
   }
 
-  override def getParentNode(): Node = attr
+  override def getParentNode: Node = attr
 
 }
 

@@ -35,7 +35,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
       throw new UnsupportedOperationException()
     }
 
-  override def hasFingerprint(): Boolean = node.hasFingerprint
+  override def hasFingerprint: Boolean = node.hasFingerprint
 
   def getRealNode(): AnyRef = {
     var u: AnyRef = this
@@ -44,7 +44,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
     u
   }
 
-  def getNodeKind(): Int = node.getNodeKind
+  def getNodeKind: Int = node.getNodeKind
 
   def atomize(): AtomicSequence = node.atomize()
 
@@ -59,13 +59,13 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   override def hashCode(): Int = node.hashCode ^ 0x3c3c3c3c
 
-  def getSystemId(): String = node.getSystemId
+  def getSystemId: String = node.getSystemId
 
   def setSystemId(uri: String): Unit = {
     node.setSystemId(uri)
   }
 
-  def getBaseURI(): String = node.getBaseURI
+  def getBaseURI: String = node.getBaseURI
 
   override def getLineNumber(): Int = node.getLineNumber
 
@@ -84,13 +84,13 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   def getStringValueCS: CharSequence = node.getStringValueCS
 
-  def getLocalPart(): String = node.getLocalPart
+  def getLocalPart: String = node.getLocalPart
 
-  def getURI(): String = node.getURI
+  def getURI: String = node.getURI
 
-  def getPrefix(): String = node.getPrefix
+  def getPrefix: String = node.getPrefix
 
-  def getDisplayName(): String = node.getDisplayName
+  def getDisplayName: String = node.getDisplayName
 
   def iterateAxis(axisNumber: Int,
                   nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =

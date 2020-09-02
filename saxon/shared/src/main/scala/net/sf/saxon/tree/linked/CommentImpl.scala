@@ -34,7 +34,7 @@ class CommentImpl(content: String) extends NodeImpl {
 
   override def atomize(): AtomicSequence = new StringValue(getStringValue)
 
-  def getNodeKind(): Int = Type.COMMENT
+  def getNodeKind: Int = Type.COMMENT
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.comment(comment, locationId, ReceiverOption.NONE)
@@ -50,7 +50,7 @@ class CommentImpl(content: String) extends NodeImpl {
     this.columnNumber = columnNumber
   }
 
-  override def getSystemId(): String = systemId
+  override def getSystemId: String = systemId
 
   override def getLineNumber(): Int = lineNumber
 

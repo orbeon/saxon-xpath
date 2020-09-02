@@ -1,74 +1,45 @@
 package net.sf.saxon.tree.tiny
 
-import net.sf.saxon.utils.Configuration
+import java.util.{ArrayList, List}
 
 import net.sf.saxon.event.Receiver
-
-import net.sf.saxon.model.AnyType
-
-import net.sf.saxon.model.SchemaType
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.model.Untyped
-
-import net.sf.saxon.om.AtomicSequence
-
-import net.sf.saxon.om.AxisInfo
-
-import net.sf.saxon.om.CopyOptions
-
-import net.sf.saxon.om.NodeInfo
-
+import net.sf.saxon.model.{AnyType, SchemaType, Type, Untyped}
+import net.sf.saxon.om.{AtomicSequence, AxisInfo, CopyOptions, NodeInfo}
 import net.sf.saxon.pattern.NodeKindTest
-
 import net.sf.saxon.s9api.Location
-
-import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.tree.iter.AxisIterator
-
 import net.sf.saxon.tree.util.FastStringBuffer
-
+import net.sf.saxon.utils.Configuration
 import net.sf.saxon.value.UntypedAtomicValue
-
 import net.sf.saxon.z.IntHashMap
-
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.Map
 
 import scala.jdk.CollectionConverters._
 
 class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   private var elementList: IntHashMap[List[NodeInfo]] = _
-
   private var baseURI: String = _
 
   this.tree = treeImpl
 
   nodeNr = 0
 
-  override def getTree(): TinyTree = tree
+  override def getTree: TinyTree = tree
 
   def getRootNode: NodeInfo = this
 
-  override def getConfiguration(): Configuration = tree.getConfiguration
+  override def getConfiguration: Configuration = tree.getConfiguration
 
   override def setSystemId(uri: String): Unit = {
     tree.setSystemId(nodeNr, uri)
   }
 
-  override def getSystemId(): String = tree.getSystemId(nodeNr)
+  override def getSystemId: String = tree.getSystemId(nodeNr)
 
-  def setBaseURI(uri: String): Unit = {
+  def setBaseURI(uri: String): Unit =
     baseURI = uri
-  }
 
-  override def getBaseURI(): String = {
+  override def getBaseURI: String = {
     if (baseURI != null) {
       return baseURI
     }
@@ -79,9 +50,9 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   def isTyped: Boolean = tree.getTypeArray != null
 
-  def getNodeKind(): Int = Type.DOCUMENT
+  def getNodeKind: Int = Type.DOCUMENT
 
-  override def getParent(): TinyNodeImpl = null
+  override def getParent: TinyNodeImpl = null
 
   override def getRoot(): NodeInfo = this
 
@@ -93,10 +64,9 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
   def atomize(): AtomicSequence = new UntypedAtomicValue(getStringValueCS)
 
   def getAllElements(fingerprint: Int): AxisIterator = {
-    if (elementList == null) {
+    if (elementList == null)
       elementList = new IntHashMap[List[NodeInfo]](20)
-    }
-    var list: List[NodeInfo] = elementList.get(fingerprint)
+    var list = elementList.get(fingerprint)
     if (list == null) {
       list = makeElementList(fingerprint)
       elementList.put(fingerprint, list)
@@ -150,16 +120,13 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
         out.setUnparsedEntity(name, systemId, publicId)
       }
     }
-    for (child <- children()) {
+    for (child <- children)
       child.copy(out, copyOptions, locationId)
-    }
     out.endDocument()
   }
 
-  def showSize(): Unit = {
+  def showSize(): Unit =
     tree.showSize()
-  }
 
   override def hashCode(): Int = tree.getDocumentNumber.toInt
-
 }

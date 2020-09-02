@@ -77,7 +77,7 @@ class EarlyEvaluationContext(private var config: Configuration)
     null
   }
 
-  def getConfiguration(): Configuration = config
+  def getConfiguration: Configuration = config
 
   def getContextItem(): Item = null
 

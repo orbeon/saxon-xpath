@@ -140,7 +140,7 @@ abstract class Builder extends Receiver {
 
   /*@Nullable*/
 
-  def getSystemId(): String = systemId
+  def getSystemId: String = systemId
 
   def setBaseURI(baseURI: String): Unit = {
     this.baseURI = baseURI

@@ -152,13 +152,13 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
   class TinyTextualElementText extends NodeInfo with SourceLocator {
 
-    override def hasFingerprint(): Boolean = true
+    override def hasFingerprint: Boolean = true
 
     def getTreeInfo(): TreeInfo = TinyTextualElement.this.getTreeInfo
 
     def setSystemId(systemId: String): Unit = ()
 
-    def getNodeKind(): Int = Type.TEXT
+    def getNodeKind: Int = Type.TEXT
 
     def getStringValue: String = getStringValueCS.toString
 
@@ -176,9 +176,9 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
       buffer.append("T")
     }
 
-    def getSystemId(): String = TinyTextualElement.this.getSystemId
+    def getSystemId: String = TinyTextualElement.this.getSystemId
 
-    def getBaseURI(): String = TinyTextualElement.this.getBaseURI
+    def getBaseURI: String = TinyTextualElement.this.getBaseURI
 
     def compareOrder(other: NodeInfo): Int =
       if (other == this) {
@@ -191,13 +191,13 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getFingerprint(): Int = -1
 
-    def getPrefix(): String = ""
+    def getPrefix: String = ""
 
-    def getURI(): String = ""
+    def getURI: String = ""
 
-    def getDisplayName(): String = ""
+    def getDisplayName: String = ""
 
-    def getLocalPart(): String = ""
+    def getLocalPart: String = ""
 
     def hasChildNodes: Boolean = false
 
@@ -280,7 +280,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
       }
 
-    def getParent(): NodeInfo = TinyTextualElement.this
+    def getParent: NodeInfo = TinyTextualElement.this
 
     def getRoot(): NodeInfo = getParent.getRoot
 

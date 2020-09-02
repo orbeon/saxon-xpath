@@ -69,7 +69,7 @@ class SpaceStrippedDocument(doc: TreeInfo, @BeanProperty var strippingRule: Spac
     }
   }
 
-  override def getUnparsedEntityNames(): Iterator[String] =
+  override def getUnparsedEntityNames: Iterator[String] =
     underlyingTree.getUnparsedEntityNames
 
   override def getUnparsedEntity(name: String): Array[String] =

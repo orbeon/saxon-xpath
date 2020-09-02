@@ -185,7 +185,7 @@ class SpaceStrippedNode()
 
   /*@Nullable*/
 
-  def getParent(): NodeInfo = {
+  def getParent: NodeInfo = {
     if (parent == null) {
       val realParent: NodeInfo = node.getParent
       if (realParent != null) {

@@ -423,7 +423,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   override def usesTypeAnnotations(): Boolean = false
 
-  def getSystemId(): String = null
+  def getSystemId: String = null
 
   private def indent(depth: Int): Unit = {
     output.cat("\n")

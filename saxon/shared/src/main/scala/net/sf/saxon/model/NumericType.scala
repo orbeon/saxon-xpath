@@ -107,17 +107,17 @@ class NumericType private()
 
   def postprocess(input: CharSequence): CharSequence = input
 
-  def getName(): String = "numeric"
+  def getName: String = "numeric"
 
   def getTargetNamespace(): String = NamespaceConstant.SCHEMA
 
   def getFingerprint(): Int = StandardNames.XS_NUMERIC
 
-  def getDisplayName(): String = "xs:numeric"
+  def getDisplayName: String = "xs:numeric"
 
   def getEQName(): String = "Q(" + NamespaceConstant.SCHEMA + "}numeric"
 
-  override def getStructuredQName(): StructuredQName =
+  override def getStructuredQName: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "numeric")
 
   def isComplexType(): Boolean = false
@@ -147,7 +147,7 @@ class NumericType private()
 
   override def getDescription: String = "xs:numeric"
 
-  def getSystemId(): String = null
+  def getSystemId: String = null
 
   override def isIdType(): Boolean = false
 

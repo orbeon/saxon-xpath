@@ -129,9 +129,9 @@ abstract class TinyNodeImpl extends NodeInfo {
     ((tree.getDocumentNumber & 0x3ff).toInt << 20) ^ nodeNr ^
       (getNodeKind << 14)
 
-  def getSystemId(): String = tree.getSystemId(nodeNr)
+  def getSystemId: String = tree.getSystemId(nodeNr)
 
-  def getBaseURI(): String = getParent.getBaseURI
+  def getBaseURI: String = getParent.getBaseURI
 
   override def getLineNumber(): Int = tree.getLineNumber(nodeNr)
 
@@ -165,7 +165,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     * @return true if the implementation of this node provides fingerprints.
     * @since 9.8; previously Saxon relied on using <code>FingerprintedNode</code> as a marker interface.
     */
-  override def hasFingerprint(): Boolean = true
+  override def hasFingerprint: Boolean = true
 
   def getFingerprint(): Int = {
     val nc: Int = tree.nameCode(nodeNr)
@@ -175,7 +175,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     nc & NamePool.FP_MASK
   }
 
-  def getPrefix(): String = {
+  def getPrefix: String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
       return ""
@@ -186,7 +186,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     tree.prefixPool.getPrefix(code >> 20)
   }
 
-  def getURI(): String = {
+  def getURI: String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
       return ""
@@ -194,7 +194,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     tree.getNamePool.getURI(code & NamePool.FP_MASK)
   }
 
-  def getDisplayName(): String = {
+  def getDisplayName: String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
       return ""
@@ -206,7 +206,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     }
   }
 
-  def getLocalPart(): String = {
+  def getLocalPart: String = {
     val code: Int = tree.nameCode(nodeNr)
     if (code < 0) {
       return ""
@@ -345,7 +345,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   /*@Nullable*/
 
-  def getParent(): TinyNodeImpl = {
+  def getParent: TinyNodeImpl = {
     if (parent != null) {
       return parent
     }
@@ -364,7 +364,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   def getRoot(): NodeInfo = if (nodeNr == 0) this else tree.getRootNode
 
-  override def getConfiguration(): Configuration = tree.getConfiguration
+  override def getConfiguration: Configuration = tree.getConfiguration
 
   def getNamePool: NamePool = tree.getNamePool
 

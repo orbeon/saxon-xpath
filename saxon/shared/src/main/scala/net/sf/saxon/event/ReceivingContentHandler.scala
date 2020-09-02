@@ -50,7 +50,7 @@ object ReceivingContentHandler {
 
     var levelInEntity: Int = 0
 
-    def getSystemId(): String = saxLocator.getSystemId
+    def getSystemId: String = saxLocator.getSystemId
 
     def getPublicId(): String = saxLocator.getPublicId
 

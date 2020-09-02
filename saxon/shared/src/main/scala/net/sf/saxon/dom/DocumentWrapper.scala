@@ -84,7 +84,7 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
       }
     }
 
-  override def getUnparsedEntityNames(): Iterator[String] = docNode.synchronized {
+  override def getUnparsedEntityNames: Iterator[String] = docNode.synchronized {
     val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
     if (node.isInstanceOf[Document]) {
       val docType: DocumentType = node.asInstanceOf[Document].getDoctype

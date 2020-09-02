@@ -70,7 +70,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getController(): Controller = controller
 
-  def getConfiguration(): Configuration = controller.getConfiguration
+  def getConfiguration: Configuration = controller.getConfiguration
 
   def getNamePool(): NamePool = controller.getConfiguration.getNamePool
 

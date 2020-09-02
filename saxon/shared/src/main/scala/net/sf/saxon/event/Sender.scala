@@ -140,7 +140,7 @@ object Sender {
           }
           reuseParser = true
         }
-//System.err.println("Using parser: " + parser.getClass().getName());
+//System.err.println("Using parser: " + parser.getClass().getName);
         val sax: SAXSource = new SAXSource(parser, is)
         sax.setSystemId(lSource.getSystemId)
         sendSAXSource(sax, next, parserOptions)

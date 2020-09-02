@@ -84,7 +84,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
     /* val precedence = module.getPrecedence
      val minImportPrecedence = module.getMinImportPrecedence*/
     val pattern = new NodeTestPattern(test)
-    //pattern.setSystemId(module.getRootElement().getSystemId());
+    //pattern.setSystemId(module.getRootElement().getSystemId);
     //pattern.setLineNumber(lineNumber);
     addRule(pattern, action, 0, 0)
   }

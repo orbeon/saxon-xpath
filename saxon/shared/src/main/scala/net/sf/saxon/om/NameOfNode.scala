@@ -32,35 +32,35 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     *
     * @return the prefix. Returns the empty string if the name is unprefixed.
     */
-  def getPrefix(): String = node.getPrefix
+  def getPrefix: String = node.getPrefix
 
   /**
     * Get the namespace URI of the QName.
     *
     * @return the URI. Returns the empty string to represent the no-namespace
     */
-  def getURI(): String = node.getURI
+  def getURI: String = node.getURI
 
   /**
     * Get the local part of the QName
     *
     * @return the local part of the QName
     */
-  def getLocalPart(): String = node.getLocalPart
+  def getLocalPart: String = node.getLocalPart
 
   /**
     * Get the display name, that is the lexical QName in the form [prefix:]local-part
     *
     * @return the lexical QName
     */
-  def getDisplayName(): String = node.getDisplayName
+  def getDisplayName: String = node.getDisplayName
 
   /**
     * Get the name in the form of a StructuredQName
     *
     * @return the name in the form of a StructuredQName
     */
-  def getStructuredQName(): StructuredQName =
+  def getStructuredQName: StructuredQName =
     new StructuredQName(getPrefix, getURI, getLocalPart)
 
   /**
@@ -71,7 +71,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     */
   def hasURI(ns: String): Boolean = node.getURI == ns
 
-  def getNamespaceBinding(): NamespaceBinding =
+  def getNamespaceBinding: NamespaceBinding =
     NamespaceBinding.makeNamespaceBinding(getPrefix, getURI)
 
   /**
@@ -80,7 +80,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     * @return true if the methods getFingerprint() and getNameCode() will
     *         return a result other than -1
     */
-  def hasFingerprint(): Boolean = node.hasFingerprint
+  def hasFingerprint: Boolean = node.hasFingerprint
 
   /**
     * Get the fingerprint of this name if known. This method should not to any work to allocate
@@ -89,7 +89,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     * @return the fingerprint if known; otherwise -1
     */
   def getFingerprint(): Int =
-    if (hasFingerprint()) {
+    if (hasFingerprint) {
       node.getFingerprint
     } else {
       -1

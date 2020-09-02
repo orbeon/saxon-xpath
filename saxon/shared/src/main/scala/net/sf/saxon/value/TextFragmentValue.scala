@@ -84,7 +84,7 @@ class TextFragmentValue(config: Configuration,
 
   def isTyped: Boolean = false
 
-  def getNodeKind(): Int = Type.DOCUMENT
+  def getNodeKind: Int = Type.DOCUMENT
 
   def getStringValue: String = text.toString
 
@@ -96,7 +96,7 @@ class TextFragmentValue(config: Configuration,
       case _ => false
     }
 
-  override def hasFingerprint(): Boolean = true
+  override def hasFingerprint: Boolean = true
 
   def generateId(buffer: FastStringBuffer): Unit = {
     buffer.append("tt")
@@ -107,7 +107,7 @@ class TextFragmentValue(config: Configuration,
     documentURI = systemId
   }
 
-  def getSystemId(): String = documentURI
+  def getSystemId: String = documentURI
 
   def compareOrder(other: NodeInfo): Int = {
     if (this eq other) {
@@ -118,13 +118,13 @@ class TextFragmentValue(config: Configuration,
 
   def getFingerprint(): Int = -1
 
-  def getPrefix(): String = ""
+  def getPrefix: String = ""
 
-  def getURI(): String = ""
+  def getURI: String = ""
 
-  def getDisplayName(): String = ""
+  def getDisplayName: String = ""
 
-  def getLocalPart(): String = ""
+  def getLocalPart: String = ""
 
   def hasChildNodes: Boolean = text.length != 0
 
@@ -194,7 +194,7 @@ class TextFragmentValue(config: Configuration,
 
     }
 
-  def getParent(): NodeInfo = null
+  def getParent: NodeInfo = null
 
   def getRoot(): NodeInfo = this
 
@@ -210,13 +210,13 @@ class TextFragmentValue(config: Configuration,
 
   class TextFragmentTextNode extends NodeInfo with SourceLocator {
 
-    override def hasFingerprint(): Boolean = true
+    override def hasFingerprint: Boolean = true
 
     def getTreeInfo(): TreeInfo = treeInfo
 
     def setSystemId(systemId: String): Unit = ()
 
-    def getNodeKind(): Int = Type.TEXT
+    def getNodeKind: Int = Type.TEXT
 
     def getStringValue: String = text.toString
 
@@ -230,9 +230,9 @@ class TextFragmentValue(config: Configuration,
       buffer.append("t1")
     }
 
-    def getSystemId(): String = null
+    def getSystemId: String = null
 
-    def getBaseURI(): String = baseURI
+    def getBaseURI: String = baseURI
 
     def compareOrder(other: NodeInfo): Int = {
       if (this eq other) {
@@ -243,13 +243,13 @@ class TextFragmentValue(config: Configuration,
 
     def getFingerprint(): Int = -1
 
-    def getPrefix(): String = ""
+    def getPrefix: String = ""
 
-    def getURI(): String = ""
+    def getURI: String = ""
 
-    def getDisplayName(): String = ""
+    def getDisplayName: String = ""
 
-    def getLocalPart(): String = ""
+    def getLocalPart: String = ""
 
     def hasChildNodes: Boolean = false
 
@@ -317,7 +317,7 @@ class TextFragmentValue(config: Configuration,
 
       }
 
-    def getParent(): NodeInfo = TextFragmentValue.this
+    def getParent: NodeInfo = TextFragmentValue.this
 
     def getRoot(): NodeInfo = TextFragmentValue.this
 
