@@ -143,7 +143,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
 
   override def getUType: UType = itemTyp.getUType
 
-  override def getFingerprint(): Int = itemTyp.getFingerprint
+  override def getFingerprint: Int = itemTyp.getFingerprint
 
   override def equals(other: Any): Boolean = other match {
     case other: GeneralNodePattern => {

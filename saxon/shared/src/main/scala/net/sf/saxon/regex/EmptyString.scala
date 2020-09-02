@@ -35,7 +35,7 @@ class EmptyString private () extends UnicodeString {
 
   override def toString: String = ""
 
-  def length(): Int = 0
+  def length: Int = 0
 
   def charAt(index: Int): Char = throw new IndexOutOfBoundsException()
 

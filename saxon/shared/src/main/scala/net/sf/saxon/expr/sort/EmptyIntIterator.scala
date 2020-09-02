@@ -8,7 +8,7 @@ import EmptyIntIterator._
 
 object EmptyIntIterator {
 
-  var THE_INSTANCE: EmptyIntIterator = new EmptyIntIterator()
+  var THE_INSTANCE: EmptyIntIterator = new EmptyIntIterator
 
   /*@NotNull*/
 
@@ -19,9 +19,9 @@ object EmptyIntIterator {
 /**
  * An iterator over a zero-length sequence of integers
  */
-class EmptyIntIterator() extends IntIterator {
+class EmptyIntIterator extends IntIterator {
 
-  def hasNext(): Boolean = false
+  def hasNext: Boolean = false
 
   def next(): Integer = 0
 

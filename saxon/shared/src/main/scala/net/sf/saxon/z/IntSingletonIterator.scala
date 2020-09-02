@@ -17,7 +17,7 @@ class IntSingletonIterator(private var value: Int) extends IntIterator {
 
   var gone: Boolean = false
 
-  def hasNext(): Boolean = !gone
+  def hasNext: Boolean = !gone
 
   def next(): Integer = {
     gone = true

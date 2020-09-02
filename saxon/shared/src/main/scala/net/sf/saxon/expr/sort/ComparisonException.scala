@@ -9,7 +9,7 @@ import net.sf.saxon.trans.XPathException
 class ComparisonException(var cause: XPathException)
     extends ClassCastException {
 
-  override def getMessage(): String = cause.getMessage
+  override def getMessage: String = cause.getMessage
 
   override def getCause(): XPathException = cause
 

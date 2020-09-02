@@ -153,7 +153,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       if (s == null) {
         return
       }
-      val len: Int = s.length
+      val len = s.length
       if (len == 0) {
         return
       }
@@ -514,7 +514,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     state = Content
   }
 
-  override def usesTypeAnnotations(): Boolean = nextReceiver.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean = nextReceiver.usesTypeAnnotations
 
   def flatten(array: ArrayItem,
               locationId: Location,

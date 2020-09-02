@@ -56,7 +56,7 @@ object Err {
       return "(NULL)"
     }
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
-    val len: Int = cs.length
+    val len = cs.length
     for (i <- 0 until len) {
       val c: Char = cs.charAt(i)
       c match {

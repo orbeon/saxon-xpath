@@ -165,29 +165,29 @@ object ParserExtension {
     def evaluateVariable(context: XPathContext): Sequence =
       throw new UnsupportedOperationException()
 
-    def isGlobal(): Boolean = false
+    def isGlobal: Boolean = false
 
-    def isAssignable(): Boolean = false
+    def isAssignable: Boolean = false
 
-    def getLocalSlotNumber(): Int = 0
+    def getLocalSlotNumber: Int = 0
 
-    def getVariableQName(): StructuredQName = new StructuredQName("", "", "")
+    def getVariableQName: StructuredQName = new StructuredQName("", "", "")
 
     def addReference(ref: VariableReference,
                      isLoopingReference: Boolean): Unit = ()
 
-    def getIntegerBoundsForVariable(): Array[IntegerValue] = null
+    def getIntegerBoundsForVariable: Array[IntegerValue] = null
 
     override def setIndexedVariable(): Unit = ()
 
-    override def isIndexedVariable(): Boolean = false
+    override def isIndexedVariable: Boolean = false
 
   }
 
   def curryFunction(functionExp: Expression,
                     args: Array[Expression],
                     placeMarkers: IntSet): Expression = {
-    val ii: IntIterator = placeMarkers.iterator()
+    val ii: IntIterator = placeMarkers.iterator
     while (ii.hasNext) args(ii.next) = null
     new PartialApply(functionExp, args)
   }

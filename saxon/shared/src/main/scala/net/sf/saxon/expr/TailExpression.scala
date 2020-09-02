@@ -77,7 +77,7 @@ class TailExpression(base: Expression, var start: Int)
     if (start == 2) {
       "tail(" + getBaseExpression + ")"
     } else {
-      ExpressionTool.parenthesize(getBaseExpression) + "[position() ge " +
+      ExpressionTool.parenthesize(getBaseExpression) + "[position ge " +
         start +
         "]"
     }
@@ -86,7 +86,7 @@ class TailExpression(base: Expression, var start: Int)
     if (start == 2) {
       "tail(" + getBaseExpression.toShortString + ")"
     } else {
-      getBaseExpression.toShortString + "[position() ge " +
+      getBaseExpression.toShortString + "[position ge " +
         start +
         "]"
     }

@@ -75,12 +75,12 @@ class Optimizer( var config: Configuration) {
     val rhs: Expression = vc.getRhsExpression
     var e2: Expression = optimizePositionVsLast(lhs, rhs, vc.getOperator)
     if (e2 != null) {
-      trace("Rewrote position() ~= last()", e2)
+      trace("Rewrote position ~= last()", e2)
       return e2
     }
     e2 = optimizePositionVsLast(rhs, lhs, Token.inverse(vc.getOperator))
     if (e2 != null) {
-      trace("Rewrote last() ~= position()", e2)
+      trace("Rewrote last() ~= position", e2)
       return e2
     }
     vc

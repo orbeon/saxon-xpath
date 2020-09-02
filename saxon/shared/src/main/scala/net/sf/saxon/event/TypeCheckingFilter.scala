@@ -286,7 +286,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
     getNextOutputter.append(item)
   }
 
-  override def usesTypeAnnotations(): Boolean = true
+  override def usesTypeAnnotations: Boolean = true
 
   private def checkItemType(`type`: ItemType,
                             itemSupplier: Supplier[_ <: Item],

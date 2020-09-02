@@ -48,8 +48,8 @@ class OnEmptyExpr /**
 
   /**
     * Determine the intrinsic dependencies of an expression, that is, those which are not derived
-    * from the dependencies of its subexpressions. For example, position() has an intrinsic dependency
-    * on the context position, while (position()+1) does not. The default implementation
+    * from the dependencies of its subexpressions. For example, position has an intrinsic dependency
+    * on the context position, while (position+1) does not. The default implementation
     * of the method returns 0, indicating "no dependencies".
     *
     * @return a set of bit-significant flags identifying the "intrinsic"

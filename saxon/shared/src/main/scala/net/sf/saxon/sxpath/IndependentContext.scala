@@ -203,7 +203,7 @@ class IndependentContext(config: Configuration)
   }
 
   def iterateExternalVariables(): Iterator[XPathVariable] =
-    variables.values.iterator()
+    variables.values.iterator
 
   def getExternalVariable(qName: StructuredQName): XPathVariable =
     variables.get(qName)
@@ -233,11 +233,11 @@ class IndependentContext(config: Configuration)
     }
   }
 
-  def iteratePrefixes(): Iterator[String] =
+  def iteratePrefixes: Iterator[String] =
     if (externalResolver != null) {
-      externalResolver.iteratePrefixes()
+      externalResolver.iteratePrefixes
     } else {
-      namespaces.keySet.iterator()
+      namespaces.keySet.iterator
     }
 
   def bindVariable(qName: StructuredQName): Expression = {

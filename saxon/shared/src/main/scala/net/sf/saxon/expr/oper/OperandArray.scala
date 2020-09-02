@@ -63,8 +63,8 @@ class OperandArray extends java.lang.Iterable[Operand] {
     this.operandArray = operands
   }
 
-  override def iterator(): Iterator[Operand] =
-    Arrays.asList(operandArray: _*).iterator()
+  override def iterator: Iterator[Operand] =
+    Arrays.asList(operandArray: _*).iterator
 
   def copy(): Array[Operand] = Arrays.copyOf(operandArray, operandArray.length)
 

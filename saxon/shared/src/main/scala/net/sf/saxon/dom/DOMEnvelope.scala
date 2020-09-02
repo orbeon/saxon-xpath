@@ -101,7 +101,7 @@ class DOMEnvelope extends ExternalObjectModel {
   private def convertObjectToXPathValue(`object`: AnyRef): Sequence =
     if (`object`.isInstanceOf[NodeList]) {
       val list: NodeList = `object`.asInstanceOf[NodeList]
-      val len: Int = list.getLength
+      val len = list.getLength
       if (len == 0) {
         return null
       }

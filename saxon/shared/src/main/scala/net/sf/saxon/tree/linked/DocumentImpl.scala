@@ -187,7 +187,7 @@ class DocumentImpl
     topWithinEntityElements != null && topWithinEntityElements.contains(
       element)
 
-  override def getLineNumber(): Int = 0
+  override def getLineNumber: Int = 0
 
   def getNodeKind: Int = Type.DOCUMENT
 
@@ -195,7 +195,7 @@ class DocumentImpl
 
   override def getPreviousSibling: NodeImpl = null
 
-  override def getRoot(): NodeInfo = this
+  override def getRoot: NodeInfo = this
 
   override def getPhysicalRoot(): DocumentImpl = this
 
@@ -257,7 +257,7 @@ class DocumentImpl
         if (e.isId) {
           registerID(e, Whitespace.trim(e.getStringValueCS))
         }
-        val atts: AttributeMap = e.attributes()
+        val atts: AttributeMap = e.attributes
         for (att <- atts if att.isId &&
           NameChecker.isValidNCName(Whitespace.trim(att.getValue))) {
           registerID(e, Whitespace.trim(att.getValue))
@@ -308,9 +308,9 @@ class DocumentImpl
   def getUnparsedEntityNames: Iterator[String] =
     if (entityTable == null) {
       val ls: List[String] = Collections.emptyList()
-      ls.iterator()
+      ls.iterator
     } else {
-      entityTable.keySet.iterator()
+      entityTable.keySet.iterator
     }
 
   def getUnparsedEntity(name: String): Array[String] = {
@@ -320,7 +320,7 @@ class DocumentImpl
     entityTable.get(name)
   }
 
-  override def getSchemaType(): SchemaType =
+  override def getSchemaType: SchemaType =
     if (documentElement == null ||
       documentElement.getSchemaType == Untyped.getInstance) {
       Untyped.getInstance

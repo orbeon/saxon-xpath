@@ -263,7 +263,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   }
 
-  override def getFingerprint(): Int = {
+  override def getFingerprint: Int = {
     val fp1: Int = nodetest1.getFingerprint
     val fp2: Int = nodetest2.getFingerprint
     if (fp1 == fp2) {
@@ -295,7 +295,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   override def isNillable(): Boolean = nodetest1.isNillable && nodetest2.isNillable
 
-  override def hashCode(): Int = nodetest1.hashCode ^ nodetest2.hashCode
+  override def hashCode: Int = nodetest1.hashCode ^ nodetest2.hashCode
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[CombinedNodeTest] &&

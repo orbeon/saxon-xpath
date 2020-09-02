@@ -83,24 +83,24 @@ class EarlyEvaluationContext(private var config: Configuration)
 
   def getController(): Controller = null
 
-  def getCurrentGroupIterator(): GroupIterator = {
+  def getCurrentGroupIterator: GroupIterator = {
     notAllowed()
     null
   }
 
-  def getCurrentMergeGroupIterator(): GroupIterator = {
+  def getCurrentMergeGroupIterator: GroupIterator = {
     notAllowed()
     null
   }
 
-  def getCurrentIterator(): FocusTrackingIterator = null
+  def getCurrentIterator: FocusTrackingIterator = null
 
   def getCurrentMode(): Component.M = {
     notAllowed()
     null
   }
 
-  def getCurrentRegexIterator(): RegexIterator = null
+  def getCurrentRegexIterator: RegexIterator = null
 
   def getCurrentTemplateRule(): Rule = null
 
@@ -171,7 +171,7 @@ class EarlyEvaluationContext(private var config: Configuration)
 
   def getImplicitTimezone: Int = CalendarValue.MISSING_TIMEZONE
 
-  def iterateStackFrames(): Iterator[AnyRef] = Collections.EMPTY_LIST.iterator().asInstanceOf[Iterator[AnyRef]]
+  def iterateStackFrames(): Iterator[AnyRef] = Collections.EMPTY_LIST.iterator.asInstanceOf[Iterator[AnyRef]]
 
   def getCurrentException(): XPathException = null
 

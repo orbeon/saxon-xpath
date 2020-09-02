@@ -113,8 +113,8 @@ class TeeOutputter(private var seq1: Receiver, private var seq2: Receiver)
     seq2.close()
   }
 
-  override def usesTypeAnnotations(): Boolean =
-    seq1.usesTypeAnnotations() || seq2.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean =
+    seq1.usesTypeAnnotations || seq2.usesTypeAnnotations
 
 }
 

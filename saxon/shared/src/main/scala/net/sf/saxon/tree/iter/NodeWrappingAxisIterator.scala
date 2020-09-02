@@ -18,7 +18,7 @@ class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
   def getNodeWrappingFunction: NodeWrappingFunction[_ >: B, NodeInfo] =
     wrappingFunction
 
-  def hasNext(): Boolean = base.hasNext
+  def hasNext: Boolean = base.hasNext
 
   def next(): NodeInfo = {
     while (base.hasNext) {

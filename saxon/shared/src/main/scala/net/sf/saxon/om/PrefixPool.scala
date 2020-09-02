@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package net.sf.saxon.om
 
-import java.util.Arrays
-
-import java.util.HashMap
-
-import java.util.Map
-
-
+import java.util.{Arrays, HashMap, Map}
 
 
 /**
@@ -22,53 +22,49 @@ import java.util.Map
 class PrefixPool {
 
   var prefixes: Array[String] = new Array[String](8)
-
   var used: Int = 1
-
   var index: Map[String, Integer] = null
 
   prefixes(0) = ""
 
   def obtainPrefixCode(prefix: String): Int = {
-    if (prefix.isEmpty) return 0
-// Create an index if it's going to be useful
-    if (index == null && used > 8) {
+
+    if (prefix.isEmpty)
+      return 0
+
+    // Create an index if it's going to be useful
+    if (index == null && used > 8)
       makeIndex()
-    }
-// See if the prefix is already known
+
+    // See if the prefix is already known
     if (index != null) {
       val existing: java.lang.Integer = index.get(prefix)
-      if (existing != null) {
+      if (existing != null)
         return existing
-      }
     } else {
-      for (i <- 0 until used if prefixes(i) == prefix) {
-        i
-      }
+      for (i <- 0 until used if prefixes(i) == prefix)
+        return i
     }
-// Allocate a new code
+
+    // Allocate a new code
     val code: Int = { used += 1; used - 1 }
-    if (used >= prefixes.length) {
+    if (used >= prefixes.length)
       prefixes = Arrays.copyOf(prefixes, used * 2)
-    }
     prefixes(code) = prefix
-    if (index != null) {
+    if (index != null)
       index.put(prefix, code)
-    }
     code
   }
 
   private def makeIndex(): Unit = {
     index = new HashMap(used)
-    for (i <- 0 until used) {
+    for (i <- 0 until used)
       index.put(prefixes(i), i)
-    }
   }
 
   def getPrefix(code: Int): String = {
-    if (code < used) {
-      prefixes(code)
-    }
+    if (code < used)
+      return prefixes(code)
     throw new IllegalArgumentException("Unknown prefix code " + code)
   }
 
@@ -76,11 +72,4 @@ class PrefixPool {
     prefixes = Arrays.copyOf(prefixes, used)
     index = null
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

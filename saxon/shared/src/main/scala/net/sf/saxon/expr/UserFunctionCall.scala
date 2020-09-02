@@ -434,6 +434,6 @@ class UserFunctionCall extends FunctionCall
     super.getProperty(name)
   }
 
-  override def getObjectName(): StructuredQName = getFunctionName
+  override def getObjectName: StructuredQName = getFunctionName
 
 }

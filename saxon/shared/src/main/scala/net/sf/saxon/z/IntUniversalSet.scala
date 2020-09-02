@@ -32,7 +32,7 @@ class IntUniversalSet private() extends IntSet {
   def add(value: Int): Boolean =
     throw new UnsupportedOperationException("IntUniversalSet is immutable")
 
-  def iterator(): IntIterator =
+  def iterator: IntIterator =
     throw new UnsupportedOperationException("Cannot enumerate an infinite set")
 
   override def union(other: IntSet): IntSet = this

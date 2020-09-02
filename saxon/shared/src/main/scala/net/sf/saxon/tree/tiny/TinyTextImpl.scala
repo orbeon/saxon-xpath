@@ -24,7 +24,7 @@ object TinyTextImpl {
 
   def getStringValue(tree: TinyTree, nodeNr: Int): CharSequence = {
     val start: Int = tree.alpha(nodeNr)
-    val len: Int = tree.beta(nodeNr)
+    val len = tree.beta(nodeNr)
     tree.charBuffer.subSequence(start, start + len)
   }
 
@@ -41,7 +41,7 @@ class TinyTextImpl() extends TinyNodeImpl {
 
   override def getStringValueCS: CharSequence = {
     val start: Int = tree.alpha(nodeNr)
-    val len: Int = tree.beta(nodeNr)
+    val len = tree.beta(nodeNr)
     tree.charBuffer.subSequence(start, start + len)
   }
 

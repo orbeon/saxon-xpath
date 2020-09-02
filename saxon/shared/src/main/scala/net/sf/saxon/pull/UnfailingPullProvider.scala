@@ -20,7 +20,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def next(): Event
 
-  def current(): Event
+  def current: Event
 
   def getAttributes: AttributeMap
 
@@ -34,7 +34,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def getStringValue: CharSequence
 
-  def getSchemaType(): SchemaType
+  def getSchemaType: SchemaType
 
   def getAtomicValue(): AtomicValue
 

@@ -43,11 +43,11 @@ class BMPString /**
     *
     * @return the number of <code>char</code>s in this sequence
     */
-  def length(): Int = src.length
+  def length: Int = src.length
 
   /**
     * Returns the <code>char</code> value at the specified index.  An index ranges from zero
-    * to <tt>length() - 1</tt>.  The first <code>char</code> value of the sequence is at
+    * to <tt>length - 1</tt>.  The first <code>char</code> value of the sequence is at
     * index zero, the next at index one, and so on, as for array
     * indexing.
     * <p>If the <code>char</code> value specified by the index is a
@@ -57,7 +57,7 @@ class BMPString /**
     * @param index the index of the <code>char</code> value to be returned
     * @return the specified <code>char</code> value
     * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is negative or not less than
-    *                                   <tt>length()</tt>
+    *                                   <tt>length</tt>
     */
   def charAt(index: Int): Char = src.charAt(index)
 
@@ -73,7 +73,7 @@ class BMPString /**
     * @param end   the end index, exclusive
     * @return the specified subsequence
     * @throws IndexOutOfBoundsException if <tt>start</tt> or <tt>end</tt> are negative,
-    *                                   if <tt>end</tt> is greater than <tt>length()</tt>,
+    *                                   if <tt>end</tt> is greater than <tt>length</tt>,
     *                                   or if <tt>start</tt> is greater than <tt>end</tt>
     */
   def subSequence(start: Int, end: Int): CharSequence =

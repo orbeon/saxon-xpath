@@ -18,7 +18,7 @@ trait IntToIntMap {
 
   def put(key: Int, value: Int): Unit
 
-  def keyIterator(): IntIterator
+  def keyIterator: IntIterator
 
 }
 

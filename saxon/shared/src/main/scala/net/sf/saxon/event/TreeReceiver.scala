@@ -136,6 +136,6 @@ class TreeReceiver(@BeanProperty var nextReceiver: Receiver) extends SequenceRec
     decompose(item, locationId, copyNamespaces)
   }
 
-  override def usesTypeAnnotations(): Boolean = nextReceiver.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean = nextReceiver.usesTypeAnnotations
 
 }

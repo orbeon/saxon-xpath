@@ -58,7 +58,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
     *
     * @return <tt>true</tt> if the iterator has more elements.
     */
-  def hasNext(): Boolean = next != null
+  def hasNext: Boolean = next != null
 
   /*@Nullable*/
 
@@ -130,7 +130,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       nextVar = getMajorCaller(context)
       val csf: ContextStackFrame = next()
       if (csf == null) {
-// we can't return null, because hasNext() returned true...
+// we can't return null, because hasNext returned true...
         new ContextStackFrame.CallingApplication()
       } else {
         csf

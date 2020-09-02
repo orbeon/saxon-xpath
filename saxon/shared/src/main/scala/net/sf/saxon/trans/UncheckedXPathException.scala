@@ -9,6 +9,6 @@ class UncheckedXPathException(private var cause: XPathException)
 
   def getXPathException: XPathException = cause
 
-  override def getMessage(): String = cause.getMessage
+  override def getMessage: String = cause.getMessage
 
 }

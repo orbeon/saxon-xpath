@@ -50,7 +50,7 @@ object VirtualUntypedCopy {
 class VirtualUntypedCopy  (base: NodeInfo, root: NodeInfo)
   extends VirtualCopy(base, root) {
 
-  override def getSchemaType(): SchemaType = getNodeKind match {
+  override def getSchemaType: SchemaType = getNodeKind match {
     case Type.ELEMENT => Untyped.getInstance
     case Type.ATTRIBUTE => BuiltInAtomicType.UNTYPED_ATOMIC
     case _ => super.getSchemaType

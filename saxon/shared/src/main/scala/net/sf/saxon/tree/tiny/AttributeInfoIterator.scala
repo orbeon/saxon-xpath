@@ -22,7 +22,7 @@ class AttributeInfoIterator(private var tree: TinyTree,
 
   private var index: Int = tree.alpha(element)
 
-  override def hasNext(): Boolean =
+  override def hasNext: Boolean =
     index < tree.numberOfAttributes && tree.attParent(index) == element
 
   def next(): AttributeInfo = {

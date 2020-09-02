@@ -18,7 +18,7 @@ class SaxonApiUncheckedException(err: Throwable)
     * @return the detail message string of this <tt>Throwable</tt> instance
     *         (which may be <tt>null</tt>).
     */
-  override def getMessage(): String = getCause.getMessage
+  override def getMessage: String = getCause.getMessage
 
 }
 

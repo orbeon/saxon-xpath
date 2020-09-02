@@ -127,7 +127,7 @@ class Controller extends ContextOriginator {
 
   private var multiThreadedFocusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = _
 
-  private var focusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = (seqItr: SequenceIterator) => new FocusTrackingIterator()
+  private var focusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = (seqItr: SequenceIterator) => new FocusTrackingIterator
 
   /**
    * Create a Controller and initialise variables. Note: XSLT applications should

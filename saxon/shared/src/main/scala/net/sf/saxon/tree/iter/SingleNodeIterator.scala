@@ -13,7 +13,7 @@ object SingleNodeIterator {
 
   def makeIterator(item: NodeInfo): AxisIterator =
     if (item == null) {
-      EmptyIterator.ofNodes()
+      EmptyIterator.ofNodes
     } else {
       new SingleNodeIterator(item)
     }
@@ -31,7 +31,7 @@ class SingleNodeIterator private (value: NodeInfo)
 
   private var position: Int = 0
 
-  def hasNext(): Boolean = position == 0
+  def hasNext: Boolean = position == 0
 
   def next(): NodeInfo =
     if (position == 0) {
@@ -46,7 +46,7 @@ class SingleNodeIterator private (value: NodeInfo)
 
   def getLength: Int = 1
 
-  def getReverseIterator(): SequenceIterator = new SingleNodeIterator(item)
+  def getReverseIterator: SequenceIterator = new SingleNodeIterator(item)
 
   def getValue: NodeInfo = item
 

@@ -28,7 +28,7 @@ object IntArraySet {
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = i < limit
+    def hasNext: Boolean = i < limit
 
     def next: Integer = contents({
       i += 1;
@@ -117,7 +117,7 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
 
   def getFirst: Int = contents(0)
 
-  def iterator(): IntIterator = new IntArrayIterator(contents, contents.length)
+  def iterator: IntIterator = new IntArrayIterator(contents, contents.length)
 
   override def union(other: IntSet): IntSet = {
     if (size == 0) {
@@ -217,10 +217,10 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
           containsAll(other.asInstanceOf[IntSet])
     }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     if (hashCodeVar == -1) {
       var h = 936247625
-      val it = iterator()
+      val it = iterator
       while (it.hasNext)
         h += it.next
       return h

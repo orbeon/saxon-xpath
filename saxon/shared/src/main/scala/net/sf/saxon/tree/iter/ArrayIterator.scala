@@ -60,12 +60,12 @@ class ArrayIterator[T <: Item]( var items: Array[T])
       newEnd = currentEnd
     }
     if (newEnd <= newStart) {
-      EmptyIterator.emptyIterator()
+      EmptyIterator.emptyIterator
     }
     new ArrayIterator(items, newStart, newEnd)
   }
 
-  def hasNext(): Boolean = index < end
+  def hasNext: Boolean = index < end
 
   def next(): T = {
     if (index >= end) {

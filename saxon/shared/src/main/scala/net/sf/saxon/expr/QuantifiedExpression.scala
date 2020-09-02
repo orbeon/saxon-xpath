@@ -114,7 +114,7 @@ class QuantifiedExpression extends Assignation {
     }
     if (getSequence.isInstanceOf[Literal]) {
       val seq: GroundedValue = getSequence.asInstanceOf[Literal].getValue
-      val len: Int = seq.getLength
+      val len = seq.getLength
       if (len == 0) {
         val e2: Expression = new Literal(
           BooleanValue.get(getOperator == Token.EVERY))

@@ -135,7 +135,7 @@ class ContentHandlerProxy extends Receiver {
     this.pipe = pipe
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipe
+  def getPipelineConfiguration: PipelineConfiguration = pipe
 
   def getConfiguration: Configuration = pipe.getConfiguration
 
@@ -338,7 +338,7 @@ class ContentHandlerProxy extends Receiver {
     }
   }
 
-  override def usesTypeAnnotations(): Boolean = false
+  override def usesTypeAnnotations: Boolean = false
 
   private def setEscaping(escaping: Boolean): Unit = {
     handler.processingInstruction(if (escaping)

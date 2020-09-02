@@ -1,39 +1,31 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//import com.sun.tools.javac.util.List;
+/**
+ * ParentNodeImpl is an implementation of a non-leaf node (specifically, an Element node
+ * or a Document node)
+ *
+ * @author Michael H. Kay
+ */
+
 package net.sf.saxon.tree.linked
 
-import net.sf.saxon.event.Builder
-
-import net.sf.saxon.expr.parser.Loc
-
-import net.sf.saxon.model.Type
-
-import net.sf.saxon.om.CopyOptions
-
-import net.sf.saxon.om.NodeInfo
-
-import net.sf.saxon.pattern.AnyNodeTest
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.tree.iter.ArrayIterator
-
-import net.sf.saxon.tree.iter.AxisIterator
-
-import net.sf.saxon.tree.iter.EmptyIterator
-
-import net.sf.saxon.tree.iter.SingleNodeIterator
-
-import net.sf.saxon.tree.jiter.MonoIterator
-
-import net.sf.saxon.tree.util.FastStringBuffer
-
-import net.sf.saxon.tree.util.Navigator
-
-import java.util.Arrays
-
-import java.util.Collections
-
+import java.util.{Arrays, Collections}
 import java.util.function.Predicate
+
+import net.sf.saxon.event.Builder
+import net.sf.saxon.expr.parser.Loc
+import net.sf.saxon.model.Type
+import net.sf.saxon.om.{CopyOptions, NodeInfo}
+import net.sf.saxon.pattern.AnyNodeTest
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.tree.iter.{ArrayIterator, AxisIterator, EmptyIterator, SingleNodeIterator}
+import net.sf.saxon.tree.jiter.MonoIterator
+import net.sf.saxon.tree.util.{FastStringBuffer, Navigator}
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
@@ -47,55 +39,51 @@ abstract class ParentNodeImpl extends NodeImpl {
   // sequence number allocated during original tree creation.
   private var sequence: Int = _
 
-  override def getSequenceNumber(): Long =
+  override def getSequenceNumber: Long =
     if (getRawSequenceNumber == -1) -1L else getRawSequenceNumber.toLong << 32
 
   def getRawSequenceNumber: Int = sequence
 
-  def setRawSequenceNumber(seq: Int): Unit = {
+  def setRawSequenceNumber(seq: Int): Unit =
     sequence = seq
-  }
 
-  def setChildren(children: AnyRef): Unit = {
+  def setChildren(children: AnyRef): Unit =
     this.childrenImpl = children
-  }
 
   override def hasChildNodes: Boolean = childrenImpl != null
 
   override def children: Iterator[NodeImpl] =
     if (childrenImpl == null) {
-      Collections.emptyList().iterator().asScala
-    } else if (childrenImpl.isInstanceOf[NodeImpl]) {
-      new MonoIterator(childrenImpl.asInstanceOf[NodeImpl]).asInstanceOf[Iterator[NodeImpl]]
-    } else {
-      Arrays.asList(childrenImpl.asInstanceOf[Array[NodeImpl]]: _*).iterator().asScala
+      Collections.emptyList[NodeImpl].iterator.asScala
+    } else childrenImpl match {
+      case impl: NodeImpl =>
+        new MonoIterator(impl).asInstanceOf[Iterator[NodeImpl]]
+      case _ =>
+        Arrays.asList(childrenImpl.asInstanceOf[Array[NodeImpl]]: _*).iterator.asScala
     }
 
   def getNumberOfChildren: Int =
-    if (childrenImpl == null) {
+    if (childrenImpl == null)
       0
-    } else if (childrenImpl.isInstanceOf[NodeImpl]) {
+    else if (childrenImpl.isInstanceOf[NodeImpl])
       1
-    } else {
+    else
       childrenImpl.asInstanceOf[Array[NodeInfo]].length
-    }
 
   def iterateChildren(test: Predicate[_ >: NodeInfo]): AxisIterator =
     if (childrenImpl == null) {
-      EmptyIterator.ofNodes()
-    } else if (childrenImpl.isInstanceOf[NodeImpl]) {
-      val child: NodeImpl = childrenImpl.asInstanceOf[NodeImpl]
-      if (test == null || test == AnyNodeTest.getInstance) {
-        SingleNodeIterator.makeIterator(child)
-      } else {
-        Navigator.filteredSingleton(child, test)
-      }
-    } else {
-      if (test == null || test == AnyNodeTest.getInstance) {
-        new ArrayIterator.OfNodes(childrenImpl.asInstanceOf[Array[NodeInfo]])
-      } else {
-        new ChildEnumeration(this, test)
-      }
+      EmptyIterator.ofNodes
+    } else childrenImpl match {
+      case child: NodeImpl =>
+        if (test == null || test == AnyNodeTest.getInstance)
+          SingleNodeIterator.makeIterator(child)
+        else
+          Navigator.filteredSingleton(child, test)
+      case _ =>
+        if (test == null || test == AnyNodeTest.getInstance)
+          new ArrayIterator.OfNodes(childrenImpl.asInstanceOf[Array[NodeInfo]])
+        else
+          new ChildEnumeration(this, test)
     }
 
   /*@Nullable*/
@@ -103,20 +91,21 @@ abstract class ParentNodeImpl extends NodeImpl {
   override def getFirstChild: NodeImpl =
     if (childrenImpl == null) {
       null
-    } else if (childrenImpl.isInstanceOf[NodeImpl]) {
-      childrenImpl.asInstanceOf[NodeImpl]
-    } else {
-      childrenImpl.asInstanceOf[Array[NodeImpl]](0)
+    } else childrenImpl match {
+      case impl: NodeImpl =>
+        impl
+      case _ =>
+        childrenImpl.asInstanceOf[Array[NodeImpl]](0)
     }
 
   /*@Nullable*/
 
   override def getLastChild: NodeImpl = {
-    if (childrenImpl == null) {
+    if (childrenImpl == null)
       return null
-    }
-    if (childrenImpl.isInstanceOf[NodeImpl]) {
-      childrenImpl.asInstanceOf[NodeImpl]
+    childrenImpl match {
+      case impl: NodeImpl => return impl
+      case _ =>
     }
     val n: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
     n(n.length - 1)
@@ -128,8 +117,10 @@ abstract class ParentNodeImpl extends NodeImpl {
     if (childrenImpl == null) {
       return null
     }
-    if (childrenImpl.isInstanceOf[NodeImpl]) {
-      if (n == 0) childrenImpl.asInstanceOf[NodeImpl] else return null
+    childrenImpl match {
+      case impl: NodeImpl =>
+        if (n == 0) impl else return null
+      case _ =>
     }
     val nodes: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
     if (n < 0 || n >= nodes.length) {
@@ -148,7 +139,7 @@ abstract class ParentNodeImpl extends NodeImpl {
     }
     val nodes: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
     breakable {
-      for (i <- 0 until nodes.length if nodes(i) == child) {
+      for (i <- nodes.indices if nodes(i) == child) {
         if (nodes.length == 2) {
           childrenImpl = nodes(1 - i)
         } else {
@@ -190,11 +181,10 @@ abstract class ParentNodeImpl extends NodeImpl {
         prevText = false
       }
     }
-    if (j == c2.length) {
+    if (j == c2.length)
       c2
-    } else {
+    else
       Arrays.copyOf(c2, j)
-    }
   }
 
   def getStringValue: String = getStringValueCS.toString
@@ -204,15 +194,16 @@ abstract class ParentNodeImpl extends NodeImpl {
     var next: NodeImpl = getFirstChild
     while (next != null) {
       if (next.isInstanceOf[TextImpl]) {
-        if (sb == null) {
+        if (sb == null)
           sb = new FastStringBuffer(FastStringBuffer.C64)
-        }
         sb.cat(next.getStringValueCS)
       }
       next = next.getNextInDocument(this)
     }
-    if (sb == null) return ""
-    sb.condense()
+    if (sb == null)
+      ""
+    else
+      sb.condense()
   }
 
   def addChild(node: NodeImpl, index: Int): Unit = {
@@ -220,15 +211,15 @@ abstract class ParentNodeImpl extends NodeImpl {
       var c: Array[NodeImpl] = null
       if (childrenImpl == null) {
         c = Array.ofDim[NodeImpl](10)
-      } else if (childrenImpl.isInstanceOf[NodeImpl]) {
-        c = Array.ofDim[NodeImpl](10)
-        c(0) = childrenImpl.asInstanceOf[NodeImpl]
-      } else {
-        c = childrenImpl.asInstanceOf[Array[NodeImpl]]
+      } else childrenImpl match {
+        case impl: NodeImpl =>
+          c = Array.ofDim[NodeImpl](10)
+          c(0) = impl
+        case _ =>
+          c = childrenImpl.asInstanceOf[Array[NodeImpl]]
       }
-      if (index >= c.length) {
+      if (index >= c.length)
         c = Arrays.copyOf(c, c.length * 2)
-      }
       c(index) = node
       node.setRawParent(this)
       node.setSiblingPosition(index)
@@ -239,20 +230,18 @@ abstract class ParentNodeImpl extends NodeImpl {
   override def insertChildren(source: Array[NodeInfo],
                               atStart: Boolean,
                               inherit: Boolean): Unit = {
-    if (atStart) {
+    if (atStart)
       insertChildrenAt(source, 0, inherit)
-    } else {
+    else
       insertChildrenAt(source, getNumberOfChildren, inherit)
-    }
   }
 
   def insertChildrenAt(source: Array[NodeInfo],
                        index: Int,
                        inherit: Boolean): Unit = {
     synchronized {
-      if (source.length == 0) {
+      if (source.length == 0)
         return
-      }
       val source2: Array[NodeImpl] = adjustSuppliedNodeArray(source, inherit)
       if (childrenImpl == null) {
         if (source2.length == 1) {
@@ -261,44 +250,38 @@ abstract class ParentNodeImpl extends NodeImpl {
         } else {
           childrenImpl = cleanUpChildren(source2)
         }
-      } else if (childrenImpl.isInstanceOf[NodeImpl]) {
-        val adjacent: Int = if (index == 0) source2.length - 1 else 0
-        if (childrenImpl.isInstanceOf[TextImpl] && source2(adjacent)
-          .isInstanceOf[TextImpl]) {
-          if (index == 0) {
-            source2(adjacent).replaceStringValue(
-              source2(adjacent).getStringValue + childrenImpl
-                .asInstanceOf[TextImpl]
-                .getStringValue)
-          } else {
-            source2(adjacent).replaceStringValue(
-              childrenImpl.asInstanceOf[TextImpl].getStringValue + source2(
-                adjacent).getStringValue)
+      } else childrenImpl match {
+        case impl: NodeImpl =>
+          val adjacent: Int = if (index == 0) source2.length - 1 else 0
+          childrenImpl match {
+            case textImpl: TextImpl if source2(adjacent).isInstanceOf[TextImpl] =>
+              if (index == 0)
+                source2(adjacent).replaceStringValue(source2(adjacent).getStringValue + textImpl.getStringValue)
+              else
+                source2(adjacent).replaceStringValue(textImpl.getStringValue + source2(adjacent).getStringValue)
+              childrenImpl = cleanUpChildren(source2)
+            case _ =>
+              val n2: Array[NodeImpl] = Array.ofDim[NodeImpl](source2.length + 1)
+              if (index == 0) {
+                System.arraycopy(source2, 0, n2, 0, source2.length)
+                n2(source2.length) = impl
+              } else {
+                n2(0) = impl
+                System.arraycopy(source2, 0, n2, 1, source2.length)
+              }
+              childrenImpl = cleanUpChildren(n2)
           }
-          childrenImpl = cleanUpChildren(source2)
-        } else {
-          val n2: Array[NodeImpl] = Array.ofDim[NodeImpl](source2.length + 1)
-          if (index == 0) {
-            System.arraycopy(source2, 0, n2, 0, source2.length)
-            n2(source2.length) = childrenImpl.asInstanceOf[NodeImpl]
-          } else {
-            n2(0) = childrenImpl.asInstanceOf[NodeImpl]
-            System.arraycopy(source2, 0, n2, 1, source2.length)
-          }
+        case _ =>
+          val n0: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
+          val n2: Array[NodeImpl] = Array.ofDim[NodeImpl](n0.length + source2.length)
+          System.arraycopy(n0, 0, n2, 0, index)
+          System.arraycopy(source2, 0, n2, index, source2.length)
+          System.arraycopy(n0,
+            index,
+            n2,
+            index + source2.length,
+            n0.length - index)
           childrenImpl = cleanUpChildren(n2)
-        }
-      } else {
-        val n0: Array[NodeImpl] = childrenImpl.asInstanceOf[Array[NodeImpl]]
-        val n2: Array[NodeImpl] =
-          Array.ofDim[NodeImpl](n0.length + source2.length)
-        System.arraycopy(n0, 0, n2, 0, index)
-        System.arraycopy(source2, 0, n2, index, source2.length)
-        System.arraycopy(n0,
-          index,
-          n2,
-          index + source2.length,
-          n0.length - index)
-        childrenImpl = cleanUpChildren(n2)
       }
     }
   }
@@ -306,7 +289,7 @@ abstract class ParentNodeImpl extends NodeImpl {
   /*@NotNull*/
 
   private def convertForeignNode(source: NodeInfo): NodeImpl = {
-    if (!(source.isInstanceOf[NodeImpl])) {
+    if (! source.isInstanceOf[NodeImpl]) {
       val kind: Int = source.getNodeKind
       kind match {
         case Type.TEXT =>
@@ -318,13 +301,12 @@ abstract class ParentNodeImpl extends NodeImpl {
         case Type.ELEMENT =>
           var builder: Builder = null
           try {
-            builder = new LinkedTreeBuilder(
-              getConfiguration.makePipelineConfiguration)
+            builder = new LinkedTreeBuilder(getConfiguration.makePipelineConfiguration)
             builder.open()
             source.copy(builder, CopyOptions.ALL_NAMESPACES, Loc.NONE)
             builder.close()
           } catch {
-            case e: XPathException => throw new IllegalArgumentException(
+            case _: XPathException => throw new IllegalArgumentException(
               "Failed to convert inserted element node to an instance of net.sf.saxon.om.tree.ElementImpl");
           }
           return builder.getCurrentRoot.asInstanceOf[NodeImpl]
@@ -374,13 +356,15 @@ abstract class ParentNodeImpl extends NodeImpl {
   private def adjustSuppliedNodeArray(source: Array[NodeInfo],
                                       inherit: Boolean): Array[NodeImpl] = {
     val source2: Array[NodeImpl] = Array.ofDim[NodeImpl](source.length)
-    for (i <- 0 until source.length) {
+    for (i <- source.indices) {
       source2(i) = convertForeignNode(source(i))
       val child: NodeImpl = source2(i)
       child.setRawParent(this)
-      if (child.isInstanceOf[ElementImpl]) {
-        // from the new parent
-        child.asInstanceOf[ElementImpl].fixupInsertedNamespaces(inherit)
+      child match {
+        case impl: ElementImpl =>
+          // from the new parent
+          impl.fixupInsertedNamespaces(inherit)
+        case _ =>
       }
       // If the child has no xmlns="xxx" declaration, then add an xmlns="" to prevent false inheritance
       // If the child has no xmlns="xxx" declaration, then add an xmlns="" to prevent false inheritance
@@ -393,26 +377,14 @@ abstract class ParentNodeImpl extends NodeImpl {
       if (size == 0) {
         childrenImpl = null
       } else if (size == 1) {
-        if (childrenImpl.isInstanceOf[Array[NodeImpl]]) {
-          childrenImpl = childrenImpl.asInstanceOf[Array[NodeImpl]](0)
+        childrenImpl match {
+          case impls: Array[NodeImpl] =>
+            childrenImpl = impls(0)
+          case _ =>
         }
       } else {
         childrenImpl = Arrays.copyOf(childrenImpl.asInstanceOf[Array[NodeImpl]], size)
       }
     }
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//import com.sun.tools.javac.util.List;
-/**
- * ParentNodeImpl is an implementation of a non-leaf node (specifically, an Element node
- * or a Document node)
- *
- * @author Michael H. Kay
- */

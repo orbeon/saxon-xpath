@@ -102,7 +102,7 @@ object AnyType extends Enumeration {
 
     def isMixedContent(): Boolean = true
 
-    def getFingerprint(): Int = StandardNames.XS_ANY_TYPE
+    def getFingerprint: Int = StandardNames.XS_ANY_TYPE
 
     /**
       * Get the name of the type as a StructuredQName

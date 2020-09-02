@@ -118,7 +118,7 @@ class LocalNameTest(pool: NamePool,
 
   }
 
-  override def hashCode(): Int = nodeKind << 20 ^ localName.hashCode
+  override def hashCode: Int = nodeKind << 20 ^ localName.hashCode
 
   /**
     * Indicates whether some other object is "equal to" this one.

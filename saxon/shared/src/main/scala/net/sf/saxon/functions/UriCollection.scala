@@ -48,7 +48,7 @@ class UriCollection extends SystemFunction {
       throw err
     }
     val sources: Iterator[String] = rCollection.getResourceURIs(context)
-    new SequenceIterator() {
+    new SequenceIterator {
       def next(): AnyURIValue =
         if (sources.hasNext) {
           new AnyURIValue(sources.next())

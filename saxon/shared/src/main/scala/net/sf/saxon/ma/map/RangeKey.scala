@@ -64,7 +64,7 @@ class RangeKey
 
   def isEmpty: Boolean = keys.next() == null
 
-  def keys(): AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator()
+  def keys(): AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator
 
   def keyValuePairs(): java.lang.Iterable[KeyValuePair] =
     () =>
@@ -73,7 +73,7 @@ class RangeKey
 
         var nextVal: AtomicValue = keyAtItr.next()
 
-        def hasNext(): Boolean = nextVal != null
+        def hasNext: Boolean = nextVal != null
 
         def next(): KeyValuePair =
           if (nextVal == null) {

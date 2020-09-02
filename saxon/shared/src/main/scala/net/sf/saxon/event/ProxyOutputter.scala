@@ -285,7 +285,7 @@ class ProxyOutputter(private var next: Outputter) extends Outputter {
     * may supply untyped nodes instead of supplying the type annotation (or conversely, it may
     * avoid stripping unwanted type annotations)
     */
-  override def usesTypeAnnotations(): Boolean = next.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean = next.usesTypeAnnotations
 
 }
 

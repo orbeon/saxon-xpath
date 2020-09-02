@@ -105,7 +105,7 @@ object Int64Value {
         compareTo(o.asInstanceOf) == 0
       }
 
-    override def hashCode(): Int = asLong().toInt
+    override def hashCode: Int = asLong().toInt
 
   }
 
@@ -188,7 +188,7 @@ class Int64Value extends IntegerValue {
 
   def getSchemaComparable(): Comparable[AnyRef] = new Int64Comparable(this)
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE) {
       value.toInt
     } else {

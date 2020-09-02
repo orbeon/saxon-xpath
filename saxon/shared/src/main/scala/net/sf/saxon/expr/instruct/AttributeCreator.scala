@@ -64,7 +64,7 @@ abstract class AttributeCreator
 
   /*@Nullable*/
 
-  def getSchemaType(): SimpleType = schemaType
+  def getSchemaType: SimpleType = schemaType
 
   def setRejectDuplicates(): Unit = {
     options |= ReceiverOption.REJECT_DUPLICATES

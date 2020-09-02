@@ -496,7 +496,7 @@ object PJConverter {
 
   object ToSequenceIterator {
 
-    val INSTANCE: ToSequenceIterator = new ToSequenceIterator()
+    val INSTANCE: ToSequenceIterator = new ToSequenceIterator
 
   }
 

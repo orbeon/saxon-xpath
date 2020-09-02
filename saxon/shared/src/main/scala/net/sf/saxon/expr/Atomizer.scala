@@ -113,7 +113,7 @@ object Atomizer {
     if (properties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       val count: Int = base.asInstanceOf[LastPositionFinder].getLength
       if (count == 0) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       } else if (count == 1) {
         val first: Item = base.next()
         first.atomize().iterate()

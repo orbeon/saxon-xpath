@@ -38,7 +38,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
 
   override def getProperty(name: String): AnyRef = properties.get(name).asInstanceOf[AnyRef]
 
-  override def getProperties: collection.Iterator[String] = properties.keySet.iterator().asScala
+  override def getProperties: collection.Iterator[String] = properties.keySet.iterator.asScala
 
   override def getExpressionName: String = "trace"
 

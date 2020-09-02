@@ -30,7 +30,7 @@ class TinyProcInstImpl() extends TinyNodeImpl {
 
   def getStringValue: String = {
     val start: Int = tree.alpha(nodeNr)
-    val len: Int = tree.beta(nodeNr)
+    val len = tree.beta(nodeNr)
     if (len == 0) {
 // need to special-case this for the Microsoft JVM
       return ""

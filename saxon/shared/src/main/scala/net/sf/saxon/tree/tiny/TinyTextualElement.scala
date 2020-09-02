@@ -51,7 +51,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
   override def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] =
     NamespaceBinding.EMPTY_ARRAY
 
-  override def getAllNamespaces(): NamespaceMap = {
+  override def getAllNamespaces: NamespaceMap = {
     val parent: TinyNodeImpl = getParent
     if (parent.isInstanceOf[TinyElementImpl]) {
       parent.getAllNamespaces
@@ -117,7 +117,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
     TinyTextImpl.getStringValue(tree, nodeNr).toString
 
   override def iterateAxis(axisNumber: Int): AxisIterator = axisNumber match {
-    case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes()
+    case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes
     case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
       SingleNodeIterator.makeIterator(getTextNode)
     case AxisInfo.DESCENDANT_OR_SELF =>
@@ -132,7 +132,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
   override def iterateAxis(axisNumber: Int,
                            nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
     axisNumber match {
-      case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes()
+      case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes
       case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
         Navigator.filteredSingleton(getTextNode, nodeTest)
       case AxisInfo.DESCENDANT_OR_SELF =>
@@ -154,7 +154,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     override def hasFingerprint: Boolean = true
 
-    def getTreeInfo(): TreeInfo = TinyTextualElement.this.getTreeInfo
+    def getTreeInfo: TreeInfo = TinyTextualElement.this.getTreeInfo
 
     def setSystemId(systemId: String): Unit = ()
 
@@ -189,7 +189,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
         getParent.compareOrder(other)
       }
 
-    def getFingerprint(): Int = -1
+    def getFingerprint: Int = -1
 
     def getPrefix: String = ""
 
@@ -203,7 +203,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getAttributeValue(uri: String, local: String): String = null
 
-    override def getLineNumber(): Int = getParent.getLineNumber
+    override def getLineNumber: Int = getParent.getLineNumber
 
     private var isNewline: IntPredicate = new IntValuePredicate(10)
 
@@ -211,12 +211,12 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def saveLocation(): Location = this
 
-    override def getSchemaType(): SchemaType = null
+    override def getSchemaType: SchemaType = null
 
     def getDeclaredNamespaces(
                                buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
-    override def getAllNamespaces(): NamespaceMap = null
+    override def getAllNamespaces: NamespaceMap = null
 
     def atomize(): AtomicSequence = new UntypedAtomicValue(getStringValueCS)
 
@@ -236,7 +236,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
       case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
            AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE |
            AxisInfo.PRECEDING_SIBLING =>
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       case AxisInfo.SELF | AxisInfo.DESCENDANT_OR_SELF =>
         SingleNodeIterator.makeIterator(this)
       case _ =>
@@ -271,7 +271,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
         case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
              AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE |
              AxisInfo.PRECEDING_SIBLING =>
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         case AxisInfo.SELF | AxisInfo.DESCENDANT_OR_SELF =>
           Navigator.filteredSingleton(this, nodeTest)
         case _ =>
@@ -282,7 +282,7 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
     def getParent: NodeInfo = TinyTextualElement.this
 
-    def getRoot(): NodeInfo = getParent.getRoot
+    def getRoot: NodeInfo = getParent.getRoot
 
     override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
       out.characters(getStringValueCS, locationId, ReceiverOption.NONE)

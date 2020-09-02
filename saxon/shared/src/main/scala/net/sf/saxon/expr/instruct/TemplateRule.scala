@@ -112,7 +112,7 @@ class TemplateRule
 
   def getChildExpression(): Expression = body
 
-  def getLocation(): Location = this
+  def getLocation: Location = this
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
     consumer.accept("match", getMatchPattern.toShortString)
@@ -154,7 +154,7 @@ class TemplateRule
 
   def getContainerGranularity: Int = 0
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   def getColumnNumber(): Int = -1
 
@@ -299,7 +299,7 @@ class TemplateRule
     this.body = expr
   }
 
-  override def getObjectName(): StructuredQName = null
+  override def getObjectName: StructuredQName = null
 
   override def getTracingTag(): String = "xsl:template"
 

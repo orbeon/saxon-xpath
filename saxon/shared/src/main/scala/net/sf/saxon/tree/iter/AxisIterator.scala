@@ -1,39 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.tree.iter
-
-import net.sf.saxon.om.NodeInfo
-
-import java.util.function.Consumer
-
-
-
-
-trait AxisIterator extends UnfailingIterator {
-
-  def next(): NodeInfo
-
-  def asIterator(): Iterator[NodeInfo] = new Iterator[NodeInfo]() {
-    var nextVar: NodeInfo = AxisIterator.this.next()
-
-    override def hasNext(): Boolean = nextVar != null
-
-    override def next(): NodeInfo = {
-      val curr: NodeInfo = nextVar
-      nextVar = AxisIterator.this.next()
-      curr
-    }
-  }
-
-  def forEachNode(consumer: Consumer[_ >: NodeInfo]): Unit = {
-    var item: NodeInfo = null
-    while (({
-      item = next()
-      item
-    }) != null) consumer.accept(item)
-  }
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -46,3 +11,37 @@ trait AxisIterator extends UnfailingIterator {
   * some cases, such as PrependIterator, where this is the responsibility of the
   * user of the class and is not enforced.)
   */
+
+package net.sf.saxon.tree.iter
+
+import java.util.function.Consumer
+
+import net.sf.saxon.om.NodeInfo
+
+
+trait AxisIterator extends UnfailingIterator {
+
+  def next(): NodeInfo
+
+  def asiterator: Iterator[NodeInfo] = new Iterator[NodeInfo]() {
+    var nextVar: NodeInfo = AxisIterator.this.next()
+
+    def hasNext: Boolean = nextVar != null
+
+    def next(): NodeInfo = {
+      val curr = nextVar
+      nextVar = AxisIterator.this.next()
+      curr
+    }
+  }
+
+  def forEachNode(consumer: Consumer[_ >: NodeInfo]): Unit = {
+    var item: NodeInfo = null
+    while ({
+      item = next()
+      item
+    } != null)
+      consumer.accept(item)
+  }
+}
+

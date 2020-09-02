@@ -157,18 +157,18 @@ class GroupByIterator
 
   def getCurrentGroup: List[_] = groups.get(position - 1)
 
-  def hasNext(): Boolean = position < groups.size
+  def hasNext: Boolean = position < groups.size
 
   def next(): Item =
     if (position >= 0 && position < groups.size) {
       position += 1
-      current()
+      current
     } else {
       position = -1
       null
     }
 
-  private def current(): Item = {
+  private def current: Item = {
     if (position < 1) {
       return null
     }

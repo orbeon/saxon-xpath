@@ -81,7 +81,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     * @return the TreeInfo
     * @since 9.7
     */
-  def getTreeInfo(): TreeInfo = tree
+  def getTreeInfo: TreeInfo = tree
 
   override def head: NodeInfo = this
 
@@ -99,7 +99,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     *         xs:anyType if it has.
     * @since 9.4
     */
-  override def getSchemaType(): SchemaType = null
+  override def getSchemaType: SchemaType = null
 
   override def getColumnNumber(): Int = tree.getColumnNumber(nodeNr)
 
@@ -125,7 +125,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     ((tree.getDocumentNumber & 0x3ff).toInt << 20) ^ nodeNr ^
       (getNodeKind << 14)
 
@@ -133,7 +133,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   def getBaseURI: String = getParent.getBaseURI
 
-  override def getLineNumber(): Int = tree.getLineNumber(nodeNr)
+  override def getLineNumber: Int = tree.getLineNumber(nodeNr)
 
   /**
     * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
@@ -159,7 +159,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     * node in the NamePool. If the answer is true, then the {@link #getFingerprint} method must
     * return the fingerprint of the node. If the answer is false, then the {@link #getFingerprint}
     * method should throw an {@code UnsupportedOperationException}. In the case of unnamed nodes
-    * such as text nodes, the result can be either true (in which case getFingerprint() should
+    * such as text nodes, the result can be either true (in which case getFingerprint should
     * return -1) or false (in which case getFingerprint may throw an exception).
     *
     * @return true if the implementation of this node provides fingerprints.
@@ -167,7 +167,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     */
   override def hasFingerprint: Boolean = true
 
-  def getFingerprint(): Int = {
+  def getFingerprint: Int = {
     val nc: Int = tree.nameCode(nodeNr)
     if (nc == -1) {
       return -1
@@ -219,7 +219,7 @@ abstract class TinyNodeImpl extends NodeInfo {
       if (hasChildNodes) {
         new SiblingIterator(tree, this, null, true)
       } else {
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       }
     } else {
       iterateAxis(axisNumber, AnyNodeTest.getInstance)
@@ -241,10 +241,10 @@ abstract class TinyNodeImpl extends NodeInfo {
           }
         case AxisInfo.ATTRIBUTE =>
           if (`type` != Type.ELEMENT) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
           if (tree.alpha(nodeNr) < 0) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
           new AttributeIterator(tree, nodeNr, nodeTest)
         case AxisInfo.CHILD =>
@@ -257,7 +257,7 @@ abstract class TinyNodeImpl extends NodeInfo {
               new SiblingIterator(tree, this, nodeTest, true)
             }
           } else {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
         case AxisInfo.DESCENDANT =>
           if (`type` == Type.DOCUMENT && nodeTest.isInstanceOf[NameTest] &&
@@ -272,7 +272,7 @@ abstract class TinyNodeImpl extends NodeInfo {
               new DescendantIteratorSansText(tree, this, nodeTest)
             }
           } else {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
         case AxisInfo.DESCENDANT_OR_SELF =>
           var descendants: AxisIterator =
@@ -286,20 +286,20 @@ abstract class TinyNodeImpl extends NodeInfo {
           if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE) {
             new FollowingIterator(tree, getParent, nodeTest, true)
           } else if (tree.depth(nodeNr) == 0) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           } else {
             new FollowingIterator(tree, this, nodeTest, false)
           }
         case AxisInfo.FOLLOWING_SIBLING =>
           if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE ||
             tree.depth(nodeNr) == 0) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           } else {
             new SiblingIterator(tree, this, nodeTest, false)
           }
         case AxisInfo.NAMESPACE =>
           if (`type` != Type.ELEMENT) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
           NamespaceNode.makeIterator(this, nodeTest)
         case AxisInfo.PARENT =>
@@ -309,21 +309,21 @@ abstract class TinyNodeImpl extends NodeInfo {
           if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE) {
             new PrecedingIterator(tree, getParent, nodeTest, false)
           } else if (tree.depth(nodeNr) == 0) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           } else {
             new PrecedingIterator(tree, this, nodeTest, false)
           }
         case AxisInfo.PRECEDING_SIBLING =>
           if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE ||
             tree.depth(nodeNr) == 0) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           } else {
             new PrecedingSiblingIterator(tree, this, nodeTest)
           }
         case AxisInfo.SELF => Navigator.filteredSingleton(this, nodeTest)
         case AxisInfo.PRECEDING_OR_ANCESTOR =>
           if (`type` == Type.DOCUMENT) {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           } else if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE) {
             val el: TinyNodeImpl = getParent
             new PrependAxisIterator(
@@ -362,7 +362,7 @@ abstract class TinyNodeImpl extends NodeInfo {
 
   def getAttributeValue(uri: String, local: String): String = null
 
-  def getRoot(): NodeInfo = if (nodeNr == 0) this else tree.getRootNode
+  def getRoot: NodeInfo = if (nodeNr == 0) this else tree.getRootNode
 
   override def getConfiguration: Configuration = tree.getConfiguration
 
@@ -383,7 +383,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     *
     * @return the in-scope namespaces for an element, or null for any other kind of node.
     */
-  override def getAllNamespaces(): NamespaceMap = null
+  override def getAllNamespaces: NamespaceMap = null
 
   def generateId(buffer: FastStringBuffer): Unit = {
     buffer.append("d")
@@ -435,7 +435,7 @@ abstract class TinyNodeImpl extends NodeInfo {
     false
   }
 
-  override def isId(): Boolean = false
+  override def isId: Boolean = false
 
   override def isIdref(): Boolean = false
 

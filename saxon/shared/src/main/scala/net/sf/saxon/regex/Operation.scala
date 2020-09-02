@@ -103,14 +103,14 @@ object Operation {
       this
     }
 
-    override def iterateMatches(matcher: REMatcher, position: Int): IntIterator = new IntIterator() {
-      var branchIter: Iterator[Operation] = branches.iterator()
+    override def iterateMatches(matcher: REMatcher, position: Int): IntIterator = new IntIterator {
+      var branchIter: Iterator[Operation] = branches.iterator
 
       var currentIter: IntIterator = null
 
       var currentOp: Operation = null
 
-      def hasNext(): Boolean = {
+      def hasNext: Boolean = {
         while (true) {
           if (currentIter == null) {
             if (branchIter.hasNext) {
@@ -284,7 +284,7 @@ object Operation {
       val savedState: REMatcher.State =
         if (containsCapturingExpressions()) matcher.captureState else null
       val backtrackingLimit: Int = matcher.getProgram.getBacktrackingLimit
-      new IntIterator() {
+      new IntIterator {
         private var primed: Boolean = false
 
         private var nextPos: Int = _
@@ -322,7 +322,7 @@ object Operation {
           -1
         }
 
-        def hasNext(): Boolean = {
+        def hasNext: Boolean = {
           if (!primed) {
             iterators.push(operations.get(0).iterateMatches(matcher, position))
             primed = true
@@ -610,7 +610,7 @@ object Operation {
             }
           }
         }
-        val base: IntIterator = new IntIterator() {
+        val base: IntIterator = new IntIterator {
           var primed: Boolean = true
 
           private def advance(): Unit = {
@@ -637,7 +637,7 @@ object Operation {
             }
           }
 
-          def hasNext(): Boolean =
+          def hasNext: Boolean =
             if (primed && iterators.size >= min) {
               !iterators.isEmpty
             } else if (iterators.isEmpty) {
@@ -654,7 +654,7 @@ object Operation {
         }
         new ForceProgressIterator(base)
       } else {
-        val iter: IntIterator = new IntIterator() {
+        val iter: IntIterator = new IntIterator {
           private var pos: Int = position
 
           private var counter: Int = 0
@@ -678,7 +678,7 @@ object Operation {
             }
           }
 
-          def hasNext(): Boolean = {
+          def hasNext: Boolean = {
             do advance() while (counter < min && pos >= 0);
             pos >= 0
           }
@@ -727,14 +727,14 @@ object Operation {
 
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator =
-      new IntIterator() {
+      new IntIterator {
         private var pos: Int = position
 
         private var count: Int = 0
 
         private var started: Boolean = false
 
-        def hasNext(): Boolean = {
+        def hasNext: Boolean = {
           if (!started) {
             started = true
             while (count < min) {
@@ -863,8 +863,8 @@ object Operation {
         matcher.startBackref(groupNr) = position
       }
       val base: IntIterator = childOp.iterateMatches(matcher, position)
-      new IntIterator() {
-        def hasNext(): Boolean = base.hasNext
+      new IntIterator {
+        def hasNext: Boolean = base.hasNext
 
         def next(): Integer = {
           val next: Int = base.next
@@ -967,10 +967,10 @@ object Operation {
           iterName +
           " " +
           iterNr)
-      new IntIterator() {
-        def hasNext(): Boolean = {
+      new IntIterator {
+        def hasNext: Boolean = {
           val b: Boolean = baseIter.hasNext
-          System.err.println("IntIterator " + iterNr + " hasNext() = " + b)
+          System.err.println("IntIterator " + iterNr + " hasNext = " + b)
           b
         }
 
@@ -1002,7 +1002,7 @@ object Operation {
 
     var currentPos: Int = -1
 
-    def hasNext(): Boolean = countZeroLength <= 3 && base.hasNext
+    def hasNext: Boolean = countZeroLength <= 3 && base.hasNext
 
     def next(): Integer = {
       val p: Int = base.next

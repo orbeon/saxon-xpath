@@ -13,20 +13,15 @@ import org.w3c.dom._
 class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends GenericTreeInfo(config) {
 
   var domLevel3: Boolean = true
-
   val docNode: Node = doc
 
   private var idIndex: Map[String, NodeInfo] = null
 
-  if (doc.getNodeType != Node.DOCUMENT_NODE && doc.getNodeType != Node.DOCUMENT_FRAGMENT_NODE) {
-    throw new IllegalArgumentException(
-      "Node must be a DOM Document or DocumentFragment")
-  }
+  if (doc.getNodeType != Node.DOCUMENT_NODE && doc.getNodeType != Node.DOCUMENT_FRAGMENT_NODE)
+    throw new IllegalArgumentException("Node must be a DOM Document or DocumentFragment")
 
-  if (config.getExternalObjectModel(doc.getClass) == null) {
-    throw new IllegalArgumentException(
-      "Node class " + doc.getClass.getName + " is not recognized in this Saxon configuration")
-  }
+  if (config.getExternalObjectModel(doc.getClass) == null)
+    throw new IllegalArgumentException("Node class " + doc.getClass.getName + " is not recognized in this Saxon configuration")
 
   this.setRootNode(wrap(doc))
 
@@ -34,12 +29,11 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
 
   def wrap(node: Node): DOMNodeWrapper = DOMNodeWrapper.makeWrapper(node, this)
 
-  def setDOMLevel(level: Int): Unit = {
-    if (!(level == 2 || level == 3)) {
+  def setDOMLevel(level: Int): Unit =
+    if (! (level == 2 || level == 3))
       throw new IllegalArgumentException("DOM Level must be 2 or 3")
-    }
-    domLevel3 = level == 3
-  }
+    else
+      domLevel3 = level == 3
 
   def getDOMLevel: Int = if (domLevel3) 3 else 2
 
@@ -49,9 +43,8 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
       node match {
         case document: Document =>
           val el = document.getElementById(id)
-          if (el != null) {
+          if (el != null)
             return wrap(el)
-          }
         case _ =>
       }
       if (idIndex != null) {
@@ -77,22 +70,18 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
     node match {
       case document: Document =>
         val docType = document.getDoctype
-        if (docType == null) {
-          val ls: util.List[String] = Collections.emptyList()
-          ls.iterator()
-        }
+        if (docType == null)
+          return Collections.emptyList[String]().iterator
         val map = docType.getEntities
-        if (map == null) {
-          val ls: util.List[String] = Collections.emptyList()
-          ls.iterator()
-        }
+        if (map == null)
+          return Collections.emptyList[String]().iterator
         val names = new util.ArrayList[String](map.getLength)
         for (i <- 0 until map.getLength) {
           val e = map.item(i).asInstanceOf[Entity]
           if (e.getNotationName != null)
             names.add(e.getLocalName)
         }
-        names.iterator()
+        names.iterator
       case _ =>
         null
     }

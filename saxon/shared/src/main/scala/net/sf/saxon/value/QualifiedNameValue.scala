@@ -85,7 +85,7 @@ abstract class QualifiedNameValue extends AtomicValue with AtomicMatchKey {
                          implicitTimezone: Int): AtomicMatchKey =
     if (ordered) null else this
 
-  override def hashCode(): Int = qName.hashCode
+  override def hashCode: Int = qName.hashCode
 
   override def isIdentical(v: AtomicValue): Boolean =
     super.isIdentical(v) &&

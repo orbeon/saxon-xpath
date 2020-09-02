@@ -83,7 +83,7 @@ abstract class NodeTest
 
   def getContentType: SchemaType = {
     val m: Set[PrimitiveUType.PrimitiveUType] = getUType.decompose()
-    val it: Iterator[PrimitiveUType.PrimitiveUType] = m.iterator()
+    val it: Iterator[PrimitiveUType.PrimitiveUType] = m.iterator
     if (m.size == 1 && it.hasNext) {
       val p: PrimitiveUType.PrimitiveUType = it.next()
       p match {

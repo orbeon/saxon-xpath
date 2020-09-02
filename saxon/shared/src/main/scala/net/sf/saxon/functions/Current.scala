@@ -38,7 +38,7 @@ class Current extends SystemFunction {
     */
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     throw new XPathException(
-      "Dynamic evaluation of the current() function is not supported",
+      "Dynamic evaluation of the current function is not supported",
       "XTDE1360")
 
 }
@@ -49,5 +49,5 @@ class Current extends SystemFunction {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * Implement the XSLT current() function
+  * Implement the XSLT current function
   */

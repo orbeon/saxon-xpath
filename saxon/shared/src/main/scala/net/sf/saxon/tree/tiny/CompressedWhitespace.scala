@@ -72,7 +72,7 @@ object CompressedWhitespace {
           break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-        val len: Int = b & 0x3f
+        val len = b & 0x3f
         buffer.ensureCapacity(len)
         for (j <- 0 until len) {
           buffer.cat(c)
@@ -97,7 +97,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
 
   def getCompressedValue: Long = value
 
-  def length(): Int = {
+  def length: Int = {
     var count: Int = 0
     val `val`: Long = value
     var s: Int = 56
@@ -144,7 +144,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     uncompress(null) == obj
   }
 
-  override def hashCode(): Int = uncompress(null).hashCode
+  override def hashCode: Int = uncompress(null).hashCode
 
   override def toString: String = uncompress(null).toString
 
@@ -158,7 +158,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
           break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-        val len: Int = b & 0x3f
+        val len = b & 0x3f
         for (j <- 0 until len) {
           writer.write(c)
         }
@@ -177,7 +177,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
           break()
         }
         val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
-        val len: Int = b & 0x3f
+        val len = b & 0x3f
         if (specialChars(c)) {
           var e: String = ""
           if (c == '\n') {

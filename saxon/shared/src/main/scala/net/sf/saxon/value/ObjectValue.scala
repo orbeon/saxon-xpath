@@ -35,7 +35,7 @@ class ObjectValue[T](obj: T) extends ExternalObject[T] {
     case _ => false
   }
 
-  override def hashCode(): Int = value.hashCode
+  override def hashCode: Int = value.hashCode
 
   override def toShortString: String = {
     val v: String = value.toString

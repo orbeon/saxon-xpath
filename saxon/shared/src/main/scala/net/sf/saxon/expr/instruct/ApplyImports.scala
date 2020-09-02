@@ -60,7 +60,7 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     if (modeComponent == null) {
       throw new AssertionError("Current mode is null")
     }
-    val currentItem: Item = context.getCurrentIterator.current()
+    val currentItem: Item = context.getCurrentIterator.current
     val mode: Mode = modeComponent.getActor
     val rule: Rule = mode.getRule(currentItem, min, max, context)
     if (rule == null) {

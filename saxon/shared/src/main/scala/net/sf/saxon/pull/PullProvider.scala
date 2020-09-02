@@ -57,7 +57,7 @@ trait PullProvider {
 
   def next(): Event
 
-  def current(): Event
+  def current: Event
 
   def getAttributes: AttributeMap
 

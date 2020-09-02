@@ -234,7 +234,7 @@ class IntRangeSet extends IntSet {
     used = n
   }
 
-  def iterator(): IntIterator = new IntRangeSetIterator()
+  def iterator: IntIterator = new IntRangeSetIterator
 
   override def toString: String = {
     val sb: FastStringBuffer = new FastStringBuffer(used * 8)
@@ -260,7 +260,7 @@ class IntRangeSet extends IntSet {
 
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     // Note, hashcodes are NOT the same as those used by IntHashSet and IntArraySet
     if (hashCodeVar == -1) {
       var h: Int = 0x836a89f1
@@ -325,7 +325,7 @@ class IntRangeSet extends IntSet {
 
     private var current: Int = java.lang.Integer.MIN_VALUE
 
-    def hasNext(): Boolean =
+    def hasNext: Boolean =
       if (i < 0) {
         size > 0
       } else {

@@ -116,7 +116,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
 
   override def toString: String = "(" + start + " to " + end + ")"
 
-  def iterator(): Iterator[AtomicValue] = new Iterator[AtomicValue]() {
+  def iterator: Iterator[AtomicValue] = new Iterator[AtomicValue]() {
     var current: Long = start
 
     /**
@@ -126,7 +126,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
      *
      * @return <tt>true</tt> if the iterator has more elements.
      */
-    def hasNext(): Boolean = current <= end
+    def hasNext: Boolean = current <= end
 
     /**
      * Removes from the underlying collection the last element returned by the

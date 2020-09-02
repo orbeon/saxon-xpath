@@ -63,7 +63,7 @@ object Untyped extends Enumeration {
 
     def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
 
-    def getFingerprint(): Int = StandardNames.XS_UNTYPED
+    def getFingerprint: Int = StandardNames.XS_UNTYPED
 
     /*@NotNull*/
 

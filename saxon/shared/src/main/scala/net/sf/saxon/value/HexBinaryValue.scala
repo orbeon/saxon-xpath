@@ -123,7 +123,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
 
     }
 
-    override def hashCode(): Int = HexBinaryValue.this.hashCode
+    override def hashCode: Int = HexBinaryValue.this.hashCode
 
   }
 
@@ -137,7 +137,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     Base64BinaryValue.byteArrayHashCode(binaryValue)
 
   def compareTo(o: AnyRef): Int = {

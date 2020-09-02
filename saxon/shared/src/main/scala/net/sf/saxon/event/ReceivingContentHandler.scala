@@ -52,9 +52,9 @@ object ReceivingContentHandler {
 
     def getSystemId: String = saxLocator.getSystemId
 
-    def getPublicId(): String = saxLocator.getPublicId
+    def getPublicId: String = saxLocator.getPublicId
 
-    def getLineNumber(): Int = saxLocator.getLineNumber
+    def getLineNumber: Int = saxLocator.getLineNumber
 
     def getColumnNumber(): Int = saxLocator.getColumnNumber
 

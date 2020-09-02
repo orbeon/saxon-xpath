@@ -318,9 +318,9 @@ class XQueryFunction extends Declaration with Location {
 
   def getSystemId: String = location.getSystemId
 
-  def getLineNumber(): Int = location.getLineNumber
+  def getLineNumber: Int = location.getLineNumber
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   def getColumnNumber(): Int = -1
 

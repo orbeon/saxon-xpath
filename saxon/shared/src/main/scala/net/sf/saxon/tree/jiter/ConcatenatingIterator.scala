@@ -15,7 +15,7 @@ class ConcatenatingIterator[E](var first: collection.Iterator[_ <: E],
 
   var active: collection.Iterator[_ <: E] = first
 
-  override def hasNext(): Boolean =
+  override def hasNext: Boolean =
     if (active.hasNext) {
       true
     } else if (active == first) {

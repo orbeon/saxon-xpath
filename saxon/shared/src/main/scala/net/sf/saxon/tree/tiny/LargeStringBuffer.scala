@@ -47,7 +47,7 @@ class LargeStringBuffer extends AppendableCharSequence {
       lS.asInstanceOf[CompressedWhitespace].uncompress(fsb)
       cat(fsb)
     }
-    val len: Int = lS.length
+    val len = lS.length
     var firstSeg: Array[Char] = null
     val firstSegOffset: Int = length & MASK
     if (firstSegOffset == 0) {
@@ -181,7 +181,7 @@ class LargeStringBuffer extends AppendableCharSequence {
 
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     var h: Int = 0
     for (chars <- data; i <- 0 until SEGLEN) {
       h = 31 * h + chars(i)

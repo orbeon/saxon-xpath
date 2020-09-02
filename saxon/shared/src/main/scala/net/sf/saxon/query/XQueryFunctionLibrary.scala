@@ -221,7 +221,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
     functions.get(functionKey)
 
   def getFunctionDefinitions: Iterator[XQueryFunction] =
-    functions.values.iterator()
+    functions.values.iterator
 
   def fixupGlobalFunctions(env: QueryModule): Unit = {
     val visitor: ExpressionVisitor = ExpressionVisitor.make(env)

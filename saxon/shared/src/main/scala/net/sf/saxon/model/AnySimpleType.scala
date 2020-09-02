@@ -59,7 +59,7 @@ object AnySimpleType extends SimpleType {
 
   def isSimpleType(): Boolean = true
 
-  def getFingerprint(): Int = StandardNames.XS_ANY_SIMPLE_TYPE
+  def getFingerprint: Int = StandardNames.XS_ANY_SIMPLE_TYPE
 
   /**
     * Get the name of the type as a StructuredQName

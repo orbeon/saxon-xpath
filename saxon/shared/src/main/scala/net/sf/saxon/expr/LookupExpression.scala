@@ -344,7 +344,7 @@ class LookupExpression(start: Expression, step: Expression)
         val key: AtomicValue =
           getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         val value: GroundedValue = map.get(key)
-        if (value == null) EmptyIterator.emptyIterator() else value.iterate()
+        if (value == null) EmptyIterator.emptyIterator else value.iterate()
       } else if (isSingleEntry) {
         val baseIterator: SequenceIterator = getLhsExpression.iterate(context)
         val key: AtomicValue =
@@ -353,7 +353,7 @@ class LookupExpression(start: Expression, step: Expression)
           baseIterator,
           (baseItem) => {
             val value: GroundedValue = baseItem.asInstanceOf[MapItem].get(key)
-            if (value == null) EmptyIterator.emptyIterator()
+            if (value == null) EmptyIterator.emptyIterator
             else value.iterate()
           }
         )
@@ -370,7 +370,7 @@ class LookupExpression(start: Expression, step: Expression)
                 val value: GroundedValue = baseItem
                   .asInstanceOf[MapItem]
                   .get(index.asInstanceOf[AtomicValue])
-                if (value == null) EmptyIterator.emptyIterator()
+                if (value == null) EmptyIterator.emptyIterator
                 else value.iterate()
               }
             )
@@ -409,7 +409,7 @@ class LookupExpression(start: Expression, step: Expression)
               var value: GroundedValue = baseItem
                 .asInstanceOf[MapItem]
                 .get(key.asInstanceOf[AtomicValue])
-              if (value == null) EmptyIterator.emptyIterator()
+              if (value == null) EmptyIterator.emptyIterator
               else value.iterate()
             }
           )

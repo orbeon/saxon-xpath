@@ -116,7 +116,7 @@ class SequenceSlice(private var value: List[_ <: Item],
    * @return the simplified sequence
    */
   override def reduce(): GroundedValue = {
-    val len: Int = getLength
+    val len = getLength
     if (len == 0) {
       EmptySequence.getInstance
     } else if (len == 1) {
@@ -129,8 +129,8 @@ class SequenceSlice(private var value: List[_ <: Item],
   override def asIterable(): java.lang.Iterable[_ <: Item] =
     value.subList(offset, offset + length)
 
-  def iterator(): Iterator[_ <: Item] =
-    value.subList(offset, offset + length).iterator()
+  def iterator: Iterator[_ <: Item] =
+    value.subList(offset, offset + length).iterator
 
 }
 

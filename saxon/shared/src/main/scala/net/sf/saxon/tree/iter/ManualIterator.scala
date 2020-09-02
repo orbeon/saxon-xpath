@@ -53,7 +53,7 @@ class ManualIterator
     this.position = position
   }
 
-  def hasNext(): Boolean =
+  def hasNext: Boolean =
     try position != getLength
     catch {
       case e: XPathException => false
@@ -62,7 +62,7 @@ class ManualIterator
 
   def next(): Item = null
 
-  def current(): Item = item
+  def current: Item = item
 
   def getLength: Int =
     if (lastPositionFinder == null) {
@@ -72,7 +72,7 @@ class ManualIterator
       lastPositionFinder.getLength
     }
 
-  def getReverseIterator(): ManualIterator = new ManualIterator(item)
+  def getReverseIterator: ManualIterator = new ManualIterator(item)
 
   override def materialize(): GroundedValue = item
 

@@ -19,10 +19,10 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
   def getURIForPrefix(prefix: String, useDefault: Boolean): String =
     resolver.getURIForPrefix(prefix, useDefault)
 
-  def iteratePrefixes(): Iterator[String] = resolver.iteratePrefixes()
+  def iteratePrefixes: Iterator[String] = resolver.iteratePrefixes
 
   def getPrefix(uri: String): String = {
-    val prefixes: util.Iterator[String] = iteratePrefixes()
+    val prefixes: util.Iterator[String] = iteratePrefixes
     while (prefixes.hasNext) {
       val p: String = prefixes.next()
       val u: String = resolver.getURIForPrefix(p, useDefault = true)
@@ -42,14 +42,14 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
 
   def getPrefixes(uri: String): Iterator[String] = {
     val list: List[String] = new ArrayList[String](4)
-    val prefixes: Iterator[String] = iteratePrefixes()
+    val prefixes: Iterator[String] = iteratePrefixes
     prefixes.forEachRemaining((p) => {
       val u: String = resolver.getURIForPrefix(p, useDefault = true)
       if (u == uri) {
         list.add(p)
       }
     })
-    list.iterator()
+    list.iterator
   }
 
 }

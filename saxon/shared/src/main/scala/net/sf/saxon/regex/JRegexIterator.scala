@@ -180,7 +180,7 @@ class JRegexIterator(private var theString: String,
             action.characters(buff)
             buff.setLength(0)
           }
-          var ii: Iterator[Integer] = events.iterator()
+          var ii: Iterator[Integer] = events.iterator
           while (ii.hasNext) {
             val group: Int = ii.next()
             if (group > 0) {

@@ -148,7 +148,7 @@ class GroupAdjacentIterator(private var select: Expression,
   def iterateCurrentGroup(): SequenceIterator =
     new ListIterator(currentMembers)
 
-  def hasNext(): Boolean = nextItem != null
+  def hasNext: Boolean = nextItem != null
 
   def next(): Item = {
     if (nextItem == null) {

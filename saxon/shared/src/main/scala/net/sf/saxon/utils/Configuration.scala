@@ -2694,7 +2694,7 @@ class Configuration() extends SourceResolver with NotationSet {
 //  }
 
   def getFocusTrackerFactory(exec: Executable, multithreaded: Boolean): Function1[SequenceIterator, FocusTrackingIterator] =
-    (insts: SequenceIterator) => new FocusTrackingIterator()
+    (insts: SequenceIterator) => new FocusTrackingIterator
 
   def isStreamedNode(node: NodeInfo): Boolean = {
     false

@@ -129,6 +129,6 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
     c0.compareTo(c1.asInstanceOf)
   }
 
-  override def hashCode(): Int = duration.hashCode
+  override def hashCode: Int = duration.hashCode
 
 }

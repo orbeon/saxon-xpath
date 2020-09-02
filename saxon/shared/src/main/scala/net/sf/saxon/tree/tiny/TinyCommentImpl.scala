@@ -28,7 +28,7 @@ class TinyCommentImpl() extends TinyNodeImpl {
 
   def getStringValue: String = {
     val start: Int = tree.alpha(nodeNr)
-    val len: Int = tree.beta(nodeNr)
+    val len = tree.beta(nodeNr)
     if (len == 0) return ""
     val dest: Array[Char] = Array.ofDim[Char](len)
     tree.commentBuffer.getChars(start, start + len, dest, 0)

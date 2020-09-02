@@ -30,54 +30,54 @@ object Subsequence_3 {
       .isInstanceOf[Int64Value]) {
       val lstart: Long = startNumVal.longValue()
       if (lstart > java.lang.Integer.MAX_VALUE) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       var llength: Long = lengthNumVal.longValue()
       if (llength > java.lang.Integer.MAX_VALUE) {
         llength = java.lang.Integer.MAX_VALUE
       }
       if (llength < 1) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       val lend: Long = lstart + llength - 1
       if (lend < 1) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       val start: Int = if (lstart < 1) 1 else lstart.toInt
       SubsequenceIterator.make(seq, start, lend.toInt)
     } else {
       if (startNumVal.isNaN) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       if (startNumVal.compareTo(Int64Value.MAX_LONG) > 0) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       startNumVal = startNumVal.round(0)
       if (lengthNumVal.isNaN) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       lengthNumVal = lengthNumVal.round(0)
       if (lengthNumVal.compareTo(Int64Value.ZERO) <= 0) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       var rend: NumericValue = ArithmeticExpression
         .compute(startNumVal, Calculator.PLUS, lengthNumVal, context)
         .asInstanceOf[NumericValue]
       if (rend.isNaN) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       rend = ArithmeticExpression
         .compute(rend, Calculator.MINUS, Int64Value.PLUS_ONE, context)
         .asInstanceOf[NumericValue]
       if (rend.compareTo(Int64Value.ZERO) <= 0) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       var lstart: Long = 0L
       lstart =
         if (startNumVal.compareTo(Int64Value.PLUS_ONE) <= 0) 1
         else startNumVal.longValue()
       if (lstart > java.lang.Integer.MAX_VALUE) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       }
       var lend: Long = 0L
       lend =

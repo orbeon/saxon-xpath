@@ -66,7 +66,7 @@ class XML10ContentChecker(next: Receiver) extends ProxyReceiver(next) {
   }
 
   private def checkString(in: CharSequence, locationId: Location): Unit = {
-    val len: Int = in.length
+    val len = in.length
     for (c <- 0 until len) {
       var ch = c
       var ch32: Int = in.charAt(ch)

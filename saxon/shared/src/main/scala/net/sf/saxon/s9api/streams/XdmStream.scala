@@ -92,9 +92,9 @@ class XdmStream[T <: XdmItem] extends ProxyStream[T] {
 
   def findAny(): Optional[T] = base.findAny()
 
-  def iterator(): Iterator[T] = base.iterator()
+  def iterator: Iterator[T] = base.iterator
 
-  def spliterator(): Spliterator[T] = base.spliterator()
+  def spliterator: Spliterator[T] = base.spliterator
 
   def isParallel(): Boolean = base.isParallel
 

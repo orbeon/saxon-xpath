@@ -116,7 +116,7 @@ class TextFragmentValue(config: Configuration,
     -1
   }
 
-  def getFingerprint(): Int = -1
+  def getFingerprint: Int = -1
 
   def getPrefix: String = ""
 
@@ -130,12 +130,12 @@ class TextFragmentValue(config: Configuration,
 
   def saveLocation(): Location = this
 
-  override def getSchemaType(): SchemaType = Untyped.getInstance
+  override def getSchemaType: SchemaType = Untyped.getInstance
 
   def getDeclaredNamespaces(
                              buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
-  override def getAllNamespaces(): NamespaceMap = null
+  override def getAllNamespaces: NamespaceMap = null
 
   def atomize(): AtomicSequence = new UntypedAtomicValue(text)
 
@@ -146,7 +146,7 @@ class TextFragmentValue(config: Configuration,
          AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE | AxisInfo.PARENT |
          AxisInfo.PRECEDING | AxisInfo.PRECEDING_SIBLING |
          AxisInfo.PRECEDING_OR_ANCESTOR =>
-      EmptyIterator.ofNodes()
+      EmptyIterator.ofNodes
     case AxisInfo.SELF | AxisInfo.ANCESTOR_OR_SELF =>
       SingleNodeIterator.makeIterator(this)
     case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
@@ -166,7 +166,7 @@ class TextFragmentValue(config: Configuration,
            AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE | AxisInfo.PARENT |
            AxisInfo.PRECEDING | AxisInfo.PRECEDING_SIBLING |
            AxisInfo.PRECEDING_OR_ANCESTOR =>
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       case AxisInfo.SELF | AxisInfo.ANCESTOR_OR_SELF =>
         Navigator.filteredSingleton(this, nodeTest)
       case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
@@ -186,7 +186,7 @@ class TextFragmentValue(config: Configuration,
           if (b2) {
             SingleNodeIterator.makeIterator(textNode2)
           } else {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
         }
       case _ =>
@@ -196,7 +196,7 @@ class TextFragmentValue(config: Configuration,
 
   def getParent: NodeInfo = null
 
-  def getRoot(): NodeInfo = this
+  def getRoot: NodeInfo = this
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.characters(text, locationId, ReceiverOption.NONE)
@@ -204,7 +204,7 @@ class TextFragmentValue(config: Configuration,
 
   def selectID(id: String, getParent: Boolean): NodeInfo = null
 
-  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator()
+  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator
 
   def getUnparsedEntity(name: String): Array[String] = null
 
@@ -212,7 +212,7 @@ class TextFragmentValue(config: Configuration,
 
     override def hasFingerprint: Boolean = true
 
-    def getTreeInfo(): TreeInfo = treeInfo
+    def getTreeInfo: TreeInfo = treeInfo
 
     def setSystemId(systemId: String): Unit = ()
 
@@ -241,7 +241,7 @@ class TextFragmentValue(config: Configuration,
       +1
     }
 
-    def getFingerprint(): Int = -1
+    def getFingerprint: Int = -1
 
     def getPrefix: String = ""
 
@@ -257,12 +257,12 @@ class TextFragmentValue(config: Configuration,
 
     def saveLocation(): Location = this
 
-    override def getSchemaType(): SchemaType = null
+    override def getSchemaType: SchemaType = null
 
     def getDeclaredNamespaces(
                                buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
-    override def getAllNamespaces(): NamespaceMap = null
+    override def getAllNamespaces: NamespaceMap = null
 
     def atomize(): AtomicSequence = new UntypedAtomicValue(text)
 
@@ -277,7 +277,7 @@ class TextFragmentValue(config: Configuration,
            AxisInfo.FOLLOWING | AxisInfo.FOLLOWING_SIBLING |
            AxisInfo.NAMESPACE | AxisInfo.PRECEDING |
            AxisInfo.PRECEDING_SIBLING =>
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       case AxisInfo.SELF | AxisInfo.DESCENDANT_OR_SELF =>
         SingleNodeIterator.makeIterator(this)
       case _ =>
@@ -302,13 +302,13 @@ class TextFragmentValue(config: Configuration,
           } else if (matchesText) {
             SingleNodeIterator.makeIterator(this)
           } else {
-            EmptyIterator.ofNodes()
+            EmptyIterator.ofNodes
           }
         case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
              AxisInfo.FOLLOWING | AxisInfo.FOLLOWING_SIBLING |
              AxisInfo.NAMESPACE | AxisInfo.PRECEDING |
              AxisInfo.PRECEDING_SIBLING =>
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         case AxisInfo.SELF | AxisInfo.DESCENDANT_OR_SELF =>
           Navigator.filteredSingleton(this, nodeTest)
         case _ =>
@@ -319,7 +319,7 @@ class TextFragmentValue(config: Configuration,
 
     def getParent: NodeInfo = TextFragmentValue.this
 
-    def getRoot(): NodeInfo = TextFragmentValue.this
+    def getRoot: NodeInfo = TextFragmentValue.this
 
     override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
       out.characters(text, locationId, ReceiverOption.NONE)

@@ -105,11 +105,11 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def getCardinality(): Int = StaticProperty.EMPTY
 
-  def isAssignable(): Boolean = false
+  def isAssignable: Boolean = false
 
-  def isGlobal(): Boolean = false
+  def isGlobal: Boolean = false
 
-  def getLocalSlotNumber(): Int = slotNumber
+  def getLocalSlotNumber: Int = slotNumber
 
   def isRequiredParam: Boolean = (properties & REQUIRED) != 0
 
@@ -210,7 +210,7 @@ class LocalParam extends Instruction with LocalBinding {
     variableQName = s
   }
 
-  def getVariableQName(): StructuredQName = variableQName
+  def getVariableQName: StructuredQName = variableQName
 
   def setConversion(convertor: Expression): Unit = {
     if (convertor != null) {
@@ -274,7 +274,7 @@ class LocalParam extends Instruction with LocalBinding {
     null
   }
 
-  def getIntegerBoundsForVariable(): Array[IntegerValue] = null
+  def getIntegerBoundsForVariable: Array[IntegerValue] = null
 
   def evaluateVariable(c: XPathContext): Sequence =
     c.evaluateLocalVariable(slotNumber)
@@ -341,6 +341,6 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def setIndexedVariable(): Unit = ()
 
-  override def isIndexedVariable(): Boolean = false
+  override def isIndexedVariable: Boolean = false
 
 }

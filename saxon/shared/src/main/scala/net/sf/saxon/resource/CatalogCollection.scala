@@ -185,7 +185,7 @@ class CatalogCollection //TODO we might know the catalog File already
       }
       result.add(uri)
     }
-    result.iterator()
+    result.iterator
   }
 // Now return an iterator over the documents that it refers to
 // Now return an iterator over the documents that it refers to

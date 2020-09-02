@@ -95,7 +95,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
       case _ => false
     }
 
-  override def hashCode(): Int = memberType.hashCode
+  override def hashCode: Int = memberType.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity =
     if (other == AnyFunctionType) {

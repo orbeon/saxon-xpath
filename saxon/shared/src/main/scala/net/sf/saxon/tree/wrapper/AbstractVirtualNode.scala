@@ -24,11 +24,11 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
    var docWrapper: TreeInfo = _
 
-  def getTreeInfo(): TreeInfo = docWrapper
+  def getTreeInfo: TreeInfo = docWrapper
 
-  def getUnderlyingNode(): NodeInfo = node
+  def getUnderlyingNode: NodeInfo = node
 
-  override def getFingerprint(): Int =
+  override def getFingerprint: Int =
     if (node.hasFingerprint) {
       node.getFingerprint
     } else {
@@ -37,7 +37,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   override def hasFingerprint: Boolean = node.hasFingerprint
 
-  def getRealNode(): AnyRef = {
+  def getRealNode: AnyRef = {
     var u: AnyRef = this
     do u = u.asInstanceOf[VirtualNode].getUnderlyingNode while (u
       .isInstanceOf[VirtualNode]);
@@ -48,7 +48,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   def atomize(): AtomicSequence = node.atomize()
 
-  override def getSchemaType(): SchemaType = node.getSchemaType
+  override def getSchemaType: SchemaType = node.getSchemaType
 
   override def equals(other: Any): Boolean =
     if (other.isInstanceOf[AbstractVirtualNode]) {
@@ -57,7 +57,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
       node == other
     }
 
-  override def hashCode(): Int = node.hashCode ^ 0x3c3c3c3c
+  override def hashCode: Int = node.hashCode ^ 0x3c3c3c3c
 
   def getSystemId: String = node.getSystemId
 
@@ -67,7 +67,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   def getBaseURI: String = node.getBaseURI
 
-  override def getLineNumber(): Int = node.getLineNumber
+  override def getLineNumber: Int = node.getLineNumber
 
   override def getColumnNumber(): Int = node.getColumnNumber
 
@@ -99,7 +99,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
   def getAttributeValue(uri: String, local: String): String =
     node.getAttributeValue(uri, local)
 
-  def getRoot(): NodeInfo = {
+  def getRoot: NodeInfo = {
     var p: NodeInfo = this
     while (true) {
       val q: NodeInfo = p.getParent
@@ -120,9 +120,9 @@ abstract class AbstractVirtualNode extends VirtualNode {
                              buffer: Array[NamespaceBinding]): Array[NamespaceBinding] =
     node.getDeclaredNamespaces(buffer)
 
-  override def getAllNamespaces(): NamespaceMap = node.getAllNamespaces
+  override def getAllNamespaces: NamespaceMap = node.getAllNamespaces
 
-  override def isId(): Boolean = node.isId
+  override def isId: Boolean = node.isId
 
   override def isIdref(): Boolean = node.isIdref
 

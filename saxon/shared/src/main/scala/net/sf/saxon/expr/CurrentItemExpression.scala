@@ -16,6 +16,6 @@ class CurrentItemExpression extends ContextItemExpression {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * The expression is generated when compiling the current() function in XSLT. It differs from
+  * The expression is generated when compiling the current function in XSLT. It differs from
   * the ContextItemExpression "." only in the error code that is returned when there is no context item.
   */

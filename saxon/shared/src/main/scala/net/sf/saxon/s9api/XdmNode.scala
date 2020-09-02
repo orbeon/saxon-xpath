@@ -139,7 +139,7 @@ class XdmNode extends XdmItem {
     if (systemId == null || systemId.isEmpty) null else new URI(systemId)
   }
 
-  override def hashCode(): Int = getUnderlyingNode.hashCode
+  override def hashCode: Int = getUnderlyingNode.hashCode
 
   override def equals(other: Any): Boolean = other match {
     case other: XdmNode => getUnderlyingNode == other.getUnderlyingNode
@@ -185,7 +185,7 @@ class XdmNode extends XdmItem {
     }
   }
 
-  def nodeIterator(): XdmSequenceIterator[XdmNode] = XdmSequenceIterator.ofNode(this)
+  def nodeiterator: XdmSequenceIterator[XdmNode] = XdmSequenceIterator.ofNode(this)
 
   override def stream(): XdmStream[XdmNode] = new XdmStream(Stream.of(this))
 

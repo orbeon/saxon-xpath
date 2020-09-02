@@ -164,7 +164,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
 
   override def getUType: UType = basePattern.getUType
 
-  override def getFingerprint(): Int = basePattern.getFingerprint
+  override def getFingerprint: Int = basePattern.getFingerprint
 
   override def getItemType: ItemType = {
     if (refinedItemType != null) {

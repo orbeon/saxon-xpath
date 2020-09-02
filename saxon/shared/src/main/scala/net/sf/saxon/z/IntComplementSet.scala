@@ -56,7 +56,7 @@ class IntComplementSet extends IntSet {
     b
   }
 
-  def iterator(): IntIterator =
+  def iterator: IntIterator =
     throw new UnsupportedOperationException("Cannot enumerate an infinite set")
 
   override def union(other: IntSet): IntSet =
@@ -83,7 +83,7 @@ class IntComplementSet extends IntSet {
     } else if (other.isInstanceOf[IntUniversalSet]) {
       (!exclusions.isEmpty)
     } else {
-      val ii: IntIterator = other.iterator()
+      val ii: IntIterator = other.iterator
       while (ii.hasNext) {
         if (exclusions.contains(ii.next)) {
           false

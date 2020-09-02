@@ -63,7 +63,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
 
   import scala.jdk.CollectionConverters._
 
-  override def iterator(): collection.Iterator[AttributeInfo] = new MonoIterator(this).asScala
+  override def iterator: collection.Iterator[AttributeInfo] = new MonoIterator(this).asScala
 
   override def apply(mapper: java.util.function.Function[AttributeInfo, AttributeInfo])
   : AttributeMap = SingletonAttributeMap.of(mapper.apply(this))

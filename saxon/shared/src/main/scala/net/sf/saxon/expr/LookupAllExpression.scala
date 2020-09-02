@@ -116,7 +116,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     "LookupAll".hashCode ^ getBaseExpression.hashCode
 
   override def iterate(context: XPathContext): SequenceIterator =
-    new SequenceIterator() {
+    new SequenceIterator {
       val level0: SequenceIterator = getBaseExpression.iterate(context)
 
       var level1: collection.Iterator[_] = null

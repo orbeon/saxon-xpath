@@ -75,7 +75,7 @@ object Categories {
         if (intSet.size > 100) {
           return false
         }
-        val ii: IntIterator = intSet.iterator()
+        val ii: IntIterator = intSet.iterator
         while (ii.hasNext) if (test(ii.next)) {
           false
         }

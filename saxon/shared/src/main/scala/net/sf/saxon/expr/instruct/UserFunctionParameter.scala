@@ -37,17 +37,17 @@ class UserFunctionParameter extends LocalBinding {
   var functionStreamability: FunctionStreamability.FunctionStreamability =
     FunctionStreamability.UNCLASSIFIED
 
-  def isGlobal(): Boolean = false
+  def isGlobal: Boolean = false
 
-  def isAssignable(): Boolean = false
+  def isAssignable: Boolean = false
 
   def setSlotNumber(slot: Int): Unit = {
     slotNumber = slot
   }
 
-  def getLocalSlotNumber(): Int = slotNumber
+  def getLocalSlotNumber: Int = slotNumber
 
-  def getIntegerBoundsForVariable(): Array[IntegerValue] = null
+  def getIntegerBoundsForVariable: Array[IntegerValue] = null
 
   def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
@@ -59,7 +59,7 @@ class UserFunctionParameter extends LocalBinding {
     this.setIndexedVariable(true)
   }
 
-  def isIndexedVariable(): Boolean = isIndexed
+  def isIndexedVariable: Boolean = isIndexed
 
   def evaluateVariable(context: XPathContext): Sequence =
     context.evaluateLocalVariable(slotNumber)

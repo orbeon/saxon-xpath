@@ -19,7 +19,7 @@ trait IntIterator {
     def hasNext: Boolean
 
   /**
-   * Return the next integer in the sequence. The result is undefined unless hasNext() has been called
+   * Return the next integer in the sequence. The result is undefined unless hasNext has been called
    * and has returned true.
    *
    * @return the next integer in the sequence

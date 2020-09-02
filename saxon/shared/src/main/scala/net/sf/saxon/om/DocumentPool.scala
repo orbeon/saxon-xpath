@@ -1,38 +1,29 @@
 package net.sf.saxon.om
 
-import java.util.HashMap
-
-import java.util.HashSet
-
-import java.util.Map
-
-import java.util.Set
+import java.util.{HashMap, HashSet, Map, Set}
 
 import scala.jdk.CollectionConverters._
 
 class DocumentPool {
 
-  private var documentNameMap: Map[DocumentURI, TreeInfo] =
+  private val documentNameMap: Map[DocumentURI, TreeInfo] =
     new HashMap[DocumentURI, TreeInfo](10)
 
-  private var unavailableDocuments: Set[DocumentURI] =
+  private val unavailableDocuments: Set[DocumentURI] =
     new HashSet[DocumentURI](10)
 
-  def add(doc: TreeInfo, uri: String): Unit = {
+  def add(doc: TreeInfo, uri: String): Unit =
     synchronized {
-      if (uri != null) {
+      if (uri != null)
         documentNameMap.put(new DocumentURI(uri), doc)
-      }
     }
-  }
 
-  def add(doc: TreeInfo, uri: DocumentURI): Unit = {
+  def add(doc: TreeInfo, uri: DocumentURI): Unit =
     synchronized {
       if (uri != null) {
         documentNameMap.put(uri, doc)
       }
     }
-  }
 
   def find(uri: String): TreeInfo = synchronized {
     documentNameMap.get(new DocumentURI(uri))
@@ -44,11 +35,11 @@ class DocumentPool {
 
   def getDocumentURI(doc: NodeInfo): String = synchronized {
     for (uri <- documentNameMap.keySet.asScala) {
-      val found: TreeInfo = find(uri)
+      val found = find(uri)
       if (found == null) {
-      }
-      if (found.getRootNode == doc) {
-        uri.toString
+        // continue; // can happen when discard-document() is used concurrently
+      } else if (found.getRootNode == doc) {
+        return uri.toString
       }
     }
     null
@@ -64,7 +55,7 @@ class DocumentPool {
       val entry: TreeInfo = value
       if (entry == doc) {
         documentNameMap.remove(name)
-        doc
+        return doc
       }
     }
     doc
@@ -76,11 +67,9 @@ class DocumentPool {
    }
    }*/
 
-  def markUnavailable(uri: DocumentURI): Unit = {
+  def markUnavailable(uri: DocumentURI): Unit =
     unavailableDocuments.add(uri)
-  }
 
   def isMarkedUnavailable(uri: DocumentURI): Boolean =
     unavailableDocuments.contains(uri)
-
 }

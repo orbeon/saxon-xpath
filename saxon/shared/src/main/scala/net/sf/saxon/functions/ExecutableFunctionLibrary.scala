@@ -82,7 +82,7 @@ class ExecutableFunctionLibrary(@transient private var config: Configuration)
     efl
   }
 
-  def iterateFunctions(): Iterator[UserFunction] = functions.values.iterator()
+  def iterateFunctions(): Iterator[UserFunction] = functions.values.iterator
 
 }
 

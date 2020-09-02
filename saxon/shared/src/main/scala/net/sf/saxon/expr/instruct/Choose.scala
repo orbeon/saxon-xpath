@@ -687,7 +687,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   override def iterate(context: XPathContext): SequenceIterator = {
     val i: Int = choose(context)
-    if (i < 0) EmptyIterator.emptyIterator() else getAction(i).iterate(context)
+    if (i < 0) EmptyIterator.emptyIterator else getAction(i).iterate(context)
   }
 
   override def evaluatePendingUpdates(context: XPathContext,

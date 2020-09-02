@@ -55,7 +55,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
   }
 
   def error(e: SAXParseException): Unit = {
-    //System.err.println("ErrorHandler.error " + e.getMessage());
+    //System.err.println("ErrorHandler.error " + e.getMessage);
     errorCount += 1
     if (!silent) {
       reportError(e, isFatal = false)
@@ -63,7 +63,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
   }
 
   def fatalError(e: SAXParseException): Unit = {
-    //System.err.println("ErrorHandler.fatalError " + e.getMessage());
+    //System.err.println("ErrorHandler.fatalError " + e.getMessage);
     fatalErrorCount += 1
     if (!silent) {
       reportError(e, isFatal = true)

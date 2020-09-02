@@ -45,7 +45,7 @@ class RangeIterator(var start: Long, var limit: Long)
 
   var currentValue: Long = start - 1
 
-  def hasNext(): Boolean = currentValue < limit
+  def hasNext: Boolean = currentValue < limit
 
   def next(): IntegerValue = {
     currentValue += 1
@@ -62,7 +62,7 @@ class RangeIterator(var start: Long, var limit: Long)
   override def getProperties: Set[Property] =
     Set(LOOKAHEAD, LAST_POSITION_FINDER, GROUNDED)
 
-  def getReverseIterator(): AtomicIterator[IntegerValue] =
+  def getReverseIterator: AtomicIterator[IntegerValue] =
     new ReverseRangeIterator(limit, start)
 
   override def materialize(): GroundedValue = new IntegerRange(start, limit)

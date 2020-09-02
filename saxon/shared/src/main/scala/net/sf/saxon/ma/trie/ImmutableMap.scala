@@ -42,7 +42,7 @@ trait ImmutableMap[K, V] extends java.lang.Iterable[Tuple2[K, V]] {
     */
   def get(key: K): V
 
-  def iterator(): Iterator[Tuple2[K, V]]
+  def iterator: Iterator[Tuple2[K, V]]
 
 }
 

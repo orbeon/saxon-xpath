@@ -187,7 +187,7 @@ abstract class AtomicValue
   override def iterate(): SingleAtomicIterator[_ <: AtomicValue] =
     new SingleAtomicIterator(this)
 
-  def iterator(): util.Iterator[AtomicValue] = new MonoIterator(this)
+  def iterator: util.Iterator[AtomicValue] = new MonoIterator(this)
 
   /**
     * Get the genre of this item

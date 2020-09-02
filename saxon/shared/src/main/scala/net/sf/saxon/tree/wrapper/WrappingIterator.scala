@@ -36,7 +36,7 @@ class WrappingIterator(var base: AxisIterator,
 
   /*@Nullable*/
 
-//  def current(): NodeInfo = current
+//  def current: NodeInfo = current
 
   override def close(): Unit = {
     base.close()

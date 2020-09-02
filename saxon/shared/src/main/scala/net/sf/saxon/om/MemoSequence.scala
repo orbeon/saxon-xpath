@@ -64,13 +64,13 @@ class MemoSequence extends Sequence {
         reservoir = Array.ofDim[Item](50)
         used = 0
         state = MAYBE_MORE
-        new ProgressiveIterator()
-      case MAYBE_MORE => new ProgressiveIterator()
+        new ProgressiveIterator
+      case MAYBE_MORE => new ProgressiveIterator
       case ALL_READ =>
         used match {
           case 0 =>
             state = EMPTY
-            EmptyIterator.emptyIterator()
+            EmptyIterator.emptyIterator
           case 1 =>
             assert(reservoir != null)
             SingletonIterator.makeIterator(reservoir(0))
@@ -85,7 +85,7 @@ class MemoSequence extends Sequence {
         //de.setXPathContext(context);
         throw de
       // recursive entry: can happen if there is a circularity involving variable and function definitions
-      case EMPTY => EmptyIterator.emptyIterator()
+      case EMPTY => EmptyIterator.emptyIterator
       case _ => throw new IllegalStateException("Unknown iterator state")
 
     }

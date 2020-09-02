@@ -273,7 +273,7 @@ class QName(prefix: String, uri: String, localName: String) {
 
   override def toString: String = sqName.getDisplayName
 
-  override def hashCode(): Int = sqName.hashCode
+  override def hashCode: Int = sqName.hashCode
 
   override def equals(other: Any): Boolean = other match {
     case other: QName => sqName == other.sqName

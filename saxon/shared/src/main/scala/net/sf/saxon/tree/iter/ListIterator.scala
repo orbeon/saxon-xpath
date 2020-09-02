@@ -39,7 +39,7 @@ class ListIterator[T <: Item](var list: List[T])
 
   private var index: Int = 0
 
-  def hasNext(): Boolean = index < list.size
+  def hasNext: Boolean = index < list.size
 
   def next(): T = {
     if (index >= list.size) {
@@ -67,6 +67,6 @@ class ListIterator[T <: Item](var list: List[T])
     SequenceExtent.makeSequenceExtent(l2)
   }
 
-  def getReverseIterator(): SequenceIterator = new ReverseListIterator(list)
+  def getReverseIterator: SequenceIterator = new ReverseListIterator(list)
 
 }

@@ -43,9 +43,7 @@ import scala.jdk.CollectionConverters._
 object XMLEmitter {
 
   var specialInText: Array[Boolean] = new Array[Boolean](128)
-
   var specialInAtt: Array[Boolean] = new Array[Boolean](128)
-
   var specialInAttSingle: Array[Boolean] = Arrays.copyOf(specialInAtt, 128)
 
   var i: Int = 0
@@ -61,15 +59,10 @@ object XMLEmitter {
   }
 
   specialInText('\n') = false
-
   specialInText('\t') = false
-
   specialInText('\r') = true
-
   specialInText('<') = true
-
   specialInText('>') = true
-
   specialInText('&') = true
 
   i = 0
@@ -85,23 +78,14 @@ object XMLEmitter {
   }
 
   specialInAtt(0.toChar) = true
-
   specialInAtt('\r') = true
-
   specialInAtt('\n') = true
-
   specialInAtt('\t') = true
-
   specialInAtt('<') = true
-
   specialInAtt('>') = true
-
   specialInAtt('&') = true
-
   specialInAtt('\"') = true
-
   specialInAttSingle('\"') = false
-
   specialInAttSingle('\'') = true
 
 }
@@ -558,7 +542,7 @@ class XMLEmitter extends Emitter {
           ReceiverOption.USE_NULL_MARKERS)) {
           writeCharSequence(chars)
         } else {
-          val len: Int = chars.length
+          val len = chars.length
           for (i <- 0 until len) {
             val c: Char = chars.charAt(i)
             if (c != 0) {
@@ -567,7 +551,7 @@ class XMLEmitter extends Emitter {
           }
         }
       } else {
-        val len: Int = chars.length
+        val len = chars.length
         var i: Int = 0
         while (i < len) {
           val c: Char = chars.charAt(i)
@@ -823,5 +807,5 @@ class XMLEmitter extends Emitter {
    *
    * @return true if content has been output
    */
-  def isStarted = started
+  def isStarted: Boolean = started
 }

@@ -425,8 +425,8 @@ class QueryModule extends StaticContext {
       new ArrayList[GlobalVariable](20)
     val iters: List[Iterator[GlobalVariable]] =
       new ArrayList[Iterator[GlobalVariable]]()
-    iters.add(variables.values.iterator())
-    iters.add(libraryVariables.values.iterator())
+    iters.add(variables.values.iterator)
+    iters.add(libraryVariables.values.iterator)
     for (iter <- iters.asScala) {
       while (iter.hasNext) {
         val `var`: GlobalVariable = iter.next()
@@ -546,12 +546,12 @@ class QueryModule extends StaticContext {
   }
 
   def getModuleVariables: Iterator[GlobalVariable] =
-    variables.values.iterator()
+    variables.values.iterator
 
   def checkForCircularities(
                              compiledVars: List[GlobalVariable],
                              globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
-    val iter: Iterator[GlobalVariable] = compiledVars.iterator()
+    val iter: Iterator[GlobalVariable] = compiledVars.iterator
     var stack: Stack[Any] = null
     while (iter.hasNext) {
       if (stack == null) {
@@ -830,8 +830,8 @@ class QueryModule extends StaticContext {
     def getURIForPrefix(prefix: String, useDefault: Boolean): String =
       checkURIForPrefix(prefix)
 
-    def iteratePrefixes(): Iterator[String] =
-      getNamespaceResolver.iteratePrefixes()
+    def iteratePrefixes: Iterator[String] =
+      getNamespaceResolver.iteratePrefixes
   }
 
   def checkURIForPrefix(prefix: String): String = {

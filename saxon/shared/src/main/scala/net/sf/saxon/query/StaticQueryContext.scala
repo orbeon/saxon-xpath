@@ -318,7 +318,7 @@ class StaticQueryContext() {
   }
 
   def iterateDeclaredPrefixes(): Iterator[String] =
-    userDeclaredNamespaces.keySet.iterator()
+    userDeclaredNamespaces.keySet.iterator
 
   def getNamespaceForPrefix(prefix: String): String =
     userDeclaredNamespaces.get(prefix)
@@ -356,9 +356,9 @@ class StaticQueryContext() {
   def iterateDeclaredGlobalVariables(): Iterator[GlobalVariable] =
     if (userDeclaredVariables == null) {
       val empty: List[GlobalVariable] = Collections.emptyList()
-      empty.iterator()
+      empty.iterator
     } else {
-      userDeclaredVariables.iterator()
+      userDeclaredVariables.iterator
     }
 
   def clearDeclaredGlobalVariables(): Unit = {

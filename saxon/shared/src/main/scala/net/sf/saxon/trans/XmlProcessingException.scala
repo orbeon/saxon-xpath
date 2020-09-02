@@ -39,9 +39,9 @@ class XmlProcessingException(private var exception: XPathException)
     if (errorCodeQName == null) null else new QName(errorCodeQName)
   }
 
-  override def getMessage(): String = exception.getMessage
+  override def getMessage: String = exception.getMessage
 
-  override def getLocation(): Location = exception.getLocator
+  override def getLocation: Location = exception.getLocator
 
   override def getPath(): String = null
 

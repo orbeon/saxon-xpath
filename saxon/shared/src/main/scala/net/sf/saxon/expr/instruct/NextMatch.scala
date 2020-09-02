@@ -61,7 +61,7 @@ class NextMatch(var useTailRecursion: Boolean)
       throw new AssertionError("Current mode is null")
     }
     val mode: Mode = modeComponent.getActor
-    val currentItem: Item = context.getCurrentIterator.current()
+    val currentItem: Item = context.getCurrentIterator.current
     val rule: Rule = mode.getNextMatchRule(currentItem, currentRule, context)
     if (rule == null) {
       mode.getBuiltInRuleSet.process(currentItem,

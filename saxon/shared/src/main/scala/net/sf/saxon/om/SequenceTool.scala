@@ -250,7 +250,7 @@ object SequenceTool {
     }
     sequence match {
       case value: GroundedValue =>
-        val len: Int = value.getLength
+        val len = value.getLength
         return len match {
           case 0 => StaticProperty.ALLOWS_ZERO
           case 1 => StaticProperty.EXACTLY_ONE

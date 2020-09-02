@@ -155,7 +155,7 @@ object BigDecimalValue {
         fsb.cat('0')
         return fsb
       }
-      //FastStringBuffer sb = new FastStringBuffer(s.length() + (-scale) + 2);
+      //FastStringBuffer sb = new FastStringBuffer(s.length + (-scale) + 2);
       if (value.signum < 0) fsb.cat('-')
       fsb.append(s)
       for (i <- 0 until -scale) {

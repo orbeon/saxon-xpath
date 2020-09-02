@@ -24,7 +24,7 @@ class UniversalPattern extends Pattern {
 
   override def getItemType: ItemType = AnyItemType
 
-  override def getFingerprint(): Int = -1
+  override def getFingerprint: Int = -1
 
   override def toString: String = "."
 

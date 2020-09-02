@@ -35,7 +35,7 @@ object NameChecker {
   def getQNameParts(qname: CharSequence): Array[String] = {
     val parts: Array[String] = Array.ofDim[String](2)
     var colon: Int = -1
-    val len: Int = qname.length
+    val len = qname.length
     breakable {
       for (i <- 0 until len if qname.charAt(i) == ':') {
         colon = i

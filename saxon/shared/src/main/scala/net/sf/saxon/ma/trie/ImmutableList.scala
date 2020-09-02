@@ -78,8 +78,8 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     if (o == this) {
       return true
     }
-    val thisIter: Iterator[T] = this.iterator()
-    val otherIter: Iterator[_] = o.asInstanceOf[ImmutableList[_]].iterator()
+    val thisIter: Iterator[T] = this.iterator
+    val otherIter: Iterator[_] = o.asInstanceOf[ImmutableList[_]].iterator
     while (thisIter.hasNext && otherIter.hasNext) if (thisIter
       .next() != otherIter
       .next()) {
@@ -88,10 +88,10 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     thisIter.hasNext == otherIter.hasNext
   }
 
-  def iterator(): Iterator[T] = new Iterator[T]() {
+  def iterator: Iterator[T] = new Iterator[T]() {
     private var list: ImmutableList[T] = ImmutableList.this
 
-    def hasNext(): Boolean = !list.isEmpty
+    def hasNext: Boolean = !list.isEmpty
 
     def next(): T = {
       val element: T = list.head

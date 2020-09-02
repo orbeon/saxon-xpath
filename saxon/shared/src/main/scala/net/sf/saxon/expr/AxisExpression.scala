@@ -27,7 +27,7 @@ object AxisExpression {
       name.getLocalPart
     } else {
       val resolver: NamespaceResolver = env.getNamespaceResolver
-      val it = resolver.iteratePrefixes()
+      val it = resolver.iteratePrefixes
       while (it.hasNext) {
         val prefix = it.next()
         if (uri == resolver.getURIForPrefix(prefix, useDefault = true)) {
@@ -81,7 +81,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
   override def simplify(): Expression = {
     val e2 = super.simplify()
-    if (e2 != this) 
+    if (e2 != this)
       return e2
     if ((test == null || test == AnyNodeTest.getInstance) && (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR))
       test = MultipleNodeKindTest.PARENT_NODE
@@ -254,7 +254,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 if (env.getPackageData.isSchemaAware && elementTest
                   .isInstanceOf[SchemaNodeTest] &&
                   outermostElementNames.get.size == 1) {
-                  val oeni: IntIterator = outermostElementNames.get.iterator()
+                  val oeni: IntIterator = outermostElementNames.get.iterator
                   val outermostElementName: Int =
                     if (oeni.hasNext) oeni.next else -1
                   val decl: SchemaDeclaration =
@@ -486,7 +486,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               Literal.makeEmptySequence()
             }
             if (children.size == 1) {
-              val iter: IntIterator = children.iterator()
+              val iter: IntIterator = children.iterator
               if (iter.hasNext) {
                 childfp = iter.next
               }
@@ -508,7 +508,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 .asInstanceOf[ComplexType]
                 .gatherAllPermittedChildren(permitted, ignoreWildcards = false)
               if (!permitted.contains(-1)) {
-                val kids: IntIterator = permitted.iterator()
+                val kids: IntIterator = permitted.iterator
                 breakable {
                   while (kids.hasNext) {
                     val kid: Int = kids.next
@@ -573,7 +573,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           val usefulChildren: IntHashSet = new IntHashSet()
           var considerSelf: Boolean = false
           var considerDescendants: Boolean = false
-          val kids: IntIterator = children.iterator()
+          val kids: IntIterator = children.iterator
           while (kids.hasNext) {
             val c: Int = kids.next
             if (c == targetfp) {
@@ -646,7 +646,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   private def makeUnionNodeTest(elements: IntHashSet,
                                 pool: NamePool): NodeTest = {
     var test: NodeTest = null
-    val iter: IntIterator = elements.iterator()
+    val iter: IntIterator = elements.iterator
     while (iter.hasNext) {
       val fp: Int = iter.next
       val nextTest: NodeTest = new NameTest(Type.ELEMENT, fp, pool)
@@ -750,7 +750,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     contextItemType match {
       case test1: NodeTest =>
         originNodeType = test1
-      case _ => 
+      case _ =>
         if (contextItemType eq AnyItemType)
           originNodeType = AnyNodeTest.getInstance
         else
@@ -763,7 +763,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           try
            complexType.getAttributeUseCardinality(nodeTest.getMatchingNodeName)
           catch {
-            case _: SchemaException => 
+            case _: SchemaException =>
               StaticProperty.ALLOWS_ZERO_OR_ONE
           }
         case _: SimpleType =>

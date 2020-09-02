@@ -72,7 +72,7 @@ class TypeStrippedNode  ()
     *
     * @return the type annotation of the base node
     */
-  override def getSchemaType(): SchemaType =
+  override def getSchemaType: SchemaType =
     if (getNodeKind == Type.ELEMENT) {
       Untyped.getInstance
     } else {

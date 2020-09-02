@@ -53,7 +53,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
 
   override def getSystemId: String = systemId
 
-  override def getLineNumber(): Int = lineNumber
+  override def getLineNumber: Int = lineNumber
 
   override def getColumnNumber(): Int = columnNumber
 

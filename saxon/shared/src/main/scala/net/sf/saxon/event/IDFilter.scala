@@ -92,7 +92,7 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
     }
   }
 
-  override def usesTypeAnnotations(): Boolean = true
+  override def usesTypeAnnotations: Boolean = true
 
 }
 

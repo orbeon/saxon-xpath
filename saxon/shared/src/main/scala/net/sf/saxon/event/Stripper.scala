@@ -169,6 +169,6 @@ class Stripper( var rule: SpaceStrippingRule, next: Receiver)
     }
   }
 
-  override def usesTypeAnnotations(): Boolean = true
+  override def usesTypeAnnotations: Boolean = true
 
 }

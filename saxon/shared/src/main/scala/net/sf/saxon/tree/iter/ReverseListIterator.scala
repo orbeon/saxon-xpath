@@ -18,7 +18,7 @@ class ReverseListIterator[T <: Item](private val items: List[T])
 
   private var index: Int = items.size - 1
 
-  def hasNext(): Boolean = index >= 0
+  def hasNext: Boolean = index >= 0
 
   def next(): T =
     if (index >= 0) {
@@ -32,6 +32,6 @@ class ReverseListIterator[T <: Item](private val items: List[T])
   override def getProperties: Set[Property] =
     Set(Property.LAST_POSITION_FINDER)
 
-  def getReverseIterator(): SequenceIterator = new ListIterator(items)
+  def getReverseIterator: SequenceIterator = new ListIterator(items)
 
 }

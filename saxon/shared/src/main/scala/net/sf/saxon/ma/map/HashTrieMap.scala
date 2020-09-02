@@ -108,7 +108,7 @@ class HashTrieMap extends MapItem {
     entries
   }
 
-  def isEmpty: Boolean = entries == 0 || !imap.iterator().hasNext
+  def isEmpty: Boolean = entries == 0 || !imap.iterator.hasNext
 
   override def conforms(requiredKeyType: AtomicType,
                         requiredValueType: SequenceType,
@@ -254,7 +254,7 @@ class HashTrieMap extends MapItem {
   def keys(): AtomicIterator[_ <: AtomicValue] =
     new AtomicIterator[AtomicValue]() {
       var base: Iterator[Tuple2[AtomicMatchKey, KeyValuePair]] =
-        imap.iterator()
+        imap.iterator
 
       def next(): AtomicValue =
         if (base.hasNext) {
@@ -268,9 +268,9 @@ class HashTrieMap extends MapItem {
     () =>
       new Iterator[KeyValuePair]() {
         var base: Iterator[Tuple2[AtomicMatchKey, KeyValuePair]] =
-          imap.iterator()
+          imap.iterator
 
-        def hasNext(): Boolean = base.hasNext
+        def hasNext: Boolean = base.hasNext
 
         def next(): KeyValuePair = base.next()._2
 

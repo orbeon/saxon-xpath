@@ -77,7 +77,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
   /**
     * Ask whether this node name representation has a known namecode and fingerprint
     *
-    * @return true if the methods getFingerprint() and getNameCode() will
+    * @return true if the methods getFingerprint and getNameCode() will
     *         return a result other than -1
     */
   def hasFingerprint: Boolean = node.hasFingerprint
@@ -88,7 +88,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     *
     * @return the fingerprint if known; otherwise -1
     */
-  def getFingerprint(): Int =
+  def getFingerprint: Int =
     if (hasFingerprint) {
       node.getFingerprint
     } else {
@@ -111,7 +111,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
   /**
     * Returns a hash code value for the object.
     */
-  override def hashCode(): Int =
+  override def hashCode: Int =
     StructuredQName.computeHashCode(getURI, getLocalPart)
 
   /**

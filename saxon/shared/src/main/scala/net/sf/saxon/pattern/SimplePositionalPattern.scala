@@ -39,7 +39,7 @@ class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
    */
   override def getUType: UType = nodeTest.getUType
 
-  override def getFingerprint(): Int = nodeTest.getFingerprint
+  override def getFingerprint: Int = nodeTest.getFingerprint
 
   override def getItemType: ItemType = nodeTest.getPrimitiveItemType
 

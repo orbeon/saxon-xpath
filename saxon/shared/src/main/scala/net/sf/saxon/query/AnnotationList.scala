@@ -55,7 +55,7 @@ class AnnotationList(var list: List[Annotation])
     new AnnotationList(out)
   }
 
-  override def iterator(): Iterator[Annotation] = list.iterator()
+  override def iterator: Iterator[Annotation] = list.iterator
 
   def isEmpty: Boolean = list.isEmpty
 
@@ -78,6 +78,6 @@ class AnnotationList(var list: List[Annotation])
 
   }
 
-  override def hashCode(): Int = list.hashCode
+  override def hashCode: Int = list.hashCode
 
 }

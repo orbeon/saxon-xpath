@@ -41,7 +41,7 @@ class SequenceType private (
         .getOccurrenceIndicator == getOccurrenceIndicator &&
       other.asInstanceOf[SequenceType].getItemType == getItemType
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     getItemType.hashCode ^ (getOccurrenceIndicator.hashCode << 17)
 
   def getUnderlyingSequenceType: net.sf.saxon.value.SequenceType =

@@ -24,7 +24,7 @@ class CollatingAtomicComparer(collator: StringCollator) extends AtomicComparer {
 
   def save(): String = "CAC|" + getCollator.getCollationURI
 
-  override def hashCode(): Int = collator.hashCode
+  override def hashCode: Int = collator.hashCode
 
   override def equals(obj: Any): Boolean = obj.isInstanceOf[CollatingAtomicComparer] && collator.equals(obj.asInstanceOf[CollatingAtomicComparer])
 

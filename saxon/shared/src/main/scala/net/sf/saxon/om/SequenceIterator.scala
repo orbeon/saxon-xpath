@@ -12,10 +12,10 @@
  * (class NodeInfo), singleton values (class AtomicValue), or function items: these are represented
  * collectively by the interface {@link Item}.</p>
  * <p>The interface to SequenceIterator is changed in Saxon 9.6 to drop support for the
- * current() and position() methods. Internal iterators no longer need to maintain the values
+ * current and position methods. Internal iterators no longer need to maintain the values
  * of the current item or the current position. This information is needed (in general) only
  * for an iterator that acts as the current focus; that is, an iterator stored as the current
- * iterator in an XPathContext. SequenceIterators than maintain the value of position()
+ * iterator in an XPathContext. SequenceIterators than maintain the value of position
  * and last() are represented by the interface {@link FocusIterator}.</p>
  *
  * @author Michael H. Kay

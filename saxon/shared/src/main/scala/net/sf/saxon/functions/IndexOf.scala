@@ -65,7 +65,7 @@ object IndexOf {
     /**
      * Get the next item in the sequence. This method changes the state of the
      * iterator, in particular it affects the result of subsequent calls of
-     * position() and current().
+     * position and current.
      *
      * @return the next item, or null if there are no more items. Once a call
      *         on next() has returned null, no further calls should be made. The preferred

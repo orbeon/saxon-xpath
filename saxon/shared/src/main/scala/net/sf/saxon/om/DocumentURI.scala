@@ -57,7 +57,7 @@ class DocumentURI(uri: String) {
 
   }
 
-  override def hashCode(): Int = normalizedValue.hashCode
+  override def hashCode: Int = normalizedValue.hashCode
 
 }
 

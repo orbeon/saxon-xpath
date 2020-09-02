@@ -204,7 +204,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
   /**
     * Returns a hash code value for the object.
     */
-  override def hashCode(): Int = keyType.hashCode ^ valueType.hashCode
+  override def hashCode: Int = keyType.hashCode ^ valueType.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity =
     if (other == AnyFunctionType) {

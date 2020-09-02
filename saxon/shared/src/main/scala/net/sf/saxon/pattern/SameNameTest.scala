@@ -96,7 +96,7 @@ class SameNameTest(private var origin: NodeInfo)
 
   def getDefaultPriority: Double = 0.0
 
-  override def getFingerprint(): Int =
+  override def getFingerprint: Int =
     if (origin.hasFingerprint) {
       origin.getFingerprint
     } else {
@@ -134,7 +134,7 @@ class SameNameTest(private var origin: NodeInfo)
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     origin.getNodeKind << 20 ^ origin.getURI.hashCode ^ origin.getLocalPart.hashCode
 
   override def equals(other: Any): Boolean = other match {

@@ -15,7 +15,7 @@ object TailIterator {
       case _ => if (base.getProperties.contains(SequenceIterator.Property.GROUNDED)) {
         val value: GroundedValue = base.materialize()
         if (start > value.getLength) {
-          EmptyIterator.emptyIterator()
+          EmptyIterator.emptyIterator
         } else {
           new ValueTailIterator(value, start - 1)
         }
@@ -23,7 +23,7 @@ object TailIterator {
         for (_ <- 0 until start - 1) {
           val b: Item = base.next()
           if (b == null) {
-            return EmptyIterator.emptyIterator()
+            return EmptyIterator.emptyIterator
           }
         }
         new TailIterator(base, start)
@@ -40,7 +40,7 @@ class TailIterator private(private var base: SequenceIterator,
 
   def next(): Item = base.next()
 
-  def hasNext(): Boolean = base.asInstanceOf[LookaheadIterator].hasNext
+  def hasNext: Boolean = base.asInstanceOf[LookaheadIterator].hasNext
 
   def getLength: Int = {
     val bl: Int = base.asInstanceOf[LastPositionFinder].getLength - start + 1

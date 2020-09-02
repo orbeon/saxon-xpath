@@ -121,7 +121,7 @@ class FilterIterator(base: SequenceIterator,
 
   def matches(): Boolean = {
     val iterator: SequenceIterator = filter.iterate(filterContext)
-    testPredicateValue(iterator, base.position(), filter)
+    testPredicateValue(iterator, base.position, filter)
   }
 
   // This code is carefully designed to avoid reading more items from the

@@ -46,7 +46,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     }
   }
 
-  override def getSchemaType(): SchemaType = tree.getSchemaType(nodeNr)
+  override def getSchemaType: SchemaType = tree.getSchemaType(nodeNr)
 
   def atomize(): AtomicSequence = tree.getTypedValueOfElement(this)
 
@@ -60,7 +60,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     }
   }
 
-  override def getAllNamespaces(): NamespaceMap = tree.namespaceMaps(tree.beta(nodeNr))
+  override def getAllNamespaces: NamespaceMap = tree.namespaceMaps(tree.beta(nodeNr))
 
   def hasUniformNamespaces: Boolean = false
 
@@ -268,7 +268,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
         case Type.COMMENT => {
           closePending = false
           val start: Int = tree.alpha(next)
-          val len: Int = tree.beta(next)
+          val len = tree.beta(next)
           if (len > 0) {
             receiver.comment(
               tree.commentBuffer.subSequence(start, start + len),
@@ -343,7 +343,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     map.getURIForPrefix(prefix, useDefault)
   }
 
-  override def isId(): Boolean = tree.isIdElement(nodeNr)
+  override def isId: Boolean = tree.isIdElement(nodeNr)
 
   override def isIdref(): Boolean = tree.isIdrefElement(nodeNr)
 

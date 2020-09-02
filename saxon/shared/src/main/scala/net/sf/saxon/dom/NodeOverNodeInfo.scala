@@ -56,7 +56,7 @@ abstract class NodeOverNodeInfo extends Node {
     case _ => false
   }
 
-  override def hashCode(): Int = node.hashCode
+  override def hashCode: Int = node.hashCode
 
   def getBaseURI: String = node.getBaseURI
 

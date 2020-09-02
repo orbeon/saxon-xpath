@@ -128,7 +128,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
     }
   }
 
-  override def hashCode(): Int = uType.hashCode
+  override def hashCode: Int = uType.hashCode
 
   override def equals(obj: Any): Boolean = obj match {
     case obj: MultipleNodeKindTest => uType == obj.uType

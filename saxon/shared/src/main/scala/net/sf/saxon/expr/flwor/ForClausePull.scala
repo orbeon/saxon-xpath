@@ -49,7 +49,7 @@ class ForClausePull(var base: TuplePull,
         if (forClause.getPositionVariable != null) {
           context.setLocalVariable(
             forClause.getPositionVariable.getLocalSlotNumber,
-            new Int64Value(currentIteration.position()))
+            new Int64Value(currentIteration.position))
         }
         true
       } else {

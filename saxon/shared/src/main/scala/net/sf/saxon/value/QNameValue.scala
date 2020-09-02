@@ -108,7 +108,7 @@ class QNameValue(prefix: String,
       (o.isInstanceOf[QNameComparable] &&
         qName == o.asInstanceOf[QNameComparable].getQNameValue.qName)
 
-    override def hashCode(): Int = qName.hashCode
+    override def hashCode: Int = qName.hashCode
 
   }
 

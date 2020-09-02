@@ -74,7 +74,7 @@ object Translate {
 
   def translateUsingMap(in: StringValue, map: IntToIntMap): CharSequence = {
     val us: UnicodeString = in.getUnicodeString
-    val len: Int = us.uLength()
+    val len = us.uLength()
     val sb: FastStringBuffer = new FastStringBuffer(len)
     for (i <- 0 until len) {
       val c: Int = us.uCharAt(i)

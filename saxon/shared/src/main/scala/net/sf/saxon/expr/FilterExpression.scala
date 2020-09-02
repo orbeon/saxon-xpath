@@ -935,7 +935,7 @@ class FilterExpression(base: Expression, filter: Expression)
         val it: SequenceIterator = getFilter.iterate(context)
         val first: Item = it.next()
         if (first == null) {
-          EmptyIterator.emptyIterator()
+          EmptyIterator.emptyIterator
         }
         if (first.isInstanceOf[NumericValue]) {
           if (it.next() != null) {
@@ -952,21 +952,21 @@ class FilterExpression(base: Expression, filter: Expression)
                 if (baseVal.isInstanceOf[MemoClosure]) {
                   val m: Item =
                     baseVal.asInstanceOf[MemoClosure].itemAt(pos - 1)
-                  if (m == null) EmptyIterator.emptyIterator() else m.iterate()
+                  if (m == null) EmptyIterator.emptyIterator else m.iterate()
                 } else {
                   val m: Item = baseVal.materialize().itemAt(pos - 1)
-                  if (m == null) EmptyIterator.emptyIterator() else m.iterate()
+                  if (m == null) EmptyIterator.emptyIterator else m.iterate()
                 }
               } else if (getBase.isInstanceOf[Literal]) {
                 val i: Item =
                   getBase.asInstanceOf[Literal].getValue.itemAt(pos - 1)
-                if (i == null) EmptyIterator.emptyIterator() else i.iterate()
+                if (i == null) EmptyIterator.emptyIterator else i.iterate()
               } else {
                 val baseIter: SequenceIterator = getBase.iterate(context)
                 SubsequenceIterator.make(baseIter, pos, pos)
               }
             }
-            EmptyIterator.emptyIterator()
+            EmptyIterator.emptyIterator
           }
         } else {
           var ebv: Boolean = false
@@ -994,7 +994,7 @@ class FilterExpression(base: Expression, filter: Expression)
           if (ebv) {
             getBase.iterate(context)
           } else {
-            EmptyIterator.emptyIterator()
+            EmptyIterator.emptyIterator
           }
         }
       } catch {

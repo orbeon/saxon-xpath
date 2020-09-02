@@ -413,7 +413,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
     override def equals(o: Any): Boolean = return compareTo(o.asInstanceOf) == 0
 
-    override def hashCode(): Int =
+    override def hashCode: Int =
       TimeValue.this.toDateTime.getSchemaComparable.hashCode
 
   }
@@ -424,7 +424,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     DateTimeValue.hashCode(1951,
       10.toByte,
       11.toByte,

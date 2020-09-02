@@ -58,12 +58,12 @@ trait NodeInfo extends Source with Item with Location {
   def getNodeKind: Int
   def isSameNodeInfo(other: NodeInfo): Boolean = equals(other)
   def equals(other: Any): Boolean
-  def hashCode(): Int
+  def hashCode: Int
   /*@Nullable*/
   def getSystemId: String
-  def getPublicId(): String = null
+  def getPublicId: String = null
   def getBaseURI: String
-  def getLineNumber(): Int = -1
+  def getLineNumber: Int = -1
   def getColumnNumber(): Int = -1
   def compareOrder(other: NodeInfo): Int
   def getStringValue: String
@@ -99,7 +99,7 @@ trait NodeInfo extends Source with Item with Location {
   def children: Iterator[NodeInfo] = {
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      parent.iterateAxis(AxisInfo.CHILD).asIterator()
+      parent.iterateAxis(AxisInfo.CHILD).asiterator
     } else {
       Collections.emptyList().asInstanceOf[Iterator[NodeInfo]]
     }
@@ -108,12 +108,12 @@ trait NodeInfo extends Source with Item with Location {
   def children(filter: Predicate[_ >: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      parent.iterateAxis(AxisInfo.CHILD, nodeTest = filter).asIterator().iterator.to(Iterable)
+      parent.iterateAxis(AxisInfo.CHILD, nodeTest = filter).asiterator.iterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }
 
-  def attributes(): AttributeMap = {
+  def attributes: AttributeMap = {
     var atts: AttributeMap = EmptyAttributeMap.getInstance
     if (getNodeKind == Type.ELEMENT) {
       val iter: AxisIterator = iterateAxis(AxisInfo.ATTRIBUTE)
@@ -142,7 +142,7 @@ trait NodeInfo extends Source with Item with Location {
   def isIdref: Boolean = false
   def isNilled: Boolean = false
 
-  override def isStreamed(): Boolean = false
+  override def isStreamed: Boolean = false
 
   override def toShortString: String = getNodeKind match {
     case Type.DOCUMENT => "document-node()"

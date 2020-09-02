@@ -69,9 +69,9 @@ object JAXPXPathStaticContext {
     def getPrefixes(namespaceURI: String): Iterator[String] =
       throw new UnsupportedOperationException()
 
-    def iteratePrefixes(): Iterator[String] = {
+    def iteratePrefixes: Iterator[String] = {
       val prefixes: Array[String] = Array("", "xml", "xs", "xsi", "saxon")
-      Arrays.asList(prefixes: _*).iterator()
+      Arrays.asList(prefixes: _*).iterator
     }
 
     def getURIForPrefix(prefix: String, useDefault: Boolean): String =
@@ -137,9 +137,9 @@ class JAXPXPathStaticContext(config: Configuration)
       namespaceContext.getNamespaceURI(prefix)
     }
 
-  def iteratePrefixes(): Iterator[String] =
+  def iteratePrefixes: Iterator[String] =
     if (namespaceContext.isInstanceOf[NamespaceResolver]) {
-      namespaceContext.asInstanceOf[NamespaceResolver].iteratePrefixes()
+      namespaceContext.asInstanceOf[NamespaceResolver].iteratePrefixes
     } else {
       throw new UnsupportedOperationException()
     }

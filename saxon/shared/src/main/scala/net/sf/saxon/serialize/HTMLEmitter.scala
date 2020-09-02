@@ -61,9 +61,8 @@ object HTMLEmitter {
    */
   private[serialize] val emptyTags = new HTMLTagHashSet(31)
 
-  def setEmptyTag(tag: String) = emptyTags.add(tag)
-
-  def isEmptyTag(tag: String) = emptyTags.contains(tag)
+  def setEmptyTag(tag: String): Unit = emptyTags.add(tag)
+  def isEmptyTag(tag: String): Boolean = emptyTags.contains(tag)
 
   /**
    * Table of boolean attributes
@@ -73,12 +72,15 @@ object HTMLEmitter {
   private val booleanAttributes = new HTMLTagHashSet(43)
   private val booleanCombinations = new HTMLTagHashSet(57)
 
-  private def setBooleanAttribute(element: String, attribute: String) = {
+  private def setBooleanAttribute(element: String, attribute: String): Unit = {
     booleanAttributes.add(attribute)
     booleanCombinations.add(element + '+' + attribute)
   }
 
-  private def isBooleanAttribute(element: String, attribute: String, value: String) = attribute.equalsIgnoreCase(value) && booleanAttributes.contains(attribute) && (booleanCombinations.contains(element + '+' + attribute) || booleanCombinations.contains("*+" + attribute))
+  private def isBooleanAttribute(element: String, attribute: String, value: String) =
+    attribute.equalsIgnoreCase(value)       &&
+      booleanAttributes.contains(attribute) &&
+      (booleanCombinations.contains(element + '+' + attribute) || booleanCombinations.contains("*+" + attribute))
 
   setBooleanAttribute("*", "hidden") // HTML5
   setBooleanAttribute("area", "nohref")
@@ -138,21 +140,16 @@ object HTMLEmitter {
 }
 
 abstract class HTMLEmitter extends XMLEmitter {
-  private var nonASCIIRepresentation: Int = REP_NATIVE
 
+  private var nonASCIIRepresentation: Int = REP_NATIVE
   private var excludedRepresentation: Int = REP_ENTITY
 
   private var inScript: Int = _
-
-   var version: Int = 5
-
+  var version: Int = 5
   private var parentElement: String = _
-
   private var uri: String = _
-
   private var escapeNonAscii: Boolean = false
-
-  private var nodeNameStack: mutable.Stack[NodeName] = new mutable.Stack[NodeName]()
+  private val nodeNameStack: mutable.Stack[NodeName] = new mutable.Stack[NodeName]()
 
   /**
    * Say that all non-ASCII characters should be escaped, regardless of the character encoding
@@ -182,8 +179,7 @@ abstract class HTMLEmitter extends XMLEmitter {
     val byteOrderMark = outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
     if ("yes" == byteOrderMark && "UTF-8".equalsIgnoreCase(outputProperties.getProperty(OutputKeys.ENCODING))) try writer.write('\uFEFF')
     catch {
-      case err: IOException =>
-
+      case _: IOException =>
       // Might be an encoding exception; just ignore it
     }
     if ("yes" == outputProperties.getProperty(SaxonOutputKeys.SINGLE_QUOTES)) {
@@ -218,7 +214,7 @@ abstract class HTMLEmitter extends XMLEmitter {
   }
 
   @throws[XPathException]
-  def startContentOLD() = closeStartTag() // prevent <xxx/> syntax
+  def startContentOLD(): Unit = closeStartTag() // prevent <xxx/> syntax
   /**
    * Write attribute name=value pair. Overrides the XML behaviour if the name and value
    * are the same (we assume this is a boolean attribute to be minimised), or if the value is
@@ -245,9 +241,11 @@ abstract class HTMLEmitter extends XMLEmitter {
     var segstart = 0
     val specialChars = if (inAttribute) attSpecials
     else specialInText
-    if (chars.isInstanceOf[CompressedWhitespace]) {
-      chars.asInstanceOf[CompressedWhitespace].writeEscape(specialChars, writer)
-      return
+    chars match {
+      case whitespace: CompressedWhitespace =>
+        whitespace.writeEscape(specialChars, writer)
+        return
+      case _ =>
     }
     var disabled = false
     while ( {
@@ -326,7 +324,7 @@ abstract class HTMLEmitter extends XMLEmitter {
       else if (escapeNonAscii || !characterSet.inCharset(c)) characterReferenceGenerator.outputCharacterReference(c, writer)
       else writer.write(c)
       segstart = {
-        i += 1;
+        i += 1
         i
       }
     }
@@ -352,7 +350,7 @@ abstract class HTMLEmitter extends XMLEmitter {
    * Output an element end tag.
    */
   @throws[XPathException]
-  override def endElement() = {
+  override def endElement(): Unit = {
     val nodeName = nodeNameStack.pop
     val name = elementStack.peek
     inScript -= 1

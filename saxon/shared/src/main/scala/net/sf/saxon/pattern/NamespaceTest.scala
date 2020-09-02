@@ -105,7 +105,7 @@ class NamespaceTest(private var namePool: NamePool,
 
   }
 
-  override def hashCode(): Int = uri.hashCode << 5 + nodeKind
+  override def hashCode: Int = uri.hashCode << 5 + nodeKind
 
   /**
     * Indicates whether some other object is "equal to" this one.

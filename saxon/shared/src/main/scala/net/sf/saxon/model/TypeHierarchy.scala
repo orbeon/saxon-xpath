@@ -97,7 +97,7 @@ object TypeHierarchy {
 
   private class ItemTypePair(var s: ItemType, var t: ItemType) {
 
-    override def hashCode(): Int = s.hashCode ^ t.hashCode
+    override def hashCode: Int = s.hashCode ^ t.hashCode
 
     override def equals(obj: Any): Boolean = obj match {
       case pair: ItemTypePair => s == pair.s && t == pair.t

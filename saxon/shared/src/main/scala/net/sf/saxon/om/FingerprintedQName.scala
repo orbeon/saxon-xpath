@@ -100,7 +100,7 @@ class FingerprintedQName extends NodeName {
   /**
     * Ask whether this node name representation has a known namecode and fingerprint
     *
-    * @return true if the methods getFingerprint() and getNameCode() will
+    * @return true if the methods getFingerprint and getNameCode() will
     * return a result other than -1
     */
   def hasFingerprint: Boolean = fingerprint != -1
@@ -182,7 +182,7 @@ class FingerprintedQName extends NodeName {
   /**
     * Returns a hash code value for the object.
     */
-  override def hashCode(): Int = qName.hashCode
+  override def hashCode: Int = qName.hashCode
 
   /**
     * Determine whether two IdentityComparable objects are identical. This is a stronger

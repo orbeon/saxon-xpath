@@ -1,35 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * A node (implementing the NodeInfo interface) representing an attribute, text node,
+  * comment, processing instruction, or namespace that has no parent (and of course no children).
+  * Exceptionally it is also used (during whitespace stripping) to represent a standalone element.
+  * <p>In general this class does not impose constraints defined in the data model: that is the responsibility
+  * of the client. For example, the class does not prevent you from creating a comment or text node that has
+  * a name or a non-trivial type annotation.</p>
+  *
+  * @author Michael H. Kay
+  */
+
 package net.sf.saxon.tree.util
-
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.event.Builder
-
-import net.sf.saxon.event.ReceiverOption
-
-import net.sf.saxon.model._
-
-import net.sf.saxon.om._
-
-import net.sf.saxon.s9api.Location
-
-import net.sf.saxon.trans.XPathException
-
-import net.sf.saxon.tree.iter.AxisIterator
-
-import net.sf.saxon.tree.iter.EmptyIterator
-
-import net.sf.saxon.tree.iter.SingleNodeIterator
-
-import net.sf.saxon.value.StringValue
-
-import net.sf.saxon.value.UntypedAtomicValue
 
 import java.util.function.Predicate
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import net.sf.saxon.event.{Builder, ReceiverOption}
+import net.sf.saxon.model._
+import net.sf.saxon.om._
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.tree.iter.{AxisIterator, EmptyIterator, SingleNodeIterator}
+import net.sf.saxon.utils.Configuration
+import net.sf.saxon.value.{StringValue, UntypedAtomicValue}
 
-
+import scala.beans.BeanProperty
 
 
 class Orphan(config: Configuration) extends MutableNodeInfo {
@@ -39,11 +37,8 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   /*@Nullable*/
 
   private var nodeName: NodeName = null
-
   private var stringValue: CharSequence = _
-
   private var typeAnnotation: SchemaType = null
-
   private var options: Int = ReceiverOption.NONE
 
   @BeanProperty
@@ -74,7 +69,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * containing the node, or null if not known or not applicable
     * @since 9.7
     */
-  override def getPublicId(): String = treeInfo.getPublicId
+  override def getPublicId: String = treeInfo.getPublicId
 
   /**
     * Set the system identifier for this Source.
@@ -151,7 +146,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     *                                       namepool fingerprints (specifically, if {@link #hasFingerprint} returns false).
     * @since 8.4 (moved into FingerprintedNode at some stage; then back into NodeInfo at 9.8).
     */
-  override def getFingerprint(): Int =
+  override def getFingerprint: Int =
     throw new UnsupportedOperationException()
 
   /**
@@ -159,7 +154,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * node in the NamePool. If the answer is true, then the {@link #getFingerprint} method must
     * return the fingerprint of the node. If the answer is false, then the {@link #getFingerprint}
     * method should throw an {@code UnsupportedOperationException}. In the case of unnamed nodes
-    * such as text nodes, the result can be either true (in which case getFingerprint() should
+    * such as text nodes, the result can be either true (in which case getFingerprint should
     * return -1) or false (in which case getFingerprint may throw an exception).
     *
     * @return true if the implementation of this node provides fingerprints.
@@ -194,7 +189,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     *         xs:anyType if it has.
     * @since 9.4
     */
-  override def getSchemaType(): SchemaType = {
+  override def getSchemaType: SchemaType = {
     if (typeAnnotation == null) {
       if (kind == Type.ELEMENT) {
         Untyped.getInstance
@@ -207,16 +202,15 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   def equals(other: NodeInfo): Boolean = this eq other
 
-  override def hashCode(): Int = super.hashCode
+  override def hashCode: Int = super.hashCode
 
   /*@Nullable*/
 
   def getBaseURI: String =
-    if (kind == Type.PROCESSING_INSTRUCTION) {
+    if (kind == Type.PROCESSING_INSTRUCTION)
       getSystemId
-    } else {
+    else
       null
-    }
 
   /**
     * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
@@ -226,11 +220,12 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def saveLocation(): Location = this
 
   def compareOrder(other: NodeInfo): Int = {
-// are they the same node?
-    if (this eq other) {
+    if (this eq other)
       return 0
-    }
-    if (this.hashCode < other.hashCode) -1 else +1
+    if (this.hashCode < other.hashCode)
+      -1
+    else
+      +1
   }
 
   def getStringValue: String = stringValue.toString
@@ -238,32 +233,28 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def getStringValueCS: CharSequence = stringValue
 
   def getLocalPart: String =
-    if (nodeName == null) {
+    if (nodeName == null)
       ""
-    } else {
+    else
       nodeName.getLocalPart
-    }
 
   def getURI: String =
-    if (nodeName == null) {
+    if (nodeName == null)
       ""
-    } else {
+    else
       nodeName.getURI
-    }
 
   def getPrefix: String =
-    if (nodeName == null) {
+    if (nodeName == null)
       ""
-    } else {
+    else
       nodeName.getPrefix
-    }
 
   def getDisplayName: String =
-    if (nodeName == null) {
+    if (nodeName == null)
       ""
-    } else {
+    else
       nodeName.getDisplayName
-    }
 
   /*@Nullable*/
 
@@ -279,7 +270,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
         AxisInfo.DESCENDANT | AxisInfo.FOLLOWING | AxisInfo.FOLLOWING_SIBLING |
         AxisInfo.NAMESPACE | AxisInfo.PARENT | AxisInfo.PRECEDING |
         AxisInfo.PRECEDING_SIBLING | AxisInfo.PRECEDING_OR_ANCESTOR =>
-      EmptyIterator.ofNodes()
+      EmptyIterator.ofNodes
     case _ =>
       throw new IllegalArgumentException("Unknown axis number " + axisNumber)
 
@@ -287,8 +278,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   /*@NotNull*/
 
-  def iterateAxis(axisNumber: Int,
-                  nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
+  def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
     axisNumber match {
       case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF |
           AxisInfo.SELF =>
@@ -298,10 +288,9 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
           AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE | AxisInfo.PARENT |
           AxisInfo.PRECEDING | AxisInfo.PRECEDING_SIBLING |
           AxisInfo.PRECEDING_OR_ANCESTOR =>
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       case _ =>
         throw new IllegalArgumentException("Unknown axis number " + axisNumber)
-
     }
 
   /**
@@ -318,7 +307,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   /*@NotNull*/
 
-  def getRoot(): NodeInfo = this
+  def getRoot: NodeInfo = this
 
   def hasChildNodes: Boolean = false
 
@@ -329,8 +318,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 
   /*@Nullable*/
 
-  def getDeclaredNamespaces(
-      buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
+  def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
   /**
     * Get all the namespace bindings that are in-scope for this element.
@@ -342,9 +330,9 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     *
     * @return the in-scope namespaces for an element, or null for any other kind of node.
     */
-  override def getAllNamespaces(): NamespaceMap = null
+  override def getAllNamespaces: NamespaceMap = null
 
-  override def isId(): Boolean =
+  override def isId: Boolean =
     isOption(ReceiverOption.IS_ID) ||
       (kind == Type.ATTRIBUTE && nodeName == StandardNames.XML_ID_NAME)
 
@@ -353,15 +341,11 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def isDisableOutputEscaping: Boolean =
     isOption(ReceiverOption.DISABLE_ESCAPING)
 
-  def insertChildren(source: Array[NodeInfo],
-                     atStart: Boolean,
-                     inherit: Boolean): Unit = ()
+  def insertChildren(source: Array[NodeInfo], atStart: Boolean, inherit: Boolean): Unit = ()
 // no action: node is not a document or element node
 // no action: node is not a document or element node
 
-  def insertSiblings(source: Array[NodeInfo],
-                     before: Boolean,
-                     inherit: Boolean): Unit = ()
+  def insertSiblings(source: Array[NodeInfo], before: Boolean, inherit: Boolean): Unit = ()
 // no action: node has no parent
 // no action: node has no parent
 
@@ -371,9 +355,8 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * @param attributes the new attribute list
     * @throws UnsupportedOperationException if this is not an element node
     */
-  override def setAttributes(attributes: AttributeMap): Unit = {
+  override def setAttributes(attributes: AttributeMap): Unit =
     throw new UnsupportedOperationException()
-  }
 
   def removeAttribute(attribute: NodeInfo): Unit = ()
 // no action: node is not an element
@@ -386,55 +369,31 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
 // no action: node is not an element
 // no action: node is not an element
 
-  def delete(): Unit = {
+  def delete(): Unit =
 // no action other than to mark it deleted: node has no parent from which it can be detached
     kind = -1
-  }
 
-  def isDeleted(): Boolean = kind == -1
+  def isDeleted: Boolean = kind == -1
 
-  def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit = {
+  def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit =
     throw new IllegalStateException("Cannot replace a parentless node")
-  }
 
-  def replaceStringValue(stringValue: CharSequence): Unit = {
+  def replaceStringValue(stringValue: CharSequence): Unit =
     this.stringValue = stringValue
-  }
 
-  def rename(newNameCode: NodeName): Unit = {
-    if (kind == Type.ATTRIBUTE || kind == Type.PROCESSING_INSTRUCTION) {
+  def rename(newNameCode: NodeName): Unit =
+    if (kind == Type.ATTRIBUTE || kind == Type.PROCESSING_INSTRUCTION)
       nodeName = newNameCode
-    }
-  }
 
   def addNamespace(nscode: NamespaceBinding): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 
-  def removeTypeAnnotation(): Unit = {
+  def removeTypeAnnotation(): Unit =
     typeAnnotation = BuiltInAtomicType.UNTYPED_ATOMIC
-  }
 
   /*@NotNull*/
 
   def newBuilder(): Builder =
-    throw new UnsupportedOperationException(
-      "Cannot create children for an Orphan node")
-
+    throw new UnsupportedOperationException("Cannot create children for an Orphan node")
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A node (implementing the NodeInfo interface) representing an attribute, text node,
-  * comment, processing instruction, or namespace that has no parent (and of course no children).
-  * Exceptionally it is also used (during whitespace stripping) to represent a standalone element.
-  * <p>In general this class does not impose constraints defined in the data model: that is the responsibility
-  * of the client. For example, the class does not prevent you from creating a comment or text node that has
-  * a name or a non-trivial type annotation.</p>
-  *
-  * @author Michael H. Kay
-  */

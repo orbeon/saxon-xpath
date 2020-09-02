@@ -66,7 +66,7 @@ object BigIntegerValue {
 
     def equals(o: BigIntegerComparable): Boolean = compareTo(o) == 0
 
-    override def hashCode(): Int = {
+    override def hashCode: Int = {
 // Must align with hashCodes for other subtypes of xs:decimal
       val big: BigInteger = value.asBigInteger()
       if (big.compareTo(MAX_LONG) < 0 && big.compareTo(MIN_LONG) > 0) {
@@ -145,7 +145,7 @@ class BigIntegerValue() extends IntegerValue {
       err
     }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     if (value.compareTo(MIN_INT) >= 0 && value.compareTo(MAX_INT) <= 0) {
       value.intValue()
     } else {

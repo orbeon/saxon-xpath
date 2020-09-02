@@ -88,13 +88,13 @@ class VirtualCopy(var original: NodeInfo,
    * @return the TreeInfo
    * @since 9.7
    */
-  def getTreeInfo(): VirtualTreeInfo = tree
+  def getTreeInfo: VirtualTreeInfo = tree
 
   def setDropNamespaces(drop: Boolean): Unit = {
     this.dropNamespaces = drop
   }
 
-  override def getAllNamespaces(): NamespaceMap =
+  override def getAllNamespaces: NamespaceMap =
     if (getNodeKind == Type.ELEMENT) {
       if (dropNamespaces) {
         var nsMap: NamespaceMap = NamespaceMap.emptyMap
@@ -132,14 +132,14 @@ class VirtualCopy(var original: NodeInfo,
    *                                       namepool fingerprints (specifically, if { @link #hasFingerprint} returns false).
    * @since 8.4 (moved into FingerprintedNode at some stage; then back into NodeInfo at 9.8).
    */
-  override def getFingerprint(): Int = original.getFingerprint
+  override def getFingerprint: Int = original.getFingerprint
 
   /**
    * Ask whether this NodeInfo implementation holds a fingerprint identifying the name of the
    * node in the NamePool. If the answer is true, then the {@link #getFingerprint} method must
    * return the fingerprint of the node. If the answer is false, then the {@link #getFingerprint}
    * method should throw an {@code UnsupportedOperationException}. In the case of unnamed nodes
-   * such as text nodes, the result can be either true (in which case getFingerprint() should
+   * such as text nodes, the result can be either true (in which case getFingerprint should
    * return -1) or false (in which case getFingerprint may throw an exception).
    *
    * @return true if the implementation of this node provides fingerprints.
@@ -154,7 +154,7 @@ class VirtualCopy(var original: NodeInfo,
       getTreeInfo == other.asInstanceOf[VirtualCopy].getTreeInfo &&
       original == other.asInstanceOf[VirtualCopy].original
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     original.hashCode ^
       ((getTreeInfo.getDocumentNumber & 0x7fffffff).toInt << 19)
 
@@ -164,7 +164,7 @@ class VirtualCopy(var original: NodeInfo,
 
   override def getBaseURI: String = Navigator.getBaseURI(this)
 
-  override def getLineNumber(): Int = original.getLineNumber
+  override def getLineNumber: Int = original.getLineNumber
 
   override def getColumnNumber(): Int = original.getColumnNumber
 
@@ -213,7 +213,7 @@ class VirtualCopy(var original: NodeInfo,
    *         xs:anyType if it has.
    * @since 9.4
    */
-  override def getSchemaType(): SchemaType = original.getSchemaType
+  override def getSchemaType: SchemaType = original.getSchemaType
 
   /*@Nullable*/
 
@@ -249,7 +249,7 @@ class VirtualCopy(var original: NodeInfo,
           nodeTest)
       case AxisInfo.NAMESPACE =>
         if (getNodeKind != Type.ELEMENT) {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         }
         NamespaceNode.makeIterator(this, nodeTest)
       case AxisInfo.PARENT => Navigator.filteredSingleton(getParent, nodeTest)
@@ -286,7 +286,7 @@ class VirtualCopy(var original: NodeInfo,
 
   /*@Nullable*/
 
-  def getRoot(): NodeInfo = {
+  def getRoot: NodeInfo = {
     var n: NodeInfo = this
     while (true) {
       val p: NodeInfo = n.getParent
@@ -324,7 +324,7 @@ class VirtualCopy(var original: NodeInfo,
         } else {
           allNamespaces.add(new NamespaceBinding(getPrefix, getURI))
         }
-        for (att <- original.attributes()) {
+        for (att <- original.attributes) {
           val name: NodeName = att.getNodeName
           if (name.getURI != null) {
             val b: NamespaceBinding =
@@ -366,7 +366,7 @@ class VirtualCopy(var original: NodeInfo,
 
   def atomize(): AtomicSequence = original.atomize()
 
-  override def isId(): Boolean = original.isId
+  override def isId: Boolean = original.isId
 
   override def isIdref(): Boolean = original.isIdref
 
@@ -374,7 +374,7 @@ class VirtualCopy(var original: NodeInfo,
 
   /*@Nullable*/
 
-  override def getPublicId(): String =
+  override def getPublicId: String =
     if (original != null) original.getPublicId else null
 
   def isIncludedInCopy(sourceNode: NodeInfo): Boolean =

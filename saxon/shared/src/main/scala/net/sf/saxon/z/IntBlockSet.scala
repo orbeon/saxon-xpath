@@ -44,13 +44,13 @@ class IntBlockSet(@BeanProperty var startPoint: Int,
 
   def add(value: Int): Boolean = throw new UnsupportedOperationException("add")
 
-  def iterator(): IntIterator = mutableCopy().iterator()
+  def iterator: IntIterator = mutableCopy().iterator
 
   override def toString: String = startPoint.toString + " - " + endPoint.toString
 
   override def equals(other: Any): Boolean = mutableCopy() == other
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     // Note, hashcodes are NOT the same as those used by IntHashSet and IntArraySet
     if (hashCodeVariable == -1) {
       hashCodeVariable = 0x836a89f1 ^ (startPoint + (endPoint << 3))

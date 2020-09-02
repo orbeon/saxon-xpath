@@ -130,7 +130,7 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
 
   def save(): String = "GAC|" + collator.getCollationURI
 
-  override def hashCode(): Int = collator.hashCode
+  override def hashCode: Int = collator.hashCode
 
   override def equals(obj: Any): Boolean = obj match {
     case obj: GenericAtomicComparer => collator == obj.collator

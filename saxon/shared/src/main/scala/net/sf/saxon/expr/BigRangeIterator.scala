@@ -32,7 +32,7 @@ class BigRangeIterator(var start: BigInteger, var limit: BigInteger)
       "XPDY0130")
   }
 
-  def hasNext(): Boolean = currentValue.compareTo(limit) < 0
+  def hasNext: Boolean = currentValue.compareTo(limit) < 0
 
   /*@Nullable*/
 

@@ -73,7 +73,7 @@ class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
     }
   }
 
-  override def usesTypeAnnotations(): Boolean = true
+  override def usesTypeAnnotations: Boolean = true
 
 }
 

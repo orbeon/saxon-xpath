@@ -261,7 +261,7 @@ object ResultDocument {
                               props: Properties,
                               c: XPathContext): Unit = {
     val resolver: NamespaceResolver = element.getAllNamespaces
-    for (att <- element.attributes()) {
+    for (att <- element.attributes) {
       val uri: String = att.getNodeName.getURI
       val local: String = att.getNodeName.getLocalPart
       val `val`: String = Whitespace.trim(att.getValue)
@@ -336,7 +336,7 @@ class ResultDocument(private val globalProperties: Properties,
     validationOptions.setTopLevelType(`type`)
   }
 
-  def getSchemaType(): SchemaType =
+  def getSchemaType: SchemaType =
     if (validationOptions == null) null else validationOptions.getTopLevelType
 
   def setValidationAction(mode: Int, schemaType: SchemaType): Unit = {

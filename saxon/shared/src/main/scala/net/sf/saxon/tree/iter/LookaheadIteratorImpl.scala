@@ -25,7 +25,7 @@ class LookaheadIteratorImpl private (private var base: SequenceIterator)
 
   private var lNext: Item = base.next()
 
-  def hasNext(): Boolean = next != null
+  def hasNext: Boolean = next != null
 
   def next(): Item = {
     val current: Item = lNext

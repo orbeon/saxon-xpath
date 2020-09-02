@@ -68,7 +68,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
     }
   }
 
-  def getOutputProperties() : Properties = {
+  def getOutputProperties : Properties = {
     return output_Properties
   }
 

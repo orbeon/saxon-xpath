@@ -72,7 +72,7 @@ class ValidationException(exception: Exception)
    * @return the detail message string of this { @code Throwable} instance
    *         (which may be { @code null}).
    */
-  override def getMessage()
+  override def getMessage
   : String = // The message in the exception can't be updated, it can only be set from the constructor.
     if (failure != null) {
       failure.getMessage

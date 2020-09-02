@@ -47,7 +47,7 @@ abstract class ParentNodeConstructor
 
    var preservingTypes: Boolean = true
 
-  def getSchemaType(): SchemaType =
+  def getSchemaType: SchemaType =
     if (validationOptions == null) null else validationOptions.getTopLevelType
 
   def setValidationAction(mode: Int, schemaType: SchemaType): Unit = {

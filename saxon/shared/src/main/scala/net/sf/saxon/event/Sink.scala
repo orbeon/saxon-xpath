@@ -54,7 +54,7 @@ class Sink(pipe: PipelineConfiguration) extends SequenceReceiver(pipe) {
 
   override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = ()
 
-  override def usesTypeAnnotations(): Boolean = false
+  override def usesTypeAnnotations: Boolean = false
 
 }
 

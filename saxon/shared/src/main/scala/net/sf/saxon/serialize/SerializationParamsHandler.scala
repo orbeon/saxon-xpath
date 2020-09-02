@@ -42,7 +42,7 @@ object SerializationParamsHandler {
 
   private def restrictAttributes(element: NodeInfo,
                                  allowedNames: String*): Unit = {
-    for (att <- element.attributes()) {
+    for (att <- element.attributes) {
       val name: NodeName = att.getNodeName
       if ("" == name.getURI &&
         Arrays.binarySearch(allowedNames.asInstanceOf[Array[AnyRef]], name.getLocalPart) < 0) {

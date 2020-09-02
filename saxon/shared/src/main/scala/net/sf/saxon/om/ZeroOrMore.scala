@@ -39,10 +39,8 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
   }
 
   def head: T = if (content.isEmpty) null.asInstanceOf[T] else content.get(0)
-
   def iterate(): ListIterator[T] = new ListIterator(content)
-
-  def iterator(): Iterator[T] = content.iterator()
+  def iterator: Iterator[T] = content.iterator
 
   def itemAt(n: Int): T =
     if (n >= 0 && n < content.size) {
@@ -85,5 +83,4 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
     }
     this
   }
-
 }

@@ -20,7 +20,7 @@ trait ConstrainedIterator[T <: Item]
     with GroundedIterator
     with LookaheadIterator {
 
-  def hasNext(): Boolean
+  def hasNext: Boolean
 
   /*@Nullable*/
 

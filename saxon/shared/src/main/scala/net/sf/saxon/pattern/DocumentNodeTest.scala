@@ -100,7 +100,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
 
   override def toString: String = "document-node(" + elementTest + ')'
 
-  override def hashCode(): Int = elementTest.hashCode ^ 12345
+  override def hashCode: Int = elementTest.hashCode ^ 12345
 
   override def equals(other: Any): Boolean = other match {
     case other: DocumentNodeTest => other.elementTest == elementTest

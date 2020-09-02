@@ -91,7 +91,7 @@ class BooleanExpressionPattern(expression: Expression)
     AnyItemType
   }
 
-  override def getFingerprint(): Int = -1
+  override def getFingerprint: Int = -1
 
   override def toString: String = ".[" + getPredicate + "]"
 

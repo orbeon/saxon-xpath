@@ -1,69 +1,40 @@
 package net.sf.saxon.serialize
 
-import net.sf.saxon.lib.NamespaceConstant
-
-import net.sf.saxon.model.SchemaType
-
-import net.sf.saxon.om.AttributeMap
-
-import net.sf.saxon.om.NamespaceMap
-
-import net.sf.saxon.om.NodeName
-
-import net.sf.saxon.s9api.Location
-
 import javax.xml.transform.OutputKeys
-
-import HTMLEmitter._
+import net.sf.saxon.lib.NamespaceConstant
+import net.sf.saxon.model.SchemaType
+import net.sf.saxon.om.{AttributeMap, NamespaceMap, NodeName}
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.serialize.HTMLEmitter._
 
 object HTML50Emitter {
-
   setEmptyTag("area")
-
   setEmptyTag("base")
-
   setEmptyTag("base")
-
   setEmptyTag("basefont")
-
   setEmptyTag("br")
-
   setEmptyTag("col")
-
   setEmptyTag("embed")
-
   setEmptyTag("frame")
-
   setEmptyTag("hr")
-
   setEmptyTag("img")
-
   setEmptyTag("input")
-
   setEmptyTag("isindex")
-
   setEmptyTag("keygen")
-
   setEmptyTag("link")
-
   setEmptyTag("meta")
-
   setEmptyTag("param")
-
   setEmptyTag("source")
-
   setEmptyTag("track")
-
   setEmptyTag("wbr")
-
 }
 
 class HTML50Emitter extends HTMLEmitter {
 
   version = 5
 
-   override def isHTMLElement(name: NodeName): Boolean = {
-    val uri: String = name.getURI
+  def isHTMLElement(name: NodeName): Boolean = {
+    val uri = name.getURI
     uri.==("") || uri == NamespaceConstant.XHTML
   }
 
@@ -75,13 +46,11 @@ class HTML50Emitter extends HTMLEmitter {
   override  def writeDocType(name: NodeName,
                                       displayName: String,
                                       systemId: String,
-                                      publicId: String): Unit = {
-    if (systemId == null && publicId == null) {
+                                      publicId: String): Unit =
+    if (systemId == null && publicId == null)
       writer.write("<!DOCTYPE HTML>")
-    } else {
+    else
       super.writeDocType(name, displayName, systemId, publicId)
-    }
-  }
 
   override  def writeDocTypeWithNullSystemId(): Boolean = true
 
@@ -93,16 +62,12 @@ class HTML50Emitter extends HTMLEmitter {
                             properties: Int): Unit = {
     if (!started) {
       openDocument()
-      var systemId: String =
-        outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
-      var publicId: String =
-        outputProperties.getProperty(OutputKeys.DOCTYPE_PUBLIC)
-      if ("" == systemId) {
+      var systemId = outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
+      var publicId = outputProperties.getProperty(OutputKeys.DOCTYPE_PUBLIC)
+      if ("" == systemId)
         systemId = null
-      }
-      if ("" == publicId) {
+      if ("" == publicId)
         publicId = null
-      }
       writeDocType(null, "html", systemId, publicId)
       started = true
     }
@@ -114,6 +79,5 @@ class HTML50Emitter extends HTMLEmitter {
       properties)
   }
 
-   override def rejectControlCharacters(): Boolean = false
-
+  def rejectControlCharacters: Boolean = false
 }

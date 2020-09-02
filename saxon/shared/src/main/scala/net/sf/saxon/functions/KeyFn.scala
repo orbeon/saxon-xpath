@@ -144,7 +144,7 @@ object KeyFn {
         LocalOrderComparer.getInstance)
     }
     if (allResults == null) {
-      allResults = EmptyIterator.ofNodes()
+      allResults = EmptyIterator.ofNodes
     }
     if (origin == doc) {
       new LazySequence(allResults)

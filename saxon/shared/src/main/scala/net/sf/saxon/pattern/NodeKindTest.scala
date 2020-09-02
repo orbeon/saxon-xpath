@@ -133,7 +133,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   override def toString: String = NodeKindTest.toString(kind)
 
-  override def hashCode(): Int = kind
+  override def hashCode: Int = kind
 
   override def equals(other: Any): Boolean = other match {
     case other: NodeKindTest => other.kind == kind

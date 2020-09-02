@@ -20,7 +20,7 @@ class IntStepIterator(start: Int,
 
   private var current: Int = start
 
-  def hasNext(): Boolean = if (step > 0) current <= limit else current >= limit
+  def hasNext: Boolean = if (step > 0) current <= limit else current >= limit
 
   def next(): Integer = {
     val n: Int = current

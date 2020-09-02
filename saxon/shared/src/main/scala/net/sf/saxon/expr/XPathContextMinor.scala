@@ -97,13 +97,13 @@ class XPathContextMinor () extends XPathContext {
     fit
   }
 
-  def getCurrentIterator(): FocusIterator = currentIterator
+  def getCurrentIterator: FocusIterator = currentIterator
 
   def getContextItem(): Item = {
     if (currentIterator == null) {
       return null
     }
-    currentIterator.current()
+    currentIterator.current
   }
 
   def getLast(): Int = {
@@ -125,7 +125,7 @@ class XPathContextMinor () extends XPathContext {
       SequenceIterator.Property.LOOKAHEAD)) {
       !currentIterator.asInstanceOf[LookaheadIterator].hasNext
     }
-    currentIterator.position() == getLast
+    currentIterator.position == getLast
   }
 
   def getURIResolver(): URIResolver = caller.getURIResolver
@@ -196,13 +196,13 @@ class XPathContextMinor () extends XPathContext {
 
   def getCurrentTemplateRule(): Rule = null
 
-  def getCurrentGroupIterator(): GroupIterator =
+  def getCurrentGroupIterator: GroupIterator =
     getCaller.getCurrentGroupIterator
 
-  def getCurrentMergeGroupIterator(): GroupIterator =
+  def getCurrentMergeGroupIterator: GroupIterator =
     getCaller.getCurrentMergeGroupIterator
 
-  def getCurrentRegexIterator(): RegexIterator =
+  def getCurrentRegexIterator: RegexIterator =
     getCaller.getCurrentRegexIterator
 
   def getCurrentDateTime(): DateTimeValue = controller.getCurrentDateTime

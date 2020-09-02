@@ -41,7 +41,7 @@ class SmallAttributeMap(attrib: List[AttributeInfo]) extends AttributeMap {
     null
   }
 
-  override def iterator(): scala.Iterator[AttributeInfo] = attributes.iterator().asScala
+  override def iterator: scala.Iterator[AttributeInfo] = attributes.iterator.asScala
 
   override def asList(): List[AttributeInfo] = new ArrayList(attributes)
 

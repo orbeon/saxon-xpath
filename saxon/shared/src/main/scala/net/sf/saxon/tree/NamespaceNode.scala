@@ -52,7 +52,7 @@ object NamespaceNode {
                    test: Predicate[_ >: NodeInfo]): AxisIterator = {
     val nodes: List[NodeInfo] = new ArrayList[NodeInfo]()
     val bindings: Iterator[NamespaceBinding] =
-      element.getAllNamespaces.iterator()
+      element.getAllNamespaces.iterator
     var position: Int = 0
     var foundXML: Boolean = false
     while (bindings.hasNext) {
@@ -96,7 +96,7 @@ class NamespaceNode(var element: NodeInfo,
     * @return the TreeInfo
     * @since 9.7
     */
-  def getTreeInfo(): TreeInfo = element.getTreeInfo
+  def getTreeInfo: TreeInfo = element.getTreeInfo
 
   override def head: NodeInfo = this
 
@@ -107,7 +107,7 @@ class NamespaceNode(var element: NodeInfo,
       element == other.asInstanceOf[NamespaceNode].element &&
       nsBinding == other.asInstanceOf[NamespaceNode].nsBinding
 
-  override def hashCode(): Int = element.hashCode ^ (position << 13)
+  override def hashCode: Int = element.hashCode ^ (position << 13)
 
   /*@Nullable*/
 
@@ -120,7 +120,7 @@ class NamespaceNode(var element: NodeInfo,
     * containing the node, or null if not known or not applicable
     * @since 9.7
     */
-  override def getPublicId(): String = element.getPublicId
+  override def getPublicId: String = element.getPublicId
 
   /*@Nullable*/
 
@@ -128,7 +128,7 @@ class NamespaceNode(var element: NodeInfo,
     : String = // the base URI of a namespace node is the empty sequence
     null
 
-  override def getLineNumber(): Int = element.getLineNumber
+  override def getLineNumber: Int = element.getLineNumber
 
   override def getColumnNumber(): Int = element.getColumnNumber
 
@@ -159,7 +159,7 @@ class NamespaceNode(var element: NodeInfo,
     * node in the NamePool. If the answer is true, then the {@link #getFingerprint} method must
     * return the fingerprint of the node. If the answer is false, then the {@link #getFingerprint}
     * method should throw an {@code UnsupportedOperationException}. In the case of unnamed nodes
-    * such as text nodes, the result can be either true (in which case getFingerprint() should
+    * such as text nodes, the result can be either true (in which case getFingerprint should
     * return -1) or false (in which case getFingerprint may throw an exception).
     *
     * @return true if the implementation of this node provides fingerprints.
@@ -167,7 +167,7 @@ class NamespaceNode(var element: NodeInfo,
     */
   override def hasFingerprint: Boolean = true
 
-  def getFingerprint(): Int = {
+  def getFingerprint: Int = {
     if (fingerprint == -1) {
       if (nsBinding.getPrefix.isEmpty) {
         return -1
@@ -207,7 +207,7 @@ class NamespaceNode(var element: NodeInfo,
     *         xs:anyType if it has.
     * @since 9.4
     */
-  override def getSchemaType(): SchemaType = BuiltInAtomicType.STRING
+  override def getSchemaType: SchemaType = BuiltInAtomicType.STRING
 
   def getParent: NodeInfo = element
 
@@ -227,7 +227,7 @@ class NamespaceNode(var element: NodeInfo,
       case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
           AxisInfo.DESCENDANT_OR_SELF | AxisInfo.FOLLOWING_SIBLING |
           AxisInfo.NAMESPACE | AxisInfo.PRECEDING_SIBLING =>
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       case AxisInfo.FOLLOWING =>
         new Navigator.AxisFilter(new Navigator.FollowingEnumeration(this),
                                  nodeTest)
@@ -258,7 +258,7 @@ class NamespaceNode(var element: NodeInfo,
     */
   def getAttributeValue(uri: String, local: String): String = null
 
-  def getRoot(): NodeInfo = element.getRoot
+  def getRoot: NodeInfo = element.getRoot
 
   def hasChildNodes: Boolean = false
 
@@ -287,7 +287,7 @@ class NamespaceNode(var element: NodeInfo,
     *
     * @return the in-scope namespaces for an element, or null for any other kind of node.
     */
-  override def getAllNamespaces(): NamespaceMap = null
+  override def getAllNamespaces: NamespaceMap = null
 
   /**
     * Set the system identifier for this Source.

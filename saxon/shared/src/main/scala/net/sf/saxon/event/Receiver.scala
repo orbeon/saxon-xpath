@@ -70,9 +70,9 @@ trait Receiver extends Result {
 
   def close(): Unit
 
-  def usesTypeAnnotations(): Boolean = false
+  def usesTypeAnnotations: Boolean = false
 
-  def handlesAppend(): Boolean = false
+  def handlesAppend: Boolean = false
 
 }
 

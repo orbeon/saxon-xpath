@@ -134,7 +134,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
 
   def isInChoiceGroup: Boolean = role.isInChoiceGroup
 
-  def iterator(): Iterator[Operand] = new MonoIterator(this).asInstanceOf[Iterator[Operand]]
+  def iterator: Iterator[Operand] = new MonoIterator(this).asInstanceOf[Iterator[Operand]]
 
   def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Unit = {

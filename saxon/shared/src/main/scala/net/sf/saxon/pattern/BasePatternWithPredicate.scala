@@ -106,7 +106,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def getUType: UType = getBasePattern.getUType
 
-  override def getFingerprint(): Int = getBasePattern.getFingerprint
+  override def getFingerprint: Int = getBasePattern.getFingerprint
 
   override def getItemType: ItemType = getBasePattern.getItemType
 

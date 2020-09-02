@@ -16,7 +16,7 @@ class MultiIterator[T](private var array: List[Iterator[T]])
 
   private var current: Int = 0
 
-  def hasNext(): Boolean = {
+  def hasNext: Boolean = {
     var result = false
     while (true) {
       if (current >= array.size) {

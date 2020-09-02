@@ -42,21 +42,21 @@ class XPathVariable private() extends LocalBinding {
 
   private var slotNumber: Int = _
 
-  def isGlobal(): Boolean = false
+  def isGlobal: Boolean = false
 
-  def isAssignable(): Boolean = false
+  def isAssignable: Boolean = false
 
   /*@Nullable*/
 
-  def getIntegerBoundsForVariable(): Array[IntegerValue] = null
+  def getIntegerBoundsForVariable: Array[IntegerValue] = null
 
   def setSlotNumber(slotNumber: Int): Unit = {
     this.slotNumber = slotNumber
   }
 
-  def getLocalSlotNumber(): Int = slotNumber
+  def getLocalSlotNumber: Int = slotNumber
 
-  def getVariableQName(): StructuredQName = name
+  def getVariableQName: StructuredQName = name
 
   def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
@@ -76,7 +76,7 @@ class XPathVariable private() extends LocalBinding {
    *
    * @return true if the variable value can be indexed
    */
-  def isIndexedVariable(): Boolean = false
+  def isIndexedVariable: Boolean = false
 
 }
 

@@ -63,26 +63,24 @@ class FLWORExpression extends Expression {
   def getReturnClause: Expression = returnClauseOp.getChildExpression
 
   override def hasVariableBinding(binding: Binding): Boolean =
-    clauses.asScala.find(clauseHasBinding(_, binding)).map(_ => true).getOrElse(false)
+    clauses.asScala.exists(clauseHasBinding(_, binding))
 
   private def clauseHasBinding(c: Clause, binding: Binding): Boolean =
-    c.getRangeVariables.find(_ == binding).map(_ => true).getOrElse(false)
+    c.getRangeVariables.exists(_ eq binding)
 
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
   override def simplify(): Expression = {
-    val simplifier: OperandProcessor = (op) =>
-      op.setChildExpression(op.getChildExpression.simplify())
-    for (c <- clauses.asScala) {
+    val simplifier: OperandProcessor = op => op.setChildExpression(op.getChildExpression.simplify())
+    for (c <- clauses.asScala)
       c.processOperands(simplifier)
-    }
     returnClauseOp.setChildExpression(getReturnClause.simplify())
     this
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    val typeChecker: OperandProcessor = (op) =>
+    val typeChecker: OperandProcessor = op =>
       op.typeCheck(visitor, contextInfo)
     for (i <- 0 until clauses.size) {
       clauses.get(i).processOperands(typeChecker)
@@ -90,11 +88,9 @@ class FLWORExpression extends Expression {
       val bindings: Array[LocalVariableBinding] =
         clauses.get(i).getRangeVariables
       for (b <- bindings) {
-        val references: List[VariableReference] =
-          new ArrayList[VariableReference]()
-        for (j <- i until clauses.size) {
+        val references = new ArrayList[VariableReference]()
+        for (j <- i until clauses.size)
           clauses.get(j).gatherVariableReferences(visitor, b, references)
-        }
         ExpressionTool.gatherVariableReferences(getReturnClause, b, references)
         clauses.get(i).refineVariableType(visitor, references, getReturnClause)
       }
@@ -104,13 +100,11 @@ class FLWORExpression extends Expression {
   }
 
   override def implementsStaticTypeCheck(): Boolean = {
-    for (c <- clauses.asScala) {
+    for (c <- clauses.asScala)
       c.getClauseKey match {
         case LET | WHERE => //continue
-        case _ => false
-
+        case _ => return false
       }
-    }
     true
   }
 
@@ -118,10 +112,8 @@ class FLWORExpression extends Expression {
                                backwardsCompatible: Boolean,
                                role: RoleDiagnostic,
                                visitor: ExpressionVisitor): Expression = {
-    val tc: TypeChecker =
-      visitor.getConfiguration.getTypeChecker(backwardsCompatible)
-    returnClauseOp.setChildExpression(
-      tc.staticTypeCheck(getReturnClause, req, role, visitor))
+    val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(backwardsCompatible)
+    returnClauseOp.setChildExpression(tc.staticTypeCheck(getReturnClause, req, role, visitor))
     this
   }
 
@@ -134,17 +126,16 @@ class FLWORExpression extends Expression {
     val list: List[Operand] = new ArrayList[Operand](5)
     var repeatable: Boolean = false
     for (c <- clauses.asScala) {
-      c.asInstanceOf[Clause].processOperands(res => list.add(res))
-      if (c.isInstanceOf[ForClause]) {
+      c.processOperands(res => list.add(res))
+      if (c.isInstanceOf[ForClause])
         repeatable = true
-      }
     }
     list.add(returnClauseOp)
     list
   }
 
   override def checkForUpdatingSubexpressions(): Unit = {
-    val processor: OperandProcessor = (op) => {
+    val processor: OperandProcessor = op => {
       op.getChildExpression.checkForUpdatingSubexpressions()
       if (op.getChildExpression.isUpdatingExpression) {
         throw new XPathException(
@@ -238,32 +229,10 @@ class FLWORExpression extends Expression {
     this
   }
 
-  private def extendBindingList(
-                                 bindings: Array[Binding],
-                                 moreBindings: Array[LocalVariableBinding]): Array[Binding] = {
-    var bindArr = bindings
-    if (bindArr == null) {
-      bindArr = Array.ofDim[Binding](0)
-    }
-    if (moreBindings == null || moreBindings.length == 0) {
-      bindArr
-    } else {
-      val b2: Array[Binding] =
-        Array.ofDim[Binding](bindArr.length + moreBindings.length)
-      System.arraycopy(bindArr, 0, b2, 0, bindArr.length)
-      System.arraycopy(moreBindings,
-        0,
-        b2,
-        bindArr.length,
-        moreBindings.length)
-      b2
-    }
-  }
-
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     for (c <- clauses.asScala) {
-      c.processOperands((op) => op.optimize(visitor, contextItemType))
+      c.processOperands(op => op.optimize(visitor, contextItemType))
       c.optimize(visitor, contextItemType)
     }
     returnClauseOp.setChildExpression(
@@ -320,7 +289,7 @@ class FLWORExpression extends Expression {
         }
       }
       changed |= tryAgain
-    } while (tryAgain);
+    } while (tryAgain)
     if (changed) {
       var i: Int = clauses.size - 1
       while (i >= 1) {
@@ -329,7 +298,7 @@ class FLWORExpression extends Expression {
           clauses.remove(i)
         }
         {
-          i -= 1;
+          i -= 1
           i + 1
         }
       }
@@ -359,14 +328,16 @@ class FLWORExpression extends Expression {
     var allForOrLetExpr: Boolean = true
     breakable {
       for (c <- clauses.asScala) {
-        if (c.isInstanceOf[ForClause]) {
-          if (c.asInstanceOf[ForClause].getPositionVariable != null) {
+        c match {
+          case clause: ForClause =>
+            if (clause.getPositionVariable != null) {
+              allForOrLetExpr = false
+              break()
+            }
+          case _ => if (! c.isInstanceOf[LetClause]) {
             allForOrLetExpr = false
             break()
           }
-        } else if (!(c.isInstanceOf[LetClause])) {
-          allForOrLetExpr = false
-          break()
         }
       }
     }
@@ -390,11 +361,13 @@ class FLWORExpression extends Expression {
     }
     val whereList: List[WhereClauseStruct] = new ArrayList[WhereClauseStruct]()
     for (c <- clauses.asScala) {
-      if (c.isInstanceOf[WhereClause]) {
-        val wStruct: WhereClauseStruct = new WhereClauseStruct()
-        wStruct.whereClause = c.asInstanceOf[WhereClause]
-        wStruct.whereIndex = clauses.size - whereIndex
-        whereList.add(wStruct)
+      c match {
+        case clause: WhereClause =>
+          val wStruct: WhereClauseStruct = new WhereClauseStruct()
+          wStruct.whereClause = clause
+          wStruct.whereIndex = clauses.size - whereIndex
+          whereList.add(wStruct)
+        case _ =>
       }
       whereIndex += 1
     }
@@ -423,18 +396,14 @@ class FLWORExpression extends Expression {
               } else {
                 whereClause.setPredicate(makeAndCondition(list))
               }
-              if ((clause.isInstanceOf[ForClause]) && !clause
-                .asInstanceOf[ForClause]
-                .isAllowingEmpty) {
-                val added: Boolean = clause
-                  .asInstanceOf[ForClause]
-                  .addPredicate(this, visitor, contextItemType, term)
-                if (!added) {
-                  clauses.add(c + 1, new WhereClause(this, removedExpr))
-                }
-              } else {
-                val newWhere: WhereClause = new WhereClause(this, term)
-                clauses.add(c + 1, newWhere)
+              clause match {
+                case forClause: ForClause if ! forClause.isAllowingEmpty =>
+                  val added: Boolean = forClause.addPredicate(this, visitor, contextItemType, term)
+                  if (!added)
+                    clauses.add(c + 1, new WhereClause(this, removedExpr))
+                case _ =>
+                  val newWhere: WhereClause = new WhereClause(this, term)
+                  clauses.add(c + 1, newWhere)
               }
               break()
             }
@@ -455,7 +424,7 @@ class FLWORExpression extends Expression {
           clauses.add(0, newWhere)
         }
         {
-          i -= 1;
+          i -= 1
           i + 1
         }
       }
@@ -477,47 +446,48 @@ class FLWORExpression extends Expression {
                                contextItemType: ContextItemStaticInfo): Expression = {
     var action: Expression = getReturnClause
     var injector: CodeInjector = null
-    if (visitor.getStaticContext.isInstanceOf[QueryModule]) {
-      injector =
-        visitor.getStaticContext.asInstanceOf[QueryModule].getCodeInjector
+    visitor.getStaticContext match {
+      case module: QueryModule =>
+        injector = module.getCodeInjector
+      case _ =>
     }
     var i: Int = clauses.size - 1
     while (i >= 0) {
-      if (clauses.get(i).isInstanceOf[ForClause]) {
-        val forClause: ForClause = clauses.get(i).asInstanceOf[ForClause]
-        var forExpr: ForExpression = null
-        forExpr =
-          if (forClause.isAllowingEmpty) new OuterForExpression()
-          else new ForExpression()
-        forExpr.setLocation(forClause.getLocation)
-        forExpr.setRetainedStaticContext(getRetainedStaticContext)
-        forExpr.setAction(action)
-        forExpr.setSequence(forClause.getSequence)
-        forExpr.setVariableQName(forClause.getRangeVariable.getVariableQName)
-        forExpr.setRequiredType(forClause.getRangeVariable.getRequiredType)
-        ExpressionTool.rebindVariableReferences(action,
-          forClause.getRangeVariable,
-          forExpr)
-        action = forExpr
-      } else {
-        val letClause: LetClause = clauses.get(i).asInstanceOf[LetClause]
-        val letExpr: LetExpression = new LetExpression()
-        letExpr.setLocation(letClause.getLocation)
-        letExpr.setRetainedStaticContext(getRetainedStaticContext)
-        letExpr.setAction(action)
-        letExpr.setSequence(letClause.getSequence)
-        letExpr.setVariableQName(letClause.getRangeVariable.getVariableQName)
-        letExpr.setRequiredType(letClause.getRangeVariable.getRequiredType)
-        if (letClause.getRangeVariable.isIndexedVariable) {
-          letExpr.setIndexedVariable()
-        }
-        ExpressionTool.rebindVariableReferences(action,
-          letClause.getRangeVariable,
-          letExpr)
-        action = letExpr
+      clauses.get(i) match {
+        case forClause: ForClause =>
+          var forExpr: ForExpression = null
+          forExpr =
+            if (forClause.isAllowingEmpty) new OuterForExpression()
+            else new ForExpression()
+          forExpr.setLocation(forClause.getLocation)
+          forExpr.setRetainedStaticContext(getRetainedStaticContext)
+          forExpr.setAction(action)
+          forExpr.setSequence(forClause.getSequence)
+          forExpr.setVariableQName(forClause.getRangeVariable.getVariableQName)
+          forExpr.setRequiredType(forClause.getRangeVariable.getRequiredType)
+          ExpressionTool.rebindVariableReferences(action,
+            forClause.getRangeVariable,
+            forExpr)
+          action = forExpr
+        case _ =>
+          val letClause: LetClause = clauses.get(i).asInstanceOf[LetClause]
+          val letExpr: LetExpression = new LetExpression()
+          letExpr.setLocation(letClause.getLocation)
+          letExpr.setRetainedStaticContext(getRetainedStaticContext)
+          letExpr.setAction(action)
+          letExpr.setSequence(letClause.getSequence)
+          letExpr.setVariableQName(letClause.getRangeVariable.getVariableQName)
+          letExpr.setRequiredType(letClause.getRangeVariable.getRequiredType)
+          if (letClause.getRangeVariable.isIndexedVariable) {
+            letExpr.setIndexedVariable()
+          }
+          ExpressionTool.rebindVariableReferences(action,
+            letClause.getRangeVariable,
+            letExpr)
+          action = letExpr
       }
       {
-        i -= 1;
+        i -= 1
         i + 1
       }
     }
@@ -594,7 +564,7 @@ class FLWORExpression extends Expression {
     var lastReferencingClause: Int = clauses.size
     if (!ExpressionTool.dependsOnVariable(getReturnClause, Array(binding))) {
       val response: List[Boolean] = new ArrayList[Boolean]()
-      val checker: OperandProcessor = (op) =>
+      val checker: OperandProcessor = op =>
         if (response.isEmpty &&
           ExpressionTool.dependsOnVariable(op.getChildExpression,
             Array(binding))) {
@@ -624,5 +594,4 @@ class FLWORExpression extends Expression {
     }
     false
   }
-
 }

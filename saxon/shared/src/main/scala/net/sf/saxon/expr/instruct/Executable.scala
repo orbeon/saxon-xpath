@@ -145,7 +145,7 @@ class Executable(var config: Configuration) {
       for (queryModules <- queryLibraryModules.values.asScala) {
         modules.addAll(queryModules)
       }
-      modules.iterator()
+      modules.iterator
     }
 
   def addQueryLocationHintProcessed(uri: String): Unit = {
@@ -227,7 +227,7 @@ class Executable(var config: Configuration) {
           case e: XPathException => {
             if ("XPDY0002" == e.getErrorCodeLocalPart) {
               if (e.getMessage.contains("last()") || e.getMessage.contains(
-                "position()")) {} else {
+                "position")) {} else {
                 e.setErrorCode("XQDY0054")
               }
             }

@@ -19,7 +19,7 @@ class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
 
   private var lNext: Item = base.next()
 
-  def hasNext(): Boolean = next != null
+  def hasNext: Boolean = next != null
 
   def next(): Item = {
     var current: Item = lNext

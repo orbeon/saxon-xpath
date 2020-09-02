@@ -27,7 +27,7 @@ trait GroupIterator extends SequenceIterator {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
   * A GroupIterator is an iterator that iterates over a sequence of groups.
-  * The normal methods such as next() and current() always deliver the leading item
+  * The normal methods such as next() and current always deliver the leading item
   * of the group. Additional methods are available to get the grouping key for the
   * current group (only applicable to group-by and group-adjacent), and to get all the
   * members of the current group.

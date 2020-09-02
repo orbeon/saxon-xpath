@@ -1,13 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package net.sf.saxon.om
-
-import net.sf.saxon.trans.XPathException
-
-
 
 
 /**
-  * An iterator that maintains the values of position() and current(),
+  * An iterator that maintains the values of position and current,
   * typically implemented as a wrapper over an iterator which does not maintain these values itself.
   */
 trait FocusIterator extends SequenceIterator {
@@ -22,15 +24,15 @@ trait FocusIterator extends SequenceIterator {
     *         of the sequence has been reached.
     * @since 8.4
     */
-  def current(): Item
+  def current: Item
 
   /**
     * Get the current position. This will usually be zero before the first call
     * on next(), otherwise it will be the number of times that next() has
     * been called. Once next() has returned null, the preferred action is
-    * for subsequent calls on position() to return -1, but not all existing
+    * for subsequent calls on position to return -1, but not all existing
     * implementations follow this practice. (In particular, the EmptyIterator
-    * is stateless, and always returns 0 as the value of position(), whether
+    * is stateless, and always returns 0 as the value of position, whether
     * or not next() has been called.)
     * <p>This method does not change the state of the iterator.</p>
     *
@@ -42,14 +44,6 @@ trait FocusIterator extends SequenceIterator {
     *         value is -1.
     * @since 8.4
     */
-  def position(): Int
-
+  def position: Int
   def getLength: Int
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

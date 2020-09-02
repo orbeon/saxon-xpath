@@ -14,5 +14,5 @@ package net.sf.saxon.expr
 
 @FunctionalInterface
 trait LastPositionFinder {
-  def getLength(): Int
+  def getLength(): Int // keep `()`
 }

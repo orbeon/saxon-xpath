@@ -100,7 +100,7 @@ class StaxBridge extends PullProvider {
       NoElementsSpaceStrippingRule.getInstance
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipe
+  def getPipelineConfiguration: PipelineConfiguration = pipe
 
   def getXMLStreamReader: XMLStreamReader = reader
 
@@ -219,7 +219,7 @@ class StaxBridge extends PullProvider {
 
   }
 
-  def current(): Event = currentEvent
+  def current: Event = currentEvent
 
   def getNamespaceDeclarations(): Array[NamespaceBinding] = {
     val n: Int = reader.getNamespaceCount
@@ -357,7 +357,7 @@ class StaxBridge extends PullProvider {
 
   def getAtomicValue(): AtomicValue = throw new IllegalStateException()
 
-  def getSchemaType(): SchemaType =
+  def getSchemaType: SchemaType =
     if (currentEvent == START_ELEMENT) {
       Untyped.getInstance
     } else if (currentEvent == ATTRIBUTE) {

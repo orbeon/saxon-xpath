@@ -1,31 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr.flwor
 
-import net.sf.saxon.utils.Configuration
-
-import net.sf.saxon.event.Outputter
-
-import net.sf.saxon.expr._
-
-import net.sf.saxon.expr.parser.ContextItemStaticInfo
-
-import net.sf.saxon.expr.parser.ExpressionVisitor
-
-import net.sf.saxon.expr.parser.PathMap
-
-import net.sf.saxon.expr.parser.RebindingMap
-
-import net.sf.saxon.s9api.Location
-
-import net.sf.saxon.trace.ExpressionPresenter
-
-import net.sf.saxon.trans.XPathException
-
 import java.util.List
 
-import Clause._
+import net.sf.saxon.event.Outputter
+import net.sf.saxon.expr._
+import net.sf.saxon.expr.flwor.Clause._
+import net.sf.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, PathMap, RebindingMap}
+import net.sf.saxon.s9api.Location
+import net.sf.saxon.trace.ExpressionPresenter
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
 object Clause {
@@ -33,30 +20,20 @@ object Clause {
   object ClauseName extends Enumeration {
 
     val FOR: ClauseName = new ClauseName()
-
     val LET: ClauseName = new ClauseName()
-
     val WINDOW: ClauseName = new ClauseName()
-
     val GROUP_BY: ClauseName = new ClauseName()
-
     val COUNT: ClauseName = new ClauseName()
-
     val ORDER_BY: ClauseName = new ClauseName()
-
     val WHERE: ClauseName = new ClauseName()
-
     val TRACE: ClauseName = new ClauseName()
-
     val FOR_MEMBER: ClauseName = new ClauseName()
 
     class ClauseName extends Val
 
     implicit def convertValue(v: Value): ClauseName =
       v.asInstanceOf[ClauseName]
-
   }
-
 }
 
 /**
@@ -74,12 +51,10 @@ abstract class Clause {
 
   var repeated: Boolean = _
 
-  def setRepeated(repeated: Boolean) = this.repeated = repeated
+  def setRepeated(repeated: Boolean): Unit = this.repeated = repeated
 
   def isRepeated: Boolean = repeated
-
   def getConfiguration: Configuration = packageData.getConfiguration
-
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): Clause
 
   /**
@@ -124,5 +99,4 @@ abstract class Clause {
   def getClauseKey: ClauseName.ClauseName
 
   def toShortString: String = toString
-
 }

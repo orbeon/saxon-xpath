@@ -68,7 +68,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
   /**
     * Ask whether this node name representation has a known fingerprint
     *
-    * @return true if the method getFingerprint() will
+    * @return true if the method getFingerprint will
     *         return a result other than -1
     */
   def hasFingerprint: Boolean = true
@@ -84,7 +84,7 @@ class CodedName(@BeanProperty var fingerprint: Int,
   /**
     * Returns a hash code value for the object.
     */
-  override def hashCode(): Int =
+  override def hashCode: Int =
     StructuredQName.computeHashCode(getURI, getLocalPart)
 
   /**

@@ -223,7 +223,7 @@ class SpaceStrippedNode()
     case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
       var parent: SpaceStrippedNode = getParent.asInstanceOf[SpaceStrippedNode]
       if (parent == null) {
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       } else {
         new StrippingIterator(node.iterateAxis(axisNumber), parent)
       }

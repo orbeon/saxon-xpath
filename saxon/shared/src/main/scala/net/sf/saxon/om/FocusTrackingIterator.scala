@@ -1,51 +1,46 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package net.sf.saxon.om
 
 import net.sf.saxon.expr.LastPositionFinder
-import net.sf.saxon.pattern.AnyNodeTest
-import net.sf.saxon.pattern.NodeTest
-import net.sf.saxon.trans.XPathException
-import net.sf.saxon.tree.iter.AxisIterator
-import net.sf.saxon.tree.iter.GroundedIterator
-import net.sf.saxon.tree.iter.LookaheadIterator
-import net.sf.saxon.tree.wrapper.SiblingCountingNode
-import net.sf.saxon.value.SequenceExtent
-import java.util.EnumSet
-
-import FocusTrackingIterator._
+import net.sf.saxon.om.FocusTrackingIterator._
 import net.sf.saxon.om.SequenceIterator.Property
 import net.sf.saxon.om.SequenceIterator.Property.Property
+import net.sf.saxon.pattern.{AnyNodeTest, NodeTest}
+import net.sf.saxon.trans.XPathException
+import net.sf.saxon.tree.iter.{AxisIterator, GroundedIterator, LookaheadIterator}
+import net.sf.saxon.tree.wrapper.SiblingCountingNode
+import net.sf.saxon.value.SequenceExtent
 
 object FocusTrackingIterator {
 
-  def track(base: SequenceIterator): FocusTrackingIterator =
-    new FocusTrackingIterator(base)
+  def track(base: SequenceIterator): FocusTrackingIterator = new FocusTrackingIterator(base)
 
   private class SiblingMemory {
-
     var mostRecentNodeTest: NodeTest = null
-
     var mostRecentNode: NodeInfo = null
-
     var mostRecentPosition: Int = -1
-
   }
-
 }
 
 /**
- * An iterator that maintains the values of position() and current(), as a wrapper
+ * An iterator that maintains the values of position and current, as a wrapper
  * over an iterator which does not maintain these values itself.
  *
  * <p>Note that when a FocusTrackingIterator is used to wrap a SequenceIterator
- * in order to track the values of position() and current(), it is important to ensure
+ * in order to track the values of position and current, it is important to ensure
  * (a) that the SequenceIterator is initially positioned at the start of the sequence,
  * and (b) that all calls on next() to advance the iterator are directed at the
  * FocusTrackingIterator, and not at the wrapped SequenceIterator.</p>
  *
  * @since 9.6
  */
-class FocusTrackingIterator()
+class FocusTrackingIterator
   extends FocusIterator
     with LookaheadIterator
     with GroundedIterator
@@ -71,7 +66,7 @@ class FocusTrackingIterator()
   /**
    * Get the next item in the sequence. This method changes the state of the
    * iterator, in particular it affects the result of subsequent calls of
-   * position() and current().
+   * position and current.
    *
    * @return the next item, or null if there are no more items. Once a call
    *         on next() has returned null, no further calls should be made. The preferred
@@ -98,15 +93,15 @@ class FocusTrackingIterator()
    *         of the sequence has been reached.
    * @since 8.4
    */
-  def current(): Item = curr
+  def current: Item = curr
 
   /**
    * Get the current position. This will usually be zero before the first call
    * on next(), otherwise it will be the number of times that next() has
    * been called. Once next() has returned null, the preferred action is
-   * for subsequent calls on position() to return -1, but not all existing
+   * for subsequent calls on position to return -1, but not all existing
    * implementations follow this practice. (In particular, the EmptyIterator
-   * is stateless, and always returns 0 as the value of position(), whether
+   * is stateless, and always returns 0 as the value of position, whether
    * or not next() has been called.)
    * <p>This method does not change the state of the iterator.</p>
    *
@@ -118,7 +113,7 @@ class FocusTrackingIterator()
    *         value is -1.
    * @since 8.4
    */
-  def position(): Int = pos
+  def position: Int = pos
 
   def getLength: Int = {
     if (last == -1) {
@@ -145,7 +140,7 @@ class FocusTrackingIterator()
    * @return true if there are more items in the sequence
    * @throws ClassCastException if the base iterator does not support lookahead processing
    */
-  def hasNext(): Boolean = {
+  def hasNext: Boolean = {
     assert(base.isInstanceOf[LookaheadIterator])
     base.asInstanceOf[LookaheadIterator].hasNext
   }
@@ -201,12 +196,13 @@ class FocusTrackingIterator()
   override def getProperties: Set[Property] = base.getProperties
 
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
-    if (node.isInstanceOf[SiblingCountingNode] && nodeTest
-      .isInstanceOf[AnyNodeTest]) {
-      node.asInstanceOf[SiblingCountingNode].getSiblingPosition
+    node match {
+      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest] =>
+        node1.getSiblingPosition
+      case _ =>
     }
     if (siblingMemory == null) {
-      siblingMemory = new SiblingMemory()
+      siblingMemory = new SiblingMemory
     } else if (siblingMemory.mostRecentNodeTest == nodeTest && node == siblingMemory.mostRecentNode) {
       return siblingMemory.mostRecentPosition
     }
@@ -235,11 +231,4 @@ class FocusTrackingIterator()
     s.mostRecentNodeTest = nodeTest
     count
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

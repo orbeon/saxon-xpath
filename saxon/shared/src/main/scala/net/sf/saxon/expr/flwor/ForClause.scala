@@ -181,7 +181,7 @@ class ForClause extends Clause {
               child.setChildExpression(position)
               if (debug) {
                 opt.trace(
-                  "Replaced positional variable in predicate by position()",
+                  "Replaced positional variable in predicate by position",
                   predicate)
               }
               selection = new FilterExpression(selection, predicate)

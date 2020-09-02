@@ -29,7 +29,7 @@ class UnionEnumeration(p1: SequenceIterator,
   private def next(iter: SequenceIterator): NodeInfo =
     iter.next().asInstanceOf[NodeInfo]
 
-  def hasNext(): Boolean = nextNode1 != null || nextNode2 != null
+  def hasNext: Boolean = nextNode1 != null || nextNode2 != null
 
   def next(): NodeInfo = {
     if (nextNode1 != null && nextNode2 != null) {

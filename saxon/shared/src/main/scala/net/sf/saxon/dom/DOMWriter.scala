@@ -51,7 +51,7 @@ class DOMWriter extends Builder {
     config = pipe.getConfiguration
   }
 
-  override def getPipelineConfiguration(): PipelineConfiguration = pipeConf
+  override def getPipelineConfiguration: PipelineConfiguration = pipeConf
 
   def setUnparsedEntity(name: String,
                         systemID: String,
@@ -178,7 +178,7 @@ class DOMWriter extends Builder {
     }
   }
 
- override def usesTypeAnnotations(): Boolean = false
+ override def usesTypeAnnotations: Boolean = false
 
   def setNode(node: Node): Unit = {
     if (node == null) {

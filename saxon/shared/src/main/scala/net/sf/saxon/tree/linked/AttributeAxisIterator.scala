@@ -22,11 +22,11 @@ class AttributeAxisIterator(node: ElementImpl,
 
   private var index: Int = 0
 
-  private val length: Int = node.attributes().size
+  private val length: Int = node.attributes.size
 
   advance()
 
-  def hasNext(): Boolean = nextInfo != null
+  def hasNext: Boolean = nextInfo != null
 
   def next(): NodeInfo =
     if (nextInfo == null) {
@@ -42,7 +42,7 @@ class AttributeAxisIterator(node: ElementImpl,
       nextInfo = null
       return
     } else {
-      val info: AttributeInfo = element.attributes().itemAt(index)
+      val info: AttributeInfo = element.attributes.itemAt(index)
       if (info.isInstanceOf[AttributeInfo.Deleted]) {
         index += 1
       } else {

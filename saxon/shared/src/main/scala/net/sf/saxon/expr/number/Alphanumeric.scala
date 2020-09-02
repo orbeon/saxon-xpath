@@ -250,22 +250,22 @@ object Alphanumeric {
 //<xsl:template name="main">
 //
 //    <xsl:text>int[] startPoints = new int[]{</xsl:text>
-//    <xsl:for-each-group select="$data/*/Char" group-adjacent="concat(f:isAlphaNum(.), f:hexToInt(code) - position())">
+//    <xsl:for-each-group select="$data/*/Char" group-adjacent="concat(f:isAlphaNum(.), f:hexToInt(code) - position)">
 //      <xsl:if test="f:isAlphaNum(.)">
 //	      <xsl:text>0x</xsl:text>
 //	      <xsl:value-of select="current-group()[1]/code"/>
 //	      <xsl:text>, </xsl:text>
-//	      <xsl:if test="position() mod 10 = 0">&#xa;</xsl:if>
+//	      <xsl:if test="position mod 10 = 0">&#xa;</xsl:if>
 //	    </xsl:if>
 //    </xsl:for-each-group>
 //    <xsl:text>};&#xa;&#xa;</xsl:text>
 //    <xsl:text>int[] endPoints = new int[]{</xsl:text>
-//    <xsl:for-each-group select="$data/*/Char" group-adjacent="concat(f:isAlphaNum(.), f:hexToInt(code) - position())">
+//    <xsl:for-each-group select="$data/*/Char" group-adjacent="concat(f:isAlphaNum(.), f:hexToInt(code) - position)">
 //      <xsl:if test="f:isAlphaNum(.)">
 //	      <xsl:text>0x</xsl:text>
 //	      <xsl:value-of select="current-group()[last()]/code"/>
 //	      <xsl:text>, </xsl:text>
-//	      <xsl:if test="position() mod 10 = 0">&#xa;</xsl:if>
+//	      <xsl:if test="position mod 10 = 0">&#xa;</xsl:if>
 //	    </xsl:if>
 //    </xsl:for-each-group>
 //    <xsl:text>};&#xa;&#xa;</xsl:text>

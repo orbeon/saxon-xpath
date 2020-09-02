@@ -1049,7 +1049,7 @@ class DateTimeValue extends CalendarValue
           o.asInstanceOf[DateTimeComparable].asDateTimeValue().hasTimezone &&
         compareTo(o.asInstanceOf[AnyRef]) == 0
 
-    override def hashCode(): Int = {
+    override def hashCode: Int = {
       val dt0: DateTimeValue = adjustTimezone(0)
       (dt0.year << 20) ^ (dt0.month << 16) ^ (dt0.day << 11) ^
         (dt0.hour << 7) ^
@@ -1065,7 +1065,7 @@ class DateTimeValue extends CalendarValue
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     DateTimeValue.hashCode(year,
       month,
       day,

@@ -141,7 +141,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
     namePool.getEQName(fingerPrintInt)
   }
 
-  override def hashCode(): Int = nodeKind << 20 ^ fingerPrintInt
+  override def hashCode: Int = nodeKind << 20 ^ fingerPrintInt
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[NameTest] && other

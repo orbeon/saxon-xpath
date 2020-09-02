@@ -44,7 +44,7 @@ object SequenceExtent {
   }
 
   def makeSequenceExtent[T <: Item](input: List[T]): GroundedValue = {
-    val len: Int = input.size
+    val len = input.size
     if (len == 0) {
       EmptySequence.getInstance
     } else if (len == 1) {
@@ -71,7 +71,7 @@ class SequenceExtent extends GroundedValue {
 
   def this(iter: SequenceIterator) = {
     this()
-    val len: Int =
+    val len =
       if (!iter.getProperties.contains(
         SequenceIterator.Property.LAST_POSITION_FINDER)) 20
       else iter.asInstanceOf[LastPositionFinder].getLength
@@ -107,7 +107,7 @@ class SequenceExtent extends GroundedValue {
   def reverseIterate(): UnfailingIterator = new ReverseListIterator(value)
 
   override def effectiveBooleanValue(): Boolean = {
-    val len: Int = getLength
+    val len = getLength
     if (len == 0) {
       false
     } else {
@@ -142,7 +142,7 @@ class SequenceExtent extends GroundedValue {
   }
 
   override def reduce(): GroundedValue = {
-    val len: Int = getLength
+    val len = getLength
     if (len == 0) {
       EmptySequence.getInstance
     } else if (len == 1) {
@@ -154,6 +154,6 @@ class SequenceExtent extends GroundedValue {
 
   override def asIterable(): java.lang.Iterable[_ <: Item] = value
 
-  def iterator(): Iterator[_ <: Item] = value.iterator()
+  def iterator: Iterator[_ <: Item] = value.iterator
 
 }

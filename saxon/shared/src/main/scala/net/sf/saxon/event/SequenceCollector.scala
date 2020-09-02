@@ -73,7 +73,7 @@ class SequenceCollector(pipe: PipelineConfiguration, estimatedSize: Int)
 
   def iterate(): SequenceIterator =
     if (list.isEmpty) {
-      EmptyIterator.emptyIterator()
+      EmptyIterator.emptyIterator
     } else {
       new ListIterator(list)
     }

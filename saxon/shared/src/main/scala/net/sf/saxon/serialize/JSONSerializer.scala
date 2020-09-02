@@ -87,7 +87,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
     }
   }
 
-  override def getOutputProperties(): Properties = outputProperties
+  override def getOutputProperties: Properties = outputProperties
 
   def setPropertySorter(sorter: Comparator[AtomicValue]): Unit = {
     this.propertySorter = sorter
@@ -149,7 +149,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
   }
 
   private def writeSequence(seq: GroundedValue): Unit = {
-    val len: Int = seq.getLength
+    val len = seq.getLength
     if (len == 0) {
       emitter.writeAtomicValue(null)
     } else if (len == 1) {

@@ -57,7 +57,7 @@ class AttributeLocation(element: NodeInfo,
     *
     * @return usually null
     */
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   /**
     * Get an immutable copy of this Location object. By default Location objects may be mutable, so they

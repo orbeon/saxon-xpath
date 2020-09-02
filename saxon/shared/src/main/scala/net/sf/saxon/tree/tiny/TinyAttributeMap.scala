@@ -1,15 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * An implementation of the AttributeMap interface based directly on the
+  * TinyTree data structure.
+  */
+
 package net.sf.saxon.tree.tiny
 
 import net.sf.saxon.event.ReceiverOption
 import net.sf.saxon.expr.parser.Loc
 import net.sf.saxon.om._
 import org.jetbrains.annotations.NotNull
-import java.util.Iterator
 
-import scala.collection
 import scala.jdk.CollectionConverters._
-
 
 
 class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
@@ -17,23 +24,19 @@ class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
 
   private var firstAttribute: Int = tree.alpha(element)
 
-  override def size(): Int = {
+  override def size: Int = {
     var i: Int = firstAttribute
-    while (i < tree.numberOfAttributes && tree.attParent(i) == element) {
-      i += 1; i - 1
-    }
+    while (i < tree.numberOfAttributes && tree.attParent(i) == element)
+      i += 1
     i - firstAttribute
   }
 
   override def get(name: NodeName): AttributeInfo = null
-
   override def get(uri: String, local: String): AttributeInfo = null
-
-  override def getByFingerprint(fingerprint: Int,
-                                namePool: NamePool): AttributeInfo = null
+  override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = null
 
   @NotNull
-  override def iterator(): collection.Iterator[AttributeInfo] =
+  override def iterator: collection.Iterator[AttributeInfo] =
     new AttributeInfoIterator(tree, element).asScala
 
   override def itemAt(index: Int): AttributeInfo = {
@@ -49,15 +52,4 @@ class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
                       Loc.NONE,
                       ReceiverOption.NONE)
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An implementation of the AttributeMap interface based directly on the
-  * TinyTree data structure.
-  */

@@ -379,7 +379,7 @@ abstract class Expression
 
   def iterate(context: XPathContext): SequenceIterator = {
     val value: Item = evaluateItem(context)
-    if (value == null) EmptyIterator.emptyIterator()
+    if (value == null) EmptyIterator.emptyIterator
     else SingletonIterator.rawIterator(value)
   }
 
@@ -614,7 +614,7 @@ abstract class Expression
       gatherSlotsUsed(Expression.this, slots)
       slotsUsed = Array.ofDim[Int](slots.size)
       var i = 0
-      val iter = slots.iterator()
+      val iter = slots.iterator
       while (iter.hasNext) {
         slotsUsed(i) = iter.next
         i = i + 1
@@ -708,7 +708,7 @@ abstract class Expression
 
   def isEqual(other: Expression): Boolean = (this eq other) || (hashCode == other.hashCode && equals(other))
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     if (cachedHashCode == -1) {
       cachedHashCode = computeHashCode()
     }

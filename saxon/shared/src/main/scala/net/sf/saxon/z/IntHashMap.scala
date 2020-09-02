@@ -9,7 +9,7 @@
   *
   * @author Dave Hale, Landmark Graphics
   * @author Dominique Devienne
-  * @author Michael Kay: retrofitted to JDK 1.4, added iterator(), modified to disallow null values
+  * @author Michael Kay: retrofitted to JDK 1.4, added iterator, modified to disallow null values
   *         Reverted to generics July 2008.
   */
 package net.sf.saxon.z
@@ -230,17 +230,17 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     }
   }
 
-  def keyIterator(): IntIterator = new IntHashMapKeyIterator()
+  def keyIterator: IntIterator = new IntHashMapKeyIterator
 
-  def valueIterator(): Iterator[T] = new IntHashMapValueIterator()
+  def valueiterator: Iterator[T] = new IntHashMapValueIterator
 
   def valueSet(): java.lang.Iterable[T] = new java.lang.Iterable[T]() {
-    def iterator(): Iterator[T] = valueIterator()
+    def iterator: Iterator[T] = valueiterator
   }
 
   def copy(): IntHashMap[T] = {
     val n: IntHashMap[T] = new IntHashMap[T](size)
-    val it: IntIterator = keyIterator()
+    val it: IntIterator = keyIterator
     while (it.hasNext) {
       val k: Int = it.next
       n.put(k, get(k))
@@ -249,7 +249,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
   }
 
   def display(ps: PrintStream): Unit = {
-    val iter: IntIterator = new IntHashMapKeyIterator()
+    val iter: IntIterator = new IntHashMapKeyIterator
     while (iter.hasNext) {
       val key: Int = iter.next
       val value: T = get(key)
@@ -264,7 +264,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = {
+    def hasNext: Boolean = {
       while (i < _key.length) if (_value(i) != null) {
         return true
       } else {
@@ -286,7 +286,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = {
+    def hasNext: Boolean = {
       while (i < _key.length) if (_value(i) != null) {
         return true
       } else {
@@ -322,7 +322,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     def copy(): IntSet = {
       val s: IntHashSet = new IntHashSet()
-      val ii: IntIterator = iterator()
+      val ii: IntIterator = iterator
       while (ii.hasNext) s.add(ii.next)
       s
     }
@@ -343,7 +343,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     def add(value: Int): Boolean =
       throw new UnsupportedOperationException("Immutable set")
 
-    def iterator(): IntIterator = new IntHashMapKeyIterator()
+    def iterator: IntIterator = new IntHashMapKeyIterator
 
     override def union(other: IntSet): IntSet = copy().union(other)
 
@@ -353,6 +353,6 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
     override def containsAll(other: IntSet): Boolean = copy().containsAll(other)
 
-    override def toString: String = IntHashSet.toString(iterator())
+    override def toString: String = IntHashSet.toString(iterator)
   }
 }

@@ -77,7 +77,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     }
   }
 
-  def keyIterator(): IntIterator = new IntToIntHashMapKeyIterator()
+  def keyIterator: IntIterator = new IntToIntHashMapKeyIterator
 
   private var defaultValue: Int = java.lang.Integer.MAX_VALUE
 
@@ -167,7 +167,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
   override def toString: String = {
     val buffer: FastStringBuffer = new FastStringBuffer(256)
     buffer.append("{")
-    val keys: IntIterator = keyIterator()
+    val keys: IntIterator = keyIterator
     var count: Int = 0
     breakable {
       while (keys.hasNext) {
@@ -191,7 +191,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = {
+    def hasNext: Boolean = {
       while (i < _key.length) if (_filled(i)) {
         true
       } else {

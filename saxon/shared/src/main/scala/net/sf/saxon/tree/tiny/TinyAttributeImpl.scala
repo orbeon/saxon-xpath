@@ -38,7 +38,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   override def getParent: TinyNodeImpl = tree.getNode(tree.attParent(nodeNr))
 
-  override def getRoot(): NodeInfo = {
+  override def getRoot: NodeInfo = {
     val parent: NodeInfo = getParent
     if (parent == null) {
       this
@@ -47,7 +47,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
     }
   }
 
-  override  def getSequenceNumber(): Long =
+  override  def getSequenceNumber: Long =
     getParent.getSequenceNumber +
       0x8000 +
       (nodeNr - tree.alpha(tree.attParent(nodeNr)))
@@ -58,7 +58,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   def getStringValue: String = tree.attValue(nodeNr).toString
 
-  override def getFingerprint(): Int = tree.attCode(nodeNr) & 0xfffff
+  override def getFingerprint: Int = tree.attCode(nodeNr) & 0xfffff
 
   def getNameCode: Int = tree.attCode(nodeNr)
 
@@ -93,7 +93,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
     tree.getNamePool.getURI(code)
   }
 
-  override def getSchemaType(): SchemaType = {
+  override def getSchemaType: SchemaType = {
     if (tree.attType == null) {
       BuiltInAtomicType.UNTYPED_ATOMIC
     }
@@ -112,17 +112,17 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
     throw new UnsupportedOperationException("copy() applied to attribute node")
   }
 
-  override def getLineNumber(): Int = getParent.getLineNumber
+  override def getLineNumber: Int = getParent.getLineNumber
 
   override def getColumnNumber(): Int = getParent.getColumnNumber
 
-  override def isId(): Boolean = tree.isIdAttribute(nodeNr)
+  override def isId: Boolean = tree.isIdAttribute(nodeNr)
 
   override def isIdref(): Boolean = tree.isIdrefAttribute(nodeNr)
 
   def isDefaultedAttribute: Boolean = tree.isDefaultedAttribute(nodeNr)
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     ((tree.getDocumentNumber & 0x3ff).toInt << 20) ^ nodeNr ^
       7 << 17
 

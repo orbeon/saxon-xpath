@@ -76,6 +76,6 @@ class Annotation(name: StructuredQName) {
     true
   }
 
-  override def hashCode(): Int = qName.hashCode ^ annotationParameters.hashCode
+  override def hashCode: Int = qName.hashCode ^ annotationParameters.hashCode
 
 }

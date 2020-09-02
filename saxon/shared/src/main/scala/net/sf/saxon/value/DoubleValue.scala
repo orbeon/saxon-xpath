@@ -89,7 +89,7 @@ class DoubleValue() extends NumericValue {
     */
   override def longValue(): Long = value.toLong
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE) {
       value.toInt
     } else {

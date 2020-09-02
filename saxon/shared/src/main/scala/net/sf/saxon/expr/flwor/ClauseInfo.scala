@@ -1,15 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.expr.flwor
 
-import net.sf.saxon.om.NamespaceResolver
-
-import net.sf.saxon.om.StructuredQName
-
+import net.sf.saxon.om.{NamespaceResolver, StructuredQName}
 import net.sf.saxon.s9api.Location
-
 import net.sf.saxon.trace.Traceable
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
 
@@ -21,7 +17,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
 
   private var nsResolver: NamespaceResolver = _
 
-  def getLocation(): Location = clause.getLocation
+  def getLocation: Location = clause.getLocation
 
   /**
     * Get a name identifying the object of the expression, for example a function name, template name,
@@ -29,7 +25,7 @@ class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
     *
     * @return the QName of the object declared or manipulated by this instruction or expression
     */
-  def getObjectName(): StructuredQName = {
+  def getObjectName: StructuredQName = {
     val vars: Array[LocalVariableBinding] = clause.getRangeVariables
     if (vars != null && vars.length > 0) {
       vars(0).getVariableQName

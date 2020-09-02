@@ -220,7 +220,7 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
 
     }
 
-    override def hashCode(): Int = asAtomic().hashCode
+    override def hashCode: Int = asAtomic().hashCode
 
   }
 

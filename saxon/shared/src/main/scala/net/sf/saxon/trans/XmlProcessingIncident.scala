@@ -158,7 +158,7 @@ class XmlProcessingIncident(@BeanProperty var msg: String,
 
   override def getModuleUri(): String = getLocation.getSystemId
 
-  def getLocation(): Location = locator
+  def getLocation: Location = locator
 
   def setLocation(loc: Location): Unit = {
     this.locator = loc
@@ -172,7 +172,7 @@ class XmlProcessingIncident(@BeanProperty var msg: String,
     -1
   }
 
-  override def getLineNumber(): Int = {
+  override def getLineNumber: Int = {
     val locator: Location = getLocation
     if (locator != null) {
       locator.getLineNumber
@@ -190,5 +190,5 @@ class XmlProcessingIncident(@BeanProperty var msg: String,
       null
     }
 
-  override def getMessage(): String = msg
+  override def getMessage: String = msg
 }

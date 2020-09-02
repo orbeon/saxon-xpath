@@ -18,7 +18,7 @@ class SingleAtomicIterator[T <: AtomicValue](value: T)
 
   /*@NotNull*/
 
-  override def getReverseIterator(): SingleAtomicIterator[T] =
+  override def getReverseIterator: SingleAtomicIterator[T] =
     new SingleAtomicIterator[T](getValue)
 
 }

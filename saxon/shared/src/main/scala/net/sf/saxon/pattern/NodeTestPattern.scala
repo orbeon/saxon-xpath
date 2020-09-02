@@ -33,7 +33,7 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
 
   override def getUType: UType = nodeTest.getUType
 
-  override def getFingerprint(): Int = nodeTest.getFingerprint
+  override def getFingerprint: Int = nodeTest.getFingerprint
 
   override def toString: String = nodeTest.toString
 

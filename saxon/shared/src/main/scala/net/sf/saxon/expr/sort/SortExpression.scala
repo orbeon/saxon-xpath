@@ -190,7 +190,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val len: Int = getSortKeyDefinitionList.size
+    val len = getSortKeyDefinitionList.size
     val sk2: Array[SortKeyDefinition] = Array.ofDim[SortKeyDefinition](len)
     for (i <- 0 until len) {
       sk2(i) = getSortKeyDefinition(i).copy(rebindings)
@@ -240,7 +240,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     }
     var comps: Array[AtomicComparer] = comparators
     if (comparators == null) {
-      val len: Int = getSortKeyDefinitionList.size
+      val len = getSortKeyDefinitionList.size
       comps = Array.ofDim[AtomicComparer](len)
       for (s <- 0 until len) {
         var comp: AtomicComparer = getSortKeyDefinition(s).getFinalComparator

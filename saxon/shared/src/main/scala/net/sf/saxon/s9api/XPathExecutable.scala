@@ -41,7 +41,7 @@ class XPathExecutable(private var exp: XPathExpression,
     override def apply(item: XdmItem): Stream[_ <: XdmItem] = {
       val selector: XPathSelector = load()
       selector.setContextItem(item)
-      var result: XdmSequenceIterator[XdmItem] = selector.iterator()
+      var result: XdmSequenceIterator[XdmItem] = selector.iterator
       result.asInstanceOf[XdmItem].stream()
     }
   }
@@ -59,7 +59,7 @@ class XPathExecutable(private var exp: XPathExpression,
   def iterateExternalVariables(): Iterator[QName] = {
     val varIterator: Iterator[XPathVariable] = env.iterateExternalVariables()
     new Iterator[QName]() {
-      def hasNext(): Boolean = varIterator.hasNext
+      def hasNext: Boolean = varIterator.hasNext
 
       def next(): QName =
         new QName(

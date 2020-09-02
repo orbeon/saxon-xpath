@@ -111,7 +111,7 @@ class NumericType private()
 
   def getTargetNamespace(): String = NamespaceConstant.SCHEMA
 
-  def getFingerprint(): Int = StandardNames.XS_NUMERIC
+  def getFingerprint: Int = StandardNames.XS_NUMERIC
 
   def getDisplayName: String = "xs:numeric"
 

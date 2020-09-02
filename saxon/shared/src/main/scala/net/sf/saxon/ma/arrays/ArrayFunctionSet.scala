@@ -373,7 +373,7 @@ object ArrayFunctionSet {
         array.arrayLength() + 1)
       var length: Int = 0
       if (arguments.length == 3) {
-        val len: IntegerValue = arguments(2).head.asInstanceOf[IntegerValue]
+        val len = arguments(2).head.asInstanceOf[IntegerValue]
         val signum: Int = len.signum()
         if (signum < 0) {
           throw new XPathException(

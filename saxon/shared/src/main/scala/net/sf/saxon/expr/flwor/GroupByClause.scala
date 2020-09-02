@@ -264,7 +264,7 @@ class GroupByClause(var config: Configuration) extends Clause {
                             private var groupingValues: Array[Sequence],
                             private var comparers: Array[GenericAtomicComparer]) {
 
-    override def hashCode(): Int = {
+    override def hashCode: Int = {
       var h: Int = 0x77557755 ^ groupingValues.length
       for (i <- 0 until groupingValues.length) {
         val comparer: GenericAtomicComparer = comparers(i)

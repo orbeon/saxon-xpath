@@ -95,7 +95,7 @@ class SpecificFunctionType extends AnyFunctionType {
     false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     var h = resultType.hashCode ^ argTypes.length
     for (argType <- argTypes)
       h ^= argType.hashCode

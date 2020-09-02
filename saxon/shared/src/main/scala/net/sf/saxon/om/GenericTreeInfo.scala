@@ -15,7 +15,6 @@ package net.sf.saxon.om
 import java.util._
 
 import net.sf.saxon.utils.Configuration
-import net.sf.saxon.tree.util.DocumentNumberAllocator
 
 import scala.beans.BeanProperty
 
@@ -35,26 +34,17 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   def this(config: Configuration, root: NodeInfo) = {
     this(config)
-    this.config = config
     this.root = root
   }
 
-  def setConfiguration(config: Configuration): Unit = {
+  def setConfiguration(config: Configuration): Unit =
     this.config = config
-  }
 
-  /**
-    * Get the Configuration to which this tree belongs
-    *
-    * @return the configuration
-    */
   def getConfiguration: Configuration = config
 
   def setRootNode(root: NodeInfo): Unit = {
-    if (root.getParent != null) {
-      throw new IllegalArgumentException(
-        "The root node of a tree must be parentless")
-    }
+    if (root.getParent != null)
+      throw new IllegalArgumentException("The root node of a tree must be parentless")
     this.root = root
   }
 
@@ -75,11 +65,10 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   def getDocumentNumber: Long = {
     if (documentNumber == -1) {
-      val dna: DocumentNumberAllocator = config.getDocumentNumberAllocator
+      val dna = config.getDocumentNumberAllocator
       this.synchronized {
-        if (documentNumber == -1) {
+        if (documentNumber == -1)
           documentNumber = dna.allocateDocumentNumber()
-        }
       }
     }
     documentNumber
@@ -112,10 +101,8 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * information is not available then an empty iterator is returned
     * @since 9.1
     */
-  def getUnparsedEntityNames: Iterator[String] = {
-    val e = Collections.emptyList[String]
-    e.iterator
-  }
+  def getUnparsedEntityNames: Iterator[String] =
+    Collections.emptyList[String].iterator
 
   /**
     * Get the unparsed entity with a given name

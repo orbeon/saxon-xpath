@@ -529,7 +529,7 @@ object FormatDate {
     var min: Int = 1
     var max: Int = java.lang.Integer.MAX_VALUE
     if (digitsPattern.matcher(primary).matches()) {
-      val len: Int = StringValue.getStringLength(primary)
+      val len = StringValue.getStringLength(primary)
       if (len > 1) {
         min = len
         max = len

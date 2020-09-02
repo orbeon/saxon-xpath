@@ -143,11 +143,11 @@ class LargeAttributeMap extends AttributeMap {
       new LargeAttributeMap(att2, size - 1, first2, last2)
     }
 
-  override def iterator(): Iterator[AttributeInfo] =
+  override def iterator: Iterator[AttributeInfo] =
     new Iterator[AttributeInfo]() {
       var current: NodeName = firstNode
 
-      override def hasNext(): Boolean = current != null
+      override def hasNext: Boolean = current != null
 
       override def next(): AttributeInfo = {
         val link: AttributeInfoLink = attributes.get(current)
@@ -158,7 +158,7 @@ class LargeAttributeMap extends AttributeMap {
 import scala.jdk.CollectionConverters._
   override def toList(): List[AttributeInfo] = synchronized {
     var result: List[AttributeInfo] = new util.ArrayList[AttributeInfo](size).asScala.toList
-    var iteratorVar : Iterator[AttributeInfo] = iterator()
+    var iteratorVar : Iterator[AttributeInfo] = iterator
     while(iteratorVar.hasNext) {
       val element : AttributeInfo = iteratorVar.next
       result:+element

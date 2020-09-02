@@ -62,7 +62,7 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
         if (forClause.getPositionVariable != null) {
           context.setLocalVariable(
             forClause.getPositionVariable.getLocalSlotNumber,
-            new Int64Value(currentIteration.position()))
+            new Int64Value(currentIteration.position))
         }
         res = true
       } else {

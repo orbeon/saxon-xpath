@@ -55,7 +55,7 @@ class ComponentTest(@BeanProperty var componentKind: Int,
       other.asInstanceOf[ComponentTest].arity == arity &&
       other.asInstanceOf[ComponentTest].nameTest == nameTest
 
-  override def hashCode(): Int = componentKind ^ arity ^ nameTest.hashCode
+  override def hashCode: Int = componentKind ^ arity ^ nameTest.hashCode
 
 }
 

@@ -16,7 +16,7 @@ class CallableWithBoundFocus(private var target: Callable,
   } else {
     val iter: ManualIterator = new ManualIterator(
       context.getContextItem,
-      context.getCurrentIterator.position())
+      context.getCurrentIterator.position)
     iter.setLastPositionFinder(context.getLast.asInstanceOf[LastPositionFinder])
     boundContext.setCurrentIterator(iter)
   }

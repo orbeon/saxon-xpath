@@ -22,6 +22,8 @@ import net.sf.saxon.trans.XPathException
 import net.sf.saxon.tree.iter._
 import net.sf.saxon.tree.tiny.{TinyElementImpl, TinyNodeImpl, TinyTextualElement}
 import net.sf.saxon.tree.wrapper.{SiblingCountingNode, VirtualCopy}
+
+import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -43,7 +45,8 @@ object Navigator {
    * @return the attribute value, or null if the attribute is not present
    * @since 9.0
    */
-  def getAttributeValue(/*@NotNull*/ element: NodeInfo, uri: String, localName: String): String = element.getAttributeValue(uri, localName)
+  def getAttributeValue(/*@NotNull*/ element: NodeInfo, uri: String, localName: String): String =
+    element.getAttributeValue(uri, localName)
 
   /**
    * Get the string value of an inherited attribute of a given element, given the URI and
@@ -59,12 +62,12 @@ object Navigator {
    */
   def getInheritedAttributeValue(element: NodeInfo, uri: String, localName: String): String = {
     var node = element
-    while ( {
-      node != null
-    }) {
+    while (node != null) {
       val value = node.getAttributeValue(uri, localName)
-      if (value == null) node = node.getParent
-      else return value
+      if (value == null)
+        node = node.getParent
+      else
+        return value
     }
     null
   }
@@ -75,8 +78,11 @@ object Navigator {
    * @param node the node
    * @return the name of the node if it has a name, or null otherwise
    */
-  def getNodeName(node: NodeInfo): StructuredQName = if (node.getLocalPart != null) new StructuredQName(node.getPrefix, node.getURI, node.getLocalPart)
-  else null
+  def getNodeName(node: NodeInfo): StructuredQName =
+    if (node.getLocalPart != null)
+      new StructuredQName(node.getPrefix, node.getURI, node.getLocalPart)
+    else
+      null
 
   /**
    * Helper method to get the outermost element of a document, given the document node
@@ -88,7 +94,9 @@ object Navigator {
    *         constructed using XSLT or XQuery.
    * @since 9.3
    */
-  /*@Nullable*/ def getOutermostElement(doc: TreeInfo): NodeInfo = doc.getRootNode.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT).next
+  /*@Nullable*/
+  def getOutermostElement(doc: TreeInfo): NodeInfo =
+    doc.getRootNode.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT).next()
 
   /**
    * Helper method to get the base URI of an element or processing instruction node
@@ -120,15 +128,18 @@ object Navigator {
    * @since 9.9
    */
   def getBaseURI(node: NodeInfo, isTopElementWithinEntity: Predicate[NodeInfo]): String = {
-    val xmlBase = if (node.isInstanceOf[TinyElementImpl]) node.asInstanceOf[TinyElementImpl].getAttributeValue(StandardNames.XML_BASE)
-    else node.getAttributeValue(NamespaceConstant.XML, "base")
+    val xmlBase = node match {
+      case impl: TinyElementImpl => impl.getAttributeValue(StandardNames.XML_BASE)
+      case _ => node.getAttributeValue(NamespaceConstant.XML, "base")
+    }
     if (xmlBase != null) {
       var baseURI: URI = null
       try {
         baseURI = new URI(xmlBase)
         if (!baseURI.isAbsolute) {
           val parent = node.getParent
-          if (parent == null) { // We have a parentless element with a relative xml:base attribute.
+          if (parent == null) {
+            // We have a parentless element with a relative xml:base attribute.
             // See for example test XQTS fn-base-uri-10 and base-uri-27
             val base = new URI(node.getSystemId)
             val resolved = if (xmlBase.isEmpty) base
@@ -139,17 +150,25 @@ object Navigator {
           if (startSystemId == null) return null
           val parentSystemId = parent.getSystemId
           var isTopWithinEntity = false
-          if (node.isInstanceOf[TinyElementImpl]) isTopWithinEntity = node.asInstanceOf[TinyElementImpl].
-            getTree.isTopWithinEntity(node.asInstanceOf[TinyElementImpl].getNodeNumber)
-          else isTopWithinEntity = !(startSystemId == parentSystemId)
-          val base = new URI(if (isTopElementWithinEntity.test(node)) startSystemId
-          else parent.getBaseURI)
+          node match {
+            case impl: TinyElementImpl =>
+              isTopWithinEntity = impl.getTree.isTopWithinEntity(impl.getNodeNumber)
+            case _ =>
+              isTopWithinEntity = ! (startSystemId == parentSystemId)
+          }
+          val base =
+            new URI(if (isTopElementWithinEntity.test(node)) startSystemId
+          else
+              parent.getBaseURI)
           //URI base = new URI(parent.getBaseURI);  //bug 3530
-          baseURI = if (xmlBase.isEmpty) base
-          else base.resolve(baseURI)
+          baseURI =
+            if (xmlBase.isEmpty)
+              base
+            else
+              base.resolve(baseURI)
         }
       } catch {
-        case e: URISyntaxException =>
+        case _: URISyntaxException =>
           // xml:base is an invalid URI. Just return it as is: the operation that needs the base URI
           // will probably fail as a result.     \
           return xmlBase
@@ -157,12 +176,16 @@ object Navigator {
       return baseURI.toString
     }
     val startSystemId = node.getSystemId
-    if (startSystemId == null) return null
+    if (startSystemId == null)
+      return null
     val parent = node.getParent
-    if (parent == null) return startSystemId
+    if (parent == null)
+      return startSystemId
     val parentSystemId = parent.getSystemId
-    if (startSystemId == parentSystemId || parentSystemId.isEmpty) parent.getBaseURI
-    else startSystemId
+    if (startSystemId == parentSystemId || parentSystemId.isEmpty)
+      parent.getBaseURI
+    else
+      startSystemId
   }
 
   /**
@@ -189,7 +212,8 @@ object Navigator {
    * @return a path expression that can be used to retrieve the node
    */
   def getPath(node: NodeInfo, context: XPathContext): String = {
-    if (node == null) return ""
+    if (node == null)
+      return ""
     var pre: String = null
     val streamed = node.getConfiguration.isStreamedNode(node)
     val parent = node.getParent
@@ -198,35 +222,31 @@ object Navigator {
       case Type.DOCUMENT =>
         "/"
       case Type.ELEMENT =>
-        if (parent == null) node.getDisplayName
+        if (parent == null)
+          node.getDisplayName
         else {
           pre = getPath(parent, context)
-          if (pre == "/") "/" + node.getDisplayName
-          else pre + "/" + node.getDisplayName + (if (streamed) ""
-          else "[" + getNumberSimple(node, context).toString + "]")
+          if (pre == "/")
+            "/" + node.getDisplayName
+          else
+            pre + "/" + node.getDisplayName + (if (streamed) "" else "[" + getNumberSimple(node, context).toString + "]")
         }
       case Type.ATTRIBUTE =>
         getPath(parent, context) + "/@" + node.getDisplayName
       case Type.TEXT =>
         pre = getPath(parent, context)
-        (if (pre == "/") ""
-        else pre) + "/text()" + (if (streamed) ""
-        else "[" + getNumberSimple(node, context) + "]")
+        (if (pre == "/") "" else pre) + "/text()" + (if (streamed) "" else "[" + getNumberSimple(node, context) + "]")
       case Type.COMMENT =>
         pre = getPath(parent, context)
-        (if (pre == "/") ""
-        else pre) + "/comment()" + (if (streamed) ""
-        else "[" + getNumberSimple(node, context) + "]")
+        (if (pre == "/") "" else pre) + "/comment()" + (if (streamed) "" else "[" + getNumberSimple(node, context) + "]")
       case Type.PROCESSING_INSTRUCTION =>
         pre = getPath(parent, context)
-        (if (pre == "/") ""
-        else pre) + "/processing-instruction()" + (if (streamed) ""
-        else "[" + getNumberSimple(node, context) + "]")
+        (if (pre == "/") "" else pre) + "/processing-instruction()" + (if (streamed) "" else "[" + getNumberSimple(node, context) + "]")
       case Type.NAMESPACE =>
         var test = node.getLocalPart
-        if (test.isEmpty) { // default namespace: need a node-test that selects unnamed nodes only
+        if (test.isEmpty)
+          // default namespace: need a node-test that selects unnamed nodes only
           test = "*[not(local-name()]"
-        }
         getPath(parent, context) + "/namespace::" + test
       case _ =>
         ""
@@ -244,9 +264,7 @@ object Navigator {
     val streamed = nodeInfo.getConfiguration.isStreamedNode(nodeInfo)
     val path = new util.LinkedList[AbsolutePath.PathElement]
     val sysId = nodeInfo.getSystemId
-    while ( {
-      nodeInfo != null && node.getNodeKind != Type.DOCUMENT
-    }) {
+    while (nodeInfo != null && node.getNodeKind != Type.DOCUMENT) {
       path.add(0, new AbsolutePath.PathElement(node.getNodeKind, NameOfNode.makeName(node), if (streamed) -1
       else getNumberSimple(node, null)))
       nodeInfo = nodeInfo.getParent
@@ -263,8 +281,11 @@ object Navigator {
    * @param n2 the second node
    * @return true if they have the same namespace and local part
    */
-  def haveSameName(n1: NodeInfo, n2: NodeInfo): Boolean = if (n1.hasFingerprint && n2.hasFingerprint) n1.getFingerprint == n2.getFingerprint
-  else n1.getLocalPart == n2.getLocalPart && n1.getURI == n2.getURI
+  def haveSameName(n1: NodeInfo, n2: NodeInfo): Boolean =
+    if (n1.hasFingerprint && n2.hasFingerprint)
+      n1.getFingerprint == n2.getFingerprint
+    else
+      n1.getLocalPart == n2.getLocalPart && n1.getURI == n2.getURI
 
   /**
    * Get simple node number. This is defined as one plus the number of previous siblings of the
@@ -277,15 +298,16 @@ object Navigator {
    */
   def getNumberSimple(node: NodeInfo, context: XPathContext): Int = { //checkNumberable(node);
     var same: NodeTest = null
-    if (node.getLocalPart.isEmpty) same = NodeKindTest.makeNodeKindTest(node.getNodeKind)
-    else same = new SameNameTest(node)
-    val controller = if (context == null) null
-    else context.getController
+    if (node.getLocalPart.isEmpty)
+      same = NodeKindTest.makeNodeKindTest(node.getNodeKind)
+    else
+      same = new SameNameTest(node)
+    val controller = if (context == null) null else context.getController
     val preceding = node.iterateAxis(AxisInfo.PRECEDING_SIBLING, same)
     var i = 1
     breakable {
       while (true) {
-        val prev = preceding.next
+        val prev = preceding.next()
         if (prev == null)
           break()
         if (controller != null) {
@@ -299,7 +321,8 @@ object Navigator {
         i += 1
       }
     }
-    if (controller != null) controller.setRememberedNumber(node, i)
+    if (controller != null)
+      controller.setRememberedNumber(node, i)
     i
   }
 
@@ -390,7 +413,7 @@ object Navigator {
     var memoNumber = 0
     val controller = context.getController
     assert(controller != null)
-    val memoise = !hasVariablesInPatterns && from == null
+    val memoise = ! hasVariablesInPatterns && from == null
     if (memoise) {
       val memo = controller.getUserData(inst.getLocation, "xsl:number").asInstanceOf[Array[AnyRef]]
       if (memo != null) {
@@ -400,23 +423,29 @@ object Navigator {
     }
     var num = 0
     if (patternCount == null) {
-      if (node.getLocalPart.isEmpty) patternCount = new NodeTestPattern(NodeKindTest.makeNodeKindTest(node.getNodeKind))
-      else patternCount = new NodeTestPattern(new SameNameTest(node))
+      if (node.getLocalPart.isEmpty)
+        patternCount = new NodeTestPattern(NodeKindTest.makeNodeKindTest(node.getNodeKind))
+      else
+        patternCount = new NodeTestPattern(new SameNameTest(node))
       num = 1
-    }
-    else if (count.matches(node, context)) num = 1
+    } else if (count.matches(node, context))
+      num = 1
     // We use a special axis invented for the purpose: the union of the preceding and
     // ancestor axes, but in reverse document order
     // Pass part of the filtering down to the axis iterator if possible
     var filter: NodeTest = null
-    if (from == null) filter = getNodeTestForPattern(count)
-    else if ((from.getUType eq UType.ELEMENT) && (count.getUType eq UType.ELEMENT)) filter = NodeKindTest.ELEMENT
-    else filter = AnyNodeTest.getInstance
-    if (from != null && from.matches(node, context)) return num
+    if (from == null)
+      filter = getNodeTestForPattern(count)
+    else if ((from.getUType eq UType.ELEMENT) && (count.getUType eq UType.ELEMENT))
+      filter = NodeKindTest.ELEMENT
+    else
+      filter = AnyNodeTest.getInstance
+    if (from != null && from.matches(node, context))
+      return num
     val preceding = node.iterateAxis(AxisInfo.PRECEDING_OR_ANCESTOR, filter)
     breakable {
       while (true) {
-        val prev: NodeInfo = preceding.next
+        val prev: NodeInfo = preceding.next()
         if (prev == null) break()
         if (count.matches(prev, context)) {
           if (num == 1 && prev == memoNode) {
@@ -425,11 +454,12 @@ object Navigator {
           }
           num += 1
         }
-        if (from != null && from.matches(prev, context)) break()
+        if (from != null && from.matches(prev, context))
+          break()
       }
     }
     if (memoise) {
-      val memo: Tuple2[NodeInfo, Int] = (node, num)
+      val memo = (node, num)
       controller.setUserData(inst.getLocation, "xsl:number", memo)
     }
     num
@@ -460,11 +490,16 @@ object Navigator {
   /**
    * Get a NodeTest to use as a filter for nodes, given a pattern.
    */
-  private def getNodeTestForPattern(pattern: Pattern) = {
+  private def getNodeTestForPattern(pattern: Pattern): NodeTest = {
     val itemType = pattern.getItemType
-    if (itemType.isInstanceOf[NodeTest]) itemType.asInstanceOf[NodeTest]
-    else if (pattern.getUType.overlaps(UType.ANY_NODE)) AnyNodeTest.getInstance
-    else ErrorType
+    itemType match {
+      case test: NodeTest => test
+      case _ =>
+        if (pattern.getUType.overlaps(UType.ANY_NODE))
+          AnyNodeTest.getInstance
+        else
+          ErrorType
+    }
   }
 
   /**
@@ -483,35 +518,38 @@ object Navigator {
   def copy(node: NodeInfo, out: Receiver, copyOptions: Int, locationId: Location): Unit = node.getNodeKind match {
     case Type.DOCUMENT =>
       out.startDocument(CopyOptions.getStartDocumentProperties(copyOptions))
-      for (child <- node.children) {
+      for (child <- node.children)
         child.copy(out, copyOptions, locationId)
-      }
       out.endDocument()
     case Type.ELEMENT =>
-      val annotation = if ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0) node.getSchemaType
-      else Untyped.getInstance
-      val ns = if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES)) node.getAllNamespaces
-      else NamespaceMap.emptyMap
+      val annotation =
+        if ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0)
+          node.getSchemaType
+        else
+          Untyped.getInstance
+      val ns =
+        if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES))
+          node.getAllNamespaces
+        else
+          NamespaceMap.emptyMap
       out.startElement(NameOfNode.makeName(node), annotation, node.attributes, ns, locationId, ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY | ReceiverOption.NAMESPACE_OK)
       // output the children
 
-      for (child <- node.children) {
+      for (child <- node.children)
         child.copy(out, copyOptions, locationId)
-      }
       // finally the end tag
       out.endElement()
     case Type.ATTRIBUTE =>
       throw new IllegalArgumentException("Cannot copy attribute to Receiver")
     //                SimpleType annotation = (copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0 ?
-    //                        (SimpleType) node.getSchemaType() :
+    //                        (SimpleType) node.getSchemaType :
     //                        BuiltInAtomicType.UNTYPED_ATOMIC;
     //                ((ComplexContentOutputter)out).attribute(NameOfNode.makeName(node), annotation, node.getStringValueCS, locationId, ReceiverOption.NONE);
     //                return;
     case Type.TEXT =>
       val value = node.getStringValueCS
-      if (value.length != 0) { // zero-length text nodes can arise from external model wrappers
+      if (value.length != 0) // zero-length text nodes can arise from external model wrappers
         out.characters(value, locationId, ReceiverOption.NONE)
-      }
     case Type.COMMENT =>
       out.comment(node.getStringValueCS, locationId, ReceiverOption.NONE)
     case Type.PROCESSING_INSTRUCTION =>
@@ -539,39 +577,31 @@ object Navigator {
     node.getNodeKind match {
       case Type.DOCUMENT =>
         out.startDocument(CopyOptions.getStartDocumentProperties(copyOptions))
-
-        for (child <- node.children) {
+        for (child <- node.children)
           copy(child, out, copyOptions, locationId)
-        }
         out.endDocument()
       case Type.ELEMENT =>
-        val annotation = if (keepTypes) node.getSchemaType
-        else Untyped.getInstance
+        val annotation = if (keepTypes) node.getSchemaType else Untyped.getInstance
         out.startElement(NameOfNode.makeName(node), annotation, locationId, ReceiverOption.DISINHERIT_NAMESPACES | ReceiverOption.NAMESPACE_OK)
-        if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0) {
-
-          for (ns <- node.getAllNamespaces.asScala) {
+        if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0)
+          for (ns <- node.getAllNamespaces.asScala)
             out.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
-          }
-        }
 
         for (attr <- node.attributes) {
-          val attType = if (keepTypes) attr.getType
-          else BuiltInAtomicType.UNTYPED_ATOMIC
+          val attType = if (keepTypes) attr.getType else BuiltInAtomicType.UNTYPED_ATOMIC
           out.attribute(attr.getNodeName, attType, attr.getValue, attr.getLocation, attr.getProperties)
         }
 
-        for (child <- node.children) {
+        for (child <- node.children)
           copy(child, out, copyOptions, locationId)
-        }
         out.endElement()
       case Type.ATTRIBUTE =>
-        val attType = if (keepTypes) node.getSchemaType.asInstanceOf[SimpleType]
-        else BuiltInAtomicType.UNTYPED_ATOMIC
+        val attType = if (keepTypes) node.getSchemaType.asInstanceOf[SimpleType] else BuiltInAtomicType.UNTYPED_ATOMIC
         out.attribute(NameOfNode.makeName(node), attType, node.getStringValueCS, locationId, ReceiverOption.NONE)
       case Type.TEXT =>
         val value = node.getStringValueCS
-        if (value.length != 0) out.characters(value, locationId, ReceiverOption.NONE)
+        if (value.length != 0)
+          out.characters(value, locationId, ReceiverOption.NONE)
       case Type.COMMENT =>
         out.comment(node.getStringValueCS, locationId, ReceiverOption.NONE)
       case Type.PROCESSING_INSTRUCTION =>
@@ -592,23 +622,30 @@ object Navigator {
    *         node, or 0 if they are the same node. (In this case, isSameNode() will always
    *         return true, and the two nodes will produce the same result for generateId())
    */
-  def compareOrder(first: SiblingCountingNode, second: SiblingCountingNode): Int = { // are they the same node?
-    if (first == second) return 0
+  def compareOrder(first: SiblingCountingNode, second: SiblingCountingNode): Int = {
+
+    // are they the same node?
+    if (first == second)
+      return 0
+
     val firstParent = first.getParent
-    if (firstParent == null) { // first node is the root
+    if (firstParent == null) // first node is the root
       return -1
-    }
+
     val secondParent = second.getParent
-    if (secondParent == null) { // second node is the root
+    if (secondParent == null) // second node is the root
       return +1
-    }
+
     // do they have the same parent (common case)?
     if (firstParent == secondParent) {
       val cat1 = nodeCategories(first.getNodeKind)
       val cat2 = nodeCategories(second.getNodeKind)
-      if (cat1 == cat2) return first.getSiblingPosition - second.getSiblingPosition
-      else return cat1 - cat2
+      if (cat1 == cat2)
+        return first.getSiblingPosition - second.getSiblingPosition
+      else
+        return cat1 - cat2
     }
+
     // find the depths of both nodes in the tree
     var depth1 = 0
     var depth2 = 0
@@ -622,31 +659,36 @@ object Navigator {
       depth2 += 1
       p2 = p2.getParent
     }
+
     // move up one branch of the tree so we have two nodes on the same level
     p1 = first
     while (depth1 > depth2) {
       p1 = p1.getParent
       assert(p1 != null)
-      if (p1 == second) return +1
+      if (p1 == second)
+        return +1
       depth1 -= 1
     }
     p2 = second
-    while ( {
-      depth2 > depth1
-    }) {
+    while (depth2 > depth1) {
       p2 = p2.getParent
       assert(p2 != null)
-      if (p2 == first) return -1
+      if (p2 == first)
+        return -1
       depth2 -= 1
     }
+
     // now move up both branches in sync until we find a common parent
     while (true) {
       val par1 = p1.getParent
       val par2 = p2.getParent
-      if (par1 == null || par2 == null) throw new NullPointerException("Node order comparison - internal error")
+      if (par1 == null || par2 == null)
+        throw new NullPointerException("Node order comparison - internal error")
       if (par1 == par2) {
-        if (p1.getNodeKind == Type.ATTRIBUTE && p2.getNodeKind != Type.ATTRIBUTE) return -1 // attributes first
-        if (p1.getNodeKind != Type.ATTRIBUTE && p2.getNodeKind == Type.ATTRIBUTE) return +1
+        if (p1.getNodeKind == Type.ATTRIBUTE && p2.getNodeKind != Type.ATTRIBUTE)
+          return -1 // attributes first
+        if (p1.getNodeKind != Type.ATTRIBUTE && p2.getNodeKind == Type.ATTRIBUTE)
+          return +1
         return p1.asInstanceOf[SiblingCountingNode].getSiblingPosition - p2.asInstanceOf[SiblingCountingNode].getSiblingPosition
       }
       p1 = par1
@@ -669,14 +711,21 @@ object Navigator {
    * @since 9.5
    */
   def comparePosition(first: NodeInfo, second: NodeInfo): Int = {
-    if (first.getNodeKind == Type.ATTRIBUTE || first.getNodeKind == Type.NAMESPACE || second.getNodeKind == Type.ATTRIBUTE || second.getNodeKind == Type.NAMESPACE) throw new UnsupportedOperationException
-    if (first == second) return AxisInfo.SELF
+    if (first.getNodeKind == Type.ATTRIBUTE || first.getNodeKind == Type.NAMESPACE || second.getNodeKind == Type.ATTRIBUTE || second.getNodeKind == Type.NAMESPACE)
+      throw new UnsupportedOperationException
+    if (first == second)
+      return AxisInfo.SELF
     val firstParent = first.getParent
-    if (firstParent == null) return AxisInfo.ANCESTOR
+    if (firstParent == null)
+      return AxisInfo.ANCESTOR
     val secondParent = second.getParent
-    if (secondParent == null) return AxisInfo.DESCENDANT
-    if (firstParent == secondParent) if (first.compareOrder(second) < 0) return AxisInfo.PRECEDING
-    else return AxisInfo.FOLLOWING
+    if (secondParent == null)
+      return AxisInfo.DESCENDANT
+    if (firstParent == secondParent)
+      if (first.compareOrder(second) < 0)
+        return AxisInfo.PRECEDING
+      else
+        return AxisInfo.FOLLOWING
     var depth1 = 0
     var depth2 = 0
     var p1 = first
@@ -700,7 +749,8 @@ object Navigator {
     }) {
       p1 = p1.getParent
       assert(p1 != null)
-      if (p1 == second) return AxisInfo.DESCENDANT
+      if (p1 == second)
+        return AxisInfo.DESCENDANT
       depth1 -= 1
     }
     p2 = second
@@ -709,12 +759,15 @@ object Navigator {
     }) {
       p2 = p2.getParent
       assert(p2 != null)
-      if (p2 == first) return AxisInfo.ANCESTOR
+      if (p2 == first)
+        return AxisInfo.ANCESTOR
       depth2 -= 1
     }
     // now delegate to compareOrder()
-    if (first.compareOrder(second) < 0) AxisInfo.PRECEDING
-    else AxisInfo.FOLLOWING
+    if (first.compareOrder(second) < 0)
+      AxisInfo.PRECEDING
+    else
+      AxisInfo.FOLLOWING
   }
 
   /**
@@ -748,8 +801,10 @@ object Navigator {
     }
     if (node.getNodeKind != Type.DOCUMENT) {
       val parent = node.getParent
-      if (parent != null) appendSequentialKey(parent.asInstanceOf[SiblingCountingNode], sb, addDocNr = false)
-      if (node.getNodeKind == Type.ATTRIBUTE) sb.cat('A')
+      if (parent != null)
+        appendSequentialKey(parent.asInstanceOf[SiblingCountingNode], sb, addDocNr = false)
+      if (node.getNodeKind == Type.ATTRIBUTE)
+        sb.cat('A')
     }
     sb.append(alphaKey(node.getSiblingPosition))
   }
@@ -786,20 +841,27 @@ object Navigator {
     val k = a.getNodeKind
     if (k != Type.ELEMENT && k != Type.DOCUMENT) return a == d
     // Fast path for the TinyTree implementation
-    if (a.isInstanceOf[TinyNodeImpl]) if (d.isInstanceOf[TinyNodeImpl]) return a.asInstanceOf[TinyNodeImpl].isAncestorOrSelf(d.asInstanceOf[TinyNodeImpl])
-    else if (d.isInstanceOf[TinyTextualElement#TinyTextualElementText]) return a == d || isAncestorOrSelf(a, d.getParent)
-    else if (d.getNodeKind == Type.NAMESPACE) {
-      // fall through
+    a match {
+      case impl: TinyNodeImpl =>
+        d match {
+          case impl1: TinyNodeImpl => return impl.isAncestorOrSelf(impl1)
+          case _: TinyTextualElement#TinyTextualElementText => return a == d || isAncestorOrSelf(a, d.getParent)
+          case _ =>
+            if (d.getNodeKind == Type.NAMESPACE) {
+              // fall through
+            } else if (d.isInstanceOf[VirtualCopy]) {
+            } else
+              return false
+        }
+      case _ =>
     }
-    else if (d.isInstanceOf[VirtualCopy]) {
-    }
-    else return false
     // Generic implementation
     var p = d
     while ( {
       p != null
     }) {
-      if (a == p) return true
+      if (a == p)
+        return true
       p = p.getParent
     }
     false
@@ -813,8 +875,11 @@ object Navigator {
    * @param nodeTest the test to be applied
    * @return an iterator over the node if it exists and matches the test.
    */
-  def filteredSingleton(node: NodeInfo, nodeTest: Predicate[_ >: NodeInfo]) = if (node != null && nodeTest.test(node)) SingleNodeIterator.makeIterator(node)
-  else EmptyIterator.ofNodes
+  def filteredSingleton(node: NodeInfo, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
+    if (node != null && nodeTest.test(node))
+      SingleNodeIterator.makeIterator(node)
+    else
+      EmptyIterator.ofNodes
 
   /**
    * Get the sibling position of a node: specifically, count how many preceding siblings
@@ -827,15 +892,20 @@ object Navigator {
    *         number exceeds max, in which case return some number greater than or equal to max.
    */
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
-    if (node.isInstanceOf[SiblingCountingNode] && nodeTest.isInstanceOf[AnyNodeTest]) return node.asInstanceOf[SiblingCountingNode].getSiblingPosition
+    node match {
+      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest] =>
+        return node1.getSiblingPosition
+      case _ =>
+    }
     val prev = node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
     var count = 1
     while ( {
       prev.next != null
     }) if ( {
-      count += 1;
+      count += 1
       count
-    } > max) return count
+    } > max)
+      return count
     count
   }
 
@@ -845,11 +915,13 @@ object Navigator {
    */
   class AxisFilter(var base: AxisIterator, var nodeTest: Predicate[_ >: NodeInfo]) extends AxisIterator {
 
-    override def next: NodeInfo = {
+    override def next(): NodeInfo = {
       while (true) {
-        val next = base.next
-        if (next == null) return null
-        if (nodeTest.test(next)) return next
+        val next = base.next()
+        if (next == null)
+          return null
+        if (nodeTest.test(next))
+          return next
       }
       null
     }
@@ -859,22 +931,14 @@ object Navigator {
    * EmptyTextFilter is an iterator that applies removes any zero-length text
    * nodes returned by an underlying AxisIterator.
    */
-  class EmptyTextFilter(var base: AxisIterator)
-
-  /**
-   * Construct an EmptyTextFilter
-   *
-   * @param base the underlying iterator that returns all the nodes on
-   *             a required axis. This must not be an atomizing iterator
-   */
-    extends AxisIterator {
-    override def next: NodeInfo = {
-      while ( {
-        true
-      }) {
-        val next = base.next
-        if (next == null) return null
-        if (!(next.getNodeKind == Type.TEXT && next.getStringValueCS.length == 0)) return next
+  class EmptyTextFilter(var base: AxisIterator) extends AxisIterator {
+    override def next(): NodeInfo = {
+      while (true) {
+        val next = base.next()
+        if (next == null)
+          return null
+        if (!(next.getNodeKind == Type.TEXT && next.getStringValueCS.length == 0))
+          return next
       }
       null
     }
@@ -887,13 +951,17 @@ object Navigator {
 
     private var atStart: Boolean = true
 
-    override final def next: NodeInfo = {
+    override def next(): NodeInfo = {
       if (atStart) {
         atStart = false
-        if (includeSelf) return current
+        if (includeSelf)
+          return current
       }
-      current = if (current == null) null
-      else current.getParent
+      current =
+        if (current == null)
+          null
+        else
+          current.getParent
       current
     }
 
@@ -913,55 +981,64 @@ object Navigator {
     private var descendants: AxisIterator = null
     private var atEnd = false
 
-    override final def next: NodeInfo = {
+    @tailrec
+    override def next(): NodeInfo = {
       if (descendants != null) {
-        val nextd = descendants.next
-        if (nextd != null) return nextd
-        else descendants = null
+        val nextd = descendants.next()
+        if (nextd != null)
+          return nextd
+        else
+          descendants = null
       }
       if (children != null) {
-        val n = children.next
-        if (n != null) if (n.hasChildNodes) if (forwards) {
-          descendants = new Navigator.DescendantEnumeration(n, false, true)
-          n
-        }
-        else {
-          descendants = new Navigator.DescendantEnumeration(n, true, false)
-          next
-        }
-        else n
-        else if (forwards || !includeSelf) null
+        val n = children.next()
+        if (n != null)
+            if (n.hasChildNodes)
+              if (forwards) {
+              descendants = new Navigator.DescendantEnumeration(n, false, true)
+              n
+            } else {
+              descendants = new Navigator.DescendantEnumeration(n, true, false)
+              next()
+            }
+          else
+            n
+        else if (forwards || !includeSelf)
+          null
         else {
           atEnd = true
           children = null
           start
         }
-      }
-      else if (atEnd) { // we're just finishing a backwards scan
+      } else if (atEnd) // we're just finishing a backwards scan
         null
-      }
       else { // we're just starting...
         if (start.hasChildNodes) { //children = new NodeWrapper.ChildEnumeration(start, true, forwards);
           children = start.iterateAxis(AxisInfo.CHILD)
-          if (!forwards) if (children.isInstanceOf[ReversibleIterator]) children = children.asInstanceOf[ReversibleIterator].getReverseIterator.asInstanceOf[AxisIterator]
-          else {
-            val list = new util.LinkedList[NodeInfo]
-            val forwards = start.iterateAxis(AxisInfo.CHILD)
-            var n: NodeInfo = null
-            while ( {
-              {n = forwards.next; n} != null
-            }) list.addFirst(n)
-            children = new ListIterator.OfNodes(list)
+          if (!forwards) children match {
+            case iterator: ReversibleIterator =>
+              children = iterator.getReverseIterator.asInstanceOf[AxisIterator]
+            case _ =>
+              val list = new util.LinkedList[NodeInfo]
+              val forwards = start.iterateAxis(AxisInfo.CHILD)
+              var n: NodeInfo = null
+              while ( {
+                {
+                  n = forwards.next(); n
+                } != null
+              }) list.addFirst(n)
+              children = new ListIterator.OfNodes(list)
           }
-        }
-        else children = EmptyIterator.ofNodes
-        if (forwards && includeSelf) start
-        else next
+        } else
+          children = EmptyIterator.ofNodes
+        if (forwards && includeSelf)
+          start
+        else
+          next()
       }
     }
 
-    def advance() = {
-    }
+    def advance(): Unit = ()
 
     // end of class DescendantEnumeration
   }
@@ -991,41 +1068,45 @@ object Navigator {
           //siblingEnum = new NodeWrapper.ChildEnumeration((NodeWrapper)start.getParent, true, true);
           // gets children of the attribute's parent node
           val parent = start.getParent
-          if (parent == null) siblingEnum = EmptyIterator.ofNodes
-          else siblingEnum = parent.iterateAxis(AxisInfo.CHILD)
+          if (parent == null)
+            siblingEnum = EmptyIterator.ofNodes
+          else
+            siblingEnum = parent.iterateAxis(AxisInfo.CHILD)
         case _ =>
           siblingEnum = EmptyIterator.ofNodes
       }
     }
 
 
-    override final def next: NodeInfo = {
+    @tailrec
+    override def next(): NodeInfo = {
       if (descendEnum != null) {
-        val nextd = descendEnum.next
+        val nextd = descendEnum.next()
         if (nextd != null) return nextd
         else descendEnum = null
       }
       if (siblingEnum != null) {
-        val nexts = siblingEnum.next
+        val nexts = siblingEnum.next()
         if (nexts != null) {
-          if (nexts.hasChildNodes) descendEnum = new Navigator.DescendantEnumeration(nexts, false, true)
-          else descendEnum = null
+          if (nexts.hasChildNodes)
+            descendEnum = new Navigator.DescendantEnumeration(nexts, false, true)
+          else
+            descendEnum = null
           return nexts
-        }
-        else {
+        } else {
           descendEnum = null
           siblingEnum = null
         }
       }
-      val nexta = ancestorEnum.next
+      val nexta = ancestorEnum.next()
       if (nexta != null) {
-        if (nexta.getNodeKind == Type.DOCUMENT) siblingEnum = EmptyIterator.ofNodes
-        else { //siblingEnum = new NodeWrapper.ChildEnumeration(next, false, true);
+        if (nexta.getNodeKind == Type.DOCUMENT)
+          siblingEnum = EmptyIterator.ofNodes
+        else //siblingEnum = new NodeWrapper.ChildEnumeration(next, false, true);
           siblingEnum = nexta.iterateAxis(AxisInfo.FOLLOWING_SIBLING)
-        }
-        next
-      }
-      else null
+        next()
+      } else
+        null
     }
 
     // end of class FollowingEnumeration
@@ -1058,42 +1139,43 @@ object Navigator {
     }
 
 
-    override final def next: NodeInfo = {
+    override def next(): NodeInfo = {
       if (descendEnum != null) {
-        val nextd = descendEnum.next
-        if (nextd != null) return nextd
-        else descendEnum = null
+        val nextd = descendEnum.next()
+        if (nextd != null)
+          return nextd
+        else
+          descendEnum = null
       }
       if (siblingEnum != null) {
-        val nexts = siblingEnum.next
-        if (nexts != null) if (nexts.hasChildNodes) {
-          descendEnum = new Navigator.DescendantEnumeration(nexts, true, false)
-          return next
-        }
-        else {
-          descendEnum = null
-          return nexts
-        }
+        val nexts = siblingEnum.next()
+        if (nexts != null)
+          if (nexts.hasChildNodes) {
+            descendEnum = new Navigator.DescendantEnumeration(nexts, true, false)
+            return next()
+          } else {
+            descendEnum = null
+            return nexts
+          }
         else {
           descendEnum = null
           siblingEnum = null
         }
       }
-      val nexta = ancestorEnum.next
+      val nexta = ancestorEnum.next()
       if (nexta != null) {
-        if (nexta.getNodeKind == Type.DOCUMENT) siblingEnum = EmptyIterator.ofNodes
-        else siblingEnum = nexta.iterateAxis(AxisInfo.PRECEDING_SIBLING)
-        if (!includeAncestors) next
-        else nexta
+        if (nexta.getNodeKind == Type.DOCUMENT)
+          siblingEnum = EmptyIterator.ofNodes
+        else
+          siblingEnum = nexta.iterateAxis(AxisInfo.PRECEDING_SIBLING)
+        if (!includeAncestors)
+          next()
+        else
+          nexta
       }
       else null
     }
 
     // end of class PrecedingEnumeration
   }
-
-}
-
-final class Navigator private() // Class is never instantiated
-{
 }

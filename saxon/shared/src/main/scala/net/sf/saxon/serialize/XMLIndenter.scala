@@ -216,7 +216,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
     emitter.comment(chars, locationId, properties)
   }
 
-  override def usesTypeAnnotations(): Boolean = true
+  override def usesTypeAnnotations: Boolean = true
 
   private def indent(): Unit = {
     if (suppressedAtLevel >= 0) {

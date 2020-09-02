@@ -1,23 +1,23 @@
 package net.sf.saxon.tree.tiny
 
-import net.sf.saxon.tree.util.FastStringBuffer
-
 import java.io.Writer
+
+import net.sf.saxon.tree.util.FastStringBuffer
 
 
 object CharSlice {
 
   def toCharArray(in: CharSequence): Array[Char] =
-    if (in.isInstanceOf[String]) {
-      in.asInstanceOf[String].toCharArray()
-    } else if (in.isInstanceOf[CharSlice]) {
-      in.asInstanceOf[CharSlice].toCharArray
-    } else if (in.isInstanceOf[FastStringBuffer]) {
-      in.asInstanceOf[FastStringBuffer].toCharArray
-    } else {
-      in.toString.toCharArray()
+    in match {
+      case string: String =>
+        string.toCharArray
+      case slice: CharSlice =>
+        slice.toCharArray
+      case buffer: FastStringBuffer =>
+        buffer.toCharArray
+      case _ =>
+        in.toString.toCharArray
     }
-
 }
 
 class CharSlice(private var array: Array[Char]) extends CharSequence {
@@ -39,7 +39,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
     }
   }
 
-  def length(): Int = count
+  def length: Int = count
 
   def setLength(length: Int): Unit = {
     count = length
@@ -53,28 +53,30 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
   override def toString: String = new String(array, offset, count)
 
   override def equals(other: Any): Boolean = {
-    if (other.isInstanceOf[CharSlice]) {
-      val cs2: CharSlice = other.asInstanceOf[CharSlice]
-      if (count != cs2.count) {
-        return false
-      }
-      val limit: Int = offset + count
-      var j: Int = offset
-      var k: Int = cs2.offset
-      while (j < limit) if (array({ j += 1; j - 1 }) != cs2
-        .array({ k += 1; k - 1 })) {
-        false
-      }
-      return true
-    } else if (other.isInstanceOf[CharSequence]) {
-      count == other
-        .asInstanceOf[CharSequence]
-        .length && toString == other.toString
+    other match {
+      case cs2: CharSlice =>
+        if (count != cs2.count)
+          return false
+        val limit: Int = offset + count
+        var j: Int = offset
+        var k: Int = cs2.offset
+        while (j < limit) if (array({
+          j += 1; j - 1
+        }) != cs2
+          .array({
+            k += 1; k - 1
+          })) {
+          false
+        }
+        return true
+      case sequence: CharSequence =>
+        count == sequence.length && toString == other.toString
+      case _ =>
     }
     false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     val end: Int = offset + count
     var h: Int = 0
     for (i <- offset until end) {
@@ -94,9 +96,8 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
   def substring(start: Int, end: Int): String =
     new String(array, offset + start, end - start)
 
-  def copyTo(destination: Array[Char], destOffset: Int): Unit = {
+  def copyTo(destination: Array[Char], destOffset: Int): Unit =
     System.arraycopy(array, offset, destination, destOffset, count)
-  }
 
   def getChars(start: Int,
                end: Int,
@@ -115,8 +116,6 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
     chars
   }
 
-  def write(writer: Writer): Unit = {
+  def write(writer: Writer): Unit =
     writer.write(array, offset, count)
-  }
-
 }

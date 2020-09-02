@@ -111,7 +111,7 @@ class ContentTypeTest(nodeKind: Int,
       schemaType.getNearestNamedType.getEQName +
       ')'
 
-  override def hashCode(): Int = kind << 20 ^ schemaType.hashCode
+  override def hashCode: Int = kind << 20 ^ schemaType.hashCode
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[ContentTypeTest] && other

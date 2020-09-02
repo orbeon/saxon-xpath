@@ -57,7 +57,7 @@ class IntToIntArrayMap extends IntToIntMap {
 
   /*@NotNull*/
 
-  def keyIterator(): IntIterator = new KeyIterator()
+  def keyIterator: IntIterator = new KeyIterator
 
   /**
    * Adds a key-value pair to the map.
@@ -108,7 +108,7 @@ class IntToIntArrayMap extends IntToIntMap {
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = i < used
+    def hasNext: Boolean = i < used
 
     def next(): Integer = keys({ i += 1; i  })
 

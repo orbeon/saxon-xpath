@@ -28,7 +28,7 @@ class ValueTailIterator(private var baseValue: GroundedValue,
     pos += 1; pos - 1
   })
 
-  def hasNext(): Boolean = baseValue.itemAt(start + pos) != null
+  def hasNext: Boolean = baseValue.itemAt(start + pos) != null
 
   override def materialize(): GroundedValue =
     if (start == 0) {

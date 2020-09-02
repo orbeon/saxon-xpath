@@ -234,7 +234,7 @@ class StructuredQName private(var content: Array[Char],
       case _ => false
     }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     if (cachedHashCode == -1) {
       var h: Int = 0x8004a00b
       h ^= prefixStart

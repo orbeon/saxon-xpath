@@ -72,7 +72,7 @@ class SortedIterator ()
     hostLanguage = language
   }
 
-  def hasNext(): Boolean = {
+  def hasNext: Boolean = {
     if (position < 0) {
       return      false
     }

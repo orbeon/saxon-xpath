@@ -85,10 +85,10 @@ class XPathSelector(private var exp: XPathExpression,
       XdmValue.wrap(i).asInstanceOf[XdmItem]
   }
 
-  def iterator(): XdmSequenceIterator[XdmItem] =
+  def iterator: XdmSequenceIterator[XdmItem] =
     new XdmSequenceIterator(exp.iterate(dynamicContext))
 
-  def stream(): XdmStream[_ <: XdmItem] = iterator().asInstanceOf[XdmItem].stream()
+  def stream(): XdmStream[_ <: XdmItem] = iterator.asInstanceOf[XdmItem].stream()
 
   def effectiveBooleanValue(): Boolean =
     exp.effectiveBooleanValue(dynamicContext)

@@ -904,9 +904,9 @@ class TinyTree(config: Configuration, statistics: Statistics)
   override def getUnparsedEntityNames: Iterator[String] =
     if (entityTable == null) {
       val emptyList: List[String] = Collections.emptyList()
-      emptyList.iterator()
+      emptyList.iterator
     } else {
-      entityTable.keySet.iterator()
+      entityTable.keySet.iterator
     }
 
   /*@Nullable*/
@@ -1135,7 +1135,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
         }
         case Type.TEXTUAL_ELEMENT => {
           val start: Int = source.alpha(from)
-          val len: Int = source.beta(from)
+          val len = source.beta(from)
           nameCode(to) = (source.nameCode(from) & NamePool.FP_MASK) |
             (prefixPool.obtainPrefixCode(source.getPrefix(from)) <<
               20)
@@ -1145,7 +1145,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
         }
         case Type.TEXT => {
           val start: Int = source.alpha(from)
-          val len: Int = source.beta(from)
+          val len = source.beta(from)
           nameCode(to) = -1
           alpha(to) = charBuffer.length
           appendChars(source.charBuffer.subSequence(start, start + len))
@@ -1158,7 +1158,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
         }
         case Type.COMMENT => {
           val start: Int = source.alpha(from)
-          val len: Int = source.beta(from)
+          val len = source.beta(from)
           nameCode(to) = -1
           val text: CharSequence =
             source.commentBuffer.subSequence(start, start + len)

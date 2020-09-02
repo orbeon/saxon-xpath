@@ -57,11 +57,11 @@ abstract class NodeImpl
 
   override def head: NodeImpl = this
 
-  def getTreeInfo(): TreeInfo = getPhysicalRoot
+  def getTreeInfo: TreeInfo = getPhysicalRoot
 
   def getStringValueCS: CharSequence = getStringValue
 
-  override def getSchemaType(): SchemaType = Untyped.getInstance
+  override def getSchemaType: SchemaType = Untyped.getInstance
 
   override def getColumnNumber(): Int =
     if (parent == null) {
@@ -70,7 +70,7 @@ abstract class NodeImpl
       parent.getColumnNumber
     }
 
-  def getSiblingPosition(): Int = index
+  def getSiblingPosition: Int = index
 
   def setSiblingPosition(index: Int): Unit = {
     this.index = index
@@ -98,7 +98,7 @@ abstract class NodeImpl
 
   override def hasFingerprint: Boolean = true
 
-  def getFingerprint(): Int = {
+  def getFingerprint: Int = {
     val name: NodeName = getNodeName
     if (name == null) {
       -1
@@ -107,7 +107,7 @@ abstract class NodeImpl
     }
   }
 
-  override def attributes(): AttributeMap = EmptyAttributeMap.getInstance
+  override def attributes: AttributeMap = EmptyAttributeMap.getInstance
 
   def generateId(buffer: FastStringBuffer): Unit = {
     val seq: Long = getSequenceNumber
@@ -177,7 +177,7 @@ abstract class NodeImpl
     if (qName == null) "" else qName.getLocalPart
   }
 
-  override def getLineNumber(): Int = parent.getLineNumber
+  override def getLineNumber: Int = parent.getLineNumber
 
   def saveLocation(): Location = this
 
@@ -219,7 +219,7 @@ abstract class NodeImpl
       if (this.isInstanceOf[ParentNodeImpl]) {
         this.asInstanceOf[ParentNodeImpl].iterateChildren(null)
       } else {
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       }
     } else {
       iterateAxis(axisNumber, AnyNodeTest.getInstance)
@@ -233,7 +233,7 @@ abstract class NodeImpl
         new AncestorEnumeration(this, nodeTest, true)
       case AxisInfo.ATTRIBUTE =>
         if (getNodeKind != Type.ELEMENT) {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         } else {
           this.asInstanceOf[ElementImpl].iterateAttributes(nodeTest)
         }
@@ -241,7 +241,7 @@ abstract class NodeImpl
         if (this.isInstanceOf[ParentNodeImpl]) {
           this.asInstanceOf[ParentNodeImpl].iterateChildren(nodeTest)
         } else {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         }
       case AxisInfo.DESCENDANT =>
         if (getNodeKind == Type.DOCUMENT && nodeTest.isInstanceOf[NameTest] &&
@@ -252,7 +252,7 @@ abstract class NodeImpl
         } else if (hasChildNodes) {
           new SteppingNavigator.DescendantAxisIterator(this, false, nodeTest)
         } else {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         }
       case AxisInfo.DESCENDANT_OR_SELF =>
         new SteppingNavigator.DescendantAxisIterator(this, true, nodeTest)
@@ -261,13 +261,13 @@ abstract class NodeImpl
         new FollowingSiblingEnumeration(this, nodeTest)
       case AxisInfo.NAMESPACE =>
         if (getNodeKind != Type.ELEMENT) {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         }
         NamespaceNode.makeIterator(this, nodeTest)
       case AxisInfo.PARENT =>
         var parent: NodeInfo = getParent
         if (parent == null) {
-          EmptyIterator.ofNodes()
+          EmptyIterator.ofNodes
         }
         Navigator.filteredSingleton(parent, nodeTest)
       case AxisInfo.PRECEDING => new PrecedingEnumeration(this, nodeTest)
@@ -283,7 +283,7 @@ abstract class NodeImpl
 
   def getAttributeValue(uri: String, localName: String): String = null
 
-  def getRoot(): NodeInfo = {
+  def getRoot: NodeInfo = {
     val parent: NodeInfo = getParent
     if (parent == null) {
       this
@@ -357,7 +357,7 @@ abstract class NodeImpl
   def getDeclaredNamespaces(
                              buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
-  override def getAllNamespaces(): NamespaceMap = null
+  override def getAllNamespaces: NamespaceMap = null
 
   def hasChildNodes: Boolean = getFirstChild != null
 
@@ -374,7 +374,7 @@ abstract class NodeImpl
     index = -1
   }
 
-  def isDeleted(): Boolean =
+  def isDeleted: Boolean =
     index == -1 || (parent != null && parent.isDeleted)
 
   override def setAttributes(attributes: AttributeMap): Unit = {

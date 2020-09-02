@@ -101,7 +101,7 @@ class Error extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    val len: Int = arguments.length
+    val len = arguments.length
     len match {
       case 0 => error(context, null, null, null)
       case 1 =>

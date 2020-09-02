@@ -134,7 +134,7 @@ class AtomicArray extends AtomicSequence {
       classOf[ValueSchemaComparable].isAssignableFrom(obj.getClass) &&
         compareTo(obj.asInstanceOf[ValueSchemaComparable]) == 0
 
-    override def hashCode(): Int =
+    override def hashCode: Int =
       try {
         var hash: Int = 0x06639662
         val iter: SequenceIterator = getValue.iterate()
@@ -156,7 +156,7 @@ class AtomicArray extends AtomicSequence {
   }
 
   override def reduce(): GroundedValue = {
-    val len: Int = getLength
+    val len = getLength
     if (len == 0) {
       EmptySequence.getInstance
     } else if (len == 1) {
@@ -166,6 +166,6 @@ class AtomicArray extends AtomicSequence {
     }
   }
 
-  def iterator(): Iterator[AtomicValue] = content.iterator()
+  def iterator: Iterator[AtomicValue] = content.iterator
 
 }

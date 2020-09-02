@@ -101,7 +101,7 @@ object SnapshotFn {
         case Type.ELEMENT => {
           bm.startElement(NameOfNode.makeName(anc),
             ancestorType,
-            anc.attributes(),
+            anc.attributes,
             anc.getAllNamespaces,
             Loc.NONE,
             ReceiverOption.NONE)

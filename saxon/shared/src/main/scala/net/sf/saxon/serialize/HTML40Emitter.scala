@@ -107,6 +107,6 @@ class HTML40Emitter extends HTMLEmitter {
       properties)
   }
 
-   override def rejectControlCharacters(): Boolean = true
+   override def rejectControlCharacters: Boolean = true
 
 }

@@ -1,4 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2013-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package net.sf.saxon.om
 
 import net.sf.saxon.lib.NamespaceConstant
@@ -17,11 +22,8 @@ import net.sf.saxon.value.Whitespace
 class QNameParser(private var resolver: NamespaceResolver) {
 
   private var acceptEQName: Boolean = false
-
   private var errorOnBadSyntax: String = "XPST0003"
-
   private var errorOnUnresolvedPrefix: String = "XPST0081"
-
   private var unescaper: XQueryParser.Unescaper = null
 
   def withNamespaceResolver(resolver: NamespaceResolver): QNameParser = {
@@ -38,18 +40,16 @@ class QNameParser(private var resolver: NamespaceResolver) {
   }
 
   def withErrorOnBadSyntax(code: String): QNameParser = {
-    if (code == errorOnBadSyntax) {
+    if (code == errorOnBadSyntax)
       return this
-    }
     val qp2: QNameParser = copy()
     qp2.errorOnBadSyntax = code
     qp2
   }
 
   def withErrorOnUnresolvedPrefix(code: String): QNameParser = {
-    if (code == errorOnUnresolvedPrefix) {
+    if (code == errorOnUnresolvedPrefix)
       return this
-    }
     val qp2: QNameParser = copy()
     qp2.errorOnUnresolvedPrefix = code
     qp2
@@ -77,51 +77,37 @@ class QNameParser(private var resolver: NamespaceResolver) {
       lexicalName.charAt(1) == '{') {
       val name: String = lexicalName.toString
       val endBrace: Int = name.indexOf('}')
-      if (endBrace < 0) {
+      if (endBrace < 0)
         throw new XPathException("Invalid EQName: closing brace not found", errorOnBadSyntax)
-      } else if (endBrace == name.length - 1) {
+      else if (endBrace == name.length - 1)
         throw new XPathException("Invalid EQName: local part is missing", errorOnBadSyntax)
-      }
-      var uri: String = name.substring(2, endBrace).toString
+      var uri: String = name.substring(2, endBrace)
       //String uri = Whitespace.collapseWhitespace(name.substring(2, endBrace)).toString();
-      if (unescaper != null && uri.contains("&")) {
+      if (unescaper != null && uri.contains("&"))
         uri = unescaper.unescape(uri).toString
-      }
-      if (uri == NamespaceConstant.XMLNS) {
+      if (uri == NamespaceConstant.XMLNS)
         throw new XPathException(
           "The string '" + NamespaceConstant.XMLNS + "' cannot be used as a namespace URI",
           "XQST0070")
-      }
       val local: String = name.substring(endBrace + 1)
       checkLocalName(local)
-      new StructuredQName("", uri, local)
+      return new StructuredQName("", uri, local)
     }
     val parts: Array[String] = NameChecker.getQNameParts(lexicalName)
     checkLocalName(parts(1))
-    if (parts(0).isEmpty) {
-      new StructuredQName("", defaultNS, parts(1))
-    }
+    if (parts(0).isEmpty)
+      return new StructuredQName("", defaultNS, parts(1))
     val uri: String = resolver.getURIForPrefix(parts(0), useDefault = false)
-    if (uri == null) {
+    if (uri == null)
       throw new XPathException(
         "Namespace prefix '" + parts(0) + "' has not been declared",
         errorOnUnresolvedPrefix)
-    }
     new StructuredQName(parts(0), uri, parts(1))
   }
 
-  private def checkLocalName(local: String): Unit = {
-    if (!NameChecker.isValidNCName(local)) {
+  private def checkLocalName(local: String): Unit =
+    if (!NameChecker.isValidNCName(local))
       throw new XPathException(
         "Invalid EQName: local part is not a valid NCName",
         errorOnBadSyntax)
-    }
-  }
-
 }
-
-// Copyright (c) 2013-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

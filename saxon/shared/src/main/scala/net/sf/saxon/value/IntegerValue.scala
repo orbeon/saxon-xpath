@@ -216,7 +216,7 @@ object IntegerValue {
   }
 
   def stringToInteger(s: CharSequence): ConversionResult = {
-    val len: Int = s.length
+    val len = s.length
     var start: Int = 0
     var last: Int = len - 1
     while (start < len && s.charAt(start) <= 0x20) {

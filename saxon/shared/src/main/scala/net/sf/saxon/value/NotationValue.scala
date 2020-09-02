@@ -94,7 +94,7 @@ class NotationValue(prefix: String,
       (o.isInstanceOf[NotationComparable] &&
         qName == o.asInstanceOf[NotationComparable].getNotationValue.qName)
 
-    override def hashCode(): Int = qName.hashCode
+    override def hashCode: Int = qName.hashCode
 
   }
 

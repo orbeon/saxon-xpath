@@ -14,9 +14,9 @@ trait XmlProcessingError extends StaticError {
 
   def getErrorCode(): QName
 
-  def getMessage(): String
+  def getMessage: String
 
-  def getLocation(): Location
+  def getLocation: Location
 
   override def getModuleUri(): String = getLocation.getSystemId
 

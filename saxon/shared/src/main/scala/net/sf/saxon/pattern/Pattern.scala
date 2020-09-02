@@ -126,7 +126,7 @@ abstract class Pattern extends PseudoExpression {
       if (matches(doc, context)) {
         SingletonIterator.makeIterator(doc)
       } else {
-        EmptyIterator.ofNodes()
+        EmptyIterator.ofNodes
       }
     } else if (UType.ATTRIBUTE.subsumes(uType)) {
       val allElements: AxisIterator =

@@ -42,6 +42,6 @@ class ImmList0[E] private() extends ImmList[E] {
       throw outOfBounds(0, 0)
     }
 
-  override def iterator(): collection.Iterator[E] = Collections.emptyIterator().asInstanceOf[collection.Iterator[E]]
+  override def iterator: collection.Iterator[E] = Collections.emptyIterator.asInstanceOf[collection.Iterator[E]]
 
 }

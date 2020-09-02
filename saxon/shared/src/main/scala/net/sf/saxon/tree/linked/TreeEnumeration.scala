@@ -31,7 +31,7 @@ abstract class TreeEnumeration(
 
    def step(): Unit
 
-  def hasNext(): Boolean = nextImpl != null
+  def hasNext: Boolean = nextImpl != null
 
   def next(): NodeInfo =
     if (nextImpl == null) {

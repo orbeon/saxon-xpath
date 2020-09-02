@@ -352,7 +352,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
       getNaN == o.getNaN
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     getDecimalSeparator + (37 * getGroupingSeparator) + (41 * getDigit)
 
 }

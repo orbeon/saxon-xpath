@@ -28,10 +28,10 @@ object PatternMaker {
   }
 //        result.setOriginalText(expression.toString());
 //        result.setSystemId(expression.getSystemId);
-//        result.setLineNumber(expression.getLineNumber());
+//        result.setLineNumber(expression.getLineNumber);
 //        result.setOriginalText(expression.toString());
 //        result.setSystemId(expression.getSystemId);
-//        result.setLineNumber(expression.getLineNumber());
+//        result.setLineNumber(expression.getLineNumber);
 
   def getAxisForPathStep(step: Expression): Int =
     if (step.isInstanceOf[AxisExpression]) {

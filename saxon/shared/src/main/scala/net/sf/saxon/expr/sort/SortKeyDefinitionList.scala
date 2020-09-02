@@ -48,8 +48,8 @@ class SortKeyDefinitionList(
 
   def getSortKeyDefinition(i: Int): SortKeyDefinition = sortKeyDefinitions(i)
 
-  def iterator(): Iterator[SortKeyDefinition] =
-    Arrays.asList(sortKeyDefinitions: _*).iterator()
+  def iterator: Iterator[SortKeyDefinition] =
+    Arrays.asList(sortKeyDefinitions: _*).iterator
 
   override def copy(rebindings: RebindingMap): SortKeyDefinitionList = {
     val s2: Array[SortKeyDefinition] =

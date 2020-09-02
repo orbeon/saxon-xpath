@@ -124,7 +124,7 @@ class SiblingIterator(private var tree: TinyTree,
     }
   }
 
-  def hasNext(): Boolean = {
+  def hasNext: Boolean = {
     var n: Int = nextNodeNr
     if (needToAdvance) {
       val nTest: Predicate[_ >: NodeInfo] = test

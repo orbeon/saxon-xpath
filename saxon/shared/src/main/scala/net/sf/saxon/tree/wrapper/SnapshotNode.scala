@@ -71,7 +71,7 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
     parent
   }
 
-  override def getRoot(): NodeInfo = super.getRoot
+  override def getRoot: NodeInfo = super.getRoot
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     Navigator.copy(this, out, copyOptions, locationId)
@@ -90,13 +90,13 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
 
   }
 
-  override def isId(): Boolean = original.isId
+  override def isId: Boolean = original.isId
 
   override def isIdref(): Boolean = original.isIdref
 
   override def isNilled(): Boolean = original.isNilled
 
-  override def getPublicId(): String =
+  override def getPublicId: String =
     if (original != null) original.getPublicId else null
 
   override def iterateAxis(axisNumber: Int,

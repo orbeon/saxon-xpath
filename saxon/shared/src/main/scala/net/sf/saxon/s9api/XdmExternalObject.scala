@@ -22,6 +22,6 @@ class XdmExternalObject extends XdmItem {
     case _ => false
   }
 
-  override def hashCode(): Int = getUnderlyingValue.hashCode
+  override def hashCode: Int = getUnderlyingValue.hashCode
 
 }

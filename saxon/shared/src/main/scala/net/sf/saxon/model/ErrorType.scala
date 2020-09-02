@@ -48,7 +48,7 @@ object ErrorType
 
   def isSimpleType(): Boolean = true
 
-  override def getFingerprint(): Int = StandardNames.XS_ERROR
+  override def getFingerprint: Int = StandardNames.XS_ERROR
 
   override def getMatchingNodeName(): StructuredQName =
     StandardNames.getStructuredQName(StandardNames.XS_ERROR)

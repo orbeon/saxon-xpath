@@ -172,7 +172,7 @@ abstract class Instruction extends Expression with TailCallReturner {
     if ((m & EVALUATE_METHOD) != 0) {
       val item: Item = evaluateItem(context)
       if (item == null) {
-        EmptyIterator.emptyIterator()
+        EmptyIterator.emptyIterator
       } else {
         SingletonIterator.makeIterator(item)
       }

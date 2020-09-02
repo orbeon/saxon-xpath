@@ -88,7 +88,7 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
   def getJavaCollationKey(source: String): CollationKey =
     uca.getCollationKey(source)
 
-  override def hashCode(): Int = uca.hashCode
+  override def hashCode: Int = uca.hashCode
 
   private def setProps(props: Properties): Unit = {
     this.properties = props

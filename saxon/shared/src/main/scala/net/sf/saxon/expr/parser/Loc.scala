@@ -47,7 +47,7 @@ class Loc extends Location {
 
   /*@Nullable*/
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   /**
    * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
@@ -58,7 +58,7 @@ class Loc extends Location {
 
   override def getSystemId: String = systemId
 
-  override def getLineNumber(): Int = lineNumber
+  override def getLineNumber: Int = lineNumber
 
   override def getColumnNumber(): Int = columnNumber
 }

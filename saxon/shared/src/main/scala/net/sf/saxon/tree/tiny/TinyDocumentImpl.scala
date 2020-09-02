@@ -46,7 +46,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
     getSystemId
   }
 
-  override def getLineNumber(): Int = 0
+  override def getLineNumber: Int = 0
 
   def isTyped: Boolean = tree.getTypeArray != null
 
@@ -54,7 +54,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
 
   override def getParent: TinyNodeImpl = null
 
-  override def getRoot(): NodeInfo = this
+  override def getRoot: NodeInfo = this
 
   override def generateId(buffer: FastStringBuffer): Unit = {
     buffer.cat('d')
@@ -98,7 +98,7 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
     list
   }
 
-  override def getSchemaType(): SchemaType = {
+  override def getSchemaType: SchemaType = {
     val children: AxisIterator =
       iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
     val node: NodeInfo = children.next()
@@ -128,5 +128,5 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
   def showSize(): Unit =
     tree.showSize()
 
-  override def hashCode(): Int = tree.getDocumentNumber.toInt
+  override def hashCode: Int = tree.getDocumentNumber.toInt
 }

@@ -28,10 +28,11 @@ object CollectionFn {
 
   /**
     * URI representing a collection that is always empty, regardless of any collection URI resolver
-    */ /**
-    * URI representing a collection that is always empty, regardless of any collection URI resolver
     */
-  var EMPTY_COLLECTION_URI: String = "http://saxon.sf.net/collection/empty"
+  /**
+   * URI representing a collection that is always empty, regardless of any collection URI resolver
+   */
+  val EMPTY_COLLECTION_URI: String = "http://saxon.sf.net/collection/empty"
 
   val EMPTY_COLLECTION: ResourceCollection = new EmptyCollection(
     EMPTY_COLLECTION_URI)
@@ -42,10 +43,10 @@ object CollectionFn {
     def getCollectionURI(): String = collectionUri
 
     def getResourceURIs(context: XPathContext): Iterator[String] =
-      new ArrayList[String]().iterator()
+      new ArrayList[String]().iterator
 
     def getResources(context: XPathContext): Iterator[Resource] =
-      new ArrayList[Resource]().iterator()
+      new ArrayList[Resource]().iterator
 
     def isStable(context: XPathContext): Boolean = true
 
@@ -96,7 +97,7 @@ class CollectionFn extends SystemFunction with Callable {
   private def getSequenceIterator(collection: ResourceCollection,
                                   context: XPathContext): SequenceIterator = {
     val sources: Iterator[_ <: Resource] = collection.getResources(context)
-    new SequenceIterator() {
+    new SequenceIterator {
       def next(): Item =
         if (sources.hasNext) {
           new ObjectValue[Resource](sources.next())
@@ -146,9 +147,8 @@ class CollectionFn extends SystemFunction with Callable {
     var cachedCollection: GroundedValue = context.getController
       .getUserData("saxon:collections", collectionKey)
       .asInstanceOf[GroundedValue]
-    if (cachedCollection != null) {
+    if (cachedCollection != null)
       return cachedCollection
-    }
     val collectionFinder: CollectionFinder =
       context.getController.getCollectionFinder
     var collection: ResourceCollection =
@@ -181,45 +181,40 @@ class CollectionFn extends SystemFunction with Callable {
     if (whitespaceRule != null) {
       val rule: SpaceStrippingRule = whitespaceRule
       val stripper: ItemMappingFunction = (item) => {
-        if (item.isInstanceOf[NodeInfo] &&
-            item.asInstanceOf[NodeInfo].getNodeKind == Type.DOCUMENT) {
-          var treeInfo: TreeInfo = item.asInstanceOf[NodeInfo].getTreeInfo
-          if (treeInfo.getSpaceStrippingRule != rule) {
-            new SpaceStrippedDocument(treeInfo, rule).getRootNode
-          }
+        item match {
+          case info: NodeInfo if info.getNodeKind == Type.DOCUMENT =>
+            val treeInfo = info.getTreeInfo
+            if (treeInfo.getSpaceStrippingRule != rule)
+              new SpaceStrippedDocument(treeInfo, rule).getRootNode
+          case _ =>
         }
         item
       }
       result = new ItemMappingIterator(result, stripper)
     }
 // If the collection is stable, cache the result
-    if (collection.isStable(context) ||
-        context.getConfiguration.getBooleanProperty(
-          Feature.STABLE_COLLECTION_URI)) {
+    if (collection.isStable(context) || context.getConfiguration.getBooleanProperty(Feature.STABLE_COLLECTION_URI)) {
       val controller: Controller = context.getController
       val docPool: DocumentPool = controller.getDocumentPool
       cachedCollection = result.materialize()
       val iter: SequenceIterator = cachedCollection.iterate()
       var item: Item = null
-      while (({
+      while ({
         item = iter.next()
         item
-      }) != null) if (item.isInstanceOf[NodeInfo] &&
-                                               item
-                                                 .asInstanceOf[NodeInfo]
-                                                 .getNodeKind == Type.DOCUMENT) {
-        val docUri: String = item.asInstanceOf[NodeInfo].getSystemId
-        val docKey: DocumentURI = new DocumentURI(docUri)
-        val info: TreeInfo =
-          if (item.isInstanceOf[TreeInfo]) item.asInstanceOf[TreeInfo]
-          else
-            new GenericTreeInfo(controller.getConfiguration,
-                                item.asInstanceOf[NodeInfo])
-        docPool.add(info, docKey)
+      } != null) item match {
+        case nodeInfo: NodeInfo if nodeInfo.getNodeKind == Type.DOCUMENT =>
+          val docUri = nodeInfo.getSystemId
+          val docKey = new DocumentURI(docUri)
+          val info =
+            item match {
+              case treeInfo: TreeInfo => treeInfo
+              case _                  => new GenericTreeInfo(controller.getConfiguration, nodeInfo)
+            }
+          docPool.add(info, docKey)
+        case _ =>
       }
-      context.getController.setUserData("saxon:collections",
-                                        collectionKey,
-                                        cachedCollection)
+      context.getController.setUserData("saxon:collections", collectionKey, cachedCollection)
       return cachedCollection
     }
     new LazySequence(result)
@@ -230,16 +225,4 @@ class CollectionFn extends SystemFunction with Callable {
 // See if the collection has been cached
 // Call the user-supplied CollectionFinder to get the ResourceCollection
 // In XSLT, worry about whitespace stripping
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Implement the fn:collection() function. This is responsible for calling the
-  * registered {@link CollectionFinder}. For the effect of the default
-  * system-supplied CollectionFinder, see {@link net.sf.saxon.resource.StandardCollectionFinder}
-  */

@@ -34,7 +34,7 @@ object BooleanValue {
   def fromString(s: CharSequence): ConversionResult = {
     var charSeq: CharSequence = s
     charSeq = Whitespace.trimWhitespace(s)
-    val len: Int = charSeq.length
+    val len = charSeq.length
     if (len == 1) {
       val c: Char = charSeq.charAt(0)
       if (c == '1') {
@@ -115,7 +115,7 @@ class BooleanValue private()
 
     }
 
-    override def hashCode(): Int = if (asBoolean()) 9999999 else 8888888
+    override def hashCode: Int = if (asBoolean()) 9999999 else 8888888
 
   }
 
@@ -158,7 +158,7 @@ class BooleanValue private()
    *
    * @return the hash code
    */
-  override def hashCode(): Int = if (value) 0 else 1
+  override def hashCode: Int = if (value) 0 else 1
 
   /**
    * Diagnostic display of this value as a string

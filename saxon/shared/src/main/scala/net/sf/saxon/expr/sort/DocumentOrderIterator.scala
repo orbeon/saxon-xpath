@@ -20,7 +20,7 @@ class DocumentOrderIterator(base: SequenceIterator,
                             private var comparer: ItemOrderComparer)
   extends SequenceIterator {
 
-  val len: Int =
+  val len =
     if (base.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER))
       base.asInstanceOf[LastPositionFinder].getLength
     else 50

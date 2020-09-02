@@ -66,7 +66,7 @@ class JavaPlatform extends Platform {
                                    useDefault: Boolean): String =
         nc.getNamespaceURI(prefix)
 
-      override def iteratePrefixes(): Iterator[String] =
+      override def iteratePrefixes: Iterator[String] =
         throw new UnsupportedOperationException()
     })
   }

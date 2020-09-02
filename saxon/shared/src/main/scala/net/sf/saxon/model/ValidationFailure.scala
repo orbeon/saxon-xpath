@@ -168,7 +168,7 @@ class ValidationFailure(@BeanProperty var message: String)
     sb.toString
   }
 
-  def getPublicId(): String = {
+  def getPublicId: String = {
     val loc: SourceLocator = getLocator
     if (publicId == null && loc != null && loc != this) {
       loc.getPublicId
@@ -186,7 +186,7 @@ class ValidationFailure(@BeanProperty var message: String)
     }
   }
 
-  def getLineNumber(): Int = {
+  def getLineNumber: Int = {
     val loc: SourceLocator = getLocator
     if (lineNumber == -1 && loc != null && loc != this) {
       loc.getLineNumber

@@ -108,7 +108,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     bodyIsTailCallReturner = (body.isInstanceOf[TailCallReturner])
   }
 
-  def getObjectName(): StructuredQName = templateName
+  def getObjectName: StructuredQName = templateName
 
   def setHasRequiredParams(has: Boolean): Unit = {
     hasRequiredParams = has

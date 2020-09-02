@@ -126,7 +126,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
     value = new SequenceExtent(values)
   }
 
-  def this(stream: Stream[_ <: XdmItem]) = this(stream.iterator())
+  def this(stream: Stream[_ <: XdmItem]) = this(stream.iterator)
 
   def setValue(value: GroundedValue): Unit = {
     this.value = value
@@ -156,7 +156,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
     XdmItem.wrapItem(item)
   }
 
-  def iterator(): Iterator[XdmItem] = {
+  def iterator: Iterator[XdmItem] = {
     val v: Sequence = getUnderlyingValue
     new XdmSequenceIterator(v.iterate())
   }
@@ -203,7 +203,7 @@ class XdmValue extends java.lang.Iterable[XdmItem] {
   }
 
   def stream(): XdmStream[_ <: XdmItem] =
-    new XdmStream(StreamSupport.stream(spliterator(), false))
+    new XdmStream(StreamSupport.stream(spliterator, false))
 
   def select[T <: XdmItem](step: Step[T]): XdmStream[T] =
     stream().flatMapToXdm(step)

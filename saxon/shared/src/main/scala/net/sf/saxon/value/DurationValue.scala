@@ -234,7 +234,7 @@ object DurationValue {
 
   def simpleInteger(s: String): Int = {
     var result: Long = 0
-    val len: Int = s.length
+    val len = s.length
     if (len == 0) {
       return -1
     }
@@ -303,7 +303,7 @@ object DurationValue {
 
     }
 
-    override def hashCode(): Int = months ^ seconds.toInt
+    override def hashCode: Int = months ^ seconds.toInt
 
     private def monthsToDaysMinimum(months: Int): Int = {
       if (months < 0) {
@@ -605,7 +605,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     java.lang.Double.valueOf(getLengthInSeconds).hashCode
 
   def add(other: DurationValue): DurationValue = {

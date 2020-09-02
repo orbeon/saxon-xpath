@@ -57,6 +57,6 @@ class ImmList1[E](private var member: E) extends ImmList[E] {
     }
   }
 
-  override def iterator(): collection.Iterator[E] = new MonoIterator(member).asInstanceOf[collection.Iterator[E]]
+  override def iterator: collection.Iterator[E] = new MonoIterator(member).asInstanceOf[collection.Iterator[E]]
 
 }

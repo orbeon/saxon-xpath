@@ -295,6 +295,6 @@ class XdmAtomicValue extends XdmItem {
 
   }
 
-  override def hashCode(): Int = getUnderlyingValue.asMapKey().hashCode
+  override def hashCode: Int = getUnderlyingValue.asMapKey().hashCode
 
 }

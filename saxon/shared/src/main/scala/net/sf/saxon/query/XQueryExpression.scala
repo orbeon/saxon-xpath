@@ -137,11 +137,11 @@ class XQueryExpression(var expression: Expression,
    *
    * @return the QName of the object declared or manipulated by this instruction or expression
    */
-  override def getObjectName(): StructuredQName = null
+  override def getObjectName: StructuredQName = null
 
   override def getTracingTag(): String = "query"
 
-  override def getLocation(): Location = this
+  override def getLocation: Location = this
 
   /**
    * Get data about the unit of compilation (XQuery module, XSLT package) to which this
@@ -238,7 +238,7 @@ class XQueryExpression(var expression: Expression,
 
   def iterator(env: DynamicQueryContext): SequenceIterator = {
     if (isUpdateQuery) {
-      throw new XPathException("Cannot call iterator() on an updating query")
+      throw new XPathException("Cannot call iterator on an updating query")
     }
     if (!env.getConfiguration.isCompatible(getExecutable.getConfiguration)) {
       throw new XPathException(
@@ -461,7 +461,7 @@ class XQueryExpression(var expression: Expression,
 
   /*@Nullable*/
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   /*@Nullable*/
 
@@ -480,7 +480,7 @@ class XQueryExpression(var expression: Expression,
    * @return The line number, or -1 if none is available.
    * @see #getColumnNumber
    */
-  def getLineNumber(): Int = -1
+  def getLineNumber: Int = -1
 
   /**
    * Return the character position where the current document event ends.

@@ -84,7 +84,7 @@ class RetainedStaticContext extends NamespaceResolver {
         namespaces = resolver
       } else {
         var map: NamespaceMap = NamespaceMap.emptyMap
-        var it: Iterator[String] = resolver.iteratePrefixes()
+        var it: Iterator[String] = resolver.iteratePrefixes
         while (it.hasNext) {
           val prefix: String = it.next()
           if (prefix.!=("xml")) {
@@ -141,12 +141,12 @@ class RetainedStaticContext extends NamespaceResolver {
   def getURIForPrefix(prefix: String, useDefault: Boolean): String =
     namespaces.getURIForPrefix(prefix, useDefault)
 
-  def iteratePrefixes(): Iterator[String] = namespaces.iteratePrefixes()
+  def iteratePrefixes: Iterator[String] = namespaces.iteratePrefixes
 
   def declaresSameNamespaces(other: RetainedStaticContext): Boolean =
     namespaces == other.namespaces
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     var h: Int = 0x8457cbce
     if (staticBaseUriString != null) {
       h ^= staticBaseUriString.hashCode

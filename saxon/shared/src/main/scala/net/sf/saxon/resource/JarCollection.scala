@@ -99,7 +99,7 @@ class JarCollection(private var context: XPathContext,
       }
       entry = zipInputStream.getNextEntry
     }
-    result.iterator()
+    result.iterator
   }
 
   private def getZipInputStream: ZipInputStream = {
@@ -157,7 +157,7 @@ class JarCollection(private var context: XPathContext,
 
     advance()
 
-    def hasNext(): Boolean = {
+    def hasNext: Boolean = {
       val more: Boolean = nextt != null
       if (!more) {
         zipInputStream.close()

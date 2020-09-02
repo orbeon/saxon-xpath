@@ -185,7 +185,7 @@ abstract class SequenceWriter(pipe: PipelineConfiguration)
     }
   }
 
-  override def usesTypeAnnotations(): Boolean =
-    builder == null || builder.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean =
+    builder == null || builder.usesTypeAnnotations
 
 }

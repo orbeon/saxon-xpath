@@ -21,7 +21,7 @@ class Tuple2[T1, T2](val _1: T1, val _2: T2) {
     true
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     var result: Int = if (_1 != null) _1.hashCode else 0
     result = 31 * result + (if (_2 != null) _2.hashCode else 0)
     result

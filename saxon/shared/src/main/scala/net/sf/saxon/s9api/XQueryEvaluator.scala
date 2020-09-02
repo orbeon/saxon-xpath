@@ -186,14 +186,14 @@ class XQueryEvaluator(var processor: Processor,
     if (next == null) null else XdmValue.wrap(next).asInstanceOf[XdmItem]
   }
 
-  def iterator(): XdmSequenceIterator[XdmItem] = {
+  def iterator: XdmSequenceIterator[XdmItem] = {
     if (expression.isUpdateQuery) {
       throw new IllegalStateException("Query is updating")
     }
     new XdmSequenceIterator(expression.iterator(context))
   }
 
-  def stream(): XdmStream[_<:XdmItem] = iterator().asInstanceOf[XdmItem].stream()
+  def stream(): XdmStream[_<:XdmItem] = iterator.asInstanceOf[XdmItem].stream()
 
   private def getDestinationReceiver(destination: Destination): Receiver = {
     val exec: Executable = expression.getExecutable
@@ -244,7 +244,7 @@ class XQueryEvaluator(var processor: Processor,
 
   def close(): Unit = ()
 
-  def getUpdatedDocuments: Iterator[XdmNode] = updatedDocuments.iterator()
+  def getUpdatedDocuments: Iterator[XdmNode] = updatedDocuments.iterator
 
   def callFunction(function: QName, arguments: Array[XdmValue]): XdmValue = {
     val fn: UserFunction = expression.getMainModule.getUserDefinedFunction(

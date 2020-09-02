@@ -95,6 +95,6 @@ class ProxyReceiver(receiver: Receiver) extends SequenceReceiver(receiver.getPip
     nextReceiver.append(item, locationId, properties)
   }
 
-  override def usesTypeAnnotations(): Boolean = nextReceiver.usesTypeAnnotations()
+  override def usesTypeAnnotations: Boolean = nextReceiver.usesTypeAnnotations
 
 }

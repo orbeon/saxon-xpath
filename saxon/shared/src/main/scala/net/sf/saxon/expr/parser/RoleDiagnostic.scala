@@ -88,16 +88,13 @@ object RoleDiagnostic {
     case _ =>
       if (n >= 21) {
         n % 10 match {
-          case 1 => n.toString + "st"
-          case 2 => n.toString + "nd"
-          case 3 => n.toString + "rd"
-
+          case 1 => return n.toString + "st"
+          case 2 => return n.toString + "nd"
+          case 3 => return n.toString + "rd"
         }
       }
       n.toString + "th"
-
   }
-
 }
 
 class RoleDiagnostic(private var kind: Int,

@@ -7,7 +7,7 @@
 /**
   * This interface represents a node name. Actually it represents any QName, but it is intended for use
   * as an element or attribute name. Various implementations are available.
-  * <p>An important requirement of an implementation of this interface is that the hashCode() and
+  * <p>An important requirement of an implementation of this interface is that the hashCode and
   * equals() methods are implemented correctly, so that any two node names compare equal if and only
   * if the local name and namespace URI parts are equal under Unicode codepoint comparison. To ensure this,
   * the hashCode must be computed using an algorithm equivalent to that used by the implementation class

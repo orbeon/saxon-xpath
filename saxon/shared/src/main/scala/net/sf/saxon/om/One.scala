@@ -38,7 +38,7 @@ class One[T <: Item](item: T)  extends ZeroOrOne[T](item) {
     new ConstrainedIterator[T]() {
       var gone: Boolean = false
 
-      override def hasNext(): Boolean = !gone
+      override def hasNext: Boolean = !gone
 
       override def next(): T =
         if (! gone) {
@@ -54,7 +54,7 @@ class One[T <: Item](item: T)  extends ZeroOrOne[T](item) {
         if (gone)
           EmptySequence.getInstance else head
 
-      override def getReverseIterator(): SequenceIterator = iterate()
+      override def getReverseIterator: SequenceIterator = iterate()
     }
 
 }

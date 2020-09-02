@@ -71,7 +71,7 @@ class NamedChildIterator(private var tree: TinyTree,
     tree.getTypedValueOfElement(nextNodeNr)
   }
 
-  def hasNext(): Boolean = {
+  def hasNext: Boolean = {
     var n: Int = nextNodeNr
     if (needToAdvance) {
       val thisNode: Int = n

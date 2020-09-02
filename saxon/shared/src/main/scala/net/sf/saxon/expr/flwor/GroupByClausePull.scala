@@ -71,7 +71,7 @@ class GroupByClausePull(private var base: TuplePull,
         val group: List[GroupByClause.ObjectToBeGrouped] = map.get(key)
         GroupByClausePush.addToGroup(key, otbg, group, map)
       }
-      groupIterator = map.values.iterator()
+      groupIterator = map.values.iterator
     }
 // First do the grouping
 // get an iterator over the groups

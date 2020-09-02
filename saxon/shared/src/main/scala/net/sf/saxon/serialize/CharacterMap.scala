@@ -37,7 +37,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
     this(null, null)
     charMap = new IntHashMap[String](64)
     for (map <- list.asScala) {
-      val keys: IntIterator = map.charMap.keyIterator()
+      val keys: IntIterator = map.charMap.keyIterator
       while (keys.hasNext) {
         val next: Int = keys.next
         charMap.put(next, map.charMap.get(next))
@@ -47,7 +47,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
   }
 
   private def init(): Unit = {
-    val keys: IntIterator = charMap.keyIterator()
+    val keys: IntIterator = charMap.keyIterator
     while (keys.hasNext) {
       val next: Int = keys.next
       if (next < min) {
@@ -137,7 +137,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("charMap")
     out.emitAttribute("name", name)
-    var iter: IntIterator = charMap.keyIterator()
+    var iter: IntIterator = charMap.keyIterator
     while (iter.hasNext) {
       val c: Int = iter.next
       val s: String = charMap.get(c)

@@ -65,16 +65,16 @@ class Closure extends Sequence with ContextOriginator {
 // Make a copy of the context item
     val currentIterator: FocusIterator = context.getCurrentIterator
     if (currentIterator != null) {
-      val contextItem: Item = currentIterator.current()
+      val contextItem: Item = currentIterator.current
       val single: ManualIterator = new ManualIterator(contextItem)
       savedXPathContext.setCurrentIterator(single)
     }
-// we don't save position() and last() because we have no way
+// we don't save position and last() because we have no way
 // of restoring them. So the caller must ensure that a Closure is not
-// created if the expression depends on position() or last()
-// we don't save position() and last() because we have no way
+// created if the expression depends on position or last()
+// we don't save position and last() because we have no way
 // of restoring them. So the caller must ensure that a Closure is not
-// created if the expression depends on position() or last()
+// created if the expression depends on position or last()
   }
 // Make a copy of all local variables. If the value of any local variable is a closure
 // whose depth exceeds a certain threshold, we evaluate the closure eagerly to avoid
@@ -156,8 +156,8 @@ class Closure extends Sequence with ContextOriginator {
   * are held in the saved XPathContext object that is kept as part of the Closure, and they
   * will always be read from that object. The expression may also depend on global variables;
   * these are unchanging, so they can be read from the Bindery in the normal way. Expressions
-  * that depend on other contextual information, for example the values of position(), last(),
-  * current(), current-group(), should not be evaluated using this mechanism: they should
+  * that depend on other contextual information, for example the values of position, last(),
+  * current, current-group(), should not be evaluated using this mechanism: they should
   * always be evaluated eagerly. This means that the Closure does not need to keep a copy
   * of these context variables.</p>
   */

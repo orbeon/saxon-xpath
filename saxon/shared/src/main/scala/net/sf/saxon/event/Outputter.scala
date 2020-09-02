@@ -22,7 +22,7 @@ abstract class Outputter extends Receiver {
     this.pipelineConfiguration = pipe
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipelineConfiguration
+  def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def getConfiguration: Configuration =
     pipelineConfiguration.getConfiguration
@@ -125,6 +125,6 @@ abstract class Outputter extends Receiver {
 
   def close(): Unit = ()
 
-  override def usesTypeAnnotations(): Boolean = false
+  override def usesTypeAnnotations: Boolean = false
 
 }

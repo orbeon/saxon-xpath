@@ -158,7 +158,7 @@ abstract class Actor extends ExpressionOwner with Location {
 
   def getColumnNumber(): Int = -1
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   def saveLocation(): Location = this.asInstanceOf[Location]
 
@@ -166,7 +166,7 @@ abstract class Actor extends ExpressionOwner with Location {
 
   def getProperties: Iterator[String] = {
     val list: List[String] = Collections.emptyList()
-    list.iterator()
+    list.iterator
   }
 
   def export(presenter: ExpressionPresenter): Unit

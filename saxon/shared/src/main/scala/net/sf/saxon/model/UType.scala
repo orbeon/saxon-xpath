@@ -191,7 +191,7 @@ class UType(private var bits: Int) {
     * @see Object#equals(Object)
     * @see java.util.Hashtable
     */
-  override def hashCode(): Int = bits
+  override def hashCode: Int = bits
 
   /**
     * Indicates whether some other object is "equal to" this one.
@@ -199,7 +199,7 @@ class UType(private var bits: Int) {
     * @param obj the reference object with which to compare.
     * @return <code>true</code> if this object is the same as the obj
     *         argument; <code>false</code> otherwise.
-    * @see #hashCode()
+    * @see #hashCode
     * @see java.util.Hashtable
     */
   override def equals(obj: Any): Boolean = obj match {
@@ -233,7 +233,7 @@ class UType(private var bits: Int) {
       return "U{}"
     }
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
-    val iter: Iterator[PrimitiveUType] = components.iterator()
+    val iter: Iterator[PrimitiveUType] = components.iterator
     var started: Boolean = false
     while (iter.hasNext) {
       if (started) {

@@ -73,7 +73,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
   /**
     * Ask whether this node name representation has a known namecode and fingerprint
     *
-    * @return true if the methods getFingerprint() and getNameCode() will
+    * @return true if the methods getFingerprint and getNameCode() will
     *         return a result other than -1
     */
   def hasFingerprint: Boolean = nameCode != -1
@@ -84,7 +84,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     *
     * @return the fingerprint if known; otherwise -1
     */
-  def getFingerprint(): Int = nameCode & NamePool.FP_MASK
+  def getFingerprint: Int = nameCode & NamePool.FP_MASK
 
   /**
     * Get the nameCode of this name, allocating a new code from the name pool if necessary
@@ -103,7 +103,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
   /**
     * Returns a hash code value for the object.
     */
-  override def hashCode(): Int = StructuredQName.computeHashCode("", localName)
+  override def hashCode: Int = StructuredQName.computeHashCode("", localName)
 
   /**
     * Indicates whether some other object is "equal to" this one.

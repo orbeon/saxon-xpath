@@ -173,7 +173,7 @@ class WindowClause extends Clause {
     if (endConditionOp == null) null else endConditionOp.getChildExpression
 
   def setVariableBinding(role: Int, binding: LocalVariableBinding): Unit = {
-    var iter: Iterator[LocalVariableBinding] = windowVars.valueIterator()
+    var iter: Iterator[LocalVariableBinding] = windowVars.valueiterator
     while (iter.hasNext) if (iter
       .next()
       .getVariableQName == binding.getVariableQName) {
@@ -282,7 +282,7 @@ class WindowClause extends Clause {
     val vars: Array[LocalVariableBinding] =
       Array.ofDim[LocalVariableBinding](windowVars.size)
     var i: Int = 0
-    val iter: Iterator[LocalVariableBinding] = windowVars.valueIterator()
+    val iter: Iterator[LocalVariableBinding] = windowVars.valueiterator
     while (iter.hasNext) i += 1
     vars(i) = iter.next()
     vars

@@ -84,9 +84,9 @@ class XdmMap extends XdmFunctionItem {
   }
 
   def keySet(): Set[XdmAtomicValue] = new AbstractSet[XdmAtomicValue]() {
-    override def iterator(): Iterator[XdmAtomicValue] =
+    override def iterator: Iterator[XdmAtomicValue] =
       new MappingJavaIterator(
-        getUnderlyingValue.keyValuePairs().iterator(),
+        getUnderlyingValue.keyValuePairs().iterator,
         (kvp: KeyValuePair) => XdmValue.wrap(kvp.key).asInstanceOf[XdmAtomicValue])
 
     override def size(): Int = getUnderlyingValue.size

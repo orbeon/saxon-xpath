@@ -33,7 +33,7 @@ object IntHashSet {
       case set: IntComplementSet => return ! set.getExclusions.containsAll(one)
       case _ =>
     }
-    val it = two.iterator()
+    val it = two.iterator
     while (it.hasNext) {
       if (one.contains(it.next))
         return true
@@ -67,7 +67,7 @@ object IntHashSet {
  * <p>Not thread safe.</p>
  *
  * @author Dominique Devienne
- * @author Michael Kay: retrofitted to JDK 1.4, added iterator()
+ * @author Michael Kay: retrofitted to JDK 1.4, added iterator
  */
 /**
  * Initializes a set with a load factor of 0,25.
@@ -267,7 +267,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     }
   }
 
-  def iterator(): IntIterator = new IntHashSetIterator()
+  def iterator: IntIterator = new IntHashSetiterator
 
   override def equals(other: Any): Boolean = other match {
     case other: IntHashSet => {
@@ -278,15 +278,15 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   }
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     // Note, hashcodes are the same as those used by IntArraySet
     var h: Int = 936247625
-    val it: IntIterator = iterator()
+    val it: IntIterator = iterator
     while (it.hasNext) h += it.next
     h
   }
 
-  override def toString: String = IntHashSet.toString(iterator())
+  override def toString: String = IntHashSet.toString(iterator)
 
   def diagnosticDump(): Unit = {
     System.err.println("Contents of IntHashSet")
@@ -312,7 +312,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     System.err.println("shift: " + _shift)
     System.err.println("mask: " + _mask)
     System.err.println("Result of iterator:")
-    val iter: IntIterator = iterator()
+    val iter: IntIterator = iterator
     var i: Int = 0
     while (iter.hasNext) {
       if ( {
@@ -327,11 +327,11 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     System.err.println("=====================")
   }
 
-  private class IntHashSetIterator() extends IntIterator {
+  private class IntHashSetiterator extends IntIterator {
 
     private var i: Int = 0
 
-    def hasNext(): Boolean = {
+    def hasNext: Boolean = {
       while (i < _values.length) if (_values(i) != ndv) {
         true
       } else {

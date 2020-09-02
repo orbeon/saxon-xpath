@@ -65,7 +65,7 @@ class SubsequenceIterator private(private var base: SequenceIterator,
     }
   }
 
-  def hasNext(): Boolean = nextItem != null
+  def hasNext: Boolean = nextItem != null
 
   def next(): Item = {
     if (nextItem == null) {

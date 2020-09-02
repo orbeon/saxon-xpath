@@ -80,7 +80,7 @@ class MonotonicIntSet extends IntSet {
     true
   }
 
-  def iterator(): IntIterator =
+  def iterator: IntIterator =
     new IntArraySet.IntArrayIterator(contents, used)
 
   override def union(other: IntSet): IntSet = {
@@ -191,9 +191,9 @@ class MonotonicIntSet extends IntSet {
       other.isInstanceOf[IntSet] && used == other.asInstanceOf[IntSet].size &&
         containsAll(other.asInstanceOf[IntSet])
 
-  override def hashCode(): Int = {
+  override def hashCode: Int = {
     var h: Int = 936247625
-    val it: IntIterator = iterator()
+    val it: IntIterator = iterator
     while (it.hasNext) h += it.next
     h
   }

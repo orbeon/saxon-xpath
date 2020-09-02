@@ -284,7 +284,7 @@ class Base64BinaryValue extends AtomicValue with AtomicMatchKey with Comparable[
    * Get an object value that implements the XPath equality and ordering comparison semantics for this value.
    * If the ordered parameter is set to true, the result will be a Comparable and will support a compareTo()
    * method with the semantics of the XPath lt/gt operator, provided that the other operand is also obtained
-   * using the getXPathComparable() method. In all cases the result will support equals() and hashCode() methods
+   * using the getXPathComparable() method. In all cases the result will support equals() and hashCode methods
    * that support the semantics of the XPath eq operator, again provided that the other operand is also obtained
    * using the getXPathComparable() method. A context argument is supplied for use in cases where the comparison
    * semantics are context-sensitive, for example where they depend on the implicit timezone or the default

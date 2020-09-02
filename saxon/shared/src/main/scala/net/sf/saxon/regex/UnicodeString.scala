@@ -122,8 +122,8 @@ abstract class UnicodeString
 
   def isEnd(pos: Int): Boolean
 
-  override def hashCode(): Int = {
-// Same result as String#hashCode() in the case where all characters are BMP chars
+  override def hashCode: Int = {
+// Same result as String#hashCode in the case where all characters are BMP chars
     if (cachedHash == -1) {
       var h: Int = 0
       for (i <- 0 until uLength()) {
@@ -175,7 +175,7 @@ abstract class UnicodeString
   }
 
   private def getCodepointCollationKey: Array[Byte] = {
-    val len: Int = uLength()
+    val len = uLength()
     val result: Array[Byte] = Array.ofDim[Byte](len * 3)
     var j: Int =0
     for (i <- 0 until len) {

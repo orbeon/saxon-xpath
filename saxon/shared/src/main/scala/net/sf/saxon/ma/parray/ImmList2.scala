@@ -94,7 +94,7 @@ class ImmList2[E](private var left: ImmList[E],
     }
   }
 
-  override def iterator(): collection.Iterator[E] =
+  override def iterator: collection.Iterator[E] =
     new ConcatenatingIterator(left.iterator, () => right.iterator)
 
   override def rebalance(): ImmList[E] = {

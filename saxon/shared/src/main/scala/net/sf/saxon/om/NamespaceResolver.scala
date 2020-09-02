@@ -1,21 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package net.sf.saxon.om
-
-import java.util.Iterator
-
-
-
-
-trait NamespaceResolver {
-
-  /*@Nullable*/
-
-  def getURIForPrefix(prefix: String, useDefault: Boolean): String
-
-  def iteratePrefixes(): Iterator[String]
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -24,3 +7,14 @@ trait NamespaceResolver {
 /**
   * Abstract class that supports lookup of a lexical QName to get the expanded QName.
   */
+
+package net.sf.saxon.om
+
+import java.util.Iterator
+
+
+trait NamespaceResolver {
+  /*@Nullable*/
+  def getURIForPrefix(prefix: String, useDefault: Boolean): String
+  def iteratePrefixes: Iterator[String]
+}

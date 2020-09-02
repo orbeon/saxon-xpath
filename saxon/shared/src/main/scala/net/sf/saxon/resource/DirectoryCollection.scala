@@ -39,7 +39,7 @@ object DirectoryCollection {
 
     advance()
 
-    def hasNext(): Boolean = nextt != null
+    def hasNext: Boolean = nextt != null
 
     def next(): String = {
       val s: String = nextt
@@ -68,7 +68,7 @@ object DirectoryCollection {
         if (nextFile.isDirectory) {
           if (recurse) {
             directories.push(
-              Arrays.asList(nextFile.listFiles(filter): _*).iterator())
+              Arrays.asList(nextFile.listFiles(filter): _*).iterator)
           }
           advance()
         } else {
@@ -227,7 +227,7 @@ class DirectoryCollection /**
       }
     }
     val directories: Stack[Iterator[File]] = new Stack[Iterator[File]]()
-    directories.push(Arrays.asList(directory.listFiles(filter): _*).iterator())
+    directories.push(Arrays.asList(directory.listFiles(filter): _*).iterator)
     new DirectoryIterator(directories, recurse, filter)
   }
 

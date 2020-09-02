@@ -1,11 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * AttributeMap represents an immutable collection of attributes available on a particular element
+  * node. An AttributeMap is an ordered collection of AttributeInfo objects. The order of the object
+  * represents document order.
+  */
+
 package net.sf.saxon.om
 
+import java.util.{ArrayList, List}
+
 import scala.jdk.CollectionConverters._
-
-import java.util.ArrayList
-
-import java.util.List
 
 
 
@@ -23,21 +32,20 @@ object AttributeMap {
       new LargeAttributeMap(list.asScala.toList)
     }
   }
-
 }
 
 trait AttributeMap extends Iterable[AttributeInfo] {
 
-  def size(): Int
+  def size: Int
 
   def get(name: NodeName): AttributeInfo =
-    this.find(_.getNodeName == name).getOrElse(null)
+    this.find(_.getNodeName == name).orNull
 
   def get(uri: String, local: String): AttributeInfo = {
     for (att <- this) {
       val attName: NodeName = att.getNodeName
       if (attName.getLocalPart == local && attName.hasURI(uri)) {
-        att
+        return att
       }
     }
     null
@@ -47,7 +55,7 @@ trait AttributeMap extends Iterable[AttributeInfo] {
     for (att <- this) {
       val attName: NodeName = att.getNodeName
       if (attName.obtainFingerprint(namePool) == fingerprint) {
-        att
+        return att
       }
     }
     null
@@ -78,7 +86,7 @@ trait AttributeMap extends Iterable[AttributeInfo] {
   def verify(): Unit = ()
 
   def apply(mapper: java.util.function.Function[AttributeInfo, AttributeInfo])
-    : AttributeMap = {
+  : AttributeMap = {
     val list: List[AttributeInfo] = new ArrayList[AttributeInfo](size)
     for (a <- this) {
       list.add(mapper.apply(a))
@@ -97,14 +105,3 @@ trait AttributeMap extends Iterable[AttributeInfo] {
   def itemAt(index: Int): AttributeInfo = asList().get(index)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * AttributeMap represents an immutable collection of attributes available on a particular element
-  * node. An AttributeMap is an ordered collection of AttributeInfo objects. The order of the object
-  * represents document order.
-  */

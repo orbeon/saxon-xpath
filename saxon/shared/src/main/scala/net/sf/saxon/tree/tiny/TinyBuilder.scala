@@ -381,7 +381,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       }
       return
     }
-    val len: Int = chars.length
+    val len = chars.length
     if (len > 0) {
       nodeNr = makeTextNode(chars, len)
       if (lineNumbering) {

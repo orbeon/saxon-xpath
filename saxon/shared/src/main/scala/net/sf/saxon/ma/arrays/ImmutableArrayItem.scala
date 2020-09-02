@@ -126,10 +126,10 @@ class ImmutableArrayItem extends AbstractArrayItem {
   }
 
   //        } catch (IndexOutOfBoundsException e) {
-  //            throw new XPathException(e.getMessage(), "FOAR0001");
+  //            throw new XPathException(e.getMessage, "FOAR0001");
   //        }
   //        } catch (IndexOutOfBoundsException e) {
-  //            throw new XPathException(e.getMessage(), "FOAR0001");
+  //            throw new XPathException(e.getMessage, "FOAR0001");
   //        }
 
   /**
@@ -142,7 +142,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
   override def removeSeveral(positions: IntSet): ArrayItem = {
     val p: Array[Int] = Array.ofDim[Int](positions.size)
     var i: Int = 0
-    val ii: IntIterator = positions.iterator()
+    val ii: IntIterator = positions.iterator
     while (ii.hasNext) {
       i = i + 1
       p(i) = ii.next

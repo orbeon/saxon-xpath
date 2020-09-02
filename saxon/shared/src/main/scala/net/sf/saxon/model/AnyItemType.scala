@@ -84,7 +84,7 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
 
   override def toString: String = "item()"
 
-  override def hashCode(): Int = "AnyItemType".hashCode
+  override def hashCode: Int = "AnyItemType".hashCode
 
   def one: SequenceType = {
     if (_one == null)

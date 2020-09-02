@@ -290,7 +290,7 @@ class StringValue extends AtomicValue {
   override def equals(other: Any): Boolean =
     throw new ClassCastException("equals on StringValue is not allowed")
 
-  override def hashCode(): Int = value.hashCode
+  override def hashCode: Int = value.hashCode
 
   def codepointEquals(other: StringValue): Boolean =
     if (value.isInstanceOf[String]) {

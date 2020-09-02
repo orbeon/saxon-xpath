@@ -153,7 +153,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
 
   override def getUType: UType = nodeTest.getUType
 
-  override def getFingerprint(): Int = nodeTest.getFingerprint
+  override def getFingerprint: Int = nodeTest.getFingerprint
 
   override def getItemType: ItemType = nodeTest
 

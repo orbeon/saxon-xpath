@@ -58,7 +58,7 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
     NodeOverNodeInfo.disallowUpdate()
   }
 
-  def isId(): Boolean = node.isId
+  def isId: Boolean = node.isId
 
   def getOwnerElement(): Element =
     if (node.getNodeKind == Type.ATTRIBUTE || node.getNodeKind == Type.NAMESPACE) {

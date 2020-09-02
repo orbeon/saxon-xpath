@@ -36,8 +36,8 @@ object ImmutableHashTrieMap {
 
     override def get(shift: Int, key: K): V = null.asInstanceOf[V]
 
-    def iterator(): Iterator[Tuple2[K, V]] =
-      Collections.emptySet[Tuple2[K, V]]().iterator()
+    def iterator: Iterator[Tuple2[K, V]] =
+      Collections.emptySet[Tuple2[K, V]]().iterator
 
   }
 
@@ -75,8 +75,8 @@ object ImmutableHashTrieMap {
       null.asInstanceOf[V]
     }
 
-    def iterator(): Iterator[Tuple2[K, V]] =
-      Collections.singleton(new Tuple2(key, value)).iterator()
+    def iterator: Iterator[Tuple2[K, V]] =
+      Collections.singleton(new Tuple2(key, value)).iterator
 
   }
 
@@ -146,11 +146,11 @@ object ImmutableHashTrieMap {
     override def get(shift: Int, key: K): V =
       entries.asScala.find(_._1 == key).map(_._2).getOrElse(null.asInstanceOf[V])
 
-    def iterator(): Iterator[Tuple2[K, V]] = new Iterator[Tuple2[K, V]]() {
+    def iterator: Iterator[Tuple2[K, V]] = new Iterator[Tuple2[K, V]]() {
       private var curList: ImmutableList[Tuple2[K, V]] =
         ListHashNode.this.entries
 
-      def hasNext(): Boolean = !curList.isEmpty
+      def hasNext: Boolean = !curList.isEmpty
 
       def next(): Tuple2[K, V] = {
         val retVal: Tuple2[K, V] = curList.head
@@ -267,19 +267,19 @@ object ImmutableHashTrieMap {
       subnodes(bucket).get(shift + BITS, key)
     }
 
-    def iterator(): Iterator[Tuple2[K, V]] = new Iterator[Tuple2[K, V]]() {
+    def iterator: Iterator[Tuple2[K, V]] = new Iterator[Tuple2[K, V]]() {
       private var bucket: Int = 0
 
       private var childIterator: Iterator[Tuple2[K, V]] =
-        subnodes(0).iterator()
+        subnodes(0).iterator
 
-      def hasNext(): Boolean = {
+      def hasNext: Boolean = {
         if (childIterator.hasNext) {
           return true
         }
         bucket += 1
         while (bucket < FANOUT) {
-          childIterator = subnodes(bucket).iterator()
+          childIterator = subnodes(bucket).iterator
           if (childIterator.hasNext) {
             return true
           }
@@ -339,7 +339,7 @@ object ImmutableHashTrieMap {
       null.asInstanceOf[V]
     }
 
-    def iterator(): Iterator[Tuple2[K, V]] = subnode.iterator()
+    def iterator: Iterator[Tuple2[K, V]] = subnode.iterator
 
   }
 

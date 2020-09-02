@@ -30,19 +30,19 @@ object Subsequence_2 {
         return seq
       }
     } else if (startNumVal.isNaN) {
-      return EmptyIterator.emptyIterator()
+      return EmptyIterator.emptyIterator
     } else {
       startNumVal = startNumVal.round(0)
       if (startNumVal.compareTo(Int64Value.PLUS_ONE) <= 0) {
         return seq
       } else if (startNumVal.compareTo(Int64Value.MAX_LONG) > 0) {
-        return EmptyIterator.emptyIterator()
+        return EmptyIterator.emptyIterator
       } else {
         lstart = startNumVal.longValue()
       }
     }
     if (lstart > java.lang.Integer.MAX_VALUE) {
-      return EmptyIterator.emptyIterator()
+      return EmptyIterator.emptyIterator
     }
     TailIterator.make(seq, lstart.toInt)
   }

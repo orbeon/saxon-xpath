@@ -285,7 +285,7 @@ class CallTemplate(private var template: NamedTemplate,
       null
     }
 
-  override def getObjectName(): StructuredQName =
+  override def getObjectName: StructuredQName =
     if (template == null) null else template.getTemplateName
 
   def export(out: ExpressionPresenter): Unit = {

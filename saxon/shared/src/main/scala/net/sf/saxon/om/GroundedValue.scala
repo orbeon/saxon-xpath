@@ -54,7 +54,7 @@ trait GroundedValue extends Sequence {
     new Iterator[Item]() {
       var pending: Item = null
 
-      override def hasNext(): Boolean = {
+      override def hasNext: Boolean = {
         pending = base.next()
         pending != null
       }

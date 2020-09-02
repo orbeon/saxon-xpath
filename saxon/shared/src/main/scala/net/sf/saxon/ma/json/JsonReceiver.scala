@@ -202,7 +202,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     this.pipe = pipe
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipe
+  def getPipelineConfiguration: PipelineConfiguration = pipe
 
   def setSystemId(systemId: String): Unit = ()
 
@@ -421,7 +421,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     }
   }
 
-  override def usesTypeAnnotations(): Boolean = false
+  override def usesTypeAnnotations: Boolean = false
 
   def getSystemId: String = null
 

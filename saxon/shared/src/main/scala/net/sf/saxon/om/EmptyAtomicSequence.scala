@@ -38,8 +38,8 @@ object EmptyAtomicSequence extends Enumeration {
 
     override def reduce(): EmptyAtomicSequence = this
 
-    def iterator(): Iterator[AtomicValue] =
-      Collections.emptyList[AtomicValue]().iterator()
+    def iterator: Iterator[AtomicValue] =
+      Collections.emptyList[AtomicValue]().iterator
 
   }
 

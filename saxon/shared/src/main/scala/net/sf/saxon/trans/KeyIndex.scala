@@ -248,7 +248,7 @@ class KeyIndex(isRangeKey: Boolean) {
 
   def entryIterator(value: AnyRef): SequenceIterator =
     if (value == null) {
-      EmptyIterator.ofNodes()
+      EmptyIterator.ofNodes
     } else if (value.isInstanceOf[NodeInfo]) {
       SingleNodeIterator.makeIterator(value.asInstanceOf[NodeInfo])
     } else {
@@ -287,7 +287,7 @@ class KeyIndex(isRangeKey: Boolean) {
       false
     }
 
-    override def hashCode(): Int = {
+    override def hashCode: Int = {
       var h: Int = 0x8ab27cd6
       for (amk <- keys) {
         h ^= amk.hashCode

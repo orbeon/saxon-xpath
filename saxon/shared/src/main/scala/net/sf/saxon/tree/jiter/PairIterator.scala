@@ -16,7 +16,7 @@ class PairIterator[T](private var one: T, private var two: T)
 
   private var pos: Int = 0
 
-  def hasNext(): Boolean = pos < 2
+  def hasNext: Boolean = pos < 2
 
   /**
     * Returns the next element in the iteration.

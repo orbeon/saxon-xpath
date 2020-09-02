@@ -154,7 +154,7 @@ class TupleItemType(names: List[String],
       case _ => false
     }
 
-  override def hashCode(): Int = fields.hashCode
+  override def hashCode: Int = fields.hashCode
 
   override def relationship(other: FunctionItemType, th: TypeHierarchy): Affinity.Affinity =
     if (other == AnyFunctionType) {

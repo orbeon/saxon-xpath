@@ -24,7 +24,7 @@ class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
     index.put(name, charMap)
   }
 
-  def iterator(): Iterator[CharacterMap] = index.values.iterator()
+  def iterator: Iterator[CharacterMap] = index.values.iterator
 
   def isEmpty: Boolean = index.isEmpty
 

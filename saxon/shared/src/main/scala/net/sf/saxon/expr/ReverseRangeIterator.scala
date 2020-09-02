@@ -21,7 +21,7 @@ class ReverseRangeIterator(var start: Long, var limit: Long)
       "XPDY0130")
   }
 
-  def hasNext(): Boolean = currentValue > limit
+  def hasNext: Boolean = currentValue > limit
 
   def next(): IntegerValue = {
     currentValue -= 1
@@ -38,6 +38,6 @@ class ReverseRangeIterator(var start: Long, var limit: Long)
   override def getProperties: Set[Property] =
     Set(LOOKAHEAD, LAST_POSITION_FINDER)
 
-  def getReverseIterator(): AtomicIterator[_ <: AtomicValue] = new RangeIterator(limit, start)
+  def getReverseIterator: AtomicIterator[_ <: AtomicValue] = new RangeIterator(limit, start)
 
 }

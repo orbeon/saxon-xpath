@@ -38,12 +38,12 @@ object PositionAndLast {
       val currentIterator: FocusIterator = c.getCurrentIterator
       if (currentIterator == null) {
         val e: XPathException = new XPathException(
-          "The context item is absent, so position() is undefined")
+          "The context item is absent, so position is undefined")
         e.setXPathContext(c)
         e.setErrorCode("XPDY0002")
         throw e
       }
-      Int64Value.makeIntegerValue(currentIterator.position())
+      Int64Value.makeIntegerValue(currentIterator.position)
     }
 
     override def getCompilerName(): String = "PositionCompiler"

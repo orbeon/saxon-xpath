@@ -269,7 +269,7 @@ abstract class GDateValue extends CalendarValue {
 
   }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     DateTimeValue.hashCode(year,
       month,
       day,
@@ -354,7 +354,7 @@ abstract class GDateValue extends CalendarValue {
 
     override def equals(o: Any): Boolean = compareTo(o.asInstanceOf[AnyRef]) == 0
 
-    override def hashCode(): Int =
+    override def hashCode: Int =
       GDateValue.this.toDateTime.getSchemaComparable.hashCode
 
   }

@@ -44,6 +44,6 @@ class UntypedAtomizingIterator(private val base: SequenceIterator)
 
   def getLength: Int = base.asInstanceOf[LastPositionFinder].getLength
 
-  def hasNext(): Boolean = base.asInstanceOf[LookaheadIterator].hasNext
+  def hasNext: Boolean = base.asInstanceOf[LookaheadIterator].hasNext
 
 }

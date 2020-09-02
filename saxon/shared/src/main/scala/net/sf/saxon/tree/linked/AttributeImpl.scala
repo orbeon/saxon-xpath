@@ -28,7 +28,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   this.setSiblingPosition(index)
 
   private def getAttributeInfo: AttributeInfo =
-    getRawParent.attributes().itemAt(getSiblingPosition)
+    getRawParent.attributes.itemAt(getSiblingPosition)
 
   override def getNodeName: NodeName = {
     if (getRawParent == null || getSiblingPosition == -1) {
@@ -37,16 +37,16 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     getAttributeInfo.getNodeName
   }
 
-  override def getFingerprint(): Int = {
+  override def getFingerprint: Int = {
     if (getRawParent == null || getSiblingPosition == -1) {
       return -1
     }
     getNodeName.obtainFingerprint(getNamePool)
   }
 
-  override def getSchemaType(): SchemaType = getAttributeInfo.getType
+  override def getSchemaType: SchemaType = getAttributeInfo.getType
 
-  override def isId(): Boolean = getAttributeInfo.isId
+  override def isId: Boolean = getAttributeInfo.isId
 
   override def isIdref(): Boolean = {
     if (ReceiverOption.contains(getAttributeInfo.getProperties,
@@ -63,10 +63,10 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
       case _ => false
     }
 
-  override def hashCode(): Int =
+  override def hashCode: Int =
     getRawParent.hashCode ^ (getSiblingPosition << 16)
 
-  override def getSequenceNumber(): Long = {
+  override def getSequenceNumber: Long = {
     val parseq: Long = getRawParent.getSequenceNumber
     (if (parseq == -1L) parseq else parseq + 0x8000 + getSiblingPosition)
   }
@@ -106,7 +106,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     }
   }
 
-  override def isDeleted(): Boolean =
+  override def isDeleted: Boolean =
     getRawParent == null ||
       getAttributeInfo.isInstanceOf[AttributeInfo.Deleted] ||
       getRawParent.isDeleted

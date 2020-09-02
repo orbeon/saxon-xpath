@@ -341,5 +341,4 @@ class ForExpression extends Assignation {
   def explainSpecializedAttributes(out: ExpressionPresenter): Unit = ()
 
   override def getStreamerName: String = "ForExpression"
-
 }

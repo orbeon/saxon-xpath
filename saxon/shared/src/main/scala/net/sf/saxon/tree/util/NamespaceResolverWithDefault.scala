@@ -30,9 +30,9 @@ class NamespaceResolverWithDefault(base: NamespaceResolver,
       baseResolver.getURIForPrefix(prefix, useDefault)
     }
 
-  def iteratePrefixes(): Iterator[String] = {
+  def iteratePrefixes: Iterator[String] = {
     val list: ArrayList[String] = new ArrayList[String](10)
-    var it: Iterator[String] = baseResolver.iteratePrefixes()
+    var it: Iterator[String] = baseResolver.iteratePrefixes
     while (it.hasNext) {
       val p: String = it.next()
       if (p.length != 0) {
@@ -40,7 +40,7 @@ class NamespaceResolverWithDefault(base: NamespaceResolver,
       }
     }
     list.add("")
-    list.iterator()
+    list.iterator
   }
 
 }

@@ -153,7 +153,7 @@ class DOMObjectModel extends TreeModel with ExternalObjectModel {
         def convert(obj: AnyRef, context: XPathContext): Sequence = {
           val config: Configuration = context.getConfiguration
           val list: NodeList = obj.asInstanceOf[NodeList]
-          val len: Int = list.getLength
+          val len = list.getLength
           val nodes: Array[NodeInfo] = Array.ofDim[NodeInfo](len)
           for (i <- 0 until len) {
             nodes(i) = wrapOrUnwrapNode(list.item(i), config)

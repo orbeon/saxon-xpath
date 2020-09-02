@@ -12,11 +12,11 @@ import net.sf.saxon.om.Item
 class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
     extends Locator {
 
-  def getPublicId(): String = null
+  def getPublicId: String = null
 
   def getSystemId: String = parent.getCurrentLocation.getSystemId
 
-  def getLineNumber(): Int = parent.getCurrentLocation.getLineNumber
+  def getLineNumber: Int = parent.getCurrentLocation.getLineNumber
 
   def getColumnNumber(): Int = parent.getCurrentLocation.getColumnNumber
 

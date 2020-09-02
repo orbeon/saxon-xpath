@@ -61,79 +61,58 @@ abstract class Emitter
     with ReceiverWithOutputProperties {
 
   var streamResult: StreamResult = _
-
   var writer: Writer = _
-
   var outputStream: OutputStream = _
-
   var outputProperties: Properties = _
-
   var characterSet: CharacterSet = _
-
   var allCharactersEncodable: Boolean = false
-
   private var mustClose: Boolean = false
 
   def setOutputProperties(details: Properties): Unit = {
     if (characterSet == null) {
-      characterSet =
-        getConfiguration.getCharacterSetFactory.getCharacterSet(details)
-      allCharactersEncodable = (characterSet
-        .isInstanceOf[UTF8CharacterSet] || characterSet
-        .isInstanceOf[UTF16CharacterSet])
+      characterSet = getConfiguration.getCharacterSetFactory.getCharacterSet(details)
+      allCharactersEncodable = characterSet.isInstanceOf[UTF8CharacterSet] || characterSet.isInstanceOf[UTF16CharacterSet]
     }
     outputProperties = details
   }
 
-  def getOutputProperties(): Properties = outputProperties
+  def getOutputProperties: Properties = outputProperties
 
   def setStreamResult(result: StreamResult): Unit = {
     streamResult = result
-    if (systemId == null) {
+    if (systemId == null)
       systemId = result.getSystemId
-    }
   }
 
   def makeWriter(): Unit = {
-    if (writer != null) {
+    if (writer != null)
       return
-    }
-    if (streamResult == null) {
-      throw new IllegalStateException(
-        "Emitter must have either a Writer or a StreamResult to write to")
-    }
+    if (streamResult == null)
+      throw new IllegalStateException("Emitter must have either a Writer or a StreamResult to write to")
     writer = streamResult.getWriter
     if (writer == null) {
       val os: OutputStream = streamResult.getOutputStream
-      if (os != null) {
+      if (os != null)
         this.outputStream = os
-      }
     }
-    if (writer == null) {
+    if (writer == null)
       makeOutputStream()
-    }
   }
 
   def makeOutputStream(): OutputStream = {
     val uriString: String = streamResult.getSystemId
-    if (uriString == null) {
-      throw new XPathException(
-        "Result has no system ID, writer, or output stream defined",
-        SaxonErrorCode.SXRD0004)
-    }
+    if (uriString == null)
+      throw new XPathException("Result has no system ID, writer, or output stream defined", SaxonErrorCode.SXRD0004)
     try {
       val file: File = ExpandedStreamResult.makeWritableOutputFile(uriString)
       this.outputStream = new FileOutputStream(file)
       streamResult.setOutputStream(outputStream)
       mustClose = true
     } catch {
-      case fnf@(_: FileNotFoundException | _: URISyntaxException |
-                _: IllegalArgumentException) => {
-        val err =
-          new XPathException("Unable to write to output destination", fnf)
+      case fnf@(_: FileNotFoundException | _: URISyntaxException | _: IllegalArgumentException) =>
+        val err = new XPathException("Unable to write to output destination", fnf)
         err.setErrorCode(SaxonErrorCode.SXRD0004)
         throw err
-      }
 
     }
     outputStream
@@ -143,14 +122,14 @@ abstract class Emitter
 
   def setWriter(writer: Writer): Unit = {
     this.writer = writer
-    if (writer.isInstanceOf[OutputStreamWriter] && outputProperties != null) {
-      val enc: String = writer.asInstanceOf[OutputStreamWriter].getEncoding
-      outputProperties.setProperty(OutputKeys.ENCODING, enc)
-      characterSet = getConfiguration.getCharacterSetFactory.getCharacterSet(
-        outputProperties)
-      allCharactersEncodable = (characterSet
-        .isInstanceOf[UTF8CharacterSet] || characterSet
-        .isInstanceOf[UTF16CharacterSet])
+    writer match {
+      case writer1: OutputStreamWriter if outputProperties != null =>
+        val enc: String = writer1.getEncoding
+        outputProperties.setProperty(OutputKeys.ENCODING, enc)
+        characterSet = getConfiguration.getCharacterSetFactory.getCharacterSet(
+          outputProperties)
+        allCharactersEncodable = characterSet.isInstanceOf[UTF8CharacterSet] || characterSet.isInstanceOf[UTF16CharacterSet]
+      case _ =>
     }
   }
 
@@ -178,11 +157,10 @@ abstract class Emitter
       }
       val byteOrderMark: String =
         outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
-      if ("no" == byteOrderMark && "UTF16" == encoding) {
+      if ("no" == byteOrderMark && "UTF16" == encoding)
         encoding = "UTF-16BE"
-      } else if (!(characterSet.isInstanceOf[UTF8CharacterSet])) {
+      else if (! characterSet.isInstanceOf[UTF8CharacterSet])
         encoding = characterSet.getCanonicalName
-      }
       breakable {
         while (true) try {
           var javaEncoding: String = encoding
@@ -193,14 +171,12 @@ abstract class Emitter
           writer =
             if (encoding.equalsIgnoreCase("UTF8")) new UTF8Writer(outputStream)
             else
-              new BufferedWriter(
-                new OutputStreamWriter(outputStream, javaEncoding))
+              new BufferedWriter(new OutputStreamWriter(outputStream, javaEncoding))
           break()
         } catch {
-          case err: Exception => {
-            if (encoding.equalsIgnoreCase("UTF8")) {
+          case _: Exception =>
+            if (encoding.equalsIgnoreCase("UTF8"))
               throw new XPathException("Failed to create a UTF8 output writer")
-            }
             val de: XmlProcessingIncident = new XmlProcessingIncident(
               "Encoding " + encoding + " is not supported: using UTF8",
               "SESU0007")
@@ -209,8 +185,6 @@ abstract class Emitter
             characterSet = UTF8CharacterSet.getInstance
             allCharactersEncodable = true
             outputProperties.setProperty(OutputKeys.ENCODING, "UTF-8")
-          }
-
         }
       }
     }
@@ -220,11 +194,9 @@ abstract class Emitter
 
   override def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = ()
 
-  def close(): Unit = {
-    if (mustClose && outputStream != null) {
+  def close(): Unit =
+    if (mustClose && outputStream != null)
       outputStream.close()
-    }
-  }
 
   /**
    * Ask whether this Receiver (or the downstream pipeline) makes any use of the type annotations
@@ -234,15 +206,11 @@ abstract class Emitter
    *         may supply untyped nodes instead of supplying the type annotation (or conversely, it may
    *         avoid stripping unwanted type annotations)
    */
-  override def usesTypeAnnotations(): Boolean = false
+  override def usesTypeAnnotations: Boolean = false
 
-  override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = {
-    if (item.isInstanceOf[NodeInfo]) {
+  override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit =
+    if (item.isInstanceOf[NodeInfo])
       decompose(item, locationId, copyNamespaces)
-    } else {
+    else
       characters(item.getStringValueCS, locationId, ReceiverOption.NONE)
-    }
-  }
-
 }
-

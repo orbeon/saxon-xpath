@@ -138,7 +138,7 @@ class UserFunction
     consumer.accept("arity", getArity)
   }
 
-  def getObjectName(): StructuredQName = functionName
+  def getObjectName: StructuredQName = functionName
 
   def getSymbolicName: SymbolicName.F =
     new SymbolicName.F(functionName, getArity)

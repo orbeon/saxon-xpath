@@ -575,7 +575,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def iterate(context: XPathContext): SequenceIterator =
     if (size == 0)
-      EmptyIterator.emptyIterator()
+      EmptyIterator.emptyIterator
     else if (size == 1)
       child(0).iterate(context)
     else

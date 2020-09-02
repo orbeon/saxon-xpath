@@ -159,13 +159,13 @@ class GlobalVariable
     isAssignable = assignable
   }
 
-  def getObjectName(): StructuredQName = getVariableQName
+  def getObjectName: StructuredQName = getVariableQName
 
   override def getProperty(name: String): AnyRef = null
 
   override def getProperties: Iterator[String] = {
     val list: List[String] = Collections.emptyList()
-    list.iterator()
+    list.iterator
   }
 
   def getHostLanguage: HostLanguage.HostLanguage = getPackageData.getHostLanguage
@@ -180,13 +180,13 @@ class GlobalVariable
     this.stackFrameMap = map
   }
 
-  def isGlobal(): Boolean = true
+  def isGlobal: Boolean = true
 
   def registerReference(ref: BindingReference): Unit = {
     references.add(ref)
   }
 
-  def iterateReferences(): Iterator[BindingReference] = references.iterator()
+  def iterateReferences(): Iterator[BindingReference] = references.iterator
 
   def setBinderySlotNumber(s: Int): Unit = {
     if (!isUnused) {
@@ -472,7 +472,7 @@ class GlobalVariable
     }
   }
 
-  def getIntegerBoundsForVariable(): Array[IntegerValue] =
+  def getIntegerBoundsForVariable: Array[IntegerValue] =
     if (getBody == null) null else getBody.getIntegerBounds
 
   def getLocalSlotNumber: Int = 0

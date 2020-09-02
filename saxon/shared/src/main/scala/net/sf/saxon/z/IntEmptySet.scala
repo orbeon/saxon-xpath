@@ -47,8 +47,8 @@ class IntEmptySet private () extends IntSet {
   def add(value: Int): Boolean =
     throw new UnsupportedOperationException("IntEmptySet is immutable")
 
-  def iterator(): IntIterator = new IntIterator() {
-    def hasNext(): Boolean = false
+  def iterator: IntIterator = new IntIterator {
+    def hasNext: Boolean = false
 
     def next(): Integer = java.lang.Integer.MIN_VALUE
   }

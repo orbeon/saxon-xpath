@@ -35,7 +35,7 @@ class DummyNamespaceResolver private () extends NamespaceResolver {
       NamespaceConstant.NULL
     }
 
-  def iteratePrefixes(): Iterator[String] = new PairIterator[String]("", "xml")
+  def iteratePrefixes: Iterator[String] = new PairIterator[String]("", "xml")
 
 }
 

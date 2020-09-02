@@ -13,7 +13,7 @@ class MappingJavaIterator[S, T](
 
   private var input: Iterator[S] = in
 
-  def hasNext(): Boolean = input.hasNext
+  def hasNext: Boolean = input.hasNext
 
   def next(): T = {
     while (true) {

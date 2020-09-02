@@ -65,7 +65,7 @@ class XdmSequenceIterator[T <: XdmItem] extends Iterator[T] {
     this.state = BEFORE_ITEM
   }
 
-  def hasNext(): Boolean = state match {
+  def hasNext: Boolean = state match {
     case ON_ITEM => true
     case FINISHED => false
     case BEFORE_ITEM => {

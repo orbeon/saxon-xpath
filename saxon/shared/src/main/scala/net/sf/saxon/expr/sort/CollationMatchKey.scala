@@ -15,7 +15,7 @@ class CollationMatchKey(private var key: CollationKey) extends AtomicMatchKey wi
       throw new ClassCastException()
     }
 
-  override def hashCode(): Int = key.hashCode
+  override def hashCode: Int = key.hashCode
 
   override def equals(o: Any): Boolean = o match {
     case o: CollationMatchKey => key == o.key

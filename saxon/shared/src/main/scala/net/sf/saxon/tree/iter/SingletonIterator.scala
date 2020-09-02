@@ -16,7 +16,7 @@ object SingletonIterator {
 
   def makeIterator[T <: Item](item: T): UnfailingIterator =
     if (item == null) {
-      EmptyIterator.emptyIterator()
+      EmptyIterator.emptyIterator
     } else {
       new SingletonIterator(item)
     }
@@ -40,7 +40,7 @@ class SingletonIterator[T <: Item](value: T)
 
   var gone: Boolean = false
 
-  def hasNext(): Boolean = !gone
+  def hasNext: Boolean = !gone
 
   def next(): T =
     if (gone) {
@@ -52,7 +52,7 @@ class SingletonIterator[T <: Item](value: T)
 
   def getLength: Int = 1
 
-  def getReverseIterator(): SingletonIterator[T] = new SingletonIterator(item)
+  def getReverseIterator: SingletonIterator[T] = new SingletonIterator(item)
 
   def getValue: T = item
 

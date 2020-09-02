@@ -175,7 +175,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
     val loc: Location = Loc.NONE
     if (node.hasChildNodes) {
       val nit: NodeList = node.getChildNodes
-      val len: Int = nit.getLength
+      val len = nit.getLength
       for (i <- 0 until len) {
         val child: Node = nit.item(i)
         currentNode = child
@@ -222,7 +222,7 @@ class DOMSender(startNode: Node, receiver: Receiver) {
     var attributes: AttributeMap = EmptyAttributeMap.getInstance
     val atts: NamedNodeMap = element.getAttributes
     if (atts != null) {
-      val len: Int = atts.getLength
+      val len = atts.getLength
       for (a2 <- 0 until len) {
         val att: Attr = atts.item(a2).asInstanceOf[Attr]
         val props: Int =

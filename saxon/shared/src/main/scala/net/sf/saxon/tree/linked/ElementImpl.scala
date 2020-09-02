@@ -85,7 +85,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     getPhysicalRoot.setSystemId(getRawSequenceNumber, uri)
   }
 
-  override def getRoot(): NodeInfo = {
+  override def getRoot: NodeInfo = {
     val up: ParentNodeImpl = getRawParent
     if (up == null ||
       (up.isInstanceOf[DocumentImpl] && up
@@ -117,9 +117,9 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     getPhysicalRoot.addNilledElement(this)
   }
 
-  override def getSchemaType(): SchemaType = `type`
+  override def getSchemaType: SchemaType = `type`
 
-  override def getLineNumber(): Int = {
+  override def getLineNumber: Int = {
     val root: DocumentImpl = getPhysicalRoot
     if (root == null) {
       -1
@@ -152,7 +152,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
 
   def getNodeKind: Int = Type.ELEMENT
 
-  override def attributes(): AttributeMap = attributeMap
+  override def attributes: AttributeMap = attributeMap
 
   def iterateAttributes(test: Predicate[_ >: NodeInfo]): AxisIterator =
     if (attributeMap.isInstanceOf[AttributeMapWithIdentity]) {
@@ -184,8 +184,8 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
         getAllNamespaces
       else NamespaceMap.emptyMap
     val atts: List[AttributeInfo] =
-      new ArrayList[AttributeInfo](attributes().size)
-    for (att <- attributes()) {
+      new ArrayList[AttributeInfo](attributes.size)
+    for (att <- attributes) {
       atts.add(
         new AttributeInfo(att.getNodeName,
           BuiltInAtomicType.UNTYPED_ATOMIC,
@@ -282,11 +282,11 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   private def prepareAttributesForUpdate(): AttributeMapWithIdentity =
-    if (attributes().isInstanceOf[AttributeMapWithIdentity]) {
-      attributes().asInstanceOf[AttributeMapWithIdentity]
+    if (attributes.isInstanceOf[AttributeMapWithIdentity]) {
+      attributes.asInstanceOf[AttributeMapWithIdentity]
     } else {
       val newAtts: AttributeMapWithIdentity = new AttributeMapWithIdentity(
-        attributes().asList())
+        attributes.asList())
       this.setAttributes(newAtts)
       newAtts
     }
@@ -327,7 +327,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       return
     }
     val index: Int = attribute.asInstanceOf[AttributeImpl].getSiblingPosition
-    val info: AttributeInfo = attributes().itemAt(index)
+    val info: AttributeInfo = attributes.itemAt(index)
     var atts: AttributeMapWithIdentity = prepareAttributesForUpdate()
     atts = atts.remove(index)
     this.setAttributes(atts)
@@ -383,7 +383,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       namespaceMap.getURI(prefix)
     }
 
-  def iteratePrefixes(): Iterator[String] = namespaceMap.iteratePrefixes()
+  def iteratePrefixes: Iterator[String] = namespaceMap.iteratePrefixes
 
   def isInScopeNamespace(uri: String): Boolean =
     namespaceMap.asScala.find(_.getURI == uri).map(_ => true).getOrElse(false)
@@ -429,17 +429,17 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator() .iterator.to(Iterable)
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asiterator .iterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }
 
-  override def getAllNamespaces(): NamespaceMap = namespaceMap
+  override def getAllNamespaces: NamespaceMap = namespaceMap
 
   override def getAttributeValue(uri: String, localName: String): String =
     if (attributeMap == null) null else attributeMap.getValue(uri, localName)
 
-  override def isId(): Boolean =
+  override def isId: Boolean =
     try {
       val `type`: SchemaType = getSchemaType
       `type`.getFingerprint == StandardNames.XS_ID ||

@@ -38,7 +38,7 @@ class ItemMappingIterator(var base: SequenceIterator,
 
    def getMappingFunction: ItemMappingFunction = action
 
-  def hasNext(): Boolean = // is a lookahead iterator and one-to-one is true
+  def hasNext: Boolean = // is a lookahead iterator and one-to-one is true
     base.asInstanceOf[LookaheadIterator].hasNext
 
   def next(): Item = {

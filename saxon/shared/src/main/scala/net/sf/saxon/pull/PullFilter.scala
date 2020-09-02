@@ -16,7 +16,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   private var pipe: PipelineConfiguration = _
 
-   var currentEvent: Event = base.current()
+   var currentEvent: Event = base.current
 
   if (base.getPipelineConfiguration != null) {
     this.setPipelineConfiguration(base.getPipelineConfiguration)
@@ -27,7 +27,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
     base.setPipelineConfiguration(pipe)
   }
 
-  def getPipelineConfiguration(): PipelineConfiguration = pipe
+  def getPipelineConfiguration: PipelineConfiguration = pipe
 
   def getNamePool: NamePool =
     getPipelineConfiguration.getConfiguration.getNamePool
@@ -36,7 +36,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   def next(): Event = base.next()
 
-  def current(): Event = currentEvent
+  def current: Event = currentEvent
 
   def getAttributes: AttributeMap = base.getAttributes
 
@@ -55,7 +55,7 @@ class PullFilter(private var base: PullProvider) extends PullProvider {
 
   def getAtomicValue(): AtomicValue = base.getAtomicValue
 
-  def getSchemaType(): SchemaType = base.getSchemaType
+  def getSchemaType: SchemaType = base.getSchemaType
 
   def getSourceLocator(): Location = base.getSourceLocator
 

@@ -96,8 +96,8 @@ class MemoClosure extends Closure with ContextOriginator {
   * are held in the saved XPathContext object that is kept as part of the Closure, and they
   * will always be read from that object. The expression may also depend on global variables;
   * these are unchanging, so they can be read from the Bindery in the normal way. Expressions
-  * that depend on other contextual information, for example the values of position(), last(),
-  * current(), current-group(), should not be evaluated using this mechanism: they should
+  * that depend on other contextual information, for example the values of position, last(),
+  * current, current-group(), should not be evaluated using this mechanism: they should
   * always be evaluated eagerly. This means that the Closure does not need to keep a copy
   * of these context variables.</p>
   * <p>In Saxon-EE, a for-each loop can be multithreaded. If a variable declared outside

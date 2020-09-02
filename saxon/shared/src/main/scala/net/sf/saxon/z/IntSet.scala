@@ -22,12 +22,12 @@ trait IntSet {
   def contains(value: Int): Boolean
   def remove(value: Int): Boolean
   def add(value: Int): Boolean
-  def iterator(): IntIterator
+  def iterator: IntIterator
 
   def containsAll(other: IntSet): Boolean = {
     if (other == IntUniversalSet.getInstance || other.isInstanceOf[IntComplementSet])
       return false
-    val it = other.iterator()
+    val it = other.iterator
     while (it.hasNext)
       if (! contains(it.next))
         return false
@@ -44,11 +44,11 @@ trait IntSet {
     if (other.isInstanceOf[IntComplementSet])
       return other.union(this)
     val n = new IntHashSet(this.size + other.size)
-    var it: IntIterator = iterator()
+    var it: IntIterator = iterator
     while (it.hasNext) {
       n.add(it.next)
     }
-    it = other.iterator()
+    it = other.iterator
     while (it.hasNext) {
       n.add(it.next)
     }
@@ -59,7 +59,7 @@ trait IntSet {
     if (this.isEmpty || other.isEmpty)
       return IntEmptySet.getInstance
     val n = new IntHashSet(size)
-    val it = iterator()
+    val it = iterator
     while (it.hasNext) {
       val v = it.next
       if (other.contains(v))
@@ -70,7 +70,7 @@ trait IntSet {
 
   def except(other: IntSet): IntSet = {
     val n = new IntHashSet(size)
-    val it = iterator()
+    val it = iterator
     while (it.hasNext) {
       val v = it.next
       if (! other.contains(v))

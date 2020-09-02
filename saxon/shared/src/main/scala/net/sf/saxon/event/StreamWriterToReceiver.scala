@@ -77,9 +77,9 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       override def getURIForPrefix(prefix: String,
                                    useDefault: Boolean): String = null
 
-      override def iteratePrefixes(): Iterator[String] = {
+      override def iteratePrefixes: Iterator[String] = {
         var e: List[String] = Collections.emptyList()
-        e.iterator()
+        e.iterator
       }
     })
 
@@ -203,7 +203,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     if (setPrefix != null) {
       return setPrefix
     }
-    val prefixes: Iterator[String] = inScopeNamespaces.iteratePrefixes()
+    val prefixes: Iterator[String] = inScopeNamespaces.iteratePrefixes
     while (prefixes.hasNext) {
       val p: String = prefixes.next()
       if (inScopeNamespaces.getURIForPrefix(p, useDefault = false) == uri) {
@@ -566,7 +566,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
         val root = rootNamespaceContext.getPrefixes(namespaceURI).asInstanceOf[util.Iterator[String]]
         while (root.hasNext)
           prefixes.add(root.next())
-        prefixes.iterator()
+        prefixes.iterator
       }
     }
 

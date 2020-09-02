@@ -408,7 +408,7 @@ abstract class ItemType {
 
   }
 
-  override def hashCode(): Int = getUnderlyingItemType.hashCode
+  override def hashCode: Int = getUnderlyingItemType.hashCode
 
   override def toString: String = {
     val `type`: net.sf.saxon.model.ItemType = getUnderlyingItemType

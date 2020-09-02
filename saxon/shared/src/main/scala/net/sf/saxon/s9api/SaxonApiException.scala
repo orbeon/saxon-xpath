@@ -15,7 +15,7 @@ class SaxonApiException(cause: Throwable) extends Exception(cause) {
     this(new Exception(new XPathException(message, cause)))
   }
 
-  override def getMessage(): String = getCause.getMessage
+  override def getMessage: String = getCause.getMessage
 
   def getErrorCode: QName = {
     val cause: Throwable = getCause

@@ -35,7 +35,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
 
   /*@NotNull*/
 
-  def iterate(): UnfailingIterator = EmptyIterator.emptyIterator()
+  def iterate(): UnfailingIterator = EmptyIterator.emptyIterator
 
   /*@Nullable*/
 
@@ -53,7 +53,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
     true
   }
 
-  override def hashCode(): Int = 42
+  override def hashCode: Int = 42
 
   override def effectiveBooleanValue(): Boolean = false
 

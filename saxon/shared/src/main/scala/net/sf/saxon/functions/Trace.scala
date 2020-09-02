@@ -103,7 +103,7 @@ class Trace extends SystemFunction with Traceable {
     e
   }
 
-  override def getLocation(): Location = location
+  override def getLocation: Location = location
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val controller: Controller = context.getController
@@ -124,7 +124,7 @@ class Trace extends SystemFunction with Traceable {
     }
   }
 
-  override def getObjectName(): StructuredQName = null
+  override def getObjectName: StructuredQName = null
 
   private class TracingIterator(private var base: SequenceIterator,
                                 private var label: String,

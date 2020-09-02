@@ -1,25 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+  * A value that is a sequence containing zero or one items.
+  */
+
 package net.sf.saxon.om
 
 import net.sf.saxon.expr.parser.ExpressionTool
-
-import net.sf.saxon.trans.XPathException
-
 import net.sf.saxon.tree.iter.ConstrainedIterator
-
 import net.sf.saxon.value.EmptySequence
-
-import ZeroOrOne._
-
-
 
 
 object ZeroOrOne {
-
-  private var EMPTY: ZeroOrOne[Item] = new ZeroOrOne[Item]
-
+  private val EMPTY: ZeroOrOne[Item] = new ZeroOrOne[Item]
   def empty[T <: Item](): ZeroOrOne[_ <:Item] = EMPTY
-
 }
 
 class ZeroOrOne[T <: Item] extends GroundedValue {
@@ -60,11 +58,10 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
   /*@NotNull*/
 
   def subsequence(start: Int, length: Int): GroundedValue =
-    if (item != null && start <= 0 && start + length > 0) {
+    if (item != null && start <= 0 && start + length > 0)
       this
-    } else {
+    else
       EmptySequence.getInstance
-    }
 
   /**
     * Return an iterator over this value.
@@ -73,9 +70,9 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
     new ConstrainedIterator[T]() {
       var gone: Boolean = false
 
-      override def hasNext(): Boolean = item != null && !gone
+      def hasNext: Boolean = item != null && !gone
 
-      override def next(): T =
+      def next(): T =
         if (gone) {
           null.asInstanceOf[T]
         } else {
@@ -83,15 +80,15 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
           item
         }
 
-      override def getLength: Int = if (item == null) 0 else 1
+      def getLength: Int = if (item == null) 0 else 1
 
       override def materialize(): GroundedValue =
         if (item == null) EmptySequence.getInstance else item
 
-      override def getResidue: GroundedValue =
+      def getResidue: GroundedValue =
         if (gone) EmptySequence.getInstance else item
 
-      override def getReverseIterator(): SequenceIterator = iterate()
+      def getReverseIterator: SequenceIterator = iterate()
     }
 
   override def effectiveBooleanValue(): Boolean =
@@ -113,19 +110,9 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
     * @return the simplified sequence
     */
   override def reduce(): GroundedValue =
-    if (item == null) {
+    if (item == null)
       EmptySequence.getInstance
-    } else {
+    else
       item
-    }
-
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A value that is a sequence containing zero or one items.
-  */

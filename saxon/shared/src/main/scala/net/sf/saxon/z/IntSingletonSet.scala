@@ -30,7 +30,7 @@ class IntSingletonSet(private var value: Int) extends IntSet {
   def add(value: Int): Boolean =
     throw new UnsupportedOperationException("IntSingletonSet is immutable")
 
-  def iterator(): IntIterator = new IntSingletonIterator(value)
+  def iterator: IntIterator = new IntSingletonIterator(value)
 
   override def union(other: IntSet): IntSet = {
     val n: IntSet = other.mutableCopy()
@@ -56,7 +56,7 @@ class IntSingletonSet(private var value: Int) extends IntSet {
     if (other.size > 1) {
       return false
     }
-    val ii: IntIterator = other.iterator()
+    val ii: IntIterator = other.iterator
     while (ii.hasNext) if (value != ii.next) {
       false
     }

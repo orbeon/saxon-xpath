@@ -86,7 +86,7 @@ class JavaExternalObjectType( var config: Configuration,
 
   def getDisplayName: String = "java-type:" + javaClass.getName
 
-  override def hashCode(): Int = javaClass.hashCode
+  override def hashCode: Int = javaClass.hashCode
 
   override def equals(obj: Any): Boolean = obj match {
     case obj: JavaExternalObjectType => javaClass == obj.javaClass
