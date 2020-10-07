@@ -1,4 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.registry
 
 import org.orbeon.saxon.utils.Configuration
@@ -36,6 +41,10 @@ import org.orbeon.saxon.value.SequenceType
 import java.util.List
 
 
+/**
+ * The ConstructorFunctionLibrary represents the collection of constructor functions for atomic types. These
+ * are provided for the built-in types such as xs:integer and xs:date, and also for user-defined atomic types.
+ */
 class ConstructorFunctionLibrary(private var config: Configuration)
   extends FunctionLibrary {
 
@@ -160,11 +169,9 @@ class ConstructorFunctionLibrary(private var config: Configuration)
               true)
             new StaticFunctionCall(lcf, arguments)
           } catch {
-            case e: MissingComponentException => {
+            case e: MissingComponentException =>
               reasons.add("Missing schema component: " + e.getMessage)
               return null
-            }
-
           }
         }
       } else {
@@ -175,51 +182,38 @@ class ConstructorFunctionLibrary(private var config: Configuration)
     if (arguments.length == 1) {
       val st: SchemaType =
         config.getSchemaType(new StructuredQName("", uri, localName))
-      if (st.isInstanceOf[SimpleType]) {
-        if (st.isInstanceOf[AtomicType]) {
-          new CastExpression(arguments(0), st.asInstanceOf[AtomicType], true)
-        } else if (st.isInstanceOf[ListType] && env.getXPathVersion >= 30) {
-          val resolver: NamespaceResolver = env.getNamespaceResolver
-          try {
-            val lcf: ListConstructorFunction = new ListConstructorFunction(
-              st.asInstanceOf[ListType],
-              resolver,
-              true)
-            new StaticFunctionCall(lcf, arguments)
-          } catch {
-            case e: MissingComponentException => {
-              reasons.add("Missing schema component: " + e.getMessage)
-              return null
+      st match {
+        case simpleType: SimpleType =>
+          st match {
+            case atomicType: AtomicType =>
+              new CastExpression(arguments(0), atomicType, true)
+            case listType: ListType if env.getXPathVersion >= 30 =>
+              val resolver: NamespaceResolver = env.getNamespaceResolver
+              try {
+                val lcf: ListConstructorFunction = new ListConstructorFunction(
+                  listType,
+                  resolver,
+                  true)
+                new StaticFunctionCall(lcf, arguments)
+              } catch {
+                case e: MissingComponentException =>
+                  reasons.add("Missing schema component: " + e.getMessage)
+                  return null
+              }
+            case _ => if (simpleType.isUnionType && env.getXPathVersion >= 30) {
+              val resolver: NamespaceResolver = env.getNamespaceResolver
+              val ucf: UnionConstructorFunction = new UnionConstructorFunction(
+                st.asInstanceOf[UnionType],
+                resolver,
+                true)
+              new StaticFunctionCall(ucf, arguments)
             }
-
           }
-        } else if (st.asInstanceOf[SimpleType]
-          .isUnionType && env.getXPathVersion >= 30) {
-          val resolver: NamespaceResolver = env.getNamespaceResolver
-          val ucf: UnionConstructorFunction = new UnionConstructorFunction(
-            st.asInstanceOf[UnionType],
-            resolver,
-            true)
-          new StaticFunctionCall(ucf, arguments)
-        }
+        case _ =>
       }
     }
     null
   }
 
-  // Now see if it's a constructor function for a user-defined type
-  // Now see if it's a constructor function for a user-defined type
-
   def copy(): FunctionLibrary = this
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * The ConstructorFunctionLibrary represents the collection of constructor functions for atomic types. These
- * are provided for the built-in types such as xs:integer and xs:date, and also for user-defined atomic types.
- */

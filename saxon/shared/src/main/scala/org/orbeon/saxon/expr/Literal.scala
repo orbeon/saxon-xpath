@@ -37,92 +37,94 @@ object Literal {
     if (value.head == null) {
       out.startElement("empty")
       out.endElement()
-    } else if (value.isInstanceOf[AtomicValue]) {
-      exportAtomicValue(value.asInstanceOf[AtomicValue], out)
-    } else if (value.isInstanceOf[IntegerRange]) {
-      out.startElement("range")
-      out.emitAttribute("from", "" + value.asInstanceOf[IntegerRange].getStart)
-      out.emitAttribute("to", "" + value.asInstanceOf[IntegerRange].getEnd)
-      out.endElement()
-    } else if (value.isInstanceOf[NodeInfo]) {
-      out.startElement("node")
-      val nodeKind: Int = value.asInstanceOf[NodeInfo].getNodeKind
-      out.emitAttribute("kind", nodeKind.toString)
-      if (out.getOptions
-        .asInstanceOf[ExpressionPresenter.ExportOptions]
-        .explaining) {
-        val name: String = value.asInstanceOf[NodeInfo].getDisplayName
-        if (!name.isEmpty) {
-          out.emitAttribute("name", name)
-        }
-      } else {
-        nodeKind match {
-          case Type.DOCUMENT | Type.ELEMENT =>
-            var sw: StringWriter = new StringWriter()
-            var props: Properties = new Properties()
-            props.setProperty("method", "xml")
-            props.setProperty("indent", "no")
-            props.setProperty("omit-xml-declaration", "yes")
-            QueryResult.serialize(value.asInstanceOf[NodeInfo],
-              new StreamResult(sw),
-              props)
-            out.emitAttribute("content", sw.toString)
-            out.emitAttribute("baseUri",
-              value.asInstanceOf[NodeInfo].getBaseURI)
-          case Type.TEXT | Type.COMMENT =>
-            out.emitAttribute("content",
-              value.asInstanceOf[NodeInfo].getStringValue)
-          case Type.ATTRIBUTE | Type.NAMESPACE | Type.PROCESSING_INSTRUCTION =>
-            val name: StructuredQName = NameOfNode
-              .makeName(value.asInstanceOf[NodeInfo])
-              .getStructuredQName
-            if (!name.getLocalPart.isEmpty) {
-              out.emitAttribute("localName", name.getLocalPart)
-            }
-            if (!name.getPrefix.isEmpty) {
-              out.emitAttribute("prefix", name.getPrefix)
-            }
-            if (!name.getURI.isEmpty) {
-              out.emitAttribute("ns", name.getURI)
-            }
-            out.emitAttribute("content",
-              value.asInstanceOf[NodeInfo].getStringValue)
-          case _ => assert(false)
-
-        }
-      }
-      out.endElement()
-    } else if (value.isInstanceOf[MapItem]) {
-      out.startElement("map")
-      out.emitAttribute("size", "" + value.asInstanceOf[MapItem].size)
-      for (kvp <- value.asInstanceOf[MapItem].keyValuePairs().asScala) {
-        exportAtomicValue(kvp.key, out)
-        exportValue(kvp.value, out)
-      }
-      out.endElement()
-    } else if (value.isInstanceOf[Function]) {
-      value.asInstanceOf[Function].export(out)
-    } else if (value.isInstanceOf[ExternalObject[_]]) {
-      if (out.getOptions
-        .asInstanceOf[ExpressionPresenter.ExportOptions]
-        .explaining) {
-        out.startElement("externalObject")
-        out.emitAttribute(
-          "class",
-          value.asInstanceOf[ExternalObject[_]].getObject.getClass.getName)
+    } else value match {
+      case atomicValue: AtomicValue =>
+        exportAtomicValue(atomicValue, out)
+      case integerRange: IntegerRange =>
+        out.startElement("range")
+        out.emitAttribute("from", "" + integerRange.getStart)
+        out.emitAttribute("to", "" + integerRange.getEnd)
         out.endElement()
-      } else {
-        throw new XPathException(
-          "Cannot export a stylesheet containing literal values bound to external Java objects")
-      }
-    } else {
-      out.startElement("literal")
-      if (value.isInstanceOf[GroundedValue]) {
-        out.emitAttribute("count",
-          value.asInstanceOf[GroundedValue].getLength.toString)
-      }
-      value.iterate().forEachOrFail((it) => exportValue(it, out))
-      out.endElement()
+      case nodeInfo: NodeInfo =>
+        out.startElement("node")
+        val nodeKind: Int = nodeInfo.getNodeKind
+        out.emitAttribute("kind", nodeKind.toString)
+        if (out.getOptions
+          .asInstanceOf[ExpressionPresenter.ExportOptions]
+          .explaining) {
+          val name: String = nodeInfo.getDisplayName
+          if (!name.isEmpty) {
+            out.emitAttribute("name", name)
+          }
+        } else {
+          nodeKind match {
+            case Type.DOCUMENT | Type.ELEMENT =>
+              var sw: StringWriter = new StringWriter()
+              var props: Properties = new Properties()
+              props.setProperty("method", "xml")
+              props.setProperty("indent", "no")
+              props.setProperty("omit-xml-declaration", "yes")
+              QueryResult.serialize(nodeInfo,
+                new StreamResult(sw),
+                props)
+              out.emitAttribute("content", sw.toString)
+              out.emitAttribute("baseUri",
+                nodeInfo.getBaseURI)
+            case Type.TEXT | Type.COMMENT =>
+              out.emitAttribute("content",
+                nodeInfo.getStringValue)
+            case Type.ATTRIBUTE | Type.NAMESPACE | Type.PROCESSING_INSTRUCTION =>
+              val name: StructuredQName = NameOfNode
+                .makeName(nodeInfo)
+                .getStructuredQName
+              if (!name.getLocalPart.isEmpty) {
+                out.emitAttribute("localName", name.getLocalPart)
+              }
+              if (!name.getPrefix.isEmpty) {
+                out.emitAttribute("prefix", name.getPrefix)
+              }
+              if (!name.getURI.isEmpty) {
+                out.emitAttribute("ns", name.getURI)
+              }
+              out.emitAttribute("content",
+                nodeInfo.getStringValue)
+            case _ => assert(false)
+
+          }
+        }
+        out.endElement()
+      case mapItem: MapItem =>
+        out.startElement("map")
+        out.emitAttribute("size", "" + mapItem.size)
+        for (kvp <- mapItem.keyValuePairs().asScala) {
+          exportAtomicValue(kvp.key, out)
+          exportValue(kvp.value, out)
+        }
+        out.endElement()
+      case function: Function =>
+        function.export(out)
+      case externalObject: ExternalObject[_] =>
+        if (out.getOptions
+          .asInstanceOf[ExpressionPresenter.ExportOptions]
+          .explaining) {
+          out.startElement("externalObject")
+          out.emitAttribute(
+            "class",
+            externalObject.getObject.getClass.getName)
+          out.endElement()
+        } else {
+          throw new XPathException(
+            "Cannot export a stylesheet containing literal values bound to external Java objects")
+        }
+      case _ =>
+        out.startElement("literal")
+        value match {
+          case groundedValue: GroundedValue =>
+            out.emitAttribute("count", groundedValue.getLength.toString)
+          case _ =>
+        }
+        value.iterate().forEachOrFail(it => exportValue(it, out))
+        out.endElement()
     }
   }
 
@@ -155,23 +157,21 @@ object Literal {
         if (value.asInstanceOf[BooleanValue].effectiveBooleanValue()) "true"
         else "false")
       out.endElement()
-    } else if (value.isInstanceOf[QualifiedNameValue]) {
-      out.startElement("qName")
-      out.emitAttribute("pre",
-        value.asInstanceOf[QualifiedNameValue].getPrefix)
-      out.emitAttribute("uri",
-        value.asInstanceOf[QualifiedNameValue].getNamespaceURI)
-      out.emitAttribute("loc",
-        value.asInstanceOf[QualifiedNameValue].getLocalName)
-      if (`type` != BuiltInAtomicType.QNAME) {
-        out.emitAttribute("type", `type`.getEQName)
-      }
-      out.endElement()
-    } else {
-      out.startElement("atomic")
-      out.emitAttribute("val", `val`)
-      out.emitAttribute("type", AlphaCode.fromItemType(`type`))
-      out.endElement()
+    } else value match {
+      case qualifiedNameValue: QualifiedNameValue =>
+        out.startElement("qName")
+        out.emitAttribute("pre", qualifiedNameValue.getPrefix)
+        out.emitAttribute("uri", qualifiedNameValue.getNamespaceURI)
+        out.emitAttribute("loc", qualifiedNameValue.getLocalName)
+        if (`type` != BuiltInAtomicType.QNAME) {
+          out.emitAttribute("type", `type`.getEQName)
+        }
+        out.endElement()
+      case _ =>
+        out.startElement("atomic")
+        out.emitAttribute("val", `val`)
+        out.emitAttribute("type", AlphaCode.fromItemType(`type`))
+        out.endElement()
     }
   }
 
@@ -186,30 +186,33 @@ object Literal {
       .getLength == 0
 
   def isConstantBoolean(exp: Expression, value: Boolean): Boolean = {
-    if (exp.isInstanceOf[Literal]) {
-      val b: GroundedValue = exp.asInstanceOf[Literal].value
-      b.isInstanceOf[BooleanValue] &&
-        b.asInstanceOf[BooleanValue].getBooleanValue == value
+    exp match {
+      case literal: Literal =>
+        val b: GroundedValue = literal.value
+        b.isInstanceOf[BooleanValue] && b.asInstanceOf[BooleanValue].getBooleanValue == value
+      case _ =>
     }
     false
   }
 
   def hasEffectiveBooleanValue(exp: Expression, value: Boolean): Boolean = {
-    if (exp.isInstanceOf[Literal]) {
-      try value ==
-        exp.asInstanceOf[Literal].value.effectiveBooleanValue()
-      catch {
-        case err: XPathException => return false
-
-      }
+    exp match {
+      case literal: Literal =>
+        try value == literal.value.effectiveBooleanValue()
+        catch {
+          case _: XPathException => return false
+        }
+      case _ =>
     }
     false
   }
 
   def isConstantOne(exp: Expression): Boolean = {
-    if (exp.isInstanceOf[Literal]) {
-      val v: GroundedValue = exp.asInstanceOf[Literal].value
-      v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue() == 1
+    exp match {
+      case literal: Literal =>
+        val v: GroundedValue = literal.value
+        v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue() == 1
+      case _ =>
     }
     false
   }
@@ -219,14 +222,13 @@ object Literal {
   def makeLiteral[T <: Item](value: GroundedValue): Literal = {
     var valueVar = value
     valueVar = valueVar.reduce()
-    if (valueVar.isInstanceOf[StringValue]) {
-      new StringLiteral(valueVar.asInstanceOf[StringValue])
-    } else if (valueVar.isInstanceOf[Function] &&
-      !(valueVar.isInstanceOf[MapItem] || valueVar
-        .isInstanceOf[ArrayItem])) {
-      new FunctionLiteral(valueVar.asInstanceOf[Function])
-    } else {
-      new Literal(valueVar)
+    valueVar match {
+      case stringValue: StringValue =>
+        new StringLiteral(stringValue)
+      case function: Function if !(valueVar.isInstanceOf[MapItem] || valueVar.isInstanceOf[ArrayItem]) =>
+        new FunctionLiteral(function)
+      case _ =>
+        new Literal(valueVar)
     }
   }
 
@@ -235,19 +237,18 @@ object Literal {
     ExpressionTool.copyLocationInfo(origin, lit)
     lit
   }
-
 }
 
 class   Literal extends Expression {
 
   var value: GroundedValue = _
 
-  def this(value: GroundedValue) {
+  def this(value: GroundedValue) = {
     this()
     this.value = value.reduce()
   }
 
-  def setValue(value: GroundedValue) = this.value = value
+  def setValue(value: GroundedValue): Unit = this.value = value
 
   def getValue: GroundedValue = value
 
@@ -257,27 +258,31 @@ class   Literal extends Expression {
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = this
 
-  override def getNetCost(): Int = 0
+  override def getNetCost: Int = 0
 
   def getItemType: ItemType =
-    if (value.isInstanceOf[AtomicValue]) {
-      value.asInstanceOf[AtomicValue].getItemType
-    } else if (value.getLength == 0) {
-      ErrorType
-    } else {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
-      SequenceTool.getItemType(value, th)
+    value match {
+      case atomicValue: AtomicValue =>
+        atomicValue.getItemType
+      case _ =>
+        if (value.getLength == 0) {
+          ErrorType
+        } else {
+          val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+          SequenceTool.getItemType(value, th)
+        }
     }
 
   override def getStaticUType(contextItemType: UType): UType =
     if (value.getLength == 0) {
       UType.VOID
-    } else if (value.isInstanceOf[AtomicValue]) {
-      value.asInstanceOf[AtomicValue].getUType
-    } else if (value.isInstanceOf[Function]) {
-      UType.FUNCTION
-    } else {
-      super.getStaticUType(contextItemType)
+    } else value match {
+      case atomicValue: AtomicValue =>
+        atomicValue.getUType
+      case _: Function =>
+        UType.FUNCTION
+      case _ =>
+        super.getStaticUType(contextItemType)
     }
 
   def computeCardinality(): Int = {
@@ -311,18 +316,19 @@ class   Literal extends Expression {
     StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
-  override def getIntegerBounds(): Array[IntegerValue] =
-    if (value.isInstanceOf[IntegerValue]) {
-      Array(value.asInstanceOf[IntegerValue], value.asInstanceOf[IntegerValue])
-    } else if (value.isInstanceOf[IntegerRange]) {
-      Array(
-        Int64Value.makeIntegerValue(value.asInstanceOf[IntegerRange].getStart),
-        Int64Value.makeIntegerValue(value.asInstanceOf[IntegerRange].getEnd))
-    } else {
-      null
+  override def getIntegerBounds: Array[IntegerValue] =
+    value match {
+      case integerValue: IntegerValue =>
+        Array(integerValue, integerValue)
+      case integerRange: IntegerRange =>
+        Array(
+          Int64Value.makeIntegerValue(integerRange.getStart),
+          Int64Value.makeIntegerValue(integerRange.getEnd))
+      case _ =>
+        null
     }
 
-  override def isVacuousExpression(): Boolean = value.getLength == 0
+  override def isVacuousExpression: Boolean = value.getLength == 0
 
   def copy(rebindings: RebindingMap): Expression = {
     val l2: Literal = new Literal(value)
@@ -342,7 +348,7 @@ class   Literal extends Expression {
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet =
     pathMapNodeSet
 
-  override def getDependencies(): Int = 0
+  override def getDependencies: Int = 0
 
   override def iterate(context: XPathContext): SequenceIterator = value.iterate()
 
@@ -351,15 +357,15 @@ class   Literal extends Expression {
   override def evaluateItem(context: XPathContext): Item = value.head
 
   override def process(output: Outputter, context: XPathContext): Unit = {
-    if (value.isInstanceOf[Item]) {
-      output.append(value.asInstanceOf[Item],
-        getLocation,
-        ReceiverOption.ALL_NAMESPACES)
-    } else {
-      value
-        .iterate()
-        .forEachOrFail((it) =>
-          output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
+    value match {
+      case item: Item =>
+        output.append(item,
+          getLocation,
+          ReceiverOption.ALL_NAMESPACES)
+      case _ =>
+        value
+          .iterate()
+          .forEachOrFail(it => output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
     }
   }
 
@@ -384,7 +390,7 @@ class   Literal extends Expression {
   }
 
   override def equals(obj: Any): Boolean = {
-    if (!(obj.isInstanceOf[Literal])) {
+    if (!obj.isInstanceOf[Literal]) {
       return false
     }
     val v0: GroundedValue = value
@@ -434,10 +440,11 @@ class   Literal extends Expression {
   }
 
   override def computeHashCode(): Int =
-    if (value.isInstanceOf[AtomicSequence]) {
-      value.asInstanceOf[AtomicSequence].getSchemaComparable.hashCode
-    } else {
-      super.computeHashCode()
+    value match {
+      case atomicSequence: AtomicSequence =>
+        atomicSequence.getSchemaComparable.hashCode
+      case _ =>
+        super.computeHashCode()
     }
 
   override def toString: String = value.toString
