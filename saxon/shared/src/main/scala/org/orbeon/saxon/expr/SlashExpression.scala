@@ -52,7 +52,7 @@ class SlashExpression(start: Expression, step: Expression)
                          contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getStart)) {
-      getStart
+      return getStart
     }
     val config: Configuration = visitor.getConfiguration
     val tc: TypeChecker = config.getTypeChecker(false)
@@ -62,7 +62,7 @@ class SlashExpression(start: Expression, step: Expression)
     setStart(tc.staticTypeCheck(getStart, SequenceType.NODE_SEQUENCE, role0, visitor))
     val startType: ItemType = getStart.getItemType
     if (startType == ErrorType) {
-      Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo =
       config.makeContextItemStaticInfo(startType, maybeUndefined = false)
@@ -70,20 +70,20 @@ class SlashExpression(start: Expression, step: Expression)
     getRhs.typeCheck(visitor, cit)
     val e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
     if (e2 != null) {
-      e2.typeCheck(visitor, contextInfo)
+      return e2.typeCheck(visitor, contextInfo)
     }
     if (getStart.isInstanceOf[ContextItemExpression] &&
       getStep.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-      getStep
+      return getStep
     }
     if (getStep.isInstanceOf[ContextItemExpression] &&
       getStart.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
-      getStart
+      return getStart
     }
     if (getStep.isInstanceOf[AxisExpression] &&
       getStep.asInstanceOf[AxisExpression].getAxis == AxisInfo.SELF &&
       config.getTypeHierarchy.isSubType(startType, getStep.getItemType)) {
-      getStart
+      return getStart
     }
     this
   }
