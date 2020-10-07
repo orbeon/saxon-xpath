@@ -46,3 +46,12 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
 
 lazy val saxonJS  = saxon.js
 lazy val saxonJVM = saxon.jvm.configs(DebugTest)
+
+lazy val root = project.in(file("."))
+  .aggregate(saxonJS, saxonJVM)
+  .settings(
+    publish := {},
+    publishLocal := {},
+    ThisProject / sourceDirectory := baseDirectory.value / "root",
+    crossScalaVersions            := Nil // "crossScalaVersions must be set to Nil on the aggregating project"
+  )
