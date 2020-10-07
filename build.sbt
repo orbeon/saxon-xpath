@@ -2,6 +2,11 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 enablePlugins(ScalaJSPlugin)
 
+
+lazy val scala212 = "2.12.12"
+lazy val scala213 = "2.13.3"
+lazy val supportedScalaVersions = List(scala212, scala213)
+
 val ScalaTestVersion = "3.2.1"
 
 traceLevel in ThisBuild := 0
@@ -14,7 +19,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     name         := "saxon",
     version      := "1.0-SNAPSHOT",
 
-    scalaVersion := "2.13.1", // 2.13.3 is not supported with Scala.js 0.6.x
+    scalaVersion := scala213,
 
     scalacOptions ++= Seq(
     "-encoding", "utf8",
