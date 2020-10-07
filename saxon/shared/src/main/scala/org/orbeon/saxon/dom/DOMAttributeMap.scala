@@ -40,7 +40,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
   def getNamedItem(name: String): Node =
     if (name.==("xmlns")) {
       val nsarray: Array[NamespaceBinding] = getNamespaceBindings
-      for (i <- 0 until nsarray.length) {
+      for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
           null
         } else if (nsarray(i).getPrefix().isEmpty) {
@@ -52,7 +52,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
     } else if (name.startsWith("xmlns:")) {
       val prefix: String = name.substring(6)
       val nsarray: Array[NamespaceBinding] = getNamespaceBindings
-      for (i <- 0 until nsarray.length) {
+      for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
           null
         } else if (prefix == nsarray(i).getPrefix()) {
