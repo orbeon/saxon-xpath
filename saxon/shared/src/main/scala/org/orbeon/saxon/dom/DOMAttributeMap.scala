@@ -43,7 +43,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
       for (i <- 0 until nsarray.length) {
         if (nsarray(i) == null) {
           null
-        } else if (nsarray(i).getPrefix.isEmpty) {
+        } else if (nsarray(i).getPrefix().isEmpty) {
           val nn: NamespaceNode = new NamespaceNode(element, nsarray(i), i + 1)
           NodeOverNodeInfo.wrap(nn)
         }
@@ -55,7 +55,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
       for (i <- 0 until nsarray.length) {
         if (nsarray(i) == null) {
           null
-        } else if (prefix == nsarray(i).getPrefix) {
+        } else if (prefix == nsarray(i).getPrefix()) {
           val nn: NamespaceNode = new NamespaceNode(element, nsarray(i), i + 1)
           NodeOverNodeInfo.wrap(nn)
         }

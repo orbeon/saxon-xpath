@@ -623,7 +623,7 @@ class DOMNodeWrapper(var node: Node,
 
     private var current: DOMNodeWrapper = _
 
-    def this(start: DOMNodeWrapper) {
+    def this(start: DOMNodeWrapper) = {
       this()
       start.docWrapper.docNode.synchronized {
         this.start = start
@@ -676,7 +676,7 @@ class DOMNodeWrapper(var node: Node,
     def this(start: DOMNodeWrapper,
              downwards: Boolean,
              forwards: Boolean,
-             elementsOnly: Boolean) {
+             elementsOnly: Boolean) = {
       this()
       start.docWrapper.docNode.synchronized {
         this.start = start

@@ -61,8 +61,8 @@ class OnDemandFunctionSet(private var config: Configuration,
     }
 
   override def isAvailable(functionName: SymbolicName.F): Boolean = {
-    val `match`: Boolean = load(functionName, null)
-    `match` && library.isAvailable(functionName)
+    val _match = load(functionName, null)
+    _match && library.isAvailable(functionName)
   }
 
   override def bind(functionName: SymbolicName.F,

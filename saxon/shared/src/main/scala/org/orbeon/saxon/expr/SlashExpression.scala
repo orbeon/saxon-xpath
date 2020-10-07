@@ -37,16 +37,15 @@ class SlashExpression(start: Expression, step: Expression)
 
   override def getExpressionName: String = "pathExpression"
 
-  def getSelectExpression(): Expression = getStart
-
-  def getActionExpression(): Expression = getStep
+  def getSelectExpression: Expression = getStart
+  def getActionExpression: Expression = getStep
 
   def getItemType: ItemType = getStep.getItemType
 
   override def getStaticUType(contextItemType: UType): UType =
     getStep.getStaticUType(getStart.getStaticUType(contextItemType))
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     getStep.getIntegerBounds
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -468,10 +467,11 @@ class SlashExpression(start: Expression, step: Expression)
   private def testNaturallyReverseSorted(): Boolean =
     if (! Cardinality.allowsMany(getStart.getCardinality) && getStep.isInstanceOf[AxisExpression]) {
       ! AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis)
-    } else
+    } else {
       ! Cardinality.allowsMany(getStep.getCardinality) &&
         getStart.isInstanceOf[AxisExpression] &&
         ! AxisInfo.isForwards(getStart.asInstanceOf[AxisExpression].getAxis)
+    }
 
   override def computeCardinality(): Int = {
     val c1: Int = getStart.getCardinality

@@ -287,15 +287,16 @@ object FilterExpression {
     }
 
   def isPositionalFilter(exp: Expression, th: TypeHierarchy): Boolean = {
-    val `type`: ItemType = exp.getItemType
-    if (`type` == BuiltInAtomicType.BOOLEAN) {
+    val _type: ItemType = exp.getItemType
+    if (_type == BuiltInAtomicType.BOOLEAN) {
       isExplicitlyPositional(exp)
+    } else {
+      _type == BuiltInAtomicType.ANY_ATOMIC || (_type eq AnyItemType) ||
+        _type == BuiltInAtomicType.INTEGER ||
+        _type == NumericType.getInstance ||
+        NumericType.isNumericType(_type) ||
+        isExplicitlyPositional(exp)
     }
-    `type` == BuiltInAtomicType.ANY_ATOMIC || (`type` eq AnyItemType) ||
-      `type` == BuiltInAtomicType.INTEGER ||
-      `type` == NumericType.getInstance ||
-      NumericType.isNumericType(`type`) ||
-      isExplicitlyPositional(exp)
   }
 
   private def isExplicitlyPositional(exp: Expression): Boolean =
@@ -354,9 +355,8 @@ class FilterExpression(base: Expression, filter: Expression)
   override def getStaticUType(contextItemType: UType): UType =
     getBase.getStaticUType(contextItemType)
 
-  def getSelectExpression(): Expression = getBase
-
-  def getActionExpression(): Expression = getFilter
+  def getSelectExpression: Expression = getBase
+  def getActionExpression: Expression = getFilter
 
   def isPositional(th: TypeHierarchy): Boolean =
     isPositionalFilter(getFilter, th)
@@ -616,7 +616,7 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def getImplementationMethod: Int = ITERATE_METHOD
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     getBase.getIntegerBounds
 
   private def tryEarlyEvaluation(visitor: ExpressionVisitor): Sequence = {

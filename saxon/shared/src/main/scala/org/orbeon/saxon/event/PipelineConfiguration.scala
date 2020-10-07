@@ -46,7 +46,7 @@ class PipelineConfiguration {
 
   private var context: XPathContext = _
 
-  def this(configuration: Configuration) {
+  def this(configuration: Configuration) = {
     this
     this.config = configuration
     parseOptions = new ParseOptions()

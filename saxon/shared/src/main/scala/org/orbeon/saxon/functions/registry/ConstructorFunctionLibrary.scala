@@ -103,15 +103,13 @@ class ConstructorFunctionLibrary(private var config: Configuration)
     }
     val uri: String = functionName.getComponentName.getURI
     val localName: String = functionName.getComponentName.getLocalPart
-    val `type`: SchemaType =
-      config.getSchemaType(new StructuredQName("", uri, localName))
-    if (`type` == null || `type`.isComplexType) {
-      return false
-    }
-    if (`type`.isAtomicType && `type`.asInstanceOf[AtomicType].isAbstract) {
-      return false
-    }
-    `type` ne AnySimpleType
+    val _type = config.getSchemaType(new StructuredQName("", uri, localName))
+    if (_type == null || _type.isComplexType)
+      false
+    else if (_type.isAtomicType && _type.asInstanceOf[AtomicType].isAbstract)
+      false
+    else
+      _type ne AnySimpleType
   }
 
   def bind(functionName: SymbolicName.F,

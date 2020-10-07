@@ -68,32 +68,32 @@ class StandardCollationURIResolver extends CollationURIResolver {
           val tokens: Array[String] = param.split("=")
           if (tokens.length == 2) {
             var kw: String = tokens(0)
-            var `val`: String = tokens(1)
+            var _val: String = tokens(1)
             if (kw.==("fallback")) {
-              if (`val`.==("no")) {
+              if (_val.==("no")) {
                 return null
-              } else if (`val`.!=("yes")) {
+              } else if (_val.!=("yes")) {
                 // effect is implementation-defined, but it seems best to reject it
                 return null
               }
             }
             kw match {
               case "strength" =>
-                `val` match {
-                  case "1" => `val` = "primary"
-                  case "2" => `val` = "secondary"
-                  case "3" => `val` = "tertiary"
-                  case "quaternary" | "4" | "5" => `val` = "identical"
+                _val match {
+                  case "1" => _val = "primary"
+                  case "2" => _val = "secondary"
+                  case "3" => _val = "tertiary"
+                  case "quaternary" | "4" | "5" => _val = "identical"
 
                 }
               case "caseFirst" =>
                 kw = "case-order"
                 // Should check correct?
-                `val` += "-first"
+                _val += "-first"
               case "numeric" => kw = "alphanumeric"
 
             }
-            props.setProperty(kw, `val`)
+            props.setProperty(kw, _val)
           }
         }
         Version.platform.makeCollation(config, props, uri)
