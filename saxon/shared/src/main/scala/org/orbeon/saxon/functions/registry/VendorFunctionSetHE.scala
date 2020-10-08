@@ -1,12 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+
 package org.orbeon.saxon.functions.registry
 
 import javax.xml.transform.SourceLocator
-import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, XPathParser}
-import org.orbeon.saxon.functions.{ApplyFn, Doc_2, SystemFunction}
+import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet._
 import org.orbeon.saxon.functions.registry.VendorFunctionSetHE._
+import org.orbeon.saxon.functions.{ApplyFn, Doc_2, SystemFunction}
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.arrays.ArrayItemType
 import org.orbeon.saxon.ma.map.{MapCreate, MapType, MapUntypedContains}
@@ -174,47 +181,47 @@ class VendorFunctionSetHE private () extends BuiltInFunctionSet {
 // Test whether supplied argument is equal to an integer
     register("is-whole-number",
              1,
-             classOf[IsWholeNumberFn],
+             () => new IsWholeNumberFn,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              0).arg(0, NumericType.getInstance, OPT, EMPTY)
 // Evaluate the value of a try-catch variable such as $err:code
     register("dynamic-error-info",
              1,
-             classOf[DynamicErrorInfoFn],
+             () => new DynamicErrorInfoFn,
              AnyItemType,
              STAR,
              FOCUS | LATE | SIDE).arg(0, BuiltInAtomicType.STRING, ONE, null)
 // saxon:apply is the same as fn:apply, but does not require the HOF feature
-    register("apply", 2, classOf[ApplyFn], AnyItemType, STAR, LATE)
+    register("apply", 2, () => new ApplyFn, AnyItemType, STAR, LATE)
       .arg(0, AnyFunctionType, ONE, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE, null)
 // Create a map according to the semantics of the XPath map constructor and XSLT xsl:map instruction
-    register("create-map", 1, classOf[MapCreate], MapType.ANY_MAP_TYPE, ONE, 0)
+    register("create-map", 1, () => new MapCreate, MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, STAR, null)
 // Variant of the doc() function with an options parameter
-    register("doc", 2, classOf[Doc_2], NodeKindTest.DOCUMENT, ONE, LATE)
+    register("doc", 2, () => new Doc_2, NodeKindTest.DOCUMENT, ONE, LATE)
       .arg(0, BuiltInAtomicType.STRING, ONE, null)
       .arg(1, MapType.ANY_MAP_TYPE, ONE, EMPTY)
       .optionDetails(Doc_2.makeOptionsParameter())
 // Ask whether the supplied element node has any local namespace declarations
     register("has-local-namespaces",
              1,
-             classOf[HasLocalNamespaces],
+             () => new HasLocalNamespaces,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              0).arg(0, NodeKindTest.ELEMENT, ONE, null)
 // Ask whether the supplied element node has consistent in scope namespaces throughout its subtree
     register("has-uniform-namespaces",
              1,
-             classOf[HasUniformNamespaces],
+             () => new HasUniformNamespaces,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              0).arg(0, NodeKindTest.ELEMENT, ONE, null)
 // Function analogous to map:contains except in the way it handles untyped key values
     register("map-untyped-contains",
              2,
-             classOf[MapUntypedContains],
+             () => new MapUntypedContains,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              0)
@@ -222,15 +229,6 @@ class VendorFunctionSetHE private () extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE, null)
   }
 
-  override def getNamespace(): String = NamespaceConstant.SAXON
-
-  override def getConventionalPrefix(): String = "saxon"
-
+  override def getNamespace: String = NamespaceConstant.SAXON
+  override def getConventionalPrefix: String = "saxon"
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2018-2020 Saxonica Limited

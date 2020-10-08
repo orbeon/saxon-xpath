@@ -1,16 +1,13 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.Literal
-import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
+import org.orbeon.saxon.functions.MathFunctionSet._
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
+import org.orbeon.saxon.functions.registry.BuiltInFunctionSet._
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.{Item, One, Sequence, ZeroOrOne}
-import BuiltInFunctionSet._
-import org.orbeon.saxon.value.DoubleValue
-import org.orbeon.saxon.value.NumericValue
-import MathFunctionSet._
+import org.orbeon.saxon.value.{DoubleValue, NumericValue}
 
 object MathFunctionSet {
 
@@ -25,12 +22,11 @@ object MathFunctionSet {
 
     def call(context: XPathContext, arguments: Array[Sequence]): DoubleValue =
       new DoubleValue(Math.PI)
-
   }
 
   abstract class TrigFn1 extends SystemFunction {
 
-     def compute(input: Double): Double
+    def compute(input: Double): Double
 
     def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[_ <: Item] = {
       val in: DoubleValue = args(0).head.asInstanceOf[DoubleValue]
@@ -40,31 +36,22 @@ object MathFunctionSet {
         One.dbl(compute(in.getDoubleValue))
       }
     }
-
   }
 
   class SinFn extends TrigFn1 {
-
      def compute(input: Double): Double = Math.sin(input)
-
   }
 
   class CosFn extends TrigFn1 {
-
      def compute(input: Double): Double = Math.cos(input)
-
   }
 
   class TanFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.tan(input)
-
+    def compute(input: Double): Double = Math.tan(input)
   }
 
   class AsinFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.asin(input)
-
+    def compute(input: Double): Double = Math.asin(input)
   }
 
   class AcosFn extends TrigFn1 {
@@ -155,29 +142,27 @@ class MathFunctionSet private () extends BuiltInFunctionSet {
 
   init()
 
-  private def reg1(name: String,
-                   implementation: Class[_ <: SystemFunction]): Unit = {
-    register(name, 1, implementation, BuiltInAtomicType.DOUBLE, OPT, CARD0)
+  private def reg1(name: String, make: () => SystemFunction): Unit =
+    register(name, 1, make, BuiltInAtomicType.DOUBLE, OPT, CARD0)
       .arg(0, BuiltInAtomicType.DOUBLE, OPT, EMPTY)
-  }
 
   private def init(): Unit = {
-    register("pi", 0, classOf[PiFn], BuiltInAtomicType.DOUBLE, ONE, 0)
-    reg1("sin", classOf[SinFn])
-    reg1("cos", classOf[CosFn])
-    reg1("tan", classOf[TanFn])
-    reg1("asin", classOf[AsinFn])
-    reg1("acos", classOf[AcosFn])
-    reg1("atan", classOf[AtanFn])
-    reg1("sqrt", classOf[SqrtFn])
-    reg1("log", classOf[LogFn])
-    reg1("log10", classOf[Log10Fn])
-    reg1("exp", classOf[ExpFn])
-    reg1("exp10", classOf[Exp10Fn])
-    register("pow", 2, classOf[PowFn], BuiltInAtomicType.DOUBLE, OPT, CARD0)
+    register("pi", 0,  () => new PiFn, BuiltInAtomicType.DOUBLE, ONE, 0)
+    reg1    ("sin",    () => new SinFn)
+    reg1    ("cos",    () => new CosFn)
+    reg1    ("tan",    () => new TanFn)
+    reg1    ("asin",   () => new AsinFn)
+    reg1    ("acos",   () => new AcosFn)
+    reg1    ("atan",   () => new AtanFn)
+    reg1    ("sqrt",   () => new SqrtFn)
+    reg1    ("log",    () => new LogFn)
+    reg1    ("log10",  () => new Log10Fn)
+    reg1    ("exp",    () => new ExpFn)
+    reg1    ("exp10",  () => new Exp10Fn)
+    register("pow", 2, () => new PowFn, BuiltInAtomicType.DOUBLE, OPT, CARD0)
       .arg(0, BuiltInAtomicType.DOUBLE, OPT, EMPTY)
       .arg(1, BuiltInAtomicType.DOUBLE, ONE, null)
-    register("atan2", 2, classOf[Atan2Fn], BuiltInAtomicType.DOUBLE, ONE, 0)
+    register("atan2", 2, () => new Atan2Fn, BuiltInAtomicType.DOUBLE, ONE, 0)
       .arg(0, BuiltInAtomicType.DOUBLE, ONE, null)
       .arg(1, BuiltInAtomicType.DOUBLE, ONE, null)
   }

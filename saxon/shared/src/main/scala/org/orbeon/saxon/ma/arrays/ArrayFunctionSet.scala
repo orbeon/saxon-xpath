@@ -473,7 +473,7 @@ object ArrayFunctionSet {
         * @return true if the result of the function is now available even though not all
         * items in the sequence have been processed
         */
-      override def isFinished(): Boolean = false
+      override def isFinished: Boolean = false
 
       /**
         * Compute the final result of the function, when all the input has been processed
@@ -494,7 +494,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
   private def init(): Unit = {
     register("append",
       2,
-      classOf[ArrayAppend],
+      () => new ArrayAppend,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -505,7 +505,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       SequenceType.SINGLE_BOOLEAN)
     register("filter",
       2,
-      classOf[ArrayFilter],
+      () => new ArrayFilter,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -513,7 +513,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(1, filterFunctionType, ONE | INS, null)
     register("flatten",
       1,
-      classOf[ArrayFlatten],
+      () => new ArrayFlatten,
       AnyItemType,
       STAR,
       0).arg(0, AnyItemType, STAR | ABS, null)
@@ -522,7 +522,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       SequenceType.ANY_SEQUENCE)
     register("fold-left",
       3,
-      classOf[ArrayFoldLeft],
+      () => new ArrayFoldLeft,
       AnyItemType,
       STAR,
       0)
@@ -531,7 +531,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(2, foldFunctionType, ONE | INS, null)
     register("fold-right",
       3,
-      classOf[ArrayFoldRight],
+      () => new ArrayFoldRight,
       AnyItemType,
       STAR,
       0)
@@ -543,7 +543,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       SequenceType.ANY_SEQUENCE)
     register("for-each",
       2,
-      classOf[ArrayForEach],
+      () => new ArrayForEach,
       AnyItemType,
       STAR,
       0)
@@ -551,21 +551,21 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(1, forEachFunctionType, ONE | INS, null)
     register("for-each-pair",
       3,
-      classOf[ArrayForEachPair],
+      () => new ArrayForEachPair,
       AnyItemType,
       STAR,
       0)
       .arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
       .arg(2, foldFunctionType, ONE | INS, null)
-    register("get", 2, classOf[ArrayGet], AnyItemType, STAR, 0)
+    register("get", 2, () => new ArrayGet, AnyItemType, STAR, 0)
       .arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.INTEGER, ONE | ABS, null)
-    register("head", 1, classOf[ArrayHead], AnyItemType, STAR, 0)
+    register("head", 1, () => new ArrayHead, AnyItemType, STAR, 0)
       .arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
     register("insert-before",
       3,
-      classOf[ArrayInsertBefore],
+      () => new ArrayInsertBefore,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -574,17 +574,17 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(2, AnyItemType, STAR | NAV, null)
     register("join",
       1,
-      classOf[ArrayJoin],
+      () => new ArrayJoin,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0).arg(0, ArrayItemType.ANY_ARRAY_TYPE, STAR | INS, null)
-    register("put", 3, classOf[ArrayPut], ArrayItemType.ANY_ARRAY_TYPE, ONE, 0)
+    register("put", 3, () => new ArrayPut, ArrayItemType.ANY_ARRAY_TYPE, ONE, 0)
       .arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.INTEGER, STAR | INS, null)
       .arg(2, AnyItemType, STAR | NAV, null)
     register("remove",
       2,
-      classOf[ArrayRemove],
+      () => new ArrayRemove,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -592,24 +592,24 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.INTEGER, STAR | ABS, null)
     register("reverse",
       1,
-      classOf[ArrayReverse],
+      () => new ArrayReverse,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0).arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
-    register("size", 1, classOf[ArraySize], BuiltInAtomicType.INTEGER, ONE, 0)
+    register("size", 1, () => new ArraySize, BuiltInAtomicType.INTEGER, ONE, 0)
       .arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
     val sortFunctionType: ItemType = new SpecificFunctionType(
       Array(SequenceType.ANY_SEQUENCE),
       SequenceType.ATOMIC_SEQUENCE)
     register("sort",
       1,
-      classOf[ArraySort],
+      () => new ArraySort,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0).arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
     register("sort",
       2,
-      classOf[ArraySort],
+      () => new ArraySort,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -617,7 +617,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, OPT | ABS, null)
     register("sort",
       3,
-      classOf[ArraySort],
+      () => new ArraySort,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -626,7 +626,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(2, sortFunctionType, ONE | INS, null)
     register("subarray",
       2,
-      classOf[ArraySubarray],
+      () => new ArraySubarray,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -634,7 +634,7 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.INTEGER, ONE | ABS, null)
     register("subarray",
       3,
-      classOf[ArraySubarray],
+      () => new ArraySubarray,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0)
@@ -643,28 +643,24 @@ class ArrayFunctionSet extends BuiltInFunctionSet {
       .arg(2, BuiltInAtomicType.INTEGER, ONE | ABS, null)
     register("tail",
       1,
-      classOf[ArrayTail],
+      () => new ArrayTail,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0).arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
     register("_to-sequence",
       1,
-      classOf[ArrayToSequence],
+      () => new ArrayToSequence,
       AnyItemType,
       STAR,
       0).arg(0, ArrayItemType.ANY_ARRAY_TYPE, ONE | INS, null)
     register("_from-sequence",
       1,
-      classOf[ArrayFromSequence],
+      () => new ArrayFromSequence,
       ArrayItemType.ANY_ARRAY_TYPE,
       ONE,
       0).arg(0, AnyItemType, STAR | INS, null)
   }
 
-  override def getNamespace(): String = NamespaceConstant.ARRAY_FUNCTIONS
-
-  override def getConventionalPrefix(): String = "array"
-
+  override def getNamespace: String = NamespaceConstant.ARRAY_FUNCTIONS
+  override def getConventionalPrefix: String = "array"
 }
-
-

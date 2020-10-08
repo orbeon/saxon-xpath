@@ -1,4 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.registry
 
 import org.orbeon.saxon.functions._
@@ -11,14 +16,15 @@ import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
 import org.orbeon.saxon.value.{SequenceType, StringValue}
 
 
+/**
+ * Function signatures (and pointers to implementations) of the functions defined in XPath 3.1 without the
+ * Higher-Order-Functions feature
+ */
 object XPath31FunctionSet {
-
-  private val THE_INSTANCE: XPath31FunctionSet = new XPath31FunctionSet()
-
-  def getInstance: XPath31FunctionSet = THE_INSTANCE
+  val getInstance: XPath31FunctionSet = new XPath31FunctionSet
 }
 
-class XPath31FunctionSet private() extends BuiltInFunctionSet {
+class XPath31FunctionSet private () extends BuiltInFunctionSet {
 
   init()
 
@@ -28,13 +34,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
     var ft: SpecificFunctionType = null
     register("collation-key",
       1,
-      classOf[CollationKeyFn],
+      () => new CollationKeyFn,
       BuiltInAtomicType.BASE64_BINARY,
       OPT,
       DCOLL).arg(0, BuiltInAtomicType.STRING, ONE, null)
     register("collation-key",
       2,
-      classOf[CollatingFunctionFree],
+      () => new CollatingFunctionFree,
       BuiltInAtomicType.BASE64_BINARY,
       OPT,
       DCOLL)
@@ -42,7 +48,7 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
     register("contains-token",
       2,
-      classOf[ContainsToken],
+      () => new ContainsToken,
       BuiltInAtomicType.BOOLEAN,
       ONE,
       DCOLL)
@@ -50,7 +56,7 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
     register("contains-token",
       3,
-      classOf[CollatingFunctionFree],
+      () => new CollatingFunctionFree,
       BuiltInAtomicType.BOOLEAN,
       ONE,
       BASE)
@@ -59,63 +65,63 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .arg(2, BuiltInAtomicType.STRING, ONE, null)
     register("copy-of",
       0,
-      classOf[CopyOfFn],
+      () => new CopyOfFn,
       AnyItemType,
       STAR,
       NEW)
     register("copy-of",
       1,
-      classOf[CopyOfFn],
+      () => new CopyOfFn,
       AnyItemType,
       STAR,
       NEW).arg(0, AnyItemType, STAR | ABS, EMPTY)
     register("default-language",
       0,
-      classOf[DynamicContextAccessor.DefaultLanguage],
+      () => new DynamicContextAccessor.DefaultLanguage,
       BuiltInAtomicType.LANGUAGE,
       ONE,
       DLANG)
     register("generate-id",
       0,
-      classOf[ContextItemAccessorFunction],
+      () => new ContextItemAccessorFunction,
       BuiltInAtomicType.STRING,
       ONE,
       CITEM | LATE)
     register("generate-id",
       1,
-      classOf[GenerateId_1],
+      () => new GenerateId_1,
       BuiltInAtomicType.STRING,
       ONE,
       0).arg(0, Type.NODE_TYPE, OPT | INS, StringValue.EMPTY_STRING)
     register("has-children",
       0,
-      classOf[ContextItemAccessorFunction],
+      () => new ContextItemAccessorFunction,
       BuiltInAtomicType.BOOLEAN,
       ONE,
       CITEM | LATE)
     register("has-children",
       1,
-      classOf[HasChildren_1],
+      () => new HasChildren_1,
       BuiltInAtomicType.BOOLEAN,
       OPT,
       0).arg(0, AnyNodeTest.getInstance, OPT | INS, null)
-    register("head", 1, classOf[HeadFn], AnyItemType, OPT, FILTER)
+    register("head", 1, () => new HeadFn, AnyItemType, OPT, FILTER)
       .arg(0, AnyItemType, STAR | TRA, null)
     register("innermost",
       1,
-      classOf[Innermost],
+      () => new Innermost,
       AnyNodeTest.getInstance,
       STAR,
       0).arg(0, AnyNodeTest.getInstance, STAR | NAV, null)
     register("json-doc",
       1,
-      classOf[JsonDoc],
+      () => new JsonDoc,
       AnyItemType,
       OPT,
       LATE).arg(0, BuiltInAtomicType.STRING, OPT, null)
     register("json-doc",
       2,
-      classOf[JsonDoc],
+      () => new JsonDoc,
       AnyItemType,
       OPT,
       LATE)
@@ -124,13 +130,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .optionDetails(ParseJsonFn.OPTION_DETAILS)
     register("json-to-xml",
       1,
-      classOf[JsonToXMLFn],
+      () => new JsonToXMLFn,
       AnyItemType,
       OPT,
       LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, null)
     register("json-to-xml",
       2,
-      classOf[JsonToXMLFn],
+      () => new JsonToXMLFn,
       AnyItemType,
       OPT,
       LATE | NEW)
@@ -139,13 +145,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .optionDetails(JsonToXMLFn.OPTION_DETAILS)
     register("load-xquery-module",
       1,
-      classOf[LoadXqueryModule],
+      () => new LoadXqueryModule,
       MapType.ANY_MAP_TYPE,
       ONE,
       LATE).arg(0, BuiltInAtomicType.STRING, ONE, null)
     register("load-xquery-module",
       2,
-      classOf[LoadXqueryModule],
+      () => new LoadXqueryModule,
       MapType.ANY_MAP_TYPE,
       ONE,
       LATE)
@@ -154,19 +160,19 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .optionDetails(LoadXqueryModule.makeOptionsParameter())
     register("parse-ietf-date",
       1,
-      classOf[ParseIetfDate],
+      () => new ParseIetfDate,
       BuiltInAtomicType.DATE_TIME,
       OPT,
       0).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("parse-json",
       1,
-      classOf[ParseJsonFn],
+      () => new ParseJsonFn,
       AnyItemType,
       OPT,
       0).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("parse-json",
       2,
-      classOf[ParseJsonFn],
+      () => new ParseJsonFn,
       AnyItemType,
       OPT,
       0)
@@ -175,31 +181,31 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .optionDetails(ParseJsonFn.OPTION_DETAILS)
     register("parse-xml",
       1,
-      classOf[ParseXml],
+      () => new ParseXml,
       NodeKindTest.DOCUMENT,
       OPT,
       LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("random-number-generator",
       0,
-      classOf[RandomNumberGenerator],
+      () => new RandomNumberGenerator,
       RandomNumberGenerator.RETURN_TYPE,
       ONE,
       LATE)
     register("random-number-generator",
       1,
-      classOf[RandomNumberGenerator],
+      () => new RandomNumberGenerator,
       RandomNumberGenerator.RETURN_TYPE,
       ONE,
       LATE).arg(0, BuiltInAtomicType.ANY_ATOMIC, OPT, null)
     register("parse-xml-fragment",
       1,
-      classOf[ParseXmlFragment],
+      () => new ParseXmlFragment,
       NodeKindTest.DOCUMENT,
       OPT,
       LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("serialize",
       2,
-      classOf[Serialize],
+      () => new Serialize,
       BuiltInAtomicType.STRING,
       ONE,
       0)
@@ -208,40 +214,40 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .optionDetails(Serialize.makeOptionsParameter)
     register("snapshot",
       0,
-      classOf[ContextItemAccessorFunction],
+      () => new ContextItemAccessorFunction,
       AnyItemType,
       STAR,
       CITEM | LATE | NEW)
     register("snapshot",
       1,
-      classOf[SnapshotFn],
+      () => new SnapshotFn,
       AnyNodeTest.getInstance,
       STAR,
       NEW).arg(0, AnyItemType, STAR | ABS, EMPTY)
-    register("sort", 1, classOf[Sort_1], AnyItemType, STAR, 0).arg(
+    register("sort", 1, () => new Sort_1, AnyItemType, STAR, 0).arg(
       0,
       AnyItemType,
       STAR,
       null)
-    register("sort", 2, classOf[Sort_2], AnyItemType, STAR, 0)
+    register("sort", 2, () => new Sort_2, AnyItemType, STAR, 0)
       .arg(0, AnyItemType, STAR, null)
       .arg(1, BuiltInAtomicType.STRING, OPT, null)
     ft = new SpecificFunctionType(Array(SequenceType.SINGLE_ITEM),
       SequenceType.ATOMIC_SEQUENCE)
-    register("sort", 3, classOf[Sort_3], AnyItemType, STAR, 0)
+    register("sort", 3, () => new Sort_3, AnyItemType, STAR, 0)
       .arg(0, AnyItemType, STAR, null)
       .arg(1, BuiltInAtomicType.STRING, OPT, null)
       .arg(2, ft, ONE, null)
     register(
       "string-join",
       1,
-      classOf[StringJoin],
+      () => new StringJoin,
       BuiltInAtomicType.STRING,
       ONE,
       0).arg(0, BuiltInAtomicType.ANY_ATOMIC, STAR, StringValue.EMPTY_STRING)
     register("string-join",
       2,
-      classOf[StringJoin],
+      () => new StringJoin,
       BuiltInAtomicType.STRING,
       ONE,
       0)
@@ -249,15 +255,15 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
     register("tokenize",
       1,
-      classOf[Tokenize_1],
+      () => new Tokenize_1,
       BuiltInAtomicType.STRING,
       STAR,
       0).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
-    register("trace", 1, classOf[Trace], Type.ITEM_TYPE, STAR, AS_ARG0 | LATE)
+    register("trace", 1, () => new Trace, Type.ITEM_TYPE, STAR, AS_ARG0 | LATE)
       .arg(0, Type.ITEM_TYPE, STAR | TRA, null)
 //    register("transform",
 //      1,
-//      classOf[TransformFn],
+//      () => new TransformFn,
 //      MapType.ANY_MAP_TYPE,
 //      ONE,
 //      LATE)
@@ -265,13 +271,13 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
 //      .optionDetails(TransformFn.makeOptionsParameter())
     register("xml-to-json",
       1,
-      classOf[XMLToJsonFn],
+      () => new XMLToJsonFn,
       BuiltInAtomicType.STRING,
       OPT,
       LATE).arg(0, AnyNodeTest.getInstance, OPT | ABS, EMPTY)
     register("xml-to-json",
       2,
-      classOf[XMLToJsonFn],
+      () => new XMLToJsonFn,
       BuiltInAtomicType.STRING,
       OPT,
       LATE)
@@ -284,15 +290,4 @@ class XPath31FunctionSet private() extends BuiltInFunctionSet {
   // The snapshot function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
   // The copy-of function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
   // The snapshot function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Function signatures (and pointers to implementations) of the functions defined in XPath 3.1 without the
- * Higher-Order-Functions feature
- */

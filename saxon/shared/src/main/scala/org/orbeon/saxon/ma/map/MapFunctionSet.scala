@@ -1,59 +1,29 @@
 package org.orbeon.saxon.ma.map
 
+import java.util.{ArrayList, List, Map}
+
 import org.orbeon.saxon.expr._
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.functions.InsertBefore
-
-import org.orbeon.saxon.functions.OptionsParameter
-
-import org.orbeon.saxon.functions.SystemFunction
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
+import org.orbeon.saxon.functions.{InsertBefore, OptionsParameter, SystemFunction}
+import org.orbeon.saxon.functions.SystemFunction._
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
-
 import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.ma.arrays.ArrayItem
-
-import org.orbeon.saxon.ma.arrays.ArrayItemType
-
-import org.orbeon.saxon.ma.arrays.SimpleArrayItem
-
+import org.orbeon.saxon.ma.arrays.{ArrayItem, ArrayItemType, SimpleArrayItem}
+import org.orbeon.saxon.ma.map.MapFunctionSet._
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.value._
 
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.Map
-
-import MapFunctionSet._
-
-import SystemFunction._
-
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.orbeon.saxon.functions.registry.BuiltInFunctionSet._
 
-import BuiltInFunctionSet._
+import scala.jdk.CollectionConverters._
 
 object MapFunctionSet {
 
-  var THE_INSTANCE: MapFunctionSet = new MapFunctionSet()
-
-  def getInstance: MapFunctionSet = THE_INSTANCE
+  val getInstance: MapFunctionSet = new MapFunctionSet()
 
   class MapContains extends SystemFunction {
 
@@ -558,7 +528,7 @@ class MapFunctionSet extends BuiltInFunctionSet {
   init()
 
   private def init(): Unit = {
-    register("merge", 1, classOf[MapMerge], MapType.ANY_MAP_TYPE, ONE, 0).arg(
+    register("merge", 1, () => new MapMerge, MapType.ANY_MAP_TYPE, ONE, 0).arg(
       0,
       MapType.ANY_MAP_TYPE,
       STAR | INS,
@@ -595,48 +565,48 @@ class MapFunctionSet extends BuiltInFunctionSet {
     mergeOptionDetails.addAllowedOption(MapMerge.onDuplicatesKey,
       oneOnDuplicatesFunction,
       null)
-    register("merge", 2, classOf[MapMerge], MapType.ANY_MAP_TYPE, ONE, 0)
+    register("merge", 2, () => new MapMerge, MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, STAR, null)
       .arg(1, MapType.ANY_MAP_TYPE, ONE, null)
       .optionDetails(mergeOptionDetails)
-    register("entry", 2, classOf[MapEntry], MapType.ANY_MAP_TYPE, ONE, 0)
+    register("entry", 2, () => new MapEntry, MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
       .arg(1, AnyItemType, STAR | NAV, null)
-    register("find", 2, classOf[MapFind], ArrayItemType.ANY_ARRAY_TYPE, ONE, 0)
+    register("find", 2, () => new MapFind, ArrayItemType.ANY_ARRAY_TYPE, ONE, 0)
       .arg(0, AnyItemType, STAR | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-    register("get", 2, classOf[MapGet], AnyItemType, STAR, 0)
+    register("get", 2, () => new MapGet, AnyItemType, STAR, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-    register("put", 3, classOf[MapPut], MapType.ANY_MAP_TYPE, ONE, 0)
+    register("put", 3, () => new MapPut, MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
       .arg(2, AnyItemType, STAR | NAV, null)
     register("contains",
       2,
-      classOf[MapContains],
+      () => new MapContains,
       BuiltInAtomicType.BOOLEAN,
       ONE,
       0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
-    register("remove", 2, classOf[MapRemove], MapType.ANY_MAP_TYPE, ONE, 0)
+    register("remove", 2, () => new MapRemove, MapType.ANY_MAP_TYPE, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, STAR | ABS, null)
     register("keys",
       1,
-      classOf[MapKeys],
+      () => new MapKeys,
       BuiltInAtomicType.ANY_ATOMIC,
       STAR,
       0).arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
-    register("size", 1, classOf[MapSize], BuiltInAtomicType.INTEGER, ONE, 0)
+    register("size", 1, () => new MapSize, BuiltInAtomicType.INTEGER, ONE, 0)
       .arg(0, MapType.ANY_MAP_TYPE, ONE | INS, null)
     val actionType: ItemType = new SpecificFunctionType(
       Array(SequenceType.SINGLE_ATOMIC, SequenceType.ANY_SEQUENCE),
       SequenceType.ANY_SEQUENCE)
     register("for-each",
       2,
-      classOf[MapForEach],
+      () => new MapForEach,
       AnyItemType,
       STAR,
       0)
@@ -644,7 +614,7 @@ class MapFunctionSet extends BuiltInFunctionSet {
       .arg(1, actionType, ONE | INS, null)
     register("untyped-contains",
       2,
-      classOf[MapUntypedContains],
+      () => new MapUntypedContains,
       BuiltInAtomicType.BOOLEAN,
       ONE,
       0)
@@ -652,8 +622,6 @@ class MapFunctionSet extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.ANY_ATOMIC, ONE | ABS, null)
   }
 
-  override def getNamespace(): String = NamespaceConstant.MAP_FUNCTIONS
-
-  override def getConventionalPrefix(): String = "map"
-
+  override def getNamespace: String = NamespaceConstant.MAP_FUNCTIONS
+  override def getConventionalPrefix: String = "map"
 }

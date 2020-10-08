@@ -33,25 +33,25 @@ class UseWhen30FunctionSet  () extends BuiltInFunctionSet {
     addXPathFunctions()
     register("available-system-properties",
              0,
-             classOf[AvailableSystemProperties],
+             () => new AvailableSystemProperties,
              BuiltInAtomicType.QNAME,
       BuiltInFunctionSet.STAR,
       BuiltInFunctionSet.LATE)
     register("element-available",
              1,
-             classOf[ElementAvailable],
+      () => new ElementAvailable,
              BuiltInAtomicType.BOOLEAN,
       BuiltInFunctionSet.ONE,
       BuiltInFunctionSet.NS).arg(0, BuiltInAtomicType.STRING, ONE, null)
     register("function-available",
              1,
-             classOf[FunctionAvailable],
+             () => new FunctionAvailable,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              NS | LATE).arg(0, BuiltInAtomicType.STRING, ONE, null)
     register("function-available",
              2,
-             classOf[FunctionAvailable],
+      () => new FunctionAvailable,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              NS | LATE)
@@ -59,13 +59,13 @@ class UseWhen30FunctionSet  () extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.INTEGER, ONE, null)
     register("system-property",
              1,
-             classOf[SystemProperty],
+             () => new SystemProperty,
              BuiltInAtomicType.STRING,
              ONE,
              NS | LATE).arg(0, BuiltInAtomicType.STRING, ONE, null)
     register("type-available",
              1,
-             classOf[TypeAvailable],
+      () => new TypeAvailable,
              BuiltInAtomicType.BOOLEAN,
              ONE,
              NS).arg(0, BuiltInAtomicType.STRING, ONE, null)
