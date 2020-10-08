@@ -50,7 +50,6 @@ import org.orbeon.saxon.utils.Configuration.ApiProvider
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.{IntHashSet, IntSet}
 import org.xml
-import org.xml.sax.ext.DefaultHandler2
 import org.xml.sax.{ContentHandler => _, _}
 
 //import scala.collection.compat._
@@ -291,8 +290,6 @@ object Configuration {
    * @return the parser (XMLReader)
    */
   private def loadParser: XMLReader = Version.platform.loadParser
-
-  private val dummyLexicalHandler: DefaultHandler2 = new DefaultHandler2
 
   /**
    * Get the configuration, given the context. This is provided as a static method to make it accessible
@@ -2327,17 +2324,17 @@ class Configuration() extends SourceResolver with NotationSet {
     try {
       try { // give things back to the garbage collecter
         parser.setContentHandler(null)
-        if (parser.getEntityResolver eq defaultParseOptions.getEntityResolver) parser.setEntityResolver(null)
+        if (parser.getEntityResolver eq defaultParseOptions.getEntityResolver)
+          parser.setEntityResolver(null)
         parser.setDTDHandler(null)
         parser.setErrorHandler(null)
         // Unfortunately setting the lexical handler to null doesn't work on Xerces, because
         // it tests "value instanceof LexicalHandler". So we set it to a lexical handler that
         // holds no references
-        parser.setProperty("http://xml.org/sax/properties/lexical-handler", Configuration.dummyLexicalHandler)
+        // 2020-10-07: ORBEON: I don't see any such thing in Xerces now.
+        parser.setProperty("http://xml.org/sax/properties/lexical-handler", null)
       } catch {
         case err@(_: SAXNotRecognizedException | _: SAXNotSupportedException) =>
-
-        //
       }
       sourceParserPool.offer(parser)
     } catch {
@@ -2404,7 +2401,7 @@ class Configuration() extends SourceResolver with NotationSet {
         parser.setErrorHandler(null)
         // it tests "value instanceof LexicalHandler". Instead we set the lexical handler to one
         // that holds no references
-        parser.setProperty("http://xml.org/sax/properties/lexical-handler", Configuration.dummyLexicalHandler)
+        parser.setProperty("http://xml.org/sax/properties/lexical-handler", null)
       } catch {
         case err@(_: SAXNotRecognizedException | _: SAXNotSupportedException) =>
       }
