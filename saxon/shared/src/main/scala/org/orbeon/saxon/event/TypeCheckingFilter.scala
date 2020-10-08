@@ -1,54 +1,28 @@
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.expr.parser.RoleDiagnostic
-
-import org.orbeon.saxon.expr.parser.Token
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.pattern.CombinedNodeTest
-
-import org.orbeon.saxon.pattern.ContentTypeTest
-
-import org.orbeon.saxon.pattern.NameTest
-
-import org.orbeon.saxon.pattern.NodeKindTest
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.Orphan
-
-import org.orbeon.saxon.value.Cardinality
-
 import java.util.HashSet
-
 import java.util.function.Supplier
+
+import org.orbeon.saxon.expr.parser.{Loc, RoleDiagnostic, Token}
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.pattern.{CombinedNodeTest, ContentTypeTest, NameTest, NodeKindTest}
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.Orphan
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.Cardinality
 
 class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
 
   private var itemType: ItemType = _
-
   private var cardinality: Int = _
-
   private var role: RoleDiagnostic = _
-
   private var locator: Location = _
-
   private var count: Int = 0
-
   private var level: Int = 0
-
-  private var checkedElements: HashSet[Long] = new HashSet(10)
-
-  private var typeHierarchy: TypeHierarchy = getConfiguration.getTypeHierarchy
+  private val checkedElements: HashSet[Long] = new HashSet(10)
+  private val typeHierarchy: TypeHierarchy = getConfiguration.getTypeHierarchy
 
   def setRequiredType(`type`: ItemType,
                       cardinality: Int,
@@ -343,5 +317,4 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
       throw err
     }
   }
-
 }

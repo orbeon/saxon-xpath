@@ -1,70 +1,55 @@
 package org.orbeon.saxon.serialize.codenorm
 
-import org.orbeon.saxon.lib.ParseOptions
-import org.orbeon.saxon.lib.Validation
-import org.orbeon.saxon.om.AxisInfo
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.TreeInfo
+import java.util.{ArrayList, BitSet, List, StringTokenizer}
+
+import javax.xml.transform.stream.StreamSource
+import org.orbeon.saxon.lib.{ParseOptions, Validation}
+import org.orbeon.saxon.om.{AxisInfo, NodeInfo}
 import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.AxisIterator
-import org.orbeon.saxon.z.IntHashMap
-import org.orbeon.saxon.z.IntToIntHashMap
-import org.orbeon.saxon.z.IntToIntMap
-import javax.xml.transform.stream.StreamSource
-import java.io.InputStream
-import java.util.ArrayList
-import java.util.BitSet
-import java.util.List
-import java.util.StringTokenizer
-
 import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.z.{IntHashMap, IntToIntHashMap, IntToIntMap}
 
 object UnicodeDataParserFromXML {
 
   def build(config: Configuration): NormalizerData = {
-    val in: InputStream = Configuration.locateResource("normalizationData.xml",
-      new ArrayList(),
-      new ArrayList())
-    if (in == null) {
+    val in = Configuration.locateResource("normalizationData.xml", new ArrayList)
+    if (in == null)
       throw new XPathException("Unable to read normalizationData.xml file")
-    }
-    val isExcluded: BitSet = new BitSet(128000)
-    val isCompatibility: BitSet = new BitSet(128000)
-    val options: ParseOptions = new ParseOptions()
+    val isExcluded = new BitSet(128000)
+    val isCompatibility = new BitSet(128000)
+    val options = new ParseOptions()
     options.setSchemaValidationMode(Validation.SKIP)
     options.setDTDValidationMode(Validation.SKIP)
-    val doc: TreeInfo = config.buildDocumentTree(
+    val doc = config.buildDocumentTree(
       new StreamSource(in, "normalizationData.xml"),
       options)
     var canonicalClassKeys: NodeInfo = null
     var canonicalClassValues: NodeInfo = null
     var decompositionKeys: NodeInfo = null
     var decompositionValues: NodeInfo = null
-    val iter: AxisIterator =
+    val iter =
       doc.getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
     var item: NodeInfo = null
-    while (({
+    while ( {
       item = iter.next()
       item
-    }) != null) item.getLocalPart match {
-      case "CanonicalClassKeys" => canonicalClassKeys = item
+    } != null) item.getLocalPart match {
+      case "CanonicalClassKeys"   => canonicalClassKeys = item
       case "CanonicalClassValues" => canonicalClassValues = item
-      case "DecompositionKeys" => decompositionKeys = item
-      case "DecompositionValues" => decompositionValues = item
-      case "ExclusionList" =>
-        readExclusionList(item.getStringValue, isExcluded)
-      case "CompatibilityList" =>
-        readCompatibilityList(item.getStringValue, isCompatibility)
+      case "DecompositionKeys"    => decompositionKeys = item
+      case "DecompositionValues"  => decompositionValues = item
+      case "ExclusionList"        => readExclusionList(item.getStringValue, isExcluded)
+      case "CompatibilityList"    => readCompatibilityList(item.getStringValue, isCompatibility)
 
     }
-    val canonicalClass: IntToIntMap = new IntToIntHashMap(400)
+    val canonicalClass = new IntToIntHashMap(400)
     canonicalClass.setDefaultValue(0)
     readCanonicalClassTable(canonicalClassKeys.getStringValue,
       canonicalClassValues.getStringValue,
       canonicalClass)
-    val decompose: IntHashMap[String] = new IntHashMap[String](18000)
-    val compose: IntToIntMap = new IntToIntHashMap(15000)
+    val decompose = new IntHashMap[String](18000)
+    val compose = new IntToIntHashMap(15000)
     compose.setDefaultValue(NormalizerData.NOT_COMPOSITE)
     readDecompositionTable(decompositionKeys.getStringValue,
       decompositionValues.getStringValue,
@@ -80,8 +65,8 @@ object UnicodeDataParserFromXML {
   }
 
   private def readExclusionList(s: String, isExcluded: BitSet): Unit = {
-    val st: StringTokenizer = new StringTokenizer(s)
-    while (st.hasMoreTokens()) {
+    val st = new StringTokenizer(s)
+    while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val value: Int = java.lang.Integer.parseInt(tok, 32)
       isExcluded.set(value)
@@ -90,7 +75,7 @@ object UnicodeDataParserFromXML {
 
   private def readCompatibilityList(s: String, isCompatible: BitSet): Unit = {
     val st: StringTokenizer = new StringTokenizer(s)
-    while (st.hasMoreTokens()) {
+    while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val value: Int = java.lang.Integer.parseInt(tok, 32)
       isCompatible.set(value)
@@ -109,7 +94,7 @@ object UnicodeDataParserFromXML {
     }
     var k: Int = 0
     st = new StringTokenizer(valueString)
-    while (st.hasMoreTokens()) {
+    while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       var clss: Int = 0
       var repeat: Int = 1
@@ -137,7 +122,7 @@ object UnicodeDataParserFromXML {
     var k: Int = 0
     val values: List[String] = new ArrayList[String](1000)
     var st: StringTokenizer = new StringTokenizer(decompositionValuesString)
-    while (st.hasMoreTokens()) {
+    while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val value: StringBuilder = new StringBuilder()
       var c: Int = 0
@@ -163,7 +148,7 @@ object UnicodeDataParserFromXML {
       values.add(value.toString)
     }
     st = new StringTokenizer(decompositionKeyString)
-    while (st.hasMoreTokens()) {
+    while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val key: Int = java.lang.Integer.parseInt(tok, 32)
       val value: String = values.get({
@@ -200,21 +185,12 @@ object UnicodeDataParserFromXML {
   }
 
   private val SBase: Int = 0xAC00
-
   private val LBase: Int = 0x1100
-
   private val VBase: Int = 0x1161
-
   private val TBase: Int = 0x11A7
-
   private val LCount: Int = 19
-
   private val VCount: Int = 21
-
   private val TCount: Int = 28
-
   private val NCount: Int = VCount * TCount
-
   private val SCount: Int = LCount * NCount
-
 }

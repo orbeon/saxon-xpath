@@ -1,14 +1,9 @@
 package org.orbeon.saxon.serialize.codenorm
 
-import org.orbeon.saxon.utils.Configuration
-
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.serialize.codenorm.Normalizer._
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import Normalizer._
+import org.orbeon.saxon.utils.Configuration
 
 import scala.util.control.Breaks._
 
@@ -22,17 +17,11 @@ object Normalizer {
   }
 
   val COMPATIBILITY_MASK: Int = 1
-
   val COMPOSITION_MASK: Int = 2
-
   val D: Int = 0
-
   val C: Int = COMPOSITION_MASK
-
   val KD: Int = COMPATIBILITY_MASK
-
   val KC: Int = (COMPATIBILITY_MASK + COMPOSITION_MASK).toByte
-
   val NO_ACTION: Int = 8
 
   private def setCharAt(target: FastStringBuffer,
@@ -184,5 +173,4 @@ class Normalizer private(private var form: Int) {
     }
     target.setLength(compPos)
   }
-
 }

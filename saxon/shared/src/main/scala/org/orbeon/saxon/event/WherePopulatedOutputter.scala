@@ -1,36 +1,24 @@
 package org.orbeon.saxon.event
 
 import org.orbeon.saxon.expr.instruct.WherePopulated
-
 import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.SimpleType
-
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.model.{SchemaType, SimpleType, Type}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
 
+
+// ORBEON: Unused class.
+// With `WherePopulated`
 
 class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
 
   private var level: Int = 0
-
   private var pendingStartTag: Boolean = false
-
   private var pendingElemName: NodeName = _
-
   private var pendingSchemaType: SchemaType = _
-
   private var pendingLocationId: Location = _
-
   private var pendingProperties: Int = _
-
   private var pendingAttributes: AttributeMap = _
-
   private var pendingNamespaces: NamespaceMap = _
 
   override def startDocument(properties: Int): Unit = {
@@ -213,30 +201,31 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
         getNextOutputter.append(item)
       }
     } else if (level == 1 && pendingStartTag) {
-      if (item.isInstanceOf[NodeInfo]) {
-        val node: NodeInfo = item.asInstanceOf[NodeInfo]
-        node.getNodeKind match {
-          case Type.TEXT =>
-            if (node.getNodeKind == Type.TEXT && node.getStringValueCS.length == 0) {
+      item match {
+        case node: NodeInfo =>
+          node.getNodeKind match {
+            case Type.TEXT =>
+              if (node.getNodeKind == Type.TEXT && node.getStringValueCS.length == 0) {
+                return
+              }
+            case Type.DOCUMENT =>
+              if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
+                return
+              }
+            case Type.ATTRIBUTE =>
+              attribute(NameOfNode.makeName(node),
+                node.getSchemaType.asInstanceOf[SimpleType],
+                node.getStringValue,
+                Loc.NONE,
+                0)
               return
-            }
-          case Type.DOCUMENT =>
-            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
+            case Type.NAMESPACE =>
+              namespace(node.getLocalPart, node.getStringValue, 0)
               return
-            }
-          case Type.ATTRIBUTE =>
-            attribute(NameOfNode.makeName(node),
-              node.getSchemaType.asInstanceOf[SimpleType],
-              node.getStringValue,
-              Loc.NONE,
-              0)
-            return
-          case Type.NAMESPACE =>
-            namespace(node.getLocalPart, node.getStringValue, 0)
-            return
-          case _ =>
+            case _ =>
 
-        }
+          }
+        case _ =>
       }
       releaseStartTag()
       getNextOutputter.append(item)
@@ -253,30 +242,31 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
         getNextOutputter.append(item, locationId, copyNamespaces)
       }
     } else if (level == 1 && pendingStartTag) {
-      if (item.isInstanceOf[NodeInfo]) {
-        val node: NodeInfo = item.asInstanceOf[NodeInfo]
-        node.getNodeKind match {
-          case Type.TEXT =>
-            if (node.getNodeKind == Type.TEXT && node.getStringValueCS.length == 0) {
+      item match {
+        case node: NodeInfo =>
+          node.getNodeKind match {
+            case Type.TEXT =>
+              if (node.getNodeKind == Type.TEXT && node.getStringValueCS.length == 0) {
+                return
+              }
+            case Type.DOCUMENT =>
+              if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
+                return
+              }
+            case Type.ATTRIBUTE =>
+              attribute(NameOfNode.makeName(node),
+                node.getSchemaType.asInstanceOf[SimpleType],
+                node.getStringValue,
+                locationId,
+                0)
               return
-            }
-          case Type.DOCUMENT =>
-            if (node.getNodeKind == Type.DOCUMENT && !node.hasChildNodes) {
+            case Type.NAMESPACE =>
+              namespace(node.getLocalPart, node.getStringValue, 0)
               return
-            }
-          case Type.ATTRIBUTE =>
-            attribute(NameOfNode.makeName(node),
-              node.getSchemaType.asInstanceOf[SimpleType],
-              node.getStringValue,
-              locationId,
-              0)
-            return
-          case Type.NAMESPACE =>
-            namespace(node.getLocalPart, node.getStringValue, 0)
-            return
-          case _ =>
+            case _ =>
 
-        }
+          }
+        case _ =>
       }
       releaseStartTag()
       getNextOutputter.append(item, locationId, copyNamespaces)
@@ -284,5 +274,4 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
       super.append(item, locationId, copyNamespaces)
     }
   }
-
 }

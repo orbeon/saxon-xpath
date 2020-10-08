@@ -44,42 +44,34 @@ object CaseVariants {
   def build(): Unit = {
     monoVariants = new IntToIntHashMap(2500)
     polyVariants = new IntHashMap(100)
-    val in: InputStream = Configuration.locateResource("casevariants.xml",
-      new ArrayList(),
-      new ArrayList())
-    if (in == null) {
+    val in = Configuration.locateResource("casevariants.xml", new ArrayList)
+    if (in == null)
       throw new RuntimeException("Unable to read casevariants.xml file")
-    }
-    val config: Configuration = new Configuration()
-    val options: ParseOptions = new ParseOptions()
+    val config = new Configuration()
+    val options = new ParseOptions()
     options.setSchemaValidationMode(Validation.SKIP)
     options.setDTDValidationMode(Validation.SKIP)
-    var doc: NodeInfo = null
-    doc = config
-      .buildDocumentTree(new StreamSource(in, "casevariants.xml"), options)
-      .getRootNode
-    val iter: AxisIterator = doc.iterateAxis(
-      AxisInfo.DESCENDANT,
-      new NameTest(Type.ELEMENT, "", "c", config.getNamePool))
+    val doc =
+      config
+        .buildDocumentTree(new StreamSource(in, "casevariants.xml"), options)
+        .getRootNode
+    val iter = doc.iterateAxis(AxisInfo.DESCENDANT, new NameTest(Type.ELEMENT, "", "c", config.getNamePool))
     breakable {
       while (true) {
-        val item: NodeInfo = iter.next()
-        if (item == null) {
+        val item = iter.next()
+        if (item == null)
           break()
-        }
-        val code: String = item.getAttributeValue("", "n")
-        val icode: Int = java.lang.Integer.parseInt(code, 16)
-        val variants: String = item.getAttributeValue("", "v")
-        val vhex: Array[String] = variants.split(",")
-        val vint: Array[Int] = Array.ofDim[Int](vhex.length)
-        for (i <- 0 until vhex.length) {
+        val code     = item.getAttributeValue("", "n")
+        val icode    = java.lang.Integer.parseInt(code, 16)
+        val variants = item.getAttributeValue("", "v")
+        val vhex     = variants.split(",")
+        val vint     = Array.ofDim[Int](vhex.length)
+        for (i <- vhex.indices)
           vint(i) = java.lang.Integer.parseInt(vhex(i), 16)
-        }
-        if (vhex.length == 1) {
+        if (vhex.length == 1)
           monoVariants.put(icode, vint(0))
-        } else {
+        else
           polyVariants.put(icode, vint)
-        }
       }
     }
   }

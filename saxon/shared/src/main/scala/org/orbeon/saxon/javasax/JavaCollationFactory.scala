@@ -37,11 +37,13 @@ object JavaCollationFactory {
       // If a specific collation class is requested, this overrides everything else
       val classAtt = props.getProperty("class")
       if (classAtt != null) {
-        val comparator = config.getInstance(classAtt, null)
-        if (comparator.isInstanceOf[Collator]) collator = comparator.asInstanceOf[Collator]
-        else if (comparator.isInstanceOf[StringCollator]) stringCollator = comparator.asInstanceOf[StringCollator]
-        else if (comparator.isInstanceOf[Comparator[_]]) stringCollator = new SimpleCollation(uri, comparator.asInstanceOf[Comparator[CharSequence]])
-        else throw new XPathException("Requested collation class " + classAtt + " is not a Comparator")
+        val comparator = config.getInstance(classAtt)
+        comparator match {
+          case c: Collator => collator = c
+          case c: StringCollator => stringCollator = c
+          case _: Comparator[_] => stringCollator = new SimpleCollation(uri, comparator.asInstanceOf[Comparator[CharSequence]])
+          case _ => throw new XPathException("Requested collation class " + classAtt + " is not a Comparator")
+        }
       }
       // If rules are specified, create a RuleBasedCollator
       if (collator == null && stringCollator == null) {
