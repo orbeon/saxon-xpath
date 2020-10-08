@@ -1,5 +1,6 @@
 package org.orbeon.saxon
 
+import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.s9api.{XdmAtomicValue, XdmItem}
 
 import org.scalatest.funspec.AnyFunSpec
@@ -9,7 +10,8 @@ class XPathTest extends AnyFunSpec {
   def compileAndRunExpression(xpath: String): XdmItem = {
     val p = new s9api.Processor
     val c = p.newXPathCompiler()
-    c.declareNamespace("fn", "http://www.w3.org/2005/xpath-functions")
+    c.declareNamespace("fn",   NamespaceConstant.FN)
+    c.declareNamespace("math", NamespaceConstant.MATH)
     val executable = c.compile(xpath)
     val selector = executable.load()
     selector.setContextItem(new XdmAtomicValue(2020))
@@ -30,6 +32,8 @@ class XPathTest extends AnyFunSpec {
       "3.1415"                                      -> "3.1415",
       "fn:concat('To be', ', or not to be')"        -> "To be, or not to be",
       "'To be' || ', or not to be'"                 -> "To be, or not to be",
+      "math:cos(0)"                                 -> "1",
+      "math:cos(math:pi())"                         -> "-1",
 //      """
 //        let $f :=
 //          function ($seq, $delim) {
