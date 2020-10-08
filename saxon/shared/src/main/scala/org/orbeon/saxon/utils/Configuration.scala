@@ -81,16 +81,8 @@ object Configuration {
    * @return a Configuration object of the class appropriate to the Saxon edition in use.
    * @since 9.2
    */
-  def newConfiguration: Configuration = {
-    val configurationClass = classOf[Configuration]
-    try
-      configurationClass.newInstance
-    catch {
-      case e: Exception =>
-        e.printStackTrace()
-        throw new RuntimeException("Cannot instantiate a Configuration", e)
-    }
-  }
+  def newConfiguration: Configuration =
+    new Configuration
 
   /**
    * Read a resource file issued with the Saxon product
@@ -375,7 +367,7 @@ object Configuration {
  * @since 8.4
  */
 
-class Configuration() extends SourceResolver with NotationSet {
+class Configuration extends SourceResolver with NotationSet {
   @transient private var apiProcessor: ApiProvider = null
   @transient private var characterSetFactory: CharacterSetFactory = _
   private var collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
