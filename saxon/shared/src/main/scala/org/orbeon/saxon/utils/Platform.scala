@@ -1,20 +1,24 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 package org.orbeon.saxon.utils
 
 import java.util.Properties
 
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.expr.StaticContext
 import org.orbeon.saxon.expr.parser.RetainedStaticContext
-import org.orbeon.saxon.expr.sort.AtomicMatchKey
-import org.orbeon.saxon.expr.sort.SimpleCollation
-import org.orbeon.saxon.lib.ModuleURIResolver
-import org.orbeon.saxon.lib.StringCollator
+import org.orbeon.saxon.expr.sort.{AtomicMatchKey, SimpleCollation}
+import org.orbeon.saxon.lib.{ModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.RegularExpression
 import org.xml.sax.XMLReader
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
 
 
 /**
@@ -72,13 +76,6 @@ trait Platform {
   def getInstallationDirectory(edition: String, config: Configuration): String
   def registerAllBuiltInObjectModels(config: Configuration): Unit
   def setDefaultSAXParserFactory(config: Configuration): Unit
-  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext, sc: StaticContext): Boolean
+//  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext, sc: StaticContext): Boolean
   def makeStandardModuleURIResolver(config: Configuration): ModuleURIResolver
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

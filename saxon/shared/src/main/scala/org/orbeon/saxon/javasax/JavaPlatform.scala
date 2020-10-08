@@ -43,33 +43,33 @@ object JavaPlatform {
 
 class JavaPlatform extends Platform {
 
-  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext,
-                             sc: StaticContext): Boolean = {
-    if (sc.isInstanceOf[JAXPXPathStaticContext] &&
-      !(sc
-        .asInstanceOf[JAXPXPathStaticContext]
-        .getNamespaceContext
-        .isInstanceOf[NamespaceResolver])) {
-      setNamespacesFromJAXP(retainedStaticContext,
-        sc.asInstanceOf[JAXPXPathStaticContext])
-      return true
-    }
-    false
-  }
-
-  private def setNamespacesFromJAXP(
-                                     retainedStaticContext: RetainedStaticContext,
-                                     sc: JAXPXPathStaticContext): Unit = {
-    val nc: NamespaceContext = sc.getNamespaceContext
-    retainedStaticContext.setNamespaces(new NamespaceResolver() {
-      override def getURIForPrefix(prefix: String,
-                                   useDefault: Boolean): String =
-        nc.getNamespaceURI(prefix)
-
-      override def iteratePrefixes: Iterator[String] =
-        throw new UnsupportedOperationException()
-    })
-  }
+//  def JAXPStaticContextCheck(retainedStaticContext: RetainedStaticContext,
+//                             sc: StaticContext): Boolean = {
+//    if (sc.isInstanceOf[JAXPXPathStaticContext] &&
+//      !(sc
+//        .asInstanceOf[JAXPXPathStaticContext]
+//        .getNamespaceContext
+//        .isInstanceOf[NamespaceResolver])) {
+//      setNamespacesFromJAXP(retainedStaticContext,
+//        sc.asInstanceOf[JAXPXPathStaticContext])
+//      return true
+//    }
+//    false
+//  }
+//
+//  private def setNamespacesFromJAXP(
+//                                     retainedStaticContext: RetainedStaticContext,
+//                                     sc: JAXPXPathStaticContext): Unit = {
+//    val nc: NamespaceContext = sc.getNamespaceContext
+//    retainedStaticContext.setNamespaces(new NamespaceResolver() {
+//      override def getURIForPrefix(prefix: String,
+//                                   useDefault: Boolean): String =
+//        nc.getNamespaceURI(prefix)
+//
+//      override def iteratePrefixes: Iterator[String] =
+//        throw new UnsupportedOperationException()
+//    })
+//  }
 
   def initialize(config: Configuration): Unit = {
     config.registerExternalObjectModel(DOMEnvelope.getInstance)
