@@ -1,39 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The XPathFunctionLibrary is a FunctionLibrary that supports binding of XPath function
+ * calls to instances of the JAXP XPathFunction interface returned by an XPathFunctionResolver.
+ */
 package org.orbeon.saxon.xpath
-
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.StaticContext
-
-import org.orbeon.saxon.functions.CallableFunction
-
-import org.orbeon.saxon.functions.FunctionLibrary
-
-import org.orbeon.saxon.model.FunctionItemType
-
-import org.orbeon.saxon.model.SpecificFunctionType
-
-import org.orbeon.saxon.om.Function
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.trans.SymbolicName
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.SequenceType
-
-import javax.xml.namespace.QName
-
-import javax.xml.xpath.XPathFunction
-
-import javax.xml.xpath.XPathFunctionResolver
-
-import java.util.Arrays
 
 import java.util.List
 
-
+import javax.xml.namespace.QName
+import javax.xml.xpath.{XPathFunction, XPathFunctionResolver}
+import org.orbeon.saxon.expr.{Expression, StaticContext}
+import org.orbeon.saxon.functions.{CallableFunction, FunctionLibrary}
+import org.orbeon.saxon.model.{FunctionItemType, SpecificFunctionType}
+import org.orbeon.saxon.om.{Function, StructuredQName}
+import org.orbeon.saxon.trans.SymbolicName
+import org.orbeon.saxon.value.SequenceType
 
 
 class XPathFunctionLibrary extends FunctionLibrary {
@@ -121,13 +107,3 @@ class XPathFunctionLibrary extends FunctionLibrary {
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * The XPathFunctionLibrary is a FunctionLibrary that supports binding of XPath function
- * calls to instances of the JAXP XPathFunction interface returned by an XPathFunctionResolver.
- */

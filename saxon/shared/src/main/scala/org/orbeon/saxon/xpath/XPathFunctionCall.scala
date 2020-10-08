@@ -1,35 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * This class is an expression that calls an external function supplied using the
+ * JAXP XPathFunction interface
+ */
 package org.orbeon.saxon.xpath
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr._
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.PathMap
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.EmptySequence
+import java.util.{ArrayList, List}
 
 import javax.xml.xpath.XPathFunction
-
-import javax.xml.xpath.XPathFunctionException
-
-import java.util.ArrayList
-
-import java.util.List
-
-
+import org.orbeon.saxon.expr._
+import org.orbeon.saxon.expr.parser.{ExpressionVisitor, PathMap, RebindingMap}
+import org.orbeon.saxon.model.{ItemType, Type}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.EmptySequence
 
 
 class XPathFunctionCall(var name: StructuredQName,
@@ -129,13 +118,3 @@ class XPathFunctionCall(var name: StructuredQName,
   def computeCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * This class is an expression that calls an external function supplied using the
- * JAXP XPathFunction interface
- */

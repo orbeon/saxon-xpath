@@ -1,29 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package org.orbeon.saxon.trace
-
-import org.orbeon.saxon.utils.Controller
-
-import org.orbeon.saxon.expr.ContextOriginator
-
-import org.orbeon.saxon.expr.UserFunctionCall
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.XPathContextMajor
-
-import org.orbeon.saxon.expr.instruct.ApplyTemplates
-
-import org.orbeon.saxon.expr.instruct.CallTemplate
-
-import org.orbeon.saxon.expr.instruct.GlobalVariable
-
-import org.orbeon.saxon.expr.instruct.UserFunction
-
-import org.orbeon.saxon.trans.rules.BuiltInRuleSet
 
 import java.util.Iterator
 
-import ContextStackIterator._
+import org.orbeon.saxon.expr.{ContextOriginator, UserFunctionCall, XPathContext, XPathContextMajor}
+import org.orbeon.saxon.expr.instruct.{ApplyTemplates, CallTemplate, GlobalVariable, UserFunction}
+import org.orbeon.saxon.trace.ContextStackIterator._
+import org.orbeon.saxon.trans.rules.BuiltInRuleSet
+import org.orbeon.saxon.utils.Controller
 
 
 
@@ -150,11 +140,4 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
   override def remove(): Unit = {
     throw new UnsupportedOperationException()
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
