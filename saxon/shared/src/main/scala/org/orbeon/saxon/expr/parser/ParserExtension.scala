@@ -1,34 +1,21 @@
 package org.orbeon.saxon.expr.parser
 
+import java.{util => ju}
+
 import org.orbeon.saxon.expr._
-import org.orbeon.saxon.expr.instruct.SlotManager
-import org.orbeon.saxon.expr.instruct.UserFunction
-import org.orbeon.saxon.expr.instruct.UserFunctionParameter
-import org.orbeon.saxon.functions.FunctionLibrary
-import org.orbeon.saxon.functions.SystemFunction
-import org.orbeon.saxon.functions.hof.FunctionLiteral
-import org.orbeon.saxon.functions.hof.PartialApply
-import org.orbeon.saxon.functions.hof.UnresolvedXQueryFunctionItem
-import org.orbeon.saxon.functions.hof.UserFunctionReference
-import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
-import org.orbeon.saxon.functions.registry.XPath31FunctionSet
+import org.orbeon.saxon.expr.instruct.{SlotManager, UserFunction, UserFunctionParameter}
+import org.orbeon.saxon.expr.parser.ParserExtension._
+import org.orbeon.saxon.functions.hof.{FunctionLiteral, PartialApply, UnresolvedXQueryFunctionItem, UserFunctionReference}
+import org.orbeon.saxon.functions.registry.{BuiltInFunctionSet, XPath31FunctionSet}
+import org.orbeon.saxon.functions.{FunctionLibrary, SystemFunction}
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Function
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
+import org.orbeon.saxon.query.{AnnotationList, XQueryFunction, XQueryParser}
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trans._
 import org.orbeon.saxon.value._
-import org.orbeon.saxon.z.IntIterator
 import org.orbeon.saxon.z.IntSet
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.List
-import java.util.Stack
-
-import ParserExtension._
-import org.orbeon.saxon.query.{AnnotationList, XQueryFunction, XQueryParser}
 
 import scala.collection.mutable
 //import scala.collection.compat._
@@ -37,31 +24,31 @@ import scala.util.control.Breaks._
 
 object ParserExtension {
 
-  private def makeNamedFunctionReference(functionName: StructuredQName,
-                                         fcf: Function): Expression =
-    if (fcf.isInstanceOf[UserFunction] && !functionName.hasURI(
-      NamespaceConstant.XSLT)) {
-      new UserFunctionReference(fcf.asInstanceOf[UserFunction])
-    } else if (fcf.isInstanceOf[UnresolvedXQueryFunctionItem]) {
-      fcf.asInstanceOf[UnresolvedXQueryFunctionItem].getFunctionReference
-    } else {
-      new FunctionLiteral(fcf)
+  private def makeNamedFunctionReference(functionName: StructuredQName, fcf: Function): Expression =
+    fcf match {
+      case function: UserFunction if !functionName.hasURI(
+        NamespaceConstant.XSLT) =>
+        new UserFunctionReference(function)
+      case item: UnresolvedXQueryFunctionItem =>
+        item.getFunctionReference
+      case _ =>
+        new FunctionLiteral(fcf)
     }
 
   class InlineFunctionDetails {
 
     var outerVariables: mutable.Stack[LocalBinding] = _
 
-    var outerVariablesUsed: List[LocalBinding] = _
+    var outerVariablesUsed: ju.List[LocalBinding] = _
 
-    var implicitParams: List[UserFunctionParameter] = _
+    var implicitParams: ju.List[UserFunctionParameter] = _
 
   }
 
   def makeInlineFunctionValue(p: XPathParser,
                               annotations: AnnotationList,
                               details: InlineFunctionDetails,
-                              params: List[UserFunctionParameter],
+                              params: ju.List[UserFunctionParameter],
                               resultType: SequenceType,
                               body: Expression): Expression = {
     val arity: Int = params.size
@@ -75,24 +62,23 @@ object ParserExtension {
     uf.setAnnotations(annotations)
     uf.setResultType(resultType)
     uf.incrementReferenceCount()
-    if (uf.getPackageData.isInstanceOf[StylesheetPackage]) {
-      val pack: StylesheetPackage =
-        uf.getPackageData.asInstanceOf[StylesheetPackage]
-      val comp: Component = Component.makeComponent(
-        uf,
-        Visibility.PRIVATE,
-        VisibilityProvenance.DEFAULTED,
-        pack,
-        pack)
-      uf.setDeclaringComponent(comp)
+    uf.getPackageData match {
+      case pack: StylesheetPackage =>
+        val comp: Component = Component.makeComponent(
+          uf,
+          Visibility.PRIVATE,
+          VisibilityProvenance.DEFAULTED,
+          pack,
+          pack)
+        uf.setDeclaringComponent(comp)
+      case _ =>
     }
     var result: Expression = null
-    val implicitParams: List[UserFunctionParameter] = details.implicitParams
+    val implicitParams = details.implicitParams
     if (!implicitParams.isEmpty) {
       val extraParams: Int = implicitParams.size
       val expandedArity: Int = params.size + extraParams
-      val paramArray: Array[UserFunctionParameter] =
-        Array.ofDim[UserFunctionParameter](expandedArity)
+      val paramArray = Array.ofDim[UserFunctionParameter](expandedArity)
       for (i <- 0 until params.size) {
         paramArray(i) = params.get(i)
       }
@@ -112,8 +98,7 @@ object ParserExtension {
       ExpressionTool.allocateSlots(body, expandedArity, stackFrame)
       uf.setStackFrameMap(stackFrame)
       result = new UserFunctionReference(uf)
-      val partialArgs: Array[Expression] =
-        Array.ofDim[Expression](expandedArity)
+      val partialArgs = Array.ofDim[Expression](expandedArity)
       for (i <- 0 until arity) {
         partialArgs(i) = null
       }
@@ -137,8 +122,7 @@ object ParserExtension {
       }
       result = new PartialApply(result, partialArgs)
     } else {
-      val paramArray: Array[UserFunctionParameter] =
-        params.toArray(Array.ofDim[UserFunctionParameter](0))
+      val paramArray = params.toArray(Array.ofDim[UserFunctionParameter](0))
       uf.setParameterDefinitions(paramArray)
       val stackFrame: SlotManager =
         p.getStaticContext.getConfiguration.makeSlotManager
@@ -149,10 +133,10 @@ object ParserExtension {
       uf.setStackFrameMap(stackFrame)
       result = new UserFunctionReference(uf)
     }
-    if (uf.getPackageData.isInstanceOf[StylesheetPackage]) {
-      uf.getPackageData
-        .asInstanceOf[StylesheetPackage]
-        .addComponent(uf.getDeclaringComponent)
+    uf.getPackageData match {
+      case stylesheetPackage: StylesheetPackage =>
+        stylesheetPackage.addComponent(uf.getDeclaringComponent)
+      case _ =>
     }
     result
   }
@@ -161,7 +145,7 @@ object ParserExtension {
 
     //var declaration: SourceBinding = decl // no scala class found
 
-    def getRequiredType(): SequenceType = new SequenceType()
+    def getRequiredType: SequenceType = new SequenceType()
 
     def evaluateVariable(context: XPathContext): Sequence =
       throw new UnsupportedOperationException()
@@ -188,31 +172,28 @@ object ParserExtension {
   def curryFunction(functionExp: Expression,
                     args: Array[Expression],
                     placeMarkers: IntSet): Expression = {
-    val ii: IntIterator = placeMarkers.iterator
-    while (ii.hasNext) args(ii.next) = null
+    val ii = placeMarkers.iterator
+    while (ii.hasNext)
+      args(ii.next()) = null
     new PartialApply(functionExp, args)
   }
 
   def findOuterRangeVariable(qName: StructuredQName,
-                             inlineFunctionStack: Stack[InlineFunctionDetails],
+                             inlineFunctionStack: List[InlineFunctionDetails],
                              env: StaticContext): LocalBinding = {
-    var b2: LocalBinding =
-      findOuterXPathRangeVariable(qName, inlineFunctionStack)
-    if (b2 != null) {
+    var b2 = findOuterXPathRangeVariable(qName, inlineFunctionStack)
+    if (b2 != null)
       return b2
-    }
-    if ( /*env.isInstanceOf[ExpressionContext] &&*/ !inlineFunctionStack.isEmpty) { // no class found
+    if ( /*env.isInstanceOf[ExpressionContext] &&*/ inlineFunctionStack.nonEmpty) // no class found
       b2 = findOuterXSLTVariable(qName, inlineFunctionStack, env)
-    }
     b2
   }
 
-  private def findOuterXPathRangeVariable(
-                                           qName: StructuredQName,
-                                           inlineFunctionStack: Stack[InlineFunctionDetails]): LocalBinding = {
+  private def findOuterXPathRangeVariable(qName: StructuredQName,
+                                          inlineFunctionStack: List[InlineFunctionDetails]): LocalBinding = {
     var s: Int = inlineFunctionStack.size - 1
     while (s >= 0) {
-      var details: InlineFunctionDetails = inlineFunctionStack.get(s)
+      var details: InlineFunctionDetails = inlineFunctionStack(s)
       val outerVariables: mutable.Stack[LocalBinding] = details.outerVariables
       var v: Int = outerVariables.size - 1
       while (v >= 0) {
@@ -220,8 +201,8 @@ object ParserExtension {
         if (b2.getVariableQName == qName) {
           var bs: Int = s
           while (bs <= inlineFunctionStack.size - 1) {
-            details = inlineFunctionStack.get(bs)
-            var found: Boolean = false
+            details = inlineFunctionStack(bs)
+            var found = false
             breakable {
               for (p <- 0 until details.outerVariablesUsed.size - 1
                    if details.outerVariablesUsed.get(p) == b2) {
@@ -253,15 +234,15 @@ object ParserExtension {
   }
 
   private def bindParametersInNestedFunctions(qName: StructuredQName,
-                                               inlineFunctionStack: Stack[InlineFunctionDetails],
-                                               start: Int): LocalBinding = {
-    var details: InlineFunctionDetails = inlineFunctionStack.get(start)
-    val params: List[UserFunctionParameter] = details.implicitParams
+                                              inlineFunctionStack: List[InlineFunctionDetails],
+                                              start: Int): LocalBinding = {
+    var details = inlineFunctionStack(start)
+    val params = details.implicitParams
     for (param <- params.asScala if param.getVariableQName == qName) {
       var b2: LocalBinding = param
       var bs: Int = start + 1
       while (bs <= inlineFunctionStack.size - 1) {
-        details = inlineFunctionStack.get(bs)
+        details = inlineFunctionStack(bs)
         var found: Boolean = false
         breakable {
           for (p <- 0 until details.outerVariablesUsed.size - 1
@@ -280,7 +261,7 @@ object ParserExtension {
           b2 = ufp
         }
         {
-          bs += 1;
+          bs += 1
           bs - 1
         }
       }
@@ -292,7 +273,7 @@ object ParserExtension {
   }
 
   private def findOuterXSLTVariable(qName: StructuredQName,
-                                    inlineFunctionStack: Stack[InlineFunctionDetails],
+                                    inlineFunctionStack: List[InlineFunctionDetails],
                                     env: StaticContext): LocalBinding = {
     /*val decl: SourceBinding = env
       .asInstanceOf[ExpressionContext]
@@ -327,18 +308,13 @@ object ParserExtension {
 
 class ParserExtension {
 
-  var inlineFunctionStack: Stack[InlineFunctionDetails] = new Stack()
+  var inlineFunctionStack: List[InlineFunctionDetails] = Nil
 
-  private def needExtension(p: XPathParser, what: String): Unit = {
-    p.grumble(what +
-      " require support for Saxon extensions, available in Saxon-PE or higher")
-  }
+  private def needExtension(p: XPathParser, what: String): Unit =
+    p.grumble(what + " require support for Saxon extensions, available in Saxon-PE or higher")
 
-  private def needUpdate(p: XPathParser, what: String): Unit = {
-    p.grumble(
-      what +
-        " requires support for XQuery Update, available in Saxon-EE or higher")
-  }
+  private def needUpdate(p: XPathParser, what: String): Unit =
+    p.grumble(what + " requires support for XQuery Update, available in Saxon-EE or higher")
 
   def parseNamedFunctionReference(p: XPathParser): Expression = {
     val t: Tokenizer = p.getTokenizer
@@ -347,15 +323,15 @@ class ParserExtension {
     val env: StaticContext = p.getStaticContext
     p.nextToken()
     p.expect(Token.NUMBER)
-    val number: NumericValue = NumericValue.parseNumber(t.currentTokenValue)
-    if (!(number.isInstanceOf[IntegerValue])) {
+
+    val number = NumericValue.parseNumber(t.currentTokenValue)
+    if (! number.isInstanceOf[IntegerValue])
       p.grumble("Number following '#' must be an integer")
-    }
-    if (number.compareTo(0) < 0 || number.compareTo(
-      java.lang.Integer.MAX_VALUE) > 0) {
+
+    if (number.compareTo(0) < 0 || number.compareTo(java.lang.Integer.MAX_VALUE) > 0)
       p.grumble("Number following '#' is out of range", "FOAR0002")
-    }
-    val arity: Int = number.longValue().toInt
+
+    val arity = number.longValue().toInt
     p.nextToken()
     var functionName: StructuredQName = null
     try {
@@ -369,11 +345,9 @@ class ParserExtension {
         }
       }
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         p.grumble(e.getMessage, e.getErrorCodeLocalPart)
         assert(functionName != null)
-      }
-
     }
     var fcf: Function = null
     try {
@@ -411,7 +385,7 @@ class ParserExtension {
                             annotations: AnnotationList): ItemType = {
     val t: Tokenizer = p.getTokenizer
     p.nextToken()
-    val argTypes: List[SequenceType] = new ArrayList[SequenceType](3)
+    val argTypes = new ju.ArrayList[SequenceType](3)
     var resultType: SequenceType = null
     if (t.currentToken == Token.STAR || t.currentToken == Token.MULT) {
       p.nextToken()
@@ -444,8 +418,7 @@ class ParserExtension {
       if (t.currentToken == Token.AS) {
         p.nextToken()
         resultType = p.parseSequenceType
-        var argArray: Array[SequenceType] =
-          Array.ofDim[SequenceType](argTypes.size)
+        var argArray = Array.ofDim[SequenceType](argTypes.size)
         argArray = argTypes.toArray(argArray)
         new SpecificFunctionType(argArray, resultType, annotations)
       } else if (!argTypes.isEmpty) {
@@ -486,15 +459,15 @@ class ParserExtension {
     details.outerVariables = new mutable.Stack[LocalBinding]
     for (lb <- p.getRangeVariables)
       details.outerVariables.push(lb)
-    details.outerVariablesUsed = new ArrayList(4)
-    details.implicitParams = new ArrayList(4)
+    details.outerVariablesUsed = new ju.ArrayList(4)
+    details.implicitParams = new ju.ArrayList(4)
 
-    inlineFunctionStack.push(details)
+    inlineFunctionStack ::= details
 
     p.setRangeVariables(new mutable.Stack[LocalBinding])
     p.nextToken()
-    val paramNames = new HashSet[StructuredQName](8)
-    val params = new ArrayList[UserFunctionParameter](8)
+    val paramNames = new ju.HashSet[StructuredQName](8)
+    val params = new ju.ArrayList[UserFunctionParameter](8)
     var resultType = SequenceType.ANY_SEQUENCE
     var paramSlot = 0
     breakable {
@@ -570,7 +543,7 @@ class ParserExtension {
     p.setLocation(result, offset)
     p.setRangeVariables(details.outerVariables)
 
-    inlineFunctionStack.pop()
+    inlineFunctionStack = inlineFunctionStack.tail
     result
   }
 
@@ -601,20 +574,19 @@ class ParserExtension {
 
     val target = lib.getFunctionItem(sn, env)
     if (target == null)
-      parser.reportMissingFunction(offset, name, args, new ArrayList)
+      parser.reportMissingFunction(offset, name, args, new ju.ArrayList)
 
     val targetExp = makeNamedFunctionReference(name, target)
     parser.setLocation(targetExp, offset)
     curryFunction(targetExp, args, placeMarkers)
   }
 
-  def findOuterRangeVariable(p: XPathParser,
-                             qName: StructuredQName): LocalBinding =
+  def findOuterRangeVariable(p: XPathParser, qName: StructuredQName): LocalBinding =
     ParserExtension.findOuterRangeVariable(qName, inlineFunctionStack, p.getStaticContext)
 
   def createDynamicCurriedFunction(p: XPathParser,
                                    functionItem: Expression,
-                                   args: ArrayList[Expression],
+                                   args: ju.ArrayList[Expression],
                                    placeMarkers: IntSet): Expression = {
     val arguments: Array[Expression] = Array.ofDim[Expression](args.size)
     args.toArray(arguments)
@@ -624,25 +596,18 @@ class ParserExtension {
     result
   }
 
-  def handleExternalFunctionDeclaration(p: XQueryParser,
-                                        func: XQueryFunction): Unit = {
+  def handleExternalFunctionDeclaration(p: XQueryParser, func: XQueryFunction): Unit =
     needExtension(p, "External function declarations")
-  }
 
-  def parseTypeAliasDeclaration(p: XQueryParser): Unit = {
+  def parseTypeAliasDeclaration(p: XQueryParser): Unit =
     needExtension(p, "Type alias declarations")
-  }
 
-  def parseRevalidationDeclaration(p: XQueryParser): Unit = {
+  def parseRevalidationDeclaration(p: XQueryParser): Unit =
     needUpdate(p, "A revalidation declaration")
-  }
 
-  def parseUpdatingFunctionDeclaration(p: XQueryParser): Unit = {
+  def parseUpdatingFunctionDeclaration(p: XQueryParser): Unit =
     needUpdate(p, "An updating function")
-  }
 
   def parseExtendedExprSingle(p: XPathParser): Expression = null
-
   def parseForMemberExpression(p: XPathParser): Expression = null
-
 }

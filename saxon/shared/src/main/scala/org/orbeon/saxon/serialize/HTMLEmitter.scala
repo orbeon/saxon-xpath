@@ -9,18 +9,17 @@ package org.orbeon.saxon.serialize
 
 import java.io.IOException
 
+import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.lib.SaxonOutputKeys
 import org.orbeon.saxon.model.SchemaType
-import org.orbeon.saxon.om.AttributeMap
-import org.orbeon.saxon.om.NamespaceMap
-import org.orbeon.saxon.om.NodeName
+import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
 import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.serialize.HTMLEmitter._
+import org.orbeon.saxon.serialize.XMLEmitter._
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.tiny.CompressedWhitespace
-import javax.xml.transform.OutputKeys
-import HTMLEmitter._
-import XMLEmitter._
+
 import scala.collection.mutable
 
 /**
@@ -173,15 +172,21 @@ abstract class HTMLEmitter extends XMLEmitter {
   }
 
   @throws[XPathException]
-  override  def openDocument(): Unit = {
-    if (writer == null) makeWriter()
-    if (started) return
+  override def openDocument(): Unit = {
+
+    if (writer == null)
+      makeWriter()
+
+    if (started)
+      return
+
     val byteOrderMark = outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
-    if ("yes" == byteOrderMark && "UTF-8".equalsIgnoreCase(outputProperties.getProperty(OutputKeys.ENCODING))) try writer.write('\uFEFF')
-    catch {
-      case _: IOException =>
-      // Might be an encoding exception; just ignore it
-    }
+    if ("yes" == byteOrderMark && "UTF-8".equalsIgnoreCase(outputProperties.getProperty(OutputKeys.ENCODING)))
+      try writer.write('\uFEFF')
+      catch {
+        case _: IOException =>
+        // Might be an encoding exception; just ignore it
+      }
     if ("yes" == outputProperties.getProperty(SaxonOutputKeys.SINGLE_QUOTES)) {
       delimiter = '\''
       attSpecials = XMLEmitter.specialInAttSingle
@@ -197,7 +202,7 @@ abstract class HTMLEmitter extends XMLEmitter {
    * @param publicId    The DOCTYPE public identifier
    */
   @throws[XPathException]
-  override  def writeDocType(name: NodeName, displayName: String, systemId: String, publicId: String): Unit =
+  override def writeDocType(name: NodeName, displayName: String, systemId: String, publicId: String): Unit =
     super.writeDocType(name, displayName, systemId, publicId)
 
   /**
@@ -207,7 +212,7 @@ abstract class HTMLEmitter extends XMLEmitter {
   override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int): Unit = {
     uri = elemName.getURI
     super.startElement(elemName, `type`, attributes, namespaces, location, properties)
-    parentElement = elementStack.peek
+    parentElement = elementStack.head
     if (elemName.hasURI("") && (parentElement.equalsIgnoreCase("script") || parentElement.equalsIgnoreCase("style"))) inScript = 0
     inScript += 1
     nodeNameStack.push(elemName)
@@ -352,13 +357,14 @@ abstract class HTMLEmitter extends XMLEmitter {
   @throws[XPathException]
   override def endElement(): Unit = {
     val nodeName = nodeNameStack.pop
-    val name = elementStack.peek
+    val name = elementStack.head
     inScript -= 1
-    if (inScript == 0) inScript = -1000000
-    if (HTMLEmitter.isEmptyTag(name) && isHTMLElement(nodeName)) { // no end tag required
-      elementStack.pop
-    }
-    else super.endElement()
+    if (inScript == 0)
+      inScript = -1000000
+    if (HTMLEmitter.isEmptyTag(name) && isHTMLElement(nodeName)) // no end tag required
+      elementStack = elementStack.tail
+    else
+      super.endElement()
   }
 
   /**

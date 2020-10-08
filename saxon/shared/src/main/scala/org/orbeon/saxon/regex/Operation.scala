@@ -1,52 +1,30 @@
 package org.orbeon.saxon.regex
 
+import java.util.function.IntPredicate
+import java.{util => ju}
+
 import org.orbeon.saxon.expr.sort.EmptyIntIterator
-
-import org.orbeon.saxon.regex.charclass.CharacterClass
-
-import org.orbeon.saxon.regex.charclass.EmptyCharacterClass
-
-import org.orbeon.saxon.regex.charclass.IntSetCharacterClass
-
-import org.orbeon.saxon.regex.charclass.SingletonCharacterClass
-
-import org.orbeon.saxon.trans.UncheckedXPathException
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.regex.charclass.{CharacterClass, EmptyCharacterClass, IntSetCharacterClass, SingletonCharacterClass}
+import org.orbeon.saxon.trans.{UncheckedXPathException, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import org.orbeon.saxon.z._
 
-import java.util.Iterator
-
-import java.util.List
-
-import java.util.Stack
-
-import java.util.function.IntPredicate
-
 //import scala.collection.compat._
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 import scala.util.control.Breaks._
 
 
 object Operation {
 
   val MATCHES_ZLS_AT_START: Int = 1
-
   val MATCHES_ZLS_AT_END: Int = 2
-
   val MATCHES_ZLS_ANYWHERE: Int = 7
-
   val MATCHES_ZLS_NEVER: Int = 1024
 
-  class OpChoice(var branches: List[Operation]) extends Operation {
+  class OpChoice(var branches: ju.List[Operation]) extends Operation {
 
-    override def getMatchLength(): Int = {
+    override def getMatchLength: Int = {
       val fixed: Int = branches.get(0).getMatchLength
       for (i <- 1 until branches.size
            if branches.get(i).getMatchLength != fixed) {
@@ -55,7 +33,7 @@ object Operation {
       fixed
     }
 
-    override def getMinimumMatchLength(): Int = {
+    override def getMinimumMatchLength: Int = {
       var min: Int = branches.get(0).getMinimumMatchLength
       for (i <- 1 until branches.size) {
         val m: Int = branches.get(i).getMinimumMatchLength
@@ -78,11 +56,7 @@ object Operation {
     }
 
     override def containsCapturingExpressions(): Boolean =
-      branches.asScala
-        .find(o =>
-          o.isInstanceOf[OpCapture] || o.containsCapturingExpressions())
-        .map(_ => true)
-        .getOrElse(false)
+      branches.asScala.exists(o => o.isInstanceOf[OpCapture] || o.containsCapturingExpressions())
 
     override def getInitialCharacterClass(caseBlind: Boolean): CharacterClass = {
       var result: CharacterClass = EmptyCharacterClass.getInstance
@@ -95,20 +69,18 @@ object Operation {
 
     override def optimize(program: REProgram, flags: REFlags): Operation = {
       for (i <- 0 until branches.size) {
-        val o1: Operation = branches.get(i)
-        val o2: Operation = o1.optimize(program, flags)
-        if (o1 != o2) {
+        val o1 = branches.get(i)
+        val o2 = o1.optimize(program, flags)
+        if (o1 != o2)
           branches.set(i, o2)
-        }
       }
       this
     }
 
     override def iterateMatches(matcher: REMatcher, position: Int): IntIterator = new IntIterator {
-      var branchIter: Iterator[Operation] = branches.iterator
 
+      val branchIter: ju.Iterator[Operation] = branches.iterator
       var currentIter: IntIterator = null
-
       var currentOp: Operation = null
 
       def hasNext: Boolean = {
@@ -123,15 +95,15 @@ object Operation {
             }
           }
           if (currentIter.hasNext) {
-            true
+            return true
           } else {
             currentIter = null
           }
         }
-        return false
+        false
       }
 
-      def next(): Integer = currentIter.next
+      def next(): Integer = currentIter.next()
     }
 
     override def display(): String = {
@@ -152,10 +124,10 @@ object Operation {
 
   }
 
-  class OpSequence(@BeanProperty var operations: List[Operation])
+  class OpSequence(@BeanProperty var operations: ju.List[Operation])
     extends Operation {
 
-    override def getMatchLength(): Int = {
+    override def getMatchLength: Int = {
       var len: Int = 0
       for (o <- operations.asScala) {
         val i: Int = o.getMatchLength
@@ -167,7 +139,7 @@ object Operation {
       len
     }
 
-    override def getMinimumMatchLength(): Int = {
+    override def getMinimumMatchLength: Int = {
       var len: Int = 0
       for (o <- operations.asScala) {
         len += o.getMinimumMatchLength
@@ -177,7 +149,6 @@ object Operation {
 
     override def matchesEmptyString(): Int = {
       var matchesEmptyAnywhere: Boolean = true
-      val matchesEmptyNowhere: Boolean = false
       breakable {
         for (o <- operations.asScala) {
           val m: Int = o.matchesEmptyString()
@@ -219,11 +190,7 @@ object Operation {
     }
 
     override def containsCapturingExpressions(): Boolean =
-      operations.asScala
-        .find(o =>
-          o.isInstanceOf[OpCapture] || o.containsCapturingExpressions())
-        .map(_ => true)
-        .getOrElse(false)
+      operations.asScala.exists(o => o.isInstanceOf[OpCapture] || o.containsCapturingExpressions())
 
     override def getInitialCharacterClass(caseBlind: Boolean): CharacterClass = {
       var result: CharacterClass = EmptyCharacterClass.getInstance
@@ -281,7 +248,7 @@ object Operation {
 
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
-      val iterators: Stack[IntIterator] = new Stack[IntIterator]()
+      var iterators: List[IntIterator] = Nil
       val savedState: REMatcher.State =
         if (containsCapturingExpressions()) matcher.captureState else null
       val backtrackingLimit: Int = matcher.getProgram.getBacktrackingLimit
@@ -292,21 +259,21 @@ object Operation {
 
         private def advance(): Int = {
           var counter: Int = 0
-          while (!iterators.isEmpty) {
-            var top: IntIterator = iterators.peek()
+          while (iterators.nonEmpty) {
+            var top = iterators.head
             while (top.hasNext) {
-              val p: Int = top.next
+              val p: Int = top.next()
               matcher.clearCapturedGroupsBeyond(p)
               val i: Int = iterators.size
               if (i >= operations.size) {
                 return p
               }
               top = operations.get(i).iterateMatches(matcher, p)
-              iterators.push(top)
+              iterators ::= top
             }
-            iterators.pop()
+            iterators = iterators.tail
             if (backtrackingLimit >= 0 && {
-              counter += 1;
+              counter += 1
               counter - 1
             } > backtrackingLimit) {
               throw new UncheckedXPathException(
@@ -325,7 +292,7 @@ object Operation {
 
         def hasNext: Boolean = {
           if (!primed) {
-            iterators.push(operations.get(0).iterateMatches(matcher, position))
+            iterators ::= operations.get(0).iterateMatches(matcher, position)
             primed = true
           }
           nextPos = advance()
@@ -341,15 +308,14 @@ object Operation {
   class OpCharClass(@BeanProperty var predicate: IntPredicate)
     extends Operation {
 
-    override def getMatchLength(): Int = 1
+    override def getMatchLength: Int = 1
 
     override def matchesEmptyString(): Int = MATCHES_ZLS_NEVER
 
     override def getInitialCharacterClass(caseBlind: Boolean): CharacterClass =
-      if (predicate.isInstanceOf[CharacterClass]) {
-        predicate.asInstanceOf[CharacterClass]
-      } else {
-        super.getInitialCharacterClass(caseBlind)
+      predicate match {
+        case clazz: CharacterClass => clazz
+        case _ => super.getInitialCharacterClass(caseBlind)
       }
 
     override def iterateMatches(matcher: REMatcher,
@@ -363,36 +329,37 @@ object Operation {
     }
 
     override def display(): String =
-      if (predicate.isInstanceOf[IntSetPredicate]) {
-        val s: IntSet = predicate.asInstanceOf[IntSetPredicate].getIntSet
-        if (s.isInstanceOf[IntSingletonSet]) {
-          "" + s.asInstanceOf[IntSingletonSet].getMember.toChar
-        } else if (s.isInstanceOf[IntRangeSet]) {
-          val fsb: FastStringBuffer = new FastStringBuffer(
-            FastStringBuffer.C64)
-          val irs: IntRangeSet = s.asInstanceOf[IntRangeSet]
-          fsb.append("[")
-          for (i <- 0 until irs.getNumberOfRanges) {
-            fsb.cat(irs.getStartPoints()(1).toChar)
-            fsb.append("-")
-            fsb.cat(irs.getEndPoints()(1).toChar)
+      predicate match {
+        case intSetPredicate: IntSetPredicate =>
+          val s: IntSet = intSetPredicate.getIntSet
+          s match {
+            case iss: IntSingletonSet =>
+              "" + iss.getMember.toChar
+            case irs: IntRangeSet =>
+              val fsb: FastStringBuffer = new FastStringBuffer(
+                FastStringBuffer.C64)
+              fsb.append("[")
+              for (_ <- 0 until irs.getNumberOfRanges) {
+                fsb.cat(irs.getStartPoints()(1).toChar)
+                fsb.append("-")
+                fsb.cat(irs.getEndPoints()(1).toChar)
+              }
+              fsb.append("[")
+              fsb.toString
+            case _ =>
+              "[....]"
           }
-          fsb.append("[")
-          fsb.toString
-        } else {
+        case _ =>
           "[....]"
-        }
-      } else {
-        "[....]"
       }
 
   }
 
   class OpAtom(@BeanProperty var atom: UnicodeString) extends Operation {
 
-    private var len: Int = atom.uLength()
+    private val len: Int = atom.uLength()
 
-    override def getMatchLength(): Int = len
+    override def getMatchLength: Int = len
 
     override def matchesEmptyString(): Int =
       if (len == 0) MATCHES_ZLS_ANYWHERE else MATCHES_ZLS_NEVER
@@ -443,9 +410,9 @@ object Operation {
   class OpGreedyFixed(op: Operation, min: Int, max: Int, private var len: Int)
     extends OpRepeat(op, min, max, true) {
 
-    var opt = op
+    var opt: Operation = op
 
-    override def getMatchLength(): Int = if (min == max) min * len else -1
+    override def getMatchLength: Int = if (min == max) min * len else -1
 
     override def matchesEmptyString(): Int = {
       if (min == 0) {
@@ -482,7 +449,7 @@ object Operation {
           var matched: Boolean = false
           if (it.hasNext) {
             matched = true
-            it.next
+            it.next()
           }
           if (matched) {
             matches += 1
@@ -505,7 +472,7 @@ object Operation {
 
   class OpUnambiguousRepeat(op: Operation, min: Int, max: Int)
     extends OpRepeat(op, min, max, true) {
-    var opt = op
+    var opt: Operation = op
 
     override def matchesEmptyString(): Int = {
       if (min == 0) {
@@ -514,7 +481,7 @@ object Operation {
       opt.matchesEmptyString()
     }
 
-    override def getMatchLength(): Int =
+    override def getMatchLength: Int =
       if (opt.getMatchLength != -1 && min == max) {
         opt.getMatchLength * min
       } else {
@@ -536,7 +503,7 @@ object Operation {
           val it: IntIterator = opt.iterateMatches(matcher, p)
           if (it.hasNext) {
             matches += 1
-            p = it.next
+            p = it.next()
           } else {
             break()
           }
@@ -572,10 +539,10 @@ object Operation {
     override def getInitialCharacterClass(caseBlind: Boolean): CharacterClass =
       op.getInitialCharacterClass(caseBlind)
 
-    override def getMatchLength(): Int =
+    override def getMatchLength: Int =
       if (min == max && op.getMatchLength >= 0) min * op.getMatchLength else -1
 
-    override def getMinimumMatchLength(): Int = min * op.getMinimumMatchLength
+    override def getMinimumMatchLength: Int = min * op.getMinimumMatchLength
 
     override def optimize(program: REProgram, flags: REFlags): Operation = {
       op = op.optimize(program, flags)
@@ -587,23 +554,24 @@ object Operation {
 
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
-      val iterators: Stack[IntIterator] = new Stack[IntIterator]()
-      val positions: Stack[Integer] = new Stack[Integer]()
-      val bound: Int = Math.min(max, matcher.search.uLength() - position + 1)
+      var iterators: List[IntIterator] = Nil
+      var positions: List[Integer] = Nil
+
+      val bound = Math.min(max, matcher.search.uLength() - position + 1)
       var p: Int = position
       if (greedy) {
         if (min == 0 &&
           !matcher.history.isDuplicateZeroLengthMatch(this, position)) {
-          iterators.push(new IntSingletonIterator(position))
-          positions.push(p)
+          iterators ::= new IntSingletonIterator(position)
+          positions ::= p
         }
         breakable {
-          for (i <- 0 until bound) {
-            val it: IntIterator = op.iterateMatches(matcher, p)
+          for (_ <- 0 until bound) {
+            val it = op.iterateMatches(matcher, p)
             if (it.hasNext) {
-              p = it.next
-              iterators.push(it)
-              positions.push(p)
+              p = it.next()
+              iterators ::= it
+              positions ::= p
             } else if (iterators.isEmpty) {
               EmptyIntIterator.getInstance
             } else {
@@ -615,42 +583,42 @@ object Operation {
           var primed: Boolean = true
 
           private def advance(): Unit = {
-            var top: IntIterator = iterators.peek()
+            val top = iterators.head
             if (top.hasNext) {
-              var p: Int = top.next
-              positions.pop()
-              positions.push(p)
+              var p: Int = top.next()
+              positions = positions.tail
+              positions ::= p
               breakable {
                 while (iterators.size < bound) {
                   var it: IntIterator = op.iterateMatches(matcher, p)
                   if (it.hasNext) {
-                    p = it.next
-                    iterators.push(it)
-                    positions.push(p)
+                    p = it.next()
+                    iterators ::= it
+                    positions ::= p
                   } else {
                     break()
                   }
                 }
               }
             } else {
-              iterators.pop()
-              positions.pop()
+              iterators = iterators.tail
+              positions = positions.tail
             }
           }
 
           def hasNext: Boolean =
             if (primed && iterators.size >= min) {
-              !iterators.isEmpty
+              iterators.nonEmpty
             } else if (iterators.isEmpty) {
               false
             } else {
-              do advance() while (iterators.size < min && !iterators.isEmpty);
-              !iterators.isEmpty
+              do advance() while (iterators.size < min && iterators.nonEmpty)
+              iterators.nonEmpty
             }
 
           def next(): Integer = {
             primed = false
-            positions.peek()
+            positions.head
           }
         }
         new ForceProgressIterator(base)
@@ -661,9 +629,9 @@ object Operation {
           private var counter: Int = 0
 
           private def advance(): Unit = {
-            var it: IntIterator = op.iterateMatches(matcher, pos)
+            val it = op.iterateMatches(matcher, pos)
             if (it.hasNext) {
-              pos = it.next
+              pos = it.next()
               if ( {
                 {
                   counter += 1
@@ -680,7 +648,7 @@ object Operation {
           }
 
           def hasNext: Boolean = {
-            do advance() while (counter < min && pos >= 0);
+            do advance() while (counter < min && pos >= 0)
             pos >= 0
           }
 
@@ -710,9 +678,10 @@ object Operation {
                          max: Int,
                          private var len: Int)
     extends OpRepeat(op, min, max, false) {
-    var opt = op
 
-    override def getMatchLength(): Int = if (min == max) min * len else -1
+    var opt: Operation = op
+
+    override def getMatchLength: Int = if (min == max) min * len else -1
 
     override def matchesEmptyString(): Int = {
       if (min == 0) {
@@ -741,7 +710,7 @@ object Operation {
             while (count < min) {
               val child: IntIterator = opt.iterateMatches(matcher, pos)
               if (child.hasNext) {
-                pos = child.next
+                pos = child.next()
                 count += 1
               } else {
                 return false
@@ -753,7 +722,7 @@ object Operation {
             matcher.clearCapturedGroupsBeyond(pos)
             val child: IntIterator = opt.iterateMatches(matcher, pos)
             if (child.hasNext) {
-              pos = child.next
+              pos = child.next()
               count += 1
               return true
             }
@@ -768,7 +737,7 @@ object Operation {
 
   class OpEndProgram extends Operation {
 
-    override def getMatchLength(): Int = 0
+    override def getMatchLength: Int = 0
 
     override def matchesEmptyString(): Int = MATCHES_ZLS_ANYWHERE
 
@@ -791,7 +760,7 @@ object Operation {
 
   class OpBOL extends Operation {
 
-    override def getMatchLength(): Int = 0
+    override def getMatchLength: Int = 0
 
     override def matchesEmptyString(): Int = MATCHES_ZLS_AT_START
 
@@ -815,7 +784,7 @@ object Operation {
 
   class OpEOL extends Operation {
 
-    override def getMatchLength(): Int = 0
+    override def getMatchLength: Int = 0
 
     override def matchesEmptyString(): Int = MATCHES_ZLS_AT_END
 
@@ -844,11 +813,11 @@ object Operation {
 
   class OpCapture(var childOp: Operation, group: Int) extends Operation {
 
-    var groupNr: Int = group
+    val groupNr: Int = group
 
-    override def getMatchLength(): Int = childOp.getMatchLength
+    override def getMatchLength: Int = childOp.getMatchLength
 
-    override def getMinimumMatchLength(): Int = childOp.getMinimumMatchLength
+    override def getMinimumMatchLength: Int = childOp.getMinimumMatchLength
 
     override def matchesEmptyString(): Int = childOp.matchesEmptyString()
 
@@ -868,7 +837,7 @@ object Operation {
         def hasNext: Boolean = base.hasNext
 
         def next(): Integer = {
-          val next: Int = base.next
+          val next: Int = base.next()
           if (groupNr >= matcher.captureState.parenCount) {
             matcher.captureState.parenCount = groupNr + 1
           }
@@ -933,7 +902,7 @@ object Operation {
 
     override def matchesEmptyString(): Int = MATCHES_ZLS_ANYWHERE
 
-    override def getMatchLength(): Int = 0
+    override def getMatchLength: Int = 0
 
     override def display(): String = "()"
 
@@ -953,7 +922,7 @@ object Operation {
                                 position: Int): IntIterator = {
       val baseIter: IntIterator = base.iterateMatches(matcher, position)
       val iterNr: Int = {
-        counter += 1;
+        counter += 1
         counter
       }
       val clName: String = baseIter.getClass.getName
@@ -976,14 +945,14 @@ object Operation {
         }
 
         def next(): Integer = {
-          val n: Int = baseIter.next
+          val n: Int = baseIter.next()
           System.err.println("IntIterator " + iterNr + " next() = " + n)
           n
         }
       }
     }
 
-    override def getMatchLength(): Int = base.getMatchLength
+    override def getMatchLength: Int = base.getMatchLength
 
     override def matchesEmptyString(): Int = base.matchesEmptyString()
 
@@ -1006,7 +975,7 @@ object Operation {
     def hasNext: Boolean = countZeroLength <= 3 && base.hasNext
 
     def next(): Integer = {
-      val p: Int = base.next
+      val p: Int = base.next()
       if (p == currentPos) {
         countZeroLength += 1
       } else {

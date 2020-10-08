@@ -105,8 +105,15 @@ class StandardOutputResolver extends OutputURIResolver {
 
    def createResult(absoluteURI: URI): Result =
     if ("file" == absoluteURI.getScheme) {
-      StandardResultDocumentResolver.makeOutputFile(absoluteURI)
+      // ORBEON: No `File` support.
+      ???
+//      StandardResultDocumentResolver.makeOutputFile(absoluteURI)
     } else {
+
+      // See if the Java VM can conjure up a writable URL connection for us.
+      // This is optimistic: I have yet to discover a URL scheme that it can handle "out of the box".
+      // But it can apparently be achieved using custom-written protocol handlers.
+
       val connection: URLConnection = absoluteURI.toURL().openConnection()
       connection.setDoInput(false)
       connection.setDoOutput(true)
@@ -116,12 +123,6 @@ class StandardOutputResolver extends OutputURIResolver {
       result.setSystemId(absoluteURI.toASCIIString())
       result
     }
-// See if the Java VM can conjure up a writable URL connection for us.
-// This is optimistic: I have yet to discover a URL scheme that it can handle "out of the box".
-// But it can apparently be achieved using custom-written protocol handlers.
-// See if the Java VM can conjure up a writable URL connection for us.
-// This is optimistic: I have yet to discover a URL scheme that it can handle "out of the box".
-// But it can apparently be achieved using custom-written protocol handlers.
 
   def close(result: Result): Unit = {
     if (result.isInstanceOf[StreamResult]) {

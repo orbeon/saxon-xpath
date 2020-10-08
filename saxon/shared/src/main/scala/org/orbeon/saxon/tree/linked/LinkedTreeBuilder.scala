@@ -1,28 +1,15 @@
 package org.orbeon.saxon.tree.linked
 
+import java.util.{ArrayList, Arrays}
+
 import org.orbeon.saxon.event._
-
 import org.orbeon.saxon.expr.parser.Loc
-
 import org.orbeon.saxon.lib.NamespaceConstant
-
 import org.orbeon.saxon.model.SchemaType
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.tree.linked.LinkedTreeBuilder._
 import org.orbeon.saxon.value.Whitespace
-
-import java.util.ArrayList
-
-import java.util.Arrays
-
-import java.util.Stack
-
-import LinkedTreeBuilder._
 
 
 object LinkedTreeBuilder {
@@ -69,21 +56,13 @@ object LinkedTreeBuilder {
 class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   private var currentNode: ParentNodeImpl = _
-
   private var nodeFactory: NodeFactory = DefaultNodeFactory.THE_INSTANCE
-
   private var size: Array[Int] = new Array[Int](100)
-
   private var depth: Int = 0
-
   private var arrays: ArrayList[Array[NodeImpl]] = new ArrayList(20)
-
-  private var namespaceStack: Stack[NamespaceMap] = new Stack()
-
+  private var namespaceStack: List[NamespaceMap] = Nil
   private var allocateSequenceNumbers: Boolean = true
-
   private var nextNodeNumber: Int = 1
-
   private var mutable: Boolean = _
 
   def this(pipe: PipelineConfiguration, mutable: Boolean) = {
@@ -97,13 +76,13 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     nodeFactory = DefaultNodeFactory.THE_INSTANCE
   }
 
-  override def getCurrentRoot(): NodeInfo = {
+  override def getCurrentRoot: NodeInfo = {
     val physicalRoot: NodeInfo = currentRoot
-    if (physicalRoot.isInstanceOf[DocumentImpl] &&
-      physicalRoot.asInstanceOf[DocumentImpl].isImaginary) {
-      physicalRoot.asInstanceOf[DocumentImpl].getDocumentElement
-    } else {
-      physicalRoot
+    physicalRoot match {
+      case impl: DocumentImpl if impl.isImaginary =>
+        impl.getDocumentElement
+      case _ =>
+        physicalRoot
     }
   }
 
@@ -181,7 +160,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     val isNilled: Boolean =
       ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT)
-    namespaceStack.push(namespaces)
+    namespaceStack ::= namespaces
     val isTopWithinEntity: Boolean = location
       .isInstanceOf[ReceivingContentHandler.LocalLocator] &&
       location
@@ -204,13 +183,16 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       `type`,
       isNilled,
       lSuppliedAttributes,
-      namespaceStack.peek(),
+      namespaceStack.head,
       pipe,
       location,
       if (allocateSequenceNumbers) { nextNodeNumber += 1; nextNodeNumber - 1 } else
         -1
     )
-    while (depth >= arrays.size) arrays.add(Array.ofDim[NodeImpl](20))
+
+    while (depth >= arrays.size)
+      arrays.add(Array.ofDim[NodeImpl](20))
+
     elem.setChildren(arrays.get(depth))
     currentNode.addChild(elem, { size(depth) += 1; size(depth) - 1 })
     if (depth >= size.length - 1) {
@@ -230,7 +212,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     currentNode.compact(size(depth))
     depth = depth - 1
     currentNode = currentNode.getParent.asInstanceOf[ParentNodeImpl]
-    namespaceStack.pop()
+    namespaceStack = namespaceStack.tail
   }
 
   def characters(chars: CharSequence,
@@ -238,11 +220,14 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
                  properties: Int): Unit = {
     if (chars.length > 0) {
       val prev: NodeInfo = currentNode.getNthChild(size(depth) - 1)
-      if (prev.isInstanceOf[TextImpl]) {
-        prev.asInstanceOf[TextImpl].appendStringValue(chars.toString)
-      } else {
-        val n: TextImpl = nodeFactory.makeTextNode(currentNode, chars)
-        currentNode.addChild(n, { size(depth) += 1; size(depth) - 1 })
+      prev match {
+        case impl: TextImpl =>
+          impl.appendStringValue(chars.toString)
+        case _ =>
+          val n: TextImpl = nodeFactory.makeTextNode(currentNode, chars)
+          currentNode.addChild(n, {
+            size(depth) += 1; size(depth) - 1
+          })
       }
     }
   }
@@ -285,6 +270,6 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
   }
 
-  override def getBuilderMonitor(): BuilderMonitor = new LinkedBuilderMonitor(this)
+  override def getBuilderMonitor: BuilderMonitor = new LinkedBuilderMonitor(this)
 
 }

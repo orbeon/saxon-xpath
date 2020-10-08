@@ -1,42 +1,19 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.utils.Controller
-
-import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.lib.Feature
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.ZeroOrOne
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.CharSequenceConsumer
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.StringValue
-
-import java.io.File
-
-import java.io.FileInputStream
-
-import java.io.InputStream
-
+import java.io.{File, FileInputStream, InputStream}
 import java.net.URI
+import java.util.{HashMap, Map}
 
-import java.util.HashMap
-
-import java.util.Map
-
-import UnparsedText._
+import org.orbeon.saxon.event.{Outputter, ReceiverOption}
+import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.parser.Loc
+import org.orbeon.saxon.functions.UnparsedText._
+import org.orbeon.saxon.lib.Feature
+import org.orbeon.saxon.om.{Sequence, ZeroOrOne}
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
+import org.orbeon.saxon.utils.Controller
+import org.orbeon.saxon.value.StringValue
 
 import scala.util.control.Breaks._
 
@@ -189,5 +166,4 @@ class UnparsedText extends UnparsedTextFunction with PushableFunction {
       }
     }
   }
-
 }

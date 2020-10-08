@@ -1,5 +1,7 @@
 package org.orbeon.saxon.pull
 
+import java.{util => ju}
+
 import org.orbeon.saxon.event.Receiver
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.event.SequenceReceiver
@@ -11,8 +13,6 @@ import org.orbeon.saxon.s9api.Location
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.tree.util.Orphan
-import java.util.List
-import java.util.Stack
 
 import org.orbeon.saxon.pull.PullProvider.Event
 import org.orbeon.saxon.pull.PullProvider.Event._
@@ -23,7 +23,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
 
   var previousAtomic: Boolean = false
 
-  private var nsStack: Stack[NamespaceMap] = new Stack()
+  private var nsStack: List[NamespaceMap] = Nil
 
   def getReceiver: Receiver = branch
 
@@ -45,7 +45,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
       case Event.START_ELEMENT =>
         var bindings: Array[NamespaceBinding] = in.getNamespaceDeclarations
         var nsMap: NamespaceMap =
-          if (nsStack.isEmpty) NamespaceMap.emptyMap else nsStack.peek()
+          if (nsStack.isEmpty) NamespaceMap.emptyMap else nsStack.head
         breakable {
           for (binding <- bindings) {
             if (binding == null) {
@@ -54,7 +54,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
             nsMap = nsMap.put(binding.getPrefix, binding.getURI)
           }
         }
-        nsStack.push(nsMap)
+        nsStack ::= nsMap
         out.startElement(in.getNodeName,
           in.getSchemaType,
           in.getAttributes,
@@ -71,9 +71,9 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
           ReceiverOption.NONE)
       case END_ELEMENT =>
         out.endElement()
-        nsStack.pop()
+        nsStack = nsStack.tail
       case END_DOCUMENT =>
-        var entities: List[UnparsedEntity] = in.getUnparsedEntities
+        var entities: ju.List[UnparsedEntity] = in.getUnparsedEntities
         if (entities != null) {
           for (entity <- entities.asScala) {
             val ue: UnparsedEntity = entity.asInstanceOf[UnparsedEntity]

@@ -1,123 +1,89 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.{ArrayList, StringTokenizer}
 
+import org.orbeon.saxon.functions.URIQueryParameters._
 import org.orbeon.saxon.lib.Validation
-
-import org.orbeon.saxon.om.AllElementsSpaceStrippingRule
-
-import org.orbeon.saxon.om.IgnorableSpaceStrippingRule
-
-import org.orbeon.saxon.om.NoElementsSpaceStrippingRule
-
-import org.orbeon.saxon.om.SpaceStrippingRule
-
+import org.orbeon.saxon.om.{AllElementsSpaceStrippingRule, IgnorableSpaceStrippingRule, NoElementsSpaceStrippingRule, SpaceStrippingRule}
 import org.orbeon.saxon.regex.ARegularExpression
-
-import org.orbeon.saxon.regex.JavaRegularExpression
-
-import org.orbeon.saxon.regex.RegularExpression
-
-import org.orbeon.saxon.trans.Instantiator
-
-import org.orbeon.saxon.trans.Maker
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
+import org.orbeon.saxon.trans.{Instantiator, Maker}
+import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.XMLReader
 
-import java.io.File
 
-import java.io.FilenameFilter
-
-import java.util.ArrayList
-
-import java.util.StringTokenizer
-
-import URIQueryParameters._
-
-
-
-
+/**
+  * A set of query parameters on a URI passed to the collection() or document() function
+  */
 object URIQueryParameters {
 
   val ON_ERROR_FAIL: Int = 1
-
   val ON_ERROR_WARNING: Int = 2
-
   val ON_ERROR_IGNORE: Int = 3
 
-  def makeGlobFilter(value: String): FilenameFilter = {
-    val sb: FastStringBuffer = new FastStringBuffer(value.length + 6)
-    sb.cat('^')
-    for (i <- 0 until value.length) {
-      val c: Char = value.charAt(i)
-      if (c == '.') {
-// replace "." with "\."
-        sb.append("\\.")
-      } else if (c == '*') {
-// replace "*" with ".*"
-        sb.append(".*")
-      } else if (c == '?') {
-// replace "?" with ".?"
-        sb.append(".?")
-      } else {
-        sb.cat(c)
-      }
-    }
-    sb.cat('$')
-    new RegexFilter(new JavaRegularExpression(sb, ""))
-  }
-
-  class RegexFilter(regex: RegularExpression) extends FilenameFilter {
-
-    private var pattern: RegularExpression = regex
-
-    def accept(dir: File, name: String): Boolean =
-      new File(dir, name).isDirectory || pattern.matches(name)
-
-    /**
-      * Test whether a name matches the pattern (regardless whether it is a directory or not)
-      *
-      * @param name the name (last component) of the file
-      * @return true if the name matches the pattern.
-      */
-    def matches(name: String): Boolean = pattern.matches(name)
-
-  }
-
+//  def makeGlobFilter(value: String): FilenameFilter = {
+//    val sb = new FastStringBuffer(value.length + 6)
+//    sb.cat('^')
+//    for (i <- 0 until value.length) {
+//      val c: Char = value.charAt(i)
+//      if (c == '.') {
+//        // replace "." with "\."
+//        sb.append("\\.")
+//      } else if (c == '*') {
+//        // replace "*" with ".*"
+//        sb.append(".*")
+//      } else if (c == '?') {
+//        // replace "?" with ".?"
+//        sb.append(".?")
+//      } else {
+//        sb.cat(c)
+//      }
+//    }
+//    sb.cat('$')
+//    new RegexFilter(new JavaRegularExpression(sb, ""))
+//  }
+//
+//
+//  class RegexFilter(regex: RegularExpression) extends FilenameFilter {
+//
+//    private val pattern: RegularExpression = regex
+//
+//    def accept(dir: File, name: String): Boolean =
+//      new File(dir, name).isDirectory || pattern.matches(name)
+//
+//    /**
+//      * Test whether a name matches the pattern (regardless whether it is a directory or not)
+//      *
+//      * @param name the name (last component) of the file
+//      * @return true if the name matches the pattern.
+//      */
+//    def matches(name: String): Boolean = pattern.matches(name)
+//  }
 }
 
 class URIQueryParameters(query: String, config: Configuration) {
 
   /*@Nullable*/
 
-  var filter: FilenameFilter = null
-
+//  var filter: FilenameFilter = null
   var recurse: java.lang.Boolean = null
-
   var validation: java.lang.Integer = null
-
   var strippingRule: SpaceStrippingRule = null
-
   var onError: java.lang.Integer = null
-
   var parserMaker: Maker[XMLReader] = null
-
   var xinclude: java.lang.Boolean = null
-
   var stable: java.lang.Boolean = null
-
   var metadata: java.lang.Boolean = null
-
   var contentType: String = null
 
   if (query != null) {
     val t: StringTokenizer = new StringTokenizer(query, ";&")
-    while (t.hasMoreTokens()) {
+    while (t.hasMoreTokens) {
       val tok: String = t.nextToken()
       val eq: Int = tok.indexOf('=')
       if (eq > 0 && eq < (tok.length - 1)) {
@@ -132,11 +98,11 @@ class URIQueryParameters(query: String, config: Configuration) {
                                keyword: String,
                                value: String): Unit = {
     if (keyword.==("select")) {
-      filter = makeGlobFilter(value)
+      ???
+//      filter = makeGlobFilter(value)
     } else if (keyword.==("match")) {
-      val regex: ARegularExpression =
-        new ARegularExpression(value, "", "XP", new ArrayList(), config)
-      filter = new RegexFilter(regex)
+      val regex = new ARegularExpression(value, "", "XP", new ArrayList, config)
+//      filter = new RegexFilter(regex)
     } else if (keyword.==("recurse")) {
       recurse = "yes" == value
     } else if (keyword.==("validation")) {
@@ -185,32 +151,13 @@ class URIQueryParameters(query: String, config: Configuration) {
   }
 
   def getSpaceStrippingRule: SpaceStrippingRule = strippingRule
-
   def getValidationMode: java.lang.Integer = validation
-
-  def getFilenameFilter: FilenameFilter = filter
-
+//  def getFilenameFilter: FilenameFilter = filter
   def getRecurse: java.lang.Boolean = recurse
-
   def getOnError: java.lang.Integer = onError
-
   def getXInclude: java.lang.Boolean = xinclude
-
   def getMetaData: java.lang.Boolean = metadata
-
   def getContentType: String = contentType
-
   def getStable: java.lang.Boolean = stable
-
   def getXMLReaderMaker: Maker[XMLReader] = parserMaker
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A set of query parameters on a URI passed to the collection() or document() function
-  */

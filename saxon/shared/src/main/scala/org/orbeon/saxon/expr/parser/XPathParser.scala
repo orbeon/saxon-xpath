@@ -46,13 +46,9 @@ object XPathParser {
   object ParsedLanguage extends Enumeration {
 
     val XPATH: ParsedLanguage = new ParsedLanguage()
-
     val XSLT_PATTERN: ParsedLanguage = new ParsedLanguage()
-
     val SEQUENCE_TYPE: ParsedLanguage = new ParsedLanguage()
-
     val XQUERY: ParsedLanguage = new ParsedLanguage()
-
     val EXTENDED_ITEM_TYPE: ParsedLanguage = new ParsedLanguage()
 
     class ParsedLanguage extends Val
@@ -334,7 +330,6 @@ object XPathParser {
      */
     override def saveLocation: Location = this
   }
-
 }
 
 
@@ -342,38 +337,23 @@ object XPathParser {
  * Create an expression parser
  */
 class XPathParser() {
+
   var t: Tokenizer = _
-
   var env: StaticContext = _
-
   var rangeVariables: mutable.Stack[LocalBinding] = new mutable.Stack[LocalBinding]()
-
   var qNameParser: QNameParser = _
-
-  var parserExtension: ParserExtension = new ParserExtension()
-
+  var parserExtension: ParserExtension = new ParserExtension
   var charChecker: IntPredicate = _
-
   var allowXPath30Syntax: Boolean = false
-
   var allowXPath30XSLTExtensions: Boolean = false
-
   var allowXPath31Syntax: Boolean = false
-
   var allowSaxonExtensions: Boolean = false
-
   var scanOnly: Boolean = false
-
   private var allowAbsentExpression: Boolean = false
-
   var codeInjector: CodeInjector = null
-
   private var accelerator: XPathParser.Accelerator = null
-
   var language: ParsedLanguage.ParsedLanguage = ParsedLanguage.XPATH
-
   var languageVersion: Int = 20
-
   var catchDepth: Int = 0
 
   /**

@@ -1,35 +1,26 @@
 package org.orbeon.saxon.event
 
+import java.{util => ju}
+
+import javax.xml.transform.Result
 import org.orbeon.saxon.expr.parser.Loc
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.lib.ParseOptions
-import org.orbeon.saxon.lib.Validation
+import org.orbeon.saxon.lib.{NamespaceConstant, ParseOptions, Validation}
 import org.orbeon.saxon.ma.arrays.ArrayItem
 import org.orbeon.saxon.ma.map.MapItem
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.SchemaType
-import org.orbeon.saxon.model.SimpleType
-import org.orbeon.saxon.model.Type
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaType, SimpleType, Type}
 import org.orbeon.saxon.om._
-import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.s9api.Location
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.util.CharSequenceConsumer
-import org.orbeon.saxon.tree.util.Orphan
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.ExternalObject
-import javax.xml.transform.Result
-import java.util._
+import org.orbeon.saxon.s9api.{HostLanguage, Location}
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.tree.util.{CharSequenceConsumer, Orphan}
+import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 
 import org.orbeon.saxon.event.RegularSequenceChecker.State._
 import org.orbeon.saxon.utils.Configuration
 
 object ComplexContentOutputter {
 
-  def makeComplexContentReceiver(
-                                  receiver: Receiver,
-                                  options: ParseOptions): ComplexContentOutputter = {
+  def makeComplexContentReceiver(receiver: Receiver,
+                                 options: ParseOptions): ComplexContentOutputter = {
     var rec = receiver
     val systemId: String = receiver.getSystemId
     val validate: Boolean = options != null &&
@@ -49,40 +40,26 @@ object ComplexContentOutputter {
 class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver with Result {
 
   private var nextReceiver: Receiver = _
-
   private var pendingStartTag: NodeName = null
-
   private var level: Int = -1
-
   private var currentLevelIsDocument: Array[Boolean] = new Array[Boolean](20)
-
-  private var pendingAttributes: List[AttributeInfo] = new ArrayList()
-
+  private val pendingAttributes: ju.List[AttributeInfo] = new ju.ArrayList()
   private var pendingNSMap: NamespaceMap = _
-
-  private var inheritedNamespaces: Stack[NamespaceMap] = new Stack()
-
+  private var inheritedNamespaces: List[NamespaceMap] = Nil
   private var currentSimpleType: SchemaType = null
-
   private var startElementProperties: Int = _
-
   private var startElementLocationId: Location = Loc.NONE
-
   private var state: RegularSequenceChecker.State.State = Initial
-
   private var previousAtomic: Boolean = false
-
   val pipe: PipelineConfiguration = next.getPipelineConfiguration
-
   private var hostLanguage: HostLanguage.HostLanguage = pipe.getHostLanguage
-
   this.pipelineConfiguration = pipe
 
   this.setReceiver(next)
 
-  Objects.requireNonNull(pipe)
+  ju.Objects.requireNonNull(pipe)
 
-  inheritedNamespaces.push(NamespaceMap.emptyMap)
+  inheritedNamespaces ::= NamespaceMap.emptyMap
 
   override def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
     if (pipelineConfiguration != pipe) {
@@ -123,7 +100,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     }
     previousAtomic = false
     if (currentLevelIsDocument.length < level + 1) {
-      currentLevelIsDocument = Arrays.copyOf(currentLevelIsDocument, level * 2)
+      currentLevelIsDocument = ju.Arrays.copyOf(currentLevelIsDocument, level * 2)
     }
     currentLevelIsDocument(level) = true
     state = Content
@@ -180,15 +157,15 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     currentSimpleType = typeCode
     previousAtomic = false
     if (currentLevelIsDocument.length < level + 1) {
-      currentLevelIsDocument = Arrays.copyOf(currentLevelIsDocument, level * 2)
+      currentLevelIsDocument = ju.Arrays.copyOf(currentLevelIsDocument, level * 2)
     }
     currentLevelIsDocument(level) = false
     state = StartTag
   }
 
   def namespace(prefix: String, namespaceUri: String, properties: Int): Unit = {
-    Objects.requireNonNull(prefix)
-    Objects.requireNonNull(namespaceUri)
+    ju.Objects.requireNonNull(prefix)
+    ju.Objects.requireNonNull(namespaceUri)
     if (ReceiverOption.contains(properties, ReceiverOption.NAMESPACE_OK)) {
       pendingNSMap = pendingNSMap.put(prefix, namespaceUri)
     } else if (level >= 0) {
@@ -242,14 +219,13 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     previousAtomic = false
   }
 
-  override def namespaces(bindings: NamespaceBindingSet, properties: Int): Unit = {
-    if (bindings.isInstanceOf[NamespaceMap] && pendingNSMap.isEmpty &&
-      ReceiverOption.contains(properties, ReceiverOption.NAMESPACE_OK)) {
-      pendingNSMap = bindings.asInstanceOf[NamespaceMap]
-    } else {
-      super.namespaces(bindings, properties)
+  override def namespaces(bindings: NamespaceBindingSet, properties: Int): Unit =
+    bindings match {
+      case map: NamespaceMap if ReceiverOption.contains(properties, ReceiverOption.NAMESPACE_OK) && pendingNSMap.isEmpty =>
+        pendingNSMap = map
+      case _ =>
+        super.namespaces(bindings, properties)
     }
-  }
 
   def attribute(attName: NodeName,
                 typeCode: SimpleType,
@@ -322,7 +298,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     level += 1
     startElementLocationId = location.saveLocation()
     if (currentLevelIsDocument.length < level + 1) {
-      currentLevelIsDocument = Arrays.copyOf(currentLevelIsDocument, level * 2)
+      currentLevelIsDocument = ju.Arrays.copyOf(currentLevelIsDocument, level * 2)
     }
     currentLevelIsDocument(level) = false
     if (elemName.hasURI("") && !namespaces.getDefaultNamespace.isEmpty) {
@@ -333,7 +309,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       ReceiverOption.DISINHERIT_NAMESPACES)
     var ns2: NamespaceMap = null
     if (inherit) {
-      val inherited: NamespaceMap = inheritedNamespaces.peek()
+      val inherited: NamespaceMap = inheritedNamespaces.head
       ns2 = inherited.putAll(nameSpacMap)
       if (!inherited.getDefaultNamespace.isEmpty && elemName.getURI.isEmpty) {
         ns2 = ns2.remove("")
@@ -341,13 +317,13 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       if (ReceiverOption.contains(
         properties,
         ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY)) {
-        inheritedNamespaces.push(inherited)
+        inheritedNamespaces ::= inherited
       } else {
-        inheritedNamespaces.push(ns2)
+        inheritedNamespaces ::= ns2
       }
     } else {
       ns2 = nameSpacMap
-      inheritedNamespaces.push(NamespaceMap.emptyMap)
+      inheritedNamespaces ::= NamespaceMap.emptyMap
     }
     val refuseInheritedNamespaces: Boolean =
       ReceiverOption.contains(properties, ReceiverOption.REFUSE_NAMESPACES)
@@ -402,7 +378,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     level -= 1
     previousAtomic = false
     state = if (level < 0) Open else Content
-    inheritedNamespaces.pop()
+    inheritedNamespaces = inheritedNamespaces.tail
   }
 
   def comment(comment: CharSequence,
@@ -488,8 +464,10 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       }
     }
     val inherited: NamespaceMap =
-      if (inheritedNamespaces.isEmpty) NamespaceMap.emptyMap
-      else inheritedNamespaces.peek()
+      if (inheritedNamespaces.isEmpty)
+        NamespaceMap.emptyMap
+      else
+        inheritedNamespaces.head
     if (!ReceiverOption.contains(startElementProperties,
       ReceiverOption.REFUSE_NAMESPACES)) {
       pendingNSMap = inherited.putAll(pendingNSMap)
@@ -507,7 +485,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     val inherit: Boolean = !ReceiverOption.contains(
       startElementProperties,
       ReceiverOption.DISINHERIT_NAMESPACES)
-    inheritedNamespaces.push(if (inherit) pendingNSMap else inherited)
+    inheritedNamespaces ::= (if (inherit) pendingNSMap else inherited)
     pendingAttributes.clear()
     pendingNSMap = NamespaceMap.emptyMap
     previousAtomic = false
@@ -522,7 +500,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     for (member <- array.members()) {
       member
         .iterate()
-        .forEachOrFail((it) => append(it, locationId, copyNamespaces))
+        .forEachOrFail(it => append(it, locationId, copyNamespaces))
     }
   }
 
@@ -537,71 +515,72 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
         }
         characters(item.getStringValueCS, locationId, ReceiverOption.NONE)
         previousAtomic = true
-      } else if (item.isInstanceOf[ArrayItem]) {
-        flatten(item.asInstanceOf[ArrayItem], locationId, copyNamespaces)
-      } else if (item.isInstanceOf[Function]) {
-        val thing: String =
-          if (item.isInstanceOf[MapItem]) "map" else "function item"
-        val errorCode: String = getErrorCodeForDecomposingFunctionItems
-        if (errorCode.startsWith("SENR")) {
-          throw new XPathException(
-            "Cannot serialize a " + thing + " using this output method",
-            errorCode,
-            locationId)
-        } else {
-          throw new XPathException(
-            "Cannot add a " + thing + " to an XDM node tree",
-            errorCode,
-            locationId)
-        }
-      } else {
-        val node: NodeInfo = item.asInstanceOf[NodeInfo]
-        node.getNodeKind match {
-          case Type.TEXT =>
-            var options: Int = ReceiverOption.NONE
-            if (node.isInstanceOf[Orphan] && node
-              .asInstanceOf[Orphan]
-              .isDisableOutputEscaping) {
-              options = ReceiverOption.DISABLE_ESCAPING
-            }
-            characters(item.getStringValueCS, locationId, options)
-          case Type.ATTRIBUTE =>
-            if (node.getSchemaType
-              .asInstanceOf[SimpleType]
-              .isNamespaceSensitive) {
-              val err = new XPathException(
-                "Cannot copy attributes whose type is namespace-sensitive (QName or NOTATION): " +
-                  Err.wrap(node.getDisplayName, Err.ATTRIBUTE))
-              err.setErrorCode(
-                if (getPipelineConfiguration.isXSLT) "XTTE0950"
-                else "XQTY0086")
-              throw err
-            }
-            attribute(NameOfNode.makeName(node),
-              node.getSchemaType.asInstanceOf[SimpleType],
-              node.getStringValue,
-              locationId,
-              ReceiverOption.NONE)
-          case Type.NAMESPACE =>
-            namespace(node.getLocalPart,
-              node.getStringValue,
-              ReceiverOption.NONE)
-          case Type.DOCUMENT =>
-            startDocument(ReceiverOption.NONE)
-            for (child <- node.children) {
-              append(child, locationId, copyNamespaces)
-            }
-            endDocument()
-          case _ =>
-            var copyOptions: Int = CopyOptions.TYPE_ANNOTATIONS
-            if (ReceiverOption.contains(copyNamespaces,
-              ReceiverOption.ALL_NAMESPACES)) {
-              copyOptions |= CopyOptions.ALL_NAMESPACES
-            }
-            item.asInstanceOf[NodeInfo].copy(this, copyOptions, locationId)
+      } else item match {
+        case arrayItem: ArrayItem =>
+          flatten(arrayItem, locationId, copyNamespaces)
+        case _: Function =>
+          val thing: String =
+            if (item.isInstanceOf[MapItem]) "map" else "function item"
+          val errorCode: String = getErrorCodeForDecomposingFunctionItems
+          if (errorCode.startsWith("SENR")) {
+            throw new XPathException(
+              "Cannot serialize a " + thing + " using this output method",
+              errorCode,
+              locationId)
+          } else {
+            throw new XPathException(
+              "Cannot add a " + thing + " to an XDM node tree",
+              errorCode,
+              locationId)
+          }
+        case _ =>
+          val node: NodeInfo = item.asInstanceOf[NodeInfo]
+          node.getNodeKind match {
+            case Type.TEXT =>
+              var options: Int = ReceiverOption.NONE
+              node match {
+                case orphan: Orphan if orphan.isDisableOutputEscaping =>
+                  options = ReceiverOption.DISABLE_ESCAPING
+                case _ =>
+              }
+              characters(item.getStringValueCS, locationId, options)
+            case Type.ATTRIBUTE =>
+              if (node.getSchemaType
+                .asInstanceOf[SimpleType]
+                .isNamespaceSensitive) {
+                val err = new XPathException(
+                  "Cannot copy attributes whose type is namespace-sensitive (QName or NOTATION): " +
+                    Err.wrap(node.getDisplayName, Err.ATTRIBUTE))
+                err.setErrorCode(
+                  if (getPipelineConfiguration.isXSLT) "XTTE0950"
+                  else "XQTY0086")
+                throw err
+              }
+              attribute(NameOfNode.makeName(node),
+                node.getSchemaType.asInstanceOf[SimpleType],
+                node.getStringValue,
+                locationId,
+                ReceiverOption.NONE)
+            case Type.NAMESPACE =>
+              namespace(node.getLocalPart,
+                node.getStringValue,
+                ReceiverOption.NONE)
+            case Type.DOCUMENT =>
+              startDocument(ReceiverOption.NONE)
+              for (child <- node.children) {
+                append(child, locationId, copyNamespaces)
+              }
+              endDocument()
+            case _ =>
+              var copyOptions: Int = CopyOptions.TYPE_ANNOTATIONS
+              if (ReceiverOption.contains(copyNamespaces,
+                ReceiverOption.ALL_NAMESPACES)) {
+                copyOptions |= CopyOptions.ALL_NAMESPACES
+              }
+              item.asInstanceOf[NodeInfo].copy(this, copyOptions, locationId)
 
-        }
-        previousAtomic = false
+          }
+          previousAtomic = false
       }
     }
   }

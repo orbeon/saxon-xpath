@@ -1,6 +1,5 @@
 package org.orbeon.saxon.saxjava
 
-import org.orbeon.saxon.dom.{DOMEnvelope, DOMObjectModel}
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.expr.sort._
 import org.orbeon.saxon.functions.FunctionLibraryList
@@ -55,8 +54,8 @@ class JavaPlatform extends Platform {
 //  }
 
   def initialize(config: Configuration): Unit = {
-    config.registerExternalObjectModel(DOMEnvelope.getInstance)
-    config.registerExternalObjectModel(DOMObjectModel.getInstance)
+//    config.registerExternalObjectModel(DOMEnvelope.getInstance)
+//    config.registerExternalObjectModel(DOMObjectModel.getInstance)
     config.setCollectionFinder(new StandardCollectionFinder())
   }
 

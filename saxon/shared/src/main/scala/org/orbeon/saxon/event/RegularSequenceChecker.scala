@@ -1,23 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.model.SchemaType
+import java.util.{HashMap, Map}
 
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.event.RegularSequenceChecker._
+import org.orbeon.saxon.model.{SchemaType, Type}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
 import org.orbeon.saxon.trans.XPathException
-
-import java.util.HashMap
-
-import java.util.Map
-
-import java.util.Stack
-
-import RegularSequenceChecker._
 
 
 object RegularSequenceChecker {
@@ -30,36 +25,25 @@ object RegularSequenceChecker {
     val Content = Value("Content")
     val Final = Value("Final")
     val Failed = Value("Failed")
-
   }
 
   object Transition extends Enumeration {
 
     val OPEN: Transition = new Transition()
-
     val APPEND: Transition = new Transition()
-
     val TEXT: Transition = new Transition()
-
     val COMMENT: Transition = new Transition()
-
     val PI: Transition = new Transition()
-
     val START_DOCUMENT: Transition = new Transition()
-
     val START_ELEMENT: Transition = new Transition()
-
     val END_ELEMENT: Transition = new Transition()
-
     val END_DOCUMENT: Transition = new Transition()
-
     val CLOSE: Transition = new Transition()
 
     class Transition extends Val
 
     implicit def convertValue(v: Value): Transition =
       v.asInstanceOf[Transition]
-
   }
 
   private var machine: Map[State.State, Map[Transition.Transition, State.State]] = new HashMap()
@@ -71,36 +55,21 @@ object RegularSequenceChecker {
   }
 
   edge(State.Initial, Transition.OPEN, State.Open)
-
   edge(State.Open, Transition.APPEND, State.Open)
-
   edge(State.Open, Transition.TEXT, State.Open)
-
   edge(State.Open, Transition.COMMENT, State.Open)
-
   edge(State.Open, Transition.PI, State.Open)
-
   edge(State.Open, Transition.START_DOCUMENT, State.Content)
-
   edge(State.Open, Transition.START_ELEMENT, State.Content)
-
   edge(State.Content, Transition.TEXT, State.Content)
-
   edge(State.Content, Transition.COMMENT, State.Content)
-
   edge(State.Content, Transition.PI, State.Content)
-
   edge(State.Content, Transition.START_ELEMENT, State.Content)
-
   // or Open if the stack is empty
   edge(State.Content, Transition.END_ELEMENT, State.Content)
-
   edge(State.Content, Transition.END_DOCUMENT, State.Open)
-
   edge(State.Open, Transition.CLOSE, State.Final)
-
   edge(State.Failed, Transition.CLOSE, State.Failed)
-
 }
 
 /**
@@ -164,7 +133,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
                              private var fullChecking: Boolean)
   extends ProxyReceiver(nextReceiver) {
 
-  private var stack: Stack[Short] = new Stack()
+  private var stack: List[Short] = Nil
 
   private var state: State.State = State.Initial
 
@@ -238,7 +207,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
 
   override def endDocument(): Unit = {
     transition(Transition.END_DOCUMENT)
-    if (stack.isEmpty || stack.pop() != Type.DOCUMENT) {
+    if (stack.isEmpty || { val r = stack.head; stack = stack.tail; r } != Type.DOCUMENT) {
       throw new IllegalStateException("Unmatched endDocument() call")
     }
     try nextReceiver.endDocument()
@@ -253,12 +222,10 @@ class RegularSequenceChecker(nextReceiver: Receiver,
 
   override def endElement(): Unit = {
     transition(Transition.END_ELEMENT)
-    if (stack.isEmpty || stack.pop() != Type.ELEMENT) {
+    if (stack.isEmpty || { val r = stack.head; stack = stack.tail; r } != Type.ELEMENT)
       throw new IllegalStateException("Unmatched endElement() call")
-    }
-    if (stack.isEmpty) {
+    if (stack.isEmpty)
       state = State.Open
-    }
     try nextReceiver.endElement()
     catch {
       case e: XPathException => {
@@ -273,11 +240,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
     transition(Transition.OPEN)
     try nextReceiver.open()
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -301,7 +266,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
 
   override def startDocument(properties: Int): Unit = {
     transition(Transition.START_DOCUMENT)
-    stack.push(Type.DOCUMENT)
+    stack ::= Type.DOCUMENT
     try nextReceiver.startDocument(properties)
     catch {
       case e: XPathException => {
@@ -319,7 +284,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
                             location: Location,
                             properties: Int): Unit = {
     transition(Transition.START_ELEMENT)
-    stack.push(Type.ELEMENT)
+    stack ::= Type.ELEMENT
     if (fullChecking) {
       attributes.verify()
       val prefix: String = elemName.getPrefix
@@ -374,11 +339,4 @@ class RegularSequenceChecker(nextReceiver: Receiver,
 
     }
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
                   sResult: StreamResult,
                   var outputProperties: Properties) {
 
-  private val result: ExpandedStreamResult = new ExpandedStreamResult(pipe.getConfiguration, sResult, outputProperties)
+//  private val result: ExpandedStreamResult = new ExpandedStreamResult(pipe.getConfiguration, sResult, outputProperties)
   private var writer: Writer = _
   private var normalizer: Normalizer = _
   private var characterMap: CharacterMap = _
@@ -34,48 +34,39 @@ class JSONEmitter(pipe: PipelineConfiguration,
 
   def setOutputProperties(details: Properties): Unit = {
     this.outputProperties = details
-    if ("yes" == details.getProperty(OutputKeys.INDENT)) {
+    if ("yes" == details.getProperty(OutputKeys.INDENT))
       isIndenting = true
-    }
-    if ("yes" == details.getProperty(SaxonOutputKeys.UNFAILING)) {
+    if ("yes" == details.getProperty(SaxonOutputKeys.UNFAILING))
       unfailing = true
-    }
-    val max: String = details.getProperty(SaxonOutputKeys.LINE_LENGTH)
-    if (max != null) {
+    val max = details.getProperty(SaxonOutputKeys.LINE_LENGTH)
+    if (max != null)
       try maxLineLength = java.lang.Integer.parseInt(max)
       catch {
-        case err: NumberFormatException => {}
-
+        case _: NumberFormatException =>
       }
-    }
-    val spaces: String = details.getProperty(SaxonOutputKeys.INDENT_SPACES)
-    if (spaces != null) {
+    val spaces = details.getProperty(SaxonOutputKeys.INDENT_SPACES)
+    if (spaces != null)
       try indentSpaces = java.lang.Integer.parseInt(spaces)
       catch {
-        case err: NumberFormatException => {}
-
+        case _: NumberFormatException =>
       }
-    }
   }
 
   def getOutputProperties: Properties = outputProperties
 
-  def setNormalizer(normalizer: Normalizer): Unit = {
+  def setNormalizer(normalizer: Normalizer): Unit =
     this.normalizer = normalizer
-  }
 
-  def setCharacterMap(map: CharacterMap): Unit = {
+  def setCharacterMap(map: CharacterMap): Unit =
     this.characterMap = map
-  }
 
   def writeKey(key: String): Unit = {
     conditionalComma(false)
     emit('"')
     emit(escape(key))
     emit("\":")
-    if (isIndenting) {
+    if (isIndenting)
       emit(" ")
-    }
     afterKey = true
   }
 
@@ -83,37 +74,37 @@ class JSONEmitter(pipe: PipelineConfiguration,
     conditionalComma(false)
     if (item == null) {
       emit("null")
-    } else if (item.isInstanceOf[NumericValue]) {
-      val num: NumericValue = item.asInstanceOf[NumericValue]
-      if (num.isNaN) {
-        if (unfailing) {
-          emit("NaN")
+    } else item match {
+      case num: NumericValue =>
+        if (num.isNaN) {
+          if (unfailing) {
+            emit("NaN")
+          } else {
+            throw new XPathException("JSON has no way of representing NaN",
+              "SERE0020")
+          }
+        } else if (java.lang.Double.isInfinite(num.getDoubleValue)) {
+          if (unfailing) {
+            emit(if (num.getDoubleValue < 0) "-INF" else "INF")
+          } else {
+            throw new XPathException("JSON has no way of representing Infinity",
+              "SERE0020")
+          }
+        } else if (item.isInstanceOf[IntegerValue]) {
+          emit(num.longValue().toString)
+        } else if (num.isWholeNumber && !num.isNegativeZero && num
+          .abs()
+          .compareTo(1000000000000000000L) < 0) {
+          emit(num.longValue().toString)
         } else {
-          throw new XPathException("JSON has no way of representing NaN",
-            "SERE0020")
+          emit(num.getStringValue)
         }
-      } else if (java.lang.Double.isInfinite(num.getDoubleValue)) {
-        if (unfailing) {
-          emit(if (num.getDoubleValue < 0) "-INF" else "INF")
-        } else {
-          throw new XPathException("JSON has no way of representing Infinity",
-            "SERE0020")
-        }
-      } else if (item.isInstanceOf[IntegerValue]) {
-        emit(num.longValue().toString)
-      } else if (num.isWholeNumber && !num.isNegativeZero && num
-        .abs()
-        .compareTo(1000000000000000000L) < 0) {
-        emit(num.longValue().toString)
-      } else {
-        emit(num.getStringValue)
-      }
-    } else if (item.isInstanceOf[BooleanValue]) {
-      emit(item.getStringValue)
-    } else {
-      emit('"')
-      emit(escape(item.getStringValue))
-      emit('"')
+      case _: BooleanValue =>
+        emit(item.getStringValue)
+      case _ =>
+        emit('"')
+        emit(escape(item.getStringValue))
+        emit('"')
     }
   }
 
@@ -122,24 +113,22 @@ class JSONEmitter(pipe: PipelineConfiguration,
     level += 1
   }
 
-  def endArray(): Unit = {
+  def endArray(): Unit =
     emitClose(']', {
-      level -= 1;
+      level -= 1
       level + 1
     })
-  }
 
   def startMap(oneLiner: Boolean): Unit = {
     emitOpen('{', oneLiner)
     level += 1
   }
 
-  def endMap(): Unit = {
+  def endMap(): Unit =
     emitClose('}', {
-      level -= 1;
+      level -= 1
       level + 1
     })
-  }
 
   private def emitOpen(bracket: Char, oneLiner: Boolean): Unit = {
     conditionalComma(true)
@@ -147,9 +136,8 @@ class JSONEmitter(pipe: PipelineConfiguration,
     emit(bracket)
     first = true
     if (isIndenting) {
-      if (oneLiner) {
+      if (oneLiner)
         emit(' ')
-      } else {}
     }
   }
 
@@ -167,19 +155,19 @@ class JSONEmitter(pipe: PipelineConfiguration,
   }
 
   private def conditionalComma(opening: Boolean): Unit = {
-    val wasFirst: Boolean = first
-    if (first) {
+
+    val wasFirst = first
+    if (first)
       first = false
-    } else if (!afterKey) {
+    else if (!afterKey)
       emit(',')
-    }
+
     if (wasFirst && afterKey) {
       emit(' ')
     } else if (isIndenting && !afterKey && level != 0) {
       emit('\n')
-      for (i <- 0 until indentSpaces * (level + 1)) {
+      for (_ <- 0 until indentSpaces * (level + 1))
         emit(' ')
-      }
     }
     afterKey = false
   }
@@ -193,16 +181,16 @@ class JSONEmitter(pipe: PipelineConfiguration,
 
   private def escape(cs: CharSequence): CharSequence =
     if (characterMap != null) {
-      val out: FastStringBuffer = new FastStringBuffer(cs.length)
+      val out = new FastStringBuffer(cs.length)
       var chSeq = cs
       chSeq = characterMap.map(chSeq, insertNulls = true)
-      val s: String = chSeq.toString
-      var prev: Int = 0
+      val s = chSeq.toString
+      var prev = 0
       while (true) {
-        val start: Int = s.indexOf(0, prev)
+        val start = s.indexOf(0, prev)
         if (start >= 0) {
           out.cat(simpleEscape(s.substring(prev, start)))
-          val end: Int = s.indexOf(0, start + 1)
+          val end = s.indexOf(0, start + 1)
           out.append(s.substring(start + 1, end))
           prev = end + 1
         } else {
@@ -216,39 +204,39 @@ class JSONEmitter(pipe: PipelineConfiguration,
     }
 
   private def simpleEscape(cs: CharSequence): CharSequence = {
+
     var chSeq = cs
-    if (normalizer != null) {
+    if (normalizer != null)
       chSeq = normalizer.normalize(chSeq)
-    }
+
     JsonReceiver.escape(
       chSeq,
       forXml = false,
-      (c) => c < 31 || (c >= 127 && c <= 159) || !characterSet.inCharset(c))
+      c => c < 31 || (c >= 127 && c <= 159) || ! characterSet.inCharset(c)
+    )
   }
 
   private def emit(s: CharSequence): Unit = {
     if (writer == null) {
-      writer = result.obtainWriter()
-      characterSet = result.getCharacterSet
+      // ORBEON: No `File` support.
+      ???
+//      writer = result.obtainWriter()
+//      characterSet = result.getCharacterSet
     }
     writer.append(s)
   }
 
-  private def emit(c: Char): Unit = {
+  private def emit(c: Char): Unit =
     emit(c.toString)
-  }
 
   def close(): Unit = {
-    if (first) {
+    if (first)
       emit("null")
-    }
     if (writer != null) {
       try writer.close()
       catch {
-        case e: IOException => {}
-
+        case _: IOException =>
       }
     }
   }
-
 }

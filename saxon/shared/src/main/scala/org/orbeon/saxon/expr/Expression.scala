@@ -470,10 +470,9 @@ abstract class Expression
   def export(out: ExpressionPresenter): Unit
 
   def explain(out: Logger): Unit = {
-    val ep: ExpressionPresenter =
-      new ExpressionPresenter(getConfiguration, out)
+    val ep = new ExpressionPresenter(getConfiguration, out)
     val options: ExpressionPresenter.ExportOptions =
-      new ExpressionPresenter.ExportOptions()
+      new ExpressionPresenter.ExportOptions
     options.explaining = true
     ep.setOptions(options)
     try export(ep)

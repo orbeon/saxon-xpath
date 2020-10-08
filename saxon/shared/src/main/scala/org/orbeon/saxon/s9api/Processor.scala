@@ -140,11 +140,12 @@ class Processor extends Configuration.ApiProvider {
     s
   }
 
-  def newSerializer(file: File): Serializer = {
-    val s: Serializer = new Serializer(this)
-    s.setOutputFile(file)
-    s
-  }
+  // ORBEON: No `File` support.
+//  def newSerializer(file: File): Serializer = {
+//    val s: Serializer = new Serializer(this)
+//    s.setOutputFile(file)
+//    s
+//  }
 
   def newPush(destination: Destination): Push = {
     val pipe: PipelineConfiguration =

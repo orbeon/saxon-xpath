@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -10,9 +9,9 @@ package org.orbeon.saxon.lib
 import java.util._
 import java.util.regex.Pattern
 
-import javax.xml.transform.{OutputKeys, Result, Source, TransformerException}
 import javax.xml.transform.sax.SAXResult
 import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.{OutputKeys, Result, Source, TransformerException}
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.om.{NameChecker, NamespaceResolver, QNameException}
 import org.orbeon.saxon.query.SequenceWrapper
@@ -23,6 +22,7 @@ import org.orbeon.saxon.value.BigDecimalValue
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 /**
  * Helper class to construct a serialization pipeline for a given result destination
@@ -355,13 +355,15 @@ class SerializerFactory {
           val normalizer = makeUnicodeNormalizer(pipe, props)
           return customizeJSONSerializer(js, props, characterMapExpander, normalizer)
         case "adaptive" =>
-          val esr = new ExpandedStreamResult(pipe.getConfiguration, result.asInstanceOf[StreamResult], props)
-          val writer = esr.obtainWriter
-          val je = new AdaptiveEmitter(pipe, writer)
-          je.setOutputProperties(props)
-          val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
-          val normalizer = makeUnicodeNormalizer(pipe, props)
-          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
+          ???
+          // ORBEON: No `File` support.
+//          val esr = new ExpandedStreamResult(pipe.getConfiguration, result.asInstanceOf[StreamResult], props)
+//          val writer = esr.obtainWriter
+//          val je = new AdaptiveEmitter(pipe, writer)
+//          je.setOutputProperties(props)
+//          val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
+//          val normalizer = makeUnicodeNormalizer(pipe, props)
+//          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
         case _ =>
           if (method.startsWith("{" + NamespaceConstant.SAXON + "}")) {
             val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)

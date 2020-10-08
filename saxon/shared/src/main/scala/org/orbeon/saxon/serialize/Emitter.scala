@@ -4,6 +4,23 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.serialize
+
+import java.io.{BufferedWriter, OutputStream, OutputStreamWriter, Writer}
+import java.util.Properties
+
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
+import org.orbeon.saxon.event.{ReceiverOption, ReceiverWithOutputProperties, SequenceReceiver}
+import org.orbeon.saxon.lib.SaxonOutputKeys
+import org.orbeon.saxon.om.{Item, NodeInfo}
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.serialize.charcode.{CharacterSet, UTF16CharacterSet, UTF8CharacterSet}
+import org.orbeon.saxon.trans.{XPathException, XmlProcessingIncident}
+
+import scala.util.control.Breaks._
+
+
 /**
  * Emitter: This abstract class defines methods that must be implemented by
  * components that format SAXON output. There is one emitter for XML,
@@ -16,46 +33,6 @@
  * to a Writer or OutputStream, using serialization properties defined in a Properties
  * object.</p>
  */
-
-package org.orbeon.saxon.serialize
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.event.ReceiverWithOutputProperties
-
-import org.orbeon.saxon.event.SequenceReceiver
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.serialize.charcode.CharacterSet
-
-import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.serialize.charcode.UTF8CharacterSet
-
-import org.orbeon.saxon.trans.SaxonErrorCode
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.trans.XmlProcessingIncident
-
-import javax.xml.transform.OutputKeys
-
-import javax.xml.transform.stream.StreamResult
-
-import java.io._
-
-import java.net.URISyntaxException
-
-import java.util.Properties
-import scala.util.control.Breaks._
-
 abstract class Emitter
   extends SequenceReceiver(null)
     with ReceiverWithOutputProperties {
@@ -91,7 +68,7 @@ abstract class Emitter
       throw new IllegalStateException("Emitter must have either a Writer or a StreamResult to write to")
     writer = streamResult.getWriter
     if (writer == null) {
-      val os: OutputStream = streamResult.getOutputStream
+      val os = streamResult.getOutputStream
       if (os != null)
         this.outputStream = os
     }
@@ -100,22 +77,27 @@ abstract class Emitter
   }
 
   def makeOutputStream(): OutputStream = {
-    val uriString: String = streamResult.getSystemId
-    if (uriString == null)
-      throw new XPathException("Result has no system ID, writer, or output stream defined", SaxonErrorCode.SXRD0004)
-    try {
-      val file: File = ExpandedStreamResult.makeWritableOutputFile(uriString)
-      this.outputStream = new FileOutputStream(file)
-      streamResult.setOutputStream(outputStream)
-      mustClose = true
-    } catch {
-      case fnf@(_: FileNotFoundException | _: URISyntaxException | _: IllegalArgumentException) =>
-        val err = new XPathException("Unable to write to output destination", fnf)
-        err.setErrorCode(SaxonErrorCode.SXRD0004)
-        throw err
 
-    }
-    outputStream
+    // ORBEON: No `File` support.
+    ???
+
+//    val uriString = streamResult.getSystemId
+//    if (uriString == null)
+//      throw new XPathException("Result has no system ID, writer, or output stream defined", SaxonErrorCode.SXRD0004)
+//
+//    try {
+//      val file = ExpandedStreamResult.makeWritableOutputFile(uriString)
+//      this.outputStream = new FileOutputStream(file)
+//      streamResult.setOutputStream(outputStream)
+//      mustClose = true
+//    } catch {
+//      case fnf@(_: FileNotFoundException | _: URISyntaxException | _: IllegalArgumentException) =>
+//        val err = new XPathException("Unable to write to output destination", fnf)
+//        err.setErrorCode(SaxonErrorCode.SXRD0004)
+//        throw err
+//
+//    }
+//    outputStream
   }
 
   def usesWriter(): Boolean = true

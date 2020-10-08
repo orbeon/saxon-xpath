@@ -1,44 +1,48 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.tiny
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.Arrays
+
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.lib.Feature
-import org.orbeon.saxon.model.SchemaType
-import org.orbeon.saxon.model.SimpleType
-import org.orbeon.saxon.model.Type
+import org.orbeon.saxon.model.{SchemaType, SimpleType, Type}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import java.util.Arrays
-import java.util.Stack
-
-import TinyBuilder._
 import org.orbeon.saxon.tree.tiny.TinyBuilder.Eligibility.Eligibility
+import org.orbeon.saxon.tree.tiny.TinyBuilder._
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
+
+/**
+ * The TinyBuilder class is responsible for taking a stream of SAX events and constructing
+ * a Document tree, using the "TinyTree" implementation.
+ *
+ * @author Michael H. Kay
+ */
 object TinyBuilder {
 
   object Eligibility extends Enumeration {
 
     val INELIGIBLE: Eligibility = new Eligibility()
-
     val PRIMED: Eligibility = new Eligibility()
-
     val ELIGIBLE: Eligibility = new Eligibility()
 
     class Eligibility extends Val
 
     implicit def convertValue(v: Value): Eligibility =
       v.asInstanceOf[Eligibility]
-
   }
 
   private val PARENT_POINTER_INTERVAL: Int = 10
-
 }
 
 class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
@@ -48,7 +52,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   @BeanProperty
   var tree: TinyTree = _
 
-  private var namespaceStack: Stack[NamespaceMap] = new Stack()
+  private var namespaceStack: List[NamespaceMap] = Nil
 
   @BeanProperty
   var currentDepth: Int = 0
@@ -176,10 +180,10 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     noNewNamespaces = true
     if (namespaceStack.isEmpty) {
       noNewNamespaces = false
-      namespaceStack.push(namespaces)
+      namespaceStack ::= namespaces
     } else {
-      noNewNamespaces = namespaces == namespaceStack.peek()
-      namespaceStack.push(namespaces)
+      noNewNamespaces = namespaces == namespaceStack.head
+      namespaceStack ::= namespaces
     }
     if (siblingsAtDepth(currentDepth) > PARENT_POINTER_INTERVAL) {
       nodeNr = tt.addNode(Type.PARENT_POINTER,
@@ -227,7 +231,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
     }
     {
-      currentDepth += 1;
+      currentDepth += 1
 
     }
     if (currentDepth == prevAtDepth.length) {
@@ -251,13 +255,10 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
         location.getLineNumber,
         location.getColumnNumber)
     }
-    if (location.isInstanceOf[ReceivingContentHandler.LocalLocator] &&
-      location
-        .asInstanceOf[ReceivingContentHandler.LocalLocator]
-        .levelInEntity ==
-        0 &&
-      currentDepth >= 1) {
-      tt.markTopWithinEntity(nodeNr)
+    location match {
+      case locator: ReceivingContentHandler.LocalLocator if currentDepth >= 1 && locator.levelInEntity == 0 =>
+        tt.markTopWithinEntity(nodeNr)
+      case _ =>
     }
     for (att <- attributes) {
       attribute2(att.getNodeName,
@@ -268,7 +269,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     textualElementEligibilityState =
       if (noNewNamespaces) Eligibility.PRIMED else Eligibility.INELIGIBLE
-    tree.addNamespaces(nodeNr, namespaceStack.peek())
+    tree.addNamespaces(nodeNr, namespaceStack.head)
     nodeNr += 1
   }
 
@@ -310,7 +311,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     prevAtDepth(currentDepth) = -1
     siblingsAtDepth(currentDepth) = 0
     currentDepth -= 1
-    namespaceStack.pop()
+    namespaceStack = namespaceStack.tail
     if (isIDElement) {
       // we're relying on the fact that an ID element has no element children!
       tree.indexIDElement(currentRoot, prevAtDepth(currentDepth))
@@ -354,32 +355,33 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
                  locationId: Location,
                  properties: Int): Unit = {
     //System.err.println("characters: " + chars);
-    if (chars.isInstanceOf[CompressedWhitespace] &&
-      ReceiverOption.contains(properties, ReceiverOption.WHOLE_TEXT_NODE)) {
-      val tt: TinyTree = tree
-      assert(tt != null)
-      val lvalue: Long =
-        chars.asInstanceOf[CompressedWhitespace].getCompressedValue
-      nodeNr = tt.addNode(Type.WHITESPACE_TEXT,
-        currentDepth,
-        (lvalue >> 32).toInt,
-        lvalue.toInt,
-        -1)
-      val prev: Int = prevAtDepth(currentDepth)
-      if (prev > 0) {
-        tt.next(prev) = nodeNr
-      }
-      // *O* owner pointer in last sibling
-      tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
-      prevAtDepth(currentDepth) = nodeNr
-      siblingsAtDepth(currentDepth) += 1
+    chars match {
+      case whitespace: CompressedWhitespace if ReceiverOption.contains(properties, ReceiverOption.WHOLE_TEXT_NODE) =>
+        val tt: TinyTree = tree
+        assert(tt != null)
+        val lvalue: Long =
+          whitespace.getCompressedValue
+        nodeNr = tt.addNode(Type.WHITESPACE_TEXT,
+          currentDepth,
+          (lvalue >> 32).toInt,
+          lvalue.toInt,
+          -1)
+        val prev: Int = prevAtDepth(currentDepth)
+        if (prev > 0) {
+          tt.next(prev) = nodeNr
+        }
+        // *O* owner pointer in last sibling
+        tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
+        prevAtDepth(currentDepth) = nodeNr
+        siblingsAtDepth(currentDepth) += 1
 
-      if (lineNumbering) {
-        tt.setLineNumber(nodeNr,
-          locationId.getLineNumber,
-          locationId.getColumnNumber)
-      }
-      return
+        if (lineNumbering) {
+          tt.setLineNumber(nodeNr,
+            locationId.getLineNumber,
+            locationId.getColumnNumber)
+        }
+        return
+      case _ =>
     }
     val len = chars.length
     if (len > 0) {
@@ -494,19 +496,5 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   }
 
   /*@NotNull*/
-
-  override def getBuilderMonitor(): BuilderMonitor = new TinyBuilderMonitor(this)
-
+  override def getBuilderMonitor: BuilderMonitor = new TinyBuilderMonitor(this)
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * The TinyBuilder class is responsible for taking a stream of SAX events and constructing
- * a Document tree, using the "TinyTree" implementation.
- *
- * @author Michael H. Kay
- */

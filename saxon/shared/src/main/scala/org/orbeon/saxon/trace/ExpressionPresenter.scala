@@ -1,31 +1,23 @@
 package org.orbeon.saxon.trace
 
-import org.orbeon.saxon.utils.Configuration
+import java.{util => ju}
+
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
 import org.orbeon.saxon.event._
-import org.orbeon.saxon.expr.Component
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.parser.Loc
-import org.orbeon.saxon.expr.parser.RetainedStaticContext
-import org.orbeon.saxon.lib.Logger
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.lib.SaxonOutputKeys
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.model.Untyped
+import org.orbeon.saxon.expr.parser.{Loc, RetainedStaticContext}
+import org.orbeon.saxon.expr.{Component, Expression}
+import org.orbeon.saxon.lib.{Logger, NamespaceConstant, SaxonOutputKeys}
+import org.orbeon.saxon.model.{BuiltInAtomicType, TypeHierarchy, Untyped}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.serialize.SerializationProperties
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
+import org.orbeon.saxon.style.StylesheetPackage
+import org.orbeon.saxon.trace.ExpressionPresenter._
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.stream.StreamResult
-import java.util.Iterator
-import java.util.Map
-import java.util.Stack
-
-import ExpressionPresenter._
-import org.orbeon.saxon.style.StylesheetPackage
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
@@ -84,53 +76,35 @@ object ExpressionPresenter {
   trait Options
 
   class ExportOptions extends Options {
-
-    var target: String = ""
-
-    var targetVersion: Int = 0
-
-    var componentMap: Map[Component, Integer] = _
-
-    var explaining: Boolean = _
-
-    var suppressStaticContext: Boolean = _
-
-    var addStaticType: Boolean = _
-
-    var rootPackage: StylesheetPackage = _
-
-    var packageMap: Map[StylesheetPackage, Integer] = _
+    val target: String = ""
+    val targetVersion: Int = 0
+    val componentMap: ju.Map[Component, Integer] = null
+    var explaining: Boolean = false
+    val suppressStaticContext: Boolean = false
+    var addStaticType: Boolean = false
+    val rootPackage: StylesheetPackage = null
+    var packageMap: ju.Map[StylesheetPackage, Integer] = null
   }
-
 }
 
 class ExpressionPresenter {
 
   private var config: Configuration = _
-
   private var receiver: Receiver = _
-
   private var cco: ComplexContentOutputter = _
-
   private var depth: Int = 0
-
   private var inStartTag: Boolean = false
-
   private var nextRole: String = null
-
-  private var expressionStack: Stack[Expression] = new Stack()
-
-  private var nameStack: Stack[String] = new Stack()
-
+  private var expressionStack: List[Expression] = Nil
+  private var nameStack: List[String] = Nil
   private var namespaceMap: NamespaceMap = NamespaceMap.emptyMap
-
   private var defaultNamespace: String = _
 
   @BeanProperty
   var options: Options = new ExportOptions()
 
   @BooleanBeanProperty
-  var relocatable: Boolean = false
+  val relocatable: Boolean = false
 
   def this(config: Configuration, receiver: Receiver) = {
     this()
@@ -141,11 +115,9 @@ class ExpressionPresenter {
       cco.open()
       cco.startDocument(ReceiverOption.NONE)
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
   }
 
@@ -155,11 +127,8 @@ class ExpressionPresenter {
   }
 
   def this(config: Configuration, out: StreamResult) = this(config, out, false)
-
   def this(config: Configuration, out: Logger) = this(config, out.asStreamResult())
-
   def this(config: Configuration) = this(config, config.getLogger)
-
 
   def init(config: Configuration, out: StreamResult, checksum: Boolean): Unit = {
     val props: SerializationProperties = makeDefaultProperties(config)
@@ -179,22 +148,18 @@ class ExpressionPresenter {
       }
       cco = new ComplexContentOutputter(receiver)
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
     this.config = config
     try {
       cco.open()
       cco.startDocument(ReceiverOption.NONE)
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
   }
 
@@ -210,11 +175,9 @@ class ExpressionPresenter {
       cco.open()
       cco.startDocument(ReceiverOption.NONE)
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
   }
 
@@ -226,9 +189,9 @@ class ExpressionPresenter {
 
   def startElement(name: String, expr: Expression): Int = {
     val parent: Expression =
-      if (expressionStack.isEmpty) null else expressionStack.peek()
-    expressionStack.push(expr)
-    nameStack.push("*" + name)
+      if (expressionStack.isEmpty) null else expressionStack.head
+    expressionStack ::= expr
+    nameStack ::= "*" + name
     val n: Int = _startElement(name)
     if (parent == null ||
       expr.getRetainedStaticContext != parent.getRetainedStaticContext) {
@@ -262,7 +225,7 @@ class ExpressionPresenter {
           parts(p)
         }
         {
-          p -= 1;
+          p -= 1
           p + 1
         }
       }
@@ -293,7 +256,7 @@ class ExpressionPresenter {
     if (!options.asInstanceOf[ExportOptions].suppressStaticContext &&
       (parentSC == null || !sc.declaresSameNamespaces(parentSC))) {
       val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
-      var iter: Iterator[String] = sc.iteratePrefixes
+      val iter = sc.iteratePrefixes
       while (iter.hasNext) {
         val p: String = iter.next()
         var uri: String = sc.getURIForPrefix(p, useDefault = true)
@@ -316,7 +279,7 @@ class ExpressionPresenter {
   }
 
   def startElement(name: String): Int = {
-    nameStack.push(name)
+    nameStack ::= name
     _startElement(name)
   }
 
@@ -339,11 +302,9 @@ class ExpressionPresenter {
         nextRole = null
       }
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
     inStartTag = true
     depth += 1
@@ -355,7 +316,7 @@ class ExpressionPresenter {
   }
 
   def emitAttribute(name: String, value: String): Unit = {
-    var valueVar = value;
+    var valueVar = value
     if (valueVar != null) {
       if (name.==("module")) {
         valueVar = truncatedModuleName(valueVar)
@@ -366,11 +327,9 @@ class ExpressionPresenter {
         Loc.NONE,
         ReceiverOption.NONE)
       catch {
-        case err: XPathException => {
+        case err: XPathException =>
           err.printStackTrace()
           throw new InternalError(err.getMessage)
-        }
-
       }
     }
   }
@@ -383,22 +342,18 @@ class ExpressionPresenter {
       Loc.NONE,
       ReceiverOption.NONE)
     catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
   }
 
   def namespace(prefix: String, uri: String): Unit = {
     try cco.namespace(prefix, uri, ReceiverOption.NONE)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.printStackTrace()
         throw new InternalError(e.getMessage)
-      }
-
     }
   }
 
@@ -410,16 +365,13 @@ class ExpressionPresenter {
       }
       cco.endElement()
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
-    val name: String = nameStack.pop()
-    if (name.startsWith("*")) {
-      expressionStack.pop()
-    }
+    val name: String = { val r = nameStack.head; nameStack = nameStack.tail; r }
+    if (name.startsWith("*"))
+      expressionStack = expressionStack.tail
     depth -= 1
     depth
   }
@@ -434,28 +386,25 @@ class ExpressionPresenter {
 
   def close(): Unit = {
     try {
-      if (receiver.isInstanceOf[CheckSumFilter]) {
-        val c: Int = receiver.asInstanceOf[CheckSumFilter].getChecksum
-        cco.processingInstruction(CheckSumFilter.SIGMA,
-          java.lang.Integer.toHexString(c),
-          Loc.NONE,
-          ReceiverOption.NONE)
+      receiver match {
+        case filter: CheckSumFilter =>
+          val c: Int = filter.getChecksum
+          cco.processingInstruction(CheckSumFilter.SIGMA,
+            java.lang.Integer.toHexString(c),
+            Loc.NONE,
+            ReceiverOption.NONE)
+        case _ =>
       }
       cco.endDocument()
       cco.close()
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.printStackTrace()
         throw new InternalError(err.getMessage)
-      }
-
     }
   }
 
   def getConfiguration: Configuration = config
-
   def getNamePool: NamePool = config.getNamePool
-
   def getTypeHierarchy: TypeHierarchy = config.getTypeHierarchy
-
 }

@@ -1,40 +1,20 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.serialize.charcode.UTF8CharacterSet
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.tiny.CharSlice
-
-import org.orbeon.saxon.tree.tiny.CompressedWhitespace
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.Whitespace
+import java.util.{Arrays, Properties}
 
 import javax.xml.transform.OutputKeys
-
-import java.util.Arrays
-
-import java.util.Properties
-
-import java.util.Stack
-
-import XMLEmitter._
+import org.orbeon.saxon.event.ReceiverOption
+import org.orbeon.saxon.lib.SaxonOutputKeys
+import org.orbeon.saxon.model.SchemaType
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.serialize.XMLEmitter._
+import org.orbeon.saxon.serialize.charcode.{UTF16CharacterSet, UTF8CharacterSet}
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.tiny.{CharSlice, CompressedWhitespace}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.Whitespace
 
 import scala.util.control.Breaks._
 
@@ -94,28 +74,17 @@ object XMLEmitter {
 class XMLEmitter extends Emitter {
 
   var canonical: Boolean = false
-
   var started: Boolean = false
-
   var startedElement: Boolean = false
-
   var openStartTag: Boolean = false
-
   var declarationIsWritten: Boolean = false
-
   var elementCode: NodeName = _
-
   var indentForNextAttribute: Int = -1
-
   var undeclareNamespaces: Boolean = false
-
   var unfailing: Boolean = false
-
   var delimiter: Char = '"'
-
   var attSpecials: Array[Boolean] = specialInAtt
-
-  var elementStack: Stack[String] = new Stack()
+  var elementStack: List[String] = Nil
 
   private var indenting: Boolean = false
 
@@ -127,10 +96,8 @@ class XMLEmitter extends Emitter {
   var characterReferenceGenerator: CharacterReferenceGenerator =
     HexCharacterReferenceGenerator.THE_INSTANCE
 
-  def setCharacterReferenceGenerator(
-                                      generator: CharacterReferenceGenerator): Unit = {
+  def setCharacterReferenceGenerator(generator: CharacterReferenceGenerator): Unit =
     this.characterReferenceGenerator = generator
-  }
 
   def setEscapeNonAscii(escape: java.lang.Boolean): Unit = ()
 
@@ -141,21 +108,19 @@ class XMLEmitter extends Emitter {
   def endDocument(): Unit = ()
 
   def openDocument(): Unit = {
-    if (writer == null) {
+
+    if (writer == null)
       makeWriter()
-    }
-    if (characterSet == null) {
+
+    if (characterSet == null)
       characterSet = UTF8CharacterSet.getInstance
-    }
-    if (outputProperties == null) {
-      outputProperties = new Properties()
-    }
-    undeclareNamespaces = "yes" == outputProperties.getProperty(
-      SaxonOutputKeys.UNDECLARE_PREFIXES)
-    canonical = "yes" == outputProperties.getProperty(
-      SaxonOutputKeys.CANONICAL)
-    unfailing = "yes" == outputProperties.getProperty(
-      SaxonOutputKeys.UNFAILING)
+
+    if (outputProperties == null)
+      outputProperties = new Properties
+
+    undeclareNamespaces = "yes" == outputProperties.getProperty(SaxonOutputKeys.UNDECLARE_PREFIXES)
+    canonical = "yes" == outputProperties.getProperty(SaxonOutputKeys.CANONICAL)
+    unfailing = "yes" == outputProperties.getProperty(SaxonOutputKeys.UNFAILING)
     if ("yes" == outputProperties.getProperty(SaxonOutputKeys.SINGLE_QUOTES)) {
       delimiter = '\''
       attSpecials = specialInAttSingle
@@ -164,39 +129,41 @@ class XMLEmitter extends Emitter {
   }
 
   def writeDeclaration(): Unit = {
-    if (declarationIsWritten) {
+
+    if (declarationIsWritten)
       return
-    }
+
     declarationIsWritten = true
     indenting = "yes" == outputProperties.getProperty(OutputKeys.INDENT)
-    val byteOrderMark: String =
-      outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
-    var encoding: String = outputProperties.getProperty(OutputKeys.ENCODING)
-    if (encoding == null || encoding.equalsIgnoreCase("utf8") ||
-      canonical) {
+
+    val byteOrderMark = outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
+
+    var encoding = outputProperties.getProperty(OutputKeys.ENCODING)
+    if (encoding == null || encoding.equalsIgnoreCase("utf8") || canonical)
       encoding = "UTF-8"
-    }
+
     if ("yes" == byteOrderMark && !canonical &&
-      ("UTF-8".equalsIgnoreCase(encoding) || "UTF-16LE".equalsIgnoreCase(
-        encoding) ||
+      ("UTF-8".equalsIgnoreCase(encoding) || "UTF-16LE".equalsIgnoreCase(encoding) ||
         "UTF-16BE".equalsIgnoreCase(encoding))) {
       writer.write('﻿')
     }
-    var omitXMLDeclaration: String =
-      outputProperties.getProperty(OutputKeys.OMIT_XML_DECLARATION)
-    if (omitXMLDeclaration == null) {
+
+    var omitXMLDeclaration = outputProperties.getProperty(OutputKeys.OMIT_XML_DECLARATION)
+    if (omitXMLDeclaration == null)
       omitXMLDeclaration = "no"
-    }
-    if (canonical) {
+
+    if (canonical)
       omitXMLDeclaration = "yes"
-    }
-    var version: String = outputProperties.getProperty(OutputKeys.VERSION)
+
+    var version = outputProperties.getProperty(OutputKeys.VERSION)
     if (version == null) {
       version =
-        if (getConfiguration.getXMLVersion == Configuration.XML10) "1.0"
-        else "1.1"
+        if (getConfiguration.getXMLVersion == Configuration.XML10)
+          "1.0"
+        else
+          "1.1"
     } else {
-      if (version.!=("1.0") && version.!=("1.1")) {
+      if (version != "1.0" && version != "1.1") {
         if (unfailing) {
           version = "1.0"
         } else {
@@ -206,10 +173,9 @@ class XMLEmitter extends Emitter {
           throw err
         }
       }
-      if (version.!=("1.0") && omitXMLDeclaration.==("yes") &&
-        outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM) !=
-          null) {
-        if (!unfailing) {
+      if (version != "1.0" && omitXMLDeclaration == "yes" &&
+        outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM) != null) {
+        if (! unfailing) {
           val err = new XPathException(
             "Values of 'version', 'omit-xml-declaration', and 'doctype-system' conflict")
           err.setErrorCode("SEPM0009")
@@ -217,12 +183,11 @@ class XMLEmitter extends Emitter {
         }
       }
     }
-    val undeclare: String =
-      outputProperties.getProperty(SaxonOutputKeys.UNDECLARE_PREFIXES)
-    if ("yes" == undeclare) {
+    val undeclare = outputProperties.getProperty(SaxonOutputKeys.UNDECLARE_PREFIXES)
+    if ("yes" == undeclare)
       undeclareNamespaces = true
-    }
-    if (version.==("1.0") && undeclareNamespaces) {
+
+    if (version == "1.0" && undeclareNamespaces) {
       if (unfailing) {
         undeclareNamespaces = false
       } else {
@@ -232,11 +197,10 @@ class XMLEmitter extends Emitter {
         throw err
       }
     }
-    var standalone: String =
-      outputProperties.getProperty(OutputKeys.STANDALONE)
-    if ("omit" == standalone) {
+    var standalone = outputProperties.getProperty(OutputKeys.STANDALONE)
+    if ("omit" == standalone)
       standalone = null
-    }
+
     if (standalone != null) {
       requireWellFormed = true
       if (omitXMLDeclaration.==("yes") && !unfailing) {
@@ -246,12 +210,11 @@ class XMLEmitter extends Emitter {
         throw err
       }
     }
-    val systemId: String =
-      outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
-    if (systemId != null && "" != systemId) {
+    val systemId = outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
+    if (systemId != null && "" != systemId)
       requireWellFormed = true
-    }
-    if (omitXMLDeclaration.==("no")) {
+
+    if (omitXMLDeclaration =="no") {
       writer.write(
         "<?xml version=\"" + version + "\" " + "encoding=\"" +
           encoding +
@@ -326,7 +289,7 @@ class XMLEmitter extends Emitter {
         throw err
       }
     }
-    elementStack.push(displayName)
+    elementStack ::= displayName
     elementCode = elemName
     if (!started) {
       var systemId: String =
@@ -504,7 +467,8 @@ class XMLEmitter extends Emitter {
   }
 
   def endElement(): Unit = {
-    val displayName: String = elementStack.pop()
+    val displayName = elementStack.head
+    elementStack = elementStack.tail
     if (openStartTag) {
       writer.write(emptyElementTagCloser(displayName, elementCode))
       openStartTag = false
@@ -583,19 +547,19 @@ class XMLEmitter extends Emitter {
     }
   }
 
-  def writeCharSequence(s: CharSequence): Unit = {
-    if (s.isInstanceOf[String]) {
-      writer.write(s.asInstanceOf[String])
-    } else if (s.isInstanceOf[CharSlice]) {
-      s.asInstanceOf[CharSlice].write(writer)
-    } else if (s.isInstanceOf[FastStringBuffer]) {
-      s.asInstanceOf[FastStringBuffer].write(writer)
-    } else if (s.isInstanceOf[CompressedWhitespace]) {
-      s.asInstanceOf[CompressedWhitespace].write(writer)
-    } else {
-      writer.write(s.toString)
+  def writeCharSequence(s: CharSequence): Unit =
+    s match {
+      case str: String =>
+        writer.write(str)
+      case slice: CharSlice =>
+        slice.write(writer)
+      case buffer: FastStringBuffer =>
+        buffer.write(writer)
+      case whitespace: CompressedWhitespace =>
+        whitespace.write(writer)
+      case _ =>
+        writer.write(s.toString)
     }
-  }
 
   /**
    * Handle a processing instruction.
@@ -661,9 +625,11 @@ class XMLEmitter extends Emitter {
     var disabled = false
     val specialChars = if (inAttribute) attSpecials
     else XMLEmitter.specialInText
-    if (chars.isInstanceOf[CompressedWhitespace]) {
-      chars.asInstanceOf[CompressedWhitespace].writeEscape(specialChars, writer)
-      return
+    chars match {
+      case whitespace: CompressedWhitespace =>
+        whitespace.writeEscape(specialChars, writer)
+        return
+      case _ =>
     }
     val clength = chars.length
     while (segstart < clength) {
@@ -696,18 +662,18 @@ class XMLEmitter extends Emitter {
       // examine the special character that interrupted the scan
       val c = chars.charAt(i)
       if (c == 0) { // used to switch escaping on and off
-        disabled = !disabled
+        disabled = ! disabled
       }
       else if (disabled) {
         if (c > 127) if (UTF16CharacterSet.isHighSurrogate(c)) {
           val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i + 1))
-          if (!characterSet.inCharset(cc)) {
+          if (! characterSet.inCharset(cc)) {
             val de = new XPathException("Character x" + Integer.toHexString(cc) + " is not available in the chosen encoding")
             de.setErrorCode("SERE0008")
             throw de
           }
         }
-        else if (!characterSet.inCharset(c)) {
+        else if (! characterSet.inCharset(c)) {
           val de = new XPathException("Character " + c + " (x" + Integer.toHexString(c.toInt) + ") is not available in the chosen encoding")
           de.setErrorCode("SERE0008")
           throw de
@@ -742,7 +708,7 @@ class XMLEmitter extends Emitter {
       }
       else if (UTF16CharacterSet.isHighSurrogate(c)) {
         val d = chars.charAt({
-          i += 1;
+          i += 1
           i
         })
         val charval = UTF16CharacterSet.combinePair(c, d)
@@ -756,7 +722,7 @@ class XMLEmitter extends Emitter {
         characterReferenceGenerator.outputCharacterReference(c, writer)
       }
       segstart = {
-        i += 1;
+        i += 1
         i
       }
     }
@@ -769,11 +735,12 @@ class XMLEmitter extends Emitter {
   def comment(chars: CharSequence,
               locationId: Location,
               properties: Int): Unit = {
-    if (!started) {
+
+    if (! started)
       openDocument()
-    }
+
     var charsVar = chars
-    val x: Int = testCharacters(charsVar)
+    val x = testCharacters(charsVar)
     if (x != 0) {
       if (unfailing) {
         charsVar = convertToAscii(charsVar)

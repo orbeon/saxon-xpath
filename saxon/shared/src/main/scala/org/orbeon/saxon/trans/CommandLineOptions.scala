@@ -1,55 +1,39 @@
 package org.orbeon.saxon.trans
 
+import javax.xml.transform.{Source, TransformerException}
+import javax.xml.transform.sax.SAXSource
+import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.Builder
 import org.orbeon.saxon.functions.AccessorFn
 import org.orbeon.saxon.lib._
-import org.orbeon.saxon.model.SchemaException
 import org.orbeon.saxon.s9api._
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.DayTimeDurationValue
-import org.orbeon.saxon.value.NumericValue
-import org.xml.sax.InputSource
-import org.xml.sax.XMLReader
-import javax.xml.transform.Source
-import javax.xml.transform.TransformerException
-import javax.xml.transform.sax.SAXSource
-import javax.xml.transform.stream.StreamSource
-import java.io.File
+import org.orbeon.saxon.value.{DayTimeDurationValue, NumericValue}
+import org.xml.sax.{InputSource, XMLReader}
 import java.math.BigDecimal
 import java.text.Collator
 import java.util._
 
-import CommandLineOptions._
+import org.orbeon.saxon.trans.CommandLineOptions._
 import org.orbeon.saxon.utils.Configuration
 
 //import scala.collection.compat._
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 object CommandLineOptions {
 
   val TYPE_BOOLEAN: Int = 1
-
   val TYPE_FILENAME: Int = 2
-
   val TYPE_CLASSNAME: Int = 3
-
   val TYPE_ENUMERATION: Int = 4
-
   val TYPE_INTEGER: Int = 5
-
   val TYPE_QNAME: Int = 6
-
   val TYPE_FILENAME_LIST: Int = 7
-
   val TYPE_DATETIME: Int = 8
-
   val TYPE_STRING: Int = 9
-
   val TYPE_INTEGER_PAIR: Int = 10
-
   val VALUE_REQUIRED: Int = 1 << 8
-
   val VALUE_PROHIBITED: Int = 2 << 8
 
   def isImplicitURI(name: String) = name.startsWith("http:") || name.startsWith("https:") || name.startsWith("file:") || name.startsWith("classpath:")
@@ -99,55 +83,58 @@ object CommandLineOptions {
       sources.add(sourceInput)
       false
     } else {
-      val sourceFile: File = new File(sourceFileName)
-      if (!sourceFile.exists()) {
-        throw new SaxonApiException(
-          "Source file " + sourceFile + " does not exist")
-      }
-      if (sourceFile.isDirectory) {
-        parser = config.getSourceParser
-        val files: Array[String] = sourceFile.list()
-        if (files != null) {
-          for (file1 <- files) {
-            val file: File = new File(sourceFile, file1)
-            if (!file.isDirectory) {
-              if (useSAXSource) {
-                val eis: InputSource = new InputSource(file.toURI().toString)
-                sourceInput = new SAXSource(parser, eis)
-              } else {
-                sourceInput = new StreamSource(file.toURI().toString)
-              }
-              sources.add(sourceInput)
-            }
-          }
-        }
-        true
-      } else {
-        if (useSAXSource) {
-          val eis: InputSource = new InputSource(sourceFile.toURI().toString)
-          sourceInput = new SAXSource(config.getSourceParser, eis)
-        } else {
-          sourceInput = new StreamSource(sourceFile.toURI().toString)
-        }
-        sources.add(sourceInput)
-        false
-      }
+      // ORBEON: No `File` support.
+      false
     }
+//      val sourceFile = new File(sourceFileName)
+//      if (! sourceFile.exists()) {
+//        throw new SaxonApiException(
+//          "Source file " + sourceFile + " does not exist")
+//      }
+//      if (sourceFile.isDirectory) {
+//        parser = config.getSourceParser
+//        val files: Array[String] = sourceFile.list()
+//        if (files != null) {
+//          for (file1 <- files) {
+//            val file: File = new File(sourceFile, file1)
+//            if (!file.isDirectory) {
+//              if (useSAXSource) {
+//                val eis: InputSource = new InputSource(file.toURI().toString)
+//                sourceInput = new SAXSource(parser, eis)
+//              } else {
+//                sourceInput = new StreamSource(file.toURI().toString)
+//              }
+//              sources.add(sourceInput)
+//            }
+//          }
+//        }
+//        true
+//      } else {
+//        if (useSAXSource) {
+//          val eis: InputSource = new InputSource(sourceFile.toURI().toString)
+//          sourceInput = new SAXSource(config.getSourceParser, eis)
+//        } else {
+//          sourceInput = new StreamSource(sourceFile.toURI().toString)
+//        }
+//        sources.add(sourceInput)
+//        false
+//      }
+//    }
   }
 
-  def loadAdditionalSchemas(config: Configuration,
-                            additionalSchemas: String): Unit = {
-    val st: StringTokenizer =
-      new StringTokenizer(additionalSchemas, File.pathSeparator)
-    while (st.hasMoreTokens()) {
-      val schema: String = st.nextToken()
-      val schemaFile: File = new File(schema)
-      if (!schemaFile.exists()) {
-        throw new SchemaException("Schema document " + schema + " not found")
-      }
-      config.addSchemaSource(new StreamSource(schemaFile))
-    }
-  }
+//  def loadAdditionalSchemas(config: Configuration,
+//                            additionalSchemas: String): Unit = {
+//    val st: StringTokenizer =
+//      new StringTokenizer(additionalSchemas, File.pathSeparator)
+//    while (st.hasMoreTokens()) {
+//      val schema: String = st.nextToken()
+//      val schemaFile: File = new File(schema)
+//      if (!schemaFile.exists()) {
+//        throw new SchemaException("Schema document " + schema + " not found")
+//      }
+//      config.addSchemaSource(new StreamSource(schemaFile))
+//    }
+//  }
 
   def featureKeys(): String = {
     val index = "http://saxon.sf.net/feature/".length
@@ -157,7 +144,7 @@ object CommandLineOptions {
     sb.toString
   }
 
-  private var milliSecond: DayTimeDurationValue =
+  private val milliSecond: DayTimeDurationValue =
     new DayTimeDurationValue(1, 0, 0, 0, 0, 1000)
 
   def showExecutionTimeNano(nanosecs: Long): String =
@@ -219,28 +206,28 @@ object CommandLineOptions {
 
 class CommandLineOptions {
 
-  private var recognizedOptions: HashMap[String, Integer] = new HashMap()
+  private val recognizedOptions: HashMap[String, Integer] = new HashMap()
 
-  private var optionHelp: HashMap[String, String] = new HashMap()
+  private val optionHelp: HashMap[String, String] = new HashMap()
 
-  private var namedOptions: Properties = new Properties()
+  private val namedOptions: Properties = new Properties()
 
-  private var configOptions: Properties = new Properties()
+  private val configOptions: Properties = new Properties()
 
-  private var permittedValues: Map[String, Set[String]] = new HashMap()
+  private val permittedValues: Map[String, Set[String]] = new HashMap()
 
-  private var defaultValues: Map[String, String] = new HashMap()
+  private val defaultValues: Map[String, String] = new HashMap()
 
   @BeanProperty
-  var positionalOptions: List[String] = new ArrayList()
+  val positionalOptions: List[String] = new ArrayList()
 
-  private var paramValues: Properties = new Properties()
+  private val paramValues: Properties = new Properties()
 
-  private var paramExpressions: Properties = new Properties()
+  private val paramExpressions: Properties = new Properties()
 
-  private var paramFiles: Properties = new Properties()
+  private val paramFiles: Properties = new Properties()
 
-  private var serializationParams: Properties = new Properties()
+  private val serializationParams: Properties = new Properties()
 
   def addRecognizedOption(option: String,
                           optionProperties: Int,
@@ -373,7 +360,7 @@ class CommandLineOptions {
 
   def applyToConfiguration(processor: Processor): Unit = {
     val config: Configuration = processor.getUnderlyingConfiguration
-    var e: Enumeration[_] = configOptions.propertyNames()
+    val e: Enumeration[_] = configOptions.propertyNames()
     while (e.hasMoreElements()) {
       val name: String = e.nextElement().asInstanceOf[String]
       val value: String = configOptions.getProperty(name)
@@ -422,13 +409,14 @@ class CommandLineOptions {
           sb.append(sourceInput.getSystemId).append(';')
         }
       } else {
-        for (s <- value.split(";")) {
-          val catalogFile: File = new File(s)
-          if (!catalogFile.exists()) {
-            throw new XPathException("Catalog file not found: " + s)
-          }
-          sb.append(catalogFile.toURI().toASCIIString()).append(';')
-        }
+        ???
+//        for (s <- value.split(";")) {
+//          val catalogFile: File = new File(s)
+//          if (!catalogFile.exists()) {
+//            throw new XPathException("Catalog file not found: " + s)
+//          }
+//          sb.append(catalogFile.toURI().toASCIIString()).append(';')
+//        }
       }
       value = sb.toString
       config.getConfClass("org.apache.xml.resolver.CatalogManager", tracing = false, null)
@@ -609,7 +597,7 @@ class CommandLineOptions {
   def getOptionValue(option: String): String = namedOptions.getProperty(option)
 
   def setParams(processor: Processor, paramSetter: ParamSetter): Unit = {
-    var en: Enumeration[_] = paramValues.propertyNames()
+    val en: Enumeration[_] = paramValues.propertyNames()
     while (en.hasMoreElements()) {
       val name: String = en.nextElement().asInstanceOf[String]
       val value: String = paramValues.getProperty(name)
@@ -617,7 +605,7 @@ class CommandLineOptions {
         new XdmAtomicValue(value, ItemType.UNTYPED_ATOMIC))
     }
     applyFileParameters(processor, paramSetter)
-    var e: Enumeration[_] = paramExpressions.propertyNames()
+    val e: Enumeration[_] = paramExpressions.propertyNames()
     while (e.hasMoreElements()) {
       val name: String = e.nextElement().asInstanceOf[String]
       val value: String = paramExpressions.getProperty(name)
@@ -631,8 +619,8 @@ class CommandLineOptions {
   private def applyFileParameters(processor: Processor,
                                   paramSetter: ParamSetter): Unit = {
     val useURLs: Boolean = "on" == getOptionValue("u")
-    var e: Enumeration[_] = paramFiles.propertyNames()
-    while (e.hasMoreElements()) {
+    val e = paramFiles.propertyNames()
+    while (e.hasMoreElements) {
       val name: String = e.nextElement().asInstanceOf[String]
       val value: String = paramFiles.getProperty(name)
       val sourceList: List[Source] = new ArrayList[Source]()
@@ -653,8 +641,8 @@ class CommandLineOptions {
   }
 
   def setSerializationProperties(serializer: Serializer): Unit = {
-    var e: Enumeration[_] = serializationParams.propertyNames()
-    while (e.hasMoreElements()) {
+    val e = serializationParams.propertyNames()
+    while (e.hasMoreElements) {
       var name: String = e.nextElement().asInstanceOf[String]
       val value: String = serializationParams.getProperty(name)
       if (name.startsWith("saxon:")) {
@@ -666,15 +654,15 @@ class CommandLineOptions {
 
   def applyStaticParams(/*compiler: XsltCompiler*/): Unit = { //  XsltCompiler not exist
     val processor: Processor = new Processor()
-    var en: Enumeration[_] = paramValues.propertyNames()
-    while (en.hasMoreElements()) {
-      val name: String = en.nextElement().asInstanceOf[String]
-      val value: String = paramValues.getProperty(name)
+    val en = paramValues.propertyNames()
+    while (en.hasMoreElements) {
+      val name = en.nextElement().asInstanceOf[String]
+      val value = paramValues.getProperty(name)
      /* compiler.setParameter(QName.fromClarkName(name),
         new XdmAtomicValue(value, ItemType.UNTYPED_ATOMIC))*/
     }
-    var e: Enumeration [_]= paramExpressions.propertyNames()
-    while (e.hasMoreElements()) {
+    val e = paramExpressions.propertyNames()
+    while (e.hasMoreElements) {
       val name: String = e.nextElement().asInstanceOf[String]
       val value: String = paramExpressions.getProperty(name)
       val xpc: XPathCompiler = processor.newXPathCompiler()
@@ -692,5 +680,4 @@ class CommandLineOptions {
       //transformer.setStylesheetParameters(params)
     }
   }
-
 }

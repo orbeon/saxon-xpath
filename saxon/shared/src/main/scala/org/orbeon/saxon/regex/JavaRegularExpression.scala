@@ -1,25 +1,11 @@
-
 package org.orbeon.saxon.regex
 
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.AtomicIterator
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.value.StringValue
-
 import java.util.function.Function
-
-import java.util.regex.Matcher
-
 import java.util.regex.Pattern
 
-import java.util.regex.PatternSyntaxException
-
-import JavaRegularExpression._
-
-
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.{AtomicIterator, EmptyIterator}
+import org.orbeon.saxon.value.StringValue
 
 
 object JavaRegularExpression {
@@ -33,34 +19,28 @@ object JavaRegularExpression {
         case 'm' => flags |= Pattern.MULTILINE
         case 'i' => flags |= Pattern.CASE_INSENSITIVE
         case 's' => flags |= Pattern.DOTALL
-        case 'x' =>
-          flags |= Pattern.COMMENTS
+        case 'x' => flags |= Pattern.COMMENTS
         case 'u' => flags |= Pattern.UNICODE_CASE
         case 'q' => flags |= Pattern.LITERAL
         case 'c' => flags |= Pattern.CANON_EQ
         case _ =>
-          var err: XPathException = new XPathException(
-            "Invalid character '" + c + "' in regular expression flags")
+          val err: XPathException = new XPathException("Invalid character '" + c + "' in regular expression flags")
           err.setErrorCode("FORX0001")
           throw err
-
       }
     }
     flags
   }
-
 }
-
 
 class JavaRegularExpression(javaReg: CharSequence, flags: String)
     extends RegularExpression {
 
   var javaRegex: String = javaReg.toString
-
   var flagBits: Int = JavaRegularExpression.setFlags(flags)
 
   var pattern: Pattern =
-    Pattern.compile(this.javaRegex, flagBits & (~(Pattern.COMMENTS)))
+    Pattern.compile(this.javaRegex, flagBits & (~Pattern.COMMENTS))
 
   def getJavaRegularExpression: String = javaRegex
 
@@ -75,26 +55,20 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
   def matches(input: CharSequence): Boolean = pattern.matcher(input).matches()
 
   def replace(input: CharSequence, replacement: CharSequence): CharSequence = {
-    val matcher: Matcher = pattern.matcher(input)
+    val matcher = pattern.matcher(input)
     matcher.replaceAll(replacement.toString)
   }
 
+  def replaceWith(input: CharSequence, replacement: Function[CharSequence, CharSequence]): CharSequence =
+    throw new XPathException("saxon:replace-with() is not supported with the Java regex engine")
 
-  override def replaceWith(
-      input: CharSequence,
-      replacement: Function[CharSequence, CharSequence]): CharSequence =
-    throw new XPathException(
-      "saxon:replace-with() is not supported with the Java regex engine")
-
-  def tokenize(input: CharSequence): AtomicIterator[StringValue] = {
-    if (input.length == 0) {
+  def tokenize(input: CharSequence): AtomicIterator[StringValue] =
+    if (input.length == 0)
       EmptyIterator.ofAtomic()
-    }
-    new JTokenIterator(input, pattern)
-  }
+    else
+      new JTokenIterator(input, pattern)
 
-
-  override def getFlags(): String = {
+  def getFlags: String = {
     var flags: String = ""
     if ((flagBits & Pattern.UNIX_LINES) != 0) {
       flags += 'd'
@@ -122,13 +96,4 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
     }
     flags
   }
-
 }
-
-
-
-
-
-
-
-

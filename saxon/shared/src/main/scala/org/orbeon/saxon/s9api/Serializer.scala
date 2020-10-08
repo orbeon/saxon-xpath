@@ -1,36 +1,24 @@
 package org.orbeon.saxon.s9api
 
+import java.io.{File, OutputStream, StringWriter, Writer}
+import java.net.{URI, URISyntaxException}
+import java.util.{HashMap, Map}
+
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.{OutputKeys, Result, Source}
 import org.orbeon.saxon.event._
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.lib.OutputURIResolver
-import org.orbeon.saxon.lib.SaxonOutputKeys
-import org.orbeon.saxon.lib.SerializerFactory
+import org.orbeon.saxon.lib.{NamespaceConstant, SaxonOutputKeys, SerializerFactory}
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.query.QueryResult
-import org.orbeon.saxon.serialize.CharacterMap
-import org.orbeon.saxon.serialize.CharacterMapIndex
-import org.orbeon.saxon.serialize.SerializationProperties
-import org.orbeon.saxon.trans.XPathException
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.Result
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamResult
-import java.io.File
-import java.io.OutputStream
-import java.io.StringWriter
-import java.io.Writer
-import java.net.URI
-import java.net.URISyntaxException
-import java.util.HashMap
-import java.util.Map
+import org.orbeon.saxon.serialize.{CharacterMapIndex, SerializationProperties}
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 import java.util.Properties
 
 import org.orbeon.saxon.s9api.Serializer.Property.Property
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
+import scala.jdk.CollectionConverters._
 
 object Serializer {
 
@@ -244,13 +232,14 @@ class Serializer(@BeanProperty var processor: Processor)
     mustClose = false
   }
 
-  def setOutputFile(file: File): Unit = {
-    result.setOutputStream(null)
-    result.setWriter(null)
-    result.setSystemId(file)
-    this.setDestinationBaseURI(file.toURI())
-    mustClose = true
-  }
+  // ORBEON: No `File` support.
+//  def setOutputFile(file: File): Unit = {
+//    result.setOutputStream(null)
+//    result.setWriter(null)
+//    result.setSystemId(file)
+//    this.setDestinationBaseURI(file.toURI())
+//    mustClose = true
+//  }
 
   def serializeNode(node: XdmNode): Unit = {
     val res: StreamResult = result
@@ -410,5 +399,4 @@ class Serializer(@BeanProperty var processor: Processor)
   }
 
   def isMustCloseAfterUse: Boolean = mustClose
-
 }

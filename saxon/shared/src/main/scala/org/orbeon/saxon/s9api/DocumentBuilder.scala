@@ -144,7 +144,8 @@ class DocumentBuilder (var config: Configuration) {
     new XdmNode(doc.getRootNode)
   }
 
-  def build(file: File): XdmNode = build(new StreamSource(file))
+  // ORBEON: No `File` support.
+//  def build(file: File): XdmNode = build(new StreamSource(file))
 
   def newBuildingContentHandler(): BuildingContentHandler = {
     val pipe: PipelineConfiguration = config.makePipelineConfiguration

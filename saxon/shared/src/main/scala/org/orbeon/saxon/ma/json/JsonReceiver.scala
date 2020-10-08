@@ -1,52 +1,19 @@
 package org.orbeon.saxon.ma.json
 
-import org.orbeon.saxon.event.PipelineConfiguration
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.StringConverter
-
-import org.orbeon.saxon.om.AttributeInfo
-
-import org.orbeon.saxon.om.AttributeMap
-
-import org.orbeon.saxon.om.NamespaceMap
-
-import org.orbeon.saxon.om.NodeName
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.CharSequenceConsumer
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.DoubleValue
-
-import org.orbeon.saxon.value.StringToDouble11
-
-import org.orbeon.saxon.value.Whitespace
-
-import java.util.HashSet
-
-import java.util.Objects
-
-import java.util.Set
-
-import java.util.Stack
-
 import java.util.function.IntPredicate
+import java.{util => ju}
 
-import JsonReceiver._
+import org.orbeon.saxon.event.{PipelineConfiguration, Receiver}
+import org.orbeon.saxon.lib.NamespaceConstant
+import org.orbeon.saxon.ma.json.JsonReceiver._
+import org.orbeon.saxon.model.{SchemaType, StringConverter}
+import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
+import org.orbeon.saxon.value.{DoubleValue, StringToDouble11, Whitespace}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 object JsonReceiver {
 
@@ -118,9 +85,7 @@ object JsonReceiver {
   }
 
   private class ControlChar extends IntPredicate {
-
     def test(c: Int): Boolean = c < 31 || (c >= 127 && c <= 159)
-
   }
 
   private def unescape(literal: String): String = {
@@ -149,20 +114,19 @@ object JsonReceiver {
           case 'n' => buffer.cat('\n')
           case 'r' => buffer.cat('\r')
           case 't' => buffer.cat('\t')
-          case 'u' => {
+          case 'u' =>
             val hex: String = literal.substring(i + 1, i + 5)
             val code: Int = java.lang.Integer.parseInt(hex, 16)
             buffer.cat(code.toChar)
             i += 4
-          }
           case _ =>
-            var next: Char = literal.charAt(i)
-            var xx: String =
-              if (next < 256) next.toString + ""
-              else "x" + java.lang.Integer.toHexString(next)
-            throw new XPathException("Unknown escape sequence \\" + xx,
-              "FOJS0007")
-
+            val next: Char = literal.charAt(i)
+            val xx: String =
+              if (next < 256)
+                next.toString + ""
+              else
+                "x" + java.lang.Integer.toHexString(next)
+            throw new XPathException("Unknown escape sequence \\" + xx, "FOJS0007")
         }
       } else {
         buffer.cat(c)
@@ -179,9 +143,9 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   private var pipe: PipelineConfiguration = pipeLine
 
-  private var textBuffer: FastStringBuffer = new FastStringBuffer(128)
+  private val textBuffer: FastStringBuffer = new FastStringBuffer(128)
 
-  private var stack: Stack[NodeName] = new Stack()
+  private var stack: List[NodeName] = Nil
 
   private var atStart: Boolean = true
 
@@ -190,28 +154,24 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   private var escaped: Boolean = false
 
-  private var keyChecker: Stack[Set[String]] = new Stack()
+  private var keyChecker: List[ju.Set[String]] = Nil
 
-  Objects.requireNonNull(pipe)
-
-  Objects.requireNonNull(output)
+  ju.Objects.requireNonNull(pipe)
+  ju.Objects.requireNonNull(output)
 
   this.setPipelineConfiguration(pipe)
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
+  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
     this.pipe = pipe
-  }
 
   def getPipelineConfiguration: PipelineConfiguration = pipe
 
   def setSystemId(systemId: String): Unit = ()
 
-  def open(): Unit = {
+  def open(): Unit =
     output.open()
-  }
 
   def startDocument(properties: Int): Unit = ()
-
   def endDocument(): Unit = ()
 
   def setUnparsedEntity(name: String,
@@ -224,9 +184,9 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
                    namespaces: NamespaceMap,
                    location: Location,
                    properties: Int): Unit = {
-    val parent: String = if (stack.empty()) null else stack.peek().getLocalPart
+    val parent: String = if (stack.isEmpty) null else stack.head.getLocalPart
     val inMap: Boolean = "map" == parent || stack.isEmpty
-    stack.push(elemName)
+    stack ::= elemName
     if (!elemName.hasURI(NamespaceConstant.FN)) {
       throw new XPathException(
         "xml-to-json: element found in wrong namespace: " + elemName.getStructuredQName.getEQName,
@@ -278,7 +238,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
         indent(stack.size)
       }
     }
-    if (inMap && !keyChecker.isEmpty) {
+    if (inMap && keyChecker.nonEmpty) {
       if (key == null) {
         throw new XPathException(
           "xml-to-json: Child elements of <map> must have a key attribute",
@@ -294,7 +254,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
       key = (if (alreadyEscaped) handleEscapedString(key)
       else escape(key, forXml = false, new ControlChar())).toString
       val normalizedKey: String = if (alreadyEscaped) unescape(key) else key
-      val added: Boolean = keyChecker.peek().add(normalizedKey)
+      val added: Boolean = keyChecker.head.add(normalizedKey)
       if (!added) {
         throw new XPathException(
           "xml-to-json: duplicate key value " + Err.wrap(key),
@@ -320,7 +280,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
           output.cat("{")
         }
         atStart = true
-        keyChecker.push(new HashSet[String]())
+        keyChecker ::= new ju.HashSet[String]()
       case "null" =>
         checkParent(local, parent)
         output.cat("null")
@@ -358,7 +318,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
   }
 
   def endElement(): Unit = {
-    val name: NodeName = stack.pop()
+    val name = { val r = stack.head; stack = stack.tail; r }
     val local: String = name.getLocalPart
     if (local.==("boolean")) {
       val b: Boolean = StringConverter.StringToBoolean.INSTANCE
@@ -393,7 +353,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     if (local.==("array")) {
       output.cat(if (indenting) " ]" else "]")
     } else if (local.==("map")) {
-      keyChecker.pop()
+      keyChecker = keyChecker.tail
       output.cat(if (indenting) " }" else "}")
     }
     atStart = false
