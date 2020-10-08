@@ -972,38 +972,38 @@ class FormatDate extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[StringValue] = {
-    var value: CalendarValue = arguments(0).head.asInstanceOf[CalendarValue]
+    var value = arguments(0).head.asInstanceOf[CalendarValue]
     if (value == null) {
-      ZeroOrOne.empty()
-    }
-    val format: String = arguments(1).head.getStringValue
-    var calendarVal: StringValue = null
-    var countryVal: StringValue = null
-    var languageVal: StringValue = null
-    if (getArity > 2) {
-      languageVal = arguments(2).head.asInstanceOf[StringValue]
-      calendarVal = arguments(3).head.asInstanceOf[StringValue]
-      countryVal = arguments(4).head.asInstanceOf[StringValue]
-    }
-    val language: String =
-      if (languageVal == null) null else languageVal.getStringValue
-    val place: String =
-      if (countryVal == null) null else countryVal.getStringValue
-    if (place != null && place.contains("/") && value.hasTimezone &&
-      !(value.isInstanceOf[TimeValue])) {
-      val zone: TimeZone = NamedTimeZone.getNamedTimeZone(place)
-      if (zone != null) {
-        val offset: Int =
-          zone.getOffset(value.toDateTime.getCalendar.getTimeInMillis)
-        value = value.adjustTimezone(offset / 60000)
+      ZeroOrOne.empty
+    } else {
+      val format: String = arguments(1).head.getStringValue
+      var calendarVal: StringValue = null
+      var countryVal: StringValue = null
+      var languageVal: StringValue = null
+      if (getArity > 2) {
+        languageVal = arguments(2).head.asInstanceOf[StringValue]
+        calendarVal = arguments(3).head.asInstanceOf[StringValue]
+        countryVal = arguments(4).head.asInstanceOf[StringValue]
       }
+      val language: String =
+        if (languageVal == null) null else languageVal.getStringValue
+      val place: String =
+        if (countryVal == null) null else countryVal.getStringValue
+      if (place != null && place.contains("/") && value.hasTimezone &&
+        !(value.isInstanceOf[TimeValue])) {
+        val zone: TimeZone = NamedTimeZone.getNamedTimeZone(place)
+        if (zone != null) {
+          val offset: Int =
+            zone.getOffset(value.toDateTime.getCalendar.getTimeInMillis)
+          value = value.adjustTimezone(offset / 60000)
+        }
+      }
+      var result: CharSequence =
+        formatDate(value, format, language, place, context)
+      if (calendarVal != null) {
+        result = adjustCalendar(calendarVal, result, context)
+      }
+      new ZeroOrOne(new StringValue(result))
     }
-    var result: CharSequence =
-      formatDate(value, format, language, place, context)
-    if (calendarVal != null) {
-      result = adjustCalendar(calendarVal, result, context)
-    }
-    new ZeroOrOne(new StringValue(result))
   }
-
 }

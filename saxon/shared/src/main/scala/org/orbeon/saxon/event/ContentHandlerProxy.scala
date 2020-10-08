@@ -1,56 +1,24 @@
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.utils.Controller
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.lib.Logger
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.lib.TraceListener
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.SchemaException
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.SaxonErrorCode
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.AttributeCollectionImpl
-
-import org.orbeon.saxon.value.Whitespace
-
-import org.xml.sax.Attributes
-
-import org.xml.sax.ContentHandler
-
-import org.xml.sax.Locator
-
-import org.xml.sax.SAXException
-
-import org.xml.sax.ext.LexicalHandler
-
-import javax.xml.transform.Result
-
-import javax.xml.transform.sax.TransformerHandler
-
 import java.util.Properties
 
-import java.util.Stack
-import scala.util.control.Breaks._
-import ContentHandlerProxy._
+import javax.xml.transform.Result
+import javax.xml.transform.sax.TransformerHandler
+import org.orbeon.saxon.event.ContentHandlerProxy._
+import org.orbeon.saxon.expr.parser.Loc
+import org.orbeon.saxon.lib.{Logger, SaxonOutputKeys, TraceListener}
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaException, SchemaType}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
+import org.orbeon.saxon.tree.util.AttributeCollectionImpl
+import org.orbeon.saxon.utils.{Configuration, Controller}
+import org.orbeon.saxon.value.Whitespace
+import org.xml.sax.ext.LexicalHandler
+import org.xml.sax.{Attributes, ContentHandler, Locator, SAXException}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.util.control.Breaks._
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -63,38 +31,30 @@ object ContentHandlerProxy {
   class ContentHandlerProxyTraceListener extends TraceListener {
 
     @BeanProperty
-    var contextItemStack: Stack[Item] = _
+    var contextItemStack: List[Item] = Nil
 
     def setOutputDestination(stream: Logger): Unit = ()
 
     def open(controller: Controller): Unit =
-      contextItemStack = new Stack()
+      contextItemStack = Nil
 
     def close(): Unit =
       contextItemStack = null
 
-    def startCurrentItem(currentItem: Item): Unit = {
-      if (contextItemStack == null) {
-        contextItemStack = new Stack()
-      }
-      contextItemStack.push(currentItem)
-    }
+    def startCurrentItem(currentItem: Item): Unit =
+      contextItemStack ::= currentItem
 
     def endCurrentItem(currentItem: Item): Unit =
-      contextItemStack.pop()
+      contextItemStack = contextItemStack.tail
   }
 }
 
 class ContentHandlerProxy extends Receiver {
 
   private var pipe: PipelineConfiguration = _
-
   var systemId: String = _
-
   var handler: ContentHandler = _
-
   var lexicalHandler: LexicalHandler = _
-
   private var depth: Int = 0
 
   @BooleanBeanProperty
@@ -103,9 +63,8 @@ class ContentHandlerProxy extends Receiver {
   @BooleanBeanProperty
   var undeclareNamespaces: Boolean = false
 
-  private var elementStack: Stack[String] = new Stack()
-
-  private var namespaceStack: Stack[String] = new Stack()
+  private var elementStack: List[String] = Nil
+  private var namespaceStack: List[String] = Nil
 
   @BeanProperty
   lazy val traceListener: ContentHandlerProxyTraceListener =
@@ -116,8 +75,9 @@ class ContentHandlerProxy extends Receiver {
 
   def setUnderlyingContentHandler(handler: ContentHandler): Unit = {
     this.handler = handler
-    if (handler.isInstanceOf[LexicalHandler]) {
-      lexicalHandler = handler.asInstanceOf[LexicalHandler]
+    handler match {
+      case lexicalHandler: LexicalHandler => this.lexicalHandler = lexicalHandler
+      case _ =>
     }
   }
 
@@ -137,13 +97,12 @@ class ContentHandlerProxy extends Receiver {
 
   def setUnparsedEntity(name: String,
                         systemID: String,
-                        publicID: String): Unit = {
-    if (handler.isInstanceOf[TransformerHandler]) {
-      handler
-        .asInstanceOf[TransformerHandler]
-        .unparsedEntityDecl(name, publicID, systemID, "unknown")
+                        publicID: String): Unit =
+    handler match {
+      case transformerHandler: TransformerHandler =>
+        transformerHandler.unparsedEntityDecl(name, publicID, systemID, "unknown")
+      case _ =>
     }
-  }
 
   def setOutputProperties(details: Properties): Unit = {
     var prop: String = details.getProperty(SaxonOutputKeys.REQUIRE_WELL_FORMED)
@@ -198,7 +157,7 @@ class ContentHandlerProxy extends Receiver {
       notifyNotWellFormed()
     }
     currentLocation = location.saveLocation()
-    namespaceStack.push(MARKER)
+    namespaceStack ::= MARKER
     for (ns <- namespaces.asScala) {
       val prefix: String = ns.getPrefix
       if (prefix.==("xml")) {
@@ -210,26 +169,27 @@ class ContentHandlerProxy extends Receiver {
       }
       try {
         handler.startPrefixMapping(prefix, uri)
-        namespaceStack.push(prefix)
+        namespaceStack ::= prefix
       } catch {
         case err: SAXException => handleSAXException(err)
 
       }
     }
     var atts2: Attributes = null
-    if (attributes.isInstanceOf[Attributes]) {
-      atts2 = attributes.asInstanceOf[Attributes]
-    } else {
-      val aci: AttributeCollectionImpl =
-        new AttributeCollectionImpl(getConfiguration, attributes.size)
-      for (att <- attributes) {
-        aci.addAttribute(att.getNodeName,
-          BuiltInAtomicType.UNTYPED_ATOMIC,
-          att.getValue,
-          att.getLocation,
-          att.getProperties)
-      }
-      atts2 = aci
+    attributes match {
+      case atts: Attributes =>
+        atts2 = atts
+      case _ =>
+        val aci: AttributeCollectionImpl =
+          new AttributeCollectionImpl(getConfiguration, attributes.size)
+        for (att <- attributes) {
+          aci.addAttribute(att.getNodeName,
+            BuiltInAtomicType.UNTYPED_ATOMIC,
+            att.getValue,
+            att.getLocation,
+            att.getProperties)
+        }
+        atts2 = aci
     }
     if (depth > 0 || !requireWellFormed) {
       try {
@@ -237,9 +197,9 @@ class ContentHandlerProxy extends Receiver {
         val localName: String = elemName.getLocalPart
         val qname: String = elemName.getDisplayName
         handler.startElement(uri, localName, qname, atts2)
-        elementStack.push(uri)
-        elementStack.push(localName)
-        elementStack.push(qname)
+        elementStack ::= uri
+        elementStack ::= localName
+        elementStack ::= qname
       } catch {
         case e: SAXException => handleSAXException(e)
 
@@ -250,10 +210,13 @@ class ContentHandlerProxy extends Receiver {
   def endElement(): Unit = {
     if (depth > 0) {
       try {
-        assert(!elementStack.isEmpty)
-        val qname: String = elementStack.pop()
-        val localName: String = elementStack.pop()
-        val uri: String = elementStack.pop()
+        assert(elementStack.nonEmpty)
+        val qname = elementStack.head
+        elementStack = elementStack.tail
+        val localName = elementStack.head
+        elementStack = elementStack.tail
+        val uri = elementStack.head
+        elementStack = elementStack.tail
         handler.endElement(uri, localName, qname)
       } catch {
         case err: SAXException => handleSAXException(err)
@@ -262,45 +225,42 @@ class ContentHandlerProxy extends Receiver {
     }
     breakable {
       while (true) {
-        val prefix: String = namespaceStack.pop()
-        if (prefix == MARKER) {
+        val prefix: String = namespaceStack.head
+        namespaceStack = namespaceStack.tail
+        if (prefix == MARKER)
           break()
-        }
         try handler.endPrefixMapping(prefix)
         catch {
           case err: SAXException => handleSAXException(err)
-
         }
       }
     }
     depth -= 1
-    if (requireWellFormed && depth <= 0) {
+    if (requireWellFormed && depth <= 0)
       depth = java.lang.Integer.MIN_VALUE
-    }
   }
 
   def characters(chars: CharSequence,
                  locationId: Location,
                  properties: Int): Unit = {
     currentLocation = locationId
-    val disable: Boolean =
-      ReceiverOption.contains(properties, ReceiverOption.DISABLE_ESCAPING)
-    if (disable) {
+    val disable = ReceiverOption.contains(properties, ReceiverOption.DISABLE_ESCAPING)
+    if (disable)
       setEscaping(false)
-    }
-    try if (depth <= 0 && requireWellFormed) {
-      if (Whitespace.isWhite(chars)) {} else {
-        notifyNotWellFormed()
+    try
+      if (depth <= 0 && requireWellFormed) {
+        if (Whitespace.isWhite(chars)) {} else {
+          notifyNotWellFormed()
+        }
+      } else {
+        handler.characters(chars.toString.toCharArray, 0, chars.length)
       }
-    } else {
-      handler.characters(chars.toString.toCharArray(), 0, chars.length)
-    } catch {
-      case err: SAXException => handleSAXException(err)
-
+    catch {
+      case err: SAXException =>
+        handleSAXException(err)
     }
-    if (disable) {
+    if (disable)
       setEscaping(true)
-    }
   }
 
   def notifyNotWellFormed(): Unit = {
@@ -318,7 +278,6 @@ class ContentHandlerProxy extends Receiver {
     try handler.processingInstruction(target, data.toString)
     catch {
       case err: SAXException => handleSAXException(err)
-
     }
   }
 
@@ -327,7 +286,7 @@ class ContentHandlerProxy extends Receiver {
               properties: Int): Unit = {
     currentLocation = locationId
     try if (lexicalHandler != null) {
-      lexicalHandler.comment(chars.toString.toCharArray(), 0, chars.length)
+      lexicalHandler.comment(chars.toString.toCharArray, 0, chars.length)
     } catch {
       case err: SAXException => handleSAXException(err)
 
@@ -336,27 +295,29 @@ class ContentHandlerProxy extends Receiver {
 
   override def usesTypeAnnotations: Boolean = false
 
-  private def setEscaping(escaping: Boolean): Unit = {
-    handler.processingInstruction(if (escaping)
-      Result.PI_ENABLE_OUTPUT_ESCAPING
-    else Result.PI_DISABLE_OUTPUT_ESCAPING,
-      "")
-  }
+  private def setEscaping(escaping: Boolean): Unit =
+    handler.processingInstruction(
+      if (escaping)
+        Result.PI_ENABLE_OUTPUT_ESCAPING
+      else
+        Result.PI_DISABLE_OUTPUT_ESCAPING,
+      ""
+    )
 
   private def handleSAXException(err: SAXException): Unit = {
     val nested: Exception = err.getException
-    if (nested.isInstanceOf[XPathException]) {
-      throw nested.asInstanceOf[XPathException]
-    } else if (nested.isInstanceOf[SchemaException]) {
-      throw new XPathException(nested)
-    } else {
-      val de: XPathException = new XPathException(err)
-      de.setErrorCode(SaxonErrorCode.SXCH0003)
-      throw de
+    nested match {
+      case e: XPathException =>
+        throw e
+      case _: SchemaException =>
+        throw new XPathException(nested)
+      case _ =>
+        val de: XPathException = new XPathException(err)
+        de.setErrorCode(SaxonErrorCode.SXCH0003)
+        throw de
     }
   }
 
-  override def getSystemId: String = systemId
-
-  override def setSystemId(systemId: String): Unit = this.systemId = systemId
+  def getSystemId: String = systemId
+  def setSystemId(systemId: String): Unit = this.systemId = systemId
 }

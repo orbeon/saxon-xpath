@@ -9,15 +9,9 @@ package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{Item, Sequence, ZeroOrOne}
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.AnyURIValue
-import org.orbeon.saxon.value.AtomicValue
-import java.io.File
-import java.net.MalformedURLException
-import java.net.URI
-import java.net.URISyntaxException
-import java.net.URL
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.value.{AnyURIValue, AtomicValue}
+import java.net.{URI, URISyntaxException}
 
 /**
  * This class supports the resolve-uri() function in XPath 2.0
@@ -33,31 +27,34 @@ object ResolveURI {
    *         current working directory is not available (e.g. in an applet) the supplied systemId
    *         unchanged (except that null is treated as "").
    */
-  /*@NotNull*/ def tryToExpand(/*@Nullable*/ systemId: String): String = {
-    var sysId = systemId
-    if (sysId == null) sysId = ""
-    try {
-      new URL(sysId)
-      sysId // all is well
-    } catch {
-      case err: MalformedURLException =>
-        var dir: String = null
-        try dir = System.getProperty("user.dir")
-        catch {
-          case geterr: Exception =>
-            // this doesn't work when running an applet
-            return sysId
-        }
-        if (!(dir.endsWith("/") || sysId.startsWith("/"))) dir = dir + '/'
-        try {
-          val currentDirectoryURI = new File(dir).toURI
-          val baseURI = currentDirectoryURI.resolve(sysId)
-          baseURI.toString
-        } catch {
-          case e: Exception =>
-            sysId
-        }
-    }
+  /*@NotNull*/
+  def tryToExpand(/*@Nullable*/ systemId: String): String = {
+    systemId
+    // ORBEON: No `File` support.
+//    var sysId = systemId
+//    if (sysId == null) sysId = ""
+//    try {
+//      new URL(sysId)
+//      sysId // all is well
+//    } catch {
+//      case err: MalformedURLException =>
+//        var dir: String = null
+//        try dir = System.getProperty("user.dir")
+//        catch {
+//          case geterr: Exception =>
+//            // this doesn't work when running an applet
+//            return sysId
+//        }
+//        if (!(dir.endsWith("/") || sysId.startsWith("/"))) dir = dir + '/'
+//        try {
+//          val currentDirectoryURI = new File(dir).toURI
+//          val baseURI = currentDirectoryURI.resolve(sysId)
+//          baseURI.toString
+//        } catch {
+//          case e: Exception =>
+//            sysId
+//        }
+//    }
   }
 
   /**
@@ -88,22 +85,22 @@ object ResolveURI {
       absoluteURI = new URI(relativeURI)
       if (!absoluteURI.isAbsolute) {
         val expandedBase = ResolveURI.tryToExpand(baseStr)
-        if (!(expandedBase == baseStr)) { // prevent infinite recursion
+        if (expandedBase != baseStr) {
+          // prevent infinite recursion
           return makeAbsolute(relativeURI, expandedBase)
         }
       }
-    }
-    else if (baseStr.startsWith("jar:") || baseStr.startsWith("file:////")) {
-      try {
-        val baseURL = new URL(baseStr)
-        val absoluteURL = new URL(baseURL, relativeURI)
-        absoluteURI = absoluteURL.toURI
-      } catch {
-        case err: MalformedURLException =>
-          throw new URISyntaxException(baseStr + " " + relativeURI, err.getMessage)
-      }
-    }
-    else if (baseStr.startsWith("classpath:")) {
+      //ORBEON: No `File` support.
+//    } else if (baseStr.startsWith("jar:") || baseStr.startsWith("file:////")) {
+//      try {
+//        val baseURL = new URL(baseStr)
+//        val absoluteURL = new URL(baseURL, relativeURI)
+//        absoluteURI = absoluteURL.toURI
+//      } catch {
+//        case err: MalformedURLException =>
+//          throw new URISyntaxException(baseStr + " " + relativeURI, err.getMessage)
+//      }
+    } else if (baseStr.startsWith("classpath:")) {
       absoluteURI = new URI(relativeURI)
       if (!absoluteURI.isAbsolute) absoluteURI = new URI("classpath:" + relativeURI)
     }
@@ -160,24 +157,27 @@ object ResolveURI {
    * @param uri the input uri
    * @return the input URI with each %20 replaced by space
    */
-  def unescapeSpaces(uri: String) = uri.replace("%20", " ")
+  def unescapeSpaces(uri: String): String = uri.replace("%20", " ")
 }
 
 class ResolveURI extends SystemFunction {
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
     val arg0 = arguments(0).head.asInstanceOf[AtomicValue]
-    if (arg0 == null) return ZeroOrOne.empty
-    val relative = arg0.getStringValue
-    var base: String = null
-    if (getArity == 2) { //noinspection ConstantConditions
-      base = arguments(1).head.getStringValue
+    if (arg0 == null) {
+      ZeroOrOne.empty
+    } else {
+      val relative = arg0.getStringValue
+      var base: String = null
+      if (getArity == 2) { //noinspection ConstantConditions
+        base = arguments(1).head.getStringValue
+      } else {
+        base = getStaticBaseUriString
+        if (base == null)
+          throw new XPathException("Base URI in static context of resolve-uri() is unknown", "FONS0005", context)
+      }
+      new ZeroOrOne[Item](resolve(base, relative, context))
     }
-    else {
-      base = getStaticBaseUriString
-      if (base == null) throw new XPathException("Base URI in static context of resolve-uri() is unknown", "FONS0005", context)
-    }
-    new ZeroOrOne[Item](resolve(base, relative, context))
   }
 
   @throws[XPathException]

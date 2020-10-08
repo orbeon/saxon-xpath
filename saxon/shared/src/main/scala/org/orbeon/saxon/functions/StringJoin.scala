@@ -1,25 +1,11 @@
 package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.StaticProperty
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
+import org.orbeon.saxon.expr.{Expression, StaticProperty, XPathContext}
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
 import org.orbeon.saxon.model.BuiltInAtomicType
-
 import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.tree.util.CharSequenceConsumer
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
+import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
 import org.orbeon.saxon.value.Cardinality
 
 import scala.beans.BooleanBeanProperty
@@ -60,9 +46,8 @@ class StringJoin extends FoldingFunction with PushableFunction {
   override def getFold(context: XPathContext,
                        additionalArguments: Sequence*): Fold = {
     var separator: CharSequence = ""
-    if (additionalArguments.length > 0) {
+    if (additionalArguments.nonEmpty)
       separator = additionalArguments(0).head.getStringValueCS
-    }
     new StringJoinFold(separator)
   }
 
@@ -76,10 +61,10 @@ class StringJoin extends FoldingFunction with PushableFunction {
     var first: Boolean = true
     val iter: SequenceIterator = arguments(0).iterate()
     var it: Item = null
-    while (({
+    while ({
       it = iter.next()
       it
-    }) != null) {
+    } != null) {
       if (first) {
         first = false
       } else {
@@ -107,20 +92,17 @@ class StringJoin extends FoldingFunction with PushableFunction {
       }
     }
 
-    def isFinished(): Boolean = false
+    def isFinished: Boolean = false
 
     def result(): ZeroOrOne[_ <: Item] =
-      if (position == 0 && returnEmptyIfEmpty) {
-        ZeroOrOne.empty()
-      } else {
+      if (position == 0 && returnEmptyIfEmpty)
+        ZeroOrOne.empty
+      else
         One.string(data.toString)
-      }
 
   }
 
-  override def equals(o: Any) = o.isInstanceOf[StringJoin] && super.equals(o) && returnEmptyIfEmpty == o.asInstanceOf[StringJoin].returnEmptyIfEmpty
-
-  override def getCompilerName(): String = "StringJoinCompiler"
-
+  override def equals(o: Any): Boolean = o.isInstanceOf[StringJoin] && super.equals(o) && returnEmptyIfEmpty == o.asInstanceOf[StringJoin].returnEmptyIfEmpty
+  override def getCompilerName: String = "StringJoinCompiler"
   override def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context, args)
 }

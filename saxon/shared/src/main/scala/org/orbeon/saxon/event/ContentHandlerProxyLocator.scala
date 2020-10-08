@@ -1,44 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package org.orbeon.saxon.event
-
-import org.xml.sax.Locator
-import java.util.Stack
-
-import org.orbeon.saxon.om.Item
-
-
-
-
-class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
-    extends Locator {
-
-  def getPublicId: String = null
-
-  def getSystemId: String = parent.getCurrentLocation.getSystemId
-
-  def getLineNumber: Int = parent.getCurrentLocation.getLineNumber
-
-  def getColumnNumber(): Int = parent.getCurrentLocation.getColumnNumber
-
-  /*@Nullable*/
-
-  def getContextItemStack: Stack[Item] = {
-    val traceListener: ContentHandlerProxy.ContentHandlerProxyTraceListener =
-      parent.getTraceListener
-    if (traceListener == null) {
-      null
-    } else {
-      traceListener.getContextItemStack
-    }
-  }
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.event
+
+import org.orbeon.saxon.om.Item
+import org.xml.sax.Locator
+
+
 /**
   * Implementation of the SAX Locator interface, used to supply location information to the ContentHandler.
   * <p>When the ContentHandler is used to receive the results of a query or stylesheet,
@@ -55,3 +26,21 @@ class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
   * which may not be the same as the context node at the time the relevant instruction was executed;
   * however, it still provides some information that may be useful for diagnostics.</p>
   */
+class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
+    extends Locator {
+
+  def getPublicId: String = null
+  def getSystemId: String = parent.getCurrentLocation.getSystemId
+  def getLineNumber: Int = parent.getCurrentLocation.getLineNumber
+  def getColumnNumber: Int = parent.getCurrentLocation.getColumnNumber
+
+  /*@Nullable*/
+  def getContextItemStack: List[Item] = {
+    val traceListener = parent.getTraceListener
+    if (traceListener == null)
+      null
+    else
+      traceListener.getContextItemStack
+  }
+}
+

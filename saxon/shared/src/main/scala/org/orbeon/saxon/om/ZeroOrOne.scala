@@ -17,7 +17,7 @@ import org.orbeon.saxon.value.EmptySequence
 
 object ZeroOrOne {
   private val EMPTY: ZeroOrOne[Item] = new ZeroOrOne[Item]
-  def empty[T <: Item](): ZeroOrOne[_ <:Item] = EMPTY
+  def empty[T <: Item]: ZeroOrOne[T] = EMPTY.asInstanceOf[ZeroOrOne[T]]
 }
 
 class ZeroOrOne[T <: Item] extends GroundedValue {

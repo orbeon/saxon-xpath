@@ -1,25 +1,18 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.SystemFunctionCall
-import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.One
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.om.ZeroOrOne
+import org.orbeon.saxon.expr.{Expression, SystemFunctionCall, XPathContext}
+import org.orbeon.saxon.om.{Item, One, Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 object ScalarSystemFunction {
-
   val ZERO_LENGTH_STRING: One[StringValue] = One.string("")
-
 }
 
 abstract class ScalarSystemFunction extends SystemFunction {
 
   def evaluate(arg: Item, context: XPathContext): AtomicValue
 
-  def resultWhenEmpty(): ZeroOrOne[_] = ZeroOrOne.empty()
+  def resultWhenEmpty(): ZeroOrOne[_] = ZeroOrOne.empty
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[AtomicValue] = {
     val val0: Item = arguments(0).head
@@ -40,5 +33,4 @@ abstract class ScalarSystemFunction extends SystemFunction {
     call.setRetainedStaticContext(getRetainedStaticContext)
     call
   }
-
 }

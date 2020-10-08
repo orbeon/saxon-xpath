@@ -62,8 +62,10 @@ class ParseXmlFragment extends SystemFunction with Callable {
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
     val input = arguments(0).head.asInstanceOf[StringValue]
-    if (input == null) ZeroOrOne.empty
-    else new ZeroOrOne[NodeInfo](evalParseXml(input, context))
+    if (input == null)
+      ZeroOrOne.empty
+    else
+      new ZeroOrOne[NodeInfo](evalParseXml(input, context))
   }
 
   @throws[XPathException]

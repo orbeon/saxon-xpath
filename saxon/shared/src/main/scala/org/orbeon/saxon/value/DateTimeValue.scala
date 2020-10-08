@@ -1,33 +1,24 @@
 package org.orbeon.saxon.value
 
-import org.orbeon.saxon.utils.Controller
-import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.model.AtomicType
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.ConversionResult
-import org.orbeon.saxon.model.ValidationFailure
-import org.orbeon.saxon.om.SequenceTool
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.NoDynamicContextException
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import java.math.BigDecimal
-import java.math.BigInteger
-import java.math.RoundingMode
+import java.math.{BigDecimal, BigInteger, RoundingMode}
 import java.time._
 import java.time.format.DateTimeParseException
-import java.time.temporal.ChronoField
-import java.time.temporal.TemporalAccessor
-import java.time.temporal.TemporalField
-import java.time.temporal.UnsupportedTemporalTypeException
+import java.time.temporal.{ChronoField, TemporalAccessor, TemporalField, UnsupportedTemporalTypeException}
 import java.util._
 
+import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.functions.AccessorFn.Component._
+import org.orbeon.saxon.lib.ConversionRules
+import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType, ConversionResult, ValidationFailure}
+import org.orbeon.saxon.om.SequenceTool
+import org.orbeon.saxon.trans.{Err, NoDynamicContextException, XPathException}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Controller
 import org.orbeon.saxon.value.CalendarValue._
+import org.orbeon.saxon.value.DateTimeValue._
 import org.orbeon.saxon.value.GDateValue._
-import scala.beans.{BeanProperty}
-import DateTimeValue._
+
+import scala.beans.BeanProperty
 
 object DateTimeValue {
 
@@ -636,7 +627,7 @@ class DateTimeValue extends CalendarValue
     }
   }
 
-  def getCalendar(): GregorianCalendar = {
+  def getCalendar: GregorianCalendar = {
     val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
     val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
     val calendar: GregorianCalendar = new GregorianCalendar(zone)

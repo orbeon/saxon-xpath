@@ -1,15 +1,7 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.ZeroOrOne
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.expr.{Expression, XPathContext}
+import org.orbeon.saxon.om.{Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.NumericValue
 
 class Round extends SystemFunction {
@@ -18,19 +10,18 @@ class Round extends SystemFunction {
     arguments(0).getCardinality
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NumericValue] = {
-    val val0: NumericValue = arguments(0).head.asInstanceOf[NumericValue]
+    val val0 = arguments(0).head.asInstanceOf[NumericValue]
     if (val0 == null) {
-      ZeroOrOne.empty()
+      ZeroOrOne.empty
+    } else {
+      var scaleRnd = 0
+      if (arguments.length == 2) {
+        val scaleVal = arguments(1).head.asInstanceOf[NumericValue]
+        scaleRnd = scaleVal.longValue().toInt
+      }
+      new ZeroOrOne(val0.round(scaleRnd))
     }
-    var scaleRnd: Int = 0
-    if (arguments.length == 2) {
-      val scaleVal: NumericValue =
-        arguments(1).head.asInstanceOf[NumericValue]
-      scaleRnd = scaleVal.longValue().toInt
-    }
-    new ZeroOrOne(val0.round(scaleRnd))
   }
 
-  override def getCompilerName(): String = "RoundingCompiler"
-
+  override def getCompilerName: String = "RoundingCompiler"
 }

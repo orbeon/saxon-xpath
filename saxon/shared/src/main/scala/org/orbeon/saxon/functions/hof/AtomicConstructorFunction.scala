@@ -51,22 +51,22 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
   def getArity: Int = 1
 
   def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[AtomicValue] = {
-    val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
-    if (`val` == null) {
-      ZeroOrOne.empty()
+    val _val = args(0).head.asInstanceOf[AtomicValue]
+    if (_val == null) {
+      ZeroOrOne.empty
+    } else {
+      val config = context.getConfiguration
+      var converter = config.getConversionRules.getConverter(_val.getItemType, targetType)
+      if (converter == null) {
+        val ex: XPathException = new XPathException(
+          "Cannot convert " + _val.getItemType + " to " + targetType,
+          "XPTY0004")
+        ex.setIsTypeError(true)
+        throw ex
+      }
+      converter = converter.setNamespaceResolver(nsResolver)
+      new ZeroOrOne(converter.convert(_val).asAtomic())
     }
-    val config: Configuration = context.getConfiguration
-    var converter: Converter =
-      config.getConversionRules.getConverter(`val`.getItemType, targetType)
-    if (converter == null) {
-      val ex: XPathException = new XPathException(
-        "Cannot convert " + `val`.getItemType + " to " + targetType,
-        "XPTY0004")
-      ex.setIsTypeError(true)
-      throw ex
-    }
-    converter = converter.setNamespaceResolver(nsResolver)
-    new ZeroOrOne(converter.convert(`val`).asAtomic())
   }
 
   override def export(out: ExpressionPresenter): Unit = {
@@ -75,6 +75,5 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
     out.endElement()
   }
 
-  override def isTrustedResultType(): Boolean = true
-
+  override def isTrustedResultType: Boolean = true
 }

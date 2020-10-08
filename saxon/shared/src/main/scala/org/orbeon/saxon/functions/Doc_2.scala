@@ -127,30 +127,29 @@ class Doc_2 extends SystemFunction with Callable {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
-    val hrefVal: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
+    val hrefVal = arguments(0).head.asInstanceOf[AtomicValue]
     if (hrefVal == null) {
-      ZeroOrOne.empty()
+      ZeroOrOne.empty
+    } else {
+      val href = hrefVal.getStringValue
+      val param = arguments(1).head
+      val checkedOptions = getDetails.optionDetails.processSuppliedOptions(param.asInstanceOf[MapItem], context)
+      val parseOptions = setParseOptions(checkedOptions, context)
+      val item = fetch(href, parseOptions, context).getRootNode
+      if (item == null)
+        throw new XPathException("Failed to load document " + href,
+          "FODC0002",
+          context)
+  //    val controller = context.getController
+  //    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
+  //      controller
+  //        .asInstanceOf[XsltController]
+  //        .getAccumulatorManager
+  //        .setApplicableAccumulators(item.getTreeInfo,
+  //          parseOptions.getApplicableAccumulators)
+  //    }
+      new ZeroOrOne(item)
     }
-    val href: String = hrefVal.getStringValue
-    val param: Item = arguments(1).head
-    val checkedOptions: Map[String, Sequence] = getDetails.optionDetails
-      .processSuppliedOptions(param.asInstanceOf[MapItem], context)
-    val parseOptions: ParseOptions = setParseOptions(checkedOptions, context)
-    val item: NodeInfo = fetch(href, parseOptions, context).getRootNode
-    if (item == null) {
-      throw new XPathException("Failed to load document " + href,
-        "FODC0002",
-        context)
-    }
-    val controller: Controller = context.getController
-//    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
-//      controller
-//        .asInstanceOf[XsltController]
-//        .getAccumulatorManager
-//        .setApplicableAccumulators(item.getTreeInfo,
-//          parseOptions.getApplicableAccumulators)
-//    }
-    new ZeroOrOne(item)
   }
 
   private def fetch(href: String,

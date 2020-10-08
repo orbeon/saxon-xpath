@@ -91,9 +91,11 @@ object ParseXml {
 class ParseXml extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
-    val input: StringValue = arguments(0).head.asInstanceOf[StringValue]
-    if (input == null) ZeroOrOne.empty()
-    else new ZeroOrOne(evalParseXml(input, context))
+    val input = arguments(0).head.asInstanceOf[StringValue]
+    if (input == null)
+      ZeroOrOne.empty
+    else
+      new ZeroOrOne(evalParseXml(input, context))
   }
 
   private def evalParseXml(inputArg: StringValue,

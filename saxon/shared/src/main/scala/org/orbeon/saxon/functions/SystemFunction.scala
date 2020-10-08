@@ -91,12 +91,10 @@ abstract class SystemFunction extends AbstractFunction {
     null
   }
 
-   def resultIfEmpty(arg: Int): Sequence = details.resultIfEmpty(arg)
+  def resultIfEmpty(arg: Int): Sequence = details.resultIfEmpty(arg)
 
-  def dependsOnContextItem(): Boolean =
-    (details.properties &
-      (BuiltInFunctionSet.CITEM | BuiltInFunctionSet.CDOC)) !=
-      0
+  def dependsOnContextItem: Boolean =
+    (details.properties & (BuiltInFunctionSet.CITEM | BuiltInFunctionSet.CDOC)) != 0
 
   def getFunctionName: StructuredQName = details.name
 

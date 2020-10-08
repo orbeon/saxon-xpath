@@ -30,8 +30,10 @@ class ParseIetfDate extends SystemFunction with Callable {
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
     val stringValue = arguments(0).head.asInstanceOf[StringValue]
-    if (stringValue == null) return ZeroOrOne.empty
-    new ZeroOrOne(parse(stringValue.getStringValue, context))
+    if (stringValue == null)
+      ZeroOrOne.empty
+    else
+      new ZeroOrOne(parse(stringValue.getStringValue, context))
   }
 
   private val dayNames = Array[String]("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")

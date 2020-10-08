@@ -29,12 +29,11 @@ object MathFunctionSet {
     def compute(input: Double): Double
 
     def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[_ <: Item] = {
-      val in: DoubleValue = args(0).head.asInstanceOf[DoubleValue]
-      if (in == null) {
-        ZeroOrOne.empty()
-      } else {
+      val in = args(0).head.asInstanceOf[DoubleValue]
+      if (in == null)
+        ZeroOrOne.empty
+      else
         One.dbl(compute(in.getDoubleValue))
-      }
     }
   }
 
@@ -167,8 +166,6 @@ class MathFunctionSet private () extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.DOUBLE, ONE, null)
   }
 
-  override def getNamespace(): String = NamespaceConstant.MATH
-
-  override def getConventionalPrefix(): String = "math"
-
+  override def getNamespace: String = NamespaceConstant.MATH
+  override def getConventionalPrefix: String = "math"
 }

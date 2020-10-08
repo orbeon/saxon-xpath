@@ -69,11 +69,8 @@ class JavaPlatform extends Platform {
 
   def getPlatformSuffix: String = "J"
 
-  def loadParser(): XMLReader = {
-    var parser: XMLReader = null
-    parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader
-    parser
-  }
+  def loadParser(): XMLReader =
+    SAXParserFactory.newInstance().newSAXParser().getXMLReader
 
   def loadParserForXmlFragments(): XMLReader = {
     var factory: SAXParserFactory = null

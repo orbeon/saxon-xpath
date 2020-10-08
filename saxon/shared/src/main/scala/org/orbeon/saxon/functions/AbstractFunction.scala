@@ -17,7 +17,7 @@ import org.orbeon.saxon.query.AnnotationList
 
 abstract class AbstractFunction extends Function {
 
-  def getOperandRoles(): Array[OperandRole] = {
+  def getOperandRoles: Array[OperandRole] = {
     val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
     Arrays.fill(roles.asInstanceOf[Array[AnyRef]], new OperandRole(0, OperandUsage.NAVIGATION).asInstanceOf[AnyRef])
     roles
@@ -28,9 +28,9 @@ abstract class AbstractFunction extends Function {
       "Function items (other than arrays) cannot be atomized",
       "FOTY0013")
 
-  def isArray(): Boolean = false
+  def isArray: Boolean = false
 
-  def isMap(): Boolean = false
+  def isMap: Boolean = false
 
   def getStringValue: String =
     throw new UnsupportedOperationException(
@@ -40,7 +40,7 @@ abstract class AbstractFunction extends Function {
     throw new UnsupportedOperationException(
       "The string value of a function is not defined")
 
-  override def getAnnotations(): AnnotationList = AnnotationList.EMPTY
+  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
  override def effectiveBooleanValue(): Boolean =
     throw new XPathException("A function has no effective boolean value",
@@ -68,6 +68,5 @@ abstract class AbstractFunction extends Function {
       "export() not implemented for " + this.getClass)
   }
 
-  def isTrustedResultType(): Boolean = false
-
+  def isTrustedResultType: Boolean = false
 }

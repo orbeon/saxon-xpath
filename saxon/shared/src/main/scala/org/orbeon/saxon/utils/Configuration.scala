@@ -280,7 +280,7 @@ object Configuration {
    *
    * @return the parser (XMLReader)
    */
-  private def loadParser: XMLReader = Version.platform.loadParser
+  private def loadParser: XMLReader = Version.platform.loadParser()
 
   /**
    * Get the configuration, given the context. This is provided as a static method to make it accessible
@@ -1039,13 +1039,17 @@ class Configuration extends SourceResolver with NotationSet {
    * @since 9.1.
    */
   @throws[XPathException]
-  def makeTraceListener: TraceListener = if (traceListener != null) traceListener
-  else if (traceListenerClass != null) try makeTraceListener(traceListenerClass)
-  catch {
-    case e: ClassCastException =>
-      throw new XPathException(e)
-  }
-  else null
+  def makeTraceListener: TraceListener =
+    if (traceListener != null)
+      traceListener
+    else if (traceListenerClass != null)
+      try makeTraceListener(traceListenerClass)
+      catch {
+        case e: ClassCastException =>
+          throw new XPathException(e)
+      }
+    else
+      null
 
   /**
    * Set the TraceListener to be used for run-time tracing of instruction execution.
@@ -3303,7 +3307,8 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.TIMING =>
         setTiming(Configuration.requireBoolean(name, value))
       case FeatureCode.TRACE_LISTENER =>
-        if (!value.isInstanceOf[TraceListener]) throw new IllegalArgumentException("TRACE_LISTENER is of wrong class")
+        if (! value.isInstanceOf[TraceListener])
+          throw new IllegalArgumentException("TRACE_LISTENER is of wrong class")
         setTraceListener(value.asInstanceOf[TraceListener])
       case FeatureCode.TRACE_LISTENER_CLASS =>
         setTraceListenerClass(requireString(name, value))

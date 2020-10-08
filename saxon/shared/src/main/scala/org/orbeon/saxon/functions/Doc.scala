@@ -85,32 +85,33 @@ class Doc extends SystemFunction with Callable {
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
     val hrefVal: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (hrefVal == null) {
-      return ZeroOrOne.empty().asInstanceOf[ZeroOrOne[NodeInfo]]
+      ZeroOrOne.empty
+    } else {
+      val href: String = hrefVal.getStringValue
+      val packageData: PackageData = getRetainedStaticContext.getPackageData
+      val item: NodeInfo = DocumentFn.makeDoc(
+        href,
+        getRetainedStaticContext.getStaticBaseUriString,
+        packageData,
+        getParseOptions,
+        context,
+        null,
+        silent = false)
+      if (item == null) {
+        throw new XPathException("Failed to load document " + href,
+          "FODC0002",
+          context)
+      }
+      val controller: Controller = context.getController
+  //    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
+  //      controller
+  //        .asInstanceOf[XsltController]
+  //        .getAccumulatorManager
+  //        .setApplicableAccumulators(item.getTreeInfo,
+  //          parseOptions.getApplicableAccumulators)
+  //    }
+      new ZeroOrOne(item)
     }
-    val href: String = hrefVal.getStringValue
-    val packageData: PackageData = getRetainedStaticContext.getPackageData
-    val item: NodeInfo = DocumentFn.makeDoc(
-      href,
-      getRetainedStaticContext.getStaticBaseUriString,
-      packageData,
-      getParseOptions,
-      context,
-      null,
-      silent = false)
-    if (item == null) {
-      throw new XPathException("Failed to load document " + href,
-        "FODC0002",
-        context)
-    }
-    val controller: Controller = context.getController
-//    if (parseOptions != null && controller.isInstanceOf[XsltController]) {
-//      controller
-//        .asInstanceOf[XsltController]
-//        .getAccumulatorManager
-//        .setApplicableAccumulators(item.getTreeInfo,
-//          parseOptions.getApplicableAccumulators)
-//    }
-    new ZeroOrOne(item)
   }
 
   override def getSpecialProperties(arguments: Array[Expression]): Int =

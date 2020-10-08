@@ -19,6 +19,6 @@ trait Location extends SourceLocator with Locator {
   def getSystemId: String
   def getPublicId: String
   def getLineNumber: Int
-  def getColumnNumber(): Int
+  def getColumnNumber: Int
   def saveLocation(): Location
 }

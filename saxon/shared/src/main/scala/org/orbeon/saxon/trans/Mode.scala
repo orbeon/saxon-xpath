@@ -1,57 +1,23 @@
 package org.orbeon.saxon.trans
 
-import org.orbeon.saxon.utils.Controller
+import java.util.{Collections, Set}
 
 import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.XPathContextMajor
-
+import org.orbeon.saxon.expr.{XPathContext, XPathContextMajor}
 import org.orbeon.saxon.expr.accum.Accumulator
-
-import org.orbeon.saxon.expr.instruct.Actor
-
-import org.orbeon.saxon.expr.instruct.ParameterSet
-
-import org.orbeon.saxon.expr.instruct.TailCall
-
-import org.orbeon.saxon.expr.instruct.TemplateRule
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.TraceListener
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.Untyped
-
+import org.orbeon.saxon.expr.instruct.{Actor, ParameterSet, TailCall, TemplateRule}
+import org.orbeon.saxon.lib.{NamespaceConstant, TraceListener}
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaType, Type, Untyped}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trace.ModeTraceListener
-
+import org.orbeon.saxon.trace.{ExpressionPresenter, ModeTraceListener}
+import org.orbeon.saxon.trans.Mode._
 import org.orbeon.saxon.trans.rules._
-
 import org.orbeon.saxon.tree.iter.LookaheadIterator
-
+import org.orbeon.saxon.utils.Controller
 import org.orbeon.saxon.value.SequenceType
 
-import java.util.Collections
-
-import java.util.Set
-
-import Mode._
-
 import scala.beans.BeanProperty
-
 import scala.util.control.Breaks._
 
 object Mode {
@@ -68,70 +34,54 @@ object Mode {
   val RECOVER_WITH_WARNINGS: Int = 1
 
   trait RuleFilter {
-
     def testRule(r: Rule): Boolean
-
   }
 
   trait RuleAction {
-
     def processRule(r: Rule): Unit
-
   }
-
 }
 
 abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   private var streamable: Boolean = _
-
   @BeanProperty
   val recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
-
   var mustBeTyped: Boolean = false
-
   var mustBeUntyped: Boolean = false
-
   var hasRules: Boolean = false
-
   var bindingSlotsAllocated: Boolean = false
-
   var modeTracing: Boolean = false
-
   var defaultResultType: SequenceType = null
-
   private var accumulators: Set[_ <: Accumulator] = _
 
   def getBuiltInRuleSet: BuiltInRuleSet
-
   def isUnnamedMode: Boolean = modeName == UNNAMED_MODE_NAME
-
   def getModeName: StructuredQName = modeName
-
   def getActivePart: SimpleMode
-
   def getMaxPrecedence: Int
-
   def getMaxRank: Int
-
   def computeRankings(start: Int): Unit
 
   def getModeTitle: String =
-    if (isUnnamedMode) "The unnamed mode"
-    else "Mode " + getModeName.getDisplayName
+    if (isUnnamedMode)
+      "The unnamed mode"
+    else
+      "Mode " + getModeName.getDisplayName
 
-  def setModeTracing(tracing: Boolean): Unit = {
+  def setModeTracing(tracing: Boolean): Unit =
     this.modeTracing = tracing
-  }
 
   def isModeTracing: Boolean = modeTracing
 
   def getAccumulators: Set[_ <: Accumulator] =
-    if (accumulators == null) Collections.emptySet() else accumulators
+    if (accumulators == null)
+      Collections.emptySet()
+    else
+      accumulators
 
-  def setAccumulators(accumulators: Set[_ <: Accumulator]): Unit = {
+  def setAccumulators(accumulators: Set[_ <: Accumulator]): Unit =
     this.accumulators = accumulators
-  }
 
   override def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_MODE, getModeName)
@@ -140,9 +90,8 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   def isEmpty: Boolean
 
-  def setHasRules(hasRules: Boolean): Unit = {
+  def setHasRules(hasRules: Boolean): Unit =
     this.hasRules = hasRules
-  }
 
   def setStreamable(streamable: Boolean): Unit = {
     this.streamable = streamable
@@ -152,9 +101,8 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   def getExplicitNamespaces(pool: NamePool): Set[String]
 
-  def setDefaultResultType(`type`: SequenceType): Unit = {
+  def setDefaultResultType(`type`: SequenceType): Unit =
     defaultResultType = `type`
-  }
 
   def getDefaultResultType: SequenceType = defaultResultType
 
@@ -164,7 +112,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     val c2: XPathContextMajor = context.newContext()
     c2.setOrigin(context.getController)
     c2.openStackFrame(getStackFrameSlotsNeeded)
-    if (!(context.getCurrentComponent.getActor.isInstanceOf[Accumulator])) {
+    if (! context.getCurrentComponent.getActor.isInstanceOf[Accumulator]) {
       c2.setCurrentComponent(context.getCurrentMode)
     }
     c2
@@ -238,37 +186,41 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
           if (lookahead && !iterator.asInstanceOf[LookaheadIterator].hasNext) {
             break()
           }
-          do tc = tc.processLeavingTail() while (tc != null);
+          do tc = tc.processLeavingTail() while (tc != null)
         }
         val item: Item = iterator.next()
         if (item == null) {
           break()
         }
         if (mustBeTyped) {
-          if (item.isInstanceOf[NodeInfo]) {
-            val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
-            if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
-              val annotation: SchemaType =
-                item.asInstanceOf[NodeInfo].getSchemaType
-              if (annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC) {
-                throw new XPathException(
-                  getModeTitle + " requires typed nodes, but the input is untyped",
-                  "XTTE3100")
+          item match {
+            case nodeInfo: NodeInfo =>
+              val kind: Int = nodeInfo.getNodeKind
+              if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
+                val annotation: SchemaType =
+                  nodeInfo.getSchemaType
+                if (annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC) {
+                  throw new XPathException(
+                    getModeTitle + " requires typed nodes, but the input is untyped",
+                    "XTTE3100")
+                }
               }
-            }
+            case _ =>
           }
         } else if (mustBeUntyped) {
-          if (item.isInstanceOf[NodeInfo]) {
-            val kind: Int = item.asInstanceOf[NodeInfo].getNodeKind
-            if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
-              val annotation: SchemaType =
-                item.asInstanceOf[NodeInfo].getSchemaType
-              if (!(annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC)) {
-                throw new XPathException(
-                  getModeTitle + " requires untyped nodes, but the input is typed",
-                  "XTTE3110")
+          item match {
+            case nodeInfo: NodeInfo =>
+              val kind: Int = nodeInfo.getNodeKind
+              if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE) {
+                val annotation: SchemaType =
+                  nodeInfo.getSchemaType
+                if (!(annotation == Untyped.getInstance || annotation == BuiltInAtomicType.UNTYPED_ATOMIC)) {
+                  throw new XPathException(
+                    getModeTitle + " requires untyped nodes, but the input is typed",
+                    "XTTE3110")
+                }
               }
-            }
+            case _ =>
           }
         }
         if (tracing) {
@@ -277,7 +229,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
         val rule: Rule = getRule(item, context)
         if (tracing) {
           traceListener.endRuleSearch(
-            if ((rule != null)) rule else getBuiltInRuleSet,
+            if (rule != null) rule else getBuiltInRuleSet,
             this,
             item)
         }
@@ -306,7 +258,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
             }
             tc = template.applyLeavingTail(output, context)
             if (tc != null) {
-              do tc = tc.processLeavingTail() while (tc != null);
+              do tc = tc.processLeavingTail() while (tc != null)
             }
             if (modeTracing) {
               traceListener.leave(template)
@@ -324,24 +276,23 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
   def getStackFrameSlotsNeeded: Int
 
   def getCodeForBuiltInRuleSet(builtInRuleSet: BuiltInRuleSet): String =
-    if (builtInRuleSet.isInstanceOf[ShallowCopyRuleSet]) {
-      "SC"
-    } else if (builtInRuleSet.isInstanceOf[ShallowSkipRuleSet]) {
-      "SS"
-    } else if (builtInRuleSet.isInstanceOf[DeepCopyRuleSet]) {
-      "DC"
-    } else if (builtInRuleSet.isInstanceOf[DeepSkipRuleSet]) {
-      "DS"
-    } else if (builtInRuleSet.isInstanceOf[FailRuleSet]) {
-      "FF"
-    } else if (builtInRuleSet.isInstanceOf[TextOnlyCopyRuleSet]) {
-      "TC"
-    } else if (builtInRuleSet.isInstanceOf[RuleSetWithWarnings]) {
-      getCodeForBuiltInRuleSet(
-        builtInRuleSet.asInstanceOf[RuleSetWithWarnings].getBaseRuleSet) +
-        "+W"
-    } else {
-      "???"
+    builtInRuleSet match {
+      case _: ShallowCopyRuleSet =>
+        "SC"
+      case _: ShallowSkipRuleSet =>
+        "SS"
+      case _: DeepCopyRuleSet =>
+        "DC"
+      case _: DeepSkipRuleSet =>
+        "DS"
+      case _: FailRuleSet =>
+        "FF"
+      case _: TextOnlyCopyRuleSet =>
+        "TC"
+      case warnings: RuleSetWithWarnings =>
+        getCodeForBuiltInRuleSet(warnings.getBaseRuleSet) + "+W"
+      case _ =>
+        "???"
     }
 
   def getBuiltInRuleSetForCode(code: String): BuiltInRuleSet = {
@@ -447,5 +398,4 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
       throw new IllegalStateException("tree unbalanced")
     }
   }
-
 }

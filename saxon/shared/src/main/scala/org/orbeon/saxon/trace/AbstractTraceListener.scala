@@ -23,14 +23,13 @@ import org.orbeon.saxon.utils.{Controller, Version}
 
 object AbstractTraceListener {
 
-  private var spaceBuffer: StringBuffer = new StringBuffer("                ")
+  private val spaceBuffer: StringBuffer = new StringBuffer("                ")
 
   def spaces(n: Int): String = {
     while (spaceBuffer.length < n) spaceBuffer.append(
       AbstractTraceListener.spaceBuffer)
     spaceBuffer.substring(0, n)
   }
-
 }
 
 abstract class AbstractTraceListener
@@ -45,9 +44,8 @@ abstract class AbstractTraceListener
 
   def getCodeInjector: CodeInjector = new TraceCodeInjector()
 
-  def setLevelOfDetail(level: Int): Unit = {
+  def setLevelOfDetail(level: Int): Unit =
     this.detail = level
-  }
 
   def open(controller: Controller): Unit = {
     out.info(
@@ -75,18 +73,20 @@ abstract class AbstractTraceListener
       val msg: StringBuilder = new StringBuilder(
         AbstractTraceListener.spaces(indent) + '<' + tagStr)
       for ((key, value) <- properties.asScala) {
-        var `val`: AnyRef = value.asInstanceOf[AnyRef]
-        if (`val`.isInstanceOf[StructuredQName]) {
-          `val` = `val`.asInstanceOf[StructuredQName].getDisplayName
-        } else if (`val`.isInstanceOf[StringValue]) {
-          `val` = `val`.asInstanceOf[StringValue].getStringValue
+        var _val: AnyRef = value.asInstanceOf[AnyRef]
+        _val match {
+          case structuredQName: StructuredQName =>
+            _val = structuredQName.getDisplayName
+          case stringValue: StringValue =>
+            _val = stringValue.getStringValue
+          case _ =>
         }
-        if (`val` != null) {
+        if (_val != null) {
           msg
             .append(' ')
             .append(key)
             .append("=\"")
-            .append(escape(`val`.toString))
+            .append(escape(_val.toString))
             .append('"')
         }
       }
@@ -110,84 +110,80 @@ abstract class AbstractTraceListener
     val sb: FastStringBuffer = new FastStringBuffer(collapsed.length + 10)
     for (i <- 0 until collapsed.length) {
       val c: Char = collapsed.charAt(i)
-      if (c == '<') {
+      if (c == '<')
         sb.append("&lt;")
-      } else if (c == '>') {
+      else if (c == '>')
         sb.append("&gt;")
-      } else if (c == '&') {
+      else if (c == '&')
         sb.append("&amp;")
-      } else if (c == '\"') {
+      else if (c == '\"')
         sb.append("&#34;")
-      } else if (c == '\n') {
+      else if (c == '\n')
         sb.append("&#xA;")
-      } else if (c == '\r') {
+      else if (c == '\r')
         sb.append("&#xD;")
-      } else if (c == '\t') {
+      else if (c == '\t')
         sb.append("&#x9;")
-      } else {
+      else
         sb.cat(c)
-      }
     }
     sb.toString
   }
 
-  override def leave(info: Traceable): Unit = {
+  override def leave(info: Traceable): Unit =
     if (isApplicable(info)) {
       val tagStr: String = tag(info)
       indent -= 1
       out.info(AbstractTraceListener.spaces(indent) + "</" + tagStr + '>')
     }
-  }
 
   def isApplicable(info: Traceable): Boolean = level(info) <= detail
 
   def tag(info: Traceable): String
 
-  def level(info: Traceable): Int = {
-    if (info.isInstanceOf[TraceableComponent]) {
-      return 1
+  def level(info: Traceable): Int =
+    info match {
+      case _: TraceableComponent =>
+        1
+      case _: Instruction =>
+        2
+      case _ =>
+        3
     }
-    if (info.isInstanceOf[Instruction]) {
-      2
-    } else {
-      3
-    }
-  }
 
   def startCurrentItem(item: Item): Unit = {
-    if (item.isInstanceOf[NodeInfo] && detail > 0) {
-      val curr: NodeInfo = item.asInstanceOf[NodeInfo]
-      out.info(
-        AbstractTraceListener.spaces(indent) + "<source node=\"" +
-          Navigator.getPath(curr) +
-          "\" line=\"" +
-          curr.getLineNumber +
-          "\" file=\"" +
-          abbreviateLocationURI(curr.getSystemId) +
-          "\">")
+    item match {
+      case nodeInfo: NodeInfo if detail > 0 =>
+        out.info(
+          AbstractTraceListener.spaces(indent) + "<source node=\"" +
+            Navigator.getPath(nodeInfo) +
+            "\" line=\"" +
+            nodeInfo.getLineNumber +
+            "\" file=\"" +
+            abbreviateLocationURI(nodeInfo.getSystemId) +
+            "\">")
+      case _ =>
     }
     indent += 1
   }
 
   def endCurrentItem(item: Item): Unit = {
     indent -= 1
-    if (item.isInstanceOf[NodeInfo] && detail > 0) {
-      val curr: NodeInfo = item.asInstanceOf[NodeInfo]
-      out.info(
-        AbstractTraceListener.spaces(indent) + "</source><!-- " +
-          Navigator.getPath(curr) +
-          " -->")
+    item match {
+      case nodeInfo: NodeInfo if detail > 0 =>
+        out.info(
+          AbstractTraceListener.spaces(indent) + "</source><!-- " +
+            Navigator.getPath(nodeInfo) +
+            " -->")
+      case _ =>
     }
   }
 
-  def setOutputDestination(stream: Logger): Unit = {
+  def setOutputDestination(stream: Logger): Unit =
     out = stream
-  }
 
   def getOutputDestination: Logger = out
 
   override def endRuleSearch(rule: AnyRef, mode: Mode, item: Item): Unit = ()
-
   override def startRuleSearch(): Unit = ()
-
 }
