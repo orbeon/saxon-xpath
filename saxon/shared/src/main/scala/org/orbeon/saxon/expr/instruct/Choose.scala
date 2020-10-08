@@ -200,7 +200,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         }
       }
       if (conditions.isEmpty) {
-        val lit: Literal = Literal.makeEmptySequence()
+        val lit: Literal = Literal.makeEmptySequence
         ExpressionTool.copyLocationInfo(this, lit)
         return lit
       } else if (conditions.size == 1 &&
@@ -222,7 +222,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
     if (Literal.isEmptySequence(getAction(localSize - 1))) {
       if (localSize == 1) {
-        val lit: Literal = Literal.makeEmptySequence()
+        val lit: Literal = Literal.makeEmptySequence
         ExpressionTool.copyLocationInfo(this, lit)
         return lit
       } else {
@@ -437,7 +437,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
     }
     if (sizeInt == 0) {
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {

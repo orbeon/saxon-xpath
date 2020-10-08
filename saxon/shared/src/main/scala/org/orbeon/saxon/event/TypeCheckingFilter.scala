@@ -320,7 +320,7 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
     if (locationId == null) {
       err.setLocation(locator)
     } else {
-      err.setLocation(locationId.saveLocation())
+      err.setLocation(locationId.saveLocation)
     }
     throw err
   }

@@ -1,43 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
 package org.orbeon.saxon.ma.json
 
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.functions.SystemFunction
-
-import org.orbeon.saxon.model.SpecificFunctionType
-
-import org.orbeon.saxon.om.Function
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.SequenceType
-
-import org.orbeon.saxon.value.StringValue
-
-import java.util.Map
-
 import java.util.function.IntPredicate
+import java.{lang => jl, util => ju}
 
-import JsonHandler._
+import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.functions.SystemFunction
+import org.orbeon.saxon.ma.json.JsonHandler._
+import org.orbeon.saxon.model.SpecificFunctionType
+import org.orbeon.saxon.om.{Function, Sequence}
+import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.{SequenceType, StringValue}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
+import scala.beans.BeanProperty
 
 
 object JsonHandler {
-
   private val REPLACEMENT: String = "\ufffd"
-
 }
 
 /**
@@ -46,12 +33,9 @@ object JsonHandler {
 class JsonHandler {
 
   var escape: Boolean = _
-
-   var charChecker: IntPredicate = _
-
+  var charChecker: IntPredicate = _
   @BeanProperty
   var context: XPathContext = _
-
   private var fallbackFunction: Function = null
 
   def getResult: Sequence = null
@@ -124,7 +108,7 @@ class JsonHandler {
             (value == 0x5C)
       })
     } else {
-      val buffer: FastStringBuffer = new FastStringBuffer(`val`)
+      val buffer = new FastStringBuffer(`val`)
       handleInvalidCharacters(buffer)
       escaped = buffer
     }
@@ -151,40 +135,28 @@ class JsonHandler {
     * @throws XPathException if any error occurs
     */
    def handleInvalidCharacters(buffer: FastStringBuffer): Unit = {
-//if (checkSurrogates && !liberal) {
-    val charChecker: IntPredicate =
-      context.getConfiguration.getValidCharacterChecker
+    val charChecker = context.getConfiguration.getValidCharacterChecker
     for (i <- 0 until buffer.length) {
-      val ch: Char = buffer.charAt(i)
+      val ch = buffer.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
-        if (i + 1 >= buffer.length ||
-            !UTF16CharacterSet.isLowSurrogate(buffer.charAt(i + 1))) {
+        if (i + 1 >= buffer.length || ! UTF16CharacterSet.isLowSurrogate(buffer.charAt(i + 1)))
           substitute(buffer, i, 1, context)
-        }
       } else if (UTF16CharacterSet.isLowSurrogate(ch)) {
-        if (i == 0 ||
-            !UTF16CharacterSet.isHighSurrogate(buffer.charAt(i - 1))) {
+        if (i == 0 || ! UTF16CharacterSet.isHighSurrogate(buffer.charAt(i - 1))) {
           substitute(buffer, i, 1, context)
         } else {
-          val pair: Int =
-            UTF16CharacterSet.combinePair(buffer.charAt(i - 1), ch)
-          if (!charChecker.test(pair)) {
+          val pair = UTF16CharacterSet.combinePair(buffer.charAt(i - 1), ch)
+          if (!charChecker.test(pair))
             substitute(buffer, i - 1, 2, context)
-          }
         }
       } else {
-        if (!charChecker.test(ch)) {
+        if (!charChecker.test(ch))
           substitute(buffer, i, 1, context)
-        }
       }
     }
   }
-//}
-//}
 
    def markAsEscaped(escaped: CharSequence, isKey: Boolean): Unit = ()
-// do nothing in this class
-// do nothing in this class
 
   /**
     * Replace an character or two characters within a string buffer, either by executing the replacement function,
@@ -200,28 +172,25 @@ class JsonHandler {
                          offset: Int,
                          count: Int,
                          context: XPathContext): Unit = {
-    val escaped: FastStringBuffer = new FastStringBuffer(count * 6)
+    val escaped = new FastStringBuffer(count * 6)
     for (j <- 0 until count) {
       escaped.append("\\u")
       var hex: String =
-        java.lang.Integer.toHexString(buffer.charAt(offset + j))
+        jl.Integer.toHexString(buffer.charAt(offset + j))
       while (hex.length < 4) hex = "0" + hex
 // cheat to get through test json-to-xml-039
       hex = hex.toUpperCase()
       escaped.append(hex)
     }
-    val replacement: String = replace(escaped.toString, context)
+    val replacement = replace(escaped.toString, context)
     if (replacement.length == count) {
-      for (j <- 0 until count) {
+      for (j <- 0 until count)
         buffer.setCharAt(offset + j, replacement.charAt(j))
-      }
     } else {
-      for (j <- 0 until count) {
+      for (j <- 0 until count)
         buffer.removeCharAt(offset + j)
-      }
-      for (j <- 0 until replacement.length) {
+      for (j <- 0 until replacement.length)
         buffer.insert(offset + j, replacement.charAt(j))
-      }
     }
   }
 
@@ -236,49 +205,38 @@ class JsonHandler {
     */
   private def replace(s: String, context: XPathContext): String =
     if (fallbackFunction != null) {
-      val args: Array[Sequence] = Array.ofDim[Sequence](1)
+      val args = Array.ofDim[Sequence](1)
       args(0) = new StringValue(s)
-      val result: Sequence =
+      val result =
         SystemFunction.dynamicCall(fallbackFunction, context, args).head
-      val first: Item = result.head
-      if (first == null) "" else first.getStringValue
+      val first = result.head
+      if (first == null)
+        ""
+      else
+        first.getStringValue
     } else {
       REPLACEMENT
     }
 
-  def setFallbackFunction(options: Map[String, Sequence],
+  def setFallbackFunction(options: ju.Map[String, Sequence],
                           context: XPathContext): Unit = {
-    val `val`: Sequence = options.get("fallback")
+    val `val` = options.get("fallback")
     if (`val` != null) {
-      val fn: Item = `val`.head
-      if (fn.isInstanceOf[Function]) {
-        fallbackFunction = fn.asInstanceOf[Function]
-        if (fallbackFunction.getArity != 1) {
-          throw new XPathException("Fallback function must have arity=1",
-                                   "FOJS0005")
-        }
-        val required: SpecificFunctionType = new SpecificFunctionType(
-          Array(SequenceType.SINGLE_STRING),
-          SequenceType.ANY_SEQUENCE)
-        if (!required.matches(fallbackFunction,
-                              context.getConfiguration.getTypeHierarchy)) {
-          throw new XPathException(
-            "Fallback function does not match the required type",
-            "FOJS0005")
-        }
-      } else {
-        throw new XPathException(
-          "Value of option 'fallback' is not a function",
-          "FOJS0005")
+      `val`.head match {
+        case function: Function =>
+          fallbackFunction = function
+          if (fallbackFunction.getArity != 1)
+            throw new XPathException("Fallback function must have arity=1", "FOJS0005")
+          val required = new SpecificFunctionType(
+            Array(SequenceType.SINGLE_STRING),
+            SequenceType.ANY_SEQUENCE)
+          if (! required.matches(fallbackFunction,
+            context.getConfiguration.getTypeHierarchy)) {
+            throw new XPathException("Fallback function does not match the required type", "FOJS0005")
+          }
+        case _ =>
+          throw new XPathException("Value of option 'fallback' is not a function", "FOJS0005")
       }
     }
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2018-2020 Saxonica Limited

@@ -1,6 +1,7 @@
 package org.orbeon.saxon.expr
 
-import java.util.{ArrayList, List, Stack}
+
+import java.{util => ju}
 
 import org.orbeon.saxon.expr.instruct.CopyOf
 import org.orbeon.saxon.expr.parser._
@@ -50,28 +51,32 @@ class SlashExpression(start: Expression, step: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
+
     getLhs.typeCheck(visitor, contextInfo)
-    if (Literal.isEmptySequence(getStart)) {
+
+    if (Literal.isEmptySequence(getStart))
       return getStart
-    }
-    val config: Configuration = visitor.getConfiguration
-    val tc: TypeChecker = config.getTypeChecker(false)
+
+    val config = visitor.getConfiguration
+    val tc = config.getTypeChecker(false)
+
     val role0: RoleDiagnostic =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "/", 0)
     role0.setErrorCode("XPTY0019")
     setStart(tc.staticTypeCheck(getStart, SequenceType.NODE_SEQUENCE, role0, visitor))
+
     val startType: ItemType = getStart.getItemType
-    if (startType == ErrorType) {
+    if (startType == ErrorType)
       return Literal.makeEmptySequence
-    }
+
     val cit: ContextItemStaticInfo =
       config.makeContextItemStaticInfo(startType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
+
     getRhs.typeCheck(visitor, cit)
     val e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
-    if (e2 != null) {
+    if (e2 != null)
       return e2.typeCheck(visitor, contextInfo)
-    }
     if (getStart.isInstanceOf[ContextItemExpression] &&
       getStep.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
       return getStep
@@ -80,12 +85,12 @@ class SlashExpression(start: Expression, step: Expression)
       getStart.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
       return getStart
     }
-    if (getStep.isInstanceOf[AxisExpression] &&
-      getStep.asInstanceOf[AxisExpression].getAxis == AxisInfo.SELF &&
-      config.getTypeHierarchy.isSubType(startType, getStep.getItemType)) {
-      return getStart
+    getStep match {
+      case expression: AxisExpression if config.getTypeHierarchy.isSubType(startType, getStep.getItemType) && expression.getAxis == AxisInfo.SELF =>
+        getStart
+      case _ =>
+        this
     }
-    this
   }
 
   def simplifyDescendantPath(env: StaticContext): SlashExpression = {
@@ -103,34 +108,28 @@ class SlashExpression(start: Expression, step: Expression)
       return null
     }
     var st: Expression = getStart
-    if (st.isInstanceOf[AxisExpression]) {
-      val stax: AxisExpression = st.asInstanceOf[AxisExpression]
-      if (stax.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
-        return null
-      }
-      val cie: ContextItemExpression = new ContextItemExpression()
-      ExpressionTool.copyLocationInfo(this, cie)
-      st =
-        ExpressionTool.makePathExpression(cie, stax.copy(new RebindingMap()))
-      ExpressionTool.copyLocationInfo(this, st)
+    st match {
+      case axisExpression: AxisExpression =>
+        if (axisExpression.getAxis != AxisInfo.DESCENDANT_OR_SELF)
+          return null
+        val cie = new ContextItemExpression
+        ExpressionTool.copyLocationInfo(this, cie)
+        st = ExpressionTool.makePathExpression(cie, axisExpression.copy(new RebindingMap()))
+        ExpressionTool.copyLocationInfo(this, st)
+      case _ =>
     }
-    if (!st.isInstanceOf[SlashExpression]) {
+    if (! st.isInstanceOf[SlashExpression])
       return null
-    }
-    val startPath: SlashExpression = st.asInstanceOf[SlashExpression]
-    if (!startPath.getStep.isInstanceOf[AxisExpression]) {
+    val startPath = st.asInstanceOf[SlashExpression]
+    if (! startPath.getStep.isInstanceOf[AxisExpression])
       return null
-    }
-    val mid: AxisExpression = startPath.getStep.asInstanceOf[AxisExpression]
-    if (mid.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
+    val mid = startPath.getStep.asInstanceOf[AxisExpression]
+    if (mid.getAxis != AxisInfo.DESCENDANT_OR_SELF)
       return null
-    }
-    val test: NodeTest = mid.getNodeTest
-    if (!(test == null || test.isInstanceOf[AnyNodeTest])) {
+    val test = mid.getNodeTest
+    if (!(test == null || test.isInstanceOf[AnyNodeTest]))
       return null
-    }
-    val underlyingAxis: Int =
-      underlyingStep.asInstanceOf[AxisExpression].getAxis
+    val underlyingAxis = underlyingStep.asInstanceOf[AxisExpression].getAxis
     if (underlyingAxis == AxisInfo.CHILD || underlyingAxis == AxisInfo.DESCENDANT ||
       underlyingAxis == AxisInfo.DESCENDANT_OR_SELF) {
       val newAxis: Int =
@@ -142,34 +141,33 @@ class SlashExpression(start: Expression, step: Expression)
         underlyingStep.asInstanceOf[AxisExpression].getNodeTest)
       ExpressionTool.copyLocationInfo(this, newStep)
       underlyingStep = getStep
-      val filters: Stack[Expression] = new Stack[Expression]()
+      var filters: List[Expression] = Nil
       while (underlyingStep.isInstanceOf[FilterExpression]) {
-        filters.add(underlyingStep.asInstanceOf[FilterExpression].getFilter)
+        filters ::= underlyingStep.asInstanceOf[FilterExpression].getFilter
         underlyingStep =
           underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
       }
-      while (!filters.isEmpty) {
-        newStep = new FilterExpression(newStep, filters.pop())
+      while (filters.nonEmpty) {
+        newStep = new FilterExpression(newStep, { val r = filters.head; filters = filters.tail; r })
         ExpressionTool.copyLocationInfo(getStep, newStep)
       }
       val newPath: Expression =
         ExpressionTool.makePathExpression(startPath.getStart, newStep)
-      if (!newPath.isInstanceOf[SlashExpression]) {
+
+      if (! newPath.isInstanceOf[SlashExpression])
         return null
-      }
+
       ExpressionTool.copyLocationInfo(this, newPath)
       newPath.asInstanceOf[SlashExpression]
     }
     if (underlyingAxis == AxisInfo.ATTRIBUTE) {
-      val newStep: Expression =
-        new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, NodeKindTest.ELEMENT)
+      val newStep = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, NodeKindTest.ELEMENT)
       ExpressionTool.copyLocationInfo(this, newStep)
-      val e2: Expression =
-        ExpressionTool.makePathExpression(startPath.getStart, newStep)
-      val e3: Expression = ExpressionTool.makePathExpression(e2, getStep)
-      if (!e3.isInstanceOf[SlashExpression]) {
+      val e2 = ExpressionTool.makePathExpression(startPath.getStart, newStep)
+      val e3 = ExpressionTool.makePathExpression(e2, getStep)
+      if (! e3.isInstanceOf[SlashExpression])
         return null
-      }
+
       ExpressionTool.copyLocationInfo(this, e3)
       e3.asInstanceOf[SlashExpression]
     }
@@ -200,35 +198,27 @@ class SlashExpression(start: Expression, step: Expression)
     val firstStep: Expression = getFirstStep
     if (!(firstStep.isCallOn(classOf[Doc]) || firstStep.isCallOn(
       classOf[DocumentFn]))) {
-      val lastStep: Expression = getLastStep
-      if (lastStep.isInstanceOf[FilterExpression] &&
-        !lastStep.asInstanceOf[FilterExpression].isPositional(th)) {
-        val leading: Expression = getLeadingSteps
-        val p2: Expression = ExpressionTool.makePathExpression(
-          leading,
-          lastStep.asInstanceOf[FilterExpression].getSelectExpression)
-        val f2: Expression = new FilterExpression(
-          p2,
-          lastStep.asInstanceOf[FilterExpression].getFilter)
-        ExpressionTool.copyLocationInfo(this, f2)
-        f2.optimize(visitor, contextItemType)
+      getLastStep match {
+        case expression: FilterExpression if !expression.isPositional(th) =>
+          val leading = getLeadingSteps
+          val p2 = ExpressionTool.makePathExpression(leading, expression.getSelectExpression)
+          val f2 = new FilterExpression(p2, expression.getFilter)
+          ExpressionTool.copyLocationInfo(this, f2)
+          f2.optimize(visitor, contextItemType)
+        case _ =>
       }
     }
-    if (!visitor.isOptimizeForStreaming) {
-      val k: Expression = opt.convertPathExpressionToKey(this, visitor)
-      if (k != null) {
-        k.typeCheck(visitor, contextItemType)
-          .optimize(visitor, contextItemType)
-      }
+    if (! visitor.isOptimizeForStreaming) {
+      val k = opt.convertPathExpressionToKey(this, visitor)
+      if (k != null)
+        return k.typeCheck(visitor, contextItemType).optimize(visitor, contextItemType)
     }
     e2 = tryToMakeSorted(visitor, contextItemType)
-    if (e2 != null) {
+    if (e2 != null)
       return e2
-    }
     if (getStep.isInstanceOf[AxisExpression]) {
       if (!Cardinality.allowsMany(getStart.getCardinality)) {
-        val sse: SimpleStepExpression =
-          new SimpleStepExpression(getStart, getStep)
+        val sse = new SimpleStepExpression(getStart, getStep)
         ExpressionTool.copyLocationInfo(this, sse)
         sse.setParentExpression(getParentExpression)
         return sse
@@ -236,10 +226,8 @@ class SlashExpression(start: Expression, step: Expression)
         contextFree = true
       }
     }
-    if (getStart.isInstanceOf[RootExpression] && getStep.isCallOn(
-      classOf[KeyFn])) {
-      val keyCall: SystemFunctionCall =
-        getStep.asInstanceOf[SystemFunctionCall]
+    if (getStart.isInstanceOf[RootExpression] && getStep.isCallOn(classOf[KeyFn])) {
+      val keyCall = getStep.asInstanceOf[SystemFunctionCall]
       if (keyCall.getArity == 3 &&
         keyCall.getArg(2).isInstanceOf[ContextItemExpression]) {
         keyCall.setArg(2, new RootExpression())
@@ -248,68 +236,57 @@ class SlashExpression(start: Expression, step: Expression)
         return keyCall
       }
     }
-    val k: Expression =
-      promoteFocusIndependentSubexpressions(visitor, contextItemType)
-    if (k != this) {
+    val k = promoteFocusIndependentSubexpressions(visitor, contextItemType)
+    if (k != this)
       return k
-    }
     if (visitor.isOptimizeForStreaming) {
-      val rawStep: Expression =
-        ExpressionTool.unfilteredExpression(getStep, allowPositional = true)
-      if (rawStep.isInstanceOf[CopyOf] &&
-        rawStep
-          .asInstanceOf[CopyOf]
-          .getSelect
-          .isInstanceOf[ContextItemExpression]) {
-        rawStep.asInstanceOf[CopyOf].setSelect(getStart)
-        rawStep.resetLocalStaticProperties()
-        getStep.resetLocalStaticProperties()
-        getStep
+      val rawStep = ExpressionTool.unfilteredExpression(getStep, allowPositional = true)
+      rawStep match {
+        case copyOf: CopyOf if copyOf.getSelect.isInstanceOf[ContextItemExpression] =>
+          copyOf.setSelect(getStart)
+          rawStep.resetLocalStaticProperties()
+          getStep.resetLocalStaticProperties()
+          getStep
+        case _ =>
       }
     }
     this
   }
 
   def tryToMakeAbsolute(): SlashExpression = {
-    val first: Expression = getFirstStep
-    if (first.getItemType.getPrimitiveType == Type.DOCUMENT) {
+
+    val first = getFirstStep
+    if (first.getItemType.getPrimitiveType == Type.DOCUMENT)
       return this
-    }
-    if (first.isInstanceOf[AxisExpression]) {
-      val contextItemType: ItemType =
-        first.asInstanceOf[AxisExpression].getContextItemType
-      if (contextItemType != null && contextItemType.getPrimitiveType == Type.DOCUMENT) {
-        val root: RootExpression = new RootExpression()
-        ExpressionTool.copyLocationInfo(this, root)
-        val path: Expression = ExpressionTool.makePathExpression(
-          root,
-          this.copy(new RebindingMap()))
-        if (!path.isInstanceOf[SlashExpression]) {
-          return null
+
+    first match {
+      case axisExpression: AxisExpression =>
+        val contextItemType = axisExpression.getContextItemType
+        if (contextItemType != null && contextItemType.getPrimitiveType == Type.DOCUMENT) {
+          val root = new RootExpression
+          ExpressionTool.copyLocationInfo(this, root)
+          val path = ExpressionTool.makePathExpression(root, this.copy(new RebindingMap()))
+          if (! path.isInstanceOf[SlashExpression])
+            return null
+          ExpressionTool.copyLocationInfo(this, path)
+          path.asInstanceOf[SlashExpression]
         }
-        ExpressionTool.copyLocationInfo(this, path)
-        path.asInstanceOf[SlashExpression]
-      }
+      case _ =>
     }
-    if (first.isInstanceOf[DocumentSorter] &&
-      first
-        .asInstanceOf[DocumentSorter]
-        .getBaseExpression
-        .isInstanceOf[SlashExpression]) {
-      val se: SlashExpression = first
-        .asInstanceOf[DocumentSorter]
-        .getBaseExpression
-        .asInstanceOf[SlashExpression]
-      val se2: SlashExpression = se.tryToMakeAbsolute()
-      if (se2 != null) {
-        if (se2 == se) {
-          return this
-        } else {
-          val rest: Expression = getRemainingSteps
-          val ds: DocumentSorter = new DocumentSorter(se2)
-          new SlashExpression(ds, rest)
+    first match {
+      case sorter: DocumentSorter if sorter.getBaseExpression.isInstanceOf[SlashExpression] =>
+        val se = sorter.getBaseExpression.asInstanceOf[SlashExpression]
+        val se2 = se.tryToMakeAbsolute()
+        if (se2 != null) {
+          if (se2 == se) {
+            return this
+          } else {
+            val rest: Expression = getRemainingSteps
+            val ds: DocumentSorter = new DocumentSorter(se2)
+            return new SlashExpression(ds, rest)
+          }
         }
-      }
+      case _ =>
     }
     null
   }
@@ -540,14 +517,14 @@ class SlashExpression(start: Expression, step: Expression)
   override def iterate(context: XPathContext): SequenceIterator = {
     if (contextFree) {
       new MappingIterator(getStart.iterate(context),
-        (item) =>
+        item =>
           getRhsExpression
             .asInstanceOf[AxisExpression]
             .iterate(item.asInstanceOf[NodeInfo]))
     }
     val context2: XPathContext = context.newMinorContext()
     context2.trackFocus(getStart.iterate(context))
-    new ContextMappingIterator((c1) => getStep.iterate(c1), context2)
+    new ContextMappingIterator(c1 => getStep.iterate(c1), context2)
   }
 
   override def export(destination: ExpressionPresenter): Unit = {
@@ -569,15 +546,14 @@ class SlashExpression(start: Expression, step: Expression)
     ExpressionTool.parenthesizeShort(getStart) + "/" + ExpressionTool.parenthesizeShort(getStep)
 
   def getFirstStep: Expression =
-    if (getStart.isInstanceOf[SlashExpression]) {
-      getStart.asInstanceOf[SlashExpression].getFirstStep
-    } else {
-      getStart
+    getStart match {
+      case slashExpression: SlashExpression => slashExpression.getFirstStep
+      case _                                => getStart
     }
 
   def getRemainingSteps: Expression =
     if (getStart.isInstanceOf[SlashExpression]) {
-      val list: List[Expression] = new ArrayList[Expression](8)
+      val list: ju.List[Expression] = new ju.ArrayList[Expression](8)
       gatherSteps(list)
       val rem: Expression = rebuildSteps(list.subList(1, list.size))
       ExpressionTool.copyLocationInfo(this, rem)
@@ -586,37 +562,32 @@ class SlashExpression(start: Expression, step: Expression)
       getStep
     }
 
-  private def gatherSteps(list: List[Expression]): Unit = {
-    if (getStart.isInstanceOf[SlashExpression]) {
-      getStart.asInstanceOf[SlashExpression].gatherSteps(list)
-    } else {
-      list.add(getStart)
+  private def gatherSteps(list: ju.List[Expression]): Unit = {
+    getStart match {
+      case slashExpression: SlashExpression => slashExpression.gatherSteps(list)
+      case _                                => list.add(getStart)
     }
-    if (getStep.isInstanceOf[SlashExpression]) {
-      getStep.asInstanceOf[SlashExpression].gatherSteps(list)
-    } else {
-      list.add(getStep)
+    getStep match {
+      case slashExpression: SlashExpression => slashExpression.gatherSteps(list)
+      case _                                => list.add(getStep)
     }
   }
 
-  private def rebuildSteps(list: List[Expression]): Expression =
-    if (list.size == 1) {
+  private def rebuildSteps(list: ju.List[Expression]): Expression =
+    if (list.size == 1)
       list.get(0).copy(new RebindingMap())
-    } else {
-      new SlashExpression(list.get(0).copy(new RebindingMap()),
-        rebuildSteps(list.subList(1, list.size)))
-    }
+    else
+      new SlashExpression(list.get(0).copy(new RebindingMap()), rebuildSteps(list.subList(1, list.size)))
 
   def getLastStep: Expression =
-    if (getStep.isInstanceOf[SlashExpression]) {
-      getStep.asInstanceOf[SlashExpression].getLastStep
-    } else {
-      getStep
+    getStep match {
+      case expression: SlashExpression => expression.getLastStep
+      case _                           => getStep
     }
 
   def getLeadingSteps: Expression =
     if (getStep.isInstanceOf[SlashExpression]) {
-      val list: List[Expression] = new ArrayList[Expression](8)
+      val list: ju.List[Expression] = new ju.ArrayList[Expression](8)
       gatherSteps(list)
       val rem: Expression = rebuildSteps(list.subList(0, list.size - 1))
       ExpressionTool.copyLocationInfo(this, rem)
@@ -629,5 +600,4 @@ class SlashExpression(start: Expression, step: Expression)
     getFirstStep.getItemType.getPrimitiveType == Type.DOCUMENT
 
   override def getStreamerName: String = "ForEach"
-
 }

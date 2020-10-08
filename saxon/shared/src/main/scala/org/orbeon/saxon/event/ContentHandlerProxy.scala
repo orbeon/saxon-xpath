@@ -156,7 +156,7 @@ class ContentHandlerProxy extends Receiver {
     if (depth <= 0 && requireWellFormed) {
       notifyNotWellFormed()
     }
-    currentLocation = location.saveLocation()
+    currentLocation = location.saveLocation
     namespaceStack ::= MARKER
     for (ns <- namespaces.asScala) {
       val prefix: String = ns.getPrefix

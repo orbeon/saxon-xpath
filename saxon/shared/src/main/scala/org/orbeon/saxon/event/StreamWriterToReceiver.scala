@@ -1,51 +1,40 @@
 package org.orbeon.saxon.event
 
-import java.util
+import java.{util => ju}
 
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.StandardURIChecker
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.Untyped
+import org.orbeon.saxon.model.{BuiltInAtomicType, Untyped}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.pull.NamespaceContextImpl
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
 import org.orbeon.saxon.trans.Err
+import org.orbeon.saxon.utils.Configuration
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 import javax.xml.namespace.NamespaceContext
-import javax.xml.stream.XMLStreamException
-import javax.xml.stream.XMLStreamWriter
-import java.util._
+import javax.xml.stream.{XMLStreamException, XMLStreamWriter}
+
+import scala.jdk.CollectionConverters._
 import java.util.function.IntPredicate
 
-import StreamWriterToReceiver._
+import org.orbeon.saxon.event.StreamWriterToReceiver._
 
 object StreamWriterToReceiver {
 
-  private var DEBUG: Boolean = false
+  private val DEBUG: Boolean = false
 
   private class Triple {
-
     var prefix: String = _
-
     var uri: String = _
-
     var local: String = _
-
     var value: String = _
-
   }
 
   private class StartTag {
-
-    var elementName: Triple = new Triple()
-
-    var attributes: List[Triple] = new ArrayList()
-
-    var namespaces: List[Triple] = new ArrayList()
-
+    val elementName: Triple = new Triple
+    val attributes: ju.List[Triple] = new ju.ArrayList
+    val namespaces: ju.List[Triple] = new ju.ArrayList
   }
 
 }
@@ -53,38 +42,23 @@ object StreamWriterToReceiver {
 class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
 
   private var pendingTag: StartTag = null
-
   val pipe: PipelineConfiguration = receiver.getPipelineConfiguration
-
-  private var inScopeNamespaces: NamespaceReducer = new NamespaceReducer(receiver)
-
-  var lReceiver: Receiver = inScopeNamespaces
-
+  private val inScopeNamespaces: NamespaceReducer = new NamespaceReducer(receiver)
+  val lReceiver: Receiver = inScopeNamespaces
   private var config: Configuration = pipe.getConfiguration
-
-  private var charChecker: IntPredicate = pipe.getConfiguration.getValidCharacterChecker
-
+  private val charChecker: IntPredicate = pipe.getConfiguration.getValidCharacterChecker
   private var isChecking: Boolean = false
-
   private var depth: Int = -1
-
   private var isEmptyElement: Boolean = _
-
-
-  private var setPrefixes: Stack[List[NamespaceBinding]] = new Stack()
+  private var setPrefixes: List[ju.List[NamespaceBinding]] = Nil
 
   private var rootNamespaceContext: javax.xml.namespace.NamespaceContext =
-    new NamespaceContextImpl(new NamespaceResolver() {
-      override def getURIForPrefix(prefix: String,
-                                   useDefault: Boolean): String = null
-
-      override def iteratePrefixes: Iterator[String] = {
-        var e: List[String] = Collections.emptyList()
-        e.iterator
-      }
+    new NamespaceContextImpl(new NamespaceResolver {
+      def getURIForPrefix(prefix: String, useDefault: Boolean): String = null
+      def iteratePrefixes: ju.Iterator[String] = ju.Collections.emptyIterator
     })
 
-  this.setPrefixes.push(new ArrayList())
+  this.setPrefixes ::= new ju.ArrayList
 
   def setCheckValues(check: Boolean): Unit = {
     this.isChecking = check
@@ -151,7 +125,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       if (isEmptyElement) {
         isEmptyElement = false
         depth -= 1
-        setPrefixes.pop()
+        setPrefixes = setPrefixes.tail
         lReceiver.endElement()
       }
     }
@@ -198,18 +172,17 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
 
   private def getPrefixForUri(uri: String): String = {
     for (t <- pendingTag.namespaces.asScala if uri == t.uri) {
-      if (t.prefix == null) "" else t.prefix
+      return if (t.prefix == null) "" else t.prefix
     }
-    val setPrefix: String = getPrefix(uri)
-    if (setPrefix != null) {
+    val setPrefix = getPrefix(uri)
+    if (setPrefix != null)
       return setPrefix
-    }
-    val prefixes: Iterator[String] = inScopeNamespaces.iteratePrefixes
+
+    val prefixes = inScopeNamespaces.iteratePrefixes
     while (prefixes.hasNext) {
-      val p: String = prefixes.next()
-      if (inScopeNamespaces.getURIForPrefix(p, useDefault = false) == uri) {
-        p
-      }
+      val p = prefixes.next()
+      if (inScopeNamespaces.getURIForPrefix(p, useDefault = false) == uri)
+        return p
     }
     ""
   }
@@ -219,7 +192,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       System.err.println("StartElement " + localName)
     }
     checkNonNull(localName)
-    setPrefixes.push(new ArrayList())
+    setPrefixes ::= new ju.ArrayList
     flushStartTag()
     depth += 1
     pendingTag = new StartTag()
@@ -232,7 +205,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     }
     checkNonNull(namespaceURI)
     checkNonNull(localName)
-    setPrefixes.push(new ArrayList())
+    setPrefixes ::= new ju.ArrayList
     flushStartTag()
     depth += 1
     pendingTag = new StartTag()
@@ -251,7 +224,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     checkNonNull(prefix)
     checkNonNull(localName)
     checkNonNull(namespaceURI)
-    setPrefixes.push(new ArrayList())
+    setPrefixes ::= new ju.ArrayList
     flushStartTag()
     depth += 1
     pendingTag = new StartTag()
@@ -295,7 +268,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
         "writeEndElement with no matching writeStartElement")
     }
     flushStartTag()
-    setPrefixes.pop()
+    setPrefixes = setPrefixes.tail
     lReceiver.endElement()
     depth -= 1
   }
@@ -482,26 +455,20 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
   }
 
   def getPrefix(uri: String): String = {
-    var i: Int = setPrefixes.size - 1
-    while (i >= 0) {
-      val bindings: List[NamespaceBinding] = setPrefixes.get(i)
-      var j: Int = bindings.size - 1
+
+    setPrefixes.iterator foreach { bindings =>
+      var j = bindings.size - 1
       while (j >= 0) {
-        val binding: NamespaceBinding = bindings.get(j)
-        if (binding.getURI == uri) {
-          binding.getPrefix
-        }
-        {
-          j -= 1; j + 1
-        }
-      }
-      {
-        i -= 1; i + 1
+        val binding = bindings.get(j)
+        if (binding.getURI == uri)
+          return binding.getPrefix
+        j -= 1
       }
     }
-    if (rootNamespaceContext != null) {
-      rootNamespaceContext.getPrefix(uri)
-    }
+
+    if (rootNamespaceContext != null)
+      return rootNamespaceContext.getPrefix(uri)
+
     null
   }
 
@@ -511,60 +478,56 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     if (URI == null) {
       URI = ""
     }
-    if (isInvalidURI(URI)) {
+    if (isInvalidURI(URI))
       throw new IllegalArgumentException("Invalid namespace URI: " + URI)
-    }
-    if ("" != prefix && !isValidNCName(prefix)) {
+
+    if ("" != prefix && !isValidNCName(prefix))
       throw new IllegalArgumentException("Invalid namespace prefix: " + prefix)
-    }
-    setPrefixes.peek().add(new NamespaceBinding(prefix, URI))
+
+    setPrefixes.head.add(new NamespaceBinding(prefix, URI))
   }
 
-  def setDefaultNamespace(uri: String): Unit = {
+  def setDefaultNamespace(uri: String): Unit =
     setPrefix("", uri)
-  }
 
-  def setNamespaceContext(
-                           context: javax.xml.namespace.NamespaceContext): Unit = {
-    if (depth > 0) {
+  def setNamespaceContext(context: javax.xml.namespace.NamespaceContext): Unit = {
+    if (depth > 0)
       throw new IllegalStateException(
         "setNamespaceContext may only be called at the start of the document")
-    }
     rootNamespaceContext = context
   }
 
-  def getNamespaceContext(): javax.xml.namespace.NamespaceContext =
-    new NamespaceContext() {
+  def getNamespaceContext: javax.xml.namespace.NamespaceContext =
+    new NamespaceContext {
+
       val rootNamespaceContext: NamespaceContext =
         StreamWriterToReceiver.this.rootNamespaceContext
 
-      val bindings: Map[String, String] = new HashMap()
+      val bindings: ju.Map[String, String] = new ju.HashMap
 
-      for (list <- setPrefixes.asScala; binding <- list.asScala) {
+      for (list <- setPrefixes; binding <- list.asScala)
         bindings.put(binding.getPrefix, binding.getURI)
-      }
 
       def getNamespaceURI(prefix: String): String = {
-        val uri: String = bindings.get(prefix)
-        if (uri != null) {
+        val uri = bindings.get(prefix)
+        if (uri != null)
           return uri
-        }
         rootNamespaceContext.getNamespaceURI(prefix)
       }
 
       def getPrefix(namespaceURI: String): String = {
-        for ((key, value) <- bindings.asScala) {
-          if (value == namespaceURI) key
-        }
+        for ((key, value) <- bindings.asScala)
+          if (value == namespaceURI)
+            return key
         rootNamespaceContext.getPrefix(namespaceURI)
       }
 
-      def getPrefixes(namespaceURI: String): Iterator[String] = {
-        val prefixes: List[String] = new ArrayList[String]()
+      def getPrefixes(namespaceURI: String): ju.Iterator[String] = {
+        val prefixes: ju.List[String] = new ju.ArrayList[String]()
         for ((key, value) <- bindings.asScala if value == namespaceURI) {
           prefixes.add(key)
         }
-        val root = rootNamespaceContext.getPrefixes(namespaceURI).asInstanceOf[util.Iterator[String]]
+        val root = rootNamespaceContext.getPrefixes(namespaceURI).asInstanceOf[ju.Iterator[String]]
         while (root.hasNext)
           prefixes.add(root.next())
         prefixes.iterator
@@ -572,24 +535,22 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
     }
 
   def getProperty(name: String): Any =
-    if (name.==("javax.xml.stream.isRepairingNamespaces")) lReceiver.isInstanceOf[NamespaceReducer]
-    else throw new IllegalArgumentException(name)
+    if (name.==("javax.xml.stream.isRepairingNamespaces"))
+      lReceiver.isInstanceOf[NamespaceReducer]
+    else
+      throw new IllegalArgumentException(name)
 
   private def isValidNCName(name: String): Boolean =
-    !isChecking || NameChecker.isValidNCName(name)
+    ! isChecking || NameChecker.isValidNCName(name)
 
   private def isValidChars(text: String): Boolean =
-    !isChecking ||
-      (UTF16CharacterSet.firstInvalidChar(text, charChecker) ==
-        -1)
+    ! isChecking ||
+      (UTF16CharacterSet.firstInvalidChar(text, charChecker) == -1)
 
   private def isInvalidURI(uri: String): Boolean =
     isChecking && !StandardURIChecker.getInstance.isValidURI(uri)
 
-  private def checkNonNull(value: AnyRef): Unit = {
-    if (value == null) {
+  private def checkNonNull(value: AnyRef): Unit =
+    if (value == null)
       throw new NullPointerException()
-    }
-  }
-
 }

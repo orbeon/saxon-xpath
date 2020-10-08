@@ -1,20 +1,16 @@
 package org.orbeon.saxon.s9api
 
-import org.orbeon.saxon.event._
-import org.orbeon.saxon.expr.EarlyEvaluationContext
-import org.orbeon.saxon.expr.JPConverter
-import org.orbeon.saxon.lib.ParseOptions
-import org.orbeon.saxon.lib.Validation
-import org.orbeon.saxon.om._
-import org.orbeon.saxon.query.XQueryExpression
-import org.orbeon.saxon.value.Whitespace
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
-import java.io.File
 import java.net.URI
 
-import DocumentBuilder._
+import javax.xml.transform.Source
+import org.orbeon.saxon.event._
+import org.orbeon.saxon.expr.{EarlyEvaluationContext, JPConverter}
+import org.orbeon.saxon.lib.{ParseOptions, Validation}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.query.XQueryExpression
+import org.orbeon.saxon.s9api.DocumentBuilder._
 import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.Whitespace
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
@@ -24,28 +20,22 @@ object DocumentBuilder {
     extends ReceivingContentHandler
       with BuildingContentHandler {
 
-    private var builder: Builder = b
+    private val builder: Builder = b
 
     this.receiver = r
-
     this.setPipelineConfiguration(r.getPipelineConfiguration)
 
-    def getDocumentNode(): XdmNode = new XdmNode(builder.getCurrentRoot)
-
+    def getDocumentNode: XdmNode = new XdmNode(builder.getCurrentRoot)
   }
-
 }
 
 class DocumentBuilder (var config: Configuration) {
 
   @BeanProperty
   var schemaValidator: SchemaValidator = _
-
   private var dtdValidation: Boolean = _
-
   @BooleanBeanProperty
   var lineNumbering: Boolean = _
-
   @BeanProperty
   var treeModel: TreeModel = TreeModel.TINY_TREE
 
@@ -57,47 +47,38 @@ class DocumentBuilder (var config: Configuration) {
 
   private var projectionQuery: XQueryExecutable = _
 
-  def setDTDValidation(option: Boolean): Unit = {
+  def setDTDValidation(option: Boolean): Unit =
     dtdValidation = option
-  }
 
   def isDTDValidation: Boolean = dtdValidation
 
-  def setWhitespaceStrippingPolicy(policy: WhitespaceStrippingPolicy): Unit = {
+  def setWhitespaceStrippingPolicy(policy: WhitespaceStrippingPolicy): Unit =
     whitespacePolicy = policy
-  }
 
   def getWhitespaceStrippingPolicy: WhitespaceStrippingPolicy =
     whitespacePolicy
 
   def setBaseURI(uri: URI): Unit = {
-    if (!uri.isAbsolute) {
+    if (! uri.isAbsolute)
       throw new IllegalArgumentException("Supplied base URI must be absolute")
-    }
     base_URI = uri
   }
 
-  def setDocumentProjectionQuery(query: XQueryExecutable): Unit = {
+  def setDocumentProjectionQuery(query: XQueryExecutable): Unit =
     this.projectionQuery = query
-  }
 
   def getDocumentProjectionQuery: XQueryExecutable = this.projectionQuery
 
   def build(source: Source): XdmNode = {
-    if (source == null) {
+    if (source == null)
       throw new NullPointerException("source")
-    }
-    if (!(whitespacePolicy == WhitespaceStrippingPolicy.UNSPECIFIED ||
+    if (! (whitespacePolicy == WhitespaceStrippingPolicy.UNSPECIFIED ||
       whitespacePolicy == WhitespaceStrippingPolicy.IGNORABLE ||
       whitespacePolicy.ordinal() == Whitespace.XSLT)) {
-      if (dtdValidation) {
-        throw new SaxonApiException(
-          "When DTD validation is used, the whitespace stripping policy must be IGNORABLE")
-      }
-      if (schemaValidator != null) {
-        throw new SaxonApiException(
-          "When schema validation is used, the whitespace stripping policy must be IGNORABLE")
-      }
+      if (dtdValidation)
+        throw new SaxonApiException("When DTD validation is used, the whitespace stripping policy must be IGNORABLE")
+      if (schemaValidator != null)
+        throw new SaxonApiException("When schema validation is used, the whitespace stripping policy must be IGNORABLE")
     }
     val options: ParseOptions = new ParseOptions(config.getParseOptions)
     options.setDTDValidationMode(
@@ -151,7 +132,7 @@ class DocumentBuilder (var config: Configuration) {
     val pipe: PipelineConfiguration = config.makePipelineConfiguration
     val builder: Builder = treeModel.makeBuilder(pipe)
     if (base_URI != null) {
-      builder.setSystemId(base_URI.toASCIIString())
+      builder.setSystemId(base_URI.toASCIIString)
     }
     builder.setLineNumbering(lineNumbering)
     var r: Receiver = builder
@@ -167,8 +148,10 @@ class DocumentBuilder (var config: Configuration) {
         pipe,
         config.obtainDefaultSerializationProperties)
       `val`.setPipelineConfiguration(pipe)
-      if (`val`.isInstanceOf[ProxyReceiver]) {
-        `val`.asInstanceOf[ProxyReceiver].setUnderlyingReceiver(r)
+      `val` match {
+        case receiver: ProxyReceiver =>
+          receiver.setUnderlyingReceiver(r)
+        case _ =>
       }
       return `val`
     }
@@ -186,21 +169,21 @@ class DocumentBuilder (var config: Configuration) {
   }
 
   def wrap(node: AnyRef): XdmNode =
-    if (node.isInstanceOf[NodeInfo]) {
-      val nodeInfo: NodeInfo = node.asInstanceOf[NodeInfo]
-      if (nodeInfo.getConfiguration.isCompatible(config)) {
-        new XdmNode(nodeInfo)
-      } else {
-        throw new IllegalArgumentException(
-          "Supplied NodeInfo was created using a different Configuration")
-      }
-    } else {
-      val converter: JPConverter =
-        JPConverter.allocate(node.getClass, null, config)
-      val nodeInfo: NodeInfo = converter
-        .convert(node, new EarlyEvaluationContext(config))
-        .asInstanceOf[NodeInfo]
-      XdmItem.wrapItem(nodeInfo)
+    node match {
+      case nodeInfo: NodeInfo =>
+        if (nodeInfo.getConfiguration.isCompatible(config)) {
+          new XdmNode(nodeInfo)
+        } else {
+          throw new IllegalArgumentException(
+            "Supplied NodeInfo was created using a different Configuration")
+        }
+      case _ =>
+        val converter: JPConverter =
+          JPConverter.allocate(node.getClass, null, config)
+        val nodeInfo: NodeInfo = converter
+          .convert(node, new EarlyEvaluationContext(config))
+          .asInstanceOf[NodeInfo]
+        XdmItem.wrapItem(nodeInfo)
     }
 
 }

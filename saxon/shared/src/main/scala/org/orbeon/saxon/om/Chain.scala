@@ -1,6 +1,6 @@
 package org.orbeon.saxon.om
 
-import java.util._
+import java.{util => ju}
 
 import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.om.Chain.ChainIterator.ChainPosition
@@ -23,10 +23,10 @@ object Chain {
     extends UnfailingIterator
       with GroundedIterator {
 
-    private val queue: Queue[UnfailingIterator] = new LinkedList()
-    private val stack: Stack[ChainPosition] = new Stack()
+    private val queue: ju.Queue[UnfailingIterator] = new ju.LinkedList()
+    private var stack: List[ChainPosition] = Nil
 
-    stack.push(new ChainPosition(thisChain, 0))
+    stack ::= new ChainPosition(thisChain, 0)
 
     def next(): Item = {
       while (!queue.isEmpty) {
@@ -41,10 +41,10 @@ object Chain {
           }
         }
       }
-      while (!stack.isEmpty) {
-        val cp: ChainPosition = stack.peek()
+      while (stack.nonEmpty) {
+        val cp: ChainPosition = stack.head
         if (cp.offset >= cp.chain.children.size) {
-          stack.pop()
+          stack = stack.tail
           //continue
         }
         val gv: GroundedValue = cp.chain.children.get({
@@ -53,7 +53,7 @@ object Chain {
         })
         gv match {
           case chain: Chain =>
-            stack.push(new ChainPosition(chain, 0))
+            stack ::= new ChainPosition(chain, 0)
           case item: Item =>
             item
           case _ =>
@@ -72,44 +72,38 @@ object Chain {
 
 }
 
-class Chain(private var children: List[GroundedValue]) extends GroundedValue {
+class Chain(private var children: ju.List[GroundedValue]) extends GroundedValue {
 
-  private var extent: List[Item] = null
+  private var extent: ju.List[Item] = null
 
   var size: Int = 0
-
   var copy: Boolean = false
 
   for (gv <- children.asScala) {
-    if (gv.isInstanceOf[Chain]) {
-      if (gv.asInstanceOf[Chain].children.size < 30) {
-        size += gv.asInstanceOf[Chain].children.size
-        copy = true
-      } else {
-        {
-          size += 1;
-          size - 1
+    gv match {
+      case chain: Chain =>
+        if (chain.children.size < 30) {
+          size += chain.children.size
+          copy = true
+        } else {
+          size += 1
         }
-      }
-    } else {
-      {
-        size += 1;
-        size - 1
-      }
+      case _ =>
+        size += 1
     }
   }
 
   if (copy) {
-    this.children = new ArrayList(size)
+    this.children = new ju.ArrayList(size)
     for (gv <- children.asScala) {
-      if (gv.isInstanceOf[Chain]) {
-        if (gv.asInstanceOf[Chain].children.size < 30) {
-          this.children.addAll(gv.asInstanceOf[Chain].children)
-        } else {
+      gv match {
+        case chain: Chain =>
+          if (chain.children.size < 30)
+            this.children.addAll(chain.children)
+          else
+            this.children.add(gv)
+        case _ =>
           this.children.add(gv)
-        }
-      } else {
-        this.children.add(gv)
       }
     }
   }
@@ -118,28 +112,24 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
     if (extent != null)
       return if (extent.isEmpty) null else extent.get(0)
     for (seq <- children.asScala) {
-      val head: Item = seq.head
-      if (head != null) {
-        head
-      }
+      val head = seq.head
+      if (head != null)
+        return head
     }
     null
   }
 
   def iterate(): UnfailingIterator =
-    if (extent != null) {
+    if (extent != null)
       new org.orbeon.saxon.tree.iter.ListIterator(extent)
-    } else {
+    else
       new ChainIterator(this)
-    }
 
   def append(item: Item): Unit = {
-    if (extent != null) {
+    if (extent != null)
       throw new IllegalStateException()
-    }
-    if (item != null) {
+    if (item != null)
       children.add(item.asInstanceOf[GroundedValue])
-    }
   }
 
   private def consolidate(): Unit =
@@ -151,28 +141,26 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
       head
     } else {
       consolidate()
-      if (n >= 0 && n < extent.size) {
+      if (n >= 0 && n < extent.size)
         extent.get(n)
-      } else {
+      else
         null
-      }
     }
 
   def subsequence(start: Int, length: Int): GroundedValue = {
     var startInt = start
     consolidate()
     var newStart: Int = 0
-    if (startInt < 0) {
+    if (startInt < 0)
       startInt = 0
-    } else if (startInt >= extent.size) {
-      EmptySequence.getInstance
-    }
+    else if (startInt >= extent.size)
+      return EmptySequence.getInstance
     newStart = startInt
     var newEnd: Int = 0
     if (length == java.lang.Integer.MAX_VALUE) {
       newEnd = extent.size
     } else if (length < 0) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     } else {
       newEnd = newStart + length
       if (newEnd > extent.size) {
@@ -186,10 +174,9 @@ class Chain(private var children: List[GroundedValue]) extends GroundedValue {
     if (extent != null) {
       extent.size
     } else {
-      var n: Int = 0
-      for (v <- children.asScala) {
+      var n = 0
+      for (v <- children.asScala)
         n += v.getLength
-      }
       n
     }
 

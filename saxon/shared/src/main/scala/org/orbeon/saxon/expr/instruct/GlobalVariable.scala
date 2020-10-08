@@ -1,32 +1,24 @@
 package org.orbeon.saxon.expr.instruct
 
-import org.orbeon.saxon.utils.Configuration
-import org.orbeon.saxon.utils.Controller
-import org.orbeon.saxon.expr._
-import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.model.Affinity
-import org.orbeon.saxon.model.AnyItemType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.SequenceTool
-import org.orbeon.saxon.om.StandardNames
-import org.orbeon.saxon.om.StructuredQName
-import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.trace.ExpressionPresenter
-import org.orbeon.saxon.trace.TraceableComponent
-import org.orbeon.saxon.trans.SymbolicName
-import org.orbeon.saxon.trans.Visibility
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.ManualIterator
-import org.orbeon.saxon.value.IntegerValue
-import org.orbeon.saxon.value.SequenceType
+
 import java.util._
 import java.util.function.BiConsumer
+import java.{lang => jl, util => ju}
 
-import GlobalVariable._
+import org.orbeon.saxon.expr._
+import org.orbeon.saxon.expr.instruct.GlobalVariable._
+import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.lib.NamespaceConstant
+import org.orbeon.saxon.model.{Affinity, AnyItemType, TypeHierarchy}
+import org.orbeon.saxon.om.{GroundedValue, SequenceTool, StandardNames, StructuredQName}
+import org.orbeon.saxon.query.QueryModule.MutableStack
 import org.orbeon.saxon.query.{XQueryFunction, XQueryFunctionLibrary}
+import org.orbeon.saxon.s9api.HostLanguage
+import org.orbeon.saxon.trace.{ExpressionPresenter, TraceableComponent}
+import org.orbeon.saxon.trans.{SymbolicName, Visibility, XPathException}
+import org.orbeon.saxon.tree.iter.ManualIterator
+import org.orbeon.saxon.utils.{Configuration, Controller}
+import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
 import scala.beans.BeanProperty
 //import scala.collection.compat._
@@ -34,56 +26,50 @@ import scala.jdk.CollectionConverters._
 
 object GlobalVariable {
 
-  private def lookForFunctionCycles(
-                                     f: XQueryFunction,
-                                     referees: Stack[Any],
-                                     globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
+  private def lookForFunctionCycles(f: XQueryFunction,
+                                    referees: MutableStack[Any],
+                                    globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
     val body: Expression = f.getBody
     referees.push(f)
-    val list: List[Binding] = new ArrayList[Binding](10)
+    val list: ju.List[Binding] = new ju.ArrayList[Binding](10)
     ExpressionTool.gatherReferencedVariables(body, list)
     for (b <- list.asScala if b.isInstanceOf[GlobalVariable]) {
       b.asInstanceOf[GlobalVariable]
         .lookForCycles(referees, globalFunctionLibrary)
     }
-    val flist: List[SymbolicName] = new ArrayList[SymbolicName]()
+    val flist: ju.List[SymbolicName] = new ju.ArrayList[SymbolicName]()
     ExpressionTool.gatherCalledFunctionNames(body, flist)
     for (s <- flist.asScala) {
-      val qf: XQueryFunction = globalFunctionLibrary.getDeclarationByKey(s)
-      if (!referees.contains(qf)) {
+      val qf = globalFunctionLibrary.getDeclarationByKey(s)
+      if (! referees.stack.contains(qf))
         lookForFunctionCycles(qf, referees, globalFunctionLibrary)
-      }
     }
     referees.pop()
   }
 
-   def setDependencies(`var`: GlobalVariable,
-                                context: XPathContext): Unit = {
+   def setDependencies(`var`: GlobalVariable, context: XPathContext): Unit = {
     var contxt = context
-    val controller: Controller = contxt.getController
-    if (!(contxt.isInstanceOf[XPathContextMajor])) {
+    val controller = contxt.getController
+    if (! contxt.isInstanceOf[XPathContextMajor])
       contxt = getMajorCaller(contxt)
-    }
     while (contxt != null) do {
-      val origin: ContextOriginator =
-        contxt.asInstanceOf[XPathContextMajor].getOrigin
-      if (origin.isInstanceOf[GlobalVariable]) {
-        controller.registerGlobalVariableDependency(
-          origin.asInstanceOf[GlobalVariable],
-          `var`)
-        return
+      val origin = contxt.asInstanceOf[XPathContextMajor].getOrigin
+      origin match {
+        case globalVar: GlobalVariable =>
+          controller.registerGlobalVariableDependency(globalVar, `var`)
+          return
+        case _ =>
       }
       contxt = getMajorCaller(contxt)
-    } while (contxt != null);
+    } while (contxt != null)
   }
 
   private def getMajorCaller(context: XPathContext): XPathContextMajor = {
     var caller: XPathContext = context.getCaller
-    while (!(caller == null || caller
-      .isInstanceOf[XPathContextMajor])) caller = caller.getCaller
+    while (!(caller == null || caller.isInstanceOf[XPathContextMajor]))
+      caller = caller.getCaller
     caller.asInstanceOf[XPathContextMajor]
   }
-
 }
 
 class GlobalVariable
@@ -93,27 +79,18 @@ class GlobalVariable
     with TraceableComponent
     with ContextOriginator {
 
-   var references: List[BindingReference] = new ArrayList(10)
-
+  var references: ju.List[BindingReference] = new ju.ArrayList(10)
   @BeanProperty
   var variableQName: StructuredQName = _
-
   @BeanProperty
   var requiredType: SequenceType = _
-
   private var indexed: Boolean = _
-
   var isPrivate: Boolean = false
-
   var isAssignable: Boolean = false
-
   @BeanProperty
   var originalVariable: GlobalVariable = _
-
   var binderySlotNumber: Int = _
-
   var isRequiredParam: Boolean = _
-
   var isStatic: Boolean = _
 
   def init(select: Expression, qName: StructuredQName): Unit = {
@@ -124,25 +101,22 @@ class GlobalVariable
   override def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_VARIABLE, variableQName)
 
-  override def getTracingTag(): String = "xsl:variable"
+  override def getTracingTag: String = "xsl:variable"
 
-  override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
+  override def gatherProperties(consumer: BiConsumer[String, Any]): Unit =
     consumer.accept("name", getVariableQName)
-  }
 
-  def setStatic(declaredStatic: Boolean): Unit = {
+  def setStatic(declaredStatic: Boolean): Unit =
     isStatic = declaredStatic
-  }
 
   private def getConfiguration: Configuration =
     getPackageData.getConfiguration
 
   def getUltimateOriginalVariable: GlobalVariable =
-    if (originalVariable == null) {
+    if (originalVariable == null)
       this
-    } else {
+    else
       originalVariable.getUltimateOriginalVariable
-    }
 
   def setUnused(unused: Boolean): Unit = {
     this.binderySlotNumber = -9234
@@ -164,40 +138,32 @@ class GlobalVariable
 
   override def getProperty(name: String): AnyRef = null
 
-  override def getProperties: Iterator[String] = {
-    val list: List[String] = Collections.emptyList()
-    list.iterator
-  }
+  override def getProperties: ju.Iterator[String] =
+    Collections.emptyIterator()
 
   def getHostLanguage: HostLanguage.HostLanguage = getPackageData.getHostLanguage
 
-  def setIndexedVariable(): Unit = {
+  def setIndexedVariable(): Unit =
     indexed = true
-  }
 
   def isIndexedVariable: Boolean = indexed
 
-  def setContainsLocals(map: SlotManager): Unit = {
+  def setContainsLocals(map: SlotManager): Unit =
     this.stackFrameMap = map
-  }
 
   def isGlobal: Boolean = true
 
-  def registerReference(ref: BindingReference): Unit = {
+  def registerReference(ref: BindingReference): Unit =
     references.add(ref)
-  }
 
-  def iterateReferences(): Iterator[BindingReference] = references.iterator
+  def iterateReferences(): ju.Iterator[BindingReference] = references.iterator
 
-  def setBinderySlotNumber(s: Int): Unit = {
-    if (!isUnused) {
+  def setBinderySlotNumber(s: Int): Unit =
+    if (! isUnused)
       binderySlotNumber = s
-    }
-  }
 
-  def setRequiredParam(requiredParam: Boolean): Unit = {
+  def setRequiredParam(requiredParam: Boolean): Unit =
     this.isRequiredParam = requiredParam
-  }
 
   def compile(exec: Executable, slot: Int): Unit = {
     val th: TypeHierarchy = getConfiguration.getTypeHierarchy
@@ -211,15 +177,16 @@ class GlobalVariable
       var constantValue: GroundedValue = null
       var properties: Int = 0
       val select: Expression = getBody
-      if (select.isInstanceOf[Literal] && !(this.isInstanceOf[GlobalParam])) {
-        val relation: Affinity.Affinity =
-          th.relationship(select.getItemType, `type`.getPrimaryType)
-        if (relation == Affinity.SAME_TYPE || relation == Affinity.SUBSUMED_BY) {
-          constantValue = select.asInstanceOf[Literal].value
-          `type` = SequenceType.makeSequenceType(
-            SequenceTool.getItemType(constantValue, th),
-            SequenceTool.getCardinality(constantValue))
-        }
+      select match {
+        case literal: Literal if ! this.isInstanceOf[GlobalParam] =>
+          val relation = th.relationship(select.getItemType, `type`.getPrimaryType)
+          if (relation == Affinity.SAME_TYPE || relation == Affinity.SUBSUMED_BY) {
+            constantValue = literal.value
+            `type` = SequenceType.makeSequenceType(
+              SequenceTool.getItemType(constantValue, th),
+              SequenceTool.getCardinality(constantValue))
+          }
+        case _ =>
       }
       if (select != null) {
         properties = select.getSpecialProperties
@@ -254,21 +221,20 @@ class GlobalVariable
         visitor.getStaticContext)
       value2 = value2.optimize(visitor, cit)
       this.body = value2
-      val map: SlotManager = getConfiguration.makeSlotManager
-      val slots: Int = ExpressionTool.allocateSlots(value2, 0, map)
-      if (slots > 0) {
+      val map = getConfiguration.makeSlotManager
+      val slots = ExpressionTool.allocateSlots(value2, 0, map)
+      if (slots > 0)
         setContainsLocals(map)
-      }
-      if (getRequiredType == SequenceType.ANY_SEQUENCE && !(this
-        .isInstanceOf[GlobalParam])) {
+      if (getRequiredType == SequenceType.ANY_SEQUENCE && ! this.isInstanceOf[GlobalParam]) {
         try {
-          val itemType: ItemType = value.getItemType
-          val cardinality: Int = value.getCardinality
-          this.requiredType =
-            SequenceType.makeSequenceType(itemType, cardinality)
+          val itemType = value.getItemType
+          val cardinality = value.getCardinality
+          this.requiredType = SequenceType.makeSequenceType(itemType, cardinality)
           var constantValue: GroundedValue = null
-          if (value2.isInstanceOf[Literal]) {
-            constantValue = value2.asInstanceOf[Literal].value
+          value2 match {
+            case literal: Literal =>
+              constantValue = literal.value
+            case _ =>
           }
           for (reference <- references.asScala
                if reference.isInstanceOf[VariableReference]) {
@@ -280,39 +246,34 @@ class GlobalVariable
                 value.getSpecialProperties)
           }
         } catch {
-          case err: Exception => {}
-
+          case _: Exception =>
         }
       }
     }
   }
 
-  def lookForCycles(referees: Stack[Any],
-                    globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
-    if (referees.contains(this)) {
-      val s: Int = referees.indexOf(this)
+  def lookForCycles(referees: MutableStack[Any], globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
+
+    if (referees.stack.contains(this)) {
+      val s = referees.stack.indexOf(this)
       referees.push(this)
-      val messageBuilder: StringBuilder = new StringBuilder(
-        "Circular definition of global variable: $" + getVariableQName.getDisplayName)
-      for (i <- s until referees.size - 1) {
-        if (i != s) {
+      val messageBuilder= new jl.StringBuilder("Circular definition of global variable: $" + getVariableQName.getDisplayName)
+      for (i <- s until referees.stack.size - 1) {
+        if (i != s)
           messageBuilder.append(", which")
-        }
-        if (referees.get(i + 1).isInstanceOf[GlobalVariable]) {
-          val next: GlobalVariable =
-            referees.get(i + 1).asInstanceOf[GlobalVariable]
-          messageBuilder
-            .append(" uses $")
-            .append(next.getVariableQName.getDisplayName)
-        } else if (referees.get(i + 1).isInstanceOf[XQueryFunction]) {
-          val next: XQueryFunction =
-            referees.get(i + 1).asInstanceOf[XQueryFunction]
-          messageBuilder
-            .append(" calls ")
-            .append(next.getFunctionName.getDisplayName)
-            .append("#")
-            .append(next.getNumberOfArguments)
-            .append("()")
+        referees.stack(i + 1) match {
+          case next: GlobalVariable =>
+            messageBuilder
+              .append(" uses $")
+              .append(next.getVariableQName.getDisplayName)
+          case next: XQueryFunction =>
+            messageBuilder
+              .append(" calls ")
+              .append(next.getFunctionName.getDisplayName)
+              .append("#")
+              .append(next.getNumberOfArguments)
+              .append("()")
+          case _ =>
         }
       }
       var message: String = messageBuilder.toString
@@ -320,9 +281,12 @@ class GlobalVariable
       val err = new XPathException(message)
       var errorCode: String = null
       errorCode =
-        if (getPackageData.isXSLT) "XTDE0640"
-        else if (s == 0 && referees.size == 2) "XPST0008"
-        else "XQDY0054"
+        if (getPackageData.isXSLT)
+          "XTDE0640"
+        else if (s == 0 && referees.stack.size == 2)
+          "XPST0008"
+        else
+          "XQDY0054"
       err.setErrorCode(errorCode)
       err.setIsStaticError(true)
       err.setLocation(getLocation)
@@ -331,19 +295,18 @@ class GlobalVariable
     val select: Expression = getBody
     if (select != null) {
       referees.push(this)
-      val list: List[Binding] = new ArrayList[Binding](10)
+      val list: ju.List[Binding] = new ju.ArrayList[Binding](10)
       ExpressionTool.gatherReferencedVariables(select, list)
       for (b <- list.asScala if b.isInstanceOf[GlobalVariable]) {
         b.asInstanceOf[GlobalVariable]
           .lookForCycles(referees, globalFunctionLibrary)
       }
-      val flist: List[SymbolicName] = new ArrayList[SymbolicName]()
+      val flist: ju.List[SymbolicName] = new ju.ArrayList[SymbolicName]()
       ExpressionTool.gatherCalledFunctionNames(select, flist)
       for (s <- flist.asScala) {
-        val f: XQueryFunction = globalFunctionLibrary.getDeclarationByKey(s)
-        if (!referees.contains(f)) {
+        val f = globalFunctionLibrary.getDeclarationByKey(s)
+        if (! referees.stack.contains(f))
           lookForFunctionCycles(f, referees, globalFunctionLibrary)
-        }
       }
       referees.pop()
     }
@@ -352,56 +315,51 @@ class GlobalVariable
   def getSelectValue(context: XPathContext, target: Component): GroundedValue = {
     val select: Expression = getBody
     if (select == null) {
-      throw new AssertionError(
-        "*** No select expression for global variable $" + getVariableQName.getDisplayName +
-          "!!")
-    } else if (select.isInstanceOf[Literal]) {
-      select.asInstanceOf[Literal].value
-    } else {
-      try {
-        val controller: Controller = context.getController
-        val exec: Executable = controller.getExecutable
-        var hasAccessToGlobalContext: Boolean = true
-       /* if (exec.isInstanceOf[PreparedStylesheet]) { //PreparedStylesheet scala class does not exist
-          hasAccessToGlobalContext = target == null ||
-            target.getDeclaringPackage ==
-              exec.asInstanceOf[PreparedStylesheet].getTopLevelPackage //PreparedStylesheet scala class does not exist
-        }*/
-        val c2: XPathContextMajor = context.newCleanContext()
-        c2.setOrigin(this)
-        if (hasAccessToGlobalContext) {
-          val mi: ManualIterator = new ManualIterator(
-            context.getController.getGlobalContextItem)
-          c2.setCurrentIterator(mi)
-        } else {
-          c2.setCurrentIterator(null)
-        }
-        if (getStackFrameMap != null) {
-          c2.openStackFrame(getStackFrameMap)
-        }
-        c2.setCurrentComponent(target)
-        val savedOutputState: Int = c2.getTemporaryOutputState
-        c2.setTemporaryOutputState(StandardNames.XSL_VARIABLE)
-        c2.setCurrentOutputUri(null)
-        var result: GroundedValue = null
-        result =
-          if (indexed)
-            c2.getConfiguration.makeSequenceExtent(select,
-              FilterExpression.FILTERED,
-              c2)
-          else select.iterate(c2).materialize()
-        c2.setTemporaryOutputState(savedOutputState)
-        result
-      } catch {
-        case e: XPathException => {
-          if (!getVariableQName.hasURI(
-            NamespaceConstant.SAXON_GENERATED_VARIABLE)) {
-            e.setIsGlobalError(true)
+      throw new AssertionError("*** No select expression for global variable $" + getVariableQName.getDisplayName + "!!")
+    } else select match {
+      case literal: Literal =>
+        literal.value
+      case _ =>
+        try {
+          val controller: Controller = context.getController
+          val exec: Executable = controller.getExecutable
+          var hasAccessToGlobalContext: Boolean = true
+          /* if (exec.isInstanceOf[PreparedStylesheet]) { //PreparedStylesheet scala class does not exist
+             hasAccessToGlobalContext = target == null ||
+               target.getDeclaringPackage ==
+                 exec.asInstanceOf[PreparedStylesheet].getTopLevelPackage //PreparedStylesheet scala class does not exist
+           }*/
+          val c2: XPathContextMajor = context.newCleanContext()
+          c2.setOrigin(this)
+          if (hasAccessToGlobalContext) {
+            val mi: ManualIterator = new ManualIterator(
+              context.getController.getGlobalContextItem)
+            c2.setCurrentIterator(mi)
+          } else {
+            c2.setCurrentIterator(null)
           }
-          throw e
+          if (getStackFrameMap != null) {
+            c2.openStackFrame(getStackFrameMap)
+          }
+          c2.setCurrentComponent(target)
+          val savedOutputState: Int = c2.getTemporaryOutputState
+          c2.setTemporaryOutputState(StandardNames.XSL_VARIABLE)
+          c2.setCurrentOutputUri(null)
+          var result: GroundedValue = null
+          result =
+            if (indexed)
+              c2.getConfiguration.makeSequenceExtent(select,
+                FilterExpression.FILTERED,
+                c2)
+            else select.iterate(c2).materialize()
+          c2.setTemporaryOutputState(savedOutputState)
+          result
+        } catch {
+          case e: XPathException =>
+            if (! getVariableQName.hasURI(NamespaceConstant.SAXON_GENERATED_VARIABLE))
+              e.setIsGlobalError(true)
+            throw e
         }
-
-      }
     }
   }
 
@@ -427,8 +385,10 @@ class GlobalVariable
     }
     val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
-      if (v.isInstanceOf[Bindery.FailureValue]) {
-        throw v.asInstanceOf[Bindery.FailureValue].getObject
+      v match {
+        case value: Bindery.FailureValue =>
+          throw value.getObject
+        case _ =>
       }
       v
     } else {
@@ -455,7 +415,7 @@ class GlobalVariable
       }
        b.saveGlobalVariableValue(this, value)
      } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         b.setNotExecuting(this)
         if (err.isInstanceOf[XPathException.Circularity]) {
           err.setErrorCode(
@@ -468,8 +428,6 @@ class GlobalVariable
         } else {
           throw err
         }
-      }
-
     }
   }
 
@@ -496,41 +454,31 @@ class GlobalVariable
     presenter.emitAttribute("as", getRequiredType.toAlphaCode)
     presenter.emitAttribute("line", getLineNumber.toString)
     presenter.emitAttribute("module", getSystemId)
-    if (getStackFrameMap != null) {
-      presenter.emitAttribute("slots",
-        getStackFrameMap.getNumberOfVariables.toString)
-    }
+    if (getStackFrameMap != null)
+      presenter.emitAttribute("slots", getStackFrameMap.getNumberOfVariables.toString)
     if (getDeclaringComponent != null) {
       val vis: Visibility.Visibility = getDeclaringComponent.getVisibility
-      if (vis != null) {
+      if (vis != null)
         presenter.emitAttribute("visibility", vis.toString)
-      }
     }
     val flags: String = getFlags
-    if (!flags.isEmpty) {
+    if (!flags.isEmpty)
       presenter.emitAttribute("flags", flags)
-    }
-    if (getBody != null) {
+    if (getBody != null)
       getBody.export(presenter)
-    }
     presenter.endElement()
   }
 
    def getFlags: String = {
     var flags: String = ""
-    if (isAssignable) {
+    if (isAssignable)
       flags += "a"
-    }
-    if (indexed) {
+    if (indexed)
       flags += "x"
-    }
-    if (isRequiredParam) {
+    if (isRequiredParam)
       flags += "r"
-    }
-    if (isStatic) {
+    if (isStatic)
       flags += "s"
-    }
     flags
   }
-
 }

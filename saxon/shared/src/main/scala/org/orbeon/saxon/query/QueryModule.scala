@@ -1,34 +1,40 @@
 package org.orbeon.saxon.query
 
-import org.orbeon.saxon.utils.Configuration
+import java.net.{URI, URISyntaxException}
+import java.{util => ju}
+
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct._
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.functions.FunctionLibrary
-import org.orbeon.saxon.functions.FunctionLibraryList
-import org.orbeon.saxon.functions.ResolveURI
-import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
-import org.orbeon.saxon.functions.registry.ConstructorFunctionLibrary
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.lib.Validation
-import org.orbeon.saxon.model.AnyItemType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.SchemaType
+import org.orbeon.saxon.functions.registry.{BuiltInFunctionSet, ConstructorFunctionLibrary}
+import org.orbeon.saxon.functions.{FunctionLibrary, FunctionLibraryList, ResolveURI}
+import org.orbeon.saxon.lib.{NamespaceConstant, Validation}
+import org.orbeon.saxon.model.{AnyItemType, ItemType, SchemaType}
 import org.orbeon.saxon.om._
-import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.s9api.Location
-import org.orbeon.saxon.s9api.XmlProcessingError
-import org.orbeon.saxon.trace.ExpressionPresenter
-import org.orbeon.saxon.trace.TraceCodeInjector
+import org.orbeon.saxon.query.QueryModule.MutableStack
+import org.orbeon.saxon.s9api.{HostLanguage, Location, XmlProcessingError}
+import org.orbeon.saxon.trace.{ExpressionPresenter, TraceCodeInjector}
 import org.orbeon.saxon.trans._
-import java.net.URI
-import java.net.URISyntaxException
-import java.util._
+import org.orbeon.saxon.utils.Configuration
+
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 object QueryModule {
+
+  class MutableStack[T] {
+
+    var stack: List[T] = Nil
+
+    def push(t: T): Unit = stack ::= t
+    def peek: T = stack.head
+    def pop(): T = {
+      val r = stack.head
+      stack = stack.tail
+      r
+    }
+  }
 
   def makeQueryModule(baseURI: String,
                       executable: Executable,
@@ -73,107 +79,60 @@ object QueryModule {
     }
     module
   }
-
-  private class ActiveNamespace {
-
-    var prefix: String = _
-
-    var uri: String = _
-
-  }
-
 }
 
 class QueryModule extends StaticContext {
 
   var isMainModule: Boolean = true
-
   var sqc: StaticQueryContext = _
   private var config: Configuration = sqc.getConfiguration
-
   @BeanProperty
   var userQueryContext: StaticQueryContext = _
-
   private var topModule: QueryModule = this
-
   private var baseURI: String = sqc.getBaseURI
-
   @BeanProperty
   var location_URI: URI = if (baseURI == null) null else new URI(baseURI)
-
   @BeanProperty
   var moduleNamespace: String = _
-
-  private var explicitPrologNamespaces: HashMap[String, String] = _
-
-  private var activeNamespaces: Stack[NamespaceBinding] = new Stack()
-
-  private var variables: HashMap[StructuredQName, GlobalVariable] = _
-
-  private var libraryVariables: HashMap[StructuredQName, GlobalVariable] = _
-
-  private var undeclaredVariables: HashMap[StructuredQName, UndeclaredVariable] =
-    _
-
-  private var importedSchemata: HashSet[String] = _
-
-  private var loadedSchemata: HashMap[String, HashSet[String]] = _
-
+  private var explicitPrologNamespaces: ju.HashMap[String, String] = _
+  private var activeNamespaces: List[NamespaceBinding] = Nil
+  private var variables: ju.HashMap[StructuredQName, GlobalVariable] = _
+  private var libraryVariables: ju.HashMap[StructuredQName, GlobalVariable] = _
+  private var undeclaredVariables: ju.HashMap[StructuredQName, UndeclaredVariable] = _
+  private var importedSchemata: ju.HashSet[String] = _
+  private var loadedSchemata: ju.HashMap[String, ju.HashSet[String]] = _
   @BeanProperty
   var executable: Executable = sqc.makeExecutable()
-
-  private var importers: List[QueryModule] = null
-
+  private var importers: ju.List[QueryModule] = null
   private var functionLibraryList: FunctionLibraryList = _
-
   @BeanProperty
   var globalFunctionLibrary: XQueryFunctionLibrary = _
-
   private var localFunctionLibraryNr: Int = _
-
   private var importedFunctionLibraryNr: Int = _
-
   private var unboundFunctionLibraryNr: Int = _
-
-  private var importedModuleNamespaces: Set[String] = _
-
+  private var importedModuleNamespaces: ju.Set[String] = _
   @BooleanBeanProperty
   var inheritNamespaces: Boolean = true
-
   @BooleanBeanProperty
   var preserveNamespaces: Boolean = true
-
   @BeanProperty
   var constructionMode: Int = Validation.PRESERVE
-
   @BeanProperty
   var defaultFunctionNamespace: String = _
-
   private var defaultElementNamespace: String = _
-
   private var preserveSpace: Boolean = false
-
   private var defaultEmptyLeast: Boolean = true
-
   private var defaultCollationName: String = sqc.getDefaultCollationName
-
   var revalidationMode: Int = Validation.SKIP
-
   var isUpdating: Boolean = false
-
   @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
-
   @BeanProperty
-  lazy val decimalFormatManager: DecimalFormatManager =
-    new DecimalFormatManager(HostLanguage.XQUERY, getXPathVersion)
-
+  lazy val decimalFormatManager: DecimalFormatManager = new DecimalFormatManager(HostLanguage.XQUERY, getXPathVersion)
   @BeanProperty
   var codeInjector: CodeInjector = _
-
   @BeanProperty
   var packageData: PackageData = _
-
   private var moduleStaticContext: RetainedStaticContext = null
 
   private var moduleLocation: Location =
@@ -191,7 +150,7 @@ class QueryModule extends StaticContext {
 
   pd.setSchemaAware(isSchemaAware)
 
-  var vars: Iterator[GlobalVariable] = sqc.iterateDeclaredGlobalVariables()
+  var vars: ju.Iterator[GlobalVariable] = sqc.iterateDeclaredGlobalVariables()
   while (vars.hasNext) {
     val `var`: GlobalVariable = vars.next()
     declareVariable(`var`)
@@ -217,28 +176,28 @@ class QueryModule extends StaticContext {
     } else {
       topModule = importer.topModule
       userQueryContext = importer.userQueryContext
-      importers = new ArrayList(2)
+      importers = new ju.ArrayList(2)
       importers.add(importer)
     }
     init(userQueryContext)
     packageData = importer.getPackageData
-    activeNamespaces = new Stack()
+    activeNamespaces = Nil
     executable = null
     optimizerOpts = importer.optimizerOpts
   }
 
   private def init(sqc: StaticQueryContext): Unit = {
     userQueryContext = sqc
-    variables = new HashMap(10)
-    undeclaredVariables = new HashMap(5)
+    variables = new ju.HashMap(10)
+    undeclaredVariables = new ju.HashMap(5)
     if (isTopLevelModule) {
-      libraryVariables = new HashMap(10)
+      libraryVariables = new ju.HashMap(10)
     }
-    importedSchemata = new HashSet(5)
-    importedModuleNamespaces = new HashSet(5)
+    importedSchemata = new ju.HashSet(5)
+    importedModuleNamespaces = new ju.HashSet(5)
     moduleNamespace = null
-    activeNamespaces = new Stack()
-    explicitPrologNamespaces = new HashMap(10)
+    activeNamespaces = Nil
+    explicitPrologNamespaces = new ju.HashMap(10)
     if (sqc != null) {
       inheritNamespaces = sqc.isInheritNamespaces
       preserveNamespaces = sqc.isPreserveNamespaces
@@ -300,25 +259,21 @@ class QueryModule extends StaticContext {
   }
 
   def mayImportModule(namespace: String): Boolean = {
-    if (namespace == moduleNamespace) {
+    if (namespace == moduleNamespace)
       return false
-    }
-    if (importers == null) {
+    if (importers == null)
       return true
-    }
-    for (importer <- importers.asScala if !importer.mayImportModule(namespace)) {
-      false
-    }
+    for (importer <- importers.asScala if ! importer.mayImportModule(namespace))
+      return false
     true
   }
 
   def isSchemaAware: Boolean = executable.isSchemaAware
 
   def makeRetainedStaticContext(): RetainedStaticContext =
-    if (activeNamespaces.empty()) {
-      if (moduleStaticContext == null) {
+    if (activeNamespaces.isEmpty) {
+      if (moduleStaticContext == null)
         moduleStaticContext = new RetainedStaticContext(this)
-      }
       moduleStaticContext
     } else {
       new RetainedStaticContext(this)
@@ -342,9 +297,8 @@ class QueryModule extends StaticContext {
       .asInstanceOf[ImportedFunctionLibrary]
 
   def addImportedNamespace(uri: String): Unit = {
-    if (importedModuleNamespaces == null) {
-      importedModuleNamespaces = new HashSet(5)
-    }
+    if (importedModuleNamespaces == null)
+      importedModuleNamespaces = new ju.HashSet(5)
     importedModuleNamespaces.add(uri)
     getImportedFunctionLibrary.addImportedNamespace(uri)
   }
@@ -354,7 +308,7 @@ class QueryModule extends StaticContext {
 
   def getTopLevelModule: QueryModule = topModule
 
-  def getContainingLocation(): Location = moduleLocation
+  def getContainingLocation: Location = moduleLocation
 
   def setLocationURI(uri: URI): Unit = {
     location_URI = uri
@@ -364,11 +318,10 @@ class QueryModule extends StaticContext {
   def getSystemId: String =
     if (location_URI == null) null else location_URI.toString
 
-  def setBaseURI(uri: String): Unit = {
+  def setBaseURI(uri: String): Unit =
     baseURI = uri
-  }
 
-  def getStaticBaseURI(): String = baseURI
+  def getStaticBaseURI: String = baseURI
 
   def getGlobalStackFrameMap: SlotManager =
     getPackageData.getGlobalSlotManager
@@ -396,7 +349,7 @@ class QueryModule extends StaticContext {
     }
     variables.put(key, `var`)
     getPackageData.addGlobalVariable(`var`)
-    val libVars: HashMap[StructuredQName, GlobalVariable] =
+    val libVars: ju.HashMap[StructuredQName, GlobalVariable] =
       getTopLevelModule.libraryVariables
     val old: GlobalVariable = libVars.get(key)
     if (old == null || old == `var`) {} else {
@@ -421,11 +374,11 @@ class QueryModule extends StaticContext {
     libraryVariables.values
 
   def fixupGlobalVariables(
-                            globalVariableMap: SlotManager): List[GlobalVariable] = {
-    val varDefinitions: List[GlobalVariable] =
-      new ArrayList[GlobalVariable](20)
-    val iters: List[Iterator[GlobalVariable]] =
-      new ArrayList[Iterator[GlobalVariable]]()
+                            globalVariableMap: SlotManager): ju.List[GlobalVariable] = {
+    val varDefinitions: ju.List[GlobalVariable] =
+      new ju.ArrayList[GlobalVariable](20)
+    val iters: ju.List[ju.Iterator[GlobalVariable]] =
+      new ju.ArrayList[ju.Iterator[GlobalVariable]]()
     iters.add(variables.values.iterator)
     iters.add(libraryVariables.values.iterator)
     for (iter <- iters.asScala) {
@@ -442,130 +395,125 @@ class QueryModule extends StaticContext {
     varDefinitions
   }
 
-  def lookForModuleCycles(referees: Stack[QueryModule],
-                          lineNumber: Int): Unit = {
-    if (referees.contains(this)) {
-      val s: Int = referees.indexOf(this)
-      referees.push(this)
-      val message: StringBuilder = new StringBuilder(
-        "Circular dependency between modules. ")
-      for (i <- s until referees.size - 1) {
-        val next: QueryModule = referees.get(i + 1)
-        if (i == s) {
-          message
-            .append("Module ")
-            .append(getSystemId)
-            .append(" references module ")
-            .append(next.getSystemId)
-        } else {
-          message.append(", which references module ").append(next.getSystemId)
-        }
-      }
-      message.append('.')
-      val err = new XPathException(message.toString)
-      err.setErrorCode("XQST0093")
-      err.setIsStaticError(true)
-      val loc: Loc = new Loc(getSystemId, lineNumber, -1)
-      err.setLocator(loc)
-      throw err
-    } else {
-      referees.push(this)
-      val viter: Iterator[GlobalVariable] = getModuleVariables
-      while (viter.hasNext) {
-        val gv: GlobalVariable = viter.next()
-        val select: Expression = gv.getBody
-        if (select != null) {
-          val list: List[Binding] = new ArrayList[Binding](10)
-          ExpressionTool.gatherReferencedVariables(select, list)
-          for (b <- list.asScala if b.isInstanceOf[GlobalVariable]) {
-            val uri: String = b.asInstanceOf[GlobalVariable].getSystemId
-            val qName: StructuredQName = b.getVariableQName
-            val synthetic: Boolean =
-              qName.hasURI(NamespaceConstant.SAXON_GENERATED_VARIABLE)
-            if (!synthetic && uri != null && uri != getSystemId) {
-              val sqc: QueryModule =
-                executable.getQueryModuleWithSystemId(uri, topModule)
-              if (sqc != null) {
-                sqc.lookForModuleCycles(
-                  referees,
-                  b.asInstanceOf[GlobalVariable].getLineNumber)
-              }
-            }
-          }
-          val fList: List[UserFunction] = new ArrayList[UserFunction](5)
-          ExpressionTool.gatherCalledFunctions(select, fList)
-          for (f <- fList.asScala) {
-            val uri: String = f.getSystemId
-            if (uri != null && uri != getSystemId) {
-              val sqc: QueryModule =
-                executable.getQueryModuleWithSystemId(uri, topModule)
-              if (sqc != null) {
-                sqc.lookForModuleCycles(referees, f.getLineNumber)
-              }
-            }
-          }
-        }
-      }
-      val fiter: Iterator[XQueryFunction] =
-        getLocalFunctionLibrary.getFunctionDefinitions
-      while (fiter.hasNext) {
-        val gf: XQueryFunction = fiter.next()
-        val body: Expression = gf.getUserFunction.getBody
-        if (body != null) {
-          val vList: List[Binding] = new ArrayList[Binding](10)
-          ExpressionTool.gatherReferencedVariables(body, vList)
-          for (b <- vList.asScala if b.isInstanceOf[GlobalVariable]) {
-            val uri: String = b.asInstanceOf[GlobalVariable].getSystemId
-            val qName: StructuredQName = b.getVariableQName
-            val synthetic: Boolean = qName.hasURI(NamespaceConstant.SAXON) && "gg" == qName.getPrefix
-            if (!synthetic && uri != null && uri != getSystemId) {
-              val sqc: QueryModule =
-                executable.getQueryModuleWithSystemId(uri, topModule)
-              if (sqc != null) {
-                sqc.lookForModuleCycles(
-                  referees,
-                  b.asInstanceOf[GlobalVariable].getLineNumber)
-              }
-            }
-          }
-          val fList: List[UserFunction] = new ArrayList[UserFunction](10)
-          ExpressionTool.gatherCalledFunctions(body, fList)
-          for (f <- fList.asScala) {
-            val uri: String = f.getSystemId
-            if (uri != null && uri != getSystemId) {
-              val sqc: QueryModule =
-                executable.getQueryModuleWithSystemId(uri, topModule)
-              if (sqc != null) {
-                sqc.lookForModuleCycles(referees, f.getLineNumber)
-              }
-            }
-          }
-        }
-      }
-      referees.pop()
-    }
-  }
+//  def lookForModuleCycles(_referees: List[QueryModule], lineNumber: Int): Unit = {
+//
+//    var referees = _referees
+//
+//    if (referees.contains(this)) {
+//      val s: Int = referees.indexOf(this)
+//      referees ::= this
+//      val message = new jl.StringBuilder("Circular dependency between modules. ")
+//      for (i <- s until referees.size - 1) {
+//        val next: QueryModule = referees(i + 1)
+//        if (i == s) {
+//          message
+//            .append("Module ")
+//            .append(getSystemId)
+//            .append(" references module ")
+//            .append(next.getSystemId)
+//        } else {
+//          message.append(", which references module ").append(next.getSystemId)
+//        }
+//      }
+//      message.append('.')
+//      val err = new XPathException(message.toString)
+//      err.setErrorCode("XQST0093")
+//      err.setIsStaticError(true)
+//      val loc: Loc = new Loc(getSystemId, lineNumber, -1)
+//      err.setLocator(loc)
+//      throw err
+//    } else {
+//      referees ::= this
+//      val viter: Iterator[GlobalVariable] = getModuleVariables
+//      while (viter.hasNext) {
+//        val gv: GlobalVariable = viter.next()
+//        val select: Expression = gv.getBody
+//        if (select != null) {
+//          val list: ju.List[Binding] = new ju.ArrayList[Binding](10)
+//          ExpressionTool.gatherReferencedVariables(select, list)
+//          for (b <- list.asScala if b.isInstanceOf[GlobalVariable]) {
+//            val uri: String = b.asInstanceOf[GlobalVariable].getSystemId
+//            val qName: StructuredQName = b.getVariableQName
+//            val synthetic: Boolean =
+//              qName.hasURI(NamespaceConstant.SAXON_GENERATED_VARIABLE)
+//            if (!synthetic && uri != null && uri != getSystemId) {
+//              val sqc: QueryModule =
+//                executable.getQueryModuleWithSystemId(uri, topModule)
+//              if (sqc != null) {
+//                sqc.lookForModuleCycles(
+//                  referees,
+//                  b.asInstanceOf[GlobalVariable].getLineNumber)
+//              }
+//            }
+//          }
+//          val fList: ju.List[UserFunction] = new ju.ArrayList[UserFunction](5)
+//          ExpressionTool.gatherCalledFunctions(select, fList)
+//          for (f <- fList.asScala) {
+//            val uri: String = f.getSystemId
+//            if (uri != null && uri != getSystemId) {
+//              val sqc: QueryModule =
+//                executable.getQueryModuleWithSystemId(uri, topModule)
+//              if (sqc != null) {
+//                sqc.lookForModuleCycles(referees, f.getLineNumber)
+//              }
+//            }
+//          }
+//        }
+//      }
+//      val fiter: ju.Iterator[XQueryFunction] =
+//        getLocalFunctionLibrary.getFunctionDefinitions
+//      while (fiter.hasNext) {
+//        val gf: XQueryFunction = fiter.next()
+//        val body: Expression = gf.getUserFunction.getBody
+//        if (body != null) {
+//          val vList: ju.List[Binding] = new ju.ArrayList[Binding](10)
+//          ExpressionTool.gatherReferencedVariables(body, vList)
+//          for (b <- vList.asScala if b.isInstanceOf[GlobalVariable]) {
+//            val uri: String = b.asInstanceOf[GlobalVariable].getSystemId
+//            val qName: StructuredQName = b.getVariableQName
+//            val synthetic: Boolean = qName.hasURI(NamespaceConstant.SAXON) && "gg" == qName.getPrefix
+//            if (!synthetic && uri != null && uri != getSystemId) {
+//              val sqc: QueryModule =
+//                executable.getQueryModuleWithSystemId(uri, topModule)
+//              if (sqc != null) {
+//                sqc.lookForModuleCycles(
+//                  referees,
+//                  b.asInstanceOf[GlobalVariable].getLineNumber)
+//              }
+//            }
+//          }
+//          val fList: ju.List[UserFunction] = new ju.ArrayList[UserFunction](10)
+//          ExpressionTool.gatherCalledFunctions(body, fList)
+//          for (f <- fList.asScala) {
+//            val uri: String = f.getSystemId
+//            if (uri != null && uri != getSystemId) {
+//              val sqc: QueryModule =
+//                executable.getQueryModuleWithSystemId(uri, topModule)
+//              if (sqc != null) {
+//                sqc.lookForModuleCycles(referees, f.getLineNumber)
+//              }
+//            }
+//          }
+//        }
+//      }
+//      referees.pop()
+//    }
+//  }
 
-  def getModuleVariables: Iterator[GlobalVariable] =
+  def getModuleVariables: ju.Iterator[GlobalVariable] =
     variables.values.iterator
 
-  def checkForCircularities(
-                             compiledVars: List[GlobalVariable],
-                             globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
-    val iter: Iterator[GlobalVariable] = compiledVars.iterator
-    var stack: Stack[Any] = null
+  def checkForCircularities(compiledVars: ju.List[GlobalVariable], globalFunctionLibrary: XQueryFunctionLibrary): Unit = {
+    val iter: ju.Iterator[GlobalVariable] = compiledVars.iterator
+    val stack = new MutableStack[Any]
     while (iter.hasNext) {
-      if (stack == null) {
-        stack = new Stack()
-      }
-      val gv: GlobalVariable = iter.next()
-      if (gv != null) {
+      val gv = iter.next()
+      if (gv != null)
         gv.lookForCycles(stack, globalFunctionLibrary)
-      }
     }
   }
 
-  def typeCheckGlobalVariables(compiledVars: List[GlobalVariable]): Unit = {
+  def typeCheckGlobalVariables(compiledVars: ju.List[GlobalVariable]): Unit = {
     val visitor: ExpressionVisitor = ExpressionVisitor.make(this)
     for (compiledVar <- compiledVars.asScala) {
       compiledVar.typeCheck(visitor)
@@ -637,7 +585,7 @@ class QueryModule extends StaticContext {
     vref
   }
 
-  def getFunctionLibrary(): FunctionLibrary = functionLibraryList
+  def getFunctionLibrary: FunctionLibrary = functionLibraryList
 
   def getLocalFunctionLibrary: XQueryFunctionLibrary =
     functionLibraryList
@@ -671,17 +619,14 @@ class QueryModule extends StaticContext {
     lib.bindUnboundFunctionReferences(functionLibraryList.asInstanceOf[XQueryFunctionBinder], getConfiguration)
   }
 
-  def fixupGlobalFunctions(): Unit = {
+  def fixupGlobalFunctions(): Unit =
     globalFunctionLibrary.fixupGlobalFunctions(this)
-  }
 
-  def optimizeGlobalFunctions(): Unit = {
+  def optimizeGlobalFunctions(): Unit =
     globalFunctionLibrary.optimizeGlobalFunctions(this)
-  }
 
-  def explainGlobalFunctions(out: ExpressionPresenter): Unit = {
+  def explainGlobalFunctions(out: ExpressionPresenter): Unit =
     globalFunctionLibrary.asInstanceOf[QueryModule].explainGlobalFunctions(out)
-  }
 
   def getUserDefinedFunction(uri: String,
                              localName: String,
@@ -719,29 +664,28 @@ class QueryModule extends StaticContext {
 
   def addImportedSchema(targetNamespace: String,
                         baseURI: String,
-                        locationURIs: List[String]): Unit = {
+                        locationURIs: ju.List[String]): Unit = {
     if (importedSchemata == null) {
-      importedSchemata = new HashSet(5)
+      importedSchemata = new ju.HashSet(5)
     }
     importedSchemata.add(targetNamespace)
-    var loadedSchemata: HashMap[String, HashSet[String]] =
+    var loadedSchemata: ju.HashMap[String, ju.HashSet[String]] =
       getTopLevelModule.loadedSchemata
     if (loadedSchemata == null) {
-      loadedSchemata = new HashMap(5)
+      loadedSchemata = new ju.HashMap(5)
       getTopLevelModule.loadedSchemata = loadedSchemata
     }
-    var entries: HashSet[String] = loadedSchemata.get(targetNamespace)
+    var entries: ju.HashSet[String] = loadedSchemata.get(targetNamespace)
     if (entries == null) {
-      entries = new HashSet(locationURIs.size)
+      entries = new ju.HashSet(locationURIs.size)
       loadedSchemata.put(targetNamespace, entries)
     }
     for (relative <- locationURIs.asScala) {
       try {
-        val abs: URI = ResolveURI.makeAbsolute(relative, baseURI)
+        val abs = ResolveURI.makeAbsolute(relative, baseURI)
         entries.add(abs.toString)
       } catch {
-        case e: URISyntaxException => {}
-
+        case _: URISyntaxException =>
       }
     }
   }
@@ -749,59 +693,53 @@ class QueryModule extends StaticContext {
   def isImportedSchema(namespace: String): Boolean =
     importedSchemata != null && importedSchemata.contains(namespace)
 
-  def getImportedSchemaNamespaces(): collection.Set[String] =
+  def getImportedSchemaNamespaces: collection.Set[String] =
     if (importedSchemata == null) {
-      Collections.emptySet().asInstanceOf[collection.Set[String]]
+      ju.Collections.emptySet().asInstanceOf[collection.Set[String]]
     } else {
       importedSchemata.asScala
     }
 
-  def reportStaticError(err: XPathException): Unit = {
-    if (!err.hasBeenReported) {
+  def reportStaticError(err: XPathException): Unit =
+    if (! err.hasBeenReported) {
       reportStaticError(new XmlProcessingException(err))
       err.setHasBeenReported(true)
     }
-  }
 
   def reportStaticError(err: XmlProcessingError): Unit = {
     userQueryContext.getErrorReporter.report(err)
-    if (err.getFatalErrorMessage != null) {
+    if (err.getFatalErrorMessage != null)
       throw new XmlProcessingAbort(err.getFatalErrorMessage)
-    }
   }
 
   def makeEarlyEvaluationContext(): XPathContext =
     new EarlyEvaluationContext(getConfiguration)
 
-  def setDefaultCollationName(collation: String): Unit = {
+  def setDefaultCollationName(collation: String): Unit =
     defaultCollationName = collation
-  }
 
-  override def getDefaultCollationName = {
-    if (defaultCollationName == null) defaultCollationName = NamespaceConstant.CODEPOINT_COLLATION_URI
+  override def getDefaultCollationName: String = {
+    if (defaultCollationName == null)
+      defaultCollationName = NamespaceConstant.CODEPOINT_COLLATION_URI
     defaultCollationName
   }
 
   def declarePrologNamespace(prefix: String, uri: String): Unit = {
-    if (prefix == null) {
-      throw new NullPointerException(
-        "Null prefix supplied to declarePrologNamespace()")
-    }
-    if (uri == null) {
-      throw new NullPointerException(
-        "Null namespace URI supplied to declarePrologNamespace()")
-    }
+
+    if (prefix == null)
+      throw new NullPointerException("Null prefix supplied to declarePrologNamespace()")
+
+    if (uri == null)
+      throw new NullPointerException("Null namespace URI supplied to declarePrologNamespace()")
+
     if ((prefix == "xml") != (uri == NamespaceConstant.XML)) {
-      val err = new XPathException(
-        "Invalid declaration of the XML namespace")
+      val err = new XPathException("Invalid declaration of the XML namespace")
       err.setErrorCode("XQST0070")
       err.setIsStaticError(true)
       throw err
     }
     if (explicitPrologNamespaces.get(prefix) != null) {
-      val err = new XPathException(
-        "Duplicate declaration of namespace prefix \"" + prefix +
-          '"')
+      val err = new XPathException("Duplicate declaration of namespace prefix \"" + prefix + '"')
       err.setErrorCode("XQST0033")
       err.setIsStaticError(true)
       throw err
@@ -811,65 +749,66 @@ class QueryModule extends StaticContext {
   }
 
   def declareActiveNamespace(prefix: String, uri: String): Unit = {
-    if (prefix == null) {
-      throw new NullPointerException(
-        "Null prefix supplied to declareActiveNamespace()")
-    }
-    if (uri == null) {
-      throw new NullPointerException(
-        "Null namespace URI supplied to declareActiveNamespace()")
-    }
-    val entry: NamespaceBinding = new NamespaceBinding(prefix, uri)
-    activeNamespaces.push(entry)
+
+    if (prefix == null)
+      throw new NullPointerException("Null prefix supplied to declareActiveNamespace()")
+
+    if (uri == null)
+      throw new NullPointerException("Null namespace URI supplied to declareActiveNamespace()")
+
+    val entry = new NamespaceBinding(prefix, uri)
+    activeNamespaces ::= entry
   }
 
-  def undeclareNamespace(): Unit = {
-    activeNamespaces.pop()
-  }
+  def undeclareNamespace(): Unit =
+    activeNamespaces = activeNamespaces.tail
 
-  def getLiveNamespaceResolver: NamespaceResolver = new NamespaceResolver() {
-    def getURIForPrefix(prefix: String, useDefault: Boolean): String =
-      checkURIForPrefix(prefix)
-
-    def iteratePrefixes: Iterator[String] =
-      getNamespaceResolver.iteratePrefixes
+  def getLiveNamespaceResolver: NamespaceResolver = new NamespaceResolver {
+    def getURIForPrefix(prefix: String, useDefault: Boolean): String = checkURIForPrefix(prefix)
+    def iteratePrefixes: ju.Iterator[String] = getNamespaceResolver.iteratePrefixes
   }
 
   def checkURIForPrefix(prefix: String): String = {
-    if (activeNamespaces != null) {
-      var i: Int = activeNamespaces.size - 1
+    locally {
+
+      // TODO: Scalaify logic
+//      activeNamespaces find (_.getPrefix == prefix) foreach { x =>
+//        val uri = x.getURI
+//        if (uri.isEmpty && prefix.nonEmpty)
+//            return null
+//          else
+//            return uri
+//      }
+
+      var i = activeNamespaces.size - 1
       while (i >= 0) {
-        if (activeNamespaces.get(i).getPrefix == prefix) {
-          val uri: String = activeNamespaces.get(i).getURI
-          if (uri.==("") && prefix.!=("")) {
+        if (activeNamespaces(i).getPrefix == prefix) {
+          val uri = activeNamespaces(i).getURI
+          if (uri.isEmpty && prefix.nonEmpty)
             return null
-          }
-          return uri
+          else
+            return uri
         }
         i -= 1
       }
     }
-    if (prefix.isEmpty) {
+    if (prefix.isEmpty)
       return defaultElementNamespace
-    }
-    var uri: String = explicitPrologNamespaces.get(prefix)
-    if (uri != null) {
-      return if (uri.isEmpty)  null else uri
-    }
+    var uri = explicitPrologNamespaces.get(prefix)
+    if (uri != null)
+      return if (uri.isEmpty) null else uri
     if (userQueryContext != null) {
       uri = userQueryContext.getNamespaceForPrefix(prefix)
-      if (uri != null) {
+      if (uri != null)
         return uri
-      }
     }
     null
   }
 
-  def getDefaultElementNamespace(): String = checkURIForPrefix("")
+  def getDefaultElementNamespace: String = checkURIForPrefix("")
 
-  def setDefaultElementNamespace(uri: String): Unit = {
+  def setDefaultElementNamespace(uri: String): Unit =
     defaultElementNamespace = uri
-  }
 
   def setRevalidationMode(mode: Int): Unit = {
     if (mode == Validation.STRICT || mode == Validation.LAX ||
@@ -883,57 +822,50 @@ class QueryModule extends StaticContext {
   def getRevalidationMode: Int = revalidationMode
 
   def getActiveNamespaceBindings: NamespaceMap = {
-    if (activeNamespaces == null) {
+
+    if (activeNamespaces == null)
       return NamespaceMap.emptyMap
-    }
+
     var result: NamespaceMap = NamespaceMap.emptyMap
-    val prefixes: HashSet[String] = new HashSet[String](10)
-    var n: Int = activeNamespaces.size - 1
+    val prefixes: ju.HashSet[String] = new ju.HashSet[String](10)
+    var n = activeNamespaces.size - 1
     while (n >= 0) {
-      val an: NamespaceBinding = activeNamespaces.get(n)
-      if (!prefixes.contains(an.getPrefix)) {
+      val an = activeNamespaces(n)
+      if (! prefixes.contains(an.getPrefix)) {
         prefixes.add(an.getPrefix)
-        if (!an.getURI.isEmpty) {
+        if (! an.getURI.isEmpty)
           result = result.put(an.getPrefix, an.getURI)
-        }
       }
-      {
-        n -= 1;
-        n + 1
-      }
+      n -= 1
     }
     result
   }
 
-  def getNamespaceResolver(): NamespaceResolver = {
+  def getNamespaceResolver: NamespaceResolver = {
     var result: NamespaceMap = NamespaceMap.emptyMap
-    val userDeclaredNamespaces: HashMap[String, String] =
+    val userDeclaredNamespaces: ju.HashMap[String, String] =
       userQueryContext.getUserDeclaredNamespaces
-    for ((key, value) <- userDeclaredNamespaces.asScala) {
+    for ((key, value) <- userDeclaredNamespaces.asScala)
       result = result.put(key, value)
-    }
-    for ((key, value) <- explicitPrologNamespaces.asScala) {
+    for ((key, value) <- explicitPrologNamespaces.asScala)
       result = result.put(key, value)
-    }
-    if (!defaultElementNamespace.isEmpty) {
+    if (!defaultElementNamespace.isEmpty)
       result = result.put("", defaultElementNamespace)
-    }
-    if (activeNamespaces == null) {
+    if (activeNamespaces == null)
       return result
-    }
-    val prefixes: HashSet[String] = new HashSet[String](10)
-    var n: Int = activeNamespaces.size - 1
+    val prefixes: ju.HashSet[String] = new ju.HashSet[String](10)
+    var n = activeNamespaces.size - 1
     while (n >= 0) {
-      val an: NamespaceBinding = activeNamespaces.get(n)
-      if (!prefixes.contains(an.getPrefix)) {
+      val an = activeNamespaces(n)
+      if (! prefixes.contains(an.getPrefix)) {
         prefixes.add(an.getPrefix)
         result =
-          if (an.getURI.isEmpty) result.remove(an.getPrefix)
-          else result.put(an.getPrefix, an.getURI)
+          if (an.getURI.isEmpty)
+            result.remove(an.getPrefix)
+          else
+            result.put(an.getPrefix, an.getURI)
       }
-      n -= 1;
-      n + 1
-
+      n -= 1
     }
     result
   }
@@ -945,13 +877,9 @@ class QueryModule extends StaticContext {
     userQueryContext.getErrorReporter.report(err)
   }
 
-  def isInBackwardsCompatibleMode(): Boolean = false
-
-  def getXPathVersion(): Int = 31
-
-  // def getKeyManager(): KeyManager = packageData.getKeyManager // getKeyManager class not exist
+  def isInBackwardsCompatibleMode: Boolean = false
+  def getXPathVersion: Int = 31
 
   override def resolveTypeAlias(typeName: StructuredQName): ItemType =
     getPackageData.obtainTypeAliasManager.getItemType(typeName)
-
 }

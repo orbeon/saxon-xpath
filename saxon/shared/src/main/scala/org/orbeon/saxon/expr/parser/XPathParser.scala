@@ -55,7 +55,6 @@ object XPathParser {
 
     implicit def convertValue(v: Value): ParsedLanguage =
       v.asInstanceOf[ParsedLanguage]
-
   }
 
   trait Accelerator {
@@ -591,9 +590,13 @@ class XPathParser() {
    * @return the display representation of the token
    */
   /*@NotNull*/
-  def currentTokenDisplay: String = if (t.currentToken == Token.NAME) "name \"" + t.currentTokenValue + '\"'
-  else if (t.currentToken == Token.UNKNOWN) "(unknown token)"
-  else "\"" + Token.tokens(t.currentToken).toString() + "\""
+  def currentTokenDisplay: String = 
+    if (t.currentToken == Token.NAME)
+      "name \"" + t.currentTokenValue + '\"'
+    else if (t.currentToken == Token.UNKNOWN)
+      "(unknown token)"
+    else
+      "\"" + Token.tokens(t.currentToken) + "\""
 
   /**
    * Parse a string representing an expression. This will accept an XPath expression if called on an
@@ -640,7 +643,7 @@ class XPathParser() {
       if (t.currentToken == terminator)
         if (allowAbsentExpression) {
           val result = Literal.makeEmptySequence
-          result.setRetainedStaticContext(env.makeRetainedStaticContext)
+          result.setRetainedStaticContext(env.makeRetainedStaticContext())
           setLocation(result)
           return result
         } else
@@ -654,7 +657,7 @@ class XPathParser() {
           grumble("Unexpected token " + currentTokenDisplay + " beyond end of expression")
       setLocation(exp, offset)
     }
-    exp.setRetainedStaticContextThoroughly(env.makeRetainedStaticContext)
+    exp.setRetainedStaticContextThoroughly(env.makeRetainedStaticContext())
     //exp.verifyParentPointers();
     exp
   }
@@ -1015,52 +1018,60 @@ class XPathParser() {
   }
 
   @throws[XPathException]
-  private def makeSingleTypeExpression(lhs: Expression, operator: Int, `type`: CastingTarget, allowEmpty: Boolean): Expression = if (`type`.isInstanceOf[AtomicType] && !(`type` eq ErrorType)) operator match {
-    case Token.CASTABLE_AS =>
-      val castable = new CastableExpression(lhs, `type`.asInstanceOf[AtomicType], allowEmpty)
-      if (lhs.isInstanceOf[StringLiteral]) castable.setOperandIsStringLiteral(true)
-      castable
-    case Token.CAST_AS =>
-      val cast = new CastExpression(lhs, `type`.asInstanceOf[AtomicType], allowEmpty)
-      if (lhs.isInstanceOf[StringLiteral]) cast.setOperandIsStringLiteral(true)
-      cast
-    case _ =>
-      throw new IllegalArgumentException
-  }
-  else if (allowXPath30Syntax) {
-    operator match {
-      case Token.CASTABLE_AS =>
-        if (`type`.isInstanceOf[UnionType]) {
-          val resolver = env.getNamespaceResolver
-          val ucf = new UnionCastableFunction(`type`.asInstanceOf[UnionType], resolver, allowEmpty)
-          return new StaticFunctionCall(ucf, Array[Expression](lhs))
+  private def makeSingleTypeExpression(lhs: Expression, operator: Int, `type`: CastingTarget, allowEmpty: Boolean): Expression =
+    `type` match {
+      case atomicType: AtomicType if !(`type` eq ErrorType) => 
+        operator match {
+          case Token.CASTABLE_AS =>
+            val castable = new CastableExpression(lhs, atomicType, allowEmpty)
+            if (lhs.isInstanceOf[StringLiteral])
+              castable.setOperandIsStringLiteral(true)
+            castable
+          case Token.CAST_AS =>
+            val cast = new CastExpression(lhs, atomicType, allowEmpty)
+            if (lhs.isInstanceOf[StringLiteral])
+              cast.setOperandIsStringLiteral(true)
+            cast
+          case _ =>
+            throw new IllegalArgumentException
         }
-        else if (`type`.isInstanceOf[ListType]) {
-          val resolver = env.getNamespaceResolver
-          val lcf = new ListCastableFunction(`type`.asInstanceOf[ListType], resolver, allowEmpty)
-          return new StaticFunctionCall(lcf, Array[Expression](lhs))
+      case _ => if (allowXPath30Syntax) {
+        operator match {
+          case Token.CASTABLE_AS =>
+            `type` match {
+              case unionType: UnionType =>
+                val resolver = env.getNamespaceResolver
+                val ucf = new UnionCastableFunction(unionType, resolver, allowEmpty)
+                return new StaticFunctionCall(ucf, Array[Expression](lhs))
+              case listType: ListType =>
+                val resolver = env.getNamespaceResolver
+                val lcf = new ListCastableFunction(listType, resolver, allowEmpty)
+                return new StaticFunctionCall(lcf, Array[Expression](lhs))
+              case _ =>
+            }
+          case Token.CAST_AS =>
+            `type` match {
+              case unionType: UnionType =>
+                val resolver = env.getNamespaceResolver
+                val ucf = new UnionConstructorFunction(unionType, resolver, allowEmpty)
+                return new StaticFunctionCall(ucf, Array[Expression](lhs))
+              case listType: ListType =>
+                val resolver = env.getNamespaceResolver
+                val lcf = new ListConstructorFunction(listType, resolver, allowEmpty)
+                return new StaticFunctionCall(lcf, Array[Expression](lhs))
+              case _ =>
+            }
+          case _ =>
+            throw new IllegalArgumentException
         }
-      case Token.CAST_AS =>
-        if (`type`.isInstanceOf[UnionType]) {
-          val resolver = env.getNamespaceResolver
-          val ucf = new UnionConstructorFunction(`type`.asInstanceOf[UnionType], resolver, allowEmpty)
-          return new StaticFunctionCall(ucf, Array[Expression](lhs))
-        }
-        else if (`type`.isInstanceOf[ListType]) {
-          val resolver = env.getNamespaceResolver
-          val lcf = new ListConstructorFunction(`type`.asInstanceOf[ListType], resolver, allowEmpty)
-          return new StaticFunctionCall(lcf, Array[Expression](lhs))
-        }
-      case _ =>
-        throw new IllegalArgumentException
+        //            if (type == AnySimpleType()) {
+        //                throw new XPathException("Cannot cast to xs:anySimpleType", "XPST0080");
+        //            } else {
+        throw new XPathException("Cannot cast to " + `type`.getClass, "XPST0051")
+        //            }
+      } else
+        throw new XPathException("Casting to list or union types requires XPath 3.0 to be enabled", "XPST0051")
     }
-    //            if (type == AnySimpleType()) {
-    //                throw new XPathException("Cannot cast to xs:anySimpleType", "XPST0080");
-    //            } else {
-    throw new XPathException("Cannot cast to " + `type`.getClass, "XPST0051")
-    //            }
-  }
-  else throw new XPathException("Casting to list or union types requires XPath 3.0 to be enabled", "XPST0051")
 
   /**
    * Parse a Typeswitch Expression.
@@ -1320,14 +1331,17 @@ class XPathParser() {
         grumble("Unknown atomic type " + qname, "XPST0051")
         assert(false)
       }
-      if (t.isInstanceOf[BuiltInAtomicType]) {
-        checkAllowedType(env, t.asInstanceOf[BuiltInAtomicType])
-        return t
-      }
-      else if (t.isPlainType) return t
-      else {
-        grumble("The type " + qname + " is not atomic", "XPST0051")
-        assert(false)
+      t match {
+        case atomicType: BuiltInAtomicType =>
+          checkAllowedType(env, atomicType)
+          return t
+        case _ =>
+          if (t.isPlainType)
+            return t
+        else {
+          grumble("The type " + qname + " is not atomic", "XPST0051")
+          assert(false)
+        }
       }
     }
     else if (uri == NamespaceConstant.JAVA_TYPE) {
@@ -1350,25 +1364,24 @@ class XPathParser() {
         if (!env.isImportedSchema(uri)) grumble("Atomic type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
         return st.asInstanceOf[AtomicType]
       }
-      else if (st.isInstanceOf[ItemType] && st.asInstanceOf[ItemType].isPlainType && allowXPath30Syntax) {
-        if (!env.isImportedSchema(uri)) grumble("Type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
-        return st.asInstanceOf[ItemType]
-      }
-      else if (st.isComplexType) {
-        grumble("Type (" + qname + ") is a complex type", "XPST0051")
-        return ANY_ATOMIC
-      }
-      else if (st.asInstanceOf[SimpleType].isListType) {
-        grumble("Type (" + qname + ") is a list type", "XPST0051")
-        return ANY_ATOMIC
-      }
-      else if (allowXPath30Syntax) {
-        grumble("Type (" + qname + ") is a union type that cannot be used as an item type", "XPST0051")
-        return ANY_ATOMIC
-      }
-      else {
-        grumble("The union type (" + qname + ") cannot be used as an item type unless XPath 3.0 is enabled", "XPST0051")
-        return ANY_ATOMIC
+      else st match {
+        case itemType: ItemType if allowXPath30Syntax && itemType.isPlainType =>
+          if (!env.isImportedSchema(uri)) grumble("Type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
+          return itemType
+        case _ =>
+          if (st.isComplexType) {
+            grumble("Type (" + qname + ") is a complex type", "XPST0051")
+            return ANY_ATOMIC
+          } else if (st.asInstanceOf[SimpleType].isListType) {
+            grumble("Type (" + qname + ") is a list type", "XPST0051")
+            return ANY_ATOMIC
+          } else if (allowXPath30Syntax) {
+            grumble("Type (" + qname + ") is a union type that cannot be used as an item type", "XPST0051")
+            return ANY_ATOMIC
+          } else {
+            grumble("The union type (" + qname + ") cannot be used as an item type unless XPath 3.0 is enabled", "XPST0051")
+            return ANY_ATOMIC
+          }
       }
     }
     grumble("Unknown atomic type " + qname, "XPST0051")
@@ -1409,7 +1422,10 @@ class XPathParser() {
       else "XPST0051")
       else if (!target.isInstanceOf[CastingTarget]) grumble("Unsuitable type for cast: " + target.getDescription, "XPST0080")
       val t = target.asInstanceOf[CastingTarget]
-      if (t.isInstanceOf[BuiltInAtomicType]) checkAllowedType(env, t.asInstanceOf[BuiltInAtomicType])
+      t match {
+        case atomicType: BuiltInAtomicType => checkAllowedType(env, atomicType)
+        case _ =>
+      }
       t
     }
     else if (uri == NamespaceConstant.DOT_NET_TYPE) Version.platform.getExternalObjectType(env.getConfiguration, uri, local).asInstanceOf[AtomicType]
@@ -1707,11 +1723,17 @@ class XPathParser() {
   private def makeUnaryExpression(operator: Int, operand: Expression): Expression = {
     if (Literal.isAtomic(operand)) { // very early evaluation of expressions like "-1", so they are treated as numeric literals
       var `val` = operand.asInstanceOf[Literal].value.asInstanceOf[AtomicValue]
-      if (`val`.isInstanceOf[NumericValue]) {
-        if (env.isInBackwardsCompatibleMode) `val` = new DoubleValue(`val`.asInstanceOf[NumericValue].getDoubleValue)
-        val value = if (operator == Token.NEGATE) `val`.asInstanceOf[NumericValue].negate
-        else `val`.asInstanceOf[NumericValue]
-        return Literal.makeLiteral(value)
+      `val` match {
+        case numericValue: NumericValue =>
+          if (env.isInBackwardsCompatibleMode) 
+            `val` = new DoubleValue(numericValue.getDoubleValue)
+          val value =
+            if (operator == Token.NEGATE) 
+              numericValue.negate()
+            else
+              numericValue
+          return Literal.makeLiteral(value)
+        case _ =>
       }
     }
     env.getConfiguration.getTypeChecker(env.isInBackwardsCompatibleMode).makeArithmeticExpression(Literal.makeLiteral(Int64Value.ZERO), operator, operand)
@@ -1903,26 +1925,29 @@ class XPathParser() {
     var step = parseBasicStep(firstInPattern)
     // When the filter is applied to an Axis step, the nodes are considered in
     // axis order. In all other cases they are considered in document order
-    val reverse = step.isInstanceOf[AxisExpression] && !AxisInfo.isForwards((step.asInstanceOf[AxisExpression]).getAxis)
+    val reverse = step.isInstanceOf[AxisExpression] && !AxisInfo.isForwards(step.asInstanceOf[AxisExpression].getAxis)
     breakable {
-      while (true) if (t.currentToken == Token.LSQB) step = parsePredicate(step)
-      else if (t.currentToken == Token.LPAR) { // dynamic function call (XQuery 3.0/XPath 3.0 syntax)
-        step = parseDynamicFunctionCall(step, null)
-        setLocation(step)
-      }
-      else if (t.currentToken == Token.QMARK) {
-        step = parseLookup(step)
-        setLocation(step)
-      }
-      else break()
+      while (true)
+        if (t.currentToken == Token.LSQB)
+          step = parsePredicate(step)
+        else if (t.currentToken == Token.LPAR) { 
+          // dynamic function call (XQuery 3.0/XPath 3.0 syntax)
+          step = parseDynamicFunctionCall(step, null)
+          setLocation(step)
+        } else if (t.currentToken == Token.QMARK) {
+          step = parseLookup(step)
+          setLocation(step)
+        } else
+          break()
     }
-    if (reverse) { // An AxisExpression such as preceding-sibling::x delivers nodes in axis
+    if (reverse) { 
+      // An AxisExpression such as preceding-sibling::x delivers nodes in axis
       // order, so that positional predicate like preceding-sibling::x[1] work
       // correctly. To satisfy the XPath semantics we turn preceding-sibling::x
       // into reverse(preceding-sibling::x), and preceding-sibling::x[3] into
       // reverse(preceding-sibling::x[3]). The call on reverse() will be eliminated
       // later in the case where the predicate selects a singleton.
-      val rsc = env.makeRetainedStaticContext
+      val rsc = env.makeRetainedStaticContext()
       step = SystemFunction.makeCall("reverse", rsc, step)
       assert(step != null)
       step
@@ -2479,7 +2504,7 @@ class XPathParser() {
                 grumble("There is no declaration for attribute @" + nodeName + " in an imported schema", "XPST0008")
                 return null
               }
-              else return attributeDecl.makeSchemaNodeTest
+              else return attributeDecl.makeSchemaNodeTest()
             }
             else return new NameTest(Type.ATTRIBUTE, fp, pool)
           }
@@ -2491,7 +2516,7 @@ class XPathParser() {
                 grumble("There is no declaration for element <" + nodeName + "> in an imported schema", "XPST0008")
                 return null
               }
-              else return elementDecl.makeSchemaNodeTest
+              else return elementDecl.makeSchemaNodeTest()
             }
             else return makeNameTest(Type.ELEMENT, nodeName, useDefault = true)
           }
@@ -2638,9 +2663,12 @@ class XPathParser() {
           nextToken()
           val value: Expression = parseExprSingle
           var entry: Expression = null
-          if (key.isInstanceOf[Literal] && key.asInstanceOf[Literal].value.isInstanceOf[AtomicValue] && value.isInstanceOf[Literal])
-            entry = Literal.makeLiteral(new SingleEntryMap(key.asInstanceOf[Literal].value.asInstanceOf[AtomicValue], value.asInstanceOf[Literal].value))
-          else entry = MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
+          key match {
+            case literal: Literal if value.isInstanceOf[Literal] && literal.value.isInstanceOf[AtomicValue] =>
+              entry = Literal.makeLiteral(new SingleEntryMap(literal.value.asInstanceOf[AtomicValue], value.asInstanceOf[Literal].value))
+            case _ =>
+              entry = MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
+          }
           entries.add(entry)
           if (t.currentToken == Token.RCURLY)
             break()
@@ -3276,7 +3304,7 @@ class XPathParser() {
    * @return the expression that does the tracing
    */
   def makeTracer(exp: Expression, qName: StructuredQName): Expression = {
-    exp.setRetainedStaticContextLocally(env.makeRetainedStaticContext)
+    exp.setRetainedStaticContextLocally(env.makeRetainedStaticContext())
     //        if (codeInjector != null) {
     //            return codeInjector.inject(exp, env, construct, qName);
     //        } else {

@@ -217,7 +217,7 @@ object Literal {
     false
   }
 
-  def makeEmptySequence(): Literal = new Literal(EmptySequence.getInstance)
+  def makeEmptySequence: Literal = new Literal(EmptySequence.getInstance)
 
   def makeLiteral[T <: Item](value: GroundedValue): Literal = {
     var valueVar = value

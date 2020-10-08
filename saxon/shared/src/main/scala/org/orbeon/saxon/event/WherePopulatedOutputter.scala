@@ -54,7 +54,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
       pendingStartTag = true
       pendingElemName = elemName
       pendingSchemaType = `type`
-      pendingLocationId = location.saveLocation()
+      pendingLocationId = location.saveLocation
       pendingProperties = properties
       pendingAttributes = EmptyAttributeMap.getInstance
       pendingNamespaces = NamespaceMap.emptyMap
@@ -75,7 +75,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
       pendingStartTag = true
       pendingElemName = elemName
       pendingSchemaType = `type`
-      pendingLocationId = location.saveLocation()
+      pendingLocationId = location.saveLocation
       pendingProperties = properties
       pendingAttributes = attributes
       pendingNamespaces = namespaces

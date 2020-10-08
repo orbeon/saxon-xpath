@@ -56,7 +56,7 @@ object Block {
 
   def makeBlock(list: List[Expression]): Expression =
     if (list.isEmpty) {
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     } else if (list.size == 1) {
       list.get(0)
     } else {
@@ -400,7 +400,7 @@ class Block(children: Array[Expression]) extends Instruction {
       e.setParentExpression(getParentExpression)
       e
     } else if (size == 0) {
-      val result: Expression = Literal.makeEmptySequence()
+      val result: Expression = Literal.makeEmptySequence
       ExpressionTool.copyLocationInfo(this, result)
       result.setParentExpression(getParentExpression)
       result
@@ -525,7 +525,7 @@ class Block(children: Array[Expression]) extends Instruction {
       return result
     }
     if (size == 0) {
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     } else if (size == 1) {
       child(0)
     } else {

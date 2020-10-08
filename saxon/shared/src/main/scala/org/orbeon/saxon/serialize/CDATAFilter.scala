@@ -11,7 +11,7 @@
 // */
 package org.orbeon.saxon.serialize
 
-import java.util._
+import java.{util => ju}
 
 import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.event.{ProxyReceiver, Receiver, ReceiverOption}
@@ -23,20 +23,18 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.charcode.{CharacterSet, UTF16CharacterSet}
 import org.orbeon.saxon.tree.tiny.CharSlice
 import org.orbeon.saxon.tree.util.FastStringBuffer
+
 import scala.util.control.Breaks._
 
 class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
 
-  private var buffer: FastStringBuffer = new FastStringBuffer(
-    FastStringBuffer.C256)
+  private var buffer: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
 
-  private var stack: Stack[NodeName] = new Stack[NodeName]()
-
-  private var nameList: Set[NodeName] = _
-
+  private var stack: List[NodeName] = Nil
+  private var nameList: ju.Set[NodeName] = _
   private var characterSet: CharacterSet = _
 
-  def setOutputProperties(details: Properties): Unit = {
+  def setOutputProperties(details: ju.Properties): Unit = {
     getCdataElements(details)
     characterSet =
       getConfiguration.getCharacterSetFactory.getCharacterSet(details)
@@ -49,7 +47,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
                             location: Location,
                             properties: Int): Unit = {
     flush()
-    stack.push(elemName)
+    stack ::= elemName
     nextReceiver.startElement(elemName,
       `type`,
       attributes,
@@ -60,7 +58,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
 
   override def endElement(): Unit = {
     flush()
-    stack.pop()
+    stack = stack.tail
     nextReceiver.endElement()
   }
 
@@ -99,19 +97,18 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
     if (stack.isEmpty) {
       cdata = false
     } else {
-      val top: NodeName = stack.peek()
+      val top: NodeName = stack.head
       cdata = isCDATA(top)
     }
     if (cdata) {
-      if (getNextReceiver.isInstanceOf[UnicodeNormalizer]) {
-        buffer = new FastStringBuffer(
-          getNextReceiver
-            .asInstanceOf[UnicodeNormalizer]
-            .normalize(buffer, containsNullMarkers = true))
-        end = buffer.length
+      getNextReceiver match {
+        case normalizer: UnicodeNormalizer =>
+          buffer = new FastStringBuffer(normalizer.normalize(buffer, containsNullMarkers = true))
+          end = buffer.length
+        case _ =>
       }
-      var start: Int = 0
-      var k: Int = 0
+      var start = 0
+      var k = 0
       while (k < end) {
         var next: Int = buffer.charAt(k)
         var skip: Int = 1
@@ -196,7 +193,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
    def isCDATA(elementName: NodeName): Boolean =
     nameList.contains(elementName)
 
-  private def getCdataElements(details: Properties): Unit = {
+  private def getCdataElements(details: ju.Properties): Unit = {
     val isHTML: Boolean = "html" == details.getProperty(OutputKeys.METHOD)
     val isHTML5: Boolean = isHTML && "5.0" == details.getProperty(
       OutputKeys.VERSION)
@@ -204,12 +201,12 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
     val cdata: String = details.getProperty(OutputKeys.CDATA_SECTION_ELEMENTS)
     if (cdata == null) {
       // this doesn't happen, but there's no harm allowing for it
-      nameList = new HashSet[NodeName](0)
+      nameList = new ju.HashSet[NodeName](0)
       return
     }
-    nameList = new HashSet[NodeName](10)
-    val st2: StringTokenizer = new StringTokenizer(cdata, " \t\n\r", false)
-    while (st2.hasMoreTokens()) {
+    nameList = new ju.HashSet[NodeName](10)
+    val st2 = new ju.StringTokenizer(cdata, " \t\n\r", false)
+    while (st2.hasMoreTokens) {
       val expandedName: String = st2.nextToken()
       val sq: StructuredQName = StructuredQName.fromClarkName(expandedName)
       val uri: String = sq.getURI

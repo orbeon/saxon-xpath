@@ -629,7 +629,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param dynamicLoader the DynamicLoader to be used by this Configuration
    */
-  def setDynamicLoader(dynamicLoader: DynamicLoader): Unit = this.dynamicLoader = dynamicLoader
+//  def setDynamicLoader(dynamicLoader: DynamicLoader): Unit = this.dynamicLoader = dynamicLoader
 
   /**
    * Get the DynamicLoader used by this Configuration. By default the standard system-supplied
@@ -656,9 +656,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws XPathException if the class cannot be loaded.
    */
   @throws[XPathException]
-  def getConfClass(className: String, tracing: Boolean, classLoader: ClassLoader): Class[_] = {
+  def getConfClass(className: String, tracing: Boolean, classLoader: ClassLoader): Class[_] =
     dynamicLoader.getClass(className, if (tracing) traceOutput else null, classLoader)
-  }
 
   /**
    * Instantiate a class using the class name provided.

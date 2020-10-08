@@ -161,7 +161,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             test.getUType.toStringWithIndefiniteArticle,
           getLocation)
       }
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     test match {
       case test1: NameTest if !test1.getNamespaceURI.isEmpty && axis == AxisInfo.NAMESPACE =>
@@ -170,7 +170,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             "The names of namespace nodes are never prefixed, so this axis step will never select anything",
             getLocation)
         }
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       case _ =>
     }
     val originUType: UType = contextType.getUType
@@ -184,7 +184,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             " will never select anything",
           getLocation)
       }
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     if (contextInfo.isParentless &&
       (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR)) {
@@ -194,7 +194,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             " axis will never select anything because the context item is parentless",
           getLocation)
       }
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     if (!targetUType.overlaps(testUType)) {
       if (warnings) {
@@ -206,7 +206,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           getLocation
         )
       }
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     val nonSelf: Int = AxisInfo.excludeSelfAxis(axis)
     val kind: UType = if (test == null) UType.ANY_NODE else test.getUType
@@ -249,7 +249,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                       getLocation
                     )
                   }
-                  Literal.makeEmptySequence()
+                  Literal.makeEmptySequence
                 }
                 if (env.getPackageData.isSchemaAware && elementTest
                   .isInstanceOf[SchemaNodeTest] &&
@@ -317,7 +317,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               getLocation
             )
           }
-          Literal.makeEmptySequence()
+          Literal.makeEmptySequence
         }
       }
       val targetfp: Int = test.getFingerprint
@@ -399,7 +399,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             getLocation
           )
         }
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       } else if (contentType.asInstanceOf[ComplexType].isEmptyContent &&
         (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT ||
           axis == AxisInfo.DESCENDANT_OR_SELF)) {
@@ -419,7 +419,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             getLocation
           )
         }
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       } else if (axis == AxisInfo.ATTRIBUTE) {
         if (targetfp == -1) {
           if (warnings) {
@@ -451,7 +451,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   "The complex type " + contentType.getDescription + " does not allow an attribute named " +
                     getDiagnosticName(targetName, env),
                   getLocation)
-                Literal.makeEmptySequence()
+                Literal.makeEmptySequence
               }
             } else {
               itemType = new CombinedNodeTest(
@@ -483,7 +483,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   "The complex type " + contentType.getDescription + " does not allow children",
                   getLocation)
               }
-              Literal.makeEmptySequence()
+              Literal.makeEmptySequence
             }
             if (children.size == 1) {
               val iter: IntIterator = children.iterator
@@ -527,7 +527,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               }
               visitor.issueWarning(message, getLocation)
             }
-            Literal.makeEmptySequence()
+            Literal.makeEmptySequence
           } else {
             itemType = new CombinedNodeTest(
               test,
@@ -544,7 +544,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 "The complex type " + contentType.getDescription + " appears not to allow a child element named " +
                   getDiagnosticName(childElement, env),
                 getLocation)
-              Literal.makeEmptySequence()
+              Literal.makeEmptySequence
             }
             if (!Cardinality.allowsMany(computedCardinality) &&
               !getParentExpression.isInstanceOf[FirstItemExpression] &&

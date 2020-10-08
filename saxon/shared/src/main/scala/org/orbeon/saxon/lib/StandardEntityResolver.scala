@@ -1,38 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
+import java.net.{URI, URISyntaxException}
+import java.{util => ju}
+
+import org.orbeon.saxon.lib.StandardEntityResolver._
 import org.orbeon.saxon.utils.Configuration
-
-import org.xml.sax.EntityResolver
-
-import org.xml.sax.InputSource
-
-import org.xml.sax.SAXException
-
-import java.io.InputStream
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util.ArrayList
-
-import java.util.HashMap
-
-import java.util.List
-
-import java.util.Objects
-
-import StandardEntityResolver._
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.xml.sax.{EntityResolver, InputSource, SAXException}
 
 
 object StandardEntityResolver {
 
-  private var publicIds: HashMap[String, String] = new HashMap(30)
-
-  private var systemIds: HashMap[String, String] = new HashMap(30)
+  private val publicIds: ju.HashMap[String, String] = new ju.HashMap(30)
+  private val systemIds: ju.HashMap[String, String] = new ju.HashMap(30)
 
   def register(publicId: String, systemId: String, fileName: String): Unit = {
     if (publicId != null) {
@@ -586,35 +571,37 @@ object StandardEntityResolver {
     "xml-to-json-indent.xsl")
 
   def fetch(filename: String, config: Configuration): InputSource = {
-    var tracing: Boolean = false
-    var traceDestination: Logger = null
-    if (config != null) {
-      tracing = config.isTiming
-      traceDestination = config.getLogger
-    }
-    if (tracing) {
-      if (traceDestination == null) {
-        traceDestination = new StandardLogger()
-      }
-      traceDestination.info("Fetching Saxon copy of " + filename)
-    }
-    val messages: List[String] = new ArrayList[String]()
-    val classLoaders: List[ClassLoader] = new ArrayList[ClassLoader]()
-    val in: InputStream =
-      Configuration.locateResource(filename, messages, classLoaders)
-    if (tracing) {
-      for (s <- messages.asScala) {
-        traceDestination.info(s)
-      }
-    }
-    if (in == null) {
-      return null
-    }
-    val result: InputSource = new InputSource(in)
-    result.setSystemId("classpath:" + filename)
-    result
-  }
 
+    // ORBEON: JVM only
+    ???
+
+//    var tracing = false
+//    var traceDestination: Logger = null
+//    if (config != null) {
+//      tracing = config.isTiming
+//      traceDestination = config.getLogger
+//    }
+//    if (tracing) {
+//      if (traceDestination == null)
+//        traceDestination = new StandardLogger()
+//      traceDestination.info("Fetching Saxon copy of " + filename)
+//    }
+//    val messages = new ju.ArrayList[String]()
+//    val classLoaders = new ju.ArrayList[ClassLoader]
+//
+//    val in = Configuration.locateResource(filename, messages, classLoaders)
+//
+//    if (tracing)
+//      for (s <- messages.asScala)
+//        traceDestination.info(s)
+//
+//    if (in == null)
+//      return null
+//
+//    val result = new InputSource(in)
+//    result.setSystemId("classpath:" + filename)
+//    result
+  }
 }
 
 /**
@@ -628,11 +615,10 @@ object StandardEntityResolver {
 class StandardEntityResolver(var config: Configuration)
   extends EntityResolver {
 
-  Objects.requireNonNull(config)
+  ju.Objects.requireNonNull(config)
 
-  def setConfiguration(config: Configuration): Unit = {
+  def setConfiguration(config: Configuration): Unit =
     this.config = config
-  }
 
   /**
    * Allow the application to resolve external entities.
@@ -670,47 +656,40 @@ class StandardEntityResolver(var config: Configuration)
    * @see org.xml.sax.InputSource
    */
   def resolveEntity(publicId: String, systemId: String): InputSource = {
+
     // See if it's a known public ID
-    var fileName: String = publicIds.get(publicId)
-    if (fileName != null) {
-      fetch(fileName, config)
-    }
+    var fileName = publicIds.get(publicId)
+    if (fileName != null)
+      return fetch(fileName, config)
+
     // See if it's a known system ID
     fileName = systemIds.get(systemId)
-    if (fileName != null) {
-      fetch(fileName, config)
-    }
-    // If this is a W3C URI, Saxon ought really to have a copy...
-    if (systemId.startsWith("http://www.w3.org/") && config.isTiming) {
-      config.getStandardErrorOutput.println(
-        "Saxon does not have a local copy of PUBLIC " + publicId +
-          " SYSTEM " +
-          systemId)
-    }
-    try {
-      val uri: URI = new URI(systemId)
-      if (uri.isAbsolute && !config.getAllowedUriTest.test(uri)) {
-        throw new SAXException(
-          "URI scheme '" + uri.getScheme + "' has been disallowed")
-      }
-    } catch {
-      case err: URISyntaxException => {}
+    if (fileName != null)
+      return fetch(fileName, config)
 
+    // If this is a W3C URI, Saxon ought really to have a copy...
+    if (systemId.startsWith("http://www.w3.org/") && config.isTiming)
+      config.getStandardErrorOutput.println("Saxon does not have a local copy of PUBLIC " + publicId + " SYSTEM " + systemId)
+
+    try {
+      val uri = new URI(systemId)
+      if (uri.isAbsolute && ! config.getAllowedUriTest.test(uri))
+        throw new SAXException("URI scheme '" + uri.getScheme + "' has been disallowed")
+    } catch {
+      case _: URISyntaxException =>
     }
     // If it's a classpath URI, handle it here
-    if (systemId.startsWith("classpath:") && systemId.length > 10) {
-      getResource(systemId.substring(10), config)
-    }
+    if (systemId.startsWith("classpath:") && systemId.length > 10)
+      return getResource(systemId.substring(10), config)
+
     // Otherwise, leave the parser to resolve the URI in the normal way
     null
   }
 
-   def getResource(resourceName: String,
-                            config: Configuration): InputSource = {
-    val inputStream: InputStream =
-      config.getDynamicLoader.getResourceAsStream(resourceName)
+   def getResource(resourceName: String, config: Configuration): InputSource = {
+    val inputStream = config.getDynamicLoader.getResourceAsStream(resourceName)
     if (inputStream != null) {
-      val inputSource: InputSource = new InputSource(inputStream)
+      val inputSource = new InputSource(inputStream)
       inputSource.setSystemId("classpath:" + resourceName)
       inputSource
     } else {
@@ -720,8 +699,3 @@ class StandardEntityResolver(var config: Configuration)
 
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

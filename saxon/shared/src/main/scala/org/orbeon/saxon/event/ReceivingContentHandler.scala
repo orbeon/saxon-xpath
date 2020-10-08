@@ -1,49 +1,47 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.lib.Feature
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.QuitParsingException
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.trans.XmlProcessingException
-
-import org.orbeon.saxon.tree.tiny.CharSlice
-
-import org.orbeon.saxon.tree.tiny.CompressedWhitespace
-
-import org.orbeon.saxon.value.Whitespace
-
-import org.xml.sax._
-
-import org.xml.sax.ext.Attributes2
-
-import org.xml.sax.ext.LexicalHandler
+import java.net.{URI, URISyntaxException}
+import java.{util => ju}
 
 import javax.xml.transform.Result
+import org.orbeon.saxon.event.ReceivingContentHandler._
+import org.orbeon.saxon.expr.parser.Loc
+import org.orbeon.saxon.lib.Feature
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.{QuitParsingException, XPathException, XmlProcessingException}
+import org.orbeon.saxon.tree.tiny.{CharSlice, CompressedWhitespace}
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.Whitespace
+import org.xml.sax._
+import org.xml.sax.ext.{Attributes2, LexicalHandler}
 
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util._
-
-import ReceivingContentHandler._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
+/**
+ * ReceivingContentHandler is a glue class that provides a standard SAX ContentHandler
+ * interface to a Saxon Receiver. To achieve this it needs to map names supplied
+ * as strings to numeric name codes, for which purpose it needs access to a name
+ * pool. The class also performs the function of assembling adjacent text nodes.
+ * <p>If the input stream contains the processing instructions assigned by JAXP to switch
+ * disable-output-escaping on or off, these will be reflected in properties set in the corresponding
+ * characters events. In this case adjacent text nodes will not be combined.</p>
+ * <p>The {@code ReceivingContentHandler} is written on the assumption that it is receiving events
+ * from a parser configured with {@code http://xml.org/sax/features/namespaces} set to true
+ * and {@code http://xml.org/sax/features/namespace-prefixes} set to false.</p>
+ * <p>When running as a {@code TransformerHandler}, we have no control over the feature settings
+ * of the sender of the events, and if the events do not follow this pattern then the class may
+ * fail in unpredictable ways.</p>
+ *
+ */
 object ReceivingContentHandler {
 
   class LocalLocator(private var saxLocator: Locator) extends Location {
@@ -51,18 +49,13 @@ object ReceivingContentHandler {
     var levelInEntity: Int = 0
 
     def getSystemId: String = saxLocator.getSystemId
-
     def getPublicId: String = saxLocator.getPublicId
-
     def getLineNumber: Int = saxLocator.getLineNumber
-
-    def getColumnNumber(): Int = saxLocator.getColumnNumber
+    def getColumnNumber: Int = saxLocator.getColumnNumber
 
     def saveLocation(): Location =
       new Loc(getSystemId, getLineNumber, getColumnNumber)
-
   }
-
 }
 
 class ReceivingContentHandler
@@ -71,51 +64,33 @@ class ReceivingContentHandler
     with DTDHandler {
 
   private var pipe: PipelineConfiguration = _
-
   @BeanProperty
   var receiver: Receiver = _
-
   // true while processing the DTD
   private var inDTD: Boolean = false
-
   private var localLocator: LocalLocator = new LocalLocator(Loc.NONE)
-
   private var lineNumbering: Boolean = _
-
   private var lastTextNodeLocator: Location = _
-
   private var buffer: Array[Char] = new Array[Char](512)
-
   private var charsUsed: Int = 0
-
   private var slice: CharSlice = new CharSlice(buffer, 0, 0)
-
-  private var namespaceStack: Stack[NamespaceMap] = new Stack()
-
+  private var namespaceStack: List[NamespaceMap] = Nil
   private var currentNamespaceMap: NamespaceMap = NamespaceMap.emptyMap
-
   private var ignoreIgnorable: Boolean = false
-
   private var retainDTDAttributeTypes: Boolean = false
-
   private var allowDisableOutputEscaping: Boolean = false
-
   private var escapingDisabled: Boolean = false
-
   private var afterStartTag: Boolean = true
-
-  private var nameCache: HashMap[String, HashMap[String, NodeName]] =
-    new HashMap(10)
-
-  private var noNamespaceNameCache: HashMap[String, NodeName] = new HashMap(10)
+  private val nameCache: ju.HashMap[String, ju.HashMap[String, NodeName]] = new ju.HashMap(10)
+  private var noNamespaceNameCache: ju.HashMap[String, NodeName] = new ju.HashMap(10)
 
   // Action to be taken with defaulted attributes. 0=process normally, -1=suppress, +1=mark as defaulted
   private var defaultedAttributesAction: Int = 0
 
   // Stack holding depth of nesting of elements within external entities; created on first use
-  private var elementDepthWithinEntity: Stack[Integer] = _
+  private var elementDepthWithinEntity: List[Integer] = _
 
-  namespaceStack.push(currentNamespaceMap)
+  namespaceStack ::= currentNamespaceMap
 
   def reset(): Unit = {
     pipe = null
@@ -124,9 +99,9 @@ class ReceivingContentHandler
     retainDTDAttributeTypes = false
     charsUsed = 0
     slice.setLength(0)
-    namespaceStack = new Stack()
+    namespaceStack = Nil
     currentNamespaceMap = NamespaceMap.emptyMap
-    namespaceStack.push(currentNamespaceMap)
+    namespaceStack ::= currentNamespaceMap
     localLocator = new LocalLocator(Loc.NONE)
     allowDisableOutputEscaping = false
     escapingDisabled = false
@@ -164,8 +139,8 @@ class ReceivingContentHandler
     try {
       charsUsed = 0
       currentNamespaceMap = NamespaceMap.emptyMap
-      namespaceStack = new Stack()
-      namespaceStack.push(currentNamespaceMap)
+      namespaceStack = Nil
+      namespaceStack ::= currentNamespaceMap
       receiver.setPipelineConfiguration(pipe)
       val systemId: String = localLocator.getSystemId
       if (systemId != null) {
@@ -174,14 +149,11 @@ class ReceivingContentHandler
       receiver.open()
       receiver.startDocument(ReceiverOption.NONE)
     } catch {
-      case quit: QuitParsingException => {
-        getPipelineConfiguration.getErrorReporter.report(
-          new XmlProcessingException(quit).asWarning())
+      case quit: QuitParsingException =>
+        getPipelineConfiguration.getErrorReporter.report(new XmlProcessingException(quit).asWarning())
         throw new SAXException(quit)
-      }
-
-      case err: XPathException => throw new SAXException(err)
-
+      case err: XPathException =>
+        throw new SAXException(err)
     }
   }
 
@@ -192,43 +164,31 @@ class ReceivingContentHandler
       receiver.endDocument()
       receiver.close()
     } catch {
-      case err: ValidationException => {
+      case err: ValidationException =>
         err.setLocator(localLocator)
         throw new SAXException(err)
-      }
-
-      case err: QuitParsingException => {}
-
-      case err: XPathException => {
+      case _: QuitParsingException =>
+      case err: XPathException =>
         err.maybeSetLocation(localLocator)
         throw new SAXException(err)
-      }
-
     }
   }
 
   def setDocumentLocator(locator: Locator): Unit = {
     localLocator = new LocalLocator(locator)
-    if (!lineNumbering) {
+    if (! lineNumbering)
       lastTextNodeLocator = localLocator
-    }
   }
 
   def startPrefixMapping(prefix: String, uri: String): Unit = {
-    //System.err.println("StartPrefixMapping " + prefix + "=" + uri);
-    if (prefix.==("xmlns")) {
-      // should never be reported, but it's been known to happen
+    if (prefix.==("xmlns")) // should never be reported, but it's been known to happen
       return
-    }
     // the binding xmlns:xmlns="http://www.w3.org/2000/xmlns/"
     // the binding xmlns:xmlns="http://www.w3.org/2000/xmlns/"
     currentNamespaceMap = currentNamespaceMap.bind(prefix, uri)
   }
 
   def endPrefixMapping(prefix: String): Unit = ()
-
-  //System.err.println("endPrefixMapping " + prefix);
-  //System.err.println("endPrefixMapping " + prefix);
 
   /**
    * Receive notification of the beginning of an element.
@@ -292,14 +252,12 @@ class ReceivingContentHandler
         localLocator,
         options)
       localLocator.levelInEntity += 1
-      namespaceStack.push(currentNamespaceMap)
+      namespaceStack ::= currentNamespaceMap
       afterStartTag = true
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(localLocator)
         throw new SAXException(err)
-      }
-
     }
   }
 
@@ -312,9 +270,9 @@ class ReceivingContentHandler
 
   private def makeAttributeMap(atts: Attributes,
                                location: Location): AttributeMap = {
-    val length: Int = atts.getLength
-    val list: List[AttributeInfo] =
-      new ArrayList[AttributeInfo](atts.getLength)
+    val length = atts.getLength
+    val list = new ju.ArrayList[AttributeInfo](atts.getLength)
+
     for (a <- 0 until length) {
       var properties: Int = ReceiverOption.NAMESPACE_OK
       val value: String = atts.getValue(a)
@@ -384,10 +342,9 @@ class ReceivingContentHandler
       throw new SAXException(
         "Parser configuration problem: namespace reporting is not enabled")
     }
-    var map2: HashMap[String, NodeName] =
-      if (uri.isEmpty) noNamespaceNameCache else nameCache.get(uri)
+    var map2 = if (uri.isEmpty) noNamespaceNameCache else nameCache.get(uri)
     if (map2 == null) {
-      map2 = new HashMap(50)
+      map2 = new ju.HashMap(50)
       nameCache.put(uri, map2)
       if (uri.isEmpty) {
         noNamespaceNameCache = map2
@@ -441,36 +398,30 @@ class ReceivingContentHandler
       localLocator.levelInEntity -= 1
       receiver.endElement()
     } catch {
-      case err: ValidationException => {
+      case err: ValidationException =>
         err.maybeSetLocation(localLocator)
-        if (!err.hasBeenReported) {
+        if (! err.hasBeenReported)
           pipe.getErrorReporter.report(new XmlProcessingException(err))
-        }
         err.setHasBeenReported(true)
         throw new SAXException(err)
-      }
-
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(localLocator)
         throw new SAXException(err)
-      }
-
     }
     afterStartTag = false
-    namespaceStack.pop()
-    currentNamespaceMap = namespaceStack.peek()
+    namespaceStack = namespaceStack.tail
+    currentNamespaceMap = namespaceStack.head
   }
 
   def characters(ch: Array[Char], start: Int, length: Int): Unit = {
     while (charsUsed + length > buffer.length) {
-      buffer = Arrays.copyOf(buffer, buffer.length * 2)
+      buffer = ju.Arrays.copyOf(buffer, buffer.length * 2)
       slice = new CharSlice(buffer, 0, 0)
     }
     System.arraycopy(ch, start, buffer, charsUsed, length)
     charsUsed += length
-    if (lineNumbering) {
+    if (lineNumbering)
       lastTextNodeLocator = localLocator.saveLocation()
-    }
   }
 
   // System.err.println("characters (" + length + ")");
@@ -489,13 +440,11 @@ class ReceivingContentHandler
     if (!inDTD) {
       if (name == null) {
         // trick used by the old James Clark xp parser to notify a comment
-        comment(remainder.toCharArray(), 0, remainder.length)
+        comment(remainder.toCharArray, 0, remainder.length)
       } else {
         // some parsers allow through PI names containing colons
-        if (!NameChecker.isValidNCName(name)) {
-          throw new SAXException(
-            "Invalid processing instruction name (" + name + ')')
-        }
+        if (!NameChecker.isValidNCName(name))
+          throw new SAXException("Invalid processing instruction name (" + name + ')')
         if (allowDisableOutputEscaping) {
           if (name == Result.PI_DISABLE_OUTPUT_ESCAPING) {
             //flush();
@@ -507,10 +456,7 @@ class ReceivingContentHandler
             return
           }
         }
-        var data: CharSequence = null
-        data =
-          if (remainder == null) ""
-          else Whitespace.removeLeadingWhitespace(remainder)
+        val data = if (remainder == null) "" else Whitespace.removeLeadingWhitespace(remainder)
         receiver.processingInstruction(name,
           data,
           localLocator,
@@ -521,7 +467,7 @@ class ReceivingContentHandler
 
   def comment(ch: Array[Char], start: Int, length: Int): Unit = {
     flush(true)
-    if (!inDTD) {
+    if (! inDTD) {
       receiver.comment(new CharSlice(ch, start, length),
         localLocator,
         ReceiverOption.NONE)
@@ -531,12 +477,13 @@ class ReceivingContentHandler
   private def flush(compress: Boolean): Unit = {
     if (charsUsed > 0) {
       slice.setLength(charsUsed)
-      val cs: CharSequence =
-        if (compress) CompressedWhitespace.compress(slice) else slice
+      val cs = if (compress) CompressedWhitespace.compress(slice) else slice
       receiver.characters(cs,
         lastTextNodeLocator,
-        if (escapingDisabled) ReceiverOption.DISABLE_ESCAPING
-        else ReceiverOption.WHOLE_TEXT_NODE)
+        if (escapingDisabled)
+          ReceiverOption.DISABLE_ESCAPING
+        else
+          ReceiverOption.WHOLE_TEXT_NODE)
       charsUsed = 0
       escapingDisabled = false
     }
@@ -544,28 +491,23 @@ class ReceivingContentHandler
 
   def skippedEntity(name: String): Unit = ()
 
-  def startDTD(name: String, publicId: String, systemId: String): Unit = {
+  def startDTD(name: String, publicId: String, systemId: String): Unit =
     inDTD = true
-  }
 
-  def endDTD(): Unit = {
+  def endDTD(): Unit =
     inDTD = false
-  }
 
   def startEntity(name: String): Unit = {
-    if (elementDepthWithinEntity == null) {
-      elementDepthWithinEntity = new Stack()
-    }
-    elementDepthWithinEntity.push(localLocator.levelInEntity)
+    if (elementDepthWithinEntity == null)
+      elementDepthWithinEntity = Nil
+    elementDepthWithinEntity ::= localLocator.levelInEntity
     localLocator.levelInEntity = 0
   }
 
-  def endEntity(name: String): Unit = {
-    localLocator.levelInEntity = elementDepthWithinEntity.pop()
-  }
+  def endEntity(name: String): Unit =
+    localLocator.levelInEntity = { val r = elementDepthWithinEntity.head; elementDepthWithinEntity = elementDepthWithinEntity.tail; r }
 
   def startCDATA(): Unit = ()
-
   def endCDATA(): Unit = ()
 
   def notationDecl(name: String, publicId: String, systemId: String): Unit = ()
@@ -574,21 +516,20 @@ class ReceivingContentHandler
                          publicId: String,
                          systemId: String,
                          notationName: String): Unit = {
-    var uri: String = systemId
+    var uri = systemId
     if (localLocator != null) {
       try {
-        val suppliedURI: URI = new URI(systemId)
-        if (!suppliedURI.isAbsolute) {
-          val baseURI: String = localLocator.getSystemId
+        val suppliedURI = new URI(systemId)
+        if (! suppliedURI.isAbsolute) {
+          val baseURI = localLocator.getSystemId
           if (baseURI != null) {
             // See bug 21679
-            val absoluteURI: URI = new URI(baseURI).resolve(systemId)
+            val absoluteURI = new URI(baseURI).resolve(systemId)
             uri = absoluteURI.toString
           }
         }
       } catch {
-        case err: URISyntaxException => {}
-
+        case _: URISyntaxException =>
       }
     }
     receiver.setUnparsedEntity(name, uri, publicId)
@@ -598,27 +539,4 @@ class ReceivingContentHandler
   // We need to turn it into an absolute URL.
   // Some (non-conformant) SAX parsers report the systemId as written.
   // We need to turn it into an absolute URL.
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * ReceivingContentHandler is a glue class that provides a standard SAX ContentHandler
- * interface to a Saxon Receiver. To achieve this it needs to map names supplied
- * as strings to numeric name codes, for which purpose it needs access to a name
- * pool. The class also performs the function of assembling adjacent text nodes.
- * <p>If the input stream contains the processing instructions assigned by JAXP to switch
- * disable-output-escaping on or off, these will be reflected in properties set in the corresponding
- * characters events. In this case adjacent text nodes will not be combined.</p>
- * <p>The {@code ReceivingContentHandler} is written on the assumption that it is receiving events
- * from a parser configured with {@code http://xml.org/sax/features/namespaces} set to true
- * and {@code http://xml.org/sax/features/namespace-prefixes} set to false.</p>
- * <p>When running as a {@code TransformerHandler}, we have no control over the feature settings
- * of the sender of the events, and if the events do not follow this pattern then the class may
- * fail in unpredictable ways.</p>
- *
- */

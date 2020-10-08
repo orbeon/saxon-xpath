@@ -150,7 +150,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       startContent()
     }
     startElementProperties = properties
-    startElementLocationId = location.saveLocation()
+    startElementLocationId = location.saveLocation
     pendingAttributes.clear()
     pendingNSMap = NamespaceMap.emptyMap
     pendingStartTag = elemName
@@ -296,7 +296,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     var nameSpacMap = namespaces
     if (state == StartTag) startContent()
     level += 1
-    startElementLocationId = location.saveLocation()
+    startElementLocationId = location.saveLocation
     if (currentLevelIsDocument.length < level + 1) {
       currentLevelIsDocument = ju.Arrays.copyOf(currentLevelIsDocument, level * 2)
     }

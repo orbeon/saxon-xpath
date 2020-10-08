@@ -227,7 +227,7 @@ class ForEachGroup(select: Expression,
     }
     val selectedItemType: ItemType = getSelectExpression.getItemType
     if (selectedItemType == ErrorType) {
-      Literal.makeEmptySequence()
+      Literal.makeEmptySequence
     }
     for (o <- operands.asScala) {
       fixupGroupReferences(this, this, selectedItemType, isInLoop = false)

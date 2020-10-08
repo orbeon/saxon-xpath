@@ -85,7 +85,7 @@ class IterateInstr(select: Expression,
     new OperandRole(OperandRole.USES_NEW_FOCUS, OperandUsage.TRANSMISSION))
 
   if (onCompletion == null) {
-    onCompletion = Literal.makeEmptySequence()
+    onCompletion = Literal.makeEmptySequence
   }
 
   def setSelect(select: Expression): Unit = {

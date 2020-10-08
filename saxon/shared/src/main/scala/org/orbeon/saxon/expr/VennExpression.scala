@@ -195,7 +195,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val t1: ItemType = getRhsExpression.getItemType
       if (th.relationship(t0, t1) == Affinity.DISJOINT) {
         if (op == Token.INTERSECT) {
-          Literal.makeEmptySequence()
+          Literal.makeEmptySequence
         } else {
           if (getLhsExpression.hasSpecialProperty(
             StaticProperty.ORDERED_NODESET)) {
@@ -266,7 +266,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val a2: AxisExpression = rhs.asInstanceOf[AxisExpression]
       if (a1.getAxis == a2.getAxis) {
         if (a1.getNodeTest == a2.getNodeTest) {
-          if (op == Token.EXCEPT) Literal.makeEmptySequence() else return a1
+          if (op == Token.EXCEPT) Literal.makeEmptySequence else return a1
         } else {
           val ax: AxisExpression = new AxisExpression(
             a1.getAxis,
@@ -347,7 +347,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     }
     if (operandsAreDisjoint(th)) {
       if (op == Token.INTERSECT) {
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       } else if (op == Token.EXCEPT) {
         if ((lhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
           0) {

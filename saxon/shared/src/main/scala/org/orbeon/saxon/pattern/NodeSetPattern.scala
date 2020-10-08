@@ -74,7 +74,7 @@ class NodeSetPattern /**
         visitor.issueWarning(
           "Pattern will never match anything. " + e.getMessage,
           getLocation)
-        checked = Literal.makeEmptySequence()
+        checked = Literal.makeEmptySequence
       }
 
     }

@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.ma.json
 
-import java.util.{HashMap, HashSet, Stack}
+import java.{util => ju}
 
 import javax.xml.transform.sax.SAXSource
 import org.orbeon.saxon.event.{Builder, ComplexContentOutputter, Outputter, ReceiverOption}
@@ -23,61 +23,36 @@ import org.xml.sax.InputSource
 
 
 object JsonHandlerXML {
-
   private val SCHEMA_URI: String = "http://www.w3.org/2005/xpath-functions.xsd"
-
   private val JSON_NS: String = NamespaceConstant.FN
-
   val PREFIX: String = ""
-
   private val UNTYPED: Untyped = Untyped.getInstance
-
   private val SIMPLE_TYPE: AnySimpleType.type = AnySimpleType
-
   private val BOOLEAN_TYPE: BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
-
   private val STRING_TYPE: BuiltInAtomicType = BuiltInAtomicType.STRING
-
 }
+
 class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, flags: Int) extends JsonHandler {
 
-  private var builder: Builder = xpathContext.getController.makeBuilder
-
-  private var out: Outputter = new ComplexContentOutputter(builder)
-
-  private var keys: Stack[String] = _
-
-  private var inMap: Stack[Boolean] = new Stack()
-
+  private val builder: Builder = xpathContext.getController.makeBuilder
+  private val out: Outputter = new ComplexContentOutputter(builder)
+  private var keys: List[String] = _
+  private var inMap: List[Boolean] = Nil
   private var allowAnyTopLevel: Boolean = _
-
   var validate: Boolean = _
-
   private var checkForDuplicates: Boolean = _
-
   private var namePool: NamePool = _
-
   private var mapQN: FingerprintedQName = _
-
   private var arrayQN: FingerprintedQName = _
-
   private var stringQN: FingerprintedQName = _
-
   private var numberQN: FingerprintedQName = _
-
   private var booleanQN: FingerprintedQName = _
-
   private var nullQN: FingerprintedQName = _
-
   private var keyQN: FingerprintedQName = _
-
   private var escapedQN: FingerprintedQName = _
-
   private var escapedKeyQN: FingerprintedQName = _
-
-  var types: HashMap[String, SchemaType] = _
-
-  private var mapKeys: Stack[HashSet[String]] = new Stack()
+  var types: ju.HashMap[String, SchemaType] = _
+  private var mapKeys: List[ju.HashSet[String]] = Nil
 
   /**
    * Create a QName in null namespace
@@ -114,14 +89,14 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
   out.startDocument(ReceiverOption.NONE)
 
   private def init(context: XPathContext, flags: Int): Unit = {
-    keys = new Stack[String]()
+    keys = Nil
     this.xpathContext = context
     charChecker = context.getConfiguration.getValidCharacterChecker
     escape = (flags & JsonParser.ESCAPE) != 0
     allowAnyTopLevel = (flags & JsonParser.ALLOW_ANY_TOP_LEVEL) != 0
     validate = (flags & JsonParser.VALIDATE) != 0
     checkForDuplicates = validate || (flags & JsonParser.DUPLICATES_RETAINED) == 0
-    types = new HashMap()
+    types = new ju.HashMap()
     namePool = context.getConfiguration.getNamePool
     mapQN = qnameNS("map")
     arrayQN = qnameNS("array")
@@ -133,7 +108,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
     escapedQN = qname("escaped")
     escapedKeyQN = qname("escaped-key")
     if (validate) {
-      var config: Configuration = context.getConfiguration
+      val config = context.getConfiguration
       config.synchronized {
         config.checkLicensedFeature(Configuration.LicenseFeature.SCHEMA_VALIDATION, "validation", -1)
         if (!config.isSchemaAvailable(JSON_NS)) {
@@ -188,8 +163,8 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
    * @return true if the key is already present in the map, false if it is not
    */
   override def setKey(unEscaped: String, reEscaped: String): Boolean = {
-    this.keys.push(unEscaped)
-    checkForDuplicates && !mapKeys.peek().add(reEscaped)
+    this.keys ::= unEscaped
+    checkForDuplicates && ! mapKeys.head.add(reEscaped)
   }
 
   /**
@@ -198,7 +173,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
    * @return the XML document for this JSON
    * @throws XPathException if an error occurs downstream
    */
-  override def getResult(): Item = {
+  override def getResult: Item = {
     out.endDocument()
     out.close()
     builder.getCurrentRoot
@@ -213,11 +188,10 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
   private def containsEscape(literal: String): Boolean =
     literal.indexOf('\\') >= 0
 
-  private def isInMap: Boolean = !inMap.isEmpty && inMap.peek()
+  private def isInMap: Boolean = inMap.nonEmpty && inMap.head
 
-  private def startElement(qn: FingerprintedQName, typeName: String): Unit = {
+  private def startElement(qn: FingerprintedQName, typeName: String): Unit =
     startElement(qn, types.get(typeName))
-  }
 
   private def startElement(qn: FingerprintedQName, st: SchemaType): Unit = {
     out.startElement(qn,
@@ -225,7 +199,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
       Loc.NONE,
       ReceiverOption.NONE)
     if (isInMap) {
-      var k: String = keys.pop()
+      var k: String = { val r = keys.head; keys = keys.tail; r }
       k = reEscape(k)
       if (escape) {
         markAsEscaped(k, isKey = true)
@@ -252,29 +226,28 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
 
   override def startArray(): Unit = {
     startElement(arrayQN, if (isInMap) "arrayWithinMapType" else "arrayType")
-    inMap.push(false)
+    inMap ::= false
     startContent()
   }
 
   override def endArray(): Unit = {
-    inMap.pop()
+    inMap = inMap.tail
     endElement()
   }
 
   override def startMap(): Unit = {
     startElement(mapQN, if (isInMap) "mapWithinMapType" else "mapType")
     if (checkForDuplicates) {
-      mapKeys.push(new HashSet())
+      mapKeys ::= new ju.HashSet
     }
-    inMap.push(true)
+    inMap ::= true
     startContent()
   }
 
   override def endMap(): Unit = {
-    inMap.pop()
-    if (checkForDuplicates) {
-      mapKeys.pop()
-    }
+    inMap = inMap.tail
+    if (checkForDuplicates)
+      mapKeys = mapKeys.tail
     endElement()
   }
 
@@ -323,5 +296,4 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
     startContent()
     endElement()
   }
-
 }

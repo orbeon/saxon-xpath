@@ -72,7 +72,7 @@ object FilterExpression {
               .asBigInteger()
               .compareTo(BigInteger.ZERO) <=
               0) {
-            Literal.makeEmptySequence()
+            Literal.makeEmptySequence
           } else {
             new SubscriptExpression(start, comparand)
           }
@@ -380,7 +380,7 @@ class FilterExpression(base: Expression, filter: Expression)
         new EarlyEvaluationContext(getConfiguration))) {
         getBase
       } else {
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       } catch {
         case e: XPathException => {
           e.maybeSetLocation(getLocation)
@@ -512,7 +512,7 @@ class FilterExpression(base: Expression, filter: Expression)
         }
         getBase
       } else {
-        val result: Expression = Literal.makeEmptySequence()
+        val result: Expression = Literal.makeEmptySequence
         ExpressionTool.copyLocationInfo(this, result)
         if (tracing) {
           opt.trace(
@@ -657,7 +657,7 @@ class FilterExpression(base: Expression, filter: Expression)
             if (lvalue == 1)
               FirstItemExpression.makeFirstItemExpression(getBase)
             else new SubscriptExpression(getBase, getFilter)
-          else Literal.makeEmptySequence()
+          else Literal.makeEmptySequence
         if (tracing) {
           Optimizer.trace(
             config,
@@ -668,7 +668,7 @@ class FilterExpression(base: Expression, filter: Expression)
       } else {
         val result: Expression =
           if (ExpressionTool.effectiveBooleanValue(`val`.iterate())) getBase
-          else Literal.makeEmptySequence()
+          else Literal.makeEmptySequence
         if (tracing) {
           Optimizer.trace(
             config,

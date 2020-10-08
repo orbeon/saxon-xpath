@@ -56,7 +56,7 @@ class Accumulator extends Actor {
   var slotManagerForInitialValueExpression: SlotManager = _
 
   // The "body" of an accumulator is an artificial expression that contains all the constituent expressions, for ease of management.
-  body = Literal.makeEmptySequence()
+  body = Literal.makeEmptySequence
 
   /**
    * Get the symbolic name of the component

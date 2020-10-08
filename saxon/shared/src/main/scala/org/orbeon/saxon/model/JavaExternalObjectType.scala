@@ -1,12 +1,11 @@
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.model.JavaExternalObjectType._
+import org.orbeon.saxon.om.{Item, StructuredQName}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.ObjectValue
-import JavaExternalObjectType._
 import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.ObjectValue
 
 object JavaExternalObjectType {
 
@@ -14,7 +13,7 @@ object JavaExternalObjectType {
     className.replace('$', '-').replace("[", "_-")
 
   def localNameToClassName(className: String): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(className.length)
+    val fsb = new FastStringBuffer(className.length)
     var atStart: Boolean = true
     for (k <- 0 until className.length) {
       var i = k
@@ -35,9 +34,7 @@ object JavaExternalObjectType {
   }
 
   def classNameToQName(className: String): StructuredQName =
-    new StructuredQName("jt",
-      NamespaceConstant.JAVA_TYPE,
-      classNameToLocalName(className))
+    new StructuredQName("jt", NamespaceConstant.JAVA_TYPE, classNameToLocalName(className))
 
 }
 
@@ -46,12 +43,9 @@ class JavaExternalObjectType( var config: Configuration,
   extends ExternalObjectType {
 
   def getConfiguration: Configuration = config
-
   def getName: String = javaClass.getName
-
-  def getTargetNamespace(): String = NamespaceConstant.JAVA_TYPE
-
-  def getTypeName(): StructuredQName = classNameToQName(javaClass.getName)
+  def getTargetNamespace: String = NamespaceConstant.JAVA_TYPE
+  def getTypeName: StructuredQName = classNameToQName(javaClass.getName)
 
   override def getPrimitiveItemType: ItemType =
     config.getJavaExternalObjectType(classOf[AnyRef])
@@ -74,9 +68,11 @@ class JavaExternalObjectType( var config: Configuration,
   def getJavaClass: Class[_] = javaClass
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (item.isInstanceOf[ObjectValue[_]]) {
-      val obj: AnyRef = item.asInstanceOf[ObjectValue[_]].getObject.asInstanceOf[AnyRef]
-      javaClass.isAssignableFrom(obj.getClass)
+    item match {
+      case value: ObjectValue[_] =>
+        val obj = value.getObject.asInstanceOf[AnyRef]
+        javaClass.isAssignableFrom(obj.getClass)
+      case _ =>
     }
     false
   }
@@ -91,7 +87,5 @@ class JavaExternalObjectType( var config: Configuration,
   override def equals(obj: Any): Boolean = obj match {
     case obj: JavaExternalObjectType => javaClass == obj.javaClass
     case _ => false
-
   }
-
 }

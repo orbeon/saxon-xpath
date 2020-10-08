@@ -517,7 +517,7 @@ class ParserExtension {
       if (t.currentToken == Token.RCURLY && p.isAllowXPath31Syntax) {
         t.lookAhead()
         p.nextToken()
-        Literal.makeEmptySequence()
+        Literal.makeEmptySequence
       } else {
         val body = p.parseExpression
         p.expect(Token.RCURLY)

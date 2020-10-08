@@ -72,7 +72,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
 
     val itemType0 = getLhsExpression.getItemType
     if (itemType0 eq ErrorType)
-      return Literal.makeEmptySequence()
+      return Literal.makeEmptySequence
 
     var type0 =
       itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
@@ -102,7 +102,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
 
     val itemType1 = getRhsExpression.getItemType
     if (itemType1 eq ErrorType)
-      return Literal.makeEmptySequence()
+      return Literal.makeEmptySequence
 
     var type1 =
       itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
@@ -139,7 +139,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     if (getRhsExpression != oldOp1)
       adoptChildExpression(getRhsExpression)
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
-      return Literal.makeEmptySequence()
+      return Literal.makeEmptySequence
 
     if (operator == Token.NEGATE) {
       if (getRhsExpression.isInstanceOf[Literal] &&

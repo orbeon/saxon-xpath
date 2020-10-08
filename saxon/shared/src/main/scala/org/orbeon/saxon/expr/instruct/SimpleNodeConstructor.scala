@@ -32,7 +32,7 @@ import org.orbeon.saxon.value.Cardinality
 
 abstract class SimpleNodeConstructor extends Instruction {
 
-  var select: Expression = Literal.makeEmptySequence()
+  var select: Expression = Literal.makeEmptySequence
   var selectOp: Operand =
     new Operand(this, select, OperandRole.SINGLE_ATOMIC)
 

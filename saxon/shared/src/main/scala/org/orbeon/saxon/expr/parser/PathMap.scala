@@ -1,32 +1,15 @@
 package org.orbeon.saxon.expr.parser
 
+import java.net.{URI, URISyntaxException}
+import java.{util => ju}
+
 import org.orbeon.saxon.expr._
-
-import org.orbeon.saxon.functions.Doc
-
-import org.orbeon.saxon.functions.DocumentFn
-
-import org.orbeon.saxon.functions.ResolveURI
-
+import org.orbeon.saxon.expr.parser.PathMap._
+import org.orbeon.saxon.functions.{Doc, DocumentFn, ResolveURI}
 import org.orbeon.saxon.lib.Logger
-
 import org.orbeon.saxon.om.AxisInfo
-
-import org.orbeon.saxon.pattern.AnyNodeTest
-
-import org.orbeon.saxon.pattern.NodeKindTest
-
-import org.orbeon.saxon.pattern.NodeTest
-
+import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest, NodeTest}
 import org.orbeon.saxon.trans.XPathException
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util._
-
-import PathMap._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
@@ -38,7 +21,7 @@ object PathMap {
 
   class PathMapNode {
 
-    var arcs: List[PathMapArc] = new ArrayList[PathMapArc]()
+    var arcs: ju.List[PathMapArc] = new ju.ArrayList[PathMapArc]()
 
     @BooleanBeanProperty
     var returnable: Boolean = _
@@ -61,14 +44,12 @@ object PathMap {
     def createArc(axis: Int, test: NodeTest, target: PathMapNode): Unit = {
       for (a <- arcs.asScala
            if a.getAxis == axis && a.getNodeTest == test && a.getTarget == target) {
-        a.getTarget.setReturnable(
-          a.getTarget.isReturnable || target.isReturnable)
-        if (target.isAtomized) {
+        a.getTarget.setReturnable(a.getTarget.isReturnable || target.isReturnable)
+        if (target.isAtomized)
           a.getTarget.setAtomized()
-        }
         return
       }
-      val arc: PathMapArc = new PathMapArc(axis, test, target)
+      val arc = new PathMapArc(axis, test, target)
       arcs.add(arc)
     }
 
@@ -79,45 +60,39 @@ object PathMap {
       if (isReturnable)
         return true
       for (arc <- arcs.asScala if arc.getTarget.hasReachableReturnables) {
-        true
+        return true
       }
       false
     }
 
-    def setAtomized(): Unit = {
+    def setAtomized(): Unit =
       this.atomized = true
-    }
 
-    def setHasUnknownDependencies(): Unit = {
+    def setHasUnknownDependencies(): Unit =
       hasUnknownDependencies = true
-    }
 
     def allPathsAreWithinStreamableSnapshot(): Boolean = {
       if (hasUnknownDependencies || isReturnable || isAtomized)
         return false
       for (arc <- arcs.asScala) {
-        val axis: Int = arc.getAxis
+        val axis = arc.getAxis
         if (axis == AxisInfo.ATTRIBUTE) {
-          val next: PathMapNode = arc.getTarget
-          if (next.isReturnable) {
+          val next = arc.getTarget
+          if (next.isReturnable)
             return false
-          }
-          if (next.getArcs.length != 0 && !next
-            .allPathsAreWithinStreamableSnapshot())
+          if (next.getArcs.length != 0 && ! next.allPathsAreWithinStreamableSnapshot())
             return false
-        } else if (axis == AxisInfo.SELF || axis == AxisInfo.ANCESTOR || axis == AxisInfo.ANCESTOR_OR_SELF ||
-          axis == AxisInfo.PARENT) {
-          val next: PathMapNode = arc.getTarget
-          if (next.isAtomized) {
+        } else if (axis == AxisInfo.SELF || axis == AxisInfo.ANCESTOR || axis == AxisInfo.ANCESTOR_OR_SELF || axis == AxisInfo.PARENT) {
+          val next = arc.getTarget
+          if (next.isAtomized)
             return false
-          }
-          if (!next.allPathsAreWithinStreamableSnapshot())
+          if (! next.allPathsAreWithinStreamableSnapshot())
             return false
         } else {
           return false
         }
       }
-      return true
+      true
     }
   }
 
@@ -138,7 +113,7 @@ object PathMap {
 
   }
 
-  class PathMapNodeSet extends HashSet[PathMapNode] {
+  class PathMapNodeSet extends ju.HashSet[PathMapNode] {
 
     def this(singleton: PathMapNode) = {
       this()
@@ -174,13 +149,10 @@ object PathMap {
     }
 
     def hasReachableReturnables: Boolean =
-      this.asScala.find(_.hasReachableReturnables).map(_ => true).getOrElse(false)
+      this.asScala.exists(_.hasReachableReturnables)
 
     def allPathsAreWithinStreamableSnapshot(): Boolean =
-      this.asScala
-        .find(!_.allPathsAreWithinStreamableSnapshot())
-        .map(_ => false)
-        .getOrElse(true)
+      this.asScala.find(! _.allPathsAreWithinStreamableSnapshot()).forall(_ => false)
 
     def addDescendants(): Unit = {
       for (node <- this.asScala) {
@@ -200,10 +172,10 @@ object PathMap {
 
 class PathMap(exp: Expression) {
 
-  private var pathMapRoots: List[PathMapRoot] = new ArrayList[PathMapRoot]()
+  private val pathMapRoots: ju.List[PathMapRoot] = new ju.ArrayList[PathMapRoot]
 
-  private var pathsForVariables: HashMap[Binding, PathMapNodeSet] =
-    new HashMap[Binding, PathMapNodeSet]()
+  private val pathsForVariables: ju.HashMap[Binding, PathMapNodeSet] =
+    new ju.HashMap[Binding, PathMapNodeSet]()
 
   val finalNodes: PathMapNodeSet = exp.addToPathMap(this, null)
 
@@ -281,26 +253,24 @@ class PathMap(exp: Expression) {
       }
       val arg: Expression = exp.asInstanceOf[SystemFunctionCall].getArg(0)
       var suppliedUri: String = null
-      if (arg.isInstanceOf[Literal]) {
-        try {
-          val argValue: String =
-            arg.asInstanceOf[Literal].getValue.getStringValue
-          suppliedUri =
-            if (baseUri == null)
-              if (new URI(argValue).isAbsolute) argValue else null
-            else ResolveURI.makeAbsolute(argValue, baseUri).toString
-        } catch {
-          case err: URISyntaxException => suppliedUri = null
-
-          case err: XPathException => suppliedUri = null
-
-        }
+      arg match {
+        case literal: Literal =>
+          try {
+            val argValue: String =
+              literal.getValue.getStringValue
+            suppliedUri =
+              if (baseUri == null)
+                if (new URI(argValue).isAbsolute) argValue else null
+              else ResolveURI.makeAbsolute(argValue, baseUri).toString
+          } catch {
+            case _: URISyntaxException | _: XPathException =>
+              suppliedUri = null
+          }
+        case _ =>
       }
       if (requiredUri == suppliedUri) {
         if (requiredRoot != null) {
-          throw new IllegalStateException(
-            "More than one document root found in path map for " +
-              requiredUri)
+          throw new IllegalStateException("More than one document root found in path map for " + requiredUri)
         } else {
           requiredRoot = newRoot
         }
@@ -314,31 +284,21 @@ class PathMap(exp: Expression) {
       return root
     var newRoot: PathMapRoot = root
     if (root.getRootExpression.isInstanceOf[ContextItemExpression]) {
-      val slash: RootExpression = new RootExpression()
+      val slash = new RootExpression()
       newRoot = makeNewRoot(slash)
-      var i: Int = root.arcs.size - 1
+      var i = root.arcs.size - 1
       while (i >= 0) {
-        val arc: PathMapArc = root.arcs.get(i)
-        val axis: Int = arc.getAxis
+        val arc = root.arcs.get(i)
+        val axis = arc.getAxis
         axis match {
-          case AxisInfo.ATTRIBUTE | AxisInfo.NAMESPACE => {
+          case AxisInfo.ATTRIBUTE | AxisInfo.NAMESPACE =>
             val newTarget: PathMapNode = new PathMapNode()
             newTarget.arcs.add(arc)
-            newRoot.createArc(AxisInfo.DESCENDANT,
-              NodeKindTest.ELEMENT,
-              newTarget)
-          }
-          case _ => {
-            newRoot.createArc(AxisInfo.DESCENDANT_OR_SELF,
-              arc.getNodeTest,
-              arc.getTarget)
-          }
-
+            newRoot.createArc(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT, newTarget)
+          case _ =>
+            newRoot.createArc(AxisInfo.DESCENDANT_OR_SELF, arc.getNodeTest, arc.getTarget)
         }
-        {
-          i -= 1;
-          i + 1
-        }
+        i -= 1
       }
       breakable {
         for (i <- 0 until pathMapRoots.size if pathMapRoots.get(i) == root) {
@@ -347,113 +307,92 @@ class PathMap(exp: Expression) {
         }
       }
     }
-    val nodeStack: Stack[PathMapNode] = new Stack[PathMapNode]()
-    nodeStack.push(newRoot)
+    val nodeStack = List(newRoot)
     reduceToDownwardsAxes(newRoot, nodeStack)
     newRoot.isDownwardsOnly = true
     newRoot
   }
 
-  private def reduceToDownwardsAxes(root: PathMapRoot,
-                                    nodeStack: Stack[PathMapNode]): Unit = {
-    val node: PathMapNode = nodeStack.peek()
-    if (node.hasUnknownDependencies) {
+  private def reduceToDownwardsAxes(root: PathMapRoot, _nodeStack: List[PathMapNode]): Unit = {
+    var nodeStack = _nodeStack
+    val node = nodeStack.head
+    if (node.hasUnknownDependencies)
       root.setHasUnknownDependencies()
-    }
     for (i <- 0 until node.arcs.size) {
-      nodeStack.push((node.arcs.get(i)).getTarget)
+      nodeStack ::= node.arcs.get(i).getTarget
       reduceToDownwardsAxes(root, nodeStack)
-      nodeStack.pop()
+      nodeStack = nodeStack.tail
     }
-    var i: Int = node.arcs.size - 1
+    var i = node.arcs.size - 1
     while (i >= 0) {
-      val thisArc: PathMapArc = node.arcs.get(i)
-      val grandParent: PathMapNode =
-        (if (nodeStack.size < 2) null else nodeStack.get(nodeStack.size - 2))
-      var lastAxis: Int = -1
+      val thisArc = node.arcs.get(i)
+      val grandParent =
+        if (nodeStack.size < 2)
+          null
+        else
+          nodeStack(nodeStack.size - 2)
+      var lastAxis = -1
       if (grandParent != null) {
         for (arc1 <- grandParent.arcs.asScala) {
-          val arc: PathMapArc = (arc1)
-          if (arc.getTarget == node) {
+          val arc = arc1
+          if (arc.getTarget == node)
             lastAxis = arc.getAxis
-          }
         }
       }
       thisArc.getAxis match {
         case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF =>
           if (thisArc.getNodeTest == NodeKindTest.DOCUMENT) {
             node.arcs.remove(i)
-            for (arc <- thisArc.getTarget.arcs.asScala) {
+            for (arc <- thisArc.getTarget.arcs.asScala)
               root.arcs.add(arc)
-            }
-          } else {}
-        case AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING => {
+          } else {
+            // TODO FIXME compare to Java
+            // fall through
+          }
+        case AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING =>
           if (thisArc.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
-            root.createArc(AxisInfo.DESCENDANT_OR_SELF,
-              thisArc.getNodeTest,
-              thisArc.getTarget)
+            root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           }
-        }
-        case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
-             AxisInfo.NAMESPACE =>
+        case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT | AxisInfo.NAMESPACE =>
         case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
           if (grandParent != null) {
-            grandParent.createArc(lastAxis,
-              thisArc.getNodeTest,
-              thisArc.getTarget)
+            grandParent.createArc(lastAxis, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           } else {
-            root.createArc(AxisInfo.CHILD,
-              thisArc.getNodeTest,
-              thisArc.getTarget)
+            root.createArc(AxisInfo.CHILD, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           }
-        case AxisInfo.PARENT => {
+        case AxisInfo.PARENT =>
           if (lastAxis == AxisInfo.CHILD || lastAxis == AxisInfo.ATTRIBUTE ||
             lastAxis == AxisInfo.NAMESPACE) {
-            if (node.isReturnable) {
+            if (node.isReturnable)
               grandParent.setReturnable(true)
-            }
-            val target: PathMapNode = thisArc.getTarget
-            for (a <- 0 until target.arcs.size) {
+            val target = thisArc.getTarget
+            for (a <- 0 until target.arcs.size)
               grandParent.arcs.add(target.arcs.get(a))
-            }
             node.arcs.remove(i)
           } else if (lastAxis == AxisInfo.DESCENDANT) {
-            if (thisArc.getTarget.arcs.isEmpty) {
-              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF,
-                thisArc.getNodeTest)
-            } else {
-              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF,
-                thisArc.getNodeTest,
-                thisArc.getTarget)
-            }
+            if (thisArc.getTarget.arcs.isEmpty)
+              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest)
+            else
+              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           } else {
-            if (thisArc.getTarget.arcs.isEmpty) {
+            if (thisArc.getTarget.arcs.isEmpty)
               root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest)
-            } else {
-              root.createArc(AxisInfo.DESCENDANT_OR_SELF,
-                thisArc.getNodeTest,
-                thisArc.getTarget)
-            }
+            else
+              root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           }
-        }
-        case AxisInfo.SELF => {
+        case AxisInfo.SELF =>
           node.arcs.remove(i)
-        }
-
       }
-      {
-        i -= 1;
-        i + 1
-      }
+      i -= 1
     }
   }
 
-  def diagnosticDump(out: Logger): Unit = {
+  def diagnosticDump(out: Logger): Unit =
     for (i <- 0 until pathMapRoots.size) {
       out.info("\nROOT EXPRESSION " + i)
       val mapRoot: PathMapRoot = pathMapRoots.get(i)
@@ -465,12 +404,10 @@ class PathMap(exp: Expression) {
       out.info("\nTREE FOR EXPRESSION " + i)
       showArcs(out, mapRoot, 2)
     }
-  }
 
   private def showArcs(out: Logger, node: PathMapNode, indent: Int): Unit = {
-    val pad: String =
-      "                                           ".substring(0, indent)
-    val arcs: List[PathMapArc] = node.arcs
+    val pad: String = "                                           ".substring(0, indent)
+    val arcs = node.arcs
     for (arc <- arcs.asScala) {
       out.info(
         pad + AxisInfo.axisName(arc.axis) + "::" + arc.test.toString +
@@ -480,5 +417,4 @@ class PathMap(exp: Expression) {
       showArcs(out, arc.target, indent + 2)
     }
   }
-
 }
