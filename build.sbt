@@ -9,7 +9,10 @@ lazy val supportedScalaVersions = List(scala212, scala213)
 
 val ScalaTestVersion = "3.2.1"
 
-traceLevel in ThisBuild := 0
+ThisBuild / githubOwner       := "orbeon"
+ThisBuild / githubRepository  := "saxon-xpath"
+ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
+ThisBuild / traceLevel        := 0
 
 lazy val DebugTest = config("debug-test") extend Test
 
@@ -17,9 +20,10 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   .settings(
     organization := "org.orbeon",
     name         := "saxon",
-    version      := "1.0-SNAPSHOT",
+    version      := "10.0.0.1-SNAPSHOT",
 
-    scalaVersion := scala213,
+    scalaVersion       := scala213,
+    crossScalaVersions := supportedScalaVersions,
 
     scalacOptions ++= Seq(
     "-encoding", "utf8",
@@ -43,6 +47,9 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     javaOptions       in DebugTest     += "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005",
     parallelExecution in DebugTest     := false
   )
+  .jsSettings(
+    libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.2-SNAPSHOT")
+  )
 
 lazy val saxonJS  = saxon.js
 lazy val saxonJVM = saxon.jvm.configs(DebugTest)
@@ -50,8 +57,8 @@ lazy val saxonJVM = saxon.jvm.configs(DebugTest)
 lazy val root = project.in(file("."))
   .aggregate(saxonJS, saxonJVM)
   .settings(
-    publish := {},
-    publishLocal := {},
+    publish                       := {},
+    publishLocal                  := {},
     ThisProject / sourceDirectory := baseDirectory.value / "root",
     crossScalaVersions            := Nil // "crossScalaVersions must be set to Nil on the aggregating project"
   )
