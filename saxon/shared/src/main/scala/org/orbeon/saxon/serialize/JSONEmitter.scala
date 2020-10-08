@@ -1,69 +1,35 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.PipelineConfiguration
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.ma.json.JsonReceiver
-
-import org.orbeon.saxon.serialize.charcode.CharacterSet
-
-import org.orbeon.saxon.serialize.codenorm.Normalizer
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.BooleanValue
-
-import org.orbeon.saxon.value.IntegerValue
-
-import org.orbeon.saxon.value.NumericValue
-
-import javax.xml.transform.OutputKeys
-
-import javax.xml.transform.stream.StreamResult
-
-import java.io.IOException
-
-import java.io.Writer
-
+import java.io.{IOException, Writer}
 import java.util.Properties
 
-import java.util.Stack
-
-import scala.beans.{BeanProperty}
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
+import org.orbeon.saxon.event.PipelineConfiguration
+import org.orbeon.saxon.lib.SaxonOutputKeys
+import org.orbeon.saxon.ma.json.JsonReceiver
+import org.orbeon.saxon.serialize.charcode.CharacterSet
+import org.orbeon.saxon.serialize.codenorm.Normalizer
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.{AtomicValue, BooleanValue, IntegerValue, NumericValue}
 
 class JSONEmitter(pipe: PipelineConfiguration,
                   sResult: StreamResult,
                   var outputProperties: Properties) {
 
-  private var result: ExpandedStreamResult = new ExpandedStreamResult(pipe.getConfiguration, sResult, outputProperties)
-
+  private val result: ExpandedStreamResult = new ExpandedStreamResult(pipe.getConfiguration, sResult, outputProperties)
   private var writer: Writer = _
-
   private var normalizer: Normalizer = _
-
   private var characterMap: CharacterMap = _
-
   private var characterSet: CharacterSet = _
-
   private var isIndenting: Boolean = _
-
   private var indentSpaces: Int = 2
-
   private var maxLineLength: Int = _
-
   private var first: Boolean = true
-
   private var afterKey: Boolean = false
-
   private var level: Int = _
-
-  private var oneLinerStack: Stack[Boolean] = new Stack()
-
+  private var oneLinerStack: List[Boolean] = Nil
   private var unfailing: Boolean = false
 
   def setOutputProperties(details: Properties): Unit = {
@@ -177,7 +143,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
 
   private def emitOpen(bracket: Char, oneLiner: Boolean): Unit = {
     conditionalComma(true)
-    oneLinerStack.push(oneLiner)
+    oneLinerStack ::= oneLiner
     emit(bracket)
     first = true
     if (isIndenting) {
@@ -188,13 +154,13 @@ class JSONEmitter(pipe: PipelineConfiguration,
   }
 
   private def emitClose(bracket: Char, level: Int): Unit = {
-    val oneLiner: Boolean = oneLinerStack.pop()
+    val oneLiner = oneLinerStack.head
+    oneLinerStack = oneLinerStack.tail
     if (isIndenting) {
-      if (oneLiner) {
+      if (oneLiner)
         emit(' ')
-      } else {
+      else
         indent(level)
-      }
     }
     emit(bracket)
     first = false
