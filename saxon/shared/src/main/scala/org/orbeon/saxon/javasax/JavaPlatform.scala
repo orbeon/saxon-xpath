@@ -1,41 +1,24 @@
 package org.orbeon.saxon.saxjava
 
-import org.orbeon.saxon.dom.DOMEnvelope
-import org.orbeon.saxon.dom.DOMObjectModel
+import org.orbeon.saxon.dom.{DOMEnvelope, DOMObjectModel}
 import org.orbeon.saxon.event.PipelineConfiguration
-import org.orbeon.saxon.expr.StaticContext
-import org.orbeon.saxon.expr.parser.RetainedStaticContext
 import org.orbeon.saxon.expr.sort._
 import org.orbeon.saxon.functions.FunctionLibraryList
-import org.orbeon.saxon.lib.ModuleURIResolver
-import org.orbeon.saxon.lib.StandardModuleURIResolver
-import org.orbeon.saxon.lib.StringCollator
+import org.orbeon.saxon.lib.{ModuleURIResolver, StandardModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
-import org.orbeon.saxon.om.NamespaceResolver
-import org.orbeon.saxon.regex.ARegularExpression
-import org.orbeon.saxon.regex.JavaRegularExpression
-import org.orbeon.saxon.regex.RegularExpression
+import org.orbeon.saxon.regex.{ARegularExpression, JavaRegularExpression, RegularExpression}
 import org.orbeon.saxon.resource.StandardCollectionFinder
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.xpath.JAXPXPathStaticContext
-import org.xml.sax.SAXException
-import org.xml.sax.XMLReader
-import javax.xml.namespace.NamespaceContext
-import javax.xml.parsers.ParserConfigurationException
+import java.lang.reflect.Method
+import java.text.{CollationKey, Collator}
+import java.util.{List, Properties}
+
 import javax.xml.parsers.SAXParserFactory
 import javax.xml.transform.Source
-import javax.xml.transform.TransformerFactoryConfigurationError
 import javax.xml.transform.stream.StreamSource
-import java.lang.reflect.Method
-import java.text.CollationKey
-import java.text.Collator
-import java.util.Iterator
-import java.util.List
-import java.util.Properties
-
-import JavaPlatform._
 import org.orbeon.saxon.javasax.JavaCollationFactory
+import org.orbeon.saxon.saxjava.JavaPlatform._
 import org.orbeon.saxon.utils.{Configuration, Platform}
+import org.xml.sax.XMLReader
 
 object JavaPlatform {
   var tryJdk9: Boolean = true
@@ -77,14 +60,14 @@ class JavaPlatform extends Platform {
     config.setCollectionFinder(new StandardCollectionFinder())
   }
 
-  def isJava(): Boolean = true
+  def isJava: Boolean = true
 
-  def isDotNet(): Boolean = false
+  def isDotNet: Boolean = false
 
-  def getPlatformVersion(): String =
+  def getPlatformVersion: String =
     "Java version " + System.getProperty("java.version")
 
-  def getPlatformSuffix(): String = "J"
+  def getPlatformSuffix: String = "J"
 
   def loadParser(): XMLReader = {
     var parser: XMLReader = null
@@ -150,9 +133,9 @@ class JavaPlatform extends Platform {
     new CollationMatchKey(ck)
   }
 
-  def hasICUCollator(): Boolean = false
+  def hasICUCollator: Boolean = false
 
-  def hasICUNumberer(): Boolean = false
+  def hasICUNumberer: Boolean = false
 
   def makeUcaCollator(uri: String, config: Configuration): StringCollator = {
     val collator: UcaCollatorUsingJava = new UcaCollatorUsingJava(uri)

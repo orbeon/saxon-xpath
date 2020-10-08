@@ -41,7 +41,8 @@ object Version {
   def main(args: Array[String]): Unit =
     System.err.println(getProductTitle + " (build " + BUILD + ')')
 
-  var configurationClass: Class[_ <: Configuration] = _
+  // ORBEON: Unused.
+//  var configurationClass: Class[_ <: Configuration] = _
   var softwareEdition: String = "HE"
-  var platform: Platform = new JavaPlatform()
+  var platform: Platform = new JavaPlatform
 }

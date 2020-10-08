@@ -90,12 +90,8 @@ object XPathContextMajor {
 
 }
 
-class XPathContextMajor private()
+class XPathContextMajor private () extends XPathContextMinor {
 
-/**
- * Private Constructor
- */
-  extends XPathContextMinor {
   private var localParameters: ParameterSet = _
   private var tunnelParameters: ParameterSet = _
   private var tailCallInfo: TailCallInfo = _
@@ -139,7 +135,7 @@ class XPathContextMajor private()
     if (item != null) {
       val iter = SingletonIterator.makeIterator(item)
       currentIterator = new FocusTrackingIterator(iter)
-      try currentIterator.next
+      try currentIterator.next()
       catch {
         case e: XPathException =>
 
@@ -154,7 +150,7 @@ class XPathContextMajor private()
    * Construct a new context as a copy of another. The new context is effectively added
    * to the top of a stack, and contains a pointer to the previous context.
    */
-  override def newContext = {
+  override def newContext: XPathContextMajor = {
     val c = new XPathContextMajor
     c.controller = controller
     c.currentIterator = currentIterator
@@ -184,13 +180,13 @@ class XPathContextMajor private()
    *
    * @return the current thread manager. This will be null if not running XSLT under Saxon-EE
    */
-  override def getThreadManager = threadManager
+  override def getThreadManager: ThreadManager = threadManager
 
   /**
    * Create a new thread manager. This is called when starting an XSLT Transformation, and also
    * when entering a try/catch block. In Saxon-HE it does nothing.
    */
-  def createThreadManager() = threadManager = getConfiguration.makeThreadManager
+  def createThreadManager(): Unit = threadManager = getConfiguration.makeThreadManager
 
   /**
    * Wait for child threads started under the control of this context to finish.
@@ -202,14 +198,14 @@ class XPathContextMajor private()
    *                        error.
    */
   @throws[XPathException]
-  override def waitForChildThreads() = if (threadManager != null) threadManager.waitForChildThreads()
+  override def waitForChildThreads(): Unit = if (threadManager != null) threadManager.waitForChildThreads()
 
   /**
    * Get the local parameters for the current template call.
    *
    * @return the supplied parameters
    */
-  override def getLocalParameters = {
+  override def getLocalParameters: ParameterSet = {
     if (localParameters == null) localParameters = new ParameterSet
     localParameters
   }
@@ -219,21 +215,21 @@ class XPathContextMajor private()
    *
    * @param localParameters the supplied parameters
    */
-  def setLocalParameters(localParameters: ParameterSet) = this.localParameters = localParameters
+  def setLocalParameters(localParameters: ParameterSet): Unit = this.localParameters = localParameters
 
   /**
    * Get the tunnel parameters for the current template call.
    *
    * @return the supplied tunnel parameters
    */
-  override def getTunnelParameters = tunnelParameters
+  override def getTunnelParameters: ParameterSet = tunnelParameters
 
   /**
    * Set the tunnel parameters for the current template call.
    *
    * @param tunnelParameters the supplied tunnel parameters
    */
-  def setTunnelParameters(tunnelParameters: ParameterSet) = this.tunnelParameters = tunnelParameters
+  def setTunnelParameters(tunnelParameters: ParameterSet): Unit = this.tunnelParameters = tunnelParameters
 
   /**
    * Set the creating expression (for use in diagnostics). The origin is generally set to "this" by the
@@ -241,12 +237,12 @@ class XPathContextMajor private()
    * is useful. The object will either be an {@link Expression}, allowing information
    * about the calling instruction to be obtained, or null.
    */
-  def setOrigin(expr: ContextOriginator) = origin = expr
+  def setOrigin(expr: ContextOriginator): Unit = origin = expr
 
   /**
    * Get information about the creating expression or other construct.
    */
-  def getOrigin = origin
+  def getOrigin: ContextOriginator = origin
 
   /**
    * Set the local stack frame. This method is used when creating a Closure to support
@@ -341,8 +337,10 @@ class XPathContextMajor private()
    */
   def openStackFrame(map: SlotManager): Unit = {
     val numberOfSlots = map.getNumberOfVariables
-    if (numberOfSlots == 0) stackFrame = StackFrame.EMPTY
-    else stackFrame = new StackFrame(map, new Array[Sequence](numberOfSlots))
+    if (numberOfSlots == 0)
+      stackFrame = StackFrame.EMPTY
+    else
+      stackFrame = new StackFrame(map, new Array[Sequence](numberOfSlots))
   }
 
   /**

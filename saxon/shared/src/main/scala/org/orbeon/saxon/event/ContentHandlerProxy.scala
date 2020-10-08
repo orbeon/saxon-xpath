@@ -67,13 +67,11 @@ object ContentHandlerProxy {
 
     def setOutputDestination(stream: Logger): Unit = ()
 
-    def open(controller: Controller): Unit = {
+    def open(controller: Controller): Unit =
       contextItemStack = new Stack()
-    }
 
-    def close(): Unit = {
+    def close(): Unit =
       contextItemStack = null
-    }
 
     def startCurrentItem(currentItem: Item): Unit = {
       if (contextItemStack == null) {
@@ -82,12 +80,9 @@ object ContentHandlerProxy {
       contextItemStack.push(currentItem)
     }
 
-    def endCurrentItem(currentItem: Item): Unit = {
+    def endCurrentItem(currentItem: Item): Unit =
       contextItemStack.pop()
-    }
-
   }
-
 }
 
 class ContentHandlerProxy extends Receiver {

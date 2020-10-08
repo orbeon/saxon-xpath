@@ -34,35 +34,28 @@ class XQueryEvaluator(var processor: Processor,
   extends AbstractDestination
     with java.lang.Iterable[XdmItem] {
 
-  private var context: DynamicQueryContext = new DynamicQueryContext(
-    expression.getConfiguration)
-
+  private val context: DynamicQueryContext = new DynamicQueryContext(expression.getConfiguration)
   private var controller: Controller = _
-
   private var destination: Destination = _
-
   private var updatedDocuments: Set[XdmNode] = _
-
   private var sourceTreeBuilder: Builder = _
 
-  def setSchemaValidationMode(mode: ValidationMode): Unit = {
-    if (mode != null) {
+  def setSchemaValidationMode(mode: ValidationMode): Unit =
+    if (mode != null)
       context.setSchemaValidationMode(mode.getNumber)
-    }
-  }
 
   def getSchemaValidationMode: ValidationMode =
     ValidationMode.get(context.getSchemaValidationMode)
 
-  def setSource(source: Source): Unit = {
-    if (source.isInstanceOf[NodeInfo]) {
-      this.setContextItem(new XdmNode(source.asInstanceOf[NodeInfo]))
-    } else if (source.isInstanceOf[DOMSource]) {
-      this.setContextItem(processor.newDocumentBuilder().wrap(source))
-    } else {
-      this.setContextItem(processor.newDocumentBuilder().build(source))
+  def setSource(source: Source): Unit =
+    source match {
+      case info: NodeInfo =>
+        this.setContextItem(new XdmNode(info))
+      case _: DOMSource =>
+        this.setContextItem(processor.newDocumentBuilder().wrap(source))
+      case _ =>
+        this.setContextItem(processor.newDocumentBuilder().build(source))
     }
-  }
 
   def setContextItem(item: XdmItem): Unit = {
     if (item != null) {
@@ -220,11 +213,10 @@ class XQueryEvaluator(var processor: Processor,
       context.initializeController(controller)
     }
     sourceTreeBuilder = controller.makeBuilder
-    if (sourceTreeBuilder.isInstanceOf[TinyBuilder]) {
-      sourceTreeBuilder
-        .asInstanceOf[TinyBuilder]
-        .setStatistics(
-          context.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
+    sourceTreeBuilder match {
+      case builder: TinyBuilder =>
+        builder.setStatistics(context.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
+      case _ =>
     }
     val out: Receiver = controller.makeStripper(sourceTreeBuilder)
     val sn: SequenceNormalizer = params.makeSequenceNormalizer(out)
@@ -265,7 +257,7 @@ class XQueryEvaluator(var processor: Processor,
     }
     val config: Configuration = processor.getUnderlyingConfiguration
     val vr: Array[Sequence] = SequenceTool.makeSequenceArray(arguments.length)
-    for (i <- 0 until arguments.length) {
+    for (i <- arguments.indices) {
       val `type`: org.orbeon.saxon.value.SequenceType =
         fn.getParameterDefinitions()(i).getRequiredType
       vr(i) = arguments(i).getUnderlyingValue
@@ -283,5 +275,4 @@ class XQueryEvaluator(var processor: Processor,
   }
 
   def getUnderlyingQueryContext: DynamicQueryContext = context
-
 }

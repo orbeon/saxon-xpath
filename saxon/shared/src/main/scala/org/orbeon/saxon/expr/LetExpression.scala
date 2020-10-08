@@ -1,37 +1,20 @@
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.expr.instruct.DocumentInstr
-
-import org.orbeon.saxon.expr.instruct.TailCall
-
-import org.orbeon.saxon.expr.instruct.TailCallReturner
-
+import org.orbeon.saxon.expr.instruct.{DocumentInstr, TailCall, TailCallReturner}
 import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.UType
-
+import org.orbeon.saxon.model.{ItemType, SchemaType, UType}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.trace.ExpressionPresenter
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-
-import org.orbeon.saxon.value.IntegerValue
-
-import org.orbeon.saxon.value.SequenceType
-
 import java.util.ArrayList
-
 import java.util.function.BiConsumer
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.value.{IntegerValue, SequenceType}
+
+import scala.beans.BeanProperty
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 
@@ -69,9 +52,8 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def resetLocalStaticProperties(): Unit = {
     super.resetLocalStaticProperties()
-    references = new ArrayList()
-    if (evaluator == Evaluator.VARIABLE && !(getSequence
-      .isInstanceOf[VariableReference])) {
+    references = new ArrayList[VariableReference]
+    if (evaluator == Evaluator.VARIABLE && ! getSequence.isInstanceOf[VariableReference]) {
       evaluator = null
       setEvaluator()
     }
@@ -92,9 +74,10 @@ class LetExpression extends Assignation with TailCallReturner {
     refineTypeInformation(
       actualItemType,
       getSequence.getCardinality,
-      if (getSequence.isInstanceOf[Literal])
-        getSequence.asInstanceOf[Literal].getValue
-      else null,
+      getSequence match {
+        case literal: Literal => literal.getValue
+        case _ => null
+      },
       getSequence.getSpecialProperties,
       this
     )
@@ -117,37 +100,37 @@ class LetExpression extends Assignation with TailCallReturner {
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     val opt: Optimizer = visitor.obtainOptimizer()
-    if (getAction.isInstanceOf[VariableReference] &&
-      (getAction.asInstanceOf[VariableReference].getBinding eq this) &&
-      !ExpressionTool.changesXsltContext(getSequence)) {
-      getSequenceOp.optimize(visitor, contextItemType)
-      opt.trace("Eliminated trivial variable " + getVariableName, getSequence)
-      return getSequence
+    getAction match {
+      case variableRef: VariableReference if ! ExpressionTool.changesXsltContext(getSequence) && (variableRef.getBinding eq this) =>
+        getSequenceOp.optimize(visitor, contextItemType)
+        opt.trace("Eliminated trivial variable " + getVariableName, getSequence)
+        return getSequence
+      case _ =>
     }
-    if (getSequence.isInstanceOf[Literal] && opt.isOptionSet(
-      OptimizerOptions.INLINE_VARIABLES)) {
+    if (getSequence.isInstanceOf[Literal] && opt.isOptionSet(OptimizerOptions.INLINE_VARIABLES)) {
       opt.trace("Inlined constant variable " + getVariableName, getSequence)
       replaceVariable(getSequence)
       return getAction.optimize(visitor, contextItemType)
     }
-    if (getSequence.isInstanceOf[DocumentInstr] && getSequence
-      .asInstanceOf[DocumentInstr]
-      .isTextOnly) {
-      verifyReferences()
-      if (allReferencesAreFlattened()) {
-        var stringValueExpression: Expression =
-          getSequence.asInstanceOf[DocumentInstr].getStringValueExpression
-        stringValueExpression =
-          stringValueExpression.typeCheck(visitor, contextItemType)
-        this.setSequence(stringValueExpression)
-        requiredType = SequenceType.SINGLE_UNTYPED_ATOMIC
-        adoptChildExpression(getSequence)
-        refineTypeInformation(requiredType.getPrimaryType,
-          requiredType.getCardinality,
-          null,
-          0,
-          this)
-      }
+    getSequence match {
+      case instr: DocumentInstr if instr
+        .isTextOnly =>
+        verifyReferences()
+        if (allReferencesAreFlattened()) {
+          var stringValueExpression: Expression =
+            instr.getStringValueExpression
+          stringValueExpression =
+            stringValueExpression.typeCheck(visitor, contextItemType)
+          this.setSequence(stringValueExpression)
+          requiredType = SequenceType.SINGLE_UNTYPED_ATOMIC
+          adoptChildExpression(getSequence)
+          refineTypeInformation(requiredType.getPrimaryType,
+            requiredType.getCardinality,
+            null,
+            0,
+            this)
+        }
+      case _ =>
     }
     if (getSequence.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS)) {
       needsEagerEvaluation = true
@@ -211,7 +194,7 @@ class LetExpression extends Assignation with TailCallReturner {
     var tries: Int = 0
     breakable {
       while ( {
-        tries += 1;
+        tries += 1
         tries - 1
       } < 5) {
         val seq0: Expression = getSequence
@@ -227,7 +210,7 @@ class LetExpression extends Assignation with TailCallReturner {
     tries = 0
     breakable {
       while ( {
-        tries += 1;
+        tries += 1
         tries - 1
       } < 5) {
         val act0: Expression = getAction
@@ -284,21 +267,19 @@ class LetExpression extends Assignation with TailCallReturner {
     references != null &&
       references.stream().allMatch(res => res.isFlattened)
 
-  override def isVacuousExpression(): Boolean = getAction.isVacuousExpression
+  override def isVacuousExpression: Boolean = getAction.isVacuousExpression
 
-  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
     getAction.checkPermittedContents(parentType, whole)
-  }
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     getAction.getIntegerBounds
 
   override def getImplementationMethod: Int =
     getAction.getImplementationMethod
 
-  override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
+  override def gatherProperties(consumer: BiConsumer[String, Any]): Unit =
     consumer.accept("name", getVariableQName)
-  }
 
   override def iterate(context: XPathContext): SequenceIterator = {
     var let: LetExpression = this
@@ -495,8 +476,6 @@ class LetExpression extends Assignation with TailCallReturner {
     out.endElement()
   }
 
-  def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit = {
+  def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit =
     this.evaluator = mode.getEvaluator
-  }
-
 }

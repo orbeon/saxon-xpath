@@ -1,19 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.lib.SerializerFactory
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.trans.XPathException
 
 import java.util._
 
+import org.orbeon.saxon.event.Receiver
+import org.orbeon.saxon.lib.SerializerFactory
+import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.trans.XPathException
 
 
-
+/**
+  * This class represents a set of named character maps. Each character map in the set is identified by a unique
+  * QName.
+  */
 class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
 
   private var index: HashMap[StructuredQName, CharacterMap] = new HashMap(10)
@@ -63,13 +67,3 @@ class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class represents a set of named character maps. Each character map in the set is identified by a unique
-  * QName.
-  */

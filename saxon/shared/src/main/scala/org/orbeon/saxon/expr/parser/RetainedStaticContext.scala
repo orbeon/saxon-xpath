@@ -1,28 +1,13 @@
 package org.orbeon.saxon.expr.parser
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.utils.Version
-
-import org.orbeon.saxon.expr.PackageData
-
-import org.orbeon.saxon.expr.StaticContext
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.om.NamespaceMap
-
-import org.orbeon.saxon.om.NamespaceResolver
-
-import org.orbeon.saxon.trans.DecimalFormatManager
-
-import org.orbeon.saxon.trans.XPathException
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
+import java.net.{URI, URISyntaxException}
 import java.util.Iterator
+
+import org.orbeon.saxon.expr.{PackageData, StaticContext}
+import org.orbeon.saxon.lib.NamespaceConstant
+import org.orbeon.saxon.om.{NamespaceMap, NamespaceResolver}
+import org.orbeon.saxon.trans.{DecimalFormatManager, XPathException}
+import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
@@ -69,8 +54,7 @@ class RetainedStaticContext extends NamespaceResolver {
       staticBaseUriString = sc.getStaticBaseURI
       try this.staticBaseUri = ExpressionTool.getBaseURI(sc, null, fail = true)
       catch {
-        case e: XPathException => staticBaseUri = null
-
+        case _: XPathException => staticBaseUri = null
       }
     }
     this.defaultCollationName = sc.getDefaultCollationName
@@ -78,7 +62,8 @@ class RetainedStaticContext extends NamespaceResolver {
     this.defaultElementNamespace = sc.getDefaultElementNamespace
     defaultFunctionNamespace = sc.getDefaultFunctionNamespace
     backwardsCompatibility = sc.isInBackwardsCompatibleMode
-    if (Version.platform.JAXPStaticContextCheck(this, sc)) {} else {
+//    if (Version.platform.JAXPStaticContextCheck(this, sc)) {} else
+    locally {
       val resolver: NamespaceResolver = sc.getNamespaceResolver
       if (resolver.isInstanceOf[NamespaceMap]) {
         namespaces = resolver
@@ -171,5 +156,4 @@ class RetainedStaticContext extends NamespaceResolver {
   def setNamespaces(namespaces: NamespaceResolver): Unit = {
     this.namespaces = namespaces
   }
-
 }

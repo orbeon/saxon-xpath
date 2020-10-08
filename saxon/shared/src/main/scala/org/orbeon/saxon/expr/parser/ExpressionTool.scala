@@ -3,7 +3,7 @@
 
 package org.orbeon.saxon.expr.parser
 
-import java.io.File
+//import java.io.File
 import java.net.{URI, URISyntaxException}
 import java.util
 import java.util.function.Predicate
@@ -351,7 +351,6 @@ object ExpressionTool {
     seq.close()
     seq.iterate
   }
-
 
   @throws[XPathException]
   def getItemFromProcessMethod(exp: Expression, context: XPathContext): Item = {
@@ -1015,18 +1014,20 @@ object ExpressionTool {
 
   def isNotAllowedInUpdatingContext(exp: Expression): Boolean = !exp.isUpdatingExpression && !exp.isVacuousExpression
 
+  // ORBEON: No support for current directory.
   def getCurrentDirectory: String = {
-    var dir: String = null
-    try
-      dir = System.getProperty("user.dir")
-    catch {
-      case _: Exception =>
-        return null
-    }
-    if (!dir.endsWith("/"))
-      dir = dir + '/'
-    val currentDirectoryURL = new File(dir).toURI
-    currentDirectoryURL.toString
+    null
+//    var dir: String = null
+//    try
+//      dir = System.getProperty("user.dir")
+//    catch {
+//      case _: Exception =>
+//        return null
+//    }
+//    if (!dir.endsWith("/"))
+//      dir = dir + '/'
+//    val currentDirectoryURL = new File(dir).toURI
+//    currentDirectoryURL.toString
   }
 
   @throws[XPathException]
@@ -1041,7 +1042,6 @@ object ExpressionTool {
         expressionBaseURI = new URI(base)
     } catch {
       case _: URISyntaxException =>
-
         val esc = IriToUri.iriToUri(base).toString
         try expressionBaseURI = new URI(esc)
         catch {

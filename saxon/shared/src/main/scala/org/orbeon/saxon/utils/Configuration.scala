@@ -1,17 +1,16 @@
 package org.orbeon.saxon.utils
 
-import java.io._
-import java.net._
+import java.io.{IOException, InputStream, PrintStream, UnsupportedEncodingException}
+import java.net.{URI, URISyntaxException, URLDecoder}
 import java.util
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.{IntPredicate, Predicate}
-import java.util.{Collections, Comparator, Locale, Properties}
+import java.util.{Collections, Comparator, Properties}
 
 import javax.xml.parsers.{ParserConfigurationException, SAXParserFactory}
 import javax.xml.transform._
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXSource
-import javax.xml.transform.stax.StAXSource
 import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.expr._
@@ -22,8 +21,8 @@ import org.orbeon.saxon.expr.number.Numberer_en
 import org.orbeon.saxon.expr.parser.XPathParser.ParsedLanguage
 import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.expr.sort.{AlphanumericCollator, CodepointCollator, HTML5CaseBlindCollator}
+import org.orbeon.saxon.functions._
 import org.orbeon.saxon.functions.registry._
-import org.orbeon.saxon.functions.{FunctionLibraryList, IntegratedFunctionLibrary, MathFunctionSet, ResolveURI}
 import org.orbeon.saxon.lib._
 import org.orbeon.saxon.ma.arrays.ArrayFunctionSet
 import org.orbeon.saxon.ma.map.{MapFunctionSet, MapItem}
@@ -49,15 +48,14 @@ import org.orbeon.saxon.tree.util.DocumentNumberAllocator
 import org.orbeon.saxon.utils.Configuration.ApiProvider
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.{IntHashSet, IntSet}
-import org.xml
-import org.xml.sax.{ContentHandler => _, _}
+import org.xml.sax._
 
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 object Configuration {
 
-   var booleanFeatures = new util.HashSet[Feature[_]](40)
+  val booleanFeatures = new util.HashSet[Feature[_]](40)
   /**
    * Constant indicating the XML Version 1.0
    */
@@ -93,7 +91,7 @@ object Configuration {
    * @return an InputStream for reading the file/resource
    */
   def locateResource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]): InputStream = {
-    var fileName: String = "net/sf/saxon/data/" + filename
+    val fileName: String = "net/sf/saxon/data/" + filename
     var loader: ClassLoader = null
     try loader = Thread.currentThread.getContextClassLoader
     catch {
@@ -135,7 +133,7 @@ object Configuration {
    * @param loaders  List to be populated with the ClassLoader that succeeded in loading the resource
    * @return a StreamSource for reading the file/resource, with URL set appropriately
    */
-  def locateResourceSource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]) = {
+  def locateResourceSource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]): StreamSource = {
     var loader: ClassLoader = null
     try loader = Thread.currentThread.getContextClassLoader
     catch {
@@ -143,7 +141,7 @@ object Configuration {
         messages.add("Failed to getContextClassLoader() - continuing\n")
     }
     var in: InputStream = null
-    var url: URL = null
+    var url: java.net.URL = null
     if (loader != null) {
       url = loader.getResource(filename)
       in = loader.getResourceAsStream(filename)
@@ -203,7 +201,7 @@ object Configuration {
   @throws[ClassNotFoundException]
   @throws[InstantiationException]
   @throws[IllegalAccessException]
-  def instantiateConfiguration(className: String, classLoader: ClassLoader) = {
+  def instantiateConfiguration(className: String, classLoader: ClassLoader): Configuration = {
     var theClass: Class[_] = null
     var loader: ClassLoader = classLoader
     if (loader == null) {
@@ -231,7 +229,8 @@ object Configuration {
    *
    * @return true if the -ea option is set
    */
-  def isAssertionsEnabled: Boolean = { // Highly devious logic here. If assertions are enabled, the assertion is false, and a deliberate side-effect
+  def isAssertionsEnabled: Boolean = {
+    // Highly devious logic here. If assertions are enabled, the assertion is false, and a deliberate side-effect
     // of evaluating the assertion is that assertsEnabled is set to true. If assertions are not enabled, the assert
     // statement is not executed, so assertsEnabled is left as false.
     var assertsEnabled = false
@@ -260,7 +259,7 @@ object Configuration {
    * @since 9.2 (renamed from makeSchemaAwareConfiguration)
    */
   @throws[RuntimeException]
-  def makeLicensedConfiguration(classLoader: ClassLoader, className: String) = {
+  def makeLicensedConfiguration(classLoader: ClassLoader, className: String): Configuration = {
     var classnameVar = className
     if (classnameVar == null) classnameVar = "com.saxonica.config.ProfessionalConfiguration"
     try instantiateConfiguration(classnameVar, classLoader)
@@ -302,9 +301,9 @@ object Configuration {
    * @return the value as a boolean
    * @throws IllegalArgumentException if the supplied value cannot be validated as a recognized boolean value
    */
-  def requireBoolean(propertyName: String, value: Any) = if (value.isInstanceOf[Boolean]) value.asInstanceOf[Boolean]
+  def requireBoolean(propertyName: String, value: Any): Boolean = if (value.isInstanceOf[Boolean]) value.asInstanceOf[Boolean]
   else if (value.isInstanceOf[String]) {
-    var valueStr = value.asInstanceOf[String].trim
+    val valueStr = value.asInstanceOf[String].trim
     if ("true" == valueStr || "on" == valueStr || "yes" == valueStr || "1" == valueStr) true
     else if ("false" == valueStr || "off" == valueStr || "no" == valueStr || "0" == valueStr) false
     else throw new IllegalArgumentException(propertyName + " must be 'true' or 'false' (or on|off, yes|no, 1|0)")
@@ -370,26 +369,27 @@ object Configuration {
 class Configuration extends SourceResolver with NotationSet {
   @transient private var apiProcessor: ApiProvider = null
   @transient private var characterSetFactory: CharacterSetFactory = _
-  private var collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
+  private val collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
   private var collationResolver: CollationURIResolver = new StandardCollationURIResolver()
   private var defaultCollationName: String = NamespaceConstant.CODEPOINT_COLLATION_URI
-  private var allowedUriTest: Predicate[URI] = (uri: URI) => true
+  private var allowedUriTest: Predicate[java.net.URI] = (uri: java.net.URI) => true
   private val standardCollectionFinder: StandardCollectionFinder = new StandardCollectionFinder()
   private var collectionFinder: CollectionFinder = standardCollectionFinder
   private var environmentVariableResolver: EnvironmentVariableResolver = new StandardEnvironmentVariableResolver()
   private var defaultCollection: String = null
-  private var defaultParseOptions: ParseOptions = new ParseOptions()
+  private val defaultParseOptions: ParseOptions = new ParseOptions()
   @transient  var defaultStaticQueryContext: StaticQueryContext = _
   private var staticQueryContextFactory: StaticQueryContextFactory = new StaticQueryContextFactory()
   var optimizerOptions: OptimizerOptions = OptimizerOptions.FULL_HE_OPTIMIZATION
 
   //var defaultXsltCompilerInfo: CompilerInfo = makeCompilerInfo
 
-  private var errorReporterFactory: java.util.function.Function[Configuration, _ <: ErrorReporter] = (config: Configuration) => {
-    val reporter: StandardErrorReporter = new StandardErrorReporter()
-    reporter.setLogger(config.getLogger)
-    reporter
-  }
+  private var errorReporterFactory: Configuration => ErrorReporter =
+    (config: Configuration) => {
+      val reporter = new StandardErrorReporter
+      reporter.setLogger(config.getLogger)
+      reporter
+    }
 
   private var label: String = null
 
@@ -397,95 +397,51 @@ class Configuration extends SourceResolver with NotationSet {
     new DocumentNumberAllocator()
 
   /*@Nullable*/
-
   @transient private var debugger: Debugger = null
-
-  private var defaultLanguage: String = Locale.getDefault.getLanguage
-
-  private var defaultCountry: String = Locale.getDefault.getCountry
-
+  private var defaultLanguage: String = "en" // Locale.getDefault.getLanguage
+  private var defaultCountry: String = "us" // Locale.getDefault.getCountry
   private var defaultOutputProperties: Properties = new Properties()
-
   @transient private var dynamicLoader: DynamicLoader = new DynamicLoader()
-
-  private var enabledProperties: IntSet = new IntHashSet(64)
-
+  private val enabledProperties: IntSet = new IntHashSet(64)
   private var externalObjectModels: util.List[ExternalObjectModel] = new util.ArrayList[ExternalObjectModel](4)
-
-  private var globalDocumentPool: DocumentPool = new DocumentPool()
-
-  private var integratedFunctionLibrary: IntegratedFunctionLibrary = new IntegratedFunctionLibrary()
-
+  private val globalDocumentPool: DocumentPool = new DocumentPool()
+  private val integratedFunctionLibrary: IntegratedFunctionLibrary = new IntegratedFunctionLibrary()
   @transient private var localizerFactory: LocalizerFactory = _
-
   private var namePool: NamePool = new NamePool()
-
-   var optimizer: Optimizer = null
-
+  var optimizer: Optimizer = null
   private var serializerFactory: SerializerFactory = new SerializerFactory(this)
-
   @volatile private var sourceParserPool: ConcurrentLinkedQueue[XMLReader] = new ConcurrentLinkedQueue()
-
   @volatile private var styleParserPool: ConcurrentLinkedQueue[XMLReader] = new ConcurrentLinkedQueue()
-
   private var sourceParserClass: String = _
-
   @transient private var sourceResolver: SourceResolver = this
-
   @transient private var traceOutput: Logger = new StandardLogger()
-
-  private var standardModuleURIResolver: ModuleURIResolver = Version.platform.makeStandardModuleURIResolver(this)
-
+  private val standardModuleURIResolver: ModuleURIResolver = Version.platform.makeStandardModuleURIResolver(this)
   private var styleParserClass: String = _
-
   private val systemURIResolver: StandardURIResolver = new StandardURIResolver(this)
-
   private var unparsedTextURIResolver: UnparsedTextURIResolver = new StandardUnparsedTextResolver()
-
   @transient private var theConversionContext: XPathContext = null
-
   private var theConversionRules: ConversionRules = null
-
   @transient private var traceListener: TraceListener = null
-
   private var traceListenerClass: String = null
-
   private var traceListenerOutput: String = null
-
   private var defaultRegexEngine: String = "S"
-
   @transient  var typeHierarchy: TypeHierarchy = _
-
-  private var typeChecker: TypeChecker = new TypeChecker()
-
-  private var typeChecker10: TypeChecker10 = new TypeChecker10()
-
+  private val typeChecker: TypeChecker = new TypeChecker()
+  private val typeChecker10: TypeChecker10 = new TypeChecker10()
   @transient private var uriResolver: URIResolver = _
-
-   var builtInExtensionLibraryList: FunctionLibraryList = _
-
-   var xsdVersion: Int = Configuration.XSD11
-
+  var builtInExtensionLibraryList: FunctionLibraryList = _
+  var xsdVersion: Int = Configuration.XSD11
   private var xmlVersion: Int = Configuration.XML10
-
   private var xpathVersionForXsd: Int = 20
-
   private var xpathVersionForXslt: Int = 31
-
   // Plug-in to allow media queries in an xml-stylesheet processing instruction to be evaluated
   private var mediaQueryEvaluator: Comparator[String] = (o1: String, o2: String) => 0
-
-  private var fileExtensions: util.Map[String, String] = new util.HashMap()
-
+  private val fileExtensions: util.Map[String, String] = new util.HashMap()
   private val resourceFactoryMapping: util.Map[String, ResourceFactory] = new util.HashMap()
-
   private val functionAnnotationHandlers: util.Map[String, FunctionAnnotationHandler] = new util.HashMap()
-
-   var byteCodeThreshold: Int = 100
-
+  val byteCodeThreshold: Int = 100
   private var regexBacktrackingLimit: Int = 10000000
-
-  private var treeStatistics: TreeStatistics = new TreeStatistics()
+  private val treeStatistics: TreeStatistics = new TreeStatistics()
 
   init()
 
@@ -545,7 +501,7 @@ class Configuration extends SourceResolver with NotationSet {
     registerFunctionAnnotationHandler(new XQueryFunctionAnnotationHandler)
   }
 
-  def importLicenseDetails(config: Configuration) = {
+  def importLicenseDetails(config: Configuration): Unit = {
     // No action for an HE configuration
   }
 
@@ -605,14 +561,14 @@ class Configuration extends SourceResolver with NotationSet {
    *         version
    * @since 8.4
    */
-  def getProductTitle = "Saxon-" + getEditionCode + " " + Version.getProductVersion + Version.platform.getPlatformSuffix + " from Saxonica"
+  def getProductTitle: String = "Saxon-" + getEditionCode + " " + Version.getProductVersion + Version.platform.getPlatformSuffix + " from Saxonica"
 
 
   @throws[LicenseException]
   def checkLicensedFeature(feature: Int, name: String, localLicenseId: Int): Unit = {
     val require = if (feature == Configuration.LicenseFeature.PROFESSIONAL_EDITION) "PE"
     else "EE"
-    var message = "Requested feature (" + name + ") requires Saxon-" + require
+    val message = "Requested feature (" + name + ") requires Saxon-" + require
     if (!Version.softwareEdition.equals("HE")) message + ". You are using Saxon-" + Version.softwareEdition +
       " software, but the Configuration is an instance of " + getClass.getName + "; to use this feature you need to create an instance of " +
       (if (feature == Configuration.LicenseFeature.PROFESSIONAL_EDITION) "com.saxonica.config.ProfessionalConfiguration"
@@ -655,7 +611,7 @@ class Configuration extends SourceResolver with NotationSet {
   /**
    * Display a message about the license status
    */
-  def displayLicenseMessage() = {
+  def displayLicenseMessage(): Unit = {
   }
 
   /**
@@ -673,7 +629,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param dynamicLoader the DynamicLoader to be used by this Configuration
    */
-  def setDynamicLoader(dynamicLoader: DynamicLoader) = this.dynamicLoader = dynamicLoader
+  def setDynamicLoader(dynamicLoader: DynamicLoader): Unit = this.dynamicLoader = dynamicLoader
 
   /**
    * Get the DynamicLoader used by this Configuration. By default the standard system-supplied
@@ -740,7 +696,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param test a condition that a URI must satisfy if access to a resource with this URI
    *             is to be permitted
    */
-  def setAllowedUriTest(test: Predicate[URI]) = this.allowedUriTest = test
+  def setAllowedUriTest(test: Predicate[URI]): Unit = this.allowedUriTest = test
 
   /**
    * Get the Predicate that is applied to a URI to determine whether the standard resource resolvers
@@ -782,7 +738,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param resolver The URIResolver to be used.
    * @since 8.4
    */
-  def setURIResolver(resolver: URIResolver) = {
+  def setURIResolver(resolver: URIResolver): Unit = {
     uriResolver = resolver
     if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(this)
     //defaultXsltCompilerInfo.setURIResolver(resolver)
@@ -792,7 +748,7 @@ class Configuration extends SourceResolver with NotationSet {
    * Set the URIResolver to a URI resolver that allows query parameters after the URI,
    * and in the case of Saxon-EE, that inteprets the file extension .ptree
    */
-  def setParameterizedURIResolver() = getSystemURIResolver.setRecognizeQueryParameters(true)
+  def setParameterizedURIResolver(): Unit = getSystemURIResolver.setRecognizeQueryParameters(true)
 
   /**
    * Get the system-defined URI Resolver. This is used when the user-defined URI resolver
@@ -819,18 +775,19 @@ class Configuration extends SourceResolver with NotationSet {
     throw new XPathException("Class " + className + " is not a URIResolver")
   }
 
-  def setErrorReporterFactory(factory: java.util.function.Function[Configuration, _ <: ErrorReporter]): Unit = errorReporterFactory = factory
+  def setErrorReporterFactory(factory: Configuration => ErrorReporter): Unit =
+    errorReporterFactory = factory
 
-  def makeErrorReporter: ErrorReporter = errorReporterFactory.apply(this)
+  def makeErrorReporter: ErrorReporter = errorReporterFactory(this)
 
-  def getLogger = traceOutput
+  def getLogger: Logger = traceOutput
 
   /**
    * Report a fatal error
    *
    * @param err the exception to be reported
    */
-  def reportFatalError(err: XPathException) = if (!err.hasBeenReported) {
+  def reportFatalError(err: XPathException): Unit = if (!err.hasBeenReported) {
     makeErrorReporter.report(new XmlProcessingException(err))
     err.setHasBeenReported(true)
   }
@@ -844,7 +801,7 @@ class Configuration extends SourceResolver with NotationSet {
    *            (if necessary).
    * @since 9.3
    */
-  def setStandardErrorOutput(out: PrintStream) = {
+  def setStandardErrorOutput(out: PrintStream): Unit = {
     if (!traceOutput.isInstanceOf[StandardLogger]) traceOutput = new StandardLogger
     traceOutput.asInstanceOf[StandardLogger].setPrintStream(out)
   }
@@ -858,7 +815,7 @@ class Configuration extends SourceResolver with NotationSet {
    *               { @link Configuration#close};
    * @since 9.6
    */
-  def setLogger(logger: Logger) = traceOutput = logger
+  def setLogger(logger: Logger): Unit = traceOutput = logger
 
   /**
    * Get the standard error output to be used in all cases where no more specific destination
@@ -868,8 +825,12 @@ class Configuration extends SourceResolver with NotationSet {
    *         has been supplied
    * @since 9.3
    */
-  /*@NotNull*/ def getStandardErrorOutput: PrintStream = if (traceOutput.isInstanceOf[StandardLogger]) traceOutput.asInstanceOf[StandardLogger].getPrintStream
-  else null
+  /*@NotNull*/
+  def getStandardErrorOutput: PrintStream =
+    traceOutput match {
+      case standardLogger: StandardLogger => standardLogger.getPrintStream
+      case _ => null
+    }
 
   /**
    * Set the XML version to be used by default for validating characters and names.
@@ -882,7 +843,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param version one of the constants XML10 or XML11
    * @since 8.6
    */
-  def setXMLVersion(version: Int) = {
+  def setXMLVersion(version: Int): Unit = {
     xmlVersion = version
     theConversionRules = null
   }
@@ -919,7 +880,7 @@ class Configuration extends SourceResolver with NotationSet {
    *                   conformant implementation could implement the syntax and semantics of media queries
    *                   as defined in CSS 3.
    */
-  def setMediaQueryEvaluator(comparator: Comparator[String]) = this.mediaQueryEvaluator = comparator
+  def setMediaQueryEvaluator(comparator: Comparator[String]): Unit = this.mediaQueryEvaluator = comparator
 
   /**
    * Get a comparator which can be used to assess whether the media pseudo-attribute
@@ -944,7 +905,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param rules the conversion rules to be used
    * @since 9.3
    */
-  def setConversionRules(rules: ConversionRules) = this.theConversionRules = rules
+  def setConversionRules(rules: ConversionRules): Unit = this.theConversionRules = rules
 
   /**
    * Get the conversion rules used to convert between atomic types. By default, the rules depend on the versions
@@ -1017,7 +978,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param treeModel the integer constant representing the selected Tree Model
    * @since 8.4 (Condensed tinytree added in 9.2)
    */
-  def setTreeModel(treeModel: Int) = defaultParseOptions.setModel(TreeModel.getTreeModel(treeModel))
+  def setTreeModel(treeModel: Int): Unit = defaultParseOptions.setModel(TreeModel.getTreeModel(treeModel))
 
   /**
    * Determine whether source documents will maintain line numbers, for the
@@ -1037,7 +998,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param lineNumbering true if line numbers are maintained in source documents
    * @since 8.4
    */
-  def setLineNumbering(lineNumbering: Boolean) = defaultParseOptions.setLineNumbering(lineNumbering)
+  def setLineNumbering(lineNumbering: Boolean): Unit = defaultParseOptions.setLineNumbering(lineNumbering)
 
   /**
    * Set whether or not source documents (including stylesheets and schemas) are have
@@ -1046,7 +1007,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param state true if XInclude elements are to be expanded, false if not
    * @since 8.9
    */
-  def setXIncludeAware(state: Boolean) = defaultParseOptions.setXIncludeAware(state)
+  def setXIncludeAware(state: Boolean): Unit = defaultParseOptions.setXIncludeAware(state)
 
   /**
    * Test whether or not source documents (including stylesheets and schemas) are to have
@@ -1096,7 +1057,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param traceListener The TraceListener to be used. If null is supplied, any existing TraceListener is removed
    * @since 8.4
    */
-  def setTraceListener(traceListener: TraceListener) = {
+  def setTraceListener(traceListener: TraceListener): Boolean = {
     this.traceListener = traceListener
     setCompileWithTracing(traceListener != null)
     internalSetBooleanProperty(Feature.ALLOW_MULTITHREADING, false)
@@ -1113,7 +1074,7 @@ class Configuration extends SourceResolver with NotationSet {
    *                                  TraceListener
    * @since 9.1. Changed in 9.4 to allow null to be supplied.
    */
-  def setTraceListenerClass(className: String) = if (className == null) {
+  def setTraceListenerClass(className: String): Unit = if (className == null) {
     traceListenerClass = null
     setCompileWithTracing(false)
   }
@@ -1145,7 +1106,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param filename the filename for TraceListener output
    * @since 9.8
    */
-  def setTraceListenerOutputFile(filename: String) = traceListenerOutput = filename
+  def setTraceListenerOutputFile(filename: String): Unit = traceListenerOutput = filename
 
   /**
    * Get the name of the file to be used for TraceListener output. Returns
@@ -1172,7 +1133,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param trace true if compile-time generation of trace code is required
    * @since 8.8
    */
-  def setCompileWithTracing(trace: Boolean) = {
+  def setCompileWithTracing(trace: Boolean): Unit = {
     internalSetBooleanProperty(Feature.COMPILE_WITH_TRACING, trace)
     if (defaultStaticQueryContext != null) if (trace) defaultStaticQueryContext.setCodeInjector(new TraceCodeInjector)
     else defaultStaticQueryContext.setCodeInjector(null)
@@ -1208,7 +1169,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @return the function
    */
-    def makeSystemFunction(localName: String, arity: Int) =
+    def makeSystemFunction(localName: String, arity: Int): SystemFunction =
       try
         getXPath31FunctionSet.makeFunction(localName, arity)
       catch {
@@ -1227,7 +1188,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param function the object that implements the extension function.
    * @since 9.2
    */
-  def registerExtensionFunction(function: ExtensionFunctionDefinition) = integratedFunctionLibrary.registerFunction(function)
+  def registerExtensionFunction(function: ExtensionFunctionDefinition): Unit = integratedFunctionLibrary.registerFunction(function)
 
   /**
    * Get the IntegratedFunction library containing integrated extension functions
@@ -1235,9 +1196,9 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the IntegratedFunctionLibrary
    * @since 9.2
    */
-  def getIntegratedFunctionLibrary = integratedFunctionLibrary
+  def getIntegratedFunctionLibrary: IntegratedFunctionLibrary = integratedFunctionLibrary
 
-  def getBuiltInExtensionLibraryList = {
+  def getBuiltInExtensionLibraryList: FunctionLibraryList = {
     if (builtInExtensionLibraryList == null) {
       builtInExtensionLibraryList = new FunctionLibraryList
       builtInExtensionLibraryList.addFunctionLibrary(VendorFunctionSetHE.getInstance)
@@ -1265,7 +1226,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param list the function library list
    */
-  def addExtensionBinders(list: FunctionLibraryList) = {
+  def addExtensionBinders(list: FunctionLibraryList): Unit = {
     // no action in this class
   }
 
@@ -1302,7 +1263,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param collator     the implementation of the collation
    * @since 9.6
    */
-  def registerCollation(collationURI: String, collator: StringCollator) = collationMap.put(collationURI, collator)
+  def registerCollation(collationURI: String, collator: StringCollator): StringCollator = collationMap.put(collationURI, collator)
 
   /**
    * Set a CollationURIResolver to be used to resolve collation URIs (that is,
@@ -1318,7 +1279,7 @@ class Configuration extends SourceResolver with NotationSet {
    *                 URI resolver previously registered.
    * @since 8.5
    */
-  def setCollationURIResolver(resolver: CollationURIResolver) = collationResolver = resolver
+  def setCollationURIResolver(resolver: CollationURIResolver): Unit = collationResolver = resolver
 
   /**
    * Get the collation URI resolver associated with this configuration. This will
@@ -1412,7 +1373,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the name of the default collation. If none has been set, returns
    *         the URI of the Unicode codepoint collation
    */
-  def getDefaultCollationName = defaultCollationName
+  def getDefaultCollationName: String = defaultCollationName
 
   /**
    * Set the default collection.
@@ -1425,7 +1386,7 @@ class Configuration extends SourceResolver with NotationSet {
    *            If null is supplied, any existing default collection is removed.
    * @since 9.2
    */
-  def setDefaultCollection(uri: String) = defaultCollection = uri
+  def setDefaultCollection(uri: String): Unit = defaultCollection = uri
 
   /**
    * Get the URI of the default collection. Returns null if no default collection URI has
@@ -1444,7 +1405,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param cf the CollectionFinder to be used
    * @since 9.7
    */
-  def setCollectionFinder(cf: CollectionFinder) = collectionFinder = cf
+  def setCollectionFinder(cf: CollectionFinder): Unit = collectionFinder = cf
 
   /**
    * Get the collection finder associated with this configuration. This is used to dereference
@@ -1478,7 +1439,7 @@ class Configuration extends SourceResolver with NotationSet {
    *        so there is no failure if the user-supplied collection finder does not implement
    *        the { @link StandardCollectionFinder} interface.
    */
-  def registerCollection(collectionURI: String, collection: ResourceCollection) = {
+  def registerCollection(collectionURI: String, collection: ResourceCollection): Unit = {
     standardCollectionFinder.registerCollection(collectionURI, collection)
     if (collectionFinder.isInstanceOf[StandardCollectionFinder] && (collectionFinder ne standardCollectionFinder))
       collectionFinder.asInstanceOf[StandardCollectionFinder].registerCollection(collectionURI, collection)
@@ -1541,7 +1502,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param factory the LocalizerFactory
    * @since 9.2
    */
-  def setLocalizerFactory(factory: LocalizerFactory) = this.localizerFactory = factory
+  def setLocalizerFactory(factory: LocalizerFactory): Unit = this.localizerFactory = factory
 
   /**
    * Get the localizer factory in use
@@ -1559,7 +1520,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws IllegalArgumentException if not valid as an xs:language instance.
    * @since 9.2. Validated from 9.7 against xs:language type.
    */
-  def setDefaultLanguage(language: String) = {
+  def setDefaultLanguage(language: String): Unit = {
     val vf = StringConverter.StringToLanguage.INSTANCE.validate(language)
     if (vf != null) throw new IllegalArgumentException("The default language must be a valid language code")
     defaultLanguage = language
@@ -1581,7 +1542,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param country the default country to be used, as an ISO code for example "US" or "GB"
    * @since 9.2
    */
-  def setDefaultCountry(country: String) = defaultCountry = country
+  def setDefaultCountry(country: String): Unit = defaultCountry = country
 
   /**
    * Get the default country to be used for number and date formatting when no country is specified.
@@ -1602,7 +1563,7 @@ class Configuration extends SourceResolver with NotationSet {
    *               <li>N - (on .NET only) - the .NET regular expression engine</li>
    *               </ul>
    */
-  def setDefaultRegexEngine(engine: String) = {
+  def setDefaultRegexEngine(engine: String): Unit = {
     if (!("J" == engine || "N" == engine || "S" == engine)) throw new IllegalArgumentException("Regex engine must be S|J|N")
     defaultRegexEngine = engine
   }
@@ -1663,7 +1624,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param resolver the URI resolver for XQuery modules. May be null, in which case any existing
    *                 Module URI Resolver is removed from the configuration
    */
-  def setModuleURIResolver(resolver: ModuleURIResolver) = getDefaultStaticQueryContext.setModuleURIResolver(resolver)
+  def setModuleURIResolver(resolver: ModuleURIResolver): Unit = getDefaultStaticQueryContext.setModuleURIResolver(resolver)
 
   /**
    * Create and register an instance of a ModuleURIResolver with a specified class name.
@@ -1712,7 +1673,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param resolver the URI resolver to be used for these functions.
    */
-  def setUnparsedTextURIResolver(resolver: UnparsedTextURIResolver) = this.unparsedTextURIResolver = resolver
+  def setUnparsedTextURIResolver(resolver: UnparsedTextURIResolver): Unit = this.unparsedTextURIResolver = resolver
 
   /**
    * Get the default options for XSLT compilation
@@ -1750,7 +1711,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param handler a function annotation handler to be invoked in respect of function
    *                annotations in the relevant namespace
    */
-  def registerFunctionAnnotationHandler(handler: FunctionAnnotationHandler) = functionAnnotationHandlers.put(handler.getAssertionNamespace, handler)
+  def registerFunctionAnnotationHandler(handler: FunctionAnnotationHandler): FunctionAnnotationHandler = functionAnnotationHandlers.put(handler.getAssertionNamespace, handler)
 
   /**
    * Get the FunctionAnnotationHandler used to handle XQuery function annotations
@@ -1813,7 +1774,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param sourceParserClass the fully qualified name of the XML parser class. This must implement
    *                          the SAX2 XMLReader interface.
    */
-  def setSourceParserClass(sourceParserClass: String) = this.sourceParserClass = sourceParserClass
+  def setSourceParserClass(sourceParserClass: String): Unit = this.sourceParserClass = sourceParserClass
 
   /**
    * Get the name of the class that will be instantiated to create an XML parser
@@ -1835,7 +1796,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param parser the fully qualified name of the XML parser class
    */
-  def setStyleParserClass(parser: String) = this.styleParserClass = parser
+  def setStyleParserClass(parser: String): Unit = this.styleParserClass = parser
 
   /**
    * Get the OutputURIResolver that will be used to resolve URIs used in the
@@ -1865,7 +1826,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param factory a custom SerializerFactory
    * @since 8.8
    */
-  def setSerializerFactory(factory: SerializerFactory) = serializerFactory = factory
+  def setSerializerFactory(factory: SerializerFactory): Unit = serializerFactory = factory
 
   /**
    * Get the SerializerFactory. This returns the standard built-in SerializerFactory, unless
@@ -1897,7 +1858,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param props the default properties
    */
-  def setDefaultSerializationProperties(props: Properties) = defaultOutputProperties = props
+  def setDefaultSerializationProperties(props: Properties): Unit = defaultOutputProperties = props
 
   /**
    * Get the default output properties. The returned value can be modified in-situ using
@@ -1990,7 +1951,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @since 8.4
    * @deprecated since 10.0; the method has had no effect since Saxon 9.8
    */
-  def setVersionWarning(warn: Boolean) = {
+  def setVersionWarning(warn: Boolean): Unit = {
     // no action
   }
 
@@ -2010,7 +1971,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param validation true if DTD validation is to be requested.
    * @since 8.4
    */
-  def setValidation(validation: Boolean) = defaultParseOptions.setDTDValidationMode(if (validation) Validation.STRICT
+  def setValidation(validation: Boolean): Unit = defaultParseOptions.setDTDValidationMode(if (validation) Validation.STRICT
   else Validation.STRIP)
 
   /**
@@ -2058,7 +2019,7 @@ class Configuration extends SourceResolver with NotationSet {
    *                       { @link Validation#LAX}
    * @since 8.4
    */
-  def setSchemaValidationMode(validationMode: Int) = { //        switch (validationMode) {
+  def setSchemaValidationMode(validationMode: Int): Unit = { //        switch (validationMode) {
     //            case Validation.STRIP:
     //            case Validation.PRESERVE:
     //                break;
@@ -2087,7 +2048,7 @@ class Configuration extends SourceResolver with NotationSet {
    *             are to be treated as fatal errors.
    * @since 8.4
    */
-  def setValidationWarnings(warn: Boolean) = defaultParseOptions.setContinueAfterValidationErrors(warn)
+  def setValidationWarnings(warn: Boolean): Unit = defaultParseOptions.setContinueAfterValidationErrors(warn)
 
   /**
    * Determine whether schema validation failures on result documents are to be treated
@@ -2117,7 +2078,7 @@ class Configuration extends SourceResolver with NotationSet {
    *               documents, as this would make the type annotations on input nodes unsound.
    * @since 9.0
    */
-  def setExpandAttributeDefaults(expand: Boolean) = defaultParseOptions.setExpandAttributeDefaults(expand)
+  def setExpandAttributeDefaults(expand: Boolean): Unit = defaultParseOptions.setExpandAttributeDefaults(expand)
 
   /**
    * Determine whether elements and attributes that have a fixed or default value are to be expanded.
@@ -2153,7 +2114,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param targetNamePool The NamePool to be used.
    * @since 8.4
    */
-  def setNamePool(targetNamePool: NamePool) = namePool = targetNamePool
+  def setNamePool(targetNamePool: NamePool): Unit = namePool = targetNamePool
 
   /**
    * Get the TypeHierarchy: a cache holding type information
@@ -2213,7 +2174,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param allocator the DocumentNumberAllocator to be used
    * @since 9.0
    */
-  def setDocumentNumberAllocator(allocator: DocumentNumberAllocator) = documentNumberAllocator = allocator
+  def setDocumentNumberAllocator(allocator: DocumentNumberAllocator): Unit = documentNumberAllocator = allocator
 
   /**
    * Determine whether two Configurations are compatible. When queries, transformations, and path expressions
@@ -2297,7 +2258,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param reader the parser
    */
-  private def reportParserDetails(reader: XMLReader) = {
+  private def reportParserDetails(reader: XMLReader): Unit = {
     val name = reader.getClass.getName
     //        if (name.equals("com.sun.org.apache.xerces.internal.parsers.SAXParser")) {
     //            name += " version " + com.sun.org.apache.xerces.internal.impl.Version.getVersion();
@@ -2496,7 +2457,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param namespace the namespace. Currently built-in schemas are available for the XML and FN namespaces
    */
-  def addSchemaForBuiltInNamespace(namespace: String) = {
+  def addSchemaForBuiltInNamespace(namespace: String): Unit = {
   }
 
   /**
@@ -2514,7 +2475,7 @@ class Configuration extends SourceResolver with NotationSet {
    * or executions) are currently active. In a multi-threaded environment, it is the user's
    * responsibility to ensure that this method is not called unless it is safe to do so.
    */
-  def clearSchemaCache() = {
+  def clearSchemaCache(): Unit = {
     // no-op except in Saxon-EE
   }
 
@@ -2534,7 +2495,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param namespace the namespace URI of the components to be sealed
    */
-  def sealNamespace(namespace: String) = {
+  def sealNamespace(namespace: String): Unit = {
   }
 
   /**
@@ -2609,22 +2570,22 @@ class Configuration extends SourceResolver with NotationSet {
   override def isDeclaredNotation(uri: String, local: String): Boolean = false
 
   @throws[SchemaException]
-  def checkTypeDerivationIsOK(derived: SchemaType, base: SchemaType, block: Int) = {
+  def checkTypeDerivationIsOK(derived: SchemaType, base: SchemaType, block: Int): Unit = {
   }
 
-  def prepareValidationReporting(context: XPathContext, options: ParseOptions) = {
+  def prepareValidationReporting(context: XPathContext, options: ParseOptions): Unit = {
   }
 
   def getDocumentValidator(receiver: Receiver, systemId: String, validationOptions: ParseOptions, initiatingLocation: Location): Receiver = receiver
 
   @throws[XPathException]
-  def getElementValidator(receiver: Receiver, validationOptions: ParseOptions, locationId: Location) = receiver
+  def getElementValidator(receiver: Receiver, validationOptions: ParseOptions, locationId: Location): Receiver = receiver
 
   @throws[ValidationException]
   @throws[MissingComponentException]
   def validateAttribute(nodeName: StructuredQName, value: CharSequence, validation: Int): SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
 
-  def getAnnotationStripper(destination: Receiver) = destination
+  def getAnnotationStripper(destination: Receiver): Receiver = destination
 
   @throws[TransformerFactoryConfigurationError]
   def makeParser(className: String): XMLReader = {
@@ -2663,7 +2624,7 @@ class Configuration extends SourceResolver with NotationSet {
   else throw new XPathException("Unknown XPath version " + languageVersion)
   else throw new XPathException("Unknown expression language " + language)
 
-  def setDebugger(debugger: Debugger) = this.debugger = debugger
+  def setDebugger(debugger: Debugger): Unit = this.debugger = debugger
 
 
   def getDebugger: Debugger = debugger
@@ -2938,7 +2899,7 @@ class Configuration extends SourceResolver with NotationSet {
    *                Note that this is not used for the default StaticQueryContext held in the Configuration itself.
    * @since 9.5.1.2
    */
-  def setStaticQueryContextFactory(factory: StaticQueryContextFactory) = staticQueryContextFactory = factory
+  def setStaticQueryContextFactory(factory: StaticQueryContextFactory): Unit = staticQueryContextFactory = factory
 
   /**
    * Get a new StaticQueryContext (which is also the factory class for creating a query parser).
@@ -2986,7 +2947,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param resolver the source resolver.
    */
-  def setSourceResolver(resolver: SourceResolver) = sourceResolver = resolver
+  def setSourceResolver(resolver: SourceResolver): Unit = sourceResolver = resolver
 
   /**
    * Get the current SourceResolver. If none has been supplied, a system-defined SourceResolver
@@ -3020,7 +2981,7 @@ class Configuration extends SourceResolver with NotationSet {
     if (source.isInstanceOf[DOMSource]) return source
     if (source.isInstanceOf[NodeInfo]) return source
     if (source.isInstanceOf[PullSource]) return source
-    if (source.isInstanceOf[StAXSource]) return source
+//    if (source.isInstanceOf[StAXSource]) return source
     if (source.isInstanceOf[EventSource]) return source
     if (source.isInstanceOf[SaplingDocument]) return source
     null
@@ -3134,14 +3095,15 @@ class Configuration extends SourceResolver with NotationSet {
       case e: XPathException =>
         throw new XPathException("Cannot create user-supplied output method. " + e.getMessage, SaxonErrorCode.SXCH0004)
     }
-    if (handler.isInstanceOf[Receiver]) handler.asInstanceOf[Receiver]
-    else if (handler.isInstanceOf[ContentHandler]) {
-      val emitter = new ContentHandlerProxy
-      emitter.setUnderlyingContentHandler(handler.asInstanceOf[xml.sax.ContentHandler])
-      emitter.setOutputProperties(props)
-      emitter
+    handler match {
+      case receiver: Receiver => receiver
+      case contentHandler: ContentHandler =>
+        val emitter = new ContentHandlerProxy
+        emitter.setUnderlyingContentHandler(contentHandler)
+        emitter.setOutputProperties(props)
+        emitter
+      case _ => throw new XPathException("Output method " + className + " is neither a Receiver nor a SAX2 ContentHandler")
     }
-    else throw new XPathException("Output method " + className + " is neither a Receiver nor a SAX2 ContentHandler")
   }
 
   /**
@@ -3164,26 +3126,26 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def setConfigurationProperty(name: String, value: Any): Unit = {
     val feature = Feature.byName(name)
-    if (feature == null) if (name.startsWith(FeatureKeys.XML_PARSER_FEATURE)) {
-      var uri = name.substring(FeatureKeys.XML_PARSER_FEATURE.length)
-      try uri = URLDecoder.decode(uri, "utf-8")
-      catch {
-        case e: UnsupportedEncodingException =>
-          throw new IllegalArgumentException(e)
-      }
-      defaultParseOptions.addParserFeature(uri, Configuration.requireBoolean(name, value))
-    }
-    else if (name.startsWith(FeatureKeys.XML_PARSER_PROPERTY)) {
-      var uri = name.substring(FeatureKeys.XML_PARSER_PROPERTY.length)
-      try uri = URLDecoder.decode(uri, "utf-8")
-      catch {
-        case e: UnsupportedEncodingException =>
-          throw new IllegalArgumentException(e)
-      }
-      defaultParseOptions.addParserProperties(uri, value)
-    }
-    else throw new IllegalArgumentException("Unrecognized configuration feature: " + name)
-    else { //noinspection unchecked
+    if (feature == null) {
+      if (name.startsWith(FeatureKeys.XML_PARSER_FEATURE)) {
+        var uri = name.substring(FeatureKeys.XML_PARSER_FEATURE.length)
+        try uri = URLDecoder.decode(uri, "utf-8")
+        catch {
+          case e: UnsupportedEncodingException =>
+            throw new IllegalArgumentException(e)
+        }
+        defaultParseOptions.addParserFeature(uri, Configuration.requireBoolean(name, value))
+      } else if (name.startsWith(FeatureKeys.XML_PARSER_PROPERTY)) {
+        var uri = name.substring(FeatureKeys.XML_PARSER_PROPERTY.length)
+        try uri = URLDecoder.decode(uri, "utf-8")
+        catch {
+          case e: UnsupportedEncodingException =>
+            throw new IllegalArgumentException(e)
+        }
+        defaultParseOptions.addParserProperties(uri, value)
+      } else
+        throw new IllegalArgumentException("Unrecognized configuration feature: " + name)
+    } else {
       setConfigurationProperty(feature.asInstanceOf[String], value)
     }
   }
@@ -3313,16 +3275,17 @@ class Configuration extends SourceResolver with NotationSet {
         setSourceParserClass(requireString(feature.name, value))
       case FeatureCode.SOURCE_RESOLVER_CLASS =>
         setSourceResolver(instantiateClassName(name, value, classOf[SourceResolver]).asInstanceOf[SourceResolver])
-      case FeatureCode.STANDARD_ERROR_OUTPUT_FILE =>
-        // Note, this property is write-only
-        try {
-          val append = true
-          val autoFlush = true
-          setStandardErrorOutput(new PrintStream(new FileOutputStream(value.asInstanceOf[String], append), autoFlush))
-        } catch {
-          case fnf: FileNotFoundException =>
-            throw new IllegalArgumentException(fnf)
-        }
+      // ORBEON: No `File` support.
+//      case FeatureCode.STANDARD_ERROR_OUTPUT_FILE =>
+//        // Note, this property is write-only
+//        try {
+//          val append = true
+//          val autoFlush = true
+//          setStandardErrorOutput(new PrintStream(new FileOutputStream(value.asInstanceOf[String], append), autoFlush))
+//        } catch {
+//          case fnf: FileNotFoundException =>
+//            throw new IllegalArgumentException(fnf)
+//        }
       case FeatureCode.STRIP_WHITESPACE =>
         val s = requireString(name, value)
         s match {
@@ -3465,13 +3428,18 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the value as an integer
    * @throws IllegalArgumentException if the supplied value cannot be validated as a recognized boolean value
    */
-   def requireInteger(propertyName: String, value: Any): Int = if (value.isInstanceOf[Integer]) value.asInstanceOf[Integer]
-  else if (value.isInstanceOf[String]) try value.asInstanceOf[String].toInt
-  catch {
-    case nfe: NumberFormatException =>
-      throw new IllegalArgumentException(propertyName + " must be an integer")
-  }
-  else throw new IllegalArgumentException(propertyName + " must be an integer (or a string representing an integer)")
+   def requireInteger(propertyName: String, value: Any): Int =
+     value match {
+       case integer: Integer => integer
+       case string: String =>
+         try string.toInt
+         catch {
+           case nfe: NumberFormatException =>
+             throw new IllegalArgumentException(propertyName + " must be an integer")
+         }
+       case _ =>
+         throw new IllegalArgumentException(propertyName + " must be an integer (or a string representing an integer)")
+     }
 
   /**
    * Set a boolean property value, without checking that it is a recognized property name
@@ -3509,7 +3477,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws IllegalArgumentException if the property name is not recognized (as a property whose expected
    *                                  value is boolean)
    */
-  def setBooleanProperty(propertyName: String, value: Boolean) = setConfigurationProperty(propertyName, value)
+  def setBooleanProperty(propertyName: String, value: Boolean): Unit = setConfigurationProperty(propertyName, value)
 
   /**
    * Set a boolean property of the configuration
@@ -3521,7 +3489,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws IllegalArgumentException if the feature is not recognized (as a feature whose expected
    *                                  value is boolean)
    */
-  def setBooleanProperty(feature: Feature[Boolean], value: Boolean) = setConfigurationProperty(feature, value)
+  def setBooleanProperty(feature: Feature[Boolean], value: Boolean): Unit = setConfigurationProperty(feature, value)
 
    def requireString(propertyName: String, value: Any): String = if (value.isInstanceOf[String]) value.asInstanceOf[String]
   else throw new IllegalArgumentException("The value of " + propertyName + " must be a string")
@@ -3825,7 +3793,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param fileName the specified file name
    */
-  def createByteCodeReport(fileName: String) = {
+  def createByteCodeReport(fileName: String): Unit = {
   }
 
   /**
@@ -3833,7 +3801,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param label the label to associate
    */
-  def setLabel(label: String) = this.label = label
+  def setLabel(label: String): Unit = this.label = label
 
   /**
    * Get the associated label for this configuration (typically, the value of the <code>@label</code>

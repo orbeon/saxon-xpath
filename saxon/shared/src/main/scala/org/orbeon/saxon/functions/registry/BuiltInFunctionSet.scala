@@ -181,17 +181,13 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       }
     }
     val functionClass: Class[_] = entry.implementationClass
-    var f: SystemFunction = null
-    try f = functionClass.newInstance().asInstanceOf[SystemFunction]
-    catch {
-      case err: Exception => {
-        err.printStackTrace()
-        throw new AssertionError(
-          "Failed to instantiate system function " + name + " - " +
-            err.getMessage)
+    val f =
+      try functionClass.newInstance().asInstanceOf[SystemFunction]
+      catch {
+        case err: Exception =>
+          err.printStackTrace()
+          throw new AssertionError("Failed to instantiate system function " + name + " - " + err.getMessage)
       }
-
-    }
     f.setDetails(entry)
     f.setArity(arity)
     f
@@ -275,7 +271,5 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   }
 
   def getNamespace: String = NamespaceConstant.FN
-
   def getConventionalPrefix: String = "fn"
-
 }

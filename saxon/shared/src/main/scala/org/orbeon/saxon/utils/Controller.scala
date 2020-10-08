@@ -1222,9 +1222,11 @@ class Controller extends ContextOriginator {
    *                      xsl:for-each iteration
    * @return a factory function that is used to create FocusTrackingIterator instances
    */
-  def getFocusTrackerFactory(multithreaded: Boolean): Function1[SequenceIterator, FocusTrackingIterator] =
-    if (multithreaded && multiThreadedFocusTrackerFactory != null) multiThreadedFocusTrackerFactory
-    else focusTrackerFactory
+  def getFocusTrackerFactory(multithreaded: Boolean): SequenceIterator => FocusTrackingIterator =
+    if (multithreaded && multiThreadedFocusTrackerFactory != null)
+      multiThreadedFocusTrackerFactory
+    else
+      focusTrackerFactory
 
   /**
    * Set a factory function that will be used to create new instances of FocusTrackingIterator.

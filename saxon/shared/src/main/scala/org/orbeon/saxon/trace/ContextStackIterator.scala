@@ -9,24 +9,21 @@ package org.orbeon.saxon.trace
 
 import java.util.Iterator
 
-import org.orbeon.saxon.expr.{ContextOriginator, UserFunctionCall, XPathContext, XPathContextMajor}
 import org.orbeon.saxon.expr.instruct.{ApplyTemplates, CallTemplate, GlobalVariable, UserFunction}
+import org.orbeon.saxon.expr.{ContextOriginator, UserFunctionCall, XPathContext, XPathContextMajor}
 import org.orbeon.saxon.trace.ContextStackIterator._
 import org.orbeon.saxon.trans.rules.BuiltInRuleSet
 import org.orbeon.saxon.utils.Controller
-
-
 
 
 object ContextStackIterator {
 
   private def getMajorCaller(context: XPathContext): XPathContextMajor = {
     var caller: XPathContext = context.getCaller
-    while (!(caller == null || caller
-             .isInstanceOf[XPathContextMajor])) caller = caller.getCaller
+    while (!(caller == null || caller.isInstanceOf[XPathContextMajor]))
+      caller = caller.getCaller
     caller.asInstanceOf[XPathContextMajor]
   }
-
 }
 
 /**
@@ -137,7 +134,6 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
     * @throws UnsupportedOperationException as the <tt>remove</tt>
     *                                       operation is not supported by this Iterator.
     */
-  override def remove(): Unit = {
+  override def remove(): Unit =
     throw new UnsupportedOperationException()
-  }
 }

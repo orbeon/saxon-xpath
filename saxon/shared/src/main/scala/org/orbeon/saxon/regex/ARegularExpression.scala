@@ -1,4 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
 import org.orbeon.saxon.utils.Configuration
@@ -10,6 +15,11 @@ import java.util.List
 import java.util.function.Function
 
 
+/**
+ * Glue class to interface the Jakarta regex engine to Saxon
+ * (The prefix 'A' indicates an Apache regular expression, as distinct from
+ * a JDK regular expression).
+ */
 class ARegularExpression(pattern: CharSequence,
                          var rawFlags: String,
                          hostLanguage: String,
@@ -18,29 +28,21 @@ class ARegularExpression(pattern: CharSequence,
   extends RegularExpression {
 
   var rawPattern: UnicodeString = _
-
   var regex: REProgram = _
-
-  var reFlags: REFlags = null
-
   val flags: String = null
+  var reFlags: REFlags = new REFlags(flags, hostLanguage)
 
-  reFlags = new REFlags(flags, hostLanguage)
-
-  {
+  locally {
     rawPattern = UnicodeString.makeUnicodeString(pattern)
-    val comp2: RECompiler = new RECompiler()
+    val comp2 = new RECompiler
     comp2.setFlags(reFlags)
     regex = comp2.compile(rawPattern)
-    if (warnings != null) {
+    if (warnings != null)
       comp2.getWarnings.forEach { s =>
         warnings.add(s)
       }
-    }
-    if (config != null) {
-      regex.setBacktrackingLimit(
-        config.getConfigurationProperty(Feature.REGEX_BACKTRACKING_LIMIT))
-    }
+    if (config != null)
+      regex.setBacktrackingLimit(config.getConfigurationProperty(Feature.REGEX_BACKTRACKING_LIMIT))
   }
 
   /**
@@ -131,17 +133,5 @@ class ARegularExpression(pattern: CharSequence,
    *
    * @return a string containing the flags
    */
-  override def getFlags(): String = rawFlags
-
+  override def getFlags: String = rawFlags
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Glue class to interface the Jakarta regex engine to Saxon
- * (The prefix 'A' indicates an Apache regular expression, as distinct from
- * a JDK regular expression).
- */
