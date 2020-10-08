@@ -44,7 +44,7 @@ class ErrorExpression(var exception: XmlProcessingError)
    * @param errorCode   the error code
    * @param isTypeError true if this is a type error
    */
-  def this(message: String, errorCode: String, isTypeError: Boolean) {
+  def this(message: String, errorCode: String, isTypeError: Boolean) = {
     this(new XmlProcessingIncident(message, errorCode))
     exception.asInstanceOf[XmlProcessingIncident].setTypeError(isTypeError)
   }

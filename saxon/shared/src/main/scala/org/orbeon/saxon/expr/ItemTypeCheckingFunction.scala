@@ -26,7 +26,7 @@ class ItemTypeCheckingFunction extends ItemMappingFunction {
   private var config: Configuration = _
   private var location: Location = _
 
-  def this(requiredItemType: ItemType, role: RoleDiagnostic, failingExpression: Expression, config: Configuration) {
+  def this(requiredItemType: ItemType, role: RoleDiagnostic, failingExpression: Expression, config: Configuration) = {
     this()
     this.requiredItemType = requiredItemType
     this.role = role
