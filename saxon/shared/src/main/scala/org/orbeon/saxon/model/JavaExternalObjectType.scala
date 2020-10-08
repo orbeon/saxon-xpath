@@ -35,11 +35,9 @@ object JavaExternalObjectType {
 
   def classNameToQName(className: String): StructuredQName =
     new StructuredQName("jt", NamespaceConstant.JAVA_TYPE, classNameToLocalName(className))
-
 }
 
-class JavaExternalObjectType( var config: Configuration,
-                              var javaClass: Class[_])
+class JavaExternalObjectType(var config: Configuration, var javaClass: Class[_])
   extends ExternalObjectType {
 
   def getConfiguration: Configuration = config

@@ -480,6 +480,7 @@ class Configuration extends SourceResolver with NotationSet {
     internalSetBooleanProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, true)
     internalSetBooleanProperty(Feature.DISABLE_XSL_EVALUATE, false)
     //internalSetBooleanProperty(FeatureKeys.STABLE_COLLECTION_URI, true);
+
     registerFileExtension("xml", "application/xml")
     registerFileExtension("html", "application/html")
     registerFileExtension("atom", "application/atom")
@@ -567,8 +568,8 @@ class Configuration extends SourceResolver with NotationSet {
    *         version
    * @since 8.4
    */
-  def getProductTitle: String = "Saxon-" + getEditionCode + " " + Version.getProductVersion + Version.platform.getPlatformSuffix + " from Saxonica"
-
+  def getProductTitle: String =
+    "Saxon-" + getEditionCode + " " + Version.getProductVersion + Version.platform.getPlatformSuffix + " from Saxonica"
 
   @throws[LicenseException]
   def checkLicensedFeature(feature: Int, name: String, localLicenseId: Int): Unit = {

@@ -13,49 +13,23 @@ import org.orbeon.saxon.value.ObjectValue
 
 
 object AnyExternalObjectType {
-  var THE_INSTANCE: AnyExternalObjectType = new AnyExternalObjectType()
+  val THE_INSTANCE: AnyExternalObjectType = new AnyExternalObjectType
 }
 
 /**
   * This class represents the type of an external object returned by
   * an extension function, or supplied as an external variable/parameter.
   */
-class AnyExternalObjectType  () extends ItemType {
-
-  override def isAtomicType: Boolean = false
-
-  override def matches(item: Item, th: TypeHierarchy): Boolean =
-    item.isInstanceOf[ObjectValue[_]]
-
-  override def isPlainType: Boolean = false
-
-  override def getPrimitiveType: Int = -1
-
-  /**
-    * Get an alphabetic code representing the type, or at any rate, the nearest built-in type
-    * from which this type is derived. The codes are designed so that for any two built-in types
-    * A and B, alphaCode(A) is a prefix of alphaCode(B) if and only if A is a supertype of B.
-    *
-    * @return the alphacode for the nearest containing built-in type
-    */
-  override def getBasicAlphaCode: String = "X"
-
-  override def getPrimitiveItemType: ItemType = this
-
-  override def getUType: UType = UType.EXTENSION
-
-  override def getAtomizedItemType: AtomicType = BuiltInAtomicType.STRING
-
-  override def isAtomizable(th: TypeHierarchy): Boolean = true
-
-  override def getGenre: Genre = Genre.EXTERNAL
-
-  /**
-    * Get the default priority when this ItemType is used as an XSLT pattern
-    *
-    * @return the default priority
-    */
-  override def getDefaultPriority: Double = -1
-
+class AnyExternalObjectType extends ItemType {
+  def isAtomicType: Boolean = false
+  override def matches(item: Item, th: TypeHierarchy): Boolean = item.isInstanceOf[ObjectValue[_]]
+  def isPlainType: Boolean = false
+  def getPrimitiveType: Int = -1
+  def getBasicAlphaCode: String = "X"
+  def getPrimitiveItemType: ItemType = this
+  def getUType: UType = UType.EXTENSION
+  def getAtomizedItemType: AtomicType = BuiltInAtomicType.STRING
+  def isAtomizable(th: TypeHierarchy): Boolean = true
+  def getGenre: Genre = Genre.EXTERNAL
+  def getDefaultPriority: Double = -1
 }
-

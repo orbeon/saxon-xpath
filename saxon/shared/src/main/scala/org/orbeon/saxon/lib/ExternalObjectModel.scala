@@ -1,50 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package org.orbeon.saxon.lib
-
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.expr.JPConverter
-
-import org.orbeon.saxon.expr.PJConverter
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.trans.XPathException
-
-import javax.xml.transform.Result
-
-import javax.xml.transform.Source
-
-
-
-
-trait ExternalObjectModel {
-
-  def getDocumentClassName: String
-
-  def getIdentifyingURI: String
-
-  def getPJConverter(targetClass: Class[_]): PJConverter
-
-  def getJPConverter(sourceClass: Class[_], config: Configuration): JPConverter
-
-  def getNodeListCreator(node: AnyRef): PJConverter
-
-  def getDocumentBuilder(result: Result): Receiver
-
-  def sendSource(source: Source, receiver: Receiver): Boolean
-
-  def unravel(source: Source, config: Configuration): NodeInfo
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.lib
+
+import javax.xml.transform.{Result, Source}
+import org.orbeon.saxon.event.Receiver
+import org.orbeon.saxon.expr.{JPConverter, PJConverter}
+import org.orbeon.saxon.om.NodeInfo
+import org.orbeon.saxon.utils.Configuration
+
+
 /**
   * This interface must be implemented by any third-party object model that can
   * be wrapped with a wrapper that implements the Saxon Object Model (the NodeInfo interface).
@@ -57,3 +25,13 @@ trait ExternalObjectModel {
   * means that it will be possible to use the external object model for output as well as for
   * input.</p>
   */
+trait ExternalObjectModel {
+  def getDocumentClassName: String
+  def getIdentifyingURI: String
+  def getPJConverter(targetClass: Class[_]): PJConverter
+  def getJPConverter(sourceClass: Class[_], config: Configuration): JPConverter
+  def getNodeListCreator(node: AnyRef): PJConverter
+  def getDocumentBuilder(result: Result): Receiver
+  def sendSource(source: Source, receiver: Receiver): Boolean
+  def unravel(source: Source, config: Configuration): NodeInfo
+}

@@ -491,8 +491,8 @@ class TypeHierarchy(var config: Configuration) {
               if (t2 == AnyExternalObjectType.THE_INSTANCE) {
                 SUBSUMED_BY
               } else t2 match {
-                case objectType1: JavaExternalObjectType =>
-                  objectType.getRelationship(objectType1)
+                case javaObjectType: JavaExternalObjectType =>
+                  objectType.getRelationship(javaObjectType)
                 case _ =>
                   DISJOINT
               }
@@ -505,15 +505,15 @@ class TypeHierarchy(var config: Configuration) {
         case _ =>
           t1 match {
             case mapType: MapType if t2.isInstanceOf[MapType] =>
-              if (t1 == MapType.EMPTY_MAP_TYPE) {
+
+              if (t1 == MapType.EMPTY_MAP_TYPE)
                 return SUBSUMED_BY
-              } else if (t2 == MapType.EMPTY_MAP_TYPE) {
+              else if (t2 == MapType.EMPTY_MAP_TYPE)
                 return SUBSUMES
-              } else if (t1 == MapType.ANY_MAP_TYPE) {
+              else if (t1 == MapType.ANY_MAP_TYPE)
                 return SUBSUMES
-              } else if (t2 == MapType.ANY_MAP_TYPE) {
+              else if (t2 == MapType.ANY_MAP_TYPE)
                 return SUBSUMED_BY
-              }
 
               val k1: AtomicType = mapType.getKeyType
               val k2: AtomicType = t2.asInstanceOf[MapType].getKeyType

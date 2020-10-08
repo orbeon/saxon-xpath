@@ -1,30 +1,15 @@
 package org.orbeon.saxon.expr.flwor
 
+import java.util.{ArrayList, List}
+
 import org.orbeon.saxon.expr._
-
 import org.orbeon.saxon.expr.oper.OperandArray
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionTool
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.model.ItemType
-
 import org.orbeon.saxon.om.Sequence
-
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.ArrayList
-
-import java.util.List
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 //remove if not needed
 //import scala.collection.compat._
@@ -55,12 +40,7 @@ class TupleExpression extends Expression {
   }
 
   def includesBinding(binding: Binding): Boolean =
-    operands.asScala
-      .find(
-        _.getChildExpression.asInstanceOf[LocalVariableReference].getBinding ==
-          binding)
-      .map(_ => true)
-      .getOrElse(false)
+    operands.asScala.exists(_.getChildExpression.asInstanceOf[LocalVariableReference].getBinding == binding)
 
   def getItemType: ItemType =
     getConfiguration.getJavaExternalObjectType(classOf[AnyRef])
@@ -76,7 +56,7 @@ class TupleExpression extends Expression {
   override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def equals(other: Any): Boolean =
-    if (!(other.isInstanceOf[TupleExpression])) {
+    if (! other.isInstanceOf[TupleExpression]) {
       false
     } else {
       val t2: TupleExpression = other.asInstanceOf[TupleExpression]
@@ -99,13 +79,10 @@ class TupleExpression extends Expression {
 
   def copy(rebindings: RebindingMap): Expression = {
     val n: Int = getOperanda.getNumberOfOperands
-    val refs2: List[LocalVariableReference] =
-      new ArrayList[LocalVariableReference](n)
-    for (i <- 0 until n) {
-      refs2.add(
-        getSlot(i).copy(rebindings).asInstanceOf[LocalVariableReference])
-    }
-    val t2: TupleExpression = new TupleExpression()
+    val refs2: List[LocalVariableReference] = new ArrayList[LocalVariableReference](n)
+    for (i <- 0 until n)
+      refs2.add(getSlot(i).copy(rebindings).asInstanceOf[LocalVariableReference])
+    val t2: TupleExpression = new TupleExpression
     ExpressionTool.copyLocationInfo(this, t2)
     t2.setVariables(refs2)
     t2
@@ -142,5 +119,4 @@ class TupleExpression extends Expression {
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
   override def getIntrinsicDependencies: Int = 0
-
 }
