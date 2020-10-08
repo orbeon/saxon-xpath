@@ -1348,7 +1348,7 @@ class XPathParser() {
       var theClass: Class[_] = null
       try {
         val className = JavaExternalObjectType.localNameToClassName(local)
-        theClass = config.getConfClass(className, tracing = false, null)
+        theClass = config.getConfClass(className, tracing = false)
       } catch {
         case err: XPathException =>
           grumble("Unknown Java class " + local, "XPST0051")

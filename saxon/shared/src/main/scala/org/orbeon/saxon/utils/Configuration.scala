@@ -1,6 +1,6 @@
 package org.orbeon.saxon.utils
 
-import java.io.{IOException, InputStream, PrintStream, UnsupportedEncodingException}
+import java.io.{InputStream, PrintStream, UnsupportedEncodingException}
 import java.net.{URI, URISyntaxException, URLDecoder}
 import java.util
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -87,76 +87,81 @@ object Configuration {
    *
    * @param filename the filename of the file to be read
    * @param messages List to be populated with messages in the event of failure
-   * @param loaders  List to be populated with the ClassLoader that succeeded in loading the resource
    * @return an InputStream for reading the file/resource
    */
-  def locateResource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]): InputStream = {
-    val fileName: String = "net/sf/saxon/data/" + filename
-    var loader: ClassLoader = null
-    try loader = Thread.currentThread.getContextClassLoader
-    catch {
-      case err: Exception =>
-        messages.add("Failed to getContextClassLoader() - continuing\n")
-    }
-    var in: InputStream = null
-    if (loader != null) {
-      val u = loader.getResource(fileName)
-      in = loader.getResourceAsStream(fileName)
-      if (in == null) messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
-    }
-    if (in == null) {
-      loader = classOf[Configuration].getClassLoader
-      if (loader != null) {
-        in = loader.getResourceAsStream(fileName)
-        if (in == null) messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
-      }
-    }
-    if (in == null) { // Means we're in a very strange class-loading environment, things are getting desperate
-      val url = ClassLoader.getSystemResource(fileName)
-      if (url != null) try in = url.openStream
-      catch {
-        case ioe: IOException =>
-          messages.add("IO error " + ioe.getMessage + " reading " + fileName + " located using getSystemResource(): using defaults")
-          in = null
-      }
-    }
-    loaders.add(loader)
-    in
+  def locateResource(filename: String, messages: util.List[String]): InputStream = {
+
+    // ORBEON: JVM only
+    null
+//
+//    val fileName: String = "net/sf/saxon/data/" + filename
+//    var loader: ClassLoader = null
+//    try loader = Thread.currentThread.getContextClassLoader
+//    catch {
+//      case _: Exception =>
+//        messages.add("Failed to getContextClassLoader() - continuing\n")
+//    }
+//    var in: InputStream = null
+//    if (loader != null) {
+//      in = loader.getResourceAsStream(fileName)
+//      if (in == null)
+//        messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
+//    }
+//    if (in == null) {
+//      loader = classOf[Configuration].getClassLoader
+//      if (loader != null) {
+//        in = loader.getResourceAsStream(fileName)
+//        if (in == null)
+//          messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
+//      }
+//    }
+//    if (in == null) { // Means we're in a very strange class-loading environment, things are getting desperate
+//      val url = ClassLoader.getSystemResource(fileName)
+//      if (url != null)
+//        try in = url.openStream
+//        catch {
+//          case ioe: IOException =>
+//            messages.add("IO error " + ioe.getMessage + " reading " + fileName + " located using getSystemResource(): using defaults")
+//            in = null
+//        }
+//    }
+//    in
   }
 
-  /**
-   * Read a resource file issued with the Saxon product, returning a StreamSource with bound systemId
-   * This means it can be an XSLT stylesheet which uses inclusions etc.
-   *
-   * @param filename the filename of the file to be read
-   * @param messages List to be populated with messages in the event of failure
-   * @param loaders  List to be populated with the ClassLoader that succeeded in loading the resource
-   * @return a StreamSource for reading the file/resource, with URL set appropriately
-   */
-  def locateResourceSource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]): StreamSource = {
-    var loader: ClassLoader = null
-    try loader = Thread.currentThread.getContextClassLoader
-    catch {
-      case err: Exception =>
-        messages.add("Failed to getContextClassLoader() - continuing\n")
-    }
-    var in: InputStream = null
-    var url: java.net.URL = null
-    if (loader != null) {
-      url = loader.getResource(filename)
-      in = loader.getResourceAsStream(filename)
-      if (in == null) messages.add("Cannot read " + filename + " file located using ClassLoader " + loader + " - continuing\n")
-    }
-    if (in == null) {
-      loader = classOf[Configuration].getClassLoader
-      if (loader != null) {
-        in = loader.getResourceAsStream(filename)
-        if (in == null) messages.add("Cannot read " + filename + " file located using ClassLoader " + loader + " - continuing\n")
-      }
-    }
-    loaders.add(loader)
-    new StreamSource(in, url.toString)
-  }
+  // ORBEON: No callers.
+//  /**
+//   * Read a resource file issued with the Saxon product, returning a StreamSource with bound systemId
+//   * This means it can be an XSLT stylesheet which uses inclusions etc.
+//   *
+//   * @param filename the filename of the file to be read
+//   * @param messages List to be populated with messages in the event of failure
+//   * @param loaders  List to be populated with the ClassLoader that succeeded in loading the resource
+//   * @return a StreamSource for reading the file/resource, with URL set appropriately
+//   */
+//  def locateResourceSource(filename: String, messages: util.List[String], loaders: util.List[ClassLoader]): StreamSource = {
+//    var loader: ClassLoader = null
+//    try loader = Thread.currentThread.getContextClassLoader
+//    catch {
+//      case err: Exception =>
+//        messages.add("Failed to getContextClassLoader() - continuing\n")
+//    }
+//    var in: InputStream = null
+//    var url: java.net.URL = null
+//    if (loader != null) {
+//      url = loader.getResource(filename)
+//      in = loader.getResourceAsStream(filename)
+//      if (in == null) messages.add("Cannot read " + filename + " file located using ClassLoader " + loader + " - continuing\n")
+//    }
+//    if (in == null) {
+//      loader = classOf[Configuration].getClassLoader
+//      if (loader != null) {
+//        in = loader.getResourceAsStream(filename)
+//        if (in == null) messages.add("Cannot read " + filename + " file located using ClassLoader " + loader + " - continuing\n")
+//      }
+//    }
+//    loaders.add(loader)
+//    new StreamSource(in, url.toString)
+//  }
 
 //  /**
 //   * Factory method to construct a Configuration object by reading a configuration file.
@@ -188,41 +193,41 @@ object Configuration {
 //    tempConfig.readConfigurationFile(source, baseConfiguration)
 //  }
 
-  /**
-   * Instantiate a Configuration object with a given class name
-   *
-   * @param className   the class name
-   * @param classLoader the class loader to be used
-   * @return a Configuration of the required class
-   * @throws ClassNotFoundException if the class is not found
-   * @throws InstantiationException if the class cannot be instantiated
-   * @throws IllegalAccessException if the class is not accessible
-   */
-  @throws[ClassNotFoundException]
-  @throws[InstantiationException]
-  @throws[IllegalAccessException]
-  def instantiateConfiguration(className: String, classLoader: ClassLoader): Configuration = {
-    var theClass: Class[_] = null
-    var loader: ClassLoader = classLoader
-    if (loader == null) {
-      try loader = Thread.currentThread().getContextClassLoader
-      catch {
-        case err: Exception =>
-          System.err.println("Failed to getContextClassLoader() - continuing")
-
-      }
-    }
-    if (loader != null) {
-      try theClass = loader.loadClass(className)
-      catch {
-        case ex: Exception => theClass = Class.forName(className)
-
-      }
-    } else {
-      theClass = Class.forName(className)
-    }
-    theClass.newInstance().asInstanceOf[Configuration]
-  }
+//  /**
+//   * Instantiate a Configuration object with a given class name
+//   *
+//   * @param className   the class name
+//   * @param classLoader the class loader to be used
+//   * @return a Configuration of the required class
+//   * @throws ClassNotFoundException if the class is not found
+//   * @throws InstantiationException if the class cannot be instantiated
+//   * @throws IllegalAccessException if the class is not accessible
+//   */
+//  @throws[ClassNotFoundException]
+//  @throws[InstantiationException]
+//  @throws[IllegalAccessException]
+//  def instantiateConfiguration(className: String, classLoader: ClassLoader): Configuration = {
+//    var theClass: Class[_] = null
+//    var loader: ClassLoader = classLoader
+//    if (loader == null) {
+//      try loader = Thread.currentThread().getContextClassLoader
+//      catch {
+//        case err: Exception =>
+//          System.err.println("Failed to getContextClassLoader() - continuing")
+//
+//      }
+//    }
+//    if (loader != null) {
+//      try theClass = loader.loadClass(className)
+//      catch {
+//        case ex: Exception => theClass = Class.forName(className)
+//
+//      }
+//    } else {
+//      theClass = Class.forName(className)
+//    }
+//    theClass.newInstance().asInstanceOf[Configuration]
+//  }
 
   /**
    * Ask if Java is being run with assertions enabled (-ea option)
@@ -243,31 +248,32 @@ object Configuration {
     assertsEnabled
   }
 
-  /**
-   * Static method to instantiate a professional or enterprise configuration.
-   * <p>This method fails if the specified configuration class cannot be loaded,
-   * but it does not check whether there is a license available.
-   *
-   * @param classLoader - the class loader to be used. If null, the context class loader for the current
-   *                    thread is used.
-   * @param className   - the name of the configuration class. Defaults to
-   *                    "com.saxonica.config.ProfessionalConfiguration" if null is supplied. This allows an assembly
-   *                    qualified name to be supplied under .NET. The class, once instantiated, must be an instance
-   *                    of Configuration.
-   * @return the new ProfessionalConfiguration or EnterpriseConfiguration
-   * @throws RuntimeException if the required Saxon edition cannot be loaded
-   * @since 9.2 (renamed from makeSchemaAwareConfiguration)
-   */
-  @throws[RuntimeException]
-  def makeLicensedConfiguration(classLoader: ClassLoader, className: String): Configuration = {
-    var classnameVar = className
-    if (classnameVar == null) classnameVar = "com.saxonica.config.ProfessionalConfiguration"
-    try instantiateConfiguration(classnameVar, classLoader)
-    catch {
-      case e@(_: ClassNotFoundException | _: InstantiationException | _: IllegalAccessException) =>
-        throw new RuntimeException(e)
-    }
-  }
+  // ORBEON: No callers.
+//  /**
+//   * Static method to instantiate a professional or enterprise configuration.
+//   * <p>This method fails if the specified configuration class cannot be loaded,
+//   * but it does not check whether there is a license available.
+//   *
+//   * @param classLoader - the class loader to be used. If null, the context class loader for the current
+//   *                    thread is used.
+//   * @param className   - the name of the configuration class. Defaults to
+//   *                    "com.saxonica.config.ProfessionalConfiguration" if null is supplied. This allows an assembly
+//   *                    qualified name to be supplied under .NET. The class, once instantiated, must be an instance
+//   *                    of Configuration.
+//   * @return the new ProfessionalConfiguration or EnterpriseConfiguration
+//   * @throws RuntimeException if the required Saxon edition cannot be loaded
+//   * @since 9.2 (renamed from makeSchemaAwareConfiguration)
+//   */
+//  @throws[RuntimeException]
+//  def makeLicensedConfiguration(classLoader: ClassLoader, className: String): Configuration = {
+//    var classnameVar = className
+//    if (classnameVar == null) classnameVar = "com.saxonica.config.ProfessionalConfiguration"
+//    try instantiateConfiguration(classnameVar, classLoader)
+//    catch {
+//      case e@(_: ClassNotFoundException | _: InstantiationException | _: IllegalAccessException) =>
+//        throw new RuntimeException(e)
+//    }
+//  }
 
   /**
    * Marker interface to represent an API that is provided as a layer on top of this
@@ -401,7 +407,7 @@ class Configuration extends SourceResolver with NotationSet {
   private var defaultLanguage: String = "en" // Locale.getDefault.getLanguage
   private var defaultCountry: String = "us" // Locale.getDefault.getCountry
   private var defaultOutputProperties: Properties = new Properties()
-  @transient private var dynamicLoader: DynamicLoader = new DynamicLoader()
+  @transient private val dynamicLoader: DynamicLoader = new DynamicLoader
   private val enabledProperties: IntSet = new IntHashSet(64)
   private var externalObjectModels: util.List[ExternalObjectModel] = new util.ArrayList[ExternalObjectModel](4)
   private val globalDocumentPool: DocumentPool = new DocumentPool()
@@ -622,23 +628,27 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def registerLocalLicense(dmk: String): Int = -1
 
-  /**
-   * Set the DynamicLoader to be used. By default an instance of {@link DynamicLoader} is used
-   * for all dynamic loading of Java classes. This method allows the actions of the standard
-   * DynamicLoader to be overridden
-   *
-   * @param dynamicLoader the DynamicLoader to be used by this Configuration
-   */
+//  /**
+//   * Set the DynamicLoader to be used. By default an instance of {@link DynamicLoader} is used
+//   * for all dynamic loading of Java classes. This method allows the actions of the standard
+//   * DynamicLoader to be overridden
+//   *
+//   * @param dynamicLoader the DynamicLoader to be used by this Configuration
+//   */
 //  def setDynamicLoader(dynamicLoader: DynamicLoader): Unit = this.dynamicLoader = dynamicLoader
 
-  /**
-   * Get the DynamicLoader used by this Configuration. By default the standard system-supplied
-   * dynamic loader is returned.
-   *
-   * @return the DynamicLoader in use - either a user-supplied DynamicLoader, or the standard one
-   *         supplied by the system.
-   */
-  def getDynamicLoader: DynamicLoader = dynamicLoader
+//  /**
+//   * Get the DynamicLoader used by this Configuration. By default the standard system-supplied
+//   * dynamic loader is returned.
+//   *
+//   * @return the DynamicLoader in use - either a user-supplied DynamicLoader, or the standard one
+//   *         supplied by the system.
+//   */
+//  def getDynamicLoader: DynamicLoader = dynamicLoader
+
+  // ORBEON
+  def getResourceAsStream(name: String): InputStream =
+    dynamicLoader.getResourceAsStream(name)
 
   /**
    * Load a class using the class name provided.
@@ -649,15 +659,13 @@ class Configuration extends SourceResolver with NotationSet {
    * @param className   A string containing the name of the
    *                    class, for example "com.microstar.sax.LarkDriver"
    * @param tracing     true if diagnostic tracing is required
-   * @param classLoader The ClassLoader to be used to load the class, or null to
-   *                    use the ClassLoader selected by the DynamicLoader.
    * @return an instance of the class named, or null if it is not
    *         loadable.
    * @throws XPathException if the class cannot be loaded.
    */
   @throws[XPathException]
-  def getConfClass(className: String, tracing: Boolean, classLoader: ClassLoader): Class[_] =
-    dynamicLoader.getClass(className, if (tracing) traceOutput else null, classLoader)
+  def getConfClass(className: String, tracing: Boolean): Class[_] =
+    dynamicLoader.getClass(className, if (tracing) traceOutput else null)
 
   /**
    * Instantiate a class using the class name provided.
@@ -669,15 +677,12 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @param className   A string containing the name of the
    *                    class, for example "com.microstar.sax.LarkDriver"
-   * @param classLoader The ClassLoader to be used to load the class, or null to
-   *                    use the ClassLoader selected by the DynamicLoader.
    * @return an instance of the class named, or null if it is not
    *         loadable.
    * @throws XPathException if the class cannot be loaded.
    */
   @throws[XPathException]
-  def getInstance(className: String, classLoader: ClassLoader): Any = dynamicLoader.getInstance(className, if (isTiming) traceOutput
-  else null, classLoader)
+  def getInstance(className: String): Any = dynamicLoader.getInstance(className, if (isTiming) traceOutput else null)
 
   /**
    * Set a Predicate that is applied to a URI to determine whether the standard resource resolvers
@@ -2760,7 +2765,7 @@ class Configuration extends SourceResolver with NotationSet {
    *              <p>This method is intended for advanced users only, and is subject to change.</p>
    */
   def registerExternalObjectModel(model: ExternalObjectModel): Unit = {
-    try getConfClass(model.getDocumentClassName, tracing = false, null)
+    try getConfClass(model.getDocumentClassName, tracing = false)
     catch {
       case _: XPathException =>
         // If the model can't be loaded, do nothing
@@ -3501,7 +3506,7 @@ class Configuration extends SourceResolver with NotationSet {
    def instantiateClassName(propertyName: String, value: Any, requiredClass: Class[_]): Any = {
     if (!value.isInstanceOf[String]) throw new IllegalArgumentException(propertyName + " must be a String")
     try {
-      val obj = getInstance(value.asInstanceOf[String], null)
+      val obj = getInstance(value.asInstanceOf[String])
       if (!requiredClass.isAssignableFrom(obj.getClass)) throw new IllegalArgumentException("Error in " + propertyName + ": Class " + value + " does not implement " + requiredClass.getName)
       obj
     } catch {

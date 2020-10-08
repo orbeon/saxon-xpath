@@ -187,16 +187,14 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
           .startsWith("text/")) &&
           (mediaType.endsWith("/xml") || mediaType.endsWith("+xml"))
     } else if (absoluteURI.getScheme.==("classpath")) {
-      val is: InputStream = config.getDynamicLoader.getResourceAsStream(
-        absoluteURI.toString.substring(10))
+      val is = config.getResourceAsStream(absoluteURI.toString.substring(10))
       if (is != null) {
-        if (encodingVar == null) {
+        if (encodingVar == null)
           encodingVar = "UTF-8"
-        }
         new InputStreamReader(is, encodingVar)
       }
     } else {
-      try absoluteURL = absoluteURI.toURL()
+      try absoluteURL = absoluteURI.toURL
       catch {
         case mue: MalformedURLException => {
           val e: XPathException = new XPathException(

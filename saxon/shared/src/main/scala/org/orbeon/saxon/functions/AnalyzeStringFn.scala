@@ -65,23 +65,16 @@ class AnalyzeStringFn extends RegexFunction {
     val re: RegularExpression = getRegularExpression(arguments)
     val iter: RegexIterator = re.analyze(input)
     if (resultName == null) {
-      val schemaAware =
-        context.getController.getExecutable.isSchemaAware
-      val config: Configuration = context.getConfiguration
+      val schemaAware = context.getController.getExecutable.isSchemaAware
+      val config = context.getConfiguration
       config.synchronized {
         if (schemaAware && ! config.isSchemaAvailable(NamespaceConstant.FN)) {
-          val inputStream =
-            Configuration.locateResource("xpath-functions.scm",
-              new ju.ArrayList[String](),
-              new ju.ArrayList[ClassLoader]())
-          if (inputStream == null) {throw new XPathException(
-              "Failed to load xpath-functions.scm from the classpath")
-          }
-          val is: InputSource = new InputSource(inputStream)
-          if (config.isTiming) {
-            config.getLogger.info(
-              "Loading schema from resources for: " + NamespaceConstant.FN)
-          }
+          val inputStream = Configuration.locateResource("xpath-functions.scm", new ju.ArrayList)
+          if (inputStream == null)
+            throw new XPathException("Failed to load xpath-functions.scm from the classpath")
+          val is = new InputSource(inputStream)
+          if (config.isTiming)
+            config.getLogger.info("Loading schema from resources for: " + NamespaceConstant.FN)
           config.addSchemaSource(new SAXSource(is))
         }
       }

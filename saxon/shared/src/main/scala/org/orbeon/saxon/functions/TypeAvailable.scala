@@ -42,16 +42,14 @@ class TypeAvailable extends SystemFunction {
       }
 
     }
-    val uri: String = qName.getURI
+    val uri = qName.getURI
     if (uri == NamespaceConstant.JAVA_TYPE) {
       try {
-        val className: String =
-          JavaExternalObjectType.localNameToClassName(qName.getLocalPart)
-        config.getConfClass(className, tracing = false, null)
+        val className = JavaExternalObjectType.localNameToClassName(qName.getLocalPart)
+        config.getConfClass(className, tracing = false)
         true
       } catch {
-        case err: XPathException => false
-
+        case _: XPathException => false
       }
     } else {
       val `type`: SchemaType = config.getSchemaType(qName)

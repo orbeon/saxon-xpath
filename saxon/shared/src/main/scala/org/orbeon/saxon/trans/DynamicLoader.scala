@@ -7,18 +7,12 @@ import org.orbeon.saxon.lib.Logger
 import org.orbeon.saxon.serialize.MessageEmitter
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.BeanProperty
-
 
 // ORBEON: JVM only
-// Used by `Configuration`
+// Used by `Configuration` only.
 class DynamicLoader {
 
-  @BeanProperty
-  var classLoader: ClassLoader = _
-
-  var knownClasses: ju.HashMap[String, Class[_]] =
-    new ju.HashMap[String, Class[_]](20)
+  private val knownClasses: ju.HashMap[String, Class[_]] = new ju.HashMap(20)
 
   registerKnownClasses()
 
@@ -27,9 +21,7 @@ class DynamicLoader {
     knownClasses.put("org.orbeon.saxon.Configuration", classOf[Configuration])
   }
 
-  def getClass(className: String,
-               traceOut: Logger,
-               classLoader: ClassLoader): Class[_] = {
+  def getClass(className: String, traceOut: Logger): Class[_] = {
     val known = knownClasses.get(className)
     if (known != null)
       return known
@@ -37,11 +29,7 @@ class DynamicLoader {
     if (tracing)
       traceOut.info("Loading " + className)
     try {
-      var loader = classLoader
-      if (loader == null)
-        loader = this.classLoader
-      if (loader == null)
-        loader = Thread.currentThread().getContextClassLoader
+      val loader = Thread.currentThread().getContextClassLoader
       if (loader != null) {
         try loader.loadClass(className)
         catch {
@@ -59,16 +47,20 @@ class DynamicLoader {
     }
   }
 
-  def getInstance(className: String, classLoader: ClassLoader): Any = {
-    val theclass = getClass(className, null, classLoader)
+  // ORBEON: No callers.
+//  def getInstance(className: String): Any = {
+//    val theclass = getClass(className, null)
+//    theclass.newInstance()
+//  }
+
+  def getInstance(className: String, traceOut: Logger): Any = {
+    val theclass = getClass(className, traceOut)
     theclass.newInstance()
   }
 
-  def getInstance(className: String,
-                  traceOut: Logger,
-                  classLoader: ClassLoader): Any = {
-    val theclass = getClass(className, traceOut, classLoader)
-    theclass.newInstance()
+  def getResourceAsStream(name: String): InputStream = {
+    val loader = Thread.currentThread().getContextClassLoader
+    loader.getResourceAsStream(name)
   }
 
   private def getJarFileForClass(className: String): String =
@@ -90,12 +82,5 @@ class DynamicLoader {
       ""
     else
       ". Check that " + jar + " is on the classpath"
-  }
-
-  def getResourceAsStream(name: String): InputStream = {
-    var loader = getClassLoader
-    if (loader == null)
-      loader = Thread.currentThread().getContextClassLoader
-    loader.getResourceAsStream(name)
   }
 }

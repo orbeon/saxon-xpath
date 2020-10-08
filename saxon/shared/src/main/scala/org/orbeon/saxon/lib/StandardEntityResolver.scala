@@ -587,9 +587,7 @@ object StandardEntityResolver {
 //      traceDestination.info("Fetching Saxon copy of " + filename)
 //    }
 //    val messages = new ju.ArrayList[String]()
-//    val classLoaders = new ju.ArrayList[ClassLoader]
-//
-//    val in = Configuration.locateResource(filename, messages, classLoaders)
+//    val in = Configuration.locateResource(filename, messages)
 //
 //    if (tracing)
 //      for (s <- messages.asScala)
@@ -687,7 +685,7 @@ class StandardEntityResolver(var config: Configuration)
   }
 
    def getResource(resourceName: String, config: Configuration): InputSource = {
-    val inputStream = config.getDynamicLoader.getResourceAsStream(resourceName)
+    val inputStream = config.getResourceAsStream(resourceName)
     if (inputStream != null) {
       val inputSource = new InputSource(inputStream)
       inputSource.setSystemId("classpath:" + resourceName)
@@ -696,6 +694,5 @@ class StandardEntityResolver(var config: Configuration)
       null
     }
   }
-
 }
 

@@ -81,7 +81,7 @@ class StandardModuleURIResolver extends ModuleURIResolver {
       var is: InputStream = null
       if ("classpath" == absoluteURI.getScheme) {
         val path: String = absoluteURI.getPath
-        is = config.getDynamicLoader.getResourceAsStream(path)
+        is = config.getResourceAsStream(path)
         if (is == null) {
           val se: XPathException = new XPathException(
             "Cannot locate module " + path + " on class path")

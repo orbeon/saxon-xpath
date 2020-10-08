@@ -419,7 +419,7 @@ class CommandLineOptions {
 //        }
       }
       value = sb.toString
-      config.getConfClass("org.apache.xml.resolver.CatalogManager", tracing = false, null)
+      config.getConfClass("org.apache.xml.resolver.CatalogManager", tracing = false)
       XmlCatalogResolver.setCatalog(value, config, getOptionValue("t") != null)
     }
     value = getOptionValue("dtd")
@@ -468,7 +468,7 @@ class CommandLineOptions {
     }
     value = getOptionValue("or")
     if (value != null) {
-      val resolver: AnyRef = config.getInstance(value, null).asInstanceOf[AnyRef]
+      val resolver: AnyRef = config.getInstance(value).asInstanceOf[AnyRef]
       if (resolver.isInstanceOf[OutputURIResolver]) {
         config.setConfigurationProperty(
           Feature.OUTPUT_URI_RESOLVER,
@@ -549,7 +549,7 @@ class CommandLineOptions {
     value = getOptionValue("init")
     if (value != null) {
       val initializer: Initializer =
-        config.getInstance(value, null).asInstanceOf[Initializer]
+        config.getInstance(value).asInstanceOf[Initializer]
       initializer.initialize(config)
     }
   }
