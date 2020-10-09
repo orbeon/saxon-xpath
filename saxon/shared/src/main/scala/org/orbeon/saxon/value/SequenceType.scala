@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
 
-import java.util.Optional
-
 import org.orbeon.saxon.expr.StaticProperty
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
 import org.orbeon.saxon.model._
@@ -264,7 +262,7 @@ class SequenceType {
 
   def this(primaryType: ItemType, cardinalityVar: Int) = {
     this()
-    this.primaryType = primaryType;
+    this.primaryType = primaryType
     this.cardinality = cardinalityVar
     if ((primaryType eq ErrorType) && Cardinality.allowsZero(cardinalityVar))
       this.cardinality = StaticProperty.EMPTY
@@ -305,14 +303,14 @@ class SequenceType {
     var count = 0
     val iter = value.iterate
     var item: Item = null
-    while (({
-      item = iter.next
+    while ({
+      item = iter.next()
       item
-    }) != null) {
+    } != null) {
       count += 1
       if (!primaryType.matches(item, th)) return false
     }
-    !(count == 0 && !(Cardinality.allowsZero(cardinality)) || count > 1 && !(Cardinality.allowsMany(cardinality)))
+    !(count == 0 && ! Cardinality.allowsZero(cardinality) || count > 1 && ! Cardinality.allowsMany(cardinality))
   }
 
   /**
@@ -323,30 +321,30 @@ class SequenceType {
    * @param value the value which has been found not to match this sequence type
    * @param th    the TypeHierarchy cache
    */
-  def explainMismatch(value: GroundedValue, th: TypeHierarchy): Optional[String] = try {
+  def explainMismatch(value: GroundedValue, th: TypeHierarchy): Option[String] = try {
     var count = 0
     val iter = value.iterate
     var item: Item = null
-    while (({
-      item = iter.next
+    while ({
+      item = iter.next()
       item
-    }) != null) {
+    } != null) {
       count += 1
       if (!primaryType.matches(item, th)) {
         var s = "The " + RoleDiagnostic.ordinal(count) + " item is not an instance of the required type"
         val more = primaryType.explainMismatch(item, th)
-        if (more.isPresent) s = if (count == 1) more.get
+        if (more.isDefined) s = if (count == 1) more.get
         else s + ". " + more.get
-        else if (count == 1) return Optional.empty // no new information, so don't say anything
-        return Optional.of(s)
+        else if (count == 1) return None // no new information, so don't say anything
+        return Some(s)
       }
     }
-    if (count == 0 && !Cardinality.allowsZero(cardinality)) return Optional.of("The type does not allow an empty sequence")
-    else if (count > 1 && !Cardinality.allowsMany(cardinality)) return Optional.of("The type does not allow a sequence of more than one item")
-    Optional.empty
+    if (count == 0 && !Cardinality.allowsZero(cardinality)) return Some("The type does not allow an empty sequence")
+    else if (count > 1 && !Cardinality.allowsMany(cardinality)) return Some("The type does not allow a sequence of more than one item")
+    None
   } catch {
     case e: XPathException =>
-      Optional.empty
+      None
   }
 
   /**
@@ -355,8 +353,11 @@ class SequenceType {
    * @return the string representation as an instance of the XPath
    *         SequenceType construct
    */
-  override def toString: String = if (cardinality == StaticProperty.ALLOWS_ZERO) "empty-sequence()"
-  else primaryType.toString + Cardinality.getOccurrenceIndicator(cardinality).toString
+  override def toString: String =
+    if (cardinality == StaticProperty.ALLOWS_ZERO)
+      "empty-sequence()"
+    else
+      primaryType.toString + Cardinality.getOccurrenceIndicator(cardinality)
 
   /**
    * Return a string representation of this SequenceType suitable for use in stylesheet
@@ -367,12 +368,10 @@ class SequenceType {
    * @return the string representation as an instance of the XPath SequenceType construct
    */
   def toExportString: String = {
-    if (cardinality == StaticProperty.ALLOWS_ZERO) {
-      return "empty-sequence()"
-    }
-    else {
-      return primaryType.toExportString + Cardinality.getOccurrenceIndicator(cardinality)
-    }
+    if (cardinality == StaticProperty.ALLOWS_ZERO)
+      "empty-sequence()"
+    else
+      primaryType.toExportString + Cardinality.getOccurrenceIndicator(cardinality)
   }
 
   def toAlphaCode: String = AlphaCode.fromSequenceType(this)
@@ -385,7 +384,9 @@ class SequenceType {
   /**
    * Indicates whether some other object is "equal to" this one.
    */
-  override def equals(/*@NotNull*/ obj: Any): Boolean = obj.isInstanceOf[SequenceType] && this.primaryType == obj.asInstanceOf[SequenceType].primaryType && this.cardinality == obj.asInstanceOf[SequenceType].cardinality
+  override def equals(/*@NotNull*/ obj: Any): Boolean =
+    obj.isInstanceOf[SequenceType] && this.primaryType == obj.asInstanceOf[SequenceType].primaryType && this.cardinality == obj.asInstanceOf[SequenceType].cardinality
 
-  def isSameType(other: SequenceType, th: TypeHierarchy): Boolean = cardinality == other.cardinality && (th.relationship(primaryType, other.primaryType) eq Affinity.SAME_TYPE)
+  def isSameType(other: SequenceType, th: TypeHierarchy): Boolean =
+    cardinality == other.cardinality && (th.relationship(primaryType, other.primaryType) eq Affinity.SAME_TYPE)
 }

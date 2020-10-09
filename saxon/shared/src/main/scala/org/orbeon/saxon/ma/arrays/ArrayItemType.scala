@@ -120,7 +120,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
       .makeFunctionSequenceCoercer(exp, role)
 
   override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
+                               th: TypeHierarchy): Option[String] = {
     if (item.isInstanceOf[ArrayItem]) {
       for (i <- 0 until item.asInstanceOf[ArrayItem].arrayLength()) {
         try {
@@ -130,19 +130,19 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
               Err.depictSequence(member) +
               "} does not match the required member type " +
               memberType
-            val more: Optional[String] = memberType.explainMismatch(member, th)
-            if (more.isPresent) {
+            val more = memberType.explainMismatch(member, th)
+            if (more.isDefined) {
               s = s + ". " + more.get
             }
             Optional.of(s)
           }
         } catch {
-          case e: XPathException => Optional.empty()
+          case e: XPathException => None
 
         }
       }
     }
-    Optional.empty()
+    None
   }
 
 }

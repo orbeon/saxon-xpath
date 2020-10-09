@@ -1,9 +1,9 @@
 package org.orbeon.saxon.model
 
-import java.util.{Objects, Optional}
+import java.util.Objects
 
-import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
+import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.functions.hof.FunctionSequenceCoercer
 import org.orbeon.saxon.ma.arrays.{ArrayItem, ArrayItemType}
 import org.orbeon.saxon.ma.map.{MapItem, MapType}
@@ -172,163 +172,162 @@ class SpecificFunctionType extends AnyFunctionType {
   }
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (!(item.isInstanceOf[Function])) {
-      return      false
+    if (! item.isInstanceOf[Function]) {
+      return false
     }
-    if (item.isInstanceOf[MapItem]) {
-      if (getArity == 1 &&
-        argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
-        argTypes(0).getPrimaryType.isPlainType) {
-        for (pair <- item.asInstanceOf[MapItem].keyValuePairs().asScala) {
-          try if (!resultType.matches(pair.value, th)) {
-            false
-          } catch {
-            case e: XPathException => false
-
-          }
-        }
-        return        true
-      } else {
-        return false
-      }
-    }
-    if (item.isInstanceOf[ArrayItem]) {
-      if (getArity == 1 &&
-        argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
-        argTypes(0).getPrimaryType.isPlainType) {
-        val rel: Affinity = th.relationship(argTypes(0).getPrimaryType,
-          BuiltInAtomicType.INTEGER)
-        if (!(rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY)) {
-          return false
-        }
-        for (member <- item.asInstanceOf[ArrayItem].members()) {
-          try if (!resultType.matches(member, th)) {
-            false
-          } catch {
-            case e: XPathException => false
-
-          }
-        }
-        return true
-      } else {
-        return false
-      }
-    }
-    val rel: Affinity =
-      th.relationship(item.asInstanceOf[Function].getFunctionItemType, this)
-    rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY
-  }
-
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    if (!(item.isInstanceOf[Function])) {
-      Optional.empty()
-    }
-    if (item.isInstanceOf[MapItem]) {
-      if (getArity == 1) {
-        if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
+    item match {
+      case mapItem: MapItem =>
+        if (getArity == 1 &&
+          argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
           argTypes(0).getPrimaryType.isPlainType) {
-          for (pair <- item.asInstanceOf[MapItem].keyValuePairs().asScala) {
+          for (pair <- mapItem.keyValuePairs().asScala) {
             try if (!resultType.matches(pair.value, th)) {
-              var s: String = "The supplied map contains an entry with key (" + pair.key +
-                ") whose corresponding value (" +
-                Err.depictSequence(pair.value) +
-                ") is not an instance of the return type in the function signature (" +
-                resultType +
-                ")"
-              val more: Optional[String] =
-                resultType.explainMismatch(pair.value, th)
-              if (more.isPresent) {
-                s = s + ". " + more.get
-              }
-              Optional.of(s)
+              false
             } catch {
-              case e: XPathException => Optional.empty()
-
+              case _: XPathException => false
             }
           }
+          true
         } else {
-          val s: String = "The function argument is of type " + argTypes(0) +
-            "; a map can only be supplied for a function type whose argument type is atomic"
-          Optional.of(s)
+          false
         }
-      } else {
-        val s: String = "The function arity is " + getArity +
-          "; a map can only be supplied for a function type with arity 1"
-        Optional.of(s)
-      }
-    }
-    if (item.isInstanceOf[ArrayItem]) {
-      if (getArity == 1) {
-        if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
+      case arrayItem: ArrayItem =>
+        if (getArity == 1 &&
+          argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
           argTypes(0).getPrimaryType.isPlainType) {
           val rel: Affinity = th.relationship(argTypes(0).getPrimaryType,
             BuiltInAtomicType.INTEGER)
           if (!(rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY)) {
-            val s: String = "The function expects an argument of type " + argTypes(
-              0) +
-              "; an array can only be supplied for a function that expects an integer"
-            Optional.of(s)
-          } else {
-            for (member <- item.asInstanceOf[ArrayItem].members()) {
-              try if (!resultType.matches(member, th)) {
-                var s: String = "The supplied array contains an entry (" + Err
-                  .depictSequence(member) +
-                  ") is not an instance of the return type in the function signature (" +
-                  resultType +
-                  ")"
-                val more: Optional[String] =
-                  resultType.explainMismatch(member, th)
-                if (more.isPresent) {
-                  s = s + ". " + more.get
-                }
-                Optional.of(s)
-              } catch {
-                case e: XPathException => Optional.empty()
-
-              }
+            return false
+          }
+          for (member <- arrayItem.members()) {
+            try if (!resultType.matches(member, th)) {
+              false
+            } catch {
+              case _: XPathException => false
             }
           }
+          true
         } else {
-          val s: String = "The function argument is of type " + argTypes(0) +
-            "; an array can only be supplied for a function type whose argument type is xs:integer"
-          Optional.of(s)
+          false
         }
-      } else {
-        val s: String = "The function arity is " + getArity +
-          "; an array can only be supplied for a function type with arity 1"
-        Optional.of(s)
-      }
+      case _ =>
+        val rel = th.relationship(item.asInstanceOf[Function].getFunctionItemType, this)
+        rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY
     }
-    val other: FunctionItemType =
-      item.asInstanceOf[Function].getFunctionItemType
+  }
+
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+
+    if (! item.isInstanceOf[Function])
+      return None
+
+    item match {
+      case mapItem: MapItem =>
+        if (getArity == 1) {
+          if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE && argTypes(0).getPrimaryType.isPlainType) {
+            for (pair <- mapItem.keyValuePairs().asScala) {
+              try
+                if (!resultType.matches(pair.value, th)) {
+                  var s: String = "The supplied map contains an entry with key (" + pair.key +
+                    ") whose corresponding value (" +
+                    Err.depictSequence(pair.value) +
+                    ") is not an instance of the return type in the function signature (" +
+                    resultType +
+                    ")"
+                  val more = resultType.explainMismatch(pair.value, th)
+                  if (more.isDefined)
+                    s = s + ". " + more.get
+                  return Some(s)
+                } catch {
+                  case _: XPathException =>
+                    return None
+                }
+              }
+
+          } else {
+            val s = "The function argument is of type " + argTypes(0) +
+              "; a map can only be supplied for a function type whose argument type is atomic"
+            return Some(s)
+          }
+        } else {
+          val s = "The function arity is " + getArity +
+            "; a map can only be supplied for a function type with arity 1"
+          return Some(s)
+        }
+      case _ =>
+    }
+
+    item match {
+      case arrayItem: ArrayItem =>
+        if (getArity == 1) {
+          if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
+            argTypes(0).getPrimaryType.isPlainType) {
+            val rel: Affinity = th.relationship(argTypes(0).getPrimaryType,
+              BuiltInAtomicType.INTEGER)
+            if (!(rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY)) {
+              val s = "The function expects an argument of type " + argTypes(
+                0) +
+                "; an array can only be supplied for a function that expects an integer"
+              Some(s)
+            } else {
+              for (member <- arrayItem.members()) {
+                try if (!resultType.matches(member, th)) {
+                  var s: String = "The supplied array contains an entry (" + Err
+                    .depictSequence(member) +
+                    ") is not an instance of the return type in the function signature (" +
+                    resultType +
+                    ")"
+                  val more: Option[String] =
+                    resultType.explainMismatch(member, th)
+                  if (more.isDefined) {
+                    s = s + ". " + more.get
+                  }
+                  return Some(s)
+                } catch {
+                  case _: XPathException =>
+                    return None
+                }
+              }
+            }
+          } else {
+            val s = "The function argument is of type " + argTypes(0) +
+              "; an array can only be supplied for a function type whose argument type is xs:integer"
+            return Some(s)
+          }
+        } else {
+          val s = "The function arity is " + getArity +
+            "; an array can only be supplied for a function type with arity 1"
+          return Some(s)
+        }
+      case _ =>
+    }
+    val other = item.asInstanceOf[Function].getFunctionItemType
     if (getArity != item.asInstanceOf[Function].getArity) {
-      val s: String = "The required function arity is " + getArity + "; the supplied function has arity " +
+      val s = "The required function arity is " + getArity + "; the supplied function has arity " +
         item.asInstanceOf[Function].getArity
-      Optional.of(s)
+      return Some(s)
     }
-    var rel: Affinity =
-      th.sequenceTypeRelationship(resultType, other.getResultType)
+    var rel = th.sequenceTypeRelationship(resultType, other.getResultType)
     if (rel != Affinity.SAME_TYPE && rel != Affinity.SUBSUMES) {
-      val s: String = "The return type of the required function is " + resultType +
+      val s = "The return type of the required function is " + resultType +
         " but the return" +
         "type of the supplied function is " +
         other.getResultType
-      Optional.of(s)
+      return Some(s)
     }
     for (j <- 0 until getArity) {
-      rel =
-        th.sequenceTypeRelationship(argTypes(j), other.getArgumentTypes(j))
+      rel = th.sequenceTypeRelationship(argTypes(j), other.getArgumentTypes(j))
       if (rel != Affinity.SAME_TYPE && rel != Affinity.SUBSUMED_BY) {
-        val s: String = "The type of the " + RoleDiagnostic.ordinal(j + 1) + " argument of the required function is " +
+        val s = "The type of the " + RoleDiagnostic.ordinal(j + 1) + " argument of the required function is " +
           argTypes(j) +
           " but the declared" +
           "type of the corresponding argument of the supplied function is " +
           other.getArgumentTypes(j)
-        Optional.of(s)
+        return Some(s)
       }
     }
-    Optional.empty()
+    None
   }
 
   override def makeFunctionSequenceCoercer(exp: Expression,

@@ -1,32 +1,12 @@
 package org.orbeon.saxon.expr.parser
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.Literal
-
-import org.orbeon.saxon.expr.StaticProperty
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.TypeHierarchy
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om.AxisInfo
-
-import org.orbeon.saxon.om.Item
-
+import org.orbeon.saxon.expr.{Expression, Literal, StaticProperty}
+import org.orbeon.saxon.expr.parser.RoleDiagnostic._
+import org.orbeon.saxon.model.{ItemType, TypeHierarchy, UType}
+import org.orbeon.saxon.om.{AxisInfo, Item}
 import org.orbeon.saxon.trans.Err
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import org.orbeon.saxon.value.SequenceType
-
-import java.util.Optional
-
-import RoleDiagnostic._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 object RoleDiagnostic {
 
@@ -189,10 +169,10 @@ class RoleDiagnostic(private var kind: Int,
                           th: TypeHierarchy): String = {
     if (supplied.isInstanceOf[Literal]) {
       var s: String = composeRequiredMessage(requiredItemType)
-      val more: Optional[String] = SequenceType
+      val more = SequenceType
         .makeSequenceType(requiredItemType, StaticProperty.ALLOWS_ZERO_OR_MORE)
         .explainMismatch(supplied.asInstanceOf[Literal].value, th)
-      if (more.isPresent) {
+      if (more.isDefined) {
         s = s + ". " + more.get
       }
       return s
@@ -216,8 +196,8 @@ class RoleDiagnostic(private var kind: Int,
     } else {
       message.append(" does not match. ")
       if (th != null) {
-        val more: Optional[String] = requiredItemType.explainMismatch(item, th)
-        more.ifPresent(message.append)
+        val more = requiredItemType.explainMismatch(item, th)
+        more foreach message.append
       }
     }
     message.toString
@@ -237,5 +217,4 @@ class RoleDiagnostic(private var kind: Int,
     fsb.append(operation)
     fsb.toString
   }
-
 }

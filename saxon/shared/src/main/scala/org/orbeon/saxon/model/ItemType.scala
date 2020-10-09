@@ -25,8 +25,6 @@
 
 package org.orbeon.saxon.model
 
-import java.util.Optional
-
 import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.value.SequenceType
@@ -71,5 +69,5 @@ trait ItemType {
     */
   def toExportString: String = toString
   def toString: String
-  def explainMismatch(item: Item, th: TypeHierarchy): Optional[String] = Optional.empty()
+  def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = None
 }

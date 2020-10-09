@@ -3,7 +3,7 @@ package org.orbeon.saxon.expr.sort
 import org.orbeon.saxon.expr.sort.CodepointCollator._
 import org.orbeon.saxon.lib.{NamespaceConstant, StringCollator, SubstringMatcher}
 import org.orbeon.saxon.regex.UnicodeString
-
+import org.orbeon.saxon.value.StringValue
 
 object CodepointCollator {
 
@@ -42,7 +42,6 @@ object CodepointCollator {
         }
         0
     }
-
 }
 
 class CodepointCollator extends StringCollator with SubstringMatcher {
@@ -54,7 +53,7 @@ class CodepointCollator extends StringCollator with SubstringMatcher {
   def comparesEqual(s1: CharSequence, s2: CharSequence): Boolean =
     s1 match {
       case str: String =>
-        str.contentEquals(s2)
+        StringValue.contentEquals(str, s2)
       case _: UnicodeString =>
         s1 == UnicodeString.makeUnicodeString(s2)
       case _ =>

@@ -1,38 +1,35 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.pattern
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.TypeHierarchy
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import org.orbeon.saxon.z.IntSet
-
-import java.util.Optional
 
 import java.util.function.IntPredicate
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.tree.tiny.NodeVectorTree
+import org.orbeon.saxon.z.IntSet
+
+import scala.beans.BeanProperty
 
 
-
-
+/**
+  * NodeTest is an interface that enables a test of whether a node has a particular
+  * name and type. A NamespaceTest matches the node type and the namespace URI.
+  *
+  * @author Michael H. Kay
+  */
 class NamespaceTest(private var namePool: NamePool,
                     @BeanProperty var nodeKind: Int,
                     private var uri: String)
     extends NodeTest
     with QNameTest {
 
-  private var uType: UType = UType.fromTypeCode(nodeKind)
+  private val uType: UType = UType.fromTypeCode(nodeKind)
 
   /**
     * Get the corresponding {@link org.orbeon.saxon.model.UType}. A UType is a union of primitive item
@@ -52,7 +49,7 @@ class NamespaceTest(private var namePool: NamePool,
   override def getRequiredNodeNames: Option[IntSet] = // See bug 3713
     None
 
-  override def getFullAlphaCode(): String =
+  override def getFullAlphaCode: String =
     getBasicAlphaCode + " nQ{" + uri + "}*"
 
   /**
@@ -78,7 +75,7 @@ class NamespaceTest(private var namePool: NamePool,
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
     val nodeKindArray: Array[Byte] = tree.getNodeKindArray
     val nameCodeArray: Array[Int] = tree.getNameCodeArray
-    (nodeNr) =>
+    nodeNr =>
       {
         val fp: Int = nameCodeArray(nodeNr) & 0xfffff
         fp != -1 && (nodeKindArray(nodeNr) & 0x0f) == nodeKind &&
@@ -137,25 +134,10 @@ class NamespaceTest(private var namePool: NamePool,
     * @param th   the type hierarchy cache
     * @return optionally, a message explaining why the item does not match the type
     */
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
       return explanation
-    }
-    Optional.of("The node is in the wrong namespace")
+    Some("The node is in the wrong namespace")
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * NodeTest is an interface that enables a test of whether a node has a particular
-  * name and type. A NamespaceTest matches the node type and the namespace URI.
-  *
-  * @author Michael H. Kay
-  */

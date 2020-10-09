@@ -315,9 +315,9 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     if (which == 0) nodetest1 else nodetest2
 
   override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+                               th: TypeHierarchy): Option[String] = {
+    val explanation: Option[String] = super.explainMismatch(item, th)
+    if (explanation.isDefined) {
       return explanation
     }
     if (operator == Token.INTERSECT) {
@@ -327,7 +327,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
         nodetest2.explainMismatch(item, th)
       }
     }
-    Optional.empty()
+    None
   }
 
 }

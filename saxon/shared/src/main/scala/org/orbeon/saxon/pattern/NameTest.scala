@@ -1,6 +1,5 @@
 package org.orbeon.saxon.pattern
 
-import java.util.Optional
 import java.util.function.IntPredicate
 
 import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
@@ -60,7 +59,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
     val nodeKindArray: Array[Byte] = tree.getNodeKindArray
     val nameCodeArray: Array[Int] = tree.getNameCodeArray
-    (nodeNr) =>
+    nodeNr =>
       (nameCodeArray(nodeNr) & 0xfffff) == fingerPrintInt && (nodeKindArray(
         nodeNr) & 0x0f) == nodeKind
   }
@@ -92,14 +91,14 @@ class NameTest(@BeanProperty var nodeKind: Int,
 
   def getDefaultPriority: Double = 0.0
 
-  override def getMatchingNodeName(): StructuredQName = {
+  override def getMatchingNodeName: StructuredQName = {
     computeUriAndLocal()
     new StructuredQName("", uri, localName)
   }
 
   override def getPrimitiveType: Int = nodeKind
 
-  override def getRequiredNodeNames(): Option[IntSet] =
+  override def getRequiredNodeNames: Option[IntSet] =
     Some(new IntSingletonSet(fingerPrintInt))
 
   def getNamespaceURI: String = {
@@ -137,7 +136,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
       other.asInstanceOf[NameTest].nodeKind == nodeKind &&
       other.asInstanceOf[NameTest].fingerPrintInt == fingerPrintInt
 
-  override def getFullAlphaCode(): String =
+  override def getFullAlphaCode: String =
     getBasicAlphaCode + " n" + getMatchingNodeName.getEQName
 
   override def exportQNameTest: String = getMatchingNodeName.getEQName
@@ -149,13 +148,11 @@ class NameTest(@BeanProperty var nodeKind: Int,
       "'"
   }
 
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
       return explanation
-    }
-    Optional.of("The node has the wrong name")
+    Some("The node has the wrong name")
   }
 
   override def toShortString: String = nodeKind match {
@@ -169,5 +166,4 @@ class NameTest(@BeanProperty var nodeKind: Int,
     case _ => toString
 
   }
-
 }

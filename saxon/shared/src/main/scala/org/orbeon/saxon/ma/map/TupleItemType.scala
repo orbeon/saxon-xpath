@@ -241,8 +241,7 @@ class TupleItemType(names: List[String],
     }
   }
 
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
     if (item.isInstanceOf[MapItem]) {
       for ((mapKey, value) <- fields.asScala) {
         val key: String = mapKey
@@ -251,21 +250,21 @@ class TupleItemType(names: List[String],
           item.asInstanceOf[MapItem].get(new StringValue(key))
         if (value == null) {
           if (!Cardinality.allowsZero(required.getCardinality)) {
-            Optional.of("Field " + key + " is absent; it must have a value")
+            Some("Field " + key + " is absent; it must have a value")
           }
         } else {
           try if (!required.matches(groundValue, th)) {
-            var s: String = "Field " + key + " has value " + Err
+            var s = "Field " + key + " has value " + Err
               .depictSequence(groundValue) +
               " which does not match the required type " +
               required.toString
-            val more: Optional[String] = required.explainMismatch(groundValue, th)
-            if (more.isPresent) {
+            val more = required.explainMismatch(groundValue, th)
+            if (more.isDefined) {
               s += ". " + more.get
             }
-            Optional.of(s)
+            Some(s)
           } catch {
-            case err: XPathException => Optional.empty()
+            case err: XPathException => None
 
           }
         }
@@ -279,17 +278,17 @@ class TupleItemType(names: List[String],
           key
         }) != null) if (!(key.isInstanceOf[
           StringValue])) {
-          Optional.of(
+          Some(
             "Undeclared field " + key +
               " is present, but it is not a string, and the tuple type is not extensible")
         } else if (!fields.containsKey(key.getStringValue)) {
-          Optional.of(
+          Some(
             "Undeclared field " + key +
               " is present, but the tuple type is not extensible")
         }
       }
     }
-    Optional.empty()
+    None
   }
 
   override def makeFunctionSequenceCoercer(exp: Expression,

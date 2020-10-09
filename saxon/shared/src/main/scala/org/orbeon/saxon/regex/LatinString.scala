@@ -33,7 +33,7 @@ class LatinString(src: CharSequence)
   }
 
   def uSubstring(beginIndex: Int, endIndex: Int): LatinString = {
-    val s: Array[Byte] = Array.ofDim[Byte](endIndex - beginIndex)
+    val s = Array.ofDim[Byte](endIndex - beginIndex)
     System.arraycopy(chars, beginIndex, s, 0, endIndex - beginIndex)
     new LatinString(s)
   }

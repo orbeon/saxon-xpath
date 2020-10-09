@@ -1,18 +1,10 @@
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.NodeName
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import java.util.Optional
-
 import java.util.function.IntPredicate
+
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{Item, NodeInfo, NodeName}
+import org.orbeon.saxon.tree.tiny.NodeVectorTree
 
 
 object NodeKindTest {
@@ -141,23 +133,23 @@ class NodeKindTest(var kind: Int) extends NodeTest {
 
   }
 
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
       return explanation
-    }
+
     if (item.isInstanceOf[NodeInfo]) {
       val actualKind: UType = UType.getUType(item)
       if (!getUType.overlaps(actualKind)) {
-        Optional.of(
+        Some(
           "The supplied value is " + actualKind
             .toStringWithIndefiniteArticle)
       } else {
-        Optional.empty()
+        None
       }
     } else {
-      Optional.of("The supplied value is " + item.getGenre.getDescription)
+      Some("The supplied value is " + item.getGenre.getDescription)
     }
   }
 
@@ -166,7 +158,5 @@ class NodeKindTest(var kind: Int) extends NodeTest {
     case Type.ATTRIBUTE => "@*"
     case Type.DOCUMENT => "/"
     case _ => toString
-
   }
-
 }

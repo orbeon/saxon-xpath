@@ -7,8 +7,6 @@
 
 package org.orbeon.saxon.model
 
-import java.util.Optional
-
 import org.orbeon.saxon.lib.ConversionRules
 import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item, StructuredQName}
@@ -52,13 +50,12 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     * @param th   the type hierarchy cache
     * @return optionally, a message explaining why the item does not match the type
     */
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] =
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] =
     item match {
       case value: AtomicValue =>
-        Optional.of("The supplied value is of type " + value.getItemType)
+        Some("The supplied value is of type " + value.getItemType)
       case _ =>
-        Optional.of("The supplied value is " + item.getGenre.getDescription)
+        Some("The supplied value is " + item.getGenre.getDescription)
     }
 
   /**

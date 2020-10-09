@@ -1,15 +1,11 @@
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.functions.Nilled_1
-import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.NodeName
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-import org.orbeon.saxon.tree.tiny.TinyTree
-import java.util.Optional
 import java.util.function.IntPredicate
 
+import org.orbeon.saxon.functions.Nilled_1
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{Item, NodeInfo, NodeName}
+import org.orbeon.saxon.tree.tiny.{NodeVectorTree, TinyTree}
 import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
@@ -20,7 +16,7 @@ class ContentTypeTest(nodeKind: Int,
                       @BooleanBeanProperty  var nillableBool: Boolean)
   extends NodeTest {
 
-  private var kind: Int = nodeKind
+  private val kind: Int = nodeKind
 
   def getUType: UType =
     if (kind == Type.ELEMENT) UType.ELEMENT else UType.ATTRIBUTE
@@ -34,7 +30,7 @@ class ContentTypeTest(nodeKind: Int,
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
     val nodeKindArray: Array[Byte] = tree.getNodeKindArray
-    (nodeNr) =>
+    nodeNr =>
       (nodeKindArray(nodeNr) & 0x0f) == kind &&
         matchesAnnotation(tree.asInstanceOf[TinyTree].getSchemaType(nodeNr)) &&
         (nillableBool || !tree.asInstanceOf[TinyTree].isNilled(nodeNr))
@@ -63,34 +59,36 @@ class ContentTypeTest(nodeKind: Int,
 
   override def getPrimitiveType: Int = kind
 
-  override def getContentType(): SchemaType = schemaType
+  override def getContentType: SchemaType = schemaType
 
   override def getAtomizedItemType: AtomicType = {
     val `type`: SchemaType = schemaType
-    try if (`type`.isAtomicType) {
-      `type`.asInstanceOf[AtomicType]
-    } else if (`type`.isInstanceOf[ListType]) {
-      val mem: SimpleType = `type`.asInstanceOf[ListType].getItemType
-      if (mem.isAtomicType) {
-        mem.asInstanceOf[AtomicType]
+    try
+      if (`type`.isAtomicType) {
+        return `type`.asInstanceOf[AtomicType]
+      } else `type` match {
+        case listType: ListType =>
+          val mem = listType.getItemType
+          if (mem.isAtomicType)
+            return mem.asInstanceOf[AtomicType]
+        case complexType: ComplexType if complexType
+          .isSimpleContent =>
+          val ctype = complexType.getSimpleContentType
+          assert(ctype != null)
+          if (ctype.isAtomicType) {
+            return ctype.asInstanceOf[AtomicType]
+          } else ctype match {
+            case listType: ListType =>
+              val mem = listType.getItemType
+              if (mem.isAtomicType)
+                return mem.asInstanceOf[AtomicType]
+            case _ =>
+          }
+        case _ =>
       }
-    } else if (`type`.isInstanceOf[ComplexType] && `type`
-      .asInstanceOf[ComplexType]
-      .isSimpleContent) {
-      val ctype: SimpleType =
-        `type`.asInstanceOf[ComplexType].getSimpleContentType
-      assert(ctype != null)
-      if (ctype.isAtomicType) {
-        ctype.asInstanceOf[AtomicType]
-      } else if (ctype.isInstanceOf[ListType]) {
-        val mem: SimpleType = ctype.asInstanceOf[ListType].getItemType
-        if (mem.isAtomicType) {
-          mem.asInstanceOf[AtomicType]
-        }
-      }
-    } catch {
-      case e: MissingComponentException => BuiltInAtomicType.ANY_ATOMIC
-
+    catch {
+      case _: MissingComponentException =>
+        return BuiltInAtomicType.ANY_ATOMIC
     }
     BuiltInAtomicType.ANY_ATOMIC
   }
@@ -121,29 +119,26 @@ class ContentTypeTest(nodeKind: Int,
       other.asInstanceOf[ContentTypeTest].nillableBool == nillableBool
 
   override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+                               th: TypeHierarchy): Option[String] = {
+
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
       return explanation
-    }
-    val node: NodeInfo = item.asInstanceOf[NodeInfo]
+
+    val node = item.asInstanceOf[NodeInfo]
     if (!matchesAnnotation(item.asInstanceOf[NodeInfo].getSchemaType)) {
-      if (node.getSchemaType == Untyped.getInstance) {
-        Optional.of("The supplied node has not been schema-validated")
-      }
-      if (node.getSchemaType == BuiltInAtomicType.UNTYPED_ATOMIC) {
-        Optional.of("The supplied node has not been schema-validated")
-      }
-      Optional.of(
+      if (node.getSchemaType == Untyped.getInstance)
+        return Some("The supplied node has not been schema-validated")
+      if (node.getSchemaType == BuiltInAtomicType.UNTYPED_ATOMIC)
+        return Some("The supplied node has not been schema-validated")
+      return Some(
         "The supplied node has the wrong type annotation (" +
           node.getSchemaType.getDescription +
           ")")
     }
-    if (Nilled_1.isNilled(node) && !nillableBool) {
-      Optional.of(
-        "The supplied node has xsi:nil='true', which the required type does not allow")
-    }
-    Optional.empty()
+    if (Nilled_1.isNilled(node) && !nillableBool)
+      return Some("The supplied node has xsi:nil='true', which the required type does not allow")
+    None
   }
 
 }

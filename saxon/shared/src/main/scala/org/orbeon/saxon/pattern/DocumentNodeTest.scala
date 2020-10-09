@@ -1,31 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.TypeHierarchy
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om.AxisInfo
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.NodeName
-
+import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
+import org.orbeon.saxon.om.{AxisInfo, Item, NodeInfo, NodeName}
 import org.orbeon.saxon.trans.Err
-
 import org.orbeon.saxon.tree.iter.AxisIterator
 
-import java.util.Optional
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
+/**
+ * A DocumentNodeTest implements the test document-node(element(~,~))
+ */
 class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
   extends NodeTest {
 
@@ -70,10 +61,10 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
     // children, and the element node matches the element test.
     var found: Boolean = false
     var n: NodeInfo = null
-    while (({
+    while ({
       n = iter.next()
       n
-    }) != null) {
+    } != null) {
       val kind: Int = n.getNodeKind
       if (kind == Type.TEXT) {
         false
@@ -95,11 +86,8 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
   // The match is true if there is exactly one element node child, no text node
 
   def getDefaultPriority: Double = elementTest.getDefaultPriority
-
   override def getPrimitiveType: Int = Type.DOCUMENT
-
   override def toString: String = "document-node(" + elementTest + ')'
-
   override def hashCode: Int = elementTest.hashCode ^ 12345
 
   override def equals(other: Any): Boolean = other match {
@@ -108,7 +96,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
 
   }
 
-  override def getFullAlphaCode(): String =
+  override def getFullAlphaCode: String =
     getBasicAlphaCode + " e[" + elementTest.getFullAlphaCode +
       "]"
 
@@ -121,59 +109,42 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
    * @param th   the type hierarchy cache
    * @return optionally, a message explaining why the item does not match the type
    */
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
       return explanation
-    }
-    val node: NodeInfo = item.asInstanceOf[NodeInfo]
-    val iter: AxisIterator = node.iterateAxis(AxisInfo.CHILD)
+
+    val node = item.asInstanceOf[NodeInfo]
+    val iter = node.iterateAxis(AxisInfo.CHILD)
+
     // children, and the element node matches the element test.
-    var found: Boolean = false
+    var found = false
     var n: NodeInfo = null
-    while (({
+    while ({
       n = iter.next()
       n
-    }) != null) {
-      val kind: Int = n.getNodeKind
+    } != null) {
+      val kind = n.getNodeKind
       if (kind == Type.TEXT) {
-        Optional.of("The supplied document node has text node children")
+        return Some("The supplied document node has text node children")
       } else if (kind == Type.ELEMENT) {
-        if (found) {
-          Optional.of(
-            "The supplied document node has more than one element child")
-        }
+        if (found)
+          return Some("The supplied document node has more than one element child")
         if (elementTest.test(n)) {
           found = true
         } else {
-          var s: String = "The supplied document node has an element child (" +
+          var s = "The supplied document node has an element child (" +
             Err.depict(n) +
             ") that does not satisfy the element test"
-          val more: Optional[String] = elementTest.explainMismatch(n, th)
-          if (more.isPresent) {
+          val more = elementTest.explainMismatch(n, th)
+          if (more.isDefined)
             s += ". " + more.get
-          }
-          Optional.of(s)
+          return Some(s)
         }
       }
     }
-    Optional.empty()
+    None
   }
-
-  // The match is true if there is exactly one element node child, no text node
-  // The match is true if there is exactly one element node child, no text node
-
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * A DocumentNodeTest implements the test document-node(element(~,~))
- */
-// This is messy because the standard interface for a NodeTest does not allow
-// any navigation from the node in question - it only tests for the node kind,
-// node name, and type annotation of the node.

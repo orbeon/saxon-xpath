@@ -1,33 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.TypeHierarchy
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import org.orbeon.saxon.tree.tiny.TinyTree
-
-import org.orbeon.saxon.z.IntSet
-
 import java.util.Map
-
-import java.util.Optional
-
 import java.util.function.IntPredicate
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.tree.tiny.{NodeVectorTree, TinyTree}
+import org.orbeon.saxon.z.IntSet
+
+import scala.beans.BeanProperty
 
 
-
-
+/**
+  * NodeTest is an interface that enables a test of whether a node has a particular
+  * name and type. A LocalNameTest matches the node type and the local name,
+  * it represents an XPath 2.0 test of the form *:name.
+  */
 class LocalNameTest(pool: NamePool,
                     @BeanProperty var nodeKind: Int,
                     @BeanProperty var localName: String)
@@ -37,7 +31,7 @@ class LocalNameTest(pool: NamePool,
   @BeanProperty
   var namePool: NamePool = pool
 
-  private var uType: UType = UType.fromTypeCode(nodeKind)
+  private val uType: UType = UType.fromTypeCode(nodeKind)
 
   /**
     * Get the corresponding {@link org.orbeon.saxon.model.UType}. A UType is a union of primitive item
@@ -57,7 +51,7 @@ class LocalNameTest(pool: NamePool,
   override def getRequiredNodeNames: Option[IntSet] = // See bug 3713
     None
 
-  override def getFullAlphaCode(): String =
+  override def getFullAlphaCode: String =
     getBasicAlphaCode + " n*:" + localName
 
   /**
@@ -87,13 +81,13 @@ class LocalNameTest(pool: NamePool,
       val localNameIndex: Map[String, IntSet] =
         tree.asInstanceOf[TinyTree].getLocalNameIndex
       val intSet: IntSet = localNameIndex.get(localName)
-      if (intSet == null) { (i) =>
+      if (intSet == null) { i =>
         false
-      } else { (nodeNr) =>
+      } else { nodeNr =>
         intSet.contains(nameCodeArray(nodeNr) & NamePool.FP_MASK) &&
         (nodeKindArray(nodeNr) & 0x0f) == Type.ELEMENT
       }
-    } else { (nodeNr) =>
+    } else { nodeNr =>
       (nodeKindArray(nodeNr) & 0x0f) == nodeKind &&
       localName == namePool.getLocalName(
         nameCodeArray(nodeNr) & NamePool.FP_MASK)
@@ -158,24 +152,13 @@ class LocalNameTest(pool: NamePool,
     * @param th   the type hierarchy cache
     * @return optionally, a message explaining why the item does not match the type
     */
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    val explanation: Optional[String] = super.explainMismatch(item, th)
-    if (explanation.isPresent) {
-      return explanation
-    }
-    Optional.of("The node has the wrong local name")
-  }
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
 
+    val explanation = super.explainMismatch(item, th)
+    if (explanation.isDefined)
+      return explanation
+
+    Some("The node has the wrong local name")
+  }
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * NodeTest is an interface that enables a test of whether a node has a particular
-  * name and type. A LocalNameTest matches the node type and the local name,
-  * it represents an XPath 2.0 test of the form *:name.
-  */

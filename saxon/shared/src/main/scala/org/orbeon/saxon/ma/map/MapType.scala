@@ -8,10 +8,8 @@
 
 package org.orbeon.saxon.ma.map
 
-import java.util.Optional
-
-import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
+import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.ma.map.MapType._
 import org.orbeon.saxon.model.Affinity.Affinity
 import org.orbeon.saxon.model._
@@ -255,34 +253,35 @@ class MapType(@BeanProperty var keyType: AtomicType,
     * @param th   the type hierarchy cache
     * @return optionally, a message explaining why the item does not match the type
     */
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] = {
-    if (item.isInstanceOf[MapItem]) {
-      for (kvp <- item.asInstanceOf[MapItem].keyValuePairs().asScala) {
-        if (!keyType.matches(kvp.key, th)) {
-          val s: String = "The map contains a key (" + kvp.key + ") of type " +
-            kvp.key.getItemType +
-            " that is not an instance of the required type " +
-            keyType
-          Optional.of(s)
-        }
-        try if (!valueType.matches(kvp.value, th)) {
-          var s: String = "The map contains an entry with key (" + kvp.key + ") whose corresponding value (" +
-            Err.depictSequence(kvp.value) +
-            ") is not an instance of the required type " +
-            valueType
-          val more: Optional[String] = valueType.explainMismatch(kvp.value, th)
-          if (more.isPresent) {
-            s = s + ". " + more.get
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
+    item match {
+      case mapItem: MapItem =>
+        for (kvp <- mapItem.keyValuePairs().asScala) {
+          if (!keyType.matches(kvp.key, th)) {
+            val s = "The map contains a key (" + kvp.key + ") of type " +
+              kvp.key.getItemType +
+              " that is not an instance of the required type " +
+              keyType
+            Some(s)
           }
-          Optional.of(s)
-        } catch {
-          case e: XPathException => {}
-
+          try
+            if (!valueType.matches(kvp.value, th)) {
+              var s = "The map contains an entry with key (" + kvp.key + ") whose corresponding value (" +
+                Err.depictSequence(kvp.value) +
+                ") is not an instance of the required type " +
+                valueType
+              val more = valueType.explainMismatch(kvp.value, th)
+              if (more.isDefined)
+                s = s + ". " + more.get
+              Some(s)
+            }
+          catch {
+            case _: XPathException =>
+          }
         }
-      }
+      case _ =>
     }
-    Optional.empty()
+    None
   }
 
   override def makeFunctionSequenceCoercer(exp: Expression,

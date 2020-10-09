@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
 
+import java.{lang => jl}
+
 import org.orbeon.saxon.expr.sort.AtomicMatchKey
 import org.orbeon.saxon.lib.StringCollator
 import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType}
@@ -13,7 +15,6 @@ import org.orbeon.saxon.regex.{BMPString, EmptyString, LatinString, UnicodeStrin
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
 import org.orbeon.saxon.value.StringValue._
-
 
 /**
   * An atomic value of type xs:string. This class is also used for types derived from xs:string.
@@ -175,6 +176,35 @@ object StringValue {
 
     def getStringValue: StringValue = new StringValue(buffer.condense())
   }
+
+  // ORBEON
+  def contentEquals(s: String, cs: CharSequence): Boolean = {
+
+    def compareChars(s1: String, cs2: CharSequence): Boolean = {
+
+      val l1 = s1.length
+
+      if (l1 != cs2.length)
+        return false
+
+      for (i <- 0 until l1)
+        if (s1.charAt(i) != cs2.charAt(i))
+          return false
+
+      true
+    }
+
+    cs match {
+      case s2: String =>
+        s == s2
+      case b: jl.StringBuffer =>
+        cs synchronized {
+          compareChars(s, b)
+        }
+      case b =>
+        compareChars(s, b)
+    }
+  }
 }
 
 class StringValue extends AtomicValue {
@@ -275,10 +305,10 @@ class StringValue extends AtomicValue {
   def codepointEquals(other: StringValue): Boolean =
     value match {
       case str: String =>
-        str.contentEquals(other.value)
+        StringValue.contentEquals(str, other.value)
       case _ => other.value match {
         case str: String =>
-          str.contentEquals(value)
+          StringValue.contentEquals(str, value)
         case _ => if (value.isInstanceOf[UnicodeString]) {
           if (! other.value.isInstanceOf[UnicodeString])
             other.makeUnicodeString()

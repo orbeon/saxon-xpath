@@ -1,30 +1,14 @@
 package org.orbeon.saxon.pattern
 
+import java.util.function.{IntPredicate, Predicate}
+
 import org.orbeon.saxon.expr.StaticProperty
-
+import org.orbeon.saxon.model.PrimitiveUType._
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
 import org.orbeon.saxon.value.SequenceType
-
-import org.orbeon.saxon.z.IntSet
-
-import org.orbeon.saxon.z.IntUniversalSet
-
-import java.util.Iterator
-
-import java.util.Optional
-
-import java.util.Set
-
-import java.util.function.IntPredicate
-
-import java.util.function.Predicate
-
-import PrimitiveUType._
+import org.orbeon.saxon.z.{IntSet, IntUniversalSet}
 
 abstract class NodeTest
   extends Predicate[NodeInfo]
@@ -82,10 +66,10 @@ abstract class NodeTest
     matches(node.getNodeKind, NameOfNode.makeName(node), node.getSchemaType)
 
   def getContentType: SchemaType = {
-    val m: Set[PrimitiveUType.PrimitiveUType] = getUType.decompose()
-    val it: Iterator[PrimitiveUType.PrimitiveUType] = m.iterator
+    val m = getUType.decompose()
+    val it = m.iterator
     if (m.size == 1 && it.hasNext) {
-      val p: PrimitiveUType.PrimitiveUType = it.next()
+      val p = it.next()
       p match {
         case DOCUMENT => AnyType.getInstance
         case ELEMENT => AnyType.getInstance
@@ -135,20 +119,18 @@ abstract class NodeTest
     _zeroOrMore
   }
 
-  override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] =
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] =
     if (item.isInstanceOf[NodeInfo]) {
       val actualKind: UType = UType.getUType(item)
       if (!getUType.overlaps(actualKind)) {
-        Optional.of(
+        Some(
           "The supplied value is " + actualKind
             .toStringWithIndefiniteArticle)
       }
-      Optional.empty()
+      None
     } else {
-      Optional.of("The supplied value is " + item.getGenre.getDescription)
+      Some("The supplied value is " + item.getGenre.getDescription)
     }
-
   def toShortString: String = toString
 
 }

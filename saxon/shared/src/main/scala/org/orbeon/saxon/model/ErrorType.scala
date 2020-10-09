@@ -167,7 +167,7 @@ object ErrorType
     null
 
   override def explainMismatch(item: Item,
-                               th: TypeHierarchy): Optional[String] =
-    Optional.of("Evaluation of the supplied expression will always fail")
+                               th: TypeHierarchy): Option[String] =
+    Some("Evaluation of the supplied expression will always fail")
 
 }
