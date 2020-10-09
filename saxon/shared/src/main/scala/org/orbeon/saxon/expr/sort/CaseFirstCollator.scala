@@ -1,7 +1,6 @@
 package org.orbeon.saxon.expr.sort
 
 import org.orbeon.saxon.lib.StringCollator
-
 import org.orbeon.saxon.trans.XPathException
 
 object CaseFirstCollator {
@@ -22,7 +21,6 @@ object CaseFirstCollator {
     }
     strCollator
   }
-
 }
 
 class CaseFirstCollator(base: StringCollator,

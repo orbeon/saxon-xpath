@@ -1,31 +1,34 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
+
+import java.{util => ju}
 
 import org.orbeon.saxon.model.SimpleType
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.jiter.MonoIterator
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-
-import SingletonAttributeMap._
-
-import scala.collection
 
 
+/**
+ * An implementation of AttributeMap for use when there is exactly one attribute
+ */
 object SingletonAttributeMap {
 
   def of(att: AttributeInfo): SingletonAttributeMap =
-    if (att.isInstanceOf[SingletonAttributeMap]) {
-      att.asInstanceOf[SingletonAttributeMap]
-    } else {
-      new SingletonAttributeMap(att.getNodeName,
-        att.getType,
-        att.getValue,
-        att.getLocation,
-        att.getProperties)
+    att match {
+      case map: SingletonAttributeMap =>
+        map
+      case _ =>
+        new SingletonAttributeMap(att.getNodeName,
+          att.getType,
+          att.getValue,
+          att.getLocation,
+          att.getProperties)
     }
-
 }
 
 class SingletonAttributeMap private(nodeName: NodeName,
@@ -36,7 +39,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
   extends AttributeInfo(nodeName, `type`, value, location, properties)
     with AttributeMap {
 
-  override def size(): Int = 1
+  override def size: Int = 1
 
   override def get(name: NodeName): AttributeInfo =
     if (name == getNodeName) this else null
@@ -52,7 +55,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
     if (getNodeName == att.getNodeName) {
       SingletonAttributeMap.of(att)
     } else {
-      val list: List[AttributeInfo] = new ArrayList[AttributeInfo](2)
+      val list: ju.List[AttributeInfo] = new ju.ArrayList[AttributeInfo](2)
       list.add(this)
       list.add(att)
       new SmallAttributeMap(list)
@@ -61,16 +64,13 @@ class SingletonAttributeMap private(nodeName: NodeName,
   override def remove(name: NodeName): AttributeMap =
     if (name == getNodeName) EmptyAttributeMap.getInstance else this
 
-  //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+  def iterator: ju.Iterator[AttributeInfo] = new MonoIterator(this)
 
-  override def iterator: collection.Iterator[AttributeInfo] = new MonoIterator(this).asScala
+  override def apply(mapper: AttributeInfo => AttributeInfo): AttributeMap =
+    SingletonAttributeMap.of(mapper.apply(this))
 
-  override def apply(mapper: java.util.function.Function[AttributeInfo, AttributeInfo])
-  : AttributeMap = SingletonAttributeMap.of(mapper.apply(this))
-
-  override def asList(): List[AttributeInfo] = {
-    val list: List[AttributeInfo] = new ArrayList[AttributeInfo](1)
+  override def asList: ju.List[AttributeInfo] = {
+    val list: ju.List[AttributeInfo] = new ju.ArrayList[AttributeInfo](1)
     list.add(this)
     list
   }
@@ -84,11 +84,3 @@ import scala.jdk.CollectionConverters._
 
 }
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * An implementation of AttributeMap for use when there is exactly one attribute
- */

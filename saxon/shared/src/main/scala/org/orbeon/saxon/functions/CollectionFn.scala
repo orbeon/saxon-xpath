@@ -40,7 +40,7 @@ object CollectionFn {
   private class EmptyCollection(private var collectionUri: String)
       extends ResourceCollection {
 
-    def getCollectionURI(): String = collectionUri
+    def getCollectionURI: String = collectionUri
 
     def getResourceURIs(context: XPathContext): Iterator[String] =
       new ArrayList[String]().iterator
@@ -49,9 +49,7 @@ object CollectionFn {
       new ArrayList[Resource]().iterator
 
     def isStable(context: XPathContext): Boolean = true
-
     def stripWhitespace(rules: SpaceStrippingRule): Boolean = false
-
   }
 
 }
@@ -72,11 +70,9 @@ class CollectionFn extends SystemFunction with Callable {
       var uri: URI = null
       try uri = new URI(hrefStr)
       catch {
-        case e: URISyntaxException => {
+        case _: URISyntaxException =>
           hrefStr = IriToUri.iriToUri(hrefStr).toString
           uri = new URI(hrefStr)
-        }
-
       }
       if (uri.isAbsolute) {
         absoluteURI = uri.toString
@@ -106,8 +102,10 @@ class CollectionFn extends SystemFunction with Callable {
         }
 
      override def close(): Unit = {
-        if (sources.isInstanceOf[Closeable]) {
-          sources.asInstanceOf[Closeable].close()
+        sources match {
+          case closeable: Closeable =>
+            closeable.close()
+          case _ =>
         }
       }
     }
@@ -172,7 +170,7 @@ class CollectionFn extends SystemFunction with Callable {
     var result: SequenceIterator =
       context.getConfiguration.getMultithreadedItemMappingIterator(
         sourceSeq,
-        (item1) =>
+        item1 =>
           item1
             .asInstanceOf[ExternalObject[Resource]]
             .getObject
@@ -180,7 +178,7 @@ class CollectionFn extends SystemFunction with Callable {
 // In XSLT, apply space-stripping to document nodes in the collection
     if (whitespaceRule != null) {
       val rule: SpaceStrippingRule = whitespaceRule
-      val stripper: ItemMappingFunction = (item) => {
+      val stripper: ItemMappingFunction = item => {
         item match {
           case info: NodeInfo if info.getNodeKind == Type.DOCUMENT =>
             val treeInfo = info.getTreeInfo

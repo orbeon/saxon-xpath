@@ -21,8 +21,6 @@ import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
 import org.orbeon.saxon.tree.tiny.{AppendableCharSequence, CharSlice, CompressedWhitespace}
 
 
-
-
 object FastStringBuffer {
 
   val C16: Int = 16
@@ -162,7 +160,7 @@ class FastStringBuffer(initialSize: Int)
       case bmpString: BMPString =>
         this.cat(bmpString.getCharSequence)
       case _ =>
-        for (i <- 0 until str.uLength()) {
+        for (i <- 0 until str.uLength) {
           appendWideChar(str.uCharAt(i))
         }
     }
@@ -306,7 +304,7 @@ class FastStringBuffer(initialSize: Int)
       throw new IndexOutOfBoundsException("" + index)
     ensureCapacity(1)
     System.arraycopy(array, index, array, index + 1, used - index)
-      used += 1;
+      used += 1
     array(index) = ch
   }
 

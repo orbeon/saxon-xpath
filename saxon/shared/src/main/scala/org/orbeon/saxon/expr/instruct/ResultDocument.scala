@@ -262,7 +262,7 @@ object ResultDocument {
                               props: Properties,
                               c: XPathContext): Unit = {
     val resolver: NamespaceResolver = element.getAllNamespaces
-    for (att <- element.attributes) {
+    for (att <- element.attributes.iterator.asScala) {
       val uri: String = att.getNodeName.getURI
       val local: String = att.getNodeName.getLocalPart
       val `val`: String = Whitespace.trim(att.getValue)

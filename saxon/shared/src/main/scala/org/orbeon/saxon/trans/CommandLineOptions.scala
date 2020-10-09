@@ -50,73 +50,73 @@ object CommandLineOptions {
     sb.toString
   }
 
-  trait ParamSetter {
-    def setParam(qName: QName, value: XdmValue): Unit
-  }
+//  trait ParamSetter {
+//    def setParam(qName: QName, value: XdmValue): Unit
+//  }
 
-  def loadDocuments(sourceFileName: String,
-                    useURLs: Boolean,
-                    processor: Processor,
-                    useSAXSource: Boolean,
-                    sources: List[Source]): Boolean = {
-    var sourceInput: Source = null
-    var parser: XMLReader = null
-    val config: Configuration = processor.getUnderlyingConfiguration
-    if (useURLs || isImplicitURI(sourceFileName)) {
-      sourceInput = config.getURIResolver.resolve(sourceFileName, null)
-      if (sourceInput == null) {
-        sourceInput = config.getSystemURIResolver.resolve(sourceFileName, null)
-      }
-      sources.add(sourceInput)
-      false
-    } else if (sourceFileName.==("-")) {
-      if (useSAXSource) {
-        parser = config.getSourceParser
-        sourceInput = new SAXSource(parser, new InputSource(System.in))
-      } else {
-        sourceInput = new StreamSource(System.in)
-      }
-      sources.add(sourceInput)
-      false
-    } else {
-      // ORBEON: No `File` support.
-      false
-    }
-//      val sourceFile = new File(sourceFileName)
-//      if (! sourceFile.exists()) {
-//        throw new SaxonApiException(
-//          "Source file " + sourceFile + " does not exist")
+//  def loadDocuments(sourceFileName: String,
+//                    useURLs: Boolean,
+//                    processor: Processor,
+//                    useSAXSource: Boolean,
+//                    sources: List[Source]): Boolean = {
+//    var sourceInput: Source = null
+//    var parser: XMLReader = null
+//    val config: Configuration = processor.getUnderlyingConfiguration
+//    if (useURLs || isImplicitURI(sourceFileName)) {
+//      sourceInput = config.getURIResolver.resolve(sourceFileName, null)
+//      if (sourceInput == null) {
+//        sourceInput = config.getSystemURIResolver.resolve(sourceFileName, null)
 //      }
-//      if (sourceFile.isDirectory) {
+//      sources.add(sourceInput)
+//      false
+//    } else if (sourceFileName.==("-")) {
+//      if (useSAXSource) {
 //        parser = config.getSourceParser
-//        val files: Array[String] = sourceFile.list()
-//        if (files != null) {
-//          for (file1 <- files) {
-//            val file: File = new File(sourceFile, file1)
-//            if (!file.isDirectory) {
-//              if (useSAXSource) {
-//                val eis: InputSource = new InputSource(file.toURI().toString)
-//                sourceInput = new SAXSource(parser, eis)
-//              } else {
-//                sourceInput = new StreamSource(file.toURI().toString)
-//              }
-//              sources.add(sourceInput)
-//            }
-//          }
-//        }
-//        true
+//        sourceInput = new SAXSource(parser, new InputSource(System.in))
 //      } else {
-//        if (useSAXSource) {
-//          val eis: InputSource = new InputSource(sourceFile.toURI().toString)
-//          sourceInput = new SAXSource(config.getSourceParser, eis)
-//        } else {
-//          sourceInput = new StreamSource(sourceFile.toURI().toString)
-//        }
-//        sources.add(sourceInput)
-//        false
+//        sourceInput = new StreamSource(System.in)
 //      }
+//      sources.add(sourceInput)
+//      false
+//    } else {
+//      // ORBEON: No `File` support.
+//      false
 //    }
-  }
+////      val sourceFile = new File(sourceFileName)
+////      if (! sourceFile.exists()) {
+////        throw new SaxonApiException(
+////          "Source file " + sourceFile + " does not exist")
+////      }
+////      if (sourceFile.isDirectory) {
+////        parser = config.getSourceParser
+////        val files: Array[String] = sourceFile.list()
+////        if (files != null) {
+////          for (file1 <- files) {
+////            val file: File = new File(sourceFile, file1)
+////            if (!file.isDirectory) {
+////              if (useSAXSource) {
+////                val eis: InputSource = new InputSource(file.toURI().toString)
+////                sourceInput = new SAXSource(parser, eis)
+////              } else {
+////                sourceInput = new StreamSource(file.toURI().toString)
+////              }
+////              sources.add(sourceInput)
+////            }
+////          }
+////        }
+////        true
+////      } else {
+////        if (useSAXSource) {
+////          val eis: InputSource = new InputSource(sourceFile.toURI().toString)
+////          sourceInput = new SAXSource(config.getSourceParser, eis)
+////        } else {
+////          sourceInput = new StreamSource(sourceFile.toURI().toString)
+////        }
+////        sources.add(sourceInput)
+////        false
+////      }
+////    }
+//  }
 
 //  def loadAdditionalSchemas(config: Configuration,
 //                            additionalSchemas: String): Unit = {

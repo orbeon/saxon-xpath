@@ -1,22 +1,13 @@
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.NodeName
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import java.util.LinkedList
-
-import java.util.function.Function
-
 import java.util.function.IntPredicate
 
-import PrimitiveUType._
+import org.orbeon.saxon.model.PrimitiveUType._
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{NodeInfo, NodeName}
+import org.orbeon.saxon.tree.tiny.NodeVectorTree
+import org.orbeon.saxon.tree.util.FastStringBuffer
 
 object MultipleNodeKindTest {
 
@@ -116,7 +107,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
 
   private def format(list: LinkedList[PrimitiveUType],
                      fsb: FastStringBuffer,
-                     show: Function[ItemType, String]): Unit = {
+                     show: ItemType => String): Unit = {
     if (list.size == 1) {
       fsb.append(list.get(0).toItemType.toString)
     } else {

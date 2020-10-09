@@ -1,27 +1,16 @@
 package org.orbeon.saxon.expr.sort
 
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.lib.SubstringMatcher
-
+import org.orbeon.saxon.lib.{NamespaceConstant, StringCollator, SubstringMatcher}
 import org.orbeon.saxon.regex.UnicodeString
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 object HTML5CaseBlindCollator {
-
-  private var theInstance: HTML5CaseBlindCollator =
-    new HTML5CaseBlindCollator()
-
-  def getInstance: HTML5CaseBlindCollator = theInstance
-
+  val getInstance: HTML5CaseBlindCollator = new HTML5CaseBlindCollator
 }
 
 class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
 
-  def getCollationURI(): String =
+  def getCollationURI: String =
     NamespaceConstant.HTML5_CASE_BLIND_COLLATION_URI
 
   def compareStrings(a: CharSequence, b: CharSequence): Int = compareCS(a, b)
@@ -95,5 +84,4 @@ class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
     }
     fsb.toString
   }
-
 }

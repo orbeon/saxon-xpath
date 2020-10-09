@@ -4,24 +4,24 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * AttributeMap represents an immutable collection of attributes available on a particular element
-  * node. An AttributeMap is an ordered collection of AttributeInfo objects. The order of the object
-  * represents document order.
-  */
-
 package org.orbeon.saxon.om
 
-import java.util.{ArrayList, List}
+
+import java.{lang => jl, util => ju}
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 
 
+/**
+  * AttributeMap represents an immutable collection of attributes available on a particular element
+  * node. An AttributeMap is an ordered collection of AttributeInfo objects. The order of the object
+  * represents document order.
+  */
 object AttributeMap {
 
-  def fromList(list: List[AttributeInfo]): AttributeMap = {
+  def fromList(list: ju.List[AttributeInfo]): AttributeMap = {
     val n: Int = list.size
     if (n == 0) {
       EmptyAttributeMap.getInstance
@@ -30,20 +30,20 @@ object AttributeMap {
     } else if (n <= SmallAttributeMap.LIMIT) {
       new SmallAttributeMap(list)
     } else {
-      new LargeAttributeMap(list.asScala.toList)
+      new LargeAttributeMap(list)
     }
   }
 }
 
-trait AttributeMap extends Iterable[AttributeInfo] {
+trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def size: Int
 
   def get(name: NodeName): AttributeInfo =
-    this.find(_.getNodeName == name).orNull
+    this.asScala.find(_.getNodeName == name).orNull
 
   def get(uri: String, local: String): AttributeInfo = {
-    for (att <- this) {
+    for (att <- this.asScala) {
       val attName: NodeName = att.getNodeName
       if (attName.getLocalPart == local && attName.hasURI(uri)) {
         return att
@@ -53,7 +53,7 @@ trait AttributeMap extends Iterable[AttributeInfo] {
   }
 
   def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
-    for (att <- this) {
+    for (att <- this.asScala) {
       val attName: NodeName = att.getNodeName
       if (attName.obtainFingerprint(namePool) == fingerprint) {
         return att
@@ -68,41 +68,36 @@ trait AttributeMap extends Iterable[AttributeInfo] {
   }
 
   def put(att: AttributeInfo): AttributeMap = {
-    val list: List[AttributeInfo] = new ArrayList[AttributeInfo](size + 1)
-    for (a <- this if a.getNodeName != att.getNodeName) {
+    val list = new ju.ArrayList[AttributeInfo](size + 1)
+    for (a <- this.asScala if a.getNodeName != att.getNodeName)
       list.add(a)
-    }
     list.add(att)
     AttributeMap.fromList(list)
   }
 
   def remove(name: NodeName): AttributeMap = {
-    val list: List[AttributeInfo] = new ArrayList[AttributeInfo](size)
-    for (a <- this if a.getNodeName != name) {
+    val list = new ju.ArrayList[AttributeInfo](size)
+    for (a <- this.asScala if a.getNodeName != name)
       list.add(a)
-    }
     AttributeMap.fromList(list)
   }
 
   def verify(): Unit = ()
 
-  def apply(mapper: java.util.function.Function[AttributeInfo, AttributeInfo])
-  : AttributeMap = {
-    val list: List[AttributeInfo] = new ArrayList[AttributeInfo](size)
-    for (a <- this) {
-      list.add(mapper.apply(a))
-    }
+  def apply(mapper: AttributeInfo => AttributeInfo): AttributeMap = {
+    val list = new ju.ArrayList[AttributeInfo](size)
+    for (a <- this.asScala)
+      list.add(mapper(a))
     AttributeMap.fromList(list)
   }
 
-  def asList(): List[AttributeInfo] = {
-    val list: List[AttributeInfo] = new ArrayList[AttributeInfo](size)
-    for (a <- this) {
+  def asList: ju.List[AttributeInfo] = {
+    val list = new ju.ArrayList[AttributeInfo](size)
+    for (a <- this.asScala) {
       list.add(a)
     }
     list
   }
 
-  def itemAt(index: Int): AttributeInfo = asList().get(index)
-
+  def itemAt(index: Int): AttributeInfo = asList.get(index)
 }

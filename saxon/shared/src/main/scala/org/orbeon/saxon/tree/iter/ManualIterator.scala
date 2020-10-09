@@ -34,7 +34,9 @@ class ManualIterator
     this()
     this.item = value
     this.position = 1
-    this.lastPositionFinder = () => 1
+    this.lastPositionFinder = new LastPositionFinder {
+      def getLength: Int = 1
+    }
   }
 
   def setContextItem(value: Item): Unit = {

@@ -166,9 +166,10 @@ class SaplingElement(name: String) extends SaplingNode {
     builder.getCurrentRoot
   }
 
-  def toXdmNode(processor: Processor): XdmNode =
-    XdmValue
-      .wrap(toNodeInfo(processor.getUnderlyingConfiguration))
-      .asInstanceOf[XdmNode]
+  // ORBEON: s9api
+//  def toXdmNode(processor: Processor): XdmNode =
+//    XdmValue
+//      .wrap(toNodeInfo(processor.getUnderlyingConfiguration))
+//      .asInstanceOf[XdmNode]
 
 }

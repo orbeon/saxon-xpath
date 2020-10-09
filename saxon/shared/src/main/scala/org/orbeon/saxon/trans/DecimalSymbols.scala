@@ -1,49 +1,31 @@
 package org.orbeon.saxon.trans
 
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.regex.UnicodeString
-
-import org.orbeon.saxon.s9api.HostLanguage
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.z.IntHashMap
-
 import java.util.Arrays
 
-import DecimalSymbols._
+import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.regex.UnicodeString
+import org.orbeon.saxon.s9api.HostLanguage
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.DecimalSymbols._
+import org.orbeon.saxon.z.IntHashMap
 
 object DecimalSymbols {
 
   val DECIMAL_SEPARATOR: Int = 0
-
   val GROUPING_SEPARATOR: Int = 1
-
   val DIGIT: Int = 2
-
   val MINUS_SIGN: Int = 3
-
   val PERCENT: Int = 4
-
   val PER_MILLE: Int = 5
-
   val ZERO_DIGIT: Int = 6
-
   val EXPONENT_SEPARATOR: Int = 7
-
   val PATTERN_SEPARATOR: Int = 8
-
   val INFINITY: Int = 9
-
   val NAN: Int = 10
 
   private val ERR_NOT_SINGLE_CHAR: Int = 0
-
   private val ERR_NOT_UNICODE_DIGIT: Int = 1
-
   private val ERR_SAME_CHAR_IN_TWO_ROLES: Int = 2
-
   private val ERR_TWO_VALUES_FOR_SAME_PROPERTY: Int = 3
 
   private var XSLT_CODES: Array[String] =
@@ -92,21 +74,13 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
     new Array[Boolean](propertyNames.length)
 
   intValues(DECIMAL_SEPARATOR) = '.'
-
   intValues(GROUPING_SEPARATOR) = ','
-
   intValues(DIGIT) = '#'
-
   intValues(MINUS_SIGN) = '-'
-
   intValues(PERCENT) = '%'
-
   intValues(PER_MILLE) = '‰'
-
   intValues(ZERO_DIGIT) = '0'
-
   intValues(EXPONENT_SEPARATOR) = 'e'
-
   intValues(PATTERN_SEPARATOR) = ';'
 
   Arrays.fill(precedences, java.lang.Integer.MIN_VALUE)
@@ -257,7 +231,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
 
   private def singleChar(name: String, value: String): Int = {
     val us: UnicodeString = UnicodeString.makeUnicodeString(value)
-    if (us.uLength() != 1) {
+    if (us.uLength != 1) {
       val err = new XPathException(
         "Attribute " + name + " should be a single character",
         errorCodes(ERR_NOT_SINGLE_CHAR))
@@ -337,9 +311,10 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
   }
 
   override def equals(obj: Any): Boolean = {
-    if (!(obj.isInstanceOf[DecimalSymbols])) {
+
+    if (! obj.isInstanceOf[DecimalSymbols])
       return false
-    }
+
     val o: DecimalSymbols = obj.asInstanceOf[DecimalSymbols]
     getDecimalSeparator == o.getDecimalSeparator && getGroupingSeparator == o.getGroupingSeparator &&
       getDigit == o.getDigit &&
@@ -354,5 +329,4 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
 
   override def hashCode: Int =
     getDecimalSeparator + (37 * getGroupingSeparator) + (41 * getDigit)
-
 }

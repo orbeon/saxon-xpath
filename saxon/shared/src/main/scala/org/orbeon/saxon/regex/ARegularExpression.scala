@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.List
+
 import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AtomicIterator
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
-import java.util.List
-import java.util.function.Function
 
 
 /**
@@ -122,7 +122,7 @@ class ARegularExpression(pattern: CharSequence,
    */
   def replaceWith(
                    input: CharSequence,
-                   replacer: Function[CharSequence, CharSequence]): CharSequence = {
+                   replacer: CharSequence => CharSequence): CharSequence = {
     val matcher: REMatcher = new REMatcher(regex)
     val in: UnicodeString = UnicodeString.makeUnicodeString(input)
     matcher.replaceWith(in, replacer)

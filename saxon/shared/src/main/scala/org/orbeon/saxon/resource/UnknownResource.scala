@@ -1,16 +1,11 @@
 package org.orbeon.saxon.resource
 
+import java.io.{BufferedInputStream, ByteArrayInputStream, IOException}
+
 import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.lib.Resource
-import org.orbeon.saxon.lib.ResourceFactory
+import org.orbeon.saxon.lib.{Resource, ResourceFactory}
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.trans.XPathException
-import java.io.BufferedInputStream
-import java.io.ByteArrayInputStream
-import java.io.IOException
-import java.io.InputStream
-import java.net.URLConnection
-
 import org.orbeon.saxon.utils.Configuration
 
 object UnknownResource {
@@ -28,7 +23,7 @@ class UnknownResource extends Resource {
     this.details = details
   }
 
-  def getResourceURI(): String = details.resourceUri
+  def getResourceURI: String = details.resourceUri
 
   def getItem(context: XPathContext): Item = {
     var stream =
@@ -41,10 +36,11 @@ class UnknownResource extends Resource {
     }
     var mediaType: String = null
     try {
-      if (!stream.markSupported()) {
+      if (!stream.markSupported())
         stream = new BufferedInputStream(stream)
-      }
-      mediaType = URLConnection.guessContentTypeFromStream(stream)
+      // ORBEON: JVM only
+      ???
+//      mediaType = URLConnection.guessContentTypeFromStream(stream)
     } catch {
       case e: IOException => mediaType = null
 
@@ -64,6 +60,6 @@ class UnknownResource extends Resource {
     actual.getItem(context)
   }
 
-  def getContentType(): String = "application/xml"
+  def getContentType: String = "application/xml"
 
 }

@@ -29,16 +29,18 @@ class DynamicLoader {
     if (tracing)
       traceOut.info("Loading " + className)
     try {
-      val loader = Thread.currentThread().getContextClassLoader
-      if (loader != null) {
-        try loader.loadClass(className)
-        catch {
-          case _: Throwable =>
-            Class.forName(className)
-        }
-      } else {
-        Class.forName(className)
-      }
+      // ORBEON: JVM only
+      ???
+//      val loader = Thread.currentThread().getContextClassLoader
+//      if (loader != null) {
+//        try loader.loadClass(className)
+//        catch {
+//          case _: Throwable =>
+//            Class.forName(className)
+//        }
+//      } else {
+//        Class.forName(className)
+//      }
     } catch {
       case e: Throwable =>
         if (tracing)
@@ -54,13 +56,17 @@ class DynamicLoader {
 //  }
 
   def getInstance(className: String, traceOut: Logger): Any = {
-    val theclass = getClass(className, traceOut)
-    theclass.newInstance()
+    // ORBEON: JVM only
+    ???
+//    val theclass = getClass(className, traceOut)
+//    theclass.newInstance()
   }
 
   def getResourceAsStream(name: String): InputStream = {
-    val loader = Thread.currentThread().getContextClassLoader
-    loader.getResourceAsStream(name)
+    // ORBEON: JVM only
+    ???
+//    val loader = Thread.currentThread().getContextClassLoader
+//    loader.getResourceAsStream(name)
   }
 
   private def getJarFileForClass(className: String): String =

@@ -1,12 +1,6 @@
-
-
-
 package org.orbeon.saxon.query
 
-import org.orbeon.saxon.event.ComplexContentOutputter
-import org.orbeon.saxon.event.Receiver
-import org.orbeon.saxon.event.ReceiverOption
-import org.orbeon.saxon.event.SequenceReceiver
+import org.orbeon.saxon.event.{ComplexContentOutputter, Receiver, ReceiverOption, SequenceReceiver}
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.arrays.ArrayItem
@@ -15,53 +9,37 @@ import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.ObjectValue
+import org.orbeon.saxon.value.{AtomicValue, ObjectValue}
 
+import scala.jdk.CollectionConverters._
 
 object SequenceWrapper {
-  val RESULT_NS = QueryResult.RESULT_NS
+  val RESULT_NS: String = QueryResult.RESULT_NS
 }
 
 class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destination.getPipelineConfiguration) {
-  private var out: ComplexContentOutputter = _
 
-  out = new ComplexContentOutputter(destination)
-
+  private var out: ComplexContentOutputter = new ComplexContentOutputter(destination)
   private var depth: Int = 0
-
   private var resultDocument: FingerprintedQName = _
-
   private var resultElement: FingerprintedQName = _
-
   private var resultAttribute: FingerprintedQName = _
-
   private var resultText: FingerprintedQName = _
-
   private var resultComment: FingerprintedQName = _
-
   private var resultPI: FingerprintedQName = _
-
   private var resultNamespace: FingerprintedQName = _
-
   private var resultAtomicValue: FingerprintedQName = _
-
   private var resultFunction: FingerprintedQName = _
-
   private var resultArray: FingerprintedQName = _
-
   private var resultMap: FingerprintedQName = _
-
   private var resultExternalValue: FingerprintedQName = _
-
   private var xsiType: FingerprintedQName = _
-
   private var namespaces: NamespaceMap = _
 
-  def getDestination = out
+  def getDestination: ComplexContentOutputter = out
 
   @throws[XPathException]
-  private def startWrapper(name: NodeName) = {
+  private def startWrapper(name: NodeName): Unit = {
     out.startElement(name, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
     out.namespace("", "", ReceiverOption.NONE)
     out.startContent()
@@ -110,13 +88,13 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   @throws[XPathException]
   override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int): Unit = {
     if ( {
-      depth += 1;
+      depth += 1
       depth - 1
     } == 0) startWrapper(resultElement)
     out.startElement(elemName, `type`, location, properties)
     out.namespace("", "", properties)
 
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       out.attribute(att.getNodeName, att.getType, att.getValue, att.getLocation, att.getProperties)
     }
     out.startContent()
@@ -127,7 +105,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   override def endElement(): Unit = {
     out.endElement()
     if ( {
-      depth -= 1;
+      depth -= 1
       depth
     } == 0) endWrapper()
   }
@@ -152,7 +130,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
 
 
   @throws[XPathException]
-  override def processingInstruction(target: String, data: CharSequence, locationId: Location, properties: Int) = if (depth == 0) {
+  override def processingInstruction(target: String, data: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
     startWrapper(resultPI)
     out.processingInstruction(target, data, locationId, properties)
     endWrapper()
@@ -161,7 +139,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
 
 
   @throws[XPathException]
-  override def append(item: Item, locationId: Location, copyNamespaces: Int) = if (item.isInstanceOf[AtomicValue]) {
+  override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = if (item.isInstanceOf[AtomicValue]) {
     val pool = getNamePool
     out.startElement(resultAtomicValue, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
     out.namespace("", "", ReceiverOption.NONE)
@@ -218,7 +196,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
 
 
   @throws[XPathException]
-  override def close() = {
+  override def close(): Unit = {
     endWrapper()
     out.endDocument()
     out.close()
@@ -229,7 +207,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
 
 
   @throws[XPathException]
-  private def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, locationId: Location, properties: Int) = {
+  private def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, locationId: Location, properties: Int): Unit = {
     val atts = SingletonAttributeMap.of(new AttributeInfo(attName, typeCode, value.toString, locationId, properties))
     var ns = NamespaceMap.emptyMap
     if (!attName.hasURI("")) ns = ns.put(attName.getPrefix, attName.getURI)
@@ -240,7 +218,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
 
 
   @throws[XPathException]
-  private def namespace(namespaceBindings: NamespaceBindingSet, properties: Int) = {
+  private def namespace(namespaceBindings: NamespaceBindingSet, properties: Int): Unit = {
     var ns = NamespaceMap.emptyMap
     ns = ns.addAll(namespaceBindings)
     out.startElement(resultNamespace, Untyped.getInstance, EmptyAttributeMap.getInstance, ns, Loc.NONE, 0)

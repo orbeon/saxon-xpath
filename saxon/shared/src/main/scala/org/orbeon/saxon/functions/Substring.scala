@@ -1,24 +1,18 @@
 package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.expr._
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.TypeHierarchy
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
+import org.orbeon.saxon.functions.Substring._
+import org.orbeon.saxon.model.{BuiltInAtomicType, TypeHierarchy}
 import org.orbeon.saxon.om.{Item, One, Sequence, ZeroOrOne}
-import org.orbeon.saxon.regex.EmptyString
-import org.orbeon.saxon.regex.UnicodeString
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.Int64Value
-import org.orbeon.saxon.value.NumericValue
-import org.orbeon.saxon.value.StringValue
-import Substring._
+import org.orbeon.saxon.regex.{EmptyString, UnicodeString}
+import org.orbeon.saxon.value.{Int64Value, NumericValue, StringValue}
 
 object Substring {
 
   def substring(sv: StringValue, start: NumericValue): UnicodeString = {
     val s: UnicodeString = sv.getUnicodeString
-    val slength: Int = s.uLength()
+    val slength: Int = s.uLength
     var lstart: Long = 0L
     if (start.isInstanceOf[Int64Value]) {
       lstart = start.asInstanceOf[Int64Value].longValue()
@@ -38,10 +32,10 @@ object Substring {
         lstart = Math.round(start.getDoubleValue)
       }
     }
-    if (lstart > s.uLength()) {
+    if (lstart > s.uLength) {
       EmptyString.THE_INSTANCE
     }
-    s.uSubstring(lstart.toInt - 1, s.uLength())
+    s.uSubstring(lstart.toInt - 1, s.uLength)
   }
 
   def substring(sv: StringValue,
@@ -89,7 +83,7 @@ object Substring {
       EmptyString.THE_INSTANCE
     }
     val us: UnicodeString = sv.getUnicodeString
-    val clength: Int = us.uLength()
+    val clength: Int = us.uLength
     var a1: Int = lstart.toInt - 1
     if (a1 >= clength) {
       EmptyString.THE_INSTANCE

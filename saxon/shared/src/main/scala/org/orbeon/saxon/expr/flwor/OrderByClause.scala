@@ -51,7 +51,7 @@ class OrderByClause(flwor: FLWORExpression,
                                      tupleExpression,
                                      OperandRole.REPEAT_NAVIGATE_CONSTRAINED)
 
-  override def getClauseKey(): ClauseName = ORDER_BY
+  override def getClauseKey: ClauseName = ORDER_BY
 
   override def containsNonInlineableVariableReference(
       binding: Binding): Boolean = getTupleExpression.includesBinding(binding)

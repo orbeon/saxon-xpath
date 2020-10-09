@@ -1,26 +1,17 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.sort
 
+import java.math.BigInteger
+import java.util.regex.{Matcher, Pattern}
+
+import org.orbeon.saxon.expr.sort.AlphanumericCollator._
 import org.orbeon.saxon.lib.StringCollator
-
 import org.orbeon.saxon.regex.UnicodeString
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-import java.math.BigInteger
-
-import java.util.regex.Matcher
-
-import java.util.regex.Pattern
-
-import AlphanumericCollator._
 
 object AlphanumericCollator {
-
-  private var pattern: Pattern = Pattern.compile("\\d+")
-
+  private val pattern: Pattern = Pattern.compile("\\d+")
   val PREFIX: String = "http://saxon.sf.net/collation/alphaNumeric?base="
-
 }
 
 class AlphanumericCollator(private var baseCollator: StringCollator)
@@ -31,8 +22,7 @@ class AlphanumericCollator(private var baseCollator: StringCollator)
     *
     * @return a collation URI that can be used to reconstruct the collation when an XSLT package is reloaded.
     */
-  def getCollationURI()
-    : String = // it possible to reconstitute the collation easily
+  def getCollationURI: String = // it possible to reconstitute the collation easily
     PREFIX + baseCollator.getCollationURI
 
   def compareStrings(cs1: CharSequence, cs2: CharSequence): Int = {

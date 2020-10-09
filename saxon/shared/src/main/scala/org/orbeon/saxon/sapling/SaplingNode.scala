@@ -1,38 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package org.orbeon.saxon.sapling
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.s9api.SchemaValidator
-
-import org.orbeon.saxon.s9api.Serializer
-
-import org.orbeon.saxon.s9api.XdmNode
-
-import org.orbeon.saxon.trans.XPathException
-
-import javax.xml.transform.Source
-
-
-
-
-abstract class SaplingNode {
-
-  def getNodeKind: Int
-
-  def sendTo(receiver: Receiver): Unit
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.sapling
+
+import javax.xml.transform.Source
+import org.orbeon.saxon.event.Receiver
+import org.orbeon.saxon.om.NodeInfo
+
+
 /**
   * This class represents a sapling node. Sapling nodes represent transient nodes used in the course
   * of tree construction; they are intended to have a very lightweight implementation, making construction
@@ -76,3 +54,8 @@ abstract class SaplingNode {
   * names of elements and attributes are added to an element automatically; additional namespace bindings may be
   * added by explicit API request.</p>
   */
+abstract class SaplingNode {
+  def getNodeKind: Int
+  def sendTo(receiver: Receiver): Unit
+}
+

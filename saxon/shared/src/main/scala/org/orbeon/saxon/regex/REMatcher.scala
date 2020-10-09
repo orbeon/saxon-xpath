@@ -1,13 +1,14 @@
 package org.orbeon.saxon.regex
 
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import scala.util.control.Breaks._
 import java.util
-import java.util.function.Function
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 
+import org.orbeon.saxon.tree.util.FastStringBuffer
+
+import scala.util.control.Breaks._
+//import scala.collection.compat._
 import org.orbeon.saxon.regex.REMatcher.State
+
+import scala.jdk.CollectionConverters._
 
 object REMatcher {
   private[regex] val MAX_PAREN = 16
@@ -408,7 +409,7 @@ class REMatcher(val progrm: REProgram) {
   }
 
 
-  def replaceWith(in: UnicodeString, replacer: Function[CharSequence, CharSequence]) = {
+  def replaceWith(in: UnicodeString, replacer: CharSequence => CharSequence) = {
     val sb = new FastStringBuffer(in.uLength * 2)
     var pos = 0
     val len = in.uLength
@@ -419,7 +420,7 @@ class REMatcher(val progrm: REProgram) {
         sb.appendWideChar(in.uCharAt(i))
       }
       val matchingSubstring = in.subSequence(getParenStart(0), getParenEnd(0))
-      val replacement = replacer.apply(matchingSubstring)
+      val replacement = replacer(matchingSubstring)
       sb.append(replacement)
       var newpos = getParenEnd(0)
       if (newpos == pos) newpos += 1
@@ -428,7 +429,7 @@ class REMatcher(val progrm: REProgram) {
     for (i <- pos until len) {
       sb.appendWideChar(in.uCharAt(i))
     }
-    sb.condense
+    sb.condense()
   }
 
 

@@ -182,7 +182,7 @@ class ContentHandlerProxy extends Receiver {
       case _ =>
         val aci: AttributeCollectionImpl =
           new AttributeCollectionImpl(getConfiguration, attributes.size)
-        for (att <- attributes) {
+        for (att <- attributes.iterator.asScala) {
           aci.addAttribute(att.getNodeName,
             BuiltInAtomicType.UNTYPED_ATOMIC,
             att.getValue,

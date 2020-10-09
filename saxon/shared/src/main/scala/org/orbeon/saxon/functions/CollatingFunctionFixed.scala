@@ -1,38 +1,16 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.StaticContext
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.parser.RetainedStaticContext
-
-import org.orbeon.saxon.expr.sort.AtomicComparer
-
-import org.orbeon.saxon.expr.sort.EqualityComparer
-
-import org.orbeon.saxon.expr.sort.GenericAtomicComparer
-
-import org.orbeon.saxon.expr.sort.SimpleCollation
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.lib.SubstringMatcher
-
-import org.orbeon.saxon.model.AtomicType
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.ErrorType
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
 import java.util.Properties
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.expr.parser.RetainedStaticContext
+import org.orbeon.saxon.expr.sort.{AtomicComparer, EqualityComparer, GenericAtomicComparer}
+import org.orbeon.saxon.expr.{StaticContext, XPathContext}
+import org.orbeon.saxon.lib.{NamespaceConstant, StringCollator, SubstringMatcher}
+import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType, ErrorType}
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.XPathException
+
+import scala.beans.BeanProperty
 
 abstract class CollatingFunctionFixed
   extends SystemFunction
@@ -71,11 +49,13 @@ abstract class CollatingFunctionFixed
         "FOCH0002")
     }
     if (isSubstringMatchingFunction) {
-      if (stringCollator.isInstanceOf[SimpleCollation]) {
-        stringCollator =
-          stringCollator.asInstanceOf[SimpleCollation].getSubstringMatcher
-      }
-      if (!(stringCollator.isInstanceOf[SubstringMatcher])) {
+      // ORBEON: Collations
+//      stringCollator match {
+//        case simpleCollation: SimpleCollation =>
+//          stringCollator = simpleCollation.getSubstringMatcher
+//        case _ =>
+//      }
+      if (! stringCollator.isInstanceOf[SubstringMatcher]) {
         throw new XPathException(
           "The collation requested for " + getFunctionName.getDisplayName +
             " does not support substring matching",
@@ -127,15 +107,18 @@ abstract class CollatingFunctionFixed
       getFunctionName.getLocalPart,
       getRetainedStaticContext,
       getArity)
-    if (copy.isInstanceOf[CollatingFunctionFree]) {
-      copy =
-        copy.asInstanceOf[CollatingFunctionFree].bindCollation(collationName)
+    copy match {
+      case free: CollatingFunctionFree =>
+        copy = free.bindCollation(collationName)
+      case _ =>
     }
-    if (copy.isInstanceOf[CollatingFunctionFixed]) {
-      copy.asInstanceOf[CollatingFunctionFixed].collationName = collationName
-      copy.asInstanceOf[CollatingFunctionFixed].atomicComparer = atomicComparer
-      copy.asInstanceOf[CollatingFunctionFixed].stringCollator = stringCollator
-      copy.asInstanceOf[CollatingFunctionFixed]
+    copy match {
+      case fixed: CollatingFunctionFixed =>
+        fixed.collationName = collationName
+        fixed.atomicComparer = atomicComparer
+        fixed.stringCollator = stringCollator
+        fixed
+      case _ =>
     }
     throw new IllegalStateException()
   }

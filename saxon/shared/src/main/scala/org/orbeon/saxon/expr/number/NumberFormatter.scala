@@ -53,7 +53,7 @@ class NumberFormatter {
     formatTokens = new ArrayList[UnicodeString](10)
     punctuationTokens = new ArrayList[UnicodeString](10)
     val uFormat: UnicodeString = UnicodeString.makeUnicodeString(strFormat)
-    val len = uFormat.uLength()
+    val len = uFormat.uLength
     var i: Int = 0
     var t: Int = 0
     var first: Boolean = true
@@ -150,7 +150,7 @@ class NumberFormatter {
       tok += 1
       if (tok == formatTokens.size) {
         {
-          tok -= 1;
+          tok -= 1
           tok + 1
         }
       }

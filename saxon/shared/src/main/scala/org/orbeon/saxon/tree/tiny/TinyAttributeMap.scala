@@ -11,19 +11,18 @@
 
 package org.orbeon.saxon.tree.tiny
 
+import org.jetbrains.annotations.NotNull
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.om._
-import org.jetbrains.annotations.NotNull
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-
+import java.{util => ju}
 
 class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
     extends AttributeMap {
 
-  private var firstAttribute: Int = tree.alpha(element)
+  private val firstAttribute: Int = tree.alpha(element)
 
   override def size: Int = {
     var i: Int = firstAttribute
@@ -37,8 +36,8 @@ class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = null
 
   @NotNull
-  override def iterator: collection.Iterator[AttributeInfo] =
-    new AttributeInfoIterator(tree, element).asScala
+  override def iterator: ju.Iterator[AttributeInfo] =
+    new AttributeInfoIterator(tree, element)
 
   override def itemAt(index: Int): AttributeInfo = {
     val attNr: Int = firstAttribute + index

@@ -1,25 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2013-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.sort
 
-import org.orbeon.saxon.expr.Operand
+import java.util.{ArrayList, Arrays, Iterator, List}
 
-import org.orbeon.saxon.expr.OperandRole
-
-import org.orbeon.saxon.expr.PseudoExpression
-
+import org.orbeon.saxon.expr.{Operand, OperandRole, PseudoExpression}
 import org.orbeon.saxon.expr.parser.RebindingMap
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.ArrayList
-
-import java.util.Arrays
-
-import java.util.Iterator
-
-import java.util.List
 
 
 
@@ -44,7 +35,7 @@ class SortKeyDefinitionList(
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
-  def size(): Int = sortKeyDefinitions.length
+  def size: Int = sortKeyDefinitions.length
 
   def getSortKeyDefinition(i: Int): SortKeyDefinition = sortKeyDefinitions(i)
 
@@ -77,9 +68,3 @@ class SortKeyDefinitionList(
   }
 
 }
-
-// Copyright (c) 2013-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

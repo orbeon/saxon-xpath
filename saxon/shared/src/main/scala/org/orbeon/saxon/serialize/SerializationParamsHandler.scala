@@ -1,40 +1,22 @@
 package org.orbeon.saxon.serialize
 
+import java.util.Properties
+import java.{util => ju}
+
 import org.orbeon.saxon.expr.instruct.ResultDocument
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
+import org.orbeon.saxon.lib.{NamespaceConstant, SaxonOutputKeys}
 import org.orbeon.saxon.model.Type
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.pattern.NodeKindTest
-
 import org.orbeon.saxon.regex.UnicodeString
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.serialize.SerializationParamsHandler._
+import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.AxisIterator
-
 import org.orbeon.saxon.tree.util.Navigator
-
 import org.orbeon.saxon.z.IntHashMap
 
-import java.util.Arrays
-
-import java.util.HashSet
-
-import java.util.Properties
-
-import java.util.Set
-
-import SerializationParamsHandler._
+import scala.jdk.CollectionConverters._
 
 object SerializationParamsHandler {
 
@@ -42,10 +24,10 @@ object SerializationParamsHandler {
 
   private def restrictAttributes(element: NodeInfo,
                                  allowedNames: String*): Unit = {
-    for (att <- element.attributes) {
+    for (att <- element.attributes.iterator.asScala) {
       val name: NodeName = att.getNodeName
       if ("" == name.getURI &&
-        Arrays.binarySearch(allowedNames.asInstanceOf[Array[AnyRef]], name.getLocalPart) < 0) {
+        ju.Arrays.binarySearch(allowedNames.asInstanceOf[Array[AnyRef]], name.getLocalPart) < 0) {
         throw new XPathException(
           "In serialization parameters, attribute @" + name.getLocalPart +
             " must not appear on element " +
@@ -106,14 +88,14 @@ class SerializationParamsHandler {
         "Serialization params: element namespace must be " + NAMESPACE)
     }
     restrictAttributes(nodeInf)
-    val nodeNames: Set[NodeName] = new HashSet[NodeName]()
+    val nodeNames: ju.Set[NodeName] = new ju.HashSet[NodeName]
     val kids: AxisIterator =
       nodeInf.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
     var child: NodeInfo = null
-    while (({
+    while ({
       child = kids.next()
       child
-    }) != null) {
+    } != null) {
       if (!nodeNames.add(NameOfNode.makeName(child))) {
         throw new XPathException(
           "Duplicated serialization parameter " + child.getDisplayName,
@@ -135,10 +117,10 @@ class SerializationParamsHandler {
           child.iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
         var gChild: NodeInfo = null
         val map: IntHashMap[String] = new IntHashMap[String]()
-        while (({
+        while ({
           gChild = gKids.next()
           gChild
-        }) != null) {
+        } != null) {
           restrictAttributes(gChild, "character", "map-string")
           if (!(gChild.getURI == NAMESPACE && gChild.getLocalPart.==(
             "character-map"))) {
@@ -151,7 +133,7 @@ class SerializationParamsHandler {
           val ch: String = getAttribute(gChild, "character")
           val str: String = getAttribute(gChild, "map-string")
           val chValue: UnicodeString = UnicodeString.makeUnicodeString(ch)
-          if (chValue.uLength() != 1) {
+          if (chValue.uLength != 1) {
             throw new XPathException(
               "In the serialization parameters, the value of @character in the character map " +
                 "must be a single Unicode character",

@@ -147,7 +147,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
       i = i + 1
       p(i) = ii.next
     }
-    Arrays.sort(p)
+    scala.util.Sorting.quickSort(p)
     var v2: ImmList[GroundedValue] = vector
     var j: Int = p.length - 1
     while (j >= 0) {

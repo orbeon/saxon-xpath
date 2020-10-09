@@ -1,23 +1,19 @@
 package org.orbeon.saxon.ma.arrays
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.StaticProperty
+import java.util.Optional
+
+import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
+import org.orbeon.saxon.ma.arrays.ArrayItemType._
+import org.orbeon.saxon.model.Affinity.Affinity
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Genre
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.om.Genre.Genre
+import org.orbeon.saxon.om.{Genre, GroundedValue, Item}
+import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.SequenceType
-import java.util.Optional
-import java.util.function.Function
-import ArrayItemType._
-import org.orbeon.saxon.model.Affinity.Affinity
-import org.orbeon.saxon.om.Genre.Genre
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object ArrayItemType {
 
@@ -55,18 +51,15 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
     memberType.getPrimaryType.getNormalizedDefaultPriority
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (!(item.isInstanceOf[ArrayItem])) {
+    if (! item.isInstanceOf[ArrayItem])
       return false
-    }
     if (this == ANY_ARRAY_TYPE) {
       true
     } else {
       item
         .asInstanceOf[ArrayItem]
         .members()
-        .find(!memberType.matches(_, th))
-        .map(_ => false)
-        .getOrElse(true)
+        .find(! memberType.matches(_, th)).forall(_ => false) // ORBEON: makes sense?
     }
   }
 

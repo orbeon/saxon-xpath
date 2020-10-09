@@ -13,35 +13,14 @@
  */
 package org.orbeon.saxon.lib
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.resource.BinaryResource
-
-import org.orbeon.saxon.resource.DataURIScheme
-
-import org.orbeon.saxon.resource.UnparsedTextResource
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import java.io._
-
-import java.net.MalformedURLException
-
 import java.net.URI
-
-import java.net.URL
-
-import java.net.URLConnection
-
 import java.nio.charset._
 
-import java.util.zip.GZIPInputStream
-
-import StandardUnparsedTextResolver._
-
-
+import org.orbeon.saxon.resource.{BinaryResource, DataURIScheme, UnparsedTextResource}
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Configuration
 
 
 object StandardUnparsedTextResolver {
@@ -147,7 +126,6 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
   def resolve(absoluteURI: URI,
               encoding: String,
               config: Configuration): Reader = {
-    var absoluteURL: URL = null
     val err: Logger = config.getLogger
     var encodingVar = encoding
     if (debug) {
@@ -170,14 +148,15 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
     if (absoluteURI.getScheme.==("data")) {
       var resource: Resource = null
       resource = DataURIScheme.decode(absoluteURI)
-      if (resource.isInstanceOf[BinaryResource]) {
-        val octets: Array[Byte] = resource.asInstanceOf[BinaryResource].getData
-        inputStream = new ByteArrayInputStream(octets)
-        contentEncoding = "utf-8"
-      } else {
-        assert(resource.isInstanceOf[UnparsedTextResource])
-        new StringReader(
-          resource.asInstanceOf[UnparsedTextResource].getContent)
+      resource match {
+        case binaryResource: BinaryResource =>
+          val octets: Array[Byte] = binaryResource.getData
+          inputStream = new ByteArrayInputStream(octets)
+          contentEncoding = "utf-8"
+        case _ =>
+          assert(resource.isInstanceOf[UnparsedTextResource])
+          new StringReader(
+            resource.asInstanceOf[UnparsedTextResource].getContent)
       }
       if (encodingVar == null) {
         encodingVar = contentEncoding
@@ -194,107 +173,108 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
         new InputStreamReader(is, encodingVar)
       }
     } else {
-      try absoluteURL = absoluteURI.toURL
-      catch {
-        case mue: MalformedURLException => {
-          val e: XPathException = new XPathException(
-            "Cannot convert absolute URI " + absoluteURI + " to URL",
-            mue)
-          e.setErrorCode("FOUT1170")
-          throw e
-        }
-
-      }
-      val connection: URLConnection = absoluteURL.openConnection()
-      connection.setRequestProperty("Accept-Encoding", "gzip")
-      try connection.connect()
-      catch {
-        case ioe: IOException => {
-          if (debug) {
-            err.error(
-              "unparsed-text(): connection failure on " + absoluteURL +
-                ". " +
-                ioe.getMessage)
-          }
-          val xpe: XPathException =
-            new XPathException("Failed to read input file " + absoluteURL, ioe)
-          xpe.setErrorCode("FOUT1170")
-          throw xpe
-        }
-
-      }
-      inputStream = connection.getInputStream
-      contentEncoding = connection.getContentEncoding
-      if ("gzip" == contentEncoding) {
-        inputStream = new GZIPInputStream(inputStream)
-      }
-      if (debug) {
-        err.info(
-          "unparsed-text(): established connection " +
-            (if ("gzip" == contentEncoding) " (zipped)" else ""))
-      }
-      if (!inputStream.markSupported()) {
-        inputStream = new BufferedInputStream(inputStream)
-      }
-// Get any external (HTTP) encoding label.
-      isXmlMediaType = false
-// The file:// URL scheme gives no useful information...
-      if ("file" != connection.getURL.getProtocol) {
-// Use the contentType from the HTTP header if available
-        val contentType: String = connection.getContentType
-        if (debug) {
-          err.info("unparsed-text(): content type = " + contentType)
-        }
-        if (contentType != null) {
-          var mediaType: String = null
-          var pos: Int = contentType.indexOf(';')
-          mediaType =
-            if (pos >= 0) contentType.substring(0, pos) else contentType
-          mediaType = mediaType.trim()
-          if (debug) {
-            err.info("unparsed-text(): media type = " + mediaType)
-          }
-          isXmlMediaType = (mediaType.startsWith("application/") || mediaType
-              .startsWith("text/")) &&
-              (mediaType.endsWith("/xml") || mediaType.endsWith("+xml"))
-          var charset: String = ""
-          pos = contentType.toLowerCase().indexOf("charset")
-          if (pos >= 0) {
-            pos = contentType.indexOf('=', pos + 7)
-            if (pos >= 0) {
-              charset = contentType.substring(pos + 1)
-            }
-            pos = charset.indexOf(';')
-            if ((pos) > 0) {
-              charset = charset.substring(0, pos)
-            }
-// attributes can have comment fields (RFC 822)
-            pos = charset.indexOf('(')
-            if ((pos) > 0) {
-              charset = charset.substring(0, pos)
-            }
-// ... and values may be quoted
-            pos = charset.indexOf('"')
-            if ((pos) > 0) {
-              charset =
-                charset.substring(pos + 1, charset.indexOf('"', pos + 2))
-            }
-            if (debug) {
-              err.info("unparsed-text(): charset = " + charset.trim())
-            }
-            encodingVar = charset.trim()
-          }
-        }
-      }
-      try if (encodingVar == null || isXmlMediaType) {
-        encodingVar = inferStreamEncoding(inputStream, if (debug) err else null)
-        if (debug) {
-          err.info("unparsed-text(): inferred encoding = " + encodingVar)
-        }
-      } catch {
-        case e: IOException => encodingVar = "UTF-8"
-
-      }
+      // ORBEON: JVM only
+      ???
+//      var absoluteURL: URL = null
+//      try absoluteURL = absoluteURI.toURL
+//      catch {
+//        case mue: MalformedURLException =>
+//          val e: XPathException = new XPathException(
+//            "Cannot convert absolute URI " + absoluteURI + " to URL",
+//            mue)
+//          e.setErrorCode("FOUT1170")
+//          throw e
+//      }
+//      val connection: URLConnection = absoluteURL.openConnection()
+//      connection.setRequestProperty("Accept-Encoding", "gzip")
+//      try connection.connect()
+//      catch {
+//        case ioe: IOException => {
+//          if (debug) {
+//            err.error(
+//              "unparsed-text(): connection failure on " + absoluteURL +
+//                ". " +
+//                ioe.getMessage)
+//          }
+//          val xpe: XPathException =
+//            new XPathException("Failed to read input file " + absoluteURL, ioe)
+//          xpe.setErrorCode("FOUT1170")
+//          throw xpe
+//        }
+//
+//      }
+//      inputStream = connection.getInputStream
+//      contentEncoding = connection.getContentEncoding
+//      if ("gzip" == contentEncoding) {
+//        inputStream = new GZIPInputStream(inputStream)
+//      }
+//      if (debug) {
+//        err.info(
+//          "unparsed-text(): established connection " +
+//            (if ("gzip" == contentEncoding) " (zipped)" else ""))
+//      }
+//      if (!inputStream.markSupported()) {
+//        inputStream = new BufferedInputStream(inputStream)
+//      }
+//// Get any external (HTTP) encoding label.
+//      isXmlMediaType = false
+//// The file:// URL scheme gives no useful information...
+//      if ("file" != connection.getURL.getProtocol) {
+//// Use the contentType from the HTTP header if available
+//        val contentType: String = connection.getContentType
+//        if (debug) {
+//          err.info("unparsed-text(): content type = " + contentType)
+//        }
+//        if (contentType != null) {
+//          var mediaType: String = null
+//          var pos: Int = contentType.indexOf(';')
+//          mediaType =
+//            if (pos >= 0) contentType.substring(0, pos) else contentType
+//          mediaType = mediaType.trim()
+//          if (debug) {
+//            err.info("unparsed-text(): media type = " + mediaType)
+//          }
+//          isXmlMediaType = (mediaType.startsWith("application/") || mediaType
+//              .startsWith("text/")) &&
+//              (mediaType.endsWith("/xml") || mediaType.endsWith("+xml"))
+//          var charset: String = ""
+//          pos = contentType.toLowerCase().indexOf("charset")
+//          if (pos >= 0) {
+//            pos = contentType.indexOf('=', pos + 7)
+//            if (pos >= 0) {
+//              charset = contentType.substring(pos + 1)
+//            }
+//            pos = charset.indexOf(';')
+//            if ((pos) > 0) {
+//              charset = charset.substring(0, pos)
+//            }
+//// attributes can have comment fields (RFC 822)
+//            pos = charset.indexOf('(')
+//            if ((pos) > 0) {
+//              charset = charset.substring(0, pos)
+//            }
+//// ... and values may be quoted
+//            pos = charset.indexOf('"')
+//            if ((pos) > 0) {
+//              charset =
+//                charset.substring(pos + 1, charset.indexOf('"', pos + 2))
+//            }
+//            if (debug) {
+//              err.info("unparsed-text(): charset = " + charset.trim())
+//            }
+//            encodingVar = charset.trim()
+//          }
+//        }
+//      }
+//      try if (encodingVar == null || isXmlMediaType) {
+//        encodingVar = inferStreamEncoding(inputStream, if (debug) err else null)
+//        if (debug) {
+//          err.info("unparsed-text(): inferred encoding = " + encodingVar)
+//        }
+//      } catch {
+//        case e: IOException => encodingVar = "UTF-8"
+//
+//      }
     }
 // The following is necessary to ensure that encoding errors are not recovered.
     val charset: Charset = Charset.forName(encodingVar)
@@ -303,7 +283,4 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
     decoder = decoder.onUnmappableCharacter(CodingErrorAction.REPORT)
     new BufferedReader(new InputStreamReader(inputStream, decoder))
   }
-
 }
-
-

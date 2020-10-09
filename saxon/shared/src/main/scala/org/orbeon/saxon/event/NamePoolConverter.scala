@@ -1,17 +1,29 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
 import org.orbeon.saxon.model.SchemaType
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
 
-import org.orbeon.saxon.trans.XPathException
+import scala.jdk.CollectionConverters._
 
 
-
-
+/**
+  * This class is a filter that passes all Receiver events through unchanged,
+  * except that it changes namecodes to allow for the source and the destination
+  * using different NamePools. This is necessary when a stylesheet has been constructed
+  * as a general document (e.g. as the result of a transformation) and is passed to
+  * newTemplates() to be compiled as a stylesheet.
+  *
+  * <p>The type annotations of nodes passed through this filter must be built-in types
+  * in the XSD namespace, because user-defined types belong to a specific Configuration
+  * and cannot readily be transferred. In practice the class is used only for untyped trees.</p>
+  */
 class NamePoolConverter(next: Receiver,
                         var oldPool: NamePool,
                         var newPool: NamePool)
@@ -28,7 +40,7 @@ class NamePoolConverter(next: Receiver,
       newPool.allocateFingerprint(elemName.getURI, elemName.getLocalPart)
     val newElemName: CodedName = new CodedName(fp, elemName.getPrefix, newPool)
     var newAtts: AttributeMap = EmptyAttributeMap.getInstance
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       checkType(att.getType)
       val afp: Int = newPool.allocateFingerprint(att.getNodeName.getURI,
                                                  att.getNodeName.getLocalPart)
@@ -58,20 +70,3 @@ class NamePoolConverter(next: Receiver,
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class is a filter that passes all Receiver events through unchanged,
-  * except that it changes namecodes to allow for the source and the destination
-  * using different NamePools. This is necessary when a stylesheet has been constructed
-  * as a general document (e.g. as the result of a transformation) and is passed to
-  * newTemplates() to be compiled as a stylesheet.
-  *
-  * <p>The type annotations of nodes passed through this filter must be built-in types
-  * in the XSD namespace, because user-defined types belong to a specific Configuration
-  * and cannot readily be transferred. In practice the class is used only for untyped trees.</p>
-  */

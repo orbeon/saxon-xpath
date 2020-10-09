@@ -12,9 +12,6 @@ import java.util.Properties
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
-import org.orbeon.saxon.expr.StaticContext
-import org.orbeon.saxon.expr.parser.RetainedStaticContext
-import org.orbeon.saxon.expr.sort.{AtomicMatchKey, SimpleCollation}
 import org.orbeon.saxon.lib.{ModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.RegularExpression
@@ -45,10 +42,9 @@ trait Platform {
                     props: Properties,
                     uri: String): StringCollator
 
-  def canReturnCollationKeys(collation: StringCollator): Boolean
-
-  def getCollationKey(namedCollation: SimpleCollation,
-                      value: String): AtomicMatchKey
+  // ORBEON: Collations
+//  def canReturnCollationKeys(collation: StringCollator): Boolean
+//  def getCollationKey(namedCollation: SimpleCollation, value: String): AtomicMatchKey
 
   /**
    * Indicate whether the ICU library is available and supports Collations
@@ -64,7 +60,8 @@ trait Platform {
    */
   def hasICUNumberer: Boolean
 
-  def makeUcaCollator(uri: String, config: Configuration): StringCollator
+  // ORBEON: Collations
+//  def makeUcaCollator(uri: String, config: Configuration): StringCollator
 
   def compileRegularExpression(config: Configuration,
                                regex: CharSequence,

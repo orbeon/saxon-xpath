@@ -1,6 +1,5 @@
 package org.orbeon.saxon.regex
 
-import java.util.function.Function
 import java.util.regex.Pattern
 
 import org.orbeon.saxon.trans.XPathException
@@ -59,7 +58,7 @@ class JavaRegularExpression(javaReg: CharSequence, flags: String)
     matcher.replaceAll(replacement.toString)
   }
 
-  def replaceWith(input: CharSequence, replacement: Function[CharSequence, CharSequence]): CharSequence =
+  def replaceWith(input: CharSequence, replacement: CharSequence => CharSequence): CharSequence =
     throw new XPathException("saxon:replace-with() is not supported with the Java regex engine")
 
   def tokenize(input: CharSequence): AtomicIterator[StringValue] =

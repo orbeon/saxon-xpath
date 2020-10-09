@@ -1,15 +1,9 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.ProxyReceiver
-
-import org.orbeon.saxon.event.Receiver
-
+import org.orbeon.saxon.event.{ProxyReceiver, Receiver}
 import org.orbeon.saxon.lib.NamespaceConstant
-
 import org.orbeon.saxon.model.SchemaType
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
 
 //import scala.collection.compat._
@@ -34,14 +28,12 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
     }
     if (isSpecial(elemNodeName.getURI)) {
       val uri: String = elemNodeName.getURI
-      if (!elemNodeName.getPrefix.isEmpty) {
+      if (! elemNodeName.getPrefix.isEmpty)
         elemNodeName = new FingerprintedQName("", uri, elemNodeName.getLocalPart)
-      }
       nameSpaceMap = nameSpaceMap.put("", uri)
     }
-    for (att <- attributes if isSpecial(att.getNodeName.getURI)) {
+    for (att <- attributes.iterator.asScala if isSpecial(att.getNodeName.getURI))
       nameSpaceMap = nameSpaceMap.put(att.getNodeName.getPrefix, att.getNodeName.getURI)
-    }
     nextReceiver.startElement(elemNodeName,
       `type`,
       attributes,

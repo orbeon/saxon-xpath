@@ -1,83 +1,87 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
-import org.orbeon.saxon.expr.LastPositionFinder
-import org.orbeon.saxon.expr.parser.Loc
-import scala.util.control.Breaks._
-import org.orbeon.saxon.trans.SaxonErrorCode
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.StringValue
-import org.orbeon.saxon.z.IntHashMap
-import org.orbeon.saxon.z.IntToIntHashMap
-import java.util.ArrayList
-import java.util.EnumSet
-import java.util.List
+import java.util.{ArrayList, List}
 
-import ARegexIterator._
+import org.orbeon.saxon.expr.LastPositionFinder
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
+import org.orbeon.saxon.regex.ARegexIterator._
 import org.orbeon.saxon.regex.RegexIterator.MatchHandler
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.StringValue
+import org.orbeon.saxon.z.{IntHashMap, IntToIntHashMap}
+
+import scala.util.control.Breaks._
 
 
+/**
+ * Class ARegexIterator - provides an iterator over matched and unmatched substrings.
+ * This implementation of RegexIterator uses the modified Jakarta regular expression engine.
+ */
 object ARegexIterator {
 
   def computeNestingTable(regex: UnicodeString): IntToIntHashMap = {
     // See bug 3211
     val nestingTable: IntToIntHashMap = new IntToIntHashMap(16)
-    val stack: Array[Int] = Array.ofDim[Int](regex.uLength())
+    val stack: Array[Int] = Array.ofDim[Int](regex.uLength)
     var tos: Int = 0
-    val captureStack: Array[Boolean] = Array.ofDim[Boolean](regex.uLength())
+    val captureStack: Array[Boolean] = Array.ofDim[Boolean](regex.uLength)
     var captureTos: Int = 0
     var group: Int = 1
     var inBrackets: Int = 0
     stack({
-      tos += 1;
+      tos += 1
       tos - 1
     }) = 0
     var i: Int = 0
-    val regexLen = regex.uLength()
+    val regexLen = regex.uLength
     while (i <= regexLen) {
       val ch: Int = regex.uCharAt(i)
       if (ch == '\\') {
         {
-          i += 1;
+          i += 1
           i - 1
         }
       } else if (ch == '[') {
         {
-          inBrackets += 1;
+          inBrackets += 1
           inBrackets - 1
         }
       } else if (ch == ']') {
         {
-          inBrackets -= 1;
+          inBrackets -= 1
           inBrackets + 1
         }
       } else if (ch == '(' && inBrackets == 0) {
         val capture: Boolean = regex.uCharAt(i + 1) != '?'
         captureStack({
-          captureTos += 1;
+          captureTos += 1
           captureTos - 1
         }) = capture
         if (capture) {
           nestingTable.put(group, stack(tos - 1))
           stack({
-            tos += 1;
+            tos += 1
             tos - 1
           }) = {
-            group += 1;
+            group += 1
             group - 1
           }
         }
       } else if (ch == ')' && inBrackets == 0) {
         val capture: Boolean = captureStack({
-          captureTos -= 1;
+          captureTos -= 1
           captureTos
         })
         if (capture) {
           {
-            tos -= 1;
+            tos -= 1
             tos + 1
           }
         }
@@ -108,12 +112,12 @@ class ARegexIterator(private var theString: UnicodeString,
   // indicates the last match was zero length
   private var skip: Boolean = false
 
-  override def getLength: Int = {
+  def getLength: Int = {
     val another: ARegexIterator =
       new ARegexIterator(theString, regex, new REMatcher(matcher.getProgram))
     var n: Int = 0
     while (another.next() != null) {
-      n += 1;
+      n += 1
       n - 1
     }
     n
@@ -126,9 +130,9 @@ class ARegexIterator(private var theString: UnicodeString,
       if (skip) {
         // previous match was zero-length
         searchStart += 1
-        if (searchStart >= theString.uLength()) {
-          if (prevEnd < theString.uLength()) {
-            current = theString.uSubstring(prevEnd, theString.uLength())
+        if (searchStart >= theString.uLength) {
+          if (prevEnd < theString.uLength) {
+            current = theString.uSubstring(prevEnd, theString.uLength)
             nextSubStr = null
           } else {
             current = null
@@ -153,8 +157,8 @@ class ARegexIterator(private var theString: UnicodeString,
         }
       } else {
         // there are no more regex matches, we must return the final non-matching text if any
-        if (prevEnd < theString.uLength()) {
-          current = theString.uSubstring(prevEnd, theString.uLength())
+        if (prevEnd < theString.uLength) {
+          current = theString.uSubstring(prevEnd, theString.uLength)
           nextSubStr = null
         } else {
           // this really is the end...
@@ -183,7 +187,7 @@ class ARegexIterator(private var theString: UnicodeString,
 
   def getRegExProperties: Set[Property] = Set(Property.LAST_POSITION_FINDER)
 
-  def isMatching(): Boolean = nextSubStr == null && prevEnd >= 0
+  def isMatching: Boolean = nextSubStr == null && prevEnd >= 0
 
   def getRegexGroup(number: Int): String = {
     if (!isMatching) {
@@ -191,13 +195,13 @@ class ARegexIterator(private var theString: UnicodeString,
     }
     if (number >= matcher.getParenCount || number < 0) return ""
     val us: UnicodeString = matcher.getParen(number)
-    (if (us == null) "" else us.toString)
+    if (us == null) "" else us.toString
   }
 
   /**
    * Get the number of captured groups
    */
-  override def getNumberOfGroups(): Int = matcher.getParenCount
+  override def getNumberOfGroups: Int = matcher.getParenCount
 
   def processMatchingSubstring(action: MatchHandler): Unit = {
     val c: Int = matcher.getParenCount - 1
@@ -260,13 +264,13 @@ class ARegexIterator(private var theString: UnicodeString,
             // insert the start and end events immediately before the end event for the parent group,
           }
           {
-            i += 1;
+            i += 1
             i - 1
           }
         }
       }
-      val buff: FastStringBuffer = new FastStringBuffer(current.uLength())
-      for (i <- 0 until current.uLength() + 1) {
+      val buff: FastStringBuffer = new FastStringBuffer(current.uLength)
+      for (i <- 0 until current.uLength + 1) {
         val events: List[Integer] = actions.get(i)
         if (events != null) {
           if (buff.length > 0) {
@@ -281,7 +285,7 @@ class ARegexIterator(private var theString: UnicodeString,
             }
           }
         }
-        if (i < current.uLength()) {
+        if (i < current.uLength) {
           buff.appendWideChar(current.uCharAt(i))
         }
       }
@@ -289,18 +293,5 @@ class ARegexIterator(private var theString: UnicodeString,
         action.characters(buff)
       }
     }
-    // Create a map from positions in the string to lists of actions.
-    // Create a map from positions in the string to lists of actions.
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Class ARegexIterator - provides an iterator over matched and unmatched substrings.
- * This implementation of RegexIterator uses the modified Jakarta regular expression engine.
- */

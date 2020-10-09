@@ -108,8 +108,8 @@ class SameNameTest(private var origin: NodeInfo)
 
   /*@NotNull*/
 
-  override def getRequiredNodeNames(): Optional[IntSet] =
-    Optional.of(new IntSingletonSet(getFingerprint))
+  override def getRequiredNodeNames: Option[IntSet] =
+    Some(new IntSingletonSet(getFingerprint))
 
   def getNamespaceURI: String = origin.getURI
 

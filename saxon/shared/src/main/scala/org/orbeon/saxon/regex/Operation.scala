@@ -321,7 +321,7 @@ object Operation {
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
       val in: UnicodeString = matcher.search
-      if (position < in.uLength() && predicate.test(in.uCharAt(position))) {
+      if (position < in.uLength && predicate.test(in.uCharAt(position))) {
         new IntSingletonIterator(position + 1)
       } else {
         EmptyIntIterator.getInstance
@@ -357,7 +357,7 @@ object Operation {
 
   class OpAtom(@BeanProperty var atom: UnicodeString) extends Operation {
 
-    private val len: Int = atom.uLength()
+    private val len: Int = atom.uLength
 
     override def getMatchLength: Int = len
 
@@ -386,7 +386,7 @@ object Operation {
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
       val in: UnicodeString = matcher.search
-      if (position + len > in.uLength()) {
+      if (position + len > in.uLength) {
         EmptyIntIterator.getInstance
       }
       if (matcher.program.flags.isCaseIndependent) {
@@ -434,7 +434,7 @@ object Operation {
 
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
-      var guard: Int = matcher.search.uLength()
+      var guard: Int = matcher.search.uLength
       if (max < java.lang.Integer.MAX_VALUE) {
         guard = java.lang.Math.min(guard, position + len * max)
       }
@@ -495,7 +495,7 @@ object Operation {
 
     override def iterateMatches(matcher: REMatcher,
                                 position: Int): IntIterator = {
-      val guard: Int = matcher.search.uLength()
+      val guard: Int = matcher.search.uLength
       var p: Int = position
       var matches: Int = 0
       breakable {
@@ -557,7 +557,7 @@ object Operation {
       var iterators: List[IntIterator] = Nil
       var positions: List[Integer] = Nil
 
-      val bound = Math.min(max, matcher.search.uLength() - position + 1)
+      val bound = Math.min(max, matcher.search.uLength - position + 1)
       var p: Int = position
       if (greedy) {
         if (min == 0 &&

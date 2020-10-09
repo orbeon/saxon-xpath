@@ -50,36 +50,32 @@ object MapItem {
     try {
       val iter: SequenceIterator = value.iterate()
       var item: Item = null
-      while (({
+      while ({
         item = iter.next()
         item
-      }) != null) if (item
-        .isInstanceOf[AtomicValue]) {
-        if (itemType.isInstanceOf[AtomicType]) {
-          if (!Type.isSubType(item.asInstanceOf[AtomicValue].getItemType,
-            itemType.asInstanceOf[AtomicType])) {
-            false
+      } != null) item match {
+        case atomicValue: AtomicValue =>
+          itemType match {
+            case atomicType: AtomicType =>
+              if (!Type.isSubType(atomicValue.getItemType, atomicType))
+                false
+            case _ =>
+              false
           }
-        } else {
-          false
-        }
-      } else if (item.isInstanceOf[NodeInfo]) {
-        if (itemType.isInstanceOf[NodeTest]) {
-          if (!itemType
-            .asInstanceOf[NodeTest]
-            .test(item.asInstanceOf[NodeInfo])) {
-            false
+        case nodeInfo: NodeInfo =>
+          itemType match {
+            case nodeTest: NodeTest =>
+              if (! nodeTest.test(nodeInfo))
+                false
+            case _ =>
+              false
           }
-        } else {
+        case _ =>
           false
-        }
-      } else {
-        false
       }
       true
     } catch {
-      case e: XPathException => false
-
+      case _: XPathException => false
     }
   }
 
@@ -91,12 +87,12 @@ object MapItem {
       } else {
         var `type`: ItemType = null
         `type` =
-          if (first.isInstanceOf[AtomicValue])
-            first.asInstanceOf[AtomicValue].getItemType
-          else if (first.isInstanceOf[NodeInfo])
-            NodeKindTest.makeNodeKindTest(
-              first.asInstanceOf[NodeInfo].getNodeKind)
-          else AnyFunctionType
+          first match {
+            case atomicValue: AtomicValue => atomicValue.getItemType
+            case info: NodeInfo => NodeKindTest.makeNodeKindTest(
+              info.getNodeKind)
+            case _ => AnyFunctionType
+          }
         if (isKnownToConform(`val`, `type`)) {
           `type`
         } else {
@@ -104,8 +100,7 @@ object MapItem {
         }
       }
     } catch {
-      case e: XPathException => AnyItemType
-
+      case _: XPathException => AnyItemType
     }
 
   def mapToString(map: MapItem): String = {
@@ -128,17 +123,11 @@ object MapItem {
 trait MapItem extends Function {
 
   def get(key: AtomicValue): GroundedValue
-
-  def size(): Int
-
+  def size: Int
   def isEmpty: Boolean
-
-  def keys(): AtomicIterator[_ <: AtomicValue]
-
+  def keys: AtomicIterator[_ <: AtomicValue]
   def keyValuePairs(): java.lang.Iterable[KeyValuePair]
-
   def addEntry(key: AtomicValue, value: GroundedValue): MapItem
-
   def remove(key: AtomicValue): MapItem
 
   def conforms(keyType: AtomicType,
@@ -159,7 +148,7 @@ trait MapItem extends Function {
       var pos: Int = 0
       for (pair <- keyValuePairs().asScala) {
         if ( {
-          pos += 1;
+          pos += 1
           pos - 1
         } > 0) {
           sb.append(",")
@@ -177,28 +166,22 @@ trait MapItem extends Function {
 
   override def getGenre: Genre.Genre = Genre.MAP
 
-  def isArray(): Boolean = false
+  def isArray: Boolean = false
 
-  def isMap(): Boolean = true
+  def isMap: Boolean = true
 
-  override def getAnnotations(): AnnotationList = AnnotationList.EMPTY
+  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
   def atomize(): AtomicSequence =
-    throw new XPathException("Cannot atomize a map (" + toShortString + ")",
-      "FOTY0013")
+    throw new XPathException("Cannot atomize a map (" + toShortString + ")", "FOTY0013")
 
-  def getOperandRoles(): Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
-
+  def getOperandRoles: Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
   def getFunctionItemType: FunctionItemType = MapType.ANY_MAP_TYPE
-
   def getFunctionName: StructuredQName = null
-
   def getDescription: String = "map"
-
   def getArity: Int = 1
 
-  def makeNewContext(callingContext: XPathContext,
-                     originator: ContextOriginator): XPathContext =
+  def makeNewContext(callingContext: XPathContext, originator: ContextOriginator): XPathContext =
     callingContext
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
@@ -224,28 +207,29 @@ trait MapItem extends Function {
                  context: XPathContext,
                  comparer: AtomicComparer,
                  flags: Int): Boolean = {
-    if (other
-      .isInstanceOf[MapItem] && other.asInstanceOf[MapItem].size == size) {
-      val keysL: AtomicIterator[_ <: AtomicValue] = keys
-      var key: AtomicValue = null
-      while (({
-        key = keysL.next()
-        key
-      }) != null) {
-        val thisValue: Sequence = get(key)
-        val otherValue: Sequence = other.asInstanceOf[MapItem].get(key)
-        if (otherValue == null) {
-          return false
+    other match {
+      case item: MapItem if item.size == size =>
+        val keysL: AtomicIterator[_ <: AtomicValue] = keys
+        var key: AtomicValue = null
+        while ({
+          key = keysL.next()
+          key
+        } != null) {
+          val thisValue: Sequence = get(key)
+          val otherValue: Sequence = item.get(key)
+          if (otherValue == null) {
+            return false
+          }
+          if (!DeepEqual.deepEqual(otherValue.iterate(),
+            thisValue.iterate(),
+            comparer,
+            context,
+            flags)) {
+            false
+          }
         }
-        if (!DeepEqual.deepEqual(otherValue.iterate(),
-          thisValue.iterate(),
-          comparer,
-          context,
-          flags)) {
-          false
-        }
-      }
-      return true
+        return true
+      case _ =>
     }
     false
   }
@@ -265,6 +249,6 @@ trait MapItem extends Function {
     out.endElement()
   }
 
-  def isTrustedResultType(): Boolean = true
+  def isTrustedResultType: Boolean = true
 
 }

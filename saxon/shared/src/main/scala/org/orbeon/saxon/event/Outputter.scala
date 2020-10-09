@@ -1,13 +1,10 @@
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.expr.parser.Loc
-import org.orbeon.saxon.model.SchemaType
-import org.orbeon.saxon.model.SimpleType
+import org.orbeon.saxon.model.{SchemaType, SimpleType}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
-import org.orbeon.saxon.tree.util.CharSequenceConsumer
-import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.StringValue
 //import scala.collection.compat._
@@ -59,7 +56,7 @@ abstract class Outputter extends Receiver {
     for (ns <- namespaces.asScala) {
       namespace(ns.getPrefix, ns.getURI, properties)
     }
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       attribute(att.getNodeName,
         att.getType,
         att.getValue,

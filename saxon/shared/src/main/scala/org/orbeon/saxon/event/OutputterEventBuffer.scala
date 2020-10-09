@@ -1,39 +1,28 @@
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.model.SchemaType
+import java.{util => ju}
 
-import org.orbeon.saxon.model.SimpleType
-
+import org.orbeon.saxon.model.{SchemaType, SimpleType}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.ArrayList
-
-import java.util.List
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 class OutputterEventBuffer extends Outputter {
 
-  private var buffer: List[OutputterEvent] = new ArrayList()
+  private var buffer: ju.List[OutputterEvent] = new ju.ArrayList
 
-  def setBuffer(buffer: List[OutputterEvent]): Unit = {
+  def setBuffer(buffer: ju.List[OutputterEvent]): Unit =
     this.buffer = buffer
-  }
 
-  override def startDocument(properties: Int): Unit = {
+  def startDocument(properties: Int): Unit =
     buffer.add(new OutputterEvent.StartDocument(properties))
-  }
 
-  override def endDocument(): Unit = {
+  def endDocument(): Unit =
     buffer.add(new OutputterEvent.EndDocument())
-  }
 
-  override def startElement(elemName: NodeName,
+  def startElement(elemName: NodeName,
                             typeCode: SchemaType,
                             location: Location,
                             properties: Int): Unit = {
@@ -52,7 +41,7 @@ class OutputterEventBuffer extends Outputter {
                             properties: Int): Unit = {
     buffer.add(
       new OutputterEvent.StartElement(elemName, `type`, location, properties))
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       buffer.add(
         new OutputterEvent.Attribute(att.getNodeName,
           att.getType,
@@ -69,7 +58,7 @@ class OutputterEventBuffer extends Outputter {
     buffer.add(new OutputterEvent.StartContent())
   }
 
-  override def attribute(name: NodeName,
+  def attribute(name: NodeName,
                          `type`: SimpleType,
                          value: CharSequence,
                          location: Location,
@@ -82,25 +71,21 @@ class OutputterEventBuffer extends Outputter {
         properties))
   }
 
-  override def namespace(prefix: String, uri: String, properties: Int): Unit = {
+  def namespace(prefix: String, uri: String, properties: Int): Unit =
     buffer.add(new OutputterEvent.Namespace(prefix, uri, properties))
-  }
 
-  override def startContent(): Unit = {
+  override def startContent(): Unit =
     buffer.add(new OutputterEvent.StartContent())
-  }
 
-  override def endElement(): Unit = {
+  def endElement(): Unit =
     buffer.add(new OutputterEvent.EndElement())
-  }
 
-  override def characters(chars: CharSequence,
+  def characters(chars: CharSequence,
                           location: Location,
-                          properties: Int): Unit = {
+                          properties: Int): Unit =
     buffer.add(new OutputterEvent.Text(chars, location, properties))
-  }
 
-  override def processingInstruction(name: String,
+  def processingInstruction(name: String,
                                      data: CharSequence,
                                      location: Location,
                                      properties: Int): Unit = {
@@ -111,28 +96,23 @@ class OutputterEventBuffer extends Outputter {
         properties))
   }
 
-  override def comment(content: CharSequence,
+  def comment(content: CharSequence,
                        location: Location,
-                       properties: Int): Unit = {
+                       properties: Int): Unit =
     buffer.add(new OutputterEvent.Comment(content, location, properties))
-  }
 
-  override def append(item: Item, location: Location, properties: Int): Unit = {
+  override def append(item: Item, location: Location, properties: Int): Unit =
     buffer.add(new OutputterEvent.Append(item, location, properties))
-  }
 
   override def close(): Unit = ()
 
-  def replay(out: Outputter): Unit = {
-    for (event <- buffer.asScala) {
+  def replay(out: Outputter): Unit =
+    for (event <- buffer.asScala)
       event.replay(out)
-    }
-  }
 
   def isEmpty: Boolean = buffer.isEmpty
 
-  def reset(): Unit = {
+  def reset(): Unit =
     buffer.clear()
-  }
 
 }

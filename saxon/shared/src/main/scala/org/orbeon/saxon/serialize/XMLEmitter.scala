@@ -1,6 +1,6 @@
 package org.orbeon.saxon.serialize
 
-import java.util.{Arrays, Properties}
+import java.{lang => jl, util => ju}
 
 import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.event.ReceiverOption
@@ -25,7 +25,7 @@ object XMLEmitter {
 
   var specialInText: Array[Boolean] = new Array[Boolean](128)
   var specialInAtt: Array[Boolean] = new Array[Boolean](128)
-  var specialInAttSingle: Array[Boolean] = Arrays.copyOf(specialInAtt, 128)
+  var specialInAttSingle: Array[Boolean] = ju.Arrays.copyOf(specialInAtt, 128)
 
   var i: Int = 0
   while (i <= 31) {
@@ -99,7 +99,7 @@ class XMLEmitter extends Emitter {
   def setCharacterReferenceGenerator(generator: CharacterReferenceGenerator): Unit =
     this.characterReferenceGenerator = generator
 
-  def setEscapeNonAscii(escape: java.lang.Boolean): Unit = ()
+  def setEscapeNonAscii(escape: jl.Boolean): Unit = ()
 
   override def open(): Unit = ()
 
@@ -116,7 +116,7 @@ class XMLEmitter extends Emitter {
       characterSet = UTF8CharacterSet.getInstance
 
     if (outputProperties == null)
-      outputProperties = new Properties
+      outputProperties = new ju.Properties
 
     undeclareNamespaces = "yes" == outputProperties.getProperty(SaxonOutputKeys.UNDECLARE_PREFIXES)
     canonical = "yes" == outputProperties.getProperty(SaxonOutputKeys.CANONICAL)
@@ -323,7 +323,7 @@ class XMLEmitter extends Emitter {
       namespace(ns.getPrefix, ns.getURI, isFirst)
       isFirst = false
     }
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       attribute(att.getNodeName, att.getValue, att.getProperties, isFirst)
       isFirst = false
     }

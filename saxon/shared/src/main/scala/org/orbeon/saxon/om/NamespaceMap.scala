@@ -397,17 +397,16 @@ class NamespaceMap() extends NamespaceBindingSet with NamespaceResolver {
   override def iterator = new Iterator[NamespaceBinding]() {
     private[om] var i = 0
 
-    override
-
     def hasNext: Boolean = return i < prefixes.length
 
-    override
-
-    def next = {
+    def next() = {
       val nb = new NamespaceBinding(prefixes(i), uris(i))
       i += 1
       nb
     }
+
+    override def remove(): Unit =
+      throw new UnsupportedOperationException("remove")
   }
 
   /**

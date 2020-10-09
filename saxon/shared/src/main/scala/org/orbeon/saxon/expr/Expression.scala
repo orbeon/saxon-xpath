@@ -619,7 +619,7 @@ abstract class Expression
         slotsUsed(i) = iter.next
         i = i + 1
       }
-      Arrays.sort(slotsUsed)
+      scala.util.Sorting.quickSort(slotsUsed)
       slotsUsed
     }
   }

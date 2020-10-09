@@ -1,28 +1,13 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.ProxyReceiver
+import java.{util => ju}
 
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
+import org.orbeon.saxon.event.{ProxyReceiver, Receiver, ReceiverOption}
 import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om.AttributeInfo
-
-import org.orbeon.saxon.om.AttributeMap
-
-import org.orbeon.saxon.om.NamespaceMap
-
-import org.orbeon.saxon.om.NodeName
-
+import org.orbeon.saxon.om.{AttributeInfo, AttributeMap, NamespaceMap, NodeName}
 import org.orbeon.saxon.s9api.Location
 
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.ArrayList
-
-import java.util.List
+import scala.jdk.CollectionConverters._
 
 class CharacterMapExpander(next: Receiver) extends ProxyReceiver(next) {
 
@@ -46,9 +31,9 @@ class CharacterMapExpander(next: Receiver) extends ProxyReceiver(next) {
                             namespaces: NamespaceMap,
                             location: Location,
                             properties: Int): Unit = {
-    val atts2: List[AttributeInfo] =
-      new ArrayList[AttributeInfo](attributes.size)
-    for (att <- attributes) {
+    val atts2: ju.List[AttributeInfo] =
+      new ju.ArrayList[AttributeInfo](attributes.size)
+    for (att <- attributes.iterator.asScala) {
       val oldValue: String = att.getValue
       if (!ReceiverOption.contains(att.getProperties,
         ReceiverOption.DISABLE_CHARACTER_MAPS)) {

@@ -14,8 +14,7 @@ import org.orbeon.saxon.ma.map.{MapItem, MapType}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
-import org.orbeon.saxon.s9api.{ItemType => _, _}
-import org.orbeon.saxon.s9apir.XdmFunctionItem
+//import org.orbeon.saxon.s9api.{ItemType => _, _}
 import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value._
@@ -28,14 +27,15 @@ object JPConverter {
 
   var converterMap =
     Map[Class[_], JPConverter](
-      classOf[XdmValue]              -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ZERO_OR_MORE),
-      classOf[XdmItem]               -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ONE),
-      classOf[XdmAtomicValue]        -> new FromXdmValue(BuiltInAtomicType.ANY_ATOMIC, StaticProperty.ALLOWS_ONE),
-      classOf[XdmNode]               -> new FromXdmValue(AnyNodeTest.getInstance,      StaticProperty.ALLOWS_ONE),
-      classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType,  StaticProperty.ALLOWS_ONE),
-      classOf[XdmMap]                -> new FromXdmValue(MapType.ANY_MAP_TYPE,         StaticProperty.ALLOWS_ONE),
-      classOf[XdmArray]              -> new FromXdmValue(ArrayItemType.ANY_ARRAY_TYPE, StaticProperty.ALLOWS_ONE),
-      classOf[XdmEmptySequence]      -> new FromXdmValue(ErrorType,        StaticProperty.ALLOWS_ZERO),
+      // ORBEON: s9api
+//      classOf[XdmValue]              -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ZERO_OR_MORE),
+//      classOf[XdmItem]               -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ONE),
+//      classOf[XdmAtomicValue]        -> new FromXdmValue(BuiltInAtomicType.ANY_ATOMIC, StaticProperty.ALLOWS_ONE),
+//      classOf[XdmNode]               -> new FromXdmValue(AnyNodeTest.getInstance,      StaticProperty.ALLOWS_ONE),
+//      classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType,  StaticProperty.ALLOWS_ONE),
+//      classOf[XdmMap]                -> new FromXdmValue(MapType.ANY_MAP_TYPE,         StaticProperty.ALLOWS_ONE),
+//      classOf[XdmArray]              -> new FromXdmValue(ArrayItemType.ANY_ARRAY_TYPE, StaticProperty.ALLOWS_ONE),
+//      classOf[XdmEmptySequence]      -> new FromXdmValue(ErrorType,        StaticProperty.ALLOWS_ZERO),
       classOf[SequenceIterator]      -> FromSequenceIterator,
       classOf[Sequence]              -> FromSequenceOfAny,
       classOf[OneOrMore[_ <: Item]]  -> FromSequenceOfAny,
@@ -118,9 +118,10 @@ object JPConverter {
     classOf[OneOrMore[_ <: Item]]    -> StaticProperty.ALLOWS_ONE_OR_MORE,
     classOf[One[_ <: Item]]          -> StaticProperty.EXACTLY_ONE,
     classOf[ZeroOrOne[_ <: Item]]    -> StaticProperty.ALLOWS_ZERO_OR_ONE,
-    classOf[XdmValue]                -> StaticProperty.ALLOWS_ZERO_OR_MORE,
-    classOf[XdmItem]                 -> StaticProperty.ALLOWS_ZERO_OR_MORE,
-    classOf[XdmEmptySequence]        -> StaticProperty.ALLOWS_ZERO,
+    // ORBEON: s9api
+//    classOf[XdmValue]                -> StaticProperty.ALLOWS_ZERO_OR_MORE,
+//    classOf[XdmItem]                 -> StaticProperty.ALLOWS_ZERO_OR_MORE,
+//    classOf[XdmEmptySequence]        -> StaticProperty.ALLOWS_ZERO,
   )
 
   def allocate(javaClass: Class[_],
@@ -205,15 +206,16 @@ object JPConverter {
     override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
-  class FromXdmValue(var resultType: ItemType,
-                     @BeanProperty var cardinalityInt: Int = 0)
-    extends JPConverter {
-
-    def convert(o: AnyRef, context: XPathContext): Sequence =
-      o.asInstanceOf[XdmValue].getUnderlyingValue
-
-    def getItemType: ItemType = resultType
-  }
+  // ORBEON: TMP s9api
+//  class FromXdmValue(var resultType: ItemType,
+//                     @BeanProperty var cardinalityInt: Int = 0)
+//    extends JPConverter {
+//
+//    def convert(o: AnyRef, context: XPathContext): Sequence =
+//      o.asInstanceOf[XdmValue].getUnderlyingValue
+//
+//    def getItemType: ItemType = resultType
+//  }
 
   object FromSequenceOfAny extends FromSequence(AnyItemType, StaticProperty.ALLOWS_ZERO_OR_MORE)
 

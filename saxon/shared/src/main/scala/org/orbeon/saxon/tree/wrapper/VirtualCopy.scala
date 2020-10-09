@@ -1,39 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.wrapper
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.function.{Predicate, Supplier}
+import java.{util => ju}
 
 import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.model.{SchemaType, Type}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.NamespaceNode
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.tree.util.Navigator
-
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.function.Predicate
-
-import java.util.function.Supplier
-
-import VirtualCopy._
+import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator}
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
+import org.orbeon.saxon.utils.Configuration
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -105,10 +83,10 @@ class VirtualCopy(var original: NodeInfo,
         }
         val iter: AxisIterator = original.iterateAxis(AxisInfo.ATTRIBUTE)
         var att: NodeInfo = null
-        while (({
+        while ({
           att = iter.next()
           att
-        }) != null) if (att.getURI.!=("")) {
+        } != null) if (att.getURI.!=("")) {
           nsMap = nsMap.put(att.getPrefix, att.getURI)
         }
         nsMap
@@ -160,32 +138,29 @@ class VirtualCopy(var original: NodeInfo,
       ((getTreeInfo.getDocumentNumber & 0x7fffffff).toInt << 19)
 
   def getSystemId: String = systemIdSupplier.get
-
   /*@Nullable*/
-
   override def getBaseURI: String = Navigator.getBaseURI(this)
-
   override def getLineNumber: Int = original.getLineNumber
-
-  override def getColumnNumber(): Int = original.getColumnNumber
+  override def getColumnNumber: Int = original.getColumnNumber
 
   /**
    * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
    * should not be saved for later use. The result of this operation holds the same location information,
    * but in an immutable form.
    */
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   def compareOrder(other: NodeInfo): Int =
-    if (other.isInstanceOf[VirtualCopy]) {
-      val c: Int = root.compareOrder(other.asInstanceOf[VirtualCopy].root)
-      if (c == 0) {
-        original.compareOrder(other.asInstanceOf[VirtualCopy].original)
-      } else {
-        c
-      }
-    } else {
-      other.compareOrder(original)
+    other match {
+      case virtualCopy: VirtualCopy =>
+        val c: Int = root.compareOrder(virtualCopy.root)
+        if (c == 0) {
+          original.compareOrder(virtualCopy.original)
+        } else {
+          c
+        }
+      case _ =>
+        other.compareOrder(original)
     }
 
   def getStringValue: String = getStringValueCS.toString
@@ -315,8 +290,8 @@ class VirtualCopy(var original: NodeInfo,
                              buffer: Array[NamespaceBinding]): Array[NamespaceBinding] =
     if (getNodeKind == Type.ELEMENT) {
       if (dropNamespaces) {
-        val allNamespaces: List[NamespaceBinding] =
-          new ArrayList[NamespaceBinding](5)
+        val allNamespaces: ju.List[NamespaceBinding] =
+          new ju.ArrayList[NamespaceBinding](5)
         val ns: String = getURI
         if (ns.isEmpty) {
           if (getParent != null && !getParent.getURI.isEmpty) {
@@ -325,7 +300,7 @@ class VirtualCopy(var original: NodeInfo,
         } else {
           allNamespaces.add(new NamespaceBinding(getPrefix, getURI))
         }
-        for (att <- original.attributes) {
+        for (att <- original.attributes.iterator.asScala) {
           val name: NodeName = att.getNodeName
           if (name.getURI != null) {
             val b: NamespaceBinding =
@@ -338,7 +313,7 @@ class VirtualCopy(var original: NodeInfo,
         allNamespaces.toArray(NamespaceBinding.EMPTY_ARRAY)
       } else {
         if (original == root) {
-          val bindings: List[NamespaceBinding] = new ArrayList[NamespaceBinding]()
+          val bindings: ju.List[NamespaceBinding] = new ju.ArrayList[NamespaceBinding]()
           //          for (binding <- original.getAllNamespaces) {
           //            bindings.add(binding)
           //          }
@@ -369,9 +344,9 @@ class VirtualCopy(var original: NodeInfo,
 
   override def isId: Boolean = original.isId
 
-  override def isIdref(): Boolean = original.isIdref
+  override def isIdref: Boolean = original.isIdref
 
-  override def isNilled(): Boolean = original.isNilled
+  override def isNilled: Boolean = original.isNilled
 
   /*@Nullable*/
 

@@ -1,39 +1,23 @@
 package org.orbeon.saxon.expr.sort
 
-import org.orbeon.saxon.lib.SubstringMatcher
-
-import org.orbeon.saxon.model.StringConverter
-
-import org.orbeon.saxon.model.ValidationFailure
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AnyURIValue
-
 import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.text.CollationElementIterator
-
-import java.text.CollationKey
-
-import java.text.Collator
-
-import java.text.RuleBasedCollator
-
+import java.text.{CollationElementIterator, CollationKey, Collator, RuleBasedCollator}
 import java.util._
 
-import UcaCollatorUsingJava._
+import org.orbeon.saxon.expr.sort.UcaCollatorUsingJava._
+import org.orbeon.saxon.lib.SubstringMatcher
+import org.orbeon.saxon.model.{StringConverter, ValidationFailure}
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.value.AnyURIValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
+// ORBEON: Collations
 object UcaCollatorUsingJava {
 
-  private var keywords: Array[String] = Array("fallback",
+  private val keywords: Array[String] = Array("fallback",
     "lang",
     "version",
     "strength",
@@ -46,15 +30,12 @@ object UcaCollatorUsingJava {
     "numeric",
     "reorder")
 
-  private var keys: Set[String] =
+  private val keys: Set[String] =
     new HashSet[String](Arrays.asList(keywords: _*))
 
   private trait Strength {
-
     def compare(ce1: Int, ce2: Int): Int
-
   }
-
 }
 
 class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {

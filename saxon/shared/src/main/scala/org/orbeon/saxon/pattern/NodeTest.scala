@@ -100,8 +100,8 @@ abstract class NodeTest
     AnyType.getInstance
   }
 
-  def getRequiredNodeNames: Optional[IntSet] =
-    Optional.of(IntUniversalSet.getInstance)
+  def getRequiredNodeNames: Option[IntSet] =
+    Some(IntUniversalSet.getInstance)
 
   def isNillable: Boolean = true
 

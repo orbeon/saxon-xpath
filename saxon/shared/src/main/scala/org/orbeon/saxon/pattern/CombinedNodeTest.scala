@@ -199,21 +199,20 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     Type.NODE
   }
 
-  override def getRequiredNodeNames(): Optional[IntSet] = {
-    val os1: Optional[IntSet] = nodetest1.getRequiredNodeNames
-    val os2: Optional[IntSet] = nodetest2.getRequiredNodeNames
-    if (os1.isPresent && os2.isPresent) {
-      val s1: IntSet = os1.get
-      val s2: IntSet = os2.get
+  override def getRequiredNodeNames: Option[IntSet] = {
+    val os1 = nodetest1.getRequiredNodeNames
+    val os2 = nodetest2.getRequiredNodeNames
+    if (os1.isDefined && os2.isDefined) {
+      val s1 = os1.get
+      val s2 = os2.get
       operator match {
-        case Token.UNION => Optional.of(s1.union(s2))
-        case Token.INTERSECT => Optional.of(s1.intersect(s2))
-        case Token.EXCEPT => Optional.of(s1.except(s2))
-        case _ => throw new IllegalStateException()
-
+        case Token.UNION     => Some(s1.union(s2))
+        case Token.INTERSECT => Some(s1.intersect(s2))
+        case Token.EXCEPT    => Some(s1.except(s2))
+        case _               => throw new IllegalStateException()
       }
     } else {
-      Optional.empty()
+      None
     }
   }
 

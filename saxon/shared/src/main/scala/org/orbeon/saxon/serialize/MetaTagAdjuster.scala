@@ -1,55 +1,40 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
-
-import org.orbeon.saxon.event.ProxyReceiver
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Untyped
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.Whitespace
-
-import javax.xml.transform.OutputKeys
 
 import java.util.Properties
 
+import javax.xml.transform.OutputKeys
+import org.orbeon.saxon.event.{ProxyReceiver, Receiver, ReceiverOption}
+import org.orbeon.saxon.expr.parser.Loc
+import org.orbeon.saxon.lib.{NamespaceConstant, SaxonOutputKeys}
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaType, Untyped}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.value.Whitespace
+
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 
+/**
+ * The MetaTagAdjuster adds a meta element to the content of the head element, indicating
+ * the required content type and encoding; it also removes any existing meta element
+ * containing this information
+ */
 class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
 
   private var seekingHead: Boolean = true
-
   private var droppingMetaTags: Int = -1
-
   private var inMetaTag: Boolean = false
-
   var encoding: String = _
-
   private var mediaType: String = _
-
   private var level: Int = 0
-
   private var isXHTML: Boolean = false
-
   private var htmlVersion: Int = 4
 
   def setOutputProperties(details: Properties): Unit = {
@@ -75,11 +60,10 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
   }
 
   private def comparesEqual(name1: String, name2: String): Boolean =
-    if (isXHTML) {
+    if (isXHTML)
       name1 == name2
-    } else {
+    else
       name1.equalsIgnoreCase(name2)
-    }
 
   private def matchesName(name: NodeName, local: String): Boolean =
     if (isXHTML) {
@@ -106,7 +90,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
         // if there was an http-equiv="ContentType" attribute, discard the meta element entirely
         var found: Boolean = false
         breakable {
-          for (att <- attributes) {
+          for (att <- attributes.iterator.asScala) {
             val name: String = att.getNodeName.getLocalPart
             if (comparesEqual(name, "http-equiv")) {
               val value: String = Whitespace.trim(att.getValue)
@@ -174,14 +158,3 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * The MetaTagAdjuster adds a meta element to the content of the head element, indicating
- * the required content type and encoding; it also removes any existing meta element
- * containing this information
- */

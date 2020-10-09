@@ -517,28 +517,29 @@ class DateTimeValue extends CalendarValue
 
   private var hasNoYearZero: Boolean = _
 
-  def this(calendar: Calendar, tzSpecified: Boolean) = {
-    this()
-    val era: Int = calendar.get(Calendar.ERA)
-    year = calendar.get(Calendar.YEAR)
-    if (era == GregorianCalendar.BC) {
-      year = 1 - year
-    }
-    month = (calendar.get(Calendar.MONTH) + 1).toByte
-    day = calendar.get(Calendar.DATE).toByte
-    hour = calendar.get(Calendar.HOUR_OF_DAY).toByte
-    minute = calendar.get(Calendar.MINUTE).toByte
-    second = calendar.get(Calendar.SECOND).toByte
-    nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000
-    if (tzSpecified) {
-      val tz: Int = (calendar.get(Calendar.ZONE_OFFSET) + calendar.get(
-        Calendar.DST_OFFSET)) /
-        60000
-      this.setTimezoneInMinutes(tz)
-    }
-    typeLabel = BuiltInAtomicType.DATE_TIME
-    hasNoYearZero = true
-  }
+
+//  def this(calendar: Calendar, tzSpecified: Boolean) = {
+//    this()
+//    val era: Int = calendar.get(Calendar.ERA)
+//    year = calendar.get(Calendar.YEAR)
+//    if (era == GregorianCalendar.BC) {
+//      year = 1 - year
+//    }
+//    month = (calendar.get(Calendar.MONTH) + 1).toByte
+//    day = calendar.get(Calendar.DATE).toByte
+//    hour = calendar.get(Calendar.HOUR_OF_DAY).toByte
+//    minute = calendar.get(Calendar.MINUTE).toByte
+//    second = calendar.get(Calendar.SECOND).toByte
+//    nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000
+//    if (tzSpecified) {
+//      val tz: Int = (calendar.get(Calendar.ZONE_OFFSET) + calendar.get(
+//        Calendar.DST_OFFSET)) /
+//        60000
+//      this.setTimezoneInMinutes(tz)
+//    }
+//    typeLabel = BuiltInAtomicType.DATE_TIME
+//    hasNoYearZero = true
+//  }
 
   def this(year: Int,
            month: Byte,

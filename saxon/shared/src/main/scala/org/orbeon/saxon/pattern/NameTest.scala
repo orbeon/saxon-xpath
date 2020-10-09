@@ -1,28 +1,15 @@
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.TypeHierarchy
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import org.orbeon.saxon.z.IntSet
-
-import org.orbeon.saxon.z.IntSingletonSet
-
 import java.util.Optional
-
 import java.util.function.IntPredicate
 
-import scala.beans.{BeanProperty}
+import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.tree.tiny.NodeVectorTree
+import org.orbeon.saxon.z.{IntSet, IntSingletonSet}
+
+import scala.beans.BeanProperty
 
 class NameTest(@BeanProperty var nodeKind: Int,
                private var uri: String,
@@ -112,8 +99,8 @@ class NameTest(@BeanProperty var nodeKind: Int,
 
   override def getPrimitiveType: Int = nodeKind
 
-  override def getRequiredNodeNames(): Optional[IntSet] =
-    Optional.of(new IntSingletonSet(fingerPrintInt))
+  override def getRequiredNodeNames(): Option[IntSet] =
+    Some(new IntSingletonSet(fingerPrintInt))
 
   def getNamespaceURI: String = {
     computeUriAndLocal()

@@ -1,25 +1,18 @@
 package org.orbeon.saxon.ma.map
 
+import java.util
+import java.util.{Iterator, List, TreeMap}
+
 import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.expr.sort.AtomicComparer
-import org.orbeon.saxon.expr.sort.AtomicMatchKey
+import org.orbeon.saxon.expr.sort.{AtomicComparer, AtomicMatchKey}
 import org.orbeon.saxon.functions.Count
-import org.orbeon.saxon.model.AtomicType
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.model.UType
-import org.orbeon.saxon.om.Function
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.Sequence
+import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType, TypeHierarchy, UType}
+import org.orbeon.saxon.om.{Function, GroundedValue, NodeInfo, Sequence}
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, _}
-import java.util.Iterator
-import java.util.List
-import java.util.TreeMap
 
 
 class RangeKey
@@ -45,17 +38,18 @@ class RangeKey
       val value: Any = index.get(k)
       if (value == null) {
         EmptySequence.getInstance
-      } else if (value.isInstanceOf[NodeInfo]) {
-        value.asInstanceOf[NodeInfo]
-      } else {
-        val nodes: List[NodeInfo] = value.asInstanceOf[List[NodeInfo]]
-        SequenceExtent.makeSequenceExtent(nodes)
+      } else value match {
+        case info: NodeInfo =>
+          info
+        case _ =>
+          val nodes: util.List[NodeInfo] = value.asInstanceOf[util.List[NodeInfo]]
+          SequenceExtent.makeSequenceExtent(nodes)
       }
     }
     EmptySequence.getInstance
   }
 
-  def size(): Int =
+  def size: Int =
     try Count.count(keys)
     catch {
       case err: XPathException => 0
@@ -64,12 +58,12 @@ class RangeKey
 
   def isEmpty: Boolean = keys.next() == null
 
-  def keys(): AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator
+  def keys: AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator
 
   def keyValuePairs(): java.lang.Iterable[KeyValuePair] =
     () =>
       new Iterator[KeyValuePair]() {
-        var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys()
+        var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys
 
         var nextVal: AtomicValue = keyAtItr.next()
 
@@ -87,7 +81,7 @@ class RangeKey
 
   def remove(key: AtomicValue): MapItem = HashTrieMap.copy(this).remove(key)
 
-  def getKeyUType(): UType = UType.STRING
+  def getKeyUType: UType = UType.STRING
 
   override def addEntry(key: AtomicValue, value: GroundedValue): MapItem =
     HashTrieMap.copy(this).addEntry(key, value)
@@ -97,10 +91,10 @@ class RangeKey
                         th: TypeHierarchy): Boolean = {
     val keyIter: AtomicIterator[_ <: AtomicValue] = keys
     var key: AtomicValue = null
-    while (({
+    while ({
       key = keyIter.next()
       key
-    }) != null) {
+    } != null) {
       val value: Sequence = get(key)
       if (!valueType.matches(value, th)) {
         false
@@ -121,11 +115,11 @@ class RangeKey
                           context: XPathContext,
                           comparer: AtomicComparer,
                           flags: Int): Boolean =
-    if (other.isInstanceOf[RangeKey]) {
-      val rk: RangeKey = other.asInstanceOf[RangeKey]
-      min == rk.min && max == rk.max && index == rk.index
-    } else {
-      false
+    other match {
+      case rk: RangeKey =>
+        min == rk.min && max == rk.max && index == rk.index
+      case _ =>
+        false
     }
 
   override def export(out: ExpressionPresenter): Unit = {

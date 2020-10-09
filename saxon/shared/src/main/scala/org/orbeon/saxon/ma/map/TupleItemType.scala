@@ -1,41 +1,22 @@
 package org.orbeon.saxon.ma.map
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.StaticProperty
-
-import org.orbeon.saxon.expr.parser.RoleDiagnostic
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Genre
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.AtomicIterator
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value._
-
 import java.util._
 
-import java.util.function.Function
+import org.orbeon.saxon.expr.{Expression, StaticProperty}
+import org.orbeon.saxon.expr.parser.RoleDiagnostic
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{Genre, GroundedValue, Item, Sequence}
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.tree.iter.AtomicIterator
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.orbeon.saxon.model.Affinity._
 
-import Affinity._
+import scala.jdk.CollectionConverters._
 
 class TupleItemType(names: List[String],
                     types: List[SequenceType],
@@ -55,14 +36,13 @@ class TupleItemType(names: List[String],
 
   override def isArrayType: Boolean = false
 
-  override def getFieldNames(): java.lang.Iterable[String] = fields.keySet
+  override def getFieldNames: java.lang.Iterable[String] = fields.keySet
 
   def getFieldType(field: String): SequenceType = fields.get(field)
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (!(item.isInstanceOf[MapItem])) {
+    if (! item.isInstanceOf[MapItem])
       return false
-    }
     val map: MapItem = item.asInstanceOf[MapItem]
     for ((key, value) <- fields.asScala) {
       var `val`: Sequence = map.get(new StringValue(key))
@@ -127,7 +107,7 @@ class TupleItemType(names: List[String],
 
   override def getBasicAlphaCode: String = "FM"
 
-  private def makeString(show: Function[SequenceType, String]): String = {
+  private def makeString(show: SequenceType => String): String = {
     val sb: FastStringBuffer = new FastStringBuffer(100)
     sb.append("tuple(")
     var first: Boolean = true

@@ -1,53 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.hof
 
-import org.orbeon.saxon.expr.Callable
+import java.util.{LinkedList, List, Random}
 
-import org.orbeon.saxon.expr.StaticProperty
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.functions.CallableFunction
-
-import org.orbeon.saxon.functions.SystemFunction
-
-import org.orbeon.saxon.ma.map.DictionaryMap
-
-import org.orbeon.saxon.ma.map.MapItem
-
-import org.orbeon.saxon.ma.map.MapType
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.FunctionItemType
-
-import org.orbeon.saxon.model.SpecificFunctionType
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.DoubleValue
-
-import org.orbeon.saxon.value.SequenceExtent
-
-import org.orbeon.saxon.value.SequenceType
-
-import java.util.LinkedList
-
-import java.util.List
-
-import java.util.Random
-
-import RandomNumberGenerator._
-
-
+import org.orbeon.saxon.expr.{Callable, StaticProperty, XPathContext}
+import org.orbeon.saxon.functions.{CallableFunction, SystemFunction}
+import org.orbeon.saxon.functions.hof.RandomNumberGenerator._
+import org.orbeon.saxon.ma.map.{DictionaryMap, MapItem, MapType}
+import org.orbeon.saxon.model.{BuiltInAtomicType, FunctionItemType, SpecificFunctionType}
+import org.orbeon.saxon.om.{Item, Sequence, SequenceIterator}
+import org.orbeon.saxon.value.{AtomicValue, DoubleValue, SequenceExtent, SequenceType}
 
 
 object RandomNumberGenerator {
@@ -131,12 +98,5 @@ class RandomNumberGenerator extends SystemFunction with Callable {
     }
     generator(seed, context)
   }
-
 }
 
-// Copyright (c) 2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2018-2020 Saxonica Limited

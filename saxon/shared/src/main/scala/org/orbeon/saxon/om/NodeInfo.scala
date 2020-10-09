@@ -65,7 +65,7 @@ trait NodeInfo extends Source with Item with Location {
   def getPublicId: String = null
   def getBaseURI: String
   def getLineNumber: Int = -1
-  def getColumnNumber(): Int = -1
+  def getColumnNumber: Int = -1
   def compareOrder(other: NodeInfo): Int
   def getStringValue: String
   def hasFingerprint: Boolean

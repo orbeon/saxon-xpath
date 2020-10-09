@@ -7,16 +7,12 @@
 
 package org.orbeon.saxon.model
 
-import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.om.Genre
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.StructuredQName
-import org.orbeon.saxon.value.AtomicValue
 import java.util.Optional
 
+import org.orbeon.saxon.lib.ConversionRules
 import org.orbeon.saxon.om.Genre.Genre
-
-
+import org.orbeon.saxon.om.{Genre, Item, StructuredQName}
+import org.orbeon.saxon.value.AtomicValue
 
 
 /**
@@ -39,19 +35,12 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
                rules: ConversionRules): ValidationFailure
 
   def isOrdered(optimistic: Boolean): Boolean
-
   def isAbstract: Boolean
-
   def isPrimitiveType: Boolean
-
-  def isIdType(): Boolean
-
-  def isIdRefType(): Boolean
-
-  def isBuiltInType(): Boolean
-
-  def getTypeName(): StructuredQName
-
+  def isIdType: Boolean
+  def isIdRefType: Boolean
+  def isBuiltInType: Boolean
+  def getTypeName: StructuredQName
   def getStringConverter(rules: ConversionRules): StringConverter
 
   /**
@@ -65,13 +54,11 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     */
   override def explainMismatch(item: Item,
                                th: TypeHierarchy): Optional[String] =
-    if (item.isInstanceOf[AtomicValue]) {
-      Optional.of(
-        "The supplied value is of type " + item
-          .asInstanceOf[AtomicValue]
-          .getItemType)
-    } else {
-      Optional.of("The supplied value is " + item.getGenre.getDescription)
+    item match {
+      case value: AtomicValue =>
+        Optional.of("The supplied value is of type " + value.getItemType)
+      case _ =>
+        Optional.of("The supplied value is " + item.getGenre.getDescription)
     }
 
   /**

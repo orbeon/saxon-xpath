@@ -1,21 +1,18 @@
 package org.orbeon.saxon.saxjava
 
+import java.text.{CollationKey, Collator}
+import java.util.{List, Properties}
+
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.expr.sort._
 import org.orbeon.saxon.functions.FunctionLibraryList
+import org.orbeon.saxon.javasax.JavaCollationFactory
 import org.orbeon.saxon.lib.{ModuleURIResolver, StandardModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.{ARegularExpression, JavaRegularExpression, RegularExpression}
 import org.orbeon.saxon.resource.StandardCollectionFinder
-import java.lang.reflect.Method
-import java.text.{CollationKey, Collator}
-import java.util.{List, Properties}
-
-import javax.xml.parsers.SAXParserFactory
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
-import org.orbeon.saxon.javasax.JavaCollationFactory
-import org.orbeon.saxon.saxjava.JavaPlatform._
 import org.orbeon.saxon.utils.{Configuration, Platform}
 import org.xml.sax.XMLReader
 
@@ -68,40 +65,45 @@ class JavaPlatform extends Platform {
 
   def getPlatformSuffix: String = "J"
 
-  def loadParser(): XMLReader =
-    SAXParserFactory.newInstance().newSAXParser().getXMLReader
+  // ORBEON: TODO: Custom parser loading.
+  def loadParser(): XMLReader = {
+    ???
+//    SAXParserFactory.newInstance().newSAXParser().getXMLReader
+  }
 
+  // ORBEON: TODO: Custom parser loading.
   def loadParserForXmlFragments(): XMLReader = {
-    var factory: SAXParserFactory = null
-    if (tryJdk9) {
-      try {
-        val method: Method =
-          classOf[SAXParserFactory].getMethod("newDefaultInstance")
-        val result: AnyRef = method.invoke(null)
-        factory = result.asInstanceOf[SAXParserFactory]
-      } catch {
-        case e: Exception => tryJdk9 = false
-
-      }
-    }
-    if (factory == null) {
-      try {
-        val factoryClass: Class[_] = Class.forName(
-          "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl")
-        factory = factoryClass.newInstance().asInstanceOf[SAXParserFactory]
-      } catch {
-        case e2: Exception => {}
-
-      }
-    }
-    if (factory != null) {
-      try factory.newSAXParser().getXMLReader
-      catch {
-        case e: Exception => {}
-
-      }
-    }
-    loadParser()
+    ???
+//    var factory: SAXParserFactory = null
+//    if (tryJdk9) {
+//      try {
+//        val method: Method =
+//          classOf[SAXParserFactory].getMethod("newDefaultInstance")
+//        val result: AnyRef = method.invoke(null)
+//        factory = result.asInstanceOf[SAXParserFactory]
+//      } catch {
+//        case e: Exception => tryJdk9 = false
+//
+//      }
+//    }
+//    if (factory == null) {
+//      try {
+//        val factoryClass: Class[_] = Class.forName(
+//          "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl")
+//        factory = factoryClass.newInstance().asInstanceOf[SAXParserFactory]
+//      } catch {
+//        case e2: Exception => {}
+//
+//      }
+//    }
+//    if (factory != null) {
+//      try factory.newSAXParser().getXMLReader
+//      catch {
+//        case e: Exception => {}
+//
+//      }
+//    }
+//    loadParser()
   }
 
   def getParserSource(pipe: PipelineConfiguration,
@@ -114,33 +116,36 @@ class JavaPlatform extends Platform {
                     uri: String): StringCollator =
     JavaCollationFactory.makeCollation(config, uri, props)
 
-  def canReturnCollationKeys(collation: StringCollator): Boolean =
-    !(collation.isInstanceOf[SimpleCollation]) ||
-      collation
-        .asInstanceOf[SimpleCollation]
-        .getComparator
-        .isInstanceOf[Collator]
+  // ORBEON: Collations
+//  def canReturnCollationKeys(collation: StringCollator): Boolean =
+//    ! collation.isInstanceOf[SimpleCollation] ||
+//      collation
+//        .asInstanceOf[SimpleCollation]
+//        .getComparator
+//        .isInstanceOf[Collator]
 
-  def getCollationKey(namedCollation: SimpleCollation,
-                      value: String): AtomicMatchKey = {
-    val ck: CollationKey = namedCollation.getComparator
-      .asInstanceOf[Collator]
-      .getCollationKey(value)
-    new CollationMatchKey(ck)
-  }
+  // ORBEON: Collations
+//  def getCollationKey(namedCollation: SimpleCollation,
+//                      value: String): AtomicMatchKey = {
+//    val ck: CollationKey = namedCollation.getComparator
+//      .asInstanceOf[Collator]
+//      .getCollationKey(value)
+//    new CollationMatchKey(ck)
+//  }
 
   def hasICUCollator: Boolean = false
 
   def hasICUNumberer: Boolean = false
 
-  def makeUcaCollator(uri: String, config: Configuration): StringCollator = {
-    val collator: UcaCollatorUsingJava = new UcaCollatorUsingJava(uri)
-    if ("yes" == collator.getProperties.getProperty("numeric")) {
-      new AlphanumericCollator(collator)
-    } else {
-      collator
-    }
-  }
+  // ORBEON: Collations
+//  def makeUcaCollator(uri: String, config: Configuration): StringCollator = {
+//    val collator: UcaCollatorUsingJava = new UcaCollatorUsingJava(uri)
+//    if ("yes" == collator.getProperties.getProperty("numeric")) {
+//      new AlphanumericCollator(collator)
+//    } else {
+//      collator
+//    }
+//  }
 
   def addFunctionLibraries(list: FunctionLibraryList,
                            config: Configuration,

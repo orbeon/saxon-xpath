@@ -49,8 +49,8 @@ class NamespaceTest(private var namePool: NamePool,
     * @return the set of integer fingerprints of the node names that this node test can match; or absent
     * if the set of names cannot be represented (for example, with the name tests *:xxx or xxx:*)
     */
-  override def getRequiredNodeNames(): Optional[IntSet] = // See bug 3713
-    Optional.empty()
+  override def getRequiredNodeNames: Option[IntSet] = // See bug 3713
+    None
 
   override def getFullAlphaCode(): String =
     getBasicAlphaCode + " nQ{" + uri + "}*"

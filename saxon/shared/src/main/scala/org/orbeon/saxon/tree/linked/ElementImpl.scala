@@ -1,8 +1,8 @@
 package org.orbeon.saxon.tree.linked
 
-import org.orbeon.saxon.event.CopyInformee
-import org.orbeon.saxon.event.Receiver
-import org.orbeon.saxon.event.ReceiverOption
+import java.util.function.Predicate
+
+import org.orbeon.saxon.event.{CopyInformee, Receiver, ReceiverOption}
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model._
@@ -11,20 +11,17 @@ import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AxisIterator
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.tree.util.Navigator
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.Whitespace
-import java.util.{ArrayList, Collections, Iterator, List, Objects}
-import java.util.function.Predicate
-
-import org.orbeon.saxon.s9api.streams.Steps.child
 import org.orbeon.saxon.tree.linked.ElementImpl.isIdRefNode
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
+import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 //import scala.collection.compat._
+import java.{util => ju}
+
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
+
 
 object ElementImpl {
 
@@ -34,19 +31,19 @@ object ElementImpl {
       if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS) {
         return true
       }
-      try for (av <- node.atomize().asScala if av.getItemType.isIdRefType) {
-        true
-      } catch {
+      try
+        for (av <- node.atomize().asScala if av.getItemType.isIdRefType) {
+          return true
+        }
+      catch {
         case _: XPathException =>
-
       }
     } catch {
-      case e: MissingComponentException => return false
-
+      case _: MissingComponentException =>
+        return false
     }
     false
   }
-
 }
 
 class ElementImpl extends ParentNodeImpl with NamespaceResolver {
@@ -108,15 +105,13 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       this.asInstanceOf[NodeInfo],
       (n: NodeInfo) => getPhysicalRoot.isTopWithinEntity(n.asInstanceOf[ElementImpl]))
 
-  override def isNilled(): Boolean = getPhysicalRoot.isNilledElement(this)
+  override def isNilled: Boolean = getPhysicalRoot.isNilledElement(this)
 
-  override def setTypeAnnotation(`type`: SchemaType): Unit = {
+  override def setTypeAnnotation(`type`: SchemaType): Unit =
     this.`type` = `type`
-  }
 
-  def setNilled(): Unit = {
+  def setNilled(): Unit =
     getPhysicalRoot.addNilledElement(this)
-  }
 
   override def getSchemaType: SchemaType = `type`
 
@@ -156,13 +151,11 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   override def attributes: AttributeMap = attributeMap
 
   def iterateAttributes(test: Predicate[_ >: NodeInfo]): AxisIterator =
-    if (attributeMap.isInstanceOf[AttributeMapWithIdentity]) {
-      new Navigator.AxisFilter(attributeMap
-        .asInstanceOf[AttributeMapWithIdentity]
-        .iterateAttributes(this),
-        test)
-    } else {
-      new AttributeAxisIterator(this, test)
+    attributeMap match {
+      case withIdentity: AttributeMapWithIdentity =>
+        new Navigator.AxisFilter(withIdentity.iterateAttributes(this), test)
+      case _ =>
+        new AttributeAxisIterator(this, test)
     }
 
   override def copy(out: Receiver, copyOptions: Int, location: Location): Unit = {
@@ -176,17 +169,19 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       .asInstanceOf[CopyInformee[AnyRef]]
     if (informee != null) {
       val o: AnyRef = informee.notifyElementNode(this)
-      if (o.isInstanceOf[Location]) {
-        lLocation = o.asInstanceOf[Location]
+      o match {
+        case l: Location =>
+          lLocation = l
+        case _ =>
       }
     }
     val ns: NamespaceMap =
       if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES))
         getAllNamespaces
       else NamespaceMap.emptyMap
-    val atts: List[AttributeInfo] =
-      new ArrayList[AttributeInfo](attributes.size)
-    for (att <- attributes) {
+    val atts: ju.List[AttributeInfo] =
+      new ju.ArrayList[AttributeInfo](attributes.size)
+    for (att <- attributes.iterator.asScala) {
       atts.add(
         new AttributeInfo(att.getNodeName,
           BuiltInAtomicType.UNTYPED_ATOMIC,
@@ -219,7 +214,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       breakable {
         while (true) {
           val n: ElementImpl = iter.next().asInstanceOf[ElementImpl]
-          for (att <- attributeMap if att.isId) {
+          for (att <- attributeMap.iterator.asScala if att.isId) {
             root.deregisterID(att.getValue)
           }
           if (n == null) {
@@ -283,13 +278,14 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   private def prepareAttributesForUpdate(): AttributeMapWithIdentity =
-    if (attributes.isInstanceOf[AttributeMapWithIdentity]) {
-      attributes.asInstanceOf[AttributeMapWithIdentity]
-    } else {
-      val newAtts: AttributeMapWithIdentity = new AttributeMapWithIdentity(
-        attributes.asList())
-      this.setAttributes(newAtts)
-      newAtts
+    attributes match {
+      case withIdentity: AttributeMapWithIdentity =>
+        withIdentity
+      case _ =>
+        val newAtts: AttributeMapWithIdentity = new AttributeMapWithIdentity(
+          attributes.asList)
+        this.setAttributes(newAtts)
+        newAtts
     }
 
   override def addAttribute(nodeName: NodeName,
@@ -324,9 +320,10 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   override def removeAttribute(attribute: NodeInfo): Unit = {
-    if (!(attribute.isInstanceOf[AttributeImpl])) {
+
+    if (! attribute.isInstanceOf[AttributeImpl])
       return
-    }
+
     val index: Int = attribute.asInstanceOf[AttributeImpl].getSiblingPosition
     val info: AttributeInfo = attributes.itemAt(index)
     var atts: AttributeMapWithIdentity = prepareAttributesForUpdate()
@@ -340,12 +337,12 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   }
 
   override def removeNamespace(prefix: String): Unit = {
-    Objects.requireNonNull(prefix)
+    ju.Objects.requireNonNull(prefix)
     if (prefix == getPrefix) {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on the element name")
     }
-    for (att <- attributeMap if att.getNodeName.getPrefix == prefix) {
+    for (att <- attributeMap.iterator.asScala if att.getNodeName.getPrefix == prefix) {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on an existing attribute name")
     }
@@ -384,17 +381,15 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       namespaceMap.getURI(prefix)
     }
 
-  def iteratePrefixes: Iterator[String] = namespaceMap.iteratePrefixes
+  def iteratePrefixes: ju.Iterator[String] = namespaceMap.iteratePrefixes
 
   def isInScopeNamespace(uri: String): Boolean =
-    namespaceMap.asScala.find(_.getURI == uri).map(_ => true).getOrElse(false)
+    namespaceMap.asScala.exists(_.getURI == uri)
 
-  override def getDeclaredNamespaces(
-                                      buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = {
-    val bindings: List[NamespaceBinding] = new ArrayList[NamespaceBinding]()
-    for (nb <- namespaceMap.asScala) {
+  override def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = {
+    val bindings: ju.List[NamespaceBinding] = new ju.ArrayList[NamespaceBinding]
+    for (nb <- namespaceMap.asScala)
       bindings.add(nb)
-    }
     bindings.toArray(NamespaceBinding.EMPTY_ARRAY)
   }
 
@@ -432,7 +427,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       val parent: NodeInfo = this
       (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asiterator .iterator.to(Iterable)
     } else {
-      Collections.emptyList().asScala
+      ju.Collections.emptyList().asScala
     }
 
   override def getAllNamespaces: NamespaceMap = namespaceMap
@@ -450,6 +445,6 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
 
     }
 
-  override def isIdref(): Boolean = isIdRefNode(this)
+  override def isIdref: Boolean = isIdRefNode(this)
 
 }

@@ -1,7 +1,6 @@
 package org.orbeon.saxon.pattern
 
 import java.util.{ArrayList, List}
-import java.util.stream.Collectors
 
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.tree.util.FastStringBuffer
@@ -31,11 +30,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
   }
 
   override def exportQNameTest: String =
-    String.join(" ",
-      tests
-        .stream()
-        .map((res: QNameTest) => res.exportQNameTest)
-        .collect(Collectors.toList()))
+    tests.asScala.iterator.map(_.exportQNameTest).mkString(" ")
 
   override def generateJavaScriptNameTest(targetVersion: Int): String = {
     val fsb: FastStringBuffer = new FastStringBuffer(256)
@@ -51,5 +46,4 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
     }
     fsb.toString
   }
-
 }

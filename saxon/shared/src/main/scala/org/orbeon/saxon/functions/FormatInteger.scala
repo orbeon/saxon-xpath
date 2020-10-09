@@ -1,75 +1,39 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.Literal
-
-import org.orbeon.saxon.expr.XPathContext
+import java.util.function.IntPredicate
+import java.util.{ArrayList, List}
 
 import org.orbeon.saxon.expr.number._
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
+import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
+import org.orbeon.saxon.functions.FormatInteger._
 import org.orbeon.saxon.lib.Numberer
-
 import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.regex.ARegularExpression
-
-import org.orbeon.saxon.regex.RegularExpression
-
-import org.orbeon.saxon.regex.UnicodeString
-
 import org.orbeon.saxon.regex.charclass.Categories
-
-import org.orbeon.saxon.trans.UncheckedXPathException
-
+import org.orbeon.saxon.regex.{ARegularExpression, RegularExpression, UnicodeString}
 import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.IntegerValue
-
-import org.orbeon.saxon.value.StringValue
-
-import org.orbeon.saxon.z.IntHashSet
-
-import org.orbeon.saxon.z.IntSet
-
-import java.util.ArrayList
-
-import java.util.List
-
-import java.util.function.Function
-
-import java.util.function.IntPredicate
-
-import FormatInteger._
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.{IntegerValue, StringValue}
+import org.orbeon.saxon.z.{IntHashSet, IntSet}
 
 import scala.util.control.Breaks._
 
 object FormatInteger {
 
   private var badHashPattern: RegularExpression = _
-
   private var modifierPattern: RegularExpression = _
-
   private var decimalDigitPattern: RegularExpression = _
 
   val preface: String = "In the picture string for format-integer, "
 
-  {
+  locally {
     badHashPattern = new ARegularExpression("((\\d+|\\w+)#+.*)|(#+[^\\d]+)",
       "",
       "XP20",
       null,
       null)
-    modifierPattern =
-      new ARegularExpression("([co](\\(.*\\))?)?[at]?", "", "XP20", null, null)
+    modifierPattern = new ARegularExpression("([co](\\(.*\\))?)?[at]?", "", "XP20", null, null)
     decimalDigitPattern = new ARegularExpression(
       "^((\\p{Nd}|#|[^\\p{N}\\p{L}])+?)$",
       "",
@@ -93,7 +57,7 @@ object FormatInteger {
           "the picture is not valid (it uses '#' where disallowed)",
         "FODF1310")
     }
-    var i: Int = picExpanded.uLength() - 1
+    var i: Int = picExpanded.uLength - 1
     while (i >= 0) {
       val codePoint: Int = picExpanded.uCharAt(i)
       java.lang.Character.getType(codePoint) match {
@@ -116,7 +80,7 @@ object FormatInteger {
              java.lang.Character.MODIFIER_LETTER |
              java.lang.Character.OTHER_LETTER =>
         case _ =>
-          if (i == picExpanded.uLength() - 1) {
+          if (i == picExpanded.uLength - 1) {
             throw new XPathException(
               preface + "the picture cannot end with a separator",
               "FODF1310")
@@ -167,12 +131,12 @@ object FormatInteger {
 
       }
       {
-        i -= 1;
+        i -= 1
         i + 1
       }
     }
     if (regularCheck && groupingPositions.size >= 1) {
-      if (picExpanded.uLength() - lastGroupingPos - groupingPositions.size >
+      if (picExpanded.uLength - lastGroupingPos - groupingPositions.size >
         firstGroupingPos) {
         regularCheck = false
       }
@@ -199,8 +163,8 @@ object FormatInteger {
 
   private def extractSeparators(arr: UnicodeString,
                                 excludePositions: IntSet): UnicodeString = {
-    val fsb: FastStringBuffer = new FastStringBuffer(arr.uLength())
-    for (i <- 0 until arr.uLength()
+    val fsb: FastStringBuffer = new FastStringBuffer(arr.uLength)
+    for (i <- 0 until arr.uLength
          if NumberFormatter.isLetterOrDigit(arr.uCharAt(i))) {
       fsb.appendWideChar(arr.uCharAt(i))
     }
@@ -211,26 +175,25 @@ object FormatInteger {
 
 class FormatInteger extends SystemFunction with StatefulSystemFunction {
 
-  private var formatter: Function[IntegerValue, String] = null
+  private var formatter: IntegerValue => String = null
 
   override def makeOptimizedFunctionCall(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo,
                                          arguments: Expression*): Expression = {
     var opt: Boolean = true
-    if (!(arguments(1).isInstanceOf[Literal])) {
+    if (! arguments(1).isInstanceOf[Literal])
       opt = false
-    }
-    if (arguments.length == 3 && !(arguments(2).isInstanceOf[Literal])) {
+    if (arguments.length == 3 && ! arguments(2).isInstanceOf[Literal])
       opt = false
-    }
-    if (!opt) {
+    if (! opt)
       super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
-    }
-    val config: Configuration = visitor.getConfiguration
-    val language: String =
+
+    val config = visitor.getConfiguration
+    val language =
       if (arguments.length == 3)
         arguments(2).asInstanceOf[Literal].value.getStringValue
-      else config.getDefaultLanguage
-    val numb: Numberer = config.makeNumberer(language, null)
+      else
+        config.getDefaultLanguage
+    val numb = config.makeNumberer(language, null)
     formatter = makeFormatter(
       numb,
       arguments(1).asInstanceOf[Literal].value.getStringValue)
@@ -254,7 +217,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     if (num == null) {
       StringValue.EMPTY_STRING
     }
-    var localFormatter: Function[IntegerValue, String] = formatter
+    var localFormatter = formatter
     if (localFormatter == null) {
       var languageVal: String = null
       languageVal =
@@ -266,8 +229,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     new StringValue(localFormatter.apply(num))
   }
 
-  private def makeFormatter(numb: Numberer,
-                            pic: String): Function[IntegerValue, String] = {
+  private def makeFormatter(numb: Numberer, pic: String): IntegerValue => String = {
     if (pic.isEmpty) {
       throw new XPathException(preface + "the picture cannot be empty",
         "FODF1310")
@@ -307,7 +269,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     val isDecimalDigit: IntPredicate = Categories.getCategory("Nd")
     var isDecimalDigitPattern: Boolean = false
     breakable {
-      for (i <- 0 until primary.uLength()
+      for (i <- 0 until primary.uLength
            if isDecimalDigit.test(primary.uCharAt(i))) {
         isDecimalDigitPattern = true
         break()
@@ -324,23 +286,23 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
       val picGroupFormat: NumericGroupFormatter = getPicSeparators(
         primaryToken)
       val adjustedPicture: UnicodeString = picGroupFormat.getAdjustedPicture
-      (num) => {
-        val s: String = numb.format(num.abs().longValue(),
+      num => {
+        val s = numb.format(num.abs().longValue(),
           adjustedPicture,
           picGroupFormat,
           letterValue,
           ordinalValue)
-        if (num.signum() < 0) ("-" + s) else s
+        if (num.signum() < 0) "-" + s else s
       }
     } else {
       val token: UnicodeString = UnicodeString.makeUnicodeString(primaryToken)
-      (num) => {
+      num => {
         val s: String = numb.format(num.abs().longValue(),
           token,
           null,
           letterValue,
           ordinalValue)
-        if (num.signum() < 0) ("-" + s) else s
+        if (num.signum() < 0) "-" + s else s
       }
     }
   }

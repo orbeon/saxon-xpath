@@ -7,7 +7,7 @@
 
 package org.orbeon.saxon.lib
 
-import java.io.{File, PrintStream}
+import java.io.PrintStream
 
 import javax.xml.transform.stream.StreamResult
 
@@ -34,15 +34,15 @@ class StandardLogger extends Logger {
     setPrintStream( stream)
   }
 
-  def this(fileName: File) = {
-    this()
-    setPrintStream(new PrintStream(fileName))
-    mustClose = true
-  }
+  // ORBEON: No `File` support.
+//  def this(fileName: File) = {
+//    this()
+//    setPrintStream(new PrintStream(fileName))
+//    mustClose = true
+//  }
 
-  def setPrintStream(stream: PrintStream): Unit = {
+  def setPrintStream(stream: PrintStream): Unit =
     out = stream
-  }
 
   def getPrintStream: PrintStream = out
 
@@ -51,7 +51,7 @@ class StandardLogger extends Logger {
     *
     * @return a Result that serializes XML to this Logger
     */
-  override def asStreamResult(): StreamResult = new StreamResult(out)
+  def asStreamResult(): StreamResult = new StreamResult(out)
 
   def println(message: String, severity: Int): Unit = {
     if (severity >= threshold) {
@@ -62,10 +62,8 @@ class StandardLogger extends Logger {
   /**
     * Close the logger, indicating that no further messages will be written
     */
-  override def close(): Unit = {
-    if (mustClose) {
+  override def close(): Unit =
+    if (mustClose)
       out.close()
-    }
-  }
 
 }

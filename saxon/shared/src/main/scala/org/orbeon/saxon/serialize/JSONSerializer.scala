@@ -12,31 +12,24 @@
 
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.PipelineConfiguration
-import org.orbeon.saxon.event.ReceiverWithOutputProperties
-import org.orbeon.saxon.event.SequenceWriter
-import org.orbeon.saxon.lib.SaxonOutputKeys
-import org.orbeon.saxon.ma.arrays.ArrayItem
-import org.orbeon.saxon.ma.map.KeyValuePair
-import org.orbeon.saxon.ma.map.MapItem
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.serialize.charcode.CharacterSet
-import org.orbeon.saxon.serialize.codenorm.Normalizer
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.StringValue
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.stream.StreamResult
 import java.io.StringWriter
 import java.util._
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
+import org.orbeon.saxon.event.{PipelineConfiguration, ReceiverWithOutputProperties, SequenceWriter}
+import org.orbeon.saxon.lib.SaxonOutputKeys
+import org.orbeon.saxon.ma.arrays.ArrayItem
+import org.orbeon.saxon.ma.map.MapItem
+import org.orbeon.saxon.om.{GroundedValue, Item, NodeInfo}
 import org.orbeon.saxon.query.QueryResult
-//import scala.collection.compat._
+import org.orbeon.saxon.serialize.charcode.CharacterSet
+import org.orbeon.saxon.serialize.codenorm.Normalizer
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.value.{AtomicValue, StringValue}
+
 import scala.jdk.CollectionConverters._
+
 
 class JSONSerializer(pipe: PipelineConfiguration,
                      private var emitter: JSONEmitter,
@@ -45,21 +38,13 @@ class JSONSerializer(pipe: PipelineConfiguration,
     with ReceiverWithOutputProperties {
 
   private var allowDuplicateKeys: Boolean = false
-
   private var nodeOutputMethod: String = "xml"
-
   private var level: Int = 0
-
   private var topLevelCount: Int = 0
-
   private var maxLineLength: Int = 80
-
   private var characterSet: CharacterSet = _
-
   private var isIndenting: Boolean = _
-
   private var propertySorter: Comparator[AtomicValue] = _
-
   private var unfailing: Boolean = false
 
   def setOutputProperties(details: Properties): Unit = {
@@ -83,25 +68,21 @@ class JSONSerializer(pipe: PipelineConfiguration,
     if (max != null) {
       try maxLineLength = java.lang.Integer.parseInt(max)
       catch {
-        case err: NumberFormatException => {}
-
+        case _: NumberFormatException =>
       }
     }
   }
 
   override def getOutputProperties: Properties = outputProperties
 
-  def setPropertySorter(sorter: Comparator[AtomicValue]): Unit = {
+  def setPropertySorter(sorter: Comparator[AtomicValue]): Unit =
     this.propertySorter = sorter
-  }
 
-  def setNormalizer(normalizer: Normalizer): Unit = {
+  def setNormalizer(normalizer: Normalizer): Unit =
     emitter.setNormalizer(normalizer)
-  }
 
-  def setCharacterMap(map: CharacterMap): Unit = {
+  def setCharacterMap(map: CharacterMap): Unit =
     emitter.setCharacterMap(map)
-  }
 
   private def isOneLinerArray(array: ArrayItem): Boolean = {
     var totalSize: Int = 0
@@ -109,32 +90,26 @@ class JSONSerializer(pipe: PipelineConfiguration,
       return true
     }
     for (member <- array.members()) {
-      if (!(member.isInstanceOf[AtomicValue])) {
+      if (! member.isInstanceOf[AtomicValue])
         return false
-      }
-      totalSize += member.asInstanceOf[AtomicValue].getStringValueCS.length +
-        1
-      if (totalSize > maxLineLength) {
-        false
-      }
+      totalSize += member.asInstanceOf[AtomicValue].getStringValueCS.length + 1
+      if (totalSize > maxLineLength)
+        return false
     }
     true
   }
 
   private def isOneLinerMap(map: MapItem): Boolean = {
     var totalSize: Int = 0
-    if (map.size < 2) {
+    if (map.size < 2)
       return true
-    }
     for (entry <- map.keyValuePairs().asScala) {
-      if (!(entry.value.isInstanceOf[AtomicValue])) {
+      if (! entry.value.isInstanceOf[AtomicValue])
         return false
-      }
       totalSize += entry.key.getStringValueCS.length +
-        entry.value.asInstanceOf[AtomicValue].getStringValueCS.length +
-        4
+        entry.value.asInstanceOf[AtomicValue].getStringValueCS.length + 4
       if (totalSize > maxLineLength) {
-        false
+        return false
       }
     }
     true
@@ -179,7 +154,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
   }
 
   @throws[XPathException]
-  override def write(item: Item) = {
+  def write(item: Item): Unit = {
     topLevelCount += 1
     if (level == 0 && topLevelCount >= 2) throw new XPathException("JSON output method cannot handle sequences of two or more items", "SERE0023")
     if (item.isInstanceOf[AtomicValue]) emitter.writeAtomicValue(item.asInstanceOf[AtomicValue])

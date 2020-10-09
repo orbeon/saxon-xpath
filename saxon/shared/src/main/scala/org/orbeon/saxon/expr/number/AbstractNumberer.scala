@@ -1,42 +1,26 @@
 package org.orbeon.saxon.expr.number
 
-import org.orbeon.saxon.lib.Numberer
-
-import org.orbeon.saxon.regex.EmptyString
-
-import org.orbeon.saxon.regex.UnicodeString
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import java.util.Locale
 
-import AbstractNumberer._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.expr.number.AbstractNumberer._
+import org.orbeon.saxon.lib.Numberer
+import org.orbeon.saxon.regex.{EmptyString, UnicodeString}
+import org.orbeon.saxon.tree.util.FastStringBuffer
 
 object AbstractNumberer {
 
   val UPPER_CASE: Int = 0
-
   val LOWER_CASE: Int = 1
-
   val TITLE_CASE: Int = 2
 
-  val westernDigits: Array[Int] =
-    Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+  val westernDigits: Array[Int] = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
   val latinUpper: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
   val latinLower: String = "abcdefghijklmnopqrstuvwxyz"
-
   val greekUpper: String = "ΑΒΓΔΕΖΗΘΙΚ" + "ΛΜΝΞΟΠΡ΢ΣΤ" + "ΥΦΧΨΩ"
-
   val greekLower: String = "αβγδεζηθικ" + "λμνξοπρςστ" + "υφχψω"
-
   val cyrillicUpper: String = "АБВГДЕЖЗИ" + "КЛМНОПРССУ" + "ФХЦЧШЩЫЭЮЯ"
-
   val cyrillicLower: String = "абвгдежзи" + "клмнопрссу" + "фхцчшщыэюя"
-
   val hebrew: String = "אבגדהוזחטיכל" + "מנסעפצקרשת"
 
   val hiraganaA: String = "あいうえおかきくけこ" + "さしすせそたちつてと" + "なにぬねのはひふへほ" + "まみむめもやゆよらり" +
@@ -166,10 +150,10 @@ abstract class AbstractNumberer extends Numberer {
     if (number < 0) {
       return "" + number
     }
-    if (picture == null || picture.uLength() == 0) {
+    if (picture == null || picture.uLength == 0) {
       return "" + number
     }
-    val pictureLength: Int = picture.uLength()
+    val pictureLength: Int = picture.uLength
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
     val formchar: Int = picture.uCharAt(0)
     val fsb: FastStringBuffer = new FastStringBuffer(2)
@@ -193,7 +177,7 @@ abstract class AbstractNumberer extends Numberer {
       case 'w' | 'W' =>
         var wordCase: Int = 0
         wordCase =
-          if (picture.uLength() == 1)
+          if (picture.uLength == 1)
             if (formchar == 'W') UPPER_CASE else LOWER_CASE
           else TITLE_CASE
         if (ordinal != null && !ordinal.isEmpty) {
@@ -422,9 +406,9 @@ abstract class AbstractNumberer extends Numberer {
     val range: Int = max - min + 1
     val last: Char = (((number - 1) % range) + min).toChar
     if (number > range) {
-      return toAlpha((number - 1) / range, min, max) + last
+      toAlpha((number - 1) / range, min, max) + last
     } else {
-      return "" + last
+      "" + last
     }
   }
 
@@ -435,9 +419,9 @@ abstract class AbstractNumberer extends Numberer {
     val range: Int = alphabet.length
     val last: Char = alphabet.charAt(((number - 1) % range).toInt)
     if (number > range) {
-      return toAlphaSequence((number - 1) / range, alphabet) + last
+      toAlphaSequence((number - 1) / range, alphabet) + last
     } else {
-      return "" + last
+      "" + last
     }
   }
 
@@ -508,19 +492,17 @@ abstract class AbstractNumberer extends Numberer {
     s
   }
 
-  override def setCountry(country: String): Unit = this.country = country
+  def setCountry(country: String): Unit = this.country = country
 
-  override def getCountry(): String = country
+  def getCountry: String = country
 
   def getOrdinalSuffixForDateTime(component: String): String = "yes"
 
   def getEraName(year: Int): String = if (year > 0) "AD" else "BC"
 
   def getCalendarName(code: String): String =
-    if (code.==("AD")) {
+    if (code.==("AD"))
       "Gregorian"
-    } else {
+    else
       code
-    }
-
 }

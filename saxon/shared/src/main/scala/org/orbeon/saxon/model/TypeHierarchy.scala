@@ -427,22 +427,22 @@ class TypeHierarchy(var config: Configuration) {
                 else if (m1.subsumes(m2)) SUBSUMES
                 else OVERLAPS
             var nodeNameRelationship: Affinity = null
-            val on1: Optional[IntSet] =
+            val on1 =
               t1.asInstanceOf[NodeTest].getRequiredNodeNames
-            val on2: Optional[IntSet] =
+            val on2 =
               t2.asInstanceOf[NodeTest].getRequiredNodeNames
             t1 match {
               case test: QNameTest if t2.isInstanceOf[QNameTest] =>
                 nodeNameRelationship = nameTestRelationship(test, t2.asInstanceOf[QNameTest])
-              case _ => if (on1.isPresent && on1.get.isInstanceOf[IntUniversalSet]) {
+              case _ => if (on1.isDefined && on1.get.isInstanceOf[IntUniversalSet]) {
                 nodeNameRelationship =
-                  if (on2.isPresent && on2.get.isInstanceOf[IntUniversalSet])
+                  if (on2.isDefined && on2.get.isInstanceOf[IntUniversalSet])
                     SAME_TYPE
                   else
                     SUBSUMES
-              } else if (on2.isPresent && on2.get.isInstanceOf[IntUniversalSet]) {
+              } else if (on2.isDefined && on2.get.isInstanceOf[IntUniversalSet]) {
                 nodeNameRelationship = SUBSUMED_BY
-              } else if (!(on1.isPresent && on2.isPresent)) {
+              } else if (!(on1.isDefined && on2.isDefined)) {
                 nodeNameRelationship = if (t1 == t2) SAME_TYPE else OVERLAPS
               } else {
                 val n1 = on1.get
@@ -612,8 +612,8 @@ class TypeHierarchy(var config: Configuration) {
 
   def computeContentRelationship(t1: ItemType,
                                  t2: ItemType,
-                                 n1: Optional[IntSet],
-                                 n2: Optional[IntSet]): Affinity = {
+                                 n1: Option[IntSet],
+                                 n2: Option[IntSet]): Affinity = {
     var contentRelationship: Affinity = null
     t1 match {
       case test: DocumentNodeTest =>

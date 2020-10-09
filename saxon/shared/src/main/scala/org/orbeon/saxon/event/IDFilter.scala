@@ -1,18 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.SimpleType
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
 import java.util.HashSet
 
+import org.orbeon.saxon.model.{SchemaType, SimpleType}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+
+import scala.jdk.CollectionConverters._
 
 class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
 
@@ -32,7 +27,7 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
                             properties: Int): Unit = {
     matched = false
     if (activeDepth == 0) {
-      for (att <- attributes
+      for (att <- attributes.iterator.asScala
            if (att.getNodeName == StandardNames.XML_ID_NAME) ||
              ReceiverOption.contains(att.getProperties, ReceiverOption.IS_ID)
            if att.getValue == requiredId) {

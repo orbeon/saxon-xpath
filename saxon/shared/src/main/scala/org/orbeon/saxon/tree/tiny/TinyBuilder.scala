@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.tiny
 
-import java.util.Arrays
+import java.{util => ju}
 
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.lib.Feature
@@ -19,6 +19,7 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
+import scala.jdk.CollectionConverters._
 
 
 
@@ -235,8 +236,8 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
     }
     if (currentDepth == prevAtDepth.length) {
-      prevAtDepth = Arrays.copyOf(prevAtDepth, currentDepth * 2)
-      siblingsAtDepth = Arrays.copyOf(siblingsAtDepth, currentDepth * 2)
+      prevAtDepth = ju.Arrays.copyOf(prevAtDepth, currentDepth * 2)
+      siblingsAtDepth = ju.Arrays.copyOf(siblingsAtDepth, currentDepth * 2)
     }
     prevAtDepth(currentDepth) = -1
     siblingsAtDepth(currentDepth) = 0
@@ -260,7 +261,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
         tt.markTopWithinEntity(nodeNr)
       case _ =>
     }
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       attribute2(att.getNodeName,
         att.getType,
         getAttValue(att),

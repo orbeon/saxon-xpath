@@ -1,7 +1,6 @@
 package org.orbeon.saxon.tree.linked
 
-import java.util.{ArrayList, List}
-import java.util.stream.Collectors
+import java.{util => ju}
 
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.iter.{AxisIterator, ListIterator}
@@ -9,7 +8,7 @@ import org.orbeon.saxon.tree.iter.{AxisIterator, ListIterator}
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
+class AttributeMapWithIdentity(private var attributes: ju.List[AttributeInfo])
   extends AttributeMap {
 
   override def size: Int = {
@@ -20,12 +19,11 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
   }
 
   def iterateAttributes(owner: ElementImpl): AxisIterator = {
-    val list: List[NodeInfo] = new ArrayList[NodeInfo](attributes.size)
+    val list = new ju.ArrayList[NodeInfo](attributes.size)
     for (i <- 0 until attributes.size) {
-      val att: AttributeInfo = attributes.get(i)
-      if (!att.isInstanceOf[AttributeInfo.Deleted]) {
+      val att = attributes.get(i)
+      if (!att.isInstanceOf[AttributeInfo.Deleted])
         list.add(new AttributeImpl(owner, i))
-      }
     }
     new ListIterator.OfNodes(list)
   }
@@ -35,7 +33,7 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
 
   override def get(uri: String, local: String): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name: NodeName = info.getNodeName
+      val name = info.getNodeName
       if (name.getLocalPart == local && name.hasURI(uri) && ! info.isInstanceOf[AttributeInfo.Deleted])
         return info
     }
@@ -44,7 +42,7 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
 
   def getIndex(uri: String, local: String): Int = {
     for (i <- 0 until attributes.size) {
-      val info: AttributeInfo = attributes.get(i)
+      val info = attributes.get(i)
       val name: NodeName = info.getNodeName
       if (name.getLocalPart == local && name.hasURI(uri))
         return i
@@ -53,7 +51,7 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
   }
 
   def set(index: Int, info: AttributeInfo): AttributeMapWithIdentity = {
-    val newList: List[AttributeInfo] = new ArrayList[AttributeInfo](attributes)
+    val newList = new ju.ArrayList[AttributeInfo](attributes)
     if (index >= 0 && index < attributes.size)
       newList.set(index, info)
     else if (index == attributes.size)
@@ -62,16 +60,15 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
   }
 
   def add(info: AttributeInfo): AttributeMapWithIdentity = {
-    val newList: List[AttributeInfo] = new ArrayList[AttributeInfo](attributes)
+    val newList = new ju.ArrayList[AttributeInfo](attributes)
     newList.add(info)
     new AttributeMapWithIdentity(newList)
   }
 
   def remove(index: Int): AttributeMapWithIdentity = {
-    val newList: List[AttributeInfo] = new ArrayList[AttributeInfo](attributes)
+    val newList = new ju.ArrayList[AttributeInfo](attributes)
     if (index >= 0 && index < attributes.size) {
-      val del: AttributeInfo.Deleted =
-        new AttributeInfo.Deleted(attributes.get(index))
+      val del = new AttributeInfo.Deleted(attributes.get(index))
       newList.set(index, del)
     }
     new AttributeMapWithIdentity(newList)
@@ -79,24 +76,18 @@ class AttributeMapWithIdentity(private var attributes: List[AttributeInfo])
 
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name: NodeName = info.getNodeName
+      val name = info.getNodeName
       if (name.obtainFingerprint(namePool) == fingerprint)
         return info
     }
     null
   }
 
-  override def iterator: collection.Iterator[AttributeInfo] =
-    attributes
-      .stream()
-      .filter((info) => !info.isInstanceOf[AttributeInfo.Deleted])
-      .iterator.asScala
+  def iterator: ju.Iterator[AttributeInfo] =
+    (attributes.iterator.asScala filterNot (_.isInstanceOf[AttributeInfo.Deleted])).asJava
 
-  override def asList(): List[AttributeInfo] =
-    attributes
-      .stream()
-      .filter((info) => !info.isInstanceOf[AttributeInfo.Deleted])
-      .collect(Collectors.toList())
+  override def asList: ju.List[AttributeInfo] =
+    (attributes.asScala filterNot (_.isInstanceOf[AttributeInfo.Deleted])).asJava
 
   override def itemAt(index: Int): AttributeInfo = attributes.get(index)
 }

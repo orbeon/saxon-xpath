@@ -2,12 +2,7 @@
 package org.orbeon.saxon.tree.wrapper
 
 import org.orbeon.saxon.om.NodeInfo
-
 import org.orbeon.saxon.tree.iter.AxisIterator
-
-import java.util.function.Function
-
-import RebasedNode._
 
 
 
@@ -45,11 +40,11 @@ class RebasedNode  ()
     wrapper
   }
 
-  private def getBaseUriMappingFunction: Function[NodeInfo, String] =
-    docWrapper.asInstanceOf[RebasedDocument].getBaseUriMapper
+  private def getBaseUriMappingFunction: NodeInfo => String =
+    docWrapper.asInstanceOf[RebasedDocument].baseUriMapper
 
-  private def getSystemIdMappingFunction: Function[NodeInfo, String] =
-    docWrapper.asInstanceOf[RebasedDocument].getSystemIdMapper
+  private def getSystemIdMappingFunction: NodeInfo => String =
+    docWrapper.asInstanceOf[RebasedDocument].systemIdMapper
 
   /**
     * Get the Base URI for the node, that is, the URI used for resolving a relative URI contained
@@ -73,10 +68,11 @@ class RebasedNode  ()
   }
 
   override def compareOrder(other: NodeInfo): Int =
-    if (other.isInstanceOf[RebasedNode]) {
-      node.compareOrder(other.asInstanceOf[RebasedNode].node)
-    } else {
-      node.compareOrder(other)
+    other match {
+      case rebasedNode: RebasedNode =>
+        node.compareOrder(rebasedNode.node)
+      case _ =>
+        node.compareOrder(other)
     }
 
   /*@Nullable*/

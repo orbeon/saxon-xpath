@@ -1,31 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Callable
-
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.StringLiteral
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{Callable, Expression, StringLiteral, XPathContext}
+import org.orbeon.saxon.functions.Translate._
 import org.orbeon.saxon.om.Sequence
-
 import org.orbeon.saxon.regex.UnicodeString
-
-import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import org.orbeon.saxon.value.StringValue
+import org.orbeon.saxon.z.{IntToIntHashMap, IntToIntMap}
 
-import org.orbeon.saxon.z.IntToIntHashMap
-
-import org.orbeon.saxon.z.IntToIntMap
-
-import Translate._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
 
@@ -65,16 +49,16 @@ object Translate {
   private def buildMap(arg1: StringValue, arg2: StringValue): IntToIntMap = {
     val a1: UnicodeString = arg1.getUnicodeString
     val a2: UnicodeString = arg2.getUnicodeString
-    val map: IntToIntMap = new IntToIntHashMap(a1.uLength(), 0.5)
-    for (i <- 0 until a1.uLength() if !map.find(a1.uCharAt(i))) {
-      map.put(a1.uCharAt(i), if (i > a2.uLength() - 1) -1 else a2.uCharAt(i))
+    val map: IntToIntMap = new IntToIntHashMap(a1.uLength, 0.5)
+    for (i <- 0 until a1.uLength if !map.find(a1.uCharAt(i))) {
+      map.put(a1.uCharAt(i), if (i > a2.uLength - 1) -1 else a2.uCharAt(i))
     }
     map
   }
 
   def translateUsingMap(in: StringValue, map: IntToIntMap): CharSequence = {
     val us: UnicodeString = in.getUnicodeString
-    val len = us.uLength()
+    val len = us.uLength
     val sb: FastStringBuffer = new FastStringBuffer(len)
     for (i <- 0 until len) {
       val c: Int = us.uCharAt(i)

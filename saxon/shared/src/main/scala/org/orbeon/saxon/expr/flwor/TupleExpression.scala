@@ -108,12 +108,10 @@ class TupleExpression extends Expression {
   override def getExpressionName: String = "tuple"
 
   def setCurrentTuple(context: XPathContext, tuple: Tuple): Unit = {
-    val members: Array[Sequence] = tuple.getMembers
-    val n: Int = getSize
-    for (i <- 0 until n) {
-      context.setLocalVariable(getSlot(i).getBinding.getLocalSlotNumber,
-        members(i))
-    }
+    val members = tuple.getMembers
+    val n = getSize
+    for (i <- 0 until n)
+      context.setLocalVariable(getSlot(i).getBinding.getLocalSlotNumber, members(i))
   }
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE

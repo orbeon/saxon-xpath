@@ -3,11 +3,10 @@ package org.orbeon.saxon.lib
 import java.util.{HashSet, Set}
 
 import javax.xml.transform.{ErrorListener, SourceLocator, TransformerException}
-import org.orbeon.saxon.expr.{EarlyEvaluationContext, Expression, XPathContext}
 import org.orbeon.saxon.expr.parser.XPathParser
+import org.orbeon.saxon.expr.{EarlyEvaluationContext, Expression, XPathContext}
 import org.orbeon.saxon.model.{ValidationException, ValidationFailure}
 import org.orbeon.saxon.om.{Sequence, StructuredQName}
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.AttributeLocation
@@ -16,8 +15,7 @@ import org.xml.sax.SAXException
 import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
-//remove if not needed
-
+// ORBEON: Unused class.
 class StandardErrorListener extends StandardDiagnostics with ErrorListener {
 
   private var warningCount: Int = 0
@@ -30,31 +28,30 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
   @BeanProperty
   var stackTraceDetail: Int = 2
 
-  private var warningsIssued: Set[String] = new HashSet()
+  private var warningsIssued: Set[String] = new HashSet
 
-  @transient var logger: Logger = new StandardLogger()
+  @transient var logger: Logger = new StandardLogger
 
-  def makeAnother(hostLanguage: HostLanguage): StandardErrorListener = {
-    var sel: StandardErrorListener = null
-    try sel = this.getClass.newInstance()
-    catch {
-      case e@(_: InstantiationException | _: IllegalAccessException) =>
-        sel = new StandardErrorListener()
+  // ORBEON: No callers.
+//  def makeAnother(hostLanguage: HostLanguage): StandardErrorListener = {
+//    var sel: StandardErrorListener = null
+//    try sel = this.getClass.newInstance()
+//    catch {
+//      case e@(_: InstantiationException | _: IllegalAccessException) =>
+//        sel = new StandardErrorListener()
+//
+//    }
+//    sel.logger = logger
+//    sel
+//  }
 
-    }
-    sel.logger = logger
-    sel
-  }
-
-  def setLogger(logger: Logger): Unit = {
+  def setLogger(logger: Logger): Unit =
     this.logger = logger
-  }
 
   def getLogger: Logger = logger
 
-  def setMaxOrdinaryCharacter(max: Int): Unit = {
+  def setMaxOrdinaryCharacter(max: Int): Unit =
     maxOrdinaryCharacter = max
-  }
 
   def getMaxOrdinaryCharacter(max: Int): Int = maxOrdinaryCharacter
 

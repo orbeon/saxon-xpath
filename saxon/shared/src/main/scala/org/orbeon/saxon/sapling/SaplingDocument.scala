@@ -79,20 +79,21 @@ class SaplingDocument extends SaplingNode with Source {
     builder.getCurrentRoot
   }
 
-  def toXdmNode(processor: Processor): XdmNode =
-    XdmValue
-      .wrap(toNodeInfo(processor.getUnderlyingConfiguration))
-      .asInstanceOf[XdmNode]
-
-  def serialize(serializer: Serializer): Unit = {
-    val proc: Processor = serializer.getProcessor
-    send(proc, serializer)
-  }
-
-  def send(processor: Processor, destination: Destination): Unit = {
-    val pipe: PipelineConfiguration =
-      processor.getUnderlyingConfiguration.makePipelineConfiguration
-    sendTo(destination.getReceiver(pipe, new SerializationProperties()))
-  }
+  // ORBEON: s9api
+//  def toXdmNode(processor: Processor): XdmNode =
+//    XdmValue
+//      .wrap(toNodeInfo(processor.getUnderlyingConfiguration))
+//      .asInstanceOf[XdmNode]
+//
+//  def serialize(serializer: Serializer): Unit = {
+//    val proc: Processor = serializer.getProcessor
+//    send(proc, serializer)
+//  }
+//
+//  def send(processor: Processor, destination: Destination): Unit = {
+//    val pipe: PipelineConfiguration =
+//      processor.getUnderlyingConfiguration.makePipelineConfiguration
+//    sendTo(destination.getReceiver(pipe, new SerializationProperties()))
+//  }
 
 }

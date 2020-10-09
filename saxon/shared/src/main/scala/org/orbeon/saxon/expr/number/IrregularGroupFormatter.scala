@@ -1,12 +1,10 @@
 package org.orbeon.saxon.expr.number
 
-import org.orbeon.saxon.regex.UnicodeString
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.z.IntSet
-
 import java.util.List
+
+import org.orbeon.saxon.regex.UnicodeString
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.z.IntSet
 
 class IrregularGroupFormatter(private var groupingPositions: IntSet,
                               private var separators: List[Integer],
@@ -16,35 +14,34 @@ class IrregularGroupFormatter(private var groupingPositions: IntSet,
   var adjustPic = adjustedPicture
   this.adjustPic = adjustedPicture
 
-  override def format(value: FastStringBuffer): String = {
+  def format(value: FastStringBuffer): String = {
     val in: UnicodeString = UnicodeString.makeUnicodeString(value)
     var l: Int = 0
     var m: Int = 0
     l = 0
-    while (l < in.uLength()) {
-      if (groupingPositions.contains(l)) {
-          m += 1
-      }
-        l += 1
+    while (l < in.uLength) {
+      if (groupingPositions.contains(l))
+        m += 1
+      l += 1
     }
-    val out: Array[Int] = Array.ofDim[Int](in.uLength() + m)
+    val out: Array[Int] = Array.ofDim[Int](in.uLength + m)
     var j: Int = 0
     var k: Int = out.length - 1
-    var i: Int = in.uLength() - 1
+    var i: Int = in.uLength - 1
     while (i >= 0) {
       k -= 1
       out(k) = in.uCharAt(i)
-      if ((i > 0) && groupingPositions.contains(in.uLength() - i)) {
+      if ((i > 0) && groupingPositions.contains(in.uLength - i)) {
         k -= 1
         j += 1
         out(k) = separators.get(j)
       }
-        i -= 1
+      i -= 1
     }
     UnicodeString.makeUnicodeString(out).toString
   }
 
-  override def getSeparator(): String =
+  def getSeparator: String =
     if (separators.size == 0) {
       null
     } else {
@@ -53,5 +50,4 @@ class IrregularGroupFormatter(private var groupingPositions: IntSet,
       fsb.appendWideChar(sep)
       fsb.toString
     }
-
 }

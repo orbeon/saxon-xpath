@@ -214,18 +214,19 @@ class QName(prefix: String, uri: String, localName: String) {
     }
   }
 
-  def this(lexicalQName: String, element: XdmNode) = {
-    this("", "", "")
-    var lexName = lexicalQName
-    if (lexName.startsWith("{")) {
-      lexName = "Q" + lexName
-    }
-    val node: NodeInfo = element.getUnderlyingValue
-    sqName = StructuredQName.fromLexicalQName(lexName,
-      useDefault = true,
-      allowEQName = true,
-      node.getAllNamespaces)
-  }
+  // ORBEON: s9api
+//  def this(lexicalQName: String, element: XdmNode) = {
+//    this("", "", "")
+//    var lexName = lexicalQName
+//    if (lexName.startsWith("{")) {
+//      lexName = "Q" + lexName
+//    }
+//    val node: NodeInfo = element.getUnderlyingValue
+//    sqName = StructuredQName.fromLexicalQName(lexName,
+//      useDefault = true,
+//      allowEQName = true,
+//      node.getAllNamespaces)
+//  }
 
   def this(qName: javax.xml.namespace.QName) = {
     this("", "", "")
@@ -239,13 +240,14 @@ class QName(prefix: String, uri: String, localName: String) {
     this.sqName = Objects.requireNonNull(sqName)
   }
 
-  def isValid(processor: Processor): Boolean = {
-    val prefix: String = getPrefix
-    if (prefix.length > 0) {
-      if (!NameChecker.isValidNCName(prefix)) return false
-    }
-    NameChecker.isValidNCName(getLocalName)
-  }
+  // ORBEON: s9api
+//  def isValid(processor: Processor): Boolean = {
+//    val prefix: String = getPrefix
+//    if (prefix.length > 0) {
+//      if (!NameChecker.isValidNCName(prefix)) return false
+//    }
+//    NameChecker.isValidNCName(getLocalName)
+//  }
 
   def getPrefix: String = sqName.getPrefix
 

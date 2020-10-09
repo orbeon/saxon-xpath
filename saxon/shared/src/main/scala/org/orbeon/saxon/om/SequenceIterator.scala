@@ -41,17 +41,13 @@ object SequenceIterator {
 
     implicit def convertValue(v: Value): Property = v.asInstanceOf[Property]
   }
-
 }
 
 trait SequenceIterator extends Closeable {
 
   /*@Nullable*/
-
   def next(): Item
-
   def close(): Unit = ()
-
   def getProperties: Set[Property] = Set()
 
   def forEachOrFail(consumer: ItemConsumer[_ >: Item]): Unit = {
@@ -63,7 +59,6 @@ trait SequenceIterator extends Closeable {
   }
 
   def materialize(): GroundedValue = new SequenceExtent(this).reduce()
-
 }
 
 

@@ -1,29 +1,13 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.ProxyReceiver
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
+import org.orbeon.saxon.event.{ProxyReceiver, Receiver}
 import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om.AttributeInfo
-
-import org.orbeon.saxon.om.AttributeMap
-
-import org.orbeon.saxon.om.NamespaceMap
-
-import org.orbeon.saxon.om.NodeName
-
+import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.serialize.charcode.XMLCharacterData
-
+import org.orbeon.saxon.serialize.charcode.{UTF16CharacterSet, XMLCharacterData}
 import org.orbeon.saxon.trans.XPathException
 
+import scala.jdk.CollectionConverters._
 class XML10ContentChecker(next: Receiver) extends ProxyReceiver(next) {
 
   override def startElement(elemName: NodeName,
@@ -32,7 +16,7 @@ class XML10ContentChecker(next: Receiver) extends ProxyReceiver(next) {
                             namespaces: NamespaceMap,
                             location: Location,
                             properties: Int): Unit = {
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       checkString(att.getValue, att.getLocation)
     }
     nextReceiver.startElement(elemName,

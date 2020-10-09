@@ -264,8 +264,7 @@ class LetExpression extends Assignation with TailCallReturner {
   override def getCost: Double = getSequence.getCost + getAction.getCost
 
   private def allReferencesAreFlattened(): Boolean =
-    references != null &&
-      references.stream().allMatch(res => res.isFlattened)
+    references != null && references.asScala.forall(_.isFlattened)
 
   override def isVacuousExpression: Boolean = getAction.isVacuousExpression
 

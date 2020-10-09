@@ -1,38 +1,19 @@
 package org.orbeon.saxon.tree.linked
 
-import org.orbeon.saxon.utils.Configuration
+import java.{util => ju}
 
-import org.orbeon.saxon.event.Builder
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.model.AnyType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.Untyped
-
+import org.orbeon.saxon.event.{Builder, Receiver}
+import org.orbeon.saxon.model.{AnyType, SchemaType, Type, Untyped}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
-import org.orbeon.saxon.tree.iter.ListIterator
-
+import org.orbeon.saxon.tree.iter.{AxisIterator, ListIterator}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
-
 import org.orbeon.saxon.z.IntHashMap
 
-import java.util._
-
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.jdk.CollectionConverters._
 
 
 class DocumentImpl
@@ -42,28 +23,17 @@ class DocumentImpl
 
   @BeanProperty
   var documentElement: ElementImpl = _
-
-  private var idTable: HashMap[String, NodeInfo] = _
-
+  private var idTable: ju.HashMap[String, NodeInfo] = _
   @BeanProperty
   var documentNumber: Long = _
-
   private var baseURI: String = _
-
-  private var entityTable: HashMap[String, Array[String]] = _
-
-  private var nilledElements: Set[ElementImpl] = _
-
-  private var topWithinEntityElements: Set[ElementImpl] = _
-
-  private var elementList: IntHashMap[List[NodeInfo]] = _
-
-  private var userData: HashMap[String, Any] = _
-
+  private var entityTable: ju.HashMap[String, Array[String]] = _
+  private var nilledElements: ju.Set[ElementImpl] = _
+  private var topWithinEntityElements: ju.Set[ElementImpl] = _
+  private var elementList: IntHashMap[ju.List[NodeInfo]] = _
+  private var userData: ju.HashMap[String, Any] = _
   private var config: Configuration = _
-
   private var lineNumberMap: LineNumberMap = _
-
   private var systemIdMap: SystemIdMap = new SystemIdMap()
 
   @BooleanBeanProperty
@@ -71,7 +41,7 @@ class DocumentImpl
 
   var mutable: Boolean = _
 
-  override def isMutable(): Boolean = mutable
+  override def isMutable: Boolean = mutable
 
   def setMutable(mute: Boolean): Unit = this.mutable = mute
 
@@ -81,7 +51,7 @@ class DocumentImpl
 
   def getRootNode: NodeInfo = this
 
-  override def setSpaceStrippingRule(rule: SpaceStrippingRule) = this.spaceStrippingRule = rule
+  override def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit = this.spaceStrippingRule = rule
 
   def getSpaceStrippingRule: SpaceStrippingRule = spaceStrippingRule
 
@@ -92,7 +62,7 @@ class DocumentImpl
 
   override def getConfiguration: Configuration = config
 
-  override def getNamePool(): NamePool = config.getNamePool
+  override def getNamePool: NamePool = config.getNamePool
 
   override def newBuilder(): Builder = {
     val builder: LinkedTreeBuilder = new LinkedTreeBuilder(
@@ -167,9 +137,8 @@ class DocumentImpl
   }
 
   def addNilledElement(element: ElementImpl): Unit = {
-    if (nilledElements == null) {
-      nilledElements = new HashSet()
-    }
+    if (nilledElements == null)
+      nilledElements = new ju.HashSet
     nilledElements.add(element)
   }
 
@@ -177,9 +146,8 @@ class DocumentImpl
     nilledElements != null && nilledElements.contains(element)
 
   def markTopWithinEntity(element: ElementImpl): Unit = {
-    if (topWithinEntityElements == null) {
-      topWithinEntityElements = new HashSet()
-    }
+    if (topWithinEntityElements == null)
+      topWithinEntityElements = new ju.HashSet
     topWithinEntityElements.add(element)
   }
 
@@ -197,7 +165,7 @@ class DocumentImpl
 
   override def getRoot: NodeInfo = this
 
-  override def getPhysicalRoot(): DocumentImpl = this
+  override def getPhysicalRoot: DocumentImpl = this
 
   override def generateId(buffer: FastStringBuffer): Unit = {
     buffer.cat('d')
@@ -208,10 +176,10 @@ class DocumentImpl
     if (elementList == null) {
       elementList = new IntHashMap(500)
     }
-    val eList: IntHashMap[List[NodeInfo]] = elementList
-    var list: List[NodeInfo] = eList.get(fingerprint)
+    val eList: IntHashMap[ju.List[NodeInfo]] = elementList
+    var list: ju.List[NodeInfo] = eList.get(fingerprint)
     if (list == null) {
-      list = new ArrayList(500)
+      list = new ju.ArrayList(500)
       var next: NodeImpl = getNextInDocument(this)
       while (next != null) {
         if (next.getNodeKind == Type.ELEMENT && next.getFingerprint == fingerprint) {
@@ -225,22 +193,21 @@ class DocumentImpl
   }
 
   def deIndex(node: NodeImpl): Unit = {
-    if (node.isInstanceOf[ElementImpl]) {
-      val eList: IntHashMap[List[NodeInfo]] = elementList
-      if (eList != null) {
-        val list: List[NodeInfo] = eList.get(node.getFingerprint)
-        if (list == null) {
-          return
+    node match {
+      case _: ElementImpl =>
+        val eList: IntHashMap[ju.List[NodeInfo]] = elementList
+        if (eList != null) {
+          val list: ju.List[NodeInfo] = eList.get(node.getFingerprint)
+          if (list == null)
+            return
+          list.remove(node)
         }
-        list.remove(node)
-      }
-      if (node.isId) {
-        deregisterID(node.getStringValue)
-      }
-    } else if (node.isInstanceOf[AttributeImpl]) {
-      if (node.isId) {
-        deregisterID(node.getStringValue)
-      }
+        if (node.isId)
+          deregisterID(node.getStringValue)
+      case _: AttributeImpl =>
+        if (node.isId)
+          deregisterID(node.getStringValue)
+      case _ =>
     }
   }
 
@@ -248,7 +215,7 @@ class DocumentImpl
     if (idTable != null) {
       return
     }
-    idTable = new HashMap(256)
+    idTable = new ju.HashMap(256)
     var curr: NodeImpl = this
     val root: NodeImpl = curr
     while (curr != null) {
@@ -258,7 +225,7 @@ class DocumentImpl
           registerID(e, Whitespace.trim(e.getStringValueCS))
         }
         val atts: AttributeMap = e.attributes
-        for (att <- atts if att.isId &&
+        for (att <- atts.iterator.asScala if att.isId &&
           NameChecker.isValidNCName(Whitespace.trim(att.getValue))) {
           registerID(e, Whitespace.trim(att.getValue))
         }
@@ -268,10 +235,9 @@ class DocumentImpl
   }
 
   def registerID(e: NodeInfo, id: String): Unit = {
-    if (idTable == null) {
-      idTable = new HashMap(256)
-    }
-    val table: HashMap[String, NodeInfo] = idTable
+    if (idTable == null)
+      idTable = new ju.HashMap(256)
+    val table: ju.HashMap[String, NodeInfo] = idTable
     table.putIfAbsent(id, e)
   }
 
@@ -296,18 +262,17 @@ class DocumentImpl
   }
 
   def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {
-    if (entityTable == null) {
-      entityTable = new HashMap(10)
-    }
+    if (entityTable == null)
+      entityTable = new ju.HashMap(10)
     val ids: Array[String] = Array.ofDim[String](2)
     ids(0) = uri
     ids(1) = publicId
     entityTable.put(name, ids)
   }
 
-  def getUnparsedEntityNames: Iterator[String] =
+  def getUnparsedEntityNames: ju.Iterator[String] =
     if (entityTable == null) {
-      val ls: List[String] = Collections.emptyList()
+      val ls: ju.List[String] = ju.Collections.emptyList()
       ls.iterator
     } else {
       entityTable.keySet.iterator
@@ -330,7 +295,7 @@ class DocumentImpl
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.startDocument(CopyOptions.getStartDocumentProperties(copyOptions))
-    var names: Iterator[String] = getUnparsedEntityNames
+    val names: ju.Iterator[String] = getUnparsedEntityNames
     while (names.hasNext) {
       val name: String = names.next()
       val details: Array[String] = getUnparsedEntity(name)
@@ -345,10 +310,8 @@ class DocumentImpl
     out.endDocument()
   }
 
-  def replaceStringValue(stringValue: CharSequence): Unit = {
-    throw new UnsupportedOperationException(
-      "Cannot replace the value of a document node")
-  }
+  def replaceStringValue(stringValue: CharSequence): Unit =
+    throw new UnsupportedOperationException("Cannot replace the value of a document node")
 
   def resetIndexes(): Unit = {
     idTable = null
@@ -356,21 +319,18 @@ class DocumentImpl
   }
 
   override def setUserData(key: String, value: Any): Unit = {
-    if (userData == null) {
-      userData = new HashMap(4)
-    }
-    if (value == null) {
+    if (userData == null)
+      userData = new ju.HashMap(4)
+    if (value == null)
       userData.remove(key)
-    } else {
+    else
       userData.put(key, value)
-    }
   }
 
   def getUserData(key: String): Any =
-    if (userData == null) {
+    if (userData == null)
       null
-    } else {
+    else
       userData.get(key)
-    }
 
 }

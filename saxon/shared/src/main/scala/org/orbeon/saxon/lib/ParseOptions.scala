@@ -1,4 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package org.orbeon.saxon.lib
 
 import java.io.IOException
@@ -7,18 +13,22 @@ import java.util._
 import javax.xml.transform.Source
 import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.stream.StreamSource
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.event.{Builder, FilterFactory}
 import org.orbeon.saxon.expr.accum.Accumulator
 import org.orbeon.saxon.model.{SchemaType, ValidationParams}
 import org.orbeon.saxon.om.{SpaceStrippingRule, StructuredQName, TreeModel}
 import org.orbeon.saxon.trans.Maker
+import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.{EntityResolver, ErrorHandler, InputSource, XMLReader}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-//remove if not needed
 
+/**
+ * This class defines options for parsing and/or validating a source document. Some of the options
+ * are relevant only when parsing, some only when validating, but they are combined into a single
+ * class because the two operations are often performed together.
+ */
 object ParseOptions {
 
   def close(source: Source): Unit = {
@@ -441,14 +451,3 @@ class ParseOptions {
   def isPleaseCloseAfterUse: Boolean = pleaseClose
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * This class defines options for parsing and/or validating a source document. Some of the options
- * are relevant only when parsing, some only when validating, but they are combined into a single
- * class because the two operations are often performed together.
- */

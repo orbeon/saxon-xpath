@@ -1,26 +1,21 @@
 package org.orbeon.saxon.om
 
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-
+import java.{util => ju}
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 object SmallAttributeMap {
-
   val LIMIT: Int = 8
-
 }
 
-class SmallAttributeMap(attrib: List[AttributeInfo]) extends AttributeMap {
+class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
 
-  private var attributes: List[AttributeInfo] = new ArrayList(attrib)
+  private val attributes: ju.List[AttributeInfo] = new ju.ArrayList(attrib)
 
-  override def size(): Int = attributes.size
+  def size: Int = attributes.size
 
   override def get(name: NodeName): AttributeInfo =
-    attributes.asScala.find(_.getNodeName == name).getOrElse(null)
+    attributes.asScala.find(_.getNodeName == name).orNull
 
   override def get(uri: String, local: String): AttributeInfo = {
     for (info <- attributes.asScala) {
@@ -42,10 +37,9 @@ class SmallAttributeMap(attrib: List[AttributeInfo]) extends AttributeMap {
     null
   }
 
-  override def iterator: scala.Iterator[AttributeInfo] = attributes.iterator.asScala
+  def iterator: ju.Iterator[AttributeInfo] = attributes.iterator
 
-  override def asList(): List[AttributeInfo] = new ArrayList(attributes)
+  override def asList: ju.List[AttributeInfo] = new ju.ArrayList(attributes)
 
   override def itemAt(index: Int): AttributeInfo = attributes.get(index)
-
 }

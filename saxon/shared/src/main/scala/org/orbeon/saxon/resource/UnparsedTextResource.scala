@@ -1,39 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.resource
 
-import org.orbeon.saxon.utils.Configuration
+import java.io.{ByteArrayInputStream, InputStream}
 
 import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.lib.Resource
-
-import org.orbeon.saxon.lib.ResourceFactory
-
-import org.orbeon.saxon.lib.StandardUnparsedTextResolver
-
+import org.orbeon.saxon.lib.{Resource, ResourceFactory, StandardUnparsedTextResolver}
 import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.StringValue
 
-import java.io.ByteArrayInputStream
-
-import java.io.IOException
-
-import java.io.InputStream
-
-import java.io.UnsupportedEncodingException
-
-import java.net.URL
-
-import java.net.URLConnection
-
-import UnparsedTextResource._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
+import scala.beans.BeanProperty
 
 
 object UnparsedTextResource {
@@ -44,7 +25,6 @@ object UnparsedTextResource {
         details: AbstractResourceCollection.InputDetails): Resource =
       new UnparsedTextResource(details)
   }
-
 }
 
 /**
@@ -57,12 +37,12 @@ object UnparsedTextResource {
 class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
     extends Resource {
 
-  private var contentType: String = details.contentType
+  private val contentType: String = details.contentType
 
   @BeanProperty
   var encoding: String = details.encoding
 
-  private var href: String = details.resourceUri
+  private val href: String = details.resourceUri
 
   private var unparsedText: String = null
 
@@ -78,33 +58,28 @@ class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
     this.unparsedText = new String(details.binaryContent, details.encoding)
   }
 
-  def getResourceURI(): String = href
+  def getResourceURI: String = href
 
   def getContent: String = {
     if (unparsedText == null) {
-      val url: URL = new URL(href)
-      val connection: URLConnection = url.openConnection()
-      val stream: InputStream = connection.getInputStream
-      var builder: StringBuilder = null
-      var enc: String = encoding
-      if (enc == null) {
-        enc = StandardUnparsedTextResolver.inferStreamEncoding(stream, null)
-      }
-      builder = CatalogCollection.makeStringBuilderFromStream(stream, enc)
-      unparsedText = builder.toString
+      // ORBEON: JVM only
+      ???
+//      val url: URL = new URL(href)
+//      val connection: URLConnection = url.openConnection()
+//      val stream: InputStream = connection.getInputStream
+//      var builder: StringBuilder = null
+//      var enc: String = encoding
+//      if (enc == null) {
+//        enc = StandardUnparsedTextResolver.inferStreamEncoding(stream, null)
+//      }
+//      builder = CatalogCollection.makeStringBuilderFromStream(stream, enc)
+//      unparsedText = builder.toString
     }
     unparsedText
   }
 
   def getItem(context: XPathContext): Item = new StringValue(getContent)
 
-  def getContentType(): String =
+  def getContentType: String =
     if (contentType == null) "text/plain" else contentType
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

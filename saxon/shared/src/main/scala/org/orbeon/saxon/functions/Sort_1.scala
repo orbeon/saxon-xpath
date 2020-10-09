@@ -74,6 +74,9 @@ class Sort_1 extends SystemFunction {
       collation,
       StandardNames.XS_ANY_ATOMIC_TYPE,
       context)
+
+
+
     try inputList.sort((a, b) => {
       val result: Int =
         ArraySort.compareSortKeys(a.sortKey, b.sortKey, atomicComparer)

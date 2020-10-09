@@ -232,12 +232,10 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         case test1: DocumentNodeTest if kind == UType.ELEMENT =>
           val elementTest: NodeTest =
             test1.getElementTest
-          val outermostElementNames: Optional[IntSet] =
-            elementTest.getRequiredNodeNames
-          if (outermostElementNames.isPresent) {
-            val selectedElementNames: Optional[IntSet] =
-              test.getRequiredNodeNames
-            if (selectedElementNames.isPresent) {
+          val outermostElementNames = elementTest.getRequiredNodeNames
+          if (outermostElementNames.isDefined) {
+            val selectedElementNames = test.getRequiredNodeNames
+            if (selectedElementNames.isDefined) {
               if (axis == AxisInfo.CHILD) {
                 if (selectedElementNames.get
                   .intersect(outermostElementNames.get)
@@ -256,7 +254,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   outermostElementNames.get.size == 1) {
                   val oeni: IntIterator = outermostElementNames.get.iterator
                   val outermostElementName: Int =
-                    if (oeni.hasNext) oeni.next else -1
+                    if (oeni.hasNext) oeni.next() else -1
                   val decl: SchemaDeclaration =
                     config.getElementDeclaration(outermostElementName)
                   if (decl == null) {
@@ -488,7 +486,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             if (children.size == 1) {
               val iter: IntIterator = children.iterator
               if (iter.hasNext) {
-                childfp = iter.next
+                childfp = iter.next()
               }
             } else {
               return this
@@ -511,7 +509,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 val kids: IntIterator = permitted.iterator
                 breakable {
                   while (kids.hasNext) {
-                    val kid: Int = kids.next
+                    val kid: Int = kids.next()
                     val sq: StructuredQName =
                       getConfiguration.getNamePool.getStructuredQName(kid)
                     if (sq.getLocalPart == childElement.getLocalPart && kid != childfp) {
@@ -575,7 +573,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           var considerDescendants: Boolean = false
           val kids: IntIterator = children.iterator
           while (kids.hasNext) {
-            val c: Int = kids.next
+            val c: Int = kids.next()
             if (c == targetfp) {
               usefulChildren.add(c)
               considerSelf = true
@@ -648,7 +646,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     var test: NodeTest = null
     val iter: IntIterator = elements.iterator
     while (iter.hasNext) {
-      val fp: Int = iter.next
+      val fp: Int = iter.next()
       val nextTest: NodeTest = new NameTest(Type.ELEMENT, fp, pool)
       test =
         if (test == null) nextTest

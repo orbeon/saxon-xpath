@@ -30,8 +30,8 @@ object IntArraySet {
 
     def hasNext: Boolean = i < limit
 
-    def next: Integer = contents({
-      i += 1;
+    def next(): Integer = contents({
+      i += 1
       i - 1
     })
   }
@@ -46,7 +46,7 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
 
   def this(input: IntHashSet) = {
     this(input.getValues)
-    Arrays.sort(contents)
+    scala.util.Sorting.quickSort(contents)
   }
 
   def this(input: IntArraySet) = {
@@ -67,12 +67,9 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
     hashCodeVar = -1
   }
 
-  def size(): Int = contents.length
-
-  def isEmpty: Boolean = contents.length == 0
-
+  def size: Int = contents.length
+  def isEmpty: Boolean = contents.isEmpty
   def getValues: Array[Int] = contents
-
   def contains(value: Int): Boolean = Arrays.binarySearch(contents, value) >= 0
 
   def remove(value: Int): Boolean = {
@@ -94,7 +91,7 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
 
   def add(value: Int): Boolean = {
     hashCodeVar = -1
-    if (contents.length == 0) {
+    if (contents.isEmpty) {
       contents = Array(value)
       return true
     }
@@ -132,54 +129,55 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
     if (equals(other)) {
       return copy()
     }
-    if (other.isInstanceOf[IntArraySet]) {
-      val merged: Array[Int] = Array.ofDim[Int](size + other.size)
-      val a: Array[Int] = contents
-      val b: Array[Int] = other.asInstanceOf[IntArraySet].contents
-      val m: Int = a.length
-      val n: Int = b.length
-      var o: Int = 0
-      var i: Int = 0
-      var j: Int = 0
-      while (true) {
-        if (a(i) < b(j)) {
+    other match {
+      case intArraySet: IntArraySet =>
+        val merged: Array[Int] = Array.ofDim[Int](size + other.size)
+        val a: Array[Int] = contents
+        val b: Array[Int] = intArraySet.contents
+        val m: Int = a.length
+        val n: Int = b.length
+        var o: Int = 0
+        var i: Int = 0
+        var j: Int = 0
+        while (true) {
+          if (a(i) < b(j)) {
 
-          merged(o) = a(i)
-          o += 1
-          i += 1
+            merged(o) = a(i)
+            o += 1
+            i += 1
 
-        } else if (b(j) < a(i)) {
-          merged(o) = b(j)
-          o += 1
-          j += 1
-        } else {
-          merged(o) = a(i)
-          o += 1
-          i += 1
-          j += 1
+          } else if (b(j) < a(i)) {
+            merged(o) = b(j)
+            o += 1
+            j += 1
+          } else {
+            merged(o) = a(i)
+            o += 1
+            i += 1
+            j += 1
+          }
+          if (i == m) {
+            System.arraycopy(b, j, merged, o, n - j)
+            o += (n - j)
+            return make(merged, o)
+          } else if (j == n) {
+            System.arraycopy(a, i, merged, o, m - i)
+            o += (m - i)
+            return make(merged, o)
+          }
         }
-        if (i == m) {
-          System.arraycopy(b, j, merged, o, n - j)
-          o += (n - j)
-          return make(merged, o)
-        } else if (j == n) {
-          System.arraycopy(a, i, merged, o, m - i)
-          o += (m - i)
-          return make(merged, o)
+      case _ =>
+        val n = new IntHashSet(size)
+        val it = iterator
+        while ( {
+          it.hasNext
+        }) {
+          val v = it.next()
+          if (!other.contains(v)) n.add(v)
         }
-      }
-    } else {
-      val n = new IntHashSet(size)
-      val it = iterator
-      while ( {
-        it.hasNext
-      }) {
-        val v = it.next
-        if (!other.contains(v)) n.add(v)
-      }
-      return n
+        return n
     }
-    return null
+    null
   }
 
   override def toString: String = {
@@ -227,5 +225,4 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
     }
     hashCodeVar
   }
-
 }

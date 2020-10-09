@@ -508,11 +508,9 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
                 locationId: Location,
                 copyNamespaces: Int): Unit = {
     if (item != null) {
-      if (item.isInstanceOf[AtomicValue] || item
-        .isInstanceOf[ExternalObject[_]]) {
-        if (previousAtomic) {
+      if (item.isInstanceOf[AtomicValue] || item.isInstanceOf[ExternalObject[_]]) {
+        if (previousAtomic)
           characters(" ", locationId, ReceiverOption.NONE)
-        }
         characters(item.getStringValueCS, locationId, ReceiverOption.NONE)
         previousAtomic = true
       } else item match {

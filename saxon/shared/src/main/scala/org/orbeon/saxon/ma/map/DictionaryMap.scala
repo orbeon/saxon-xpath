@@ -12,42 +12,40 @@ import scala.jdk.CollectionConverters._
 
 class DictionaryMap extends MapItem {
 
-  private var hashMap: HashMap[String, GroundedValue] = new HashMap()
+  private val hashMap: HashMap[String, GroundedValue] = new HashMap
 
-  def initialPut(key: String, value: GroundedValue): Unit = {
+  def initialPut(key: String, value: GroundedValue): Unit =
     hashMap.put(key, value)
-  }
 
   def initialAppend(key: String, value: GroundedValue): Unit = {
-    val existingValue: GroundedValue = hashMap.get(key)
-    if (existingValue == null) {
+    val existingValue = hashMap.get(key)
+    if (existingValue == null)
       initialPut(key, value)
-    } else {
+    else
       hashMap.put(key, existingValue.concatenate(value))
-    }
   }
 
   override def get(key: AtomicValue): GroundedValue =
-    if (key.isInstanceOf[StringValue]) {
+    if (key.isInstanceOf[StringValue])
       hashMap.get(key.getStringValue)
-    } else {
+    else
       null
-    }
 
   override def size(): Int = hashMap.size
-
   override def isEmpty: Boolean = hashMap.isEmpty
 
-  override def keys(): AtomicIterator[StringValue] = {
+  override def keys: AtomicIterator[StringValue] = {
     val base: Iterator[String] = hashMap.keySet.iterator
 
-    if (base.hasNext) new StringValue(base.next()).asInstanceOf[AtomicIterator[StringValue]] else null
+    if (base.hasNext)
+      new StringValue(base.next()).asInstanceOf[AtomicIterator[StringValue]] else null
   }
 
   override def keyValuePairs(): java.lang.Iterable[KeyValuePair] = {
-    val pairs: List[KeyValuePair] = new ArrayList[KeyValuePair]()
-    hashMap.forEach((k, v) =>
-      pairs.add(new KeyValuePair(new StringValue(k), v)))
+    val pairs = new ArrayList[KeyValuePair]
+    hashMap.asScala.foreach { case (k, v) =>
+      pairs.add(new KeyValuePair(new StringValue(k), v))
+    }
     pairs
   }
 
@@ -59,27 +57,25 @@ class DictionaryMap extends MapItem {
   override def conforms(keyType: AtomicType,
                         valueType: SequenceType,
                         th: TypeHierarchy): Boolean = {
-    if (isEmpty) {
+    if (isEmpty)
       return true
-    }
-    if (!(keyType == BuiltInAtomicType.STRING || keyType == BuiltInAtomicType.ANY_ATOMIC)) {
+
+    if (!(keyType == BuiltInAtomicType.STRING || keyType == BuiltInAtomicType.ANY_ATOMIC))
       return false
-    }
-    if (valueType == SequenceType.ANY_SEQUENCE) {
+
+    if (valueType == SequenceType.ANY_SEQUENCE)
       return true
-    }
-    for (mapVal <- hashMap.values.asScala if !valueType.matches(mapVal, th)) {
-      false
-    }
+
+    for (mapVal <- hashMap.values.asScala if !valueType.matches(mapVal, th))
+      return false
+
     true
   }
 
   override def getItemType(th: TypeHierarchy): ItemType = {
     var valueType: ItemType = null
     var valueCard: Int = 0
-    val keyIter: AtomicIterator[_ <: AtomicValue] = keys
-    val key: AtomicValue = null
-    for ((key, value) <- hashMap.asScala) {
+    for ((_, value) <- hashMap.asScala) {
       val `val`: GroundedValue = value
       if (valueType == null) {
         valueType = SequenceTool.getItemType(`val`, th)
@@ -93,20 +89,18 @@ class DictionaryMap extends MapItem {
           Cardinality.union(valueCard, SequenceTool.getCardinality(`val`))
       }
     }
-    if (valueType == null) {
+    if (valueType == null)
       MapType.EMPTY_MAP_TYPE
-    } else {
-      new MapType(BuiltInAtomicType.STRING,
-        SequenceType.makeSequenceType(valueType, valueCard))
-    }
+    else
+      new MapType(BuiltInAtomicType.STRING, SequenceType.makeSequenceType(valueType, valueCard))
   }
 
-  override def getKeyUType(): UType =
+  override def getKeyUType: UType =
     if (hashMap.isEmpty) UType.VOID else UType.STRING
 
   private def toHashTrieMap: HashTrieMap = {
-    val target: HashTrieMap = new HashTrieMap()
-    hashMap.forEach((k, v) => target.initialPut(new StringValue(k), v))
+    val target = new HashTrieMap()
+    hashMap.asScala.foreach { case (k, v) => target.initialPut(new StringValue(k), v) }
     target
   }
 

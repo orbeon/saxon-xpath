@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-import java.util.{HashMap, Map}
+import java.{util => ju}
 
 import org.orbeon.saxon.event.RegularSequenceChecker._
 import org.orbeon.saxon.model.{SchemaType, Type}
@@ -14,6 +14,7 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 
+import scala.jdk.CollectionConverters._
 
 object RegularSequenceChecker {
 
@@ -46,11 +47,11 @@ object RegularSequenceChecker {
       v.asInstanceOf[Transition]
   }
 
-  private var machine: Map[State.State, Map[Transition.Transition, State.State]] = new HashMap()
+  private val machine: ju.Map[State.State, ju.Map[Transition.Transition, State.State]] = new ju.HashMap
 
   private def edge(from: State.State, event: Transition.Transition, to: State.State): Unit = {
-    val edges: Map[Transition.Transition, State.State] =
-      machine.computeIfAbsent(from, (s) => new HashMap())
+    val edges: ju.Map[Transition.Transition, State.State] =
+      machine.computeIfAbsent(from, s => new ju.HashMap())
     edges.put(event, to)
   }
 
@@ -138,7 +139,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
   private var state: State.State = State.Initial
 
   private def transition(event: Transition.Transition): Unit = {
-    val map: Map[Transition.Transition, State.State] = machine.get(state)
+    val map: ju.Map[Transition.Transition, State.State] = machine.get(state)
     val newState: State.State = if (map == null) null else map.get(event)
     if (newState == null) {
       //assert false;
@@ -154,11 +155,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
       transition(Transition.APPEND)
       nextReceiver.append(item, locationId, copyNamespaces)
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -166,26 +165,20 @@ class RegularSequenceChecker(nextReceiver: Receiver,
                           locationId: Location,
                           properties: Int): Unit = {
     transition(Transition.TEXT)
-    if (chars.length == 0 && !stack.isEmpty) {
-      throw new IllegalStateException(
-        "Zero-length text nodes not allowed within document/element content")
-    }
+    if (chars.length == 0 && stack.nonEmpty)
+      throw new IllegalStateException("Zero-length text nodes not allowed within document/element content")
     try nextReceiver.characters(chars, locationId, properties)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
   override def close(): Unit = {
     if (state != State.Final && state != State.Failed) {
-      if (!stack.isEmpty) {
-        throw new IllegalStateException(
-          "Unclosed element or document nodes at end of stream")
-      }
+      if (stack.nonEmpty)
+        throw new IllegalStateException("Unclosed element or document nodes at end of stream")
       nextReceiver.close()
       state = State.Final
     }
@@ -197,11 +190,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
     transition(Transition.COMMENT)
     try nextReceiver.comment(chars, locationId, properties)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -212,11 +203,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
     }
     try nextReceiver.endDocument()
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -228,11 +217,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
       state = State.Open
     try nextReceiver.endElement()
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -256,11 +243,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
       locationId,
       properties)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -269,11 +254,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
     stack ::= Type.DOCUMENT
     try nextReceiver.startDocument(properties)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 
@@ -289,7 +272,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
       attributes.verify()
       val prefix: String = elemName.getPrefix
       if (prefix.isEmpty) {
-        val declaredDefaultUri: String = namespaces.getDefaultNamespace.toString
+        val declaredDefaultUri: String = namespaces.getDefaultNamespace
         if (declaredDefaultUri != elemName.getURI) {
           throw new IllegalStateException(
             "URI of element Q{" + elemName.getURI + "}" + elemName.getLocalPart +
@@ -307,7 +290,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
             "Prefix " + prefix + " is bound to the wrong namespace")
         }
       }
-      for (att <- attributes) {
+      for (att <- attributes.iterator.asScala) {
         val name: NodeName = att.getNodeName
         if (!name.getURI.isEmpty) {
           val attPrefix: String = name.getPrefix
@@ -332,11 +315,9 @@ class RegularSequenceChecker(nextReceiver: Receiver,
       location,
       properties)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         state = State.Failed
         throw e
-      }
-
     }
   }
 }

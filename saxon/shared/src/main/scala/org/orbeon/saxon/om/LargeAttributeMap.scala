@@ -1,49 +1,41 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.util
+import java.{util => ju}
 
 import org.orbeon.saxon.ma.trie.ImmutableHashTrieMap
+import org.orbeon.saxon.om.LargeAttributeMap._
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import LargeAttributeMap._
 
-
+import scala.jdk.CollectionConverters._
 
 
 object LargeAttributeMap {
 
   private class AttributeInfoLink {
-
     var payload: AttributeInfo = _
-
     var prior: NodeName = _
-
     var next: NodeName = _
-
   }
-
 }
 
 class LargeAttributeMap extends AttributeMap {
 
   private var attributes: ImmutableHashTrieMap[NodeName, AttributeInfoLink] = _
-
   private var firstNode: NodeName = _
-
   private var lastNode: NodeName = _
 
-   var sizeInt: Int = _
+  var size: Int = _
 
-  def this(atts: List[AttributeInfo]) = {
+  def this(atts: ju.List[AttributeInfo]) = {
     this()
     assert(!atts.isEmpty)
     this.attributes = ImmutableHashTrieMap.empty[NodeName, AttributeInfoLink]()
-    this.sizeInt = atts.size
+    this.size = atts.size
     var current: AttributeInfoLink = null
-    for (att:AttributeInfo <- atts) {
-      if (attributes.get(att.getNodeName) != null) {
+    for (att:AttributeInfo <- atts.asScala) {
+      if (attributes.get(att.getNodeName) != null)
         throw new IllegalArgumentException("Attribute map contains duplicates")
-      }
       val link: AttributeInfoLink = new AttributeInfoLink()
       link.payload = att
       if (current == null) {
@@ -65,7 +57,7 @@ class LargeAttributeMap extends AttributeMap {
       last: NodeName) = {
     this()
     this.attributes = attributes
-    this.sizeInt = size
+    this.size = size
     this.firstNode = first
     this.lastNode = last
   }
@@ -88,15 +80,15 @@ class LargeAttributeMap extends AttributeMap {
   }
 
   override def put(att: AttributeInfo): AttributeMap = {
-    val existing: AttributeInfoLink = attributes.get(att.getNodeName)
-    val link: AttributeInfoLink = new AttributeInfoLink()
-    var last2: NodeName = lastNode
+    val existing = attributes.get(att.getNodeName)
+    val link = new AttributeInfoLink
+    var last2 = lastNode
     link.payload = att
     if (existing == null) {
       link.prior = lastNode
       last2 = att.getNodeName
-      val oldLast: AttributeInfoLink = attributes.get(lastNode)
-      val penult: AttributeInfoLink = new AttributeInfoLink()
+      val oldLast = attributes.get(lastNode)
+      val penult = new AttributeInfoLink
       penult.payload = oldLast.payload
       penult.next = att.getNodeName
       penult.prior = oldLast.prior
@@ -105,9 +97,8 @@ class LargeAttributeMap extends AttributeMap {
       link.prior = existing.prior
       link.next = existing.next
     }
-    val att2: ImmutableHashTrieMap[NodeName, AttributeInfoLink] =
-      attributes.put(att.getNodeName, link)
-    val size2: Int = if (existing == null) size + 1 else size
+    val att2 = attributes.put(att.getNodeName, link)
+    val size2 = if (existing == null) size + 1 else size
     new LargeAttributeMap(att2, size2, firstNode, last2)
   }
 
@@ -115,14 +106,13 @@ class LargeAttributeMap extends AttributeMap {
     if (attributes.get(name) == null) {
       this
     } else {
-      var first2: NodeName = firstNode
-      var last2: NodeName = lastNode
-      val att2: ImmutableHashTrieMap[NodeName, AttributeInfoLink] =
-        attributes.remove(name)
-      val existing: AttributeInfoLink = attributes.get(name)
+      var first2 = firstNode
+      var last2 = lastNode
+      val att2 = attributes.remove(name)
+      val existing = attributes.get(name)
       if (existing.prior != null) {
-        val priorLink: AttributeInfoLink = attributes.get(existing.prior)
-        val priorLink2: AttributeInfoLink = new AttributeInfoLink()
+        val priorLink = attributes.get(existing.prior)
+        val priorLink2 = new AttributeInfoLink()
         priorLink2.payload = priorLink.payload
         priorLink2.prior = priorLink.prior
         priorLink2.next = existing.next
@@ -131,8 +121,8 @@ class LargeAttributeMap extends AttributeMap {
         first2 = existing.next
       }
       if (existing.next != null) {
-        val nextLink: AttributeInfoLink = attributes.get(existing.next)
-        val nextLink2: AttributeInfoLink = new AttributeInfoLink()
+        val nextLink = attributes.get(existing.next)
+        val nextLink2 = new AttributeInfoLink()
         nextLink2.payload = nextLink.payload
         nextLink2.next = nextLink.next
         nextLink2.prior = existing.prior
@@ -143,33 +133,29 @@ class LargeAttributeMap extends AttributeMap {
       new LargeAttributeMap(att2, size - 1, first2, last2)
     }
 
-  override def iterator: Iterator[AttributeInfo] =
-    new Iterator[AttributeInfo]() {
+  override def iterator: ju.Iterator[AttributeInfo] =
+    new ju.Iterator[AttributeInfo] {
+
       var current: NodeName = firstNode
 
-      override def hasNext: Boolean = current != null
+      def hasNext: Boolean = current != null
 
-      override def next(): AttributeInfo = {
-        val link: AttributeInfoLink = attributes.get(current)
+      def next(): AttributeInfo = {
+        val link = attributes.get(current)
         current = link.next
         link.payload
       }
     }
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-  override def toList(): List[AttributeInfo] = synchronized {
-    var result: List[AttributeInfo] = new util.ArrayList[AttributeInfo](size).asScala.toList
-    var iteratorVar : Iterator[AttributeInfo] = iterator
-    while(iteratorVar.hasNext) {
-      val element : AttributeInfo = iteratorVar.next
-      result:+element
-    }
+
+  override def asList: ju.List[AttributeInfo] = synchronized {
+    val result = new ju.ArrayList[AttributeInfo](size)
+    iterator.asScala foreach result.add
     result
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(256)
-    for (att <- this) {
+    val sb = new FastStringBuffer(256)
+    for (att <- this.asScala) {
       sb.cat(att.getNodeName.getDisplayName)
         .cat("=\"")
         .cat(att.getValue)

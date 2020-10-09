@@ -1,42 +1,19 @@
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.{Arrays, TimeZone}
+import java.util.regex.{Matcher, Pattern}
 
-import org.orbeon.saxon.expr.Callable
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.expr.number._
-
+import org.orbeon.saxon.functions.FormatDate._
 import org.orbeon.saxon.lib.Numberer
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.om.ZeroOrOne
-
+import org.orbeon.saxon.om.{Sequence, StructuredQName, ZeroOrOne}
 import org.orbeon.saxon.regex.UnicodeString
-
 import org.orbeon.saxon.regex.charclass.Categories
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
-
-import java.util.Arrays
-
-import java.util.TimeZone
-
-import java.util.regex.Matcher
-
-import java.util.regex.Pattern
-
-import FormatDate._
 
 import scala.util.control.Breaks._
 
@@ -395,24 +372,13 @@ object FormatDate {
         }
       case 'z' | 'Z' =>
         var dtv: DateTimeValue = null
-        if (value.isInstanceOf[TimeValue]) {
-          val now: DateTimeValue = DateTimeValue.getCurrentDateTime(context)
-          val year: Int = now.getYear
-          val tzoffset: Int = value.getTimezoneInMinutes
-          var baseDate: DateTimeValue = new DateTimeValue(year,
-            1.toByte,
-            1.toByte,
-            0.toByte,
-            0.toByte,
-            0.toByte,
-            0,
-            tzoffset,
-            false)
-          val b: java.lang.Boolean =
-            NamedTimeZone.inSummerTime(baseDate, country)
-          if (b != null && b) {
-            baseDate = new DateTimeValue(year,
-              7.toByte,
+        value match {
+          case timeValue: TimeValue =>
+            val now = DateTimeValue.getCurrentDateTime(context)
+            val year = now.getYear
+            val tzoffset = value.getTimezoneInMinutes
+            var baseDate = new DateTimeValue(year,
+              1.toByte,
               1.toByte,
               0.toByte,
               0.toByte,
@@ -420,11 +386,21 @@ object FormatDate {
               0,
               tzoffset,
               false)
-          }
-          dtv = DateTimeValue.makeDateTimeValue(baseDate.toDateValue,
-            value.asInstanceOf[TimeValue])
-        } else {
-          dtv = value.toDateTime
+            val b = NamedTimeZone.inSummerTime(baseDate, country)
+            if (b != null && b) {
+              baseDate = new DateTimeValue(year,
+                7.toByte,
+                1.toByte,
+                0.toByte,
+                0.toByte,
+                0.toByte,
+                0,
+                tzoffset,
+                false)
+            }
+            dtv = DateTimeValue.makeDateTimeValue(baseDate.toDateValue, timeValue)
+          case _ =>
+            dtv = value.toDateTime
         }
         formatTimeZone(dtv, component.charAt(0), format, country)
       case 'F' =>
@@ -542,7 +518,7 @@ object FormatDate {
         max = getWidths(widths)(1)
       } else if (digitsPattern.matcher(primary).find()) {
         val uPrimary: UnicodeString = UnicodeString.makeUnicodeString(primary)
-        for (i <- 0 until uPrimary.uLength()) {
+        for (i <- 0 until uPrimary.uLength) {
           val c: Int = uPrimary.uCharAt(i)
           if (c == '#') {
             max += 1
@@ -624,7 +600,7 @@ object FormatDate {
           context)
         var correctedResult: UnicodeString = reverse(
           UnicodeString.makeUnicodeString(reverseResult))
-        if (correctedResult.uLength() > max) {
+        if (correctedResult.uLength > max) {
           correctedResult = correctedResult.uSubstring(0, max)
         }
         correctedResult.toString
@@ -685,13 +661,11 @@ object FormatDate {
     var picGroupFormat: NumericGroupFormatter = null
     try picGroupFormat = FormatInteger.getPicSeparators(primary)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         if ("FODF1310" == e.getErrorCodeLocalPart) {
           e.setErrorCode("FOFD1340")
         }
         throw e
-      }
-
     }
     val adjustedPicture: UnicodeString = picGroupFormat.getAdjustedPicture
     var s: String = numberer.format(intVal,
@@ -714,8 +688,8 @@ object FormatDate {
   }
 
   private def reverse(in: UnicodeString): UnicodeString = {
-    val out: Array[Int] = Array.ofDim[Int](in.uLength())
-    var i: Int = in.uLength() - 1
+    val out: Array[Int] = Array.ofDim[Int](in.uLength)
+    var i: Int = in.uLength - 1
     var j: Int = 0
     while (i >= 0) {
       out(j) = in.uCharAt(i)
@@ -771,13 +745,10 @@ object FormatDate {
       result(1) = max
       result
     } catch {
-      case err: NumberFormatException => {
-        val e: XPathException = new XPathException(
-          "Invalid integer used as width in date/time picture")
+      case _: NumberFormatException =>
+        val e: XPathException = new XPathException("Invalid integer used as width in date/time picture")
         e.setErrorCode("FOFD1340")
         throw e
-      }
-
     }
 
   private def formatTimeZone(value: DateTimeValue,
@@ -826,14 +797,14 @@ object FormatDate {
     for (ch <- expandedFormat) {
       if (java.lang.Character.isDigit(ch)) {
         {
-          digits += 1;
+          digits += 1
         }
         if (zeroDigit < 0) {
           zeroDigit = Alphanumeric.getDigitFamily(ch)
         }
       } else {
         {
-          separators += 1;
+          separators += 1
         }
         separatorChar = ch
       }
@@ -850,7 +821,7 @@ object FormatDate {
       val negative: Boolean = tz < 0
       tz = java.lang.Math.abs(tz)
       buffer({
-        used += 1;
+        used += 1
         used - 1
       }) = if (negative) '-' else '+'
       val hour: Int = tz / 60
@@ -860,27 +831,27 @@ object FormatDate {
       val hourDigits: Int = if (digits <= 2) digits else digits - 2
       if (hour > 9 || hourDigits >= 2) {
         buffer({
-          used += 1;
+          used += 1
           used - 1
         }) = zeroDigit + hour / 10
       }
       buffer({
-        used += 1;
+        used += 1
         used - 1
       }) = (hour % 10) + zeroDigit
       if (includeSep) {
         buffer({
-          used += 1;
+          used += 1
           used - 1
         }) = separatorChar
       }
       if (includeMinutes) {
         buffer({
-          used += 1;
+          used += 1
           used - 1
         }) = minute / 10 + zeroDigit
         buffer({
-          used += 1;
+          used += 1
           used - 1
         }) = minute % 10 + zeroDigit
       }
@@ -944,14 +915,12 @@ class FormatDate extends SystemFunction with Callable {
         allowEQName = true,
         getRetainedStaticContext)
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         val err = new XPathException(
           "Invalid calendar name. " + e.getMessage)
         err.setErrorCode("FOFD1340")
         err.setXPathContext(context)
         throw err
-      }
-
     }
     if (cal.hasURI("")) {
       val calLocal: String = cal.getLocalPart
@@ -989,8 +958,7 @@ class FormatDate extends SystemFunction with Callable {
         if (languageVal == null) null else languageVal.getStringValue
       val place: String =
         if (countryVal == null) null else countryVal.getStringValue
-      if (place != null && place.contains("/") && value.hasTimezone &&
-        !(value.isInstanceOf[TimeValue])) {
+      if (place != null && place.contains("/") && value.hasTimezone && ! value.isInstanceOf[TimeValue]) {
         val zone: TimeZone = NamedTimeZone.getNamedTimeZone(place)
         if (zone != null) {
           val offset: Int =

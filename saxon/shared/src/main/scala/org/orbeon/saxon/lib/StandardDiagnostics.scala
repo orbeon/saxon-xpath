@@ -1,9 +1,8 @@
 package org.orbeon.saxon.lib
 
-import java.util.List
+import java.{util => ju}
 
 import javax.xml.transform.SourceLocator
-import javax.xml.transform.dom.DOMLocator
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct._
 import org.orbeon.saxon.expr.parser.{Loc, XPathParser}
@@ -13,8 +12,8 @@ import org.orbeon.saxon.om.{NodeInfo, StandardNames, StructuredQName}
 import org.orbeon.saxon.regex.{BMPString, GeneralUnicodeString, LatinString, UnicodeString}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-import org.orbeon.saxon.trans.{Err, Mode}
 import org.orbeon.saxon.trans.rules.{BuiltInRuleSet, Rule}
+import org.orbeon.saxon.trans.{Err, Mode}
 import org.orbeon.saxon.tree.AttributeLocation
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Controller
@@ -22,16 +21,19 @@ import org.orbeon.saxon.utils.Controller
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
+
 object StandardDiagnostics {
 
   def getInstructionNameDefault(inst: Instruction): String =
     try {
-      if (inst.isInstanceOf[FixedElement]) {
-        val qName: StructuredQName = inst.getObjectName
-        "element constructor <" + qName.getDisplayName + '>'
-      } else if (inst.isInstanceOf[FixedAttribute]) {
-        val qName: StructuredQName = inst.getObjectName
-        "attribute constructor " + qName.getDisplayName + "=\"{...}\""
+      inst match {
+        case _: FixedElement =>
+          val qName: StructuredQName = inst.getObjectName
+          "element constructor <" + qName.getDisplayName + '>'
+        case _: FixedAttribute =>
+          val qName: StructuredQName = inst.getObjectName
+          "attribute constructor " + qName.getDisplayName + "=\"{...}\""
+        case _ =>
       }
       val construct: Int = inst.getInstructionNameCode
       if (construct < 0) {
@@ -103,62 +105,64 @@ class StandardDiagnostics {
     if (sorLoc == null) {
       sorLoc = Loc.NONE
     }
-    if (sorLoc.isInstanceOf[XPathParser.NestedLocation]) {
-      sorLoc = sorLoc.asInstanceOf[XPathParser.NestedLocation].getContainingLocation
+    sorLoc match {
+      case location: XPathParser.NestedLocation =>
+        sorLoc = location.getContainingLocation
+      case _ =>
     }
-    if (sorLoc.isInstanceOf[AttributeLocation]) {
-      val saLoc: AttributeLocation = sorLoc.asInstanceOf[AttributeLocation]
-      nodeMessage = "in " + saLoc.getElementName.getDisplayName
-      if (saLoc.getAttributeName != null) {
-        nodeMessage += "/@" + saLoc.getAttributeName
-      }
-      nodeMessage += ' '
-    } else if (sorLoc.isInstanceOf[DOMLocator]) {
-      nodeMessage = "at " +
-        sorLoc.asInstanceOf[DOMLocator].getOriginatingNode.getNodeName +
-        ' '
-    } else if (sorLoc.isInstanceOf[NodeInfo]) {
-      node = sorLoc.asInstanceOf[NodeInfo]
-      nodeMessage = "at " + node.getDisplayName + ' '
-    } else if (sorLoc.isInstanceOf[ValidationException] &&
-      sorLoc.asInstanceOf[ValidationException].getNode != null) {
-      node = sorLoc.asInstanceOf[ValidationException].getNode
-      nodeMessage = "at " + node.getDisplayName + ' '
-    } else if (sorLoc.isInstanceOf[ValidationException] && sorLoc.getLineNumber == -1 &&
-      sorLoc.asInstanceOf[ValidationException].getPath != null) {
-      path = sorLoc.asInstanceOf[ValidationException].getPath
-      nodeMessage = "at " + path + ' '
-    } else if (sorLoc.isInstanceOf[Instruction]) {
-      val instructionName: String = getInstructionName(
-        sorLoc.asInstanceOf[Instruction])
-      if ("" != instructionName) {
-        nodeMessage = "at " + instructionName + ' '
-      }
-      systemId = sorLoc.getSystemId
-      lineNumber = sorLoc.getLineNumber
-    } else if (sorLoc.isInstanceOf[Actor]) {
-      var kind: String = "procedure"
-      if (sorLoc.isInstanceOf[UserFunction]) {
-        kind = "function"
-      } else if (sorLoc.isInstanceOf[NamedTemplate]) {
-        kind = "template"
-        //      } else if (sorLoc.isInstanceOf[AttributeSet]) {
-        //        kind = "attribute-set"
-      } /*else if (sorLoc.isInstanceOf[KeyDefinition]) { // KeyDefinition not found
-        kind = "key"
-      }*/ else if (sorLoc.isInstanceOf[GlobalParam]) {
-        kind = "parameter"
-      } else if (sorLoc.isInstanceOf[GlobalVariable]) {
-        kind = "variable"
-      }
-      systemId = sorLoc.getSystemId
-      lineNumber = sorLoc.getLineNumber
-      nodeMessage = "at " + kind + " "
-      val name: StructuredQName = sorLoc.asInstanceOf[Actor].getComponentName
-      if (name != null) {
-        nodeMessage += name.toString
-        nodeMessage += " "
-      }
+    sorLoc match {
+      case saLoc: AttributeLocation =>
+        nodeMessage = "in " + saLoc.getElementName.getDisplayName
+        if (saLoc.getAttributeName != null) {
+          nodeMessage += "/@" + saLoc.getAttributeName
+        }
+        nodeMessage += ' '
+      // ORBEON: No W3C DOM.
+      //    } else if (sorLoc.isInstanceOf[DOMLocator]) {
+      //      nodeMessage = "at " +
+      //        sorLoc.asInstanceOf[DOMLocator].getOriginatingNode.getNodeName +
+      //        ' '
+      case info: NodeInfo =>
+        node = info
+        nodeMessage = "at " + node.getDisplayName + ' '
+      case exception: ValidationException if exception.getNode != null =>
+        node = exception.getNode
+        nodeMessage = "at " + node.getDisplayName + ' '
+      case exception: ValidationException if exception.getPath != null && sorLoc.getLineNumber == -1 =>
+        path = exception.getPath
+        nodeMessage = "at " + path + ' '
+      case instruction: Instruction =>
+        val instructionName: String = getInstructionName(
+          instruction)
+        if ("" != instructionName) {
+          nodeMessage = "at " + instructionName + ' '
+        }
+        systemId = sorLoc.getSystemId
+        lineNumber = sorLoc.getLineNumber
+      case actor: Actor =>
+        var kind: String = "procedure"
+        sorLoc match {
+          case _: UserFunction =>
+            kind = "function"
+          case _: NamedTemplate =>
+            kind = "template"
+          //      } else if (sorLoc.isInstanceOf[AttributeSet]) {
+          //        kind = "attribute-set"
+          case _: GlobalParam =>
+            kind = "parameter"
+          case _: GlobalVariable =>
+            kind = "variable"
+          case _ =>
+        }
+        systemId = sorLoc.getSystemId
+        lineNumber = sorLoc.getLineNumber
+        nodeMessage = "at " + kind + " "
+        val name: StructuredQName = actor.getComponentName
+        if (name != null) {
+          nodeMessage += name.toString
+          nodeMessage += " "
+        }
+      case _ =>
     }
     if (lineNumber == -1) {
       lineNumber = sorLoc.getLineNumber
@@ -229,11 +233,10 @@ class StandardDiagnostics {
         }
         try xPathContext.getStackFrame.getStackFrameMap.showStackFrame(xPathContext, out)
         catch {
-          case e: Exception => {}
-
+          case _: Exception =>
         }
-        while (!(xPathContext.isInstanceOf[XPathContextMajor])) xPathContext =
-          xPathContext.getCaller
+        while (! xPathContext.isInstanceOf[XPathContextMajor])
+          xPathContext = xPathContext.getCaller
         val originator: ContextOriginator =
           xPathContext.asInstanceOf[XPathContextMajor].getOrigin
         if (originator == null || originator.isInstanceOf[Controller]) {
@@ -250,36 +253,36 @@ class StandardDiagnostics {
     val sb: StringBuilder = new StringBuilder()
     if (originator == null) {
       sb.append("unknown caller (null)")
-    } else if (originator.isInstanceOf[Instruction]) {
-      sb.append(getInstructionName(originator.asInstanceOf[Instruction]))
-    } else if (originator.isInstanceOf[UserFunctionCall]) {
-      sb.append("function call")
-    } else if (originator.isInstanceOf[Controller]) {
-      sb.append("external application")
-    } else if (originator.isInstanceOf[BuiltInRuleSet]) {
-      sb.append("built-in template rule (")
-        .append(originator.asInstanceOf[BuiltInRuleSet].getName)
-        .append(")")
-    } /*else if (originator.isInstanceOf[KeyDefinition]) {  // KeyDefinition class not found
-      sb.append("xsl:key definition")
-    } */
-    else if (originator.isInstanceOf[GlobalParam]) {
-      sb.append("global parameter ")
-        .append(
-          originator.asInstanceOf[GlobalParam].getVariableQName.getDisplayName)
-    } else if (originator.isInstanceOf[GlobalVariable]) {
-      sb.append(originator.asInstanceOf[GlobalVariable].getDescription)
-    } else {
-      sb.append("unknown caller (").append(originator.getClass).append(")")
-    }
-    if (originator.isInstanceOf[Locatable]) {
-      val loc: Location = originator.asInstanceOf[Locatable].getLocation
-      if (loc.getLineNumber != -1) {
-        sb.append(" at ")
+    } else originator match {
+      case instruction: Instruction =>
+        sb.append(getInstructionName(instruction))
+      case _: UserFunctionCall =>
+        sb.append("function call")
+      case _: Controller =>
+        sb.append("external application")
+      case set: BuiltInRuleSet =>
+        sb.append("built-in template rule (")
+          .append(set.getName)
+          .append(")")
+      case param: GlobalParam =>
+        sb.append("global parameter ")
           .append(
-            if (loc.getSystemId == null) "line " else (loc.getSystemId + "#"))
-        sb.append(loc.getLineNumber)
-      }
+            param.getVariableQName.getDisplayName)
+      case variable: GlobalVariable =>
+        sb.append(variable.getDescription)
+      case _ =>
+        sb.append("unknown caller (").append(originator.getClass).append(")")
+    }
+    originator match {
+      case locatable: Locatable =>
+        val loc: Location = locatable.getLocation
+        if (loc.getLineNumber != -1) {
+          sb.append(" at ")
+            .append(
+              if (loc.getSystemId == null) "line " else loc.getSystemId + "#")
+          sb.append(loc.getLineNumber)
+        }
+      case _ =>
     }
     sb.toString
   }
@@ -287,7 +290,7 @@ class StandardDiagnostics {
   def formatListOfOffendingNodes(
                                   failure: ValidationFailure): String = {
     val message: StringBuilder = new StringBuilder()
-    val offendingNodes: List[NodeInfo] = failure.getOffendingNodes
+    val offendingNodes: ju.List[NodeInfo] = failure.getOffendingNodes
     if (!offendingNodes.isEmpty) {
       message.append("\n  Nodes for which the assertion fails:")
       for (offender <- offendingNodes.asScala) {
@@ -372,8 +375,8 @@ class StandardDiagnostics {
       if (max <= 255) new LatinString(in)
       else if (!isAstral) new BMPString(in)
       else new GeneralUnicodeString(in)
-    val fsb: FastStringBuffer = new FastStringBuffer(str.uLength() * 2)
-    for (i <- 0 until str.uLength()) {
+    val fsb: FastStringBuffer = new FastStringBuffer(str.uLength * 2)
+    for (i <- 0 until str.uLength) {
       val ch: Int = str.uCharAt(i)
       fsb.appendWideChar(ch)
       if (ch > threshold) {
@@ -384,5 +387,4 @@ class StandardDiagnostics {
     }
     fsb
   }
-
 }

@@ -14,6 +14,7 @@ import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
 import org.orbeon.saxon.value.{DoubleValue, StringToDouble11, Whitespace}
 
 import scala.beans.BooleanBeanProperty
+import scala.jdk.CollectionConverters._
 
 object JsonReceiver {
 
@@ -195,7 +196,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     var key: String = null
     var escapedAtt: String = null
     var escapedKey: String = null
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       val attName: NodeName = att.getNodeName
       if (attName.hasURI("")) {
         if (attName.getLocalPart.==("key")) {

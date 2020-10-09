@@ -17,7 +17,7 @@ trait IntSet {
   def mutableCopy(): IntSet
   def isMutable: Boolean = true
   def clear(): Unit
-  def size(): Int
+  def size: Int
   def isEmpty: Boolean
   def contains(value: Int): Boolean
   def remove(value: Int): Boolean
@@ -29,7 +29,7 @@ trait IntSet {
       return false
     val it = other.iterator
     while (it.hasNext)
-      if (! contains(it.next))
+      if (! contains(it.next()))
         return false
     true
   }
@@ -46,11 +46,11 @@ trait IntSet {
     val n = new IntHashSet(this.size + other.size)
     var it: IntIterator = iterator
     while (it.hasNext) {
-      n.add(it.next)
+      n.add(it.next())
     }
     it = other.iterator
     while (it.hasNext) {
-      n.add(it.next)
+      n.add(it.next())
     }
     n
   }
@@ -61,7 +61,7 @@ trait IntSet {
     val n = new IntHashSet(size)
     val it = iterator
     while (it.hasNext) {
-      val v = it.next
+      val v = it.next()
       if (other.contains(v))
         n.add(v)
     }
@@ -72,7 +72,7 @@ trait IntSet {
     val n = new IntHashSet(size)
     val it = iterator
     while (it.hasNext) {
-      val v = it.next
+      val v = it.next()
       if (! other.contains(v))
         n.add(v)
     }

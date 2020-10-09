@@ -1,41 +1,22 @@
 package org.orbeon.saxon.serialize
 
-import org.orbeon.saxon.event.Event
-
-import org.orbeon.saxon.event.ProxyReceiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.lib.SaxonOutputKeys
-
-import org.orbeon.saxon.model.AnyType
-
-import org.orbeon.saxon.model.ComplexType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Untyped
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.tiny.CharSlice
-
-import org.orbeon.saxon.value.Whitespace
-
-import javax.xml.transform.OutputKeys
-
 import java.util._
 
+import javax.xml.transform.OutputKeys
+import org.orbeon.saxon.event.{Event, ProxyReceiver, ReceiverOption}
+import org.orbeon.saxon.expr.parser.Loc
+import org.orbeon.saxon.lib.{NamespaceConstant, SaxonOutputKeys}
+import org.orbeon.saxon.model.{AnyType, ComplexType, SchemaType, Untyped}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.tree.tiny.CharSlice
+import org.orbeon.saxon.value.Whitespace
+
 //import scala.collection.compat._
+import java.{util => ju}
+
 import scala.jdk.CollectionConverters._
+
 
 class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
 
@@ -45,20 +26,13 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')
 
   private var sameline: Boolean = false
-
   private var afterStartTag: Boolean = false
-
   private var afterEndTag: Boolean = true
-
   private var pendingWhitespace: Event.Text = null
-
   private var line: Int = 0
-
   private var column: Int = 0
-
   private var suppressedAtLevel: Int = -1
-
-  private var suppressedElements: Set[NodeName] = null
+  private var suppressedElements: ju.Set[NodeName] = null
 
   def setOutputProperties(props: Properties): Unit = {
     val omit: String = props.getProperty(OutputKeys.OMIT_XML_DECLARATION)
@@ -69,9 +43,9 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
       s = props.getProperty("{http://saxon.sf.net/}suppress-indentation")
     }
     if (s != null) {
-      suppressedElements = new HashSet(8)
+      suppressedElements = new ju.HashSet(8)
       val st: StringTokenizer = new StringTokenizer(s, " \t\r\n")
-      while (st.hasMoreTokens()) {
+      while (st.hasMoreTokens) {
         val eqName: String = st.nextToken()
         suppressedElements.add(FingerprintedQName.fromEQName(eqName))
       }
@@ -99,7 +73,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
       flushPendingWhitespace()
     }
     {
-      level += 1;
+      level += 1
     }
     if (suppressedAtLevel < 0) {
       val xmlSpace: String =
@@ -132,7 +106,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
           len += prefix.length + 10 + binding.getURI.length
         }
       }
-      for (att <- attributes) {
+      for (att <- attributes.iterator.asScala) {
         val name: NodeName = att.getNodeName
         val prefix: String = name.getPrefix
         len += name.getLocalPart.length + att.getValue.length + 4 + (if (prefix.isEmpty)
@@ -155,7 +129,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
 
   override def endElement(): Unit = {
     {
-      level -= 1;
+      level -= 1
     }
     if (afterEndTag && !sameline) {
       indent()
@@ -239,7 +213,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
       }
       val c2: Array[Char] = Array.ofDim[Char](indentChars.length + increment)
       System.arraycopy(indentChars, 0, c2, 0, indentChars.length)
-      Arrays.fill(c2, indentChars.length, c2.length, ' ')
+      ju.Arrays.fill(c2, indentChars.length, c2.length, ' ')
       indentChars = c2
     }
     val start: Int = if (line == 0) 0 else 1

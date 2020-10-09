@@ -1,49 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.resource
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.utils.Controller
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.functions.URIQueryParameters
-
-import org.orbeon.saxon.lib._
-
-import org.orbeon.saxon.om.SpaceStrippingRule
-
-import org.orbeon.saxon.trans.Maker
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.trans.XmlProcessingIncident
-
-import org.xml.sax.XMLReader
-
-import java.io._
-
+import java.io.InputStream
 import java.net.URI
 
-import java.net.URISyntaxException
-
-import java.net.URL
-
-import java.net.URLConnection
-
-import AbstractResourceCollection._
+import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.functions.URIQueryParameters
+import org.orbeon.saxon.lib._
+import org.orbeon.saxon.om.SpaceStrippingRule
+import org.orbeon.saxon.resource.AbstractResourceCollection._
+import org.orbeon.saxon.trans.{Maker, XmlProcessingIncident}
+import org.orbeon.saxon.utils.{Configuration, Controller}
+import org.xml.sax.XMLReader
 
 
 object AbstractResourceCollection {
 
-  def setupErrorHandlingForCollection(
-                                       options: ParseOptions,
-                                       onError: Int,
-                                       oldErrorListener: ErrorReporter): Unit = {
+  def setupErrorHandlingForCollection(options: ParseOptions,
+                                      onError: Int,
+                                      oldErrorListener: ErrorReporter): Unit = {
     if (onError == URIQueryParameters.ON_ERROR_IGNORE) {
-      options.setErrorReporter((error) => {})
+      options.setErrorReporter(_ => ())
     } else if (onError == URIQueryParameters.ON_ERROR_WARNING) {
-      options.setErrorReporter((error) =>
+      options.setErrorReporter(error =>
         if (error.isWarning) {
           oldErrorListener.report(error)
         } else {
@@ -59,23 +43,19 @@ object AbstractResourceCollection {
   class InputDetails {
 
     var resourceUri: String = _
-
     var binaryContent: Array[Byte] = _
-
     var characterContent: String = _
-
     var contentType: String = _
-
     var encoding: String = _
-
     var parseOptions: ParseOptions = _
-
     var onError: Int = URIQueryParameters.ON_ERROR_FAIL
 
     def getInputStream: InputStream = {
-      val url: URL = new URL(resourceUri)
-      val connection: URLConnection = url.openConnection()
-      connection.getInputStream
+      // ORBEON: JVM only
+      ???
+//      val url: URL = new URL(resourceUri)
+//      val connection: URLConnection = url.openConnection()
+//      connection.getInputStream
     }
 
     def obtainBinaryContent(): Array[Byte] =
@@ -104,11 +84,9 @@ object AbstractResourceCollection {
         }
         builder = CatalogCollection.makeStringBuilderFromStream(stream, enc)
         characterContent = builder.toString
-        return characterContent
+        characterContent
       }
-
   }
-
 }
 
 /**
@@ -124,25 +102,19 @@ abstract class AbstractResourceCollection(var config: Configuration)
 
   var params: URIQueryParameters = null
 
-  def setParams(params: URIQueryParameters) = this.params = params
-
+  def setParams(params: URIQueryParameters): Unit = this.params = params
   def getParams: URIQueryParameters = params
-
-  def getCollectionURI(): String = collectionURI
-
-  def setCollectionURI(collectionURI: String) = this.collectionURI = collectionURI
+  def getCollectionURI: String = collectionURI
+  def setCollectionURI(collectionURI: String): Unit = this.collectionURI = collectionURI
 
   def isStable(context: XPathContext): Boolean = {
-    if (params == null) {
+    if (params == null)
       return false
-    }
-    val stable: java.lang.Boolean = params.getStable
-    if (stable == null) {
-      context.getConfiguration.getBooleanProperty(
-        Feature.STABLE_COLLECTION_URI)
-    } else {
+    val stable = params.getStable
+    if (stable == null)
+      context.getConfiguration.getBooleanProperty(Feature.STABLE_COLLECTION_URI)
+    else
       stable
-    }
   }
 
   def registerContentType(contentType: String,
@@ -150,9 +122,8 @@ abstract class AbstractResourceCollection(var config: Configuration)
     config.registerMediaType(contentType, factory)
   }
 
-  def optionsFromQueryParameters(
-                                  params: URIQueryParameters,
-                                  context: XPathContext): ParseOptions = {
+  def optionsFromQueryParameters(params: URIQueryParameters,
+                                 context: XPathContext): ParseOptions = {
     val options: ParseOptions = new ParseOptions(
       context.getConfiguration.getParseOptions)
     if (params != null) {
@@ -204,36 +175,42 @@ abstract class AbstractResourceCollection(var config: Configuration)
           params.getContentType
         else guessContentTypeFromName(resourceURI)
     } else {
-      val url: URL = uri.toURL()
-      val connection: URLConnection = url.openConnection()
-      //inputDetails.inputStream = connection.getInputStream();
-      inputDetails.contentType = connection.getContentType
-      inputDetails.encoding = connection.getContentEncoding
-      for (param <- inputDetails.contentType.replace(" ", "").split(";")) {
-        if (param.startsWith("charset=")) {
-          inputDetails.encoding = param.split("=", 2)(1)
-        } else {
-          inputDetails.contentType = param
-        }
-      }
+      // ORBEON: JVM only
+      ???
+//      val url = uri.toURL
+//      val connection: URLConnection = url.openConnection()
+//      //inputDetails.inputStream = connection.getInputStream();
+//      inputDetails.contentType = connection.getContentType
+//      inputDetails.encoding = connection.getContentEncoding
+//      for (param <- inputDetails.contentType.replace(" ", "").split(";")) {
+//        if (param.startsWith("charset=")) {
+//          inputDetails.encoding = param.split("=", 2)(1)
+//        } else {
+//          inputDetails.contentType = param
+//        }
+//      }
     }
     if (inputDetails.contentType == null ||
       config.getResourceFactoryForMediaType(inputDetails.contentType) ==
         null) {
       var stream: InputStream = null
       if ("file" == uri.getScheme) {
-        val file: File = new File(uri)
-        stream = new BufferedInputStream(new FileInputStream(file))
-        if (file.length <= 1024) {
-          inputDetails.binaryContent =
-            BinaryResource.readBinaryFromStream(stream, resourceURI)
-          stream.close()
-          stream = new ByteArrayInputStream(inputDetails.binaryContent)
-        }
+        ???
+        // ORBEON: No `File` support.
+//        val file: File = new File(uri)
+//        stream = new BufferedInputStream(new FileInputStream(file))
+//        if (file.length <= 1024) {
+//          inputDetails.binaryContent =
+//            BinaryResource.readBinaryFromStream(stream, resourceURI)
+//          stream.close()
+//          stream = new ByteArrayInputStream(inputDetails.binaryContent)
+//        }
       } else {
-        val url: URL = uri.toURL()
-        val connection: URLConnection = url.openConnection()
-        stream = connection.getInputStream
+        // ORBEON: JVM only
+        ???
+//        val url: URL = uri.toURL()
+//        val connection: URLConnection = url.openConnection()
+//        stream = connection.getInputStream
       }
       inputDetails.contentType = guessContentTypeFromContent(stream)
       stream.close()
@@ -245,29 +222,33 @@ abstract class AbstractResourceCollection(var config: Configuration)
   }
 
   def guessContentTypeFromName(resourceURI: String): String = {
-    var contentTypeFromName: String =
-      URLConnection.guessContentTypeFromName(resourceURI)
-    var extension: String = null
-    if (contentTypeFromName == null) {
-      extension = getFileExtension(resourceURI)
-      if (extension != null) {
-        contentTypeFromName = config.getMediaTypeForFileExtension(extension)
-      }
-    }
-    contentTypeFromName
+    // ORBEON: JVM only
+    ???
+//    var contentTypeFromName: String =
+//      URLConnection.guessContentTypeFromName(resourceURI)
+//    var extension: String = null
+//    if (contentTypeFromName == null) {
+//      extension = getFileExtension(resourceURI)
+//      if (extension != null) {
+//        contentTypeFromName = config.getMediaTypeForFileExtension(extension)
+//      }
+//    }
+//    contentTypeFromName
   }
 
-  def guessContentTypeFromContent(stream: InputStream): String =
-    try {
-      var typeStream: InputStream = stream
-      if (!typeStream.markSupported()) {
-        typeStream = new BufferedInputStream(typeStream)
-      }
-      URLConnection.guessContentTypeFromStream(typeStream)
-    } catch {
-      case err: IOException => null
-
-    }
+  def guessContentTypeFromContent(stream: InputStream): String = {
+    // ORBEON: JVM only
+    ???
+//    try {
+//      var typeStream: InputStream = stream
+//      if (!typeStream.markSupported()) {
+//        typeStream = new BufferedInputStream(typeStream)
+//      }
+//      URLConnection.guessContentTypeFromStream(typeStream)
+//    } catch {
+//      case _: IOException => null
+//    }
+  }
 
   private def getFileExtension(name: String): String = {
     val i: Int = name.lastIndexOf('.')
@@ -298,22 +279,21 @@ abstract class AbstractResourceCollection(var config: Configuration)
     if (factory == null) {
       return basicResource
     }
-    if (basicResource.isInstanceOf[BinaryResource]) {
-      val details: InputDetails = new InputDetails()
-      details.binaryContent =
-        basicResource.asInstanceOf[BinaryResource].getData
-      details.contentType = mediaType
-      details.resourceUri = basicResource.getResourceURI
-      factory.makeResource(config, details)
-    } else if (basicResource.isInstanceOf[UnparsedTextResource]) {
-      val details: InputDetails = new InputDetails()
-      details.characterContent =
-        basicResource.asInstanceOf[UnparsedTextResource].getContent
-      details.contentType = mediaType
-      details.resourceUri = basicResource.getResourceURI
-      factory.makeResource(config, details)
-    } else {
-      basicResource
+    basicResource match {
+      case resource: BinaryResource =>
+        val details: InputDetails = new InputDetails()
+        details.binaryContent = resource.getData
+        details.contentType = mediaType
+        details.resourceUri = basicResource.getResourceURI
+        factory.makeResource(config, details)
+      case resource: UnparsedTextResource =>
+        val details: InputDetails = new InputDetails()
+        details.characterContent = resource.getContent
+        details.contentType = mediaType
+        details.resourceUri = basicResource.getResourceURI
+        factory.makeResource(config, details)
+      case _ =>
+        basicResource
     }
   }
 
@@ -323,11 +303,4 @@ abstract class AbstractResourceCollection(var config: Configuration)
   }
 
   def stripWhitespace(rules: SpaceStrippingRule): Boolean = false
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

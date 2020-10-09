@@ -1,29 +1,32 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
+import org.orbeon.saxon.event.CheckSumFilter._
 import org.orbeon.saxon.model.SchemaType
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.value.Whitespace
 
-import CheckSumFilter._
-
 import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.jdk.CollectionConverters._
 
 
-
-
+/**
+  * A filter to go on a Receiver pipeline and calculate a checksum of the data passing through the pipeline.
+  * Optionally the filter will also check any checksum (represented by a processing instruction with name
+  * SIGMA) found in the file.
+  *
+  * <p>The checksum takes account of element, attribute, and text nodes only. The order of attributes
+  * within an element makes no difference.</p>
+  */
 object CheckSumFilter {
-
   private val DEBUG: Boolean = false
-
   val SIGMA: String = "Σ"
-
 }
 
 class CheckSumFilter(nextReceiver: Receiver)
@@ -31,11 +34,8 @@ class CheckSumFilter(nextReceiver: Receiver)
 
   @BeanProperty
   var checksum: Int = 0
-
   private var sequence: Int = 0
-
   private var checkExistingChecksum: Boolean = false
-
   private var checksumCorrect: Boolean = false
 
   @BooleanBeanProperty
@@ -46,9 +46,8 @@ class CheckSumFilter(nextReceiver: Receiver)
   }
 
   override def startDocument(properties: Int): Unit = {
-    if (DEBUG) {
+    if (DEBUG)
       System.err.println("CHECKSUM - START DOC")
-    }
     super.startDocument(properties)
   }
 
@@ -64,10 +63,8 @@ class CheckSumFilter(nextReceiver: Receiver)
                       locationId: Location,
                       copyNamespaces: Int): Unit = {
     checksum ^= hash(item.toString, { sequence += 1; sequence - 1 })
-    if (DEBUG) {
-      System.err.println(
-        "After append: " + java.lang.Integer.toHexString(checksum))
-    }
+    if (DEBUG)
+      System.err.println("After append: " + java.lang.Integer.toHexString(checksum))
     super.append(item, locationId, copyNamespaces)
   }
 
@@ -77,7 +74,7 @@ class CheckSumFilter(nextReceiver: Receiver)
   override def characters(chars: CharSequence,
                           locationId: Location,
                           properties: Int): Unit = {
-    if (!Whitespace.isWhite(chars)) {
+    if (! Whitespace.isWhite(chars)) {
       checksum ^= hash(chars, { sequence += 1; sequence - 1 })
       if (DEBUG) {
         System.err.println(
@@ -104,7 +101,7 @@ class CheckSumFilter(nextReceiver: Receiver)
           checksum)
     }
     checksumCorrect = false
-    for (att <- attributes) {
+    for (att <- attributes.iterator.asScala) {
       checksum ^= hash(att.getNodeName, sequence)
       checksum ^= hash(att.getValue, sequence)
       if (DEBUG) {
@@ -175,17 +172,3 @@ class CheckSumFilter(nextReceiver: Receiver)
     hash(n.getLocalPart, sequence) ^ hash(n.getURI, sequence)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A filter to go on a Receiver pipeline and calculate a checksum of the data passing through the pipeline.
-  * Optionally the filter will also check any checksum (represented by a processing instruction with name
-  * SIGMA) found in the file.
-  *
-  * <p>The checksum takes account of element, attribute, and text nodes only. The order of attributes
-  * within an element makes no difference.</p>
-  */

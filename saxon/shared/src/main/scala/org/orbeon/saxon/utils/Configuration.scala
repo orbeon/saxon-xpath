@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.{IntPredicate, Predicate}
 import java.util.{Collections, Comparator, Properties}
 
-import javax.xml.parsers.{ParserConfigurationException, SAXParserFactory}
 import javax.xml.transform._
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXSource
@@ -376,7 +375,7 @@ class Configuration extends SourceResolver with NotationSet {
   @transient private var apiProcessor: ApiProvider = null
   @transient private var characterSetFactory: CharacterSetFactory = _
   private val collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
-  private var collationResolver: CollationURIResolver = new StandardCollationURIResolver()
+  private var collationResolver: CollationURIResolver = new StandardCollationURIResolver
   private var defaultCollationName: String = NamespaceConstant.CODEPOINT_COLLATION_URI
   private var allowedUriTest: Predicate[java.net.URI] = (uri: java.net.URI) => true
   private val standardCollectionFinder: StandardCollectionFinder = new StandardCollectionFinder()
@@ -1150,17 +1149,21 @@ class Configuration extends SourceResolver with NotationSet {
 
   @throws[XPathException]
   def makeTraceListener(className: String): TraceListener = {
-    val obj = dynamicLoader.getInstance(className, null)
-    if (obj.isInstanceOf[TraceListener]) {
-      val destination = getTraceListenerOutputFile
-      if (destination != null) try obj.asInstanceOf[TraceListener].setOutputDestination(new StandardLogger(new PrintStream(destination)))
-      catch {
-        case e: Exception =>
-          throw new XPathException(e)
-      }
-      return obj.asInstanceOf[TraceListener]
-    }
-    throw new XPathException("Class " + className + " is not a TraceListener")
+    ???
+    // ORBEON: maybe TODO.
+//    dynamicLoader.getInstance(className, null) match {
+//      case listener: TraceListener =>
+//        val destination = getTraceListenerOutputFile
+//        if (destination != null)
+//          try listener.setOutputDestination(new StandardLogger(new PrintStream(destination)))
+//          catch {
+//            case e: Exception =>
+//              throw new XPathException(e)
+//          }
+//        return listener
+//      case _ =>
+//    }
+//    throw new XPathException("Class " + className + " is not a TraceListener")
   }
 
 //   def getXSLT30FunctionSet = XSLT30FunctionSet.getInstance
@@ -2222,12 +2225,11 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @return a parser
    */
-  def createXMLParser: XMLReader = {
-    var parser: XMLReader = null
-    if (getSourceParserClass != null) parser = makeParser(getSourceParserClass)
-    else parser = Configuration.loadParser
-    parser
-  }
+  def createXMLParser: XMLReader =
+    if (getSourceParserClass != null)
+      makeParser(getSourceParserClass)
+    else
+      Configuration.loadParser
 
   /**
    * Get a parser for source documents. The parser is allocated from a pool if any are available
@@ -2243,12 +2245,17 @@ class Configuration extends SourceResolver with NotationSet {
    */
   @throws[TransformerFactoryConfigurationError]
   def getSourceParser: XMLReader = {
-    if (sourceParserPool == null) sourceParserPool = new ConcurrentLinkedQueue[XMLReader]
+    if (sourceParserPool == null)
+      sourceParserPool = new ConcurrentLinkedQueue[XMLReader]
     var parser = sourceParserPool.poll
-    if (parser != null) return parser
-    if (getSourceParserClass != null) parser = makeParser(getSourceParserClass)
-    else parser = Configuration.loadParser
-    if (isTiming) reportParserDetails(parser)
+    if (parser != null)
+      return parser
+    if (getSourceParserClass != null)
+      parser = makeParser(getSourceParserClass)
+    else
+      parser = Configuration.loadParser
+    if (isTiming)
+      reportParserDetails(parser)
     try Sender.configureParser(parser)
     catch {
       case err: XPathException =>
@@ -2598,21 +2605,29 @@ class Configuration extends SourceResolver with NotationSet {
 
   @throws[TransformerFactoryConfigurationError]
   def makeParser(className: String): XMLReader = {
-    try {
-      val obj = dynamicLoader.getInstance(className, null)
-      if (obj.isInstanceOf[XMLReader]) return obj.asInstanceOf[XMLReader]
-      if (obj.isInstanceOf[SAXParserFactory]) try {
-        val saxParser = obj.asInstanceOf[SAXParserFactory].newSAXParser
-        return saxParser.getXMLReader
-      } catch {
-        case e@(_: ParserConfigurationException | _: SAXException) =>
-          throw new XPathException(e)
-      }
-    } catch {
-      case err: XPathException =>
-        throw new TransformerFactoryConfigurationError(err)
-    }
-    throw new TransformerFactoryConfigurationError("Class " + className + " is not a SAX2 XMLReader or SAXParserFactory")
+    // ORBEON: JVM only
+    ???
+//    try {
+//      val obj = dynamicLoader.getInstance(className, null)
+//      obj match {
+//        case reader: XMLReader => return reader
+//        case _ =>
+//      }
+//      obj match {
+//        case factory: SAXParserFactory => try {
+//          val saxParser = factory.newSAXParser
+//          return saxParser.getXMLReader
+//        } catch {
+//          case e@(_: ParserConfigurationException | _: SAXException) =>
+//            throw new XPathException(e)
+//        }
+//        case _ =>
+//      }
+//    } catch {
+//      case err: XPathException =>
+//        throw new TransformerFactoryConfigurationError(err)
+//    }
+//    throw new TransformerFactoryConfigurationError("Class " + className + " is not a SAX2 XMLReader or SAXParserFactory")
   }
 
   @throws[XPathException]

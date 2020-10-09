@@ -29,18 +29,17 @@ class DocumentOrderIterator(base: SequenceIterator,
 
   private var current: NodeInfo = null
 
-  base.forEachOrFail((item) =>
-    if (item.isInstanceOf[NodeInfo]) {
-      sequence.add(item.asInstanceOf[NodeInfo])
-    } else {
+  base.forEachOrFail {
+    case info: NodeInfo =>
+      sequence.add(info)
+    case item =>
       throw new XPathException(
         "Item in input for sorting is not a node: " + Err.depict(item),
         "XPTY0004")
-    })
-
-  if (sequence.size > 1) {
-    sequence.sort(comparer)
   }
+
+  if (sequence.size > 1)
+    sequence.sort(comparer)
 
   def next(): NodeInfo = {
     while (true) {

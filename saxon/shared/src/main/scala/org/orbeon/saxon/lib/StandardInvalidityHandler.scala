@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-import javax.xml.transform.dom.DOMLocator
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.model.ValidationFailure
 import org.orbeon.saxon.om.{AbsolutePath, NodeInfo, Sequence}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.EmptySequence
+
 
 class StandardInvalidityHandler(var config: Configuration) extends StandardDiagnostics with InvalidityHandler {
   private var logger: Logger = null
@@ -51,12 +50,15 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
     var path: AbsolutePath = null
     var nodeMessage: String = null
     val lineNumber = err.getLineNumber
-    if (err.isInstanceOf[DOMLocator]) nodeMessage = "at " + err.asInstanceOf[DOMLocator].getOriginatingNode.getNodeName + ' '
-    else if ((lineNumber == -1) && ({
-      path = err.getPath
-      path
-    } != null)) nodeMessage = "at " + path.toString + " "
-    else if (node != null) nodeMessage = "at " + Navigator.getPath(node) + ' '
+    err match {
+      // ORBEON: No W3C DOM.
+//      case locator: DOMLocator => nodeMessage = "at " + locator.getOriginatingNode.getNodeName + ' '
+      case _ => if ((lineNumber == -1) && ({
+        path = err.getPath
+        path
+      } != null)) nodeMessage = "at " + path.toString + " "
+      else if (node != null) nodeMessage = "at " + Navigator.getPath(node) + ' '
+    }
     val containsLineNumber = lineNumber != -1
     if (nodeMessage != null) locMessage += nodeMessage
     if (containsLineNumber) {

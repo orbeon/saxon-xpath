@@ -253,7 +253,7 @@ class HashTrieMap extends MapItem {
 
   def getKeyValuePair(key: AtomicValue): KeyValuePair = imap.get(makeKey(key))
 
-  def keys(): AtomicIterator[_ <: AtomicValue] =
+  def keys: AtomicIterator[_ <: AtomicValue] =
     new AtomicIterator[AtomicValue]() {
       var base: Iterator[Tuple2[AtomicMatchKey, KeyValuePair]] =
         imap.iterator
