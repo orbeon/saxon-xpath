@@ -248,15 +248,15 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
                     tz: Int): TimeValue =
     new TimeValue(hour, minute, second, nanosecond, tz, "")
 
-  def this(calendar: GregorianCalendar, tz: Int) = {
-    this()
-    hour = calendar.get(Calendar.HOUR_OF_DAY).toByte
-    minute = calendar.get(Calendar.MINUTE).toByte
-    second = calendar.get(Calendar.SECOND).toByte
-    nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000
-    this.setTimezoneInMinutes(tz)
-    typeLabel = BuiltInAtomicType.TIME
-  }
+//  def this(calendar: GregorianCalendar, tz: Int) = {
+//    this()
+//    hour = calendar.get(Calendar.HOUR_OF_DAY).toByte
+//    minute = calendar.get(Calendar.MINUTE).toByte
+//    second = calendar.get(Calendar.SECOND).toByte
+//    nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000
+//    this.setTimezoneInMinutes(tz)
+//    typeLabel = BuiltInAtomicType.TIME
+//  }
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.TIME
 
@@ -303,22 +303,20 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
       nanosecond,
       getTimezoneInMinutes)
 
-  def getCalendar(): GregorianCalendar = {
-    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
-    val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
-    val calendar: GregorianCalendar = new GregorianCalendar(zone)
-    calendar.setLenient(false)
-    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar
-      .getMaximum(Calendar.ZONE_OFFSET)) {
-      adjustTimezone(0).getCalendar
-    }
-    calendar.set(1972, Calendar.DECEMBER, 31, hour, minute, second)
-    calendar.set(Calendar.MILLISECOND, nanosecond / 1000000)
-    calendar.set(Calendar.ZONE_OFFSET, tz)
-    calendar.set(Calendar.DST_OFFSET, 0)
-    calendar.getTime
-    calendar
-  }
+//  def getCalendar(): GregorianCalendar = {
+//    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
+//    val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
+//    val calendar: GregorianCalendar = new GregorianCalendar(zone)
+//    calendar.setLenient(false)
+//    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar.getMaximum(Calendar.ZONE_OFFSET))
+//      return adjustTimezone(0).getCalendar
+//    calendar.set(1972, Calendar.DECEMBER, 31, hour, minute, second)
+//    calendar.set(Calendar.MILLISECOND, nanosecond / 1000000)
+//    calendar.set(Calendar.ZONE_OFFSET, tz)
+//    calendar.set(Calendar.DST_OFFSET, 0)
+//    calendar.getTime
+//    calendar
+//  }
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: TimeValue =

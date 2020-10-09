@@ -693,14 +693,11 @@ abstract class Expression
 
   def isSubtreeExpression: Boolean =
     if (ExpressionTool.dependsOnFocus(Expression.this)) {
-      if ((getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS) !=
-        0) {
+      if ((getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS) != 0) {
         false
       } else {
-        operands.asScala
-          .find(!_.getChildExpression.isSubtreeExpression)
-          .map(_ => false)
-          .getOrElse(true)
+        // ORBEON: CHECK
+        operands.asScala.find(!_.getChildExpression.isSubtreeExpression).forall(_ => false)
       }
     } else {
       true

@@ -81,37 +81,34 @@ class CharacterSetFactory {
     getCharacterSet(encoding)
   }
 
-  def getCharacterSet(encoding: String): CharacterSet =
+  private def getCharacterSet(encoding: String): CharacterSet =
     if (encoding == null) {
       UTF8CharacterSet.getInstance
     } else {
-      val encodingKey: String = normalizeCharsetName(encoding)
-      val cs: CharacterSet = characterSets.get(encodingKey)
-      if (cs != null) {
-        return cs
-      }
-      var charset: Charset = null
-      try {
-        charset = Charset.forName(encoding)
-        val res: CharacterSet = JavaCharacterSet.makeCharSet(charset)
-        characterSets.put(encodingKey, res)
-        res
-      } catch {
-        case err: IllegalCharsetNameException => {
-          val e: XPathException = new XPathException(
-            "Invalid encoding name: " + encoding)
-          e.setErrorCode("SESU0007")
-          throw e
-        }
-
-        case err: UnsupportedCharsetException => {
-          val e: XPathException = new XPathException(
-            "Unknown encoding requested: " + encoding)
-          e.setErrorCode("SESU0007")
-          throw e
-        }
-
-      }
+      // ORBEON: JavaCharacterSet
+      ???
+//      val encodingKey = normalizeCharsetName(encoding)
+//      val cs = characterSets.get(encodingKey)
+//      if (cs != null)
+//        return cs
+//
+//      var charset: Charset = null
+//      try {
+//        charset = Charset.forName(encoding)
+//        val res = JavaCharacterSet.makeCharSet(charset)
+//        characterSets.put(encodingKey, res)
+//        res
+//      } catch {
+//        case _: IllegalCharsetNameException =>
+//          val e = new XPathException(
+//            "Invalid encoding name: " + encoding)
+//          e.setErrorCode("SESU0007")
+//          throw e
+//        case _: UnsupportedCharsetException =>
+//          val e: XPathException = new XPathException(
+//            "Unknown encoding requested: " + encoding)
+//          e.setErrorCode("SESU0007")
+//          throw e
+//      }
     }
-
 }

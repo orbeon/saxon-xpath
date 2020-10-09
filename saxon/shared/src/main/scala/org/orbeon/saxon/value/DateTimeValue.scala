@@ -496,25 +496,18 @@ class DateTimeValue extends CalendarValue
 
   @BeanProperty
   var year: Int = _
-
   @BeanProperty
   var month: Byte = _
-
   @BeanProperty
   var day: Byte = _
-
   @BeanProperty
   var hour: Byte = _
-
   @BeanProperty
   var minute: Byte = _
-
   @BeanProperty
   var second: Byte = _
-
   @BeanProperty
   var nanosecond: Int = _
-
   private var hasNoYearZero: Boolean = _
 
 
@@ -602,11 +595,9 @@ class DateTimeValue extends CalendarValue
     if (hasTimezone) {
       adjustTimezone(0)
     } else {
-      if (implicitTimezone == CalendarValue.MISSING_TIMEZONE || implicitTimezone == CalendarValue.NO_TIMEZONE) {
-        throw new NoDynamicContextException(
-          "DateTime operation needs access to implicit timezone")
-      }
-      val dt: DateTimeValue = copyAsSubType(null)
+      if (implicitTimezone == CalendarValue.MISSING_TIMEZONE || implicitTimezone == CalendarValue.NO_TIMEZONE)
+        throw new NoDynamicContextException("DateTime operation needs access to implicit timezone")
+      val dt = copyAsSubType(null)
       dt.setTimezoneInMinutes(implicitTimezone)
       dt.adjustTimezone(0)
     }
@@ -628,27 +619,27 @@ class DateTimeValue extends CalendarValue
     }
   }
 
-  def getCalendar: GregorianCalendar = {
-    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
-    val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
-    val calendar: GregorianCalendar = new GregorianCalendar(zone)
-    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar
-      .getMaximum(Calendar.ZONE_OFFSET)) {
-      adjustTimezone(0).getCalendar
-    }
-    calendar.setGregorianChange(new Date(java.lang.Long.MIN_VALUE))
-    calendar.setLenient(false)
-    var yr: Int = year
-    if (year <= 0) {
-      yr = if (hasNoYearZero) 1 - year else 0 - year
-      calendar.set(Calendar.ERA, GregorianCalendar.BC)
-    }
-    calendar.set(yr, month - 1, day, hour, minute, second)
-    calendar.set(Calendar.MILLISECOND, nanosecond / 1000000)
-    calendar.set(Calendar.ZONE_OFFSET, tz)
-    calendar.set(Calendar.DST_OFFSET, 0)
-    calendar
-  }
+//  def getCalendar: GregorianCalendar = {
+//    val tz = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
+//    val zone = new SimpleTimeZone(tz, "LLL")
+//
+//    val calendar = new GregorianCalendar(zone)
+//    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar.getMaximum(Calendar.ZONE_OFFSET))
+//      return adjustTimezone(0).getCalendar
+//
+//    calendar.setGregorianChange(new Date(java.lang.Long.MIN_VALUE))
+//    calendar.setLenient(false)
+//    var yr: Int = year
+//    if (year <= 0) {
+//      yr = if (hasNoYearZero) 1 - year else 0 - year
+//      calendar.set(Calendar.ERA, GregorianCalendar.BC)
+//    }
+//    calendar.set(yr, month - 1, day, hour, minute, second)
+//    calendar.set(Calendar.MILLISECOND, nanosecond / 1000000)
+//    calendar.set(Calendar.ZONE_OFFSET, tz)
+//    calendar.set(Calendar.DST_OFFSET, 0)
+//    calendar
+//  }
 
   def toJavaInstant: Instant = Instant.from(this)
 
@@ -836,7 +827,7 @@ class DateTimeValue extends CalendarValue
 
   override def subtract(other: CalendarValue,
                         context: XPathContext): DayTimeDurationValue = {
-    if (!(other.isInstanceOf[DateTimeValue])) {
+    if (! other.isInstanceOf[DateTimeValue]) {
       val err = new XPathException(
         "First operand of '-' is a dateTime, but the second is not")
       err.setErrorCode("XPTY0004")
@@ -846,10 +837,10 @@ class DateTimeValue extends CalendarValue
     super.subtract(other, context)
   }
 
-  def secondsSinceEpoch(): BigDecimal = {
-    val dtv: DateTimeValue = adjustToUTC(0)
-    val d1: BigDecimal = dtv.toJulianInstant
-    val d2: BigDecimal = EPOCH.toJulianInstant
+  def secondsSinceEpoch: BigDecimal = {
+    val dtv = adjustToUTC(0)
+    val d1 = dtv.toJulianInstant
+    val d2 = EPOCH.toJulianInstant
     d1.subtract(d2)
   }
 
@@ -885,7 +876,7 @@ class DateTimeValue extends CalendarValue
 
     }
 
-  override def isSupported(field: TemporalField): Boolean =
+  def isSupported(field: TemporalField): Boolean =
     if (field == ChronoField.OFFSET_SECONDS) {
       getTimezoneInMinutes != NO_TIMEZONE
     } else if (field.isInstanceOf[ChronoField]) {
@@ -894,69 +885,58 @@ class DateTimeValue extends CalendarValue
       field.isSupportedBy(this)
     }
 
-  override def getLong(field: TemporalField): Long =
-    if (field.isInstanceOf[ChronoField]) {
-      field.asInstanceOf[ChronoField] match {
-        case ChronoField.NANO_OF_SECOND => nanosecond
-        case ChronoField.NANO_OF_DAY =>
-          (hour * 3600 + minute * 60 + second) * 1000000000L + nanosecond
-        case ChronoField.MICRO_OF_SECOND => nanosecond / 1000
-        case ChronoField.MICRO_OF_DAY =>
-          (hour * 3600 + minute * 60 + second) * 1000000L + (nanosecond / 1000)
-        case ChronoField.MILLI_OF_SECOND => nanosecond / 1000000
-        case ChronoField.MILLI_OF_DAY =>
-          (hour * 3600 + minute * 60 + second) * 1000L + nanosecond / 1000000
-        case ChronoField.SECOND_OF_MINUTE => second
-        case ChronoField.SECOND_OF_DAY => hour * 3600 + minute * 60 + second
-        case ChronoField.MINUTE_OF_HOUR => minute
-        case ChronoField.MINUTE_OF_DAY => hour * 60 + minute
-        case ChronoField.HOUR_OF_AMPM => hour % 12
-        case ChronoField.CLOCK_HOUR_OF_AMPM => (hour + 11) % 12 + 1
-        case ChronoField.HOUR_OF_DAY => hour
-        case ChronoField.CLOCK_HOUR_OF_DAY => (hour + 23) % 24 + 1
-        case ChronoField.AMPM_OF_DAY => hour / 12
-        case ChronoField.DAY_OF_WEEK => DateValue.getDayOfWeek(year, month, day)
-        case ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH => (day - 1) % 7 + 1
-        case ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR =>
-          (DateValue.getDayWithinYear(year, month, day) - 1) % 7 +
-            1
-        case ChronoField.DAY_OF_MONTH => day
-        case ChronoField.DAY_OF_YEAR => DateValue.getDayWithinYear(year, month, day)
-        case ChronoField.EPOCH_DAY =>
-          var secs: BigDecimal = secondsSinceEpoch()
-          var days: Long = secondsSinceEpoch().longValue() / (24 * 60 * 60)
-          if (secs.signum() < 0) days - 1 else days
-        case ChronoField.ALIGNED_WEEK_OF_MONTH => (day - 1) / 7 + 1
-        case ChronoField.ALIGNED_WEEK_OF_YEAR =>
-          (DateValue.getDayWithinYear(year, month, day) - 1) / 7 +
-            1
-        case ChronoField.MONTH_OF_YEAR => month
-        case ChronoField.PROLEPTIC_MONTH => year * 12 + month - 1
-        case ChronoField.YEAR_OF_ERA => Math.abs(year) + (if (year < 0) 1 else 0)
-        case ChronoField.YEAR => year
-        case ChronoField.ERA => if (year < 0) 0 else 1
-        case ChronoField.INSTANT_SECONDS => secondsSinceEpoch().setScale(0, BigDecimal.ROUND_FLOOR).longValue()
-        case ChronoField.OFFSET_SECONDS =>
-          var tz: Int = getTimezoneInMinutes
-          if (tz == NO_TIMEZONE) {
-            throw new UnsupportedTemporalTypeException(
-              "xs:dateTime value has no timezone")
-          } else {
-            tz * 60
-          }
-        case _ => throw new UnsupportedTemporalTypeException(field.toString)
-
-      }
-    } else {
-      field.getFrom(this)
+  def getLong(field: TemporalField): Long =
+    field match {
+      case chronoField: ChronoField =>
+        chronoField match {
+          case ChronoField.NANO_OF_SECOND => nanosecond
+          case ChronoField.NANO_OF_DAY => (hour * 3600 + minute * 60 + second) * 1000000000L + nanosecond
+          case ChronoField.MICRO_OF_SECOND => nanosecond / 1000
+          case ChronoField.MICRO_OF_DAY => (hour * 3600 + minute * 60 + second) * 1000000L + (nanosecond / 1000)
+          case ChronoField.MILLI_OF_SECOND => nanosecond / 1000000
+          case ChronoField.MILLI_OF_DAY => (hour * 3600 + minute * 60 + second) * 1000L + nanosecond / 1000000
+          case ChronoField.SECOND_OF_MINUTE => second
+          case ChronoField.SECOND_OF_DAY => hour * 3600 + minute * 60 + second
+          case ChronoField.MINUTE_OF_HOUR => minute
+          case ChronoField.MINUTE_OF_DAY => hour * 60 + minute
+          case ChronoField.HOUR_OF_AMPM => hour % 12
+          case ChronoField.CLOCK_HOUR_OF_AMPM => (hour + 11) % 12 + 1
+          case ChronoField.HOUR_OF_DAY => hour
+          case ChronoField.CLOCK_HOUR_OF_DAY => (hour + 23) % 24 + 1
+          case ChronoField.AMPM_OF_DAY => hour / 12
+          case ChronoField.DAY_OF_WEEK => DateValue.getDayOfWeek(year, month, day)
+          case ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH => (day - 1) % 7 + 1
+          case ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR => (DateValue.getDayWithinYear(year, month, day) - 1) % 7 + 1
+          case ChronoField.DAY_OF_MONTH => day
+          case ChronoField.DAY_OF_YEAR => DateValue.getDayWithinYear(year, month, day)
+          case ChronoField.EPOCH_DAY =>
+            val secs = secondsSinceEpoch
+            val days = secondsSinceEpoch.longValue() / (24 * 60 * 60)
+            if (secs.signum() < 0) days - 1 else days
+          case ChronoField.ALIGNED_WEEK_OF_MONTH => (day - 1) / 7 + 1
+          case ChronoField.ALIGNED_WEEK_OF_YEAR => (DateValue.getDayWithinYear(year, month, day) - 1) / 7 + 1
+          case ChronoField.MONTH_OF_YEAR => month
+          case ChronoField.PROLEPTIC_MONTH => year * 12 + month - 1
+          case ChronoField.YEAR_OF_ERA => Math.abs(year) + (if (year < 0) 1 else 0)
+          case ChronoField.YEAR => year
+          case ChronoField.ERA => if (year < 0) 0 else 1
+          case ChronoField.INSTANT_SECONDS => secondsSinceEpoch.setScale(0, BigDecimal.ROUND_FLOOR).longValue()
+          case ChronoField.OFFSET_SECONDS =>
+            val tz = getTimezoneInMinutes
+            if (tz == NO_TIMEZONE)
+              throw new UnsupportedTemporalTypeException("xs:dateTime value has no timezone")
+            else
+              tz * 60
+          case _ => throw new UnsupportedTemporalTypeException(field.toString)
+        }
+      case _ =>
+        field.getFrom(this)
     }
 
   def compareTo(other: CalendarValue, implicitTimezone: Int): Int = {
-    if (!(other.isInstanceOf[DateTimeValue])) {
-      throw new ClassCastException(
-        "DateTime values are not comparable to " + other.getClass)
-    }
-    val v2: DateTimeValue = other.asInstanceOf[DateTimeValue]
+    if (! other.isInstanceOf[DateTimeValue])
+      throw new ClassCastException("DateTime values are not comparable to " + other.getClass)
+    val v2 = other.asInstanceOf[DateTimeValue]
     if (getTimezoneInMinutes == v2.getTimezoneInMinutes) {
       if (year != v2.year) {
         IntegerValue.signum(year - v2.year)
@@ -987,7 +967,7 @@ class DateTimeValue extends CalendarValue
   def compareTo(v2: AnyRef): Int =
     compareTo(v2.asInstanceOf[DateTimeValue], MISSING_TIMEZONE)
 
-  def getSchemaComparable(): Comparable[AnyRef] = new DateTimeComparable().asInstanceOf[Comparable[AnyRef]]
+  def getSchemaComparable: Comparable[AnyRef] = new DateTimeComparable().asInstanceOf[Comparable[AnyRef]]
 
   class DateTimeComparable extends Comparable[AnyRef] {
 

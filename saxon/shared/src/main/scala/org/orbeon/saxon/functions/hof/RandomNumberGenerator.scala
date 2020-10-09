@@ -9,8 +9,8 @@ package org.orbeon.saxon.functions.hof
 import java.util.{LinkedList, List, Random}
 
 import org.orbeon.saxon.expr.{Callable, StaticProperty, XPathContext}
-import org.orbeon.saxon.functions.{CallableFunction, SystemFunction}
 import org.orbeon.saxon.functions.hof.RandomNumberGenerator._
+import org.orbeon.saxon.functions.{CallableFunction, SystemFunction}
 import org.orbeon.saxon.ma.map.{DictionaryMap, MapItem, MapType}
 import org.orbeon.saxon.model.{BuiltInAtomicType, FunctionItemType, SpecificFunctionType}
 import org.orbeon.saxon.om.{Item, Sequence, SequenceIterator}
@@ -54,10 +54,10 @@ object RandomNumberGenerator {
       var item: Item = null
       val output: List[Item] = new LinkedList[Item]()
       val random: Random = new Random(nextSeed)
-      while (({
+      while ({
         item = iterator.next()
         item
-      }) != null) {
+      } != null) {
         val p: Int = random.nextInt(output.size + 1)
         output.add(p, item)
       }
@@ -65,7 +65,6 @@ object RandomNumberGenerator {
     }
 
     override def toString: String = "random-number-generator.permute"
-
   }
 
   private class NextGenerator(var nextSeed: Long) extends Callable {
@@ -74,9 +73,7 @@ object RandomNumberGenerator {
       generator(nextSeed, context)
 
     override def toString: String = "random-number-generator.next"
-
   }
-
 }
 
 /**
@@ -85,18 +82,22 @@ object RandomNumberGenerator {
 class RandomNumberGenerator extends SystemFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-    var seed: Long = 0L
+    var seed = 0L
     if (arguments.length == 0) {
-// seed value must be repeatable within execution scope
-      seed = context.getCurrentDateTime.getCalendar.getTimeInMillis
+      // seed value must be repeatable within execution scope
+      // ORBEON: GregorianCalendar
+//      seed = context.getCurrentDateTime.getCalendar.getTimeInMillis
+      seed = context.getCurrentDateTime.secondsSinceEpoch.longValue * 1000
     } else {
       val `val`: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
       seed =
-        if (`val` == null)
-          context.getCurrentDateTime.getCalendar.getTimeInMillis
-        else `val`.hashCode
+        if (`val` == null) {
+          // ORBEON: GregorianCalendar
+//          context.getCurrentDateTime.getCalendar.getTimeInMillis
+          context.getCurrentDateTime.secondsSinceEpoch.longValue * 1000
+        } else
+          `val`.hashCode
     }
     generator(seed, context)
   }
 }
-

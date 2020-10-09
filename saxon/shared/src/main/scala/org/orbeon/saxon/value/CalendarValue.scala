@@ -1,32 +1,15 @@
 package org.orbeon.saxon.value
 
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.sort.AtomicMatchKey
-
-import org.orbeon.saxon.expr.sort.CodepointCollator
-
-import org.orbeon.saxon.lib.ConversionRules
-
-import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.model.ConversionResult
-
-import org.orbeon.saxon.model.ValidationFailure
-
-import org.orbeon.saxon.trans.NoDynamicContextException
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import javax.xml.datatype.XMLGregorianCalendar
-
 import java.math.BigDecimal
-
 import java.util.GregorianCalendar
 
-import CalendarValue._
+import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.sort.{AtomicMatchKey, CodepointCollator}
+import org.orbeon.saxon.lib.{ConversionRules, StringCollator}
+import org.orbeon.saxon.model.{ConversionResult, ValidationFailure}
+import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.CalendarValue._
 
 object CalendarValue {
 
@@ -96,23 +79,21 @@ abstract class CalendarValue extends AtomicValue with AtomicMatchKey {
 
   def hasTimezone: Boolean = tzMinutes != NO_TIMEZONE
 
-  def setTimezoneInMinutes(minutes: Int): Unit = {
+  def setTimezoneInMinutes(minutes: Int): Unit =
     tzMinutes = minutes
-  }
 
   def toDateTime: DateTimeValue
 
   def getTimezoneInMinutes: Int = tzMinutes
 
-  def getCalendar: GregorianCalendar
+//  def getCalendar: GregorianCalendar
 
-  def getXMLGregorianCalendar: XMLGregorianCalendar =
-    new SaxonXMLGregorianCalendar(this)
+//  def getXMLGregorianCalendar: XMLGregorianCalendar =
+//    new SaxonXMLGregorianCalendar(this)
 
   def add(duration: DurationValue): CalendarValue
 
-  def subtract(other: CalendarValue,
-               context: XPathContext): DayTimeDurationValue = {
+  def subtract(other: CalendarValue, context: XPathContext): DayTimeDurationValue = {
     var dt1: DateTimeValue = toDateTime
     var dt2: DateTimeValue = other.toDateTime
     if (dt1.getTimezoneInMinutes != dt2.getTimezoneInMinutes) {

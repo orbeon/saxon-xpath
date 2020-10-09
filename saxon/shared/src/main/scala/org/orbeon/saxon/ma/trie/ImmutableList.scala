@@ -99,6 +99,8 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
       list = list.tail()
       element
     }
+
+    override def remove(): Unit = throw new UnsupportedOperationException("remove")
   }
 
   override def toString: String = {

@@ -230,28 +230,28 @@ abstract class GDateValue extends CalendarValue {
 
   def getDay: Byte = day
 
-  def getCalendar(): GregorianCalendar = {
-    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
-    val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
-    val calendar: GregorianCalendar = new GregorianCalendar(zone)
-    calendar.setGregorianChange(new Date(java.lang.Long.MIN_VALUE))
-    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar
-      .getMaximum(Calendar.ZONE_OFFSET)) {
-      adjustTimezone(0).getCalendar
-    }
-    calendar.clear()
-    calendar.setLenient(false)
-    var yr: Int = year
-    if (year <= 0) {
-      yr = if (hasNoYearZero) 1 - year else 0 - year
-      calendar.set(Calendar.ERA, GregorianCalendar.BC)
-    }
-    calendar.set(yr, month - 1, day)
-    calendar.set(Calendar.ZONE_OFFSET, tz)
-    calendar.set(Calendar.DST_OFFSET, 0)
-    calendar.getTime
-    calendar
-  }
+//  def getCalendar(): GregorianCalendar = {
+//    val tz: Int = if (hasTimezone) getTimezoneInMinutes * 60000 else 0
+//    val zone: TimeZone = new SimpleTimeZone(tz, "LLL")
+//    val calendar: GregorianCalendar = new GregorianCalendar(zone)
+//    calendar.setGregorianChange(new Date(java.lang.Long.MIN_VALUE))
+//    if (tz < calendar.getMinimum(Calendar.ZONE_OFFSET) || tz > calendar
+//      .getMaximum(Calendar.ZONE_OFFSET)) {
+//      adjustTimezone(0).getCalendar
+//    }
+//    calendar.clear()
+//    calendar.setLenient(false)
+//    var yr: Int = year
+//    if (year <= 0) {
+//      yr = if (hasNoYearZero) 1 - year else 0 - year
+//      calendar.set(Calendar.ERA, GregorianCalendar.BC)
+//    }
+//    calendar.set(yr, month - 1, day)
+//    calendar.set(Calendar.ZONE_OFFSET, tz)
+//    calendar.set(Calendar.DST_OFFSET, 0)
+//    calendar.getTime
+//    calendar
+//  }
 
   override def checkValidInJavascript(): Unit = {
     if (year <= 0 || year > 9999) {

@@ -201,20 +201,19 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
       localDate.getMonthValue.toByte,
       localDate.getDayOfMonth.toByte)
 
-
-  def this(calendar: GregorianCalendar, tz: Int) = {
-    this()
-
-    val era: Int = calendar.get(Calendar.ERA)
-    year = calendar.get(Calendar.YEAR)
-    if (era == GregorianCalendar.BC) {
-      year = 1 - year
-    }
-    month = (calendar.get(Calendar.MONTH) + 1).toByte
-    day = calendar.get(Calendar.DATE).toByte
-    this.setTimezoneInMinutes(tz)
-    typeLabel = BuiltInAtomicType.DATE
-  }
+//  def this(calendar: GregorianCalendar, tz: Int) = {
+//    this()
+//
+//    val era: Int = calendar.get(Calendar.ERA)
+//    year = calendar.get(Calendar.YEAR)
+//    if (era == GregorianCalendar.BC) {
+//      year = 1 - year
+//    }
+//    month = (calendar.get(Calendar.MONTH) + 1).toByte
+//    day = calendar.get(Calendar.DATE).toByte
+//    this.setTimezoneInMinutes(tz)
+//    typeLabel = BuiltInAtomicType.DATE
+//  }
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DATE
 

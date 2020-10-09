@@ -874,10 +874,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
     nilledElements != null && nilledElements.contains(nodeNr)
 
   def registerID(e: NodeInfo, id: String): Unit = {
-    if (idTable == null) {
+    if (idTable == null)
       idTable = new HashMap(256)
-    }
-    idTable.putIfAbsent(id, e)
+
+    if (idTable.get(id) eq null)
+      idTable.put(id, e)
   }
 
   /*@Nullable*/

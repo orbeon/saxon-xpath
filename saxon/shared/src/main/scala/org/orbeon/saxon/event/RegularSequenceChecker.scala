@@ -50,8 +50,18 @@ object RegularSequenceChecker {
   private val machine: ju.Map[State.State, ju.Map[Transition.Transition, State.State]] = new ju.HashMap
 
   private def edge(from: State.State, event: Transition.Transition, to: State.State): Unit = {
-    val edges: ju.Map[Transition.Transition, State.State] =
-      machine.computeIfAbsent(from, s => new ju.HashMap())
+    val edges = {
+      // ORBEON: computeIfAbsent
+//      machine.computeIfAbsent(from, s => new ju.HashMap)
+      val r = machine.get(from)
+      if (r ne null)
+        r
+      else {
+        val newValue: ju.Map[Transition.Transition, State.State] = new ju.HashMap
+        machine.put(from, newValue)
+        newValue
+      }
+    }
     edges.put(event, to)
   }
 

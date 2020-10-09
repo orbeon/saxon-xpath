@@ -1,6 +1,6 @@
 package org.orbeon.saxon.serialize.codenorm
 
-import java.util.{ArrayList, BitSet, List, StringTokenizer}
+import java.util.{ArrayList, List, StringTokenizer}
 
 import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.lib.{ParseOptions, Validation}
@@ -10,14 +10,16 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.z.{IntHashMap, IntToIntHashMap, IntToIntMap}
 
+import scala.collection.mutable
+
 object UnicodeDataParserFromXML {
 
   def build(config: Configuration): NormalizerData = {
     val in = Configuration.locateResource("normalizationData.xml", new ArrayList)
     if (in == null)
       throw new XPathException("Unable to read normalizationData.xml file")
-    val isExcluded = new BitSet(128000)
-    val isCompatibility = new BitSet(128000)
+    val isExcluded = new mutable.BitSet(128000)
+    val isCompatibility = new mutable.BitSet(128000)
     val options = new ParseOptions()
     options.setSchemaValidationMode(Validation.SKIP)
     options.setDTDValidationMode(Validation.SKIP)
@@ -64,21 +66,21 @@ object UnicodeDataParserFromXML {
       isExcluded)
   }
 
-  private def readExclusionList(s: String, isExcluded: BitSet): Unit = {
+  private def readExclusionList(s: String, isExcluded: mutable.BitSet): Unit = {
     val st = new StringTokenizer(s)
     while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val value: Int = java.lang.Integer.parseInt(tok, 32)
-      isExcluded.set(value)
+      isExcluded.add(value)
     }
   }
 
-  private def readCompatibilityList(s: String, isCompatible: BitSet): Unit = {
+  private def readCompatibilityList(s: String, isCompatible: mutable.BitSet): Unit = {
     val st: StringTokenizer = new StringTokenizer(s)
     while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
       val value: Int = java.lang.Integer.parseInt(tok, 32)
-      isCompatible.set(value)
+      isCompatible.add(value)
     }
   }
 
@@ -117,8 +119,8 @@ object UnicodeDataParserFromXML {
                                      decompositionValuesString: String,
                                      decompose: IntHashMap[String],
                                      compose: IntToIntMap,
-                                     isExcluded: BitSet,
-                                     isCompatibility: BitSet): Unit = {
+                                     isExcluded: mutable.BitSet,
+                                     isCompatibility: mutable.BitSet): Unit = {
     var k: Int = 0
     val values: List[String] = new ArrayList[String](1000)
     var st: StringTokenizer = new StringTokenizer(decompositionValuesString)
@@ -155,7 +157,7 @@ object UnicodeDataParserFromXML {
         k += 1; k - 1
       })
       decompose.put(key, value)
-      if (!isCompatibility.get(key) && !isExcluded.get(key)) {
+      if (! isCompatibility(key) && ! isExcluded(key)) {
         var first: Char = 0
         var second: Char = value.charAt(0)
         if (value.length > 1) {

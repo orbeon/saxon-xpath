@@ -237,8 +237,9 @@ class DocumentImpl
   def registerID(e: NodeInfo, id: String): Unit = {
     if (idTable == null)
       idTable = new ju.HashMap(256)
-    val table: ju.HashMap[String, NodeInfo] = idTable
-    table.putIfAbsent(id, e)
+
+    if (idTable.get(id) eq null)
+      idTable.put(id, e)
   }
 
   def selectID(id: String, getParent: Boolean): NodeInfo = {

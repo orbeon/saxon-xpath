@@ -3,13 +3,13 @@ package org.orbeon.saxon.utils
 import java.net.{URI, URISyntaxException}
 import java.util
 
-import javax.xml.transform.{Source, URIResolver}
 import javax.xml.transform.sax.SAXSource
+import javax.xml.transform.{Source, URIResolver}
 import org.orbeon.saxon.event._
+import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct.{Bindery, Executable, GlobalParameterSet, GlobalVariable}
 import org.orbeon.saxon.expr.parser.PathMap
 import org.orbeon.saxon.expr.sort.GroupIterator
-import org.orbeon.saxon.expr._
 import org.orbeon.saxon.functions.AccessorFn
 import org.orbeon.saxon.lib._
 import org.orbeon.saxon.model.{Type, Untyped}
@@ -25,7 +25,6 @@ import org.orbeon.saxon.z.IntHashMap
 import org.xml.sax.SAXParseException
 
 import scala.collection.immutable.HashMap
-import scala.collection.mutable
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -60,74 +59,42 @@ object Controller {
 }
 
 class Controller extends ContextOriginator {
+
   private var config: Configuration = _
-
   var executable: Executable = _
-
   var globalContextItem: Item = _
-
   private var globalContextItemPreset: Boolean = _
-
   private var binderies: Map[PackageData, Bindery] = _
-
   private var globalParameters: GlobalParameterSet = _
-
   private var convertParameters: Boolean = true
-
   private var globalVariableDependencies: Map[GlobalVariable, Set[GlobalVariable]] = new HashMap()
-
   var traceListener: TraceListener = _
-
   private var tracingPaused: Boolean = _
-
   private var traceFunctionDestination: Logger = _
-
   private var standardURIResolver: URIResolver = _
-
   private var userURIResolver: URIResolver = _
-
   var principalResult: Receiver = _
-
   var principalResultURI: String = _
-
   private var unparsedTextResolver: UnparsedTextURIResolver = _
-
   private var defaultCollectionURI: String = _
-
   private var errorReporter: ErrorReporter = new StandardErrorReporter()
-
   // UnfailingErrorListener errorListener;
   private var treeModel: TreeModel = TreeModel.TINY_TREE
-
   private var sourceDocumentPool: DocumentPool = _
-
   private var localIndexes: IntHashMap[Map[Long, KeyIndex]] = _
-
   private var userDataTable: HashMap[String, Any] = _
-
   private var lastRememberedNode: NodeInfo = null
-
   private var lastRememberedNumber: Int = -1
-
   private var currentDateTime: DateTimeValue = _
-
   private var dateTimePreset: Boolean = false
-
   private var pathMap: PathMap = null
-
   var validationMode: Int = Validation.DEFAULT
-
   var inUse: Boolean = false
-
   private var stripSourceTrees: Boolean = true
-
-  // boolean buildTree = true;
+  // boolean buildTree = true
   private var collectionFinder: CollectionFinder = null
-
   private var stylesheetCache: StylesheetCache = null
-
   private var multiThreadedFocusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = _
-
   private var focusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = (seqItr: SequenceIterator) => new FocusTrackingIterator
 
   /**
@@ -432,12 +399,8 @@ class Controller extends ContextOriginator {
    * for a sequence of transformations, but it isn't done automatically, because when
    * the transformations use common look-up documents, the caching is beneficial.
    */
-  def clearDocumentPool(): Unit = {
-    /* for (pack <- getExecutable.getPackages.asScala) {
-      // sourceDocumentPool.discardIndexes(pack.getKeyManager) // required KeyManager type but this class not exist
-     }*/
+  def clearDocumentPool(): Unit =
     sourceDocumentPool = new DocumentPool
-  }
 
   /**
    * Get the bindery for the global variables in a particular package.
@@ -1140,9 +1103,23 @@ class Controller extends ContextOriginator {
         registerGlobalVariableDependency(one, glVar)
       }
     }
-    val existingDependencies: mutable.Set[GlobalVariable] = globalVariableDependencies.asInstanceOf[util.Map[instruct.GlobalVariable, util.Set[instruct.GlobalVariable]]]
-      .computeIfAbsent(one, (k: GlobalVariable) => new util.HashSet[GlobalVariable]).asScala
-    existingDependencies(two)
+    val existingDependencies = {
+      // ORBEON: computeIfAbsent
+//      globalVariableDependencies.asInstanceOf[util.Map[instruct.GlobalVariable, util.Set[instruct.GlobalVariable]]]
+//        .computeIfAbsent(one, (k: GlobalVariable) => new util.HashSet[GlobalVariable]).asScala
+
+      val m = globalVariableDependencies.asInstanceOf[util.Map[instruct.GlobalVariable, util.Set[instruct.GlobalVariable]]]
+
+      val r = m.get(one)
+      if (r ne null)
+        r
+      else {
+        val newValue = new util.HashSet[GlobalVariable]
+        m.put(one, newValue)
+        newValue
+      }
+    }
+    existingDependencies.add(two)
   }
 
   @throws[XPathException]

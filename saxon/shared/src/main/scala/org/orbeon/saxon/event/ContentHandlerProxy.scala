@@ -99,8 +99,9 @@ class ContentHandlerProxy extends Receiver {
                         systemID: String,
                         publicID: String): Unit =
     handler match {
-      case transformerHandler: TransformerHandler =>
-        transformerHandler.unparsedEntityDecl(name, publicID, systemID, "unknown")
+      // ORBEON:
+//      case transformerHandler: TransformerHandler =>
+//        transformerHandler.unparsedEntityDecl(name, publicID, systemID, "unknown")
       case _ =>
     }
 

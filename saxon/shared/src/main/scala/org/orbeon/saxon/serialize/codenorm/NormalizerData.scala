@@ -1,17 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// * The class is derived from the sample program NormalizerData.java published by the
+// * Unicode consortium. That code has been modified so that instead of building the run-time
+// * data structures directly, they are written to a Java "source" module, which is then
+// * compiled. Also, the ability to construct a condensed version of the data tables has been
+// * removed.
 package org.orbeon.saxon.serialize.codenorm
 
+import org.orbeon.saxon.serialize.codenorm.NormalizerData._
 import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.z.{IntHashMap, IntToIntMap}
 
-import org.orbeon.saxon.z.IntHashMap
-
-import org.orbeon.saxon.z.IntToIntMap
-
-import java.util.BitSet
-
-import NormalizerData._
-
-
+import scala.collection.mutable
 
 
 object NormalizerData {
@@ -37,14 +42,11 @@ object NormalizerData {
   *
   * @author Mark Davis
   */
-class NormalizerData /**
-  * Only accessed by NormalizerBuilder.
-  */
-(private var canonicalClass: IntToIntMap,
+class NormalizerData(private var canonicalClass: IntToIntMap,
  private var decompose: IntHashMap[_],
  private var compose: IntToIntMap,
- private var isCompatibility: BitSet,
- private var isExcluded: BitSet) {
+ private var isCompatibility: mutable.BitSet,
+ private var isExcluded: mutable.BitSet) {
 
   /**
     * Gets the combining class of a character from the
@@ -85,7 +87,7 @@ class NormalizerData /**
                                 ch: Int,
                                 buffer: FastStringBuffer): Unit = {
     val decomp: String = decompose.get(ch).asInstanceOf[String]
-    if (decomp != null && !(canonical && isCompatibility.get(ch))) {
+    if (decomp != null && !(canonical && isCompatibility(ch))) {
       for (i <- 0 until decomp.length) {
         getRecursiveDecomposition(canonical, decomp.charAt(i), buffer)
       }
@@ -98,7 +100,7 @@ class NormalizerData /**
   /**
     * Just accessible for testing.
     */
-  def getExcluded(ch: Char): Boolean = isExcluded.get(ch)
+  def getExcluded(ch: Char): Boolean = isExcluded(ch)
 
   /*@NotNull*/
 
@@ -106,14 +108,3 @@ class NormalizerData /**
     decompose.get(ch).asInstanceOf[String]
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// * The class is derived from the sample program NormalizerData.java published by the
-// * Unicode consortium. That code has been modified so that instead of building the run-time
-// * data structures directly, they are written to a Java "source" module, which is then
-// * compiled. Also, the ability to construct a condensed version of the data tables has been
-// * removed.

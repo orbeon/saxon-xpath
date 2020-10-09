@@ -289,16 +289,16 @@ class ReceivingContentHandler
       // But when running as a TransformerHandler, we have no control over the feature settings
       // of the sender of the events. So we filter them out, just in case. There might be cases
       // where we ought not just to ignore them, but to handle them as namespace events, but
-      if (defaultedAttributesAction != 0 && atts.isInstanceOf[Attributes2] &&
-        !atts.asInstanceOf[Attributes2].isSpecified(qname)) {
-        if (defaultedAttributesAction == -1) {
-          // suppress defaulted attributes
-          //continue
-        } else {
-          // mark defaulted attributes
-          properties |= ReceiverOption.DEFAULTED_VALUE
-        }
-      }
+      // ORBEON: Attributes2
+//      if (defaultedAttributesAction != 0 && atts.isInstanceOf[Attributes2] && ! atts.asInstanceOf[Attributes2].isSpecified(qname)) {
+//        if (defaultedAttributesAction == -1) {
+//          // suppress defaulted attributes
+//          //continue // ORBEON: CHECK
+//        } else {
+//          // mark defaulted attributes
+//          properties |= ReceiverOption.DEFAULTED_VALUE
+//        }
+//      }
       val attCode: NodeName =
         getNodeName(atts.getURI(a), atts.getLocalName(a), atts.getQName(a))
       val `type`: String = atts.getType(a)

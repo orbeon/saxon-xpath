@@ -40,9 +40,12 @@ object DayTimeDurationValue {
     if (sdv.negative) {
       bigSeconds = bigSeconds.negate()
     }
-    val wholeSeconds: BigInteger = bigSeconds.toBigInteger()
+    val wholeSeconds: BigInteger = bigSeconds.toBigInteger
     // ArithmeticException if out of range
-    sdv.seconds = wholeSeconds.longValueExact()
+
+    // ORBEON: `BigInteger`
+//    sdv.seconds = wholeSeconds.longValueExact
+    sdv.seconds = wholeSeconds.longValue
     val fractionalPart: BigDecimal = bigSeconds.remainder(BigDecimal.ONE)
     val nanoseconds: BigDecimal =
       fractionalPart.multiply(BigDecimalValue.BIG_DECIMAL_ONE_BILLION)

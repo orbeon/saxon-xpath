@@ -1133,8 +1133,10 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.getCalendar.getTime
+      // ORBEON: GregorianCalendar
+      ???
+//      val cv = value.head.asInstanceOf[CalendarValue]
+//      if (cv == null) null else cv.getCalendar.getTime
     }
   }
 
@@ -1161,8 +1163,10 @@ object PJConverter {
     def convert(value: Sequence,
                 targetClass: Class[_],
                 context: XPathContext): AnyRef = {
-      val cv: CalendarValue = value.head.asInstanceOf[CalendarValue]
-      if (cv == null) null else cv.getCalendar
+      // ORBEON: GregorianCalendar
+      ???
+//      val cv = value.head.asInstanceOf[CalendarValue]
+//      if (cv == null) null else cv.getCalendar
     }
   }
 

@@ -1,10 +1,11 @@
 package org.orbeon.saxon.functions
 
-import java.util.{Arrays, TimeZone}
 import java.util.regex.{Matcher, Pattern}
+import java.util.Arrays
+import java.{lang => jl}
 
-import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.expr.number._
+import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.functions.FormatDate._
 import org.orbeon.saxon.lib.Numberer
 import org.orbeon.saxon.om.{Sequence, StructuredQName, ZeroOrOne}
@@ -65,12 +66,14 @@ object FormatDate {
       placeStr = config.getDefaultCountry
     }
     if (calVal.hasTimezone && placeStr.contains("/")) {
-      val tz: TimeZone = TimeZone.getTimeZone(placeStr)
-      if (tz != null) {
-        val milliOffset: Int =
-          tz.getOffset(calVal.toDateTime.getCalendar.getTime.getTime)
-        calVal = calVal.adjustTimezone(milliOffset / 60000)
-      }
+      // ORBEON: TimeZone
+//      val tz = TimeZone.getTimeZone(placeStr)
+//      if (tz != null) {
+//        // ORBEON: GregorianCalendar
+////        val milliOffset = tz.getOffset(calVal.toDateTime.getCalendar.getTime.getTime)
+//        val milliOffset = tz.getOffset(calVal.toDateTime.secondsSinceEpoch.longValue * 1000)
+//        calVal = calVal.adjustTimezone(milliOffset / 60000)
+//      }
     }
     val numberer: Numberer = config.makeNumberer(lang, placeStr)
     val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
@@ -386,7 +389,9 @@ object FormatDate {
               0,
               tzoffset,
               false)
-            val b = NamedTimeZone.inSummerTime(baseDate, country)
+            // ORBEON: TimeZone
+//            val b = NamedTimeZone.inSummerTime(baseDate, country)
+            val b: jl.Boolean = false
             if (b != null && b) {
               baseDate = new DateTimeValue(year,
                 7.toByte,
@@ -883,16 +888,16 @@ object FormatDate {
       min = range(0)
     }
     if (format.charAt(0) == 'N' || format.charAt(0) == 'n') {
-      if (min <= 5) {
-        var tzname: String =
-          NamedTimeZone.getTimeZoneNameForDate(value, country)
-        if (format.charAt(0) == 'n') {
-          tzname = tzname.toLowerCase()
-        }
-        return tzname
-      } else {
-        NamedTimeZone.getOlsenTimeZoneName(value, country)
-      }
+      // ORBEON: TimeZone
+      return "???"
+//      if (min <= 5) {
+//        var tzname = NamedTimeZone.getTimeZoneNameForDate(value, country)
+//        if (format.charAt(0) == 'n')
+//          tzname = tzname.toLowerCase()
+//        return tzname
+//      } else {
+//        NamedTimeZone.getOlsenTimeZoneName(value, country)
+//      }
     }
     val sbz: FastStringBuffer = new FastStringBuffer(8)
     value.appendTimezone(sbz)
@@ -959,12 +964,15 @@ class FormatDate extends SystemFunction with Callable {
       val place: String =
         if (countryVal == null) null else countryVal.getStringValue
       if (place != null && place.contains("/") && value.hasTimezone && ! value.isInstanceOf[TimeValue]) {
-        val zone: TimeZone = NamedTimeZone.getNamedTimeZone(place)
-        if (zone != null) {
-          val offset: Int =
-            zone.getOffset(value.toDateTime.getCalendar.getTimeInMillis)
-          value = value.adjustTimezone(offset / 60000)
-        }
+        // ORBEON: TimeZone
+        ???
+//        val zone = NamedTimeZone.getNamedTimeZone(place)
+//        if (zone != null) {
+//          // ORBEON: GregorianCalendar
+////          val offset = zone.getOffset(value.toDateTime.getCalendar.getTimeInMillis)
+//          val offset = zone.getOffset(value.toDateTime.secondsSinceEpoch.longValue * 1000)
+//          value = value.adjustTimezone(offset / 60000)
+//        }
       }
       var result: CharSequence =
         formatDate(value, format, language, place, context)

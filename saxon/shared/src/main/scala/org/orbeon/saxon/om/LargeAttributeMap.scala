@@ -145,6 +145,8 @@ class LargeAttributeMap extends AttributeMap {
         current = link.next
         link.payload
       }
+
+      override def remove(): Unit = throw new UnsupportedOperationException("remove")
     }
 
   override def asList: ju.List[AttributeInfo] = synchronized {

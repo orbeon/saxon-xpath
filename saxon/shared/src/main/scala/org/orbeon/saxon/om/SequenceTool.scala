@@ -160,9 +160,13 @@ object SequenceTool {
           case StandardNames.XS_FLOAT =>
             value.asInstanceOf[FloatValue].getFloatValue
           case StandardNames.XS_DATE_TIME =>
-            value.asInstanceOf[DateTimeValue].getCalendar.getTime
+            // ORBEON: GregorianCalendar
+            ???
+//            value.asInstanceOf[DateTimeValue].getCalendar.getTime
           case StandardNames.XS_DATE =>
-            value.asInstanceOf[DateValue].getCalendar.getTime
+            // ORBEON: GregorianCalendar
+            ???
+//            value.asInstanceOf[DateValue].getCalendar.getTime
           case StandardNames.XS_TIME => value.getStringValue
           case StandardNames.XS_BASE64_BINARY =>
             value.asInstanceOf[Base64BinaryValue].getBinaryValue
