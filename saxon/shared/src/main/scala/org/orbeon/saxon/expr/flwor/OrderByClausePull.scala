@@ -4,6 +4,7 @@ import java.util.ArrayList
 
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.sort.{AtomicComparer, ItemToBeSorted, SortKeyDefinitionList}
+import org.orbeon.saxon.ma.arrays.ArraySort
 import org.orbeon.saxon.trans.XPathException
 
 
@@ -45,28 +46,21 @@ class OrderByClausePull(private var base: TuplePull,
         tupleArray.add(itbs)
       }
 
-      // ORBEON: TODO sorting
-//      implicit object ItemToBeSortedOrdering extends Ordering[ItemToBeSorted] {
-//        def compare(a: ItemToBeSorted, b: ItemToBeSorted): Int = {
-//          for (i <- comparers.indices) {
-//            val comp = comparers(i).compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
-//            if (comp != 0) {
-//              return comp
-//            }
-//          }
-//          a.originalPosition - b.originalPosition
-//        }
-//      }
-//
-//      val newArray = tupleArray.toArray(new Array[ItemToBeSorted])
-//      try
-//        scala.util.Sorting.quickSort(newArray)
-//      catch {
-//        case e: ClassCastException =>
-//          val err = new XPathException("Non-comparable types found while sorting: " + e.getMessage)
-//          err.setErrorCode("XPTY0004")
-//          throw err
-//      }
+      try
+        ArraySort.sortList(tupleArray) { (a, b) =>
+
+          val compResultsIt =
+            for ((comp, i) <- comparers.iterator.zipWithIndex) yield
+              comp.compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
+
+          compResultsIt.find(_ != 0).getOrElse(a.originalPosition - b.originalPosition)
+        }
+      catch {
+        case e: ClassCastException =>
+          val err = new XPathException("Non-comparable types found while sorting: " + e.getMessage)
+          err.setErrorCode("XPTY0004")
+          throw err
+      }
     }
     if (currentPosition < tupleArray.size) {
       tupleExpr.setCurrentTuple(

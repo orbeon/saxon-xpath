@@ -5,6 +5,7 @@ import java.util.ArrayList
 import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.sort.{AtomicComparer, ItemToBeSorted, SortKeyDefinitionList}
+import org.orbeon.saxon.ma.arrays.ArraySort
 import org.orbeon.saxon.trans.XPathException
 
 //remove if not needed
@@ -49,16 +50,14 @@ class OrderByClausePush(outputter: Outputter,
 
   override def close(): Unit = {
     try {
-      // ORBEON: TODO sorting
-//      tupleArray.sort((a, b) => {
-//        for (i <- comparers.indices) {
-//          val comp: Int = comparers(i).compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
-//          if (comp != 0) {
-//            comp
-//          }
-//        }
-//        a.originalPosition - b.originalPosition
-//      })
+      ArraySort.sortList(tupleArray)((a, b) => {
+
+        val compResultsIt =
+          for ((comp, i) <- comparers.iterator.zipWithIndex) yield
+            comp.compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
+
+        compResultsIt.find(_ != 0).getOrElse(a.originalPosition - b.originalPosition)
+      })
     } catch {
       case e: ClassCastException => {
         val err = new XPathException(

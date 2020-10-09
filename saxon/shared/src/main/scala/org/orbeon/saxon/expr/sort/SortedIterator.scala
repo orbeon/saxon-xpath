@@ -1,30 +1,13 @@
 package org.orbeon.saxon.expr.sort
 
-import org.orbeon.saxon.expr.ErrorIterator
-
-import org.orbeon.saxon.expr.LastPositionFinder
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.om.FocusTrackingIterator
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.om.StandardNames
-
-import org.orbeon.saxon.s9api.HostLanguage
-
-import SequenceIterator.Property._
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.LookaheadIterator
-
 import java.util.Arrays
 
-import java.util.EnumSet
+import org.orbeon.saxon.expr.{ErrorIterator, LastPositionFinder, XPathContext}
+import org.orbeon.saxon.om.SequenceIterator.Property._
+import org.orbeon.saxon.om.{FocusTrackingIterator, Item, SequenceIterator, StandardNames}
+import org.orbeon.saxon.s9api.HostLanguage
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.LookaheadIterator
 
 class SortedIterator ()
   extends SequenceIterator
@@ -32,17 +15,11 @@ class SortedIterator ()
     with LookaheadIterator {
 
    var base: SequenceIterator = _
-
    var sortKeyEvaluator: SortKeyEvaluator = _
-
    var comparators: Array[AtomicComparer] = _
-
    var values: Array[ObjectToBeSorted[Item]] = _
-
    var count: Int = -1
-
    var position: Int = 0
-
    var context: XPathContext = _
 
   private var hostLanguage: HostLanguage.HostLanguage = _
@@ -63,9 +40,8 @@ class SortedIterator ()
     }
     this.sortKeyEvaluator = sortKeyEvaluator
     this.comparators = Array.ofDim[AtomicComparer](comparators.length)
-    for (n <- 0 until comparators.length) {
+    for (n <- comparators.indices)
       this.comparators(n) = comparators(n).provideContext(context)
-    }
   }
 
   def setHostLanguage(language: HostLanguage.HostLanguage): Unit = {
@@ -73,24 +49,22 @@ class SortedIterator ()
   }
 
   def hasNext: Boolean = {
-    if (position < 0) {
-      return      false
-    }
+    if (position < 0)
+      return false
     if (count < 0) {
-      if (base.isInstanceOf[LookaheadIterator]) {
-        base.asInstanceOf[LookaheadIterator].hasNext
-      } else {
-        try {
-          doSort()
-          count > 0
-        } catch {
-          case err: XPathException => {
-            count = -1
-            base = new FocusTrackingIterator(new ErrorIterator(err))
-            true
+      base match {
+        case iterator: LookaheadIterator =>
+          iterator.hasNext
+        case _ =>
+          try {
+            doSort()
+            count > 0
+          } catch {
+            case err: XPathException =>
+              count = -1
+              base = new FocusTrackingIterator(new ErrorIterator(err))
+              true
           }
-
-        }
       }
     } else {
       position < count
@@ -98,15 +72,14 @@ class SortedIterator ()
   }
 
   def next(): Item = {
-    if (position < 0) {
-      return      null
-    }
-    if (count < 0) {
+    if (position < 0)
+      return null
+    if (count < 0)
       doSort()
-    }
     if (position < count) {
       values({
-        position += 1; position - 1
+        position += 1
+        position - 1
       }).value
     } else {
       position = -1
@@ -115,9 +88,8 @@ class SortedIterator ()
   }
 
   def getLength: Int = {
-    if (count < 0) {
+    if (count < 0)
       doSort()
-    }
     count
   }
 
@@ -128,14 +100,15 @@ class SortedIterator ()
     allocated =
       if (base.getProperties.contains(LAST_POSITION_FINDER))
         base.asInstanceOf[LastPositionFinder].getLength
-      else 100
+      else
+        100
     values = Array.ofDim[ObjectToBeSorted[Item]](allocated)
     count = 0
     var item: Item = null
-    while (({
+    while ({
       item = base.next()
       item
-    }) != null) {
+    } != null) {
       if (count == allocated) {
         allocated *= 2
         val nk2: Array[ObjectToBeSorted[Item]] =
@@ -146,9 +119,8 @@ class SortedIterator ()
       val itbs: ItemToBeSorted = new ItemToBeSorted(comparators.length)
       values(count) = itbs
       itbs.value = item
-      for (n <- 0 until comparators.length) {
+      for (n <- comparators.indices)
         itbs.sortKeyValues(n) = sortKeyEvaluator.evaluateSortKey(n, context)
-      }
       count += 1
       itbs.originalPosition = count
     }
@@ -160,33 +132,31 @@ class SortedIterator ()
   }
 
   private def doSort(): Unit = {
+
     buildArray()
-    if (count < 2) {
+
+    if (count < 2)
       return
-    }
-    try Arrays.sort(values, 0, count, (a: ObjectToBeSorted[Item], b: ObjectToBeSorted[Item]) => {
-      for (i <- 0 until comparators.length) {
-        val comp: Int = comparators(i).compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
-        if (comp != 0) {
-          comp
-        }
-      }
-      a.originalPosition - b.originalPosition
-    }
-    )
+
+    try
+      Arrays.sort(values, 0, count, (a: ObjectToBeSorted[Item], b: ObjectToBeSorted[Item]) => {
+
+        val compResultsIt =
+          for ((comp, i) <- comparators.iterator.zipWithIndex) yield
+            comp.compareAtomicValues(a.sortKeyValues(i), b.sortKeyValues(i))
+
+        compResultsIt.find(_ != 0).getOrElse(a.originalPosition - b.originalPosition)
+      })
     catch {
       case e: ClassCastException => {
         val err = new XPathException(
           "Non-comparable types found while sorting: " + e.getMessage)
-        if (hostLanguage == HostLanguage.XSLT) {
+        if (hostLanguage == HostLanguage.XSLT)
           err.setErrorCode("XTDE1030")
-        } else {
+        else
           err.setErrorCode("XPTY0004")
-        }
         throw err
       }
-
     }
   }
-
 }

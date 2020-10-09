@@ -19,7 +19,7 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.stream.StreamResult
 import org.orbeon.saxon.event.{PipelineConfiguration, ReceiverWithOutputProperties, SequenceWriter}
 import org.orbeon.saxon.lib.SaxonOutputKeys
-import org.orbeon.saxon.ma.arrays.ArrayItem
+import org.orbeon.saxon.ma.arrays.{ArrayItem, ArraySort}
 import org.orbeon.saxon.ma.map.MapItem
 import org.orbeon.saxon.om.{GroundedValue, Item, NodeInfo}
 import org.orbeon.saxon.query.QueryResult
@@ -168,7 +168,8 @@ class JSONSerializer(pipe: PipelineConfiguration,
       for (pair <- item.asInstanceOf[MapItem].keyValuePairs.asScala) {
         keyList.add(pair.key)
       }
-      if (propertySorter != null) keyList.sort(propertySorter)
+      if (propertySorter != null)
+        ArraySort.sortList(keyList)(propertySorter)
       for (key: AtomicValue <- keyList.asScala) {
         val stringKey = key.getStringValue
         emitter.writeKey(stringKey)
