@@ -1,22 +1,34 @@
 package org.orbeon.saxon
 
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.s9api.{XdmAtomicValue, XdmItem}
+import org.orbeon.saxon.model.BuiltInAtomicType
+import org.orbeon.saxon.om.Item
+import org.orbeon.saxon.sxpath.{IndependentContext, XPathEvaluator}
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.Int64Value
+
+//import org.orbeon.dom
 
 import org.scalatest.funspec.AnyFunSpec
 
 class XPathTest extends AnyFunSpec {
 
-  def compileAndRunExpression(xpath: String): XdmItem = {
-    val p = new s9api.Processor
-    val c = p.newXPathCompiler()
-    c.declareNamespace("fn",   NamespaceConstant.FN)
-    c.declareNamespace("math", NamespaceConstant.MATH)
-    val executable = c.compile(xpath)
-    val selector = executable.load()
-    selector.setContextItem(new XdmAtomicValue(2020))
-    selector.evaluateSingle()
+  def compileAndRunExpression(xpath: String): Item = {
+
+    val evaluator = new XPathEvaluator(new Configuration)
+
+    evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("fn",   NamespaceConstant.FN)
+    evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("math", NamespaceConstant.MATH)
+
+    val xpe = evaluator.createExpression(xpath)
+
+    val dc = xpe.createDynamicContext
+    dc.setContextItem(Int64Value.makeDerived(2020, BuiltInAtomicType.INT))
+
+    xpe.evaluateSingle(dc)
   }
+
+//  val doc = dom.Document(dom.Element("root"))
 
   describe("Minimalistic expression compilation and execution") {
 
@@ -47,7 +59,7 @@ class XPathTest extends AnyFunSpec {
 
     for ((in, out) <- Expected)
       it(s"must evaluate `$in`") {
-        assert(out == compileAndRunExpression(in).toString)
+        assert(out == compileAndRunExpression(in).getStringValue)
       }
   }
 }
