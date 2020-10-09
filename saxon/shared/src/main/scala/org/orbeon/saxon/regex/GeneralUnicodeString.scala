@@ -1,13 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
+import org.jetbrains.annotations.NotNull
 import org.orbeon.saxon.value.StringValue
 
-import org.jetbrains.annotations.NotNull
 
-
-
-
+/**
+  * A Unicode string which, in general, may contain non-BMP characters (that is, codepoints
+  * outside the range 0-65535)
+  */
 class GeneralUnicodeString(var charSequence: CharSequence)
     extends UnicodeString {
 
@@ -39,19 +45,17 @@ class GeneralUnicodeString(var charSequence: CharSequence)
   def uCharAt(pos: Int): Int = charArr(start + pos)
 
   def uIndexOf(search: Int, pos: Int): Int = {
-    val len = uLength()
+    val len = uLength
     for(i <- pos until len) {
-         if(charArr(start +i) == search) {
-           return i;
-         }
-         else {
-           return -1;
-         }
+         if(charArr(start +i) == search)
+           return i
+         else
+           return -1
     }
-    return -1;
+    -1
   }
 
-  def uLength(): Int = end - start
+  def uLength: Int = end - start
 
   def isEnd(pos: Int): Boolean = pos >= (end - start)
 
@@ -64,10 +68,10 @@ class GeneralUnicodeString(var charSequence: CharSequence)
 
   private def obtainCharSequence(): CharSequence = {
     if (charSequence == null) {
-      var c: Array[Int] = charArr
+      var c = charArr
       if (start != 0) {
         c = Array.ofDim[Int](end - start)
-        System.arraycopy(chars, start, c, 0, end - start)
+        System.arraycopy(charArr, start, c, 0, end - start)
       }
       charSequence = StringValue.contract(c, end - start)
     }
@@ -117,13 +121,3 @@ class GeneralUnicodeString(var charSequence: CharSequence)
     obtainCharSequence().subSequence(start, end)
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A Unicode string which, in general, may contain non-BMP characters (that is, codepoints
-  * outside the range 0-65535)
-  */

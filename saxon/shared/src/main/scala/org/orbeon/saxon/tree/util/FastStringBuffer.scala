@@ -111,7 +111,7 @@ class FastStringBuffer(initialSize: Int)
         this.cat(string.getCharSequence)
         return this
       case string: GeneralUnicodeString =>
-        for (i <- 0 until string.uLength())
+        for (i <- 0 until string.uLength)
           appendWideChar(string.uCharAt(i))
         return this
       case _ =>

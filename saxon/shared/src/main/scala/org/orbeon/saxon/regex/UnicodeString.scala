@@ -54,15 +54,14 @@ object UnicodeString {
       false
     } else value match {
       case gus: GeneralUnicodeString =>
-        for (i <- 0 until gus.uLength() if gus.uCharAt(i) >= 65535)
+        for (i <- 0 until gus.uLength if gus.uCharAt(i) >= 65535)
           return true
         false
       case _ =>
         for (i <- 0 until value.length) {
-          val c: Int = value.charAt(i).toInt
-          if (c >= 55296 && c <= 56319) {
-            true
-          }
+          val c = value.charAt(i).toInt
+          if (c >= 55296 && c <= 56319)
+            return true
         }
         false
     }
@@ -189,5 +188,4 @@ abstract class UnicodeString
     */
   override def asAtomic(): AtomicValue =
     new Base64BinaryValue(getCodepointCollationKey)
-
 }

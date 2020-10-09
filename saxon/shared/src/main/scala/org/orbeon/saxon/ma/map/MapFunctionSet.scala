@@ -4,9 +4,9 @@ import java.util.{ArrayList, List, Map}
 
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
-import org.orbeon.saxon.functions.{InsertBefore, OptionsParameter, SystemFunction}
 import org.orbeon.saxon.functions.SystemFunction._
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
+import org.orbeon.saxon.functions.{InsertBefore, OptionsParameter, SystemFunction}
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.arrays.{ArrayItem, ArrayItemType, SimpleArrayItem}
 import org.orbeon.saxon.ma.map.MapFunctionSet._
@@ -42,74 +42,74 @@ object MapFunctionSet {
     override def supplyTypeInformation(visitor: ExpressionVisitor,
                                        contextItemType: ContextItemStaticInfo,
                                        arguments: Array[Expression]): Unit = {
-      val it: ItemType = arguments(0).getItemType
-      if (it.isInstanceOf[TupleType]) {
-        if (arguments(1).isInstanceOf[Literal]) {
-          val key: String = arguments(1)
-            .asInstanceOf[Literal]
-            .getValue
-            .getStringValue
-          if (it.asInstanceOf[TupleType].getFieldType(key) == null) {
-            val xe: XPathException = new XPathException(
-              "Field " + key + " is not defined for tuple type " + it,
-              "SXTT0001")
+      val it = arguments(0).getItemType
+      it match {
+        case tupleType: TupleType =>
+          arguments(1) match {
+            case literal: Literal =>
+              val key = literal
+                .getValue
+                .getStringValue
+              if (tupleType.getFieldType(key) == null) {
+                val xe = new XPathException(
+                  "Field " + key + " is not defined for tuple type " + it,
+                  "SXTT0001")
+                xe.setIsTypeError(true)
+                throw xe
+              }
+            case _ =>
+          }
+          val th = visitor.getConfiguration.getTypeHierarchy
+          val relation = th.relationship(arguments(1).getItemType, BuiltInAtomicType.STRING)
+          if (relation == Affinity.DISJOINT) {
+            val xe = new XPathException(
+              "Key for tuple type must be a string (actual type is " +
+                arguments(1).getItemType,
+              "XPTY0004")
             xe.setIsTypeError(true)
             throw xe
           }
-        }
-        val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
-        val relation: Affinity.Affinity =
-          th.relationship(arguments(1).getItemType, BuiltInAtomicType.STRING)
-        if (relation == Affinity.DISJOINT) {
-          val xe: XPathException = new XPathException(
-            "Key for tuple type must be a string (actual type is " +
-              arguments(1).getItemType,
-            "XPTY0004")
-          xe.setIsTypeError(true)
-          throw xe
-        }
+        case _ =>
       }
     }
 
     override def getResultItemType(args: Array[Expression]): ItemType = {
-      val mapType: ItemType = args(0).getItemType
-      if (mapType.isInstanceOf[TupleItemType] && args(1)
-        .isInstanceOf[StringLiteral]) {
-        val key: String = args(1).asInstanceOf[StringLiteral].getStringValue
-        val tit: TupleItemType = mapType.asInstanceOf[TupleItemType]
-        val valueType: SequenceType = tit.getFieldType(key)
-        if (valueType == null) {
-          warning("Field " + key + " is not defined in tuple type")
-          AnyItemType
-        } else {
-          valueType.getPrimaryType
-        }
-      } else if (mapType.isInstanceOf[MapType]) {
-        mapType.asInstanceOf[MapType].getValueType.getPrimaryType
-      } else {
-        super.getResultItemType(args)
+      val itemType = args(0).getItemType
+      itemType match {
+        case tupleItemType: TupleItemType if args(1).isInstanceOf[StringLiteral] =>
+          val key = args(1).asInstanceOf[StringLiteral].getStringValue
+          val valueType: SequenceType = tupleItemType.getFieldType(key)
+          if (valueType == null) {
+            warning("Field " + key + " is not defined in tuple type")
+            AnyItemType
+          } else {
+            valueType.getPrimaryType
+          }
+        case mapType: MapType =>
+          mapType.getValueType.getPrimaryType
+        case _ =>
+          super.getResultItemType(args)
       }
     }
 
     override def getCardinality(args: Array[Expression]): Int = {
-      val mapType: ItemType = args(0).getItemType
-      if (mapType.isInstanceOf[TupleItemType] && args(1)
-        .isInstanceOf[StringLiteral]) {
-        val key: String = args(1).asInstanceOf[StringLiteral].getStringValue
-        val tit: TupleItemType = mapType.asInstanceOf[TupleItemType]
-        val valueType: SequenceType = tit.getFieldType(key)
-        if (valueType == null) {
-          warning("Field " + key + " is not defined in tuple type")
-          StaticProperty.ALLOWS_MANY
-        } else {
-          valueType.getCardinality
-        }
-      } else if (mapType.isInstanceOf[MapType]) {
-        Cardinality.union(
-          mapType.asInstanceOf[MapType].getValueType.getCardinality,
-          StaticProperty.ALLOWS_ZERO)
-      } else {
-        super.getCardinality(args)
+      val itemType = args(0).getItemType
+      itemType match {
+        case tupleItemType: TupleItemType if args(1).isInstanceOf[StringLiteral] =>
+          val key = args(1).asInstanceOf[StringLiteral].getStringValue
+          val valueType: SequenceType = tupleItemType.getFieldType(key)
+          if (valueType == null) {
+            warning("Field " + key + " is not defined in tuple type")
+            StaticProperty.ALLOWS_MANY
+          } else {
+            valueType.getCardinality
+          }
+        case mapType1: MapType =>
+          Cardinality.union(
+            mapType1.getValueType.getCardinality,
+            StaticProperty.ALLOWS_ZERO)
+        case _ =>
+          super.getCardinality(args)
       }
     }
 
@@ -124,11 +124,9 @@ object MapFunctionSet {
       null
     }
 
-    private def warning(message: String): Unit = {
-      if ("DONE" != pendingWarning) {
+    private def warning(message: String): Unit =
+      if ("DONE" != pendingWarning)
         pendingWarning = message
-      }
-    }
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
       val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
@@ -141,14 +139,13 @@ object MapFunctionSet {
         value
       }
     }
-
   }
 
   class MapFind extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
-      val result: List[GroundedValue] = new ArrayList[GroundedValue]()
-      val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
+      val result = new ArrayList[GroundedValue]()
+      val key = arguments(1).head.asInstanceOf[AtomicValue]
       processSequence(arguments(0), key, result)
       new SimpleArrayItem(result)
     }
@@ -156,23 +153,19 @@ object MapFunctionSet {
     private def processSequence(in: Sequence,
                                 key: AtomicValue,
                                 result: List[GroundedValue]): Unit = {
-      in.iterate()
-        .forEachOrFail((item) =>
-          if (item.isInstanceOf[ArrayItem]) {
-            for (sequence <- item.asInstanceOf[ArrayItem].members()) {
-              processSequence(sequence, key, result)
-            }
-          } else if (item.isInstanceOf[MapItem]) {
-            val value: GroundedValue = item.asInstanceOf[MapItem].get(key)
-            if (value != null) {
-              result.add(value)
-            }
-            for (entry <- item.asInstanceOf[MapItem].keyValuePairs().asScala) {
-              processSequence(entry.value, key, result)
-            }
-          })
+      in.iterate().forEachOrFail {
+        case arrayItem: ArrayItem =>
+          for (sequence <- arrayItem.members())
+            processSequence(sequence, key, result)
+        case mapItem: MapItem =>
+          val value = mapItem.get(key)
+          if (value != null)
+            result.add(value)
+          for (entry <- mapItem.keyValuePairs().asScala)
+            processSequence(entry.value, key, result)
+        case _ =>
+      }
     }
-
   }
 
   class MapEntry extends SystemFunction {
@@ -189,8 +182,10 @@ object MapFunctionSet {
       val ku: PlainType = args(0).getItemType.getAtomizedItemType
       var ka: AtomicType = null
       ka =
-        if (ku.isInstanceOf[AtomicType]) ku.asInstanceOf[AtomicType]
-        else ku.getPrimitiveItemType
+        ku match {
+          case atomicType: AtomicType => atomicType
+          case _ => ku.getPrimitiveItemType
+        }
       new MapType(ka,
         SequenceType.makeSequenceType(args(1).getItemType,
           args(1).getCardinality))
@@ -203,12 +198,11 @@ object MapFunctionSet {
   class MapForEach extends SystemFunction {
 
     def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
-      val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
-      val fn: Function = arguments(1).head.asInstanceOf[Function]
-      val results: List[GroundedValue] = new ArrayList[GroundedValue]()
+      val map = arguments(0).head.asInstanceOf[MapItem]
+      val fn = arguments(1).head.asInstanceOf[Function]
+      val results = new ArrayList[GroundedValue]()
       for (pair <- map.keyValuePairs().asScala) {
-        val seq: Sequence =
-          dynamicCall(fn, context, Array(pair.key, pair.value))
+        val seq = dynamicCall(fn, context, Array(pair.key, pair.value))
         results.add(seq.materialize())
       }
       new Chain(results)
@@ -294,33 +288,35 @@ object MapFunctionSet {
       val it: ItemType = args(0).getItemType
       if (it == ErrorType) {
         MapType.EMPTY_MAP_TYPE
-      } else if (it.isInstanceOf[MapType]) {
-        var maybeCombined: Boolean = true
-        if (args.length == 1) {
-          maybeCombined = false
-        } else if (args(1).isInstanceOf[Literal]) {
-          val options: MapItem =
-            args(1).asInstanceOf[Literal].getValue.head.asInstanceOf[MapItem]
-          val dupes: GroundedValue = options.get(new StringValue("duplicates"))
-          try if (dupes != null && "combine" != dupes.getStringValue) {
+      } else it match {
+        case mapType: MapType =>
+          var maybeCombined: Boolean = true
+          if (args.length == 1) {
             maybeCombined = false
-          } catch {
-            case e: XPathException => {}
-
+          } else args(1) match {
+            case literal: Literal =>
+              val options = literal.getValue.head.asInstanceOf[MapItem]
+              val dupes = options.get(new StringValue("duplicates"))
+              try
+                if (dupes != null && "combine" != dupes.getStringValue)
+                  maybeCombined = false
+              catch {
+                case _: XPathException =>
+              }
+            case _ =>
           }
-        }
-        if (maybeCombined) {
-          new MapType(
-            it.asInstanceOf[MapType].getKeyType,
-            SequenceType.makeSequenceType(
-              it.asInstanceOf[MapType].getValueType.getPrimaryType,
-              StaticProperty.ALLOWS_ZERO_OR_MORE)
-          )
-        } else {
-          it
-        }
-      } else {
-        super.getResultItemType(args)
+          if (maybeCombined) {
+            new MapType(
+              mapType.getKeyType,
+              SequenceType.makeSequenceType(
+                mapType.getValueType.getPrimaryType,
+                StaticProperty.ALLOWS_ZERO_OR_MORE)
+            )
+          } else {
+            it
+          }
+        case _ =>
+          super.getResultItemType(args)
       }
     }
 

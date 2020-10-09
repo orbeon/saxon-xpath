@@ -100,7 +100,7 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getDescription: String = details.name.getDisplayName
 
-  override def getOperandRoles(): Array[OperandRole] = {
+  override def getOperandRoles: Array[OperandRole] = {
     val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
     val usages: Array[OperandUsage.OperandUsage] = details.usage
     try for (i <- 0 until getArity) {
@@ -119,7 +119,7 @@ abstract class SystemFunction extends AbstractFunction {
                             arguments: Array[Expression]): Unit = ()
 
   override def equals(o: Any): Boolean =
-    (o.isInstanceOf[SystemFunction]) && this == o
+    o.isInstanceOf[SystemFunction] && this == o
 
   def getErrorCodeForTypeErrors: String = "XPTY0004"
 
@@ -178,7 +178,7 @@ abstract class SystemFunction extends AbstractFunction {
         "XPDY0002")
       err.maybeSetContext(context)
       throw err
-    } else if (!(item.isInstanceOf[NodeInfo])) {
+    } else if (! item.isInstanceOf[NodeInfo]) {
       val err = new XPathException(
         "Context item for " + getFunctionName + "() is not a node",
         "XPTY0004")
@@ -208,7 +208,7 @@ abstract class SystemFunction extends AbstractFunction {
                       visitor: ExpressionVisitor,
                       contextInfo: ContextItemStaticInfo): Expression = caller
 
-  override def isTrustedResultType(): Boolean = true
+  override def isTrustedResultType: Boolean = true
 
   def getStaticBaseUriString: String =
     getRetainedStaticContext.getStaticBaseUriString

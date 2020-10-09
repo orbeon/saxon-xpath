@@ -34,7 +34,7 @@ class LatinString(src: CharSequence)
 
   def uSubstring(beginIndex: Int, endIndex: Int): LatinString = {
     val s = Array.ofDim[Byte](endIndex - beginIndex)
-    System.arraycopy(chars, beginIndex, s, 0, endIndex - beginIndex)
+    System.arraycopy(charArr, beginIndex, s, 0, endIndex - beginIndex)
     new LatinString(s)
   }
 
@@ -48,16 +48,16 @@ class LatinString(src: CharSequence)
         if ((charArr(i) & 0xff) == search)
           return i
       }
-      -1;
+      -1
     }
 
-  def uLength(): Int = charArr.length
+  def uLength: Int = charArr.length
 
   def isEnd(pos: Int): Boolean = pos >= charArr.length
 
   override def toString: String = {
     val expanded: Array[Char] = Array.ofDim[Char](charArr.length)
-    for (i <- 0 until charArr.length) {
+    for (i <- charArr.indices) {
       expanded(i) = (charArr(i) & 0xff).toChar
     }
     new String(expanded)
