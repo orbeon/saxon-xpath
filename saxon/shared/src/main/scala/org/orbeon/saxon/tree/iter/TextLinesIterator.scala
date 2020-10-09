@@ -1,45 +1,34 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.iter
 
-import org.orbeon.saxon.functions.UnparsedTextFunction
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.StringValue
-
-import java.io.IOException
-
-import java.io.LineNumberReader
-
+import java.io.{IOException, LineNumberReader}
 import java.net.URI
-
 import java.util.function.IntPredicate
 
-
+import org.orbeon.saxon.functions.UnparsedTextFunction
+import org.orbeon.saxon.om.SequenceIterator
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.value.StringValue
 
 
 /**
   * An iterator that iterates over a file line by line, returning each line as a {@link StringValue}
   */
-abstract class TextLinesIterator  () extends SequenceIterator {
+abstract class TextLinesIterator extends SequenceIterator {
 
-   var reader: LineNumberReader = _
-
-   var checker: IntPredicate = _
-
+  var reader: LineNumberReader = _
+  var checker: IntPredicate = _
   var current: StringValue = null
-
   var position: Int = 0
-
-   var location: Location = _
-
-   var uri: URI = _
+  var location: Location = _
+  var uri: URI = _
 
   def this(reader: LineNumberReader,
            location: Location,
@@ -77,7 +66,7 @@ abstract class TextLinesIterator  () extends SequenceIterator {
       position += 1
       current
     } catch {
-      case err: IOException => {
+      case err: IOException =>
         close()
         val e: XPathException =
           UnparsedTextFunction.handleIOError(uri, err, null)
@@ -85,18 +74,14 @@ abstract class TextLinesIterator  () extends SequenceIterator {
           e.setLocator(location)
         }
         throw e
-      }
-
     }
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     try reader.close()
     catch {
-      case err: IOException => {}
-
+      case _: IOException =>
     }
-  }
 
   private def checkLine(checker: IntPredicate, buffer: String): Unit = {
     var c: Int = 0
@@ -123,9 +108,3 @@ abstract class TextLinesIterator  () extends SequenceIterator {
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,18 +1,11 @@
 package org.orbeon.saxon.tree.iter
 
-import org.orbeon.saxon.utils.Configuration
+import java.io.{LineNumberReader, Reader}
+import java.net.URI
 
 import org.orbeon.saxon.expr.XPathContext
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import java.io.LineNumberReader
-
-import java.io.Reader
-
-import java.net.URI
+import org.orbeon.saxon.utils.Configuration
 
 
 class UnparsedTextIterator(absoluteURI: URI,
@@ -49,5 +42,4 @@ class UnparsedTextIterator(absoluteURI: URI,
     this.encoding = encoding
     this.loc = null
   }
-
 }

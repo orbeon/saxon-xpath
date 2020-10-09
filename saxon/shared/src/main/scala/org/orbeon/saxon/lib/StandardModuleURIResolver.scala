@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-import java.io.{BufferedInputStream, IOException, InputStream, InputStreamReader}
+import java.io.{IOException, InputStream, InputStreamReader}
 import java.net.{URI, URISyntaxException}
 
 import javax.xml.transform.stream.StreamSource
@@ -121,15 +121,15 @@ class StandardModuleURIResolver extends ModuleURIResolver {
 //          }
 //        }
       }
-      if (!is.markSupported()) {
-        is = new BufferedInputStream(is)
-      }
-      val ss: StreamSource = new StreamSource()
-      if (encoding == null) {
+      // ORBEON: BufferedInputStream
+      if (! is.markSupported())
+        ???
+//        is = new BufferedInputStream(is)
+      val ss = new StreamSource
+      if (encoding == null)
         ss.setInputStream(is)
-      } else {
+      else
         ss.setReader(new InputStreamReader(is, encoding))
-      }
       ss.setSystemId(absoluteURI.toString)
       ss
     } catch {

@@ -1,6 +1,6 @@
 package org.orbeon.saxon.resource
 
-import java.io.{BufferedInputStream, ByteArrayInputStream, IOException}
+import java.io.{ByteArrayInputStream, IOException}
 
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.lib.{Resource, ResourceFactory}
@@ -26,18 +26,23 @@ class UnknownResource extends Resource {
   def getResourceURI: String = details.resourceUri
 
   def getItem(context: XPathContext): Item = {
+
     var stream =
       if (details.binaryContent != null)
         new ByteArrayInputStream(details.binaryContent)
       else
         details.getInputStream
-    if (stream == null) {
+
+    if (stream == null)
       throw new XPathException("Unable to dereference resource URI " + details.resourceUri)
-    }
+
     var mediaType: String = null
     try {
-      if (!stream.markSupported())
-        stream = new BufferedInputStream(stream)
+      // ORBEON: BufferedInputStream
+      if (! stream.markSupported()) {
+        ???
+//        stream = new BufferedInputStream(stream)
+      }
       // ORBEON: JVM only
       ???
 //      mediaType = URLConnection.guessContentTypeFromStream(stream)
@@ -61,5 +66,4 @@ class UnknownResource extends Resource {
   }
 
   def getContentType: String = "application/xml"
-
 }

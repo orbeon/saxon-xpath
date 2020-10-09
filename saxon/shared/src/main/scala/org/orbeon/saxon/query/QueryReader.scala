@@ -1,20 +1,13 @@
 package org.orbeon.saxon.query
 
-import org.orbeon.saxon.functions.UnparsedTextFunction
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.Whitespace
+import java.io._
+import java.util.function.IntPredicate
 
 import javax.xml.transform.stream.StreamSource
-
-import java.io._
-
-import java.util.function.IntPredicate
+import org.orbeon.saxon.functions.UnparsedTextFunction
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.Whitespace
 
 object QueryReader {
 
@@ -22,9 +15,10 @@ object QueryReader {
     var queryText: CharSequence = null
     if (ss.getInputStream != null) {
       var is: InputStream = ss.getInputStream
-      if (!is.markSupported()) {
-        is = new BufferedInputStream(is)
-      }
+      // ORBEON: BufferedInputStream
+      if (! is.markSupported())
+        ???
+//        is = new BufferedInputStream(is)
       val encoding: String = readEncoding(is)
       queryText = readInputStream(is, encoding, charChecker)
     } else if (ss.getReader != null) {
@@ -57,9 +51,10 @@ object QueryReader {
     var encodeStr = encoding
     var inStream = is
     if (encodeStr == null) {
-      if (!inStream.markSupported()) {
-        inStream = new BufferedInputStream(inStream)
-      }
+      // ORBEON: BufferedInputStream
+      if (! inStream.markSupported())
+        ???
+//        inStream = new BufferedInputStream(inStream)
       encodeStr = readEncoding(inStream)
     }
     try {
@@ -73,7 +68,6 @@ object QueryReader {
         err.setErrorCode("XQST0087")
         throw err
       }
-
     }
   }
 
@@ -84,15 +78,12 @@ object QueryReader {
         UnparsedTextFunction.readFile(charChecker, reader)
       content.toString
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.setErrorCode("XPST0003")
         err.setIsStaticError(true)
         throw err
-      }
-
       case ioErr: IOException =>
         throw new XPathException("Failed to read supplied query file", ioErr)
-
     }
 
   private def inferEncoding(start: Array[Byte], read: Int): String = {
@@ -186,5 +177,4 @@ object QueryReader {
   }
 
   private def ch(b: Byte): Int = b.toInt & 0xff
-
 }
