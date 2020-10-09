@@ -38,29 +38,25 @@ import javax.xml.transform.URIResolver
  * <p>This object is always created via the method
  * {@link org.orbeon.saxon.sxpath.XPathExpression#createDynamicContext(org.orbeon.saxon.om.Item)}</p>
  */
-class XPathDynamicContext(
-                           private var contextItemType: ItemType,
-                           private var contextObject: XPathContextMajor,
-                           private var stackFrameMap: SlotManager) {
+class XPathDynamicContext(private var contextItemType: ItemType,
+                          private var contextObject: XPathContextMajor,
+                          private var stackFrameMap: SlotManager) {
 
   def setContextItem(item: Item): Unit = {
-    if (item.isInstanceOf[NodeInfo]) {
-      if (!item
-        .asInstanceOf[NodeInfo]
-        .getConfiguration
-        .isCompatible(contextObject.getConfiguration)) {
-        throw new XPathException(
-          "Supplied node must be built using the same or a compatible Configuration",
-          SaxonErrorCode.SXXP0004)
-      }
+    item match {
+      case nodeInfo: NodeInfo =>
+        if (! nodeInfo.getConfiguration.isCompatible(contextObject.getConfiguration))
+          throw new XPathException(
+            "Supplied node must be built using the same or a compatible Configuration",
+            SaxonErrorCode.SXXP0004)
+      case _ =>
     }
-    val th: TypeHierarchy = contextObject.getConfiguration.getTypeHierarchy
-    if (!contextItemType.matches(item, th)) {
+    val th = contextObject.getConfiguration.getTypeHierarchy
+    if (! contextItemType.matches(item, th))
       throw new XPathException(
         "Supplied context item does not match required context item type " +
           contextItemType)
-    }
-    val iter: ManualIterator = new ManualIterator(item)
+    val iter = new ManualIterator(item)
     contextObject.setCurrentIterator(iter)
   }
 

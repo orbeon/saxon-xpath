@@ -65,22 +65,25 @@ class NamePool {
 
   def allocateFingerprint(uri: String, local: String): Int = synchronized {
     if (NamespaceConstant.isReserved(uri) || NamespaceConstant.SAXON == uri) {
-      val fp: Int = StandardNames.getFingerprint(uri, local)
-      if (fp != -1) {
+      val fp = StandardNames.getFingerprint(uri, local)
+      if (fp != -1)
         return fp
-      }
     }
-    val qName: StructuredQName = new StructuredQName("", uri, local)
-    var existing: java.lang.Integer = qNameToInteger.get(qName)
-    if (existing != null) {
+
+    val qName = new StructuredQName("", uri, local)
+    var existing = qNameToInteger.get(qName)
+    if (existing != null)
       return existing
-    }
-    val next: Int = unique.getAndIncrement
-    if (next > MAX_FINGERPRINT) {
+
+    val next = unique.getAndIncrement
+    if (next > MAX_FINGERPRINT)
       throw new NamePoolLimitException("Too many distinct names in NamePool")
-    }
-    existing = qNameToInteger.putIfAbsent(qName, next)
+
+//    existing = qNameToInteger.putIfAbsent(qName, next)
+    existing = qNameToInteger.get(qName)
+
     if (existing == null) {
+      qNameToInteger.put(qName, next)
       integerToQName.put(next, qName)
       next
     } else {

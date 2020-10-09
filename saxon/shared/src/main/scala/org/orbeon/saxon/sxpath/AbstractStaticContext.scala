@@ -1,12 +1,12 @@
 package org.orbeon.saxon.sxpath
 
-import java.util.{HashMap, Map}
 import java.util.function.BiConsumer
+import java.util.{HashMap, Map}
 
-import org.orbeon.saxon.expr.{EarlyEvaluationContext, PackageData, StaticContext, XPathContext}
 import org.orbeon.saxon.expr.parser.{Loc, RetainedStaticContext}
-import org.orbeon.saxon.functions.{FunctionLibrary, FunctionLibraryList}
+import org.orbeon.saxon.expr.{EarlyEvaluationContext, PackageData, StaticContext, XPathContext}
 import org.orbeon.saxon.functions.registry.{ConstructorFunctionLibrary, XPath20FunctionSet}
+import org.orbeon.saxon.functions.{FunctionLibrary, FunctionLibraryList}
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.{AnyItemType, ItemType}
 import org.orbeon.saxon.om.StructuredQName
@@ -19,38 +19,25 @@ import scala.beans.BeanProperty
 abstract class AbstractStaticContext extends StaticContext {
 
   private var baseURI: String = null
-
   private var config: Configuration = _
-
   @BeanProperty
   var packageData: PackageData = _
-
   @BeanProperty
   var containingLocation: Location = Loc.NONE
-
   @BeanProperty
   var defaultCollationName: String = _
-
   private var libraryList: FunctionLibraryList = new FunctionLibraryList()
-
   @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
-
   var defaultElementNamespace: String = NamespaceConstant.NULL
-
   private var backwardsCompatible: Boolean = false
-
   private var xpathLanguageLevel: Int = 31
-
   var usingDefaultFunctionLibrary: Boolean = _
-
   private var typeAliases: Map[StructuredQName, ItemType] = new HashMap()
-
   private var unprefixedElementPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
 
-  def setDefaultElementNamespace(uri: String): Unit = {
+  def setDefaultElementNamespace(uri: String): Unit =
     defaultElementNamespace = uri
-  }
 
   def getDefaultElementNamespace: String = defaultElementNamespace
 
@@ -69,9 +56,8 @@ abstract class AbstractStaticContext extends StaticContext {
 
   def getConfiguration: Configuration = config
 
-  def setSchemaAware(aware: Boolean): Unit = {
+  def setSchemaAware(aware: Boolean): Unit =
     getPackageData.setSchemaAware(aware)
-  }
 
   def makeRetainedStaticContext(): RetainedStaticContext =
     new RetainedStaticContext(this)
@@ -86,20 +72,18 @@ abstract class AbstractStaticContext extends StaticContext {
     this.setFunctionLibrary(lib)
   }
 
-  def addFunctionLibrary(library: FunctionLibrary): Unit = {
+  def addFunctionLibrary(library: FunctionLibrary): Unit =
     libraryList.addFunctionLibrary(library)
-  }
 
   def makeEarlyEvaluationContext(): XPathContext =
     new EarlyEvaluationContext(getConfiguration)
 
-  def setBaseURI(baseURI: String): Unit = {
+  def setBaseURI(baseURI: String): Unit =
     this.baseURI = baseURI
-  }
 
-  def getStaticBaseURI(): String = if (baseURI == null) "" else baseURI
+  def getStaticBaseURI: String = if (baseURI == null) "" else baseURI
 
-  def getFunctionLibrary(): FunctionLibrary = libraryList
+  def getFunctionLibrary: FunctionLibrary = libraryList
 
   def setFunctionLibrary(lib: FunctionLibraryList): Unit = {
     libraryList = lib
@@ -116,21 +100,19 @@ abstract class AbstractStaticContext extends StaticContext {
     xpathLanguageLevel = level
   }
 
-  def getXPathVersion(): Int = xpathLanguageLevel
+  def getXPathVersion: Int = xpathLanguageLevel
 
-  def setBackwardsCompatibilityMode(option: Boolean): Unit = {
+  def setBackwardsCompatibilityMode(option: Boolean): Unit =
     backwardsCompatible = option
-  }
 
-  def isInBackwardsCompatibleMode(): Boolean = backwardsCompatible
+  def isInBackwardsCompatibleMode: Boolean = backwardsCompatible
 
-  def setDecimalFormatManager(manager: DecimalFormatManager): Unit = {
+  def setDecimalFormatManager(manager: DecimalFormatManager): Unit =
     getPackageData.setDecimalFormatManager(manager)
-  }
 
-  def getRequiredContextItemType(): ItemType = AnyItemType
+  def getRequiredContextItemType: ItemType = AnyItemType
 
-  def getDecimalFormatManager(): DecimalFormatManager = {
+  def getDecimalFormatManager: DecimalFormatManager = {
     var manager: DecimalFormatManager = getPackageData.getDecimalFormatManager
     if (manager == null) {
       manager =
@@ -155,20 +137,15 @@ abstract class AbstractStaticContext extends StaticContext {
     setFunctionLibrary(lib)
   }
 
-  //def getKeyManager(): KeyManager = getPackageData.getKeyManager // KeyManager not exist
-
-  def setTypeAlias(name: StructuredQName, `type`: ItemType): Unit = {
+  def setTypeAlias(name: StructuredQName, `type`: ItemType): Unit =
     typeAliases.put(name, `type`)
-  }
 
   override def resolveTypeAlias(typeName: StructuredQName): ItemType =
     typeAliases.get(typeName)
 
-  def setUnprefixedElementMatchingPolicy(policy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy): Unit = {
+  def setUnprefixedElementMatchingPolicy(policy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy): Unit =
     this.unprefixedElementPolicy = policy
-  }
 
-  override def getUnprefixedElementMatchingPolicy(): UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy =
+  override def getUnprefixedElementMatchingPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy =
     unprefixedElementPolicy
-
 }

@@ -34,8 +34,8 @@ class XPathExpression(private var env: StaticContext,
     this.numberOfExternalVariables = numberOfExternalVariables
   }
 
-  def createDynamicContext(): XPathDynamicContext = {
-    val context: XPathContextMajor = new XPathContextMajor(null, executable)
+  def createDynamicContext: XPathDynamicContext = {
+    val context = new XPathContextMajor(null, executable)
     context.openStackFrame(stackFrameMap)
     new XPathDynamicContext(env.getRequiredContextItemType,
       context,
@@ -95,9 +95,8 @@ class XPathExpression(private var env: StaticContext,
   }
 
   def evaluateSingle(context: XPathDynamicContext): Item = {
-    val iter: SequenceIterator =
-      expression.iterate(context.getXPathContextObject)
-    val result: Item = iter.next()
+    val iter = expression.iterate(context.getXPathContextObject)
+    val result = iter.next()
     iter.close()
     result
   }
@@ -106,5 +105,4 @@ class XPathExpression(private var env: StaticContext,
     expression.effectiveBooleanValue(context.getXPathContextObject)
 
   def getInternalExpression: Expression = expression
-
 }

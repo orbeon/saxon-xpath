@@ -24,10 +24,6 @@ object Idref {
     val map: IdrefMappingFunction = new IdrefMappingFunction()
     map.document = doc
     map.keyContext = context
-    /*  map.keyManager =
-        context.getController.getExecutable.getTopLevelPackage.getKeyManager
-      map.keySet = map.keyManager.getKeyDefinitionSet(  //getKeyDefinitionSet,getKeyManager not exist
-        StandardNames.getStructuredQName(StandardNames.XS_IDREFS))*/
     val allValues: SequenceIterator = new MappingIterator(keys, map)
     new DocumentOrderIterator(allValues, LocalOrderComparer.getInstance)
   }

@@ -437,8 +437,6 @@ class XQueryExpression(var expression: Expression,
 
   def explain(out: ExpressionPresenter): Unit = {
     out.startElement("query")
-    // getKeyManager class does not exist. It will be fixed later.
-    //  mainModule.getKeyManager.exportKeys(out, null)
     getExecutable.explainGlobalVariables(out)
     mainModule.explainGlobalFunctions(out)
     out.startElement("body")

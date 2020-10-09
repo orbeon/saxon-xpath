@@ -1,48 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
 
+import java.math.{BigDecimal, BigInteger}
+
 import org.orbeon.saxon.expr.Calculator
-
-import org.orbeon.saxon.model.AtomicType
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.ValidationFailure
-
-import org.orbeon.saxon.om.SequenceTool
-
-import org.orbeon.saxon.om.StandardNames
-
+import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType, ValidationFailure}
+import org.orbeon.saxon.om.{SequenceTool, StandardNames}
 import org.orbeon.saxon.trans.XPathException
-
-import java.math.BigDecimal
-
-import java.math.BigInteger
-
-import BigIntegerValue._
+import org.orbeon.saxon.value.BigIntegerValue._
 
 
-
-
+/**
+  * An integer value: note this is a subtype of decimal in XML Schema, not a primitive type.
+  * The abstract class IntegerValue is used to represent any xs:integer value; this implementation
+  * is used for values that do not fit comfortably in a Java long; including the built-in subtype xs:unsignedLong
+  */
 object BigIntegerValue {
 
-   val MAX_INT: BigInteger =
-    BigInteger.valueOf(java.lang.Integer.MAX_VALUE)
-
-   val MIN_INT: BigInteger =
-    BigInteger.valueOf(java.lang.Integer.MIN_VALUE)
-
-  val MAX_LONG: BigInteger = BigInteger.valueOf(java.lang.Long.MAX_VALUE)
-
-  val MIN_LONG: BigInteger = BigInteger.valueOf(java.lang.Long.MIN_VALUE)
-
-  /*@NotNull*/
-
-  val MAX_UNSIGNED_LONG: BigInteger = new BigInteger("18446744073709551615")
-
-  /*@NotNull*/
-
-  val ZERO: BigIntegerValue = new BigIntegerValue(BigInteger.ZERO)
+  val MAX_INT          : BigInteger      = BigInteger.valueOf(java.lang.Integer.MAX_VALUE)
+  val MIN_INT          : BigInteger      = BigInteger.valueOf(java.lang.Integer.MIN_VALUE)
+  val MAX_LONG         : BigInteger      = BigInteger.valueOf(java.lang.Long.MAX_VALUE)
+  val MIN_LONG         : BigInteger      = BigInteger.valueOf(java.lang.Long.MIN_VALUE)
+  val MAX_UNSIGNED_LONG: BigInteger      = new BigInteger("18446744073709551615")
+  val ZERO             : BigIntegerValue = new BigIntegerValue(BigInteger.ZERO)
 
   class BigIntegerComparable( var value: BigIntegerValue)
       extends Comparable[AnyRef] {
@@ -381,16 +366,4 @@ class BigIntegerValue() extends IntegerValue {
   }
 
   override def asAtomic(): BigIntegerValue = this
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An integer value: note this is a subtype of decimal in XML Schema, not a primitive type.
-  * The abstract class IntegerValue is used to represent any xs:integer value; this implementation
-  * is used for values that do not fit comfortably in a Java long; including the built-in subtype xs:unsignedLong
-  */

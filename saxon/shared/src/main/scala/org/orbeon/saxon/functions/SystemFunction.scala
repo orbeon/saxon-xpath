@@ -84,10 +84,9 @@ abstract class SystemFunction extends AbstractFunction {
   }
 
   def fixArguments(arguments: Expression*): Expression = {
-
-    for (i <- 0 until getArity) {
-      if (Literal.isEmptySequence(arguments(i)) && resultIfEmpty(i) != null) return Literal.makeLiteral(details.resultIfEmpty(i).materialize)
-    }
+    for (i <- 0 until getArity)
+      if (Literal.isEmptySequence(arguments(i)) && resultIfEmpty(i) != null)
+        return Literal.makeLiteral(details.resultIfEmpty(i).materialize)
     null
   }
 

@@ -1,26 +1,19 @@
 package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.expr.PackageData
-
 import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Sequence
-
 import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.value.ObjectValue
 
-object Bindery {
 
+object Bindery {
   class FailureValue(err: XPathException)
     extends ObjectValue[XPathException](err)
-
 }
 
 class Bindery(pack: PackageData) {
 
   private var globals: Array[GroundedValue] = _
-
   private var busy: Array[Long] = _
 
   allocateGlobals(pack.getGlobalSlotManager)
@@ -40,29 +33,28 @@ class Bindery(pack: PackageData) {
   }
 
   def setExecuting(binding: GlobalVariable): Boolean = {
-    val thisThread: Long = Thread.currentThread().getId
-    val slot: Int = binding.getBinderySlotNumber
-    val busyThread: Long = busy(slot)
-    if (busyThread != -1L) {
-      if (busyThread == thisThread) {
-        throw new XPathException.Circularity(
-          "Circular definition of variable " + binding.getVariableQName.getDisplayName)
-      } else {
-        for (i <- 0.until(10)) {
-          try Thread.sleep(20 * i)
-          catch {
-            case e: InterruptedException => {}
-
-          }
-          if (busy(slot) == -1L) {
-            false
-          }
-        }
-        return true
-      }
-    }
-    busy(slot) = thisThread
+    // ORBEON: Thread
     true
+//    val thisThread = Thread.currentThread().getId
+//    val slot = binding.getBinderySlotNumber
+//    val busyThread = busy(slot)
+//    if (busyThread != -1L) {
+//      if (busyThread == thisThread) {
+//        throw new XPathException.Circularity("Circular definition of variable " + binding.getVariableQName.getDisplayName)
+//      } else {
+//        for (i <- 0.until(10)) {
+//          try Thread.sleep(20 * i)
+//          catch {
+//            case _: InterruptedException =>
+//          }
+//          if (busy(slot) == -1L)
+//            return false
+//        }
+//        return true
+//      }
+//    }
+//    busy(slot) = thisThread
+//    true
   }
 
   def setNotExecuting(binding: GlobalVariable): Unit = {

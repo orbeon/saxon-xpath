@@ -56,7 +56,7 @@ object Int64Value {
     }
 
   def makeDerived(`val`: Long, `type`: AtomicType): Int64Value = {
-    val v: Int64Value = new Int64Value(`val`)
+    val v = new Int64Value(`val`)
     v.typeLabel = `type`
     v
   }

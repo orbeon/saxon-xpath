@@ -157,11 +157,6 @@ object KeyFn {
 
 class KeyFn extends SystemFunction with StatefulSystemFunction {
 
-  /* private var staticKeySet: KeyDefinitionSet = null
-
-   def getKeyManager(): KeyManager =
-     getRetainedStaticContext.getPackageData.getKeyManager*/
-
   def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
   override def getSpecialProperties(arguments: Array[Expression]): Int = {
@@ -186,12 +181,10 @@ class KeyFn extends SystemFunction with StatefulSystemFunction {
   }
 
   override def fixArguments(arguments: Expression*): Expression = {
-    if (arguments(0).isInstanceOf[StringLiteral] /* && staticKeySet == null*/ ) {
-      //val keyManager: KeyManager = getKeyManager
-      val keyName: String = arguments(0)
-        .asInstanceOf[StringLiteral]
-        .getStringValue
-      // staticKeySet = getKeyDefinitionSet(keyManager, keyName)
+    arguments(0) match {
+      case literal: StringLiteral =>
+        val keyName: String = literal.getStringValue
+      case _ =>
     }
     null
   }
@@ -235,13 +228,6 @@ class KeyFn extends SystemFunction with StatefulSystemFunction {
         context
       )
     }
-    /*var selectedKeySet: KeyDefinitionSet = staticKeySet
-    val keyManager: KeyManager = getKeyManager
-    if (selectedKeySet == null) {
-      selectedKeySet =
-        getKeyDefinitionSet(keyManager, arguments(0).head.getStringValue)
-    }*/
-    //search(keyManager, context, arguments(1), origin, selectedKeySet)
     null
   }
 

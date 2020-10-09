@@ -4,11 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A StaticContext contains the information needed while an expression or pattern
-  * is being parsed. The information is also sometimes needed at run-time.
-  */
-
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.parser.{OptimizerOptions, RetainedStaticContext}
@@ -23,8 +18,11 @@ import org.orbeon.saxon.utils.Configuration
 import scala.collection.Set
 
 
+/**
+  * A StaticContext contains the information needed while an expression or pattern
+  * is being parsed. The information is also sometimes needed at run-time.
+  */
 trait StaticContext {
-
   def getConfiguration: Configuration
   def getPackageData: PackageData
   def makeEarlyEvaluationContext(): XPathContext
@@ -46,7 +44,6 @@ trait StaticContext {
   def getRequiredContextItemType: ItemType
   def getDecimalFormatManager: DecimalFormatManager
   def getXPathVersion: Int
-  /*def getKeyManager(): KeyManager*/ // KeyManager class not found
   def resolveTypeAlias(typeName: StructuredQName): ItemType
   def getOptimizerOptions: OptimizerOptions = getConfiguration.getOptimizerOptions
 }

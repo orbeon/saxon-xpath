@@ -1,94 +1,72 @@
 package org.orbeon.saxon.sxpath
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.LocalVariableReference
-import org.orbeon.saxon.expr.PackageData
-import org.orbeon.saxon.expr.instruct.Executable
-import org.orbeon.saxon.expr.instruct.SlotManager
-import org.orbeon.saxon.expr.parser.OptimizerOptions
-import org.orbeon.saxon.expr.parser.RetainedStaticContext
+import java.util._
+
+import org.orbeon.saxon.expr.{Expression, LocalVariableReference, PackageData}
+import org.orbeon.saxon.expr.instruct.{Executable, SlotManager}
+import org.orbeon.saxon.expr.parser.{OptimizerOptions, RetainedStaticContext}
 import org.orbeon.saxon.functions.FunctionLibraryList
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.model.AnyItemType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.Type
-import org.orbeon.saxon.om.AxisInfo
-import org.orbeon.saxon.om.NamespaceResolver
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.model.{AnyItemType, ItemType, Type}
+import org.orbeon.saxon.om.{AxisInfo, NamespaceResolver, NodeInfo, StructuredQName}
 import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.value.QNameValue
-import java.util._
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.utils.Configuration
 
-import scala.collection
+import scala.jdk.CollectionConverters._
+
 
 class IndependentContext(config: Configuration)
   extends AbstractStaticContext
     with XPathStaticContext
     with NamespaceResolver {
 
-   var namespaces: HashMap[String, String] = new HashMap(10)
-
-   var variables: HashMap[StructuredQName, XPathVariable] =
-    new HashMap(20)
-
-   var externalResolver: NamespaceResolver = null
-
-   var requiredContextItemType: ItemType = AnyItemType
-
+  var namespaces: HashMap[String, String] = new HashMap(10)
+  var variables: HashMap[StructuredQName, XPathVariable] = new HashMap(20)
+  var externalResolver: NamespaceResolver = null
+  var requiredContextItemType: ItemType = AnyItemType
   var importedSchemaNamespaces: Set[String] = new HashSet()
-
-   var autoDeclare: Boolean = false
-
-   var executable: Executable = _
-
-   var retainedStaticContext: RetainedStaticContext = _
-
-   var optimizerOptions: OptimizerOptions = config.getOptimizerOptions
-
-   var parentlessContextItem: Boolean = _
+  var autoDeclare: Boolean = false
+  var executable: Executable = _
+  var retainedStaticContext: RetainedStaticContext = _
+  var optimizerOptions: OptimizerOptions = config.getOptimizerOptions
+  var parentlessContextItem: Boolean = _
 
   this.setConfiguration(config)
-
   clearNamespaces()
-
   this.setDefaultFunctionLibrary(31)
 
   usingDefaultFunctionLibrary = true
-
   this.defaultCollationName = config.getDefaultCollationName
 
   val pd: PackageData = new PackageData(config)
-
   pd.setHostLanguage(HostLanguage.XPATH)
-
   pd.setSchemaAware(false)
-
   this.packageData = pd
 
-  def this() = this(new Configuration())
+  def this() = this(new Configuration)
 
   def this(ic: IndependentContext) = {
     this(ic.getConfiguration)
+
     this.packageData = ic.getPackageData
     this.setBaseURI(ic.getStaticBaseURI)
     this.containingLocation = ic.getContainingLocation
     this.defaultElementNamespace = ic.getDefaultElementNamespace
     this.defaultFunctionNamespace = ic.getDefaultFunctionNamespace
     this.setBackwardsCompatibilityMode(ic.isInBackwardsCompatibleMode)
+
     namespaces = new HashMap(ic.namespaces)
     variables = new HashMap(10)
-    val libList: FunctionLibraryList =
-      ic.getFunctionLibrary.asInstanceOf[FunctionLibraryList]
-    if (libList != null) {
+
+    val libList = ic.getFunctionLibrary.asInstanceOf[FunctionLibraryList]
+    if (libList != null)
       this.setFunctionLibrary(libList.copy().asInstanceOf[FunctionLibraryList])
-    }
+
     this.importedSchemaNamespaces = ic.importedSchemaNamespaces
     externalResolver = ic.externalResolver
     autoDeclare = ic.autoDeclare
@@ -98,33 +76,29 @@ class IndependentContext(config: Configuration)
   }
 
   override def makeRetainedStaticContext(): RetainedStaticContext = {
-    if (retainedStaticContext == null) {
+    if (retainedStaticContext == null)
       retainedStaticContext = new RetainedStaticContext(this)
-    }
     retainedStaticContext
   }
 
   def declareNamespace(prefix: String, uri: String): Unit = {
-    if (prefix == null) {
-      throw new NullPointerException(
-        "Null prefix supplied to declareNamespace()")
-    }
-    if (uri == null) {
-      throw new NullPointerException(
-        "Null namespace URI supplied to declareNamespace()")
-    }
-    if ("" == prefix) {
+
+    if (prefix == null)
+      throw new NullPointerException("Null prefix supplied to declareNamespace()")
+
+    if (uri == null)
+      throw new NullPointerException("Null namespace URI supplied to declareNamespace()")
+
+    if ("" == prefix)
       this.defaultElementNamespace = uri
-    } else {
+    else
       namespaces.put(prefix, uri)
-    }
   }
 
   override def setDefaultElementNamespace(uri: String): Unit = {
     var uriStr = uri
-    if (uriStr == null) {
+    if (uriStr == null)
       uriStr = ""
-    }
     super.setDefaultElementNamespace(uriStr)
     namespaces.put("", uriStr)
   }
@@ -216,7 +190,7 @@ class IndependentContext(config: Configuration)
     `var`.getLocalSlotNumber
   }
 
-  def getNamespaceResolver(): NamespaceResolver =
+  def getNamespaceResolver: NamespaceResolver =
     if (externalResolver != null) {
       externalResolver
     } else {
@@ -256,7 +230,7 @@ class IndependentContext(config: Configuration)
     }
   }
 
-  def getStackFrameMap(): SlotManager = {
+  def getStackFrameMap: SlotManager = {
     val map: SlotManager = getConfiguration.makeSlotManager
     val va: Array[XPathVariable] = Array.ofDim[XPathVariable](variables.size)
     for (value <- variables.values.asScala) {
@@ -273,7 +247,7 @@ class IndependentContext(config: Configuration)
   def isImportedSchema(namespace: String): Boolean =
     importedSchemaNamespaces.contains(namespace)
 
-  def getImportedSchemaNamespaces(): collection.Set[String] = importedSchemaNamespaces.asScala.toSet
+  def getImportedSchemaNamespaces: collection.Set[String] = importedSchemaNamespaces.asScala.toSet
 
   def setImportedSchemaNamespaces(namespaces: Set[String]): Unit = {
     importedSchemaNamespaces = namespaces
@@ -286,30 +260,23 @@ class IndependentContext(config: Configuration)
     requiredContextItemType = `type`
   }
 
-  override def getRequiredContextItemType(): ItemType = requiredContextItemType
+  override def getRequiredContextItemType: ItemType = requiredContextItemType
 
-  def setOptimizerOptions(options: OptimizerOptions): Unit = {
+  def setOptimizerOptions(options: OptimizerOptions): Unit =
     this.optimizerOptions = options
-  }
 
-  override def getOptimizerOptions(): OptimizerOptions = this.optimizerOptions
+  override def getOptimizerOptions: OptimizerOptions = this.optimizerOptions
 
-  def setExecutable(exec: Executable): Unit = {
+  def setExecutable(exec: Executable): Unit =
     executable = exec
-  }
 
   def getExecutable: Executable = executable
-
   def getColumnNumber: Int = -1
-
   def getPublicId: String = null
-
   def getLineNumber: Int = -1
 
-  override def isContextItemParentless(): Boolean = parentlessContextItem
+  override def isContextItemParentless: Boolean = parentlessContextItem
 
-  def setContextItemParentless(parentless: Boolean): Unit = {
+  def setContextItemParentless(parentless: Boolean): Unit =
     parentlessContextItem = parentless
-  }
-
 }

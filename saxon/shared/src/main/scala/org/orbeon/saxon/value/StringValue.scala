@@ -209,8 +209,8 @@ object StringValue {
 
 class StringValue extends AtomicValue {
 
-// may be zero-length, will never be null
-   var value: CharSequence = ""
+  // may be zero-length, will never be null
+  var value: CharSequence = ""
 
   typeLabel = BuiltInAtomicType.STRING
 
@@ -242,14 +242,12 @@ class StringValue extends AtomicValue {
 
   def getPrimitiveStringValue: CharSequence = value
 
-  def setStringValueCS(value: CharSequence): Unit = {
+  def setStringValueCS(value: CharSequence): Unit =
     this.value = value
-  }
 
   def getStringLength: Int = synchronized {
-    if (! value.isInstanceOf[UnicodeString]) {
+    if (! value.isInstanceOf[UnicodeString])
       makeUnicodeString()
-    }
     value.asInstanceOf[UnicodeString].uLength
   }
 
@@ -268,9 +266,8 @@ class StringValue extends AtomicValue {
     value.asInstanceOf[UnicodeString]
   }
 
-  private def makeUnicodeString(): Unit = {
+  private def makeUnicodeString(): Unit =
     value = UnicodeString.makeUnicodeString(value)
-  }
 
   def isZeroLength: Boolean = value.length == 0
 
@@ -323,23 +320,20 @@ class StringValue extends AtomicValue {
   override def effectiveBooleanValue(): Boolean = !isZeroLength
 
   /*@NotNull*/
-
   override def toString: String = "\"" + value + '\"'
 
   override def toShortString: String = {
-    var s: String = value.toString
-    if (s.length > 40) {
+    var s = value.toString
+    if (s.length > 40)
       s = s.substring(0, 35) + "..."
-    }
     "\"" + s + '\"'
   }
 
   def getSchemaComparable: Comparable[AnyRef] = getStringValue.asInstanceOf[Comparable[AnyRef]]
 
   override def isIdentical(v: AtomicValue): Boolean =
-    v.isInstanceOf[StringValue] &&
-      (this.isInstanceOf[AnyURIValue] == v.isInstanceOf[AnyURIValue]) &&
-      (this.isInstanceOf[UntypedAtomicValue] == v
-        .isInstanceOf[UntypedAtomicValue]) &&
+    v.isInstanceOf[StringValue]                                                     &&
+      (this.isInstanceOf[AnyURIValue]        == v.isInstanceOf[AnyURIValue])        &&
+      (this.isInstanceOf[UntypedAtomicValue] == v.isInstanceOf[UntypedAtomicValue]) &&
       codepointEquals(v.asInstanceOf[StringValue])
 }

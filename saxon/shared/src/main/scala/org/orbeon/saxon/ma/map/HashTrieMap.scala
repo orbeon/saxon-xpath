@@ -1,35 +1,17 @@
 package org.orbeon.saxon.ma.map
 
 import org.orbeon.saxon.expr.sort.AtomicMatchKey
-
-import org.orbeon.saxon.ma.trie.ImmutableHashTrieMap
-
-import org.orbeon.saxon.ma.trie.ImmutableMap
-
-import org.orbeon.saxon.ma.trie.Tuple2
-
+import org.orbeon.saxon.ma.trie.{ImmutableHashTrieMap, ImmutableMap, Tuple2}
 import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceTool
+import org.orbeon.saxon.om.{GroundedValue, Sequence, SequenceTool}
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-
-import org.orbeon.saxon.tree.iter.AtomicIterator
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.Cardinality
-
-import org.orbeon.saxon.value.SequenceType
-
 import java.util.Iterator
 
-import scala.beans.{BeanProperty}
+import org.orbeon.saxon.tree.iter.AtomicIterator
+import org.orbeon.saxon.value.{AtomicValue, Cardinality, SequenceType}
+
+import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 

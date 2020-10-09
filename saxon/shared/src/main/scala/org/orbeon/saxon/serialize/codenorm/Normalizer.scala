@@ -46,7 +46,6 @@ object Normalizer {
   }
 
   private var data: NormalizerData = null
-
 }
 
 class Normalizer private(private var form: Int) {
@@ -72,7 +71,7 @@ class Normalizer private(private var form: Int) {
     while (i < source.length) {
       buffer.setLength(0)
       ch32 = source.charAt({
-        i += 1;
+        i += 1
         i - 1
       })
       if (ch32 < 128) {

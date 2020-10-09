@@ -228,11 +228,10 @@ class TypeCheckingFilter(next: Outputter) extends ProxyOutputter(next) {
                            name: NodeName,
                            `type`: SchemaType,
                            value: CharSequence): Supplier[NodeInfo] = () => {
-    val o: Orphan = new Orphan(getPipelineConfiguration.getConfiguration)
+    val o = new Orphan(getPipelineConfiguration.getConfiguration)
     o.setNodeKind(nodeKind)
-    if (name != null) {
+    if (name != null)
       o.setNodeName(name)
-    }
     o.setTypeAnnotation(`type`)
     o.setStringValue(value)
     o

@@ -396,18 +396,16 @@ class GlobalVariable
     }
   }
 
-   def actuallyEvaluate(context: XPathContext,
-                                 target: Component): GroundedValue = {
-    val controller: Controller = context.getController
+   def actuallyEvaluate(context: XPathContext, target: Component): GroundedValue = {
+    val controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData)
+    val b = controller.getBindery(getPackageData)
      try {
       setDependencies(this, context)
-      val go: Boolean = b.setExecuting(this)
-      if (!go) {
-        b.getGlobalVariable(getBinderySlotNumber)
-      }
-      var value: GroundedValue = getSelectValue(context, target)
+      val go = b.setExecuting(this)
+      if (! go)
+        return b.getGlobalVariable(getBinderySlotNumber)
+      var value = getSelectValue(context, target)
       if (indexed) {
         value = controller.getConfiguration
           .obtainOptimizer
@@ -418,8 +416,7 @@ class GlobalVariable
       case err: XPathException =>
         b.setNotExecuting(this)
         if (err.isInstanceOf[XPathException.Circularity]) {
-          err.setErrorCode(
-            if (getPackageData.isXSLT) "XTDE0640" else "XQDY0054")
+          err.setErrorCode(if (getPackageData.isXSLT) "XTDE0640" else "XQDY0054")
           err.setXPathContext(context)
           err.setIsGlobalError(true)
           b.setGlobalVariable(this, new Bindery.FailureValue(err))
