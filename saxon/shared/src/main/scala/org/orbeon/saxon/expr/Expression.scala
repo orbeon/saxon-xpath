@@ -53,13 +53,12 @@ object Expression {
     Int64Value.makeIntegerValue(java.lang.Integer.MAX_VALUE)
 
   private def gatherSlotsUsed(exp: Expression, slots: IntHashSet): Unit = {
-    val expVar: Expression = exp.getInterpretedExpression
+    val expVar = exp.getInterpretedExpression
     expVar match {
       case varRef: LocalVariableReference =>
         slots.add(varRef.getSlotNumber)
       case reference: SuppliedParameterReference =>
-        val slot: Int =
-          reference.getSlotNumber
+        val slot = reference.getSlotNumber
         slots.add(slot)
       case _ =>
         for (o <- expVar.operands.asScala)
@@ -340,9 +339,8 @@ abstract class Expression
     Expression.this
 
   def getSpecialProperties: Int = {
-    if (staticProperties == -1) {
+    if (staticProperties == -1)
       computeStaticProperties()
-    }
     staticProperties & StaticProperty.SPECIAL_PROPERTY_MASK
   }
 
@@ -350,9 +348,8 @@ abstract class Expression
     (getSpecialProperties & property) != 0
 
   def getCardinality: Int = {
-    if (staticProperties == -1) {
+    if (staticProperties == -1)
       computeStaticProperties()
-    }
     staticProperties & StaticProperty.CARDINALITY_MASK
   }
 
@@ -364,9 +361,8 @@ abstract class Expression
   def getStaticUType(contextItemType: UType): UType = UType.ANY
 
   def getDependencies: Int = {
-    if (staticProperties == -1) {
+    if (staticProperties == -1)
       computeStaticProperties()
-    }
     staticProperties & StaticProperty.DEPENDENCY_MASK
   }
 
@@ -614,8 +610,8 @@ abstract class Expression
       var i = 0
       val iter = slots.iterator
       while (iter.hasNext) {
-        slotsUsed(i) = iter.next
-        i = i + 1
+        slotsUsed(i) = iter.next()
+        i += 1
       }
       scala.util.Sorting.quickSort(slotsUsed)
       slotsUsed

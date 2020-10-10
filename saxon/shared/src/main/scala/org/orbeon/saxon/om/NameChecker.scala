@@ -112,7 +112,7 @@ object NameChecker {
     while (i < ncName.length) {
       ch = ncName.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
-        i = i + 1
+        i += 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, ncName.charAt(i)))) {
           return false
         }
@@ -121,7 +121,7 @@ object NameChecker {
           return  false
         }
       }
-      i = i + 1
+      i += 1
     }
     true
   }
@@ -134,7 +134,7 @@ object NameChecker {
     while (i < nmtoken.length) {
       val ch: Char = nmtoken.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
-        i = i + 1
+        i += 1
         if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, nmtoken.charAt(i)))) {
           return false
         }
@@ -143,7 +143,7 @@ object NameChecker {
           return false
         }
       }
-      i = i + 1
+      i += 1
     }
     true
   }

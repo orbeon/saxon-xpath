@@ -273,7 +273,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
       false
     }
 
-    def next: Integer = _key({
+    def next(): Int = _key({
       i += 1; i - 1
     })
 

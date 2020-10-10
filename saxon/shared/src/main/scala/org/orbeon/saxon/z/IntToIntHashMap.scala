@@ -1,10 +1,7 @@
 package org.orbeon.saxon.z
 
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import IntToIntHashMap._
-
-import scala.beans.{BeanProperty}
+import org.orbeon.saxon.z.IntToIntHashMap._
 
 import scala.util.control.Breaks._
 
@@ -200,7 +197,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
       false
     }
 
-    def next(): Integer = {
+    def next(): Int = {
       i += 1
       _key(i)
     }

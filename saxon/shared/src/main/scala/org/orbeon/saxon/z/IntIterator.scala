@@ -24,5 +24,5 @@ trait IntIterator {
    *
    * @return the next integer in the sequence
    */
-  def next():Integer
+  def next():Int
 }

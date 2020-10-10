@@ -24,7 +24,7 @@ object NestedIntegerValue {
     var i: Int = 0
     while (st.hasMoreTokens()) {
       valuei(i) = java.lang.Integer.parseInt(st.nextToken())
-      i = i + 1
+      i += 1
     }
     new NestedIntegerValue(valuei)
   }

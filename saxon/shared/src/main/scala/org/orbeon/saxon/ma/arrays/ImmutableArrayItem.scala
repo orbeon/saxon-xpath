@@ -144,7 +144,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
     var i: Int = 0
     val ii: IntIterator = positions.iterator
     while (ii.hasNext) {
-      i = i + 1
+      i += 1
       p(i) = ii.next
     }
     scala.util.Sorting.quickSort(p)

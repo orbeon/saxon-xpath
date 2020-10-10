@@ -31,7 +31,7 @@ object XMLEmitter {
     var i = 0
     while (i <= 31) {
       specialInText(i) = true
-      i = i + 1
+      i += 1
     }
   }
 
@@ -39,7 +39,7 @@ object XMLEmitter {
     var i = 32
     while (i <= 127) {
       specialInText(i) = false
-      i = i + 1
+      i += 1
     }
   }
 
@@ -54,7 +54,7 @@ object XMLEmitter {
     var i = 0
     while (i <= 31) {
       specialInAtt(i) = true
-      i = i + 1
+      i += 1
     }
   }
 
@@ -62,7 +62,7 @@ object XMLEmitter {
     var i = 32
     while (i <= 127) {
       specialInAtt(i) = false
-      i = i + 1
+      i += 1
     }
   }
 
@@ -442,7 +442,7 @@ class XMLEmitter extends Emitter {
       val c: Char = chars.charAt(i)
       if (c > 127) {
         if (UTF16CharacterSet.isHighSurrogate(c)) {
-          i = i + 1
+          i += 1
           val cc: Int = UTF16CharacterSet.combinePair(c, chars.charAt(i))
           if (!characterSet.inCharset(cc)) {
             return cc
@@ -451,7 +451,7 @@ class XMLEmitter extends Emitter {
           return c
         }
       }
-      i = i + 1
+      i += 1
     }
     0
   }
@@ -527,7 +527,7 @@ class XMLEmitter extends Emitter {
             if (c > 127 && UTF16CharacterSet.isHighSurrogate(c)) {
               val pair: Array[Char] = Array.ofDim[Char](2)
               pair(0) = c
-              i = i + 1
+              i += 1
               pair(1) = chars.charAt(i)
               val cc: Int = UTF16CharacterSet.combinePair(c, pair(1))
               if (!characterSet.inCharset(cc)) {
@@ -544,7 +544,7 @@ class XMLEmitter extends Emitter {
               }
             }
           }
-          i = i + 1
+          i += 1
         }
       }
     }

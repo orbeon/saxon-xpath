@@ -267,7 +267,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     }
   }
 
-  def iterator: IntIterator = new IntHashSetiterator
+  def iterator: IntIterator = new IntHashSetIterator
 
   override def equals(other: Any): Boolean = other match {
     case other: IntHashSet => {
@@ -327,27 +327,23 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     System.err.println("=====================")
   }
 
-  private class IntHashSetiterator extends IntIterator {
+  private class IntHashSetIterator extends IntIterator {
 
     private var i: Int = 0
 
     def hasNext: Boolean = {
-      while (i < _values.length) if (_values(i) != ndv) {
-        true
-      } else {
-        {
-          i += 1; i - 1
-        }
-      }
+      while (i < _values.length)
+        if ( _values(i) != ndv)
+          return true
+        else
+          i += 1
       false
     }
 
-    def next: Integer = {
-      _values(i)
-      i = i + 1
-      i
+    def next(): Int = {
+      val r = _values(i)
+      i += 1
+      r
     }
-
   }
-
 }

@@ -30,7 +30,7 @@ object IntArraySet {
 
     def hasNext: Boolean = i < limit
 
-    def next(): Integer = contents({
+    def next(): Int = contents({
       i += 1
       i - 1
     })

@@ -312,7 +312,7 @@ class IntRangeSet extends IntSet {
       var i: Int = low
       while (i <= high) {
         add(i)
-        i = i + 1
+        i += 1
       }
     }
   }
@@ -332,14 +332,14 @@ class IntRangeSet extends IntSet {
         current < endPoints(used - 1)
       }
 
-    def next(): Integer = {
+    def next(): Int = {
       if (i < 0) {
         i = 0
         current = startPoints(0)
         return current
       }
       if (current == endPoints(i)) {
-        i = i + 1
+        i += 1
         current = startPoints(i)
         current
       } else {

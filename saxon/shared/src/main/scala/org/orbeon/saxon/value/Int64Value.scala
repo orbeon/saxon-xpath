@@ -246,7 +246,7 @@ class Int64Value extends IntegerValue {
       var i: Long = 1
       while (i <= -scale) {
         factor *= 10
-        i = i + 1
+        i += 1
       }
       val modulus: Long = absolute % factor
       var rval: Long = absolute - modulus
@@ -276,7 +276,7 @@ class Int64Value extends IntegerValue {
       var i: Long = 1
       while (i <= -scale) {
         factor *= 10
-        i = i + 1;
+        i += 1;
       }
       val modulus: Long = absolute % factor
       var rval: Long = absolute - modulus

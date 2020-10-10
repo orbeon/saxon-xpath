@@ -14,7 +14,7 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Cardinality
-import org.orbeon.saxon.z.{IntHashSet, IntIterator, IntSet}
+import org.orbeon.saxon.z.{IntHashSet, IntIterator}
 
 import scala.beans.BeanProperty
 import scala.util.control.Breaks._

@@ -49,8 +49,7 @@ class IntEmptySet private () extends IntSet {
 
   def iterator: IntIterator = new IntIterator {
     def hasNext: Boolean = false
-
-    def next(): Integer = java.lang.Integer.MIN_VALUE
+    def next(): Int = Integer.MIN_VALUE
   }
 
   override def union(other: IntSet): IntSet = other.copy()

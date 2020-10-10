@@ -136,7 +136,7 @@ abstract class NodeImpl
       }
       assert(prev != null)
       prev = prev.getPreviousInDocument
-      i = i + 1
+      i += 1
     }
     0
   }

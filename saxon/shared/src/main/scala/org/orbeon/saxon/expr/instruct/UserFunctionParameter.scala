@@ -1,22 +1,12 @@
 package org.orbeon.saxon.expr.instruct
 
-import org.orbeon.saxon.expr.LocalBinding
-
-import org.orbeon.saxon.expr.VariableReference
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.StructuredQName
-
+import org.orbeon.saxon.expr.{LocalBinding, VariableReference, XPathContext}
+import org.orbeon.saxon.om.{Sequence, StructuredQName}
 import org.orbeon.saxon.trans.FunctionStreamability
+import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
-import org.orbeon.saxon.value.IntegerValue
+import scala.beans.BeanProperty
 
-import org.orbeon.saxon.value.SequenceType
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 class UserFunctionParameter extends LocalBinding {
 
@@ -41,9 +31,8 @@ class UserFunctionParameter extends LocalBinding {
 
   def isAssignable: Boolean = false
 
-  def setSlotNumber(slot: Int): Unit = {
+  def setSlotNumber(slot: Int): Unit =
     slotNumber = slot
-  }
 
   def getLocalSlotNumber: Int = slotNumber
 
@@ -51,17 +40,14 @@ class UserFunctionParameter extends LocalBinding {
 
   def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = ()
 
-  def setIndexedVariable(indexed: Boolean): Unit = {
+  def setIndexedVariable(indexed: Boolean): Unit =
     isIndexed = indexed
-  }
 
-  override def setIndexedVariable(): Unit = {
+  override def setIndexedVariable(): Unit =
     this.setIndexedVariable(true)
-  }
 
   def isIndexedVariable: Boolean = isIndexed
 
   def evaluateVariable(context: XPathContext): Sequence =
     context.evaluateLocalVariable(slotNumber)
-
 }

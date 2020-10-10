@@ -30,7 +30,7 @@ class Sort_3 extends Sort_2 {
       member.originalPosition = {
         i
       }
-      i = i + 1
+      i += 1
       member.sortKey = SystemFunction.dynamicCall(key, context, Array(item)).materialize()
       inputList.add(member)
     }

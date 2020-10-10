@@ -23,7 +23,7 @@ class EmptyIntIterator extends IntIterator {
 
   def hasNext: Boolean = false
 
-  def next(): Integer = 0
+  def next(): Int = 0
 
 }
 

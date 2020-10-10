@@ -103,7 +103,7 @@ object Operation {
         false
       }
 
-      def next(): Integer = currentIter.next()
+      def next(): Int = currentIter.next()
     }
 
     override def display(): String = {
@@ -299,7 +299,7 @@ object Operation {
           nextPos >= 0
         }
 
-        def next(): Integer = nextPos
+        def next(): Int = nextPos
       }
     }
 
@@ -616,7 +616,7 @@ object Operation {
               iterators.nonEmpty
             }
 
-          def next(): Integer = {
+          def next(): Int = {
             primed = false
             positions.head
           }
@@ -652,7 +652,7 @@ object Operation {
             pos >= 0
           }
 
-          def next(): Integer = pos
+          def next(): Int = pos
         }
         new ForceProgressIterator(iter)
       }
@@ -730,7 +730,7 @@ object Operation {
           false
         }
 
-        def next(): Integer = pos
+        def next(): Int = pos
       }
 
   }
@@ -836,7 +836,7 @@ object Operation {
       new IntIterator {
         def hasNext: Boolean = base.hasNext
 
-        def next(): Integer = {
+        def next(): Int = {
           val next: Int = base.next()
           if (groupNr >= matcher.captureState.parenCount) {
             matcher.captureState.parenCount = groupNr + 1
@@ -944,7 +944,7 @@ object Operation {
           b
         }
 
-        def next(): Integer = {
+        def next(): Int = {
           val n: Int = baseIter.next()
           System.err.println("IntIterator " + iterNr + " next() = " + n)
           n
@@ -974,7 +974,7 @@ object Operation {
 
     def hasNext: Boolean = countZeroLength <= 3 && base.hasNext
 
-    def next(): Integer = {
+    def next(): Int = {
       val p: Int = base.next()
       if (p == currentPos) {
         countZeroLength += 1
