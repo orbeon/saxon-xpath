@@ -27,16 +27,20 @@ object XMLEmitter {
   var specialInAtt: Array[Boolean] = new Array[Boolean](128)
   var specialInAttSingle: Array[Boolean] = ju.Arrays.copyOf(specialInAtt, 128)
 
-  var i: Int = 0
-  while (i <= 31) {
-    specialInText(i) = true
-    i = i + 1
+  locally {
+    var i = 0
+    while (i <= 31) {
+      specialInText(i) = true
+      i = i + 1
+    }
   }
 
-  var j: Int = 32
-  while (j <= 127) {
-    specialInText(i) = false
-    j = j + 1
+  locally {
+    var i = 32
+    while (i <= 127) {
+      specialInText(i) = false
+      i = i + 1
+    }
   }
 
   specialInText('\n') = false
@@ -46,16 +50,20 @@ object XMLEmitter {
   specialInText('>') = true
   specialInText('&') = true
 
-  i = 0
-  while (i <= 31) {
-    specialInAtt(i) = true
-    i = i + 1
+  locally {
+    var i = 0
+    while (i <= 31) {
+      specialInAtt(i) = true
+      i = i + 1
+    }
   }
 
-  j = 32
-  while (i <= 127) {
-    specialInAtt(i) = false
-    j = j + 1
+  locally {
+    var i = 32
+    while (i <= 127) {
+      specialInAtt(i) = false
+      i = i + 1
+    }
   }
 
   specialInAtt(0.toChar) = true
@@ -68,7 +76,6 @@ object XMLEmitter {
   specialInAtt('\"') = true
   specialInAttSingle('\"') = false
   specialInAttSingle('\'') = true
-
 }
 
 class XMLEmitter extends Emitter {
