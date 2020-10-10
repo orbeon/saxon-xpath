@@ -50,15 +50,15 @@ class XPathTest extends AnyFunSpec {
       "math:cos(math:pi())"                         -> "-1",
       """let $fn := function($v) { $v * 2 }
          return $fn(7)"""                           -> "14",
-//      """
-//        let $f :=
-//          function ($seq, $delim) {
-//            fn:fold-left($seq, '', fn:concat(?, $delim, ?))
-//          },
-//          $paf := $f(?, ".")
-//        return
-//          $paf(1 to 5)
-//        """ -> "TODO",
+      """
+        let $f :=
+          function ($seq, $delim) {
+            fn:fold-left($seq, '', fn:concat(?, $delim, ?))
+          },
+          $paf := $f(?, '.')
+        return
+          $paf(1 to 5)
+        """ -> ".1.2.3.4.5",
     )
 
     for ((in, out) <- Expected)
