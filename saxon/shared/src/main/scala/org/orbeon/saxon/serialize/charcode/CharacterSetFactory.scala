@@ -81,12 +81,11 @@ class CharacterSetFactory {
     getCharacterSet(encoding)
   }
 
+  // ORBEON: JavaCharacterSet
   private def getCharacterSet(encoding: String): CharacterSet =
-    if (encoding == null) {
-      UTF8CharacterSet.getInstance
-    } else {
-      // ORBEON: JavaCharacterSet
-      ???
+//    if (encoding == null) {
+        UTF8CharacterSet.getInstance
+//    } else {
 //      val encodingKey = normalizeCharsetName(encoding)
 //      val cs = characterSets.get(encodingKey)
 //      if (cs != null)
@@ -110,5 +109,5 @@ class CharacterSetFactory {
 //          e.setErrorCode("SESU0007")
 //          throw e
 //      }
-    }
+//    }
 }

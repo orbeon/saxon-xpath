@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
 
-import java.io.{BufferedWriter, OutputStream, OutputStreamWriter, Writer}
+import java.io.{BufferedWriter, OutputStream, OutputStreamWriter, PrintWriter, Writer}
 import java.util.Properties
 
 import javax.xml.transform.OutputKeys
@@ -72,14 +72,20 @@ abstract class Emitter
       if (os != null)
         this.outputStream = os
     }
-    if (writer == null)
-      makeOutputStream()
+
+    // ORBEON: No `File` support.
+    writer = new PrintWriter(System.out)
+//    if (writer == null)
+//      makeOutputStream()
   }
 
   def makeOutputStream(): OutputStream = {
 
     // ORBEON: No `File` support.
     ???
+//    this.outputStream = System.out
+//    streamResult.setOutputStream(outputStream)
+//    outputStream
 
 //    val uriString = streamResult.getSystemId
 //    if (uriString == null)
