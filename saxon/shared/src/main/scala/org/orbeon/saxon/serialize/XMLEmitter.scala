@@ -23,8 +23,8 @@ import scala.jdk.CollectionConverters._
 
 object XMLEmitter {
 
-  var specialInText: Array[Boolean] = new Array[Boolean](128)
-  var specialInAtt: Array[Boolean] = new Array[Boolean](128)
+  var specialInText     : Array[Boolean] = new Array[Boolean](128)
+  var specialInAtt      : Array[Boolean] = new Array[Boolean](128)
   var specialInAttSingle: Array[Boolean] = ju.Arrays.copyOf(specialInAtt, 128)
 
   locally {
@@ -46,9 +46,9 @@ object XMLEmitter {
   specialInText('\n') = false
   specialInText('\t') = false
   specialInText('\r') = true
-  specialInText('<') = true
-  specialInText('>') = true
-  specialInText('&') = true
+  specialInText('<')  = true
+  specialInText('>')  = true
+  specialInText('&')  = true
 
   locally {
     var i = 0
@@ -66,14 +66,14 @@ object XMLEmitter {
     }
   }
 
-  specialInAtt(0.toChar) = true
-  specialInAtt('\r') = true
-  specialInAtt('\n') = true
-  specialInAtt('\t') = true
-  specialInAtt('<') = true
-  specialInAtt('>') = true
-  specialInAtt('&') = true
-  specialInAtt('\"') = true
+  specialInAtt(0.toChar)   = true
+  specialInAtt('\r')       = true
+  specialInAtt('\n')       = true
+  specialInAtt('\t')       = true
+  specialInAtt('<')        = true
+  specialInAtt('>')        = true
+  specialInAtt('&')        = true
+  specialInAtt('\"')       = true
   specialInAttSingle('\"') = false
   specialInAttSingle('\'') = true
 }
@@ -174,8 +174,7 @@ class XMLEmitter extends Emitter {
         if (unfailing) {
           version = "1.0"
         } else {
-          val err = new XPathException(
-            "XML version must be 1.0 or 1.1")
+          val err = new XPathException("XML version must be 1.0 or 1.1")
           err.setErrorCode("SESU0013")
           throw err
         }
@@ -183,8 +182,7 @@ class XMLEmitter extends Emitter {
       if (version != "1.0" && omitXMLDeclaration == "yes" &&
         outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM) != null) {
         if (! unfailing) {
-          val err = new XPathException(
-            "Values of 'version', 'omit-xml-declaration', and 'doctype-system' conflict")
+          val err = new XPathException("Values of 'version', 'omit-xml-declaration', and 'doctype-system' conflict")
           err.setErrorCode("SEPM0009")
           throw err
         }
@@ -198,8 +196,7 @@ class XMLEmitter extends Emitter {
       if (unfailing) {
         undeclareNamespaces = false
       } else {
-        val err = new XPathException(
-          "Cannot undeclare namespaces with XML version 1.0")
+        val err = new XPathException("Cannot undeclare namespaces with XML version 1.0")
         err.setErrorCode("SEPM0010")
         throw err
       }
@@ -211,8 +208,7 @@ class XMLEmitter extends Emitter {
     if (standalone != null) {
       requireWellFormed = true
       if (omitXMLDeclaration.==("yes") && !unfailing) {
-        val err = new XPathException(
-          "Values of 'standalone' and 'omit-xml-declaration' conflict")
+        val err = new XPathException("Values of 'standalone' and 'omit-xml-declaration' conflict")
         err.setErrorCode("SEPM0009")
         throw err
       }
