@@ -7,17 +7,8 @@
 
 package org.orbeon.saxon.z
 
-import IntEmptySet._
-
-//remove if not needed
-//import scala.collection.JavaConversions._
-
 object IntEmptySet {
-
-  private var THE_INSTANCE: IntEmptySet = new IntEmptySet()
-
-  def getInstance: IntEmptySet = THE_INSTANCE
-
+  val getInstance: IntEmptySet = new IntEmptySet
 }
 
 /**
