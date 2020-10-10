@@ -73,7 +73,7 @@ class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
     UnicodeString.makeUnicodeString(normalize(s))
 
   private def normalize(cs: CharSequence): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(cs.length)
+    val fsb = new FastStringBuffer(cs.length)
     for (i <- 0 until cs.length) {
       val c: Char = cs.charAt(i)
       if ('a' <= c && c <= 'z') {

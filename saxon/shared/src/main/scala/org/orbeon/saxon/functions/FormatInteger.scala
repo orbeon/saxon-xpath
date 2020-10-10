@@ -163,7 +163,7 @@ object FormatInteger {
 
   private def extractSeparators(arr: UnicodeString,
                                 excludePositions: IntSet): UnicodeString = {
-    val fsb: FastStringBuffer = new FastStringBuffer(arr.uLength)
+    val fsb = new FastStringBuffer(arr.uLength)
     for (i <- 0 until arr.uLength
          if NumberFormatter.isLetterOrDigit(arr.uCharAt(i))) {
       fsb.appendWideChar(arr.uCharAt(i))

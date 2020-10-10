@@ -682,7 +682,7 @@ object FormatDate {
     var zeroDigit: Int = 0
     if (len < min) {
       zeroDigit = Alphanumeric.getDigitFamily(adjustedPicture.uCharAt(0))
-      val fsb: FastStringBuffer = new FastStringBuffer(s)
+      val fsb = new FastStringBuffer(s)
       while (len < min) {
         fsb.prependWideChar(zeroDigit)
         len = len + 1

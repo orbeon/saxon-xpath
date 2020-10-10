@@ -135,7 +135,7 @@ class NumberFormatter {
         s =
           numberer.format(nr, formatTokens.get(tok), rgf, letterValue, ordinal)
       } else if (o.isInstanceOf[BigInteger]) {
-        val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+        val fsb = new FastStringBuffer(FastStringBuffer.C64)
         fsb.append(o.toString)
         val rgf: RegularGroupFormatter = new RegularGroupFormatter(
           groupSize,

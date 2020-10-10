@@ -409,7 +409,7 @@ class UserFunctionCall extends FunctionCall
     }
     out.emitAttribute("bSlot", "" + getBindingSlot)
     if (argumentEvaluators != null && getArity > 0) {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+      val fsb = new FastStringBuffer(FastStringBuffer.C64)
       for (e <- argumentEvaluators) {
         fsb.append(e.getEvaluationMode.getCode.toString + " ")
       }

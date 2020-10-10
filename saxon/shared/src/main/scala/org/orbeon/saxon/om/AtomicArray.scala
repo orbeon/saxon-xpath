@@ -79,7 +79,7 @@ class AtomicArray extends AtomicSequence {
   def getCanonicalLexicalRepresentation(): CharSequence = getStringValueCS
 
   def getStringValueCS: CharSequence = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     var first: Boolean = true
     for (av <- content.asScala) {
       if (!first) {

@@ -106,7 +106,7 @@ object FormatNumber {
     val nines: String = if (precision == 1) "99999" else "999999999"
     val initial: BigDecimal = BigDecimal.valueOf(value)
     var trial: BigDecimal = null
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     BigDecimalValue.decimalToString(initial, fsb)
     val s: String = fsb.toString
     val start: Int = if (s.charAt(0) == '-') 1 else 0

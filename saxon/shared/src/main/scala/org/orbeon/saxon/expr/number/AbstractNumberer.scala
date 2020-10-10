@@ -156,7 +156,7 @@ abstract class AbstractNumberer extends Numberer {
     val pictureLength: Int = picture.uLength
     val sb = new FastStringBuffer(FastStringBuffer.C16)
     val formchar: Int = picture.uCharAt(0)
-    val fsb: FastStringBuffer = new FastStringBuffer(2)
+    val fsb = new FastStringBuffer(2)
     formchar match {
       case '0' | '1' =>
         sb.append(
@@ -438,7 +438,7 @@ abstract class AbstractNumberer extends Numberer {
   }
 
   def toJapanese(number: Long): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     if (number == 0) {
       fsb.appendWideChar(0x3007)
     } else if (number <= 9999) {

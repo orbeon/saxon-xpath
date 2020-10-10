@@ -219,7 +219,7 @@ class GroupByClause(var config: Configuration) extends Clause {
   }
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("group by ... ")
     fsb.toString
   }

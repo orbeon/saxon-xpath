@@ -94,7 +94,7 @@ class CountClause extends Clause {
   }
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("count $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.toString

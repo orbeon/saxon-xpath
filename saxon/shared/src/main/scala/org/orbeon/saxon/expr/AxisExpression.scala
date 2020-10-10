@@ -908,7 +908,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   }
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     fsb.append(AxisInfo.axisName(axis))
     fsb.append("::")
     fsb.append(if (test == null) "node()" else test.toString)
@@ -916,7 +916,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   }
 
   override def toShortString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     if (axis == AxisInfo.CHILD) {
       // no action
     } else if (axis == AxisInfo.ATTRIBUTE) {

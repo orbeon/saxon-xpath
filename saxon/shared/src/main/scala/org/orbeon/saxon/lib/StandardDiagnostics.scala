@@ -375,7 +375,7 @@ class StandardDiagnostics {
       if (max <= 255) new LatinString(in)
       else if (!isAstral) new BMPString(in)
       else new GeneralUnicodeString(in)
-    val fsb: FastStringBuffer = new FastStringBuffer(str.uLength * 2)
+    val fsb = new FastStringBuffer(str.uLength * 2)
     for (i <- 0 until str.uLength) {
       val ch: Int = str.uCharAt(i)
       fsb.appendWideChar(ch)

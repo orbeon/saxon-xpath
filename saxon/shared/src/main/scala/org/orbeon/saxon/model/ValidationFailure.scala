@@ -309,7 +309,7 @@ class ValidationFailure(@BeanProperty var message: String)
   }
 
   def getValidationLocationText: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val fsb = new FastStringBuffer(FastStringBuffer.C256)
     val valPath: AbsolutePath = getAbsolutePath
     if (valPath != null) {
       fsb.append("Validating ")
@@ -323,7 +323,7 @@ class ValidationFailure(@BeanProperty var message: String)
   }
 
   def getContextLocationText: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val fsb = new FastStringBuffer(FastStringBuffer.C256)
     val contextPath: AbsolutePath = getContextPath
     if (contextPath != null) {
       fsb.append("Currently processing ")

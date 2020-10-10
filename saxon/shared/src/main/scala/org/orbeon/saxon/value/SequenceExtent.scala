@@ -112,7 +112,7 @@ class SequenceExtent extends GroundedValue {
   }
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     for (i <- 0 until value.size) {
       fsb.append(if (i == 0) "(" else ", ")
       fsb.append(value.get(i).toString)

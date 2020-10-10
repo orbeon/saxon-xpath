@@ -41,7 +41,7 @@ object UnicodeString {
     for (ch <- in if ch > 65535) {
       new GeneralUnicodeString(in, 0, in.length)
     }
-    val fsb: FastStringBuffer = new FastStringBuffer(in.length)
+    val fsb = new FastStringBuffer(in.length)
     for (ch <- in) {
       fsb.cat(ch.toChar)
     }

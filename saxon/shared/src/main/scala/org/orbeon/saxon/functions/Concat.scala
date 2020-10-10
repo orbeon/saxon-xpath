@@ -68,7 +68,7 @@ class Concat extends SystemFunction with PushableFunction {
     arg.getCardinality == StaticProperty.EXACTLY_ONE && arg.getItemType == BuiltInAtomicType.BOOLEAN
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     for (arg <- arguments) {
       val item: Item = arg.head
       if (item != null) {

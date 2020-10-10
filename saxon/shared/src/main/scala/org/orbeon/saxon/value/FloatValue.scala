@@ -113,7 +113,7 @@ class FloatValue() extends NumericValue {
   def getPrimitiveStringValue(): CharSequence = floatToString(value)
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     FloatingPointConverter.appendFloat(fsb, value, forceExponential = true)
   }
 

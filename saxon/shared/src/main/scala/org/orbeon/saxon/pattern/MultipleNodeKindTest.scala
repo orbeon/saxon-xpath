@@ -90,7 +90,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
   def getDefaultPriority: Double = -0.5
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     val types: LinkedList[PrimitiveUType] =
       new LinkedList[PrimitiveUType](uType.decompose())
     format(types, fsb, (res :ItemType) => res.toString)
@@ -98,7 +98,7 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
   }
 
   override def toExportString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     val types: LinkedList[PrimitiveUType] =
       new LinkedList[PrimitiveUType](uType.decompose())
     format(types, fsb,  (res :ItemType) => res.toExportString)

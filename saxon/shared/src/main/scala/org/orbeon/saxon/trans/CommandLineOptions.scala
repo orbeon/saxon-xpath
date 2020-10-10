@@ -166,7 +166,7 @@ object CommandLineOptions {
           .getComponent(AccessorFn.Component.SECONDS)
           .asInstanceOf[NumericValue]
           .getDecimalValue
-        val fsb: FastStringBuffer = new FastStringBuffer(256)
+        val fsb = new FastStringBuffer(256)
         if (days > 0) {
           fsb.append(days.toString + "days ")
         }

@@ -97,7 +97,7 @@ object StringValue {
   /*@NotNull*/
 
   def diagnosticDisplay(s: String): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(s.length)
+    val fsb = new FastStringBuffer(s.length)
     for (i <- 0 until s.length) {
       val c: Char = s.charAt(i)
       if (c >= 0x20 && c <= 0x7e) {

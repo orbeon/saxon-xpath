@@ -426,7 +426,7 @@ class CopyOf(select: Expression,
     if (schemaType != null) {
       out.emitAttribute("type", schemaType.getStructuredQName)
     }
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     if (requireDocumentOrElement) {
       fsb.cat('p')
     }

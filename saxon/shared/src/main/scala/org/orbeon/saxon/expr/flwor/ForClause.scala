@@ -307,7 +307,7 @@ class ForClause extends Clause {
   }
 
   override def toShortString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.cat(' ')
@@ -323,7 +323,7 @@ class ForClause extends Clause {
   }
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.cat(' ')

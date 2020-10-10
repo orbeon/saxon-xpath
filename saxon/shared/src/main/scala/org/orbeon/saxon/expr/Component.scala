@@ -107,7 +107,7 @@ class Component private () {
 
   def listComponentReferences(
                                componentIdMap: Map[Component, Integer]): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(128)
+    val fsb = new FastStringBuffer(128)
     for (ref <- getComponentBindings.asScala) {
       val target: Component = ref.getTarget
       val targetId: Int = obtainComponentId(target, componentIdMap)

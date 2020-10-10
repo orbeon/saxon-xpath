@@ -114,7 +114,7 @@ class DoubleValue() extends NumericValue {
   def getPrimitiveStringValue: CharSequence = doubleToString(value)
 
   override def getCanonicalLexicalRepresentation(): CharSequence = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val fsb = new FastStringBuffer(FastStringBuffer.C16)
     FloatingPointConverter.appendDouble(fsb, value, forceExponential = true)
   }
 

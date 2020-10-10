@@ -17,7 +17,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
 
   override def toString: String = {
     var started: Boolean = false
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val fsb = new FastStringBuffer(FastStringBuffer.C256)
     for (qt <- tests.asScala) {
       if (started) {
         fsb.append("|")
@@ -33,7 +33,7 @@ class UnionQNameTest(testList: List[QNameTest]) extends QNameTest {
     tests.asScala.iterator.map(_.exportQNameTest).mkString(" ")
 
   override def generateJavaScriptNameTest(targetVersion: Int): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(256)
+    val fsb = new FastStringBuffer(256)
     var started: Boolean = false
     for (qt <- tests.asScala) {
       if (started) {

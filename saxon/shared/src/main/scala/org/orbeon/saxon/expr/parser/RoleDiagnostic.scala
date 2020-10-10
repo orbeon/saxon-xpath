@@ -209,7 +209,7 @@ class RoleDiagnostic(private var kind: Int,
       suppliedItemType
 
   def save(): String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val fsb = new FastStringBuffer(FastStringBuffer.C256)
     fsb.append(kind.toString + "|")
     fsb.append(operand.toString + "|")
     fsb.append(if (errorCode.==("XPTY0004")) "" else errorCode)

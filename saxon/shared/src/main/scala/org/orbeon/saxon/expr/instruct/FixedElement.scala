@@ -403,7 +403,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     if (!flags.isEmpty) {
       out.emitAttribute("flags", flags)
     }
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val fsb = new FastStringBuffer(FastStringBuffer.C256)
     if (!namespaceBindings.isEmpty) {
       for (ns <- namespaceBindings.asScala) {
         val prefix: String = ns.getPrefix

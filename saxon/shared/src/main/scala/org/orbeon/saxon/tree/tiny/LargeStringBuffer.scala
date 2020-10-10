@@ -43,7 +43,7 @@ class LargeStringBuffer extends AppendableCharSequence {
   def cat(s: CharSequence): LargeStringBuffer = {
     var lS = s
     if (lS.isInstanceOf[CompressedWhitespace]) {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+      val fsb = new FastStringBuffer(FastStringBuffer.C64)
       lS.asInstanceOf[CompressedWhitespace].uncompress(fsb)
       cat(fsb)
     }
@@ -153,7 +153,7 @@ class LargeStringBuffer extends AppendableCharSequence {
         }
       }
     } else {
-      val fsb: FastStringBuffer = new FastStringBuffer(end - start)
+      val fsb = new FastStringBuffer(end - start)
       val firstSegLen: Int = SEGLEN - (start & MASK)
       fsb.append(data(firstSeg), start & MASK, firstSegLen)
       var doneTo: Int = start + firstSegLen

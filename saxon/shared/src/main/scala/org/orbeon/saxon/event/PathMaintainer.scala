@@ -50,7 +50,7 @@
 //  }
 //
 //  def getPath(useURIs: Boolean): String = {
-//    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+//    val fsb = new FastStringBuffer(FastStringBuffer.C256)
 //    for (pe <- path.asScala) {
 //      fsb.cat('/')
 //      if (useURIs) {

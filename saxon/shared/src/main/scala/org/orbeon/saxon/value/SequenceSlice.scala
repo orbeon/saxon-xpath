@@ -98,7 +98,7 @@ class SequenceSlice(private var value: List[_ <: Item],
   /*@NotNull*/
 
   override def toString: String = {
-    val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
     for (i <- 0 until getLength) {
       fsb.append(if (i == 0) "(" else ", ")
       fsb.append(itemAt(i).toString)

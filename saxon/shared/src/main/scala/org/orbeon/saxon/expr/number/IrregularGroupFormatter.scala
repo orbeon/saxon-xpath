@@ -46,7 +46,7 @@ class IrregularGroupFormatter(private var groupingPositions: IntSet,
       null
     } else {
       val sep: Int = separators.get(separators.size - 1)
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+      val fsb = new FastStringBuffer(FastStringBuffer.C16)
       fsb.appendWideChar(sep)
       fsb.toString
     }

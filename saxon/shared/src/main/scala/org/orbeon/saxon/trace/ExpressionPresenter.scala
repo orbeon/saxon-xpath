@@ -255,10 +255,10 @@ class ExpressionPresenter {
     }
     if (!options.asInstanceOf[ExportOptions].suppressStaticContext &&
       (parentSC == null || !sc.declaresSameNamespaces(parentSC))) {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+      val fsb = new FastStringBuffer(FastStringBuffer.C256)
       val iter = sc.iteratePrefixes
       while (iter.hasNext) {
-        val p: String = iter.next()
+        val p = iter.next()
         var uri: String = sc.getURIForPrefix(p, useDefault = true)
         fsb.append(p)
         fsb.append("=")

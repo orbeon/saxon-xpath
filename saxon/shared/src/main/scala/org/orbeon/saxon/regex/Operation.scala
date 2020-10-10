@@ -107,7 +107,7 @@ object Operation {
     }
 
     override def display(): String = {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+      val fsb = new FastStringBuffer(FastStringBuffer.C64)
       fsb.append("(?:")
       var first: Boolean = true
       for (branch <- branches.asScala) {
@@ -205,7 +205,7 @@ object Operation {
     }
 
     override def display(): String = {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+      val fsb = new FastStringBuffer(FastStringBuffer.C64)
       for (op <- operations.asScala) {
         fsb.append(op.display())
       }
@@ -336,7 +336,7 @@ object Operation {
             case iss: IntSingletonSet =>
               "" + iss.getMember.toChar
             case irs: IntRangeSet =>
-              val fsb: FastStringBuffer = new FastStringBuffer(
+              val fsb = new FastStringBuffer(
                 FastStringBuffer.C64)
               fsb.append("[")
               for (_ <- 0 until irs.getNumberOfRanges) {

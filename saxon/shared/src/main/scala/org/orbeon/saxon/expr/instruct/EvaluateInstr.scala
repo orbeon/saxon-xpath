@@ -223,7 +223,7 @@ class EvaluateInstr(xpath: Expression,
     }
     var expr: Expression = null
     var slotMap: SlotManager = null
-    val fsb: FastStringBuffer = new FastStringBuffer(
+    val fsb = new FastStringBuffer(
       exprText.length + (if (baseUri == null) 4 else baseUri.length) +
         40)
     fsb.append(baseUri)

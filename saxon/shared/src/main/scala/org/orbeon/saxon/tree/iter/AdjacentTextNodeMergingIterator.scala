@@ -28,7 +28,7 @@ class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
     }
     lNext = base.next()
     if (AdjacentTextNodeMerger.isTextNode(current)) {
-      val fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+      val fsb = new FastStringBuffer(FastStringBuffer.C256)
       fsb.cat(current.getStringValueCS)
       while (AdjacentTextNodeMerger.isTextNode(lNext)) {
         fsb.cat(next.getStringValueCS)
