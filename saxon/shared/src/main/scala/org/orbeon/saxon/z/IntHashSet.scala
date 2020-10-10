@@ -185,9 +185,10 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     if (value == ndv) {
       throw new IllegalArgumentException("Can't add the 'no data' value")
     }
-    val i: Int = indexOf(value)
-    if (_values(i) == ndv) {
 
+    val i = indexOf(value)
+    if (_values(i) == ndv) {
+      _size += 1
       _values(i) = value
       // Check new size
       if (_size > MAX_SIZE) {
@@ -227,12 +228,11 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       this.capacity = _size
     }
     //double factor = 0.25;
-    var nbit: Int = 0
-    var nmax: Int = 0
-    nbit = 1
-    nmax = 2
-    while (nmax < capacity * 4 && nmax < MAX_SIZE) {
+    var nbit = 1
+    var nmax = 2
 
+    while (nmax < capacity * 4 && nmax < MAX_SIZE) {
+      nbit += 1
       nmax *= 2
     }
     // do nothing
@@ -256,7 +256,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
         val value: Int = values(i)
         if (value != ndv) {
           //add(values[i]);
-
+          _size += 1
           _values(indexOf(value)) = value
         }
         // Don't use add, because the capacity is necessarily large enough,
