@@ -1,18 +1,17 @@
-
-
-
 package org.orbeon.saxon.regex
+
+
+import java.util.function.IntPredicate
+import java.{util => ju}
 
 import org.orbeon.saxon.regex.charclass._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.z._
-import java.util
-import java.util.Collections
-import java.util.function.IntPredicate
 
 import scala.util.control.Breaks
 import scala.util.control.Breaks._
+
 
 object RECompiler {
   val NODE_NORMAL = 0
@@ -67,7 +66,7 @@ object RECompiler {
     o2
   }
   else {
-    val list = new util.ArrayList[Operation](4)
+    val list = new ju.ArrayList[Operation](4)
     list.add(o1)
     list.add(o2)
     trace(new Operation.OpSequence(list))
@@ -110,7 +109,7 @@ class RECompiler() {
 
   var reFlags: REFlags = _
 
-  var warnings: util.List[String] = _
+  var warnings: ju.List[String] = _
 
 
   def setFlags(flags: REFlags): Unit = {
@@ -121,13 +120,15 @@ class RECompiler() {
   }
 
   def setWarning(s: String): Unit = {
-    if (warnings == null) warnings = new util.ArrayList[String](4)
+    if (warnings == null) warnings = new ju.ArrayList[String](4)
     warnings.add(s)
   }
 
-  def getWarnings: util.List[String] = if (warnings == null) Collections.emptyList
-  else warnings
-
+  def getWarnings: ju.List[String] =
+    if (warnings == null)
+      ju.Collections.emptyList[String]
+    else
+      warnings
 
   @throws[Error]
   def internalError(): Unit = throw new Error("Internal error!")
@@ -711,7 +712,7 @@ class RECompiler() {
   private def parseExpr(compilerFlags: Array[Int]) = {
     var paren = -1
     var group = 0
-    val branches = new util.ArrayList[Operation]
+    val branches = new ju.ArrayList[Operation]
     val closeParens = capturingOpenParenCount
     var capturing = true
     if ((compilerFlags(0) & RECompiler.NODE_TOPLEVEL) == 0 && pattern.uCharAt(idx) == '(') {

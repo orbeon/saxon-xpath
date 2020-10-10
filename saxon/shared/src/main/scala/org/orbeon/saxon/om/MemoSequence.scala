@@ -1,36 +1,25 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.util
+import java.{util => ju}
 
 import org.orbeon.saxon.expr.LastPositionFinder
 import org.orbeon.saxon.om.MemoSequence.State
-import org.orbeon.saxon.om.MemoSequence.State.State
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{ArrayIterator, EmptyIterator, GroundedIterator, SingletonIterator}
 import org.orbeon.saxon.value.{EmptySequence, SequenceExtent}
 
-
 object MemoSequence {
 
   object State extends Enumeration {
-
     val UNREAD: State = new State()
-
     val MAYBE_MORE: State = new State()
-
     val ALL_READ: State = new State()
-
     val BUSY: State = new State()
-
     val EMPTY: State = new State()
-
     class State
-
   }
-
 }
 
 class MemoSequence extends Sequence {
@@ -39,18 +28,14 @@ class MemoSequence extends Sequence {
 
   var inputIterator: SequenceIterator = _
 
-  def this(iterator: SequenceIterator) {
+  def this(iterator: SequenceIterator) = {
     this()
     inputIterator = iterator
   }
 
-
   var reservoir: Array[Item] = null
-
   var used: Int = _
-
   var state: State = State.UNREAD
-
   def head: Item = iterate().next()
 
   def iterate(): SequenceIterator = synchronized {
@@ -118,7 +103,7 @@ class MemoSequence extends Sequence {
     // We have read some items from the input sequence but not enough. Read as many more as are needed.
     var diff: Int = n - used + 1
     while ( {
-      diff -= 1;
+      diff -= 1
       diff + 1
     } > 0) {
       val i: Item = inputIterator.next()
@@ -136,20 +121,17 @@ class MemoSequence extends Sequence {
 
   private def append(item: Item): Unit = {
     assert(reservoir != null)
-    if (used >= reservoir.length) {
-      reservoir = Array.copyOf(reservoir, used * 2)
-    }
+    if (used >= reservoir.length)
+      reservoir = ju.Arrays.copyOf(reservoir, used * 2)
     reservoir({
-      used += 1;
+      used += 1
       used - 1
     }) = item
   }
 
-  private def condense(): Unit = {
-    if (reservoir != null && reservoir.length - used > 30) {
-      reservoir = Array.copyOf(reservoir, used)
-    }
-  }
+  private def condense(): Unit =
+    if (reservoir != null && reservoir.length - used > 30)
+      reservoir = ju.Arrays.copyOf(reservoir, used)
 
   class ProgressiveIterator
     extends SequenceIterator
@@ -162,8 +144,7 @@ class MemoSequence extends Sequence {
     def getMemoSequence: MemoSequence = MemoSequence.this
 
     /*@Nullable*/
-
-    override def next(): Item = this.synchronized {
+    def next(): Item = this.synchronized {
       // synchronized for the case where a multi-threaded xsl:for-each is reading the variable
       if (position == -2) {
         // means we've already returned null once, keep doing so if called again.
@@ -240,29 +221,27 @@ class MemoSequence extends Sequence {
         }
       } else {
         SequenceExtent.makeSequenceExtent {
-          Seq(reservoir.toIndexedSeq: _*).slice(0, used).toList.asInstanceOf[util.List[Item]]
+          Seq(reservoir.toIndexedSeq: _*).slice(0, used).toList.asInstanceOf[ju.List[Item]]
         }
       }
 
-    override def getResidue: GroundedValue =
+    def getResidue: GroundedValue =
       if (state == EMPTY || position >= used || position == -2) {
         EmptySequence.getInstance
       } else if (state == ALL_READ) {
-        SequenceExtent.makeSequenceExtent(reservoir.slice(position + 1, used).toList.asInstanceOf[util.List[Item]])
+        SequenceExtent.makeSequenceExtent(reservoir.slice(position + 1, used).toList.asInstanceOf[ju.List[Item]])
       } else {
         // save the current position
-        val savePos: Int = position
+        val savePos = position
         // fill the reservoir
         while (next() != null) {}
         // reset the current position
         position = savePos
         // return all the items
         SequenceExtent.makeSequenceExtent(
-          Seq(reservoir.toIndexedSeq: _*).slice(position + 1, used).toList.asInstanceOf[util.List[Item]])
+          Seq(reservoir.toIndexedSeq: _*).slice(position + 1, used).toList.asInstanceOf[ju.List[Item]])
       }
 
     override def getProperties: Set[Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)
-
   }
-
 }

@@ -1,32 +1,12 @@
 package org.orbeon.saxon.value
 
-import org.orbeon.saxon.expr.LastPositionFinder
+import java.util.{ArrayList, Arrays, Iterator, List}
 
-import org.orbeon.saxon.expr.StaticProperty
-
+import org.orbeon.saxon.expr.{LastPositionFinder, StaticProperty}
 import org.orbeon.saxon.expr.parser.ExpressionTool
-
 import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.GroundedIterator
-
-import org.orbeon.saxon.tree.iter.ListIterator
-
-import org.orbeon.saxon.tree.iter.ReverseListIterator
-
-import org.orbeon.saxon.tree.iter.UnfailingIterator
-
+import org.orbeon.saxon.tree.iter.{GroundedIterator, ListIterator, ReverseListIterator, UnfailingIterator}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import java.util.ArrayList
-
-import java.util.Arrays
-
-import java.util.Iterator
-
-import java.util.List
 
 object SequenceExtent {
 

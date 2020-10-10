@@ -1,48 +1,19 @@
 package org.orbeon.saxon.value
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.Untyped
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.ArrayIterator
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.tree.iter.SingleNodeIterator
-
-import org.orbeon.saxon.tree.linked.DocumentImpl
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.tree.util.Navigator
-
-import javax.xml.transform.SourceLocator
-
-import java.util.Collections
-
-import java.util.Iterator
-
+import java.util.{Collections, Iterator}
 import java.util.function.Predicate
 
-import TextFragmentValue._
+import javax.xml.transform.SourceLocator
+import org.orbeon.saxon.event.{Receiver, ReceiverOption}
+import org.orbeon.saxon.model.{SchemaType, Type, Untyped}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.tree.iter.{ArrayIterator, AxisIterator, EmptyIterator, SingleNodeIterator}
+import org.orbeon.saxon.tree.linked.DocumentImpl
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
+import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 
 object TextFragmentValue {
@@ -81,13 +52,9 @@ class TextFragmentValue(config: Configuration,
   this.treeInfo.setRootNode(this)
 
   def getRootNode: NodeInfo = this
-
   def isTyped: Boolean = false
-
   def getNodeKind: Int = Type.DOCUMENT
-
   def getStringValue: String = text.toString
-
   def getStringValueCS: CharSequence = text
 
   override def equals(other: Any): Boolean =
@@ -110,25 +77,18 @@ class TextFragmentValue(config: Configuration,
   def getSystemId: String = documentURI
 
   def compareOrder(other: NodeInfo): Int = {
-    if (this eq other) {
+    if (this eq other)
       return 0
-    }
     -1
   }
 
   def getFingerprint: Int = -1
-
   def getPrefix: String = ""
-
   def getURI: String = ""
-
   def getDisplayName: String = ""
-
   def getLocalPart: String = ""
-
   def hasChildNodes: Boolean = text.length != 0
-
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   override def getSchemaType: SchemaType = Untyped.getInstance
 
@@ -204,25 +164,19 @@ class TextFragmentValue(config: Configuration,
 
   def selectID(id: String, getParent: Boolean): NodeInfo = null
 
-  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator
+  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator[String]
 
   def getUnparsedEntity(name: String): Array[String] = null
 
   class TextFragmentTextNode extends NodeInfo with SourceLocator {
 
-    override def hasFingerprint: Boolean = true
-
+    def hasFingerprint: Boolean = true
     def getTreeInfo: TreeInfo = treeInfo
-
     def setSystemId(systemId: String): Unit = ()
-
     def getNodeKind: Int = Type.TEXT
-
     def getStringValue: String = text.toString
-
     def getStringValueCS: CharSequence = text
-
-     def equals(other: NodeInfo): Boolean = this eq other
+    def equals(other: NodeInfo): Boolean = this eq other
 
     def generateId(buffer: FastStringBuffer): Unit = {
       buffer.append("tt")
@@ -231,7 +185,6 @@ class TextFragmentValue(config: Configuration,
     }
 
     def getSystemId: String = null
-
     def getBaseURI: String = baseURI
 
     def compareOrder(other: NodeInfo): Int = {
@@ -242,20 +195,13 @@ class TextFragmentValue(config: Configuration,
     }
 
     def getFingerprint: Int = -1
-
     def getPrefix: String = ""
-
     def getURI: String = ""
-
     def getDisplayName: String = ""
-
     def getLocalPart: String = ""
-
     def hasChildNodes: Boolean = false
-
     def getAttributeValue(uri: String, local: String): String = null
-
-    def saveLocation(): Location = this
+    def saveLocation: Location = this
 
     override def getSchemaType: SchemaType = null
 

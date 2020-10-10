@@ -8,6 +8,7 @@ lazy val scala213 = "2.13.3"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 val ScalaTestVersion = "3.2.1"
+val ScalaCollectionCompatVersion  = "2.2.0"
 
 ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
@@ -30,6 +31,8 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     "-deprecation",
     "-unchecked"
     ),
+
+    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
 
     libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
     libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,

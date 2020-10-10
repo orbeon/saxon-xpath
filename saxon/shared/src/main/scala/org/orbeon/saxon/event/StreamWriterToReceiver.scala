@@ -1,6 +1,6 @@
 package org.orbeon.saxon.event
 
-import java.{util => ju}
+import java.{lang => jl, util => ju}
 
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.StandardURIChecker
@@ -12,13 +12,13 @@ import org.orbeon.saxon.trans.Err
 import org.orbeon.saxon.utils.Configuration
 
 //import scala.collection.compat._
-import javax.xml.namespace.NamespaceContext
-import javax.xml.stream.{XMLStreamException, XMLStreamWriter}
-
-import scala.jdk.CollectionConverters._
 import java.util.function.IntPredicate
 
+import javax.xml.namespace.NamespaceContext
+import javax.xml.stream.{XMLStreamException, XMLStreamWriter}
 import org.orbeon.saxon.event.StreamWriterToReceiver._
+
+import scala.jdk.CollectionConverters._
 
 object StreamWriterToReceiver {
 
@@ -55,7 +55,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
   private var rootNamespaceContext: javax.xml.namespace.NamespaceContext =
     new NamespaceContextImpl(new NamespaceResolver {
       def getURIForPrefix(prefix: String, useDefault: Boolean): String = null
-      def iteratePrefixes: ju.Iterator[String] = ju.Collections.emptyIterator
+      def iteratePrefixes: ju.Iterator[String] = ju.Collections.emptyIterator[String]
     })
 
   this.setPrefixes ::= new ju.ArrayList
@@ -534,9 +534,9 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       }
     }
 
-  def getProperty(name: String): Any =
-    if (name.==("javax.xml.stream.isRepairingNamespaces"))
-      lReceiver.isInstanceOf[NamespaceReducer]
+  def getProperty(name: String): AnyRef =
+    if (name == "javax.xml.stream.isRepairingNamespaces")
+      lReceiver.isInstanceOf[NamespaceReducer]: jl.Boolean
     else
       throw new IllegalArgumentException(name)
 

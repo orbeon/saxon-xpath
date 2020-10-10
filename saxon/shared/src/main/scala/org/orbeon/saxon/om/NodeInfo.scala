@@ -21,7 +21,7 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Configuration
 
-//import scala.collection.compat._
+import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 
@@ -100,7 +100,7 @@ trait NodeInfo extends Source with Item with Location {
   def children: Iterator[NodeInfo] = {
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      parent.iterateAxis(AxisInfo.CHILD).asiterator
+      parent.iterateAxis(AxisInfo.CHILD).asIterator
     } else {
       Collections.emptyList().asInstanceOf[Iterator[NodeInfo]]
     }
@@ -109,7 +109,7 @@ trait NodeInfo extends Source with Item with Location {
   def children(filter: Predicate[_ >: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      parent.iterateAxis(AxisInfo.CHILD, nodeTest = filter).asiterator.iterator.to(Iterable)
+      parent.iterateAxis(AxisInfo.CHILD, nodeTest = filter).asIterator.to(Iterable)
     } else {
       Collections.emptyList().asScala
     }

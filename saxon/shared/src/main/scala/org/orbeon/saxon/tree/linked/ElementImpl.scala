@@ -16,7 +16,7 @@ import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.value.Whitespace
 
 import scala.beans.BeanProperty
-//import scala.collection.compat._
+import scala.collection.compat._
 import java.{util => ju}
 
 import scala.jdk.CollectionConverters._
@@ -425,7 +425,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asiterator .iterator.to(Iterable)
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator.to(Iterable)
     } else {
       ju.Collections.emptyList().asScala
     }
