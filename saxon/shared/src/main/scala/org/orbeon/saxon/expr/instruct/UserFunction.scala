@@ -334,26 +334,23 @@ class UserFunction
     }
     val c2: XPathContextMajor = context.asInstanceOf[XPathContextMajor]
     c2.setStackFrame(getStackFrameMap, actualArgs)
-    var result: Sequence = null
-    try result = evaluator.evaluate(getBody, c2)
+    try
+      evaluator.evaluate(getBody, c2)
     catch {
-      case err: XPathException => {
-        err.maybeSetLocation(getLocation)
-        err.maybeSetContext(c2)
-        throw err
-      }
+      case xpe: XPathException =>
 
-      case err2: Exception => {
+
+        xpe.maybeSetLocation(getLocation)
+        xpe.maybeSetContext(c2)
+        throw xpe
+      case e: Exception =>
         val message: String = "Internal error evaluating function " +
           (if (functionName == null) "(unnamed)"
           else functionName.getDisplayName) +
           (if (getLineNumber > 0) " at line " + getLineNumber else "") +
           (if (getSystemId != null) " in module " + getSystemId else "")
-        throw new RuntimeException(message, err2)
-      }
-
+        throw new RuntimeException(message, e)
     }
-    result
   }
 
   def process(context: XPathContextMajor,

@@ -76,7 +76,7 @@ class XPathEvaluator(config: Configuration) {
     xpe
   }
 
-   def postProcess(exp: Expression,
+  def postProcess(exp: Expression,
                             visitor: ExpressionVisitor,
                             cit: ContextItemStaticInfo): Expression = exp
 
