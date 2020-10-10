@@ -37,6 +37,10 @@ class FoldLeftFn extends FoldingFunction {
       args(0) = data
       args(1) = item
 
+      // The result can be returned as a LazySequence. Since we are passing it to a user-defined
+      // function which can read it repeatedly, we need at the very least to wrap it in a MemoSequence.
+      // But wrapping MemoSequences too deeply can cause a StackOverflow when the unwrapping finally
+      // takes place; so to avoid this, we periodically ground the value as a real in-memory concrete
       // sequence. We don't want to do this every time because it involves allocating memory.
       val result = SystemFunction.dynamicCall(function, context, args)
       data =
@@ -45,15 +49,6 @@ class FoldLeftFn extends FoldingFunction {
         else
           result
     }
-
-    // The result can be returned as a LazySequence. Since we are passing it to a user-defined
-    // function which can read it repeatedly, we need at the very least to wrap it in a MemoSequence.
-    // But wrapping MemoSequences too deeply can cause a StackOverflow when the unwrapping finally
-    // takes place; so to avoid this, we periodically ground the value as a real in-memory concrete
-    // The result can be returned as a LazySequence. Since we are passing it to a user-defined
-    // function which can read it repeatedly, we need at the very least to wrap it in a MemoSequence.
-    // But wrapping MemoSequences too deeply can cause a StackOverflow when the unwrapping finally
-    // takes place; so to avoid this, we periodically ground the value as a real in-memory concrete
 
     def isFinished: Boolean = false
     def result(): Sequence = data

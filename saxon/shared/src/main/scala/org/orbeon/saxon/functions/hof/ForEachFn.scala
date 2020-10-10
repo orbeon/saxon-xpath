@@ -7,30 +7,12 @@
 /**
   * This class implements the function fn:for-each() (formerly fn:map), which is a standard function in XQuery 3.0
   */
-// Copyright (c) 2018-2020 Saxonica Limited
 package org.orbeon.saxon.functions.hof
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.MappingFunction
-
-import org.orbeon.saxon.expr.MappingIterator
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{Expression, MappingFunction, MappingIterator, XPathContext}
 import org.orbeon.saxon.functions.SystemFunction
-
-import org.orbeon.saxon.model.AnyItemType
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.SpecificFunctionType
-
+import org.orbeon.saxon.model.{AnyItemType, ItemType, SpecificFunctionType}
 import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trans.XPathException
-
-
 
 
 class ForEachFn extends SystemFunction {
@@ -42,7 +24,7 @@ class ForEachFn extends SystemFunction {
     * @return the best available item type that the function will return
     */
   override def getResultItemType(args: Array[Expression]): ItemType = {
-// Item type of the result is the same as the result item type of the function
+    // Item type of the result is the same as the result item type of the function
     val fnType: ItemType = args(1).getItemType
     if (fnType.isInstanceOf[SpecificFunctionType]) {
       fnType.asInstanceOf[SpecificFunctionType].getResultType.getPrimaryType

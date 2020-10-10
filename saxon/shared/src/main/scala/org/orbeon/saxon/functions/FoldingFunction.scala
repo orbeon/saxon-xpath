@@ -16,14 +16,13 @@ abstract class FoldingFunction extends SystemFunction {
     val iter= arguments(0).iterate()
     var item: Item = null
     breakable {
-      while ( {
+      while ({
         item = iter.next()
         item
       } != null) {
         fold.processItem(item)
-        if (fold.isFinished) {
+        if (fold.isFinished)
           break()
-        }
       }
     }
     fold.result()

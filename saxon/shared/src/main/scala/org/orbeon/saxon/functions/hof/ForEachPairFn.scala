@@ -2,14 +2,10 @@ package org.orbeon.saxon.functions.hof
 
 import org.orbeon.saxon.expr.{Expression, MappingFunction, MappingIterator, XPathContext}
 import org.orbeon.saxon.functions.SystemFunction
-import org.orbeon.saxon.model.AnyItemType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.SpecificFunctionType
+import org.orbeon.saxon.functions.hof.ForEachPairFn._
+import org.orbeon.saxon.model.{AnyItemType, ItemType, SpecificFunctionType}
 import org.orbeon.saxon.om._
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.ExternalObject
-import org.orbeon.saxon.value.ObjectValue
-import ForEachPairFn._
+import org.orbeon.saxon.value.{ExternalObject, ObjectValue}
 
 
 object ForEachPairFn {

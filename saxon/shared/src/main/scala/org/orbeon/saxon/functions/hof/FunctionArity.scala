@@ -1,23 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.hof
 
 import org.orbeon.saxon.expr.XPathContext
-
 import org.orbeon.saxon.functions.SystemFunction
-
-import org.orbeon.saxon.om.Function
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.Int64Value
-
-import org.orbeon.saxon.value.IntegerValue
+import org.orbeon.saxon.om.{Function, Sequence}
+import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
 
-
-
+/**
+  * This class implements the function function-arity(), which is a standard function in XPath 3.0
+  */
 class FunctionArity extends SystemFunction {
 
   /*@NotNull*/
@@ -41,12 +38,3 @@ class FunctionArity extends SystemFunction {
 
 }
 
-// Copyright (c) 2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class implements the function function-arity(), which is a standard function in XPath 3.0
-  */
-// Copyright (c) 2012-2020 Saxonica Limited

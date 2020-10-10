@@ -23,21 +23,18 @@ object IntHashSet {
   private val MAX_SIZE: Int = 1 << NBIT
 
   def containsSome(one: IntSet, two: IntSet): Boolean = {
-    if (two.isInstanceOf[IntEmptySet]) {
+    if (two.isInstanceOf[IntEmptySet])
       return false
-    }
-    if (two.isInstanceOf[IntUniversalSet]) {
+    if (two.isInstanceOf[IntUniversalSet])
       return ! one.isEmpty
-    }
     two match {
       case set: IntComplementSet => return ! set.getExclusions.containsAll(one)
       case _ =>
     }
     val it = two.iterator
-    while (it.hasNext) {
-      if (one.contains(it.next))
+    while (it.hasNext)
+      if (one.contains(it.next()))
         return true
-    }
     false
   }
 
@@ -138,9 +135,8 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   def clear(): Unit = {
     _size = 0
-    for (i <- 0 until _nmax) {
+    for (i <- 0 until _nmax)
       _values(i) = ndv
-    }
   }
 
   def size(): Int = _size
@@ -151,9 +147,8 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     var index: Int = 0
     val values: Array[Int] = Array.ofDim[Int](_size)
     for (_value <- _values if _value != ndv) {
-      values({
-        index += 1; index - 1
-      }) = _value
+      values(index) = _value
+      index += 1
     }
     values
   }
@@ -182,21 +177,19 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
   }
 
   def add(value: Int): Boolean = {
-    if (value == ndv) {
+
+    if (value == ndv)
       throw new IllegalArgumentException("Can't add the 'no data' value")
-    }
 
     val i = indexOf(value)
     if (_values(i) == ndv) {
       _size += 1
       _values(i) = value
       // Check new size
-      if (_size > MAX_SIZE) {
+      if (_size > MAX_SIZE)
         throw new RuntimeException("Too many elements (> " + MAX_SIZE + ')')
-      }
-      if (_nlo < _size && _size <= _nhi) {
+      if (_nlo < _size && _size <= _nhi)
         this.capacity = _size
-      }
       true
     } else {
       // leave set unchanged
@@ -212,21 +205,21 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
    * this value would be added if it does not exist yet.
    */
   private def indexOf(value: Int): Int = {
-    var i: Int = hash(value)
+    var i = hash(value)
     while (_values(i) != ndv) {
-      if (_values(i) == value) {
+      if (_values(i) == value)
         return i
-      }
       i = (i - 1) & _mask
     }
     i
   }
 
   private def setCapacity(capacity: Int): Unit = {
+
     // Changed MHK in 8.9 to use a constant factor of 0.25, thus avoiding floating point arithmetic
-    if (capacity < _size) {
+    if (capacity < _size)
       this.capacity = _size
-    }
+
     //double factor = 0.25;
     var nbit = 1
     var nmax = 2
@@ -235,34 +228,30 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       nbit += 1
       nmax *= 2
     }
-    // do nothing
-    // do nothing
-    val nold: Int = _nmax
-    if (nmax == nold) {
+
+    val nold = _nmax
+    if (nmax == nold)
       return
-    }
     _nmax = nmax
     _nlo = nmax / 4
     _nhi = MAX_SIZE / 4
     _shift = 1 + NBIT - nbit
     _mask = nmax - 1
     _size = 0
-    val values: Array[Int] = _values
+    val values = _values
     _values = Array.ofDim[Int](nmax)
     // empty all values
     java.util.Arrays.fill(_values, ndv)
     if (values != null) {
       for (i <- 0 until nold) {
-        val value: Int = values(i)
+        val value = values(i)
         if (value != ndv) {
+          // Don't use add, because the capacity is necessarily large enough,
+          // and the value is necessarily unique (since in this set already)!
           //add(values[i]);
           _size += 1
           _values(indexOf(value)) = value
         }
-        // Don't use add, because the capacity is necessarily large enough,
-        // and the value is necessarily unique (since in this set already)!
-        // Don't use add, because the capacity is necessarily large enough,
-        // and the value is necessarily unique (since in this set already)!
       }
     }
   }
@@ -270,19 +259,18 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
   def iterator: IntIterator = new IntHashSetIterator
 
   override def equals(other: Any): Boolean = other match {
-    case other: IntHashSet => {
-      val s: IntHashSet = other
-      (size == s.size && containsAll(s))
-    }
+    case other: IntHashSet =>
+      size == other.size && containsAll(other)
     case _ => false
 
   }
 
   override def hashCode: Int = {
     // Note, hashcodes are the same as those used by IntArraySet
-    var h: Int = 936247625
-    val it: IntIterator = iterator
-    while (it.hasNext) h += it.next
+    var h = 936247625
+    val it = iterator
+    while (it.hasNext)
+      h += it.next
     h
   }
 
@@ -291,7 +279,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
   def diagnosticDump(): Unit = {
     System.err.println("Contents of IntHashSet")
     val sb = new FastStringBuffer(100)
-    for (i <- 0 until _values.length) {
+    for (i <- _values.indices) {
       if (i % 10 == 0) {
         System.err.println(sb.toString)
         sb.setLength(0)
@@ -316,7 +304,8 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     var i: Int = 0
     while (iter.hasNext) {
       if ( {
-        i += 1; i - 1
+        i += 1
+        i - 1
       } % 10 == 0) {
         System.err.println(sb.toString)
         sb.setLength(0)

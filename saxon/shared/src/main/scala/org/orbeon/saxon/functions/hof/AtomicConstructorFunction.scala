@@ -1,42 +1,16 @@
 package org.orbeon.saxon.functions.hof
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.StaticProperty
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{StaticProperty, XPathContext}
 import org.orbeon.saxon.functions.AbstractFunction
-
-import org.orbeon.saxon.model.AtomicType
-
-import org.orbeon.saxon.model.Converter
-
-import org.orbeon.saxon.model.FunctionItemType
-
-import org.orbeon.saxon.model.SpecificFunctionType
-
-import org.orbeon.saxon.om.NamespaceResolver
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.om.ZeroOrOne
-
+import org.orbeon.saxon.model.{AtomicType, FunctionItemType, SpecificFunctionType}
+import org.orbeon.saxon.om.{NamespaceResolver, Sequence, StructuredQName, ZeroOrOne}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.SequenceType
+import org.orbeon.saxon.value.{AtomicValue, SequenceType}
 
 class AtomicConstructorFunction(private var targetType: AtomicType,
-                                resolver: NamespaceResolver)
+                                nsResolver: NamespaceResolver)
   extends AbstractFunction {
-
-  private var nsResolver: NamespaceResolver = resolver
 
   def getFunctionItemType: FunctionItemType =
     new SpecificFunctionType(

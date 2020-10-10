@@ -1,20 +1,15 @@
 package org.orbeon.saxon.functions.hof
 
-import org.orbeon.saxon.expr.Literal
-import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.expr.XPathContextMajor
-import org.orbeon.saxon.expr.instruct.UserFunction
-import org.orbeon.saxon.functions.AbstractFunction
-import org.orbeon.saxon.model.FunctionItemType
-import org.orbeon.saxon.model.SpecificFunctionType
-import org.orbeon.saxon.om.Function
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.om.StructuredQName
-import org.orbeon.saxon.trace.ExpressionPresenter
-import org.orbeon.saxon.value.SequenceType
 import java.util.Arrays
 
+import org.orbeon.saxon.expr.{Literal, XPathContext, XPathContextMajor}
+import org.orbeon.saxon.expr.instruct.UserFunction
+import org.orbeon.saxon.functions.AbstractFunction
+import org.orbeon.saxon.model.{FunctionItemType, SpecificFunctionType}
+import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.query.AnnotationList
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.value.SequenceType
 
 class CurriedFunction(private var targetFunction: Function, private var boundValues: Array[Sequence])
   extends AbstractFunction {

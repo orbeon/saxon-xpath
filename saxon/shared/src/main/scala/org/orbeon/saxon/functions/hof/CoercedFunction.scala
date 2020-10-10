@@ -1,10 +1,10 @@
 package org.orbeon.saxon.functions.hof
 
-import org.orbeon.saxon.expr.{FunctionCall, XPathContext}
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, Loc, RoleDiagnostic}
+import org.orbeon.saxon.expr.{FunctionCall, XPathContext}
 import org.orbeon.saxon.functions.AbstractFunction
 import org.orbeon.saxon.functions.hof.CoercedFunction._
-import org.orbeon.saxon.model.{FunctionItemType, SpecificFunctionType, TypeHierarchy}
+import org.orbeon.saxon.model.{FunctionItemType, SpecificFunctionType}
 import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
@@ -104,5 +104,4 @@ class CoercedFunction(private var targetFunction: Function, private val required
     new FunctionLiteral(targetFunction).export(out)
     out.endElement()
   }
-
 }
