@@ -9,7 +9,7 @@ abstract class FoldingFunction extends SystemFunction {
 
   def getFold(context: XPathContext, additionalArguments: Sequence*): Fold
 
-  def call(context: XPathContext, arguments: Sequence*): Sequence = {
+  def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val additionalArgs = Array.ofDim[Sequence](arguments.length - 1)
     System.arraycopy(arguments, 1, additionalArgs, 0, additionalArgs.length)
     val fold = getFold(context, additionalArgs.toIndexedSeq:_*)

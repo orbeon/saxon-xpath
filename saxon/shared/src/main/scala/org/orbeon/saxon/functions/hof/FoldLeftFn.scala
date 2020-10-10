@@ -75,8 +75,6 @@ class FoldLeftFn extends FoldingFunction {
       AnyItemType
     }
   }
-
-  def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context, args)
 }
 
 
