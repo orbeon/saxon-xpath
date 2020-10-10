@@ -118,7 +118,7 @@ class OptionsParameter {
   def processSuppliedOptions(supplied: MapItem,
                              context: XPathContext): Map[String, Sequence] = {
     val result: Map[String, Sequence] = new HashMap[String, Sequence]()
-    val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
+    val th = context.getConfiguration.getTypeHierarchy
     for (req <- requiredOptions.asScala
          if supplied.get(new StringValue(req)) == null) {
       throw new XPathException("No value supplied for required option: " + req,

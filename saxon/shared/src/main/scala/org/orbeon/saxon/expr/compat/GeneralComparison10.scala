@@ -149,7 +149,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       .isInstanceOf[Literal])) {
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
     }
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     var type0: ItemType = getLhsExpression.getItemType
     var type1: ItemType = getRhsExpression.getItemType
     if (type0.isPlainType) {

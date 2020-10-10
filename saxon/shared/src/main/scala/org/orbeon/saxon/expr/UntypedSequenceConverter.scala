@@ -101,7 +101,7 @@ class UntypedSequenceConverter(sequence: Expression,
     if (e2 != this) {
       return e2
     }
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     val base: Expression = getBaseExpression
     if (th.relationship(base.getItemType, BuiltInAtomicType.UNTYPED_ATOMIC) ==
       Affinity.DISJOINT ||
@@ -130,7 +130,7 @@ class UntypedSequenceConverter(sequence: Expression,
     if (getBaseExpression.getItemType == BuiltInAtomicType.UNTYPED_ATOMIC) {
       getRequiredItemType
     } else {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       Type.getCommonSuperType(getRequiredItemType,
         getBaseExpression.getItemType,
         th)

@@ -70,7 +70,7 @@ class YearMonthDurationValue private ()
   override def getPrimitiveStringValue(): CharSequence = {
     val y: Int = getYears
     val m: Int = getMonths
-    val sb: FastStringBuffer = new FastStringBuffer(32)
+    val sb = new FastStringBuffer(32)
     if (negative) {
       sb.cat('-')
     }

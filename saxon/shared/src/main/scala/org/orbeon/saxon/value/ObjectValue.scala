@@ -26,7 +26,7 @@ class ObjectValue[T](obj: T) extends ExternalObject[T] {
   def getItemType(th: TypeHierarchy): ItemType =
     th.getConfiguration.getJavaExternalObjectType(value.getClass)
 
-  override def effectiveBooleanValue(): Boolean = true
+  override def effectiveBooleanValue: Boolean = true
 
   def getObject: T = value
 

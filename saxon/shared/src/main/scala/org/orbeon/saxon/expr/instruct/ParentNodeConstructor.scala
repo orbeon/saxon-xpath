@@ -113,7 +113,7 @@ abstract class ParentNodeConstructor
       }
     }
     if (visitor.getStaticContext.getPackageData.isSchemaAware) {
-      val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+      val th = visitor.getConfiguration.getTypeHierarchy
       if (getValidationAction == Validation.STRIP) {
         if (getContentExpression.hasSpecialProperty(
           StaticProperty.ALL_NODES_UNTYPED) ||
@@ -142,7 +142,7 @@ abstract class ParentNodeConstructor
     val result: PathMap.PathMapNodeSet =
       super.addToPathMap(pathMap, pathMapNodeSet)
     result.setReturnable(false)
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     val `type`: ItemType = getItemType
     if (th.relationship(`type`, NodeKindTest.ELEMENT) != Affinity.DISJOINT ||
       th.relationship(`type`, NodeKindTest.DOCUMENT) != Affinity.DISJOINT) {

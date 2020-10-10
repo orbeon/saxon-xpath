@@ -529,11 +529,14 @@ class XPathParser() {
     }
     language match {
       case XPATH =>
-        if (!(verson == 20 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
+        if (!(verson == 20 || verson == 30 || verson == 31))
+          throw new IllegalArgumentException("Unsupported language version " + verson)
       case XSLT_PATTERN | SEQUENCE_TYPE =>
-        if (!(verson == 20 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
+        if (!(verson == 20 || verson == 30 || verson == 31))
+          throw new IllegalArgumentException("Unsupported language version " + verson)
       case XQUERY =>
-        if (!(verson == 10 || verson == 30 || verson == 31)) throw new IllegalArgumentException("Unsupported language version " + verson)
+        if (!(verson == 10 || verson == 30 || verson == 31))
+          throw new IllegalArgumentException("Unsupported language version " + verson)
       case _ =>
         throw new IllegalArgumentException("Unknown language " + language)
     }
@@ -590,7 +593,7 @@ class XPathParser() {
    * @return the display representation of the token
    */
   /*@NotNull*/
-  def currentTokenDisplay: String = 
+  def currentTokenDisplay: String =
     if (t.currentToken == Token.NAME)
       "name \"" + t.currentTokenValue + '\"'
     else if (t.currentToken == Token.UNKNOWN)
@@ -610,7 +613,12 @@ class XPathParser() {
    * @throws XPathException if the expression contains a syntax error
    */
   @throws[XPathException]
-  def parse(expression: String, start: Int, terminator: Int, env: StaticContext): Expression = {
+  def parse(
+    expression : String,
+    start      : Int,
+    terminator : Int,
+    env        : StaticContext
+  ): Expression = {
     // System.err.println("Parse expression: " + expression);
     this.env = env
     var languageVersion = env.getXPathVersion
@@ -618,15 +626,22 @@ class XPathParser() {
     setLanguage(language, languageVersion)
     var exp: Expression = null
     var offset: Int = start
+
     if (accelerator != null && (env.getUnprefixedElementMatchingPolicy eq UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE)
       && terminator != Token.IMPLICIT_EOF && (expression.length - start < 30 || terminator == Token.RCURLY)) {
       t = new Tokenizer
       t.languageLevel = env.getXPathVersion
       exp = accelerator.parse(t, env, expression, start, terminator)
     }
+
     if (exp == null) {
-      qNameParser = new QNameParser(env.getNamespaceResolver).withAcceptEQName(allowXPath30Syntax).withErrorOnBadSyntax(if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340"
-      else "XPST0003").withErrorOnUnresolvedPrefix("XPST0081")
+
+      qNameParser =
+        new QNameParser(env.getNamespaceResolver)
+          .withAcceptEQName(allowXPath30Syntax)
+          .withErrorOnBadSyntax(if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340" else "XPST0003")
+          .withErrorOnUnresolvedPrefix("XPST0081")
+
       charChecker = env.getConfiguration.getValidCharacterChecker
       t = new Tokenizer
       t.languageLevel = env.getXPathVersion
@@ -634,7 +649,9 @@ class XPathParser() {
       allowSaxonExtensions = t.allowSaxonExtensions
       offset = t.currentTokenStartOffset
       customizeTokenizer(t)
-      try t.tokenize(expression, start, -1)
+
+      try
+        t.tokenize(expression, start, -1)
       catch {
         case err: XPathException =>
           grumble(err.getMessage)
@@ -1020,7 +1037,7 @@ class XPathParser() {
   @throws[XPathException]
   private def makeSingleTypeExpression(lhs: Expression, operator: Int, `type`: CastingTarget, allowEmpty: Boolean): Expression =
     `type` match {
-      case atomicType: AtomicType if !(`type` eq ErrorType) => 
+      case atomicType: AtomicType if !(`type` eq ErrorType) =>
         operator match {
           case Token.CASTABLE_AS =>
             val castable = new CastableExpression(lhs, atomicType, allowEmpty)
@@ -1725,10 +1742,10 @@ class XPathParser() {
       var `val` = operand.asInstanceOf[Literal].value.asInstanceOf[AtomicValue]
       `val` match {
         case numericValue: NumericValue =>
-          if (env.isInBackwardsCompatibleMode) 
+          if (env.isInBackwardsCompatibleMode)
             `val` = new DoubleValue(numericValue.getDoubleValue)
           val value =
-            if (operator == Token.NEGATE) 
+            if (operator == Token.NEGATE)
               numericValue.negate()
             else
               numericValue
@@ -1930,7 +1947,7 @@ class XPathParser() {
       while (true)
         if (t.currentToken == Token.LSQB)
           step = parsePredicate(step)
-        else if (t.currentToken == Token.LPAR) { 
+        else if (t.currentToken == Token.LPAR) {
           // dynamic function call (XQuery 3.0/XPath 3.0 syntax)
           step = parseDynamicFunctionCall(step, null)
           setLocation(step)
@@ -1940,7 +1957,7 @@ class XPathParser() {
         } else
           break()
     }
-    if (reverse) { 
+    if (reverse) {
       // An AxisExpression such as preceding-sibling::x delivers nodes in axis
       // order, so that positional predicate like preceding-sibling::x[1] work
       // correctly. To satisfy the XPath semantics we turn preceding-sibling::x

@@ -124,7 +124,7 @@ class ForClause extends Clause {
     val opt: Optimizer = visitor.obtainOptimizer()
     val debug: Boolean =
       config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     var head: Expression = null
     var selection: Expression = getSequence
     var selectionContextItemType: ItemType =

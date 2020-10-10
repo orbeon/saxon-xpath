@@ -59,7 +59,7 @@ class GMonthDayValue() extends GDateValue {
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_MONTH_DAY
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     sb.append("--")
     appendTwoDigits(sb, month)
     sb.cat('-')

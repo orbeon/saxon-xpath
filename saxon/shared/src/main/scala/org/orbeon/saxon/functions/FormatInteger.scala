@@ -150,7 +150,7 @@ object FormatInteger {
       if (separatorList.isEmpty) {
         new RegularGroupFormatter(0, "", adjustedPic)
       } else {
-        val sb: FastStringBuffer = new FastStringBuffer(4)
+        val sb = new FastStringBuffer(4)
         sb.appendWideChar(separatorList.get(0))
         new RegularGroupFormatter(firstGroupingPos, sb.toString, adjustedPic)
       }

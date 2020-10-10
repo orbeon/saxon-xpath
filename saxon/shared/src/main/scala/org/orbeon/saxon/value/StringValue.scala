@@ -317,7 +317,7 @@ class StringValue extends AtomicValue {
       }
     }
 
-  override def effectiveBooleanValue(): Boolean = !isZeroLength
+  override def effectiveBooleanValue: Boolean = !isZeroLength
 
   /*@NotNull*/
   override def toString: String = "\"" + value + '\"'

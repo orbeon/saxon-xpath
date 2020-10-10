@@ -37,7 +37,7 @@ object CommandLineOptions {
     name.startsWith("http:") || name.startsWith("https:") || name.startsWith("file:") || name.startsWith("classpath:")
 
   private def displayPermittedValues(permittedValues: Set[String]): String = {
-    val sb: FastStringBuffer = new FastStringBuffer(20)
+    val sb = new FastStringBuffer(20)
     for (perVal <- permittedValues.asScala) {
       if ("" == perVal) {
         sb.append("\"\"")
@@ -546,7 +546,7 @@ object CommandLineOptions {
 //    var options: Array[String] = Array.ofDim[String](recognizedOptions.size)
 //    options = new ArrayList(recognizedOptions.keySet).toArray(options)
 //    Arrays.sort(options, Collator.getInstance)
-//    val sb: FastStringBuffer = new FastStringBuffer(100)
+//    val sb = new FastStringBuffer(100)
 //    for (opt <- options) {
 //      sb.append(" -")
 //      sb.append(opt)

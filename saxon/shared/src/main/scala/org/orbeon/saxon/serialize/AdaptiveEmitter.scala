@@ -122,7 +122,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
         "\"" + s + "\""
       }
       case StandardNames.XS_BOOLEAN =>
-        if (value.effectiveBooleanValue()) "true()" else "false()"
+        if (value.effectiveBooleanValue) "true()" else "false()"
       case StandardNames.XS_DECIMAL | StandardNames.XS_INTEGER =>
         value.getStringValue
       case StandardNames.XS_DOUBLE =>

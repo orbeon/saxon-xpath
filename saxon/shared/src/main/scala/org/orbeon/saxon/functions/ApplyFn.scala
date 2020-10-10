@@ -121,7 +121,7 @@ class ApplyFn extends SystemFunction {
       err.setXPathContext(context)
       throw err
     }
-    val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
+    val th = context.getConfiguration.getTypeHierarchy
     val fit: FunctionItemType = function.getFunctionItemType
     val argArray: Array[Sequence] = Array.ofDim[Sequence](args.arrayLength())
     if (fit == AnyFunctionType) {

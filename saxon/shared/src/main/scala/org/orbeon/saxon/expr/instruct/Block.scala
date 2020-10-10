@@ -286,7 +286,7 @@ class Block(children: Array[Expression]) extends Instruction {
       return ErrorType
 
     var t1: ItemType = null
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     for (i <- 0 until size) {
       val child1: Expression = child(i)
       /*if (!(child1.isInstanceOf[Message])) {*/

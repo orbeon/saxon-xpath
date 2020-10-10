@@ -660,7 +660,7 @@ class DateTimeValue extends CalendarValue
   def toLocalDateTime: LocalDateTime = LocalDateTime.from(this)
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(30)
+    val sb = new FastStringBuffer(30)
     var yr: Int = year
     if (year <= 0) {
       yr = -yr + (if (hasNoYearZero) 1 else 0)

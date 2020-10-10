@@ -65,7 +65,7 @@ class PatternParser30 extends XPathParser with PatternParser {
             e.asInstanceOf[FilterExpression].getActionExpression
           e = e.asInstanceOf[FilterExpression].getSelectExpression
           val filterType: ItemType = filter.getItemType
-          val th: TypeHierarchy = env.getConfiguration.getTypeHierarchy
+          val th = env.getConfiguration.getTypeHierarchy
           val rel: Affinity.Affinity =
             th.relationship(filterType, NumericType.getInstance)
           if (rel != Affinity.DISJOINT) {

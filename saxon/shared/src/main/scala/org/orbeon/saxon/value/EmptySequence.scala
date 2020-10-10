@@ -55,7 +55,7 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
 
   override def hashCode: Int = 42
 
-  override def effectiveBooleanValue(): Boolean = false
+  override def effectiveBooleanValue: Boolean = false
 
   /*@Nullable*/
 

@@ -60,7 +60,7 @@ class AndExpression(p1: Expression, p2: Expression)
     if (t != this) {
       return t
     }
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     if (getRhsExpression.isInstanceOf[UserFunctionCall] &&
       th.isSubType(getRhsExpression.getItemType, BuiltInAtomicType.BOOLEAN) &&
       !ExpressionTool.isLoopingSubexpression(this, null)) {

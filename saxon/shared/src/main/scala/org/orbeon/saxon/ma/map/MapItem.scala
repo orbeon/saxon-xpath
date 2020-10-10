@@ -236,7 +236,7 @@ trait MapItem extends Function {
 
   override def itemAt(n: Int): MapItem = if (n == 0) this else null
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     throw new XPathException("A map item has no effective boolean value")
 
   def export(out: ExpressionPresenter): Unit = {

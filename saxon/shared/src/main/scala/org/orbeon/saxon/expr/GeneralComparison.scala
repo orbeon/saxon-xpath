@@ -167,7 +167,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val oldOp0 = getLhsExpression
     val oldOp1 = getRhsExpression
     getLhs.typeCheck(visitor, contextInfo)
@@ -332,7 +332,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   }
 
   override def getIntrinsicDependencies: Int = {
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     if (mayInvolveCastToQName(th, getLhsExpression, getRhsExpression) ||
       mayInvolveCastToQName(th, getRhsExpression, getLhsExpression)) {
       StaticProperty.DEPENDS_ON_STATIC_CONTEXT
@@ -356,7 +356,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     val env: StaticContext = visitor.getStaticContext
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)

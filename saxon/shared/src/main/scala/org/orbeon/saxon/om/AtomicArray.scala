@@ -39,7 +39,7 @@ class AtomicArray extends AtomicSequence {
 
   var content: List[AtomicValue] = _
 
-  def this(content: List[AtomicValue]) {
+  def this(content: List[AtomicValue]) = {
     this()
     this.content = content
   }
@@ -94,7 +94,7 @@ class AtomicArray extends AtomicSequence {
 
   def getStringValue: String = getStringValueCS.toString
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
   def getSchemaComparable(): Comparable[_] =

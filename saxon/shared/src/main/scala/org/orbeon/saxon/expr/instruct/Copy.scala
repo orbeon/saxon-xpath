@@ -115,7 +115,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     if (resultItemType != null) {
       resultItemType
     } else {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       resultItemType = computeItemType(th)
       resultItemType
     }

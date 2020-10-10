@@ -65,7 +65,7 @@ object StandardUnparsedTextResolver {
         if (debug) {
           logger.info("unparsed-text(): found XML declaration")
         }
-        val sb: FastStringBuffer = new FastStringBuffer(read)
+        val sb = new FastStringBuffer(read)
         for (b <- 0 until read) {
           sb.cat(start(b).toChar)
         }

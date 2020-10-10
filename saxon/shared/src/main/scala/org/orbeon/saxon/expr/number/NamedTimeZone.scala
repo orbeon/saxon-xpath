@@ -283,7 +283,7 @@
 //  }
 //
 //  def formatTimeZoneOffset(timeValue: DateTimeValue): String = {
-//    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+//    val sb = new FastStringBuffer(FastStringBuffer.C16)
 //    CalendarValue.appendTimezone(timeValue.getTimezoneInMinutes, sb)
 //    sb.toString
 //  }

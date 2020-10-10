@@ -154,7 +154,7 @@ abstract class AbstractNumberer extends Numberer {
       return "" + number
     }
     val pictureLength: Int = picture.uLength
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     val formchar: Int = picture.uCharAt(0)
     val fsb: FastStringBuffer = new FastStringBuffer(2)
     formchar match {

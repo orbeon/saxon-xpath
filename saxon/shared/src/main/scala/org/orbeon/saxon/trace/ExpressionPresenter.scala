@@ -24,12 +24,12 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 object ExpressionPresenter {
 
   def defaultDestination(config: Configuration, out: Logger): Receiver = {
-    val props: SerializationProperties = makeDefaultProperties(config)
+    val props = makeDefaultProperties(config)
     config.getSerializerFactory.getReceiver(out.asStreamResult(), props)
   }
 
   def makeDefaultProperties(config: Configuration): SerializationProperties = {
-    val props: SerializationProperties = new SerializationProperties()
+    val props = new SerializationProperties
     props.setProperty(OutputKeys.METHOD, "xml")
     props.setProperty(OutputKeys.INDENT, "yes")
     if (config.isLicensedFeature(
@@ -101,7 +101,7 @@ class ExpressionPresenter {
   private var defaultNamespace: String = _
 
   @BeanProperty
-  var options: Options = new ExportOptions()
+  var options: Options = new ExportOptions
 
   @BooleanBeanProperty
   val relocatable: Boolean = false
@@ -311,16 +311,14 @@ class ExpressionPresenter {
     depth
   }
 
-  def setChildRole(role: String): Unit = {
+  def setChildRole(role: String): Unit =
     nextRole = role
-  }
 
   def emitAttribute(name: String, value: String): Unit = {
     var valueVar = value
     if (valueVar != null) {
-      if (name.==("module")) {
+      if (name =="module")
         valueVar = truncatedModuleName(valueVar)
-      }
       try cco.attribute(new NoNamespaceName(name),
         BuiltInAtomicType.UNTYPED_ATOMIC,
         valueVar,
@@ -335,7 +333,7 @@ class ExpressionPresenter {
   }
 
   def emitAttribute(name: String, value: StructuredQName): Unit = {
-    val attVal: String = value.getEQName
+    val attVal = value.getEQName
     try cco.attribute(new NoNamespaceName(name),
       BuiltInAtomicType.UNTYPED_ATOMIC,
       attVal,
@@ -376,19 +374,17 @@ class ExpressionPresenter {
     depth
   }
 
-  def startSubsidiaryElement(name: String): Unit = {
+  def startSubsidiaryElement(name: String): Unit =
     startElement(name)
-  }
 
-  def endSubsidiaryElement(): Unit = {
+  def endSubsidiaryElement(): Unit =
     endElement()
-  }
 
   def close(): Unit = {
     try {
       receiver match {
         case filter: CheckSumFilter =>
-          val c: Int = filter.getChecksum
+          val c = filter.getChecksum
           cco.processingInstruction(CheckSumFilter.SIGMA,
             java.lang.Integer.toHexString(c),
             Loc.NONE,

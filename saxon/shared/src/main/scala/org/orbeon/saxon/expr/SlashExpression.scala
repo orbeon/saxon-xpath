@@ -177,7 +177,7 @@ class SlashExpression(start: Expression, step: Expression)
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val opt: Optimizer = visitor.obtainOptimizer()
     getLhs.optimize(visitor, contextItemType)
     val cit: ContextItemStaticInfo = visitor.getConfiguration
@@ -303,7 +303,7 @@ class SlashExpression(start: Expression, step: Expression)
   def tryToMakeSorted(visitor: ExpressionVisitor,
                       contextItemType: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val opt: Optimizer = visitor.obtainOptimizer()
     val s1: Expression = ExpressionTool.unfilteredExpression(getStart, allowPositional = false)
     if (!(s1.isInstanceOf[AxisExpression] &&

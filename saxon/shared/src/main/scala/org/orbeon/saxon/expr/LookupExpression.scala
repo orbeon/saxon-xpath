@@ -121,7 +121,7 @@ class LookupExpression(start: Expression, step: Expression)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     // with a tuple type. So check this first.
     val originalType: ItemType = getLhsExpression.getItemType
     // Check the first operand

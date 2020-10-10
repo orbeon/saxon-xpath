@@ -42,7 +42,7 @@ abstract class AbstractFunction extends Function {
 
   override def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
- override def effectiveBooleanValue(): Boolean =
+ override def effectiveBooleanValue: Boolean =
     throw new XPathException("A function has no effective boolean value",
       "XPTY0004")
 

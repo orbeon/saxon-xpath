@@ -239,7 +239,7 @@ class TypeChecker {
     var exp: Expression = supplied
     val env: StaticContext = visitor.getStaticContext
     val config: Configuration = env.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val defaultContextInfo: ContextItemStaticInfo =
       config.getDefaultContextItemStaticInfo
     val reqItemType: ItemType = req.getPrimaryType

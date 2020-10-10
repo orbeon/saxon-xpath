@@ -49,7 +49,7 @@ class TypeChecker10 extends TypeChecker {
       suppliedExp.staticTypeCheck(req, backwardsCompatible = true, role, visitor)
     }
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
 // rule 1
     if (!Cardinality.allowsMany(req.getCardinality) && Cardinality.allowsMany(
       suppliedExp.getCardinality)) {
@@ -123,7 +123,7 @@ class TypeChecker10 extends TypeChecker {
 
   override def processValueOf(select: Expression, config: Configuration): Expression = {
     var selExp = select
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (!selExp.getItemType.isPlainType) {
       selExp = Atomizer.makeAtomizer(selExp, null)
     }

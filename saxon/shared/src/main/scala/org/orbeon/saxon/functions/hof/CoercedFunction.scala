@@ -67,7 +67,7 @@ class CoercedFunction(private var targetFunction: Function, private val required
     val req: SpecificFunctionType = requiredType
     val argTypes: Array[SequenceType] =
       targetFunction.getFunctionItemType.getArgumentTypes
-    val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
+    val th = context.getConfiguration.getTypeHierarchy
     val targetArgs: Array[Sequence] = Array.ofDim[Sequence](args.length)
     for (i <- args.indices) {
       args(i) = args(i).materialize()

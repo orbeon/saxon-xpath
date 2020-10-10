@@ -52,7 +52,7 @@ class SpecificFunctionType extends AnyFunctionType {
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(100)
+    val sb = new FastStringBuffer(100)
     sb.append("(function(")
     for (i <- argTypes.indices) {
       sb.append(argTypes(i).toString)
@@ -66,7 +66,7 @@ class SpecificFunctionType extends AnyFunctionType {
   }
 
   override def toExportString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(100)
+    val sb = new FastStringBuffer(100)
     sb.append("(function(")
     for (i <- argTypes.indices) {
       sb.append(argTypes(i).toExportString)

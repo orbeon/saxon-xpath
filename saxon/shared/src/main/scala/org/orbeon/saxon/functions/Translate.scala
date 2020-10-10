@@ -33,7 +33,7 @@ object Translate {
     val cs1: CharSequence = sv1.getStringValueCS
     val cs2: CharSequence = sv2.getStringValueCS
     val st1: String = cs1.toString
-    val sb: FastStringBuffer = new FastStringBuffer(cs0.length)
+    val sb = new FastStringBuffer(cs0.length)
     val s2len: Int = cs2.length
     val s0len: Int = cs0.length
     for (i <- 0 until s0len) {
@@ -59,7 +59,7 @@ object Translate {
   def translateUsingMap(in: StringValue, map: IntToIntMap): CharSequence = {
     val us: UnicodeString = in.getUnicodeString
     val len = us.uLength
-    val sb: FastStringBuffer = new FastStringBuffer(len)
+    val sb = new FastStringBuffer(len)
     for (i <- 0 until len) {
       val c: Int = us.uCharAt(i)
       var newchar: Int = map.get(c)

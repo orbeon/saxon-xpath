@@ -164,7 +164,7 @@ class NumberSequenceFormatter(value: Expression,
     op == null || op.getChildExpression.isInstanceOf[Literal]
 
   private def hasFixedOperands: Boolean =
-    operands.asScala.find(!isFixed(_)).map(_ => false).getOrElse(true)
+    operands.asScala.forall(isFixed)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {

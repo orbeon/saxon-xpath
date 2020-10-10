@@ -23,7 +23,7 @@ import MemoFunction._
 object MemoFunction {
 
   private def getCombinedKey(params: Array[Sequence]): String = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val sb = new FastStringBuffer(FastStringBuffer.C256)
     for (seq <- params) {
       val iter: SequenceIterator = seq.iterate()
       var item: Item = null

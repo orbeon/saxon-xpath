@@ -40,7 +40,7 @@ class SequenceExtent extends GroundedValue {
 
    var value: List[_ <: Item] = _
 
-  def this(items: Array[Item]) {
+  def this(items: Array[Item]) = {
     this()
     value = Arrays.asList(items: _*)
   }
@@ -86,7 +86,7 @@ class SequenceExtent extends GroundedValue {
 
   def reverseIterate(): UnfailingIterator = new ReverseListIterator(value)
 
-  override def effectiveBooleanValue(): Boolean = {
+  override def effectiveBooleanValue: Boolean = {
     val len = getLength
     if (len == 0) {
       false
@@ -95,7 +95,7 @@ class SequenceExtent extends GroundedValue {
       if (first.isInstanceOf[NodeInfo]) {
         true
       } else if (len == 1 && first.isInstanceOf[AtomicValue]) {
-        first.effectiveBooleanValue()
+        first.effectiveBooleanValue
       } else {
         ExpressionTool.effectiveBooleanValue(iterate())
       }

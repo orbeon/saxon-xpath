@@ -522,7 +522,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
     val seconds: Int = getSeconds
 
     if (months == 0 && seconds == 0L && nanoseconds == 0) return "PT0S"
-    val sb: FastStringBuffer = new FastStringBuffer(32)
+    val sb = new FastStringBuffer(32)
     if (negative) sb.cat('-')
     sb.append("P")
     if (years != 0) sb.append(years.toString + "Y")

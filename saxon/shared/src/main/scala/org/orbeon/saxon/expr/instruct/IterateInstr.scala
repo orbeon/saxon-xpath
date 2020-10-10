@@ -165,7 +165,7 @@ class IterateInstr(select: Expression,
     if (Literal.isEmptySequence(getOnCompletion)) {
       getActionExpression.getItemType
     } else {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       Type.getCommonSuperType(getActionExpression.getItemType,
         getOnCompletion.getItemType,
         th)

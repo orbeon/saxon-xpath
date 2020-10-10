@@ -171,7 +171,7 @@ object PJConverter {
                itemType: ItemType,
                cardinality: Int,
                targetClass: Class[_]): PJConverter = {
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (targetClass == classOf[SequenceIterator]) {
       ToSequenceIterator.INSTANCE
     }

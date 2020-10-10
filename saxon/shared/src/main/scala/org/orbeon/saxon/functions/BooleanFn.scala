@@ -35,7 +35,7 @@ object BooleanFn {
                                    contextItemType: ContextItemStaticInfo): Expression = {
     var exprssn = exp
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val forStreaming: Boolean = visitor.isOptimizeForStreaming
     exprssn = ExpressionTool.unsortedIfHomogeneous(exp, forStreaming)
     if (exprssn.isInstanceOf[Literal]) {

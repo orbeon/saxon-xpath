@@ -143,7 +143,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
   }
 
-  override def getInstructionNameCode(): Int =
+  override def getInstructionNameCode: Int =
     if (size == 1) StandardNames.XSL_IF else StandardNames.XSL_CHOOSE
 
   override def simplify(): Expression = {
@@ -254,7 +254,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     if (localSize == 2 && Literal.isConstantBoolean(getAction(0), value = true) &&
       Literal.isConstantBoolean(getAction(1), value = false) &&
       Literal.hasEffectiveBooleanValue(getCondition(1), value = true)) {
-      val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+      val th = visitor.getConfiguration.getTypeHierarchy
       if (th.isSubType(getCondition(0).getItemType, BuiltInAtomicType.BOOLEAN) &&
         getCondition(0).getCardinality == StaticProperty.EXACTLY_ONE) {
         getCondition(0)
@@ -269,7 +269,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     for (i <- 0 until size) {
       conditionOps(i).typeCheck(visitor, contextInfo)
       val err = TypeChecker.ebvError(getCondition(i), th)
@@ -391,7 +391,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         try b = getCondition(i)
           .asInstanceOf[Literal]
           .getValue
-          .effectiveBooleanValue()
+          .effectiveBooleanValue
         catch {
           case err: XPathException => {
             err.setLocation(getLocation)
@@ -505,29 +505,21 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
   }
 
-  override def isUpdatingExpression(): Boolean =
-    actions().asScala
-      .find(_.getChildExpression.isUpdatingExpression)
-      .map(_ => true)
-      .getOrElse(false)
+  override def isUpdatingExpression: Boolean =
+    actions().asScala.exists(_.getChildExpression.isUpdatingExpression)
 
-  override def isVacuousExpression(): Boolean =
-    actions().asScala
-      .find(!_.getChildExpression.isVacuousExpression)
-      .map(_ => false)
-      .getOrElse(true)
+  override def isVacuousExpression: Boolean =
+    actions().asScala.forall(_.getChildExpression.isVacuousExpression)
 
   override def getImplementationMethod: Int = {
-    var m: Int = Expression.PROCESS_METHOD | Expression.ITERATE_METHOD |
-      Expression.WATCH_METHOD
-    if (!Cardinality.allowsMany(getCardinality)) {
+    var m = Expression.PROCESS_METHOD | Expression.ITERATE_METHOD | Expression.WATCH_METHOD
+    if (! Cardinality.allowsMany(getCardinality))
       m |= Expression.EVALUATE_METHOD
-    }
     m
   }
 
   override def markTailFunctionCalls(qName: StructuredQName, arity: Int): Int = {
-    var result: Int = UserFunctionCall.NOT_TAIL_CALL
+    var result = UserFunctionCall.NOT_TAIL_CALL
     for (action <- actions().asScala) {
       result = Math.max(
         result,
@@ -537,7 +529,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
   }
 
   override def getItemType: ItemType = {
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     var `type`: ItemType = getAction(0).getItemType
     for (i <- 1 until size) {
       `type` = Type.getCommonSuperType(`type`, getAction(i).getItemType, th)
@@ -619,7 +611,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     sb.append("if (")
     for (i <- 0 until size) {
       sb.append(getCondition(i).toString)

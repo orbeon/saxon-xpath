@@ -152,7 +152,7 @@ object PathMap {
       this.asScala.exists(_.hasReachableReturnables)
 
     def allPathsAreWithinStreamableSnapshot(): Boolean =
-      this.asScala.find(! _.allPathsAreWithinStreamableSnapshot()).forall(_ => false)
+      this.asScala.forall(_.allPathsAreWithinStreamableSnapshot())
 
     def addDescendants(): Unit = {
       for (node <- this.asScala) {

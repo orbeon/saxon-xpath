@@ -52,7 +52,7 @@ class ItemTypeCheckingFunction extends ItemMappingFunction {
   }
 
   private def testConformance(item: Item, config: Configuration): Unit = {
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (requiredItemType.matches(item, th)) {} else if (requiredItemType.getUType
       .subsumes(
         UType.STRING) && BuiltInAtomicType.ANY_URI

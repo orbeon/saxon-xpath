@@ -57,7 +57,7 @@ class GMonthValue() extends GDateValue {
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_MONTH
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     sb.append("--")
     appendTwoDigits(sb, month)
     if (hasTimezone) {

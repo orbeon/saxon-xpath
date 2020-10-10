@@ -49,9 +49,7 @@ object Literal {
         out.startElement("node")
         val nodeKind: Int = nodeInfo.getNodeKind
         out.emitAttribute("kind", nodeKind.toString)
-        if (out.getOptions
-          .asInstanceOf[ExpressionPresenter.ExportOptions]
-          .explaining) {
+        if (out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions].explaining) {
           val name: String = nodeInfo.getDisplayName
           if (!name.isEmpty) {
             out.emitAttribute("name", name)
@@ -154,7 +152,7 @@ object Literal {
       out.endElement()
     } else if (`type` == BuiltInAtomicType.BOOLEAN) {
       out.startElement(
-        if (value.asInstanceOf[BooleanValue].effectiveBooleanValue()) "true"
+        if (value.asInstanceOf[BooleanValue].effectiveBooleanValue) "true"
         else "false")
       out.endElement()
     } else value match {
@@ -198,7 +196,7 @@ object Literal {
   def hasEffectiveBooleanValue(exp: Expression, value: Boolean): Boolean = {
     exp match {
       case literal: Literal =>
-        try value == literal.value.effectiveBooleanValue()
+        try value == literal.value.effectiveBooleanValue
         catch {
           case _: XPathException => return false
         }
@@ -268,7 +266,7 @@ class   Literal extends Expression {
         if (value.getLength == 0) {
           ErrorType
         } else {
-          val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+          val th = getConfiguration.getTypeHierarchy
           SequenceTool.getItemType(value, th)
         }
     }
@@ -380,7 +378,7 @@ class   Literal extends Expression {
   }
 
   override def effectiveBooleanValue(context: XPathContext): Boolean =
-    value.effectiveBooleanValue()
+    value.effectiveBooleanValue
 
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit = {

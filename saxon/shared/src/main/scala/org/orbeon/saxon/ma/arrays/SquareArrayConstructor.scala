@@ -124,7 +124,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
   def getItemType: ItemType = {
     var contentType: ItemType = null
     var contentCardinality: Int = StaticProperty.EXACTLY_ONE
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     for (e <- getOperanda.operandExpressions().asScala) {
       if (contentType == null) {
         contentType = e.getItemType

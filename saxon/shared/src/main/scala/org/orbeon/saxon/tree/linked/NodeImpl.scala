@@ -424,6 +424,6 @@ abstract class NodeImpl
 
   def newBuilder(): Builder = getPhysicalRoot.newBuilder()
 
-  override def effectiveBooleanValue(): Boolean = true
+  override def effectiveBooleanValue: Boolean = true
 
 }

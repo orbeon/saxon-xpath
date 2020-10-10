@@ -40,7 +40,7 @@ class String_1 extends ScalarSystemFunction {
                                           visitor: ExpressionVisitor,
                                           contextInfo: ContextItemStaticInfo,
                                           arguments: Expression*): Expression = {
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     val arg: Expression = arguments(0)
     if (th.isSubType(arg.getItemType, BuiltInAtomicType.STRING) &&
       arg.getCardinality == StaticProperty.EXACTLY_ONE) {

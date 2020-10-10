@@ -60,7 +60,7 @@ class AlphanumericCollator(private var baseCollator: StringCollator)
   def getCollationKey(cs: CharSequence): AtomicMatchKey = {
 // The string is normalized by removing leading zeros in a numeric component
     val s: String = cs.toString
-    val sb: FastStringBuffer = new FastStringBuffer(s.length * 2)
+    val sb = new FastStringBuffer(s.length * 2)
     var pos1: Int = 0
     val m1: Matcher = pattern.matcher(s)
     while (true) {

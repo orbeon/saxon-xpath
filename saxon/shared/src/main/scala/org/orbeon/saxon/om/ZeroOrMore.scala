@@ -22,7 +22,7 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
 
   private var content: List[T] = _
 
-  def this(contentArr: Array[T]) {
+  def this(contentArr: Array[T]) = {
     this()
     this.content = Arrays.asList(contentArr: _*)
   }
@@ -63,7 +63,7 @@ class ZeroOrMore[T <: Item] extends GroundedValue with java.lang.Iterable[T] {
 
   def getLength: Int = content.size
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
   def getStringValue: String = SequenceTool.getStringValue(this)

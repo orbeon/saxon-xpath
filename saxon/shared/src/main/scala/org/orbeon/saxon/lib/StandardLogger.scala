@@ -31,7 +31,7 @@ class StandardLogger extends Logger {
 
   def this(stream: PrintStream) = {
     this()
-    setPrintStream( stream)
+    setPrintStream(stream)
   }
 
   // ORBEON: No `File` support.
@@ -53,11 +53,9 @@ class StandardLogger extends Logger {
     */
   def asStreamResult(): StreamResult = new StreamResult(out)
 
-  def println(message: String, severity: Int): Unit = {
-    if (severity >= threshold) {
+  def println(message: String, severity: Int): Unit =
+    if (severity >= threshold)
       out.println(message)
-    }
-  }
 
   /**
     * Close the logger, indicating that no further messages will be written
@@ -65,5 +63,4 @@ class StandardLogger extends Logger {
   override def close(): Unit =
     if (mustClose)
       out.close()
-
 }

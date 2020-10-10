@@ -379,9 +379,11 @@ abstract class Expression
   def evaluateItem(context: XPathContext): Item = iterate(context).next()
 
   def iterate(context: XPathContext): SequenceIterator = {
-    val value: Item = evaluateItem(context)
-    if (value == null) EmptyIterator.emptyIterator
-    else SingletonIterator.rawIterator(value)
+    val value = evaluateItem(context)
+    if (value == null)
+      EmptyIterator.emptyIterator
+    else
+      SingletonIterator.rawIterator(value)
   }
 
   def effectiveBooleanValue(context: XPathContext): Boolean =
@@ -471,18 +473,15 @@ abstract class Expression
 
   def explain(out: Logger): Unit = {
     val ep = new ExpressionPresenter(getConfiguration, out)
-    val options: ExpressionPresenter.ExportOptions =
-      new ExpressionPresenter.ExportOptions
+    val options = new ExpressionPresenter.ExportOptions
     options.explaining = true
     ep.setOptions(options)
     try export(ep)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         ep.startElement("failure")
         ep.emitAttribute("message", e.getMessage)
-        ep.endElement
-      }
-
+        ep.endElement()
     }
     ep.close()
   }
@@ -490,13 +489,14 @@ abstract class Expression
   def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = ()
 
   def adoptChildExpression(child: Expression): Unit = {
-    if (child == null) {
+
+    if (child == null)
       return
-    }
+
     child.setParentExpression(Expression.this)
-    if (child.retainedStaticContext == null) {
+    if (child.retainedStaticContext == null)
       child.retainedStaticContext = retainedStaticContext
-    }
+
     if (getLocation == null || getLocation == Loc.NONE) {
       ExpressionTool.copyLocationInfo(child, Expression.this)
     } else if (child.getLocation == null || child.getLocation == Loc.NONE) {
@@ -556,18 +556,16 @@ abstract class Expression
   def getIntrinsicDependencies: Int = 0
 
   def setStaticProperty(prop: Int): Unit = {
-    if (staticProperties == -1) {
+    if (staticProperties == -1)
       computeStaticProperties()
-    }
     staticProperties |= prop
   }
 
   def checkForUpdatingSubexpressions(): Unit = {
     for (o <- operands.asScala) {
-      val sub: Expression = o.getChildExpression
-      if (sub == null) {
+      val sub = o.getChildExpression
+      if (sub == null)
         throw new NullPointerException()
-      }
       sub.checkForUpdatingSubexpressions()
       if (sub.isUpdatingExpression) {
         val err = new XPathException(
@@ -697,28 +695,28 @@ abstract class Expression
         false
       } else {
         // ORBEON: CHECK
-        operands.asScala.find(!_.getChildExpression.isSubtreeExpression).forall(_ => false)
+        operands.asScala.forall(_.getChildExpression.isSubtreeExpression)
       }
     } else {
       true
     }
 
-  def isEqual(other: Expression): Boolean = (this eq other) || (hashCode == other.hashCode && equals(other))
+  def isEqual(other: Expression): Boolean =
+    (this eq other) || (hashCode == other.hashCode && equals(other))
 
   override def hashCode: Int = {
-    if (cachedHashCode == -1) {
+    if (cachedHashCode == -1)
       cachedHashCode = computeHashCode()
-    }
     cachedHashCode
   }
 
   def hasCompatibleStaticContext(other: Expression): Boolean = {
-    val d1: Boolean = (getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
-    val d2: Boolean = (other.getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
+    val d1 = (getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
+    val d2 = (other.getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
     if (d1 != d2)
       return false
     if (d1)
-      getRetainedStaticContext == other.getRetainedStaticContext
+      return getRetainedStaticContext == other.getRetainedStaticContext
     true
   }
 
@@ -731,26 +729,22 @@ abstract class Expression
 
   def setExtraProperty(name: String, value: AnyRef): Unit = {
     if (extraProperties == null) {
-      if (value == null) {
+      if (value == null)
         return
-      }
       extraProperties = new HashMap(4)
     }
-    if (value == null) {
+    if (value == null)
       extraProperties.remove(name)
-    } else {
+    else
       extraProperties.put(name, value)
-    }
   }
 
   def getExtraProperty(name: String): Any = {
-    if (extraProperties == null) {
-      return null
-    } else {
-      return extraProperties.get(name)
-    }
+    if (extraProperties == null)
+      null
+    else
+      extraProperties.get(name)
   }
 
   def getStreamerName: String = null
-
 }

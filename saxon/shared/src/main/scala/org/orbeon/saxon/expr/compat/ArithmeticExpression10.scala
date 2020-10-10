@@ -158,7 +158,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
                                    config: Configuration,
                                    `type`: AtomicType): Expression = {
     var expr = operand
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (Cardinality.allowsMany(expr.getCardinality)) {
       val fie: Expression =
         FirstItemExpression.makeFirstItemExpression(expr)

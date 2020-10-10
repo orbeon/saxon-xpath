@@ -455,7 +455,7 @@ class UserFunction
 
   override def getLength: Int = 1
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(this)
 
   override def reduce(): UserFunction = this

@@ -74,7 +74,7 @@ class XPathExpression(private var env: StaticContext,
   private def checkContextItemType(contextItem: Item): Unit = {
     if (contextItem != null) {
       val `type`: ItemType = env.getRequiredContextItemType
-      val th: TypeHierarchy = env.getConfiguration.getTypeHierarchy
+      val th = env.getConfiguration.getTypeHierarchy
       if (!`type`.matches(contextItem, th)) {
         throw new XPathException(
           "Supplied context item does not match required context item type " +

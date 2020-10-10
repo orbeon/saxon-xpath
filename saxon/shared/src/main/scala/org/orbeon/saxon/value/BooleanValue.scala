@@ -70,7 +70,7 @@ class BooleanValue private()
   typeLabel = BuiltInAtomicType.BOOLEAN
   var value: Boolean = _
 
-  def this(value: Boolean) {
+  def this(value: Boolean) = {
     this()
     this.value = value
   }
@@ -94,7 +94,7 @@ class BooleanValue private()
    *
    * @return the boolean value
    */
-  override def effectiveBooleanValue(): Boolean = value
+  override def effectiveBooleanValue: Boolean = value
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
 

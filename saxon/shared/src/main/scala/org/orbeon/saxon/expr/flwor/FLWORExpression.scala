@@ -531,7 +531,7 @@ class FLWORExpression extends Expression {
   override def getExpressionName: String = "FLWOR"
 
   override def toShortString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     sb.append(clauses.get(0).toShortString)
     sb.append(" ... return ")
     sb.append(getReturnClause.toShortString)
@@ -539,7 +539,7 @@ class FLWORExpression extends Expression {
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     for (c <- clauses.asScala) {
       sb.append(c.toString)
       sb.cat(' ')

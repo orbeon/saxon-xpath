@@ -232,7 +232,7 @@ class UType(private var bits: Int) {
     if (components.isEmpty) {
       return "U{}"
     }
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+    val sb = new FastStringBuffer(FastStringBuffer.C256)
     val iter: Iterator[PrimitiveUType] = components.iterator
     var started: Boolean = false
     while (iter.hasNext) {

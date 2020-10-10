@@ -155,7 +155,7 @@ object XQueryParser {
   class Unescaper(val characterChecker: IntPredicate) {
     @throws[XPathException]
     def unescape(token: String): CharSequence = {
-      val sb: FastStringBuffer = new FastStringBuffer(token.length)
+      val sb = new FastStringBuffer(token.length)
       var i = 0
       while ( {
         i < token.length
@@ -3562,7 +3562,7 @@ class XQueryParser extends XPathParser {
   @throws[XPathException]
   private def readEntityReference: String = try {
 
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     breakable {
       while (true) {
         val c = t.nextChar

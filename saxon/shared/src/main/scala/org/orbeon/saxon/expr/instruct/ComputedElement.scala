@@ -108,7 +108,7 @@ override  def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Expression = {
     super.typeCheck(visitor, contextInfo)
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val role: RoleDiagnostic =
       new RoleDiagnostic(RoleDiagnostic.INSTRUCTION, "element/name", 0)
     if (allowNameAsQName) {

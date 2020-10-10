@@ -89,7 +89,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * Get the effective boolean value of this sequence
     * @return the effective boolean value (always true for an Orphan node)
     */
-  override def effectiveBooleanValue(): Boolean = true
+  override def effectiveBooleanValue: Boolean = true
 
   def setNodeKind(kind: Short): Unit = {
     this.kind = kind

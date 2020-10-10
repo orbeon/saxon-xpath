@@ -34,7 +34,7 @@ object AnyURIValue {
     if (s.indexOf('%') < 0) {
       return s
     }
-    val sb: FastStringBuffer = new FastStringBuffer(n)
+    val sb = new FastStringBuffer(n)
     val bb: ByteBuffer = ByteBuffer.allocate(n)
     val utf8: Charset = Charset.forName("UTF-8")
     // This is not horribly efficient, but it will do for now

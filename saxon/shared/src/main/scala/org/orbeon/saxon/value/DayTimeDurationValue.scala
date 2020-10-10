@@ -205,7 +205,7 @@ class DayTimeDurationValue
     BuiltInAtomicType.DAY_TIME_DURATION
 
   override def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(32)
+    val sb = new FastStringBuffer(32)
     if (negative) {
       sb.cat('-')
     }

@@ -115,7 +115,7 @@ class Int64Value extends IntegerValue {
 
   private var value: Long = _
 
-  def this(value: Long) {
+  def this(value: Long) = {
     this()
     this.value = value
     typeLabel = BuiltInAtomicType.INTEGER
@@ -197,7 +197,7 @@ class Int64Value extends IntegerValue {
 
   def longValue(): Long = value
 
-  override def effectiveBooleanValue(): Boolean = value != 0
+  override def effectiveBooleanValue: Boolean = value != 0
 
   override def compareTo(other: NumericValue): Int =
     if (other.isInstanceOf[Int64Value]) {

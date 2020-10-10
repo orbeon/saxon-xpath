@@ -153,7 +153,7 @@ class MonotonicIntSet extends IntSet {
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(used * 4)
+    val sb = new FastStringBuffer(used * 4)
     var i = 0
     while (i < used) {
       if (i == used - 1) {

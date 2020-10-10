@@ -129,7 +129,7 @@ object Sum {
 class Sum extends FoldingFunction {
 
   override def getResultItemType(args: Array[Expression]): ItemType = {
-    val th: TypeHierarchy =
+    val th =
       getRetainedStaticContext.getConfiguration.getTypeHierarchy
     var base: ItemType = Atomizer.getAtomizedItemType(args(0), alwaysUntyped = false, th)
     if (base == BuiltInAtomicType.UNTYPED_ATOMIC) {

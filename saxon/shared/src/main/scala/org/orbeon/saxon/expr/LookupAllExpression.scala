@@ -50,7 +50,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     getOperand.typeCheck(visitor, contextInfo)
     val containerType: ItemType = getBaseExpression.getItemType
     val isArrayLookup: Boolean = containerType.isInstanceOf[ArrayItemType]

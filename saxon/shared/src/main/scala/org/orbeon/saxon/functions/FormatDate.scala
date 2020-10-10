@@ -76,7 +76,7 @@ object FormatDate {
 //      }
     }
     val numberer: Numberer = config.makeNumberer(lang, placeStr)
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     if (numberer.getClass == classOf[Numberer_en] && "en" != lang &&
       !languageDefaulted) {
       sb.append("[Language: en]")
@@ -567,7 +567,7 @@ object FormatDate {
         else Math.max(max, range(1))
       if (defaultFormat) {
         if (primary.endsWith("1") && min != primary.length) {
-          val sb: FastStringBuffer = new FastStringBuffer(min + 1)
+          val sb = new FastStringBuffer(min + 1)
           for (i <- 1 until min) {
             sb.cat('0')
           }

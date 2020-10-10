@@ -196,7 +196,7 @@ class WindowClause extends Clause {
     val required: ItemType = requiredType.getPrimaryType
     val supplied: ItemType = getSequence.getItemType
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val rel: Affinity.Affinity = th.relationship(required, supplied)
     rel match {
       case SAME_TYPE | SUBSUMES =>

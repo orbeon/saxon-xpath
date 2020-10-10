@@ -560,7 +560,7 @@ object Converter {
 
     def convert(input: AtomicValue): BooleanValue =
       BooleanValue.get(
-        input.asInstanceOf[NumericValue].effectiveBooleanValue())
+        input.asInstanceOf[NumericValue].effectiveBooleanValue)
 
   }
 

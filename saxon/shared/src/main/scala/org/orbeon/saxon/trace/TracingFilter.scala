@@ -84,7 +84,7 @@ class TracingFilter(nextReceiver: Receiver)
     out.println(
       "RCVR " + id + indent + " CHARACTERS " +
         (if (Whitespace.isWhite(chars)) "(whitespace)" else ""))
-    val sb: FastStringBuffer = new FastStringBuffer(chars.length * 4)
+    val sb = new FastStringBuffer(chars.length * 4)
     sb.cat(chars).append(":")
     for (i <- 0 until chars.length) {
       sb.append(chars.charAt(i).toInt.toString + " ")

@@ -196,7 +196,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
       if (constantText != null) {
         textValue = constantText
       } else {
-        val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+        val sb = new FastStringBuffer(FastStringBuffer.C64)
         val iter: SequenceIterator = getContentExpression.iterate(context)
         var item: Item = null
         while (({

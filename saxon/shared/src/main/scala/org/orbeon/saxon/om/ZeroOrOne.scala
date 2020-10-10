@@ -91,7 +91,7 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
       def getReverseIterator: SequenceIterator = iterate()
     }
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(item)
 
   /**

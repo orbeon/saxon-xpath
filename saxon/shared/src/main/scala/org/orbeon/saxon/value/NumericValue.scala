@@ -76,7 +76,7 @@ abstract class NumericValue
     * @return true, unless the value is boolean false, numeric zero, or
     * zero-length string
     */
-  def effectiveBooleanValue(): Boolean
+  def effectiveBooleanValue: Boolean
 
   /**
     * Return the numeric value as a Java long.

@@ -114,7 +114,7 @@ object FormatNumber {
     var i: Int = s.lastIndexOf(zeros)
     if (i > 0) {
       if (p < 0 || i < p) {
-        val sb: FastStringBuffer = new FastStringBuffer(s.length)
+        val sb = new FastStringBuffer(s.length)
         sb.append(s.substring(0, i))
         for (n <- i until s.length) {
           sb.cat(if (s.charAt(n) == '.') '.' else '0')
@@ -127,7 +127,7 @@ object FormatNumber {
       i = s.indexOf(nines)
       if (i >= 0) {
         if (i == start) {
-          val sb: FastStringBuffer = new FastStringBuffer(s.length + 1)
+          val sb = new FastStringBuffer(s.length + 1)
           if (start == 1) {
             sb.cat('-')
           }
@@ -143,7 +143,7 @@ object FormatNumber {
           if (i < 0 || s.charAt(i) == '-') {
             return initial
           } else if (p < 0 || i < p) {
-            val sb: FastStringBuffer = new FastStringBuffer(s.length)
+            val sb = new FastStringBuffer(s.length)
             sb.append(s.substring(0, i))
             sb.cat((s.charAt(i).toInt + 1).toChar)
             for (n <- i until s.length) {
@@ -478,7 +478,7 @@ object FormatNumber {
         java.lang.Double.isInfinite(numValue.getDoubleValue)) {
         minusSign + prefix + dfs.getInfinity + suffix
       }
-      val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+      val sb = new FastStringBuffer(FastStringBuffer.C16)
       if (numValue.isInstanceOf[DoubleValue] || numValue.isInstanceOf[FloatValue]) {
         val dec: BigDecimal = adjustToDecimal(numValue.getDoubleValue, 2)
         formatDecimal(dec, sb)

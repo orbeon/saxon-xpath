@@ -140,7 +140,7 @@ object HTMLURIEscaper {
   }
 
   private def reallyEscapeURL(url: CharSequence): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(url.length + 20)
+    val sb = new FastStringBuffer(url.length + 20)
     val hex: String = "0123456789ABCDEF"
     val array: Array[Byte] = Array.ofDim[Byte](4)
     for (i <- 0 until url.length) {

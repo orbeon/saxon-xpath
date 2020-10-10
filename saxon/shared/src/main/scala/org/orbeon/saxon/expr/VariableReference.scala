@@ -169,7 +169,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
                          cardinality: Int,
                          constantValue: GroundedValue,
                          properties: Int): Unit = {
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     val oldItemType: ItemType = getItemType
     var newItemType: ItemType = oldItemType
     if (th.isSubType(`type`, oldItemType)) {

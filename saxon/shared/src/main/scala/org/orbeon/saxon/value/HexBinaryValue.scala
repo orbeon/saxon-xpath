@@ -92,7 +92,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
 
   def getPrimitiveStringValue(): CharSequence = {
     val digits: String = "0123456789ABCDEF"
-    val sb: FastStringBuffer = new FastStringBuffer(binaryValue.length * 2)
+    val sb = new FastStringBuffer(binaryValue.length * 2)
     for (aBinaryValue <- binaryValue) {
       sb.cat(digits.charAt((aBinaryValue >> 4) & 0xf))
       sb.cat(digits.charAt(aBinaryValue & 0xf))

@@ -128,7 +128,7 @@ class SingletonAtomizer(sequence: Expression,
     val result: PathMap.PathMapNodeSet =
       getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (result != null) {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       val operandItemType: ItemType = getBaseExpression.getItemType
       if (th.relationship(NodeKindTest.ELEMENT, operandItemType) !=
         Affinity.DISJOINT ||

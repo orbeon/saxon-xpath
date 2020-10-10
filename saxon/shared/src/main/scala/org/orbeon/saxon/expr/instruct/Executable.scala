@@ -214,7 +214,7 @@ class Executable(var config: Configuration) {
         "The global context item is required to be absent",
         "XPDY0002")
     }
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (contextItemVar == null) {
       if (!globalContextRequirement.isMayBeOmitted) {
         throw new XPathException(

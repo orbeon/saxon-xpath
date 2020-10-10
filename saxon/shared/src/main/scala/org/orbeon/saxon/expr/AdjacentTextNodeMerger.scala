@@ -69,7 +69,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     if (th.relationship(getBaseExpression.getItemType, NodeKindTest.TEXT) ==
       Affinity.DISJOINT) {
       val base: Expression = getBaseExpression

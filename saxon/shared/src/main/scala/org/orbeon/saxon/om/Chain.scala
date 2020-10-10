@@ -180,7 +180,7 @@ class Chain(private var children: ju.List[GroundedValue]) extends GroundedValue 
       n
     }
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
   def getStringValue: String = SequenceTool.getStringValue(this)

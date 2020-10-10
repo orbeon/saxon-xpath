@@ -49,7 +49,7 @@ abstract class BooleanExpression(p1: Expression, operator: Int, p2: Expression)
                          contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     val err0: XPathException = TypeChecker.ebvError(getLhsExpression, th)
     if (err0 != null) {
       err0.setLocator(getLocation)

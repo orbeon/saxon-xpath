@@ -147,7 +147,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
         throw err
       }
     } else {
-      val th: TypeHierarchy = contxt.getConfiguration.getTypeHierarchy
+      val th = contxt.getConfiguration.getTypeHierarchy
       if (requiredContextItemType != AnyItemType && !requiredContextItemType
         .matches(contextItem, th)) {
         val role: RoleDiagnostic = new RoleDiagnostic(

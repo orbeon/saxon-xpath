@@ -105,7 +105,7 @@ class FloatValue() extends NumericValue {
    *
    * @return true unless the value is zero or NaN
    */
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     (value != 0.0 && !java.lang.Float.isNaN(value))
 
   /*@NotNull*/

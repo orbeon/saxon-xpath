@@ -104,7 +104,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     }
     val config: Configuration = visitor.getConfiguration
     if (contextItemType.getGenre != Genre.NODE) {
-      val th: TypeHierarchy = config.getTypeHierarchy
+      val th = config.getTypeHierarchy
       val relation: Affinity.Affinity =
         th.relationship(contextItemType, AnyNodeTest.getInstance)
       if (relation == Affinity.DISJOINT) {

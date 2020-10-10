@@ -55,7 +55,7 @@ object Err {
     if (cs == null) {
       return "(NULL)"
     }
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     val len = cs.length
     for (i <- 0 until len) {
       val c: Char = cs.charAt(i)
@@ -154,7 +154,7 @@ object Err {
                           max: Int,
                           actual: Int): String =
     try {
-      val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+      val sb = new FastStringBuffer(FastStringBuffer.C64)
       var count: Int = 0
       sb.append(" (")
       var next: Item = null

@@ -399,7 +399,7 @@ class FilterExpression(base: Expression, filter: Expression)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     getLhs.typeCheck(visitor, contextInfo)
     getBase.setFiltered(true)
     if (Literal.isEmptySequence(getBase)) {
@@ -436,7 +436,7 @@ class FilterExpression(base: Expression, filter: Expression)
     val opt: Optimizer = visitor.obtainOptimizer()
     val tracing: Boolean =
       config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     getLhs.optimize(visitor, contextItemType)
     getBase.setFiltered(true)
     val baseItemType: ContextItemStaticInfo =
@@ -646,7 +646,7 @@ class FilterExpression(base: Expression, filter: Expression)
   private def tryToRewritePositionalFilter(visitor: ExpressionVisitor,
                                            tracing: Boolean): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     if (getFilter.isInstanceOf[Literal]) {
       val `val`: GroundedValue = getFilter.asInstanceOf[Literal].getValue
       if (`val`.isInstanceOf[NumericValue]) {
@@ -893,7 +893,7 @@ class FilterExpression(base: Expression, filter: Expression)
   override def toPattern(config: Configuration): Pattern = {
     val base: Expression = getSelectExpression
     val filter: Expression = getFilter
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val basePattern: Pattern = base.toPattern(config)
     if (!isPositional(th)) {
       new BasePatternWithPredicate(basePattern, filter)

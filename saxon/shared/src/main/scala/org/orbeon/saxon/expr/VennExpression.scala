@@ -42,7 +42,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     val t1: ItemType = getLhsExpression.getItemType
     if (op == Token.UNION) {
       val t2: ItemType = getRhsExpression.getItemType
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       Type.getCommonSuperType(t1, t2, th)
     } else {
       t1
@@ -190,7 +190,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         visitor))
     }
     if (op != Token.UNION) {
-      val th: TypeHierarchy = config.getTypeHierarchy
+      val th = config.getTypeHierarchy
       val t0: ItemType = getLhsExpression.getItemType
       val t1: ItemType = getRhsExpression.getItemType
       if (th.relationship(t0, t1) == Affinity.DISJOINT) {
@@ -216,7 +216,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       return e
     }
     val config: Configuration = visitor.getConfiguration
-    val th: TypeHierarchy = config.getTypeHierarchy
+    val th = config.getTypeHierarchy
     val lhs: Expression = getLhsExpression
     val rhs: Expression = getRhsExpression
     op match {

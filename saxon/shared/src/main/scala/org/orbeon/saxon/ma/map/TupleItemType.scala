@@ -108,7 +108,7 @@ class TupleItemType(names: List[String],
   override def getBasicAlphaCode: String = "FM"
 
   private def makeString(show: SequenceType => String): String = {
-    val sb: FastStringBuffer = new FastStringBuffer(100)
+    val sb = new FastStringBuffer(100)
     sb.append("tuple(")
     var first: Boolean = true
     for ((key, value) <- fields.asScala) {

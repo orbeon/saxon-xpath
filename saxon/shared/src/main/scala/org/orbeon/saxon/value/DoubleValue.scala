@@ -103,7 +103,7 @@ class DoubleValue() extends NumericValue {
     *
     * @return the effective boolean value (true unless the value is zero or NaN)
     */
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     value != 0.0 && !java.lang.Double.isNaN(value)
 
   /**

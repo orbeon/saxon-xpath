@@ -167,7 +167,7 @@ object QueryReader {
     if (p >= len) {
       new String(in, i, len - i)
     }
-    val sb: FastStringBuffer = new FastStringBuffer(p - i + 1)
+    val sb = new FastStringBuffer(p - i + 1)
     var c: Int = i
     while (c <= p) {
       sb.cat(ch(in(c)).toChar)

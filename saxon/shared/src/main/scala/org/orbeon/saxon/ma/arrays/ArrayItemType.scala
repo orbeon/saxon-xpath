@@ -50,18 +50,13 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
   override def getDefaultPriority: Double =
     memberType.getPrimaryType.getNormalizedDefaultPriority
 
-  override def matches(item: Item, th: TypeHierarchy): Boolean = {
+  override def matches(item: Item, th: TypeHierarchy): Boolean =
     if (! item.isInstanceOf[ArrayItem])
-      return false
-    if (this == ANY_ARRAY_TYPE) {
+      false
+    else if (this == ANY_ARRAY_TYPE)
       true
-    } else {
-      item
-        .asInstanceOf[ArrayItem]
-        .members()
-        .find(! memberType.matches(_, th)).forall(_ => false) // ORBEON: makes sense?
-    }
-  }
+    else
+      item.asInstanceOf[ArrayItem].members().forall(memberType.matches(_, th))
 
   override def getResultType: SequenceType = memberType
 
@@ -71,7 +66,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
     if (this == ANY_ARRAY_TYPE) {
       "array(*)"
     } else {
-      val sb: FastStringBuffer = new FastStringBuffer(100)
+      val sb = new FastStringBuffer(100)
       sb.append("array(")
       sb.append(show.apply(memberType))
       sb.append(")")

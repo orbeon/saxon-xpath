@@ -251,7 +251,7 @@ class CopyOf(select: Expression,
     }
     val config: Configuration = getConfiguration
     if (schemaType != null) {
-      val th: TypeHierarchy = config.getTypeHierarchy
+      val th = config.getTypeHierarchy
       val e: Affinity.Affinity = th.relationship(in, NodeKindTest.ELEMENT)
       if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
         new ContentTypeTest(Type.ELEMENT, schemaType, config, false)
@@ -264,7 +264,7 @@ class CopyOf(select: Expression,
       validation match {
         case Validation.PRESERVE => return in
         case Validation.STRIP => {
-          val th: TypeHierarchy = config.getTypeHierarchy
+          val th = config.getTypeHierarchy
           val e: Affinity.Affinity = th.relationship(in, NodeKindTest.ELEMENT)
           if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
             new ContentTypeTest(Type.ELEMENT,
@@ -288,7 +288,7 @@ class CopyOf(select: Expression,
         }
         case Validation.STRICT | Validation.LAX =>
           if (in.isInstanceOf[NodeTest]) {
-            val th: TypeHierarchy = config.getTypeHierarchy
+            val th = config.getTypeHierarchy
             val fp: Int = in.asInstanceOf[NodeTest].getFingerprint
             if (fp != -1) {
               val e: Affinity.Affinity = th.relationship(in, NodeKindTest.ELEMENT)
@@ -374,7 +374,7 @@ class CopyOf(select: Expression,
       setSelect(config
         .getTypeChecker(false)
         .staticTypeCheck(getSelect, SequenceType.SINGLE_NODE, role, visitor))
-      val th: TypeHierarchy = config.getTypeHierarchy
+      val th = config.getTypeHierarchy
       val t: ItemType = getSelect.getItemType
       if (th.isSubType(t, NodeKindTest.ATTRIBUTE)) {
         throw new XPathException(
@@ -466,7 +466,7 @@ class CopyOf(select: Expression,
     val result: PathMap.PathMapNodeSet =
       super.addToPathMap(pathMap, pathMapNodeSet)
     result.setReturnable(false)
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     val `type`: ItemType = getItemType
     if (th.relationship(`type`, NodeKindTest.ELEMENT) != Affinity.DISJOINT ||
       th.relationship(`type`, NodeKindTest.DOCUMENT) != Affinity.DISJOINT) {

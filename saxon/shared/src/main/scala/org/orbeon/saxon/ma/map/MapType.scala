@@ -160,7 +160,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     } else if (this == EMPTY_MAP_TYPE) {
       "map{}"
     } else {
-      val sb: FastStringBuffer = new FastStringBuffer(100)
+      val sb = new FastStringBuffer(100)
       sb.append("map(")
       sb.append(keyType.toString)
       sb.append(", ")
@@ -184,7 +184,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
     } else if (this == EMPTY_MAP_TYPE) {
       "map{}"
     } else {
-      val sb: FastStringBuffer = new FastStringBuffer(100)
+      val sb = new FastStringBuffer(100)
       sb.append("map(")
       sb.append(keyType.toExportString)
       sb.append(", ")

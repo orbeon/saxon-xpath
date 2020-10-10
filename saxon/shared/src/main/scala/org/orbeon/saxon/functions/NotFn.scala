@@ -70,7 +70,7 @@ class NotFn extends SystemFunction {
   override def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
                                          contextInfo: ContextItemStaticInfo,
                                          arguments: Expression*): Expression = {
-    val th: TypeHierarchy =
+    val th =
       visitor.getStaticContext.getConfiguration.getTypeHierarchy
     if (arguments(0).isInstanceOf[Negatable] &&
       arguments(0).asInstanceOf[Negatable].isNegatable(th)) {

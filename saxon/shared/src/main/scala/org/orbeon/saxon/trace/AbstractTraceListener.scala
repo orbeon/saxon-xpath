@@ -107,7 +107,7 @@ abstract class AbstractTraceListener
       return ""
     }
     val collapsed: CharSequence = Whitespace.collapseWhitespace(in)
-    val sb: FastStringBuffer = new FastStringBuffer(collapsed.length + 10)
+    val sb = new FastStringBuffer(collapsed.length + 10)
     for (i <- 0 until collapsed.length) {
       val c: Char = collapsed.charAt(i)
       if (c == '<')

@@ -55,7 +55,7 @@ class FoldLeftFn extends FoldingFunction {
     // But wrapping MemoSequences too deeply can cause a StackOverflow when the unwrapping finally
     // takes place; so to avoid this, we periodically ground the value as a real in-memory concrete
 
-    def isFinished(): Boolean = false
+    def isFinished: Boolean = false
     def result(): Sequence = data
   }
 

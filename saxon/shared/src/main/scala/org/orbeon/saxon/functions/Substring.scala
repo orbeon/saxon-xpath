@@ -110,7 +110,7 @@ class Substring extends SystemFunction with Callable {
     if (e2 != caller) {
       return e2
     }
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     if (caller.getArg(1).isCallOn(classOf[Number_1])) {
       val a1: Expression =
         caller.getArg(1).asInstanceOf[StaticFunctionCall].getArg(0)

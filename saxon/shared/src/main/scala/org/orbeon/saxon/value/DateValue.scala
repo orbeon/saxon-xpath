@@ -218,7 +218,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DATE
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     var yr: Int = year
     if (year <= 0) {
 

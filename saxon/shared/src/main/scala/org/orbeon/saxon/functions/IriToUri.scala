@@ -50,7 +50,7 @@ object IriToUri {
     if (allAllowedAscii(s)) {
       return s
     }
-    val sb: FastStringBuffer = new FastStringBuffer(s.length + 20)
+    val sb = new FastStringBuffer(s.length + 20)
     for (i <- 0 until s.length) {
       val c: Char = s.charAt(i)
       if (c >= 0x7f || !allowedASCII(c.toInt)) {

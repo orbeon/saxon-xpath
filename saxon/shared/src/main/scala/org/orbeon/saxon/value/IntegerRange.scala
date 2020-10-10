@@ -96,7 +96,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
 
   def getStringValue: String = getStringValueCS.toString
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
   /**

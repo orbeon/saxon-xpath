@@ -180,7 +180,7 @@ class TemplateRule
 
   def applyLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     var XPathCont = context
-    val th: TypeHierarchy = XPathCont.getConfiguration.getTypeHierarchy
+    val th = XPathCont.getConfiguration.getTypeHierarchy
     if (requiredContextItemType != AnyItemType &&
       !requiredContextItemType.matches(XPathCont.getContextItem, th)) {
       val role: RoleDiagnostic = new RoleDiagnostic(

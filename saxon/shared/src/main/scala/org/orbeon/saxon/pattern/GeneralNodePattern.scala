@@ -77,7 +77,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     ExpressionTool.allocateSlots(equivalentExpr, nextFree, slotManager)
 
   def matches(item: Item, context: XPathContext): Boolean = {
-    val th: TypeHierarchy = context.getConfiguration.getTypeHierarchy
+    val th = context.getConfiguration.getTypeHierarchy
     if (!itemTyp.matches(item, th)) {
       return false
     }

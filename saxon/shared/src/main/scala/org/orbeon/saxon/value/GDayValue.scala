@@ -57,7 +57,7 @@ class GDayValue() extends GDateValue {
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_DAY
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     sb.append("---")
     appendTwoDigits(sb, day)
     if (hasTimezone) {

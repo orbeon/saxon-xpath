@@ -263,7 +263,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
   def getMicrosecond: Int = nanosecond / 1000
 
   def getPrimitiveStringValue(): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     appendTwoDigits(sb, hour)
     sb.cat(':')
     appendTwoDigits(sb, minute)

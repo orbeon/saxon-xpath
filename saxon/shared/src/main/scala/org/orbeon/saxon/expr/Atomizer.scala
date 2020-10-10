@@ -220,7 +220,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     getOperand.typeCheck(visitor, contextInfo)
     untyped = untyped |
       !visitor.getStaticContext.getPackageData.isSchemaAware
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     computeSingleValued(th)
     resetLocalStaticProperties()
     val operandType: ItemType = getOperandItemType
@@ -282,7 +282,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
                         contextInfo: ContextItemStaticInfo): Expression = {
     val exp: Expression = super.optimize(visitor, contextInfo)
     if (exp == this) {
-      val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+      val th = visitor.getConfiguration.getTypeHierarchy
       val operand: Expression = getBaseExpression
       if (th.isSubType(operand.getItemType, BuiltInAtomicType.ANY_ATOMIC)) {
         return operand
@@ -398,7 +398,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   override def getItemType: ItemType = {
     operandItemType = getBaseExpression.getItemType
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     getAtomizedItemType(getBaseExpression, untyped, th)
   }
 
@@ -428,7 +428,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     val result: PathMap.PathMapNodeSet =
       getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (result != null) {
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       val operandItemType: ItemType = getBaseExpression.getItemType
       if (th.relationship(NodeKindTest.ELEMENT, operandItemType) !=
         Affinity.DISJOINT ||

@@ -181,7 +181,7 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
   }
 
   override def toString: String = {
-    val sb: FastStringBuffer = new FastStringBuffer(contents.length * 4)
+    val sb = new FastStringBuffer(contents.length * 4)
     var i = 0
     while (i < contents.length) {
       if (i == contents.length - 1) {

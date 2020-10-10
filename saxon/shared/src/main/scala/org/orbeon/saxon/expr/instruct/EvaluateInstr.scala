@@ -313,7 +313,7 @@ class EvaluateInstr(xpath: Expression,
       if (isSchemaAware) {
         val allowAny: GroundedValue =
           options.get(new StringValue("allow-any-namespace"))
-        if (allowAny != null && allowAny.effectiveBooleanValue()) {
+        if (allowAny != null && allowAny.effectiveBooleanValue) {
           env.setImportedSchemaNamespaces(config.getImportedNamespaces)
         } else {
           env.setImportedSchemaNamespaces(importedSchemaNamespaces)

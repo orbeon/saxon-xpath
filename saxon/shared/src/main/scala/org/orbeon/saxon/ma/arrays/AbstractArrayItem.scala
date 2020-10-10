@@ -128,7 +128,7 @@ abstract class AbstractArrayItem extends ArrayItem {
       false
     }
 
-  override def effectiveBooleanValue(): Boolean =
+  override def effectiveBooleanValue: Boolean =
     throw new XPathException(
       "Effective boolean value is not defined for arrays",
       "FORG0006")

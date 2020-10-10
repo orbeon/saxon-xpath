@@ -36,7 +36,7 @@ class RootExpression extends Expression {
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     if (contextInfo == null || contextInfo.getItemType == null ||
       contextInfo.getItemType == ErrorType) {
       val err = new XPathException(

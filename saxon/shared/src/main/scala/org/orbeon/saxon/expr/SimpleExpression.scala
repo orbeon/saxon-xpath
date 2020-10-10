@@ -51,7 +51,6 @@
 //
 //  def copy(rebindings: RebindingMap): Expression = {
 //
-////    xxxxx
 //    val se2: SimpleExpression = getClass.newInstance()
 //    val a2: Array[Expression] =
 //      Array.ofDim[Expression](operanda.getNumberOfOperands)

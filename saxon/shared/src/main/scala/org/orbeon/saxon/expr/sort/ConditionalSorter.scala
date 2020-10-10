@@ -92,7 +92,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     val cond: Expression = rewriter.rewrite(getCondition)
     if (cond.isInstanceOf[Literal]) {
       val b: Boolean =
-        cond.asInstanceOf[Literal].value.effectiveBooleanValue()
+        cond.asInstanceOf[Literal].value.effectiveBooleanValue
       if (b) {
         base
       } else {

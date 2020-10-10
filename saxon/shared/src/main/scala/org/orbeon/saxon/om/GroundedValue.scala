@@ -36,7 +36,7 @@ trait GroundedValue extends Sequence {
 
   def getLength: Int
 
-  def effectiveBooleanValue(): Boolean =
+  def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
   def getStringValue: String

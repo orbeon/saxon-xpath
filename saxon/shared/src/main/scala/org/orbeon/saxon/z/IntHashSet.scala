@@ -42,7 +42,7 @@ object IntHashSet {
   }
 
   def toString(it: IntIterator): String = {
-    val sb: FastStringBuffer = new FastStringBuffer(100)
+    val sb = new FastStringBuffer(100)
     while (it.hasNext) if (sb.isEmpty) {
       sb.append("" + it.next)
     } else {
@@ -290,7 +290,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
 
   def diagnosticDump(): Unit = {
     System.err.println("Contents of IntHashSet")
-    val sb: FastStringBuffer = new FastStringBuffer(100)
+    val sb = new FastStringBuffer(100)
     for (i <- 0 until _values.length) {
       if (i % 10 == 0) {
         System.err.println(sb.toString)

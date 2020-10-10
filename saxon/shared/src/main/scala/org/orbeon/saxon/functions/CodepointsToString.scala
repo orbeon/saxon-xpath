@@ -24,7 +24,7 @@ object CodepointsToString {
 
   def unicodeToString(chars: SequenceIterator,
                       checker: IntPredicate): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val sb = new FastStringBuffer(FastStringBuffer.C64)
     while (true) {
       val nextInt: NumericValue = chars.next().asInstanceOf[NumericValue]
       if (nextInt == null) {

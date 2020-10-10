@@ -34,7 +34,7 @@ object EmptyAtomicSequence extends Enumeration {
 
     def subsequence(start: Int, length: Int): EmptyAtomicSequence = this
 
-    override def effectiveBooleanValue(): Boolean = false
+    override def effectiveBooleanValue: Boolean = false
 
     override def reduce(): EmptyAtomicSequence = this
 

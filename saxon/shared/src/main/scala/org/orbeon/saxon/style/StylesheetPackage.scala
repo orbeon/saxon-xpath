@@ -168,7 +168,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
           "The package contains two xsl:global-context-item declarations with conflicting @use attributes",
           "XTSE3087")
       }
-      val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+      val th = getConfiguration.getTypeHierarchy
       if (th.relationship(requirement.getRequiredItemType,
         globalContextRequirement.getRequiredItemType) !=
         Affinity.SAME_TYPE) {

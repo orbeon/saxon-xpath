@@ -93,7 +93,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     if (namespaceBindings.isEmpty) {
       return
     }
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     val contentType: ItemType = getContentExpression.getItemType
     var ok: Boolean = th.relationship(contentType, NodeKindTest.ATTRIBUTE) ==
       Affinity.DISJOINT

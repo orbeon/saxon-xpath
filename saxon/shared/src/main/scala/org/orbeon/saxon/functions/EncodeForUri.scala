@@ -23,7 +23,7 @@ import EncodeForUri._
 object EncodeForUri {
 
   def escape(s: CharSequence, allowedPunctuation: String): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(s.length)
+    val sb = new FastStringBuffer(s.length)
     for (i <- 0 until s.length) {
       val c: Char = s.charAt(i)
       if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {

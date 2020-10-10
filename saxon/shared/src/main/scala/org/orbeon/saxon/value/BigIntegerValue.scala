@@ -153,7 +153,7 @@ class BigIntegerValue() extends IntegerValue {
     *
     * @return false if the integer is zero, otherwise true
     */
-  override def effectiveBooleanValue(): Boolean = value.compareTo(BigInteger.ZERO) != 0
+  override def effectiveBooleanValue: Boolean = value.compareTo(BigInteger.ZERO) != 0
 
   override def compareTo(other: NumericValue): Int =
     if (other.isInstanceOf[BigIntegerValue]) {

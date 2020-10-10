@@ -292,7 +292,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
         t1.getPrimitiveItemType.asInstanceOf[AtomicType],
         t2.getPrimitiveItemType.asInstanceOf[AtomicType])
       if (resultType == BuiltInAtomicType.ANY_ATOMIC) {
-        val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+        val th = getConfiguration.getTypeHierarchy
         if ((operator == Token.PLUS || operator == Token.MINUS) &&
           (NumericType.isNumericType(t2) || NumericType.isNumericType(t1))) {
           resultType = NumericType.getInstance

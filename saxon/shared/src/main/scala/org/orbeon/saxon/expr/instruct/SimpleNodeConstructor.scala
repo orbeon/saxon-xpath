@@ -62,7 +62,7 @@ abstract class SimpleNodeConstructor extends Instruction {
                          contextInfo: ContextItemStaticInfo): Expression = {
     typeCheckChildren(visitor, contextInfo)
     localTypeCheck(visitor, contextInfo)
-    val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+    val th = visitor.getConfiguration.getTypeHierarchy
     if (getSelect.isInstanceOf[ValueOf]) {
       val valSelect: Expression = getSelect.asInstanceOf[ValueOf].getSelect
       if (th.isSubType(valSelect.getItemType, BuiltInAtomicType.STRING) &&
@@ -96,7 +96,7 @@ abstract class SimpleNodeConstructor extends Instruction {
     optimizeChildren(visitor, contextItemType)
     if (getSelect.isCallOn(classOf[String_1])) {
       val sf: SystemFunctionCall = getSelect.asInstanceOf[SystemFunctionCall]
-      val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+      val th = visitor.getConfiguration.getTypeHierarchy
       if (th.isSubType(sf.getArg(0).getItemType, BuiltInAtomicType.STRING) &&
         !Cardinality.allowsMany(sf.getArg(0).getCardinality)) {
         this.setSelect(sf.getArg(0))

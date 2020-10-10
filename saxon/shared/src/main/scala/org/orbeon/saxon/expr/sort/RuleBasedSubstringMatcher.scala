@@ -13,7 +13,7 @@
 ////    val collator: RuleBasedCollator = new RuleBasedCollator(rules)
 ////    for (i <- 0 until args.length) {
 ////      System.err.println(args(i))
-////      val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
+////      val sb = new FastStringBuffer(FastStringBuffer.C256)
 ////      val iter: CollationElementIterator =
 ////        collator.getCollationElementIterator(args(i))
 ////      breakable {

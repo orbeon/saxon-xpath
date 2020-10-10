@@ -239,7 +239,7 @@ abstract class Minimax extends CollatingFunctionFixed {
   }
 
   override def getResultItemType(args: Array[Expression]): ItemType = {
-    val th: TypeHierarchy =
+    val th =
       getRetainedStaticContext.getConfiguration.getTypeHierarchy
     var base: ItemType = Atomizer.getAtomizedItemType(args(0), alwaysUntyped = false, th)
     if (base == BuiltInAtomicType.UNTYPED_ATOMIC) {
@@ -263,7 +263,7 @@ abstract class Minimax extends CollatingFunctionFixed {
       val it: ItemType = arguments(0).getItemType.getPrimitiveItemType
       if (it.isInstanceOf[BuiltInAtomicType] &&
         it.asInstanceOf[BuiltInAtomicType].isOrdered(false)) {
-        val th: TypeHierarchy = visitor.getConfiguration.getTypeHierarchy
+        val th = visitor.getConfiguration.getTypeHierarchy
         if (th.relationship(it, BuiltInAtomicType.UNTYPED_ATOMIC) !=
           Affinity.DISJOINT) {
           UntypedSequenceConverter

@@ -109,7 +109,7 @@ class NumberFormatter {
              letterValue: String,
              ordinal: String,
              numberer: Numberer): CharSequence = {
-    val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
+    val sb = new FastStringBuffer(FastStringBuffer.C16)
     var num: Int = 0
     var tok: Int = 0
     if (startsWithPunctuation) {
@@ -178,7 +178,7 @@ class NumberFormatter {
         digits(z) = zero + z
         z += 1
       }
-      val sb: FastStringBuffer = new FastStringBuffer(128)
+      val sb = new FastStringBuffer(128)
       for (i <- 0 until in.length) {
         val c: Char = in.charAt(i)
         if (c >= '0' && c <= '9') {

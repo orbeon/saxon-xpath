@@ -166,7 +166,7 @@ class GlobalVariable
     this.isRequiredParam = requiredParam
 
   def compile(exec: Executable, slot: Int): Unit = {
-    val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+    val th = getConfiguration.getTypeHierarchy
     this.binderySlotNumber = slot
     if (this.isInstanceOf[GlobalParam]) {
       setRequiredParam(getBody == null)

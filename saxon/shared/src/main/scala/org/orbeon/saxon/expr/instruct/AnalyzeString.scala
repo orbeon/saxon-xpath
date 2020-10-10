@@ -241,7 +241,7 @@ class AnalyzeString(select: Expression,
   override def getItemType: ItemType =
     if (getMatching != null) {
       if (getNonMatching != null) {
-        val th: TypeHierarchy = getConfiguration.getTypeHierarchy
+        val th = getConfiguration.getTypeHierarchy
         Type.getCommonSuperType(getMatching.getItemType,
           getNonMatching.getItemType,
           th)
