@@ -1,6 +1,8 @@
 package org.orbeon.saxon
 
-import org.orbeon.saxon.lib.NamespaceConstant
+import java.io.PrintStream
+
+import org.orbeon.saxon.lib.{NamespaceConstant, StandardLogger}
 import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.sxpath.{IndependentContext, XPathEvaluator}
@@ -46,6 +48,8 @@ class XPathTest extends AnyFunSpec {
       "'To be' || ', or not to be'"                 -> "To be, or not to be",
       "math:cos(0)"                                 -> "1",
       "math:cos(math:pi())"                         -> "-1",
+      """let $fn := function($v) { $v * 2 }
+         return $fn(7)"""                           -> "14",
 //      """
 //        let $f :=
 //          function ($seq, $delim) {
