@@ -366,21 +366,21 @@ object ExpressionTool {
   }
 
 
-  def allocateSlots(exp: Expression, nextFree: Int, frame: SlotManager): Int = {
-    var nextFreeCount = nextFree
+  def allocateSlots(exp: Expression, _nextFree: Int, frame: SlotManager): Int = {
+    var nextFree = _nextFree
     exp match {
       case assignation: Assignation =>
-        assignation.setSlotNumber(nextFreeCount)
+        assignation.setSlotNumber(nextFree)
         val count = assignation.getRequiredSlots
-        nextFreeCount += count
+        nextFree += count
         if (frame != null)
           frame.allocateSlotNumber(assignation.getVariableQName)
       case _ =>
     }
     exp match {
       case param: LocalParam if param.getSlotNumber < 0 => param.setSlotNumber({
-        nextFreeCount += 1
-        nextFreeCount
+        nextFree += 1
+        nextFree
       })
       case _ =>
     }
@@ -389,8 +389,8 @@ object ExpressionTool {
         for (c <- expr.getClauseList.asScala) {
           for (b <- c.getRangeVariables) {
             b.setSlotNumber({
-              nextFreeCount += 1
-              nextFreeCount
+              nextFree += 1
+              nextFree
             })
             frame.allocateSlotNumber(b.getVariableQName)
           }
@@ -401,14 +401,17 @@ object ExpressionTool {
       case varRef: VariableReference =>
         val binding = varRef.getBinding
 
-        if (exp.isInstanceOf[LocalVariableReference])
-          varRef.asInstanceOf[LocalVariableReference].setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber)
+        varRef match {
+          case reference: LocalVariableReference =>
+            reference.setSlotNumber(binding.asInstanceOf[LocalBinding].getLocalSlotNumber)
+          case _ =>
+        }
         binding match {
           case decl: Assignation if binding.asInstanceOf[LocalBinding].getLocalSlotNumber < 0 =>
 
 
             var err: Logger = null
-            try err = exp.getConfiguration.getLogger
+            try err = varRef.getConfiguration.getLogger
             catch {
               case _: Exception =>
                 err = new StandardLogger
@@ -431,10 +434,10 @@ object ExpressionTool {
     }
     exp match {
       case pattern: Pattern =>
-        nextFreeCount = pattern.allocateSlots(frame, nextFreeCount)
+        nextFree = pattern.allocateSlots(frame, nextFree)
       case _ =>
         for (o <- exp.operands.asScala)
-          nextFreeCount = allocateSlots(o.getChildExpression, nextFree, frame)
+          nextFree = allocateSlots(o.getChildExpression, nextFree, frame)
     }
     nextFree
   }
