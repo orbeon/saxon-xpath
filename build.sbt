@@ -21,7 +21,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   .settings(
     organization := "org.orbeon",
     name         := "saxon",
-    version      := "10.0.0.1-SNAPSHOT",
+    version      := "10.0.0.2-SNAPSHOT",
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
