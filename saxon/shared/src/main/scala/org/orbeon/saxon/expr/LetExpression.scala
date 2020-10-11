@@ -22,28 +22,25 @@ class LetExpression extends Assignation with TailCallReturner {
 
   @BeanProperty
   var evaluator: Evaluator = null
-
   private var needsEagerEvaluation: Boolean = false
-
   var needsLazyEvaluation: Boolean = false
-
   var isInstruct: Boolean = false
 
-  def setInstruction(inst: Boolean): Unit = {
+  def setInstruction(inst: Boolean): Unit =
     isInstruct = inst
-  }
 
   override def getExpressionName: String = "let"
 
   def setNeedsEagerEvaluation(req: Boolean): Unit = {
-    if (req && needsLazyEvaluation) {}
+    if (req && needsLazyEvaluation) {
+      // No action - see bug #2903, Lazy evaluation wins
+    }
     this.needsEagerEvaluation = req
   }
 
   def setNeedsLazyEvaluation(req: Boolean): Unit = {
-    if (req && needsEagerEvaluation) {
+    if (req && needsEagerEvaluation)
       this.needsEagerEvaluation = false
-    }
     this.needsLazyEvaluation = req
   }
 
@@ -91,15 +88,14 @@ class LetExpression extends Assignation with TailCallReturner {
                                backwardsCompatible: Boolean,
                                role: RoleDiagnostic,
                                visitor: ExpressionVisitor): Expression = {
-    val tc: TypeChecker =
-      visitor.getConfiguration.getTypeChecker(backwardsCompatible)
+    val tc = visitor.getConfiguration.getTypeChecker(backwardsCompatible)
     this.setAction(tc.staticTypeCheck(getAction, req, role, visitor))
     this
   }
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    val opt: Optimizer = visitor.obtainOptimizer()
+    val opt = visitor.obtainOptimizer()
     getAction match {
       case variableRef: VariableReference if ! ExpressionTool.changesXsltContext(getSequence) && (variableRef.getBinding eq this) =>
         getSequenceOp.optimize(visitor, contextItemType)
@@ -113,14 +109,11 @@ class LetExpression extends Assignation with TailCallReturner {
       return getAction.optimize(visitor, contextItemType)
     }
     getSequence match {
-      case instr: DocumentInstr if instr
-        .isTextOnly =>
+      case instr: DocumentInstr if instr.isTextOnly =>
         verifyReferences()
         if (allReferencesAreFlattened()) {
-          var stringValueExpression: Expression =
-            instr.getStringValueExpression
-          stringValueExpression =
-            stringValueExpression.typeCheck(visitor, contextItemType)
+          var stringValueExpression = instr.getStringValueExpression
+          stringValueExpression = stringValueExpression.typeCheck(visitor, contextItemType)
           this.setSequence(stringValueExpression)
           requiredType = SequenceType.SINGLE_UNTYPED_ATOMIC
           adoptChildExpression(getSequence)
@@ -132,13 +125,12 @@ class LetExpression extends Assignation with TailCallReturner {
         }
       case _ =>
     }
-    if (getSequence.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS)) {
+    if (getSequence.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS))
       needsEagerEvaluation = true
-    }
     hasLoopingReference |= removeDeadReferences
     if (!needsEagerEvaluation) {
-      var considerRemoval: Boolean = ((references != null && references.size < 2) || getSequence
-        .isInstanceOf[VariableReference]) &&
+      var considerRemoval =
+        ((references != null && references.size < 2) || getSequence.isInstanceOf[VariableReference]) &&
         !isIndexedVariable &&
         !hasLoopingReference &&
         !needsEagerEvaluation
@@ -151,16 +143,14 @@ class LetExpression extends Assignation with TailCallReturner {
         opt.trace("Eliminated unused variable " + getVariableName, getAction)
         getAction
       }
-      if (considerRemoval && references.size == 1 && ExpressionTool
-        .dependsOnFocus(getSequence)) {
-        if (visitor.isOptimizeForStreaming) {
+      if (considerRemoval && references.size == 1 && ExpressionTool.dependsOnFocus(getSequence)) {
+        if (visitor.isOptimizeForStreaming)
           considerRemoval = false
-        }
         var child: Expression = references.get(0)
-        var parent: Expression = child.getParentExpression
+        var parent = child.getParentExpression
         breakable {
           while (parent != null && parent != this) {
-            val operand: Operand = ExpressionTool.findOperand(parent, child)
+            val operand = ExpressionTool.findOperand(parent, child)
             assert(operand != null)
             if (! operand.hasSameFocus) {
               considerRemoval = false
@@ -172,14 +162,12 @@ class LetExpression extends Assignation with TailCallReturner {
         }
       }
       if (considerRemoval && references.size == 1) {
-        if (ExpressionTool.changesXsltContext(getSequence)) {
+        if (ExpressionTool.changesXsltContext(getSequence))
           considerRemoval = false
-        } else if ((getSequence.getDependencies & StaticProperty.DEPENDS_ON_CURRENT_GROUP) !=
-          0) {
+        else if ((getSequence.getDependencies & StaticProperty.DEPENDS_ON_CURRENT_GROUP) != 0)
           considerRemoval = false
-        } else if (references.get(0).isInLoop) {
+        else if (references.get(0).isInLoop)
           considerRemoval = false
-        }
       }
       if (considerRemoval &&
         (references.size == 1 || getSequence.isInstanceOf[Literal] ||
@@ -213,12 +201,12 @@ class LetExpression extends Assignation with TailCallReturner {
         tries += 1
         tries - 1
       } < 5) {
-        val act0: Expression = getAction
+        val act0 = getAction
         getActionOp.optimize(visitor, contextItemType)
         if (act0 == getAction) {
           break()
         }
-        if (!isIndexedVariable && !needsEagerEvaluation) {
+        if (! isIndexedVariable && ! needsEagerEvaluation) {
           verifyReferences()
           if (references != null && references.size < 2) {
             if (references.isEmpty) {
@@ -237,29 +225,24 @@ class LetExpression extends Assignation with TailCallReturner {
     this
   }
 
-  def setEvaluator(): Unit = {
-    if (needsEagerEvaluation) {
+  def setEvaluator(): Unit =
+    if (needsEagerEvaluation)
       this.evaluator = ExpressionTool.eagerEvaluator(getSequence)
-    } else if (isIndexedVariable) {
+    else if (isIndexedVariable)
       this.evaluator = Evaluator.MAKE_INDEXED_VARIABLE
-    } else if (evaluator == null) {
-      this.evaluator =
-        ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
-    }
-  }
+    else if (evaluator == null)
+      this.evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
 
-  private def inlineReferences(): Unit = {
+  private def inlineReferences(): Unit =
     for (ref <- references.asScala) {
-      val parent: Expression = ref.getParentExpression
+      val parent = ref.getParentExpression
       if (parent != null) {
-        val o: Operand = ExpressionTool.findOperand(parent, ref)
-        if (o != null) {
+        val o = ExpressionTool.findOperand(parent, ref)
+        if (o != null)
           o.setChildExpression(getSequence.copy(new RebindingMap()))
-        }
         ExpressionTool.resetStaticProperties(parent)
       }
     }
-  }
 
   override def getCost: Double = getSequence.getCost + getAction.getCost
 
@@ -281,15 +264,16 @@ class LetExpression extends Assignation with TailCallReturner {
     consumer.accept("name", getVariableQName)
 
   override def iterate(context: XPathContext): SequenceIterator = {
-    var let: LetExpression = this
+    var let = this
     breakable {
       while (true) {
-        val `val`: Sequence = let.eval(context)
+        val `val` = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
@@ -297,40 +281,39 @@ class LetExpression extends Assignation with TailCallReturner {
   }
 
   def eval(context: XPathContext): Sequence = {
-    if (evaluator == null) {
-      this.evaluator =
-        ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
-    }
+
+    if (evaluator == null)
+      evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
+
     try {
-      val savedOutputState: Int = context.getTemporaryOutputState
+      val savedOutputState = context.getTemporaryOutputState
       context.setTemporaryOutputState(StandardNames.XSL_VARIABLE)
-      val result: Sequence = evaluator.evaluate(getSequence, context)
+      val result = evaluator.evaluate(getSequence, context)
       context.setTemporaryOutputState(savedOutputState)
       result
     } catch {
-      case e: ClassCastException => {
-        assert(false)
-        val savedOutputState: Int = context.getTemporaryOutputState
+      case _: ClassCastException =>
+        // Probably the evaluation mode is wrong, as a result of an expression rewrite. Try again.
+        assert(false) // ORBEON: not sure why this is there then.
+        val savedOutputState = context.getTemporaryOutputState
         context.setTemporaryOutputState(StandardNames.XSL_VARIABLE)
-        val result: Sequence =
-          Evaluator.EAGER_SEQUENCE.evaluate(getSequence, context)
+        val result = Evaluator.EAGER_SEQUENCE.evaluate(getSequence, context)
         context.setTemporaryOutputState(savedOutputState)
         result
-      }
-
     }
   }
 
   override def evaluateItem(context: XPathContext): Item = {
-    var let: LetExpression = this
+    var let = this
     breakable {
       while (true) {
-        val `val`: Sequence = let.eval(context)
+        val `val` = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
@@ -338,15 +321,16 @@ class LetExpression extends Assignation with TailCallReturner {
   }
 
   override def effectiveBooleanValue(context: XPathContext): Boolean = {
-    var let: LetExpression = this
+    var let = this
     breakable {
       while (true) {
-        val `val`: Sequence = let.eval(context)
+        val `val` = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
@@ -354,15 +338,16 @@ class LetExpression extends Assignation with TailCallReturner {
   }
 
   override def process(output: Outputter, context: XPathContext): Unit = {
-    var let: LetExpression = this
+    var let = this
     breakable {
       while (true) {
-        val `val`: Sequence = let.eval(context)
+        val `val` = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
@@ -371,21 +356,19 @@ class LetExpression extends Assignation with TailCallReturner {
 
   def getItemType: ItemType = getAction.getItemType
 
-  override def getStaticUType(contextItemType: UType): UType = {
-    if (isInstruction) {
+  override def getStaticUType(contextItemType: UType): UType =
+    if (isInstruction)
       UType.ANY
-    }
-    getAction.getStaticUType(contextItemType)
-  }
+    else
+      getAction.getStaticUType(contextItemType)
 
   def computeCardinality(): Int = getAction.getCardinality
 
   override def computeSpecialProperties(): Int = {
-    var props: Int = getAction.getSpecialProperties
-    val seqProps: Int = getSequence.getSpecialProperties
-    if ((seqProps & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {
+    var props = getAction.getSpecialProperties
+    val seqProps = getSequence.getSpecialProperties
+    if ((seqProps & StaticProperty.NO_NODES_NEWLY_CREATED) == 0)
       props &= ~StaticProperty.NO_NODES_NEWLY_CREATED
-    }
     props
   }
 
@@ -415,34 +398,35 @@ class LetExpression extends Assignation with TailCallReturner {
       while (true) {
         val `val`: Sequence = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
-    if (let.getAction.isInstanceOf[TailCallReturner]) {
-      let.getAction
-        .asInstanceOf[TailCallReturner]
-        .processLeavingTail(output, context)
-    } else {
-      let.getAction.process(output, context)
-      null
+    let.getAction match {
+      case tc: TailCallReturner =>
+        tc.processLeavingTail(output, context)
+      case _ =>
+        let.getAction.process(output, context)
+        null
     }
   }
 
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit = {
-    var let: LetExpression = this
+    var let = this
     breakable {
       while (true) {
         val `val`: Sequence = let.eval(context)
         context.setLocalVariable(let.getLocalSlotNumber, `val`)
-        if (let.getAction.isInstanceOf[LetExpression]) {
-          let = let.getAction.asInstanceOf[LetExpression]
-        } else {
-          break()
+        let.getAction match {
+          case letExpr: LetExpression =>
+            let = letExpr
+          case _ =>
+            break()
         }
       }
     }
@@ -458,17 +442,13 @@ class LetExpression extends Assignation with TailCallReturner {
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("let", this)
     out.emitAttribute("var", variableName)
-    if (getRequiredType != SequenceType.ANY_SEQUENCE) {
+    if (getRequiredType != SequenceType.ANY_SEQUENCE)
       out.emitAttribute("as", getRequiredType.toAlphaCode)
-    }
-    if (isIndexedVariable) {
+    if (isIndexedVariable)
       out.emitAttribute("indexable", "true")
-    }
     out.emitAttribute("slot", getLocalSlotNumber.toString)
-    if (evaluator == null) {
-      this.evaluator =
-        ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
-    }
+    if (evaluator == null)
+      this.evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
     out.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
     getSequence.export(out)
     getAction.export(out)
