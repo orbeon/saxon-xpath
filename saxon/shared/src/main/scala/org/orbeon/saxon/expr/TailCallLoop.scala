@@ -53,7 +53,7 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
     var result:SequenceIterator = null
     while (true) {
       val iter: SequenceIterator = getBaseExpression.iterate(cm)
-      val extent: GroundedValue = iter.materialize()
+      val extent: GroundedValue = iter.materialize
       val tail: TailCallInfo = cm.getTailCallInfo
       if (tail == null) {
         result = extent.iterate()

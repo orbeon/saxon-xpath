@@ -206,7 +206,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
       }
     }
     try if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-      return Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize(), this)
+      return Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
     } catch {
       case _: XPathException =>
       // if early evaluation fails, suppress the error: the value might

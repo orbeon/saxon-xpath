@@ -38,7 +38,7 @@ class FoldRightFn extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     evalFoldRight(arguments(2).head.asInstanceOf[Function],
-                  arguments(1).materialize(),
+                  arguments(1).materialize,
                   arguments(0).iterate(),
                   context)
 
@@ -55,7 +55,7 @@ class FoldRightFn extends SystemFunction {
       item
     } != null) {
       args(0) = item
-      args(1) = zeroVar.materialize()
+      args(1) = zeroVar.materialize
       try {
         zeroVar = SystemFunction.dynamicCall(function, context, args)
       } catch {

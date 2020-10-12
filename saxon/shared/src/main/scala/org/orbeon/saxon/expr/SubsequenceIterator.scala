@@ -25,7 +25,7 @@ object SubsequenceIterator {
         TailIterator.make(base, min)
       } else if (base.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
         min > 4) {
-        var value: GroundedValue = base.materialize()
+        var value: GroundedValue = base.materialize
         value = value.subsequence(min - 1, max - min + 1)
         value.iterate()
       } else {

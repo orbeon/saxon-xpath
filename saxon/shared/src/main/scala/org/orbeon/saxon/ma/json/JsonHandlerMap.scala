@@ -100,7 +100,7 @@ class JsonHandlerMap(context: XPathContext, flags: Int) extends JsonHandler {
       stack ::= `val`
     } else if (stack.head.isInstanceOf[ArrayItem]) {
       val array: SimpleArrayItem = stack.head.asInstanceOf[SimpleArrayItem]
-      array.getMembersList.add(`val`.materialize())
+      array.getMembersList.add(`val`.materialize)
     } else {
       val map: DictionaryMap = stack.head.asInstanceOf[DictionaryMap]
       map.initialPut({ val r = keys.head; keys = keys.tail; r }, `val`)

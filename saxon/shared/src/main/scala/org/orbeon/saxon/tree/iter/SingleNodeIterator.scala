@@ -50,7 +50,7 @@ class SingleNodeIterator private (value: NodeInfo)
 
   def getValue: NodeInfo = item
 
-  override def materialize(): GroundedValue = new ZeroOrOne(item)
+  override def materialize: GroundedValue = new ZeroOrOne(item)
 
   override def getResidue: GroundedValue =
     if (item == null) EmptySequence.getInstance else new One(item)

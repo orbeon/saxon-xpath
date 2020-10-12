@@ -236,7 +236,7 @@ abstract class Expression
   }
 
   def setRetainedStaticContextThoroughly(rsc: RetainedStaticContext): Unit = {
-    var rscVar = rsc;
+    var rscVar = rsc
     if (rscVar != null) {
       retainedStaticContext = rscVar
       for (o <- operands.asScala if o != null) {
@@ -385,12 +385,10 @@ abstract class Expression
   def effectiveBooleanValue(context: XPathContext): Boolean =
     try ExpressionTool.effectiveBooleanValue(iterate(context))
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetFailingExpression(this)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
   def evaluateAsString(context: XPathContext): CharSequence = {
@@ -413,17 +411,15 @@ abstract class Expression
         output.append(item, getLocation, ReceiverOption.ALL_NAMESPACES)
       }
     } else if (hasIterateMethod) {
-      iterate(context).forEachOrFail((it) => output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
+      iterate(context).forEachOrFail(it => output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
     } else {
       throw new AssertionError(
         "process() is not implemented in the subclass " + getClass)
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
   }
 
@@ -718,7 +714,7 @@ abstract class Expression
 
   def computeHashCode(): Int = super.hashCode
 
-  def isIdentical(other: IdentityComparable): Boolean = (this eq other)
+  def isIdentical(other: IdentityComparable): Boolean = this eq other
 
   def identityHashCode(): Int =
     System.identityHashCode(Expression.this.getLocation)

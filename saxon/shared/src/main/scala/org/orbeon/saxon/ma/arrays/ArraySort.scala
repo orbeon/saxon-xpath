@@ -69,7 +69,7 @@ object ArraySort {
     val iterator = input.iterate()
     val mapper =
       Atomizer.getAtomizingIterator(iterator, oneToOne = false)
-    mapper.materialize()
+    mapper.materialize
   }
 
 }
@@ -105,7 +105,7 @@ class ArraySort extends SystemFunction {
       i += 1
       member.originalPosition = i
       member.sortKey =
-        if (key != null) SystemFunction.dynamicCall(key, context, Array(seq)).materialize()
+        if (key != null) SystemFunction.dynamicCall(key, context, Array(seq)).materialize
         else ArraySort.atomize(seq)
       inputList.add(member)
     }

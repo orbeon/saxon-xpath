@@ -65,7 +65,7 @@ class RangeIterator(var start: Long, var limit: Long)
   def getReverseIterator: AtomicIterator[IntegerValue] =
     new ReverseRangeIterator(limit, start)
 
-  override def materialize(): GroundedValue = new IntegerRange(start, limit)
+  override def materialize: GroundedValue = new IntegerRange(start, limit)
 
   override def getResidue: GroundedValue =
     new IntegerRange(currentValue, limit)

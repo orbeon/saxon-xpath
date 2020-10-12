@@ -533,7 +533,7 @@ object PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
-                context: XPathContext): AnyRef = value.iterate().materialize()
+                context: XPathContext): AnyRef = value.iterate().materialize
 
   }
 
@@ -711,7 +711,7 @@ object PJConverter {
       if (targetClass.isAssignableFrom(seqVal.getClass)) {
         seqVal
       } else {
-        var gv: GroundedValue = seqVal.materialize()
+        var gv: GroundedValue = seqVal.materialize
         if (targetClass.isAssignableFrom(gv.getClass)) {
           return gv
         }
@@ -1202,7 +1202,7 @@ object PJConverter {
                 targetClass: Class[_],
                 context: XPathContext): Any = {
       val config: Configuration = context.getConfiguration
-      val gv: GroundedValue = value.materialize()
+      val gv: GroundedValue = value.materialize
       var converter: PJConverter = allocate(
         config,
         SequenceTool.getItemType(gv, config.getTypeHierarchy),

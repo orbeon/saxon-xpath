@@ -127,7 +127,7 @@ object Evaluator {
   val EAGER_SEQUENCE: Evaluator = new Evaluator() {
     override def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val iter: SequenceIterator = expr.iterate(context)
-      iter.materialize()
+      iter.materialize
     }
 
     override def getEvaluationMode(): EvaluationMode =
@@ -144,7 +144,7 @@ object Evaluator {
         for (o <- children) {
           val child = o.getChildExpression
           if (Cardinality.allowsMany(child.getCardinality)) {
-            subsequences.add(child.iterate(context).materialize())
+            subsequences.add(child.iterate(context).materialize)
           } else {
             val j: Item = child.evaluateItem(context)
             if (j != null) {
@@ -154,7 +154,7 @@ object Evaluator {
         }
         new Chain(subsequences)
       } else {
-        expr.iterate(context).materialize()
+        expr.iterate(context).materialize
       }
 
     override def getEvaluationMode(): EvaluationMode =
@@ -205,7 +205,7 @@ object Evaluator {
       var base: Sequence = Evaluator.VARIABLE.evaluate(vr, context)
       if (base.isInstanceOf[MemoClosure]) {
         val it: SequenceIterator = base.iterate()
-        base = it.materialize()
+        base = it.materialize
       }
       if (base.isInstanceOf[IntegerRange]) {
         val start: Long = base

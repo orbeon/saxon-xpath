@@ -468,7 +468,7 @@ class Block(children: Array[Expression]) extends Instruction {
                                       list: List[Expression]): Unit =
     if (currentLiteralList != null) {
       val iter: ListIterator[Item] = new ListIterator[Item](currentLiteralList)
-      val lit: Literal = Literal.makeLiteral(iter.materialize(), this)
+      val lit: Literal = Literal.makeLiteral(iter.materialize, this)
       list.add(lit)
     }
 

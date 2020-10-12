@@ -136,7 +136,7 @@ object Err {
       return "(*null*)"
     }
     try {
-      val `val`: GroundedValue = seq.materialize()
+      val `val`: GroundedValue = seq.materialize
       if (`val`.getLength == 0) {
         "()"
       } else if (`val`.getLength == 1) {

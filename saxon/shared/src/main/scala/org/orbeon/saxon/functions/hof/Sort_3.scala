@@ -31,7 +31,7 @@ class Sort_3 extends Sort_2 {
         i
       }
       i += 1
-      member.sortKey = SystemFunction.dynamicCall(key, context, Array(item)).materialize()
+      member.sortKey = SystemFunction.dynamicCall(key, context, Array(item)).materialize
       inputList.add(member)
     }
     doSort(inputList, getCollation(context, arguments(1)), context)

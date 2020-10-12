@@ -72,7 +72,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
       }
     }
     if (getBaseExpression.isInstanceOf[Literal]) {
-      new Literal(iterate(visitor.makeDynamicContext()).materialize())
+      new Literal(iterate(visitor.makeDynamicContext()).materialize)
     }
     this
   }
@@ -81,7 +81,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
                         contextItemType: ContextItemStaticInfo): Expression = {
     getOperand.optimize(visitor, contextItemType)
     if (getBaseExpression.isInstanceOf[Literal]) {
-      new Literal(iterate(visitor.makeDynamicContext()).materialize())
+      new Literal(iterate(visitor.makeDynamicContext()).materialize)
     }
     if (getBaseExpression.isInstanceOf[SquareArrayConstructor]) {
       val children: List[Expression] = new ArrayList[Expression]()

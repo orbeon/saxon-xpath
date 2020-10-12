@@ -67,7 +67,7 @@ class Error extends SystemFunction with Callable {
     e.setErrorCodeQName(qname.getStructuredQName)
     e.setXPathContext(context)
     if (getArity > 2 && errObject != null) {
-      val errorObject: Sequence = errObject.materialize()
+      val errorObject: Sequence = errObject.materialize
       if (errorObject.isInstanceOf[ZeroOrOne[_ <: Item]]) {
         val root: Item = errorObject.asInstanceOf[ZeroOrOne[_ <: Item]].head
         if ((root.isInstanceOf[NodeInfo]) &&

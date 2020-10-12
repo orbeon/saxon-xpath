@@ -184,7 +184,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       if (getArity <= details.resultIfEmpty.length) {
         for (i <- 0 until getArity
              if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {
-          Literal.makeLiteral(details.resultIfEmpty(i).materialize(), this)
+          Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
         }
       }
       sf.asInstanceOf[SystemFunctionCall]

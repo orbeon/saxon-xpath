@@ -41,7 +41,7 @@ object ContextItemAccessorFunction {
         getRetainedStaticContext,
         1)
       val `val`: StringValue = new StringValue(item.getStringValueCS)
-      f.call(context, Array(`val`)).materialize()
+      f.call(context, Array(`val`)).materialize
     }
 
   }
@@ -65,7 +65,7 @@ object ContextItemAccessorFunction {
       val `val`: AtomicSequence = item.atomize()
       `val`.getLength match {
         case 0 => DoubleValue.NaN
-        case 1 => f.call(context, Array(`val`.head)).materialize()
+        case 1 => f.call(context, Array(`val`.head)).materialize
         case _ =>
           var err: XPathException = new XPathException(
             "When number() is called with no arguments, the atomized value of the context node must " +
@@ -106,7 +106,7 @@ class ContextItemAccessorFunction extends ContextAccessorFunction {
       getDetails.name.getLocalPart,
       getRetainedStaticContext,
       1)
-    f.call(context, Array(item)).materialize()
+    f.call(context, Array(item)).materialize
   }
 
   override def call(context: XPathContext, arguments: Array[Sequence]): Sequence =

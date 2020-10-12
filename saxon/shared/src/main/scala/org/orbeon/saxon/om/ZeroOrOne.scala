@@ -82,7 +82,7 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
 
       def getLength: Int = if (item == null) 0 else 1
 
-      override def materialize(): GroundedValue =
+      override def materialize: GroundedValue =
         if (item == null) EmptySequence.getInstance else item
 
       def getResidue: GroundedValue =

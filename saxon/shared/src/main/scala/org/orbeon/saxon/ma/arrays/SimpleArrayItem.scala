@@ -71,7 +71,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
     if (!knownToBeGrounded) {
       this.synchronized {
         for (i <- 0 until membersList.size) {
-          membersList.set(i, membersList.get(i).asInstanceOf[Sequence].materialize())
+          membersList.set(i, membersList.get(i).asInstanceOf[Sequence].materialize)
         }
         knownToBeGrounded = true
       }

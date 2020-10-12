@@ -56,7 +56,7 @@ class SingletonIterator[T <: Item](value: T)
 
   def getValue: T = item
 
-  override def materialize(): GroundedValue =
+  override def materialize: GroundedValue =
     if (item != null) {
       item
     } else {
@@ -64,7 +64,7 @@ class SingletonIterator[T <: Item](value: T)
     }
 
   override def getResidue: GroundedValue =
-    if (gone) EmptySequence.getInstance else materialize()
+    if (gone) EmptySequence.getInstance else materialize
 
   override def getProperties: Set[Property] = Set(LOOKAHEAD, GROUNDED, LAST_POSITION_FINDER)
 

@@ -110,7 +110,7 @@ class Trace extends SystemFunction with Traceable {
     val label: String =
       if (arguments.length == 1) "*" else arguments(1).head.getStringValue
     if (controller.isTracing) {
-      val value: Sequence = arguments(0).iterate().materialize()
+      val value: Sequence = arguments(0).iterate().materialize
       notifyListener(label, value, context)
       value
     } else {

@@ -54,7 +54,7 @@ class EmptyIterator
       Property.LAST_POSITION_FINDER,
       Property.ATOMIZING)
 
-  override def materialize(): GroundedValue = EmptySequence.getInstance
+  override def materialize: GroundedValue = EmptySequence.getInstance
 
   def getResidue: GroundedValue = EmptySequence.getInstance
   def hasNext: Boolean = false

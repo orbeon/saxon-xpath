@@ -20,7 +20,7 @@ class FoldLeftFn extends FoldingFunction {
 
   def getFold(context: XPathContext, arguments: Sequence*): Fold = {
     val arg0 = arguments(0)
-    new FoldLeftFold(context, arg0.materialize(), arguments(1).head.asInstanceOf[Function])
+    new FoldLeftFold(context, arg0.materialize, arguments(1).head.asInstanceOf[Function])
   }
 
   class FoldLeftFold(private var context: XPathContext,
@@ -45,7 +45,7 @@ class FoldLeftFn extends FoldingFunction {
       val result = SystemFunction.dynamicCall(function, context, args)
       data =
         if ( {counter += 1; counter - 1} % 32 == 0)
-          result.materialize()
+          result.materialize
         else
           result
     }

@@ -194,7 +194,7 @@ class MemoSequence extends Sequence {
 
     /*@Nullable*/
 
-    override def materialize(): GroundedValue =
+    override def materialize: GroundedValue =
       if (state == ALL_READ) {
         makeExtent()
       } else if (state == EMPTY) {

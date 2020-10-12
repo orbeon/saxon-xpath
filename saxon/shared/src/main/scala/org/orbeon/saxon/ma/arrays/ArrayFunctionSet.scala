@@ -43,7 +43,7 @@ object ArrayFunctionSet {
 
     def append(array: ArrayItem, member: Sequence): ArrayItem = {
       val list: List[GroundedValue] = new ArrayList[GroundedValue](1)
-      list.add(member.materialize())
+      list.add(member.materialize)
       val otherArray: SimpleArrayItem = new SimpleArrayItem(list)
       array.concat(otherArray)
     }
@@ -175,7 +175,7 @@ object ArrayFunctionSet {
       var i: Int = 0
       i = 0
       while (i < array.arrayLength()) {
-        list.add(dynamicCall(fn, context, Array(array.get(i))).materialize())
+        list.add(dynamicCall(fn, context, Array(array.get(i))).materialize)
           i =i+ 1
 
       }
@@ -202,7 +202,7 @@ object ArrayFunctionSet {
       while (i < array1.arrayLength() && i < array2.arrayLength()) {
         list.add(
           dynamicCall(fn, context, Array(array1.get(i), array2.get(i)))
-            .materialize())
+            .materialize)
         i =i+ 1
       }
       new SimpleArrayItem(list)
@@ -257,7 +257,7 @@ object ArrayFunctionSet {
           "FOAY0001")
       }
       val newMember: Sequence = arguments(2)
-      array.insert(index, newMember.materialize())
+      array.insert(index, newMember.materialize)
     }
 
   }
@@ -294,7 +294,7 @@ object ArrayFunctionSet {
         arguments(1).head.asInstanceOf[IntegerValue],
         array.arrayLength()) -
         1
-      val newVal: GroundedValue = arguments(2).materialize()
+      val newVal: GroundedValue = arguments(2).materialize
       array.put(index, newVal)
     }
 
@@ -423,7 +423,7 @@ object ArrayFunctionSet {
     def toSequence(array: ArrayItem): Sequence = {
       val results: List[GroundedValue] = new ArrayList[GroundedValue]()
       for (seq <- array.members()) {
-        results.add(seq.materialize())
+        results.add(seq.materialize)
       }
       new Chain(results)
     }

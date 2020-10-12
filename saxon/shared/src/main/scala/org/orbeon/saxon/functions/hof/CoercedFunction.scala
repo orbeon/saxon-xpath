@@ -70,7 +70,7 @@ class CoercedFunction(private var targetFunction: Function, private val required
     val th = context.getConfiguration.getTypeHierarchy
     val targetArgs: Array[Sequence] = Array.ofDim[Sequence](args.length)
     for (i <- args.indices) {
-      args(i) = args(i).materialize()
+      args(i) = args(i).materialize
       if (argTypes(i).matches(args(i), th)) {
         targetArgs(i) = args(i)
       } else {
@@ -83,7 +83,7 @@ class CoercedFunction(private var targetFunction: Function, private val required
       }
     }
     var rawResult: Sequence = targetFunction.call(context, targetArgs)
-    rawResult = rawResult.materialize()
+    rawResult = rawResult.materialize
     if (req.getResultType.matches(rawResult, th)) {
       rawResult
     } else {

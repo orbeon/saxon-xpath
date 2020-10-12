@@ -141,7 +141,7 @@ class ApplyFn extends SystemFunction {
           expected,
           role,
           Loc.NONE)
-        argArray(i) = converted.materialize()
+        argArray(i) = converted.materialize
       }
     }
     val rawResult: Sequence = SystemFunction.dynamicCall(function, context, argArray)

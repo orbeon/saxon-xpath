@@ -133,7 +133,7 @@ object TypeChecker {
         context.getConfiguration.getTypeHierarchy)) {
         val err = new XPathException(
           "Required type is " + reqItemType + "; supplied value has type " +
-            UType.getUType(`val`.materialize()))
+            UType.getUType(`val`.materialize))
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
         err
@@ -324,7 +324,7 @@ class TypeChecker {
           ExpressionTool.copyLocationInfo(exp, cexp)
           try if (exp.isInstanceOf[Literal]) {
             exp = Literal.makeLiteral(
-              cexp.iterate(visitor.makeDynamicContext()).materialize(),
+              cexp.iterate(visitor.makeDynamicContext()).materialize,
               exp)
             ExpressionTool.copyLocationInfo(cexp, exp)
           } else {
@@ -364,7 +364,7 @@ class TypeChecker {
           try {
             if (exp.isInstanceOf[Literal]) {
               exp = Literal.makeLiteral(
-                conversion.iterate(visitor.makeDynamicContext()).materialize(),
+                conversion.iterate(visitor.makeDynamicContext()).materialize,
                 exp)
               ExpressionTool.copyLocationInfo(supplied, exp)
             } else {

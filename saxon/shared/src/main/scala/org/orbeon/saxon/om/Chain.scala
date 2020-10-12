@@ -65,7 +65,7 @@ object Chain {
     }
 
     override def getProperties: immutable.Set[Property] = immutable.Set(GROUNDED)
-    override def materialize(): GroundedValue = thisChain
+    override def materialize: GroundedValue = thisChain
     def getResidue: GroundedValue = new SequenceExtent(this)
 
   }

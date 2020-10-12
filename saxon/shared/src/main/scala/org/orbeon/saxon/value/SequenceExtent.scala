@@ -10,7 +10,7 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 object SequenceExtent {
 
-  def makeSequenceExtent(iter: SequenceIterator): GroundedValue = iter.materialize()
+  def makeSequenceExtent(iter: SequenceIterator): GroundedValue = iter.materialize
 
   def fromIterator(iter: SequenceIterator): GroundedValue =
     new SequenceExtent(iter).reduce()

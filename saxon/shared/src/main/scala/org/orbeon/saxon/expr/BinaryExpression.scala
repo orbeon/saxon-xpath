@@ -92,7 +92,7 @@ abstract class BinaryExpression(p0: Expression,
     try if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
       .isInstanceOf[Literal])) {
       val v: GroundedValue = evaluateItem(
-        visitor.getStaticContext.makeEarlyEvaluationContext()).materialize()
+        visitor.getStaticContext.makeEarlyEvaluationContext()).materialize
       Literal.makeLiteral(v, this)
     } catch {
       case _: XPathException =>
@@ -113,7 +113,7 @@ abstract class BinaryExpression(p0: Expression,
         val item: Item = evaluateItem(
           visitor.getStaticContext.makeEarlyEvaluationContext())
         if (item != null) {
-          val v: GroundedValue = item.materialize()
+          val v: GroundedValue = item.materialize
           Literal.makeLiteral(v, this)
         }
       }

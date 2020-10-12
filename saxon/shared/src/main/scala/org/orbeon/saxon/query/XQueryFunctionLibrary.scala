@@ -73,7 +73,7 @@ object XQueryFunctionLibrary {
       val args: Array[Sequence] = Array.ofDim[Sequence](arguments.length)
       for (i <- 0 until arguments.length) {
         args(i) =
-          arguments(i).iterate().materialize()
+          arguments(i).iterate().materialize
       }
       function.call(context.newCleanContext(), args)
     }

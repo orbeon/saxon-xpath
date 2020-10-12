@@ -605,7 +605,7 @@ class FilterExpression(base: Expression, filter: Expression)
     }
     val sequence: Sequence = tryEarlyEvaluation(visitor)
     if (sequence != null) {
-      val value: GroundedValue = sequence.materialize()
+      val value: GroundedValue = sequence.materialize
       Literal.makeLiteral(value, this)
     }
     this
@@ -626,7 +626,7 @@ class FilterExpression(base: Expression, filter: Expression)
         0) {
       val context: XPathContext =
         visitor.getStaticContext.makeEarlyEvaluationContext()
-      iterate(context).materialize()
+      iterate(context).materialize
     } catch {
       case e: Exception => return null
 
@@ -954,7 +954,7 @@ class FilterExpression(base: Expression, filter: Expression)
                     baseVal.asInstanceOf[MemoClosure].itemAt(pos - 1)
                   if (m == null) EmptyIterator.emptyIterator else m.iterate()
                 } else {
-                  val m: Item = baseVal.materialize().itemAt(pos - 1)
+                  val m: Item = baseVal.materialize.itemAt(pos - 1)
                   if (m == null) EmptyIterator.emptyIterator else m.iterate()
                 }
               } else if (getBase.isInstanceOf[Literal]) {

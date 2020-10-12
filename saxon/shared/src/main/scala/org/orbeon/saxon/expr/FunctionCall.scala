@@ -167,7 +167,7 @@ abstract class FunctionCall extends Expression {
     try {
       val lit: Literal = Literal.makeLiteral(
         iterate(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize(),
+          .materialize,
         this)
       Optimizer.trace(visitor.getConfiguration,
         "Pre-evaluated function call " + toShortString,

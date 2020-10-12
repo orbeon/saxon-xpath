@@ -154,7 +154,7 @@ class FocusTrackingIterator
    *                            which cause evaluation of expressions while materializing the value.
    * @throws ClassCastException if the iterator does not have the { @link org.orbeon.saxon.om.SequenceIterator.Property#GROUNDED} property.
    */
-  override def materialize(): GroundedValue = base.materialize()
+  override def materialize: GroundedValue = base.materialize
 
   /**
    * Return a GroundedValue containing all the remaining items in the sequence returned by this

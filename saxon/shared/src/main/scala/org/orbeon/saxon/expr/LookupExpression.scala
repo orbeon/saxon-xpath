@@ -320,7 +320,7 @@ class LookupExpression(start: Expression, step: Expression)
       } else {
         val baseIterator: SequenceIterator = getLhsExpression.iterate(context)
         val rhs: GroundedValue =
-          getRhsExpression.iterate(context).materialize()
+          getRhsExpression.iterate(context).materialize
         new MappingIterator(
           baseIterator,
           (baseItem) =>
@@ -360,7 +360,7 @@ class LookupExpression(start: Expression, step: Expression)
       } else {
         val baseIterator: SequenceIterator = getLhsExpression.iterate(context)
         val rhs: GroundedValue =
-          getRhsExpression.iterate(context).materialize()
+          getRhsExpression.iterate(context).materialize
         new MappingIterator(
           baseIterator,
           (baseItem) =>
@@ -378,7 +378,7 @@ class LookupExpression(start: Expression, step: Expression)
       }
     } else {
       val baseIterator: SequenceIterator = getLhsExpression.iterate(context)
-      val rhs: GroundedValue = getRhsExpression.iterate(context).materialize()
+      val rhs: GroundedValue = getRhsExpression.iterate(context).materialize
       val mappingFunction: MappingFunction = (baseItem) =>
         if (baseItem.isInstanceOf[ArrayItem]) {
           var arrayAccess: MappingFunction = (index) =>

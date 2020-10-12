@@ -136,7 +136,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
       val config = getConfiguration
       allocateConverterStatically(config, allowNull = true)
       if (converter != null) {
-        val value = iterate(new EarlyEvaluationContext(config)).materialize()
+        val value = iterate(new EarlyEvaluationContext(config)).materialize
         Literal.makeLiteral(value, operand)
       }
     }

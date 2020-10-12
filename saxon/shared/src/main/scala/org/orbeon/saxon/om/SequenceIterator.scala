@@ -58,7 +58,7 @@ trait SequenceIterator extends Closeable {
     } != null) consumer.accept(item)
   }
 
-  def materialize(): GroundedValue = new SequenceExtent(this).reduce()
+  def materialize: GroundedValue = new SequenceExtent(this).reduce()
 }
 
 

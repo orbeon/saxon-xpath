@@ -73,7 +73,7 @@ class GlobalParameterSet {
         }
       }
     }
-    `val`.materialize()
+    `val`.materialize
   }
 
   def clear(): Unit = {

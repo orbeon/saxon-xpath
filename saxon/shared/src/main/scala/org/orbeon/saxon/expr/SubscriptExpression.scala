@@ -84,7 +84,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
         item = mem.itemAt(intindex - 1)
       } else if (iter.getProperties.contains(
         SequenceIterator.Property.GROUNDED)) {
-        val value: GroundedValue = iter.materialize()
+        val value: GroundedValue = iter.materialize
         item = value.itemAt(intindex - 1)
       } else {
         val tail: SequenceIterator = TailIterator.make(iter, intindex)

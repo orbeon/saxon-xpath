@@ -380,21 +380,25 @@ abstract class Assignation() extends Expression with LocalBinding {
    *
    * @return true if any of the references in the reference list occurs within a looping construct.
    */
-  def removeDeadReferences: Boolean = {
+  def removeDeadReferences(): Boolean = {
     var inLoop = false
-    if (references != null) for (i <- references.size - 1 to 0 by -1) { // Check whether the reference still has this Assignation as an ancestor in the expression tree
-      var found = false
-      inLoop |= references.get(i).isInLoop
-      var parent = references.get(i).getParentExpression
-      breakable {
-        while (parent != null) if (parent eq this) {
-          found = true
-          break()
+    if (references != null)
+      for (i <- references.size - 1 to 0 by -1) {
+        // Check whether the reference still has this Assignation as an ancestor in the expression tree
+        var found = false
+        inLoop |= references.get(i).isInLoop
+        var parent = references.get(i).getParentExpression
+        breakable {
+          while (parent != null)
+            if (parent eq this) {
+              found = true
+              break()
+            } else
+              parent = parent.getParentExpression
         }
-        else parent = parent.getParentExpression
+        if (!found)
+          references.remove(i)
       }
-      if (!found) references.remove(i)
-    }
     inLoop
   }
 
@@ -434,7 +438,10 @@ abstract class Assignation() extends Expression with LocalBinding {
     val done = ExpressionTool.inlineVariableReferences(getAction, this, seq)
     if (done && isIndexedVariable && seq.isInstanceOf[VariableReference]) {
       val newBinding = seq.asInstanceOf[VariableReference].getBinding
-      if (newBinding.isInstanceOf[Assignation]) newBinding.asInstanceOf[Assignation].setIndexedVariable()
+      newBinding match {
+        case assignation: Assignation => assignation.setIndexedVariable()
+        case _ =>
+      }
     }
     done
   }

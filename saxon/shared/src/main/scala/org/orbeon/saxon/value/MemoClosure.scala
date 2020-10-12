@@ -1,77 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-package org.orbeon.saxon.value
-
-import org.orbeon.saxon.expr.ContextOriginator
-
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.XPathContextMajor
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.trans.XPathException
-
-
-
-
-class MemoClosure extends Closure with ContextOriginator {
-
-  private var sequence: Sequence = _
-
-  def this(expr: Expression, context: XPathContext) = {
-    this()
-    this.expression = expr
-    val c2: XPathContextMajor = context.newContext()
-    c2.setOrigin(this)
-    this.savedXPathContext = c2
-    saveContext(expr, context)
-  }
-
-  /*@NotNull*/
-
-  override def iterate(): SequenceIterator = synchronized {
-    makeSequence()
-    sequence.iterate()
-  }
-
-  private def makeSequence(): Unit = {
-    if (sequence == null) {
-      inputIterator = expression.iterate(savedXPathContext)
-      sequence = SequenceTool.toMemoSequence(inputIterator)
-    }
-  }
-
-  def itemAt(n: Int): Item = synchronized {
-    makeSequence()
-    if (sequence.isInstanceOf[GroundedValue]) {
-      sequence.asInstanceOf[GroundedValue].itemAt(n)
-    } else if (sequence.isInstanceOf[MemoSequence]) {
-      sequence.asInstanceOf[MemoSequence].itemAt(n)
-    } else {
-      throw new IllegalStateException()
-    }
-  }
-
-  /*@Nullable*/
-
-  override def reduce(): GroundedValue =
-    if (sequence.isInstanceOf[GroundedValue]) {
-      sequence.asInstanceOf[GroundedValue]
-    } else {
-      iterate().materialize()
-    }
-
-  override def makeRepeatable(): Sequence = this
-
-}
-
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.value
+
+import org.orbeon.saxon.expr.{ContextOriginator, Expression, XPathContext}
+import org.orbeon.saxon.om._
+
+
 /**
   * A MemoClosure represents a value that has not yet been evaluated: the value is represented
   * by an expression, together with saved values of all the context variables that the
@@ -105,3 +43,51 @@ class MemoClosure extends Closure with ContextOriginator {
   * loop can result in concurrent attempts to evaluate the variable incrementally. This
   * is prevented by synchronizing the evaluation methods.</p>
   */
+class MemoClosure extends Closure with ContextOriginator {
+
+  private var sequence: Sequence = _
+
+  def this(expr: Expression, context: XPathContext) = {
+    this()
+    this.expression = expr
+    val c2 = context.newContext()
+    c2.setOrigin(this)
+    this.savedXPathContext = c2
+    saveContext(expr, context)
+  }
+
+  /*@NotNull*/
+  override def iterate(): SequenceIterator = synchronized {
+    makeSequence()
+    sequence.iterate()
+  }
+
+  private def makeSequence(): Unit =
+    if (sequence == null) {
+      inputIterator = expression.iterate(savedXPathContext)
+      sequence = SequenceTool.toMemoSequence(inputIterator)
+    }
+
+  def itemAt(n: Int): Item = synchronized {
+    makeSequence()
+    sequence match {
+      case groundedValue: GroundedValue =>
+        groundedValue.itemAt(n)
+      case memoSequence: MemoSequence =>
+        memoSequence.itemAt(n)
+      case _ =>
+        throw new IllegalStateException()
+    }
+  }
+
+  /*@Nullable*/
+  override def reduce(): GroundedValue =
+    sequence match {
+      case value: GroundedValue =>
+        value
+      case _ =>
+        iterate().materialize
+    }
+
+  override def makeRepeatable(): Sequence = this
+}

@@ -1,54 +1,21 @@
 package org.orbeon.saxon.expr.instruct
 
-import org.orbeon.saxon.utils.Controller
+import java.net.{URI, URISyntaxException}
 
-import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.event.PipelineConfiguration
-
+import org.orbeon.saxon.event.{Outputter, PipelineConfiguration}
 import org.orbeon.saxon.expr._
-
+import org.orbeon.saxon.expr.instruct.ForEachGroup._
 import org.orbeon.saxon.expr.parser._
-
 import org.orbeon.saxon.expr.sort._
-
 import org.orbeon.saxon.functions.CurrentGroupCall
-
-import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.lib.TraceListener
-
-import org.orbeon.saxon.model.ErrorType
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om.FocusIterator
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.om.StandardNames
-
+import org.orbeon.saxon.lib.{StringCollator, TraceListener}
+import org.orbeon.saxon.model.{ErrorType, ItemType, SchemaType}
+import org.orbeon.saxon.om.{FocusIterator, Item, SequenceIterator, StandardNames}
 import org.orbeon.saxon.pattern.Pattern
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.StringValue
-
-import java.net.URI
-
-import java.net.URISyntaxException
-
-import ForEachGroup._
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.utils.Controller
+import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
@@ -58,67 +25,62 @@ import scala.jdk.CollectionConverters._
 object ForEachGroup {
 
   val GROUP_BY: Int = 0
-
   val GROUP_ADJACENT: Int = 1
-
   val GROUP_STARTING: Int = 2
-
   val GROUP_ENDING: Int = 3
 
   private def fixupGroupReferences(exp: Expression,
                                    feg: ForEachGroup,
                                    selectedItemType: ItemType,
                                    isInLoop: Boolean): Unit = {
-    if (exp == null) {} else if (exp.isInstanceOf[CurrentGroupCall]) {
-      exp
-        .asInstanceOf[CurrentGroupCall]
-        .setControllingInstruction(feg, selectedItemType, isInLoop)
-    } else if (exp.isInstanceOf[ForEachGroup]) {
-      val feg2: ForEachGroup = exp.asInstanceOf[ForEachGroup]
-      if (feg2 == feg) {
-        fixupGroupReferences(feg2.getActionExpression,
-          feg,
-          selectedItemType,
-          isInLoop = false)
-      } else {
-        fixupGroupReferences(feg2.getSelectExpression,
-          feg,
-          selectedItemType,
-          isInLoop)
-        fixupGroupReferences(feg2.getGroupingKey,
-          feg,
-          selectedItemType,
-          isInLoop)
-        if (feg2.getSortKeyDefinitions != null) {
-          for (skd <- feg2.getSortKeyDefinitions.asScala) {
-            fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
-            fixupGroupReferences(skd.getCaseOrder,
-              feg,
-              selectedItemType,
-              isInLoop)
-            fixupGroupReferences(skd.getDataTypeExpression,
-              feg,
-              selectedItemType,
-              isInLoop)
-            fixupGroupReferences(skd.getLanguage,
-              feg,
-              selectedItemType,
-              isInLoop)
-            fixupGroupReferences(skd.getCollationNameExpression,
-              feg,
-              selectedItemType,
-              isInLoop)
-            fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
+    if (exp == null) {} else exp match {
+      case call: CurrentGroupCall =>
+        call.setControllingInstruction(feg, selectedItemType, isInLoop)
+      case feg2: ForEachGroup =>
+        if (feg2 == feg) {
+          fixupGroupReferences(feg2.getActionExpression,
+            feg,
+            selectedItemType,
+            isInLoop = false)
+        } else {
+          fixupGroupReferences(feg2.getSelectExpression,
+            feg,
+            selectedItemType,
+            isInLoop)
+          fixupGroupReferences(feg2.getGroupingKey,
+            feg,
+            selectedItemType,
+            isInLoop)
+          if (feg2.getSortKeyDefinitions != null) {
+            for (skd <- feg2.getSortKeyDefinitions.asScala) {
+              fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
+              fixupGroupReferences(skd.getCaseOrder,
+                feg,
+                selectedItemType,
+                isInLoop)
+              fixupGroupReferences(skd.getDataTypeExpression,
+                feg,
+                selectedItemType,
+                isInLoop)
+              fixupGroupReferences(skd.getLanguage,
+                feg,
+                selectedItemType,
+                isInLoop)
+              fixupGroupReferences(skd.getCollationNameExpression,
+                feg,
+                selectedItemType,
+                isInLoop)
+              fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
+            }
           }
         }
-      }
-    } else {
-      for (o <- exp.operands.asScala) {
-        fixupGroupReferences(o.getChildExpression,
-          feg,
-          selectedItemType,
-          isInLoop || o.isHigherOrder)
-      }
+      case _ =>
+        for (o <- exp.operands.asScala) {
+          fixupGroupReferences(o.getChildExpression,
+            feg,
+            selectedItemType,
+            isInLoop || o.isHigherOrder)
+        }
     }
   }
 
@@ -145,7 +107,7 @@ class ForEachGroup(select: Expression,
     with ContextMappingFunction
     with ContextSwitchingExpression {
 
-  var cnExpression = collationNameExpression
+  var cnExpression: Expression = collationNameExpression
 
   @BeanProperty
   var keyItemType: Int = _
@@ -158,7 +120,7 @@ class ForEachGroup(select: Expression,
   var isInFork: Boolean = false
 
   val keyRole: OperandRole =
-    if ((algorithm == GROUP_ENDING || algorithm == GROUP_STARTING))
+    if (algorithm == GROUP_ENDING || algorithm == GROUP_STARTING)
       OperandRole.PATTERN
     else OperandRole.NEW_FOCUS_ATOMIC
 
@@ -187,14 +149,14 @@ class ForEachGroup(select: Expression,
     adoptChildExpression(o.getChildExpression)
   }
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_FOR_EACH_GROUP
+  override def getInstructionNameCode: Int = StandardNames.XSL_FOR_EACH_GROUP
 
   override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, actionOp, keyOp, collationOp, sortKeysOp)
 
-  def getSelectExpression(): Expression = selectOp.getChildExpression
+  def getSelectExpression: Expression = selectOp.getChildExpression
 
-  def getActionExpression(): Expression = actionOp.getChildExpression
+  def getActionExpression: Expression = actionOp.getChildExpression
 
   def getGroupingKey: Expression = keyOp.getChildExpression
 
@@ -209,13 +171,11 @@ class ForEachGroup(select: Expression,
   def getBaseURI: URI =
     try getRetainedStaticContext.getStaticBaseUri
     catch {
-      case err: XPathException => null
-
+      case _: XPathException => null
     }
 
-  def setIsInFork(inFork: Boolean): Unit = {
+  def setIsInFork(inFork: Boolean): Unit =
     isInFork = inFork
-  }
 
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
@@ -226,23 +186,19 @@ class ForEachGroup(select: Expression,
       collationOp.typeCheck(visitor, contextInfo)
     }
     val selectedItemType: ItemType = getSelectExpression.getItemType
-    if (selectedItemType == ErrorType) {
-      Literal.makeEmptySequence
-    }
-    for (o <- operands.asScala) {
+    if (selectedItemType == ErrorType)
+      return Literal.makeEmptySequence
+
+    for (o <- operands.asScala)
       fixupGroupReferences(this, this, selectedItemType, isInLoop = false)
-    }
-    val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
+    val cit = visitor.getConfiguration.makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getSelectExpression)
     actionOp.typeCheck(visitor, cit)
     keyOp.typeCheck(visitor, cit)
-    if (Literal.isEmptySequence(getSelectExpression)) {
-      getSelectExpression
-    }
-    if (Literal.isEmptySequence(getActionExpression)) {
-      getActionExpression
-    }
+    if (Literal.isEmptySequence(getSelectExpression))
+      return getSelectExpression
+    if (Literal.isEmptySequence(getActionExpression))
+      return getActionExpression
     if (getSortKeyDefinitions != null) {
       var allFixed: Boolean = true
       for (sk <- getSortKeyDefinitions.asScala) {
@@ -272,12 +228,9 @@ class ForEachGroup(select: Expression,
         }
       }
       if (allFixed) {
-        sortComparators =
-          Array.ofDim[AtomicComparer](getSortKeyDefinitions.size)
-        for (i <- 0 until getSortKeyDefinitions.size) {
-          sortComparators(i) =
-            getSortKeyDefinitions.getSortKeyDefinition(i).getFinalComparator
-        }
+        sortComparators = Array.ofDim[AtomicComparer](getSortKeyDefinitions.size)
+        for (i <- 0 until getSortKeyDefinitions.size)
+          sortComparators(i) = getSortKeyDefinitions.getSortKeyDefinition(i).getFinalComparator
       }
     }
     keyItemType = getGroupingKey.getItemType.getPrimitiveType
@@ -309,10 +262,8 @@ class ForEachGroup(select: Expression,
     if (collationOp != null) {
       collationOp.optimize(visitor, contextItemType)
     }
-    if (collator == null &&
-      (getCollationNameExpression.isInstanceOf[StringLiteral])) {
-      val collation: String =
-        getCollationNameExpression.asInstanceOf[StringLiteral].getStringValue
+    if (collator == null && getCollationNameExpression.isInstanceOf[StringLiteral]) {
+      val collation = getCollationNameExpression.asInstanceOf[StringLiteral].getStringValue
       var collationURI: URI = null
       try {
         collationURI = new URI(collation)
@@ -330,14 +281,12 @@ class ForEachGroup(select: Expression,
           }
         }
       } catch {
-        case err: URISyntaxException => {
+        case _: URISyntaxException =>
           val e: XPathException = new XPathException(
             "Collation name '" + getCollationNameExpression + "' is not a valid URI")
           e.setErrorCode("XTDE1110")
           e.setLocation(getLocation)
           throw e
-        }
-
       }
     }
     this
@@ -352,14 +301,17 @@ class ForEachGroup(select: Expression,
           getSortKeyDefinitions.getSortKeyDefinition(i).copy(rebindings)
       }
     }
-    val feg: ForEachGroup = new ForEachGroup(
+    val feg = new ForEachGroup(
       getSelectExpression.copy(rebindings),
       getActionExpression.copy(rebindings),
       algorithm,
       getGroupingKey.copy(rebindings),
       collator,
       getCollationNameExpression.copy(rebindings),
-      if (newKeyDef == null) null else new SortKeyDefinitionList(newKeyDef)
+      if (newKeyDef == null)
+        null
+      else
+        new SortKeyDefinitionList(newKeyDef)
     )
     ExpressionTool.copyLocationInfo(this, feg)
     feg.setComposite(isComposite)
@@ -370,7 +322,7 @@ class ForEachGroup(select: Expression,
   override def getItemType: ItemType = getActionExpression.getItemType
 
   override def computeDependencies: Int = {
-    var dependencies: Int = 0
+    var dependencies = 0
     dependencies |= getSelectExpression.getDependencies
     dependencies |= getGroupingKey.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS
     dependencies |= getActionExpression.getDependencies &
@@ -378,23 +330,19 @@ class ForEachGroup(select: Expression,
     if (getSortKeyDefinitions != null) {
       for (skd <- getSortKeyDefinitions.asScala) {
         dependencies |= skd.getSortKey.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS
-        var e: Expression = skd.getCaseOrder
-        if (e != null && !(e.isInstanceOf[Literal])) {
+        var e = skd.getCaseOrder
+        if (e != null && !e.isInstanceOf[Literal])
           dependencies |= e.getDependencies
-        }
         e = skd.getDataTypeExpression
-        if (e != null && !(e.isInstanceOf[Literal])) {
+        if (e != null && !e.isInstanceOf[Literal])
           dependencies |= e.getDependencies
-        }
         e = skd.getLanguage
-        if (e != null && !(e.isInstanceOf[Literal])) {
+        if (e != null && !e.isInstanceOf[Literal])
           dependencies |= e.getDependencies
-        }
       }
     }
-    if (getCollationNameExpression != null) {
+    if (getCollationNameExpression != null)
       dependencies |= getCollationNameExpression.getDependencies
-    }
     dependencies
   }
 
@@ -411,45 +359,36 @@ class ForEachGroup(select: Expression,
 
   override def getStreamerName: String = "ForEachGroup"
 
-  override def addToPathMap(
-                             pathMap: PathMap,
-                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
-    val target: PathMap.PathMapNodeSet =
-      getSelectExpression.addToPathMap(pathMap, pathMapNodeSet)
-    if (getCollationNameExpression != null) {
+  override def addToPathMap(pathMap: PathMap,
+                            pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+    val target = getSelectExpression.addToPathMap(pathMap, pathMapNodeSet)
+    if (getCollationNameExpression != null)
       getCollationNameExpression.addToPathMap(pathMap, pathMapNodeSet)
-    }
     if (getSortKeyDefinitions != null) {
       for (skd <- getSortKeyDefinitions.asScala) {
         skd.getSortKey.addToPathMap(pathMap, target)
-        var e: Expression = skd.getOrder
-        if (e != null) {
+        var e = skd.getOrder
+        if (e != null)
           e.addToPathMap(pathMap, pathMapNodeSet)
-        }
         e = skd.getCaseOrder
-        if (e != null) {
+        if (e != null)
           e.addToPathMap(pathMap, pathMapNodeSet)
-        }
         e = skd.getDataTypeExpression
-        if (e != null) {
+        if (e != null)
           e.addToPathMap(pathMap, pathMapNodeSet)
-        }
         e = skd.getLanguage
-        if (e != null) {
+        if (e != null)
           e.addToPathMap(pathMap, pathMapNodeSet)
-        }
         e = skd.getCollationNameExpression
-        if (e != null) {
+        if (e != null)
           e.addToPathMap(pathMap, pathMapNodeSet)
-        }
       }
     }
     getActionExpression.addToPathMap(pathMap, target)
   }
 
-  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
     getActionExpression.checkPermittedContents(parentType, whole = false)
-  }
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController
@@ -466,17 +405,17 @@ class ForEachGroup(select: Expression,
       val listener: TraceListener = controller.getTraceListener
       assert(listener != null)
       var item: Item = null
-      while (({
+      while ({
         item = focusIterator.next()
         item
-      }) != null) {
+      } != null) {
         listener.startCurrentItem(item)
         getActionExpression.process(output, c2)
         listener.endCurrentItem(item)
       }
     } else {
-      while (focusIterator.next() != null) getActionExpression.process(output,
-        c2)
+      while (focusIterator.next() != null)
+        getActionExpression.process(output, c2)
     }
     pipe.setXPathContext(context)
     null
@@ -496,11 +435,9 @@ class ForEachGroup(select: Expression,
         getStaticBaseURIString,
         "FOCH0002")
       catch {
-        case e: XPathException => {
+        case e: XPathException =>
           e.setLocation(getLocation)
           throw e
-        }
-
       }
     } else {
       CodepointCollator.getInstance
@@ -513,7 +450,7 @@ class ForEachGroup(select: Expression,
                        context: XPathContext): GroupIterator = {
     var groupIterator: GroupIterator = null
     algorithm match {
-      case GROUP_BY => {
+      case GROUP_BY =>
         var coll: StringCollator = collator
         if (coll == null) {
           coll = getCollator(context)
@@ -522,8 +459,7 @@ class ForEachGroup(select: Expression,
         val population: FocusIterator = c2.trackFocus(select.iterate(context))
         groupIterator =
           new GroupByIterator(population, getGroupingKey, c2, coll, composite)
-      }
-      case GROUP_ADJACENT => {
+      case GROUP_ADJACENT =>
         var coll: StringCollator = collator
         if (coll == null) {
           coll = getCollator(context)
@@ -533,7 +469,6 @@ class ForEachGroup(select: Expression,
           context,
           coll,
           composite)
-      }
       case GROUP_STARTING =>
         groupIterator = new GroupStartingIterator(
           select,
@@ -552,10 +487,8 @@ class ForEachGroup(select: Expression,
       val xpc: XPathContext = context.newMinorContext()
       if (comps == null) {
         comps = Array.ofDim[AtomicComparer](getSortKeyDefinitions.size)
-        for (s <- 0 until getSortKeyDefinitions.size) {
-          comps(s) =
-            getSortKeyDefinitions.getSortKeyDefinition(s).makeComparator(xpc)
-        }
+        for (s <- 0 until getSortKeyDefinitions.size)
+          comps(s) = getSortKeyDefinitions.getSortKeyDefinition(s).makeComparator(xpc)
       }
       groupIterator = new SortedGroupIterator(xpc, groupIterator, this, comps)
     }
@@ -582,10 +515,11 @@ class ForEachGroup(select: Expression,
       .evaluateItem(c)
       .asInstanceOf[AtomicValue]
 
-  def getSortKeyDefinitionList: SortKeyDefinitionList = {
-    if (sortKeysOp == null) return null
-    sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
-  }
+  def getSortKeyDefinitionList: SortKeyDefinitionList =
+    if (sortKeysOp == null)
+      null
+    else
+      sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("forEachGroup", this)
@@ -622,34 +556,24 @@ class ForEachGroup(select: Expression,
     out.endElement()
   }
 
-  def setSelect(select: Expression): Unit = {
+  def setSelect(select: Expression): Unit =
     selectOp.setChildExpression(select)
-  }
 
-  def setAction(action: Expression): Unit = {
+  def setAction(action: Expression): Unit =
     actionOp.setChildExpression(action)
-  }
 
-  def setKey(key: Expression): Unit = {
+  def setKey(key: Expression): Unit =
     keyOp.setChildExpression(key)
-  }
 
-  def setCollationNameExpression(collationNameExpression: Expression): Unit = {
-    if (collationOp == null) {
-      collationOp =
-        new Operand(this, collationNameExpression, OperandRole.SINGLE_ATOMIC)
-    } else {
+  def setCollationNameExpression(collationNameExpression: Expression): Unit =
+    if (collationOp == null)
+      collationOp = new Operand(this, collationNameExpression, OperandRole.SINGLE_ATOMIC)
+    else
       collationOp.setChildExpression(collationNameExpression)
-    }
-  }
 
-  def setSortKeyDefinitions(sortKeyDefinitions: SortKeyDefinitionList): Unit = {
-    if (sortKeysOp == null) {
-      sortKeysOp =
-        new Operand(this, sortKeyDefinitions, OperandRole.SINGLE_ATOMIC)
-    } else {
+  def setSortKeyDefinitions(sortKeyDefinitions: SortKeyDefinitionList): Unit =
+    if (sortKeysOp == null)
+      sortKeysOp = new Operand(this, sortKeyDefinitions, OperandRole.SINGLE_ATOMIC)
+    else
       sortKeysOp.setChildExpression(sortKeyDefinitions)
-    }
-  }
-
 }

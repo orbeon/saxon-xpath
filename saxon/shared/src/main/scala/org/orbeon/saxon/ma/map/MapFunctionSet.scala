@@ -174,7 +174,7 @@ object MapFunctionSet {
       val key: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
       assert(key != null)
       val value: GroundedValue =
-        arguments(1).iterate().materialize()
+        arguments(1).iterate().materialize
       new SingleEntryMap(key, value)
     }
 
@@ -203,7 +203,7 @@ object MapFunctionSet {
       val results = new ArrayList[GroundedValue]()
       for (pair <- map.keyValuePairs().asScala) {
         val seq = dynamicCall(fn, context, Array(pair.key, pair.value))
-        results.add(seq.materialize())
+        results.add(seq.materialize)
       }
       new Chain(results)
     }
@@ -389,13 +389,13 @@ object MapFunctionSet {
                         existing.iterate(),
                         1)
                     var combinedValue: GroundedValue =
-                      combinedIter.materialize()
+                      combinedIter.materialize
                     baseMap.initialPut(pair.key.getStringValue, combinedValue)
                   case "use-callback" =>
                     var args: Array[Sequence] = Array(existing, pair.value)
                     var combined: Sequence = onDuplicates.call(context, args)
                     baseMap.initialPut(pair.key.getStringValue,
-                      combined.materialize())
+                      combined.materialize)
                   case _ =>
                     throw new XPathException(
                       "Duplicate key in constructed map: " + Err.wrap(
@@ -436,7 +436,7 @@ object MapFunctionSet {
                     new InsertBefore.InsertIterator(pair.value.iterate(),
                       existing.iterate(),
                       1)
-                  var combinedValue: GroundedValue = combinedIter.materialize()
+                  var combinedValue: GroundedValue = combinedIter.materialize
                   baseMap = baseMap.addEntry(pair.key, combinedValue)
                 case "use-callback" =>
                   assert(onDuplicates != null)
@@ -444,7 +444,7 @@ object MapFunctionSet {
                     if (onDuplicates.getArity == 2) Array(existing, pair.value)
                     else Array(existing, pair.value, pair.key)
                   var combined: Sequence = onDuplicates.call(context, args)
-                  baseMap = baseMap.addEntry(pair.key, combined.materialize())
+                  baseMap = baseMap.addEntry(pair.key, combined.materialize)
                 case _ =>
                   throw new XPathException(
                     "Duplicate key in constructed map: " + Err.wrap(
@@ -486,7 +486,7 @@ object MapFunctionSet {
       }
       val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
       val value: GroundedValue =
-        arguments(2).materialize()
+        arguments(2).materialize
       baseMap.addEntry(key, value)
     }
 

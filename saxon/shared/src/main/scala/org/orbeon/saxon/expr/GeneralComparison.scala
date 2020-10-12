@@ -370,7 +370,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       .isInstanceOf[Literal]) {
       Literal.makeLiteral(
         evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize(),
+          .materialize,
         this)
     }
     val t0: ItemType = getLhsExpression.getItemType

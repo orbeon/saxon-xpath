@@ -351,7 +351,7 @@ class GlobalVariable
               c2.getConfiguration.makeSequenceExtent(select,
                 FilterExpression.FILTERED,
                 c2)
-            else select.iterate(c2).materialize()
+            else select.iterate(c2).materialize
           c2.setTemporaryOutputState(savedOutputState)
           result
         } catch {

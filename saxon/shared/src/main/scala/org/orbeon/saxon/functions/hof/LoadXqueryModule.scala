@@ -198,7 +198,7 @@ class LoadXqueryModule extends SystemFunction with Callable {
         key
       }) != null) dqc.setParameter(
         key.asInstanceOf[QNameValue].getStructuredQName,
-        extVariables.get(key).asInstanceOf[Sequence].materialize())
+        extVariables.get(key).asInstanceOf[Sequence].materialize)
     }
     // Get the context item supplied, and set it on the new Controller
     if (contextItemOption != null) {

@@ -345,7 +345,7 @@ class StaticQueryContext() {
     `var`.setVariableQName(qName)
     `var`.setRequiredType(`type`)
     if (value != null) {
-      `var`.setBody(Literal.makeLiteral(value.materialize()))
+      `var`.setBody(Literal.makeLiteral(value.materialize))
     }
     if (userDeclaredVariables == null) {
       userDeclaredVariables = new HashSet()

@@ -30,7 +30,7 @@ trait ConstrainedIterator[T <: Item]
 
   /*@NotNull*/
 
-  def materialize(): GroundedValue
+  def materialize: GroundedValue
 
 }
 

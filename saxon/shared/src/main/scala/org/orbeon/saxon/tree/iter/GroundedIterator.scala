@@ -12,7 +12,7 @@ import org.orbeon.saxon.trans.XPathException
 
 trait GroundedIterator extends SequenceIterator {
 
-  def materialize(): GroundedValue
+  def materialize: GroundedValue
 
   def getResidue: GroundedValue
 

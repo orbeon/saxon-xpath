@@ -119,7 +119,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
         Literal.makeLiteral(
           evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
-            .materialize(),
+            .materialize,
           this)
       }
     catch {

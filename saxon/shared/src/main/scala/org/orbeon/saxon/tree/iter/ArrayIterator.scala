@@ -83,7 +83,7 @@ class ArrayIterator[T <: Item]( var items: Array[T])
 
   def getEndPosition: Int = end
 
-  override def materialize(): GroundedValue = {
+  override def materialize: GroundedValue = {
     var seq: SequenceExtent = null
     if (start == 0 && end == items.length) {
       seq = new SequenceExtent(items.asInstanceOf[Array[Item]])

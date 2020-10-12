@@ -157,7 +157,7 @@ object ExpressionTool {
   @throws[XPathException]
   def eagerEvaluate(exp: Expression, context: XPathContext): GroundedValue = {
     val evaluator = eagerEvaluator(exp)
-    evaluator.evaluate(exp, context).materialize()
+    evaluator.evaluate(exp, context).materialize
   }
 
   def markTailFunctionCalls(exp: Expression, qName: StructuredQName, arity: Int): Int =

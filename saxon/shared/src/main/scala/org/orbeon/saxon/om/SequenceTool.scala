@@ -24,14 +24,14 @@ object SequenceTool {
   val INDETERMINATE_ORDERING: Int = java.lang.Integer.MIN_VALUE
 
   def toGroundedValue[T <: Item](iterator: SequenceIterator): GroundedValue =
-    iterator.materialize()
+    iterator.materialize
 
   def toMemoSequence(iterator: SequenceIterator): Sequence =
     if (iterator.isInstanceOf[EmptyIterator]) {
       EmptySequence.getInstance
     } else if (iterator.getProperties.contains(
       SequenceIterator.Property.GROUNDED)) {
-      iterator.materialize()
+      iterator.materialize
     } else {
       new MemoSequence(iterator)
     }
@@ -40,7 +40,7 @@ object SequenceTool {
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
       !iterator.isInstanceOf[RangeIterator] &&
       !iterator.isInstanceOf[ReverseRangeIterator]) {
-      iterator.materialize()
+      iterator.materialize
     } else {
       new LazySequence(iterator)
     }
@@ -49,7 +49,7 @@ object SequenceTool {
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
       !iterator.isInstanceOf[RangeIterator] &&
       !iterator.isInstanceOf[ReverseRangeIterator]) {
-      iterator.materialize()
+      iterator.materialize
     } else {
       new LazySequence(iterator)
     }
@@ -111,7 +111,7 @@ object SequenceTool {
       case item: Item if index == 0 => return item
       case _ =>
     }
-    sequence.materialize().itemAt(index)
+    sequence.materialize.itemAt(index)
   }
 
   /*@Nullable*/

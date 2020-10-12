@@ -24,7 +24,7 @@ class TailExpression(base: Expression, var start: Int)
     getOperand.optimize(visitor, contextInfo)
     if (getBaseExpression.isInstanceOf[Literal]) {
       val value: GroundedValue = iterate(
-        visitor.getStaticContext.makeEarlyEvaluationContext()).materialize()
+        visitor.getStaticContext.makeEarlyEvaluationContext()).materialize
       Literal.makeLiteral(value, this)
     }
     this

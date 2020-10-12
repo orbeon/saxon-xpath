@@ -13,7 +13,7 @@ object TailIterator {
       case value: ArrayIterator[_] =>
         value.makeSliceIterator(start, java.lang.Integer.MAX_VALUE)
       case _ => if (base.getProperties.contains(SequenceIterator.Property.GROUNDED)) {
-        val value: GroundedValue = base.materialize()
+        val value: GroundedValue = base.materialize
         if (start > value.getLength) {
           EmptyIterator.emptyIterator
         } else {

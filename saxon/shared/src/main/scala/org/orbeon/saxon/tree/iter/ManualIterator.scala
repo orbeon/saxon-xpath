@@ -72,9 +72,9 @@ class ManualIterator
 
   def getReverseIterator: ManualIterator = new ManualIterator(item)
 
-  override def materialize(): GroundedValue = item
+  override def materialize: GroundedValue = item
 
-  override def getResidue: GroundedValue = materialize()
+  override def getResidue: GroundedValue = materialize
 
   override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD,

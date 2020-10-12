@@ -262,7 +262,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
       values(i) =
         if (boundArgumentsOp(i) == null) null
         else
-          boundArgumentsOp(i).getChildExpression.iterate(context).materialize()
+          boundArgumentsOp(i).getChildExpression.iterate(context).materialize
     }
     new CurriedFunction(f, values)
   }

@@ -199,7 +199,7 @@ object JPConverter {
   object FromSequenceIterator extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence =
-      o.asInstanceOf[SequenceIterator].materialize()
+      o.asInstanceOf[SequenceIterator].materialize
 
     def getItemType: ItemType = AnyItemType
 
@@ -223,7 +223,7 @@ object JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence =
       o match {
-        case closure: Closure => closure.iterate().materialize()
+        case closure: Closure => closure.iterate().materialize
         case _                => o.asInstanceOf[Sequence]
       }
 

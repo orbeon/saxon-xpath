@@ -49,7 +49,7 @@ class One[T <: Item](item: T)  extends ZeroOrOne[T](item) {
         }
 
       override def getLength: Int = 1
-      override def materialize(): GroundedValue = head
+      override def materialize: GroundedValue = head
       override def getResidue: GroundedValue =
         if (gone)
           EmptySequence.getInstance else head

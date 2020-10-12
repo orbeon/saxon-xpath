@@ -57,7 +57,7 @@ class ListIterator[T <: Item](var list: List[T])
       Property.GROUNDED,
       Property.LAST_POSITION_FINDER)
 
-  override def materialize(): GroundedValue = SequenceExtent.makeSequenceExtent(list)
+  override def materialize: GroundedValue = SequenceExtent.makeSequenceExtent(list)
 
   override def getResidue: GroundedValue = {
     var l2: List[T] = list

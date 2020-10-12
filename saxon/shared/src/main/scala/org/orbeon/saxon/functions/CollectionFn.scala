@@ -194,7 +194,7 @@ class CollectionFn extends SystemFunction with Callable {
     if (collection.isStable(context) || context.getConfiguration.getBooleanProperty(Feature.STABLE_COLLECTION_URI)) {
       val controller: Controller = context.getController
       val docPool: DocumentPool = controller.getDocumentPool
-      cachedCollection = result.materialize()
+      cachedCollection = result.materialize
       val iter: SequenceIterator = cachedCollection.iterate()
       var item: Item = null
       while ({

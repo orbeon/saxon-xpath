@@ -160,7 +160,7 @@ class OptionsParameter {
               th.applyFunctionConversionRules(actual, required, role, Loc.NONE)
           }
         }
-        actual = actual.materialize()
+        actual = actual.materialize
         val permitted: Set[String] = allowedValues.get(nominalKey)
         if (permitted != null) {
           if (!(actual.isInstanceOf[AtomicValue]) ||

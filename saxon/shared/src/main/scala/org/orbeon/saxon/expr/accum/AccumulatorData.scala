@@ -93,7 +93,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     val slots: Array[Sequence] = Array.ofDim[Sequence](sf.getNumberOfVariables)
     c2.setStackFrame(sf, slots)
     c2.setCurrentIterator(new ManualIterator(doc))
-    var `val`: Sequence = initialValue.iterate(c2).materialize()
+    var `val`: Sequence = initialValue.iterate(c2).materialize
     values.add(new DataPoint(new Visit(doc, false), `val`))
     `val` = visit(doc, `val`, c2)
     values.add(new DataPoint(new Visit(doc, true), `val`))
