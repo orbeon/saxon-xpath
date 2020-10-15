@@ -37,9 +37,9 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
     libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,
 
-//    libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
-//    libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
-//    libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
+    libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
+    libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
+    libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
 
     testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
