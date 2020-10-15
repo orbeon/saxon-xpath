@@ -21,15 +21,15 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   .settings(
     organization := "org.orbeon",
     name         := "saxon",
-    version      := "10.0.0.2-SNAPSHOT",
+    version      := "10.0.0.3-SNAPSHOT",
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
 
     scalacOptions ++= Seq(
-    "-encoding", "utf8",
-    "-deprecation",
-    "-unchecked"
+      "-encoding", "utf8",
+      "-deprecation",
+      "-unchecked"
     ),
 
     libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
@@ -37,9 +37,9 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
     libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,
 
-    libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
-    libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
-    libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
+//    libraryDependencies += "org.jetbrains" %   "annotations"   % "17.0.0",
+//    libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
+//    libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
 
     testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
