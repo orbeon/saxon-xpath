@@ -21,100 +21,53 @@ import scala.jdk.CollectionConverters._
 
 object PJConverter {
 
-  private var jpmap: HashMap[Class[_], SequenceType] = new HashMap()
+  private val jpmap: HashMap[Class[_], SequenceType] = new HashMap
 
   jpmap.put(classOf[Boolean], SequenceType.SINGLE_BOOLEAN)
-
   jpmap.put(classOf[Boolean], SequenceType.OPTIONAL_BOOLEAN)
-
   jpmap.put(classOf[String], SequenceType.OPTIONAL_STRING)
-
   jpmap.put(classOf[CharSequence], SequenceType.OPTIONAL_STRING)
-
   jpmap.put(classOf[Long], SequenceType.SINGLE_INTEGER)
-
   jpmap.put(classOf[Long], SequenceType.OPTIONAL_INTEGER)
-
   jpmap.put(classOf[Int], SequenceType.SINGLE_INTEGER)
-
   jpmap.put(classOf[Integer], SequenceType.OPTIONAL_INTEGER)
-
   jpmap.put(classOf[Short], SequenceType.SINGLE_SHORT)
-
   jpmap.put(classOf[Short], SequenceType.OPTIONAL_SHORT)
-
   jpmap.put(classOf[Byte], SequenceType.SINGLE_BYTE)
-
   jpmap.put(classOf[Byte], SequenceType.OPTIONAL_BYTE)
-
   jpmap.put(classOf[Float], SequenceType.SINGLE_FLOAT)
-
   jpmap.put(classOf[Float], SequenceType.OPTIONAL_FLOAT)
-
   jpmap.put(classOf[Double], SequenceType.SINGLE_DOUBLE)
-
   jpmap.put(classOf[Double], SequenceType.OPTIONAL_DOUBLE)
-
   jpmap.put(classOf[URI], SequenceType.OPTIONAL_ANY_URI)
-
   jpmap.put(classOf[URL], SequenceType.OPTIONAL_ANY_URI)
-
   jpmap.put(classOf[BigInteger], SequenceType.OPTIONAL_INTEGER)
-
   jpmap.put(classOf[BigDecimal], SequenceType.OPTIONAL_DECIMAL)
-
   jpmap.put(classOf[StringValue], SequenceType.OPTIONAL_STRING)
-
   jpmap.put(classOf[BooleanValue], SequenceType.OPTIONAL_BOOLEAN)
-
   jpmap.put(classOf[DoubleValue], SequenceType.OPTIONAL_DOUBLE)
-
   jpmap.put(classOf[FloatValue], SequenceType.OPTIONAL_FLOAT)
-
   jpmap.put(classOf[DecimalValue], SequenceType.OPTIONAL_DECIMAL)
-
   jpmap.put(classOf[IntegerValue], SequenceType.OPTIONAL_INTEGER)
-
   jpmap.put(classOf[AnyURIValue], SequenceType.OPTIONAL_ANY_URI)
-
   jpmap.put(classOf[QNameValue], SequenceType.OPTIONAL_QNAME)
-
   jpmap.put(classOf[NotationValue], SequenceType.OPTIONAL_NOTATION)
-
   jpmap.put(classOf[DateValue], SequenceType.OPTIONAL_DATE)
-
   jpmap.put(classOf[DateTimeValue], SequenceType.OPTIONAL_DATE_TIME)
-
   jpmap.put(classOf[TimeValue], SequenceType.OPTIONAL_TIME)
-
   jpmap.put(classOf[DurationValue], SequenceType.OPTIONAL_DURATION)
-
-  jpmap.put(classOf[DayTimeDurationValue],
-    SequenceType.OPTIONAL_DAY_TIME_DURATION)
-
-  jpmap.put(classOf[YearMonthDurationValue],
-    SequenceType.OPTIONAL_YEAR_MONTH_DURATION)
-
+  jpmap.put(classOf[DayTimeDurationValue], SequenceType.OPTIONAL_DAY_TIME_DURATION)
+  jpmap.put(classOf[YearMonthDurationValue], SequenceType.OPTIONAL_YEAR_MONTH_DURATION)
   jpmap.put(classOf[GYearValue], SequenceType.OPTIONAL_G_YEAR)
-
   jpmap.put(classOf[GYearMonthValue], SequenceType.OPTIONAL_G_YEAR_MONTH)
-
   jpmap.put(classOf[GMonthValue], SequenceType.OPTIONAL_G_MONTH)
-
   jpmap.put(classOf[GMonthDayValue], SequenceType.OPTIONAL_G_MONTH_DAY)
-
   jpmap.put(classOf[GDayValue], SequenceType.OPTIONAL_G_DAY)
-
   jpmap.put(classOf[Base64BinaryValue], SequenceType.OPTIONAL_BASE64_BINARY)
-
   jpmap.put(classOf[HexBinaryValue], SequenceType.OPTIONAL_HEX_BINARY)
-
   jpmap.put(classOf[Function], SequenceType.OPTIONAL_FUNCTION_ITEM)
-
   jpmap.put(classOf[MapItem], MapType.OPTIONAL_MAP_ITEM)
-
   jpmap.put(classOf[NodeInfo], SequenceType.OPTIONAL_NODE)
-
   jpmap.put(classOf[TreeInfo], SequenceType.OPTIONAL_DOCUMENT_NODE)
 
   def getEquivalentSequenceType(javaClass: Class[_]): SequenceType = {
@@ -173,26 +126,26 @@ object PJConverter {
                targetClass: Class[_]): PJConverter = {
     val th = config.getTypeHierarchy
     if (targetClass == classOf[SequenceIterator]) {
-      ToSequenceIterator.INSTANCE
+      return ToSequenceIterator
     }
     if (targetClass == classOf[Sequence] || targetClass == classOf[Item]) {
-      Identity.INSTANCE
+      return Identity
     }
     if (targetClass == classOf[One[_ <: Item]]) {
-      ToOne.INSTANCE
+      return ToOne
     }
     if (targetClass == classOf[ZeroOrOne[_ <: Item]]) {
-      ToZeroOrOne.INSTANCE
+      return ToZeroOrOne
     }
     if (targetClass == classOf[OneOrMore[_ <: Item]]) {
-      ToOneOrMore.INSTANCE
+      return ToOneOrMore
     }
     if (targetClass == classOf[ZeroOrMore[_ <: Item]]) {
-      ToZeroOrMore.INSTANCE
+      return ToZeroOrMore
     }
     if (targetClass == classOf[GroundedValue] | targetClass == classOf[
       SequenceExtent]) {
-      ToSequenceExtent.INSTANCE
+      return ToSequenceExtent
     }
     if (!itemType.isPlainType) {
       val externalObjectModels: List[ExternalObjectModel] =
@@ -200,45 +153,42 @@ object PJConverter {
       for (model <- externalObjectModels.asScala) {
         val converter: PJConverter = model.getPJConverter(targetClass)
         if (converter != null) {
-          converter
+          return converter
         }
       }
       if (classOf[NodeInfo].isAssignableFrom(targetClass)) {
-        Identity.INSTANCE
+        return Identity
       }
     }
     if (classOf[Collection[_]].isAssignableFrom(targetClass)) {
-      ToCollection.INSTANCE
+      return ToCollection
     }
     if (targetClass.isArray) {
-      val itemConverter: PJConverter = allocate(config,
+      val itemConverter = allocate(config,
         itemType,
         StaticProperty.EXACTLY_ONE,
         targetClass.getComponentType)
-      new ToArray(itemConverter)
+      return new ToArray(itemConverter)
     }
     if (!Cardinality.allowsMany(cardinality)) {
       if (itemType.isPlainType) {
         if (itemType == ErrorType) {
-          StringValueToString.INSTANCE
+          StringValueToString
         } else if (th.isSubType(itemType, BuiltInAtomicType.STRING)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[String] ||
-            targetClass == classOf[CharSequence]) {
-            StringValueToString.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[String] || targetClass == classOf[CharSequence]) {
+            StringValueToString
           } else if (targetClass.isAssignableFrom(classOf[StringValue])) {
-            Identity.INSTANCE
-          } else if (targetClass == classOf[Char] || targetClass == classOf[
-            Character]) {
-            StringValueToChar.INSTANCE
+            Identity
+          } else if (targetClass == classOf[Char] || targetClass == classOf[Character]) {
+            StringValueToChar
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (itemType == BuiltInAtomicType.UNTYPED_ATOMIC) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[String] ||
-            targetClass == classOf[CharSequence]) {
-            StringValueToString.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[String] || targetClass == classOf[CharSequence]) {
+            StringValueToString
           } else if (targetClass.isAssignableFrom(classOf[UntypedAtomicValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             val constructor: Constructor[_] = targetClass.getConstructor(classOf[String])
             new PJConverter() {
@@ -249,259 +199,234 @@ object PJConverter {
             }
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.BOOLEAN)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[Boolean] ||
-            targetClass == classOf[Boolean]) {
-            BooleanValueToBoolean.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[Boolean] || targetClass == classOf[Boolean]) {
+            BooleanValueToBoolean
           } else if (targetClass.isAssignableFrom(classOf[BooleanValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.INTEGER)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[
-            BigInteger]) {
-            IntegerValueToBigInteger.INSTANCE
-          } else if (targetClass == classOf[Long] || targetClass == classOf[
-            Long]) {
-            IntegerValueToLong.INSTANCE
-          } else if (targetClass == classOf[Int] || targetClass == classOf[
-            Integer]) {
-            IntegerValueToInt.INSTANCE
-          } else if (targetClass == classOf[Short] || targetClass == classOf[
-            Short]) {
-            IntegerValueToShort.INSTANCE
-          } else if (targetClass == classOf[Byte] || targetClass == classOf[
-            Byte]) {
-            IntegerValueToByte.INSTANCE
-          } else if (targetClass == classOf[Char] || targetClass == classOf[
-            Character]) {
-            IntegerValueToChar.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[BigInteger]) {
+            IntegerValueToBigInteger
+          } else if (targetClass == classOf[Long] || targetClass == classOf[Long]) {
+            IntegerValueToLong
+          } else if (targetClass == classOf[Int] || targetClass == classOf[Integer]) {
+            IntegerValueToInt
+          } else if (targetClass == classOf[Short] || targetClass == classOf[Short]) {
+            IntegerValueToShort} else if (targetClass == classOf[Byte] || targetClass == classOf[Byte]) {
+            IntegerValueToByte
+          } else if (targetClass == classOf[Char] || targetClass == classOf[Character]) {
+            IntegerValueToChar
           } else if (targetClass == classOf[Double] || targetClass == classOf[
             Double]) {
-            NumericValueToDouble.INSTANCE
+            NumericValueToDouble
           } else if (targetClass == classOf[Float] || targetClass == classOf[
             Float]) {
-            NumericValueToFloat.INSTANCE
+            NumericValueToFloat
           } else if (targetClass == classOf[BigDecimal]) {
-            NumericValueToBigDecimal.INSTANCE
+            NumericValueToBigDecimal
           } else if (targetClass.isAssignableFrom(classOf[IntegerValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.DECIMAL)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[
-            BigDecimal]) {
-            NumericValueToBigDecimal.INSTANCE
-          } else if (targetClass == classOf[Double] || targetClass == classOf[
-            Double]) {
-            NumericValueToDouble.INSTANCE
-          } else if (targetClass == classOf[Float] || targetClass == classOf[
-            Float]) {
-            NumericValueToFloat.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[BigDecimal]) {
+            NumericValueToBigDecimal
+          } else if (targetClass == classOf[Double] || targetClass == classOf[Double]) {
+            NumericValueToDouble
+          } else if (targetClass == classOf[Float] || targetClass == classOf[Float]) {
+            NumericValueToFloat
           } else if (targetClass.isAssignableFrom(classOf[BigDecimalValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.FLOAT)) {
           if (targetClass == classOf[AnyRef] || targetClass == classOf[Float] ||
             targetClass == classOf[Float]) {
-            NumericValueToFloat.INSTANCE
-          } else if (targetClass == classOf[Double] || targetClass == classOf[
-            Double]) {
-            NumericValueToDouble.INSTANCE
+            NumericValueToFloat
+          } else if (targetClass == classOf[Double] || targetClass == classOf[Double]) {
+            NumericValueToDouble
           } else if (targetClass.isAssignableFrom(classOf[FloatValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.DOUBLE)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[Double] ||
-            targetClass == classOf[Double]) {
-            NumericValueToDouble.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[Double] || targetClass == classOf[Double]) {
+            NumericValueToDouble
           } else if (targetClass.isAssignableFrom(classOf[DoubleValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
-            Atomic.INSTANCE
+            Atomic
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.ANY_URI)) {
-          if (targetClass == classOf[AnyRef] || classOf[URI].isAssignableFrom(
-            targetClass)) {
-            AnyURIValueToURI.INSTANCE
+          if (targetClass == classOf[AnyRef] || classOf[URI].isAssignableFrom(targetClass)) {
+            AnyURIValueToURI
           } else if (classOf[URL].isAssignableFrom(targetClass)) {
-            AnyURIValueToURL.INSTANCE
-          } else if (targetClass == classOf[String] || targetClass == classOf[
-            CharSequence]) {
-            StringValueToString.INSTANCE
+            AnyURIValueToURL
+          } else if (targetClass == classOf[String] || targetClass == classOf[CharSequence]) {
+            StringValueToString
           } else if (targetClass.isAssignableFrom(classOf[AnyURIValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.QNAME)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[
-            javax.xml.namespace.QName]) {
-            QualifiedNameValueToQName.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[javax.xml.namespace.QName]) {
+            QualifiedNameValueToQName
           } else if (targetClass.isAssignableFrom(classOf[QNameValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.NOTATION)) {
-          if (targetClass == classOf[AnyRef] || targetClass == classOf[
-            javax.xml.namespace.QName]) {
-            QualifiedNameValueToQName.INSTANCE
+          if (targetClass == classOf[AnyRef] || targetClass == classOf[javax.xml.namespace.QName]) {
+            QualifiedNameValueToQName
           } else if (targetClass.isAssignableFrom(classOf[NotationValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.DURATION)) {
           if (targetClass.isAssignableFrom(classOf[DurationValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.DATE_TIME)) {
           if (targetClass.isAssignableFrom(classOf[DateTimeValue])) {
-            Identity.INSTANCE
+            Identity
           } else if (targetClass == classOf[java.util.Date]) {
-            CalendarValueToDate.INSTANCE
+            CalendarValueToDate
           } else if (targetClass == classOf[java.util.Calendar]) {
-            CalendarValueToCalendar.INSTANCE
+            CalendarValueToCalendar
           } else if (targetClass == classOf[Instant]) {
-            CalendarValueToInstant.INSTANCE
+            CalendarValueToInstant
           } else if (targetClass == classOf[ZonedDateTime]) {
-            CalendarValueToZonedDateTime.INSTANCE
+            CalendarValueToZonedDateTime
           } else if (targetClass == classOf[LocalDateTime]) {
-            CalendarValueToLocalDateTime.INSTANCE
+            CalendarValueToLocalDateTime
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.DATE)) {
           if (targetClass.isAssignableFrom(classOf[DateValue])) {
-            Identity.INSTANCE
+            Identity
           } else if (targetClass == classOf[java.util.Date]) {
-            CalendarValueToDate.INSTANCE
+            CalendarValueToDate
           } else if (targetClass == classOf[java.util.Calendar]) {
-            CalendarValueToCalendar.INSTANCE
+            CalendarValueToCalendar
           } else if (targetClass == classOf[Instant]) {
-            CalendarValueToInstant.INSTANCE
+            CalendarValueToInstant
           } else if (targetClass == classOf[ZonedDateTime]) {
-            CalendarValueToZonedDateTime.INSTANCE
+            CalendarValueToZonedDateTime
           } else if (targetClass == classOf[OffsetDateTime]) {
-            CalendarValueToOffsetDateTime.INSTANCE
+            CalendarValueToOffsetDateTime
           } else if (targetClass == classOf[LocalDateTime]) {
-            CalendarValueToLocalDateTime.INSTANCE
+            CalendarValueToLocalDateTime
           } else if (targetClass == classOf[LocalDate]) {
-            DateValueToLocalDate.INSTANCE
+            DateValueToLocalDate
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.TIME)) {
           if (targetClass.isAssignableFrom(classOf[TimeValue])) {
-            Identity.INSTANCE
+            Identity
           } else if (targetClass == classOf[java.util.Date]) {
-            CalendarValueToDate.INSTANCE
+            CalendarValueToDate
           } else if (targetClass == classOf[java.util.Calendar]) {
-            CalendarValueToCalendar.INSTANCE
+            CalendarValueToCalendar
           } else if (targetClass == classOf[Instant]) {
-            CalendarValueToInstant.INSTANCE
+            CalendarValueToInstant
           } else if (targetClass == classOf[ZonedDateTime]) {
-            CalendarValueToZonedDateTime.INSTANCE
+            CalendarValueToZonedDateTime
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.G_YEAR)) {
           if (targetClass.isAssignableFrom(classOf[GYearValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.G_YEAR_MONTH)) {
           if (targetClass.isAssignableFrom(classOf[GYearMonthValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.G_MONTH)) {
           if (targetClass.isAssignableFrom(classOf[GMonthValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.G_MONTH_DAY)) {
           if (targetClass.isAssignableFrom(classOf[GMonthDayValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.G_DAY)) {
           if (targetClass.isAssignableFrom(classOf[GDayValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.BASE64_BINARY)) {
           if (targetClass.isAssignableFrom(classOf[Base64BinaryValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else if (th.isSubType(itemType, BuiltInAtomicType.HEX_BINARY)) {
           if (targetClass.isAssignableFrom(classOf[HexBinaryValue])) {
-            Identity.INSTANCE
+            Identity
           } else {
             throw cannotConvert(itemType, targetClass, config)
           }
         } else {
-          Atomic.INSTANCE
+          Atomic
         }
       } else if (itemType.isInstanceOf[JavaExternalObjectType]) {
-        UnwrapExternalObject.INSTANCE
+        UnwrapExternalObject
       } else if (itemType eq ErrorType) {
-        ToNull.INSTANCE
+        ToNull
       } else if (itemType.isInstanceOf[NodeTest]) {
         if (classOf[NodeInfo].isAssignableFrom(targetClass)) {
-          Identity.INSTANCE
+          Identity
         } else {
-          General.INSTANCE
+          General
         }
       } else {
-        General.INSTANCE
+        General
       }
     } else {
-      General.INSTANCE
+      General
     }
   }
 
   private def cannotConvert(source: ItemType,
                             target: Class[_],
                             config: Configuration): XPathException =
-    new XPathException(
-      "Cannot convert from " + source + " to " + target.getName)
+    new XPathException("Cannot convert from " + source + " to " + target.getName)
 
   def allocateNodeListCreator(config: Configuration,
                               node: AnyRef): PJConverter = {
-    val externalObjectModels: List[ExternalObjectModel] =
-      config.getExternalObjectModels
+    val externalObjectModels = config.getExternalObjectModels
     for (model <- externalObjectModels.asScala) {
-      val converter: PJConverter = model.getNodeListCreator(node)
+      val converter = model.getNodeListCreator(node)
       if (converter != null) {
-        converter
+        return converter
       }
     }
-    ToCollection.INSTANCE
+    ToCollection
   }
 
-  object ToSequenceIterator {
-
-    val INSTANCE: ToSequenceIterator = new ToSequenceIterator
-
-  }
-
-  class ToSequenceIterator extends PJConverter {
+  object ToSequenceIterator extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -509,13 +434,7 @@ object PJConverter {
 
   }
 
-  object ToNull {
-
-    val INSTANCE: ToNull = new ToNull()
-
-  }
-
-  class ToNull extends PJConverter {
+  object ToNull extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -523,13 +442,7 @@ object PJConverter {
 
   }
 
-  object ToSequenceExtent {
-
-    val INSTANCE: ToSequenceExtent = new ToSequenceExtent()
-
-  }
-
-  class ToSequenceExtent extends PJConverter {
+  object ToSequenceExtent extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -537,13 +450,7 @@ object PJConverter {
 
   }
 
-  object ToCollection {
-
-    val INSTANCE: ToCollection = new ToCollection()
-
-  }
-
-  class ToCollection extends PJConverter {
+  object ToCollection extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -555,30 +462,26 @@ object PJConverter {
         try
           list = targetClass.newInstance().asInstanceOf[Collection[Any]]
         catch {
-          case e: InstantiationException => {
+          case e =>
             val de: XPathException = new XPathException(
               "Cannot instantiate collection class " + targetClass)
             de.setXPathContext(context)
             throw de
-          }
-
-          case e: IllegalAccessException => {
+          case _: IllegalAccessException =>
             val de: XPathException = new XPathException(
               "Cannot access collection class " + targetClass)
             de.setXPathContext(context)
             throw de
-          }
-
         }
       }
       val config: Configuration = context.getConfiguration
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
-      while (({
+      while ({
         it = iter.next()
         it
-      }) != null) if (it.isInstanceOf[AtomicValue]) {
-        val pj: PJConverter = allocate(
+      } != null) if (it.isInstanceOf[AtomicValue]) {
+        val pj = allocate(
           config,
           it.asInstanceOf[AtomicValue].getItemType,
           StaticProperty.EXACTLY_ONE,
@@ -605,13 +508,13 @@ object PJConverter {
         value.asInstanceOf[ExternalObject[_]].getObject
       }
       val componentClass: Class[_] = targetClass.getComponentType
-      val list: List[Any] = new ArrayList[Any](20)
-      val iter: SequenceIterator = value.iterate()
+      val list = new ArrayList[Any](20)
+      val iter = value.iterate()
       var item: Item = null
-      while (({
+      while ({
         item = iter.next()
         item
-      }) != null) {
+      } != null) {
         val obj: Any = itemConverter.convert(item, componentClass, context)
         if (obj != null) {
           list.add(obj)
@@ -626,13 +529,7 @@ object PJConverter {
 
   }
 
-  object ToOne {
-
-    val INSTANCE: ToOne = new ToOne()
-
-  }
-
-  class ToOne extends PJConverter {
+  object ToOne extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -640,13 +537,7 @@ object PJConverter {
 
   }
 
-  object ToZeroOrOne {
-
-    val INSTANCE: ToZeroOrOne = new ToZeroOrOne()
-
-  }
-
-  class ToZeroOrOne extends PJConverter {
+  object ToZeroOrOne extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -654,13 +545,7 @@ object PJConverter {
 
   }
 
-  object ToOneOrMore {
-
-    val INSTANCE: ToOneOrMore = new ToOneOrMore()
-
-  }
-
-  class ToOneOrMore extends PJConverter {
+  object ToOneOrMore extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -669,13 +554,7 @@ object PJConverter {
 
   }
 
-  object ToZeroOrMore {
-
-    val INSTANCE: ToZeroOrMore = new ToZeroOrMore()
-
-  }
-
-  class ToZeroOrMore extends PJConverter {
+  object ToZeroOrMore extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -684,13 +563,7 @@ object PJConverter {
 
   }
 
-  object Identity {
-
-    val INSTANCE: Identity = new Identity()
-
-  }
-
-  class Identity extends PJConverter {
+  object Identity extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -735,13 +608,7 @@ object PJConverter {
 
   }
 
-  object UnwrapExternalObject {
-
-    val INSTANCE: UnwrapExternalObject = new UnwrapExternalObject()
-
-  }
-
-  class UnwrapExternalObject extends PJConverter {
+  object UnwrapExternalObject extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -750,7 +617,7 @@ object PJConverter {
       if (head == null) {
         return null
       }
-      if (!(head.isInstanceOf[ExternalObject[_]])) {
+      if (! head.isInstanceOf[ExternalObject[_]]) {
         if (classOf[Sequence].isAssignableFrom(targetClass)) {
           head = new ObjectValue(value)
         } else {
@@ -773,13 +640,7 @@ object PJConverter {
 
   }
 
-  object StringValueToString {
-
-    val INSTANCE: StringValueToString = new StringValueToString()
-
-  }
-
-  class StringValueToString extends PJConverter {
+  object StringValueToString extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -790,13 +651,7 @@ object PJConverter {
 
   }
 
-  object StringValueToChar {
-
-    val INSTANCE: StringValueToChar = new StringValueToChar()
-
-  }
-
-  class StringValueToChar extends PJConverter {
+  object StringValueToChar extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -819,13 +674,7 @@ object PJConverter {
 
   }
 
-  object BooleanValueToBoolean {
-
-    val INSTANCE: BooleanValueToBoolean = new BooleanValueToBoolean()
-
-  }
-
-  class BooleanValueToBoolean extends PJConverter {
+  object BooleanValueToBoolean extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -837,13 +686,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToBigInteger {
-
-    val INSTANCE: IntegerValueToBigInteger = new IntegerValueToBigInteger()
-
-  }
-
-  class IntegerValueToBigInteger extends PJConverter {
+  object IntegerValueToBigInteger extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -854,13 +697,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToLong {
-
-    val INSTANCE: IntegerValueToLong = new IntegerValueToLong()
-
-  }
-
-  class IntegerValueToLong extends PJConverter {
+  object IntegerValueToLong extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -872,13 +709,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToInt {
-
-    val INSTANCE: IntegerValueToInt = new IntegerValueToInt()
-
-  }
-
-  class IntegerValueToInt extends PJConverter {
+  object IntegerValueToInt extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -890,13 +721,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToShort {
-
-    val INSTANCE: IntegerValueToShort = new IntegerValueToShort()
-
-  }
-
-  class IntegerValueToShort extends PJConverter {
+  object IntegerValueToShort extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -908,13 +733,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToByte {
-
-    val INSTANCE: IntegerValueToByte = new IntegerValueToByte()
-
-  }
-
-  class IntegerValueToByte extends PJConverter {
+  object IntegerValueToByte extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -926,13 +745,7 @@ object PJConverter {
 
   }
 
-  object IntegerValueToChar {
-
-    val INSTANCE: IntegerValueToChar = new IntegerValueToChar()
-
-  }
-
-  class IntegerValueToChar extends PJConverter {
+  object IntegerValueToChar extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -944,13 +757,7 @@ object PJConverter {
 
   }
 
-  object NumericValueToBigDecimal {
-
-    val INSTANCE: NumericValueToBigDecimal = new NumericValueToBigDecimal()
-
-  }
-
-  class NumericValueToBigDecimal extends PJConverter {
+  object NumericValueToBigDecimal extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -961,13 +768,7 @@ object PJConverter {
 
   }
 
-  object NumericValueToDouble {
-
-    val INSTANCE: NumericValueToDouble = new NumericValueToDouble()
-
-  }
-
-  class NumericValueToDouble extends PJConverter {
+  object NumericValueToDouble extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -979,13 +780,7 @@ object PJConverter {
 
   }
 
-  object NumericValueToFloat {
-
-    val INSTANCE: NumericValueToFloat = new NumericValueToFloat()
-
-  }
-
-  class NumericValueToFloat extends PJConverter {
+  object NumericValueToFloat extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -997,13 +792,7 @@ object PJConverter {
 
   }
 
-  object AnyURIValueToURI {
-
-    val INSTANCE: AnyURIValueToURI = new AnyURIValueToURI()
-
-  }
-
-  class AnyURIValueToURI extends PJConverter {
+  object AnyURIValueToURI extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1015,13 +804,7 @@ object PJConverter {
 
   }
 
-  object AnyURIValueToURL {
-
-    val INSTANCE: AnyURIValueToURL = new AnyURIValueToURL()
-
-  }
-
-  class AnyURIValueToURL extends PJConverter {
+  object AnyURIValueToURL extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1033,13 +816,7 @@ object PJConverter {
 
   }
 
-  object QualifiedNameValueToQName {
-
-    val INSTANCE: QualifiedNameValueToQName = new QualifiedNameValueToQName()
-
-  }
-
-  class QualifiedNameValueToQName extends PJConverter {
+  object QualifiedNameValueToQName extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1051,13 +828,7 @@ object PJConverter {
 
   }
 
-  object CalendarValueToInstant {
-
-    val INSTANCE: CalendarValueToInstant = new CalendarValueToInstant()
-
-  }
-
-  class CalendarValueToInstant extends PJConverter {
+  object CalendarValueToInstant extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1068,14 +839,7 @@ object PJConverter {
 
   }
 
-  object CalendarValueToZonedDateTime {
-
-    val INSTANCE: CalendarValueToZonedDateTime =
-      new CalendarValueToZonedDateTime()
-
-  }
-
-  class CalendarValueToZonedDateTime extends PJConverter {
+  object CalendarValueToZonedDateTime extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1086,14 +850,7 @@ object PJConverter {
 
   }
 
-  object CalendarValueToOffsetDateTime {
-
-    val INSTANCE: CalendarValueToOffsetDateTime =
-      new CalendarValueToOffsetDateTime()
-
-  }
-
-  class CalendarValueToOffsetDateTime extends PJConverter {
+  object CalendarValueToOffsetDateTime extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1104,14 +861,7 @@ object PJConverter {
 
   }
 
-  object CalendarValueToLocalDateTime {
-
-    val INSTANCE: CalendarValueToLocalDateTime =
-      new CalendarValueToLocalDateTime()
-
-  }
-
-  class CalendarValueToLocalDateTime extends PJConverter {
+  object CalendarValueToLocalDateTime extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1122,13 +872,7 @@ object PJConverter {
 
   }
 
-  object CalendarValueToDate {
-
-    val INSTANCE: CalendarValueToDate = new CalendarValueToDate()
-
-  }
-
-  class CalendarValueToDate extends PJConverter {
+  object CalendarValueToDate extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1140,11 +884,7 @@ object PJConverter {
     }
   }
 
-  object DateValueToLocalDate {
-    val INSTANCE: DateValueToLocalDate = new DateValueToLocalDate()
-  }
-
-  class DateValueToLocalDate extends PJConverter {
+  object DateValueToLocalDate extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1154,11 +894,7 @@ object PJConverter {
     }
   }
 
-  object CalendarValueToCalendar {
-    val INSTANCE: CalendarValueToCalendar = new CalendarValueToCalendar()
-  }
-
-  class CalendarValueToCalendar extends PJConverter {
+  object CalendarValueToCalendar extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1170,11 +906,7 @@ object PJConverter {
     }
   }
 
-  object Atomic {
-    val INSTANCE: Atomic = new Atomic()
-  }
-
-  class Atomic extends PJConverter {
+  object Atomic extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1192,11 +924,7 @@ object PJConverter {
     }
   }
 
-  object General {
-    val INSTANCE: General = new General()
-  }
-
-  class General extends PJConverter {
+  object General extends PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
@@ -1208,8 +936,8 @@ object PJConverter {
         SequenceTool.getItemType(gv, config.getTypeHierarchy),
         SequenceTool.getCardinality(gv),
         targetClass)
-      if (converter.isInstanceOf[General]) {
-        converter = Identity.INSTANCE
+      if (converter.isInstanceOf[General.type]) {
+        converter = Identity
       }
       converter.convert(gv, targetClass, context)
     }

@@ -1,53 +1,39 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The <tt>PIGrabber</tt> class is a {@link ProxyReceiver} that looks for {@code xml-stylesheet} processing
+ * instructions and tests whether they match specified criteria; for those that do, it creates
+ * a {@link Source} object referring to the relevant stylesheet
+ */
 package org.orbeon.saxon.event
 
+import java.util.{ArrayList, List}
+
+import javax.xml.transform.{Source, URIResolver}
+import javax.xml.transform.sax.SAXSource
+import org.orbeon.saxon.lib.StandardURIResolver
+import org.orbeon.saxon.model.SchemaType
+import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.ProcInstParser
 import org.orbeon.saxon.utils.Configuration
 
-import org.orbeon.saxon.lib.StandardURIResolver
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.om.AttributeMap
-
-import org.orbeon.saxon.om.NamespaceMap
-
-import org.orbeon.saxon.om.NodeName
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.ProcInstParser
-
-import javax.xml.transform.Source
-
-import javax.xml.transform.TransformerException
-
-import javax.xml.transform.URIResolver
-
-import javax.xml.transform.sax.SAXSource
-
-import java.util.ArrayList
-
-import java.util.Comparator
-
-import java.util.List
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 
+// ORBEON: Unused class
 class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 
   private var config: Configuration = null
-
   private var reqMedia: String = null
-
   private var reqTitle: String = null
-
   private var baseURI: String = null
-
   private var uriResolver: URIResolver = null
-
   private var stylesheets: List[String] = new ArrayList()
 
   @BooleanBeanProperty
@@ -125,7 +111,6 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
   }
 
   /*@Nullable*/
-
   def getAssociatedStylesheets: Array[Source] = {
     if (stylesheets.isEmpty)
       return null
@@ -148,15 +133,3 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * The <tt>PIGrabber</tt> class is a {@link ProxyReceiver} that looks for {@code xml-stylesheet} processing
- * instructions and tests whether they match specified criteria; for those that do, it creates
- * a {@link Source} object referring to the relevant stylesheet
- */
-//

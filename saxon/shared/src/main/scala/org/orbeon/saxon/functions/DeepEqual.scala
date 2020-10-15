@@ -1,75 +1,38 @@
 package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.sort.AtomicComparer
-
-import org.orbeon.saxon.expr.sort.GenericAtomicComparer
-
+import org.orbeon.saxon.expr.sort.{AtomicComparer, GenericAtomicComparer}
 import org.orbeon.saxon.lib.ErrorReporter
-
-import org.orbeon.saxon.model.ComplexType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.model.{ComplexType, Type}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.pattern.SameNameTest
 
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import java.util.{ArrayList, HashSet}
 
+import org.orbeon.saxon.functions.DeepEqual._
 import org.orbeon.saxon.trans.XmlProcessingIncident
-
-import org.orbeon.saxon.tree.iter.AtomicIterator
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
+import org.orbeon.saxon.tree.iter.{AtomicIterator, AxisIterator}
 import org.orbeon.saxon.tree.tiny.WhitespaceTextImpl
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.tree.util.Navigator
-
-import org.orbeon.saxon.tree.util.Orphan
-
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator, Orphan}
 import org.orbeon.saxon.value._
 
-import java.util.ArrayList
-
-import java.util.HashSet
-
-import java.util.List
-
-import DeepEqual._
-
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 object DeepEqual {
 
-  val INCLUDE_NAMESPACES: Int = 1
-
-  val INCLUDE_PREFIXES: Int = 1 << 1
-
-  val INCLUDE_COMMENTS: Int = 1 << 2
-
-  val INCLUDE_PROCESSING_INSTRUCTIONS: Int = 1 << 3
-
-  val EXCLUDE_WHITESPACE_TEXT_NODES: Int = 1 << 4
-
-  val COMPARE_STRING_VALUES: Int = 1 << 5
-
-  val COMPARE_ANNOTATIONS: Int = 1 << 6
-
-  val WARNING_IF_FALSE: Int = 1 << 7
-
-  val JOIN_ADJACENT_TEXT_NODES: Int = 1 << 8
-
-  val COMPARE_ID_FLAGS: Int = 1 << 9
-
-  val EXCLUDE_VARIETY: Int = 1 << 10
+  val INCLUDE_NAMESPACES              : Int = 1
+  val INCLUDE_PREFIXES                : Int = 1 << 1
+  val INCLUDE_COMMENTS                : Int = 1 << 2
+  val INCLUDE_PROCESSING_INSTRUCTIONS : Int = 1 << 3
+  val EXCLUDE_WHITESPACE_TEXT_NODES   : Int = 1 << 4
+  val COMPARE_STRING_VALUES           : Int = 1 << 5
+  val COMPARE_ANNOTATIONS             : Int = 1 << 6
+  val WARNING_IF_FALSE                : Int = 1 << 7
+  val JOIN_ADJACENT_TEXT_NODES        : Int = 1 << 8
+  val COMPARE_ID_FLAGS                : Int = 1 << 9
+  val EXCLUDE_VARIETY                 : Int = 1 << 10
 
   def deepEqual(op1: SequenceIterator,
                 op2: SequenceIterator,
@@ -141,51 +104,50 @@ object DeepEqual {
           if (item1 != item2) return false
         }
         breakable {
-          if (item1.isInstanceOf[NodeInfo]) {
-            if (item2.isInstanceOf[NodeInfo]) {
-              if (!deepEquals(item1.asInstanceOf[NodeInfo],
-                item2.asInstanceOf[NodeInfo],
-                comparer,
-                context,
-                flags)) {
-                result = false
-                reason = "nodes at position " + pos1 + " differ"
-                break()
+          item1 match {
+            case nodeInfo1: NodeInfo =>
+              item2 match {
+                case nodeInfo2: NodeInfo =>
+                  if (!deepEquals(nodeInfo1,
+                    nodeInfo2,
+                    comparer,
+                    context,
+                    flags)) {
+                    result = false
+                    reason = "nodes at position " + pos1 + " differ"
+                    break()
+                  }
+                case _ =>
+                  result = false
+                  reason = "comparing a node to an atomic value at position " + pos1
+                  break()
               }
-            } else {
-              result = false
-              reason = "comparing a node to an atomic value at position " + pos1
-              break()
-            }
-          } else {
-            if (item2.isInstanceOf[NodeInfo]) {
-              result = false
-              reason = "comparing an atomic value to a node at position " + pos1
-              break()
-            } else {
-              val av1: AtomicValue = item1.asInstanceOf[AtomicValue]
-              val av2: AtomicValue = item2.asInstanceOf[AtomicValue]
-              if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
-                av1,
-                av2)) {
+            case _ =>
+              if (item2.isInstanceOf[NodeInfo]) {
                 result = false
-                reason = "atomic values at position " + pos1 + " differ"
+                reason = "comparing an atomic value to a node at position " + pos1
                 break()
+              } else {
+                val av1 = item1.asInstanceOf[AtomicValue]
+                val av2 = item2.asInstanceOf[AtomicValue]
+                if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
+                  av1,
+                  av2)) {
+                  result = false
+                  reason = "atomic values at position " + pos1 + " differ"
+                  break()
+                }
               }
-            }
           }
         }
       }
     } catch {
-      case err: ClassCastException => {
+      case _: ClassCastException =>
         result = false
         reason = "sequences contain non-comparable values"
-      }
-
     }
-    if (!result) {
+    if (! result)
       explain(reporter, reason, flags, null, null)
-    }
     result
   }
 
@@ -194,8 +156,9 @@ object DeepEqual {
                  comparer: AtomicComparer,
                  context: XPathContext,
                  flags: Int): Boolean = {
-    if (n1 == n2) return true
-    val reporter: ErrorReporter = context.getErrorReporter
+    if (n1 == n2)
+      return true
+    val reporter = context.getErrorReporter
     if (n1.getNodeKind != n2.getNodeKind) {
       explain(reporter,
         "node kinds differ: comparing " + showKind(n1) + " to " +
@@ -230,7 +193,7 @@ object DeepEqual {
           return false
         }
         var a1: AxisIterator = n1.iterateAxis(AxisInfo.ATTRIBUTE)
-        var a2: AxisIterator = n2.iterateAxis(AxisInfo.ATTRIBUTE)
+        val a2: AxisIterator = n2.iterateAxis(AxisInfo.ATTRIBUTE)
         if (!SequenceTool.sameLength(a1, a2)) {
           explain(reporter,
             "elements have different number of attributes",
@@ -270,28 +233,24 @@ object DeepEqual {
           }
         }
         if ((flags & INCLUDE_NAMESPACES) != 0) {
-          val ns1: HashSet[NamespaceBinding] =
-            new HashSet[NamespaceBinding](10)
-          val ns2: HashSet[NamespaceBinding] =
-            new HashSet[NamespaceBinding](10)
-          val it1: AxisIterator = n1.iterateAxis(AxisInfo.NAMESPACE)
+          val ns1 = new HashSet[NamespaceBinding](10)
+          val ns2 = new HashSet[NamespaceBinding](10)
+          val it1 = n1.iterateAxis(AxisInfo.NAMESPACE)
           var nn1: NodeInfo = null
-          while (({
+          while ({
             nn1 = it1.next()
             nn1
-          }) != null) {
-            val nscode1: NamespaceBinding =
-              new NamespaceBinding(nn1.getLocalPart, nn1.getStringValue)
+          } != null) {
+            val nscode1 = new NamespaceBinding(nn1.getLocalPart, nn1.getStringValue)
             ns1.add(nscode1)
           }
-          val it2: AxisIterator = n2.iterateAxis(AxisInfo.NAMESPACE)
+          val it2 = n2.iterateAxis(AxisInfo.NAMESPACE)
           var nn2: NodeInfo = null
-          while (({
+          while ({
             nn2 = it2.next()
             nn2
-          }) != null) {
-            val nscode2: NamespaceBinding =
-              new NamespaceBinding(nn2.getLocalPart, nn2.getStringValue)
+          } != null) {
+            val nscode2 = new NamespaceBinding(nn2.getLocalPart, nn2.getStringValue)
             ns2.add(nscode2)
           }
           if (ns1 != ns2) {
@@ -327,9 +286,9 @@ object DeepEqual {
             return false
           }
           if (n1.getSchemaType.isComplexType) {
-            val variety1: Int =
+            val variety1 =
               n1.getSchemaType.asInstanceOf[ComplexType].getVariety
-            val variety2: Int =
+            val variety2 =
               n2.getSchemaType.asInstanceOf[ComplexType].getVariety
             if (variety1 != variety2) {
               explain(
@@ -343,10 +302,10 @@ object DeepEqual {
           }
         }
         if ((flags & COMPARE_STRING_VALUES) == 0) {
-          val type1: SchemaType = n1.getSchemaType
-          val type2: SchemaType = n2.getSchemaType
-          val isSimple1: Boolean = type1.isSimpleType || type1.asInstanceOf[ComplexType].isSimpleContent
-          val isSimple2: Boolean = type2.isSimpleType || type2.asInstanceOf[ComplexType].isSimpleContent
+          val type1 = n1.getSchemaType
+          val type2 = n2.getSchemaType
+          val isSimple1 = type1.isSimpleType || type1.asInstanceOf[ComplexType].isSimpleContent
+          val isSimple2 = type2.isSimpleType || type2.asInstanceOf[ComplexType].isSimpleContent
           if (isSimple1 != isSimple2) {
             explain(reporter,
               "one element has a simple type, the other does not",
@@ -357,8 +316,8 @@ object DeepEqual {
           }
           if (isSimple1) {
             assert(isSimple2)
-            val v1: AtomicIterator[AtomicValue] = n1.atomize().iterate().asInstanceOf[AtomicIterator[AtomicValue]]
-            val v2: AtomicIterator[AtomicValue] = n2.atomize().iterate().asInstanceOf[AtomicIterator[AtomicValue]]
+            val v1 = n1.atomize().iterate().asInstanceOf[AtomicIterator[AtomicValue]]
+            val v2 = n2.atomize().iterate().asInstanceOf[AtomicIterator[AtomicValue]]
             return deepEqual(v1, v2, comparer, context, flags)
           }
           return false
@@ -383,16 +342,18 @@ object DeepEqual {
           return false
         }
       case Type.DOCUMENT =>
-        var c1: AxisIterator = n1.iterateAxis(AxisInfo.CHILD)
-        var c2: AxisIterator = n2.iterateAxis(AxisInfo.CHILD)
+        val c1 = n1.iterateAxis(AxisInfo.CHILD)
+        val c2 = n2.iterateAxis(AxisInfo.CHILD)
         while (true) {
-          var d1: NodeInfo = c1.next()
-          while (d1 != null && isIgnorable(d1, flags)) d1 = c1.next()
-          var d2: NodeInfo = c2.next()
-          while (d2 != null && isIgnorable(d2, flags)) d2 = c2.next()
+          var d1 = c1.next()
+          while (d1 != null && isIgnorable(d1, flags))
+            d1 = c1.next()
+          var d2 = c2.next()
+          while (d2 != null && isIgnorable(d2, flags))
+            d2 = c2.next()
           if (d1 == null || d2 == null) {
-            val r: Boolean = d1 == d2
-            if (!r) {
+            val r = d1 == d2
+            if (! r) {
               var message: String = "the first operand contains a node with " + (if (d1 == null)
                 "fewer"
               else
@@ -406,13 +367,12 @@ object DeepEqual {
             }
             return r
           }
-          if (!deepEquals(d1, d2, comparer, context, flags)) {
+          if (! deepEquals(d1, d2, comparer, context, flags))
             return false
-          }
           false
         }
       case Type.ATTRIBUTE =>
-        if (!Navigator.haveSameName(n1, n2)) {
+        if (! Navigator.haveSameName(n1, n2)) {
           explain(
             reporter,
             "attribute names differ: " +
@@ -444,7 +404,7 @@ object DeepEqual {
             return false
           }
         }
-        var ar: Boolean = false
+        var ar = false
         ar =
           if ((flags & COMPARE_STRING_VALUES) == 0)
             deepEqual(n1.atomize().iterate(),
@@ -488,16 +448,15 @@ object DeepEqual {
           return false
         }
       case Type.TEXT | Type.COMMENT =>
-        var vr: Boolean = comparer.comparesEqual(
+        val vr = comparer.comparesEqual(
           n1.atomize().asInstanceOf[AtomicValue],
           n2.atomize().asInstanceOf[AtomicValue])
-        if (!vr && ((flags & WARNING_IF_FALSE) != 0)) {
-          val v1: String = n1.atomize().getStringValue
-          val v2: String = n2.atomize().getStringValue
-          var message: String = ""
-          if (v1.length != v2.length) {
+        if (! vr && ((flags & WARNING_IF_FALSE) != 0)) {
+          val v1 = n1.atomize().getStringValue
+          val v2 = n2.atomize().getStringValue
+          var message = ""
+          if (v1.length != v2.length)
             message = "lengths (" + v1.length + "," + v2.length + ")"
-          }
           if (v1.length < 10 && v2.length < 10) {
             message = " (\"" + v1 + "\" vs \"" + v2 + "\")"
           } else {
@@ -548,16 +507,15 @@ object DeepEqual {
   }
 
   private def isIgnorable(node: NodeInfo, flags: Int): Boolean = {
-    val kind: Int = node.getNodeKind
-    if (kind == Type.COMMENT) {
-      return (flags & INCLUDE_COMMENTS) == 0
-    } else if (kind == Type.PROCESSING_INSTRUCTION) {
-      return (flags & INCLUDE_PROCESSING_INSTRUCTIONS) == 0
-    } else if (kind == Type.TEXT) {
-      return ((flags & EXCLUDE_WHITESPACE_TEXT_NODES) != 0) && Whitespace.isWhite(
-        node.getStringValueCS)
-    }
-    false
+    val kind = node.getNodeKind
+    if (kind == Type.COMMENT)
+      (flags & INCLUDE_COMMENTS) == 0
+    else if (kind == Type.PROCESSING_INSTRUCTION)
+      (flags & INCLUDE_PROCESSING_INSTRUCTIONS) == 0
+    else if (kind == Type.TEXT)
+      ((flags & EXCLUDE_WHITESPACE_TEXT_NODES) != 0) && Whitespace.isWhite(node.getStringValueCS)
+    else
+      false
   }
 
   private def explain(reporter: ErrorReporter,
@@ -579,12 +537,11 @@ object DeepEqual {
   }
 
   private def showKind(item: Item): String =
-    if (item.isInstanceOf[NodeInfo] &&
-      item.asInstanceOf[NodeInfo].getNodeKind == Type.TEXT &&
-      Whitespace.isWhite(item.getStringValueCS)) {
-      "whitespace text() node"
-    } else {
-      Type.displayTypeName(item)
+    item match {
+      case nodeInfo: NodeInfo if Whitespace.isWhite(item.getStringValueCS) && nodeInfo.getNodeKind == Type.TEXT =>
+        "whitespace text() node"
+      case _ =>
+        Type.displayTypeName(item)
     }
 
   private def showNamespaces(bindings: HashSet[NamespaceBinding]): String = {
@@ -600,43 +557,40 @@ object DeepEqual {
   }
 
   private def mergeAdjacentTextNodes(in: SequenceIterator): SequenceIterator = {
-    val items: List[Item] = new ArrayList[Item](20)
-    var prevIsText: Boolean = false
-    val textBuffer: FastStringBuffer = new FastStringBuffer(
-      FastStringBuffer.C64)
+    val items = new ArrayList[Item](20)
+    var prevIsText = false
+    val textBuffer = new FastStringBuffer(FastStringBuffer.C64)
     breakable {
       while (true) {
-        val next: Item = in.next()
-        if (next == null) {
+        val next = in.next()
+        if (next == null)
           break()
-        }
-        if (next.isInstanceOf[NodeInfo] &&
-          next.asInstanceOf[NodeInfo].getNodeKind == Type.TEXT) {
-          textBuffer.cat(next.getStringValueCS)
-          prevIsText = true
-        } else {
-          if (prevIsText) {
-            val textNode: Orphan = new Orphan(null)
-            textNode.setNodeKind(Type.TEXT)
-            textNode.setStringValue(textBuffer.toString)
-            items.add(textNode)
-            textBuffer.setLength(0)
-          }
-          prevIsText = false
-          items.add(next)
+        next match {
+          case nodeInfo: NodeInfo if nodeInfo.getNodeKind == Type.TEXT =>
+            textBuffer.cat(next.getStringValueCS)
+            prevIsText = true
+          case _ =>
+            if (prevIsText) {
+              val textNode = new Orphan(null)
+              textNode.setNodeKind(Type.TEXT)
+              textNode.setStringValue(textBuffer.toString)
+              items.add(textNode)
+              textBuffer.setLength(0)
+            }
+            prevIsText = false
+            items.add(next)
         }
       }
     }
     if (prevIsText) {
-      val textNode: Orphan = new Orphan(null)
+      val textNode = new Orphan(null)
       textNode.setNodeKind(Type.TEXT)
       textNode.setStringValue(textBuffer.toString)
       items.add(textNode)
     }
-    val extent: SequenceExtent = new SequenceExtent(items)
+    val extent = new SequenceExtent(items)
     extent.iterate()
   }
-
 }
 
 class DeepEqual extends CollatingFunctionFixed {
@@ -653,5 +607,4 @@ class DeepEqual extends CollatingFunctionFixed {
   }
 
   override def getStreamerName: String = "DeepEqual"
-
 }

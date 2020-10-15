@@ -17,6 +17,7 @@ import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 import org.orbeon.saxon.event.RegularSequenceChecker.State._
 import org.orbeon.saxon.utils.Configuration
 
+
 object ComplexContentOutputter {
 
   def makeComplexContentReceiver(receiver: Receiver,
@@ -585,5 +586,4 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
 
   def getErrorCodeForDecomposingFunctionItems: String =
     if (getPipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
-
 }
