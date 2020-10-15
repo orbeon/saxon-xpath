@@ -1,25 +1,19 @@
 package org.orbeon.saxon.expr.instruct
 
+import java.util.{Collections, Iterator, List}
+
 import org.orbeon.saxon.expr._
+import org.orbeon.saxon.expr.instruct.Actor._
 import org.orbeon.saxon.expr.parser.RetainedStaticContext
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.om.StandardNames
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.om.{StandardNames, StructuredQName}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
-import org.orbeon.saxon.trans.SymbolicName
-import org.orbeon.saxon.trans.Visibility
-import org.orbeon.saxon.trans.VisibilityProvenance
-import org.orbeon.saxon.trans.XPathException
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-
-import Actor._
+import org.orbeon.saxon.trans.{SymbolicName, Visibility, VisibilityProvenance}
 import org.orbeon.saxon.trans.VisibilityProvenance.VisibilityProvenance
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -29,64 +23,51 @@ object Actor {
                                     p: Actor,
                                     exp: Expression,
                                     bindings: List[ComponentBinding]): Unit = {
-    if (exp.isInstanceOf[ComponentInvocation]) {
-      p.processComponentReference(pack,
-        exp.asInstanceOf[ComponentInvocation],
-        bindings)
+    exp match {
+      case componentInvocation: ComponentInvocation =>
+        p.processComponentReference(pack, componentInvocation, bindings)
+      case _ =>
     }
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands.asScala)
       allocateBindingSlotsRecursive(pack, p, o.getChildExpression, bindings)
-    }
   }
-
 }
 
 abstract class Actor extends ExpressionOwner with Location {
 
-   var body: Expression = _
-
+  var body: Expression = _
   @BeanProperty
   var systemId: String = _
-
   @BeanProperty
   var lineNumber: Int = _
-
   var stackFrameMap: SlotManager = _
-
   @BeanProperty
   var packageData: PackageData = _
-
   @BeanProperty
   var declaringComponent: Component = _
-
   @BeanProperty
   var declaredVisibility: Visibility.Visibility = _
-
   @BeanProperty
   var retainedStaticContext: RetainedStaticContext = _
 
   def getSymbolicName: SymbolicName
-
   def getComponentName: StructuredQName = getSymbolicName.getComponentName
+  def getTracingTag: String = StandardNames.getLocalName(getSymbolicName.getComponentKind)
 
-  def getTracingTag: String =
-    StandardNames.getLocalName(getSymbolicName.getComponentKind)
-
-  def makeDeclaringComponent(
-                              visibility: Visibility.Visibility,
-                              declaringPackage: StylesheetPackage): Component = {
-    if (declaringComponent == null) {
+  def makeDeclaringComponent(visibility: Visibility.Visibility,
+                             declaringPackage: StylesheetPackage): Component = {
+    if (declaringComponent == null)
       declaringComponent = Component.makeComponent(
         this,
         visibility,
         VisibilityProvenance.DEFAULTED,
         declaringPackage,
         declaringPackage)
-    }
     declaringComponent
   }
 
-  def obtainDeclaringComponent(/*declaration: StyleElement*/): Component = { // StyleElement not exist
+  def obtainDeclaringComponent(/*declaration: StyleElement*/): Component = {
+    // StyleElement not exist
     if (declaringComponent == null) {
       val declaringPackage: StylesheetPackage = null //declaration.getContainingPackage
       val defaultVisibility: Visibility.Visibility = /*if (declaration.isInstanceOf[XSLGlobalParam]) Visibility.PUBLIC else*/ Visibility.PRIVATE
@@ -107,8 +88,7 @@ abstract class Actor extends ExpressionOwner with Location {
   }
 
   def allocateAllBindingSlots(pack: StylesheetPackage): Unit = {
-    if (getBody != null && getDeclaringComponent.getDeclaringPackage == pack &&
-      packageData.isXSLT) {
+    if (getBody != null && getDeclaringComponent.getDeclaringPackage == pack && packageData.isXSLT) {
       allocateBindingSlotsRecursive(pack,
         this,
         getBody,
@@ -116,28 +96,22 @@ abstract class Actor extends ExpressionOwner with Location {
     }
   }
 
-  private def processComponentReference(
-                                         pack: StylesheetPackage,
-                                         invocation: ComponentInvocation,
-                                         bindings: List[ComponentBinding]): Unit = {
+  private def processComponentReference(pack: StylesheetPackage,
+                                        invocation: ComponentInvocation,
+                                        bindings: List[ComponentBinding]): Unit = {
     val name: SymbolicName = invocation.getSymbolicName
-    if (name == null) {
+    if (name == null)
       return
-    }
     var target: Component = pack.getComponent(name)
     if (target == null &&
       name.getComponentName.hasURI(NamespaceConstant.XSLT) &&
       name.getComponentName.getLocalPart.==("original")) {
       target = pack.getOverriddenComponent(getSymbolicName)
     }
-    if (target == null) {
-      throw new AssertionError(
-        "Target of component reference " + name + " is undefined")
-    }
-    if (invocation.getBindingSlot >= 0) {
-      throw new AssertionError(
-        "**** Component reference " + name + " is already bound")
-    }
+    if (target == null)
+      throw new AssertionError("Target of component reference " + name + " is undefined")
+    if (invocation.getBindingSlot >= 0)
+      throw new AssertionError("**** Component reference " + name + " is already bound")
     val slot: Int = bindings.size
     val cb: ComponentBinding = new ComponentBinding(name, target)
     bindings.add(cb)
@@ -146,23 +120,16 @@ abstract class Actor extends ExpressionOwner with Location {
 
   def setBody(body: Expression): Unit = {
     this.body = body
-    if (body != null) {
+    if (body != null)
       body.setParentExpression(null)
-    }
   }
 
   def getBody: Expression = body
-
-  def getChildExpression(): Expression = getBody
-
+  def getChildExpression: Expression = getBody
   def getLocation: Location = this.asInstanceOf[Location]
-
-  def getColumnNumber(): Int = -1
-
+  def getColumnNumber: Int = -1
   def getPublicId: String = null
-
-  def saveLocation(): Location = this.asInstanceOf[Location]
-
+  def saveLocation: Location = this.asInstanceOf[Location]
   def getProperty(name: String): AnyRef = null
 
   def getProperties: Iterator[String] = {
@@ -171,16 +138,13 @@ abstract class Actor extends ExpressionOwner with Location {
   }
 
   def export(presenter: ExpressionPresenter): Unit
-
   def isExportable: Boolean = true
 
-  def setChildExpression(expr: Expression): Unit = {
+  def setChildExpression(expr: Expression): Unit =
     this.body = expr
-  }
 
   def getStackFrameMap: SlotManager = stackFrameMap
 
-  def setStackFrameMap(value: SlotManager): Unit = {
+  def setStackFrameMap(value: SlotManager): Unit =
     stackFrameMap = value
-  }
 }

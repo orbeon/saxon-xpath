@@ -18,26 +18,45 @@ import NamePool._
 /**
  * A NamePool holds a collection of expanded names, each containing a namespace URI,
  * and a local name.
- * <p>Each expanded name is allocated a unique 20-bit fingerprint. The fingerprint enables
+ *
+ * Each expanded name is allocated a unique 20-bit fingerprint. The fingerprint enables
  * the URI and the local name to be determined. Some subsystems (notably the Tinytree) use
  * the top 10 bits to represent the prefix, but the NamePool is no longer concerned with
- * managing prefixes, and prefixes do not have global codes.</p>
- * <p>The NamePool has been redesigned in Saxon 9.7 to make use of two Java
+ * managing prefixes, and prefixes do not have global codes.
+ *
+ * The NamePool has been redesigned in Saxon 9.7 to make use of two Java
  * ConcurrentHashMaps, one from QNames to integers, one from integers to QNames.
  * This gives better scaleability in terms of multithreaded concurrency and in terms
  * of the capacity of the NamePool and retention of performance as the size of
- * the vocabulary increases.</p>
- * <p>Fingerprints in the range 0 to 1023 are reserved for system use, and are allocated as constants
+ * the vocabulary increases.
+ *
+ * Fingerprints in the range 0 to 1023 are reserved for system use, and are allocated as constants
  * mainly to names in the XSLT and XML Schema namespaces: constants representing these names
- * are found in {@link StandardNames}.</p>
- * <p>The fingerprint -1 is reserved to mean "not known" or inapplicable.</p>
- * <p>Modified in 9.4 to remove namespace codes.</p>
- * <p>Modified in 9.7 to remove URI codes.</p>
- * <p>Modified in 9.8 to remove namecodes and all handling of prefixes.</p>
+ * are found in `StandardNames`.
+ *
+ * The fingerprint -1 is reserved to mean "not known" or inapplicable.
+ *
+ * Modified in 9.4 to remove namespace codes.
+ *
+ * Modified in 9.7 to remove URI codes.
+ *
+ * Modified in 9.8 to remove namecodes and all handling of prefixes.
  */
 object NamePool {
 
-  val FP_MASK: Int = 0xfffff
+  /**
+   * FP_MASK is a mask used to obtain a fingerprint from a nameCode. Given a
+   * nameCode nc, the fingerprint is <code>nc &amp; NamePool.FP_MASK</code>.
+   * (In practice, Saxon code often uses the literal constant 0xfffff,
+   * to extract the bottom 20 bits).
+   * <p>The difference between a fingerprint and a nameCode is that
+   * a nameCode contains information
+   * about the prefix of a name, the fingerprint depends only on the namespace
+   * URI and local name. Note that the "null" nameCode (-1) does not produce
+   * the "null" fingerprint (also -1) when this mask is applied.</p>
+   */
+  val FP_MASK = 0xfffff
+
   val USER_DEFINED_MASK: Int = 0xffc00
   private val MAX_FINGERPRINT: Int = FP_MASK
 

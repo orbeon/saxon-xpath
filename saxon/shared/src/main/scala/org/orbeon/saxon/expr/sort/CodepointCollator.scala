@@ -7,38 +7,41 @@ import org.orbeon.saxon.value.StringValue
 
 object CodepointCollator {
 
-  private val theInstance: CodepointCollator = new CodepointCollator()
-
-  val getInstance: CodepointCollator = theInstance
+  val getInstance: CodepointCollator = new CodepointCollator
 
   def compareCS(a: CharSequence, b: CharSequence): Int =
     a match {
       case unicodeString: UnicodeString if b.isInstanceOf[UnicodeString] =>
         unicodeString.compareTo(b.asInstanceOf[UnicodeString])
       case _ =>
-        val alen: Int = a.length
-        val blen: Int = b.length
-        var i: Int = 0
-        var j: Int = 0
+        val alen = a.length
+        val blen = b.length
+        var i = 0
+        var j = 0
         while (true) {
           if (i == alen) {
-            if (j == blen) return 0 else return -1
+            if (j == blen)
+              return 0
+            else
+              return -1
           }
-          if (j == blen) return +1
+          if (j == blen)
+            return +1
           i += 1
-          var nexta: Int = a.charAt(i).toInt
+          var nexta = a.charAt(i).toInt
           if (nexta >= 55296 && nexta <= 56319) {
             i += 1
             nexta = ((nexta - 55296) * 1024) + (a.charAt(i).toInt - 56320) + 65536
           }
           j += 1
-          var nextb: Int = b.charAt(j).toInt
+          var nextb = b.charAt(j).toInt
           if (nextb >= 55296 && nextb <= 56319) {
             j += 1
             nextb = ((nextb - 55296) * 1024) + (b.charAt(j).toInt - 56320) + 65536
           }
-          val c: Int = nexta - nextb
-          if (c != 0) return c
+          val c = nexta - nextb
+          if (c != 0)
+            return c
         }
         0
     }
@@ -60,10 +63,8 @@ class CodepointCollator extends StringCollator with SubstringMatcher {
         s1.length == s2.length && s1.toString == s2.toString
     }
 
-  def contains(s1: String, s2: String): Boolean = s1.contains(s2)
-
-  def endsWith(s1: String, s2: String): Boolean = s1.endsWith(s2)
-
+  def contains  (s1: String, s2: String): Boolean = s1.contains(s2)
+  def endsWith  (s1: String, s2: String): Boolean = s1.endsWith(s2)
   def startsWith(s1: String, s2: String): Boolean = s1.startsWith(s2)
 
   def substringAfter(s1: String, s2: String): String = {

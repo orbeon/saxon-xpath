@@ -93,7 +93,6 @@ trait NodeInfo extends Source with Item with Location {
                   nodeTest: Predicate[_ >: NodeInfo]): AxisIterator
 
   /*@Nullable*/
-
   def getAttributeValue(uri: String, local: String): String
   def getRoot: NodeInfo
   def hasChildNodes: Boolean

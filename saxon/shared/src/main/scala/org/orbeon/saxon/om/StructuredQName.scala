@@ -13,19 +13,21 @@ object StructuredQName {
   def fromClarkName(expandedName: String): StructuredQName = {
     var namespace: String = null
     var localName: String = null
+
     var expName = expandedName
-    if (expName.startsWith("Q{")) {
+    if (expName.startsWith("Q{"))
       expName = expName.substring(1)
-    }
+
     if (expName.charAt(0) == '{') {
-      val closeBrace: Int = expName.indexOf('}')
-      if (closeBrace < 0) {
+
+      val closeBrace = expName.indexOf('}')
+      if (closeBrace < 0)
         throw new IllegalArgumentException("No closing '}' in Clark name")
-      }
+
       namespace = expName.substring(1, closeBrace)
-      if (closeBrace == expName.length) {
+      if (closeBrace == expName.length)
         throw new IllegalArgumentException("Missing local part in Clark name")
-      }
+
       localName = expName.substring(closeBrace + 1)
     } else {
       namespace = ""
@@ -40,41 +42,35 @@ object StructuredQName {
                        resolver: NamespaceResolver): StructuredQName = {
     var lexName = lexicalName
     lexName = Whitespace.trimWhitespace(lexName)
-    if (allowEQName && lexName.length >= 4 && lexName.charAt(0) == 'Q' &&
-      lexName.charAt(1) == '{') {
-      val name: String = lexName.toString
-      val endBrace: Int = name.indexOf('}')
-      if (endBrace < 0) {
-        throw new XPathException("Invalid EQName: closing brace not found",
-          "FOCA0002")
-      } else if (endBrace == name.length - 1) {
-        throw new XPathException("Invalid EQName: local part is missing",
-          "FOCA0002")
-      }
-      val uri: String = name.substring(2, endBrace)
-      if (uri.contains("{")) {
-        throw new XPathException("Namespace URI must not contain '{'",
-          "FOCA0002")
-      }
-      val local: String = name.substring(endBrace + 1)
-      if (!NameChecker.isValidNCName(local)) {
-        throw new XPathException(
-          "Invalid EQName: local part is not a valid NCName",
-          "FOCA0002")
-      }
+    if (allowEQName && lexName.length >= 4 && lexName.charAt(0) == 'Q' && lexName.charAt(1) == '{') {
+
+      val name = lexName.toString
+
+      val endBrace = name.indexOf('}')
+      if (endBrace < 0)
+        throw new XPathException("Invalid EQName: closing brace not found", "FOCA0002")
+      else if (endBrace == name.length - 1)
+        throw new XPathException("Invalid EQName: local part is missing", "FOCA0002")
+
+      val uri = name.substring(2, endBrace)
+      if (uri.contains("{"))
+        throw new XPathException("Namespace URI must not contain '{'", "FOCA0002")
+
+      val local = name.substring(endBrace + 1)
+      if (! NameChecker.isValidNCName(local))
+        throw new XPathException("Invalid EQName: local part is not a valid NCName", "FOCA0002")
+
       new StructuredQName("", uri, local)
     }
-    val parts: Array[String] = NameChecker.getQNameParts(lexName)
-    val uri: String = resolver.getURIForPrefix(parts(0), useDefault)
+    val parts = NameChecker.getQNameParts(lexName)
+    val uri = resolver.getURIForPrefix(parts(0), useDefault)
     if (uri == null) {
       if (NameChecker.isValidNCName(parts(0))) {
-        val de: XPathException = new XPathException(
-          "Namespace prefix '" + parts(0) + "' has not been declared")
+        val de = new XPathException("Namespace prefix '" + parts(0) + "' has not been declared")
         de.setErrorCode("FONS0004")
         throw de
       } else {
-        val de: XPathException = new XPathException(
-          "Invalid namespace prefix '" + parts(0) + "'")
+        val de = new XPathException("Invalid namespace prefix '" + parts(0) + "'")
         de.setErrorCode("FOCA0002")
         throw de
       }
@@ -86,17 +82,15 @@ object StructuredQName {
     var eqChName = eqName
     eqChName = Whitespace.trimWhitespace(eqChName)
     if (eqChName.length >= 4 && eqChName.charAt(0) == 'Q' && eqChName.charAt(1) == '{') {
-      val name: String = eqChName.toString
-      val endBrace: Int = name.indexOf('}')
+      val name = eqChName.toString
+      val endBrace = name.indexOf('}')
       if (endBrace < 0) {
-        throw new IllegalArgumentException(
-          "Invalid EQName: closing brace not found")
+        throw new IllegalArgumentException("Invalid EQName: closing brace not found")
       } else if (endBrace == name.length - 1) {
-        throw new IllegalArgumentException(
-          "Invalid EQName: local part is missing")
+        throw new IllegalArgumentException("Invalid EQName: local part is missing")
       }
-      val uri: String = name.substring(2, endBrace)
-      val local: String = name.substring(endBrace + 1)
+      val uri = name.substring(2, endBrace)
+      val local = name.substring(endBrace + 1)
       new StructuredQName("", uri, local)
     } else {
       new StructuredQName("", "", eqChName.toString)
@@ -104,14 +98,14 @@ object StructuredQName {
   }
 
   def computeHashCode(uri: CharSequence, local: CharSequence): Int = {
-    var h: Int = 0x8004a00b
-    val localLen: Int = local.length
-    val uriLen: Int = uri.length
-    val totalLen: Int = localLen + uriLen
+    var h = 0x8004a00b
+    val localLen = local.length
+    val uriLen = uri.length
+    val totalLen = localLen + uriLen
     h ^= totalLen
     h ^= uriLen
-    var i: Int = 0
-    var j: Int = uriLen
+    var i = 0
+    var j = uriLen
     while (i < localLen) {
       h ^= local.charAt(i) << (j & 0x1f)
       i += 1
@@ -131,13 +125,15 @@ class StructuredQName private(var content: Array[Char],
 
   def this(prefix: String, uri: String, localName: String) = {
     this(null, 0, 0)
+
     var uriStr = uri
-    if (uriStr == null) {
+    if (uriStr == null)
       uriStr = ""
-    }
-    val plen: Int = prefix.length
-    val ulen: Int = uriStr.length
-    val llen: Int = localName.length
+
+    val plen = prefix.length
+    val ulen = uriStr.length
+    val llen = localName.length
+
     localNameStart = ulen
     prefixStart = ulen + llen
     content = Array.ofDim[Char](ulen + llen + plen)
@@ -149,12 +145,11 @@ class StructuredQName private(var content: Array[Char],
   def getPrefix: String =
     new String(content, prefixStart, content.length - prefixStart)
 
-  def getURI: String = {
-    if (localNameStart == 0) {
-      return ""
-    }
-    new String(content, 0, localNameStart)
-  }
+  def getURI: String =
+    if (localNameStart == 0)
+      ""
+    else
+      new String(content, 0, localNameStart)
 
   def hasURI(uri: String): Boolean = {
     if (localNameStart != uri.length) {
@@ -254,8 +249,8 @@ class StructuredQName private(var content: Array[Char],
   def getNamespaceBinding: NamespaceBinding =
     NamespaceBinding.makeNamespaceBinding(getPrefix, getURI)
 
-  def isIdentical(other: IdentityComparable): Boolean = equals(other) && other.asInstanceOf[StructuredQName].getPrefix == getPrefix
+  def isIdentical(other: IdentityComparable): Boolean =
+    equals(other) && other.asInstanceOf[StructuredQName].getPrefix == getPrefix
 
   def identityHashCode(): Int = hashCode ^ getPrefix.hashCode
-
 }

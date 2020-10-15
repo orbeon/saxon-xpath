@@ -52,9 +52,9 @@ trait GroundedValue extends Sequence {
     SingletonIntersectExpression.containsNode(iterate(), sought)
 
   def concatenate(others: GroundedValue*): GroundedValue = {
-    val c: List[GroundedValue] = new ArrayList[GroundedValue]()
+    val c = new ArrayList[GroundedValue]()
     c.add(this)
-    Collections.addAll(c, others:_*)
+    Collections.addAll(c, others: _*)
     new Chain(c)
   }
 }

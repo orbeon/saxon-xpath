@@ -34,31 +34,24 @@ object UserFunction {
   object Determinism extends Enumeration {
 
     val DETERMINISTIC: Determinism = new Determinism()
-
     val PROACTIVE: Determinism = new Determinism()
-
     val ELIDABLE: Determinism = new Determinism()
 
     class Determinism extends Val
 
     implicit def convertValue(v: Value): Determinism =
       v.asInstanceOf[Determinism]
-
   }
 
   private val MAX_INLININGS: Int = 100
 
   private def containsUserFunctionCalls(exp: Expression): Boolean = {
-    if (exp.isInstanceOf[UserFunctionCall]) {
+    if (exp.isInstanceOf[UserFunctionCall])
       return true
-    }
-    for (o <- exp.operands.asScala
-         if containsUserFunctionCalls(o.getChildExpression)) {
-      true
-    }
+    for (o <- exp.operands.asScala if containsUserFunctionCalls(o.getChildExpression))
+      return true
     false
   }
-
 }
 
 class UserFunction
@@ -69,37 +62,24 @@ class UserFunction
 
   @BeanProperty
   var functionName: StructuredQName = _
-
   private var tailCalls: Boolean = false
-
   @BooleanBeanProperty
   var tailRecursive: Boolean = false
-
   @BeanProperty
   var parameterDefinitions: Array[UserFunctionParameter] = _
-
   private var resultType: SequenceType = _
-
   @BeanProperty
   var declaredResultType: SequenceType = _
-
-   var evaluator: Evaluator = null
-
+  var evaluator: Evaluator = null
   var isUpdating: Boolean = false
-
   private var inlineable: Int = -1
-
   private var inliningCount: Int = 0
-
   @BooleanBeanProperty
   var overrideExtensionFunction: Boolean = true
-
   @BeanProperty
   var annotations: AnnotationList = AnnotationList.EMPTY
-
   @BeanProperty
   var declaredStreamability: FunctionStreamability.FunctionStreamability = FunctionStreamability.UNCLASSIFIED
-
   @BeanProperty
   var determinism: Determinism.Determinism = Determinism.PROACTIVE
 
@@ -132,7 +112,7 @@ class UserFunction
     }
   }
 
-  override def getTracingTag(): String = "xsl:function"
+  override def getTracingTag: String = "xsl:function"
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
     consumer.accept("name", getFunctionName)
@@ -147,14 +127,14 @@ class UserFunction
   def getFunctionItemType: FunctionItemType = {
     val argTypes: Array[SequenceType] =
       Array.ofDim[SequenceType](parameterDefinitions.length)
-    for (i <- 0 until parameterDefinitions.length) {
+    for (i <- parameterDefinitions.indices) {
       val ufp: UserFunctionParameter = parameterDefinitions(i)
       argTypes(i) = ufp.getRequiredType
     }
     new SpecificFunctionType(argTypes, resultType, annotations)
   }
 
-  def getOperandRoles(): Array[OperandRole] = {
+  def getOperandRoles: Array[OperandRole] = {
     val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
     var first: OperandUsage.OperandUsage = null
     declaredStreamability match {
@@ -422,16 +402,16 @@ class UserFunction
     presenter.endElement()
   }
 
-  override def isExportable(): Boolean =
+  override def isExportable: Boolean =
     refCount > 0 ||
       (getDeclaredVisibility != null && getDeclaredVisibility != Visibility.PRIVATE) ||
       getPackageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
 
-  def isTrustedResultType(): Boolean = false
+  def isTrustedResultType: Boolean = false
 
-  def isMap(): Boolean = false
+  def isMap: Boolean = false
 
-  def isArray(): Boolean = false
+  def isArray: Boolean = false
 
   def deepEquals(other: Function,
                  context: XPathContext,

@@ -1,7 +1,7 @@
 package org.orbeon.saxon.expr
 
 import java.net.URI
-import java.util._
+import java.{lang => jl, util => ju}
 
 import org.orbeon.saxon.event.{Outputter, ReceiverOption}
 import org.orbeon.saxon.expr.Expression._
@@ -47,24 +47,22 @@ object Expression {
     .asInstanceOf[IntegerValue]
 
   val MAX_STRING_LENGTH: IntegerValue =
-    Int64Value.makeIntegerValue(java.lang.Integer.MAX_VALUE)
+    Int64Value.makeIntegerValue(jl.Integer.MAX_VALUE)
 
   val MAX_SEQUENCE_LENGTH: IntegerValue =
-    Int64Value.makeIntegerValue(java.lang.Integer.MAX_VALUE)
+    Int64Value.makeIntegerValue(jl.Integer.MAX_VALUE)
 
-  private def gatherSlotsUsed(exp: Expression, slots: IntHashSet): Unit = {
-    val expVar = exp.getInterpretedExpression
-    expVar match {
-      case varRef: LocalVariableReference =>
-        slots.add(varRef.getSlotNumber)
-      case reference: SuppliedParameterReference =>
-        val slot = reference.getSlotNumber
+  private def gatherSlotsUsed(exp: Expression, slots: IntHashSet): Unit =
+    exp.getInterpretedExpression match {
+      case localVarRef: LocalVariableReference =>
+        slots.add(localVarRef.getSlotNumber)
+      case suppliedParameterRef: SuppliedParameterReference =>
+        val slot = suppliedParameterRef.getSlotNumber
         slots.add(slot)
-      case _ =>
+      case expVar =>
         for (o <- expVar.operands.asScala)
           gatherSlotsUsed(o.getChildExpression, slots)
     }
-  }
 }
 
 abstract class Expression
@@ -74,37 +72,29 @@ abstract class Expression
     with Traceable {
 
   var staticProperties: Int = -1
-
   private var location: Location = Loc.NONE
-
   @BeanProperty
   var parentExpression: Expression = _
-
   private var retainedStaticContext: RetainedStaticContext = _
-
   private var slotsUsed: Array[Int] = _
-
   @BeanProperty
   var evaluationMethod: Int = _
-
-  private var extraProperties: Map[String, Any] = _
-
+  private var extraProperties: ju.Map[String, Any] = _
   private var cost: Double = -1
-
   private var cachedHashCode: Int = -1
 
   def getExpressionName: String = getClass.getSimpleName
-  def operands: java.lang.Iterable[Operand] = Collections.emptyList()
+  def operands: jl.Iterable[Operand] = ju.Collections.emptyList()
   def getInterpretedExpression: Expression = this
 
-  def checkedOperands: java.lang.Iterable[Operand] = {
-    val ops: java.lang.Iterable[Operand] = operands
+  def checkedOperands: jl.Iterable[Operand] = {
+    val ops = operands
     for (o <- ops.asScala) {
       val child = o.getChildExpression
-      val badOperand: Boolean = o.getParentExpression != this
-      val badExpression: Boolean = child.getParentExpression != this
+      val badOperand = o.getParentExpression != this
+      val badExpression = child.getParentExpression != this
       if (badOperand || badExpression) {
-        val message: String = "*** Bad parent pointer found in " + (if (badOperand)
+        val message = "*** Bad parent pointer found in " + (if (badOperand)
           "operand "
         else
           "expression ") +
@@ -116,33 +106,30 @@ abstract class Expression
           " ***"
         val config: Configuration = getConfiguration
         val logger: Logger = if (config == null) null else config.getLogger
-        if (logger != null) {
+        if (logger != null)
           logger.warning(message)
-        } else {
+        else
           throw new IllegalStateException(message)
-        }
         child.setParentExpression(Expression.this)
       }
-      if (child.getRetainedStaticContext == null) {
+      if (child.getRetainedStaticContext == null)
         child.setRetainedStaticContext(getRetainedStaticContext)
-      }
     }
     ops
   }
 
-  def operandList(a: Operand*): List[Operand] = Arrays.asList(a: _*)
+  def operandList(a: Operand*): ju.List[Operand] = ju.Arrays.asList(a: _*)
 
-  def operandSparseList(a: Operand*): List[Operand] = {
-    val operanda: List[Operand] = new ArrayList[Operand]()
-    for (o <- a if o != null) {
+  def operandSparseList(a: Operand*): ju.List[Operand] = {
+    val operanda = new ju.ArrayList[Operand]()
+    for (o <- a if o != null)
       operanda.add(o)
-    }
     operanda
   }
 
   def verifyParentPointers(): Expression = {
     for (o <- operands.asScala) {
-      val parent: Expression = o.getChildExpression.getParentExpression
+      val parent = o.getChildExpression.getParentExpression
       if (parent != this) {
         throw new IllegalStateException(
           "Invalid parent pointer in " + parent.toShortString +
@@ -156,8 +143,7 @@ abstract class Expression
             " subexpression " +
             o.getChildExpression.toShortString)
       }
-      if (ExpressionTool.findOperand(parent, o.getChildExpression) ==
-        null) {
+      if (ExpressionTool.findOperand(parent, o.getChildExpression) == null) {
         throw new IllegalStateException(
           "Incorrect parent pointer in " + parent.toShortString +
             " subexpression " +
@@ -168,13 +154,12 @@ abstract class Expression
     this
   }
 
-  def restoreParentPointers(): Unit = {
+  def restoreParentPointers(): Unit =
     for (o <- operands.asScala) {
       val child = o.getChildExpression
       child.setParentExpression(Expression.this)
       child.restoreParentPointers()
     }
-  }
 
   def getImplementationMethod: Int
 
@@ -183,8 +168,8 @@ abstract class Expression
   def hasVariableBinding(binding: Binding): Boolean = false
 
   def isLiftable(forStreaming: Boolean): Boolean = {
-    val p: Int = getSpecialProperties
-    val d: Int = getDependencies
+    val p = getSpecialProperties
+    val d = getDependencies
     (p & StaticProperty.NO_NODES_NEWLY_CREATED) != 0 && (p & StaticProperty.HAS_SIDE_EFFECTS) == 0 &&
       ((d & StaticProperty.DEPENDS_ON_ASSIGNABLE_GLOBALS) == 0) &&
       ((d & StaticProperty.DEPENDS_ON_POSITION) == 0) &&
@@ -192,13 +177,12 @@ abstract class Expression
   }
 
   def getScopingExpression: Expression = {
-    val d: Int = getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS
+    val d = getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS
     if (d != 0) {
-      if (d == StaticProperty.DEPENDS_ON_CONTEXT_DOCUMENT) {
+      if (d == StaticProperty.DEPENDS_ON_CONTEXT_DOCUMENT)
         ExpressionTool.getContextDocumentSettingContainer(this)
-      } else {
+      else
         ExpressionTool.getFocusSettingContainer(this)
-      }
     } else {
       null
     }
@@ -217,7 +201,7 @@ abstract class Expression
     for (o <- operands.asScala if o != null) {
       val e: Expression = o.getChildExpression
       if (e != null) {
-        val f: Expression = e.simplify()
+        val f = e.simplify()
         o.setChildExpression(f)
       }
     }
@@ -247,10 +231,9 @@ abstract class Expression
           } else {
             rscVar = child.getLocalRetainedStaticContext
             for (p <- child.operands.asScala) {
-              val grandchild: Expression = p.getChildExpression
-              if (grandchild != null) {
+              val grandchild = p.getChildExpression
+              if (grandchild != null)
                 grandchild.setRetainedStaticContextThoroughly(rscVar)
-              }
             }
           }
         }
@@ -259,9 +242,8 @@ abstract class Expression
   }
 
   def setRetainedStaticContextLocally(rsc: RetainedStaticContext): Unit = {
-    if (rsc != null) {
+    if (rsc != null)
       retainedStaticContext = rsc
-    }
   }
 
   def getRetainedStaticContext: RetainedStaticContext = {
@@ -309,11 +291,9 @@ abstract class Expression
   }
 
   def optimizeChildren(visitor: ExpressionVisitor,
-                       contextInfo: ContextItemStaticInfo): Unit = {
-    for (o <- operands.asScala) {
+                       contextInfo: ContextItemStaticInfo): Unit =
+    for (o <- operands.asScala)
       o.optimize(visitor, contextInfo)
-    }
-  }
 
   def prepareForStreaming(): Unit = ()
 
@@ -323,9 +303,8 @@ abstract class Expression
       breakable {
         for (o <- operands.asScala) {
           i += o.getChildExpression.getCost
-          if (i > MAX_COST) {
+          if (i > MAX_COST)
             break()
-          }
         }
       }
       cost = i
@@ -383,7 +362,8 @@ abstract class Expression
   }
 
   def effectiveBooleanValue(context: XPathContext): Boolean =
-    try ExpressionTool.effectiveBooleanValue(iterate(context))
+    try
+      ExpressionTool.effectiveBooleanValue(iterate(context))
     catch {
       case e: XPathException =>
         e.maybeSetFailingExpression(this)
@@ -392,30 +372,28 @@ abstract class Expression
     }
 
   def evaluateAsString(context: XPathContext): CharSequence = {
-    val o: Item = evaluateItem(context)
-    val value: StringValue = o.asInstanceOf[StringValue]
-    if (value == null) {
+    val o = evaluateItem(context)
+    val value = o.asInstanceOf[StringValue]
+    if (value == null)
       return ""
-    }
     value.getStringValueCS
   }
 
   def process(output: Outputter, context: XPathContext): Unit = {
-    val m: Int = getImplementationMethod
-    val hasEvaluateMethod: Boolean = (m & EVALUATE_METHOD) != 0
-    val hasIterateMethod: Boolean = (m & ITERATE_METHOD) != 0
-    try if (hasEvaluateMethod &&
-      (!hasIterateMethod || !Cardinality.allowsMany(getCardinality))) {
-      val item: Item = evaluateItem(context)
-      if (item != null) {
-        output.append(item, getLocation, ReceiverOption.ALL_NAMESPACES)
+    val m = getImplementationMethod
+    val hasEvaluateMethod = (m & EVALUATE_METHOD) != 0
+    val hasIterateMethod = (m & ITERATE_METHOD) != 0
+    try
+      if (hasEvaluateMethod && (! hasIterateMethod || !Cardinality.allowsMany(getCardinality))) {
+        val item = evaluateItem(context)
+        if (item != null)
+          output.append(item, getLocation, ReceiverOption.ALL_NAMESPACES)
+      } else if (hasIterateMethod) {
+        iterate(context).forEachOrFail(it => output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
+      } else {
+        throw new AssertionError("process() is not implemented in the subclass " + getClass)
       }
-    } else if (hasIterateMethod) {
-      iterate(context).forEachOrFail(it => output.append(it, getLocation, ReceiverOption.ALL_NAMESPACES))
-    } else {
-      throw new AssertionError(
-        "process() is not implemented in the subclass " + getClass)
-    } catch {
+    catch {
       case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
@@ -424,21 +402,20 @@ abstract class Expression
   }
 
   def evaluatePendingUpdates(context: XPathContext,
-                             pul: PendingUpdateList): Unit = {
-    if (isVacuousExpression) {
+                             pul: PendingUpdateList): Unit =
+    if (isVacuousExpression)
       iterate(context).next()
-    } else {
-      throw new UnsupportedOperationException(
-        "Expression " + getClass + " is not an updating expression")
-    }
-  }
+    else
+      throw new UnsupportedOperationException("Expression " + getClass + " is not an updating expression")
 
   override def toString: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
-    var className: String = getClass.getName
+
+    val buff = new FastStringBuffer(FastStringBuffer.C64)
+    var className = getClass.getName
+
     breakable {
       while (true) {
-        val dot: Int = className.indexOf('.')
+        val dot = className.indexOf('.')
         if (dot >= 0) {
           className = className.substring(dot + 1)
         } else {
@@ -447,15 +424,17 @@ abstract class Expression
       }
     }
     buff.append(className)
-    var first: Boolean = true
+
+    var first = true
     for (o <- operands.asScala) {
       buff.append(if (first) "(" else ", ")
       buff.append(o.getChildExpression.toString)
       first = false
     }
-    if (!first) {
+
+    if (! first)
       buff.append(")")
-    }
+
     buff.toString
   }
 
@@ -468,7 +447,8 @@ abstract class Expression
     val options = new ExpressionPresenter.ExportOptions
     options.explaining = true
     ep.setOptions(options)
-    try export(ep)
+    try
+      export(ep)
     catch {
       case e: XPathException =>
         ep.startElement("failure")
@@ -489,11 +469,11 @@ abstract class Expression
     if (child.retainedStaticContext == null)
       child.retainedStaticContext = retainedStaticContext
 
-    if (getLocation == null || getLocation == Loc.NONE) {
+    if (getLocation == null || getLocation == Loc.NONE)
       ExpressionTool.copyLocationInfo(child, Expression.this)
-    } else if (child.getLocation == null || child.getLocation == Loc.NONE) {
+    else if (child.getLocation == null || child.getLocation == Loc.NONE)
       ExpressionTool.copyLocationInfo(Expression.this, child)
-    }
+
     resetLocalStaticProperties()
   }
 
@@ -501,7 +481,7 @@ abstract class Expression
     location = id
 
   def getLocation: Location = {
-    var limit: Int = 0
+    var limit = 0
     var exp: Expression = this
     while (limit < 10)
       if ((exp.location == null || exp.location == Loc.NONE) && exp.getParentExpression != null) {
@@ -520,9 +500,8 @@ abstract class Expression
 
   def isInstruction: Boolean = false
 
-  def computeStaticProperties(): Unit = {
+  def computeStaticProperties(): Unit =
     staticProperties = computeDependencies() | computeCardinality() | computeSpecialProperties()
-  }
 
   def resetLocalStaticProperties(): Unit = {
     staticProperties = -1
@@ -582,23 +561,19 @@ abstract class Expression
     UserFunctionCall.NOT_TAIL_CALL
 
   def toPattern(config: Configuration): Pattern = {
-    val `type`: ItemType = getItemType
-    if (((getDependencies & StaticProperty.DEPENDS_ON_NON_DOCUMENT_FOCUS) ==
-      0) &&
-      (`type`.isInstanceOf[NodeTest] || this
-        .isInstanceOf[VariableReference])) {
+    val `type` = getItemType
+    if (((getDependencies & StaticProperty.DEPENDS_ON_NON_DOCUMENT_FOCUS) == 0) &&
+      (`type`.isInstanceOf[NodeTest] || this.isInstanceOf[VariableReference]))
       new NodeSetPattern(Expression.this)
-    }
-    if (isCallOn(classOf[KeyFn]) || isCallOn(classOf[SuperId])) {
+    else if (isCallOn(classOf[KeyFn]) || isCallOn(classOf[SuperId]))
       new NodeSetPattern(Expression.this)
-    }
-    throw new XPathException(
-      "Cannot convert the expression {" + this + "} to a pattern")
+    else
+      throw new XPathException("Cannot convert the expression {" + this + "} to a pattern")
   }
 
   def getSlotsUsed: Array[Int] = synchronized {
     if (slotsUsed != null) {
-      return slotsUsed
+      slotsUsed
     } else {
       val slots = new IntHashSet(10)
       gatherSlotsUsed(Expression.this, slots)
@@ -626,7 +601,7 @@ abstract class Expression
   def typeError(message: String,
                 errorCode: String,
                 context: XPathContext): Unit = {
-    val e: XPathException = new XPathException(message, errorCode, getLocation)
+    val e = new XPathException(message, errorCode, getLocation)
     e.setIsTypeError(true)
     e.setXPathContext(context)
     e.setFailingExpression(this)
@@ -638,18 +613,17 @@ abstract class Expression
   def getObjectName: StructuredQName = null
 
   def getProperty(name: String): AnyRef =
-    if (name.==("expression")) {
+    if (name.==("expression"))
       Expression.this.getLocation
-    } else {
+    else
       null
-    }
 
   def getProperties: collection.Iterator[String] = new MonoIterator("expression").asScala
 
   def addToPathMap(pathMap: PathMap,
                    pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
-    val dependsOnFocus: Boolean =
-      ExpressionTool.dependsOnFocus(Expression.this)
+
+    val dependsOnFocus = ExpressionTool.dependsOnFocus(Expression.this)
     var attachmentPoint: PathMap.PathMapNodeSet = null
     if (pathMapNodeSet == null) {
       attachmentPoint = pathMapNodeSet
@@ -683,12 +657,10 @@ abstract class Expression
 
   def isSubtreeExpression: Boolean =
     if (ExpressionTool.dependsOnFocus(Expression.this)) {
-      if ((getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS) != 0) {
+      if ((getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS) != 0)
         false
-      } else {
-        // ORBEON: CHECK
+      else
         operands.asScala.forall(_.getChildExpression.isSubtreeExpression)
-      }
     } else {
       true
     }
@@ -706,10 +678,11 @@ abstract class Expression
     val d1 = (getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
     val d2 = (other.getIntrinsicDependencies & StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0
     if (d1 != d2)
-      return false
-    if (d1)
-      return getRetainedStaticContext == other.getRetainedStaticContext
-    true
+      false
+    else if (d1)
+      getRetainedStaticContext == other.getRetainedStaticContext
+    else
+      true
   }
 
   def computeHashCode(): Int = super.hashCode
@@ -723,7 +696,7 @@ abstract class Expression
     if (extraProperties == null) {
       if (value == null)
         return
-      extraProperties = new HashMap(4)
+      extraProperties = new ju.HashMap(4)
     }
     if (value == null)
       extraProperties.remove(name)

@@ -17,11 +17,8 @@ class AttributeAxisIterator(node: ElementImpl,
     with LookaheadIterator {
 
   private val element: ElementImpl = node
-
   private var nextInfo: NodeInfo = _
-
   private var index: Int = 0
-
   private val length: Int = node.attributes.size
 
   advance()
@@ -37,24 +34,22 @@ class AttributeAxisIterator(node: ElementImpl,
       current
     }
 
-  private def advance(): Unit = {
-    while (true) if (index >= length) {
-      nextInfo = null
-      return
-    } else {
-      val info: AttributeInfo = element.attributes.itemAt(index)
-      if (info.isInstanceOf[AttributeInfo.Deleted]) {
-        index += 1
+  private def advance(): Unit =
+    while (true)
+      if (index >= length) {
+        nextInfo = null
+        return
       } else {
-        nextInfo = new AttributeImpl(element, index)
-        index += 1
-        if (nodeTest.test(nextInfo)) {
-          return
+        val info = element.attributes.itemAt(index)
+        if (info.isInstanceOf[AttributeInfo.Deleted]) {
+          index += 1
+        } else {
+          nextInfo = new AttributeImpl(element, index)
+          index += 1
+          if (nodeTest.test(nextInfo))
+            return
         }
       }
-    }
-  }
 
   override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
-
 }

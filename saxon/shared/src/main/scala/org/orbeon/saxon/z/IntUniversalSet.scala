@@ -1,14 +1,11 @@
 package org.orbeon.saxon.z
 
 object IntUniversalSet {
-
-  private var THE_INSTANCE: IntUniversalSet = new IntUniversalSet()
-
-  def getInstance: IntUniversalSet = THE_INSTANCE
-
+  val getInstance: IntUniversalSet = new IntUniversalSet
 }
 
-class IntUniversalSet private() extends IntSet {
+
+class IntUniversalSet private () extends IntSet {
 
   def copy(): IntSet = this
 
@@ -47,5 +44,4 @@ class IntUniversalSet private() extends IntSet {
     }
 
   override def containsAll(other: IntSet): Boolean = true
-
 }

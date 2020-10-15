@@ -30,9 +30,8 @@ object SystemFunction {
   def makeFunction(name: String,
                    rsc: RetainedStaticContext,
                    arity: Int): SystemFunction = {
-    if (rsc == null) {
+    if (rsc == null)
       throw new NullPointerException()
-    }
     val fn = rsc.getConfiguration.makeSystemFunction(name, arity)
     if (fn == null) {
       rsc.getConfiguration.makeSystemFunction(name, arity)
@@ -65,7 +64,7 @@ abstract class SystemFunction extends AbstractFunction {
   var retainedStaticContext: RetainedStaticContext = _
 
   def makeFunctionCall(arguments: Expression*): Expression = {
-    val e: Expression = new SystemFunctionCall(this, arguments.toArray)
+    val e = new SystemFunctionCall(this, arguments.toArray)
     e.setRetainedStaticContext(getRetainedStaticContext)
     e
   }
@@ -75,12 +74,11 @@ abstract class SystemFunction extends AbstractFunction {
   def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
                                 contextInfo: ContextItemStaticInfo,
                                 arguments: Expression*): Expression = {
-    val opt: Optimizer = visitor.obtainOptimizer()
-    if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
+    val opt = visitor.obtainOptimizer()
+    if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING))
       fixArguments(arguments: _*)
-    } else {
+    else
       null
-    }
   }
 
   def fixArguments(arguments: Expression*): Expression = {
@@ -96,17 +94,16 @@ abstract class SystemFunction extends AbstractFunction {
     (details.properties & (BuiltInFunctionSet.CITEM | BuiltInFunctionSet.CDOC)) != 0
 
   def getFunctionName: StructuredQName = details.name
-
   def getDescription: String = details.name.getDisplayName
 
   override def getOperandRoles: Array[OperandRole] = {
-    val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
-    val usages: Array[OperandUsage.OperandUsage] = details.usage
-    try for (i <- 0 until getArity) {
-      roles(i) = new OperandRole(0, usages(i), getRequiredType(i))
-    } catch {
+    val roles = Array.ofDim[OperandRole](getArity)
+    val usages = details.usage
+    try
+      for (i <- 0 until getArity)
+        roles(i) = new OperandRole(0, usages(i), getRequiredType(i))
+    catch {
       case e: ArrayIndexOutOfBoundsException => e.printStackTrace()
-
     }
     roles
   }
@@ -122,33 +119,30 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getErrorCodeForTypeErrors: String = "XPTY0004"
 
-  def getRequiredType(arg: Int): SequenceType = {
-    if (details == null) {
+  def getRequiredType(arg: Int): SequenceType =
+    if (details == null)
       SequenceType.ANY_SEQUENCE
-    }
-    details.argumentTypes(arg)
-  }
+    else
+      details.argumentTypes(arg)
 
-  def getResultItemType: ItemType = details.itemType
+  def getResultItemType: ItemType =
+    details.itemType
 
   def getFunctionItemType: FunctionItemType = {
-    val resultType: SequenceType =
-      SequenceType.makeSequenceType(getResultItemType, details.cardinality)
+    val resultType = SequenceType.makeSequenceType(getResultItemType, details.cardinality)
     new SpecificFunctionType(details.argumentTypes, resultType)
   }
 
   def getResultItemType(args: Array[Expression]): ItemType =
-    if ((details.properties & BuiltInFunctionSet.AS_ARG0) != 0) {
+    if ((details.properties & BuiltInFunctionSet.AS_ARG0) != 0)
       args(0).getItemType
-    } else if ((details.properties & BuiltInFunctionSet.AS_PRIM_ARG0) !=
-      0) {
+    else if ((details.properties & BuiltInFunctionSet.AS_PRIM_ARG0) != 0)
       args(0).getItemType.getPrimitiveItemType
-    } else {
+    else
       details.itemType
-    }
 
   def getCardinality(args: Array[Expression]): Int = {
-    val c: Int = details.cardinality
+    val c = details.cardinality
     if (c == BuiltInFunctionSet.OPT &&
       (details.properties & BuiltInFunctionSet.CARD0) != 0 &&
       !Cardinality.allowsZero(args(0).getCardinality)) {
@@ -159,10 +153,9 @@ abstract class SystemFunction extends AbstractFunction {
   }
 
   def getSpecialProperties(arguments: Array[Expression]): Int = {
-    if ((details.properties & BuiltInFunctionSet.NEW) != 0) {
-      StaticProperty.ALL_NODES_NEWLY_CREATED
-    }
-    var p: Int = StaticProperty.NO_NODES_NEWLY_CREATED
+    if ((details.properties & BuiltInFunctionSet.NEW) != 0)
+      return StaticProperty.ALL_NODES_NEWLY_CREATED
+    var p = StaticProperty.NO_NODES_NEWLY_CREATED
     if ((details.properties & BuiltInFunctionSet.SIDE) != 0) {
       p |= StaticProperty.HAS_SIDE_EFFECTS
     }
@@ -170,7 +163,7 @@ abstract class SystemFunction extends AbstractFunction {
   }
 
    def getContextNode(context: XPathContext): NodeInfo = {
-    val item: Item = context.getContextItem
+    val item = context.getContextItem
     if (item == null) {
       val err = new XPathException(
         "Context item for " + getFunctionName + "() is absent",
@@ -190,14 +183,15 @@ abstract class SystemFunction extends AbstractFunction {
 
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("fnRef")
-    val qName: StructuredQName = getFunctionName
-    val name: String =
-      if (qName.hasURI(NamespaceConstant.FN)) qName.getLocalPart
-      else qName.getEQName
+    val qName = getFunctionName
+    val name =
+      if (qName.hasURI(NamespaceConstant.FN))
+        qName.getLocalPart
+      else
+        qName.getEQName
     out.emitAttribute("name", name)
     out.emitAttribute("arity", getArity.toString)
-    if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) !=
-      0) {
+    if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) != 0) {
       out.emitRetainedStaticContext(getRetainedStaticContext, null)
     }
     out.endElement()
@@ -218,9 +212,7 @@ abstract class SystemFunction extends AbstractFunction {
                                 out: ExpressionPresenter): Unit = ()
 
   def importAttributes(attributes: Properties): Unit = ()
-
   def getCompilerName: String = null
-
   def getStreamerName: String = null
 
   override def toShortString: String =
@@ -228,5 +220,4 @@ abstract class SystemFunction extends AbstractFunction {
 
   override def toString: String =
     getFunctionName.getDisplayName + '#' + getArity
-
 }

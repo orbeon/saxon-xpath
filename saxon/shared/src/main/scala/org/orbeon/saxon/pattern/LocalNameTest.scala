@@ -78,19 +78,14 @@ class LocalNameTest(pool: NamePool,
     val nodeKindArray: Array[Byte] = tree.getNodeKindArray
     val nameCodeArray: Array[Int] = tree.getNameCodeArray
     if (nodeKind == Type.ELEMENT && tree.isInstanceOf[TinyTree]) {
-      val localNameIndex: Map[String, IntSet] =
-        tree.asInstanceOf[TinyTree].getLocalNameIndex
-      val intSet: IntSet = localNameIndex.get(localName)
-      if (intSet == null) { i =>
-        false
-      } else { nodeNr =>
-        intSet.contains(nameCodeArray(nodeNr) & NamePool.FP_MASK) &&
-        (nodeKindArray(nodeNr) & 0x0f) == Type.ELEMENT
-      }
-    } else { nodeNr =>
-      (nodeKindArray(nodeNr) & 0x0f) == nodeKind &&
-      localName == namePool.getLocalName(
-        nameCodeArray(nodeNr) & NamePool.FP_MASK)
+      val localNameIndex = tree.asInstanceOf[TinyTree].getLocalNameIndex
+      val intSet = localNameIndex.get(localName)
+      if (intSet == null)
+        _ => false
+      else
+        nodeNr => intSet.contains(nameCodeArray(nodeNr) & NamePool.FP_MASK) && (nodeKindArray(nodeNr) & 0x0f) == Type.ELEMENT
+    } else {
+      nodeNr => (nodeKindArray(nodeNr) & 0x0f) == nodeKind && localName == namePool.getLocalName(nameCodeArray(nodeNr) & NamePool.FP_MASK)
     }
   }
 
@@ -105,11 +100,9 @@ class LocalNameTest(pool: NamePool,
   override def getPrimitiveType: Int = nodeKind
 
   override def toString: String = nodeKind match {
-    case Type.ELEMENT => "*:" + localName
+    case Type.ELEMENT   => "*:" + localName
     case Type.ATTRIBUTE => "@*:" + localName
-    case _ => // should not be used
-      "(*" + nodeKind + "*):" + localName
-
+    case _              => "(*" + nodeKind + "*):" + localName // should not be used
   }
 
   override def hashCode: Int = nodeKind << 20 ^ localName.hashCode
@@ -129,7 +122,7 @@ class LocalNameTest(pool: NamePool,
     * a sequence of alternatives separated by vertical bars, where each alternative is one of '*',
     * '*:localname', 'Q{uri}*', or 'Q{uri}local'.
     */
-  override def exportQNameTest: String = "*:" + localName
+  def exportQNameTest: String = "*:" + localName
 
   /**
     * Generate Javascript code to test if a name matches the test.

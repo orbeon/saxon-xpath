@@ -25,9 +25,7 @@ object ListIterator {
       with AxisIterator {
 
     override def next(): NodeInfo = super.next()
-
   }
-
 }
 
 class ListIterator[T <: Item](var list: List[T])
@@ -60,13 +58,11 @@ class ListIterator[T <: Item](var list: List[T])
   override def materialize: GroundedValue = SequenceExtent.makeSequenceExtent(list)
 
   override def getResidue: GroundedValue = {
-    var l2: List[T] = list
-    if (index != 0) {
+    var l2 = list
+    if (index != 0)
       l2 = l2.subList(index, l2.size)
-    }
     SequenceExtent.makeSequenceExtent(l2)
   }
 
   def getReverseIterator: SequenceIterator = new ReverseListIterator(list)
-
 }

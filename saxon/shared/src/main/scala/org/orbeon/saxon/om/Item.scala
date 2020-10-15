@@ -4,18 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An Item is an object that can occur as a member of a sequence.
-  * It corresponds directly to the concept of an item in the XPath 2.0 data model.
-  * There are four kinds of Item: atomic values, nodes, function items, and external objects.
-  * <p>This interface is part of the public Saxon API. As such (starting from Saxon 8.4),
-  * methods that form part of the stable API are labelled with a JavaDoc "since" tag
-  * to identify the Saxon release at which they were introduced.</p>
-  * <p>Note: there is no method getItemType(). This is to avoid having to implement it
-  * on every implementation of NodeInfo. Instead, use the static method Type.getItemType(Item).</p>
-  *
-  */
-
 package org.orbeon.saxon.om
 
 import org.orbeon.saxon.om.Genre.Genre
@@ -23,6 +11,18 @@ import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.value.EmptySequence
 
 
+/**
+  * An Item is an object that can occur as a member of a sequence.
+  * It corresponds directly to the concept of an item in the XPath 2.0 data model.
+  * There are four kinds of Item: atomic values, nodes, function items, and external objects.
+ *
+  * This interface is part of the public Saxon API. As such (starting from Saxon 8.4),
+  * methods that form part of the stable API are labelled with a JavaDoc "since" tag
+  * to identify the Saxon release at which they were introduced.
+ *
+  * Note: there is no method getItemType(). This is to avoid having to implement it
+  * on every implementation of NodeInfo. Instead, use the static method Type.getItemType(Item).
+  */
 object Item {
   def toGroundedValue(item: Item): GroundedValue = item.reduce()
 }

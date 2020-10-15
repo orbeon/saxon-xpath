@@ -74,7 +74,7 @@ object NamespaceMap {
   }
 }
 
-class NamespaceMap() extends NamespaceBindingSet with NamespaceResolver {
+class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
 
   var prefixes: Array[String] = null // always sorted, for binary search
   var uris: Array[String] = null

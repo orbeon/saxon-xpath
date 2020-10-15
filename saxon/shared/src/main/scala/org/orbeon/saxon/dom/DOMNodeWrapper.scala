@@ -104,67 +104,69 @@ object DOMNodeWrapper {
   }
 
   private def getElementURI(element: Element): String = {
-    val uri: String = element.getNamespaceURI
-    if (uri != null) {
+
+    val uri = element.getNamespaceURI
+    if (uri != null)
       return uri
-    }
-    val displayName: String = element.getNodeName
-    val colon: Int = displayName.indexOf(':')
-    val attName: String =
-      if (colon < 0) "xmlns" else "xmlns:" + displayName.substring(0, colon)
-    if (attName.==("xmlns:xml")) {
-      NamespaceConstant.XML
-    }
+
+    val displayName = element.getNodeName
+    val colon = displayName.indexOf(':')
+
+    val attName = if (colon < 0) "xmlns" else "xmlns:" + displayName.substring(0, colon)
+    if (attName.==("xmlns:xml"))
+      return NamespaceConstant.XML
+
     var node: Node = element
     do {
-      if (node.asInstanceOf[Element].hasAttribute(attName)) {
-        node.asInstanceOf[Element].getAttribute(attName)
-      }
+      if (node.asInstanceOf[Element].hasAttribute(attName))
+        return node.asInstanceOf[Element].getAttribute(attName)
       node = node.getParentNode
     } while (node != null && node.getNodeType == Node.ELEMENT_NODE)
-    if (colon < 0) {
+
+    if (colon < 0)
       ""
-    } else {
-      throw new IllegalStateException(
-        "Undeclared namespace prefix in element name " + displayName +
-          " in DOM input")
-    }
+    else
+      throw new IllegalStateException("Undeclared namespace prefix in element name " + displayName + " in DOM input")
   }
 
   private def getAttributeURI(attr: Attr): String = {
-    val uri: String = attr.getNamespaceURI
-    if (uri != null) {
+
+    val uri = attr.getNamespaceURI
+    if (uri != null)
       return uri
-    }
-    val displayName: String = attr.getNodeName
-    val colon: Int = displayName.indexOf(':')
-    if (colon < 0) {
+
+    val displayName = attr.getNodeName
+    val colon = displayName.indexOf(':')
+    if (colon < 0)
       return ""
-    }
-    val attName: String = "xmlns:" + displayName.substring(0, colon)
-    if (attName.==("xmlns:xml")) {
-      NamespaceConstant.XML
-    }
+
+    val attName = "xmlns:" + displayName.substring(0, colon)
+    if (attName == "xmlns:xml")
+      return NamespaceConstant.XML
+
     var node: Node = attr.getOwnerElement
     do {
-      if (node.asInstanceOf[Element].hasAttribute(attName)) {
-        node.asInstanceOf[Element].getAttribute(attName)
-      }
+      if (node.asInstanceOf[Element].hasAttribute(attName))
+        return node.asInstanceOf[Element].getAttribute(attName)
       node = node.getParentNode
     } while (node != null && node.getNodeType == Node.ELEMENT_NODE)
-    throw new IllegalStateException(
-      "Undeclared namespace prefix in attribute name " + displayName +
-        " in DOM input")
+
+    throw new IllegalStateException("Undeclared namespace prefix in attribute name " + displayName + " in DOM input")
   }
 
   private def getSuccessorNode(start: Node, anchor: Node): Node = {
-    if (start.hasChildNodes) return start.getFirstChild
 
-    if (anchor != null && start.isSameNode(anchor)) return null
+    if (start.hasChildNodes)
+      return start.getFirstChild
+
+    if (anchor != null && start.isSameNode(anchor))
+      return null
+
     var p: Node = start
     while (true) {
-      val s: Node = p.getNextSibling
-      if (s != null) return s
+      val s = p.getNextSibling
+      if (s != null)
+        return s
       p = p.getParentNode
       if (p == null || (anchor != null && p.isSameNode(anchor))) {
         return null
@@ -172,7 +174,6 @@ object DOMNodeWrapper {
     }
     null
   }
-
 }
 
 class DOMNodeWrapper(var node: Node,

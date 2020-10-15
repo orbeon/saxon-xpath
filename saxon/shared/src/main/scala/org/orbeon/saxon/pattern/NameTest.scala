@@ -78,7 +78,7 @@ class NameTest(@BeanProperty var nodeKind: Int,
 
   private def computeUriAndLocal(): Unit = {
     if (uri == null || localName == null) {
-      val name: StructuredQName = namePool.getUnprefixedQName(fingerPrintInt)
+      val name = namePool.getUnprefixedQName(fingerPrintInt)
       uri = name.getURI
       localName = name.getLocalPart
     }

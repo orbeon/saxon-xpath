@@ -4,19 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * The AtomicValue class corresponds to the concept of an atomic value in the
-  * XPath 2.0 data model. Atomic values belong to one of the 19 primitive types
-  * defined in XML Schema; or they are of type xs:untypedAtomic; or they are
-  * "external objects", representing a Saxon extension to the XPath 2.0 type system.
-  * <p>The AtomicValue class contains some methods that are suitable for applications
-  * to use, and many others that are designed for internal use by Saxon itself.
-  * These have not been fully classified. At present, therefore, none of the methods on this
-  * class should be considered to be part of the public Saxon API.</p>
-  *
-  * @author Michael H. Kay
-  */
-
 package org.orbeon.saxon.value
 
 import java.util
@@ -32,6 +19,19 @@ import org.orbeon.saxon.tree.iter.SingleAtomicIterator
 import org.orbeon.saxon.tree.jiter.MonoIterator
 
 
+/**
+  * The AtomicValue class corresponds to the concept of an atomic value in the
+  * XPath 2.0 data model. Atomic values belong to one of the 19 primitive types
+  * defined in XML Schema; or they are of type xs:untypedAtomic; or they are
+  * "external objects", representing a Saxon extension to the XPath 2.0 type system.
+ *
+  * The AtomicValue class contains some methods that are suitable for applications
+  * to use, and many others that are designed for internal use by Saxon itself.
+  * These have not been fully classified. At present, therefore, none of the methods on this
+  * class should be considered to be part of the public Saxon API.
+  *
+  * @author Michael H. Kay
+  */
 abstract class AtomicValue
     extends Item
     with AtomicSequence
@@ -45,9 +45,8 @@ abstract class AtomicValue
   override def head: AtomicValue = this
   override def getLength: Int = 1
 
-  def setTypeLabel(`type`: AtomicType): Unit = {
+  def setTypeLabel(`type`: AtomicType): Unit =
     typeLabel = `type`
-  }
 
   def getSchemaComparable: Comparable[AnyRef]
 
@@ -74,16 +73,14 @@ abstract class AtomicValue
     *
     * @return a hashCode suitable for use when testing for identity.
     */
-  def identityHashCode()
-    : Int = // default implementation, which presumes that if two objects are identical then they are equal.
-    hashCode
+  def identityHashCode(): Int =
+    hashCode // default implementation, which presumes that if two objects are identical then they are equal.
 
   def getStringValueCS: CharSequence = {
-    val cs: CharSequence = getPrimitiveStringValue
+    val cs = getPrimitiveStringValue
     try typeLabel.postprocess(cs)
     catch {
-      case err: XPathException => cs
-
+      case _: XPathException => cs
     }
   }
 
@@ -97,25 +94,15 @@ abstract class AtomicValue
   def getCanonicalLexicalRepresentation: CharSequence = getStringValueCS
 
   /*@Nullable*/
-
   override def itemAt(n: Int): AtomicValue = if (n == 0) head else null
-
   /*@NotNull*/
-
   def getItemType: AtomicType = typeLabel
-
   def getPrimitiveType: BuiltInAtomicType
-
   def getUType: UType = getItemType.getUType
-
   def getCardinality: Int = StaticProperty.EXACTLY_ONE
-
   def copyAsSubType(typeLabel: AtomicType): AtomicValue
-
   def isNaN: Boolean = false
-
   def getStringValue: String = getStringValueCS.toString
-
    def getPrimitiveStringValue: CharSequence
 
   override def effectiveBooleanValue: Boolean = {
@@ -126,12 +113,9 @@ abstract class AtomicValue
     err.setErrorCode("FORG0006")
     throw err
   }
-// unless otherwise specified in a subclass
-// unless otherwise specified in a subclass
 
   def getComponent(component: Component): AtomicValue =
-    throw new UnsupportedOperationException(
-      "Data type does not support component extraction")
+    throw new UnsupportedOperationException("Data type does not support component extraction")
 
   def checkPermittedContents(parentType: SchemaType,
                              env: StaticContext,
@@ -146,14 +130,13 @@ abstract class AtomicValue
         case _ =>
       }
       if (stype != null && !stype.isNamespaceSensitive) {
-// Can't validate namespace-sensitive content statically
-        val err: ValidationFailure = stype.validateContent(
+        // Can't validate namespace-sensitive content statically
+        val err = stype.validateContent(
           getStringValueCS,
           null,
           env.getConfiguration.getConversionRules)
-        if (err != null) {
+        if (err != null)
           throw err.makeException()
-        }
         return
       }
     }
@@ -169,11 +152,8 @@ abstract class AtomicValue
   }
 
   def checkValidInJavascript(): Unit = ()
-// default - no action
-// default - no action
 
   /*@NotNull*/
-
   def asAtomic(): AtomicValue = this
 
   override def toString: String =
@@ -195,6 +175,4 @@ abstract class AtomicValue
     * @return the genre: specifically, {@link Genre#ATOMIC};
     */
   def getGenre:Genre.Genre = Genre.ATOMIC
-
 }
-

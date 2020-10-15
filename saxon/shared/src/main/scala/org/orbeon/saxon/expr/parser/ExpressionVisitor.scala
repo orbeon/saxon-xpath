@@ -1,32 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.parser
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.StaticContext
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{StaticContext, XPathContext}
+import org.orbeon.saxon.expr.parser.ExpressionVisitor._
 import org.orbeon.saxon.s9api.Location
-
-import ExpressionVisitor._
+import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 
-
-
+/**
+  * The ExpressionVisitor supports the various phases of processing of an expression tree which require
+  * a recursive walk of the tree structure visiting each node in turn. In maintains a stack holding the
+  * ancestor nodes of the node currently being visited.
+  */
 object ExpressionVisitor {
 
   private val MAX_DEPTH: Int = 500
 
   def make(env: StaticContext): ExpressionVisitor = {
-    val visitor: ExpressionVisitor = new ExpressionVisitor(
-      env.getConfiguration)
+    val visitor = new ExpressionVisitor(env.getConfiguration)
     visitor.setStaticContext(env)
     visitor
   }
-
 }
 
 class ExpressionVisitor(private var config: Configuration) {
@@ -53,40 +54,25 @@ class ExpressionVisitor(private var config: Configuration) {
     */
   def getConfiguration: Configuration = config
 
-  def issueWarning(message: String, locator: Location): Unit = {
-    if (!isSuppressWarnings) {
+  def issueWarning(message: String, locator: Location): Unit =
+    if (! isSuppressWarnings)
       staticContext.issueWarning(message, locator)
-    }
-  }
 
   def makeDynamicContext(): XPathContext =
     staticContext.makeEarlyEvaluationContext()
 
   def obtainOptimizer(): Optimizer = {
-    if (optimizer == null) {
+    if (optimizer == null)
       optimizer = config.obtainOptimizer(staticContext.getOptimizerOptions)
-    }
     optimizer
   }
 
   def getTargetEdition: String =
     staticContext.getPackageData.getTargetEdition
 
-  def incrementAndTestDepth(): Boolean = { depth += 1; depth - 1 } < MAX_DEPTH
+  def incrementAndTestDepth(): Boolean =
+    { depth += 1; depth - 1 } < MAX_DEPTH
 
-  def decrementDepth(): Unit = {
+  def decrementDepth(): Unit =
      depth -= 1
-  }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * The ExpressionVisitor supports the various phases of processing of an expression tree which require
-  * a recursive walk of the tree structure visiting each node in turn. In maintains a stack holding the
-  * ancestor nodes of the node currently being visited.
-  */

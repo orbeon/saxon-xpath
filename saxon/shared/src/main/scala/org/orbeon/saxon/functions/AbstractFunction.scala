@@ -24,27 +24,22 @@ abstract class AbstractFunction extends Function {
   }
 
   def atomize(): AtomicSequence =
-    throw new XPathException(
-      "Function items (other than arrays) cannot be atomized",
-      "FOTY0013")
+    throw new XPathException("Function items (other than arrays) cannot be atomized", "FOTY0013")
 
   def isArray: Boolean = false
 
   def isMap: Boolean = false
 
   def getStringValue: String =
-    throw new UnsupportedOperationException(
-      "The string value of a function is not defined")
+    throw new UnsupportedOperationException("The string value of a function is not defined")
 
   def getStringValueCS: CharSequence =
-    throw new UnsupportedOperationException(
-      "The string value of a function is not defined")
+    throw new UnsupportedOperationException("The string value of a function is not defined")
 
   override def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
  override def effectiveBooleanValue: Boolean =
-    throw new XPathException("A function has no effective boolean value",
-      "XPTY0004")
+    throw new XPathException("A function has no effective boolean value", "XPTY0004")
 
   def simplify(): Unit = ()
 

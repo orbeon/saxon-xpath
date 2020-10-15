@@ -97,52 +97,48 @@ object SteppingNavigator {
 
     if (test == null || test == AnyNodeTest.getInstance) {
       stepper = new FollowingNodeStepper(start)
-    } else if (test.isInstanceOf[NameTest]) {
-      if (test.asInstanceOf[NameTest].getPrimitiveType == Type.ELEMENT) {
-        val nt: NameTest = test.asInstanceOf[NameTest]
+    } else test match {
+      case nt: NameTest =>
+        if (nt.getPrimitiveType == Type.ELEMENT) {
+          stepper =
+            if (start.hasFingerprint)
+              new FollowingFingerprintedElementStepper(start, nt.getFingerprint)
+            else
+              new FollowingElementStepper(start,
+                nt.getNamespaceURI,
+                nt.getLocalPart)
+        } else {
+          stepper = new FollowingFilteredNodeStepper(start, test)
+        }
+      case nodeKindTest: NodeKindTest =>
         stepper =
-          if (start.hasFingerprint)
-            new FollowingFingerprintedElementStepper(start, nt.getFingerprint)
+          if (nodeKindTest.getPrimitiveType == Type.ELEMENT)
+            new FollowingElementStepper(start, null, null)
           else
-            new FollowingElementStepper(start,
-              nt.getNamespaceURI,
-              nt.getLocalPart)
-      } else {
+            new FollowingFilteredNodeStepper(start, test)
+      case localNameTest: LocalNameTest =>
+        if (localNameTest.getPrimitiveType == Type.ELEMENT)
+          stepper = new FollowingElementStepper(start, null, localNameTest.getLocalName)
+        else
+          stepper = new FollowingFilteredNodeStepper(start, test)
+      case namespaceTest: NamespaceTest =>
+        if (namespaceTest.getPrimitiveType == Type.ELEMENT)
+          stepper = new FollowingElementStepper(start, namespaceTest.getNamespaceURI, null)
+        else
+          stepper = new FollowingFilteredNodeStepper(start, test)
+      case _ =>
         stepper = new FollowingFilteredNodeStepper(start, test)
-      }
-    } else if (test.isInstanceOf[NodeKindTest]) {
-      stepper =
-        if (test.asInstanceOf[NodeKindTest].getPrimitiveType == Type.ELEMENT)
-          new FollowingElementStepper(start, null, null)
-        else new FollowingFilteredNodeStepper(start, test)
-    } else if (test.isInstanceOf[LocalNameTest]) {
-      if (test.asInstanceOf[LocalNameTest].getPrimitiveType == Type.ELEMENT) {
-        val nt: LocalNameTest = test.asInstanceOf[LocalNameTest]
-        stepper = new FollowingElementStepper(start, null, nt.getLocalName)
-      } else {
-        stepper = new FollowingFilteredNodeStepper(start, test)
-      }
-    } else if (test.isInstanceOf[NamespaceTest]) {
-      if (test.asInstanceOf[NamespaceTest].getPrimitiveType == Type.ELEMENT) {
-        val nt: NamespaceTest = test.asInstanceOf[NamespaceTest]
-        stepper = new FollowingElementStepper(start, nt.getNamespaceURI, null)
-      } else {
-        stepper = new FollowingFilteredNodeStepper(start, test)
-      }
-    } else {
-      stepper = new FollowingFilteredNodeStepper(start, test)
     }
 
     def next(): N = {
       if (current == null) {
         current = start
-        return start
+        start
+      } else {
+        val curr = stepper.step(current)
+        current = curr
+        current
       }
-      val curr: N = stepper.step(current)
-      current = curr
-      current
     }
-
   }
-
 }

@@ -4,10 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * XDM 3.0 introduces a third kind of item, beyond nodes and atomic values: the function. Functions
-  * implement this interface.
-  */
 package org.orbeon.saxon.om
 
 import org.orbeon.saxon.expr.sort.AtomicComparer
@@ -17,6 +13,11 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.query.AnnotationList
 import org.orbeon.saxon.trace.ExpressionPresenter
 
+
+/**
+  * XDM 3.0 introduces a third kind of item, beyond nodes and atomic values: the function. Functions
+  * implement this interface.
+  */
 object Function {
   @SafeVarargs
   def argumentArray(args: Sequence*): Seq[Sequence] = args
