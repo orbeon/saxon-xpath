@@ -583,7 +583,7 @@ object StandardEntityResolver {
 //    }
 //    if (tracing) {
 //      if (traceDestination == null)
-//        traceDestination = new StandardLogger()
+//        traceDestination = new StandardLogger
 //      traceDestination.info("Fetching Saxon copy of " + filename)
 //    }
 //    val messages = new ju.ArrayList[String]()

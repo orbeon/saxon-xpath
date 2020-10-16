@@ -40,7 +40,7 @@ abstract class AbstractTraceListener
 
   private var detail: Int = 2
 
-  var out: Logger = new StandardLogger()
+  var out: Logger = new StandardLogger
 
   def getCodeInjector: CodeInjector = new TraceCodeInjector()
 

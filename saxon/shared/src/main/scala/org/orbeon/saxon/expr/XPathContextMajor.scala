@@ -87,7 +87,6 @@ object XPathContextMajor {
     @throws[XPathException]
     def waitForChildThreads(): Unit
   }
-
 }
 
 class XPathContextMajor private () extends XPathContextMinor {

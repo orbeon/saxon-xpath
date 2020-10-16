@@ -57,7 +57,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
 
   def warning(exception: TransformerException): Unit = {
     if (logger == null) {
-      logger = new StandardLogger()
+      logger = new StandardLogger
     }
     val xe: XPathException = XPathException.makeXPathException(exception)
     val message: String = constructMessage(exception, xe, "", "Warning ")
@@ -80,7 +80,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
 
   def error(exception: TransformerException): Unit = {
     if (logger == null) {
-      logger = new StandardLogger()
+      logger = new StandardLogger
     }
     var message: String = null
     if (exception.isInstanceOf[ValidationException]) {
@@ -123,7 +123,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       return
     }
     if (logger == null) {
-      logger = new StandardLogger()
+      logger = new StandardLogger
     }
     var message: String = null
     val lang: String = xe.getHostLanguage

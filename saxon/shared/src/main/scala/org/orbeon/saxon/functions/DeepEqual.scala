@@ -204,10 +204,10 @@ object DeepEqual {
         }
         var att1: NodeInfo = null
         a1 = n1.iterateAxis(AxisInfo.ATTRIBUTE)
-        while (({
+        while ({
           att1 = a1.next()
           att1
-        }) != null) {
+        } != null) {
           val a2iter: AxisIterator =
             n2.iterateAxis(AxisInfo.ATTRIBUTE, new SameNameTest(att1))
           val att2: NodeInfo = a2iter.next()

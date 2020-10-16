@@ -419,7 +419,7 @@ class Configuration extends SourceResolver with NotationSet {
   @volatile private var styleParserPool: ConcurrentLinkedQueue[XMLReader] = new ConcurrentLinkedQueue()
   private var sourceParserClass: String = _
   @transient private var sourceResolver: SourceResolver = this
-  @transient private var traceOutput: Logger = new StandardLogger()
+  @transient private var traceOutput: Logger = new StandardLogger
   private val standardModuleURIResolver: ModuleURIResolver = Version.platform.makeStandardModuleURIResolver(this)
   private var styleParserClass: String = _
   private val systemURIResolver: StandardURIResolver = new StandardURIResolver(this)
