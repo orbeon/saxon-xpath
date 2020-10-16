@@ -1,8 +1,8 @@
 package org.orbeon.saxon
 
-import java.io.PrintStream
 
-import org.orbeon.saxon.lib.{NamespaceConstant, StandardLogger}
+
+import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.sxpath.{IndependentContext, XPathEvaluator}
@@ -15,6 +15,8 @@ import org.scalatest.funspec.AnyFunSpec
 
 class XPathTest extends AnyFunSpec {
 
+  val ExplainExpressions = false
+
   def compileAndRunExpression(xpath: String): Item = {
 
     val evaluator = new XPathEvaluator(new Configuration)
@@ -23,6 +25,13 @@ class XPathTest extends AnyFunSpec {
     evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("math", NamespaceConstant.MATH)
 
     val xpe = evaluator.createExpression(xpath)
+
+    if (ExplainExpressions) {
+      import _root_.java.io.PrintStream
+      import org.orbeon.saxon.lib.StandardLogger
+
+      xpe.getInternalExpression.explain(new StandardLogger(new PrintStream(System.out)))
+    }
 
     val dc = xpe.createDynamicContext
     dc.setContextItem(Int64Value.makeDerived(2020, BuiltInAtomicType.INT))
