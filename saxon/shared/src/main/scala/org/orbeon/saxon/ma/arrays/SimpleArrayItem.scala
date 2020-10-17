@@ -127,7 +127,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
     } else if (size > 5) {
       "[(:size " + size + ":)]"
     } else {
-      val buff: FastStringBuffer = new FastStringBuffer(256)
+      val buff = new FastStringBuffer(256)
       buff.append("[")
       for (entry <- members()) {
         buff.append(Err.depictSequence(entry).toString.trim())

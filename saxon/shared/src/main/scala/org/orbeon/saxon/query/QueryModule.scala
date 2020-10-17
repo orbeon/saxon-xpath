@@ -223,7 +223,7 @@ class QueryModule extends StaticContext {
     if (isTopLevelModule) {
       globalFunctionLibrary = new XQueryFunctionLibrary(config)
     }
-    functionLibraryList = new FunctionLibraryList()
+    functionLibraryList = new FunctionLibraryList
     functionLibraryList.addFunctionLibrary(getBuiltInFunctionSet)
     functionLibraryList.addFunctionLibrary(
       config.getBuiltInExtensionLibraryList)
@@ -693,12 +693,11 @@ class QueryModule extends StaticContext {
   def isImportedSchema(namespace: String): Boolean =
     importedSchemata != null && importedSchemata.contains(namespace)
 
-  def getImportedSchemaNamespaces: collection.Set[String] =
-    if (importedSchemata == null) {
-      ju.Collections.emptySet().asInstanceOf[collection.Set[String]]
-    } else {
-      importedSchemata.asScala
-    }
+  def getImportedSchemaNamespaces: ju.Set[String] =
+    if (importedSchemata == null)
+      ju.Collections.emptySet()
+    else
+      importedSchemata
 
   def reportStaticError(err: XPathException): Unit =
     if (! err.hasBeenReported) {

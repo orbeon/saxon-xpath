@@ -231,7 +231,7 @@ abstract class FunctionCall extends Expression {
   }
 
   override def toString: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val buff = new FastStringBuffer(FastStringBuffer.C64)
     val fName: StructuredQName = getFunctionName
     var f: String = null
     f =

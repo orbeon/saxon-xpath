@@ -1,7 +1,7 @@
 package org.orbeon.saxon.sxpath
 
 import java.util.function.BiConsumer
-import java.util.{HashMap, Map}
+import java.{util => ju}
 
 import org.orbeon.saxon.expr.parser.{Loc, RetainedStaticContext}
 import org.orbeon.saxon.expr.{EarlyEvaluationContext, PackageData, StaticContext, XPathContext}
@@ -16,6 +16,7 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
+
 abstract class AbstractStaticContext extends StaticContext {
 
   private var baseURI: String = null
@@ -26,15 +27,16 @@ abstract class AbstractStaticContext extends StaticContext {
   var containingLocation: Location = Loc.NONE
   @BeanProperty
   var defaultCollationName: String = _
-  private var libraryList: FunctionLibraryList = new FunctionLibraryList()
+  private var libraryList: FunctionLibraryList = new FunctionLibraryList
   @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
   var defaultElementNamespace: String = NamespaceConstant.NULL
   private var backwardsCompatible: Boolean = false
   private var xpathLanguageLevel: Int = 31
   var usingDefaultFunctionLibrary: Boolean = _
-  private var typeAliases: Map[StructuredQName, ItemType] = new HashMap()
-  private var unprefixedElementPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
+  private val typeAliases: ju.Map[StructuredQName, ItemType] = new ju.HashMap
+  private var unprefixedElementPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy =
+    UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
 
   def setDefaultElementNamespace(uri: String): Unit =
     defaultElementNamespace = uri
@@ -63,7 +65,7 @@ abstract class AbstractStaticContext extends StaticContext {
     new RetainedStaticContext(this)
 
   def setDefaultFunctionLibrary(): Unit = {
-    val lib: FunctionLibraryList = new FunctionLibraryList()
+    val lib = new FunctionLibraryList
     lib.addFunctionLibrary(config.getXPath31FunctionSet)
     lib.addFunctionLibrary(getConfiguration.getBuiltInExtensionLibraryList)
     lib.addFunctionLibrary(new ConstructorFunctionLibrary(getConfiguration))
@@ -90,15 +92,13 @@ abstract class AbstractStaticContext extends StaticContext {
     usingDefaultFunctionLibrary = false
   }
 
-  def issueWarning(s: String, locator: Location): Unit = {
+  def issueWarning(s: String, locator: Location): Unit =
     getWarningHandler.accept(s, locator)
-  }
 
   def getSystemId: String = ""
 
-  def setXPathLanguageLevel(level: Int): Unit = {
+  def setXPathLanguageLevel(level: Int): Unit =
     xpathLanguageLevel = level
-  }
 
   def getXPathVersion: Int = xpathLanguageLevel
 
@@ -113,22 +113,21 @@ abstract class AbstractStaticContext extends StaticContext {
   def getRequiredContextItemType: ItemType = AnyItemType
 
   def getDecimalFormatManager: DecimalFormatManager = {
-    var manager: DecimalFormatManager = getPackageData.getDecimalFormatManager
+    var manager = getPackageData.getDecimalFormatManager
     if (manager == null) {
-      manager =
-        new DecimalFormatManager(HostLanguage.XPATH, xpathLanguageLevel)
+      manager = new DecimalFormatManager(HostLanguage.XPATH, xpathLanguageLevel)
       getPackageData.setDecimalFormatManager(manager)
     }
     manager
   }
 
   def setDefaultFunctionLibrary(version: Int): Unit = {
-    val lib: FunctionLibraryList = new FunctionLibraryList
+    val lib = new FunctionLibraryList
     version match {
       case 20 | 30 =>
-      case 305 => lib.addFunctionLibrary(config.getXPath30FunctionSet)
-      case 31 => lib.addFunctionLibrary(config.getXPath31FunctionSet)
-      case _ => lib.addFunctionLibrary(XPath20FunctionSet.getInstance)
+      case 305     => lib.addFunctionLibrary(config.getXPath30FunctionSet)
+      case 31      => lib.addFunctionLibrary(config.getXPath31FunctionSet)
+      case _       => lib.addFunctionLibrary(XPath20FunctionSet.getInstance)
     }
     lib.addFunctionLibrary(getConfiguration.getBuiltInExtensionLibraryList)
     lib.addFunctionLibrary(new ConstructorFunctionLibrary(getConfiguration))

@@ -488,7 +488,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   }
 
   def createFunctionLibrary(): Unit = {
-    val functionLibrary: FunctionLibraryList = new FunctionLibraryList()
+    val functionLibrary: FunctionLibraryList = new FunctionLibraryList
     val includeHOF: Boolean =
       !("HE" == getTargetEdition || "JS" == getTargetEdition)
     /*functionLibrary.addFunctionLibrary(
@@ -565,7 +565,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
        pss.setSchemaAware(true)
      }
      pss.setHostLanguage(HostLanguage.XSLT)*/
-    val libraryList: FunctionLibraryList = new FunctionLibraryList()
+    val libraryList: FunctionLibraryList = new FunctionLibraryList
     for (lib <- functionLibrary.getLibraryList.asScala) {
       /*    if (lib.isInstanceOf[StylesheetFunctionLibrary]) {
             if (lib
@@ -629,7 +629,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       abstractComponents.put(key, value)
     }
     if (!abstractComponents.isEmpty) {
-      val buff: FastStringBuffer = new FastStringBuffer(256)
+      val buff = new FastStringBuffer(256)
       var count: Int = 0
       breakable {
         for (name <- abstractComponents.keySet.asScala) {

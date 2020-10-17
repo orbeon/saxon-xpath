@@ -6,16 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
+import java.{util => ju}
+
 import org.orbeon.saxon.expr.parser.{OptimizerOptions, RetainedStaticContext}
 import org.orbeon.saxon.functions.FunctionLibrary
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.om.{NamespaceResolver, StructuredQName}
-import org.orbeon.saxon.s9api.{Location, UnprefixedElementMatchingPolicy}
 import org.orbeon.saxon.s9api.UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy
+import org.orbeon.saxon.s9api.{Location, UnprefixedElementMatchingPolicy}
 import org.orbeon.saxon.trans.DecimalFormatManager
 import org.orbeon.saxon.utils.Configuration
-
-import scala.collection.Set
 
 
 /**
@@ -39,7 +39,7 @@ trait StaticContext {
   def getDefaultFunctionNamespace: String
   def isInBackwardsCompatibleMode: Boolean
   def isImportedSchema(namespace: String): Boolean
-  def getImportedSchemaNamespaces: Set[String]
+  def getImportedSchemaNamespaces: ju.Set[String]
   def getNamespaceResolver: NamespaceResolver
   def getRequiredContextItemType: ItemType
   def getDecimalFormatManager: DecimalFormatManager

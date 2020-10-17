@@ -172,7 +172,7 @@ class JRegexIterator(private var theString: String,
           }
         }
       }
-      val buff: FastStringBuffer = new FastStringBuffer(current.length)
+      val buff = new FastStringBuffer(current.length)
       for (i <- 0 until current.length + 1) {
         val events: List[Integer] = actions.get(i)
         if (events != null) {

@@ -457,7 +457,7 @@ class XMLEmitter extends Emitter {
   }
 
   def convertToAscii(chars: CharSequence): String = {
-    val buff: FastStringBuffer = new FastStringBuffer(chars.length)
+    val buff = new FastStringBuffer(chars.length)
     for (i <- 0 until chars.length) {
       val c: Char = chars.charAt(i)
       if (c >= 20 && c < 127) {

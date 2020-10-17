@@ -269,7 +269,7 @@ class ARegexIterator(private var theString: UnicodeString,
           }
         }
       }
-      val buff: FastStringBuffer = new FastStringBuffer(current.uLength)
+      val buff = new FastStringBuffer(current.uLength)
       for (i <- 0 until current.uLength + 1) {
         val events: List[Integer] = actions.get(i)
         if (events != null) {

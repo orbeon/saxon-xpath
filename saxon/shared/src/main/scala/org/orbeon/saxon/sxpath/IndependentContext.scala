@@ -1,10 +1,10 @@
 package org.orbeon.saxon.sxpath
 
-import java.util._
+import java.{util => ju}
 
-import org.orbeon.saxon.expr.{Expression, LocalVariableReference, PackageData}
 import org.orbeon.saxon.expr.instruct.{Executable, SlotManager}
 import org.orbeon.saxon.expr.parser.{OptimizerOptions, RetainedStaticContext}
+import org.orbeon.saxon.expr.{Expression, LocalVariableReference, PackageData}
 import org.orbeon.saxon.functions.FunctionLibraryList
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.{AnyItemType, ItemType, Type}
@@ -25,11 +25,11 @@ class IndependentContext(config: Configuration)
     with XPathStaticContext
     with NamespaceResolver {
 
-  var namespaces: HashMap[String, String] = new HashMap(10)
-  var variables: HashMap[StructuredQName, XPathVariable] = new HashMap(20)
+  var namespaces: ju.HashMap[String, String] = new ju.HashMap(10)
+  var variables: ju.HashMap[StructuredQName, XPathVariable] = new ju.HashMap(20)
   var externalResolver: NamespaceResolver = null
   var requiredContextItemType: ItemType = AnyItemType
-  var importedSchemaNamespaces: Set[String] = new HashSet()
+  var importedSchemaNamespaces: ju.Set[String] = new ju.HashSet
   var autoDeclare: Boolean = false
   var executable: Executable = _
   var retainedStaticContext: RetainedStaticContext = _
@@ -60,8 +60,8 @@ class IndependentContext(config: Configuration)
     this.defaultFunctionNamespace = ic.getDefaultFunctionNamespace
     this.setBackwardsCompatibilityMode(ic.isInBackwardsCompatibleMode)
 
-    namespaces = new HashMap(ic.namespaces)
-    variables = new HashMap(10)
+    namespaces = new ju.HashMap(ic.namespaces)
+    variables = new ju.HashMap(10)
 
     val libList = ic.getFunctionLibrary.asInstanceOf[FunctionLibraryList]
     if (libList != null)
@@ -121,102 +121,94 @@ class IndependentContext(config: Configuration)
   def setNamespaces(node: NodeInfo): Unit = {
     var nodeInf = node
     namespaces.clear()
-    val kind: Int = nodeInf.getNodeKind
+    val kind = nodeInf.getNodeKind
     if (kind == Type.ATTRIBUTE || kind == Type.TEXT || kind == Type.COMMENT ||
       kind == Type.PROCESSING_INSTRUCTION ||
       kind == Type.NAMESPACE) {
       nodeInf = nodeInf.getParent
     }
-    if (nodeInf == null) {
+    if (nodeInf == null)
       return
-    }
-    val iter: AxisIterator = nodeInf.iterateAxis(AxisInfo.NAMESPACE)
+    val iter = nodeInf.iterateAxis(AxisInfo.NAMESPACE)
     while (true) {
-      val ns: NodeInfo = iter.next()
+      val ns = iter.next()
       if (ns == null) {
         return
       }
-      val prefix: String = ns.getLocalPart
-      if ("" == prefix) {
+      val prefix = ns.getLocalPart
+      if ("" == prefix)
         this.defaultElementNamespace = ns.getStringValue
-      } else {
+      else
         declareNamespace(ns.getLocalPart, ns.getStringValue)
-      }
     }
   }
 
-  def setNamespaceResolver(resolver: NamespaceResolver): Unit = {
+  def setNamespaceResolver(resolver: NamespaceResolver): Unit =
     externalResolver = resolver
-  }
 
-  def setAllowUndeclaredVariables(allow: Boolean): Unit = {
+  def setAllowUndeclaredVariables(allow: Boolean): Unit =
     autoDeclare = allow
-  }
 
   def isAllowUndeclaredVariables: Boolean = autoDeclare
 
   def declareVariable(qname: QNameValue): XPathVariable =
     declareVariable(qname.getStructuredQName)
 
-  def declareVariable(namespaceURI: String, localName: String): XPathVariable = {
-    val qName: StructuredQName =
-      new StructuredQName("", namespaceURI, localName)
-    declareVariable(qName)
-  }
+  def declareVariable(namespaceURI: String, localName: String): XPathVariable =
+    declareVariable(new StructuredQName("", namespaceURI, localName))
 
   def declareVariable(qName: StructuredQName): XPathVariable = {
-    var `var`: XPathVariable = variables.get(qName)
+    var `var` = variables.get(qName)
     if (`var` != null) {
       `var`
     } else {
       `var` = XPathVariable.make(qName)
-      val slot: Int = variables.size
+      val slot = variables.size
       `var`.setSlotNumber(slot)
       variables.put(qName, `var`)
       `var`
     }
   }
 
-  def iterateExternalVariables(): Iterator[XPathVariable] =
+  def iterateExternalVariables(): ju.Iterator[XPathVariable] =
     variables.values.iterator
 
   def getExternalVariable(qName: StructuredQName): XPathVariable =
     variables.get(qName)
 
   def getSlotNumber(qname: QNameValue): Int = {
-    val sq: StructuredQName = qname.getStructuredQName
-    val `var`: XPathVariable = variables.get(sq)
-    if (`var` == null) return -1
+    val sq = qname.getStructuredQName
+    val `var` = variables.get(sq)
+    if (`var` == null)
+      return -1
     `var`.getLocalSlotNumber
   }
 
   def getNamespaceResolver: NamespaceResolver =
-    if (externalResolver != null) {
+    if (externalResolver != null)
       externalResolver
-    } else {
+    else
       this
-    }
 
   def getURIForPrefix(prefix: String, useDefault: Boolean): String = {
-    if (externalResolver != null) {
+    if (externalResolver != null)
       externalResolver.getURIForPrefix(prefix, useDefault)
-    }
     if (prefix.isEmpty) {
-      if (useDefault) getDefaultElementNamespace else ""
+      if (useDefault)
+        getDefaultElementNamespace else ""
     } else {
       namespaces.get(prefix)
     }
   }
 
-  def iteratePrefixes: Iterator[String] =
-    if (externalResolver != null) {
+  def iteratePrefixes: ju.Iterator[String] =
+    if (externalResolver != null)
       externalResolver.iteratePrefixes
-    } else {
+    else
       namespaces.keySet.iterator
-    }
 
   def bindVariable(qName: StructuredQName): Expression = {
-    val `var`: XPathVariable = variables.get(qName)
+    val `var` = variables.get(qName)
     if (`var` == null) {
       if (autoDeclare) {
         new LocalVariableReference(declareVariable(qName))
@@ -231,34 +223,31 @@ class IndependentContext(config: Configuration)
   }
 
   def getStackFrameMap: SlotManager = {
-    val map: SlotManager = getConfiguration.makeSlotManager
-    val va: Array[XPathVariable] = Array.ofDim[XPathVariable](variables.size)
-    for (value <- variables.values.asScala) {
+    val map = getConfiguration.makeSlotManager
+    val va = Array.ofDim[XPathVariable](variables.size)
+    for (value <- variables.values.asScala)
       va(value.getLocalSlotNumber) = value
-    }
-    for (v <- va) {
+    for (v <- va)
       map.allocateSlotNumber(v.getVariableQName)
-    }
     map
   }
 
-  def getDeclaredVariables: Collection[XPathVariable] = variables.values
+  def getDeclaredVariables: ju.Collection[XPathVariable] = variables.values
 
   def isImportedSchema(namespace: String): Boolean =
     importedSchemaNamespaces.contains(namespace)
 
-  def getImportedSchemaNamespaces: collection.Set[String] = importedSchemaNamespaces.asScala.toSet
+  def getImportedSchemaNamespaces: ju.Set[String] = importedSchemaNamespaces
 
-  def setImportedSchemaNamespaces(namespaces: Set[String]): Unit = {
+  def setImportedSchemaNamespaces(namespaces: ju.Set[String]): Unit = {
     importedSchemaNamespaces = namespaces
     if (!namespaces.isEmpty) {
       this.setSchemaAware(true)
     }
   }
 
-  def setRequiredContextItemType(`type`: ItemType): Unit = {
+  def setRequiredContextItemType(`type`: ItemType): Unit =
     requiredContextItemType = `type`
-  }
 
   override def getRequiredContextItemType: ItemType = requiredContextItemType
 

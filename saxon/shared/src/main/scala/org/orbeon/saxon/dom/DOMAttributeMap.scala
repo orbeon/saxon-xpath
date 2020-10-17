@@ -26,14 +26,14 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
   }
 
   private def getNamespaceDeltas: Array[NamespaceBinding] = {
-    val allNamespaces: NamespaceMap = element.getAllNamespaces
+    val allNamespaces = element.getAllNamespaces
     var bindings: Array[NamespaceBinding] = null
-    val parent: NodeInfo = element.getParent
+    val parent = element.getParent
     bindings =
       if (parent != null && parent.getNodeKind == Type.ELEMENT)
-        allNamespaces.getDifferences(parent.getAllNamespaces,
-          !excludeNamespaceUndeclarations)
-      else allNamespaces.getNamespaceBindings
+        allNamespaces.getDifferences(parent.getAllNamespaces, ! excludeNamespaceUndeclarations)
+      else
+        allNamespaces.getNamespaceBindings
     bindings
   }
 

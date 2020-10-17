@@ -314,7 +314,7 @@ class CallTemplate(private var template: NamedTemplate,
   }
 
   override def toString: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val buff = new FastStringBuffer(FastStringBuffer.C64)
     buff.append("CallTemplate#")
     if (template.getObjectName != null) {
       buff.append(template.getObjectName.getDisplayName)
@@ -334,7 +334,7 @@ class CallTemplate(private var template: NamedTemplate,
   }
 
   override def toShortString: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val buff = new FastStringBuffer(FastStringBuffer.C64)
     buff.append("CallTemplate#")
     buff.append(template.getObjectName.getDisplayName)
     buff.toString

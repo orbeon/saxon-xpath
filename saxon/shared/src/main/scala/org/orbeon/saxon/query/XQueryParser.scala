@@ -2989,7 +2989,7 @@ class XQueryParser extends XPathParser {
     var changesContext = false
     val offset = t.inputOffset - 1
     var c: Char = 0
-    val buff: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+    val buff = new FastStringBuffer(FastStringBuffer.C64)
     var namespaceCount = 0
     breakable {
       while ( {

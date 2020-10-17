@@ -297,7 +297,7 @@ object StringConverter {
       if (NameChecker.isValidNCName(trimmed)) {
         return null
       }
-      val buff: FastStringBuffer = new FastStringBuffer(trimmed.length)
+      val buff = new FastStringBuffer(trimmed.length)
       buff.cat(trimmed)
       for (i <- 0 until buff.length if buff.charAt(i) == ':') {
         buff.setCharAt(i, '_')

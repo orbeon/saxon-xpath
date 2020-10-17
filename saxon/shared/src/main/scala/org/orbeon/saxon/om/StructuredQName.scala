@@ -171,7 +171,7 @@ class StructuredQName private(var content: Array[Char],
     if (prefixStart == content.length) {
       getLocalPart
     } else {
-      val buff: FastStringBuffer = new FastStringBuffer(
+      val buff = new FastStringBuffer(
         content.length - localNameStart + 1)
       buff.append(content, prefixStart, content.length - prefixStart)
       buff.cat(':')
@@ -182,7 +182,7 @@ class StructuredQName private(var content: Array[Char],
   def getStructuredQName: StructuredQName = this
 
   def getClarkName: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(
+    val buff = new FastStringBuffer(
       content.length - prefixStart + 2)
     if (localNameStart > 0) {
       buff.cat('{')
@@ -194,7 +194,7 @@ class StructuredQName private(var content: Array[Char],
   }
 
   def getEQName: String = {
-    val buff: FastStringBuffer = new FastStringBuffer(
+    val buff = new FastStringBuffer(
       content.length - prefixStart + 2)
     buff.append("Q{")
     if (localNameStart > 0) {
