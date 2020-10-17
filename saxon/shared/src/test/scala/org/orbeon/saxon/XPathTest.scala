@@ -52,7 +52,7 @@ class XPathTest extends AnyFunSpec {
          return $fn(7)"""                           -> "14",
       """
         let $f :=
-          function ($seq, $delim) {
+          function($seq, $delim) {
             fn:fold-left($seq, '', fn:concat(?, $delim, ?))
           },
           $paf := $f(?, '.')
