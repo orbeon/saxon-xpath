@@ -78,96 +78,55 @@ class TinyTree(config: Configuration, statistics: Statistics)
     with NodeVectorTree {
 
   /*@Nullable*/
-
-  val nodes: Int = statistics.getAverageNodes.toInt + 1
-
-  val attributes: Int = statistics.getAverageAttributes.toInt + 1
-
-  val namespaces: Int = statistics.getAverageNamespaces.toInt + 1
-
-  val characters: Int = statistics.getAverageCharacters.toInt + 1
-
-  var commentBuffer: FastStringBuffer = null
-
-  var numberOfNodes: Int = 0
-
-  var nodeKind: Array[Byte] = new Array[Byte](nodes)
-
-  var depth: Array[Short] = new Array[Short](nodes)
-
-  var next: Array[Int] = new Array[Int](nodes)
-
-  var alpha: Array[Int] = new Array[Int](nodes)
-
-  var beta: Array[Int] = new Array[Int](nodes)
-
-  var nameCode: Array[Int] = new Array[Int](nodes)
+  val nodes         : Int              = statistics.getAverageNodes.toInt + 1
+  val attributes    : Int              = statistics.getAverageAttributes.toInt + 1
+  val namespaces    : Int              = statistics.getAverageNamespaces.toInt + 1
+  val characters    : Int              = statistics.getAverageCharacters.toInt + 1
+  var commentBuffer : FastStringBuffer = null
+  var numberOfNodes : Int              = 0
+  var nodeKind      : Array[Byte]      = new Array[Byte](nodes)
+  var depth         : Array[Short]     = new Array[Short](nodes)
+  var next          : Array[Int]       = new Array[Int](nodes)
+  var alpha         : Array[Int]       = new Array[Int](nodes)
+  var beta          : Array[Int]       = new Array[Int](nodes)
+  var nameCode      : Array[Int]       = new Array[Int](nodes)
 
   /*@Nullable*/
-
   var prior: Array[Int] = null
 
   /*@Nullable*/
-
   var typeArray: Array[SchemaType] = null
 
   /*@Nullable*/
-
-  var typedValueArray: Array[AtomicSequence] = null
-
-  var idRefElements: IntSet = null
-
-  var idRefAttributes: IntSet = null
-
-  var nilledElements: IntSet = null
-
-  var defaultedAttributes: IntSet = null
-
-  var topWithinEntity: IntSet = null
+  var typedValueArray     : Array[AtomicSequence] = null
+  var idRefElements       : IntSet                = null
+  var idRefAttributes     : IntSet                = null
+  var nilledElements      : IntSet                = null
+  var defaultedAttributes : IntSet                = null
+  var topWithinEntity     : IntSet                = null
 
   private var allowTypedValueCache: Boolean = true
-
   private var localNameIndex: Map[String, IntSet] = null
-
   var numberOfAttributes: Int = 0
-
   var attParent: Array[Int] = new Array[Int](attributes)
-
   var attCode: Array[Int] = new Array[Int](attributes)
-
   var attValue: Array[CharSequence] = new Array[CharSequence](attributes)
-
   var attTypedValue: Array[AtomicSequence] = _
-
   /*@Nullable*/
-
   var attType: Array[SimpleType] = _
-
   var numberOfNamespaces: Int = 0
-
-  var namespaceMaps: Array[NamespaceMap] =
-    new Array[NamespaceMap](namespaces)
+  var namespaceMaps: Array[NamespaceMap] = new Array[NamespaceMap](namespaces)
 
   /*@Nullable*/
-
   private var lineNumbers: Array[Int] = null
-
   /*@Nullable*/
-
   private var columnNumbers: Array[Int] = null
-
   /*@Nullable*/
-
   private var systemIdMap: SystemIdMap = null
-
   var usesNamespaces: Boolean = false
-
   var prefixPool: PrefixPool = new PrefixPool()
-
   private var root: TinyDocumentImpl = _
-
   private var idTable: HashMap[String, NodeInfo] = _
-
   var entityTable: HashMap[String, Array[String]] = _
 
   @BeanProperty
@@ -981,43 +940,24 @@ class TinyTree(config: Configuration, statistics: Statistics)
    * @return true if the document contains elements whose type is other than UNTYPED
    */
   override def isTyped: Boolean = typeArray != null
-
   def getNumberOfNodes: Int = numberOfNodes
-
   def getNumberOfAttributes: Int = numberOfAttributes
-
   def getNumberOfNamespaces: Int = numberOfNamespaces
-
   def getNodeKindArray(): Array[Byte] = nodeKind
-
   def getNodeDepthArray: Array[Short] = depth
-
   def getNameCodeArray(): Array[Int] = nameCode
-
   /*@Nullable*/
-
   def getTypeArray: Array[SchemaType] = typeArray
-
   def getNextPointerArray: Array[Int] = next
-
   def getAlphaArray: Array[Int] = alpha
-
   def getBetaArray: Array[Int] = beta
-
   def getCharacterBuffer: AppendableCharSequence = charBuffer
-
   /*@Nullable*/
-
   def getCommentBuffer: CharSequence = commentBuffer
-
   def getAttributeNameCodeArray: Array[Int] = attCode
-
   /*@Nullable*/
-
   def getAttributeTypeArray: Array[SimpleType] = attType
-
   def getAttributeParentArray: Array[Int] = attParent
-
   def getAttributeValueArray: Array[CharSequence] = attValue
 
   def getNamespaceBindings: Array[NamespaceBinding] =

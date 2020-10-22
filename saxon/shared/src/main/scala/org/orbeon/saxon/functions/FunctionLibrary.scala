@@ -17,7 +17,7 @@ import org.orbeon.saxon.utils.Configuration
   * There are a number of implementations of this
   * class to handle different kinds of function: system functions, constructor functions, vendor-defined
   * functions, Java extension functions, stylesheet functions, and so on. There is also an implementation
-  * {@link org.orbeon.saxon.functions.FunctionLibraryList} that allows a FunctionLibrary
+  * `org.orbeon.saxon.functions.FunctionLibraryList` that allows a FunctionLibrary
   * to be constructed by combining other FunctionLibrary objects.
   */
 trait FunctionLibrary {
@@ -38,5 +38,4 @@ trait FunctionLibrary {
   /*@Nullable*/
   def getFunctionItem(functionName: SymbolicName.F,
                       staticContext: StaticContext): Function
-
 }
