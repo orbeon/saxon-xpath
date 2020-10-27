@@ -1,4 +1,4 @@
-package org.orbeon.saxon.saxjava
+package org.orbeon.saxon.java
 
 import java.text.{CollationKey, Collator}
 import java.util.{List, Properties}
@@ -8,7 +8,7 @@ import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.expr.sort._
 import org.orbeon.saxon.functions.FunctionLibraryList
-import org.orbeon.saxon.javasax.JavaCollationFactory
+import org.orbeon.saxon.java.JavaCollationFactory
 import org.orbeon.saxon.lib.{ModuleURIResolver, StandardModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.{ARegularExpression, JavaRegularExpression, RegularExpression}

@@ -1,6 +1,6 @@
 package org.orbeon.saxon.utils
 
-import org.orbeon.saxon.saxjava.JavaPlatform
+import org.orbeon.saxon.java.JavaPlatform
 
 object Version {
 
