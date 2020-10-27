@@ -30,7 +30,7 @@ object TreeModel {
     * The TinyTree implementation. This is normally the default implementation
     * of the tree model.
     */
-  val TINY_TREE: TreeModel = new TinyTree()
+  val TINY_TREE: TreeModel = new TinyTree
 
   /**
     * The CondensedTinyTree implementation. This is a variant of the TinyTree that
@@ -41,7 +41,7 @@ object TreeModel {
     * uses less memory but takes a little longer to build. Run-time performance
     * is the same as the TinyTree.
     */
-  val TINY_TREE_CONDENSED: TreeModel = new TinyTreeCondensed()
+  val TINY_TREE_CONDENSED: TreeModel = new TinyTreeCondensed
 
   /**
     * The LinkedTree. This takes more memory than the TinyTree, but offers flexibility
@@ -52,7 +52,7 @@ object TreeModel {
     * for storing user-defined data in each element node; it is also mutable, supporting
     * XQuery Update
     */
-  val LINKED_TREE: TreeModel = new LinkedTree()
+  val LINKED_TREE: TreeModel = new LinkedTree
 
   def getTreeModel(symbolicValue: Int): TreeModel = symbolicValue match {
     case Builder.TINY_TREE => TreeModel.TINY_TREE
@@ -64,9 +64,8 @@ object TreeModel {
   private class TinyTree extends TreeModel {
 
     def makeBuilder(pipe: PipelineConfiguration): Builder = {
-      val builder: TinyBuilder = new TinyBuilder(pipe)
-      builder.setStatistics(
-        pipe.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
+      val builder = new TinyBuilder(pipe)
+      builder.setStatistics(pipe.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
       builder
     }
 
@@ -78,9 +77,8 @@ object TreeModel {
   private class TinyTreeCondensed extends TreeModel {
 
     def makeBuilder(pipe: PipelineConfiguration): Builder = {
-      val tbc: TinyBuilderCondensed = new TinyBuilderCondensed(pipe)
-      tbc.setStatistics(
-        pipe.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
+      val tbc = new TinyBuilderCondensed(pipe)
+      tbc.setStatistics(pipe.getConfiguration.getTreeStatistics.SOURCE_DOCUMENT_STATISTICS)
       tbc
     }
 
@@ -92,7 +90,6 @@ object TreeModel {
   private class LinkedTree extends TreeModel {
 
     /*@NotNull*/
-
     def makeBuilder(pipe: PipelineConfiguration): Builder =
       new LinkedTreeBuilder(pipe)
 
@@ -104,8 +101,9 @@ object TreeModel {
 
 abstract class TreeModel {
   def makeBuilder(pipe: PipelineConfiguration): Builder
-  def getSymbolicValue: Int = Builder.UNSPECIFIED_TREE_MODEL
-  def isMutable: Boolean = false
-  def isSchemaAware: Boolean = false
-  def getName: String = toString
+
+  def getSymbolicValue: Int     = Builder.UNSPECIFIED_TREE_MODEL
+  def isMutable       : Boolean = false
+  def isSchemaAware   : Boolean = false
+  def getName         : String  = toString
 }
