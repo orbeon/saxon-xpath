@@ -3542,8 +3542,10 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def getConfigurationProperty(name: String): Any = {
     val feature = Feature.byName(name)
-    if (feature == null) throw new IllegalArgumentException("Unknown configuration property " + name)
-    else getConfigurationProperty(feature)
+    if (feature == null)
+      throw new IllegalArgumentException("Unknown configuration property " + name)
+    else
+      getConfigurationProperty(feature)
   }
 
   @SuppressWarnings(Array("unchecked")) def getConfigurationProperty[T](feature: Feature[T]): T = {

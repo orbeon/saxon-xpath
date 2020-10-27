@@ -21,7 +21,7 @@ import org.orbeon.saxon.tree.tiny.{CharSlice, CompressedWhitespace}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
 import org.xml.sax._
-import org.xml.sax.ext.{Attributes2, LexicalHandler}
+import org.xml.sax.ext.LexicalHandler
 
 import scala.beans.BeanProperty
 
@@ -31,15 +31,18 @@ import scala.beans.BeanProperty
  * interface to a Saxon Receiver. To achieve this it needs to map names supplied
  * as strings to numeric name codes, for which purpose it needs access to a name
  * pool. The class also performs the function of assembling adjacent text nodes.
- * <p>If the input stream contains the processing instructions assigned by JAXP to switch
+ *
+ * If the input stream contains the processing instructions assigned by JAXP to switch
  * disable-output-escaping on or off, these will be reflected in properties set in the corresponding
- * characters events. In this case adjacent text nodes will not be combined.</p>
- * <p>The {@code ReceivingContentHandler} is written on the assumption that it is receiving events
- * from a parser configured with {@code http://xml.org/sax/features/namespaces} set to true
- * and {@code http://xml.org/sax/features/namespace-prefixes} set to false.</p>
- * <p>When running as a {@code TransformerHandler}, we have no control over the feature settings
+ * characters events. In this case adjacent text nodes will not be combined.
+ *
+ * The `ReceivingContentHandler` is written on the assumption that it is receiving events
+ * from a parser configured with `http://xml.org/sax/features/namespaces` set to true
+ * and `http://xml.org/sax/features/namespace-prefixes` set to false.
+ *
+ * When running as a `TransformerHandler`, we have no control over the feature settings
  * of the sender of the events, and if the events do not follow this pattern then the class may
- * fail in unpredictable ways.</p>
+ * fail in unpredictable ways.
  *
  */
 object ReceivingContentHandler {
@@ -53,7 +56,7 @@ object ReceivingContentHandler {
     def getLineNumber: Int = saxLocator.getLineNumber
     def getColumnNumber: Int = saxLocator.getColumnNumber
 
-    def saveLocation(): Location =
+    def saveLocation: Location =
       new Loc(getSystemId, getLineNumber, getColumnNumber)
   }
 }
@@ -193,15 +196,15 @@ class ReceivingContentHandler
   /**
    * Receive notification of the beginning of an element.
    *
-   * <p>The Parser will invoke this method at the beginning of every
+   * The Parser will invoke this method at the beginning of every
    * element in the XML document; there will be a corresponding
-   * {@link #endElement endElement} event for every startElement event
+   * `#` event for every startElement event
    * (even when the element is empty). All of the element's content will be
    * reported, in order, before the corresponding endElement
-   * event.</p>
+   * event.
    *
-   * <p>This event allows up to three name components for each
-   * element:</p>
+   * This event allows up to three name components for each
+   * element:
    *
    * <ol>
    * <li>the Namespace URI;</li>
@@ -209,14 +212,14 @@ class ReceivingContentHandler
    * <li>the qualified (prefixed) name.</li>
    * </ol>
    *
-   * <p>Saxon expects all three of these to be provided.
+   * Saxon expects all three of these to be provided.
    *
-   * <p>The attribute list provided should contain only
+   * The attribute list provided should contain only
    * attributes with explicit values (specified or defaulted):
    * #IMPLIED attributes should be omitted.  The attribute list
    * should not contain attributes used for Namespace declarations
    * (xmlns* attributes); if it does, Saxon will ignore them,
-   * which may lead to unresolved namespace prefixes.</p>
+   * which may lead to unresolved namespace prefixes.
    *
    * @param uri       the Namespace URI, or the empty string if the
    *                  element has no Namespace URI or if Namespace
@@ -421,7 +424,7 @@ class ReceivingContentHandler
     System.arraycopy(ch, start, buffer, charsUsed, length)
     charsUsed += length
     if (lineNumbering)
-      lastTextNodeLocator = localLocator.saveLocation()
+      lastTextNodeLocator = localLocator.saveLocation
   }
 
   // System.err.println("characters (" + length + ")");
@@ -535,8 +538,6 @@ class ReceivingContentHandler
     receiver.setUnparsedEntity(name, uri, publicId)
   }
 
-  // Some (non-conformant) SAX parsers report the systemId as written.
-  // We need to turn it into an absolute URL.
   // Some (non-conformant) SAX parsers report the systemId as written.
   // We need to turn it into an absolute URL.
 }

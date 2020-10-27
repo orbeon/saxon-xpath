@@ -60,47 +60,37 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   // this is the local sequence within this document
   private var nodeNr: Int = 0
-
   private var ended: Boolean = false
-
   private var noNewNamespaces: Boolean = true
-
   val configur: Configuration = pipe.getConfiguration
 
   private var statistics: Statistics =
     configur.getTreeStatistics.TEMPORARY_TREE_STATISTICS
 
-  private var markDefaultedAttributes: Boolean = config.isExpandAttributeDefaults &&
+  private val markDefaultedAttributes: Boolean = config.isExpandAttributeDefaults &&
     configur.getBooleanProperty(Feature.MARK_DEFAULTED_ATTRIBUTES)
 
   private var textualElementEligibilityState: Eligibility = Eligibility.INELIGIBLE
 
-
-  def setStatistics(stats: Statistics): Unit = {
+  def setStatistics(stats: Statistics): Unit =
     statistics = stats
-  }
 
   /*@NotNull*/
-
   private var prevAtDepth: Array[Int] = new Array[Int](100)
 
   /*@NotNull*/
-
   private var siblingsAtDepth: Array[Int] = new Array[Int](100)
 
   private var isIDElement: Boolean = false
 
   override def open(): Unit = {
-    if (started) {
-      // this happens when using an IdentityTransformer
+    if (started) // this happens when using an IdentityTransformer
       return
-    }
     if (tree == null) {
       tree = new TinyTree(config, statistics)
       currentDepth = 0
-      if (lineNumbering) {
+      if (lineNumbering)
         tree.setLineNumbering()
-      }
       uniformBaseURI = true
       tree.setUniformBaseUri(baseURI)
     }
@@ -108,23 +98,19 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   }
 
   def startDocument(properties: Int): Unit = {
-    if ((started && !ended) || currentDepth > 0) {
-      // the content of an element
+    if ((started && !ended) || currentDepth > 0) // the content of an element
       return
-    }
-    // this happens when using an IdentityTransformer, or when copying a document node to form
     // this happens when using an IdentityTransformer, or when copying a document node to form
     started = true
     ended = false
-    val tt: TinyTree = tree
+    val tt = tree
     assert(tt != null)
     currentRoot = new TinyDocumentImpl(tt)
-    val doc: TinyDocumentImpl = currentRoot.asInstanceOf[TinyDocumentImpl]
+    val doc = currentRoot.asInstanceOf[TinyDocumentImpl]
     doc.setSystemId(getSystemId)
     doc.setBaseURI(getBaseURI)
     currentDepth = 0
-    val nodeNr: Int =
-      tt.addDocumentNode(currentRoot.asInstanceOf[TinyDocumentImpl])
+    val nodeNr = tt.addDocumentNode(currentRoot.asInstanceOf[TinyDocumentImpl])
     prevAtDepth(0) = nodeNr
     prevAtDepth(1) = -1
     siblingsAtDepth(0) = 0
@@ -137,17 +123,13 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     // decrement numberOfNodes so the next node will overwrite it
     tree.addNode(Type.STOPPER, 0, 0, 0, -1)
     tree.numberOfNodes -= 1
-    if (currentDepth > 1) {
+    if (currentDepth > 1)
       return
-    }
-    if (ended) {
-      // happens when using an IdentityTransformer
-      return
-    }
+    if (ended)
+      return // happens when using an IdentityTransformer
     ended = true
     prevAtDepth(currentDepth) = -1
     currentDepth -= 1
-
   }
 
   override def reset(): Unit = {
@@ -160,7 +142,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   }
 
   override def close(): Unit = {
-    val tt: TinyTree = tree
+    val tt = tree
     if (tt != null) {
       tt.addNode(Type.STOPPER, 0, 0, 0, -1)
       tt.condense(statistics)
@@ -201,52 +183,48 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       siblingsAtDepth(currentDepth) = 0
     }
     // now add the element node itself
-    val fp: Int = elemName.obtainFingerprint(namePool)
-    val prefixCode: Int = tree.prefixPool.obtainPrefixCode(elemName.getPrefix)
-    val nameCode: Int = (prefixCode << 20) | fp
+    val fp = elemName.obtainFingerprint(namePool)
+    val prefixCode = tree.prefixPool.obtainPrefixCode(elemName.getPrefix)
+    val nameCode = (prefixCode << 20) | fp
     nodeNr = tt.addNode(Type.ELEMENT, currentDepth, -1, -1, nameCode)
     isIDElement = ReceiverOption.contains(properties, ReceiverOption.IS_ID)
-    val typeCode: Int = `type`.getFingerprint
+    val typeCode = `type`.getFingerprint
     if (typeCode != StandardNames.XS_UNTYPED) {
       tt.setElementAnnotation(nodeNr, `type`)
-      if (ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT)) {
+      if (ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT))
         tt.setNilled(nodeNr)
-      }
-      if (!isIDElement && `type`.isIdType) {
+      if (!isIDElement && `type`.isIdType)
         isIDElement = true
-      }
     }
     if (currentDepth == 0) {
       prevAtDepth(0) = nodeNr
       prevAtDepth(1) = -1
       currentRoot = tt.getNode(nodeNr)
     } else {
-      val prev: Int = prevAtDepth(currentDepth)
-      if (prev > 0) {
+      val prev = prevAtDepth(currentDepth)
+      if (prev > 0)
         tt.next(prev) = nodeNr
-      }
       // *O* owner pointer in last sibling
       tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
       prevAtDepth(currentDepth) = nodeNr
       siblingsAtDepth(currentDepth) += 1
-
     }
-    {
-      currentDepth += 1
 
-    }
+    currentDepth += 1
+
     if (currentDepth == prevAtDepth.length) {
       prevAtDepth = ju.Arrays.copyOf(prevAtDepth, currentDepth * 2)
       siblingsAtDepth = ju.Arrays.copyOf(siblingsAtDepth, currentDepth * 2)
     }
     prevAtDepth(currentDepth) = -1
     siblingsAtDepth(currentDepth) = 0
-    val localSystemId: String = location.getSystemId
-    if (isUseEventLocation && localSystemId != null) {
+
+    val localSystemId = location.getSystemId
+    if (isUseEventLocation && localSystemId != null)
       tt.setSystemId(nodeNr, localSystemId)
-    } else if (currentDepth == 1) {
+    else if (currentDepth == 1)
       tt.setSystemId(nodeNr, systemId)
-    }
+
     if (uniformBaseURI && localSystemId != null && localSystemId != baseURI) {
       uniformBaseURI = false
       tt.setUniformBaseUri(null)
@@ -274,8 +252,6 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     nodeNr += 1
   }
 
-  // if the number of siblings exceeds a certain threshold, add a parent pointer, in the form
-  // of a pseudo-node
   // if the number of siblings exceeds a certain threshold, add a parent pointer, in the form
   // of a pseudo-node
 
@@ -335,21 +311,16 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     // Collapse a simple element with text content and no attributes or namespaces into a single node
     // of type TRIVIAL_ELEMENT
-    // Collapse a simple element with text content and no attributes or namespaces into a single node
-    // of type TRIVIAL_ELEMENT
   }
 
   //System.err.println(this + " end element " + currentDepth);
-  //System.err.println(this + " end element " + currentDepth);
 
-  def getLastCompletedElement: TinyNodeImpl = {
-    if (tree == null) {
-      return null
-    }
-    tree.getNode(if (currentDepth >= 0) prevAtDepth(currentDepth) else 0)
-  }
+  def getLastCompletedElement: TinyNodeImpl =
+    if (tree == null)
+      null
+    else
+      tree.getNode(if (currentDepth >= 0) prevAtDepth(currentDepth) else 0)
 
-  // Note: reading an incomplete tree needs care if it constructs a prior index, etc.
   // Note: reading an incomplete tree needs care if it constructs a prior index, etc.
 
   def characters(chars: CharSequence,
@@ -425,30 +396,30 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
                             remainder: CharSequence,
                             locationId: Location,
                             properties: Int): Unit = {
-    val tt: TinyTree = tree
+    val tt = tree
     assert(tt != null)
     textualElementEligibilityState = Eligibility.INELIGIBLE
-    if (tt.commentBuffer == null) {
+    if (tt.commentBuffer == null)
       tt.commentBuffer = new FastStringBuffer(FastStringBuffer.C256)
-    }
-    val s: Int = tt.commentBuffer.length
+    val s = tt.commentBuffer.length
     tt.commentBuffer.append(remainder.toString)
-    val nameCode: Int = namePool.allocateFingerprint("", piname)
+    val nameCode = namePool.allocateFingerprint("", piname)
     nodeNr = tt.addNode(Type.PROCESSING_INSTRUCTION,
       currentDepth,
       s,
       remainder.length,
       nameCode)
-    val prev: Int = prevAtDepth(currentDepth)
-    if (prev > 0) {
+
+    val prev = prevAtDepth(currentDepth)
+    if (prev > 0)
       tt.next(prev) = nodeNr
-    }
+
     // *O* owner pointer in last sibling
     tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
     prevAtDepth(currentDepth) = nodeNr
     siblingsAtDepth(currentDepth) += 1
 
-    val localLocation: String = locationId.getSystemId
+    val localLocation = locationId.getSystemId
     tt.setSystemId(nodeNr, localLocation)
     if (localLocation != null && localLocation != baseURI) {
       uniformBaseURI = false
@@ -464,19 +435,17 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   def comment(chars: CharSequence,
               locationId: Location,
               properties: Int): Unit = {
-    val tt: TinyTree = tree
+    val tt = tree
     assert(tt != null)
     textualElementEligibilityState = Eligibility.INELIGIBLE
-    if (tt.commentBuffer == null) {
+    if (tt.commentBuffer == null)
       tt.commentBuffer = new FastStringBuffer(FastStringBuffer.C256)
-    }
-    val s: Int = tt.commentBuffer.length
+    val s = tt.commentBuffer.length
     tt.commentBuffer.append(chars.toString)
     nodeNr = tt.addNode(Type.COMMENT, currentDepth, s, chars.length, -1)
-    val prev: Int = prevAtDepth(currentDepth)
-    if (prev > 0) {
+    val prev = prevAtDepth(currentDepth)
+    if (prev > 0)
       tt.next(prev) = nodeNr
-    }
     // *O* owner pointer in last sibling
     tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
     prevAtDepth(currentDepth) = nodeNr
@@ -489,12 +458,9 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
   }
 
-  def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {
-    if (tree.getUnparsedEntity(name) == null) {
-      // bug 2187
-      tree.setUnparsedEntity(name, uri, publicId)
-    }
-  }
+  def setUnparsedEntity(name: String, uri: String, publicId: String): Unit =
+    if (tree.getUnparsedEntity(name) == null)
+      tree.setUnparsedEntity(name, uri, publicId) // bug 2187
 
   /*@NotNull*/
   override def getBuilderMonitor: BuilderMonitor = new TinyBuilderMonitor(this)

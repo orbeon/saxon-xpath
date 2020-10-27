@@ -12,6 +12,4 @@ class BasicTransformerFactory extends TransformerFactoryImpl {
     this()
     this.configuration = (config)
   }
-
-
 }

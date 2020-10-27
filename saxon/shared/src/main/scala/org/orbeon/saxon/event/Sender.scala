@@ -35,7 +35,7 @@ object Sender {
   def send(source: Source, receiver: Receiver, options: ParseOptions): Unit = {
     var lSource = source
     var parserOptions = options
-    val pipe: PipelineConfiguration = receiver.getPipelineConfiguration
+    val pipe = receiver.getPipelineConfiguration
     parserOptions =
       if (options == null) new ParseOptions(pipe.getParseOptions)
       else new ParseOptions(options)
@@ -47,22 +47,22 @@ object Sender {
         lSource = augmentedSource.getContainedSource
       case _ =>
     }
-    val config: Configuration = pipe.getConfiguration
+    val config = pipe.getConfiguration
     parserOptions.applyDefaults(config)
     receiver.setSystemId(systemId)
-    var next: Receiver = receiver
-    val schemaValidation: Int = parserOptions.getSchemaValidationMode
-    val filters: List[FilterFactory] = parserOptions.getFilters
+    var next = receiver
+    val schemaValidation = parserOptions.getSchemaValidationMode
+    val filters = parserOptions.getFilters
     if (filters != null) {
-      var i: Int = filters.size - 1
+      var i = filters.size - 1
       while (i >= 0) {
-        val filter: Receiver = filters.get(i).makeFilter(next)
+        val filter = filters.get(i).makeFilter(next)
         filter.setSystemId(lSource.getSystemId)
         next = filter
         i -= 1
       }
     }
-    val strippingRule: SpaceStrippingRule = parserOptions.getSpaceStrippingRule
+    val strippingRule = parserOptions.getSpaceStrippingRule
     if (strippingRule != null && ! strippingRule.isInstanceOf[NoElementsSpaceStrippingRule])
       next = strippingRule.makeStripper(next)
     lSource match {
