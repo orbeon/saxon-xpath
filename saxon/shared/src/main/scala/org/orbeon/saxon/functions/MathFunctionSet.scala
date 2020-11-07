@@ -11,9 +11,7 @@ import org.orbeon.saxon.value.{DoubleValue, NumericValue}
 
 object MathFunctionSet {
 
-  private var THE_INSTANCE: MathFunctionSet = new MathFunctionSet()
-
-  def getInstance: MathFunctionSet = THE_INSTANCE
+  val getInstance: MathFunctionSet = new MathFunctionSet
 
   class PiFn extends SystemFunction {
 
@@ -54,45 +52,31 @@ object MathFunctionSet {
   }
 
   class AcosFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.acos(input)
-
+    def compute(input: Double): Double = Math.acos(input)
   }
 
   class AtanFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.atan(input)
-
+    def compute(input: Double): Double = Math.atan(input)
   }
 
   class SqrtFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.sqrt(input)
-
+    def compute(input: Double): Double = Math.sqrt(input)
   }
 
   class LogFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.log(input)
-
+    def compute(input: Double): Double = Math.log(input)
   }
 
   class Log10Fn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.log10(input)
-
+    def compute(input: Double): Double = Math.log10(input)
   }
 
   class ExpFn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.exp(input)
-
+    def compute(input: Double): Double = Math.exp(input)
   }
 
   class Exp10Fn extends TrigFn1 {
-
-     def compute(input: Double): Double = Math.pow(10, input)
-
+    def compute(input: Double): Double = Math.pow(10, input)
   }
 
   class PowFn extends SystemFunction {
@@ -139,13 +123,12 @@ object MathFunctionSet {
 
 class MathFunctionSet private () extends BuiltInFunctionSet {
 
-  init()
+  locally {
 
-  private def reg1(name: String, make: () => SystemFunction): Unit =
-    register(name, 1, make, BuiltInAtomicType.DOUBLE, OPT, CARD0)
-      .arg(0, BuiltInAtomicType.DOUBLE, OPT, EMPTY)
+    def reg1(name: String, make: () => SystemFunction): Unit =
+      register(name, 1, make, BuiltInAtomicType.DOUBLE, OPT, CARD0)
+        .arg(0, BuiltInAtomicType.DOUBLE, OPT, EMPTY)
 
-  private def init(): Unit = {
     register("pi", 0,  () => new PiFn, BuiltInAtomicType.DOUBLE, ONE, 0)
     reg1    ("sin",    () => new SinFn)
     reg1    ("cos",    () => new CosFn)
