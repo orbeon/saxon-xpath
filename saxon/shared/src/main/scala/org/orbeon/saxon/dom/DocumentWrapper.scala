@@ -24,7 +24,6 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
     throw new IllegalArgumentException("Node class " + doc.getClass.getName + " is not recognized in this Saxon configuration")
 
   this.setRootNode(wrap(doc))
-
   this.systemId = baseURI
 
   def wrap(node: Node): DOMNodeWrapper = DOMNodeWrapper.makeWrapper(node, this)
@@ -39,8 +38,7 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
 
   override def selectID(id: String, getParent: Boolean): NodeInfo =
     docNode.synchronized {
-      val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-      node match {
+      getRootNode.asInstanceOf[DOMNodeWrapper].node match {
         case document: Document =>
           val el = document.getElementById(id)
           if (el != null)
@@ -50,7 +48,7 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
       if (idIndex != null) {
         idIndex.get(id)
       } else {
-        idIndex = new HashMap()
+        idIndex = new HashMap
         val iter = getRootNode.iterateAxis(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
         var e: NodeInfo = null
         while ({
@@ -66,15 +64,14 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
     }
 
   override def getUnparsedEntityNames: Iterator[String] = docNode.synchronized {
-    val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-    node match {
+    getRootNode.asInstanceOf[DOMNodeWrapper].node match {
       case document: Document =>
         val docType = document.getDoctype
         if (docType == null)
-          return Collections.emptyList[String]().iterator
+          return Collections.emptyIterator[String]
         val map = docType.getEntities
         if (map == null)
-          return Collections.emptyList[String]().iterator
+          return Collections.emptyIterator[String]
         val names = new util.ArrayList[String](map.getLength)
         for (i <- 0 until map.getLength) {
           val e = map.item(i).asInstanceOf[Entity]
@@ -88,8 +85,7 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
   }
 
   override def getUnparsedEntity(name: String): Array[String] = docNode.synchronized {
-    val node: Node = getRootNode.asInstanceOf[DOMNodeWrapper].node
-    node match {
+    getRootNode.asInstanceOf[DOMNodeWrapper].node match {
       case document: Document =>
         val docType = document.getDoctype
         if (docType == null)

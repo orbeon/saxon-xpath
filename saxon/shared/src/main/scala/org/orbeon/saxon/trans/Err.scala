@@ -115,15 +115,11 @@ object Err {
       node.getNodeKind match {
         case Type.DOCUMENT => "doc(" + abbreviateURI(node.getSystemId) + ')'
         case Type.ELEMENT => "<" + node.getDisplayName + ">"
-        case Type.ATTRIBUTE =>
-          "@" + node.getDisplayName + "=\"" + node.getStringValueCS +
-            '"'
+        case Type.ATTRIBUTE => "@" + node.getDisplayName + "=\"" + node.getStringValueCS + '"'
         case Type.TEXT => "text{" + truncate30(node.getStringValueCS) + "}"
         case Type.COMMENT => "<!--...-->"
         case Type.PROCESSING_INSTRUCTION => "<?" + node.getLocalPart + "...?>"
-        case Type.NAMESPACE =>
-          "xmlns:" + node.getLocalPart + "=" + abbreviateURI(
-            node.getStringValue)
+        case Type.NAMESPACE => "xmlns:" + node.getLocalPart + "=" + abbreviateURI(node.getStringValue)
         case _ => ""
 
       }

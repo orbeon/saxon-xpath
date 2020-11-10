@@ -1,14 +1,14 @@
 package org.orbeon.saxon.expr
 
-import java.util.{ArrayList, List, Map}
+import java.{util => ju}
 
 import org.orbeon.saxon.expr.instruct.{Actor, GlobalVariable, NamedTemplate}
 import org.orbeon.saxon.om.{Function, StandardNames}
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.Visibility.Visibility
-import org.orbeon.saxon.trans.{Mode, Visibility, VisibilityProvenance}
 import org.orbeon.saxon.trans.VisibilityProvenance.VisibilityProvenance
+import org.orbeon.saxon.trans.{Mode, Visibility, VisibilityProvenance}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import scala.beans.BeanProperty
@@ -22,26 +22,28 @@ object Component {
                     provenance: VisibilityProvenance,
                     containingPackage: StylesheetPackage,
                     declaringPackage: StylesheetPackage): Component = {
-    var c: Component = null
-    c = if (actor.isInstanceOf[Mode]) new M() else new Component()
-    c.actor = actor
-    c.visibility = visibility
-    c.provenance = provenance
+    val c =
+      if (actor.isInstanceOf[Mode])
+        new M
+      else
+        new Component
+
+    c.actor             = actor
+    c.visibility        = visibility
+    c.provenance        = provenance
     c.containingPackage = containingPackage
-    c.declaringPackage = declaringPackage
+    c.declaringPackage  = declaringPackage
     c
   }
 
   class M extends Component {
 
-    override def getActor(): Mode = super.getActor.asInstanceOf[Mode]
+    override def getActor: Mode =
+      super.getActor.asInstanceOf[Mode]
 
-    def setActor(m: Mode): Unit = {
+    def setActor(m: Mode): Unit =
       this.actor = m
-    }
-
   }
-
 }
 
 class Component private () {
@@ -51,7 +53,7 @@ class Component private () {
   @BeanProperty
   var visibility: Visibility = _
 
-  private var bindings: List[ComponentBinding] = new ArrayList()
+  private var bindings: ju.List[ComponentBinding] = new ju.ArrayList
 
   @BeanProperty
   var containingPackage: StylesheetPackage = _
@@ -64,11 +66,10 @@ class Component private () {
   @BeanProperty
   var baseComponent: Component = _
 
-  def getComponentBindings: List[ComponentBinding] = bindings
+  def getComponentBindings: ju.List[ComponentBinding] = bindings
 
-  def setComponentBindings(bindings: List[ComponentBinding]): Unit = {
+  def setComponentBindings(bindings: ju.List[ComponentBinding]): Unit =
     this.bindings = bindings
-  }
 
   def setVisibility(visibility: Visibility,
                     provenance: VisibilityProvenance): Unit = {
@@ -79,24 +80,24 @@ class Component private () {
   def getVisibilityProvenance: VisibilityProvenance = provenance
 
   def isHiddenAbstractComponent: Boolean =
-    visibility == Visibility.HIDDEN && baseComponent != null &&
+    visibility == Visibility.HIDDEN &&
+      baseComponent != null         &&
       baseComponent.getVisibility == Visibility.ABSTRACT
 
   def getActor: Actor = actor
 
   def export(out: ExpressionPresenter,
-             componentIdMap: Map[Component, Integer],
-             packageIdMap: Map[StylesheetPackage, Integer]): Unit = {
+             componentIdMap: ju.Map[Component, Integer],
+             packageIdMap: ju.Map[StylesheetPackage, Integer]): Unit = {
     out.startElement("co")
-    val id: Int = obtainComponentId(this, componentIdMap)
+    val id = obtainComponentId(this, componentIdMap)
     out.emitAttribute("id", "" + id)
-    if (provenance != VisibilityProvenance.DEFAULTED) {
+    if (provenance != VisibilityProvenance.DEFAULTED)
       out.emitAttribute("vis", getVisibility.toString)
-    }
-    val refs: String = listComponentReferences(componentIdMap)
+    val refs = listComponentReferences(componentIdMap)
     out.emitAttribute("binds", refs)
     if (baseComponent != null && getActor == baseComponent.getActor) {
-      val baseId: Int = obtainComponentId(baseComponent, componentIdMap)
+      val baseId = obtainComponentId(baseComponent, componentIdMap)
       out.emitAttribute("base", "" + baseId)
       out.emitAttribute("dpack", packageIdMap.get(declaringPackage).toString)
     } else {
@@ -106,14 +107,13 @@ class Component private () {
   }
 
   def listComponentReferences(
-                               componentIdMap: Map[Component, Integer]): String = {
+                               componentIdMap: ju.Map[Component, Integer]): String = {
     val fsb = new FastStringBuffer(128)
     for (ref <- getComponentBindings.asScala) {
-      val target: Component = ref.getTarget
-      val targetId: Int = obtainComponentId(target, componentIdMap)
-      if (fsb.length != 0) {
+      val target = ref.getTarget
+      val targetId = obtainComponentId(target, componentIdMap)
+      if (fsb.length != 0)
         fsb.append(" ")
-      }
       fsb.append("" + targetId)
     }
     fsb.toString
@@ -121,8 +121,8 @@ class Component private () {
 
   private def obtainComponentId(
                                  component: Component,
-                                 componentIdMap: Map[Component, Integer]): Int = {
-    var id: java.lang.Integer = componentIdMap.get(component)
+                                 componentIdMap: ju.Map[Component, Integer]): Int = {
+    var id = componentIdMap.get(component)
     if (id == null) {
       id = componentIdMap.size
       componentIdMap.put(component, id)
@@ -131,18 +131,18 @@ class Component private () {
   }
 
   def getComponentKind: Int =
-    if (actor.isInstanceOf[NamedTemplate]) {
-      StandardNames.XSL_TEMPLATE
-    } else if (actor.isInstanceOf[GlobalVariable]) {
-      StandardNames.XSL_VARIABLE
-    } else if (actor.isInstanceOf[Function]) {
-      StandardNames.XSL_FUNCTION
-//    } else if (actor.isInstanceOf[AttributeSet]) {
-//      StandardNames.XSL_ATTRIBUTE_SET
-    } else if (actor.isInstanceOf[Mode]) {
-      StandardNames.XSL_MODE
-    } else {
-      -1
+    actor match {
+      case _: NamedTemplate =>
+        StandardNames.XSL_TEMPLATE
+      case _: GlobalVariable =>
+        StandardNames.XSL_VARIABLE
+      case _: Function =>
+        StandardNames.XSL_FUNCTION
+      //    } else if (actor.isInstanceOf[AttributeSet]) {
+      //      StandardNames.XSL_ATTRIBUTE_SET
+      case _: Mode =>
+        StandardNames.XSL_MODE
+      case _ =>
+        -1
     }
-
 }

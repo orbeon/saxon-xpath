@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import java.util.{Collections, Iterator}
+import java.{util => ju}
 
 import javax.xml.transform.URIResolver
 import org.orbeon.saxon.expr.instruct.ParameterSet
@@ -14,12 +14,10 @@ import org.orbeon.saxon.expr.sort.GroupIterator
 import org.orbeon.saxon.lib.ErrorReporter
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.regex.RegexIterator
-import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
 import org.orbeon.saxon.trans.rules.Rule
+import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.{CalendarValue, DateTimeValue}
-
-//import scala.collection.compat._
 
 
 /**
@@ -29,11 +27,7 @@ import org.orbeon.saxon.value.{CalendarValue, DateTimeValue}
 class EarlyEvaluationContext(private var config: Configuration)
     extends XPathContext {
 
-  /*@Nullable*/
-  def evaluateLocalVariable(slotnumber: Int): Sequence = {
-    notAllowed()
-    null
-  }
+  def evaluateLocalVariable(slotnumber: Int): Sequence = notAllowed()
 
   def getCaller: XPathContext = null
 
@@ -58,37 +52,16 @@ class EarlyEvaluationContext(private var config: Configuration)
     */
   def getErrorReporter: ErrorReporter = config.makeErrorReporter
 
-  /**
-    * Get the current component
-    */
-  def getCurrentComponent: Component = {
-    notAllowed()
-    null
-  }
-
-  def getConfiguration: Configuration = config
-  def getContextItem: Item = null
-  def getController: Controller = null
-
-  def getCurrentGroupIterator: GroupIterator = {
-    notAllowed()
-    null
-  }
-
-  def getCurrentMergeGroupIterator: GroupIterator = {
-    notAllowed()
-    null
-  }
-
-  def getCurrentIterator: FocusTrackingIterator = null
-
-  def getCurrentMode: Component.M = {
-    notAllowed()
-    null
-  }
-
-  def getCurrentRegexIterator: RegexIterator = null
-  def getCurrentTemplateRule: Rule = null
+  def getCurrentComponent          : Component             = notAllowed()
+  def getConfiguration             : Configuration         = config
+  def getContextItem               : Item                  = null
+  def getController                : Controller            = null
+  def getCurrentGroupIterator      : GroupIterator         = notAllowed()
+  def getCurrentMergeGroupIterator : GroupIterator         = notAllowed()
+  def getCurrentIterator           : FocusTrackingIterator = null
+  def getCurrentMode               : Component.M           = notAllowed()
+  def getCurrentRegexIterator      : RegexIterator         = null
+  def getCurrentTemplateRule       : Rule                  = null
 
   def getLast: Int = {
     val err = new XPathException("The context item is absent")
@@ -96,22 +69,10 @@ class EarlyEvaluationContext(private var config: Configuration)
     throw err
   }
 
-  def getLocalParameters: ParameterSet = {
-    notAllowed()
-    null
-  }
-
-  def getNamePool: NamePool = config.getNamePool
-
-  def getStackFrame: StackFrame = {
-    notAllowed()
-    null
-  }
-
-  def getTunnelParameters: ParameterSet = {
-    notAllowed()
-    null
-  }
+  def getLocalParameters  : ParameterSet = notAllowed()
+  def getNamePool         : NamePool     = config.getNamePool
+  def getStackFrame       : StackFrame   = notAllowed()
+  def getTunnelParameters : ParameterSet = notAllowed()
 
   def isAtLast: Boolean = {
     val err = new XPathException("The context item is absent")
@@ -119,10 +80,7 @@ class EarlyEvaluationContext(private var config: Configuration)
     throw err
   }
 
-  def newCleanContext(): XPathContextMajor = {
-    notAllowed()
-    null
-  }
+  def newCleanContext(): XPathContextMajor = notAllowed()
 
   def newContext(): XPathContextMajor = {
     val controller: Controller = new Controller(config)
@@ -132,17 +90,9 @@ class EarlyEvaluationContext(private var config: Configuration)
   def newMinorContext(): XPathContextMinor = newContext().newMinorContext()
 
   def setCaller(caller: XPathContext): Unit = ()
-
-  def setCurrentIterator(iter: FocusIterator): Unit =
-    notAllowed()
-
-  override def trackFocus(iter: SequenceIterator): FocusIterator = {
-    notAllowed()
-    null
-  }
-
-  def setLocalVariable(slotNumber: Int, value: Sequence): Unit =
-    notAllowed()
+  def setCurrentIterator(iter: FocusIterator): Unit =  notAllowed()
+  def trackFocus(iter: SequenceIterator): FocusIterator =  notAllowed()
+  def setLocalVariable(slotNumber: Int, value: Sequence): Unit =  notAllowed()
 
   def useLocalParameter(parameterId: StructuredQName,
                         slotNumber: Int,
@@ -151,9 +101,11 @@ class EarlyEvaluationContext(private var config: Configuration)
   def getCurrentDateTime: DateTimeValue =
     throw new NoDynamicContextException("current-dateTime")
 
-  def getImplicitTimezone: Int = CalendarValue.MISSING_TIMEZONE
+  def getImplicitTimezone: Int =
+    CalendarValue.MISSING_TIMEZONE
 
-  def iterateStackFrames: Iterator[AnyRef] = Collections.EMPTY_LIST.iterator.asInstanceOf[Iterator[AnyRef]]
+  def iterateStackFrames: ju.Iterator[AnyRef] =
+    ju.Collections.EMPTY_LIST.iterator.asInstanceOf[ju.Iterator[AnyRef]]
 
   def getCurrentException: XPathException = null
 
@@ -161,28 +113,14 @@ class EarlyEvaluationContext(private var config: Configuration)
     getCaller.waitForChildThreads()
 
   def setTemporaryOutputState(temporary: Int): Unit = ()
-
-  /**
-    * Ask whether the XSLT output state is "temporary" or "final"
-    *
-    * @return non-zero in temporary output state; zero in final output state
-    */
   def getTemporaryOutputState: Int = 0
-
   def setCurrentOutputUri(uri: String): Unit = ()
   def getCurrentOutputUri: String = null
+  def getThreadManager: XPathContextMajor.ThreadManager = null
+  def getTargetComponent(bindingSlot: Int): Component = null
 
-  private def notAllowed(): Unit =
+  private def notAllowed(): Nothing =
     throw new UnsupportedOperationException(
       new NoDynamicContextException("Internal error: early evaluation of subexpression with no context")
     )
-
-  /**
-    * Get the thread manager used to process asynchronous xsl:result-document threads.
-    *
-    * @return the current thread manager; or null if multithreading is not supported
-    */
-  def getThreadManager: XPathContextMajor.ThreadManager = null
-
-  def getTargetComponent(bindingSlot: Int): Component = null
 }

@@ -29,7 +29,6 @@ trait XPathContext {
   def newMinorContext(): XPathContextMinor
   def getLocalParameters: ParameterSet
   def getTunnelParameters: ParameterSet
-  /*@Nullable*/
   def getController: Controller
   def getConfiguration: Configuration
   def getNamePool: NamePool
@@ -49,12 +48,6 @@ trait XPathContext {
   def evaluateLocalVariable(slotnumber: Int): Sequence
   def setLocalVariable(slotNumber: Int, value: Sequence): Unit
   def setTemporaryOutputState(temporary: Int): Unit
-
-  /**
-    * Ask whether the XSLT output state is "temporary" or "final"
-    *
-    * @return non-zero if in temporary output state (integer identifies the state); zero if in final output state
-    */
   def getTemporaryOutputState: Int
   def setCurrentOutputUri(uri: String): Unit
   def getCurrentOutputUri: String

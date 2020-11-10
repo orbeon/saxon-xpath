@@ -102,7 +102,7 @@ class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
     * @since 9.1
     */
   def getUnparsedEntityNames: Iterator[String] =
-    Collections.emptyList[String].iterator
+    Collections.emptyIterator[String]
 
   /**
     * Get the unparsed entity with a given name
