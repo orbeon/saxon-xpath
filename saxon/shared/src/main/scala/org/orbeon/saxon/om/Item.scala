@@ -29,12 +29,14 @@ object Item {
 
 trait Item extends GroundedValue {
 
+  // Abstract methods
   def getGenre: Genre
   def head: Item = this
   def getStringValue: String
   def getStringValueCS: CharSequence
   def atomize(): AtomicSequence
 
+  // Methods with defaults
   override def toShortString: String = toString
 
   /**
@@ -86,5 +88,4 @@ trait Item extends GroundedValue {
   override def reduce(): GroundedValue = this
 
   def isStreamed: Boolean = false
-
 }

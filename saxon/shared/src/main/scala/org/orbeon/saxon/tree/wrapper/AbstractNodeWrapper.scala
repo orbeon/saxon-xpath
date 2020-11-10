@@ -12,7 +12,15 @@ import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator}
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.{StringValue, UntypedAtomicValue}
 
-abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
+
+/**
+ * A node in the XML parse tree representing an XML element, character content, or attribute.
+ * <p>This implementation of the NodeInfo interface contains common code used by many "wrapper" implementations
+ * for external data models.</p>
+ *
+ * @author Michael H. Kay
+ */
+trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Make this a `trait`
 
   var treeInfo: TreeInfo = _
 
@@ -68,10 +76,9 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
   }
 
   override def getLineNumber: Int = -1
+  override def getColumnNumber: Int = -1
 
-  override def getColumnNumber(): Int = -1
-
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   def getStringValue: String = getStringValueCS.toString
 
@@ -90,7 +97,7 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     iterateAxis(axisNumber, AnyNodeTest.getInstance)
 
   def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
-    val nodeKind: Int = getNodeKind
+    val nodeKind = getNodeKind
     axisNumber match {
       case AxisInfo.ANCESTOR =>
         if (nodeKind == Type.DOCUMENT)
@@ -192,8 +199,8 @@ abstract class AbstractNodeWrapper extends NodeInfo with VirtualNode {
     case _ => false
   }
 
-  def getFingerprint: Int =
+  def getFingerprint =
     throw new UnsupportedOperationException()
 
-  def hasFingerprint: Boolean = false
+  def hasFingerprint = false
 }
