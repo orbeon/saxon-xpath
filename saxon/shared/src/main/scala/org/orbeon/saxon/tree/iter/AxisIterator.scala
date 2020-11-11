@@ -35,6 +35,7 @@ trait AxisIterator extends UnfailingIterator {
     }
   }
 
+  // ORBEON: Only used by `SnapshotFn` from XSLT.
   def forEachNode(consumer: Consumer[_ >: NodeInfo]): Unit = {
     var item: NodeInfo = null
     while ({

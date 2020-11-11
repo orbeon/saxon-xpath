@@ -20,17 +20,13 @@ import org.orbeon.saxon.tree.tiny.NodeVectorTree
   * @author Michael H. Kay
   */
 object AnyNodeTest {
-
-  private var THE_INSTANCE: AnyNodeTest = new AnyNodeTest()
-
-  def getInstance: AnyNodeTest = THE_INSTANCE
-
+  val getInstance: AnyNodeTest = new AnyNodeTest
 }
 
 class AnyNodeTest private () extends NodeTest with QNameTest {
 
   /**
-    * Get the corresponding {@link org.orbeon.saxon.model.UType}. A UType is a union of primitive item
+    * Get the corresponding `org.orbeon.saxon.model.UType`. A UType is a union of primitive item
     * types.
     *
     * @return the smallest UType that subsumes this item type
@@ -52,15 +48,12 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
     *                   The value should be null for a node with no name.
     * @param annotation The actual content type of the node
     */
-  override def matches(nodeKind: Int,
-                       name: NodeName,
-                       annotation: SchemaType): Boolean =
+  override def matches(nodeKind: Int, name: NodeName, annotation: SchemaType): Boolean =
     nodeKind != Type.PARENT_POINTER
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
-    val nodeKindArray: Array[Byte] = tree.getNodeKindArray
-    (nodeNr) =>
-      nodeKindArray(nodeNr) != Type.PARENT_POINTER
+    val nodeKindArray = tree.getNodeKindArray
+    nodeNr => nodeKindArray(nodeNr) != Type.PARENT_POINTER
   }
 
   override def test(node: NodeInfo): Boolean = true
@@ -80,7 +73,7 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
     * a sequence of alternatives separated by vertical bars, where each alternative is one of '*',
     * '*:localname', 'Q{uri}*', or 'Q{uri}local'.
     */
-  override def exportQNameTest: String = "*"
+  def exportQNameTest: String = "*"
 
   /**
     * Generate Javascript code to test if a name matches the test.
@@ -92,5 +85,4 @@ class AnyNodeTest private () extends NodeTest with QNameTest {
     * @param targetVersion The version of Saxon-JS being targeted
     */
   def generateJavaScriptNameTest(targetVersion: Int): String = "true"
-
 }

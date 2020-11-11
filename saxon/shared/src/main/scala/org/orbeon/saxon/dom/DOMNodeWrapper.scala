@@ -377,7 +377,7 @@ class DOMNodeWrapper(var node: Node,
     index
   }
 
-  override def iterateAttributes(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
+  def iterateAttributes(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
     var iter: AxisIterator = new AttributeEnumeration(this)
     if (nodeTest != AnyNodeTest.getInstance)
       iter = new Navigator.AxisFilter(iter, nodeTest)
@@ -387,7 +387,7 @@ class DOMNodeWrapper(var node: Node,
   private def isElementOnly(nodeTest: Predicate[_ >: NodeInfo]): Boolean =
     nodeTest.isInstanceOf[NodeTest] && nodeTest.asInstanceOf[NodeTest].getUType == UType.ELEMENT
 
-  override def iterateChildren(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
+  def iterateChildren(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
     val elementOnly = isElementOnly(nodeTest)
     var iter: AxisIterator = new Navigator.EmptyTextFilter(new ChildEnumeration(this, true, true, elementOnly))
     if (nodeTest != AnyNodeTest.getInstance)
@@ -395,7 +395,7 @@ class DOMNodeWrapper(var node: Node,
     iter
   }
 
-  override def iterateSiblings(nodeTest: Predicate[_ >: NodeInfo], forwards: Boolean): AxisIterator = {
+  def iterateSiblings(nodeTest: Predicate[_ >: NodeInfo], forwards: Boolean): AxisIterator = {
     val elementOnly = isElementOnly(nodeTest)
     var iter: AxisIterator = new Navigator.EmptyTextFilter(new ChildEnumeration(this, false, forwards, elementOnly))
     if (nodeTest != AnyNodeTest.getInstance)
@@ -487,23 +487,23 @@ class DOMNodeWrapper(var node: Node,
         inScopeNamespaces
       } else {
         val parent: NodeInfo = getParent
-        var nsMap: NamespaceMap =
+        var nsMap =
           if (parent != null && parent.getNodeKind == Type.ELEMENT)
             parent.getAllNamespaces
-          else NamespaceMap.emptyMap
-        val elem: Element = node.asInstanceOf[Element]
-        val atts: NamedNodeMap = elem.getAttributes
+          else
+            NamespaceMap.emptyMap
+        val elem = node.asInstanceOf[Element]
+        val atts = elem.getAttributes
         if (atts != null) {
-          val attsLen: Int = atts.getLength
+          val attsLen = atts.getLength
           for (i <- 0 until attsLen) {
-            val att: Attr = atts.item(i).asInstanceOf[Attr]
-            val attName: String = att.getName
+            val att = atts.item(i).asInstanceOf[Attr]
+            val attName = att.getName
             if (attName.startsWith("xmlns")) {
-              if (attName.length == 5) {
+              if (attName.length == 5)
                 nsMap = nsMap.bind("", att.getValue)
-              } else if (attName.charAt(5) == ':') {
+              else if (attName.charAt(5) == ':')
                 nsMap = nsMap.bind(attName.substring(6), att.getValue)
-              }
             }
           }
         }
@@ -597,45 +597,50 @@ class DOMNodeWrapper(var node: Node,
     null
   }
 
-  def getSuccessorElement(anchor: DOMNodeWrapper,
-                          uri: String,
-                          local: String): DOMNodeWrapper =
+  def getSuccessorElement(
+    anchor : DOMNodeWrapper,
+    uri    : String,
+    local  : String
+  ): DOMNodeWrapper =
     docWrapper.docNode.synchronized {
-      val stop: Node = if (anchor == null) null else anchor.node
-      var next: Node = node
-      do next = getSuccessorNode(next, stop) while (next != null &&
-        !(next.getNodeType == Node.ELEMENT_NODE && (local == null || local == getLocalName(
-          next)) &&
-          (uri == null || uri == getElementURI(next.asInstanceOf[Element]))))
-      if (next == null) {
+
+      val stop = if (anchor == null) null else anchor.node
+      var next = node
+
+      do next = getSuccessorNode(next, stop)
+      while (
+        next != null &&
+        ! (
+          next.getNodeType == Node.ELEMENT_NODE          &&
+          (local == null || local == getLocalName(next)) &&
+          (uri   == null || uri   == getElementURI(next.asInstanceOf[Element]))
+        )
+      )
+
+      if (next == null)
         null
-      } else {
+      else
         makeWrapper(next, docWrapper)
-      }
     }
 
   private class AttributeEnumeration extends AxisIterator with LookaheadIterator {
 
     private val attList: ArrayList[Node] = new ArrayList(10)
-
     private var ix: Int = 0
-
     private var start: DOMNodeWrapper = _
-
     private var current: DOMNodeWrapper = _
 
     def this(start: DOMNodeWrapper) = {
       this()
       start.docWrapper.docNode.synchronized {
         this.start = start
-        val atts: NamedNodeMap = start.node.getAttributes
+        val atts = start.node.getAttributes
         if (atts != null) {
-          val attsLen: Int = atts.getLength
+          val attsLen = atts.getLength
           for (i <- 0 until attsLen) {
-            val name: String = atts.item(i).getNodeName
-            if (!(name.startsWith("xmlns") && (name.length == 5 || name.charAt(5) == ':'))) {
+            val name = atts.item(i).getNodeName
+            if (!(name.startsWith("xmlns") && (name.length == 5 || name.charAt(5) == ':')))
               attList.add(atts.item(i))
-            }
           }
         }
         ix = 0
@@ -646,7 +651,8 @@ class DOMNodeWrapper(var node: Node,
     def hasNext: Boolean = ix < attList.size
 
     def next(): NodeInfo = {
-      if (ix >= attList.size) return null
+      if (ix >= attList.size)  // ORBEON: sames as `! hasNext`
+        return null
       current = makeWrapper(attList.get(ix), docWrapper, start, ix)
       ix += 1
       current
@@ -656,8 +662,6 @@ class DOMNodeWrapper(var node: Node,
       enumSet(LAST_POSITION_FINDER)
       enumSet
     }
-
-
   }
 
   private class ChildEnumeration

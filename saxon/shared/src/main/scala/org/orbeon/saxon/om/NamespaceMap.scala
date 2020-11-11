@@ -51,7 +51,8 @@ object NamespaceMap {
    */
   def of(prefix: String, uri: String): NamespaceMap = {
     val map = new NamespaceMap
-    if (map.isPointlessMapping(prefix, uri)) return EMPTY_MAP
+    if (map.isPointlessMapping(prefix, uri))
+      return EMPTY_MAP
     map.prefixes = Array[String](prefix)
     map.uris = Array[String](uri)
     map
@@ -76,10 +77,8 @@ object NamespaceMap {
 
 class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
 
-  var prefixes: Array[String] = null // always sorted, for binary search
-  var uris: Array[String] = null
-  prefixes = NamespaceMap.emptyArray
-  uris = NamespaceMap.emptyArray
+  var prefixes: Array[String] = NamespaceMap.emptyArray // always sorted, for binary search
+  var uris: Array[String] = NamespaceMap.emptyArray
 
   def newInstance = new NamespaceMap
 
@@ -105,11 +104,13 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
       uris(i) = bindingArray(i).getURI
       if (prefixes(i) == "xml") {
         bindsXmlNamespace = true
-        if (!(uris(i) == NamespaceConstant.XML)) throw new IllegalArgumentException("Binds xml prefix to the wrong namespace")
-      }
-      else if (uris(i) == NamespaceConstant.XML) throw new IllegalArgumentException("Binds xml namespace to the wrong prefix")
+        if (!(uris(i) == NamespaceConstant.XML))
+          throw new IllegalArgumentException("Binds xml prefix to the wrong namespace")
+      } else if (uris(i) == NamespaceConstant.XML)
+        throw new IllegalArgumentException("Binds xml namespace to the wrong prefix")
     }
-    if (bindsXmlNamespace) remove("xml")
+    if (bindsXmlNamespace)
+      remove("xml")
   }
 
   def allowsNamespaceUndeclarations = false
@@ -130,17 +131,20 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
 
   /**
    * Get the URI associated with a given prefix. If the supplied prefix is "xml", the
-   * XML namespace {@link NamespaceConstant#XML} is returned, even if the map is empty.
+   * XML namespace `NamespaceConstant` is returned, even if the map is empty.
    *
    * @param prefix the required prefix (may be an empty string to get the default namespace)
    * @return the associated URI, or null if no mapping is present. Note that we return null
    *         when no mapping is present, even for the case where the prefix is the empty string.
    */
   override def getURI(prefix: String): String = {
-    if (prefix == "xml") return NamespaceConstant.XML
+    if (prefix == "xml")
+      return NamespaceConstant.XML
     val position = ju.Arrays.binarySearch(prefixes.asInstanceOf[Array[AnyRef]], prefix.asInstanceOf[AnyRef])
-    if (position >= 0) uris(position)
-    else null
+    if (position >= 0)
+      uris(position)
+    else
+      null
   }
 
   /**
@@ -148,10 +152,11 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    *
    * @return the namespace bound to the prefix "" if there is one, otherwise "".
    */
-  def getDefaultNamespace: String = { // If the prefix "" is present, it will be the first in alphabetical order
-    if (prefixes.length > 0 && prefixes(0).isEmpty) uris(0)
-    else ""
-  }
+  def getDefaultNamespace: String = // If the prefix "" is present, it will be the first in alphabetical order
+    if (prefixes.length > 0 && prefixes(0).isEmpty)
+      uris(0)
+    else
+      ""
 
   /**
    * Add a new entry to the map, or replace an existing entry. An attempt
@@ -167,13 +172,13 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    *                                  mapping for the "xml" prefix or URI.
    */
   def put(prefix: String, uri: String): NamespaceMap = {
-    if (isPointlessMapping(prefix, uri)) return this
+    if (isPointlessMapping(prefix, uri))
+      return this
     val position = ju.Arrays.binarySearch(prefixes.asInstanceOf[Array[AnyRef]], prefix.asInstanceOf[AnyRef])
     if (position >= 0) { // An entry for this prefix already exists
       if (uris(position) == uri) { // No change
         this
-      }
-      else if (uri.isEmpty) { // Delete the entry for the prefix
+      } else if (uri.isEmpty) { // Delete the entry for the prefix
         val n2 = newInstance
         n2.prefixes = new Array[String](prefixes.length - 1)
         System.arraycopy(prefixes, 0, n2.prefixes, 0, position)
@@ -182,16 +187,14 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
         System.arraycopy(uris, 0, n2.uris, 0, position)
         System.arraycopy(uris, position + 1, n2.uris, position + 1, uris.length - position)
         n2
-      }
-      else { // Replace the entry for the prefix
+      } else { // Replace the entry for the prefix
         val n2 = newInstance
         n2.prefixes = ju.Arrays.copyOf(prefixes, prefixes.length)
         n2.uris = ju.Arrays.copyOf(uris, uris.length)
         n2.uris(position) = uri
         n2
       }
-    }
-    else { // No existing entry for the prefix exists
+    } else { // No existing entry for the prefix exists
       val insertionPoint = -position - 1
       val p2 = new Array[String](prefixes.length + 1)
       val u2 = new Array[String](uris.length + 1)
@@ -210,10 +213,11 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
 
   private def isPointlessMapping(prefix: String, uri: String): Boolean = {
     if (prefix == "xml") {
-      if (!(uri == NamespaceConstant.XML)) throw new IllegalArgumentException("Invalid URI for xml prefix")
+      if (!(uri == NamespaceConstant.XML))
+        throw new IllegalArgumentException("Invalid URI for xml prefix")
       return true
-    }
-    else if (uri == NamespaceConstant.XML) throw new IllegalArgumentException("Invalid prefix for XML namespace")
+    } else if (uri == NamespaceConstant.XML)
+      throw new IllegalArgumentException("Invalid prefix for XML namespace")
     //        if (uri.isEmpty && !allowsNamespaceUndeclarations()) {
     //            throw new IllegalArgumentException("URI must not be zero-length");
     //        }
@@ -227,8 +231,11 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @param uri    the namespace URI to which the prefix is bound; or "" to indicate that an existing
    *               binding for the prefix is to be removed
    */
-  def bind(prefix: String, uri: String): NamespaceMap = if (uri.isEmpty) remove(prefix)
-  else put(prefix, uri)
+  def bind(prefix: String, uri: String): NamespaceMap =
+    if (uri.isEmpty)
+      remove(prefix)
+    else
+      put(prefix, uri)
 
   /**
    * Remove an entry from the map
@@ -262,69 +269,71 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @param delta prefix/uri pairs to be merged into this map
    * @return a new map, the result of the merge
    */
-  def putAll(delta: NamespaceMap): NamespaceMap = if (this eq delta) this
-  else if (isEmpty) delta
-  else if (delta.isEmpty) this
-  else { // Merge of two sorted arrays to produce a sorted array
-    val p1 = prefixes
-    val u1 = uris
-    val p2 = delta.prefixes
-    val u2 = delta.uris
-    val p3 = new ju.ArrayList[String](p1.length + p2.length)
-    val u3 = new ju.ArrayList[String](p1.length + p2.length)
-    var i1 = 0
-    var i2 = 0
-    breakable {
-      while (true) {
-        val c = p1(i1).compareTo(p2(i2))
-        if (c < 0) {
-          p3.add(p1(i1))
-          u3.add(u1(i1))
-          i1 += 1
-          if (i1 >= p1.length) break()
-        }
-        else if (c > 0) {
-          p3.add(p2(i2))
-          u3.add(u2(i2))
-          i2 += 1
-          if (i2 >= p2.length) break()
-        }
-        else {
-          p3.add(p2(i2))
-          u3.add(u2(i2))
-          i1 += 1
-          i2 += 1
-          if (i1 >= p1.length || i2 >= p2.length) break()
+  def putAll(delta: NamespaceMap): NamespaceMap =
+    if (this eq delta)
+      this
+    else if (isEmpty)
+      delta
+    else if (delta.isEmpty)
+      this
+    else { // Merge of two sorted arrays to produce a sorted array
+      val p1 = prefixes
+      val u1 = uris
+      val p2 = delta.prefixes
+      val u2 = delta.uris
+      val p3 = new ju.ArrayList[String](p1.length + p2.length)
+      val u3 = new ju.ArrayList[String](p1.length + p2.length)
+      var i1 = 0
+      var i2 = 0
+      breakable {
+        while (true) {
+          val c = p1(i1).compareTo(p2(i2))
+          if (c < 0) {
+            p3.add(p1(i1))
+            u3.add(u1(i1))
+            i1 += 1
+            if (i1 >= p1.length)
+              break()
+          } else if (c > 0) {
+            p3.add(p2(i2))
+            u3.add(u2(i2))
+            i2 += 1
+            if (i2 >= p2.length)
+              break()
+          } else {
+            p3.add(p2(i2))
+            u3.add(u2(i2))
+            i1 += 1
+            i2 += 1
+            if (i1 >= p1.length || i2 >= p2.length)
+              break()
+          }
         }
       }
+      while (i1 < p1.length) {
+        p3.add(p1(i1))
+        u3.add(u1(i1))
+        i1 += 1
+      }
+      while (i2 < p2.length) {
+        p3.add(p2(i2))
+        u3.add(u2(i2))
+        i2 += 1
+      }
+      val n2 = new NamespaceMap
+      n2.prefixes = p3.toArray(Array.empty[String])
+      n2.uris = u3.toArray(Array.empty[String])
+      n2
     }
-    while (i1 < p1.length) {
-      p3.add(p1(i1))
-      u3.add(u1(i1))
-      i1 += 1
-    }
-    while ( {
-      i2 < p2.length
-    }) {
-      p3.add(p2(i2))
-      u3.add(u2(i2))
-      i2 += 1
-    }
-    val n2 = new NamespaceMap
-    n2.prefixes = p3.toArray(Array.empty[String])
-    n2.uris = u3.toArray(Array.empty[String])
-    n2
-  }
 
   def addAll(namespaces: NamespaceBindingSet): NamespaceMap =
     namespaces match {
-    case map: NamespaceMap => putAll(map)
+    case map: NamespaceMap =>
+      putAll(map)
     case _ =>
       var map = this
-
       for (nb <- namespaces.asScala)
         map = map.put(nb.getPrefix, nb.getURI)
-
       map
   }
 
@@ -336,60 +345,56 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @return a map combining the namespace declarations in this map with the declarations
    *         and undeclarations in the { @code delta} map.
    */
-  def applyDifferences(delta: NamespaceDeltaMap): NamespaceMap = if (delta.isEmpty) this
-  else {
-    val p1 = this.prefixes
-    val u1 = this.uris
-    val p2 = delta.prefixes
-    val u2 = delta.uris
-    val prefixes = new ju.ArrayList[String](p1.length + p2.length)
-    val uris = new ju.ArrayList[String](p1.length + p2.length)
-    var i1 = 0
-    var i2 = 0
-    while (i1 < p1.length && i2 < p2.length) {
-      val c = p1(i1).compareTo(p2(i2))
-      if (c < 0) {
+  def applyDifferences(delta: NamespaceDeltaMap): NamespaceMap =
+    if (delta.isEmpty)
+      this
+    else {
+      val p1 = this.prefixes
+      val u1 = this.uris
+      val p2 = delta.prefixes
+      val u2 = delta.uris
+      val prefixes = new ju.ArrayList[String](p1.length + p2.length)
+      val uris = new ju.ArrayList[String](p1.length + p2.length)
+      var i1 = 0
+      var i2 = 0
+      while (i1 < p1.length && i2 < p2.length) {
+        val c = p1(i1).compareTo(p2(i2))
+        if (c < 0) {
+          prefixes.add(p1(i1))
+          uris.add(u1(i1))
+          i1 += 1
+        } else if (c > 0) {
+          if (!u2(i2).isEmpty) {
+            prefixes.add(p2(i2))
+            uris.add(u2(i2))
+          }
+          i2 += 1
+        } else {
+          if (!u2(i2).isEmpty) {
+            prefixes.add(p2(i2))
+            uris.add(u2(i2))
+          }
+          i1 += 1
+          i2 += 1
+        }
+      }
+      while (i1 < p1.length) {
         prefixes.add(p1(i1))
         uris.add(u1(i1))
         i1 += 1
       }
-      else if (c > 0) {
+      while (i2 < p2.length) {
         if (!u2(i2).isEmpty) {
           prefixes.add(p2(i2))
           uris.add(u2(i2))
         }
         i2 += 1
       }
-      else {
-        if (!u2(i2).isEmpty) {
-          prefixes.add(p2(i2))
-          uris.add(u2(i2))
-        }
-        i1 += 1
-        i2 += 1
-      }
+      val n2 = new NamespaceMap
+      n2.prefixes = prefixes.toArray(Array[String]())
+      n2.uris = uris.toArray(Array[String]())
+      n2
     }
-    while ( {
-      i1 < p1.length
-    }) {
-      prefixes.add(p1(i1))
-      uris.add(u1(i1))
-      i1 += 1
-    }
-    while ( {
-      i2 < p2.length
-    }) {
-      if (!u2(i2).isEmpty) {
-        prefixes.add(p2(i2))
-        uris.add(u2(i2))
-      }
-      i2 += 1
-    }
-    val n2 = new NamespaceMap
-    n2.prefixes = prefixes.toArray(Array[String]())
-    n2.uris = uris.toArray(Array[String]())
-    n2
-  }
 
   /**
    * Get an iterator over the namespace bindings defined in this namespace map
@@ -420,9 +425,8 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    */
   def getNamespaceBindings: Array[NamespaceBinding] = {
     val result = new Array[NamespaceBinding](prefixes.length)
-    for (i <- prefixes.indices) {
+    for (i <- prefixes.indices)
       result(i) = new NamespaceBinding(prefixes(i), uris(i))
-    }
     result
   }
 
@@ -449,31 +453,29 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
         if (c < 0) { // prefix in this namespace map, absent from other
           result.add(new NamespaceBinding(prefixes(i), uris(i)))
           i += 1
-        }
-        else if (c == 0) { // prefix present in both maps
+        } else if (c == 0) { // prefix present in both maps
           if (uris(i) == other.uris(j)) {
             // URI is the same; this declaration is redundant, so omit it from the result
-          }
-          else { // URI is different; use the URI appearing in this map in preference
+          } else {
+            // URI is different; use the URI appearing in this map in preference
             result.add(new NamespaceBinding(prefixes(i), uris(i)))
           }
           i += 1
           j += 1
-        }
-        else { // prefix present in other map, absent from this: maybe add an undeclaration
-          if (addUndeclarations || prefixes(i).isEmpty) result.add(new NamespaceBinding(other.prefixes(j), ""))
+        } else {
+          // prefix present in other map, absent from this: maybe add an undeclaration
+          if (addUndeclarations || prefixes(i).isEmpty)
+            result.add(new NamespaceBinding(other.prefixes(j), ""))
           j += 1
         }
-      }
-      else if (i < prefixes.length) {
+      } else if (i < prefixes.length) {
         result.add(new NamespaceBinding(prefixes(i), uris(i)))
         i += 1
-      }
-      else if (j < other.prefixes.length) { // prefix present in other map, absent from this: add an undeclaration
+      } else if (j < other.prefixes.length) { // prefix present in other map, absent from this: add an undeclaration
         result.add(new NamespaceBinding(other.prefixes(j), ""))
         j += 1
-      }
-      else return result.toArray(NamespaceBinding.EMPTY_ARRAY)
+      } else
+        return result.toArray(NamespaceBinding.EMPTY_ARRAY)
     }
     null
   }
@@ -494,9 +496,13 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    *         The "null namespace" is represented by the pseudo-URI "".
    */
   def getURIForPrefix(prefix: String, useDefault: Boolean): String = {
-    if (prefix == "xml") return NamespaceConstant.XML
-    if (prefix == "") if (useDefault) return getDefaultNamespace
-    else return ""
+    if (prefix == "xml")
+      return NamespaceConstant.XML
+    if (prefix == "")
+      if (useDefault)
+        return getDefaultNamespace
+      else
+        return ""
     getURI(prefix)
   }
 

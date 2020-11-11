@@ -712,42 +712,43 @@ object Navigator {
    * @since 9.5
    */
   def comparePosition(first: NodeInfo, second: NodeInfo): Int = {
+
     if (first.getNodeKind == Type.ATTRIBUTE || first.getNodeKind == Type.NAMESPACE || second.getNodeKind == Type.ATTRIBUTE || second.getNodeKind == Type.NAMESPACE)
       throw new UnsupportedOperationException
+
     if (first == second)
       return AxisInfo.SELF
+
     val firstParent = first.getParent
     if (firstParent == null)
       return AxisInfo.ANCESTOR
+
     val secondParent = second.getParent
     if (secondParent == null)
       return AxisInfo.DESCENDANT
+
     if (firstParent == secondParent)
       if (first.compareOrder(second) < 0)
         return AxisInfo.PRECEDING
       else
         return AxisInfo.FOLLOWING
+
     var depth1 = 0
     var depth2 = 0
     var p1 = first
     var p2 = second
-    while ( {
-      p1 != null
-    }) {
+
+    while (p1 != null) {
       depth1 += 1
       p1 = p1.getParent
     }
-    while ( {
-      p2 != null
-    }) {
+    while (p2 != null) {
       depth2 += 1
       p2 = p2.getParent
     }
     // Test if either node is an ancestor of the other
     p1 = first
-    while ( {
-      depth1 > depth2
-    }) {
+    while (depth1 > depth2) {
       p1 = p1.getParent
       assert(p1 != null)
       if (p1 == second)
@@ -755,9 +756,7 @@ object Navigator {
       depth1 -= 1
     }
     p2 = second
-    while ( {
-      depth2 > depth1
-    }) {
+    while (depth2 > depth1) {
       p2 = p2.getParent
       assert(p2 != null)
       if (p2 == first)
@@ -775,7 +774,8 @@ object Navigator {
    * Classify node kinds into categories for sorting into document order:
    * 0 = document, 1 = namespace, 2 = attribute, 3 = (element, text, comment, pi)
    */
-  private val nodeCategories = Array(-1, //0 = not used
+  private val nodeCategories = Array(
+    -1, //0 = not used
     3, //1 = element
     2, //2 = attribute
     3, //3 = text
@@ -900,9 +900,7 @@ object Navigator {
     }
     val prev = node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
     var count = 1
-    while ( {
-      prev.next != null
-    }) if ( {
+    while (prev.next != null) if ( {
       count += 1
       count
     } > max)
@@ -993,27 +991,30 @@ object Navigator {
       }
       if (children != null) {
         val n = children.next()
-        if (n != null)
-            if (n.hasChildNodes)
+        if (n != null) {
+            if (n.hasChildNodes) {
               if (forwards) {
-              descendants = new Navigator.DescendantEnumeration(n, false, true)
-              n
+                descendants = new Navigator.DescendantEnumeration(n, false, true)
+                n
+              } else {
+                descendants = new Navigator.DescendantEnumeration(n, true, false)
+                next()
+              }
             } else {
-              descendants = new Navigator.DescendantEnumeration(n, true, false)
-              next()
+              n
             }
-          else
-            n
-        else if (forwards || !includeSelf)
-          null
-        else {
-          atEnd = true
-          children = null
-          start
+        } else {
+          if (forwards || !includeSelf) {
+            null
+          } else {
+            atEnd = true
+            children = null
+            start
+          }
         }
-      } else if (atEnd) // we're just finishing a backwards scan
+      } else if (atEnd) {// we're just finishing a backwards scan
         null
-      else { // we're just starting...
+      } else { // we're just starting...
         if (start.hasChildNodes) { //children = new NodeWrapper.ChildEnumeration(start, true, forwards);
           children = start.iterateAxis(AxisInfo.CHILD)
           if (!forwards) children match {
@@ -1048,7 +1049,7 @@ object Navigator {
    * General purpose implementation of the following axis, in terms of the
    * ancestor, child, and following-sibling axes
    */
-  final class FollowingEnumeration() extends AxisIterator {
+  final class FollowingEnumeration extends AxisIterator {
     private var ancestorEnum: AxisIterator = null
     private var siblingEnum: AxisIterator = null
     private var descendEnum: AxisIterator = null
@@ -1057,15 +1058,11 @@ object Navigator {
       this()
       ancestorEnum = new Navigator.AncestorEnumeration(start, false)
       start.getNodeKind match {
-        case Type.ELEMENT =>
-        case Type.TEXT =>
-        case Type.COMMENT =>
-        case Type.PROCESSING_INSTRUCTION =>
+        case Type.ELEMENT  | Type.TEXT  | Type.COMMENT  | Type.PROCESSING_INSTRUCTION =>
           //siblingEnum = new NodeWrapper.ChildEnumeration(start, false, true);
           // gets following siblings
           siblingEnum = start.iterateAxis(AxisInfo.FOLLOWING_SIBLING)
-        case Type.ATTRIBUTE =>
-        case Type.NAMESPACE =>
+        case Type.ATTRIBUTE | Type.NAMESPACE =>
           //siblingEnum = new NodeWrapper.ChildEnumeration((NodeWrapper)start.getParent, true, true);
           // gets children of the attribute's parent node
           val parent = start.getParent
@@ -1083,8 +1080,10 @@ object Navigator {
     override def next(): NodeInfo = {
       if (descendEnum != null) {
         val nextd = descendEnum.next()
-        if (nextd != null) return nextd
-        else descendEnum = null
+        if (nextd != null)
+          return nextd
+        else
+          descendEnum = null
       }
       if (siblingEnum != null) {
         val nexts = siblingEnum.next()
@@ -1118,7 +1117,8 @@ object Navigator {
    * preceding-or-ancestor axis, by making use of the ancestor, descendant, and
    * preceding-sibling axes.
    */
-  final class PrecedingEnumeration() extends AxisIterator {
+  final class PrecedingEnumeration extends AxisIterator {
+
     private var ancestorEnum: AxisIterator = null
     private var siblingEnum: AxisIterator = null
     private var descendEnum: AxisIterator = null
@@ -1138,7 +1138,6 @@ object Navigator {
           siblingEnum = EmptyIterator.ofNodes
       }
     }
-
 
     override def next(): NodeInfo = {
       if (descendEnum != null) {

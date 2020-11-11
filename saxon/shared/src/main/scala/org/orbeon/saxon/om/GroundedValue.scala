@@ -25,9 +25,10 @@ trait GroundedValue extends Sequence {
   def head: Item
   def subsequence(start: Int, length: Int): GroundedValue
   def getLength: Int
-  def effectiveBooleanValue: Boolean = ExpressionTool.effectiveBooleanValue(iterate())
   def getStringValue: String
   def getStringValueCS: CharSequence
+
+  def effectiveBooleanValue: Boolean = ExpressionTool.effectiveBooleanValue(iterate())
   def reduce(): GroundedValue = this
 
   override def materialize: GroundedValue = this

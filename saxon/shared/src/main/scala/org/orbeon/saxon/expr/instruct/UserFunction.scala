@@ -125,10 +125,9 @@ class UserFunction
     new SymbolicName.F(functionName, getArity)
 
   def getFunctionItemType: FunctionItemType = {
-    val argTypes: Array[SequenceType] =
-      Array.ofDim[SequenceType](parameterDefinitions.length)
+    val argTypes = Array.ofDim[SequenceType](parameterDefinitions.length)
     for (i <- parameterDefinitions.indices) {
-      val ufp: UserFunctionParameter = parameterDefinitions(i)
+      val ufp = parameterDefinitions(i)
       argTypes(i) = ufp.getRequiredType
     }
     new SpecificFunctionType(argTypes, resultType, annotations)
@@ -139,7 +138,7 @@ class UserFunction
     var first: OperandUsage.OperandUsage = null
     declaredStreamability match {
       case UNCLASSIFIED =>
-        var required: SequenceType = getArgumentType(0)
+        val required = getArgumentType(0)
         first = OperandRole.getTypeDeterminedUsage(required.getPrimaryType)
       case ABSORBING => first = OperandUsage.ABSORPTION
       case INSPECTION => first = OperandUsage.INSPECTION
@@ -162,34 +161,31 @@ class UserFunction
 
   def acceptsNodesWithoutAtomization(): Boolean = {
     for (i <- 0 until getArity) {
-      val `type`: ItemType = getArgumentType(i).getPrimaryType
-      if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType) {
-        true
-      }
+      val `type` = getArgumentType(i).getPrimaryType
+      if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType)
+        return true
     }
     false
   }
 
   def computeEvaluationMode(): Unit = {
     evaluator =
-      if (tailRecursive) ExpressionTool.eagerEvaluator(getBody)
-      else ExpressionTool.lazyEvaluator(getBody, repeatable = true)
+      if (tailRecursive)
+        ExpressionTool.eagerEvaluator(getBody)
+      else
+        ExpressionTool.lazyEvaluator(getBody, repeatable = true)
   }
 
   def isInlineable: java.lang.Boolean = {
-    if (inlineable != -1) {
+    if (inlineable != -1)
       return inlineable > 0 && inliningCount < MAX_INLININGS
-    }
-    if (body == null) {
+    if (body == null)
       return null
-    }
-    if (body.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) ||
-      tailCalls) {
+    if (body.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) || tailCalls)
       return false
-    }
-    val component: Component = getDeclaringComponent
+    val component = getDeclaringComponent
     if (component != null) {
-      val visibility: Visibility.Visibility = getDeclaringComponent.getVisibility
+      val visibility = getDeclaringComponent.getVisibility
       if (visibility == Visibility.PRIVATE || visibility == Visibility.FINAL) {
         if (inlineable < 0) {
           null
@@ -204,15 +200,11 @@ class UserFunction
     }
   }
 
-  def setInlineable(inlineable: Boolean): Unit = {
+  def setInlineable(inlineable: Boolean): Unit =
     this.inlineable = if (inlineable) 1 else 0
-  }
 
-  def markAsInlined(): Unit = {
-    {
-      inliningCount += 1;
-    }
-  }
+  def markAsInlined(): Unit =
+    inliningCount += 1
 
   def setResultType(resultType: SequenceType): Unit = {
     this.declaredResultType = resultType
@@ -226,17 +218,13 @@ class UserFunction
 
   def containsTailCalls(): Boolean = tailCalls
 
-  def setUpdating(isUpdating: Boolean): Unit = {
+  def setUpdating(isUpdating: Boolean): Unit =
     this.isUpdating = isUpdating
-  }
 
   def getResultType: SequenceType = {
-    if (resultType == SequenceType.ANY_SEQUENCE && getBody != null) {
-      if (!containsUserFunctionCalls(getBody)) {
-        resultType = SequenceType.makeSequenceType(getBody.getItemType,
-          getBody.getCardinality)
-      }
-    }
+    if (resultType == SequenceType.ANY_SEQUENCE && getBody != null)
+      if (! containsUserFunctionCalls(getBody))
+        resultType = SequenceType.makeSequenceType(getBody.getItemType, getBody.getCardinality)
     resultType
   }
 
@@ -244,15 +232,13 @@ class UserFunction
     parameterDefinitions(n).getRequiredType
 
   def getEvaluator: Evaluator = {
-    if (evaluator == null) {
+    if (evaluator == null)
       computeEvaluationMode()
-    }
     evaluator
   }
 
-  def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit = {
+  def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit =
     evaluator = mode.getEvaluator
-  }
 
   def getArity: Int = parameterDefinitions.length
 
@@ -260,21 +246,21 @@ class UserFunction
 
   def typeCheck(visitor: ExpressionVisitor): Unit = {
     val exp: Expression = getBody
-    if (exp.isInstanceOf[ValueOf] &&
-      exp.asInstanceOf[ValueOf].getSelect.getItemType.isAtomicType &&
-      declaredResultType.getPrimaryType.isAtomicType &&
-      declaredResultType.getPrimaryType != BuiltInAtomicType.STRING) {
-      visitor.getStaticContext.issueWarning(
-        "A function that computes atomic values should use xsl:sequence rather than xsl:value-of",
-        getLocation)
+    exp match {
+      case valueOf: ValueOf if declaredResultType.getPrimaryType != BuiltInAtomicType.STRING && declaredResultType.getPrimaryType.isAtomicType && valueOf.getSelect.getItemType.isAtomicType =>
+        visitor.getStaticContext.issueWarning(
+          "A function that computes atomic values should use xsl:sequence rather than xsl:value-of",
+          getLocation
+        )
+      case _ =>
     }
     ExpressionTool.resetPropertiesWithinSubtree(exp)
     var exp2: Expression = exp
     try {
-      val info: ContextItemStaticInfo = ContextItemStaticInfo.ABSENT
+      val info = ContextItemStaticInfo.ABSENT
       exp2 = exp.typeCheck(visitor, info)
       if (resultType != null) {
-        val role: RoleDiagnostic = new RoleDiagnostic(
+        val role = new RoleDiagnostic(
           RoleDiagnostic.FUNCTION_RESULT,
           if (functionName == null) ""
           else functionName.getDisplayName + "#" + getArity,
@@ -287,15 +273,12 @@ class UserFunction
           .staticTypeCheck(exp2, resultType, role, visitor)
       }
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(getLocation)
         throw err
-      }
-
     }
-    if (exp2 != exp) {
+    if (exp2 != exp)
       this.body = exp2
-    }
   }
 
   def makeNewContext(oldContext: XPathContext,
@@ -408,9 +391,7 @@ class UserFunction
       getPackageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
 
   def isTrustedResultType: Boolean = false
-
   def isMap: Boolean = false
-
   def isArray: Boolean = false
 
   def deepEquals(other: Function,
@@ -449,9 +430,7 @@ class UserFunction
 
   def incrementReferenceCount(): Unit = refCount += 1
 
-
   def getReferenceCount: Int = refCount
 
   def prepareForStreaming(): Unit = ()
-
 }

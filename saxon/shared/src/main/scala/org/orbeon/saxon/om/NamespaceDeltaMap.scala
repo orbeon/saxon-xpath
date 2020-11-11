@@ -4,6 +4,9 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+package org.orbeon.saxon.om
+
+
 /**
  * Holds a set of namespace bindings as a simple immutable map from prefixes to URIs.
  *
@@ -16,13 +19,9 @@
  * <p>The map must not contain any namespace undeclarations: that is, the namespace will
  * never be "" (zero-length string)</p>
  */
-
-package org.orbeon.saxon.om
-
-
 object NamespaceDeltaMap {
 
-  var EMPTY_MAP: NamespaceDeltaMap = new NamespaceDeltaMap()
+  var EMPTY_MAP: NamespaceDeltaMap = new NamespaceDeltaMap
 
   /**
    * Get a namespace map containing no namespace bindings
@@ -30,24 +29,22 @@ object NamespaceDeltaMap {
    * @return an empty namespace map
    */
   def emptyMap(): NamespaceDeltaMap = EMPTY_MAP
-
 }
 
-class NamespaceDeltaMap()
+class NamespaceDeltaMap
   extends NamespaceMap
     with NamespaceBindingSet
     with NamespaceResolver {
 
-  override def newInstance(): NamespaceMap = new NamespaceDeltaMap()
+  override def newInstance: NamespaceMap = new NamespaceDeltaMap
 
-  override def allowsNamespaceUndeclarations(): Boolean = true
+  override def allowsNamespaceUndeclarations: Boolean = true
 
   override def put(prefix: String, uri: String): NamespaceDeltaMap =
     super.put(prefix, uri).asInstanceOf[NamespaceDeltaMap]
 
   override def remove(prefix: String): NamespaceDeltaMap =
     super.remove(prefix).asInstanceOf[NamespaceDeltaMap]
-
 }
 
 

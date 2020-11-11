@@ -1,50 +1,38 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.wrapper
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.Stripper
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.model.ComplexType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om.AtomicSequence
-
-import org.orbeon.saxon.om.AxisInfo
-
-import org.orbeon.saxon.om.NameOfNode
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.pattern.NodeKindTest
-
-import org.orbeon.saxon.pattern.NodeTest
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.Whitespace
 
 import java.util.function.Predicate
 
-import SpaceStrippedNode._
+import org.orbeon.saxon.event.{Receiver, Stripper}
+import org.orbeon.saxon.lib.NamespaceConstant
+import org.orbeon.saxon.model.{ComplexType, SchemaType, Type, UType}
+import org.orbeon.saxon.om.{AtomicSequence, AxisInfo, NameOfNode, NodeInfo}
+import org.orbeon.saxon.pattern.{NodeKindTest, NodeTest}
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.tree.wrapper.SpaceStrippedNode._
+import org.orbeon.saxon.value.Whitespace
 
 import scala.util.control.Breaks._
 
+
+/**
+ * A StrippedNode is a view of a node, in a virtual tree that has whitespace
+ * text nodes stripped from it. All operations on the node produce the same result
+ * as operations on the real underlying node, except that iterations over the axes
+ * take care to skip whitespace-only text nodes that are supposed to be stripped.
+ * Note that this class is only used in cases where a pre-built tree is supplied as
+ * the input to a transformation, and where the stylesheet does whitespace stripping;
+ * if a SAXSource or StreamSource is supplied, whitespace is stripped as the tree
+ * is built.
+ */
 object SpaceStrippedNode {
 
   /*@NotNull*/
@@ -61,24 +49,19 @@ object SpaceStrippedNode {
                       docWrapper: SpaceStrippedDocument,
                       actualParent: NodeInfo): Boolean = {
     // Non-text nodes, non-whitespace nodes, and parentless nodes are preserved
-    if (node.getNodeKind != Type.TEXT || actualParent == null ||
-      !Whitespace.isWhite(node.getStringValueCS)) {
+    if (node.getNodeKind != Type.TEXT || actualParent == null || ! Whitespace.isWhite(node.getStringValueCS))
       return true
-    }
     // if the node has a simple type annotation, it is preserved
     val `type`: SchemaType = actualParent.getSchemaType
-    if (`type`.isSimpleType || `type`
-      .asInstanceOf[ComplexType]
-      .isSimpleContent) {
+    if (`type`.isSimpleType || `type`.asInstanceOf[ComplexType].isSimpleContent)
       return true
-    }
     // if there is an ancestor with xml:space="preserve", it is preserved
     if (docWrapper.containsPreserveSpace()) {
       var p: NodeInfo = actualParent
       // if one of them is on an ancestor of this node
       breakable {
         while (p.getNodeKind == Type.ELEMENT) {
-          val `val`: String = p.getAttributeValue(NamespaceConstant.XML, "space")
+          val `val` = p.getAttributeValue(NamespaceConstant.XML, "space")
           if (`val` != null) {
             if ("preserve" == `val`) {
               return true
@@ -91,34 +74,28 @@ object SpaceStrippedNode {
       }
     }
     // the document contains one or more xml:space="preserve" attributes, so we need to see
-    // the document contains one or more xml:space="preserve" attributes, so we need to see
     // if there is an ancestor whose type has an assertion, it is preserved
     if (docWrapper.containsAssertions) {
       var p: NodeInfo = actualParent
       // if one of them is on an ancestor of this node
       while (p.getNodeKind == Type.ELEMENT) {
-        val t: SchemaType = p.getSchemaType
-        if (t.isInstanceOf[ComplexType] && t
-          .asInstanceOf[ComplexType]
-          .hasAssertions) {
-          return true
+        p.getSchemaType match {
+          case complexType: ComplexType if complexType.hasAssertions =>
+            return true
+          case _ =>
         }
         p = p.getParent
       }
     }
     // the document contains one or more xml:space="preserve" attributes, so we need to see
-    // the document contains one or more xml:space="preserve" attributes, so we need to see
     // otherwise it depends on xsl:strip-space
     try {
-      val preserve: Int = docWrapper.getStrippingRule
-        .isSpacePreserving(NameOfNode.makeName(actualParent), null)
+      val preserve = docWrapper.getStrippingRule.isSpacePreserving(NameOfNode.makeName(actualParent), null)
       preserve == Stripper.ALWAYS_PRESERVE
     } catch {
-      case e: XPathException => true
-
+      case _: XPathException => true
     }
   }
-
 }
 
 class SpaceStrippedNode()
@@ -132,43 +109,42 @@ class SpaceStrippedNode()
   }
 
   /*@NotNull*/
-
   def makeWrapper(node: NodeInfo, parent: VirtualNode): VirtualNode = {
-    val wrapper: SpaceStrippedNode =
-      new SpaceStrippedNode(node, parent.asInstanceOf[SpaceStrippedNode])
+    val wrapper = new SpaceStrippedNode(node, parent.asInstanceOf[SpaceStrippedNode])
     wrapper.docWrapper = this.docWrapper
     wrapper
   }
 
   override def atomize(): AtomicSequence =
-    if (getNodeKind == Type.ELEMENT) {
+    if (getNodeKind == Type.ELEMENT)
       getSchemaType.atomize(this)
-    } else {
+    else
       node.atomize()
-    }
 
   override def equals(other: Any): Boolean =
-    if (other.isInstanceOf[SpaceStrippedNode]) {
-      node == other.asInstanceOf[SpaceStrippedNode].node
-    } else {
-      node == other
+    other match {
+      case ssn: SpaceStrippedNode =>
+        node == ssn.node
+      case _ =>
+        node == other
     }
 
   override def compareOrder(other: NodeInfo): Int =
-    if (other.isInstanceOf[SpaceStrippedNode]) {
-      node.compareOrder(other.asInstanceOf[SpaceStrippedNode].node)
-    } else {
-      node.compareOrder(other)
+    other match {
+      case ssn: SpaceStrippedNode =>
+        node.compareOrder(ssn.node)
+      case _ =>
+        node.compareOrder(other)
     }
 
-  override def getStringValueCS
-  : CharSequence = // Might not be the same as the string value of the underlying node because of space stripping
+  override def getStringValueCS: CharSequence =
+    // Might not be the same as the string value of the underlying node because of space stripping
     getNodeKind match {
       case Type.DOCUMENT | Type.ELEMENT =>
-        var iter: AxisIterator = iterateAxis(
+        val iter: AxisIterator = iterateAxis(
           AxisInfo.DESCENDANT,
           NodeKindTest.makeNodeKindTest(Type.TEXT))
-        var sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
+        val sb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C64)
         breakable {
           while (true) {
             val it: NodeInfo = iter.next()
@@ -214,14 +190,13 @@ class SpaceStrippedNode()
     }
 
   /*@Nullable*/
-
   override def iterateAxis(axisNumber: Int): AxisIterator = axisNumber match {
     case AxisInfo.ATTRIBUTE | AxisInfo.NAMESPACE =>
       new WrappingIterator(node.iterateAxis(axisNumber), this, this)
     case AxisInfo.CHILD =>
       new StrippingIterator(node.iterateAxis(axisNumber), this)
     case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
-      var parent: SpaceStrippedNode = getParent.asInstanceOf[SpaceStrippedNode]
+      val parent: SpaceStrippedNode = getParent.asInstanceOf[SpaceStrippedNode]
       if (parent == null) {
         EmptyIterator.ofNodes
       } else {
@@ -301,26 +276,7 @@ class SpaceStrippedNode()
         actualParent)
     }
 
-    override def close(): Unit = {
+    override def close(): Unit =
       base.close()
-    }
-
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * A StrippedNode is a view of a node, in a virtual tree that has whitespace
- * text nodes stripped from it. All operations on the node produce the same result
- * as operations on the real underlying node, except that iterations over the axes
- * take care to skip whitespace-only text nodes that are supposed to be stripped.
- * Note that this class is only used in cases where a pre-built tree is supplied as
- * the input to a transformation, and where the stylesheet does whitespace stripping;
- * if a SAXSource or StreamSource is supplied, whitespace is stripped as the tree
- * is built.
- */

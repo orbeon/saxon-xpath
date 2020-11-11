@@ -1,84 +1,56 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.AxisIterator
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.tree.iter.ListIterator
-
-import org.orbeon.saxon.tree.iter.PrependAxisIterator
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.tree.util.Navigator
-
-import org.orbeon.saxon.value.StringValue
-
 import java.util.ArrayList
-
-import java.util.Iterator
-
-import java.util.List
-
 import java.util.function.Predicate
 
-import NamespaceNode._
+import org.orbeon.saxon.event.Receiver
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaType, Type}
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.s9api.Location
+import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator, ListIterator, PrependAxisIterator}
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.StringValue
 
 
-
-
+/**
+  * This class represents a namespace node; it is used in several tree models.
+  */
 object NamespaceNode {
 
   /*@NotNull*/
-
-  def makeIterator(element: NodeInfo,
-                   test: Predicate[_ >: NodeInfo]): AxisIterator = {
-    val nodes: List[NodeInfo] = new ArrayList[NodeInfo]()
-    val bindings: Iterator[NamespaceBinding] =
-      element.getAllNamespaces.iterator
-    var position: Int = 0
-    var foundXML: Boolean = false
+  def makeIterator(element: NodeInfo, test: Predicate[_ >: NodeInfo]): AxisIterator = {
+    val nodes = new ArrayList[NodeInfo]
+    val bindings = element.getAllNamespaces.iterator
+    var position = 0
+    var foundXML = false
     while (bindings.hasNext) {
-      val binding: NamespaceBinding = bindings.next()
+      val binding = bindings.next()
       if (binding.getPrefix.==("xml")) {
         foundXML = true
       }
-      val node: NamespaceNode = {
+      val node =
         new NamespaceNode(element, binding, {
-          (position = position + 1).asInstanceOf[Int]
-        })}
+          position = position + 1
+          position
+        })
 
-      if (test.test(node)) {
+      if (test.test(node))
         nodes.add(node)
-      }
     }
-    if (!foundXML) {
-      val node: NamespaceNode =
-        new NamespaceNode(element, NamespaceBinding.XML, position)
-      if (test.test(node)) {
+    if (! foundXML) {
+      val node = new NamespaceNode(element, NamespaceBinding.XML, position)
+      if (test.test(node))
         nodes.add(node)
-      }
     }
     new ListIterator.OfNodes(nodes)
   }
-
 }
 
 class NamespaceNode(var element: NodeInfo,
@@ -87,7 +59,6 @@ class NamespaceNode(var element: NodeInfo,
     extends NodeInfo {
 
   var nsBinding: NamespaceBinding = nscode
-
   var fingerprint: Int = -1
 
   /**
@@ -110,7 +81,6 @@ class NamespaceNode(var element: NodeInfo,
   override def hashCode: Int = element.hashCode ^ (position << 13)
 
   /*@Nullable*/
-
   def getSystemId: String = element.getSystemId
 
   /**
@@ -123,42 +93,39 @@ class NamespaceNode(var element: NodeInfo,
   override def getPublicId: String = element.getPublicId
 
   /*@Nullable*/
-
-  def getBaseURI
-    : String = // the base URI of a namespace node is the empty sequence
+  def getBaseURI: String = // the base URI of a namespace node is the empty sequence
     null
 
   override def getLineNumber: Int = element.getLineNumber
-
-  override def getColumnNumber(): Int = element.getColumnNumber
+  override def getColumnNumber: Int = element.getColumnNumber
 
   /**
     * Get an immutable copy of this Location object. By default Location objects may be mutable, so they
     * should not be saved for later use. The result of this operation holds the same location information,
     * but in an immutable form.
     */
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   def compareOrder(other: NodeInfo): Int =
-    if (other.isInstanceOf[NamespaceNode] &&
-        element == other.asInstanceOf[NamespaceNode].element) {
-      val c: Int = position - other.asInstanceOf[NamespaceNode].position
-      java.lang.Integer.compare(c, 0)
-    } else if (element == other) {
-      +1
-    } else {
-      element.compareOrder(other)
+    other match {
+      case nsNode: NamespaceNode if element == nsNode.element =>
+        val c = position - nsNode.position
+        java.lang.Integer.compare(c, 0)
+      case _ =>
+        if (element == other)
+          +1
+        else
+          element.compareOrder(other)
     }
 
   def getStringValue: String = nsBinding.getURI
-
   def getStringValueCS: CharSequence = getStringValue
 
   /**
     * Ask whether this NodeInfo implementation holds a fingerprint identifying the name of the
-    * node in the NamePool. If the answer is true, then the {@link #getFingerprint} method must
-    * return the fingerprint of the node. If the answer is false, then the {@link #getFingerprint}
-    * method should throw an {@code UnsupportedOperationException}. In the case of unnamed nodes
+    * node in the NamePool. If the answer is true, then the `#` method must
+    * return the fingerprint of the node. If the answer is false, then the `#`
+    * method should throw an `UnsupportedOperationException`. In the case of unnamed nodes
     * such as text nodes, the result can be either true (in which case getFingerprint should
     * return -1) or false (in which case getFingerprint may throw an exception).
     *
@@ -172,27 +139,20 @@ class NamespaceNode(var element: NodeInfo,
       if (nsBinding.getPrefix.isEmpty) {
         return -1
       } else {
-        fingerprint = element.getConfiguration.getNamePool
-          .allocateFingerprint("", nsBinding.getPrefix)
+        fingerprint = element.getConfiguration.getNamePool.allocateFingerprint("", nsBinding.getPrefix)
       }
     }
     fingerprint
   }
 
   def getLocalPart: String = nsBinding.getPrefix
-
   /*@NotNull*/
-
   def getURI: String = ""
-
   def getDisplayName: String = getLocalPart
-
   /*@NotNull*/
-
   def getPrefix: String = ""
 
   override def getConfiguration: Configuration = element.getConfiguration
-
   def getNamePool: NamePool = getConfiguration.getNamePool
 
   /**
@@ -268,14 +228,11 @@ class NamespaceNode(var element: NodeInfo,
     buffer.append(java.lang.Integer.toString(position))
   }
 
-  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
     out.append(this)
-  }
 
   /*@Nullable*/
-
-  def getDeclaredNamespaces(
-      buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
+  def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
   /**
     * Get all the namespace bindings that are in-scope for this element.
@@ -287,7 +244,7 @@ class NamespaceNode(var element: NodeInfo,
     *
     * @return the in-scope namespaces for an element, or null for any other kind of node.
     */
-  override def getAllNamespaces: NamespaceMap = null
+  def getAllNamespaces: NamespaceMap = null
 
   /**
     * Set the system identifier for this Source.
@@ -299,22 +256,9 @@ class NamespaceNode(var element: NodeInfo,
     * @param systemId The system identifier as a URL string.
     */
   def setSystemId(systemId: String): Unit = ()
-// no action: namespace nodes have the same base URI as their parent
-// no action: namespace nodes have the same base URI as their parent
 
   /*@NotNull*/
-
   def atomize(): AtomicSequence = new StringValue(getStringValueCS)
 
-  override def isStreamed(): Boolean = element.isStreamed
-
+  override def isStreamed: Boolean = element.isStreamed
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class represents a namespace node; it is used in several tree models.
-  */

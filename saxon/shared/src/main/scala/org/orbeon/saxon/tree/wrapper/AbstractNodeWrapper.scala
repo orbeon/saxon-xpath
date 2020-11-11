@@ -35,12 +35,11 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Make th
       new UntypedAtomicValue(getStringValueCS)
   }
 
-  override def equals(other: Any): Boolean = {
-    if (! other.isInstanceOf[AbstractNodeWrapper])
-      return false
-    val ow = other.asInstanceOf[AbstractNodeWrapper]
-    getUnderlyingNode == ow.getUnderlyingNode
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case ow: AbstractNodeWrapper if getUnderlyingNode == ow.getUnderlyingNode => true
+      case _ => false
+    }
 
   override def hashCode: Int = getUnderlyingNode.hashCode
 
@@ -75,6 +74,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Make th
     getRoot.getSystemId
   }
 
+  // ORBEON: Overrides `NodeInfo` which also returns `-1`.
   override def getLineNumber: Int = -1
   override def getColumnNumber: Int = -1
 
