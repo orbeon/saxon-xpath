@@ -46,7 +46,7 @@ object CodepointsToString {
 
 }
 
-class CodepointsToString extends SystemFunction with Callable {
+class CodepointsToString extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val chars: SequenceIterator = arguments(0).iterate()

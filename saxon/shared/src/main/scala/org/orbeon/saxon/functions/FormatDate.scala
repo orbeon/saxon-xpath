@@ -906,7 +906,7 @@ object FormatDate {
 
 }
 
-class FormatDate extends SystemFunction with Callable {
+class FormatDate extends SystemFunction {
 
   private def adjustCalendar(calendarVal: StringValue,
                              result: CharSequence,

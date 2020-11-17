@@ -522,7 +522,7 @@ object DocumentFn {
 
 }
 
-class DocumentFn extends SystemFunction with Callable {
+class DocumentFn extends SystemFunction {
 
   private var location: Location = _
 

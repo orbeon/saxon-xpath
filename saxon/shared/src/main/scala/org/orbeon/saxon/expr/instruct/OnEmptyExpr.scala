@@ -55,8 +55,7 @@ class OnEmptyExpr /**
     * @return a set of bit-significant flags identifying the "intrinsic"
     * dependencies. The flags are documented in class org.orbeon.saxon.value.StaticProperty
     */
-  override def getIntrinsicDependencies
-    : Int = // suppress optimizations such as loop-lifting
+  override def getIntrinsicDependencies: Int = // suppress optimizations such as loop-lifting
     StaticProperty.HAS_SIDE_EFFECTS
 
   /**

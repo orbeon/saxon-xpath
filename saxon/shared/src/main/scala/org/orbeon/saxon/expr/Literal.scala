@@ -237,7 +237,7 @@ object Literal {
   }
 }
 
-class   Literal extends Expression {
+class Literal extends Expression {
 
   var value: GroundedValue = _
 
@@ -466,5 +466,4 @@ class   Literal extends Expression {
   override def isSubtreeExpression: Boolean = true
 
   override def getStreamerName: String = "Literal"
-
 }

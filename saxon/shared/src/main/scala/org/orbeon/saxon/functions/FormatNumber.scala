@@ -694,7 +694,7 @@ object FormatNumber {
 
 }
 
-class FormatNumber extends SystemFunction with Callable {
+class FormatNumber extends SystemFunction {
 
   private var decimalFormatName: StructuredQName = _
 

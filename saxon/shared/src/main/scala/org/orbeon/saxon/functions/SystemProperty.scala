@@ -65,71 +65,73 @@ object SystemProperty {
   }
 }
 
-class SystemProperty extends SystemFunction with Callable {
+class SystemProperty extends SystemFunction {
 
   override def makeOptimizedFunctionCall(
                                           visitor: ExpressionVisitor,
                                           contextInfo: ContextItemStaticInfo,
                                           arguments: Expression*): Expression = {
-    if (arguments(0).isInstanceOf[Literal]) {
-      try {
-        val name: StringValue = arguments(0)
-          .asInstanceOf[Literal]
-          .value
-          .asInstanceOf[StringValue]
-        val qName: StructuredQName = StructuredQName.fromLexicalQName(
-          name.getStringValue,
-          useDefault = false,
-          allowEQName = true,
-          getRetainedStaticContext)
-        val uri: String = qName.getURI
-        val local: String = qName.getLocalPart
-        if (uri == NamespaceConstant.XSLT &&
-          (local == "version" || local == "vendor" || local == "vendor-url" ||
-            local == "product-name" ||
-            local == "product-version" ||
-            local == "supports-backwards-compatibility" ||
-            local == "xpath-version" ||
-            local == "xsd-version")) {
-          val result: String =
-            getProperty(uri, local, getRetainedStaticContext)
-          new StringLiteral(result)
+    arguments(0) match {
+      case literal: Literal =>
+        try {
+          val name = literal.value.asInstanceOf[StringValue]
+          val qName: StructuredQName = StructuredQName.fromLexicalQName(
+            name.getStringValue,
+            useDefault = false,
+            allowEQName = true,
+            getRetainedStaticContext)
+          val uri: String = qName.getURI
+          val local: String = qName.getLocalPart
+          if (uri == NamespaceConstant.XSLT &&
+            (local == "version" || local == "vendor" || local == "vendor-url" ||
+              local == "product-name" ||
+              local == "product-version" ||
+              local == "supports-backwards-compatibility" ||
+              local == "xpath-version" ||
+              local == "xsd-version")) {
+            val result: String =
+              getProperty(uri, local, getRetainedStaticContext)
+            new StringLiteral(result)
+          }
+        } catch {
+          case _: XPathException => // no action
         }
-      } catch {
-        case _: XPathException => // no action
-      }
+      case _ =>
     }
     null
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
-    val name: StringValue = arguments(0).head.asInstanceOf[StringValue]
+    val name = arguments(0).head.asInstanceOf[StringValue]
     val qName: StructuredQName = StructuredQName.fromLexicalQName(
       name.getStringValue,
       useDefault = false,
       allowEQName = true,
       getRetainedStaticContext)
-    new StringValue(
-      getProperty(qName.getURI, qName.getLocalPart, getRetainedStaticContext))
+
+    new StringValue(getProperty(qName.getURI, qName.getLocalPart, getRetainedStaticContext))
   }
 
+  // ORBEON: Never used.
   private def allowsEarlyEvaluation(arguments: Array[Sequence],
                                     context: XPathContext): Boolean = {
-    val name: StringValue = arguments(0).head.asInstanceOf[StringValue]
-    val qName: StructuredQName = StructuredQName.fromLexicalQName(
+    val name = arguments(0).head.asInstanceOf[StringValue]
+    val qName = StructuredQName.fromLexicalQName(
       name.getStringValue,
       useDefault = false,
       allowEQName = true,
       getRetainedStaticContext)
-    val uri: String = qName.getURI
-    val local: String = qName.getLocalPart
-    uri == NamespaceConstant.XSLT &&
-      (local == "version" || local == "vendor" || local == "vendor-url" ||
-        local == "product-name" ||
-        local == "product-version" ||
-        local == "supports-backwards-compatibility" ||
-        local == "xpath-version" ||
-        local == "xsd-version")
+    val uri = qName.getURI
+    val local = qName.getLocalPart
+    uri == NamespaceConstant.XSLT && (
+      local == "version"                          ||
+      local == "vendor"                           ||
+      local == "vendor-url"                       ||
+      local == "product-name"                     ||
+      local == "product-version"                  ||
+      local == "supports-backwards-compatibility" ||
+      local == "xpath-version"                    ||
+      local == "xsd-version"
+      )
   }
-
 }

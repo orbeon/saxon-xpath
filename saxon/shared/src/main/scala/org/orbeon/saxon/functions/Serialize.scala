@@ -170,7 +170,7 @@ object Serialize {
   requiredTypesSaxon.put("suppress-indentation", BuiltInAtomicType.QNAME.zeroOrMore)
 }
 
-class Serialize extends SystemFunction with Callable {
+class Serialize extends SystemFunction {
   private val paramNames = Array[String]("allow-duplicate-names", "byte-order-mark", "cdata-section-elements", "doctype-public", "doctype-system", "encoding", "escape-uri-attributes", "html-version", "include-content-type", "indent", "item-separator", "json-node-output-method", "media-type", "method", "normalization-form", "omit-xml-declaration", "standalone", "suppress-indentation", "undeclare-prefixes", "use-character-maps", "version")
 
   private def isParamName(string: String): Boolean = {

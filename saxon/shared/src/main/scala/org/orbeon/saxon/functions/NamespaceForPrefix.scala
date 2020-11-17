@@ -36,7 +36,7 @@ object NamespaceForPrefix {
 
 }
 
-class NamespaceForPrefix extends SystemFunction with Callable {
+class NamespaceForPrefix extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[AnyURIValue] = {
     val result: AnyURIValue = namespaceUriForPrefix(

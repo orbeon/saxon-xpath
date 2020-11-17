@@ -6,17 +6,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-import java.util.Set
+import java.{util => ju}
 
 
 /**
   * This interface defines a Saxon plug-in used to resolve calls on the XPath 3.0
   * functions available-environment-variables() and environment-variable(). The standard
-  * implementation reads environment variables using the Java method {@link System#getenv()};
+  * implementation reads environment variables using the Java method `System`;
   * this can be overridden by a user-provided implementation that resolves environment variables
   * any way it likes.
   */
 trait EnvironmentVariableResolver {
-  def getAvailableEnvironmentVariables: Set[String]
+  def getAvailableEnvironmentVariables: ju.Set[String]
   def getEnvironmentVariable(name: String): String
 }

@@ -49,7 +49,7 @@ object Doc_2 {
 
 }
 
-class Doc_2 extends SystemFunction with Callable {
+class Doc_2 extends SystemFunction {
 
   private def setParseOptions(checkedOptions: Map[String, Sequence],
                               context: XPathContext): ParseOptions = {

@@ -4,7 +4,7 @@ import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.om.{Item, NodeInfo, Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.AnyURIValue
 
-class BaseUri_1 extends SystemFunction with Callable {
+class BaseUri_1 extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
     val node = arguments(0).head.asInstanceOf[NodeInfo]

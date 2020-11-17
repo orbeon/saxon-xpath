@@ -1,32 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.SystemFunctionCall
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{Expression, SystemFunctionCall, XPathContext}
 import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.lib.EnvironmentVariableResolver
-
-import org.orbeon.saxon.lib.Feature
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.Sequence
+import org.orbeon.saxon.lib.{EnvironmentVariableResolver, Feature}
+import org.orbeon.saxon.om.{Item, Sequence}
 
 //import scala.collection.compat._
+import java.util.{ArrayList, List}
+
+import org.orbeon.saxon.value.{SequenceExtent, StringValue}
+
 import scala.jdk.CollectionConverters._
-
-import org.orbeon.saxon.value.SequenceExtent
-
-import org.orbeon.saxon.value.StringValue
-
-import java.util.ArrayList
-
-import java.util.List
 
 
 class AvailableEnvironmentVariables extends SystemFunction {
@@ -49,5 +34,4 @@ class AvailableEnvironmentVariables extends SystemFunction {
       // Suppress early evaluation
       override def preEvaluate(visitor: ExpressionVisitor): Expression = this
     }
-
 }

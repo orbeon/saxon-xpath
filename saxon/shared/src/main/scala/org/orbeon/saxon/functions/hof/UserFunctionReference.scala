@@ -54,7 +54,7 @@ object UserFunctionReference {
     }
 
     def getFunctionItemType: FunctionItemType = function.getFunctionItemType
-    override def getAnnotations(): AnnotationList = function.getAnnotations
+    override def getAnnotations: AnnotationList = function.getAnnotations
     def getFunctionName: StructuredQName = function.getFunctionName
     def getArity: Int = function.getArity
     def getDescription: String = function.getDescription
@@ -65,7 +65,7 @@ object UserFunctionReference {
 
 }
 
-class UserFunctionReference()
+class UserFunctionReference
   extends Expression
     with ComponentInvocation
     with UserFunctionResolvable

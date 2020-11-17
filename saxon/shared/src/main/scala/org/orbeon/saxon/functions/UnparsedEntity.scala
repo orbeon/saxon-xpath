@@ -44,7 +44,7 @@ object UnparsedEntity {
 
 }
 
-abstract class UnparsedEntity extends SystemFunction with Callable {
+abstract class UnparsedEntity extends SystemFunction {
 
   def getOp: Int
 

@@ -69,7 +69,7 @@ object Doc {
 
 }
 
-class Doc extends SystemFunction with Callable {
+class Doc extends SystemFunction {
 
   @BeanProperty
   var parseOptions: ParseOptions = _

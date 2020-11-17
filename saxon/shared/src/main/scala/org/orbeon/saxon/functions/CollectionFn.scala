@@ -54,7 +54,7 @@ object CollectionFn {
 
 }
 
-class CollectionFn extends SystemFunction with Callable {
+class CollectionFn extends SystemFunction {
 
  override def getSpecialProperties(arguments: Array[Expression]): Int = // they will all be "new" documents. We can't even assume that they will be distinct.
     (super.getSpecialProperties(arguments) & ~StaticProperty.NO_NODES_NEWLY_CREATED) |

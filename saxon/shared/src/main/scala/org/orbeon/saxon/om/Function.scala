@@ -18,11 +18,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
   * XDM 3.0 introduces a third kind of item, beyond nodes and atomic values: the function. Functions
   * implement this interface.
   */
-object Function {
-  @SafeVarargs
-  def argumentArray(args: Sequence*): Seq[Sequence] = args
-}
-
 trait Function extends Item with Callable with GroundedValue {
 
   def isMap: Boolean
@@ -58,4 +53,10 @@ trait Function extends Item with Callable with GroundedValue {
     * @return the genre: specifically, {@link Genre#FUNCTION}. Overridden for maps and arrays.
     */
   override def getGenre: Genre = Genre.FUNCTION
+}
+
+// ORBEON: Never used in Saxon XPath.
+object Function {
+  @SafeVarargs
+  def argumentArray(args: Sequence*): Seq[Sequence] = args
 }

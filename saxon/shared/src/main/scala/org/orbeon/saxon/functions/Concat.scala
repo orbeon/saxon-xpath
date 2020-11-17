@@ -8,17 +8,17 @@ import org.orbeon.saxon.expr.oper.OperandArray
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
 import org.orbeon.saxon.model.{BuiltInAtomicType, FunctionItemType, SpecificFunctionType}
 import org.orbeon.saxon.om.{Item, Sequence}
-import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
+import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{SequenceType, StringValue}
 
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 class Concat extends SystemFunction with PushableFunction {
 
-   override def resultIfEmpty(arg: Int): Sequence = null
+ override def resultIfEmpty(arg: Int): Sequence = null
 
-  override def getOperandRoles(): Array[OperandRole] = {
+  override def getOperandRoles: Array[OperandRole] = {
     val roles: Array[OperandRole] = Array.ofDim[OperandRole](getArity)
     val operandRole: OperandRole = new OperandRole(0, OperandUsage.ABSORPTION)
     for (i <- 0 until getArity) {
@@ -64,36 +64,34 @@ class Concat extends SystemFunction with PushableFunction {
     }
   }
 
+  // ORBEON: Never used.
   private def isSingleBoolean(arg: Expression): Boolean =
     arg.getCardinality == StaticProperty.EXACTLY_ONE && arg.getItemType == BuiltInAtomicType.BOOLEAN
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val fsb = new FastStringBuffer(FastStringBuffer.C64)
     for (arg <- arguments) {
-      val item: Item = arg.head
-      if (item != null) {
+      val item = arg.head
+      if (item != null)
         fsb.cat(item.getStringValueCS)
-      }
     }
     new StringValue(fsb)
   }
 
-  override def process(destination: Outputter,
+  def process(destination: Outputter,
                        context: XPathContext,
                        arguments: Array[Sequence]): Unit = {
-    val output: CharSequenceConsumer = destination.getStringReceiver(false)
+    val output = destination.getStringReceiver(false)
     output.open()
     for (arg <- arguments) {
-      val item: Item = arg.head
-      if (item != null) {
+      val item = arg.head
+      if (item != null)
         output.cat(item.getStringValueCS)
-      }
     }
     output.close()
   }
 
-  override def getRequiredType(arg: Int): SequenceType = getDetails().argumentTypes(0)
+  override def getRequiredType(arg: Int): SequenceType = getDetails.argumentTypes(0)
 
-  override def getCompilerName(): String = "ConcatCompiler"
-
+  override def getCompilerName: String = "ConcatCompiler"
 }

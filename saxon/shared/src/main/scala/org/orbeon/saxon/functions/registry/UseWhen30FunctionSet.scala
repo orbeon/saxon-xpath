@@ -4,32 +4,24 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Function signatures (and pointers to implementations) of the functions available for use
- * in static expressions (including use-when expressions) in XSLT 3.0 stylesheets
- */
-
 package org.orbeon.saxon.functions.registry
 
 import org.orbeon.saxon.functions._
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet._
 import org.orbeon.saxon.model.BuiltInAtomicType
 
-//remove if not needed
-
 object UseWhen30FunctionSet {
-
-  private var THE_INSTANCE: UseWhen30FunctionSet = new UseWhen30FunctionSet()
-
-  def getInstance: UseWhen30FunctionSet = THE_INSTANCE
-
+  val getInstance: UseWhen30FunctionSet = new UseWhen30FunctionSet
 }
 
-class UseWhen30FunctionSet  () extends BuiltInFunctionSet {
 
-  init()
+/**
+ * Function signatures (and pointers to implementations) of the functions available for use
+ * in static expressions (including use-when expressions) in XSLT 3.0 stylesheets
+ */
+class UseWhen30FunctionSet extends BuiltInFunctionSet {
 
-   def init(): Unit = {
+  locally {
     addXPathFunctions()
     register("available-system-properties",
              0,
@@ -71,9 +63,6 @@ class UseWhen30FunctionSet  () extends BuiltInFunctionSet {
              NS).arg(0, BuiltInAtomicType.STRING, ONE, null)
   }
 
-   def addXPathFunctions(): Unit = {
+   def addXPathFunctions(): Unit =
     importFunctionSet(XPath31FunctionSet.getInstance)
-  }
-
 }
-

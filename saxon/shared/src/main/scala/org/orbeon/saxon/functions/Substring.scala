@@ -101,7 +101,7 @@ object Substring {
 
 }
 
-class Substring extends SystemFunction with Callable {
+class Substring extends SystemFunction {
 
   override def typeCheckCaller(caller: FunctionCall,
                                visitor: ExpressionVisitor,

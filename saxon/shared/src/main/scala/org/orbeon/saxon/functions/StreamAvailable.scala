@@ -52,7 +52,7 @@ object StreamAvailable {
 
 }
 
-class StreamAvailable extends SystemFunction with Callable {
+class StreamAvailable extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val result: Boolean =

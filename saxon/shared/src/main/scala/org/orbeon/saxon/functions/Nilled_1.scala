@@ -20,7 +20,7 @@ object Nilled_1 {
   }
 }
 
-class Nilled_1 extends SystemFunction with Callable {
+class Nilled_1 extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[BooleanValue] = {
     val node = arguments(0).head.asInstanceOf[NodeInfo]

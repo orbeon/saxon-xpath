@@ -79,7 +79,7 @@ object RandomNumberGenerator {
 /**
   * This class implements the function random-number-generator(), which is a standard function in XPath 3.1
   */
-class RandomNumberGenerator extends SystemFunction with Callable {
+class RandomNumberGenerator extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     var seed = 0L

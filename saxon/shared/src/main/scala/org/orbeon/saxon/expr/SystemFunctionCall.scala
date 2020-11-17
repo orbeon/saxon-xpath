@@ -4,14 +4,13 @@ import java.util.Arrays
 
 import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr.instruct.AnalyzeString
-import org.orbeon.saxon.expr.oper.OperandArray
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.functions.{Error, _}
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
+import org.orbeon.saxon.functions.{Error, _}
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.map.MapFunctionSet
 import org.orbeon.saxon.model.{BuiltInAtomicType, ItemType, TypeHierarchy}
-import org.orbeon.saxon.om.{Function, Sequence}
+import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.pattern.{NodeSetPattern, Pattern}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
@@ -21,16 +20,14 @@ import org.orbeon.saxon.value.IntegerValue
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
+
 object SystemFunctionCall {
 
-  abstract class Optimized(target: SystemFunction,
-                           arguments: Array[Expression])
+  abstract class Optimized(target: SystemFunction, arguments: Array[Expression])
     extends SystemFunctionCall(target, arguments) {
 
-    override def optimize(visitor: ExpressionVisitor,
-                          contextInfo: ContextItemStaticInfo): Expression =
+    override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression =
       this
-
   }
 
 }
@@ -73,23 +70,27 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
   }
 
   private def allocateArgumentEvaluators(arguments: Array[Expression]): Unit = {
-    for (i <- 0 until arguments.length) {
+    for (i <- arguments.indices) {
       val arg: Expression = arguments(i)
       val cardinality: Int =
         if (isCallOn(classOf[Concat])) StaticProperty.ALLOWS_ZERO_OR_ONE
-        else getTargetFunction().getDetails().argumentTypes(i).getCardinality
+        else getTargetFunction.getDetails.argumentTypes(i).getCardinality
       argumentEvaluators(i) =
-        if (arg.isInstanceOf[Literal]) Evaluator.LITERAL
-        else if (arg.isInstanceOf[VariableReference]) Evaluator.VARIABLE
-        else if (cardinality == StaticProperty.EXACTLY_ONE)
-          Evaluator.SINGLE_ITEM
-        else if (cardinality == StaticProperty.ALLOWS_ZERO_OR_ONE)
-          Evaluator.OPTIONAL_ITEM
-        else Evaluator.LAZY_SEQUENCE
+        arg match {
+          case _: Literal => Evaluator.LITERAL
+          case _: VariableReference => Evaluator.VARIABLE
+          case _ =>
+            if (cardinality == StaticProperty.EXACTLY_ONE)
+              Evaluator.SINGLE_ITEM
+            else if (cardinality == StaticProperty.ALLOWS_ZERO_OR_ONE)
+              Evaluator.OPTIONAL_ITEM
+            else
+              Evaluator.LAZY_SEQUENCE
+        }
     }
   }
 
-  override def getTargetFunction(): SystemFunction =
+  override def getTargetFunction: SystemFunction =
     super.getTargetFunction.asInstanceOf[SystemFunction]
 
   override def getIntrinsicDependencies: Int = {
@@ -133,7 +134,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
 
   override def getNetCost(): Int = getTargetFunction.getNetCost
 
-  override def getScopingExpression(): Expression =
+  override def getScopingExpression: Expression =
     if (isCallOn(classOf[RegexGroup])) {
       var parent: Expression = getParentExpression
       while (parent != null) {
@@ -165,59 +166,55 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       if (sfo != null) {
         sfo.setParentExpression(getParentExpression)
         ExpressionTool.copyLocationInfo(this, sfo)
-        if (sfo.isInstanceOf[SystemFunctionCall]) {
-          sfo
-            .asInstanceOf[SystemFunctionCall]
-            .allocateArgumentEvaluators(
-              sfo.asInstanceOf[SystemFunctionCall].getArguments)
+        sfo match {
+          case systemFunctionCall: SystemFunctionCall =>
+            systemFunctionCall.allocateArgumentEvaluators(systemFunctionCall.getArguments)
+          case _ =>
         }
         return sfo
       }
     }
-    if (sf.isInstanceOf[SystemFunctionCall] && opt.isOptionSet(
-      OptimizerOptions.CONSTANT_FOLDING)) {
-      val details: BuiltInFunctionSet.Entry =
-        sf.asInstanceOf[SystemFunctionCall].getTargetFunction.getDetails
-      if ((details.properties & BuiltInFunctionSet.UO) != 0) {
-        setArg(0, getArg(0).unordered(retainAllNodes = true, forStreaming = visitor.isOptimizeForStreaming))
-      }
-      if (getArity <= details.resultIfEmpty.length) {
-        for (i <- 0 until getArity
-             if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {
-          Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
+    sf match {
+      case systemFunctionCall: SystemFunctionCall if opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING) =>
+        val details = systemFunctionCall.getTargetFunction.getDetails
+        if ((details.properties & BuiltInFunctionSet.UO) != 0)
+          setArg(0, getArg(0).unordered(retainAllNodes = true, forStreaming = visitor.isOptimizeForStreaming))
+        if (getArity <= details.resultIfEmpty.length) {
+          for (i <- 0 until getArity
+               if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {
+            Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
+          }
         }
-      }
-      sf.asInstanceOf[SystemFunctionCall]
-        .allocateArgumentEvaluators(
-          sf.asInstanceOf[SystemFunctionCall].getArguments)
+        systemFunctionCall.allocateArgumentEvaluators(systemFunctionCall.getArguments)
+      case _ =>
     }
     sf
   }
 
-  override def isVacuousExpression(): Boolean = isCallOn(classOf[Error])
+  override def isVacuousExpression: Boolean = isCallOn(classOf[Error])
 
   override def getItemType: ItemType =
     getTargetFunction.getResultItemType(getArguments)
 
   override def copy(rebindings: RebindingMap): Expression = {
     val args: Array[Expression] = Array.ofDim[Expression](getArity)
-    for (i <- 0 until args.length) {
+    for (i <- args.indices)
       args(i) = getArg(i).copy(rebindings)
-    }
     var target: SystemFunction = getTargetFunction
-    if (target.isInstanceOf[StatefulSystemFunction]) {
-      target = target.asInstanceOf[StatefulSystemFunction].copy()
+    target match {
+      case statefulSystemFunction: StatefulSystemFunction =>
+        target = statefulSystemFunction.copy()
+      case _ =>
     }
     target.makeFunctionCall(args.toIndexedSeq: _*)
   }
 
-  override def getIntegerBounds(): Array[IntegerValue] = {
-    val fn: SystemFunction = getTargetFunction
-    if ((fn.getDetails.properties & BuiltInFunctionSet.FILTER) !=
-      0) {
+  override def getIntegerBounds: Array[IntegerValue] = {
+    val fn = getTargetFunction
+    if ((fn.getDetails.properties & BuiltInFunctionSet.FILTER) != 0) {
       getArg(0).getIntegerBounds
-    }
-    fn.getIntegerBounds
+    } else
+      fn.getIntegerBounds
   }
 
   def isNegatable(th: TypeHierarchy): Boolean =
@@ -225,41 +222,40 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       isCallOn(classOf[Empty]) ||
       isCallOn(classOf[Exists])
 
-  def negate(): Expression = {
-    val fn: SystemFunction = getTargetFunction
-    if (fn.isInstanceOf[NotFn]) {
-      val arg: Expression = getArg(0)
-      if (arg.getItemType == BuiltInAtomicType.BOOLEAN && arg.getCardinality == StaticProperty.EXACTLY_ONE) {
-        return arg
-      } else {
-        SystemFunction.makeCall("boolean", getRetainedStaticContext, arg)
-      }
-    } else if (fn.isInstanceOf[BooleanFn]) {
-      SystemFunction.makeCall("not", getRetainedStaticContext, getArg(0))
-    } else if (fn.isInstanceOf[Exists]) {
-      SystemFunction.makeCall("empty", getRetainedStaticContext, getArg(0))
-    } else if (fn.isInstanceOf[Empty]) {
-      SystemFunction.makeCall("exists", getRetainedStaticContext, getArg(0))
+  def negate(): Expression =
+    getTargetFunction match {
+      case _: NotFn =>
+        val arg = getArg(0)
+        if (arg.getItemType == BuiltInAtomicType.BOOLEAN && arg.getCardinality == StaticProperty.EXACTLY_ONE)
+          arg
+        else
+          SystemFunction.makeCall("boolean", getRetainedStaticContext, arg)
+      case _: BooleanFn =>
+        SystemFunction.makeCall("not", getRetainedStaticContext, getArg(0))
+      case _: Exists =>
+        SystemFunction.makeCall("empty", getRetainedStaticContext, getArg(0))
+      case _: Empty =>
+        SystemFunction.makeCall("exists", getRetainedStaticContext, getArg(0))
+      case _ =>
+        throw new UnsupportedOperationException
     }
-    throw new UnsupportedOperationException()
-  }
 
-  override def unordered(retainAllNodes: Boolean,
-                         forStreaming: Boolean): Expression = {
-    val fn: SystemFunction = getTargetFunction
-    if (fn.isInstanceOf[Reverse]) {
-      getArg(0)
-    }
-    if (fn.isInstanceOf[TreatFn]) {
+  override def unordered(retainAllNodes: Boolean, forStreaming: Boolean): Expression = {
+
+    val fn = getTargetFunction
+    if (fn.isInstanceOf[Reverse])
+      return getArg(0)
+
+    if (fn.isInstanceOf[TreatFn])
       setArg(0, getArg(0).unordered(retainAllNodes, forStreaming))
-    }
+
     this
   }
 
   override def addToPathMap(
                              pathMap: PathMap,
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet =
-    if (isCallOn(classOf[Doc]) || isCallOn(classOf[DocumentFn]) ||
+      if (isCallOn(classOf[Doc]) || isCallOn(classOf[DocumentFn]) ||
       isCallOn(classOf[CollectionFn])) {
       getArg(0).addToPathMap(pathMap, pathMapNodeSet)
       new PathMap.PathMapNodeSet(pathMap.makeNewRoot(this))
@@ -272,7 +268,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     }
 
   override def toPattern(config: Configuration): Pattern = {
-    val fn: SystemFunction = getTargetFunction
+    val fn = getTargetFunction
     if (fn.isInstanceOf[Root_1]) {
       if (getArg(0).isInstanceOf[ContextItemExpression] ||
         (getArg(0).isInstanceOf[ItemChecker] &&
@@ -280,18 +276,18 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
             .asInstanceOf[ItemChecker]
             .getBaseExpression
             .isInstanceOf[ContextItemExpression])) {
-        new NodeSetPattern(this)
+        return new NodeSetPattern(this)
       }
     }
     super.toPattern(config)
   }
 
   override def evaluateArguments(context: XPathContext): Array[Sequence] = {
-    val operanda: OperandArray = getOperanda
-    val numArgs: Int = operanda.getNumberOfOperands
-    val actualArgs: Array[Sequence] = Array.ofDim[Sequence](numArgs)
+    val operanda = getOperanda
+    val numArgs = operanda.getNumberOfOperands
+    val actualArgs = Array.ofDim[Sequence](numArgs)
     for (i <- 0 until numArgs) {
-      val exp: Expression = operanda.getOperandExpression(i)
+      val exp = operanda.getOperandExpression(i)
       actualArgs(i) = argumentEvaluators(i).evaluate(exp, context)
     }
     actualArgs
@@ -299,31 +295,26 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
 
   override def resetLocalStaticProperties(): Unit = {
     super.resetLocalStaticProperties()
-    if (argumentEvaluators != null) {
+    if (argumentEvaluators != null)
       allocateArgumentEvaluators(getArguments)
-    }
   }
 
-  override def process(output: Outputter, context: XPathContext): Unit = {
-    val target: Function = getTargetFunction
-    if (target.isInstanceOf[PushableFunction]) {
-      val actualArgs: Array[Sequence] = evaluateArguments(context)
-      try target
-        .asInstanceOf[PushableFunction]
-        .process(output, context, actualArgs)
-      catch {
-        case e: XPathException => {
-          e.maybeSetLocation(getLocation)
-          e.maybeSetContext(context)
-          e.maybeSetFailingExpression(this)
-          throw e
+  override def process(output: Outputter, context: XPathContext): Unit =
+    getTargetFunction match {
+      case pushableFunction: PushableFunction =>
+        val actualArgs = evaluateArguments(context)
+        try
+          pushableFunction.process(output, context, actualArgs)
+        catch {
+          case e: XPathException =>
+            e.maybeSetLocation(getLocation)
+            e.maybeSetContext(context)
+            e.maybeSetFailingExpression(this)
+            throw e
         }
-
-      }
-    } else {
-      super.process(output, context)
+      case _ =>
+        super.process(output, context)
     }
-  }
 
   override def getExpressionName: String = "sysFuncCall"
 
@@ -332,9 +323,8 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       out.startElement("fn", this)
       out.emitAttribute("name", getFunctionName.getLocalPart)
       getTargetFunction.exportAttributes(out)
-      for (o <- operands.asScala) {
+      for (o <- operands.asScala)
         o.getChildExpression.export(out)
-      }
       getTargetFunction.exportAdditionalArguments(this, out)
       out.endElement()
     } else {
@@ -344,12 +334,10 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         "type",
         getTargetFunction.getFunctionItemType.getResultType.toAlphaCode)
       getTargetFunction.exportAttributes(out)
-      for (o <- operands.asScala) {
+      for (o <- operands.asScala)
         o.getChildExpression.export(out)
-      }
       getTargetFunction.exportAdditionalArguments(this, out)
       out.endElement()
     }
   }
-
 }

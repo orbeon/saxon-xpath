@@ -88,7 +88,7 @@ object ParseXml {
 
 }
 
-class ParseXml extends SystemFunction with Callable {
+class ParseXml extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
     val input = arguments(0).head.asInstanceOf[StringValue]

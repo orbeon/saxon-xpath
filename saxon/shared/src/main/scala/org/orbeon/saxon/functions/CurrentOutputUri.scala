@@ -20,7 +20,7 @@ import org.orbeon.saxon.value.AnyURIValue
 
 
 
-class CurrentOutputUri extends SystemFunction with Callable {
+class CurrentOutputUri extends SystemFunction {
 
   /**
     * Determine the special properties of this function. The general rule

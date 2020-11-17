@@ -157,32 +157,27 @@ abstract class FunctionCall extends Expression {
     this
   }
 
-  override def getNetCost(): Int = 5
+  override def getNetCost: Int = 5
 
   def preEvaluate(visitor: ExpressionVisitor): Expression = {
-    if ((getIntrinsicDependencies & ~StaticProperty.DEPENDS_ON_STATIC_CONTEXT) !=
-      0) {
+    if ((getIntrinsicDependencies & ~StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0) {
       return this
     }
     try {
-      val lit: Literal = Literal.makeLiteral(
-        iterate(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize,
-        this)
+      val lit = Literal.makeLiteral(
+        iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
       Optimizer.trace(visitor.getConfiguration,
         "Pre-evaluated function call " + toShortString,
         lit)
       lit
     } catch {
-      case e: NoDynamicContextException => this
-
+      case _: NoDynamicContextException =>
+        this
       case e: UnsupportedOperationException =>
-        if (e.getCause.isInstanceOf[NoDynamicContextException]) {
+        if (e.getCause.isInstanceOf[NoDynamicContextException])
           this
-        } else {
+        else
           throw e
-        }
-
     }
   }
 
@@ -214,11 +209,9 @@ abstract class FunctionCall extends Expression {
   def addExternalFunctionCallToPathMap(
                                         pathMap: PathMap,
                                         pathMapNodes: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
-    val result: PathMap.PathMapNodeSet = new PathMap.PathMapNodeSet()
-    for (o <- operands.asScala) {
-      result.addNodeSet(
-        o.getChildExpression.addToPathMap(pathMap, pathMapNodes))
-    }
+    val result = new PathMap.PathMapNodeSet()
+    for (o <- operands.asScala)
+      result.addNodeSet(o.getChildExpression.addToPathMap(pathMap, pathMapNodes))
     result.setHasUnknownDependencies()
     result
   }
@@ -226,7 +219,7 @@ abstract class FunctionCall extends Expression {
   override def getExpressionName: String = "functionCall"
 
   def getDisplayName: String = {
-    val fName: StructuredQName = getFunctionName
+    val fName = getFunctionName
     if (fName == null) "(anonymous)" else fName.getDisplayName
   }
 
@@ -239,7 +232,7 @@ abstract class FunctionCall extends Expression {
       else if (fName.hasURI(NamespaceConstant.FN)) fName.getLocalPart
       else fName.getEQName
     buff.append(f)
-    var first: Boolean = true
+    var first = true
     for (o <- operands.asScala) {
       buff.append(if (first) "(" else ", ")
       buff.append(o.getChildExpression.toString)

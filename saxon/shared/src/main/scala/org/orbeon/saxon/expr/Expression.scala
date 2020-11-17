@@ -5,7 +5,6 @@ import java.{lang => jl, util => ju}
 
 import org.orbeon.saxon.event.{Outputter, ReceiverOption}
 import org.orbeon.saxon.expr.Expression._
-import org.orbeon.saxon.expr.OperandUsage.OperandUsage
 import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.functions.{KeyFn, SuperId, SystemFunction}
 import org.orbeon.saxon.lib.Logger
@@ -27,16 +26,17 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
+
 object Expression {
 
-  val EVALUATE_METHOD: Int = 1
-  val ITERATE_METHOD: Int = 2
-  val PROCESS_METHOD: Int = 4
-  val WATCH_METHOD: Int = 8
-  val ITEM_FEED_METHOD: Int = 16
-  val EFFECTIVE_BOOLEAN_VALUE: Int = 32
-  val UPDATE_METHOD: Int = 64
-  val MAX_COST: Double = 1e9
+  val EVALUATE_METHOD         : Int    = 1
+  val ITERATE_METHOD          : Int    = 2
+  val PROCESS_METHOD          : Int    = 4
+  val WATCH_METHOD            : Int    = 8
+  val ITEM_FEED_METHOD        : Int    = 16
+  val EFFECTIVE_BOOLEAN_VALUE : Int    = 32
+  val UPDATE_METHOD           : Int    = 64
+  val MAX_COST                : Double = 1e9
 
   val UNBOUNDED_LOWER: IntegerValue = IntegerValue
     .makeIntegerValue(new DoubleValue(-1e100))
@@ -536,7 +536,7 @@ abstract class Expression
     for (o <- operands.asScala) {
       val sub = o.getChildExpression
       if (sub == null)
-        throw new NullPointerException()
+        throw new NullPointerException
       sub.checkForUpdatingSubexpressions()
       if (sub.isUpdatingExpression) {
         val err = new XPathException(
@@ -628,7 +628,7 @@ abstract class Expression
     if (pathMapNodeSet == null) {
       attachmentPoint = pathMapNodeSet
       if (dependsOnFocus) {
-        val cie: ContextItemExpression = new ContextItemExpression()
+        val cie = new ContextItemExpression
         ExpressionTool.copyLocationInfo(Expression.this, cie)
         attachmentPoint = new PathMap.PathMapNodeSet(pathMap.makeNewRoot(cie))
       }
@@ -637,13 +637,11 @@ abstract class Expression
     }
     val result: PathMap.PathMapNodeSet = new PathMap.PathMapNodeSet()
     for (o <- operands.asScala) {
-      val usage: OperandUsage = o.getUsage
+      val usage = o.getUsage
       val child = o.getChildExpression
-      var target: PathMap.PathMapNodeSet =
-        child.addToPathMap(pathMap, attachmentPoint)
+      var target = child.addToPathMap(pathMap, attachmentPoint)
       if (usage == OperandUsage.NAVIGATION) {
-        target =
-          target.createArc(AxisInfo.ANCESTOR_OR_SELF, NodeKindTest.ELEMENT)
+        target = target.createArc(AxisInfo.ANCESTOR_OR_SELF, NodeKindTest.ELEMENT)
         target = target.createArc(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT)
       }
       result.addNodeSet(target)
@@ -704,12 +702,11 @@ abstract class Expression
       extraProperties.put(name, value)
   }
 
-  def getExtraProperty(name: String): Any = {
+  def getExtraProperty(name: String): Any =
     if (extraProperties == null)
       null
     else
       extraProperties.get(name)
-  }
 
   def getStreamerName: String = null
 }

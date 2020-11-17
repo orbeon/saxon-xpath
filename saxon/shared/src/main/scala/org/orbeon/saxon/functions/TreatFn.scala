@@ -52,7 +52,7 @@ object TreatFn {
 
 }
 
-abstract class TreatFn extends SystemFunction with Callable {
+abstract class TreatFn extends SystemFunction {
 
   def getErrorCodeForTypeErrors: String
 

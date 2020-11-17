@@ -49,7 +49,7 @@ object Subsequence_2 {
 
 }
 
-class Subsequence_2 extends SystemFunction with Callable {
+class Subsequence_2 extends SystemFunction {
 
   override def getSpecialProperties(arguments: Array[Expression]): Int =
     arguments(0).getSpecialProperties

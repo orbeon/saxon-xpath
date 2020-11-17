@@ -4,7 +4,7 @@ import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.om.{Item, Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.{BooleanValue, StringValue}
 
-class CodepointEqual extends SystemFunction with Callable {
+class CodepointEqual extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {
     val op1 = arguments(0).head.asInstanceOf[StringValue]

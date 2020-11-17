@@ -37,7 +37,7 @@ object Error {
 
 }
 
-class Error extends SystemFunction with Callable {
+class Error extends SystemFunction {
 
   override def getSpecialProperties(arguments: Array[Expression]): Int =
     super.getSpecialProperties(arguments) & ~StaticProperty.NO_NODES_NEWLY_CREATED

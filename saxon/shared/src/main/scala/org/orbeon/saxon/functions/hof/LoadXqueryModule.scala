@@ -62,7 +62,7 @@ object LoadXqueryModule {
  * This class implements the function load-xquery-module(), which is a standard function in XPath 3.1.
  * It is classified as a higher-order function and therefore requires Saxon-PE or higher.
  */
-class LoadXqueryModule extends SystemFunction with Callable {
+class LoadXqueryModule extends SystemFunction {
 
   /**
    * Prepare an XPathContext object for evaluating the function

@@ -25,7 +25,7 @@ object ParseIetfDate {
   private val EOF = ""
 }
 
-class ParseIetfDate extends SystemFunction with Callable {
+class ParseIetfDate extends SystemFunction {
 
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {

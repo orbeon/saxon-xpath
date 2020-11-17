@@ -57,7 +57,7 @@ object ParseXmlFragment {
 
 }
 
-class ParseXmlFragment extends SystemFunction with Callable {
+class ParseXmlFragment extends SystemFunction {
 
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {

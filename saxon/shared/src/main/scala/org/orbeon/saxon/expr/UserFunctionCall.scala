@@ -1,47 +1,42 @@
 package org.orbeon.saxon.expr
 
+import java.util
+
 import org.orbeon.saxon.event.Outputter
-import org.orbeon.saxon.expr.instruct.Block
-import org.orbeon.saxon.expr.instruct.UserFunction
+import org.orbeon.saxon.expr.Expression._
+import org.orbeon.saxon.expr.TailCallLoop.{TailCallComponent, TailCallFunction}
+import org.orbeon.saxon.expr.UserFunctionCall._
+import org.orbeon.saxon.expr.instruct.{Block, UserFunction}
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.model.AnyItemType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.UType
+import org.orbeon.saxon.model.{AnyItemType, ItemType, UType}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans._
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.Cardinality
-import org.orbeon.saxon.value.EmptySequence
-import org.orbeon.saxon.value.SequenceType
-import org.orbeon.saxon.value.Whitespace
-import java.util.ArrayList
-import java.util.List
-
-import UserFunctionCall._
-import org.orbeon.saxon.expr.TailCallLoop.{TailCallComponent, TailCallFunction}
+import org.orbeon.saxon.value.{Cardinality, EmptySequence, SequenceType, Whitespace}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-import Expression._
+
 
 object UserFunctionCall {
 
-  val NOT_TAIL_CALL: Int = 0
-
-  val FOREIGN_TAIL_CALL: Int = 1
-
-  val SELF_TAIL_CALL: Int = 2
+  val NOT_TAIL_CALL     : Int = 0
+  val FOREIGN_TAIL_CALL : Int = 1
+  val SELF_TAIL_CALL    : Int = 2
 
   private val UNHANDLED_DEPENDENCIES: Int = StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST |
     StaticProperty.DEPENDS_ON_XSLT_CONTEXT |
     StaticProperty.DEPENDS_ON_USER_FUNCTIONS
 
-  private var depth: Int = 0
-
+  // ORBEON: Never used.
+//  private var depth: Int = 0
 }
 
+
+/**
+ * This class represents a call to a user-defined function in the stylesheet or query.
+ */
 class UserFunctionCall extends FunctionCall
   with UserFunctionResolvable
   with ComponentInvocation
@@ -63,33 +58,25 @@ class UserFunctionCall extends FunctionCall
   @BeanProperty
   var argumentEvaluators: Array[Evaluator] = null
 
-   def setFunction(compiledFunction: UserFunction): Unit = {
+   def setFunction(compiledFunction: UserFunction): Unit =
     function = compiledFunction
-  }
 
   def getFunction: UserFunction = function
 
-  def setBindingSlot(slot: Int): Unit = {
+  def setBindingSlot(slot: Int): Unit =
     this.bindingSlot = slot
-  }
 
   def getBindingSlot: Int = bindingSlot
 
-  def setFunctionName(name: StructuredQName): Unit = {
+  def setFunctionName(name: StructuredQName): Unit =
     this.name = name
-  }
 
-  def setStaticType(`type`: SequenceType): Unit = {
+  def setStaticType(`type`: SequenceType): Unit =
     staticType = `type`
-  }
 
   def getFixedTarget: Component = {
     val v: Visibility.Visibility = function.getDeclaringComponent.getVisibility
-    if (v == Visibility.PRIVATE || v == Visibility.FINAL) {
-      function.getDeclaringComponent
-    } else {
-      null
-    }
+    if (v == Visibility.PRIVATE || v == Visibility.FINAL) function.getDeclaringComponent else null
   }
 
   def isTailCall: Boolean = tailCall != NOT_TAIL_CALL
@@ -97,11 +84,7 @@ class UserFunctionCall extends FunctionCall
   def isRecursiveTailCall: Boolean = tailCall == SELF_TAIL_CALL
 
   def getFunctionName: StructuredQName =
-    if (name == null) {
-      function.getFunctionName
-    } else {
-      name
-    }
+    if (name == null) function.getFunctionName else name
 
   def getSymbolicName: SymbolicName =
     new SymbolicName.F(getFunctionName, getArity)
@@ -110,9 +93,8 @@ class UserFunctionCall extends FunctionCall
 
   def setArgumentEvaluationModes(evalModes: Array[EvaluationMode.EvaluationMode]): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](evalModes.length)
-    for (i <- 0 until evalModes.length) {
+    for (i <- evalModes.indices)
       argumentEvaluators(i) = evalModes(i).getEvaluator
-    }
   }
 
   def allocateArgumentEvaluators(): Unit = {
@@ -148,49 +130,35 @@ class UserFunctionCall extends FunctionCall
   override def preEvaluate(visitor: ExpressionVisitor): Expression = this
 
   def getItemType: ItemType =
-    if (staticType == null) {
-      AnyItemType
-    } else {
-      staticType.getPrimaryType
-    }
+    if (staticType == null) AnyItemType else staticType.getPrimaryType
 
   override def getStaticUType(contextItemType: UType): UType = {
     val f: UserFunction = getFunction
-    if (f == null) {
-      UType.ANY
-    }
+    if (f == null) UType.ANY
     f.getResultType.getPrimaryType.getUType
   }
 
   override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_USER_FUNCTIONS
 
-  override def isUpdatingExpression(): Boolean = function.isUpdating
+  override def isUpdatingExpression: Boolean = function.isUpdating
 
   override def computeSpecialProperties(): Int =
-    if (function == null) {
-      super.computeSpecialProperties()
-    } else if (function.getBody != null &&
+    if (function == null) super.computeSpecialProperties() else if (function.getBody != null &&
       (function.getDeclaredVisibility == Visibility.PRIVATE ||
         function.getDeclaredVisibility == Visibility.FINAL)) {
       var props: Int = 0
-      val calledFunctions: List[UserFunction] = new ArrayList[UserFunction]()
+      val calledFunctions: util.List[UserFunction] = new util.ArrayList[UserFunction]()
       ExpressionTool.gatherCalledFunctions(function.getBody, calledFunctions)
       props =
         if (calledFunctions.isEmpty) function.getBody.getSpecialProperties
         else super.computeSpecialProperties()
-      if (function.getDeterminism != UserFunction.Determinism.PROACTIVE) {
-        props |= StaticProperty.NO_NODES_NEWLY_CREATED
-      }
+      if (function.getDeterminism != UserFunction.Determinism.PROACTIVE) props |= StaticProperty.NO_NODES_NEWLY_CREATED
       props
-    } else {
-      super.computeSpecialProperties()
-    }
+    } else super.computeSpecialProperties()
 
   def copy(rebindings: RebindingMap): Expression = {
-    if (function == null) {
-      throw new UnsupportedOperationException("UserFunctionCall.copy()")
-    }
+    if (function == null) throw new UnsupportedOperationException("UserFunctionCall.copy()")
     val ufc: UserFunctionCall = new UserFunctionCall()
     ufc.setFunction(function)
     ufc.setStaticType(staticType)
@@ -205,23 +173,15 @@ class UserFunctionCall extends FunctionCall
   }
 
   def computeCardinality(): Int =
-    if (staticType == null) {
-      StaticProperty.ALLOWS_ZERO_OR_MORE
-    } else {
-      staticType.getCardinality
-    }
+    if (staticType == null) StaticProperty.ALLOWS_ZERO_OR_MORE else staticType.getCardinality
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val e: Expression = super.typeCheck(visitor, contextInfo)
-    if (e != this) {
-      return e
-    }
+    if (e != this) return e
     if (function != null) {
       checkFunctionCall(function, visitor)
-      if (staticType == null || staticType == SequenceType.ANY_SEQUENCE) {
-        staticType = function.getResultType
-      }
+      if (staticType == null || staticType == SequenceType.ANY_SEQUENCE) staticType = function.getResultType
     }
     this
   }
@@ -229,11 +189,9 @@ class UserFunctionCall extends FunctionCall
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextItemType)
-    if (e == this && function != null) {
-      visitor
-        .obtainOptimizer()
-        .tryInlineFunctionCall(this, visitor, contextItemType)
-    }
+    if (e == this && function != null) visitor
+      .obtainOptimizer()
+      .tryInlineFunctionCall(this, visitor, contextItemType)
     e
   }
 
@@ -255,11 +213,7 @@ class UserFunctionCall extends FunctionCall
   }
 
   override def getImplementationMethod: Int =
-    if (Cardinality.allowsMany(getCardinality)) {
-      ITERATE_METHOD | PROCESS_METHOD
-    } else {
-      EVALUATE_METHOD
-    }
+    if (Cardinality.allowsMany(getCardinality)) ITERATE_METHOD | PROCESS_METHOD else EVALUATE_METHOD
 
   override def evaluateItem(c: XPathContext): Item = callFunction(c).head
 
@@ -283,12 +237,10 @@ class UserFunctionCall extends FunctionCall
     }
     if (bindingSlot >= 0) {
       val target: Component = getTargetComponent(context)
-      if (target.isHiddenAbstractComponent) {
-        throw new XPathException(
-          "Cannot call an abstract function (" + name.getDisplayName +
-            ") with no implementation",
-          "XTDE3052")
-      }
+      if (target.isHiddenAbstractComponent) throw new XPathException(
+        "Cannot call an abstract function (" + name.getDisplayName +
+          ") with no implementation",
+        "XTDE3052")
       targetFunction = target.getActor.asInstanceOf[UserFunction]
       c2 = targetFunction.makeNewContext(context, this)
       c2.setCurrentComponent(target)
@@ -323,12 +275,10 @@ class UserFunctionCall extends FunctionCall
       val target: Component = getTargetComponent(context)
       info.component = target
       info.function = target.getActor.asInstanceOf[UserFunction]
-      if (target.isHiddenAbstractComponent) {
-        throw new XPathException(
-          "Cannot call an abstract function (" + name.getDisplayName +
-            ") with no implementation",
-          "XTDE3052")
-      }
+      if (target.isHiddenAbstractComponent) throw new XPathException(
+        "Cannot call an abstract function (" + name.getDisplayName +
+          ") with no implementation",
+        "XTDE3052")
       context.asInstanceOf[XPathContextMajor].requestTailCall(info, actualArgs)
     } else {
       val info: TailCallFunction =
@@ -348,11 +298,9 @@ class UserFunctionCall extends FunctionCall
       val target: Component = getTargetComponent(context)
       val targetFunction: UserFunction =
         target.getActor.asInstanceOf[UserFunction]
-      if (target.getVisibility == Visibility.ABSTRACT) {
-        throw new XPathException(
-          "Cannot call a function defined with visibility=abstract",
-          "XTDE3052")
-      }
+      if (target.getVisibility == Visibility.ABSTRACT) throw new XPathException(
+        "Cannot call a function defined with visibility=abstract",
+        "XTDE3052")
       val c2: XPathContextMajor = targetFunction.makeNewContext(context, this)
       c2.setCurrentComponent(target)
       c2.setOrigin(this)
@@ -365,11 +313,7 @@ class UserFunctionCall extends FunctionCall
   }
 
   def getTargetComponent(context: XPathContext): Component =
-    if (bindingSlot == -1) {
-      function.getDeclaringComponent
-    } else {
-      context.getTargetComponent(bindingSlot)
-    }
+    if (bindingSlot == -1) function.getDeclaringComponent else context.getTargetComponent(bindingSlot)
 
   def getTargetFunction(context: XPathContext): UserFunction =
     getTargetComponent(context).getActor.asInstanceOf[UserFunction]
@@ -381,19 +325,13 @@ class UserFunctionCall extends FunctionCall
     val numArgs: Int = getArity
     val actualArgs: Array[Sequence] = SequenceTool.makeSequenceArray(numArgs)
     this.synchronized {
-      if (argumentEvaluators == null) {
-        allocateArgumentEvaluators()
-      }
+      if (argumentEvaluators == null) allocateArgumentEvaluators()
     }
     for (i <- 0 until numArgs) {
       var eval: Evaluator = argumentEvaluators(i)
-      if (eval == Evaluator.STREAMING_ARGUMENT && !streamed) {
-        eval = Evaluator.EAGER_SEQUENCE
-      }
+      if (eval == Evaluator.STREAMING_ARGUMENT && !streamed) eval = Evaluator.EAGER_SEQUENCE
       actualArgs(i) = eval.evaluate(getArg(i), c)
-      if (actualArgs(i) == null) {
-        actualArgs(i) = EmptySequence.getInstance
-      }
+      if (actualArgs(i) == null) actualArgs(i) = EmptySequence.getInstance
     }
     actualArgs
   }
@@ -429,12 +367,9 @@ class UserFunctionCall extends FunctionCall
   override def getExpressionName: String = "userFunctionCall"
 
   override def getProperty(name: String): AnyRef = {
-    if (name.==("target")) {
-      return function
-    }
+    if (name.==("target")) return function
     super.getProperty(name)
   }
 
   override def getObjectName: StructuredQName = getFunctionName
-
 }
