@@ -1,170 +1,73 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-import org.orbeon.saxon.model.ValidationException
-
-import org.orbeon.saxon.om.NameChecker
-
-import org.orbeon.saxon.om.NamespaceResolver
-
-import org.orbeon.saxon.om.QNameException
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.BigDecimalValue
+import java.{lang => jl}
+import java.math.BigDecimal
+import java.util.{Properties, StringTokenizer}
 
 import javax.xml.transform.OutputKeys
-
-import java.math.BigDecimal
-
-import java.util.Properties
-
-import java.util.StringTokenizer
+import org.orbeon.saxon.model.ValidationException
+import org.orbeon.saxon.om.{NameChecker, NamespaceResolver}
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.value.BigDecimalValue
 
 
-
-
+/**
+  * Provides string constants that can be used to set
+  * output properties for a Transformer, or to retrieve
+  * output properties from a Transformer or Templates object.
+  * <p>These keys are private Saxon keys that supplement the standard keys
+  * defined in javax.xml.transform.OutputKeys. As well as Saxon extension
+  * attributes, the list includes new attributes defined in XSLT 2.0 which
+  * are not yet supported in JAXP</p>
+  *
+  * <p>Note that for JAXP compatibility, the names of properties use Clark format,
+  * that is <code>{uri}local</code>. However, from 10.0, the values of properties
+  * containing QNames, such as <code>cdata-section-elements</code>, use EQName
+  * format, that is <code>Q{uri}local</code>.</p>
+  */
 object SaxonOutputKeys {
 
-  /*@NotNull*/
-
-  val SAXON_XQUERY_METHOD: String = "{http://saxon.sf.net/}xquery"
-
-  /*@NotNull*/
-
-  val SAXON_BASE64_BINARY_METHOD: String = "{http://saxon.sf.net/}base64Binary"
-
-  /*@NotNull*/
-
-  val SAXON_HEX_BINARY_METHOD: String = "{http://saxon.sf.net/}hexBinary"
-
-  /*@NotNull*/
-
-  val SAXON_XML_TO_JSON_METHOD: String = "{http://saxon.sf.net/}xml-to-json"
-
-  /*@NotNull*/
-
-  val ALLOW_DUPLICATE_NAMES: String = "allow-duplicate-names"
-
-  /*@NotNull*/
-
-  val BUILD_TREE: String = "build-tree"
-
-  /*@NotNull*/
-
-  val INDENT_SPACES: String = "{http://saxon.sf.net/}indent-spaces"
-
-  /*@NotNull*/
-
-  val LINE_LENGTH: String = "{http://saxon.sf.net/}line-length"
-
-  /*@NotNull*/
-
-  val SINGLE_QUOTES: String = "{http://saxon.sf.net/}single-quotes"
-
-  /*@NotNull*/
-
-  val SUPPRESS_INDENTATION: String = "suppress-indentation"
-
-  val HTML_VERSION: String = "html-version"
-
-  val ITEM_SEPARATOR: String = "item-separator"
-
-  /*@NotNull*/
-
-  val JSON_NODE_OUTPUT_METHOD: String = "json-node-output-method"
-
-  /*@NotNull*/
-
-  val ATTRIBUTE_ORDER: String = "{http://saxon.sf.net/}attribute-order"
-
-  /*@NotNull*/
-
-  val CANONICAL: String = "{http://saxon.sf.net/}canonical"
-
-  /*@NotNull*/
-
-  val PROPERTY_ORDER: String = "{http://saxon.sf.net/}property-order"
-
-  /*@NotNull*/
-
-  val DOUBLE_SPACE: String = "{http://saxon.sf.net/}double-space"
-
-  /*@NotNull*/
-
-  val NEWLINE: String = "{http://saxon.sf.net/}newline"
-
-  /*@NotNull*/
-
-  val STYLESHEET_VERSION: String = "{http://saxon.sf.net/}stylesheet-version"
-
-  /*@NotNull*/
-
-  val USE_CHARACTER_MAPS: String = "use-character-maps"
-
-  /*@NotNull*/
-
-  val INCLUDE_CONTENT_TYPE: String = "include-content-type"
-
-  /*@NotNull*/
-
-  val UNDECLARE_PREFIXES: String = "undeclare-prefixes"
-
-  /*@NotNull*/
-
-  val ESCAPE_URI_ATTRIBUTES: String = "escape-uri-attributes"
-
-  /*@NotNull*/
-
-  val CHARACTER_REPRESENTATION: String =
-    "{http://saxon.sf.net/}character-representation"
-
-  /*@NotNull*/
-
-  val NEXT_IN_CHAIN: String = "{http://saxon.sf.net/}next-in-chain"
-
-  /*@NotNull*/
-
-  val NEXT_IN_CHAIN_BASE_URI: String =
-    "{http://saxon.sf.net/}next-in-chain-base-uri"
-
-  /*@NotNull*/
-
-  val PARAMETER_DOCUMENT: String = "parameter-document"
-
-  /*@NotNull*/
-
-  val PARAMETER_DOCUMENT_BASE_URI: String =
-    "{http://saxon.sf.net/}parameter-document-base-uri"
-
-  /*@NotNull*/
-
-  val BYTE_ORDER_MARK: String = "byte-order-mark"
-
-  /*@NotNull*/
-
-  val NORMALIZATION_FORM: String = "normalization-form"
-
-  /*@NotNull*/
-
-  val RECOGNIZE_BINARY: String = "{http://saxon.sf.net/}recognize-binary"
-
-  /*@NotNull*/
-
-  val REQUIRE_WELL_FORMED: String = "{http://saxon.sf.net/}require-well-formed"
-
-  /*@NotNull*/
-
-  val SUPPLY_SOURCE_LOCATOR: String =
-    "{http://saxon.sf.net/}supply-source-locator"
-
-  /*@NotNull*/
-
-  val WRAP: String = "{http://saxon.sf.net/}wrap-result-sequence"
-
-  val UNFAILING: String = "{http://saxon.sf.net/}unfailing"
-
-  /*@NotNull*/
+  val SAXON_XQUERY_METHOD         : String = "{http://saxon.sf.net/}xquery"
+  val SAXON_BASE64_BINARY_METHOD  : String = "{http://saxon.sf.net/}base64Binary"
+  val SAXON_HEX_BINARY_METHOD     : String = "{http://saxon.sf.net/}hexBinary"
+  val SAXON_XML_TO_JSON_METHOD    : String = "{http://saxon.sf.net/}xml-to-json"
+  val ALLOW_DUPLICATE_NAMES       : String = "allow-duplicate-names"
+  val BUILD_TREE                  : String = "build-tree"
+  val INDENT_SPACES               : String = "{http://saxon.sf.net/}indent-spaces"
+  val LINE_LENGTH                 : String = "{http://saxon.sf.net/}line-length"
+  val SINGLE_QUOTES               : String = "{http://saxon.sf.net/}single-quotes"
+  val SUPPRESS_INDENTATION        : String = "suppress-indentation"
+  val HTML_VERSION                : String = "html-version"
+  val ITEM_SEPARATOR              : String = "item-separator"
+  val JSON_NODE_OUTPUT_METHOD     : String = "json-node-output-method"
+  val ATTRIBUTE_ORDER             : String = "{http://saxon.sf.net/}attribute-order"
+  val CANONICAL                   : String = "{http://saxon.sf.net/}canonical"
+  val PROPERTY_ORDER              : String = "{http://saxon.sf.net/}property-order"
+  val DOUBLE_SPACE                : String = "{http://saxon.sf.net/}double-space"
+  val NEWLINE                     : String = "{http://saxon.sf.net/}newline"
+  val STYLESHEET_VERSION          : String = "{http://saxon.sf.net/}stylesheet-version"
+  val USE_CHARACTER_MAPS          : String = "use-character-maps"
+  val INCLUDE_CONTENT_TYPE        : String = "include-content-type"
+  val UNDECLARE_PREFIXES          : String = "undeclare-prefixes"
+  val ESCAPE_URI_ATTRIBUTES       : String = "escape-uri-attributes"
+  val CHARACTER_REPRESENTATION    : String = "{http://saxon.sf.net/}character-representation"
+  val NEXT_IN_CHAIN               : String = "{http://saxon.sf.net/}next-in-chain"
+  val NEXT_IN_CHAIN_BASE_URI      : String = "{http://saxon.sf.net/}next-in-chain-base-uri"
+  val PARAMETER_DOCUMENT          : String = "parameter-document"
+  val PARAMETER_DOCUMENT_BASE_URI : String = "{http://saxon.sf.net/}parameter-document-base-uri"
+  val BYTE_ORDER_MARK             : String = "byte-order-mark"
+  val NORMALIZATION_FORM          : String = "normalization-form"
+  val RECOGNIZE_BINARY            : String = "{http://saxon.sf.net/}recognize-binary"
+  val REQUIRE_WELL_FORMED         : String = "{http://saxon.sf.net/}require-well-formed"
+  val SUPPLY_SOURCE_LOCATOR       : String = "{http://saxon.sf.net/}supply-source-locator"
+  val WRAP                        : String = "{http://saxon.sf.net/}wrap-result-sequence"
+  val UNFAILING                   : String = "{http://saxon.sf.net/}unfailing"
 
   def parseListOfNodeNames(value: String,
                            nsResolver: NamespaceResolver,
@@ -172,10 +75,10 @@ object SaxonOutputKeys {
                            prevalidated: Boolean,
                            allowStar: Boolean,
                            errorCode: String): String = {
-    val s: StringBuilder = new StringBuilder()
-    val st: StringTokenizer = new StringTokenizer(value, " \t\n\r", false)
-    while (st.hasMoreTokens()) {
-      val displayname: String = st.nextToken()
+    val s = new jl.StringBuilder
+    val st = new StringTokenizer(value, " \t\n\r", false)
+    while (st.hasMoreTokens) {
+      val displayname = st.nextToken()
       if (allowStar && "*" == displayname) {
         s.append(' ').append(displayname)
       } else if (prevalidated || (nsResolver == null)) {
@@ -183,13 +86,12 @@ object SaxonOutputKeys {
       } else if (displayname.startsWith("Q{")) {
         s.append(' ').append(displayname)
       } else {
-        val parts: Array[String] = NameChecker.getQNameParts(displayname)
-        val muri: String = nsResolver.getURIForPrefix(parts(0), useDefaultNS)
-        if (muri == null) {
+        val parts = NameChecker.getQNameParts(displayname)
+        val muri = nsResolver.getURIForPrefix(parts(0), useDefaultNS)
+        if (muri == null)
           throw new XPathException(
             "Namespace prefix '" + parts(0) + "' has not been declared",
             errorCode)
-        }
         s.append(" Q{").append(muri).append('}').append(parts(1))
       }
     }
@@ -228,8 +130,7 @@ object SaxonOutputKeys {
     *         it can also be written, for example, "5" or "+5.00".
     */
   def isXhtmlHtmlVersion5(properties: Properties): Boolean = {
-    val htmlVersion: String =
-      properties.getProperty(SaxonOutputKeys.HTML_VERSION)
+    val htmlVersion = properties.getProperty(SaxonOutputKeys.HTML_VERSION)
     try htmlVersion != null &&
       BigDecimalValue
         .makeDecimalValue(htmlVersion, validate = false)
@@ -237,8 +138,7 @@ object SaxonOutputKeys {
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)
     catch {
-      case e: ValidationException => false
-
+      case _: ValidationException => false
     }
   }
 
@@ -252,11 +152,9 @@ object SaxonOutputKeys {
     *         it can also be written, for example, "5" or "+5.00".
     */
   def isHtmlVersion5(properties: Properties): Boolean = {
-    var htmlVersion: String =
-      properties.getProperty(SaxonOutputKeys.HTML_VERSION)
-    if (htmlVersion == null) {
+    var htmlVersion = properties.getProperty(SaxonOutputKeys.HTML_VERSION)
+    if (htmlVersion == null)
       htmlVersion = properties.getProperty(OutputKeys.VERSION)
-    }
     if (htmlVersion != null) {
       try BigDecimalValue
         .makeDecimalValue(htmlVersion, validate = false)
@@ -264,8 +162,7 @@ object SaxonOutputKeys {
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)
       catch {
-        case e: ValidationException => false
-
+        case _: ValidationException => false
       }
     } else {
 // Change in 10.0 to make HTML5 the default
@@ -281,25 +178,4 @@ object SaxonOutputKeys {
     val method: String = properties.getProperty("method")
     !("json" == method || "adaptive" == method)
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Provides string constants that can be used to set
-  * output properties for a Transformer, or to retrieve
-  * output properties from a Transformer or Templates object.
-  * <p>These keys are private Saxon keys that supplement the standard keys
-  * defined in javax.xml.transform.OutputKeys. As well as Saxon extension
-  * attributes, the list includes new attributes defined in XSLT 2.0 which
-  * are not yet supported in JAXP</p>
-  *
-  * <p>Note that for JAXP compatibility, the names of properties use Clark format,
-  * that is <code>{uri}local</code>. However, from 10.0, the values of properties
-  * containing QNames, such as <code>cdata-section-elements</code>, use EQName
-  * format, that is <code>Q{uri}local</code>.</p>
-  */

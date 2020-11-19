@@ -1,19 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.om.AtomicSequence
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.om.{AtomicSequence, NodeInfo, StructuredQName}
 
 
-
-
+/**
+  * SchemaType is an interface implemented by all schema types: simple and complex types, built-in and
+  * user-defined types.
+  * <p>There is a hierarchy of interfaces that extend SchemaType, representing the top levels of the schema
+  * type system: SimpleType and ComplexType, with SimpleType further subdivided into List, Union, and Atomic
+  * types.</p>
+  * <p>The implementations of these interfaces are organized into a different hierarchy: on the one side,
+  * built-in types such as AnyType, AnySimpleType, and the built-in atomic types and list types; on the other
+  * side, user-defined types defined in a schema.</p>
+  */
 trait SchemaType extends SchemaComponent {
 
   /**
@@ -113,77 +119,37 @@ trait SchemaType extends SchemaComponent {
   var DERIVE_BY_SUBSTITUTION: Int = 16
 
   /*@Nullable*/
-
   def getName: String
-
   /*@Nullable*/
-
   def getTargetNamespace: String
-
   def getFingerprint: Int
-
   def getDisplayName: String
-
   def getStructuredQName: StructuredQName
-
   def getEQName: String
-
   def isComplexType: Boolean
-
   def isSimpleType: Boolean
-
   def isAtomicType: Boolean
-
   def isAnonymousType: Boolean
-
   def getBlock: Int
-
   def getBaseType: SchemaType
 
   def getNearestNamedType: SchemaType = {
-    var `type`: SchemaType = this
-    while (`type`.isAnonymousType) `type` = `type`.getBaseType
-    `type`
+    var typ = this
+    while (typ.isAnonymousType)
+      typ = typ.getBaseType
+    typ
   }
 
   def getDerivationMethod: Int
-
   def getFinalProhibitions: Int
-
   def allowsDerivation(derivation: Int): Boolean
-
   def analyzeContentExpression(expression: Expression, kind: Int): Unit
-
   def atomize(node: NodeInfo): AtomicSequence
-
   def isSameType(other: SchemaType): Boolean
-
   def getDescription: String
-
   def checkTypeDerivationIsOK(base: SchemaType, block: Int): Unit
-
   /*@Nullable*/
-
   def getSystemId: String
-
   def isIdType: Boolean
-
   def isIdRefType: Boolean
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * SchemaType is an interface implemented by all schema types: simple and complex types, built-in and
-  * user-defined types.
-  * <p>There is a hierarchy of interfaces that extend SchemaType, representing the top levels of the schema
-  * type system: SimpleType and ComplexType, with SimpleType further subdivided into List, Union, and Atomic
-  * types.</p>
-  * <p>The implementations of these interfaces are organized into a different hierarchy: on the one side,
-  * built-in types such as AnyType, AnySimpleType, and the built-in atomic types and list types; on the other
-  * side, user-defined types defined in a schema.</p>
-  */

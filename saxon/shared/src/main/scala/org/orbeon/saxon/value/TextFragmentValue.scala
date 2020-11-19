@@ -1,7 +1,7 @@
 package org.orbeon.saxon.value
 
-import java.util.{Collections, Iterator}
 import java.util.function.Predicate
+import java.util.{Collections, Iterator}
 
 import javax.xml.transform.SourceLocator
 import org.orbeon.saxon.event.{Receiver, ReceiverOption}
@@ -30,7 +30,6 @@ object TextFragmentValue {
     } else {
       new TextFragmentValue(config, value, baseURI)
     }
-
 }
 
 class TextFragmentValue(config: Configuration,
@@ -39,15 +38,14 @@ class TextFragmentValue(config: Configuration,
   extends NodeInfo
     with SourceLocator {
 
-  private var text: CharSequence = value
-
+  private val text: CharSequence = value
   private var documentURI: String = _
 
   @BeanProperty
-  var treeInfo: GenericTreeInfo = new GenericTreeInfo(config)
+  val treeInfo: GenericTreeInfo = new GenericTreeInfo(config)
 
   @BeanProperty
-  lazy val textNode: TextFragmentTextNode = new TextFragmentTextNode()
+  lazy val textNode: TextFragmentTextNode = new TextFragmentTextNode
 
   this.treeInfo.setRootNode(this)
 
@@ -70,9 +68,8 @@ class TextFragmentValue(config: Configuration,
     buffer.append(java.lang.Long.toString(treeInfo.getDocumentNumber))
   }
 
-  def setSystemId(systemId: String): Unit = {
+  def setSystemId(systemId: String): Unit =
     documentURI = systemId
-  }
 
   def getSystemId: String = documentURI
 
@@ -112,15 +109,14 @@ class TextFragmentValue(config: Configuration,
     case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
       SingleNodeIterator.makeIterator(getTextNode)
     case AxisInfo.DESCENDANT_OR_SELF =>
-      var nodes: Array[NodeInfo] = Array(this, getTextNode)
+      val nodes: Array[NodeInfo] = Array(this, getTextNode)
       new ArrayIterator.OfNodes(nodes)
     case _ =>
       throw new IllegalArgumentException("Unknown axis number " + axisNumber)
 
   }
 
-  def iterateAxis(axisNumber: Int,
-                  nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
+  def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
     axisNumber match {
       case AxisInfo.ANCESTOR | AxisInfo.ATTRIBUTE | AxisInfo.FOLLOWING |
            AxisInfo.FOLLOWING_SIBLING | AxisInfo.NAMESPACE | AxisInfo.PARENT |
@@ -132,35 +128,31 @@ class TextFragmentValue(config: Configuration,
       case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
         Navigator.filteredSingleton(getTextNode, nodeTest)
       case AxisInfo.DESCENDANT_OR_SELF =>
-        var b1: Boolean = nodeTest.test(this)
-        var textNode2: NodeInfo = getTextNode
-        var b2: Boolean = nodeTest.test(textNode2)
+        val b1        = nodeTest.test(this)
+        val textNode2 = getTextNode
+        val b2        = nodeTest.test(textNode2)
         if (b1) {
           if (b2) {
-            val pair: Array[NodeInfo] = Array(this, textNode2)
+            val pair = Array(this, textNode2)
             new ArrayIterator.OfNodes(pair)
           } else {
             SingleNodeIterator.makeIterator(this)
           }
         } else {
-          if (b2) {
+          if (b2)
             SingleNodeIterator.makeIterator(textNode2)
-          } else {
+          else
             EmptyIterator.ofNodes
-          }
         }
       case _ =>
         throw new IllegalArgumentException("Unknown axis number " + axisNumber)
-
     }
 
   def getParent: NodeInfo = null
-
   def getRoot: NodeInfo = this
 
-  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
     out.characters(text, locationId, ReceiverOption.NONE)
-  }
 
   def selectID(id: String, getParent: Boolean): NodeInfo = null
 
@@ -188,9 +180,8 @@ class TextFragmentValue(config: Configuration,
     def getBaseURI: String = baseURI
 
     def compareOrder(other: NodeInfo): Int = {
-      if (this eq other) {
+      if (this eq other)
         return 0
-      }
       +1
     }
 
@@ -213,11 +204,10 @@ class TextFragmentValue(config: Configuration,
     def atomize(): AtomicSequence = new UntypedAtomicValue(text)
 
     override def iterateAxis(axisNumber: Int): AxisIterator = axisNumber match {
-      case AxisInfo.ANCESTOR | AxisInfo.PARENT |
-           AxisInfo.PRECEDING_OR_ANCESTOR =>
+      case AxisInfo.ANCESTOR | AxisInfo.PARENT | AxisInfo.PRECEDING_OR_ANCESTOR =>
         SingleNodeIterator.makeIterator(TextFragmentValue.this)
       case AxisInfo.ANCESTOR_OR_SELF =>
-        var nodes: Array[NodeInfo] = Array(this, TextFragmentValue.this)
+        val nodes: Array[NodeInfo] = Array(this, TextFragmentValue.this)
         new ArrayIterator.OfNodes(nodes)
       case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT |
            AxisInfo.FOLLOWING | AxisInfo.FOLLOWING_SIBLING |
@@ -228,7 +218,6 @@ class TextFragmentValue(config: Configuration,
         SingleNodeIterator.makeIterator(this)
       case _ =>
         throw new IllegalArgumentException("Unknown axis number " + axisNumber)
-
     }
 
     def iterateAxis(axisNumber: Int,
@@ -238,8 +227,8 @@ class TextFragmentValue(config: Configuration,
              AxisInfo.PRECEDING_OR_ANCESTOR =>
           Navigator.filteredSingleton(TextFragmentValue.this, nodeTest)
         case AxisInfo.ANCESTOR_OR_SELF =>
-          var matchesDoc: Boolean = nodeTest.test(TextFragmentValue.this)
-          var matchesText: Boolean = nodeTest.test(this)
+          val matchesDoc: Boolean = nodeTest.test(TextFragmentValue.this)
+          val matchesText: Boolean = nodeTest.test(this)
           if (matchesDoc && matchesText) {
             val nodes: Array[NodeInfo] = Array(this, TextFragmentValue.this)
             new ArrayIterator.OfNodes(nodes)
@@ -264,13 +253,9 @@ class TextFragmentValue(config: Configuration,
       }
 
     def getParent: NodeInfo = TextFragmentValue.this
-
     def getRoot: NodeInfo = TextFragmentValue.this
 
-    override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+    override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
       out.characters(text, locationId, ReceiverOption.NONE)
-    }
-
   }
-
 }
