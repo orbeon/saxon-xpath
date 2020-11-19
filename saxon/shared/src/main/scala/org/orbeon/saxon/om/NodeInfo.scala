@@ -41,7 +41,7 @@ import scala.jdk.CollectionConverters._
   * the lower-level properties (such as "parent" and "children") directly. All navigation within trees,
   * except for a few convenience methods, is done by following the axes using the {@link #iterateAxis} method.
   * This allows different implementations of the XPath tree model to implement axis navigation in different ways.
-  * Some implementations may choose to use the helper methods provided in class {@link org.orbeon.saxon.tree.util.Navigator}.</p>
+  * Some implementations may choose to use the helper methods provided in class `org.orbeon.saxon.tree.util.Navigator`.</p>
   * <p>Note that the stability of this interface applies to classes that use the interface,
   * not to classes that implement it. The interface may be extended in future to add new methods.</p>
   * <p>New implementations of NodeInfo are advised also to implement the methods in interface
@@ -94,9 +94,6 @@ trait NodeInfo extends Source with Item with Location {
     case Type.DOCUMENT | Type.ELEMENT => Untyped.getInstance
     case _ => null
   }
-
-  val IS_DTD_TYPE: Int = 1 << 30
-  val IS_NILLED  : Int = 1 << 29
 
   def iterateAxis(axisNumber: Int): AxisIterator =
     iterateAxis(axisNumber, AnyNodeTest.getInstance)
@@ -168,4 +165,9 @@ trait NodeInfo extends Source with Item with Location {
     * be overridden) returns {@link Genre#NODE}.
     */
   override def getGenre: Genre = Genre.NODE
+}
+
+object NodeInfo {
+  val IS_DTD_TYPE: Int = 1 << 30
+  val IS_NILLED  : Int = 1 << 29
 }
