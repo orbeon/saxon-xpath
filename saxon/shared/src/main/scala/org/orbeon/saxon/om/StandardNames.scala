@@ -19,7 +19,6 @@ import java.util.HashMap
   * <p>Codes in the range 0-100 are used for standard node kinds such as ELEMENT,
   * DOCUMENT, etc, and for built-in types such as ITEM and EMPTY.</p>
   */
-
 object StandardNames {
 
   private val DFLT_NS : Int = 0
@@ -29,8 +28,8 @@ object StandardNames {
   private val XS_NS   : Int = 4
   private val XSI_NS  : Int = 5
 
-  val DFLT                            : Int = 0 //   0
-  val XSL                             : Int = 128 // 128
+  val DFLT                            : Int = 0       //   0
+  val XSL                             : Int = 128     // 128
   val SAXON                           : Int = 128 * 2 // 256
   val XML                             : Int = 128 * 3 // 384
   val XS                              : Int = 128 * 4 // 512
@@ -544,19 +543,16 @@ object StandardNames {
   def getLocalName(fingerprint: Int): String = localNames(fingerprint)
 
   /*@NotNull*/
-  def getURI(fingerprint: Int): String = {
-    val c = fingerprint >> 7
-    c match {
-      case DFLT_NS => ""
-      case XSL_NS => NamespaceConstant.XSLT
+  def getURI(fingerprint: Int): String =
+    fingerprint >> 7 match {
+      case DFLT_NS  => ""
+      case XSL_NS   => NamespaceConstant.XSLT
       case SAXON_NS => NamespaceConstant.SAXON
-      case XML_NS => NamespaceConstant.XML
-      case XS_NS => NamespaceConstant.SCHEMA
-      case XSI_NS => NamespaceConstant.SCHEMA_INSTANCE
-      case _ =>
-        throw new IllegalArgumentException("Unknown system fingerprint " + fingerprint)
+      case XML_NS   => NamespaceConstant.XML
+      case XS_NS    => NamespaceConstant.SCHEMA
+      case XSI_NS   => NamespaceConstant.SCHEMA_INSTANCE
+      case _        => throw new IllegalArgumentException("Unknown system fingerprint " + fingerprint)
     }
-  }
 
   def getClarkName(fingerprint: Int): String = {
     val uri = getURI(fingerprint)
@@ -566,18 +562,16 @@ object StandardNames {
       "{" + uri + "}" + getLocalName(fingerprint)
   }
 
-  def getPrefix(fingerprint: Int): String = {
-    val c = fingerprint >> 7
-    c match {
-      case DFLT_NS => ""
-      case XSL_NS => "xsl"
+  def getPrefix(fingerprint: Int): String =
+    fingerprint >> 7 match {
+      case DFLT_NS  => ""
+      case XSL_NS   => "xsl"
       case SAXON_NS => "saxon"
-      case XML_NS => "xml"
-      case XS_NS => "xs"
-      case XSI_NS => "xsi"
-      case _ => null
+      case XML_NS   => "xml"
+      case XS_NS    => "xs"
+      case XSI_NS   => "xsi"
+      case _        => null
     }
-  }
 
   def getDisplayName(fingerprint: Int): String = {
     if (fingerprint == -1)
@@ -590,9 +584,7 @@ object StandardNames {
   }
 
   def getStructuredQName(fingerprint: Int): StructuredQName =
-    new StructuredQName(getPrefix(fingerprint),
-                        getURI(fingerprint),
-                        getLocalName(fingerprint))
+    new StructuredQName(getPrefix(fingerprint), getURI(fingerprint), getLocalName(fingerprint))
 
   def getUnprefixedQName(fingerprint: Int): StructuredQName =
     new StructuredQName("", getURI(fingerprint), getLocalName(fingerprint))

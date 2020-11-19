@@ -1,31 +1,23 @@
 package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.expr.LastPositionFinder
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
+import org.orbeon.saxon.om.{GroundedValue, Item, SequenceIterator}
+import org.orbeon.saxon.om.SequenceIterator.Property._
 import org.orbeon.saxon.value.EmptySequence
 
-import org.orbeon.saxon.om.SequenceIterator.Property._
 
 object SingletonIterator {
 
   def makeIterator[T <: Item](item: T): UnfailingIterator =
-    if (item == null) {
+    if (item == null)
       EmptyIterator.emptyIterator
-    } else {
+    else
       new SingletonIterator(item)
-    }
 
   def rawIterator[T <: Item](item: T): SingletonIterator[T] = {
-    assert(item != null)
+    require(item ne null)
     new SingletonIterator(item)
   }
-
 }
 
 class SingletonIterator[T <: Item](value: T)
@@ -63,9 +55,8 @@ class SingletonIterator[T <: Item](value: T)
       EmptySequence.getInstance
     }
 
-  override def getResidue: GroundedValue =
+  def getResidue: GroundedValue =
     if (gone) EmptySequence.getInstance else materialize
 
   override def getProperties: Set[Property] = Set(LOOKAHEAD, GROUNDED, LAST_POSITION_FINDER)
-
 }

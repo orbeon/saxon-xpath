@@ -1,51 +1,45 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
-
-import org.orbeon.saxon.expr.sort.AtomicMatchKey
-
-import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.model.ConversionResult
-
-import org.orbeon.saxon.model.ValidationException
-
-import org.orbeon.saxon.model.ValidationFailure
-
-import org.orbeon.saxon.trans.XPathException
 
 import java.math.BigDecimal
 
-import NumericValue._
+import org.orbeon.saxon.expr.sort.AtomicMatchKey
+import org.orbeon.saxon.lib.StringCollator
+import org.orbeon.saxon.model.{ConversionResult, ValidationFailure}
 
 
-
+/**
+  * NumericValue is an abstract superclass for IntegerValue, DecimalValue,
+  * FloatValue, and DoubleValue
+  */
 
 object NumericValue {
 
   /*@NotNull*/
-
   def parseNumber(in: String): NumericValue = {
 
     if (in.indexOf('e') >= 0 || in.indexOf('E') >= 0) {
       try new DoubleValue(java.lang.Double.parseDouble(in))
       catch {
-        case e: NumberFormatException => DoubleValue.NaN
-
+        case _: NumberFormatException => DoubleValue.NaN
       }
     } else if (in.indexOf('.') >= 0) {
-      val v: ConversionResult = BigDecimalValue.makeDecimalValue(in, validate = true)
-      if (v.isInstanceOf[ValidationFailure]) {
+      val v = BigDecimalValue.makeDecimalValue(in, validate = true)
+      if (v.isInstanceOf[ValidationFailure])
         DoubleValue.NaN
-      } else {
+      else
         v.asInstanceOf[NumericValue]
-      }
     } else {
-      val v: ConversionResult = IntegerValue.stringToInteger(in)
-      if (v.isInstanceOf[ValidationFailure]) {
+      val v = IntegerValue.stringToInteger(in)
+      if (v.isInstanceOf[ValidationFailure])
         DoubleValue.NaN
-      } else {
+      else
         v.asInstanceOf[NumericValue]
-      }
     }
   }
 
@@ -65,9 +59,7 @@ abstract class NumericValue
     *         converted
     */
   def getDoubleValue: Double
-
   def getFloatValue: Float
-
   def getDecimalValue: BigDecimal
 
   /**
@@ -87,29 +79,17 @@ abstract class NumericValue
     *          if the value cannot be converted
     */
   def longValue(): Long
-
   def negate(): NumericValue
-
   /*@NotNull*/
-
   def floor(): NumericValue
-
   /*@NotNull*/
-
   def ceiling(): NumericValue
-
   def round(scale: Int): NumericValue
-
   def roundHalfToEven(scale: Int): NumericValue
-
   def signum(): Int
-
   def isNegativeZero: Boolean = false
-
   def isWholeNumber: Boolean
-
   def asSubscript(): Int
-
   def abs(): NumericValue
 
   /*@NotNull*/
@@ -131,33 +111,19 @@ abstract class NumericValue
     }
     +1
   }
-// IntelliJ says this can be replaced with Double.compare(). But it can't. Double.compare()
-// treats positive and negative zero as not equal; we want them treated as equal. XSLT3 test case
-// boolean-014.  MHK 2020-02-17
-// IntelliJ says this can be replaced with Double.compare(). But it can't. Double.compare()
-// treats positive and negative zero as not equal; we want them treated as equal. XSLT3 test case
-// boolean-014.  MHK 2020-02-17
+
+  // IntelliJ says this can be replaced with Double.compare(). But it can't. Double.compare()
+  // treats positive and negative zero as not equal; we want them treated as equal. XSLT3 test case
+  // boolean-014.  MHK 2020-02-17
 
   def compareTo(other: Long): Int
 
   override def equals(other: Any): Boolean = other match {
     case other: NumericValue => compareTo(other) == 0
-    case _ => false
-
+    case _                   => false
   }
 
-  override def hashCode: Int
+  def hashCode: Int
 
   override def toString: String = getStringValue
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * NumericValue is an abstract superclass for IntegerValue, DecimalValue,
-  * FloatValue, and DoubleValue
-  */

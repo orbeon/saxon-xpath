@@ -21,10 +21,10 @@ import org.orbeon.saxon.value.DoubleValue._
 
 object DoubleValue {
 
-  val ZERO: DoubleValue = new DoubleValue(0.0)
-  val NEGATIVE_ZERO: DoubleValue = new DoubleValue(-0.0)
-  val ONE: DoubleValue = new DoubleValue(1.0)
-  val NaN: DoubleValue = new DoubleValue(java.lang.Double.NaN)
+  val ZERO          : DoubleValue = new DoubleValue(0.0)
+  val NEGATIVE_ZERO : DoubleValue = new DoubleValue(-0.0)
+  val ONE           : DoubleValue = new DoubleValue(1.0)
+  val NaN           : DoubleValue = new DoubleValue(java.lang.Double.NaN)
 
   def makeDoubleValue(value: Double): DoubleValue = new DoubleValue(value)
 
@@ -33,10 +33,9 @@ object DoubleValue {
       new FastStringBuffer(FastStringBuffer.C16),
       value,
       forceExponential = false)
-
 }
 
-class DoubleValue() extends NumericValue {
+class DoubleValue extends NumericValue {
 
   typeLabel = BuiltInAtomicType.DOUBLE
   var value: Double = _
@@ -46,15 +45,15 @@ class DoubleValue() extends NumericValue {
     this.value = value
     typeLabel = `type`
   }
+
   def this(value: Double) = {
     this()
     this.value = value
   }
 
   /*@NotNull*/
-
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
-    val v: DoubleValue = new DoubleValue(value)
+    val v = new DoubleValue(value)
     v.typeLabel = typeLabel
     v
   }
@@ -68,7 +67,7 @@ class DoubleValue() extends NumericValue {
     *
     * @return a float representing this numeric value; NaN if it cannot be converted
     */
-  override def getFloatValue: Float = value.toFloat
+  def getFloatValue: Float = value.toFloat
 
   /**
     * Get the numeric value converted to a decimal
@@ -77,7 +76,7 @@ class DoubleValue() extends NumericValue {
     * @throws ValidationException
     *          if the value cannot be converted, for example if it is NaN or infinite
     */
-  override def getDecimalValue: BigDecimal = new BigDecimal(value)
+  def getDecimalValue: BigDecimal = new BigDecimal(value)
 
   /**
     * Return the numeric value as a Java long.
@@ -87,14 +86,13 @@ class DoubleValue() extends NumericValue {
     * @throws XPathException
     *          if the value cannot be converted
     */
-  override def longValue(): Long = value.toLong
+  def longValue(): Long = value.toLong
 
   override def hashCode: Int =
-    if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE) {
+    if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE)
       value.toInt
-    } else {
+    else
       java.lang.Double.valueOf(value).hashCode
-    }
 
   override def isNaN: Boolean = java.lang.Double.isNaN(value)
 
@@ -113,7 +111,7 @@ class DoubleValue() extends NumericValue {
     */
   def getPrimitiveStringValue: CharSequence = doubleToString(value)
 
-  override def getCanonicalLexicalRepresentation(): CharSequence = {
+  override def getCanonicalLexicalRepresentation: CharSequence = {
     val fsb = new FastStringBuffer(FastStringBuffer.C16)
     FloatingPointConverter.appendDouble(fsb, value, forceExponential = true)
   }
@@ -124,94 +122,87 @@ class DoubleValue() extends NumericValue {
 
   def ceiling(): NumericValue = new DoubleValue(Math.ceil(value))
 
-  def round(scale: Int): NumericValue = {
-    if (java.lang.Double.isNaN(value)) {
-      return this
-    }
-    if (java.lang.Double.isInfinite(value)) {
-      return this
-    }
-    if (value == 0.0) {
-// handles the negative zero case
-      return this
-    }
-    if (scale == 0 && value > java.lang.Long.MIN_VALUE && value < java.lang.Long.MAX_VALUE) {
-      if (value >= -0.5 && value < 0.0) {
+  def round(scale: Int): NumericValue =
+    if (java.lang.Double.isNaN(value))
+      this
+    else if (java.lang.Double.isInfinite(value))
+      this
+    else if (value == 0.0)
+      // handles the negative zero case
+      this
+    else if (scale == 0 && value > java.lang.Long.MIN_VALUE && value < java.lang.Long.MAX_VALUE) {
+      if (value >= -0.5 && value < 0.0)
         new DoubleValue(-0.0)
+      else
+        new DoubleValue(Math.round(value))
+    } else {
+      val factor = Math.pow(10, scale + 1)
+      var d = Math.abs(value * factor)
+      if (java.lang.Double.isInfinite(d)) {
+        // double arithmetic has overflowed - do it in decimal
+        var dec = new BigDecimal(value)
+        dec = dec.setScale(scale, RoundingMode.HALF_UP)
+        new DoubleValue(dec.doubleValue())
+      } else {
+        val rem = d % 10
+        if (rem >= 5)
+          d += 10 - rem
+        else if (rem < 5)
+          d -= rem
+        d /= factor
+        if (value < 0)
+          d = -d
+        new DoubleValue(d)
       }
-      new DoubleValue(Math.round(value))
     }
-    val factor: Double = Math.pow(10, scale + 1)
-    var d: Double = Math.abs(value * factor)
-    if (java.lang.Double.isInfinite(d)) {
-// double arithmetic has overflowed - do it in decimal
-      var dec: BigDecimal = new BigDecimal(value)
-      dec = dec.setScale(scale, RoundingMode.HALF_UP)
-      new DoubleValue(dec.doubleValue())
-    }
-    val rem: Double = d % 10
-    if (rem >= 5) {
-      d += 10 - rem
-    } else if (rem < 5) {
-      d -= rem
-    }
-    d /= factor
-    if (value < 0) {
-      d = -d
-    }
-    new DoubleValue(d)
-  }
-// Convert to a scaled integer, by multiplying by 10^scale
-// Now apply any rounding needed, using the "round half to even" rule***CHANGE
-// Now convert back to the original magnitude
-// Convert to a scaled integer, by multiplying by 10^scale
-// Now apply any rounding needed, using the "round half to even" rule***CHANGE
-// Now convert back to the original magnitude
+
+  // Convert to a scaled integer, by multiplying by 10^scale
+  // Now apply any rounding needed, using the "round half to even" rule***CHANGE
+  // Now convert back to the original magnitude
 
   def roundHalfToEven(scale: Int): NumericValue = {
-    if (java.lang.Double.isNaN(value)) return this
-    if (java.lang.Double.isInfinite(value)) return this
-// handles the negative zero case
-    if (value == 0.0) return this
-    val factor: Double = Math.pow(10, scale + 1)
-    var d: Double = Math.abs(value * factor)
+    if (java.lang.Double.isNaN(value))
+      return this
+    if (java.lang.Double.isInfinite(value))
+      return this
+    // handles the negative zero case
+    if (value == 0.0)
+      return this
+    val factor = Math.pow(10, scale + 1)
+    var d = Math.abs(value * factor)
     if (java.lang.Double.isInfinite(d)) {
-// double arithmetic has overflowed - do it in decimal
-      var dec: BigDecimal = new BigDecimal(value)
+      // double arithmetic has overflowed - do it in decimal
+      var dec = new BigDecimal(value)
       dec = dec.setScale(scale, RoundingMode.HALF_EVEN)
       new DoubleValue(dec.doubleValue())
     }
-    val rem: Double = d % 10
+    val rem = d % 10
     if (rem > 5) {
       d += 10 - rem
     } else if (rem < 5) {
       d -= rem
     } else {
 // round half to even - check the last bit
-      if ((d % 20) == 15) {
+      if ((d % 20) == 15)
         d += 5
-      } else {
+      else
         d -= 5
-      }
     }
     d /= factor
-    if (value < 0) {
+    if (value < 0)
       d = -d
-    }
     new DoubleValue(d)
   }
-// Convert to a scaled integer, by multiplying by 10^scale
-// Now apply any rounding needed, using the "round half to even" rule
-// Now convert back to the original magnitude
-// Convert to a scaled integer, by multiplying by 10^scale
-// Now apply any rounding needed, using the "round half to even" rule
-// Now convert back to the original magnitude
+
+  // Convert to a scaled integer, by multiplying by 10^scale
+  // Now apply any rounding needed, using the "round half to even" rule
+  // Now convert back to the original magnitude
 
   def signum(): Int = {
-    if (java.lang.Double.isNaN(value)) {
-      return  0
-    }
-    if (value > 0) 1 else if (value == 0) 0 else -1
+    if (java.lang.Double.isNaN(value))
+      0
+    else
+      if (value > 0) 1 else if (value == 0) 0 else -1
   }
 
   /**
@@ -234,42 +225,38 @@ class DoubleValue() extends NumericValue {
     *
     * @return the number as an int if it is a possible subscript, or -1 otherwise
     */
-  override def asSubscript(): Int =
-    if (isWholeNumber && value > 0 && value <= java.lang.Integer.MAX_VALUE) {
+  def asSubscript(): Int =
+    if (isWholeNumber && value > 0 && value <= java.lang.Integer.MAX_VALUE)
       value.toInt
-    } else {
+    else
       -1
-    }
 
   def abs(): NumericValue =
-    if (value > 0.0) {
+    if (value > 0.0)
       this
-    } else {
+    else
       new DoubleValue(Math.abs(value))
-    }
 
   def compareTo(other: Long): Int = {
-    val otherDouble: Double = other.toDouble
-    if (value == otherDouble) {
-      return 0
-    }
-    if (value < otherDouble) -1 else +1
+    val otherDouble = other.toDouble
+    if (value == otherDouble)
+      0
+    else
+      if (value < otherDouble) -1 else +1
   }
 
   def getSchemaComparable: Comparable[AnyRef] = // that ensures NaN != NaN.
     if (value == 0.0) 0.0.asInstanceOf else value.asInstanceOf
 
   override def asMapKey(): AtomicMatchKey =
-    if (isNaN) {
+    if (isNaN)
       AtomicSortComparer.COLLATION_KEY_NaN
-    } else if (java.lang.Double.isInfinite(value)) {
+    else if (java.lang.Double.isInfinite(value))
       this
-    } else {
+    else
       new BigDecimalValue(value)
-    }
 
   override def isIdentical(v: AtomicValue): Boolean =
     v.isInstanceOf[DoubleValue] &&
       DoubleSortComparer.getInstance.comparesEqual(this, v)
-
 }

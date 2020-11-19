@@ -4,15 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * This exception indicates a failure when validating an instance against a type
- * defined in a schema.
- * <p>This class holds the same information as a ValidationException, except that it is not an exception,
- * and does not carry system overheads such as a stack trace. It is used because operations such as "castable",
- * and validation of values in a union, cause validation failures on a success path and it is costly to throw,
- * or even to create, exception objects on a success path.</p>
- */
-
 package org.orbeon.saxon.model
 
 import java.util.{ArrayList, Collections, List}
@@ -29,8 +20,15 @@ import org.orbeon.saxon.value.AtomicValue
 import scala.beans.BeanProperty
 
 
-
-
+/**
+ * This exception indicates a failure when validating an instance against a type
+ * defined in a schema.
+ *
+ * This class holds the same information as a ValidationException, except that it is not an exception,
+ * and does not carry system overheads such as a stack trace. It is used because operations such as "castable",
+ * and validation of values in a union, cause validation failures on a success path and it is costly to throw,
+ * or even to create, exception objects on a success path.
+ */
 object ValidationFailure {
 
   /**
@@ -40,25 +38,23 @@ object ValidationFailure {
     * @param exception the nested exception
     */
   def fromException(exception: Exception): ValidationFailure =
-    if (exception.isInstanceOf[ValidationException]) {
-      exception.asInstanceOf[ValidationException].getValidationFailure
-    } else if (exception.isInstanceOf[XPathException]) {
-      val failure: ValidationFailure = new ValidationFailure(
-        exception.getMessage)
-      if (exception.asInstanceOf[XPathException].getErrorCodeQName ==
-            null) {
-        failure.setErrorCode("FORG0001")
-      } else {
-        failure.setErrorCodeQName(
-          exception.asInstanceOf[XPathException].getErrorCodeQName)
-      }
-      failure.setLocator(exception.asInstanceOf[XPathException].getLocator)
-      failure
-    } else {
-      new ValidationFailure(exception.getMessage)
+    exception match {
+      case validationException: ValidationException =>
+        validationException.getValidationFailure
+      case xpathException: XPathException =>
+        val failure = new ValidationFailure(
+          exception.getMessage)
+        if (xpathException.getErrorCodeQName == null)
+          failure.setErrorCode("FORG0001")
+        else
+          failure.setErrorCodeQName(xpathException.getErrorCodeQName)
+        failure.setLocator(xpathException.getLocator)
+        failure
+      case _ =>
+        new ValidationFailure(exception.getMessage)
     }
-
 }
+
 /**
  * Creates a new ValidationException with the given message.
  *
@@ -69,13 +65,10 @@ class ValidationFailure(@BeanProperty var message: String)
     with ConversionResult
     with Invalidity {
 
-  private var systemId: String = _
-
-  private var publicId: String = _
-
-  private var lineNumber: Int = -1
-
-  private var columnNumber: Int = -1
+  private var systemId     : String = _
+  private var publicId     : String = _
+  private var lineNumber   : Int    = -1
+  private var columnNumber : Int    = -1
 
   @BeanProperty
   var path: AbsolutePath = _
@@ -100,7 +93,6 @@ class ValidationFailure(@BeanProperty var message: String)
   var schemaType: SchemaType = _
 
   /*@Nullable*/
-
   private var errorCode: StructuredQName = new StructuredQName("err", NamespaceConstant.ERR, "FORG0001")
 
   private var exception: ValidationException = _
@@ -121,18 +113,18 @@ class ValidationFailure(@BeanProperty var message: String)
     clause = e.clause
   }
 
-  def getConstraintClauseNumber(): String = clause
+  def getConstraintClauseNumber: String = clause
 
   /*@NotNull*/
 
-  def getConstraintReference(): String = constraintName + '.' + clause
+  def getConstraintReference: String = constraintName + '.' + clause
 
   /*@Nullable*/
 
   def getConstraintReferenceMessage: String = {
-    if (schemaPart == -1) {
+    if (schemaPart == -1)
       return null
-    }
+
     "See http://www.w3.org/TR/xmlschema11-" + schemaPart +
       "/#" +
       constraintName +
@@ -141,18 +133,16 @@ class ValidationFailure(@BeanProperty var message: String)
   }
 
   def addOffendingNode(node: NodeInfo): Unit = {
-    if (offendingNodes == null) {
+    if (offendingNodes == null)
       offendingNodes = new ArrayList[NodeInfo]()
-    }
     offendingNodes.add(node)
   }
 
   def getOffendingNodes: List[NodeInfo] =
-    if (offendingNodes == null) {
+    if (offendingNodes == null)
       Collections.emptyList()
-    } else {
+    else
       offendingNodes
-    }
 
   /**
     * Returns the String representation of this Exception
@@ -161,47 +151,42 @@ class ValidationFailure(@BeanProperty var message: String)
     */
   override def toString: String = {
     val sb = new FastStringBuffer("ValidationException: ")
-    val message: String = getMessage
-    if (message != null) {
+    val message = getMessage
+    if (message != null)
       sb.append(message)
-    }
     sb.toString
   }
 
   def getPublicId: String = {
-    val loc: SourceLocator = getLocator
-    if (publicId == null && loc != null && loc != this) {
+    val loc = getLocator
+    if (publicId == null && loc != null && loc != this)
       loc.getPublicId
-    } else {
+    else
       publicId
-    }
   }
 
   def getSystemId: String = {
-    val loc: SourceLocator = getLocator
-    if (systemId == null && loc != null && loc != this) {
+    val loc = getLocator
+    if (systemId == null && loc != null && loc != this)
       loc.getSystemId
-    } else {
+    else
       systemId
-    }
   }
 
   def getLineNumber: Int = {
-    val loc: SourceLocator = getLocator
-    if (lineNumber == -1 && loc != null && loc != this) {
+    val loc = getLocator
+    if (lineNumber == -1 && loc != null && loc != this)
       loc.getLineNumber
-    } else {
+    else
       lineNumber
-    }
   }
 
-  def getColumnNumber(): Int = {
-    val loc: SourceLocator = getLocator
-    if (columnNumber == -1 && loc != null && loc != this) {
+  def getColumnNumber: Int = {
+    val loc = getLocator
+    if (columnNumber == -1 && loc != null && loc != this)
       loc.getColumnNumber
-    } else {
+    else
       columnNumber
-    }
   }
 
   /**
@@ -209,55 +194,48 @@ class ValidationFailure(@BeanProperty var message: String)
     * should not be saved for later use. The result of this operation holds the same location information,
     * but in an immutable form.
     */
-  def saveLocation(): Location = new Loc(this)
+  def saveLocation: Location = new Loc(this)
 
-  def setPublicId(id: String): Unit = {
+  def setPublicId(id: String): Unit =
     publicId = id
-  }
 
-  def setSystemId(id: String): Unit = {
+  def setSystemId(id: String): Unit =
     systemId = id
-  }
 
-  def setLineNumber(line: Int): Unit = {
+  def setLineNumber(line: Int): Unit =
     lineNumber = line
-  }
 
-  def setColumnNumber(column: Int): Unit = {
+  def setColumnNumber(column: Int): Unit =
     columnNumber = column
-  }
 
-  def setLocator(locator: SourceLocator): Unit = {
+  def setLocator(locator: SourceLocator): Unit =
     if (locator != null) {
       this.publicId = locator.getPublicId
       this.systemId = locator.getSystemId
       this.lineNumber = locator.getLineNumber
       this.columnNumber = locator.getColumnNumber
     }
-  }
 
-  def setSourceLocator(locator: SourceLocator): Unit = {
+  def setSourceLocator(locator: SourceLocator): Unit =
     if (locator != null) {
       this.publicId = locator.getPublicId
       this.systemId = locator.getSystemId
       this.lineNumber = locator.getLineNumber
       this.columnNumber = locator.getColumnNumber
     }
-  }
 
   /*@NotNull*/
-
   def getLocator: Location = this
 
-  def setErrorCode(errorCode: String): Unit = {
+  def setErrorCode(errorCode: String): Unit =
     this.errorCode =
-      if (errorCode == null) null
-      else new StructuredQName("err", NamespaceConstant.ERR, errorCode)
-  }
+      if (errorCode == null)
+        null
+      else
+        new StructuredQName("err", NamespaceConstant.ERR, errorCode)
 
-  def setErrorCodeQName(errorCode: StructuredQName): Unit = {
+  def setErrorCodeQName(errorCode: StructuredQName): Unit =
     this.errorCode = errorCode
-  }
 
   /**
     * Get the error code associated with the validity error. This is relevant only when validation
@@ -266,51 +244,45 @@ class ValidationFailure(@BeanProperty var message: String)
     * @return the error code associated with the error, if any. The error is returned as a simple
     * string if it is in the standard error namespace, or as an EQName (that is Q{uri}local) otherwise.
     */
-  def getErrorCode(): String =
-    if (errorCode == null) {
+  def getErrorCode: String =
+    if (errorCode == null)
       null
-    } else if (errorCode.hasURI(NamespaceConstant.ERR)) {
+    else if (errorCode.hasURI(NamespaceConstant.ERR))
       errorCode.getLocalPart
-    } else {
+    else
       errorCode.getEQName
-    }
 
   /*@Nullable*/
-
   def getErrorCodeQName: StructuredQName = errorCode
 
   /*@NotNull*/
-
   def makeException(): ValidationException = {
     if (exception != null) {
       exception.maybeSetLocation(this)
       return exception
     }
-    val ve: ValidationException = new ValidationException(this)
-    if (errorCode == null) {
+    val ve = new ValidationException(this)
+    if (errorCode == null)
       ve.setErrorCode("FORG0001")
-    } else {
+    else
       ve.setErrorCodeQName(errorCode)
-    }
     ve.setHasBeenReported(hasBeenReported)
     exception = ve
     ve
   }
 
   /*@NotNull*/
-
   def asAtomic(): AtomicValue = throw makeException()
 
   def setHasBeenReported(reported: Boolean): Unit = {
     hasBeenReported = reported
-    if (exception != null) {
+    if (exception != null)
       exception.setHasBeenReported(reported)
-    }
   }
 
   def getValidationLocationText: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
-    val valPath: AbsolutePath = getAbsolutePath
+    val valPath = getAbsolutePath
     if (valPath != null) {
       fsb.append("Validating ")
       fsb.append(valPath.getPathUsingPrefixes)
@@ -324,7 +296,7 @@ class ValidationFailure(@BeanProperty var message: String)
 
   def getContextLocationText: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
-    val contextPath: AbsolutePath = getContextPath
+    val contextPath = getContextPath
     if (contextPath != null) {
       fsb.append("Currently processing ")
       fsb.append(contextPath.getPathUsingPrefixes)
@@ -337,11 +309,8 @@ class ValidationFailure(@BeanProperty var message: String)
   }
 
   def getAbsolutePath: AbsolutePath =
-    if (path != null) {
+    if (path != null)
       path
-    } else {
+    else
       null
-    }
-
 }
-

@@ -6,6 +6,7 @@ import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.value.{AtomicValue, EmptySequence}
 
+
 object EmptyIterator {
 
   private val theInstance: EmptyIterator = new EmptyIterator
@@ -18,7 +19,7 @@ object EmptyIterator {
     OfAtomic.THE_INSTANCE.asInstanceOf[AtomicIterator[T]]
 
   object OfNodes {
-    val THE_INSTANCE: OfNodes = new OfNodes()
+    val THE_INSTANCE: OfNodes = new OfNodes
   }
 
   class OfNodes extends EmptyIterator with AxisIterator {
@@ -26,7 +27,7 @@ object EmptyIterator {
   }
 
   object OfAtomic {
-    val THE_INSTANCE: OfAtomic[Nothing] = new OfAtomic()
+    val THE_INSTANCE: OfAtomic[Nothing] = new OfAtomic
   }
 
   class OfAtomic[T <: AtomicValue] extends AtomicIterator[T] {

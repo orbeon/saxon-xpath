@@ -22,49 +22,41 @@ import org.orbeon.saxon.value.StringValue._
   */
 object StringValue {
 
-  val EMPTY_STRING: StringValue = new StringValue(EmptyString.THE_INSTANCE)
-  val SINGLE_SPACE: StringValue = new StringValue(LatinString.SINGLE_SPACE)
-  val TRUE: StringValue = new StringValue(new LatinString("true"))
-  val FALSE: StringValue = new StringValue(new LatinString("false"))
+  val EMPTY_STRING : StringValue = new StringValue(EmptyString.THE_INSTANCE)
+  val SINGLE_SPACE : StringValue = new StringValue(LatinString.SINGLE_SPACE)
+  val TRUE         : StringValue = new StringValue(new LatinString("true"))
+  val FALSE        : StringValue = new StringValue(new LatinString("false"))
 
   /*@NotNull*/
   def makeStringValue(value: CharSequence): StringValue =
-    if (value == null || value.length == 0) {
+    if (value == null || value.length == 0)
       StringValue.EMPTY_STRING
-    } else {
+    else
       new StringValue(value)
-    }
 
   def isEmpty(string: CharSequence): Boolean =
     string match {
-      case str: String =>
-        str.isEmpty
-      case unicodeString: UnicodeString =>
-        unicodeString.uLength == 0
-      case _ =>
-        string.length == 0
+      case str: String                  => str.isEmpty
+      case unicodeString: UnicodeString => unicodeString.uLength == 0
+      case _                            => string.length == 0
     }
 
-  def getStringLength(s: CharSequence): Int = {
+  def getStringLength(s: CharSequence): Int =
     s match {
       case string: UnicodeString =>
-        return string.uLength
+        string.uLength
       case _ =>
+        var n = 0
+        for (i <- 0 until s.length) {
+          val c = s.charAt(i).toInt
+          if (c < 55296 || c > 56319) // don't count high surrogates, i.e. D800 to DBFF
+            n += 1
+        }
+        n
     }
-    var n: Int = 0
-    for (i <- 0 until s.length) {
-      val c: Int = s.charAt(i).toInt
-      if (c < 55296 || c > 56319) {
-// don't count high surrogates, i.e. D800 to DBFF
-        { n += 1; n - 1 }
-      }
-    }
-    n
-  }
 
   /*@NotNull*/
-
-  def expand(/*@NotNull*/ s: CharSequence): Array[Int] = {
+  def expand(s: CharSequence): Array[Int] = {
     val array = new Array[Int](getStringLength(s))
     var o = 0
     var i = 0
@@ -74,19 +66,15 @@ object StringValue {
       if (c >= 55296 && c <= 56319) { // we'll trust the data to be sound
         charval = ((c - 55296) * 1024) + (s.charAt(i + 1).asInstanceOf[Int] - 56320) + 65536
         i += 1
-      }
-      else charval = c
-      array({
-        o += 1; o - 1
-      }) = charval
-
+      } else
+        charval = c
+      array({o += 1; o - 1}) = charval
       i += 1
     }
     array
   }
 
   /*@NotNull*/
-
   def contract(codes: Array[Int], used: Int): CharSequence = {
     val sb = new FastStringBuffer(codes.length)
     for (i <- 0 until used)
@@ -95,16 +83,15 @@ object StringValue {
   }
 
   /*@NotNull*/
-
   def diagnosticDisplay(s: String): String = {
     val fsb = new FastStringBuffer(s.length)
     for (i <- 0 until s.length) {
-      val c: Char = s.charAt(i)
+      val c = s.charAt(i)
       if (c >= 0x20 && c <= 0x7e) {
         fsb.cat(c)
       } else {
         fsb.append("\\u")
-        var shift: Int = 12
+        var shift = 12
         while (shift >= 0) {
           fsb.cat("0123456789ABCDEF".charAt((c >> shift) & 0xF))
           shift -= 4
@@ -117,17 +104,16 @@ object StringValue {
   class CharacterIterator(private var value: CharSequence)
       extends AtomicIterator[Int64Value] {
 
-// 0-based index of the current Java char
+    // 0-based index of the current Java char
     var inpos: Int = 0
 
     /*@Nullable*/
-
     def next(): Int64Value =
       if (inpos < value.length) {
         val c: Int = value.charAt({ inpos += 1; inpos - 1 })
         var current: Int = 0
         if (c >= 55296 && c <= 56319) {
-// we'll trust the data to be sound
+          // we'll trust the data to be sound
           try current = ((c - 55296) * 1024) +
               (value.charAt({ inpos += 1; inpos - 1 }).toInt - 56320) +
               65536
@@ -151,17 +137,15 @@ object StringValue {
 
     var uValue: UnicodeString = value
 
-// 0-based index of the current Java char
+    // 0-based index of the current Java char
     var inpos: Int = 0
 
     /*@Nullable*/
-
     def next(): Int64Value =
-      if (inpos < uValue.uLength) {
+      if (inpos < uValue.uLength)
         new Int64Value(uValue.uCharAt({ inpos += 1; inpos - 1 }))
-      } else {
+      else
         null
-      }
 
   }
 
@@ -169,7 +153,7 @@ object StringValue {
 
     var buffer: FastStringBuffer = new FastStringBuffer(256)
 
-    override def cat(chars: CharSequence): CharSequenceConsumer =
+    def cat(chars: CharSequence): CharSequenceConsumer =
       buffer.cat(chars)
 
     override def cat(c: Char): CharSequenceConsumer = buffer.cat(c)
@@ -253,10 +237,8 @@ class StringValue extends AtomicValue {
 
   def getStringLengthUpperBound: Int = synchronized {
     value match {
-      case unicodeString: UnicodeString =>
-        unicodeString.uLength
-      case _ =>
-        value.length
+      case unicodeString: UnicodeString => unicodeString.uLength
+      case _                            => value.length
     }
   }
 
@@ -279,13 +261,10 @@ class StringValue extends AtomicValue {
       value.isInstanceOf[EmptyString]
 
   /*@NotNull*/
-
   def iterateCharacters(): AtomicIterator[Int64Value] = synchronized {
     value match {
-      case unicodeString: UnicodeString =>
-        new UnicodeCharacterIterator(unicodeString)
-      case _ =>
-        new CharacterIterator(value)
+      case unicodeString: UnicodeString => new UnicodeCharacterIterator(unicodeString)
+      case _                            => new CharacterIterator(value)
     }
   }
 

@@ -89,7 +89,7 @@ abstract class Instruction extends Expression with TailCallReturner {
 
   def getImplementationMethod: Int = Expression.PROCESS_METHOD
 
-  override def isInstruction(): Boolean = true
+  override def isInstruction: Boolean = true
 
   def getInstructionNameCode: Int = -1
 
@@ -138,7 +138,7 @@ abstract class Instruction extends Expression with TailCallReturner {
     }
   }
 
-  override def getNetCost(): Int = 20
+  override def getNetCost: Int = 20
 
   def mayCreateNewNodes(): Boolean = false
 

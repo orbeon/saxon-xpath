@@ -1,19 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.om.EnumSetTool
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import SequenceIterator.Property._
-
+import org.orbeon.saxon.om.SequenceIterator.Property._
+import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.tree.iter.LookaheadIterator
 
-import java.util.EnumSet
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 
 class ItemMappingIterator(var base: SequenceIterator,
@@ -34,46 +25,37 @@ class ItemMappingIterator(var base: SequenceIterator,
     this.oneToOne = oneToOne
   }
 
-   def getBaseIterator: SequenceIterator = base
-
-   def getMappingFunction: ItemMappingFunction = action
+  def getBaseIterator: SequenceIterator = base
+  def getMappingFunction: ItemMappingFunction = action
 
   def hasNext: Boolean = // is a lookahead iterator and one-to-one is true
     base.asInstanceOf[LookaheadIterator].hasNext
 
   def next(): Item = {
-    var results: Item = null
     while (true) {
-      val nextSource: Item = base.next()
-      if (nextSource == null) {
-        results = null
-      }
+      val nextSource = base.next()
+      if (nextSource == null)
+        return null
       // Call the supplied mapping function
-      val current: Item = action.mapItem(nextSource)
-      if (current != null) {
-        results = current
-      }
+      val current = action.mapItem(nextSource)
+      if (current != null)
+        return current
     }
-    results
+    null
   }
 
-  // otherwise go round the loop to get the next item from the base sequence
-  // otherwise go round the loop to get the next item from the base sequence
-
-  override def close(): Unit = {
+  override def close(): Unit =
     base.close()
-  }
 
   def getLength: Int = // is a last-position-finder iterator and one-to-one is true
     base.asInstanceOf[LastPositionFinder].getLength
 
   override def getProperties: Set[Property] = {
-    var propSet : Set[Property] = Set()
+    val propSet: Set[Property] = Set.empty
     val resultsSet: Set[Property] = Set(LAST_POSITION_FINDER, LOOKAHEAD)
-    if (oneToOne) {
+    if (oneToOne)
       base.getProperties.intersect(resultsSet)
-    } else {
+    else
       propSet
-    }
   }
 }
