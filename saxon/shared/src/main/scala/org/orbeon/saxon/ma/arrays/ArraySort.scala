@@ -99,7 +99,7 @@ class ArraySort extends SystemFunction {
     if (arguments.length == 3) {
       key = arguments(2).head.asInstanceOf[Function]
     }
-    for (seq <- array.members()) {
+    for (seq <- array.members) {
       val member: MemberToBeSorted = new MemberToBeSorted()
       member.value = seq
       i += 1

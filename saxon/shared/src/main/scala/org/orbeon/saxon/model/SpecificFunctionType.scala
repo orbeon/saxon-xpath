@@ -180,7 +180,7 @@ class SpecificFunctionType extends AnyFunctionType {
         if (getArity == 1 &&
           argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
           argTypes(0).getPrimaryType.isPlainType) {
-          for (pair <- mapItem.keyValuePairs().asScala) {
+          for (pair <- mapItem.keyValuePairs.asScala) {
             try if (!resultType.matches(pair.value, th)) {
               false
             } catch {
@@ -200,7 +200,7 @@ class SpecificFunctionType extends AnyFunctionType {
           if (!(rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMED_BY)) {
             return false
           }
-          for (member <- arrayItem.members()) {
+          for (member <- arrayItem.members) {
             try if (!resultType.matches(member, th)) {
               false
             } catch {
@@ -226,7 +226,7 @@ class SpecificFunctionType extends AnyFunctionType {
       case mapItem: MapItem =>
         if (getArity == 1) {
           if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE && argTypes(0).getPrimaryType.isPlainType) {
-            for (pair <- mapItem.keyValuePairs().asScala) {
+            for (pair <- mapItem.keyValuePairs.asScala) {
               try
                 if (!resultType.matches(pair.value, th)) {
                   var s: String = "The supplied map contains an entry with key (" + pair.key +
@@ -271,7 +271,7 @@ class SpecificFunctionType extends AnyFunctionType {
                 "; an array can only be supplied for a function that expects an integer"
               Some(s)
             } else {
-              for (member <- arrayItem.members()) {
+              for (member <- arrayItem.members) {
                 try if (!resultType.matches(member, th)) {
                   var s: String = "The supplied array contains an entry (" + Err
                     .depictSequence(member) +

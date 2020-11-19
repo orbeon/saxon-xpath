@@ -39,7 +39,7 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
         throw ex
       }
       converter = converter.setNamespaceResolver(nsResolver)
-      new ZeroOrOne(converter.convert(_val).asAtomic())
+      new ZeroOrOne(converter.convert(_val).asAtomic)
     }
   }
 

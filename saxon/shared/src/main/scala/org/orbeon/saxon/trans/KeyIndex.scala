@@ -2,44 +2,27 @@ package org.orbeon.saxon.trans
 
 import java.util
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.expr.XPathContextMajor
+import org.orbeon.saxon.expr.{XPathContext, XPathContextMajor}
 //import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-import org.orbeon.saxon.expr.sort.AtomicMatchKey
-import org.orbeon.saxon.expr.sort.LocalOrderComparer
-import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.lib.StringCollator
-import org.orbeon.saxon.model.BuiltInAtomicType
-import org.orbeon.saxon.model.StringConverter
-import org.orbeon.saxon.model.UType
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.SequenceIterator
-import org.orbeon.saxon.om.StandardNames
-import org.orbeon.saxon.om.TreeInfo
-import org.orbeon.saxon.pattern.Pattern
+import org.orbeon.saxon.expr.sort.{AtomicMatchKey, LocalOrderComparer}
+import org.orbeon.saxon.lib.{ConversionRules, StringCollator}
+import org.orbeon.saxon.model.{BuiltInAtomicType, StringConverter, UType}
+import org.orbeon.saxon.om.{NodeInfo, SequenceIterator, StandardNames, TreeInfo}
 import org.orbeon.saxon.regex.UnicodeString
-import org.orbeon.saxon.tree.iter.EmptyIterator
-import org.orbeon.saxon.tree.iter.ListIterator
-import org.orbeon.saxon.tree.iter.ManualIterator
-import org.orbeon.saxon.tree.iter.SingleNodeIterator
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.UntypedAtomicValue
+import org.orbeon.saxon.tree.iter.{EmptyIterator, ListIterator, ManualIterator, SingleNodeIterator}
+import org.orbeon.saxon.value.{AtomicValue, UntypedAtomicValue}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-import scala.collection.mutable
+import scala.beans.BeanProperty
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 object KeyIndex {
 
   object Status extends Enumeration {
 
-    val UNDER_CONSTRUCTION: Status = new Status()
-
-    val BUILT: Status = new Status()
-
-    val FAILED: Status = new Status()
+    val UNDER_CONSTRUCTION : Status = new Status
+    val BUILT              : Status = new Status
+    val FAILED             : Status = new Status
 
     class Status extends Val
 
@@ -70,17 +53,11 @@ class KeyIndex(isRangeKey: Boolean) {
     if (isRangeKey) new util.TreeMap[AtomicMatchKey, Any]() else new util.HashMap[AtomicMatchKey, Any]()
 
   var keyTypesPresent: UType = UType.VOID
-
   var keyTypesConvertedFromUntyped: UType = UType.STRING_LIKE
-
   var untypedKeys: util.List[UntypedAtomicValue] = _
-
   var rules: ConversionRules = _
-
   var implicitTimezone: Int = _
-
   var collation: StringCollator = _
-
   var creatingThread: Long = Thread.currentThread().getId
 
   @BeanProperty
@@ -220,7 +197,7 @@ class KeyIndex(isRangeKey: Boolean) {
     for (v <- untypedKeys.asScala) {
       val uk: AtomicMatchKey = getCollationKey(v, collation, implicitTimezone)
       val convertedValue: AtomicValue =
-        converter.convertString(v.getStringValueCS).asAtomic()
+        converter.convertString(v.getStringValueCS).asAtomic
       val amk: AtomicMatchKey =
         getCollationKey(convertedValue, collation, implicitTimezone)
       val value: AnyRef = index.get(uk).asInstanceOf[AnyRef]
@@ -275,15 +252,14 @@ class KeyIndex(isRangeKey: Boolean) {
     def asAtomic(): AtomicValue = throw new UnsupportedOperationException()
 
     override def equals(obj: Any): Boolean = {
-      if (obj.isInstanceOf[CompositeAtomicMatchKey] &&
-        obj.asInstanceOf[CompositeAtomicMatchKey].keys.size ==
-          keys.size) {
-        val keys2: util.List[AtomicMatchKey] =
-          obj.asInstanceOf[CompositeAtomicMatchKey].keys.asJava
-        for (i <- 0 until keys.size if keys.asJava.get(i) != keys2.get(i)) {
-          false
-        }
-        return true
+      obj match {
+        case compositeAtomicMatchKey: CompositeAtomicMatchKey if compositeAtomicMatchKey.keys.size ==
+          keys.size =>
+          val keys2: util.List[AtomicMatchKey] = compositeAtomicMatchKey.keys.asJava
+          for (i <- keys.indices if keys.asJava.get(i) != keys2.get(i))
+            return false
+          return true
+        case _ =>
       }
       false
     }
@@ -296,7 +272,5 @@ class KeyIndex(isRangeKey: Boolean) {
       }
       h
     }
-
   }
-
 }

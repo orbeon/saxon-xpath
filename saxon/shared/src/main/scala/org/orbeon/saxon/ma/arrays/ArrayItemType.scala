@@ -56,7 +56,7 @@ class ArrayItemType(@BeanProperty var memberType: SequenceType)
     else if (this == ANY_ARRAY_TYPE)
       true
     else
-      item.asInstanceOf[ArrayItem].members().forall(memberType.matches(_, th))
+      item.asInstanceOf[ArrayItem].members.forall(memberType.matches(_, th))
 
   override def getResultType: SequenceType = memberType
 

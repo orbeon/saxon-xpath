@@ -2,23 +2,17 @@ package org.orbeon.saxon.pattern
 
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct.SlotManager
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-import org.orbeon.saxon.expr.parser.ExpressionTool
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-import org.orbeon.saxon.expr.parser.RebindingMap
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.functions.Current
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.AxisInfo
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.om.SequenceIterator
+import org.orbeon.saxon.om.{AxisInfo, Item, NodeInfo, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.AxisIterator
-import org.orbeon.saxon.tree.iter.ManualIterator
+import org.orbeon.saxon.tree.iter.{AxisIterator, ManualIterator}
 import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
+
 
 class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
                          @BeanProperty var itemTyp: NodeTest) extends Pattern {
@@ -28,7 +22,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
   override def operands: java.lang.Iterable[Operand] =
     new Operand(this, equivalentExpr, OperandRole.SAME_FOCUS_ACTION)
 
-  override def isMotionless(): Boolean = false
+  override def isMotionless: Boolean = false
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {
@@ -44,15 +38,15 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     val defaultInfo: ContextItemStaticInfo =
       config.getDefaultContextItemStaticInfo
     equivalentExpr = equivalentExpr.optimize(visitor, defaultInfo)
-    if (equivalentExpr.isInstanceOf[FilterExpression] &&
-      !equivalentExpr.asInstanceOf[FilterExpression].isFilterIsPositional) {
-      try PatternMaker
-        .fromExpression(equivalentExpr, config, is30 = true)
-        .typeCheck(visitor, defaultInfo)
-      catch {
-        case _: XPathException =>
-
-      }
+    equivalentExpr match {
+      case expression: FilterExpression if !expression.isFilterIsPositional =>
+        try PatternMaker
+          .fromExpression(equivalentExpr, config, is30 = true)
+          .typeCheck(visitor, defaultInfo)
+        catch {
+          case _: XPathException =>
+        }
+      case _ =>
     }
     this
   }
@@ -129,29 +123,23 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
       }
       false
     } catch {
-      case e@(_: XPathException.Circularity |
-              _: XPathException.StackOverflow) =>
+      case e @ (_: XPathException.Circularity | _: XPathException.StackOverflow) =>
         throw e
-
-      case e: XPathException => {
+      case e: XPathException =>
         handleDynamicError(e, c2)
         false
-      }
-
     }
   }
 
-  override def getUType: UType = itemTyp.getUType
+  def getUType: UType = itemTyp.getUType
 
   override def getFingerprint: Int = itemTyp.getFingerprint
 
   override def equals(other: Any): Boolean = other match {
-    case other: GeneralNodePattern => {
+    case other: GeneralNodePattern =>
       val lpp: GeneralNodePattern = other
       equivalentExpr.isEqual(lpp.equivalentExpr)
-    }
     case _ => false
-
   }
 
   override def computeHashCode(): Int = 83641 ^ equivalentExpr.hashCode
@@ -169,5 +157,4 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     equivalentExpr.export(presenter)
     presenter.endElement()
   }
-
 }

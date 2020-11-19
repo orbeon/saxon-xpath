@@ -129,7 +129,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
     } else {
       val buff = new FastStringBuffer(256)
       buff.append("[")
-      for (entry <- members()) {
+      for (entry <- members) {
         buff.append(Err.depictSequence(entry).toString.trim())
         buff.append(", ")
       }

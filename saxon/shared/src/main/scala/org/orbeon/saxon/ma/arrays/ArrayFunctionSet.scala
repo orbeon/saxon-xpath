@@ -100,7 +100,7 @@ object ArrayFunctionSet {
         .iterate()
         .forEachOrFail((item) =>
           if (item.isInstanceOf[ArrayItem]) {
-            for (member <- item.asInstanceOf[ArrayItem].members()) {
+            for (member <- item.asInstanceOf[ArrayItem].members) {
               flatten(member, out)
             }
           } else {
@@ -422,7 +422,7 @@ object ArrayFunctionSet {
 
     def toSequence(array: ArrayItem): Sequence = {
       val results: List[GroundedValue] = new ArrayList[GroundedValue]()
-      for (seq <- array.members()) {
+      for (seq <- array.members) {
         results.add(seq.materialize)
       }
       new Chain(results)

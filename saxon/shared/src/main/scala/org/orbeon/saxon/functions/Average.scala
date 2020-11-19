@@ -50,7 +50,7 @@ class Average extends FoldingFunction {
       var next: AtomicValue = item.asInstanceOf[AtomicValue]
       if (next.isInstanceOf[UntypedAtomicValue]) {
         next =
-          toDouble.convert(next.asInstanceOf[UntypedAtomicValue]).asAtomic()
+          toDouble.convert(next.asInstanceOf[UntypedAtomicValue]).asAtomic
       }
       count += 1
       if (atStart) {

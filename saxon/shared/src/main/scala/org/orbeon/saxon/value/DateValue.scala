@@ -1,31 +1,19 @@
 
 package org.orbeon.saxon.value
 
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.lib.ConversionRules
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import java.time.LocalDate
-
 import java.time.format.DateTimeParseException
-
 import java.time.temporal.WeekFields
 
-import java.util.Calendar
-
-import java.util.GregorianCalendar
-
+import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.lib.ConversionRules
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.CalendarValue._
+import org.orbeon.saxon.value.DateValue._
 import org.orbeon.saxon.value.GDateValue._
 
-import org.orbeon.saxon.value.CalendarValue._
-
-import DateValue._
 
 object DateValue {
 
@@ -187,7 +175,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   def this(s: CharSequence, rules: ConversionRules) = {
     this()
-    setLexicalValue(this, s, rules.isAllowYearZero).asAtomic()
+    setLexicalValue(this, s, rules.isAllowYearZero).asAtomic
     typeLabel = BuiltInAtomicType.DATE
   }
 

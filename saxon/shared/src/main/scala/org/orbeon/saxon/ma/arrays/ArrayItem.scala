@@ -1,15 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.ma.arrays
 
 import org.orbeon.saxon.expr.StaticProperty
 import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.om.Function
-import org.orbeon.saxon.om.Genre
 import org.orbeon.saxon.om.Genre.Genre
-import org.orbeon.saxon.om.GroundedValue
+import org.orbeon.saxon.om.{Function, Genre, GroundedValue}
 import org.orbeon.saxon.value.SequenceType
 import org.orbeon.saxon.z.IntSet
+
 import scala.util.control.Breaks._
+
 
 /**
  * Interface supported by different implementations of an XDM array item
@@ -21,25 +26,15 @@ trait ArrayItem extends Function {
     StaticProperty.EXACTLY_ONE)
 
   def get(index: Int): GroundedValue
-
   def put(index: Int, newValue: GroundedValue): ArrayItem
-
   def arrayLength(): Int
-
   def isEmpty: Boolean
-
-  def members(): Iterable[GroundedValue]
-
+  def members: Iterable[GroundedValue]
   def concat(other: ArrayItem): ArrayItem
-
   def remove(index: Int): ArrayItem
-
   def removeSeveral(positions: IntSet): ArrayItem
-
   def subArray(start: Int, end: Int): ArrayItem
-
   def insert(position: Int, member: GroundedValue): ArrayItem
-
   def getMemberType(th: TypeHierarchy): SequenceType
 
   /**
@@ -53,9 +48,9 @@ trait ArrayItem extends Function {
     sb.append("array{")
     var count: Int = 0
     breakable {
-      for (member <- members()) {
+      for (member <- members) {
         if ( {
-          count += 1;
+          count += 1
           count - 1
         } > 2) {
           sb.append(" ...")
@@ -75,12 +70,4 @@ trait ArrayItem extends Function {
    * @return the genre: specifically, { @link Genre#ARRAY}.
    */
   override def getGenre: Genre = Genre.ARRAY
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2014-2020 Saxonica Limited

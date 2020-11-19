@@ -115,7 +115,6 @@ object UType {
          StandardNames.XS_ENTITY =>
       STRING
     case _ => throw new IllegalArgumentException("" + code)
-
   }
 
   def getUType(item: Item): UType =
@@ -230,7 +229,7 @@ class UType(private var bits: Int) {
   def except(other: UType): UType =
     new UType(bits & ~other.bits)
 
-  def decompose(): ju.Set[PrimitiveUType] = {
+  def decompose: ju.Set[PrimitiveUType] = {
     val result = new ju.HashSet[PrimitiveUType]()
     for (p <- PrimitiveUType.values if (bits & (1 << p.getBit)) != 0)
       result.add(p)
@@ -239,7 +238,7 @@ class UType(private var bits: Int) {
 
   override def toString: String = {
 
-    val components = decompose()
+    val components = decompose
     if (components.isEmpty)
       return "U{}"
 
@@ -268,7 +267,7 @@ class UType(private var bits: Int) {
   def subsumes(other: UType): Boolean = (bits & other.bits) == other.bits
 
   def toItemType: ItemType = {
-    val p = decompose()
+    val p = decompose
     if (p.isEmpty) {
       ErrorType
     } else if (p.size == 1) {

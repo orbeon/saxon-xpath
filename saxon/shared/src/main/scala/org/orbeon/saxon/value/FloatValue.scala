@@ -163,7 +163,7 @@ class FloatValue extends NumericValue {
    *
    * @return the number as an int if it is a possible subscript, or -1 otherwise
    */
-  override def asSubscript(): Int =
+  def asSubscript(): Int =
     if (isWholeNumber && value > 0 && value <= java.lang.Integer.MAX_VALUE)
       value.toInt
     else

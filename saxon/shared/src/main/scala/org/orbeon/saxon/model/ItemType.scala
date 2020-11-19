@@ -4,25 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
-  * ItemType is an interface that allows testing of whether an Item conforms to an
-  * expected type. ItemType represents the types in the type hierarchy in the XPath model,
-  * as distinct from the schema model: an item type is either item() (matches everything),
-  * a node type (matches nodes), an atomic type (matches atomic values), or empty()
-  * (matches nothing). Atomic types, represented by the class AtomicType, are also
-  * instances of SimpleType in the schema type hierarchy. Node Types, represented by
-  * the class NodeTest, are also Patterns as used in XSLT.
-  * <p>Saxon assumes that apart from {@link AnyItemType} (which corresponds to <code>item()</code>
-  * and matches anything), every ItemType will be either an {@link AtomicType}, a {@link org.orbeon.saxon.pattern.NodeTest},
-  * or a {@link FunctionItemType}. User-defined implementations of ItemType must therefore extend one of those
-  * three classes/interfaces.</p>
-  *
-  * @see AtomicType
-  * @see org.orbeon.saxon.pattern.NodeTest
-  * @see FunctionItemType
-  */
-
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.om.Genre.Genre
@@ -30,6 +11,24 @@ import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.value.SequenceType
 
 
+/**
+  * ItemType is an interface that allows testing of whether an Item conforms to an
+  * expected type. ItemType represents the types in the type hierarchy in the XPath model,
+  * as distinct from the schema model: an item type is either `item()` (matches everything),
+  * a node type (matches nodes), an atomic type (matches atomic values), or empty()
+  * (matches nothing). Atomic types, represented by the class `AtomicType`, are also
+  * instances of SimpleType in the schema type hierarchy. Node Types, represented by
+  * the class `NodeTest`, are also Patterns as used in XSLT.
+ *
+  * Saxon assumes that apart from `AnyItemType` (which corresponds to `item()`
+  * and matches anything), every `ItemType` will be either an `AtomicType`, a `org.orbeon.saxon.pattern.NodeTest`,
+  * or a `FunctionItemType`. User-defined implementations of ItemType must therefore extend one of those
+  * three classes/interfaces.
+  *
+  * @see AtomicType
+  * @see org.orbeon.saxon.pattern.NodeTest
+  * @see FunctionItemType
+  */
 object ItemType {
   trait WithSequenceTypeCache extends ItemType {
     def one: SequenceType
@@ -63,7 +62,7 @@ trait ItemType {
     * export files. This differs from the result of toString() in that it will not contain
     * any references to anonymous types. Note that it may also use the Saxon extended syntax
     * for union types and tuple types. The default implementation returns the result of
-    * calling {@code toString()}.
+    * calling `toString()`.
     *
     * @return the string representation as an instance of the XPath SequenceType construct
     */

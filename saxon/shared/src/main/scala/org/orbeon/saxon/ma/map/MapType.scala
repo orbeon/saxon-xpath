@@ -256,7 +256,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
   override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
     item match {
       case mapItem: MapItem =>
-        for (kvp <- mapItem.keyValuePairs().asScala) {
+        for (kvp <- mapItem.keyValuePairs.asScala) {
           if (!keyType.matches(kvp.key, th)) {
             val s = "The map contains a key (" + kvp.key + ") of type " +
               kvp.key.getItemType +

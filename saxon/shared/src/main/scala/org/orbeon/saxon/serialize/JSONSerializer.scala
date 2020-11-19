@@ -89,7 +89,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
     if (array.arrayLength() < 2) {
       return true
     }
-    for (member <- array.members()) {
+    for (member <- array.members) {
       if (! member.isInstanceOf[AtomicValue])
         return false
       totalSize += member.asInstanceOf[AtomicValue].getStringValueCS.length + 1
@@ -103,7 +103,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
     var totalSize: Int = 0
     if (map.size < 2)
       return true
-    for (entry <- map.keyValuePairs().asScala) {
+    for (entry <- map.keyValuePairs.asScala) {
       if (! entry.value.isInstanceOf[AtomicValue])
         return false
       totalSize += entry.key.getStringValueCS.length +

@@ -24,7 +24,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
   /**
     * Determine the Genre (top-level classification) of this type
     *
-    * @return the Genre to which this type belongs, specifically {@link Genre#ATOMIC}
+    * @return the Genre to which this type belongs, specifically `Genre#ATOMIC`
     */
   override def getGenre: Genre = Genre.ATOMIC
 
@@ -77,6 +77,4 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     } while (at != BuiltInAtomicType.ANY_ATOMIC);
     1 - factor
   }
-
 }
-

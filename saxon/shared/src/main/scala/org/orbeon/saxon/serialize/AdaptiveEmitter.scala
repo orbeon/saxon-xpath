@@ -206,7 +206,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   private def serializeArray(array: ArrayItem): Unit = {
     emit("[")
     var first: Boolean = true
-    for (seq <- array.members()) {
+    for (seq <- array.members) {
       if (first) {
         first = false
       } else {
@@ -220,7 +220,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   private def serializeMap(map: MapItem): Unit = {
     emit("map{")
     var first: Boolean = true
-    for (pair <- map.keyValuePairs().asScala) {
+    for (pair <- map.keyValuePairs.asScala) {
       if (first) {
         first = false
       } else {

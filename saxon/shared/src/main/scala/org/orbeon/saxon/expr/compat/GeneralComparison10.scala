@@ -1,57 +1,24 @@
 package org.orbeon.saxon.expr.compat
 
-import org.orbeon.saxon.utils.Configuration
+import java.util.{ArrayList, List}
 
 import org.orbeon.saxon.expr._
-
+import org.orbeon.saxon.expr.compat.GeneralComparison10._
 import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.expr.sort.AtomicComparer
-
-import org.orbeon.saxon.expr.sort.CodepointCollator
-
-import org.orbeon.saxon.expr.sort.GenericAtomicComparer
-
+import org.orbeon.saxon.expr.sort.{AtomicComparer, CodepointCollator, GenericAtomicComparer}
 import org.orbeon.saxon.functions.Number_1
-
-import org.orbeon.saxon.lib.ConversionRules
-
-import org.orbeon.saxon.lib.StringCollator
-
+import org.orbeon.saxon.lib.{ConversionRules, StringCollator}
 import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceIterator
-
+import org.orbeon.saxon.om.{Item, Sequence, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.{EmptyIterator, PrependSequenceIterator}
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.{AtomicValue, BooleanValue, DoubleValue, StringValue}
 
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.tree.iter.PrependSequenceIterator
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.BooleanValue
-
-import org.orbeon.saxon.value.DoubleValue
-
-import org.orbeon.saxon.value.StringValue
-
-import java.util.ArrayList
-
-import java.util.List
-
-import GeneralComparison10._
-
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-
 import scala.util.control.Breaks._
+
 
 object GeneralComparison10 {
 
@@ -82,13 +49,13 @@ object GeneralComparison10 {
       atomicVal0 = t1
         .getStringConverter(rules)
         .convert(atomicVal0.asInstanceOf[StringValue])
-        .asAtomic()
+        .asAtomic
     }
     if (t1 == BuiltInAtomicType.UNTYPED_ATOMIC) {
       atomicVal1 = t0
         .getStringConverter(rules)
         .convert(atomicVal1.asInstanceOf[StringValue])
-        .asAtomic()
+        .asAtomic
     }
     ValueComparison.compare(atomicVal0, op, atomicVal1, atomicCom, checkTypes = false)
   }
@@ -361,5 +328,4 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
   }
 
   override def tag(): String = "gc10"
-
 }

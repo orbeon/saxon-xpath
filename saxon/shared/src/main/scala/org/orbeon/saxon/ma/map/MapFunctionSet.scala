@@ -155,13 +155,13 @@ object MapFunctionSet {
                                 result: List[GroundedValue]): Unit = {
       in.iterate().forEachOrFail {
         case arrayItem: ArrayItem =>
-          for (sequence <- arrayItem.members())
+          for (sequence <- arrayItem.members)
             processSequence(sequence, key, result)
         case mapItem: MapItem =>
           val value = mapItem.get(key)
           if (value != null)
             result.add(value)
-          for (entry <- mapItem.keyValuePairs().asScala)
+          for (entry <- mapItem.keyValuePairs.asScala)
             processSequence(entry.value, key, result)
         case _ =>
       }
@@ -201,7 +201,7 @@ object MapFunctionSet {
       val map = arguments(0).head.asInstanceOf[MapItem]
       val fn = arguments(1).head.asInstanceOf[Function]
       val results = new ArrayList[GroundedValue]()
-      for (pair <- map.keyValuePairs().asScala) {
+      for (pair <- map.keyValuePairs.asScala) {
         val seq = dynamicCall(fn, context, Array(pair.key, pair.value))
         results.add(seq.materialize)
       }
@@ -357,7 +357,7 @@ object MapFunctionSet {
               next = iter.next().asInstanceOf[MapItem]
               next
             }) != null) for (pair <- next
-              .keyValuePairs().asScala) {
+              .keyValuePairs.asScala) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
                   "The keys in this map must all be strings (found " + pair.key.getItemType +
@@ -371,7 +371,7 @@ object MapFunctionSet {
               next = iter.next().asInstanceOf[MapItem]
               next
             }) != null) for (pair <- next
-              .keyValuePairs().asScala) {
+              .keyValuePairs.asScala) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
                   "The keys in this map must all be strings (found " + pair.key.getItemType +
@@ -424,7 +424,7 @@ object MapFunctionSet {
             next = iter.next().asInstanceOf[MapItem]
             next
           }) != null) for (pair <- next
-            .keyValuePairs().asScala) {
+            .keyValuePairs.asScala) {
             val existing: Sequence = baseMap.get(pair.key)
             if (existing != null) {
               duplicates match {

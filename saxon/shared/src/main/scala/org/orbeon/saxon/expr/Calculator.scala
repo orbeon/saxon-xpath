@@ -593,7 +593,7 @@ object Calculator {
                                  "FOAR0002",
                                  c)
       }
-      IntegerValue.makeIntegerValue(new DoubleValue(A / B)).asAtomic()
+      IntegerValue.makeIntegerValue(new DoubleValue(A / B)).asAtomic
     }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType =
@@ -696,7 +696,7 @@ object Calculator {
       } else {
         Converter.FloatToInteger.INSTANCE
           .convert(new FloatValue(quotient))
-          .asAtomic()
+          .asAtomic
           .asInstanceOf[IntegerValue]
       }
     }
@@ -709,13 +709,14 @@ object Calculator {
   class DecimalPlusDecimal extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue =
-      if (a.isInstanceOf[IntegerValue] && b.isInstanceOf[IntegerValue]) {
-        a.asInstanceOf[IntegerValue].plus(b.asInstanceOf[IntegerValue])
-      } else {
-        new BigDecimalValue(
-          a.asInstanceOf[NumericValue]
-            .getDecimalValue
-            .add(b.asInstanceOf[NumericValue].getDecimalValue))
+      a match {
+        case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
+          integerValue.plus(b.asInstanceOf[IntegerValue])
+        case _ =>
+          new BigDecimalValue(
+            a.asInstanceOf[NumericValue]
+              .getDecimalValue
+              .add(b.asInstanceOf[NumericValue].getDecimalValue))
       }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType =
@@ -726,13 +727,14 @@ object Calculator {
   class DecimalMinusDecimal extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue =
-      if (a.isInstanceOf[IntegerValue] && b.isInstanceOf[IntegerValue]) {
-        a.asInstanceOf[IntegerValue].minus(b.asInstanceOf[IntegerValue])
-      } else {
-        new BigDecimalValue(
-          a.asInstanceOf[NumericValue]
-            .getDecimalValue
-            .subtract(b.asInstanceOf[NumericValue].getDecimalValue))
+      a match {
+        case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
+          integerValue.minus(b.asInstanceOf[IntegerValue])
+        case _ =>
+          new BigDecimalValue(
+            a.asInstanceOf[NumericValue]
+              .getDecimalValue
+              .subtract(b.asInstanceOf[NumericValue].getDecimalValue))
       }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType =
@@ -743,13 +745,14 @@ object Calculator {
   class DecimalTimesDecimal extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue =
-      if (a.isInstanceOf[IntegerValue] && b.isInstanceOf[IntegerValue]) {
-        a.asInstanceOf[IntegerValue].times(b.asInstanceOf[IntegerValue])
-      } else {
-        new BigDecimalValue(
-          a.asInstanceOf[NumericValue]
-            .getDecimalValue
-            .multiply(b.asInstanceOf[NumericValue].getDecimalValue))
+      a match {
+        case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
+          integerValue.times(b.asInstanceOf[IntegerValue])
+        case _ =>
+          new BigDecimalValue(
+            a.asInstanceOf[NumericValue]
+              .getDecimalValue
+              .multiply(b.asInstanceOf[NumericValue].getDecimalValue))
       }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType =
@@ -793,8 +796,10 @@ object Calculator {
   class DecimalModDecimal extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue = {
-      if (a.isInstanceOf[IntegerValue] && b.isInstanceOf[IntegerValue]) {
-        a.asInstanceOf[IntegerValue].mod(b.asInstanceOf[IntegerValue])
+      a match {
+        case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
+          integerValue.mod(b.asInstanceOf[IntegerValue])
+        case _ =>
       }
       val A: BigDecimal = a.asInstanceOf[NumericValue].getDecimalValue
       val B: BigDecimal = b.asInstanceOf[NumericValue].getDecimalValue
@@ -821,8 +826,10 @@ object Calculator {
     def compute(a: AtomicValue,
                 b: AtomicValue,
                 c: XPathContext): IntegerValue = {
-      if (a.isInstanceOf[IntegerValue] && b.isInstanceOf[IntegerValue]) {
-        a.asInstanceOf[IntegerValue].idiv(b.asInstanceOf[IntegerValue])
+      a match {
+        case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
+          integerValue.idiv(b.asInstanceOf[IntegerValue])
+        case _ =>
       }
       val A: BigDecimal = a.asInstanceOf[NumericValue].getDecimalValue
       val B: BigDecimal = b.asInstanceOf[NumericValue].getDecimalValue
@@ -830,7 +837,7 @@ object Calculator {
         throw new XPathException("Integer division by zero", "FOAR0001", c)
       }
 //BigInteger quot = A.divide(B, 0, BigDecimal.ROUND_DOWN).toBigInteger();
-      val quot: BigInteger = A.divideToIntegralValue(B).toBigInteger()
+      val quot: BigInteger = A.divideToIntegralValue(B).toBigInteger
       IntegerValue.makeIntegerValue(quot)
     }
 
@@ -967,12 +974,13 @@ object Calculator {
   private class DurationTimesNumeric extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue =
-      if (b.isInstanceOf[Int64Value]) {
-        a.asInstanceOf[DurationValue]
-          .multiply(b.asInstanceOf[Int64Value].longValue())
-      } else {
-        a.asInstanceOf[DurationValue]
-          .multiply(b.asInstanceOf[NumericValue].getDoubleValue)
+      b match {
+        case int64Value: Int64Value =>
+          a.asInstanceOf[DurationValue]
+            .multiply(int64Value.longValue())
+        case _ =>
+          a.asInstanceOf[DurationValue]
+            .multiply(b.asInstanceOf[NumericValue].getDoubleValue)
       }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType = typeA
@@ -982,12 +990,13 @@ object Calculator {
   private class NumericTimesDuration extends Calculator {
 
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue =
-      if (a.isInstanceOf[Int64Value]) {
-        b.asInstanceOf[DurationValue]
-          .multiply(a.asInstanceOf[Int64Value].longValue())
-      } else {
-        b.asInstanceOf[DurationValue]
-          .multiply(a.asInstanceOf[NumericValue].getDoubleValue)
+      a match {
+        case int64Value: Int64Value =>
+          b.asInstanceOf[DurationValue]
+            .multiply(int64Value.longValue())
+        case _ =>
+          b.asInstanceOf[DurationValue]
+            .multiply(a.asInstanceOf[NumericValue].getDoubleValue)
       }
 
     def getResultType(typeA: AtomicType, typeB: AtomicType): AtomicType = typeB

@@ -1,45 +1,20 @@
 package org.orbeon.saxon.ma.map
 
-import org.orbeon.saxon.expr.ContextOriginator
-
-import org.orbeon.saxon.expr.Literal
-
-import org.orbeon.saxon.expr.OperandRole
-
-import org.orbeon.saxon.expr.XPathContext
-
+import org.orbeon.saxon.expr.{ContextOriginator, Literal, OperandRole, XPathContext}
 import org.orbeon.saxon.expr.sort.AtomicComparer
-
 import org.orbeon.saxon.functions.DeepEqual
-
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.pattern.NodeKindTest
-
-import org.orbeon.saxon.pattern.NodeTest
-
+import org.orbeon.saxon.pattern.{NodeKindTest, NodeTest}
 import org.orbeon.saxon.query.AnnotationList
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.Err
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.AtomicIterator
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.{AtomicValue, EmptySequence, SequenceType}
 
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.EmptySequence
-
-import org.orbeon.saxon.value.SequenceType
-
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 object MapItem {
 
@@ -85,19 +60,16 @@ object MapItem {
       if (first == null) {
         AnyItemType
       } else {
-        var `type`: ItemType = null
-        `type` =
+        val `type` =
           first match {
             case atomicValue: AtomicValue => atomicValue.getItemType
-            case info: NodeInfo => NodeKindTest.makeNodeKindTest(
-              info.getNodeKind)
+            case info: NodeInfo => NodeKindTest.makeNodeKindTest(info.getNodeKind)
             case _ => AnyFunctionType
           }
-        if (isKnownToConform(`val`, `type`)) {
+        if (isKnownToConform(`val`, `type`))
           `type`
-        } else {
+        else
           AnyItemType
-        }
       }
     } catch {
       case _: XPathException => AnyItemType
@@ -106,7 +78,7 @@ object MapItem {
   def mapToString(map: MapItem): String = {
     val buffer: FastStringBuffer = new FastStringBuffer(256)
     buffer.append("map{")
-    for (pair <- map.keyValuePairs().asScala) {
+    for (pair <- map.keyValuePairs.asScala) {
       if (buffer.length > 4) {
         buffer.append(",")
       }
@@ -126,7 +98,7 @@ trait MapItem extends Function {
   def size: Int
   def isEmpty: Boolean
   def keys: AtomicIterator[_ <: AtomicValue]
-  def keyValuePairs(): java.lang.Iterable[KeyValuePair]
+  def keyValuePairs: java.lang.Iterable[KeyValuePair]
   def addEntry(key: AtomicValue, value: GroundedValue): MapItem
   def remove(key: AtomicValue): MapItem
 
@@ -146,7 +118,7 @@ trait MapItem extends Function {
       sb.append("}")
     } else if (sizeInt <= 5) {
       var pos: Int = 0
-      for (pair <- keyValuePairs().asScala) {
+      for (pair <- keyValuePairs.asScala) {
         if ( {
           pos += 1
           pos - 1
@@ -167,7 +139,6 @@ trait MapItem extends Function {
   override def getGenre: Genre.Genre = Genre.MAP
 
   def isArray: Boolean = false
-
   def isMap: Boolean = true
 
   override def getAnnotations: AnnotationList = AnnotationList.EMPTY
@@ -242,7 +213,7 @@ trait MapItem extends Function {
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("map")
     out.emitAttribute("size", "" + size)
-    for (kvp <- keyValuePairs().asScala) {
+    for (kvp <- keyValuePairs.asScala) {
       Literal.exportAtomicValue(kvp.key, out)
       Literal.exportValue(kvp.value, out)
     }
@@ -250,5 +221,4 @@ trait MapItem extends Function {
   }
 
   def isTrustedResultType: Boolean = true
-
 }

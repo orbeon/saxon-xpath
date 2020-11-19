@@ -132,10 +132,10 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
             if (base == null) {
               null
             } else if (base.isInstanceOf[ArrayItem]) {
-              level1 = base.asInstanceOf[ArrayItem].members().iterator
+              level1 = base.asInstanceOf[ArrayItem].members.iterator
               next()
             } else if (base.isInstanceOf[MapItem]) {
-              level1 = base.asInstanceOf[MapItem].keyValuePairs().iterator.asScala
+              level1 = base.asInstanceOf[MapItem].keyValuePairs.iterator.asScala
               next()
             } else {
               LookupExpression.mustBeArrayOrMap(LookupAllExpression.this, base)

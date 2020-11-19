@@ -498,7 +498,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
   def flatten(array: ArrayItem,
               locationId: Location,
               copyNamespaces: Int): Unit = {
-    for (member <- array.members()) {
+    for (member <- array.members) {
       member
         .iterate()
         .forEachOrFail(it => append(it, locationId, copyNamespaces))

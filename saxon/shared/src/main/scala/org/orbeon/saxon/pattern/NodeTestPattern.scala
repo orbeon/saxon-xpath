@@ -1,26 +1,14 @@
 package org.orbeon.saxon.pattern
 
 import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.parser.ExpressionTool
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
-import org.orbeon.saxon.model.AlphaCode
-
-import org.orbeon.saxon.model.SchemaDeclaration
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
+import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap}
+import org.orbeon.saxon.model.{AlphaCode, UType}
+import org.orbeon.saxon.om.{Item, NodeInfo}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.{BeanProperty}
+import scala.beans.BeanProperty
+
 
 class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
 
@@ -30,26 +18,19 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
     item.isInstanceOf[NodeInfo] && nodeTest.test(item.asInstanceOf[NodeInfo])
 
   override def getItemType: NodeTest = nodeTest
-
-  override def getUType: UType = nodeTest.getUType
-
+  def getUType: UType = nodeTest.getUType
   override def getFingerprint: Int = nodeTest.getFingerprint
-
   override def toString: String = nodeTest.toString
-
   override def toShortString: String = nodeTest.toShortString
-
   override def equals(other: Any): Boolean =
-    (other.isInstanceOf[NodeTestPattern]) &&
+    other.isInstanceOf[NodeTestPattern] &&
       other.asInstanceOf[NodeTestPattern].nodeTest == nodeTest
 
   override def computeHashCode(): Int = 0x7aeffea8 ^ nodeTest.hashCode
 
   override def convertToTypedPattern(`val`: String): Pattern =
-    if (nodeTest
-      .isInstanceOf[NameTest] && nodeTest.getUType == UType.ELEMENT) {
-      val decl: SchemaDeclaration =
-        getConfiguration.getElementDeclaration(nodeTest.getMatchingNodeName)
+    if (nodeTest.isInstanceOf[NameTest] && nodeTest.getUType == UType.ELEMENT) {
+      val decl = getConfiguration.getElementDeclaration(nodeTest.getMatchingNodeName)
       if (decl == null) {
         if ("lax" == `val`) {
           this
@@ -61,7 +42,7 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
             "XTSE3105")
         }
       } else {
-        val schemaNodeTest: NodeTest = decl.makeSchemaNodeTest()
+        val schemaNodeTest: NodeTest = decl.makeSchemaNodeTest
         new NodeTestPattern(schemaNodeTest)
       }
     } else {
@@ -80,5 +61,4 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
     ExpressionTool.copyLocationInfo(this, n)
     n
   }
-
 }

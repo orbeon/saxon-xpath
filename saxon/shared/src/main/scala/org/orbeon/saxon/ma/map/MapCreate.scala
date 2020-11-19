@@ -36,7 +36,7 @@ class MapCreate extends SystemFunction {
       while (({
         next = iter.next().asInstanceOf[MapItem]
         next
-      }) != null) for (pair <- next.keyValuePairs().asScala) {
+      }) != null) for (pair <- next.keyValuePairs.asScala) {
         if (baseMap.get(pair.key) != null) {
           throw new XPathException(
             "Duplicate key value (" + pair.key + ") in map",

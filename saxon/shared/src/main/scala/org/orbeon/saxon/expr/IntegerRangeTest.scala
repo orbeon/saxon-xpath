@@ -131,7 +131,7 @@ override def typeCheck(visitor: ExpressionVisitor,
           e.setLocation(getLocation)
           throw e
         } else {
-          v = result.asAtomic().asInstanceOf[DoubleValue]
+          v = result.asAtomic.asInstanceOf[DoubleValue]
         }
       } else if (atom.isInstanceOf[NumericValue]) {
         v = atom.asInstanceOf[NumericValue]

@@ -30,16 +30,18 @@ import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.{IntArraySet, IntSet}
 
 import scala.collection.mutable
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
+
 /**
  * Parser for XPath expressions and XSLT patterns.
- * <p>This code was originally inspired by James Clark's xt but has been totally rewritten (several times)</p>
- * <p>The base class handles parsing of XPath 2.0, XPath 3.0 and XPath 3.1 syntax (switched by a languageVersion variable).
- * Subclasses refine this to handle XQuery syntax (1.0, 3.0 and 3.1) and XQuery Update syntax.</p>
  *
+ * This code was originally inspired by James Clark's xt but has been totally rewritten (several times)
+ *
+ * The base class handles parsing of XPath 2.0, XPath 3.0 and XPath 3.1 syntax (switched by a languageVersion variable).
+ *
+ * Subclasses refine this to handle XQuery syntax (1.0, 3.0 and 3.1) and XQuery Update syntax.</p>
  */
 object XPathParser {
 
@@ -2520,8 +2522,8 @@ class XPathParser() {
               if (attributeDecl == null) {
                 grumble("There is no declaration for attribute @" + nodeName + " in an imported schema", "XPST0008")
                 return null
-              }
-              else return attributeDecl.makeSchemaNodeTest()
+              } else
+                return attributeDecl.makeSchemaNodeTest
             }
             else return new NameTest(Type.ATTRIBUTE, fp, pool)
           }
@@ -2532,8 +2534,8 @@ class XPathParser() {
               if (elementDecl == null) {
                 grumble("There is no declaration for element <" + nodeName + "> in an imported schema", "XPST0008")
                 return null
-              }
-              else return elementDecl.makeSchemaNodeTest()
+              } else
+                return elementDecl.makeSchemaNodeTest
             }
             else return makeNameTest(Type.ELEMENT, nodeName, useDefault = true)
           }

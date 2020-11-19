@@ -56,7 +56,7 @@ object Sum {
       if (atStart) {
         atStart = false
         if (next.isInstanceOf[UntypedAtomicValue]) {
-          data = toDouble.convert(next).asAtomic()
+          data = toDouble.convert(next).asAtomic
           return
         } else if (next.isInstanceOf[NumericValue] || next
           .isInstanceOf[DayTimeDurationValue] ||
@@ -74,7 +74,7 @@ object Sum {
       }
       if (data.isInstanceOf[NumericValue]) {
         if (next.isInstanceOf[UntypedAtomicValue]) {
-          next = toDouble.convert(next).asAtomic()
+          next = toDouble.convert(next).asAtomic
         } else if (!(next.isInstanceOf[NumericValue])) {
           val err = new XPathException(
             "Input to sum() contains a mix of numeric and non-numeric values")

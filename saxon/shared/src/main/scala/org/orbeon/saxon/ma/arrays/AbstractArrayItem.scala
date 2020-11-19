@@ -1,5 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 package org.orbeon.saxon.ma.arrays
+
+import java.util.{ArrayList, List}
 
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.sort.AtomicComparer
@@ -9,15 +17,10 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.Cardinality
-import org.orbeon.saxon.value.IntegerValue
-import org.orbeon.saxon.value.SequenceType
-import java.util.ArrayList
-import java.util.List
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.orbeon.saxon.value.{AtomicValue, Cardinality, IntegerValue, SequenceType}
 import org.orbeon.saxon.query.AnnotationList
+
+import scala.jdk.CollectionConverters._
 
 
 /**
@@ -33,21 +36,21 @@ abstract class AbstractArrayItem extends ArrayItem {
    *
    * @return an array of OperandRole objects, one for each argument
    */
-  def getOperandRoles(): Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
+  def getOperandRoles: Array[OperandRole] = Array(OperandRole.SINGLE_ATOMIC)
 
   /**
    * Ask whether this function item is an array
    *
    * @return true (it is an array)
    */
-  def isArray(): Boolean = true
+  def isArray: Boolean = true
 
   /**
    * Ask whether this function item is a map
    *
    * @return false (it is not a map)
    */
-  def isMap(): Boolean = false
+  def isMap: Boolean = false
 
   /**
    * Atomize the item.
@@ -56,8 +59,8 @@ abstract class AbstractArrayItem extends ArrayItem {
    * @throws XPathException if atomization is not allowed for this kind of item
    */
   def atomize(): AtomicSequence = {
-    var list: List[AtomicValue] = new ArrayList[AtomicValue](arrayLength())
-    for (seq <- members()) {
+    val list: List[AtomicValue] = new ArrayList[AtomicValue](arrayLength())
+    for (seq <- members) {
       seq
         .iterate()
         .forEachOrFail((item: Item) => {
@@ -67,10 +70,10 @@ abstract class AbstractArrayItem extends ArrayItem {
           }
         })
     }
-    return new AtomicArray(list)
+    new AtomicArray(list)
   }
 
-  override def getAnnotations(): AnnotationList = AnnotationList.EMPTY
+  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
   def getFunctionItemType: FunctionItemType = ArrayItemType.ANY_ARRAY_TYPE
 
@@ -147,18 +150,18 @@ abstract class AbstractArrayItem extends ArrayItem {
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("array")
     out.emitAttribute("size", s"${arrayLength()}")
-    for (mem <- members()) {
+    for (mem <- members) {
       Literal.exportValue(mem, out)
     }
     out.endElement()
   }
 
-  def isTrustedResultType(): Boolean = false
+  def isTrustedResultType: Boolean = false
 
   override def toString: String = {
     val buffer: FastStringBuffer = new FastStringBuffer(256)
     buffer.append("[")
-    for (seq <- members()) {
+    for (seq <- members) {
       if (buffer.length > 1) {
         buffer.append(", ")
       }
@@ -177,7 +180,7 @@ abstract class AbstractArrayItem extends ArrayItem {
       } else {
         var contentType: ItemType = null
         var contentCard: Int = StaticProperty.EXACTLY_ONE
-        for (s <- members()) {
+        for (s <- members) {
           if (contentType == null) {
             contentType = SequenceTool.getItemType(s, th)
             contentCard = SequenceTool.getCardinality(s)
@@ -203,9 +206,3 @@ abstract class AbstractArrayItem extends ArrayItem {
   //        }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

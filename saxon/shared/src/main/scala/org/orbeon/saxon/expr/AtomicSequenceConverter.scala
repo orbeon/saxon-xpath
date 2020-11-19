@@ -1,30 +1,12 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-
+import org.orbeon.saxon.expr.AtomicSequenceConverter._
 import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.lib.ConversionRules
-
 import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
+import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.StringValue
-
-import AtomicSequenceConverter._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 
 object AtomicSequenceConverter {
@@ -48,7 +30,7 @@ object AtomicSequenceConverter {
       if (errorCode != null && result.isInstanceOf[ValidationFailure]) {
         result.asInstanceOf[ValidationFailure].setErrorCode(errorCode)
       }
-      result.asAtomic()
+      result.asAtomic
     }
   }
 
@@ -110,7 +92,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     converter
   }
 
-  def getOperandRole(): OperandRole = OperandRole.ATOMIC_SEQUENCE
+  def getOperandRole: OperandRole = OperandRole.ATOMIC_SEQUENCE
 
   def getRequiredItemType: PlainType = requiredItemType
 
@@ -237,7 +219,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     val result = conv.convert(item)
     if (roleDiagnostic != null && result.isInstanceOf[ValidationFailure])
       result.asInstanceOf[ValidationFailure].setErrorCode(roleDiagnostic.getErrorCode)
-    result.asAtomic()
+    result.asAtomic
   }
 
   override def getItemType: ItemType = requiredItemType

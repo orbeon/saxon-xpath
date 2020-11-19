@@ -295,7 +295,7 @@ object AxisInfo {
 
   def getTargetUType(origin: UType, axis: Int): UType = {
     var resultType = UType.VOID
-    val origins = origin.intersection(UType.ANY_NODE).decompose()
+    val origins = origin.intersection(UType.ANY_NODE).decompose
     for (u <- origins.asScala) {
       val r = axisTransitions.get(makeKey(u, axis))
       if (r == null) {

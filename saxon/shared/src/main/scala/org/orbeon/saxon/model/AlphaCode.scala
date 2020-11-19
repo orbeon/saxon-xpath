@@ -1,56 +1,39 @@
 package org.orbeon.saxon.model
 
-import org.orbeon.saxon.utils.Configuration
-import org.orbeon.saxon.expr.StaticProperty
-import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.{StaticProperty, XPathContext}
 import org.orbeon.saxon.expr.parser.Token
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.orbeon.saxon.utils.Configuration
+import java.util
+
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.ma.arrays.ArrayItem
-import org.orbeon.saxon.ma.arrays.ArrayItemType
-import org.orbeon.saxon.ma.arrays.SimpleArrayItem
+import org.orbeon.saxon.ma.arrays.{ArrayItem, ArrayItemType, SimpleArrayItem}
 import org.orbeon.saxon.ma.map._
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.om.{GroundedValue, StructuredQName}
 import org.orbeon.saxon.pattern._
 import org.orbeon.saxon.sxpath.IndependentContext
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.Cardinality
-import org.orbeon.saxon.value.SequenceExtent
-import org.orbeon.saxon.value.SequenceType
-import org.orbeon.saxon.value.StringValue
-import java.util
+import org.orbeon.saxon.value.{Cardinality, SequenceExtent, SequenceType, StringValue}
+
 import scala.util.control.Breaks._
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 object AlphaCode {
 
   trait ParserCallBack[T] {
-
     def makeContainer: T
-
-
     def setStringProperty(container: T, key: String, value: String): Unit
-
-
     def setMultiStringProperty(container: T, key: String, value: util.List[String]): Unit
-
-
     def setTypeProperty(container: T, key: String, value: T): Unit
-
-
     def setMultiTypeProperty(container: T, key: String, value: util.List[T]): Unit
   }
 
-
   private class MapItemCallBack extends AlphaCode.ParserCallBack[DictionaryMap] {
-    override def makeContainer = new DictionaryMap
+    def makeContainer = new DictionaryMap
 
-    override def setStringProperty(container: DictionaryMap, key: String, value: String) = container.initialPut(key, new StringValue(value))
+    def setStringProperty(container: DictionaryMap, key: String, value: String): Unit = container.initialPut(key, new StringValue(value))
 
-    override def setMultiStringProperty(container: DictionaryMap, key: String, value: util.List[String]) = {
+    def setMultiStringProperty(container: DictionaryMap, key: String, value: util.List[String]): Unit = {
       val xdmValue = new util.ArrayList[StringValue]
 
       for (v <- value.asScala) {
@@ -59,19 +42,19 @@ object AlphaCode {
       container.initialPut(key, new SequenceExtent(xdmValue))
     }
 
-    override def setTypeProperty(container: DictionaryMap, key: String, value: DictionaryMap) = container.initialPut(key, value)
+    def setTypeProperty(container: DictionaryMap, key: String, value: DictionaryMap): Unit = container.initialPut(key, value)
 
-    override def setMultiTypeProperty(container: DictionaryMap, key: String, value: util.List[DictionaryMap]) = {
+    def setMultiTypeProperty(container: DictionaryMap, key: String, value: util.List[DictionaryMap]): Unit = {
       val contents = new util.ArrayList[GroundedValue](value)
       container.initialPut(key, new SimpleArrayItem(contents))
     }
   }
 
-
   private class TreeCallBack extends AlphaCode.ParserCallBack[AlphaCode.AlphaCodeTree] {
-    override def makeContainer = new AlphaCode.AlphaCodeTree
 
-    override def setStringProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: String) = key match {
+    def makeContainer = new AlphaCode.AlphaCodeTree
+
+    def setStringProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: String): Unit = key match {
       case "o" =>
         tree.cardinality = value
       case "p" =>
@@ -88,12 +71,13 @@ object AlphaCode {
         throw new IllegalArgumentException("Bad alphacode component " + key)
     }
 
-    override def setMultiStringProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: util.List[String]) = if (key == "f") {
-      tree.fieldNames = value
-    }
-    else throw new IllegalArgumentException("Bad alphacode component " + key)
+    def setMultiStringProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: util.List[String]): Unit =
+      if (key == "f")
+        tree.fieldNames = value
+      else
+        throw new IllegalArgumentException("Bad alphacode component " + key)
 
-    override def setTypeProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: AlphaCode.AlphaCodeTree) = key match {
+    def setTypeProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: AlphaCode.AlphaCodeTree): Unit = key match {
       case "k" =>
         tree.keyType = value
       case "v" =>
@@ -106,7 +90,7 @@ object AlphaCode {
         throw new IllegalArgumentException("Bad alphacode component " + key)
     }
 
-    override def setMultiTypeProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: util.List[AlphaCode.AlphaCodeTree]) = key match {
+    def setMultiTypeProperty(tree: AlphaCode.AlphaCodeTree, key: String, value: util.List[AlphaCode.AlphaCodeTree]): Unit = key match {
       case "a" =>
         tree.argTypes = value
       case "m" =>
@@ -125,14 +109,13 @@ object AlphaCode {
     }
   }
 
-
   class AlphaCodeParser[T](var input: String, var callBack: AlphaCode.ParserCallBack[T]) {
     private var position = 0
 
     private def nextChar: Int = {
       if (position >= input.length) return -1
       input.charAt({
-        position += 1;
+        position += 1
         position - 1
       })
     }
@@ -144,7 +127,7 @@ object AlphaCode {
         position < input.length
       }) {
         val ch = input.charAt({
-          position += 1;
+          position += 1
           position - 1
         })
         ch match {
@@ -155,7 +138,7 @@ object AlphaCode {
           case ']' =>
           case ',' =>
             if (inBraces == 0) return input.substring(start, {
-              position -= 1;
+              position -= 1
               position
             })
           case ' ' =>
@@ -167,7 +150,7 @@ object AlphaCode {
       input.substring(start, position)
     }
 
-    private def expect(c: Char) = {
+    private def expect(c: Char): Unit = {
       val d = nextChar
       if (d != c) throw new IllegalStateException("Expected '" + c + "', found '" + (if (d == -1) "<eof>"
       else d.toChar) + "'")
@@ -275,8 +258,7 @@ object AlphaCode {
     }
   }
 
-
-  def toXdmMap(input: String) = {
+  def toXdmMap(input: String): DictionaryMap = {
     val callBack = new AlphaCode.MapItemCallBack
     val parser = new AlphaCode.AlphaCodeParser[DictionaryMap](input, callBack)
     parser.parseType
@@ -333,7 +315,6 @@ object AlphaCode {
     out.toString
   }
 
-
   private class AlphaCodeTree {
     private[model] var cardinality: String = null
     private[model] var principal: String = null
@@ -352,21 +333,18 @@ object AlphaCode {
     private[model] var extensibleTupleType = false
   }
 
-
-  def toSequenceType(input: String, config: Configuration) = {
+  def toSequenceType(input: String, config: Configuration): SequenceType = {
     val callBack = new AlphaCode.TreeCallBack
     val parser = new AlphaCode.AlphaCodeParser[AlphaCode.AlphaCodeTree](input, callBack)
     val tree = parser.parseType
     sequenceTypeFromTree(tree, config)
   }
 
-
-  def toItemType(input: String, config: Configuration) = {
+  def toItemType(input: String, config: Configuration): ItemType = {
     val st = toSequenceType(input, config)
     if (st.getCardinality != StaticProperty.EXACTLY_ONE) throw new IllegalArgumentException("Supplied alphacode has a cardinality other than 1")
     st.getPrimaryType
   }
-
 
   private def sequenceTypeFromTree(tree: AlphaCodeTree, config: Configuration): SequenceType = {
     val principal = tree.principal
@@ -414,7 +392,7 @@ object AlphaCode {
       else {
         assert(tree.vennOperator == Token.UNION)
         var u = UType.VOID
-        for (i <- 0 until tree.vennOperands.length) {
+        for (i <- tree.vennOperands.indices) {
           val it = sequenceTypeFromTree(tree.vennOperands(i), config).getPrimaryType
           assert(it.isInstanceOf[NodeKindTest])
           u = u.union(it.getUType)
@@ -489,9 +467,7 @@ object AlphaCode {
               val decl: SchemaDeclaration = config.getElementDeclaration(qName)
               if (decl != null) try itemType = decl.makeSchemaNodeTest
               catch {
-                case e: MissingComponentException =>
-
-
+                case _: MissingComponentException =>
               }
               if (itemType == null) itemType = new NameTest(Type.ELEMENT, qName.getURI, qName.getLocalPart, config.getNamePool)
             case "NAS" =>
@@ -540,9 +516,8 @@ object AlphaCode {
         if (returnType == null) r = SequenceType.ANY_SEQUENCE
         else r = sequenceTypeFromTree(returnType, config)
         val a = new Array[SequenceType](argTypes.size)
-        for (i <- 0 until a.length) {
+        for (i <- a.indices)
           a(i) = sequenceTypeFromTree(argTypes.get(i), config)
-        }
         itemType = new SpecificFunctionType(a, r)
       }
     }
@@ -561,106 +536,107 @@ object AlphaCode {
     val result = new AlphaCode.AlphaCodeTree
     result.principal = primary.getBasicAlphaCode
     result.cardinality = "1"
-    if (primary.isInstanceOf[AtomicType] && !(primary.asInstanceOf[AtomicType]).isBuiltInType) result.name = primary.asInstanceOf[AtomicType].getEQName
-    else if (primary.isInstanceOf[UnionType]) {
-      val name = primary.asInstanceOf[UnionType].getTypeName
-      if (name.getURI == NamespaceConstant.SCHEMA) {
-        result.name = "~" + name.getLocalPart
-      }
-      else if (name.getURI == NamespaceConstant.ANONYMOUS) {
-        try {
-          val memberMaps = new util.ArrayList[AlphaCode.AlphaCodeTree]
+    primary match {
+      case atomicType: AtomicType if !atomicType.isBuiltInType => result.name = atomicType.getEQName
+      case unionType: UnionType =>
+        val name = unionType.getTypeName
+        if (name.getURI == NamespaceConstant.SCHEMA) {
+          result.name = "~" + name.getLocalPart
+        }
+        else if (name.getURI == NamespaceConstant.ANONYMOUS) {
+          try {
+            val memberMaps = new util.ArrayList[AlphaCodeTree]
 
-          for (pt <- primary.asInstanceOf[UnionType].getPlainMemberTypes) {
-            memberMaps.add(makeTree(pt))
+            for (pt <- unionType.getPlainMemberTypes) {
+              memberMaps.add(makeTree(pt))
+            }
+            result.members = memberMaps
+          } catch {
+            case e: MissingComponentException =>
           }
-          result.members = memberMaps
-        } catch {
-          case e: MissingComponentException =>
         }
-      }
-      else result.name = name.getEQName
-    }
-    else if (primary.isInstanceOf[NameTest]) {
-      val name = primary.asInstanceOf[NameTest].getMatchingNodeName
-      result.name = name.getEQName
-    }
-    else if (primary.isInstanceOf[SchemaNodeTest]) {
-      val name = primary.asInstanceOf[SchemaNodeTest].getNodeName
-      result.name = name.getEQName
-    }
-    else if (primary.isInstanceOf[LocalNameTest]) result.name = "*:" + primary.asInstanceOf[LocalNameTest].getLocalName
-    else if (primary.isInstanceOf[NamespaceTest]) result.name = "Q{" + primary.asInstanceOf[NamespaceTest].getNamespaceURI + "}*"
-    else if (primary.isInstanceOf[CombinedNodeTest]) {
-      val combi = primary.asInstanceOf[CombinedNodeTest]
-      val c = combi.getContentTypeForAlphaCode
-      if (c != null) {
-        result.content = c
-        result.name = combi.getMatchingNodeName.getEQName
-        result.nillable = combi.isNillable
-      }
-      else {
-        result.vennOperator = combi.getOperator
-        result.vennOperands = new Array[AlphaCode.AlphaCodeTree](2)
-        result.vennOperands(0) = makeTree(combi.getOperand(0))
-        result.vennOperands(1) = makeTree(combi.getOperand(1))
-      }
-    }
-    else if (primary.isInstanceOf[MultipleNodeKindTest]) {
-      result.vennOperator = Token.UNION
-      val types = primary.getUType.decompose
-      result.vennOperands = new Array[AlphaCode.AlphaCodeTree](types.size)
-      var i = 0
-
-      for (itemType <- types.asScala) {
-        result.vennOperands({
-          i += 1;
-          i - 1
-        }) = makeTree(itemType.toItemType)
-      }
-    }
-    else if (primary.isInstanceOf[ContentTypeTest]) result.content = primary.asInstanceOf[ContentTypeTest].getContentType.getEQName
-    else if (primary.isInstanceOf[DocumentNodeTest]) {
-      val content = primary.asInstanceOf[DocumentNodeTest].getElementTest
-      result.elementType = makeTree(content)
-    }
-    else if (primary.isInstanceOf[FunctionItemType]) if (primary.isInstanceOf[ArrayItemType]) {
-      val memberType = primary.asInstanceOf[ArrayItemType].getMemberType
-      if (memberType ne SequenceType.ANY_SEQUENCE) result.valueType = makeTree(memberType)
-    }
-    else if (primary.isInstanceOf[TupleItemType]) {
-      result.extensibleTupleType = primary.asInstanceOf[TupleItemType].isExtensible
-      result.fieldNames = new util.ArrayList[String]
-      result.argTypes = new util.ArrayList[AlphaCode.AlphaCodeTree]
-
-      for (s <- primary.asInstanceOf[TupleItemType].getFieldNames.asScala) {
-        result.fieldNames.add(s)
-        result.argTypes.add(makeTree(primary.asInstanceOf[TupleItemType].getFieldType(s)))
-      }
-    }
-    else if (primary.isInstanceOf[MapType]) {
-      val keyType = primary.asInstanceOf[MapType].getKeyType
-      if (keyType ne BuiltInAtomicType.ANY_ATOMIC) result.keyType = makeTree(keyType)
-      val valueType = primary.asInstanceOf[MapType].getValueType
-      if (valueType ne SequenceType.ANY_SEQUENCE) result.valueType = makeTree(valueType)
-    }
-    else {
-      val resultType = primary.asInstanceOf[FunctionItemType].getResultType
-      if (resultType ne SequenceType.ANY_SEQUENCE) result.resultType = makeTree(resultType)
-      val argTypes = primary.asInstanceOf[FunctionItemType].getArgumentTypes
-      if (argTypes != null) {
-        val argMaps = new util.ArrayList[AlphaCode.AlphaCodeTree]
-        for (at <- argTypes) {
-          argMaps.add(makeTree(at))
+        else result.name = name.getEQName
+      case test: NameTest =>
+        val name = test.getMatchingNodeName
+        result.name = name.getEQName
+      case test: SchemaNodeTest =>
+        val name = test.getNodeName
+        result.name = name.getEQName
+      case test: LocalNameTest => result.name = "*:" + test.getLocalName
+      case test: NamespaceTest => result.name = "Q{" + test.getNamespaceURI + "}*"
+      case combi: CombinedNodeTest =>
+        val c = combi.getContentTypeForAlphaCode
+        if (c != null) {
+          result.content = c
+          result.name = combi.getMatchingNodeName.getEQName
+          result.nillable = combi.isNillable
         }
-        result.argTypes = argMaps
+        else {
+          result.vennOperator = combi.getOperator
+          result.vennOperands = new Array[AlphaCodeTree](2)
+          result.vennOperands(0) = makeTree(combi.getOperand(0))
+          result.vennOperands(1) = makeTree(combi.getOperand(1))
+        }
+      case _: MultipleNodeKindTest =>
+        result.vennOperator = Token.UNION
+        val types = primary.getUType.decompose
+        result.vennOperands = new Array[AlphaCodeTree](types.size)
+        var i = 0
+
+        for (itemType <- types.asScala) {
+          result.vennOperands({
+            i += 1
+            i - 1
+          }) = makeTree(itemType.toItemType)
+        }
+      case test: ContentTypeTest =>
+        result.content = test.getContentType.getEQName
+      case test: DocumentNodeTest =>
+        val content = test.getElementTest
+        result.elementType = makeTree(content)
+      case itemType: FunctionItemType => primary match {
+        case arrayItemType: ArrayItemType =>
+          val memberType = arrayItemType.getMemberType
+          if (memberType ne SequenceType.ANY_SEQUENCE)
+            result.valueType = makeTree(memberType)
+        case tupleItemType: TupleItemType =>
+          result.extensibleTupleType = tupleItemType.isExtensible
+          result.fieldNames = new util.ArrayList[String]
+          result.argTypes = new util.ArrayList[AlphaCodeTree]
+
+          for (s <- tupleItemType.getFieldNames.asScala) {
+            result.fieldNames.add(s)
+            result.argTypes.add(makeTree(tupleItemType.getFieldType(s)))
+          }
+        case mapType: MapType =>
+          val keyType = mapType.getKeyType
+          if (keyType ne BuiltInAtomicType.ANY_ATOMIC)
+            result.keyType = makeTree(keyType)
+          val valueType = mapType.getValueType
+          if (valueType ne SequenceType.ANY_SEQUENCE)
+            result.valueType = makeTree(valueType)
+        case _ =>
+          val resultType = itemType.getResultType
+          if (resultType ne SequenceType.ANY_SEQUENCE)
+            result.resultType = makeTree(resultType)
+          val argTypes = itemType.getArgumentTypes
+          if (argTypes != null) {
+            val argMaps = new util.ArrayList[AlphaCodeTree]
+            for (at <- argTypes)
+              argMaps.add(makeTree(at))
+            result.argTypes = argMaps
+          }
       }
+      case _ =>
     }
     result
   }
 
-  private def abbreviateEQName(in: String) = if (in.startsWith("Q{" + NamespaceConstant.SCHEMA + "}")) "~" + in.substring(("Q{" + NamespaceConstant.SCHEMA + "}").length)
-  else in
+  private def abbreviateEQName(in: String) =
+    if (in.startsWith("Q{" + NamespaceConstant.SCHEMA + "}"))
+      "~" + in.substring(("Q{" + NamespaceConstant.SCHEMA + "}").length)
+    else
+      in
 
   private def alphaCodeFromTree(tree: AlphaCode.AlphaCodeTree, withCardinality: Boolean, sb: StringBuilder): Unit = {
     if (withCardinality) sb.append(tree.cardinality)
@@ -717,8 +693,9 @@ object AlphaCode {
       else if (tree.vennOperator == Token.UNION) "u"
       else "d"
       sb.append(" ").append(operator).append("[")
-      for (i <- 0 until tree.vennOperands.length) {
-        if (i != 0) sb.append(",")
+      for (i <- tree.vennOperands.indices) {
+        if (i != 0)
+          sb.append(",")
         alphaCodeFromTree(tree.vennOperands(i), withCardinality = false, sb)
       }
       sb.append("]")
@@ -737,7 +714,7 @@ object AlphaCode {
     }
   }
 
-  def fromItemType(`type`: ItemType) = {
+  def fromItemType(`type`: ItemType): String = {
     val tree = makeTree(`type`)
     val sb = new StringBuilder
     alphaCodeFromTree(tree, withCardinality = false, sb)
@@ -752,7 +729,7 @@ object AlphaCode {
   }
 
   @throws[XPathException]
-  def fromLexicalSequenceType(context: XPathContext, input: String) = {
+  def fromLexicalSequenceType(context: XPathContext, input: String): String = {
     val parser = context.getConfiguration.newExpressionParser("XP", updating = false, 31)
     val env = new IndependentContext(context.getConfiguration)
     env.declareNamespace("xs", NamespaceConstant.SCHEMA)
@@ -761,5 +738,3 @@ object AlphaCode {
     fromSequenceType(st)
   }
 }
-
-class AlphaCode {}

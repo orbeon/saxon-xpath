@@ -11,11 +11,11 @@ import org.orbeon.saxon.value.AtomicValue
 
 /**
   * This is a marker interface used as the result of methods that convert or cast values from one type
-  * to another. It is implemented by AtomicValue, which indicates a successful conversion, and by
+  * to another. It is implemented by `AtomicValue`, which indicates a successful conversion, and by
   * ValidationFailure, which indicates an unsuccessful conversion. An unsuccessful conversion does not
   * throw an exception because exceptions are expensive and should not be used on success paths. For example
   * when validating a union, conversion failures are to be expected.
   */
 trait ConversionResult {
-  def asAtomic(): AtomicValue
+  def asAtomic: AtomicValue
 }

@@ -20,7 +20,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
 import java.util.ArrayList
 import java.util.List
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.utils.Configuration
 
@@ -29,11 +28,9 @@ object GeneralComparison {
 
   object ComparisonCardinality extends Enumeration {
 
-    val ONE_TO_ONE: ComparisonCardinality = new ComparisonCardinality()
-
-    val MANY_TO_ONE: ComparisonCardinality = new ComparisonCardinality()
-
-    val MANY_TO_MANY: ComparisonCardinality = new ComparisonCardinality()
+    val ONE_TO_ONE   : ComparisonCardinality = new ComparisonCardinality
+    val MANY_TO_ONE  : ComparisonCardinality = new ComparisonCardinality
+    val MANY_TO_MANY : ComparisonCardinality = new ComparisonCardinality
 
     class ComparisonCardinality extends Val
 
@@ -71,36 +68,40 @@ object GeneralComparison {
     if (u0 != u1) {
       val rules: ConversionRules = context.getConfiguration.getConversionRules
       if (u0) {
-        if (atomicVal1.isInstanceOf[NumericValue]) {
-          UntypedNumericComparer.quickCompare(
-            atomicVal0.asInstanceOf[UntypedAtomicValue],
-            atomicVal1.asInstanceOf[NumericValue],
-            operator,
-            rules)
-        } else if (atomicVal1.isInstanceOf[StringValue]) {} else {
-          var sc: StringConverter =
-            atomicVal1.getItemType.getPrimitiveItemType.getStringConverter(rules)
-          if (atomicVal1.isInstanceOf[QualifiedNameValue]) {
-            sc =
-              sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
-          }
-          atomicVal0 = sc.convertString(atomicVal0.getStringValueCS).asAtomic()
+        atomicVal1 match {
+          case numericValue: NumericValue =>
+            UntypedNumericComparer.quickCompare(
+              atomicVal0.asInstanceOf[UntypedAtomicValue],
+              numericValue,
+              operator,
+              rules)
+          case _: StringValue =>
+          case _ =>
+            var sc: StringConverter =
+              atomicVal1.getItemType.getPrimitiveItemType.getStringConverter(rules)
+            if (atomicVal1.isInstanceOf[QualifiedNameValue]) {
+              sc =
+                sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
+            }
+            atomicVal0 = sc.convertString(atomicVal0.getStringValueCS).asAtomic
         }
       } else {
-        if (atomicVal0.isInstanceOf[NumericValue]) {
-          UntypedNumericComparer.quickCompare(
-            atomicVal1.asInstanceOf[UntypedAtomicValue],
-            atomicVal0.asInstanceOf[NumericValue],
-            Token.inverse(operator),
-            rules)
-        } else if (atomicVal0.isInstanceOf[StringValue]) {} else {
-          var sc: StringConverter =
-            atomicVal0.getItemType.getPrimitiveItemType.getStringConverter(rules)
-          if (atomicVal0.isInstanceOf[QualifiedNameValue]) {
-            sc =
-              sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
-          }
-          atomicVal1 = sc.convertString(atomicVal1.getStringValueCS).asAtomic()
+        atomicVal0 match {
+          case numericValue: NumericValue =>
+            UntypedNumericComparer.quickCompare(
+              atomicVal1.asInstanceOf[UntypedAtomicValue],
+              numericValue,
+              Token.inverse(operator),
+              rules)
+          case _: StringValue =>
+          case _ =>
+            var sc: StringConverter =
+              atomicVal0.getItemType.getPrimitiveItemType.getStringConverter(rules)
+            if (atomicVal0.isInstanceOf[QualifiedNameValue]) {
+              sc =
+                sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
+            }
+            atomicVal1 = sc.convertString(atomicVal1.getStringValueCS).asAtomic
         }
       }
       checkTyps = false
@@ -156,9 +157,9 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext
 
-  def getAtomicComparer(): AtomicComparer = comparer
+  def getAtomicComparer: AtomicComparer = comparer
 
-  def getSingletonOperator(): Int = singletonOperator
+  def getSingletonOperator: Int = singletonOperator
 
   def convertsUntypedToOther(): Boolean = true
 
@@ -311,8 +312,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         collation,
         config.getConversionContext)
     }
-    if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
-      .isInstanceOf[Literal])) {
+    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
+      .isInstanceOf[Literal]) {
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
     }
     this
@@ -396,53 +397,65 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
     }
     if (op == Token.EQUALS) {
-      if (getLhsExpression.isInstanceOf[RangeExpression]) {
-        val min: Expression =
-          getLhsExpression.asInstanceOf[RangeExpression].getLhsExpression
-        val max: Expression =
-          getLhsExpression.asInstanceOf[RangeExpression].getRhsExpression
-        val ir: IntegerRangeTest =
-          new IntegerRangeTest(getRhsExpression, min, max)
-        ExpressionTool.copyLocationInfo(this, ir)
-        return ir
-      }
-      if (getRhsExpression.isInstanceOf[RangeExpression]) {
-        val min: Expression =
-          getRhsExpression.asInstanceOf[RangeExpression].getLhsExpression
-        val max: Expression =
-          getRhsExpression.asInstanceOf[RangeExpression].getRhsExpression
-        val ir: IntegerRangeTest =
-          new IntegerRangeTest(getLhsExpression, min, max)
-        ExpressionTool.copyLocationInfo(this, ir)
-        return ir
-      }
-      if (getLhsExpression.isInstanceOf[Literal]) {
-        val value0: GroundedValue =
-          getLhsExpression.asInstanceOf[Literal].getValue
-        if (value0.isInstanceOf[IntegerRange]) {
-          val min: Long = value0.asInstanceOf[IntegerRange].getStart
-          val max: Long = value0.asInstanceOf[IntegerRange].getEnd
-          val ir: IntegerRangeTest = new IntegerRangeTest(
-            getRhsExpression,
-            Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
-            Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
+      getLhsExpression match {
+        case expression1: RangeExpression =>
+          val min: Expression =
+            expression1.getLhsExpression
+          val max: Expression =
+            expression1.getRhsExpression
+          val ir: IntegerRangeTest =
+            new IntegerRangeTest(getRhsExpression, min, max)
           ExpressionTool.copyLocationInfo(this, ir)
           return ir
-        }
+        case _ =>
       }
-      if (getRhsExpression.isInstanceOf[Literal]) {
-        val value1: GroundedValue =
-          getRhsExpression.asInstanceOf[Literal].getValue
-        if (value1.isInstanceOf[IntegerRange]) {
-          val min: Long = value1.asInstanceOf[IntegerRange].getStart
-          val max: Long = value1.asInstanceOf[IntegerRange].getEnd
-          val ir: IntegerRangeTest = new IntegerRangeTest(
-            getLhsExpression,
-            Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
-            Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
+      getRhsExpression match {
+        case expression: RangeExpression =>
+          val min: Expression =
+            expression.getLhsExpression
+          val max: Expression =
+            expression.getRhsExpression
+          val ir: IntegerRangeTest =
+            new IntegerRangeTest(getLhsExpression, min, max)
           ExpressionTool.copyLocationInfo(this, ir)
           return ir
-        }
+        case _ =>
+      }
+      getLhsExpression match {
+        case literal1: Literal =>
+          val value0: GroundedValue =
+            literal1.getValue
+          value0 match {
+            case range: IntegerRange =>
+              val min: Long = range.getStart
+              val max: Long = range.getEnd
+              val ir: IntegerRangeTest = new IntegerRangeTest(
+                getRhsExpression,
+                Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
+                Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
+              ExpressionTool.copyLocationInfo(this, ir)
+              return ir
+            case _ =>
+          }
+        case _ =>
+      }
+      getRhsExpression match {
+        case literal: Literal =>
+          val value1: GroundedValue =
+            literal.getValue
+          value1 match {
+            case range: IntegerRange =>
+              val min: Long = range.getStart
+              val max: Long = range.getEnd
+              val ir: IntegerRangeTest = new IntegerRangeTest(
+                getLhsExpression,
+                Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
+                Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
+              ExpressionTool.copyLocationInfo(this, ir)
+              return ir
+            case _ =>
+          }
+        case _ =>
       }
     }
     if (op != Token.EQUALS && op != Token.NE &&
@@ -473,8 +486,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       vc.setRetainedStaticContext(getRetainedStaticContext)
       vc.typeCheck(visitor, contextInfo)
     }
-    if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
-      .isInstanceOf[Literal])) {
+    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
+      .isInstanceOf[Literal]) {
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
     }
     visitor
@@ -483,89 +496,78 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   }
 
   private def manyOperandIsLiftable(): Boolean = {
-    if (getParentExpression.isInstanceOf[ContextSwitchingExpression] &&
-      getParentExpression
+    getParentExpression match {
+      case _: ContextSwitchingExpression if getParentExpression
         .asInstanceOf[ContextSwitchingExpression]
         .getActionExpression ==
-        this) {
-      for (o <- operands.asScala
-           if Cardinality.allowsMany(o.getChildExpression.getCardinality)
-           if ExpressionTool.dependsOnFocus(o.getChildExpression)) {
-        false
-      }
-      return true
+        this =>
+        for (o <- operands.asScala
+             if Cardinality.allowsMany(o.getChildExpression.getCardinality)
+             if ExpressionTool.dependsOnFocus(o.getChildExpression)) {
+          false
+        }
+        return true
+      case _ =>
     }
     false
   }
 
   override def evaluateItem(context: XPathContext): BooleanValue = {
     comparisonCardinality match {
-      case ONE_TO_ONE => {
+      case ONE_TO_ONE =>
         val value0: AtomicValue =
           getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         val value1: AtomicValue =
           getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateOneToOne(value0, value1, context))
-      }
-      case MANY_TO_ONE => {
+      case MANY_TO_ONE =>
         val iter0: SequenceIterator = getLhsExpression.iterate(context)
         val value1: AtomicValue =
           getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateManyToOne(iter0, value1, context))
-      }
-      case MANY_TO_MANY => {
+      case MANY_TO_MANY =>
         val iter1: SequenceIterator = getLhsExpression.iterate(context)
         val iter2: SequenceIterator = getRhsExpression.iterate(context)
         BooleanValue.get(evaluateManyToMany(iter1, iter2, context))
-      }
-
     }
     null
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     comparisonCardinality match {
-      case ONE_TO_ONE => {
+      case ONE_TO_ONE =>
         val value0: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
         val value1: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateOneToOne(value0, value1, context))
-      }
-      case MANY_TO_ONE => {
+      case MANY_TO_ONE =>
         val iter0: SequenceIterator = arguments(0).iterate()
         val value1: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateManyToOne(iter0, value1, context))
-      }
-      case MANY_TO_MANY => {
+      case MANY_TO_MANY =>
         val iter1: SequenceIterator = arguments(0).iterate()
         val iter2: SequenceIterator = arguments(1).iterate()
         BooleanValue.get(evaluateManyToMany(iter1, iter2, context))
-      }
-
     }
     null
   }
 
   override def effectiveBooleanValue(context: XPathContext): Boolean = {
     comparisonCardinality match {
-      case ONE_TO_ONE => {
+      case ONE_TO_ONE =>
         val value0: AtomicValue =
           getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         val value1: AtomicValue =
           getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         evaluateOneToOne(value0, value1, context)
-      }
-      case MANY_TO_ONE => {
+      case MANY_TO_ONE =>
         val iter0: SequenceIterator = getLhsExpression.iterate(context)
         val value1: AtomicValue =
           getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         evaluateManyToOne(iter0, value1, context)
-      }
-      case MANY_TO_MANY => {
+      case MANY_TO_MANY =>
         val iter1: SequenceIterator = getLhsExpression.iterate(context)
         val iter2: SequenceIterator = getRhsExpression.iterate(context)
         evaluateManyToMany(iter1, iter2, context)
-      }
-
     }
     false
   }
@@ -581,12 +583,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       context,
       getRetainedStaticContext)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
   private def evaluateManyToOne(iter0: SequenceIterator,
@@ -598,10 +598,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       var item0: AtomicValue = null
       val boundComparer: AtomicComparer = comparer.provideContext(context)
-      while (({
+      while ( {
         item0 = iter0.next().asInstanceOf[AtomicValue]
         item0
-      }) != null) if (GeneralComparison.compare(
+      } != null) if (GeneralComparison.compare(
         item0,
         singletonOperator,
         value1,
@@ -614,12 +614,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       false
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
   def evaluateManyToMany(iter0: SequenceIterator,
@@ -683,12 +681,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       false
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
   def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
@@ -719,5 +715,4 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     out.emitAttribute("card", cc)
     out.emitAttribute("comp", comparer.save())
   }
-
 }

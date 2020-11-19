@@ -18,7 +18,7 @@ object Converter {
       ve.setErrorCode("FORG0001")
       throw ve.makeException()
     }
-    converter.convert(value).asAtomic()
+    converter.convert(value).asAtomic
   }
 
   abstract class UnfailingConverter extends Converter {

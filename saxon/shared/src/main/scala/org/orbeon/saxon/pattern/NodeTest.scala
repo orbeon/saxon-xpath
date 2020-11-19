@@ -66,7 +66,7 @@ abstract class NodeTest
     matches(node.getNodeKind, NameOfNode.makeName(node), node.getSchemaType)
 
   def getContentType: SchemaType = {
-    val m = getUType.decompose()
+    val m = getUType.decompose
     val it = m.iterator
     if (m.size == 1 && it.hasNext) {
       val p = it.next()

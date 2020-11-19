@@ -249,7 +249,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
       if (escapedKey != null) {
         alreadyEscaped = StringConverter.StringToBoolean.INSTANCE
           .convertString(escapedKey)
-          .asAtomic()
+          .asAtomic
           .effectiveBooleanValue
       }
       key = (if (alreadyEscaped) handleEscapedString(key)
@@ -290,7 +290,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
         if (escapedAtt != null) {
           escaped = StringConverter.StringToBoolean.INSTANCE
             .convertString(escapedAtt)
-            .asAtomic()
+            .asAtomic
             .effectiveBooleanValue
         }
         checkParent(local, parent)
@@ -324,7 +324,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     if (local.==("boolean")) {
       val b: Boolean = StringConverter.StringToBoolean.INSTANCE
         .convertString(textBuffer)
-        .asAtomic()
+        .asAtomic
         .effectiveBooleanValue
       output.cat(if (b) "true" else "false")
     } else if (local.==("number")) {

@@ -1,35 +1,18 @@
 package org.orbeon.saxon.pattern
 
-import org.orbeon.saxon.expr.parser.Token
-
-import org.orbeon.saxon.ma.map.DictionaryMap
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.NodeName
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.tree.tiny.NodeVectorTree
-
-import org.orbeon.saxon.value.StringValue
-
-import org.orbeon.saxon.z.IntExceptPredicate
-
-import org.orbeon.saxon.z.IntSet
-
-import java.util.Optional
-
 import java.util.function.IntPredicate
 
-import AnyType._
-import AnySimpleType._
+import org.orbeon.saxon.expr.parser.Token
+import org.orbeon.saxon.ma.map.DictionaryMap
+import org.orbeon.saxon.model.AnyType._
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{Item, NodeInfo, NodeName, StructuredQName}
+import org.orbeon.saxon.tree.tiny.NodeVectorTree
+import org.orbeon.saxon.value.StringValue
+import org.orbeon.saxon.z.{IntExceptPredicate, IntSet}
 
-import scala.beans.{BeanProperty}
+import scala.beans.BeanProperty
+
 
 object CombinedNodeTest {
 
@@ -128,59 +111,60 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   private def makeString(forExport: Boolean): String =
     if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT) {
-      val kind: Int = nodetest1.getPrimitiveType
-      val skind: String =
-        if (kind == Type.ELEMENT) "element(" else "attribute("
+      val kind = nodetest1.getPrimitiveType
+      val skind = if (kind == Type.ELEMENT) "element(" else "attribute("
       var content: String = ""
-      if (nodetest2.isInstanceOf[ContentTypeTest]) {
-        var schemaType: SchemaType =
-          nodetest2.asInstanceOf[ContentTypeTest].getSchemaType
-        if (forExport) {
-          schemaType = schemaType.getNearestNamedType
-        }
-        content = ", " + schemaType.getEQName
-        if (nodetest2.isNillable) {
-          content += "?"
-        }
+      nodetest2 match {
+        case contentTypeTest: ContentTypeTest =>
+          var schemaType: SchemaType =
+            contentTypeTest.getSchemaType
+          if (forExport)
+            schemaType = schemaType.getNearestNamedType
+          content = ", " + schemaType.getEQName
+          if (nodetest2.isNillable)
+            content += "?"
+        case _ =>
       }
       val name: String = nodetest1.getMatchingNodeName.getEQName
       skind + name + content + ')'
     } else {
       val nt1: String = if (nodetest1 == null) "item()" else nodetest1.toString
       val nt2: String = if (nodetest2 == null) "item()" else nodetest2.toString
-      "(" + nt1 + " " + Token.tokens(operator).toString + " " + nt2 +
+      "(" + nt1 + " " + Token.tokens(operator) + " " + nt2 +
         ")"
     }
 
   override def toExportString: String = makeString(true)
 
   def getContentTypeForAlphaCode: String =
-    if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT &&
-      nodetest2.isInstanceOf[ContentTypeTest]) {
-      CombinedNodeTest.getContentTypeForAlphaCode(nodetest1.asInstanceOf[NameTest],
-        nodetest2.asInstanceOf[ContentTypeTest])
-    } else if (nodetest2
-      .isInstanceOf[NameTest] && operator == Token.INTERSECT &&
-      nodetest1.isInstanceOf[ContentTypeTest]) {
-      CombinedNodeTest.getContentTypeForAlphaCode(nodetest2.asInstanceOf[NameTest],
-        nodetest1.asInstanceOf[ContentTypeTest])
-    } else {
-      null
+    nodetest1 match {
+      case nameTest: NameTest if nodetest2.isInstanceOf[ContentTypeTest] && operator == Token.INTERSECT =>
+        CombinedNodeTest.getContentTypeForAlphaCode(nameTest,
+          nodetest2.asInstanceOf[ContentTypeTest])
+      case _ => nodetest2 match {
+        case nameTest: NameTest if nodetest1.isInstanceOf[ContentTypeTest] && operator == Token.INTERSECT =>
+          CombinedNodeTest.getContentTypeForAlphaCode(nameTest,
+            nodetest1.asInstanceOf[ContentTypeTest])
+        case _ =>
+          null
+      }
     }
 
   def addTypeDetails(map: DictionaryMap): Unit = {
     if (nodetest1.isInstanceOf[NameTest] && operator == Token.INTERSECT) {
       map.initialPut("n",
         new StringValue(nodetest1.getMatchingNodeName.getEQName))
-      if (nodetest2.isInstanceOf[ContentTypeTest]) {
-        val schemaType: SchemaType =
-          nodetest2.asInstanceOf[ContentTypeTest].getSchemaType
-        if (schemaType != Untyped.getInstance && schemaType != BuiltInAtomicType.UNTYPED_ATOMIC) {
-          map.initialPut(
-            "c",
-            new StringValue(
-              schemaType.getEQName + (if (nodetest2.isNillable) "?" else "")))
-        }
+      nodetest2 match {
+        case contentTypeTest: ContentTypeTest =>
+          val schemaType: SchemaType =
+            contentTypeTest.getSchemaType
+          if (schemaType != Untyped.getInstance && schemaType != BuiltInAtomicType.UNTYPED_ATOMIC) {
+            map.initialPut(
+              "c",
+              new StringValue(
+                schemaType.getEQName + (if (nodetest2.isNillable) "?" else "")))
+          }
+        case _ =>
       }
     }
   }
@@ -216,7 +200,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     }
   }
 
-  override def getContentType(): SchemaType = {
+  override def getContentType: SchemaType = {
     val type1: SchemaType = nodetest1.getContentType
     val type2: SchemaType = nodetest2.getContentType
     if (type1.isSameType(type2)) {
@@ -277,7 +261,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     -1
   }
 
-  override def getMatchingNodeName(): StructuredQName = {
+  override def getMatchingNodeName: StructuredQName = {
     val n1: StructuredQName = nodetest1.getMatchingNodeName
     val n2: StructuredQName = nodetest2.getMatchingNodeName
     if (n1 != null && n1 == n2) {
@@ -292,7 +276,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     null
   }
 
-  override def isNillable(): Boolean = nodetest1.isNillable && nodetest2.isNillable
+  override def isNillable: Boolean = nodetest1.isNillable && nodetest2.isNillable
 
   override def hashCode: Int = nodetest1.hashCode ^ nodetest2.hashCode
 

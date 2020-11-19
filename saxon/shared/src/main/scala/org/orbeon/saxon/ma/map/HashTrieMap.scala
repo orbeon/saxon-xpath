@@ -25,7 +25,7 @@ object HashTrieMap {
       map.asInstanceOf[HashTrieMap]
     }
     var m2: HashTrieMap = new HashTrieMap()
-    for (pair <- map.keyValuePairs().asScala) {
+    for (pair <- map.keyValuePairs.asScala) {
       m2 = m2.addEntry(pair.key, pair.value)
     }
     m2
