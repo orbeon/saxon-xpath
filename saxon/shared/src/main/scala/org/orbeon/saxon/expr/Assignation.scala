@@ -47,7 +47,7 @@ object Assignation {
   }
 }
 
-abstract class Assignation() extends Expression with LocalBinding {
+abstract class Assignation extends Expression with LocalBinding {
   private var sequenceOp: Operand = null
   private var actionOp: Operand = null
   sequenceOp = new Operand(this, null, OperandRole.NAVIGATE)

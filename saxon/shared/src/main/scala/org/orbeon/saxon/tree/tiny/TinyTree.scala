@@ -73,18 +73,18 @@ class TinyTree(config: Configuration, statistics: Statistics)
     with NodeVectorTree {
 
   /*@Nullable*/
-  val nodes         : Int              = statistics.getAverageNodes.toInt + 1
-  val attributes    : Int              = statistics.getAverageAttributes.toInt + 1
-  val namespaces    : Int              = statistics.getAverageNamespaces.toInt + 1
-  val characters    : Int              = statistics.getAverageCharacters.toInt + 1
-  var commentBuffer : FastStringBuffer = null
-  var numberOfNodes : Int              = 0
-  var nodeKind      : Array[Byte]      = new Array[Byte](nodes)
-  var depth         : Array[Short]     = new Array[Short](nodes)
-  var next          : Array[Int]       = new Array[Int](nodes)
-  var alpha         : Array[Int]       = new Array[Int](nodes)
-  var beta          : Array[Int]       = new Array[Int](nodes)
-  var nameCode      : Array[Int]       = new Array[Int](nodes)
+  val nodes: Int = statistics.getAverageNodes.toInt + 1
+  val attributes: Int = statistics.getAverageAttributes.toInt + 1
+  val namespaces: Int = statistics.getAverageNamespaces.toInt + 1
+  val characters: Int = statistics.getAverageCharacters.toInt + 1
+  var commentBuffer: FastStringBuffer = null
+  var numberOfNodes: Int = 0
+  var nodeKind: Array[Byte] = new Array[Byte](nodes)
+  var depth: Array[Short] = new Array[Short](nodes)
+  var next: Array[Int] = new Array[Int](nodes)
+  var alpha: Array[Int] = new Array[Int](nodes)
+  var beta: Array[Int] = new Array[Int](nodes)
+  var nameCode: Array[Int] = new Array[Int](nodes)
 
   /*@Nullable*/
   var prior: Array[Int] = null
@@ -93,12 +93,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
   var typeArray: Array[SchemaType] = null
 
   /*@Nullable*/
-  var typedValueArray     : Array[AtomicSequence] = null
-  var idRefElements       : IntSet                = null
-  var idRefAttributes     : IntSet                = null
-  var nilledElements      : IntSet                = null
-  var defaultedAttributes : IntSet                = null
-  var topWithinEntity     : IntSet                = null
+  var typedValueArray: Array[AtomicSequence] = null
+  var idRefElements: IntSet = null
+  var idRefAttributes: IntSet = null
+  var nilledElements: IntSet = null
+  var defaultedAttributes: IntSet = null
+  var topWithinEntity: IntSet = null
 
   private var allowTypedValueCache: Boolean = true
   private var localNameIndex: Map[String, IntSet] = null
@@ -237,7 +237,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
     }
     {
-      numberOfNodes += 1; numberOfNodes - 1
+      numberOfNodes += 1;
+      numberOfNodes - 1
     }
   }
 
@@ -587,16 +588,16 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getNode(nr: Int): TinyNodeImpl =
     nodeKind(nr) match {
-      case Type.DOCUMENT               => getRootNode.asInstanceOf[TinyDocumentImpl]
-      case Type.ELEMENT                => new TinyElementImpl(this, nr)
-      case Type.TEXTUAL_ELEMENT        => new TinyTextualElement(this, nr)
-      case Type.TEXT                   => new TinyTextImpl(this, nr)
-      case Type.WHITESPACE_TEXT        => new WhitespaceTextImpl(this, nr)
-      case Type.COMMENT                => new TinyCommentImpl(this, nr)
+      case Type.DOCUMENT => getRootNode.asInstanceOf[TinyDocumentImpl]
+      case Type.ELEMENT => new TinyElementImpl(this, nr)
+      case Type.TEXTUAL_ELEMENT => new TinyTextualElement(this, nr)
+      case Type.TEXT => new TinyTextImpl(this, nr)
+      case Type.WHITESPACE_TEXT => new WhitespaceTextImpl(this, nr)
+      case Type.COMMENT => new TinyCommentImpl(this, nr)
       case Type.PROCESSING_INSTRUCTION => new TinyProcInstImpl(this, nr)
-      case Type.PARENT_POINTER         => throw new IllegalArgumentException("Attempting to treat a parent pointer as a node")
-      case Type.STOPPER                => throw new IllegalArgumentException("Attempting to treat a stopper entry as a node")
-      case _                           => throw new IllegalStateException("Unknown node kind " + nodeKind(nr))
+      case Type.PARENT_POINTER => throw new IllegalArgumentException("Attempting to treat a parent pointer as a node")
+      case Type.STOPPER => throw new IllegalArgumentException("Attempting to treat a stopper entry as a node")
+      case _ => throw new IllegalStateException("Unknown node kind " + nodeKind(nr))
     }
 
   def getAtomizedValueOfUntypedNode(nodeNr: Int): AtomicValue =
@@ -690,13 +691,13 @@ class TinyTree(config: Configuration, statistics: Statistics)
           return true
         try
           for (av <- getTypedValueOfElement(nr).asScala
-                 if av.getItemType.isIdRefType) {
+               if av.getItemType.isIdRefType) {
             return true
           }
         catch {
           case _: XPathException =>
         }
-    } catch {
+      } catch {
       case _: MissingComponentException =>
         return false
     }
@@ -879,24 +880,40 @@ class TinyTree(config: Configuration, statistics: Statistics)
    * @return true if the document contains elements whose type is other than UNTYPED
    */
   override def isTyped: Boolean = typeArray != null
+
   def getNumberOfNodes: Int = numberOfNodes
+
   def getNumberOfAttributes: Int = numberOfAttributes
+
   def getNumberOfNamespaces: Int = numberOfNamespaces
+
   def getNodeKindArray(): Array[Byte] = nodeKind
+
   def getNodeDepthArray: Array[Short] = depth
+
   def getNameCodeArray(): Array[Int] = nameCode
+
   /*@Nullable*/
   def getTypeArray: Array[SchemaType] = typeArray
+
   def getNextPointerArray: Array[Int] = next
+
   def getAlphaArray: Array[Int] = alpha
+
   def getBetaArray: Array[Int] = beta
+
   def getCharacterBuffer: AppendableCharSequence = charBuffer
+
   /*@Nullable*/
   def getCommentBuffer: CharSequence = commentBuffer
+
   def getAttributeNameCodeArray: Array[Int] = attCode
+
   /*@Nullable*/
   def getAttributeTypeArray: Array[SimpleType] = attType
+
   def getAttributeParentArray: Array[Int] = attParent
+
   def getAttributeValueArray: Array[CharSequence] = attValue
 
   def getNamespaceBindings: Array[NamespaceBinding] =
@@ -946,7 +963,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
             var lastAtt: Int = firstAtt
             while (lastAtt < source.numberOfAttributes && source.attParent(
               lastAtt) == from) {
-              lastAtt += 1; lastAtt - 1
+              lastAtt += 1;
+              lastAtt - 1
             }
             val atts: Int = lastAtt - firstAtt
             ensureAttributeCapacity(atts)
@@ -983,7 +1001,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
                 aFrom += 1;
               }
               {
-                aTo += 1; aTo - 1
+                aTo += 1;
+                aTo - 1
               }
             }
             numberOfAttributes += atts
@@ -998,7 +1017,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
               namespaceMaps(numberOfNamespaces) =
                 source.namespaceMaps(source.beta(nodeNr))
               beta(to) = {
-                numberOfNamespaces += 1; numberOfNamespaces - 1
+                numberOfNamespaces += 1;
+                numberOfNamespaces - 1
               }
             }
           } else {
@@ -1010,7 +1030,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
               val out: NamespaceMap = inherited.putAll(in)
               namespaceMaps(numberOfNamespaces) = out
               beta(to) = {
-                numberOfNamespaces += 1; numberOfNamespaces - 1
+                numberOfNamespaces += 1;
+                numberOfNamespaces - 1
               }
             }
           }

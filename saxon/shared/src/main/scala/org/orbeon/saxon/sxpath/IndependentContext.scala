@@ -25,16 +25,16 @@ class IndependentContext(config: Configuration)
     with XPathStaticContext
     with NamespaceResolver {
 
-  var namespaces: ju.HashMap[String, String] = new ju.HashMap(10)
-  var variables: ju.HashMap[StructuredQName, XPathVariable] = new ju.HashMap(20)
-  var externalResolver: NamespaceResolver = null
-  var requiredContextItemType: ItemType = AnyItemType
-  var importedSchemaNamespaces: ju.Set[String] = new ju.HashSet
-  var autoDeclare: Boolean = false
-  var executable: Executable = _
-  var retainedStaticContext: RetainedStaticContext = _
-  var optimizerOptions: OptimizerOptions = config.getOptimizerOptions
-  var parentlessContextItem: Boolean = _
+  var namespaces               : ju.HashMap[String, String] = new ju.HashMap(10)
+  var variables                : ju.HashMap[StructuredQName, XPathVariable] = new ju.HashMap(20)
+  var externalResolver         : NamespaceResolver = null
+  var requiredContextItemType  : ItemType = AnyItemType
+  var importedSchemaNamespaces : ju.Set[String] = new ju.HashSet
+  var autoDeclare              : Boolean = false
+  var executable               : Executable = _
+  var retainedStaticContext    : RetainedStaticContext = _
+  var optimizerOptions         : OptimizerOptions = config.getOptimizerOptions
+  var parentlessContextItem    : Boolean = _
 
   this.setConfiguration(config)
   clearNamespaces()
@@ -132,9 +132,8 @@ class IndependentContext(config: Configuration)
     val iter = nodeInf.iterateAxis(AxisInfo.NAMESPACE)
     while (true) {
       val ns = iter.next()
-      if (ns == null) {
+      if (ns == null)
         return
-      }
       val prefix = ns.getLocalPart
       if ("" == prefix)
         this.defaultElementNamespace = ns.getStringValue
@@ -180,8 +179,9 @@ class IndependentContext(config: Configuration)
     val sq = qname.getStructuredQName
     val `var` = variables.get(sq)
     if (`var` == null)
-      return -1
-    `var`.getLocalSlotNumber
+      -1
+    else
+      `var`.getLocalSlotNumber
   }
 
   def getNamespaceResolver: NamespaceResolver =
@@ -190,16 +190,14 @@ class IndependentContext(config: Configuration)
     else
       this
 
-  def getURIForPrefix(prefix: String, useDefault: Boolean): String = {
-    if (externalResolver != null)
+  def getURIForPrefix(prefix: String, useDefault: Boolean): String =
+    if (externalResolver != null) {
       externalResolver.getURIForPrefix(prefix, useDefault)
-    if (prefix.isEmpty) {
-      if (useDefault)
-        getDefaultElementNamespace else ""
+    } else if (prefix.isEmpty) {
+      if (useDefault) getDefaultElementNamespace else ""
     } else {
       namespaces.get(prefix)
     }
-  }
 
   def iteratePrefixes: ju.Iterator[String] =
     if (externalResolver != null)
@@ -241,9 +239,8 @@ class IndependentContext(config: Configuration)
 
   def setImportedSchemaNamespaces(namespaces: ju.Set[String]): Unit = {
     importedSchemaNamespaces = namespaces
-    if (!namespaces.isEmpty) {
+    if (! namespaces.isEmpty)
       this.setSchemaAware(true)
-    }
   }
 
   def setRequiredContextItemType(`type`: ItemType): Unit =
@@ -259,12 +256,12 @@ class IndependentContext(config: Configuration)
   def setExecutable(exec: Executable): Unit =
     executable = exec
 
-  def getExecutable: Executable = executable
-  def getColumnNumber: Int = -1
-  def getPublicId: String = null
-  def getLineNumber: Int = -1
+  def getExecutable   : Executable = executable
+  def getColumnNumber : Int = -1
+  def getPublicId     : String = null
+  def getLineNumber   : Int = -1
 
-  override def isContextItemParentless: Boolean = parentlessContextItem
+  def isContextItemParentless: Boolean = parentlessContextItem
 
   def setContextItemParentless(parentless: Boolean): Unit =
     parentlessContextItem = parentless
