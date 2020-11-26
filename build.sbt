@@ -3,9 +3,11 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 enablePlugins(ScalaJSPlugin)
 
 
-lazy val scala212 = "2.12.12"
-lazy val scala213 = "2.13.3"
-lazy val supportedScalaVersions = List(scala212, scala213)
+val saxonVersion = "10.0.0.14-SNAPSHOT"
+
+val scala212 = "2.12.12"
+val scala213 = "2.13.3"
+val supportedScalaVersions = List(scala212, scala213)
 
 val ScalaTestVersion = "3.2.1"
 val ScalaCollectionCompatVersion  = "2.2.0"
@@ -21,7 +23,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   .settings(
     organization := "org.orbeon",
     name         := "saxon",
-    version      := "10.0.0.11-SNAPSHOT",
+    version      := saxonVersion,
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
