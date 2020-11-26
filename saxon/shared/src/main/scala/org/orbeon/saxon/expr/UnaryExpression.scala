@@ -17,9 +17,8 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
 
   def getBaseExpression: Expression = operand.getChildExpression
 
-  def setBaseExpression(child: Expression): Unit = {
+  def setBaseExpression(child: Expression): Unit =
     operand.setChildExpression(child)
-  }
 
   def getOperand: Operand = operand
 

@@ -268,7 +268,7 @@ class TypeHierarchy(var config: Configuration) {
   def getConfiguration: Configuration = config
 
   def isSubType(subtype: ItemType, supertype: ItemType): Boolean = {
-    val relation: Affinity = relationship(subtype, supertype)
+    val relation = relationship(subtype, supertype)
     relation == SAME_TYPE || relation == SUBSUMED_BY
   }
 

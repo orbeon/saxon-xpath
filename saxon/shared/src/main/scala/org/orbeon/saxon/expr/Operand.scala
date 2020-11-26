@@ -29,13 +29,12 @@ object Operand {
   private val DEBUG: Boolean = false
 
   def typeDeterminedUsage(`type`: org.orbeon.saxon.model.ItemType): OperandUsage =
-    if (`type`.isPlainType) {
+    if (`type`.isPlainType)
       OperandUsage.ABSORPTION
-    } else if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType) {
+    else if (`type`.isInstanceOf[NodeTest] || `type` == AnyItemType)
       OperandUsage.NAVIGATION
-    } else {
+    else
       OperandUsage.INSPECTION
-    }
 }
 
 class Operand(@BeanProperty val parentExpression: Expression,
@@ -46,15 +45,12 @@ class Operand(@BeanProperty val parentExpression: Expression,
 
   def setChildExpression(childExpression: Expression): Unit = {
     if (childExpression != this.childExpression) {
-      if (role.isConstrainedClass && this.childExpression != null &&
-          childExpression.getClass != this.childExpression.getClass) {
-        throw new AssertionError()
-      }
+      if (role.isConstrainedClass && this.childExpression != null && childExpression.getClass != this.childExpression.getClass)
+        throw new AssertionError
       this.childExpression = childExpression
       parentExpression.adoptChildExpression(childExpression)
       parentExpression.resetLocalStaticProperties()
     }
-//childExpression.verifyParentPointers();
 //childExpression.verifyParentPointers();
   }
 
@@ -75,9 +71,8 @@ class Operand(@BeanProperty val parentExpression: Expression,
 
   def getOperandRole: OperandRole = role
 
-  def setOperandRole(role: OperandRole): Unit = {
+  def setOperandRole(role: OperandRole): Unit =
     this.role = role
-  }
 
   /**
     * Ask whether the child expression sets a new focus for evaluation of other operands
@@ -121,9 +116,8 @@ class Operand(@BeanProperty val parentExpression: Expression,
     */
   def getUsage: OperandUsage = role.getUsage
 
-  def setUsage(usage: OperandUsage): Unit = {
+  def setUsage(usage: OperandUsage): Unit =
     role = new OperandRole(role.properties, usage, role.getRequiredType)
-  }
 
   /**
     * Get the required type of the operand
@@ -138,31 +132,28 @@ class Operand(@BeanProperty val parentExpression: Expression,
 
   def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Unit = {
-    try this.childExpression =
-      getChildExpression.typeCheck(visitor, contextInfo)
+    try
+      this.childExpression = getChildExpression.typeCheck(visitor, contextInfo)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
-        if (!e.isReportableStatically) {
+        if (! e.isReportableStatically) {
           visitor.getStaticContext.issueWarning(
             "Evaluation will always throw a dynamic error: " + e.getMessage,
             getChildExpression.getLocation)
-          this.childExpression = new ErrorExpression(
-            new XmlProcessingException(e))
+          this.childExpression = new ErrorExpression(new XmlProcessingException(e))
         } else {
           throw e
         }
-      }
-
     }
   }
 
   def optimize(visitor: ExpressionVisitor,
                contextInfo: ContextItemStaticInfo): Unit = {
-    try this.childExpression =
-      getChildExpression.optimize(visitor, contextInfo)
+    try
+      this.childExpression = getChildExpression.optimize(visitor, contextInfo)
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
         if (!e.isReportableStatically) {
           visitor.getStaticContext.issueWarning(
@@ -173,9 +164,6 @@ class Operand(@BeanProperty val parentExpression: Expression,
         } else {
           throw e
         }
-      }
-
     }
   }
-
 }

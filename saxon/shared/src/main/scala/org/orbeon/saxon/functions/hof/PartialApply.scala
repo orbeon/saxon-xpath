@@ -1,4 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.hof
 
 import org.orbeon.saxon.expr._
@@ -31,17 +30,16 @@ import java.util.List
 class PartialApply(base: Expression, boundArguments: Array[Expression])
   extends Expression {
 
-  private var baseOp: Operand = new Operand(this, base, OperandRole.INSPECT)
+  private val baseOp: Operand = new Operand(this, base, OperandRole.INSPECT)
 
   // contains null where the question marks appear
-  private var boundArgumentsOp: Array[Operand] =
+  private val boundArgumentsOp: Array[Operand] =
     new Array[Operand](boundArguments.length)
 
   adoptChildExpression(base)
 
-  for (i <- 0 until boundArguments.length if boundArguments(i) != null) {
-    boundArgumentsOp(i) =
-      new Operand(this, boundArguments(i), OperandRole.NAVIGATE)
+  for (i <- boundArguments.indices if boundArguments(i) != null) {
+    boundArgumentsOp(i) = new Operand(this, boundArguments(i), OperandRole.NAVIGATE)
     adoptChildExpression(boundArguments(i))
   }
 
@@ -55,7 +53,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     var n: Int = 0
     for (o <- boundArgumentsOp if o == null) {
       {
-        n += 1;
+        n += 1
         n - 1
       }
     }
@@ -63,7 +61,6 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
   }
 
   /*@NotNull*/
-
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     typeCheckChildren(visitor, contextInfo)
