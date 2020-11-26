@@ -1,4 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
 
 import java.util.Collections
@@ -7,14 +12,14 @@ import org.orbeon.saxon.om.{GroundedValue, Item}
 import org.orbeon.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
 
 
-
-
+/**
+  * An EmptySequence object represents a sequence containing no members.
+  */
 object EmptySequence {
-  private var THE_INSTANCE: EmptySequence[Item] = new EmptySequence()
+  private val THE_INSTANCE: EmptySequence[Item] = new EmptySequence
 
   def getInstance[T <: Item]: EmptySequence[T] =
     THE_INSTANCE.asInstanceOf[EmptySequence[T]]
-
 }
 
 class EmptySequence[T <: Item] private () extends GroundedValue {
@@ -31,25 +36,19 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
     * @return the first item in the sequence if there is one, or null if the sequence
     *         is empty
     */
-  def head = null
+  def head: Item = null
 
   /*@NotNull*/
-
   def iterate(): UnfailingIterator = EmptyIterator.emptyIterator
 
   /*@Nullable*/
-
   def asItem(): Item = null
 
   def getLength: Int = 0
 
   override def equals(other: Any): Boolean = {
-    if (!(other.isInstanceOf[GroundedValue] && other
-          .asInstanceOf[GroundedValue]
-          .getLength == 0)) {
-      throw new ClassCastException(
-        "Cannot compare " + other.getClass + " to empty sequence")
-    }
+    if (! (other.isInstanceOf[GroundedValue] && other.asInstanceOf[GroundedValue].getLength == 0))
+      throw new ClassCastException("Cannot compare " + other.getClass + " to empty sequence")
     true
   }
 
@@ -58,15 +57,12 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
   override def effectiveBooleanValue: Boolean = false
 
   /*@Nullable*/
-
-  def itemAt(n: Int) = null
+  def itemAt(n: Int): Item = null
 
   /*@NotNull*/
-
   def subsequence(min: Int, length: Int): GroundedValue = this
 
   /*@NotNull*/
-
   override def toString: String = "()"
 
   /**
@@ -78,14 +74,4 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
     * @return the simplified sequence
     */
   override def reduce(): GroundedValue = this
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An EmptySequence object represents a sequence containing no members.
-  */

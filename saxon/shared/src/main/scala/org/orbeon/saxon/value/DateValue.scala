@@ -19,7 +19,7 @@ object DateValue {
 
   def makeDateValue(in: CharSequence,
                     rules: ConversionRules): ConversionResult = {
-    val d: DateValue = new DateValue()
+    val d = new DateValue
     d.typeLabel = BuiltInAtomicType.DATE
     setLexicalValue(d, in, rules.isAllowYearZero)
   }
@@ -60,17 +60,17 @@ object DateValue {
     }
 
   def getJulianDayNumber(year: Int, month: Int, day: Int): Int = {
-    var z: Int = year - (if (month < 3) 1 else 0)
-    val f: Short = monthData(month - 1)
+    var z = year - (if (month < 3) 1 else 0)
+    val f = monthData(month - 1)
     if (z >= 0) {
       day + f + 365 * z + z / 4 - z / 100 + z / 400 + 1721118
     } else {
 
       z += 12000
-      val j: Int = day + f + 365 * z + z / 4 - z / 100 + z / 400 + 1721118
 
-      j -
-        (365 * 12000 + 12000 / 4 - 12000 / 100 + 12000 / 400)
+      val j = day + f + 365 * z + z / 4 - z / 100 + z / 400 + 1721118
+
+      j - (365 * 12000 + 12000 / 4 - 12000 / 100 + 12000 / 400)
     }
   }
 

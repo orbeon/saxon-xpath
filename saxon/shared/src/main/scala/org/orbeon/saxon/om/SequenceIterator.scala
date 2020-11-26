@@ -32,10 +32,10 @@ object SequenceIterator {
 
   object Property extends Enumeration {
 
-    val GROUNDED: Property = new Property()
-    val LAST_POSITION_FINDER: Property = new Property()
-    val LOOKAHEAD: Property = new Property()
-    val ATOMIZING: Property = new Property()
+    val GROUNDED             : Property = new Property
+    val LAST_POSITION_FINDER : Property = new Property
+    val LOOKAHEAD            : Property = new Property
+    val ATOMIZING            : Property = new Property
 
     class Property extends Val
 
@@ -60,5 +60,3 @@ trait SequenceIterator extends Closeable {
 
   def materialize: GroundedValue = new SequenceExtent(this).reduce()
 }
-
-

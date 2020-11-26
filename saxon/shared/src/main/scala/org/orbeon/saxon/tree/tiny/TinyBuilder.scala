@@ -49,7 +49,6 @@ object TinyBuilder {
 class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   /*@Nullable*/
-
   @BeanProperty
   var tree: TinyTree = _
 

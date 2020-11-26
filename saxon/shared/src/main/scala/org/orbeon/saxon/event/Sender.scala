@@ -7,7 +7,7 @@
 package org.orbeon.saxon.event
 
 import java.util
-import java.util.{List, Map}
+import java.util.Map
 
 import javax.xml.transform.Source
 import javax.xml.transform.sax.SAXSource
@@ -509,5 +509,4 @@ object Sender {
     parser.setFeature("http://xml.org/sax/features/namespaces", true)
     parser.setFeature("http://xml.org/sax/features/namespace-prefixes", false)
   }
-
 }

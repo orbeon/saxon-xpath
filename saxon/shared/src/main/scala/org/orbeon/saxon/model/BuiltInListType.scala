@@ -18,33 +18,22 @@ import scala.beans.BeanProperty
 
 object BuiltInListType {
 
-  var ENTITIES: BuiltInListType =
-    makeListType(NamespaceConstant.SCHEMA, "ENTITIES")
-
-  var IDREFS: BuiltInListType =
-    makeListType(NamespaceConstant.SCHEMA, "IDREFS")
-
-  var NMTOKENS: BuiltInListType =
-    makeListType(NamespaceConstant.SCHEMA, "NMTOKENS")
-
-  var ANY_URIS: BuiltInListType = makeListType(
-    NamespaceConstant.SCHEMA_INSTANCE,
-    "anonymous_schemaLocationType")
+  var ENTITIES : BuiltInListType = makeListType(NamespaceConstant.SCHEMA, "ENTITIES")
+  var IDREFS   : BuiltInListType = makeListType(NamespaceConstant.SCHEMA, "IDREFS")
+  var NMTOKENS : BuiltInListType = makeListType(NamespaceConstant.SCHEMA, "NMTOKENS")
+  var ANY_URIS : BuiltInListType = makeListType(NamespaceConstant.SCHEMA_INSTANCE, "anonymous_schemaLocationType")
 
   private def makeListType(namespace: String, lname: String): BuiltInListType = {
-    val t: BuiltInListType = new BuiltInListType(
-      StandardNames.getFingerprint(namespace, lname))
+    val t = new BuiltInListType(StandardNames.getFingerprint(namespace, lname))
     BuiltInType.register(t.getFingerprint, t)
     t
   }
 
   private class ListTypeMappingFunction extends MappingFunction {
 
-    var resolver: NamespaceResolver = _
-
-    var atomicType: AtomicType = _
-
-    var rules: ConversionRules = _
+    var resolver   : NamespaceResolver = _
+    var atomicType : AtomicType        = _
+    var rules      : ConversionRules   = _
 
     def map(item: Item): AtomicIterator[AtomicValue] =
       atomicType
@@ -57,13 +46,10 @@ object BuiltInListType {
 
 class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
-  def isBuiltInType(): Boolean = true
-
+  def isBuiltInType: Boolean = true
   def getSystemId: String = null
-
-  def getRedefinitionLevel(): Int = 0
-
-  def getWhitespaceAction(): Int = Whitespace.COLLAPSE
+  def getRedefinitionLevel: Int = 0
+  def getWhitespaceAction: Int = Whitespace.COLLAPSE
 
   @BeanProperty
   var itemType: BuiltInAtomicType = _
@@ -77,47 +63,27 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
 
   }
 
-  def getValidationStatus(): ValidationStatus = VALIDATED
-
-  def getBaseType(): SchemaType = AnySimpleType
-
+  def getValidationStatus: ValidationStatus = VALIDATED
+  def getBaseType: SchemaType = AnySimpleType
   def isAtomicType: Boolean = false
-
-  def isIdType(): Boolean = false
-
-  def isIdRefType(): Boolean = fingerprint == StandardNames.XS_IDREFS
-
-  def isListType(): Boolean = true
-
-  def isUnionType(): Boolean = false
-
-  def isAnonymousType(): Boolean = false
-
-  def getBuiltInBaseType(): SchemaType = this
-
-  def isNamespaceSensitive(): Boolean = false
-
+  def isIdType: Boolean = false
+  def isIdRefType: Boolean = fingerprint == StandardNames.XS_IDREFS
+  def isListType: Boolean = true
+  def isUnionType: Boolean = false
+  def isAnonymousType: Boolean = false
+  def getBuiltInBaseType: SchemaType = this
+  def isNamespaceSensitive: Boolean = false
   def getName: String = StandardNames.getLocalName(fingerprint)
-
-  def getTargetNamespace(): String = NamespaceConstant.SCHEMA
-
-  def getEQName(): String = "Q{" + NamespaceConstant.SCHEMA + "}" + getName
-
+  def getTargetNamespace: String = NamespaceConstant.SCHEMA
+  def getEQName: String = "Q{" + NamespaceConstant.SCHEMA + "}" + getName
   def getDisplayName: String = StandardNames.getDisplayName(fingerprint)
-
-  def isComplexType(): Boolean = false
-
-  def isSimpleType(): Boolean = true
-
-  def getBlock(): Int = 0
-
+  def isComplexType: Boolean = false
+  def isSimpleType: Boolean = true
+  def getBlock: Int = 0
   def getKnownBaseType: SchemaType = AnySimpleType
-
-  def getDerivationMethod(): Int = DERIVATION_LIST
-
+  def getDerivationMethod: Int = DERIVATION_LIST
   def allowsDerivation(derivation: Int): Boolean = true
-
-  def getFinalProhibitions(): Int = 0
+  def getFinalProhibitions: Int = 0
 
   def atomize(node: NodeInfo): AtomicSequence =
     getTypedValue(node.getStringValue,
@@ -128,9 +94,7 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
     other.getFingerprint == getFingerprint
 
   def getDescription: String = getDisplayName
-
   def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = ()
-
   def getLocalName: String = StandardNames.getLocalName(fingerprint)
 
   def getStructuredQName: StructuredQName =
@@ -181,7 +145,5 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
   }
 
   def preprocess(input: CharSequence): CharSequence = input
-
   def postprocess(input: CharSequence): CharSequence = input
-
 }
