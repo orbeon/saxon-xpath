@@ -4,18 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * A data structure to hold the contents of a tree. As the name implies, this implementation
- * of the data model is optimized for size, and for speed of creation: it minimizes the number
- * of Java objects used.
- * <p>
- * <p>It can be used to represent a tree that is rooted at a document node, or one that is rooted
- * at an element node.</p>
- * <p>
- * <p>From Saxon 9.7, as a consequence of bug 2220, it is used only to hold a single tree, whose
- * root is always node number zero.</p>
- */
-
 package org.orbeon.saxon.tree.tiny
 
 
@@ -45,23 +33,30 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 
+/**
+ * A data structure to hold the contents of a tree. As the name implies, this implementation
+ * of the data model is optimized for size, and for speed of creation: it minimizes the number
+ * of Java objects used.
+ *
+ * It can be used to represent a tree that is rooted at a document node, or one that is rooted
+ * at an element node.
+ *
+ * From Saxon 9.7, as a consequence of bug 2220, it is used only to hold a single tree, whose
+ * root is always node number zero.
+ */
 object TinyTree {
-
-  /*@NotNull*/
-
-  private val EMPTY_STRING_ARRAY: Array[String] = new Array[String](0)
 
   val TYPECODE_IDREF: Int = 1 << 29
 
   def diagnosticDump(node: NodeInfo): Unit = {
     synchronized {
-      if (node.isInstanceOf[TinyNodeImpl]) {
-        val tree: TinyTree = node.asInstanceOf[TinyNodeImpl].tree
-        System.err.println(
-          "Tree containing node " + node.asInstanceOf[TinyNodeImpl].nodeNr)
-        tree.diagnosticDump()
-      } else {
-        System.err.println("Node is not in a TinyTree")
+      node match {
+        case impl: TinyNodeImpl =>
+          val tree = impl.tree
+          System.err.println("Tree containing node " + impl.nodeNr)
+          tree.diagnosticDump()
+        case _ =>
+          System.err.println("Node is not in a TinyTree")
       }
     }
   }
@@ -279,7 +274,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       if (k == 0) {
         attParent = IntArraySet.EMPTY_INT_ARRAY
         attCode = IntArraySet.EMPTY_INT_ARRAY
-        attValue = Array()
+        attValue = Array.empty
         attType = null
       } else {
         attParent = Arrays.copyOf(attParent, numberOfAttributes)
@@ -311,46 +306,39 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
   }
 
-  def getTypeAnnotation(nodeNr: Int): Int = {
-    if (typeArray == null) {
+  def getTypeAnnotation(nodeNr: Int): Int =
+    if (typeArray == null)
       StandardNames.XS_UNTYPED
-    }
-    typeArray(nodeNr).getFingerprint
-  }
+    else
+      typeArray(nodeNr).getFingerprint
 
-  def getSchemaType(nodeNr: Int): SchemaType = {
-    if (typeArray == null) {
+  def getSchemaType(nodeNr: Int): SchemaType =
+    if (typeArray == null)
       Untyped.getInstance
-    }
-    typeArray(nodeNr)
-  }
+    else
+      typeArray(nodeNr)
 
   /*@Nullable*/
-
   def getTypedValueOfElement(element: TinyElementImpl): AtomicSequence = {
-    val nodeNr: Int = element.nodeNr
+    val nodeNr = element.nodeNr
     if (typedValueArray == null || typedValueArray(nodeNr) == null) {
-      val stype: SchemaType = getSchemaType(nodeNr)
-      val annotation: Int = stype.getFingerprint
+      val stype = getSchemaType(nodeNr)
+      val annotation = stype.getFingerprint
       if (annotation == StandardNames.XS_UNTYPED || annotation == StandardNames.XS_UNTYPED_ATOMIC ||
         annotation == StandardNames.XS_ANY_TYPE) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new UntypedAtomicValue(stringValue)
       } else if (annotation == StandardNames.XS_STRING) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new StringValue(stringValue)
       } else if (annotation == StandardNames.XS_ANY_URI) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new AnyURIValue(stringValue)
       } else {
-        val value: AtomicSequence = stype.atomize(element)
+        val value = stype.atomize(element)
         if (allowTypedValueCache) {
-          if (typedValueArray == null) {
+          if (typedValueArray == null)
             typedValueArray = Array.ofDim[AtomicSequence](nodeKind.length)
-          }
           typedValueArray(nodeNr) = value
         }
         value
@@ -361,34 +349,28 @@ class TinyTree(config: Configuration, statistics: Statistics)
   }
 
   /*@Nullable*/
-
   def getTypedValueOfElement(nodeNr: Int): AtomicSequence =
     if (typedValueArray == null || typedValueArray(nodeNr) == null) {
-      val stype: SchemaType = getSchemaType(nodeNr)
-      val annotation: Int = stype.getFingerprint
+      val stype = getSchemaType(nodeNr)
+      val annotation = stype.getFingerprint
       if (annotation == StandardNames.XS_UNTYPED_ATOMIC || annotation == StandardNames.XS_UNTYPED) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new UntypedAtomicValue(stringValue)
       } else if (annotation == StandardNames.XS_STRING) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new StringValue(stringValue)
       } else if (annotation == StandardNames.XS_ANY_URI) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new AnyURIValue(stringValue)
       } else if (annotation == StandardNames.XS_ID) {
-        val stringValue: CharSequence =
-          TinyParentNodeImpl.getStringValueCS(this, nodeNr)
+        val stringValue = TinyParentNodeImpl.getStringValueCS(this, nodeNr)
         new StringValue(stringValue, BuiltInAtomicType.ID)
       } else {
-        val element: TinyNodeImpl = getNode(nodeNr)
-        val value: AtomicSequence = stype.atomize(element)
+        val element = getNode(nodeNr)
+        val value = stype.atomize(element)
         if (allowTypedValueCache) {
-          if (typedValueArray == null) {
+          if (typedValueArray == null)
             typedValueArray = Array.ofDim[AtomicSequence](nodeKind.length)
-          }
           typedValueArray(nodeNr) = value
         }
         value
@@ -397,12 +379,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
       typedValueArray(nodeNr)
     }
 
-  def getTypedValueOfAttribute(att: TinyAttributeImpl,
-                               nodeNr: Int): AtomicSequence = {
-    var tinyAtt: TinyAttributeImpl = att
-    if (attType == null) {
-      new UntypedAtomicValue(attValue(nodeNr))
-    }
+  def getTypedValueOfAttribute(att: TinyAttributeImpl, nodeNr: Int): AtomicSequence = {
+    var tinyAtt = att
+    if (attType == null)
+      return new UntypedAtomicValue(attValue(nodeNr))
     if (attTypedValue == null || attTypedValue(nodeNr) == null) {
       val `type`: SimpleType = getAttributeType(nodeNr)
       if (`type` == BuiltInAtomicType.UNTYPED_ATOMIC) {
@@ -412,14 +392,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
       } else if (`type` == BuiltInAtomicType.ANY_URI) {
         new AnyURIValue(attValue(nodeNr))
       } else {
-        if (tinyAtt == null) {
+        if (tinyAtt == null)
           tinyAtt = new TinyAttributeImpl(this, nodeNr)
-        }
-        val value: AtomicSequence = `type`.atomize(tinyAtt)
+        val value = `type`.atomize(tinyAtt)
         if (allowTypedValueCache) {
-          if (attTypedValue == null) {
+          if (attTypedValue == null)
             attTypedValue = Array.ofDim[AtomicSequence](attParent.length)
-          }
           attTypedValue(nodeNr) = value
         }
         value
@@ -430,22 +408,21 @@ class TinyTree(config: Configuration, statistics: Statistics)
   }
 
   def getNodeKind(nodeNr: Int): Int = {
-    val kind: Int = nodeKind(nodeNr)
+    val kind = nodeKind(nodeNr)
     if (kind == Type.WHITESPACE_TEXT) Type.TEXT else kind
   }
 
   def getNameCode(nodeNr: Int): Int = nameCode(nodeNr)
 
   def getFingerprint(nodeNr: Int): Int = {
-    val nc: Int = nameCode(nodeNr)
+    val nc = nameCode(nodeNr)
     if (nc == -1) -1 else nc & NamePool.FP_MASK
   }
 
   def getPrefix(nodeNr: Int): String = {
-    val code: Int = nameCode(nodeNr) >> 20
-    if (code <= 0) {
-      if (code == 0) return "" else return null
-    }
+    val code = nameCode(nodeNr) >> 20
+    if (code <= 0)
+      return if (code == 0) "" else null
     prefixPool.getPrefix(code)
   }
 
@@ -587,12 +564,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
   }
 
   def hasXmlSpacePreserveAttribute: Boolean =
-    (0 until numberOfAttributes)
-      .find(i =>
-        (attCode(i) & NamePool.FP_MASK) == StandardNames.XML_SPACE &&
-          "preserve" == attValue(i).toString)
-      .map(_ => true)
-      .getOrElse(false)
+    (0 until numberOfAttributes).exists(i =>
+      (attCode(i) & NamePool.FP_MASK) == StandardNames.XML_SPACE && "preserve" == attValue(i).toString)
 
   /**
    * Add a set of namespace bindings to the current element
@@ -612,83 +585,69 @@ class TinyTree(config: Configuration, statistics: Statistics)
     numberOfNamespaces += 1
   }
 
-  def getNode(nr: Int): TinyNodeImpl = nodeKind(nr) match {
-    case Type.DOCUMENT => getRootNode.asInstanceOf[TinyDocumentImpl]
-    case Type.ELEMENT => new TinyElementImpl(this, nr)
-    case Type.TEXTUAL_ELEMENT => new TinyTextualElement(this, nr)
-    case Type.TEXT => new TinyTextImpl(this, nr)
-    case Type.WHITESPACE_TEXT => new WhitespaceTextImpl(this, nr)
-    case Type.COMMENT => new TinyCommentImpl(this, nr)
-    case Type.PROCESSING_INSTRUCTION => new TinyProcInstImpl(this, nr)
-    case Type.PARENT_POINTER =>
-      throw new IllegalArgumentException(
-        "Attempting to treat a parent pointer as a node")
-    case Type.STOPPER =>
-      throw new IllegalArgumentException(
-        "Attempting to treat a stopper entry as a node")
-    case _ =>
-      throw new IllegalStateException("Unknown node kind " + nodeKind(nr))
-
-  }
+  def getNode(nr: Int): TinyNodeImpl =
+    nodeKind(nr) match {
+      case Type.DOCUMENT               => getRootNode.asInstanceOf[TinyDocumentImpl]
+      case Type.ELEMENT                => new TinyElementImpl(this, nr)
+      case Type.TEXTUAL_ELEMENT        => new TinyTextualElement(this, nr)
+      case Type.TEXT                   => new TinyTextImpl(this, nr)
+      case Type.WHITESPACE_TEXT        => new WhitespaceTextImpl(this, nr)
+      case Type.COMMENT                => new TinyCommentImpl(this, nr)
+      case Type.PROCESSING_INSTRUCTION => new TinyProcInstImpl(this, nr)
+      case Type.PARENT_POINTER         => throw new IllegalArgumentException("Attempting to treat a parent pointer as a node")
+      case Type.STOPPER                => throw new IllegalArgumentException("Attempting to treat a stopper entry as a node")
+      case _                           => throw new IllegalStateException("Unknown node kind " + nodeKind(nr))
+    }
 
   def getAtomizedValueOfUntypedNode(nodeNr: Int): AtomicValue =
     nodeKind(nodeNr) match {
       case Type.ELEMENT | Type.DOCUMENT =>
-        var level: Int = depth(nodeNr)
-        var next: Int = nodeNr + 1
+        val level = depth(nodeNr)
+        var next = nodeNr + 1
         if (depth(next) <= level) {
-          UntypedAtomicValue.ZERO_LENGTH_UNTYPED
+          return UntypedAtomicValue.ZERO_LENGTH_UNTYPED
         } else if (nodeKind(next) == Type.TEXT && depth(next + 1) <= level) {
-          val length: Int = beta(next)
-          val start: Int = alpha(next)
-          new UntypedAtomicValue(charBuffer.subSequence(start, start + length))
+          val length = beta(next)
+          val start = alpha(next)
+          return new UntypedAtomicValue(charBuffer.subSequence(start, start + length))
         } else if (nodeKind(next) == Type.WHITESPACE_TEXT && depth(next + 1) <= level) {
-          new UntypedAtomicValue(
-            WhitespaceTextImpl.getStringValueCS(this, next))
+          return new UntypedAtomicValue(WhitespaceTextImpl.getStringValueCS(this, next))
         }
         var sb: FastStringBuffer = null
         while (next < numberOfNodes && depth(next) > level) {
           if (nodeKind(next) == Type.TEXT) {
-            if (sb == null) {
+            if (sb == null)
               sb = new FastStringBuffer(FastStringBuffer.C256)
-            }
             sb.cat(TinyTextImpl.getStringValue(this, next))
           } else if (nodeKind(next) == Type.WHITESPACE_TEXT) {
-            if (sb == null) {
+            if (sb == null)
               sb = new FastStringBuffer(FastStringBuffer.C256)
-            }
             WhitespaceTextImpl.appendStringValue(this, next, sb)
           }
-          {
-            next += 1; next - 1
-          }
+          next += 1
         }
-        if (sb == null) {
+        if (sb == null)
           UntypedAtomicValue.ZERO_LENGTH_UNTYPED
-        } else {
+        else
           new UntypedAtomicValue(sb.condense())
-        }
       case Type.TEXT =>
         new UntypedAtomicValue(TinyTextImpl.getStringValue(this, nodeNr))
       case Type.WHITESPACE_TEXT =>
-        new UntypedAtomicValue(
-          WhitespaceTextImpl.getStringValueCS(this, nodeNr))
+        new UntypedAtomicValue(WhitespaceTextImpl.getStringValueCS(this, nodeNr))
       case Type.COMMENT | Type.PROCESSING_INSTRUCTION =>
-        var start2: Int = alpha(nodeNr)
-        var len2: Int = beta(nodeNr)
-        if (len2 == 0) {
-          UntypedAtomicValue.ZERO_LENGTH_UNTYPED
-        }
-        var dest: Array[Char] = Array.ofDim[Char](len2)
+        val start2 = alpha(nodeNr)
+        val len2 = beta(nodeNr)
+        if (len2 == 0)
+          return UntypedAtomicValue.ZERO_LENGTH_UNTYPED
+        val dest = Array.ofDim[Char](len2)
         assert(commentBuffer != null)
         commentBuffer.getChars(start2, start2 + len2, dest, 0)
         new StringValue(new CharSlice(dest, 0, len2))
-      case _ => throw new IllegalStateException("Unknown node kind")
-
+      case _ =>
+        throw new IllegalStateException("Unknown node kind")
     }
 
   /*@NotNull*/
-
   def getAttributeNode(nr: Int): TinyAttributeImpl =
     new TinyAttributeImpl(this, nr)
 
@@ -724,44 +683,41 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
 
   def isIdrefElement(nr: Int): Boolean = {
-    val `type`: SchemaType = getSchemaType(nr)
-    try if (`type`.isIdRefType) {
-      if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS) {
-        return true
-      }
-      try for (av <- getTypedValueOfElement(nr).asScala
-               if av.getItemType.isIdRefType) {
-        true
-      } catch {
-        case _: XPathException =>
-
-      }
+    val `type` = getSchemaType(nr)
+    try
+      if (`type`.isIdRefType) {
+        if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS)
+          return true
+        try
+          for (av <- getTypedValueOfElement(nr).asScala
+                 if av.getItemType.isIdRefType) {
+            return true
+          }
+        catch {
+          case _: XPathException =>
+        }
     } catch {
-      case e: MissingComponentException => return false
-
+      case _: MissingComponentException =>
+        return false
     }
     false
   }
 
   def setSystemId(seq: Int, uri: String): Unit = {
     var uriStr: String = uri
-    if (uriStr == null) {
+    if (uriStr == null)
       uriStr = ""
-    }
-    if (systemIdMap == null) {
+    if (systemIdMap == null)
       systemIdMap = new SystemIdMap()
-    }
     systemIdMap.setSystemId(seq, uriStr)
   }
 
   /*@Nullable*/
-
-  def getSystemId(seq: Int): String = {
-    if (systemIdMap == null) {
-      return null
-    }
-    systemIdMap.getSystemId(seq)
-  }
+  def getSystemId(seq: Int): String =
+    if (systemIdMap == null)
+      null
+    else
+      systemIdMap.getSystemId(seq)
 
   override def getRootNode: NodeInfo =
     if (getNodeKind(0) == Type.DOCUMENT) {
@@ -792,15 +748,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getLineNumber(sequence: Int): Int = {
     if (lineNumbers != null) {
-      var i: Int = sequence
+      var i = sequence
       while (i >= 0) {
-        val c: Int = lineNumbers(i)
-        if (c > 0) {
+        val c = lineNumbers(i)
+        if (c > 0)
           return c
-        }
-        {
-          i -= 1; i + 1
-        }
+        i -= 1
       }
     }
     -1
@@ -808,15 +761,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getColumnNumber(sequence: Int): Int = {
     if (columnNumbers != null) {
-      var i: Int = sequence
+      var i = sequence
       while (i >= 0) {
-        val c: Int = columnNumbers(i)
-        if (c > 0) {
+        val c = columnNumbers(i)
+        if (c > 0)
           return c
-        }
-        {
-          i -= 1; i + 1
-        }
+        i -= 1
       }
     }
     -1
@@ -841,51 +791,42 @@ class TinyTree(config: Configuration, statistics: Statistics)
   }
 
   /*@Nullable*/
-
   override def selectID(id: String, getParent: Boolean): NodeInfo = {
-    if (idTable == null) {
+    if (idTable == null)
       return null
-    }
-    var node: NodeInfo = idTable.get(id)
-    if (node != null && getParent && node.isId && node.getStringValue == id) {
+    var node = idTable.get(id)
+    if (node != null && getParent && node.isId && node.getStringValue == id)
       node = node.getParent
-    }
     node
   }
 
   def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {
-    if (entityTable == null) {
+    if (entityTable == null)
       entityTable = new HashMap(20)
-    }
-    val ids: Array[String] = Array.ofDim[String](2)
+    val ids = Array.ofDim[String](2)
     ids(0) = uri
     ids(1) = publicId
     entityTable.put(name, ids)
   }
 
   override def getUnparsedEntityNames: Iterator[String] =
-    if (entityTable == null) {
-      val emptyList: List[String] = Collections.emptyList()
-      emptyList.iterator
-    } else {
+    if (entityTable == null)
+      Collections.emptyIterator[String]()
+    else
       entityTable.keySet.iterator
-    }
 
   /*@Nullable*/
-
-  override def getUnparsedEntity(name: String): Array[String] = {
-    if (entityTable == null) {
-      return null
-    }
-    entityTable.get(name)
-  }
+  override def getUnparsedEntity(name: String): Array[String] =
+    if (entityTable == null)
+      null
+    else
+      entityTable.get(name)
 
   def getNamePool: NamePool = getConfiguration.getNamePool
 
   def markTopWithinEntity(nodeNr: Int): Unit = {
-    if (topWithinEntity == null) {
+    if (topWithinEntity == null)
       topWithinEntity = new IntHashSet()
-    }
     topWithinEntity.add(nodeNr)
   }
 
@@ -893,15 +834,14 @@ class TinyTree(config: Configuration, statistics: Statistics)
     topWithinEntity != null && topWithinEntity.contains(nodeNr)
 
   def diagnosticDump(): Unit = {
-    val pool: NamePool = getNamePool
-    System.err.println(
-      "    node    kind   depth    next   alpha    beta    name    type")
+    val pool = getNamePool
+    System.err.println("    node    kind   depth    next   alpha    beta    name    type")
     for (i <- 0 until numberOfNodes) {
-      var eqName: String = ""
+      var eqName = ""
       if (nameCode(i) != -1) {
         try eqName = pool.getEQName(nameCode(i))
         catch {
-          case err: Exception => eqName = "#" + nameCode(1)
+          case _: Exception => eqName = "#" + nameCode(1)
 
         }
       }
@@ -916,8 +856,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
     System.err.println("    attr  parent    name    value")
     for (i <- 0 until numberOfAttributes) {
-      System.err.println(
-        n8(i) + n8(attParent(i)) + n8(attCode(i)) + "    " + attValue(i))
+      System.err.println(n8(i) + n8(attParent(i)) + n8(attCode(i)) + "    " + attValue(i))
     }
     System.err.println("      ns  parent  prefix     uri")
     for (i <- 0 until numberOfNamespaces) {
@@ -1158,6 +1097,4 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
     localNameIndex
   }
-
 }
-
