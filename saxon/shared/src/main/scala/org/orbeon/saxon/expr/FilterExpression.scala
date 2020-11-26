@@ -1,43 +1,24 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-
-import org.orbeon.saxon.expr.instruct.Choose
-
-import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.functions.LocalName_1
-
-import org.orbeon.saxon.functions.PositionAndLast
-
-import org.orbeon.saxon.functions.SystemFunction
-
-import org.orbeon.saxon.functions.registry.VendorFunctionSetHE
-
-import org.orbeon.saxon.lib.Feature
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om._
-
-import org.orbeon.saxon.pattern._
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.EmptyIterator
-
-import org.orbeon.saxon.value._
-
 import java.math.BigInteger
 
-import FilterExpression._
-import Expression._
+import org.orbeon.saxon.expr.Expression._
+import org.orbeon.saxon.expr.FilterExpression._
+import org.orbeon.saxon.expr.instruct.Choose
+import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.functions.{LocalName_1, PositionAndLast, SystemFunction}
+import org.orbeon.saxon.functions.registry.VendorFunctionSetHE
+import org.orbeon.saxon.lib.{Feature, NamespaceConstant}
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om._
+import org.orbeon.saxon.pattern._
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.EmptyIterator
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 object FilterExpression {
 
@@ -48,11 +29,11 @@ object FilterExpression {
     OperandUsage.INSPECTION,
     SequenceType.ANY_SEQUENCE)
 
-  private def forceToBoolean(in: Expression): Expression = {
+  private def forceToBoolean(in: Expression): Expression =
     if (in.getItemType.getPrimitiveType == StandardNames.XS_BOOLEAN)
-      return in
-    SystemFunction.makeCall("boolean", in.getRetainedStaticContext, in)
-  }
+      in
+    else
+      SystemFunction.makeCall("boolean", in.getRetainedStaticContext, in)
 
   private def tryToRewritePositionalFilterSupport(
                                                    start: Expression,
@@ -64,20 +45,19 @@ object FilterExpression {
         case Token.FEQ =>
           if (Literal.isConstantOne(comparand)) {
             FirstItemExpression.makeFirstItemExpression(start)
-          } else if (comparand.isInstanceOf[Literal] &&
-            comparand
-              .asInstanceOf[Literal]
+          } else comparand match {
+            case literal: Literal if literal
               .getValue
               .asInstanceOf[IntegerValue]
               .asBigInteger()
               .compareTo(BigInteger.ZERO) <=
-              0) {
-            Literal.makeEmptySequence
-          } else {
-            new SubscriptExpression(start, comparand)
+              0 =>
+              Literal.makeEmptySequence
+            case _ =>
+              new SubscriptExpression(start, comparand)
           }
-        case Token.FLT => {
-          val args: Array[Expression] = Array.ofDim[Expression](3)
+        case Token.FLT =>
+          val args = Array.ofDim[Expression](3)
           args(0) = start
           args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
           if (Literal.isAtomic(comparand)) {
@@ -103,7 +83,6 @@ object FilterExpression {
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        }
         case Token.FLE => {
           val args: Array[Expression] = Array.ofDim[Expression](3)
           args(0) = start
@@ -115,7 +94,7 @@ object FilterExpression {
         }
         case Token.FNE =>
           SystemFunction.makeCall("remove", start.getRetainedStaticContext, start, comparand)
-        case Token.FGT => {
+        case Token.FGT =>
           val args: Array[Expression] = Array.ofDim[Expression](2)
           args(0) = start
           if (Literal.isAtomic(comparand)) {
@@ -135,24 +114,20 @@ object FilterExpression {
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        }
-        case Token.FGE => {
+        case Token.FGE =>
           val args: Array[Expression] = Array.ofDim[Expression](3)
           args(0) = start
           args(1) = comparand
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        }
-
         case _ => throw new IllegalArgumentException("operator")
-
       }
     } else {
       operator match {
         case Token.FEQ => new SubscriptExpression(start, comparand)
         case Token.FLT => {
-          val let: LetExpression = new LetExpression()
+          val let = new LetExpression()
           let.setRequiredType(
             SequenceType.makeSequenceType(comparand.getItemType,
               StaticProperty.ALLOWS_ONE))
@@ -161,28 +136,28 @@ object FilterExpression {
               NamespaceConstant.SAXON,
               "pp" + let.hashCode))
           let.setSequence(comparand)
-          val isWholeArg: LocalVariableReference = new LocalVariableReference(let)
-          val arithArg: LocalVariableReference = new LocalVariableReference(let)
-          val floorArg: LocalVariableReference = new LocalVariableReference(let)
-          val isWhole: Expression = VendorFunctionSetHE.getInstance
+          val isWholeArg = new LocalVariableReference(let)
+          val arithArg = new LocalVariableReference(let)
+          val floorArg = new LocalVariableReference(let)
+          val isWhole = VendorFunctionSetHE.getInstance
             .makeFunction("is-whole-number", 1)
             .makeFunctionCall(isWholeArg)
-          val minusOne: Expression = new ArithmeticExpression(
+          val minusOne = new ArithmeticExpression(
             arithArg,
             Token.MINUS,
             Literal.makeLiteral(Int64Value.makeIntegerValue(1), start))
-          val floor: Expression = SystemFunction.makeCall(
+          val floor = SystemFunction.makeCall(
             "floor",
             start.getRetainedStaticContext,
             floorArg)
-          val choice: Expression =
+          val choice =
             Choose.makeConditional(isWhole, minusOne, floor)
-          val args: Array[Expression] = Array.ofDim[Expression](4)
+          val args = Array.ofDim[Expression](4)
           args(0) = start
           args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1))
           args(2) = start
           args(3) = choice
-          val subs: Expression = SystemFunction.makeCall(
+          val subs = SystemFunction.makeCall(
             "subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
@@ -190,7 +165,7 @@ object FilterExpression {
           let
         }
         case Token.FLE => {
-          val floor: Expression = SystemFunction.makeCall(
+          val floor = SystemFunction.makeCall(
             "floor",
             start.getRetainedStaticContext,
             comparand)
@@ -202,7 +177,7 @@ object FilterExpression {
               floor).toIndexedSeq: _*)
         }
         case Token.FNE => {
-          val let: LetExpression = new LetExpression()
+          val let = new LetExpression()
           ExpressionTool.copyLocationInfo(start, let)
           let.setRequiredType(
             SequenceType.makeSequenceType(comparand.getItemType,
@@ -212,21 +187,19 @@ object FilterExpression {
               NamespaceConstant.SAXON,
               "pp" + let.hashCode))
           let.setSequence(comparand)
-          val isWholeArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val castArg: LocalVariableReference = new LocalVariableReference(let)
-          val isWhole: Expression = VendorFunctionSetHE.getInstance
+          val isWholeArg = new LocalVariableReference(let)
+          val castArg = new LocalVariableReference(let)
+          val isWhole = VendorFunctionSetHE.getInstance
             .makeFunction("is-whole-number", 1)
             .makeFunctionCall(isWholeArg)
           ExpressionTool.copyLocationInfo(start, isWhole)
-          val cast: Expression =
-            new CastExpression(castArg, BuiltInAtomicType.INTEGER, false)
+          val cast = new CastExpression(castArg, BuiltInAtomicType.INTEGER, false)
           ExpressionTool.copyLocationInfo(start, cast)
-          val choice: Expression = Choose.makeConditional(
+          val choice = Choose.makeConditional(
             isWhole,
             cast,
             Literal.makeLiteral(Int64Value.makeIntegerValue(0), start))
-          val rem: Expression = SystemFunction.makeCall(
+          val rem = SystemFunction.makeCall(
             "remove",
             start.getRetainedStaticContext,
             start,
@@ -235,7 +208,7 @@ object FilterExpression {
           let
         }
         case Token.FGT => {
-          val let: LetExpression = new LetExpression()
+          val let = new LetExpression
           let.setRequiredType(
             SequenceType.makeSequenceType(comparand.getItemType,
               StaticProperty.ALLOWS_ONE))
@@ -244,26 +217,23 @@ object FilterExpression {
               NamespaceConstant.SAXON,
               "pp" + let.hashCode))
           let.setSequence(comparand)
-          val isWholeArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val arithArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val ceilingArg: LocalVariableReference = new LocalVariableReference(
-            let)
-          val isWhole: Expression = VendorFunctionSetHE.getInstance
+          val isWholeArg = new LocalVariableReference(let)
+          val arithArg = new LocalVariableReference(let)
+          val ceilingArg = new LocalVariableReference(let)
+          val isWhole = VendorFunctionSetHE.getInstance
             .makeFunction("is-whole-number", 1)
             .makeFunctionCall(isWholeArg)
-          val plusOne: Expression = new ArithmeticExpression(
+          val plusOne = new ArithmeticExpression(
             arithArg,
             Token.PLUS,
             Literal.makeLiteral(Int64Value.makeIntegerValue(1), start))
-          val ceiling: Expression = SystemFunction.makeCall(
+          val ceiling = SystemFunction.makeCall(
             "ceiling",
             start.getRetainedStaticContext,
             ceilingArg)
-          val choice: Expression =
+          val choice =
             Choose.makeConditional(isWhole, plusOne, ceiling)
-          val subs: Expression = SystemFunction.makeCall(
+          val subs = SystemFunction.makeCall(
             "subsequence",
             start.getRetainedStaticContext,
             start,
@@ -272,7 +242,7 @@ object FilterExpression {
           let
         }
         case Token.FGE => {
-          val ceiling: Expression = SystemFunction.makeCall(
+          val ceiling = SystemFunction.makeCall(
             "ceiling",
             start.getRetainedStaticContext,
             comparand)
@@ -287,7 +257,7 @@ object FilterExpression {
     }
 
   def isPositionalFilter(exp: Expression, th: TypeHierarchy): Boolean = {
-    val _type: ItemType = exp.getItemType
+    val _type = exp.getItemType
     if (_type == BuiltInAtomicType.BOOLEAN) {
       isExplicitlyPositional(exp)
     } else {
@@ -300,57 +270,43 @@ object FilterExpression {
   }
 
   private def isExplicitlyPositional(exp: Expression): Boolean =
-    (exp.getDependencies &
-      (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST)) !=
-      0
-
+    (exp.getDependencies & (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST)) != 0
 }
 
 class FilterExpression(base: Expression, filter: Expression)
   extends BinaryExpression(base, Token.LSQB, filter)
     with ContextSwitchingExpression {
 
-  var baseExp = base
-  var filterExp = filter
-
   @BooleanBeanProperty
   var filterIsPositional: Boolean = _
-
   private var filterIsSingletonBoolean: Boolean = _
-
   private var filterIsIndependent: Boolean = _
-
   var doneReorderingPredicates: Boolean = false
 
-  baseExp.setFiltered(true)
+  base.setFiltered(true)
 
   override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.SAME_FOCUS_ACTION else FILTER_PREDICATE
 
   def getBase: Expression = getLhsExpression
 
-  def setBase(baseExp: Expression): Unit = {
+  def setBase(baseExp: Expression): Unit =
     this.setLhsExpression(baseExp)
-  }
 
   def getFilter: Expression = getRhsExpression
 
-  def setFilter(filter: Expression): Unit = {
+  def setFilter(filter: Expression): Unit =
     this.setRhsExpression(filter)
-  }
 
   override def getExpressionName: String = "filter"
 
-  def getItemType: ItemType = {
-    if (getFilter.isInstanceOf[InstanceOfExpression] &&
-      getFilter
-        .asInstanceOf[InstanceOfExpression]
-        .getBaseExpression
-        .isInstanceOf[ContextItemExpression]) {
-      getFilter.asInstanceOf[InstanceOfExpression].getRequiredItemType
+  def getItemType: ItemType =
+    getFilter match {
+      case instanceofExpression: InstanceOfExpression if instanceofExpression.getBaseExpression.isInstanceOf[ContextItemExpression] =>
+        instanceofExpression.getRequiredItemType
+      case _ =>
+        getBase.getItemType
     }
-    getBase.getItemType
-  }
 
   override def getStaticUType(contextItemType: UType): UType =
     getBase.getStaticUType(contextItemType)
@@ -366,34 +322,29 @@ class FilterExpression(base: Expression, filter: Expression)
   def isIndependentFilter: Boolean = filterIsIndependent
 
   override def simplify(): Expression = {
-    baseExp = getBase.simplify()
-    filterExp = getFilter.simplify()
-    if (Literal.isEmptySequence(getBase)) {
-      getBase
-    }
-    if (getFilter.isInstanceOf[Literal] &&
-      !(getFilter
-        .asInstanceOf[Literal]
-        .getValue
-        .isInstanceOf[NumericValue])) {
-      try if (getFilter.effectiveBooleanValue(
-        new EarlyEvaluationContext(getConfiguration))) {
-        getBase
-      } else {
-        Literal.makeEmptySequence
-      } catch {
-        case e: XPathException => {
-          e.maybeSetLocation(getLocation)
-          throw e
+    setBase(getBase.simplify())
+    setFilter(getFilter.simplify())
+    if (Literal.isEmptySequence(getBase))
+      return getBase
+    getFilter match {
+      case literal: Literal if ! literal.getValue.isInstanceOf[NumericValue] =>
+        try
+          if (getFilter.effectiveBooleanValue(new EarlyEvaluationContext(getConfiguration)))
+            getBase
+          else
+            Literal.makeEmptySequence
+        catch {
+          case e: XPathException =>
+            e.maybeSetLocation(getLocation)
+            throw e
         }
-
-      }
+      case _ =>
+         if (getFilter.isCallOn(classOf[PositionAndLast.Last])) {
+          setFilter(new IsLastExpression(true))
+          adoptChildExpression(getFilter)
+        }
+        this
     }
-    if (getFilter.isCallOn(classOf[PositionAndLast.Last])) {
-      filterExp = new IsLastExpression(true)
-      adoptChildExpression(getFilter)
-    }
-    this
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -402,22 +353,18 @@ class FilterExpression(base: Expression, filter: Expression)
     val th = config.getTypeHierarchy
     getLhs.typeCheck(visitor, contextInfo)
     getBase.setFiltered(true)
-    if (Literal.isEmptySequence(getBase)) {
-      getBase
-    }
-    val baseItemType: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
+    if (Literal.isEmptySequence(getBase))
+      return getBase
+    val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.setContextSettingExpression(getBase)
     getRhs.typeCheck(visitor, baseItemType)
-    val filter2: Expression = ExpressionTool.unsortedIfHomogeneous(
+    val filter2 = ExpressionTool.unsortedIfHomogeneous(
       getFilter,
       visitor.isOptimizeForStreaming)
-    if (filter2 != getFilter) {
-      filterExp = filter2
-    }
+    if (filter2 ne getFilter)
+      setFilter(filter2)
     if (Literal.isConstantOne(getFilter)) {
-      val fie: Expression =
-        FirstItemExpression.makeFirstItemExpression(getBase)
+      val fie = FirstItemExpression.makeFirstItemExpression(getBase)
       ExpressionTool.copyLocationInfo(this, fie)
       return fie
     }
@@ -432,111 +379,94 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    val config: Configuration = visitor.getConfiguration
-    val opt: Optimizer = visitor.obtainOptimizer()
-    val tracing: Boolean =
-      config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
+    val config = visitor.getConfiguration
+    val opt = visitor.obtainOptimizer()
+    val tracing = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
     val th = config.getTypeHierarchy
     getLhs.optimize(visitor, contextItemType)
     getBase.setFiltered(true)
-    val baseItemType: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
+    val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.setContextSettingExpression(getBase)
     getRhs.optimize(visitor, baseItemType)
-    val filter2: Expression = ExpressionTool.unsortedIfHomogeneous(
+    val filter2 = ExpressionTool.unsortedIfHomogeneous(
       getFilter,
       visitor.isOptimizeForStreaming)
-    if (filter2 != getFilter) {
-      filterExp = filter2
+    if (filter2 != getFilter)
+      setFilter(filter2)
+    getFilter match {
+      case isLastExpression: IsLastExpression if getBase.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD && getBase.isInstanceOf[AxisExpression] && isLastExpression.getCondition =>
+        val test = getBase.asInstanceOf[AxisExpression].getNodeTest
+        val fs = new AxisExpression(AxisInfo.FOLLOWING_SIBLING, test)
+        setFilter(SystemFunction.makeCall("empty", getRetainedStaticContext, fs))
+        if (tracing)
+          Optimizer.trace(
+            config,
+            "Replaced [last()] predicate by test for following-sibling",
+            this)
+      case _ =>
     }
-    if (getFilter.isInstanceOf[IsLastExpression] &&
-      getFilter.asInstanceOf[IsLastExpression].getCondition &&
-      getBase.isInstanceOf[AxisExpression] &&
-      getBase.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
-      val test: NodeTest = getBase.asInstanceOf[AxisExpression].getNodeTest
-      val fs: AxisExpression =
-        new AxisExpression(AxisInfo.FOLLOWING_SIBLING, test)
-      filterExp =
-        SystemFunction.makeCall("empty", getRetainedStaticContext, fs)
-      if (tracing) {
-        Optimizer.trace(
-          config,
-          "Replaced [last()] predicate by test for following-sibling",
-          this)
-      }
-    }
-    if (getBase.isInstanceOf[AxisExpression] &&
-      getBase
-        .asInstanceOf[AxisExpression]
-        .getNodeTest == NodeKindTest.ELEMENT &&
-      getFilter.isInstanceOf[CompareToStringConstant] &&
-      getFilter.asInstanceOf[CompareToStringConstant].getSingletonOperator ==
-        Token.FEQ &&
-      getFilter
-        .asInstanceOf[CompareToStringConstant]
-        .getLhsExpression
-        .isCallOn(classOf[LocalName_1]) &&
-      getFilter
+    getBase match {
+      case axisExpression: AxisExpression if getFilter
         .asInstanceOf[CompareToStringConstant]
         .getLhsExpression
         .asInstanceOf[SystemFunctionCall]
         .getArg(0)
-        .isInstanceOf[ContextItemExpression]) {
-      val ax2: AxisExpression = new AxisExpression(
-        getBase.asInstanceOf[AxisExpression].getAxis,
-        new LocalNameTest(
-          config.getNamePool,
-          Type.ELEMENT,
-          getFilter.asInstanceOf[CompareToStringConstant].getComparand)
-      )
-      ExpressionTool.copyLocationInfo(this, ax2)
-      return ax2
+        .isInstanceOf[ContextItemExpression] && getFilter
+        .asInstanceOf[CompareToStringConstant]
+        .getLhsExpression
+        .isCallOn(classOf[LocalName_1]) && getFilter.asInstanceOf[CompareToStringConstant].getSingletonOperator ==
+        Token.FEQ && getFilter.isInstanceOf[CompareToStringConstant] && axisExpression
+        .getNodeTest == NodeKindTest.ELEMENT =>
+        val ax2: AxisExpression = new AxisExpression(
+          axisExpression.getAxis,
+          new LocalNameTest(
+            config.getNamePool,
+            Type.ELEMENT,
+            getFilter.asInstanceOf[CompareToStringConstant].getComparand)
+        )
+        ExpressionTool.copyLocationInfo(this, ax2)
+        return ax2
+      case _ =>
     }
-    val filterType: ItemType = getFilter.getItemType
-    if (!th.isSubType(filterType, BuiltInAtomicType.BOOLEAN) &&
+    val filterType = getFilter.getItemType
+    if (! th.isSubType(filterType, BuiltInAtomicType.BOOLEAN) &&
       th.relationship(filterType, NumericType.getInstance) ==
         Affinity.DISJOINT) {
-      val f: Expression =
-        SystemFunction.makeCall("boolean", getRetainedStaticContext, getFilter)
-      filterExp = f.optimize(visitor, baseItemType)
+      val f = SystemFunction.makeCall("boolean", getRetainedStaticContext, getFilter)
+      setFilter(f.optimize(visitor, baseItemType))
     }
-    if (getFilter.isInstanceOf[Literal] &&
-      getFilter.asInstanceOf[Literal].getValue.isInstanceOf[BooleanValue]) {
-      if (getFilter
-        .asInstanceOf[Literal]
-        .getValue
-        .asInstanceOf[BooleanValue]
-        .getBooleanValue) {
-        if (tracing) {
-          opt.trace("Redundant filter removed", getBase)
+    getFilter match {
+      case literal: Literal if literal.getValue.isInstanceOf[BooleanValue] =>
+        if (literal
+          .getValue
+          .asInstanceOf[BooleanValue]
+          .getBooleanValue) {
+          if (tracing)
+            opt.trace("Redundant filter removed", getBase)
+          return getBase
+        } else {
+          val result = Literal.makeEmptySequence
+          ExpressionTool.copyLocationInfo(this, result)
+          if (tracing)
+            opt.trace(
+              "Filter expression eliminated because predicate is always false",
+              result)
+          return result
         }
-        getBase
-      } else {
-        val result: Expression = Literal.makeEmptySequence
-        ExpressionTool.copyLocationInfo(this, result)
-        if (tracing) {
-          opt.trace(
-            "Filter expression eliminated because predicate is always false",
-            result)
-        }
-        return result
-      }
+      case _ =>
     }
     filterIsPositional = isPositionalFilter(getFilter, th)
     filterIsSingletonBoolean = getFilter.getCardinality == StaticProperty.EXACTLY_ONE &&
       getFilter.getItemType == BuiltInAtomicType.BOOLEAN
-    if (!filterIsPositional && !visitor.isOptimizeForStreaming) {
-      val isIndexable: Int = opt.isIndexableFilter(getFilter)
+    if (! filterIsPositional && !visitor.isOptimizeForStreaming) {
+      val isIndexable = opt.isIndexableFilter(getFilter)
       if (isIndexable != 0) {
-        val contextIsDoc: Boolean = contextItemType != null &&
+        val contextIsDoc = contextItemType != null &&
           contextItemType.getItemType != ErrorType &&
           th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)
-        val f: Expression =
-          opt.tryIndexedFilter(this, visitor, isIndexable > 0, contextIsDoc)
-        if (f != this) {
-          f.typeCheck(visitor, contextItemType)
-            .optimize(visitor, contextItemType)
-        }
+        val f = opt.tryIndexedFilter(this, visitor, isIndexable > 0, contextIsDoc)
+        if (f != this)
+          return f.typeCheck(visitor, contextItemType).optimize(visitor, contextItemType)
       }
     }
     if (filterIsPositional && getFilter.isInstanceOf[BooleanExpression] &&
@@ -554,7 +484,7 @@ class FilterExpression(base: Expression, filter: Expression)
           opt.trace("Composite filter replaced by nested filter expressions",
             f2)
         }
-        f2.optimize(visitor, contextItemType)
+        return f2.optimize(visitor, contextItemType)
       }
       if (isExplicitlyPositional(bf.getRhsExpression) && !isExplicitlyPositional(
         bf.getLhsExpression)) {
@@ -568,34 +498,33 @@ class FilterExpression(base: Expression, filter: Expression)
           opt.trace("Composite filter replaced by nested filter expressions",
             f2)
         }
-        f2.optimize(visitor, contextItemType)
+        return f2.optimize(visitor, contextItemType)
       }
     }
-    if (getFilter.isInstanceOf[IsLastExpression] &&
-      getFilter.asInstanceOf[IsLastExpression].getCondition) {
-      if (getBase.isInstanceOf[Literal]) {
-        filterExp = Literal.makeLiteral(
-          new Int64Value(getBase.asInstanceOf[Literal].getValue.getLength),
-          this)
-      } else {
-        new LastItemExpression(getBase)
-      }
+    getFilter match {
+      case isLastExpression: IsLastExpression if isLastExpression.getCondition =>
+        getBase match {
+          case literal: Literal =>
+            setFilter(Literal.makeLiteral(new Int64Value(literal.getValue.getLength), this))
+          case _ =>
+            return new LastItemExpression(getBase)
+        }
+      case _ =>
     }
-    val subsequence: Expression =
-      tryToRewritePositionalFilter(visitor, tracing)
+    val subsequence = tryToRewritePositionalFilter(visitor, tracing)
     if (subsequence != null) {
       if (tracing) {
         subsequence.setRetainedStaticContext(getRetainedStaticContext)
         opt.trace("Rewrote Filter Expression as:", subsequence)
       }
       ExpressionTool.copyLocationInfo(this, subsequence)
-      subsequence
+      return subsequence
         .simplify()
         .typeCheck(visitor, contextItemType)
         .optimize(visitor, contextItemType)
     }
-    if (!filterIsPositional && !doneReorderingPredicates &&
-      !(getParentExpression.isInstanceOf[FilterExpression])) {
+    if (! filterIsPositional && !doneReorderingPredicates &&
+      ! getParentExpression.isInstanceOf[FilterExpression]) {
       val f2: FilterExpression =
         opt.reorderPredicates(this, visitor, contextItemType)
       if (f2 != this) {
@@ -603,10 +532,10 @@ class FilterExpression(base: Expression, filter: Expression)
         return f2
       }
     }
-    val sequence: Sequence = tryEarlyEvaluation(visitor)
+    val sequence = tryEarlyEvaluation(visitor)
     if (sequence != null) {
-      val value: GroundedValue = sequence.materialize
-      Literal.makeLiteral(value, this)
+      val value = sequence.materialize
+      return Literal.makeLiteral(value, this)
     }
     this
   }
@@ -805,9 +734,8 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def unordered(retainAllNodes: Boolean,
                          forStreaming: Boolean): Expression = {
-    if (!filterIsPositional) {
-      baseExp = getBase.unordered(retainAllNodes, forStreaming)
-    }
+    if (! filterIsPositional)
+      setBase(getBase.unordered(retainAllNodes, forStreaming))
     this
   }
 
@@ -815,74 +743,71 @@ class FilterExpression(base: Expression, filter: Expression)
                                             bindings: Array[Binding],
                                             opt: Optimizer,
                                             th: TypeHierarchy): FilterExpression = {
-    if (!ExpressionTool.dependsOnVariable(getBase, bindings)) {
+    if (!ExpressionTool.dependsOnVariable(getBase, bindings))
       return this
-    }
-    if (isPositional(th)) {
+    if (isPositional(th))
       return this
-    }
-    if (getBase.isInstanceOf[FilterExpression]) {
-      val fe: FilterExpression = getBase.asInstanceOf[FilterExpression]
-      if (fe.isPositional(th)) {
-        return this
-      }
-      if (!ExpressionTool.dependsOnVariable(fe.getFilter, bindings)) {
-        return this
-      }
-      if (!ExpressionTool.dependsOnVariable(getFilter, bindings)) {
-        val result: FilterExpression = new FilterExpression(
-          new FilterExpression(fe.getBase, getFilter)
-            .promoteIndependentPredicates(bindings, opt, th),
-          fe.getFilter)
-        opt.trace("Reordered filter predicates:", result)
-        return result
-      }
+    getBase match {
+      case fe: FilterExpression =>
+        if (fe.isPositional(th))
+          return this
+        if (! ExpressionTool.dependsOnVariable(fe.getFilter, bindings))
+          return this
+        if (! ExpressionTool.dependsOnVariable(getFilter, bindings)) {
+          val result = new FilterExpression(
+            new FilterExpression(fe.getBase, getFilter)
+              .promoteIndependentPredicates(bindings, opt, th),
+            fe.getFilter)
+          opt.trace("Reordered filter predicates:", result)
+          return result
+        }
+      case _ =>
     }
     this
   }
 
   override def computeCardinality(): Int = {
-    if (getFilter.isInstanceOf[Literal] &&
-      getFilter.asInstanceOf[Literal].getValue.isInstanceOf[NumericValue]) {
-      if (getFilter
-        .asInstanceOf[Literal]
-        .getValue
-        .asInstanceOf[NumericValue]
-        .compareTo(1) ==
-        0 &&
-        !Cardinality.allowsZero(getBase.getCardinality)) {
-        StaticProperty.ALLOWS_ONE
-      } else {
-        StaticProperty.ALLOWS_ZERO_OR_ONE
-      }
+    getFilter match {
+      case literal: Literal if literal.getValue.isInstanceOf[NumericValue] =>
+        if (literal
+          .getValue
+          .asInstanceOf[NumericValue]
+          .compareTo(1) ==
+          0 &&
+          !Cardinality.allowsZero(getBase.getCardinality)) {
+          return StaticProperty.ALLOWS_ONE
+        } else {
+          return StaticProperty.ALLOWS_ZERO_OR_ONE
+        }
+      case _ =>
     }
     if (filterIsIndependent) {
-      val filterType: ItemType = getFilter.getItemType.getPrimitiveItemType
+      val filterType = getFilter.getItemType.getPrimitiveItemType
       if (filterType == BuiltInAtomicType.INTEGER || filterType == BuiltInAtomicType.DOUBLE ||
         filterType == BuiltInAtomicType.DECIMAL ||
         filterType == BuiltInAtomicType.FLOAT) {
-        StaticProperty.ALLOWS_ZERO_OR_ONE
+        return StaticProperty.ALLOWS_ZERO_OR_ONE
       }
-      if (getFilter.isInstanceOf[ArithmeticExpression]) {
-        StaticProperty.ALLOWS_ZERO_OR_ONE
-      }
+      if (getFilter.isInstanceOf[ArithmeticExpression])
+        return StaticProperty.ALLOWS_ZERO_OR_ONE
     }
-    if (getFilter.isInstanceOf[IsLastExpression] &&
-      getFilter.asInstanceOf[IsLastExpression].getCondition) {
-      StaticProperty.ALLOWS_ZERO_OR_ONE
+    getFilter match {
+      case isLastExpression: IsLastExpression if isLastExpression.getCondition =>
+        return StaticProperty.ALLOWS_ZERO_OR_ONE
+      case _ =>
     }
-    if (!Cardinality.allowsMany(getBase.getCardinality)) {
-      StaticProperty.ALLOWS_ZERO_OR_ONE
-    }
+    if (! Cardinality.allowsMany(getBase.getCardinality))
+      return StaticProperty.ALLOWS_ZERO_OR_ONE
     StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   override def computeSpecialProperties(): Int = getBase.getSpecialProperties
 
   override def equals(other: Any): Boolean = {
-    if (other.isInstanceOf[FilterExpression]) {
-      val f: FilterExpression = other.asInstanceOf[FilterExpression]
-      getBase.isEqual(f.getBase) && getFilter.isEqual(f.getFilter)
+    other match {
+      case f: FilterExpression =>
+        getBase.isEqual(f.getBase) && getFilter.isEqual(f.getFilter)
+      case _ =>
     }
     false
   }
@@ -891,12 +816,12 @@ class FilterExpression(base: Expression, filter: Expression)
     "FilterExpression".hashCode + getBase.hashCode + getFilter.hashCode
 
   override def toPattern(config: Configuration): Pattern = {
-    val base: Expression = getSelectExpression
-    val filter: Expression = getFilter
+    val base = getSelectExpression
+    val filter = getFilter
     val th = config.getTypeHierarchy
-    val basePattern: Pattern = base.toPattern(config)
-    if (!isPositional(th)) {
-      new BasePatternWithPredicate(basePattern, filter)
+    val basePattern = base.toPattern(config)
+    if (! isPositional(th)) {
+      return new BasePatternWithPredicate(basePattern, filter)
     } else if (basePattern
       .isInstanceOf[NodeTestPattern] && basePattern.getItemType
       .isInstanceOf[NodeTest] &&
@@ -907,7 +832,7 @@ class FilterExpression(base: Expression, filter: Expression)
         0) {
       if (filter.isInstanceOf[Literal] &&
         filter.asInstanceOf[Literal].getValue.isInstanceOf[IntegerValue]) {
-        new SimplePositionalPattern(
+        return new SimplePositionalPattern(
           basePattern.getItemType.asInstanceOf[NodeTest],
           filter
             .asInstanceOf[Literal]
@@ -916,109 +841,109 @@ class FilterExpression(base: Expression, filter: Expression)
             .longValue()
             .toInt)
       } else {
-        new GeneralPositionalPattern(
+        return new GeneralPositionalPattern(
           basePattern.getItemType.asInstanceOf[NodeTest],
           filter)
       }
     }
-    if (base.getItemType.isInstanceOf[NodeTest]) {
-      new GeneralNodePattern(this, base.getItemType.asInstanceOf[NodeTest])
-    } else {
-      throw new XPathException(
-        "The filtered expression in an XSLT 2.0 pattern must be a simple step")
+    base.getItemType match {
+      case nodeTest: NodeTest =>
+        new GeneralNodePattern(this, nodeTest)
+      case _ =>
+        throw new XPathException(
+          "The filtered expression in an XSLT 2.0 pattern must be a simple step")
     }
   }
 
   override def iterate(context: XPathContext): SequenceIterator = {
     if (filterIsIndependent) {
       try {
-        val it: SequenceIterator = getFilter.iterate(context)
+        val it = getFilter.iterate(context)
         val first: Item = it.next()
-        if (first == null) {
-          EmptyIterator.emptyIterator
-        }
-        if (first.isInstanceOf[NumericValue]) {
-          if (it.next() != null) {
-            ExpressionTool.ebvError(
-              "sequence of two or more items starting with a numeric value",
-              getFilter)
-          } else {
-            val pos: Int = first.asInstanceOf[NumericValue].asSubscript()
-            if (pos != -1) {
-              if (getBase.isInstanceOf[VariableReference]) {
-                val baseVal: Sequence = getBase
-                  .asInstanceOf[VariableReference]
-                  .evaluateVariable(context)
-                if (baseVal.isInstanceOf[MemoClosure]) {
-                  val m: Item =
-                    baseVal.asInstanceOf[MemoClosure].itemAt(pos - 1)
-                  if (m == null) EmptyIterator.emptyIterator else m.iterate()
-                } else {
-                  val m: Item = baseVal.materialize.itemAt(pos - 1)
-                  if (m == null) EmptyIterator.emptyIterator else m.iterate()
+        if (first == null)
+          return EmptyIterator.emptyIterator
+        first match {
+          case numericValue: NumericValue =>
+            if (it.next() != null) {
+              ExpressionTool.ebvError(
+                "sequence of two or more items starting with a numeric value",
+                getFilter)
+            } else {
+              val pos: Int = numericValue.asSubscript()
+              if (pos != -1) {
+                getBase match {
+                  case varRef: VariableReference =>
+                    val baseVal = varRef.evaluateVariable(context)
+                    baseVal match {
+                      case memoClosure: MemoClosure =>
+                        val m =
+                          memoClosure.itemAt(pos - 1)
+                        return if (m == null) EmptyIterator.emptyIterator else m.iterate()
+                      case _ =>
+                        val m = baseVal.materialize.itemAt(pos - 1)
+                        return if (m == null) EmptyIterator.emptyIterator else m.iterate()
+                    }
+                  case literal: Literal =>
+                    val i = literal.getValue.itemAt(pos - 1)
+                    return if (i == null) EmptyIterator.emptyIterator else i.iterate()
+                  case _ =>
+                    val baseIter: SequenceIterator = getBase.iterate(context)
+                    return SubsequenceIterator.make(baseIter, pos, pos)
                 }
-              } else if (getBase.isInstanceOf[Literal]) {
-                val i: Item =
-                  getBase.asInstanceOf[Literal].getValue.itemAt(pos - 1)
-                if (i == null) EmptyIterator.emptyIterator else i.iterate()
-              } else {
-                val baseIter: SequenceIterator = getBase.iterate(context)
-                SubsequenceIterator.make(baseIter, pos, pos)
+              }
+              return EmptyIterator.emptyIterator
+            }
+          case _ =>
+            var ebv = false
+            first match {
+              case _: NodeInfo =>
+                ebv = true
+              case _ => first match {
+                case booleanValue: BooleanValue =>
+                  ebv = booleanValue.getBooleanValue
+                  if (it.next() != null) {
+                    ExpressionTool.ebvError(
+                      "sequence of two or more items starting with a boolean value",
+                      getFilter)
+                  }
+                case _ => first match {
+                  case stringValue: StringValue =>
+                    ebv = !stringValue.isZeroLength
+                    if (it.next() != null) {
+                      ExpressionTool.ebvError(
+                        "sequence of two or more items starting with a boolean value",
+                        getFilter)
+                    }
+                  case _ =>
+                    ExpressionTool.ebvError(
+                      "sequence starting with an atomic value other than a boolean, number, or string",
+                      getFilter)
+                }
               }
             }
-            EmptyIterator.emptyIterator
-          }
-        } else {
-          var ebv: Boolean = false
-          if (first.isInstanceOf[NodeInfo]) {
-            ebv = true
-          } else if (first.isInstanceOf[BooleanValue]) {
-            ebv = first.asInstanceOf[BooleanValue].getBooleanValue
-            if (it.next() != null) {
-              ExpressionTool.ebvError(
-                "sequence of two or more items starting with a boolean value",
-                getFilter)
-            }
-          } else if (first.isInstanceOf[StringValue]) {
-            ebv = !first.asInstanceOf[StringValue].isZeroLength
-            if (it.next() != null) {
-              ExpressionTool.ebvError(
-                "sequence of two or more items starting with a boolean value",
-                getFilter)
-            }
-          } else {
-            ExpressionTool.ebvError(
-              "sequence starting with an atomic value other than a boolean, number, or string",
-              getFilter)
-          }
-          if (ebv) {
-            getBase.iterate(context)
-          } else {
-            EmptyIterator.emptyIterator
-          }
+            if (ebv)
+              return getBase.iterate(context)
+            else
+              return EmptyIterator.emptyIterator
         }
       } catch {
-        case e: XPathException => {
+        case e: XPathException =>
           e.maybeSetLocation(getLocation)
           throw e
-        }
-
       }
     }
-    val baseIter: SequenceIterator = getBase.iterate(context)
-    if (baseIter.isInstanceOf[EmptyIterator]) {
-      return baseIter
-    }
-    if (filterIsPositional && !filterIsSingletonBoolean) {
+
+    val baseIter = getBase.iterate(context)
+    if (baseIter.isInstanceOf[EmptyIterator])
+      baseIter
+    else if (filterIsPositional && ! filterIsSingletonBoolean)
       new FilterIterator(baseIter, getFilter, context)
-    } else {
+    else
       new FilterIterator.NonNumeric(baseIter, getFilter, context)
-    }
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val fe: FilterExpression = new FilterExpression(getBase.copy(rebindings),
-      getFilter.copy(rebindings))
+    val fe = new FilterExpression(getBase.copy(rebindings), getFilter.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, fe)
     fe.filterIsIndependent = filterIsIndependent
     fe.filterIsPositional = filterIsPositional
@@ -1029,8 +954,7 @@ class FilterExpression(base: Expression, filter: Expression)
   override def getStreamerName: String = "FilterExpression"
 
   override def toString: String =
-    ExpressionTool.parenthesize(getBase) + "[" + getFilter +
-      "]"
+    ExpressionTool.parenthesize(getBase) + "[" + getFilter + "]"
 
   override def toShortString: String =
     getBase.toShortString + "[" + getFilter.toShortString + "]"
@@ -1058,5 +982,4 @@ class FilterExpression(base: Expression, filter: Expression)
     filterIsPositional = flags.contains("p")
     filterIsSingletonBoolean = flags.contains("b")
   }
-
 }

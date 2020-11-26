@@ -74,9 +74,9 @@ object UntypedSequenceConverter {
     val atomicSeqConverter: UntypedSequenceConverter =
       new UntypedSequenceConverter(operand, requiredItemType)
     val rules: ConversionRules = config.getConversionRules
-    val untypedConverter: Converter = new Converter() {
+    val untypedConverter: Converter = new Converter {
       def convert(input: AtomicValue): ConversionResult = {
-        var vf: ValidationFailure = new ValidationFailure(
+        val vf = new ValidationFailure(
           "Implicit conversion of untypedAtomic value to " + requiredItemType.toString +
             " is not allowed")
         vf.setErrorCode("XPTY0117")
@@ -97,22 +97,20 @@ class UntypedSequenceConverter(sequence: Expression,
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    val e2: Expression = super.typeCheck(visitor, contextInfo)
-    if (e2 != this) {
+    val e2 = super.typeCheck(visitor, contextInfo)
+    if (e2 ne this)
       return e2
-    }
     val th = visitor.getConfiguration.getTypeHierarchy
-    val base: Expression = getBaseExpression
-    if (th.relationship(base.getItemType, BuiltInAtomicType.UNTYPED_ATOMIC) ==
-      Affinity.DISJOINT ||
+    val base = getBaseExpression
+    if (th.relationship(base.getItemType, BuiltInAtomicType.UNTYPED_ATOMIC) == Affinity.DISJOINT ||
       base.hasSpecialProperty(StaticProperty.NOT_UNTYPED_ATOMIC)) {
-      getBaseExpression
+      return getBaseExpression
     }
     this
   }
 
   override def computeSpecialProperties(): Int = {
-    val p: Int = super.computeSpecialProperties()
+    val p = super.computeSpecialProperties()
     p | StaticProperty.NO_NODES_NEWLY_CREATED | StaticProperty.NOT_UNTYPED_ATOMIC
   }
 

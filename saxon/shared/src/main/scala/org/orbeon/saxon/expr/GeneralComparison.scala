@@ -1,27 +1,19 @@
 package org.orbeon.saxon.expr
 
 
+import java.util.{ArrayList, List}
+
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.expr.sort.AtomicComparer
-import org.orbeon.saxon.expr.sort.CodepointCollator
-import org.orbeon.saxon.expr.sort.GenericAtomicComparer
-import org.orbeon.saxon.expr.sort.UntypedNumericComparer
-import org.orbeon.saxon.functions.Minimax
-import org.orbeon.saxon.functions.SystemFunction
-import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.lib.StringCollator
+import org.orbeon.saxon.expr.sort.{AtomicComparer, CodepointCollator, GenericAtomicComparer, UntypedNumericComparer}
+import org.orbeon.saxon.functions.{Minimax, SystemFunction}
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.om.NamespaceResolver
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.om.SequenceIterator
+import org.orbeon.saxon.om.{GroundedValue, NamespaceResolver, Sequence, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value._
-import java.util.ArrayList
-import java.util.List
-import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value._
+
+import scala.jdk.CollectionConverters._
 
 
 object GeneralComparison {
@@ -41,8 +33,7 @@ object GeneralComparison {
 
   private def makeMinOrMax(exp: Expression, function: String): Expression =
     if (Cardinality.allowsMany(exp.getCardinality)) {
-      val fn: Expression =
-        SystemFunction.makeCall(function, exp.getRetainedStaticContext, exp)
+      val fn = SystemFunction.makeCall(function, exp.getRetainedStaticContext, exp)
       assert(fn != null)
       fn.asInstanceOf[SystemFunctionCall]
         .getTargetFunction
@@ -63,44 +54,38 @@ object GeneralComparison {
     var atomicVal0 = a0
     var atomicVal1 = a1
     var checkTyps = checkTypes
-    val u0: Boolean = a0.isInstanceOf[UntypedAtomicValue]
-    val u1: Boolean = atomicVal1.isInstanceOf[UntypedAtomicValue]
+    val u0 = a0.isInstanceOf[UntypedAtomicValue]
+    val u1 = atomicVal1.isInstanceOf[UntypedAtomicValue]
     if (u0 != u1) {
-      val rules: ConversionRules = context.getConfiguration.getConversionRules
+      val rules = context.getConfiguration.getConversionRules
       if (u0) {
         atomicVal1 match {
           case numericValue: NumericValue =>
-            UntypedNumericComparer.quickCompare(
+            return UntypedNumericComparer.quickCompare(
               atomicVal0.asInstanceOf[UntypedAtomicValue],
               numericValue,
               operator,
               rules)
           case _: StringValue =>
           case _ =>
-            var sc: StringConverter =
-              atomicVal1.getItemType.getPrimitiveItemType.getStringConverter(rules)
-            if (atomicVal1.isInstanceOf[QualifiedNameValue]) {
-              sc =
-                sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
-            }
+            var sc = atomicVal1.getItemType.getPrimitiveItemType.getStringConverter(rules)
+            if (atomicVal1.isInstanceOf[QualifiedNameValue])
+              sc = sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
             atomicVal0 = sc.convertString(atomicVal0.getStringValueCS).asAtomic
         }
       } else {
         atomicVal0 match {
           case numericValue: NumericValue =>
-            UntypedNumericComparer.quickCompare(
+            return UntypedNumericComparer.quickCompare(
               atomicVal1.asInstanceOf[UntypedAtomicValue],
               numericValue,
               Token.inverse(operator),
               rules)
           case _: StringValue =>
           case _ =>
-            var sc: StringConverter =
-              atomicVal0.getItemType.getPrimitiveItemType.getStringConverter(rules)
-            if (atomicVal0.isInstanceOf[QualifiedNameValue]) {
-              sc =
-                sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
-            }
+            var sc = atomicVal0.getItemType.getPrimitiveItemType.getStringConverter(rules)
+            if (atomicVal0.isInstanceOf[QualifiedNameValue])
+              sc = sc.setNamespaceResolver(nsResolver).asInstanceOf[StringConverter]
             atomicVal1 = sc.convertString(atomicVal1.getStringValueCS).asAtomic
         }
       }
@@ -117,9 +102,7 @@ object GeneralComparison {
     case Token.GT => Token.FGT
     case Token.LE => Token.FLE
     case _ => op
-
   }
-
 }
 
 abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
@@ -130,13 +113,9 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   import GeneralComparison.ComparisonCardinality._
 
   var singletonOperator: Int = GeneralComparison.getCorrespondingSingletonOperator(op)
-
   var comparer: AtomicComparer = _
-
   var needsRuntimeCheck: Boolean = true
-
   var comparisonCardinality: ComparisonCardinality = MANY_TO_MANY
-
   var doneWarnings: Boolean = false
 
   def getNeedsRuntimeCheck: Boolean = needsRuntimeCheck
@@ -145,13 +124,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   def getComparisonCardinality: ComparisonCardinality = comparisonCardinality
 
-  def setComparisonCardinality(card: ComparisonCardinality): Unit = {
+  def setComparisonCardinality(card: ComparisonCardinality): Unit =
     comparisonCardinality = card
-  }
 
-  def setAtomicComparer(comparer: AtomicComparer): Unit = {
+  def setAtomicComparer(comparer: AtomicComparer): Unit =
     this.comparer = comparer
-  }
 
   override def getExpressionName: String = "GeneralComparison"
 
@@ -175,11 +152,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     getRhs.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
       getRhsExpression)) {
-      Literal.makeLiteral(BooleanValue.FALSE, this)
+      return Literal.makeLiteral(BooleanValue.FALSE, this)
     }
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
-    val atomicType: SequenceType = SequenceType.ATOMIC_SEQUENCE
+    val atomicType = SequenceType.ATOMIC_SEQUENCE
     val tc = config.getTypeChecker(false)
     val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
     this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
@@ -193,7 +170,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     val t0 = getLhsExpression.getItemType
     val t1 = getRhsExpression.getItemType
     if ((t0 eq ErrorType) || (t1 eq ErrorType))
-      Literal.makeLiteral(BooleanValue.FALSE, this)
+      return Literal.makeLiteral(BooleanValue.FALSE, this)
 
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
       val err = new XPathException(
@@ -203,19 +180,16 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       err.setLocator(getLocation)
       throw err
     }
-    val pt0: BuiltInAtomicType =
-      t0.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
-    val pt1: BuiltInAtomicType =
-      t1.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
-    val c0: Int = getLhsExpression.getCardinality
-    val c1: Int = getRhsExpression.getCardinality
-    if (c0 == StaticProperty.EMPTY || c1 == StaticProperty.EMPTY) {
-      Literal.makeLiteral(BooleanValue.FALSE, this)
-    }
+    val pt0 = t0.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
+    val pt1 = t1.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
+    val c0 = getLhsExpression.getCardinality
+    val c1 = getRhsExpression.getCardinality
+    if (c0 == StaticProperty.EMPTY || c1 == StaticProperty.EMPTY)
+      return Literal.makeLiteral(BooleanValue.FALSE, this)
     if (t0 == BuiltInAtomicType.ANY_ATOMIC || t0 == BuiltInAtomicType.UNTYPED_ATOMIC ||
       t1 == BuiltInAtomicType.ANY_ATOMIC ||
       t1 == BuiltInAtomicType.UNTYPED_ATOMIC) {} else {
-      if (!Type.isPossiblyComparable(
+      if (! Type.isPossiblyComparable(
         pt0,
         pt1,
         Token.isOrderedOperator(singletonOperator))) {
@@ -246,7 +220,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         }
       }
     }
-    needsRuntimeCheck = !Type.isGuaranteedGenerallyComparable(
+    needsRuntimeCheck = ! Type.isGuaranteedGenerallyComparable(
       pt0,
       pt1,
       Token.isOrderedOperator(singletonOperator))
@@ -269,7 +243,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
           val vun: Expression = makeCompareUntypedToNumeric(getLhsExpression,
             getRhsExpression,
             singletonOperator)
-          vun.typeCheck(visitor, contextInfo)
+          return vun.typeCheck(visitor, contextInfo)
         } else {
           e0 = new CastExpression(getLhsExpression,
             pt1,
@@ -282,7 +256,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
             getRhsExpression,
             getLhsExpression,
             Token.inverse(singletonOperator))
-          vun.typeCheck(visitor, contextInfo)
+          return vun.typeCheck(visitor, contextInfo)
         } else {
           e1 = new CastExpression(getRhsExpression,
             pt0,
@@ -297,26 +271,24 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       Optimizer.trace(config,
         "Replaced general comparison by value comparison",
         vc)
-      vc.typeCheck(visitor, contextInfo)
+      return vc.typeCheck(visitor, contextInfo)
     }
-    val env: StaticContext = visitor.getStaticContext
+    val env = visitor.getStaticContext
     if (comparer == null) {
-      val defaultCollationName: String = env.getDefaultCollationName
-      var collation: StringCollator = config.getCollation(defaultCollationName)
-      if (collation == null) {
+      val defaultCollationName = env.getDefaultCollationName
+      var collation = config.getCollation(defaultCollationName)
+      if (collation == null)
         collation = CodepointCollator.getInstance
-      }
       comparer = GenericAtomicComparer.makeAtomicComparer(
         pt0,
         pt1,
         collation,
         config.getConversionContext)
     }
-    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
-      .isInstanceOf[Literal]) {
+    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
-    }
-    this
+    else
+      this
   }
 
   private def makeCompareUntypedToNumeric(lhs: Expression,
@@ -358,40 +330,36 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     val th = visitor.getConfiguration.getTypeHierarchy
-    val env: StaticContext = visitor.getStaticContext
+    val env = visitor.getStaticContext
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)
-    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
-      getRhsExpression)) {
-      Literal.makeLiteral(BooleanValue.FALSE, this)
-    }
+    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
+      return Literal.makeLiteral(BooleanValue.FALSE, this)
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
-    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
-      .isInstanceOf[Literal]) {
-      Literal.makeLiteral(
+    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
+      return Literal.makeLiteral(
         evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
           .materialize,
         this)
-    }
-    val t0: ItemType = getLhsExpression.getItemType
-    val t1: ItemType = getRhsExpression.getItemType
-    val c0: Int = getLhsExpression.getCardinality
-    val c1: Int = getRhsExpression.getCardinality
-    val many0: Boolean = Cardinality.allowsMany(c0)
-    val many1: Boolean = Cardinality.allowsMany(c1)
+    val t0 = getLhsExpression.getItemType
+    val t1 = getRhsExpression.getItemType
+    val c0 = getLhsExpression.getCardinality
+    val c1 = getRhsExpression.getCardinality
+    val many0 = Cardinality.allowsMany(c0)
+    val many1 = Cardinality.allowsMany(c1)
     if (many0) {
       comparisonCardinality =
         if (many1) MANY_TO_MANY
         else MANY_TO_ONE
     } else {
       if (many1) {
-        val mc: GeneralComparison = getInverseComparison
+        val mc = getInverseComparison
         mc.comparisonCardinality = MANY_TO_ONE
         ExpressionTool.copyLocationInfo(this, mc)
         mc.comparer = comparer
         mc.needsRuntimeCheck = needsRuntimeCheck
-        mc.optimize(visitor, contextInfo)
+        return mc.optimize(visitor, contextInfo)
       } else {
         comparisonCardinality = ONE_TO_ONE
       }
@@ -399,37 +367,29 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     if (op == Token.EQUALS) {
       getLhsExpression match {
         case expression1: RangeExpression =>
-          val min: Expression =
-            expression1.getLhsExpression
-          val max: Expression =
-            expression1.getRhsExpression
-          val ir: IntegerRangeTest =
-            new IntegerRangeTest(getRhsExpression, min, max)
+          val min = expression1.getLhsExpression
+          val max = expression1.getRhsExpression
+          val ir = new IntegerRangeTest(getRhsExpression, min, max)
           ExpressionTool.copyLocationInfo(this, ir)
           return ir
         case _ =>
       }
       getRhsExpression match {
         case expression: RangeExpression =>
-          val min: Expression =
-            expression.getLhsExpression
-          val max: Expression =
-            expression.getRhsExpression
-          val ir: IntegerRangeTest =
-            new IntegerRangeTest(getLhsExpression, min, max)
+          val min = expression.getLhsExpression
+          val max = expression.getRhsExpression
+          val ir = new IntegerRangeTest(getLhsExpression, min, max)
           ExpressionTool.copyLocationInfo(this, ir)
           return ir
         case _ =>
       }
       getLhsExpression match {
         case literal1: Literal =>
-          val value0: GroundedValue =
-            literal1.getValue
-          value0 match {
+          literal1.getValue match {
             case range: IntegerRange =>
-              val min: Long = range.getStart
-              val max: Long = range.getEnd
-              val ir: IntegerRangeTest = new IntegerRangeTest(
+              val min = range.getStart
+              val max = range.getEnd
+              val ir = new IntegerRangeTest(
                 getRhsExpression,
                 Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
                 Literal.makeLiteral(Int64Value.makeIntegerValue(max), this))
@@ -441,9 +401,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       getRhsExpression match {
         case literal: Literal =>
-          val value1: GroundedValue =
-            literal.getValue
-          value1 match {
+          literal.getValue match {
             case range: IntegerRange =>
               val min: Long = range.getStart
               val max: Long = range.getEnd
@@ -478,18 +436,14 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
           vc.setResultWhenEmpty(BooleanValue.FALSE)
           vc.setAtomicComparer(comparer)
         case _ =>
-          throw new UnsupportedOperationException(
-            "Unknown operator " + op)
-
+          throw new UnsupportedOperationException("Unknown operator " + op)
       }
       ExpressionTool.copyLocationInfo(this, vc)
       vc.setRetainedStaticContext(getRetainedStaticContext)
-      vc.typeCheck(visitor, contextInfo)
+      return vc.typeCheck(visitor, contextInfo)
     }
-    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression
-      .isInstanceOf[Literal]) {
-      Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
-    }
+    if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
+      return Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
     visitor
       .obtainOptimizer()
       .optimizeGeneralComparison(visitor, this, backwardsCompatible = false, contextInfo)
@@ -499,41 +453,37 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     getParentExpression match {
       case _: ContextSwitchingExpression if getParentExpression
         .asInstanceOf[ContextSwitchingExpression]
-        .getActionExpression ==
-        this =>
+        .getActionExpression eq this =>
         for (o <- operands.asScala
              if Cardinality.allowsMany(o.getChildExpression.getCardinality)
              if ExpressionTool.dependsOnFocus(o.getChildExpression)) {
-          false
+          return false
         }
-        return true
+        true
       case _ =>
+        false
     }
-    false
   }
 
-  override def evaluateItem(context: XPathContext): BooleanValue = {
+  override def evaluateItem(context: XPathContext): BooleanValue =
     comparisonCardinality match {
       case ONE_TO_ONE =>
-        val value0: AtomicValue =
-          getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-        val value1: AtomicValue =
-          getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+        val value0 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+        val value1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateOneToOne(value0, value1, context))
       case MANY_TO_ONE =>
-        val iter0: SequenceIterator = getLhsExpression.iterate(context)
-        val value1: AtomicValue =
-          getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+        val iter0 = getLhsExpression.iterate(context)
+        val value1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
         BooleanValue.get(evaluateManyToOne(iter0, value1, context))
       case MANY_TO_MANY =>
-        val iter1: SequenceIterator = getLhsExpression.iterate(context)
-        val iter2: SequenceIterator = getRhsExpression.iterate(context)
+        val iter1 = getLhsExpression.iterate(context)
+        val iter2 = getRhsExpression.iterate(context)
         BooleanValue.get(evaluateManyToMany(iter1, iter2, context))
+      case _ =>
+        null
     }
-    null
-  }
 
-  def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
+  def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     comparisonCardinality match {
       case ONE_TO_ONE =>
         val value0: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
@@ -547,11 +497,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         val iter1: SequenceIterator = arguments(0).iterate()
         val iter2: SequenceIterator = arguments(1).iterate()
         BooleanValue.get(evaluateManyToMany(iter1, iter2, context))
+      case _ =>
+        null
     }
-    null
-  }
 
-  override def effectiveBooleanValue(context: XPathContext): Boolean = {
+  override def effectiveBooleanValue(context: XPathContext): Boolean =
     comparisonCardinality match {
       case ONE_TO_ONE =>
         val value0: AtomicValue =
@@ -568,20 +518,22 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         val iter1: SequenceIterator = getLhsExpression.iterate(context)
         val iter2: SequenceIterator = getRhsExpression.iterate(context)
         evaluateManyToMany(iter1, iter2, context)
+      case _ =>
+        false
     }
-    false
-  }
 
   private def evaluateOneToOne(value0: AtomicValue,
                                value1: AtomicValue,
                                context: XPathContext): Boolean =
-    try !(value0 == null || value1 == null) && GeneralComparison.compare(value0,
-      singletonOperator,
-      value1,
-      comparer.provideContext(context),
-      needsRuntimeCheck,
-      context,
-      getRetainedStaticContext)
+    try
+     ! (value0 == null || value1 == null) && GeneralComparison.compare(value0,
+        singletonOperator,
+        value1,
+        comparer.provideContext(context),
+        needsRuntimeCheck,
+        context,
+        getRetainedStaticContext
+      )
     catch {
       case e: XPathException =>
         e.maybeSetLocation(getLocation)
@@ -593,12 +545,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
                                 value1: AtomicValue,
                                 context: XPathContext): Boolean =
     try {
-      if (value1 == null) {
+      if (value1 == null)
         return false
-      }
       var item0: AtomicValue = null
-      val boundComparer: AtomicComparer = comparer.provideContext(context)
-      while ( {
+      val boundComparer = comparer.provideContext(context)
+      while ({
         item0 = iter0.next().asInstanceOf[AtomicValue]
         item0
       } != null) if (GeneralComparison.compare(
@@ -610,7 +561,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         context,
         getRetainedStaticContext)) {
         iter0.close()
-        true
+        return true
       }
       false
     } catch {
@@ -624,18 +575,17 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
                          iter1: SequenceIterator,
                          context: XPathContext): Boolean =
     try {
-      var exhausted0: Boolean = false
-      var exhausted1: Boolean = false
-      val value0: List[AtomicValue] = new ArrayList[AtomicValue]()
-      val value1: List[AtomicValue] = new ArrayList[AtomicValue]()
-      val boundComparer: AtomicComparer = comparer.provideContext(context)
+      var exhausted0 = false
+      var exhausted1 = false
+      val value0 = new ArrayList[AtomicValue]()
+      val value1 = new ArrayList[AtomicValue]()
+      val boundComparer = comparer.provideContext(context)
       while (true) {
         if (!exhausted0) {
-          val item0: AtomicValue = iter0.next().asInstanceOf[AtomicValue]
+          val item0 = iter0.next().asInstanceOf[AtomicValue]
           if (item0 == null) {
-            if (exhausted1) {
+            if (exhausted1)
               return false
-            }
             exhausted0 = true
           } else {
             for (item1 <- value1.asScala if GeneralComparison.compare(item0,
@@ -647,19 +597,17 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               getRetainedStaticContext)) {
               iter0.close()
               iter1.close()
-              true
+              return true
             }
-            if (!exhausted1) {
+            if (! exhausted1)
               value0.add(item0)
-            }
           }
         }
-        if (!exhausted1) {
-          val item1: AtomicValue = iter1.next().asInstanceOf[AtomicValue]
+        if (! exhausted1) {
+          val item1 = iter1.next().asInstanceOf[AtomicValue]
           if (item1 == null) {
-            if (exhausted0) {
+            if (exhausted0)
               return false
-            }
             exhausted1 = true
           } else {
             for (item0 <- value0.asScala if GeneralComparison.compare(item0,
@@ -671,11 +619,10 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               getRetainedStaticContext)) {
               iter0.close()
               iter1.close()
-              true
+              return true
             }
-            if (!exhausted0) {
+            if (! exhausted0)
               value1.add(item1)
-            }
           }
         }
       }
@@ -692,7 +639,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
   def getInverseComparison: GeneralComparison = {
-    val gc2: GeneralComparison20 = new GeneralComparison20(
+    val gc2 = new GeneralComparison20(
       getRhsExpression,
       Token.inverse(op),
       getLhsExpression)
@@ -705,13 +652,13 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   override def tag(): String = "gc"
 
   override def explainExtraAttributes(out: ExpressionPresenter): Unit = {
-    var cc: String = ""
-    comparisonCardinality match {
-      case ONE_TO_ONE => cc = "1:1"
-      case MANY_TO_ONE => cc = "N:1"
-      case MANY_TO_MANY => cc = "M:N"
-
-    }
+    val cc =
+      comparisonCardinality match {
+        case ONE_TO_ONE   => "1:1"
+        case MANY_TO_ONE  => "N:1"
+        case MANY_TO_MANY => "M:N"
+        case _            => ""
+      }
     out.emitAttribute("card", cc)
     out.emitAttribute("comp", comparer.save())
   }

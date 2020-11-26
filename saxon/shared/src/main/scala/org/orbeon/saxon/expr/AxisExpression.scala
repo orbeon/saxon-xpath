@@ -32,9 +32,9 @@ object AxisExpression {
         val prefix = it.next()
         if (uri == resolver.getURIForPrefix(prefix, useDefault = true)) {
           if (prefix.isEmpty)
-            "Q{" + uri + "}" + name.getLocalPart
+            return "Q{" + uri + "}" + name.getLocalPart
           else
-            prefix + ":" + name.getLocalPart
+            return prefix + ":" + name.getLocalPart
         }
       }
     }
@@ -94,8 +94,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val noWarnings: Boolean = doneOptimize || (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
     doneTypeCheck = true
     if (contextItemType == ErrorType) {
-      val err = new XPathException(
-        "Axis step " + this + " cannot be used here: the context item is absent")
+      val err = new XPathException("Axis step " + this + " cannot be used here: the context item is absent")
       err.setErrorCode("XPDY0002")
       err.setLocation(getLocation)
       throw err
@@ -118,10 +117,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       } else if (relation == Affinity.OVERLAPS || relation == Affinity.SUBSUMES) {
         val thisExp: Expression =
           checkPlausibility(visitor, contextInfo, !noWarnings)
-        if (Literal.isEmptySequence(thisExp)) {
+        if (Literal.isEmptySequence(thisExp))
           return thisExp
-        }
-        val exp: ContextItemExpression = new ContextItemExpression()
+        val exp = new ContextItemExpression()
         ExpressionTool.copyLocationInfo(this, exp)
         val role: RoleDiagnostic =
           new RoleDiagnostic(RoleDiagnostic.AXIS_STEP, "", axis)
@@ -170,7 +168,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             "The names of namespace nodes are never prefixed, so this axis step will never select anything",
             getLocation)
         }
-        Literal.makeEmptySequence
+        return Literal.makeEmptySequence
       case _ =>
     }
     val originUType: UType = contextType.getUType
@@ -184,7 +182,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             " will never select anything",
           getLocation)
       }
-      Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     if (contextInfo.isParentless &&
       (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR)) {
@@ -194,7 +192,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             " axis will never select anything because the context item is parentless",
           getLocation)
       }
-      Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     if (!targetUType.overlaps(testUType)) {
       if (warnings) {
@@ -206,7 +204,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           getLocation
         )
       }
-      Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     val nonSelf: Int = AxisInfo.excludeSelfAxis(axis)
     val kind: UType = if (test == null) UType.ANY_NODE else test.getUType
@@ -247,7 +245,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                       getLocation
                     )
                   }
-                  Literal.makeEmptySequence
+                  return Literal.makeEmptySequence
                 }
                 if (env.getPackageData.isSchemaAware && elementTest
                   .isInstanceOf[SchemaNodeTest] &&
@@ -284,24 +282,22 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   .intersect(outermostElementNames.get)
                   .isEmpty
                 if (!canMatchOutermost) {
-                  val path: Expression = ExpressionTool.makePathExpression(
+                  val path = ExpressionTool.makePathExpression(
                     new AxisExpression(AxisInfo.CHILD, elementTest),
                     new AxisExpression(AxisInfo.DESCENDANT, test))
                   ExpressionTool.copyLocationInfo(this, path)
-                  path.typeCheck(visitor, contextInfo)
+                  return path.typeCheck(visitor, contextInfo)
                 }
               }
             }
           }
         case _ =>
       }
-      val contentType: SchemaType =
-        contextType.asInstanceOf[NodeTest].getContentType
-      if (contentType == AnyType.getInstance) {
+      val contentType = contextType.asInstanceOf[NodeTest].getContentType
+      if (contentType == AnyType.getInstance)
         return this
-      }
-      if (!env.getPackageData.isSchemaAware) {
-        val ct: SchemaType = test.getContentType
+      if (! env.getPackageData.isSchemaAware) {
+        val ct = test.getContentType
         if (!(ct == AnyType.getInstance || ct == Untyped.getInstance ||
           ct == AnySimpleType ||
           ct == BuiltInAtomicType.ANY_ATOMIC ||
@@ -315,7 +311,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               getLocation
             )
           }
-          Literal.makeEmptySequence
+          return Literal.makeEmptySequence
         }
       }
       val targetfp: Int = test.getFingerprint
@@ -397,7 +393,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             getLocation
           )
         }
-        Literal.makeEmptySequence
+        return Literal.makeEmptySequence
       } else if (contentType.asInstanceOf[ComplexType].isEmptyContent &&
         (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT ||
           axis == AxisInfo.DESCENDANT_OR_SELF)) {
@@ -417,7 +413,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             getLocation
           )
         }
-        Literal.makeEmptySequence
+        return Literal.makeEmptySequence
       } else if (axis == AxisInfo.ATTRIBUTE) {
         if (targetfp == -1) {
           if (warnings) {
@@ -449,7 +445,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   "The complex type " + contentType.getDescription + " does not allow an attribute named " +
                     getDiagnosticName(targetName, env),
                   getLocation)
-                Literal.makeEmptySequence
+                return Literal.makeEmptySequence
               }
             } else {
               itemType = new CombinedNodeTest(
@@ -481,7 +477,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                   "The complex type " + contentType.getDescription + " does not allow children",
                   getLocation)
               }
-              Literal.makeEmptySequence
+              return Literal.makeEmptySequence
             }
             if (children.size == 1) {
               val iter: IntIterator = children.iterator
@@ -525,7 +521,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               }
               visitor.issueWarning(message, getLocation)
             }
-            Literal.makeEmptySequence
+            return Literal.makeEmptySequence
           } else {
             itemType = new CombinedNodeTest(
               test,
@@ -542,52 +538,48 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 "The complex type " + contentType.getDescription + " appears not to allow a child element named " +
                   getDiagnosticName(childElement, env),
                 getLocation)
-              Literal.makeEmptySequence
+              return Literal.makeEmptySequence
             }
             if (!Cardinality.allowsMany(computedCardinality) &&
               !getParentExpression.isInstanceOf[FirstItemExpression] &&
               !visitor.isOptimizeForPatternMatching) {
-              FirstItemExpression.makeFirstItemExpression(this)
+              return FirstItemExpression.makeFirstItemExpression(this)
             }
           }
         } catch {
           case _: SchemaException =>
-
         }
       } else if (axis == AxisInfo.DESCENDANT && kind == UType.ELEMENT &&
         targetfp != -1) {
-        val descendants: IntHashSet = new IntHashSet()
+        val descendants = new IntHashSet
         contentType
           .asInstanceOf[ComplexType]
           .gatherAllPermittedDescendants(descendants)
-        if (descendants.contains(-1)) {
+        if (descendants.contains(-1))
           return this
-        }
         if (descendants.contains(targetfp)) {
-          val children: IntHashSet = new IntHashSet()
+          val children = new IntHashSet
           contentType
             .asInstanceOf[ComplexType]
             .gatherAllPermittedChildren(children, ignoreWildcards = false)
-          val usefulChildren: IntHashSet = new IntHashSet()
-          var considerSelf: Boolean = false
-          var considerDescendants: Boolean = false
-          val kids: IntIterator = children.iterator
+          val usefulChildren = new IntHashSet
+          var considerSelf = false
+          var considerDescendants = false
+          val kids = children.iterator
           while (kids.hasNext) {
-            val c: Int = kids.next()
+            val c = kids.next()
             if (c == targetfp) {
               usefulChildren.add(c)
               considerSelf = true
             }
-            val st: SchemaType = contentType
+            val st = contentType
               .asInstanceOf[ComplexType]
               .getElementParticleType(c, considerExtensions = true)
-            if (st == null) {
-              throw new AssertionError(
-                "Can't find type for child element " + c)
-            }
+            if (st == null)
+              throw new AssertionError("Can't find type for child element " + c)
             st match {
               case complexType: ComplexType =>
-                val subDescendants: IntHashSet = new IntHashSet()
+                val subDescendants = new IntHashSet
                 complexType.gatherAllPermittedDescendants(subDescendants)
                 if (subDescendants.contains(targetfp)) {
                   usefulChildren.add(c)
@@ -609,24 +601,21 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             }
           }
           if (usefulChildren.size < children.size) {
-            val childTest: NodeTest =
-              makeUnionNodeTest(usefulChildren, config.getNamePool)
-            val first: AxisExpression =
-              new AxisExpression(AxisInfo.CHILD, childTest)
+            val childTest = makeUnionNodeTest(usefulChildren, config.getNamePool)
+            val first = new AxisExpression(AxisInfo.CHILD, childTest)
             ExpressionTool.copyLocationInfo(this, first)
-            var nextAxis: Int = 0
-            nextAxis =
+            val nextAxis =
               if (considerSelf)
-                if (considerDescendants) AxisInfo.DESCENDANT_OR_SELF
-                else AxisInfo.SELF
+                if (considerDescendants)
+                  AxisInfo.DESCENDANT_OR_SELF
+                else
+                  AxisInfo.SELF
               else AxisInfo.DESCENDANT
-            val next: AxisExpression =
-              new AxisExpression(nextAxis, itemType.asInstanceOf[NodeTest])
+            val next = new AxisExpression(nextAxis, itemType.asInstanceOf[NodeTest])
             ExpressionTool.copyLocationInfo(this, next)
-            val path: Expression =
-              ExpressionTool.makePathExpression(first, next)
+            val path = ExpressionTool.makePathExpression(first, next)
             ExpressionTool.copyLocationInfo(this, path)
-            path.typeCheck(visitor, contextInfo)
+            return path.typeCheck(visitor, contextInfo)
           }
         } else {
           if (warnings) {
@@ -713,19 +702,16 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       else 0)
 
   def getItemType: ItemType = {
-    if (itemType != null) {
+    if (itemType != null)
       return itemType
-    }
-    val p: Int = AxisInfo.principalNodeType(axis)
+    val p = AxisInfo.principalNodeType(axis)
     p match {
       case Type.ATTRIBUTE | Type.NAMESPACE => NodeKindTest.makeNodeKindTest(p)
       case _ =>
-        if (test == null) {
+        if (test == null)
           AnyNodeTest.getInstance
-        } else {
+        else
           test
-        }
-
     }
   }
 
@@ -752,11 +738,10 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         if (contextItemType eq AnyItemType)
           originNodeType = AnyNodeTest.getInstance
         else
-          StaticProperty.ALLOWS_ZERO_OR_MORE
+          return StaticProperty.ALLOWS_ZERO_OR_MORE
     }
     if (axis == AxisInfo.ATTRIBUTE && nodeTest.isInstanceOf[NameTest]) {
-      val contentType: SchemaType = originNodeType.getContentType
-      contentType match {
+      originNodeType.getContentType match {
         case complexType: ComplexType =>
           try
            complexType.getAttributeUseCardinality(nodeTest.getMatchingNodeName)
@@ -767,17 +752,16 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         case _: SimpleType =>
           StaticProperty.EMPTY
         case _ =>
+          StaticProperty.ALLOWS_ZERO_OR_ONE
       }
-      StaticProperty.ALLOWS_ZERO_OR_ONE
-    } else if (axis == AxisInfo.DESCENDANT && nodeTest
-      .isInstanceOf[NameTest] &&
-      nodeTest.getPrimitiveType == Type.ELEMENT) {
-      val contentType: SchemaType = originNodeType.getContentType
-      contentType match {
+    } else if (axis == AxisInfo.DESCENDANT && nodeTest.isInstanceOf[NameTest] && nodeTest.getPrimitiveType == Type.ELEMENT) {
+      originNodeType.getContentType match {
         case complexType: ComplexType =>
-          try complexType.getDescendantElementCardinality(nodeTest.getFingerprint)
+          try
+            complexType.getDescendantElementCardinality(nodeTest.getFingerprint)
           catch {
-            case _: SchemaException => StaticProperty.ALLOWS_ZERO_OR_MORE
+            case _: SchemaException =>
+              StaticProperty.ALLOWS_ZERO_OR_MORE
           }
         case _ =>
           StaticProperty.EMPTY

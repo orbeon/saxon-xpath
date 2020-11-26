@@ -15,7 +15,7 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{AtomizingIterator, EmptyIterator, UntypedAtomizingIterator}
 import org.orbeon.saxon.value.{AtomicValue, Cardinality, EmptySequence}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 
 object Atomizer {
@@ -75,7 +75,7 @@ object Atomizer {
 
   def getAtomizingIterator(base: SequenceIterator,
                            oneToOne: Boolean): SequenceIterator = {
-    val properties: Set[SequenceIterator.Property.Property] = base.getProperties
+    val properties = base.getProperties
     if (properties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       val count = base.asInstanceOf[LastPositionFinder].getLength
       if (count == 0) {
@@ -87,6 +87,7 @@ object Atomizer {
     } else if (properties.contains(SequenceIterator.Property.ATOMIZING)) {
       return new AxisAtomizingIterator(base.asInstanceOf[AtomizedValueIterator])
     }
+
     if (oneToOne)
       new UntypedAtomizingIterator(base)
     else
@@ -113,11 +114,15 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   private var singleValued: Boolean = false
 
-  @BeanProperty
-  var operandItemType: ItemType = getBaseExpression.getItemType
+  private var operandItemType: ItemType = null
+  private def getOperandItemType: ItemType = {
+    if (operandItemType eq null)
+      operandItemType = getBaseExpression.getItemType
+    operandItemType
+  }
+
 
   private var roleDiagnostic: RoleDiagnostic = role
-
   sequence.setFlattened(true)
 
   def getOperandRole: OperandRole = OperandRole.ATOMIC_SEQUENCE
@@ -316,36 +321,31 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
 
   override def iterate(context: XPathContext): SequenceIterator =
     try {
-      val base: SequenceIterator = getBaseExpression.iterate(context)
-      getAtomizingIterator(base,
-        untyped && operandItemType.isInstanceOf[NodeTest])
+      val base = getBaseExpression.iterate(context)
+      getAtomizingIterator(base, untyped && getOperandItemType.isInstanceOf[NodeTest])
     } catch {
       case e: XPathException =>
-        if (roleDiagnostic == null || e
-          .isInstanceOf[Error.UserDefinedXPathException]) {
+        if (roleDiagnostic == null || e.isInstanceOf[Error.UserDefinedXPathException]) {
           throw e
         } else {
-          val message: String = expandMessage(e.getMessage)
-          val e2: XPathException =
-            new XPathException(message, e.getErrorCodeLocalPart, e.getLocator)
+          val message = expandMessage(e.getMessage)
+          val e2 = new XPathException(message, e.getErrorCodeLocalPart, e.getLocator)
           e2.setXPathContext(context)
           e2.maybeSetLocation(getLocation)
           throw e2
         }
-
     }
 
   override def evaluateItem(context: XPathContext): AtomicValue = {
-    val i: Item = getBaseExpression.evaluateItem(context)
-    if (i == null) {
+    val i = getBaseExpression.evaluateItem(context)
+    if (i == null)
       null
-    } else {
+    else
       i.atomize().head
-    }
   }
 
   override def getItemType: ItemType = {
-    operandItemType = getBaseExpression.getItemType
+    getOperandItemType
     val th = getConfiguration.getTypeHierarchy
     getAtomizedItemType(getBaseExpression, untyped, th)
   }
@@ -361,10 +361,12 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
       return StaticProperty.ALLOWS_ZERO_OR_MORE
     } else if (in.isPlainType) {
       return operand.getCardinality
-    } else if (in.isInstanceOf[NodeTest]) {
-      val schemaType = in.asInstanceOf[NodeTest].getContentType
-      if (schemaType.isAtomicType)
-        return operand.getCardinality
+    } else in match {
+      case nodeTest: NodeTest =>
+        val schemaType = nodeTest.getContentType
+        if (schemaType.isAtomicType)
+          return operand.getCardinality
+      case _ =>
     }
     StaticProperty.ALLOWS_ZERO_OR_MORE
   }
@@ -372,11 +374,10 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   override def addToPathMap(
                              pathMap: PathMap,
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
-    val result: PathMap.PathMapNodeSet =
-      getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
+    val result = getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (result != null) {
       val th = getConfiguration.getTypeHierarchy
-      val operandItemType: ItemType = getBaseExpression.getItemType
+      val operandItemType = getBaseExpression.getItemType
       if (th.relationship(NodeKindTest.ELEMENT, operandItemType) !=
         Affinity.DISJOINT ||
         th.relationship(NodeKindTest.DOCUMENT, operandItemType) !=
@@ -388,15 +389,10 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   }
 
   override def getExpressionName: String = "data"
-
   override def toString: String = "data(" + getBaseExpression.toString + ")"
-
   override def toShortString: String = getBaseExpression.toShortString
 
-  override def emitExtraAttributes(out: ExpressionPresenter): Unit = {
-    if (roleDiagnostic != null) {
+  override def emitExtraAttributes(out: ExpressionPresenter): Unit =
+    if (roleDiagnostic != null)
       out.emitAttribute("diag", roleDiagnostic.save())
-    }
-  }
-
 }
