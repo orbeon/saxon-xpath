@@ -308,26 +308,25 @@ class ReceivingContentHandler
       var typeCode: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
       if (retainDTDAttributeTypes) {
         `type` match {
-          case "CDATA" => // common case, no action
-          case "ID" => typeCode = BuiltInAtomicType.ID
-          case "IDREF" => typeCode = BuiltInAtomicType.IDREF
-          case "IDREFS" => typeCode = BuiltInListType.IDREFS
-          case "NMTOKEN" => typeCode = BuiltInAtomicType.NMTOKEN
+          case "CDATA"    => // common case, no action
+          case "ID"       => typeCode = BuiltInAtomicType.ID
+          case "IDREF"    => typeCode = BuiltInAtomicType.IDREF
+          case "IDREFS"   => typeCode = BuiltInListType.IDREFS
+          case "NMTOKEN"  => typeCode = BuiltInAtomicType.NMTOKEN
           case "NMTOKENS" => typeCode = BuiltInListType.NMTOKENS
-          case "ENTITY" => typeCode = BuiltInAtomicType.ENTITY
+          case "ENTITY"   => typeCode = BuiltInAtomicType.ENTITY
           case "ENTITIES" => typeCode = BuiltInListType.ENTITIES
-
+          case _          => // ORBEON: No action. Unsure if any other types are possible
         }
       } else {
         `type` match {
-          case "ID" => properties |= ReceiverOption.IS_ID
-          case "IDREF" => properties |= ReceiverOption.IS_IDREF
+          case "ID"     => properties |= ReceiverOption.IS_ID
+          case "IDREF"  => properties |= ReceiverOption.IS_IDREF
           case "IDREFS" => properties |= ReceiverOption.IS_IDREF
-
+          case _        => // ORBEON: No action.
         }
       }
-      list.add(
-        new AttributeInfo(attCode, typeCode, value, location, properties))
+      list.add(new AttributeInfo(attCode, typeCode, value, location, properties))
     }
     AttributeMap.fromList(list)
   }
