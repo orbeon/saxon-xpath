@@ -1,28 +1,14 @@
 package org.orbeon.saxon.expr.sort
 
 import org.orbeon.saxon.expr.XPathContext
-
 import org.orbeon.saxon.lib.StringCollator
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.model.{BuiltInAtomicType, Type}
 import org.orbeon.saxon.om.StandardNames
-
-import org.orbeon.saxon.trans.NoDynamicContextException
-
 import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.value.{AtomicValue, CalendarValue, StringValue}
 
-import org.orbeon.saxon.value.AtomicValue
+import scala.beans.BeanProperty
 
-import org.orbeon.saxon.value.CalendarValue
-
-import org.orbeon.saxon.value.StringValue
-
-import GenericAtomicComparer._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 object GenericAtomicComparer {
 
@@ -30,39 +16,42 @@ object GenericAtomicComparer {
                          type1: BuiltInAtomicType,
                          collator: StringCollator,
                          context: XPathContext): AtomicComparer = {
-    val fp0: Int = type0.getFingerprint
-    val fp1: Int = type1.getFingerprint
+    val fp0 = type0.getFingerprint
+    val fp1 = type1.getFingerprint
     if (fp0 == fp1) {
       fp0 match {
-        case StandardNames.XS_DATE_TIME | StandardNames.XS_DATE |
-             StandardNames.XS_TIME | StandardNames.XS_G_DAY |
-             StandardNames.XS_G_MONTH | StandardNames.XS_G_YEAR |
-             StandardNames.XS_G_MONTH_DAY | StandardNames.XS_G_YEAR_MONTH =>
-          new CalendarValueComparer(context)
-        case StandardNames.XS_BOOLEAN | StandardNames.XS_DAY_TIME_DURATION |
+        case StandardNames.XS_DATE_TIME         |
+             StandardNames.XS_DATE              |
+             StandardNames.XS_TIME              |
+             StandardNames.XS_G_DAY             |
+             StandardNames.XS_G_MONTH           |
+             StandardNames.XS_G_YEAR            |
+             StandardNames.XS_G_MONTH_DAY       |
+             StandardNames.XS_G_YEAR_MONTH =>
+          return new CalendarValueComparer(context)
+        case StandardNames.XS_BOOLEAN           |
+             StandardNames.XS_DAY_TIME_DURATION |
              StandardNames.XS_YEAR_MONTH_DURATION =>
-          ComparableAtomicValueComparer.getInstance
-        case StandardNames.XS_BASE64_BINARY | StandardNames.XS_HEX_BINARY =>
-          ComparableAtomicValueComparer.getInstance
-        case StandardNames.XS_QNAME | StandardNames.XS_NOTATION =>
-          EqualityComparer.getInstance
-
+          return ComparableAtomicValueComparer.getInstance
+        case StandardNames.XS_BASE64_BINARY     |
+             StandardNames.XS_HEX_BINARY =>
+          return ComparableAtomicValueComparer.getInstance
+        case StandardNames.XS_QNAME             |
+             StandardNames.XS_NOTATION =>
+          return EqualityComparer.getInstance
+        case _ =>
       }
     }
-    if (type0.isPrimitiveNumeric && type1.isPrimitiveNumeric) {
+    if (type0.isPrimitiveNumeric && type1.isPrimitiveNumeric)
       ComparableAtomicValueComparer.getInstance
-    }
-    if ((fp0 == StandardNames.XS_STRING || fp0 == StandardNames.XS_UNTYPED_ATOMIC ||
-      fp0 == StandardNames.XS_ANY_URI) &&
-      (fp1 == StandardNames.XS_STRING || fp1 == StandardNames.XS_UNTYPED_ATOMIC ||
-        fp1 == StandardNames.XS_ANY_URI)) {
-      if (collator.isInstanceOf[CodepointCollator]) {
+    else if ((fp0 == StandardNames.XS_STRING || fp0 == StandardNames.XS_UNTYPED_ATOMIC || fp0 == StandardNames.XS_ANY_URI) &&
+        (fp1 == StandardNames.XS_STRING || fp1 == StandardNames.XS_UNTYPED_ATOMIC || fp1 == StandardNames.XS_ANY_URI)) {
+      if (collator.isInstanceOf[CodepointCollator])
         CodepointCollatingComparer.getInstance
-      } else {
+      else
         new CollatingAtomicComparer(collator)
-      }
-    }
-    new GenericAtomicComparer(collator, context)
+    } else
+      new GenericAtomicComparer(collator, context)
   }
 
 }
@@ -71,9 +60,8 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
                             @BeanProperty var context: XPathContext)
   extends AtomicComparer {
 
-  if (collator == null) {
+  if (collator == null)
     this.collator = CodepointCollator.getInstance
-  }
 
   def provideContext(context: XPathContext): GenericAtomicComparer =
     new GenericAtomicComparer(collator, context)
@@ -81,26 +69,23 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
   def getStringCollator: StringCollator = collator
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
-    if (a == null) {
-      if (b == null) return 0 else return -1
-    } else if (b == null) {
+
+    if (a == null)
+      return if (b == null) 0 else -1
+    else if (b == null)
       return +1
-    }
+
     if (a.isInstanceOf[StringValue] && b.isInstanceOf[StringValue]) {
-      if (collator.isInstanceOf[CodepointCollator]) {
+      if (collator.isInstanceOf[CodepointCollator])
         CodepointCollator.compareCS(a.getStringValueCS, b.getStringValueCS)
-      } else {
+      else
         collator.compareStrings(a.getStringValue, b.getStringValue)
-      }
     } else {
-      val implicitTimezone: Int = context.getImplicitTimezone
-      val ac: Comparable[AtomicValue] = a
-        .getXPathComparable(ordered = true, collator, implicitTimezone)
-        .asInstanceOf[Comparable[AtomicValue]]
-      val bc: AtomicValue= b
-        .getXPathComparable(ordered = true, collator, implicitTimezone).asAtomic()
+      val implicitTimezone = context.getImplicitTimezone
+      val ac = a.getXPathComparable(ordered = true, collator, implicitTimezone).asInstanceOf[Comparable[AtomicValue]]
+      val bc = b.getXPathComparable(ordered = true, collator, implicitTimezone).asAtomic()
       if (ac == null || bc == null) {
-        val e: XPathException = new XPathException(
+        val e = new XPathException(
           "Objects are not comparable (" + Type.displayTypeName(a) +
             ", " +
             Type.displayTypeName(b) +
@@ -114,18 +99,16 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
   }
 
   def comparesEqual(a: AtomicValue, b: AtomicValue): Boolean =
-    if (a.isInstanceOf[StringValue] && b.isInstanceOf[StringValue]) {
-      collator.comparesEqual(a.getStringValue, b.getStringValue)
-    } else if (a.isInstanceOf[CalendarValue] && b
-      .isInstanceOf[CalendarValue]) {
-      a.asInstanceOf[CalendarValue]
-        .compareTo(b.asInstanceOf[CalendarValue], context.getImplicitTimezone) ==
-        0
-    } else {
-      val implicitTimezone: Int = context.getImplicitTimezone
-      val ac: AnyRef = a.getXPathComparable(ordered = false, collator, implicitTimezone)
-      val bc: AnyRef = b.getXPathComparable(ordered = false, collator, implicitTimezone)
-      ac == bc
+    a match {
+      case _: StringValue if b.isInstanceOf[StringValue] =>
+        collator.comparesEqual(a.getStringValue, b.getStringValue)
+      case calendarValue: CalendarValue if b.isInstanceOf[CalendarValue] =>
+        calendarValue.compareTo(b.asInstanceOf[CalendarValue], context.getImplicitTimezone) == 0
+      case _ =>
+        val implicitTimezone = context.getImplicitTimezone
+        val ac: AnyRef = a.getXPathComparable(ordered = false, collator, implicitTimezone)
+        val bc: AnyRef = b.getXPathComparable(ordered = false, collator, implicitTimezone)
+        ac == bc
     }
 
   def save(): String = "GAC|" + collator.getCollationURI
@@ -135,7 +118,5 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
   override def equals(obj: Any): Boolean = obj match {
     case obj: GenericAtomicComparer => collator == obj.collator
     case _ => false
-
   }
-
 }
