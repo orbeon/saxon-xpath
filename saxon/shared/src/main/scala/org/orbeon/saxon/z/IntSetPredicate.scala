@@ -9,37 +9,19 @@ package org.orbeon.saxon.z
 
 import java.util.function.IntPredicate
 
-//remove if not needed
 
 object IntSetPredicate {
-
-  val ALWAYS_TRUE :IntSetPredicate = new IntSetPredicate() {
-    override def test(value: Int): Boolean = {
-    true
-    }
-  }
-
-  val ALWAYS_FALSE :IntPredicate = new IntSetPredicate() {
-    override def test(value: Int): Boolean = {
-      false
-    }
-  }
-
+  val ALWAYS_TRUE  : IntPredicate = _ => true
+  val ALWAYS_FALSE : IntPredicate = _ => false
 }
 
 /**
   * An implementation of IntPredicate that tests whether a given integer is a member
   * of some IntSet
   */
-class IntSetPredicate extends IntPredicate {
-  private var set: IntSet = _
-  def this(setVar: IntSet){
-    this()
-    this.set = setVar
-  }
-  if (set == null) {
-    throw new NullPointerException()
-  }
+class IntSetPredicate(protected val set: IntSet) extends IntPredicate {
+
+  require(set ne null)
 
   /**
     * Ask whether a given value matches this predicate
@@ -52,29 +34,28 @@ class IntSetPredicate extends IntPredicate {
   /**
     * Returns a composed predicate that represents a short-circuiting logical
     * OR of this predicate and another.  When evaluating the composed
-    * predicate, if this predicate is {@code true}, then the {@code other}
+    * predicate, if this predicate is `true`, then the `other`
     * predicate is not evaluated.
-    * <p>
-    * <p>Any exceptions thrown during evaluation of either predicate are relayed
+    *
+    * Any exceptions thrown during evaluation of either predicate are relayed
     * to the caller; if evaluation of this predicate throws an exception, the
-    * {@code other} predicate will not be evaluated.
+    * `other` predicate will not be evaluated.
     *
     * @param other a predicate that will be logically-ORed with this
     *              predicate
     * @return a composed predicate that represents the short-circuiting logical
-    * OR of this predicate and the {@code other} predicate
+    *         OR of this predicate and the `other` predicate
     * @throws NullPointerException if other is null
     */
   override def or(other: IntPredicate): IntPredicate =
-    if (other.isInstanceOf[IntSetPredicate]) {
-      new IntSetPredicate(set.union(other.asInstanceOf[IntSetPredicate].set))
-    } else {
-      super.or(other)
+    other match {
+      case predicate: IntSetPredicate =>
+        new IntSetPredicate(set.union(predicate.set))
+      case _ =>
+        super.or(other)
     }
 
   def getIntSet: IntSet = set
 
   override def toString: String = "in {" + set + "}"
-
 }
-
