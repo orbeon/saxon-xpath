@@ -4,13 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * The abstract Builder class is responsible for taking a stream of SAX events
-  * and constructing a Document tree. There is one concrete subclass for each
-  * tree implementation.
-  *
-  */
-
 package org.orbeon.saxon.event
 
 import org.orbeon.saxon.om.{NamePool, NodeInfo}
@@ -19,6 +12,12 @@ import org.orbeon.saxon.tree.tiny.TinyDocumentImpl
 import org.orbeon.saxon.utils.Configuration
 
 
+/**
+  * The abstract Builder class is responsible for taking a stream of SAX events
+  * and constructing a Document tree. There is one concrete subclass for each
+  * tree implementation.
+  *
+  */
 object Builder {
 
   /**
@@ -119,7 +118,6 @@ abstract class Builder extends Receiver {
     this.baseURI = baseURI
 
   /*@Nullable*/
-
   def getBaseURI: String = baseURI
 
   def setLineNumbering(lineNumbering: Boolean): Unit =
@@ -131,9 +129,8 @@ abstract class Builder extends Receiver {
   def isTiming: Boolean = timing
 
   def open(): Unit = {
-    if (timing && !isOpen) {
-      getConfiguration.getStandardErrorOutput.println(
-        "Building tree for " + getSystemId + " using " + getClass)
+    if (timing && ! isOpen) {
+      getConfiguration.getStandardErrorOutput.println("Building tree for " + getSystemId + " using " + getClass)
       startTime = System.nanoTime()
     }
     isOpen = true
@@ -141,10 +138,8 @@ abstract class Builder extends Receiver {
 
   def close(): Unit = {
     if (timing && isOpen) {
-      val endTime: Long = System.nanoTime()
-      getConfiguration.getStandardErrorOutput.println(
-        "Tree built in " +
-          CommandLineOptions.showExecutionTimeNano(endTime - startTime))
+      val endTime = System.nanoTime()
+      getConfiguration.getStandardErrorOutput.println("Tree built in " + CommandLineOptions.showExecutionTimeNano(endTime - startTime))
       currentRoot match {
         case impl: TinyDocumentImpl =>
           impl.showSize()

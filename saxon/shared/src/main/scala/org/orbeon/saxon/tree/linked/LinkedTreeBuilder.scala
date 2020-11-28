@@ -15,9 +15,7 @@ import org.orbeon.saxon.value.Whitespace
 object LinkedTreeBuilder {
 
   object DefaultNodeFactory {
-
-    var THE_INSTANCE: DefaultNodeFactory = new DefaultNodeFactory()
-
+    var THE_INSTANCE: DefaultNodeFactory = new DefaultNodeFactory
   }
 
   class DefaultNodeFactory extends NodeFactory {
@@ -31,16 +29,15 @@ object LinkedTreeBuilder {
                         pipe: PipelineConfiguration,
                         locationId: Location,
                         sequenceNumber: Int): ElementImpl = {
-      val e: ElementImpl = new ElementImpl()
+      val e = new ElementImpl
       e.setNamespaceMap(namespaces)
       e.initialise(nodeName, elementType, attlist, parent, sequenceNumber)
-      if (isNilled) {
+      if (isNilled)
         e.setNilled()
-      }
       if (locationId != Loc.NONE && sequenceNumber >= 0) {
-        val baseURI: String = locationId.getSystemId
-        val lineNumber: Int = locationId.getLineNumber
-        val columnNumber: Int = locationId.getColumnNumber
+        val baseURI = locationId.getSystemId
+        val lineNumber = locationId.getLineNumber
+        val columnNumber = locationId.getColumnNumber
         e.setLocation(baseURI, lineNumber, columnNumber)
       }
       e
@@ -48,12 +45,10 @@ object LinkedTreeBuilder {
 
     def makeTextNode(parent: NodeInfo, content: CharSequence): TextImpl =
       new TextImpl(content.toString)
-
   }
-
 }
 
-class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
+class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) extends Builder(pipe) {
 
   private var currentNode: ParentNodeImpl = _
   private var nodeFactory: NodeFactory = DefaultNodeFactory.THE_INSTANCE
@@ -63,18 +58,6 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   private var namespaceStack: List[NamespaceMap] = Nil
   private var allocateSequenceNumbers: Boolean = true
   private var nextNodeNumber: Int = 1
-  private var mutable: Boolean = _
-
-  def this(pipe: PipelineConfiguration, mutable: Boolean) = {
-    this(???) /* TODO: Scala does not allow multiple super constructor calls
-     * Change this code to call a constructor of the current class instead.
-     * For your convenience, here is the invalid super constructor call:
-     * }super(pipe)
-     */
-
-    this.mutable = mutable
-    nodeFactory = DefaultNodeFactory.THE_INSTANCE
-  }
 
   override def getCurrentRoot: NodeInfo = {
     val physicalRoot: NodeInfo = currentRoot
@@ -107,14 +90,13 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     started = true
     depth = 0
     size(depth) = 0
-    if (arrays == null) {
+    if (arrays == null)
       arrays = new ArrayList[Array[NodeImpl]](20)
-    }
     super.open()
   }
 
   def startDocument(properties: Int): Unit = {
-    val doc: DocumentImpl = new DocumentImpl()
+    val doc: DocumentImpl = new DocumentImpl
     doc.setMutable(mutable)
     currentRoot = doc
     doc.setSystemId(getSystemId)
@@ -123,23 +105,19 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     currentNode = doc
     depth = 0
     size(depth) = 0
-    if (arrays == null) {
+    if (arrays == null)
       arrays = new ArrayList(20)
-    }
     doc.setRawSequenceNumber(0)
-    if (lineNumbering) {
+    if (lineNumbering)
       doc.setLineNumbering()
-    }
   }
 
-  def endDocument(): Unit = {
+  def endDocument(): Unit =
     currentNode.compact(size(depth))
-  }
 
   override def close(): Unit = {
-    if (currentNode == null) {
+    if (currentNode == null)
       return
-    }
     currentNode.compact(size(depth))
     currentNode = null
     arrays = null
@@ -158,17 +136,14 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       startDocument(ReceiverOption.NONE)
       currentRoot.asInstanceOf[DocumentImpl].setImaginary(true)
     }
-    val isNilled: Boolean =
-      ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT)
+    val isNilled = ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT)
     namespaceStack ::= namespaces
-    val isTopWithinEntity: Boolean = location
-      .isInstanceOf[ReceivingContentHandler.LocalLocator] &&
+    val isTopWithinEntity: Boolean = location.isInstanceOf[ReceivingContentHandler.LocalLocator] &&
       location
         .asInstanceOf[ReceivingContentHandler.LocalLocator]
         .levelInEntity ==
         0
-    val xmlId: AttributeInfo =
-      lSuppliedAttributes.get(NamespaceConstant.XML, "id")
+    val xmlId = lSuppliedAttributes.get(NamespaceConstant.XML, "id")
     if (xmlId != null && Whitespace.containsWhitespace(xmlId.getValue)) {
       lSuppliedAttributes = lSuppliedAttributes.put(
         new AttributeInfo(xmlId.getNodeName,
@@ -177,7 +152,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
           xmlId.getLocation,
           xmlId.getProperties))
     }
-    val elem: ElementImpl = nodeFactory.makeElementNode(
+    val elem = nodeFactory.makeElementNode(
       currentNode,
       elemName,
       `type`,
@@ -186,31 +161,28 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       namespaceStack.head,
       pipe,
       location,
-      if (allocateSequenceNumbers) { nextNodeNumber += 1; nextNodeNumber - 1 } else
-        -1
+      if (allocateSequenceNumbers) { nextNodeNumber += 1; nextNodeNumber - 1 } else -1
     )
 
-    while (depth >= arrays.size)
+    while (depth >= arrays.size) // ORBEON: CHECK `depth` is never udpated?
       arrays.add(Array.ofDim[NodeImpl](20))
 
     elem.setChildren(arrays.get(depth))
     currentNode.addChild(elem, { size(depth) += 1; size(depth) - 1 })
-    if (depth >= size.length - 1) {
+    if (depth >= size.length - 1)
       size = Arrays.copyOf(size, size.length * 2)
-    }
+    depth += 1
     size(depth) = 0
-    if (currentNode.isInstanceOf[TreeInfo]) {
+    if (currentNode.isInstanceOf[TreeInfo])
       currentNode.asInstanceOf[DocumentImpl].setDocumentElement(elem)
-    }
-    if (isTopWithinEntity) {
+    if (isTopWithinEntity)
       currentNode.getPhysicalRoot.markTopWithinEntity(elem)
-    }
     currentNode = elem
   }
 
   def endElement(): Unit = {
     currentNode.compact(size(depth))
-    depth = depth - 1
+    depth -= 1
     currentNode = currentNode.getParent.asInstanceOf[ParentNodeImpl]
     namespaceStack = namespaceStack.tail
   }
@@ -236,7 +208,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
                             remainder: CharSequence,
                             locationId: Location,
                             properties: Int): Unit = {
-    val pi: ProcInstImpl = new ProcInstImpl(name, remainder.toString)
+    val pi = new ProcInstImpl(name, remainder.toString)
     currentNode.addChild(pi, { size(depth) += 1; size(depth) - 1 })
     pi.setLocation(locationId.getSystemId,
       locationId.getLineNumber,
@@ -246,7 +218,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   def comment(chars: CharSequence,
               locationId: Location,
               properties: Int): Unit = {
-    val comment: CommentImpl = new CommentImpl(chars.toString)
+    val comment = new CommentImpl(chars.toString)
     currentNode.addChild(comment, { size(depth) += 1; size(depth) - 1 })
     comment.setLocation(locationId.getSystemId,
       locationId.getLineNumber,
@@ -257,19 +229,15 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   def getCurrentLeafNode: NodeImpl = currentNode.getLastChild
 
-  def graftElement(element: ElementImpl): Unit = {
+  def graftElement(element: ElementImpl): Unit =
     currentNode.addChild(element, { size(depth) += 1; size(depth) - 1 })
-  }
 
-  def setUnparsedEntity(name: String, uri: String, publicId: String): Unit = {
-    if (currentRoot.asInstanceOf[DocumentImpl].getUnparsedEntity(name) ==
-      null) {
+  def setUnparsedEntity(name: String, uri: String, publicId: String): Unit =
+    if (currentRoot.asInstanceOf[DocumentImpl].getUnparsedEntity(name) == null) {
       currentRoot
         .asInstanceOf[DocumentImpl]
         .setUnparsedEntity(name, uri, publicId)
     }
-  }
 
   override def getBuilderMonitor: BuilderMonitor = new LinkedBuilderMonitor(this)
-
 }
