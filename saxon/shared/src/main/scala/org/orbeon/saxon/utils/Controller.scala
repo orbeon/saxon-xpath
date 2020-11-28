@@ -94,8 +94,8 @@ class Controller extends ContextOriginator {
   // boolean buildTree = true
   private var collectionFinder: CollectionFinder = null
   private var stylesheetCache: StylesheetCache = null
-  private var multiThreadedFocusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = _
-  private var focusTrackerFactory: Function1[SequenceIterator, FocusTrackingIterator] = (seqItr: SequenceIterator) => new FocusTrackingIterator
+  private var multiThreadedFocusTrackerFactory: SequenceIterator => FocusTrackingIterator = _
+  private var focusTrackerFactory: SequenceIterator => FocusTrackingIterator = new FocusTrackingIterator(_)
 
   /**
    * Create a Controller and initialise variables. Note: XSLT applications should

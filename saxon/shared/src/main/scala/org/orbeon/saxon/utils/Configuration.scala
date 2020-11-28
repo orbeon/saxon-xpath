@@ -2668,23 +2668,22 @@ class Configuration extends SourceResolver with NotationSet {
 //    si
 //  }
 
-  def getFocusTrackerFactory(exec: Executable, multithreaded: Boolean): Function1[SequenceIterator, FocusTrackingIterator] =
-    (insts: SequenceIterator) => new FocusTrackingIterator
+  def getFocusTrackerFactory(exec: Executable, multithreaded: Boolean): SequenceIterator => FocusTrackingIterator =
+    new FocusTrackingIterator(_)
 
-  def isStreamedNode(node: NodeInfo): Boolean = {
+  def isStreamedNode(node: NodeInfo): Boolean =
     false
-  }
 
+  def getOptimizerOptions: OptimizerOptions =
+    optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION)
 
-  def getOptimizerOptions: OptimizerOptions = optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION)
-
-
-  def obtainOptimizer: Optimizer = if (optimizer == null) {
-    optimizer = new Optimizer(this)
-    optimizer.setOptimizerOptions(optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION))
-    optimizer
-  }
-  else optimizer
+  def obtainOptimizer: Optimizer =
+    if (optimizer == null) {
+      optimizer = new Optimizer(this)
+      optimizer.setOptimizerOptions(optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION))
+      optimizer
+    } else
+      optimizer
 
   /**
    * Factory method to get an Optimizer with specified optimizer options.

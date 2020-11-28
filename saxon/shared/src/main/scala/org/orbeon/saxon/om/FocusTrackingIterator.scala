@@ -17,6 +17,7 @@ import org.orbeon.saxon.tree.iter.{AxisIterator, GroundedIterator, LookaheadIter
 import org.orbeon.saxon.tree.wrapper.SiblingCountingNode
 import org.orbeon.saxon.value.SequenceExtent
 
+
 object FocusTrackingIterator {
 
   def track(base: SequenceIterator): FocusTrackingIterator = new FocusTrackingIterator(base)
@@ -32,31 +33,22 @@ object FocusTrackingIterator {
  * An iterator that maintains the values of position and current, as a wrapper
  * over an iterator which does not maintain these values itself.
  *
- * <p>Note that when a FocusTrackingIterator is used to wrap a SequenceIterator
+ * Note that when a FocusTrackingIterator is used to wrap a SequenceIterator
  * in order to track the values of position and current, it is important to ensure
  * (a) that the SequenceIterator is initially positioned at the start of the sequence,
  * and (b) that all calls on next() to advance the iterator are directed at the
- * FocusTrackingIterator, and not at the wrapped SequenceIterator.</p>
+ * FocusTrackingIterator, and not at the wrapped SequenceIterator.
  *
  * @since 9.6
  */
-class FocusTrackingIterator
+class FocusTrackingIterator(private var base: SequenceIterator)
   extends FocusIterator
     with LookaheadIterator
     with GroundedIterator
     with LastPositionFinder {
 
-  private var base: SequenceIterator = _
-
-  def this(seqBase: SequenceIterator) {
-    this()
-    this.base = seqBase
-  }
-
   private var curr: Item = _
-
   private var pos: Int = 0
-
   private var last: Int = -1
 
   private var siblingMemory: SiblingMemory = _
@@ -78,8 +70,10 @@ class FocusTrackingIterator
    */
   def next(): Item = {
     curr = base.next()
-    if (curr == null) pos = -1
-    else pos += 1
+    if (curr == null)
+      pos = -1
+    else
+      pos += 1
     curr
   }
 
@@ -117,11 +111,10 @@ class FocusTrackingIterator
 
   def getLength: Int = {
     if (last == -1) {
-      if (base.getProperties.contains(Property.LAST_POSITION_FINDER)) {
+      if (base.getProperties.contains(Property.LAST_POSITION_FINDER))
         last = base.asInstanceOf[LastPositionFinder].getLength
-      }
       if (last == -1) {
-        val residue: GroundedValue = SequenceExtent.makeResidue(base)
+        val residue = SequenceExtent.makeResidue(base)
         last = pos + residue.getLength
         base = residue.iterate().asInstanceOf[SequenceIterator]
       }
@@ -135,7 +128,7 @@ class FocusTrackingIterator
    * next(). It is used only when there is an explicit need to tell if we
    * are at the last element.
    * <p>This method must not be called unless the result of getProperties() on the iterator
-   * includes the bit setting {@link org.orbeon.saxon.om.SequenceIterator.Property#LOOKAHEAD}</p>
+   * includes the bit setting `org.orbeon.saxon.om.SequenceIterator.Property`</p>
    *
    * @return true if there are more items in the sequence
    * @throws ClassCastException if the base iterator does not support lookahead processing
@@ -179,9 +172,8 @@ class FocusTrackingIterator
    *
    * @since 9.1
    */
-  override def close(): Unit = {
+  override def close(): Unit =
     base.close()
-  }
 
   /**
    * Get properties of this iterator, as a bit-significant integer.
@@ -198,7 +190,7 @@ class FocusTrackingIterator
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
     node match {
       case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest] =>
-        node1.getSiblingPosition
+        return node1.getSiblingPosition
       case _ =>
     }
     if (siblingMemory == null) {
@@ -206,25 +198,23 @@ class FocusTrackingIterator
     } else if (siblingMemory.mostRecentNodeTest == nodeTest && node == siblingMemory.mostRecentNode) {
       return siblingMemory.mostRecentPosition
     }
-    val s: SiblingMemory = siblingMemory
-    val prev: AxisIterator =
-      node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
+    val s = siblingMemory
+    val prev = node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
     var prior: NodeInfo = null
-    var count: Int = 1
-    while (({
+    var count = 1
+    while ({
       prior = prev.next()
       prior
-    }) != null) {
+    } != null) {
       if (prior == s.mostRecentNode && nodeTest == s.mostRecentNodeTest) {
-        val result: Int = count + s.mostRecentPosition
+        val result = count + s.mostRecentPosition
         s.mostRecentNode = node
         s.mostRecentPosition = result
         return result
       }
       count = count + 1
-      if (count > max) {
-        count
-      }
+      if (count > max)
+        return count
     }
     s.mostRecentNode = node
     s.mostRecentPosition = count
