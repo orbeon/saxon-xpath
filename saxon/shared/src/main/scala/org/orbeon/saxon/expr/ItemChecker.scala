@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,50 +6,52 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.event.Outputter
-import org.orbeon.saxon.event.TypeCheckingFilter
+import org.orbeon.saxon.event.{Outputter, TypeCheckingFilter}
 import org.orbeon.saxon.expr.instruct.Block
 import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.model.Affinity._
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Item
-import Affinity._
-import org.orbeon.saxon.pattern.CombinedNodeTest
-import org.orbeon.saxon.pattern.DocumentNodeTest
-import org.orbeon.saxon.pattern.NodeTest
+import org.orbeon.saxon.om.{Item, SequenceIterator}
+import org.orbeon.saxon.pattern.{CombinedNodeTest, DocumentNodeTest, NodeTest}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.Cardinality
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
+import org.orbeon.saxon.value.{Cardinality, IntegerValue}
 import java.util
-import Expression._
+
+import org.orbeon.saxon.expr.Expression._
+
+import scala.jdk.CollectionConverters._
+
 
 /**
  * A ItemChecker implements the item type checking of "treat as": that is,
  * it returns the supplied sequence, checking that all its items are of the correct type
  */
-final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType, var role: RoleDiagnostic) extends UnaryExpression(sequence) {
+final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, role: RoleDiagnostic)
+  extends UnaryExpression(sequence) {
+
   /**
    * Get the required type
    *
    * @return the required type of the items in the sequence
    */
-  def getRequiredType = requiredItemType
+  def getRequiredType: ItemType = requiredItemType
 
-  override  def getOperandRole = OperandRole.SAME_FOCUS_ACTION
+  override def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   /**
    * Get the RoleLocator (used to construct error messages)
    *
    * @return the RoleLocator
    */
-  def getRoleLocator = role
+  def getRoleLocator: RoleDiagnostic = role
 
   /**
    * Simplify an expression
    *
    */
-  /*@NotNull*/ @throws[XPathException]
+  /*@NotNull*/
+  @throws[XPathException]
   override def simplify(): Expression = {
     val operand = getBaseExpression.simplify()
     if (requiredItemType eq AnyItemType)
@@ -66,43 +67,44 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
     val operand = getBaseExpression
-    if (operand.isInstanceOf[Block]) { // Do the item-checking on each operand of the block separately (it might not be needed on all items)
-      // This is particularly needed for streamability analysis of xsl:map
-      val block = operand.asInstanceOf[Block]
-      val checkedOperands = new util.ArrayList[Expression]
-
-      for (o <- block.operands.asScala) {
-        val checkedOp = new ItemChecker(o.getChildExpression, requiredItemType, role)
-        checkedOperands.add(checkedOp)
-      }
-      val newBlock = new Block(checkedOperands.toArray(new Array[Expression](0)))
-      ExpressionTool.copyLocationInfo(this, newBlock)
-      return newBlock.typeCheck(visitor, contextInfo)
+    operand match {
+      case block: Block =>
+        // Do the item-checking on each operand of the block separately (it might not be needed on all items)
+        val checkedOperands = new util.ArrayList[Expression]
+        for (o <- block.operands.asScala) {
+          val checkedOp = new ItemChecker(o.getChildExpression, requiredItemType, role)
+          checkedOperands.add(checkedOp)
+        }
+        val newBlock = new Block(checkedOperands.toArray(new Array[Expression](0)))
+        ExpressionTool.copyLocationInfo(this, newBlock)
+        return newBlock.typeCheck(visitor, contextInfo)
+      case _ =>
     }
     // When typeCheck is called a second time, we might have more information...
     val th = getConfiguration.getTypeHierarchy
     val card = operand.getCardinality
-    if (card == StaticProperty.EMPTY) { //value is always empty, so no item checking needed
+    if (card == StaticProperty.EMPTY) //value is always empty, so no item checking needed
       return operand
-    }
+
     val supplied = operand.getItemType
     val relation = th.relationship(requiredItemType, supplied)
-    if ((relation eq Affinity.SAME_TYPE) || (relation eq Affinity.SUBSUMES)) return operand
-    else if (relation eq Affinity.DISJOINT) if (requiredItemType == BuiltInAtomicType.STRING && th.isSubType(supplied, BuiltInAtomicType.ANY_URI)) { // URI promotion will take care of this at run-time
+    if ((relation eq Affinity.SAME_TYPE) || (relation eq Affinity.SUBSUMES))
       return operand
-    }
-    else if (Cardinality.allowsZero(card)) if (!operand.isInstanceOf[Literal]) {
-      val message = role.composeErrorMessage(requiredItemType, operand, th)
-      visitor.getStaticContext.issueWarning("The only value that can pass type-checking is an empty sequence. " + message, getLocation)
-    }
-    else {
-      val message = role.composeErrorMessage(requiredItemType, operand, th)
-      val err = new XPathException(message)
-      err.setErrorCode(role.getErrorCode)
-      err.setLocation(this.getLocation)
-      err.setIsTypeError(role.isTypeError)
-      throw err
-    }
+    else if (relation eq Affinity.DISJOINT)
+      if (requiredItemType == BuiltInAtomicType.STRING && th.isSubType(supplied, BuiltInAtomicType.ANY_URI)) {
+        // URI promotion will take care of this at run-time
+        return operand
+      } else if (Cardinality.allowsZero(card)) if (! operand.isInstanceOf[Literal]) {
+        val message = role.composeErrorMessage(requiredItemType, operand, th)
+        visitor.getStaticContext.issueWarning("The only value that can pass type-checking is an empty sequence. " + message, getLocation)
+      } else {
+        val message = role.composeErrorMessage(requiredItemType, operand, th)
+        val err = new XPathException(message)
+        err.setErrorCode(role.getErrorCode)
+        err.setLocation(this.getLocation)
+        err.setIsTypeError(role.isTypeError)
+        throw err
+      }
     this
   }
 
@@ -125,8 +127,10 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
     getOperand.optimize(visitor, contextInfo)
     val th = visitor.getConfiguration.getTypeHierarchy
     val rel = th.relationship(requiredItemType, getBaseExpression.getItemType)
-    if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMES)) return getBaseExpression
-    this
+    if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMES))
+      getBaseExpression
+    else
+      this
   }
 
   /**
@@ -134,9 +138,10 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * This method indicates which of these methods is provided. This implementation provides both iterate() and
    * process() methods natively.
    */
-  override def getImplementationMethod = {
+  override def getImplementationMethod: Int = {
     var m = ITERATE_METHOD | PROCESS_METHOD | ITEM_FEED_METHOD
-    if (!Cardinality.allowsMany(getCardinality)) m |= EVALUATE_METHOD
+    if (!Cardinality.allowsMany(getCardinality))
+      m |= EVALUATE_METHOD
     m
   }
 
@@ -161,13 +166,14 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * @return the lower and upper bounds of integer values in the result, or null to indicate
    *         unknown or not applicable.
    */
-  /*@Nullable*/ override def getIntegerBounds = getBaseExpression.getIntegerBounds
+  /*@Nullable*/
+  override def getIntegerBounds: Array[IntegerValue] = getBaseExpression.getIntegerBounds
 
   /**
    * Iterate over the sequence of values
    */
   @throws[XPathException]
-  override def iterate(context: XPathContext) = {
+  override def iterate(context: XPathContext): SequenceIterator = {
     val base = getBaseExpression.iterate(context)
     new ItemMappingIterator(base, getMappingFunction(context), true)
   }
@@ -180,7 +186,8 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * @return the mapping function. This will be an identity mapping: the output sequence is the same
    *         as the input sequence, unless the dynamic type checking reveals an error.
    */
-  def getMappingFunction(context: XPathContext) = new ItemTypeCheckingFunction(requiredItemType, role, getBaseExpression, context.getConfiguration)
+  def getMappingFunction(context: XPathContext): ItemTypeCheckingFunction =
+    new ItemTypeCheckingFunction(requiredItemType, role, getBaseExpression, context.getConfiguration)
 
   /**
    * Evaluate as an Item.
@@ -189,16 +196,19 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
   override def evaluateItem(context: XPathContext): Item = {
     val th = context.getConfiguration.getTypeHierarchy
     val item = getBaseExpression.evaluateItem(context)
-    if (item == null) return null
-    if (requiredItemType.matches(item, th)) item
-    else if (requiredItemType.getUType.subsumes(UType.STRING) && BuiltInAtomicType.ANY_URI.matches(item, th)) item
+    if (item == null)
+      null
+    else if (requiredItemType.matches(item, th))
+      item
+    else if (requiredItemType.getUType.subsumes(UType.STRING) && BuiltInAtomicType.ANY_URI.matches(item, th))
+      item
     else {
       val message = role.composeErrorMessage(requiredItemType, item, th)
       val errorCode = role.getErrorCode
-      if ("XPDY0050" == errorCode) { // error in "treat as" assertion
+      if ("XPDY0050" == errorCode)  // error in "treat as" assertion
         dynamicError(message, errorCode, context)
-      }
-      else typeError(message, errorCode, context)
+      else
+        typeError(message, errorCode, context)
       null
     }
   }
@@ -210,20 +220,22 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * @param context The dynamic context, giving access to the current node,
    */
   @throws[XPathException]
-  override def process(output: Outputter, context: XPathContext) = {
+  override def process(output: Outputter, context: XPathContext): Unit = {
     var next = getBaseExpression
     var card = StaticProperty.ALLOWS_ZERO_OR_MORE
-    if (next.isInstanceOf[CardinalityChecker]) {
-      card = next.asInstanceOf[CardinalityChecker].getRequiredCardinality
-      next = next.asInstanceOf[CardinalityChecker].getBaseExpression
+    next match {
+      case checker: CardinalityChecker =>
+        card = checker.getRequiredCardinality
+        next = checker.getBaseExpression
+      case _ =>
     }
     if ((next.getImplementationMethod & PROCESS_METHOD) != 0 && !requiredItemType.isInstanceOf[DocumentNodeTest]) {
       val filter = new TypeCheckingFilter(output)
       filter.setRequiredType(requiredItemType, card, role, getLocation)
       next.process(filter, context)
       filter.finalCheck()
-    }
-    else { // Force pull-mode evaluation
+    } else {
+      // Force pull-mode evaluation
       super.process(output, context)
     }
   }
@@ -234,7 +246,7 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * @return the copy of the original expression
    * @param rebindings variable bindings that need to be changed
    */
-  override def copy(rebindings: RebindingMap) = {
+  override def copy(rebindings: RebindingMap): Expression = {
     val exp = new ItemChecker(getBaseExpression.copy(rebindings), requiredItemType, role)
     ExpressionTool.copyLocationInfo(this, exp)
     exp
@@ -243,22 +255,23 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
   /**
    * Determine the data type of the items returned by the expression
    */
-  override def getItemType = {
+  override def getItemType: ItemType = {
     val operandType = getBaseExpression.getItemType
     val th = getConfiguration.getTypeHierarchy
     val relationship = th.relationship(requiredItemType, operandType)
     relationship match {
       case OVERLAPS =>
-        if (requiredItemType.isInstanceOf[NodeTest] && operandType.isInstanceOf[NodeTest]) new CombinedNodeTest(requiredItemType.asInstanceOf[NodeTest], Token.INTERSECT, operandType.asInstanceOf[NodeTest])
-        else { // we don't know how to intersect atomic types, it doesn't actually happen
-          requiredItemType
+        requiredItemType match {
+          case nodeTest: NodeTest if operandType.isInstanceOf[NodeTest] =>
+            new CombinedNodeTest(nodeTest, Token.INTERSECT, operandType.asInstanceOf[NodeTest])
+          case _ =>
+            // we don't know how to intersect atomic types, it doesn't actually happen
+            requiredItemType
         }
-      case SUBSUMES => null
-      case SAME_TYPE =>
+      case SAME_TYPE | SUBSUMES =>
         // shouldn't happen, but it doesn't matter
         operandType
-      case SUBSUMED_BY =>null
-      case _ =>
+      case _ => // including `SUBSUMED_BY`
         requiredItemType
     }
   }
@@ -270,30 +283,31 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * @return the static item type of the expression according to the XSLT 3.0 defined rules
    * @param contextItemType the type of the context item
    */
-  override def getStaticUType(contextItemType: UType) = UType.fromTypeCode(requiredItemType.getPrimitiveType)
+  override def getStaticUType(contextItemType: UType): UType = UType.fromTypeCode(requiredItemType.getPrimitiveType)
 
   /**
    * Is this expression the same as another expression?
    */
-  override def equals(other: Any) = super.equals(other) && (requiredItemType eq other.asInstanceOf[ItemChecker].requiredItemType)
+  override def equals(other: Any): Boolean =
+    super.equals(other) && (requiredItemType eq other.asInstanceOf[ItemChecker].requiredItemType)
 
   /**
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode = super.computeHashCode ^ requiredItemType.hashCode
+  override def computeHashCode: Int = super.computeHashCode ^ requiredItemType.hashCode
 
   /**
    * Diagnostic print of expression structure. The abstract expression tree
    * is written to the supplied output destination.
    */
   @throws[XPathException]
-  override def `export`(out: ExpressionPresenter) = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("treat", this)
     out.emitAttribute("as", AlphaCode.fromItemType(requiredItemType))
     out.emitAttribute("diag", role.save)
     getBaseExpression.`export`(out)
-    out.endElement
+    out.endElement()
   }
 
   /**
@@ -310,10 +324,10 @@ final class ItemChecker(val sequence: Expression, var requiredItemType: ItemType
    * in an XPath-like form, but there is no guarantee that the syntax will actually be true XPath.
    * In the case of XSLT instructions, the toString() method gives an abstracted view of the syntax
    */
-  override def toString = {
+  override def toString: String = {
     val typeDesc = requiredItemType.toString
     "(" + getBaseExpression + ") treat as " + typeDesc
   }
 
-  override def toShortString = getBaseExpression.toShortString
+  override def toShortString: String = getBaseExpression.toShortString
 }
