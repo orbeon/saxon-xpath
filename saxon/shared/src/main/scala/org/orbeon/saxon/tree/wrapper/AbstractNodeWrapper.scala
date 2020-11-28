@@ -20,7 +20,7 @@ import org.orbeon.saxon.value.{StringValue, UntypedAtomicValue}
  *
  * @author Michael H. Kay
  */
-trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Make this a `trait`
+trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made this a `trait`
 
   var treeInfo: TreeInfo = _
 

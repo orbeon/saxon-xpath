@@ -290,7 +290,7 @@ object ExpressionTool {
       val o = findOperand(parent, child)
       if (o == null)
         throw new AssertionError
-      if (!o.hasSameFocus)
+      if (! o.hasSameFocus)
         return parent
       child = parent
       parent = child.getParentExpression
