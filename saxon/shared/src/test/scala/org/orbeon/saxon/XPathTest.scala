@@ -58,12 +58,20 @@ class XPathTest extends AnyFunSpec {
         handler
       }
 
+      def writeText(t: String) =
+        handler.characters(t.toCharArray, 0, t.length)
+
       handler.startDocument()
       handler.startElement("", "root", "root", new AttributesImpl)
-      handler.startElement("", "name", "name", new AttributesImpl)
-      val t = "World"
-      handler.characters(t.toCharArray, 0, t.length)
-      handler.endElement("", "name", "name")
+      handler.startElement("", "first-name", "first-name", new AttributesImpl)
+      writeText("Wile")
+      handler.endElement("", "first-name", "first-name")
+      handler.startElement("", "middle-name", "middle-name", new AttributesImpl)
+      writeText("E.")
+      handler.endElement("", "middle-name", "middle-name")
+      handler.startElement("", "last-name", "last-name", new AttributesImpl)
+      writeText("Coyote")
+      handler.endElement("", "last-name", "last-name")
       handler.endElement("", "root", "root")
       handler.endDocument()
 
@@ -95,12 +103,14 @@ class XPathTest extends AnyFunSpec {
         return
           $paf(1 to 5)
         """, int, ".1.2.3.4.5"),
-      ("""string(/)""", doc, "World"),
-      ("""string(/*/*)""", doc, "World"),
+      ("""string(/)""", doc, "WileE.Coyote"),
       ("""normalize-space(' abc ')""", doc, "abc"),
       ("""normalize-space(()))""", doc, ""),
-//      ("""normalize-space(/)""", doc, ""),
-//      ("""string(/root/name)""", doc, "World"),
+      ("""string(/*[1])""", doc, "WileE.Coyote"),
+      ("""normalize-space(/)""", doc, "WileE.Coyote"),
+      ("""string(/*/*[1])""", doc, "Wile"),
+      ("""string(/*/*[3])""", doc, "Coyote"),
+//      ("""string(/root/first-name)""", doc, "Wile"), // FIXME: returns blank
 //      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
 
