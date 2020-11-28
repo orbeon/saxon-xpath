@@ -2707,7 +2707,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @param maybeUndefined set to true if it is possible (or certain) that the context item will be absent.
    * @return the ContextItemStaticInfo
    */
-  def makeContextItemStaticInfo(itemType: ItemType, maybeUndefined: Boolean): ContextItemStaticInfo = new ContextItemStaticInfo(itemType, maybeUndefined)
+  def makeContextItemStaticInfo(itemType: ItemType, maybeUndefined: Boolean): ContextItemStaticInfo =
+    new ContextItemStaticInfo(itemType, maybeUndefined)
 
   /**
    * Get a default ContextItemStaticInfo, indication no information is available about the context item

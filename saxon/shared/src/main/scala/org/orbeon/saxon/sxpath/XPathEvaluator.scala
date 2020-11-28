@@ -79,19 +79,21 @@ class XPathEvaluator(config: Configuration) {
                             cit: ContextItemStaticInfo): Expression = exp
 
   def createPattern(pattern: String): XPathExpression = {
-    val config: Configuration = getConfiguration
-    val exec: Executable = new Executable(config)
-    val pat: Pattern =
-      Pattern.make(pattern, staticContext, new PackageData(config))
-    val visitor: ExpressionVisitor = ExpressionVisitor.make(staticContext)
-    pat.typeCheck(visitor,
-      config.makeContextItemStaticInfo(Type.NODE_TYPE, maybeUndefined = true))
-    val map: SlotManager = staticContext.getStackFrameMap
-    var slots: Int = map.getNumberOfVariables
+
+    val config = getConfiguration
+    val exec = new Executable(config)
+    val pat = Pattern.make(pattern, staticContext, new PackageData(config))
+
+    val visitor = ExpressionVisitor.make(staticContext)
+    pat.typeCheck(visitor, config.makeContextItemStaticInfo(Type.NODE_TYPE, maybeUndefined = true))
+
+    val map = staticContext.getStackFrameMap
+    var slots = map.getNumberOfVariables
     slots = pat.allocateSlots(map, slots)
-    val xpe: XPathExpression = new XPathExpression(staticContext, pat, exec)
+
+    val xpe = new XPathExpression(staticContext, pat, exec)
     xpe.setStackFrameMap(map, slots)
+
     xpe
   }
-
 }
