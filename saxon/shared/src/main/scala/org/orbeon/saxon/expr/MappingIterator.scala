@@ -29,11 +29,10 @@ class MappingIterator(private var base: SequenceIterator,
           if (obj != null) {
             results = obj
             nextItem = results.next()
-            if (nextItem == null) {
+            if (nextItem == null)
               results = null
-            } else {
+            else
               break()
-            }
           }
         } else {
           results = null
