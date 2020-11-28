@@ -2,14 +2,15 @@ package org.orbeon.saxon
 
 
 
+import org.orbeon.saxon.jaxp.SaxonTransformerFactory
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.sxpath.{IndependentContext, XPathEvaluator}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Int64Value
+import org.xml.sax.helpers.AttributesImpl
 
-//import org.orbeon.dom
 
 import org.scalatest.funspec.AnyFunSpec
 
@@ -17,9 +18,9 @@ class XPathTest extends AnyFunSpec {
 
   val ExplainExpressions = false
 
-  def compileAndRunExpression(xpath: String): Item = {
+  def compileAndRunExpression(xpath: String, ctx: Item, config: Configuration): Item = {
 
-    val evaluator = new XPathEvaluator(new Configuration)
+    val evaluator = new XPathEvaluator(config)
 
     evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("fn",   NamespaceConstant.FN)
     evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("math", NamespaceConstant.MATH)
@@ -34,7 +35,7 @@ class XPathTest extends AnyFunSpec {
     }
 
     val dc = xpe.createDynamicContext
-    dc.setContextItem(Int64Value.makeDerived(2020, BuiltInAtomicType.INT))
+    dc.setContextItem(ctx)
 
     xpe.evaluateSingle(dc)
   }
@@ -43,23 +44,49 @@ class XPathTest extends AnyFunSpec {
 
   describe("Minimalistic expression compilation and execution") {
 
+    val config = new Configuration
+
+    val int = Int64Value.makeDerived(2020, BuiltInAtomicType.INT)
+
+    val doc = {
+      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(config.makePipelineConfiguration)
+//      val treeBuilder = om.TreeModel.LINKED_TREE.makeBuilder(config.makePipelineConfiguration)
+
+      val handler = {
+        val handler = new SaxonTransformerFactory(config).newTransformerHandler
+        handler.setResult(treeBuilder)
+        handler
+      }
+
+      handler.startDocument()
+      handler.startElement("", "root", "root", new AttributesImpl)
+      handler.startElement("", "name", "name", new AttributesImpl)
+      val t = "World"
+      handler.characters(t.toCharArray, 0, t.length)
+      handler.endElement("", "name", "name")
+      handler.endElement("", "root", "root")
+      handler.endDocument()
+
+      treeBuilder.getCurrentRoot
+    }
+
     val Expected = List(
-      "."                                           -> "2020",
-      "42"                                          -> "42",
-      "42 + 1"                                      -> "43",
-      "2 + 3 * 4 - 5 * 2"                           -> "4",
-      "(2 + 3) * 4 - 5 * 2"                         -> "10",
-      "'To be, or not to be, that is the question'" -> "To be, or not to be, that is the question",
-      "let $a := 42 return $a"                      -> "42",
-      "let $a := 1, $b := 2 return $a + $b"         -> "3",
-      "3.1415"                                      -> "3.1415",
-      "fn:concat('To be', ', or not to be')"        -> "To be, or not to be",
-      "'To be' || ', or not to be'"                 -> "To be, or not to be",
-      "math:cos(0)"                                 -> "1",
-      "math:cos(math:pi())"                         -> "-1",
-      """let $fn := function($v) { $v * 2 }
-         return $fn(7)"""                           -> "14",
-      """
+      ("."                                          , int, "2020"),
+      ("42"                                         , int, "42"),
+      ("42 + 1"                                     , int, "43"),
+      ("2 + 3 * 4 - 5 * 2"                          , int, "4"),
+      ("(2 + 3) * 4 - 5 * 2"                        , int, "10"),
+      ("'To be, or not to be, that is the question'", int, "To be, or not to be, that is the question"),
+      ("let $a := 42 return $a"                     , int, "42"),
+      ("let $a := 1, $b := 2 return $a + $b"        , int, "3"),
+      ("3.1415"                                     , int, "3.1415"),
+      ("fn:concat('To be', ', or not to be')"       , int, "To be, or not to be"),
+      ("'To be' || ', or not to be'"                , int, "To be, or not to be"),
+      ("math:cos(0)"                                , int, "1"),
+      ("math:cos(math:pi())"                        , int, "-1"),
+      ("""let $fn := function($v) { $v * 2 }
+         return $fn(7)"""                           , int, "14"),
+      ("""
         let $f :=
           function($seq, $delim) {
             fn:fold-left($seq, '', fn:concat(?, $delim, ?))
@@ -67,12 +94,19 @@ class XPathTest extends AnyFunSpec {
           $paf := $f(?, '.')
         return
           $paf(1 to 5)
-        """ -> ".1.2.3.4.5",
+        """, int, ".1.2.3.4.5"),
+      ("""string(/)""", doc, "World"),
+      ("""string(/*/*)""", doc, "World"),
+      ("""normalize-space(' abc ')""", doc, "abc"),
+      ("""normalize-space(()))""", doc, ""),
+//      ("""normalize-space(/)""", doc, ""),
+//      ("""string(/root/name)""", doc, "World"),
+//      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
 
-    for ((in, out) <- Expected)
+    for ((in, ctx, out) <- Expected)
       it(s"must evaluate `$in`") {
-        assert(out == compileAndRunExpression(in).getStringValue)
+        assert(out == compileAndRunExpression(in, ctx, config).getStringValue)
       }
   }
 }
