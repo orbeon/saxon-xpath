@@ -78,6 +78,8 @@ class XPathTest extends AnyFunSpec {
       treeBuilder.getCurrentRoot
     }
 
+    val docElem = doc.children.next()
+
     val Expected = List(
       ("."                                          , int, "2020"),
       ("42"                                         , int, "42"),
@@ -109,7 +111,11 @@ class XPathTest extends AnyFunSpec {
       ("""string(/*[1])""", doc, "WileE.Coyote"),
       ("""normalize-space(/)""", doc, "WileE.Coyote"),
       ("""string(/*/*[1])""", doc, "Wile"),
+      ("""string(*[1])""", docElem, "Wile"),
+      ("""string(*[3])""", docElem, "Coyote"),
       ("""string(/*/*[3])""", doc, "Coyote"),
+      ("""string-join(for $i in * return string($i), '')""", doc, "WileE.Coyote"),
+//      ("""string-join(for $i in * return string($i), '/')""", doc, "Wile/E./Coyote"), // FIXME: doesn't include '/'
 //      ("""string(/root/first-name)""", doc, "Wile"), // FIXME: returns blank
 //      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
