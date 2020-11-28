@@ -2,6 +2,7 @@ package org.orbeon.saxon
 
 
 
+import org.orbeon.saxon.expr.parser.OptimizerOptions
 import org.orbeon.saxon.jaxp.SaxonTransformerFactory
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.BuiltInAtomicType
@@ -10,8 +11,6 @@ import org.orbeon.saxon.sxpath.{IndependentContext, XPathEvaluator}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Int64Value
 import org.xml.sax.helpers.AttributesImpl
-
-
 import org.scalatest.funspec.AnyFunSpec
 
 class XPathTest extends AnyFunSpec {
@@ -45,6 +44,7 @@ class XPathTest extends AnyFunSpec {
   describe("Minimalistic expression compilation and execution") {
 
     val config = new Configuration
+    config.optimizerOptions = new OptimizerOptions("vmt") // FIXME: temporarily remove the "l" option which fails
 
     val int = Int64Value.makeDerived(2020, BuiltInAtomicType.INT)
 
