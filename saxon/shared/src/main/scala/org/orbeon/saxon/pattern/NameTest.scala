@@ -10,6 +10,7 @@ import org.orbeon.saxon.z.{IntSet, IntSingletonSet}
 
 import scala.beans.BeanProperty
 
+
 class NameTest(@BeanProperty var nodeKind: Int,
                private var uri: String,
                private var localName: String,
@@ -45,9 +46,11 @@ class NameTest(@BeanProperty var nodeKind: Int,
   override def matches(nodeKind: Int,
                        name: NodeName,
                        annotation: SchemaType): Boolean = {
-    if (nodeKind != this.nodeKind) {
+
+    println(s"xxx matches $nodeKind / $name")
+
+    if (nodeKind != this.nodeKind)
       return false
-    }
     if (name.hasFingerprint) {
       name.getFingerprint == this.fingerPrintInt
     } else {
@@ -57,17 +60,16 @@ class NameTest(@BeanProperty var nodeKind: Int,
   }
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
-    val nodeKindArray: Array[Byte] = tree.getNodeKindArray
-    val nameCodeArray: Array[Int] = tree.getNameCodeArray
-    nodeNr =>
-      (nameCodeArray(nodeNr) & 0xfffff) == fingerPrintInt && (nodeKindArray(
-        nodeNr) & 0x0f) == nodeKind
+    val nodeKindArray = tree.getNodeKindArray
+    val nameCodeArray = tree.getNameCodeArray
+    nodeNr => (nameCodeArray(nodeNr) & 0xfffff) == fingerPrintInt && (nodeKindArray(nodeNr) & 0x0f) == nodeKind
   }
 
   override def test(node: NodeInfo): Boolean = {
-    if (node.getNodeKind != nodeKind) {
+    println(s"xxx test $node")
+
+    if (node.getNodeKind != nodeKind)
       return false
-    }
     if (node.hasFingerprint) {
       node.getFingerprint == fingerPrintInt
     } else {
@@ -76,13 +78,12 @@ class NameTest(@BeanProperty var nodeKind: Int,
     }
   }
 
-  private def computeUriAndLocal(): Unit = {
+  private def computeUriAndLocal(): Unit =
     if (uri == null || localName == null) {
       val name = namePool.getUnprefixedQName(fingerPrintInt)
       uri = name.getURI
       localName = name.getLocalPart
     }
-  }
 
   def matches(qname: StructuredQName): Boolean = {
     computeUriAndLocal()
@@ -111,21 +112,14 @@ class NameTest(@BeanProperty var nodeKind: Int,
     localName
   }
 
-  override def toString: String = {
+  override def toString: String =
     nodeKind match {
-      case Type.ELEMENT => "element(" + namePool.getEQName(fingerPrintInt) + ")"
-      case Type.ATTRIBUTE =>
-        "attribute(" + namePool.getEQName(fingerPrintInt) + ")"
-      case Type.PROCESSING_INSTRUCTION =>
-        "processing-instruction(" + namePool.getLocalName(fingerPrintInt) +
-          ')'
-      case Type.NAMESPACE =>
-        "namespace-node(" + namePool.getLocalName(fingerPrintInt) +
-          ')'
-
+      case Type.ELEMENT                => "element(" + namePool.getEQName(fingerPrintInt) + ")"
+      case Type.ATTRIBUTE              => "attribute(" + namePool.getEQName(fingerPrintInt) + ")"
+      case Type.PROCESSING_INSTRUCTION => "processing-instruction(" + namePool.getLocalName(fingerPrintInt) + ')'
+      case Type.NAMESPACE              => "namespace-node(" + namePool.getLocalName(fingerPrintInt) + ')'
+      case _                           => namePool.getEQName(fingerPrintInt)
     }
-    namePool.getEQName(fingerPrintInt)
-  }
 
   override def hashCode: Int = nodeKind << 20 ^ fingerPrintInt
 
@@ -157,13 +151,18 @@ class NameTest(@BeanProperty var nodeKind: Int,
 
   override def toShortString: String = nodeKind match {
     case Type.ELEMENT =>
-      if (getNamespaceURI.isEmpty) namePool.getLocalName(getFingerprint)
-      else toString
+      if (getNamespaceURI.isEmpty)
+        namePool.getLocalName(getFingerprint)
+      else
+        toString
     case Type.ATTRIBUTE =>
       "@" +
-        (if (getNamespaceURI.isEmpty) namePool.getLocalName(getFingerprint)
-        else toString)
+        (
+          if (getNamespaceURI.isEmpty)
+            namePool.getLocalName(getFingerprint)
+          else
+            toString
+        )
     case _ => toString
-
   }
 }

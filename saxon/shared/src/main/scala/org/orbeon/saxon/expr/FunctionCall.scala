@@ -1,45 +1,26 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.oper.OperandArray
-
-import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.lib.NamespaceConstant
-
-import org.orbeon.saxon.model.JavaExternalObjectType
-
-import org.orbeon.saxon.om.Function
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.om.StructuredQName
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.NoDynamicContextException
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.value.SequenceType
-
 import java.util.Collections
 
-import FunctionCall._
+import org.orbeon.saxon.expr.FunctionCall._
+import org.orbeon.saxon.expr.oper.OperandArray
+import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.lib.NamespaceConstant
+import org.orbeon.saxon.model.JavaExternalObjectType
+import org.orbeon.saxon.om.{Function, Sequence, SequenceIterator, StructuredQName}
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
+import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import scala.beans.BeanProperty
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
+
 
 object FunctionCall {
 
   def pluralArguments(num: Int): String =
     if (num == 1) "one argument" else s"$num arguments"
-
 }
 
 abstract class FunctionCall extends Expression {
@@ -48,11 +29,10 @@ abstract class FunctionCall extends Expression {
   var operanda: OperandArray = _
 
   override def operands: java.lang.Iterable[Operand] =
-    if (operanda != null) {
+    if (operanda != null)
       operanda.operands
-    } else {
+    else
       Collections.emptyList()
-    }
 
   def getTargetFunction(context: XPathContext): Function
 
@@ -60,18 +40,15 @@ abstract class FunctionCall extends Expression {
 
   def getArity: Int = getOperanda.getNumberOfOperands
 
-  def setArguments(args: Array[Expression]): Unit = {
+  def setArguments(args: Array[Expression]): Unit =
     this.operanda = new OperandArray(this, args)
-  }
 
-  def setOperanda(args: Array[Expression],
-                  roles: Array[OperandRole]): Unit = {
+  def setOperanda(args: Array[Expression], roles: Array[OperandRole]): Unit =
     this.operanda = new OperandArray(this, args, roles)
-  }
 
   def getArguments: Array[Expression] = {
-    val result: Array[Expression] = Array.ofDim[Expression](getArity)
-    var i: Int = 0
+    val result = Array.ofDim[Expression](getArity)
+    var i = 0
     for (o <- operands.asScala) {
       result(i) = o.getChildExpression
       i += 1
@@ -105,7 +82,7 @@ abstract class FunctionCall extends Expression {
   }
 
   def preEvaluateIfConstant(visitor: ExpressionVisitor): Expression = {
-    val opt: Optimizer = visitor.obtainOptimizer()
+    val opt = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
 
       var fixed = true
@@ -124,16 +101,12 @@ abstract class FunctionCall extends Expression {
   }
 
   def checkFunctionCall(target: Function, visitor: ExpressionVisitor): Unit = {
-    val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(
-      visitor.getStaticContext.isInBackwardsCompatibleMode)
-    val argTypes: Array[SequenceType] =
-      target.getFunctionItemType.getArgumentTypes
-    val n: Int = target.getArity
+    val tc = visitor.getConfiguration.getTypeChecker(visitor.getStaticContext.isInBackwardsCompatibleMode)
+    val argTypes = target.getFunctionItemType.getArgumentTypes
+    val n = target.getArity
     for (i <- 0 until n) {
-      val name: String =
-        if (getFunctionName == null) "" else getFunctionName.getDisplayName
-      val role: RoleDiagnostic =
-        new RoleDiagnostic(RoleDiagnostic.FUNCTION, name, i)
+      val name = if (getFunctionName == null) "" else getFunctionName.getDisplayName
+      val role = new RoleDiagnostic(RoleDiagnostic.FUNCTION, name, i)
       setArg(i, tc.staticTypeCheck(getArg(i), argTypes(i), role, visitor))
     }
   }
@@ -143,16 +116,15 @@ abstract class FunctionCall extends Expression {
     optimizeChildren(visitor, contextItemType)
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
-      var fixed: Boolean = true
+      var fixed = true
       breakable {
         for (o <- operands.asScala if !o.getChildExpression.isInstanceOf[Literal]) {
           fixed = false
           break()
         }
       }
-      if (fixed) {
+      if (fixed)
         preEvaluate(visitor)
-      }
     }
     this
   }
@@ -160,12 +132,11 @@ abstract class FunctionCall extends Expression {
   override def getNetCost: Int = 5
 
   def preEvaluate(visitor: ExpressionVisitor): Expression = {
-    if ((getIntrinsicDependencies & ~StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0) {
+    if ((getIntrinsicDependencies & ~StaticProperty.DEPENDS_ON_STATIC_CONTEXT) != 0)
       return this
-    }
+
     try {
-      val lit = Literal.makeLiteral(
-        iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
+      val lit = Literal.makeLiteral(iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
       Optimizer.trace(visitor.getConfiguration,
         "Pre-evaluated function call " + toShortString,
         lit)
@@ -184,7 +155,7 @@ abstract class FunctionCall extends Expression {
   def checkArguments(visitor: ExpressionVisitor): Unit = ()
 
   def checkArgumentCount(min: Int, max: Int): Int = {
-    val numArgs: Int = getArity
+    val numArgs = getArity
     var msg: String = null
     if (min == max && numArgs != min) {
       msg = "Function " + getDisplayName + " must have " + pluralArguments(min)
@@ -192,8 +163,7 @@ abstract class FunctionCall extends Expression {
       msg = "Function " + getDisplayName + " must have at least " +
         pluralArguments(min)
     } else if (numArgs > max) {
-      msg = "Function " + getDisplayName + " must have no more than " +
-        pluralArguments(max)
+      msg = "Function " + getDisplayName + " must have no more than " + pluralArguments(max)
     }
     if (msg != null) {
       val err = new XPathException(msg, "XPST0017")
@@ -226,11 +196,13 @@ abstract class FunctionCall extends Expression {
   override def toString: String = {
     val buff = new FastStringBuffer(FastStringBuffer.C64)
     val fName: StructuredQName = getFunctionName
-    var f: String = null
-    f =
-      if (fName == null) "$anonymousFunction"
-      else if (fName.hasURI(NamespaceConstant.FN)) fName.getLocalPart
-      else fName.getEQName
+    val f =
+      if (fName == null)
+        "$anonymousFunction"
+      else if (fName.hasURI(NamespaceConstant.FN))
+        fName.getLocalPart
+      else
+        fName.getEQName
     buff.append(f)
     var first = true
     for (o <- operands.asScala) {
@@ -243,7 +215,7 @@ abstract class FunctionCall extends Expression {
   }
 
   override def toShortString: String = {
-    val fName: StructuredQName = getFunctionName
+    val fName = getFunctionName
     (if (fName == null) "$anonFn" else fName.getDisplayName) +
       "(" +
       (if (getArity == 0) "" else "...") +
@@ -252,42 +224,34 @@ abstract class FunctionCall extends Expression {
 
   def export(out: ExpressionPresenter): Unit = {
     out.startElement("functionCall", this)
-    if (getFunctionName == null) {
+    if (getFunctionName == null)
       throw new AssertionError("Exporting call to anonymous function")
-    } else {
+    else
       out.emitAttribute("name", getFunctionName.getDisplayName)
-    }
-    for (o <- operands.asScala) {
+    for (o <- operands.asScala)
       o.getChildExpression.export(out)
-    }
     out.endElement()
   }
 
   override def equals(o: Any): Boolean = {
-    if (!o.isInstanceOf[FunctionCall]) {
+    if (!o.isInstanceOf[FunctionCall])
       return false
-    }
-    if (getFunctionName == null) {
+    if (getFunctionName == null)
       return this == o
-    }
-    val f: FunctionCall = o.asInstanceOf[FunctionCall]
-    if (getFunctionName != f.getFunctionName) {
+    val f = o.asInstanceOf[FunctionCall]
+    if (getFunctionName != f.getFunctionName)
       return false
-    }
-    if (getArity != f.getArity) {
+    if (getArity != f.getArity)
       return false
-    }
-    for (i <- 0 until getArity if !getArg(i).isEqual(f.getArg(i))) {
-      false
-    }
+    for (i <- 0 until getArity if !getArg(i).isEqual(f.getArg(i)))
+      return false
     true
   }
 
   override def computeHashCode(): Int = {
-    if (getFunctionName == null) {
-      super.computeHashCode()
-    }
-    var h: Int = getFunctionName.hashCode
+    if (getFunctionName == null)
+      return super.computeHashCode()
+    var h = getFunctionName.hashCode
     for (i <- 0 until getArity) {
       h ^= getArg(i).hashCode
     }
@@ -295,29 +259,26 @@ abstract class FunctionCall extends Expression {
   }
 
   override def iterate(context: XPathContext): SequenceIterator = {
-    val target: Function = getTargetFunction(context)
-    val actualArgs: Array[Sequence] = evaluateArguments(context)
-    try target.call(context, actualArgs).iterate()
+    val target = getTargetFunction(context)
+    val actualArgs = evaluateArguments(context)
+    try
+      target.call(context, actualArgs).iterate()
     catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         e.maybeSetFailingExpression(this)
         throw e
-      }
-
     }
   }
 
   def evaluateArguments(context: XPathContext): Array[Sequence] = {
-    val numArgs: Int = getArity
-    val actualArgs: Array[Sequence] = Array.ofDim[Sequence](numArgs)
-    for (i <- 0 until numArgs) {
+    val numArgs = getArity
+    val actualArgs = Array.ofDim[Sequence](numArgs)
+    for (i <- 0 until numArgs)
       actualArgs(i) = ExpressionTool.lazyEvaluate(getArg(i), context, repeatable = false)
-    }
     actualArgs
   }
 
   def adjustRequiredType(requiredType: JavaExternalObjectType): Boolean = false
-
 }

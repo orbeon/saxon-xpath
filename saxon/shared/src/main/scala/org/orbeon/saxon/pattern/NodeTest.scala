@@ -10,6 +10,7 @@ import org.orbeon.saxon.tree.tiny.NodeVectorTree
 import org.orbeon.saxon.value.SequenceType
 import org.orbeon.saxon.z.{IntSet, IntUniversalSet}
 
+
 abstract class NodeTest
   extends Predicate[NodeInfo]
     with ItemType.WithSequenceTypeCache {
@@ -27,12 +28,11 @@ abstract class NodeTest
     item.isInstanceOf[NodeInfo] && test(item.asInstanceOf[NodeInfo])
 
   def getPrimitiveItemType: ItemType = {
-    val p: Int = getPrimitiveType
-    if (p == Type.NODE) {
+    val p = getPrimitiveType
+    if (p == Type.NODE)
       AnyNodeTest.getInstance
-    } else {
+    else
       NodeKindTest.makeNodeKindTest(p)
-    }
   }
 
   def getPrimitiveType: Int = Type.NODE
@@ -40,16 +40,15 @@ abstract class NodeTest
   def getMatchingNodeName: StructuredQName = null
 
   override def getBasicAlphaCode: String = getPrimitiveType match {
-    case Type.NODE => "N"
-    case Type.ELEMENT => "NE"
-    case Type.ATTRIBUTE => "NA"
-    case Type.TEXT => "NT"
-    case Type.COMMENT => "NC"
+    case Type.NODE                   => "N"
+    case Type.ELEMENT                => "NE"
+    case Type.ATTRIBUTE              => "NA"
+    case Type.TEXT                   => "NT"
+    case Type.COMMENT                => "NC"
     case Type.PROCESSING_INSTRUCTION => "NP"
-    case Type.DOCUMENT => "ND"
-    case Type.NAMESPACE => "NN"
-    case _ => "*"
-
+    case Type.DOCUMENT               => "ND"
+    case Type.NAMESPACE              => "NN"
+    case _                           => "*"
   }
 
   def isAtomicType: Boolean = false
@@ -71,14 +70,13 @@ abstract class NodeTest
     if (m.size == 1 && it.hasNext) {
       val p = it.next()
       p match {
-        case DOCUMENT => AnyType.getInstance
-        case ELEMENT => AnyType.getInstance
+        case DOCUMENT  => AnyType.getInstance
+        case ELEMENT   => AnyType.getInstance
         case ATTRIBUTE => AnySimpleType
-        case COMMENT => BuiltInAtomicType.STRING
-        case TEXT => BuiltInAtomicType.UNTYPED_ATOMIC
-        case PI => BuiltInAtomicType.STRING
+        case COMMENT   => BuiltInAtomicType.STRING
+        case TEXT      => BuiltInAtomicType.UNTYPED_ATOMIC
+        case PI        => BuiltInAtomicType.STRING
         case NAMESPACE => BuiltInAtomicType.STRING
-
       }
     }
     AnyType.getInstance
@@ -92,45 +90,39 @@ abstract class NodeTest
   def copy(): NodeTest = this
 
   def one: SequenceType = {
-    if (_one == null) {
+    if (_one == null)
       _one = new SequenceType(this, StaticProperty.EXACTLY_ONE)
-    }
     _one
   }
 
   def zeroOrOne: SequenceType = {
-    if (_zeroOrOne == null) {
+    if (_zeroOrOne == null)
       _zeroOrOne = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_ONE)
-    }
     _zeroOrOne
   }
 
   def oneOrMore: SequenceType = {
-    if (_oneOrMore == null) {
+    if (_oneOrMore == null)
       _oneOrMore = new SequenceType(this, StaticProperty.ALLOWS_ONE_OR_MORE)
-    }
     _oneOrMore
   }
 
   def zeroOrMore: SequenceType = {
-    if (_zeroOrMore == null) {
+    if (_zeroOrMore == null)
       _zeroOrMore = new SequenceType(this, StaticProperty.ALLOWS_ZERO_OR_MORE)
-    }
     _zeroOrMore
   }
 
   override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] =
     if (item.isInstanceOf[NodeInfo]) {
-      val actualKind: UType = UType.getUType(item)
-      if (!getUType.overlaps(actualKind)) {
-        Some(
-          "The supplied value is " + actualKind
-            .toStringWithIndefiniteArticle)
-      }
-      None
+      val actualKind = UType.getUType(item)
+      if (! getUType.overlaps(actualKind))
+        Some("The supplied value is " + actualKind.toStringWithIndefiniteArticle)
+      else
+        None
     } else {
       Some("The supplied value is " + item.getGenre.getDescription)
     }
-  def toShortString: String = toString
 
+  def toShortString: String = toString
 }

@@ -7,29 +7,23 @@
 package org.orbeon.saxon.tree.tiny
 
 
-import org.orbeon.saxon.utils.Configuration
+import java.util._
+
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.lib.Feature
-import org.orbeon.saxon.lib.FeatureKeys
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.linked.SystemIdMap
+import org.orbeon.saxon.tree.tiny.TinyTree._
 import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z._
-import java.util._
 
-import TinyTree._
+import scala.beans.BeanProperty
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-
-//remove if not needed
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-
 import scala.util.control.Breaks._
 
 
@@ -135,8 +129,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
   this.setConfiguration(config)
 
   var charBuffer: AppendableCharSequence =
-    if (characters > 65000) new LargeStringBuffer()
-    else new FastStringBuffer(characters)
+    if (characters > 65000)
+      new LargeStringBuffer()
+    else
+      new FastStringBuffer(characters)
 
   override def setConfiguration(config: Configuration): Unit = {
     super.setConfiguration(config)
@@ -145,59 +141,50 @@ class TinyTree(config: Configuration, statistics: Statistics)
       config.getBooleanProperty(Feature.USE_TYPED_VALUE_CACHE)
   }
 
-  private def ensureNodeCapacity(kind: Short, needed: Int): Unit = {
+  private def ensureNodeCapacity(kind: Short, needed: Int): Unit =
     if (nodeKind.length < numberOfNodes + needed) {
-      val k: Int =
-        if (kind == Type.STOPPER) numberOfNodes + 1
-        else Math.max(numberOfNodes * 2, numberOfNodes + needed)
+      val k =
+        if (kind == Type.STOPPER)
+          numberOfNodes + 1
+        else
+          Math.max(numberOfNodes * 2, numberOfNodes + needed)
       nodeKind = Arrays.copyOf(nodeKind, k)
       next = Arrays.copyOf(next, k)
       depth = Arrays.copyOf(depth, k)
       alpha = Arrays.copyOf(alpha, k)
       beta = Arrays.copyOf(beta, k)
       nameCode = Arrays.copyOf(nameCode, k)
-      if (typeArray != null) {
+      if (typeArray != null)
         typeArray = Arrays.copyOf(typeArray, k)
-      }
-      if (typedValueArray != null) {
+      if (typedValueArray != null)
         typedValueArray = Arrays.copyOf(typedValueArray, k)
-      }
       if (lineNumbers != null) {
         lineNumbers = Arrays.copyOf(lineNumbers, k)
         columnNumbers = Arrays.copyOf(columnNumbers, k)
       }
     }
-  }
 
-  private def ensureAttributeCapacity(needed: Int): Unit = {
+  private def ensureAttributeCapacity(needed: Int): Unit =
     if (attParent.length < numberOfAttributes + needed) {
-      var k: Int =
-        Math.max(numberOfAttributes + needed, numberOfAttributes * 2)
-      if (k == 0) {
+      var k = Math.max(numberOfAttributes + needed, numberOfAttributes * 2)
+      if (k == 0)
         k = 10 + needed
-      }
       attParent = Arrays.copyOf(attParent, k)
       attCode = Arrays.copyOf(attCode, k)
       attValue = Arrays.copyOf(attValue, k)
-      if (attType != null) {
+      if (attType != null)
         attType = Arrays.copyOf(attType, k)
-      }
-      if (attTypedValue != null) {
+      if (attTypedValue != null)
         attTypedValue = Arrays.copyOf(attTypedValue, k)
-      }
     }
-  }
 
-  private def ensureNamespaceCapacity(needed: Int): Unit = {
+  private def ensureNamespaceCapacity(needed: Int): Unit =
     if (namespaceMaps.length < numberOfNamespaces + needed) {
-      var k: Int =
-        Math.max(numberOfNamespaces * 2, numberOfNamespaces + needed)
-      if (k == 0) {
+      var k = Math.max(numberOfNamespaces * 2, numberOfNamespaces + needed)
+      if (k == 0)
         k = 10
-      }
       namespaceMaps = Arrays.copyOf(namespaceMaps, k)
     }
-  }
 
   def getPrefixPool: PrefixPool = prefixPool
 
@@ -234,7 +221,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
     }
     if (numberOfNodes == 0) {
       this.setDocumentNumber(getConfiguration.getDocumentNumberAllocator.allocateDocumentNumber())
-
     }
     {
       numberOfNodes += 1;
@@ -262,16 +248,15 @@ class TinyTree(config: Configuration, statistics: Statistics)
       alpha = Arrays.copyOf(alpha, numberOfNodes)
       beta = Arrays.copyOf(beta, numberOfNodes)
       nameCode = Arrays.copyOf(nameCode, numberOfNodes)
-      if (typeArray != null) {
+      if (typeArray != null)
         typeArray = Arrays.copyOf(typeArray, numberOfNodes)
-      }
       if (lineNumbers != null) {
         lineNumbers = Arrays.copyOf(lineNumbers, numberOfNodes)
         columnNumbers = Arrays.copyOf(columnNumbers, numberOfNodes)
       }
     }
     if ((numberOfAttributes * 3 < attParent.length) || (attParent.length - numberOfAttributes > 1000)) {
-      val k: Int = numberOfAttributes
+      val k = numberOfAttributes
       if (k == 0) {
         attParent = IntArraySet.EMPTY_INT_ARRAY
         attCode = IntArraySet.EMPTY_INT_ARRAY
@@ -282,13 +267,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
         attCode = Arrays.copyOf(attCode, numberOfAttributes)
         attValue = Arrays.copyOf(attValue, numberOfAttributes)
       }
-      if (attType != null) {
+      if (attType != null)
         attType = Arrays.copyOf(attType, numberOfAttributes)
-      }
     }
-    if (numberOfNamespaces * 3 < namespaceMaps.length) {
+    if (numberOfNamespaces * 3 < namespaceMaps.length)
       namespaceMaps = Arrays.copyOf(namespaceMaps, numberOfNamespaces)
-    }
     prefixPool.condense()
     statistics.updateStatistics(numberOfNodes,
       numberOfAttributes,
@@ -296,7 +279,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
       charBuffer.length)
   }
 
-  def setElementAnnotation(nodeNr: Int, `type`: SchemaType): Unit = {
+  def setElementAnnotation(nodeNr: Int, `type`: SchemaType): Unit =
     if (`type` != Untyped.getInstance) {
       if (typeArray == null) {
         typeArray = Array.ofDim[SchemaType](nodeKind.length)
@@ -305,7 +288,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
       assert(typeArray != null)
       typeArray(nodeNr) = `type`
     }
-  }
 
   def getTypeAnnotation(nodeNr: Int): Int =
     if (typeArray == null)
@@ -457,17 +439,14 @@ class TinyTree(config: Configuration, statistics: Statistics)
     attParent(numberOfAttributes) = parent
     attCode(numberOfAttributes) = nameCode
     this.attValue(numberOfAttributes) = attValue.toString
-    if (`type` != BuiltInAtomicType.UNTYPED_ATOMIC) {
+    if (`type` != BuiltInAtomicType.UNTYPED_ATOMIC)
       initializeAttributeTypeCodes()
-    }
-    if (attType != null) {
+    if (attType != null)
       attType(numberOfAttributes) = `type`
-    }
-    if (alpha(parent) == -1) {
+    if (alpha(parent) == -1)
       alpha(parent) = numberOfAttributes
-    }
     if (root.isInstanceOf[TinyDocumentImpl]) {
-      var isID: Boolean = false
+      var isID = false
       try if (ReceiverOption.contains(properties, ReceiverOption.IS_ID)) {
         isID = true
       } else if ((nameCode & NamePool.FP_MASK) == StandardNames.XML_ID) {
@@ -475,14 +454,14 @@ class TinyTree(config: Configuration, statistics: Statistics)
       } else if (`type`.isIdType) {
         isID = true
       } catch {
-        case e: MissingComponentException => {}
+        case _: MissingComponentException =>
 
       }
       if (isID) {
-        val id: String = Whitespace.trim(attValue)
+        val id = Whitespace.trim(attValue)
         this.attValue(numberOfAttributes) = id
         if (NameChecker.isValidNCName(id)) {
-          val e: NodeInfo = getNode(parent)
+          val e = getNode(parent)
           registerID(e, id)
         } else if (attType != null) {
           attType(numberOfAttributes) = BuiltInAtomicType.UNTYPED_ATOMIC
@@ -513,29 +492,24 @@ class TinyTree(config: Configuration, statistics: Statistics)
               }
             }
           }
-
-
         } catch {
-          case ve: ValidationException => {}
-
+          case _: ValidationException =>
         }
       } catch {
-        case e: MissingComponentException => {}
-
+        case _: MissingComponentException =>
       }
       if (isIDREF) {
-        if (idRefAttributes == null) {
+        if (idRefAttributes == null)
           idRefAttributes = new IntHashSet()
-        }
         idRefAttributes.add(numberOfAttributes)
       }
     }
     {
-      numberOfAttributes += 1;
+      numberOfAttributes += 1
     }
   }
 
-  private def initializeAttributeTypeCodes(): Unit = {
+  private def initializeAttributeTypeCodes(): Unit =
     if (attType == null) {
       attType = Array.ofDim[SimpleType](attParent.length)
       Arrays.fill(attType.asInstanceOf[Array[AnyRef]],
@@ -543,12 +517,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
         numberOfAttributes,
         BuiltInAtomicType.UNTYPED_ATOMIC)
     }
-  }
 
   def markDefaultedAttribute(attNr: Int): Unit = {
-    if (defaultedAttributes == null) {
+    if (defaultedAttributes == null)
       defaultedAttributes = new IntHashSet()
-    }
     defaultedAttributes.add(attNr)
   }
 
@@ -556,10 +528,9 @@ class TinyTree(config: Configuration, statistics: Statistics)
     defaultedAttributes != null && defaultedAttributes.contains(attNr)
 
   def indexIDElement(root: NodeInfo, nodeNr: Int): Unit = {
-    val id: String =
-      Whitespace.trim(TinyParentNodeImpl.getStringValueCS(this, nodeNr))
+    val id = Whitespace.trim(TinyParentNodeImpl.getStringValueCS(this, nodeNr))
     if (root.getNodeKind == Type.DOCUMENT && NameChecker.isValidNCName(id)) {
-      val e: NodeInfo = getNode(nodeNr)
+      val e = getNode(nodeNr)
       registerID(e, id)
     }
   }
@@ -653,34 +624,35 @@ class TinyTree(config: Configuration, statistics: Statistics)
     new TinyAttributeImpl(this, nr)
 
   def getAttributeAnnotation(nr: Int): Int =
-    if (attType == null) {
+    if (attType == null)
       StandardNames.XS_UNTYPED_ATOMIC
-    } else {
+    else {
       attType(nr).getFingerprint
     }
 
   def getAttributeType(nr: Int): SimpleType =
-    if (attType == null) {
+    if (attType == null)
       BuiltInAtomicType.UNTYPED_ATOMIC
-    } else {
+    else {
       attType(nr)
     }
 
   def isIdAttribute(nr: Int): Boolean =
-    try attType != null && getAttributeType(nr).isIdType
+    try
+      attType != null && getAttributeType(nr).isIdType
     catch {
-      case e: MissingComponentException => false
-
+      case _: MissingComponentException =>
+        false
     }
 
   def isIdrefAttribute(nr: Int): Boolean =
     idRefAttributes != null && idRefAttributes.contains(nr)
 
   def isIdElement(nr: Int): Boolean =
-    try getSchemaType(nr).isIdType && getTypedValueOfElement(nr).getLength == 1
+    try
+      getSchemaType(nr).isIdType && getTypedValueOfElement(nr).getLength == 1
     catch {
-      case e: XPathException => false
-
+      case _: XPathException => false
     }
 
   def isIdrefElement(nr: Int): Boolean = {
@@ -739,13 +711,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
     Arrays.fill(columnNumbers, -1)
   }
 
-  def setLineNumber(sequence: Int, line: Int, column: Int): Unit = {
+  def setLineNumber(sequence: Int, line: Int, column: Int): Unit =
     if (lineNumbers != null) {
       assert(columnNumbers != null)
       lineNumbers(sequence) = line
       columnNumbers(sequence) = column
     }
-  }
 
   def getLineNumber(sequence: Int): Int = {
     if (lineNumbers != null) {
@@ -774,9 +745,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
   }
 
   def setNilled(nodeNr: Int): Unit = {
-    if (nilledElements == null) {
+    if (nilledElements == null)
       nilledElements = new IntHashSet()
-    }
     nilledElements.add(nodeNr)
   }
 
@@ -856,13 +826,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
           eqName)
     }
     System.err.println("    attr  parent    name    value")
-    for (i <- 0 until numberOfAttributes) {
+    for (i <- 0 until numberOfAttributes)
       System.err.println(n8(i) + n8(attParent(i)) + n8(attCode(i)) + "    " + attValue(i))
-    }
     System.err.println("      ns  parent  prefix     uri")
-    for (i <- 0 until numberOfNamespaces) {
+    for (i <- 0 until numberOfNamespaces)
       System.err.println(n8(i) + "  " + namespaceMaps(i))
-    }
   }
 
   def showSize(): Unit = {
@@ -949,15 +917,14 @@ class TinyTree(config: Configuration, statistics: Statistics)
     val inherited: NamespaceMap = namespaceMaps(beta(parentNodeNr))
     val sameNamespaces: Boolean = subtreeRoot == inherited || inherited.isEmpty
     for (i <- 0 until length) {
-      val from: Int = nodeNr + i
-      val to: Int = numberOfNodes + i
+      val from = nodeNr + i
+      val to = numberOfNodes + i
       depth(to) = (source.depth(from) + depthDiff).toShort
       next(to) = source.next(from) + (to - from)
       source.nodeKind(from) match {
         case Type.ELEMENT => {
           nameCode(to) = (source.nameCode(from) & NamePool.FP_MASK) |
-            (prefixPool.obtainPrefixCode(source.getPrefix(from)) <<
-              20)
+            (prefixPool.obtainPrefixCode(source.getPrefix(from)) << 20)
           val firstAtt: Int = source.alpha(from)
           if (firstAtt >= 0) {
             var lastAtt: Int = firstAtt
@@ -995,13 +962,13 @@ class TinyTree(config: Configuration, statistics: Statistics)
                 idRefAttributes.add(aTo)
               }
               {
-                a += 1;
+                a += 1
               }
               {
-                aFrom += 1;
+                aFrom += 1
               }
               {
-                aTo += 1;
+                aTo += 1
                 aTo - 1
               }
             }

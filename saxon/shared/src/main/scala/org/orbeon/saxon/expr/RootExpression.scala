@@ -1,53 +1,36 @@
 package org.orbeon.saxon.expr
 
+import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.model._
+import org.orbeon.saxon.om.{AxisInfo, NodeInfo, SequenceIterator}
+import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest, NodeTestPattern}
+import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.utils.Configuration
 
-import org.orbeon.saxon.expr.parser._
 
-import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.AxisInfo
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.NodeInfo
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.pattern.AnyNodeTest
-
-import org.orbeon.saxon.pattern.NodeKindTest
-
-import org.orbeon.saxon.pattern.NodeTestPattern
-
-import org.orbeon.saxon.pattern.Pattern
-
-import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.tree.iter.SingletonIterator
-
+/**
+ * An expression whose value is always a set of nodes containing a single node,
+ * the document root. This corresponds to the XPath Expression "/", including the implicit
+ * "/" at the start of a path expression with a leading "/".
+ */
 class RootExpression extends Expression {
 
-  private var contextMaybeUndefined: Boolean = true
+  private var contextMaybeUndefined = true
 
-  private var doneWarnings: Boolean = false
+  private var doneWarnings = false
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val th = visitor.getConfiguration.getTypeHierarchy
-    if (contextInfo == null || contextInfo.getItemType == null ||
-      contextInfo.getItemType == ErrorType) {
-      val err = new XPathException(
-        noContextMessage() + ": the context item is absent")
+    if (contextInfo == null || contextInfo.getItemType == null || contextInfo.getItemType == ErrorType) {
+      val err = new XPathException(noContextMessage() + ": the context item is absent")
       err.setErrorCode("XPDY0002")
       err.setIsTypeError(true)
       err.setLocation(getLocation)
       throw err
-    } else if (!doneWarnings && contextInfo.isParentless &&
-      th.relationship(contextInfo.getItemType, NodeKindTest.DOCUMENT) ==
-        Affinity.DISJOINT) {
+    } else if (!doneWarnings && contextInfo.isParentless && th.relationship(contextInfo.getItemType, NodeKindTest.DOCUMENT) == Affinity.DISJOINT) {
       visitor.issueWarning(
         noContextMessage() +
           ": the context item is parentless and is not a document node",
@@ -56,12 +39,12 @@ class RootExpression extends Expression {
     }
     contextMaybeUndefined = contextInfo.isPossiblyAbsent
     if (th.isSubType(contextInfo.getItemType, NodeKindTest.DOCUMENT)) {
-      val cie: ContextItemExpression = new ContextItemExpression()
+      val cie = new ContextItemExpression()
       ExpressionTool.copyLocationInfo(this, cie)
       cie.setStaticInfo(contextInfo)
       return cie
     }
-    val relation: Affinity.Affinity =
+    val relation =
       th.relationship(contextInfo.getItemType, AnyNodeTest.getInstance)
     if (relation == Affinity.DISJOINT) {
       val err = new XPathException(
@@ -74,18 +57,18 @@ class RootExpression extends Expression {
     this
   }
 
-  override def optimize(visitor: ExpressionVisitor,
-                        contextItemType: ContextItemStaticInfo): Expression =
+  override def optimize(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo): Expression =
     typeCheck(visitor, contextItemType)
 
   override def computeSpecialProperties(): Int =
-    StaticProperty.ORDERED_NODESET | StaticProperty.CONTEXT_DOCUMENT_NODESET |
-      StaticProperty.SINGLE_DOCUMENT_NODESET |
+    StaticProperty.ORDERED_NODESET            |
+      StaticProperty.CONTEXT_DOCUMENT_NODESET |
+      StaticProperty.SINGLE_DOCUMENT_NODESET  |
       StaticProperty.NO_NODES_NEWLY_CREATED
 
   def isContextPossiblyUndefined: Boolean = contextMaybeUndefined
 
-  def noContextMessage(): String = "Leading '/' selects nothing"
+  def noContextMessage() = "Leading '/' selects nothing"
 
   override def equals(other: Any): Boolean = other.isInstanceOf[RootExpression]
 
@@ -100,25 +83,19 @@ class RootExpression extends Expression {
   override def computeHashCode(): Int = "RootExpression".hashCode
 
   def getNode(context: XPathContext): NodeInfo = {
-    val current: Item = context.getContextItem
-    if (current == null) {
-      dynamicError("Finding root of tree: the context item is absent",
-        "XPDY0002",
-        context)
+    val current = context.getContextItem
+    if (current == null)
+      dynamicError("Finding root of tree: the context item is absent", "XPDY0002", context)
+    current match {
+      case nodeInfo: NodeInfo =>
+        val doc = nodeInfo.getRoot
+        println(s"xxx RootExpression root doc = $doc, ${doc.getNodeKind}")
+        if (doc.getNodeKind != Type.DOCUMENT)
+          dynamicError("The root of the tree containing the context item is not a document node", "XPDY0050", context)
+        return doc
+      case _ =>
     }
-    if (current.isInstanceOf[NodeInfo]) {
-      val doc: NodeInfo = current.asInstanceOf[NodeInfo].getRoot
-      if (doc.getNodeKind != Type.DOCUMENT) {
-        dynamicError(
-          "The root of the tree containing the context item is not a document node",
-          "XPDY0050",
-          context)
-      }
-      return doc
-    }
-    typeError("Finding root of tree: the context item is not a node",
-      "XPTY0020",
-      context)
+    typeError("Finding root of tree: the context item is not a node", "XPTY0020", context)
     null
   }
 
@@ -126,12 +103,12 @@ class RootExpression extends Expression {
     StaticProperty.DEPENDS_ON_CONTEXT_DOCUMENT
 
   def copy(rebindings: RebindingMap): Expression = {
-    val exp: RootExpression = new RootExpression()
+    val exp = new RootExpression()
     ExpressionTool.copyLocationInfo(this, exp)
     exp
   }
 
-  override def toPattern(config: Configuration): Pattern =
+  override def toPattern(config: Configuration) =
     new NodeTestPattern(NodeKindTest.DOCUMENT)
 
   override def addToPathMap(
@@ -139,16 +116,16 @@ class RootExpression extends Expression {
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     var pmnSet = pathMapNodeSet
     if (pmnSet == null) {
-      val cie: ContextItemExpression = new ContextItemExpression()
+      val cie = new ContextItemExpression()
       ExpressionTool.copyLocationInfo(this, cie)
       pmnSet = new PathMap.PathMapNodeSet(pathMap.makeNewRoot(cie))
     }
     pmnSet.createArc(AxisInfo.ANCESTOR_OR_SELF, NodeKindTest.DOCUMENT)
   }
 
-  override def toString: String = "(/)"
+  override def toString = "(/)"
 
-  override def getExpressionName: String = "root"
+  override def getExpressionName = "root"
 
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("root", this)
@@ -163,6 +140,6 @@ class RootExpression extends Expression {
   override def effectiveBooleanValue(context: XPathContext): Boolean =
     getNode(context) != null
 
-  override def getStreamerName: String = "RootExpression"
+  override def getStreamerName = "RootExpression"
 
 }

@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.expr.{StaticProperty, XPathContext}
@@ -18,6 +24,9 @@ import scala.util.control.Breaks._
 import scala.jdk.CollectionConverters._
 
 
+/**
+ * An AlphaCode is a compact, context-independent string representation of a SequenceType
+ */
 object AlphaCode {
 
   trait ParserCallBack[T] {
@@ -29,6 +38,7 @@ object AlphaCode {
   }
 
   private class MapItemCallBack extends AlphaCode.ParserCallBack[DictionaryMap] {
+
     def makeContainer = new DictionaryMap
 
     def setStringProperty(container: DictionaryMap, key: String, value: String): Unit = container.initialPut(key, new StringValue(value))
@@ -36,9 +46,8 @@ object AlphaCode {
     def setMultiStringProperty(container: DictionaryMap, key: String, value: util.List[String]): Unit = {
       val xdmValue = new util.ArrayList[StringValue]
 
-      for (v <- value.asScala) {
+      for (v <- value.asScala)
         xdmValue.add(new StringValue(v))
-      }
       container.initialPut(key, new SequenceExtent(xdmValue))
     }
 
@@ -373,7 +382,7 @@ object AlphaCode {
       }
     }
     else if (principal.startsWith("N")) {
-      val contentName: String = tree.content
+      val contentName = tree.content
       var contentQName: StructuredQName = null
       var contentTest: ContentTypeTest = null
       val nillable = tree.nillable
@@ -424,7 +433,8 @@ object AlphaCode {
           val uri = name.substring(2, name.length - 2)
           partialNameTest = new NamespaceTest(config.getNamePool, kind, uri)
         }
-        if (partialNameTest != null) itemType = partialNameTest.asInstanceOf[NodeTest]
+        if (partialNameTest != null)
+          itemType = partialNameTest.asInstanceOf[NodeTest]
         else {
           val qName = if (name == null) null
           else StructuredQName.fromEQName(name)
@@ -464,7 +474,7 @@ object AlphaCode {
               }
             case "NES" =>
               assert(qName != null)
-              val decl: SchemaDeclaration = config.getElementDeclaration(qName)
+              val decl = config.getElementDeclaration(qName)
               if (decl != null) try itemType = decl.makeSchemaNodeTest
               catch {
                 case _: MissingComponentException =>
@@ -472,10 +482,10 @@ object AlphaCode {
               if (itemType == null) itemType = new NameTest(Type.ELEMENT, qName.getURI, qName.getLocalPart, config.getNamePool)
             case "NAS" =>
               assert(qName != null)
-              val decl: SchemaDeclaration = config.getAttributeDeclaration(qName)
+              val decl = config.getAttributeDeclaration(qName)
               if (decl != null) try itemType = decl.makeSchemaNodeTest
               catch {
-                case e: MissingComponentException =>
+                case _: MissingComponentException =>
               }
               if (itemType == null) itemType = new NameTest(Type.ATTRIBUTE, qName.getURI, qName.getLocalPart, config.getNamePool)
             case _ =>
@@ -522,13 +532,14 @@ object AlphaCode {
       }
     }
     val indicator = tree.cardinality
-    val cardinality: Int = Cardinality.fromOccurrenceIndicator(indicator).asInstanceOf[Int]
+    val cardinality = Cardinality.fromOccurrenceIndicator(indicator).asInstanceOf[Int]
     SequenceType.makeSequenceType(itemType, cardinality)
   }
 
   private def makeTree(sequenceType: SequenceType): AlphaCodeTree = {
     val tree = makeTree(sequenceType.getPrimaryType)
-    if (sequenceType.getCardinality != StaticProperty.EXACTLY_ONE) tree.cardinality = Cardinality.getOccurrenceIndicator(sequenceType.getCardinality)
+    if (sequenceType.getCardinality != StaticProperty.EXACTLY_ONE)
+      tree.cardinality = Cardinality.getOccurrenceIndicator(sequenceType.getCardinality)
     tree
   }
 
@@ -537,41 +548,36 @@ object AlphaCode {
     result.principal = primary.getBasicAlphaCode
     result.cardinality = "1"
     primary match {
-      case atomicType: AtomicType if !atomicType.isBuiltInType => result.name = atomicType.getEQName
+      case atomicType: AtomicType if !atomicType.isBuiltInType =>
+        result.name = atomicType.getEQName
       case unionType: UnionType =>
         val name = unionType.getTypeName
-        if (name.getURI == NamespaceConstant.SCHEMA) {
-          result.name = "~" + name.getLocalPart
-        }
-        else if (name.getURI == NamespaceConstant.ANONYMOUS) {
-          try {
-            val memberMaps = new util.ArrayList[AlphaCodeTree]
-
-            for (pt <- unionType.getPlainMemberTypes) {
-              memberMaps.add(makeTree(pt))
-            }
-            result.members = memberMaps
-          } catch {
-            case e: MissingComponentException =>
-          }
-        }
-        else result.name = name.getEQName
+        if (name.getURI == NamespaceConstant.SCHEMA) result.name = "~" + name.getLocalPart else if (name.getURI == NamespaceConstant.ANONYMOUS) try {
+          val memberMaps = new util.ArrayList[AlphaCodeTree]
+          for (pt <- unionType.getPlainMemberTypes)
+            memberMaps.add(makeTree(pt))
+          result.members = memberMaps
+        } catch {
+          case _: MissingComponentException =>
+        } else
+          result.name = name.getEQName
       case test: NameTest =>
         val name = test.getMatchingNodeName
         result.name = name.getEQName
       case test: SchemaNodeTest =>
         val name = test.getNodeName
         result.name = name.getEQName
-      case test: LocalNameTest => result.name = "*:" + test.getLocalName
-      case test: NamespaceTest => result.name = "Q{" + test.getNamespaceURI + "}*"
+      case test: LocalNameTest =>
+        result.name = "*:" + test.getLocalName
+      case test: NamespaceTest =>
+        result.name = "Q{" + test.getNamespaceURI + "}*"
       case combi: CombinedNodeTest =>
         val c = combi.getContentTypeForAlphaCode
         if (c != null) {
           result.content = c
           result.name = combi.getMatchingNodeName.getEQName
           result.nillable = combi.isNillable
-        }
-        else {
+        } else {
           result.vennOperator = combi.getOperator
           result.vennOperands = new Array[AlphaCodeTree](2)
           result.vennOperands(0) = makeTree(combi.getOperand(0))
@@ -582,7 +588,6 @@ object AlphaCode {
         val types = primary.getUType.decompose
         result.vennOperands = new Array[AlphaCodeTree](types.size)
         var i = 0
-
         for (itemType <- types.asScala) {
           result.vennOperands({
             i += 1
@@ -639,12 +644,15 @@ object AlphaCode {
       in
 
   private def alphaCodeFromTree(tree: AlphaCode.AlphaCodeTree, withCardinality: Boolean, sb: StringBuilder): Unit = {
-    if (withCardinality) sb.append(tree.cardinality)
+    if (withCardinality)
+      sb.append(tree.cardinality)
     sb.append(tree.principal)
-    if (tree.name != null) sb.append(" n").append(abbreviateEQName(tree.name))
+    if (tree.name != null)
+      sb.append(" n").append(abbreviateEQName(tree.name))
     if (tree.content != null) {
       sb.append(" c").append(abbreviateEQName(tree.content))
-      if (tree.nillable) sb.append("?")
+      if (tree.nillable)
+        sb.append("?")
     }
     if (tree.keyType != null) {
       sb.append(" k[")
@@ -714,8 +722,8 @@ object AlphaCode {
     }
   }
 
-  def fromItemType(`type`: ItemType): String = {
-    val tree = makeTree(`type`)
+  def fromItemType(itemType: ItemType): String = {
+    val tree = makeTree(itemType)
     val sb = new StringBuilder
     alphaCodeFromTree(tree, withCardinality = false, sb)
     sb.toString.trim

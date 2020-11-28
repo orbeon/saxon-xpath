@@ -886,8 +886,8 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     destination.emitAttribute("name", AxisInfo.axisName(axis))
     destination.emitAttribute(
       "nodeTest",
-      AlphaCode.fromItemType(
-        if (test == null) AnyNodeTest.getInstance else test))
+      AlphaCode.fromItemType(if (test == null) AnyNodeTest.getInstance else test)
+    )
     destination.endElement()
   }
 
@@ -926,8 +926,8 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
   override def getStreamerName: String = "AxisExpression"
 
   def getPreconditions: Set[Expression] = {
-    val pre: HashSet[Expression] = new HashSet[Expression](1)
-    val a: Expression = this.copy(new RebindingMap())
+    val pre = new HashSet[Expression](1)
+    val a = this.copy(new RebindingMap())
     a.setRetainedStaticContext(getRetainedStaticContext)
     pre.add(a)
     pre

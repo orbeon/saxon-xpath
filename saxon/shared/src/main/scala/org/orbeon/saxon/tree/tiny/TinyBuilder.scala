@@ -304,9 +304,8 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       nodeNr -= 1
       tree.numberOfNodes -= 1
 
-      if (currentDepth == 0) {
+      if (currentDepth == 0)
         currentRoot = tree.getNode(nodeNr)
-      }
     }
     // Collapse a simple element with text content and no attributes or namespaces into a single node
     // of type TRIVIAL_ELEMENT
