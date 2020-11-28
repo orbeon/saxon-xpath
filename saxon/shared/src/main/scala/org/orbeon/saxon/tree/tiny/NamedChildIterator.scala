@@ -1,16 +1,11 @@
 package org.orbeon.saxon.tree.tiny
 
 import org.orbeon.saxon.model.Type
-import org.orbeon.saxon.om.AtomicSequence
-import org.orbeon.saxon.om.AtomizedValueIterator
-import org.orbeon.saxon.om.NodeInfo
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.AxisIterator
-import org.orbeon.saxon.tree.iter.LookaheadIterator
-import java.util.EnumSet
-
+import org.orbeon.saxon.om.{AtomicSequence, AtomizedValueIterator, NodeInfo}
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
+import org.orbeon.saxon.tree.iter.{AxisIterator, LookaheadIterator}
+
 
 class NamedChildIterator(private var tree: TinyTree,
                          private var node: TinyNodeImpl,
@@ -24,30 +19,27 @@ class NamedChildIterator(private var tree: TinyTree,
 
   private var needToAdvance: Boolean = false
 
-  private var startNode: TinyNodeImpl = node
+  private val startNode: TinyNodeImpl = node
 
-  if (((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT) ||
-    (tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) {
+  if (((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT) || (tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint)
     needToAdvance = true
-  }
 
   def next(): NodeInfo = {
     if (needToAdvance) {
-      val thisNode: Int = nextNodeNr
+      val thisNode = nextNodeNr
       do {
         nextNodeNr = tree.next(nextNodeNr)
         if (nextNodeNr < thisNode) {
           nextNodeNr = -1
           needToAdvance = false
-          null
+          return null
         }
-      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) ||
-        ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT));
+      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT))
     } else if (nextNodeNr == -1) {
       return null
     }
     needToAdvance = true
-    val nextNode: TinyNodeImpl = tree.getNode(nextNodeNr)
+    val nextNode = tree.getNode(nextNodeNr)
     nextNode.setParentNode(startNode)
     nextNode
   }
@@ -60,10 +52,9 @@ class NamedChildIterator(private var tree: TinyTree,
         if (nextNodeNr < thisNode) {
           nextNodeNr = -1
           needToAdvance = false
-          null
+          return null
         }
-      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) ||
-        (tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT);
+      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || (tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT)
     } else if (nextNodeNr == -1) {
       return null
     }
@@ -72,15 +63,14 @@ class NamedChildIterator(private var tree: TinyTree,
   }
 
   def hasNext: Boolean = {
-    var n: Int = nextNodeNr
+    var n = nextNodeNr
     if (needToAdvance) {
-      val thisNode: Int = n
+      val thisNode = n
       do {
         n = tree.next(n)
-        if (n < thisNode) {
-          false
-        }
-      } while ((tree.nodeKind(n) & 0xf) != Type.ELEMENT || (tree.nameCode(n) & 0xfffff) != fingerprint);
+        if (n < thisNode)
+          return false
+      } while ((tree.nodeKind(n) & 0xf) != Type.ELEMENT || (tree.nameCode(n) & 0xfffff) != fingerprint)
       true
     } else {
       n != -1
@@ -89,5 +79,4 @@ class NamedChildIterator(private var tree: TinyTree,
 
   override def getProperties: Set[Property] =
     Set(Property.LOOKAHEAD, Property.ATOMIZING)
-
 }

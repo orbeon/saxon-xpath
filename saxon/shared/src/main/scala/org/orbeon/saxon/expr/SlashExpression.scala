@@ -14,6 +14,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
+
 class SlashExpression(start: Expression, step: Expression)
   extends BinaryExpression(start, Token.SLASH, step)
     with ContextSwitchingExpression {
@@ -21,20 +22,20 @@ class SlashExpression(start: Expression, step: Expression)
   var contextFree: Boolean = _
 
   override def getOperandRole(arg: Int): OperandRole =
-    if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT
-    else OperandRole.FOCUS_CONTROLLED_ACTION
+    if (arg == 0)
+      OperandRole.FOCUS_CONTROLLING_SELECT
+    else
+      OperandRole.FOCUS_CONTROLLED_ACTION
 
   def getStart: Expression = getLhsExpression
 
-  def setStart(start: Expression): Unit = {
+  def setStart(start: Expression): Unit =
     this.setLhsExpression(start)
-  }
 
   def getStep: Expression = getRhsExpression
 
-  def setStep(step: Expression): Unit = {
+  def setStep(step: Expression): Unit =
     this.setRhsExpression(step)
-  }
 
   override def getExpressionName: String = "pathExpression"
 
@@ -60,31 +61,27 @@ class SlashExpression(start: Expression, step: Expression)
     val config = visitor.getConfiguration
     val tc = config.getTypeChecker(false)
 
-    val role0: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "/", 0)
+    val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "/", 0)
     role0.setErrorCode("XPTY0019")
     setStart(tc.staticTypeCheck(getStart, SequenceType.NODE_SEQUENCE, role0, visitor))
 
-    val startType: ItemType = getStart.getItemType
+    val startType = getStart.getItemType
     if (startType == ErrorType)
       return Literal.makeEmptySequence
 
-    val cit: ContextItemStaticInfo =
-      config.makeContextItemStaticInfo(startType, maybeUndefined = false)
+    val cit = config.makeContextItemStaticInfo(startType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
 
     getRhs.typeCheck(visitor, cit)
-    val e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
+
+    val e2 = simplifyDescendantPath(visitor.getStaticContext)
     if (e2 != null)
       return e2.typeCheck(visitor, contextInfo)
-    if (getStart.isInstanceOf[ContextItemExpression] &&
-      getStep.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
+    if (getStart.isInstanceOf[ContextItemExpression] && getStep.hasSpecialProperty(StaticProperty.ORDERED_NODESET))
       return getStep
-    }
-    if (getStep.isInstanceOf[ContextItemExpression] &&
-      getStart.hasSpecialProperty(StaticProperty.ORDERED_NODESET)) {
+    if (getStep.isInstanceOf[ContextItemExpression] && getStart.hasSpecialProperty(StaticProperty.ORDERED_NODESET))
       return getStart
-    }
+
     getStep match {
       case expression: AxisExpression if config.getTypeHierarchy.isSubType(startType, getStep.getItemType) && expression.getAxis == AxisInfo.SELF =>
         getStart
@@ -94,19 +91,16 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   def simplifyDescendantPath(env: StaticContext): SlashExpression = {
-    var underlyingStep: Expression = getStep
+    var underlyingStep = getStep
     while (underlyingStep.isInstanceOf[FilterExpression]) {
-      if (underlyingStep
-        .asInstanceOf[FilterExpression]
-        .isPositional(env.getConfiguration.getTypeHierarchy)) {
+      if (underlyingStep.asInstanceOf[FilterExpression].isPositional(env.getConfiguration.getTypeHierarchy))
         return null
-      }
-      underlyingStep =
-        underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
+      underlyingStep = underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
     }
-    if (!underlyingStep.isInstanceOf[AxisExpression]) {
+
+    if (! underlyingStep.isInstanceOf[AxisExpression])
       return null
-    }
+
     var st: Expression = getStart
     st match {
       case axisExpression: AxisExpression =>
@@ -118,24 +112,31 @@ class SlashExpression(start: Expression, step: Expression)
         ExpressionTool.copyLocationInfo(this, st)
       case _ =>
     }
+
     if (! st.isInstanceOf[SlashExpression])
       return null
+
     val startPath = st.asInstanceOf[SlashExpression]
     if (! startPath.getStep.isInstanceOf[AxisExpression])
       return null
+
     val mid = startPath.getStep.asInstanceOf[AxisExpression]
     if (mid.getAxis != AxisInfo.DESCENDANT_OR_SELF)
       return null
+
     val test = mid.getNodeTest
     if (!(test == null || test.isInstanceOf[AnyNodeTest]))
       return null
+
     val underlyingAxis = underlyingStep.asInstanceOf[AxisExpression].getAxis
-    if (underlyingAxis == AxisInfo.CHILD || underlyingAxis == AxisInfo.DESCENDANT ||
-      underlyingAxis == AxisInfo.DESCENDANT_OR_SELF) {
-      val newAxis: Int =
+    if (underlyingAxis == AxisInfo.CHILD || underlyingAxis == AxisInfo.DESCENDANT || underlyingAxis == AxisInfo.DESCENDANT_OR_SELF) {
+
+      val newAxis =
         if (underlyingAxis == AxisInfo.DESCENDANT_OR_SELF)
           AxisInfo.DESCENDANT_OR_SELF
-        else AxisInfo.DESCENDANT
+        else
+          AxisInfo.DESCENDANT
+
       var newStep: Expression = new AxisExpression(
         newAxis,
         underlyingStep.asInstanceOf[AxisExpression].getNodeTest)
@@ -144,15 +145,14 @@ class SlashExpression(start: Expression, step: Expression)
       var filters: List[Expression] = Nil
       while (underlyingStep.isInstanceOf[FilterExpression]) {
         filters ::= underlyingStep.asInstanceOf[FilterExpression].getFilter
-        underlyingStep =
-          underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
+        underlyingStep = underlyingStep.asInstanceOf[FilterExpression].getSelectExpression
       }
       while (filters.nonEmpty) {
         newStep = new FilterExpression(newStep, { val r = filters.head; filters = filters.tail; r })
         ExpressionTool.copyLocationInfo(getStep, newStep)
       }
-      val newPath: Expression =
-        ExpressionTool.makePathExpression(startPath.getStart, newStep)
+
+      val newPath = ExpressionTool.makePathExpression(startPath.getStart, newStep)
 
       if (! newPath.isInstanceOf[SlashExpression])
         return null
@@ -176,35 +176,34 @@ class SlashExpression(start: Expression, step: Expression)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    val config: Configuration = visitor.getConfiguration
+
+    val config = visitor.getConfiguration
     val th = config.getTypeHierarchy
-    val opt: Optimizer = visitor.obtainOptimizer()
+    val opt = visitor.obtainOptimizer()
     getLhs.optimize(visitor, contextItemType)
-    val cit: ContextItemStaticInfo = visitor.getConfiguration
-      .makeContextItemStaticInfo(getStart.getItemType, maybeUndefined = false)
+    val cit = visitor.getConfiguration.makeContextItemStaticInfo(getStart.getItemType, maybeUndefined = false)
     cit.setContextSettingExpression(getStart)
     getRhs.optimize(visitor, cit)
-    if (Literal.isEmptySequence(getStart) || Literal.isEmptySequence(getStep)) {
-      Literal.makeEmptySequence
-    }
-    if (getStart.isInstanceOf[RootExpression] &&
-      th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)) {
-      getStep
-    }
+
+    if (Literal.isEmptySequence(getStart) || Literal.isEmptySequence(getStep))
+      return Literal.makeEmptySequence
+
+    if (getStart.isInstanceOf[RootExpression] && th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT))
+      return getStep
+
     var e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
-    if (e2 != null) {
-      e2.optimize(visitor, contextItemType)
-    }
-    val firstStep: Expression = getFirstStep
-    if (!(firstStep.isCallOn(classOf[Doc]) || firstStep.isCallOn(
-      classOf[DocumentFn]))) {
+    if (e2 != null)
+      return e2.optimize(visitor, contextItemType)
+
+    val firstStep = getFirstStep
+    if (! (firstStep.isCallOn(classOf[Doc]) || firstStep.isCallOn(classOf[DocumentFn]))) {
       getLastStep match {
-        case expression: FilterExpression if !expression.isPositional(th) =>
+        case expression: FilterExpression if ! expression.isPositional(th) =>
           val leading = getLeadingSteps
           val p2 = ExpressionTool.makePathExpression(leading, expression.getSelectExpression)
           val f2 = new FilterExpression(p2, expression.getFilter)
           ExpressionTool.copyLocationInfo(this, f2)
-          f2.optimize(visitor, contextItemType)
+          return f2.optimize(visitor, contextItemType)
         case _ =>
       }
     }
@@ -213,11 +212,13 @@ class SlashExpression(start: Expression, step: Expression)
       if (k != null)
         return k.typeCheck(visitor, contextItemType).optimize(visitor, contextItemType)
     }
+
     e2 = tryToMakeSorted(visitor, contextItemType)
     if (e2 != null)
       return e2
+
     if (getStep.isInstanceOf[AxisExpression]) {
-      if (!Cardinality.allowsMany(getStart.getCardinality)) {
+      if (! Cardinality.allowsMany(getStart.getCardinality)) {
         val sse = new SimpleStepExpression(getStart, getStep)
         ExpressionTool.copyLocationInfo(this, sse)
         sse.setParentExpression(getParentExpression)
@@ -246,7 +247,7 @@ class SlashExpression(start: Expression, step: Expression)
           copyOf.setSelect(getStart)
           rawStep.resetLocalStaticProperties()
           getStep.resetLocalStaticProperties()
-          getStep
+          return getStep
         case _ =>
       }
     }
@@ -269,7 +270,7 @@ class SlashExpression(start: Expression, step: Expression)
           if (! path.isInstanceOf[SlashExpression])
             return null
           ExpressionTool.copyLocationInfo(this, path)
-          path.asInstanceOf[SlashExpression]
+          return path.asInstanceOf[SlashExpression]
         }
       case _ =>
     }
@@ -292,44 +293,41 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   override def getCost: Double = {
-    val factor: Int =
-      if (Cardinality.allowsMany(getLhsExpression.getCardinality)) 5 else 1
-    val lh: Double = getLhsExpression.getCost + 1
-    val rh: Double = getRhsExpression.getCost
-    val product: Double = lh + factor * rh
+    val factor = if (Cardinality.allowsMany(getLhsExpression.getCardinality)) 5 else 1
+    val lh = getLhsExpression.getCost + 1
+    val rh = getRhsExpression.getCost
+    val product = lh + factor * rh
     Math.max(product, Expression.MAX_COST)
   }
 
   def tryToMakeSorted(visitor: ExpressionVisitor,
                       contextItemType: ContextItemStaticInfo): Expression = {
-    val config: Configuration = visitor.getConfiguration
+    val config = visitor.getConfiguration
     val th = config.getTypeHierarchy
-    val opt: Optimizer = visitor.obtainOptimizer()
-    val s1: Expression = ExpressionTool.unfilteredExpression(getStart, allowPositional = false)
-    if (!(s1.isInstanceOf[AxisExpression] &&
+    val opt = visitor.obtainOptimizer()
+    val s1 = ExpressionTool.unfilteredExpression(getStart, allowPositional = false)
+    if (! (s1.isInstanceOf[AxisExpression] &&
       s1.asInstanceOf[AxisExpression].getAxis == AxisInfo.DESCENDANT)) {
       return null
     }
-    val s2: Expression = ExpressionTool.unfilteredExpression(getStep, allowPositional = false)
+    val s2 = ExpressionTool.unfilteredExpression(getStep, allowPositional = false)
     if (!(s2.isInstanceOf[AxisExpression] &&
       s2.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD)) {
       return null
     }
-    val x: Expression = getStart.copy(new RebindingMap())
-    val ax: AxisExpression = ExpressionTool
+    val x = getStart.copy(new RebindingMap())
+    val ax = ExpressionTool
       .unfilteredExpression(x, allowPositional = false)
       .asInstanceOf[AxisExpression]
     ax.setAxis(AxisInfo.PARENT)
-    val y: Expression = getStep.copy(new RebindingMap())
-    val ay: AxisExpression = ExpressionTool
+    val y = getStep.copy(new RebindingMap())
+    val ay = ExpressionTool
       .unfilteredExpression(y, allowPositional = false)
       .asInstanceOf[AxisExpression]
     ay.setAxis(AxisInfo.DESCENDANT)
     var k: Expression = new FilterExpression(y, x)
-    if (!th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)) {
-      k = new SlashExpression(
-        new AxisExpression(AxisInfo.CHILD, NodeKindTest.ELEMENT),
-        k)
+    if (! th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)) {
+      k = new SlashExpression(new AxisExpression(AxisInfo.CHILD, NodeKindTest.ELEMENT), k)
       ExpressionTool.copyLocationInfo(this, k)
       opt.trace(
         "Rewrote descendant::X/child::Y as child::*/descendant::Y[parent::X]",
@@ -372,71 +370,49 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   override def computeSpecialProperties(): Int = {
-    var startProperties: Int = getStart.getSpecialProperties
-    var stepProperties: Int = getStep.getSpecialProperties
-    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) !=
-      0) {
-      StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET |
-        StaticProperty.NO_NODES_NEWLY_CREATED
-    }
-    var p: Int = 0
-    if (!Cardinality.allowsMany(getStart.getCardinality)) {
-      startProperties |= StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET |
-        StaticProperty.SINGLE_DOCUMENT_NODESET
-    }
-    if (!Cardinality.allowsMany(getStep.getCardinality)) {
-      stepProperties |= StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET |
-        StaticProperty.SINGLE_DOCUMENT_NODESET
-    }
-    if ((startProperties & stepProperties & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
-      0) {
+
+    var startProperties = getStart.getSpecialProperties
+    var stepProperties = getStep.getSpecialProperties
+
+    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) != 0)
+      return StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET | StaticProperty.NO_NODES_NEWLY_CREATED
+
+    var p = 0
+    if (!Cardinality.allowsMany(getStart.getCardinality))
+      startProperties |= StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET | StaticProperty.SINGLE_DOCUMENT_NODESET
+    if (!Cardinality.allowsMany(getStep.getCardinality))
+      stepProperties |= StaticProperty.ORDERED_NODESET | StaticProperty.PEER_NODESET | StaticProperty.SINGLE_DOCUMENT_NODESET
+    if ((startProperties & stepProperties & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0)
       p |= StaticProperty.CONTEXT_DOCUMENT_NODESET
-    }
-    if (((startProperties & StaticProperty.SINGLE_DOCUMENT_NODESET) !=
-      0) &&
-      ((stepProperties & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
-        0)) {
+    if (((startProperties & StaticProperty.SINGLE_DOCUMENT_NODESET) != 0) && ((stepProperties & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0))
       p |= StaticProperty.SINGLE_DOCUMENT_NODESET
-    }
-    if ((startProperties & stepProperties & StaticProperty.PEER_NODESET) !=
-      0) {
+    if ((startProperties & stepProperties & StaticProperty.PEER_NODESET) != 0)
       p |= StaticProperty.PEER_NODESET
-    }
-    if ((startProperties & stepProperties & StaticProperty.SUBTREE_NODESET) !=
-      0) {
+    if ((startProperties & stepProperties & StaticProperty.SUBTREE_NODESET) != 0)
       p |= StaticProperty.SUBTREE_NODESET
-    }
-    if (testNaturallySorted(startProperties, stepProperties)) {
+    if (testNaturallySorted(startProperties, stepProperties))
       p |= StaticProperty.ORDERED_NODESET
-    }
-    if (testNaturallyReverseSorted()) {
+    if (testNaturallyReverseSorted())
       p |= StaticProperty.REVERSE_DOCUMENT_ORDER
-    }
-    if ((startProperties & stepProperties & StaticProperty.NO_NODES_NEWLY_CREATED) !=
-      0) {
+    if ((startProperties & stepProperties & StaticProperty.NO_NODES_NEWLY_CREATED) != 0)
       p |= StaticProperty.NO_NODES_NEWLY_CREATED
-    }
     p
   }
 
   private def testNaturallySorted(startProperties: Int,
                                   stepProperties: Int): Boolean = {
-    if ((stepProperties & StaticProperty.ORDERED_NODESET) == 0) {
+    if ((stepProperties & StaticProperty.ORDERED_NODESET) == 0)
       return false
-    }
     if (Cardinality.allowsMany(getStart.getCardinality)) {
-      if ((startProperties & StaticProperty.ORDERED_NODESET) == 0) {
+      if ((startProperties & StaticProperty.ORDERED_NODESET) == 0)
         return false
-      }
     } else {
       return true
     }
-    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) != 0) {
+    if ((stepProperties & StaticProperty.ATTRIBUTE_NS_NODESET) != 0)
       return true
-    }
-    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) != 0) {
+    if ((stepProperties & StaticProperty.ALL_NODES_NEWLY_CREATED) != 0)
       return true
-    }
     ((startProperties & StaticProperty.PEER_NODESET) != 0) &&
       ((stepProperties & StaticProperty.SUBTREE_NODESET) != 0)
   }
@@ -451,14 +427,14 @@ class SlashExpression(start: Expression, step: Expression)
     }
 
   override def computeCardinality(): Int = {
-    val c1: Int = getStart.getCardinality
-    val c2: Int = getStep.getCardinality
+    val c1 = getStart.getCardinality
+    val c2 = getStep.getCardinality
     Cardinality.multiply(c1, c2)
   }
 
   override def toPattern(config: Configuration): Pattern = {
-    val head: Expression = getLeadingSteps
-    val tail: Expression = getLastStep
+    val head = getLeadingSteps
+    val tail = getLastStep
     head match {
       case checker: ItemChecker =>
         if (checker.getBaseExpression.isInstanceOf[ContextItemExpression])
@@ -499,15 +475,13 @@ class SlashExpression(start: Expression, step: Expression)
 
   def isContextFree: Boolean = contextFree
 
-  def setContextFree(free: Boolean): Unit = {
+  def setContextFree(free: Boolean): Unit =
     this.contextFree = free
-  }
 
   override def equals(other: Any): Boolean = {
-    if (!other.isInstanceOf[SlashExpression]) {
+    if (! other.isInstanceOf[SlashExpression])
       return false
-    }
-    val p: SlashExpression = other.asInstanceOf[SlashExpression]
+    val p = other.asInstanceOf[SlashExpression]
     getStart.isEqual(p.getStart) && getStep.isEqual(p.getStep)
   }
 
@@ -516,13 +490,13 @@ class SlashExpression(start: Expression, step: Expression)
 
   override def iterate(context: XPathContext): SequenceIterator = {
     if (contextFree) {
-      new MappingIterator(getStart.iterate(context),
+      return new MappingIterator(getStart.iterate(context),
         item =>
           getRhsExpression
             .asInstanceOf[AxisExpression]
             .iterate(item.asInstanceOf[NodeInfo]))
     }
-    val context2: XPathContext = context.newMinorContext()
+    val context2 = context.newMinorContext()
     context2.trackFocus(getStart.iterate(context))
     new ContextMappingIterator(c1 => getStep.iterate(c1), context2)
   }
@@ -553,9 +527,9 @@ class SlashExpression(start: Expression, step: Expression)
 
   def getRemainingSteps: Expression =
     if (getStart.isInstanceOf[SlashExpression]) {
-      val list: ju.List[Expression] = new ju.ArrayList[Expression](8)
+      val list = new ju.ArrayList[Expression](8)
       gatherSteps(list)
-      val rem: Expression = rebuildSteps(list.subList(1, list.size))
+      val rem = rebuildSteps(list.subList(1, list.size))
       ExpressionTool.copyLocationInfo(this, rem)
       rem
     } else {
@@ -587,9 +561,9 @@ class SlashExpression(start: Expression, step: Expression)
 
   def getLeadingSteps: Expression =
     if (getStep.isInstanceOf[SlashExpression]) {
-      val list: ju.List[Expression] = new ju.ArrayList[Expression](8)
+      val list = new ju.ArrayList[Expression](8)
       gatherSteps(list)
-      val rem: Expression = rebuildSteps(list.subList(0, list.size - 1))
+      val rem = rebuildSteps(list.subList(0, list.size - 1))
       ExpressionTool.copyLocationInfo(this, rem)
       rem
     } else {

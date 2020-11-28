@@ -1,9 +1,9 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.om.Item
+import org.orbeon.saxon.om.{Item, SequenceIterator}
 
-import org.orbeon.saxon.om.SequenceIterator
 import scala.util.control.Breaks._
+
 
 class MappingIterator(private var base: SequenceIterator,
                       private var action: MappingFunction)
@@ -23,9 +23,9 @@ class MappingIterator(private var base: SequenceIterator,
             results = null
           }
         }
-        val nextSource: Item = base.next()
+        val nextSource = base.next()
         if (nextSource != null) {
-          val obj: SequenceIterator = action.map(nextSource)
+          val obj = action.map(nextSource)
           if (obj != null) {
             results = obj
             nextItem = results.next()
@@ -37,7 +37,7 @@ class MappingIterator(private var base: SequenceIterator,
           }
         } else {
           results = null
-          null
+          return null
         }
       }
     }
@@ -45,10 +45,8 @@ class MappingIterator(private var base: SequenceIterator,
   }
 
   override def close(): Unit = {
-    if (results != null) {
+    if (results != null)
       results.close()
-    }
     base.close()
   }
-
 }

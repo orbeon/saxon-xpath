@@ -89,7 +89,6 @@ class RootExpression extends Expression {
     current match {
       case nodeInfo: NodeInfo =>
         val doc = nodeInfo.getRoot
-        println(s"xxx RootExpression root doc = $doc, ${doc.getNodeKind}")
         if (doc.getNodeKind != Type.DOCUMENT)
           dynamicError("The root of the tree containing the context item is not a document node", "XPDY0050", context)
         return doc
