@@ -14,6 +14,7 @@ import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
 import scala.beans.BeanProperty
 
+
 object SystemFunction {
 
   def makeCall(name: String,
@@ -145,7 +146,7 @@ abstract class SystemFunction extends AbstractFunction {
     val c = details.cardinality
     if (c == BuiltInFunctionSet.OPT &&
       (details.properties & BuiltInFunctionSet.CARD0) != 0 &&
-      !Cardinality.allowsZero(args(0).getCardinality)) {
+      ! Cardinality.allowsZero(args(0).getCardinality)) {
       StaticProperty.EXACTLY_ONE
     } else {
       c
@@ -191,9 +192,8 @@ abstract class SystemFunction extends AbstractFunction {
         qName.getEQName
     out.emitAttribute("name", name)
     out.emitAttribute("arity", getArity.toString)
-    if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) != 0) {
+    if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) != 0)
       out.emitRetainedStaticContext(getRetainedStaticContext, null)
-    }
     out.endElement()
   }
 
