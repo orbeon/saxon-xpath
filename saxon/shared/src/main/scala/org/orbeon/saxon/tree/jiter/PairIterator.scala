@@ -30,7 +30,6 @@ class PairIterator[T](private var one: T, private var two: T)
     case 0 => one
     case 1 => two
     case _ => throw new NoSuchElementException()
-
   }
 
   override def remove(): Unit = throw new UnsupportedOperationException("remove")

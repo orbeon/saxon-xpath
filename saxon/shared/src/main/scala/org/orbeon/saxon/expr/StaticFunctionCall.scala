@@ -28,9 +28,8 @@ class StaticFunctionCall(private var target: Function,
   extends FunctionCall
     with Callable {
 
-  if (target.getArity != arguments.length) {
+  if (target.getArity != arguments.length)
     throw new IllegalArgumentException("Function call to " + target.getFunctionName + " with wrong number of arguments (" + arguments.length + ")")
-  }
 
   setOperanda(arguments, target.getOperandRoles)
 
@@ -51,25 +50,22 @@ class StaticFunctionCall(private var target: Function,
   }
 
   override def copy(rebindings: RebindingMap): Expression = {
-    val args: Array[Expression] = Array.ofDim[Expression](getArity)
-    for (i <- 0 until args.length) {
+    val args = Array.ofDim[Expression](getArity)
+    for (i <- args.indices)
       args(i) = getArg(i).copy(rebindings)
-    }
     new StaticFunctionCall(target, args)
   }
 
-   override def computeCardinality(): Int =
+  override def computeCardinality(): Int =
     target.getFunctionItemType.getResultType.getCardinality
 
   override def getItemType: ItemType =
     target.getFunctionItemType.getResultType.getPrimaryType
 
   override def getStaticUType(contextItemType: UType): UType = {
-    var result: UType = getItemType.getUType
-    for (o <- operands.asScala if o.getUsage == OperandUsage.TRANSMISSION) {
-      result = result.intersection(
-        o.getChildExpression.getStaticUType(contextItemType))
-    }
+    var result = getItemType.getUType
+    for (o <- operands.asScala if o.getUsage == OperandUsage.TRANSMISSION)
+      result = result.intersection(o.getChildExpression.getStaticUType(contextItemType))
     result
   }
 
@@ -79,92 +75,81 @@ class StaticFunctionCall(private var target: Function,
   override def getExpressionName: String = "staticFunctionCall"
 
   override def export(out: ExpressionPresenter): Unit = {
-    if (target.isInstanceOf[OriginalFunction]) {
-      val options: ExpressionPresenter.ExportOptions =
-        out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
-      val pf: OriginalFunction = target.asInstanceOf[OriginalFunction]
-      out.startElement("origFC", this)
-      out.emitAttribute("name", pf.getFunctionName)
-      out.emitAttribute("pack", options.componentMap.get(pf.getComponent.getContainingPackage).toString)
-      for (o <- operands.asScala) {
-        o.getChildExpression.export(out)
-      }
-      out.endElement()
-    } else {
-      if (target.isInstanceOf[UnionCastableFunction]) {
-        val targetType: UnionType =
-          target.asInstanceOf[UnionConstructorFunction].getTargetType
-        out.startElement("castable", this)
-        if (targetType.isInstanceOf[LocalUnionType]) {
-          out.emitAttribute("to", AlphaCode.fromItemType(targetType))
-        } else {
-          out.emitAttribute("as", targetType.toExportString)
-        }
-        out.emitAttribute(
-          "flags",
-          "u" +
-            (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
-              "e"
-            else ""))
-        for (o <- operands.asScala) {
+    target match {
+      case originalFunction: OriginalFunction =>
+        val options = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+        out.startElement("origFC", this)
+        out.emitAttribute("name", originalFunction.getFunctionName)
+        out.emitAttribute("pack", options.componentMap.get(originalFunction.getComponent.getContainingPackage).toString)
+        for (o <- operands.asScala)
           o.getChildExpression.export(out)
-        }
         out.endElement()
-      } else if (target.isInstanceOf[ListCastableFunction]) {
-        out.startElement("castable", this)
-        out.emitAttribute("as",
-          target
-            .asInstanceOf[ListConstructorFunction]
-            .getTargetType
-            .getStructuredQName)
-        out.emitAttribute(
-          "flags",
-          "l" +
-            (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
-            else ""))
-        for (o <- operands.asScala) {
-          o.getChildExpression.export(out)
+      case _ =>
+        target match {
+          case _: UnionCastableFunction =>
+            val targetType = target.asInstanceOf[UnionConstructorFunction].getTargetType
+            out.startElement("castable", this)
+            if (targetType.isInstanceOf[LocalUnionType])
+              out.emitAttribute("to", AlphaCode.fromItemType(targetType))
+            else
+              out.emitAttribute("as", targetType.toExportString)
+            out.emitAttribute(
+              "flags",
+              "u" +
+                (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
+                  "e"
+                else ""))
+            for (o <- operands.asScala)
+              o.getChildExpression.export(out)
+            out.endElement()
+          case _: ListCastableFunction =>
+            out.startElement("castable", this)
+            out.emitAttribute("as",
+              target
+                .asInstanceOf[ListConstructorFunction]
+                .getTargetType
+                .getStructuredQName)
+            out.emitAttribute(
+              "flags",
+              "l" +
+                (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
+                else ""))
+            for (o <- operands.asScala)
+              o.getChildExpression.export(out)
+            out.endElement()
+          case function: UnionConstructorFunction =>
+            val targetType = function.getTargetType
+            out.startElement("cast", this)
+            if (targetType.isInstanceOf[LocalUnionType])
+              out.emitAttribute("to", AlphaCode.fromItemType(targetType))
+            else
+              out.emitAttribute("as", targetType.toExportString)
+            out.emitAttribute(
+              "flags",
+              "u" +
+                (if (function.isAllowEmpty)
+                  "e"
+                else ""))
+            for (o <- operands.asScala)
+              o.getChildExpression.export(out)
+            out.endElement()
+          case function: ListConstructorFunction =>
+            out.startElement("cast", this)
+            out.emitAttribute("as",
+              function
+                .getTargetType
+                .getStructuredQName)
+            out.emitAttribute(
+              "flags",
+              "l" +
+                (if (function.isAllowEmpty) "e"
+                else ""))
+            for (o <- operands.asScala)
+              o.getChildExpression.export(out)
+            out.endElement()
+          case _ =>
+            super.export(out)
         }
-        out.endElement()
-      } else if (target.isInstanceOf[UnionConstructorFunction]) {
-        val targetType: UnionType =
-          target.asInstanceOf[UnionConstructorFunction].getTargetType
-        out.startElement("cast", this)
-        if (targetType.isInstanceOf[LocalUnionType]) {
-          out.emitAttribute("to", AlphaCode.fromItemType(targetType))
-        } else {
-          out.emitAttribute("as", targetType.toExportString)
-        }
-        out.emitAttribute(
-          "flags",
-          "u" +
-            (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
-              "e"
-            else ""))
-        for (o <- operands.asScala) {
-          o.getChildExpression.export(out)
-        }
-        out.endElement()
-      } else if (target.isInstanceOf[ListConstructorFunction]) {
-        out.startElement("cast", this)
-        out.emitAttribute("as",
-          target
-            .asInstanceOf[ListConstructorFunction]
-            .getTargetType
-            .getStructuredQName)
-        out.emitAttribute(
-          "flags",
-          "l" +
-            (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
-            else ""))
-        for (o <- operands.asScala) {
-          o.getChildExpression.export(out)
-        }
-        out.endElement()
-      } else {
-        super.export(out)
-      }
     }
   }
-
 }

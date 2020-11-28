@@ -112,7 +112,7 @@ class XPathContextMajor private () extends XPathContextMinor {
    *
    * @param controller the Controller
    */
-  def this(controller: Controller) {
+  def this(controller: Controller) = {
     this()
     this.controller = controller
     stackFrame = StackFrame.EMPTY
@@ -127,7 +127,7 @@ class XPathContextMajor private () extends XPathContextMinor {
    *             if it is referenced).
    * @param exec the Executable
    */
-  def this(item: Item, exec: Executable) {
+  def this(item: Item, exec: Executable) = {
     this()
     controller = new Controller(exec.getConfiguration, exec) /*if (exec.isInstanceOf[PreparedStylesheet]) new XsltController(exec.getConfiguration, exec.asInstanceOf[PreparedStylesheet]) // PreparedStylesheet not found
     else*/

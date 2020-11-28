@@ -47,7 +47,6 @@ object ExpressionTool {
     exp
   }
 
-
   def setDeepRetainedStaticContext(exp: Expression, rsc: RetainedStaticContext): Unit = {
     var rSC = rsc
     if (exp.getLocalRetainedStaticContext == null)
@@ -68,7 +67,6 @@ object ExpressionTool {
         to.setRetainedStaticContextLocally(from.getLocalRetainedStaticContext)
     }
 
-
   @throws[XPathException]
   def unsortedIfHomogeneous(exp: Expression, forStreaming: Boolean): Expression = {
     if (exp.isInstanceOf[Literal])
@@ -78,7 +76,6 @@ object ExpressionTool {
     else
       exp.unordered(retainAllNodes = false, forStreaming = forStreaming)
   }
-
 
   def injectCode(exp: Expression, injector: CodeInjector): Expression = {
     exp match {
@@ -90,7 +87,6 @@ object ExpressionTool {
     }
     injector.inject(exp)
   }
-
 
   def lazyEvaluator(exp: Expression, repeatable: Boolean): Evaluator =
     exp match {
@@ -123,7 +119,6 @@ object ExpressionTool {
           else Evaluator.LAZY_SEQUENCE
         }
     }
-
 
   def eagerEvaluator(exp: Expression): Evaluator = {
     exp match {
@@ -199,7 +194,6 @@ object ExpressionTool {
     }
     )
 
-
   def contains(exp: Expression, sameFocusOnly: Boolean, predicate: Predicate[Expression]): Boolean = {
     if (predicate.test(exp))
       return true
@@ -211,7 +205,6 @@ object ExpressionTool {
     false
   }
 
-
   def changesXsltContext(exp: Expression): Boolean = {
     var expression = exp
     expression = exp.getInterpretedExpression
@@ -222,7 +215,6 @@ object ExpressionTool {
     }
     false
   }
-
 
   def isLoopingSubexpression(child: Expression, ancestor: Expression): Boolean = {
     var childExp = child
@@ -282,7 +274,6 @@ object ExpressionTool {
     false
   }
 
-
   def getFocusSettingContainer(exp: Expression): Expression = {
     var child = exp
     var parent = child.getParentExpression
@@ -297,7 +288,6 @@ object ExpressionTool {
     }
     null
   }
-
 
   def getContextDocumentSettingContainer(exp: Expression): Expression = {
     var child = exp
@@ -557,7 +547,6 @@ object ExpressionTool {
     foo(e)
   })
 
-
   def gatherReferencedVariables(e: Expression, list: util.List[Binding]): Unit =
     e match {
       case varRef: VariableReference =>
@@ -596,7 +585,6 @@ object ExpressionTool {
           gatherCalledFunctions(o.getChildExpression, list)
     }
 
-
   def gatherCalledFunctionNames(e: Expression, list: util.List[SymbolicName]): Unit =
     e match {
       case call: UserFunctionCall => list.add(call.getSymbolicName)
@@ -606,7 +594,7 @@ object ExpressionTool {
     }
 
   // Compilation,ExpressionContext scala class not exist
-
+  // ORBEON: Not used by Saxon XPAth.
   @throws[XPathException]
   def optimizeComponentBody(body: Expression/*, compilation: Compilation*/, visitor: ExpressionVisitor, cisi: ContextItemStaticInfo, extractGlobals: Boolean): Expression = { //
     val config = visitor.getConfiguration
@@ -616,7 +604,8 @@ object ExpressionTool {
     var expBody = body
     if (!compileWithTracing) {
      /* if (compilation != null) compileWithTracing = compilation.getCompilerInfo.isCompileWithTracing
-      else*/ if (env.isInstanceOf[QueryModule]) compileWithTracing = env.asInstanceOf[QueryModule].getUserQueryContext.isCompileWithTracing
+      else*/ if (env.isInstanceOf[QueryModule])
+        compileWithTracing = env.asInstanceOf[QueryModule].getUserQueryContext.isCompileWithTracing
       //else if (env.isInstanceOf[ExpressionContext]) compileWithTracing = env.asInstanceOf[ExpressionContext].getStyleElement.getCompilation.getCompilerInfo.isCompileWithTracing
     }
     if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) && !compileWithTracing) {
@@ -643,7 +632,6 @@ object ExpressionTool {
     expBody
   }
 
-
   private def avoidDocumentSort(exp: Expression): Expression = {
     exp match {
       case sorter1: DocumentSorter =>
@@ -666,7 +654,6 @@ object ExpressionTool {
     exp
   }
 
-
   @throws[XPathException]
   def computeEvaluationModesForUserFunctionCalls(exp: Expression): Boolean =
     ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: Any) => {
@@ -685,7 +672,6 @@ object ExpressionTool {
     foo(expression, result)
   })
 
-
   @throws[XPathException]
   def clearStreamabilityData(exp: Expression): Boolean =
     ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: Any) => {
@@ -697,7 +683,6 @@ object ExpressionTool {
 
     foo(expression, result)
   })
-
 
   def resetPropertiesWithinSubtree(exp: Expression): Unit = {
     exp.resetLocalStaticProperties()
@@ -714,7 +699,6 @@ object ExpressionTool {
       o.getChildExpression.setParentExpression(exp)
     }
   }
-
 
   def resolveCallsToCurrentFunction(exp: Expression): Expression =
     if (exp.isCallOn(classOf[Current])) {
@@ -736,7 +720,6 @@ object ExpressionTool {
       else exp
     }
 
-
   def gatherVariableReferences(exp: Expression, binding: Binding, list: util.List[VariableReference]): Unit =
     exp match {
       case varRef: VariableReference if varRef.getBinding eq binding =>
@@ -745,7 +728,6 @@ object ExpressionTool {
         for (o <- exp.operands.asScala)
           gatherVariableReferences(o.getChildExpression, binding, list)
     }
-
 
   @throws[XPathException]
   def processExpressionTree(root: Expression, result: Any, action: ExpressionAction): Boolean = {
@@ -765,7 +747,6 @@ object ExpressionTool {
     def matches(exp: Expression): Boolean
   }
 
-
   def replaceSelectedSubexpressions(exp: Expression, selector: ExpressionTool.ExpressionSelector, replacement: Expression, mustCopy: Boolean): Boolean = {
     var replaced = false
     var mustCpy = mustCopy
@@ -783,7 +764,6 @@ object ExpressionTool {
     }
     replaced
   }
-
 
   def replaceVariableReferences(exp: Expression, binding: Binding, replacement: Expression, mustCopy: Boolean): Boolean = {
     val selector: ExpressionSelector = (child: Expression) => child.isInstanceOf[VariableReference] && (child.asInstanceOf[VariableReference].getBinding eq binding)
@@ -821,7 +801,6 @@ object ExpressionTool {
     rcount
   }
 
-
   def expressionSize(exp: Expression): Int = {
     var expres = exp
     expres = expres.getInterpretedExpression
@@ -832,7 +811,6 @@ object ExpressionTool {
 
     total
   }
-
 
   def rebindVariableReferences(exp: Expression, oldBinding: Binding, newBinding: Binding): Unit =
     exp match {
@@ -864,7 +842,6 @@ object ExpressionTool {
     expr
   }
 
-
   def findOperand(parentExpression: Expression, childExpression: Expression): Operand = {
 
     for (o <- parentExpression.operands.asScala)
@@ -873,7 +850,6 @@ object ExpressionTool {
 
     null
   }
-
 
   private def isFilteredAxisPath(exp: Expression): Boolean =
     unfilteredExpression(exp, allowPositional = true).isInstanceOf[AxisExpression]
@@ -911,7 +887,6 @@ object ExpressionTool {
         } else
           null
     }
-
 
   def factorOutDot(exp: Expression, variable: Binding): Boolean = {
     var changed = false
@@ -994,7 +969,6 @@ object ExpressionTool {
     found
   }
 
-
   def replaceCallsToCurrent(expr: Expression, binding: LocalBinding): Boolean = {
     var found = false
 
@@ -1013,7 +987,6 @@ object ExpressionTool {
       expr.resetLocalStaticProperties()
     found
   }
-
 
   def isNotAllowedInUpdatingContext(exp: Expression): Boolean = !exp.isUpdatingExpression && !exp.isVacuousExpression
 
@@ -1059,7 +1032,6 @@ object ExpressionTool {
     }
     expressionBaseURI
   }
-
 
   def parenthesize(exp: Expression): String =
     if (exp.operands.iterator.hasNext)

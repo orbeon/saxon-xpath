@@ -31,7 +31,7 @@ object SystemFunction {
                    rsc: RetainedStaticContext,
                    arity: Int): SystemFunction = {
     if (rsc == null)
-      throw new NullPointerException()
+      throw new NullPointerException
     val fn = rsc.getConfiguration.makeSystemFunction(name, arity)
     if (fn == null) {
       rsc.getConfiguration.makeSystemFunction(name, arity)

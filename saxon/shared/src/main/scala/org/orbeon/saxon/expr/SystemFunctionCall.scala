@@ -47,13 +47,11 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
   }
 
   override def preEvaluate(visitor: ExpressionVisitor): Expression = {
-    val target: SystemFunction = getTargetFunction
-    if ((target.getDetails.properties & BuiltInFunctionSet.LATE) ==
-      0) {
+    val target = getTargetFunction
+    if ((target.getDetails.properties & BuiltInFunctionSet.LATE) == 0)
       super.preEvaluate(visitor)
-    } else {
+    else
       this
-    }
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -132,15 +130,14 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
    override def computeSpecialProperties(): Int =
     getTargetFunction.getSpecialProperties(getArguments)
 
-  override def getNetCost(): Int = getTargetFunction.getNetCost
+  override def getNetCost: Int = getTargetFunction.getNetCost
 
   override def getScopingExpression: Expression =
     if (isCallOn(classOf[RegexGroup])) {
-      var parent: Expression = getParentExpression
+      var parent = getParentExpression
       while (parent != null) {
-        if (parent.isInstanceOf[AnalyzeString]) {
+        if (parent.isInstanceOf[AnalyzeString])
           return parent
-        }
         parent = parent.getParentExpression
       }
       null

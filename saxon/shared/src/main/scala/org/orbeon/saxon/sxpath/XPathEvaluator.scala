@@ -40,8 +40,7 @@ class XPathEvaluator(config: Configuration) {
     exec.setFunctionLibrary(lib)
 
     val opt = config.obtainOptimizer
-    var exp =
-      ExpressionTool.make(expression, staticContext, 0, -1, null)
+    var exp = ExpressionTool.make(expression, staticContext, 0, -1, null)
 
     val rsc = staticContext.makeRetainedStaticContext
     exp.setRetainedStaticContext(rsc)
@@ -49,8 +48,7 @@ class XPathEvaluator(config: Configuration) {
     val visitor = ExpressionVisitor.make(staticContext)
     val contextItemType = staticContext.getRequiredContextItemType
 
-    val cit =
-      config.makeContextItemStaticInfo(contextItemType, maybeUndefined = true)
+    val cit = config.makeContextItemStaticInfo(contextItemType, maybeUndefined = true)
 
     cit.setParentless(staticContext.isContextItemParentless)
 

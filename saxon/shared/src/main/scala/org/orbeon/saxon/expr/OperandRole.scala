@@ -111,8 +111,7 @@ class OperandRole(var properties: Int, @BeanProperty var usage: OperandUsage) {
   def setsNewFocus(): Boolean = (properties & SETS_NEW_FOCUS) != 0
 
   def hasSameFocus: Boolean =
-    (properties & (USES_NEW_FOCUS | HAS_SPECIAL_FOCUS_RULES)) ==
-      0
+    (properties & (USES_NEW_FOCUS | HAS_SPECIAL_FOCUS_RULES)) == 0
 
   def hasSpecialFocusRules: Boolean =
     (properties & HAS_SPECIAL_FOCUS_RULES) != 0

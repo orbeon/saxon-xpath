@@ -1,43 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.Token
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.trans.XPathException
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, Token}
+import org.orbeon.saxon.model.{BuiltInAtomicType, ItemType}
 import org.orbeon.saxon.value.BooleanValue
 
 
-
-
+/**
+  * This class implements a comparison of a computed value to a literal constant using one of the operators
+  * eq, ne, lt, gt, le, ge. The semantics are identical to ValueComparison, but this is a fast path for an
+  * important common case. Different subclasses handle different types of constant.
+  */
 abstract class CompareToConstant(p0: Expression)
     extends UnaryExpression(p0)
     with ComparisonExpression {
 
    var operator: Int = _
 
-   override def getOperandRole(): OperandRole =
-    OperandRole.SINGLE_ATOMIC
-
-  def getLhsExpression(): Expression = getBaseExpression
-
-  def getLhs(): Operand = getOperand
-
-  def getRhsExpression(): Expression
-
-  def getRhs(): Operand =
-    new Operand(this, getRhsExpression, OperandRole.SINGLE_ATOMIC)
-
+  def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
+  def getLhsExpression: Expression = getBaseExpression
+  def getLhs: Operand = getOperand
+  def getRhsExpression: Expression
+  def getRhs: Operand = new Operand(this, getRhsExpression, OperandRole.SINGLE_ATOMIC)
   def getComparisonOperator: Int = operator
-
   def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
   override def computeSpecialProperties(): Int = StaticProperty.NO_NODES_NEWLY_CREATED
@@ -46,21 +36,18 @@ abstract class CompareToConstant(p0: Expression)
     BooleanValue.get(effectiveBooleanValue(context))
 
   /*@NotNull*/
-
-  override def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.optimize(visitor, contextInfo)
-    if (getLhsExpression.isInstanceOf[Literal]) {
+    if (getLhsExpression.isInstanceOf[Literal])
       Literal.makeLiteral(BooleanValue.get(effectiveBooleanValue(null)), this)
-    }
-    this
+    else
+      this
   }
 
   /*@NotNull*/
-
   override def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
-  def getSingletonOperator(): Int = operator
+  def getSingletonOperator: Int = operator
 
   def convertsUntypedToOther(): Boolean = true
 
@@ -71,20 +58,6 @@ abstract class CompareToConstant(p0: Expression)
     case Token.FLT => c < 0
     case Token.FGE => c >= 0
     case Token.FLE => c <= 0
-    case _ =>
-      throw new UnsupportedOperationException("Unknown operator " + operator)
-
+    case _         => throw new UnsupportedOperationException("Unknown operator " + operator)
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * This class implements a comparison of a computed value to a literal constant using one of the operators
-  * eq, ne, lt, gt, le, ge. The semantics are identical to ValueComparison, but this is a fast path for an
-  * important common case. Different subclasses handle different types of constant.
-  */

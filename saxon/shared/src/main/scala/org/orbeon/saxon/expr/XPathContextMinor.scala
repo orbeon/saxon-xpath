@@ -68,15 +68,15 @@ class XPathContextMinor () extends XPathContext {
 
   def trackFocus(iter: SequenceIterator): FocusIterator = {
     val factory = controller.getFocusTrackerFactory(false)
-    val fit: FocusIterator = factory(iter)
-    this.currentIterator = fit
+    val fit = factory(iter)
+    setCurrentIterator(fit)
     fit
   }
 
   def trackFocusMultithreaded(iter: SequenceIterator): FocusIterator = {
     val factory = controller.getFocusTrackerFactory(true)
     val fit = factory(iter)
-    this.currentIterator = fit
+    setCurrentIterator(fit)
     fit
   }
 

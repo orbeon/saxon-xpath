@@ -114,11 +114,11 @@ abstract class FunctionCall extends Expression {
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextItemType)
-    val opt: Optimizer = visitor.obtainOptimizer()
+    val opt = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       var fixed = true
       breakable {
-        for (o <- operands.asScala if !o.getChildExpression.isInstanceOf[Literal]) {
+        for (o <- operands.asScala if ! o.getChildExpression.isInstanceOf[Literal]) {
           fixed = false
           break()
         }
@@ -243,7 +243,7 @@ abstract class FunctionCall extends Expression {
       return false
     if (getArity != f.getArity)
       return false
-    for (i <- 0 until getArity if !getArg(i).isEqual(f.getArg(i)))
+    for (i <- 0 until getArity if ! getArg(i).isEqual(f.getArg(i)))
       return false
     true
   }
@@ -252,9 +252,8 @@ abstract class FunctionCall extends Expression {
     if (getFunctionName == null)
       return super.computeHashCode()
     var h = getFunctionName.hashCode
-    for (i <- 0 until getArity) {
+    for (i <- 0 until getArity)
       h ^= getArg(i).hashCode
-    }
     h
   }
 
