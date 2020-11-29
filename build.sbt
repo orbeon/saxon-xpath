@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 enablePlugins(ScalaJSPlugin)
 
 
-val saxonVersion = "10.0.0.17-SNAPSHOT"
+val saxonVersion = "10.0.0.19-SNAPSHOT"
 
 val scala212 = "2.12.12"
 val scala213 = "2.13.3"
@@ -16,6 +16,9 @@ ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / traceLevel        := 0
+
+//ThisBuild / Compile    / publishArtifact := false
+//ThisBuild / packageDoc / publishArtifact := false
 
 lazy val DebugTest = config("debug-test") extend Test
 
