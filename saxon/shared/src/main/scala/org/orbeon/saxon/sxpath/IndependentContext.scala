@@ -11,10 +11,8 @@ import org.orbeon.saxon.model.{AnyItemType, ItemType, Type}
 import org.orbeon.saxon.om.{AxisInfo, NamespaceResolver, NodeInfo, StructuredQName}
 import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.value.QNameValue
 
-//import scala.collection.compat._
 import org.orbeon.saxon.utils.Configuration
 
 import scala.jdk.CollectionConverters._
@@ -36,17 +34,22 @@ class IndependentContext(config: Configuration)
   var optimizerOptions         : OptimizerOptions = config.getOptimizerOptions
   var parentlessContextItem    : Boolean = _
 
-  this.setConfiguration(config)
-  clearNamespaces()
-  this.setDefaultFunctionLibrary(31)
+  // Primary constructor
+  locally {
+    this.setConfiguration(config)
+    clearNamespaces()
+    this.setDefaultFunctionLibrary(31)
 
-  usingDefaultFunctionLibrary = true
-  this.defaultCollationName = config.getDefaultCollationName
+    this.usingDefaultFunctionLibrary = true
+    this.defaultCollationName = config.getDefaultCollationName // already set by `setConfiguration()` above
 
-  val pd: PackageData = new PackageData(config)
-  pd.setHostLanguage(HostLanguage.XPATH)
-  pd.setSchemaAware(false)
-  this.packageData = pd
+    this.packageData = {
+      val pd = new PackageData(config)
+      pd.setHostLanguage(HostLanguage.XPATH)
+      pd.setSchemaAware(false)
+      pd
+    }
+  }
 
   def this() = this(new Configuration)
 

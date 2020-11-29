@@ -139,7 +139,7 @@ abstract class AbstractStaticContext extends StaticContext {
   def setTypeAlias(name: StructuredQName, `type`: ItemType): Unit =
     typeAliases.put(name, `type`)
 
-  override def resolveTypeAlias(typeName: StructuredQName): ItemType =
+  def resolveTypeAlias(typeName: StructuredQName): ItemType =
     typeAliases.get(typeName)
 
   def setUnprefixedElementMatchingPolicy(policy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy): Unit =
