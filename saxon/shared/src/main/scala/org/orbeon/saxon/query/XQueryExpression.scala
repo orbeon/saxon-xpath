@@ -228,10 +228,10 @@ class XQueryExpression(var expression: Expression,
     val itr: SequenceIterator = iterator(env)
     val item: Item = itr.next()
 
-    if (item == null) {
-      return null
-    }
-    SequenceTool.convertToJava(item)
+    if (item == null)
+      null
+    else
+      SequenceTool.convertToJava(item)
   }
 
   /*@NotNull*/
@@ -375,7 +375,7 @@ class XQueryExpression(var expression: Expression,
       controller.getConfiguration.getSerializerFactory
     if (outputProperties != null) {
       val iter: util.Enumeration[_] = outputProperties.propertyNames()
-      while (iter.hasMoreElements()) {
+      while (iter.hasMoreElements) {
         val key: String = iter.nextElement().asInstanceOf[String]
         var value: String = outputProperties.getProperty(key)
         try {

@@ -132,7 +132,7 @@ object SequenceTool {
       case _: ExternalObject[_] =>
         item.asInstanceOf[ExternalObject[_]].getObject
       case _ =>
-        val value: AtomicValue = item.asInstanceOf[AtomicValue]
+        val value = item.asInstanceOf[AtomicValue]
         value.getItemType.getPrimitiveType match {
           case StandardNames.XS_STRING         |
                StandardNames.XS_UNTYPED_ATOMIC |
@@ -263,19 +263,17 @@ object SequenceTool {
     }
   }
 
-  def process(value: Sequence, output: Outputter, locationId: Location): Unit = {
+  def process(value: Sequence, output: Outputter, locationId: Location): Unit =
     value
       .iterate()
       .forEachOrFail(it =>
         output.append(it, locationId, ReceiverOption.ALL_NAMESPACES))
-  }
 
   def makeSequenceArray(length: Int): Array[Sequence] =
     Array.ofDim[Sequence](length)
 
   def fromItems(items: Item*): Array[Sequence] = {
-    val seq: Array[Sequence] =
-      Array.ofDim[Sequence](items.length)
+    val seq = Array.ofDim[Sequence](items.length)
     System.arraycopy(items, 0, seq, 0, items.length)
     seq
   }

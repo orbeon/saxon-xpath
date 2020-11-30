@@ -97,9 +97,8 @@ class LoopLifter(@BeanProperty var root: Expression,
     while (parent != null) {
       parent match {
         case _: ConditionalInstruction =>
-          val o: Operand = ExpressionTool.findOperand(parent, expressn)
-          if (o == null)
-            throw new AssertionError()
+          val o = ExpressionTool.findOperand(parent, expressn)
+          assert(o ne null)
           if (o.getOperandRole.isInChoiceGroup)
             return parent
         case _: TryCatch =>
