@@ -12,7 +12,7 @@ import org.orbeon.saxon.functions.Count
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
+import org.orbeon.saxon.tree.iter.EmptyIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.tree.wrapper.VirtualNode
 import org.orbeon.saxon.value._
@@ -28,57 +28,49 @@ object SequenceTool {
     iterator.materialize
 
   def toMemoSequence(iterator: SequenceIterator): Sequence =
-    if (iterator.isInstanceOf[EmptyIterator]) {
+    if (iterator.isInstanceOf[EmptyIterator])
       EmptySequence.getInstance
-    } else if (iterator.getProperties.contains(
-      SequenceIterator.Property.GROUNDED)) {
+    else if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED))
       iterator.materialize
-    } else {
+    else
       new MemoSequence(iterator)
-    }
 
   def toLazySequence(iterator: SequenceIterator): Sequence =
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
-      !iterator.isInstanceOf[RangeIterator] &&
-      !iterator.isInstanceOf[ReverseRangeIterator]) {
+      ! iterator.isInstanceOf[RangeIterator] && ! iterator.isInstanceOf[ReverseRangeIterator])
       iterator.materialize
-    } else {
+    else
       new LazySequence(iterator)
-    }
 
   def toLazySequence2(iterator: SequenceIterator): Sequence =
     if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED) &&
-      !iterator.isInstanceOf[RangeIterator] &&
-      !iterator.isInstanceOf[ReverseRangeIterator]) {
+      ! iterator.isInstanceOf[RangeIterator] && ! iterator.isInstanceOf[ReverseRangeIterator])
       iterator.materialize
-    } else {
+    else
       new LazySequence(iterator)
-    }
 
   def isUnrepeatable(seq: Sequence): Boolean =
     seq.isInstanceOf[LazySequence] ||
       (seq.isInstanceOf[Closure] &&
-        !(seq.isInstanceOf[MemoClosure] || seq.isInstanceOf[SingletonClosure]))
+        ! (seq.isInstanceOf[MemoClosure] || seq.isInstanceOf[SingletonClosure]))
 
-  def getLength(sequence: Sequence): Int = {
+  def getLength(sequence: Sequence): Int =
     sequence match {
       case value: GroundedValue => value.getLength
-      case _ =>
+      case _                    => Count.count(sequence.iterate())
     }
-    Count.count(sequence.iterate())
-  }
 
   def hasLength(iter: SequenceIterator, length: Int): Boolean =
     if (iter.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       iter.asInstanceOf[LastPositionFinder].getLength == length
     } else {
-      var n: Int = 0
+      var n = 0
       while (iter.next() != null) if ( {
         n += 1
         n - 1
       } == length) {
         iter.close()
-        false
+        return false
       }
       length == 0
     }
@@ -107,29 +99,24 @@ object SequenceTool {
       false
     }
 
-  def itemAt(sequence: Sequence, index: Int): Item = {
+  def itemAt(sequence: Sequence, index: Int): Item =
     sequence match {
-      case item: Item if index == 0 => return item
-      case _ =>
+      case item: Item if index == 0 => item
+      case _                        => sequence.materialize.itemAt(index)
     }
-    sequence.materialize.itemAt(index)
-  }
 
   /*@Nullable*/
-
   def asItem(sequence: Sequence): Item = {
     sequence match {
       case item: Item => return item
       case _ =>
     }
-    val iter: SequenceIterator = sequence.iterate()
-    val first: Item = iter.next()
-    if (first == null) {
+    val iter = sequence.iterate()
+    val first = iter.next()
+    if (first == null)
       return null
-    }
-    if (iter.next() != null) {
+    if (iter.next() != null)
       throw new XPathException("Sequence contains more than one item")
-    }
     first
   }
 
@@ -147,11 +134,13 @@ object SequenceTool {
       case _ =>
         val value: AtomicValue = item.asInstanceOf[AtomicValue]
         value.getItemType.getPrimitiveType match {
-          case StandardNames.XS_STRING | StandardNames.XS_UNTYPED_ATOMIC |
-               StandardNames.XS_ANY_URI | StandardNames.XS_DURATION =>
+          case StandardNames.XS_STRING         |
+               StandardNames.XS_UNTYPED_ATOMIC |
+               StandardNames.XS_ANY_URI        |
+               StandardNames.XS_DURATION =>
             value.getStringValue
           case StandardNames.XS_BOOLEAN =>
-            if (value.asInstanceOf[BooleanValue].getBooleanValue) true else false
+            value.asInstanceOf[BooleanValue].getBooleanValue
           case StandardNames.XS_DECIMAL =>
             value.asInstanceOf[BigDecimalValue].getDecimalValue
           case StandardNames.XS_INTEGER =>
@@ -174,7 +163,6 @@ object SequenceTool {
           case StandardNames.XS_HEX_BINARY =>
             value.asInstanceOf[HexBinaryValue].getBinaryValue
           case _ => item
-
         }
     }
 
@@ -183,9 +171,8 @@ object SequenceTool {
     sequence
       .iterate()
       .forEachOrFail(item => {
-        if (!fsb.isEmpty) {
+        if (! fsb.isEmpty)
           fsb.cat(' ')
-        }
         fsb.cat(item.getStringValueCS)
       })
     fsb.toString
@@ -198,26 +185,25 @@ object SequenceTool {
       case _: GroundedValue =>
         try {
           var `type`: ItemType = null
-          val iter: SequenceIterator = sequence.iterate()
+          val iter = sequence.iterate()
           var item: Item = null
           breakable {
-            while ( {
+            while ({
               item = iter.next()
               item
             } != null) {
               `type` =
-                if (`type` == null) Type.getItemType(item, th)
+                if (`type` == null)
+                  Type.getItemType(item, th)
                 else
                   Type.getCommonSuperType(`type`, Type.getItemType(item, th), th)
-              if (`type` == AnyItemType) {
+              if (`type` == AnyItemType)
                 break()
-              }
             }
           }
           if (`type` == null) ErrorType else `type`
         } catch {
-          case err: XPathException => AnyItemType
-
+          case _: XPathException => AnyItemType
         }
       case _ =>
         AnyItemType
@@ -228,9 +214,8 @@ object SequenceTool {
       case item: Item =>
         UType.getUType(item)
       case value: GroundedValue =>
-        var `type`: UType = UType.VOID
-        val iter: UnfailingIterator =
-          value.iterate()
+        var `type` = UType.VOID
+        val iter = value.iterate()
         var item: Item = null
         breakable {
           while ({
@@ -238,9 +223,8 @@ object SequenceTool {
             item
           } != null) {
             `type` = `type`.union(UType.getUType(item))
-            if (`type` == UType.ANY) {
+            if (`type` == UType.ANY)
               break()
-            }
           }
         }
         `type`
@@ -257,18 +241,17 @@ object SequenceTool {
       case value: GroundedValue =>
         val len = value.getLength
         return len match {
-          case 0 => StaticProperty.ALLOWS_ZERO
-          case 1 => StaticProperty.EXACTLY_ONE
-          case _ => StaticProperty.ALLOWS_ONE_OR_MORE
+          case 0 => return StaticProperty.ALLOWS_ZERO
+          case 1 => return StaticProperty.EXACTLY_ONE
+          case _ => return StaticProperty.ALLOWS_ONE_OR_MORE
         }
       case _ =>
     }
     try {
-      val iter: SequenceIterator = sequence.iterate()
-      var item: Item = iter.next()
-      if (item == null) {
+      val iter = sequence.iterate()
+      var item = iter.next()
+      if (item == null)
         return StaticProperty.ALLOWS_ZERO
-      }
       item = iter.next()
       if (item == null)
         StaticProperty.EXACTLY_ONE
@@ -277,7 +260,6 @@ object SequenceTool {
     } catch {
       case _: XPathException =>
         StaticProperty.ALLOWS_ONE_OR_MORE
-
     }
   }
 

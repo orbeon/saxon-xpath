@@ -235,7 +235,6 @@ class XQueryExpression(var expression: Expression,
   }
 
   /*@NotNull*/
-
   def iterator(env: DynamicQueryContext): SequenceIterator = {
     if (isUpdateQuery) {
       throw new XPathException("Cannot call iterator on an updating query")
