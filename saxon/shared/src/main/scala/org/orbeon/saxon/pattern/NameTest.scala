@@ -11,35 +11,36 @@ import org.orbeon.saxon.z.{IntSet, IntSingletonSet}
 import scala.beans.BeanProperty
 
 
-class NameTest(@BeanProperty var nodeKind: Int,
-               private var uri: String,
-               private var localName: String,
-               @BeanProperty var namePool: NamePool)
-  extends NodeTest
-    with QNameTest {
+class NameTest private (
+  @BeanProperty val nodeKind       : Int,
+  private var uri                  : String,
+  private var localName            : String,
+  @BeanProperty val namePool       : NamePool,
+  @BeanProperty val fingerPrintInt : Int
+) extends NodeTest
+     with QNameTest {
 
-  @BeanProperty
-  var fingerPrintInt: Int = namePool.allocateFingerprint(uri, localName) & NamePool.FP_MASK
+  private val uType: UType = UType.fromTypeCode(nodeKind)
 
-  private var uType: UType = UType.fromTypeCode(nodeKind)
+  def this(
+    nodeKind  : Int,
+    uri       : String,
+    localName : String,
+    namePool  : NamePool
+  ) =
+    this(
+      nodeKind,
+      uri,
+      localName,
+      namePool,
+      namePool.allocateFingerprint(uri, localName) & NamePool.FP_MASK
+    )
 
-  def this(nodeKind: Int, nameCode: Int, namePool: NamePool) = {
-    this(nodeKind, "", "", namePool)
-    this.nodeKind = nodeKind
-    this.fingerPrintInt = nameCode & NamePool.FP_MASK
-    this.namePool = namePool
-    this.uType = UType.fromTypeCode(nodeKind)
-  }
+  def this(nodeKind: Int, nameCode: Int, namePool: NamePool) =
+    this(nodeKind, null, null, namePool, nameCode & NamePool.FP_MASK)
 
-  def this(nodeKind: Int, name: NodeName, pool: NamePool) = {
-    this(nodeKind, "", "", pool)
-    this.uri = name.getURI
-    this.localName = name.getLocalPart
-    this.nodeKind = nodeKind
-    this.fingerPrintInt = name.obtainFingerprint(pool)
-    this.namePool = pool
-    this.uType = UType.fromTypeCode(nodeKind)
-  }
+  def this(nodeKind: Int, name: NodeName, pool: NamePool) =
+    this(nodeKind, name.getURI, name.getLocalPart, pool, name.obtainFingerprint(pool))
 
   def getUType: UType = uType
 
