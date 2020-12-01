@@ -107,7 +107,7 @@ class XPathTest extends AnyFunSpec {
         """, int, ".1.2.3.4.5"),
       ("""string(/)""", doc, "WileE.Coyote"),
       ("""normalize-space(' abc ')""", doc, "abc"),
-      ("""normalize-space(()))""", doc, ""),
+      ("""normalize-space(())""", doc, ""),
       ("""string(/*[1])""", doc, "WileE.Coyote"),
       ("""normalize-space(/)""", doc, "WileE.Coyote"),
       ("""string(/*/*[1])""", doc, "Wile"),

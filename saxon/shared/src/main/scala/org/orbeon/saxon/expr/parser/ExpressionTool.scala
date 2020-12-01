@@ -1,9 +1,5 @@
-
-
-
 package org.orbeon.saxon.expr.parser
 
-//import java.io.File
 import java.net.{URI, URISyntaxException}
 import java.util
 import java.util.function.Predicate
@@ -26,6 +22,8 @@ import org.orbeon.saxon.trans.{Err, NoDynamicContextException, SymbolicName, XPa
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value._
 
+import scala.annotation.tailrec
+
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -33,31 +31,32 @@ import scala.jdk.CollectionConverters._
 object ExpressionTool {
 
   @throws[XPathException]
-  def make(expression: String, env: StaticContext, start: Int, terminator: Int, codeInjector: CodeInjector): Expression = {
-    var rTerminator = terminator
+  def make(expression: String, env: StaticContext, start: Int, _terminator: Int, codeInjector: CodeInjector): Expression = {
+    var terminator = _terminator
     val languageLevel = env.getXPathVersion
     val parser = env.getConfiguration.newExpressionParser("XP", updating = false, languageLevel)
     if (codeInjector != null)
       parser.setCodeInjector(codeInjector)
     if (terminator == -1)
-      rTerminator = Token.EOF
+      terminator = Token.EOF
     var exp = parser.parse(expression, start, terminator, env)
     setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext())
     exp = exp.simplify()
     exp
   }
 
-  def setDeepRetainedStaticContext(exp: Expression, rsc: RetainedStaticContext): Unit = {
-    var rSC = rsc
+  def setDeepRetainedStaticContext(exp: Expression, _rsc: RetainedStaticContext): Unit = {
+
+    var rsc = _rsc
+
     if (exp.getLocalRetainedStaticContext == null)
       exp.setRetainedStaticContextLocally(rsc)
     else
-      rSC = exp.getLocalRetainedStaticContext
+      rsc = exp.getLocalRetainedStaticContext
 
     for (o <- exp.operands.asScala)
       setDeepRetainedStaticContext(o.getChildExpression, rsc)
   }
-
 
   def copyLocationInfo(from: Expression, to: Expression): Unit =
     if (from != null && to != null) {
@@ -97,27 +96,26 @@ object ExpressionTool {
         if ((exp.getDependencies & (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST | StaticProperty.DEPENDS_ON_CURRENT_ITEM |
         StaticProperty.DEPENDS_ON_CURRENT_GROUP | StaticProperty.DEPENDS_ON_REGEX_GROUP)) != 0) {
           eagerEvaluator(exp)
-        }
-      else if (exp.isInstanceOf[ErrorExpression]) {
-        Evaluator.SINGLE_ITEM
-      } else if (!Cardinality.allowsMany(exp.getCardinality)) {
-        eagerEvaluator(exp)
-      } else exp match {
-          case tail: TailExpression =>
-            val base = tail.getBaseExpression
-            if (base.isInstanceOf[VariableReference])
-              Evaluator.LAZY_TAIL
-            else if (repeatable)
+        } else if (exp.isInstanceOf[ErrorExpression]) {
+          Evaluator.SINGLE_ITEM
+        } else if (!Cardinality.allowsMany(exp.getCardinality)) {
+          eagerEvaluator(exp)
+        } else exp match {
+            case tail: TailExpression =>
+              val base = tail.getBaseExpression
+              if (base.isInstanceOf[VariableReference])
+                Evaluator.LAZY_TAIL
+              else if (repeatable)
+                Evaluator.MEMO_CLOSURE
+              else
+                Evaluator.LAZY_SEQUENCE
+            case block: Block if block.isCandidateForSharedAppend =>
+              Evaluator.SHARED_APPEND
+            case _ => if (repeatable) {
               Evaluator.MEMO_CLOSURE
-            else
-              Evaluator.LAZY_SEQUENCE
-          case block: Block if block.isCandidateForSharedAppend =>
-            Evaluator.SHARED_APPEND
-          case _ => if (repeatable) {
-            Evaluator.MEMO_CLOSURE
+            }
+            else Evaluator.LAZY_SEQUENCE
           }
-          else Evaluator.LAZY_SEQUENCE
-        }
     }
 
   def eagerEvaluator(exp: Expression): Evaluator = {
@@ -160,18 +158,18 @@ object ExpressionTool {
 
   def indent(level: Int): String = {
     val fsb = new FastStringBuffer(level)
-    for (i <- 0 until level) {
+    for (_ <- 0 until level)
       fsb.append("  ")
-    }
     fsb.toString
   }
 
   def contains(a: Expression, b: Expression): Boolean = {
     var temp = b
-    while ( {
-      temp != null
-    }) if (temp eq a) return true
-    else temp = temp.getParentExpression
+    while (temp != null)
+      if (temp eq a)
+        return true
+      else
+          temp = temp.getParentExpression
     false
   }
 
@@ -179,22 +177,16 @@ object ExpressionTool {
     contains(exp, sameFocusOnly = true, (e: Expression) => e.isInstanceOf[LocalParam])
 
   def containsLocalVariableReference(exp: Expression): Boolean =
-    contains(exp, sameFocusOnly = false, (e: Expression) => {
-      def foo(e: Expression) = {
-        e match {
-          case vref: LocalVariableReference =>
-            val binding = vref.getBinding
-            ! (binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
-          case _ =>
-        }
+    contains(exp, sameFocusOnly = false, {
+      case vref: LocalVariableReference =>
+        val binding = vref.getBinding
+        ! (binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
+      case _ =>
         false
-      }
-
-      foo(e)
-    }
-    )
+    }: Predicate[Expression])
 
   def contains(exp: Expression, sameFocusOnly: Boolean, predicate: Predicate[Expression]): Boolean = {
+
     if (predicate.test(exp))
       return true
 
@@ -210,26 +202,25 @@ object ExpressionTool {
     expression = exp.getInterpretedExpression
     if (exp.isInstanceOf[ResultDocument] || exp.isInstanceOf[CallTemplate] || exp.isInstanceOf[ApplyTemplates] || exp.isInstanceOf[NextMatch] || exp.isInstanceOf[ApplyImports] || exp.isCallOn(classOf[RegexGroup]) || exp.isCallOn(classOf[CurrentGroup])) return true
 
-    for (o <- exp.operands.asScala) {
-      if (changesXsltContext(o.getChildExpression)) return true
-    }
+    for (o <- exp.operands.asScala)
+      if (changesXsltContext(o.getChildExpression))
+        return true
     false
   }
 
   def isLoopingSubexpression(child: Expression, ancestor: Expression): Boolean = {
     var childExp = child
-    val parent = childExp.getParentExpression
-    var result = false
     while (true) {
+      val parent = childExp.getParentExpression
       if (parent == null)
-        result = false
+        return false
       if (hasLoopingSubexpression(parent, childExp))
-        result = true
+        return true
       if (parent eq ancestor)
-        result = false
+        return false
       childExp = parent
     }
-    result
+    false
   }
 
   def isLoopingReference(reference: VariableReference, binding: Binding): Boolean = {
@@ -250,14 +241,14 @@ object ExpressionTool {
         case _ =>
           if (parent.getExpressionName == "tryCatch")
             return true
-        else {
-          if (parent.isInstanceOf[ForEachGroup] && parent.hasVariableBinding(binding))
-            return false
-          if (hasLoopingSubexpression(parent, child))
-            return true
-          if (parent.hasVariableBinding(binding))
-            return false
-        }
+          else {
+            if (parent.isInstanceOf[ForEachGroup] && parent.hasVariableBinding(binding))
+              return false
+            if (hasLoopingSubexpression(parent, child))
+              return true
+            if (parent.hasVariableBinding(binding))
+              return false
+          }
       }
       child = parent
       parent = child.getParentExpression
@@ -279,8 +270,7 @@ object ExpressionTool {
     var parent = child.getParentExpression
     while (parent != null) {
       val o = findOperand(parent, child)
-      if (o == null)
-        throw new AssertionError
+      assert(o ne null)
       if (! o.hasSameFocus)
         return parent
       child = parent
@@ -304,8 +294,7 @@ object ExpressionTool {
         case _ =>
       }
       val o = findOperand(parent, child)
-      if (o == null)
-        throw new AssertionError
+      assert(o ne null)
       if (! o.hasSameFocus)
         return parent
       child = parent
@@ -339,7 +328,7 @@ object ExpressionTool {
     val seq = controller.allocateSequenceOutputter
     exp.process(new ComplexContentOutputter(seq), context)
     seq.close()
-    seq.iterate
+    seq.iterate()
   }
 
   @throws[XPathException]
@@ -436,11 +425,12 @@ object ExpressionTool {
   @throws[XPathException]
   def effectiveBooleanValue(iterator: SequenceIterator): Boolean = {
     val first = iterator.next
-    if (first == null) return false
+    if (first == null)
+      return false
     first match {
       case _: NodeInfo =>
         iterator.close()
-        return true
+        true
       case value: AtomicValue => first match {
         case value1: BooleanValue =>
           if (iterator.next != null) {
@@ -448,49 +438,44 @@ object ExpressionTool {
             ebvError("a sequence of two or more items starting with a boolean")
           }
           iterator.close()
-          return value1.getBooleanValue
+          value1.getBooleanValue
         case value1: StringValue =>
           if (iterator.next != null) {
             iterator.close()
             ebvError("a sequence of two or more items starting with a string")
           }
-          return !value1.isZeroLength
+          ! value1.isZeroLength
         case n: NumericValue =>
           if (iterator.next != null) {
             iterator.close()
             ebvError("a sequence of two or more items starting with a numeric value")
           }
-          return (n.compareTo(0) != 0) && !n.isNaN
+          (n.compareTo(0) != 0) && !n.isNaN
         case _ =>
           iterator.close()
           ebvError("a sequence starting with an atomic value of type " + value.getItemType.getTypeName.getDisplayName)
-          return false
       }
       case _: Function =>
         iterator.close()
         first match {
           case _: ArrayItem =>
             ebvError("a sequence starting with an array item (" + first.toShortString + ")")
-            return false
           case _: MapItem =>
             ebvError("a sequence starting with a map (" + first.toShortString + ")")
-            return false
           case _ =>
             ebvError("a sequence starting with a function (" + first.toShortString + ")")
-            return false
         }
       case _: ObjectValue[_] =>
         if (iterator.next != null) {
           iterator.close()
           ebvError("a sequence of two or more items starting with an external object value")
         }
-        return true
+        true
       case _ =>
+        ebvError("a sequence starting with an item of unknown kind")
+        false
     }
-    ebvError("a sequence starting with an item of unknown kind")
-    false
   }
-
 
   @throws[XPathException]
   def effectiveBooleanValue(item: Item): Boolean =
@@ -505,11 +490,9 @@ object ExpressionTool {
           case _: ExternalObject[_] => true
           case _ =>
             ebvError("an atomic value of type " + value.getPrimitiveType.getDisplayName)
-            false
         }
       case _ =>
         ebvError(item.getGenre.toString)
-        false
     }
 
   @throws[XPathException]
@@ -716,8 +699,8 @@ object ExpressionTool {
         replaceCallsToCurrent(exp, let)
         let.setAction(exp)
         let
-      }
-      else exp
+      } else
+        exp
     }
 
   def gatherVariableReferences(exp: Expression, binding: Binding, list: util.List[VariableReference]): Unit =
@@ -854,6 +837,7 @@ object ExpressionTool {
   private def isFilteredAxisPath(exp: Expression): Boolean =
     unfilteredExpression(exp, allowPositional = true).isInstanceOf[AxisExpression]
 
+  @tailrec
   def unfilteredExpression(exp: Expression, allowPositional: Boolean): Expression =
     exp match {
       case filterExpr: FilterExpression if allowPositional || !filterExpr.isFilterIsPositional =>
