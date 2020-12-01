@@ -197,7 +197,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
         }
       }
     } else {
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     }
   }
 

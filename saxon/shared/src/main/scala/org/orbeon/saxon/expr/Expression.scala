@@ -346,11 +346,8 @@ abstract class Expression
   }
 
   def getIntegerBounds: Array[IntegerValue] = null
-
   def setFlattened(flattened: Boolean): Unit = ()
-
   def setFiltered(filtered: Boolean): Unit = ()
-
   def evaluateItem(context: XPathContext): Item = iterate(context).next()
 
   def iterate(context: XPathContext): SequenceIterator = {

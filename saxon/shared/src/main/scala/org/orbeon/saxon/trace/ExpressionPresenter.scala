@@ -45,12 +45,12 @@ object ExpressionPresenter {
   }
 
   def jsEscape(in: String): String = {
-    val out: FastStringBuffer = new FastStringBuffer(in.length)
+    val out = new FastStringBuffer(in.length)
     for (i <- 0 until in.length) {
-      val c: Char = in.charAt(i)
+      val c = in.charAt(i)
       c match {
         case '\'' => out.append("\\'")
-        case '"' => out.append("\\\"")
+        case '"'  => out.append("\\\"")
         case '\b' => out.append("\\b")
         case '\f' => out.append("\\f")
         case '\n' => out.append("\\n")
@@ -131,7 +131,7 @@ class ExpressionPresenter {
   def this(config: Configuration) = this(config, config.getLogger)
 
   def init(config: Configuration, out: StreamResult, checksum: Boolean): Unit = {
-    val props: SerializationProperties = makeDefaultProperties(config)
+    val props = makeDefaultProperties(config)
     if (config.getXMLVersion == Configuration.XML11) {
       if ("JS" == getOptions.asInstanceOf[ExportOptions].target) {
         config.getLogger.warning(
@@ -192,7 +192,7 @@ class ExpressionPresenter {
       if (expressionStack.isEmpty) null else expressionStack.head
     expressionStack ::= expr
     nameStack ::= "*" + name
-    val n: Int = _startElement(name)
+    val n = _startElement(name)
     if (parent == null ||
       expr.getRetainedStaticContext != parent.getRetainedStaticContext) {
       if (expr.getRetainedStaticContext == null) {} else {
@@ -201,12 +201,12 @@ class ExpressionPresenter {
           if (parent == null) null else parent.getRetainedStaticContext)
       }
     }
-    val mod: String = expr.getLocation.getSystemId
+    val mod = expr.getLocation.getSystemId
     if (mod != null && parent != null &&
       (parent.getLocation.getSystemId == null || parent.getLocation.getSystemId != mod)) {
       emitAttribute("module", truncatedModuleName(mod))
     }
-    val lineNr: Int = expr.getLocation.getLineNumber
+    val lineNr = expr.getLocation.getLineNumber
     if (parent == null ||
       (parent.getLocation.getLineNumber != lineNr && lineNr != -1)) {
       emitAttribute("line", lineNr.toString)
@@ -215,19 +215,15 @@ class ExpressionPresenter {
   }
 
   private def truncatedModuleName(module: String): String =
-    if (!relocatable) {
+    if (! relocatable) {
       module
     } else {
-      val parts: Array[String] = module.split("/")
-      var p: Int = parts.length - 1
+      val parts = module.split("/")
+      var p = parts.length - 1
       while (p >= 0) {
-        if (!parts(p).isEmpty) {
-          parts(p)
-        }
-        {
-          p -= 1
-          p + 1
-        }
+        if (! parts(p).isEmpty)
+          return parts(p)
+        p -= 1
       }
       module
     }
@@ -291,8 +287,10 @@ class ExpressionPresenter {
       }
       var nodeName: NodeName = null
       nodeName =
-        if (defaultNamespace == null) new NoNamespaceName(name)
-        else new FingerprintedQName("", defaultNamespace, name)
+        if (defaultNamespace == null)
+          new NoNamespaceName(name)
+        else
+          new FingerprintedQName("", defaultNamespace, name)
       cco.startElement(nodeName,
         Untyped.getInstance,
         Loc.NONE,
@@ -319,11 +317,12 @@ class ExpressionPresenter {
     if (valueVar != null) {
       if (name =="module")
         valueVar = truncatedModuleName(valueVar)
-      try cco.attribute(new NoNamespaceName(name),
-        BuiltInAtomicType.UNTYPED_ATOMIC,
-        valueVar,
-        Loc.NONE,
-        ReceiverOption.NONE)
+      try
+        cco.attribute(new NoNamespaceName(name),
+          BuiltInAtomicType.UNTYPED_ATOMIC,
+          valueVar,
+          Loc.NONE,
+          ReceiverOption.NONE)
       catch {
         case err: XPathException =>
           err.printStackTrace()
@@ -334,11 +333,12 @@ class ExpressionPresenter {
 
   def emitAttribute(name: String, value: StructuredQName): Unit = {
     val attVal = value.getEQName
-    try cco.attribute(new NoNamespaceName(name),
-      BuiltInAtomicType.UNTYPED_ATOMIC,
-      attVal,
-      Loc.NONE,
-      ReceiverOption.NONE)
+    try
+      cco.attribute(new NoNamespaceName(name),
+        BuiltInAtomicType.UNTYPED_ATOMIC,
+        attVal,
+        Loc.NONE,
+        ReceiverOption.NONE)
     catch {
       case err: XPathException =>
         err.printStackTrace()
@@ -347,7 +347,8 @@ class ExpressionPresenter {
   }
 
   def namespace(prefix: String, uri: String): Unit = {
-    try cco.namespace(prefix, uri, ReceiverOption.NONE)
+    try
+      cco.namespace(prefix, uri, ReceiverOption.NONE)
     catch {
       case e: XPathException =>
         e.printStackTrace()

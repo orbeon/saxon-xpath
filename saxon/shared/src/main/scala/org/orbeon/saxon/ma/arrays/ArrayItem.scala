@@ -44,7 +44,7 @@ trait ArrayItem extends Function {
    * @return a depiction of the item suitable for use in error messages
    */
   override def toShortString: String = {
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     sb.append("array{")
     var count: Int = 0
     breakable {

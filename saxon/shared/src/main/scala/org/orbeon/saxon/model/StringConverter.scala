@@ -777,11 +777,11 @@ object StringConverter {
     extends StringConverter {
 
     if (!targetType.isPlainType) {
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     }
 
     if (targetType.isNamespaceSensitive) {
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     }
 
     override def convertString(input: CharSequence): ConversionResult =

@@ -351,7 +351,7 @@ class ResultDocument(private val globalProperties: Properties,
     }
   }
 
-  def getValidationAction(): Int =
+  def getValidationAction: Int =
     if (validationOptions == null) Validation.PRESERVE
     else validationOptions.getSchemaValidationMode
 
@@ -444,7 +444,7 @@ class ResultDocument(private val globalProperties: Properties,
     r
   }
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_RESULT_DOCUMENT
+  override def getInstructionNameCode: Int = StandardNames.XSL_RESULT_DOCUMENT
 
   override def getItemType: ItemType = ErrorType
 
@@ -731,7 +731,7 @@ class ResultDocument(private val globalProperties: Properties,
   }
 
   private def exportProperties(props: Properties): String = {
-    val writer: StringBuilder = new StringBuilder()
+    val writer = new StringBuilder
     for (key <- props.stringPropertyNames().asScala) {
       var mapKey = key
       var `val`: String = props.getProperty(mapKey)
@@ -754,14 +754,11 @@ class ResultDocument(private val globalProperties: Properties,
   def getHref: Expression =
     if (hrefOp == null) null else hrefOp.getChildExpression
 
-  def setHref(href: Expression): Unit = {
+  def setHref(href: Expression): Unit =
     hrefOp.setChildExpression(href)
-  }
 
-  def setFormatExpression(formatExpression: Expression): Unit = {
+  def setFormatExpression(formatExpression: Expression): Unit =
     formatOp.setChildExpression(formatExpression)
-  }
 
-  def getContentExpression(): Expression = contentOp.getChildExpression
-
+  def getContentExpression: Expression = contentOp.getChildExpression
 }

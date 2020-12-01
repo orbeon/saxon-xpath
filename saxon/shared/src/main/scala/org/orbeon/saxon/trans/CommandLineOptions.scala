@@ -134,7 +134,7 @@ object CommandLineOptions {
 
   def featureKeys(): String = {
     val index = "http://saxon.sf.net/feature/".length
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     Feature.getNames.forEachRemaining((s) =>
       sb.append("\n  ").append(s.substring(index)))
     sb.toString
@@ -382,7 +382,7 @@ object CommandLineOptions {
 //      if (getOptionValue("y") != null) {
 //        throw new XPathException("Cannot use -catalog and -y together")
 //      }
-//      val sb: StringBuilder = new StringBuilder()
+//      val sb = new StringBuilder
 //      if ((getOptionValue("u") != null) || isImplicitURI(value)) {
 //        for (s <- value.split(";")) {
 //          var sourceInput: Source = null

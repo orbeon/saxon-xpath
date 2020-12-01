@@ -231,7 +231,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
            flag: String) = {
     this()
     if (!flag.isEmpty) {
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     }
     this.hour = hour
     this.minute = minute

@@ -21,7 +21,7 @@ object OneOrMore {
     val content: List[Item] = List[Item]()
     sequence.iterate().forEachOrFail(item => (content:+item))
     if (content.isEmpty) {
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
     }
     new OneOrMore(content)
   }
@@ -30,12 +30,12 @@ object OneOrMore {
 class OneOrMore[T <: Item](content: Array[Item]) extends SequenceExtent(content) {
 
   if (content.length == 0)
-    throw new IllegalArgumentException()
+    throw new IllegalArgumentException
 
   def this(content: List[T]) = {
     this(content.toArray[Item])
 
     if (content.isEmpty)
-      throw new IllegalArgumentException()
+      throw new IllegalArgumentException
   }
 }

@@ -111,7 +111,7 @@ trait MapItem extends Function {
   def getKeyUType: UType
 
   override def toShortString: String = {
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     sb.append("map{")
     val sizeInt: Int = size
     if (sizeInt == 0) {

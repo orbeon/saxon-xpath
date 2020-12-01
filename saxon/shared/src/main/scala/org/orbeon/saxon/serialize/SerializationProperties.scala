@@ -88,7 +88,7 @@ class SerializationProperties {
   }
 
   override def toString: String = {
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     for (k <- properties.stringPropertyNames().asScala) {
       sb.append(k).append("=").append(properties.getProperty(k)).append(" ")
     }

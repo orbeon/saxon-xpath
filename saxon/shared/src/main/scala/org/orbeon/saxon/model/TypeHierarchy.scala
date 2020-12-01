@@ -92,7 +92,7 @@ object TypeHierarchy {
     case SUBSUMED_BY => SUBSUMES
     case OVERLAPS => OVERLAPS
     case DISJOINT => DISJOINT
-    case _ => throw new IllegalArgumentException()
+    case _ => throw new IllegalArgumentException
 
   }
 

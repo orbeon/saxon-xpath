@@ -100,7 +100,7 @@
 //        parseOptions.setSpaceStrippingRule(
 //          IgnorableSpaceStrippingRule.getInstance)
 //      case Whitespace.UNSPECIFIED => parseOptions.setSpaceStrippingRule(null)
-//      case _ => throw new IllegalArgumentException()
+//      case _ => throw new IllegalArgumentException
 //
 //    }
 //  }

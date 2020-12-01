@@ -35,7 +35,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
   extends SlashExpression(start, step) {
 
   if (! step.isInstanceOf[AxisExpression])
-    throw new IllegalArgumentException()
+    throw new IllegalArgumentException
 
   override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT else STEP_ROLE

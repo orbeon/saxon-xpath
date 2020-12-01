@@ -93,7 +93,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   }
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
-    throw new IllegalArgumentException()
+    throw new IllegalArgumentException
   }
 
   override def delete(): Unit = {

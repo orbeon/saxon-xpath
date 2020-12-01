@@ -126,7 +126,7 @@ object UnicodeDataParserFromXML {
     var st: StringTokenizer = new StringTokenizer(decompositionValuesString)
     while (st.hasMoreTokens) {
       val tok: String = st.nextToken()
-      val value: StringBuilder = new StringBuilder()
+      val value = new StringBuilder
       var c: Int = 0
       while (c < tok.length) {
         val h0: Char = tok.charAt({

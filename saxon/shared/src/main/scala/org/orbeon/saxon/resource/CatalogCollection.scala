@@ -25,7 +25,7 @@ object CatalogCollection {
                                   encoding: String): StringBuilder = {
     val is: InputStreamReader =
       new InputStreamReader(in, Charset.forName(encoding))
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     val br: BufferedReader = new BufferedReader(is)
     var read: String = br.readLine()
     while (read != null) {

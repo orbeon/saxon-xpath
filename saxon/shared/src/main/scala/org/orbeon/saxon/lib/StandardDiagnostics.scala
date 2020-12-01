@@ -212,7 +212,7 @@ class StandardDiagnostics {
           if (component.getActor.isInstanceOf[Mode]) {
             val rule: Rule = xPathContext.getCurrentTemplateRule
             if (rule != null) {
-              val sb: StringBuilder = new StringBuilder()
+              val sb = new StringBuilder
               val loc: Location = rule.getPattern.getLocation
               sb.append("  In template rule with match=\"")
                 .append(rule.getPattern.toShortString)
@@ -250,7 +250,7 @@ class StandardDiagnostics {
   }
 
   def showOriginator(originator: ContextOriginator): String = {
-    val sb: StringBuilder = new StringBuilder()
+    val sb = new StringBuilder
     if (originator == null) {
       sb.append("unknown caller (null)")
     } else originator match {
@@ -289,7 +289,7 @@ class StandardDiagnostics {
 
   def formatListOfOffendingNodes(
                                   failure: ValidationFailure): String = {
-    val message: StringBuilder = new StringBuilder()
+    val message = new StringBuilder
     val offendingNodes: ju.List[NodeInfo] = failure.getOffendingNodes
     if (!offendingNodes.isEmpty) {
       message.append("\n  Nodes for which the assertion fails:")
