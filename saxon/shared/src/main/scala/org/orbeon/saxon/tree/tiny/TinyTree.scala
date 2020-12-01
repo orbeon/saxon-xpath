@@ -56,10 +56,9 @@ object TinyTree {
   }
 
   private def n8(`val`: Int): String = {
-    val s: String = "        " + `val`
+    val s = "        " + `val`
     s.substring(s.length - 8)
   }
-
 }
 
 class TinyTree(config: Configuration, statistics: Statistics)
@@ -67,18 +66,18 @@ class TinyTree(config: Configuration, statistics: Statistics)
     with NodeVectorTree {
 
   /*@Nullable*/
-  val nodes: Int = statistics.getAverageNodes.toInt + 1
-  val attributes: Int = statistics.getAverageAttributes.toInt + 1
-  val namespaces: Int = statistics.getAverageNamespaces.toInt + 1
-  val characters: Int = statistics.getAverageCharacters.toInt + 1
-  var commentBuffer: FastStringBuffer = null
-  var numberOfNodes: Int = 0
-  var nodeKind: Array[Byte] = new Array[Byte](nodes)
-  var depth: Array[Short] = new Array[Short](nodes)
-  var next: Array[Int] = new Array[Int](nodes)
-  var alpha: Array[Int] = new Array[Int](nodes)
-  var beta: Array[Int] = new Array[Int](nodes)
-  var nameCode: Array[Int] = new Array[Int](nodes)
+  val nodes         : Int              = statistics.getAverageNodes.toInt + 1
+  val attributes    : Int              = statistics.getAverageAttributes.toInt + 1
+  val namespaces    : Int              = statistics.getAverageNamespaces.toInt + 1
+  val characters    : Int              = statistics.getAverageCharacters.toInt + 1
+  var commentBuffer : FastStringBuffer = null
+  var numberOfNodes : Int              = 0
+  var nodeKind      : Array[Byte]      = new Array[Byte](nodes)
+  var depth         : Array[Short]     = new Array[Short](nodes)
+  var next          : Array[Int]       = new Array[Int](nodes)
+  var alpha         : Array[Int]       = new Array[Int](nodes)
+  var beta          : Array[Int]       = new Array[Int](nodes)
+  var nameCode      : Array[Int]       = new Array[Int](nodes)
 
   /*@Nullable*/
   var prior: Array[Int] = null
@@ -87,12 +86,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
   var typeArray: Array[SchemaType] = null
 
   /*@Nullable*/
-  var typedValueArray: Array[AtomicSequence] = null
-  var idRefElements: IntSet = null
-  var idRefAttributes: IntSet = null
-  var nilledElements: IntSet = null
-  var defaultedAttributes: IntSet = null
-  var topWithinEntity: IntSet = null
+  var typedValueArray     : Array[AtomicSequence] = null
+  var idRefElements       : IntSet = null
+  var idRefAttributes     : IntSet = null
+  var nilledElements      : IntSet = null
+  var defaultedAttributes : IntSet = null
+  var topWithinEntity     : IntSet = null
 
   private var allowTypedValueCache: Boolean = true
   private var localNameIndex: Map[String, IntSet] = null

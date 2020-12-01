@@ -4,10 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A value that is a sequence containing zero or one items.
-  */
-
 package org.orbeon.saxon.om
 
 import org.orbeon.saxon.expr.parser.ExpressionTool
@@ -15,25 +11,20 @@ import org.orbeon.saxon.tree.iter.ConstrainedIterator
 import org.orbeon.saxon.value.EmptySequence
 
 
+/**
+  * A value that is a sequence containing zero or one items.
+  */
 object ZeroOrOne {
-  private val EMPTY: ZeroOrOne[Item] = new ZeroOrOne[Item]
+  private val EMPTY: ZeroOrOne[Item] = new ZeroOrOne[Item](null)
   def empty[T <: Item]: ZeroOrOne[T] = EMPTY.asInstanceOf[ZeroOrOne[T]]
 }
 
-class ZeroOrOne[T <: Item] extends GroundedValue {
-
-  private var item: T = _
-
-  def this(item: T)={
-    this()
-    this.item =item
-  }
+class ZeroOrOne[T <: Item](item: T) extends GroundedValue {
 
   def getStringValueCS: CharSequence =
     if (item == null) "" else item.getStringValueCS
 
   /*@NotNull*/
-
   def getStringValue: String = if (item == null) "" else item.getStringValue
 
   /**
@@ -47,16 +38,13 @@ class ZeroOrOne[T <: Item] extends GroundedValue {
   def getLength: Int = if (item == null) 0 else 1
 
   /*@Nullable*/
-
   def itemAt(n: Int): T =
-    if (n == 0 && item != null) {
+    if (n == 0 && item != null)
       item
-    } else {
+    else
       null.asInstanceOf[T]
-    }
 
   /*@NotNull*/
-
   def subsequence(start: Int, length: Int): GroundedValue =
     if (item != null && start <= 0 && start + length > 0)
       this

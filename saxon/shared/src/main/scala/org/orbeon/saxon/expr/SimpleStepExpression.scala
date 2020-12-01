@@ -103,8 +103,9 @@ class SimpleStepExpression(start: Expression, step: Expression)
         }
     }
     if (origin == null)
-      return EmptyIterator.getInstance
-    getStep.asInstanceOf[AxisExpression].iterate(origin)
+      EmptyIterator.getInstance
+    else
+      getStep.asInstanceOf[AxisExpression].iterate(origin)
   }
 
   override def getExpressionName: String = "simpleStep"

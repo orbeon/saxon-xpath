@@ -33,9 +33,9 @@ object TinyBuilder {
 
   object Eligibility extends Enumeration {
 
-    val INELIGIBLE: Eligibility = new Eligibility()
-    val PRIMED: Eligibility = new Eligibility()
-    val ELIGIBLE: Eligibility = new Eligibility()
+    val INELIGIBLE : Eligibility = new Eligibility
+    val PRIMED     : Eligibility = new Eligibility
+    val ELIGIBLE   : Eligibility = new Eligibility
 
     class Eligibility extends Val
 
@@ -173,10 +173,9 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
         prevAtDepth(currentDepth - 1),
         0,
         0)
-      val prev: Int = prevAtDepth(currentDepth)
-      if (prev > 0) {
+      val prev = prevAtDepth(currentDepth)
+      if (prev > 0)
         tt.next(prev) = nodeNr
-      }
       tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
       prevAtDepth(currentDepth) = nodeNr
       siblingsAtDepth(currentDepth) = 0
@@ -262,11 +261,13 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
                          locationId: Location,
                          properties: Int): Unit = {
     // System.err.println("attribute " + nameCode + "=" + value);
-    val fp: Int = attName.obtainFingerprint(namePool)
-    val prefix: String = attName.getPrefix
-    val nameCode: Int =
-      if (prefix.isEmpty) fp
-      else (tree.prefixPool.obtainPrefixCode(prefix) << 20) | fp
+    val fp = attName.obtainFingerprint(namePool)
+    val prefix = attName.getPrefix
+    val nameCode =
+      if (prefix.isEmpty)
+        fp
+      else
+        (tree.prefixPool.obtainPrefixCode(prefix) << 20) | fp
     assert(tree != null)
     assert(currentRoot != null)
     tree.addAttribute(currentRoot, nodeNr, nameCode, `type`, value, properties)
@@ -327,19 +328,18 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     //System.err.println("characters: " + chars);
     chars match {
       case whitespace: CompressedWhitespace if ReceiverOption.contains(properties, ReceiverOption.WHOLE_TEXT_NODE) =>
-        val tt: TinyTree = tree
+        val tt = tree
         assert(tt != null)
-        val lvalue: Long =
+        val lvalue =
           whitespace.getCompressedValue
         nodeNr = tt.addNode(Type.WHITESPACE_TEXT,
           currentDepth,
           (lvalue >> 32).toInt,
           lvalue.toInt,
           -1)
-        val prev: Int = prevAtDepth(currentDepth)
-        if (prev > 0) {
+        val prev = prevAtDepth(currentDepth)
+        if (prev > 0)
           tt.next(prev) = nodeNr
-        }
         // *O* owner pointer in last sibling
         tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
         prevAtDepth(currentDepth) = nodeNr
@@ -369,20 +369,19 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   }
 
   def makeTextNode(chars: CharSequence, len: Int): Int = {
-    val tt: TinyTree = tree
+    val tt = tree
     assert(tt != null)
-    val bufferStart: Int = tt.getCharacterBuffer.length
+    val bufferStart = tt.getCharacterBuffer.length
     tt.appendChars(chars)
-    val n: Int = tt.numberOfNodes - 1
+    val n = tt.numberOfNodes - 1
     if (tt.nodeKind(n) == Type.TEXT && tt.depth(n) == currentDepth) {
       // merge this text node with the previous text node
       tt.beta(n) += len
     } else {
       nodeNr = tt.addNode(Type.TEXT, currentDepth, bufferStart, len, -1)
-      val prev: Int = prevAtDepth(currentDepth)
-      if (prev > 0) {
+      val prev = prevAtDepth(currentDepth)
+      if (prev > 0)
         tt.next(prev) = nodeNr
-      }
       tt.next(nodeNr) = prevAtDepth(currentDepth - 1)
       prevAtDepth(currentDepth) = nodeNr
       siblingsAtDepth(currentDepth) += 1

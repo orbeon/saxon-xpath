@@ -35,11 +35,13 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
    */
   /*@NotNull*/ @throws[XPathException]
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
-    if (getBaseExpression.isInstanceOf[HomogeneityChecker]) return getBaseExpression.typeCheck(visitor, contextInfo)
+    if (getBaseExpression.isInstanceOf[HomogeneityChecker])
+      return getBaseExpression.typeCheck(visitor, contextInfo)
     getOperand.typeCheck(visitor, contextInfo)
     val th = visitor.getConfiguration.getTypeHierarchy
     val `type` = getBaseExpression.getItemType
-    if (`type` == ErrorType) return Literal.makeEmptySequence
+    if (`type` == ErrorType)
+      return Literal.makeEmptySequence
     val rel = th.relationship(`type`, AnyNodeTest.getInstance)
     if (rel eq Affinity.DISJOINT) { // expression cannot return nodes, so this checker is redundant
       // code deleted by bug 4298
@@ -52,8 +54,7 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
       //            } else {
       return getBaseExpression
       //            }
-    }
-    else if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMED_BY)) { // expression always returns nodes, so replace this expression with a DocumentSorter
+    } else if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMED_BY)) { // expression always returns nodes, so replace this expression with a DocumentSorter
       val savedBase = getBaseExpression
       val parent = getParentExpression
       getOperand.detachChild()

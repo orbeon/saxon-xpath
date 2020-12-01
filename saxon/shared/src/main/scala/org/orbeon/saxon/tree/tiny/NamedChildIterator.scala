@@ -7,22 +7,18 @@ import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.tree.iter.{AxisIterator, LookaheadIterator}
 
 
-class NamedChildIterator(private var tree: TinyTree,
-                         private var node: TinyNodeImpl,
-                         private var fingerprint: Int)
+class NamedChildIterator(tree: TinyTree,
+                         node: TinyNodeImpl,
+                         fingerprint: Int)
   extends AxisIterator
     with LookaheadIterator
     with AtomizedValueIterator {
 
+  private var nextNodeNr : Int          = node.nodeNr + 1
+  private val startNode  : TinyNodeImpl = node
 
-  private var nextNodeNr: Int = node.nodeNr + 1
-
-  private var needToAdvance: Boolean = false
-
-  private val startNode: TinyNodeImpl = node
-
-  if (((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT) || (tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint)
-    needToAdvance = true
+  private var needToAdvance =
+    ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT) || (tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint
 
   def next(): NodeInfo = {
     if (needToAdvance) {
@@ -46,7 +42,7 @@ class NamedChildIterator(private var tree: TinyTree,
 
   def nextAtomizedValue(): AtomicSequence = {
     if (needToAdvance) {
-      val thisNode: Int = nextNodeNr
+      val thisNode = nextNodeNr
       do {
         nextNodeNr = tree.next(nextNodeNr)
         if (nextNodeNr < thisNode) {

@@ -14,30 +14,28 @@ import org.orbeon.saxon.value.Cardinality
 
 import scala.beans.BeanProperty
 
-//import scala.collection.compat._
-
 
 object BinaryExpression {
 
   def isCommutative(operator: Int): Boolean =
-    operator == Token.AND         ||
-      operator == Token.OR        ||
-      operator == Token.UNION     ||
-      operator == Token.INTERSECT ||
-      operator == Token.PLUS      ||
-      operator == Token.MULT      ||
-      operator == Token.EQUALS    ||
-      operator == Token.FEQ       ||
-      operator == Token.NE        ||
-      operator == Token.FNE
+    operator == Token.AND       ||
+    operator == Token.OR        ||
+    operator == Token.UNION     ||
+    operator == Token.INTERSECT ||
+    operator == Token.PLUS      ||
+    operator == Token.MULT      ||
+    operator == Token.EQUALS    ||
+    operator == Token.FEQ       ||
+    operator == Token.NE        ||
+    operator == Token.FNE
 
   def isAssociative(operator: Int): Boolean =
-    operator == Token.AND         ||
-      operator == Token.OR        ||
-      operator == Token.UNION     ||
-      operator == Token.INTERSECT ||
-      operator == Token.PLUS      ||
-      operator == Token.MULT
+    operator == Token.AND       ||
+    operator == Token.OR        ||
+    operator == Token.UNION     ||
+    operator == Token.INTERSECT ||
+    operator == Token.PLUS      ||
+    operator == Token.MULT
 
   def isInverse(op1: Int, op2: Int): Boolean =
     op1 != op2 && op1 == Token.inverse(op2)
@@ -116,20 +114,19 @@ abstract class BinaryExpression(p0: Expression,
   def getOperator: Int = operator
 
   def computeCardinality(): Int = {
-    val lhs: Expression = getLhsExpression
-    val rhs: Expression = getRhsExpression
-    if (!Cardinality.allowsZero(lhs.getCardinality) && lhs.getItemType
-      .isInstanceOf[AtomicType] &&
-      !Cardinality.allowsZero(rhs.getCardinality) &&
-      rhs.getItemType.isInstanceOf[AtomicType]) {
+    val lhs = getLhsExpression
+    val rhs = getRhsExpression
+    if (! Cardinality.allowsZero(lhs.getCardinality) &&
+        lhs.getItemType.isInstanceOf[AtomicType] &&
+        ! Cardinality.allowsZero(rhs.getCardinality) &&
+        rhs.getItemType.isInstanceOf[AtomicType])
       StaticProperty.EXACTLY_ONE
-    } else {
+    else
       StaticProperty.ALLOWS_ZERO_OR_ONE
-    }
   }
 
   override def computeSpecialProperties(): Int = {
-    val p: Int = super.computeSpecialProperties()
+    val p = super.computeSpecialProperties()
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
@@ -215,7 +212,7 @@ abstract class BinaryExpression(p0: Expression,
       parenthesize(getRhsExpression)
 
   private def parenthesize(operand: Expression): String = {
-    var operandStr: String = operand.toShortString
+    var operandStr = operand.toShortString
     operand match {
       case binaryExpr: BinaryExpression if XPathParser.operatorPrecedence(binaryExpr.operator) < XPathParser.operatorPrecedence(operator) =>
         operandStr = "(" + operandStr + ")"
