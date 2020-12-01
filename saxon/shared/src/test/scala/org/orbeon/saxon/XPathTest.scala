@@ -65,15 +65,17 @@ class XPathTest extends AnyFunSpec {
       def writeText(t: String) =
         handler.characters(t.toCharArray, 0, t.length)
 
+      val EmptyAtts = new AttributesImpl
+
       handler.startDocument()
-      handler.startElement("", "root", "root", new AttributesImpl)
-      handler.startElement("", "first-name", "first-name", new AttributesImpl)
+      handler.startElement("", "root", "root", EmptyAtts)
+      handler.startElement("", "first-name", "first-name", EmptyAtts)
       writeText("Wile")
       handler.endElement("", "first-name", "first-name")
-      handler.startElement("", "middle-name", "middle-name", new AttributesImpl)
+      handler.startElement("", "middle-name", "middle-name", EmptyAtts)
       writeText("E.")
       handler.endElement("", "middle-name", "middle-name")
-      handler.startElement("", "last-name", "last-name", new AttributesImpl)
+      handler.startElement("", "last-name", "last-name", EmptyAtts)
       writeText("Coyote")
       handler.endElement("", "last-name", "last-name")
       handler.endElement("", "root", "root")
