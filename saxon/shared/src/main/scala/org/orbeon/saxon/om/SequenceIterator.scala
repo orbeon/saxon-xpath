@@ -8,15 +8,17 @@
  * A SequenceIterator is used to iterate over any XPath 2 sequence (of values or nodes).
  * To get the next item in a sequence, call next(); if this returns null, you've
  * reached the end of the sequence.
- * <p>The objects returned by the SequenceIterator will generally be either nodes
+ *
+ * The objects returned by the SequenceIterator will generally be either nodes
  * (class NodeInfo), singleton values (class AtomicValue), or function items: these are represented
- * collectively by the interface {@link Item}.</p>
- * <p>The interface to SequenceIterator is changed in Saxon 9.6 to drop support for the
+ * collectively by the interface `Item`.
+ *
+ * The interface to SequenceIterator is changed in Saxon 9.6 to drop support for the
  * current and position methods. Internal iterators no longer need to maintain the values
  * of the current item or the current position. This information is needed (in general) only
  * for an iterator that acts as the current focus; that is, an iterator stored as the current
  * iterator in an XPathContext. SequenceIterators than maintain the value of position
- * and last() are represented by the interface {@link FocusIterator}.</p>
+ * and last() are represented by the interface `FocusIterator`.
  *
  * @author Michael H. Kay
  * @since 8.4. Significant changes in 9.6. Generics added in 9.9, removed again in 10.0
@@ -27,6 +29,7 @@ import java.io.Closeable
 
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.value.SequenceExtent
+
 
 object SequenceIterator {
 
