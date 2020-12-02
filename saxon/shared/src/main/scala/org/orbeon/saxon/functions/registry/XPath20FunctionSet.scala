@@ -11,10 +11,7 @@ object XPath20FunctionSet {
 }
 
 class XPath20FunctionSet private() extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
     register("abs",
       1,
       () => new Abs,

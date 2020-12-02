@@ -520,10 +520,7 @@ object MapFunctionSet {
 }
 
 class MapFunctionSet extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
     register("merge", 1, () => new MapMerge, MapType.ANY_MAP_TYPE, ONE, 0).arg(
       0,
       MapType.ANY_MAP_TYPE,

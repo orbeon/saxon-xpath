@@ -448,9 +448,6 @@ class Configuration extends SourceResolver with NotationSet {
   private var regexBacktrackingLimit: Int = 10000000
   private val treeStatistics: TreeStatistics = new TreeStatistics()
 
-  init()
-
-
 //  /**
 //   * Read the configuration file an construct a new Configuration (the real one)
 //   *
@@ -470,7 +467,7 @@ class Configuration extends SourceResolver with NotationSet {
 //
 //   def makeConfigurationReader = new ConfigurationReader
 
-   def init(): Unit = {
+   locally {
     Version.platform.initialize(this)
     //defaultXsltCompilerInfo.setURIResolver(getSystemURIResolver)
     val resolver = new StandardEntityResolver(this)

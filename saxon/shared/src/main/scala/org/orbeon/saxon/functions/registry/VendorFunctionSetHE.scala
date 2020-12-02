@@ -174,10 +174,7 @@ object VendorFunctionSetHE {
   * are used internally. This library is available in all Saxon versions.
   */
 class VendorFunctionSetHE private () extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
 // Test whether supplied argument is equal to an integer
     register("is-whole-number",
              1,

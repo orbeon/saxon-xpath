@@ -25,10 +25,7 @@ object XPath31FunctionSet {
 }
 
 class XPath31FunctionSet private () extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
     importFunctionSet(XPath20FunctionSet.getInstance)
     importFunctionSet(XPath30FunctionSet.getInstance)
     var ft: SpecificFunctionType = null
@@ -286,8 +283,6 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
       .optionDetails(XMLToJsonFn.makeOptionsParameter())
   }
 
-  // The copy-of function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
-  // The snapshot function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
   // The copy-of function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
   // The snapshot function is defined in XSLT 3.0, but we choose to make it available also in XPath/XQuery
 }

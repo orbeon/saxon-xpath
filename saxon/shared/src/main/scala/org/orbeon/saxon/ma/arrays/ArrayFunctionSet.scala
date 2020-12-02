@@ -488,10 +488,7 @@ object ArrayFunctionSet {
 }
 
 class ArrayFunctionSet extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
     register("append",
       2,
       () => new ArrayAppend,

@@ -26,10 +26,7 @@ object XPath30FunctionSet {
 }
 
 class XPath30FunctionSet private () extends BuiltInFunctionSet {
-
-  init()
-
-  private def init(): Unit = {
+  locally {
     importFunctionSet(XPath20FunctionSet.getInstance)
     register("analyze-string",
              2,

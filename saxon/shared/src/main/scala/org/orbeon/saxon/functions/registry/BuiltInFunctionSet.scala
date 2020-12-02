@@ -12,6 +12,7 @@ import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.value.{AtomicValue, EmptySequence, SequenceType}
 
+
 object BuiltInFunctionSet {
 
   val EMPTY                    : Sequence = EmptySequence.getInstance
@@ -64,17 +65,16 @@ object BuiltInFunctionSet {
     var optionDetails: OptionsParameter = _
 
     def arg(a: Int, `type`: ItemType, options: Int, resultIfEmpty: Sequence): Entry = {
-      val cardinality: Int = options & StaticProperty.CARDINALITY_MASK
-      var usage: OperandUsage.OperandUsage = OperandUsage.NAVIGATION
-      if ((options & ABS) != 0) {
+      val cardinality = options & StaticProperty.CARDINALITY_MASK
+      var usage = OperandUsage.NAVIGATION
+      if ((options & ABS) != 0)
         usage = OperandUsage.ABSORPTION
-      } else if ((options & TRA) != 0) {
+      else if ((options & TRA) != 0)
         usage = OperandUsage.TRANSMISSION
-      } else if ((options & INS) != 0) {
+      else if ((options & INS) != 0)
         usage = OperandUsage.INSPECTION
-      } else if (`type`.isInstanceOf[PlainType]) {
+      else if (`type`.isInstanceOf[PlainType])
         usage = OperandUsage.ABSORPTION
-      }
       try {
         this.argumentTypes(a) = SequenceType.makeSequenceType(`type`, cardinality)
         this.resultIfEmpty(a) = resultIfEmpty
@@ -130,9 +130,9 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
                     staticArgs: Array[Expression],
                     env: StaticContext,
                     reasons: List[String]): Expression = {
-    val functionName: StructuredQName = symbolicName.getComponentName
-    val arity: Int = symbolicName.getArity
-    val localName: String = functionName.getLocalPart
+    val functionName = symbolicName.getComponentName
+    val arity = symbolicName.getArity
+    val localName = functionName.getLocalPart
 
     if (functionName.hasURI(getNamespace) && getFunctionDetails(localName, arity) != null) {
       val rsc = new RetainedStaticContext(env)
@@ -161,14 +161,12 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
         else
           "Function Q{" + getNamespace + "}" + name
       if (getFunctionDetails(name, -1) == null) {
-        val err = new XPathException(
-          diagName + "() does not exist or is not available in this environment")
+        val err = new XPathException(diagName + "() does not exist or is not available in this environment")
         err.setErrorCode("XPST0017")
         err.setIsStaticError(true)
         throw err
       } else {
-        val err = new XPathException(
-          diagName + "() cannot be called with " + pluralArguments(arity))
+        val err = new XPathException(diagName + "() cannot be called with " + pluralArguments(arity))
         err.setErrorCode("XPST0017")
         err.setIsStaticError(true)
         throw err
@@ -191,10 +189,9 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   }
 
   override def isAvailable(symbolicName: SymbolicName.F): Boolean = {
-    val qn: StructuredQName = symbolicName.getComponentName
+    val qn = symbolicName.getComponentName
     qn.hasURI(getNamespace) &&
-      getFunctionDetails(qn.getLocalPart, symbolicName.getArity) !=
-        null
+      getFunctionDetails(qn.getLocalPart, symbolicName.getArity) != null
   }
 
   override def copy(): FunctionLibrary = this
@@ -220,7 +217,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
                itemType: ItemType,
                cardinality: Int,
                properties: Int): Entry = {
-    val e: Entry = new Entry()
+    val e = new Entry
     e.name = new StructuredQName(getConventionalPrefix, getNamespace, name)
     e.arity = arity
     e.make = make
@@ -243,10 +240,10 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   def registerReducedArityVariants(key: String,
                                    min: Int,
                                    max: Int): Unit = {
-    val master: Entry = functionTable.get(key)
-    var arity: Int = min
+    val master = functionTable.get(key)
+    var arity = min
     while (arity <= max) {
-      val e: Entry = new Entry()
+      val e = new Entry
       e.name = master.name
       e.arity = arity
       e.make = master.make
@@ -254,8 +251,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       e.cardinality = master.cardinality
       e.properties = master.properties
       e.argumentTypes = Array.ofDim[SequenceType](arity)
-      e.resultIfEmpty =
-        Array.ofDim[Sequence](arity)
+      e.resultIfEmpty = Array.ofDim[Sequence](arity)
       e.usage = Array.ofDim[OperandUsage.OperandUsage](arity)
       for (i <- 0 until arity) {
         e.argumentTypes(i) = master.argumentTypes(i)
