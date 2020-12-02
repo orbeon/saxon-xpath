@@ -13,13 +13,13 @@ import org.orbeon.saxon.utils.Configuration
 
 
 /**
-  * A FunctionLibrary handles the binding of function calls in XPath (or XQuery) expressions.
-  * There are a number of implementations of this
-  * class to handle different kinds of function: system functions, constructor functions, vendor-defined
-  * functions, Java extension functions, stylesheet functions, and so on. There is also an implementation
-  * `org.orbeon.saxon.functions.FunctionLibraryList` that allows a FunctionLibrary
-  * to be constructed by combining other FunctionLibrary objects.
-  */
+ * A FunctionLibrary handles the binding of function calls in XPath (or XQuery) expressions.
+ * There are a number of implementations of this
+ * class to handle different kinds of function: system functions, constructor functions, vendor-defined
+ * functions, Java extension functions, stylesheet functions, and so on. There is also an implementation
+ * `org.orbeon.saxon.functions.FunctionLibraryList` that allows a FunctionLibrary
+ * to be constructed by combining other FunctionLibrary objects.
+ */
 trait FunctionLibrary {
 
   def setConfiguration(config: Configuration): Unit = ()
@@ -28,14 +28,15 @@ trait FunctionLibrary {
   def isAvailable(functionName: SymbolicName.F): Boolean
 
   /*@Nullable*/
-  def bind(functionName: SymbolicName.F,
-           staticArgs: Array[Expression],
-           env: StaticContext,
-           reasons: java.util.List[String]): Expression
+  def bind(
+    functionName: SymbolicName.F,
+    staticArgs  : Array[Expression],
+    env         : StaticContext,
+    reasons     : java.util.List[String]
+  ): Expression
 
   def copy(): FunctionLibrary
 
   /*@Nullable*/
-  def getFunctionItem(functionName: SymbolicName.F,
-                      staticContext: StaticContext): Function
+  def getFunctionItem(functionName: SymbolicName.F, staticContext: StaticContext): Function
 }

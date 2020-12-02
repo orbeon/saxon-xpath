@@ -107,9 +107,8 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     if (arity == -1) {
       for (i <- 0.until(20)) {
         val found = getFunctionDetails(name, i)
-        if (found != null) {
+        if (found != null)
           return found
-        }
       }
       return null
     }
