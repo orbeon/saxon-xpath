@@ -53,20 +53,20 @@ object BuiltInFunctionSet {
 
   class Entry {
 
-    var name: StructuredQName = _
-    var make: () => SystemFunction = _
-    var arity: Int = _
-    var itemType: ItemType = _
-    var cardinality: Int = _
-    var usage: Array[OperandUsage.OperandUsage] = _
-    var argumentTypes: Array[SequenceType] = _
-    var resultIfEmpty: Array[Sequence] = Array()
-    var properties: Int = _
-    var optionDetails: OptionsParameter = _
+    var name         : StructuredQName                  = _
+    var make         : () => SystemFunction             = _
+    var arity        : Int                              = _
+    var itemType     : ItemType                         = _
+    var cardinality  : Int                              = _
+    var usage        : Array[OperandUsage.OperandUsage] = _
+    var argumentTypes: Array[SequenceType]              = _
+    var resultIfEmpty: Array[Sequence]                  = Array()
+    var properties   : Int                              = _
+    var optionDetails: OptionsParameter                 = _
 
     def arg(a: Int, `type`: ItemType, options: Int, resultIfEmpty: Sequence): Entry = {
       val cardinality = options & StaticProperty.CARDINALITY_MASK
-      var usage = OperandUsage.NAVIGATION
+      var usage       = OperandUsage.NAVIGATION
       if ((options & ABS) != 0)
         usage = OperandUsage.ABSORPTION
       else if ((options & TRA) != 0)
@@ -91,6 +91,7 @@ object BuiltInFunctionSet {
       this
     }
   }
+
 }
 
 abstract class BuiltInFunctionSet extends FunctionLibrary {
@@ -112,7 +113,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       }
       return null
     }
-    var key = name + "#" + arity
+    var key   = name + "#" + arity
     var entry = functionTable.get(key)
     if (entry ne null)
       return entry
@@ -125,13 +126,15 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     null
   }
 
-  override def bind(symbolicName: SymbolicName.F,
-                    staticArgs: Array[Expression],
-                    env: StaticContext,
-                    reasons: List[String]): Expression = {
+  override def bind(
+    symbolicName: SymbolicName.F,
+    staticArgs  : Array[Expression],
+    env         : StaticContext,
+    reasons     : List[String]
+  ): Expression = {
     val functionName = symbolicName.getComponentName
-    val arity = symbolicName.getArity
-    val localName = functionName.getLocalPart
+    val arity        = symbolicName.getArity
+    val localName    = functionName.getLocalPart
 
     if (functionName.hasURI(getNamespace) && getFunctionDetails(localName, arity) != null) {
       val rsc = new RetainedStaticContext(env)
@@ -173,14 +176,14 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     }
 
     // ORBEON: No reflection.
-//    val functionClass: Class[_] = entry.implementationClass
-//    val f =
-//      try functionClass.newInstance().asInstanceOf[SystemFunction]
-//      catch {
-//        case err: Exception =>
-//          err.printStackTrace()
-//          throw new AssertionError("Failed to instantiate system function " + name + " - " + err.getMessage)
-//      }
+    //    val functionClass: Class[_] = entry.implementationClass
+    //    val f =
+    //      try functionClass.newInstance().asInstanceOf[SystemFunction]
+    //      catch {
+    //        case err: Exception =>
+    //          err.printStackTrace()
+    //          throw new AssertionError("Failed to instantiate system function " + name + " - " + err.getMessage)
+    //      }
     val f = entry.make()
     f.setDetails(entry)
     f.setArity(arity)
@@ -198,11 +201,11 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   override def getFunctionItem(symbolicName: SymbolicName.F, staticContext: StaticContext): Function = {
 
     val functionName = symbolicName.getComponentName
-    val arity = symbolicName.getArity
+    val arity        = symbolicName.getArity
 
     if (functionName.hasURI(getNamespace) && getFunctionDetails(functionName.getLocalPart, arity) != null) {
       val rsc = staticContext.makeRetainedStaticContext()
-      val fn = makeFunction(functionName.getLocalPart, arity)
+      val fn  = makeFunction(functionName.getLocalPart, arity)
       fn.setRetainedStaticContext(rsc)
       fn
     } else {
@@ -210,12 +213,14 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     }
   }
 
-  def register(name: String,
-               arity: Int,
-               make: () => SystemFunction,
-               itemType: ItemType,
-               cardinality: Int,
-               properties: Int): Entry = {
+  def register(
+    name       : String,
+    arity      : Int,
+    make       : () => SystemFunction,
+    itemType   : ItemType,
+    cardinality: Int,
+    properties : Int
+  ): Entry = {
     val e = new Entry
     e.name = new StructuredQName(getConventionalPrefix, getNamespace, name)
     e.arity = arity
@@ -226,32 +231,34 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     if (e.arity == -1) {
       e.argumentTypes = Array.ofDim[SequenceType](1)
       e.resultIfEmpty = Array.ofDim[AtomicValue](1).asInstanceOf[Array[Sequence]]
-      e.usage = Array.ofDim[OperandUsage.OperandUsage](1)
+      e.usage         = Array.ofDim[OperandUsage.OperandUsage](1)
     } else {
       e.argumentTypes = Array.ofDim[SequenceType](arity)
       e.resultIfEmpty = Array.ofDim[Sequence](arity)
-      e.usage = Array.ofDim[OperandUsage.OperandUsage](arity)
+      e.usage         = Array.ofDim[OperandUsage.OperandUsage](arity)
     }
     functionTable.put(name + "#" + arity, e)
     e
   }
 
-  def registerReducedArityVariants(key: String,
-                                   min: Int,
-                                   max: Int): Unit = {
+  def registerReducedArityVariants(
+    key: String,
+    min: Int,
+    max: Int
+  ): Unit = {
     val master = functionTable.get(key)
-    var arity = min
+    var arity  = min
     while (arity <= max) {
       val e = new Entry
-      e.name = master.name
-      e.arity = arity
-      e.make = master.make
-      e.itemType = master.itemType
-      e.cardinality = master.cardinality
-      e.properties = master.properties
+      e.name          = master.name
+      e.arity         = arity
+      e.make          = master.make
+      e.itemType      = master.itemType
+      e.cardinality   = master.cardinality
+      e.properties    = master.properties
       e.argumentTypes = Array.ofDim[SequenceType](arity)
       e.resultIfEmpty = Array.ofDim[Sequence](arity)
-      e.usage = Array.ofDim[OperandUsage.OperandUsage](arity)
+      e.usage         = Array.ofDim[OperandUsage.OperandUsage](arity)
       for (i <- 0 until arity) {
         e.argumentTypes(i) = master.argumentTypes(i)
         e.resultIfEmpty(i) = master.resultIfEmpty(i)
@@ -263,5 +270,6 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
   }
 
   def getNamespace: String = NamespaceConstant.FN
+
   def getConventionalPrefix: String = "fn"
 }
