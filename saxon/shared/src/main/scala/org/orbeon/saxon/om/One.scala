@@ -12,10 +12,10 @@ import org.orbeon.saxon.value._
 
 
 object One {
-  def bool(value: Boolean): One[BooleanValue] = new One(BooleanValue.get(value))
-  def string(value: String): One[StringValue] = new One(new StringValue(value))
-  def integer(value: Long): One[IntegerValue] = new One(new Int64Value(value))
-  def dbl(value: Double): One[DoubleValue] = new One(new DoubleValue(value))
+  def bool   (value: Boolean): One[BooleanValue] = new One(BooleanValue.get(value))
+  def string (value: String) : One[StringValue]  = new One(new StringValue(value))
+  def integer(value: Long)   : One[IntegerValue] = new One(new Int64Value(value))
+  def dbl    (value: Double) : One[DoubleValue]  = new One(new DoubleValue(value))
 }
 
 /**
@@ -23,13 +23,12 @@ object One {
   * of reflexive method calls, where the use of One(T) rather than T emphasizes that the value must not be null/empty,
   * and generates type-checking code to ensure that it is not empty.
   *
-  * <p>To extract the wrapped item, use {@link #head()}.</p>
+  * To extract the wrapped item, use {@link #head()}.
   */
-class One[T <: Item](item: T)  extends ZeroOrOne[T](item) {
+class One[T <: Item](item: T) extends ZeroOrOne[T](item) {
 
-  if (item == null) {
+  if (item == null)
     throw new NullPointerException()
-  }
 
   /**
     * Return an iterator over this value.
@@ -56,5 +55,4 @@ class One[T <: Item](item: T)  extends ZeroOrOne[T](item) {
 
       override def getReverseIterator: SequenceIterator = iterate()
     }
-
 }

@@ -13,27 +13,25 @@ object SchemaComponent {
 
   object ValidationStatus extends Enumeration {
 
-    val UNVALIDATED: ValidationStatus = new ValidationStatus()
-    val FIXED_UP: ValidationStatus = new ValidationStatus()
-    val VALIDATING: ValidationStatus = new ValidationStatus()
-    val VALIDATED: ValidationStatus = new ValidationStatus()
-    val INVALID: ValidationStatus = new ValidationStatus()
-    val INCOMPLETE: ValidationStatus = new ValidationStatus()
+    val UNVALIDATED: ValidationStatus = new ValidationStatus
+    val FIXED_UP   : ValidationStatus = new ValidationStatus
+    val VALIDATING : ValidationStatus = new ValidationStatus
+    val VALIDATED  : ValidationStatus = new ValidationStatus
+    val INVALID    : ValidationStatus = new ValidationStatus
+    val INCOMPLETE : ValidationStatus = new ValidationStatus
 
     class ValidationStatus extends Val
 
     implicit def convertValue(v: Value): ValidationStatus =
       v.asInstanceOf[ValidationStatus]
-
   }
-
 }
 
 /**
   * This is a marker interface that represents any "schema component" as defined in the XML Schema
   * specification. This may be a user-defined schema component or a built-in schema component. Since
   * all built-in schema components are types, every SchemaComponent in practice is either a
-  * {@link com.saxonica.ee.schema.UserSchemaComponent} or a {@link SchemaType} or both.
+  * `com.saxonica.ee.schema.UserSchemaComponent` or a `SchemaType` or both.
   */
 trait SchemaComponent {
 

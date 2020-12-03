@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,29 +6,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.trans
 
-import org.orbeon.saxon.expr.{ComponentBinding, XPathContext, XPathContextMajor}
 import org.orbeon.saxon.expr.instruct.{Actor, SlotManager, TemplateRule}
+import org.orbeon.saxon.expr.{ComponentBinding, XPathContext, XPathContextMajor}
 import org.orbeon.saxon.model.{ErrorType, Type, UType}
 import org.orbeon.saxon.om._
-import org.orbeon.saxon.pattern._
-import org.orbeon.saxon.trans.Mode.RuleAction
-import org.orbeon.saxon.trans.RecoveryPolicy._
-
-import scala.util.control.Breaks._
-
-/*import org.orbeon.saxon.style.StylesheetModule*/
-// StylesheetModule not exist
-import java.util._
-
+import org.orbeon.saxon.pattern.{AnyNodeTest, _}
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.Mode.RuleAction
+import org.orbeon.saxon.trans.RecoveryPolicy._
 import org.orbeon.saxon.trans.rules._
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.{AtomicValue, Whitespace}
 import org.orbeon.saxon.z.IntHashMap
 
-//import scala.collection.compat._
+import java.util._
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks._
+
 
 /**
  * A Mode is a collection of rules; the selection of a rule to apply to a given element
@@ -379,9 +373,9 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     if (pattern.isInstanceOf[NodeTestPattern]) {
       val test = pattern.getItemType
       test match {
-        case _: AnyNodeTest => newRule.setAlwaysMatches(true)
+        case AnyNodeTest     => newRule.setAlwaysMatches(true)
         case _: NodeKindTest => newRule.setAlwaysMatches(true)
-        case _: NameTest =>
+        case _: NameTest     =>
           val kind = test.getPrimitiveType
           if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE)
             newRule.setAlwaysMatches(true)

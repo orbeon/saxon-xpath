@@ -15,13 +15,12 @@ import org.orbeon.saxon.om.{GroundedValue, SequenceIterator}
   * and that is therefore capable of returning a Sequence containing all the items
   * in the sequence.
   *
-  * <p>We stretch the concept to consider an iterator over a MemoClosure as a grounded
+  * We stretch the concept to consider an iterator over a MemoClosure as a grounded
   * iterator, on the basis that the in-memory sequence might exist already or might
   * be created as a side-effect of navigating the iterator. This is why materializing
-  * the iterator can raise an exception.</p>
+  * the iterator can raise an exception.
   */
 trait GroundedIterator extends SequenceIterator {
   def materialize: GroundedValue
   def getResidue: GroundedValue
 }
-

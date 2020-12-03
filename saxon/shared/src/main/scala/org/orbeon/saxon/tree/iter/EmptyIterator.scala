@@ -11,9 +11,9 @@ object EmptyIterator {
 
   private val theInstance: EmptyIterator = new EmptyIterator
 
-  def getInstance: EmptyIterator = theInstance
-  def emptyIterator: EmptyIterator = theInstance
-  def ofNodes: AxisIterator = OfNodes.THE_INSTANCE
+  def getInstance   : EmptyIterator = theInstance
+  def emptyIterator : EmptyIterator = theInstance
+  def ofNodes       : AxisIterator  = OfNodes.THE_INSTANCE
 
   def ofAtomic[T <: AtomicValue](): AtomicIterator[T] =
     OfAtomic.THE_INSTANCE.asInstanceOf[AtomicIterator[T]]

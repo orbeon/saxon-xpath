@@ -6,12 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.util.{ArrayList, Collections, Iterator, List}
-
 import org.orbeon.saxon.expr.SingletonIntersectExpression
 import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.trans.Err
 import org.orbeon.saxon.tree.iter.UnfailingIterator
+
+import java.{util => ju}
 
 
 /**
@@ -37,7 +37,7 @@ trait GroundedValue extends Sequence {
 
   def asIterable(): java.lang.Iterable[_ <: Item] = () => {
     val base: UnfailingIterator = iterate()
-    new Iterator[Item]() {
+    new ju.Iterator[Item]() {
       var pending: Item = null
 
       def hasNext: Boolean = {
@@ -53,9 +53,9 @@ trait GroundedValue extends Sequence {
     SingletonIntersectExpression.containsNode(iterate(), sought)
 
   def concatenate(others: GroundedValue*): GroundedValue = {
-    val c = new ArrayList[GroundedValue]()
+    val c = new ju.ArrayList[GroundedValue]()
     c.add(this)
-    Collections.addAll(c, others: _*)
+    ju.Collections.addAll(c, others: _*)
     new Chain(c)
   }
 }

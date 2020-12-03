@@ -1,12 +1,13 @@
 package org.orbeon.saxon.value
 
-import java.util.{ArrayList, Arrays, Iterator, List}
-
-import org.orbeon.saxon.expr.{LastPositionFinder, StaticProperty}
 import org.orbeon.saxon.expr.parser.ExpressionTool
+import org.orbeon.saxon.expr.{LastPositionFinder, StaticProperty}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.iter.{GroundedIterator, ListIterator, ReverseListIterator, UnfailingIterator}
 import org.orbeon.saxon.tree.util.FastStringBuffer
+
+import java.{util => ju}
+
 
 object SequenceExtent {
 
@@ -16,46 +17,44 @@ object SequenceExtent {
     new SequenceExtent(iter).reduce()
 
   def makeResidue(iter: SequenceIterator): GroundedValue = {
-    if (iter.getProperties.contains(SequenceIterator.Property.GROUNDED)) {
-      iter.asInstanceOf[GroundedIterator].getResidue
-    }
-    val extent: SequenceExtent = new SequenceExtent(iter)
+    if (iter.getProperties.contains(SequenceIterator.Property.GROUNDED))
+      return iter.asInstanceOf[GroundedIterator].getResidue
+    val extent = new SequenceExtent(iter)
     extent.reduce()
   }
 
-  def makeSequenceExtent[T <: Item](input: List[T]): GroundedValue = {
+  def makeSequenceExtent[T <: Item](input: ju.List[T]): GroundedValue = {
     val len = input.size
-    if (len == 0) {
+    if (len == 0)
       EmptySequence.getInstance
-    } else if (len == 1) {
+    else if (len == 1)
       input.get(0)
-    } else {
-      new SequenceExtent(new ArrayList(input))
-    }
+    else
+      new SequenceExtent(new ju.ArrayList(input))
   }
-
 }
 
 class SequenceExtent extends GroundedValue {
 
-   var value: List[_ <: Item] = _
+  var value: ju.List[_ <: Item] = _
 
   def this(items: Array[Item]) = {
     this()
-    value = Arrays.asList(items: _*)
+    value = ju.Arrays.asList(items: _*)
   }
-  def this(list: List[_ <: Item]) = {
+  def this(list: ju.List[_ <: Item]) = {
     this()
     this.value = list
   }
 
   def this(iter: SequenceIterator) = {
     this()
-    val len =
+    val len  =
       if (!iter.getProperties.contains(
         SequenceIterator.Property.LAST_POSITION_FINDER)) 20
-      else iter.asInstanceOf[LastPositionFinder].getLength
-    val list: List[Item] = new ArrayList[Item](len)
+      else
+        iter.asInstanceOf[LastPositionFinder].getLength
+    val list = new ju.ArrayList[Item](len)
     iter.forEachOrFail(res => list.add(res))
     value = list
   }
@@ -72,15 +71,13 @@ class SequenceExtent extends GroundedValue {
     case 0 => StaticProperty.EMPTY
     case 1 => StaticProperty.EXACTLY_ONE
     case _ => StaticProperty.ALLOWS_ONE_OR_MORE
-
   }
 
   def itemAt(n: Int): Item =
-    if (n < 0 || n >= getLength) {
+    if (n < 0 || n >= getLength)
       null
-    } else {
+    else
       value.get(n)
-    }
 
   def iterate(): ListIterator[_ <: Item] = new ListIterator(value)
 
@@ -91,7 +88,7 @@ class SequenceExtent extends GroundedValue {
     if (len == 0) {
       false
     } else {
-      val first: Item = value.get(0)
+      val first = value.get(0)
       if (first.isInstanceOf[NodeInfo]) {
         true
       } else if (len == 1 && first.isInstanceOf[AtomicValue]) {
@@ -105,10 +102,10 @@ class SequenceExtent extends GroundedValue {
   def subsequence(start: Int, length: Int): GroundedValue = {
     var startInt = start
     if (startInt < 0) startInt = 0
-    if (startInt > value.size) {
+    if (startInt > value.size)
       EmptySequence.getInstance
-    }
-    new SequenceSlice(value, startInt, length).reduce()
+    else
+      new SequenceSlice(value, startInt, length).reduce()
   }
 
   override def toString: String = {
@@ -123,17 +120,15 @@ class SequenceExtent extends GroundedValue {
 
   override def reduce(): GroundedValue = {
     val len = getLength
-    if (len == 0) {
+    if (len == 0)
       EmptySequence.getInstance
-    } else if (len == 1) {
+    else if (len == 1)
       itemAt(0)
-    } else {
+    else
       this
-    }
   }
 
   override def asIterable(): java.lang.Iterable[_ <: Item] = value
 
-  def iterator: Iterator[_ <: Item] = value.iterator
-
+  def iterator: ju.Iterator[_ <: Item] = value.iterator
 }

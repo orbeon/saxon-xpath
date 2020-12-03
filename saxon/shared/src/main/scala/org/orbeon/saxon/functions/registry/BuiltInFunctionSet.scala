@@ -60,7 +60,7 @@ object BuiltInFunctionSet {
     var cardinality  : Int                              = _
     var usage        : Array[OperandUsage.OperandUsage] = _
     var argumentTypes: Array[SequenceType]              = _
-    var resultIfEmpty: Array[Sequence]                  = Array()
+    var resultIfEmpty: Array[Sequence]                  = Array.empty
     var properties   : Int                              = _
     var optionDetails: OptionsParameter                 = _
 
@@ -262,7 +262,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
       for (i <- 0 until arity) {
         e.argumentTypes(i) = master.argumentTypes(i)
         e.resultIfEmpty(i) = master.resultIfEmpty(i)
-        e.usage(i) = master.usage(i)
+        e.usage(i)         = master.usage(i)
       }
       functionTable.put(e.name.getLocalPart + "#" + arity, e)
       arity += 1

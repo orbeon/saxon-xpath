@@ -1,7 +1,5 @@
 package org.orbeon.saxon.om
 
-import java.{util => ju}
-
 import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.om.Chain.ChainIterator.ChainPosition
 import org.orbeon.saxon.om.Chain._
@@ -9,10 +7,39 @@ import org.orbeon.saxon.om.SequenceIterator.Property._
 import org.orbeon.saxon.tree.iter.{GroundedIterator, UnfailingIterator}
 import org.orbeon.saxon.value.{EmptySequence, SequenceExtent}
 
+import java.{util => ju}
 import scala.collection.immutable
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
+
+/**
+ * A chain is an implementation of Sequence that represents the concatenation of
+ * a number of subsequences.
+ *
+ * The most common use case is a recursive function that appends one item to a
+ * sequence each time it is called. Each call of this function will create a Chain
+ * with two subsequences, the first being a Chain and the second an individual item.
+ * The design of the class is constrained by the need to handle this extreme case.
+ *
+ * Firstly, the iterator for the class cannot use simple recursion to navigate the
+ * tree because it will often be too deep, causing StackOverflow. So it maintains its
+ * own Stack (on the Java heap).
+ *
+ * Secondly, even using the heap will run out of space at about a million entries.
+ * To prevent this, any Chains of size less than thirty items are amalgamated into
+ * chunks of 30. Building larger chunks than this would cause insertion operations
+ * to have linear performance (and thus the total cost of sequence construction
+ * would be quadratic). The figure of 30 was chosen because elapsed time is almost
+ * as good as with smaller chunks, and memory use during navigation is substantially
+ * reduced.
+ *
+ * A Chain has two phases in its life-cycle. In the first phase, the Chain is mutable;
+ * it can be extended using append() calls. In the second phase, the Chain is immutable;
+ * further append() operations are not allowed. The transition from the first to the
+ * second phase occurs when any of the methods itemAt(), reduce(), or subsequence()
+ * is called.
+ */
 object Chain {
 
   object ChainIterator {
@@ -29,25 +56,23 @@ object Chain {
     stack ::= new ChainPosition(thisChain, 0)
 
     def next(): Item = {
-      while (!queue.isEmpty) {
-        var ui: UnfailingIterator = queue.peek()
+      while (! queue.isEmpty) {
+        var ui = queue.peek()
         while (ui != null) {
-          val current: Item = ui.next()
-          if (current != null) {
-            current
-          } else {
+          val current = ui.next()
+          if (current != null) current else {
             queue.remove()
             ui = queue.peek()
           }
         }
       }
       while (stack.nonEmpty) {
-        val cp: ChainPosition = stack.head
+        val cp = stack.head
         if (cp.offset >= cp.chain.children.size) {
           stack = stack.tail
           //continue
         }
-        val gv: GroundedValue = cp.chain.children.get({
+        val gv = cp.chain.children.get({
           cp.offset += 1
           cp.offset - 1
         })
@@ -66,10 +91,9 @@ object Chain {
 
     override def getProperties: immutable.Set[Property] = immutable.Set(GROUNDED)
     override def materialize: GroundedValue = thisChain
-    def getResidue: GroundedValue = new SequenceExtent(this)
 
+    def getResidue = new SequenceExtent(this)
   }
-
 }
 
 class Chain(private var children: ju.List[GroundedValue]) extends GroundedValue {
@@ -127,7 +151,7 @@ class Chain(private var children: ju.List[GroundedValue]) extends GroundedValue 
 
   def append(item: Item): Unit = {
     if (extent != null)
-      throw new IllegalStateException()
+      throw new IllegalStateException
     if (item != null)
       children.add(item.asInstanceOf[GroundedValue])
   }
@@ -163,9 +187,8 @@ class Chain(private var children: ju.List[GroundedValue]) extends GroundedValue 
       return EmptySequence.getInstance
     } else {
       newEnd = newStart + length
-      if (newEnd > extent.size) {
+      if (newEnd > extent.size)
         newEnd = extent.size
-      }
     }
     new SequenceExtent(extent.subList(newStart, newEnd))
   }

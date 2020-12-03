@@ -16,9 +16,10 @@ package org.orbeon.saxon.om
  * @since 9.5. Generified in 9.9. Generics dropped in 10.0.
  */
 trait Sequence {
+
   def head: Item
   def iterate(): SequenceIterator
-  def makeRepeatable(): Sequence = this
 
+  def makeRepeatable(): Sequence = this
   def materialize: GroundedValue = iterate().materialize
 }
