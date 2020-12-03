@@ -78,7 +78,7 @@ abstract class NumericValue
     * @throws org.orbeon.saxon.trans.XPathException
     *          if the value cannot be converted
     */
-  def longValue(): Long
+  def longValue: Long
   def negate(): NumericValue
   /*@NotNull*/
   def floor(): NumericValue

@@ -126,7 +126,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     null
   }
 
-  override def bind(
+  def bind(
     symbolicName: SymbolicName.F,
     staticArgs  : Array[Expression],
     env         : StaticContext,
@@ -222,12 +222,12 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     properties : Int
   ): Entry = {
     val e = new Entry
-    e.name = new StructuredQName(getConventionalPrefix, getNamespace, name)
-    e.arity = arity
-    e.make = make
-    e.itemType = itemType
+    e.name        = new StructuredQName(getConventionalPrefix, getNamespace, name)
+    e.arity       = arity
+    e.make        = make
+    e.itemType    = itemType
     e.cardinality = cardinality
-    e.properties = properties
+    e.properties  = properties
     if (e.arity == -1) {
       e.argumentTypes = Array.ofDim[SequenceType](1)
       e.resultIfEmpty = Array.ofDim[AtomicValue](1).asInstanceOf[Array[Sequence]]

@@ -188,7 +188,7 @@ class Int64Value extends IntegerValue {
       java.lang.Double.valueOf(getDoubleValue).hashCode
     }
 
-  def longValue(): Long = value
+  def longValue: Long = value
 
   override def effectiveBooleanValue: Boolean = value != 0
 
@@ -212,7 +212,7 @@ class Int64Value extends IntegerValue {
 
   def getFloatValue: Float = value.toFloat
 
-  def getDecimalValue(): BigDecimal = BigDecimal.valueOf(value)
+  def getDecimalValue: BigDecimal = BigDecimal.valueOf(value)
 
   def negate(): NumericValue =
     if (value == java.lang.Long.MIN_VALUE) {

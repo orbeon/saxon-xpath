@@ -27,8 +27,7 @@ abstract class AbstractFunction extends Function {
     throw new XPathException("Function items (other than arrays) cannot be atomized", "FOTY0013")
 
   def isArray: Boolean = false
-
-  def isMap: Boolean = false
+  def isMap  : Boolean = false
 
   def getStringValue: String =
     throw new UnsupportedOperationException("The string value of a function is not defined")
@@ -50,18 +49,18 @@ abstract class AbstractFunction extends Function {
                      originator: ContextOriginator): XPathContext =
     callingContext
 
-  def deepEquals(other: Function,
-                 context: XPathContext,
-                 comparer: AtomicComparer,
-                 flags: Int): Boolean =
-    throw new XPathException(
-      "Argument to deep-equal() contains a function item",
-      "FOTY0015")
+  def deepEquals(
+    other   : Function,
+    context : XPathContext,
+    comparer: AtomicComparer,
+    flags   : Int
+  ): Boolean = throw new XPathException(
+    "Argument to deep-equal() contains a function item", "FOTY0015"
+  )
 
-  def export(out: ExpressionPresenter): Unit = {
-    throw new UnsupportedOperationException(
-      "export() not implemented for " + this.getClass)
-  }
+  def export(
+    out: ExpressionPresenter
+  ): Unit = throw new UnsupportedOperationException("export() not implemented for " + this.getClass)
 
   def isTrustedResultType: Boolean = false
 }

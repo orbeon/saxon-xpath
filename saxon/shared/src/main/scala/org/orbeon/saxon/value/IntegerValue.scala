@@ -19,8 +19,9 @@ import org.orbeon.saxon.trans.{Err, XPathException}
  * This class represents the XPath built-in type xs:integer. It is used for all
  * subtypes of xs:integer, other than user-defined subtypes. There are two implementations
  *
- * of IntegerValue: `Int64Value`, which accommodates values up to 2^63, and
+ * of IntegerValue: `Int64Value`, which accommodates values up to `2^63`, and
  * `BigIntegerValue`, which accommodates unlimited-length integers.
+ *
  * @since 9.8: changed in 9.8 to make this class a subclass of the new abstract
  *        class DecimalValue, to better reflect the XDM type hierarchy
  */
@@ -31,8 +32,8 @@ object IntegerValue {
    * This is a sequence of triples, each holding the fingerprint of the type, the minimum
    * value, and the maximum value. The special value NO_LIMIT indicates that there is no
    * minimum (or no maximum) for this type. The special value MAX_UNSIGNED_LONG represents the
-   * value 2^64-1
-   * */
+   * value `2^64-1`
+   */
   private val NO_LIMIT: Long = -9999
 
   private val MAX_UNSIGNED_LONG: Long = -9998
@@ -101,9 +102,9 @@ object IntegerValue {
       err
     } else if (value > java.lang.Long.MAX_VALUE || value < java.lang.Long.MIN_VALUE) {
       if (value == Math.floor(value))
-        new BigIntegerValue(FormatNumber.adjustToDecimal(value, 2).toBigInteger())
+        new BigIntegerValue(FormatNumber.adjustToDecimal(value, 2).toBigInteger)
       else
-        new BigIntegerValue(new BigDecimal(value).toBigInteger())
+        new BigIntegerValue(new BigDecimal(value).toBigInteger)
     } else
       Int64Value.makeIntegerValue(value.toLong)
 

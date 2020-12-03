@@ -31,7 +31,7 @@ abstract class CollatingFunctionFixed
       collationName = retainedStaticContext.getDefaultCollationName
       try allocateCollator()
       catch {
-        case e: XPathException => {}
+        case _: XPathException =>
       }
     }
   }
@@ -42,24 +42,25 @@ abstract class CollatingFunctionFixed
   }
 
   private def allocateCollator(): Unit = {
-    stringCollator =
-      getRetainedStaticContext.getConfiguration.getCollation(collationName)
+    stringCollator = getRetainedStaticContext.getConfiguration.getCollation(collationName)
     if (stringCollator == null) {
-      throw new XPathException("Unknown collation " + collationName,
-        "FOCH0002")
+      throw new XPathException(
+        "Unknown collation " + collationName,
+        "FOCH0002"
+      )
     }
     if (isSubstringMatchingFunction) {
       // ORBEON: Collations
-//      stringCollator match {
-//        case simpleCollation: SimpleCollation =>
-//          stringCollator = simpleCollation.getSubstringMatcher
-//        case _ =>
-//      }
+      //      stringCollator match {
+      //        case simpleCollation: SimpleCollation =>
+      //          stringCollator = simpleCollation.getSubstringMatcher
+      //        case _ =>
+      //      }
       if (! stringCollator.isInstanceOf[SubstringMatcher]) {
         throw new XPathException(
-          "The collation requested for " + getFunctionName.getDisplayName +
-            " does not support substring matching",
-          "FOCH0004")
+          "The collation requested for " + getFunctionName.getDisplayName + " does not support substring matching",
+          "FOCH0004"
+        )
       }
     }
   }
@@ -67,7 +68,7 @@ abstract class CollatingFunctionFixed
    def preAllocateComparer(type0: AtomicType,
                                     type1: AtomicType,
                                     env: StaticContext): Unit = {
-    val collation: StringCollator = getStringCollator
+    val collation = getStringCollator
     if (type0 == ErrorType || type1 == ErrorType) {
       atomicComparer = EqualityComparer.getInstance
       return
@@ -83,44 +84,37 @@ abstract class CollatingFunctionFixed
   def getPreAllocatedAtomicComparer: AtomicComparer = atomicComparer
 
   def getAtomicComparer(context: XPathContext): AtomicComparer =
-    if (atomicComparer != null) {
+    if (atomicComparer != null)
       atomicComparer.provideContext(context)
-    } else {
+    else
       new GenericAtomicComparer(getStringCollator, context)
-    }
 
-  override def exportAttributes(out: ExpressionPresenter): Unit = {
-    if (collationName != NamespaceConstant.CODEPOINT_COLLATION_URI) {
+  override def exportAttributes(out: ExpressionPresenter): Unit =
+    if (collationName != NamespaceConstant.CODEPOINT_COLLATION_URI)
       out.emitAttribute("collation", collationName)
-    }
-  }
 
   override def importAttributes(attributes: Properties): Unit = {
-    val collationName: String = attributes.getProperty("collation")
-    if (collationName != null) {
+    val collationName = attributes.getProperty("collation")
+    if (collationName != null)
       this.collationName = collationName
-    }
   }
 
   override def copy(): CollatingFunctionFixed = {
-    var copy: SystemFunction = SystemFunction.makeFunction(
+    var copy = SystemFunction.makeFunction(
       getFunctionName.getLocalPart,
       getRetainedStaticContext,
-      getArity)
+      getArity
+    )
     copy match {
-      case free: CollatingFunctionFree =>
-        copy = free.bindCollation(collationName)
-      case _ =>
+      case free: CollatingFunctionFree => copy = free.bindCollation(collationName)
+      case _                           =>
     }
     copy match {
-      case fixed: CollatingFunctionFixed =>
-        fixed.collationName = collationName
+      case fixed: CollatingFunctionFixed => fixed.collationName = collationName
         fixed.atomicComparer = atomicComparer
         fixed.stringCollator = stringCollator
         fixed
-      case _ =>
+      case _                             => throw new IllegalStateException()
     }
-    throw new IllegalStateException()
   }
-
 }

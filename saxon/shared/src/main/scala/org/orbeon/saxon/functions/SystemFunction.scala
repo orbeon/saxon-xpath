@@ -15,11 +15,16 @@ import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 import scala.beans.BeanProperty
 
 
+/**
+ * Abstract superclass for calls to functions in the standard function library
+ */
 object SystemFunction {
 
-  def makeCall(name: String,
-               rsc: RetainedStaticContext,
-               arguments: Expression*): Expression = {
+  def makeCall(
+    name     : String,
+    rsc      : RetainedStaticContext,
+    arguments: Expression*
+  ): Expression = {
     val f = makeFunction(name, rsc, arguments.length)
     if (f == null)
       return null
@@ -28,11 +33,12 @@ object SystemFunction {
     expr
   }
 
-  def makeFunction(name: String,
-                   rsc: RetainedStaticContext,
-                   arity: Int): SystemFunction = {
-    if (rsc == null)
-      throw new NullPointerException
+  def makeFunction(
+    name : String,
+    rsc  : RetainedStaticContext,
+    arity: Int
+  ): SystemFunction = {
+    require (rsc ne null)
     val fn = rsc.getConfiguration.makeSystemFunction(name, arity)
     if (fn == null) {
       rsc.getConfiguration.makeSystemFunction(name, arity)
@@ -42,9 +48,11 @@ object SystemFunction {
     fn
   }
 
-  def dynamicCall(f: Function,
-                  context: XPathContext,
-                  args: Array[Sequence]): Sequence = {
+  def dynamicCall(
+    f      : Function,
+    context: XPathContext,
+    args   : Array[Sequence]
+  ): Sequence = {
     var xPathCont = context
     xPathCont = f.makeNewContext(xPathCont, null)
     xPathCont.setCurrentOutputUri(null)
@@ -72,9 +80,11 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getNetCost: Int = 1
 
-  def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
-                                contextInfo: ContextItemStaticInfo,
-                                arguments: Expression*): Expression = {
+  def makeOptimizedFunctionCall(
+    visitor    : ExpressionVisitor,
+    contextInfo: ContextItemStaticInfo,
+    arguments  : Expression*
+  ): Expression = {
     val opt = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING))
       fixArguments(arguments: _*)
@@ -111,9 +121,11 @@ abstract class SystemFunction extends AbstractFunction {
 
   def getIntegerBounds: Array[IntegerValue] = null
 
-  def supplyTypeInformation(visitor: ExpressionVisitor,
-                            contextItemType: ContextItemStaticInfo,
-                            arguments: Array[Expression]): Unit = ()
+  def supplyTypeInformation(
+    visitor        : ExpressionVisitor,
+    contextItemType: ContextItemStaticInfo,
+    arguments      : Array[Expression]
+  ): Unit = ()
 
   override def equals(o: Any): Boolean =
     o.isInstanceOf[SystemFunction] && this == o
@@ -157,9 +169,8 @@ abstract class SystemFunction extends AbstractFunction {
     if ((details.properties & BuiltInFunctionSet.NEW) != 0)
       return StaticProperty.ALL_NODES_NEWLY_CREATED
     var p = StaticProperty.NO_NODES_NEWLY_CREATED
-    if ((details.properties & BuiltInFunctionSet.SIDE) != 0) {
+    if ((details.properties & BuiltInFunctionSet.SIDE) != 0)
       p |= StaticProperty.HAS_SIDE_EFFECTS
-    }
     p
   }
 
@@ -197,9 +208,11 @@ abstract class SystemFunction extends AbstractFunction {
     out.endElement()
   }
 
-  def typeCheckCaller(caller: FunctionCall,
-                      visitor: ExpressionVisitor,
-                      contextInfo: ContextItemStaticInfo): Expression = caller
+  def typeCheckCaller(
+    caller     : FunctionCall,
+    visitor    : ExpressionVisitor,
+    contextInfo: ContextItemStaticInfo
+  ): Expression = caller
 
   override def isTrustedResultType: Boolean = true
 
@@ -208,8 +221,10 @@ abstract class SystemFunction extends AbstractFunction {
 
   def exportAttributes(out: ExpressionPresenter): Unit = ()
 
-  def exportAdditionalArguments(call: SystemFunctionCall,
-                                out: ExpressionPresenter): Unit = ()
+  def exportAdditionalArguments(
+    call: SystemFunctionCall,
+    out : ExpressionPresenter
+  ): Unit = ()
 
   def importAttributes(attributes: Properties): Unit = ()
   def getCompilerName: String = null

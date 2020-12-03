@@ -4,10 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * An implementation of ItemType that matches any item (node or atomic value)
-  */
-
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.expr.StaticProperty
@@ -15,22 +11,25 @@ import org.orbeon.saxon.om.{Genre, Item}
 import org.orbeon.saxon.value.SequenceType
 
 
+/**
+  * An implementation of ItemType that matches any item (node or atomic value)
+  */
 object AnyItemType extends ItemType.WithSequenceTypeCache {
 
-  private var _one: SequenceType = _
-  private var _oneOrMore: SequenceType = _
-  private var _zeroOrOne: SequenceType = _
+  private var _one       : SequenceType = _
+  private var _oneOrMore : SequenceType = _
+  private var _zeroOrOne : SequenceType = _
   private var _zeroOrMore: SequenceType = _
 
   /**
     * Determine the Genre (top-level classification) of this type
     *
-    * @return the Genre to which this type belongs, specifically {@link Genre#ANY}
+    * @return the Genre to which this type belongs, specifically `Genre`
     */
-  override def getGenre: Genre.Genre = Genre.ANY
+  def getGenre: Genre.Genre = Genre.ANY
 
   /**
-    * Get the corresponding {@link org.orbeon.saxon.model.UType}. A UType is a union of primitive item
+    * Get the corresponding `org.orbeon.saxon.model.UType`. A UType is a union of primitive item
     * types.
     *
     * @return the smallest UType that subsumes this item type
@@ -51,7 +50,7 @@ object AnyItemType extends ItemType.WithSequenceTypeCache {
     *
     * @return the alphacode for the nearest containing built-in type
     */
-  override def getBasicAlphaCode: String = ""
+  def getBasicAlphaCode: String = ""
 
   def isPlainType: Boolean = false
 
