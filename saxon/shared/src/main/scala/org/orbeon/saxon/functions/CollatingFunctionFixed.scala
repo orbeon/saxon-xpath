@@ -114,7 +114,7 @@ abstract class CollatingFunctionFixed
         fixed.atomicComparer = atomicComparer
         fixed.stringCollator = stringCollator
         fixed
-      case _                             => throw new IllegalStateException()
+      case _                             => throw new IllegalStateException
     }
   }
 }

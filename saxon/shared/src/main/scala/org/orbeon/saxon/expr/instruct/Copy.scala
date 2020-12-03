@@ -236,7 +236,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
           } else {
             AnyItemType
           }
-        case _ => throw new IllegalStateException()
+        case _ => throw new IllegalStateException
 
       }
     }

@@ -33,7 +33,7 @@ object CombinedNodeTest {
         contentType.getEQName
       }
     } else {
-      throw new IllegalStateException()
+      throw new IllegalStateException
     }
 
 }
@@ -193,7 +193,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
         case Token.UNION     => Some(s1.union(s2))
         case Token.INTERSECT => Some(s1.intersect(s2))
         case Token.EXCEPT    => Some(s1.except(s2))
-        case _               => throw new IllegalStateException()
+        case _               => throw new IllegalStateException
       }
     } else {
       None

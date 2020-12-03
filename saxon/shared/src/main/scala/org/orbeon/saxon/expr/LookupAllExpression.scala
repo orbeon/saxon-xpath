@@ -151,7 +151,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
               } else if (nextEntry.isInstanceOf[GroundedValue]) {
                 level2 = nextEntry.asInstanceOf[GroundedValue].iterate()
               } else {
-                throw new IllegalStateException()
+                throw new IllegalStateException
               }
             } else {
               level1 = null

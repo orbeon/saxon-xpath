@@ -59,7 +59,7 @@ object AccumulatorData {
         case AxisInfo.FOLLOWING => +1
         case AxisInfo.ANCESTOR => if (isPostDescent) +1 else -1
         case AxisInfo.DESCENDANT => if (other.isPostDescent) -1 else +1
-        case _ => throw new IllegalStateException()
+        case _ => throw new IllegalStateException
 
       }
     }

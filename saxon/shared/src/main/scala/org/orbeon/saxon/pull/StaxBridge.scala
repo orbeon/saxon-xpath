@@ -267,7 +267,7 @@
 //      val local: String = reader.getPITarget
 //      new NoNamespaceName(local)
 //    } else {
-//      throw new IllegalStateException()
+//      throw new IllegalStateException
 //    }
 //
 //  def getStringValue: CharSequence = currentEvent match {
@@ -320,7 +320,7 @@
 //
 //  }
 //
-//  def getAtomicValue(): AtomicValue = throw new IllegalStateException()
+//  def getAtomicValue(): AtomicValue = throw new IllegalStateException
 //
 //  def getSchemaType: SchemaType =
 //    if (currentEvent == START_ELEMENT) {

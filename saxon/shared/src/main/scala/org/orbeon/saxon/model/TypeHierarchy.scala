@@ -392,7 +392,7 @@ class TypeHierarchy(var config: Configuration) {
             val r: Affinity = relationship(t2, t1)
             inverseRelationship(r)
           } else {
-            throw new IllegalStateException()
+            throw new IllegalStateException
           }
         }
       } else t1 match {

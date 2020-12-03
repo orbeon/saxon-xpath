@@ -76,7 +76,7 @@ class MemoClosure extends Closure with ContextOriginator {
       case memoSequence: MemoSequence =>
         memoSequence.itemAt(n)
       case _ =>
-        throw new IllegalStateException()
+        throw new IllegalStateException
     }
   }
 
