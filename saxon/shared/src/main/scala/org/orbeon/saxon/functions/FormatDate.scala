@@ -289,7 +289,7 @@ object FormatDate {
             .asInstanceOf[Int64Value]
           assert(hour != null)
           formatNumber(component,
-            hour.longValue().toInt,
+            hour.longValue.toInt,
             format,
             defaultFormat,
             numberer,
@@ -307,7 +307,7 @@ object FormatDate {
             .getComponent(AccessorFn.Component.HOURS)
             .asInstanceOf[Int64Value]
           assert(hour != null)
-          var hr: Int = hour.longValue().toInt
+          var hr: Int = hour.longValue.toInt
           if (hr > 12) {
             hr = hr - 12
           }
@@ -329,7 +329,7 @@ object FormatDate {
             .asInstanceOf[Int64Value]
           assert(minutes != null)
           formatNumber(component,
-            minutes.longValue().toInt,
+            minutes.longValue.toInt,
             format,
             defaultFormat,
             numberer,
@@ -348,7 +348,7 @@ object FormatDate {
             .asInstanceOf[IntegerValue]
           assert(seconds != null)
           formatNumber(component,
-            seconds.longValue().toInt,
+            seconds.longValue.toInt,
             format,
             defaultFormat,
             numberer,
@@ -367,7 +367,7 @@ object FormatDate {
             .asInstanceOf[Int64Value]
           assert(micros != null)
           formatNumber(component,
-            micros.longValue().toInt,
+            micros.longValue.toInt,
             format,
             defaultFormat,
             numberer,

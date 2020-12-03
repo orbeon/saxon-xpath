@@ -60,7 +60,7 @@ class FunctionAvailable extends SystemFunction {
         minArity = arguments(1)
           .evaluateItem(env.makeEarlyEvaluationContext())
           .asInstanceOf[NumericValue]
-          .longValue()
+          .longValue
           .toInt
         maxArity = minArity
       }
@@ -120,7 +120,7 @@ class FunctionAvailable extends SystemFunction {
     val lexicalQName: String = arguments(0).head.getStringValue
     var arity: Int = -1
     if (arguments.length == 2) {
-      arity = arguments(1).head.asInstanceOf[NumericValue].longValue().toInt
+      arity = arguments(1).head.asInstanceOf[NumericValue].longValue.toInt
     }
     BooleanValue.get(
       isFunctionAvailable(

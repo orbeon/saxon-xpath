@@ -385,7 +385,7 @@ class LookupExpression(start: Expression, step: Expression)
             if (index.isInstanceOf[IntegerValue]) {
               var member: GroundedValue = baseItem
                 .asInstanceOf[ArrayItem]
-                .get(index.asInstanceOf[IntegerValue].longValue().toInt - 1)
+                .get(index.asInstanceOf[IntegerValue].longValue.toInt - 1)
               member.iterate()
             } else {
               var exception: XPathException = new XPathException(

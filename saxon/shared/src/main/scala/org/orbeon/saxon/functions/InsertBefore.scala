@@ -83,7 +83,7 @@ class InsertBefore extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val n: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
-    val pos: Int = n.longValue().toInt
+    val pos: Int = n.longValue.toInt
     SequenceTool.toLazySequence(
       new InsertIterator(arguments(0).iterate(), arguments(2).iterate(), pos))
   }

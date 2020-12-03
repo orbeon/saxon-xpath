@@ -15,7 +15,7 @@ object Substring {
     val slength: Int = s.uLength
     var lstart: Long = 0L
     if (start.isInstanceOf[Int64Value]) {
-      lstart = start.asInstanceOf[Int64Value].longValue()
+      lstart = start.asInstanceOf[Int64Value].longValue
       if (lstart > slength) {
         EmptyString.THE_INSTANCE
       } else if (lstart <= 0) {
@@ -44,7 +44,7 @@ object Substring {
     val slength: Int = sv.getStringLengthUpperBound
     var lstart: Long = 0L
     if (start.isInstanceOf[Int64Value]) {
-      lstart = start.asInstanceOf[Int64Value].longValue()
+      lstart = start.asInstanceOf[Int64Value].longValue
       if (lstart > slength) {
         EmptyString.THE_INSTANCE
       }
@@ -62,7 +62,7 @@ object Substring {
     }
     var llen: Long = 0L
     if (len.isInstanceOf[Int64Value]) {
-      llen = len.asInstanceOf[Int64Value].longValue()
+      llen = len.asInstanceOf[Int64Value].longValue
       if (llen <= 0) {
         EmptyString.THE_INSTANCE
       }

@@ -25,7 +25,7 @@ object Subsequence_2 {
     var startNumVal = startVal
     var lstart: Long = 0L
     if (startNumVal.isInstanceOf[Int64Value]) {
-      lstart = startNumVal.longValue()
+      lstart = startNumVal.longValue
       if (lstart <= 1) {
         return seq
       }
@@ -38,7 +38,7 @@ object Subsequence_2 {
       } else if (startNumVal.compareTo(Int64Value.MAX_LONG) > 0) {
         return EmptyIterator.emptyIterator
       } else {
-        lstart = startNumVal.longValue()
+        lstart = startNumVal.longValue
       }
     }
     if (lstart > java.lang.Integer.MAX_VALUE) {
@@ -70,7 +70,7 @@ class Subsequence_2 extends SystemFunction {
         .value
         .asInstanceOf[NumericValue]
       start = start.round(0)
-      val intStart: Long = start.longValue()
+      val intStart: Long = start.longValue
       if (intStart > java.lang.Integer.MAX_VALUE) {
         super.makeFunctionCall(arguments.toIndexedSeq: _*)
       }

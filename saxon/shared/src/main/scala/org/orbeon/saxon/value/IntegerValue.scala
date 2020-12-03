@@ -86,7 +86,7 @@ object IntegerValue {
       BigIntegerValue.MIN_LONG) < 0) {
       new BigIntegerValue(value)
     } else {
-      Int64Value.makeIntegerValue(value.longValue())
+      Int64Value.makeIntegerValue(value.longValue)
     }
 
   def makeIntegerValue(value: Double): ConversionResult =

@@ -40,31 +40,31 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
         duration
           .getComponent(AccessorFn.Component.YEAR)
           .asInstanceOf[Int64Value]
-          .longValue())
+          .longValue)
     } else if (field == DatatypeConstants.MONTHS) {
       BigInteger.valueOf(
         duration
           .getComponent(AccessorFn.Component.MONTH)
           .asInstanceOf[Int64Value]
-          .longValue())
+          .longValue)
     } else if (field == DatatypeConstants.DAYS) {
       BigInteger.valueOf(
         duration
           .getComponent(AccessorFn.Component.DAY)
           .asInstanceOf[Int64Value]
-          .longValue())
+          .longValue)
     } else if (field == DatatypeConstants.HOURS) {
       BigInteger.valueOf(
         duration
           .getComponent(AccessorFn.Component.HOURS)
           .asInstanceOf[Int64Value]
-          .longValue())
+          .longValue)
     } else if (field == DatatypeConstants.MINUTES) {
       BigInteger.valueOf(
         duration
           .getComponent(AccessorFn.Component.MINUTES)
           .asInstanceOf[Int64Value]
-          .longValue())
+          .longValue)
     } else if (field == DatatypeConstants.SECONDS) {
       duration
         .getComponent(AccessorFn.Component.SECONDS)
@@ -97,14 +97,14 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
       duration
         .getComponent(AccessorFn.Component.WHOLE_SECONDS)
         .asInstanceOf[Int64Value]
-        .longValue()
+        .longValue
         .toInt *
         sign)
     calendar.add(Calendar.MILLISECOND,
       duration
         .getComponent(AccessorFn.Component.MICROSECONDS)
         .asInstanceOf[Int64Value]
-        .longValue()
+        .longValue
         .toInt *
         sign /
         1000)

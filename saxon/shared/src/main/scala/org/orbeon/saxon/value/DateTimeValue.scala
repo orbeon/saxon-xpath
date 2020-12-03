@@ -430,7 +430,7 @@ object DateTimeValue {
     val nanoseconds: BigDecimal = instant
       .subtract(new BigDecimal(julianSecond))
       .multiply(BigDecimalValue.BIG_DECIMAL_ONE_BILLION)
-    var js: Long = julianSecond.longValue()
+    var js: Long = julianSecond.longValue
     val jd: Long = js / (24L * 60L * 60L)
     val date: DateValue = DateValue.dateFromJulianDayNumber(jd.toInt)
     js = js % (24L * 60L * 60L)
@@ -911,7 +911,7 @@ class DateTimeValue extends CalendarValue
           case ChronoField.DAY_OF_YEAR => DateValue.getDayWithinYear(year, month, day)
           case ChronoField.EPOCH_DAY =>
             val secs = secondsSinceEpoch
-            val days = secondsSinceEpoch.longValue() / (24 * 60 * 60)
+            val days = secondsSinceEpoch.longValue / (24 * 60 * 60)
             if (secs.signum() < 0) days - 1 else days
           case ChronoField.ALIGNED_WEEK_OF_MONTH => (day - 1) / 7 + 1
           case ChronoField.ALIGNED_WEEK_OF_YEAR => (DateValue.getDayWithinYear(year, month, day) - 1) / 7 + 1
@@ -920,7 +920,7 @@ class DateTimeValue extends CalendarValue
           case ChronoField.YEAR_OF_ERA => Math.abs(year) + (if (year < 0) 1 else 0)
           case ChronoField.YEAR => year
           case ChronoField.ERA => if (year < 0) 0 else 1
-          case ChronoField.INSTANT_SECONDS => secondsSinceEpoch.setScale(0, BigDecimal.ROUND_FLOOR).longValue()
+          case ChronoField.INSTANT_SECONDS => secondsSinceEpoch.setScale(0, BigDecimal.ROUND_FLOOR).longValue
           case ChronoField.OFFSET_SECONDS =>
             val tz = getTimezoneInMinutes
             if (tz == NO_TIMEZONE)

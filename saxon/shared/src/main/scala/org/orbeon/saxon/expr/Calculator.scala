@@ -977,7 +977,7 @@ object Calculator {
       b match {
         case int64Value: Int64Value =>
           a.asInstanceOf[DurationValue]
-            .multiply(int64Value.longValue())
+            .multiply(int64Value.longValue)
         case _ =>
           a.asInstanceOf[DurationValue]
             .multiply(b.asInstanceOf[NumericValue].getDoubleValue)
@@ -993,7 +993,7 @@ object Calculator {
       a match {
         case int64Value: Int64Value =>
           b.asInstanceOf[DurationValue]
-            .multiply(int64Value.longValue())
+            .multiply(int64Value.longValue)
         case _ =>
           b.asInstanceOf[DurationValue]
             .multiply(a.asInstanceOf[NumericValue].getDoubleValue)

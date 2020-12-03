@@ -153,15 +153,15 @@ object CommandLineOptions {
         val days: Long = d
           .getComponent(AccessorFn.Component.DAY)
           .asInstanceOf[NumericValue]
-          .longValue()
+          .longValue
         val hours: Long = d
           .getComponent(AccessorFn.Component.HOURS)
           .asInstanceOf[NumericValue]
-          .longValue()
+          .longValue
         val minutes: Long = d
           .getComponent(AccessorFn.Component.MINUTES)
           .asInstanceOf[NumericValue]
-          .longValue()
+          .longValue
         val seconds: BigDecimal = d
           .getComponent(AccessorFn.Component.SECONDS)
           .asInstanceOf[NumericValue]

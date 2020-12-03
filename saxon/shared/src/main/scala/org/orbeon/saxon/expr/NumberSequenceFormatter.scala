@@ -273,7 +273,7 @@ class NumberSequenceFormatter(value: Expression,
               .convert(num, BuiltInAtomicType.INTEGER, rules)
               .asAtomic()
               .asInstanceOf[NumericValue]
-              .longValue()
+              .longValue
             i += startValue - 1
             vec.add(i)
           }

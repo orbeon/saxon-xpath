@@ -23,8 +23,8 @@ object RangeIterator {
         .isInstanceOf[BigIntegerValue]) {
         new BigRangeIterator(start.asBigInteger(), end.asBigInteger())
       } else {
-        val startVal: Long = start.longValue()
-        val endVal: Long = end.longValue()
+        val startVal: Long = start.longValue
+        val endVal: Long = end.longValue
         if (endVal - startVal > java.lang.Integer.MAX_VALUE) {
           throw new XPathException(
             "Saxon limit on sequence length exceeded (2^31)",

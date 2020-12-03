@@ -28,11 +28,11 @@ object Subsequence_3 {
     var lengthNumVal = lengthVal
     if (startNumVal.isInstanceOf[Int64Value] && lengthNumVal
       .isInstanceOf[Int64Value]) {
-      val lstart: Long = startNumVal.longValue()
+      val lstart: Long = startNumVal.longValue
       if (lstart > java.lang.Integer.MAX_VALUE) {
         EmptyIterator.emptyIterator
       }
-      var llength: Long = lengthNumVal.longValue()
+      var llength: Long = lengthNumVal.longValue
       if (llength > java.lang.Integer.MAX_VALUE) {
         llength = java.lang.Integer.MAX_VALUE
       }
@@ -75,7 +75,7 @@ object Subsequence_3 {
       var lstart: Long = 0L
       lstart =
         if (startNumVal.compareTo(Int64Value.PLUS_ONE) <= 0) 1
-        else startNumVal.longValue()
+        else startNumVal.longValue
       if (lstart > java.lang.Integer.MAX_VALUE) {
         EmptyIterator.emptyIterator
       }
@@ -83,7 +83,7 @@ object Subsequence_3 {
       lend =
         if (rend.compareTo(Int64Value.MAX_LONG) >= 0)
           java.lang.Integer.MAX_VALUE
-        else rend.longValue()
+        else rend.longValue
       SubsequenceIterator.make(seq, lstart.toInt, lend.toInt)
     }
   }

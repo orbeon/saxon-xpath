@@ -144,7 +144,7 @@ object SequenceTool {
           case StandardNames.XS_DECIMAL =>
             value.asInstanceOf[BigDecimalValue].getDecimalValue
           case StandardNames.XS_INTEGER =>
-            value.asInstanceOf[NumericValue].longValue()
+            value.asInstanceOf[NumericValue].longValue
           case StandardNames.XS_DOUBLE =>
             value.asInstanceOf[DoubleValue].getDoubleValue
           case StandardNames.XS_FLOAT =>

@@ -45,113 +45,113 @@
 //        value
 //          .getComponent(AccessorFn.Component.YEAR)
 //          .asInstanceOf[Int64Value]
-//          .longValue())
+//          .longValue)
 //    } else if (value.isInstanceOf[GYearMonthValue]) {
 //      year = BigInteger.valueOf(
 //        value
 //          .getComponent(AccessorFn.Component.YEAR)
 //          .asInstanceOf[Int64Value]
-//          .longValue())
+//          .longValue)
 //      month = value
 //        .getComponent(AccessorFn.Component.MONTH)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else if (value.isInstanceOf[GMonthValue]) {
 //      month = value
 //        .getComponent(AccessorFn.Component.MONTH)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else if (value.isInstanceOf[GMonthDayValue]) {
 //      month = value
 //        .getComponent(AccessorFn.Component.MONTH)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      day = value
 //        .getComponent(AccessorFn.Component.DAY)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else if (value.isInstanceOf[GDayValue]) {
 //      day = value
 //        .getComponent(AccessorFn.Component.DAY)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else if (value.isInstanceOf[DateValue]) {
 //      year = BigInteger.valueOf(
 //        value
 //          .getComponent(AccessorFn.Component.YEAR)
 //          .asInstanceOf[Int64Value]
-//          .longValue())
+//          .longValue)
 //      month = value
 //        .getComponent(AccessorFn.Component.MONTH)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      day = value
 //        .getComponent(AccessorFn.Component.DAY)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else if (value.isInstanceOf[TimeValue]) {
 //      hour = value
 //        .getComponent(AccessorFn.Component.HOURS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      minute = value
 //        .getComponent(AccessorFn.Component.MINUTES)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      second = value
 //        .getComponent(AccessorFn.Component.WHOLE_SECONDS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      microsecond = value
 //        .getComponent(AccessorFn.Component.MICROSECONDS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    } else {
 //      year = BigInteger.valueOf(
 //        value
 //          .getComponent(AccessorFn.Component.YEAR)
 //          .asInstanceOf[Int64Value]
-//          .longValue())
+//          .longValue)
 //      month = value
 //        .getComponent(AccessorFn.Component.MONTH)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      day = value
 //        .getComponent(AccessorFn.Component.DAY)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      hour = value
 //        .getComponent(AccessorFn.Component.HOURS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      minute = value
 //        .getComponent(AccessorFn.Component.MINUTES)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      second = value
 //        .getComponent(AccessorFn.Component.WHOLE_SECONDS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //      microsecond = value
 //        .getComponent(AccessorFn.Component.MICROSECONDS)
 //        .asInstanceOf[Int64Value]
-//        .longValue()
+//        .longValue
 //        .toInt
 //    }
 //  }

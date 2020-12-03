@@ -452,7 +452,7 @@ object StringConverter {
       val iv: ConversionResult = IntegerValue.stringToInteger(input)
       if (iv.isInstanceOf[Int64Value]) {
         val ok: Boolean = IntegerValue.checkRange(
-          iv.asInstanceOf[Int64Value].longValue(),
+          iv.asInstanceOf[Int64Value].longValue,
           targetType)
         if (ok) {
           iv.asInstanceOf[Int64Value].copyAsSubType(targetType)

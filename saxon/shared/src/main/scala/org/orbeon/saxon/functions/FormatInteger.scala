@@ -287,7 +287,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
         primaryToken)
       val adjustedPicture: UnicodeString = picGroupFormat.getAdjustedPicture
       num => {
-        val s = numb.format(num.abs().longValue(),
+        val s = numb.format(num.abs().longValue,
           adjustedPicture,
           picGroupFormat,
           letterValue,
@@ -297,7 +297,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     } else {
       val token: UnicodeString = UnicodeString.makeUnicodeString(primaryToken)
       num => {
-        val s: String = numb.format(num.abs().longValue(),
+        val s: String = numb.format(num.abs().longValue,
           token,
           null,
           letterValue,

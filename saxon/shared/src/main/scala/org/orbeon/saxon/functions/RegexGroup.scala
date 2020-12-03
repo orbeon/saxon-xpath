@@ -33,7 +33,7 @@ class RegexGroup extends SystemFunction {
       StringValue.EMPTY_STRING
     }
     val gp0: NumericValue = arguments(0).head.asInstanceOf[NumericValue]
-    val s: String = iter.getRegexGroup(gp0.longValue().toInt)
+    val s: String = iter.getRegexGroup(gp0.longValue.toInt)
     StringValue.makeStringValue(s)
   }
 

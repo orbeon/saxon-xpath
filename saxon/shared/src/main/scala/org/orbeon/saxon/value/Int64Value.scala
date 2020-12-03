@@ -63,12 +63,12 @@ object Int64Value {
 
   class Int64Comparable(var value: Int64Value) extends Comparable[AnyRef] {
 
-    def asLong(): Long = value.longValue()
+    def asLong(): Long = value.longValue
 
     def compareTo(o: AnyRef): Int =
       if (o.isInstanceOf[Int64Comparable]) {
-        val long0: Long = value.longValue()
-        val long1: Long = o.asInstanceOf[Int64Comparable].value.longValue()
+        val long0: Long = value.longValue
+        val long1: Long = o.asInstanceOf[Int64Comparable].value.longValue
         if (long0 <= long1) {
           if (long0 == long1) {
             0

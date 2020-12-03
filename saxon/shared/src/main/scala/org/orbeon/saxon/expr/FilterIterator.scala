@@ -50,7 +50,7 @@ object FilterIterator {
             "a sequence of two or more items starting with a numeric value",
             filter)
         }
-        first.asInstanceOf[Int64Value].longValue() == position
+        first.asInstanceOf[Int64Value].longValue == position
       } else if (first.isInstanceOf[NumericValue]) {
         if (iterator.next() != null) {
           ExpressionTool.ebvError(

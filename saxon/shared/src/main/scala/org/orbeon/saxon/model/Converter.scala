@@ -188,7 +188,7 @@ object Converter {
     def convert(input: AtomicValue): BigDecimalValue =
       input match {
         case int64Value: Int64Value =>
-          new BigDecimalValue(int64Value.longValue())
+          new BigDecimalValue(int64Value.longValue)
         case _ =>
           new BigDecimalValue(input.asInstanceOf[BigIntegerValue].asDecimal())
       }

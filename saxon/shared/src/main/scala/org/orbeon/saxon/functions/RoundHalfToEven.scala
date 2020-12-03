@@ -24,7 +24,7 @@ class RoundHalfToEven extends SystemFunction {
             if (scaleVal.compareTo(java.lang.Integer.MIN_VALUE) < 0)
               java.lang.Integer.MIN_VALUE
             else
-              scaleVal.longValue().toInt
+              scaleVal.longValue.toInt
       }
       new One(val0.roundHalfToEven(scale))
     }

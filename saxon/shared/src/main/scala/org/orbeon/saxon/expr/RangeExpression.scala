@@ -70,8 +70,8 @@ class RangeExpression(start: Expression, end: Expression)
       val v0: GroundedValue = getLhsExpression.asInstanceOf[Literal].getValue
       val v1: GroundedValue = getRhsExpression.asInstanceOf[Literal].getValue
       if (v0.isInstanceOf[Int64Value] && v1.isInstanceOf[Int64Value]) {
-        val i0: Long = v0.asInstanceOf[Int64Value].longValue()
-        val i1: Long = v1.asInstanceOf[Int64Value].longValue()
+        val i0: Long = v0.asInstanceOf[Int64Value].longValue
+        val i1: Long = v1.asInstanceOf[Int64Value].longValue
         var result: Literal = null
         if (i0 > i1) {
           result = Literal.makeEmptySequence

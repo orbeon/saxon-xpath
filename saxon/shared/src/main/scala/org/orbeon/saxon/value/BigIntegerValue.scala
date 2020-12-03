@@ -55,7 +55,7 @@ object BigIntegerValue {
 // Must align with hashCodes for other subtypes of xs:decimal
       val big: BigInteger = value.asBigInteger()
       if (big.compareTo(MAX_LONG) < 0 && big.compareTo(MIN_LONG) > 0) {
-        val iv: Int64Value = new Int64Value(big.longValue())
+        val iv: Int64Value = new Int64Value(big.longValue)
         iv.hashCode
       }
       big.hashCode
@@ -137,7 +137,7 @@ class BigIntegerValue() extends IntegerValue {
       java.lang.Double.valueOf(getDoubleValue).hashCode
     }
 
-  def longValue(): Long = value.longValue()
+  def longValue(): Long = value.longValue
 
   def asBigInteger(): BigInteger = value
 
@@ -160,7 +160,7 @@ class BigIntegerValue() extends IntegerValue {
       value.compareTo(other.asInstanceOf[BigIntegerValue].value)
     } else if (other.isInstanceOf[Int64Value]) {
       value.compareTo(
-        BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue()))
+        BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue))
     } else if (other.isInstanceOf[BigDecimalValue]) {
       asDecimal().compareTo(
         other.asInstanceOf[BigDecimalValue].getDecimalValue)
@@ -275,7 +275,7 @@ class BigIntegerValue() extends IntegerValue {
 //noinspection RedundantCast
       IntegerValue.makeIntegerValue(
         value.add(
-          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue())))
+          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue)))
     }
 
   def minus(other: IntegerValue): IntegerValue =
@@ -286,7 +286,7 @@ class BigIntegerValue() extends IntegerValue {
 //noinspection RedundantCast
       IntegerValue.makeIntegerValue(
         value.subtract(
-          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue())))
+          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue)))
     }
 
   def times(other: IntegerValue): IntegerValue =
@@ -297,7 +297,7 @@ class BigIntegerValue() extends IntegerValue {
 //noinspection RedundantCast
       IntegerValue.makeIntegerValue(
         value.multiply(
-          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue())))
+          BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue)))
     }
 
   def div(other: IntegerValue): NumericValue = {
@@ -305,7 +305,7 @@ class BigIntegerValue() extends IntegerValue {
     oi =
       if (other.isInstanceOf[BigIntegerValue])
         other.asInstanceOf[BigIntegerValue].value
-      else BigInteger.valueOf(other.longValue())
+      else BigInteger.valueOf(other.longValue)
     val a: BigDecimalValue = new BigDecimalValue(new BigDecimal(value))
     val b: BigDecimalValue = new BigDecimalValue(new BigDecimal(oi))
     Calculator.decimalDivide(a, b)
@@ -316,12 +316,12 @@ class BigIntegerValue() extends IntegerValue {
       IntegerValue.makeIntegerValue(
         value.remainder(other.asInstanceOf[BigIntegerValue].value))
     } else {
-      IntegerValue.makeIntegerValue(value.remainder(BigInteger.valueOf(other.longValue())))
+      IntegerValue.makeIntegerValue(value.remainder(BigInteger.valueOf(other.longValue)))
     } catch {
       case err: ArithmeticException => {
         var e: XPathException = null
         e =
-          if (BigInteger.valueOf(other.longValue()).signum() == 0)
+          if (BigInteger.valueOf(other.longValue).signum() == 0)
             new XPathException("Integer modulo zero", "FOAR0001")
           else new XPathException("Integer mod operation failure", err)
         throw e
@@ -334,7 +334,7 @@ class BigIntegerValue() extends IntegerValue {
     oi =
       if (other.isInstanceOf[BigIntegerValue])
         other.asInstanceOf[BigIntegerValue].value
-      else BigInteger.valueOf(other.longValue())
+      else BigInteger.valueOf(other.longValue)
     try IntegerValue.makeIntegerValue(value.divide(oi))
     catch {
       case err: ArithmeticException => {

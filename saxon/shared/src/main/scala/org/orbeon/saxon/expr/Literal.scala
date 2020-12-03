@@ -209,7 +209,7 @@ object Literal {
     exp match {
       case literal: Literal =>
         val v: GroundedValue = literal.value
-        v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue() == 1
+        v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue == 1
       case _ =>
     }
     false

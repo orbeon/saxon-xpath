@@ -17,7 +17,7 @@ class Round extends SystemFunction {
       var scaleRnd = 0
       if (arguments.length == 2) {
         val scaleVal = arguments(1).head.asInstanceOf[NumericValue]
-        scaleRnd = scaleVal.longValue().toInt
+        scaleRnd = scaleVal.longValue.toInt
       }
       new ZeroOrOne(val0.round(scaleRnd))
     }

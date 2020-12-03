@@ -91,11 +91,11 @@ class JSONEmitter(pipe: PipelineConfiguration,
               "SERE0020")
           }
         } else if (item.isInstanceOf[IntegerValue]) {
-          emit(num.longValue().toString)
+          emit(num.longValue.toString)
         } else if (num.isWholeNumber && !num.isNegativeZero && num
           .abs()
           .compareTo(1000000000000000000L) < 0) {
-          emit(num.longValue().toString)
+          emit(num.longValue.toString)
         } else {
           emit(num.getStringValue)
         }

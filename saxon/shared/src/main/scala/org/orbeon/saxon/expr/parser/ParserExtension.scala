@@ -331,7 +331,7 @@ class ParserExtension {
     if (number.compareTo(0) < 0 || number.compareTo(java.lang.Integer.MAX_VALUE) > 0)
       p.grumble("Number following '#' is out of range", "FOAR0002")
 
-    val arity = number.longValue().toInt
+    val arity = number.longValue.toInt
     p.nextToken()
     var functionName: StructuredQName = null
     try {

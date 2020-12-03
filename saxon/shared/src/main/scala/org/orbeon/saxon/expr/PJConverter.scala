@@ -704,7 +704,7 @@ object PJConverter {
                 context: XPathContext): Any = {
       val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
-      iv.longValue()
+      iv.longValue
     }
 
   }
@@ -716,7 +716,7 @@ object PJConverter {
                 context: XPathContext): Any = {
       val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
-      iv.longValue().toInt
+      iv.longValue.toInt
     }
 
   }
@@ -728,7 +728,7 @@ object PJConverter {
                 context: XPathContext): Any = {
       val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
-      iv.longValue().toShort
+      iv.longValue.toShort
     }
 
   }
@@ -740,7 +740,7 @@ object PJConverter {
                 context: XPathContext): Any = {
       val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
-      iv.longValue().toByte
+      iv.longValue.toByte
     }
 
   }
@@ -752,7 +752,7 @@ object PJConverter {
                 context: XPathContext): Any = {
       val iv: IntegerValue = value.head.asInstanceOf[IntegerValue]
       assert(iv != null)
-      iv.longValue().toChar
+      iv.longValue.toChar
     }
 
   }

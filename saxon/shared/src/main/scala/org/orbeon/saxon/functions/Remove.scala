@@ -66,7 +66,7 @@ class Remove extends SystemFunction {
       val index: Sequence = arguments(1).asInstanceOf[Literal].value
       if (index.isInstanceOf[IntegerValue]) {
         try {
-          val value: Long = index.asInstanceOf[IntegerValue].longValue()
+          val value: Long = index.asInstanceOf[IntegerValue].longValue
           if (value <= 0) {
             arguments(0)
           } else if (value == 1) {
@@ -83,7 +83,7 @@ class Remove extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val n: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
-    val pos: Int = n.longValue().toInt
+    val pos: Int = n.longValue.toInt
     if (pos < 1) {
       arguments(0)
     }

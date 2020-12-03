@@ -65,7 +65,7 @@ object FilterExpression {
               .asInstanceOf[Literal]
               .getValue
               .asInstanceOf[NumericValue]
-              .longValue()
+              .longValue
             args(2) =
               Literal.makeLiteral(Int64Value.makeIntegerValue(n - 1), start)
           } else {
@@ -102,7 +102,7 @@ object FilterExpression {
               .asInstanceOf[Literal]
               .getValue
               .asInstanceOf[NumericValue]
-              .longValue()
+              .longValue
             args(1) =
               Literal.makeLiteral(Int64Value.makeIntegerValue(n + 1), start)
           } else {
@@ -427,7 +427,7 @@ class FilterExpression(base: Expression, filter: Expression)
 //      ExpressionTool.copyLocationInfo(this, ax2)
 //      return ax2
 //    }
-    
+
     if (
       {
         getBase match {
@@ -482,14 +482,14 @@ class FilterExpression(base: Expression, filter: Expression)
         }
       case _ =>
     }
-    
+
     // determine whether the filter might depend on position
-    
+
     filterIsPositional = isPositionalFilter(getFilter, th)
-    filterIsSingletonBoolean = 
+    filterIsSingletonBoolean =
       getFilter.getCardinality == StaticProperty.EXACTLY_ONE &&
       getFilter.getItemType == BuiltInAtomicType.BOOLEAN
-    
+
     if (! filterIsPositional && ! visitor.isOptimizeForStreaming) {
       val isIndexable = opt.isIndexableFilter(getFilter)
       if (isIndexable != 0) {
@@ -501,10 +501,10 @@ class FilterExpression(base: Expression, filter: Expression)
           return f.typeCheck(visitor, contextItemType).optimize(visitor, contextItemType)
       }
     }
-    
+
     // if the filter is positional, try changing f[a and b] to f[a][b] to increase
     // the chances of finishing early.
-    
+
     if (filterIsPositional && getFilter.isInstanceOf[BooleanExpression] &&
       getFilter.asInstanceOf[BooleanExpression].operator == Token.AND) {
       val bf = getFilter.asInstanceOf[BooleanExpression]
@@ -515,7 +515,7 @@ class FilterExpression(base: Expression, filter: Expression)
         ExpressionTool.copyLocationInfo(this, f1)
         val f2 = new FilterExpression(f1, p1)
         ExpressionTool.copyLocationInfo(this, f2)
-        if (tracing) 
+        if (tracing)
           opt.trace("Composite filter replaced by nested filter expressions", f2)
         return f2.optimize(visitor, contextItemType)
       }
@@ -526,7 +526,7 @@ class FilterExpression(base: Expression, filter: Expression)
         ExpressionTool.copyLocationInfo(this, f1)
         val f2 = new FilterExpression(f1, p0)
         ExpressionTool.copyLocationInfo(this, f2)
-        if (tracing) 
+        if (tracing)
           opt.trace("Composite filter replaced by nested filter expressions", f2)
         return f2.optimize(visitor, contextItemType)
       }
@@ -541,7 +541,7 @@ class FilterExpression(base: Expression, filter: Expression)
         }
       case _ =>
     }
-    
+
     val subsequence = tryToRewritePositionalFilter(visitor, tracing)
     if (subsequence != null) {
       if (tracing) {
@@ -583,13 +583,13 @@ class FilterExpression(base: Expression, filter: Expression)
     getBase.getIntegerBounds
 
   private def tryEarlyEvaluation(visitor: ExpressionVisitor): Sequence = {
-    try 
+    try
       if (getBase.isInstanceOf[Literal] &&
         ! ExpressionTool.refersToVariableOrFunction(getFilter) &&
         (getFilter.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS) == 0) {
         val context = visitor.getStaticContext.makeEarlyEvaluationContext()
         return iterate(context).materialize
-      } 
+      }
     catch {
       case _: Exception => return null
     }
@@ -623,7 +623,7 @@ class FilterExpression(base: Expression, filter: Expression)
                   new SubscriptExpression(getBase, getFilter)
               else
                 Literal.makeEmptySequence
-            if (tracing) 
+            if (tracing)
               Optimizer.trace(config, "Rewriting numeric filter expression with constant subscript", result)
             return result
           case _ =>
@@ -632,7 +632,7 @@ class FilterExpression(base: Expression, filter: Expression)
                 getBase
               else
                 Literal.makeEmptySequence
-            if (tracing) 
+            if (tracing)
               Optimizer.trace(config, "Rewriting boolean filter expression with constant subscript", result)
             return result
         }
@@ -642,7 +642,7 @@ class FilterExpression(base: Expression, filter: Expression)
       .allowsMany(getFilter.getCardinality) &&
       (getFilter.getDependencies & StaticProperty.DEPENDS_ON_FOCUS) == 0) {
       val result: Expression = new SubscriptExpression(getBase, getFilter)
-      if (tracing) 
+      if (tracing)
         Optimizer.trace(config, "Rewriting numeric filter expression with focus-independent subscript", result)
       return result
     }
@@ -660,10 +660,10 @@ class FilterExpression(base: Expression, filter: Expression)
         } else {
           return null
         }
-        if (ExpressionTool.dependsOnFocus(comparand)) 
+        if (ExpressionTool.dependsOnFocus(comparand))
           return null
         val card = comparand.getCardinality
-        if (Cardinality.allowsMany(card)) 
+        if (Cardinality.allowsMany(card))
           return null
         if (Cardinality.allowsZero(card)) {
           val let = new LetExpression()
@@ -674,7 +674,7 @@ class FilterExpression(base: Expression, filter: Expression)
           val existsArg = new LocalVariableReference(let)
           val exists = SystemFunction.makeCall("exists", getRetainedStaticContext, existsArg)
           val rewrite = tryToRewritePositionalFilterSupport(getBase, comparand, operator, th)
-          if (rewrite == null) 
+          if (rewrite == null)
             return this
           val choice = Choose.makeConditional(exists, rewrite)
           let.setAction(choice)
@@ -684,11 +684,11 @@ class FilterExpression(base: Expression, filter: Expression)
         }
       case test: IntegerRangeTest =>
         val `val` = test.getValue
-        if (! `val`.isCallOn(classOf[PositionAndLast])) 
+        if (! `val`.isCallOn(classOf[PositionAndLast]))
           return null
         var min = test.getMin
         val max = test.getMax
-        if (ExpressionTool.dependsOnFocus(min)) 
+        if (ExpressionTool.dependsOnFocus(min))
           return null
         if (ExpressionTool.dependsOnFocus(max)) {
           if (max.isCallOn(classOf[PositionAndLast.Last])) {
@@ -697,7 +697,7 @@ class FilterExpression(base: Expression, filter: Expression)
               getRetainedStaticContext,
               getBase,
               min)
-            if (tracing) 
+            if (tracing)
               Optimizer.trace(config, "Rewriting numeric range filter expression using subsequence()", result)
             return result
           } else {
@@ -721,7 +721,7 @@ class FilterExpression(base: Expression, filter: Expression)
           min,
           length)
         let.setAction(subs)
-        if (tracing) 
+        if (tracing)
           Optimizer.trace(config, "Rewriting numeric range filter expression using subsequence()", subs)
         let
       case _ =>
@@ -779,7 +779,7 @@ class FilterExpression(base: Expression, filter: Expression)
     }
     if (filterIsIndependent) {
       val filterType = getFilter.getItemType.getPrimitiveItemType
-      if (filterType == BuiltInAtomicType.INTEGER || 
+      if (filterType == BuiltInAtomicType.INTEGER ||
         filterType == BuiltInAtomicType.DOUBLE ||
         filterType == BuiltInAtomicType.DECIMAL ||
         filterType == BuiltInAtomicType.FLOAT) {
@@ -833,7 +833,7 @@ class FilterExpression(base: Expression, filter: Expression)
             literal
               .getValue
               .asInstanceOf[IntegerValue]
-              .longValue()
+              .longValue
               .toInt)
         case _ =>
           return new GeneralPositionalPattern(
@@ -892,12 +892,12 @@ class FilterExpression(base: Expression, filter: Expression)
               case _ => first match {
                 case booleanValue: BooleanValue =>
                   ebv = booleanValue.getBooleanValue
-                  if (it.next() != null) 
+                  if (it.next() != null)
                     ExpressionTool.ebvError("sequence of two or more items starting with a boolean value", getFilter)
                 case _ => first match {
                   case stringValue: StringValue =>
                     ebv = !stringValue.isZeroLength
-                    if (it.next() != null) 
+                    if (it.next() != null)
                       ExpressionTool.ebvError("sequence of two or more items starting with a boolean value", getFilter)
                   case _ =>
                     ExpressionTool.ebvError("sequence starting with an atomic value other than a boolean, number, or string", getFilter)
@@ -945,11 +945,11 @@ class FilterExpression(base: Expression, filter: Expression)
   override def export(out: ExpressionPresenter): Unit = {
     out.startElement("filter", this)
     var flags: String = ""
-    if (filterIsIndependent) 
+    if (filterIsIndependent)
       flags += "i"
-    if (filterIsPositional) 
+    if (filterIsPositional)
       flags += "p"
-    if (filterIsSingletonBoolean) 
+    if (filterIsSingletonBoolean)
       flags += "b"
     out.emitAttribute("flags", flags)
     getBase.export(out)

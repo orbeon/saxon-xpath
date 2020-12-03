@@ -30,7 +30,7 @@ object CodepointsToString {
       if (nextInt == null) {
         return sb.condense()
       }
-      val next: Long = nextInt.longValue()
+      val next: Long = nextInt.longValue
       if (next < 0 || next > java.lang.Integer.MAX_VALUE || !checker.test(
         next.toInt)) {
         throw new XPathException(
