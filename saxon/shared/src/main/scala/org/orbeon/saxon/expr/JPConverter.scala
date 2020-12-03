@@ -31,7 +31,7 @@ object JPConverter {
 //      classOf[XdmValue]              -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ZERO_OR_MORE),
 //      classOf[XdmItem]               -> new FromXdmValue(AnyItemType,                  StaticProperty.ALLOWS_ONE),
 //      classOf[XdmAtomicValue]        -> new FromXdmValue(BuiltInAtomicType.ANY_ATOMIC, StaticProperty.ALLOWS_ONE),
-//      classOf[XdmNode]               -> new FromXdmValue(AnyNodeTest.getInstance,      StaticProperty.ALLOWS_ONE),
+//      classOf[XdmNode]               -> new FromXdmValue(AnyNodeTest,      StaticProperty.ALLOWS_ONE),
 //      classOf[XdmFunctionItem]       -> new FromXdmValue(AnyFunctionType,  StaticProperty.ALLOWS_ONE),
 //      classOf[XdmMap]                -> new FromXdmValue(MapType.ANY_MAP_TYPE,         StaticProperty.ALLOWS_ONE),
 //      classOf[XdmArray]              -> new FromXdmValue(ArrayItemType.ANY_ARRAY_TYPE, StaticProperty.ALLOWS_ONE),
@@ -103,7 +103,7 @@ object JPConverter {
     classOf[NotationValue]           -> BuiltInAtomicType.NOTATION,
     classOf[HexBinaryValue]          -> BuiltInAtomicType.HEX_BINARY,
     classOf[Base64BinaryValue]       -> BuiltInAtomicType.BASE64_BINARY,
-    classOf[NodeInfo]                -> AnyNodeTest.getInstance,
+    classOf[NodeInfo]                -> AnyNodeTest,
     classOf[TreeInfo]                -> NodeKindTest.DOCUMENT,
     classOf[MapItem]                 -> MapType.EMPTY_MAP_TYPE,
     classOf[ArrayItem]               -> ArrayItemType.ANY_ARRAY_TYPE,
@@ -157,7 +157,7 @@ object JPConverter {
       return FromObject
 
     if (classOf[NodeInfo].isAssignableFrom(javaClass))
-      return new FromSequence(AnyNodeTest.getInstance, StaticProperty.ALLOWS_ZERO_OR_ONE)
+      return new FromSequence(AnyNodeTest, StaticProperty.ALLOWS_ZERO_OR_ONE)
 
     if (classOf[Source].isAssignableFrom(javaClass) && !classOf[DOMSource].isAssignableFrom(javaClass))
       return FromSource
@@ -441,7 +441,7 @@ object JPConverter {
         .getRootNode
     }
 
-    def getItemType: ItemType = AnyNodeTest.getInstance
+    def getItemType: ItemType = AnyNodeTest
   }
 
   object FromLongArray extends JPConverter {

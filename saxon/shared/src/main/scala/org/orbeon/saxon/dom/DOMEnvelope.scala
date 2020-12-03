@@ -59,7 +59,7 @@
 //        def convert(`object`: AnyRef, context: XPathContext): Sequence =
 //          convertObjectToXPathValue(`object`)
 //
-//        def getItemType: ItemType = AnyNodeTest.getInstance
+//        def getItemType: ItemType = AnyNodeTest
 //      }
 //    } else {
 //      null

@@ -156,7 +156,7 @@ object PathMap {
 
     def addDescendants(): Unit = {
       for (node <- this.asScala) {
-        node.createArc(AxisInfo.DESCENDANT, AnyNodeTest.getInstance)
+        node.createArc(AxisInfo.DESCENDANT, AnyNodeTest)
       }
     }
 

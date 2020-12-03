@@ -25,7 +25,7 @@ object NodeKindTest {
     case Type.TEXT                   => TEXT
     case Type.PROCESSING_INSTRUCTION => PROCESSING_INSTRUCTION
     case Type.NAMESPACE              => NAMESPACE
-    case Type.NODE                   => AnyNodeTest.getInstance
+    case Type.NODE                   => AnyNodeTest
     case _                           => throw new IllegalArgumentException("Unknown node kind " + kind + " in NodeKindTest")
   }
 

@@ -48,7 +48,7 @@
 //      while (ancestor != null) {
 //        path.push(
 //          Navigator.getSiblingPosition(ancestor,
-//                                       AnyNodeTest.getInstance,
+//                                       AnyNodeTest,
 //                                       java.lang.Integer.MAX_VALUE))
 //        ancestor = ancestor.getParent
 //      }

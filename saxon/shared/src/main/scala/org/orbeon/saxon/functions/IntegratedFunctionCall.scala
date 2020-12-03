@@ -196,7 +196,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
           true
         )
       }
-      if (th.relationship(`type`, AnyNodeTest.getInstance) != Affinity.DISJOINT) {
+      if (th.relationship(`type`, AnyNodeTest) != Affinity.DISJOINT) {
         result = new ItemMappingIterator(
           result,
           new ConfigurationCheckingFunction(context.getConfiguration),

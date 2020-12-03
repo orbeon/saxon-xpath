@@ -66,7 +66,7 @@ class AnchorPattern  () extends Pattern {
   def matches(item: Item, context: XPathContext): Boolean =
     throw new AssertionError()
 
-  override def getItemType: ItemType = AnyNodeTest.getInstance
+  override def getItemType: ItemType = AnyNodeTest
 
   /*@NotNull*/
 

@@ -45,7 +45,7 @@ class RootExpression extends Expression {
       return cie
     }
     val relation =
-      th.relationship(contextInfo.getItemType, AnyNodeTest.getInstance)
+      th.relationship(contextInfo.getItemType, AnyNodeTest)
     if (relation == Affinity.DISJOINT) {
       val err = new XPathException(
         noContextMessage() + ": the context item is not a node")

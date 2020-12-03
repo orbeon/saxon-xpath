@@ -440,7 +440,7 @@ object AlphaCode {
           else StructuredQName.fromEQName(name)
           principal match {
             case "N" =>
-              itemType = AnyNodeTest.getInstance
+              itemType = AnyNodeTest
             case "NT" =>
               itemType = NodeKindTest.TEXT
             case "NC" =>
@@ -489,7 +489,7 @@ object AlphaCode {
               }
               if (itemType == null) itemType = new NameTest(Type.ATTRIBUTE, qName.getURI, qName.getLocalPart, config.getNamePool)
             case _ =>
-              itemType = AnyNodeTest.getInstance
+              itemType = AnyNodeTest
           }
         }
       }

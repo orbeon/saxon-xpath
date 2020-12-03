@@ -182,11 +182,11 @@ object SequenceType {
   /**
    * A type that allows zero or one nodes
    */
-  val OPTIONAL_NODE: SequenceType = AnyNodeTest.getInstance.zeroOrOne
+  val OPTIONAL_NODE: SequenceType = AnyNodeTest.zeroOrOne
   /**
    * A type that allows a single node
    */
-  val SINGLE_NODE: SequenceType = AnyNodeTest.getInstance.one
+  val SINGLE_NODE: SequenceType = AnyNodeTest.one
   /**
    * A type that allows a single document node
    */
@@ -194,7 +194,7 @@ object SequenceType {
   /**
    * A type that allows a sequence of zero or more nodes
    */
-  val NODE_SEQUENCE: SequenceType = AnyNodeTest.getInstance.zeroOrMore
+  val NODE_SEQUENCE: SequenceType = AnyNodeTest.zeroOrMore
   /**
    * A type that allows a sequence of zero or more string values
    */

@@ -83,7 +83,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val e2 = super.simplify()
     if (e2 != this)
       return e2
-    if ((test == null || test == AnyNodeTest.getInstance) && (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR))
+    if ((test == null || test == AnyNodeTest) && (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR))
       test = MultipleNodeKindTest.PARENT_NODE
     this
   }
@@ -107,7 +107,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val config = visitor.getConfiguration
     if (contextItemType.getGenre != Genre.NODE) {
       val th = config.getTypeHierarchy
-      val relation = th.relationship(contextItemType, AnyNodeTest.getInstance)
+      val relation = th.relationship(contextItemType, AnyNodeTest)
       if (relation == Affinity.DISJOINT) {
         val err = new XPathException(
           "Axis step " + this +
@@ -127,7 +127,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           new RoleDiagnostic(RoleDiagnostic.AXIS_STEP, "", axis)
         role.setErrorCode("XPTY0020")
         val checker: ItemChecker =
-          new ItemChecker(exp, AnyNodeTest.getInstance, role)
+          new ItemChecker(exp, AnyNodeTest, role)
         ExpressionTool.copyLocationInfo(this, checker)
         val step: SimpleStepExpression =
           new SimpleStepExpression(checker, thisExp)
@@ -151,7 +151,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     val config: Configuration = env.getConfiguration
     var contextType: ItemType = contextInfo.getItemType
     if (! contextType.isInstanceOf[NodeTest])
-      contextType = AnyNodeTest.getInstance
+      contextType = AnyNodeTest
     if (test != null &&
       ! AxisInfo
         .getTargetUType(UType.ANY_NODE, axis)
@@ -217,9 +217,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
     val target = targetUType.toItemType
     itemType =
-      if (test == null || test.isInstanceOf[AnyNodeTest])
+      if (test == null || test.isInstanceOf[AnyNodeTest.type])
         target
-      else if (target.isInstanceOf[AnyNodeTest] || targetUType.subsumes(
+      else if (target.isInstanceOf[AnyNodeTest.type] || targetUType.subsumes(
         test.getUType)) test
       else
         new CombinedNodeTest(target.asInstanceOf[NodeTest], Token.INTERSECT, test)
@@ -711,7 +711,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         NodeKindTest.makeNodeKindTest(p)
       case _ =>
         if (test == null)
-          AnyNodeTest.getInstance
+          AnyNodeTest
         else
           test
     }
@@ -737,7 +737,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
         originNodeType = test1
       case _ =>
         if (contextItemType eq AnyItemType)
-          originNodeType = AnyNodeTest.getInstance
+          originNodeType = AnyNodeTest
         else
           return StaticProperty.ALLOWS_ZERO_OR_MORE
     }
@@ -787,7 +787,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     }
     pmnSet.createArc(
       axis,
-      if (test == null) AnyNodeTest.getInstance else test)
+      if (test == null) AnyNodeTest else test)
   }
 
   def isContextPossiblyUndefined: Boolean = staticInfo.isPossiblyAbsent
@@ -800,9 +800,9 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     var pat: Pattern = null
 
     if (test == null)
-      test = AnyNodeTest.getInstance
+      test = AnyNodeTest
 
-    if (test.isInstanceOf[AnyNodeTest] && (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT || axis == AxisInfo.SELF))
+    if (test.isInstanceOf[AnyNodeTest.type] && (axis == AxisInfo.CHILD || axis == AxisInfo.DESCENDANT || axis == AxisInfo.SELF))
       test = MultipleNodeKindTest.CHILD_NODE
 
     val kind: Int = test.getPrimitiveType
@@ -888,7 +888,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     destination.emitAttribute("name", AxisInfo.axisName(axis))
     destination.emitAttribute(
       "nodeTest",
-      AlphaCode.fromItemType(if (test == null) AnyNodeTest.getInstance else test)
+      AlphaCode.fromItemType(if (test == null) AnyNodeTest else test)
     )
     destination.endElement()
   }

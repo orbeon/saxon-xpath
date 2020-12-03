@@ -2850,7 +2850,7 @@ class XQueryParser extends XPathParser {
           case Token.STAR =>
           case Token.MULT =>
             nextToken()
-            tests.add(AnyNodeTest.getInstance)
+            tests.add(AnyNodeTest)
           case _ =>
             grumble("Unrecognized name test")
             return null

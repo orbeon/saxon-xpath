@@ -19,11 +19,9 @@ import org.orbeon.saxon.tree.tiny.NodeVectorTree
   *
   * @author Michael H. Kay
   */
-object AnyNodeTest {
-  val getInstance: AnyNodeTest = new AnyNodeTest
-}
+object AnyNodeTest extends NodeTest with QNameTest {
 
-class AnyNodeTest private () extends NodeTest with QNameTest {
+  val getInstance: AnyNodeTest.type = this
 
   /**
     * Get the corresponding `org.orbeon.saxon.model.UType`. A UType is a union of primitive item

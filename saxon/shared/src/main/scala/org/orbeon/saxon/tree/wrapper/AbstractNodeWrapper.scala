@@ -94,7 +94,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made th
   def getAttributeValue(uri: String, local: String): String = null
 
   override def iterateAxis(axisNumber: Int): AxisIterator =
-    iterateAxis(axisNumber, AnyNodeTest.getInstance)
+    iterateAxis(axisNumber, AnyNodeTest)
 
   def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
     val nodeKind = getNodeKind
@@ -169,7 +169,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made th
 
   def iterateDescendants(nodeTest: Predicate[_ >: NodeInfo], includeSelf: Boolean): AxisIterator = {
     var iter: AxisIterator = new Navigator.DescendantEnumeration(this, includeSelf, true)
-    if (! nodeTest.isInstanceOf[AnyNodeTest])
+    if (! nodeTest.isInstanceOf[AnyNodeTest.type])
       iter = new Navigator.AxisFilter(iter, nodeTest)
     iter
   }

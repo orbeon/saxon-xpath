@@ -94,7 +94,7 @@ object SteppingNavigator {
     if (! (includeSelf && test.test(start)))
       current = start
 
-    if (test == null || test == AnyNodeTest.getInstance)
+    if (test == null || test == AnyNodeTest)
       stepper = new FollowingNodeStepper(start)
     else test match {
       case nt: NameTest =>

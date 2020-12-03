@@ -96,7 +96,7 @@ trait NodeInfo extends Source with Item with Location {
   }
 
   def iterateAxis(axisNumber: Int): AxisIterator =
-    iterateAxis(axisNumber, AnyNodeTest.getInstance)
+    iterateAxis(axisNumber, AnyNodeTest)
 
   def children: Iterator[NodeInfo] = {
     if (hasChildNodes) {

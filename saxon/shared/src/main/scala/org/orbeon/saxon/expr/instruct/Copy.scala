@@ -139,7 +139,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
       if (a == Affinity.SAME_TYPE || a == Affinity.SUBSUMED_BY) {
         new ContentTypeTest(Type.ATTRIBUTE, getSchemaType, config, false)
       }
-      AnyNodeTest.getInstance
+      AnyNodeTest
     } else {
       getValidationAction match {
         case Validation.PRESERVE => selectItemType
@@ -161,7 +161,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
               false)
           }
           if (e != Affinity.DISJOINT || a != Affinity.DISJOINT) {
-            AnyNodeTest.getInstance
+            AnyNodeTest
           } else {
             selectItemType
           }
@@ -230,7 +230,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
                 NodeKindTest.ATTRIBUTE
               }
             }
-            AnyNodeTest.getInstance
+            AnyNodeTest
           } else if (selectItemType.isInstanceOf[AtomicType]) {
             selectItemType
           } else {

@@ -400,12 +400,12 @@ class TypeHierarchy(var config: Configuration) {
           if (t2.isPlainType || t2.isInstanceOf[FunctionItemType]) {
             DISJOINT
           } else {
-            if (t1.isInstanceOf[AnyNodeTest]) {
-              if (t2.isInstanceOf[AnyNodeTest])
+            if (t1.isInstanceOf[AnyNodeTest.type]) {
+              if (t2.isInstanceOf[AnyNodeTest.type])
                 SAME_TYPE
               else
                 SUBSUMES
-            } else if (t2.isInstanceOf[AnyNodeTest]) {
+            } else if (t2.isInstanceOf[AnyNodeTest.type]) {
               SUBSUMED_BY
             } else if (t2 eq ErrorType) {
               DISJOINT

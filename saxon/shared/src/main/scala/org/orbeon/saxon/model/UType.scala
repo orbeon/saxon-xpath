@@ -273,7 +273,7 @@ class UType(private var bits: Int) {
     } else if (p.size == 1) {
       p.toArray(Array.ofDim[PrimitiveUType](1))(0).toItemType
     } else if (ANY_NODE.subsumes(this)) {
-      AnyNodeTest.getInstance
+      AnyNodeTest
     } else if (equals(NUMERIC)) {
       NumericType.getInstance
     } else if (ANY_ATOMIC.subsumes(this)) {

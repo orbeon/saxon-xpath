@@ -199,7 +199,7 @@ abstract class TinyNodeImpl extends NodeInfo {
       else
         EmptyIterator.ofNodes
     } else {
-      iterateAxis(axisNumber, AnyNodeTest.getInstance)
+      iterateAxis(axisNumber, AnyNodeTest)
     }
 
   def iterateAxis(axisNumber: Int,
@@ -298,7 +298,7 @@ abstract class TinyNodeImpl extends NodeInfo {
             throw new IllegalArgumentException("Unknown axis number " + axisNumber)
         }
       case _ =>
-        new Navigator.AxisFilter(iterateAxis(axisNumber, AnyNodeTest.getInstance), predicate)
+        new Navigator.AxisFilter(iterateAxis(axisNumber, AnyNodeTest), predicate)
     }
 
   /*@Nullable*/

@@ -222,7 +222,7 @@ abstract class NodeImpl
         EmptyIterator.ofNodes
       }
     } else {
-      iterateAxis(axisNumber, AnyNodeTest.getInstance)
+      iterateAxis(axisNumber, AnyNodeTest)
     }
 
   def iterateAxis(axisNumber: Int,

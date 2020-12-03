@@ -2084,7 +2084,7 @@ class XPathParser() {
         }
         else if (firstInPattern && t.currentToken == Token.NODEKIND && t.currentTokenValue == "document-node") defaultAxis = AxisInfo.SELF
         var test = parseNodeTest(Type.ELEMENT)
-        if (test.isInstanceOf[AnyNodeTest]) { // handles patterns of the form match="node()"
+        if (test.isInstanceOf[AnyNodeTest.type]) { // handles patterns of the form match="node()"
           test = if (defaultAxis == AxisInfo.CHILD) MultipleNodeKindTest.CHILD_NODE
           else NodeKindTest.ATTRIBUTE
         }
@@ -2415,7 +2415,7 @@ class XPathParser() {
         grumble("item() is not allowed in a path expression")
         null
       case Type.NODE =>
-        if (empty) AnyNodeTest.getInstance
+        if (empty) AnyNodeTest
         else {
           grumble("Expected ')': no arguments are allowed in node()")
           null

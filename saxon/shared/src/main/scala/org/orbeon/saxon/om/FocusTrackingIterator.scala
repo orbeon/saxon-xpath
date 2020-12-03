@@ -189,7 +189,7 @@ class FocusTrackingIterator(private var base: SequenceIterator)
 
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
     node match {
-      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest] =>
+      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest.type] =>
         return node1.getSiblingPosition
       case _ =>
     }

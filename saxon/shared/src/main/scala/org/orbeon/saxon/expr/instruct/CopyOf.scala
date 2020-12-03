@@ -280,7 +280,7 @@ class CopyOf(select: Expression,
               false)
           }
           if (e != Affinity.DISJOINT || a != Affinity.DISJOINT) {
-            if (in.isInstanceOf[NodeTest]) AnyNodeTest.getInstance
+            if (in.isInstanceOf[NodeTest]) AnyNodeTest
             else AnyItemType
           } else {
             return in
@@ -347,7 +347,7 @@ class CopyOf(select: Expression,
                 NodeKindTest.ATTRIBUTE
               }
             }
-            AnyNodeTest.getInstance
+            AnyNodeTest
           } else if (in.isInstanceOf[AtomicType]) {
             return in
           } else {

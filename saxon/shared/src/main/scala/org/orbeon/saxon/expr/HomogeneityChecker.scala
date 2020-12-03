@@ -42,7 +42,7 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
     val `type` = getBaseExpression.getItemType
     if (`type` == ErrorType)
       return Literal.makeEmptySequence
-    val rel = th.relationship(`type`, AnyNodeTest.getInstance)
+    val rel = th.relationship(`type`, AnyNodeTest)
     if (rel eq Affinity.DISJOINT) { // expression cannot return nodes, so this checker is redundant
       // code deleted by bug 4298
       //            if (getBaseExpression() instanceof SlashExpression && ((SlashExpression) getBaseExpression()).getLeadingSteps() instanceof SlashExpression &&

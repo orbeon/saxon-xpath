@@ -278,15 +278,15 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              () => new HasChildren_1,
              BuiltInAtomicType.BOOLEAN,
              OPT,
-             0).arg(0, AnyNodeTest.getInstance, OPT | INS, null)
+             0).arg(0, AnyNodeTest, OPT | INS, null)
     register("head", 1, () => new HeadFn, AnyItemType, OPT, FILTER)
       .arg(0, AnyItemType, STAR | TRA, null)
     register("innermost",
              1,
              () => new Innermost,
-             AnyNodeTest.getInstance,
+             AnyNodeTest,
              STAR,
-             0).arg(0, AnyNodeTest.getInstance, STAR | NAV, null)
+             0).arg(0, AnyNodeTest, STAR | NAV, null)
     register("nilled",
              0,
              () => new ContextItemAccessorFunction,
@@ -303,9 +303,9 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
       "outermost",
       1,
       () => new Outermost,
-      AnyNodeTest.getInstance,
+      AnyNodeTest,
       STAR,
-      AS_ARG0 | FILTER).arg(0, AnyNodeTest.getInstance, STAR | TRA, null)
+      AS_ARG0 | FILTER).arg(0, AnyNodeTest, STAR | TRA, null)
     register("parse-xml",
              1,
              () => new ParseXml,
@@ -326,7 +326,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              CITEM | LATE)
     register("path", 1, () => new Path_1, BuiltInAtomicType.STRING, OPT, 0).arg(
       0,
-      AnyNodeTest.getInstance,
+      AnyNodeTest,
       OPT | NAV,
       null)
     register("round",

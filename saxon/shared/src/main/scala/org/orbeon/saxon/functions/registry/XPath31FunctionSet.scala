@@ -101,15 +101,15 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
       () => new HasChildren_1,
       BuiltInAtomicType.BOOLEAN,
       OPT,
-      0).arg(0, AnyNodeTest.getInstance, OPT | INS, null)
+      0).arg(0, AnyNodeTest, OPT | INS, null)
     register("head", 1, () => new HeadFn, AnyItemType, OPT, FILTER)
       .arg(0, AnyItemType, STAR | TRA, null)
     register("innermost",
       1,
       () => new Innermost,
-      AnyNodeTest.getInstance,
+      AnyNodeTest,
       STAR,
-      0).arg(0, AnyNodeTest.getInstance, STAR | NAV, null)
+      0).arg(0, AnyNodeTest, STAR | NAV, null)
     register("json-doc",
       1,
       () => new JsonDoc,
@@ -218,7 +218,7 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
     register("snapshot",
       1,
       () => new SnapshotFn,
-      AnyNodeTest.getInstance,
+      AnyNodeTest,
       STAR,
       NEW).arg(0, AnyItemType, STAR | ABS, EMPTY)
     register("sort", 1, () => new Sort_1, AnyItemType, STAR, 0).arg(
@@ -271,14 +271,14 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
       () => new XMLToJsonFn,
       BuiltInAtomicType.STRING,
       OPT,
-      LATE).arg(0, AnyNodeTest.getInstance, OPT | ABS, EMPTY)
+      LATE).arg(0, AnyNodeTest, OPT | ABS, EMPTY)
     register("xml-to-json",
       2,
       () => new XMLToJsonFn,
       BuiltInAtomicType.STRING,
       OPT,
       LATE)
-      .arg(0, AnyNodeTest.getInstance, OPT | ABS, EMPTY)
+      .arg(0, AnyNodeTest, OPT | ABS, EMPTY)
       .arg(1, MapType.ANY_MAP_TYPE, ONE | ABS, null)
       .optionDetails(XMLToJsonFn.makeOptionsParameter())
   }

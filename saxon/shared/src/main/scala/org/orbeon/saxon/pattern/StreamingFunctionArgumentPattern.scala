@@ -65,7 +65,7 @@ class StreamingFunctionArgumentPattern() extends Pattern {
     false
   }
 
-  override def getItemType: ItemType = AnyNodeTest.getInstance
+  override def getItemType: ItemType = AnyNodeTest
 
   /*@NotNull*/
 

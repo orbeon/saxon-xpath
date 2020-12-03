@@ -63,7 +63,7 @@ object Type {
   // Chosen so kind & 0x0f = Type.ELEMENT
   val TEXTUAL_ELEMENT: Short = 17
   val NODE: Short = 0
-  val NODE_TYPE: ItemType = AnyNodeTest.getInstance
+  val NODE_TYPE: ItemType = AnyNodeTest
   val ITEM: Short = 88
   /*@NotNull*/
   val ITEM_TYPE: ItemType = AnyItemType
@@ -320,7 +320,7 @@ object Type {
       return ANY_ATOMIC
 
     if (t1.isInstanceOf[NodeTest] && t2.isInstanceOf[NodeTest])
-      return AnyNodeTest.getInstance
+      return AnyNodeTest
 
     t1 match {
       case objectType: JavaExternalObjectType if t2.isInstanceOf[JavaExternalObjectType] =>

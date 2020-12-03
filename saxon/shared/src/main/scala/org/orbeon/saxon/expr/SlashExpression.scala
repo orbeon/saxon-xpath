@@ -125,7 +125,7 @@ class SlashExpression(start: Expression, step: Expression)
       return null
 
     val test = mid.getNodeTest
-    if (!(test == null || test.isInstanceOf[AnyNodeTest]))
+    if (!(test == null || test.isInstanceOf[AnyNodeTest.type]))
       return null
 
     val underlyingAxis = underlyingStep.asInstanceOf[AxisExpression].getAxis
@@ -458,7 +458,7 @@ class SlashExpression(start: Expression, step: Expression)
       case start: SlashExpression =>
         start.getActionExpression match {
           case mid: AxisExpression =>
-            if (mid.getAxis == AxisInfo.DESCENDANT_OR_SELF && (mid.getNodeTest == null || mid.getNodeTest.isInstanceOf[AnyNodeTest])) {
+            if (mid.getAxis == AxisInfo.DESCENDANT_OR_SELF && (mid.getNodeTest == null || mid.getNodeTest.isInstanceOf[AnyNodeTest.type])) {
               axis = AxisInfo.ANCESTOR
               headPattern = start.getSelectExpression.toPattern(config)
             }

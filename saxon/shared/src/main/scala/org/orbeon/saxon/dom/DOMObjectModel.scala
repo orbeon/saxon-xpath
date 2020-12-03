@@ -146,7 +146,7 @@
 //        def convert(obj: AnyRef, context: XPathContext): Sequence =
 //          wrapOrUnwrapNode(obj.asInstanceOf[Node], context.getConfiguration)
 //
-//        def getItemType: ItemType = AnyNodeTest.getInstance
+//        def getItemType: ItemType = AnyNodeTest
 //      }
 //    } else if (classOf[NodeList].isAssignableFrom(sourceClass)) {
 //      new JPConverter() {
@@ -161,7 +161,7 @@
 //          new SequenceExtent(nodes.asInstanceOf[Array[Item]])
 //        }
 //
-//        def getItemType: ItemType = AnyNodeTest.getInstance
+//        def getItemType: ItemType = AnyNodeTest
 //
 //        override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 //      }
@@ -170,14 +170,14 @@
 //        def convert(obj: AnyRef, context: XPathContext): Sequence =
 //          unravel(obj.asInstanceOf[DOMSource], context.getConfiguration)
 //
-//        def getItemType: ItemType = AnyNodeTest.getInstance
+//        def getItemType: ItemType = AnyNodeTest
 //      }
 //    } else if (classOf[DocumentWrapper] == sourceClass) {
 //      new JPConverter() {
 //        def convert(obj: AnyRef, context: XPathContext): Sequence =
 //          obj.asInstanceOf[DocumentWrapper].getRootNode
 //
-//        def getItemType: ItemType = AnyNodeTest.getInstance
+//        def getItemType: ItemType = AnyNodeTest
 //      }
 //    } else {
 //      null

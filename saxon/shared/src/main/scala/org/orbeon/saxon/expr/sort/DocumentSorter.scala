@@ -72,7 +72,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
       return e2
     }
     val th = visitor.getConfiguration.getTypeHierarchy
-    if (th.relationship(getBaseExpression.getItemType, AnyNodeTest.getInstance) ==
+    if (th.relationship(getBaseExpression.getItemType, AnyNodeTest) ==
       Affinity.DISJOINT) {
       getBaseExpression
     }

@@ -117,7 +117,7 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
                 this,
                 axisNumber == AxisInfo.DESCENDANT_OR_SELF,
                 true)
-              if (!(nodeTest.isInstanceOf[AnyNodeTest])) {
+              if (!(nodeTest.isInstanceOf[AnyNodeTest.type])) {
                 iter = new Navigator.AxisFilter(iter, nodeTest)
               }
               iter

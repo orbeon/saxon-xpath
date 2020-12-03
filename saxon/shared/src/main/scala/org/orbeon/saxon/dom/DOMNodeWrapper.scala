@@ -379,7 +379,7 @@ class DOMNodeWrapper(var node: Node,
 
   def iterateAttributes(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
     var iter: AxisIterator = new AttributeEnumeration(this)
-    if (nodeTest != AnyNodeTest.getInstance)
+    if (nodeTest != AnyNodeTest)
       iter = new Navigator.AxisFilter(iter, nodeTest)
     iter
   }
@@ -390,7 +390,7 @@ class DOMNodeWrapper(var node: Node,
   def iterateChildren(nodeTest: Predicate[_ >: NodeInfo]): AxisIterator = {
     val elementOnly = isElementOnly(nodeTest)
     var iter: AxisIterator = new Navigator.EmptyTextFilter(new ChildEnumeration(this, true, true, elementOnly))
-    if (nodeTest != AnyNodeTest.getInstance)
+    if (nodeTest != AnyNodeTest)
       iter = new Navigator.AxisFilter(iter, nodeTest)
     iter
   }
@@ -398,7 +398,7 @@ class DOMNodeWrapper(var node: Node,
   def iterateSiblings(nodeTest: Predicate[_ >: NodeInfo], forwards: Boolean): AxisIterator = {
     val elementOnly = isElementOnly(nodeTest)
     var iter: AxisIterator = new Navigator.EmptyTextFilter(new ChildEnumeration(this, false, forwards, elementOnly))
-    if (nodeTest != AnyNodeTest.getInstance)
+    if (nodeTest != AnyNodeTest)
       iter = new Navigator.AxisFilter(iter, nodeTest)
     iter
   }

@@ -135,7 +135,7 @@ class NodeSetPattern /**
     if (itemType.isInstanceOf[NodeTest]) {
       itemType
     } else {
-      AnyNodeTest.getInstance
+      AnyNodeTest
     }
   }
 

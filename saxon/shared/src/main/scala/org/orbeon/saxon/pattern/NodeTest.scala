@@ -30,7 +30,7 @@ abstract class NodeTest
   def getPrimitiveItemType: ItemType = {
     val p = getPrimitiveType
     if (p == Type.NODE)
-      AnyNodeTest.getInstance
+      AnyNodeTest
     else
       NodeKindTest.makeNodeKindTest(p)
   }

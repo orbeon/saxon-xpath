@@ -76,12 +76,12 @@ abstract class ParentNodeImpl extends NodeImpl {
       EmptyIterator.ofNodes
     } else childrenImpl match {
       case child: NodeImpl =>
-        if (test == null || test == AnyNodeTest.getInstance)
+        if (test == null || test == AnyNodeTest)
           SingleNodeIterator.makeIterator(child)
         else
           Navigator.filteredSingleton(child, test)
       case _ =>
-        if (test == null || test == AnyNodeTest.getInstance)
+        if (test == null || test == AnyNodeTest)
           new ArrayIterator.OfNodes(childrenImpl.asInstanceOf[Array[NodeInfo]])
         else
           new ChildEnumeration(this, test)

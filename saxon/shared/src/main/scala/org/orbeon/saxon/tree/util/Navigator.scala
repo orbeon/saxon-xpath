@@ -440,7 +440,7 @@ object Navigator {
     else if ((from.getUType eq UType.ELEMENT) && (count.getUType eq UType.ELEMENT))
       filter = NodeKindTest.ELEMENT
     else
-      filter = AnyNodeTest.getInstance
+      filter = AnyNodeTest
     if (from != null && from.matches(node, context))
       return num
     val preceding = node.iterateAxis(AxisInfo.PRECEDING_OR_ANCESTOR, filter)
@@ -497,7 +497,7 @@ object Navigator {
       case test: NodeTest => test
       case _ =>
         if (pattern.getUType.overlaps(UType.ANY_NODE))
-          AnyNodeTest.getInstance
+          AnyNodeTest
         else
           ErrorType
     }
@@ -894,7 +894,7 @@ object Navigator {
    */
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
     node match {
-      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest] =>
+      case node1: SiblingCountingNode if nodeTest.isInstanceOf[AnyNodeTest.type] =>
         return node1.getSiblingPosition
       case _ =>
     }
