@@ -406,7 +406,7 @@ object JPConverter {
   }
 
   object VoidConverter extends JPConverter {
-    def convert(o: AnyRef, context: XPathContext): EmptySequence[_ <: Item] = EmptySequence.getInstance
+    def convert(o: AnyRef, context: XPathContext): EmptySequence.type = EmptySequence
     def getItemType: ItemType = AnyItemType
   }
 

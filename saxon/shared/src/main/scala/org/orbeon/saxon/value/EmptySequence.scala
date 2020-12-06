@@ -15,14 +15,10 @@ import org.orbeon.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
 /**
   * An EmptySequence object represents a sequence containing no members.
   */
-object EmptySequence {
-  private val THE_INSTANCE: EmptySequence[Item] = new EmptySequence
+object EmptySequence extends GroundedValue {
 
-  def getInstance[T <: Item]: EmptySequence[T] =
-    THE_INSTANCE.asInstanceOf[EmptySequence[T]]
-}
-
-class EmptySequence[T <: Item] private () extends GroundedValue {
+  // ORBEON: For legacy callers.
+  def getInstance[T <: Item]: EmptySequence.type = this
 
   def getStringValue: String = ""
 
@@ -45,14 +41,6 @@ class EmptySequence[T <: Item] private () extends GroundedValue {
   def asItem(): Item = null
 
   def getLength: Int = 0
-
-  override def equals(other: Any): Boolean = {
-    if (! (other.isInstanceOf[GroundedValue] && other.asInstanceOf[GroundedValue].getLength == 0))
-      throw new ClassCastException("Cannot compare " + other.getClass + " to empty sequence")
-    true
-  }
-
-  override def hashCode: Int = 42
 
   override def effectiveBooleanValue: Boolean = false
 

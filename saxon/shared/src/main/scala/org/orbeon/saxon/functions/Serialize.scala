@@ -243,7 +243,7 @@ class Serialize extends SystemFunction {
   @throws[XPathException]
   private def toYesNoOmitTypeString(seqVal: Sequence) = {
     var stringVal = ""
-    if (seqVal.isInstanceOf[EmptySequence[_ <: Item]]) stringVal = "omit"
+    if (seqVal.isInstanceOf[EmptySequence.type]) stringVal = "omit"
     else if (seqVal.head.isInstanceOf[BooleanValue]) stringVal = toYesNoTypeString(seqVal)
     // otherwise invalid
     stringVal

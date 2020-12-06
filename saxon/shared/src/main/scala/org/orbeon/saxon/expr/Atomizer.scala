@@ -98,7 +98,7 @@ object Atomizer {
     sequence match {
       case atomicSequence: AtomicSequence =>
         atomicSequence
-      case _: EmptySequence[_] =>
+      case EmptySequence =>
         EmptyAtomicSequence.getInstance
       case _ =>
         val iter = getAtomizingIterator(sequence.iterate(), oneToOne = false)
