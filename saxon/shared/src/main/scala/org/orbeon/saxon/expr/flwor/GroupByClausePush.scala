@@ -1,57 +1,54 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.flwor
 
 import org.orbeon.saxon.event.Outputter
-import org.orbeon.saxon.expr.Atomizer
-import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.{Atomizer, XPathContext}
+import org.orbeon.saxon.expr.flwor.GroupByClausePush._
 import org.orbeon.saxon.expr.sort.GenericAtomicComparer
-import org.orbeon.saxon.om.{Item, Sequence, SequenceTool}
+import org.orbeon.saxon.om.{Sequence, SequenceTool}
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.value.AtomicValue
-import org.orbeon.saxon.value.EmptySequence
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
+import org.orbeon.saxon.value.{AtomicValue, EmptySequence}
 
-import GroupByClausePush._
-
-//import scala.collection.compat._
+import java.util.{ArrayList, HashMap, List}
 import scala.jdk.CollectionConverters._
 
 
 object GroupByClausePush {
 
   def addToGroup(
-                  key: AnyRef,
-                  objectToBeGrouped: GroupByClause.ObjectToBeGrouped,
-                  group: List[GroupByClause.ObjectToBeGrouped],
-                  map: HashMap[Any, List[GroupByClause.ObjectToBeGrouped]]): Unit = {
+    key              : AnyRef,
+    objectToBeGrouped: GroupByClause.ObjectToBeGrouped,
+    group            : List[GroupByClause.ObjectToBeGrouped],
+    map              : HashMap[Any, List[GroupByClause.ObjectToBeGrouped]]
+  ): Unit =
     if (group != null) {
       group.add(objectToBeGrouped)
       map.put(key, group)
     } else {
-      val list: List[GroupByClause.ObjectToBeGrouped] =
-        new ArrayList[GroupByClause.ObjectToBeGrouped]()
+      val list = new ArrayList[GroupByClause.ObjectToBeGrouped]()
       list.add(objectToBeGrouped)
       map.put(key, list)
     }
-  }
 
-  def checkGroupingValues(groupingValues: Array[Sequence]): Unit = {
-    for (i <- 0 until groupingValues.length) {
-      var v: Sequence = groupingValues(i)
+  def checkGroupingValues(groupingValues: Array[Sequence]): Unit =
+    for (i <- groupingValues.indices) {
+      var v = groupingValues(i)
       if (! (v.isInstanceOf[EmptySequence.type] || v.isInstanceOf[AtomicValue])) {
         v = Atomizer.getAtomizingIterator(v.iterate(), oneToOne = false).materialize
         if (SequenceTool.getLength(v) > 1) {
           throw new XPathException(
             "Grouping key value cannot be a sequence of more than one item",
-            "XPTY0004")
+            "XPTY0004"
+          )
         }
         groupingValues(i) = v
       }
     }
-  }
-
 }
 
 /**
@@ -59,23 +56,21 @@ object GroupByClausePush {
  * as its input, and outputs a new set of tuples one per group of the input tuples. No groups are output
  * until all the groups have been read.
  */
-class GroupByClausePush(outputter: Outputter,
-                        private var destination: TuplePush,
-                        groupBy: GroupByClause,
-                        private var context: XPathContext)
-  extends TuplePush(outputter) {
+class GroupByClausePush(
+  outputter              : Outputter,
+  private var destination: TuplePush,
+  groupBy                : GroupByClause,
+  private var context    : XPathContext
+) extends TuplePush(outputter) {
 
-  private var groupByClause: GroupByClause = groupBy
+  private val groupByClause: GroupByClause = groupBy
+  private val map: HashMap[Any, List[GroupByClause.ObjectToBeGrouped]] = new HashMap
 
-  private var map: HashMap[Any, List[GroupByClause.ObjectToBeGrouped]] =
-    new HashMap()
-
-  private var comparers: Array[GenericAtomicComparer] =
+  private val comparers: Array[GenericAtomicComparer] =
     new Array[GenericAtomicComparer](groupBy.comparers.length)
 
-  for (i <- 0 until comparers.length) {
+  for (i <- comparers.indices)
     comparers(i) = groupBy.comparers(i).provideContext(context)
-  }
 
   /**
    * Move on to the next tuple. Before returning, this method must set all the variables corresponding
@@ -83,27 +78,25 @@ class GroupByClausePush(outputter: Outputter,
    *
    * @param context the dynamic evaluation context
    */
-  override def processTuple(context: XPathContext): Unit = {
-    val groupingTupleExpr: TupleExpression =
-      groupByClause.getGroupingTupleExpression
-    val retainedTupleExpr: TupleExpression =
-      groupByClause.getRetainedTupleExpression
-    val otbg: GroupByClause.ObjectToBeGrouped =
-      new GroupByClause.ObjectToBeGrouped()
-    val groupingValues: Array[Sequence] =
-      groupingTupleExpr.evaluateItem(context).getMembers
+  def processTuple(context: XPathContext): Unit = {
+
+    val groupingTupleExpr = groupByClause.getGroupingTupleExpression
+    val retainedTupleExpr = groupByClause.getRetainedTupleExpression
+    val otbg              = new GroupByClause.ObjectToBeGrouped()
+    val groupingValues    = groupingTupleExpr.evaluateItem(context).getMembers
+
     checkGroupingValues(groupingValues)
+
     otbg.groupingValues = new Tuple(groupingValues)
     otbg.retainedValues = retainedTupleExpr.evaluateItem(context)
-    val key: AnyRef =
-      groupByClause.getComparisonKey(otbg.groupingValues, comparers)
-    val group: List[GroupByClause.ObjectToBeGrouped] = map.get(key)
+
+    val key   = groupByClause.getComparisonKey(otbg.groupingValues, comparers)
+    val group = map.get(key)
+
     addToGroup(key, otbg, group, map)
   }
 
   // Allocate the incoming tuple to a group
-  // Allocate the incoming tuple to a group
-
   override def close(): Unit = {
     for (group <- map.values.asScala) {
       groupByClause.processGroup(group, context)
@@ -111,12 +104,4 @@ class GroupByClausePush(outputter: Outputter,
     }
     destination.close()
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2011-2020 Saxonica Limited
