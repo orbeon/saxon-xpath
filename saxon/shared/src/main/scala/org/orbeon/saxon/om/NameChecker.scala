@@ -44,8 +44,8 @@ object NameChecker {
   }
 
   def getQNameParts(qname: CharSequence): Array[String] = {
-    val parts: Array[String] = Array.ofDim[String](2)
-    var colon: Int = -1
+    val parts = Array.ofDim[String](2)
+    var colon = -1
     val len = qname.length
     breakable {
       for (i <- 0 until len if qname.charAt(i) == ':') {
@@ -66,24 +66,22 @@ object NameChecker {
       parts(0) = qname.subSequence(0, colon).toString
       parts(1) = qname.subSequence(colon + 1, len).toString
       if (! isValidNCName(parts(1))) {
-        if (! isValidNCName(parts(0))) {
+        if (! isValidNCName(parts(0)))
           throw new QNameException(
-            "Both the prefix " + Err.wrap(parts(0)) + " and the local part " +
-              Err.wrap(parts(1)) +
-              " are invalid")
-        }
-        throw new QNameException("Invalid QName local part " + Err.wrap(parts(1)))
+            "Both the prefix " + Err.wrap(parts(0)) + " and the local part " + Err.wrap(parts(1)) + " are invalid"
+          )
+        else
+          throw new QNameException("Invalid QName local part " + Err.wrap(parts(1)))
       }
     }
     parts
   }
 
   /*@NotNull*/
-
   def checkQNameParts(qname: CharSequence): Array[String] =
     try {
       val parts = getQNameParts(qname)
-      if (parts(0).length > 0 && !isValidNCName(parts(0)))
+      if (parts(0).nonEmpty && ! isValidNCName(parts(0)))
         throw new XPathException("Invalid QName prefix " + Err.wrap(parts(0)))
       parts
     } catch {
@@ -132,10 +130,10 @@ object NameChecker {
       val ch = nmtoken.charAt(i)
       if (UTF16CharacterSet.isHighSurrogate(ch)) {
         i += 1
-        if (!isNCNameChar(UTF16CharacterSet.combinePair(ch, nmtoken.charAt(i))))
+        if (! isNCNameChar(UTF16CharacterSet.combinePair(ch, nmtoken.charAt(i))))
           return false
       } else {
-        if (ch != ':' && !isNCNameChar(ch))
+        if (ch != ':' && ! isNCNameChar(ch))
           return false
       }
       i += 1

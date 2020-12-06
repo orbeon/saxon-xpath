@@ -123,7 +123,7 @@ class SequenceExtent extends GroundedValue {
     if (len == 0)
       EmptySequence.getInstance
     else if (len == 1)
-      itemAt(0)
+      itemAt(0) // AKA `head`
     else
       this
   }

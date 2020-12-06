@@ -269,7 +269,6 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     }
   }
 
-  def getNamespace: String = NamespaceConstant.FN
-
+  def getNamespace         : String = NamespaceConstant.FN
   def getConventionalPrefix: String = "fn"
 }

@@ -9,7 +9,6 @@ import org.orbeon.saxon.value.{EmptySequence, SequenceExtent}
 
 import java.{util => ju}
 import scala.collection.immutable
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 

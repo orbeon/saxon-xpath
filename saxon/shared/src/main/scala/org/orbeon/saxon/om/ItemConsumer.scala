@@ -12,8 +12,6 @@ import org.orbeon.saxon.trans.XPathException
 /**
   * A FunctionalInterface for any method that processes individual items, and which
   * may generate exceptions.
- *
-  * @param <T> the type of items to be processed
   */
 @FunctionalInterface
 trait ItemConsumer[T <: Item] {

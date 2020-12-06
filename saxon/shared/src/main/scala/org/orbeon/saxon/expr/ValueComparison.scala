@@ -97,9 +97,9 @@ override  def getExpressionName: String = "ValueComparison"
     this.comparer = comparer
   }
 
-  def getAtomicComparer(): AtomicComparer = comparer
+  def getAtomicComparer: AtomicComparer = comparer
 
-  def getSingletonOperator(): Int = op
+  def getSingletonOperator: Int = op
 
   def convertsUntypedToOther(): Boolean =
     comparer.isInstanceOf[UntypedNumericComparer]
