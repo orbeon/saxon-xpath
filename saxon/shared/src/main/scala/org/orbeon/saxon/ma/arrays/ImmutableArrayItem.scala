@@ -27,7 +27,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return the value at the given position.
    * @throws IndexOutOfBoundsException if the index is out of range
    */
-  override def get(index: Int): GroundedValue = vector.get(index)
+  def get(index: Int): GroundedValue = vector.get(index)
 
   /**
    * Replace a member of the array
@@ -37,7 +37,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return the value at the given position.
    * @throws IndexOutOfBoundsException if the index is out of range
    */
-  override def put(index: Int, newValue: GroundedValue): ArrayItem = {
+  def put(index: Int, newValue: GroundedValue): ArrayItem = {
     val v2 = vector.replace(index, newValue)
     if (v2 eq vector)
       this
@@ -53,7 +53,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return a new array item with the new member inserted
    * @throws IndexOutOfBoundsException if position is out of range
    */
-  override def insert(position: Int, member: GroundedValue): ArrayItem = {
+  def insert(position: Int, member: GroundedValue): ArrayItem = {
     val v2 = vector.insert(position, member)
     new ImmutableArrayItem(v2)
   }
@@ -65,21 +65,21 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    *
    * @return the number of members in this array.
    */
-  override def arrayLength(): Int = vector.size
+  def arrayLength(): Int = vector.size
 
   /**
    * Ask whether the array is empty
    *
    * @return true if and only if the size of the array is zero
    */
-  override def isEmpty: Boolean = vector.isEmpty
+  def isEmpty: Boolean = vector.isEmpty
 
   /**
    * Get the list of all members of the array
    *
    * @return an iterator over the members of the array
    */
-  override def members: Iterable[GroundedValue] = vector
+  def members: Iterable[GroundedValue] = vector
 
   /**
    * Get a subarray given a start and end position
@@ -89,7 +89,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    *              (zero based)
    * @throws IndexOutOfBoundsException if start, or start+end, is out of range
    */
-  override def subArray(start: Int, end: Int): ArrayItem =
+  def subArray(start: Int, end: Int): ArrayItem =
     new ImmutableArrayItem(vector.subList(start, end))
 
   /**
@@ -99,7 +99,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return the concatenation of the two arrays; that is, an array
    *         containing first the members of this array, and then the members of the other array
    */
-  override def concat(other: ArrayItem): ArrayItem = {
+  def concat(other: ArrayItem): ArrayItem = {
     if (other.arrayLength() == 0)
       return this
     var v1: ImmList[GroundedValue] = null
@@ -119,7 +119,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return a new array in which the requested member has been removed.
    * @throws IndexOutOfBoundsException if index is out of range
    */
-  override def remove(index: Int): ArrayItem = {
+  def remove(index: Int): ArrayItem = {
     //try {
     val v2 = vector.remove(index)
     if (v2 eq vector)
@@ -142,7 +142,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    *                  A value that is out of range is ignored.
    * @return a new array in which the requested member has been removed
    */
-  override def removeSeveral(positions: IntSet): ArrayItem = {
+  def removeSeveral(positions: IntSet): ArrayItem = {
     val p = Array.ofDim[Int](positions.size)
     var i = 0
     val ii = positions.iterator
