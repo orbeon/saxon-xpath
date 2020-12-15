@@ -20,17 +20,16 @@ object HashTrieMap {
   def singleton(key: AtomicValue, value: GroundedValue): HashTrieMap =
     new HashTrieMap().addEntry(key, value)
 
-  def copy(map: MapItem): HashTrieMap = {
-    if (map.isInstanceOf[HashTrieMap]) {
-      map.asInstanceOf[HashTrieMap]
+  def copy(map: MapItem): HashTrieMap =
+    map match {
+      case hashTrieMap: HashTrieMap =>
+        hashTrieMap
+      case _                 =>
+        var m2 = new HashTrieMap
+        for (pair <- map.keyValuePairs.asScala)
+          m2 = m2.addEntry(pair.key, pair.value)
+        m2
     }
-    var m2: HashTrieMap = new HashTrieMap()
-    for (pair <- map.keyValuePairs.asScala) {
-      m2 = m2.addEntry(pair.key, pair.value)
-    }
-    m2
-  }
-
 }
 
 class HashTrieMap extends MapItem {
@@ -42,13 +41,9 @@ class HashTrieMap extends MapItem {
   var keyUType: UType = UType.VOID
 
   private var valueUType: UType = UType.VOID
-
   private var keyAtomicType: AtomicType = ErrorType
-
   private var valueItemType: ItemType = ErrorType
-
   private var valueCardinality: Int = 0
-
   private var entries: Int = 0
 
   def this(imap: ImmutableMap[AtomicMatchKey, KeyValuePair]) = {
@@ -71,79 +66,70 @@ class HashTrieMap extends MapItem {
       valueUType = valueUType.union(SequenceTool.getUType(`val`))
       valueCardinality =
         Cardinality.union(valueCardinality, SequenceTool.getCardinality(`val`))
-      if (key.getItemType != keyAtomicType) {
+      if (key.getItemType != keyAtomicType)
         keyAtomicType = null
-      }
       if (!MapItem.isKnownToConform(`val`, valueItemType)) {
         valueItemType = null
       }
     }
   }
 
-  def size(): Int = {
-    if (entries >= 0) {
+  def size: Int = {
+    if (entries >= 0)
       return entries
-    }
-    var count: Int = 0
-    for (entry <- keyValuePairs().asScala) {
+    var count = 0
+    for (_ <- keyValuePairs.asScala)
       count += 1
-    }
     entries = count
     entries
   }
 
-  def isEmpty: Boolean = entries == 0 || !imap.iterator.hasNext
+  def isEmpty: Boolean = entries == 0 || ! imap.iterator.hasNext
 
   override def conforms(requiredKeyType: AtomicType,
                         requiredValueType: SequenceType,
                         th: TypeHierarchy): Boolean = {
-    if (isEmpty) {
+    if (isEmpty)
       return true
-    }
     if (keyAtomicType == requiredKeyType && valueItemType == requiredValueType.getPrimaryType &&
       Cardinality.subsumes(requiredValueType.getCardinality,
         valueCardinality)) {
       return true
     }
-    var needFullCheck: Boolean = false
+    var needFullCheck = false
     if (requiredKeyType != BuiltInAtomicType.ANY_ATOMIC) {
-      val upperBoundKeyType: ItemType = keyUType.toItemType
-      val rel: Affinity.Affinity = th.relationship(requiredKeyType, upperBoundKeyType)
-      if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT) {
+      val upperBoundKeyType = keyUType.toItemType
+      val rel               = th.relationship(requiredKeyType, upperBoundKeyType)
+      if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT)
         return false
-      } else {
+      else
         needFullCheck = true
-      }
     }
-    val requiredValueItemType: ItemType = requiredValueType.getPrimaryType
+    val requiredValueItemType = requiredValueType.getPrimaryType
     if (requiredValueItemType != BuiltInAtomicType.ANY_ATOMIC) {
-      val upperBoundValueType: ItemType = valueUType.toItemType
-      val rel: Affinity.Affinity =
-        th.relationship(requiredValueItemType, upperBoundValueType)
-      if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT) {
+      val upperBoundValueType = valueUType.toItemType
+      val rel                 = th.relationship(requiredValueItemType, upperBoundValueType)
+      if (rel == Affinity.SAME_TYPE || rel == Affinity.SUBSUMES) {} else if (rel == Affinity.DISJOINT)
         return false
-      } else {
+      else
         needFullCheck = true
-      }
     }
-    val requiredValueCard: Int = requiredValueType.getCardinality
-    if (!Cardinality.subsumes(requiredValueCard, valueCardinality)) {
+    val requiredValueCard = requiredValueType.getCardinality
+    if (! Cardinality.subsumes(requiredValueCard, valueCardinality)) {
       needFullCheck = true
     }
     if (needFullCheck) {
-      val keyIter: AtomicIterator[_ <: AtomicValue] = keys
+      val keyIter = keys
       var key: AtomicValue = null
-      while (({
+      while ({
         key = keyIter.next()
         key
-      }) != null) {
-        if (!requiredKeyType.matches(key, th)) {
+      } != null) {
+        if (! requiredKeyType.matches(key, th))
           return false
-        }
-        val `val`: Sequence = get(key)
-        if (!requiredValueType.matches(`val`, th)) {
-          false
-        }
+        val `val` = get(key)
+        if (! requiredValueType.matches(`val`, th))
+          return false
       }
     }
     true
@@ -152,14 +138,14 @@ class HashTrieMap extends MapItem {
   override def getItemType(th: TypeHierarchy): MapType = {
     var keyType: AtomicType = null
     var valueType: ItemType = null
-    var valueCard: Int = 0
-    val keyIter: AtomicIterator[_ <: AtomicValue] = keys
+    var valueCard           = 0
+    val keyIter             = keys
     var key: AtomicValue = null
-    while (({
+    while ({
       key = keyIter.next()
       key
-    }) != null) {
-      val `val`: Sequence = get(key)
+    } != null) {
+      val `val` = get(key)
       if (keyType == null) {
         keyType = key.getItemType
         valueType = SequenceTool.getItemType(`val`, th)
@@ -190,22 +176,22 @@ class HashTrieMap extends MapItem {
   }
 
   def addEntry(key: AtomicValue, value: GroundedValue): HashTrieMap = {
-    val empty: Boolean = isEmpty
-    val imap2: ImmutableMap[AtomicMatchKey, KeyValuePair] =
-      imap.put(makeKey(key), new KeyValuePair(key, value))
-    val t2: HashTrieMap = new HashTrieMap(imap2)
+    val empty = isEmpty
+    val imap2 = imap.put(makeKey(key), new KeyValuePair(key, value))
+    val t2    = new HashTrieMap(imap2)
+
     t2.valueCardinality = this.valueCardinality
-    t2.keyUType = keyUType
-    t2.valueUType = valueUType
-    t2.keyAtomicType = keyAtomicType
-    t2.valueItemType = valueItemType
+    t2.keyUType         = keyUType
+    t2.valueUType       = valueUType
+    t2.keyAtomicType    = keyAtomicType
+    t2.valueItemType    = valueItemType
     t2.updateTypeInformation(key, value, empty)
     t2
   }
 
   def initialPut(key: AtomicValue, value: GroundedValue): Boolean = {
-    val empty: Boolean = isEmpty
-    val exists: Boolean = get(key) != null
+    val empty  = isEmpty
+    val exists = get(key) != null
     imap = imap.put(makeKey(key), new KeyValuePair(key, value))
     updateTypeInformation(key, value, empty)
     entries = -1
@@ -215,12 +201,10 @@ class HashTrieMap extends MapItem {
   private def makeKey(key: AtomicValue): AtomicMatchKey = key.asMapKey()
 
   def remove(key: AtomicValue): HashTrieMap = {
-    val m2: ImmutableMap[AtomicMatchKey, KeyValuePair] =
-      imap.remove(makeKey(key))
-    if (m2 == imap) {
+    val m2 = imap.remove(makeKey(key))
+    if (m2 == imap)
       return this
-    }
-    val result: HashTrieMap = new HashTrieMap(m2)
+    val result = new HashTrieMap(m2)
     result.keyUType = keyUType
     result.valueUType = valueUType
     result.valueCardinality = valueCardinality
@@ -229,7 +213,7 @@ class HashTrieMap extends MapItem {
   }
 
   def get(key: AtomicValue): GroundedValue = {
-    val o: KeyValuePair = imap.get(makeKey(key))
+    val o = imap.get(makeKey(key))
     if (o == null) null else o.value
   }
 
@@ -237,38 +221,34 @@ class HashTrieMap extends MapItem {
 
   def keys: AtomicIterator[_ <: AtomicValue] =
     new AtomicIterator[AtomicValue]() {
-      var base: Iterator[Tuple2[AtomicMatchKey, KeyValuePair]] =
-        imap.iterator
+      val base = imap.iterator
 
       def next(): AtomicValue =
-        if (base.hasNext) {
+        if (base.hasNext)
           base.next()._2.key
-        } else {
+        else
           null
-        }
     }
 
-  def keyValuePairs(): java.lang.Iterable[KeyValuePair] =
+  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
     () =>
       new Iterator[KeyValuePair]() {
-        var base: Iterator[Tuple2[AtomicMatchKey, KeyValuePair]] =
-          imap.iterator
+        val base = imap.iterator
 
         def hasNext: Boolean = base.hasNext
 
         def next(): KeyValuePair = base.next()._2
 
-        override def remove(): Unit = {
+        override def remove(): Unit =
           base.remove()
-        }
       }
 
   def diagnosticDump(): Unit = {
     System.err.println("Map details:")
     for (entry <- imap.asScala) {
-      val k1: AtomicMatchKey = entry._1
-      val k2: AtomicValue = entry._2.key
-      val v: Sequence = entry._2.value
+      val k1 = entry._1
+      val k2 = entry._2.key
+      val v  = entry._2.value
       System.err.println(
         k1.getClass.toString + " " + k1.toString + " #:" + k1.hashCode.toString + " = (" +
           k2.getClass.toString +
@@ -281,5 +261,4 @@ class HashTrieMap extends MapItem {
   }
 
   override def toString: String = MapItem.mapToString(this)
-
 }

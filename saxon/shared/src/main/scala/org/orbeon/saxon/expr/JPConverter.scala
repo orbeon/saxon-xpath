@@ -1,27 +1,26 @@
 package org.orbeon.saxon.expr
 
-import java.lang.reflect.ParameterizedType
-import java.math.{BigDecimal, BigInteger}
-import java.net.{URI, URL}
-import java.time._
-import java.{lang => jl, util => ju}
-
-import javax.xml.transform.Source
-import javax.xml.transform.dom.DOMSource
 import org.orbeon.saxon.lib.ParseOptions
 import org.orbeon.saxon.ma.arrays.{ArrayItem, ArrayItemType}
 import org.orbeon.saxon.ma.map.{MapItem, MapType}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
-//import org.orbeon.saxon.s9api.{ItemType => _, _}
+
+import java.lang.reflect.ParameterizedType
+import java.math.{BigDecimal, BigInteger}
+import java.net.{URI, URL}
+import java.time._
+import java.{lang => jl, util => ju}
+import javax.xml.transform.Source
+import javax.xml.transform.dom.DOMSource
 import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
-import org.orbeon.saxon.utils.{Configuration, Controller}
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 
 import scala.beans.BeanProperty
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 object JPConverter {
 
@@ -193,7 +192,7 @@ object JPConverter {
 
     def getItemType: ItemType = AnyItemType
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromSequenceIterator extends JPConverter {
@@ -203,7 +202,7 @@ object JPConverter {
 
     def getItemType: ItemType = AnyItemType
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   // ORBEON: TMP s9api
@@ -389,17 +388,17 @@ object JPConverter {
     extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): ExternalObject[Any] =
-      if (o == null) {
+      if (o == null)
         null
-      } else if (resultType.getJavaClass.isInstance(o)) {
+      else if (resultType.getJavaClass.isInstance(o))
         new ObjectValue(o)
-      } else {
+      else
         throw new XPathException(
           "Java external object of type " + o.getClass.getName +
             " is not an instance of the required type " +
             resultType.getJavaClass.getName,
-          "XPTY0004")
-      }
+          "XPTY0004"
+        )
 
     def getItemType: JavaExternalObjectType = resultType
 
@@ -425,17 +424,16 @@ object JPConverter {
 
     def getItemType: ItemType = AnyItemType
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromSource extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): NodeInfo = {
-      val options: ParseOptions = new ParseOptions()
-      val controller: Controller = context.getController
-      if (controller != null) {
+      val options    = new ParseOptions()
+      val controller = context.getController
+      if (controller != null)
         options.setSchemaValidationMode(controller.getSchemaValidationMode)
-      }
       context.getConfiguration
         .buildDocumentTree(o.asInstanceOf[Source], options)
         .getRootNode
@@ -447,79 +445,72 @@ object JPConverter {
   object FromLongArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Long]].length)
-      for (i <- 0 until array.length) {
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Long]].length)
+      for (i <- array.indices)
         array(i) = Int64Value.makeDerived(
           o.asInstanceOf[Array[Long]](i),
-          BuiltInAtomicType.LONG)
-      }
+          BuiltInAtomicType.LONG
+        )
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.LONG
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromIntArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Int]].length)
-      for (i <- 0 until array.length) {
-        array(i) = Int64Value.makeDerived(o.asInstanceOf[Array[Int]](i),
-          BuiltInAtomicType.INT)
-      }
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Int]].length)
+      for (i <- array.indices)
+        array(i) = Int64Value.makeDerived(o.asInstanceOf[Array[Int]](i), BuiltInAtomicType.INT)
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.INT
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromShortArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Short]].length)
-      for (i <- 0 until array.length) {
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Short]].length)
+      for (i <- array.indices)
         array(i) = Int64Value.makeDerived(
           o.asInstanceOf[Array[Short]](i),
-          BuiltInAtomicType.SHORT)
-      }
+          BuiltInAtomicType.SHORT
+        )
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.SHORT
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromByteArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Byte]].length)
-      for (i <- 0 until array.length) {
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Byte]].length)
+      for (i <- array.indices)
         array(i) = Int64Value.makeDerived(
           255 & o.asInstanceOf[Array[Byte]](i).toInt,
-          BuiltInAtomicType.UNSIGNED_BYTE)
-      }
+          BuiltInAtomicType.UNSIGNED_BYTE
+        )
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.UNSIGNED_BYTE
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromCharArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): StringValue =
-      StringValue.makeStringValue(
-        new String(o.asInstanceOf[Array[Char]]))
+      StringValue.makeStringValue(new String(o.asInstanceOf[Array[Char]]))
 
     def getItemType: ItemType = BuiltInAtomicType.STRING
   }
@@ -527,33 +518,29 @@ object JPConverter {
   object FromDoubleArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Double]].length)
-      for (i <- 0 until array.length) {
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Double]].length)
+      for (i <- array.indices)
         array(i) = new DoubleValue(o.asInstanceOf[Array[Double]](i))
-      }
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.DOUBLE
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromFloatArray extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val array: Array[Item] =
-        Array.ofDim[Item](o.asInstanceOf[Array[Float]].length)
-      for (i <- 0 until array.length) {
+      val array = Array.ofDim[Item](o.asInstanceOf[Array[Float]].length)
+      for (i <- array.indices)
         array(i) = new DoubleValue(o.asInstanceOf[Array[Float]](i))
-      }
       new SequenceExtent(array)
     }
 
     def getItemType: ItemType = BuiltInAtomicType.FLOAT
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   object FromBooleanArray extends JPConverter {
@@ -567,15 +554,15 @@ object JPConverter {
 
     def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 
   class FromObjectArray(var itemConverter: JPConverter)
     extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence = {
-      val arrayObject: Array[Any] = o.asInstanceOf[Array[Any]]
-      val newArray = new ju.ArrayList[Item](arrayObject.length)
+      val arrayObject = o.asInstanceOf[Array[Any]]
+      val newArray    = new ju.ArrayList[Item](arrayObject.length)
       for (member <- arrayObject) {
         if (member != null) {
           val newItem = SequenceTool.asItem(itemConverter.convert(member.asInstanceOf[AnyRef], context))
@@ -593,7 +580,7 @@ object JPConverter {
 
     def getItemType: ItemType = itemConverter.getItemType
 
-    override def getCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
+    override def getCardinality: Int = StaticProperty.ALLOWS_ZERO_OR_MORE
   }
 }
 

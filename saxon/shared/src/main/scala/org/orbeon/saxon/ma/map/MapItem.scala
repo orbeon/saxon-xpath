@@ -19,35 +19,37 @@ import scala.jdk.CollectionConverters._
 object MapItem {
 
   def isKnownToConform(value: Sequence, itemType: ItemType): Boolean = {
-    if (itemType == AnyItemType) {
+
+    if (itemType == AnyItemType)
       return true
-    }
+
     try {
-      val iter: SequenceIterator = value.iterate()
+      val iter = value.iterate()
       var item: Item = null
       while ({
         item = iter.next()
         item
-      } != null) item match {
-        case atomicValue: AtomicValue =>
-          itemType match {
-            case atomicType: AtomicType =>
-              if (!Type.isSubType(atomicValue.getItemType, atomicType))
-                false
-            case _ =>
-              false
-          }
-        case nodeInfo: NodeInfo =>
-          itemType match {
-            case nodeTest: NodeTest =>
-              if (! nodeTest.test(nodeInfo))
-                false
-            case _ =>
-              false
-          }
-        case _ =>
-          false
-      }
+      } != null)
+        item match {
+          case atomicValue: AtomicValue =>
+            itemType match {
+              case atomicType: AtomicType =>
+                if (! Type.isSubType(atomicValue.getItemType, atomicType))
+                  return false
+              case _ =>
+                return false
+            }
+          case nodeInfo: NodeInfo =>
+            itemType match {
+              case nodeTest: NodeTest =>
+                if (! nodeTest.test(nodeInfo))
+                  return false
+              case _ =>
+                return false
+            }
+          case _ =>
+            return false
+        }
       true
     } catch {
       case _: XPathException => false
@@ -56,15 +58,15 @@ object MapItem {
 
   def getItemTypeOfSequence(`val`: Sequence): ItemType =
     try {
-      val first: Item = `val`.head
+      val first = `val`.head
       if (first == null) {
         AnyItemType
       } else {
         val `type` =
           first match {
             case atomicValue: AtomicValue => atomicValue.getItemType
-            case info: NodeInfo => NodeKindTest.makeNodeKindTest(info.getNodeKind)
-            case _ => AnyFunctionType
+            case info: NodeInfo           => NodeKindTest.makeNodeKindTest(info.getNodeKind)
+            case _                        => AnyFunctionType
           }
         if (isKnownToConform(`val`, `type`))
           `type`
@@ -76,12 +78,11 @@ object MapItem {
     }
 
   def mapToString(map: MapItem): String = {
-    val buffer: FastStringBuffer = new FastStringBuffer(256)
+    val buffer = new FastStringBuffer(256)
     buffer.append("map{")
     for (pair <- map.keyValuePairs.asScala) {
-      if (buffer.length > 4) {
+      if (buffer.length > 4)
         buffer.append(",")
-      }
       buffer.append(pair.key.toString)
       buffer.append(":")
       buffer.append(pair.value.toString)
@@ -89,7 +90,6 @@ object MapItem {
     buffer.append("}")
     buffer.toString
   }
-
 }
 
 trait MapItem extends Function {
@@ -113,13 +113,13 @@ trait MapItem extends Function {
   override def toShortString: String = {
     val sb = new StringBuilder
     sb.append("map{")
-    val sizeInt: Int = size
+    val sizeInt = size
     if (sizeInt == 0) {
       sb.append("}")
     } else if (sizeInt <= 5) {
-      var pos: Int = 0
+      var pos = 0
       for (pair <- keyValuePairs.asScala) {
-        if ( {
+        if ({
           pos += 1
           pos - 1
         } > 0) {
@@ -141,7 +141,7 @@ trait MapItem extends Function {
   def isArray: Boolean = false
   def isMap: Boolean = true
 
-  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
+  def getAnnotations: AnnotationList = AnnotationList.EMPTY
 
   def atomize(): AtomicSequence =
     throw new XPathException("Cannot atomize a map (" + toShortString + ")", "FOTY0013")
@@ -156,13 +156,12 @@ trait MapItem extends Function {
     callingContext
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
-    val key: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
-    val value: Sequence = get(key)
-    if (value == null) {
+    val key   = args(0).head.asInstanceOf[AtomicValue]
+    val value = get(key)
+    if (value == null)
       EmptySequence.getInstance
-    } else {
+    else
       value
-    }
   }
 
   def getStringValue: String =
@@ -174,36 +173,36 @@ trait MapItem extends Function {
   def getTypedValue: SequenceIterator =
     throw new XPathException("A map has no typed value")
 
-  def deepEquals(other: Function,
-                 context: XPathContext,
-                 comparer: AtomicComparer,
-                 flags: Int): Boolean = {
+  def deepEquals(
+    other    : Function,
+    context  : XPathContext,
+    comparer : AtomicComparer,
+    flags    : Int
+  ): Boolean =
     other match {
       case item: MapItem if item.size == size =>
-        val keysL: AtomicIterator[_ <: AtomicValue] = keys
+        val keysL = keys
         var key: AtomicValue = null
         while ({
           key = keysL.next()
           key
         } != null) {
-          val thisValue: Sequence = get(key)
-          val otherValue: Sequence = item.get(key)
-          if (otherValue == null) {
+          val thisValue  = get(key)
+          val otherValue = item.get(key)
+          if (otherValue == null)
             return false
-          }
-          if (!DeepEqual.deepEqual(otherValue.iterate(),
+          if (! DeepEqual.deepEqual(otherValue.iterate(),
             thisValue.iterate(),
             comparer,
             context,
             flags)) {
-            false
+            return false
           }
         }
-        return true
+        true
       case _ =>
+        false
     }
-    false
-  }
 
   override def itemAt(n: Int): MapItem = if (n == 0) this else null
 

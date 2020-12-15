@@ -1,27 +1,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.ma.arrays
-
-import java.util.Arrays
 
 import org.orbeon.saxon.ma.parray.ImmList
 import org.orbeon.saxon.om.GroundedValue
-import org.orbeon.saxon.z.{IntIterator, IntSet}
+import org.orbeon.saxon.z.IntSet
 
-//remove if not needed
 
-class ImmutableArrayItem extends AbstractArrayItem {
-  var other: SimpleArrayItem = _
-  private var vector: ImmList[GroundedValue] = ImmList.fromList(other.getMembersList)
+/**
+ * Implementation of ArrayItem backed by a persistent immutable array, so that operations
+ * that "update" the array do not have to copy the whole array
+ */
+class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArrayItem {
 
-  def this(other: SimpleArrayItem) {
-    this()
-    this.other = other
-  }
-
-  def this(vector: ImmList[GroundedValue]) = {
-    this()
-    this.vector = vector
-  }
+  def this(other: SimpleArrayItem) =
+    this(ImmList.fromList(other.getMembersList))
 
   /**
    * Get a member of the array
@@ -41,8 +38,11 @@ class ImmutableArrayItem extends AbstractArrayItem {
    * @throws IndexOutOfBoundsException if the index is out of range
    */
   override def put(index: Int, newValue: GroundedValue): ArrayItem = {
-    val v2: ImmList[GroundedValue] = vector.replace(index, newValue)
-    if (v2 == vector) this else new ImmutableArrayItem(v2)
+    val v2 = vector.replace(index, newValue)
+    if (v2 eq vector)
+      this
+    else
+      new ImmutableArrayItem(v2)
   }
 
   /**
@@ -54,7 +54,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
    * @throws IndexOutOfBoundsException if position is out of range
    */
   override def insert(position: Int, member: GroundedValue): ArrayItem = {
-    val v2: ImmList[GroundedValue] = vector.insert(position, member)
+    val v2 = vector.insert(position, member)
     new ImmutableArrayItem(v2)
   }
 
@@ -79,7 +79,7 @@ class ImmutableArrayItem extends AbstractArrayItem {
    *
    * @return an iterator over the members of the array
    */
-  override def members(): Iterable[GroundedValue] = vector
+  override def members: Iterable[GroundedValue] = vector
 
   /**
    * Get a subarray given a start and end position
@@ -100,15 +100,15 @@ class ImmutableArrayItem extends AbstractArrayItem {
    *         containing first the members of this array, and then the members of the other array
    */
   override def concat(other: ArrayItem): ArrayItem = {
-    if (other.arrayLength() == 0) {
+    if (other.arrayLength() == 0)
       return this
-    }
     var v1: ImmList[GroundedValue] = null
     v1 =
-      if (other.isInstanceOf[ImmutableArrayItem])
-        other.asInstanceOf[ImmutableArrayItem].vector
-      else new ImmutableArrayItem(other.asInstanceOf[SimpleArrayItem]).vector
-    val v2: ImmList[GroundedValue] = vector.appendList(v1)
+      other match {
+        case arrayItem: ImmutableArrayItem => arrayItem.vector
+        case _                             => new ImmutableArrayItem(other.asInstanceOf[SimpleArrayItem]).vector
+      }
+    val v2 = vector.appendList(v1)
     new ImmutableArrayItem(v2)
   }
 
@@ -121,8 +121,11 @@ class ImmutableArrayItem extends AbstractArrayItem {
    */
   override def remove(index: Int): ArrayItem = {
     //try {
-    val v2: ImmList[GroundedValue] = vector.remove(index)
-    if (v2 == vector) this else new ImmutableArrayItem(v2)
+    val v2 = vector.remove(index)
+    if (v2 eq vector)
+      this
+    else
+      new ImmutableArrayItem(v2)
   }
 
   //        } catch (IndexOutOfBoundsException e) {
@@ -140,31 +143,23 @@ class ImmutableArrayItem extends AbstractArrayItem {
    * @return a new array in which the requested member has been removed
    */
   override def removeSeveral(positions: IntSet): ArrayItem = {
-    val p: Array[Int] = Array.ofDim[Int](positions.size)
-    var i: Int = 0
-    val ii: IntIterator = positions.iterator
+    val p = Array.ofDim[Int](positions.size)
+    var i = 0
+    val ii = positions.iterator
     while (ii.hasNext) {
       i += 1
-      p(i) = ii.next
+      p(i) = ii.next()
     }
     scala.util.Sorting.quickSort(p)
-    var v2: ImmList[GroundedValue] = vector
-    var j: Int = p.length - 1
+    var v2 = vector
+    var j  = p.length - 1
     while (j >= 0) {
       v2 = v2.remove(p(j))
       j = j - 1
     }
-    if (v2 == vector) this else new ImmutableArrayItem(v2)
+    if (v2 eq vector)
+      this
+    else
+      new ImmutableArrayItem(v2)
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Implementation of ArrayItem backed by a persistent immutable array, so that operations
- * that "update" the array do not have to copy the whole array
- */

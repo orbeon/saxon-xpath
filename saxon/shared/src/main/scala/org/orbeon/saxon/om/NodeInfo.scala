@@ -27,25 +27,30 @@ import scala.jdk.CollectionConverters._
 
 /**
   * The NodeInfo interface represents a node in Saxon's implementation of the XPath 2.0 data model.
-  * <p>Note that several NodeInfo objects may represent the same node. To test node identity, the
+  *
+  * Note that several NodeInfo objects may represent the same node. To test node identity, the
   * method {@link #equals(Object)} should be used. An exception to this rule applies for
   * document nodes, where the correspondence between document nodes and DocumentInfo objects is one to
   * one. NodeInfo objects are never reused: a given NodeInfo object represents the same node for its entire
-  * lifetime.</p>
-  * <p>This is the primary interface for accessing trees in Saxon, and it forms part of the public
+  * lifetime.
+  *
+  * This is the primary interface for accessing trees in Saxon, and it forms part of the public
   * Saxon API. Methods that form part of the public API are (since Saxon 8.4)
   * labelled with a JavaDoc "since" tag: classes and methods that have no such label should not be
-  * regarded as stable interfaces.</p>
-  * <p>The interface represented by this class is at a slightly higher level than the abstraction described
+  * regarded as stable interfaces.
+  *
+  * The interface represented by this class is at a slightly higher level than the abstraction described
   * in the W3C data model specification, in that it includes support for the XPath axes, rather than exposing
   * the lower-level properties (such as "parent" and "children") directly. All navigation within trees,
   * except for a few convenience methods, is done by following the axes using the {@link #iterateAxis} method.
   * This allows different implementations of the XPath tree model to implement axis navigation in different ways.
-  * Some implementations may choose to use the helper methods provided in class `org.orbeon.saxon.tree.util.Navigator`.</p>
-  * <p>Note that the stability of this interface applies to classes that use the interface,
-  * not to classes that implement it. The interface may be extended in future to add new methods.</p>
-  * <p>New implementations of NodeInfo are advised also to implement the methods in interface
-  * ExtendedNodeInfo, which will be moved into this interface at some time in the future.</p>
+  * Some implementations may choose to use the helper methods provided in class `org.orbeon.saxon.tree.util.Navigator`.
+  *
+  * Note that the stability of this interface applies to classes that use the interface,
+  * not to classes that implement it. The interface may be extended in future to add new methods.
+  *
+  * New implementations of NodeInfo are advised also to implement the methods in interface
+  * ExtendedNodeInfo, which will be moved into this interface at some time in the future.
   *
   * @since 8.4. Extended with three extra methods, previously in ExtendedNodeInfo, in 9.1.
   * In 9.7, DocumentInfo is no longer defined as a sub-interface; it is replaced with TreeInfo,

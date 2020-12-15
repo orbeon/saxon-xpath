@@ -4,16 +4,14 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * An immutable list of elements
- */
 package org.orbeon.saxon.ma.parray
 
 import java.util.List
 
 
-
-
+/**
+ * An immutable list of elements
+ */
 object ImmList {
 
   def empty[E](): ImmList[E] = ImmList0.INSTANCE.asInstanceOf[ImmList[E]]
@@ -29,19 +27,18 @@ object ImmList {
     * @return the immutable list
     */
   def fromList[E](members: List[E]): ImmList[E] = {
-    val size: Int = members.size
+    val size = members.size
     if (size == 0) {
       empty()
     } else if (size == 1) {
       singleton(members.get(0))
     } else {
-      val split: Int = size / 2
-      val left: List[E] = members.subList(0, split)
-      val right: List[E] = members.subList(split, size)
+      val split = size / 2
+      val left  = members.subList(0, split)
+      val right = members.subList(split, size)
       new ImmList2(fromList(left), fromList(right))
     }
   }
-
 }
 
 abstract class ImmList[E] extends Iterable[E] {
@@ -51,30 +48,18 @@ abstract class ImmList[E] extends Iterable[E] {
   override def head: E = get(0)
 
   def size(): Int
-
   def isEmpty: Boolean
-
   def replace(index: Int, member: E): ImmList[E]
-
   def insert(index: Int, member: E): ImmList[E]
-
   def append(member: E): ImmList[E]
-
   def appendList(members: ImmList[E]): ImmList[E]
-
   def remove(index: Int): ImmList[E]
-
   def subList(start: Int, end: Int): ImmList[E]
 
   override def tail(): ImmList[E] = remove(0)
 
-   def rebalance(): ImmList[E] = this
+  def rebalance(): ImmList[E] = this
 
-   def outOfBounds(requested: Int,
-                            actual: Int): IndexOutOfBoundsException =
-    new IndexOutOfBoundsException(
-      "Requested " + requested + ", actual size " + actual)
-
+  def outOfBounds(requested: Int, actual: Int): IndexOutOfBoundsException =
+    new IndexOutOfBoundsException("Requested " + requested + ", actual size " + actual)
 }
-
-

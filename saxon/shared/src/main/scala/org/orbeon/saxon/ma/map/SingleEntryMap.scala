@@ -34,7 +34,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    *
    * @return the number of keys/entries present in this map
    */
-  def size(): Int = 1
+  def size: Int = 1
 
   /**
    * Ask whether the map is empty
@@ -48,14 +48,16 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    *
    * @return a set containing all the key values present in the map, in unpredictable order
    */
-  def keys: AtomicIterator[AtomicValue] = new SingleAtomicIterator(key)
+  def keys: AtomicIterator[AtomicValue] =
+    new SingleAtomicIterator(key)
 
   /**
    * Get the set of all key-value pairs in the map
    *
    * @return an iterable containing all the key-value pairs
    */
-  def keyValuePairs(): java.lang.Iterable[KeyValuePair] = new MonoIterator(new KeyValuePair(key, value)).asInstanceOf[java.lang.Iterable[KeyValuePair]]
+  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
+    new MonoIterator(new KeyValuePair(key, value)).asInstanceOf[java.lang.Iterable[KeyValuePair]]
 
   /**
    * Create a new map containing the existing entries in the map plus an additional entry,
@@ -87,9 +89,11 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    * @param th        the type hierarchy cache for the configuration
    * @return true if the map conforms to the required type
    */
-  def conforms(keyType: AtomicType,
-                        valueType: SequenceType,
-                        th: TypeHierarchy): Boolean =
+  def conforms(
+    keyType   : AtomicType,
+    valueType : SequenceType,
+    th        : TypeHierarchy
+  ): Boolean =
     keyType.matches(key, th) && valueType.matches(value, th)
 
   /**
@@ -102,8 +106,11 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
   def getItemType(th: TypeHierarchy): ItemType =
     new MapType(
       key.getItemType,
-      SequenceType.makeSequenceType(SequenceTool.getItemType(value, th),
-        SequenceTool.getCardinality(value)))
+      SequenceType.makeSequenceType(
+        SequenceTool.getItemType(value, th),
+        SequenceTool.getCardinality(value)
+      )
+    )
 
   /**
    * Get the lowest common item type of the keys in the map
@@ -114,9 +121,8 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
   def getKeyUType: UType = key.getUType
 
   private def toHashTrieMap: HashTrieMap = {
-    val target: HashTrieMap = new HashTrieMap()
+    val target = new HashTrieMap
     target.initialPut(key, value)
     target
   }
-
 }

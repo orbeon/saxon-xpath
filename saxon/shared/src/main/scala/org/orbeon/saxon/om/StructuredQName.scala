@@ -1,12 +1,11 @@
 package org.orbeon.saxon.om
 
 import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
 import org.orbeon.saxon.value.Whitespace
 
 import javax.xml.namespace.QName
+
 
 object StructuredQName {
 
@@ -84,11 +83,10 @@ object StructuredQName {
     if (eqChName.length >= 4 && eqChName.charAt(0) == 'Q' && eqChName.charAt(1) == '{') {
       val name = eqChName.toString
       val endBrace = name.indexOf('}')
-      if (endBrace < 0) {
+      if (endBrace < 0)
         throw new IllegalArgumentException("Invalid EQName: closing brace not found")
-      } else if (endBrace == name.length - 1) {
+      else if (endBrace == name.length - 1)
         throw new IllegalArgumentException("Invalid EQName: local part is missing")
-      }
       val uri = name.substring(2, endBrace)
       val local = name.substring(endBrace + 1)
       new StructuredQName("", uri, local)
@@ -116,10 +114,11 @@ object StructuredQName {
 
 }
 
-class StructuredQName private(var content: Array[Char],
-                              var localNameStart: Int,
-                              var prefixStart: Int)
-  extends IdentityComparable {
+class StructuredQName private (
+  var content        : Array[Char],
+  var localNameStart : Int,
+  var prefixStart    : Int
+) extends IdentityComparable {
 
   private var cachedHashCode: Int = -1
 
@@ -152,9 +151,8 @@ class StructuredQName private(var content: Array[Char],
       new String(content, 0, localNameStart)
 
   def hasURI(uri: String): Boolean = {
-    if (localNameStart != uri.length) {
+    if (localNameStart != uri.length)
       return false
-    }
     var i = localNameStart - 1
     while (i >= 0) {
       if (content(i) != uri.charAt(i))
@@ -171,8 +169,7 @@ class StructuredQName private(var content: Array[Char],
     if (prefixStart == content.length) {
       getLocalPart
     } else {
-      val buff = new FastStringBuffer(
-        content.length - localNameStart + 1)
+      val buff = new FastStringBuffer(content.length - localNameStart + 1)
       buff.append(content, prefixStart, content.length - prefixStart)
       buff.cat(':')
       buff.append(content, localNameStart, prefixStart - localNameStart)
@@ -182,8 +179,7 @@ class StructuredQName private(var content: Array[Char],
   def getStructuredQName: StructuredQName = this
 
   def getClarkName: String = {
-    val buff = new FastStringBuffer(
-      content.length - prefixStart + 2)
+    val buff = new FastStringBuffer(content.length - prefixStart + 2)
     if (localNameStart > 0) {
       buff.cat('{')
       buff.append(content, 0, localNameStart)
@@ -194,12 +190,10 @@ class StructuredQName private(var content: Array[Char],
   }
 
   def getEQName: String = {
-    val buff = new FastStringBuffer(
-      content.length - prefixStart + 2)
+    val buff = new FastStringBuffer(content.length - prefixStart + 2)
     buff.append("Q{")
-    if (localNameStart > 0) {
+    if (localNameStart > 0)
       buff.append(content, 0, localNameStart)
-    }
     buff.cat('}')
     buff.append(content, localNameStart, prefixStart - localNameStart)
     buff.toString
@@ -215,14 +209,12 @@ class StructuredQName private(var content: Array[Char],
         if (c != -1 && c != hashCode) {
           return false
         }
-        if (localNameStart != sq2.localNameStart || prefixStart != sq2.prefixStart) {
+        if (localNameStart != sq2.localNameStart || prefixStart != sq2.prefixStart)
           return false
-        }
         var i = prefixStart - 1
         while (i >= 0) {
-          if (content(i) != sq2.content(i)) {
+          if (content(i) != sq2.content(i))
             return false
-          }
           i -= 1;
         }
         true

@@ -29,7 +29,7 @@ class PairIterator[T](private var one: T, private var two: T)
   def next(): T = { pos += 1; pos - 1 } match {
     case 0 => one
     case 1 => two
-    case _ => throw new NoSuchElementException()
+    case _ => throw new NoSuchElementException
   }
 
   override def remove(): Unit = throw new UnsupportedOperationException("remove")

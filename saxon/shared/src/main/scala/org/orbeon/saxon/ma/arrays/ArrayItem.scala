@@ -21,9 +21,11 @@ import scala.util.control.Breaks._
  */
 trait ArrayItem extends Function {
 
-  var SINGLE_ARRAY_TYPE: SequenceType = SequenceType.makeSequenceType(
-    ArrayItemType.ANY_ARRAY_TYPE,
-    StaticProperty.EXACTLY_ONE)
+  var SINGLE_ARRAY_TYPE: SequenceType =
+    SequenceType.makeSequenceType(
+      ArrayItemType.ANY_ARRAY_TYPE,
+      StaticProperty.EXACTLY_ONE
+    )
 
   def get(index: Int): GroundedValue
   def put(index: Int, newValue: GroundedValue): ArrayItem
@@ -46,10 +48,10 @@ trait ArrayItem extends Function {
   override def toShortString: String = {
     val sb = new StringBuilder
     sb.append("array{")
-    var count: Int = 0
+    var count = 0
     breakable {
       for (member <- members) {
-        if ( {
+        if ({
           count += 1
           count - 1
         } > 2) {

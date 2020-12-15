@@ -1,14 +1,14 @@
 package org.orbeon.saxon.ma.map
 
-import java.util._
-
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{GroundedValue, SequenceTool}
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, Cardinality, SequenceType, StringValue}
 
-//import scala.collection.compat._
+import java.util._
+
 import scala.jdk.CollectionConverters._
+
 
 class DictionaryMap extends MapItem {
 
@@ -31,17 +31,16 @@ class DictionaryMap extends MapItem {
     else
       null
 
-  override def size(): Int = hashMap.size
+  override def size: Int = hashMap.size
   override def isEmpty: Boolean = hashMap.isEmpty
 
   override def keys: AtomicIterator[StringValue] = {
-    val base: Iterator[String] = hashMap.keySet.iterator
-
+    val base = hashMap.keySet.iterator
     if (base.hasNext)
       new StringValue(base.next()).asInstanceOf[AtomicIterator[StringValue]] else null
   }
 
-  override def keyValuePairs(): java.lang.Iterable[KeyValuePair] = {
+  override def keyValuePairs: java.lang.Iterable[KeyValuePair] = {
     val pairs = new ArrayList[KeyValuePair]
     hashMap.asScala.foreach { case (k, v) =>
       pairs.add(new KeyValuePair(new StringValue(k), v))
@@ -54,9 +53,11 @@ class DictionaryMap extends MapItem {
 
   override def remove(key: AtomicValue): MapItem = toHashTrieMap.remove(key)
 
-  override def conforms(keyType: AtomicType,
-                        valueType: SequenceType,
-                        th: TypeHierarchy): Boolean = {
+  override def conforms(
+    keyType   : AtomicType,
+    valueType : SequenceType,
+    th        : TypeHierarchy
+  ): Boolean = {
     if (isEmpty)
       return true
 
@@ -74,9 +75,9 @@ class DictionaryMap extends MapItem {
 
   override def getItemType(th: TypeHierarchy): ItemType = {
     var valueType: ItemType = null
-    var valueCard: Int = 0
+    var valueCard           = 0
     for ((_, value) <- hashMap.asScala) {
-      val `val`: GroundedValue = value
+      val `val` = value
       if (valueType == null) {
         valueType = SequenceTool.getItemType(`val`, th)
         valueCard = SequenceTool.getCardinality(`val`)
@@ -85,8 +86,7 @@ class DictionaryMap extends MapItem {
           valueType,
           SequenceTool.getItemType(`val`, th),
           th)
-        valueCard =
-          Cardinality.union(valueCard, SequenceTool.getCardinality(`val`))
+        valueCard = Cardinality.union(valueCard, SequenceTool.getCardinality(`val`))
       }
     }
     if (valueType == null)
@@ -103,5 +103,4 @@ class DictionaryMap extends MapItem {
     hashMap.asScala.foreach { case (k, v) => target.initialPut(new StringValue(k), v) }
     target
   }
-
 }

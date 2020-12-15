@@ -4,21 +4,22 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A hash table that maps int keys to Object values.
-  *
-  * @author Dave Hale, Landmark Graphics
-  * @author Dominique Devienne
-  * @author Michael Kay: retrofitted to JDK 1.4, added iterator, modified to disallow null values
-  *         Reverted to generics July 2008.
-  */
 package org.orbeon.saxon.z
+
+import org.orbeon.saxon.z.IntHashMap._
 
 import java.io.PrintStream
 import java.util.{Iterator, NoSuchElementException}
 
-import org.orbeon.saxon.z.IntHashMap._
 
+/**
+ * A hash table that maps int keys to Object values.
+ *
+ * @author Dave Hale, Landmark Graphics
+ * @author Dominique Devienne
+ * @author Michael Kay: retrofitted to JDK 1.4, added iterator, modified to disallow null values
+ *         Reverted to generics July 2008.
+ */
 object IntHashMap {
 
   // NMAX = 2^NBIT
@@ -28,17 +29,18 @@ object IntHashMap {
   private val NMAX: Int = 1 << NBIT
 
 }
+
 /**
-  * Constructs a new map with initial capacity, and load factor.
-  * <p>The capacity is the number of keys that can be mapped without resizing
-  * the arrays in which keys and values are stored. For efficiency, only
-  * a fraction of the elements in those arrays are used. That fraction is
-  * the specified load factor. The initial length of the arrays equals the
-  * smallest power of two not less than the ratio capacity/factor. The
-  * capacity of the map is increased, as necessary. The maximum number
-  * of keys that can be mapped is 2^30.</p>
-  *
-  */
+ * Constructs a new map with initial capacity, and load factor.
+ *
+ * The capacity is the number of keys that can be mapped without resizing
+ * the arrays in which keys and values are stored. For efficiency, only
+ * a fraction of the elements in those arrays are used. That fraction is
+ * the specified load factor. The initial length of the arrays equals the
+ * smallest power of two not less than the ratio capacity/factor. The
+ * capacity of the map is increased, as necessary. The maximum number
+ * of keys that can be mapped is `2^30`.
+ */
 class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
 
   setCapacity(capacity)
@@ -93,22 +95,20 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     */
   def remove(key: Int): Boolean = {
     // Knuth, v. 3, 527, Algorithm R.
-    var i: Int = indexOf(key)
+    var i = indexOf(key)
     //if (!_filled[i]) {
-    if (_value(i) == null) {
+    if (_value(i) == null)
       return false
-    }
 
     while (true) {
       _value(i) = null
-      val j: Int = i
-      var r: Int = 0
+      val j = i
+      var r = 0
       do {
         i = (i - 1) & _mask
         //if (!_filled[i]) {
-        if (_value(i) == null) {
+        if (_value(i) == null)
           return true
-        }
         r = hash(_key(i))
       } while ((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r));
       _key(j) = _key(i)
@@ -127,11 +127,10 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     * @return the value that was previously associated with the key, or null if there was no previous value
     */
   def put(key: Int, value: T): T = {
-    if (value == null) {
+    if (value == null)
       throw new NullPointerException("IntHashMap does not allow null values")
-    }
-    val i: Int = indexOf(key)
-    val old: T = _value(i)
+    val i   = indexOf(key)
+    val old = _value(i)
     if (old != null) {
       _value(i) = value
     } else {
@@ -170,68 +169,58 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     ((1327217885 * key) >> _shift) & _mask
 
   private def indexOf(key: Int): Int = {
-    var i: Int = hash(key)
+    var i = hash(key)
     //while (_filled[i]) {
     while (_value(i) != null) {
-      if (_key(i) == key) {
+      if (_key(i) == key)
         return i
-      }
       i = (i - 1) & _mask
     }
     i
   }
 
   private def grow(): Unit = {
-
-    if (_n > NMAX) {
+    if (_n > NMAX)
       throw new RuntimeException("number of keys mapped exceeds " + NMAX)
-    }
-    if (_nlo < _n && _n <= _nhi) {
+    if (_nlo < _n && _n <= _nhi)
       capacity = _n
-    }
   }
 
   private def setCapacity(capacity: Int): Unit = {
-    if (capacity < _n) {
+    if (capacity < _n)
       this.capacity = _n
-    }
-    val factor: Double =
+    val factor =
       if ((_factor < 0.01)) 0.01 else if ((_factor > 0.99)) 0.99 else _factor
-    var nbit: Int = 0
-    var nmax: Int = 0
+    var nbit      = 0
+    var nmax      = 0
     nbit = 1
     nmax = 2
-    while (nmax * factor < capacity && nmax < NMAX) {
+    while (nmax * factor < capacity && nmax < NMAX)
       nmax *= 2
-    }
     // no-op
     // no-op
-    val nold: Int = _nmax
-    if (nmax == nold) {
+    val nold = _nmax
+    if (nmax == nold)
       return
-    }
     _nmax = nmax
     _nlo = (nmax * factor).toInt
     _nhi = (NMAX * factor).toInt
     _shift = 1 + NBIT - nbit
     _mask = nmax - 1
-    val key: Array[Int] = _key
-    val value: Array[T] = _value
+    val key   = _key
+    val value = _value
     //boolean[] filled = _filled;
     _n = 0
     _key = Array.ofDim[Int](nmax)
     // semantically equivalent to _value = new V[nmax]
     _value = Array.ofDim[Any](nmax).asInstanceOf[Array[T]]
     //_filled = new boolean[nmax];
-    if (key != null) {
-      for (i <- 0 until nold if value(i) != null) {
+    if (key != null)
+      for (i <- 0 until nold if value(i) != null)
         put(key(i), value(i))
-      }
-    }
   }
 
   def keyIterator: IntIterator = new IntHashMapKeyIterator
-
   def valueiterator: Iterator[T] = new IntHashMapValueIterator
 
   def valueSet(): java.lang.Iterable[T] = new java.lang.Iterable[T]() {
@@ -239,20 +228,20 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
   }
 
   def copy(): IntHashMap[T] = {
-    val n: IntHashMap[T] = new IntHashMap[T](size)
-    val it: IntIterator = keyIterator
+    val n  = new IntHashMap[T](size)
+    val it = keyIterator
     while (it.hasNext) {
-      val k: Int = it.next
+      val k = it.next()
       n.put(k, get(k))
     }
     n
   }
 
   def display(ps: PrintStream): Unit = {
-    val iter: IntIterator = new IntHashMapKeyIterator
+    val iter = new IntHashMapKeyIterator
     while (iter.hasNext) {
-      val key: Int = iter.next
-      val value: T = get(key)
+      val key   = iter.next()
+      val value = get(key)
       ps.println(key.toString + " -> " + value.toString)
     }
   }
@@ -262,14 +251,14 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     */
   private class IntHashMapKeyIterator extends IntIterator {
 
-    private var i: Int = 0
+    private var i = 0
 
     def hasNext: Boolean = {
-      while (i < _key.length) if (_value(i) != null) {
-        return true
-      } else {
-        { i += 1; i - 1 }
-      }
+      while (i < _key.length)
+        if (_value(i) != null)
+          return true
+        else
+          i += 1
       false
     }
 
@@ -284,22 +273,21 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     */
   private class IntHashMapValueIterator extends Iterator[T] {
 
-    private var i: Int = 0
+    private var i = 0
 
     def hasNext: Boolean = {
-      while (i < _key.length) if (_value(i) != null) {
-        return true
-      } else {
-        { i += 1; i - 1 }
-      }
+      while (i < _key.length)
+        if (_value(i) != null)
+          return true
+        else
+          i += 1
       false
     }
 
     def next(): T = {
       val temp: T = _value({ i += 1; i - 1 })
-      if (temp == null) {
-        throw new NoSuchElementException()
-      }
+      if (temp == null)
+        throw new NoSuchElementException
       temp
     }
 
@@ -310,31 +298,29 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
       * @throws UnsupportedOperationException if the <tt>remove</tt>
       *                                       operation is not supported by this Iterator.
       */
-    override def remove(): Unit = {
+    override def remove(): Unit =
       throw new UnsupportedOperationException("remove")
-    }
   }
 
-  def keySet(): IntSet = new IntSet() {
-    def clear(): Unit = {
+  def keySet(): IntSet = new IntSet {
+
+    def clear(): Unit =
       throw new UnsupportedOperationException("Immutable set")
-    }
 
     def copy(): IntSet = {
-      val s: IntHashSet = new IntHashSet()
-      val ii: IntIterator = iterator
-      while (ii.hasNext) s.add(ii.next)
+      val s  = new IntHashSet
+      val ii = iterator
+      while (ii.hasNext)
+        s.add(ii.next())
       s
     }
 
     def mutableCopy(): IntSet = copy()
 
-    override def isMutable(): Boolean = false
+    override def isMutable: Boolean = false
 
-    def size(): Int = _n
-
+    def size: Int = _n
     def isEmpty: Boolean = _n == 0
-
     def contains(key: Int): Boolean = _value(indexOf(key)) != null
 
     def remove(value: Int): Boolean =
@@ -346,13 +332,9 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     def iterator: IntIterator = new IntHashMapKeyIterator
 
     override def union(other: IntSet): IntSet = copy().union(other)
-
     override def intersect(other: IntSet): IntSet = copy().intersect(other)
-
     override def except(other: IntSet): IntSet = copy().except(other)
-
     override def containsAll(other: IntSet): Boolean = copy().containsAll(other)
-
     override def toString: String = IntHashSet.toString(iterator)
   }
 }

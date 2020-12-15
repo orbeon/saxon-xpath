@@ -72,9 +72,9 @@ class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   def getSchemaTypeInfo(): TypeInfo = {
     val `type`: SchemaType = node.getSchemaType
-    if (`type` == null || BuiltInAtomicType.UNTYPED_ATOMIC == `type`) {
-      return null
-    }
-    new TypeInfoImpl(node.getConfiguration, `type`)
+    if (`type` == null || BuiltInAtomicType.UNTYPED_ATOMIC == `type`)
+      null
+    else
+      new TypeInfoImpl(node.getConfiguration, `type`)
   }
 }
