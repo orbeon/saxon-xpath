@@ -95,7 +95,7 @@ class IntToIntArrayMap extends IntToIntMap {
   def remove(key: Int): Boolean = {
     for (i <- 0 until used if keys(i) == key) {
       values(i) = defaultValue
-      true
+      return true
     }
     false
   }

@@ -210,7 +210,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    *
    * @param defaultRules the built-in rule set
    */
-  def setBuiltInRuleSet(defaultRules: BuiltInRuleSet) = {
+  def setBuiltInRuleSet(defaultRules: BuiltInRuleSet):Unit = {
     this.builtInRuleSet = defaultRules
     hasRules = true // if mode is explicitly declared, treat it as containing rules
   }
@@ -228,7 +228,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * Get the active component of this mode. For a simple mode this is the mode itself;
    * for a compound mode it is the "overriding" part
    */
-  override def getActivePart = this
+  override def getActivePart: SimpleMode = this
 
   /**
    * Check that the mode does not contain conflicting property values
@@ -427,7 +427,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     else addRuleToList(newRule, genericRuleChain)
   }
 
-  def addRuleToNamedOrUnnamedChain(newRule: Rule, fp: Int, unnamedRuleChain: RuleChain, namedRuleChains: IntHashMap[RuleChain]) = if (fp == -1) addRuleToList(newRule, unnamedRuleChain)
+  def addRuleToNamedOrUnnamedChain(newRule: Rule, fp: Int, unnamedRuleChain: RuleChain, namedRuleChains: IntHashMap[RuleChain]): Unit = if (fp == -1) addRuleToList(newRule, unnamedRuleChain)
   else {
     var chain = namedRuleChains.get(fp)
     if (chain == null) {

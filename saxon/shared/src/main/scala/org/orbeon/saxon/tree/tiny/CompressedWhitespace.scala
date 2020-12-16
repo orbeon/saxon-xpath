@@ -30,13 +30,13 @@ object CompressedWhitespace {
           runlength = 1
           outlength = outlength + 1
           if (outlength > 8) {
-            in
+            return in
           }
         } else {
           runlength = runlength + 1
         }
       } else {
-        in
+        return in
       }
     }
     var ix: Int = 0
@@ -49,10 +49,7 @@ object CompressedWhitespace {
         ix = ix + 1
         runlength = 1
       } else {
-        {
-          runlength += 1;
-          runlength - 1
-        }
+          runlength += 1
       }
     }
     var value: Long = 0
@@ -126,7 +123,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
         }
         count += b & 0x3f
         if (count > index) {
-          WHITE_CHARS(b >>> 6 & 0x3)
+         return WHITE_CHARS(b >>> 6 & 0x3)
         }
         s -= 8
       }

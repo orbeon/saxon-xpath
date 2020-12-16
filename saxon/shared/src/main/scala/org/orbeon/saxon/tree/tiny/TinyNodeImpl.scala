@@ -241,10 +241,10 @@ abstract class TinyNodeImpl extends NodeInfo {
           }
         case AxisInfo.ATTRIBUTE =>
           if (`type` != Type.ELEMENT) {
-            EmptyIterator.ofNodes
+           return EmptyIterator.ofNodes
           }
           if (tree.alpha(nodeNr) < 0) {
-            EmptyIterator.ofNodes
+           return EmptyIterator.ofNodes
           }
           new AttributeIterator(tree, nodeNr, nodeTest)
         case AxisInfo.CHILD =>
@@ -299,7 +299,7 @@ abstract class TinyNodeImpl extends NodeInfo {
           }
         case AxisInfo.NAMESPACE =>
           if (`type` != Type.ELEMENT) {
-            EmptyIterator.ofNodes
+           return EmptyIterator.ofNodes
           }
           NamespaceNode.makeIterator(this, nodeTest)
         case AxisInfo.PARENT =>
@@ -351,11 +351,11 @@ abstract class TinyNodeImpl extends NodeInfo {
     }
     val p: Int = getParentNodeNr(tree, nodeNr)
     if (p == -1) {
-      return null
+       null
     } else {
       parent = tree.getNode(p)
+      parent
     }
-    null
   }
 
   def hasChildNodes: Boolean = false

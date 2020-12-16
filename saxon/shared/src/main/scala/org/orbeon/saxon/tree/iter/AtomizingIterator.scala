@@ -32,7 +32,7 @@ class AtomizingIterator(private var base: SequenceIterator)
     while (true) {
       if (currentValue != null) {
         if (currentValuePosition < currentValueSize) {
-          currentValue.itemAt({
+         return currentValue.itemAt({
             currentValuePosition += 1;
             currentValuePosition - 1
           })
@@ -45,7 +45,7 @@ class AtomizingIterator(private var base: SequenceIterator)
         try {
           val v: AtomicSequence = nextSource.atomize()
           if (v.isInstanceOf[AtomicValue]) {
-            v.asInstanceOf[AtomicValue]
+            return v.asInstanceOf[AtomicValue]
           } else {
             currentValue = v
             currentValuePosition = 0

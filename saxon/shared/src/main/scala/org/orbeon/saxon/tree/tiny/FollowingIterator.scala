@@ -79,9 +79,11 @@ class FollowingIterator(var doc: TinyTree,
           }
           position += 1
           current = tree.getNode(nodeNr)
+          return current
         } else if (test.test(t)) {
           position += 1
           current = t
+          return current
         }
       } else if (matcher.test(nodeNr)) {
         position += 1

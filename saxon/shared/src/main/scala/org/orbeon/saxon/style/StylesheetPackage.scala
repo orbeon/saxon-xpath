@@ -536,7 +536,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         val uf: UserFunction = getFunction(sn)
         if (uf != null) {
           uf.incrementReferenceCount()
-          uf
+          return uf
         }
       }
       null
@@ -614,7 +614,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       return true
     }
     for (p <- usedPackages.asScala if p.mayCreateSecondaryResultDocuments()) {
-      true
+     return true
     }
     false
   }
@@ -633,12 +633,10 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       var count: Int = 0
       breakable {
         for (name <- abstractComponents.keySet.asScala) {
-          if ( {
-            count += 1;
-            count - 1
-          } > 0) {
+          if (count > 0) {
             buff.append(", ")
           }
+          count += 1
           buff.append(name.toString)
           if (buff.length > 300) {
             buff.append(" ...")

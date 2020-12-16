@@ -107,7 +107,7 @@ class IntRangeSet extends IntSet {
       } else if (startPoints(mid) > value) {
         j = Math.min(mid, j - 1)
       } else {
-        true
+        return true
       }
     } while (i != j);
     false
@@ -165,7 +165,7 @@ class IntRangeSet extends IntSet {
         j = Math.min(mid, j - 1)
       } else {
         // value is already present
-        false
+       return false
       }
     } while (i != j);
     if (i > 0 && endPoints(i - 1) + 1 == value) {
@@ -181,10 +181,7 @@ class IntRangeSet extends IntSet {
         System.arraycopy(endPoints, i + 2, endPoints, i + 1, used - i - 2)
         used = used - 1
       } else {
-        {
-          endPoints(i) += 1;
-          endPoints(i) - 1
-        }
+        endPoints(i) += 1
       }
       size += 1
       true
@@ -196,10 +193,7 @@ class IntRangeSet extends IntSet {
         System.arraycopy(endPoints, i + 1, endPoints, i, used - i - 1)
         used = used - 1
       } else {
-        {
-          startPoints(i) -= 1;
-          startPoints(i) + 1
-        }
+          startPoints(i) -= 1
       }
       size += 1
       true

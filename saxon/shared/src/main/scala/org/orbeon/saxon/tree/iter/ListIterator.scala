@@ -44,7 +44,8 @@ class ListIterator[T <: Item](var list: List[T])
       return null.asInstanceOf[T]
     }
     list.get({
-      index += 1; index - 1
+      index += 1;
+      index - 1
     })
   }
 

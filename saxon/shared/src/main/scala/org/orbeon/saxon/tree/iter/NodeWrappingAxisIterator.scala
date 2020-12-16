@@ -24,7 +24,7 @@ class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
     while (base.hasNext) {
       val next: B = base.next()
       if (!isIgnorable(next)) {
-        wrappingFunction.wrap(next)
+        return wrappingFunction.wrap(next)
       }
     }
     null

@@ -36,7 +36,7 @@ class TextOverAttrInfo(private var attr: AttrOverNodeInfo)
       if (node == other.asInstanceOf[TextOverAttrInfo].node) {
         return 0
       } else {
-        attr.compareDocumentPosition(other.asInstanceOf[TextOverAttrInfo].attr)
+       return attr.compareDocumentPosition(other.asInstanceOf[TextOverAttrInfo].attr)
       }
     } else if (other.isInstanceOf[AttrOverNodeInfo]) {
       if (node == other.asInstanceOf[AttrOverNodeInfo].getUnderlyingNodeInfo) {

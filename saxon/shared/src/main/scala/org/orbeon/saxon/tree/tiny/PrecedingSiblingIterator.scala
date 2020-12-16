@@ -43,7 +43,7 @@ class PrecedingSiblingIterator(private var document: TinyTree,
         return next
       }
     }
-    return null;
+    null
   }
 
 }

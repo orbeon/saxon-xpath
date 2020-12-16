@@ -128,16 +128,16 @@ object DateTimeValue {
       "-:.+TZ",
       true)
     if (!tok.hasMoreElements()) {
-      badDate("too short", s)
+      return badDate("too short", s)
     }
     var part: String = tok.nextElement().asInstanceOf[String]
     var era: Int = +1
     if ("+" == part) {
-      badDate("Date must not start with '+' sign", s)
+      return badDate("Date must not start with '+' sign", s)
     } else if ("-" == part) {
       era = -1
       if (!tok.hasMoreElements()) {
-        badDate("No year after '-'", s)
+        return badDate("No year after '-'", s)
       }
       part = tok.nextElement().asInstanceOf[String]
     }
@@ -153,142 +153,142 @@ object DateTimeValue {
     }
     dt.year = value * era
     if (part.length < 4) {
-      badDate("Year is less than four digits", s)
+      return badDate("Year is less than four digits", s)
     }
     if (part.length > 4 && part.charAt(0) == '0') {
-      badDate("When year exceeds 4 digits, leading zeroes are not allowed", s)
+      return badDate("When year exceeds 4 digits, leading zeroes are not allowed", s)
     }
     if (dt.year == 0 && !rules.isAllowYearZero) {
-      badDate("Year zero is not allowed", s)
+      return badDate("Year zero is not allowed", s)
     }
     if (era < 0 && !rules.isAllowYearZero) {
       dt.year += 1
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     if ("-" != tok.nextElement()) {
-      badDate("Wrong delimiter after year", s)
+      return badDate("Wrong delimiter after year", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badDate("Month must be two digits", s)
+      return badDate("Month must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badDate("Non-numeric month component", s)
+      return badDate("Non-numeric month component", s)
     }
     dt.month = value.toByte
     if (dt.month < 1 || dt.month > 12) {
-      badDate("Month is out of range", s)
+      return badDate("Month is out of range", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     if ("-" != tok.nextElement()) {
-      badDate("Wrong delimiter after month", s)
+      return badDate("Wrong delimiter after month", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badDate("Day must be two digits", s)
+      return badDate("Day must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badDate("Non-numeric day component", s)
+      return badDate("Non-numeric day component", s)
     }
     dt.day = value.toByte
     if (dt.day < 1 || dt.day > 31) {
-      badDate("Day is out of range", s)
+      return badDate("Day is out of range", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     if ("T" != tok.nextElement()) {
-      badDate("Wrong delimiter after day", s)
+      return badDate("Wrong delimiter after day", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badDate("Hour must be two digits", s)
+      return badDate("Hour must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badDate("Non-numeric hour component", s)
+      return badDate("Non-numeric hour component", s)
     }
     dt.hour = value.toByte
     if (dt.hour > 24) {
-      badDate("Hour is out of range", s)
+      return badDate("Hour is out of range", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     if (":" != tok.nextElement()) {
-      badDate("Wrong delimiter after hour", s)
+      return badDate("Wrong delimiter after hour", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badDate("Minute must be two digits", s)
+      return badDate("Minute must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badDate("Non-numeric minute component", s)
+      return badDate("Non-numeric minute component", s)
     }
     dt.minute = value.toByte
     if (dt.minute > 59) {
-      badDate("Minute is out of range", s)
+      return badDate("Minute is out of range", s)
     }
     if (dt.hour == 24 && dt.minute != 0) {
-      badDate("If hour is 24, minute must be 00", s)
+      return badDate("If hour is 24, minute must be 00", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     if (":" != tok.nextElement()) {
-      badDate("Wrong delimiter after minute", s)
+      return badDate("Wrong delimiter after minute", s)
     }
     if (!tok.hasMoreElements()) {
-      badDate("Too short", s)
+      return badDate("Too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badDate("Second must be two digits", s)
+      return badDate("Second must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badDate("Non-numeric second component", s)
+      return badDate("Non-numeric second component", s)
     }
     dt.second = value.toByte
     if (dt.second > 59) {
-      badDate("Second is out of range", s)
+      return badDate("Second is out of range", s)
     }
     if (dt.hour == 24 && dt.second != 0) {
-      badDate("If hour is 24, second must be 00", s)
+      return badDate("If hour is 24, second must be 00", s)
     }
     var tz: Int = 0
     var negativeTz: Boolean = false
     var state: Int = 0
     while (tok.hasMoreElements()) {
       if (state == 9) {
-        badDate("Characters after the end", s)
+        return badDate("Characters after the end", s)
       }
       val delim: String = tok.nextElement().asInstanceOf[String]
       if ("." == delim) {
         if (state != 0) {
-          badDate("Decimal separator occurs twice", s)
+          return badDate("Decimal separator occurs twice", s)
         }
         if (!tok.hasMoreElements()) {
-          badDate("Decimal point must be followed by digits", s)
+          return badDate("Decimal point must be followed by digits", s)
         }
         part = tok.nextElement().asInstanceOf[String]
         if (part.length > 9 && part.matches("^[0-9]+$")) {
@@ -296,7 +296,7 @@ object DateTimeValue {
         }
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badDate("Non-numeric fractional seconds component", s)
+          return badDate("Non-numeric fractional seconds component", s)
         }
         val fractionalSeconds: Double =
           java.lang.Double.parseDouble("." + part)
@@ -306,35 +306,35 @@ object DateTimeValue {
         }
         dt.nanosecond = nanoSeconds
         if (dt.hour == 24 && dt.nanosecond != 0) {
-          badDate("If hour is 24, fractional seconds must be 0", s)
+          return badDate("If hour is 24, fractional seconds must be 0", s)
         }
         state = 1
       } else if ("Z" == delim) {
         if (state > 1) {
-          badDate("Z cannot occur here", s)
+          return badDate("Z cannot occur here", s)
         }
         tz = 0
         state = 9
         dt.setTimezoneInMinutes(0)
       } else if ("+" == delim || "-" == delim) {
         if (state > 1) {
-          badDate(delim + " cannot occur here", s)
+          return badDate(delim + " cannot occur here", s)
         }
         state = 2
         if (!tok.hasMoreElements()) {
-          badDate("Missing timezone", s)
+          return badDate("Missing timezone", s)
         }
         part = tok.nextElement().asInstanceOf[String]
         if (part.length != 2) {
-          badDate("Timezone hour must be two digits", s)
+          return badDate("Timezone hour must be two digits", s)
         }
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badDate("Non-numeric timezone hour component", s)
+          return badDate("Non-numeric timezone hour component", s)
         }
         tz = value
         if (tz > 14) {
-          badDate("Timezone is out of range (-14:00 to +14:00)", s)
+          return badDate("Timezone is out of range (-14:00 to +14:00)", s)
         }
         tz *= 60
         if ("-" == delim) {
@@ -342,23 +342,23 @@ object DateTimeValue {
         }
       } else if (":" == delim) {
         if (state != 2) {
-          badDate("Misplaced ':'", s)
+          return badDate("Misplaced ':'", s)
         }
         state = 9
         part = tok.nextElement().asInstanceOf[String]
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badDate("Non-numeric timezone minute component", s)
+          return badDate("Non-numeric timezone minute component", s)
         }
         val tzminute: Int = value
         if (part.length != 2) {
-          badDate("Timezone minute must be two digits", s)
+          return badDate("Timezone minute must be two digits", s)
         }
         if (tzminute > 59) {
-          badDate("Timezone minute is out of range", s)
+          return badDate("Timezone minute is out of range", s)
         }
         if (Math.abs(tz) == 14 * 60 && tzminute != 0) {
-          badDate("Timezone is out of range (-14:00 to +14:00)", s)
+          return badDate("Timezone is out of range (-14:00 to +14:00)", s)
         }
         tz += tzminute
         if (negativeTz) {
@@ -366,11 +366,11 @@ object DateTimeValue {
         }
         dt.setTimezoneInMinutes(tz)
       } else {
-        badDate("Timezone format is incorrect", s)
+       return badDate("Timezone format is incorrect", s)
       }
     }
     if (state == 2 || state == 3) {
-      badDate("Timezone incomplete", s)
+      return badDate("Timezone incomplete", s)
     }
     var midnight: Boolean = false
     if (dt.hour == 24) {
@@ -378,7 +378,7 @@ object DateTimeValue {
       midnight = true
     }
     if (!isValidDate(dt.year, dt.month, dt.day)) {
-      badDate("Non-existent date", s)
+      return badDate("Non-existent date", s)
     }
     if (midnight) {
       val t: DateValue = DateValue.tomorrow(dt.year, dt.month, dt.day)
@@ -939,25 +939,25 @@ class DateTimeValue extends CalendarValue
     val v2 = other.asInstanceOf[DateTimeValue]
     if (getTimezoneInMinutes == v2.getTimezoneInMinutes) {
       if (year != v2.year) {
-        IntegerValue.signum(year - v2.year)
+        return IntegerValue.signum(year - v2.year)
       }
       if (month != v2.month) {
-        IntegerValue.signum(month - v2.month)
+       return IntegerValue.signum(month - v2.month)
       }
       if (day != v2.day) {
-        IntegerValue.signum(day - v2.day)
+       return IntegerValue.signum(day - v2.day)
       }
       if (hour != v2.hour) {
-        IntegerValue.signum(hour - v2.hour)
+       return IntegerValue.signum(hour - v2.hour)
       }
       if (minute != v2.minute) {
-        IntegerValue.signum(minute - v2.minute)
+       return IntegerValue.signum(minute - v2.minute)
       }
       if (second != v2.second) {
-        IntegerValue.signum(second - v2.second)
+       return IntegerValue.signum(second - v2.second)
       }
       if (nanosecond != v2.nanosecond) {
-        IntegerValue.signum(nanosecond - v2.nanosecond)
+       return IntegerValue.signum(nanosecond - v2.nanosecond)
       }
     }
     adjustToUTC(implicitTimezone)

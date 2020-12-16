@@ -28,7 +28,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
 
   override def getBaseURI: String = {
     if (tree.getUniformBaseUri != null) {
-      tree.getUniformBaseUri
+     return tree.getUniformBaseUri
     }
     tree.synchronized {
       if (tree.knownBaseUris == null) {

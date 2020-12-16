@@ -172,13 +172,11 @@ abstract class ParentNodeImpl extends NodeImpl {
         } else if (!node.getStringValue.isEmpty) {
           prevText = true
           node.setSiblingPosition(j)
-          j = j + 1
-          c2(j) = node
+          c2({ j += 1; j - 1 }) = node
         }
       } else {
         node.setSiblingPosition(j)
-        j = j + 1
-        c2(j) = node
+        c2({ j += 1; j - 1 }) = node
         prevText = false
       }
     }

@@ -50,9 +50,7 @@ class PrecedingIterator(private var doc: TinyTree,
             current = null
             return null
           }
-          {
-            nextNodeNr -= 1; nextNodeNr + 1
-          }
+          nextNodeNr -= 1
         }
       } else {
         if (tree.depth(nextNodeNr) == 0) {

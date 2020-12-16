@@ -23,7 +23,7 @@ object GMonthValue {
     val g: GMonthValue = new GMonthValue()
     val m: Matcher = regex.matcher(Whitespace.trimWhitespace(value))
     if (!m.matches()) {
-      new ValidationFailure("Cannot convert '" + value + "' to a gMonth")
+      return new ValidationFailure("Cannot convert '" + value + "' to a gMonth")
     }
     val base: String = m.group(1)
     val tz: String = m.group(2)

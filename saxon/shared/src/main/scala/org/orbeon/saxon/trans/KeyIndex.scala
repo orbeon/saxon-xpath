@@ -171,10 +171,7 @@ class KeyIndex(isRangeKey: Boolean) {
             found = true
             break()
           }
-          {
-            i -= 1;
-            i + 1
-          }
+            i -= 1
         }
       }
         if (!found) {

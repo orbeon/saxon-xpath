@@ -44,20 +44,11 @@ object ARegexIterator {
     while (i <= regexLen) {
       val ch: Int = regex.uCharAt(i)
       if (ch == '\\') {
-        {
-          i += 1
-          i - 1
-        }
+        i += 1
       } else if (ch == '[') {
-        {
-          inBrackets += 1
-          inBrackets - 1
-        }
+        inBrackets += 1
       } else if (ch == ']') {
-        {
-          inBrackets -= 1
-          inBrackets + 1
-        }
+        inBrackets -= 1
       } else if (ch == '(' && inBrackets == 0) {
         val capture: Boolean = regex.uCharAt(i + 1) != '?'
         captureStack({
@@ -69,21 +60,14 @@ object ARegexIterator {
           stack({
             tos += 1
             tos - 1
-          }) = {
-            group += 1
-            group - 1
-          }
+          }) = group
+          group += 1
         }
       } else if (ch == ')' && inBrackets == 0) {
-        val capture: Boolean = captureStack({
-          captureTos -= 1
-          captureTos
-        })
+        captureTos -= 1
+        val capture: Boolean = captureStack(captureTos)
         if (capture) {
-          {
-            tos -= 1
-            tos + 1
-          }
+          tos -= 1
         }
       }
     }
@@ -118,7 +102,6 @@ class ARegexIterator(private var theString: UnicodeString,
     var n: Int = 0
     while (another.next() != null) {
       n += 1
-      n - 1
     }
     n
   }
@@ -263,10 +246,7 @@ class ARegexIterator(private var theString: UnicodeString,
             // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
             // insert the start and end events immediately before the end event for the parent group,
           }
-          {
             i += 1
-            i - 1
-          }
         }
       }
       val buff = new FastStringBuffer(current.uLength)

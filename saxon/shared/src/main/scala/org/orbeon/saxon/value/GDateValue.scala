@@ -34,7 +34,7 @@ object GDateValue {
       new StringTokenizer(Whitespace.trimWhitespace(s).toString, "-:+TZ", true)
     try {
       if (!tok.hasMoreElements()) {
-        badDate("Too short", s)
+       return badDate("Too short", s)
       }
       var part: String = tok.nextElement().asInstanceOf[String]
       var era: Int = +1
@@ -43,15 +43,15 @@ object GDateValue {
       } else if ("-" == part) {
         era = -1
         if (!tok.hasMoreElements()) {
-          badDate("No year after '-'", s)
+          return badDate("No year after '-'", s)
         }
         part = tok.nextElement().asInstanceOf[String]
       }
       if (part.length < 4) {
-        badDate("Year is less than four digits", s)
+        return badDate("Year is less than four digits", s)
       }
       if (part.length > 4 && part.charAt(0) == '0') {
-        badDate("When year exceeds 4 digits, leading zeroes are not allowed",
+        return badDate("When year exceeds 4 digits, leading zeroes are not allowed",
           s)
       }
       var value: Int = DurationValue.simpleInteger(part)
@@ -66,7 +66,7 @@ object GDateValue {
       }
       d.year = value * era
       if (d.year == 0 && !allowYearZero) {
-        badDate("Year zero is not allowed", s)
+        return  badDate("Year zero is not allowed", s)
       }
       if (era < 0 && !allowYearZero) {
         {
@@ -74,97 +74,97 @@ object GDateValue {
         }
       }
       if (!tok.hasMoreElements()) {
-        badDate("Too short", s)
+        return badDate("Too short", s)
       }
       if ("-" != tok.nextElement()) {
-        badDate("Wrong delimiter after year", s)
+        return badDate("Wrong delimiter after year", s)
       }
       if (!tok.hasMoreElements()) {
-        badDate("Too short", s)
+        return  badDate("Too short", s)
       }
       part = tok.nextElement().asInstanceOf[String]
       if (part.length != 2) {
-        badDate("Month must be two digits", s)
+        return badDate("Month must be two digits", s)
       }
       value = DurationValue.simpleInteger(part)
       if (value < 0) {
-        badDate("Non-numeric month component", s)
+        return  badDate("Non-numeric month component", s)
       }
       d.month = value.toByte
       if (d.month < 1 || d.month > 12) {
-        badDate("Month is out of range", s)
+        return  badDate("Month is out of range", s)
       }
       if (!tok.hasMoreElements()) {
-        badDate("Too short", s)
+        return  badDate("Too short", s)
       }
       if ("-" != tok.nextElement()) {
-        badDate("Wrong delimiter after month", s)
+        return badDate("Wrong delimiter after month", s)
       }
       if (!tok.hasMoreElements()) {
-        badDate("Too short", s)
+        return badDate("Too short", s)
       }
       part = tok.nextElement().asInstanceOf[String]
       if (part.length != 2) {
-        badDate("Day must be two digits", s)
+        return badDate("Day must be two digits", s)
       }
       value = DurationValue.simpleInteger(part)
       if (value < 0) {
-        badDate("Non-numeric day component", s)
+        return badDate("Non-numeric day component", s)
       }
       d.day = value.toByte
       if (d.day < 1 || d.day > 31) {
-        badDate("Day is out of range", s)
+        return badDate("Day is out of range", s)
       }
       var tzOffset: Int = 0
       if (tok.hasMoreElements()) {
         val delim: String = tok.nextElement().asInstanceOf[String]
         if ("T" == delim) {
-          badDate("Value includes time", s)
+         return badDate("Value includes time", s)
         } else if ("Z" == delim) {
           tzOffset = 0
           if (tok.hasMoreElements()) {
-            badDate("Continues after 'Z'", s)
+            return badDate("Continues after 'Z'", s)
           }
           d.setTimezoneInMinutes(tzOffset)
         } else if (!("+" != delim && "-" != delim)) {
           if (!tok.hasMoreElements()) {
-            badDate("Missing timezone", s)
+            return badDate("Missing timezone", s)
           }
           part = tok.nextElement().asInstanceOf[String]
           value = DurationValue.simpleInteger(part)
           if (value < 0) {
-            badDate("Non-numeric timezone hour component", s)
+            return badDate("Non-numeric timezone hour component", s)
           }
           val tzhour: Int = value
           if (part.length != 2) {
-            badDate("Timezone hour must be two digits", s)
+            return badDate("Timezone hour must be two digits", s)
           }
           if (tzhour > 14) {
-            badDate("Timezone hour is out of range", s)
+            return badDate("Timezone hour is out of range", s)
           }
           if (!tok.hasMoreElements()) {
-            badDate("No minutes in timezone", s)
+            return  badDate("No minutes in timezone", s)
           }
           if (":" != tok.nextElement()) {
-            badDate("Wrong delimiter after timezone hour", s)
+            return badDate("Wrong delimiter after timezone hour", s)
           }
           if (!tok.hasMoreElements()) {
-            badDate("No minutes in timezone", s)
+            return badDate("No minutes in timezone", s)
           }
           part = tok.nextElement().asInstanceOf[String]
           value = DurationValue.simpleInteger(part)
           if (value < 0) {
-            badDate("Non-numeric timezone minute component", s)
+            return badDate("Non-numeric timezone minute component", s)
           }
           val tzminute: Int = value
           if (part.length != 2) {
-            badDate("Timezone minute must be two digits", s)
+            return badDate("Timezone minute must be two digits", s)
           }
           if (tzminute > 59) {
-            badDate("Timezone minute is out of range", s)
+            return badDate("Timezone minute is out of range", s)
           }
           if (tok.hasMoreElements()) {
-            badDate("Continues after timezone", s)
+            return badDate("Continues after timezone", s)
           }
           tzOffset = tzhour * 60 + tzminute
           if ("-" == delim) {
@@ -172,11 +172,11 @@ object GDateValue {
           }
           d.setTimezoneInMinutes(tzOffset)
         } else {
-          badDate("Timezone format is incorrect", s)
+         return badDate("Timezone format is incorrect", s)
         }
       }
       if (!isValidDate(d.year, d.month, d.day)) {
-        badDate("Non-existent date", s)
+        return badDate("Non-existent date", s)
       }
     } catch {
       case err: NumberFormatException => badDate("Non-numeric component", s)
@@ -286,13 +286,13 @@ abstract class GDateValue extends CalendarValue {
     val v2: GDateValue = other.asInstanceOf[GDateValue]
     if (getTimezoneInMinutes == other.getTimezoneInMinutes) {
       if (year != v2.year) {
-        IntegerValue.signum(year - v2.year)
+        return IntegerValue.signum(year - v2.year)
       }
       if (month != v2.month) {
-        IntegerValue.signum(month - v2.month)
+        return IntegerValue.signum(month - v2.month)
       }
       if (day != v2.day) {
-        IntegerValue.signum(day - v2.day)
+        return IntegerValue.signum(day - v2.day)
       }
       return 0
     }

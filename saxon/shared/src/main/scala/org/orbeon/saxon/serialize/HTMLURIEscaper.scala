@@ -127,14 +127,12 @@ object HTMLURIEscaper {
         if (normalize) {
           val normalized: CharSequence =
             Normalizer.make(Normalizer.C, config).normalize(url)
-          reallyEscapeURL(normalized)
+          return reallyEscapeURL(normalized)
         } else {
-          reallyEscapeURL(url)
+          return reallyEscapeURL(url)
         }
       }
-      {
-        i -= 1; i + 1
-      }
+      i -= 1
     }
     url
   }
@@ -207,17 +205,17 @@ class HTMLURIEscaper(nextReceiver: Receiver) extends ProxyReceiver(nextReceiver)
             var attName: NodeName = att.getNodeName
             if (isUrlAttribute(nameCode, attName)) {
               var value: String = att.getValue
-              new AttributeInfo(
+              return new AttributeInfo(
                 att.getNodeName,
                 att.getType,
                 escapeURL(value, normalize = true, getConfiguration).toString,
                 att.getLocation,
                 att.getProperties | ReceiverOption.DISABLE_CHARACTER_MAPS)
             } else {
-              att
+             return  att
             }
           } else {
-            att
+            return att
           })
     }
     nextReceiver.startElement(nameCode,

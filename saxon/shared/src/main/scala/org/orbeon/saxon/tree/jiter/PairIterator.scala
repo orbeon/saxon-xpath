@@ -26,7 +26,9 @@ class PairIterator[T](private var one: T, private var two: T)
     * @return the next element in the iteration.
     * @throws NoSuchElementException iteration has no more elements.
     */
-  def next(): T = { pos += 1; pos - 1 } match {
+  def next(): T = {
+    pos += 1; pos - 1
+  } match {
     case 0 => one
     case 1 => two
     case _ => throw new NoSuchElementException()

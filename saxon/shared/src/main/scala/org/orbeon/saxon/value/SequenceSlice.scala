@@ -74,14 +74,14 @@ class SequenceSlice(private var value: List[_ <: Item],
   def subsequence(start: Int, length: Int): GroundedValue = {
     var start1: Int = start
     if (start1 < 0) {
-      start1 = 0
+     start1 = 0
     }
     val newStart: Int = start1 + offset
     if (newStart > value.size) {
-      EmptySequence.getInstance
+     return EmptySequence.getInstance
     }
     if (length < 0) {
-      EmptySequence.getInstance
+     return EmptySequence.getInstance
     }
     var newLength: Int = java.lang.Integer.min(length, this.length)
     if (newStart + newLength > value.size) {

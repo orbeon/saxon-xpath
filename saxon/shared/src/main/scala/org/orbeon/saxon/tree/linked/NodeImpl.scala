@@ -143,12 +143,12 @@ abstract class NodeImpl
 
   def compareOrder(other: NodeInfo): Int = {
     if (other.isInstanceOf[NamespaceNode]) {
-      0 - other.compareOrder(this)
+     return 0 - other.compareOrder(this)
     }
     val a: Long = getSequenceNumber
     val b: Long = other.asInstanceOf[NodeImpl].getSequenceNumber
     if (a == -1L || b == -1L) {
-      Navigator.compareOrder(this, other.asInstanceOf[NodeImpl])
+     return Navigator.compareOrder(this, other.asInstanceOf[NodeImpl])
     }
     java.lang.Long.compare(a, b)
   }
@@ -267,7 +267,7 @@ abstract class NodeImpl
       case AxisInfo.PARENT =>
         var parent: NodeInfo = getParent
         if (parent == null) {
-          EmptyIterator.ofNodes
+          return EmptyIterator.ofNodes
         }
         Navigator.filteredSingleton(parent, nodeTest)
       case AxisInfo.PRECEDING => new PrecedingEnumeration(this, nodeTest)

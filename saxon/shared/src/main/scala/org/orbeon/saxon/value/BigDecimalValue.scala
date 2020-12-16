@@ -130,7 +130,7 @@ object BigDecimalValue {
    * @param in the string to be tested
    * @return true if the string has the correct format for a decimal
    */
-  def castableAsDecimal(in: CharSequence) = {
+  def castableAsDecimal(in: CharSequence): Boolean = {
     val trimmed = Whitespace.trimWhitespace(in)
     decimalPattern.matcher(trimmed).matches
   }

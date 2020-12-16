@@ -78,7 +78,7 @@ object Cardinality {
    * @return the cardinality of a sequence formed by concatenating the sequences whose cardinalities
    *         are c1 and c2
    */
-  def sum(c1: Int, c2: Int) = {
+  def sum(c1: Int, c2: Int): Int = {
     val minimum = min(c1) + min(c2)
     val maximun = max(c1) + max(c2)
     fromMinAndMax(minimum, maximun)
@@ -90,7 +90,7 @@ object Cardinality {
    * @param cardinality the cardinality code
    * @return the minimum size of a sequence that satisfies this cardinality
    */
-  private[value] def min(cardinality: Int) = if (allowsZero(cardinality)) 0
+  private[value] def min(cardinality: Int): Int = if (allowsZero(cardinality)) 0
   else if (cardinality == StaticProperty.ALLOWS_MANY) 2
   else 1
 
@@ -101,11 +101,11 @@ object Cardinality {
    * @return the maximum size of a sequence that satisfies this cardinality,
    *         where 2 represents infinity.
    */
-  private[value] def max(cardinality: Int) = if (allowsMany(cardinality)) 2
+  private[value] def max(cardinality: Int): Int = if (allowsMany(cardinality)) 2
   else if (cardinality == StaticProperty.ALLOWS_ZERO) 0
   else 1
 
-  private[value] def fromMinAndMax(min: Int, max: Int) = {
+  private[value] def fromMinAndMax(min: Int, max: Int):Int = {
     val zero = min == 0
     val one = min <= 1 || max <= 1
     val many = max > 1
@@ -124,7 +124,7 @@ object Cardinality {
    * @return true if if every option permitted
    *         by c2 is also permitted by c1.
    */
-  def subsumes(c1: Int, c2: Int) = (c1 | c2) == c1
+  def subsumes(c1: Int, c2: Int): Boolean = (c1 | c2) == c1
 
   /**
    * Multiply two cardinalities
@@ -172,7 +172,7 @@ object Cardinality {
    * @param cardinality the cardinality value
    * @return the occurrence indicator, for example "*", "+", "?", "".
    */
-  /*@NotNull*/ def getOccurrenceIndicator(cardinality: Int) = cardinality match {
+  /*@NotNull*/ def getOccurrenceIndicator(cardinality: Int): String = cardinality match {
     case StaticProperty.ALLOWS_ZERO_OR_ONE =>
       "?"
     case StaticProperty.EXACTLY_ONE =>
@@ -213,7 +213,7 @@ object Cardinality {
    * @param card the cardinality value
    * @return a Javascript function which checks whether a number satisfies the cardinality property.
    */
-  def generateJavaScriptChecker(card: Int) = if (Cardinality.allowsZero(card) && Cardinality.allowsMany(card)) "function c() {return true;};"
+  def generateJavaScriptChecker(card: Int): String = if (Cardinality.allowsZero(card) && Cardinality.allowsMany(card)) "function c() {return true;};"
   else if (card == StaticProperty.EXACTLY_ONE) "function c(n) {return n==1;};"
   else if (card == StaticProperty.EMPTY) "function c(n) {return n==0;};"
   else if (!Cardinality.allowsZero(card)) "function c(n) {return n>=1;};"
