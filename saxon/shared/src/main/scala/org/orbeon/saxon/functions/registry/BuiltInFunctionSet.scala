@@ -78,7 +78,7 @@ object BuiltInFunctionSet {
       try {
         this.argumentTypes(a) = SequenceType.makeSequenceType(`type`, cardinality)
         this.resultIfEmpty(a) = resultIfEmpty
-        this.usage(a) = usage
+        this.usage(a)         = usage
       } catch {
         case _: ArrayIndexOutOfBoundsException =>
           System.err.println("Internal Saxon error: Can't set argument " + a + " of " + name)
@@ -241,6 +241,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     e
   }
 
+  // ORBEON: Unused.
   def registerReducedArityVariants(
     key: String,
     min: Int,

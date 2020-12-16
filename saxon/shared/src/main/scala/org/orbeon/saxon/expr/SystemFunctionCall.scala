@@ -156,7 +156,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     val opt: Optimizer = visitor.obtainOptimizer()
     val sf: Expression = super.optimize(visitor, contextInfo)
     if (sf == this) {
-      val sfo: Expression = getTargetFunction.makeOptimizedFunctionCall(
+      val sfo = getTargetFunction.makeOptimizedFunctionCall(
         visitor,
         contextInfo,
         getArguments.toIndexedSeq: _*)
@@ -179,7 +179,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         if (getArity <= details.resultIfEmpty.length) {
           for (i <- 0 until getArity
                if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {
-            Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
+            return Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
           }
         }
         systemFunctionCall.allocateArgumentEvaluators(systemFunctionCall.getArguments)
