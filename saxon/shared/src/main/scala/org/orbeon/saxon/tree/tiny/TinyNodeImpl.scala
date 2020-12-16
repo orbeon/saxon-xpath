@@ -282,7 +282,8 @@ abstract class TinyNodeImpl extends NodeInfo {
               EmptyIterator.ofNodes
             else
               new PrecedingSiblingIterator(tree, this, nodeTest)
-          case AxisInfo.SELF => Navigator.filteredSingleton(this, nodeTest)
+          case AxisInfo.SELF =>
+            Navigator.filteredSingleton(this, nodeTest)
           case AxisInfo.PRECEDING_OR_ANCESTOR =>
             if (`type` == Type.DOCUMENT) {
               EmptyIterator.ofNodes
@@ -306,11 +307,12 @@ abstract class TinyNodeImpl extends NodeInfo {
     if (parent != null)
       return parent
     val p = getParentNodeNr(tree, nodeNr)
-    if (p == -1)
-      return null
-    else
+    if (p == -1) {
+       null
+    } else {
       parent = tree.getNode(p)
-    null
+      parent
+    }
   }
 
   def hasChildNodes: Boolean = false

@@ -64,17 +64,17 @@ object DurationValue {
       true)
     var components: Int = 0
     if (!tok.hasMoreElements()) {
-      badDuration("empty string", s)
+     return badDuration("empty string", s)
     }
     var part: String = tok.nextElement().asInstanceOf[String]
     if ("+" == part) {
-      badDuration("+ sign not allowed in a duration", s)
+     return badDuration("+ sign not allowed in a duration", s)
     } else if ("-" == part) {
       negative = true
       part = tok.nextElement().asInstanceOf[String]
     }
     if ("P" != part) {
-      badDuration("missing 'P'", s)
+     return badDuration("missing 'P'", s)
     }
     var state: Int = 0
     while (tok.hasMoreElements()) {
@@ -82,7 +82,7 @@ object DurationValue {
       if ("T" == part) {
         state = 4
         if (!tok.hasMoreElements()) {
-          badDuration("T must be followed by time components", s)
+          return badDuration("T must be followed by time components", s)
         }
         part = tok.nextElement().asInstanceOf[String]
       }
@@ -97,16 +97,16 @@ object DurationValue {
         }
       }
       if (!tok.hasMoreElements()) {
-        badDuration("missing unit letter at end", s)
+        return  badDuration("missing unit letter at end", s)
       }
       val delim: Char = tok.nextElement().asInstanceOf[String].charAt(0)
       delim match {
         case 'Y' =>
           if (state > 0) {
-            badDuration("Y is out of sequence", s)
+            return  badDuration("Y is out of sequence", s)
           }
           if (!allowYM) {
-            badDuration("Year component is not allowed in dayTimeDuration", s)
+            return badDuration("Year component is not allowed in dayTimeDuration", s)
           }
           years = value
           state = 1
@@ -114,7 +114,7 @@ object DurationValue {
         case 'M' =>
           if (state == 4 || state == 5) {
             if (!allowDT) {
-              badDuration(
+              return badDuration(
                 "Minute component is not allowed in yearMonthDuration",
                 s)
             }
@@ -123,7 +123,7 @@ object DurationValue {
             components += 1
           } else if (state == 0 || state == 1) {
             if (!allowYM) {
-              badDuration("Month component is not allowed in dayTimeDuration",
+              return badDuration("Month component is not allowed in dayTimeDuration",
                 s)
             }
             months = value
@@ -134,20 +134,20 @@ object DurationValue {
           }
         case 'D' =>
           if (state > 2) {
-            badDuration("D is out of sequence", s)
+            return badDuration("D is out of sequence", s)
           }
           if (!allowDT) {
-            badDuration("Day component is not allowed in yearMonthDuration", s)
+            return badDuration("Day component is not allowed in yearMonthDuration", s)
           }
           days = value
           state = 3
           components += 1
         case 'H' =>
           if (state != 4) {
-            badDuration("H is out of sequence", s)
+            return badDuration("H is out of sequence", s)
           }
           if (!allowDT) {
-            badDuration("Hour component is not allowed in yearMonthDuration",
+            return badDuration("Hour component is not allowed in yearMonthDuration",
               s)
           }
           hours = value
@@ -155,16 +155,16 @@ object DurationValue {
           components += 1
         case '.' =>
           if (state < 4 || state > 6) {
-            badDuration("misplaced decimal point", s)
+            return badDuration("misplaced decimal point", s)
           }
           seconds = value
           state = 7
         case 'S' =>
           if (state < 4 || state > 7) {
-            badDuration("S is out of sequence", s)
+            return badDuration("S is out of sequence", s)
           }
           if (!allowDT) {
-            badDuration(
+            return badDuration(
               "Seconds component is not allowed in yearMonthDuration",
               s)
           }
@@ -177,7 +177,7 @@ object DurationValue {
             }
             value = simpleInteger(part)
             if (value < 0) {
-              badDuration("non-numeric fractional seconds", s)
+              return badDuration("non-numeric fractional seconds", s)
             }
             nanoseconds = value
           } else {
@@ -190,7 +190,7 @@ object DurationValue {
       }
     }
     if (components == 0) {
-      badDuration("Duration specifies no components", s)
+      return badDuration("Duration specifies no components", s)
     }
     if (negative) {
       years = -years
@@ -307,7 +307,7 @@ object DurationValue {
 
     private def monthsToDaysMinimum(months: Int): Int = {
       if (months < 0) {
-        -monthsToDaysMaximum(-months)
+       return -monthsToDaysMaximum(-months)
       }
       if (months < 12) {
         val shortest: Array[Int] =
@@ -325,7 +325,7 @@ object DurationValue {
 
     private def monthsToDaysMaximum(months: Int): Int = {
       if (months < 0) {
-        -monthsToDaysMinimum(-months)
+       return -monthsToDaysMinimum(-months)
       }
       if (months < 12) {
         val longest: Array[Int] =

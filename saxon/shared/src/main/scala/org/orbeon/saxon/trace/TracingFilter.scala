@@ -49,8 +49,12 @@ object TracingFilter {
 class TracingFilter(nextReceiver: Receiver)
     extends ProxyReceiver(nextReceiver) {
 
+  private var nextId = 0
+
   @BeanProperty
-  var id: Int = { nextid += 1; nextid - 1 }
+  var id: Int = nextid
+
+  nextid += 1
 
   private var indent: String = ""
 
@@ -59,13 +63,9 @@ class TracingFilter(nextReceiver: Receiver)
   private var closed: Boolean = false
 
   def this(nextReceiver: Receiver, diagnosticOutput: PrintStream) = {
-    this(???) /* TODO: Scala does not allow multiple super constructor calls
-     * Change this code to call a constructor of the current class instead.
-     * For your convenience, here is the invalid super constructor call:
-     * }super(nextReceiver)
-     */
-
-    id = { nextid += 1; nextid - 1 }
+    this(nextReceiver)
+    id = nextId
+    nextid += 1
     out = diagnosticOutput
   }
 

@@ -178,7 +178,7 @@ object Base64BinaryValue {
   }
 
   @throws[XPathException]
-  private def decodeChar(c: Char) = {
+  private def decodeChar(c: Char): Int = {
     val d = if (c < 128) decoding(c)
     else -1
     if (d == -1) if (UTF16CharacterSet.isSurrogate(c)) throw new XPathException("Invalid character (surrogate pair) in base64 value", "FORG0001")

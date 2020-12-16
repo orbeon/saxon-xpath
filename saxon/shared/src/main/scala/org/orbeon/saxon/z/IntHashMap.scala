@@ -180,6 +180,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
   }
 
   private def grow(): Unit = {
+    _n += 1
     if (_n > NMAX)
       throw new RuntimeException("number of keys mapped exceeds " + NMAX)
     if (_nlo < _n && _n <= _nhi)
@@ -190,15 +191,18 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     if (capacity < _n)
       this.capacity = _n
     val factor =
-      if ((_factor < 0.01)) 0.01 else if ((_factor > 0.99)) 0.99 else _factor
+      if (_factor < 0.01) 0.01 else if (_factor > 0.99) 0.99 else _factor
+
     var nbit      = 0
     var nmax      = 0
     nbit = 1
     nmax = 2
-    while (nmax * factor < capacity && nmax < NMAX)
+
+    while (nmax * factor < capacity && nmax < NMAX) {
+      nbit += 1
       nmax *= 2
-    // no-op
-    // no-op
+    }
+
     val nold = _nmax
     if (nmax == nold)
       return

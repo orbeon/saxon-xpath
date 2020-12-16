@@ -30,16 +30,18 @@ object NumericValue {
       }
     } else if (in.indexOf('.') >= 0) {
       val v = BigDecimalValue.makeDecimalValue(in, validate = true)
-      if (v.isInstanceOf[ValidationFailure])
+      val res = if (v.isInstanceOf[ValidationFailure])
         DoubleValue.NaN
       else
         v.asInstanceOf[NumericValue]
+      res
     } else {
       val v = IntegerValue.stringToInteger(in)
-      if (v.isInstanceOf[ValidationFailure])
+      val resp = if (v.isInstanceOf[ValidationFailure])
         DoubleValue.NaN
       else
         v.asInstanceOf[NumericValue]
+      resp
     }
   }
 

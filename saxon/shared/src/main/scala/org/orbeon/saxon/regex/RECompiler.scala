@@ -218,20 +218,8 @@ class RECompiler() {
         return new SingletonCharacterClass('\r')
       case 't' =>
         return new SingletonCharacterClass('\t')
-      case '\\' =>
-      case '|' =>
-      case '.' =>
-      case '-' =>
-      case '^' =>
-      case '?' =>
-      case '*' =>
-      case '+' =>
-      case '{' =>
-      case '}' =>
-      case '(' =>
-      case ')' =>
-      case '[' =>
-      case ']' =>
+      case '\\' | '|' | '.' | '-' | '^' | '?' |
+           '*' | '+' | '{' | '}' | '(' | ')' | '[' | ']' =>
         return new SingletonCharacterClass(escapeChar)
       case '$' =>
         if (isXPath) return new SingletonCharacterClass(escapeChar)
@@ -256,8 +244,7 @@ class RECompiler() {
         return Categories.ESCAPE_w
       case 'W' =>
         return Categories.ESCAPE_W
-      case 'p' =>
-      case 'P' =>
+      case 'p' | 'P' =>
         if (idx == len) syntaxError("Expected '{' after \\" + escapeChar)
         if (pattern.uCharAt(idx) != '{') syntaxError("Expected '{' after \\" + escapeChar)
         val close = pattern.uIndexOf('}', {
@@ -292,15 +279,7 @@ class RECompiler() {
         else syntaxError("Unknown character category: " + block)
       case '0' =>
         syntaxError("Octal escapes not allowed")
-      case '1' =>
-      case '2' =>
-      case '3' =>
-      case '4' =>
-      case '5' =>
-      case '6' =>
-      case '7' =>
-      case '8' =>
-      case '9' =>
+      case '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
         if (inSquareBrackets) syntaxError("Backreference not allowed within character class")
         else if (isXPath) {
           var backRef = escapeChar - '0'
@@ -479,70 +458,47 @@ class RECompiler() {
   @throws[RESyntaxException]
   def parseAtom = {
     var lenAtom = 0
-
     val fsb = new FastStringBuffer(FastStringBuffer.C64)
     var atomLoop = new Breaks
     atomLoop.breakable {
       while (idx < len) {
         if ((idx + 1) < len) {
           var c = pattern.uCharAt(idx + 1)
-
           if (pattern.uCharAt(idx) == '\\') {
             val idxEscape = idx
             escape(false)
             if (idx < len) c = pattern.uCharAt(idx)
             idx = idxEscape
           }
-
           c match {
-            case '{' =>
-            case '?' =>
-            case '*' =>
-            case '+' =>
-
-
-              if (lenAtom != 0)  atomLoop.break()
+            case '{' | '?' | '*' | '+' =>
+              if (lenAtom != 0) atomLoop.break()
           }
         }
 
         pattern.uCharAt(idx) match {
-          case ']' =>
-          case '.' =>
-          case '[' =>
-          case '(' =>
-          case ')' =>
-          case '|' =>
-             atomLoop.break()
-          case '{' =>
-          case '?' =>
-          case '*' =>
-          case '+' =>
-
+          case ']' | '.' | '[' | '(' | ')' | '|' =>
+            atomLoop.break()
+          case '{' | '?' | '*' | '+' =>
             if (lenAtom == 0) {
               syntaxError("No expression before quantifier")
             }
-             atomLoop.break()
+            atomLoop.break()
           case '}' =>
             syntaxError("Unescaped right curly brace")
-             atomLoop.break()
+            atomLoop.break()
           case '\\' =>
-
             val idxBeforeEscape = idx
             val charClass = escape(false)
-
             if (charClass.isInstanceOf[RECompiler#BackReference] || !charClass.isInstanceOf[IntValuePredicate]) {
               idx = idxBeforeEscape
-               atomLoop.break()
+              atomLoop.break()
             }
-
             fsb.appendWideChar(charClass.asInstanceOf[IntValuePredicate].getTarget)
             lenAtom += 1
-          case '^' =>
-          case '$' =>
-            if (isXPath)  atomLoop.break()
-
+          case '^' | '$' =>
+            if (isXPath) atomLoop.break()
           case _ =>
-
             fsb.appendWideChar(pattern.uCharAt({
               idx += 1;
               idx - 1
@@ -594,13 +550,9 @@ class RECompiler() {
         syntaxError("Unexpected closing ']'")
       case 0 =>
         syntaxError("Unexpected end of input")
-      case '?' =>
-      case '+' =>
-      case '{' =>
-      case '*' =>
+      case '?' | '+' |'{' |'*' =>
         syntaxError("No expression before quantifier")
       case '\\' =>
-
         val idxBeforeEscape = idx
         val esc = escape(false)
         if (esc.isInstanceOf[RECompiler#BackReference]) {
@@ -609,13 +561,10 @@ class RECompiler() {
           return RECompiler.trace(new Operation.OpBackReference(backreference))
         }
         else if (esc.isInstanceOf[IntSingletonSet]) {
-
           idx = idxBeforeEscape
         }
         else return RECompiler.trace(new Operation.OpCharClass(esc))
     }
-
-
     parseAtom
   }
 
@@ -632,16 +581,11 @@ class RECompiler() {
     var greedy = true
     var quantifierType = pattern.uCharAt(idx)
     quantifierType match {
-      case '?' =>
-      case '*' =>
-      case '+' =>
-
+      case '?' | '*' | '+' =>
         idx += 1
-
       case '{' =>
         if (quantifierType == '{') bracket()
         if (ret.isInstanceOf[Operation.OpBOL] || ret.isInstanceOf[Operation.OpEOL]) {
-
           if (quantifierType == '?' || quantifierType == '*' || (quantifierType == '{' && bracketMin == 0)) return new Operation.OpNothing
           else quantifierType = 0
         }
@@ -725,19 +669,13 @@ class RECompiler() {
       else {
         paren = 1
         idx += 1
-        group = {
-          capturingOpenParenCount += 1;
-          capturingOpenParenCount - 1
-        }
+        group = capturingOpenParenCount
+        capturingOpenParenCount += 1
       }
     }
     compilerFlags(0) &= ~RECompiler.NODE_TOPLEVEL
-
     branches.add(parseBranch)
-
-    while ( {
-      idx < len && pattern.uCharAt(idx) == '|'
-    }) {
+    while (idx < len && pattern.uCharAt(idx) == '|') {
       idx += 1
       branches.add(parseBranch)
     }

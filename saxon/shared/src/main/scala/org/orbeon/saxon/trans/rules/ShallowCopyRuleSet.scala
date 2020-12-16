@@ -23,14 +23,14 @@ import scala.jdk.CollectionConverters._
  * The built-in rule set introduced in XSLT 3.0, which is effectively an identity template.
  */
 object ShallowCopyRuleSet {
-  private val THE_INSTANCE = new ShallowCopyRuleSet
+  private val THE_INSTANCE: ShallowCopyRuleSet = new ShallowCopyRuleSet
 
   /**
    * Get the singleton instance of this class
    *
    * @return the singleton instance
    */
-  def getInstance = THE_INSTANCE
+  def getInstance: ShallowCopyRuleSet = THE_INSTANCE
 }
 
 class ShallowCopyRuleSet private() extends BuiltInRuleSet {
@@ -123,5 +123,5 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
    * @param nodeKind the node kind
    * @return the default action for unmatched nodes: one of DEEP_COPY, APPLY_TEMPLATES, DEEP_SKIP, FAIL
    */
-  override def getActionForParentNodes(nodeKind: Int) = Array[Int](SHALLOW_COPY, APPLY_TEMPLATES_TO_ATTRIBUTES, APPLY_TEMPLATES_TO_CHILDREN)
+  override def getActionForParentNodes(nodeKind: Int): Array[Int] = Array[Int](SHALLOW_COPY, APPLY_TEMPLATES_TO_ATTRIBUTES, APPLY_TEMPLATES_TO_CHILDREN)
 }

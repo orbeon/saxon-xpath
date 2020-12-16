@@ -24,7 +24,7 @@ object GYearMonthValue {
                           rules: ConversionRules): ConversionResult = {
     val m: Matcher = regex.matcher(Whitespace.trimWhitespace(value))
     if (!m.matches()) {
-      new ValidationFailure("Cannot convert '" + value + "' to a gYearMonth")
+     return new ValidationFailure("Cannot convert '" + value + "' to a gYearMonth")
     }
     val g: GYearMonthValue = new GYearMonthValue()
     val base: String = m.group(1)

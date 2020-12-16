@@ -114,7 +114,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
   }
 
   private def grow(): Unit = {
-
+    _n += 1
     if (_n > NMAX) {
       throw new RuntimeException("number of keys mapped exceeds " + NMAX)
     }

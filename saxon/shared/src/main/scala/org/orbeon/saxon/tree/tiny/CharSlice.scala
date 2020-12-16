@@ -66,7 +66,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
           .array({
             k += 1; k - 1
           })) {
-          false
+         return false
         }
         return true
       case sequence: CharSequence =>

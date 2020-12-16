@@ -25,7 +25,7 @@ object GYearValue {
     val g: GYearValue = new GYearValue()
     val m: Matcher = regex.matcher(Whitespace.trimWhitespace(value))
     if (!m.matches()) {
-      new ValidationFailure("Cannot convert '" + value + "' to a gYear")
+      return new ValidationFailure("Cannot convert '" + value + "' to a gYear")
     }
     val base: String = m.group(1)
     val tz: String = m.group(2)

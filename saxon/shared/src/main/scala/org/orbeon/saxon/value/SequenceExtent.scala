@@ -101,7 +101,8 @@ class SequenceExtent extends GroundedValue {
 
   def subsequence(start: Int, length: Int): GroundedValue = {
     var startInt = start
-    if (startInt < 0) startInt = 0
+    if (startInt < 0)
+      startInt = 0
     if (startInt > value.size)
       EmptySequence.getInstance
     else

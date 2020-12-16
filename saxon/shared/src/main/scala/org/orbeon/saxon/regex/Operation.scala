@@ -28,7 +28,7 @@ object Operation {
       val fixed: Int = branches.get(0).getMatchLength
       for (i <- 1 until branches.size
            if branches.get(i).getMatchLength != fixed) {
-        -1
+        return -1
       }
       fixed
     }
@@ -198,7 +198,7 @@ object Operation {
         result =
           RECompiler.makeUnion(result, o.getInitialCharacterClass(caseBlind))
         if (o.matchesEmptyString() == MATCHES_ZLS_NEVER) {
-          result
+          return result
         }
       }
       result
@@ -366,7 +366,7 @@ object Operation {
 
     override def getInitialCharacterClass(caseBlind: Boolean): CharacterClass = {
       if (len == 0) {
-        EmptyCharacterClass.getInstance
+        return EmptyCharacterClass.getInstance
       } else if (caseBlind) {
         var set: IntSet = null
         val ch: Int = atom.uCharAt(0)
@@ -377,7 +377,7 @@ object Operation {
           for (v <- variants) {
             set.add(v)
           }
-          new IntSetCharacterClass(set)
+         return new IntSetCharacterClass(set)
         }
       }
       new SingletonCharacterClass(atom.uCharAt(0))
@@ -423,7 +423,7 @@ object Operation {
 
     override def optimize(program: REProgram, flags: REFlags): Operation = {
       if (max == 0) {
-        new OpNothing()
+        return new OpNothing()
       }
       if (opt.getMatchLength == 0) {
         return opt
@@ -573,7 +573,7 @@ object Operation {
               iterators ::= it
               positions ::= p
             } else if (iterators.isEmpty) {
-              EmptyIntIterator.getInstance
+             return EmptyIntIterator.getInstance
             } else {
               break()
             }
@@ -770,10 +770,10 @@ object Operation {
         if (matcher.program.flags.isMultiLine) {
           if (matcher.isNewline(position - 1) && !matcher.search.isEnd(
             position)) {
-            new IntSingletonIterator(position)
+            return new IntSingletonIterator(position)
           }
         }
-        EmptyIntIterator.getInstance
+        return EmptyIntIterator.getInstance
       }
       new IntSingletonIterator(position)
     }
@@ -866,26 +866,26 @@ object Operation {
       val s: Int = matcher.startBackref(groupNr)
       val e: Int = matcher.endBackref(groupNr)
       if (s == -1 || e == -1) {
-        EmptyIntIterator.getInstance
+        return EmptyIntIterator.getInstance
       }
       if (s == e) {
-        new IntSingletonIterator(position)
+       return new IntSingletonIterator(position)
       }
       val l: Int = e - s
       val search: UnicodeString = matcher.search
       if (search.isEnd(position + l - 1)) {
-        EmptyIntIterator.getInstance
+       return EmptyIntIterator.getInstance
       }
       if (matcher.program.flags.isCaseIndependent) {
         for (i <- 0 until l
              if !matcher.equalCaseBlind(search.uCharAt(position + i),
                search.uCharAt(s + i))) {
-          EmptyIntIterator.getInstance
+         return EmptyIntIterator.getInstance
         }
       } else {
         for (i <- 0 until l
              if search.uCharAt(position + i) != search.uCharAt(s + i)) {
-          EmptyIntIterator.getInstance
+         return EmptyIntIterator.getInstance
         }
       }
       new IntSingletonIterator(position + l)

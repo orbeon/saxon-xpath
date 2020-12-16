@@ -51,13 +51,9 @@ class CountingFilter(nextReceiver: Receiver)
   var id: Int = { nextid += 1; nextid - 1 }
 
   def this(nextReceiver: Receiver, diagnosticOutput: PrintStream) = {
-    this(???) /* TODO: Scala does not allow multiple super constructor calls
-     * Change this code to call a constructor of the current class instead.
-     * For your convenience, here is the invalid super constructor call:
-     * }super(nextReceiver)
-     */
-
-    id = { nextid += 1; nextid - 1 }
+    this(nextReceiver)
+    id = nextid
+    nextid += 1
   }
 
   private def count(counter: String): Unit = {

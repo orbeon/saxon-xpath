@@ -124,14 +124,14 @@ class DocumentImpl
 
   def getLineNumber(sequence: Int): Int = {
     if (lineNumberMap != null && sequence >= 0) {
-      lineNumberMap.getLineNumber(sequence)
+      return lineNumberMap.getLineNumber(sequence)
     }
     -1
   }
 
   def getColumnNumber(sequence: Int): Int = {
     if (lineNumberMap != null && sequence >= 0) {
-      lineNumberMap.getColumnNumber(sequence)
+     return lineNumberMap.getColumnNumber(sequence)
     }
     -1
   }

@@ -118,7 +118,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
           skip = 2
         }
         if (next != 0 && characterSet.inCharset(next)) {
-          { k += 1; k - 1 }
+           k += 1
         } else {
           val array: Array[Char] = Array.ofDim[Char](k - start)
           buffer.getChars(start, k, array, 0)
@@ -178,7 +178,7 @@ class CDATAFilter(next: Receiver) extends ProxyReceiver(next) {
           chprop)
         doneto = i + 1
       }
-      { i += 1; i - 1 }
+      i += 1
     }
     nextReceiver.characters(new CharSlice(array, doneto, len - doneto),
       loc,

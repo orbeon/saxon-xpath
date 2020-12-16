@@ -39,7 +39,7 @@ object UnicodeString {
 
   def makeUnicodeString(in: Array[Int]): UnicodeString = {
     for (ch <- in if ch > 65535) {
-      new GeneralUnicodeString(in, 0, in.length)
+      return new GeneralUnicodeString(in, 0, in.length)
     }
     val fsb = new FastStringBuffer(in.length)
     for (ch <- in) {
@@ -83,7 +83,7 @@ object UnicodeString {
         nonLatin = true
       }
       if (c >= 55296 && c <= 56319) {
-        4
+        return 4
       }
     }
     if (nonLatin) 2 else 1

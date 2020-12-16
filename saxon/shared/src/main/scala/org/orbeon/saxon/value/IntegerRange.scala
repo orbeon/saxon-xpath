@@ -52,7 +52,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
 
   def subsequence(start: Int, length: Int): GroundedValue = {
     if (length <= 0) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     val newStart: Long = this.start + (if (start > 0) start else 0)
     var newEnd: Long = newStart + length - 1

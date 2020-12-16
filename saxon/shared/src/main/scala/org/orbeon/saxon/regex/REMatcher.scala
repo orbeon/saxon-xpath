@@ -96,10 +96,8 @@ class REMatcher(val progrm: REProgram) {
   }
 
 
-  final def setParenStart(which: Int, i: Int) = {
-    while ( {
-      which > captureState.startn.length - 1
-    }) {
+  final def setParenStart(which: Int, i: Int):Unit = {
+    while (which > captureState.startn.length - 1) {
       val s2 = new Array[Int](captureState.startn.length * 2)
       System.arraycopy(captureState.startn, 0, s2, 0, captureState.startn.length)
       util.Arrays.fill(s2, captureState.startn.length, s2.length, -1)
@@ -109,10 +107,8 @@ class REMatcher(val progrm: REProgram) {
   }
 
 
-  final def setParenEnd(which: Int, i: Int) = {
-    while ( {
-      which > captureState.endn.length - 1
-    }) {
+  final def setParenEnd(which: Int, i: Int):Unit = {
+    while (which > captureState.endn.length - 1) {
       val e2 = new Array[Int](captureState.endn.length * 2)
       System.arraycopy(captureState.endn, 0, e2, 0, captureState.endn.length)
       util.Arrays.fill(e2, captureState.endn.length, e2.length, -1)
@@ -122,7 +118,7 @@ class REMatcher(val progrm: REProgram) {
   }
 
 
-  def clearCapturedGroupsBeyond(pos: Int) = {
+  def clearCapturedGroupsBeyond(pos: Int):Unit = {
     for (i <- 0 until captureState.startn.length) {
       if (captureState.startn(i) >= pos) captureState.endn(i) = captureState.startn(i)
     }
@@ -172,9 +168,7 @@ class REMatcher(val progrm: REProgram) {
 
       var nl = z
       if (matchAt(nl, anchored = false)) return true
-      while ( {
-        true
-      }) {
+      while (true) {
         nl = search.uIndexOf('\n', nl) + 1
         if (nl >= search.uLength || nl <= 0) return false
         else if (matchAt(nl, anchored = false)) return true
@@ -187,10 +181,8 @@ class REMatcher(val progrm: REProgram) {
     if (program.prefix == null) {
       if (program.initialCharClass != null) {
         val pred = program.initialCharClass
-        while ( {
-          !search.isEnd(i)
-        }) {
-          if (pred.test(search.uCharAt(i))) if (matchAt(i, anchored = false)) return true
+        while (!search.isEnd(z)) {
+          if (pred.test(search.uCharAt(z))) if (matchAt(z, anchored = false)) return true
           z += 1
         }
         return false
@@ -198,9 +190,7 @@ class REMatcher(val progrm: REProgram) {
 
       if (!checkPreconditions(z)) return false
 
-      while ( {
-        !search.isEnd(z - 1)
-      }) {
+      while (!search.isEnd(z - 1)) {
         if (matchAt(i, anchored = false)) return true
         z += 1
       }
@@ -210,9 +200,7 @@ class REMatcher(val progrm: REProgram) {
       val prefix = program.prefix
       val prefixLength = prefix.uLength
       val ignoreCase = program.flags.isCaseIndependent
-      while ( {
-        !search.isEnd(i + prefixLength - 1)
-      }) {
+      while (!search.isEnd(z + prefixLength - 1)) {
         var prefixOK = true
         if (ignoreCase) {
           var j = z
@@ -288,29 +276,20 @@ class REMatcher(val progrm: REProgram) {
 
   def split(s: UnicodeString): util.List[UnicodeString] = {
     val v = new util.ArrayList[UnicodeString]
-
     var pos = 0
     val len = s.uLength
-
-    while ( {
-      pos < len && `match`(s, pos)
-    }) {
+    while (pos < len && `match`(s, pos)) {
       val start = getParenStart(0)
-
       var newpos = getParenEnd(0)
-
       if (newpos == pos) {
         v.add(s.uSubstring(pos, start + 1))
         newpos += 1
       }
       else v.add(s.uSubstring(pos, start))
-
       pos = newpos
     }
-
     val remainder = s.uSubstring(pos, len)
     v.add(remainder)
-
     v
   }
 
@@ -319,18 +298,14 @@ class REMatcher(val progrm: REProgram) {
     val sb = new FastStringBuffer(in.uLength * 2)
     var pos = 0
     val len = in.uLength
-    while ( {
-      pos < len && `match`(in, pos)
-    }) {
+    while (pos < len && `match`(in, pos)) {
       for (i <- pos until getParenStart(0)) {
         sb.appendWideChar(in.uCharAt(i))
       }
       if (!program.flags.isLiteral) {
         val maxCapture = program.maxParens - 1
         var i = 0
-        while ( {
-          i < replacement.uLength
-        }) {
+        while (i < replacement.uLength) {
           var ch = replacement.uCharAt(i)
           if (ch == '\\') {
             ch = replacement.uCharAt({
@@ -413,9 +388,7 @@ class REMatcher(val progrm: REProgram) {
     val sb = new FastStringBuffer(in.uLength * 2)
     var pos = 0
     val len = in.uLength
-    while ( {
-      pos < len && `match`(in, pos)
-    }) {
+    while (pos < len && `match`(in, pos)) {
       for (i <- pos until getParenStart(0)) {
         sb.appendWideChar(in.uCharAt(i))
       }

@@ -160,7 +160,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     var i = indexOf(value)
     if (_values(i) == ndv)
       return false
-
+    _size -= 1
     while (true) {
       _values(i) = ndv
       val j: Int = i

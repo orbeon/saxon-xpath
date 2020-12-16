@@ -49,8 +49,6 @@ class GeneralUnicodeString(var charSequence: CharSequence)
     for(i <- pos until len) {
          if(charArr(start +i) == search)
            return i
-         else
-           return -1
     }
     -1
   }

@@ -132,12 +132,13 @@ class TextFragmentValue(config: Configuration,
         val textNode2 = getTextNode
         val b2        = nodeTest.test(textNode2)
         if (b1) {
-          if (b2) {
+          val res = if (b2) {
             val pair = Array(this, textNode2)
             new ArrayIterator.OfNodes(pair)
           } else {
             SingleNodeIterator.makeIterator(this)
           }
+          res
         } else {
           if (b2)
             SingleNodeIterator.makeIterator(textNode2)
