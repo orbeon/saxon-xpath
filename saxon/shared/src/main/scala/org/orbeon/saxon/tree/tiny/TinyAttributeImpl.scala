@@ -95,7 +95,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
 
   override def getSchemaType: SchemaType = {
     if (tree.attType == null) {
-      BuiltInAtomicType.UNTYPED_ATOMIC
+     return BuiltInAtomicType.UNTYPED_ATOMIC
     }
     tree.getAttributeType(nodeNr)
   }

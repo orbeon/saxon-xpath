@@ -17,7 +17,7 @@ object SequenceExtent {
 
   def makeResidue(iter: SequenceIterator): GroundedValue = {
     if (iter.getProperties.contains(SequenceIterator.Property.GROUNDED)) {
-      iter.asInstanceOf[GroundedIterator].getResidue
+      return iter.asInstanceOf[GroundedIterator].getResidue
     }
     val extent: SequenceExtent = new SequenceExtent(iter)
     extent.reduce()
@@ -106,7 +106,7 @@ class SequenceExtent extends GroundedValue {
     var startInt = start
     if (startInt < 0) startInt = 0
     if (startInt > value.size) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     new SequenceSlice(value, startInt, length).reduce()
   }

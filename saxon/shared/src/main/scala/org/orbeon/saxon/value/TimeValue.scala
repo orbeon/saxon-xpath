@@ -30,82 +30,82 @@ object TimeValue {
     val tok: StringTokenizer =
       new StringTokenizer(Whitespace.trimWhitespace(s).toString, "-:.+Z", true)
     if (!tok.hasMoreElements()) {
-      badTime("too short", s)
+      return badTime("too short", s)
     }
     var part: String = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badTime("hour must be two digits", s)
+     return  badTime("hour must be two digits", s)
     }
     var value: Int = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badTime("Non-numeric hour component", s)
+     return badTime("Non-numeric hour component", s)
     }
     tv.hour = value.toByte
     if (tv.hour > 24) {
-      badTime("hour is out of range", s)
+     return badTime("hour is out of range", s)
     }
     if (!tok.hasMoreElements()) {
-      badTime("too short", s)
+      return badTime("too short", s)
     }
     if (":" != tok.nextElement()) {
-      badTime("wrong delimiter after hour", s)
+    return badTime("wrong delimiter after hour", s)
     }
     if (!tok.hasMoreElements()) {
-      badTime("too short", s)
+     return badTime("too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badTime("minute must be two digits", s)
+     return badTime("minute must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badTime("Non-numeric minute component", s)
+     return badTime("Non-numeric minute component", s)
     }
     tv.minute = value.toByte
     if (tv.minute > 59) {
-      badTime("minute is out of range", s)
+     return badTime("minute is out of range", s)
     }
     if (tv.hour == 24 && tv.minute != 0) {
-      badTime("If hour is 24, minute must be 00", s)
+    return badTime("If hour is 24, minute must be 00", s)
     }
     if (!tok.hasMoreElements()) {
-      badTime("too short", s)
+     return badTime("too short", s)
     }
     if (":" != tok.nextElement()) {
-      badTime("wrong delimiter after minute", s)
+     return badTime("wrong delimiter after minute", s)
     }
     if (!tok.hasMoreElements()) {
-      badTime("too short", s)
+     return badTime("too short", s)
     }
     part = tok.nextElement().asInstanceOf[String]
     if (part.length != 2) {
-      badTime("second must be two digits", s)
+     return badTime("second must be two digits", s)
     }
     value = DurationValue.simpleInteger(part)
     if (value < 0) {
-      badTime("Non-numeric second component", s)
+     return badTime("Non-numeric second component", s)
     }
     tv.second = value.toByte
     if (tv.second > 59) {
-      badTime("second is out of range", s)
+     return badTime("second is out of range", s)
     }
     if (tv.hour == 24 && tv.second != 0) {
-      badTime("If hour is 24, second must be 00", s)
+     return badTime("If hour is 24, second must be 00", s)
     }
     var tz: Int = 0
     var negativeTz: Boolean = false
     var state: Int = 0
     while (tok.hasMoreElements()) {
       if (state == 9) {
-        badTime("characters after the end", s)
+       return badTime("characters after the end", s)
       }
       val delim: String = tok.nextElement().asInstanceOf[String]
       if ("." == delim) {
         if (state != 0) {
-          badTime("decimal separator occurs twice", s)
+         return badTime("decimal separator occurs twice", s)
         }
         if (!tok.hasMoreElements()) {
-          badTime("decimal point must be followed by digits", s)
+         return badTime("decimal point must be followed by digits", s)
         }
         part = tok.nextElement().asInstanceOf[String]
         if (part.length > 9 && part.matches("^[0-9]+$")) {
@@ -113,61 +113,61 @@ object TimeValue {
         }
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badTime("Non-numeric fractional seconds component", s)
+          return badTime("Non-numeric fractional seconds component", s)
         }
         val fractionalSeconds: Double =
           java.lang.Double.parseDouble("."+ part)
         tv.nanosecond = Math.round(fractionalSeconds * 1000000000).toInt
         if (tv.hour == 24 && tv.nanosecond != 0) {
-          badTime("If hour is 24, fractional seconds must be 0", s)
+          return badTime("If hour is 24, fractional seconds must be 0", s)
         }
         state = 1
       } else if ("Z" == delim) {
         if (state > 1) {
-          badTime("Z cannot occur here", s)
+          return badTime("Z cannot occur here", s)
         }
         tz = 0
         state = 9
         tv.setTimezoneInMinutes(0)
       } else if ("+" == delim || "-" == delim) {
         if (state > 1) {
-          badTime(delim + " cannot occur here", s)
+          return badTime(delim + " cannot occur here", s)
         }
         state = 2
         if (!tok.hasMoreElements()) {
-          badTime("missing timezone", s)
+          return badTime("missing timezone", s)
         }
         part = tok.nextElement().asInstanceOf[String]
         if (part.length != 2) {
-          badTime("timezone hour must be two digits", s)
+          return  badTime("timezone hour must be two digits", s)
         }
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badTime("Non-numeric timezone hour component", s)
+          return badTime("Non-numeric timezone hour component", s)
         }
         tz = value * 60
         if (tz > 14 * 60) {
-          badTime("timezone hour is out of range", s)
+          return badTime("timezone hour is out of range", s)
         }
         if ("-" == delim) {
           negativeTz = true
         }
       } else if (":" == delim) {
         if (state != 2) {
-          badTime("colon cannot occur here", s)
+          return badTime("colon cannot occur here", s)
         }
         state = 9
         part = tok.nextElement().asInstanceOf[String]
         value = DurationValue.simpleInteger(part)
         if (value < 0) {
-          badTime("Non-numeric timezone minute component", s)
+          return badTime("Non-numeric timezone minute component", s)
         }
         val tzminute: Int = value
         if (part.length != 2) {
-          badTime("timezone minute must be two digits", s)
+          return badTime("timezone minute must be two digits", s)
         }
         if (tzminute > 59) {
-          badTime("timezone minute is out of range", s)
+          return badTime("timezone minute is out of range", s)
         }
         tz += tzminute
         if (negativeTz) {
@@ -175,11 +175,11 @@ object TimeValue {
         }
         tv.setTimezoneInMinutes(tz)
       } else {
-        badTime("timezone format is incorrect", s)
+        return badTime("timezone format is incorrect", s)
       }
     }
     if (state == 2 || state == 3) {
-      badTime("timezone incomplete", s)
+      return badTime("timezone incomplete", s)
     }
     if (tv.hour == 24) {
       tv.hour = 0

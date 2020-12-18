@@ -224,10 +224,7 @@ class ExpressionPresenter {
         if (!parts(p).isEmpty) {
           parts(p)
         }
-        {
           p -= 1
-          p + 1
-        }
       }
       module
     }

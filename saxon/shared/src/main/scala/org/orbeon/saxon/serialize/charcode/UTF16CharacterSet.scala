@@ -58,7 +58,7 @@ object UTF16CharacterSet {
         ch32 = UTF16CharacterSet.combinePair(ch32.toChar, low)
       }
       if (!predicate.test(ch32)) {
-        ch32
+        return ch32
       }
     }
     -1

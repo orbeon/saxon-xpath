@@ -174,7 +174,7 @@ class DoubleValue extends NumericValue {
       // double arithmetic has overflowed - do it in decimal
       var dec = new BigDecimal(value)
       dec = dec.setScale(scale, RoundingMode.HALF_EVEN)
-      new DoubleValue(dec.doubleValue())
+      return new DoubleValue(dec.doubleValue())
     }
     val rem = d % 10
     if (rem > 5) {

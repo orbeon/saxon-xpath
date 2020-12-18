@@ -42,22 +42,22 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
       val nsarray: Array[NamespaceBinding] = getNamespaceBindings
       for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
-          null
+          return null
         } else if (nsarray(i).getPrefix().isEmpty) {
           val nn: NamespaceNode = new NamespaceNode(element, nsarray(i), i + 1)
-          NodeOverNodeInfo.wrap(nn)
+         return NodeOverNodeInfo.wrap(nn)
         }
       }
-      null
+     null
     } else if (name.startsWith("xmlns:")) {
       val prefix: String = name.substring(6)
       val nsarray: Array[NamespaceBinding] = getNamespaceBindings
       for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
-          null
+         return null
         } else if (prefix == nsarray(i).getPrefix()) {
           val nn: NamespaceNode = new NamespaceNode(element, nsarray(i), i + 1)
-          NodeOverNodeInfo.wrap(nn)
+          return NodeOverNodeInfo.wrap(nn)
         }
       }
       null
@@ -77,7 +77,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
     if (index < namespaces.length) {
       val ns: NamespaceBinding = namespaces(index)
       val nn: NamespaceNode = new NamespaceNode(element, ns, index)
-      NodeOverNodeInfo.wrap(nn)
+      return NodeOverNodeInfo.wrap(nn)
     }
     var pos: Int = 0
     val attNr: Int = index - namespaces.length
@@ -88,9 +88,9 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
       att
     }) != null) {
       if (pos == attNr) {
-        NodeOverNodeInfo.wrap(att)
+        return NodeOverNodeInfo.wrap(att)
       }
-      { pos += 1; pos - 1 }
+      pos += 1
     }
     null
   }
@@ -107,7 +107,7 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
   def getLength: Int = {
     var length: Int = 0
     val atts: AxisIterator = element.iterateAxis(AxisInfo.ATTRIBUTE)
-    while (atts.next() != null) { length += 1; length - 1 }
+    while (atts.next() != null) { length += 1 }
     getNumberOfNamespaces + length
   }
 

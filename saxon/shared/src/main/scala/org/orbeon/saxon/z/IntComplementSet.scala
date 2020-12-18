@@ -86,7 +86,7 @@ class IntComplementSet extends IntSet {
       val ii: IntIterator = other.iterator
       while (ii.hasNext) {
         if (exclusions.contains(ii.next)) {
-          false
+          return false
         }
       }
       true

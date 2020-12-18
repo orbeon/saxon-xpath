@@ -253,9 +253,7 @@ abstract class HTMLEmitter extends XMLEmitter {
       case _ =>
     }
     var disabled = false
-    while ( {
-      segstart < chars.length
-    }) {
+    while (segstart < chars.length) {
       var i = segstart
       // find a maximal sequence of "ordinary" characters
       if (escapeNonAscii) {
@@ -328,10 +326,8 @@ abstract class HTMLEmitter extends XMLEmitter {
       }
       else if (escapeNonAscii || !characterSet.inCharset(c)) characterReferenceGenerator.outputCharacterReference(c, writer)
       else writer.write(c)
-      segstart = {
-        i += 1
-        i
-      }
+      i += 1
+      segstart = i
     }
   }
 

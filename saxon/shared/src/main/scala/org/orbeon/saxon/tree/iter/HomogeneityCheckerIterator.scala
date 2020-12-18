@@ -64,7 +64,7 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
           GlobalOrderComparer.getInstance)
         // first item is a node
         state = 1
-        base.next()
+       return base.next()
       } else {
         // first item is an atomic value or function item
         state = -1

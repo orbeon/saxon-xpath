@@ -128,9 +128,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
   }
 
   override def endElement(): Unit = {
-    {
-      level -= 1
-    }
+    level -= 1
     if (afterEndTag && !sameline) {
       indent()
     } else {

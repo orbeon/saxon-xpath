@@ -46,14 +46,9 @@ object Whitespace {
    * @param ch the character (Unicode codepoint) to be tested
    * @return true if the character is one of tab, newline, carriage return, or space
    */
-  def isWhitespace(ch: Int) = ch match {
-    case 9 =>
-    case 10 =>
-    case 13 =>
-    case 32 =>
-      true
-    case _ =>
-      false
+  def isWhitespace(ch: Int): Boolean = ch match {
+    case 9 | 10 | 13 | 32 => true
+    case _ => false
   }
 
   /**
@@ -63,7 +58,7 @@ object Whitespace {
    * @param value  the value to be normalized
    * @return the value after normalization
    */
-  def applyWhitespaceNormalization(action: Int, /*@NotNull*/ value: CharSequence) = action match {
+  def applyWhitespaceNormalization(action: Int, /*@NotNull*/ value: CharSequence): CharSequence = action match {
     case PRESERVE =>
       value
     case REPLACE =>
@@ -71,12 +66,8 @@ object Whitespace {
       for (i <- 0 until value.length) {
         val c = value.charAt(i)
         c match {
-          case '\n' =>
-          case '\r' =>
-          case '\t' =>
-            sb.cat(' ')
-          case _ =>
-            sb.cat(c)
+          case '\n' | '\r' | '\t' => sb.cat(' ')
+          case _ => sb.cat(c)
         }
       }
       sb
@@ -95,7 +86,7 @@ object Whitespace {
    * @return the string without its whitespace. This may be the original value
    *         if it contained no whitespace
    */
-  def removeAllWhitespace(value: CharSequence) = if (containsWhitespace(value)) {
+  def removeAllWhitespace(value: CharSequence): CharSequence = if (containsWhitespace(value)) {
     val sb = new FastStringBuffer(value.length)
     for (i <- 0 until value.length) {
       val c = value.charAt(i)
@@ -144,9 +135,7 @@ object Whitespace {
    */
   def containsWhitespace(value: CharSequence): Boolean = {
     var i = value.length - 1
-    while ( {
-      i >= 0
-    }) {
+    while (i >= 0) {
       val c = value.charAt({
         i -= 1; i + 1
       })
@@ -166,9 +155,7 @@ object Whitespace {
     if (content.isInstanceOf[CompressedWhitespace]) return true
     val len = content.length
     var i = 0
-    while ( {
-      i < len
-    }) { // all valid XML 1.0 whitespace characters, and only whitespace characters, are <= 0x20
+    while ( i < len) { // all valid XML 1.0 whitespace characters, and only whitespace characters, are <= 0x20
       // But XML 1.1 allows non-white characters that are also < 0x20, so we need a specific test for these
       val c = content.charAt({
         i += 1; i - 1
@@ -201,14 +188,12 @@ object Whitespace {
    * @return a copy of the string in which any whitespace character is replaced by
    *         a single space character
    */
-  def normalizeWhitespace(in: CharSequence) = {
+  def normalizeWhitespace(in: CharSequence): CharSequence = {
     val sb = new FastStringBuffer(in.length)
     for (i <- 0 until in.length) {
       val c = in.charAt(i)
       c match {
-        case '\n' =>
-        case '\r' =>
-        case '\t' =>
+        case '\n' | '\r' | '\t' =>
           sb.cat(' ')
         case _ =>
           sb.cat(c)
@@ -231,15 +216,10 @@ object Whitespace {
     val sb = new FastStringBuffer(len)
     var inWhitespace = true
     var i = 0
-    while ( {
-      i < len
-    }) {
+    while (i < len) {
       val c = in.charAt(i)
       c match {
-        case '\n' =>
-        case '\r' =>
-        case '\t' =>
-        case ' ' =>
+        case '\n'|'\r'|'\t'| ' ' =>
           if (inWhitespace) {
             // remove the whitespace
           }
@@ -330,14 +310,10 @@ object Whitespace {
     override def next: StringValue = {
       var start = position
       val eol = input.length
-      while ( {
-        start < eol && isWhite(input(start))
-      }) start += 1
+      while (start < eol && isWhite(input(start))) start += 1
       if (start >= eol) return null
       var end = start
-      while ( {
-        end < eol && !isWhite(input(end))
-      }) end += 1
+      while (end < eol && !isWhite(input(end))) end += 1
       position = end
       StringValue.makeStringValue(new CharSlice(input, start, end - start))
     }

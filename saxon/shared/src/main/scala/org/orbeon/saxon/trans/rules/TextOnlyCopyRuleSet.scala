@@ -33,7 +33,7 @@ object TextOnlyCopyRuleSet {
    *
    * @return the singleton instance
    */
-  def getInstance = THE_INSTANCE
+  def getInstance: TextOnlyCopyRuleSet = THE_INSTANCE
 }
 
 class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
@@ -105,5 +105,5 @@ class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
    * @param nodeKind the node kind
    * @return the default action for unmatched nodes: one of DEEP_COPY, SHALLOW_SKIP, DEEP_SKIP, FAIL, etc
    */
-  override def getActionForParentNodes(nodeKind: Int) = Array[Int](APPLY_TEMPLATES_TO_CHILDREN)
+  override def getActionForParentNodes(nodeKind: Int): Array[Int] = Array[Int](APPLY_TEMPLATES_TO_CHILDREN)
 }

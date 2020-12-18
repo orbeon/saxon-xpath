@@ -76,7 +76,7 @@ class CharacterSetFactory {
   def getCharacterSet(details: Properties): CharacterSet = {
     val encoding: String = details.getProperty(OutputKeys.ENCODING)
     if (encoding == null) {
-      UTF8CharacterSet.getInstance
+     return UTF8CharacterSet.getInstance
     }
     getCharacterSet(encoding)
   }

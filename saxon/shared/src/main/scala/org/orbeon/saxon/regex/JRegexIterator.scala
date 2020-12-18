@@ -166,10 +166,7 @@ class JRegexIterator(private var theString: String,
             // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
             // insert the start and end events immediately before the end event for the parent group,
           }
-          {
-            i += 1;
-            i - 1
-          }
+          i += 1
         }
       }
       val buff = new FastStringBuffer(current.length)
@@ -217,34 +214,20 @@ class JRegexIterator(private var theString: String,
     while (i < s.length) {
       val ch: Char = s.charAt(i)
       if (ch == '\'') {
-        {
-          i += 1;
-          i - 1
-        }
+          i += 1
       } else if (ch == '[') {
-        {
-          inBrackets += 1;
-          inBrackets - 1
-        }
+        inBrackets += 1
       } else if (ch == ']') {
-        {
-          inBrackets -= 1;
-          inBrackets + 1
-        }
+          inBrackets -= 1
       } else if (ch == '(' && s.charAt(i + 1) != '?' && inBrackets == 0) {
         nestingTable.put(group, stack(tos - 1))
         stack({
           tos += 1;
           tos - 1
-        }) = {
-          group += 1;
-          group - 1
-        }
+        }) = group
+        group += 1
       } else if (ch == ')' && inBrackets == 0) {
-        {
-          tos -= 1;
-          tos + 1
-        }
+          tos -= 1
       }
     }
   }

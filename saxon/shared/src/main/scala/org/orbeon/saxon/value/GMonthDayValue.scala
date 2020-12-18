@@ -22,7 +22,7 @@ object GMonthDayValue {
   def makeGMonthDayValue(value: CharSequence): ConversionResult = {
     val m: Matcher = regex.matcher(Whitespace.trimWhitespace(value))
     if (!m.matches()) {
-      new ValidationFailure("Cannot convert '" + value + "' to a gMonthDay")
+      return new ValidationFailure("Cannot convert '" + value + "' to a gMonthDay")
     }
     val g: GMonthDayValue = new GMonthDayValue()
     val base: String = m.group(1)

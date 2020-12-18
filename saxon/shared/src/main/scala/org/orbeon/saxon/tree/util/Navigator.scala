@@ -1129,10 +1129,7 @@ object Navigator {
       this.includeAncestors = includeAncestors
       ancestorEnum = new Navigator.AncestorEnumeration(start, false)
       start.getNodeKind match {
-        case Type.ELEMENT =>
-        case Type.TEXT =>
-        case Type.COMMENT =>
-        case Type.PROCESSING_INSTRUCTION =>
+        case Type.ELEMENT | Type.TEXT | Type.COMMENT | Type.PROCESSING_INSTRUCTION =>
           siblingEnum = start.iterateAxis(AxisInfo.PRECEDING_SIBLING)
         case _ =>
           siblingEnum = EmptyIterator.ofNodes

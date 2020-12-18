@@ -710,10 +710,8 @@ class XMLEmitter extends Emitter {
         characterReferenceGenerator.outputCharacterReference(c, writer)
       }
       else if (UTF16CharacterSet.isHighSurrogate(c)) {
-        val d = chars.charAt({
-          i += 1
-          i
-        })
+        i += 1
+        val d = chars.charAt(i)
         val charval = UTF16CharacterSet.combinePair(c, d)
         if (characterSet.inCharset(charval)) {
           writer.write(c)
@@ -724,10 +722,8 @@ class XMLEmitter extends Emitter {
       else { // process characters not available in the current encoding
         characterReferenceGenerator.outputCharacterReference(c, writer)
       }
-      segstart = {
-        i += 1
-        i
-      }
+      i += 1
+      segstart = i
     }
   }
 

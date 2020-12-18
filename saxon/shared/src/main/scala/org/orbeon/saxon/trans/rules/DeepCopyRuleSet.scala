@@ -32,7 +32,7 @@ object DeepCopyRuleSet {
    *
    * @return the singleton instance
    */
-  def getInstance = THE_INSTANCE
+  def getInstance: DeepCopyRuleSet = THE_INSTANCE
 }
 
 class DeepCopyRuleSet private() extends BuiltInRuleSet {
