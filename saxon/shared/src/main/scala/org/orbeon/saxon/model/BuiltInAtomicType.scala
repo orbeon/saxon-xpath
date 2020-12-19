@@ -153,7 +153,7 @@ object BuiltInAtomicType {
    * @return the newly constructed built in atomic type
    */
   /*@NotNull*/
-  private def makeAtomicType(fingerprint: Int, baseType: SimpleType, code: String, ordered: Boolean) = {
+  private def makeAtomicType(fingerprint: Int, baseType: SimpleType, code: String, ordered: Boolean): BuiltInAtomicType = {
     val t = new BuiltInAtomicType(fingerprint)
     t.setBaseTypeFingerprint(baseType.getFingerprint)
     if (t.isPrimitiveType)

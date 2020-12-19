@@ -51,19 +51,18 @@ class IntegratedFunctionCall(private var name: StructuredQName,
   def getTargetFunction(context: XPathContext): Function = null
 
   override def checkArguments(visitor: ExpressionVisitor): Unit = {
-    val definition: ExtensionFunctionDefinition = function.getDefinition
-    checkArgumentCount(definition.getMinimumNumberOfArguments,
-      definition.getMaximumNumberOfArguments)
-    val args: Int = getArity
-    val declaredArgumentTypes: Array[SequenceType] =
-      definition.getArgumentTypes
-    if (declaredArgumentTypes == null || (args != 0 && declaredArgumentTypes.length == 0)) {
-      throw new XPathException(
-        "Integrated function " + getDisplayName + " failed to declare its argument types")
-    }
-    val actualArgumentTypes: Array[SequenceType] =
-      Array.ofDim[SequenceType](args)
-    val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(false)
+
+    val definition = function.getDefinition
+    checkArgumentCount(definition.getMinimumNumberOfArguments, definition.getMaximumNumberOfArguments)
+
+    val args                  = getArity
+    val declaredArgumentTypes = definition.getArgumentTypes
+
+    if (declaredArgumentTypes == null || (args != 0 && declaredArgumentTypes.length == 0))
+      throw new XPathException("Integrated function " + getDisplayName + " failed to declare its argument types")
+
+    val actualArgumentTypes = Array.ofDim[SequenceType](args)
+    val tc                  = visitor.getConfiguration.getTypeChecker(false)
     for (i <- 0 until args) {
       setArg(
         i,
@@ -82,32 +81,32 @@ class IntegratedFunctionCall(private var name: StructuredQName,
         getArg(i).getCardinality)
     }
     resultType = definition.getResultType(actualArgumentTypes)
-    if (state == 0) {
+    if (state == 0)
       function.supplyStaticContext(visitor.getStaticContext, 0, getArguments)
-    }
     state += 1
   }
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextInfo: ContextItemStaticInfo): Expression = {
-    val exp: Expression = super.typeCheck(visitor, contextInfo)
-    if (exp.isInstanceOf[IntegratedFunctionCall]) {
-      val exp2: Expression = exp
-        .asInstanceOf[IntegratedFunctionCall]
-        .function
-        .rewrite(visitor.getStaticContext, getArguments)
-      if (exp2 == null) {
-        return  exp
-      } else {
-        ExpressionTool.copyLocationInfo(this, exp2)
-        exp2
-          .simplify()
-          .typeCheck(visitor, contextInfo)
-          .optimize(visitor, contextInfo)
-      }
+  override def typeCheck(
+    visitor     : ExpressionVisitor,
+    contextInfo : ContextItemStaticInfo
+  ): Expression =
+    super.typeCheck(visitor, contextInfo) match {
+      case integratedFunctionCall: IntegratedFunctionCall =>
+        val exp2 = integratedFunctionCall
+          .function
+          .rewrite(visitor.getStaticContext, getArguments)
+        if (exp2 == null) {
+          integratedFunctionCall
+        } else {
+          ExpressionTool.copyLocationInfo(this, exp2)
+          exp2
+            .simplify()
+            .typeCheck(visitor, contextInfo)
+            .optimize(visitor, contextInfo)
+        }
+      case exp =>
+        exp
     }
-    exp
-  }
 
   override def preEvaluate(visitor: ExpressionVisitor): Expression = this
 

@@ -1,9 +1,5 @@
 package org.orbeon.saxon.expr.instruct
 
-import java.util
-import java.util._
-import java.util.function.Predicate
-
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.expr.sort.LRUCache
@@ -23,9 +19,12 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value._
 
+import java.util._
+import java.util.function.Predicate
 import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 class EvaluateInstr(xpath: Expression,
                     private var requiredType: SequenceType,
@@ -92,7 +91,7 @@ class EvaluateInstr(xpath: Expression,
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    importedSchemaNamespaces = visitor.getStaticContext.getImportedSchemaNamespaces.asInstanceOf[util.Set[String]]
+    importedSchemaNamespaces = visitor.getStaticContext.getImportedSchemaNamespaces
     typeCheckChildren(visitor, contextInfo)
     WithParam.typeCheck(getActualParams, visitor, contextInfo)
     this

@@ -10,10 +10,10 @@ import org.orbeon.saxon.functions._
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet._
 import org.orbeon.saxon.model.BuiltInAtomicType
 
+
 object UseWhen30FunctionSet {
   val getInstance: UseWhen30FunctionSet = new UseWhen30FunctionSet
 }
-
 
 /**
  * Function signatures (and pointers to implementations) of the functions available for use

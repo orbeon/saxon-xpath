@@ -48,10 +48,6 @@ class ExpressionVisitor(private var config: Configuration) {
   @BooleanBeanProperty
   var suppressWarnings: Boolean = false
 
-  /**
-    * Get the Configuration
-    * @return the configuration
-    */
   def getConfiguration: Configuration = config
 
   def issueWarning(message: String, locator: Location): Unit =

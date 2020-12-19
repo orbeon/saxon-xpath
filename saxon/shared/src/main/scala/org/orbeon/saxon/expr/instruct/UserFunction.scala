@@ -332,11 +332,9 @@ class UserFunction
     context.setStackFrame(getStackFrameMap, actualArgs)
     try getBody.evaluatePendingUpdates(context, pul)
     catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(getLocation)
         throw err
-      }
-
     }
   }
 
@@ -344,10 +342,9 @@ class UserFunction
     presenter.startElement("function")
     if (getFunctionName != null) {
       presenter.emitAttribute("name", getFunctionName)
-      presenter.emitAttribute("line", getLineNumber.toString())
+      presenter.emitAttribute("line", getLineNumber.toString)
       presenter.emitAttribute("module", getSystemId)
-      presenter.emitAttribute("eval",
-        getEvaluator.getEvaluationMode.getCode.toString)
+      presenter.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
     }
     var flags: String = ""
     if (determinism == Determinism.PROACTIVE) {
