@@ -55,36 +55,48 @@ object Chain {
     stack ::= new ChainPosition(thisChain, 0)
 
     def next(): Item = {
+
+      // If there are iterators on the queue waiting to be processed, then take the first
+      // item from the first iterator on the queue.
       while (! queue.isEmpty) {
         var ui = queue.peek()
         while (ui != null) {
           val current = ui.next()
-          if (current != null) current else {
+          if (current != null)
+            return current
+          else {
             queue.remove()
             ui = queue.peek()
           }
         }
       }
+
+      // Otherwise, or after attempting to process the iterators on the queue, look at the
+      // stack of Chain objects and get the next item from the top-most Chain. If this is itself
+      // a Chain, then add it to the stack and repeat. If this Chain is exhausted, then pop it off the
+      // stack and repeat.
       while (stack.nonEmpty) {
         val cp = stack.head
         if (cp.offset >= cp.chain.children.size) {
           stack = stack.tail
-          //continue
-        }
-        val gv = cp.chain.children.get({
-          cp.offset += 1
-          cp.offset - 1
-        })
-        gv match {
-          case chain: Chain =>
-            stack ::= new ChainPosition(chain, 0)
-          case item: Item =>
-            item
-          case _ =>
-            queue.offer(gv.iterate())
-            next()
+        } else {
+          val gv = cp.chain.children.get({
+            cp.offset += 1
+            cp.offset - 1
+          })
+          gv match {
+            case chain: Chain =>
+              stack ::= new ChainPosition(chain, 0)
+            case item: Item =>
+              return item
+            case _ =>
+              queue.offer(gv.iterate())
+              return next()
+          }
         }
       }
+
+      // If we get here, there is no more data available
       null
     }
 
