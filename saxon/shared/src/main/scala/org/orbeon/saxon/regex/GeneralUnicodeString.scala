@@ -17,11 +17,9 @@ import org.orbeon.saxon.value.StringValue
 class GeneralUnicodeString(var charSequence: CharSequence)
     extends UnicodeString {
 
-  private var charArr: Array[Int] = org.orbeon.saxon.value.StringValue.expand(charSequence)
-
-  private var start: Int = 0
-
-  private var end: Int = charArr.length
+  private var charArr = org.orbeon.saxon.value.StringValue.expand(charSequence)
+  private var start   = 0
+  private var end     = charArr.length
 
   def this(chars: Array[Int], start: Int, end: Int) = {
     this("")
@@ -31,14 +29,10 @@ class GeneralUnicodeString(var charSequence: CharSequence)
   }
 
   def uSubstring(beginIndex: Int, endIndex: Int): UnicodeString = {
-    if (endIndex > charArr.length) {
-      throw new IndexOutOfBoundsException(
-        "endIndex=" + endIndex + "; sequence size=" + charArr.length)
-    }
-    if (beginIndex < 0 || beginIndex > endIndex) {
-      throw new IndexOutOfBoundsException(
-        "beginIndex=" + beginIndex + "; endIndex=" + endIndex)
-    }
+    if (endIndex > charArr.length)
+      throw new IndexOutOfBoundsException("endIndex=" + endIndex + "; sequence size=" + charArr.length)
+    if (beginIndex < 0 || beginIndex > endIndex)
+      throw new IndexOutOfBoundsException("beginIndex=" + beginIndex + "; endIndex=" + endIndex)
     new GeneralUnicodeString(charArr, start + beginIndex, start + endIndex)
   }
 
@@ -46,10 +40,9 @@ class GeneralUnicodeString(var charSequence: CharSequence)
 
   def uIndexOf(search: Int, pos: Int): Int = {
     val len = uLength
-    for(i <- pos until len) {
-         if(charArr(start +i) == search)
-           return i
-    }
+    for(i <- pos until len)
+      if (charArr(start + i) == search)
+        return i
     -1
   }
 
@@ -117,5 +110,4 @@ class GeneralUnicodeString(var charSequence: CharSequence)
     */
   def subSequence(start: Int, end: Int): CharSequence =
     obtainCharSequence().subSequence(start, end)
-
 }

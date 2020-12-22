@@ -27,22 +27,24 @@ import scala.util.control.Breaks._
 object ARegexIterator {
 
   def computeNestingTable(regex: UnicodeString): IntToIntHashMap = {
+
     // See bug 3211
-    val nestingTable: IntToIntHashMap = new IntToIntHashMap(16)
-    val stack: Array[Int] = Array.ofDim[Int](regex.uLength)
-    var tos: Int = 0
-    val captureStack: Array[Boolean] = Array.ofDim[Boolean](regex.uLength)
-    var captureTos: Int = 0
-    var group: Int = 1
-    var inBrackets: Int = 0
+    val nestingTable = new IntToIntHashMap(16)
+    val stack        = Array.ofDim[Int](regex.uLength)
+    var tos          = 0
+    val captureStack = Array.ofDim[Boolean](regex.uLength)
+    var captureTos   = 0
+    var group        = 1
+    var inBrackets   = 0
+
     stack({
       tos += 1
       tos - 1
     }) = 0
-    var i: Int = 0
+    var i = 0
     val regexLen = regex.uLength
     while (i <= regexLen) {
-      val ch: Int = regex.uCharAt(i)
+      val ch = regex.uCharAt(i)
       if (ch == '\\') {
         i += 1
       } else if (ch == '[') {
@@ -50,7 +52,7 @@ object ARegexIterator {
       } else if (ch == ']') {
         inBrackets -= 1
       } else if (ch == '(' && inBrackets == 0) {
-        val capture: Boolean = regex.uCharAt(i + 1) != '?'
+        val capture = regex.uCharAt(i + 1) != '?'
         captureStack({
           captureTos += 1
           captureTos - 1
@@ -99,17 +101,16 @@ class ARegexIterator(private var theString: UnicodeString,
   def getLength: Int = {
     val another: ARegexIterator =
       new ARegexIterator(theString, regex, new REMatcher(matcher.getProgram))
-    var n: Int = 0
-    while (another.next() != null) {
+    var n = 0
+    while (another.next() != null)
       n += 1
-    }
     n
   }
 
   def next(): StringValue = {
     if (nextSubStr == null && prevEnd >= 0) {
       // we've returned a match (or we're at the start), so find the next match
-      var searchStart: Int = prevEnd
+      var searchStart = prevEnd
       if (skip) {
         // previous match was zero-length
         searchStart += 1
@@ -125,8 +126,8 @@ class ARegexIterator(private var theString: UnicodeString,
         }
       }
       if (matcher.`match`(theString, searchStart)) {
-        val start: Int = matcher.getParenStart(0)
-        val end: Int = matcher.getParenEnd(0)
+        val start = matcher.getParenStart(0)
+        val end   = matcher.getParenEnd(0)
         skip = start == end
         if (prevEnd == start) {
           // there's no intervening non-matching string to return
@@ -168,17 +169,24 @@ class ARegexIterator(private var theString: UnicodeString,
   private def currentStringValue(): StringValue =
     StringValue.makeStringValue(current)
 
-  def getRegExProperties: Set[Property] = Set(Property.LAST_POSITION_FINDER)
+  def getRegExProperties: Set[Property] =
+    Set(Property.LAST_POSITION_FINDER)
 
   def isMatching: Boolean = nextSubStr == null && prevEnd >= 0
 
   def getRegexGroup(number: Int): String = {
-    if (!isMatching) {
+
+    if (!isMatching)
       return null
-    }
-    if (number >= matcher.getParenCount || number < 0) return ""
-    val us: UnicodeString = matcher.getParen(number)
-    if (us == null) "" else us.toString
+
+    if (number >= matcher.getParenCount || number < 0)
+      return ""
+
+    val us = matcher.getParen(number)
+    if (us == null)
+      ""
+    else
+      us.toString
   }
 
   /**
@@ -187,28 +195,28 @@ class ARegexIterator(private var theString: UnicodeString,
   override def getNumberOfGroups: Int = matcher.getParenCount
 
   def processMatchingSubstring(action: MatchHandler): Unit = {
-    val c: Int = matcher.getParenCount - 1
+    val c = matcher.getParenCount - 1
     if (c == 0) {
       action.characters(current.toString)
     } else {
       // The "actions" in each list are: +N: start group N; -N: end group N.
-      val actions: IntHashMap[List[Integer]] = new IntHashMap[List[Integer]](c)
-      var i: Int = 1
+      val actions = new IntHashMap[List[Integer]](c)
+      var i = 1
       breakable {
         while (i <= c) {
-          val start: Int = matcher.getParenStart(i) - matcher.getParenStart(0)
+          val start = matcher.getParenStart(i) - matcher.getParenStart(0)
           if (start != -1) {
-            val end: Int = matcher.getParenEnd(i) - matcher.getParenStart(0)
+            val end = matcher.getParenEnd(i) - matcher.getParenStart(0)
             if (start < end) {
               // Add the start action after all other actions on the list for the same position
-              var s: List[Integer] = actions.get(start)
+              var s = actions.get(start)
               if (s == null) {
                 s = new ArrayList[Integer](4)
                 actions.put(start, s)
               }
               s.add(i)
               // Add the end action before all other actions on the list for the same position
-              var e: List[Integer] = actions.get(end)
+              var e = actions.get(end)
               if (e == null) {
                 e = new ArrayList[Integer](4)
                 actions.put(end, e)
@@ -216,19 +224,18 @@ class ARegexIterator(private var theString: UnicodeString,
               e.add(0, -i)
             } else {
               // So we need to go back to the original regex to determine the group nesting
-              if (nestingTable == null) {
+              if (nestingTable == null)
                 nestingTable = computeNestingTable(regex)
-              }
-              val parentGroup: Int = nestingTable.get(i)
+              val parentGroup = nestingTable.get(i)
               // if present; otherwise after all existing events for this position
-              var s: List[Integer] = actions.get(start)
+              var s = actions.get(start)
               if (s == null) {
                 s = new ArrayList[Integer](4)
                 actions.put(start, s)
                 s.add(i)
                 s.add(-i)
               } else {
-                var pos: Int = s.size
+                var pos = s.size
                 for (e <- 0 until s.size if s.get(e) == -parentGroup) {
                   pos = e
                   break()
@@ -241,17 +248,13 @@ class ARegexIterator(private var theString: UnicodeString,
             // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
             // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
             // insert the start and end events immediately before the end event for the parent group,
-            // zero-length group (start==end). The problem here is that the information available
-            // from Java isn't sufficient to determine the nesting of groups: match("a", "(a(b?))")
-            // and match("a", "(a)(b?)") will both give the same result for group 2 (start=1, end=1).
-            // insert the start and end events immediately before the end event for the parent group,
           }
             i += 1
         }
       }
       val buff = new FastStringBuffer(current.uLength)
       for (i <- 0 until current.uLength + 1) {
-        val events: List[Integer] = actions.get(i)
+        val events = actions.get(i)
         if (events != null) {
           if (buff.length > 0) {
             action.characters(buff)
