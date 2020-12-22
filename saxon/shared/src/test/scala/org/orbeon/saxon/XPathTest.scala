@@ -125,8 +125,8 @@ class XPathTest extends AnyFunSpec {
       ("""*[3]/root()/*/*[1]""",                                   docElem, false, "Wile"),
       ("""There are {41 + 1} {/}s""",                              docElem, true,  "There are 42 WileE.Coyotes"),
 //      ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
-//      ("""string-join(for $i in * return string($i), '/')""", doc, "Wile/E./Coyote"), // FIXME: doesn't include '/'
-//      ("""string(/root/first-name)""", doc, "Wile"), // FIXME: returns blank
+//      ("""string-join(for $i in * return string($i), '/')""",      doc,     false, "Wile/E./Coyote"), // FIXME: doesn't include '/'
+//      ("""string(/root/first-name)""",                             doc,     false, "Wile"), // FIXME: returns blank
 //      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
 
