@@ -53,35 +53,42 @@ object BuiltInFunctionSet {
 
   class Entry {
 
+    // Passed at construction
     var name         : StructuredQName                  = _
-    var make         : () => SystemFunction             = _
     var arity        : Int                              = _
+    var make         : () => SystemFunction             = _
     var itemType     : ItemType                         = _
     var cardinality  : Int                              = _
-    var usage        : Array[OperandUsage.OperandUsage] = _
+    var properties   : Int                              = _
+
+    // Updated when adding `arg`s
     var argumentTypes: Array[SequenceType]              = _
     var resultIfEmpty: Array[Sequence]                  = Array.empty
-    var properties   : Int                              = _
+    var usage        : Array[OperandUsage.OperandUsage] = _
+
+    // Updated with `optionDetails`
     var optionDetails: OptionsParameter                 = _
 
-    def arg(a: Int, `type`: ItemType, options: Int, resultIfEmpty: Sequence): Entry = {
+    def arg(a: Int, itemType: ItemType, options: Int, resultIfEmpty: Sequence): Entry = {
       val cardinality = options & StaticProperty.CARDINALITY_MASK
-      var usage       = OperandUsage.NAVIGATION
-      if ((options & ABS) != 0)
-        usage = OperandUsage.ABSORPTION
-      else if ((options & TRA) != 0)
-        usage = OperandUsage.TRANSMISSION
-      else if ((options & INS) != 0)
-        usage = OperandUsage.INSPECTION
-      else if (`type`.isInstanceOf[PlainType])
-        usage = OperandUsage.ABSORPTION
+      val usage =
+        if ((options & ABS) != 0)
+          OperandUsage.ABSORPTION
+        else if ((options & TRA) != 0)
+          OperandUsage.TRANSMISSION
+        else if ((options & INS) != 0)
+          OperandUsage.INSPECTION
+        else if (itemType.isInstanceOf[PlainType])
+          OperandUsage.ABSORPTION
+        else
+          OperandUsage.NAVIGATION
       try {
-        this.argumentTypes(a) = SequenceType.makeSequenceType(`type`, cardinality)
+        this.argumentTypes(a) = SequenceType.makeSequenceType(itemType, cardinality)
         this.resultIfEmpty(a) = resultIfEmpty
         this.usage(a)         = usage
       } catch {
         case _: ArrayIndexOutOfBoundsException =>
-          System.err.println("Internal Saxon error: Can't set argument " + a + " of " + name)
+          System.err.println(s"Internal Saxon error: Can't set argument $a of `$name`")
       }
       this
     }
@@ -91,7 +98,6 @@ object BuiltInFunctionSet {
       this
     }
   }
-
 }
 
 abstract class BuiltInFunctionSet extends FunctionLibrary {
@@ -104,9 +110,10 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     functionTable.putAll(importee.functionTable)
   }
 
+  // ORBEON: Could be private.
   def getFunctionDetails(name: String, arity: Int): Entry = {
     if (arity == -1) {
-      for (i <- 0.until(20)) {
+      for (i <- 0 until 20) {
         val found = getFunctionDetails(name, i)
         if (found != null)
           return found
@@ -222,15 +229,17 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     properties : Int
   ): Entry = {
     val e = new Entry
+
     e.name        = new StructuredQName(getConventionalPrefix, getNamespace, name)
     e.arity       = arity
     e.make        = make
     e.itemType    = itemType
     e.cardinality = cardinality
     e.properties  = properties
+
     if (e.arity == -1) {
       e.argumentTypes = Array.ofDim[SequenceType](1)
-      e.resultIfEmpty = Array.ofDim[AtomicValue](1).asInstanceOf[Array[Sequence]]
+      e.resultIfEmpty = Array.ofDim[Sequence](1)
       e.usage         = Array.ofDim[OperandUsage.OperandUsage](1)
     } else {
       e.argumentTypes = Array.ofDim[SequenceType](arity)
@@ -251,6 +260,7 @@ abstract class BuiltInFunctionSet extends FunctionLibrary {
     var arity  = min
     while (arity <= max) {
       val e = new Entry
+
       e.name          = master.name
       e.arity         = arity
       e.make          = master.make

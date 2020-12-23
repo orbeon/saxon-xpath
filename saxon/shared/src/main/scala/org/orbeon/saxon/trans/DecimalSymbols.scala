@@ -242,7 +242,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
   }
 
   def checkConsistency(name: StructuredQName): Unit = {
-    for (i <- 0.until(10) if inconsistent(i)) {
+    for (i <- 0 until 10 if inconsistent(i)) {
       val err = new XPathException(
         "Inconsistency in " +
           (if (name == null) "unnamed decimal format. "

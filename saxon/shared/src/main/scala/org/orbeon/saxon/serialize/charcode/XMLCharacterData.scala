@@ -1347,7 +1347,7 @@ object XMLCharacterData {
 
   def getCategory(mask: Byte): IntRangeSet = {
     val irs: IntRangeSet = new IntRangeSet()
-    for (i <- 0.until(65536) if (data(i) & mask) != 0) {
+    for (i <- 0 until 65536 if (data(i) & mask) != 0) {
       irs.add(i)
     }
     if ((mask & (NAME_START_11_MASK | NAME_11_MASK)) != 0) {

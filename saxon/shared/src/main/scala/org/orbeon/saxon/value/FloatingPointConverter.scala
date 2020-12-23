@@ -221,7 +221,7 @@ object FloatingPointConverter {
       S = S * 10
       k += 1
     }
-    for (z <- k.until(0)) {
+    for (z <- k until 0) {
       if (initial) {
         sb.append("0.")
       }
@@ -304,7 +304,7 @@ object FloatingPointConverter {
       S = S.multiply(TEN)
       k += 1;
     }
-    for (z <- k.until(0)) {
+    for (z <- k until 0) {
       if (initial) {
         sb.append("0.")
       }

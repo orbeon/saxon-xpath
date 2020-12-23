@@ -159,7 +159,7 @@ class ForClause extends Clause {
         return false
       }
       breakable {
-        for (op <- 0.until(2)) {
+        for (op <- 0 until 2) {
           val thisVar: Array[Binding] = Array(this.getRangeVariable)
           if (positionVariable != null && operands(op)
             .isInstanceOf[VariableReference] &&
