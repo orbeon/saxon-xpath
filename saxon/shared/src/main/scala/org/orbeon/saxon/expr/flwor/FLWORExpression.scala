@@ -278,7 +278,7 @@ class FLWORExpression extends Expression {
               ExpressionTool.replaceVariableReferences(this,
                 lc.getRangeVariable,
                 lc.getSequence,
-                !oneRef)
+                true)
               clauses.remove(c)
               if (clauses.isEmpty) {
                 getReturnClause
