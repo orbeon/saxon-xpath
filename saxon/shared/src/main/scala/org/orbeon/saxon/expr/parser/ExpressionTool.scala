@@ -880,14 +880,20 @@ object ExpressionTool {
         if (info.hasSameFocus) {
           val child = info.getChildExpression
           if (child.isInstanceOf[ContextItemExpression]) {
-            val ref = if (variable.isGlobal) new GlobalVariableReference(variable.asInstanceOf[GlobalVariable])
-            else new LocalVariableReference(variable.asInstanceOf[LocalBinding])
+            val ref =
+              if (variable.isGlobal)
+                new GlobalVariableReference(variable.asInstanceOf[GlobalVariable])
+              else
+                new LocalVariableReference(variable.asInstanceOf[LocalBinding])
             copyLocationInfo(child, ref)
             info.setChildExpression(ref)
             changed = true
           } else if (child.isInstanceOf[AxisExpression] || child.isInstanceOf[RootExpression]) {
-            val ref = if (variable.isGlobal) new GlobalVariableReference(variable.asInstanceOf[GlobalVariable])
-            else new LocalVariableReference(variable.asInstanceOf[LocalBinding])
+            val ref =
+              if (variable.isGlobal)
+                new GlobalVariableReference(variable.asInstanceOf[GlobalVariable])
+              else
+                new LocalVariableReference(variable.asInstanceOf[LocalBinding])
             copyLocationInfo(child, ref)
             val path = ExpressionTool.makePathExpression(ref, child)
             info.setChildExpression(path)

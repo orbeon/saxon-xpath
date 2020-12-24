@@ -4,12 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Represents the defining occurrence of a variable declared within a FLWOR expression,
-  * for example the $p in "for $x at $p in ...". Also used for the variables bound to the context
-  * item in a pattern that uses current
-  */
-
 package org.orbeon.saxon.expr.flwor
 
 import org.orbeon.saxon.expr.{FilterExpression, LocalBinding, VariableReference, XPathContext}
@@ -19,6 +13,11 @@ import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 import scala.beans.BeanProperty
 
 
+/**
+  * Represents the defining occurrence of a variable declared within a FLWOR expression,
+  * for example the $p in "for $x at $p in ...". Also used for the variables bound to the context
+  * item in a pattern that uses current
+  */
 class LocalVariableBinding(private var variableName: StructuredQName,
                            @BeanProperty var requiredType: SequenceType)
     extends LocalBinding {

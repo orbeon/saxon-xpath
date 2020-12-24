@@ -11,7 +11,7 @@ object StackFrame {
 
 class StackFrame(var map: SlotManager, var slots: Array[Sequence]) {
 
-  var dynamicStack: List[Sequence] = Nil
+  private var dynamicStack: List[Sequence] = Nil
 
   def getStackFrameMap: SlotManager = map
 
@@ -28,7 +28,7 @@ class StackFrame(var map: SlotManager, var slots: Array[Sequence]) {
   }
 
   def pushDynamicValue(value: Sequence): Unit = {
-    if (this == StackFrame.EMPTY)
+    if (this eq StackFrame.EMPTY)
       throw new IllegalStateException("Immutable stack frame")
     dynamicStack ::= value
   }

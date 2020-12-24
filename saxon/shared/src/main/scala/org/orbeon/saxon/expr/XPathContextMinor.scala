@@ -121,7 +121,7 @@ class XPathContextMinor () extends XPathContext {
   def getStackFrame      : StackFrame                      = stackFrame
 
   def makeStackFrameMutable(): Unit =
-    if (stackFrame == StackFrame.EMPTY)
+    if (stackFrame eq StackFrame.EMPTY)
       stackFrame = new StackFrame(null, SequenceTool.makeSequenceArray(0))
 
   def evaluateLocalVariable(slotnumber: Int): Sequence =

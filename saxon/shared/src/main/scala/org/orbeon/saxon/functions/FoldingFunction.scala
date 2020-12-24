@@ -13,7 +13,7 @@ abstract class FoldingFunction extends SystemFunction {
     val additionalArgs = Array.ofDim[Sequence](arguments.length - 1)
     System.arraycopy(arguments, 1, additionalArgs, 0, additionalArgs.length)
     val fold = getFold(context, additionalArgs.toIndexedSeq:_*)
-    val iter= arguments(0).iterate()
+    val iter = arguments(0).iterate()
     var item: Item = null
     breakable {
       while ({
