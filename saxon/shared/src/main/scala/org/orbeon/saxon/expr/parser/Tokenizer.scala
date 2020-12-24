@@ -258,17 +258,14 @@ final class Tokenizer {
         case Token.PERCENT =>
           if (currentTokenValue == "declare") currentToken = Token.DECLARE_ANNOTATED
         case Token.NAME =>
-          var candidate = -1
-          currentTokenValue match {
-            case "element" =>
-              candidate = Token.ELEMENT_QNAME
-            case "attribute" =>
-              candidate = Token.ATTRIBUTE_QNAME
-            case "processing-instruction" =>
-              candidate = Token.PI_QNAME
-            case "namespace" =>
-              candidate = Token.NAMESPACE_QNAME
-          }
+          val candidate =
+            currentTokenValue match {
+              case "element"                => Token.ELEMENT_QNAME
+              case "attribute"              => Token.ATTRIBUTE_QNAME
+              case "processing-instruction" => Token.PI_QNAME
+              case "namespace"              => Token.NAMESPACE_QNAME
+              case _                        => -1
+            }
           if (candidate != -1) { // <'element' QName '{'> constructor
             // <'attribute' QName '{'> constructor
             // <'processing-instruction' QName '{'> constructor
