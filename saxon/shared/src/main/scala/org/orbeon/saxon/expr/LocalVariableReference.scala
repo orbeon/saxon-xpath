@@ -3,6 +3,12 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.expr.parser.RebindingMap
 import org.orbeon.saxon.om.{Sequence, StructuredQName}
 
+
+/**
+ * Variable reference: a reference to a local variable. This subclass of VariableReference
+ * bypasses the Binding object to get the value directly from the relevant slot in the local
+ * stackframe.
+ */
 class LocalVariableReference private (qnameOrBinding: StructuredQName Either LocalBinding)
   extends VariableReference(qnameOrBinding) {
 
@@ -43,14 +49,13 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
     catch {
       case _: ArrayIndexOutOfBoundsException =>
         if (slotNumber == -999) {
-          if (binding != null) {
+          if (binding != null)
             try {
               slotNumber = getBinding.getLocalSlotNumber
-              c.getStackFrame.getStackFrameValues(slotNumber)
+              return c.getStackFrame.getStackFrameValues(slotNumber)
             } catch {
               case _: ArrayIndexOutOfBoundsException =>
             }
-          }
           throw new ArrayIndexOutOfBoundsException("Local variable $" + getDisplayName + " has not been allocated a stack frame slot")
         } else {
           val actual = c.getStackFrame.getStackFrameValues.length
@@ -58,13 +63,17 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
             "Local variable $" + getDisplayName + " uses slot " +
               slotNumber +
               " but " +
-              (if (actual == 0) "no"
-              else "only " + c.getStackFrame.getStackFrameValues.length) +
-              " slots" +
-              " are allocated on the stack frame")
+              (
+                if (actual == 0)
+                  "no"
+                else
+                  "only " +
+                  c.getStackFrame.getStackFrameValues.length) +
+                  " slots" +
+                  " are allocated on the stack frame"
+              )
         }
-
     }
 
-  override def getExpressionName: String = "locVarRef"
+  override def getExpressionName = "locVarRef"
 }

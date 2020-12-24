@@ -1,42 +1,21 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.event.Outputter
-
-import org.orbeon.saxon.event.ReceiverOption
-
+import org.orbeon.saxon.event.{Outputter, ReceiverOption}
+import org.orbeon.saxon.expr.Expression._
 import org.orbeon.saxon.expr.flwor.LocalVariableBinding
-
-import org.orbeon.saxon.expr.instruct.GlobalParam
-
-import org.orbeon.saxon.expr.instruct.LocalParam
-
-import org.orbeon.saxon.expr.instruct.LocalParamBlock
-
+import org.orbeon.saxon.expr.instruct.{GlobalParam, LocalParam, LocalParamBlock}
 import org.orbeon.saxon.expr.parser._
-
 import org.orbeon.saxon.lib.StandardDiagnostics
-
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.pattern.NodeTest
-
 import org.orbeon.saxon.s9api.Location
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.Cardinality
-
-import org.orbeon.saxon.value.IntegerValue
-
-import org.orbeon.saxon.value.SequenceType
+import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-import Expression._
 
 abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   extends Expression with BindingReference {
@@ -44,7 +23,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   @BeanProperty var variableName: StructuredQName = qnameOrBinding.fold(identity, _.getVariableQName)
 
   // This will be null until fixup() is called; it will also be null if the variable reference has been inlined
-   var binding: Binding = null
+  var binding: Binding = null
 
   locally {
     qnameOrBinding foreach fixup
@@ -57,17 +36,16 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   var inLoop: Boolean = false
   var filtered: Boolean = false
 
-  override def setFlattened(flattened: Boolean): Unit = {
+  override def setFlattened(flattened: Boolean): Unit =
     this.flattened = flattened
-  }
 
   def isFlattened: Boolean = flattened
 
   def copy(rebindings: RebindingMap): Expression
 
-  override def getNetCost(): Int = 0
+  override def getNetCost: Int = 0
 
-   def copyFrom(ref: VariableReference): Unit = {
+  def copyFrom(ref: VariableReference): Unit = {
     binding = ref.binding
     staticType = ref.staticType
     constantValue = ref.constantValue
@@ -84,9 +62,8 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
                     value: GroundedValue,
                     properties: Int): Unit = {
     var seqTpe = sequenceType
-    if (seqTpe == null) {
+    if (seqTpe == null)
       seqTpe = SequenceType.ANY_SEQUENCE
-    }
     staticType = seqTpe
     constantValue = value
     val dependencies = getDependencies
@@ -110,9 +87,8 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     this
   }
 
-  def recomputeInLoop(): Unit = {
+  def recomputeInLoop(): Unit =
     inLoop = ExpressionTool.isLoopingReference(this, binding)
-  }
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
@@ -172,30 +148,23 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     val th = getConfiguration.getTypeHierarchy
     val oldItemType: ItemType = getItemType
     var newItemType: ItemType = oldItemType
-    if (th.isSubType(`type`, oldItemType)) {
+    if (th.isSubType(`type`, oldItemType))
       newItemType = `type`
-    }
-    if (oldItemType.isInstanceOf[NodeTest] && `type`
-      .isInstanceOf[AtomicType]) {
+    if (oldItemType.isInstanceOf[NodeTest] && `type`.isInstanceOf[AtomicType])
       newItemType = `type`
-    }
-    var newcard: Int = cardinality & getCardinality
-    if (newcard == 0) {
+    var newcard = cardinality & getCardinality
+    if (newcard == 0)
       newcard = getCardinality
-    }
-    val seqType: SequenceType =
-      SequenceType.makeSequenceType(newItemType, newcard)
+    val seqType = SequenceType.makeSequenceType(newItemType, newcard)
     setStaticType(seqType, constantValue, properties)
   }
 
   def getItemType: ItemType =
-    if (staticType == null ||
-      staticType.getPrimaryType == AnyItemType) {
+    if (staticType == null || staticType.getPrimaryType == AnyItemType) {
       if (binding != null) {
-        val st: SequenceType = binding.getRequiredType
-        if (st != null) {
-          st.getPrimaryType
-        }
+        val st = binding.getRequiredType
+        if (st != null)
+          return st.getPrimaryType
       }
       AnyItemType
     } else {
@@ -209,14 +178,13 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
           .asInstanceOf[LetExpression]
           .isInstruction) ||
         binding.isInstanceOf[LocalVariableBinding]) {
-        val st: SequenceType = binding.getRequiredType
-        if (st != null) {
-          st.getPrimaryType.getUType
-        } else {
-          UType.ANY
-        }
+        val st = binding.getRequiredType
+        if (st != null)
+          return st.getPrimaryType.getUType
+        else
+          return UType.ANY
       } else if (binding.isInstanceOf[Assignation]) {
-        binding
+        return binding
           .asInstanceOf[Assignation]
           .getSequence
           .getStaticUType(contextItemType)
@@ -225,12 +193,11 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     UType.ANY
   }
 
-  override def getIntegerBounds(): Array[IntegerValue] =
-    if (binding != null) {
+  override def getIntegerBounds: Array[IntegerValue] =
+    if (binding != null)
       binding.getIntegerBoundsForVariable
-    } else {
+    else
       null
-    }
 
   def computeCardinality(): Int =
     if (staticType == null) {
@@ -277,7 +244,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     if (binding == null) 73619830 else binding.hashCode
 
   override def getIntrinsicDependencies: Int = {
-    var d: Int = 0
+    var d = 0
     if (binding == null) {
       d |= StaticProperty.DEPENDS_ON_LOCAL_VARIABLES | StaticProperty.DEPENDS_ON_ASSIGNABLE_GLOBALS |
         StaticProperty.DEPENDS_ON_RUNTIME_ENVIRONMENT
@@ -299,7 +266,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       ITERATE_METHOD |
       PROCESS_METHOD
 
-  override def getScopingExpression(): Expression = {
+  override def getScopingExpression: Expression = {
     if (binding.isInstanceOf[Expression]) {
       if (binding.isInstanceOf[LocalParam] &&
         binding
@@ -315,11 +282,10 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         binding.asInstanceOf[Expression]
       }
     }
-    var parent: Expression = getParentExpression
+    var parent = getParentExpression
     while (parent != null) {
-      if (parent.hasVariableBinding(binding)) {
+      if (parent.hasVariableBinding(binding))
         return parent
-      }
       parent = parent.getParentExpression
     }
     null
@@ -332,16 +298,15 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   override def iterate(c: XPathContext): SequenceIterator =
     try {
-      val actual: Sequence = evaluateVariable(c)
+      val actual = evaluateVariable(c)
       assert(actual != null)
       actual.iterate()
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(getLocation)
         throw err
-      }
 
-      case err: NullPointerException => {
+      case err: NullPointerException =>
         err.printStackTrace()
         val msg = "Internal error: no value for variable $" + getDisplayName +
           " at line " +
@@ -351,9 +316,8 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         new StandardDiagnostics()
           .printStackTrace(c, c.getConfiguration.getLogger, 2)
         throw new AssertionError(msg)
-      }
 
-      case err: AssertionError => {
+      case err: AssertionError =>
         err.printStackTrace()
         val msg = err.getMessage + ". Variable reference $" + getDisplayName +
           " at line " +
@@ -363,8 +327,6 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         new StandardDiagnostics()
           .printStackTrace(c, c.getConfiguration.getLogger, 2)
         throw new AssertionError(msg)
-      }
-
     }
 
   override def evaluateItem(c: XPathContext): Item =
@@ -373,11 +335,9 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       assert(actual != null)
       actual.head
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(getLocation)
         throw err
-      }
-
     }
 
   override def process(output: Outputter, c: XPathContext): Unit = {
@@ -396,41 +356,37 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   }
 
   def evaluateVariable(c: XPathContext): Sequence =
-    try binding.evaluateVariable(c)
+    try
+      binding.evaluateVariable(c)
     catch {
       case err: NullPointerException =>
-        if (binding == null) {
-          throw new IllegalStateException(
-            "Variable $" + variableName.getDisplayName + " has not been fixed up")
-        } else {
+        if (binding == null)
+          throw new IllegalStateException("Variable $" + variableName.getDisplayName + " has not been fixed up")
+        else
           throw err
-        }
-
     }
 
   def getBinding: Binding = binding
 
   def getDisplayName: String =
-    if (binding != null) {
+    if (binding != null)
       binding.getVariableQName.getDisplayName
-    } else {
+    else
       variableName.getDisplayName
-    }
 
   def getEQName: String =
     if (binding != null) {
-      val q: StructuredQName = binding.getVariableQName
-      if (q.hasURI("")) {
+      val q = binding.getVariableQName
+      if (q.hasURI(""))
         q.getLocalPart
-      } else {
+      else
         q.getEQName
-      }
     } else {
       variableName.getEQName
     }
 
   override def toString: String = {
-    val d: String = getEQName
+    val d = getEQName
     "$" + (if (d == null) "$" else d)
   }
 
@@ -451,5 +407,4 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   }
 
   override def getStreamerName: String = "VariableReference"
-
 }
