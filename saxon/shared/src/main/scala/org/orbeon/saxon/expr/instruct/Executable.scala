@@ -1,26 +1,21 @@
 package org.orbeon.saxon.expr.instruct
 
-import org.orbeon.saxon.utils.Configuration
-import org.orbeon.saxon.expr.PackageData
-import org.orbeon.saxon.expr.XPathContext
+import org.orbeon.saxon.expr.{PackageData, XPathContext}
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
 import org.orbeon.saxon.functions.FunctionLibraryList
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.om.{Item, StructuredQName}
+import org.orbeon.saxon.query.QueryModule
 import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.serialize.CharacterMapIndex
-import org.orbeon.saxon.serialize.SerializationProperties
+import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
+import org.orbeon.saxon.serialize.{CharacterMapIndex, SerializationProperties}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import java.util._
+import org.orbeon.saxon.utils.Configuration
 
-import org.orbeon.saxon.query.QueryModule
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
-//import scala.collection.compat._
+import java.util._
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+
 
 class Executable(var config: Configuration) {
 
@@ -44,7 +39,7 @@ class Executable(var config: Configuration) {
   @BeanProperty
   var hostLanguage: HostLanguage = HostLanguage.XSLT
 
-  private var globalParams: Map[StructuredQName, GlobalParam] = new HashMap()
+  private val globalParams: Map[StructuredQName, GlobalParam] = new HashMap
 
   private var outputDeclarations: HashMap[StructuredQName, Properties] = null
 

@@ -1,27 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.instruct.GlobalVariable
-
 import org.orbeon.saxon.expr.parser.RebindingMap
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.StandardNames
-
-import org.orbeon.saxon.om.StructuredQName
-
+import org.orbeon.saxon.om.{GroundedValue, StandardNames, StructuredQName}
 import org.orbeon.saxon.trace.ExpressionPresenter
+import org.orbeon.saxon.trans.{SymbolicName, Visibility, XPathException}
 
-import org.orbeon.saxon.trans.SymbolicName
-
-import org.orbeon.saxon.trans.Visibility
-
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.HashSet
-
-import java.util.Set
+import java.util.{HashSet, Set}
 
 
 /**
@@ -55,9 +46,8 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
    *             can be found.
    */
   def setBindingSlot(slot: Int): Unit = {
-    if (bindingSlot != -1) {
+    if (bindingSlot != -1)
       throw new AssertionError("Duplicate binding slot assignment")
-    }
     bindingSlot = slot
   }
 
@@ -78,21 +68,19 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
   def getSymbolicName: SymbolicName =
     new SymbolicName(StandardNames.XSL_VARIABLE, getVariableName)
 
-  def setTarget(target: Component): Unit = {
+  def setTarget(target: Component): Unit =
     binding = target.getActor.asInstanceOf[GlobalVariable]
-  }
 
   def getTarget: Component =
     binding.asInstanceOf[GlobalVariable].getDeclaringComponent
 
   def getFixedTarget: Component = {
-    val c: Component = getTarget
-    val v: Visibility.Visibility = c.getVisibility
-    if (v == Visibility.PRIVATE || v == Visibility.FINAL) {
+    val c = getTarget
+    val v = c.getVisibility
+    if (v == Visibility.PRIVATE || v == Visibility.FINAL)
       c
-    } else {
+    else
       null
-    }
   }
 
   /**
@@ -104,10 +92,9 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
    */
   override def evaluateVariable(c: XPathContext): GroundedValue =
     if (bindingSlot >= 0) {
-      if (c.getCurrentComponent == null) {
+      if (c.getCurrentComponent == null)
         throw new AssertionError("No current component")
-      }
-      val target: Component = c.getTargetComponent(bindingSlot)
+      val target = c.getTargetComponent(bindingSlot)
       if (target.isHiddenAbstractComponent) {
         val err = new XPathException(
           "Cannot evaluate an abstract variable (" + getVariableName.getDisplayName +
@@ -116,11 +103,11 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
         err.setLocation(getLocation)
         throw err
       }
-      val p: GlobalVariable = target.getActor.asInstanceOf[GlobalVariable]
+      val p = target.getActor.asInstanceOf[GlobalVariable]
       p.evaluateVariable(c, target)
     } else {
       // code for references to final/private variables, also used in XQuery
-      val b: GlobalVariable = binding.asInstanceOf[GlobalVariable]
+      val b = binding.asInstanceOf[GlobalVariable]
       b.evaluateVariable(c, b.getDeclaringComponent)
     }
 
@@ -132,15 +119,8 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
   }
 
   def getPreconditions: Set[Expression] = {
-    val pre: Set[Expression] = new HashSet[Expression]()
+    val pre = new HashSet[Expression]
     //pre.add(this.copy());
     pre
   }
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

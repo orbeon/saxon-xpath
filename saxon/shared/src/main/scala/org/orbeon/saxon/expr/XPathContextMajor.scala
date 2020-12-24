@@ -39,30 +39,32 @@ object XPathContextMajor {
    * @return the new major context
    */
   def newContext(prev: XPathContextMinor): XPathContextMajor = {
-    val c: XPathContextMajor = new XPathContextMajor
+
+    val c = new XPathContextMajor
+
     var p: XPathContext = prev
-    while ( {
-      !p.isInstanceOf[XPathContextMajor]
-    }) p = p.getCaller
-    c.controller = p.getController
-    c.currentIterator = prev.getCurrentIterator
-    c.stackFrame = prev.getStackFrame
-    c.localParameters = p.getLocalParameters
-    c.tunnelParameters = p.getTunnelParameters
-    c.last = prev.last
-    c.currentDestination = prev.currentDestination
-    c.currentMode = p.getCurrentMode
-    c.currentTemplate = p.getCurrentTemplateRule
-    c.currentRegexIterator = p.getCurrentRegexIterator
-    c.currentGroupIterator = p.getCurrentGroupIterator
+    while (! p.isInstanceOf[XPathContextMajor])
+      p = p.getCaller
+
+    c.controller                = p.getController
+    c.currentIterator           = prev.getCurrentIterator
+    c.stackFrame                = prev.getStackFrame
+    c.localParameters           = p.getLocalParameters
+    c.tunnelParameters          = p.getTunnelParameters
+    c.last                      = prev.last
+    c.currentDestination        = prev.currentDestination
+    c.currentMode               = p.getCurrentMode
+    c.currentTemplate           = p.getCurrentTemplateRule
+    c.currentRegexIterator      = p.getCurrentRegexIterator
+    c.currentGroupIterator      = p.getCurrentGroupIterator
     c.currentMergeGroupIterator = p.getCurrentMergeGroupIterator
-    c.caller = prev
-    c.tailCallInfo = null
-    c.threadManager = p.asInstanceOf[XPathContextMajor].threadManager
-    c.currentComponent = p.asInstanceOf[XPathContextMajor].currentComponent
-    c.errorReporter = p.asInstanceOf[XPathContextMajor].errorReporter
-    c.uriResolver = p.asInstanceOf[XPathContextMajor].uriResolver
-    c.temporaryOutputState = prev.temporaryOutputState
+    c.caller                    = prev
+    c.tailCallInfo              = null
+    c.threadManager             = p.asInstanceOf[XPathContextMajor].threadManager
+    c.currentComponent          = p.asInstanceOf[XPathContextMajor].currentComponent
+    c.errorReporter             = p.asInstanceOf[XPathContextMajor].errorReporter
+    c.uriResolver               = p.asInstanceOf[XPathContextMajor].uriResolver
+    c.temporaryOutputState      = prev.temporaryOutputState
     c
   }
 
@@ -91,20 +93,20 @@ object XPathContextMajor {
 
 class XPathContextMajor private () extends XPathContextMinor {
 
-  private var localParameters: ParameterSet = _
-  private var tunnelParameters: ParameterSet = _
-  private var tailCallInfo: TailCallInfo = _
-  private var currentMode: M = _
-  private var currentTemplate: Rule = _
-  private var currentGroupIterator: GroupIterator = _
-  private var currentMergeGroupIterator: GroupIterator = _
-  private var currentRegexIterator: RegexIterator = _
-  private var origin: ContextOriginator = _
-  private var threadManager: ThreadManager = _
-  private var uriResolver: URIResolver = _
-  private var errorReporter: ErrorReporter = _
-  private var currentComponent: Component = _
-  private[expr] var currentException: XPathException = _
+  private var localParameters          : ParameterSet      = _
+  private var tunnelParameters         : ParameterSet      = _
+  private var tailCallInfo             : TailCallInfo      = _
+  private var currentMode              : M                 = _
+  private var currentTemplate          : Rule              = _
+  private var currentGroupIterator     : GroupIterator     = _
+  private var currentMergeGroupIterator: GroupIterator     = _
+  private var currentRegexIterator     : RegexIterator     = _
+  private var origin                   : ContextOriginator = _
+  private var threadManager            : ThreadManager     = _
+  private var uriResolver              : URIResolver       = _
+  private var errorReporter            : ErrorReporter     = _
+  private var currentComponent         : Component         = _
+  private[expr] var currentException   : XPathException    = _
 
   /**
    * Constructor should only be called by the Controller,
@@ -134,10 +136,10 @@ class XPathContextMajor private () extends XPathContextMinor {
     if (item != null) {
       val iter = SingletonIterator.makeIterator(item)
       currentIterator = new FocusTrackingIterator(iter)
-      try currentIterator.next()
+      try
+        currentIterator.next()
       catch {
-        case e: XPathException =>
-
+        case _: XPathException =>
         // cannot happen
       }
       last = new XPathContextMinor.LastValue(1)
@@ -151,26 +153,26 @@ class XPathContextMajor private () extends XPathContextMinor {
    */
   override def newContext: XPathContextMajor = {
     val c = new XPathContextMajor
-    c.controller = controller
-    c.currentIterator = currentIterator
-    c.stackFrame = stackFrame
-    c.localParameters = localParameters
-    c.tunnelParameters = tunnelParameters
-    c.last = last
-    c.currentDestination = currentDestination
-    c.currentMode = currentMode
-    c.currentTemplate = currentTemplate
-    c.currentRegexIterator = currentRegexIterator
-    c.currentGroupIterator = currentGroupIterator
+    c.controller                = controller
+    c.currentIterator           = currentIterator
+    c.stackFrame                = stackFrame
+    c.localParameters           = localParameters
+    c.tunnelParameters          = tunnelParameters
+    c.last                      = last
+    c.currentDestination        = currentDestination
+    c.currentMode               = currentMode
+    c.currentTemplate           = currentTemplate
+    c.currentRegexIterator      = currentRegexIterator
+    c.currentGroupIterator      = currentGroupIterator
     c.currentMergeGroupIterator = currentMergeGroupIterator
-    c.currentException = currentException
-    c.caller = this
-    c.tailCallInfo = null
-    c.temporaryOutputState = temporaryOutputState
-    c.threadManager = threadManager
-    c.currentComponent = currentComponent
-    c.errorReporter = errorReporter
-    c.uriResolver = uriResolver
+    c.currentException          = currentException
+    c.caller                    = this
+    c.tailCallInfo              = null
+    c.temporaryOutputState      = temporaryOutputState
+    c.threadManager             = threadManager
+    c.currentComponent          = currentComponent
+    c.errorReporter             = errorReporter
+    c.uriResolver               = uriResolver
     c
   }
 
@@ -197,7 +199,8 @@ class XPathContextMajor private () extends XPathContextMinor {
    *                        error.
    */
   @throws[XPathException]
-  override def waitForChildThreads(): Unit = if (threadManager != null) threadManager.waitForChildThreads()
+  override def waitForChildThreads(): Unit =
+    if (threadManager != null) threadManager.waitForChildThreads()
 
   /**
    * Get the local parameters for the current template call.
@@ -205,7 +208,8 @@ class XPathContextMajor private () extends XPathContextMinor {
    * @return the supplied parameters
    */
   override def getLocalParameters: ParameterSet = {
-    if (localParameters == null) localParameters = new ParameterSet
+    if (localParameters == null)
+      localParameters = new ParameterSet
     localParameters
   }
 
@@ -214,7 +218,8 @@ class XPathContextMajor private () extends XPathContextMinor {
    *
    * @param localParameters the supplied parameters
    */
-  def setLocalParameters(localParameters: ParameterSet): Unit = this.localParameters = localParameters
+  def setLocalParameters(localParameters: ParameterSet): Unit =
+    this.localParameters = localParameters
 
   /**
    * Get the tunnel parameters for the current template call.
@@ -233,7 +238,7 @@ class XPathContextMajor private () extends XPathContextMinor {
   /**
    * Set the creating expression (for use in diagnostics). The origin is generally set to "this" by the
    * object that creates the new context. It's up to the debugger to determine whether this information
-   * is useful. The object will either be an {@link Expression}, allowing information
+   * is useful. The object will either be an `Expression`, allowing information
    * about the calling instruction to be obtained, or null.
    */
   def setOrigin(expr: ContextOriginator): Unit = origin = expr
@@ -255,7 +260,8 @@ class XPathContextMajor private () extends XPathContextMinor {
   def setStackFrame(map: SlotManager, variables: Array[Sequence]): Unit = {
     stackFrame = new StackFrame(map, variables)
     if (map != null && variables.length != map.getNumberOfVariables) {
-      if (variables.length > map.getNumberOfVariables) throw new IllegalStateException("Attempting to set more local variables (" + variables.length + ") than the stackframe can accommodate (" + map.getNumberOfVariables + ")")
+      if (variables.length > map.getNumberOfVariables)
+        throw new IllegalStateException("Attempting to set more local variables (" + variables.length + ") than the stackframe can accommodate (" + map.getNumberOfVariables + ")")
       stackFrame.slots = new Array[Sequence](map.getNumberOfVariables)
       System.arraycopy(variables, 0, stackFrame.slots, 0, variables.length)
     }
@@ -274,8 +280,7 @@ class XPathContextMajor private () extends XPathContextMinor {
       val v2 = new Array[Sequence](map.getNumberOfVariables)
       System.arraycopy(stackFrame.slots, 0, v2, 0, numberOfParams)
       stackFrame.slots = v2
-    }
-    else { // not strictly necessary
+    } else { // not strictly necessary
       //util.Arrays.fill(stackFrame.slots, numberOfParams, stackFrame.slots.length, null)
     }
   }
@@ -312,8 +317,11 @@ class XPathContextMajor private () extends XPathContextMinor {
    * @param variables the parameter to be supplied to the user function
    */
   def requestTailCall(targetFn: TailCallLoop.TailCallInfo, variables: Array[Sequence]): Unit = {
-    if (variables != null) if (variables.length > stackFrame.slots.length) stackFrame.slots = util.Arrays.copyOf(variables, variables.length)
-    else System.arraycopy(variables, 0, stackFrame.slots, 0, variables.length)
+    if (variables != null)
+      if (variables.length > stackFrame.slots.length)
+        stackFrame.slots = util.Arrays.copyOf(variables, variables.length)
+      else
+        System.arraycopy(variables, 0, stackFrame.slots, 0, variables.length)
     tailCallInfo = targetFn
   }
 
@@ -349,7 +357,8 @@ class XPathContextMajor private () extends XPathContextMinor {
    *
    * @param numberOfVariables The number of local variables to be accommodated.
    */
-  def openStackFrame(numberOfVariables: Int): Unit = stackFrame = new StackFrame(new SlotManager(numberOfVariables), SequenceTool.makeSequenceArray(numberOfVariables))
+  def openStackFrame(numberOfVariables: Int): Unit =
+    stackFrame = new StackFrame(new SlotManager(numberOfVariables), SequenceTool.makeSequenceArray(numberOfVariables))
 
   /**
    * Set the current mode.
@@ -449,21 +458,31 @@ class XPathContextMajor private () extends XPathContextMinor {
    */
   @throws[XPathException]
   override def useLocalParameter(paramName: StructuredQName, slotNumber: Int, isTunnel: Boolean): Int = {
-    val params = if (isTunnel) getTunnelParameters
-    else localParameters
-    if (params == null) return ParameterSet.NOT_SUPPLIED
+    val params =
+      if (isTunnel)
+        getTunnelParameters
+      else
+        localParameters
+    if (params == null)
+      return ParameterSet.NOT_SUPPLIED
     val index = params.getIndex(paramName)
-    if (index < 0) return ParameterSet.NOT_SUPPLIED
+    if (index < 0)
+      return ParameterSet.NOT_SUPPLIED
     val `val` = params.getValue(index)
     stackFrame.slots(slotNumber) = `val`
     val checked = params.isTypeChecked(index)
-    if (checked) ParameterSet.SUPPLIED_AND_CHECKED
-    else ParameterSet.SUPPLIED
+    if (checked)
+      ParameterSet.SUPPLIED_AND_CHECKED
+    else
+      ParameterSet.SUPPLIED
   }
 
   def setURIResolver(resolver: URIResolver): Unit = {
     uriResolver = resolver
-    if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(getConfiguration)
+    resolver match {
+      case standardUriResolver: StandardURIResolver => standardUriResolver.setConfiguration(getConfiguration)
+      case _                                        =>
+    }
   }
 
   /**
@@ -474,8 +493,11 @@ class XPathContextMajor private () extends XPathContextMinor {
    * @return the user-supplied URI resolver if there is one, or null otherwise.
    * @since 9.6
    */
-  override def getURIResolver: URIResolver = if (uriResolver == null) controller.getURIResolver
-  else uriResolver
+  override def getURIResolver: URIResolver =
+    if (uriResolver == null)
+      controller.getURIResolver
+    else
+      uriResolver
 
   /**
    * Set the error reporter. The ErrorReporter is set locally to this XPathContext
@@ -494,8 +516,11 @@ class XPathContextMajor private () extends XPathContextMinor {
    * @return the ErrorReporter in use.
    * @since 9.6. Changed in 10.0 to use an ErrorReporter rather than ErrorListener
    */
-  override def getErrorReporter: ErrorReporter = if (errorReporter == null) controller.getErrorReporter
-  else errorReporter
+  override def getErrorReporter: ErrorReporter =
+    if (errorReporter == null)
+      controller.getErrorReporter
+    else
+      errorReporter
 
   /**
    * Set the current exception (in saxon:catch)
@@ -523,7 +548,8 @@ class XPathContextMajor private () extends XPathContextMinor {
    *
    * @param component the current component
    */
-  def setCurrentComponent(component: Component): Unit = { //System.err.println("Set current component := " + (component==null ? "null" : component.getCode()));
+  def setCurrentComponent(component: Component): Unit = {
+    //System.err.println("Set current component := " + (component==null ? "null" : component.getCode()));
     currentComponent = component
   }
 
@@ -543,18 +569,19 @@ class XPathContextMajor private () extends XPathContextMinor {
    *                    executed
    * @return the component to be invoked
    */
-  override def getTargetComponent(bindingSlot: Int): Component = try {
-    val binding = currentComponent.getComponentBindings.get(bindingSlot)
-    binding.getTarget
-  } catch {
-    case e: NullPointerException =>
-      // Suggests that the current component is null, which would be a bug
-      e.printStackTrace()
-      throw e
-    case e: IndexOutOfBoundsException =>
-      // Suggests that the current component's binding vector is the wrong size, which would be a bug.
-      //System.err.println("Current component = " + currentComponent.getCode());
-      e.printStackTrace()
-      throw e
-  }
+  override def getTargetComponent(bindingSlot: Int): Component =
+    try {
+      val binding = currentComponent.getComponentBindings.get(bindingSlot)
+      binding.getTarget
+    } catch {
+      case e: NullPointerException =>
+        // Suggests that the current component is null, which would be a bug
+        e.printStackTrace()
+        throw e
+      case e: IndexOutOfBoundsException =>
+        // Suggests that the current component's binding vector is the wrong size, which would be a bug.
+        //System.err.println("Current component = " + currentComponent.getCode());
+        e.printStackTrace()
+        throw e
+    }
 }

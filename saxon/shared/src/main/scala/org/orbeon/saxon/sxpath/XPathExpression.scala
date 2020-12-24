@@ -1,25 +1,21 @@
 package org.orbeon.saxon.sxpath
 
-import org.orbeon.saxon.expr.Expression
-import org.orbeon.saxon.expr.StaticContext
-import org.orbeon.saxon.expr.XPathContextMajor
-import org.orbeon.saxon.expr.instruct.Executable
-import org.orbeon.saxon.expr.instruct.SlotManager
+import org.orbeon.saxon.expr.{Expression, StaticContext, XPathContextMajor}
+import org.orbeon.saxon.expr.instruct.{Executable, SlotManager}
 import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.om.Item
-import org.orbeon.saxon.om.SequenceIterator
+import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
-import java.util.ArrayList
-import java.util.List
-
 import org.orbeon.saxon.utils.Controller
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import java.util.{ArrayList, List}
+import scala.beans.BeanProperty
 
-class XPathExpression(private var env: StaticContext,
-                      private var expression: Expression,
-                      exec: Executable) {
+
+class XPathExpression(
+  private var env        : StaticContext,
+  private var expression : Expression,
+  exec                   : Executable
+) {
 
   private var stackFrameMap: SlotManager = _
 
@@ -28,8 +24,7 @@ class XPathExpression(private var env: StaticContext,
 
   private var numberOfExternalVariables: Int = _
 
-  def setStackFrameMap(map: SlotManager,
-                       numberOfExternalVariables: Int): Unit = {
+  def setStackFrameMap(map: SlotManager, numberOfExternalVariables: Int): Unit = {
     stackFrameMap = map
     this.numberOfExternalVariables = numberOfExternalVariables
   }
@@ -44,12 +39,13 @@ class XPathExpression(private var env: StaticContext,
 
   def createDynamicContext(contextItem: Item): XPathDynamicContext = {
     checkContextItemType(contextItem)
-    val context: XPathContextMajor =
-      new XPathContextMajor(contextItem, executable)
+    val context = new XPathContextMajor(contextItem, executable)
     context.openStackFrame(stackFrameMap)
-    new XPathDynamicContext(env.getRequiredContextItemType,
+    new XPathDynamicContext(
+      env.getRequiredContextItemType,
       context,
-      stackFrameMap)
+      stackFrameMap
+    )
   }
 
   def createDynamicContext(controller: Controller,
@@ -58,30 +54,29 @@ class XPathExpression(private var env: StaticContext,
     if (controller == null) {
       createDynamicContext(contextItem)
     } else {
-      val context: XPathContextMajor = controller.newXPathContext
+      val context = controller.newXPathContext
       context.openStackFrame(stackFrameMap)
-      val dc: XPathDynamicContext = new XPathDynamicContext(
+      val dc = new XPathDynamicContext(
         env.getRequiredContextItemType,
         context,
-        stackFrameMap)
-      if (contextItem != null) {
+        stackFrameMap
+      )
+      if (contextItem != null)
         dc.setContextItem(contextItem)
-      }
       dc
     }
   }
 
-  private def checkContextItemType(contextItem: Item): Unit = {
+  private def checkContextItemType(contextItem: Item): Unit =
     if (contextItem != null) {
-      val `type`: ItemType = env.getRequiredContextItemType
-      val th = env.getConfiguration.getTypeHierarchy
-      if (!`type`.matches(contextItem, th)) {
+      val `type` = env.getRequiredContextItemType
+      val th     = env.getConfiguration.getTypeHierarchy
+      if (! `type`.matches(contextItem, th))
         throw new XPathException(
           "Supplied context item does not match required context item type " +
-            `type`)
-      }
+            `type`
+        )
     }
-  }
 
   def iterate(context: XPathDynamicContext): SequenceIterator = {
     context.checkExternalVariables(stackFrameMap, numberOfExternalVariables)

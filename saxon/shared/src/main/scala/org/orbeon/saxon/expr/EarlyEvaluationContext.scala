@@ -6,9 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import java.{util => ju}
-
-import javax.xml.transform.URIResolver
 import org.orbeon.saxon.expr.instruct.ParameterSet
 import org.orbeon.saxon.expr.sort.GroupIterator
 import org.orbeon.saxon.lib.ErrorReporter
@@ -18,6 +15,9 @@ import org.orbeon.saxon.trans.rules.Rule
 import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.{CalendarValue, DateTimeValue}
+
+import java.{util => ju}
+import javax.xml.transform.URIResolver
 
 
 /**

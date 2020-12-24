@@ -17,30 +17,36 @@ import org.orbeon.saxon.tree.iter.LookaheadIterator
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.DateTimeValue
 
+
+/**
+ * This class represents a minor change in the dynamic context in which an XPath expression is evaluated:
+ * a "major context" object allows all aspects of the dynamic context to change, whereas
+ * a "minor context" only allows changes to the focus and the destination for push output.
+ */
 object XPathContextMinor {
   class LastValue(var value: Int)
 }
 
 class XPathContextMinor () extends XPathContext {
 
-  var controller: Controller = _
-  var currentIterator: FocusIterator = _
-  var last: LastValue = null
-  var caller: XPathContext = null
-  var stackFrame: StackFrame = _
-  var currentDestination: String = ""
-  var temporaryOutputState: Int = 0
+  var controller          : Controller    = _
+  var currentIterator     : FocusIterator = _
+  var last                : LastValue     = null
+  var caller              : XPathContext  = null
+  var stackFrame          : StackFrame    = _
+  var currentDestination  : String        = ""
+  var temporaryOutputState: Int           = 0
 
   def newContext(): XPathContextMajor = XPathContextMajor.newContext(this)
 
   def newMinorContext(): XPathContextMinor = {
-    val c: XPathContextMinor = new XPathContextMinor()
-    c.controller = controller
-    c.caller = this
-    c.currentIterator = currentIterator
-    c.last = last
-    c.stackFrame = stackFrame
-    c.currentDestination = currentDestination
+    val c = new XPathContextMinor
+    c.controller           = controller
+    c.caller               = this
+    c.currentIterator      = currentIterator
+    c.last                 = last
+    c.stackFrame           = stackFrame
+    c.currentDestination   = currentDestination
     c.temporaryOutputState = temporaryOutputState
     c
   }
@@ -82,11 +88,11 @@ class XPathContextMinor () extends XPathContext {
 
   def getCurrentIterator: FocusIterator = currentIterator
 
-  def getContextItem: Item = {
+  def getContextItem: Item =
     if (currentIterator == null)
-      return null
-    currentIterator.current
-  }
+      null
+    else
+      currentIterator.current
 
   def getLast: Int = {
     if (currentIterator == null) {
@@ -96,17 +102,16 @@ class XPathContextMinor () extends XPathContext {
       throw e
     }
     if (last.value >= 0)
-      return last.value
-    currentIterator.getLength
+      last.value
+    else
+      currentIterator.getLength
   }
 
-  def isAtLast: Boolean = {
-    if (currentIterator.getProperties.contains(
-      SequenceIterator.Property.LOOKAHEAD)) {
-      !currentIterator.asInstanceOf[LookaheadIterator].hasNext
-    }
-    currentIterator.position == getLast
-  }
+  def isAtLast: Boolean =
+    if (currentIterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD)) {
+      ! currentIterator.asInstanceOf[LookaheadIterator].hasNext
+    } else
+      currentIterator.position == getLast
 
   def getURIResolver     : URIResolver                     = caller.getURIResolver
   def getErrorReporter   : ErrorReporter                   = caller.getErrorReporter
@@ -116,30 +121,26 @@ class XPathContextMinor () extends XPathContext {
   def getStackFrame      : StackFrame                      = stackFrame
 
   def makeStackFrameMutable(): Unit =
-    if (stackFrame == StackFrame.EMPTY) {
+    if (stackFrame == StackFrame.EMPTY)
       stackFrame = new StackFrame(null, SequenceTool.makeSequenceArray(0))
-    }
 
   def evaluateLocalVariable(slotnumber: Int): Sequence =
     stackFrame.slots(slotnumber) // need changes in StackFrame class
 
   def setLocalVariable(slotNumber: Int, value: Sequence): Unit = {
-    var sequence = value
-    sequence = sequence.makeRepeatable()
-    try stackFrame.slots(slotNumber) = sequence
+    try
+      stackFrame.slots(slotNumber) = value.makeRepeatable()
     catch {
-      case e: ArrayIndexOutOfBoundsException =>
-        if (slotNumber == -999) {
-          throw new AssertionError(
-            "Internal error: Cannot set local variable: no slot allocated")
-        } else {
+      case _: ArrayIndexOutOfBoundsException =>
+        if (slotNumber == -999)
+          throw new AssertionError("Internal error: Cannot set local variable: no slot allocated")
+        else
           throw new AssertionError(
             "Internal error: Cannot set local variable (slot " + slotNumber +
               " of " +
               getStackFrame.getStackFrameValues.length +
-              ")")
-        }
-
+              ")"
+          )
     }
   }
 

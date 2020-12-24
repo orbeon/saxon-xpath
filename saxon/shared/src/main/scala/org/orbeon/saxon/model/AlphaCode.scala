@@ -493,13 +493,12 @@ object AlphaCode {
           }
         }
       }
-    }
-    else if (principal.startsWith("F")) if (principal == "FA") {
+    } else if (principal.startsWith("F")) if (principal == "FA") {
       val valueType = tree.valueType
       if (valueType == null) itemType = ArrayItemType.ANY_ARRAY_TYPE
       else itemType = new ArrayItemType(sequenceTypeFromTree(valueType, config))
-    }
-    else if (principal == "FM") if (tree.fieldNames == null) {
+    } else if (principal == "FM")
+      if (tree.fieldNames == null) {
       val keyType = tree.keyType
       val valueType = tree.valueType
       if (keyType != null && valueType != null) {
@@ -508,16 +507,14 @@ object AlphaCode {
         itemType = new MapType(a, v)
       }
       else itemType = MapType.ANY_MAP_TYPE
-    }
-    else {
+    } else {
       val fieldTypes = new util.ArrayList[SequenceType](tree.argTypes.size)
 
       for (t <- tree.argTypes.asScala) {
         fieldTypes.add(sequenceTypeFromTree(t, config))
       }
       itemType = new TupleItemType(tree.fieldNames, fieldTypes, tree.extensibleTupleType)
-    }
-    else {
+    } else {
       val returnType = tree.resultType
       val argTypes = tree.argTypes
       if (argTypes == null) itemType = AnyFunctionType

@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,14 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.instruct
 
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.functions.SystemFunction
-import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.lib.StandardURIChecker
-import org.orbeon.saxon.lib.Validation
+import org.orbeon.saxon.lib.{NamespaceConstant, StandardURIChecker, Validation}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.pattern.NodeKindTest
@@ -22,6 +18,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Orphan
 import org.orbeon.saxon.value._
+
 
 /**
  * An instruction derived from an xsl:attribute element in stylesheet, or from
@@ -85,7 +82,8 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
    *
    * @return the static type of the item returned by this expression
    */
-  /*@NotNull*/ override def getItemType = NodeKindTest.ATTRIBUTE
+  /*@NotNull*/
+  override def getItemType = NodeKindTest.ATTRIBUTE
 
   /**
    * Get the static cardinality of this expression
@@ -111,7 +109,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
   override def computeSpecialProperties = super.computeSpecialProperties | StaticProperty.SINGLE_DOCUMENT_NODESET
 
   @throws[XPathException]
-  override def localTypeCheck(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo) = {
+  def localTypeCheck(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo) = {
     nameOp.typeCheck(visitor, contextItemType)
     val role = new RoleDiagnostic(RoleDiagnostic.INSTRUCTION, "attribute/name", 0)
     val config = visitor.getConfiguration
@@ -189,7 +187,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
    *                   that is used to update the bindings held in any
    *                   local variable references that are copied.
    */
-  override def copy(rebindings: RebindingMap) = {
+  def copy(rebindings: RebindingMap) = {
     val exp = new ComputedAttribute(if (getNameExp == null) null
     else getNameExp.copy(rebindings), if (getNamespaceExp == null) null
     else getNamespaceExp.copy(rebindings), getRetainedStaticContext, getValidationAction, getSchemaType, allowNameAsQName)
@@ -355,14 +353,17 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
    * is written to the supplied output destination.
    */
   @throws[XPathException]
-  override def `export`(out: ExpressionPresenter) = {
+  def `export`(out: ExpressionPresenter) = {
     out.startElement("compAtt", this)
-    if (getValidationAction != Validation.SKIP) out.emitAttribute("validation", Validation.toString(getValidationAction))
+    if (getValidationAction != Validation.SKIP)
+      out.emitAttribute("validation", Validation.toString(getValidationAction))
     val `type` = getSchemaType
-    if (`type` != null) out.emitAttribute("type", `type`.getStructuredQName)
+    if (`type` != null)
+      out.emitAttribute("type", `type`.getStructuredQName)
     var flags = ""
     if (isLocal) flags += "l"
-    if (!flags.isEmpty) out.emitAttribute("flags", flags)
+    if (!flags.isEmpty)
+      out.emitAttribute("flags", flags)
     out.setChildRole("name")
     getNameExp.`export`(out)
     if (getNamespaceExp != null) {
