@@ -66,18 +66,15 @@ class NameTest private (
     nodeNr => (nameCodeArray(nodeNr) & 0xfffff) == fingerPrintInt && (nodeKindArray(nodeNr) & 0x0f) == nodeKind
   }
 
-  override def test(node: NodeInfo): Boolean = {
-    println(s"xxx test $node")
-
+  override def test(node: NodeInfo): Boolean =
     if (node.getNodeKind != nodeKind)
-      return false
-    if (node.hasFingerprint) {
+      false
+    else if (node.hasFingerprint) {
       node.getFingerprint == fingerPrintInt
     } else {
       computeUriAndLocal()
       localName == node.getLocalPart && uri == node.getURI
     }
-  }
 
   private def computeUriAndLocal(): Unit =
     if (uri == null || localName == null) {
