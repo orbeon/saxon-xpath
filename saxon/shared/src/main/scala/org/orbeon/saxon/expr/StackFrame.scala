@@ -11,18 +11,17 @@ object StackFrame {
 
 class StackFrame(var map: SlotManager, var slots: Array[Sequence]) {
 
-  var seqArray: Array[Sequence] = slots
   var dynamicStack: List[Sequence] = Nil
 
   def getStackFrameMap: SlotManager = map
 
-  def getStackFrameValues: Array[Sequence] = seqArray
+  def getStackFrameValues: Array[Sequence] = slots
 
   def setStackFrameValues(values: Array[Sequence]): Unit =
-    seqArray = values
+    slots = values
 
   def copy(): StackFrame = {
-    val v2 = Arrays.copyOf(seqArray, seqArray.length)
+    val v2 = Arrays.copyOf(slots, slots.length)
     val s = new StackFrame(map, v2)
     s.dynamicStack = dynamicStack
     s
