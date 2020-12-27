@@ -337,7 +337,7 @@ object XPathParser {
 /**
  * Create an expression parser
  */
-class XPathParser() {
+class XPathParser {
 
   var t: Tokenizer = _
   var env: StaticContext = _
@@ -2191,17 +2191,15 @@ class XPathParser() {
   def parseVariableReference: Expression = {
     val offset = t.currentTokenStartOffset
     nextToken()
-    if (t.currentToken == Token.NUMBER) { // Saxon extension: $1, $2 etc as parameter references
+    if (t.currentToken == Token.NUMBER) // Saxon extension: $1, $2 etc as parameter references
       return parserExtension.bindNumericParameterReference(this)
-    }
     expect(Token.NAME)
     val `var` = t.currentTokenValue
     nextToken()
 
-    if (scanOnly) {
+    if (scanOnly)
       return new ContextItemExpression
       // don't do any semantic checks during a prescan
-    }
 
     //int vtest = makeNameCode(var, false) & 0xfffff;
     val vtest = makeStructuredQName(`var`, "")
@@ -2209,26 +2207,27 @@ class XPathParser() {
 
     // See if it's a range variable or a variable in the context
     val b = findRangeVariable(vtest)
-    var ref: Expression = null
-    if (b != null) {
-      ref = new LocalVariableReference(b)
-    } else {
-      if (catchDepth > 0)
-        for (errorVariable <- StandardNames.errorVariables) {
-          if (errorVariable.getLocalPart == vtest.getLocalPart) {
-            val functionName = new StructuredQName("saxon", NamespaceConstant.SAXON, "dynamic-error-info")
-            val sn = new SymbolicName.F(functionName, 1)
-            val args = Array[Expression](new StringLiteral(vtest.getLocalPart))
-            return VendorFunctionSetHE.getInstance.bind(sn, args, env, new util.ArrayList[String])
+    val ref =
+      if (b != null) {
+        new LocalVariableReference(b)
+      } else {
+        if (catchDepth > 0)
+          for (errorVariable <- StandardNames.errorVariables) {
+            if (errorVariable.getLocalPart == vtest.getLocalPart) {
+              val functionName = new StructuredQName("saxon", NamespaceConstant.SAXON, "dynamic-error-info")
+              val sn = new SymbolicName.F(functionName, 1)
+              val args = Array[Expression](new StringLiteral(vtest.getLocalPart))
+              return VendorFunctionSetHE.getInstance.bind(sn, args, env, new util.ArrayList[String])
+            }
           }
+        try {
+          env.bindVariable(vtest)
+        } catch {
+          case err: XPathException =>
+            err.maybeSetLocation(makeLocation)
+            throw err
         }
-      try ref = env.bindVariable(vtest)
-      catch {
-        case err: XPathException =>
-          err.maybeSetLocation(makeLocation)
-          throw err
       }
-    }
     setLocation(ref, offset)
     ref
   }

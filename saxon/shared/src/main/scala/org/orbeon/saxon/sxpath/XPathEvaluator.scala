@@ -24,9 +24,10 @@ class XPathEvaluator(config: Configuration) {
   def createExpression(expression: String): XPathExpression =
     setupExpression(ExpressionTool.make(expression, staticContext, 0, -1, null))
 
-  def postProcess(exp     : Expression,
-                  visitor : ExpressionVisitor,
-                  cit     : ContextItemStaticInfo
+  def postProcess(
+    exp     : Expression,
+    visitor : ExpressionVisitor,
+    cit     : ContextItemStaticInfo
   ): Expression = exp
 
   def createPattern(pattern: String): XPathExpression = {

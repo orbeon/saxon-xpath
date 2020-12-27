@@ -15,7 +15,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
   * the expression itself acts as its own export agent, and includes an export() method
   * to do the exporting. In a few cases, notably literals containing function items,
   * extra machinery is required to export a value, and a
-  * {@link org.orbeon.saxon.functions.hof.UserFunctionReference.BoundUserFunction}
+  * `org.orbeon.saxon.functions.hof.UserFunctionReference.BoundUserFunction`
   * in particular includes custom export methods to handle different cases.
   */
 trait ExportAgent {
