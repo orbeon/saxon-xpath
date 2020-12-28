@@ -36,7 +36,7 @@ trait GroundedValue extends Sequence {
   def toShortString: String = Err.depictSequence(this).toString
 
   def asIterable(): java.lang.Iterable[_ <: Item] = () => {
-    val base: UnfailingIterator = iterate()
+    val base = iterate()
     new ju.Iterator[Item]() {
       var pending: Item = null
 
