@@ -71,25 +71,18 @@ object NamePool {
 
 class NamePool {
 
-  private val qNameToInteger: ConcurrentHashMap[StructuredQName, Integer] =
-    new ConcurrentHashMap(1000)
-
-  private val integerToQName: ConcurrentHashMap[Integer, StructuredQName] =
-    new ConcurrentHashMap(1000)
-
-  private val unique: AtomicInteger = new AtomicInteger(1024)
-
-  private val suggestedPrefixes: ConcurrentHashMap[String, String] =
-    new ConcurrentHashMap()
+  private val qNameToInteger   : ConcurrentHashMap[StructuredQName, Integer] = new ConcurrentHashMap(1000)
+  private val integerToQName   : ConcurrentHashMap[Integer, StructuredQName] = new ConcurrentHashMap(1000)
+  private val unique           : AtomicInteger                               = new AtomicInteger(1024)
+  private val suggestedPrefixes: ConcurrentHashMap[String, String]           = new ConcurrentHashMap
 
   def suggestPrefix(prefix: String, uri: String): Unit =
     suggestedPrefixes.put(uri, prefix)
 
   def getUnprefixedQName(nameCode: Int): StructuredQName = {
     val fp = nameCode & FP_MASK
-    if ((fp & USER_DEFINED_MASK) == 0) {
-      StandardNames.getUnprefixedQName(fp)
-    }
+    if ((fp & USER_DEFINED_MASK) == 0)
+      return StandardNames.getUnprefixedQName(fp)
     integerToQName.get(fp)
   }
 
