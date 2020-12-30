@@ -23,16 +23,17 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
 
   def getDurationValue: DurationValue = duration
 
-  override def getXMLSchemaType(): QName =
-    if (duration.isInstanceOf[DayTimeDurationValue]) {
-      new QName(NamespaceConstant.SCHEMA, "dayTimeDuration")
-    } else if (duration.isInstanceOf[YearMonthDurationValue]) {
-      new QName(NamespaceConstant.SCHEMA, "yearMonthDuration")
-    } else {
-      new QName(NamespaceConstant.SCHEMA, "duration")
+  override def getXMLSchemaType: QName =
+    duration match {
+      case _: DayTimeDurationValue   =>
+        new QName(NamespaceConstant.SCHEMA, "dayTimeDuration")
+      case _: YearMonthDurationValue =>
+        new QName(NamespaceConstant.SCHEMA, "yearMonthDuration")
+      case _                         =>
+        new QName(NamespaceConstant.SCHEMA, "duration")
     }
 
-  def getSign(): Int = duration.signum()
+  def getSign: Int = duration.signum()
 
   def getField(field: DatatypeConstants.Field): Number =
     if (field == DatatypeConstants.YEARS) {
@@ -119,7 +120,7 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
     throw new UnsupportedOperationException()
 
   def compare(rhs: Duration): Int = {
-    if (!(rhs.isInstanceOf[SaxonDuration])) {
+    if (! rhs.isInstanceOf[SaxonDuration]) {
       throw new IllegalArgumentException(
         "Supplied duration is not a SaxonDuration")
     }
