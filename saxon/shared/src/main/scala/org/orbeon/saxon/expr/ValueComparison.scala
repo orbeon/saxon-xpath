@@ -1,56 +1,39 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-
+import org.orbeon.saxon.expr.ValueComparison._
 import org.orbeon.saxon.expr.parser._
-
 import org.orbeon.saxon.expr.sort._
-
 import org.orbeon.saxon.lib.StringCollator
-
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
+import org.orbeon.saxon.value.{AtomicValue, BooleanValue, Cardinality, SequenceType}
 
-import org.orbeon.saxon.value.AtomicValue
+import scala.beans.BeanProperty
 
-import org.orbeon.saxon.value.BooleanValue
-
-import org.orbeon.saxon.value.Cardinality
-
-import org.orbeon.saxon.value.SequenceType
-
-import ValueComparison._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-//remove if not needed
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 
 object ValueComparison {
 
-  def compare(v0: AtomicValue,
-              op: Int,
-              v1: AtomicValue,
-              comparer: AtomicComparer,
-              checkTypes: Boolean): Boolean = {
+  def compare(
+    v0         : AtomicValue,
+    op         : Int,
+    v1         : AtomicValue,
+    comparer   : AtomicComparer,
+    checkTypes : Boolean
+  ): Boolean = {
     if (checkTypes &&
-      !Type.isGuaranteedComparable(v0.getPrimitiveType,
+      ! Type.isGuaranteedComparable(v0.getPrimitiveType,
         v1.getPrimitiveType,
         Token.isOrderedOperator(op))) {
-      val e2: XPathException = new XPathException(
+      val e2 = new XPathException(
         "Cannot compare " + Type.displayTypeName(v0) + " to " +
           Type.displayTypeName(v1))
       e2.setErrorCode("XPTY0004")
       e2.setIsTypeError(true)
       throw e2
     }
-    if (v0.isNaN || v1.isNaN) {
+    if (v0.isNaN || v1.isNaN)
       op == Token.FNE
-    }
     try op match {
       case Token.FEQ => comparer.comparesEqual(v0, v1)
       case Token.FNE => !comparer.comparesEqual(v0, v1)
@@ -58,25 +41,18 @@ object ValueComparison {
       case Token.FLT => comparer.compareAtomicValues(v0, v1) < 0
       case Token.FGE => comparer.compareAtomicValues(v0, v1) >= 0
       case Token.FLE => comparer.compareAtomicValues(v0, v1) <= 0
-      case _ =>
-        throw new UnsupportedOperationException("Unknown operator " + op)
-
+      case _         => throw new UnsupportedOperationException("Unknown operator " + op)
     } catch {
-      case err: ComparisonException => throw err.getCause
-
-      case err: ClassCastException => {
+      case err: ComparisonException =>
+        throw err.getCause
+      case err: ClassCastException =>
         err.printStackTrace()
-        val e2: XPathException = new XPathException(
-          "Cannot compare " + Type.displayTypeName(v0) + " to " +
-            Type.displayTypeName(v1))
+        val e2 = new XPathException("Cannot compare " + Type.displayTypeName(v0) + " to " + Type.displayTypeName(v1))
         e2.setErrorCode("XPTY0004")
         e2.setIsTypeError(true)
         throw e2
-      }
-
     }
   }
-
 }
 
 class ValueComparison(p1: Expression, op: Int, p2: Expression)
@@ -91,11 +67,10 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
 
   private var needsRuntimeCheck: Boolean = _
 
-override  def getExpressionName: String = "ValueComparison"
+  override def getExpressionName: String = "ValueComparison"
 
-  def setAtomicComparer(comparer: AtomicComparer): Unit = {
+  def setAtomicComparer(comparer: AtomicComparer): Unit =
     this.comparer = comparer
-  }
 
   def getAtomicComparer: AtomicComparer = comparer
 
@@ -111,65 +86,63 @@ override  def getExpressionName: String = "ValueComparison"
     resetLocalStaticProperties()
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
-    val config: Configuration = visitor.getConfiguration
-    val env: StaticContext = visitor.getStaticContext
-    if (Literal.isEmptySequence(getLhsExpression)) {
-      if (resultWhenEmpty == null) getLhsExpression
-      else Literal.makeLiteral(resultWhenEmpty, this)
-    }
-    if (Literal.isEmptySequence(getRhsExpression)) {
-      if (resultWhenEmpty == null) getRhsExpression
-      else Literal.makeLiteral(resultWhenEmpty, this)
-    }
-    if (comparer.isInstanceOf[UntypedNumericComparer]) {
+    val config = visitor.getConfiguration
+    val env    = visitor.getStaticContext
+
+    if (Literal.isEmptySequence(getLhsExpression))
+      return {
+        if (resultWhenEmpty == null)
+          getLhsExpression
+        else
+          Literal.makeLiteral(resultWhenEmpty, this)
+      }
+
+    if (Literal.isEmptySequence(getRhsExpression))
+      return {
+        if (resultWhenEmpty == null)
+          getRhsExpression
+        else
+          Literal.makeLiteral(resultWhenEmpty, this)
+      }
+
+    if (comparer.isInstanceOf[UntypedNumericComparer])
       return this
-    }
-    val optionalAtomic: SequenceType = SequenceType.OPTIONAL_ATOMIC
-    val tc: TypeChecker = config.getTypeChecker(false)
-    val role0: RoleDiagnostic =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
+
+    val optionalAtomic        = SequenceType.OPTIONAL_ATOMIC
+    val tc = config.getTypeChecker(false)
+    val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
     this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, optionalAtomic, role0, visitor))
-    val role1: RoleDiagnostic =
+    val role1 =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
     this.setRhsExpression(tc.staticTypeCheck(getRhsExpression, optionalAtomic, role1, visitor))
-    val t0: PlainType = getLhsExpression.getItemType.getAtomizedItemType
-    val t1: PlainType = getRhsExpression.getItemType.getAtomizedItemType
+    val t0 = getLhsExpression.getItemType.getAtomizedItemType
+    val t1 = getRhsExpression.getItemType.getAtomizedItemType
     if (t0.getUType.union(t1.getUType).overlaps(UType.EXTENSION)) {
-      val err = new XPathException(
-        "Cannot perform comparisons involving external objects")
+      val err = new XPathException("Cannot perform comparisons involving external objects")
       err.setIsTypeError(true)
       err.setErrorCode("XPTY0004")
       err.setLocation(getLocation)
       throw err
     }
-    var p0: BuiltInAtomicType =
-      t0.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
-    if (p0 == BuiltInAtomicType.UNTYPED_ATOMIC) {
+    var p0 = t0.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
+    if (p0 == BuiltInAtomicType.UNTYPED_ATOMIC)
       p0 = BuiltInAtomicType.STRING
-    }
-    var p1: BuiltInAtomicType =
-      t1.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
-    if (p1 == BuiltInAtomicType.UNTYPED_ATOMIC) {
+    var p1 = t1.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
+    if (p1 == BuiltInAtomicType.UNTYPED_ATOMIC)
       p1 = BuiltInAtomicType.STRING
-    }
     needsRuntimeCheck = p0 == BuiltInAtomicType.ANY_ATOMIC || p1 == BuiltInAtomicType.ANY_ATOMIC
     if (!needsRuntimeCheck &&
-      !Type.isPossiblyComparable(p0, p1, Token.isOrderedOperator(op))) {
-      val opt0: Boolean =
-        Cardinality.allowsZero(getLhsExpression.getCardinality)
-      val opt1: Boolean =
-        Cardinality.allowsZero(getRhsExpression.getCardinality)
+      ! Type.isPossiblyComparable(p0, p1, Token.isOrderedOperator(op))) {
+      val opt0 = Cardinality.allowsZero(getLhsExpression.getCardinality)
+      val opt1 = Cardinality.allowsZero(getRhsExpression.getCardinality)
       if (opt0 || opt1) {
         var which: String = null
-        if (opt0) {
+        if (opt0)
           which = "the first operand is"
-        }
-        if (opt1) {
+        if (opt1)
           which = "the second operand is"
-        }
-        if (opt0 && opt1) {
+        if (opt0 && opt1)
           which = "one or both operands are"
-        }
         visitor.getStaticContext.issueWarning(
           "Comparison of " + t0.toString + (if (opt0) "?" else "") +
             " to " +
@@ -181,10 +154,10 @@ override  def getExpressionName: String = "ValueComparison"
           getLocation)
         needsRuntimeCheck = true
       } else {
-        val message: String = "In {" + toShortString + "}: cannot compare " + t0.toString +
+        val message = "In {" + toShortString + "}: cannot compare " + t0.toString +
           " to " +
           t1.toString
-        val err = new XPathException(message)
+        val err     = new XPathException(message)
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
         err.setLocation(getLocation)
@@ -264,44 +237,36 @@ override  def optimize(visitor: ExpressionVisitor,
     vc
   }
 
-override  def effectiveBooleanValue(context: XPathContext): Boolean =
+  override def effectiveBooleanValue(context: XPathContext): Boolean =
     try {
-      val v0: AtomicValue =
-        getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-      if (v0 == null) {
-        resultWhenEmpty == BooleanValue.TRUE
-      }
-      val v1: AtomicValue =
-        getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-      if (v1 == null) {
-        resultWhenEmpty == BooleanValue.TRUE
-      }
-      compare(v0,
+      val v0 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+      if (v0 == null)
+        return resultWhenEmpty == BooleanValue.TRUE
+      val v1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+      if (v1 == null)
+        return resultWhenEmpty == BooleanValue.TRUE
+      compare(
+        v0,
         op,
         v1,
         comparer.provideContext(context),
-        needsRuntimeCheck)
+        needsRuntimeCheck
+      )
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
   override def evaluateItem(context: XPathContext): BooleanValue =
     try {
-      val v0: AtomicValue =
-        getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-      if (v0 == null) {
+      val v0 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+      if (v0 == null)
         return resultWhenEmpty
-      }
-      val v1: AtomicValue =
-        getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-      if (v1 == null) {
+      val v1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
+      if (v1 == null)
         return resultWhenEmpty
-      }
       BooleanValue.get(
         compare(v0,
           op,
@@ -309,35 +274,35 @@ override  def effectiveBooleanValue(context: XPathContext): Boolean =
           comparer.provideContext(context),
           needsRuntimeCheck))
     } catch {
-      case e: XPathException => {
+      case e: XPathException =>
         e.maybeSetLocation(getLocation)
         e.maybeSetContext(context)
         throw e
-      }
-
     }
 
-  override def equals(other: Any) = other.isInstanceOf[ValueComparison] && super.equals(other) && comparer == other.asInstanceOf[ValueComparison].comparer
+  override def equals(other: Any): Boolean =
+    other.isInstanceOf[ValueComparison] && super.equals(other) && comparer == other.asInstanceOf[ValueComparison].comparer
 
   def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
   override def computeCardinality(): Int =
-    if (resultWhenEmpty != null) {
+    if (resultWhenEmpty != null)
       StaticProperty.EXACTLY_ONE
-    } else {
+    else
       super.computeCardinality()
-    }
 
   override def tag(): String = "vc"
 
-
-   override def explainExtraAttributes(
-                                                 out: ExpressionPresenter): Unit = {
+  override def explainExtraAttributes(
+    out: ExpressionPresenter
+  ): Unit = {
     if (resultWhenEmpty != null) {
-      out.emitAttribute("onEmpty",
-        if (resultWhenEmpty.getBooleanValue) "1" else "0")
+      out.emitAttribute(
+        "onEmpty",
+        if (resultWhenEmpty.getBooleanValue) "1" else "0"
+      )
     }
     out.emitAttribute("comp", comparer.save())
   }
