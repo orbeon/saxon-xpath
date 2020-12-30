@@ -558,15 +558,15 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getNode(nr: Int): TinyNodeImpl =
     nodeKind(nr) match {
-      case Type.DOCUMENT => getRootNode.asInstanceOf[TinyDocumentImpl]
-      case Type.ELEMENT => new TinyElementImpl(this, nr)
-      case Type.TEXTUAL_ELEMENT => new TinyTextualElement(this, nr)
-      case Type.TEXT => new TinyTextImpl(this, nr)
-      case Type.WHITESPACE_TEXT => new WhitespaceTextImpl(this, nr)
-      case Type.COMMENT => new TinyCommentImpl(this, nr)
+      case Type.DOCUMENT               => getRootNode.asInstanceOf[TinyDocumentImpl]
+      case Type.ELEMENT                => new TinyElementImpl(this, nr)
+      case Type.TEXTUAL_ELEMENT        => new TinyTextualElement(this, nr)
+      case Type.TEXT                   => new TinyTextImpl(this, nr)
+      case Type.WHITESPACE_TEXT        => new WhitespaceTextImpl(this, nr)
+      case Type.COMMENT                => new TinyCommentImpl(this, nr)
       case Type.PROCESSING_INSTRUCTION => new TinyProcInstImpl(this, nr)
-      case Type.PARENT_POINTER => throw new IllegalArgumentException("Attempting to treat a parent pointer as a node")
-      case Type.STOPPER => throw new IllegalArgumentException("Attempting to treat a stopper entry as a node")
+      case Type.PARENT_POINTER         => throw new IllegalArgumentException("Attempting to treat a parent pointer as a node")
+      case Type.STOPPER                => throw new IllegalArgumentException("Attempting to treat a stopper entry as a node")
       case _ => throw new IllegalStateException("Unknown node kind " + nodeKind(nr))
     }
 

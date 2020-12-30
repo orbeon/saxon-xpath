@@ -129,8 +129,8 @@ object SequenceTool {
         node
       case _: Function =>
         item
-      case _: ExternalObject[_] =>
-        item.asInstanceOf[ExternalObject[_]].getObject
+      case externalObject: ExternalObject[_] =>
+        externalObject.getObject
       case _ =>
         val value = item.asInstanceOf[AtomicValue]
         value.getItemType.getPrimitiveType match {

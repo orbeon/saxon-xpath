@@ -50,9 +50,9 @@ class NameTest private (
 
     println(s"xxx matches $nodeKind / $name")
 
-    if (nodeKind != this.nodeKind)
-      return false
-    if (name.hasFingerprint) {
+    if (nodeKind != this.nodeKind) {
+      false
+    } else if (name.hasFingerprint) {
       name.getFingerprint == this.fingerPrintInt
     } else {
       computeUriAndLocal()
@@ -67,9 +67,9 @@ class NameTest private (
   }
 
   override def test(node: NodeInfo): Boolean =
-    if (node.getNodeKind != nodeKind)
+    if (node.getNodeKind != nodeKind) {
       false
-    else if (node.hasFingerprint) {
+    } else if (node.hasFingerprint) {
       node.getFingerprint == fingerPrintInt
     } else {
       computeUriAndLocal()

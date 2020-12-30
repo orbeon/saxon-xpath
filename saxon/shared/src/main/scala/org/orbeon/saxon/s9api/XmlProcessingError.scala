@@ -13,10 +13,10 @@ import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
   * The <b>XmlProcessingError</b> class contains information about an error detected during
   * compilation or execution of a stylesheet, query, XPath expression, or schema
   *
-  * <p>The interface extends {@link StaticError} so that
-  *  the methods {@link XsltCompiler#setErrorList(List)} and {@link XQueryCompiler#setErrorList(List)}
-  *  continue to function. It is <b>not</b> the case, however, that every {@code XmlProcessingError}
-  *  is a static error.</p>
+  * The interface extends `StaticError` so that
+  * the methods `XsltCompiler` and {@link XQueryCompiler#setErrorList(List)}
+  * continue to function. It is <b>not</b> the case, however, that every `XmlProcessingError`
+  * is a static error.
   */
 trait XmlProcessingError extends StaticError {
   def getHostLanguage: HostLanguage
