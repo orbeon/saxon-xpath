@@ -1,15 +1,8 @@
 package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
-
-import org.orbeon.saxon.om.AtomicSequence
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
+import org.orbeon.saxon.om.{AtomicSequence, Item, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.value.AtomicValue
 
 
@@ -17,11 +10,8 @@ class AtomizingIterator(private var base: SequenceIterator)
   extends SequenceIterator {
 
   private var currentValue: AtomicSequence = null
-
   private var currentValuePosition: Int = 1
-
   private var currentValueSize: Int = 1
-
   private var roleDiagnostic: RoleDiagnostic = _
 
   def setRoleDiagnostic(role: RoleDiagnostic): Unit = {
@@ -33,7 +23,7 @@ class AtomizingIterator(private var base: SequenceIterator)
       if (currentValue != null) {
         if (currentValuePosition < currentValueSize) {
          return currentValue.itemAt({
-            currentValuePosition += 1;
+            currentValuePosition += 1
             currentValuePosition - 1
           })
         } else {
@@ -44,19 +34,20 @@ class AtomizingIterator(private var base: SequenceIterator)
       if (nextSource != null) {
         try {
           val v: AtomicSequence = nextSource.atomize()
-          if (v.isInstanceOf[AtomicValue]) {
-            return v.asInstanceOf[AtomicValue]
-          } else {
-            currentValue = v
-            currentValuePosition = 0
-            currentValueSize = currentValue.getLength
+          v match {
+            case atomicValue: AtomicValue =>
+              return atomicValue
+            case _ =>
+              currentValue = v
+              currentValuePosition = 0
+              currentValueSize = currentValue.getLength
           }
         } catch {
           case e: XPathException =>
             if (roleDiagnostic == null) {
               throw e
             } else {
-              val message: String = e.getMessage + ". Failed while atomizing the " + roleDiagnostic.getMessage
+              val message = e.getMessage + ". Failed while atomizing the " + roleDiagnostic.getMessage
               throw new XPathException(message,
                 e.getErrorCodeLocalPart,
                 e.getLocator)
@@ -65,15 +56,12 @@ class AtomizingIterator(private var base: SequenceIterator)
         }
       } else {
         currentValue = null
-        null
+        return null
       }
     }
     null
   }
 
-
-  override def close(): Unit = {
+  override def close(): Unit =
     base.close()
-  }
-
 }
