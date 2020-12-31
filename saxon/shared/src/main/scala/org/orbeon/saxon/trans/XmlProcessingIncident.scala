@@ -48,7 +48,7 @@ class XmlProcessingIncident(
 
   @BeanProperty
   var fatalErrorMessage: String = _
-  
+
   @BeanProperty
   var hostLanguage: HostLanguage.HostLanguage = _
 
