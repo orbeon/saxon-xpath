@@ -56,7 +56,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     parallelExecution in DebugTest     := false
   )
   .jsSettings(
-    libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.2-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.6-SNAPSHOT"),
     //  .enablePlugins(TzdbPlugin)
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0",
 //    zonesFilter := {(z: String) => z == "America/Los_Angeles"} // Q: See if/how we do this filtering
