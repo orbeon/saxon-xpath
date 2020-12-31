@@ -22,6 +22,13 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 
+/**
+ * This class together with its embedded subclasses handles conversion from Java values to XPath values.
+ *
+ * The general principle is to allocate a specific JPConverter at compile time wherever possible. If there
+ * is insufficient type information to make this feasible, a general-purpose JPConverter is allocated, which
+ * in turn allocates a more specific converter at run-time to do the actual work.
+ */
 object JPConverter {
 
   var converterMap =
@@ -123,17 +130,19 @@ object JPConverter {
 //    classOf[XdmEmptySequence]        -> StaticProperty.ALLOWS_ZERO,
   )
 
-  def allocate(javaClass: Class[_],
-               genericType: java.lang.reflect.Type,
-               config: Configuration): JPConverter = {
+  def allocate(
+    javaClass   : Class[_],
+    genericType : java.lang.reflect.Type,
+    config      : Configuration
+  ): JPConverter = {
 
     if (classOf[javax.xml.namespace.QName].isAssignableFrom(javaClass))
       return FromQName
 
-    if (classOf[Sequence].isAssignableFrom(javaClass)) {
+    if (classOf[Sequence].isAssignableFrom(javaClass))
       genericType match {
         case parameterizedType: ParameterizedType =>
-          val params  = parameterizedType.getActualTypeArguments
+          val params = parameterizedType.getActualTypeArguments
           if (params.length == 1 && params(0).isInstanceOf[Class[_]] &&
             classOf[Item].isAssignableFrom(params(0).asInstanceOf[Class[_]])) {
             val itemType = itemTypeMap.get(params(0).asInstanceOf[Class[_]])
@@ -146,7 +155,6 @@ object JPConverter {
             return new FromSequence(itemType, StaticProperty.ALLOWS_ZERO_OR_ONE)
           }
       }
-    }
 
     converterMap.get(javaClass) foreach { c =>
       return c // NonLocalReturns
@@ -287,7 +295,8 @@ object JPConverter {
 
   object FromInt extends JPConverter {
 
-    def convert(o: AnyRef, context: XPathContext): Int64Value = new Int64Value(o.asInstanceOf[Long])
+    def convert(o: AnyRef, context: XPathContext): Int64Value =
+      new Int64Value(o.asInstanceOf[Long])
 
     def getItemType: ItemType = BuiltInAtomicType.INTEGER
   }
@@ -320,7 +329,7 @@ object JPConverter {
   object FromQName extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): QNameValue = {
-      val qn: javax.xml.namespace.QName =
+      val qn =
         o.asInstanceOf[javax.xml.namespace.QName]
       new QNameValue(qn.getPrefix, qn.getNamespaceURI, qn.getLocalPart)
     }
@@ -568,12 +577,11 @@ object JPConverter {
           val newItem = SequenceTool.asItem(itemConverter.convert(member.asInstanceOf[AnyRef], context))
           if (newItem != null)
             newArray.add(newItem)
-        } else {
+        } else
           throw new XPathException(
             "Returned array contains null values: cannot convert to items",
             SaxonErrorCode.SXJE0051
           )
-        }
       }
       new SequenceExtent(newArray)
     }
