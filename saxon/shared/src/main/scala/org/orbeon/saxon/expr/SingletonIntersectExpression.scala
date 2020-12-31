@@ -31,7 +31,7 @@ object SingletonIntersectExpression {
       n
     }) != null) if (n == m) {
       iter.close()
-      true
+      return true
     }
     false
   }
@@ -87,7 +87,7 @@ class SingletonIntersectExpression(p1: Expression, op: Int, p2: Expression)
   override def iterate(c: XPathContext): SequenceIterator = {
     val m: NodeInfo = getLhsExpression.evaluateItem(c).asInstanceOf[NodeInfo]
     if (m == null) {
-      EmptyIterator.getInstance
+      return EmptyIterator.getInstance
     }
     val iter: SequenceIterator = getRhsExpression.iterate(c)
     var n: NodeInfo = null
@@ -95,7 +95,7 @@ class SingletonIntersectExpression(p1: Expression, op: Int, p2: Expression)
       n = iter.next().asInstanceOf[NodeInfo]
       n
     }) != null) if (n == m) {
-      SingletonIterator.makeIterator(m)
+      return SingletonIterator.makeIterator(m)
     }
     EmptyIterator.getInstance
   }

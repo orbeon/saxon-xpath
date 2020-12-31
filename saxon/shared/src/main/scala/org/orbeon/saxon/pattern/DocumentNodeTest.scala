@@ -67,7 +67,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
     } != null) {
       val kind: Int = n.getNodeKind
       if (kind == Type.TEXT) {
-        false
+        return false
       } else if (kind == Type.ELEMENT) {
         if (found) {
           return false
@@ -75,7 +75,7 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
         if (elementTest.test(n)) {
           found = true
         } else {
-          false
+          return false
         }
       }
     }

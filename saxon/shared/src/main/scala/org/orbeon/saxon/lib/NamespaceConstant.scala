@@ -319,7 +319,7 @@ object NamespaceConstant {
         if (!((i < s2.length && c1 == s2.charAt(i)) ||
               (i > 0 && i < s2.length - 1 && c1 == s2.charAt(i - 1)) ||
               (i + 1 < s2.length && c1 == s2.charAt(i + 1)))) {
-          { diff += 1; diff - 1 }
+          diff += 1
         }
       }
       diff < 3

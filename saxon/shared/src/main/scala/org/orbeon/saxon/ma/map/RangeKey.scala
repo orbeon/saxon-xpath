@@ -37,13 +37,13 @@ class RangeKey
       .compareTo(k) >= 0)) {
       val value: Any = index.get(k)
       if (value == null) {
-        EmptySequence.getInstance
+        return EmptySequence.getInstance
       } else value match {
         case info: NodeInfo =>
-          info
+          return info
         case _ =>
           val nodes: util.List[NodeInfo] = value.asInstanceOf[util.List[NodeInfo]]
-          SequenceExtent.makeSequenceExtent(nodes)
+          return SequenceExtent.makeSequenceExtent(nodes)
       }
     }
     EmptySequence.getInstance
@@ -97,7 +97,7 @@ class RangeKey
     } != null) {
       val value: Sequence = get(key)
       if (!valueType.matches(value, th)) {
-        false
+        return false
       }
     }
     true
@@ -159,9 +159,7 @@ class RangeKey
         pos = -1
         null
       } else {
-        {
-          pos += 1
-        }
+        pos += 1
         new StringValue(curr)
       }
     }

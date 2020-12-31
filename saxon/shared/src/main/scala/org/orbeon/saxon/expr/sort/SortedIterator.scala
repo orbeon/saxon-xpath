@@ -121,8 +121,8 @@ class SortedIterator ()
       itbs.value = item
       for (n <- comparators.indices)
         itbs.sortKeyValues(n) = sortKeyEvaluator.evaluateSortKey(n, context)
-      count += 1
       itbs.originalPosition = count
+      count += 1
     }
     if (allocated * 2 < count || (allocated - count) > 2000) {
       val nk2: Array[ObjectToBeSorted[Item]] = Array.ofDim[ObjectToBeSorted[Item]](count)

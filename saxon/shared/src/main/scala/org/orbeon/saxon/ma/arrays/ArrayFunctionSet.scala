@@ -83,7 +83,7 @@ object ArrayFunctionSet {
           .getBooleanValue) {
           list.add(array.get(i))
         }
-        { i += 1; i - 1 }
+      i += 1
       }
       new SimpleArrayItem(list)
     }

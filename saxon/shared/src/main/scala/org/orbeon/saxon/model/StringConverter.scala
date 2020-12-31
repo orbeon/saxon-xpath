@@ -37,7 +37,7 @@ object StringConverter {
       var in: CharSequence = input.getStringValueCS
       try in = phaseTwo.getTargetType.preprocess(in)
       catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       val temp: ConversionResult = phaseOne.convertString(in)
@@ -52,7 +52,7 @@ object StringConverter {
       try {
         inputChar = phaseTwo.getTargetType.preprocess(inputChar)
       } catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       val temp: ConversionResult = phaseOne.convertString(inputChar)
@@ -76,12 +76,12 @@ object StringConverter {
          inputChar = phaseTwo.getTargetType.preprocess(inputChar)
       }
       catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       val temp: ConversionResult = phaseOne.convertString(inputChar)
       if (temp.isInstanceOf[ValidationFailure]) {
-        temp.asInstanceOf[ValidationFailure]
+        return temp.asInstanceOf[ValidationFailure]
       }
       phaseTwo.validate(temp.asInstanceOf[AtomicValue], inputChar)
     }
@@ -186,7 +186,7 @@ object StringConverter {
     def convertString(input: CharSequence): ConversionResult = {
       val trimmed: CharSequence = Whitespace.trimWhitespace(input)
       if (!StringToLanguage.regex.matcher(trimmed).matches()) {
-        new ValidationFailure(
+        return new ValidationFailure(
           "The value '" + input + "' is not a valid xs:language")
       }
       new StringValue(trimmed, BuiltInAtomicType.LANGUAGE)
@@ -323,7 +323,7 @@ object StringConverter {
         Whitespace.applyWhitespaceNormalization(whitespaceAction, input)
       try cs = targetType.preprocess(cs)
       catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       val sv: StringValue = new StringValue(cs)
@@ -342,7 +342,7 @@ object StringConverter {
         Whitespace.applyWhitespaceNormalization(whitespaceAction, input)
       try cs = targetType.preprocess(cs)
       catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       targetType.validate(new StringValue(cs), cs, getConversionRules)
@@ -369,7 +369,7 @@ object StringConverter {
       }
       try cs = targetType.preprocess(cs)
       catch {
-        case err: ValidationException => err.getValidationFailure
+        case err: ValidationException => return err.getValidationFailure
 
       }
       val sv: StringValue = new StringValue(cs)
@@ -534,10 +534,10 @@ object StringConverter {
         DateTimeValue.makeDateTimeValue(input, getConversionRules)
       if (`val`.isInstanceOf[DateTimeValue]) {
         if (!`val`.asInstanceOf[DateTimeValue].hasTimezone ){
-          new ValidationFailure(
+          return new ValidationFailure(
             "Supplied DateTimeStamp value " + input + " has no time zone")
         } else {
-          `val`
+           `val`
             .asInstanceOf[DateTimeValue]
             .setTypeLabel(BuiltInAtomicType.DATE_TIME_STAMP)
         }
@@ -732,12 +732,12 @@ object StringConverter {
           NameChecker.getQNameParts(Whitespace.trimWhitespace(input))
         val uri: String = getNamespaceResolver.getURIForPrefix(parts(0), useDefault = true)
         if (uri == null) {
-          new ValidationFailure(
+          return new ValidationFailure(
             "Namespace prefix " + Err
               .wrap(parts(0)) + " has not been declared")
         }
         if (!getConversionRules.isDeclaredNotation(uri, parts(1))) {
-          new ValidationFailure(
+         return new ValidationFailure(
             "Notation {" + uri + "}" + parts(1) + " is not declared in the schema")
         }
         new NotationValue(parts(0), uri, parts(1), false)

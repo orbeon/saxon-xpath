@@ -155,7 +155,7 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
           contentEncoding = "utf-8"
         case _ =>
           assert(resource.isInstanceOf[UnparsedTextResource])
-          new StringReader(
+          return new StringReader(
             resource.asInstanceOf[UnparsedTextResource].getContent)
       }
       if (encodingVar == null) {

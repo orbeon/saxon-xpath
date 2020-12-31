@@ -45,14 +45,14 @@ class ListCastableFunction(targetType: ListType,
     val iter: SequenceIterator = args(0).iterate()
     val `val`: AtomicValue = iter.next().asInstanceOf[AtomicValue]
     if (`val` == null) {
-      BooleanValue.get(allowEmpty)
+      return BooleanValue.get(allowEmpty)
     }
     if (iter.next() != null) {
-      BooleanValue.FALSE
+      return BooleanValue.FALSE
     }
     if (!(`val`.isInstanceOf[StringValue]) || `val`
           .isInstanceOf[AnyURIValue]) {
-      BooleanValue.FALSE
+      return BooleanValue.FALSE
     }
     val rules: ConversionRules = context.getConfiguration.getConversionRules
     val cs: CharSequence = `val`.getStringValueCS

@@ -34,11 +34,11 @@ class Tokenize_3 extends RegexFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val sv: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (sv == null) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     val input: CharSequence = sv.getStringValueCS
     if (input.length == 0) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     val re: RegularExpression = getRegularExpression(arguments)
     SequenceTool.toLazySequence(re.tokenize(input))

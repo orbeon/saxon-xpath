@@ -240,7 +240,7 @@ class FLWORExpression extends Expression {
       if (c.isInstanceOf[LetClause] ||
         (c.isInstanceOf[ForClause] &&
           c.asInstanceOf[ForClause].getPositionVariable == null)) {
-        rewriteForOrLet(visitor, contextItemType)
+        return rewriteForOrLet(visitor, contextItemType)
       }
     }
     var tryAgain = false
@@ -279,7 +279,7 @@ class FLWORExpression extends Expression {
               )
               clauses.remove(c)
               if (clauses.isEmpty) {
-                getReturnClause
+                return getReturnClause
               }
               tryAgain = true
               outer.break()
@@ -317,7 +317,7 @@ class FLWORExpression extends Expression {
     }
     val expr2 = rewriteWhereClause(visitor, contextItemType)
     if (expr2 != null && expr2 != this)
-      expr2.optimize(visitor, contextItemType)
+      return expr2.optimize(visitor, contextItemType)
     var allForOrLetExpr = true
     breakable {
       for (c <- clauses.asScala) {
@@ -335,7 +335,7 @@ class FLWORExpression extends Expression {
       }
     }
     if (allForOrLetExpr)
-      rewriteForOrLet(visitor, contextItemType)
+      return rewriteForOrLet(visitor, contextItemType)
     this
   }
 

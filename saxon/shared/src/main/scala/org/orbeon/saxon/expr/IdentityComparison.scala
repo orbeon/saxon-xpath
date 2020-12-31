@@ -50,7 +50,7 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
     if (!generateIdEmulation) {
       if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
             getRhsExpression)) {
-        Literal.makeEmptySequence
+        return Literal.makeEmptySequence
       }
     }
     val role0: RoleDiagnostic =
@@ -86,7 +86,7 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
       if (!generateIdEmulation) {
         if (Literal.isEmptySequence(getLhsExpression) || Literal
               .isEmptySequence(getRhsExpression)) {
-          Literal.makeEmptySequence
+          return Literal.makeEmptySequence
         }
       }
     }
@@ -127,14 +127,14 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
     val node0: NodeInfo = getNode(getLhsExpression, context)
     if (node0 == null) {
       if (generateIdEmulation) {
-        BooleanValue.get(getNode(getRhsExpression, context) == null)
+        return BooleanValue.get(getNode(getRhsExpression, context) == null)
       }
       return null
     }
     val node1: NodeInfo = getNode(getRhsExpression, context)
     if (node1 == null) {
       if (generateIdEmulation) {
-        BooleanValue.FALSE
+        return BooleanValue.FALSE
       }
       return null
     }
@@ -144,7 +144,7 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
   override def effectiveBooleanValue(context: XPathContext): Boolean = {
     val node0: NodeInfo = getNode(getLhsExpression, context)
     if (node0 == null) {
-      generateIdEmulation && getNode(getRhsExpression, context) == null
+      return generateIdEmulation && getNode(getRhsExpression, context) == null
     }
     val node1: NodeInfo = getNode(getRhsExpression, context)
     node1 != null && compareIdentity(node0, node1)

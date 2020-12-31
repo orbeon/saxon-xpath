@@ -321,9 +321,9 @@ class FilterExpression(base: Expression, filter: Expression)
       case literal: Literal if ! literal.getValue.isInstanceOf[NumericValue] =>
         try
           if (getFilter.effectiveBooleanValue(new EarlyEvaluationContext(getConfiguration)))
-            getBase
+            return getBase
           else
-            Literal.makeEmptySequence
+            return Literal.makeEmptySequence
         catch {
           case e: XPathException =>
             e.maybeSetLocation(getLocation)
@@ -331,11 +331,11 @@ class FilterExpression(base: Expression, filter: Expression)
         }
       case _ =>
          if (getFilter.isCallOn(classOf[PositionAndLast.Last])) {
-          setFilter(new IsLastExpression(true))
-          adoptChildExpression(getFilter)
-        }
-        this
+           setFilter(new IsLastExpression(true))
+           adoptChildExpression(getFilter)
+         }
     }
+    this
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
@@ -795,7 +795,7 @@ class FilterExpression(base: Expression, filter: Expression)
   override def equals(other: Any): Boolean = {
     other match {
       case f: FilterExpression =>
-        getBase.isEqual(f.getBase) && getFilter.isEqual(f.getFilter)
+        return getBase.isEqual(f.getBase) && getFilter.isEqual(f.getFilter)
       case _ =>
     }
     false

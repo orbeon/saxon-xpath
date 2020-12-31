@@ -134,7 +134,7 @@ class UserFunctionCall extends FunctionCall
 
   override def getStaticUType(contextItemType: UType): UType = {
     val f: UserFunction = getFunction
-    if (f == null) UType.ANY
+    if (f == null) return UType.ANY
     f.getResultType.getPrimaryType.getUType
   }
 
@@ -189,7 +189,7 @@ class UserFunctionCall extends FunctionCall
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     val e: Expression = super.optimize(visitor, contextItemType)
-    if (e == this && function != null) visitor
+    if (e == this && function != null) return visitor
       .obtainOptimizer()
       .tryInlineFunctionCall(this, visitor, contextItemType)
     e
@@ -233,7 +233,7 @@ class UserFunctionCall extends FunctionCall
     var c2: XPathContextMajor = null
     if (isTailCall) {
       requestTailCall(context, actualArgs)
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     if (bindingSlot >= 0) {
       val target: Component = getTargetComponent(context)

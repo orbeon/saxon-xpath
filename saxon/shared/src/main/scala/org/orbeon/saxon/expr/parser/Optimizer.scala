@@ -101,8 +101,8 @@ class Optimizer( var config: Configuration) {
           var ilefalse: IsLastExpression = new IsLastExpression(false)
           ExpressionTool.copyLocationInfo(lhs, ilefalse)
           return ilefalse
-        case Token.FGT => Literal.makeLiteral(BooleanValue.FALSE, lhs)
-        case Token.FLE => Literal.makeLiteral(BooleanValue.TRUE, lhs)
+        case Token.FGT => return Literal.makeLiteral(BooleanValue.FALSE, lhs)
+        case Token.FLE => return Literal.makeLiteral(BooleanValue.TRUE, lhs)
 
       }
     }
@@ -162,7 +162,7 @@ class Optimizer( var config: Configuration) {
       isVariableReplaceableByDot(start, binding) && !ExpressionTool
         .dependsOnVariable(step, binding)
     } else {
-      for (op <- exp.operands.asScala) if (!isVariableReplaceableByDot(op.getChildExpression, binding)) false
+      for (op <- exp.operands.asScala) if (!isVariableReplaceableByDot(op.getChildExpression, binding)) return false
       true
     }
 

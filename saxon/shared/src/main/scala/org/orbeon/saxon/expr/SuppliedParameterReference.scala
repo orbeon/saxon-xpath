@@ -91,7 +91,7 @@ class SuppliedParameterReference(var slotNumber: Int) extends Expression {
 
   def evaluateVariable(c: XPathContext): Sequence = {
     if (slotNumber == -1) {
-      c.getStackFrame.popDynamicValue()
+      return c.getStackFrame.popDynamicValue()
     }
     try c.evaluateLocalVariable(slotNumber)
     catch {

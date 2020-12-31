@@ -13,10 +13,8 @@ import org.orbeon.saxon.expr.StringLiteral
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.om.NameChecker
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.om.StandardNames
-import org.orbeon.saxon.om.StructuredQName
+import org.orbeon.saxon.om.{NameChecker, Sequence, StandardNames, StructuredQName}
+import org.orbeon.saxon.om.StandardNames._
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.BooleanValue
 
@@ -158,7 +156,7 @@ class ElementAvailable extends SystemFunction {
     if (qName.hasURI(NamespaceConstant.XSLT)) {
       val fp = context.getConfiguration.getNamePool.getFingerprint(NamespaceConstant.XSLT, qName.getLocalPart)
       var known = ElementAvailable.isXslt30Element(fp).asInstanceOf[Boolean]
-      if (fp == StandardNames.XSL_EVALUATE) known = known && !context.getConfiguration.getBooleanProperty(Feature.DISABLE_XSL_EVALUATE)
+      if (fp == XSL_EVALUATE) known = known && !context.getConfiguration.getBooleanProperty(Feature.DISABLE_XSL_EVALUATE)
       return known
     }
     else if (qName.hasURI(NamespaceConstant.IXSL) && !(edition == "JS")) return false

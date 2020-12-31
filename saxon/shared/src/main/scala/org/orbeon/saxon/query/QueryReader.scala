@@ -146,8 +146,7 @@ object QueryReader {
   private def readToken(in: Array[Byte], i: Int, len: Int): String = {
     var p: Int = i
     while (p < len && " \n\r\t".indexOf(ch(in(p))) >= 0) {
-      p += 1;
-      p - 1
+      p += 1
     }
     if (ch(in(p)) == '"') {
       p += 1

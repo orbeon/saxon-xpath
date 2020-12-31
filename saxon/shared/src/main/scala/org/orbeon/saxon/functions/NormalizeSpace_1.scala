@@ -26,7 +26,7 @@ object NormalizeSpace_1 {
 
   def normalizeSpace(sv: StringValue): StringValue = {
     if (sv == null) {
-      StringValue.EMPTY_STRING
+      return StringValue.EMPTY_STRING
     }
     StringValue.makeStringValue(
       Whitespace.collapseWhitespace(sv.getStringValueCS))

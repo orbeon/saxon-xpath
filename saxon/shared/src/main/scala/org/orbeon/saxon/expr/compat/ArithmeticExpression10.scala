@@ -42,9 +42,9 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     val th = config.getTypeHierarchy
 
     if (Literal.isEmptySequence(getLhsExpression))
-      Literal.makeLiteral(DoubleValue.NaN, this)
+      return Literal.makeLiteral(DoubleValue.NaN, this)
     if (Literal.isEmptySequence(getRhsExpression))
-      Literal.makeLiteral(DoubleValue.NaN, this)
+      return Literal.makeLiteral(DoubleValue.NaN, this)
 
     val oldOp0 = getLhsExpression
     val oldOp1 = getRhsExpression
@@ -58,12 +58,12 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
 
     val itemType0 = getLhsExpression.getItemType
     if (itemType0 eq ErrorType)
-      Literal.makeLiteral(DoubleValue.NaN, this)
+     return Literal.makeLiteral(DoubleValue.NaN, this)
 
     var type0 = itemType0.getPrimitiveItemType.asInstanceOf[AtomicType]
     val itemType1 = getRhsExpression.getItemType
     if (itemType1 eq ErrorType)
-      Literal.makeLiteral(DoubleValue.NaN, this)
+      return Literal.makeLiteral(DoubleValue.NaN, this)
 
     var type1 = itemType1.getPrimitiveItemType.asInstanceOf[AtomicType]
 
@@ -75,7 +75,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
         new ArithmeticExpression(getLhsExpression, operator, getRhsExpression)
       val n: Expression =
         SystemFunction.makeCall("number", getRetainedStaticContext, arith)
-      n.typeCheck(visitor, contextInfo)
+      return n.typeCheck(visitor, contextInfo)
     }
     if (calculator == null) {
       this.setLhsExpression(
@@ -101,7 +101,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
           val v: GroundedValue = literal.getValue
           v match {
             case value: NumericValue =>
-              Literal.makeLiteral(value.negate(), this)
+              return Literal.makeLiteral(value.negate(), this)
             case _ =>
           }
         case _ =>
@@ -117,7 +117,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     calculator = assignCalculator(type0, type1, mustResolve)
     try
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-        Literal.makeLiteral(
+        return Literal.makeLiteral(
           evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
             .materialize,
           this)

@@ -50,7 +50,7 @@ class TupleItemType(names: List[String],
         `val` = EmptySequence.getInstance
       }
       if (!value.matches(`val`, th)) {
-        false
+        return false
       }
     }
     if (!extensible) {
@@ -63,7 +63,7 @@ class TupleItemType(names: List[String],
         StringValue]) || !fields
         .containsKey(
           key.getStringValue)) {
-        false
+       return false
       }
     }
     true
@@ -162,7 +162,7 @@ class TupleItemType(names: List[String],
       else BuiltInAtomicType.STRING
     val keyRel: Affinity = th.relationship(tupleKeyType, other.getKeyType)
     if (keyRel == Affinity.DISJOINT) {
-      Affinity.DISJOINT
+     return Affinity.DISJOINT
     }
     if (other.getValueType.getPrimaryType == AnyItemType &&
       other.getValueType.getCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE) {
@@ -178,7 +178,7 @@ class TupleItemType(names: List[String],
         val rel: Affinity =
           th.sequenceTypeRelationship(entry, other.getValueType)
         if (!(rel == Affinity.SUBSUMED_BY || rel == Affinity.SAME_TYPE)) {
-          Affinity.OVERLAPS
+          return Affinity.OVERLAPS
         }
       }
       Affinity.SUBSUMED_BY
@@ -208,7 +208,7 @@ class TupleItemType(names: List[String],
         } else if (Cardinality.allowsZero(t2.getCardinality)) {
           foundOverlap = true
         } else {
-          Affinity.DISJOINT
+         return Affinity.DISJOINT
         }
       } else if (t2 == null) {
         if (other.isExtensible) {
@@ -216,7 +216,7 @@ class TupleItemType(names: List[String],
         } else if (Cardinality.allowsZero(t1.getCardinality)) {
           foundOverlap = true
         } else {
-          Affinity.DISJOINT
+          return Affinity.DISJOINT
         }
       } else {
         val a: Affinity = th.sequenceTypeRelationship(t1, t2)
@@ -225,7 +225,7 @@ class TupleItemType(names: List[String],
           case SUBSUMED_BY => foundSubsumed = true
           case SUBSUMES => foundSubsuming = true
           case OVERLAPS => foundOverlap = true
-          case DISJOINT => Affinity.DISJOINT
+          case DISJOINT => return Affinity.DISJOINT
 
         }
       }
@@ -250,7 +250,7 @@ class TupleItemType(names: List[String],
           item.asInstanceOf[MapItem].get(new StringValue(key))
         if (value == null) {
           if (!Cardinality.allowsZero(required.getCardinality)) {
-            Some("Field " + key + " is absent; it must have a value")
+            return Some("Field " + key + " is absent; it must have a value")
           }
         } else {
           try if (!required.matches(groundValue, th)) {
@@ -262,9 +262,9 @@ class TupleItemType(names: List[String],
             if (more.isDefined) {
               s += ". " + more.get
             }
-            Some(s)
+            return Some(s)
           } catch {
-            case err: XPathException => None
+            case err: XPathException => return None
 
           }
         }
@@ -278,11 +278,11 @@ class TupleItemType(names: List[String],
           key
         }) != null) if (!(key.isInstanceOf[
           StringValue])) {
-          Some(
+          return Some(
             "Undeclared field " + key +
               " is present, but it is not a string, and the tuple type is not extensible")
         } else if (!fields.containsKey(key.getStringValue)) {
-          Some(
+          return Some(
             "Undeclared field " + key +
               " is present, but the tuple type is not extensible")
         }

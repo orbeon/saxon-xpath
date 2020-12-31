@@ -134,7 +134,7 @@ class IterateInstr(select: Expression,
     if (Literal.isEmptySequence(getOnCompletion)) {
       if (Literal.isEmptySequence(getSelectExpression) || Literal
         .isEmptySequence(getActionExpression)) {
-        getOnCompletion
+        return getOnCompletion
       }
     }
     this
@@ -152,7 +152,7 @@ class IterateInstr(select: Expression,
     if (Literal.isEmptySequence(getOnCompletion)) {
       if (Literal.isEmptySequence(getSelectExpression) || Literal
         .isEmptySequence(getActionExpression)) {
-        getOnCompletion
+        return getOnCompletion
       }
     }
     this
@@ -181,7 +181,7 @@ class IterateInstr(select: Expression,
     for (o <- paramBlock.operands.asScala) {
       val setter: LocalParam = o.getChildExpression.asInstanceOf[LocalParam]
       if (setter == binding) {
-        true
+        return true
       }
     }
     false
@@ -233,7 +233,7 @@ class IterateInstr(select: Expression,
           val comp: TailCallLoop.TailCallInfo = c2.getTailCallInfo
           if (comp == null) {} else if (comp.isInstanceOf[BreakInstr]) {
             iter.close()
-            null
+            return null
           } else {}
         } else {
           val c3: XPathContextMinor = context.newMinorContext()

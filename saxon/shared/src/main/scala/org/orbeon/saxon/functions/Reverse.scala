@@ -62,7 +62,7 @@ class Reverse extends SystemFunction {
                                  contextInfo: ContextItemStaticInfo,
                                  arguments: Expression*): Expression = {
     if (arguments(0).getCardinality == StaticProperty.ALLOWS_ZERO_OR_ONE) {
-      arguments(0)
+      return arguments(0)
     }
     super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
   }

@@ -27,7 +27,7 @@ class NamespaceContextImpl(var resolver: NamespaceResolver)
       val p: String = prefixes.next()
       val u: String = resolver.getURIForPrefix(p, useDefault = true)
       if (u == uri) {
-        p
+        return p
       }
     }
     null

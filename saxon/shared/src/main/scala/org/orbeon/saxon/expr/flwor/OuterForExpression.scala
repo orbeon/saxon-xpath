@@ -28,7 +28,7 @@ class OuterForExpression extends ForExpression {
     val action0: Expression = getAction
     getActionOp.optimize(visitor, contextItemType)
     if (sequence0 != getSequence || action0 != getAction) {
-      optimize(visitor, contextItemType)
+      return optimize(visitor, contextItemType)
     }
     this
   }

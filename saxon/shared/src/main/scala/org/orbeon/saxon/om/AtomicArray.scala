@@ -125,7 +125,7 @@ class AtomicArray extends AtomicSequence {
         }
         val c: Int = item1.getSchemaComparable.compareTo(item2.getSchemaComparable.asInstanceOf[Item])
         if (c != 0) {
-          c
+         return c
         }
       }
       0

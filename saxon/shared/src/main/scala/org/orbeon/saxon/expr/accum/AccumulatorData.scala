@@ -182,9 +182,9 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     if (start == end) {
       val rel: Int = sought.compareTo(values.get(start).visit)
       if (rel < 0) {
-        values.get(start - 1).value
+        return values.get(start - 1).value
       } else {
-        values.get(start).value
+        return values.get(start).value
       }
     }
     val mid: Int = (start + end) / 2

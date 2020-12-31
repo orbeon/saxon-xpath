@@ -95,7 +95,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
   def obtainFingerprint(namePool: NamePool): Int =
     if (nameCode == -1) {
       nameCode = namePool.allocateFingerprint("", localName)
-      return nameCode
+      nameCode
     } else {
       nameCode
     }

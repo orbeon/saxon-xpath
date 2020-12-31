@@ -29,7 +29,7 @@ class JsonDoc extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val arg0: Item = arguments(0).head
     if (arg0 == null) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     val href: String = arg0.getStringValue
     val config: Configuration = context.getConfiguration

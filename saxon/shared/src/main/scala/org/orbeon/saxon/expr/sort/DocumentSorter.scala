@@ -74,7 +74,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     val th = visitor.getConfiguration.getTypeHierarchy
     if (th.relationship(getBaseExpression.getItemType, AnyNodeTest) ==
       Affinity.DISJOINT) {
-      getBaseExpression
+      return getBaseExpression
     }
     val role: RoleDiagnostic =
       new RoleDiagnostic(RoleDiagnostic.MISC, "document-order sorter", 0)
@@ -113,7 +113,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
             val condition: Expression = c.getCondition
             var s: Expression = new SlashExpression(d.getBaseExpression, rhs)
             s = s.optimize(visitor, contextInfo)
-            new ConditionalSorter(condition, new DocumentSorter(s))
+            return new ConditionalSorter(condition, new DocumentSorter(s))
           }
           if (lhs.isInstanceOf[DocumentSorter] && rhs
             .isInstanceOf[AxisExpression] &&
@@ -122,13 +122,13 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
               lhs.asInstanceOf[DocumentSorter].getBaseExpression,
               rhs)
             ExpressionTool.copyLocationInfo(this, s1)
-            new DocumentSorter(s1).optimize(visitor, contextInfo)
+            return new DocumentSorter(s1).optimize(visitor, contextInfo)
           }
           if (!ExpressionTool.dependsOnFocus(rhs) &&
             !rhs.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) &&
             rhs.hasSpecialProperty(StaticProperty.NO_NODES_NEWLY_CREATED)) {
             this.setBaseExpression(slash.getRhsExpression)
-            optimize(visitor, contextInfo)
+            return optimize(visitor, contextInfo)
           }
         }
         if (tryHarder) {
@@ -173,7 +173,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
             .getAxis == AxisInfo.DESCENDANT_OR_SELF) &&
         b.isInstanceOf[AxisExpression] &&
         b.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
-        operand.unordered(retainAllNodes, forStreaming = false)
+        return operand.unordered(retainAllNodes, forStreaming = false)
       }
     }
     this.setBaseExpression(operand)

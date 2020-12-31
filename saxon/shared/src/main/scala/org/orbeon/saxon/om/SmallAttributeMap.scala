@@ -21,7 +21,7 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
     for (info <- attributes.asScala) {
       val name: NodeName = info.getNodeName
       if (name.getLocalPart == local && name.hasURI(uri)) {
-        info
+        return info
       }
     }
     null
@@ -31,7 +31,7 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
     for (info <- attributes.asScala) {
       val name: NodeName = info.getNodeName
       if (name.obtainFingerprint(namePool) == fingerprint) {
-        info
+        return info
       }
     }
     null

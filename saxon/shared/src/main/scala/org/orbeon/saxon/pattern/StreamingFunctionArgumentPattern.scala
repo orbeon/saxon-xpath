@@ -60,7 +60,7 @@ class StreamingFunctionArgumentPattern() extends Pattern {
       j = iter.next()
       j
     }) != null) if (j == item) {
-      true
+      return true
     }
     false
   }

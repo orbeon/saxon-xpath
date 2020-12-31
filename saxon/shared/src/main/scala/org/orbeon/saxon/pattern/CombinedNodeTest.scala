@@ -172,13 +172,13 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
   override def getPrimitiveType: Int = {
     val mask: UType = getUType
     if (mask == UType.ELEMENT) {
-      Type.ELEMENT
+      return Type.ELEMENT
     }
     if (mask == UType.ATTRIBUTE) {
-      Type.ATTRIBUTE
+      return Type.ATTRIBUTE
     }
     if (mask == UType.DOCUMENT) {
-      Type.DOCUMENT
+      return Type.DOCUMENT
     }
     Type.NODE
   }

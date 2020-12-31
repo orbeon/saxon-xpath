@@ -42,7 +42,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
     if (operand.isInstanceOf[Literal]) {
       val v: GroundedValue = operand.asInstanceOf[Literal].getValue
       if (v.isInstanceOf[NumericValue]) {
-        Literal.makeLiteral(v.asInstanceOf[NumericValue].negate(), this)
+        return Literal.makeLiteral(v.asInstanceOf[NumericValue].negate(), this)
       }
     }
     this
@@ -60,7 +60,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
     val v1: NumericValue =
       getBaseExpression.evaluateItem(context).asInstanceOf[NumericValue]
     if (v1 == null) {
-      if (backwardsCompatible) DoubleValue.NaN else return null
+      if (backwardsCompatible) return DoubleValue.NaN else return null
     }
     v1.negate()
   }

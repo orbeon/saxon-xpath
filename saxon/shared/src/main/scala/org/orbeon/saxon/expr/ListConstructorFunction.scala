@@ -92,7 +92,7 @@ class ListConstructorFunction( var targetType: ListType,
     val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     if (`val` == null) {
       if (allowEmpty) {
-        EmptyAtomicSequence.getInstance
+        return EmptyAtomicSequence.getInstance
       } else {
         val e: XPathException = new XPathException(
           "Cast expression does not allow an empty sequence to be supplied",

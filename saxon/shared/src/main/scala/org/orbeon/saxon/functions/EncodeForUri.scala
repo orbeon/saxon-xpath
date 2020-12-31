@@ -118,7 +118,7 @@ object EncodeForUri {
             "% sign in URI must be followed by two hex digits" + Err.wrap(uri))
         }
       } else {
-        { i += 1; i - 1 }
+        i += 1
       }
     }
   }

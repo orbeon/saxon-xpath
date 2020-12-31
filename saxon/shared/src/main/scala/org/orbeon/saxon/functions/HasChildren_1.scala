@@ -28,7 +28,7 @@ class HasChildren_1 extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val arg: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (arg == null) {
-      BooleanValue.FALSE
+      return BooleanValue.FALSE
     }
     BooleanValue.get(arg.hasChildNodes)
   }

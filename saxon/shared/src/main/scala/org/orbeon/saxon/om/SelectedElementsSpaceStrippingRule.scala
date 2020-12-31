@@ -223,20 +223,15 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
   def getRankedRules = {
     val treeMap = new util.TreeMap[Integer, Rule]
     var rule = anyElementRule
-    while ( {
-      rule != null
-    }) {
+    while (rule != null) {
       treeMap.put(-rule.getRank, rule)
       rule = rule.getNext
     }
     rule = unnamedElementRuleChain
-    while ( {
-      rule != null
-    }) {
+    while (rule != null) {
       treeMap.put(-rule.getRank, rule)
       rule = rule.getNext
     }
-
     for (r <- namedElementRules.values.asScala) {
       treeMap.put(-r.getRank, r)
     }
@@ -261,20 +256,15 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
   override def `export`(presenter: ExpressionPresenter) = {
     presenter.startElement("strip")
     var rule = anyElementRule
-    while ( {
-      rule != null
-    }) {
+    while (rule != null) {
       SelectedElementsSpaceStrippingRule.exportRule(rule, presenter)
       rule = rule.getNext
     }
     rule = unnamedElementRuleChain
-    while ( {
-      rule != null
-    }) {
+    while (rule != null) {
       SelectedElementsSpaceStrippingRule.exportRule(rule, presenter)
       rule = rule.getNext
     }
-
     for (r <- namedElementRules.values.asScala) {
       SelectedElementsSpaceStrippingRule.exportRule(r, presenter)
     }

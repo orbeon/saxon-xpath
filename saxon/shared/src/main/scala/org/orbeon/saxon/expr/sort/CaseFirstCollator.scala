@@ -56,20 +56,24 @@ class CaseFirstCollator(base: StringCollator,
       if (j >= b.length) return 0
 
       val aFirst: Boolean = if (upperFirst) {
-        i += 1
-        java.lang.Character.isUpperCase(a.charAt(i))
+        java.lang.Character.isUpperCase(a.charAt({
+          i += 1; i - 1
+        }))
       }
       else {
-        i += 1
-        java.lang.Character.isLowerCase(a.charAt(i))
+        java.lang.Character.isLowerCase(a.charAt({
+          i += 1; i - 1
+        }))
       }
       val bFirst: Boolean = if (upperFirst) {
-        j += 1
-        java.lang.Character.isUpperCase(b.charAt(j))
+        java.lang.Character.isUpperCase(b.charAt({
+          j += 1; j - 1
+        }))
       }
       else {
-        j += 1
-        java.lang.Character.isLowerCase(b.charAt(j))
+        java.lang.Character.isLowerCase(b.charAt({
+          j += 1; j - 1
+        }))
       }
       if (aFirst && !bFirst) return -1
       if (bFirst && !aFirst) return +1

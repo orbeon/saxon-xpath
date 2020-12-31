@@ -48,7 +48,7 @@ class AxisAtomizingIterator(private var base: AtomizedValueIterator) extends Seq
         }
       }
     }
-    results.asInstanceOf[AtomicValue]
+    null
   }
 
   override def close(): Unit =

@@ -167,7 +167,7 @@ class ApplyTemplates  ()
     }
     adoptChildExpression(getSelect)
     if (Literal.isEmptySequence(getSelect)) {
-      getSelect
+      return getSelect
     }
     this
   }
@@ -179,7 +179,7 @@ override  def optimize(visitor: ExpressionVisitor,
     selectOp.typeCheck(visitor, contextInfo)
     selectOp.optimize(visitor, contextInfo)
     if (Literal.isEmptySequence(getSelect)) {
-      getSelect
+      return getSelect
     }
     this
   }
@@ -224,7 +224,7 @@ override  def optimize(visitor: ExpressionVisitor,
     if (returnTailCall) {
       val c2: XPathContextMajor = context.newContext()
       c2.setOrigin(this)
-      new ApplyTemplatesPackage(
+      return new ApplyTemplatesPackage(
         ExpressionTool.lazyEvaluate(getSelect, context, repeatable = false),
         targetMode,
         params,

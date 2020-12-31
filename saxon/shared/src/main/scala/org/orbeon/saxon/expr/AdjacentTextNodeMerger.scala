@@ -129,7 +129,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
       }
       if (!needed) {
         if (maybeEmpty) {
-          new EmptyTextNodeRemover(block)
+          return new EmptyTextNodeRemover(block)
         } else {
           return block
         }

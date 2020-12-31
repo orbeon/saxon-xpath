@@ -46,7 +46,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     operand.optimize(visitor, contextInfo)
     val base: Expression = getBaseExpression
     try if (base.isInstanceOf[Literal]) {
-      Literal.makeLiteral(
+      return Literal.makeLiteral(
         iterate(visitor.getStaticContext.makeEarlyEvaluationContext())
           .materialize,
         this)

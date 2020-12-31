@@ -40,22 +40,20 @@ class LastItemExpression(base: Expression) extends SingleItemFilter(base) {
   /*@Nullable*/
 
   override def evaluateItem(context: XPathContext): Item = {
-    var results: Item = null
     val forwards: SequenceIterator = getBaseExpression.iterate(context)
     if (forwards.isInstanceOf[ReversibleIterator]) {
-      results = forwards.asInstanceOf[ReversibleIterator].getReverseIterator.next()
+      return forwards.asInstanceOf[ReversibleIterator].getReverseIterator.next()
     } else {
       var current: Item = null
       while (true) {
         val item: Item = forwards.next()
         if (item == null) {
-          results = current
+          return current
         }
         current = item
-        results = current
       }
     }
-    results
+    null
   }
 
   override def getExpressionName: String = "lastOf"

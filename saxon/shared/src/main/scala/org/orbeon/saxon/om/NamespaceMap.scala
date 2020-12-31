@@ -329,7 +329,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
   def addAll(namespaces: NamespaceBindingSet): NamespaceMap =
     namespaces match {
     case map: NamespaceMap =>
-      putAll(map)
+      return putAll(map)
     case _ =>
       var map = this
       for (nb <- namespaces.asScala)

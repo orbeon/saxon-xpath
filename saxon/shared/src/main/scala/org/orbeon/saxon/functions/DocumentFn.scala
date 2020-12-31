@@ -89,13 +89,13 @@ object DocumentFn {
       computeDocumentKey(hrefStr, baseURI, packageData, c)
     var doc: TreeInfo = config.getGlobalDocumentPool.find(documentKey)
     if (doc != null) {
-      doc.getRootNode
+      return doc.getRootNode
     }
     val pool: DocumentPool = controller.getDocumentPool
     controller.synchronized {
       doc = pool.find(documentKey)
       if (doc != null) {
-        getFragment(doc, fragmentId, c, locator)
+        return getFragment(doc, fragmentId, c, locator)
       }
       //      if (controller.isInstanceOf[XsltController] &&
       //        !controller
@@ -192,7 +192,7 @@ object DocumentFn {
       controller.synchronized {
         doc = pool.find(documentKey)
         if (doc != null) {
-          getFragment(doc, fragmentId, c, locator)
+          return getFragment(doc, fragmentId, c, locator)
         }
         controller.registerDocument(newdoc, documentKey)
         //        if (controller.isInstanceOf[XsltController]) {
@@ -383,7 +383,7 @@ object DocumentFn {
     }
     val doc: TreeInfo = config.getGlobalDocumentPool.find(documentKey)
     if (doc != null) {
-      doc.getRootNode
+      return doc.getRootNode
     }
     try {
       var r: URIResolver = resolver
@@ -509,13 +509,13 @@ object DocumentFn {
                           context: XPathContext,
                           locator: Location): NodeInfo = {
     if (fragmentId == null) {
-      doc.getRootNode
+      return doc.getRootNode
     }
     if (!NameChecker.isValidNCName(fragmentId)) {
       context.getController.warning("Invalid fragment identifier in URI",
         "XTDE1160",
         locator)
-      doc.getRootNode
+     return doc.getRootNode
     }
     doc.selectID(fragmentId, getParent = false)
   }

@@ -133,7 +133,7 @@ object TypeChecker {
       item = iter.next()
       item
     } != null) {
-      { count += 1;}
+      count += 1
       if (! reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {
         val err = new XPathException(

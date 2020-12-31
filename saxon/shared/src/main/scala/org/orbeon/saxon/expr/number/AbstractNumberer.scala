@@ -301,7 +301,7 @@ abstract class AbstractNumberer extends Numberer {
       case 127234 =>
         if (number == 0) {
           fsb.appendWideChar(127233)
-          fsb.toString
+          return fsb.toString
         }
         if (number >= 10) {
           return "" + number
@@ -393,8 +393,7 @@ abstract class AbstractNumberer extends Numberer {
     val min: Int = formchar.toInt
     var max: Int = formchar.toInt
     while (java.lang.Character.isLetterOrDigit((max + 1).toChar)) {
-      max += 1;
-      max - 1
+      max += 1
     }
     sb.append(toAlpha(number, min, max))
   }

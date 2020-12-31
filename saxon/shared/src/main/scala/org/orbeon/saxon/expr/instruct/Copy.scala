@@ -79,7 +79,7 @@ class Copy(
             false
           )
           ExpressionTool.copyLocationInfo(this, c)
-          c.typeCheck(visitor, contextInfo)
+          return c.typeCheck(visitor, contextInfo)
         case _ => this.resultItemType = selectItemType
 
       }
@@ -132,11 +132,11 @@ class Copy(
     if (getSchemaType != null) {
       val e: Affinity = th.relationship(selectItemType, NodeKindTest.ELEMENT)
       if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
-        new ContentTypeTest(Type.ELEMENT, getSchemaType, config, false)
+        return new ContentTypeTest(Type.ELEMENT, getSchemaType, config, false)
       }
       val a: Affinity = th.relationship(selectItemType, NodeKindTest.ATTRIBUTE)
       if (a == Affinity.SAME_TYPE || a == Affinity.SUBSUMED_BY) {
-        new ContentTypeTest(Type.ATTRIBUTE, getSchemaType, config, false)
+       return new ContentTypeTest(Type.ATTRIBUTE, getSchemaType, config, false)
       }
       AnyNodeTest
     } else {
@@ -146,7 +146,7 @@ class Copy(
           val e: Affinity =
             th.relationship(selectItemType, NodeKindTest.ELEMENT)
           if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
-            new ContentTypeTest(Type.ELEMENT,
+            return new ContentTypeTest(Type.ELEMENT,
               Untyped.getInstance,
               config,
               false)
@@ -154,7 +154,7 @@ class Copy(
           val a: Affinity =
             th.relationship(selectItemType, NodeKindTest.ATTRIBUTE)
           if (a == Affinity.SAME_TYPE || a == Affinity.SUBSUMED_BY) {
-            new ContentTypeTest(Type.ATTRIBUTE,
+            return new ContentTypeTest(Type.ATTRIBUTE,
               BuiltInAtomicType.UNTYPED_ATOMIC,
               config,
               false)
@@ -174,20 +174,20 @@ class Copy(
               if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
                 val elem: SchemaDeclaration = config.getElementDeclaration(fp)
                 if (elem != null) {
-                  try new ContentTypeTest(Type.ELEMENT,
+                  try return new ContentTypeTest(Type.ELEMENT,
                     elem.getType,
                     config,
                     false)
                   catch {
                     case e1: MissingComponentException =>
-                      new ContentTypeTest(Type.ELEMENT,
+                      return new ContentTypeTest(Type.ELEMENT,
                         AnyType.getInstance,
                         config,
                         false)
 
                   }
                 } else {
-                  new ContentTypeTest(Type.ELEMENT,
+                  return new ContentTypeTest(Type.ELEMENT,
                     AnyType.getInstance,
                     config,
                     false)
@@ -198,20 +198,20 @@ class Copy(
               if (a == Affinity.SAME_TYPE || a == Affinity.SUBSUMED_BY) {
                 val attr: SchemaDeclaration = config.getElementDeclaration(fp)
                 if (attr != null) {
-                  try new ContentTypeTest(Type.ATTRIBUTE,
+                  try return new ContentTypeTest(Type.ATTRIBUTE,
                     attr.getType,
                     config,
                     false)
                   catch {
                     case e1: MissingComponentException =>
-                      new ContentTypeTest(Type.ATTRIBUTE,
+                      return new ContentTypeTest(Type.ATTRIBUTE,
                         AnySimpleType,
                         config,
                         false)
 
                   }
                 } else {
-                  new ContentTypeTest(Type.ATTRIBUTE,
+                  return new ContentTypeTest(Type.ATTRIBUTE,
                     AnySimpleType,
                     config,
                     false)
@@ -221,12 +221,12 @@ class Copy(
               val e: Affinity =
                 th.relationship(selectItemType, NodeKindTest.ELEMENT)
               if (e == Affinity.SAME_TYPE || e == Affinity.SUBSUMED_BY) {
-                NodeKindTest.ELEMENT
+                return NodeKindTest.ELEMENT
               }
               val a: Affinity =
                 th.relationship(selectItemType, NodeKindTest.ATTRIBUTE)
               if (a == Affinity.SAME_TYPE || a == Affinity.SUBSUMED_BY) {
-                NodeKindTest.ATTRIBUTE
+                return NodeKindTest.ATTRIBUTE
               }
             }
             AnyNodeTest
@@ -235,8 +235,8 @@ class Copy(
           } else {
             AnyItemType
           }
-        case _ => throw new IllegalStateException
-
+        case _ =>
+          throw new IllegalStateException
       }
     }
   }
@@ -316,7 +316,7 @@ class Copy(
     val source: NodeInfo = item.asInstanceOf[NodeInfo]
     source.getNodeKind match {
       case Type.ELEMENT =>
-        super.processLeavingTail(outPutter, context, item.asInstanceOf[NodeInfo])
+        return super.processLeavingTail(outPutter, context, item.asInstanceOf[NodeInfo])
       case Type.ATTRIBUTE =>
         if (getSchemaType.isInstanceOf[ComplexType]) {
           dynamicError(

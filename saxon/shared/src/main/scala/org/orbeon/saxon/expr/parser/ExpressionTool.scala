@@ -309,10 +309,10 @@ object ExpressionTool {
     while (expression != null) {
       expression.resetLocalStaticProperties()
       expression = expression.getParentExpression
-      i += 1
       if (i > 100000)
         throw new IllegalStateException("Loop in parent expression chain")
     }
+    i += 1
   }
 
   def equalOrNull(x: Any, y: Any): Boolean =

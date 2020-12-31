@@ -311,9 +311,9 @@ class GroupByClause(var config: Configuration) extends Clause {
           comparers(i),
           comparers(i).getContext,
           0)) {
-          false
+          return false
         } catch {
-          case e: XPathException => false
+          case e: XPathException => return false
 
         }
       }

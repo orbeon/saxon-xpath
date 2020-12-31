@@ -127,7 +127,7 @@ class Executable(var config: Configuration) {
       val sqc: QueryModule = miter.next()
       val uri: String = sqc.getSystemId
       if (uri != null && uri == systemId) {
-        sqc
+        return sqc
       }
     }
     null

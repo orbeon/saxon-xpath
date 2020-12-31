@@ -17,18 +17,16 @@ class MultiIterator[T](private var array: List[Iterator[T]])
   private var current: Int = 0
 
   def hasNext: Boolean = {
-    var result = false
     while (true) {
       if (current >= array.size) {
-        result = false
+        return false
       }
       if (array.get(current).hasNext) {
-        result = true
+        return true
       }
       current += 1
-
     }
-    result
+    false
   }
   /**
     * Returns the next element in the iteration.

@@ -32,11 +32,7 @@ class DoubleSortComparer private () extends AtomicComparer {
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {
-      if (b == null) {
-        return  0
-      } else {
-        return -1
-      }
+      if (b == null) return 0 else return -1
     } else if (b == null) {
       return +1
     }

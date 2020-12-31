@@ -495,7 +495,7 @@ class JsonParser {
           JsonParser.JsonToken.COLON
         case ',' =>
           JsonParser.JsonToken.COMMA
-        case '-' => jsonToken
+        case '-' => jsonToken // Erick to check whole method
         case '+' => jsonToken
         case '.' => jsonToken
         case '0' => jsonToken

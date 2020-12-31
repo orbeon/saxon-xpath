@@ -72,7 +72,7 @@ object Block {
         val it: ItemType = exp.getItemType
         if (th.relationship(it, NodeKindTest.ELEMENT) != Affinity.DISJOINT ||
           th.relationship(it, NodeKindTest.ATTRIBUTE) != Affinity.DISJOINT) {
-          false
+          return false
         }
       }
     }
@@ -122,7 +122,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def computeSpecialProperties(): Int = {
     if (size == 0) {
-      StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
+      return StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
     }
     var p: Int = super.computeSpecialProperties()
     if (allNodesUntyped) {
@@ -325,7 +325,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def computeCardinality(): Int = {
     if (size == 0) {
-      StaticProperty.EMPTY
+      return StaticProperty.EMPTY
     }
     var c1: Int = child(0).getCardinality
     breakable {

@@ -122,11 +122,11 @@ class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
       val v: ValidationFailure =
         base.validateContent(`val`.getStringValue, nsResolver, rules)
       if (v != null) {
-        v
+       return v
       }
     }
     if (!found) {
-      new ValidationFailure(
+      return new ValidationFailure(
         "The built-in list type " + StandardNames.getDisplayName(fingerprint) +
           " does not allow a zero-length list")
     }

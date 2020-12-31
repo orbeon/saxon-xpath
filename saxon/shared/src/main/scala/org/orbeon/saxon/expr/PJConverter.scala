@@ -74,12 +74,12 @@ object PJConverter {
     if (javaClass.isArray) {
       val memberClass: Class[_] = javaClass.getComponentType
       if (memberClass == classOf[Byte]) {
-        SequenceType.makeSequenceType(BuiltInAtomicType.UNSIGNED_BYTE,
+        return SequenceType.makeSequenceType(BuiltInAtomicType.UNSIGNED_BYTE,
           StaticProperty.ALLOWS_ZERO_OR_MORE)
       } else {
         val memberType: SequenceType = getEquivalentSequenceType(memberClass)
         if (memberType != null) {
-          SequenceType.makeSequenceType(memberType.getPrimaryType,
+         return SequenceType.makeSequenceType(memberType.getPrimaryType,
             StaticProperty.ALLOWS_ZERO_OR_MORE)
         }
       }
@@ -113,7 +113,7 @@ object PJConverter {
           cardinality = StaticProperty.ALLOWS_ZERO_OR_MORE
         }
         if (itemType != null && cardinality != -1) {
-          SequenceType.makeSequenceType(itemType, cardinality)
+          return SequenceType.makeSequenceType(itemType, cardinality)
         }
       }
     }
@@ -505,7 +505,7 @@ object PJConverter {
       if (value.isInstanceOf[ExternalObject[_]] &&
         targetClass.isAssignableFrom(
           value.asInstanceOf[ExternalObject[_]].getObject.getClass)) {
-        value.asInstanceOf[ExternalObject[_]].getObject
+        value.asInstanceOf[ExternalObject[_]].getObject // Erick need to check
       }
       val componentClass: Class[_] = targetClass.getComponentType
       val list = new ArrayList[Any](20)

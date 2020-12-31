@@ -33,7 +33,8 @@ object ValueComparison {
       throw e2
     }
     if (v0.isNaN || v1.isNaN)
-      op == Token.FNE
+      return op == Token.FNE
+
     try op match {
       case Token.FEQ =>   comparer.comparesEqual(v0, v1)
       case Token.FNE => ! comparer.comparesEqual(v0, v1)
@@ -85,6 +86,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
     resetLocalStaticProperties()
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
+
     val config = visitor.getConfiguration
     val env    = visitor.getStaticContext
 

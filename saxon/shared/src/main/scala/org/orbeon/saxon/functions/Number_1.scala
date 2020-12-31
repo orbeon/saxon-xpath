@@ -55,24 +55,24 @@ object Number_1 {
   def convert(value: AtomicValue, config: Configuration): DoubleValue =
     try {
       if (value == null) {
-        DoubleValue.NaN
+        return DoubleValue.NaN
       }
       if (value.isInstanceOf[BooleanValue]) {
-        new DoubleValue(
+        return new DoubleValue(
           if (value.asInstanceOf[BooleanValue].getBooleanValue) 1.0e0
           else 0.0e0)
       }
       if (value.isInstanceOf[DoubleValue]) {
-        value.asInstanceOf[DoubleValue]
+       return value.asInstanceOf[DoubleValue]
       }
       if (value.isInstanceOf[NumericValue]) {
-        new DoubleValue(value.asInstanceOf[NumericValue].getDoubleValue)
+       return new DoubleValue(value.asInstanceOf[NumericValue].getDoubleValue)
       }
       if (value
         .isInstanceOf[StringValue] && !(value.isInstanceOf[AnyURIValue])) {
         val d: Double = config.getConversionRules.getStringToDoubleConverter
           .stringToNumber(value.getStringValueCS)
-        new DoubleValue(d)
+        return new DoubleValue(d)
       }
       DoubleValue.NaN
     } catch {

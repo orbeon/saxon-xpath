@@ -59,12 +59,12 @@ override def typeCheck(visitor: ExpressionVisitor,
                contextItemType: ContextItemStaticInfo): Expression = {
     if (Literal.isEmptySequence(getMin) || Literal.isEmptySequence(getMax) ||
       Literal.isEmptySequence(getValue)) {
-      new Literal(BooleanValue.FALSE)
+      return new Literal(BooleanValue.FALSE)
     }
     if (getMin.isInstanceOf[Literal] && getMax.isInstanceOf[Literal] &&
       getValue.isInstanceOf[Literal]) {
       val result: BooleanValue = evaluateItem(visitor.makeDynamicContext())
-      new Literal(result)
+      return new Literal(result)
     }
     this
   }
@@ -108,11 +108,11 @@ override def typeCheck(visitor: ExpressionVisitor,
       if (minVal == null) {
         minVal = getMin.evaluateItem(c).asInstanceOf[IntegerValue]
         if (minVal == null) {
-          BooleanValue.FALSE
+          return BooleanValue.FALSE
         }
         maxVal = getMax.evaluateItem(c).asInstanceOf[IntegerValue]
         if (maxVal == null || maxVal.compareTo(minVal) < 0) {
-          BooleanValue.FALSE
+          return BooleanValue.FALSE
         }
       }
       var v: NumericValue = null
@@ -144,7 +144,7 @@ override def typeCheck(visitor: ExpressionVisitor,
         throw e
       }
       if (v.isWholeNumber && v.compareTo(minVal) >= 0 && v.compareTo(maxVal) <= 0) {
-        BooleanValue.TRUE
+        return BooleanValue.TRUE
       }
     }
     BooleanValue.FALSE

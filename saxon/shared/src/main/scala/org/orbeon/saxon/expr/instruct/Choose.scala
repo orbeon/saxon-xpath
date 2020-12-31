@@ -272,7 +272,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       val reduced = removeRedundantBranches(visitor)
       if (reduced != this)
-        reduced.typeCheck(visitor, contextInfo)
+        return reduced.typeCheck(visitor, contextInfo)
       return reduced
     }
     this
@@ -491,7 +491,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   override def getStaticUType(contextItemType: UType): UType =
     if (isInstruction) {
-      super.getStaticUType(contextItemType)
+      return super.getStaticUType(contextItemType)
     } else {
       var `type` = getAction(0).getStaticUType(contextItemType)
       for (i <- 1 until size)

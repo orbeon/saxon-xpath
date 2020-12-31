@@ -66,7 +66,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val xml: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (xml == null) {
-      EmptySequence.getInstance
+     return EmptySequence.getInstance
     }
     val indent: Boolean = isindentingRequested(context, arguments)
     val pipe: PipelineConfiguration =
@@ -83,7 +83,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
       val suppliedOptions: MapItem = arguments(1).head.asInstanceOf[MapItem]
       val options: Map[String, Sequence] = getDetails.optionDetails
         .processSuppliedOptions(suppliedOptions, context)
-      options.get("indent").head.asInstanceOf[BooleanValue].getBooleanValue
+      return options.get("indent").head.asInstanceOf[BooleanValue].getBooleanValue
     }
     false
   }

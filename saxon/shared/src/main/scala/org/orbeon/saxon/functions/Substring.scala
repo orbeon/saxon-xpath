@@ -17,23 +17,23 @@ object Substring {
     if (start.isInstanceOf[Int64Value]) {
       lstart = start.asInstanceOf[Int64Value].longValue
       if (lstart > slength) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else if (lstart <= 0) {
         lstart = 1
       }
     } else {
       if (start.isNaN) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else if (start.signum() <= 0) {
         return s
       } else if (start.compareTo(slength) > 0) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else {
         lstart = Math.round(start.getDoubleValue)
       }
     }
     if (lstart > s.uLength) {
-      EmptyString.THE_INSTANCE
+      return EmptyString.THE_INSTANCE
     }
     s.uSubstring(lstart.toInt - 1, s.uLength)
   }
@@ -46,13 +46,13 @@ object Substring {
     if (start.isInstanceOf[Int64Value]) {
       lstart = start.asInstanceOf[Int64Value].longValue
       if (lstart > slength) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       }
     } else {
       if (start.isNaN) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else if (start.compareTo(slength) > 0) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else {
         val dstart: Double = start.getDoubleValue
         lstart =
@@ -64,14 +64,14 @@ object Substring {
     if (len.isInstanceOf[Int64Value]) {
       llen = len.asInstanceOf[Int64Value].longValue
       if (llen <= 0) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       }
     } else {
       if (len.isNaN) {
-        EmptyString.THE_INSTANCE
+       return EmptyString.THE_INSTANCE
       }
       if (len.signum() <= 0) {
-        EmptyString.THE_INSTANCE
+       return EmptyString.THE_INSTANCE
       }
       val dlen: Double = len.getDoubleValue
       llen =
@@ -80,18 +80,18 @@ object Substring {
     }
     val lend: Long = lstart + llen
     if (lend < lstart) {
-      EmptyString.THE_INSTANCE
+     return EmptyString.THE_INSTANCE
     }
     val us: UnicodeString = sv.getUnicodeString
     val clength: Int = us.uLength
     var a1: Int = lstart.toInt - 1
     if (a1 >= clength) {
-      EmptyString.THE_INSTANCE
+     return EmptyString.THE_INSTANCE
     }
     val a2: Int = Math.min(clength, lend.toInt - 1)
     if (a1 < 0) {
       if (a2 < 0) {
-        EmptyString.THE_INSTANCE
+        return EmptyString.THE_INSTANCE
       } else {
         a1 = 0
       }
@@ -131,7 +131,7 @@ class Substring extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <:Item] = {
     val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (arg0 == null) {
-      One.string("")
+      return One.string("")
     }
     val arg1: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
     if (arguments.length == 2) {

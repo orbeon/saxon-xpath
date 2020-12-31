@@ -27,17 +27,21 @@ object CodepointCollator {
           }
           if (j == blen)
             return +1
-          i += 1
-          var nexta = a.charAt(i).toInt
+          var nexta = a.charAt({
+            i += 1; i - 1
+          }).toInt
           if (nexta >= 55296 && nexta <= 56319) {
-            i += 1
-            nexta = ((nexta - 55296) * 1024) + (a.charAt(i).toInt - 56320) + 65536
+            nexta = ((nexta - 55296) * 1024) + (a.charAt({
+              i += 1; i - 1
+            }).toInt - 56320) + 65536
           }
-          j += 1
-          var nextb = b.charAt(j).toInt
+          var nextb = b.charAt({
+            j += 1; j - 1
+          }).toInt
           if (nextb >= 55296 && nextb <= 56319) {
-            j += 1
-            nextb = ((nextb - 55296) * 1024) + (b.charAt(j).toInt - 56320) + 65536
+            nextb = ((nextb - 55296) * 1024) + (b.charAt({
+              j += 1; j - 1
+            }).toInt - 56320) + 65536
           }
           val c = nexta - nextb
           if (c != 0)

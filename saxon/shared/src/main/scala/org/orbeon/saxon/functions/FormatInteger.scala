@@ -130,10 +130,7 @@ object FormatInteger {
           }
 
       }
-      {
         i -= 1
-        i + 1
-      }
     }
     if (regularCheck && groupingPositions.size >= 1) {
       if (picExpanded.uLength - lastGroupingPos - groupingPositions.size >
@@ -144,7 +141,7 @@ object FormatInteger {
     val adjustedPic: UnicodeString =
       extractSeparators(picExpanded, groupingPositions)
     if (groupingPositions.isEmpty) {
-      new RegularGroupFormatter(0, "", adjustedPic)
+      return new RegularGroupFormatter(0, "", adjustedPic)
     }
     if (regularCheck) {
       if (separatorList.isEmpty) {
@@ -185,7 +182,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     if (arguments.length == 3 && ! arguments(2).isInstanceOf[Literal])
       opt = false
     if (! opt)
-      super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
+      return super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
 
     val config = visitor.getConfiguration
     val language =
@@ -215,7 +212,7 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
                             context: XPathContext): StringValue = {
     val config: Configuration = context.getConfiguration
     if (num == null) {
-      StringValue.EMPTY_STRING
+      return StringValue.EMPTY_STRING
     }
     var localFormatter = formatter
     if (localFormatter == null) {

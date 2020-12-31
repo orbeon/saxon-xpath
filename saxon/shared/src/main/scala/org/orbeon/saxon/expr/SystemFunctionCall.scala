@@ -61,7 +61,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     getTargetFunction.supplyTypeInformation(visitor, contextInfo, getArguments)
     if ((getTargetFunction.getDetails.properties & BuiltInFunctionSet.LATE) ==
       0) {
-      preEvaluateIfConstant(visitor)
+      return preEvaluateIfConstant(visitor)
     }
     allocateArgumentEvaluators(getArguments)
     this

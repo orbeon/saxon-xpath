@@ -33,7 +33,7 @@ object PathMap {
 
     def createArc(axis: Int, test: NodeTest): PathMapNode = {
       for (a <- arcs.asScala if a.getAxis == axis && a.getNodeTest == test) {
-        a.getTarget
+        return a.getTarget
       }
       val target: PathMapNode = new PathMapNode()
       val arc: PathMapArc = new PathMapArc(axis, test, target)
@@ -187,7 +187,7 @@ class PathMap(exp: Expression) {
 
   def makeNewRoot(exp: Expression): PathMapRoot = {
     for (r <- pathMapRoots.asScala if exp.isEqual(r.getRootExpression)) {
-      r
+      return r
     }
     val root: PathMapRoot = new PathMapRoot(exp)
     pathMapRoots.add(root)

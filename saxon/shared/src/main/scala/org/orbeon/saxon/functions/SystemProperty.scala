@@ -91,7 +91,7 @@ class SystemProperty extends SystemFunction {
               local == "xsd-version")) {
             val result: String =
               getProperty(uri, local, getRetainedStaticContext)
-            new StringLiteral(result)
+            return new StringLiteral(result)
           }
         } catch {
           case _: XPathException => // no action

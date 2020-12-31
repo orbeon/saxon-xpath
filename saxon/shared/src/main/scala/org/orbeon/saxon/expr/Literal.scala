@@ -187,7 +187,7 @@ object Literal {
     exp match {
       case literal: Literal =>
         val b: GroundedValue = literal.value
-        b.isInstanceOf[BooleanValue] && b.asInstanceOf[BooleanValue].getBooleanValue == value
+        return b.isInstanceOf[BooleanValue] && b.asInstanceOf[BooleanValue].getBooleanValue == value
       case _ =>
     }
     false
@@ -196,7 +196,7 @@ object Literal {
   def hasEffectiveBooleanValue(exp: Expression, value: Boolean): Boolean = {
     exp match {
       case literal: Literal =>
-        try value == literal.value.effectiveBooleanValue
+        try return value == literal.value.effectiveBooleanValue
         catch {
           case _: XPathException => return false
         }
@@ -208,8 +208,8 @@ object Literal {
   def isConstantOne(exp: Expression): Boolean = {
     exp match {
       case literal: Literal =>
-        val v: GroundedValue = literal.value
-        v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue == 1
+        val v = literal.value
+        return v.isInstanceOf[Int64Value] && v.asInstanceOf[Int64Value].longValue == 1
       case _ =>
     }
     false
@@ -285,9 +285,9 @@ class Literal extends Expression {
 
   def computeCardinality(): Int = {
     if (value.getLength == 0) {
-      StaticProperty.EMPTY
+      return StaticProperty.EMPTY
     } else if (value.isInstanceOf[AtomicValue]) {
-      StaticProperty.EXACTLY_ONE
+      return StaticProperty.EXACTLY_ONE
     }
     try {
       val iter: SequenceIterator = value.iterate()
@@ -309,7 +309,7 @@ class Literal extends Expression {
 
   override def computeSpecialProperties(): Int = {
     if (value.getLength == 0) {
-      StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
+      return StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
     }
     StaticProperty.NO_NODES_NEWLY_CREATED
   }
@@ -424,7 +424,7 @@ class Literal extends Expression {
             if (a0) {
               if (! (m0.asInstanceOf[AtomicValue].isIdentical(m1.asInstanceOf[AtomicValue]) &&
                   m0.asInstanceOf[AtomicValue].getItemType == m1.asInstanceOf[AtomicValue].getItemType)) {
-                return false
+                return false // Erick to check
               }
             } else
               return false

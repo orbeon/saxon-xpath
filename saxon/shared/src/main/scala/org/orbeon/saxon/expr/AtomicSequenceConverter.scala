@@ -119,7 +119,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
       allocateConverterStatically(config, allowNull = true)
       if (converter != null) {
         val value = iterate(new EarlyEvaluationContext(config)).materialize
-        Literal.makeLiteral(value, operand)
+        return Literal.makeLiteral(value, operand)
       }
     }
     this
@@ -150,24 +150,24 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
       case asc: UntypedSequenceConverter =>
         val ascType = asc.getItemType
         if (ascType == requiredItemType) {
-          getBaseExpression
+          return getBaseExpression
         } else if ((requiredItemType == BuiltInAtomicType.STRING ||
           requiredItemType == BuiltInAtomicType.UNTYPED_ATOMIC) &&
           (ascType == BuiltInAtomicType.STRING || ascType == BuiltInAtomicType.UNTYPED_ATOMIC)) {
           val old = asc
           val asc2 = new UntypedSequenceConverter(old.getBaseExpression, requiredItemType)
-          asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
+          return asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
         }
       case asc: AtomicSequenceConverter =>
         val ascType = asc.getItemType
         if (ascType == requiredItemType) {
-          getBaseExpression
+          return getBaseExpression
         } else if ((requiredItemType == BuiltInAtomicType.STRING ||
           requiredItemType == BuiltInAtomicType.UNTYPED_ATOMIC) &&
           (ascType == BuiltInAtomicType.STRING || ascType == BuiltInAtomicType.UNTYPED_ATOMIC)) {
           val old = asc
           val asc2 = new AtomicSequenceConverter(old.getBaseExpression, requiredItemType)
-          asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
+         return  asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
         }
       case _ =>
     }

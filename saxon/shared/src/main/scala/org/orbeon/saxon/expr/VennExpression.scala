@@ -294,7 +294,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         ExpressionTool.copyLocationInfo(this, filter)
         val f = new FilterExpression(exp0.getSelectExpression, filter)
         ExpressionTool.copyLocationInfo(this, f)
-        f.simplify()
+        return f.simplify()
           .typeCheck(visitor, contextItemType)
           .optimize(visitor, contextItemType)
       }

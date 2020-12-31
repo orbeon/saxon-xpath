@@ -121,7 +121,7 @@ class WindowClausePull(private var source: TuplePull,
           }
         }
         if (deliver) {
-          true
+          return true
         }
       }
     }

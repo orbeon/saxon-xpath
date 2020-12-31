@@ -69,7 +69,7 @@ object IriToUri {
     for (i <- 0 until s.length) {
       val c: Char = s.charAt(i)
       if (c >= 0x7f || !allowedASCII(c.toInt)) {
-        false
+        return false
       }
     }
     true
