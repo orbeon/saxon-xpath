@@ -78,7 +78,7 @@ abstract class PositionAndLast extends ContextAccessorFunction {
         val name: SymbolicName.F =
           new SymbolicName.F(getFunctionName, getArity)
         val callable: Callable = (context1, arguments) => throw e
-        new CallableFunction(name, callable, getFunctionItemType)
+        return new CallableFunction(name, callable, getFunctionItemType)
       }
 
     }

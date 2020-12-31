@@ -124,7 +124,7 @@ abstract class AbstractArrayItem extends ArrayItem {
              comparer,
              context,
              flags)) {
-        false
+        return false
       }
       true
     } else {

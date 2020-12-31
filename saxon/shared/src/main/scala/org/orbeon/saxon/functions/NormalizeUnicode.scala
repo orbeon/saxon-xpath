@@ -65,7 +65,7 @@ class NormalizeUnicode extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val sv: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (sv == null) {
-      StringValue.EMPTY_STRING
+     return StringValue.EMPTY_STRING
     }
     val nf: String =
       if (arguments.length == 1) "NFC"

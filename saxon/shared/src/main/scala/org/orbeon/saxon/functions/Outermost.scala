@@ -39,7 +39,7 @@ class Outermost extends SystemFunction {
                                           arguments: Expression*): Expression = {
     if ((arguments(0).getSpecialProperties & StaticProperty.PEER_NODESET) !=
       0) {
-      arguments(0)
+      return arguments(0)
     }
     presorted = (arguments(0).getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
       0

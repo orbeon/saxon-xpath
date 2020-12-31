@@ -27,7 +27,7 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
   def call(context: XPathContext, args: Array[Sequence]): ZeroOrOne[AtomicValue] = {
     val _val = args(0).head.asInstanceOf[AtomicValue]
     if (_val == null) {
-      ZeroOrOne.empty
+      return ZeroOrOne.empty
     } else {
       val config = context.getConfiguration
       var converter = config.getConversionRules.getConverter(_val.getItemType, targetType)

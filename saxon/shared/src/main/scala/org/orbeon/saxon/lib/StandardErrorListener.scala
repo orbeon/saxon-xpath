@@ -191,7 +191,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       val extraContext: String = formatExtraContext(failingExpression, nearBy)
       if (outerLoc.isInstanceOf[AttributeLocation]) {
         val innerLoc: String = lineInfo + extraContext + columnInfo
-        kind + innerLoc + langText + getLocationMessageText(outerLoc)
+        return kind + innerLoc + langText + getLocationMessageText(outerLoc)
       } else {
         var innerLoc: String = lineInfo + columnInfo
         if (outerLoc.getLineNumber > 1) {
@@ -201,7 +201,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
         if (outerLoc.getSystemId != null) {
           innerLoc += "of " + outerLoc.getSystemId + " "
         }
-        kind + extraContext + innerLoc
+       return kind + extraContext + innerLoc
       }
     } else if (xe.isInstanceOf[ValidationException]) {
       "Validation error " + getLocationMessage(exception)
@@ -260,7 +260,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       errVar = errVar.getCause.asInstanceOf[TransformerException]
       loc = errVar.getLocator
     } else {
-      ""
+      return ""
     }
     getLocationMessageText(loc)
   }

@@ -112,9 +112,7 @@ object JsonParser {
     val liberal = (flags & LIBERAL) != 0
     val buffer = new FastStringBuffer(literal.length)
     var i = 0
-    while ( {
-      i < literal.length
-    }) {
+    while (i < literal.length) {
       val c = literal.charAt(i)
       if (c == '\\') {
         if ( {
@@ -495,7 +493,7 @@ class JsonParser() {
           JsonParser.JsonToken.COLON
         case ',' =>
           JsonParser.JsonToken.COMMA
-        case '-' => jsonToken
+        case '-' => jsonToken // Erick to check whole method
         case '+' => jsonToken
         case '.' => jsonToken
         case '0' => jsonToken

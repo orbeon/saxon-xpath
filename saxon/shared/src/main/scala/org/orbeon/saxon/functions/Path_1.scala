@@ -20,7 +20,7 @@ object Path_1 {
 
   def makePath(node: NodeInfo, context: XPathContext): StringValue = {
     if (node.getNodeKind == Type.DOCUMENT) {
-      StringValue.makeStringValue("/")
+      return StringValue.makeStringValue("/")
     }
     var fsb: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
     val iter: AxisIterator = node.iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
@@ -31,15 +31,15 @@ object Path_1 {
     } != null) {
       if (n.getParent == null) {
         if (n.getNodeKind == Type.DOCUMENT) {
-          new StringValue(fsb)
+          return new StringValue(fsb)
         } else {
           fsb.prepend("Q{http://www.w3.org/2005/xpath-functions}root()")
-          new StringValue(fsb)
+          return new StringValue(fsb)
         }
       }
       val fsb2: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C256)
       n.getNodeKind match {
-        case Type.DOCUMENT => new StringValue(fsb)
+        case Type.DOCUMENT => return new StringValue(fsb)
         case Type.ELEMENT =>
           fsb2.append("/Q{")
           fsb2.append(n.getURI)

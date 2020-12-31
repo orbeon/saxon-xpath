@@ -61,7 +61,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     getTargetFunction.supplyTypeInformation(visitor, contextInfo, getArguments)
     if ((getTargetFunction.getDetails.properties & BuiltInFunctionSet.LATE) ==
       0) {
-      preEvaluateIfConstant(visitor)
+      return preEvaluateIfConstant(visitor)
     }
     allocateArgumentEvaluators(getArguments)
     this
@@ -179,7 +179,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         if (getArity <= details.resultIfEmpty.length) {
           for (i <- 0 until getArity
                if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {
-            Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
+            return Literal.makeLiteral(details.resultIfEmpty(i).materialize, this)
           }
         }
         systemFunctionCall.allocateArgumentEvaluators(systemFunctionCall.getArguments)

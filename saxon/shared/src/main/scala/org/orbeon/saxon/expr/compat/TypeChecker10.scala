@@ -46,7 +46,7 @@ class TypeChecker10 extends TypeChecker {
                       visitor: ExpressionVisitor): Expression = {
     var suppliedExp = supplied
     if (suppliedExp.implementsStaticTypeCheck()) {
-      suppliedExp.staticTypeCheck(req, backwardsCompatible = true, role, visitor)
+      return suppliedExp.staticTypeCheck(req, backwardsCompatible = true, role, visitor)
     }
     val config: Configuration = visitor.getConfiguration
     val th = config.getTypeHierarchy
@@ -65,7 +65,7 @@ class TypeChecker10 extends TypeChecker {
         !th.isSubType(suppliedExp.getItemType, BuiltInAtomicType.STRING)) {
       val rsc: RetainedStaticContext = new RetainedStaticContext(config)
       val fn: Expression = SystemFunction.makeCall("string", rsc, suppliedExp)
-      try fn.typeCheck(visitor, config.getDefaultContextItemStaticInfo)
+      try return fn.typeCheck(visitor, config.getDefaultContextItemStaticInfo)
       catch {
         case err: XPathException => {
           err.maybeSetLocation(suppliedExp.getLocation)
@@ -82,7 +82,7 @@ class TypeChecker10 extends TypeChecker {
         !th.isSubType(suppliedExp.getItemType, BuiltInAtomicType.DOUBLE)) {
       val rsc: RetainedStaticContext = new RetainedStaticContext(config)
       val fn: Expression = SystemFunction.makeCall("number", rsc, suppliedExp)
-      try fn.typeCheck(visitor, config.getDefaultContextItemStaticInfo)
+      try return fn.typeCheck(visitor, config.getDefaultContextItemStaticInfo)
       catch {
         case err: XPathException => {
           err.maybeSetLocation(suppliedExp.getLocation)

@@ -63,7 +63,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
    * that is private
    */
   def getFunctionItem(functionName: SymbolicName.F,
-                      staticContext: StaticContext): Function = {
+                      staticContext: StaticContext): Function = { // Erick need to check this method
     if (functionName.getArity != 1) {
       return null
     }
@@ -159,7 +159,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
             `type`.asInstanceOf[UnionType],
             resolver,
             true)
-          new StaticFunctionCall(ucf, arguments)
+          return new StaticFunctionCall(ucf, arguments)
         } else {
           val resolver: NamespaceResolver = env.getNamespaceResolver
           try {
@@ -167,7 +167,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
               `type`.asInstanceOf[ListType],
               resolver,
               true)
-            new StaticFunctionCall(lcf, arguments)
+            return new StaticFunctionCall(lcf, arguments)
           } catch {
             case e: MissingComponentException =>
               reasons.add("Missing schema component: " + e.getMessage)
@@ -194,7 +194,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
                   listType,
                   resolver,
                   true)
-                new StaticFunctionCall(lcf, arguments)
+                return new StaticFunctionCall(lcf, arguments)
               } catch {
                 case e: MissingComponentException =>
                   reasons.add("Missing schema component: " + e.getMessage)
@@ -206,7 +206,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
                 st.asInstanceOf[UnionType],
                 resolver,
                 true)
-              new StaticFunctionCall(ucf, arguments)
+              return new StaticFunctionCall(ucf, arguments)
             }
           }
         case _ =>

@@ -32,7 +32,7 @@ object UnionConstructorFunction {
     }
     if (value
       .isInstanceOf[StringValue] && !(value.isInstanceOf[AnyURIValue])) {
-      try targetType.getTypedValue(value.getStringValueCS, nsResolver, rules)
+      try return targetType.getTypedValue(value.getStringValueCS, nsResolver, rules)
       catch {
         case e: ValidationException => {
           e.setErrorCode("FORG0001")
@@ -45,12 +45,12 @@ object UnionConstructorFunction {
     val memberTypes: Iterable[_ <: PlainType] =
       targetType.getPlainMemberTypes
     for (member <- memberTypes if label == member) {
-      value
+      return value
     }
     for (member <- memberTypes) {
       var t: AtomicType = label
       while (t != null) if (t == member) {
-        value
+        return value
       } else {
         t =
           if (t.getBaseType.isInstanceOf[AtomicType])
@@ -64,7 +64,7 @@ object UnionConstructorFunction {
       if (c != null) {
         val result: ConversionResult = c.convert(value)
         if (result.isInstanceOf[AtomicValue]) {
-          result.asInstanceOf[AtomicValue]
+          return result.asInstanceOf[AtomicValue]
         }
       }
     }
@@ -109,7 +109,7 @@ class UnionConstructorFunction( var targetType: UnionType,
     }
     if (value
       .isInstanceOf[StringValue] && !(value.isInstanceOf[AnyURIValue])) {
-      try targetType.getTypedValue(value.getStringValueCS, resolver, rules)
+      try return targetType.getTypedValue(value.getStringValueCS, resolver, rules)
       catch {
         case e: ValidationException => {
           e.setErrorCode("FORG0001")
@@ -123,12 +123,12 @@ class UnionConstructorFunction( var targetType: UnionType,
       targetType.asInstanceOf[UnionType].getPlainMemberTypes
     if (targetType.asInstanceOf[UnionType].isPlainType) {
       for (member <- memberTypes if label == member) {
-        value
+        return value
       }
       for (member <- memberTypes) {
         var t: AtomicType = label
         while (t != null) if (t == member) {
-          value
+          return value
         } else {
           t =
             if (t.getBaseType.isInstanceOf[AtomicType])
@@ -148,10 +148,10 @@ class UnionConstructorFunction( var targetType: UnionType,
               result.asInstanceOf[AtomicValue],
               rules)
             if (vf == null) {
-              result.asInstanceOf[AtomicValue]
+              return result.asInstanceOf[AtomicValue]
             }
           } else {
-            result.asInstanceOf[AtomicValue]
+            return result.asInstanceOf[AtomicValue]
           }
         }
       }
@@ -165,7 +165,7 @@ class UnionConstructorFunction( var targetType: UnionType,
     val `val`: AtomicValue = args(0).head.asInstanceOf[AtomicValue]
     if (`val` == null) {
       if (allowEmpty) {
-        EmptyAtomicSequence.getInstance
+        return EmptyAtomicSequence.getInstance
       } else {
         val e: XPathException = new XPathException(
           "Cast expression does not allow an empty sequence to be supplied",

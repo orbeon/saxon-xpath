@@ -73,7 +73,7 @@ class CollatingFunctionFree extends SystemFunction {
       val newArgs: Array[Expression] =
         Array.ofDim[Expression](arguments.length - 1)
       System.arraycopy(arguments, 0, newArgs, 0, newArgs.length)
-      fn.makeFunctionCall(newArgs.toIndexedSeq: _*)
+      return fn.makeFunctionCall(newArgs.toIndexedSeq: _*)
     }
     null
   }

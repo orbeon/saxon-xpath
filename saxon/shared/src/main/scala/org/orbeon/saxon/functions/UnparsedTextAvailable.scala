@@ -30,7 +30,7 @@ class UnparsedTextAvailable extends UnparsedTextFunction with Callable {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val hrefVal: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (hrefVal == null) {
-      BooleanValue.FALSE
+      return BooleanValue.FALSE
     }
     val encoding: String =
       if (getArity == 2) arguments(1).head.getStringValue else null

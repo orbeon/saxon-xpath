@@ -180,9 +180,9 @@ object Alphanumeric {
   def getDigitValue(in: Int): Int = {
     for (zeroDigit <- zeroDigits if in <= zeroDigit + 9) {
       if (in >= zeroDigit) {
-        in - zeroDigit
+        return in - zeroDigit
       } else {
-        -1
+        return -1
       }
     }
     -1
@@ -191,9 +191,9 @@ object Alphanumeric {
   def getDigitFamily(in: Int): Int = {
     for (zeroDigit <- zeroDigits if in <= zeroDigit + 9) {
       if (in >= zeroDigit) {
-        zeroDigit
+        return zeroDigit
       } else {
-        -1
+        return -1
       }
     }
     -1

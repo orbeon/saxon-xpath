@@ -32,7 +32,7 @@ class Tokenize_1 extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val sv: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (sv == null) {
-      EmptySequence.getInstance
+     return EmptySequence.getInstance
     }
     val input: CharSequence = sv.getStringValueCS
     SequenceTool.toLazySequence(new Whitespace.Tokenizer(input))

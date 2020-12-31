@@ -176,7 +176,7 @@ override  def evaluateItem(c: XPathContext): Item = {
             val caught: Expression = clause.catchOp.getChildExpression
             val c2: XPathContextMajor = c.newContext()
             c2.setCurrentException(err)
-            caught.evaluateItem(c2)
+            return caught.evaluateItem(c2)
           }
         }
         err.setHasBeenReported(false)
@@ -218,7 +218,7 @@ override  def iterate(c: XPathContext): SequenceIterator = {
             if (tci.isInstanceOf[BreakInstr]) {
               tci.asInstanceOf[BreakInstr].markContext(c)
             }
-            v.iterate()
+            return v.iterate()
           }
         }
         err.setHasBeenReported(false)
@@ -316,7 +316,7 @@ override  def iterate(c: XPathContext): SequenceIterator = {
     private def isCaught(err: XmlProcessingError): Boolean = {
       val code: StructuredQName = err.getErrorCode.getStructuredQName
       for (clause <- catchClauses.asScala if clause.nameTest.matches(code)) {
-        true
+        return true
       }
       false
     }

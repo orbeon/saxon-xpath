@@ -30,7 +30,7 @@ object Lang {
           break()
         }
         node = node.getParent
-        if (node == null) false
+        if (node == null) return false
       }
     }
     if (doclang == null) return false

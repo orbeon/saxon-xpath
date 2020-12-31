@@ -74,12 +74,12 @@ class NotFn extends SystemFunction {
       visitor.getStaticContext.getConfiguration.getTypeHierarchy
     if (arguments(0).isInstanceOf[Negatable] &&
       arguments(0).asInstanceOf[Negatable].isNegatable(th)) {
-      arguments(0).asInstanceOf[Negatable].negate()
+      return arguments(0).asInstanceOf[Negatable].negate()
     }
     if (arguments(0).getItemType.isInstanceOf[NodeTest]) {
       val empty: SystemFunction =
         SystemFunction.makeFunction("empty", getRetainedStaticContext, 1)
-      empty.makeFunctionCall(arguments(0)).optimize(visitor, contextInfo)
+      return empty.makeFunctionCall(arguments(0)).optimize(visitor, contextInfo)
     }
     null
   }

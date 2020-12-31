@@ -23,7 +23,7 @@ object AnyFunctionTypeWithAssertions {
       if (handler != null) {
         val ok: Boolean = handler.satisfiesAssertion(ann, annotations)
         if (!ok) {
-          false
+         return false
         }
       }
     }

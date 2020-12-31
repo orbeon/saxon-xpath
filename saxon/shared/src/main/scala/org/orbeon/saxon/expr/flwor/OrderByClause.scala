@@ -162,7 +162,7 @@ class OrderByClause(flwor: FLWORExpression,
           comparators(i) = comp
         }
       }
-      { i += 1; i - 1 }
+     i += 1
     }
   }
 

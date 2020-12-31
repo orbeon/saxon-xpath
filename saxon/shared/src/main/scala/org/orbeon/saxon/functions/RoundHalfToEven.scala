@@ -12,13 +12,13 @@ class RoundHalfToEven extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
     val val0 = arguments(0).head.asInstanceOf[NumericValue]
     if (val0 == null) {
-      ZeroOrOne.empty
+      return ZeroOrOne.empty
     } else {
       var scale = 0
       if (arguments.length == 2) {
         val scaleVal = arguments(1).head.asInstanceOf[NumericValue]
         if (scaleVal.compareTo(java.lang.Integer.MAX_VALUE) > 0) {
-          new ZeroOrOne(val0)
+          return new ZeroOrOne(val0)
         } else
           scale =
             if (scaleVal.compareTo(java.lang.Integer.MIN_VALUE) < 0)

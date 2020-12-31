@@ -85,7 +85,7 @@ class BooleanExpressionPattern(expression: Expression)
       val ioe: InstanceOfExpression =
         getPredicate.asInstanceOf[InstanceOfExpression]
       if (ioe.getBaseExpression.isInstanceOf[ContextItemExpression]) {
-        ioe.getRequiredItemType
+       return ioe.getRequiredItemType
       }
     }
     AnyItemType

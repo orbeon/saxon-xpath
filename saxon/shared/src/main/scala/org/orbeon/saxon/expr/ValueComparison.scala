@@ -49,7 +49,7 @@ object ValueComparison {
       throw e2
     }
     if (v0.isNaN || v1.isNaN) {
-      op == Token.FNE
+      return op == Token.FNE
     }
     try op match {
       case Token.FEQ => comparer.comparesEqual(v0, v1)
@@ -114,12 +114,12 @@ override  def getExpressionName: String = "ValueComparison"
     val config: Configuration = visitor.getConfiguration
     val env: StaticContext = visitor.getStaticContext
     if (Literal.isEmptySequence(getLhsExpression)) {
-      if (resultWhenEmpty == null) getLhsExpression
-      else Literal.makeLiteral(resultWhenEmpty, this)
+      if (resultWhenEmpty == null) return getLhsExpression
+      else return Literal.makeLiteral(resultWhenEmpty, this)
     }
     if (Literal.isEmptySequence(getRhsExpression)) {
-      if (resultWhenEmpty == null) getRhsExpression
-      else Literal.makeLiteral(resultWhenEmpty, this)
+      if (resultWhenEmpty == null) return getRhsExpression
+      else return Literal.makeLiteral(resultWhenEmpty, this)
     }
     if (comparer.isInstanceOf[UntypedNumericComparer]) {
       return this
@@ -269,12 +269,12 @@ override  def effectiveBooleanValue(context: XPathContext): Boolean =
       val v0: AtomicValue =
         getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
       if (v0 == null) {
-        resultWhenEmpty == BooleanValue.TRUE
+        return resultWhenEmpty == BooleanValue.TRUE
       }
       val v1: AtomicValue =
         getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
       if (v1 == null) {
-        resultWhenEmpty == BooleanValue.TRUE
+        return resultWhenEmpty == BooleanValue.TRUE
       }
       compare(v0,
         op,

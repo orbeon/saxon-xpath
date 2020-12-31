@@ -45,7 +45,7 @@ class GlobalParam extends GlobalVariable {
                                              getRequiredType,
                                              context)
     if (`val` != null) {
-      b.saveGlobalVariableValue(this, `val`)
+      return b.saveGlobalVariableValue(this, `val`)
     }
     if (isRequiredParam) {
       val e: XPathException = new XPathException(

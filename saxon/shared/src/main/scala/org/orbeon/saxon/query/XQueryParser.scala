@@ -56,9 +56,7 @@ object XQueryParser {
     if (in.indexOf(0xd.toChar) < 0 && in.indexOf(0x85.toChar) < 0 && in.indexOf(0x2028.toChar) < 0) return in
     val sb = new FastStringBuffer(in.length)
     var i = 0
-    while ( {
-      i < in.length
-    }) {
+    while (i < in.length) {
       val ch = in.charAt(i)
       ch match {
         case 0x85 =>
@@ -83,9 +81,7 @@ object XQueryParser {
     if (in.indexOf(0xd.toChar) < 0) return in
     val sb = new FastStringBuffer(in.length)
     var i = 0
-    while ( {
-      i < in.length
-    }) {
+    while (i < in.length) {
       val ch = in.charAt(i)
       if (ch == 0xd) if (i < in.length - 1 && in.charAt(i + 1) == 0xa.toChar) {
         sb.cat(0xa.toChar)
@@ -157,9 +153,7 @@ object XQueryParser {
     def unescape(token: String): CharSequence = {
       val sb = new FastStringBuffer(token.length)
       var i = 0
-      while ( {
-        i < token.length
-      }) {
+      while (i < token.length) {
         val c = token.charAt(i)
         if (c == '&') {
           val semic = token.indexOf(';', i)
@@ -518,9 +512,7 @@ class XQueryParser extends XPathParser {
   private def parseProlog(): Unit = {
     var allowModuleDecl = true
     var allowDeclarations = true
-    while ( {
-      true
-    }) try {
+    while (true) try {
       if (t.currentToken == Token.MODULE_NAMESPACE) {
         val uri = env.asInstanceOf[QueryModule].getModuleNamespace
         if (uri == null) grumble("Module declaration must not be used in a main module")
@@ -661,11 +653,7 @@ class XQueryParser extends XPathParser {
           if (firstError == null) firstError = err
           reportError(err)
         }
-
-
-        while ( {
-          t.currentToken != Token.SEMICOLON
-        }) {
+        while (t.currentToken != Token.SEMICOLON) {
           nextToken()
           if (t.currentToken == Token.EOF) return
           else if (t.currentToken == Token.RCURLY) t.lookAhead()
@@ -713,9 +701,7 @@ class XQueryParser extends XPathParser {
         nextToken()
         if (t.currentToken == Token.RPAR) grumble("Annotation parameter list cannot be empty")
         breakable {
-          while ( {
-            true
-          }) {
+          while (true) {
             var arg: Literal = null
             t.currentToken match {
               case Token.STRING_LITERAL =>
@@ -1033,9 +1019,7 @@ class XQueryParser extends XPathParser {
         expect(Token.STRING_LITERAL)
         mImport.locationURIs.add(uriLiteral(t.currentTokenValue))
         nextToken()
-      } while ( {
-        t.currentToken == Token.COMMA
-      })
+      } while (t.currentToken == Token.COMMA)
     }
     else grumble("After 'import module', expected 'namespace' or a string-literal")
     if (prefix != null) try if (mImport.namespaceURI == thisModule.getModuleNamespace && mImport.namespaceURI == thisModule.checkURIForPrefix(prefix)) {
@@ -1506,10 +1490,7 @@ class XQueryParser extends XPathParser {
     var external = false
     if (t.currentToken != Token.RPAR)
       breakable {
-        while ( {
-          true
-        }) {
-
+        while (true) {
           expect(Token.DOLLAR)
           nextToken()
           expect(Token.NAME)
@@ -2543,7 +2524,6 @@ class XQueryParser extends XPathParser {
   @throws[XPathException]
   private def parseComputedElementConstructor(offset: Int): Expression = {
     nextToken()
-
     val name = parseExpression
     expect(Token.RCURLY)
     lookAhead()
@@ -2554,8 +2534,6 @@ class XQueryParser extends XPathParser {
     var content: Expression = null
     if (t.currentToken != Token.RCURLY) {
       content = parseExpression
-
-
       if (content.isInstanceOf[ElementCreator] && content.asInstanceOf[ElementCreator].getSchemaType == null) content.asInstanceOf[ElementCreator].setValidationAction(Validation.PRESERVE, null)
       expect(Token.RCURLY)
     }
@@ -2564,7 +2542,6 @@ class XQueryParser extends XPathParser {
     var inst: Instruction = null
     if (name.isInstanceOf[Literal]) {
       val vName = name.asInstanceOf[Literal].getValue
-
       var elemName: NodeName = null
       if (vName.isInstanceOf[StringValue] && !vName.isInstanceOf[AnyURIValue]) {
         val lex = vName.asInstanceOf[StringValue].getStringValue

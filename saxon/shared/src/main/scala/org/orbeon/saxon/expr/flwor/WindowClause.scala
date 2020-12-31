@@ -283,8 +283,10 @@ class WindowClause extends Clause {
       Array.ofDim[LocalVariableBinding](windowVars.size)
     var i: Int = 0
     val iter: Iterator[LocalVariableBinding] = windowVars.valueiterator
-    while (iter.hasNext) i += 1
-    vars(i) = iter.next()
+    while (iter.hasNext) {
+      vars(i) = iter.next()
+      i += 1
+    }
     vars
   }
 

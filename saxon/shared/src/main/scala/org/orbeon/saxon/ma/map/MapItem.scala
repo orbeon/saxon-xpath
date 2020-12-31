@@ -62,9 +62,9 @@ object MapItem {
       } else {
         val `type` =
           first match {
-            case atomicValue: AtomicValue => atomicValue.getItemType
-            case info: NodeInfo => NodeKindTest.makeNodeKindTest(info.getNodeKind)
-            case _ => AnyFunctionType
+            case atomicValue: AtomicValue => return atomicValue.getItemType
+            case info: NodeInfo => return NodeKindTest.makeNodeKindTest(info.getNodeKind)
+            case _ => return AnyFunctionType
           }
         if (isKnownToConform(`val`, `type`))
           `type`

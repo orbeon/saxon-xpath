@@ -64,8 +64,8 @@ class Fork extends Instruction {
     val e2 = Array.ofDim[Expression](getSize)
     var i = 0
     for (o <- operands.asScala) {
-      i += 1
       e2(i) = o.getChildExpression.copy(rebindings)
+      i += 1
     }
     val f2 = new Fork(e2)
     ExpressionTool.copyLocationInfo(this, f2)

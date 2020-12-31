@@ -105,7 +105,7 @@ class PatternParser30 extends XPathParser with PatternParser {
             else new AndExpression(filter, predicate)
         }
         if (e.isInstanceOf[ContextItemExpression]) {
-          new BooleanExpressionPattern(predicate)
+          return new BooleanExpressionPattern(predicate)
         }
       }
       grumble(

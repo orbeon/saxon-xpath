@@ -81,7 +81,7 @@ abstract class BinaryExpression(p0: Expression,
     try
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
         val v = evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize
-        Literal.makeLiteral(v, this)
+        return Literal.makeLiteral(v, this)
       }
     catch {
       case _: XPathException =>
@@ -99,7 +99,7 @@ abstract class BinaryExpression(p0: Expression,
         val item = evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
         if (item != null) {
           val v = item.materialize
-          Literal.makeLiteral(v, this)
+          return Literal.makeLiteral(v, this)
         }
       }
     } catch {
@@ -154,7 +154,7 @@ abstract class BinaryExpression(p0: Expression,
             return true
           }
         }
-        isInverse(operator, b.operator) && lhs1.isEqual(rhs2) && rhs1.isEqual(lhs2)
+        return isInverse(operator, b.operator) && lhs1.isEqual(rhs2) && rhs1.isEqual(lhs2)
       case _ =>
     }
     false

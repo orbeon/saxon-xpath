@@ -347,7 +347,7 @@ class ParseOptions {
 
   def getTreeModel: Int = {
     if (treeModel == null) {
-      Builder.UNSPECIFIED_TREE_MODEL
+      return Builder.UNSPECIFIED_TREE_MODEL
     }
     treeModel.getSymbolicValue
   }

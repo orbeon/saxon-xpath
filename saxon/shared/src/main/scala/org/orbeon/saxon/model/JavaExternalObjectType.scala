@@ -69,7 +69,7 @@ class JavaExternalObjectType(var config: Configuration, var javaClass: Class[_])
     item match {
       case value: ObjectValue[_] =>
         val obj = value.getObject.asInstanceOf[AnyRef]
-        javaClass.isAssignableFrom(obj.getClass)
+        return javaClass.isAssignableFrom(obj.getClass)
       case _ =>
     }
     false

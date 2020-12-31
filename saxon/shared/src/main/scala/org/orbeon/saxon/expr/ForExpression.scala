@@ -69,7 +69,7 @@ class ForExpression extends Assignation {
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getSequenceOp.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getSequence) && !(this.isInstanceOf[OuterForExpression])) {
-      getSequence
+      return getSequence
     }
     if (requiredType != null) {
       val decl: SequenceType = requiredType
@@ -87,7 +87,7 @@ class ForExpression extends Assignation {
         this)
     }
     if (Literal.isEmptySequence(getAction)) {
-      getAction
+      return getAction
     }
     getActionOp.typeCheck(visitor, contextInfo)
     actionCardinality = getAction.getCardinality
@@ -110,24 +110,24 @@ class ForExpression extends Assignation {
       if (debug) {
         opt.trace("Promoted where clause in for $" + getVariableName, p)
       }
-      p.optimize(visitor, contextItemType)
+      return p.optimize(visitor, contextItemType)
     }
     val seq0: Expression = getSequence
     getSequenceOp.optimize(visitor, contextItemType)
     if (seq0 != getSequence) {
-      optimize(visitor, contextItemType)
+      return optimize(visitor, contextItemType)
     }
     if (Literal.isEmptySequence(getSequence) && !(this
       .isInstanceOf[OuterForExpression])) {
-      getSequence
+      return getSequence
     }
     val act0: Expression = getAction
     getActionOp.optimize(visitor, contextItemType)
     if (act0 != getAction) {
-      optimize(visitor, contextItemType)
+      return optimize(visitor, contextItemType)
     }
     if (Literal.isEmptySequence(getAction)) {
-      getAction
+      return getAction
     }
     if (getSequence.isInstanceOf[SlashExpression] && getAction
       .isInstanceOf[SlashExpression]) {
@@ -151,7 +151,7 @@ class ForExpression extends Assignation {
               " into path expression",
               newPath)
           }
-          newPath.optimize(visitor, contextItemType)
+          return newPath.optimize(visitor, contextItemType)
         }
       }
     }
@@ -162,7 +162,7 @@ class ForExpression extends Assignation {
         opt.trace("Collapsed redundant for expression $" + getVariableName,
           getSequence)
       }
-      getSequence
+      return getSequence
     }
     if (getSequence.getCardinality == StaticProperty.EXACTLY_ONE) {
       val let: LetExpression = new LetExpression()
@@ -175,7 +175,7 @@ class ForExpression extends Assignation {
       let.setSlotNumber(slotNumber)
       let.setRetainedStaticContextLocally(getRetainedStaticContext)
       ExpressionTool.rebindVariableReferences(getAction, this, let)
-      let
+      return let
         .typeCheck(visitor, contextItemType)
         .optimize(visitor, contextItemType)
     }
@@ -214,7 +214,7 @@ class ForExpression extends Assignation {
         if (list.isEmpty) {
           val oldThen: Expression = getAction.asInstanceOf[Choose].getAction(0)
           this.setAction(oldThen)
-          Choose.makeConditional(condition, this)
+          return Choose.makeConditional(condition, this)
         } else {
           var retainedCondition: Expression = list.get(0)
           for (i <- 1 until list.size) {

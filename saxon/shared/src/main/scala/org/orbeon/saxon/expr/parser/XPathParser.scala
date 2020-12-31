@@ -2075,7 +2075,7 @@ class XPathParser() {
           //                } else if (t.currentTokenValue.equals("map")) {
           //                    return parseFunctionCall(null);
 
-      case Token.NODEKIND| Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
+      case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
         var defaultAxis = AxisInfo.CHILD
         if (t.currentToken == Token.NODEKIND && (t.currentTokenValue == "attribute" || t.currentTokenValue == "schema-attribute")) defaultAxis = AxisInfo.ATTRIBUTE
         else if (t.currentToken == Token.NODEKIND && t.currentTokenValue == "namespace-node") {

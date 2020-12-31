@@ -18,7 +18,6 @@ class IrregularGroupFormatter(private var groupingPositions: IntSet,
     val in: UnicodeString = UnicodeString.makeUnicodeString(value)
     var l: Int = 0
     var m: Int = 0
-    l = 0
     while (l < in.uLength) {
       if (groupingPositions.contains(l))
         m += 1
@@ -29,12 +28,15 @@ class IrregularGroupFormatter(private var groupingPositions: IntSet,
     var k: Int = out.length - 1
     var i: Int = in.uLength - 1
     while (i >= 0) {
-      k -= 1
-      out(k) = in.uCharAt(i)
+      out({
+        k -= 1; k + 1
+      }) = in.uCharAt(i)
       if ((i > 0) && groupingPositions.contains(in.uLength - i)) {
-        k -= 1
-        j += 1
-        out(k) = separators.get(j)
+        out({
+          k -= 1; k + 1
+        }) = separators.get({
+          j += 1; j - 1
+        })
       }
       i -= 1
     }

@@ -32,7 +32,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
                         contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.optimize(visitor, contextInfo)
     if (Literal.isConstantOne(getSubscript)) {
-      FirstItemExpression.makeFirstItemExpression(getBaseExpression)
+      return FirstItemExpression.makeFirstItemExpression(getBaseExpression)
     }
     this
   }

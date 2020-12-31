@@ -128,7 +128,7 @@ object TypeChecker {
       item = iter.next()
       item
     } != null) {
-      { count += 1;}
+      count += 1
       if (! reqItemType.matches(item,
         context.getConfiguration.getTypeHierarchy)) {
         val err = new XPathException(
@@ -136,7 +136,7 @@ object TypeChecker {
             UType.getUType(`val`.materialize))
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
-        err
+        return err
       }
     }
     val reqCardinality: Int = requiredType.getCardinality
@@ -234,7 +234,7 @@ class TypeChecker {
                       role: RoleDiagnostic,
                       visitor: ExpressionVisitor): Expression = {
     if (supplied.implementsStaticTypeCheck()) {
-      supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
+      return supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
     }
     var exp: Expression = supplied
     val env: StaticContext = visitor.getStaticContext

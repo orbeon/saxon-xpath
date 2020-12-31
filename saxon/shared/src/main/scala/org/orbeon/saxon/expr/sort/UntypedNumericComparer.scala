@@ -52,7 +52,6 @@ object UntypedNumericComparer {
         comp >= 0
       case Token.FGT =>
         comp > 0
-      case Token.FNE => false
       case _ =>
         comp != 0
     }

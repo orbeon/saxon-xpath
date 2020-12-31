@@ -129,7 +129,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   def getLocalParamInfo(id: StructuredQName): LocalParamInfo = {
     val params: List[LocalParamInfo] = getLocalParamDetails
     for (lp <- params.asScala if lp.name == id) {
-      lp
+      return lp
     }
     null
   }
@@ -167,7 +167,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
       }
     }
     if (bodyIsTailCallReturner) {
-      body.asInstanceOf[TailCallReturner].processLeavingTail(output, contxt)
+      return body.asInstanceOf[TailCallReturner].processLeavingTail(output, contxt)
     } else if (body != null) {
       body.process(output, contxt)
     }

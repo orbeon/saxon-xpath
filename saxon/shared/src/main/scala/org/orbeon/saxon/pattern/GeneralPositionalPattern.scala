@@ -52,9 +52,9 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
       config.makeContextItemStaticInfo(getItemType, maybeUndefined = false)
     positionExpr = positionExpr.optimize(visitor, cit)
     if (Literal.isConstantBoolean(positionExpr, value = true)) {
-      new NodeTestPattern(nodeTest)
+      return new NodeTestPattern(nodeTest)
     } else if (Literal.isConstantBoolean(positionExpr, value = false)) {
-      new NodeTestPattern(ErrorType)
+      return new NodeTestPattern(ErrorType)
     }
     if ((positionExpr.getDependencies & StaticProperty.DEPENDS_ON_POSITION) ==
       0) {
@@ -70,7 +70,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
       }
       val ae: AxisExpression = new AxisExpression(axis, nodeTest)
       val fe: FilterExpression = new FilterExpression(ae, positionExpr)
-      PatternMaker
+      return PatternMaker
         .fromExpression(fe, config, is30 = true)
         .typeCheck(visitor, contextInfo)
     }
@@ -144,7 +144,7 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
                                 max: Int,
                                 iterator: FocusIterator): Int = {
     if (iterator.isInstanceOf[FocusTrackingIterator]) {
-      iterator
+     return iterator
         .asInstanceOf[FocusTrackingIterator]
         .getSiblingPosition(node, nodeTest, max)
     }

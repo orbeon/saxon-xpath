@@ -180,16 +180,15 @@ object ExpressionTool {
 
   def containsLocalVariableReference(exp: Expression): Boolean =
     contains(exp, sameFocusOnly = false, (e: Expression) => {
-      def foo(e: Expression) = {
+      def foo(e: Expression):Boolean = {
         e match {
           case vref: LocalVariableReference =>
             val binding = vref.getBinding
-            ! (binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
+            return ! (binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
           case _ =>
         }
         false
       }
-
       foo(e)
     }
     )
@@ -219,17 +218,16 @@ object ExpressionTool {
   def isLoopingSubexpression(child: Expression, ancestor: Expression): Boolean = {
     var childExp = child
     val parent = childExp.getParentExpression
-    var result = false
     while (true) {
       if (parent == null)
-        result = false
+        return false
       if (hasLoopingSubexpression(parent, childExp))
-        result = true
+       return true
       if (parent eq ancestor)
-        result = false
+        return false
       childExp = parent
     }
-    result
+    false
   }
 
   def isLoopingReference(reference: VariableReference, binding: Binding): Boolean = {
@@ -320,10 +318,10 @@ object ExpressionTool {
     while (expression != null) {
       expression.resetLocalStaticProperties()
       expression = expression.getParentExpression
-      i += 1
       if (i > 100000)
         throw new IllegalStateException("Loop in parent expression chain")
     }
+    i += 1
   }
 
   def equalOrNull(x: Any, y: Any): Boolean =
@@ -370,7 +368,7 @@ object ExpressionTool {
     exp match {
       case param: LocalParam if param.getSlotNumber < 0 => param.setSlotNumber({
         nextFree += 1
-        nextFree
+        nextFree - 1
       })
       case _ =>
     }

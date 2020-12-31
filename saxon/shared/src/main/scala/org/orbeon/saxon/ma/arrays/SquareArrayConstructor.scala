@@ -63,11 +63,11 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
       val ab2: SquareArrayConstructor =
         other.asInstanceOf[SquareArrayConstructor]
       if (ab2.getOperanda.getNumberOfOperands != getOperanda.getNumberOfOperands) {
-        return        false
+        return false
       }
       for (i <- 0 until getOperanda.getNumberOfOperands
            if getOperanda.getOperand(i) != ab2.getOperanda.getOperand(i)) {
-        false
+        return false
       }
       true
     }
@@ -101,7 +101,7 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
   private def preEvaluate(visitor: ExpressionVisitor): Expression = {
     val allFixed: Boolean = false
     for (o <- operands.asScala if !(o.getChildExpression.isInstanceOf[Literal])) {
-      this
+      return this
     }
     try Literal.makeLiteral(evaluateItem(visitor.makeDynamicContext()), this)
     catch {

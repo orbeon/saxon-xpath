@@ -39,17 +39,17 @@ class MapUntypedContains extends SystemFunction {
             av = converter.convert(key)
             if (av.isInstanceOf[AtomicValue]) {
               if (map.get(av.asAtomic) != null) {
-                BooleanValue.TRUE
+                return BooleanValue.TRUE
               }
             }
           }
         } else if (map.get(av.asAtomic) != null) {
-          BooleanValue.TRUE
+          return BooleanValue.TRUE
         }
       }
-      BooleanValue.FALSE
+      return BooleanValue.FALSE
     } else if (key.isNaN) {
-      BooleanValue.FALSE
+     return BooleanValue.FALSE
     }
     val result: Boolean = map.get(key) != null
     BooleanValue.get(result)

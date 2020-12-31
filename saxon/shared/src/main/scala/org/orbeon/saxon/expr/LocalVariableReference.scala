@@ -46,7 +46,7 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
           if (binding != null) {
             try {
               slotNumber = getBinding.getLocalSlotNumber
-              c.getStackFrame.getStackFrameValues(slotNumber)
+              return c.getStackFrame.getStackFrameValues(slotNumber)
             } catch {
               case _: ArrayIndexOutOfBoundsException =>
             }

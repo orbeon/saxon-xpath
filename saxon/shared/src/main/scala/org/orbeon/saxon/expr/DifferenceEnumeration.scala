@@ -24,24 +24,23 @@ class DifferenceEnumeration(private var p1: SequenceIterator,
   private def next(iter: SequenceIterator): NodeInfo = iter.next().asInstanceOf[NodeInfo]
 
   def next(): NodeInfo = {
-    var results: NodeInfo = null
     while (true) {
       if (nextNode1 == null) {
-        results = null
+        return null
       }
       if (nextNode2 == null) {
         // second node-set is exhausted; return the next node from the first node-set
-        results = deliver()
+        return deliver()
       }
       val c: Int = comparer.compare(nextNode1, nextNode2)
       if (c < 0) {
         // p1 is lower
-        results = deliver()
+        return deliver()
       } else if (c > 0) {
         // p1 is higher
         nextNode2 = next(p2)
         if (nextNode2 == null) {
-          results = deliver()
+          return deliver()
         }
       } else {
         // keys are equal
@@ -49,7 +48,7 @@ class DifferenceEnumeration(private var p1: SequenceIterator,
         nextNode1 = next(p1)
       }
     }
-    results
+    null
   }
 
   /**

@@ -22,7 +22,7 @@ class AxisAtomizingIterator(private var base: AtomizedValueIterator) extends Seq
     while (true) {
       if (results != null) {
         if (atomicPosition < results.getLength) {
-          results.itemAt({
+          return results.itemAt({
             atomicPosition += 1; atomicPosition - 1
           })
         } else {
@@ -38,13 +38,13 @@ class AxisAtomizingIterator(private var base: AtomizedValueIterator) extends Seq
       if (atomized.isInstanceOf[AtomicValue]) {
         // common case (the atomized value of the node is a single atomic value)
         results = null
-        atomized.asInstanceOf[AtomicValue]
+        return atomized.asInstanceOf[AtomicValue]
       } else {
         results = atomized
         atomicPosition = 0
       }
     }
-    results.asInstanceOf[AtomicValue]
+    null
   }
 
   override def close(): Unit = {

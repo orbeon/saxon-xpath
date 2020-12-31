@@ -41,7 +41,7 @@ class QuantifiedExpression extends Assignation {
                          contextInfo: ContextItemStaticInfo): Expression = {
     getSequenceOp.typeCheck(visitor, contextInfo)
     if (Literal.isEmptySequence(getSequence)) {
-      Literal.makeLiteral(BooleanValue.get(operator != Token.SOME), this)
+      return Literal.makeLiteral(BooleanValue.get(operator != Token.SOME), this)
     }
     this.setSequence(getSequence.unordered(retainAllNodes = false, forStreaming = false))
     val decl: SequenceType = getRequiredType
@@ -95,7 +95,7 @@ class QuantifiedExpression extends Assignation {
     }
     if (Literal.hasEffectiveBooleanValue(ebv, value = true)) {
       if (getOperator == Token.SOME) {
-        SystemFunction.makeCall("exists",
+        return SystemFunction.makeCall("exists",
           getRetainedStaticContext,
           getSequence)
       } else {
@@ -109,7 +109,7 @@ class QuantifiedExpression extends Assignation {
         ExpressionTool.copyLocationInfo(this, e2)
         return e2
       } else {
-        SystemFunction.makeCall("empty", getRetainedStaticContext, getSequence)
+        return SystemFunction.makeCall("empty", getRetainedStaticContext, getSequence)
       }
     }
     if (getSequence.isInstanceOf[Literal]) {
@@ -124,12 +124,12 @@ class QuantifiedExpression extends Assignation {
         if (getAction.isInstanceOf[VariableReference] &&
           getAction.asInstanceOf[VariableReference].getBinding ==
             this) {
-          SystemFunction.makeCall("boolean",
+          return SystemFunction.makeCall("boolean",
             getRetainedStaticContext,
             getSequence)
         } else {
           replaceVariable(getSequence)
-          getAction
+          return getAction
         }
       }
     }
@@ -138,7 +138,7 @@ class QuantifiedExpression extends Assignation {
         .obtainOptimizer()
         .optimizeQuantifiedExpressionForStreaming(this)
       if (e3 != null && e3 != this) {
-        e3.optimize(visitor, contextItemType)
+        return e3.optimize(visitor, contextItemType)
       }
     }
     this
@@ -188,7 +188,7 @@ class QuantifiedExpression extends Assignation {
       context.setLocalVariable(slot, it)
       if (some == getAction.effectiveBooleanValue(context)) {
         base.close()
-        some
+        return some
       }
     }
     !some

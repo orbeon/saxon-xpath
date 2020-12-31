@@ -28,11 +28,11 @@ object Component {
       else
         new Component
 
-    c.actor             = actor
-    c.visibility        = visibility
-    c.provenance        = provenance
+    c.actor = actor
+    c.visibility = visibility
+    c.provenance = provenance
     c.containingPackage = containingPackage
-    c.declaringPackage  = declaringPackage
+    c.declaringPackage = declaringPackage
     c
   }
 

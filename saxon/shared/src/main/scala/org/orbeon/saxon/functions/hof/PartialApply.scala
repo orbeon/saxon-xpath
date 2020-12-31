@@ -52,10 +52,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
   def getNumberOfPlaceHolders: Int = {
     var n: Int = 0
     for (o <- boundArgumentsOp if o == null) {
-      {
         n += 1
-        n - 1
-      }
     }
     n
   }
@@ -121,10 +118,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
       var j = 0
       for (i <- 0 until boundArgumentsOp.length
            if boundArgumentsOp(i) == null) {
-        argTypes({
-          j
-        }) =
-          baseItemType.asInstanceOf[SpecificFunctionType].getArgumentTypes(i)
+        argTypes(j) = baseItemType.asInstanceOf[SpecificFunctionType].getArgumentTypes(i)
         j = j + 1
       }
     } else {
@@ -175,7 +169,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
         }
         if (boundArgumentsOp(i) != null && boundArgumentsOp(i) != pa2
           .boundArgumentsOp(i)) {
-          false
+          return false
         }
       }
       true

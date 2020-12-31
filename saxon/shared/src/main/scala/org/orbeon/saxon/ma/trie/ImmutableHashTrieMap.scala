@@ -48,9 +48,9 @@ object ImmutableHashTrieMap {
                      key: K,
                      value: V): ImmutableHashTrieMap[K, V] = {
       if (this.key == key) {
-        new EntryHashNode(key, value)
+        return new EntryHashNode(key, value)
       } else if (this.key.hashCode == key.hashCode) {
-        new ListHashNode(new Tuple2(this.key, this.value),
+        return new ListHashNode(new Tuple2(this.key, this.value),
           new Tuple2(key, value))
       }
       newArrayHashNode(shift,
@@ -62,7 +62,7 @@ object ImmutableHashTrieMap {
 
     override def remove(shift: Int, key: K): ImmutableHashTrieMap[K, V] = {
       if (this.key == key) {
-        empty()
+        return empty()
       }
       this
     }
@@ -106,7 +106,7 @@ object ImmutableHashTrieMap {
                      key: K,
                      value: V): ImmutableHashTrieMap[K, V] = {
       if (entries.head._1.hashCode != key.hashCode) {
-        newArrayHashNode(shift,
+       return newArrayHashNode(shift,
           entries.head._1.hashCode,
           this,
           key.hashCode,
@@ -137,7 +137,7 @@ object ImmutableHashTrieMap {
       }
       if (size == 1) {
         val entry: Tuple2[K, V] = newList.head
-        new EntryHashNode(entry._1, entry._2)
+       return new EntryHashNode(entry._1, entry._2)
       }
       new ListHashNode(newList)
     }
@@ -256,7 +256,7 @@ object ImmutableHashTrieMap {
         val orphanedEntry: ImmutableHashTrieMap[K, V] = subnodes(
           orphanedBucket)
         if (orphanedEntry.isArrayNode) {
-          new SingletonArrayHashNode(orphanedBucket, orphanedEntry)
+          return new SingletonArrayHashNode(orphanedBucket, orphanedEntry)
         }
         return orphanedEntry
       }
@@ -310,7 +310,7 @@ object ImmutableHashTrieMap {
                      value: V): ImmutableHashTrieMap[K, V] = {
       val bucket: Int = getBucket(shift, key)
       if (bucket == this.bucket) {
-        new SingletonArrayHashNode(bucket,
+        return new SingletonArrayHashNode(bucket,
           subnode.put(shift + BITS, key, value))
       }
       new BranchedArrayHashNode(this.bucket,
@@ -327,7 +327,7 @@ object ImmutableHashTrieMap {
         if (!newNode.isArrayNode) {
           return newNode
         }
-        new SingletonArrayHashNode(bucket, newNode)
+        return new SingletonArrayHashNode(bucket, newNode)
       }
       this
     }
@@ -335,7 +335,7 @@ object ImmutableHashTrieMap {
     override def get(shift: Int, key: K): V = {
       val bucket: Int = getBucket(shift, key)
       if (bucket == this.bucket) {
-        subnode.get(shift + BITS, key)
+        return subnode.get(shift + BITS, key)
       }
       null.asInstanceOf[V]
     }

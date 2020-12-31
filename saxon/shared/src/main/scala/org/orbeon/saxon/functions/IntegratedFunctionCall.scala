@@ -100,7 +100,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
         return  exp
       } else {
         ExpressionTool.copyLocationInfo(this, exp2)
-        exp2
+       return exp2
           .simplify()
           .typeCheck(visitor, contextInfo)
           .optimize(visitor, contextInfo)

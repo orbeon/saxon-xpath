@@ -39,9 +39,10 @@ class ForClausePush(outputter: Outputter,
       context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
                                next)
       if (forClause.getPositionVariable != null) {
+        pos += 1
         context.setLocalVariable(
           forClause.getPositionVariable.getLocalSlotNumber,
-          new Int64Value())
+          new Int64Value(pos))
       }
       destination.processTuple(context)
     }

@@ -205,7 +205,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         return lit
       } else if (conditions.size == 1 &&
         Literal.hasEffectiveBooleanValue(conditions.get(0), value = true)) {
-        actions.get(0)
+        return actions.get(0)
       } else if (conditions.size != localSize) {
         val c: Array[Expression] =
           conditions.toArray(Array.ofDim[Expression](conditions.size))
@@ -218,7 +218,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     }
     if (localSize == 1 &&
       Literal.hasEffectiveBooleanValue(getCondition(0), value = true)) {
-      getAction(0)
+      return getAction(0)
     }
     if (Literal.isEmptySequence(getAction(localSize - 1))) {
       if (localSize == 1) {
@@ -232,7 +232,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
           conditions(i) = getCondition(i)
           actions(i) = getAction(i)
         }
-        new Choose(conditions, actions)
+        return new Choose(conditions, actions)
       }
     }
     if (Literal.hasEffectiveBooleanValue(getCondition(localSize - 1), value = true) &&
@@ -249,7 +249,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         c2(i + localSize - 1) = choose2.getCondition(i)
         a2(i + localSize - 1) = choose2.getAction(i)
       }
-      new Choose(c2, a2)
+     return new Choose(c2, a2)
     }
     if (localSize == 2 && Literal.isConstantBoolean(getAction(0), value = true) &&
       Literal.isConstantBoolean(getAction(1), value = false) &&
@@ -257,11 +257,11 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       val th = visitor.getConfiguration.getTypeHierarchy
       if (th.isSubType(getCondition(0).getItemType, BuiltInAtomicType.BOOLEAN) &&
         getCondition(0).getCardinality == StaticProperty.EXACTLY_ONE) {
-        getCondition(0)
+        return getCondition(0)
       } else {
         SystemFunction.makeCall("boolean",
           getRetainedStaticContext,
-          getCondition(0))
+          return getCondition(0))
       }
     }
     this
@@ -317,7 +317,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       val reduced: Expression = removeRedundantBranches(visitor)
       if (reduced != this) {
-        reduced.typeCheck(visitor, contextInfo)
+        return reduced.typeCheck(visitor, contextInfo)
       }
       return reduced
     }
@@ -365,7 +365,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
         new ErrorExpression(message, role.getErrorCode, true)
       ExpressionTool.copyLocationInfo(this, errExp)
       a(sizeInt) = errExp
-      new Choose(c, a)
+     return new Choose(c, a)
     }
     this
   }
@@ -437,13 +437,13 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
       }
     }
     if (sizeInt == 0) {
-      Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     val opt: Optimizer = visitor.obtainOptimizer()
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       val e: Expression = removeRedundantBranches(visitor)
       if (e.isInstanceOf[Choose]) {
-        visitor.obtainOptimizer().trySwitch(e.asInstanceOf[Choose], visitor)
+       return visitor.obtainOptimizer().trySwitch(e.asInstanceOf[Choose], visitor)
       } else {
         return e
       }
@@ -539,7 +539,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
   override def getStaticUType(contextItemType: UType): UType =
     if (isInstruction) {
-      super.getStaticUType(contextItemType)
+      return super.getStaticUType(contextItemType)
     } else {
       var `type`: UType = getAction(0).getStaticUType(contextItemType)
       for (i <- 1 until size) {
@@ -575,7 +575,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     for (action <- actions().asScala) {
       val props: Int = action.getChildExpression.getSpecialProperties
       if ((props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {
-        true
+        return true
       }
     }
     false
@@ -643,7 +643,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
     if (i >= 0) {
       val action: Expression = getAction(i)
       if (action.isInstanceOf[TailCallReturner]) {
-        action
+        return action
           .asInstanceOf[TailCallReturner]
           .processLeavingTail(output, context)
       } else {
@@ -667,7 +667,7 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
 
       }
       if (b) {
-        i
+        return i
       }
     }
     -1

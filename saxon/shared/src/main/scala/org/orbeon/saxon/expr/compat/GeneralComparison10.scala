@@ -37,13 +37,13 @@ object GeneralComparison10 {
     if (t0.isPrimitiveNumeric || t1.isPrimitiveNumeric) {
       val v0: DoubleValue = Number_1.convert(atomicVal0, context.getConfiguration)
       val v1: DoubleValue = Number_1.convert(atomicVal1, context.getConfiguration)
-      ValueComparison.compare(v0, op, v1, atomicCom, checkTypes = false)
+      return ValueComparison.compare(v0, op, v1, atomicCom, checkTypes = false)
     }
     if (t0 == BuiltInAtomicType.STRING || t1 == BuiltInAtomicType.STRING ||
       (t0 == BuiltInAtomicType.UNTYPED_ATOMIC && t1 == BuiltInAtomicType.UNTYPED_ATOMIC)) {
       val s0: StringValue = StringValue.makeStringValue(atomicVal0.getStringValueCS)
       val s1: StringValue = StringValue.makeStringValue(atomicVal1.getStringValueCS)
-      ValueComparison.compare(s0, op, s1, atomicCom, checkTypes = false)
+      return ValueComparison.compare(s0, op, s1, atomicCom, checkTypes = false)
     }
     if (t0 == BuiltInAtomicType.UNTYPED_ATOMIC) {
       atomicVal0 = t1
@@ -95,7 +95,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     comparer = new GenericAtomicComparer(comp, context)
     if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
       .isInstanceOf[Literal])) {
-      Literal.makeLiteral(evaluateItem(context), this)
+      return Literal.makeLiteral(evaluateItem(context), this)
     }
     this
   }
@@ -159,7 +159,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
             .obtainOptimizer()
             .optimizeGeneralComparison(visitor, gc, backwardsCompatible = false, contextInfo)
           ExpressionTool.copyLocationInfo(this, binExp)
-          binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
+          return binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
         }
       } else if (numeric0 && numeric1) {
         val gc: GeneralComparison =
@@ -169,7 +169,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
           .obtainOptimizer()
           .optimizeGeneralComparison(visitor, gc, backwardsCompatible = false, contextInfo)
         ExpressionTool.copyLocationInfo(this, binExp)
-        binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
+        return binExp.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
       }
     }
     this
@@ -201,7 +201,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       if (i01.isInstanceOf[BooleanValue] && i02 == null) {
         seqItr0.close()
         val b: Boolean = ExpressionTool.effectiveBooleanValue(seqItr1)
-        compare(i01.asInstanceOf[BooleanValue],
+        return compare(i01.asInstanceOf[BooleanValue],
           singletonop,
           BooleanValue.get(b),
           comparer,
@@ -224,7 +224,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       if (i11.isInstanceOf[BooleanValue] && i12 == null) {
         seqItr1.close()
         val b: Boolean = ExpressionTool.effectiveBooleanValue(seqItr0)
-        compare(BooleanValue.get(b),
+        return compare(BooleanValue.get(b),
           singletonop,
           i11.asInstanceOf[BooleanValue],
           comparer,
@@ -256,7 +256,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       val config: Configuration = context.getConfiguration
       val map: ItemMappingFunction = new ItemMappingFunction() {
         def mapItem(item: Item): DoubleValue =
-          Number_1.convert(item.asInstanceOf[AtomicValue], config)
+         return Number_1.convert(item.asInstanceOf[AtomicValue], config)
       }
       seqItr0 = new ItemMappingIterator(seqItr0, map, true)
       seqItr1 = new ItemMappingIterator(seqItr1, map, true)
@@ -298,7 +298,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
       } else {
         for (item1 <- seq1.asScala
              if compare(item0, singletonop, item1, comparer, context)) {
-          true
+          return true
         }
       }
     }

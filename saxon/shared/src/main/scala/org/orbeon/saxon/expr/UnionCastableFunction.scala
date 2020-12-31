@@ -44,7 +44,7 @@ class UnionCastableFunction(targetType: UnionType,
       if (length != 0) {
         val av: AtomicValue = atomizedValue.head
         if (!castable(av, context)) {
-          false
+          return false
         }
       }
     } else if (item.isInstanceOf[AtomicValue]) {

@@ -81,7 +81,7 @@ class MemoSequence extends Sequence {
       return null
     }
     if (reservoir != null && n < used) {
-      reservoir(n)
+      return reservoir(n)
     }
     if (state == ALL_READ || state == EMPTY) {
       return null

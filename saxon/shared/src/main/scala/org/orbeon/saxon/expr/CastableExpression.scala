@@ -42,7 +42,7 @@ class CastableExpression(source: Expression,
       if (converter == null) {
         if (!allowsEmpty() || !Cardinality.allowsZero(operand.getCardinality)) {
 
-          Literal.makeLiteral(BooleanValue.FALSE, this)
+          return Literal.makeLiteral(BooleanValue.FALSE, this)
         }
       } else {
         if (getTargetPrimitiveType.isNamespaceSensitive) {
@@ -50,13 +50,13 @@ class CastableExpression(source: Expression,
         }
         if (converter.isAlwaysSuccessful && !allowsEmpty() &&
           operand.getCardinality == StaticProperty.ALLOWS_ONE) {
-          Literal.makeLiteral(BooleanValue.TRUE, this)
+          return Literal.makeLiteral(BooleanValue.TRUE, this)
         }
       }
     }
     this.setBaseExpression(operand)
     if (operand.isInstanceOf[Literal]) {
-      preEvaluate()
+      return preEvaluate()
     }
     this
   }
@@ -67,16 +67,16 @@ class CastableExpression(source: Expression,
     if (literalOperand.isInstanceOf[AtomicValue] && converter != null) {
       val result: ConversionResult =
         converter.convert(literalOperand.asInstanceOf[AtomicValue])
-      Literal.makeLiteral(
+      return Literal.makeLiteral(
         BooleanValue.get(!(result.isInstanceOf[ValidationFailure])),
         this)
     }
     val length: Int = literalOperand.getLength
     if (length == 0) {
-      Literal.makeLiteral(BooleanValue.get(allowsEmpty()), this)
+      return Literal.makeLiteral(BooleanValue.get(allowsEmpty()), this)
     }
     if (length > 1) {
-      Literal.makeLiteral(BooleanValue.FALSE, this)
+      return Literal.makeLiteral(BooleanValue.FALSE, this)
     }
     this
   }
@@ -87,7 +87,7 @@ class CastableExpression(source: Expression,
                         contextInfo: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextInfo)
     if (getBaseExpression.isInstanceOf[Literal]) {
-      preEvaluate()
+      return preEvaluate()
     }
     this
   }
@@ -146,7 +146,7 @@ class CastableExpression(source: Expression,
       if (length != 0) {
         val av: AtomicValue = atomizedValue.head
         if (!isCastable(av, getTargetType, context)) {
-          false
+          return false
         }
       }
     } else if (item.isInstanceOf[AtomicValue]) {
@@ -156,7 +156,7 @@ class CastableExpression(source: Expression,
         return false
       }
       if (!isCastable(av, getTargetType, context)) {
-        false
+        return false
       }
     } else {
       throw new XPathException("Input to cast cannot be atomized", "XPTY0004")

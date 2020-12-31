@@ -50,39 +50,37 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
 
   override def iterate(context: XPathContext): SequenceIterator = {
     val cm: XPathContextMajor = context.asInstanceOf[XPathContextMajor]
-    var result:SequenceIterator = null
     while (true) {
       val iter: SequenceIterator = getBaseExpression.iterate(cm)
       val extent: GroundedValue = iter.materialize
       val tail: TailCallInfo = cm.getTailCallInfo
       if (tail == null) {
-        result = extent.iterate()
+        return extent.iterate()
       } else {
         val target: UserFunction = establishTargetFunction(tail, cm)
         if (target != containingFunction) {
-          result = tailCallDifferentFunction(target, cm).iterate()
+          return tailCallDifferentFunction(target, cm).iterate()
         }
       }
     }
-    result
+    null
   }
 
  override def evaluateItem(context: XPathContext): Item = {
     val cm: XPathContextMajor = context.asInstanceOf[XPathContextMajor]
-    var itemRes: Item = null
     while (true) {
       val item: Item = getBaseExpression.evaluateItem(context)
       val tail: TailCallInfo = cm.getTailCallInfo
       if (tail == null) {
-        itemRes = item
+        return item
       } else {
         val target: UserFunction = establishTargetFunction(tail, cm)
         if (target != containingFunction) {
-          itemRes= tailCallDifferentFunction(target, cm).head
+          return tailCallDifferentFunction(target, cm).head
         }
       }
     }
-    itemRes
+    null
   }
 
   private def establishTargetFunction(tail: TailCallInfo,

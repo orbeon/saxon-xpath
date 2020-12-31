@@ -114,7 +114,7 @@ class FilterIterator(base: SequenceIterator,
       next = base.next()
       next
     }) != null) if (matches()) {
-      next
+      return next
     }
     null
   }

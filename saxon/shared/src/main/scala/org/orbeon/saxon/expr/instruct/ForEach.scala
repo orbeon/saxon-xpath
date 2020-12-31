@@ -137,7 +137,7 @@ class ForEach(select: Expression,
     selectOp.typeCheck(visitor, contextInfo)
     val selectType: ItemType = getSelect.getItemType
     if (selectType == ErrorType) {
-      Literal.makeEmptySequence
+     return Literal.makeEmptySequence
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(getSelect.getItemType, maybeUndefined = false)
@@ -159,18 +159,18 @@ class ForEach(select: Expression,
     actionOp.optimize(visitor, cit)
     if (!visitor.isOptimizeForStreaming) {
       if (Literal.isEmptySequence(getSelect)) {
-        getSelect
+        return getSelect
       }
       if (Literal.isEmptySequence(getAction)) {
-        getAction
+        return getAction
       }
     }
     if (getSelect.getCardinality == StaticProperty.EXACTLY_ONE &&
       getAction.isInstanceOf[AxisExpression]) {
-      new SimpleStepExpression(getSelect, getAction)
+     return new SimpleStepExpression(getSelect, getAction)
     }
     if (threadsOp != null && !Literal.isEmptySequence(getThreads)) {
-      visitor.obtainOptimizer().generateMultithreadedInstruction(this)
+      return visitor.obtainOptimizer().generateMultithreadedInstruction(this)
     }
     this
   }
@@ -259,7 +259,7 @@ class ForEach(select: Expression,
         if (item == null) {
           return null
         }
-        action.asInstanceOf[TailCallReturner].processLeavingTail(output, c2)
+       return action.asInstanceOf[TailCallReturner].processLeavingTail(output, c2)
       }
     } else {
       val pipe: PipelineConfiguration = output.getPipelineConfiguration

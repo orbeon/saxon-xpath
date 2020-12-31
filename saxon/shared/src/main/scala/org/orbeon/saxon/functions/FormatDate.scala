@@ -553,12 +553,10 @@ object FormatDate {
       val s: StringBuilder = new StringBuilder(roman)
       var len: Int = StringValue.getStringLength(roman)
       while (len < min) {
-        s.append(' ') {
-          len += 1;
-          len - 1
-        }
+        s.append(' ')
+        len += 1
       }
-      s.toString
+      return s.toString
     } else if (!widths.isEmpty) {
       val range: Array[Int] = getWidths(widths)
       min = Math.max(min, range(0))
@@ -590,7 +588,7 @@ object FormatDate {
     } else if ("f" == component) {
       val uFormat: UnicodeString = UnicodeString.makeUnicodeString(format)
       if (!digitsPattern.matcher(primary).find()) {
-        formatNumber(component, intVal, "1", defaultFormat, numberer, context)
+        return formatNumber(component, intVal, "1", defaultFormat, numberer, context)
       }
       if (!digitsOrOptionalDigitsPattern.matcher(primary).matches()) {
         val reverseFormat: UnicodeString = reverse(uFormat)
@@ -608,7 +606,7 @@ object FormatDate {
         if (correctedResult.uLength > max) {
           correctedResult = correctedResult.uSubstring(0, max)
         }
-        correctedResult.toString
+       return correctedResult.toString
       }
       if (!fractionalDigitsPattern.matcher(primary).matches()) {
         throw new XPathException(
@@ -801,16 +799,12 @@ object FormatDate {
     val expandedFormat: Array[Int] = StringValue.expand(formatStr)
     for (ch <- expandedFormat) {
       if (java.lang.Character.isDigit(ch)) {
-        {
-          digits += 1
-        }
+        digits += 1
         if (zeroDigit < 0) {
           zeroDigit = Alphanumeric.getDigitFamily(ch)
         }
       } else {
-        {
           separators += 1
-        }
         separatorChar = ch
       }
     }

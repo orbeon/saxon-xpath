@@ -85,7 +85,7 @@ object IndexOf {
           baseItem.getPrimitiveType,
           ordered = false) &&
           comparer.comparesEqual(baseItem, key)) {
-          new Int64Value(index)
+          return new Int64Value(index)
         }
       }
       null

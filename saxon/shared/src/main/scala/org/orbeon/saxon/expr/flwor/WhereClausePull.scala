@@ -30,7 +30,7 @@ class WhereClausePull(var base: TuplePull, var predicate: Expression)
   override def nextTuple(context: XPathContext): Boolean = {
     while (base.nextTuple(context)) if (predicate.effectiveBooleanValue(
                                           context)) {
-      true
+      return true
     }
     false
   }

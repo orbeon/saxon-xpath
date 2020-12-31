@@ -75,11 +75,11 @@ class UriCollection extends SystemFunction {
     */
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     if (arguments.length == 0) {
-      getDefaultUriCollection(context)
+      return getDefaultUriCollection(context)
     } else {
       val arg: Item = arguments(0).head
       if (arg == null) {
-        getDefaultUriCollection(context)
+        return getDefaultUriCollection(context)
       }
       val href: String = arg.getStringValue
       var hrefURI: URI = null

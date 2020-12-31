@@ -34,7 +34,7 @@ object Chain {
         while (ui != null) {
           val current: Item = ui.next()
           if (current != null) {
-            current
+           return current
           } else {
             queue.remove()
             ui = queue.peek()

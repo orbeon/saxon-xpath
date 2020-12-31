@@ -68,9 +68,9 @@ class Remove extends SystemFunction {
         try {
           val value: Long = index.asInstanceOf[IntegerValue].longValue()
           if (value <= 0) {
-            arguments(0)
+            return arguments(0)
           } else if (value == 1) {
-            new TailExpression(arguments(0), 2)
+            return new TailExpression(arguments(0), 2)
           }
         } catch {
           case _: XPathException =>
@@ -85,7 +85,7 @@ class Remove extends SystemFunction {
     val n: NumericValue = arguments(1).head.asInstanceOf[NumericValue]
     val pos: Int = n.longValue().toInt
     if (pos < 1) {
-      arguments(0)
+      return arguments(0)
     }
     SequenceTool.toLazySequence2(
       new RemoveIterator(arguments(0).iterate(), pos))
