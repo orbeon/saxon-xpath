@@ -41,7 +41,7 @@ object CurrentGroupCall {
           parent.asInstanceOf[ForEachGroup].getActionExpression ||
           child ==
             parent.asInstanceOf[ForEachGroup].getSortKeyDefinitionList)) {
-        parent.asInstanceOf[ForEachGroup]
+        return parent.asInstanceOf[ForEachGroup]
       }
       child = parent
       parent = parent.getParentExpression

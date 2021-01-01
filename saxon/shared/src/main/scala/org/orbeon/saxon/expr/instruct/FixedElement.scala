@@ -275,7 +275,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
 
   override def getItemType: ItemType = {
     if (itemType == null) {
-      super.getItemType
+      return super.getItemType
     }
     itemType
   }
@@ -300,7 +300,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           val `type`: SchemaType =
             testForXSIType(exp.asInstanceOf[FixedAttribute], env)
           if (`type` != null) {
-            `type`
+            return `type`
           }
         }
       }
@@ -321,7 +321,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
         if (uri == null) {
           return null
         } else {
-          env.getConfiguration.getSchemaType(
+          return env.getConfiguration.getSchemaType(
             new StructuredQName("", uri, parts(1)))
         }
       }

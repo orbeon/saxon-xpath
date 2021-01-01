@@ -77,15 +77,15 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         c1 | c2 | StaticProperty.ALLOWS_ONE | StaticProperty.ALLOWS_MANY
       case Token.INTERSECT =>
         if (Literal.isEmptySequence(getLhsExpression)) {
-          StaticProperty.EMPTY
+          return StaticProperty.EMPTY
         }
         if (Literal.isEmptySequence(getRhsExpression)) {
-          StaticProperty.EMPTY
+          return StaticProperty.EMPTY
         }
         (c1 & c2) | StaticProperty.ALLOWS_ZERO | StaticProperty.ALLOWS_ONE
       case Token.EXCEPT =>
         if (Literal.isEmptySequence(getLhsExpression)) {
-          StaticProperty.EMPTY
+          return StaticProperty.EMPTY
         }
         if (Literal.isEmptySequence(getRhsExpression)) {
           return c1
@@ -115,13 +115,13 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
   private def testContextDocumentNodeSet(prop0: Int, prop1: Int): Boolean = {
     op match {
       case Token.UNION =>
-        (prop0 & prop1 & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
+        return (prop0 & prop1 & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
           0
       case Token.INTERSECT =>
-        ((prop0 | prop1) & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
+        return ((prop0 | prop1) & StaticProperty.CONTEXT_DOCUMENT_NODESET) !=
           0
       case Token.EXCEPT =>
-        (prop0 & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0
+        return (prop0 & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0
 
     }
     false
@@ -150,10 +150,10 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
 
   private def testSubTree(prop0: Int, prop1: Int): Boolean = {
     op match {
-      case Token.UNION => (prop0 & prop1 & StaticProperty.SUBTREE_NODESET) != 0
+      case Token.UNION => return (prop0 & prop1 & StaticProperty.SUBTREE_NODESET) != 0
       case Token.INTERSECT =>
-        ((prop0 | prop1) & StaticProperty.SUBTREE_NODESET) != 0
-      case Token.EXCEPT => (prop0 & StaticProperty.SUBTREE_NODESET) != 0
+        return ((prop0 | prop1) & StaticProperty.SUBTREE_NODESET) != 0
+      case Token.EXCEPT => return (prop0 & StaticProperty.SUBTREE_NODESET) != 0
 
     }
     false
@@ -195,13 +195,13 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val t1: ItemType = getRhsExpression.getItemType
       if (th.relationship(t0, t1) == Affinity.DISJOINT) {
         if (op == Token.INTERSECT) {
-          Literal.makeEmptySequence
+          return Literal.makeEmptySequence
         } else {
           if (getLhsExpression.hasSpecialProperty(
             StaticProperty.ORDERED_NODESET)) {
-            getLhsExpression
+            return getLhsExpression
           } else {
-            new DocumentSorter(getLhsExpression)
+            return new DocumentSorter(getLhsExpression)
           }
         }
       }
@@ -266,7 +266,8 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val a2: AxisExpression = rhs.asInstanceOf[AxisExpression]
       if (a1.getAxis == a2.getAxis) {
         if (a1.getNodeTest == a2.getNodeTest) {
-          if (op == Token.EXCEPT) Literal.makeEmptySequence else return a1
+          if (op == Token.EXCEPT)
+            return Literal.makeEmptySequence else return a1
         } else {
           val ax: AxisExpression = new AxisExpression(
             a1.getAxis,
@@ -289,7 +290,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         val path: Expression =
           ExpressionTool.makePathExpression(path1.getFirstStep, venn)
         ExpressionTool.copyLocationInfo(this, path)
-        path.optimize(visitor, contextItemType)
+        return path.optimize(visitor, contextItemType)
       }
     }
     if (lhs.isInstanceOf[FilterExpression] && rhs
@@ -317,7 +318,7 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         val f: FilterExpression =
           new FilterExpression(exp0.getSelectExpression, filter)
         ExpressionTool.copyLocationInfo(this, f)
-        f.simplify()
+        return f.simplify()
           .typeCheck(visitor, contextItemType)
           .optimize(visitor, contextItemType)
       }
@@ -328,32 +329,32 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       val a0: AxisExpression = lhs.asInstanceOf[AxisExpression]
       val a1: AxisExpression = rhs.asInstanceOf[AxisExpression]
       if (a0.getAxis == AxisInfo.ATTRIBUTE && a1.getAxis == AxisInfo.CHILD) {
-        new Block(Array(lhs, rhs))
+        return new Block(Array(lhs, rhs))
       } else if (a1.getAxis == AxisInfo.ATTRIBUTE && a0.getAxis == AxisInfo.CHILD) {
-        new Block(Array(rhs, lhs))
+        return new Block(Array(rhs, lhs))
       }
     }
     if (op == Token.INTERSECT && !Cardinality.allowsMany(
       lhs.getCardinality)) {
-      new SingletonIntersectExpression(lhs,
+      return new SingletonIntersectExpression(lhs,
         op,
         rhs.unordered(retainAllNodes = false, forStreaming = false))
     }
     if (op == Token.INTERSECT && !Cardinality.allowsMany(
       rhs.getCardinality)) {
-      new SingletonIntersectExpression(rhs,
+      return new SingletonIntersectExpression(rhs,
         op,
         lhs.unordered(retainAllNodes = false, forStreaming = false))
     }
     if (operandsAreDisjoint(th)) {
       if (op == Token.INTERSECT) {
-        Literal.makeEmptySequence
+        return Literal.makeEmptySequence
       } else if (op == Token.EXCEPT) {
         if ((lhs.getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
           0) {
           return lhs
         } else {
-          new DocumentSorter(lhs)
+          return new DocumentSorter(lhs)
         }
       }
     }
@@ -458,11 +459,11 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     val i2: SequenceIterator = getRhsExpression.iterate(c)
     op match {
       case Token.UNION =>
-        new UnionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        return new UnionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
       case Token.INTERSECT =>
-        new IntersectionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        return new IntersectionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
       case Token.EXCEPT =>
-        new DifferenceEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        return new DifferenceEnumeration(i1, i2, GlobalOrderComparer.getInstance)
 
     }
     throw new UnsupportedOperationException(

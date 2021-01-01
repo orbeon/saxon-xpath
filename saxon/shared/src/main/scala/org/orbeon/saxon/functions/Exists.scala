@@ -48,9 +48,9 @@ class Exists extends Aggregate {
         }
         val c: Int = getArg(0).getCardinality
         if (!Cardinality.allowsZero(c)) {
-          Literal.makeLiteral(BooleanValue.TRUE, e2)
+          return Literal.makeLiteral(BooleanValue.TRUE, e2)
         } else if (c == StaticProperty.ALLOWS_ZERO) {
-          Literal.makeLiteral(BooleanValue.FALSE, e2)
+         return Literal.makeLiteral(BooleanValue.FALSE, e2)
         }
         setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming))
         if (getArg(0)
@@ -65,7 +65,7 @@ class Exists extends Aggregate {
               "exists",
               getRetainedStaticContext,
               v.getRhsExpression)
-            new OrExpression(e0, e1).optimize(visitor, contextInfo)
+            return new OrExpression(e0, e1).optimize(visitor, contextInfo)
           }
         }
         this
@@ -103,9 +103,9 @@ class Exists extends Aggregate {
     var args = arguments.toArray
     val c: Int = args(0).getCardinality
     if (c == StaticProperty.ALLOWS_ONE_OR_MORE) {
-      Literal.makeLiteral(BooleanValue.TRUE, args(0))
+     return Literal.makeLiteral(BooleanValue.TRUE, args(0))
     } else if (c == StaticProperty.ALLOWS_ZERO) {
-      Literal.makeLiteral(BooleanValue.FALSE, args(0))
+      return Literal.makeLiteral(BooleanValue.FALSE, args(0))
     }
     args(0) = args(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming)
     if (args(0).isInstanceOf[VennExpression] && !visitor.isOptimizeForStreaming) {
@@ -117,7 +117,7 @@ class Exists extends Aggregate {
         val e1: Expression = SystemFunction.makeCall("exists",
           getRetainedStaticContext,
           v.getRhsExpression)
-        new OrExpression(e0, e1).optimize(visitor, contextInfo)
+        return new OrExpression(e0, e1).optimize(visitor, contextInfo)
       }
     }
     null

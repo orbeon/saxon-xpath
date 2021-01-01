@@ -52,7 +52,7 @@ object ContainsToken {
         token.getStringValue)) {
         tokens.close()
         arg0.close()
-        true
+       return true
       }
     }
     false

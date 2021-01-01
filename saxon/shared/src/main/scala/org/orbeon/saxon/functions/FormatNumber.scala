@@ -455,7 +455,7 @@ object FormatNumber {
                minusSign: String): CharSequence = {
       var numValue = value
       if (numValue.isNaN) {
-        dfs.getNaN
+        return dfs.getNaN
       }
       var multiplier: Int = 1
       if (isPercent) {

@@ -49,8 +49,7 @@ class SortedIterator ()
   }
 
   def hasNext: Boolean = {
-    if (position < 0)
-      return false
+    if (position < 0) return false
     if (count < 0) {
       base match {
         case iterator: LookaheadIterator =>
@@ -72,10 +71,8 @@ class SortedIterator ()
   }
 
   def next(): Item = {
-    if (position < 0)
-      return null
-    if (count < 0)
-      doSort()
+    if (position < 0) return null
+    if (count < 0) doSort()
     if (position < count) {
       values({
         position += 1
@@ -121,8 +118,8 @@ class SortedIterator ()
       itbs.value = item
       for (n <- comparators.indices)
         itbs.sortKeyValues(n) = sortKeyEvaluator.evaluateSortKey(n, context)
-      count += 1
       itbs.originalPosition = count
+      count += 1
     }
     if (allocated * 2 < count || (allocated - count) > 2000) {
       val nk2: Array[ObjectToBeSorted[Item]] = Array.ofDim[ObjectToBeSorted[Item]](count)

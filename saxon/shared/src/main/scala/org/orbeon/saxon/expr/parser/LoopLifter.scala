@@ -92,6 +92,27 @@ class LoopLifter(@BeanProperty var root: Expression,
   }
 
   private def getContainingConditional(exp: Expression): Expression = {
+    var expres = exp
+    var parent: Expression = expres.getParentExpression
+    while (parent != null) {
+      if (parent.isInstanceOf[ConditionalInstruction]) {
+        val o: Operand = ExpressionTool.findOperand(parent, expres)
+        if (o == null) {
+          throw new AssertionError()
+        }
+        if (o.getOperandRole.isInChoiceGroup) {
+          parent
+        }
+      } else if (parent.isInstanceOf[TryCatch]) {
+        parent
+      }
+      expres = parent
+      parent = parent.getParentExpression
+    }
+    null
+  }
+
+  private def c(exp: Expression): Expression = {
     var expressn = exp
     var parent = expressn.getParentExpression
     while (parent != null) {

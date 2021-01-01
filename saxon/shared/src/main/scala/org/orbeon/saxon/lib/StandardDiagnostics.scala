@@ -29,10 +29,10 @@ object StandardDiagnostics {
       inst match {
         case _: FixedElement =>
           val qName: StructuredQName = inst.getObjectName
-          "element constructor <" + qName.getDisplayName + '>'
+          return "element constructor <" + qName.getDisplayName + '>'
         case _: FixedAttribute =>
           val qName: StructuredQName = inst.getObjectName
-          "attribute constructor " + qName.getDisplayName + "=\"{...}\""
+          return "attribute constructor " + qName.getDisplayName + "=\"{...}\""
         case _ =>
       }
       val construct: Int = inst.getInstructionNameCode
@@ -205,8 +205,9 @@ class StandardDiagnostics {
     var xPathContext = context
     if (level > 0) {
       var depth: Int = 20
-      depth -= 1
-      while (depth > 0) {
+      while ( {
+        depth -= 1; depth + 1
+      } > 0) {
         val component: Component = xPathContext.getCurrentComponent
         if (component != null) {
           if (component.getActor.isInstanceOf[Mode]) {

@@ -279,7 +279,7 @@ object MapFunctionSet {
         mm2.onDuplicates = onDuplicates
         mm2.allStringKeys = keyType.==("string")
         mm2.treatAsFinal = isFinal
-        mm2.makeFunctionCall(arguments(0))
+        return mm2.makeFunctionCall(arguments(0))
       }
       super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
     }

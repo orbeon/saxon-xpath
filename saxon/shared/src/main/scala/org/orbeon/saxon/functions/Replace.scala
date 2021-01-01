@@ -28,20 +28,20 @@ object Replace {
           itr += 1
           val next: Char = rep.charAt(itr)
           if (next < '0' || next > '9') {
-            "Invalid replacement string in replace(): $ sign must be followed by digit 0-9"
+            return "Invalid replacement string in replace(): $ sign must be followed by digit 0-9"
           }
         } else {
-          "Invalid replacement string in replace(): $ sign at end of string"
+          return "Invalid replacement string in replace(): $ sign at end of string"
         }
       } else if (c == '\\') {
         if (itr + 1 < rep.length) {
           itr += 1
           val next: Char = rep.charAt(itr)
           if (next != '\\' && next != '$') {
-            "Invalid replacement string in replace(): \\ character must be followed by \\ or $"
+            return  "Invalid replacement string in replace(): \\ character must be followed by \\ or $"
           }
         } else {
-          "Invalid replacement string in replace(): \\ character at end of string"
+          return "Invalid replacement string in replace(): \\ character at end of string"
         }
       }
     }

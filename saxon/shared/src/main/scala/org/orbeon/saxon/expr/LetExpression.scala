@@ -141,7 +141,7 @@ class LetExpression extends Assignation with TailCallReturner {
       if (considerRemoval && references.isEmpty) {
         getActionOp.optimize(visitor, contextItemType)
         opt.trace("Eliminated unused variable " + getVariableName, getAction)
-        getAction
+        return getAction
       }
       if (considerRemoval && references.size == 1 && ExpressionTool.dependsOnFocus(getSequence)) {
         if (visitor.isOptimizeForStreaming)
@@ -176,7 +176,7 @@ class LetExpression extends Assignation with TailCallReturner {
         inlineReferences()
         opt.trace("Inlined references to $" + getVariableName, getAction)
         references = null
-        getAction.optimize(visitor, contextItemType)
+        return getAction.optimize(visitor, contextItemType)
       }
     }
     var tries: Int = 0

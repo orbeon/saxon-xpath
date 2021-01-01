@@ -75,7 +75,7 @@ class NextMatch(var useTailRecursion: Boolean)
       context
         .asInstanceOf[XPathContextMajor]
         .setCurrentComponent(modeComponent)
-      new NextMatchPackage(rule, params, tunnels, output, context)
+      return new NextMatchPackage(rule, params, tunnels, output, context)
     } else {
       val nh: TemplateRule = rule.getAction.asInstanceOf[TemplateRule]
       nh.initialize()

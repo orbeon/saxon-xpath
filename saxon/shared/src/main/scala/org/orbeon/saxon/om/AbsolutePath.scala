@@ -116,7 +116,7 @@ class AbsolutePath(path: util.List[AbsolutePath.PathElement]) {
   }
 
 
-  def getPathUsingPrefixes = {
+  def getPathUsingPrefixes: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
 
     for (pe <- path.asScala) {

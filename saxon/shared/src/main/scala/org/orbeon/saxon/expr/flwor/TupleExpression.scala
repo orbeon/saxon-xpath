@@ -57,14 +57,14 @@ class TupleExpression extends Expression {
 
   override def equals(other: Any): Boolean =
     if (! other.isInstanceOf[TupleExpression]) {
-      false
+      return false
     } else {
       val t2: TupleExpression = other.asInstanceOf[TupleExpression]
       if (getOperanda.getNumberOfOperands != t2.getOperanda.getNumberOfOperands) {
         return false
       }
       for (i <- 0 until getSize if !getSlot(i).isEqual(t2.getSlot(i))) {
-        false
+        return false
       }
       true
     }

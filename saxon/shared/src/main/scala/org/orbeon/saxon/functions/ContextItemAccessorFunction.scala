@@ -93,7 +93,7 @@ class ContextItemAccessorFunction extends ContextAccessorFunction {
           "XPDY0002")
       val fit: FunctionItemType =
         new SpecificFunctionType(Array(), SequenceType.ANY_SEQUENCE)
-      new CallableFunction(0, callable, fit)
+      return new CallableFunction(0, callable, fit)
     }
     val fn: ConstantFunction = new ConstantFunction(evaluate(ci, context))
     fn.setDetails(getDetails)

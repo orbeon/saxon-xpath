@@ -220,23 +220,23 @@ class MapType(@BeanProperty var keyType: AtomicType,
       val f2: MapType = other.asInstanceOf[MapType]
       val keyRel: Affinity = th.relationship(keyType, f2.keyType)
       if (keyRel == Affinity.DISJOINT) {
-        Affinity.OVERLAPS
+        return Affinity.OVERLAPS
       }
       val valueRel: Affinity =
         th.sequenceTypeRelationship(valueType, f2.valueType)
       if (valueRel == Affinity.DISJOINT) {
-        Affinity.OVERLAPS
+        return Affinity.OVERLAPS
       }
       if (keyRel == valueRel) {
         return keyRel
       }
       if ((keyRel == Affinity.SAME_TYPE || keyRel == Affinity.SUBSUMES) &&
         (valueRel == Affinity.SAME_TYPE || valueRel == Affinity.SUBSUMES)) {
-        Affinity.SUBSUMES
+        return Affinity.SUBSUMES
       }
       if ((keyRel == Affinity.SAME_TYPE || keyRel == Affinity.SUBSUMED_BY) &&
         (valueRel == Affinity.SAME_TYPE || valueRel == Affinity.SUBSUMED_BY)) {
-        Affinity.SUBSUMED_BY
+        return Affinity.SUBSUMED_BY
       }
       Affinity.OVERLAPS
     } else {
@@ -262,7 +262,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
               kvp.key.getItemType +
               " that is not an instance of the required type " +
               keyType
-            Some(s)
+           return Some(s)
           }
           try
             if (!valueType.matches(kvp.value, th)) {
@@ -273,7 +273,7 @@ class MapType(@BeanProperty var keyType: AtomicType,
               val more = valueType.explainMismatch(kvp.value, th)
               if (more.isDefined)
                 s = s + ". " + more.get
-              Some(s)
+              return Some(s)
             }
           catch {
             case _: XPathException =>

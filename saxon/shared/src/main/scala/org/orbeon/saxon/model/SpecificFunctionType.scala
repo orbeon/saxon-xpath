@@ -45,7 +45,7 @@ class SpecificFunctionType extends AnyFunctionType {
 
   override def isAtomizable(th: TypeHierarchy): Boolean = {
     if (getArity != 1) {
-      return      false
+      return false
     }
     val argType: ItemType = getArgumentTypes(0).getPrimaryType
     th.isSubType(BuiltInAtomicType.INTEGER, argType)
@@ -121,7 +121,7 @@ class SpecificFunctionType extends AnyFunctionType {
       }
     } else {
       if (argTypes.length != other.getArgumentTypes.length) {
-        Affinity.DISJOINT
+        return Affinity.DISJOINT
       }
       var wider: Boolean = false
       var narrower: Boolean = false
@@ -139,7 +139,7 @@ class SpecificFunctionType extends AnyFunctionType {
       }
       val resRel = th.sequenceTypeRelationship(resultType, other.getResultType)
       resRel match {
-        case DISJOINT => Affinity.DISJOINT
+        case DISJOINT => return Affinity.DISJOINT
         case SUBSUMES => wider = true
         case SUBSUMED_BY => narrower = true
         case OVERLAPS =>
@@ -172,7 +172,7 @@ class SpecificFunctionType extends AnyFunctionType {
   }
 
   override def matches(item: Item, th: TypeHierarchy): Boolean = {
-    if (! item.isInstanceOf[Function]) {
+    if (!item.isInstanceOf[Function]) {
       return false
     }
     item match {
@@ -182,12 +182,12 @@ class SpecificFunctionType extends AnyFunctionType {
           argTypes(0).getPrimaryType.isPlainType) {
           for (pair <- mapItem.keyValuePairs.asScala) {
             try if (!resultType.matches(pair.value, th)) {
-              false
+              return false
             } catch {
-              case _: XPathException => false
+              case _: XPathException => return false
             }
           }
-          true
+          return true
         } else {
           false
         }
@@ -202,12 +202,12 @@ class SpecificFunctionType extends AnyFunctionType {
           }
           for (member <- arrayItem.members) {
             try if (!resultType.matches(member, th)) {
-              false
+              return false
             } catch {
-              case _: XPathException => false
+              case _: XPathException => return false
             }
           }
-          true
+          return true
         } else {
           false
         }
@@ -269,7 +269,7 @@ class SpecificFunctionType extends AnyFunctionType {
               val s = "The function expects an argument of type " + argTypes(
                 0) +
                 "; an array can only be supplied for a function that expects an integer"
-              Some(s)
+              return Some(s)
             } else {
               for (member <- arrayItem.members) {
                 try if (!resultType.matches(member, th)) {

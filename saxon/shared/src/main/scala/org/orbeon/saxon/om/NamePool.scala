@@ -88,7 +88,7 @@ class NamePool {
   def getUnprefixedQName(nameCode: Int): StructuredQName = {
     val fp = nameCode & FP_MASK
     if ((fp & USER_DEFINED_MASK) == 0) {
-      StandardNames.getUnprefixedQName(fp)
+      return StandardNames.getUnprefixedQName(fp)
     }
     integerToQName.get(fp)
   }

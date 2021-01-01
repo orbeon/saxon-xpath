@@ -39,7 +39,7 @@ class IntersectionEnumeration(private var e1: SequenceIterator,
         val current: NodeInfo = nextNode2
         nextNode2 = next(e2)
         nextNode1 = next(e1)
-        current
+        return current
       }
       // keys are equal
       // keys are equal

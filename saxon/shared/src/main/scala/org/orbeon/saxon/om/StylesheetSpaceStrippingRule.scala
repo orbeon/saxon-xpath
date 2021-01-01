@@ -46,10 +46,10 @@ class StylesheetSpaceStrippingRule(pool: NamePool) extends SpaceStrippingRule {
   def isSpacePreserving(elementName: NodeName, schemaType: SchemaType): Int = {
     val fingerprint: Int = elementName.obtainFingerprint(namePool)
     if (fingerprint == (StandardNames.XSL_TEXT & NamePool.FP_MASK)) {
-      Stripper.ALWAYS_PRESERVE
+      return Stripper.ALWAYS_PRESERVE
     }
     if (Arrays.binarySearch(specials, fingerprint) >= 0) {
-      Stripper.ALWAYS_STRIP
+      return Stripper.ALWAYS_STRIP
     }
     Stripper.STRIP_DEFAULT
   }

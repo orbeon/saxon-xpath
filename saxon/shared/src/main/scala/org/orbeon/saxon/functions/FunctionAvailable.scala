@@ -72,10 +72,7 @@ class FunctionAvailable extends SystemFunction {
             b = true
             break()
           }
-          {
-            i += 1;
-            i - 1
-          }
+          i += 1
         }
       }
       Literal.makeLiteral(BooleanValue.get(b))
@@ -88,7 +85,7 @@ class FunctionAvailable extends SystemFunction {
                                   arity: Int,
                                   context: XPathContext): Boolean = {
     if (arity == -1) {
-      (0.until(20))
+     return (0.until(20))
         .find(isFunctionAvailable(lexicalName, edition, _, context))
         .map(_ => true)
         .getOrElse(false)

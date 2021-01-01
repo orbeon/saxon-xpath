@@ -60,7 +60,7 @@ object StructuredQName {
       if (! NameChecker.isValidNCName(local))
         throw new XPathException("Invalid EQName: local part is not a valid NCName", "FOCA0002")
 
-      new StructuredQName("", uri, local)
+      return new StructuredQName("", uri, local)
     }
     val parts = NameChecker.getQNameParts(lexName)
     val uri = resolver.getURIForPrefix(parts(0), useDefault)

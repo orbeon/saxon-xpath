@@ -158,7 +158,7 @@ class SlashExpression(start: Expression, step: Expression)
         return null
 
       ExpressionTool.copyLocationInfo(this, newPath)
-      newPath.asInstanceOf[SlashExpression]
+      return newPath.asInstanceOf[SlashExpression]
     }
     if (underlyingAxis == AxisInfo.ATTRIBUTE) {
       val newStep = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, NodeKindTest.ELEMENT)
@@ -169,7 +169,7 @@ class SlashExpression(start: Expression, step: Expression)
         return null
 
       ExpressionTool.copyLocationInfo(this, e3)
-      e3.asInstanceOf[SlashExpression]
+      return e3.asInstanceOf[SlashExpression]
     }
     null
   }

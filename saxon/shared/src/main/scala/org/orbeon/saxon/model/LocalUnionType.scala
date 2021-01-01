@@ -93,7 +93,7 @@ class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
       converter.setNamespaceResolver(resolver)
       val outcome: ConversionResult = converter.convertString(value)
       if (outcome.isInstanceOf[AtomicValue]) {
-        outcome.asInstanceOf[AtomicValue]
+        return outcome.asInstanceOf[AtomicValue]
       }
     }
     val ve: ValidationFailure = new ValidationFailure(

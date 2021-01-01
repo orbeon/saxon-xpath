@@ -72,12 +72,12 @@ class ApplyFn extends SystemFunction {
       val target: Expression = arguments(0)
       target.getItemType match {
         case _: MapType =>
-          makeGetCall(visitor,
+          return makeGetCall(visitor,
             MapFunctionSet.getInstance,
             contextInfo,
             arguments.toArray)
         case _: ArrayItemType =>
-          makeGetCall(visitor,
+          return makeGetCall(visitor,
             ArrayFunctionSet.getInstance,
             contextInfo,
             arguments.toArray)

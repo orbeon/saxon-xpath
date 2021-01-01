@@ -91,7 +91,7 @@ abstract class FunctionCall extends Expression {
 
       if (fixed) {
         try
-          preEvaluate(visitor)
+          return preEvaluate(visitor)
         catch {
           case _: NoDynamicContextException => return this
         }
@@ -124,7 +124,7 @@ abstract class FunctionCall extends Expression {
         }
       }
       if (fixed)
-        preEvaluate(visitor)
+        return preEvaluate(visitor)
     }
     this
   }

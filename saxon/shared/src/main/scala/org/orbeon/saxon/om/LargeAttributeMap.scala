@@ -104,7 +104,7 @@ class LargeAttributeMap extends AttributeMap {
 
   override def remove(name: NodeName): AttributeMap = // Not actually used (or tested)
     if (attributes.get(name) == null) {
-      this
+      return this
     } else {
       var first2 = firstNode
       var last2 = lastNode

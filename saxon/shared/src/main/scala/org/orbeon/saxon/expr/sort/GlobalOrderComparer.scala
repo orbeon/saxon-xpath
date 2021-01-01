@@ -28,7 +28,7 @@ class GlobalOrderComparer extends ItemOrderComparer {
     val d1: Long = a.asInstanceOf[NodeInfo].getTreeInfo.getDocumentNumber
     val d2: Long = b.asInstanceOf[NodeInfo].getTreeInfo.getDocumentNumber
     if (d1 == d2) {
-      a.asInstanceOf[NodeInfo].compareOrder(b.asInstanceOf[NodeInfo])
+      return a.asInstanceOf[NodeInfo].compareOrder(b.asInstanceOf[NodeInfo])
     }
     java.lang.Long.signum(d1 - d2)
   }

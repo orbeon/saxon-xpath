@@ -41,7 +41,7 @@ class ReturnClauseIterator(private var base: TuplePull,
           }
         } else {
           results = null
-          null
+          return null
         }
       }
     }

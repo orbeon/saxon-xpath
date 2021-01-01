@@ -67,7 +67,7 @@ class TypeAvailable extends SystemFunction {
       val b: Boolean = typeAvailable(
         arguments(0).asInstanceOf[Literal].value.getStringValue,
         getRetainedStaticContext.getConfiguration)
-      Literal.makeLiteral(BooleanValue.get(b))
+      return Literal.makeLiteral(BooleanValue.get(b))
     } catch {
       case e: XPathException => {}
 

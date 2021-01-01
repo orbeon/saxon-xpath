@@ -56,7 +56,7 @@ class EarlyEvaluationContext(private var config: Configuration)
   def getConfiguration             : Configuration         = config
   def getContextItem               : Item                  = null
   def getController                : Controller            = null
-  def getCurrentGroupIterator      : GroupIterator         = notAllowed()
+  def getCurrentGroupIterator      : GroupIterator         = notAllowed() // Erick to check whole file
   def getCurrentMergeGroupIterator : GroupIterator         = notAllowed()
   def getCurrentIterator           : FocusTrackingIterator = null
   def getCurrentMode               : Component.M           = notAllowed()

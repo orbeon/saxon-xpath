@@ -798,7 +798,7 @@ object Calculator {
     def compute(a: AtomicValue, b: AtomicValue, c: XPathContext): AtomicValue = {
       a match {
         case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
-          integerValue.mod(b.asInstanceOf[IntegerValue])
+          return integerValue.mod(b.asInstanceOf[IntegerValue])
         case _ =>
       }
       val A: BigDecimal = a.asInstanceOf[NumericValue].getDecimalValue
@@ -828,7 +828,7 @@ object Calculator {
                 c: XPathContext): IntegerValue = {
       a match {
         case integerValue: IntegerValue if b.isInstanceOf[IntegerValue] =>
-          integerValue.idiv(b.asInstanceOf[IntegerValue])
+          return integerValue.idiv(b.asInstanceOf[IntegerValue])
         case _ =>
       }
       val A: BigDecimal = a.asInstanceOf[NumericValue].getDecimalValue

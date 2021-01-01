@@ -84,7 +84,7 @@ abstract class ImmutableList[T] extends java.lang.Iterable[T] {
     while (thisIter.hasNext && otherIter.hasNext) if (thisIter
       .next() != otherIter
       .next()) {
-      false
+      return false
     }
     thisIter.hasNext == otherIter.hasNext
   }

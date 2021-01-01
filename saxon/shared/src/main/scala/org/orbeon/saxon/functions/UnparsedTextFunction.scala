@@ -98,7 +98,7 @@ object UnparsedTextFunction {
                     context: XPathContext): XPathException = {
     var message: String = "Failed to read input file"
     if (absoluteURI != null && ioErr.getMessage != absoluteURI.toString) {
-      message +=  s" ${absoluteURI.toString}"
+      message += s" ${absoluteURI.toString}"
     }
     message += " (" + ioErr.getClass.getName + ')'
     val e: XPathException = new XPathException(message, ioErr)
@@ -155,14 +155,10 @@ object UnparsedTextFunction {
             c - 1
           })
           if (ch32 == '\n') {
-            {
-              line += 1;
-            }
+            line += 1
             column = 0
           }
-          {
-            column += 1;
-          }
+          column += 1;
           if (ch32 > 255) {
             latin = false
             if (UTF16CharacterSet.isHighSurrogate(ch32)) {

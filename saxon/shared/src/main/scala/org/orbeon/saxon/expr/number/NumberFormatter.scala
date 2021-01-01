@@ -149,10 +149,7 @@ class NumberFormatter {
       sb.append(s)
       tok += 1
       if (tok == formatTokens.size) {
-        {
           tok -= 1
-          tok + 1
-        }
       }
     }
     if (punctuationTokens.size > formatTokens.size) {

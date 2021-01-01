@@ -68,7 +68,7 @@ object Instruction {
                            actualParams: Array[WithParam]): ParameterSet = {
     val existingParams: ParameterSet = context.getTunnelParameters
     if (existingParams == null) {
-      assembleParams(context, actualParams)
+      return assembleParams(context, actualParams)
     }
     if (actualParams == null || actualParams.length == 0) {
       return existingParams
@@ -149,7 +149,7 @@ abstract class Instruction extends Expression with TailCallReturner {
       val child = o.getChildExpression
       val props: Int = child.getSpecialProperties
       if ((props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {
-        true
+       return true
       }
     }
     false

@@ -243,7 +243,7 @@ class FLWORExpression extends Expression {
       if (c.isInstanceOf[LetClause] ||
         (c.isInstanceOf[ForClause] &&
           c.asInstanceOf[ForClause].getPositionVariable == null)) {
-        rewriteForOrLet(visitor, contextItemType)
+        return rewriteForOrLet(visitor, contextItemType)
       }
     }
     var tryAgain: Boolean = false
@@ -281,7 +281,7 @@ class FLWORExpression extends Expression {
                 !oneRef)
               clauses.remove(c)
               if (clauses.isEmpty) {
-                getReturnClause
+                return getReturnClause
               }
               tryAgain = true
               outer.break()
@@ -298,10 +298,7 @@ class FLWORExpression extends Expression {
           clauses.get(i - 1).getClauseKey == Clause.ClauseName.TRACE) {
           clauses.remove(i)
         }
-        {
           i -= 1
-          i + 1
-        }
       }
     }
     var depends: Boolean = false
@@ -324,7 +321,7 @@ class FLWORExpression extends Expression {
     }
     val expr2: Expression = rewriteWhereClause(visitor, contextItemType)
     if (expr2 != null && expr2 != this) {
-      expr2.optimize(visitor, contextItemType)
+      return expr2.optimize(visitor, contextItemType)
     }
     var allForOrLetExpr: Boolean = true
     breakable {
@@ -343,7 +340,7 @@ class FLWORExpression extends Expression {
       }
     }
     if (allForOrLetExpr) {
-      rewriteForOrLet(visitor, contextItemType)
+      return rewriteForOrLet(visitor, contextItemType)
     }
     this
   }
@@ -408,10 +405,7 @@ class FLWORExpression extends Expression {
               }
               break()
             }
-            {
               c -= 1
-              c + 1
-            }
           }
         }
         if (list.size - 1 == i) {
@@ -424,10 +418,7 @@ class FLWORExpression extends Expression {
           val newWhere: WhereClause = new WhereClause(this, term)
           clauses.add(0, newWhere)
         }
-        {
           i -= 1
-          i + 1
-        }
       }
       whereList.remove(0)
     }
@@ -487,10 +478,7 @@ class FLWORExpression extends Expression {
             letExpr)
           action = letExpr
       }
-      {
         i -= 1
-        i + 1
-      }
     }
     action = action.typeCheck(visitor, contextItemType)
     action = action.optimize(visitor, contextItemType)

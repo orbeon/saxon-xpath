@@ -17,7 +17,7 @@ object RangeIterator {
       EmptyIterator.ofAtomic()
     } else {
       if (start.compareTo(end) > 0) {
-        EmptyIterator.ofAtomic()
+        return EmptyIterator.ofAtomic()
       }
       if (start.isInstanceOf[BigIntegerValue] || end
         .isInstanceOf[BigIntegerValue]) {

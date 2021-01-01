@@ -132,9 +132,7 @@ object AlphaCode {
     private def nextToken: String = {
       var inBraces = 0
       val start = position
-      while ( {
-        position < input.length
-      }) {
+      while (position < input.length) {
         val ch = input.charAt({
           position += 1
           position - 1
@@ -144,8 +142,7 @@ object AlphaCode {
             inBraces += 1
           case '}' =>
             inBraces -= 1
-          case ']' =>
-          case ',' =>
+          case ']'| ',' =>
             if (inBraces == 0) return input.substring(start, {
               position -= 1
               position
@@ -182,13 +179,11 @@ object AlphaCode {
       while (position < input.length) {
         val c = input.charAt(position)
         c match {
-          case ']' =>
-          case ',' =>
+          case ']'| ',' =>
             return container
           case ' ' =>
             position += 1
-          case 'n' =>
-          case 'c' =>
+          case 'n'|'c' =>
             position += 1
             var token = nextToken
             if (token.startsWith("~")) token = "Q{" + NamespaceConstant.SCHEMA + "}" + token.substring(1)
@@ -197,20 +192,13 @@ object AlphaCode {
               token = token.substring(0, token.length - 1)
             }
             callBack.setStringProperty(container, "" + c, token)
-          case 'k' =>
-          case 'r' =>
-          case 'v' =>
-          case 'e' =>
+          case 'k' | 'r' |'v' | 'e' =>
             position += 1
             expect('[')
             val nestedType = parseType
             expect(']')
             callBack.setTypeProperty(container, "" + c, nestedType)
-          case 'a' =>
-          case 'm' =>
-          case 'i' =>
-          case 'u' =>
-          case 'd' =>
+          case 'a' | 'm' | 'i' | 'u' | 'd' =>
             position += 1
             expect('[')
             val nestedTypes = new util.ArrayList[T]
@@ -229,8 +217,7 @@ object AlphaCode {
                 }
               }
             }
-          case 'f' =>
-          case 'F' =>
+          case 'f' | 'F' =>
             if (c == 'F') callBack.setStringProperty(container, "x", "1")
             position += 1
             expect('[')
@@ -239,8 +226,8 @@ object AlphaCode {
             var escaped = false
             breakable {
               while (true) {
-                position += 1
                 val ch = input.charAt(position)
+                position += 1
                 if (ch == '\\' && !escaped) escaped = true
                 else if (ch == ',' && !escaped) {
                   fieldNames.add(currName.toString)
@@ -286,25 +273,17 @@ object AlphaCode {
     for (kvp <- map.keyValuePairs.asScala) {
       val key = kvp.key.getStringValue
       key match {
-        case "o" =>
-        case "p" =>
-        case "n" =>
-        case "c" =>
-        case "t" =>
+        case "o" | "p" |"n" | "c" | "t" =>
           out.append(key)
           out.append(kvp.value.asInstanceOf[StringValue].getStringValue)
           out.append(" ")
-        case "k" =>
-        case "r" =>
-        case "v" =>
-        case "e" =>
+        case "k" | "r" | "v" |"e" =>
           out.append(key)
           out.append('[')
           out.append(fromXdmMap(kvp.value.asInstanceOf[MapItem]))
           out.append(']')
           out.append(" ")
-        case "a" =>
-        case "u" =>
+        case "a" | "u" =>
           out.append(key)
           out.append('[')
           val types = kvp.value.asInstanceOf[ArrayItem]

@@ -84,8 +84,9 @@ object ParserExtension {
       }
       var k: Int = params.size
       for (implicitParam <- implicitParams.asScala) {
-        k += 1
-        paramArray(k) = implicitParam
+        paramArray({
+          k += 1; k - 1
+        }) = implicitParam
       }
       uf.setParameterDefinitions(paramArray)
       val stackFrame: SlotManager =
@@ -260,13 +261,10 @@ object ParserExtension {
           details.implicitParams.add(ufp)
           b2 = ufp
         }
-        {
           bs += 1
-          bs - 1
-        }
       }
       if (b2 != null) {
-        b2
+        return b2
       }
     }
     null
@@ -370,7 +368,7 @@ class ParserExtension {
         val lookup: SystemFunction =
           XPath31FunctionSet.getInstance.makeFunction("function-lookup", 2)
         lookup.setRetainedStaticContext(env.makeRetainedStaticContext())
-        lookup.makeFunctionCall(
+        return lookup.makeFunctionCall(
           Literal.makeLiteral(
             new QNameValue(functionName, BuiltInAtomicType.QNAME)),
           Literal.makeLiteral(Int64Value.makeIntegerValue(arity)))
@@ -574,7 +572,7 @@ class ParserExtension {
 
     val target = lib.getFunctionItem(sn, env)
     if (target == null)
-      parser.reportMissingFunction(offset, name, args, new ju.ArrayList)
+      return parser.reportMissingFunction(offset, name, args, new ju.ArrayList)
 
     val targetExp = makeNamedFunctionReference(name, target)
     parser.setLocation(targetExp, offset)

@@ -81,7 +81,7 @@ class LookupExpression(start: Expression, step: Expression)
       if (isArrayLookup) {
         val arrayType: ItemType = getLhsExpression.getItemType
         if (arrayType.isInstanceOf[ArrayItemType]) {
-          arrayType.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
+          return arrayType.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
         }
       } else if (isMapLookup) {
         val mapType: ItemType = getLhsExpression.getItemType
@@ -93,13 +93,13 @@ class LookupExpression(start: Expression, step: Expression)
             mapType.asInstanceOf[TupleItemType].getFieldType(fieldName)
           if (fieldType == null) {
             if (mapType.asInstanceOf[TupleItemType].isExtensible)
-              AnyItemType
-            else ErrorType
+              return AnyItemType
+            else return ErrorType
           } else {
-            fieldType.getPrimaryType
+            return fieldType.getPrimaryType
           }
         } else if (mapType.isInstanceOf[MapType]) {
-          mapType.asInstanceOf[MapType].getValueType.getPrimaryType
+          return mapType.asInstanceOf[MapType].getValueType.getPrimaryType
         }
       }
     }
@@ -136,7 +136,7 @@ class LookupExpression(start: Expression, step: Expression)
         Configuration.LicenseFeature.PROFESSIONAL_EDITION,
         "use of lookup expressions on external objects",
         -1)
-      config
+      return config
         .makeObjectLookupExpression(getLhsExpression, getRhsExpression)
         .typeCheck(visitor, contextInfo)
     }
@@ -244,7 +244,7 @@ class LookupExpression(start: Expression, step: Expression)
       if (isArrayLookup) {
         val arrayType: ItemType = getLhsExpression.getItemType
         if (arrayType.isInstanceOf[ArrayItemType]) {
-          arrayType.asInstanceOf[ArrayItemType].getMemberType.getCardinality
+          return arrayType.asInstanceOf[ArrayItemType].getMemberType.getCardinality
         }
       } else if (isMapLookup) {
         val mapType: ItemType = getLhsExpression.getItemType
@@ -256,13 +256,13 @@ class LookupExpression(start: Expression, step: Expression)
             mapType.asInstanceOf[TupleItemType].getFieldType(fieldName)
           if (fieldType == null) {
             if (mapType.asInstanceOf[TupleItemType].isExtensible)
-              StaticProperty.ALLOWS_ZERO_OR_MORE
-            else StaticProperty.ALLOWS_ZERO
+              return StaticProperty.ALLOWS_ZERO_OR_MORE
+            else return StaticProperty.ALLOWS_ZERO
           } else {
-            fieldType.getCardinality
+            return fieldType.getCardinality
           }
         } else if (mapType.isInstanceOf[MapType]) {
-          (Cardinality.union(
+          return (Cardinality.union(
             mapType.asInstanceOf[MapType].getValueType.getCardinality,
             StaticProperty.ALLOWS_ZERO))
         }

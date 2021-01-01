@@ -167,7 +167,7 @@ class Numberer_en extends AbstractNumberer {
       else " and " + toWords(rem))
     } else {
       if (number < 20) {
-        englishUnits(number.toInt)
+        return englishUnits(number.toInt)
       }
       val rem: Int = (number % 10).toInt
       englishTens(number.toInt / 10) +

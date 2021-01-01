@@ -266,13 +266,13 @@ abstract class Minimax extends CollatingFunctionFixed {
         val th = visitor.getConfiguration.getTypeHierarchy
         if (th.relationship(it, BuiltInAtomicType.UNTYPED_ATOMIC) !=
           Affinity.DISJOINT) {
-          UntypedSequenceConverter
+          return UntypedSequenceConverter
             .makeUntypedSequenceConverter(visitor.getConfiguration,
               arguments(0),
               BuiltInAtomicType.DOUBLE)
             .typeCheck(visitor, contextInfo)
         } else {
-          arguments(0)
+         return arguments(0)
         }
       }
     }

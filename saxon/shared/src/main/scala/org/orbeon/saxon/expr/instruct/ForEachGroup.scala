@@ -247,10 +247,10 @@ class ForEachGroup(select: Expression,
     actionOp.optimize(visitor, sit)
     keyOp.optimize(visitor, sit)
     if (Literal.isEmptySequence(getSelectExpression)) {
-      getSelectExpression
+      return getSelectExpression
     }
     if (Literal.isEmptySequence(getActionExpression)) {
-      getActionExpression
+      return getActionExpression
     }
     if (getSortKeyDefinitions != null) {
       for (skd <- getSortKeyDefinitions.asScala) {

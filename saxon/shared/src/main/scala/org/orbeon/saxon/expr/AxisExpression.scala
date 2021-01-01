@@ -24,7 +24,7 @@ object AxisExpression {
   private def getDiagnosticName(name: StructuredQName, env: StaticContext): String = {
     val uri: String = name.getURI
     if (uri.==("")) {
-      name.getLocalPart
+      return name.getLocalPart
     } else {
       val resolver: NamespaceResolver = env.getNamespaceResolver
       val it = resolver.iteratePrefixes
@@ -162,7 +162,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             test.getUType.toStringWithIndefiniteArticle,
           getLocation)
       }
-      Literal.makeEmptySequence
+     return Literal.makeEmptySequence
     }
     test match {
       case test1: NameTest if !test1.getNamespaceURI.isEmpty && axis == AxisInfo.NAMESPACE =>

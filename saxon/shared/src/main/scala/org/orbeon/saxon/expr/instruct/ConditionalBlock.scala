@@ -187,7 +187,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
           case expr: OnEmptyExpr => retain.add(expr.getBaseExpression)
           case _                 => retain.add(getChildExpression(c))
         }
-      Block.makeBlock(retain)
+      return Block.makeBlock(retain)
     }
     if (alwaysNonEmpty) {
       visitor.getStaticContext.issueWarning(
@@ -202,13 +202,13 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
           case expr: OnNonEmptyExpr => retain.add(expr.getBaseExpression)
           case _                    => retain.add(getChildExpression(c))
         }
-      Block.makeBlock(retain)
+      return Block.makeBlock(retain)
     }
     if (lastOrdinaryInstruction == -1) {
       val retain = new ArrayList[Expression]()
       for (c <- 0 until size if getChildExpression(c).isInstanceOf[OnEmptyExpr])
         retain.add(getChildExpression(c).asInstanceOf[OnEmptyExpr].getBaseExpression)
-      Block.makeBlock(retain)
+      return Block.makeBlock(retain)
     }
     this
   }

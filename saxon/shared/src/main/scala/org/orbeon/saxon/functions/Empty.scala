@@ -47,9 +47,9 @@ class Empty extends Aggregate {
     // See if we can deduce the answer from the cardinality
     val c: Int = arguments(0).getCardinality
     if (c == StaticProperty.ALLOWS_ONE_OR_MORE) {
-      Literal.makeLiteral(BooleanValue.FALSE, arguments(0))
+      return Literal.makeLiteral(BooleanValue.FALSE, arguments(0))
     } else if (c == StaticProperty.ALLOWS_ZERO) {
-      Literal.makeLiteral(BooleanValue.TRUE, arguments(0))
+      return Literal.makeLiteral(BooleanValue.TRUE, arguments(0))
     }
     //    empty(A|B) => empty(A) and empty(B)
     if (arguments(0)
@@ -62,7 +62,7 @@ class Empty extends Aggregate {
         val e1: Expression = SystemFunction.makeCall("empty",
           getRetainedStaticContext,
           v.getRhsExpression)
-        new AndExpression(e0, e1).optimize(visitor, contextInfo)
+        return new AndExpression(e0, e1).optimize(visitor, contextInfo)
       }
     }
     null
@@ -93,9 +93,9 @@ class Empty extends Aggregate {
         // See if we can deduce the answer from the cardinality
         val c: Int = getArg(0).getCardinality
         if (c == StaticProperty.ALLOWS_ONE_OR_MORE) {
-          Literal.makeLiteral(BooleanValue.FALSE, e2)
+          return Literal.makeLiteral(BooleanValue.FALSE, e2)
         } else if (c == StaticProperty.ALLOWS_ZERO) {
-          Literal.makeLiteral(BooleanValue.TRUE, e2)
+          return Literal.makeLiteral(BooleanValue.TRUE, e2)
         }
         // Don't sort the argument
         setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming))
@@ -111,7 +111,7 @@ class Empty extends Aggregate {
               "empty",
               getRetainedStaticContext,
               v.getRhsExpression)
-            new AndExpression(e0, e1).optimize(visitor, contextInfo)
+            return new AndExpression(e0, e1).optimize(visitor, contextInfo)
           }
         }
         this

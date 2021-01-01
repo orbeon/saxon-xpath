@@ -22,8 +22,8 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
   private var pendingNamespaces: NamespaceMap = _
 
   override def startDocument(properties: Int): Unit = {
-    level += 1
-    if (level == 0) {
+
+    if ({level += 1;level-1} == 0) {
       pendingStartTag = true
       pendingElemName = null
       pendingProperties = properties
@@ -37,8 +37,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
                             location: Location,
                             properties: Int): Unit = {
     releaseStartTag()
-    level += 1
-    if (level == 0) {
+    if ({level += 1;level-1} == 0) {
       pendingStartTag = true
       pendingElemName = elemName
       pendingSchemaType = `type`
@@ -58,8 +57,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
                             location: Location,
                             properties: Int): Unit = {
     releaseStartTag()
-    level += 1
-    if (level == 0) {
+    if ({level += 1;level-1} == 0) {
       pendingStartTag = true
       pendingElemName = elemName
       pendingSchemaType = `type`

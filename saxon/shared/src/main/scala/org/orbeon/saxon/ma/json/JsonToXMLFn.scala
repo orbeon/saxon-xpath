@@ -65,7 +65,7 @@ class JsonToXMLFn extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val arg0: Item = arguments(0).head
     if (arg0 == null) {
-      EmptySequence.getInstance
+      return EmptySequence.getInstance
     }
     val input: String = arg0.getStringValue
     var options: MapItem = null

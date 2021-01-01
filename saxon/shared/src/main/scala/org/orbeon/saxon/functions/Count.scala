@@ -32,13 +32,13 @@ object Count {
       iter.asInstanceOf[LastPositionFinder].getLength
     } else {
       var n: Int = 0
-      while (iter.next() != null) { n += 1; n - 1 }
+      while (iter.next() != null) { n += 1}
       n
     }
 
   def steppingCount(iter: SequenceIterator): Int = {
     var n: Int = 0
-    while (iter.next() != null) { n += 1; n - 1 }
+    while (iter.next() != null) { n += 1}
     n
   }
 

@@ -30,7 +30,7 @@ class RegexGroup extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val iter: RegexIterator = context.getCurrentRegexIterator
     if (iter == null) {
-      StringValue.EMPTY_STRING
+      return StringValue.EMPTY_STRING
     }
     val gp0: NumericValue = arguments(0).head.asInstanceOf[NumericValue]
     val s: String = iter.getRegexGroup(gp0.longValue().toInt)

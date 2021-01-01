@@ -16,7 +16,7 @@ object AugmentedSource {
 
   def makeAugmentedSource(source: Source): AugmentedSource = {
     if (source.isInstanceOf[AugmentedSource]) {
-      source.asInstanceOf[AugmentedSource]
+      return source.asInstanceOf[AugmentedSource]
     }
     new AugmentedSource(source)
   }

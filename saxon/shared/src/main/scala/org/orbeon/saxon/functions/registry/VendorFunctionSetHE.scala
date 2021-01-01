@@ -50,7 +50,7 @@ object VendorFunctionSetHE {
         contextInfo: ContextItemStaticInfo,
         arguments: Expression*): Expression = {
       if (arguments(0).getItemType.getPrimitiveItemType == BuiltInAtomicType.INTEGER) {
-        Literal.makeLiteral(BooleanValue.TRUE)
+       return Literal.makeLiteral(BooleanValue.TRUE)
       }
       null
     }
@@ -103,7 +103,7 @@ object VendorFunctionSetHE {
       val `var`: String = arguments(0).head.getStringValue
       val error: XPathException = context.getCurrentException
       if (error == null) {
-        EmptySequence.getInstance
+        return EmptySequence.getInstance
       }
       val locator: SourceLocator = error.getLocator
       `var` match {

@@ -21,11 +21,11 @@ class AnalyzeMappingFunction(private var base: RegexIterator,
   def map(context: XPathContext): SequenceIterator = {
     if (base.isMatching) {
       if (matchingExpr != null) {
-        matchingExpr.iterate(c2)
+        return matchingExpr.iterate(c2)
       }
     } else {
       if (nonMatchExpr != null) {
-        nonMatchExpr.iterate(c2)
+        return nonMatchExpr.iterate(c2)
       }
     }
     EmptyIterator.getInstance

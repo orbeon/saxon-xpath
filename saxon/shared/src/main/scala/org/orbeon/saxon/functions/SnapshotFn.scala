@@ -115,7 +115,7 @@ object SnapshotFn {
             "Unknown ancestor node kind " + anc.getNodeKind)
 
       }
-      { i -= 1; i + 1 }
+      i -= 1
     }
     bm
   }

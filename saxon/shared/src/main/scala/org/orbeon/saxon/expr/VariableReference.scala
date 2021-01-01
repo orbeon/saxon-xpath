@@ -127,7 +127,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         "Replaced variable " + getDisplayName + " by its value",
         `val`)
       binding = null
-      `val`.copy(new RebindingMap())
+      return `val`.copy(new RebindingMap())
     }
     if (constantValue != null) {
       binding = null
@@ -194,7 +194,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       if (binding != null) {
         val st: SequenceType = binding.getRequiredType
         if (st != null) {
-          st.getPrimaryType
+          return st.getPrimaryType
         }
       }
       AnyItemType
@@ -211,12 +211,12 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         binding.isInstanceOf[LocalVariableBinding]) {
         val st: SequenceType = binding.getRequiredType
         if (st != null) {
-          st.getPrimaryType.getUType
+          return st.getPrimaryType.getUType
         } else {
-          UType.ANY
+          return UType.ANY
         }
       } else if (binding.isInstanceOf[Assignation]) {
-        binding
+       return  binding
           .asInstanceOf[Assignation]
           .getSequence
           .getStaticUType(contextItemType)
@@ -310,9 +310,9 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
           .asInstanceOf[LocalParam]
           .getParentExpression
           .asInstanceOf[LocalParamBlock]
-        block.getParentExpression
+       return block.getParentExpression
       } else {
-        binding.asInstanceOf[Expression]
+       return binding.asInstanceOf[Expression]
       }
     }
     var parent: Expression = getParentExpression

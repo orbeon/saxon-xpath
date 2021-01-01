@@ -30,7 +30,8 @@ object DocumentUri_1 {
     if (node.getNodeKind == Type.DOCUMENT) {
       val o: Any = node.getTreeInfo.getUserData("saxon:document-uri")
       if (o.isInstanceOf[String]) {
-        if (o.toString.isEmpty) return null else return new AnyURIValue(o.toString)
+        val res = if (o.toString.isEmpty) return null else return new AnyURIValue(o.toString)
+        return res
       }
       val controller: Controller = c.getController
       assert(controller != null)

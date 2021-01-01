@@ -22,7 +22,7 @@ object HashTrieMap {
 
   def copy(map: MapItem): HashTrieMap = {
     if (map.isInstanceOf[HashTrieMap]) {
-      map.asInstanceOf[HashTrieMap]
+      return map.asInstanceOf[HashTrieMap]
     }
     var m2: HashTrieMap = new HashTrieMap()
     for (pair <- map.keyValuePairs.asScala) {

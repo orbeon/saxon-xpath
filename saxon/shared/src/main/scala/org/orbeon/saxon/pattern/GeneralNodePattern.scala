@@ -83,7 +83,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
         return false
       }
       if (matchesBeneathAnchor(item.asInstanceOf[NodeInfo], a, context)) {
-        true
+       return true
       }
     }
     false

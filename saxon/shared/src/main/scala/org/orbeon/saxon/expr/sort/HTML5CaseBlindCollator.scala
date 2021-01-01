@@ -25,10 +25,12 @@ class HTML5CaseBlindCollator extends StringCollator with SubstringMatcher {
         if (j == blen) return 0 else return -1
       }
       if (j == blen) return +1
-      i += 1
-      var nexta: Int = a.charAt(i).toInt
-      j += 1
-      var nextb: Int = b.charAt(j).toInt
+      var nexta: Int = a.charAt({
+        i += 1; i - 1
+      }).toInt
+      var nextb: Int = b.charAt({
+        j += 1; j - 1
+      }).toInt
       if (nexta >= 'a' && nexta <= 'z') {
         nexta += 'A' - 'a'
       }

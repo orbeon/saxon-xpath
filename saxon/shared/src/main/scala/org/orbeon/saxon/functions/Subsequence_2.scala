@@ -72,12 +72,12 @@ class Subsequence_2 extends SystemFunction {
       start = start.round(0)
       val intStart: Long = start.longValue()
       if (intStart > java.lang.Integer.MAX_VALUE) {
-        super.makeFunctionCall(arguments.toIndexedSeq: _*)
+        return super.makeFunctionCall(arguments.toIndexedSeq: _*)
       }
       if (intStart <= 0) {
-        arguments(0)
+        return arguments(0)
       }
-      new TailExpression(arguments(0), intStart.toInt)
+      return new TailExpression(arguments(0), intStart.toInt)
     } catch {
       case e: Exception => {}
 

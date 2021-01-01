@@ -22,12 +22,12 @@ object Translate {
 // if any string contains surrogate pairs, expand everything to 32-bit characters
     if (sv0.containsSurrogatePairs() || sv1.containsSurrogatePairs() ||
         sv2.containsSurrogatePairs()) {
-      translateUsingMap(sv0, buildMap(sv1, sv2))
+      return translateUsingMap(sv0, buildMap(sv1, sv2))
     }
 // if the size of the strings is above some threshold, use a hash map to avoid O(n*m) performance
     if (sv0.getStringLength * sv1.getStringLength > 1000) {
 // Cut-off point for building the map based on some simple measurements
-      translateUsingMap(sv0, buildMap(sv1, sv2))
+     return translateUsingMap(sv0, buildMap(sv1, sv2))
     }
     val cs0: CharSequence = sv0.getStringValueCS
     val cs1: CharSequence = sv1.getStringValueCS
@@ -113,7 +113,7 @@ class Translate
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val sv0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     if (sv0 == null) {
-      StringValue.EMPTY_STRING
+      return StringValue.EMPTY_STRING
     }
     if (staticMap != null) {
       new StringValue(translateUsingMap(sv0, staticMap))

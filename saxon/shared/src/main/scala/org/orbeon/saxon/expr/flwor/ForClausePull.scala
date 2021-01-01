@@ -51,7 +51,7 @@ class ForClausePull(var base: TuplePull,
             forClause.getPositionVariable.getLocalSlotNumber,
             new Int64Value(currentIteration.position))
         }
-        true
+        return true
       } else {
         currentIteration = null
       }

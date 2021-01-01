@@ -14,8 +14,6 @@ import org.orbeon.saxon.value.NumericValue
 import NumericComparer._
 
 
-
-
 object NumericComparer {
 
   private var THE_INSTANCE: NumericComparer = new NumericComparer()
@@ -24,9 +22,9 @@ object NumericComparer {
 
 }
 
-class NumericComparer  () extends AtomicComparer {
+class NumericComparer() extends AtomicComparer {
 
-   var converter: StringToDouble = StringToDouble.getInstance
+  var converter: StringToDouble = StringToDouble.getInstance
 
   /*@Nullable*/
 
@@ -60,21 +58,12 @@ class NumericComparer  () extends AtomicComparer {
       }
     }
     if (java.lang.Double.isNaN(d1)) {
-      if (java.lang.Double.isNaN(d2)) {
-        return  0
-      } else {
-        return -1
-      }
+      if (java.lang.Double.isNaN(d2)) return 0
+      else return -1
     }
-    if (java.lang.Double.isNaN(d2)) {
-      return +1
-    }
-    if (d1 < d2) {
-      return -1
-    }
-    if (d1 > d2) {
-      return +1
-    }
+    if (java.lang.Double.isNaN(d2)) return +1
+    if (d1 < d2) return -1
+    if (d1 > d2) return +1
     0
   }
 
@@ -82,11 +71,11 @@ class NumericComparer  () extends AtomicComparer {
     compareAtomicValues(a, b) == 0
 
   /**
-    * Create a string representation of this AtomicComparer that can be saved in a compiled
-    * package and used to reconstitute the AtomicComparer when the package is reloaded
-    *
-    * @return a string representation of the AtomicComparer
-    */
+   * Create a string representation of this AtomicComparer that can be saved in a compiled
+   * package and used to reconstitute the AtomicComparer when the package is reloaded
+   *
+   * @return a string representation of the AtomicComparer
+   */
   def save(): String = "NC"
 
 }
@@ -97,9 +86,9 @@ class NumericComparer  () extends AtomicComparer {
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
-  * A Comparer used for comparing sort keys when data-type="number". The items to be
-  * compared are converted to numbers, and the numbers are then compared directly. NaN values
-  * compare equal to each other, and equal to an empty sequence, but less than anything else.
-  * <p>This class is used in XSLT only, so there is no need to handle XQuery's "empty least" vs
-  * "empty greatest" options.</p>
-  */
+ * A Comparer used for comparing sort keys when data-type="number". The items to be
+ * compared are converted to numbers, and the numbers are then compared directly. NaN values
+ * compare equal to each other, and equal to an empty sequence, but less than anything else.
+ * <p>This class is used in XSLT only, so there is no need to handle XQuery's "empty least" vs
+ * "empty greatest" options.</p>
+ */

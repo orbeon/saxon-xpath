@@ -43,7 +43,7 @@ class Innermost extends SystemFunction {
                                           arguments: Expression*): Expression = {
     if ((arguments(0).getSpecialProperties & StaticProperty.PEER_NODESET) !=
       0) {
-      arguments(0)
+      return arguments(0)
     }
     if ((arguments(0).getSpecialProperties & StaticProperty.ORDERED_NODESET) !=
       0) {

@@ -214,16 +214,16 @@ object Evaluator {
           1
         val end: Long = base.asInstanceOf[IntegerRange].getEnd
         if (start == end) {
-          Int64Value.makeIntegerValue(end)
+          return Int64Value.makeIntegerValue(end)
         } else if (start > end) {
-          EmptySequence.getInstance
+          return EmptySequence.getInstance
         } else {
-          new IntegerRange(start, end)
+          return new IntegerRange(start, end)
         }
       }
       if (base.isInstanceOf[GroundedValue]) {
         val baseSeq: GroundedValue = base.asInstanceOf[GroundedValue]
-        baseSeq.subsequence(tail.getStart - 1,
+       return baseSeq.subsequence(tail.getStart - 1,
           baseSeq.getLength - tail.getStart + 1)
       }
       new MemoClosure(tail, context)

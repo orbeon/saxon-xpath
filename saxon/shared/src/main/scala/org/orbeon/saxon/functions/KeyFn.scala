@@ -139,7 +139,7 @@ object KeyFn {
          context)*/
       /*allResults =
         if (allResults == null) null*/
-      new UnionEnumeration(allResults,
+      allResults = new UnionEnumeration(allResults,
         null,
         LocalOrderComparer.getInstance)
     }
@@ -147,7 +147,7 @@ object KeyFn {
       allResults = EmptyIterator.ofNodes
     }
     if (origin == doc) {
-      new LazySequence(allResults)
+      return new LazySequence(allResults)
     }
     new LazySequence(
       new ItemMappingIterator(allResults, new SubtreeFilter(origin)))

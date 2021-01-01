@@ -27,9 +27,7 @@ class Sort_3 extends Sort_2 {
     }) != null) {
       val member: ItemToBeSorted = new ItemToBeSorted()
       member.value = item
-      member.originalPosition = {
-        i
-      }
+      member.originalPosition = i
       i += 1
       member.sortKey = SystemFunction.dynamicCall(key, context, Array(item)).materialize
       inputList.add(member)

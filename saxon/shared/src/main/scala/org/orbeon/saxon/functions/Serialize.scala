@@ -89,7 +89,7 @@ object Serialize {
     op
   }
 
-  private def sx(s: String) = "Q{" + NamespaceConstant.SAXON + "}" + s
+  private def sx(s: String): String = "Q{" + NamespaceConstant.SAXON + "}" + s
 
   private val requiredTypes = new util.HashMap[String, SequenceType](40)
   private val requiredTypesSaxon = new util.HashMap[String, SequenceType](20)

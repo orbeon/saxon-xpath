@@ -71,7 +71,7 @@ class CompareToIntegerConstant(operand: Expression,
     val n: NumericValue =
       getLhsExpression.evaluateItem(context).asInstanceOf[NumericValue]
     if (n.isNaN) {
-      operator == Token.FNE
+      return operator == Token.FNE
     }
     val c: Int = n.compareTo(comparand)
     interpretComparisonResult(c)
