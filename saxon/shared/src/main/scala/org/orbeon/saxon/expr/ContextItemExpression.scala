@@ -1,34 +1,25 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-
 import org.orbeon.saxon.expr.parser._
-
-import org.orbeon.saxon.model.AnyItemType
-
-import org.orbeon.saxon.model.ErrorType
-
-import org.orbeon.saxon.model.ItemType
-
-import org.orbeon.saxon.model.UType
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.pattern.AnchorPattern
-
-import org.orbeon.saxon.pattern.Pattern
-
+import org.orbeon.saxon.model.{AnyItemType, ErrorType, ItemType, UType}
+import org.orbeon.saxon.om.{Item, SequenceIterator}
+import org.orbeon.saxon.pattern.{AnchorPattern, Pattern}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.iter.SingletonIterator
-
+import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.SequenceType
 
 
+/**
+ * This class represents the expression "(dot)", which always returns the context item.
+ * This may be a AtomicValue or a Node.
+ */
 class ContextItemExpression extends Expression {
 
   private var staticInfo: ContextItemStaticInfo = ContextItemStaticInfo.DEFAULT
@@ -204,13 +195,3 @@ class ContextItemExpression extends Expression {
   override def toShortString: String = "."
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * This class represents the expression "(dot)", which always returns the context item.
- * This may be a AtomicValue or a Node.
- */
