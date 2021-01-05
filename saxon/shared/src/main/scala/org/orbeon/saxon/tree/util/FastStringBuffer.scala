@@ -94,7 +94,9 @@ class FastStringBuffer(initialSize: Int)
   }
 
   def cat(s: CharSequence): FastStringBuffer = {
-// creating objects and copying strings unnecessarily. So we do a dynamic dispatch.
+    // Although we provide variants of this method for different subtypes, Java decides which to use based
+    // on the static type of the operand. We want to use the right method based on the dynamic type, to avoid
+    // creating objects and copying strings unnecessarily. So we do a dynamic dispatch.
     val len = s.length
     ensureCapacity(len)
     s match {
@@ -120,10 +122,6 @@ class FastStringBuffer(initialSize: Int)
     used += len
     this
   }
-// Although we provide variants of this method for different subtypes, Java decides which to use based
-// on the static type of the operand. We want to use the right method based on the dynamic type, to avoid
-// Although we provide variants of this method for different subtypes, Java decides which to use based
-// on the static type of the operand. We want to use the right method based on the dynamic type, to avoid
 
   def append(s: CharSequence): Unit =
     cat(s)

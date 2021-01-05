@@ -92,12 +92,12 @@ class LoopLifter(@BeanProperty var root: Expression,
   }
 
   private def getContainingConditional(exp: Expression): Expression = {
-    var expressn = exp
-    var parent = expressn.getParentExpression
+    var _exp = exp
+    var parent = _exp.getParentExpression
     while (parent != null) {
       parent match {
         case _: ConditionalInstruction =>
-          val o = ExpressionTool.findOperand(parent, expressn)
+          val o = ExpressionTool.findOperand(parent, _exp)
           assert(o ne null)
           if (o.getOperandRole.isInChoiceGroup)
             return parent
@@ -105,7 +105,7 @@ class LoopLifter(@BeanProperty var root: Expression,
           return parent
         case _ =>
       }
-      expressn = parent
+      _exp = parent
       parent = parent.getParentExpression
     }
     null
@@ -207,8 +207,7 @@ class LoopLifter(@BeanProperty var root: Expression,
       ExpressionTool.processExpressionTree(child,
         null,
         (expression, result) => {
-          val info: ExpInfo =
-            expInfoMap.get(expression)
+          val info = expInfoMap.get(expression)
           info.loopLevel -= hoist
           false
         }

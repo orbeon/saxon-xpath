@@ -17,16 +17,16 @@ class StringJoin extends FoldingFunction with PushableFunction {
   var returnEmptyIfEmpty: Boolean = _
 
   override def getCardinality(arguments: Array[Expression]): Int =
-    if (returnEmptyIfEmpty) {
+    if (returnEmptyIfEmpty)
       StaticProperty.ALLOWS_ZERO_OR_ONE
-    } else {
+    else
       StaticProperty.EXACTLY_ONE
-    }
 
   override def makeOptimizedFunctionCall(
-                                          visitor: ExpressionVisitor,
-                                          contextInfo: ContextItemStaticInfo,
-                                          arguments: Expression*): Expression = {
+    visitor    : ExpressionVisitor,
+    contextInfo: ContextItemStaticInfo,
+    arguments  : Expression*
+  ): Expression = {
     val e2 = super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
     if (e2 != null)
       return e2
@@ -40,18 +40,20 @@ class StringJoin extends FoldingFunction with PushableFunction {
       null
   }
 
-  override def getFold(context: XPathContext,
-                       additionalArguments: Sequence*): Fold = {
+  def getFold(context: XPathContext, additionalArguments: Sequence*): Fold = {
     var separator: CharSequence = ""
     if (additionalArguments.nonEmpty)
       separator = additionalArguments(0).head.getStringValueCS
     new StringJoinFold(separator)
   }
 
-  override def process(destination: Outputter,
+  def process(destination: Outputter,
                        context: XPathContext,
                        arguments: Array[Sequence]): Unit = {
-    val separator = if (arguments.length > 1) arguments(1).head.getStringValueCS else ""
+    val separator =
+      if (arguments.length > 1)
+        arguments(1).head.getStringValueCS
+      else ""
     val output = destination.getStringReceiver(false)
     output.open()
     var first = true
