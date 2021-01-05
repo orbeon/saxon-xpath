@@ -48,7 +48,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made th
       case info: GenericTreeInfo =>
         info.getSystemId
       case _ =>
-        throw new UnsupportedOperationException()
+        throw new UnsupportedOperationException
     }
 
   def setSystemId(uri: String): Unit =
@@ -56,7 +56,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made th
       case info: GenericTreeInfo =>
         info.setSystemId(uri)
       case _ =>
-        throw new UnsupportedOperationException()
+        throw new UnsupportedOperationException
     }
 
   def getBaseURI: String = {
@@ -200,7 +200,7 @@ trait AbstractNodeWrapper extends NodeInfo with VirtualNode { // ORBEON: Made th
   }
 
   def getFingerprint =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def hasFingerprint = false
 }

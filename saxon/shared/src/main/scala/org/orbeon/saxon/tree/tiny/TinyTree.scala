@@ -884,12 +884,12 @@ class TinyTree(config: Configuration, statistics: Statistics)
   def getAttributeValueArray: Array[CharSequence] = attValue
 
   def getNamespaceBindings: Array[NamespaceBinding] =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def getNamespaceMaps: Array[NamespaceMap] = namespaceMaps
 
   def getNamespaceParentArray: Array[Int] =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def isUsesNamespaces: Boolean = usesNamespaces
 

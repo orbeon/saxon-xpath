@@ -22,7 +22,7 @@ abstract class AbstractVirtualNode extends VirtualNode {
     if (node.hasFingerprint)
       node.getFingerprint
     else
-      throw new UnsupportedOperationException()
+      throw new UnsupportedOperationException
 
   override def hasFingerprint: Boolean = node.hasFingerprint
 

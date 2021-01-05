@@ -147,7 +147,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * @since 8.4 (moved into FingerprintedNode at some stage; then back into NodeInfo at 9.8).
     */
   override def getFingerprint: Int =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   /**
     * Ask whether this NodeInfo implementation holds a fingerprint identifying the name of the
@@ -356,7 +356,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * @throws UnsupportedOperationException if this is not an element node
     */
   override def setAttributes(attributes: AttributeMap): Unit =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def removeAttribute(attribute: NodeInfo): Unit = ()
 // no action: node is not an element

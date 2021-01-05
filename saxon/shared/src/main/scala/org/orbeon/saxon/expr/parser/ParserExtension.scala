@@ -148,7 +148,7 @@ object ParserExtension {
     def getRequiredType: SequenceType = new SequenceType()
 
     def evaluateVariable(context: XPathContext): Sequence =
-      throw new UnsupportedOperationException()
+      throw new UnsupportedOperationException
 
     def isGlobal: Boolean = false
 

@@ -58,7 +58,7 @@ trait Receiver extends Result {
   def comment(content: CharSequence, location: Location, properties: Int): Unit
 
   def append(item: Item, locationId: Location, properties: Int): Unit =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def append(item: Item): Unit =
     append(item, Loc.NONE, ReceiverOption.ALL_NAMESPACES)

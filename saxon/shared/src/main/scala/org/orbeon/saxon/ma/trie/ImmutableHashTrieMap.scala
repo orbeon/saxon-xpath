@@ -160,7 +160,7 @@ object ImmutableHashTrieMap {
       }
 
       override def remove(): Unit = {
-        throw new UnsupportedOperationException()
+        throw new UnsupportedOperationException
       }
     }
 
@@ -292,7 +292,7 @@ object ImmutableHashTrieMap {
       def next(): Tuple2[K, V] = childIterator.next()
 
       override def remove(): Unit = {
-        throw new UnsupportedOperationException()
+        throw new UnsupportedOperationException
       }
     }
 

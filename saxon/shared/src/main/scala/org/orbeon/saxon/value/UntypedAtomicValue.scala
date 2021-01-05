@@ -23,7 +23,7 @@ class UntypedAtomicValue(var value1: CharSequence) extends StringValue {
   /*@NotNull*/
   override def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     if (typeLabel != BuiltInAtomicType.UNTYPED_ATOMIC)
-      throw new UnsupportedOperationException()
+      throw new UnsupportedOperationException
     this
   }
 

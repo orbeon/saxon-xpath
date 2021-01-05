@@ -96,7 +96,7 @@ abstract class Outputter extends Receiver {
   def comment(content: CharSequence, location: Location, properties: Int): Unit
 
   override def append(item: Item, locationId: Location, properties: Int): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
   override def append(item: Item): Unit = {

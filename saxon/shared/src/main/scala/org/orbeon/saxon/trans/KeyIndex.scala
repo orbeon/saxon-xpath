@@ -246,7 +246,7 @@ class KeyIndex(isRangeKey: Boolean) {
   class CompositeAtomicMatchKey(var keys: List[AtomicMatchKey])
     extends AtomicMatchKey {
 
-    def asAtomic(): AtomicValue = throw new UnsupportedOperationException()
+    def asAtomic(): AtomicValue = throw new UnsupportedOperationException
 
     override def equals(obj: Any): Boolean = {
       obj match {

@@ -143,7 +143,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
      *                                       method.
      */
     override def remove(): Unit = {
-      throw new UnsupportedOperationException()
+      throw new UnsupportedOperationException
     }
 
     /**

@@ -132,7 +132,7 @@ class RetainedStaticContext extends NamespaceResolver {
   def declareNamespace(prefix: String, uri: String): Unit =
     namespaces match {
       case nsMap: NamespaceMap => namespaces = nsMap.put(prefix, uri)
-      case _                   => throw new UnsupportedOperationException()
+      case _                   => throw new UnsupportedOperationException
     }
 
   def getURIForPrefix(prefix: String, useDefault: Boolean): String =

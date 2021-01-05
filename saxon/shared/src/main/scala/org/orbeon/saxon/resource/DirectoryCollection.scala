@@ -48,7 +48,7 @@
 //    }
 //
 //    override def remove(): Unit = {
-//      throw new UnsupportedOperationException()
+//      throw new UnsupportedOperationException
 //    }
 //
 //    private def advance(): Unit = {

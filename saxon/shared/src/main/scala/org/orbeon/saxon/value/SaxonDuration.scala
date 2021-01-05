@@ -117,7 +117,7 @@ class SaxonDuration(private var duration: DurationValue) extends Duration {
   def negate(): Duration = new SaxonDuration(duration.negate())
 
   def normalizeWith(startTimeInstant: Calendar): Duration =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def compare(rhs: Duration): Int = {
     if (! rhs.isInstanceOf[SaxonDuration]) {

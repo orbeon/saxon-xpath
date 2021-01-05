@@ -230,7 +230,7 @@ class TemplateRule
   }
 
   def export(presenter: ExpressionPresenter): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
   def setDeclaredStreamable(streamable: Boolean): Unit = ()

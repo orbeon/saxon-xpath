@@ -46,7 +46,7 @@ class JavaPlatform extends Platform {
 //        nc.getNamespaceURI(prefix)
 //
 //      override def iteratePrefixes: Iterator[String] =
-//        throw new UnsupportedOperationException()
+//        throw new UnsupportedOperationException
 //    })
 //  }
 

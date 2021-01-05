@@ -135,5 +135,5 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
     *                                       operation is not supported by this Iterator.
     */
   override def remove(): Unit =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 }

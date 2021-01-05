@@ -54,7 +54,7 @@ class MultiIterator[T](private var array: List[Iterator[T]])
     *                                       method.
     */
   override def remove(): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
 }

@@ -142,7 +142,7 @@ class NumericType private()
   }
 
   def atomize(node: NodeInfo): AtomicSequence =
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
 
   def isSameType(other: SchemaType): Boolean = other.isInstanceOf[NumericType]
 

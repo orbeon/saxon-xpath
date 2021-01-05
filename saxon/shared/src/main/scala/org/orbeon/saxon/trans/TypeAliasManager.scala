@@ -22,11 +22,11 @@ import java.util.List
 class TypeAliasManager {
 
   def registerTypeAlias(name: StructuredQName, `type`: ItemType): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
  /* def processDeclaration(declaration: ComponentDeclaration): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
   def processAllDeclarations(topLevel: List[ComponentDeclaration]): Unit = ()*/

@@ -26,7 +26,7 @@ class SaplingDocument extends SaplingNode with Source {
   }
 
   override def setSystemId(systemId: String): Unit = {
-    throw new UnsupportedOperationException()
+    throw new UnsupportedOperationException
   }
 
   override def getSystemId: String = baseUri
