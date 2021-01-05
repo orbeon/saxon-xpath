@@ -48,13 +48,22 @@ object Assignation {
 }
 
 abstract class Assignation extends Expression with LocalBinding {
-  private var sequenceOp: Operand = null
-  private var actionOp: Operand = null
-  sequenceOp = new Operand(this, null, OperandRole.NAVIGATE)
-  actionOp = new Operand(this, null, if (this.isInstanceOf[LetExpression]) OperandRole.SAME_FOCUS_ACTION
-  else Assignation.REPEATED_ACTION_ROLE)
+
+  private val sequenceOp = new Operand(this, null, OperandRole.NAVIGATE)
+
+  private val actionOp   =
+    new Operand(
+      this,
+      null,
+      if (this.isInstanceOf[LetExpression])
+        OperandRole.SAME_FOCUS_ACTION
+      else
+        Assignation.REPEATED_ACTION_ROLE
+    )
+
   var slotNumber: Int = -999 // slot number for range variable
   // (initialized to ensure a crash if no real slot is allocated)
+
   var variableName: StructuredQName = null
   var requiredType: SequenceType = null
   var isIndexedVariable: Boolean = false
@@ -123,7 +132,8 @@ abstract class Assignation extends Expression with LocalBinding {
     // Unset the DEPENDS_ON_LOCAL_VARIABLES bit if the only dependencies are to
     // variables declared within the expression itself (typically, the variable
     // bound by this Assignation)
-    if (!ExpressionTool.containsLocalVariableReference(this)) d &= ~StaticProperty.DEPENDS_ON_LOCAL_VARIABLES
+    if (!ExpressionTool.containsLocalVariableReference(this))
+      d &= ~StaticProperty.DEPENDS_ON_LOCAL_VARIABLES
     d
   }
 

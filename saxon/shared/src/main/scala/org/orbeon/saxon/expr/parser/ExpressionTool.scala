@@ -357,10 +357,11 @@ object ExpressionTool {
       case _ =>
     }
     exp match {
-      case param: LocalParam if param.getSlotNumber < 0 => param.setSlotNumber({
-        nextFree += 1
-        nextFree
-      })
+      case param: LocalParam if param.getSlotNumber < 0 =>
+        param.setSlotNumber({
+          nextFree += 1
+          nextFree
+        })
       case _ =>
     }
     exp match {
@@ -387,7 +388,12 @@ object ExpressionTool {
         }
         binding match {
           case decl: Assignation if binding.asInstanceOf[LocalBinding].getLocalSlotNumber < 0 =>
-
+            // This indicates something badly wrong: we've found a variable reference on the tree, that's
+            // bound to a variable declaration that is no longer on the tree. All we can do is print diagnostics.
+            // The most common reason for this failure is that the declaration of the variable was removed
+            // from the tree in the mistaken belief that there were no references to the variable. Variable
+            // references are counted during the typeCheck phase, so this can happen if typeCheck() fails to
+            // visit some branch of the expression tree.
 
             var err: Logger = null
             try err = varRef.getConfiguration.getLogger

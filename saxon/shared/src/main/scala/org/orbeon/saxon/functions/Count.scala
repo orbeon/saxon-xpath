@@ -1,44 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.LastPositionFinder
-
-import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.om.GroundedValue
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.Int64Value
-
-import org.orbeon.saxon.value.IntegerValue
-
-import Count._
-
-
+import org.orbeon.saxon.expr.{Expression, LastPositionFinder, XPathContext}
+import org.orbeon.saxon.functions.Count._
+import org.orbeon.saxon.om.{GroundedValue, Sequence, SequenceIterator}
+import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
 
 object Count {
 
   def count(iter: SequenceIterator): Int =
-    if (iter.getProperties.contains(
-          SequenceIterator.Property.LAST_POSITION_FINDER)) {
+    if (iter.getProperties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       iter.asInstanceOf[LastPositionFinder].getLength
     } else {
-      var n: Int = 0
-      while (iter.next() != null) { n += 1; n - 1 }
+      var n = 0
+      while (iter.next() != null)
+        n += 1
       n
     }
 
   def steppingCount(iter: SequenceIterator): Int = {
-    var n: Int = 0
-    while (iter.next() != null) { n += 1; n - 1 }
+    var n = 0
+    while (iter.next() != null)
+      n += 1
     n
   }
 
@@ -62,7 +51,7 @@ class Count extends SystemFunction {
     * @return the lower and upper bounds of integer values in the result, or null to indicate
     *         unknown or not applicable.
     */
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     Array(Int64Value.ZERO, Expression.MAX_SEQUENCE_LENGTH)
 
   /*
@@ -75,22 +64,16 @@ class Count extends SystemFunction {
               if a dynamic error occurs during the evaluation of the expression*/
 
   def call(context: XPathContext, arguments: Array[Sequence]): IntegerValue = {
-    val arg: Sequence = arguments(0)
-    val size: Int =
-      if (arg.isInstanceOf[GroundedValue])
-        arg.asInstanceOf[GroundedValue].getLength
-      else count(arg.iterate())
+    val arg  = arguments(0)
+    val size =
+      arg match {
+        case groundedValue: GroundedValue => groundedValue.getLength
+        case _                            => count(arg.iterate())
+      }
     Int64Value.makeIntegerValue(size)
   }
 
-  override def getCompilerName(): String = "CountCompiler"
+  override def getCompilerName: String = "CountCompiler"
 
   override def getStreamerName: String = "Count"
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

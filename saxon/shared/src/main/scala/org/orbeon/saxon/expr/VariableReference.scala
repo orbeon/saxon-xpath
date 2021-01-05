@@ -9,7 +9,6 @@ import org.orbeon.saxon.lib.StandardDiagnostics
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.pattern.NodeTest
-import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
@@ -46,13 +45,13 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   override def getNetCost: Int = 0
 
   def copyFrom(ref: VariableReference): Unit = {
-    binding = ref.binding
-    staticType = ref.staticType
+    binding       = ref.binding
+    staticType    = ref.staticType
     constantValue = ref.constantValue
-    variableName = ref.variableName
-    flattened = ref.flattened
-    inLoop = ref.inLoop
-    filtered = ref.filtered
+    variableName  = ref.variableName
+    flattened     = ref.flattened
+    inLoop        = ref.inLoop
+    filtered      = ref.filtered
     ExpressionTool.copyLocationInfo(ref, this)
   }
 
@@ -92,40 +91,40 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    if (binding.isInstanceOf[LetExpression] &&
-      binding
-        .asInstanceOf[LetExpression]
-        .getSequence
-        .isInstanceOf[Literal] &&
-      !binding.asInstanceOf[LetExpression].isIndexedVariable) {
-      val `val`: Expression = binding.asInstanceOf[LetExpression].getSequence
-      Optimizer.trace(visitor.getConfiguration,
-        "Replaced variable " + getDisplayName + " by its value",
-        `val`)
-      binding = null
-      `val`.copy(new RebindingMap())
+    binding match {
+      case letExpression: LetExpression if !letExpression.isIndexedVariable && letExpression.getSequence.isInstanceOf[Literal] =>
+        val `val` = letExpression.getSequence
+        Optimizer.trace(
+          visitor.getConfiguration,
+          "Replaced variable " + getDisplayName + " by its value",
+          `val`
+        )
+        binding = null
+        return `val`.copy(new RebindingMap())
+      case _                   =>
     }
     if (constantValue != null) {
       binding = null
-      val result: Expression = Literal.makeLiteral(constantValue, this)
+      val result = Literal.makeLiteral(constantValue, this)
       ExpressionTool.copyLocationInfo(this, result)
       Optimizer.trace(visitor.getConfiguration,
         "Replaced variable " + getDisplayName + " by its value",
         result)
       return result
     }
-    if (binding.isInstanceOf[GlobalParam] && binding
-      .asInstanceOf[GlobalParam]
-      .isStatic) {
-      val select: Expression = binding.asInstanceOf[GlobalParam].getBody
-      if (select.isInstanceOf[Literal]) {
-        binding = null
-        Optimizer.trace(
-          visitor.getConfiguration,
-          "Replaced static parameter " + getDisplayName + " by its value",
-          select)
-        return select
-      }
+    binding match {
+      case globalParam: GlobalParam if globalParam.isStatic =>
+        val select = globalParam.getBody
+        if (select.isInstanceOf[Literal]) {
+          binding = null
+          Optimizer.trace(
+            visitor.getConfiguration,
+            "Replaced static parameter " + getDisplayName + " by its value",
+            select
+          )
+          return select
+        }
+      case _      =>
     }
     this
   }
@@ -183,11 +182,12 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
           return st.getPrimaryType.getUType
         else
           return UType.ANY
-      } else if (binding.isInstanceOf[Assignation]) {
-        return binding
-          .asInstanceOf[Assignation]
-          .getSequence
-          .getStaticUType(contextItemType)
+      } else binding match {
+        case assignation: Assignation =>
+          return assignation
+            .getSequence
+            .getStaticUType(contextItemType)
+        case _                        =>
       }
     }
     UType.ANY
@@ -203,14 +203,16 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     if (staticType == null) {
       if (binding == null) {
         StaticProperty.ALLOWS_ZERO_OR_MORE
-      } else if (binding.isInstanceOf[LetExpression]) {
-        binding.getRequiredType.getCardinality
-      } else if (binding.isInstanceOf[Assignation]) {
-        StaticProperty.EXACTLY_ONE
-      } else if (binding.getRequiredType == null) {
-        StaticProperty.ALLOWS_ZERO_OR_MORE
-      } else {
-        binding.getRequiredType.getCardinality
+      } else binding match {
+        case _: LetExpression =>
+          binding.getRequiredType.getCardinality
+        case _: Assignation   =>
+          StaticProperty.EXACTLY_ONE
+        case _                =>
+          if (binding.getRequiredType == null)
+            StaticProperty.ALLOWS_ZERO_OR_MORE
+          else
+            binding.getRequiredType.getCardinality
       }
     } else {
       staticType.getCardinality
@@ -221,11 +223,13 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
     if (binding == null || !binding.isAssignable) {
       p |= StaticProperty.NO_NODES_NEWLY_CREATED
     }
-    if (binding.isInstanceOf[Assignation]) {
-      val exp: Expression = binding.asInstanceOf[Assignation].getSequence
-      if (exp != null) {
-        p |= exp.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC
-      }
+    binding match {
+      case assignation: Assignation =>
+        val exp = assignation.getSequence
+        if (exp != null) {
+          p |= exp.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC
+        }
+      case _                        =>
     }
     if (staticType != null && !Cardinality.allowsMany(
       staticType.getCardinality) &&
@@ -267,20 +271,22 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
       PROCESS_METHOD
 
   override def getScopingExpression: Expression = {
-    if (binding.isInstanceOf[Expression]) {
-      if (binding.isInstanceOf[LocalParam] &&
-        binding
-          .asInstanceOf[LocalParam]
-          .getParentExpression
-          .isInstanceOf[LocalParamBlock]) {
-        val block: LocalParamBlock = binding
-          .asInstanceOf[LocalParam]
-          .getParentExpression
-          .asInstanceOf[LocalParamBlock]
-        block.getParentExpression
-      } else {
-        binding.asInstanceOf[Expression]
-      }
+    binding match {
+      case expression: Expression =>
+        if (binding.isInstanceOf[LocalParam] &&
+          binding
+            .asInstanceOf[LocalParam]
+            .getParentExpression
+            .isInstanceOf[LocalParamBlock]) {
+          val block = binding
+            .asInstanceOf[LocalParam]
+            .getParentExpression
+            .asInstanceOf[LocalParamBlock]
+          return block.getParentExpression
+        } else {
+          return expression
+        }
+      case _                      =>
     }
     var parent = getParentExpression
     while (parent != null) {
@@ -292,8 +298,9 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   }
 
   override def addToPathMap(
-                             pathMap: PathMap,
-                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet =
+    pathMap        : PathMap,
+    pathMapNodeSet : PathMap.PathMapNodeSet
+  ): PathMap.PathMapNodeSet =
     pathMap.getPathForVariable(getBinding)
 
   override def iterate(c: XPathContext): SequenceIterator =
@@ -340,20 +347,16 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         throw err
     }
 
-  override def process(output: Outputter, c: XPathContext): Unit = {
+  override def process(output: Outputter, c: XPathContext): Unit =
     try {
-      val iter: SequenceIterator = evaluateVariable(c).iterate()
-      val loc: Location = getLocation
-      iter.forEachOrFail((item) =>
-        output.append(item, loc, ReceiverOption.ALL_NAMESPACES))
+      val iter = evaluateVariable(c).iterate()
+      val loc  = getLocation
+      iter.forEachOrFail(item => output.append(item, loc, ReceiverOption.ALL_NAMESPACES))
     } catch {
-      case err: XPathException => {
+      case err: XPathException =>
         err.maybeSetLocation(getLocation)
         throw err
-      }
-
     }
-  }
 
   def evaluateVariable(c: XPathContext): Sequence =
     try
@@ -397,11 +400,13 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   def export(destination: ExpressionPresenter): Unit = {
     destination.startElement("varRef", this)
     destination.emitAttribute("name", variableName)
-    if (binding.isInstanceOf[LocalBinding]) {
-      destination.emitAttribute(
-        "slot",
-        "" +
-          binding.asInstanceOf[LocalBinding].getLocalSlotNumber)
+    binding match {
+      case localBinding: LocalBinding =>
+        destination.emitAttribute(
+          "slot",
+          "" + localBinding.getLocalSlotNumber
+        )
+      case _ =>
     }
     destination.endElement()
   }

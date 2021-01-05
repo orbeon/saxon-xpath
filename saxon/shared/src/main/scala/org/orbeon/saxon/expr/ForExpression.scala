@@ -71,14 +71,15 @@ class ForExpression extends Assignation {
 
   def getRangeVariableCardinality: Int = StaticProperty.EXACTLY_ONE
 
-  override def optimize(visitor: ExpressionVisitor,
-                        contextItemType: ContextItemStaticInfo): Expression = {
+  override def optimize(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo): Expression = {
+
     val config         = visitor.getConfiguration
-    val opt = visitor.obtainOptimizer()
+    val opt           = visitor.obtainOptimizer()
     val debug          = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
-    if (Choose.isSingleBranchChoice(getAction)) {
+
+    if (Choose.isSingleBranchChoice(getAction))
       getActionOp.optimize(visitor, contextItemType)
-    }
+
     val p = promoteWhereClause()
     if (p != null) {
       if (debug)
@@ -97,9 +98,10 @@ class ForExpression extends Assignation {
     getActionOp.optimize(visitor, contextItemType)
     if (act0 != getAction)
       return optimize(visitor, contextItemType)
-    if (Literal.isEmptySequence(getAction)) {
+
+    if (Literal.isEmptySequence(getAction))
       return getAction
-    }
+
     if (getSequence.isInstanceOf[SlashExpression] && getAction
       .isInstanceOf[SlashExpression]) {
       val path2             = getAction.asInstanceOf[SlashExpression]
@@ -127,6 +129,7 @@ class ForExpression extends Assignation {
         case _                              =>
       }
     }
+
     getAction match {
       case varRef: VariableReference if varRef.getBinding == this =>
         if (debug)
@@ -134,6 +137,7 @@ class ForExpression extends Assignation {
         return getSequence
       case _                                                            =>
     }
+
     if (getSequence.getCardinality == StaticProperty.EXACTLY_ONE) {
       val let = new LetExpression
       let.setVariableQName(variableName)
@@ -292,7 +296,7 @@ class ForExpression extends Assignation {
     out.startElement("for", this)
     explainSpecializedAttributes(out)
     out.emitAttribute("var", getVariableQName)
-    val varType: ItemType = getSequence.getItemType
+    val varType = getSequence.getItemType
     if (varType != AnyItemType)
       out.emitAttribute("as", AlphaCode.fromItemType(varType))
     out.emitAttribute("slot", "" + getLocalSlotNumber)

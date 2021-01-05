@@ -8,6 +8,7 @@ import org.orbeon.saxon.om.{NodeInfo, SequenceIterator}
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.ListIterator
 
+
 class DocumentOrderIterator(base: SequenceIterator,
                             private var comparer: ItemOrderComparer)
   extends SequenceIterator {
@@ -36,7 +37,7 @@ class DocumentOrderIterator(base: SequenceIterator,
 
   def next(): NodeInfo = {
     while (true) {
-      val next: NodeInfo = iterator.next().asInstanceOf[NodeInfo]
+      val next = iterator.next().asInstanceOf[NodeInfo]
       if (next == null) {
         current = null
         return null
