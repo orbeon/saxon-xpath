@@ -1,42 +1,18 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-
 import org.orbeon.saxon.event.Outputter
-
+import org.orbeon.saxon.expr.Expression._
+import org.orbeon.saxon.expr.ForExpression._
 import org.orbeon.saxon.expr.flwor.OuterForExpression
-
 import org.orbeon.saxon.expr.instruct.Choose
-
 import org.orbeon.saxon.expr.parser._
-
 import org.orbeon.saxon.lib.Feature
-
 import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.om.StructuredQName
-
+import org.orbeon.saxon.om.{Item, SequenceIterator, StructuredQName}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.Cardinality
-
-import org.orbeon.saxon.value.IntegerValue
-
-import org.orbeon.saxon.value.SequenceType
+import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
 import java.util.ArrayList
-
-import java.util.List
-
-import ForExpression._
-
-import Expression._
 
 object ForExpression {
 
@@ -55,9 +31,7 @@ object ForExpression {
       context.setLocalVariable(slotNumber, item)
       action.evaluateItem(context)
     }
-
   }
-
 }
 
 class ForExpression extends Assignation {
@@ -67,28 +41,29 @@ class ForExpression extends Assignation {
   override def getExpressionName: String = "for"
 
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
+
     getSequenceOp.typeCheck(visitor, contextInfo)
-    if (Literal.isEmptySequence(getSequence) && !(this.isInstanceOf[OuterForExpression])) {
-      getSequence
-    }
+    if (Literal.isEmptySequence(getSequence) && ! this.isInstanceOf[OuterForExpression])
+      return getSequence
+
     if (requiredType != null) {
-      val decl: SequenceType = requiredType
-      val sequenceType: SequenceType = SequenceType.makeSequenceType(decl.getPrimaryType, StaticProperty.ALLOWS_ZERO_OR_MORE)
-      val role: RoleDiagnostic = new RoleDiagnostic(RoleDiagnostic.VARIABLE, variableName.getDisplayName, 0)
+      val decl         = requiredType
+      val sequenceType = SequenceType.makeSequenceType(decl.getPrimaryType, StaticProperty.ALLOWS_ZERO_OR_MORE)
+      val role         = new RoleDiagnostic(RoleDiagnostic.VARIABLE, variableName.getDisplayName, 0)
       this.setSequence(TypeChecker.strictTypeCheck(getSequence,
         sequenceType,
         role,
         visitor.getStaticContext))
-      val actualItemType: ItemType = getSequence.getItemType
+      val actualItemType = getSequence.getItemType
       refineTypeInformation(actualItemType,
         getRangeVariableCardinality,
         null,
         getSequence.getSpecialProperties,
         this)
     }
-    if (Literal.isEmptySequence(getAction)) {
-      getAction
-    }
+    if (Literal.isEmptySequence(getAction))
+      return getAction
+
     getActionOp.typeCheck(visitor, contextInfo)
     actionCardinality = getAction.getCardinality
     this
@@ -98,74 +73,69 @@ class ForExpression extends Assignation {
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    val config: Configuration = visitor.getConfiguration
-    val opt: Optimizer = visitor.obtainOptimizer()
-    val debug: Boolean =
-      config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
+    val config         = visitor.getConfiguration
+    val opt = visitor.obtainOptimizer()
+    val debug          = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
     if (Choose.isSingleBranchChoice(getAction)) {
       getActionOp.optimize(visitor, contextItemType)
     }
-    val p: Expression = promoteWhereClause()
+    val p = promoteWhereClause()
     if (p != null) {
-      if (debug) {
+      if (debug)
         opt.trace("Promoted where clause in for $" + getVariableName, p)
-      }
-      p.optimize(visitor, contextItemType)
+      return p.optimize(visitor, contextItemType)
     }
-    val seq0: Expression = getSequence
+    val seq0 = getSequence
     getSequenceOp.optimize(visitor, contextItemType)
-    if (seq0 != getSequence) {
-      optimize(visitor, contextItemType)
-    }
-    if (Literal.isEmptySequence(getSequence) && !(this
-      .isInstanceOf[OuterForExpression])) {
-      getSequence
-    }
-    val act0: Expression = getAction
+    if (seq0 != getSequence)
+      return optimize(visitor, contextItemType)
+
+    if (Literal.isEmptySequence(getSequence) && ! this.isInstanceOf[OuterForExpression])
+      return getSequence
+
+    val act0 = getAction
     getActionOp.optimize(visitor, contextItemType)
-    if (act0 != getAction) {
-      optimize(visitor, contextItemType)
-    }
+    if (act0 != getAction)
+      return optimize(visitor, contextItemType)
     if (Literal.isEmptySequence(getAction)) {
-      getAction
+      return getAction
     }
     if (getSequence.isInstanceOf[SlashExpression] && getAction
       .isInstanceOf[SlashExpression]) {
-      val path2: SlashExpression = getAction.asInstanceOf[SlashExpression]
-      val start2: Expression = path2.getSelectExpression
-      val step2: Expression = path2.getActionExpression
-      if (start2.isInstanceOf[VariableReference] &&
-        start2.asInstanceOf[VariableReference].getBinding == this &&
-        ExpressionTool.getReferenceCount(getAction, this, inLoop = false) ==
-          1 &&
-        ((step2.getDependencies &
+      val path2             = getAction.asInstanceOf[SlashExpression]
+      val start2 = path2.getSelectExpression
+      val step2 = path2.getActionExpression
+      start2 match {
+        case varRef: VariableReference if (step2.getDependencies &
           (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST)) ==
-          0)) {
-        var newPath: Expression =
-          new SlashExpression(getSequence, path2.getActionExpression)
-        ExpressionTool.copyLocationInfo(this, newPath)
-        newPath = newPath.simplify().typeCheck(visitor, contextItemType)
-        if (newPath.isInstanceOf[SlashExpression]) {
-          if (debug) {
-            opt.trace("Collapsed return clause of for $" + getVariableName +
-              " into path expression",
-              newPath)
+          0 && ExpressionTool.getReferenceCount(getAction, this, inLoop = false) ==
+          1 && varRef.getBinding == this =>
+          var newPath: Expression =
+            new SlashExpression(getSequence, path2.getActionExpression)
+          ExpressionTool.copyLocationInfo(this, newPath)
+          newPath = newPath.simplify().typeCheck(visitor, contextItemType)
+          if (newPath.isInstanceOf[SlashExpression]) {
+            if (debug) {
+              opt.trace(
+                "Collapsed return clause of for $" + getVariableName +
+                  " into path expression",
+                newPath
+              )
+            }
+            return newPath.optimize(visitor, contextItemType)
           }
-          newPath.optimize(visitor, contextItemType)
-        }
+        case _                              =>
       }
     }
-    if (getAction.isInstanceOf[VariableReference] &&
-      getAction.asInstanceOf[VariableReference].getBinding ==
-        this) {
-      if (debug) {
-        opt.trace("Collapsed redundant for expression $" + getVariableName,
-          getSequence)
-      }
-      getSequence
+    getAction match {
+      case varRef: VariableReference if varRef.getBinding == this =>
+        if (debug)
+          opt.trace("Collapsed redundant for expression $" + getVariableName, getSequence)
+        return getSequence
+      case _                                                            =>
     }
     if (getSequence.getCardinality == StaticProperty.EXACTLY_ONE) {
-      val let: LetExpression = new LetExpression()
+      val let = new LetExpression
       let.setVariableQName(variableName)
       let.setRequiredType(
         SequenceType.makeSequenceType(getSequence.getItemType,
@@ -175,7 +145,7 @@ class ForExpression extends Assignation {
       let.setSlotNumber(slotNumber)
       let.setRetainedStaticContextLocally(getRetainedStaticContext)
       ExpressionTool.rebindVariableReferences(getAction, this, let)
-      let
+      return let
         .typeCheck(visitor, contextItemType)
         .optimize(visitor, contextItemType)
     }
@@ -188,41 +158,40 @@ class ForExpression extends Assignation {
     this
   }
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     getAction.getIntegerBounds
 
   private def promoteWhereClause(): Expression = {
     if (Choose.isSingleBranchChoice(getAction)) {
-      val condition: Expression =
-        getAction.asInstanceOf[Choose].getCondition(0)
+      val condition              = getAction.asInstanceOf[Choose].getCondition(0)
       val bindingList: Array[Binding] = Array(this)
-      val list: List[Expression] = new ArrayList[Expression](5)
+      val list = new ArrayList[Expression](5)
       var promotedCondition: Expression = null
       BooleanExpression.listAndComponents(condition, list)
-      var i: Int = list.size - 1
+      var i = list.size - 1
       while (i >= 0) {
-        val term: Expression = list.get(i)
-        if (!ExpressionTool.dependsOnVariable(term, bindingList)) {
+        val term = list.get(i)
+        if (! ExpressionTool.dependsOnVariable(term, bindingList)) {
           promotedCondition =
-            if (promotedCondition == null) term
-            else new AndExpression(term, promotedCondition)
+            if (promotedCondition == null)
+              term
+            else
+              new AndExpression(term, promotedCondition)
           list.remove(i)
         }
         i -= 1
       }
       if (promotedCondition != null) {
         if (list.isEmpty) {
-          val oldThen: Expression = getAction.asInstanceOf[Choose].getAction(0)
+          val oldThen = getAction.asInstanceOf[Choose].getAction(0)
           this.setAction(oldThen)
-          Choose.makeConditional(condition, this)
+          return Choose.makeConditional(condition, this)
         } else {
-          var retainedCondition: Expression = list.get(0)
-          for (i <- 1 until list.size) {
-            retainedCondition =
-              new AndExpression(retainedCondition, list.get(i))
-          }
+          var retainedCondition = list.get(0)
+          for (i <- 1 until list.size)
+            retainedCondition = new AndExpression(retainedCondition, list.get(i))
           getAction.asInstanceOf[Choose].setCondition(0, retainedCondition)
-          val newIf: Expression = Choose.makeConditional(
+          val newIf = Choose.makeConditional(
             promotedCondition,
             this,
             Literal.makeEmptySequence)
@@ -235,7 +204,7 @@ class ForExpression extends Assignation {
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val forExp: ForExpression = new ForExpression()
+    val forExp = new ForExpression
     ExpressionTool.copyLocationInfo(this, forExp)
     forExp.setRequiredType(requiredType)
     forExp.setVariableQName(variableName)
@@ -249,36 +218,33 @@ class ForExpression extends Assignation {
   }
 
   override def markTailFunctionCalls(qName: StructuredQName, arity: Int): Int =
-    if (!Cardinality.allowsMany(getSequence.getCardinality)) {
+    if (!Cardinality.allowsMany(getSequence.getCardinality))
       ExpressionTool.markTailFunctionCalls(getAction, qName, arity)
-    } else {
+    else
       UserFunctionCall.NOT_TAIL_CALL
-    }
 
-  override def isVacuousExpression(): Boolean = getAction.isVacuousExpression
+  override def isVacuousExpression: Boolean = getAction.isVacuousExpression
 
   def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
-  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = {
+  override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
     getAction.checkPermittedContents(parentType, whole = false)
-  }
 
   override def iterate(context: XPathContext): SequenceIterator = {
-    val base: SequenceIterator = getSequence.iterate(context)
-    val map: MappingAction =
-      new MappingAction(context, getLocalSlotNumber, getAction)
+    val base = getSequence.iterate(context)
+    val map  = new MappingAction(context, getLocalSlotNumber, getAction)
     actionCardinality match {
       case StaticProperty.EXACTLY_ONE =>
         new ItemMappingIterator(base, map, true)
       case StaticProperty.ALLOWS_ZERO_OR_ONE =>
         new ItemMappingIterator(base, map, false)
-      case _ => new MappingIterator(base, map)
-
+      case _ =>
+        new MappingIterator(base, map)
     }
   }
 
   override def process(output: Outputter, context: XPathContext): Unit = {
-    val slot: Int = getLocalSlotNumber
+    val slot = getLocalSlotNumber
     getSequence
       .iterate(context)
       .forEachOrFail((item) => {
@@ -289,7 +255,7 @@ class ForExpression extends Assignation {
 
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit = {
-    val slot: Int = getLocalSlotNumber
+    val slot = getLocalSlotNumber
     getSequence
       .iterate(context)
       .forEachOrFail((item) => {
@@ -304,8 +270,8 @@ class ForExpression extends Assignation {
     getAction.getStaticUType(contextItemType)
 
   def computeCardinality(): Int = {
-    val c1: Int = getSequence.getCardinality
-    val c2: Int = getAction.getCardinality
+    val c1 = getSequence.getCardinality
+    val c2 = getAction.getCardinality
     Cardinality.multiply(c1, c2)
   }
 
@@ -327,9 +293,8 @@ class ForExpression extends Assignation {
     explainSpecializedAttributes(out)
     out.emitAttribute("var", getVariableQName)
     val varType: ItemType = getSequence.getItemType
-    if (varType != AnyItemType) {
+    if (varType != AnyItemType)
       out.emitAttribute("as", AlphaCode.fromItemType(varType))
-    }
     out.emitAttribute("slot", "" + getLocalSlotNumber)
     out.setChildRole("in")
     getSequence.export(out)

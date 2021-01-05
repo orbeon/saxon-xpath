@@ -31,15 +31,13 @@ object TinyParentNodeImpl {
     // where it has a single text node as a child.
 
     if (tree.nodeKind(nodeNr) == Type.TEXTUAL_ELEMENT) {
-      TinyTextImpl.getStringValue(tree, nodeNr)
+      return TinyTextImpl.getStringValue(tree, nodeNr)
     } else if (next < tree.numberOfNodes) {
       // bug 4445
-      if (tree.depth(next) <= level) {
+      if (tree.depth(next) <= level)
         return ""
-      } else if (tree.nodeKind(next) == Type.TEXT &&
-                 (next + 1 >= tree.numberOfNodes || tree.depth(next + 1) <= level)) {
+      else if (tree.nodeKind(next) == Type.TEXT && (next + 1 >= tree.numberOfNodes || tree.depth(next + 1) <= level))
         return TinyTextImpl.getStringValue(tree, next)
-      }
     }
 
     // now handle the general case
@@ -77,4 +75,3 @@ abstract class TinyParentNodeImpl extends TinyNodeImpl {
   override def getStringValueCS: CharSequence =
     TinyParentNodeImpl.getStringValueCS(tree, nodeNr)
 }
-
