@@ -804,14 +804,12 @@ object ExpressionTool {
   def rebindVariableReferences(exp: Expression, oldBinding: Binding, newBinding: Binding): Unit =
     exp match {
       case varRef: VariableReference =>
-        if (varRef.getBinding eq oldBinding) varRef.fixup(newBinding)
-        else {
-          for (o <- exp.operands.asScala)
-            rebindVariableReferences(o.getChildExpression, oldBinding, newBinding)
-        }
+        if (varRef.getBinding eq oldBinding)
+          varRef.fixup(newBinding)
       case _ =>
+        for (o <- exp.operands.asScala)
+          rebindVariableReferences(o.getChildExpression, oldBinding, newBinding)
     }
-
 
   def makePathExpression(start: Expression, step: Expression): Expression = {
 
