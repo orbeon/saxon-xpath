@@ -181,6 +181,7 @@ class XPathContextMinor () extends XPathContext {
 
   def getImplicitTimezone: Int = controller.getImplicitTimezone
 
+  // ORBEON: TODO: Why cast?
   def iterateStackFrames: util.Iterator[AnyRef] = new ContextStackIterator(this).asInstanceOf[Iterator[AnyRef]]
 
   def getTargetComponent(bindingSlot: Int): Component =

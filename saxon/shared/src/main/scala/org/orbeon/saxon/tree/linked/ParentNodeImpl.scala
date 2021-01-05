@@ -58,7 +58,7 @@ abstract class ParentNodeImpl extends NodeImpl {
       Collections.emptyList[NodeImpl].iterator.asScala
     } else childrenImpl match {
       case impl: NodeImpl =>
-        new MonoIterator(impl).asInstanceOf[Iterator[NodeImpl]]
+        new MonoIterator(impl).asScala
       case _ =>
         Arrays.asList(childrenImpl.asInstanceOf[Array[NodeImpl]]: _*).iterator.asScala
     }

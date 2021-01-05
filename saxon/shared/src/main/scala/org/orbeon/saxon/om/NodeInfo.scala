@@ -108,7 +108,7 @@ trait NodeInfo extends Source with Item with Location {
       val parent: NodeInfo = this
       parent.iterateAxis(AxisInfo.CHILD).asIterator
     } else {
-      Collections.emptyList().asInstanceOf[Iterator[NodeInfo]]
+      Iterator.empty
     }
   }
 
