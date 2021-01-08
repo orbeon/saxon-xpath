@@ -36,64 +36,82 @@ import scala.jdk.CollectionConverters._
  */
 object SerializerFactory {
   @throws[XPathException]
-   def checkYesOrNo(key: String, value: String) = if ("yes" == value || "true" == value || "1" == value) "yes"
-  else if ("no" == value || "false" == value || "0" == value) "no"
-  else throw new XPathException("Serialization parameter " + Err.wrap(key) + " must have the value yes|no, true|false, or 1|0", "SEPM0016")
+   def checkYesOrNo(key: String, value: String): String =
+    if ("yes" == value || "true" == value || "1" == value)
+      "yes"
+    else if ("no" == value || "false" == value || "0" == value)
+      "no"
+    else
+      throw new XPathException("Serialization parameter " + Err.wrap(key) + " must have the value yes|no, true|false, or 1|0", "SEPM0016")
 
   @throws[XPathException]
-  private def checkNormalizationForm(value: String) = if (!NameChecker.isValidNmtoken(value)) throw new XPathException("Invalid value for normalization-form: " + "must be NFC, NFD, NFKC, NFKD, fully-normalized, or none", "SEPM0016")
+  private def checkNormalizationForm(value: String): Unit =
+    if (!NameChecker.isValidNmtoken(value))
+      throw new XPathException("Invalid value for normalization-form: " + "must be NFC, NFD, NFKC, NFKD, fully-normalized, or none", "SEPM0016")
 
   private def isValidEQName(value: String): Boolean = {
     Objects.requireNonNull(value)
-    if (value.isEmpty || !value.startsWith("Q{")) return false
+    if (value.isEmpty || !value.startsWith("Q{"))
+      return false
     val closer = value.indexOf('}', 2)
     closer >= 2 && closer != value.length - 1 && NameChecker.isValidNCName(value.substring(closer + 1))
   }
 
-  private def isValidClarkName(/*@NotNull*/ value: String) = if (value.startsWith("{")) isValidEQName("Q" + value)
-  else isValidEQName("Q{}" + value)
+  private def isValidClarkName(/*@NotNull*/ value: String) =
+    if (value.startsWith("{"))
+      isValidEQName("Q" + value)
+    else
+      isValidEQName("Q{}" + value)
 
   @throws[XPathException]
-   def checkNonNegativeInteger(key: String, value: String) = try {
-    val n = value.toInt
-    if (n < 0) throw new XPathException("Value of " + Err.wrap(key) + " must be a non-negative integer", "SEPM0016")
-  } catch {
-    case err: NumberFormatException =>
-      throw new XPathException("Value of " + Err.wrap(key) + " must be a non-negative integer", "SEPM0016")
-  }
+   def checkNonNegativeInteger(key: String, value: String): Unit =
+    try {
+      val n = value.toInt
+      if (n < 0)
+        throw new XPathException("Value of " + Err.wrap(key) + " must be a non-negative integer", "SEPM0016")
+    } catch {
+      case _: NumberFormatException =>
+        throw new XPathException("Value of " + Err.wrap(key) + " must be a non-negative integer", "SEPM0016")
+    }
 
   @throws[XPathException]
-  private def checkDecimal(key: String, value: String) = if (!BigDecimalValue.castableAsDecimal(value)) throw new XPathException("Value of " + Err.wrap(key) + " must be a decimal number", "SEPM0016")
+  private def checkDecimal(key: String, value: String): Unit =
+    if (!BigDecimalValue.castableAsDecimal(value))
+      throw new XPathException("Value of " + Err.wrap(key) + " must be a decimal number", "SEPM0016")
 
   @throws[XPathException]
-   def checkListOfEQNames(key: String, value: String) = {
+   def checkListOfEQNames(key: String, value: String): String = {
     val tok = new StringTokenizer(value, " \t\n\r", false)
     val builder = new StringBuilder
-    while ( {
-      tok.hasMoreTokens
-    }) {
+    while (tok.hasMoreTokens) {
       val s = tok.nextToken
-      if (isValidEQName(s) || NameChecker.isValidNCName(s)) builder.append(s)
-      else if (isValidClarkName(s)) if (s.startsWith("{")) builder.append("Q").append(s)
-      else builder.append("Q{}").append(s)
-      else throw new XPathException("Value of " + Err.wrap(key) + " must be a list of QNames in 'Q{uri}local' notation", "SEPM0016")
+      if (isValidEQName(s) || NameChecker.isValidNCName(s))
+        builder.append(s)
+      else if (isValidClarkName(s)) if (s.startsWith("{"))
+        builder.append("Q").append(s)
+      else
+        builder.append("Q{}").append(s)
+      else
+        throw new XPathException("Value of " + Err.wrap(key) + " must be a list of QNames in 'Q{uri}local' notation", "SEPM0016")
       builder.append(" ")
     }
     builder.toString
   }
 
   @throws[XPathException]
-   def checkListOfEQNamesAllowingStar(key: String, value: String) = {
+   def checkListOfEQNamesAllowingStar(key: String, value: String): String = {
     val builder = new StringBuilder
     val tok = new StringTokenizer(value, " \t\n\r", false)
-    while ( {
-      tok.hasMoreTokens
-    }) {
+    while (tok.hasMoreTokens) {
       val s = tok.nextToken
-      if ("*" == s || isValidEQName(s) || NameChecker.isValidNCName(s)) builder.append(s)
-      else if (isValidClarkName(s)) if (s.startsWith("{")) builder.append("Q").append(s)
-      else builder.append("Q{}").append(s)
-      else throw new XPathException("Value of " + Err.wrap(key) + " must be a list of QNames in 'Q{uri}local' notation", "SEPM0016")
+      if ("*" == s || isValidEQName(s) || NameChecker.isValidNCName(s))
+        builder.append(s)
+      else if (isValidClarkName(s)) if (s.startsWith("{"))
+        builder.append("Q").append(s)
+      else
+        builder.append("Q{}").append(s)
+      else
+        throw new XPathException("Value of " + Err.wrap(key) + " must be a list of QNames in 'Q{uri}local' notation", "SEPM0016")
       builder.append(" ")
     }
     builder.toString.trim
@@ -102,10 +120,14 @@ object SerializerFactory {
   private val publicIdPattern = Pattern.compile("^[\\s\\r\\na-zA-Z0-9\\-'()+,./:=?;!*#@$_%]*$")
 
   @throws[XPathException]
-  private def checkPublicIdentifier(value: String) = if (!publicIdPattern.matcher(value).matches) throw new XPathException("Invalid character in doctype-public parameter", "SEPM0016")
+  private def checkPublicIdentifier(value: String): Unit =
+    if (!publicIdPattern.matcher(value).matches)
+      throw new XPathException("Invalid character in doctype-public parameter", "SEPM0016")
 
   @throws[XPathException]
-  private def checkSystemIdentifier(value: String) = if (value.contains("'") && value.contains("\"")) throw new XPathException("The doctype-system parameter must not contain both an apostrophe and a quotation mark", "SEPM0016")
+  private def checkSystemIdentifier(value: String): Unit =
+    if (value.contains("'") && value.contains("\""))
+      throw new XPathException("The doctype-system parameter must not contain both an apostrophe and a quotation mark", "SEPM0016")
 
   /**
    * Process a serialization property whose value is a list of element names, for example cdata-section-elements
@@ -121,24 +143,26 @@ object SerializerFactory {
    * @throws XPathException if any error is found in the list of element names, for example, an undeclared namespace prefix
    */
   @throws[XPathException]
-  def parseListOfNodeNames(value: String, nsResolver: NamespaceResolver, useDefaultNS: Boolean, prevalidated: Boolean, errorCode: String) = {
+  def parseListOfNodeNames(value: String, nsResolver: NamespaceResolver, useDefaultNS: Boolean, prevalidated: Boolean, errorCode: String): String = {
     val s = new StringBuilder
     val st = new StringTokenizer(value, " \t\n\r", false)
-    while ( {
-      st.hasMoreTokens
-    }) {
+    while (st.hasMoreTokens) {
       val displayname = st.nextToken
-      if (prevalidated || (nsResolver == null)) s.append(' ').append(displayname)
-      else if (displayname.startsWith("Q{")) s.append(' ').append(displayname.substring(1))
-      else try {
-        val parts = NameChecker.getQNameParts(displayname)
-        val muri = nsResolver.getURIForPrefix(parts(0), useDefaultNS)
-        if (muri == null) throw new XPathException("Namespace prefix '" + parts(0) + "' has not been declared", errorCode)
-        s.append(" {").append(muri).append('}').append(parts(1))
-      } catch {
-        case err: QNameException =>
-          throw new XPathException("Invalid element name. " + err.getMessage, errorCode)
-      }
+      if (prevalidated || (nsResolver == null))
+        s.append(' ').append(displayname)
+      else if (displayname.startsWith("Q{"))
+        s.append(' ').append(displayname.substring(1))
+      else
+        try {
+          val parts = NameChecker.getQNameParts(displayname)
+          val muri = nsResolver.getURIForPrefix(parts(0), useDefaultNS)
+          if (muri == null)
+            throw new XPathException("Namespace prefix '" + parts(0) + "' has not been declared", errorCode)
+          s.append(" {").append(muri).append('}').append(parts(1))
+        } catch {
+          case err: QNameException =>
+            throw new XPathException("Invalid element name. " + err.getMessage, errorCode)
+        }
     }
     s.toString
   }
@@ -164,7 +188,7 @@ class SerializerFactory {
     this.config = pipe.getConfiguration
   }
 
-  def getConfiguration = config
+  def getConfiguration: Configuration = config
 
   /**
    * Create a serializer with given output properties, and return
@@ -177,7 +201,7 @@ class SerializerFactory {
    * if any error occurs
    */
   @throws[XPathException]
-  def getXMLStreamWriter(result: StreamResult, properties: Properties) = {
+  def getXMLStreamWriter(result: StreamResult, properties: Properties): StreamWriterToReceiver = {
     var r = getReceiver(result, new SerializationProperties(properties))
     r = new NamespaceReducer(r)
     new StreamWriterToReceiver(r)
@@ -212,7 +236,8 @@ class SerializerFactory {
    * @deprecated since Saxon 9.9: use one of the other { @code getReceiver} methods
    */
   @throws[XPathException]
-  def getReceiver(result: Result, pipe: PipelineConfiguration, props: Properties): Receiver = getReceiver(result, new SerializationProperties(props), pipe)
+  def getReceiver(result: Result, pipe: PipelineConfiguration, props: Properties): Receiver =
+    getReceiver(result, new SerializationProperties(props), pipe)
 
   /**
    * Get a Receiver that wraps a given Result object. Saxon calls this method to construct
@@ -228,7 +253,8 @@ class SerializerFactory {
    * @throws XPathException if a serializer cannot be created
    */
   @throws[XPathException]
-  def getReceiver(result: Result): Receiver = getReceiver(result, new SerializationProperties, config.makePipelineConfiguration)
+  def getReceiver(result: Result): Receiver =
+    getReceiver(result, new SerializationProperties, config.makePipelineConfiguration)
 
   /**
    * Get a Receiver that wraps a given Result object. Saxon calls this method to construct
@@ -245,7 +271,8 @@ class SerializerFactory {
    * @throws XPathException if a serializer cannot be created
    */
   @throws[XPathException]
-  def getReceiver(result: Result, params: SerializationProperties): Receiver = getReceiver(result, params, config.makePipelineConfiguration)
+  def getReceiver(result: Result, params: SerializationProperties): Receiver =
+    getReceiver(result, params, config.makePipelineConfiguration)
 
   /**
    * Get a Receiver that wraps a given Result object. Saxon calls this method to construct
@@ -270,17 +297,21 @@ class SerializerFactory {
    */
   @throws[XPathException]
   def getReceiver(result: Result, params: SerializationProperties, pipe: PipelineConfiguration): Receiver = {
+
     Objects.requireNonNull(result)
     Objects.requireNonNull(params)
     Objects.requireNonNull(pipe)
+
     var props = params.getProperties
     var charMapIndex = params.getCharacterMapIndex
-    if (charMapIndex == null) charMapIndex = new CharacterMapIndex
+    if (charMapIndex == null)
+      charMapIndex = new CharacterMapIndex
     val nextInChain = props.getProperty(SaxonOutputKeys.NEXT_IN_CHAIN)
-    if (nextInChain != null && !nextInChain.isEmpty) {
+    if (nextInChain != null && nextInChain.nonEmpty) {
       val href = props.getProperty(SaxonOutputKeys.NEXT_IN_CHAIN)
       var base = props.getProperty(SaxonOutputKeys.NEXT_IN_CHAIN_BASE_URI)
-      if (base == null) base = ""
+      if (base == null)
+        base = ""
       val sansNext = new Properties(props)
       sansNext.setProperty(SaxonOutputKeys.NEXT_IN_CHAIN, "")
       return prepareNextStylesheet(pipe, href, base, result)
@@ -304,9 +335,7 @@ class SerializerFactory {
       ph.setSerializationParams(doc.getRootNode)
       val paramDocProps = ph.getSerializationProperties.getProperties
       val names = paramDocProps.propertyNames
-      while ( {
-        names.hasMoreElements
-      }) {
+      while (names.hasMoreElements) {
         val name = names.nextElement.asInstanceOf[String]
         val value = paramDocProps.getProperty(name)
         props2.setProperty(name, value)
@@ -318,95 +347,110 @@ class SerializerFactory {
       }
       props = props2
     }
-    if (result.isInstanceOf[StreamResult]) { // The "target" is the start of the output pipeline, the Receiver that
-      // instructions will actually write to (except that other things like a
-      // NamespaceReducer may get added in front of it). The "emitter" is the
-      // last thing in the output pipeline, the Receiver that actually generates
-      // characters or bytes that are written to the StreamResult.
-      var target: SequenceReceiver = null
-      val method = props.getProperty(OutputKeys.METHOD)
-      if (method == null) return newUncommittedSerializer(result, new Sink(pipe), params)
-      var emitter: Emitter = null
-      method match {
-        case "html" =>
-          emitter = newHTMLEmitter(props)
-          emitter.setPipelineConfiguration(pipe)
-          target = createHTMLSerializer(emitter, params, pipe)
-        case "xml" =>
-          emitter = newXMLEmitter(props)
-          emitter.setPipelineConfiguration(pipe)
-          target = createXMLSerializer(emitter.asInstanceOf[XMLEmitter], params)
-        case "xhtml" =>
-          emitter = newXHTMLEmitter(props)
-          emitter.setPipelineConfiguration(pipe)
-          target = createXHTMLSerializer(emitter, params, pipe)
-        case "text" =>
-          emitter = newTEXTEmitter
-          emitter.setPipelineConfiguration(pipe)
-          target = createTextSerializer(emitter, params)
-        case "json" =>
-          val sr = result.asInstanceOf[StreamResult]
-          props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
-          val je = new JSONEmitter(pipe, sr, props)
-          val js = new JSONSerializer(pipe, je, props)
-          val sortOrder = props.getProperty(SaxonOutputKeys.PROPERTY_ORDER)
-          if (sortOrder != null) js.setPropertySorter(getPropertySorter(sortOrder))
-          val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
-          val normalizer = makeUnicodeNormalizer(pipe, props)
-          return customizeJSONSerializer(js, props, characterMapExpander, normalizer)
-        case "adaptive" =>
-          ???
-          // ORBEON: No `File` support.
-//          val esr = new ExpandedStreamResult(pipe.getConfiguration, result.asInstanceOf[StreamResult], props)
-//          val writer = esr.obtainWriter
-//          val je = new AdaptiveEmitter(pipe, writer)
-//          je.setOutputProperties(props)
-//          val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
-//          val normalizer = makeUnicodeNormalizer(pipe, props)
-//          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
-        case _ =>
-          if (method.startsWith("{" + NamespaceConstant.SAXON + "}")) {
+    result match {
+      case sr: StreamResult =>
+
+        // The "target" is the start of the output pipeline, the Receiver that
+        // instructions will actually write to (except that other things like a
+        // NamespaceReducer may get added in front of it). The "emitter" is the
+        // last thing in the output pipeline, the Receiver that actually generates
+        // characters or bytes that are written to the StreamResult.
+        var target: SequenceReceiver = null
+        val method                   = props.getProperty(OutputKeys.METHOD)
+        println(s"xxx saxon StreamResult $method")
+
+        if (method == null)
+          return newUncommittedSerializer(result, new Sink(pipe), params)
+
+        println(s"xxx saxon method $method")
+
+        var emitter: Emitter = null
+        method match {
+          case "html"     =>
+            emitter = newHTMLEmitter(props)
+            emitter.setPipelineConfiguration(pipe)
+            target = createHTMLSerializer(emitter, params, pipe)
+          case "xml"      =>
+            emitter = newXMLEmitter(props)
+            emitter.setPipelineConfiguration(pipe)
+            target = createXMLSerializer(emitter.asInstanceOf[XMLEmitter], params)
+          case "xhtml"    =>
+            emitter = newXHTMLEmitter(props)
+            emitter.setPipelineConfiguration(pipe)
+            target = createXHTMLSerializer(emitter, params, pipe)
+          case "text"     =>
+            emitter = newTEXTEmitter
+            emitter.setPipelineConfiguration(pipe)
+            target = createTextSerializer(emitter, params)
+          case "json"     =>
+            props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+            val je        = new JSONEmitter(pipe, sr, props)
+            val js        = new JSONSerializer(pipe, je, props)
+            val sortOrder = props.getProperty(SaxonOutputKeys.PROPERTY_ORDER)
+            if (sortOrder != null)
+              js.setPropertySorter(getPropertySorter(sortOrder))
             val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
-            val normalizer = makeUnicodeNormalizer(pipe, props)
-            target = createSaxonSerializationMethod(method, params, pipe, characterMapExpander, normalizer, result.asInstanceOf[StreamResult])
-            if (target.isInstanceOf[Emitter]) emitter = target.asInstanceOf[Emitter]
-          }
-          else {
-            var userReceiver: SequenceReceiver = null
-            userReceiver = createUserDefinedOutputMethod(method, props, pipe)
-            if (userReceiver.isInstanceOf[Emitter]) {
-              emitter = userReceiver.asInstanceOf[Emitter]
-              target = params.makeSequenceNormalizer(emitter)
+            val normalizer           = makeUnicodeNormalizer(pipe, props)
+            return customizeJSONSerializer(js, props, characterMapExpander, normalizer)
+          case "adaptive" =>
+            ???
+          // ORBEON: No `File` support.
+          //          val esr = new ExpandedStreamResult(pipe.getConfiguration, result.asInstanceOf[StreamResult], props)
+          //          val writer = esr.obtainWriter
+          //          val je = new AdaptiveEmitter(pipe, writer)
+          //          je.setOutputProperties(props)
+          //          val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
+          //          val normalizer = makeUnicodeNormalizer(pipe, props)
+          //          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
+          case _ =>
+            if (method.startsWith("{" + NamespaceConstant.SAXON + "}")) {
+              val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
+              val normalizer           = makeUnicodeNormalizer(pipe, props)
+              target = createSaxonSerializationMethod(method, params, pipe, characterMapExpander, normalizer, sr)
+              target match {
+                case e: Emitter => emitter = e
+                case _ =>
+              }
             }
-            else return params.makeSequenceNormalizer(userReceiver)
-          }
-      }
-      if (emitter != null) {
-        emitter.setOutputProperties(props)
-        val sr = result.asInstanceOf[StreamResult]
-        emitter.setStreamResult(sr)
-      }
-      //target = new RegularSequenceChecker(target); // add this back in for diagnostics only
-      target.setSystemId(result.getSystemId)
-      target
-    }
-    else { // Handle results other than StreamResult: these generally do not involve serialization
-      getReceiverForNonSerializedResult(result, props, pipe)
+            else {
+              var userReceiver: SequenceReceiver = null
+              userReceiver = createUserDefinedOutputMethod(method, props, pipe)
+              userReceiver match {
+                case e: Emitter =>
+                  emitter = e
+                  target  = params.makeSequenceNormalizer(emitter)
+                case _ => return params.makeSequenceNormalizer(userReceiver)
+              }
+            }
+        }
+        if (emitter != null) {
+          emitter.setOutputProperties(props)
+          emitter.setStreamResult(sr)
+        }
+        //target = new RegularSequenceChecker(target); // add this back in for diagnostics only
+        target.setSystemId(result.getSystemId)
+        target
+      case _                => // Handle results other than StreamResult: these generally do not involve serialization
+        getReceiverForNonSerializedResult(result, props, pipe)
     }
   }
 
   @throws[XPathException]
   private def makeUnicodeNormalizer(pipe: PipelineConfiguration, props: Properties): ProxyReceiver = {
     val normForm = props.getProperty(SaxonOutputKeys.NORMALIZATION_FORM)
-    if (normForm != null && !(normForm == "none")) return newUnicodeNormalizer(new Sink(pipe), props)
-    null
+    if (normForm != null && !(normForm == "none"))
+      newUnicodeNormalizer(new Sink(pipe), props)
+    else
+      null
   }
 
   @throws[XPathException]
   private def makeCharacterMapExpander(pipe: PipelineConfiguration, props: Properties, charMapIndex: CharacterMapIndex): CharacterMapExpander = {
     val useMaps = props.getProperty(SaxonOutputKeys.USE_CHARACTER_MAPS)
-    if (useMaps != null) return charMapIndex.makeCharacterMapExpander(useMaps, new Sink(pipe), this)
-    null
+    if (useMaps != null)
+      charMapIndex.makeCharacterMapExpander(useMaps, new Sink(pipe), this)
+    else
+      null
   }
 
   /**
@@ -476,7 +520,7 @@ class SerializerFactory {
     throw new IllegalArgumentException("Unknown type of result: " + result.getClass)
   }
 
-  def makeSequenceNormalizer(receiver: Receiver, properties: Properties) = {
+  def makeSequenceNormalizer(receiver: Receiver, properties: Properties): SequenceReceiver = {
     val method = properties.getProperty(OutputKeys.METHOD)
     if ("json" == method || "adaptive" == method) if (receiver.isInstanceOf[SequenceReceiver]) receiver.asInstanceOf[SequenceReceiver]
     else new TreeReceiver(receiver)
@@ -502,7 +546,7 @@ class SerializerFactory {
    * @throws XPathException if a failure occurs
    */
   @throws[XPathException]
-   def createHTMLSerializer(emitter: Emitter, params: SerializationProperties, pipe: PipelineConfiguration) = {
+   def createHTMLSerializer(emitter: Emitter, params: SerializationProperties, pipe: PipelineConfiguration): SequenceReceiver = {
     var target:Receiver = null
     target = emitter
     val props = params.getProperties
@@ -531,7 +575,7 @@ class SerializerFactory {
    * @throws XPathException if a failure occurs
    */
   @throws[XPathException]
-   def createTextSerializer(emitter: Emitter, params: SerializationProperties) = {
+   def createTextSerializer(emitter: Emitter, params: SerializationProperties): SequenceReceiver = {
     val props = params.getProperties
     var target: Receiver = null
     target = injectUnicodeNormalizer(params, emitter)
@@ -552,7 +596,7 @@ class SerializerFactory {
    * @return a Receiver acting as the entry point to the serialization pipeline
    */
   @throws[XPathException]
-   def customizeJSONSerializer(emitter: JSONSerializer, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver) = {
+   def customizeJSONSerializer(emitter: JSONSerializer, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver): JSONSerializer = {
     if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].getNormalizer)
     if (characterMapExpander != null) emitter.setCharacterMap(characterMapExpander.getCharacterMap)
     emitter
@@ -568,7 +612,7 @@ class SerializerFactory {
    * @param normalizer           the filter used for Unicode normalization
    * @return a Receiver acting as the entry point to the serialization pipeline
    */
-   def customizeAdaptiveSerializer(emitter: AdaptiveEmitter, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver) = {
+   def customizeAdaptiveSerializer(emitter: AdaptiveEmitter, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver): AdaptiveEmitter = {
     if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].getNormalizer)
     if (characterMapExpander != null) emitter.setCharacterMap(characterMapExpander.getCharacterMap)
     emitter
@@ -585,7 +629,7 @@ class SerializerFactory {
    * @throws XPathException if a failure occurs
    */
   @throws[XPathException]
-   def createXHTMLSerializer(emitter: Emitter, params: SerializationProperties, pipe: PipelineConfiguration) = {
+   def createXHTMLSerializer(emitter: Emitter, params: SerializationProperties, pipe: PipelineConfiguration): SequenceReceiver = {
     var target: Receiver = emitter
     val props = params.getProperties
     if (!("no" == props.getProperty(OutputKeys.INDENT))) target = newXHTMLIndenter(target, props)
@@ -612,7 +656,7 @@ class SerializerFactory {
    * @param outputProperties the serialization properties
    * @return a new Receiver to perform HTML5-related namespace manipulation
    */
-  def addHtml5Component(target: Receiver, outputProperties: Properties) = {
+  def addHtml5Component(target: Receiver, outputProperties: Properties): Receiver = {
     var targetReceiver = target
     targetReceiver = new NamespaceReducer(targetReceiver)
     targetReceiver = new XHTMLPrefixRemover(targetReceiver)
@@ -629,7 +673,7 @@ class SerializerFactory {
    * @throws XPathException if a failure occurs
    */
   @throws[XPathException]
-   def createXMLSerializer(emitter: XMLEmitter, params: SerializationProperties) = {
+  def createXMLSerializer(emitter: XMLEmitter, params: SerializationProperties): SequenceReceiver = {
     var target: Receiver = null
     val props = params.getProperties
     val canonical = "yes" == props.getProperty(SaxonOutputKeys.CANONICAL)
@@ -657,7 +701,14 @@ class SerializerFactory {
   }
 
   @throws[XPathException]
-   def createSaxonSerializationMethod(method: String, params: SerializationProperties, pipe: PipelineConfiguration, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver, result: StreamResult) = throw new XPathException("Saxon serialization methods require Saxon-PE to be enabled")
+  def createSaxonSerializationMethod(
+    method               : String,
+    params               : SerializationProperties,
+    pipe                 : PipelineConfiguration,
+    characterMapExpander : CharacterMapExpander,
+    normalizer           : ProxyReceiver,
+    result               : StreamResult
+  ) = throw new XPathException("Saxon serialization methods require Saxon-PE to be enabled")
 
   /**
    * Create a serialization pipeline to implement a user-defined output method. This method is
@@ -671,7 +722,7 @@ class SerializerFactory {
    * @throws XPathException if a failure occurs
    */
   @throws[XPathException]
-   def createUserDefinedOutputMethod(method: String, props: Properties, pipe: PipelineConfiguration) = {
+   def createUserDefinedOutputMethod(method: String, props: Properties, pipe: PipelineConfiguration): SequenceReceiver = {
     var userReceiver: Receiver = null // See if this output method is recognized by the Configuration
     userReceiver = pipe.getConfiguration.makeEmitter(method, props)
     userReceiver.setPipelineConfiguration(pipe)
@@ -682,7 +733,7 @@ class SerializerFactory {
   }
 
   @throws[XPathException]
-   def injectCharacterMapExpander(params: SerializationProperties, out: Receiver, useNullMarkers: Boolean): Receiver = {
+  def injectCharacterMapExpander(params: SerializationProperties, out: Receiver, useNullMarkers: Boolean): Receiver = {
     val charMapIndex = params.getCharacterMapIndex
     if (charMapIndex != null) {
       val useMaps = params.getProperties.getProperty(SaxonOutputKeys.USE_CHARACTER_MAPS)
@@ -696,7 +747,7 @@ class SerializerFactory {
   }
 
   @throws[XPathException]
-   def injectUnicodeNormalizer(params: SerializationProperties, out: Receiver): Receiver = {
+  def injectUnicodeNormalizer(params: SerializationProperties, out: Receiver): Receiver = {
     val props = params.getProperties
     val normForm = props.getProperty(SaxonOutputKeys.NORMALIZATION_FORM)
     if (normForm != null && !(normForm == "none")) return newUnicodeNormalizer(out, props)
@@ -708,7 +759,7 @@ class SerializerFactory {
    *
    * @return the newly created ContentHandlerProxy.
    */
-   def newContentHandlerProxy = new ContentHandlerProxy
+  def newContentHandlerProxy = new ContentHandlerProxy
 
   /**
    * Create an UncommittedSerializer. This method exists so that it can be overridden in a subclass.
@@ -718,7 +769,7 @@ class SerializerFactory {
    * @param params the serialization parameters
    * @return the newly created UncommittedSerializer.
    */
-   def newUncommittedSerializer(result: Result, next: Receiver, params: SerializationProperties) = new UncommittedSerializer(result, next, params)
+  def newUncommittedSerializer(result: Result, next: Receiver, params: SerializationProperties) = new UncommittedSerializer(result, next, params)
 
   /**
    * Create a new XML Emitter. This method exists so that it can be overridden in a subclass.
@@ -726,7 +777,7 @@ class SerializerFactory {
    * @param properties the output properties
    * @return the newly created XML emitter.
    */
-   def newXMLEmitter(properties: Properties) = new XMLEmitter
+  def newXMLEmitter(properties: Properties) = new XMLEmitter
 
   /**
    * Create a new HTML Emitter. This method exists so that it can be overridden in a subclass.
@@ -734,11 +785,13 @@ class SerializerFactory {
    * @param properties the output properties
    * @return the newly created HTML emitter.
    */
-   def newHTMLEmitter(properties: Properties) = {
+  def newHTMLEmitter(properties: Properties): HTMLEmitter = {
     var emitter: HTMLEmitter = null
     // Note, we recognize html-version even when running XSLT 2.0.
-    if (SaxonOutputKeys.isHtmlVersion5(properties)) emitter = new HTML50Emitter
-    else emitter = new HTML40Emitter
+    if (SaxonOutputKeys.isHtmlVersion5(properties))
+      emitter = new HTML50Emitter
+    else
+      emitter = new HTML40Emitter
     emitter
   }
 
@@ -748,10 +801,12 @@ class SerializerFactory {
    * @param properties the output properties
    * @return the newly created XHTML emitter.
    */
-   def newXHTMLEmitter(properties: Properties) = {
+  def newXHTMLEmitter(properties: Properties): XMLEmitter = {
     val is5 = SaxonOutputKeys.isXhtmlHtmlVersion5(properties)
-    if (is5) new XHTML5Emitter
-    else new XHTML1Emitter
+    if (is5)
+      new XHTML5Emitter
+    else
+      new XHTML1Emitter
   }
 
   /**
@@ -764,14 +819,14 @@ class SerializerFactory {
    * @throws XPathException if the operation fails
    */
   @throws[XPathException]
-  def addTextOutputFilter(next: Receiver, properties: Properties) = next
+  def addTextOutputFilter(next: Receiver, properties: Properties): Receiver = next
 
   /**
    * Create a new Text Emitter. This method exists so that it can be overridden in a subclass.
    *
    * @return the newly created text emitter.
    */
-   def newTEXTEmitter = new TEXTEmitter
+  def newTEXTEmitter = new TEXTEmitter
 
   /**
    * Create a new XML Indenter. This method exists so that it can be overridden in a subclass.
@@ -780,7 +835,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created XML indenter.
    */
-   def newXMLIndenter(next: XMLEmitter, outputProperties: Properties) = {
+  def newXMLIndenter(next: XMLEmitter, outputProperties: Properties): XMLIndenter = {
     val r = new XMLIndenter(next)
     r.setOutputProperties(outputProperties)
     r
@@ -793,7 +848,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created HTML indenter.
    */
-   def newHTMLIndenter(next: Receiver, outputProperties: Properties) = {
+  def newHTMLIndenter(next: Receiver, outputProperties: Properties): HTMLIndenter = {
     val r = new HTMLIndenter(next, "html")
     r.setOutputProperties(outputProperties)
     r
@@ -806,7 +861,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created XHTML indenter.
    */
-   def newXHTMLIndenter(next: Receiver, outputProperties: Properties) = {
+  def newXHTMLIndenter(next: Receiver, outputProperties: Properties): HTMLIndenter = {
     var method = "xhtml"
     val htmlVersion = outputProperties.getProperty("html-version")
     if (htmlVersion != null && htmlVersion.startsWith("5")) method = "xhtml5"
@@ -823,7 +878,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created XHTML MetaTagAdjuster.
    */
-   def newXHTMLMetaTagAdjuster(next: Receiver, outputProperties: Properties) = {
+  def newXHTMLMetaTagAdjuster(next: Receiver, outputProperties: Properties): MetaTagAdjuster = {
     val r = new MetaTagAdjuster(next)
     r.setIsXHTML(true)
     r.setOutputProperties(outputProperties)
@@ -838,7 +893,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created HTML MetaTagAdjuster.
    */
-   def newHTMLMetaTagAdjuster(next: Receiver, outputProperties: Properties) = {
+  def newHTMLMetaTagAdjuster(next: Receiver, outputProperties: Properties): MetaTagAdjuster = {
     val r = new MetaTagAdjuster(next)
     r.setIsXHTML(false)
     r.setOutputProperties(outputProperties)
@@ -853,7 +908,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created HTML URI escaper.
    */
-   def newHTMLURIEscaper(next: Receiver, outputProperties: Properties) = new HTMLURIEscaper(next)
+  def newHTMLURIEscaper(next: Receiver, outputProperties: Properties) = new HTMLURIEscaper(next)
 
   /**
    * Create a new XHTML URI Escaper, responsible for percent-encoding of URIs in
@@ -863,7 +918,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created HTML URI escaper.
    */
-   def newXHTMLURIEscaper(next: Receiver, outputProperties: Properties) = new XHTMLURIEscaper(next)
+  def newXHTMLURIEscaper(next: Receiver, outputProperties: Properties) = new XHTMLURIEscaper(next)
 
   /**
    * Create a new CDATA Filter, responsible for insertion of CDATA sections where required.
@@ -876,7 +931,7 @@ class SerializerFactory {
    * if an error occurs
    */
   @throws[XPathException]
-   def newCDATAFilter(next: Receiver, outputProperties: Properties) = {
+  def newCDATAFilter(next: Receiver, outputProperties: Properties): CDATAFilter = {
     val r = new CDATAFilter(next)
     r.setOutputProperties(outputProperties)
     r
@@ -894,7 +949,7 @@ class SerializerFactory {
    * @return the newly created filter.
    */
   @throws[XPathException]
-   def newAttributeSorter(next: Receiver, outputProperties: Properties) = next
+  def newAttributeSorter(next: Receiver, outputProperties: Properties): Receiver = next
 
   /**
    * Create a new NamespaceSorter, responsible for sorting of namespaces into a specified order.
@@ -904,7 +959,7 @@ class SerializerFactory {
    * @return the newly created filter.
    */
   @throws[XPathException]
-   def newNamespaceSorter(next: Receiver, outputProperties: Properties) = next
+  def newNamespaceSorter(next: Receiver, outputProperties: Properties): Receiver = next
 
   /**
    * Create a new XML 1.0 content checker, responsible for checking that the output conforms to
@@ -915,7 +970,7 @@ class SerializerFactory {
    * @param outputProperties the serialization parameters
    * @return the newly created XML 1.0 content checker.
    */
-   def newXML10ContentChecker(next: Receiver, outputProperties: Properties) = new XML10ContentChecker(next)
+  def newXML10ContentChecker(next: Receiver, outputProperties: Properties) = new XML10ContentChecker(next)
 
   /**
    * Create a Unicode Normalizer. This method exists so that it can be overridden in a subclass.
@@ -927,7 +982,7 @@ class SerializerFactory {
    * if an error occurs
    */
   @throws[XPathException]
-   def newUnicodeNormalizer(next: Receiver, outputProperties: Properties) = {
+  def newUnicodeNormalizer(next: Receiver, outputProperties: Properties): UnicodeNormalizer = {
     val normForm = outputProperties.getProperty(SaxonOutputKeys.NORMALIZATION_FORM)
     new UnicodeNormalizer(normForm, next)
   }
@@ -954,7 +1009,7 @@ class SerializerFactory {
    * @throws XPathException if any dynamic error occurs
    */
   @throws[XPathException]
-  def prepareNextStylesheet(pipe: PipelineConfiguration, href: String, baseURI: String, result: Result) = {
+  def prepareNextStylesheet(pipe: PipelineConfiguration, href: String, baseURI: String, result: Result): Null = {
     pipe.getConfiguration.checkLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION, "saxon:next-in-chain", -1)
     null
   }
@@ -982,60 +1037,68 @@ class SerializerFactory {
    */
   @throws[XPathException]
   def checkOutputProperty(key: String, value: String): String = {
-      var finalValue = value
-    if (!key.startsWith("{")) key match {
-      case SaxonOutputKeys.ALLOW_DUPLICATE_NAMES =>
-      case SaxonOutputKeys.ESCAPE_URI_ATTRIBUTES =>
-      case SaxonOutputKeys.INCLUDE_CONTENT_TYPE =>
-      case OutputKeys.INDENT =>
-      case OutputKeys.OMIT_XML_DECLARATION =>
-      case SaxonOutputKeys.UNDECLARE_PREFIXES =>
-        if (finalValue != null) finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
+    var finalValue = value
+    if (! key.startsWith("{")) key match {
+      case SaxonOutputKeys.ALLOW_DUPLICATE_NAMES |
+           SaxonOutputKeys.ESCAPE_URI_ATTRIBUTES |
+           SaxonOutputKeys.INCLUDE_CONTENT_TYPE  |
+           OutputKeys.INDENT                     |
+           OutputKeys.OMIT_XML_DECLARATION       |
+           SaxonOutputKeys.UNDECLARE_PREFIXES =>
+        if (finalValue != null)
+          finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
       case SaxonOutputKeys.BUILD_TREE =>
-        if (finalValue != null) finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
+        if (finalValue != null)
+          finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
       case SaxonOutputKeys.BYTE_ORDER_MARK =>
-        if (finalValue != null) finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
-      case OutputKeys.CDATA_SECTION_ELEMENTS =>
-      case SaxonOutputKeys.SUPPRESS_INDENTATION =>
-      case SaxonOutputKeys.USE_CHARACTER_MAPS =>
-        if (finalValue != null) finalValue = SerializerFactory.checkListOfEQNames(key, finalValue)
+        if (finalValue != null)
+          finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
+      case OutputKeys.CDATA_SECTION_ELEMENTS    |
+           SaxonOutputKeys.SUPPRESS_INDENTATION |
+           SaxonOutputKeys.USE_CHARACTER_MAPS =>
+        if (finalValue != null)
+          finalValue = SerializerFactory.checkListOfEQNames(key, finalValue)
       case OutputKeys.DOCTYPE_PUBLIC =>
-        if (finalValue != null) SerializerFactory.checkPublicIdentifier(finalValue)
+        if (finalValue != null)
+          SerializerFactory.checkPublicIdentifier(finalValue)
       case OutputKeys.DOCTYPE_SYSTEM =>
-        if (finalValue != null) SerializerFactory.checkSystemIdentifier(finalValue)
+        if (finalValue != null)
+          SerializerFactory.checkSystemIdentifier(finalValue)
       case OutputKeys.ENCODING =>
       // no constraints
       case SaxonOutputKeys.HTML_VERSION =>
-        if (finalValue != null) SerializerFactory.checkDecimal(key, finalValue)
+        if (finalValue != null)
+          SerializerFactory.checkDecimal(key, finalValue)
       case SaxonOutputKeys.ITEM_SEPARATOR =>
       // no checking needed
-      case OutputKeys.METHOD =>
-      case SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD =>
-        if (finalValue != null) finalValue = checkMethod(key, finalValue)
+      case OutputKeys.METHOD |
+           SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD =>
+        if (finalValue != null)
+          finalValue = checkMethod(key, finalValue)
       case OutputKeys.MEDIA_TYPE =>
       case SaxonOutputKeys.NORMALIZATION_FORM =>
-        if (finalValue != null) SerializerFactory.checkNormalizationForm(finalValue)
+        if (finalValue != null)
+          SerializerFactory.checkNormalizationForm(finalValue)
       case SaxonOutputKeys.PARAMETER_DOCUMENT =>
       // no checking
       case OutputKeys.STANDALONE =>
-        if (finalValue != null && !(finalValue == "omit")) finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
+        if (finalValue != null && !(finalValue == "omit"))
+          finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
       case OutputKeys.VERSION =>
       case _ =>
         throw new XPathException("Unknown serialization parameter " + Err.wrap(key), "XQST0109")
-    }
-    else if (key.startsWith("{http://saxon.sf.net/}")) { // Some Saxon serialization parameters are recognized in HE if they are used for internal purposes
+    } else if (key.startsWith("{http://saxon.sf.net/}")) {
+      // Some Saxon serialization parameters are recognized in HE if they are used for internal purposes
       key match {
         case SaxonOutputKeys.STYLESHEET_VERSION =>
         // return
         case SaxonOutputKeys.PARAMETER_DOCUMENT_BASE_URI =>
-        case SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR =>
-        case SaxonOutputKeys.UNFAILING =>
+        case SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR | SaxonOutputKeys.UNFAILING =>
           if (finalValue != null) finalValue = SerializerFactory.checkYesOrNo(key, finalValue)
         case _ =>
           throw new XPathException("Serialization parameter " + Err.wrap(key, Err.EQNAME) + " is not available in Saxon-HE", "XQST0109")
       }
-    }
-    else {
+    } else {
       //return;
     }
     finalValue
@@ -1045,17 +1108,23 @@ class SerializerFactory {
   private def checkMethod(key: String, value: String): String = {
     var finalValue = value
     if (!("xml" == finalValue) && !("html" == finalValue) && !("xhtml" == finalValue) && !("text" == finalValue)) {
-      if (!(SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD == key) && ("json" == finalValue || "adaptive" == finalValue)) return finalValue
-      if (value.startsWith("{")) finalValue = "Q" + finalValue
-      if (SerializerFactory.isValidEQName(finalValue)) checkExtensions(finalValue)
-      else throw new XPathException("Invalid value (" + finalValue + ") for serialization method: " + "must be xml|html|xhtml|text|json|adaptive, or a QName in 'Q{uri}local' form", "SEPM0016")
+      if (!(SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD == key) && ("json" == finalValue || "adaptive" == finalValue))
+        return finalValue
+      if (value.startsWith("{"))
+        finalValue = "Q" + finalValue
+      if (SerializerFactory.isValidEQName(finalValue))
+        checkExtensions(finalValue)
+      else
+        throw new XPathException("Invalid value (" + finalValue + ") for serialization method: " + "must be xml|html|xhtml|text|json|adaptive, or a QName in 'Q{uri}local' form", "SEPM0016")
     }
     finalValue
   }
 
   @throws[XPathException]
-   def checkExtensions(key: String /*@Nullable*/) = throw new XPathException("Serialization property " + Err.wrap(key, Err.EQNAME) + " is not available in Saxon-HE")
+   def checkExtensions(key: String /*@Nullable*/) =
+    throw new XPathException("Serialization property " + Err.wrap(key, Err.EQNAME) + " is not available in Saxon-HE")
 
   @throws[XPathException]
-   def getPropertySorter(sortSpecification: String) = throw new XPathException("Serialization property saxon:property-order is not available in Saxon-HE")
+   def getPropertySorter(sortSpecification: String) =
+    throw new XPathException("Serialization property saxon:property-order is not available in Saxon-HE")
 }

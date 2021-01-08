@@ -6,21 +6,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-import javax.xml.transform.Result
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.model.SchemaType
 import org.orbeon.saxon.om.{AttributeMap, Item, NamespaceMap, NodeName}
 import org.orbeon.saxon.s9api.Location
+
+import javax.xml.transform.Result
+
 
 /**
   * Receiver: This interface represents a recipient of XML tree-walking (push) events. It is
   * based on SAX2's ContentHandler, but adapted to handle additional events. Namespaces and
   * Attributes are handled by separate events following the startElement event. Schema types
   * can be defined for elements and attributes.
-  * <p>The Receiver interface is an important internal interface within Saxon, and provides a powerful
+ *
+  * The Receiver interface is an important internal interface within Saxon, and provides a powerful
   * mechanism for integrating Saxon with other applications. It has been designed with extensibility
   * and stability in mind. However, it should be considered as an interface designed primarily for
-  * internal use, and not as a completely stable part of the public Saxon API.</p>
+  * internal use, and not as a completely stable part of the public Saxon API.
   *
   * @since 8.0. Extended in 9.9 to support additional methods with default implementations.
   * Changed in 10.0 to accept all the attributes and namespaces as part of the startElement event
@@ -37,23 +40,29 @@ trait Receiver extends Result {
   def endDocument(): Unit
   def setUnparsedEntity(name: String, systemID: String, publicID: String): Unit
 
-  def startElement(elemName: NodeName,
-                   `type`: SchemaType,
-                   attributes: AttributeMap,
-                   namespaces: NamespaceMap,
-                   location: Location,
-                   properties: Int): Unit
+  def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit
 
   def endElement(): Unit
 
-  def characters(chars: CharSequence,
-                 location: Location,
-                 properties: Int): Unit
+  def characters(
+    chars      : CharSequence,
+    location   : Location,
+    properties : Int
+  ): Unit
 
-  def processingInstruction(name: String,
-                            data: CharSequence,
-                            location: Location,
-                            properties: Int): Unit
+  def processingInstruction(
+    name       : String,
+    data       : CharSequence,
+    location   : Location,
+    properties : Int
+  ): Unit
 
   def comment(content: CharSequence, location: Location, properties: Int): Unit
 
@@ -67,4 +76,3 @@ trait Receiver extends Result {
   def usesTypeAnnotations: Boolean = false
   def handlesAppend: Boolean = false
 }
-
