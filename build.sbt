@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 enablePlugins(ScalaJSPlugin)
 
 
-val saxonVersion = "10.0.0.31-SNAPSHOT"
+val saxonVersion = "10.0.0.32-SNAPSHOT"
 
 val scala212 = "2.12.12"
 val scala213 = "2.13.3"
