@@ -1295,7 +1295,8 @@ class XPathParser {
    * @throws XPathException if any error is encountered
    */
   @throws[XPathException]
-  private def parseIfExpression = { // left paren already read
+  private def parseIfExpression = {
+    // left paren already read
     val ifoffset = t.currentTokenStartOffset
     nextToken()
     val condition = parseExpression

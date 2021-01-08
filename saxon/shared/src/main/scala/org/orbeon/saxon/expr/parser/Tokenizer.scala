@@ -857,34 +857,40 @@ final class Tokenizer {
   private def getFunctionType(s: String) = s match {
     case "if" =>
       Token.IF
-    case "map" =>
-    case "namespace-node" =>
-    case "array" =>
-    case "function" =>
-      if (languageLevel == 20) Token.FUNCTION
-      else Token.NODEKIND
-    case "node" =>
-    case "schema-attribute" =>
-    case "schema-element" =>
-    case "processing-instruction" =>
-    case "empty-sequence" =>
-    case "document-node" =>
-    case "comment" =>
-    case "element" =>
-    case "item" =>
-    case "text" =>
-    case "attribute" =>
+    case "map"                    |
+         "namespace-node"         |
+         "array"                  |
+         "function" =>
+      if (languageLevel == 20)
+        Token.FUNCTION
+      else
+        Token.NODEKIND
+    case "node"                   |
+         "schema-attribute"       |
+         "schema-element"         |
+         "processing-instruction" |
+         "empty-sequence"         |
+         "document-node"          |
+         "comment"                |
+         "element"                |
+         "item"                   |
+         "text"                   |
+         "attribute" =>
       Token.NODEKIND
-    case "atomic" =>
-    case "tuple" =>
-    case "type" =>
-    case "union" =>
-      if (allowSaxonExtensions) Token.NODEKIND
-      else Token.FUNCTION // Saxon extension types
+    case "atomic"                 |
+         "tuple"                  |
+         "type"                   |
+         "union" =>
+      if (allowSaxonExtensions)
+        Token.NODEKIND
+      else
+        Token.FUNCTION // Saxon extension types
     case "switch" =>
       // Reserved in XPath 3.0, even though only used in XQuery
-      if (languageLevel == 20) Token.FUNCTION
-      else Token.SWITCH
+      if (languageLevel == 20)
+        Token.FUNCTION
+      else
+        Token.SWITCH
     case "otherwise" =>
       Token.OTHERWISE
     case "typeswitch" =>
@@ -899,7 +905,8 @@ final class Tokenizer {
    * @param precedingToken the token to be tested
    * @return true if the previous token is an operator token
    */
-  private def followsOperator(precedingToken: Int) = precedingToken <= Token.LAST_OPERATOR
+  private def followsOperator(precedingToken: Int): Boolean =
+    precedingToken <= Token.LAST_OPERATOR
 
   /**
    * Read next character directly. Used by the XQuery parser when parsing pseudo-XML syntax
