@@ -357,12 +357,9 @@ class SerializerFactory {
         // characters or bytes that are written to the StreamResult.
         var target: SequenceReceiver = null
         val method                   = props.getProperty(OutputKeys.METHOD)
-        println(s"xxx saxon StreamResult $method")
 
         if (method == null)
           return newUncommittedSerializer(result, new Sink(pipe), params)
-
-        println(s"xxx saxon method $method")
 
         var emitter: Emitter = null
         method match {

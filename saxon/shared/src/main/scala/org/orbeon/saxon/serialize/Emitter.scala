@@ -6,11 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
 
-import java.io.{BufferedWriter, OutputStream, OutputStreamWriter, PrintWriter, Writer}
-import java.util.Properties
-
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.stream.StreamResult
 import org.orbeon.saxon.event.{ReceiverOption, ReceiverWithOutputProperties, SequenceReceiver}
 import org.orbeon.saxon.lib.SaxonOutputKeys
 import org.orbeon.saxon.om.{Item, NodeInfo}
@@ -18,6 +13,10 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.charcode.{CharacterSet, UTF16CharacterSet, UTF8CharacterSet}
 import org.orbeon.saxon.trans.{XPathException, XmlProcessingIncident}
 
+import java.io.{BufferedWriter, OutputStream, OutputStreamWriter, Writer}
+import java.util.Properties
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
 import scala.util.control.Breaks._
 
 
@@ -26,24 +25,27 @@ import scala.util.control.Breaks._
  * components that format SAXON output. There is one emitter for XML,
  * one for HTML, and so on. Additional methods are concerned with
  * setting options and providing a Writer.
- * <p>The interface is deliberately designed to be as close as possible to the
+ *
+ * The interface is deliberately designed to be as close as possible to the
  * standard SAX2 ContentHandler interface, however, it allows additional
- * information to be made available.</p>
- * <p>An Emitter is a Receiver, specifically it is a Receiver that can direct output
+ * information to be made available.
+ *
+ * An Emitter is a Receiver, specifically it is a Receiver that can direct output
  * to a Writer or OutputStream, using serialization properties defined in a Properties
- * object.</p>
+ * object.
  */
 abstract class Emitter
   extends SequenceReceiver(null)
     with ReceiverWithOutputProperties {
 
-  var streamResult: StreamResult = _
-  var writer: Writer = _
-  var outputStream: OutputStream = _
-  var outputProperties: Properties = _
-  var characterSet: CharacterSet = _
-  var allCharactersEncodable: Boolean = false
-  private var mustClose: Boolean = false
+  var streamResult           : StreamResult = _
+  var writer                 : Writer       = _
+  var outputStream           : OutputStream = _
+  var outputProperties       : Properties   = _
+  var characterSet           : CharacterSet = _
+  var allCharactersEncodable : Boolean      = false
+
+  private val mustClose = false
 
   def setOutputProperties(details: Properties): Unit = {
     if (characterSet == null) {
@@ -70,13 +72,11 @@ abstract class Emitter
     if (writer == null) {
       val os = streamResult.getOutputStream
       if (os != null)
-        this.outputStream = os
+        setOutputStream(os)
     }
 
-    // ORBEON: No `File` support.
-    writer = new PrintWriter(System.out)
-//    if (writer == null)
-//      makeOutputStream()
+    if (writer == null)
+      makeOutputStream()
   }
 
   def makeOutputStream(): OutputStream = {
@@ -106,7 +106,7 @@ abstract class Emitter
 //    outputStream
   }
 
-  def usesWriter(): Boolean = true
+  def usesWriter: Boolean = true
 
   def setWriter(writer: Writer): Unit = {
     this.writer = writer
@@ -125,11 +125,10 @@ abstract class Emitter
 
   def setOutputStream(stream: OutputStream): Unit = {
     outputStream = stream
-    if (usesWriter()) {
-      if (outputProperties == null) {
-        outputProperties = new Properties()
-      }
-      var encoding: String = outputProperties.getProperty(OutputKeys.ENCODING)
+    if (usesWriter) {
+      if (outputProperties == null)
+        outputProperties = new Properties
+      var encoding = outputProperties.getProperty(OutputKeys.ENCODING)
       if (encoding == null) {
         encoding = "UTF8"
         allCharactersEncodable = true
@@ -139,41 +138,38 @@ abstract class Emitter
       } else if (encoding.equalsIgnoreCase("UTF-16")) {
         encoding = "UTF16"
       }
-      if (characterSet == null) {
-        characterSet = getConfiguration.getCharacterSetFactory.getCharacterSet(
-          outputProperties)
-      }
-      val byteOrderMark: String =
-        outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
+      if (characterSet == null)
+        characterSet = getConfiguration.getCharacterSetFactory.getCharacterSet(outputProperties)
+      val byteOrderMark = outputProperties.getProperty(SaxonOutputKeys.BYTE_ORDER_MARK)
       if ("no" == byteOrderMark && "UTF16" == encoding)
         encoding = "UTF-16BE"
       else if (! characterSet.isInstanceOf[UTF8CharacterSet])
         encoding = characterSet.getCanonicalName
       breakable {
-        while (true) try {
-          var javaEncoding: String = encoding
-          if (encoding.equalsIgnoreCase("iso-646") || encoding.equalsIgnoreCase(
-            "iso646")) {
-            javaEncoding = "US-ASCII"
+        while (true)
+          try {
+            var javaEncoding = encoding
+            if (encoding.equalsIgnoreCase("iso-646") || encoding.equalsIgnoreCase("iso646"))
+              javaEncoding = "US-ASCII"
+            writer =
+              if (encoding.equalsIgnoreCase("UTF8"))
+                new UTF8Writer(outputStream)
+              else
+                new BufferedWriter(new OutputStreamWriter(outputStream, javaEncoding))
+            break()
+          } catch {
+            case _: Exception =>
+              if (encoding.equalsIgnoreCase("UTF8"))
+                throw new XPathException("Failed to create a UTF8 output writer")
+              val de = new XmlProcessingIncident(
+                "Encoding " + encoding + " is not supported: using UTF8",
+                "SESU0007")
+              getPipelineConfiguration.getErrorReporter.report(de)
+              encoding = "UTF8"
+              characterSet = UTF8CharacterSet.getInstance
+              allCharactersEncodable = true
+              outputProperties.setProperty(OutputKeys.ENCODING, "UTF-8")
           }
-          writer =
-            if (encoding.equalsIgnoreCase("UTF8")) new UTF8Writer(outputStream)
-            else
-              new BufferedWriter(new OutputStreamWriter(outputStream, javaEncoding))
-          break()
-        } catch {
-          case _: Exception =>
-            if (encoding.equalsIgnoreCase("UTF8"))
-              throw new XPathException("Failed to create a UTF8 output writer")
-            val de: XmlProcessingIncident = new XmlProcessingIncident(
-              "Encoding " + encoding + " is not supported: using UTF8",
-              "SESU0007")
-            getPipelineConfiguration.getErrorReporter.report(de)
-            encoding = "UTF8"
-            characterSet = UTF8CharacterSet.getInstance
-            allCharactersEncodable = true
-            outputProperties.setProperty(OutputKeys.ENCODING, "UTF-8")
-        }
       }
     }
   }
