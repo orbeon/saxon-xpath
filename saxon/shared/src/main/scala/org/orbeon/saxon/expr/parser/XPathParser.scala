@@ -446,8 +446,8 @@ class XPathParser {
    *                        supplied message
    */
   @throws[XPathException]
-  def grumble(message: String): Unit = grumble(message, if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340"
-  else "XPST0003")
+  def grumble(message: String): Nothing =
+    grumble(message, if (language eq ParsedLanguage.XSLT_PATTERN) "XTSE0340" else "XPST0003")
 
   /**
    * Report a static error
@@ -458,7 +458,8 @@ class XPathParser {
    *                        supplied message
    */
   @throws[XPathException]
-  def grumble(message: String, errorCode: String): Unit = grumble(message, new StructuredQName("", NamespaceConstant.ERR, errorCode), -1)
+  def grumble(message: String, errorCode: String): Nothing =
+    grumble(message, new StructuredQName("", NamespaceConstant.ERR, errorCode), -1)
 
   /**
    * Report a static error, with location information
@@ -470,7 +471,8 @@ class XPathParser {
    *                        supplied message
    */
   @throws[XPathException]
-  def grumble(message: String, errorCode: String, offset: Int): Unit = grumble(message, new StructuredQName("", NamespaceConstant.ERR, errorCode), offset)
+  def grumble(message: String, errorCode: String, offset: Int): Nothing =
+    grumble(message, new StructuredQName("", NamespaceConstant.ERR, errorCode), offset)
 
   /**
    * Report a static error
@@ -482,7 +484,7 @@ class XPathParser {
    *                        supplied message
    */
   @throws[XPathException]
-  def grumble(message: String, errorCode: StructuredQName, offset: Int): Unit = {
+  def grumble(message: String, errorCode: StructuredQName, offset: Int): Nothing = {
     var errCode = errorCode
     if (errCode == null)
       errCode = new StructuredQName("err", NamespaceConstant.ERR, "XPST0003")
@@ -704,20 +706,23 @@ class XPathParser {
     this.env = env
     if (qNameParser == null) {
       qNameParser = new QNameParser(env.getNamespaceResolver)
-      if (languageVersion >= 30) qNameParser = qNameParser.withAcceptEQName(true)
+      if (languageVersion >= 30)
+        qNameParser = qNameParser.withAcceptEQName(true)
     }
     language = ParsedLanguage.SEQUENCE_TYPE
     t = new Tokenizer
     t.languageLevel = env.getXPathVersion
     t.allowSaxonExtensions = env.getConfiguration.getBooleanProperty(Feature.ALLOW_SYNTAX_EXTENSIONS)
     allowSaxonExtensions = t.allowSaxonExtensions
-    try t.tokenize(input, 0, -1)
+    try
+      t.tokenize(input, 0, -1)
     catch {
       case err: XPathException =>
         grumble(err.getMessage)
     }
-    val req: SequenceType = parseSequenceType
-    if (t.currentToken != Token.EOF) grumble("Unexpected token " + currentTokenDisplay + " beyond end of SequenceType")
+    val req = parseSequenceType
+    if (t.currentToken != Token.EOF)
+      grumble("Unexpected token " + currentTokenDisplay + " beyond end of SequenceType")
     req
   }
 
@@ -747,7 +752,8 @@ class XPathParser {
         grumble(err.getMessage)
     }
     val req = parseItemType
-    if (t.currentToken != Token.EOF) grumble("Unexpected token " + currentTokenDisplay + " beyond end of ItemType")
+    if (t.currentToken != Token.EOF)
+      grumble("Unexpected token " + currentTokenDisplay + " beyond end of ItemType")
     req
   }
 
@@ -775,7 +781,8 @@ class XPathParser {
         grumble(err.getMessage)
     }
     val req = parseSequenceType
-    if (t.currentToken != Token.EOF) grumble("Unexpected token " + currentTokenDisplay + " beyond end of SequenceType")
+    if (t.currentToken != Token.EOF)
+      grumble("Unexpected token " + currentTokenDisplay + " beyond end of SequenceType")
     req
   }
 
@@ -848,7 +855,6 @@ class XPathParser {
     t.currentToken match {
       case Token.EOF =>
         grumble("Expected an expression, but reached the end of the input")
-        null
       case Token.FOR |  Token.LET |  Token.FOR_SLIDING |  Token.FOR_TUMBLING =>
         parseFLWORExpression
       case Token.SOME | Token.EVERY =>
@@ -1101,10 +1107,8 @@ class XPathParser {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseTypeswitchExpression: Expression = {
+  def parseTypeswitchExpression: Expression =
     grumble("typeswitch is not allowed in XPath")
-    new ErrorExpression
-  }
 
   /**
    * Parse a Switch Expression.
@@ -1116,10 +1120,8 @@ class XPathParser {
    * @throws XPathException in the event of a syntax error
    */
   @throws[XPathException]
-  def parseSwitchExpression: Expression = {
+  def parseSwitchExpression: Expression =
     grumble("switch is not allowed in XPath")
-    new ErrorExpression
-  }
 
   /**
    * Parse a Validate Expression.
@@ -1131,10 +1133,8 @@ class XPathParser {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseValidateExpression: Expression = {
+  def parseValidateExpression: Expression =
     grumble("validate{} expressions are not allowed in XPath")
-    new ErrorExpression
-  }
 
   /**
    * Parse an Extension Expression
@@ -1146,10 +1146,8 @@ class XPathParser {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseExtensionExpression: Expression = {
+  def parseExtensionExpression: Expression =
     grumble("extension expressions (#...#) are not allowed in XPath")
-    new ErrorExpression
-  }
 
   /**
    * Parse a try/catch Expression
@@ -1161,10 +1159,8 @@ class XPathParser {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def parseTryCatchExpression: Expression = {
+  def parseTryCatchExpression: Expression =
     grumble("try/catch expressions are not allowed in XPath")
-    new ErrorExpression
-  }
 
   /**
    * Parse a FOR or LET expression:
@@ -1332,7 +1328,6 @@ class XPathParser {
     catch {
       case e: XPathException =>
         grumble(e.getMessage, e.getErrorCodeLocalPart)
-        return null
     }
     getPlainType(sq)
   }
@@ -1347,10 +1342,8 @@ class XPathParser {
     val builtInNamespace = uri == NamespaceConstant.SCHEMA
     if (builtInNamespace) {
       val t = Type.getBuiltInItemType(uri, local)
-      if (t == null) {
+      if (t == null)
         grumble("Unknown atomic type " + qname, "XPST0051")
-        assert(false)
-      }
       t match {
         case atomicType: BuiltInAtomicType =>
           checkAllowedType(env, atomicType)
@@ -1358,10 +1351,8 @@ class XPathParser {
         case _ =>
           if (t.isPlainType)
             return t
-        else {
-          grumble("The type " + qname + " is not atomic", "XPST0051")
-          assert(false)
-        }
+          else
+            grumble("The type " + qname + " is not atomic", "XPST0051")
       }
     }
     else if (uri == NamespaceConstant.JAVA_TYPE) {
@@ -1372,46 +1363,43 @@ class XPathParser {
       } catch {
         case _: XPathException =>
           grumble("Unknown Java class " + local, "XPST0051")
-          return AnyItemType
       }
       return config.getJavaExternalObjectType(theClass)
     }
     else if (uri == NamespaceConstant.DOT_NET_TYPE) return Version.platform.getExternalObjectType(config, uri, local)
     else {
       val st = config.getSchemaType(sq)
-      if (st == null) grumble("Unknown simple type " + qname, "XPST0051")
+      if (st == null)
+        grumble("Unknown simple type " + qname, "XPST0051")
       else if (st.isAtomicType) {
-        if (!env.isImportedSchema(uri)) grumble("Atomic type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
+        if (!env.isImportedSchema(uri))
+          grumble("Atomic type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
         return st.asInstanceOf[AtomicType]
       }
       else st match {
         case itemType: ItemType if allowXPath30Syntax && itemType.isPlainType =>
-          if (!env.isImportedSchema(uri)) grumble("Type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
+          if (!env.isImportedSchema(uri))
+            grumble("Type " + qname + " exists, but its schema definition has not been imported", "XPST0051")
           return itemType
         case _ =>
-          if (st.isComplexType) {
+          if (st.isComplexType)
             grumble("Type (" + qname + ") is a complex type", "XPST0051")
-            return ANY_ATOMIC
-          } else if (st.asInstanceOf[SimpleType].isListType) {
+          else if (st.asInstanceOf[SimpleType].isListType)
             grumble("Type (" + qname + ") is a list type", "XPST0051")
-            return ANY_ATOMIC
-          } else if (allowXPath30Syntax) {
+          else if (allowXPath30Syntax)
             grumble("Type (" + qname + ") is a union type that cannot be used as an item type", "XPST0051")
-            return ANY_ATOMIC
-          } else {
+          else
             grumble("The union type (" + qname + ") cannot be used as an item type unless XPath 3.0 is enabled", "XPST0051")
-            return ANY_ATOMIC
-          }
       }
     }
     grumble("Unknown atomic type " + qname, "XPST0051")
-    ANY_ATOMIC
   }
 
   @throws[XPathException]
   private def checkAllowedType(env: StaticContext, `type`: BuiltInAtomicType): Unit = {
     val s = XPathParser.whyDisallowedType(env.getPackageData, `type`)
-    if (s != null) grumble(s, "XPST0080")
+    if (s != null)
+      grumble(s, "XPST0080")
   }
 
   /**
@@ -1425,57 +1413,61 @@ class XPathParser {
    */
   @throws[XPathException]
   private def getSimpleType(qname: String): CastingTarget = {
-    if (scanOnly) return STRING
-    var sq: StructuredQName = null
-    try sq = qNameParser.parse(qname, env.getDefaultElementNamespace)
-    catch {
-      case e: XPathException =>
-        grumble(e.getMessage, e.getErrorCodeLocalPart)
-        assert(false)
-    }
+
+    if (scanOnly)
+      return STRING
+
+    val sq =
+      try
+        qNameParser.parse(qname, env.getDefaultElementNamespace)
+      catch {
+        case e: XPathException =>
+          grumble(e.getMessage, e.getErrorCodeLocalPart)
+      }
+
     val uri = sq.getURI
     val local = sq.getLocalPart
+
     val builtInNamespace = uri == NamespaceConstant.SCHEMA
     if (builtInNamespace) {
       val target = Type.getBuiltInSimpleType(uri, local)
-      if (target == null) grumble("Unknown simple type " + qname, if (allowXPath30Syntax) "XQST0052"
-      else "XPST0051")
-      else if (!target.isInstanceOf[CastingTarget]) grumble("Unsuitable type for cast: " + target.getDescription, "XPST0080")
+      if (target == null)
+        grumble("Unknown simple type " + qname, if (allowXPath30Syntax) "XQST0052" else "XPST0051")
+      else if (!target.isInstanceOf[CastingTarget])
+        grumble("Unsuitable type for cast: " + target.getDescription, "XPST0080")
       val t = target.asInstanceOf[CastingTarget]
       t match {
         case atomicType: BuiltInAtomicType => checkAllowedType(env, atomicType)
         case _ =>
       }
       t
-    }
-    else if (uri == NamespaceConstant.DOT_NET_TYPE) Version.platform.getExternalObjectType(env.getConfiguration, uri, local).asInstanceOf[AtomicType]
-    else {
+    } else if (uri == NamespaceConstant.DOT_NET_TYPE) {
+      Version.platform.getExternalObjectType(env.getConfiguration, uri, local).asInstanceOf[AtomicType]
+    } else {
       val st = env.getConfiguration.getSchemaType(new StructuredQName("", uri, local))
       if (st == null) {
-        if (allowXPath30Syntax) grumble("Unknown simple type " + qname, "XQST0052")
-        else grumble("Unknown simple type " + qname, "XPST0051")
-        return ANY_ATOMIC
+        if (allowXPath30Syntax)
+          grumble("Unknown simple type " + qname, "XQST0052")
+        else
+          grumble("Unknown simple type " + qname, "XPST0051")
       }
-      if (allowXPath30Syntax) { // XPath 3.0
-        if (!env.isImportedSchema(uri)) grumble("Simple type " + qname + " exists, but its target namespace has not been imported in the static context")
+      if (allowXPath30Syntax) {
+        // XPath 3.0
+        if (!env.isImportedSchema(uri))
+          grumble("Simple type " + qname + " exists, but its target namespace has not been imported in the static context")
         st.asInstanceOf[CastingTarget]
-      }
-      else { // XPath 2.0
+      } else {
+        // XPath 2.0
         if (st.isAtomicType) {
-          if (!env.isImportedSchema(uri)) grumble("Atomic type " + qname + " exists, but its target namespace has not been imported in the static context")
+          if (!env.isImportedSchema(uri))
+            grumble("Atomic type " + qname + " exists, but its target namespace has not been imported in the static context")
           st.asInstanceOf[AtomicType]
-        }
-        else if (st.isComplexType) {
+        } else if (st.isComplexType) {
           grumble("Cannot cast to a complex type (" + qname + ")", "XPST0051")
-          ANY_ATOMIC
-        }
-        else if (st.asInstanceOf[SimpleType].isListType) {
+        } else if (st.asInstanceOf[SimpleType].isListType) {
           grumble("Casting to a list type (" + qname + ") requires XPath 3.0", "XPST0051")
-          ANY_ATOMIC
-        }
-        else {
+        } else {
           grumble("casting to a union type (" + qname + ") requires XPath 3.0", "XPST0051")
-          ANY_ATOMIC
         }
       }
     }
@@ -1567,11 +1559,10 @@ class XPathParser {
     }
     else if (t.currentToken == Token.PERCENT) {
       val annotations = parseAnnotationsList
-      if (t.currentTokenValue == "function") primaryType = parseFunctionItemType(annotations)
-      else {
+      if (t.currentTokenValue == "function")
+        primaryType = parseFunctionItemType(annotations)
+      else
         grumble("Expected 'function' to follow annotation assertions, found " + Token.tokens(t.currentToken))
-        return null
-      }
     }
     else if ((language eq ParsedLanguage.EXTENDED_ITEM_TYPE) && t.currentToken == Token.PREFIX) {
       val tokv = t.currentTokenValue
@@ -1591,22 +1582,17 @@ class XPathParser {
         val tokv = t.currentTokenValue
         nextToken()
         return makeNamespaceTest(Type.ATTRIBUTE, tokv)
-      }
-      else if (t.currentToken == Token.SUFFIX) {
+      } else if (t.currentToken == Token.SUFFIX) {
         nextToken()
         expect(Token.NAME)
         val tokv = t.currentTokenValue
         nextToken()
         return makeLocalNameTest(Type.ATTRIBUTE, tokv)
-      }
-      else {
+      } else {
         grumble("Expected NodeTest after '@'")
-        return ANY_ATOMIC
       }
-    }
-    else {
+    } else {
       grumble("Expected type name in SequenceType, found " + Token.tokens(t.currentToken))
-      return ANY_ATOMIC
     }
     primaryType
   }
@@ -1643,10 +1629,8 @@ class XPathParser {
       val valueType = parseSequenceType
       expect(Token.RPAR)
       nextToken()
-      if (!keyType.isInstanceOf[AtomicType]) {
+      if (!keyType.isInstanceOf[AtomicType])
         grumble("Key type of a map must be atomic")
-        return null
-      }
       new MapType(keyType.asInstanceOf[AtomicType], valueType)
     }
   }
@@ -1689,7 +1673,8 @@ class XPathParser {
    */
   @throws[XPathException]
   private def parseParenthesizedItemType = {
-    if (!allowXPath30Syntax) grumble("Parenthesized item types require 3.0 to be enabled")
+    if (!allowXPath30Syntax)
+      grumble("Parenthesized item types require 3.0 to be enabled")
     nextToken()
     var primaryType = parseItemType
     while ( {
@@ -1804,7 +1789,8 @@ class XPathParser {
         nextToken()
         val start = new RootExpression
         setLocation(start)
-        if (disallowedAtStartOfRelativePath) grumble("Operator '" + Token.tokens(t.currentToken) + "' is not allowed after '/'")
+        if (disallowedAtStartOfRelativePath)
+          grumble("Operator '" + Token.tokens(t.currentToken) + "' is not allowed after '/'")
         if (atStartOfRelativePath) {
           val path = parseRemainingPath(start)
           setLocation(path, offset)
@@ -1917,7 +1903,9 @@ class XPathParser {
           exp = new HomogeneityChecker(exp)
         }
         else {
-          /*if (op == Token.BANG)*/ if (!allowXPath30Syntax) grumble("XPath '!' operator requires XPath 3.0 to be enabled")
+          /*if (op == Token.BANG)*/
+          if (!allowXPath30Syntax)
+            grumble("XPath '!' operator requires XPath 3.0 to be enabled")
           exp = new ForEach(exp, next)
         }
         setLocation(exp, offset)
@@ -1994,20 +1982,18 @@ class XPathParser {
     checkLanguageVersion31()
     nextToken()
     val token = getTokenizer.currentToken
-    if (token == Token.NAME || token == Token.FUNCTION) parseFunctionCall(lhs)
+    if (token == Token.NAME || token == Token.FUNCTION)
+      parseFunctionCall(lhs)
     else if (token == Token.DOLLAR) {
       val `var` = parseVariableReference
       expect(Token.LPAR)
       parseDynamicFunctionCall(`var`, lhs)
-    }
-    else if (token == Token.LPAR) {
+    } else if (token == Token.LPAR) {
       val `var` = parseParenthesizedExpression
       expect(Token.LPAR)
       parseDynamicFunctionCall(`var`, lhs)
-    }
-    else {
+    } else {
       grumble("Unexpected " + Token.tokens(token) + " after '=>'")
-      null
     }
   }
 
@@ -2063,7 +2049,8 @@ class XPathParser {
         return pne
       case Token.PERCENT =>
         val annotations = parseAnnotationsList
-        if (!(t.currentTokenValue == "function")) grumble("Expected 'function' to follow the annotation assertion")
+        if (!(t.currentTokenValue == "function"))
+          grumble("Expected 'function' to follow the annotation assertion")
         annotations.check(env.getConfiguration, "IF")
         return parseInlineFunction(annotations)
       case Token.NODEKIND if t.currentTokenValue == "function" =>
@@ -2112,7 +2099,6 @@ class XPathParser {
         catch {
           case err: XPathException =>
             grumble(err.getMessage)
-            axis = AxisInfo.CHILD // error recovery
         }
         testPermittedAxis(axis, "XPST0003")
         val principalNodeType = AxisInfo.principalNodeType(axis)
@@ -2192,10 +2178,8 @@ class XPathParser {
   }
 
   @throws[XPathException]
-  def parseStringConstructor: Expression = {
+  def parseStringConstructor: Expression =
     grumble("String constructor expressions are allowed only in XQuery")
-    null
-  }
 
   @throws[XPathException]
   def parseVariableReference: Expression = {
@@ -2262,10 +2246,8 @@ class XPathParser {
   def unescape(token: String): CharSequence = token
 
   @throws[XPathException]
-  def parseConstructor: Expression = {
+  def parseConstructor: Expression =
     grumble("Node constructor expressions are allowed only in XQuery, not in XPath")
-    new ErrorExpression
-  }
 
   @throws[XPathException]
   def parseDynamicFunctionCall(functionItem: Expression, prefixArgument: Expression): Expression = {
@@ -2323,34 +2305,31 @@ class XPathParser {
     var result: Expression = null
     if (token == Token.NAME) {
       val name = t.currentTokenValue
-      if (!NameChecker.isValidNCName(name)) grumble("The name following '?' must be a valid NCName")
+      if (!NameChecker.isValidNCName(name))
+        grumble("The name following '?' must be a valid NCName")
       nextToken()
       result = lookupName(lhs, name)
-    }
-    else if (token == Token.NUMBER) {
+    } else if (token == Token.NUMBER) {
       val number = NumericValue.parseNumber(t.currentTokenValue)
-      if (!number.isInstanceOf[IntegerValue]) grumble("Number following '?' must be an integer")
+      if (!number.isInstanceOf[IntegerValue])
+        grumble("Number following '?' must be an integer")
       nextToken()
       result = XPathParser.lookup(this, lhs, Literal.makeLiteral(number))
-    }
-    else if (token == Token.MULT || token == Token.STAR) {
+    } else if (token == Token.MULT || token == Token.STAR) {
       nextToken()
       result = XPathParser.lookupStar(lhs)
-    }
-    else if (token == Token.LPAR) result = XPathParser.lookup(this, lhs, parseParenthesizedExpression)
+    } else if (token == Token.LPAR)
+      result = XPathParser.lookup(this, lhs, parseParenthesizedExpression)
     else if (token == Token.STRING_LITERAL) {
       checkSyntaxExtensions("string literal after '?'")
       result = lookupName(lhs, t.currentTokenValue)
       nextToken()
-    }
-    else if (token == Token.DOLLAR) {
+    } else if (token == Token.DOLLAR) {
       checkSyntaxExtensions("variable reference after '?'")
       result = XPathParser.lookup(this, lhs, parseVariableReference)
       nextToken()
-    }
-    else {
+    } else {
       grumble("Unexpected " + Token.tokens(token) + " after '?'")
-      return null
     }
     setLocation(result, offset)
     result
@@ -2398,7 +2377,6 @@ class XPathParser {
         parseKindTest
       case _ =>
         grumble("Unrecognized node test")
-        throw new XPathException("") // unreachable instruction
     }
   }
 
@@ -2412,50 +2390,42 @@ class XPathParser {
     var empty = false
     nextToken()
     if (t.currentToken == Token.RPAR) {
-      if (schemaDeclaration) {
+      if (schemaDeclaration)
         grumble("schema-element() and schema-attribute() require a name to be supplied")
-        return null
-      }
       empty = true
       nextToken()
     }
     primaryType match {
       case Type.ITEM =>
         grumble("item() is not allowed in a path expression")
-        null
       case Type.NODE =>
-        if (empty) AnyNodeTest
-        else {
+        if (empty)
+          AnyNodeTest
+        else
           grumble("Expected ')': no arguments are allowed in node()")
-          null
-        }
       case Type.TEXT =>
-        if (empty) NodeKindTest.TEXT
-        else {
+        if (empty)
+          NodeKindTest.TEXT
+        else
           grumble("Expected ')': no arguments are allowed in text()")
-          null
-        }
       case Type.COMMENT =>
-        if (empty) NodeKindTest.COMMENT
-        else {
+        if (empty)
+          NodeKindTest.COMMENT
+        else
           grumble("Expected ')': no arguments are allowed in comment()")
-          null
-        }
       case Type.NAMESPACE =>
         if (empty) {
-          if (!isNamespaceTestAllowed) grumble("namespace-node() test is not allowed in XPath 2.0/XQuery 1.0")
+          if (!isNamespaceTestAllowed)
+            grumble("namespace-node() test is not allowed in XPath 2.0/XQuery 1.0")
           NodeKindTest.NAMESPACE
-        }
-        else if ((language eq ParsedLanguage.EXTENDED_ITEM_TYPE) && t.currentToken == Token.NAME) {
+        } else if ((language eq ParsedLanguage.EXTENDED_ITEM_TYPE) && t.currentToken == Token.NAME) {
           val nsName = t.currentTokenValue
           nextToken()
           expect(Token.RPAR)
           nextToken()
           new NameTest(Type.NAMESPACE, "", nsName, pool)
-        }
-        else {
+        } else {
           grumble("No arguments are allowed in namespace-node()")
-          null
         }
       case Type.DOCUMENT =>
         if (empty) NodeKindTest.DOCUMENT
@@ -2463,13 +2433,11 @@ class XPathParser {
           var innerType = 0
           try innerType = getSystemType(t.currentTokenValue)
           catch {
-            case err: XPathException =>
+            case _: XPathException =>
               innerType = Type.ITEM
           }
-          if (innerType != Type.ELEMENT) {
+          if (innerType != Type.ELEMENT)
             grumble("Argument to document-node() must be an element type descriptor")
-            return null
-          }
           val inner = parseKindTest
           expect(Token.RPAR)
           nextToken()
@@ -2479,20 +2447,23 @@ class XPathParser {
         if (empty) return NodeKindTest.PROCESSING_INSTRUCTION
         else if (t.currentToken == Token.STRING_LITERAL) {
           val piName = Whitespace.trim(unescape(t.currentTokenValue))
-          if (!NameChecker.isValidNCName(piName)) { // Became an error as a result of XPath erratum XP.E7
+          if (!NameChecker.isValidNCName(piName)) {
+            // Became an error as a result of XPath erratum XP.E7
             grumble("Processing instruction name must be a valid NCName", "XPTY0004")
-          }
-          else fp = pool.allocateFingerprint("", piName)
+          } else
+            fp = pool.allocateFingerprint("", piName)
         }
         else if (t.currentToken == Token.NAME) try {
           val parts = NameChecker.getQNameParts(t.currentTokenValue)
-          if (parts(0).isEmpty) fp = pool.allocateFingerprint("", parts(1))
-          else grumble("Processing instruction name must not contain a colon")
+          if (parts(0).isEmpty)
+            fp = pool.allocateFingerprint("", parts(1))
+          else
+            grumble("Processing instruction name must not contain a colon")
         } catch {
           case e: QNameException =>
             grumble("Invalid processing instruction name. " + e.getMessage)
-        }
-        else grumble("Processing instruction name must be a QName or a string literal")
+        } else
+          grumble("Processing instruction name must be a QName or a string literal")
         nextToken()
         expect(Token.RPAR)
         nextToken()
@@ -2500,38 +2471,37 @@ class XPathParser {
       case Type.ATTRIBUTE | Type.ELEMENT =>
         var nodeName = ""
         var nodeTest: NodeTest = null
-        if (empty) return NodeKindTest.makeNodeKindTest(primaryType)
-        else if (t.currentToken == Token.STAR || t.currentToken == Token.MULT) { // allow for both representations of "*" to be safe
-          if (schemaDeclaration) {
+        if (empty) {
+          return NodeKindTest.makeNodeKindTest(primaryType)
+        } else if (t.currentToken == Token.STAR || t.currentToken == Token.MULT) { // allow for both representations of "*" to be safe
+          if (schemaDeclaration)
             grumble("schema-element() and schema-attribute() must specify an actual name, not '*'")
-            return null
-          }
           nodeTest = NodeKindTest.makeNodeKindTest(primaryType)
           nextToken()
-        }
-        else if (t.currentToken == Token.NAME) {
+        } else if (t.currentToken == Token.NAME) {
           nodeName = t.currentTokenValue
           fp = makeFingerprint(t.currentTokenValue, primaryType == Type.ELEMENT)
           nextToken()
-        }
-        else if ((t.currentToken == Token.PREFIX || t.currentToken == Token.SUFFIX) && allowSaxonExtensions)
+        } else if ((t.currentToken == Token.PREFIX || t.currentToken == Token.SUFFIX) && allowSaxonExtensions) {
           nodeTest = parseNodeTest(primaryType.toShort)
-        else grumble("Unexpected " + Token.tokens(t.currentToken) + " after '(' in SequenceType")
+        } else {
+          grumble("Unexpected " + Token.tokens(t.currentToken) + " after '(' in SequenceType")
+        }
         var suri: String = null
         if (fp != -1) suri = pool.getURI(fp)
         if (t.currentToken == Token.RPAR) {
           nextToken()
-          if (fp == -1) { // element(*) or attribute(*)
+          if (fp == -1) {
+            // element(*) or attribute(*)
             return nodeTest
           }
           else if (primaryType == Type.ATTRIBUTE) { // attribute(N) or schema-attribute(N)
             if (schemaDeclaration) { // schema-attribute(N)
               val attributeDecl: SchemaDeclaration = env.getConfiguration.getAttributeDeclaration(fp & 0xfffff)
               if (!env.isImportedSchema(suri)) grumble("No schema has been imported for namespace '" + suri + '\'', "XPST0008")
-              if (attributeDecl == null) {
+              if (attributeDecl == null)
                 grumble("There is no declaration for attribute @" + nodeName + " in an imported schema", "XPST0008")
-                return null
-              } else
+              else
                 return attributeDecl.makeSchemaNodeTest
             }
             else return new NameTest(Type.ATTRIBUTE, fp, pool)
@@ -2540,26 +2510,21 @@ class XPathParser {
             if (schemaDeclaration) { // schema-element(N)
               if (!env.isImportedSchema(suri)) grumble("No schema has been imported for namespace '" + suri + '\'', "XPST0008")
               val elementDecl: SchemaDeclaration = env.getConfiguration.getElementDeclaration(fp & 0xfffff)
-              if (elementDecl == null) {
+              if (elementDecl == null)
                 grumble("There is no declaration for element <" + nodeName + "> in an imported schema", "XPST0008")
-                return null
-              } else
+              else
                 return elementDecl.makeSchemaNodeTest
             }
             else return makeNameTest(Type.ELEMENT, nodeName, useDefault = true)
           }
         }
         else if (t.currentToken == Token.COMMA) {
-          if (schemaDeclaration) {
+          if (schemaDeclaration)
             grumble("schema-element() and schema-attribute() must have one argument only")
-            return null
-          }
           nextToken()
           var result: NodeTest = null
-          if (t.currentToken == Token.STAR) {
+          if (t.currentToken == Token.STAR)
             grumble("'*' is no longer permitted as the second argument of element() and attribute()")
-            return null
-          }
           else if (t.currentToken == Token.NAME) {
             var schemaType: SchemaType = null
             val contentType = makeStructuredQName(t.currentTokenValue, env.getDefaultElementNamespace)
@@ -2568,13 +2533,12 @@ class XPathParser {
             val lname: String = contentType.getLocalPart
             if (uri == NamespaceConstant.SCHEMA) schemaType = env.getConfiguration.getSchemaType(contentType)
             else {
-              if (!env.isImportedSchema(uri)) grumble("No schema has been imported for namespace '" + uri + '\'', "XPST0008")
+              if (!env.isImportedSchema(uri))
+                grumble("No schema has been imported for namespace '" + uri + '\'', "XPST0008")
               schemaType = env.getConfiguration.getSchemaType(contentType)
             }
-            if (schemaType == null) {
+            if (schemaType == null)
               grumble("Unknown type name " + contentType.getEQName, "XPST0008")
-              return null
-            }
             if (primaryType == Type.ATTRIBUTE && schemaType.isComplexType) warning("An attribute cannot have a complex type")
             val typeTest = new ContentTypeTest(primaryType, schemaType, env.getConfiguration, false)
             if (fp == -1 && (nodeTest == null || nodeTest.isInstanceOf[NodeKindTest])) { // this represents element(*,T) or attribute(*,T)
@@ -2603,21 +2567,18 @@ class XPathParser {
                 nextToken()
               }
             }
-          }
-          else {
+          } else {
             grumble("Unexpected " + Token.tokens(t.currentToken) + " after ',' in SequenceType")
-            return null
           }
           expect(Token.RPAR)
           nextToken()
           return result
-        }
-        else grumble("Expected ')' or ',' in SequenceType")
+        } else
+          grumble("Expected ')' or ',' in SequenceType")
         null
       case _ =>
         // can't happen!
         grumble("Unknown node kind")
-        null
     }
   }
 
@@ -2648,22 +2609,23 @@ class XPathParser {
   else if ("processing-instruction" == name) Type.PROCESSING_INSTRUCTION
   else if ("namespace-node" == name) Type.NAMESPACE
   else if ("node" == name) Type.NODE
-  else {
-    grumble("Unknown type " + name)
-    -1
-  }
+  else grumble("Unknown type " + name)
 
   @throws[XPathException]
-  def checkLanguageVersion30(): Unit = if (!allowXPath30Syntax) grumble("To use XPath 3.0 syntax, you must configure the XPath parser to handle it")
+  def checkLanguageVersion30(): Unit = if (!allowXPath30Syntax)
+    grumble("To use XPath 3.0 syntax, you must configure the XPath parser to handle it")
 
   @throws[XPathException]
-  def checkLanguageVersion31(): Unit = if (!allowXPath31Syntax) grumble("The XPath parser is not configured to allow use of XPath 3.1 syntax")
+  def checkLanguageVersion31(): Unit = if (!allowXPath31Syntax)
+    grumble("The XPath parser is not configured to allow use of XPath 3.1 syntax")
 
   @throws[XPathException]
-  def checkMapExtensions(): Unit = if (!(allowXPath31Syntax || allowXPath30XSLTExtensions)) grumble("The XPath parser is not configured to allow use of the map syntax from XSLT 3.0 or XPath 3.1")
+  def checkMapExtensions(): Unit = if (!(allowXPath31Syntax || allowXPath30XSLTExtensions))
+    grumble("The XPath parser is not configured to allow use of the map syntax from XSLT 3.0 or XPath 3.1")
 
   @throws[XPathException]
-  def checkSyntaxExtensions(construct: String): Unit = if (!allowSaxonExtensions) grumble("Saxon XPath syntax extensions have not been enabled: " + construct + " is not allowed")
+  def checkSyntaxExtensions(construct: String): Unit = if (!allowSaxonExtensions)
+    grumble("Saxon XPath syntax extensions have not been enabled: " + construct + " is not allowed")
 
   /**
    * Parse a map expression. Requires XPath/XQuery 3.0
@@ -2757,7 +2719,6 @@ class XPathParser {
         }
       }
       grumble("Expected ',' or ']', " + "found " + Token.tokens(t.currentToken))
-      return new ErrorExpression
     }
     val block = new SquareArrayConstructor(members)
     setLocation(block, offset)
@@ -2854,10 +2815,8 @@ class XPathParser {
       else fcall match {
         case _: CurrentGroupCall =>
           grumble("The current-group() function cannot be used in a pattern", "XTSE1060", offset)
-          return new ErrorExpression
         case _: CurrentGroupingKeyCall =>
           grumble("The current-grouping-key() function cannot be used in a pattern", "XTSE1070", offset)
-          return new ErrorExpression
         case _ =>
       }
 //    else if (fcall.isCallOn(classOf[CurrentMergeGroup])) {
@@ -2919,7 +2878,6 @@ class XPathParser {
       new ErrorExpression(sb.toString, "XTDE1425", false)
     } else {
       grumble(sb.toString, "XPST0017", offset)
-      null
     }
   }
 
@@ -2944,8 +2902,6 @@ class XPathParser {
       catch {
         case e: XPathException =>
           grumble(e.getMessage, e.getErrorCodeLocalPart)
-          assert(false)
-          null
       }
 
     if (functionName.hasURI(NamespaceConstant.SCHEMA)) {
@@ -2982,10 +2938,8 @@ class XPathParser {
     parserExtension.parseNamedFunctionReference(this)
 
   @throws[XPathException]
-  def parseAnnotationsList: AnnotationList = {
+  def parseAnnotationsList: AnnotationList =
     grumble("Inline functions are not allowed in Saxon-HE")
-    null
-  }
 
   @throws[XPathException]
   def parseInlineFunction(annotations: AnnotationList): Expression =
@@ -3003,10 +2957,8 @@ class XPathParser {
    * @throws XPathException if a static error is found
    */
   @throws[XPathException]
-  def makeCurriedFunction(offset: Int, name: StructuredQName, args: Array[Expression], placeMarkers: IntSet): ErrorExpression = {
+  def makeCurriedFunction(offset: Int, name: StructuredQName, args: Array[Expression], placeMarkers: IntSet): ErrorExpression =
     grumble("Partial function application is not allowed in Saxon-HE")
-    new ErrorExpression
-  }
 
   /**
    * Get the stack of in-scope range variables
@@ -3085,7 +3037,6 @@ class XPathParser {
     } catch {
       case e: XPathException =>
         grumble(e.getMessage, e.getErrorCodeLocalPart)
-        -1
     }
   }
 
@@ -3126,7 +3077,6 @@ class XPathParser {
     } catch {
       case err: XPathException =>
         grumble(err.getMessage, err.getErrorCodeLocalPart)
-        new StructuredQName("", "", "error") // Not executed; here to keep the compiler happy
     }
 
   /**
@@ -3190,7 +3140,8 @@ class XPathParser {
           val test2 = new NameTest(nodeType, fp2, pool)
           return new CombinedNodeTest(test1, Token.UNION, test2)
         case ANY_NAMESPACE =>
-          if (!NameChecker.isValidNCName(qname)) grumble("Invalid name '" + qname + "'")
+          if (!NameChecker.isValidNCName(qname))
+            grumble("Invalid name '" + qname + "'")
           return new LocalNameTest(pool, nodeType, qname)
       }
     }
@@ -3233,7 +3184,6 @@ class XPathParser {
     } catch {
       case err: XPathException =>
         grumble(err.getMessage, err.getErrorCodeLocalPart)
-        null
     }
   }
 
@@ -3248,7 +3198,8 @@ class XPathParser {
    */
   @throws[XPathException]
   def makeLocalNameTest(nodeType: Short, localName: String): LocalNameTest = {
-    if (!NameChecker.isValidNCName(localName)) grumble("Local name [" + localName + "] contains invalid characters")
+    if (!NameChecker.isValidNCName(localName))
+      grumble("Local name [" + localName + "] contains invalid characters")
     new LocalNameTest(env.getConfiguration.getNamePool, nodeType, localName)
   }
 
