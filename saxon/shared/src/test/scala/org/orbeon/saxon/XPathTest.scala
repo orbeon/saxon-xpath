@@ -19,12 +19,18 @@ class XPathTest extends AnyFunSpec {
   val Configuration = new Configuration
   Configuration.optimizerOptions = new OptimizerOptions("vmt") // FIXME: temporarily remove the "l" option which fails
 
-  def compileAndRunExpression(xpath: String, ctx: Item, isAVT: Boolean): Item = {
+  def compileAndRunExpression(xpath: String, ctx: Item, isAVT: Boolean): Option[Item] = {
 
     val evaluator = new XPathEvaluator(Configuration)
 
-    evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("fn",   NamespaceConstant.FN)
-    evaluator.staticContext.asInstanceOf[IndependentContext].declareNamespace("math", NamespaceConstant.MATH)
+    val staticContext = evaluator.staticContext.asInstanceOf[IndependentContext]
+
+    val FnPrefix = "foo"
+    val FnUri    = "http://example.org/foo"
+
+    staticContext.declareNamespace("fn",     NamespaceConstant.FN)
+    staticContext.declareNamespace("math",   NamespaceConstant.MATH)
+    staticContext.declareNamespace(FnPrefix, FnUri)
 
     val xpe =
       if (isAVT)
@@ -43,7 +49,7 @@ class XPathTest extends AnyFunSpec {
     val dc = xpe.createDynamicContext
     dc.setContextItem(ctx)
 
-    xpe.evaluateSingle(dc)
+    Option(xpe.evaluateSingle(dc))
   }
 
 //  val doc = dom.Document(dom.Element("root"))
@@ -127,6 +133,8 @@ class XPathTest extends AnyFunSpec {
       ("""for $n in name() return count($n)""",                    docElem, false, "1"),
       ("if (true()) then 'x' else .",                              int,     false, "x"),
       ("if (false()) then 'x' else .",                             int,     false, "2020"),
+      ("(*[1])/name(.) = 'first-name'",                            docElem, false, "true"),
+      ("(*[1])/name() = 'first-name'",                             docElem, false, "true"),
 
 //      ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
 //      ("""string-join(for $i in * return string($i), '/')""",      doc,     false, "Wile/E./Coyote"), // FIXME: doesn't include '/'
@@ -136,7 +144,7 @@ class XPathTest extends AnyFunSpec {
 
     for ((in, ctx, isAVT, out) <- Expected)
       it(s"must evaluate `$in`") {
-        assert(out == compileAndRunExpression(in, ctx, isAVT).getStringValue)
+        assert(out == compileAndRunExpression(in, ctx, isAVT).map(_.getStringValue).orNull)
       }
   }
 }

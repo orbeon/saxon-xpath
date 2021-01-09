@@ -346,7 +346,7 @@ class SlashExpression(start: Expression, step: Expression)
   override def unordered(retainAllNodes: Boolean,
                          forStreaming: Boolean): Expression = {
     this.setStart(getStart.unordered(retainAllNodes, forStreaming))
-    this.setStart(getStep.unordered(retainAllNodes, forStreaming))
+    this.setStep(getStep.unordered(retainAllNodes, forStreaming))
     this
   }
 
