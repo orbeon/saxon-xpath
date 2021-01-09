@@ -2563,40 +2563,43 @@ class Configuration extends SourceResolver with NotationSet {
    *         been registered.
    */
   def getElementDeclaration(fingerprint: Int): SchemaDeclaration = null
-
   def getElementDeclaration(qName: StructuredQName): SchemaDeclaration = null
-
-
   def getAttributeDeclaration(fingerprint: Int): SchemaDeclaration = null
-
-
   def getAttributeDeclaration(attributeName: StructuredQName): SchemaDeclaration = null
 
 
-  def getSchemaType(name: StructuredQName): SchemaType = {
-    if (name.hasURI(NamespaceConstant.SCHEMA)) return BuiltInType.getSchemaTypeByLocalName(name.getLocalPart)
-    null
-  }
+  def getSchemaType(name: StructuredQName): SchemaType =
+    if (name.hasURI(NamespaceConstant.SCHEMA))
+      BuiltInType.getSchemaTypeByLocalName(name.getLocalPart)
+    else
+      null
 
   def makeUserUnionType(memberTypes: java.util.List[AtomicType]): ItemType = null
 
   override def isDeclaredNotation(uri: String, local: String): Boolean = false
 
   @throws[SchemaException]
-  def checkTypeDerivationIsOK(derived: SchemaType, base: SchemaType, block: Int): Unit = {
-  }
+  def checkTypeDerivationIsOK(derived: SchemaType, base: SchemaType, block: Int): Unit = ()
+  def prepareValidationReporting(context: XPathContext, options: ParseOptions): Unit = ()
 
-  def prepareValidationReporting(context: XPathContext, options: ParseOptions): Unit = {
-  }
-
-  def getDocumentValidator(receiver: Receiver, systemId: String, validationOptions: ParseOptions, initiatingLocation: Location): Receiver = receiver
+  def getDocumentValidator(
+    receiver           : Receiver,
+    systemId           : String,
+    validationOptions  : ParseOptions,
+    initiatingLocation : Location
+  ): Receiver = receiver
 
   @throws[XPathException]
-  def getElementValidator(receiver: Receiver, validationOptions: ParseOptions, locationId: Location): Receiver = receiver
+  def getElementValidator(
+    receiver           : Receiver,
+    validationOptions  : ParseOptions,
+    locationId         : Location
+  ): Receiver = receiver
 
   @throws[ValidationException]
   @throws[MissingComponentException]
-  def validateAttribute(nodeName: StructuredQName, value: CharSequence, validation: Int): SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
+  def validateAttribute(nodeName: StructuredQName, value: CharSequence, validation: Int): SimpleType =
+    BuiltInAtomicType.UNTYPED_ATOMIC
 
   def getAnnotationStripper(destination: Receiver): Receiver = destination
 
@@ -2628,33 +2631,47 @@ class Configuration extends SourceResolver with NotationSet {
   }
 
   @throws[XPathException]
-  def newExpressionParser(language: String, updating: Boolean, languageVersion: Int): XPathParser = if ("XQ" == language) if (updating) throw new XPathException("XQuery Update is supported only in Saxon-EE")
-  else if (languageVersion == 31 || languageVersion == 30 || languageVersion == 10) {
-    val parser = new XQueryParser
-    parser.setLanguage(ParsedLanguage.XQUERY, 31)
-    parser
-  }
-  else throw new XPathException("Unknown XQuery version " + languageVersion)
-  else if ("XP" == language) if (languageVersion == 31 || languageVersion == 30 || languageVersion == 305 || languageVersion == 20) {
-    val parser = new XPathParser
-    parser.setLanguage(ParsedLanguage.XPATH, languageVersion)
-    parser
-  }
-  else throw new XPathException("Unknown XPath version " + languageVersion)
-  else if ("PATTERN" == language) if (languageVersion == 30 || languageVersion == 20 || languageVersion == 305 || languageVersion == 31) new PatternParser30
-  else throw new XPathException("Unknown XPath version " + languageVersion)
-  else throw new XPathException("Unknown expression language " + language)
+  def newExpressionParser(language: String, updating: Boolean, languageVersion: Int): XPathParser =
+    if ("XQ" == language) {
+      if (updating) {
+        throw new XPathException("XQuery Update is supported only in Saxon-EE")
+      } else if (languageVersion == 31 || languageVersion == 30 || languageVersion == 10) {
+        val parser = new XQueryParser
+        parser.setLanguage(ParsedLanguage.XQUERY, 31)
+        parser
+      } else {
+          throw new XPathException("Unknown XQuery version " + languageVersion)
+      }
+    } else if ("XP" == language) {
+      if (languageVersion == 31 || languageVersion == 30 || languageVersion == 305 || languageVersion == 20) {
+        val parser = new XPathParser
+        parser.setLanguage(ParsedLanguage.XPATH, languageVersion)
+        parser
+      } else
+        throw new XPathException("Unknown XPath version " + languageVersion)
+    } else if ("PATTERN" == language) {
+      if (languageVersion == 30 || languageVersion == 20 || languageVersion == 305 || languageVersion == 31)
+        new PatternParser30
+      else
+        throw new XPathException("Unknown XPath version " + languageVersion)
+    } else {
+      throw new XPathException("Unknown expression language " + language)
+    }
 
   def setDebugger(debugger: Debugger): Unit = this.debugger = debugger
-
-
   def getDebugger: Debugger = debugger
 
-  def makeSlotManager: SlotManager = if (debugger == null) new SlotManager() else debugger.makeSlotManager()
+  def makeSlotManager: SlotManager =
+    if (debugger == null) new SlotManager() else debugger.makeSlotManager()
 
   @throws[XPathException]
-  def makeStreamingTransformer(mode: Mode, ordinaryParams: ParameterSet, tunnelParams: ParameterSet,
-                               output: Outputter, context: XPathContext): Receiver = throw new XPathException("Streaming is only available in Saxon-EE")
+  def makeStreamingTransformer(
+    mode           : Mode,
+    ordinaryParams : ParameterSet,
+    tunnelParams   : ParameterSet,
+    output         : Outputter,
+    context        : XPathContext
+  ): Receiver = throw new XPathException("Streaming is only available in Saxon-EE")
 
 //  @throws[XPathException]
 //  def makeStreamInstruction(hrefExp: Expression, body: Expression, streaming: Boolean,
@@ -2727,7 +2744,8 @@ class Configuration extends SourceResolver with NotationSet {
   @throws[XPathException]
   def makeXQueryExpression(exp: Expression, mainModule: QueryModule, streaming: Boolean): XQueryExpression = {
     val xqe = new XQueryExpression(exp, mainModule, false)
-    if (mainModule.getCodeInjector != null) mainModule.getCodeInjector.process(xqe)
+    if (mainModule.getCodeInjector != null)
+      mainModule.getCodeInjector.process(xqe)
     xqe
   }
 
@@ -2742,12 +2760,16 @@ class Configuration extends SourceResolver with NotationSet {
    */
   @throws[XPathException]
   def makeClosure(expression: Expression, ref: Int, context: XPathContext): Sequence = {
-    if (getBooleanProperty(Feature.EAGER_EVALUATION)) { // Using eager evaluation can make for easier debugging
+    if (getBooleanProperty(Feature.EAGER_EVALUATION)) {
+      // Using eager evaluation can make for easier debugging
       val iter = expression.iterate(context)
       return iter.materialize
     }
-    val closure = if (ref > 1) new MemoClosure
-    else new Closure
+    val closure =
+      if (ref > 1)
+        new MemoClosure
+      else
+        new Closure
     closure.setExpression(expression)
     closure.setSavedXPathContext(context.newContext())
     closure.saveContext(expression, context)
@@ -2764,8 +2786,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws XPathException if evaluation of the expression fails
    */
   @throws[XPathException]
-  def makeSequenceExtent(expression: Expression, ref: Int, context: XPathContext): GroundedValue = expression.iterate(context).materialize
-
+  def makeSequenceExtent(expression: Expression, ref: Int, context: XPathContext): GroundedValue =
+    expression.iterate(context).materialize
 
   def makeAccumulatorRegistry: AccumulatorRegistry = new AccumulatorRegistry
 
@@ -2778,7 +2800,8 @@ class Configuration extends SourceResolver with NotationSet {
    *              <p>This method is intended for advanced users only, and is subject to change.</p>
    */
   def registerExternalObjectModel(model: ExternalObjectModel): Unit = {
-    try getConfClass(model.getDocumentClassName, tracing = false)
+    try
+      getConfClass(model.getDocumentClassName, tracing = false)
     catch {
       case _: XPathException =>
         // If the model can't be loaded, do nothing
@@ -2792,9 +2815,9 @@ class Configuration extends SourceResolver with NotationSet {
 
 
   def getExternalObjectModel(uri: String): ExternalObjectModel = {
-    for (model <- externalObjectModels.asScala) {
-      if (model.getIdentifyingURI.equals(uri)) return model
-    }
+    for (model <- externalObjectModels.asScala)
+      if (model.getIdentifyingURI.equals(uri))
+        return model
     null
   }
 
@@ -2807,7 +2830,8 @@ class Configuration extends SourceResolver with NotationSet {
   def getExternalObjectModel(nodeClass: Class[_]): ExternalObjectModel = {
     for (model <- externalObjectModels.asScala) {
       val converter = model.getPJConverter(nodeClass)
-      if (converter != null) return model
+      if (converter != null)
+        return model
     }
     null
   }
@@ -2887,19 +2911,23 @@ class Configuration extends SourceResolver with NotationSet {
    *                                  <em>not</em> call the registered { @link SourceResolver to resolve the Source}.
    */
   def unravel(source: Source): NodeInfo = {
-    val externalObjectModels: util.List[ExternalObjectModel] = getExternalObjectModels
+    val externalObjectModels = getExternalObjectModels
     if (!source.isInstanceOf[NodeInfo]) {
       for (model <- externalObjectModels.asScala) {
         val node = model.unravel(source, this)
         if (node != null) {
-          if (!node.getConfiguration.isCompatible(this)) throw new IllegalArgumentException("Externally supplied Node belongs to the wrong Configuration")
+          if (!node.getConfiguration.isCompatible(this))
+            throw new IllegalArgumentException("Externally supplied Node belongs to the wrong Configuration")
           return node
         }
       }
     }
-    if (source.isInstanceOf[NodeInfo]) {
-      if (!(source.asInstanceOf[NodeInfo]).getConfiguration.isCompatible(this)) throw new IllegalArgumentException("Externally supplied NodeInfo belongs to the wrong Configuration")
-      return source.asInstanceOf[NodeInfo]
+    source match {
+      case nodeInfo: NodeInfo =>
+        if (! nodeInfo.getConfiguration.isCompatible(this))
+          throw new IllegalArgumentException("Externally supplied NodeInfo belongs to the wrong Configuration")
+        return nodeInfo
+      case _ =>
     }
     throw new IllegalArgumentException("A source of class " + source.getClass + " is not recognized by any registered object model")
   }
@@ -3029,11 +3057,12 @@ class Configuration extends SourceResolver with NotationSet {
    *        TreeInfo containing information about the constructed tree, including a reference to its root node.
    */
   @throws[XPathException]
-  def buildDocumentTree(source: Source): TreeInfo = {
-    if (source == null) throw new NullPointerException("source")
-    if (source.isInstanceOf[AugmentedSource]) buildDocumentTree(source.asInstanceOf[AugmentedSource].getContainedSource, source.asInstanceOf[AugmentedSource].getParseOptions)
-    else buildDocumentTree(source, new ParseOptions(defaultParseOptions)) // see bug 3678
-  }
+  def buildDocumentTree(source: Source): TreeInfo =
+    source match {
+      case null => throw new NullPointerException("source")
+      case augmentedSource: AugmentedSource => buildDocumentTree(augmentedSource.getContainedSource, augmentedSource.getParseOptions)
+      case _                                => buildDocumentTree(source, new ParseOptions(defaultParseOptions))
+    } // see bug 3678
 
   /**
    * Build a document, using specified options for parsing and building. This method always
@@ -3056,15 +3085,18 @@ class Configuration extends SourceResolver with NotationSet {
   @throws[XPathException]
   def buildDocumentTree(source: Source, parseOptions: ParseOptions): TreeInfo = {
     var src: Source = source
-    if (source == null) throw new NullPointerException("source")
+    if (source == null)
+      throw new NullPointerException("source")
     var finallyClose = false
     try {
       val options: ParseOptions = new ParseOptions(parseOptions)
       // Resolve user-defined implementations of Source
       val src2 = resolveSource(source, this)
-      if (src2 == null) throw new XPathException("Unknown source class " + src.getClass.getName)
+      if (src2 == null)
+        throw new XPathException("Unknown source class " + src.getClass.getName)
       src = src2
-      if (source.isInstanceOf[AugmentedSource]) options.merge(src.asInstanceOf[AugmentedSource].getParseOptions)
+      if (source.isInstanceOf[AugmentedSource])
+        options.merge(src.asInstanceOf[AugmentedSource].getParseOptions)
       options.applyDefaults(this)
       finallyClose = options.isPleaseCloseAfterUse
       // Create an appropriate Builder
@@ -3081,7 +3113,8 @@ class Configuration extends SourceResolver with NotationSet {
       Sender.send(src, builder, options)
       // Get the constructed document
       val newdoc = builder.getCurrentRoot
-      if (newdoc.getNodeKind != Type.DOCUMENT) throw new XPathException("Source object represents a node other than a document node")
+      if (newdoc.getNodeKind != Type.DOCUMENT)
+        throw new XPathException("Source object represents a node other than a document node")
       // Reset the builder, detaching it from the constructed document
       builder.reset()
       // Return the constructed document
@@ -3091,7 +3124,6 @@ class Configuration extends SourceResolver with NotationSet {
       if (finallyClose) {
         ParseOptions.close(source)
         ParseOptions.close(src)
-
       }
     }
   }
@@ -3456,7 +3488,7 @@ class Configuration extends SourceResolver with NotationSet {
        case string: String =>
          try string.toInt
          catch {
-           case nfe: NumberFormatException =>
+           case _: NumberFormatException =>
              throw new IllegalArgumentException(propertyName + " must be an integer")
          }
        case _ =>
@@ -3474,8 +3506,10 @@ class Configuration extends SourceResolver with NotationSet {
    */
    def internalSetBooleanProperty(property: Feature[_], value: Any): Boolean = {
     val b = Configuration.requireBoolean(property.name, value)
-    if (b) enabledProperties.add(property.code)
-    else enabledProperties.remove(property.code)
+    if (b)
+      enabledProperties.add(property.code)
+    else
+      enabledProperties.remove(property.code)
   }
 
   /**

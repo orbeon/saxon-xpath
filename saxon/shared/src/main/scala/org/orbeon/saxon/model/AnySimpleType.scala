@@ -20,12 +20,9 @@ import org.orbeon.saxon.value.{UntypedAtomicValue, Whitespace}
   */
 object AnySimpleType extends SimpleType {
 
-
   /*@NotNull*/
-
   def getName: String = "anySimpleType"
-
-  def getTargetNamespace(): String = NamespaceConstant.SCHEMA
+  def getTargetNamespace: String = NamespaceConstant.SCHEMA
 
   /**
     * Get the name of this type as an EQName, that is, a string in the format Q{uri}local.
@@ -33,32 +30,24 @@ object AnySimpleType extends SimpleType {
     * @return an EQName identifying the type. In the case of an anonymous type, an internally-generated
     *         name is returned
     */
-  def getEQName(): String =
+  def getEQName: String =
     "Q{" + NamespaceConstant.SCHEMA + "}anySimpleType"
 
-  def isBuiltInType(): Boolean = true
-
-  def isIdType(): Boolean = false
-
-  def isIdRefType(): Boolean = false
-
-  def getRedefinitionLevel(): Int = 0
+  def isBuiltInType: Boolean = true
+  def isIdType: Boolean = false
+  def isIdRefType: Boolean = false
+  def getRedefinitionLevel: Int = 0
 
   /*@Nullable*/
-
   def getSystemId: String = null
 
   /**
     * Get the validation status - always valid
     */
-  def getValidationStatus(): ValidationStatus = VALIDATED
-
-  def getBaseType(): SchemaType = AnyType.getInstance
-
-  def isComplexType(): Boolean = false
-
-  def isSimpleType(): Boolean = true
-
+  def getValidationStatus: ValidationStatus = VALIDATED
+  def getBaseType: SchemaType = AnyType.getInstance
+  def isComplexType: Boolean = false
+  def isSimpleType: Boolean = true
   def getFingerprint: Int = StandardNames.XS_ANY_SIMPLE_TYPE
 
   /**
@@ -70,13 +59,10 @@ object AnySimpleType extends SimpleType {
   def getStructuredQName: StructuredQName = NAME
 
   /*@NotNull*/
-
   def getDescription: String = "xs:anySimpleType"
 
   /*@NotNull*/
-
   def getDisplayName: String = "xs:anySimpleType"
-
   def isSameType(other: SchemaType): Boolean = other == AnySimpleType
 
   /*@NotNull*/
@@ -85,44 +71,39 @@ object AnySimpleType extends SimpleType {
     new UntypedAtomicValue(node.getStringValueCS)
 
   def checkTypeDerivationIsOK(`type`: SchemaType, block: Int): Unit = {
-    if (`type` == this) {
+    if (`type` == this)
       return
-    }
     throw new SchemaException(
       "Cannot derive xs:anySimpleType from another type")
   }
 
   def isAtomicType: Boolean = false
-
-  def isAnonymousType(): Boolean = false
+  def isAnonymousType: Boolean = false
 
   /**
     * Determine whether this is a list type
     *
     * @return false (it isn't a list type)
     */
-  def isListType(): Boolean = false
+  def isListType: Boolean = false
 
   /**
     * Determin whether this is a union type
     *
     * @return false (it isn't a union type)
     */
-  def isUnionType(): Boolean = false
+  def isUnionType: Boolean = false
 
   /*@NotNull*/
-
-  def getBuiltInBaseType(): SchemaType = this
+  def getBuiltInBaseType: SchemaType = this
 
   /*@NotNull*/
-
   def getTypedValue(value: CharSequence,
                     resolver: NamespaceResolver,
                     rules: ConversionRules): AtomicSequence =
     new UntypedAtomicValue(value)
 
   /*@Nullable*/
-
   def validateContent(value: CharSequence,
                       nsResolver: NamespaceResolver,
                       rules: ConversionRules): ValidationFailure = null
@@ -132,12 +113,9 @@ object AnySimpleType extends SimpleType {
     *
     * @return false
     */
-  def isNamespaceSensitive(): Boolean = false
-
-  def getBlock(): Int = 0
-
-  def getDerivationMethod(): Int = DERIVATION_RESTRICTION
-
+  def isNamespaceSensitive: Boolean = false
+  def getBlock: Int = 0
+  def getDerivationMethod: Int = DERIVATION_RESTRICTION
   def allowsDerivation(derivation: Int): Boolean = true
 
   /**
@@ -146,20 +124,13 @@ object AnySimpleType extends SimpleType {
     * @return the types of derivation that are not permitted, as a bit-significant integer
     *         containing bits such as {@link org.orbeon.saxon.model.SchemaType#DERIVATION_EXTENSION}
     */
-  def getFinalProhibitions(): Int = 0
-
-  def getWhitespaceAction(): Int = Whitespace.PRESERVE
-
+  def getFinalProhibitions: Int = 0
+  def getWhitespaceAction: Int = Whitespace.PRESERVE
   def analyzeContentExpression(expression: Expression, kind: Int): Unit = ()
-//return;
-//return;
-
   def preprocess(input: CharSequence): CharSequence = input
-
   def postprocess(input: CharSequence): CharSequence = input
 
   /*@NotNull*/
-
   def getInstance: AnySimpleType.type = AnySimpleType
 
   val NAME: StructuredQName =
@@ -167,6 +138,4 @@ object AnySimpleType extends SimpleType {
 
 //  implicit def convertValue(v: Value): AnySimpleType.type =
 //    v.asInstanceOf[AnySimpleType.type]
-
 }
-

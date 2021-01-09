@@ -213,10 +213,9 @@ class PatternParser30 extends XPathParser with PatternParser {
       nextToken()
       expect(Token.RPAR)
       nextToken()
-      val `type`: SchemaType = env.getConfiguration.getSchemaType(typeName)
-      if (`type` == null || !`type`.isAtomicType) {
+      val `type` = env.getConfiguration.getSchemaType(typeName)
+      if (`type` == null || !`type`.isAtomicType)
         grumble("Unknown atomic type " + typeName)
-      }
       val at: AtomicType = `type`.asInstanceOf[AtomicType]
       var expr: Expression = new ItemTypePattern(at)
       this.setLocation(expr)

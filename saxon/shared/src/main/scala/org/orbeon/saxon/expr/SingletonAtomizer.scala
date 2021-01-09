@@ -37,7 +37,7 @@ class SingletonAtomizer(sequence: Expression,
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
-    val operand: Expression = getBaseExpression
+    val operand = getBaseExpression
     ExpressionTool.resetStaticProperties(this)
     if (Literal.isEmptySequence(operand)) {
       if (! allowEmpty) {
@@ -176,7 +176,6 @@ class SingletonAtomizer(sequence: Expression,
           Configuration.LicenseFeature.SCHEMA_VALIDATION)) {
           isSchemaAware = false
         }
-
     }
     val in = getBaseExpression.getItemType
     if (in.isPlainType) {

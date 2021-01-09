@@ -95,9 +95,9 @@ trait NodeInfo extends Source with Item with Location {
   def getColumnNumber: Int = -1
 
   def getSchemaType: SchemaType = getNodeKind match {
-    case Type.ATTRIBUTE => BuiltInAtomicType.UNTYPED_ATOMIC
+    case Type.ATTRIBUTE               => BuiltInAtomicType.UNTYPED_ATOMIC
     case Type.DOCUMENT | Type.ELEMENT => Untyped.getInstance
-    case _ => null
+    case _                            => null
   }
 
   def iterateAxis(axisNumber: Int): AxisIterator =
@@ -123,17 +123,21 @@ trait NodeInfo extends Source with Item with Location {
   def attributes: AttributeMap = {
     var atts: AttributeMap = EmptyAttributeMap.getInstance
     if (getNodeKind == Type.ELEMENT) {
-      val iter: AxisIterator = iterateAxis(AxisInfo.ATTRIBUTE)
+      val iter = iterateAxis(AxisInfo.ATTRIBUTE)
       var attr: NodeInfo = null
       while ({
         attr = iter.next()
         attr
-      } != null) atts = atts.put(
-        new AttributeInfo(NameOfNode.makeName(attr),
-                          attr.getSchemaType.asInstanceOf[SimpleType],
-                          attr.getStringValue,
-                          Loc.NONE,
-                          ReceiverOption.NONE))
+      } != null)
+        atts = atts.put(
+          new AttributeInfo(
+            NameOfNode.makeName(attr),
+            attr.getSchemaType.asInstanceOf[SimpleType],
+            attr.getStringValue,
+            Loc.NONE,
+            ReceiverOption.NONE
+          )
+        )
     }
     atts
   }

@@ -309,21 +309,19 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       null
     }
 
-  private def testForXSIType(fat: FixedAttribute,
-                             env: StaticContext): SchemaType = {
-    val att: Int = fat.getAttributeFingerprint
+  private def testForXSIType(fat: FixedAttribute, env: StaticContext): SchemaType = {
+    val att = fat.getAttributeFingerprint
     if (att == StandardNames.XSI_TYPE) {
-      val attValue: Expression = fat.getSelect
-      if (attValue.isInstanceOf[StringLiteral]) {
-        val parts: Array[String] = NameChecker.getQNameParts(
-          attValue.asInstanceOf[StringLiteral].getStringValue)
-        val uri: String = namespaceBindings.getURI(parts(0))
-        if (uri == null) {
-          return null
-        } else {
-          env.getConfiguration.getSchemaType(
-            new StructuredQName("", uri, parts(1)))
-        }
+      val attValue = fat.getSelect
+      attValue match {
+        case literal: StringLiteral =>
+          val parts = NameChecker.getQNameParts(literal.getStringValue)
+          val uri   = namespaceBindings.getURI(parts(0))
+          if (uri == null)
+            return null
+          else
+            env.getConfiguration.getSchemaType(new StructuredQName("", uri, parts(1)))
+        case _ =>
       }
     }
     null

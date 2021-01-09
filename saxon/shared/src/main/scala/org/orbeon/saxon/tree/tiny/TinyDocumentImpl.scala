@@ -100,14 +100,12 @@ class TinyDocumentImpl(treeImpl: TinyTree) extends TinyParentNodeImpl {
   }
 
   override def getSchemaType: SchemaType = {
-    val children: AxisIterator =
-      iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
-    val node: NodeInfo = children.next()
-    if (node == null || node.getSchemaType == Untyped.getInstance) {
+    val children = iterateAxis(AxisInfo.CHILD, NodeKindTest.ELEMENT)
+    val node     = children.next()
+    if (node == null || node.getSchemaType == Untyped.getInstance)
       Untyped.getInstance
-    } else {
+    else
       AnyType.getInstance
-    }
   }
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {

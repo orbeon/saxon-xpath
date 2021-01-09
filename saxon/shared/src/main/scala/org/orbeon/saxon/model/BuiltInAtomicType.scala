@@ -628,7 +628,6 @@ class BuiltInAtomicType private(var fingerprint: Int) extends AtomicType with It
     var fp = base.getFingerprint
     while (fp > 1023) {
       base = base.getBaseType.asInstanceOf[BuiltInAtomicType]
-      assert(base != null)
       fp = base.getFingerprint
     }
     fp == StandardNames.XS_QNAME || fp == StandardNames.XS_NOTATION
@@ -720,23 +719,26 @@ class BuiltInAtomicType private(var fingerprint: Int) extends AtomicType with It
    * @since 8.5
    */
   @throws[XPathException]
-  def atomize(node: NodeInfo): AtomicSequence = { // Fast path for common cases
+  def atomize(node: NodeInfo): AtomicSequence = {
+    // Fast path for common cases
     val stringValue = node.getStringValueCS
     if (stringValue.length == 0 && node.isNilled)
-      return AtomicArray.EMPTY_ATOMIC_ARRAY
-    if (fingerprint == StandardNames.XS_STRING)
-      return StringValue.makeStringValue(stringValue)
+      AtomicArray.EMPTY_ATOMIC_ARRAY
+    else if (fingerprint == StandardNames.XS_STRING)
+      StringValue.makeStringValue(stringValue)
     else if (fingerprint == StandardNames.XS_UNTYPED_ATOMIC)
-      return new UntypedAtomicValue(stringValue)
-    var converter = stringConverter
-    if (converter == null) {
-      converter = getStringConverter(node.getConfiguration.getConversionRules)
-      if (isNamespaceSensitive) {
-        val container = if (node.getNodeKind == Type.ELEMENT) node else node.getParent
-        converter = converter.setNamespaceResolver(container.getAllNamespaces).asInstanceOf[StringConverter]
+      new UntypedAtomicValue(stringValue)
+    else {
+      var converter = stringConverter
+      if (converter == null) {
+        converter = getStringConverter(node.getConfiguration.getConversionRules)
+        if (isNamespaceSensitive) {
+          val container = if (node.getNodeKind == Type.ELEMENT) node else node.getParent
+          converter = converter.setNamespaceResolver(container.getAllNamespaces).asInstanceOf[StringConverter]
+        }
       }
+      converter.convertString(stringValue).asAtomic
     }
-    converter.convertString(stringValue).asAtomic
   }
 
   /**
@@ -757,13 +759,15 @@ class BuiltInAtomicType private(var fingerprint: Int) extends AtomicType with It
   @throws[ValidationException]
   def getTypedValue(value: CharSequence, resolver: NamespaceResolver, rules: ConversionRules): AtomicSequence = {
     if (fingerprint == StandardNames.XS_STRING)
-      return StringValue.makeStringValue(value)
+      StringValue.makeStringValue(value)
     else if (fingerprint == StandardNames.XS_UNTYPED_ATOMIC)
-      return new UntypedAtomicValue(value)
-    var converter = getStringConverter(rules)
-    if (isNamespaceSensitive)
-      converter = converter.setNamespaceResolver(resolver).asInstanceOf[StringConverter]
-    converter.convertString(value).asAtomic
+      new UntypedAtomicValue(value)
+    else {
+      var converter = getStringConverter(rules)
+      if (isNamespaceSensitive)
+        converter = converter.setNamespaceResolver(resolver).asInstanceOf[StringConverter]
+      converter.convertString(value).asAtomic
+    }
   }
 
   /**

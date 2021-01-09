@@ -2371,24 +2371,30 @@ class XQueryParser extends XPathParser {
         expect(Token.KEYWORD_CURLY)
         if (!NameChecker.isQName(t.currentTokenValue)) grumble("Schema type name expected after 'validate type")
         requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(t.currentTokenValue, env.getDefaultElementNamespace))
-        if (requiredType == null) grumble("Unknown schema type " + t.currentTokenValue, "XQST0104")
+        if (requiredType == null) 
+          grumble("Unknown schema type " + t.currentTokenValue, "XQST0104")
         foundCurly = true
       case Token.KEYWORD_CURLY =>
-        if (t.currentTokenValue == "validate") mode = Validation.STRICT
-        else throw new AssertionError("shouldn't be parsing a validate expression")
+        if (t.currentTokenValue == "validate") 
+          mode = Validation.STRICT
+        else 
+          throw new AssertionError("shouldn't be parsing a validate expression")
         foundCurly = true
     }
-    if (!foundCurly) expect(Token.LCURLY)
+    if (!foundCurly) 
+      expect(Token.LCURLY)
     nextToken()
     var exp = parseExpression
-    if (exp.isInstanceOf[ParentNodeConstructor]) exp.asInstanceOf[ParentNodeConstructor].setValidationAction(mode, if (mode == Validation.BY_TYPE) requiredType
-    else null)
-    else {
-
-
-      exp = new CopyOf(exp, true, mode, requiredType, true)
-      setLocation(exp)
-      exp.asInstanceOf[CopyOf].setRequireDocumentOrElement(true)
+    exp match {
+      case constructor: ParentNodeConstructor =>
+       constructor.setValidationAction(
+         mode,
+         if (mode == Validation.BY_TYPE) requiredType else null
+      )
+      case _ =>
+        exp = new CopyOf(exp, true, mode, requiredType, true)
+        setLocation(exp)
+        exp.asInstanceOf[CopyOf].setRequireDocumentOrElement(true)
     }
     expect(Token.RCURLY)
     t.lookAhead()
@@ -2418,13 +2424,17 @@ class XQueryParser extends XPathParser {
     assert(pragmaName != null)
     val uri = pragmaName.getURI
     val localName = pragmaName.getLocalPart
-    if (uri == NamespaceConstant.SAXON) if ("validate-type" == localName) if (!env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY))
-      warning("Ignoring saxon:validate-type. To use this feature " + "you need the Saxon-EE processor from http:")
+    if (uri == NamespaceConstant.SAXON)
+      if ("validate-type" == localName) 
+        if (!env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY))
+          warning("Ignoring saxon:validate-type. To use this feature " + "you need the Saxon-EE processor from http:")
     else {
       val typeName = Whitespace.trim(pragmaContents)
-      if (!NameChecker.isQName(typeName)) grumble("Schema type name expected in saxon:validate-type pragma: found " + Err.wrap(typeName))
+      if (!NameChecker.isQName(typeName)) 
+        grumble("Schema type name expected in saxon:validate-type pragma: found " + Err.wrap(typeName))
       requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(typeName, env.getDefaultElementNamespace))
-      if (requiredType == null) grumble("Unknown schema type " + typeName)
+      if (requiredType == null) 
+        grumble("Unknown schema type " + typeName)
       validateType = true
     }
     else warning("Ignored pragma " + qname + " (unrecognized Saxon pragma)")

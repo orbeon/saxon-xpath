@@ -53,15 +53,14 @@ class Doc_2 extends SystemFunction {
 
   private def setParseOptions(checkedOptions: Map[String, Sequence],
                               context: XPathContext): ParseOptions = {
-    val result: ParseOptions = new ParseOptions(
-      context.getConfiguration.getParseOptions)
-    var value: Sequence = checkedOptions.get("validation")
+    val result = new ParseOptions(context.getConfiguration.getParseOptions)
+    var value = checkedOptions.get("validation")
     if (value != null) {
-      var valStr: String = value.head.getStringValue
+      var valStr = value.head.getStringValue
       if ("skip" == valStr) {
         valStr = "strip"
       }
-      val v: Int = Validation.getCode(valStr)
+      val v = Validation.getCode(valStr)
       if (v == Validation.INVALID) {
         throw new XPathException("Invalid validation value " + valStr,
           "SXZZ0002")
@@ -70,14 +69,13 @@ class Doc_2 extends SystemFunction {
     }
     value = checkedOptions.get("type")
     if (value != null) {
-      val qval: QNameValue = value.head.asInstanceOf[QNameValue]
-      result.setTopLevelType(
-        context.getConfiguration.getSchemaType(qval.getStructuredQName))
+      val qval = value.head.asInstanceOf[QNameValue]
+      result.setTopLevelType(context.getConfiguration.getSchemaType(qval.getStructuredQName))
       result.setSchemaValidationMode(Validation.BY_TYPE)
     }
     value = checkedOptions.get("strip-space")
     if (value != null) {
-      val s: String = value.head.getStringValue
+      val s = value.head.getStringValue
       s match {
         case "all" =>
           result.setSpaceStrippingRule(
@@ -86,12 +84,12 @@ class Doc_2 extends SystemFunction {
           result.setSpaceStrippingRule(
             NoElementsSpaceStrippingRule.getInstance)
         case "package-defined" =>
-          var data: PackageData = getRetainedStaticContext.getPackageData
-          if (data.isInstanceOf[StylesheetPackage]) {
-            result.setSpaceStrippingRule(
-              data.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
+          val data = getRetainedStaticContext.getPackageData
+          data match {
+            case stylesheetPackage: StylesheetPackage =>
+              result.setSpaceStrippingRule(stylesheetPackage.getSpaceStrippingRule)
+            case _ =>
           }
-
       }
     }
     value = checkedOptions.get("dtd-validation")
