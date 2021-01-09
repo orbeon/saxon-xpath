@@ -20,9 +20,9 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.{IntHashSet, IntSet, IntUniversalSet}
 
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
+
 
 object TypeHierarchy {
 
@@ -67,17 +67,16 @@ object TypeHierarchy {
     }
 
   private def combineRelationships(rel1: Affinity, rel2: Affinity): Affinity =
-    if (rel1 == SAME_TYPE && rel2 == SAME_TYPE) {
+    if (rel1 == SAME_TYPE && rel2 == SAME_TYPE)
       SAME_TYPE
-    } else if ((rel1 == SAME_TYPE || rel1 == SUBSUMES) && (rel2 == SAME_TYPE || rel2 == SUBSUMES)) {
+    else if ((rel1 == SAME_TYPE || rel1 == SUBSUMES) && (rel2 == SAME_TYPE || rel2 == SUBSUMES))
       SUBSUMES
-    } else if ((rel1 == SAME_TYPE || rel1 == SUBSUMED_BY) && (rel2 == SAME_TYPE || rel2 == SUBSUMED_BY)) {
+    else if ((rel1 == SAME_TYPE || rel1 == SUBSUMED_BY) && (rel2 == SAME_TYPE || rel2 == SUBSUMED_BY))
       SUBSUMED_BY
-    } else if (rel1 == DISJOINT || rel2 == DISJOINT) {
+    else if (rel1 == DISJOINT || rel2 == DISJOINT)
       DISJOINT
-    } else {
+    else
       OVERLAPS
-    }
 
   private def toSet[X](in: Iterable[X]): Set[X] = {
     val s = new HashSet[X]()
@@ -138,14 +137,15 @@ class TypeHierarchy(var config: Configuration) {
       if (relationship(suppliedItemType, BuiltInAtomicType.UNTYPED_ATOMIC) != DISJOINT &&
         ! isSubType(BuiltInAtomicType.UNTYPED_ATOMIC, requiredItemType)) {
         val nsSensitive = requiredItemType.asInstanceOf[SimpleType].isNamespaceSensitive
-        var converter: ItemMappingFunction =
+        val converter: ItemMappingFunction =
           if (nsSensitive) {
             item =>
               if (item.isInstanceOf[UntypedAtomicValue]) {
                 val vf = new ValidationFailure(
                   "Failed to convert the " + role.getMessage + ": " + "Implicit conversion of untypedAtomic value to " +
                     requiredItemType +
-                    " is not allowed")
+                    " is not allowed"
+                )
                 vf.setErrorCode("XPTY0117")
                 throw vf.makeException()
               } else {
@@ -173,7 +173,7 @@ class TypeHierarchy(var config: Configuration) {
                 requiredItemType.asInstanceOf[AtomicType],
                 config.getConversionRules
               )
-            case item =>
+            case item                            =>
               return item
           }
         iterator = new ItemMappingIterator(iterator, converter, true)
@@ -273,39 +273,40 @@ class TypeHierarchy(var config: Configuration) {
   }
 
   def relationship(t1: ItemType, t2: ItemType): Affinity = {
-    var itmTyp1 = t1
-    var itmTyp2 = t2
-    Objects.requireNonNull(itmTyp1)
-    Objects.requireNonNull(itmTyp2)
-    itmTyp1 = stabilize(itmTyp1)
-    itmTyp2 = stabilize(itmTyp2)
 
-    if (itmTyp1 == itmTyp2) {
+    Objects.requireNonNull(t1)
+    Objects.requireNonNull(t2)
+
+    var _t1 = t1
+    var _t2 = t2
+
+    _t1 = stabilize(_t1)
+    _t2 = stabilize(_t2)
+
+    if (_t1 == _t2) {
       SAME_TYPE
-    } else if (itmTyp2 eq AnyItemType) {
+    } else if (_t2 eq AnyItemType) {
       SUBSUMED_BY
-    } else if (itmTyp1 eq AnyItemType) {
+    } else if (_t1 eq AnyItemType) {
       SUBSUMES
-    } else itmTyp1 match {
-      case _: BuiltInAtomicType if itmTyp2
-        .isInstanceOf[BuiltInAtomicType] =>
-        if (itmTyp1.getBasicAlphaCode.startsWith(itmTyp2.getBasicAlphaCode)) {
+    } else _t1 match {
+      case _: BuiltInAtomicType if _t2.isInstanceOf[BuiltInAtomicType] =>
+        if (_t1.getBasicAlphaCode.startsWith(_t2.getBasicAlphaCode))
           SUBSUMED_BY
-        } else if (itmTyp2.getBasicAlphaCode.startsWith(itmTyp1.getBasicAlphaCode)) {
+        else if (_t2.getBasicAlphaCode.startsWith(_t1.getBasicAlphaCode))
           SUBSUMES
-        } else {
+        else
           DISJOINT
-        }
       case ErrorType =>
         SUBSUMED_BY
       case _ =>
-        if (itmTyp2 eq ErrorType) {
+        if (_t2 eq ErrorType) {
           SUBSUMES
         } else {
-          val pair: ItemTypePair = new ItemTypePair(itmTyp1, itmTyp2)
-          var result: Affinity = map.get(pair)
+          val pair = new ItemTypePair(_t1, _t2)
+          var result = map.get(pair)
           if (result == null) {
-            result = computeRelationship(itmTyp1, itmTyp2)
+            result = computeRelationship(_t1, _t2)
             map.put(pair, result)
           }
           result
@@ -366,30 +367,26 @@ class TypeHierarchy(var config: Configuration) {
             }
             DISJOINT
           case _ => if (!t1.isAtomicType && t2.isPlainType) {
-            val s1: util.Set[_ <: PlainType] = toSet(
-              t1.asInstanceOf[PlainType].getPlainMemberTypes)
-            val s2: util.Set[_ <: PlainType] = toSet(
-              t2.asInstanceOf[PlainType].getPlainMemberTypes)
-            if (!unionOverlaps(s1, s2)) {
+            val s1 = toSet(t1.asInstanceOf[PlainType].getPlainMemberTypes)
+            val s2 = toSet(t2.asInstanceOf[PlainType].getPlainMemberTypes)
+            if (!unionOverlaps(s1, s2))
               return DISJOINT
-            }
-            val gt: Boolean = s1.containsAll(s2)
-            val lt: Boolean = s2.containsAll(s1)
-            if (gt && lt) {
+            val gt = s1.containsAll(s2)
+            val lt = s2.containsAll(s1)
+            if (gt && lt)
               SAME_TYPE
-            } else if (gt) {
+            else if (gt)
               SUBSUMES
-            } else if (lt) {
+            else if (lt)
               SUBSUMED_BY
-            } else if (unionSubsumes(s1, s2)) {
+            else if (unionSubsumes(s1, s2))
               SUBSUMES
-            } else if (unionSubsumes(s2, s1)) {
+            else if (unionSubsumes(s2, s1))
               SUBSUMED_BY
-            } else {
+            else
               OVERLAPS
-            }
           } else if (t1.isInstanceOf[AtomicType]) {
-            val r: Affinity = relationship(t2, t1)
+            val r = relationship(t2, t1)
             inverseRelationship(r)
           } else {
             throw new IllegalStateException
@@ -417,10 +414,14 @@ class TypeHierarchy(var config: Configuration) {
                 return DISJOINT
               } else
                 nodeKindRelationship =
-                  if (m1 == m2) SAME_TYPE
-                  else if (m2.subsumes(m1)) SUBSUMED_BY
-                  else if (m1.subsumes(m2)) SUBSUMES
-                  else OVERLAPS
+                  if (m1 == m2)
+                    SAME_TYPE
+                  else if (m2.subsumes(m1))
+                    SUBSUMED_BY
+                  else if (m1.subsumes(m2))
+                    SUBSUMES
+                  else
+                    OVERLAPS
               var nodeNameRelationship: Affinity = null
               val on1 = nodeTest.getRequiredNodeNames
               val on2 = t2.asInstanceOf[NodeTest].getRequiredNodeNames
@@ -508,16 +509,16 @@ class TypeHierarchy(var config: Configuration) {
                 else if (t2 == MapType.ANY_MAP_TYPE)
                   return SUBSUMED_BY
 
-                val k1: AtomicType = mapType.getKeyType
-                val k2: AtomicType = t2.asInstanceOf[MapType].getKeyType
-                val v1: SequenceType = mapType.getValueType
-                val v2: SequenceType = t2.asInstanceOf[MapType].getValueType
-                val keyRel: Affinity = relationship(k1, k2)
-                val valueRel: Affinity = sequenceTypeRelationship(v1, v2)
-                val rel: Affinity = combineRelationships(keyRel, valueRel)
-                if (rel == SAME_TYPE || rel == SUBSUMES || rel == SUBSUMED_BY) {
+                val k1       = mapType.getKeyType
+                val k2       = t2.asInstanceOf[MapType].getKeyType
+                val v1       = mapType.getValueType
+                val v2       = t2.asInstanceOf[MapType].getValueType
+                val keyRel   = relationship(k1, k2)
+                val valueRel = sequenceTypeRelationship(v1, v2)
+                val rel      = combineRelationships(keyRel, valueRel)
+
+                if (rel == SAME_TYPE || rel == SUBSUMES || rel == SUBSUMED_BY)
                   return rel
-                }
               case _ =>
             }
             t2 match {
@@ -578,7 +579,7 @@ class TypeHierarchy(var config: Configuration) {
   private def unionSubsumes(s1: Set[_ <: PlainType],
                             s2: Set[_ <: PlainType]): Boolean = {
     for (t2 <- s2.asScala) {
-      var t2isSubsumed: Boolean = false
+      var t2isSubsumed = false
       breakable {
         for (t1 <- s1.asScala) {
           val rel = relationship(t1, t2)
@@ -597,7 +598,7 @@ class TypeHierarchy(var config: Configuration) {
   private def unionOverlaps(s1: Set[_ <: PlainType],
                             s2: Set[_ <: PlainType]): Boolean = {
     for (t2 <- s2.asScala; t1 <- s1.asScala) {
-      val rel: Affinity = relationship(t1, t2)
+      val rel = relationship(t1, t2)
       if (rel != DISJOINT)
         return true
     }

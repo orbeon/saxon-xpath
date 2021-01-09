@@ -7,27 +7,25 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-import org.orbeon.saxon.expr.parser.ExpressionTool
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-import org.orbeon.saxon.expr.parser.RebindingMap
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.expr.sort.DocumentSorter
-import org.orbeon.saxon.model.Affinity
-import org.orbeon.saxon.model.ErrorType
-import org.orbeon.saxon.model.ItemType
-import org.orbeon.saxon.model.TypeHierarchy
+import org.orbeon.saxon.model.{Affinity, ErrorType}
 import org.orbeon.saxon.om.SequenceIterator
 import org.orbeon.saxon.pattern.AnyNodeTest
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.HomogeneityCheckerIterator
+
 
 /**
  * This class is an expression that does a run-time check of the result of a "/" expression
  * to ensure that (a) the results consists entirely of atomic values and function items, or entirely of nodes,
  * and (b) if the results are nodes, then they are deduplicated and sorted into document order.
  */
-class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
-  override  def getOperandRole = OperandRole.INSPECT
+class HomogeneityChecker(val base: Expression)
+  extends UnaryExpression(base) {
+
+  def getOperandRole = OperandRole.INSPECT
+
 
   /**
    * Type-check the expression. Default implementation for unary operators that accept
@@ -35,13 +33,16 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
    */
   /*@NotNull*/ @throws[XPathException]
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
+
     if (getBaseExpression.isInstanceOf[HomogeneityChecker])
       return getBaseExpression.typeCheck(visitor, contextInfo)
+
     getOperand.typeCheck(visitor, contextInfo)
     val th = visitor.getConfiguration.getTypeHierarchy
     val `type` = getBaseExpression.getItemType
     if (`type` == ErrorType)
       return Literal.makeEmptySequence
+
     val rel = th.relationship(`type`, AnyNodeTest)
     if (rel eq Affinity.DISJOINT) { // expression cannot return nodes, so this checker is redundant
       // code deleted by bug 4298
@@ -54,7 +55,8 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
       //            } else {
       return getBaseExpression
       //            }
-    } else if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMED_BY)) { // expression always returns nodes, so replace this expression with a DocumentSorter
+    } else if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMED_BY)) {
+      // expression always returns nodes, so replace this expression with a DocumentSorter
       val savedBase = getBaseExpression
       val parent = getParentExpression
       getOperand.detachChild()
@@ -69,8 +71,10 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
 
   @throws[XPathException]
   override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
-    if (getBaseExpression.isInstanceOf[HomogeneityChecker]) return getBaseExpression.optimize(visitor, contextInfo)
-    super.optimize(visitor, contextInfo)
+    if (getBaseExpression.isInstanceOf[HomogeneityChecker])
+      getBaseExpression.optimize(visitor, contextInfo)
+    else
+      super.optimize(visitor, contextInfo)
   }
 
   /**
@@ -79,7 +83,7 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
    * @return the copy of the original expression
    * @param rebindings
    */
-  override def copy(rebindings: RebindingMap) = {
+  def copy(rebindings: RebindingMap): Expression = {
     val hc = new HomogeneityChecker(getBaseExpression.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, hc)
     hc
@@ -93,7 +97,7 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
    * @return the implementation method, for example { @link #ITERATE_METHOD} or { @link #EVALUATE_METHOD} or
    *                                                        { @link #PROCESS_METHOD}
    */
-  override def getImplementationMethod = Expression.ITERATE_METHOD
+  def getImplementationMethod = Expression.ITERATE_METHOD
 
   /**
    * Iterate the path-expression in a given context
@@ -101,7 +105,8 @@ class HomogeneityChecker(val base: Expression) extends UnaryExpression(base) {
    * @param context the evaluation context
    */
   @throws[XPathException]
-  override def iterate(context: XPathContext) = { // This class delivers the result of the path expression in unsorted order,
+  override def iterate(context: XPathContext): SequenceIterator = {
+    // This class delivers the result of the path expression in unsorted order,
     // without removal of duplicates. If sorting and deduplication are needed,
     // this is achieved by wrapping the path expression in a DocumentSorter
     val base = getBaseExpression.iterate(context)

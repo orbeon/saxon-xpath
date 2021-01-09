@@ -16,8 +16,9 @@ import scala.util.control.Breaks._
 
 /**
  * Tokenizer for expressions and inputs.
- * <p>This code was originally derived from James Clark's xt, though it has been greatly modified since.
- * See copyright notice at end of file.</p>
+ *
+ * This code was originally derived from James Clark's xt, though it has been greatly modified since.
+ * See copyright notice at end of file.
  */
 object Tokenizer {
   /**
@@ -920,7 +921,7 @@ final class Tokenizer {
   @throws[StringIndexOutOfBoundsException]
   def nextChar: Char = {
     val c = input.charAt({
-      inputOffset += 1;
+      inputOffset += 1
       inputOffset - 1
     })
     //c = normalizeLineEnding(c);
@@ -936,7 +937,8 @@ final class Tokenizer {
    */
   private def incrementLineNumber() = {
     nextLineNumber += 1
-    if (newlineOffsets == null) newlineOffsets = new util.ArrayList[Integer](20)
+    if (newlineOffsets == null)
+      newlineOffsets = new util.ArrayList[Integer](20)
     newlineOffsets.add(inputOffset - 1)
   }
 
@@ -947,21 +949,24 @@ final class Tokenizer {
    */
   def incrementLineNumber(offset: Int): Boolean = {
     nextLineNumber += 1
-    if (newlineOffsets == null) newlineOffsets = new util.ArrayList[Integer](20)
+    if (newlineOffsets == null)
+      newlineOffsets = new util.ArrayList[Integer](20)
     newlineOffsets.add(offset)
   }
 
   /**
    * Step back one character. If this steps back to a previous line, adjust the line number.
    */
-  def unreadChar(): Any = if (input.charAt({
-    inputOffset -= 1;
-    inputOffset
-  }) == '\n') {
-    nextLineNumber -= 1
-    lineNumber -= 1
-    if (newlineOffsets != null) newlineOffsets.remove(newlineOffsets.size - 1)
-  }
+  def unreadChar(): Any =
+    if (input.charAt({
+      inputOffset -= 1
+      inputOffset
+    }) == '\n') {
+      nextLineNumber -= 1
+      lineNumber -= 1
+      if (newlineOffsets != null)
+        newlineOffsets.remove(newlineOffsets.size - 1)
+    }
 
   /**
    * Get the most recently read text (for use in an error message)
@@ -969,17 +974,24 @@ final class Tokenizer {
    * @param offset the offset of the offending token, if known, or -1 to use the current offset
    * @return a chunk of text leading up to the error
    */
-  private[parser] def recentText(offset: Int): String = if (offset == -1) { // if no offset was supplied, we want the text immediately before the current reading position
-    if (inputOffset > inputLength) inputOffset = inputLength
-    if (inputOffset < 34) input.substring(0, inputOffset)
-    else Whitespace.collapseWhitespace("..." + input.substring(inputOffset - 30, inputOffset)).toString
-  }
-  else { // if a specific offset was supplied, we want the text *starting* at that offset
-    var end = offset + 30
-    if (end > inputLength) end = inputLength
-    Whitespace.collapseWhitespace((if (offset > 0) "..."
-    else "") + input.substring(offset, end)).toString
-  }
+  private[parser] def recentText(offset: Int): String =
+    if (offset == -1) {
+      // if no offset was supplied, we want the text immediately before the current reading position
+      if (inputOffset > inputLength)
+        inputOffset = inputLength
+      if (inputOffset < 34)
+        input.substring(0, inputOffset)
+      else
+        Whitespace.collapseWhitespace("..." + input.substring(inputOffset - 30, inputOffset)).toString
+    } else {
+      // if a specific offset was supplied, we want the text *starting* at that offset
+      var end = offset + 30
+      if (end > inputLength)
+        end = inputLength
+      Whitespace.collapseWhitespace(
+        (if (offset > 0) "..." else "") + input.substring(offset, end)
+      ).toString
+    }
 
   /**
    * Get the line number of the current token

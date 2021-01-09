@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.parser.ExpressionTool
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
-import org.orbeon.saxon.expr.parser.Token
+import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap, Token}
 
 
 /**
@@ -17,27 +13,30 @@ import org.orbeon.saxon.expr.parser.Token
 class GeneralComparison20(p0: Expression, op: Int, p1: Expression) extends GeneralComparison(p0, op, p1) {
 
   /*@NotNull*/
-
   def copy(rebindings: RebindingMap): Expression = {
-    val gc: GeneralComparison20 = new GeneralComparison20(getLhsExpression.copy(rebindings),
-      op,
-      getRhsExpression.copy(rebindings))
+    val gc =
+      new GeneralComparison20(
+        getLhsExpression.copy(rebindings),
+        op,
+        getRhsExpression.copy(rebindings)
+      )
     ExpressionTool.copyLocationInfo(this, gc)
     gc.setRetainedStaticContext(getRetainedStaticContext)
-    gc.comparer = comparer
-    gc.singletonOperator = singletonOperator
-    gc.needsRuntimeCheck = needsRuntimeCheck
+    gc.comparer              = comparer
+    gc.singletonOperator     = singletonOperator
+    gc.needsRuntimeCheck     = needsRuntimeCheck
     gc.comparisonCardinality = comparisonCardinality
     gc
   }
 
-  override def getInverseComparison(): GeneralComparison = {
-    val gc: GeneralComparison20 = new GeneralComparison20(
-      getRhsExpression,
-      Token.inverse(op),
-      getLhsExpression)
+  override def getInverseComparison: GeneralComparison = {
+    val gc =
+      new GeneralComparison20(
+        getRhsExpression,
+        Token.inverse(op),
+        getLhsExpression
+      )
     gc.setRetainedStaticContext(getRetainedStaticContext)
     gc
   }
-
 }

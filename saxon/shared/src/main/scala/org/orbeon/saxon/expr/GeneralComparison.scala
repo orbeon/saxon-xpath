@@ -44,18 +44,23 @@ object GeneralComparison {
       exp
     }
 
-  def compare(a0: AtomicValue,
-              operator: Int,
-              a1: AtomicValue,
-              comparer: AtomicComparer,
-              checkTypes: Boolean,
-              context: XPathContext,
-              nsResolver: NamespaceResolver): Boolean = {
+  def compare(
+    a0         : AtomicValue,
+    operator   : Int,
+    a1         : AtomicValue,
+    comparer   : AtomicComparer,
+    checkTypes : Boolean,
+    context    : XPathContext,
+    nsResolver : NamespaceResolver
+  ): Boolean = {
+
     var atomicVal0 = a0
     var atomicVal1 = a1
     var checkTyps = checkTypes
+
     val u0 = a0.isInstanceOf[UntypedAtomicValue]
     val u1 = atomicVal1.isInstanceOf[UntypedAtomicValue]
+
     if (u0 != u1) {
       val rules = context.getConfiguration.getConversionRules
       if (u0) {
@@ -96,12 +101,12 @@ object GeneralComparison {
 
   def getCorrespondingSingletonOperator(op: Int): Int = op match {
     case Token.EQUALS => Token.FEQ
-    case Token.GE => Token.FGE
-    case Token.NE => Token.FNE
-    case Token.LT => Token.FLT
-    case Token.GT => Token.FGT
-    case Token.LE => Token.FLE
-    case _ => op
+    case Token.GE     => Token.FGE
+    case Token.NE     => Token.FNE
+    case Token.LT     => Token.FLT
+    case Token.GT     => Token.FGT
+    case Token.LE     => Token.FLE
+    case _            => op
   }
 }
 
@@ -142,26 +147,35 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextInfo: ContextItemStaticInfo): Expression = {
-    val config: Configuration = visitor.getConfiguration
-    val th = config.getTypeHierarchy
+  override def typeCheck(
+    visitor     : ExpressionVisitor,
+    contextInfo : ContextItemStaticInfo
+  ): Expression = {
+
+    val config = visitor.getConfiguration
+    val th     = config.getTypeHierarchy
+
     val oldOp0 = getLhsExpression
     val oldOp1 = getRhsExpression
+
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
-    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
-      getRhsExpression)) {
+
+    if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
       return Literal.makeLiteral(BooleanValue.FALSE, this)
-    }
+
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+
     val atomicType = SequenceType.ATOMIC_SEQUENCE
     val tc = config.getTypeChecker(false)
+
     val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
     this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, atomicType, role0, visitor))
+
     val role1 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
     this.setRhsExpression(tc.staticTypeCheck(getRhsExpression, atomicType, role1, visitor))
+
     if (getLhsExpression != oldOp0)
       adoptChildExpression(getLhsExpression)
     if (getRhsExpression != oldOp1)
@@ -180,12 +194,16 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       err.setLocator(getLocation)
       throw err
     }
+
     val pt0 = t0.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
     val pt1 = t1.getPrimitiveItemType.asInstanceOf[BuiltInAtomicType]
+
     val c0 = getLhsExpression.getCardinality
     val c1 = getRhsExpression.getCardinality
+
     if (c0 == StaticProperty.EMPTY || c1 == StaticProperty.EMPTY)
       return Literal.makeLiteral(BooleanValue.FALSE, this)
+
     if (t0 == BuiltInAtomicType.ANY_ATOMIC || t0 == BuiltInAtomicType.UNTYPED_ATOMIC ||
       t1 == BuiltInAtomicType.ANY_ATOMIC ||
       t1 == BuiltInAtomicType.UNTYPED_ATOMIC) {} else {
@@ -227,8 +245,9 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     if (!Cardinality.allowsMany(c0) && !Cardinality.allowsMany(c1) &&
       t0 != BuiltInAtomicType.ANY_ATOMIC &&
       t1 != BuiltInAtomicType.ANY_ATOMIC) {
-      var e0: Expression = getLhsExpression
-      var e1: Expression = getRhsExpression
+      var e0 = getLhsExpression
+      var e1 = getRhsExpression
+
       if (t0 == BuiltInAtomicType.UNTYPED_ATOMIC) {
         if (t1 == BuiltInAtomicType.UNTYPED_ATOMIC) {
           e0 = new CastExpression(getLhsExpression,
@@ -240,7 +259,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
             Cardinality.allowsZero(c1))
           adoptChildExpression(e1)
         } else if (NumericType.isNumericType(t1)) {
-          val vun: Expression = makeCompareUntypedToNumeric(getLhsExpression,
+          val vun = makeCompareUntypedToNumeric(getLhsExpression,
             getRhsExpression,
             singletonOperator)
           return vun.typeCheck(visitor, contextInfo)
@@ -327,27 +346,37 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         0
   }
 
-  override def optimize(visitor: ExpressionVisitor,
-                        contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(
+    visitor     : ExpressionVisitor,
+    contextInfo : ContextItemStaticInfo
+  ): Expression = {
+
     val th = visitor.getConfiguration.getTypeHierarchy
     val env = visitor.getStaticContext
+
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)
+
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
       return Literal.makeLiteral(BooleanValue.FALSE, this)
+
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
+
     if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
       return Literal.makeLiteral(
         evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
           .materialize,
         this)
+
     val t0 = getLhsExpression.getItemType
     val t1 = getRhsExpression.getItemType
     val c0 = getLhsExpression.getCardinality
     val c1 = getRhsExpression.getCardinality
+
     val many0 = Cardinality.allowsMany(c0)
     val many1 = Cardinality.allowsMany(c1)
+
     if (many0) {
       comparisonCardinality =
         if (many1) MANY_TO_MANY
@@ -443,10 +472,11 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       return vc.typeCheck(visitor, contextInfo)
     }
     if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
-      return Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
-    visitor
-      .obtainOptimizer()
-      .optimizeGeneralComparison(visitor, this, backwardsCompatible = false, contextInfo)
+      Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
+    else
+      visitor
+        .obtainOptimizer()
+        .optimizeGeneralComparison(visitor, this, backwardsCompatible = false, contextInfo)
   }
 
   private def manyOperandIsLiftable(): Boolean = {

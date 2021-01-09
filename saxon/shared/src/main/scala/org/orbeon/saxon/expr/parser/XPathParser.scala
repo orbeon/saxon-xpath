@@ -1845,10 +1845,9 @@ class XPathParser {
   def parseSimpleMappingExpression: Expression = {
     val offset = t.currentTokenStartOffset
     var exp = parsePathExpression
-    while ( {
-      t.currentToken == Token.BANG
-    }) {
-      if (!allowXPath30Syntax) grumble("XPath '!' operator requires XPath 3.0 to be enabled")
+    while (t.currentToken == Token.BANG) {
+      if (!allowXPath30Syntax)
+        grumble("XPath '!' operator requires XPath 3.0 to be enabled")
       nextToken()
       val next = parsePathExpression
       exp = new ForEach(exp, next)
@@ -1868,9 +1867,7 @@ class XPathParser {
   def parseRelativePath: Expression = {
     val offset = t.currentTokenStartOffset
     var exp = parseStepExpression(language eq ParsedLanguage.XSLT_PATTERN)
-    while ( {
-      t.currentToken == Token.SLASH || t.currentToken == Token.SLASH_SLASH
-    }) {
+    while (t.currentToken == Token.SLASH || t.currentToken == Token.SLASH_SLASH) {
       val op = t.currentToken
       nextToken()
       val next = parseStepExpression(false)
@@ -1971,8 +1968,8 @@ class XPathParser {
       step = SystemFunction.makeCall("reverse", rsc, step)
       assert(step != null)
       step
-    }
-    else step
+    } else
+      step
   }
 
   @throws[XPathException]
@@ -2035,7 +2032,6 @@ class XPathParser {
    */
   @throws[XPathException]
   def parseBasicStep(firstInPattern: Boolean): Expression = {
-
     t.currentToken match {
       case Token.DOLLAR =>
         return parseVariableReference
@@ -2076,7 +2072,11 @@ class XPathParser {
           //                } else if (t.currentTokenValue.equals("map")) {
           //                    return parseFunctionCall(null);
 
-      case Token.NODEKIND| Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR =>
+      case Token.NODEKIND |
+           Token.NAME     |
+           Token.PREFIX   |
+           Token.SUFFIX   |
+           Token.STAR =>
         var defaultAxis = AxisInfo.CHILD
         if (t.currentToken == Token.NODEKIND && (t.currentTokenValue == "attribute" || t.currentTokenValue == "schema-attribute")) defaultAxis = AxisInfo.ATTRIBUTE
         else if (t.currentToken == Token.NODEKIND && t.currentTokenValue == "namespace-node") {
@@ -2095,7 +2095,11 @@ class XPathParser {
       case Token.AT =>
         nextToken()
         t.currentToken match {
-          case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR | Token.NODEKIND =>
+          case Token.NAME   |
+               Token.PREFIX |
+               Token.SUFFIX |
+               Token.STAR   |
+               Token.NODEKIND =>
             val ae2 = new AxisExpression(AxisInfo.ATTRIBUTE, parseNodeTest(Type.ATTRIBUTE))
             setLocation(ae2)
             return ae2
@@ -2114,7 +2118,11 @@ class XPathParser {
         val principalNodeType = AxisInfo.principalNodeType(axis)
         nextToken()
         t.currentToken match {
-          case Token.NAME | Token.PREFIX | Token.SUFFIX | Token.STAR | Token.NODEKIND =>
+          case Token.NAME   |
+               Token.PREFIX |
+               Token.SUFFIX |
+               Token.STAR   |
+               Token.NODEKIND =>
             val ax = new AxisExpression(axis, parseNodeTest(principalNodeType))
             setLocation(ax)
             return ax
@@ -2138,7 +2146,8 @@ class XPathParser {
         return parseConstructor
       case Token.NAMED_FUNCTION_REF =>
         return parseNamedFunctionReference
-      case _ => grumble("Unexpected token " + currentTokenDisplay + " at start of expression")
+      case _ =>
+        grumble("Unexpected token " + currentTokenDisplay + " at start of expression")
     }
     new ErrorExpression
   }

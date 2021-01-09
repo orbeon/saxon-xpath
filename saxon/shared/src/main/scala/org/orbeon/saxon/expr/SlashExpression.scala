@@ -159,8 +159,7 @@ class SlashExpression(start: Expression, step: Expression)
 
       ExpressionTool.copyLocationInfo(this, newPath)
       newPath.asInstanceOf[SlashExpression]
-    }
-    if (underlyingAxis == AxisInfo.ATTRIBUTE) {
+    } else if (underlyingAxis == AxisInfo.ATTRIBUTE) {
       val newStep = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, NodeKindTest.ELEMENT)
       ExpressionTool.copyLocationInfo(this, newStep)
       val e2 = ExpressionTool.makePathExpression(startPath.getStart, newStep)
@@ -170,8 +169,8 @@ class SlashExpression(start: Expression, step: Expression)
 
       ExpressionTool.copyLocationInfo(this, e3)
       e3.asInstanceOf[SlashExpression]
-    }
-    null
+    } else
+      null
   }
 
   override def optimize(visitor: ExpressionVisitor,
@@ -354,15 +353,14 @@ class SlashExpression(start: Expression, step: Expression)
   override def addToPathMap(
                              pathMap: PathMap,
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
-    val target: PathMap.PathMapNodeSet =
-      getStart.addToPathMap(pathMap, pathMapNodeSet)
+    val target = getStart.addToPathMap(pathMap, pathMapNodeSet)
     getStep.addToPathMap(pathMap, target)
   }
 
   override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
   def copy(rebindings: RebindingMap): Expression = {
-    val exp: Expression = ExpressionTool.makePathExpression(
+    val exp = ExpressionTool.makePathExpression(
       getStart.copy(rebindings),
       getStep.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, exp)

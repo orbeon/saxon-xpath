@@ -14,16 +14,21 @@ import org.orbeon.saxon.value.{AtomicValue, Cardinality, SequenceType}
 
 object TypeChecker {
 
-  private def makeFunctionSequenceCoercer(exp: Expression,
-                                          reqItemType: FunctionItemType,
-                                          visitor: ExpressionVisitor,
-                                          role: RoleDiagnostic): Expression =
+  private def makeFunctionSequenceCoercer(
+    exp         : Expression,
+    reqItemType : FunctionItemType,
+    visitor     : ExpressionVisitor,
+    role        : RoleDiagnostic
+  ): Expression =
     reqItemType.makeFunctionSequenceCoercer(exp, role)
 
-  def strictTypeCheck(supplied: Expression,
-                      req: SequenceType,
-                      role: RoleDiagnostic,
-                      env: StaticContext): Expression = {
+  def strictTypeCheck(
+    supplied : Expression,
+    req      : SequenceType,
+    role     : RoleDiagnostic,
+    env      : StaticContext
+  ): Expression = {
+
     var exp = supplied
     val th = env.getConfiguration.getTypeHierarchy
     val reqItemType = req.getPrimaryType
@@ -167,10 +172,11 @@ object TypeChecker {
   }
 
   def ebvError(exp: Expression, th: TypeHierarchy): XPathException = {
-    if (Cardinality.allowsZero(exp.getCardinality)) {
+
+    if (Cardinality.allowsZero(exp.getCardinality))
       return null
-    }
-    val t: ItemType = exp.getItemType
+
+    val t = exp.getItemType
     if (th.relationship(t, Type.NODE_TYPE) == DISJOINT &&
       th.relationship(t, BuiltInAtomicType.BOOLEAN) == DISJOINT &&
       th.relationship(t, BuiltInAtomicType.STRING) == DISJOINT &&
@@ -229,25 +235,31 @@ object TypeChecker {
 
 class TypeChecker {
 
-  def staticTypeCheck(supplied: Expression,
-                      req: SequenceType,
-                      role: RoleDiagnostic,
-                      visitor: ExpressionVisitor): Expression = {
-    if (supplied.implementsStaticTypeCheck()) {
-      supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
-    }
-    var exp: Expression = supplied
-    val env: StaticContext = visitor.getStaticContext
-    val config: Configuration = env.getConfiguration
-    val th = config.getTypeHierarchy
-    val defaultContextInfo: ContextItemStaticInfo =
-      config.getDefaultContextItemStaticInfo
-    val reqItemType: ItemType = req.getPrimaryType
-    val reqCard: Int = req.getCardinality
-    val allowsMany: Boolean = Cardinality.allowsMany(reqCard)
+  def staticTypeCheck(
+    supplied : Expression,
+    req      : SequenceType,
+    role     : RoleDiagnostic,
+    visitor  : ExpressionVisitor
+  ): Expression = {
+
+    if (supplied.implementsStaticTypeCheck())
+      return supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
+
+    var exp    = supplied
+    val env    = visitor.getStaticContext
+    val config = env.getConfiguration
+
+    val th                 = config.getTypeHierarchy
+    val defaultContextInfo = config.getDefaultContextItemStaticInfo
+    val reqItemType        = req.getPrimaryType
+    val reqCard            = req.getCardinality
+    val allowsMany         = Cardinality.allowsMany(reqCard)
+
     var suppliedItemType: ItemType = null
-    var suppliedCard: Int = -1
-    var cardOK: Boolean = reqCard == StaticProperty.ALLOWS_ZERO_OR_MORE
+
+    var suppliedCard       = -1
+    var cardOK             = reqCard == StaticProperty.ALLOWS_ZERO_OR_MORE
+
     if (!cardOK) {
       suppliedCard = exp.getCardinality
       cardOK = Cardinality.subsumes(reqCard, suppliedCard)
@@ -259,9 +271,8 @@ class TypeChecker {
 
     if (! itemTypeOK) {
       suppliedItemType = exp.getItemType
-      if (reqItemType == null || suppliedItemType == null) {
+      if (reqItemType == null || suppliedItemType == null)
         throw new NullPointerException()
-      }
       val relation = th.relationship(reqItemType, suppliedItemType)
       itemTypeOK = relation == Affinity.SAME_TYPE || relation == Affinity.SUBSUMES
     }
@@ -485,18 +496,20 @@ class TypeChecker {
         case _ =>
       }
     }
-    if (itemTypeOK && cardOK) {
+
+    if (itemTypeOK && cardOK)
       return exp
-    }
+
     if (suppliedCard == -1) {
       suppliedCard = exp.getCardinality
       if (!cardOK) {
         cardOK = Cardinality.subsumes(reqCard, suppliedCard)
       }
     }
-    if (cardOK && suppliedCard == StaticProperty.EMPTY) {
+
+    if (cardOK && suppliedCard == StaticProperty.EMPTY)
       return exp
-    }
+
     if (suppliedCard == StaticProperty.EMPTY && ((reqCard & StaticProperty.ALLOWS_ZERO) == 0)) {
       val err = new XPathException(
         "An empty sequence is not allowed as the " + role.getMessage,
@@ -506,14 +519,15 @@ class TypeChecker {
       err.setFailingExpression(supplied)
       throw err
     }
-    var relation: Affinity =
+    var relation =
       if (itemTypeOK)
         SUBSUMED_BY
       else
         th.relationship(suppliedItemType, reqItemType)
-    if (reqCard == StaticProperty.ALLOWS_ZERO) {
+
+    if (reqCard == StaticProperty.ALLOWS_ZERO)
       relation = SAME_TYPE
-    }
+
     if (relation == DISJOINT) {
       if (Cardinality.allowsZero(suppliedCard) && Cardinality.allowsZero(reqCard)) {
         if (suppliedCard != StaticProperty.EMPTY) {
@@ -523,8 +537,7 @@ class TypeChecker {
         }
       } else {
         val msg = role.composeErrorMessage(reqItemType, supplied, th)
-        val err =
-          new XPathException(msg, role.getErrorCode, supplied.getLocation)
+        val err = new XPathException(msg, role.getErrorCode, supplied.getLocation)
         err.setIsTypeError(role.isTypeError)
         err.setFailingExpression(supplied)
         throw err
@@ -533,8 +546,10 @@ class TypeChecker {
     if (!(relation == SAME_TYPE || relation == SUBSUMED_BY)) {
       exp match {
         case literal: Literal =>
+
           if (req.matches(literal.value, th))
             return exp
+
           val msg = role.composeErrorMessage(reqItemType, supplied, th)
           val err = new XPathException(msg, role.getErrorCode, supplied.getLocation)
           err.setIsTypeError(role.isTypeError)
@@ -567,16 +582,23 @@ class TypeChecker {
     exp
   }
 
-  def makeArithmeticExpression(lhs: Expression,
-                               operator: Int,
-                               rhs: Expression): Expression =
+  def makeArithmeticExpression(
+    lhs      : Expression,
+    operator : Int,
+    rhs      : Expression
+  ): Expression =
     new ArithmeticExpression(lhs, operator, rhs)
 
-  def makeGeneralComparison(lhs: Expression,
-                            operator: Int,
-                            rhs: Expression): Expression =
+  def makeGeneralComparison(
+    lhs      : Expression,
+    operator : Int,
+    rhs      : Expression
+  ): Expression =
     new GeneralComparison20(lhs, operator, rhs)
 
-  def processValueOf(select: Expression, config: Configuration): Expression =
+  def processValueOf(
+    select : Expression,
+    config : Configuration
+  ): Expression =
     select
 }
