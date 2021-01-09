@@ -141,7 +141,7 @@ object TypeChecker {
             UType.getUType(`val`.materialize))
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
-        err
+        return err
       }
     }
     val reqCardinality: Int = requiredType.getCardinality
