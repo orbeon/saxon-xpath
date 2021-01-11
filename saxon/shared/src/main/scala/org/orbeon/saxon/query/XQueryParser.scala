@@ -980,7 +980,8 @@ class XQueryParser extends XPathParser {
 
   @throws[XPathException]
    def ensureSchemaAware(featureName: String): Unit = {
-    if (!env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY)) throw new XPathException("This Saxon version and license does not allow use of '" + featureName + "'", "XQST0009")
+    if (! env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY))
+      throw new XPathException("This Saxon version and license does not allow use of '" + featureName + "'", "XQST0009")
     env.getConfiguration.checkLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY, featureName, -1)
     getExecutable.setSchemaAware(true)
     getStaticContext.getPackageData.setSchemaAware(true)
@@ -2371,17 +2372,17 @@ class XQueryParser extends XPathParser {
         expect(Token.KEYWORD_CURLY)
         if (!NameChecker.isQName(t.currentTokenValue)) grumble("Schema type name expected after 'validate type")
         requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(t.currentTokenValue, env.getDefaultElementNamespace))
-        if (requiredType == null) 
+        if (requiredType == null)
           grumble("Unknown schema type " + t.currentTokenValue, "XQST0104")
         foundCurly = true
       case Token.KEYWORD_CURLY =>
-        if (t.currentTokenValue == "validate") 
+        if (t.currentTokenValue == "validate")
           mode = Validation.STRICT
-        else 
+        else
           throw new AssertionError("shouldn't be parsing a validate expression")
         foundCurly = true
     }
-    if (!foundCurly) 
+    if (!foundCurly)
       expect(Token.LCURLY)
     nextToken()
     var exp = parseExpression
@@ -2425,15 +2426,15 @@ class XQueryParser extends XPathParser {
     val uri = pragmaName.getURI
     val localName = pragmaName.getLocalPart
     if (uri == NamespaceConstant.SAXON)
-      if ("validate-type" == localName) 
+      if ("validate-type" == localName)
         if (!env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY))
           warning("Ignoring saxon:validate-type. To use this feature " + "you need the Saxon-EE processor from http:")
     else {
       val typeName = Whitespace.trim(pragmaContents)
-      if (!NameChecker.isQName(typeName)) 
+      if (!NameChecker.isQName(typeName))
         grumble("Schema type name expected in saxon:validate-type pragma: found " + Err.wrap(typeName))
       requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(typeName, env.getDefaultElementNamespace))
-      if (requiredType == null) 
+      if (requiredType == null)
         grumble("Unknown schema type " + typeName)
       validateType = true
     }

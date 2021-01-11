@@ -111,9 +111,11 @@ class JavaPlatform extends Platform {
                       validation: Int,
                       dtdValidation: Boolean): Source = input
 
-  def makeCollation(config: Configuration,
-                    props: Properties,
-                    uri: String): StringCollator =
+  def makeCollation(
+    config : Configuration,
+    props  : Properties,
+    uri    : String
+  ): StringCollator =
     JavaCollationFactory.makeCollation(config, uri, props)
 
   // ORBEON: Collations

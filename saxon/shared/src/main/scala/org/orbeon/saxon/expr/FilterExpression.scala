@@ -36,10 +36,11 @@ object FilterExpression {
       SystemFunction.makeCall("boolean", in.getRetainedStaticContext, in)
 
   private def tryToRewritePositionalFilterSupport(
-                                                   start: Expression,
-                                                   comparand: Expression,
-                                                   operator: Int,
-                                                   th: TypeHierarchy): Expression =
+    start     : Expression,
+    comparand : Expression,
+    operator  : Int,
+    th        : TypeHierarchy
+  ): Expression =
     if (th.isSubType(comparand.getItemType, BuiltInAtomicType.INTEGER)) {
       operator match {
         case Token.FEQ =>
@@ -83,19 +84,18 @@ object FilterExpression {
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        case Token.FLE => {
-          val args: Array[Expression] = Array.ofDim[Expression](3)
+        case Token.FLE =>
+          val args = Array.ofDim[Expression](3)
           args(0) = start
           args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
           args(2) = comparand
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        }
         case Token.FNE =>
           SystemFunction.makeCall("remove", start.getRetainedStaticContext, start, comparand)
         case Token.FGT =>
-          val args: Array[Expression] = Array.ofDim[Expression](2)
+          val args = Array.ofDim[Expression](2)
           args(0) = start
           if (Literal.isAtomic(comparand)) {
             val n: Long = comparand
@@ -115,26 +115,23 @@ object FilterExpression {
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
         case Token.FGE =>
-          val args: Array[Expression] = Array.ofDim[Expression](3)
+          val args = Array.ofDim[Expression](3)
           args(0) = start
           args(1) = comparand
           SystemFunction.makeCall("subsequence",
             start.getRetainedStaticContext,
             args.toIndexedSeq: _*)
-        case _ => throw new IllegalArgumentException("operator")
+        case _ =>
+          throw new IllegalArgumentException("operator")
       }
     } else {
       operator match {
-        case Token.FEQ => new SubscriptExpression(start, comparand)
-        case Token.FLT => {
-          val let = new LetExpression()
-          let.setRequiredType(
-            SequenceType.makeSequenceType(comparand.getItemType,
-              StaticProperty.ALLOWS_ONE))
-          let.setVariableQName(
-            new StructuredQName("pp",
-              NamespaceConstant.SAXON,
-              "pp" + let.hashCode))
+        case Token.FEQ =>
+          new SubscriptExpression(start, comparand)
+        case Token.FLT =>
+          val let = new LetExpression
+          let.setRequiredType(SequenceType.makeSequenceType(comparand.getItemType, StaticProperty.ALLOWS_ONE))
+          let.setVariableQName(new StructuredQName("pp", NamespaceConstant.SAXON, "pp" + let.hashCode))
           let.setSequence(comparand)
           val isWholeArg = new LocalVariableReference(let)
           val arithArg = new LocalVariableReference(let)
@@ -150,8 +147,7 @@ object FilterExpression {
             "floor",
             start.getRetainedStaticContext,
             floorArg)
-          val choice =
-            Choose.makeConditional(isWhole, minusOne, floor)
+          val choice = Choose.makeConditional(isWhole, minusOne, floor)
           val args = Array.ofDim[Expression](4)
           args(0) = start
           args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1))
@@ -163,8 +159,7 @@ object FilterExpression {
             args.toIndexedSeq: _*)
           let.setAction(subs)
           let
-        }
-        case Token.FLE => {
+        case Token.FLE =>
           val floor = SystemFunction.makeCall(
             "floor",
             start.getRetainedStaticContext,
@@ -175,8 +170,7 @@ object FilterExpression {
             Array(start,
               Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
               floor).toIndexedSeq: _*)
-        }
-        case Token.FNE => {
+        case Token.FNE =>
           val let = new LetExpression()
           ExpressionTool.copyLocationInfo(start, let)
           let.setRequiredType(
@@ -206,8 +200,7 @@ object FilterExpression {
             choice)
           let.setAction(rem)
           let
-        }
-        case Token.FGT => {
+        case Token.FGT =>
           val let = new LetExpression
           let.setRequiredType(
             SequenceType.makeSequenceType(comparand.getItemType,
@@ -240,8 +233,7 @@ object FilterExpression {
             choice)
           let.setAction(subs)
           let
-        }
-        case Token.FGE => {
+        case Token.FGE =>
           val ceiling = SystemFunction.makeCall(
             "ceiling",
             start.getRetainedStaticContext,
@@ -250,9 +242,8 @@ object FilterExpression {
             start.getRetainedStaticContext,
             start,
             ceiling)
-        }
-        case _ => throw new IllegalArgumentException("operator")
-
+        case _ =>
+          throw new IllegalArgumentException("operator")
       }
     }
 
@@ -591,7 +582,8 @@ class FilterExpression(base: Expression, filter: Expression)
         return iterate(context).materialize
       }
     catch {
-      case _: Exception => return null
+      case _: Exception =>
+        return null
     }
     null
   }

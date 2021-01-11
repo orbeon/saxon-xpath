@@ -12,12 +12,16 @@ import scala.beans.BeanProperty
 
 object GenericAtomicComparer {
 
-  def makeAtomicComparer(type0: BuiltInAtomicType,
-                         type1: BuiltInAtomicType,
-                         collator: StringCollator,
-                         context: XPathContext): AtomicComparer = {
+  def makeAtomicComparer(
+    type0    : BuiltInAtomicType,
+    type1    : BuiltInAtomicType,
+    collator : StringCollator,
+    context  : XPathContext
+  ): AtomicComparer = {
+
     val fp0 = type0.getFingerprint
     val fp1 = type1.getFingerprint
+
     if (fp0 == fp1) {
       fp0 match {
         case StandardNames.XS_DATE_TIME         |
@@ -42,16 +46,19 @@ object GenericAtomicComparer {
         case _ =>
       }
     }
-    if (type0.isPrimitiveNumeric && type1.isPrimitiveNumeric)
+    if (type0.isPrimitiveNumeric && type1.isPrimitiveNumeric) {
       ComparableAtomicValueComparer.getInstance
-    else if ((fp0 == StandardNames.XS_STRING || fp0 == StandardNames.XS_UNTYPED_ATOMIC || fp0 == StandardNames.XS_ANY_URI) &&
-        (fp1 == StandardNames.XS_STRING || fp1 == StandardNames.XS_UNTYPED_ATOMIC || fp1 == StandardNames.XS_ANY_URI)) {
+    } else if (
+      (fp0 == StandardNames.XS_STRING || fp0 == StandardNames.XS_UNTYPED_ATOMIC || fp0 == StandardNames.XS_ANY_URI) &&
+      (fp1 == StandardNames.XS_STRING || fp1 == StandardNames.XS_UNTYPED_ATOMIC || fp1 == StandardNames.XS_ANY_URI)
+    ) {
       if (collator.isInstanceOf[CodepointCollator])
         CodepointCollatingComparer.getInstance
       else
         new CollatingAtomicComparer(collator)
-    } else
+    } else {
       new GenericAtomicComparer(collator, context)
+    }
   }
 
 }

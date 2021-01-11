@@ -8,64 +8,50 @@
 package org.orbeon.saxon.ma.json
 
 import org.orbeon.saxon.expr.XPathContext
-import org.orbeon.saxon.model.StringToDouble
-import org.orbeon.saxon.om.NameChecker
-import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.trans.Err
-import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.value.BooleanValue
-import org.orbeon.saxon.value.StringValue
-import java.util
-
 import org.orbeon.saxon.ma.json.JsonParser.JsonToken.JsonToken
+import org.orbeon.saxon.model.StringToDouble
+import org.orbeon.saxon.om.{NameChecker, Sequence}
+import org.orbeon.saxon.trans.{Err, XPathException}
+import org.orbeon.saxon.tree.util.FastStringBuffer
+import org.orbeon.saxon.value.{BooleanValue, StringValue}
 
+import java.util
 import scala.util.control.Breaks._
 
 /**
  * Parser for JSON, which notifies parsing events to a JsonHandler
  */
 object JsonParser {
-  val ESCAPE: Int = 1
 
-  val ALLOW_ANY_TOP_LEVEL: Int = 2
+  val ESCAPE              : Int = 1
+  val ALLOW_ANY_TOP_LEVEL : Int = 2
+  val LIBERAL             : Int = 4
+  val VALIDATE            : Int = 8
+  val DEBUG               : Int = 16
+  val DUPLICATES_RETAINED : Int = 32
+  val DUPLICATES_LAST     : Int = 64
+  val DUPLICATES_FIRST    : Int = 128
+  val DUPLICATES_REJECTED : Int = 256
 
-  val LIBERAL: Int = 4
+  val DUPLICATES_SPECIFIED: Int = DUPLICATES_FIRST | DUPLICATES_LAST | DUPLICATES_RETAINED | DUPLICATES_REJECTED
 
-  val VALIDATE: Int = 8
-
-  val DEBUG: Int = 16
-
-  val DUPLICATES_RETAINED: Int = 32
-
-  val DUPLICATES_LAST: Int = 64
-
-  val DUPLICATES_FIRST: Int = 128
-
-  val DUPLICATES_REJECTED: Int = 256
-
-  val DUPLICATES_SPECIFIED: Int = DUPLICATES_FIRST | DUPLICATES_LAST | DUPLICATES_RETAINED |
-    DUPLICATES_REJECTED
-
-  private val ERR_GRAMMAR: String = "FOJS0001"
-
-  private val ERR_DUPLICATE: String = "FOJS0003"
-
-  private val ERR_SCHEMA: String = "FOJS0004"
-
-  private val ERR_OPTIONS: String = "FOJS0005"
-
-  private val ERR_LIMITS: String = "FOJS0001"
+  private val ERR_GRAMMAR   : String = "FOJS0001"
+  private val ERR_DUPLICATE : String = "FOJS0003"
+  private val ERR_SCHEMA    : String = "FOJS0004"
+  private val ERR_OPTIONS   : String = "FOJS0005"
+  private val ERR_LIMITS    : String = "FOJS0001"
 
   @throws[XPathException]
-  def getFlags(options: util.Map[String, Sequence], context: XPathContext, allowValidate: Boolean) = {
+  def getFlags(options: util.Map[String, Sequence], context: XPathContext, allowValidate: Boolean): Int = {
     var flags = 0
     val debug = options.get("debug").asInstanceOf[BooleanValue]
-    if (debug != null && debug.getBooleanValue) flags |= DEBUG
+    if (debug != null && debug.getBooleanValue)
+      flags |= DEBUG
     val escape = options.get("escape").asInstanceOf[BooleanValue].getBooleanValue
     if (escape) {
       flags |= ESCAPE
-      if (options.get("fallback") != null) throw new XPathException("Cannot specify a fallback function when escape=true", "FOJS0005")
+      if (options.get("fallback") != null)
+        throw new XPathException("Cannot specify a fallback function when escape=true", "FOJS0005")
     }
     if (options.get("liberal").asInstanceOf[BooleanValue].getBooleanValue) {
       flags |= LIBERAL
@@ -75,7 +61,8 @@ object JsonParser {
     if (allowValidate) {
       validate = options.get("validate").asInstanceOf[BooleanValue].getBooleanValue
       if (validate) {
-        if (!context.getController.getExecutable.isSchemaAware) error("Requiring validation on non-schema-aware processor", ERR_SCHEMA)
+        if (!context.getController.getExecutable.isSchemaAware)
+          error("Requiring validation on non-schema-aware processor", ERR_SCHEMA)
         flags |= VALIDATE
       }
     }
@@ -93,7 +80,8 @@ object JsonParser {
         case _ =>
           error("Invalid value for 'duplicates' option", ERR_OPTIONS)
       }
-      if (validate && "retain" == duplicates) error("The options validate:true and duplicates:retain cannot be used together", ERR_OPTIONS)
+      if (validate && "retain" == duplicates)
+        error("The options validate:true and duplicates:retain cannot be used together", ERR_OPTIONS)
     }
     flags
   }
@@ -108,19 +96,19 @@ object JsonParser {
    */
   @throws[XPathException]
   def unescape(literal: String, flags: Int, errorCode: String, lineNumber: Int): String = {
-    if (literal.indexOf('\\') < 0) return literal
+    if (literal.indexOf('\\') < 0)
+      return literal
     val liberal = (flags & LIBERAL) != 0
     val buffer = new FastStringBuffer(literal.length)
     var i = 0
-    while ( {
-      i < literal.length
-    }) {
+    while (i < literal.length) {
       val c = literal.charAt(i)
       if (c == '\\') {
-        if ( {
-          i += 1;
+        if ({
+          i += 1
           i - 1
-        } == literal.length - 1) throw new XPathException("Invalid JSON escape: String " + Err.wrap(literal) + " ends in backslash", errorCode)
+        } == literal.length - 1)
+          throw new XPathException("Invalid JSON escape: String " + Err.wrap(literal) + " ends in backslash", errorCode)
         literal.charAt(i) match {
           case '"' =>
             buffer.cat('"')
@@ -145,9 +133,11 @@ object JsonParser {
               buffer.cat(code.toChar)
               i += 4
             } catch {
-              case e: Exception =>
-                if (liberal) buffer.append("\\u")
-                else throw new XPathException("Invalid JSON escape: \\u must be followed by four hex characters", errorCode)
+              case _: Exception =>
+                if (liberal)
+                  buffer.append("\\u")
+                else
+                  throw new XPathException("Invalid JSON escape: \\u must be followed by four hex characters", errorCode)
             }
           case _ =>
             if (liberal) buffer.cat(literal.charAt(i))
@@ -179,73 +169,61 @@ object JsonParser {
 
   object JsonToken extends Enumeration {
 
-    val LSQB: JsonToken = new JsonToken()
-
-    val RSQB: JsonToken = new JsonToken()
-
-    val LCURLY: JsonToken = new JsonToken()
-
-    val RCURLY: JsonToken = new JsonToken()
-
-    val STRING_LITERAL: JsonToken = new JsonToken()
-
-    val NUMERIC_LITERAL: JsonToken = new JsonToken()
-
-    val TRUE: JsonToken = new JsonToken()
-
-    val FALSE: JsonToken = new JsonToken()
-
-    val NULL: JsonToken = new JsonToken()
-
-    val COLON: JsonToken = new JsonToken()
-
-    val COMMA: JsonToken = new JsonToken()
-
-    val UNQUOTED_STRING: JsonToken = new JsonToken()
-
-    val EOF: JsonToken = new JsonToken()
+    val LSQB            : JsonToken = new JsonToken
+    val RSQB            : JsonToken = new JsonToken
+    val LCURLY          : JsonToken = new JsonToken
+    val RCURLY          : JsonToken = new JsonToken
+    val STRING_LITERAL  : JsonToken = new JsonToken
+    val NUMERIC_LITERAL : JsonToken = new JsonToken
+    val TRUE            : JsonToken = new JsonToken
+    val FALSE           : JsonToken = new JsonToken
+    val NULL            : JsonToken = new JsonToken
+    val COLON           : JsonToken = new JsonToken
+    val COMMA           : JsonToken = new JsonToken
+    val UNQUOTED_STRING : JsonToken = new JsonToken
+    val EOF             : JsonToken = new JsonToken
 
     class JsonToken
-
   }
 
   import JsonToken._
 
-  def toString(token: JsonToken, currentTokenValue: String) = token match {
-    case LSQB =>
-      "["
-    case RSQB =>
-      "]"
-    case LCURLY =>
-      "{"
-    case RCURLY =>
-      "}"
-    case STRING_LITERAL =>
-      "string (\"" + currentTokenValue + "\")"
-    case NUMERIC_LITERAL =>
-      "number (" + currentTokenValue + ")"
-    case TRUE =>
-      "true"
-    case FALSE =>
-      "false"
-    case NULL =>
-      "null"
-    case COLON =>
-      ":"
-    case COMMA =>
-      ","
-    case EOF =>
-      "<eof>"
-    case _ =>
-      "<" + token + ">"
-  }
+  def toString(token: JsonToken, currentTokenValue: String): String =
+    token match {
+      case LSQB =>
+        "["
+      case RSQB =>
+        "]"
+      case LCURLY =>
+        "{"
+      case RCURLY =>
+        "}"
+      case STRING_LITERAL =>
+        "string (\"" + currentTokenValue + "\")"
+      case NUMERIC_LITERAL =>
+        "number (" + currentTokenValue + ")"
+      case TRUE =>
+        "true"
+      case FALSE =>
+        "false"
+      case NULL =>
+        "null"
+      case COLON =>
+        ":"
+      case COMMA =>
+        ","
+      case EOF =>
+        "<eof>"
+      case _ =>
+        "<" + token + ">"
+    }
 }
 
 
 /**
  * Create a JSON parser
  */
-class JsonParser() {
+class JsonParser {
   /**
    * Parse the JSON string according to supplied options
    *
@@ -257,9 +235,10 @@ class JsonParser() {
    */
   @throws[XPathException]
   def parse(input: String, flags: Int, handler: JsonHandler, context: XPathContext): Unit = {
-    if (input.isEmpty) invalidJSON("An empty string is not valid JSON", JsonParser.ERR_GRAMMAR, 1)
+    if (input.isEmpty)
+      invalidJSON("An empty string is not valid JSON", JsonParser.ERR_GRAMMAR, 1)
     val t = new JsonTokenizer(input)
-    t.next
+    t.next()
     parseConstruct(handler, t, flags, context)
     if (t.next != JsonParser.JsonToken.EOF) invalidJSON("Unexpected token beyond end of JSON input", JsonParser.ERR_GRAMMAR, t.lineNumber)
   }
@@ -311,35 +290,41 @@ class JsonParser() {
   private def parseObject(handler: JsonHandler, tokenizer: JsonParser#JsonTokenizer, flags: Int, context: XPathContext): Unit = {
     val liberal = (flags & JsonParser.LIBERAL) != 0
     handler.startMap()
-    var tok = tokenizer.next
+    var tok = tokenizer.next()
     breakable {
       while (tok != JsonParser.JsonToken.RCURLY) {
-        if ((tok ne JsonParser.JsonToken.STRING_LITERAL) && !((tok eq JsonParser.JsonToken.UNQUOTED_STRING) && liberal)) invalidJSON("Property name must be a string literal", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
+        if ((tok ne JsonParser.JsonToken.STRING_LITERAL) && !((tok eq JsonParser.JsonToken.UNQUOTED_STRING) && liberal))
+          invalidJSON("Property name must be a string literal", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
         var key = tokenizer.currentTokenValue.toString
         key = JsonParser.unescape(key, flags, JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
         val reEscaped = handler.reEscape(key)
-        tok = tokenizer.next
-        if (tok ne JsonParser.JsonToken.COLON) invalidJSON("Missing colon after \"" + Err.wrap(key) + "\"", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
-        tokenizer.next
+        tok = tokenizer.next()
+        if (tok ne JsonParser.JsonToken.COLON)
+          invalidJSON("Missing colon after \"" + Err.wrap(key) + "\"", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
+        tokenizer.next()
         val duplicate = handler.setKey(key, reEscaped)
-        if (duplicate && ((flags & JsonParser.DUPLICATES_REJECTED) != 0)) invalidJSON("Duplicate key value \"" + Err.wrap(key) + "\"", JsonParser.ERR_DUPLICATE, tokenizer.lineNumber)
-        try if (!duplicate || ((flags & (JsonParser.DUPLICATES_LAST | JsonParser.DUPLICATES_RETAINED)) != 0)) parseConstruct(handler, tokenizer, flags, context)
-        else { // retain first: parse the duplicate value but discard it
-          val h2 = new JsonHandler
-          h2.setContext(context)
-          parseConstruct(h2, tokenizer, flags, context)
-        }
+        if (duplicate && ((flags & JsonParser.DUPLICATES_REJECTED) != 0))
+          invalidJSON("Duplicate key value \"" + Err.wrap(key) + "\"", JsonParser.ERR_DUPLICATE, tokenizer.lineNumber)
+        try
+            if (!duplicate || ((flags & (JsonParser.DUPLICATES_LAST | JsonParser.DUPLICATES_RETAINED)) != 0))
+              parseConstruct(handler, tokenizer, flags, context)
+          else { // retain first: parse the duplicate value but discard it
+            val h2 = new JsonHandler
+            h2.setContext(context)
+            parseConstruct(h2, tokenizer, flags, context)
+          }
         catch {
-          case e: StackOverflowError =>
+          case _: StackOverflowError =>
             invalidJSON("Objects are too deeply nested", JsonParser.ERR_LIMITS, tokenizer.lineNumber)
         }
-        tok = tokenizer.next
+        tok = tokenizer.next()
         if (tok eq JsonParser.JsonToken.COMMA) {
-          tok = tokenizer.next
-          if (tok eq JsonParser.JsonToken.RCURLY) if (liberal) {
-            break()
-          }
-          else invalidJSON("Trailing comma after entry in object", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
+          tok = tokenizer.next()
+          if (tok eq JsonParser.JsonToken.RCURLY)
+            if (liberal)
+              break()
+            else
+              invalidJSON("Trailing comma after entry in object", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
         }
         else if (tok eq JsonParser.JsonToken.RCURLY) break()
         else invalidJSON("Unexpected token after value of \"" + Err.wrap(key) + "\" property", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
@@ -360,26 +345,31 @@ class JsonParser() {
   private def parseArray(handler: JsonHandler, tokenizer: JsonParser#JsonTokenizer, flags: Int, context: XPathContext): Unit = {
     val liberal = (flags & JsonParser.LIBERAL) != 0
     handler.startArray()
-    var tok = tokenizer.next
+    var tok = tokenizer.next()
     if (tok eq JsonParser.JsonToken.RSQB) {
       handler.endArray()
       return
     }
     breakable {
       while (true) {
-        try parseConstruct(handler, tokenizer, flags, context)
+        try
+          parseConstruct(handler, tokenizer, flags, context)
         catch {
-          case e: StackOverflowError =>
+          case _: StackOverflowError =>
             invalidJSON("Arrays are too deeply nested", JsonParser.ERR_LIMITS, tokenizer.lineNumber)
         }
-        tok = tokenizer.next
+        tok = tokenizer.next()
         if (tok eq JsonParser.JsonToken.COMMA) {
-          tok = tokenizer.next
-          if (tok eq JsonParser.JsonToken.RSQB) if (liberal) break()
-          else invalidJSON("Trailing comma after entry in array", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
-        }
-        else if (tok eq JsonParser.JsonToken.RSQB) break()
-        else invalidJSON("Unexpected token (" + JsonParser.toString(tok, tokenizer.currentTokenValue.toString) +
+          tok = tokenizer.next()
+          if (tok eq JsonParser.JsonToken.RSQB)
+            if (liberal)
+              break()
+            else
+              invalidJSON("Trailing comma after entry in array", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
+        } else if (tok eq JsonParser.JsonToken.RSQB)
+          break()
+        else
+          invalidJSON("Unexpected token (" + JsonParser.toString(tok, tokenizer.currentTokenValue.toString) +
           ") after entry in array", JsonParser.ERR_GRAMMAR, tokenizer.lineNumber)
       }
     }
@@ -394,15 +384,20 @@ class JsonParser() {
    * @return the result of parsing and conversion to XDM
    */
   @throws[XPathException]
-  private def parseNumericLiteral(token: String, flags: Int, lineNumber: Int) = try {
-    if ((flags & JsonParser.LIBERAL) == 0) { // extra checks on the number disabled by choosing spec="liberal"
-      if (token.startsWith("+")) invalidJSON("Leading + sign not allowed: " + token, JsonParser.ERR_GRAMMAR, lineNumber)
+  private def parseNumericLiteral(token: String, flags: Int, lineNumber: Int): Double = try {
+    if ((flags & JsonParser.LIBERAL) == 0) {
+      // extra checks on the number disabled by choosing spec="liberal"
+      if (token.startsWith("+"))
+        invalidJSON("Leading + sign not allowed: " + token, JsonParser.ERR_GRAMMAR, lineNumber)
       else {
         var t = token
         if (t.startsWith("-")) t = t.substring(1)
-        if (t.startsWith("0") && !(t == "0" || t.startsWith("0.") || t.startsWith("0e") || t.startsWith("0E"))) invalidJSON("Redundant leading zeroes not allowed: " + token, JsonParser.ERR_GRAMMAR, lineNumber)
-        if (t.endsWith(".") || t.contains(".e") || t.contains(".E")) invalidJSON("Empty fractional part not allowed", JsonParser.ERR_GRAMMAR, lineNumber)
-        if (t.startsWith(".")) invalidJSON("Empty integer part not allowed", JsonParser.ERR_GRAMMAR, lineNumber)
+        if (t.startsWith("0") && !(t == "0" || t.startsWith("0.") || t.startsWith("0e") || t.startsWith("0E")))
+          invalidJSON("Redundant leading zeroes not allowed: " + token, JsonParser.ERR_GRAMMAR, lineNumber)
+        if (t.endsWith(".") || t.contains(".e") || t.contains(".E"))
+          invalidJSON("Empty fractional part not allowed", JsonParser.ERR_GRAMMAR, lineNumber)
+        if (t.startsWith("."))
+          invalidJSON("Empty integer part not allowed", JsonParser.ERR_GRAMMAR, lineNumber)
       }
     }
     StringToDouble.getInstance.stringToNumber(token)
@@ -413,28 +408,30 @@ class JsonParser() {
   }
 
   @throws[XPathException]
-  private def invalidJSON(message: String, code: String, lineNumber: Int) = JsonParser.error("Invalid JSON input on line " + lineNumber + ": " + message, code)
+  private def invalidJSON(message: String, code: String, lineNumber: Int): Nothing =
+    JsonParser.error("Invalid JSON input on line " + lineNumber + ": " + message, code)
 
   /**
    * Inner class to do the tokenization
    */
   class JsonTokenizer(var input: String) {
-    private var position: Int = 0
+    private var position = 0
     // Ignore a leading BOM
-    if (!input.isEmpty && input.charAt(0) == 65279) position += 1
-    var lineNumber: Int = 1
+    if (input.nonEmpty && input.charAt(0) == 65279)
+      position += 1
+    var lineNumber              = 1
     var currentToken: JsonToken = null
     var currentTokenValue = new FastStringBuffer(FastStringBuffer.C64)
 
     @throws[XPathException]
-    def next = {
+    def next(): JsonToken = {
       currentToken = readToken
       currentToken
     }
 
     @throws[XPathException]
     private def readToken: JsonToken = {
-      var jsonToken = new JsonToken
+      val jsonToken = new JsonToken
       if (position >= input.length)
         return JsonParser.JsonToken.EOF
       while (true) {
@@ -444,14 +441,14 @@ class JsonParser() {
             if (c == '\n' || c == '\r')
               lineNumber += 1
             if ( {
-              position += 1;
+              position += 1
               position
             } >= input.length) return JsonParser.JsonToken.EOF
           case _ =>
         }
       }
       val ch = input.charAt({
-        position += 1;
+        position += 1
         position - 1
       })
       ch match {
@@ -468,20 +465,23 @@ class JsonParser() {
           var afterBackslash = false
           breakable {
             while (true) {
-              if (position >= input.length) invalidJSON("Unclosed quotes in string literal", JsonParser.ERR_GRAMMAR, lineNumber)
+              if (position >= input.length)
+                invalidJSON("Unclosed quotes in string literal", JsonParser.ERR_GRAMMAR, lineNumber)
               val c = input.charAt({
-                position += 1;
+                position += 1
                 position - 1
               })
-              if (c < 32) invalidJSON("Unescaped control character (x" + Integer.toHexString(c) + ")", JsonParser.ERR_GRAMMAR, lineNumber)
-              if (afterBackslash && c == 'u') try {
-                val hex = input.substring(position, position + 4)
-                //noinspection ResultOfMethodCallIgnored
-                Integer.parseInt(hex, 16)
-              } catch {
-                case e: Exception =>
-                  invalidJSON("\\u must be followed by four hex characters", JsonParser.ERR_GRAMMAR, lineNumber)
-              }
+              if (c < 32)
+                invalidJSON("Unescaped control character (x" + Integer.toHexString(c) + ")", JsonParser.ERR_GRAMMAR, lineNumber)
+              if (afterBackslash && c == 'u')
+                try {
+                  val hex = input.substring(position, position + 4)
+                  //noinspection ResultOfMethodCallIgnored
+                  Integer.parseInt(hex, 16)
+                } catch {
+                  case _: Exception =>
+                    invalidJSON("\\u must be followed by four hex characters", JsonParser.ERR_GRAMMAR, lineNumber)
+                }
               if (c == '"' && !afterBackslash)
                 break()
               else {
@@ -510,14 +510,15 @@ class JsonParser() {
         case '9' =>
           currentTokenValue.setLength(0)
           currentTokenValue.cat(ch)
-          if (position < input.length) { // We could be in ECMA mode when there is a single digit
+          if (position < input.length) {
+            // We could be in ECMA mode when there is a single digit
             breakable {
               while (true) {
                 val c = input.charAt(position)
                 if ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E') {
                   currentTokenValue.cat(c)
                   if ( {
-                    position += 1;
+                    position += 1
                     position
                   } >= input.length)
                     break()
@@ -539,12 +540,11 @@ class JsonParser() {
                 if (NameChecker.isNCNameChar(c)) {
                   currentTokenValue.cat(c)
                   position += 1
-                }
-                else break()
+                } else
+                  break()
               }
             }
-            val `val` = currentTokenValue.toString
-            `val` match {
+            currentTokenValue.toString match {
               case "true" =>
                 JsonParser.JsonToken.TRUE
               case "false" =>
@@ -557,7 +557,7 @@ class JsonParser() {
           }
           else {
             val c = input.charAt({
-              position -= 1;
+              position -= 1
               position
             })
             invalidJSON("Unexpected character '" + c + "' (\\u" + Integer.toHexString(c) + ") at position " + position, JsonParser.ERR_GRAMMAR, lineNumber)

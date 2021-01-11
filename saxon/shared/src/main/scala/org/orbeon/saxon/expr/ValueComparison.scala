@@ -35,12 +35,12 @@ object ValueComparison {
     if (v0.isNaN || v1.isNaN)
       op == Token.FNE
     try op match {
-      case Token.FEQ => comparer.comparesEqual(v0, v1)
-      case Token.FNE => !comparer.comparesEqual(v0, v1)
-      case Token.FGT => comparer.compareAtomicValues(v0, v1) > 0
-      case Token.FLT => comparer.compareAtomicValues(v0, v1) < 0
-      case Token.FGE => comparer.compareAtomicValues(v0, v1) >= 0
-      case Token.FLE => comparer.compareAtomicValues(v0, v1) <= 0
+      case Token.FEQ =>   comparer.comparesEqual(v0, v1)
+      case Token.FNE => ! comparer.comparesEqual(v0, v1)
+      case Token.FGT =>   comparer.compareAtomicValues(v0, v1) > 0
+      case Token.FLT =>   comparer.compareAtomicValues(v0, v1) < 0
+      case Token.FGE =>   comparer.compareAtomicValues(v0, v1) >= 0
+      case Token.FLE =>   comparer.compareAtomicValues(v0, v1) <= 0
       case _         => throw new UnsupportedOperationException("Unknown operator " + op)
     } catch {
       case err: ComparisonException =>
@@ -81,8 +81,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
 
   def needsRuntimeComparabilityCheck(): Boolean = needsRuntimeCheck
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Expression = {
+  override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     resetLocalStaticProperties()
     getLhs.typeCheck(visitor, contextInfo)
     getRhs.typeCheck(visitor, contextInfo)
@@ -112,8 +111,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
     val tc = config.getTypeChecker(false)
     val role0 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 0)
     this.setLhsExpression(tc.staticTypeCheck(getLhsExpression, optionalAtomic, role0, visitor))
-    val role1 =
-      new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
+    val role1 = new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, Token.tokens(op), 1)
     this.setRhsExpression(tc.staticTypeCheck(getRhsExpression, optionalAtomic, role1, visitor))
     val t0 = getLhsExpression.getItemType.getAtomizedItemType
     val t1 = getRhsExpression.getItemType.getAtomizedItemType
@@ -131,8 +129,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
     if (p1 == BuiltInAtomicType.UNTYPED_ATOMIC)
       p1 = BuiltInAtomicType.STRING
     needsRuntimeCheck = p0 == BuiltInAtomicType.ANY_ATOMIC || p1 == BuiltInAtomicType.ANY_ATOMIC
-    if (!needsRuntimeCheck &&
-      ! Type.isPossiblyComparable(p0, p1, Token.isOrderedOperator(op))) {
+    if (! needsRuntimeCheck && ! Type.isPossiblyComparable(p0, p1, Token.isOrderedOperator(op))) {
       val opt0 = Cardinality.allowsZero(getLhsExpression.getCardinality)
       val opt1 = Cardinality.allowsZero(getRhsExpression.getCardinality)
       if (opt0 || opt1) {
@@ -154,9 +151,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
           getLocation)
         needsRuntimeCheck = true
       } else {
-        val message = "In {" + toShortString + "}: cannot compare " + t0.toString +
-          " to " +
-          t1.toString
+        val message = "In {" + toShortString + "}: cannot compare " + t0.toString + " to " + t1.toString
         val err     = new XPathException(message)
         err.setIsTypeError(true)
         err.setErrorCode("XPTY0004")
@@ -169,24 +164,23 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
       mustBeOrdered(t1, p1)
     }
     if (comparer == null) {
-      val defaultCollationName: String = env.getDefaultCollationName
-      var comp: StringCollator = config.getCollation(defaultCollationName)
-      if (comp == null) {
+      val defaultCollationName = env.getDefaultCollationName
+      var comp = config.getCollation(defaultCollationName)
+      if (comp == null)
         comp = CodepointCollator.getInstance
-      }
       comparer = GenericAtomicComparer.makeAtomicComparer(
         p0,
         p1,
         comp,
-        env.getConfiguration.getConversionContext)
+        env.getConfiguration.getConversionContext
+      )
     }
     this
   }
 
   private def mustBeOrdered(t1: PlainType, p1: BuiltInAtomicType): Unit = {
     if (!p1.isOrdered(true)) {
-      val err = new XPathException(
-        "Type " + t1.toString + " is not an ordered type")
+      val err = new XPathException("Type " + t1.toString + " is not an ordered type")
       err.setErrorCode("XPTY0004")
       err.setIsTypeError(true)
       err.setLocation(getLocation)
@@ -194,8 +188,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
     }
   }
 
-override  def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Expression = {
+override  def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)
     visitor
@@ -213,20 +206,19 @@ override  def optimize(visitor: ExpressionVisitor,
         Affinity.DISJOINT
 
   def negate(): Expression = {
-    val vc: ValueComparison = new ValueComparison(getLhsExpression,
-      Token.negate(op),
-      getRhsExpression)
+    val vc = new ValueComparison(getLhsExpression, Token.negate(op), getRhsExpression)
     vc.comparer = comparer
     vc.resultWhenEmpty =
       if (resultWhenEmpty == null || resultWhenEmpty == BooleanValue.FALSE)
         BooleanValue.TRUE
-      else BooleanValue.FALSE
+      else
+        BooleanValue.FALSE
     ExpressionTool.copyLocationInfo(this, vc)
     vc
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val vc: ValueComparison = new ValueComparison(
+    val vc = new ValueComparison(
       getLhsExpression.copy(rebindings),
       op,
       getRhsExpression.copy(rebindings))
@@ -268,11 +260,14 @@ override  def optimize(visitor: ExpressionVisitor,
       if (v1 == null)
         return resultWhenEmpty
       BooleanValue.get(
-        compare(v0,
+        compare(
+          v0,
           op,
           v1,
           comparer.provideContext(context),
-          needsRuntimeCheck))
+          needsRuntimeCheck
+        )
+      )
     } catch {
       case e: XPathException =>
         e.maybeSetLocation(getLocation)

@@ -262,14 +262,14 @@ class Executable(var config: Configuration) {
     contextItemVar
   }
 
-  def setSchemaAware(aware: Boolean): Unit = {
+  def setSchemaAware(aware: Boolean): Unit =
     schemaAware = aware
-  }
 
   def isSchemaAware: Boolean = schemaAware
 
   def getCharacterMapIndex = {
-    if (characterMapIndex == null) characterMapIndex = new CharacterMapIndex
+    if (characterMapIndex == null)
+      characterMapIndex = new CharacterMapIndex
     characterMapIndex
   }
 }

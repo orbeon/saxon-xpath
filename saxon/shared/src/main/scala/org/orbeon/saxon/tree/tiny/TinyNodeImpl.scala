@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.tiny
 
-import java.util.function.Predicate
-
 import org.orbeon.saxon.model.{SchemaType, Type, UType}
 import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om._
@@ -18,6 +16,8 @@ import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator, PrependAxisItera
 import org.orbeon.saxon.tree.tiny.TinyNodeImpl._
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Configuration
+
+import java.util.function.Predicate
 
 
 /**
@@ -130,12 +130,13 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getSequenceNumber: Long = nodeNr.toLong << 32
 
   def compareOrder(other: NodeInfo): Int = {
-    val a: Long = getSequenceNumber
-    if (other.isInstanceOf[TinyNodeImpl]) {
-      val b: Long = other.asInstanceOf[TinyNodeImpl].getSequenceNumber
-      java.lang.Long.compare(a, b)
-    } else {
-      0 - other.compareOrder(this)
+    val a = getSequenceNumber
+    other match {
+      case tinyNodeImpl: TinyNodeImpl =>
+        val b = tinyNodeImpl.getSequenceNumber
+        java.lang.Long.compare(a, b)
+      case _                  =>
+        0 - other.compareOrder(this)
     }
   }
 
@@ -155,31 +156,34 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getFingerprint: Int = {
     val nc = tree.nameCode(nodeNr)
     if (nc == -1)
-      return -1
-    nc & NamePool.FP_MASK
+      -1
+    else
+      nc & NamePool.FP_MASK
   }
 
   def getPrefix: String = {
     val code = tree.nameCode(nodeNr)
     if (code < 0)
-      return ""
-    if (! NamePool.isPrefixed(code))
-      return ""
-    tree.prefixPool.getPrefix(code >> 20)
+      ""
+    else if (! NamePool.isPrefixed(code))
+      ""
+    else
+      tree.prefixPool.getPrefix(code >> 20)
   }
 
   def getURI: String = {
     val code = tree.nameCode(nodeNr)
     if (code < 0)
-      return ""
-    tree.getNamePool.getURI(code & NamePool.FP_MASK)
+      ""
+    else
+      tree.getNamePool.getURI(code & NamePool.FP_MASK)
   }
 
   def getDisplayName: String = {
     val code = tree.nameCode(nodeNr)
     if (code < 0)
-      return ""
-    if (NamePool.isPrefixed(code))
+      ""
+    else if (NamePool.isPrefixed(code))
       getPrefix + ":" + getLocalPart
     else
       getLocalPart
@@ -188,8 +192,9 @@ abstract class TinyNodeImpl extends NodeInfo {
   def getLocalPart: String = {
     val code = tree.nameCode(nodeNr)
     if (code < 0)
-      return ""
-    tree.getNamePool.getLocalName(code)
+      ""
+    else
+      tree.getNamePool.getLocalName(code)
   }
 
   override def iterateAxis(axisNumber: Int): AxisIterator =
@@ -202,8 +207,7 @@ abstract class TinyNodeImpl extends NodeInfo {
       iterateAxis(axisNumber, AnyNodeTest)
     }
 
-  def iterateAxis(axisNumber: Int,
-                  predicate: Predicate[_ >: NodeInfo]): AxisIterator =
+  def iterateAxis(axisNumber: Int, predicate: Predicate[_ >: NodeInfo]): AxisIterator =
     predicate match {
       case nodeTest: NodeTest =>
         val `type` = getNodeKind

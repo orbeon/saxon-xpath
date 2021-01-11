@@ -33,23 +33,28 @@ import scala.jdk.CollectionConverters._
  * an executing instance of a transformation or query. Multiple concurrent executions of
  * the same transformation or query will use different Controller instances. This class is
  * therefore not thread-safe.
- * <p>The Controller is serially reusable: when one transformation or query
+ *
+ * The Controller is serially reusable: when one transformation or query
  * is finished, it can be used to run another. However, there is no advantage in doing this
- * rather than allocating a new Controller each time.</p>
- * <p> A dummy Controller is created when running free-standing XPath expressions.</p>
- * <p>The Controller holds those parts of the dynamic context that do not vary during the course
+ * rather than allocating a new Controller each time.
+ *
+ * A dummy Controller is created when running free-standing XPath expressions.
+ *
+ * The Controller holds those parts of the dynamic context that do not vary during the course
  * of a transformation or query, or that do not change once their value has been computed.
- * This also includes those parts of the static context that are required at run-time.</p>
- * <p>Many methods on the Controller are designed for internal use and should not be
+ * This also includes those parts of the static context that are required at run-time.
+ *
+ * Many methods on the Controller are designed for internal use and should not be
  * considered stable. From release 8.4 onwards, those methods that are considered sufficiently
  * stable to constitute path of the Saxon public API are labelled with the JavaDoc tag "since":
- * the value indicates the release at which the method was added to the public API.</p>
- * <p>Prior to Saxon 9.6 the Controller implemented (extended) the JAXP {@link Transformer}
+ * the value indicates the release at which the method was added to the public API.
+ *
+ * Prior to Saxon 9.6 the Controller implemented (extended) the JAXP `Transformer`
  * interface, and advanced applications were able to down-cast the Transformer to a Controller.
- * This is no longer the case. Instead, the JAXP factory delivers an instance of {@link org.orbeon.saxon.jaxp.TransformerImpl},
+ * This is no longer the case. Instead, the JAXP factory delivers an instance of `org.orbeon.saxon.jaxp.TransformerImpl`,
  * from which the Controller is accessible if required. Because the Controller is no longer required
  * to implement the JAXP interface, it has been possible to make it less monolithic, so some of the
- * things it did are now done elsewhere: for example, it no longer handles global parameters</p>
+ * things it did are now done elsewhere: for example, it no longer handles global parameters
  *
  * @since 8.4. From 9.6 this class should no longer be considered a public API. In 9.9, the class
  *        was split into two: XSLT-specific functionality has been moved into the subclass { @link XsltController}.
@@ -129,17 +134,20 @@ class Controller extends ContextOriginator {
 
   /**
    * <p>Reset this <code>Transformer</code> to its original configuration.</p>
+   *
    * <p><code>Transformer</code> is reset to the same state as when it was created with
    * {@link javax.xml.transform.TransformerFactory#newTransformer()},
    * {@link javax.xml.transform.TransformerFactory#newTransformer(javax.xml.transform.Source source)} or
    * {@link javax.xml.transform.Templates#newTransformer()}.
    * <code>reset()</code> is designed to allow the reuse of existing <code>Transformer</code>s
    * thus saving resources associated with the creation of new <code>Transformer</code>s.</p>
+   *
    * <p><i>The above is from the JAXP specification. With Saxon, it's unlikely that reusing a Transformer will
    * give any performance benefits over creating a new one. The one case where it might be beneficial is
    * to reuse the document pool (the set of documents that have been loaded using the doc() or document()
    * functions). Therefore, this method does not clear the document pool. If you want to clear the document
    * pool, call the method {@link #clearDocumentPool} as well.</i></p>
+   *
    * <p>The reset <code>Transformer</code> is not guaranteed to have the same {@link javax.xml.transform.URIResolver}
    * or {@link javax.xml.transform.ErrorListener} <code>Object</code>s, e.g. {@link Object#equals(Object obj)}.
    * It is guaranteed to have a functionally equal <code>URIResolver</code>
@@ -1124,7 +1132,8 @@ class Controller extends ContextOriginator {
 
   @throws[XPathException]
   def setCurrentDateTime(dateTime: DateTimeValue): Unit = if (currentDateTime == null) {
-    if (dateTime.getComponent(AccessorFn.Component.TIMEZONE) == null) throw new XPathException("No timezone is present in supplied value of current date/time")
+    if (dateTime.getComponent(AccessorFn.Component.TIMEZONE) == null)
+      throw new XPathException("No timezone is present in supplied value of current date/time")
     currentDateTime = dateTime
     dateTimePreset = true
   }
@@ -1140,7 +1149,8 @@ class Controller extends ContextOriginator {
    *         determined by the platform on which the application is running.
    */
   def getCurrentDateTime: DateTimeValue = {
-    if (currentDateTime == null) currentDateTime = DateTimeValue.now
+    if (currentDateTime == null)
+      currentDateTime = DateTimeValue.now
     currentDateTime
   }
 

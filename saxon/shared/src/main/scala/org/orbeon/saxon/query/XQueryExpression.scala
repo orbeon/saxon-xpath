@@ -59,7 +59,7 @@ class XQueryExpression(var expression: Expression,
     expression.checkForUpdatingSubexpressions()
     val contextReq = exec.getGlobalContextRequirement
     val req =
-      if (contextReq == null) 
+      if (contextReq == null)
         AnyItemType
       else
         contextReq.getRequiredItemType
@@ -112,7 +112,7 @@ class XQueryExpression(var expression: Expression,
 
   def getChildExpression: Expression = expression
 
-  def setBody(expression: Expression): Unit = 
+  def setBody(expression: Expression): Unit =
     this.setChildExpression(expression);
 
   /**
@@ -141,13 +141,13 @@ class XQueryExpression(var expression: Expression,
   def getConfiguration: Configuration = mainModule.getConfiguration
 
   def usesContextItem(): Boolean = {
-    if (ExpressionTool.dependsOnFocus(expression)) 
+    if (ExpressionTool.dependsOnFocus(expression))
       return true
     val map = getPackageData.getGlobalVariableList
-    if (map != null) 
+    if (map != null)
       map.forEach { gVar =>
         val select = gVar.getBody
-        if (select != null && ExpressionTool.dependsOnFocus(select)) 
+        if (select != null && ExpressionTool.dependsOnFocus(select))
           return true
       }
     false
@@ -185,7 +185,7 @@ class XQueryExpression(var expression: Expression,
   /*@NotNull*/
 
   def evaluate(env: DynamicQueryContext): List[Any] = {
-    if (isUpdateQuery) 
+    if (isUpdateQuery)
       throw new XPathException("Cannot call evaluate() on an updating query")
     val list = new ArrayList[Any](100)
     iterator(env).forEachOrFail((item) =>
@@ -195,7 +195,7 @@ class XQueryExpression(var expression: Expression,
 
   /*@Nullable*/
   def evaluateSingle(env: DynamicQueryContext): Any = {
-    if (isUpdateQuery) 
+    if (isUpdateQuery)
       throw new XPathException("Cannot call evaluateSingle() on an updating query")
 
     val itr  = iterator(env)
@@ -209,9 +209,9 @@ class XQueryExpression(var expression: Expression,
 
   /*@NotNull*/
   def iterator(env: DynamicQueryContext): SequenceIterator = {
-    if (isUpdateQuery) 
+    if (isUpdateQuery)
       throw new XPathException("Cannot call iterator on an updating query")
-    if (! env.getConfiguration.isCompatible(getExecutable.getConfiguration)) 
+    if (! env.getConfiguration.isCompatible(getExecutable.getConfiguration))
       throw new XPathException(
         "The query must be compiled and executed under the same Configuration",
         SaxonErrorCode.SXXP0004
@@ -220,21 +220,19 @@ class XQueryExpression(var expression: Expression,
     try {
       val contextItem = controller.getGlobalContextItem
       contextItem match {
-        case nodeInfo: NodeInfo if !getExecutable.isSchemaAware && nodeInfo.getTreeInfo.isTyped =>
-          throw new XPathException(
-            "A typed input document can only be used with a schema-aware query"
-          )
+        case nodeInfo: NodeInfo if ! getExecutable.isSchemaAware && nodeInfo.getTreeInfo.isTyped =>
+          throw new XPathException("A typed input document can only be used with a schema-aware query")
         case _                                                                                  =>
       }
       val context = initialContext(env, controller)
       // In tracing/debugging mode, evaluate all the global variables first
-      if (controller.getTraceListener != null) 
+      if (controller.getTraceListener != null)
         controller.preEvaluateGlobals(context)
       context.openStackFrame(stackFrameMap)
       val iterator = expression.iterate(context)
-      if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED)) 
+      if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED))
         iterator
-      else 
+      else
         new ErrorReportingIterator(iterator, controller.getErrorReporter)
     } catch {
       case err: XPathException =>
@@ -250,18 +248,16 @@ class XQueryExpression(var expression: Expression,
   def run(env: DynamicQueryContext,
           result: Result,
           outputProperties: Properties): Unit = {
-    if (isUpdateQuery) 
+    if (isUpdateQuery)
       throw new XPathException("Cannot call run() on an updating query")
-    if (!env.getConfiguration.isCompatible(getExecutable.getConfiguration)) 
+    if (!env.getConfiguration.isCompatible(getExecutable.getConfiguration))
       throw new XPathException(
         "The query must be compiled and executed under the same Configuration",
         SaxonErrorCode.SXXP0004)
     val contextItem = env.getContextItem
     contextItem match {
       case info: NodeInfo if ! getExecutable.isSchemaAware && info.getTreeInfo.isTyped =>
-        throw new XPathException(
-          "A typed input document can only be used with a schema-aware query"
-        )
+        throw new XPathException("A typed input document can only be used with a schema-aware query")
       case _ =>
     }
     val controller: Controller = newController(env)
@@ -276,7 +272,7 @@ class XQueryExpression(var expression: Expression,
     val context = initialContext(env, controller)
     // In tracing/debugging mode, evaluate all the global variables first
     val tracer  = controller.getTraceListener
-    if (tracer != null) 
+    if (tracer != null)
       controller.preEvaluateGlobals(context)
     context.openStackFrame(stackFrameMap)
     val mustClose = result.isInstanceOf[StreamResult] &&
@@ -298,14 +294,14 @@ class XQueryExpression(var expression: Expression,
     val dest = new ComplexContentOutputter(out)
     dest.open()
     // Run the query
-    try 
+    try
       expression.process(dest, context)
     catch {
       case err: XPathException =>
         controller.reportFatalError(err)
         throw err
     } finally try {
-      if (tracer != null) 
+      if (tracer != null)
         tracer.close()
       dest.close()
     } catch {
@@ -320,7 +316,7 @@ class XQueryExpression(var expression: Expression,
                              mustClose: Boolean): Unit = {
     if (mustClose) {
       val os = result.getOutputStream
-      if (os != null) 
+      if (os != null)
         os.close()
     }
   }
@@ -354,7 +350,7 @@ class XQueryExpression(var expression: Expression,
         }
       }
     }
-    if (baseProperties.getProperty("method") == null) 
+    if (baseProperties.getProperty("method") == null)
       // XQuery forces the default method to XML, unlike XSLT where it depends on the contents of the result tree
       baseProperties.setProperty("method", "xml")
     baseProperties
@@ -407,7 +403,7 @@ class XQueryExpression(var expression: Expression,
   def getExecutable: Executable = executable
 
   def setAllowDocumentProjection(allowed: Boolean): Unit =
-    if (allowed) 
+    if (allowed)
       throw new UnsupportedOperationException(
         "Document projection requires Saxon-EE")
 
@@ -458,7 +454,7 @@ class XQueryExpression(var expression: Expression,
 
   def getHostLanguage: HostLanguage = HostLanguage.XQUERY
 
-  def setChildExpression(expr: Expression): Unit = 
+  def setChildExpression(expr: Expression): Unit =
     expression = expr
 
   private class ErrorReportingIterator(private var base: SequenceIterator,
@@ -478,7 +474,7 @@ class XQueryExpression(var expression: Expression,
         }
       }
 
-    override def close(): Unit = 
+    override def close(): Unit =
       base.close()
   }
 }

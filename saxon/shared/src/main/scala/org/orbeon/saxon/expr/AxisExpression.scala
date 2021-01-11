@@ -245,8 +245,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                     )
                   return Literal.makeEmptySequence
                 }
-                if (env.getPackageData.isSchemaAware &&
-                  elementTest.isInstanceOf[SchemaNodeTest] &&
+                if (env.getPackageData.isSchemaAware && elementTest.isInstanceOf[SchemaNodeTest] &&
                   outermostElementNames.get.size == 1) {
                   val oeni = outermostElementNames.get.iterator
                   val outermostElementName = if (oeni.hasNext) oeni.next() else -1
@@ -295,11 +294,14 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
 
       if (! env.getPackageData.isSchemaAware) {
         val ct = test.getContentType
-        if (!(ct == AnyType.getInstance || ct == Untyped.getInstance ||
-          ct == AnySimpleType ||
-          ct == BuiltInAtomicType.ANY_ATOMIC ||
+        if (! (
+          ct == AnyType.getInstance              ||
+          ct == Untyped.getInstance              ||
+          ct == AnySimpleType                    ||
+          ct == BuiltInAtomicType.ANY_ATOMIC     ||
           ct == BuiltInAtomicType.UNTYPED_ATOMIC ||
-          ct == BuiltInAtomicType.STRING)) {
+          ct == BuiltInAtomicType.STRING)
+        ) {
           if (warnings)
             visitor.issueWarning(
               "The " + AxisInfo

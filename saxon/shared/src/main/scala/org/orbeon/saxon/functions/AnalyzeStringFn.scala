@@ -1,9 +1,6 @@
 package org.orbeon.saxon.functions
 
-import java.{util => ju}
-
-import javax.xml.transform.sax.SAXSource
-import org.orbeon.saxon.event.{Builder, ComplexContentOutputter, ReceiverOption}
+import org.orbeon.saxon.event.{ComplexContentOutputter, ReceiverOption}
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.NamespaceConstant
@@ -14,20 +11,24 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.InputSource
 
+import java.{util => ju}
+import javax.xml.transform.sax.SAXSource
+
+
 class AnalyzeStringFn extends RegexFunction {
 
-  private var resultName: NodeName = _
-  private var nonMatchName: NodeName = _
-  private var matchName: NodeName = _
-  private var groupName: NodeName = _
-  private var groupNrName: NodeName = _
-  private var resultType: SchemaType = Untyped.getInstance
-  private var nonMatchType: SchemaType = Untyped.getInstance
-  private var matchType: SchemaType = Untyped.getInstance
-  private var groupType: SchemaType = Untyped.getInstance
-  private var groupNrType: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
+  private var resultName   : NodeName   = _
+  private var nonMatchName : NodeName   = _
+  private var matchName    : NodeName   = _
+  private var groupName    : NodeName   = _
+  private var groupNrName  : NodeName   = _
+  private var resultType   : SchemaType = Untyped.getInstance
+  private var nonMatchType : SchemaType = Untyped.getInstance
+  private var matchType    : SchemaType = Untyped.getInstance
+  private var groupType    : SchemaType = Untyped.getInstance
+  private var groupNrType  : SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
 
-   override def allowRegexMatchingEmptyString(): Boolean = false
+  override def allowRegexMatchingEmptyString(): Boolean = false
 
   private def init(config: Configuration, schemaAware: Boolean): Unit = {
     synchronized {
@@ -68,6 +69,7 @@ class AnalyzeStringFn extends RegexFunction {
       val schemaAware = context.getController.getExecutable.isSchemaAware
       val config = context.getConfiguration
       config.synchronized {
+        // ORBEON: No actual Schema support and `config.isSchemaAvailable() == false`.
         if (schemaAware && ! config.isSchemaAvailable(NamespaceConstant.FN)) {
           val inputStream = Configuration.locateResource("xpath-functions.scm", new ju.ArrayList)
           if (inputStream == null)
@@ -80,51 +82,49 @@ class AnalyzeStringFn extends RegexFunction {
       }
       init(context.getConfiguration, schemaAware)
     }
-    val builder: Builder = context.getController.makeBuilder
-    val out: ComplexContentOutputter = new ComplexContentOutputter(builder)
+    val builder = context.getController.makeBuilder
+    val out     = new ComplexContentOutputter(builder)
     builder.setBaseURI(getStaticBaseUriString)
     out.open()
     out.startElement(resultName, resultType, Loc.NONE, ReceiverOption.NONE)
     out.startContent()
     var item: Item = null
-    while ( {
+    while ({
       item = iter.next()
       item
-    } != null) if (iter.isMatching) {
-      out.startElement(matchName, matchType, Loc.NONE, ReceiverOption.NONE)
-      out.startContent()
-      iter.processMatchingSubstring(new RegexIterator.MatchHandler() {
-        def characters(s: CharSequence): Unit = {
-          out.characters(s, Loc.NONE, ReceiverOption.NONE)
-        }
+    } != null)
+      if (iter.isMatching) {
+        out.startElement(matchName, matchType, Loc.NONE, ReceiverOption.NONE)
+        out.startContent()
+        iter.processMatchingSubstring(new RegexIterator.MatchHandler() {
+          def characters(s: CharSequence): Unit =
+            out.characters(s, Loc.NONE, ReceiverOption.NONE)
 
-        def onGroupStart(groupNumber: Int): Unit = {
-          out.startElement(groupName, groupType, Loc.NONE, ReceiverOption.NONE)
-          out.attribute(groupNrName,
-            groupNrType,
-            "" + groupNumber,
-            Loc.NONE,
-            ReceiverOption.NONE)
-          out.startContent()
-        }
+          def onGroupStart(groupNumber: Int): Unit = {
+            out.startElement(groupName, groupType, Loc.NONE, ReceiverOption.NONE)
+            out.attribute(groupNrName,
+              groupNrType,
+              "" + groupNumber,
+              Loc.NONE,
+              ReceiverOption.NONE)
+            out.startContent()
+          }
 
-        def onGroupEnd(groupNumber: Int): Unit = {
-          out.endElement()
-        }
-      })
-      out.endElement()
-    } else {
-      out.startElement(nonMatchName,
-        nonMatchType,
-        Loc.NONE,
-        ReceiverOption.NONE)
-      out.startContent()
-      out.characters(item.getStringValueCS, Loc.NONE, ReceiverOption.NONE)
-      out.endElement()
-    }
+          def onGroupEnd(groupNumber: Int): Unit =
+            out.endElement()
+        })
+        out.endElement()
+      } else {
+        out.startElement(nonMatchName,
+          nonMatchType,
+          Loc.NONE,
+          ReceiverOption.NONE)
+        out.startContent()
+        out.characters(item.getStringValueCS, Loc.NONE, ReceiverOption.NONE)
+        out.endElement()
+      }
     out.endElement()
     out.close()
     builder.getCurrentRoot
   }
-
 }

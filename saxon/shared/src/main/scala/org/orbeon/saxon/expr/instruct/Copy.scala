@@ -1,7 +1,5 @@
 package org.orbeon.saxon.expr.instruct
 
-import java.util.Iterator
-
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct.Copy._
@@ -18,25 +16,25 @@ import org.orbeon.saxon.value.{BooleanValue, SequenceType}
 
 import scala.beans.BooleanBeanProperty
 
+
 object Copy {
 
   def copyUnparsedEntities(source: NodeInfo, out: Outputter): Unit = {
-    val unparsedEntities: Iterator[String] =
-      source.getTreeInfo.getUnparsedEntityNames
+    val unparsedEntities = source.getTreeInfo.getUnparsedEntityNames
     while (unparsedEntities.hasNext) {
-      val n: String = unparsedEntities.next()
-      val details: Array[String] = source.getTreeInfo.getUnparsedEntity(n)
+      val n       = unparsedEntities.next()
+      val details = source.getTreeInfo.getUnparsedEntity(n)
       out.setUnparsedEntity(n, details(0), details(1))
     }
   }
-
 }
 
-class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
-           inheritNamespaces: Boolean,
-           schemaType: SchemaType,
-           validation: Int)
-  extends ElementCreator {
+class Copy(
+  @BooleanBeanProperty var copyNamespaces : Boolean,
+  inheritNamespaces                       : Boolean,
+  schemaType                              : SchemaType,
+  validation                              : Int
+) extends ElementCreator {
 
   private var selectItemType: ItemType = AnyItemType
 
@@ -71,13 +69,15 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
         case Type.DOCUMENT => this.resultItemType = NodeKindTest.DOCUMENT
         case Type.ATTRIBUTE | Type.TEXT | Type.COMMENT |
              Type.PROCESSING_INSTRUCTION | Type.NAMESPACE =>
-          var dot: ContextItemExpression = new ContextItemExpression()
+          val dot = new ContextItemExpression()
           ExpressionTool.copyLocationInfo(this, dot)
-          var c: CopyOf = new CopyOf(dot,
+          val c = new CopyOf(
+            dot,
             copyNamespaces,
             getValidationAction,
             getSchemaType,
-            false)
+            false
+          )
           ExpressionTool.copyLocationInfo(this, c)
           c.typeCheck(visitor, contextInfo)
         case _ => this.resultItemType = selectItemType
@@ -91,7 +91,7 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val copy: Copy = new Copy(copyNamespaces,
+    val copy = new Copy(copyNamespaces,
       bequeathNamespacesToChildren,
       getSchemaType,
       getValidationAction)
@@ -101,13 +101,12 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     copy
   }
 
-  def setSelectItemType(`type`: ItemType): Unit = {
+  def setSelectItemType(`type`: ItemType): Unit =
     selectItemType = `type`
-  }
 
   override def getIntrinsicDependencies: Int = StaticProperty.DEPENDS_ON_CONTEXT_ITEM
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_COPY
+  override def getInstructionNameCode: Int = StandardNames.XSL_COPY
 
   override def operands: java.lang.Iterable[Operand] = contentOp
 
@@ -420,5 +419,4 @@ class Copy(@BooleanBeanProperty var copyNamespaces: Boolean,
     getContentExpression.export(out)
     out.endElement()
   }
-
 }

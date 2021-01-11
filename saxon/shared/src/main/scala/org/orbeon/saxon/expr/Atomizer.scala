@@ -28,9 +28,11 @@ object Atomizer {
         new Atomizer(sequence, role)
     }
 
-  def getAtomizedItemType(operand: Expression,
-                          alwaysUntyped: Boolean,
-                          th: TypeHierarchy): ItemType = {
+  def getAtomizedItemType(
+    operand       : Expression,
+    alwaysUntyped : Boolean,
+    th            : TypeHierarchy
+  ): ItemType = {
     val in = operand.getItemType
     if (in.isPlainType) {
       in
@@ -51,7 +53,7 @@ object Atomizer {
         case _: JavaExternalObjectType =>
           in.getAtomizedItemType
         case arrayItemType: ArrayItemType =>
-          val ait: PlainType = arrayItemType
+          val ait = arrayItemType
             .getMemberType
             .getPrimaryType
             .getAtomizedItemType
@@ -73,8 +75,7 @@ object Atomizer {
     .union(UType.DOCUMENT)
     .union(UType.ATTRIBUTE)
 
-  def getAtomizingIterator(base: SequenceIterator,
-                           oneToOne: Boolean): SequenceIterator = {
+  def getAtomizingIterator(base: SequenceIterator, oneToOne: Boolean): SequenceIterator = {
     val properties = base.getProperties
     if (properties.contains(SequenceIterator.Property.LAST_POSITION_FINDER)) {
       val count = base.asInstanceOf[LastPositionFinder].getLength
@@ -281,12 +282,12 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           operand.asInstanceOf[AxisExpression].getNodeTest.getMatchingNodeName
         val qName: FingerprintedQName =
           new FingerprintedQName(name, visitor.getConfiguration.getNamePool)
-        val ag: AttributeGetter = new AttributeGetter(qName)
-        var checks: Int = 0
-        if (!(operand
+        val ag = new AttributeGetter(qName)
+        var checks = 0
+        if (! operand
           .asInstanceOf[AxisExpression]
           .getContextItemType
-          .isInstanceOf[NodeTest])) {
+          .isInstanceOf[NodeTest]) {
           checks = AttributeGetter.CHECK_CONTEXT_ITEM_IS_NODE
         }
         ag.setRequiredChecks(checks)
@@ -309,8 +310,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val copy: Atomizer =
-      new Atomizer(getBaseExpression.copy(rebindings), roleDiagnostic)
+    val copy = new Atomizer(getBaseExpression.copy(rebindings), roleDiagnostic)
     copy.untyped = untyped
     copy.singleValued = singleValued
     ExpressionTool.copyLocationInfo(this, copy)
@@ -345,7 +345,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   }
 
   override def getItemType: ItemType = {
-    getOperandItemType
+    operandItemType = getBaseExpression.getItemType // `getOperandItemType` ?
     val th = getConfiguration.getTypeHierarchy
     getAtomizedItemType(getBaseExpression, untyped, th)
   }

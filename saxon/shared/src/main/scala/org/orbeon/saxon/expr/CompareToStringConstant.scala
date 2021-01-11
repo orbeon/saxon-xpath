@@ -1,35 +1,27 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.parser.ExpressionTool
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
-import org.orbeon.saxon.expr.parser.Token
-
-import org.orbeon.saxon.expr.sort.AtomicComparer
-
-import org.orbeon.saxon.expr.sort.CodepointCollatingComparer
-
-import org.orbeon.saxon.expr.sort.CodepointCollator
-
+import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap, Token}
+import org.orbeon.saxon.expr.sort.{AtomicComparer, CodepointCollatingComparer, CodepointCollator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-import org.orbeon.saxon.trans.XPathException
+import scala.beans.BeanProperty
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-class CompareToStringConstant(operand: Expression,
-                              operator: Int,
-                              @BeanProperty var comparand: String)
+class CompareToStringConstant(
+  operand                     : Expression,
+  operator                    : Int,
+  @BeanProperty var comparand : String
+)
   extends CompareToConstant(operand) {
 
-  def getRhsExpression(): Expression = new StringLiteral(comparand)
+  def getRhsExpression: Expression = new StringLiteral(comparand)
 
   def copy(rebindings: RebindingMap): Expression = {
-    val c2: CompareToStringConstant = new CompareToStringConstant(
+    val c2 = new CompareToStringConstant(
       getLhsExpression.copy(rebindings),
       operator,
-      comparand)
+      comparand
+    )
     ExpressionTool.copyLocationInfo(this, c2)
     c2
   }
@@ -45,13 +37,13 @@ class CompareToStringConstant(operand: Expression,
         operator
 
   override def computeHashCode(): Int = {
-    val h: Int = 0x884b12a0
+    val h = 0x884b12a0
     h + getLhsExpression.hashCode ^ comparand.hashCode
   }
 
   override def effectiveBooleanValue(context: XPathContext): Boolean = {
-    val s: CharSequence = getLhsExpression.evaluateAsString(context)
-    val c: Int = CodepointCollator.compareCS(s, comparand)
+    val s = getLhsExpression.evaluateAsString(context)
+    val c = CodepointCollator.compareCS(s, comparand)
     interpretComparisonResult(c)
   }
 
@@ -80,7 +72,6 @@ class CompareToStringConstant(operand: Expression,
       comparand +
       "\""
 
-  def getAtomicComparer(): AtomicComparer =
+  def getAtomicComparer: AtomicComparer =
     CodepointCollatingComparer.getInstance
-
 }

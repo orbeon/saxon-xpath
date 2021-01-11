@@ -29,7 +29,8 @@ object JavaCollationFactory {
    * @param props  the desired properties of the collation
    * @return a collation with these properties
    */
-    /*@Nullable*/ @throws[XPathException]
+    /*@Nullable*/
+    @throws[XPathException]
     def makeCollation(config: Configuration, uri: String, props: Properties): StringCollator = {
       // ORBEON: Collations
       new AlphanumericCollator(CodepointCollator.getInstance) // ORBEON

@@ -1315,12 +1315,18 @@ class Configuration extends SourceResolver with NotationSet {
    */
   @throws[XPathException]
   def getCollation(collationName: String): StringCollator = {
-    if (collationName == null || collationName == NamespaceConstant.CODEPOINT_COLLATION_URI) return CodepointCollator.getInstance
-    if (collationName == NamespaceConstant.HTML5_CASE_BLIND_COLLATION_URI) return HTML5CaseBlindCollator.getInstance
-    if (collationName.startsWith(AlphanumericCollator.PREFIX)) return new AlphanumericCollator(getCollation(collationName.substring(AlphanumericCollator.PREFIX.length)))
-    var collator = collationMap.get(collationName)
-    if (collator == null) collator = getCollationURIResolver.resolve(collationName, this)
-    collator
+    if (collationName == null || collationName == NamespaceConstant.CODEPOINT_COLLATION_URI)
+      CodepointCollator.getInstance
+    else if (collationName == NamespaceConstant.HTML5_CASE_BLIND_COLLATION_URI)
+      HTML5CaseBlindCollator.getInstance
+    else if (collationName.startsWith(AlphanumericCollator.PREFIX))
+      new AlphanumericCollator(getCollation(collationName.substring(AlphanumericCollator.PREFIX.length)))
+    else {
+      var collator = collationMap.get(collationName)
+      if (collator == null)
+        collator = getCollationURIResolver.resolve(collationName, this)
+      collator
+    }
   }
 
   /**
