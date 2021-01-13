@@ -125,13 +125,14 @@ class XPathContextMajor private () extends XPathContextMinor {
    * Constructor for use in free-standing Java applications.
    *
    * @param item the item to use as the initial context item. If this is null,
-   *             the comtext item is initially undefined (which will cause a dynamic error
+   *             the context item is initially undefined (which will cause a dynamic error
    *             if it is referenced).
    * @param exec the Executable
    */
   def this(item: Item, exec: Executable) = {
     this()
-    controller = new Controller(exec.getConfiguration, exec) /*if (exec.isInstanceOf[PreparedStylesheet]) new XsltController(exec.getConfiguration, exec.asInstanceOf[PreparedStylesheet]) // PreparedStylesheet not found
+    controller = new Controller(exec.getConfiguration, exec)
+    /*if (exec.isInstanceOf[PreparedStylesheet]) new XsltController(exec.getConfiguration, exec.asInstanceOf[PreparedStylesheet]) // PreparedStylesheet not found
     else*/
     if (item != null) {
       val iter = SingletonIterator.makeIterator(item)

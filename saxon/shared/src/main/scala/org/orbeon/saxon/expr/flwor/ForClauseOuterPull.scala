@@ -1,17 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.flwor
 
 import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.om.FocusTrackingIterator
-
-import org.orbeon.saxon.om.Item
-
-import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.EmptySequence
-
-import org.orbeon.saxon.value.Int64Value
+import org.orbeon.saxon.om.{FocusTrackingIterator, Item}
+import org.orbeon.saxon.value.{EmptySequence, Int64Value}
 
 
 /**
@@ -30,47 +27,39 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
    *         are undefined.
    */
   override def nextTuple(context: XPathContext): Boolean = {
-    var res = false
     while (true) {
       var next: Item = null
       if (currentIteration == null) {
-        if (!base.nextTuple(context)) {
-          res = false
-          return res
-        }
-        currentIteration = new FocusTrackingIterator(
-          forClause.getSequence.iterate(context))
+        if (!base.nextTuple(context))
+          return false
+        currentIteration = new FocusTrackingIterator(forClause.getSequence.iterate(context))
         next = currentIteration.next()
         if (next == null) {
-          context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
-            EmptySequence.getInstance)
+          context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber, EmptySequence.getInstance)
           if (forClause.getPositionVariable != null) {
             context.setLocalVariable(
               forClause.getPositionVariable.getLocalSlotNumber,
               Int64Value.ZERO)
           }
           currentIteration = null
-          res = true
+          return true
         }
-        return res
       } else {
         next = currentIteration.next()
       }
       if (next != null) {
-        context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
-          next)
-        if (forClause.getPositionVariable != null) {
+        context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber, next)
+        if (forClause.getPositionVariable != null)
           context.setLocalVariable(
             forClause.getPositionVariable.getLocalSlotNumber,
-            new Int64Value(currentIteration.position))
-        }
-        res = true
+            new Int64Value(currentIteration.position)
+          )
+        return true
       } else {
         currentIteration = null
       }
-      res
     }
-    res
+    false // shouldn't reach here
   }
 
   /**
@@ -85,9 +74,3 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
   }
 
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

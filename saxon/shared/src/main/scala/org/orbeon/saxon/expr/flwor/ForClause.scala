@@ -1,7 +1,5 @@
 package org.orbeon.saxon.expr.flwor
 
-import java.util.{ArrayList, List}
-
 import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.flwor.Clause.ClauseName.{ClauseName, FOR}
@@ -14,10 +12,11 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{Cardinality, SequenceType}
 
+import java.util.{ArrayList, List}
 import scala.beans.BeanProperty
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
+
 
 class ForClause extends Clause {
 
@@ -31,7 +30,7 @@ class ForClause extends Clause {
 
   private var allowsEmpty: Boolean = _
 
-  override def getClauseKey(): ClauseName = FOR
+  override def getClauseKey: ClauseName = FOR
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): ForClause = {
     val f2: ForClause = new ForClause()
@@ -59,7 +58,7 @@ class ForClause extends Clause {
 
   def getSequence: Expression = sequenceOp.getChildExpression
 
-  override def getRangeVariables(): Array[LocalVariableBinding] =
+  override def getRangeVariables: Array[LocalVariableBinding] =
     if (positionVariable == null) {
       Array(rangeVariable)
     } else {
@@ -99,22 +98,19 @@ class ForClause extends Clause {
       visitor.getStaticContext))
   }
 
-  override def getPullStream(base: TuplePull,
-                             context: XPathContext): TuplePull =
-    if (allowsEmpty) {
+  override def getPullStream(base: TuplePull, context: XPathContext): TuplePull =
+    if (allowsEmpty)
       new ForClauseOuterPull(base, this)
-    } else {
+    else
       new ForClausePull(base, this)
-    }
 
   override def getPushStream(destination: TuplePush,
                              output: Outputter,
                              context: XPathContext): TuplePush =
-    if (allowsEmpty) {
+    if (allowsEmpty)
       new ForClauseOuterPush(output, destination, this)
-    } else {
+    else
       new ForClausePush(output, destination, this)
-    }
 
   def addPredicate(flwor: FLWORExpression,
                    visitor: ExpressionVisitor,
@@ -128,7 +124,10 @@ class ForClause extends Clause {
     var head: Expression = null
     var selection: Expression = getSequence
     var selectionContextItemType: ItemType =
-      if (contextItemType == null) null else contextItemType.getItemType
+      if (contextItemType == null)
+        null
+      else
+        contextItemType.getItemType
     if (getSequence.isInstanceOf[SlashExpression]) {
       if (getSequence.asInstanceOf[SlashExpression].isAbsolute) {
         head = getSequence.asInstanceOf[SlashExpression].getFirstStep
@@ -337,5 +336,4 @@ class ForClause extends Clause {
     fsb.append(getSequence.toString)
     fsb.toString
   }
-
 }

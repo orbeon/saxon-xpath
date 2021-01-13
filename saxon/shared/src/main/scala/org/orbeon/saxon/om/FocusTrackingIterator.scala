@@ -13,7 +13,7 @@ import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeTest}
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.{AxisIterator, GroundedIterator, LookaheadIterator}
+import org.orbeon.saxon.tree.iter.{GroundedIterator, LookaheadIterator}
 import org.orbeon.saxon.tree.wrapper.SiblingCountingNode
 import org.orbeon.saxon.value.SequenceExtent
 

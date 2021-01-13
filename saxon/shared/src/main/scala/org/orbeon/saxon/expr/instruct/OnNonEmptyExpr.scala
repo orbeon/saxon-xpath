@@ -1,33 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.event.Outputter
-
 import org.orbeon.saxon.expr._
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.om.SequenceIterator
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import org.orbeon.saxon.trans.XPathException
-
-
 
 
 /**
   * A compiled xsl:on-non-empty instruction.
   */
-class OnNonEmptyExpr /**
-  * Create the instruction
-  */
-(base: Expression)
-    extends UnaryExpression(base) {
+class OnNonEmptyExpr(base: Expression)
+  extends UnaryExpression(base) {
 
   /**
     * Ask whether this expression is an instruction. In XSLT streamability analysis this
@@ -35,18 +25,17 @@ class OnNonEmptyExpr /**
     *
     * @return true if this construct originates as an XSLT instruction
     */
-  override def isInstruction(): Boolean = true
+  override def isInstruction: Boolean = true
 
   /**
     * Get the usage (in terms of streamability analysis) of the single operand
     *
     * @return the operand usage
     */
-   override def getOperandRole(): OperandRole =
+  override def getOperandRole: OperandRole =
     new OperandRole(0, OperandUsage.TRANSMISSION)
 
   /*@NotNull*/
-
   def copy(rebindings: RebindingMap): Expression =
     new OnNonEmptyExpr(getBaseExpression.copy(rebindings))
 
@@ -59,9 +48,8 @@ class OnNonEmptyExpr /**
     * @return a set of bit-significant flags identifying the "intrinsic"
     * dependencies. The flags are documented in class org.orbeon.saxon.value.StaticProperty
     */
-  override def getIntrinsicDependencies
-    : Int = // suppress optimizations such as loop-lifting
-    StaticProperty.HAS_SIDE_EFFECTS
+  override def getIntrinsicDependencies: Int =
+    StaticProperty.HAS_SIDE_EFFECTS // suppress optimizations such as loop-lifting
 
   /**
     * Ask whether common subexpressions found in the operands of this expression can
@@ -74,7 +62,6 @@ class OnNonEmptyExpr /**
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
   /*@NotNull*/
-
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
@@ -100,11 +87,10 @@ class OnNonEmptyExpr /**
     * @return the implementation method, for example {@link #ITERATE_METHOD} or {@link #EVALUATE_METHOD} or
     * {@link #PROCESS_METHOD}
     */
-  override def getImplementationMethod: Int = getBaseExpression.getImplementationMethod
+  def getImplementationMethod: Int = getBaseExpression.getImplementationMethod
 
-  override def process(output: Outputter, context: XPathContext): Unit = {
+  override def process(output: Outputter, context: XPathContext): Unit =
     getBaseExpression.process(output, context)
-  }
 
   override def iterate(context: XPathContext): SequenceIterator =
     getBaseExpression.iterate(context)
@@ -124,11 +110,4 @@ class OnNonEmptyExpr /**
     * or null if there is no such class
     */
   override def getStreamerName: String = "OnNonEmpty"
-
 }
-
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

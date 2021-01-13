@@ -24,10 +24,10 @@ import org.orbeon.saxon.value.DateTimeValue
  * a "minor context" only allows changes to the focus and the destination for push output.
  */
 object XPathContextMinor {
-  class LastValue(var value: Int)
+  class LastValue(val value: Int)
 }
 
-class XPathContextMinor () extends XPathContext {
+class XPathContextMinor extends XPathContext {
 
   var controller          : Controller    = _
   var currentIterator     : FocusIterator = _
