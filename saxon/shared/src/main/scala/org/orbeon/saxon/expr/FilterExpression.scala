@@ -828,9 +828,7 @@ class FilterExpression(base: Expression, filter: Expression)
               .longValue
               .toInt)
         case _ =>
-          return new GeneralPositionalPattern(
-            basePattern.getItemType.asInstanceOf[NodeTest],
-            filter)
+          return new GeneralPositionalPattern(basePattern.getItemType.asInstanceOf[NodeTest], filter)
       }
     }
     base.getItemType match {

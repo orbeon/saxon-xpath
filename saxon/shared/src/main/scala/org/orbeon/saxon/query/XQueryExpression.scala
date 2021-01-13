@@ -32,15 +32,17 @@ import javax.xml.transform.stream.StreamResult
  * XQueryExpression represents a compiled query. This object is immutable and thread-safe,
  * the same compiled query may be executed many times in series or in parallel. The object
  * is intended to be created only by using the compileQuery method of the QueryProcessor class.
- * <p>Various methods are provided for evaluating the query, with different options for
- * delivery of the results.</p>
+ *
+ * Various methods are provided for evaluating the query, with different options for
+ * delivery of the results.
  */
-class XQueryExpression(var expression: Expression,
-                       var mainModule: QueryModule,
-                       streaming: Boolean)
-  extends Location
-    with ExpressionOwner
-    with TraceableComponent {
+class XQueryExpression(
+  var expression : Expression,
+  var mainModule : QueryModule,
+  streaming      : Boolean
+) extends Location
+     with ExpressionOwner
+     with TraceableComponent {
 
   val config: Configuration = mainModule.getConfiguration
   var stackFrameMap: SlotManager = config.makeSlotManager
@@ -360,7 +362,6 @@ class XQueryExpression(var expression: Expression,
   // Validate the serialization properties requested
 
   /*@NotNull*/
-
   def runUpdate(dynamicEnv: DynamicQueryContext): Set[MutableNodeInfo] =
     throw new XPathException("Calling runUpdate() on a non-updating query")
 
@@ -368,8 +369,7 @@ class XQueryExpression(var expression: Expression,
     throw new XPathException("Calling runUpdate() on a non-updating query")
   }
 
-  def initialContext(dynamicEnv: DynamicQueryContext,
-                     controller: Controller): XPathContextMajor = {
+  def initialContext(dynamicEnv: DynamicQueryContext, controller: Controller): XPathContextMajor = {
     val contextItem = controller.getGlobalContextItem
     val context     = controller.newXPathContext
     if (contextItem != null) {
@@ -381,7 +381,6 @@ class XQueryExpression(var expression: Expression,
   }
 
   /*@NotNull*/
-
   def newController(env: DynamicQueryContext): Controller = {
     val controller = new Controller(executable.getConfiguration, executable)
     env.initializeController(controller)

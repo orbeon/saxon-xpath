@@ -17,8 +17,7 @@ object PositionAndLast {
     def evaluateItem(c: XPathContext): Int64Value = {
       val currentIterator = c.getCurrentIterator
       if (currentIterator == null) {
-        val e = new XPathException(
-          "The context item is absent, so position is undefined")
+        val e = new XPathException("The context item is absent, so position is undefined")
         e.setXPathContext(c)
         e.setErrorCode("XPDY0002")
         throw e

@@ -60,11 +60,10 @@ class AnalyzeStringFn extends RegexFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): NodeInfo = {
-    val inputItem: Item = arguments(0).head
-    var input: CharSequence = null
-    input = if (inputItem == null) "" else inputItem.getStringValueCS
-    val re: RegularExpression = getRegularExpression(arguments)
-    val iter: RegexIterator = re.analyze(input)
+    val inputItem = arguments(0).head
+    val input     = if (inputItem == null) "" else inputItem.getStringValueCS
+    val re        = getRegularExpression(arguments)
+    val iter      = re.analyze(input)
     if (resultName == null) {
       val schemaAware = context.getController.getExecutable.isSchemaAware
       val config = context.getConfiguration

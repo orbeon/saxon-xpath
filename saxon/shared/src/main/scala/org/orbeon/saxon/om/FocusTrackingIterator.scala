@@ -20,12 +20,13 @@ import org.orbeon.saxon.value.SequenceExtent
 
 object FocusTrackingIterator {
 
-  def track(base: SequenceIterator): FocusTrackingIterator = new FocusTrackingIterator(base)
+  def track(base: SequenceIterator): FocusTrackingIterator =
+    new FocusTrackingIterator(base)
 
   private class SiblingMemory {
-    var mostRecentNodeTest: NodeTest = null
-    var mostRecentNode: NodeInfo = null
-    var mostRecentPosition: Int = -1
+    var mostRecentNodeTest : NodeTest = null
+    var mostRecentNode     : NodeInfo = null
+    var mostRecentPosition : Int = -1
   }
 }
 

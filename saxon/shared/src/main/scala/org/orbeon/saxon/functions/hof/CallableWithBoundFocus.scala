@@ -13,14 +13,14 @@ class CallableWithBoundFocus(private var target: Callable,
   if (context.getCurrentIterator == null) {
     boundContext.setCurrentIterator(null)
   } else {
-    val iter: ManualIterator = new ManualIterator(
+    val iter = new ManualIterator(
       context.getContextItem,
-      context.getCurrentIterator.position)
+      context.getCurrentIterator.position
+    )
     iter.setLastPositionFinder(context.getLast.asInstanceOf[LastPositionFinder])
     boundContext.setCurrentIterator(iter)
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     target.call(boundContext, arguments)
-
 }

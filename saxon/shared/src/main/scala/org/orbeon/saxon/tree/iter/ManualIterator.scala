@@ -1,10 +1,11 @@
 package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.expr.LastPositionFinder
-import org.orbeon.saxon.om.{FocusIterator, GroundedValue, Item}
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
+import org.orbeon.saxon.om.{FocusIterator, GroundedValue, Item}
 import org.orbeon.saxon.trans.XPathException
+
 
 class ManualIterator
   extends FocusIterator
@@ -35,27 +36,23 @@ class ManualIterator
     }
   }
 
-  def setContextItem(value: Item): Unit = {
+  def setContextItem(value: Item): Unit =
     this.item = value
-  }
 
-  def setLastPositionFinder(finder: LastPositionFinder): Unit = {
+  def setLastPositionFinder(finder: LastPositionFinder): Unit =
     this.lastPositionFinder = finder
-  }
 
-  def incrementPosition(): Unit = {
+  def incrementPosition(): Unit =
     position += 1
-  }
 
-  def setPosition(position: Int): Unit = {
+  def setPosition(position: Int): Unit =
     this.position = position
-  }
 
   def hasNext: Boolean =
-    try position != getLength
+    try
+      position != getLength
     catch {
-      case e: XPathException => false
-
+      case _: XPathException => false
     }
 
   def next(): Item = null
@@ -63,22 +60,21 @@ class ManualIterator
   def current: Item = item
 
   def getLength: Int =
-    if (lastPositionFinder == null) {
-      throw new XPathException(
-        "Saxon streaming restriction: last() cannot be used when consuming a sequence of streamed nodes, even if the items being processed are grounded")
-    } else {
+    if (lastPositionFinder == null)
+      throw new XPathException("Saxon streaming restriction: last() cannot be used when consuming a sequence of streamed nodes, even if the items being processed are grounded")
+    else
       lastPositionFinder.getLength
-    }
 
   def getReverseIterator: ManualIterator = new ManualIterator(item)
 
   override def materialize: GroundedValue = item
 
-  override def getResidue: GroundedValue = materialize
+  def getResidue: GroundedValue = materialize
 
   override def getProperties: Set[Property] =
-    Set(Property.LOOKAHEAD,
+    Set(
+      Property.LOOKAHEAD,
       Property.GROUNDED,
-      Property.LAST_POSITION_FINDER)
-
+      Property.LAST_POSITION_FINDER
+    )
 }

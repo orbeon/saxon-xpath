@@ -429,10 +429,12 @@ object Sender {
   private def namedParser(parser: XMLReader): String =
     "Selected XML parser " + parser.getClass.getName
 
-  private def makeValidator(receiver: Receiver,
-                            systemId: String,
-                            options: ParseOptions): Receiver = {
-    val pipe   = receiver.getPipelineConfiguration
+  private def makeValidator(
+    receiver : Receiver,
+    systemId : String,
+    options  : ParseOptions
+  ): Receiver = {
+    val pipe = receiver.getPipelineConfiguration
     val config = pipe.getConfiguration
     val sv     = options.getSchemaValidationMode
     if (sv != Validation.PRESERVE && sv != Validation.DEFAULT) {
@@ -443,9 +445,11 @@ object Sender {
     receiver
   }
 
-  private def sendPullSource(source: PullSource,
-                             receiver: Receiver,
-                             options: ParseOptions): Unit = {
+  private def sendPullSource(
+    source   : PullSource,
+    receiver : Receiver,
+    options  : ParseOptions
+  ): Unit = {
     var lReceiver = receiver
     val pipe      = lReceiver.getPipelineConfiguration
     val xInclude  = options.isXIncludeAware

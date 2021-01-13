@@ -16,7 +16,7 @@ import org.orbeon.saxon.value.{IntegerValue, QNameValue}
  * a function name (QName) and arity, and returns a function item representing that
  * function if found, or an empty sequence if not found.
  */
-class FunctionLookup() extends ContextAccessorFunction {
+class FunctionLookup extends ContextAccessorFunction {
   private var boundContext :XPathContext = _
 
   override def makeFunctionCall(arguments: Expression*):Expression = {
@@ -39,15 +39,15 @@ class FunctionLookup() extends ContextAccessorFunction {
    * @param context the context to which the function applies. Must not be null.
    */
   override def bindContext(context: XPathContext):Function = {
-    val bound = SystemFunction.makeFunction("function-lookup", getRetainedStaticContext, 2).asInstanceOf[FunctionLookup]
-    val focusIterator:FocusIterator = context.getCurrentIterator
+    val bound         = SystemFunction.makeFunction("function-lookup", getRetainedStaticContext, 2).asInstanceOf[FunctionLookup]
+    val focusIterator = context.getCurrentIterator
     if (focusIterator != null) {
-      val c2 : XPathContextMinor = context.newMinorContext
+      val c2 = context.newMinorContext()
       val mi = new ManualIterator(context.getContextItem, focusIterator.position)
       c2.setCurrentIterator(mi)
       bound.boundContext = c2
-    }
-    else bound.boundContext = context
+    } else
+      bound.boundContext = context
     bound
   }
 
@@ -98,10 +98,11 @@ class FunctionLookup() extends ContextAccessorFunction {
    */
   @throws[XPathException]
   override def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[_ <: Item] = {
-    var c :XPathContext=boundContext
-    if (boundContext ==null){
-      c= context
-    }
+    val c =
+      if (boundContext == null)
+        context
+      else
+        boundContext
     val qname = arguments(0).head.asInstanceOf[QNameValue]
     val arity = arguments(1).head.asInstanceOf[IntegerValue]
     var fi = lookup(qname.getStructuredQName, arity.longValue.toInt, c)
@@ -114,7 +115,7 @@ class FunctionLookup() extends ContextAccessorFunction {
       }
       val target = fi match {
         case f: UserFunction => f.getDeclaringComponent
-        case _ => null
+        case _               => null
       }
       val agent: ExportAgent = out => makeFunctionCall(Literal.makeLiteral(qname), Literal.makeLiteral(arity)).`export`(out)
       val result = new UserFunctionReference.BoundUserFunction(agent, fi, target, c.getController)
