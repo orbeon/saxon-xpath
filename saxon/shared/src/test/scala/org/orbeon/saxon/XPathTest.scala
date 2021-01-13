@@ -128,6 +128,7 @@ class XPathTest extends AnyFunSpec {
       ("""string(/*/*[3])""",                                      doc,     false, "Coyote"),
       ("""string-join(for $i in * return string($i), '')""",       doc,     false, "WileE.Coyote"),
       ("""string-join((*[1]/string(), *[3]/string()), ' and ')""", docElem, false, "Wile and Coyote"),
+      ("""string-join(for $i in * return string($i), '/')""",      docElem, false, "Wile/E./Coyote"),
       ("""*[3]/root()/*/*[1]""",                                   docElem, false, "Wile"),
       ("""There are {41 + 1} {/}s""",                              docElem, true,  "There are 42 WileE.Coyotes"),
       ("""for $n in name() return count($n)""",                    docElem, false, "1"),
@@ -135,9 +136,7 @@ class XPathTest extends AnyFunSpec {
       ("if (false()) then 'x' else .",                             int,     false, "2020"),
       ("(*[1])/name(.) = 'first-name'",                            docElem, false, "true"),
       ("(*[1])/name() = 'first-name'",                             docElem, false, "true"),
-
-//      ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
-//      ("""string-join(for $i in * return string($i), '/')""",      doc,     false, "Wile/E./Coyote"), // FIXME: doesn't include '/'
+      ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
 //      ("""string(/root/first-name)""",                             doc,     false, "Wile"), // FIXME: returns blank
 //      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
