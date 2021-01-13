@@ -5,17 +5,18 @@ import org.orbeon.saxon.expr.instruct.SlotManager
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.functions.Current
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.{AxisInfo, Item, NodeInfo, SequenceIterator}
+import org.orbeon.saxon.om.{AxisInfo, Item, NodeInfo}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.iter.{AxisIterator, ManualIterator}
-import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.tree.iter.ManualIterator
 
 import scala.beans.BeanProperty
 
 
-class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
-                         @BeanProperty var itemTyp: NodeTest) extends Pattern {
+class GeneralNodePattern(
+  @BeanProperty var equivalentExpr : Expression,
+  @BeanProperty var itemTyp        : NodeTest
+) extends Pattern {
 
   override def getItemType: ItemType = itemTyp
 
@@ -26,23 +27,22 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {
-    val cit: ContextItemStaticInfo =
-      visitor.getConfiguration.getDefaultContextItemStaticInfo
+    val cit = visitor.getConfiguration.getDefaultContextItemStaticInfo
     equivalentExpr = equivalentExpr.typeCheck(visitor, cit)
     this
   }
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Pattern = {
-    val config: Configuration = visitor.getConfiguration
-    val defaultInfo: ContextItemStaticInfo =
-      config.getDefaultContextItemStaticInfo
+    val config      = visitor.getConfiguration
+    val defaultInfo = config.getDefaultContextItemStaticInfo
     equivalentExpr = equivalentExpr.optimize(visitor, defaultInfo)
     equivalentExpr match {
       case expression: FilterExpression if !expression.isFilterIsPositional =>
-        try PatternMaker
-          .fromExpression(equivalentExpr, config, is30 = true)
-          .typeCheck(visitor, defaultInfo)
+        try
+          return PatternMaker
+            .fromExpression(equivalentExpr, config, is30 = true)
+            .typeCheck(visitor, defaultInfo)
         catch {
           case _: XPathException =>
         }
@@ -59,11 +59,10 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
     if (ExpressionTool.callsFunction(equivalentExpr,
       Current.FN_CURRENT,
       sameFocusOnly = false)) {
-      if (equivalentExpr.isCallOn(classOf[Current])) {
+      if (equivalentExpr.isCallOn(classOf[Current]))
         equivalentExpr = new LocalVariableReference(binding)
-      } else {
+      else
         Pattern.replaceCurrent(equivalentExpr, binding)
-      }
     }
   }
 
@@ -72,19 +71,15 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
 
   def matches(item: Item, context: XPathContext): Boolean = {
     val th = context.getConfiguration.getTypeHierarchy
-    if (!itemTyp.matches(item, th)) {
+    if (!itemTyp.matches(item, th))
       return false
-    }
-    val anc: AxisIterator =
-      item.asInstanceOf[NodeInfo].iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
+    val anc = item.asInstanceOf[NodeInfo].iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
     while (true) {
-      val a: NodeInfo = anc.next()
-      if (a == null) {
+      val a = anc.next()
+      if (a == null)
         return false
-      }
-      if (matchesBeneathAnchor(item.asInstanceOf[NodeInfo], a, context)) {
-        true
-      }
+      if (matchesBeneathAnchor(item.asInstanceOf[NodeInfo], a, context))
+        return true
     }
     false
   }
@@ -92,34 +87,29 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
   override def matchesBeneathAnchor(node: NodeInfo,
                                     anchor: NodeInfo,
                                     context: XPathContext): Boolean = {
-    if (!itemTyp.test(node)) {
+    if (!itemTyp.test(node))
       return false
-    }
     if (anchor == null) {
-      val ancestors: AxisIterator = node.iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
+      val ancestors = node.iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
       while (true) {
-        val ancestor: NodeInfo = ancestors.next()
-        if (ancestor == null) {
+        val ancestor = ancestors.next()
+        if (ancestor == null)
           return false
-        }
-        if (matchesBeneathAnchor(node, ancestor, context)) {
+        if (matchesBeneathAnchor(node, ancestor, context))
           true
-        }
       }
     }
     val c2: XPathContext = context.newMinorContext()
-    val iter: ManualIterator = new ManualIterator(anchor)
+    val iter             = new ManualIterator(anchor)
     c2.setCurrentIterator(iter)
     try {
-      val nsv: SequenceIterator = equivalentExpr.iterate(c2)
+      val nsv = equivalentExpr.iterate(c2)
       while (true) {
-        val n: NodeInfo = nsv.next().asInstanceOf[NodeInfo]
-        if (n == null) {
+        val n = nsv.next().asInstanceOf[NodeInfo]
+        if (n == null)
           return false
-        }
-        if (n == node) {
-          true
-        }
+        if (n == node)
+          return true
       }
       false
     } catch {
@@ -136,8 +126,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
   override def getFingerprint: Int = itemTyp.getFingerprint
 
   override def equals(other: Any): Boolean = other match {
-    case other: GeneralNodePattern =>
-      val lpp: GeneralNodePattern = other
+    case lpp: GeneralNodePattern =>
       equivalentExpr.isEqual(lpp.equivalentExpr)
     case _ => false
   }
@@ -145,8 +134,7 @@ class GeneralNodePattern(@BeanProperty var equivalentExpr: Expression,
   override def computeHashCode(): Int = 83641 ^ equivalentExpr.hashCode
 
   def copy(rebindings: RebindingMap): Pattern = {
-    val n: GeneralNodePattern =
-      new GeneralNodePattern(equivalentExpr.copy(rebindings), itemTyp)
+    val n = new GeneralNodePattern(equivalentExpr.copy(rebindings), itemTyp)
     ExpressionTool.copyLocationInfo(this, n)
     n
   }
