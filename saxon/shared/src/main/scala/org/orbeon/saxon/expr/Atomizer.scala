@@ -134,7 +134,8 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
     this.roleDiagnostic = role
 
   override def simplify(): Expression = {
-    untyped = ! getPackageData.isSchemaAware
+    // ORBEON: Don't set `untyped = true` so we can handle type annotations on our DOM.
+//    untyped = ! getPackageData.isSchemaAware
     computeSingleValued(getConfiguration.getTypeHierarchy)
     val operand = getBaseExpression.simplify()
     operand match {
@@ -180,7 +181,8 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
-    untyped = untyped | ! visitor.getStaticContext.getPackageData.isSchemaAware
+    // ORBEON: Don't set `untyped = true` so we can handle type annotations on our DOM.
+//    untyped = untyped | ! visitor.getStaticContext.getPackageData.isSchemaAware
     val th = visitor.getConfiguration.getTypeHierarchy
     computeSingleValued(th)
     resetLocalStaticProperties()

@@ -167,16 +167,17 @@ class SingletonAtomizer(sequence: Expression,
   }
 
   override def getItemType: ItemType = {
-    var isSchemaAware = true
-    try
-      isSchemaAware = getPackageData.isSchemaAware
-    catch {
-      case _: NullPointerException =>
-        if (!getConfiguration.isLicensedFeature(
-          Configuration.LicenseFeature.SCHEMA_VALIDATION)) {
-          isSchemaAware = false
-        }
-    }
+    // ORBEON: Set to `true` so we can handle type annotations on our DOM.
+    val isSchemaAware = true
+//    try
+//      isSchemaAware = getPackageData.isSchemaAware
+//    catch {
+//      case _: NullPointerException =>
+//        if (!getConfiguration.isLicensedFeature(
+//          Configuration.LicenseFeature.SCHEMA_VALIDATION)) {
+//          isSchemaAware = false
+//        }
+//    }
     val in = getBaseExpression.getItemType
     if (in.isPlainType) {
       in

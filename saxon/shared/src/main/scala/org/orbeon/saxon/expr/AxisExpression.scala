@@ -245,6 +245,8 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                     )
                   return Literal.makeEmptySequence
                 }
+                // ORBEON: We don't have any `SchemaNodeTest` instance so this will always be `false`, even though
+                // we pretend to be Schema-aware in other places.
                 if (env.getPackageData.isSchemaAware && elementTest.isInstanceOf[SchemaNodeTest] &&
                   outermostElementNames.get.size == 1) {
                   val oeni = outermostElementNames.get.iterator
@@ -292,6 +294,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
       if (contentType == AnyType.getInstance)
         return this
 
+      // ORBEON: Unclear if here we should pretend we are Schema-aware.
       if (! env.getPackageData.isSchemaAware) {
         val ct = test.getContentType
         if (! (
