@@ -160,15 +160,13 @@ class IndependentContext(config: Configuration)
     declareVariable(new StructuredQName("", namespaceURI, localName))
 
   def declareVariable(qName: StructuredQName): XPathVariable = {
-    var `var` = variables.get(qName)
-    if (`var` != null) {
-      `var`
+    var variable = variables.get(qName)
+    if (variable != null) {
+      variable
     } else {
-      `var` = XPathVariable.make(qName)
-      val slot = variables.size
-      `var`.setSlotNumber(slot)
-      variables.put(qName, `var`)
-      `var`
+      variable = XPathVariable(qName, slotNumber = variables.size)
+      variables.put(qName, variable)
+      variable
     }
   }
 
@@ -180,11 +178,11 @@ class IndependentContext(config: Configuration)
 
   def getSlotNumber(qname: QNameValue): Int = {
     val sq = qname.getStructuredQName
-    val `var` = variables.get(sq)
-    if (`var` == null)
+    val variable = variables.get(sq)
+    if (variable == null)
       -1
     else
-      `var`.getLocalSlotNumber
+      variable.getLocalSlotNumber
   }
 
   def getNamespaceResolver: NamespaceResolver =
@@ -209,8 +207,8 @@ class IndependentContext(config: Configuration)
       namespaces.keySet.iterator
 
   def bindVariable(qName: StructuredQName): Expression = {
-    val `var` = variables.get(qName)
-    if (`var` == null) {
+    val variable = variables.get(qName)
+    if (variable == null) {
       if (autoDeclare) {
         new LocalVariableReference(declareVariable(qName))
       } else {
@@ -219,7 +217,7 @@ class IndependentContext(config: Configuration)
           "XPST0008")
       }
     } else {
-      new LocalVariableReference(`var`)
+      new LocalVariableReference(variable)
     }
   }
 

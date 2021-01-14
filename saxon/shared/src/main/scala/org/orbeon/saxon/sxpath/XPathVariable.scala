@@ -25,26 +25,22 @@ import scala.beans.BeanProperty
  * XPathDynamicContext, which means that the XPathVariable itself can be used in multiple threads.
  */
 object XPathVariable {
-  def make(name: StructuredQName): XPathVariable =
-    new XPathVariable(name)
+  def apply(name: StructuredQName, slotNumber: Int): XPathVariable =
+    new XPathVariable(name, slotNumber)
 }
 
-class XPathVariable private (name: StructuredQName) extends LocalBinding {
+class XPathVariable private (name: StructuredQName, slotNumber: Int) extends LocalBinding {
 
   @BeanProperty
   var requiredType: SequenceType = SequenceType.ANY_SEQUENCE
   @BeanProperty
   var defaultValue: Sequence = _
-  private var slotNumber: Int = _
 
   def isGlobal: Boolean = false
   def isAssignable: Boolean = false
 
   /*@Nullable*/
   def getIntegerBoundsForVariable: Array[IntegerValue] = null
-
-  def setSlotNumber(slotNumber: Int): Unit =
-    this.slotNumber = slotNumber
 
   def getLocalSlotNumber: Int = slotNumber
   def getVariableQName: StructuredQName = name

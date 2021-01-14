@@ -1,8 +1,7 @@
 package org.orbeon.saxon.sxpath
 
-import org.orbeon.saxon.expr.{Expression, StaticContext, XPathContextMajor}
 import org.orbeon.saxon.expr.instruct.{Executable, SlotManager}
-import org.orbeon.saxon.model.ItemType
+import org.orbeon.saxon.expr.{Expression, StaticContext, XPathContextMajor}
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Controller
@@ -32,9 +31,11 @@ class XPathExpression(
   def createDynamicContext: XPathDynamicContext = {
     val context = new XPathContextMajor(null, executable)
     context.openStackFrame(stackFrameMap)
-    new XPathDynamicContext(env.getRequiredContextItemType,
+    new XPathDynamicContext(
+      env.getRequiredContextItemType,
       context,
-      stackFrameMap)
+      stackFrameMap
+    )
   }
 
   def createDynamicContext(contextItem: Item): XPathDynamicContext = {
@@ -48,19 +49,22 @@ class XPathExpression(
     )
   }
 
-  def createDynamicContext(controller: Controller,
-                           contextItem: Item): XPathDynamicContext = {
+  def createDynamicContext(
+    controller  : Controller,
+    contextItem : Item
+  ): XPathDynamicContext = {
     checkContextItemType(contextItem)
     if (controller == null) {
       createDynamicContext(contextItem)
     } else {
       val context = controller.newXPathContext
       context.openStackFrame(stackFrameMap)
-      val dc = new XPathDynamicContext(
-        env.getRequiredContextItemType,
-        context,
-        stackFrameMap
-      )
+      val dc =
+        new XPathDynamicContext(
+          env.getRequiredContextItemType,
+          context,
+          stackFrameMap
+        )
       if (contextItem != null)
         dc.setContextItem(contextItem)
       dc
@@ -72,10 +76,7 @@ class XPathExpression(
       val `type` = env.getRequiredContextItemType
       val th     = env.getConfiguration.getTypeHierarchy
       if (! `type`.matches(contextItem, th))
-        throw new XPathException(
-          "Supplied context item does not match required context item type " +
-            `type`
-        )
+        throw new XPathException("Supplied context item does not match required context item type " + `type`)
     }
 
   def iterate(context: XPathDynamicContext): SequenceIterator = {
@@ -84,7 +85,7 @@ class XPathExpression(
   }
 
   def evaluate(context: XPathDynamicContext): List[Item] = {
-    val list: List[Item] = new ArrayList[Item](20)
+    val list = new ArrayList[Item](20)
     expression.iterate(context.getXPathContextObject).forEachOrFail((res: Item) => list.add(res))
     list
   }

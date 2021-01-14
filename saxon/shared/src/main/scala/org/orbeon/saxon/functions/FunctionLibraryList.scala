@@ -34,10 +34,12 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
   def isAvailable(functionName: SymbolicName.F): Boolean =
     libraryList.asScala.exists(_.isAvailable(functionName))
 
-  def bind(functionName: SymbolicName.F,
-           staticArgs: Array[Expression],
-           env: StaticContext,
-           reasons: List[String]): Expression = {
+  def bind(
+    functionName : SymbolicName.F,
+    staticArgs   : Array[Expression],
+    env          : StaticContext,
+    reasons      : List[String]
+  ): Expression = {
 
     val debug = env.getConfiguration.getBooleanProperty(Feature.TRACE_EXTERNAL_FUNCTIONS)
 
@@ -58,8 +60,10 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
     null
   }
 
-  def getDeclaration(functionName: StructuredQName,
-                     staticArgs: Int): XQueryFunction = {
+  def getDeclaration(
+    functionName : StructuredQName,
+    staticArgs   : Int
+  ): XQueryFunction = {
     for (lib <- libraryList.asScala if lib.isInstanceOf[XQueryFunctionBinder]) {
       val func = lib.asInstanceOf[XQueryFunctionBinder].getDeclaration(functionName, staticArgs)
       if (func != null)
