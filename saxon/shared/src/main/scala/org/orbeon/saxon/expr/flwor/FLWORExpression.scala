@@ -313,13 +313,13 @@ class FLWORExpression extends Expression {
     }
     if (depends && contextItemType != null) {
       val expr1 = ExpressionTool.tryToFactorOutDot(this, contextItemType.getItemType)
-      if (expr1 == null || expr1 == this)
+      if (expr1 == null || (expr1 eq this))
         return this
       resetLocalStaticProperties()
       expr1.optimize(visitor, contextItemType)
     }
     val expr2 = rewriteWhereClause(visitor, contextItemType)
-    if (expr2 != null && expr2 != this)
+    if (expr2 != null && (expr2 ne this))
       return expr2.optimize(visitor, contextItemType)
     var allForOrLetExpr = true
     breakable {
