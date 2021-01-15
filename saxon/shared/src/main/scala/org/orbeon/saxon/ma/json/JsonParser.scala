@@ -437,6 +437,7 @@ class JsonParser {
       while (true) {
         val c = input.charAt(position)
         c match {
+          // XXX ERIK TO CHECK: This is wrong.
           case '\n' | '\r' | ' ' | '\t' =>
             if (c == '\n' || c == '\r')
               lineNumber += 1
@@ -495,7 +496,8 @@ class JsonParser {
           JsonParser.JsonToken.COLON
         case ',' =>
           JsonParser.JsonToken.COMMA
-        case '-' => jsonToken // Erick to check whole method
+        // XXX ERIK TO CHECK: This is wrong.
+        case '-' => jsonToken
         case '+' => jsonToken
         case '.' => jsonToken
         case '0' => jsonToken
