@@ -158,9 +158,10 @@ class Operand(@BeanProperty val parentExpression: Expression,
         if (!e.isReportableStatically) {
           visitor.getStaticContext.issueWarning(
             "Evaluation will always throw a dynamic error: " + e.getMessage,
-            getChildExpression.getLocation)
-          this.childExpression = new ErrorExpression(
-            new XmlProcessingException(e))
+            getChildExpression.getLocation
+          )
+          e.printStackTrace()
+          this.childExpression = new ErrorExpression(new XmlProcessingException(e))
         } else {
           throw e
         }

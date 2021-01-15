@@ -73,9 +73,9 @@ class ForExpression extends Assignation {
 
   override def optimize(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo): Expression = {
 
-    val config         = visitor.getConfiguration
-    val opt           = visitor.obtainOptimizer()
-    val debug          = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
+    val config = visitor.getConfiguration
+    val opt    = visitor.obtainOptimizer()
+    val debug  = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
 
     if (Choose.isSingleBranchChoice(getAction))
       getActionOp.optimize(visitor, contextItemType)
