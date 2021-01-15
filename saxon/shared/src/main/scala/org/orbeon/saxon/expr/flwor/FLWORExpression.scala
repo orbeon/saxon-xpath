@@ -335,8 +335,9 @@ class FLWORExpression extends Expression {
       }
     }
     if (allForOrLetExpr)
-      return rewriteForOrLet(visitor, contextItemType)
-    this
+      rewriteForOrLet(visitor, contextItemType)
+    else
+      this
   }
 
   private def rewriteWhereClause(

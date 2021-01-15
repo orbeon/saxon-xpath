@@ -108,9 +108,9 @@ class XPathContextMinor extends XPathContext {
   }
 
   def isAtLast: Boolean =
-    if (currentIterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD)) {
+    if (currentIterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD))
       ! currentIterator.asInstanceOf[LookaheadIterator].hasNext
-    } else
+    else
       currentIterator.position == getLast
 
   def getURIResolver     : URIResolver                     = caller.getURIResolver

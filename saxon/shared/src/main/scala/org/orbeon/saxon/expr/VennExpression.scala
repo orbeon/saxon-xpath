@@ -135,11 +135,14 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
 
   private def testSubTree(prop0: Int, prop1: Int): Boolean =
     op match {
-      case Token.UNION => (prop0 & prop1 & StaticProperty.SUBTREE_NODESET) != 0
+      case Token.UNION =>
+        (prop0 & prop1 & StaticProperty.SUBTREE_NODESET) != 0
       case Token.INTERSECT =>
         ((prop0 | prop1) & StaticProperty.SUBTREE_NODESET) != 0
-      case Token.EXCEPT => (prop0 & StaticProperty.SUBTREE_NODESET) != 0
-      case _ => false
+      case Token.EXCEPT =>
+        (prop0 & StaticProperty.SUBTREE_NODESET) != 0
+      case _ =>
+        false
     }
 
   private def createsNoNewNodes(prop0: Int, prop1: Int): Boolean =

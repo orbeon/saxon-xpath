@@ -22,12 +22,12 @@ import scala.util.control.Breaks._
 object AxisExpression {
 
   private def getDiagnosticName(name: StructuredQName, env: StaticContext): String = {
-    val uri: String = name.getURI
-    if (uri.==("")) {
+    val uri = name.getURI
+    if (uri.isEmpty) {
       return name.getLocalPart
     } else {
-      val resolver: NamespaceResolver = env.getNamespaceResolver
-      val it = resolver.iteratePrefixes
+      val resolver = env.getNamespaceResolver
+      val it       = resolver.iteratePrefixes
       while (it.hasNext) {
         val prefix = it.next()
         if (uri == resolver.getURIForPrefix(prefix, useDefault = true)) {
@@ -43,15 +43,12 @@ object AxisExpression {
 
   private def getStartingNodeDescription(`type`: SchemaType): String = {
     val s = `type`.getDescription
-    if (s.startsWith("of element")) {
+    if (s.startsWith("of element"))
       "a valid element named" + s.substring("of element".length)
-    } else if (s.startsWith("of attribute")) {
+    else if (s.startsWith("of attribute"))
       "a valid attribute named" + s.substring("of attribute".length)
-    } else {
-      "a node with " + (if (`type`.isSimpleType) "simple" else "complex") +
-        " type " +
-        s
-    }
+    else
+      "a node with " + (if (`type`.isSimpleType) "simple" else "complex") + " type " + s
   }
 
   private def isPeerNodeTest(test: NodeTest): Boolean = {

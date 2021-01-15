@@ -17,11 +17,14 @@ import scala.jdk.CollectionConverters._
 
 object Component {
 
-  def makeComponent(actor: Actor,
-                    visibility: Visibility,
-                    provenance: VisibilityProvenance,
-                    containingPackage: StylesheetPackage,
-                    declaringPackage: StylesheetPackage): Component = {
+  def makeComponent(
+    actor             : Actor,
+    visibility        : Visibility,
+    provenance        : VisibilityProvenance,
+    containingPackage : StylesheetPackage,
+    declaringPackage  : StylesheetPackage
+  ): Component = {
+
     val c =
       if (actor.isInstanceOf[Mode])
         new M
@@ -71,8 +74,10 @@ class Component private () {
   def setComponentBindings(bindings: ju.List[ComponentBinding]): Unit =
     this.bindings = bindings
 
-  def setVisibility(visibility: Visibility,
-                    provenance: VisibilityProvenance): Unit = {
+  def setVisibility(
+    visibility : Visibility,
+    provenance : VisibilityProvenance
+  ): Unit = {
     this.visibility = visibility
     this.provenance = provenance
   }
@@ -80,15 +85,17 @@ class Component private () {
   def getVisibilityProvenance: VisibilityProvenance = provenance
 
   def isHiddenAbstractComponent: Boolean =
-    visibility == Visibility.HIDDEN &&
-      baseComponent != null         &&
-      baseComponent.getVisibility == Visibility.ABSTRACT
+    visibility                  == Visibility.HIDDEN &&
+    baseComponent               != null              &&
+    baseComponent.getVisibility == Visibility.ABSTRACT
 
   def getActor: Actor = actor
 
-  def export(out: ExpressionPresenter,
-             componentIdMap: ju.Map[Component, Integer],
-             packageIdMap: ju.Map[StylesheetPackage, Integer]): Unit = {
+  def export(
+    out            : ExpressionPresenter,
+    componentIdMap : ju.Map[Component, Integer],
+    packageIdMap   : ju.Map[StylesheetPackage, Integer]
+  ): Unit = {
     out.startElement("co")
     val id = obtainComponentId(this, componentIdMap)
     out.emitAttribute("id", "" + id)
@@ -107,7 +114,8 @@ class Component private () {
   }
 
   def listComponentReferences(
-                               componentIdMap: ju.Map[Component, Integer]): String = {
+    componentIdMap: ju.Map[Component, Integer]
+  ): String = {
     val fsb = new FastStringBuffer(128)
     for (ref <- getComponentBindings.asScala) {
       val target = ref.getTarget
@@ -120,8 +128,9 @@ class Component private () {
   }
 
   private def obtainComponentId(
-                                 component: Component,
-                                 componentIdMap: ju.Map[Component, Integer]): Int = {
+    component      : Component,
+    componentIdMap : ju.Map[Component, Integer]
+  ): Int = {
     var id = componentIdMap.get(component)
     if (id == null) {
       id = componentIdMap.size
