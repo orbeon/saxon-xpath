@@ -107,16 +107,15 @@ class XPathTest extends AnyFunSpec {
       ("math:cos(0)"                                , int, false, "1"),
       ("math:cos(math:pi())"                        , int, false, "-1"),
       ("""let $fn := function($v) { $v * 2 }
-         return $fn(7)"""                           , int, false, "14"),
-      ("""
-        let $f :=
-          function($seq, $delim) {
-            fn:fold-left($seq, '', fn:concat(?, $delim, ?))
-          },
-          $paf := $f(?, '.')
-        return
-          $paf(1 to 5)
-        """, int, false, ".1.2.3.4.5"),
+          return $fn(7)"""                          , int, false, "14"),
+      ("""let $f :=
+            function($seq, $delim) {
+              fn:fold-left($seq, '', fn:concat(?, $delim, ?))
+            },
+            $paf := $f(?, '.')
+          return
+            $paf(1 to 5)
+       """, int, false, ".1.2.3.4.5"),
       ("""string(/)""",                                            doc,     false, "WileE.Coyote"),
       ("""normalize-space(' abc ')""",                             doc,     false, "abc"),
       ("""normalize-space(())""",                                  doc,     false, ""),
@@ -137,6 +136,12 @@ class XPathTest extends AnyFunSpec {
       ("(*[1])/name(.) = 'first-name'",                            docElem, false, "true"),
       ("(*[1])/name() = 'first-name'",                             docElem, false, "true"),
       ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
+      ("""for $parent in .[
+            lower-case(string(*[1])) = ('wile', 'road')
+          ]
+          return
+            concat($parent/*[1]/string(), $parent/*[3]/string())
+        """, docElem, false, "WileCoyote"),
 //      ("""string(/root/first-name)""",                             doc,     false, "Wile"), // FIXME: returns blank
 //      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
     )
