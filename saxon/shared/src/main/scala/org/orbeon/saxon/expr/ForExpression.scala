@@ -88,7 +88,7 @@ class ForExpression extends Assignation {
     }
     val seq0 = getSequence
     getSequenceOp.optimize(visitor, contextItemType)
-    if (seq0 != getSequence)
+    if (seq0 ne getSequence)
       return optimize(visitor, contextItemType)
 
     if (Literal.isEmptySequence(getSequence) && ! this.isInstanceOf[OuterForExpression])
@@ -96,7 +96,7 @@ class ForExpression extends Assignation {
 
     val act0 = getAction
     getActionOp.optimize(visitor, contextItemType)
-    if (act0 != getAction)
+    if (act0 ne getAction)
       return optimize(visitor, contextItemType)
 
     if (Literal.isEmptySequence(getAction))
@@ -111,9 +111,8 @@ class ForExpression extends Assignation {
         case varRef: VariableReference if (step2.getDependencies &
           (StaticProperty.DEPENDS_ON_POSITION | StaticProperty.DEPENDS_ON_LAST)) ==
           0 && ExpressionTool.getReferenceCount(getAction, this, inLoop = false) ==
-          1 && varRef.getBinding == this =>
-          var newPath: Expression =
-            new SlashExpression(getSequence, path2.getActionExpression)
+          1 && (varRef.getBinding eq this) =>
+          var newPath: Expression = new SlashExpression(getSequence, path2.getActionExpression)
           ExpressionTool.copyLocationInfo(this, newPath)
           newPath = newPath.simplify().typeCheck(visitor, contextItemType)
           if (newPath.isInstanceOf[SlashExpression]) {
@@ -131,7 +130,7 @@ class ForExpression extends Assignation {
     }
 
     getAction match {
-      case varRef: VariableReference if varRef.getBinding == this =>
+      case varRef: VariableReference if varRef.getBinding eq this =>
         if (debug)
           opt.trace("Collapsed redundant for expression $" + getVariableName, getSequence)
         return getSequence
