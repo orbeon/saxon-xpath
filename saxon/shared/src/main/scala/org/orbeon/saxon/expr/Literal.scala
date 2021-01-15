@@ -391,39 +391,38 @@ class Literal extends Expression {
     if (!obj.isInstanceOf[Literal]) {
       return false
     }
-    val v0: GroundedValue = value
-    val v1: GroundedValue = obj.asInstanceOf[Literal].value
+    val v0 = value
+    val v1 = obj.asInstanceOf[Literal].value
     try {
-      val i0: SequenceIterator = v0.iterate()
-      val i1: SequenceIterator = v1.iterate()
+      val i0 = v0.iterate()
+      val i1 = v1.iterate()
       while (true) {
-        val m0: Item = i0.next()
-        val m1: Item = i1.next()
-        if (m0 == null && m1 == null) {
+        val m0 = i0.next()
+        val m1 = i1.next()
+        if (m0 == null && m1 == null)
           return true
-        }
-        if (m0 == null || m1 == null) {
+        if (m0 == null || m1 == null)
           return false
-        }
         if (m0 ne m1) {
-          val n0: Boolean = m0.isInstanceOf[NodeInfo]
-          val n1: Boolean = m1.isInstanceOf[NodeInfo]
-          if (n0 != n1) {
+          val n0 = m0.isInstanceOf[NodeInfo]
+          val n1 = m1.isInstanceOf[NodeInfo]
+          if (n0 != n1)
             return false
-          }
           if (n0) {
-            if (m0 != m1) {
+            if (m0 != m1)
               return false
-            }
           } else {
-            val a0: Boolean = m0.isInstanceOf[AtomicValue]
-            val a1: Boolean = m1.isInstanceOf[AtomicValue]
-            if (a0 != a1) {
+            val a0 = m0.isInstanceOf[AtomicValue]
+            val a1 = m1.isInstanceOf[AtomicValue]
+            if (a0 != a1)
               return false
-            }
             if (a0) {
-              if (! (m0.asInstanceOf[AtomicValue].isIdentical(m1.asInstanceOf[AtomicValue]) &&
-                  m0.asInstanceOf[AtomicValue].getItemType == m1.asInstanceOf[AtomicValue].getItemType)) {
+              if (
+                ! (
+                  m0.asInstanceOf[AtomicValue].isIdentical(m1.asInstanceOf[AtomicValue]) &&
+                  m0.asInstanceOf[AtomicValue].getItemType == m1.asInstanceOf[AtomicValue].getItemType
+                )
+              ) {
                 return false
               }
             } else
