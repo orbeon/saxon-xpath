@@ -26,8 +26,9 @@ import scala.util.control.Breaks._
 object FLWORExpression {
 
   def isLoopingClause(c: Clause): Boolean =
-    c.getClauseKey == Clause.ClauseName.FOR || c.getClauseKey == Clause.ClauseName.GROUP_BY ||
-      c.getClauseKey == Clause.ClauseName.WINDOW
+    c.getClauseKey == Clause.ClauseName.FOR      ||
+    c.getClauseKey == Clause.ClauseName.GROUP_BY ||
+    c.getClauseKey == Clause.ClauseName.WINDOW
 
   private val SINGLE_RETURN: OperandRole =
     new OperandRole(0, OperandUsage.TRANSMISSION, SequenceType.ANY_SEQUENCE)
@@ -292,8 +293,10 @@ class FLWORExpression extends Expression {
     if (changed) {
       var i = clauses.size - 1
       while (i >= 1) {
-        if (clauses.get(i).getClauseKey == Clause.ClauseName.TRACE &&
-          clauses.get(i - 1).getClauseKey == Clause.ClauseName.TRACE) {
+        if (
+          clauses.get(i).getClauseKey     == Clause.ClauseName.TRACE &&
+          clauses.get(i - 1).getClauseKey == Clause.ClauseName.TRACE
+        ) {
           clauses.remove(i)
         }
         i -= 1
