@@ -1,27 +1,15 @@
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.instruct.OriginalFunction
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, RebindingMap}
 import org.orbeon.saxon.functions.SystemFunction
-
 import org.orbeon.saxon.model._
-
-import org.orbeon.saxon.om.Function
-
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.StructuredQName
-
+import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trace.ExpressionPresenter
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
+
 
 class StaticFunctionCall(private var target: Function,
                          arguments: Array[Expression])

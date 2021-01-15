@@ -1,21 +1,21 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2018-2020 Saxonica Limited
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
 import org.orbeon.saxon.lib.StandardDiagnostics
-
 import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.s9api.HostLanguage
-
-import org.orbeon.saxon.s9api.Location
-
+import org.orbeon.saxon.s9api.HostLanguage._
+import org.orbeon.saxon.s9api.{HostLanguage, Location}
 import org.orbeon.saxon.trans.XPathException
 
-import HostLanguage._
-
-
-
-
+/**
+  * Exception indicating that an attribute or namespace node has been written when
+  * there is no open element to write it to
+  */
 object NoOpenStartTagException {
 
   def makeNoOpenStartTagException(
@@ -56,12 +56,3 @@ object NoOpenStartTagException {
 
 class NoOpenStartTagException(message: String) extends XPathException(message)
 
-// Copyright (c) 2018-2020 Saxonica Limited
-// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * Exception indicating that an attribute or namespace node has been written when
-  * there is no open element to write it to
-  */

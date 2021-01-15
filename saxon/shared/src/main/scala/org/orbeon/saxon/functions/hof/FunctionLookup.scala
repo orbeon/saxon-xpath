@@ -19,10 +19,10 @@ import org.orbeon.saxon.value.{IntegerValue, QNameValue}
 class FunctionLookup extends ContextAccessorFunction {
   private var boundContext :XPathContext = _
 
-  override def makeFunctionCall(arguments: Expression*):Expression = {
+  override def makeFunctionCall(arguments: Expression*): Expression = {
 //    val pack = getRetainedStaticContext.getPackageData
     //if (pack.isInstanceOf[StylesheetPackage]) pack.asInstanceOf[StylesheetPackage].setRetainUnusedFunctions()
-    super.makeFunctionCall(arguments:_*)
+    super.makeFunctionCall(arguments: _*)
   }
 
   /**

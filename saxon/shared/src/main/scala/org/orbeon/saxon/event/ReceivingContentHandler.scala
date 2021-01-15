@@ -184,9 +184,8 @@ class ReceivingContentHandler
   }
 
   def startPrefixMapping(prefix: String, uri: String): Unit = {
-    if (prefix.==("xmlns")) // should never be reported, but it's been known to happen
+    if (prefix == "xmlns") // should never be reported, but it's been known to happen
       return
-    // the binding xmlns:xmlns="http://www.w3.org/2000/xmlns/"
     // the binding xmlns:xmlns="http://www.w3.org/2000/xmlns/"
     currentNamespaceMap = currentNamespaceMap.bind(prefix, uri)
   }

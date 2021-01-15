@@ -232,45 +232,45 @@ class XMLEmitter extends Emitter {
                    displayName: String,
                    systemId: String,
                    publicId: String): Unit = {
-    if (!canonical) {
-      if (declarationIsWritten && !indenting) {
+    if (! canonical) {
+      if (declarationIsWritten && !indenting)
         writer.write("\n")
-      }
       writer.write("<!DOCTYPE " + displayName + '\n')
       var quotedSystemId: String = null
-      if (systemId != null) {
+      if (systemId != null)
         quotedSystemId =
-          if (systemId.contains("\"")) "'" + systemId + "'"
-          else "\"" + systemId + "\""
-      }
-      if (systemId != null && publicId == null) {
+          if (systemId.contains("\""))
+            "'" + systemId + "'"
+          else
+            "\"" + systemId + "\""
+      if (systemId != null && publicId == null)
         writer.write("  SYSTEM " + quotedSystemId + ">\n")
-      } else if (systemId == null && publicId != null) {
+      else if (systemId == null && publicId != null)
         writer.write("  PUBLIC \"" + publicId + "\">\n")
-      } else {
+      else
         writer.write("  PUBLIC \"" + publicId + "\" " + quotedSystemId + ">\n")
-      }
     }
   }
 
   override def close(): Unit = {
-    if (!started) {
+    if (! started)
       openDocument()
-    }
-    if (writer != null) {
+    if (writer != null)
       writer.flush()
-    }
     super.close()
   }
 
-  def startElement(elemName: NodeName,
-                   `type`: SchemaType,
-                   attributes: AttributeMap,
-                   namespaces: NamespaceMap,
-                   location: Location,
-                   properties: Int): Unit = {
+  def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit = {
+
     previousAtomic = false
-    if (!started) {
+    if (! started) {
       openDocument()
     } else if (requireWellFormed && elementStack.isEmpty && startedElement &&
       !unfailing) {
@@ -281,9 +281,9 @@ class XMLEmitter extends Emitter {
       throw err
     }
     startedElement = true
-    val displayName: String = elemName.getDisplayName
-    if (!allCharactersEncodable) {
-      val badchar: Int = testCharacters(displayName)
+    val displayName = elemName.getDisplayName
+    if (! allCharactersEncodable) {
+      val badchar = testCharacters(displayName)
       if (badchar != 0) {
         val err = new XPathException(
           "Element name contains a character (decimal + " + badchar +
@@ -294,17 +294,13 @@ class XMLEmitter extends Emitter {
     }
     elementStack ::= displayName
     elementCode = elemName
-    if (!started) {
-      var systemId: String =
-        outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
-      var publicId: String =
-        outputProperties.getProperty(OutputKeys.DOCTYPE_PUBLIC)
-      if ("" == systemId) {
+    if (! started) {
+      var systemId = outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
+      var publicId = outputProperties.getProperty(OutputKeys.DOCTYPE_PUBLIC)
+      if ("" == systemId)
         systemId = null
-      }
-      if ("" == publicId) {
+      if ("" == publicId)
         publicId = null
-      }
       if (systemId != null) {
         requireWellFormed = true
         writeDocType(elemName, displayName, systemId, publicId)
@@ -318,10 +314,9 @@ class XMLEmitter extends Emitter {
     }
     writer.write('<')
     writer.write(displayName)
-    if (indentForNextAttribute >= 0) {
+    if (indentForNextAttribute >= 0)
       indentForNextAttribute += displayName.length
-    }
-    var isFirst: Boolean = true
+    var isFirst = true
     for (ns <- namespaces.asScala) {
       namespace(ns.getPrefix, ns.getURI, isFirst)
       isFirst = false
@@ -337,12 +332,14 @@ class XMLEmitter extends Emitter {
   def writeDocTypeWithNullSystemId(): Boolean = false
 
   def namespace(nsprefix: String, nsuri: String, isFirst: Boolean): Unit = {
-    val sep: String = if (isFirst) " " else getAttributeIndentString
+    val sep = if (isFirst) " " else getAttributeIndentString
     if (nsprefix.isEmpty) {
       writer.write(sep)
       writeAttribute(elementCode, "xmlns", nsuri, ReceiverOption.NONE)
-    } else if (nsprefix.==("xml")) {} else {
-      val badchar: Int = testCharacters(nsprefix)
+    } else if (nsprefix == "xml") {
+      //
+    } else {
+      val badchar = testCharacters(nsprefix)
       if (badchar != 0) {
         val err = new XPathException(
           "Namespace prefix contains a character (decimal + " +
@@ -351,7 +348,7 @@ class XMLEmitter extends Emitter {
         err.setErrorCode("SERE0008")
         throw err
       }
-      if (undeclareNamespaces || !nsuri.isEmpty) {
+      if (undeclareNamespaces || nsuri.nonEmpty) {
         writer.write(sep)
         writeAttribute(elementCode,
           "xmlns:" + nsprefix,
@@ -361,17 +358,16 @@ class XMLEmitter extends Emitter {
     }
   }
 
-  def setIndentForNextAttribute(indent: Int): Unit = {
+  def setIndentForNextAttribute(indent: Int): Unit =
     indentForNextAttribute = indent
-  }
 
   private def attribute(nameCode: NodeName,
                         value: CharSequence,
                         properties: Int,
                         isFirst: Boolean): Unit = {
     var displayName: String = nameCode.getDisplayName
-    if (!allCharactersEncodable) {
-      val badchar: Int = testCharacters(displayName)
+    if (! allCharactersEncodable) {
+      val badchar = testCharacters(displayName)
       if (badchar != 0) {
         if (unfailing) {
           displayName = convertToAscii(displayName)
@@ -392,27 +388,26 @@ class XMLEmitter extends Emitter {
     if (indentForNextAttribute < 0) {
       " "
     } else {
-      val indent: Int = indentForNextAttribute
-      while (indent >= indentChars.length) indentChars += "                     "
+      val indent = indentForNextAttribute
+      while (indent >= indentChars.length)
+        indentChars += "                     "
       indentChars.substring(0, indent)
     }
 
-  def closeStartTag(): Unit = {
+  def closeStartTag(): Unit =
     if (openStartTag) {
       writer.write('>')
       openStartTag = false
     }
-  }
 
-  def emptyElementTagCloser(displayName: String,
-                            nameCode: NodeName): String =
+  def emptyElementTagCloser(displayName: String, nameCode: NodeName): String =
     if (canonical) "></" + displayName + ">" else "/>"
 
   def writeAttribute(elCode: NodeName,
                      attname: String,
                      value: CharSequence,
                      properties: Int): Unit = {
-    val `val`: String = value.toString
+    val `val` = value.toString
     writer.write(attname)
     if (ReceiverOption.contains(properties, ReceiverOption.NO_SPECIAL_CHARS)) {
       writer.write('=')
@@ -422,9 +417,11 @@ class XMLEmitter extends Emitter {
     } else if (ReceiverOption.contains(properties,
       ReceiverOption.USE_NULL_MARKERS)) {
       writer.write('=')
-      val delim: Char =
-        if (`val`.indexOf('"') >= 0 && `val`.indexOf('\'') < 0) '\''
-        else delimiter
+      val delim =
+        if (`val`.indexOf('"') >= 0 && `val`.indexOf('\'') < 0)
+          '\''
+        else
+          delimiter
       writer.write(delim)
       writeEscape(value, inAttribute = true)
       writer.write(delim)
@@ -437,14 +434,14 @@ class XMLEmitter extends Emitter {
   }
 
   def testCharacters(chars: CharSequence): Int = {
-    var i: Int = 0
+    var i = 0
     while (i < chars.length) {
-      val c: Char = chars.charAt(i)
+      val c = chars.charAt(i)
       if (c > 127) {
         if (UTF16CharacterSet.isHighSurrogate(c)) {
           i += 1
-          val cc: Int = UTF16CharacterSet.combinePair(c, chars.charAt(i))
-          if (!characterSet.inCharset(cc)) {
+          val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i))
+          if (! characterSet.inCharset(cc)) {
             return cc
           }
         } else if (!characterSet.inCharset(c)) {
@@ -459,12 +456,11 @@ class XMLEmitter extends Emitter {
   def convertToAscii(chars: CharSequence): String = {
     val buff = new FastStringBuffer(chars.length)
     for (i <- 0 until chars.length) {
-      val c: Char = chars.charAt(i)
-      if (c >= 20 && c < 127) {
+      val c = chars.charAt(i)
+      if (c >= 20 && c < 127)
         buff.cat(c)
-      } else {
+      else
         buff.append("_" + c.toInt + "_")
-      }
     }
     buff.toString
   }
@@ -485,20 +481,17 @@ class XMLEmitter extends Emitter {
   def characters(chars: CharSequence,
                  locationId: Location,
                  properties: Int): Unit = {
-    if (!started) {
+    if (! started)
       openDocument()
-    }
-    if (requireWellFormed && elementStack.isEmpty && !Whitespace.isWhite(chars) &&
-      !unfailing) {
+    if (requireWellFormed && elementStack.isEmpty && !Whitespace.isWhite(chars) && !unfailing) {
       val err = new XPathException(
         "When 'standalone' or 'doctype-system' is specified, " +
           "the document must be well-formed; but this document contains a top-level text node")
       err.setErrorCode("SEPM0004")
       throw err
     }
-    if (openStartTag) {
+    if (openStartTag)
       closeStartTag()
-    }
     if (ReceiverOption.contains(properties, ReceiverOption.NO_SPECIAL_CHARS)) {
       writeCharSequence(chars)
     } else if (!ReceiverOption.contains(properties,
@@ -520,28 +513,26 @@ class XMLEmitter extends Emitter {
         }
       } else {
         val len = chars.length
-        var i: Int = 0
+        var i = 0
         while (i < len) {
-          val c: Char = chars.charAt(i)
+          val c = chars.charAt(i)
           if (c != 0) {
             if (c > 127 && UTF16CharacterSet.isHighSurrogate(c)) {
-              val pair: Array[Char] = Array.ofDim[Char](2)
+              val pair = Array.ofDim[Char](2)
               pair(0) = c
               i += 1
               pair(1) = chars.charAt(i)
-              val cc: Int = UTF16CharacterSet.combinePair(c, pair(1))
-              if (!characterSet.inCharset(cc)) {
+              val cc = UTF16CharacterSet.combinePair(c, pair(1))
+              if (!characterSet.inCharset(cc))
                 writeEscape(new CharSlice(pair), inAttribute = false)
-              } else {
+              else
                 writeCharSequence(new CharSlice(pair))
-              }
             } else {
-              val ca: Array[Char] = Array(c)
-              if (!characterSet.inCharset(c)) {
+              val ca = Array(c)
+              if (! characterSet.inCharset(c))
                 writeEscape(new CharSlice(ca), inAttribute = false)
-              } else {
+              else
                 writeCharSequence(new CharSlice(ca))
-              }
             }
           }
           i += 1
@@ -568,13 +559,16 @@ class XMLEmitter extends Emitter {
    * Handle a processing instruction.
    */
   @throws[XPathException]
-  def processingInstruction(target: String,
-                            data: CharSequence,
-                            locationId: Location,
-                            properties: Int): Unit = {
-    if (!started) {
+  def processingInstruction(
+    target     : String,
+    data       : CharSequence,
+    locationId : Location,
+    properties : Int
+  ): Unit = {
+
+    if (!started)
       openDocument()
-    }
+
     var targetVar: String = target
     var dataVar: CharSequence = data
     var x: Int = testCharacters(targetVar)
@@ -605,12 +599,11 @@ class XMLEmitter extends Emitter {
         throw err
       }
     }
-    if (openStartTag) {
+
+    if (openStartTag)
       closeStartTag()
-    }
-    writer.write(
-      "<?" + targetVar + (if (dataVar.length > 0) " " + dataVar.toString else "") +
-        "?>")
+
+    writer.write("<?" + targetVar + (if (dataVar.length > 0) " " + dataVar.toString else "") + "?>")
   }
 
   /**

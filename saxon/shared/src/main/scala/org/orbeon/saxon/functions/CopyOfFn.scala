@@ -62,7 +62,7 @@ class CopyOfFn extends SystemFunction {
   override def makeFunctionCall(arguments: Expression*): Expression = {
     var arg: Expression = null
     arg =
-      if (arguments.length == 0) new ContextItemExpression() else arguments(0)
+      if (arguments.isEmpty) new ContextItemExpression() else arguments(0)
     val fn: CopyOf = new CopyOf(arg, true, Validation.PRESERVE, null, false)
     fn.setCopyAccumulators(true)
     fn.setSchemaAware(false)

@@ -51,10 +51,11 @@ class CollationKeyFn extends CollatingFunctionFixed {
     *          if a dynamic error occurs during the evaluation of the expression
     */
   def call(
-    context: XPathContext, arguments: Array[Sequence]
+    context   : XPathContext,
+    arguments : Array[Sequence]
   ): Base64BinaryValue = {
-    val in      : String         = arguments(0).head.getStringValue
-    val collator: StringCollator = getStringCollator
+    val in       = arguments(0).head.getStringValue
+    val collator = getStringCollator
     getCollationKey(
       in,
       collator
