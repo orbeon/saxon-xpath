@@ -311,8 +311,8 @@ object ExpressionTool {
       expression = expression.getParentExpression
       if (i > 100000)
         throw new IllegalStateException("Loop in parent expression chain")
+      i += 1
     }
-    i += 1
   }
 
   def equalOrNull(x: Any, y: Any): Boolean =
