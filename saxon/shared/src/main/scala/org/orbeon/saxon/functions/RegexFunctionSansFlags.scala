@@ -25,12 +25,11 @@ class RegexFunctionSansFlags extends SystemFunction {
   }
 
   override def makeFunctionCall(arguments: Expression*): Expression = {
-    val withFlags: SystemFunction = addFlagsArgument()
-    val newArgs: Array[Expression] =
-      Array.ofDim[Expression](arguments.length + 1)
-    System.arraycopy(arguments, 0, newArgs, 0, arguments.length)
+    val withFlags = addFlagsArgument()
+    val newArgs   = Array.ofDim[Expression](arguments.length + 1)
+    System.arraycopy(arguments.toArray, 0, newArgs, 0, arguments.length)
     newArgs(arguments.length) = new StringLiteral("")
-    withFlags.makeFunctionCall(newArgs.toIndexedSeq: _*)
+    withFlags.makeFunctionCall(newArgs: _*)
   }
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
