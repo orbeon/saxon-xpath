@@ -359,7 +359,7 @@ class SaxonTransformerFactory extends ReceivingContentHandler with TransformerHa
    *         be used as a ContentHandler for SAX parse events.
    */
   def newTransformerHandler: TransformerHandler = {
-    val transformer = new IdentityTransformer(getConfiguration)
+    val transformer = newTransformer // ORBEON
     new IdentityTransformerHandler(transformer)
   }
 
