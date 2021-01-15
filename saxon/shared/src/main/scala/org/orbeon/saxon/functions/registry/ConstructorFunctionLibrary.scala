@@ -63,7 +63,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
    * that is private
    */
   def getFunctionItem(functionName: SymbolicName.F,
-                      staticContext: StaticContext): Function = { // Erick need to check this method
+                      staticContext: StaticContext): Function = {
     if (functionName.getArity != 1) {
       return null
     }
@@ -89,12 +89,12 @@ class ConstructorFunctionLibrary(private var config: Configuration)
         var value: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
         if (value == null) {
           EmptySequence.getInstance
-        }
-        UnionConstructorFunction.cast(
-          value,
-          `type`.asInstanceOf[UnionType],
-          resolver,
-          context.getConfiguration.getConversionRules)
+        } else
+          UnionConstructorFunction.cast(
+            value,
+            `type`.asInstanceOf[UnionType],
+            resolver,
+            context.getConfiguration.getConversionRules)
       }
       val returnType: SequenceType =
         `type`.asInstanceOf[UnionType].getResultTypeOfCast

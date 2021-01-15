@@ -424,7 +424,7 @@ class Literal extends Expression {
             if (a0) {
               if (! (m0.asInstanceOf[AtomicValue].isIdentical(m1.asInstanceOf[AtomicValue]) &&
                   m0.asInstanceOf[AtomicValue].getItemType == m1.asInstanceOf[AtomicValue].getItemType)) {
-                return false // Erick to check
+                return false
               }
             } else
               return false

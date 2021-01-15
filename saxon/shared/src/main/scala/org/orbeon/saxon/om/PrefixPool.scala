@@ -47,7 +47,7 @@ class PrefixPool {
     }
 
     // Allocate a new code
-    val code: Int = { used += 1; used - 1 } // Erick to check
+    val code: Int = { used += 1; used - 1 }
     if (used >= prefixes.length)
       prefixes = Arrays.copyOf(prefixes, used * 2)
     prefixes(code) = prefix

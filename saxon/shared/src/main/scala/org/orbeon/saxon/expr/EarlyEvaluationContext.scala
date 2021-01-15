@@ -27,7 +27,7 @@ import javax.xml.transform.URIResolver
 class EarlyEvaluationContext(private var config: Configuration)
     extends XPathContext {
 
-  def evaluateLocalVariable(slotnumber: Int): Sequence = notAllowed()
+  def evaluateLocalVariable(slotnumber: Int): Nothing = notAllowed()
 
   def getCaller: XPathContext = null
 

@@ -501,11 +501,11 @@ object PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
-                context: XPathContext): AnyRef = {
+                context: XPathContext): Any = {
       if (value.isInstanceOf[ExternalObject[_]] &&
         targetClass.isAssignableFrom(
           value.asInstanceOf[ExternalObject[_]].getObject.getClass)) {
-        value.asInstanceOf[ExternalObject[_]].getObject // Erick need to check
+        return value.asInstanceOf[ExternalObject[_]].getObject
       }
       val componentClass: Class[_] = targetClass.getComponentType
       val list = new ArrayList[Any](20)
