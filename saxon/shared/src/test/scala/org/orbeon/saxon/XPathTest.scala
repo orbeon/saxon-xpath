@@ -60,7 +60,7 @@ class XPathTest extends AnyFunSpec {
 
     val doc = {
       val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
-//      val treeBuilder = om.TreeModel.LINKED_TREE.makeBuilder(config.makePipelineConfiguration)
+//      val treeBuilder = om.TreeModel.LINKED_TREE.makeBuilder(Configuration.makePipelineConfiguration)
 
       val handler = {
         val handler = new SaxonTransformerFactory(Configuration).newTransformerHandler
@@ -142,8 +142,8 @@ class XPathTest extends AnyFunSpec {
           return
             concat($parent/*[1]/string(), $parent/*[3]/string())
         """, docElem, false, "WileCoyote"),
-//      ("""string(/root/first-name)""",                             doc,     false, "Wile"), // FIXME: returns blank
-//      ("""string((if (normalize-space(/root/name) = '') then '' else concat('Hello, ', /root/name, '!'))[1]))""", doc, "xxxx"),
+      ("""string(first-name)""",                                   docElem, false, "Wile"),
+      ("""string(/root/first-name)""",                             doc,     false, "Wile"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
