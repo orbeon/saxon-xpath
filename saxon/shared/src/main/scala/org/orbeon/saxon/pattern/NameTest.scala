@@ -12,11 +12,11 @@ import scala.beans.BeanProperty
 
 
 class NameTest private (
-  @BeanProperty val nodeKind       : Int,
-  private var uri                  : String,
-  private var localName            : String,
-  @BeanProperty val namePool       : NamePool,
-  @BeanProperty val fingerPrintInt : Int
+  @BeanProperty val nodeKind : Int,
+  private var uri            : String,
+  private var localName      : String,
+  @BeanProperty val namePool : NamePool,
+  val fingerPrint            : Int
 ) extends NodeTest
      with QNameTest {
 
@@ -48,12 +48,10 @@ class NameTest private (
                        name: NodeName,
                        annotation: SchemaType): Boolean = {
 
-    println(s"xxx matches $nodeKind / $name")
-
     if (nodeKind != this.nodeKind) {
       false
     } else if (name.hasFingerprint) {
-      name.getFingerprint == this.fingerPrintInt
+      name.getFingerprint == this.fingerPrint
     } else {
       computeUriAndLocal()
       name.hasURI(uri) && name.getLocalPart == localName
@@ -63,14 +61,14 @@ class NameTest private (
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
     val nodeKindArray = tree.getNodeKindArray
     val nameCodeArray = tree.getNameCodeArray
-    nodeNr => (nameCodeArray(nodeNr) & 0xfffff) == fingerPrintInt && (nodeKindArray(nodeNr) & 0x0f) == nodeKind
+    nodeNr => (nameCodeArray(nodeNr) & 0xfffff) == fingerPrint && (nodeKindArray(nodeNr) & 0x0f) == nodeKind
   }
 
   override def test(node: NodeInfo): Boolean =
     if (node.getNodeKind != nodeKind) {
       false
     } else if (node.hasFingerprint) {
-      node.getFingerprint == fingerPrintInt
+      node.getFingerprint == fingerPrint
     } else {
       computeUriAndLocal()
       localName == node.getLocalPart && uri == node.getURI
@@ -78,7 +76,7 @@ class NameTest private (
 
   private def computeUriAndLocal(): Unit =
     if (uri == null || localName == null) {
-      val name = namePool.getUnprefixedQName(fingerPrintInt)
+      val name = namePool.getUnprefixedQName(fingerPrint)
       uri = name.getURI
       localName = name.getLocalPart
     }
@@ -90,6 +88,9 @@ class NameTest private (
 
   def getDefaultPriority: Double = 0.0
 
+
+  override def getFingerprint: Int = fingerPrint
+
   override def getMatchingNodeName: StructuredQName = {
     computeUriAndLocal()
     new StructuredQName("", uri, localName)
@@ -98,7 +99,7 @@ class NameTest private (
   override def getPrimitiveType: Int = nodeKind
 
   override def getRequiredNodeNames: Option[IntSet] =
-    Some(new IntSingletonSet(fingerPrintInt))
+    Some(new IntSingletonSet(fingerPrint))
 
   def getNamespaceURI: String = {
     computeUriAndLocal()
@@ -112,21 +113,21 @@ class NameTest private (
 
   override def toString: String =
     nodeKind match {
-      case Type.ELEMENT                => "element(" + namePool.getEQName(fingerPrintInt) + ")"
-      case Type.ATTRIBUTE              => "attribute(" + namePool.getEQName(fingerPrintInt) + ")"
-      case Type.PROCESSING_INSTRUCTION => "processing-instruction(" + namePool.getLocalName(fingerPrintInt) + ')'
-      case Type.NAMESPACE              => "namespace-node(" + namePool.getLocalName(fingerPrintInt) + ')'
-      case _                           => namePool.getEQName(fingerPrintInt)
+      case Type.ELEMENT                => "element(" + namePool.getEQName(fingerPrint) + ")"
+      case Type.ATTRIBUTE              => "attribute(" + namePool.getEQName(fingerPrint) + ")"
+      case Type.PROCESSING_INSTRUCTION => "processing-instruction(" + namePool.getLocalName(fingerPrint) + ')'
+      case Type.NAMESPACE              => "namespace-node(" + namePool.getLocalName(fingerPrint) + ')'
+      case _                           => namePool.getEQName(fingerPrint)
     }
 
-  override def hashCode: Int = nodeKind << 20 ^ fingerPrintInt
+  override def hashCode: Int = nodeKind << 20 ^ fingerPrint
 
   override def equals(other: Any): Boolean =
     other.isInstanceOf[NameTest] && other
       .asInstanceOf[NameTest]
       .namePool == namePool &&
       other.asInstanceOf[NameTest].nodeKind == nodeKind &&
-      other.asInstanceOf[NameTest].fingerPrintInt == fingerPrintInt
+      other.asInstanceOf[NameTest].fingerPrint == fingerPrint
 
   override def getFullAlphaCode: String =
     getBasicAlphaCode + " n" + getMatchingNodeName.getEQName
