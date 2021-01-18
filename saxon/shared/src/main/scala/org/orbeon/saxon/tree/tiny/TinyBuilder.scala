@@ -57,8 +57,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   @BeanProperty
   var currentDepth: Int = 0
 
-  // this is the local sequence within this document
-  private var nodeNr: Int = 0
+  private var nodeNr: Int = 0 // this is the local sequence within this document
   private var ended: Boolean = false
   private var noNewNamespaces: Boolean = true
   val configur: Configuration = pipe.getConfiguration
@@ -97,36 +96,47 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   }
 
   def startDocument(properties: Int): Unit = {
-    if ((started && !ended) || currentDepth > 0) // the content of an element
+    if ((started && !ended) || currentDepth > 0)
       return
-    // this happens when using an IdentityTransformer, or when copying a document node to form
+      // this happens when using an IdentityTransformer, or when copying a document node to form
+      // the content of an element
+
     started = true
     ended = false
+
     val tt = tree
     assert(tt != null)
     currentRoot = new TinyDocumentImpl(tt)
     val doc = currentRoot.asInstanceOf[TinyDocumentImpl]
     doc.setSystemId(getSystemId)
     doc.setBaseURI(getBaseURI)
+
     currentDepth = 0
+
     val nodeNr = tt.addDocumentNode(currentRoot.asInstanceOf[TinyDocumentImpl])
     prevAtDepth(0) = nodeNr
     prevAtDepth(1) = -1
     siblingsAtDepth(0) = 0
     siblingsAtDepth(1) = 0
     tt.next(nodeNr) = -1
+
     currentDepth += 1
   }
 
   def endDocument(): Unit = {
+
     // decrement numberOfNodes so the next node will overwrite it
     tree.addNode(Type.STOPPER, 0, 0, 0, -1)
     tree.numberOfNodes -= 1
+
     if (currentDepth > 1)
       return
+
     if (ended)
       return // happens when using an IdentityTransformer
+
     ended = true
+
     prevAtDepth(currentDepth) = -1
     currentDepth -= 1
   }
@@ -149,16 +159,19 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     super.close()
   }
 
-  def startElement(elemName: NodeName,
-                   `type`: SchemaType,
-                   attributes: AttributeMap,
-                   namespaces: NamespaceMap,
-                   location: Location,
-                   properties: Int): Unit = {
+  def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit = {
     //System.err.println(this + " startElement " + elemName + " " + currentDepth);
     val tt: TinyTree = tree
     assert(tt != null)
     textualElementEligibilityState = Eligibility.INELIGIBLE
+
     noNewNamespaces = true
     if (namespaceStack.isEmpty) {
       noNewNamespaces = false
@@ -167,12 +180,15 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       noNewNamespaces = namespaces == namespaceStack.head
       namespaceStack ::= namespaces
     }
+
     if (siblingsAtDepth(currentDepth) > PARENT_POINTER_INTERVAL) {
-      nodeNr = tt.addNode(Type.PARENT_POINTER,
+      nodeNr = tt.addNode(
+        Type.PARENT_POINTER,
         currentDepth,
         prevAtDepth(currentDepth - 1),
         0,
-        0)
+        0
+      )
       val prev = prevAtDepth(currentDepth)
       if (prev > 0)
         tt.next(prev) = nodeNr
@@ -180,11 +196,13 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       prevAtDepth(currentDepth) = nodeNr
       siblingsAtDepth(currentDepth) = 0
     }
+
     // now add the element node itself
     val fp = elemName.obtainFingerprint(namePool)
     val prefixCode = tree.prefixPool.obtainPrefixCode(elemName.getPrefix)
     val nameCode = (prefixCode << 20) | fp
     nodeNr = tt.addNode(Type.ELEMENT, currentDepth, -1, -1, nameCode)
+
     isIDElement = ReceiverOption.contains(properties, ReceiverOption.IS_ID)
     val typeCode = `type`.getFingerprint
     if (typeCode != StandardNames.XS_UNTYPED) {
@@ -238,11 +256,13 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       case _ =>
     }
     for (att <- attributes.iterator.asScala) {
-      attribute2(att.getNodeName,
+      attribute2(
+        att.getNodeName,
         att.getType,
         getAttValue(att),
         location,
-        att.getProperties)
+        att.getProperties
+      )
     }
     textualElementEligibilityState =
       if (noNewNamespaces) Eligibility.PRIMED else Eligibility.INELIGIBLE
@@ -255,11 +275,13 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   def getAttValue(att: AttributeInfo): String = att.getValue
 
-  private def attribute2(attName: NodeName,
-                         `type`: SimpleType,
-                         value: CharSequence,
-                         locationId: Location,
-                         properties: Int): Unit = {
+  private def attribute2(
+    attName    : NodeName,
+    `type`     : SimpleType,
+    value      : CharSequence,
+    locationId : Location,
+    properties : Int
+  ): Unit = {
     // System.err.println("attribute " + nameCode + "=" + value);
     val fp = attName.obtainFingerprint(namePool)
     val prefix = attName.getPrefix
@@ -283,7 +305,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   def endElement(): Unit = {
     assert(tree != null)
-    val eligibleAsTextualElement: Boolean = textualElementEligibilityState == Eligibility.ELIGIBLE
+    val eligibleAsTextualElement = textualElementEligibilityState == Eligibility.ELIGIBLE
     textualElementEligibilityState = Eligibility.INELIGIBLE
     prevAtDepth(currentDepth) = -1
     siblingsAtDepth(currentDepth) = 0
@@ -322,9 +344,11 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   // Note: reading an incomplete tree needs care if it constructs a prior index, etc.
 
-  def characters(chars: CharSequence,
-                 locationId: Location,
-                 properties: Int): Unit = {
+  def characters(
+    chars      : CharSequence,
+    locationId : Location,
+    properties : Int
+  ): Unit = {
     //System.err.println("characters: " + chars);
     chars match {
       case whitespace: CompressedWhitespace if ReceiverOption.contains(properties, ReceiverOption.WHOLE_TEXT_NODE) =>
@@ -429,9 +453,11 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
   }
 
-  def comment(chars: CharSequence,
-              locationId: Location,
-              properties: Int): Unit = {
+  def comment(
+    chars      : CharSequence,
+    locationId : Location,
+    properties : Int
+  ): Unit = {
     val tt = tree
     assert(tt != null)
     textualElementEligibilityState = Eligibility.INELIGIBLE
