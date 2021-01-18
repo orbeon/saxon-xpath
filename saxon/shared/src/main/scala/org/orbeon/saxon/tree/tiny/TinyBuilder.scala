@@ -177,7 +177,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       noNewNamespaces = false
       namespaceStack ::= namespaces
     } else {
-      noNewNamespaces = namespaces == namespaceStack.head
+      noNewNamespaces = namespaces eq namespaceStack.head
       namespaceStack ::= namespaces
     }
 
