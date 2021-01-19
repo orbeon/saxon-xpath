@@ -18,6 +18,7 @@ class XPathTest extends AnyFunSpec {
 
   val Configuration = new Configuration
   Configuration.optimizerOptions = new OptimizerOptions("vmt") // FIXME: temporarily remove the "l" option which fails
+  Configuration.setDefaultRegexEngine("J") // the "S" (Saxon) engine is broken at this time
 
   def compileAndRunExpression(xpath: String, ctx: Item, isAVT: Boolean): Option[Item] = {
 
@@ -144,6 +145,21 @@ class XPathTest extends AnyFunSpec {
         """, docElem, false, "WileCoyote"),
       ("""string(first-name)""",                                   docElem, false, "Wile"),
       ("""string(/root/first-name)""",                             doc,     false, "Wile"),
+      (
+        """
+          |let $format      := '[M]/[D]/[Y]',
+          |    $cleaned     := translate($format, '[01]', ''),
+          |    $duplicate   := replace(replace(replace($cleaned,
+          |                        'M', 'MM'),
+          |                        'D', 'DD'),
+          |                        'Y', 'YYYY'),
+          |    $format-en   := 'MDY',
+          |    $format-lang := 'MDY',
+          |    $translated  := translate($duplicate, $format-en, $format-lang)
+          |return
+          |    $translated
+          |
+          |""".stripMargin,                                         doc, false, "MM/DD/YYYY"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
