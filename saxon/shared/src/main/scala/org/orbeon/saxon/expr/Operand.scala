@@ -51,7 +51,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
       parentExpression.adoptChildExpression(childExpression)
       parentExpression.resetLocalStaticProperties()
     }
-//childExpression.verifyParentPointers();
+//    childExpression.verifyParentPointers()
   }
 
   def getChildExpression: Expression = childExpression

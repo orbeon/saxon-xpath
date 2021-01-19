@@ -34,18 +34,21 @@ object CardinalityChecker {
    * @return a new Expression that does the CardinalityChecking (not necessarily a CardinalityChecker)
    */
   def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression = {
-    var result: Expression = null
+
     sequence match {
-      case literal: Literal if Cardinality.subsumes(cardinality, SequenceTool.getCardinality(literal.getValue)) => return sequence
+      case literal: Literal if Cardinality.subsumes(cardinality, SequenceTool.getCardinality(literal.getValue)) =>
+        return literal
       case _ =>
     }
-    sequence match {
-      case atomizer: Atomizer if !Cardinality.allowsMany(cardinality) =>
-        val base = atomizer.getBaseExpression
-        result = new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
-      case _ =>
-        result = new CardinalityChecker(sequence, cardinality, role)
-    }
+
+    val result =
+      sequence match {
+        case atomizer: Atomizer if ! Cardinality.allowsMany(cardinality) =>
+          val base = atomizer.getBaseExpression
+          new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
+        case _ =>
+          new CardinalityChecker(sequence, cardinality, role)
+      }
     ExpressionTool.copyLocationInfo(sequence, result)
     result
   }
@@ -66,7 +69,7 @@ object CardinalityChecker {
       next = seq.next()
       next
     } != null) {
-      if ( {
+      if ({
         count += 1
         count - 1
       } > 0) sb.append(", ")
@@ -84,10 +87,11 @@ object CardinalityChecker {
   }
 }
 
-final class CardinalityChecker private(val sequence: Expression, val cardinality: Int, var role: RoleDiagnostic)
-  extends UnaryExpression(sequence) {
-  private var requiredCardinality = -1
-  requiredCardinality = cardinality
+final class CardinalityChecker private (
+  val sequence            : Expression,
+  val requiredCardinality : Int,
+  var role                : RoleDiagnostic
+) extends UnaryExpression(sequence) {
 
   override def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
@@ -101,7 +105,8 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
   /**
    * Type-check the expression
    */
-  /*@NotNull*/ @throws[XPathException]
+  /*@NotNull*/
+  @throws[XPathException]
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
     val base = getBaseExpression
@@ -169,7 +174,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * This method indicates which of these methods is provided. This implementation provides both iterate() and
    * process() methods natively.
    */
-  override def getImplementationMethod: Int = {
+  def getImplementationMethod: Int = {
     var m = ITERATE_METHOD | PROCESS_METHOD | ITEM_FEED_METHOD
     if (!Cardinality.allowsMany(requiredCardinality)) m |= EVALUATE_METHOD
     m
@@ -212,7 +217,8 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * Evaluate as an Item. For this class, this implies checking that the underlying
    * expression delivers a singleton.
    */
-  /*@Nullable*/ @throws[XPathException]
+  /*@Nullable*/
+  @throws[XPathException]
   override def evaluateItem(context: XPathContext): Item = {
     val iter = getBaseExpression.iterate(context)
     val first = iter.next()
@@ -220,8 +226,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
       if (!Cardinality.allowsZero(requiredCardinality))
         typeError("An empty sequence is not allowed as the " + role.getMessage, role.getErrorCode, context)
         return null
-    }
-    else {
+    } else {
       if (requiredCardinality == StaticProperty.EMPTY) {
         typeError("An empty sequence is required as the " + role.getMessage, role.getErrorCode, context)
         return null
@@ -295,7 +300,7 @@ final class CardinalityChecker private(val sequence: Expression, val cardinality
    * @return the copy of the original expression
    * @param rebindings variable bindings that need to be changed
    */
-  override def copy(rebindings: RebindingMap): Expression = {
+  def copy(rebindings: RebindingMap): Expression = {
     val c2 = new CardinalityChecker(getBaseExpression.copy(rebindings), requiredCardinality, role)
     ExpressionTool.copyLocationInfo(this, c2)
     c2

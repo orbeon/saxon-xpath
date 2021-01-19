@@ -1,13 +1,12 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.utils.Configuration
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-import org.orbeon.saxon.expr.parser.ExpressionTool
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
+import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor}
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.jiter.MonoIterator
+import org.orbeon.saxon.utils.Configuration
+
 
 abstract class UnaryExpression(p0: Expression) extends Expression {
 
@@ -41,16 +40,20 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     this
   }
 
-  override def optimize(visitor: ExpressionVisitor,
-                        contextInfo: ContextItemStaticInfo): Expression = {
+  override def optimize(
+    visitor     : ExpressionVisitor,
+    contextInfo : ContextItemStaticInfo
+  ): Expression = {
     operand.optimize(visitor, contextInfo)
-    val base: Expression = getBaseExpression
-    try if (base.isInstanceOf[Literal]) {
-      return Literal.makeLiteral(
-        iterate(visitor.getStaticContext.makeEarlyEvaluationContext())
-          .materialize,
-        this)
-    } catch {
+    val base = getBaseExpression
+    try
+      if (base.isInstanceOf[Literal]) {
+        return Literal.makeLiteral(
+          iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize,
+          this
+        )
+      }
+    catch {
       case _: XPathException =>
     }
     this
@@ -64,8 +67,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
 
   override def equals(other: Any): Boolean =
     other != null && this.getClass == other.getClass &&
-      this.getBaseExpression
-        .isEqual(other.asInstanceOf[UnaryExpression].getBaseExpression)
+      this.getBaseExpression.isEqual(other.asInstanceOf[UnaryExpression].getBaseExpression)
 
   override def computeHashCode(): Int =
     ("UnaryExpression " + getClass).hashCode ^ getBaseExpression.hashCode
@@ -80,10 +82,9 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     val name: String = getExpressionName
     if (name == null) {
       out.startElement("unaryOperator", this)
-      val op: String = displayOperator(out.getConfiguration)
-      if (op != null) {
+      val op = displayOperator(out.getConfiguration)
+      if (op != null)
         out.emitAttribute("op", op)
-      }
     } else {
       out.startElement(name, this)
     }
@@ -93,7 +94,5 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
   }
 
    def emitExtraAttributes(out: ExpressionPresenter): Unit = ()
-
    def displayOperator(config: Configuration): String = null
-
 }

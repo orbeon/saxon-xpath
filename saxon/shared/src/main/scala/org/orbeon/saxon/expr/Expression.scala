@@ -610,7 +610,7 @@ abstract class Expression
   def getObjectName: StructuredQName = null
 
   def getProperty(name: String): AnyRef =
-    if (name.==("expression"))
+    if (name == "expression")
       Expression.this.getLocation
     else
       null

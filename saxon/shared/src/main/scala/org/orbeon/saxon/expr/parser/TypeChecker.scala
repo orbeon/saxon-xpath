@@ -208,9 +208,11 @@ object TypeChecker {
       new Converter.ToStringConverter(),
       BuiltInAtomicType.STRING)
 
-  private def makePromoter(exp: Expression,
-                           converter: Converter,
-                           `type`: BuiltInAtomicType): Expression = {
+  private def makePromoter(
+    exp       : Expression,
+    converter : Converter,
+    `type`    : BuiltInAtomicType
+  ): Expression = {
     val rules: ConversionRules = exp.getConfiguration.getConversionRules
     converter.setConversionRules(rules)
     exp match {
@@ -225,7 +227,7 @@ object TypeChecker {
         }
       case _ =>
     }
-    val asc: AtomicSequenceConverter = new AtomicSequenceConverter(exp, `type`)
+    val asc = new AtomicSequenceConverter(exp, `type`)
     asc.setConverter(converter)
     ExpressionTool.copyLocationInfo(exp, asc)
     asc
@@ -560,7 +562,7 @@ class TypeChecker {
           exp = cexp
       }
     }
-    if (!cardOK) {
+    if (! cardOK) {
       if (exp.isInstanceOf[Literal]) {
         val err = new XPathException(
           "Required cardinality of " + role.getMessage + " is " +

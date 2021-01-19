@@ -122,7 +122,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
       0
   }
 
-  override  def computeSpecialProperties(): Int = {
+  override def computeSpecialProperties(): Int = {
     val definition = function.getDefinition
     if (definition.hasSideEffects)
       StaticProperty.HAS_SIDE_EFFECTS

@@ -12,7 +12,7 @@ import java.util
 
 object Evaluator {
 
-  val EMPTY_SEQUENCE: Evaluator = new Evaluator() {
+  val EMPTY_SEQUENCE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       EmptySequence.getInstance
 
@@ -20,7 +20,7 @@ object Evaluator {
       EvaluationMode.RETURN_EMPTY_SEQUENCE
   }
 
-  val LITERAL: Evaluator = new Evaluator() {
+  val LITERAL: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       expr.asInstanceOf[Literal].getValue
 
@@ -28,11 +28,13 @@ object Evaluator {
       EvaluationMode.EVALUATE_LITERAL
   }
 
-  val VARIABLE: Evaluator = new Evaluator() {
+  val VARIABLE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
-      try expr.asInstanceOf[VariableReference].evaluateVariable(context)
+      try
+        expr.asInstanceOf[VariableReference].evaluateVariable(context)
       catch {
         case _: ClassCastException =>
+          // should not happen
           assert(false)
           LAZY_SEQUENCE.evaluate(expr, context)
       }
@@ -41,13 +43,15 @@ object Evaluator {
       EvaluationMode.EVALUATE_AND_MATERIALIZE_VARIABLE
   }
 
-  val SUPPLIED_PARAMETER: Evaluator = new Evaluator() {
+  val SUPPLIED_PARAMETER: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
-      try expr
-        .asInstanceOf[SuppliedParameterReference]
-        .evaluateVariable(context)
+      try
+        expr
+          .asInstanceOf[SuppliedParameterReference]
+          .evaluateVariable(context)
       catch {
         case _: ClassCastException =>
+          // should not happen
           assert(false)
           LAZY_SEQUENCE.evaluate(expr, context)
       }
@@ -56,7 +60,7 @@ object Evaluator {
       EvaluationMode.EVALUATE_SUPPLIED_PARAMETER
   }
 
-  val SINGLE_ITEM: Evaluator = new Evaluator() {
+  val SINGLE_ITEM: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Item =
       expr.evaluateItem(context)
 
@@ -64,7 +68,7 @@ object Evaluator {
       EvaluationMode.CALL_EVALUATE_SINGLE_ITEM
   }
 
-  val OPTIONAL_ITEM: Evaluator = new Evaluator() {
+  val OPTIONAL_ITEM: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val item = expr.evaluateItem(context)
       if (item == null) EmptySequence.getInstance else item
@@ -74,7 +78,7 @@ object Evaluator {
       EvaluationMode.CALL_EVALUATE_OPTIONAL_ITEM
   }
 
-  val LAZY_SEQUENCE: Evaluator = new Evaluator() {
+  val LAZY_SEQUENCE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val iter = expr.iterate(context)
       new LazySequence(iter)
@@ -84,7 +88,7 @@ object Evaluator {
       EvaluationMode.MAKE_CLOSURE
   }
 
-  val MEMO_SEQUENCE: Evaluator = new Evaluator() {
+  val MEMO_SEQUENCE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val iter = expr.iterate(context)
       new MemoSequence(iter)
@@ -94,7 +98,7 @@ object Evaluator {
       EvaluationMode.MAKE_MEMO_CLOSURE
   }
 
-  val MEMO_CLOSURE: Evaluator = new Evaluator() {
+  val MEMO_CLOSURE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       new MemoClosure(expr, context)
 
@@ -102,7 +106,7 @@ object Evaluator {
       EvaluationMode.MAKE_MEMO_CLOSURE
   }
 
-  val SINGLETON_CLOSURE: Evaluator = new Evaluator() {
+  val SINGLETON_CLOSURE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       new SingletonClosure(expr, context)
 
@@ -110,9 +114,9 @@ object Evaluator {
       EvaluationMode.MAKE_SINGLETON_CLOSURE
   }
 
-  val EAGER_SEQUENCE: Evaluator = new Evaluator() {
+  val EAGER_SEQUENCE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
-      val iter: SequenceIterator = expr.iterate(context)
+      val iter = expr.iterate(context)
       iter.materialize
     }
 
@@ -120,7 +124,7 @@ object Evaluator {
       EvaluationMode.ITERATE_AND_MATERIALIZE
   }
 
-  val SHARED_APPEND: Evaluator = new Evaluator() {
+  val SHARED_APPEND: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       expr match {
         case block: Block =>
@@ -145,7 +149,7 @@ object Evaluator {
       EvaluationMode.SHARED_APPEND_EXPRESSION
   }
 
-  val STREAMING_ARGUMENT: Evaluator = new Evaluator() {
+  val STREAMING_ARGUMENT: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       context.getConfiguration
         .obtainOptimizer
@@ -155,7 +159,7 @@ object Evaluator {
       EvaluationMode.STREAMING_ARGUMENT
   }
 
-  val MAKE_INDEXED_VARIABLE: Evaluator = new Evaluator() {
+  val MAKE_INDEXED_VARIABLE: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       context.getConfiguration
         .obtainOptimizer
@@ -165,7 +169,7 @@ object Evaluator {
       EvaluationMode.MAKE_INDEXED_VARIABLE
   }
 
-  val PROCESS: Evaluator = new Evaluator() {
+  val PROCESS: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val controller = context.getController
       val seq = controller.allocateSequenceOutputter
@@ -181,7 +185,7 @@ object Evaluator {
     def getEvaluationMode: EvaluationMode = EvaluationMode.PROCESS
   }
 
-  val LAZY_TAIL: Evaluator = new Evaluator() {
+  val LAZY_TAIL: Evaluator = new Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence = {
       val tail = expr.asInstanceOf[TailExpression]
       val vr = tail.getBaseExpression.asInstanceOf[VariableReference]

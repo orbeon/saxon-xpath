@@ -15,7 +15,7 @@ package org.orbeon.saxon.om
   * equals() methods are implemented correctly, so that any two node names compare equal if and only
   * if the local name and namespace URI parts are equal under Unicode codepoint comparison. To ensure this,
   * the hashCode must be computed using an algorithm equivalent to that used by the implementation class
-  * {@link FingerprintedQName}
+  * `FingerprintedQName`
   *
   * This class is used to carry name information for elements and attributes on the Receiver pipeline.
   * An advantage of this is that NodeName can include a fingerprint where this is available, but the fingerprint

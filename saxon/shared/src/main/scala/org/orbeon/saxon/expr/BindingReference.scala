@@ -11,16 +11,17 @@ import org.orbeon.saxon.value.SequenceType
 
 
 /**
-  * BindingReference is a interface used to mark references to a variable declaration. The main
-  * implementation is VariableReference, which represents a reference to a variable in an XPath
-  * expression, but it is also used to represent a reference to a variable in a saxon:assign instruction.
-  */
+ * BindingReference is a interface used to mark references to a variable declaration. The main
+ * implementation is VariableReference, which represents a reference to a variable in an XPath
+ * expression, but it is also used to represent a reference to a variable in a saxon:assign instruction.
+ */
 trait BindingReference {
 
-  def setStaticType(`type`: SequenceType,
-                    constantValue: GroundedValue,
-                    properties: Int): Unit
+  def setStaticType(
+    `type`        : SequenceType,
+    constantValue : GroundedValue,
+    properties    : Int
+  ): Unit
 
   def fixup(binding: Binding): Unit
 }
-

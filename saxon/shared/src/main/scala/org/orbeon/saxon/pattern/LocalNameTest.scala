@@ -6,14 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.pattern
 
-import java.util.Map
-import java.util.function.IntPredicate
-
 import org.orbeon.saxon.model.{SchemaType, Type, TypeHierarchy, UType}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.tiny.{NodeVectorTree, TinyTree}
 import org.orbeon.saxon.z.IntSet
 
+import java.util.function.IntPredicate
 import scala.beans.BeanProperty
 
 
@@ -22,11 +20,13 @@ import scala.beans.BeanProperty
   * name and type. A LocalNameTest matches the node type and the local name,
   * it represents an XPath 2.0 test of the form *:name.
   */
-class LocalNameTest(pool: NamePool,
-                    @BeanProperty var nodeKind: Int,
-                    @BeanProperty var localName: String)
-    extends NodeTest
-    with QNameTest {
+class LocalNameTest(
+  pool                        : NamePool,
+  @BeanProperty var nodeKind  : Int,
+  @BeanProperty var localName : String
+)
+  extends NodeTest
+  with QNameTest {
 
   @BeanProperty
   var namePool: NamePool = pool
@@ -69,14 +69,16 @@ class LocalNameTest(pool: NamePool,
     *                   The value should be null for a node with no name.
     * @param annotation The actual content type of the node
     */
-  override def matches(nodeKind: Int,
-                       name: NodeName,
-                       annotation: SchemaType): Boolean =
+  def matches(
+    nodeKind   : Int,
+    name       : NodeName,
+    annotation : SchemaType
+  ): Boolean =
     name != null && nodeKind == this.nodeKind && localName == name.getLocalPart
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
-    val nodeKindArray: Array[Byte] = tree.getNodeKindArray
-    val nameCodeArray: Array[Int] = tree.getNameCodeArray
+    val nodeKindArray = tree.getNodeKindArray
+    val nameCodeArray = tree.getNameCodeArray
     if (nodeKind == Type.ELEMENT && tree.isInstanceOf[TinyTree]) {
       val localNameIndex = tree.asInstanceOf[TinyTree].getLocalNameIndex
       val intSet = localNameIndex.get(localName)
@@ -145,13 +147,8 @@ class LocalNameTest(pool: NamePool,
     * @param th   the type hierarchy cache
     * @return optionally, a message explaining why the item does not match the type
     */
-  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] = {
-
-    val explanation = super.explainMismatch(item, th)
-    if (explanation.isDefined)
-      return explanation
-
-    Some("The node has the wrong local name")
-  }
+  override def explainMismatch(item: Item, th: TypeHierarchy): Option[String] =
+    super.explainMismatch(item, th) orElse
+      Some("The node has the wrong local name")
 }
 

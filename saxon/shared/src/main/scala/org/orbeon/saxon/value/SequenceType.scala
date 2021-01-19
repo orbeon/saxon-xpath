@@ -13,6 +13,7 @@ import org.orbeon.saxon.om.{GroundedValue, Item, Sequence}
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
 import org.orbeon.saxon.trans.XPathException
 
+
 /**
  * SequenceType: a sequence type consists of a primary type, which indicates the type of item,
  * and a cardinality, which indicates the number of occurrences permitted. Where the primary type
@@ -301,14 +302,15 @@ class SequenceType {
   @throws[XPathException]
   def matches(value: Sequence, th: TypeHierarchy): Boolean = {
     var count = 0
-    val iter = value.iterate
+    val iter = value.iterate()
     var item: Item = null
     while ({
       item = iter.next()
       item
     } != null) {
       count += 1
-      if (!primaryType.matches(item, th)) return false
+      if (! primaryType.matches(item, th))
+        return false
     }
     !(count == 0 && ! Cardinality.allowsZero(cardinality) || count > 1 && ! Cardinality.allowsMany(cardinality))
   }
@@ -323,7 +325,7 @@ class SequenceType {
    */
   def explainMismatch(value: GroundedValue, th: TypeHierarchy): Option[String] = try {
     var count = 0
-    val iter = value.iterate
+    val iter = value.iterate()
     var item: Item = null
     while ({
       item = iter.next()
@@ -339,11 +341,14 @@ class SequenceType {
         return Some(s)
       }
     }
-    if (count == 0 && !Cardinality.allowsZero(cardinality)) return Some("The type does not allow an empty sequence")
-    else if (count > 1 && !Cardinality.allowsMany(cardinality)) return Some("The type does not allow a sequence of more than one item")
-    None
+    if (count == 0 && !Cardinality.allowsZero(cardinality))
+      Some("The type does not allow an empty sequence")
+    else if (count > 1 && !Cardinality.allowsMany(cardinality))
+      Some("The type does not allow a sequence of more than one item")
+    else
+      None
   } catch {
-    case e: XPathException =>
+    case _: XPathException =>
       None
   }
 
@@ -367,12 +372,11 @@ class SequenceType {
    *
    * @return the string representation as an instance of the XPath SequenceType construct
    */
-  def toExportString: String = {
+  def toExportString: String =
     if (cardinality == StaticProperty.ALLOWS_ZERO)
       "empty-sequence()"
     else
       primaryType.toExportString + Cardinality.getOccurrenceIndicator(cardinality)
-  }
 
   def toAlphaCode: String = AlphaCode.fromSequenceType(this)
 
@@ -384,8 +388,13 @@ class SequenceType {
   /**
    * Indicates whether some other object is "equal to" this one.
    */
-  override def equals(/*@NotNull*/ obj: Any): Boolean =
-    obj.isInstanceOf[SequenceType] && this.primaryType == obj.asInstanceOf[SequenceType].primaryType && this.cardinality == obj.asInstanceOf[SequenceType].cardinality
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case other: SequenceType =>
+        this.primaryType == other.primaryType && this.cardinality == other.cardinality
+      case _ =>
+        false
+    }
 
   def isSameType(other: SequenceType, th: TypeHierarchy): Boolean =
     cardinality == other.cardinality && (th.relationship(primaryType, other.primaryType) eq Affinity.SAME_TYPE)

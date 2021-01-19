@@ -583,7 +583,7 @@ object ExpressionTool {
     }
 
   // Compilation,ExpressionContext scala class not exist
-  // ORBEON: Not used by Saxon XPAth.
+  // ORBEON: Not used by Saxon XPath.
   @throws[XPathException]
   def optimizeComponentBody(body: Expression/*, compilation: Compilation*/, visitor: ExpressionVisitor, cisi: ContextItemStaticInfo, extractGlobals: Boolean): Expression = { //
     val config = visitor.getConfiguration
@@ -597,7 +597,7 @@ object ExpressionTool {
         compileWithTracing = env.asInstanceOf[QueryModule].getUserQueryContext.isCompileWithTracing
       //else if (env.isInstanceOf[ExpressionContext]) compileWithTracing = env.asInstanceOf[ExpressionContext].getStyleElement.getCompilation.getCompilerInfo.isCompileWithTracing
     }
-    if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) && !compileWithTracing) {
+    if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) && ! compileWithTracing) {
       ExpressionTool.resetPropertiesWithinSubtree(expBody)
       if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS)) expBody = expBody.optimize(visitor, cisi)
       expBody.setParentExpression(null)

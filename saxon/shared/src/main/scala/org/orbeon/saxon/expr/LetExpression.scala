@@ -59,15 +59,16 @@ class LetExpression extends Assignation with TailCallReturner {
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getSequenceOp.typeCheck(visitor, contextInfo)
-    val role: RoleDiagnostic = new RoleDiagnostic(
+    val role = new RoleDiagnostic(
       RoleDiagnostic.VARIABLE,
       getVariableQName.getDisplayName,
-      0)
+      0
+    )
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       requiredType,
       role,
       visitor.getStaticContext))
-    val actualItemType: ItemType = getSequence.getItemType
+    val actualItemType = getSequence.getItemType
     refineTypeInformation(
       actualItemType,
       getSequence.getCardinality,

@@ -12,16 +12,12 @@ class FollowingIterator(var doc: TinyTree,
                         var nodeTest: NodeTest,
                         var includeDescendants: Boolean)
   extends AxisIterator {
+
   var tree: TinyTree = doc
-
   var current: NodeInfo = _
-
   var position: Int = 0
-
   val matcher: IntPredicate = nodeTest.getMatcher(doc)
-
   var pending: NodeInfo = _
-
   var test: NodeTest = nodeTest
 
   def next(): NodeInfo = {

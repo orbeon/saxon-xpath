@@ -74,15 +74,10 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate =
     operator match {
-      case Token.UNION =>
-        nodetest1.getMatcher(tree).or(nodetest2.getMatcher(tree))
-      case Token.INTERSECT =>
-        nodetest1.getMatcher(tree).and(nodetest2.getMatcher(tree))
-      case Token.EXCEPT =>
-        new IntExceptPredicate(nodetest1.getMatcher(tree),
-          nodetest2.getMatcher(tree))
-      case _ =>
-        throw new IllegalArgumentException("Unknown operator in Combined Node Test")
+      case Token.UNION     => nodetest1.getMatcher(tree).or(nodetest2.getMatcher(tree))
+      case Token.INTERSECT => nodetest1.getMatcher(tree).and(nodetest2.getMatcher(tree))
+      case Token.EXCEPT    => new IntExceptPredicate(nodetest1.getMatcher(tree), nodetest2.getMatcher(tree))
+      case _               => throw new IllegalArgumentException("Unknown operator in Combined Node Test")
     }
 
   override def test(node: NodeInfo): Boolean = operator match {

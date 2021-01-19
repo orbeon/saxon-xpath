@@ -71,27 +71,32 @@ class ForClause extends Clause {
 
   def isAllowingEmpty: Boolean = allowsEmpty
 
-  override def typeCheck(visitor: ExpressionVisitor,
-                         contextInfo: ContextItemStaticInfo): Unit = {
-    val decl: SequenceType = rangeVariable.getRequiredType
+  override def typeCheck(
+    visitor     : ExpressionVisitor,
+    contextInfo : ContextItemStaticInfo
+  ): Unit = {
+    val decl = rangeVariable.getRequiredType
     if (allowsEmpty && !Cardinality.allowsZero(decl.getCardinality)) {
-      val role: RoleDiagnostic = new RoleDiagnostic(
+      val role    = new RoleDiagnostic(
         RoleDiagnostic.VARIABLE,
         rangeVariable.getVariableQName.getDisplayName,
         0)
-      val checker: Expression = CardinalityChecker.makeCardinalityChecker(
+      val checker = CardinalityChecker.makeCardinalityChecker(
         getSequence,
         StaticProperty.ALLOWS_ONE_OR_MORE,
-        role)
+        role
+      )
       this.setSequence(checker)
     }
-    val sequenceType: SequenceType = SequenceType.makeSequenceType(
+    val sequenceType = SequenceType.makeSequenceType(
       decl.getPrimaryType,
-      StaticProperty.ALLOWS_ZERO_OR_MORE)
-    val role: RoleDiagnostic = new RoleDiagnostic(
+      StaticProperty.ALLOWS_ZERO_OR_MORE
+    )
+    val role = new RoleDiagnostic(
       RoleDiagnostic.VARIABLE,
       rangeVariable.getVariableQName.getDisplayName,
-      0)
+      0
+    )
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       sequenceType,
       role,

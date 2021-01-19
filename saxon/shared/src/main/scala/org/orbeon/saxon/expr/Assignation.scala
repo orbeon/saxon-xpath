@@ -16,7 +16,13 @@ import java.util
 object Assignation {
   private val REPEATED_ACTION_ROLE = new OperandRole(OperandRole.HIGHER_ORDER, OperandUsage.TRANSMISSION)
 
-  private def countReferences(binding: Binding, exp: Expression, references: util.List[VariableReference], results: Array[Int]): Unit = { // results[0] = nominal reference count
+  private def countReferences(
+    binding    : Binding,
+    exp        : Expression,
+    references : util.List[VariableReference],
+    results    : Array[Int]
+  ): Unit = {
+    // results[0] = nominal reference count
     // results[1] = quota nodes visited
     exp match {
       case ref: LocalVariableReference =>
@@ -30,19 +36,19 @@ object Assignation {
 
           references.add(ref)
         }
-      case _ => if ((exp.getDependencies & StaticProperty.DEPENDS_ON_LOCAL_VARIABLES) != 0) if ( {
-        results(1) -= 1
-        results(1)
-      } <= 0) { // abandon the search
-        results(0) = 100
-        results(1) = 0
-      }
-      else {
-
-        for (o <- exp.operands.asScala) {
-          countReferences(binding, o.getChildExpression, references, results)
-        }
-      }
+      case _ =>
+        if ((exp.getDependencies & StaticProperty.DEPENDS_ON_LOCAL_VARIABLES) != 0)
+          if ({
+            results(1) -= 1
+            results(1)
+          } <= 0) {
+            // abandon the search
+            results(0) = 100
+            results(1) = 0
+          } else {
+            for (o <- exp.operands.asScala)
+              countReferences(binding, o.getChildExpression, references, results)
+          }
     }
   }
 }
@@ -71,8 +77,7 @@ abstract class Assignation extends Expression with LocalBinding {
   var references: util.ArrayList[VariableReference] = null
 
   def getSequenceOp: Operand = sequenceOp
-
-  def getActionOp: Operand = actionOp
+  def getActionOp  : Operand = actionOp
 
   override def operands: util.List[Operand] = operandList(sequenceOp, actionOp)
 
@@ -356,6 +361,7 @@ abstract class Assignation extends Expression with LocalBinding {
    */
   override def addReference(ref: VariableReference, isLoopingReference: Boolean): Unit = {
     hasLoopingReference |= isLoopingReference
+
     if (references == null)
       references = new util.ArrayList[VariableReference]()
 
@@ -428,12 +434,14 @@ abstract class Assignation extends Expression with LocalBinding {
    *              a stylesheet contains very large templates or functions.
    */
   def rebuildReferenceList(force: Boolean): Unit = {
-    val results = Array[Int](0, if (force) Integer.MAX_VALUE
-    else 500)
+    val results = Array[Int](0, if (force) Integer.MAX_VALUE else 500)
     val references = new util.ArrayList[VariableReference]
     Assignation.countReferences(this, getAction, references, results)
-    this.references = if (results(1) <= 0) null
-    else references
+    this.references =
+      if (results(1) <= 0)
+        null
+      else
+        references
   }
 
   /**
