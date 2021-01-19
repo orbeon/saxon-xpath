@@ -69,7 +69,7 @@ abstract class NodeTest
     val it = m.iterator
     if (m.size == 1 && it.hasNext) {
       val p = it.next()
-      p match {
+      return p match {
         case DOCUMENT  => AnyType.getInstance
         case ELEMENT   => AnyType.getInstance
         case ATTRIBUTE => AnySimpleType

@@ -72,12 +72,11 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     }
     val pool: NamePool = getNamePool
     while (a < tree.numberOfAttributes && tree.attParent(a) == nodeNr) {
-      val nc: Int = tree.attCode(a)
-      val name: StructuredQName = pool.getUnprefixedQName(nc)
-      if (name.getLocalPart == local && name.hasURI(uri)) {
-        tree.attValue(a).toString
-      }
-      { a += 1; a - 1 }
+      val nc   = tree.attCode(a)
+      val name = pool.getUnprefixedQName(nc)
+      if (name.getLocalPart == local && name.hasURI(uri))
+        return tree.attValue(a).toString
+      a += 1
     }
     null
   }
@@ -88,10 +87,9 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
       return null
     }
     while (a < tree.numberOfAttributes && tree.attParent(a) == nodeNr) {
-      if (fp == (tree.attCode(a) & NamePool.FP_MASK)) {
-        tree.attValue(a).toString
-      }
-      { a += 1; a - 1 }
+      if (fp == (tree.attCode(a) & NamePool.FP_MASK))
+        return tree.attValue(a).toString
+      a += 1
     }
     null
   }
