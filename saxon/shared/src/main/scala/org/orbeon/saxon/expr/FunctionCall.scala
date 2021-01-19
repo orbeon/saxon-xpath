@@ -66,7 +66,7 @@ abstract class FunctionCall extends Expression {
   def simplifyArguments(env: StaticContext): Expression = {
     for (i <- getArguments.indices) {
       val exp: Expression = getArg(i).simplify()
-      if (exp != getArg(i)) {
+      if (exp ne getArg(i)) {
         adoptChildExpression(exp)
         setArg(i, exp)
       }

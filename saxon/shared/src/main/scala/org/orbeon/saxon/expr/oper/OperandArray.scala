@@ -88,7 +88,7 @@ class OperandArray extends java.lang.Iterable[Operand] {
   }
 
   def setOperand(n: Int, child: Expression): Unit =
-    if (operandArray(n).getChildExpression != child)
+    if (operandArray(n).getChildExpression ne child)
       operandArray(n).setChildExpression(child)
 
   def getNumberOfOperands: Int = operandArray.length

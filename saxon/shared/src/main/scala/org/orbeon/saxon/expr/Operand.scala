@@ -44,7 +44,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
     with ExpressionOwner {
 
   def setChildExpression(childExpression: Expression): Unit = {
-    if (childExpression != this.childExpression) {
+    if (childExpression ne this.childExpression) {
       if (role.isConstrainedClass && this.childExpression != null && childExpression.getClass != this.childExpression.getClass)
         throw new AssertionError
       this.childExpression = childExpression

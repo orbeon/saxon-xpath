@@ -91,8 +91,8 @@ abstract class Expression
     val ops = operands
     for (o <- ops.asScala) {
       val child = o.getChildExpression
-      val badOperand = o.getParentExpression != this
-      val badExpression = child.getParentExpression != this
+      val badOperand = o.getParentExpression ne this
+      val badExpression = child.getParentExpression ne this
       if (badOperand || badExpression) {
         val message = "*** Bad parent pointer found in " + (if (badOperand)
           "operand "
@@ -130,13 +130,13 @@ abstract class Expression
   def verifyParentPointers(): Expression = {
     for (o <- operands.asScala) {
       val parent = o.getChildExpression.getParentExpression
-      if (parent != this) {
+      if (parent ne this) {
         throw new IllegalStateException(
           "Invalid parent pointer in " + parent.toShortString +
             " subexpression " +
             o.getChildExpression.toShortString)
       }
-      if (o.getParentExpression != this) {
+      if (o.getParentExpression ne this) {
         throw new IllegalStateException(
           "Invalid parent pointer in operand object " + parent
             .toShortString +

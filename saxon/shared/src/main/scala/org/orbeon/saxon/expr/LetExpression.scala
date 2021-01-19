@@ -50,7 +50,7 @@ class LetExpression extends Assignation with TailCallReturner {
   override def resetLocalStaticProperties(): Unit = {
     super.resetLocalStaticProperties()
     references = new ArrayList[VariableReference]
-    if (evaluator == Evaluator.VARIABLE && ! getSequence.isInstanceOf[VariableReference]) {
+    if ((evaluator eq Evaluator.VARIABLE) && ! getSequence.isInstanceOf[VariableReference]) {
       evaluator = null
       setEvaluator()
     }
@@ -149,7 +149,7 @@ class LetExpression extends Assignation with TailCallReturner {
         var child: Expression = references.get(0)
         var parent = child.getParentExpression
         breakable {
-          while (parent != null && parent != this) {
+          while (parent != null && (parent ne this)) {
             val operand = ExpressionTool.findOperand(parent, child)
             assert(operand != null)
             if (! operand.hasSameFocus) {
@@ -190,7 +190,7 @@ class LetExpression extends Assignation with TailCallReturner {
         if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
           return optimize(visitor, contextItemType)
         }
-        if (seq0 == getSequence) {
+        if (seq0 eq getSequence) {
           break()
         }
       }
@@ -203,9 +203,8 @@ class LetExpression extends Assignation with TailCallReturner {
       } < 5) {
         val act0 = getAction
         getActionOp.optimize(visitor, contextItemType)
-        if (act0 == getAction) {
+        if (act0 eq getAction)
           break()
-        }
         if (! isIndexedVariable && ! needsEagerEvaluation) {
           verifyReferences()
           if (references != null && references.size < 2) {
