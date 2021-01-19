@@ -31,8 +31,7 @@ class ARegularExpression(
 
   var rawPattern: UnicodeString = _
   var regex: REProgram = _
-  val flags: String = null
-  var reFlags: REFlags = new REFlags(flags, hostLanguage)
+  var reFlags: REFlags = new REFlags(rawFlags, hostLanguage)
 
   locally {
     rawPattern = UnicodeString.makeUnicodeString(pattern)
