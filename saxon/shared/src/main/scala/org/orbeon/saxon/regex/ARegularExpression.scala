@@ -6,13 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
-import java.util.List
-
 import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
+
+import java.{util => ju}
 
 
 /**
@@ -20,11 +20,13 @@ import org.orbeon.saxon.value.{AtomicValue, StringValue}
  * (The prefix 'A' indicates an Apache regular expression, as distinct from
  * a JDK regular expression).
  */
-class ARegularExpression(pattern: CharSequence,
-                         var rawFlags: String,
-                         hostLanguage: String,
-                         warnings: List[String],
-                         config: Configuration)
+class ARegularExpression(
+  pattern      : CharSequence,
+  var rawFlags : String,
+  hostLanguage : String,
+  warnings     : ju.List[String],
+  config       : Configuration
+)
   extends RegularExpression {
 
   var rawPattern: UnicodeString = _
@@ -52,10 +54,9 @@ class ARegularExpression(pattern: CharSequence,
    * @return true if the string matches, false otherwise
    */
   def matches(input: CharSequence): Boolean = {
-    if (StringValue.isEmpty(input) && regex.isNullable) {
+    if (StringValue.isEmpty(input) && regex.isNullable)
       return true
-    }
-    val matcher: REMatcher = new REMatcher(regex)
+    val matcher = new REMatcher(regex)
     matcher.anchoredMatch(UnicodeString.makeUnicodeString(input))
   }
 
@@ -66,7 +67,7 @@ class ARegularExpression(pattern: CharSequence,
    * @return true if the string matches, false otherwise
    */
   def containsMatch(input: CharSequence): Boolean = {
-    val matcher: REMatcher = new REMatcher(regex)
+    val matcher = new REMatcher(regex)
     matcher.`match`(UnicodeString.makeUnicodeString(input), 0)
   }
 
@@ -77,8 +78,7 @@ class ARegularExpression(pattern: CharSequence,
    * @return a SequenceIterator containing the resulting tokens, as objects of type StringValue
    */
   def tokenize(input: CharSequence): AtomicIterator[AtomicValue] =
-    new ATokenIterator(UnicodeString.makeUnicodeString(input),
-      new REMatcher(regex))
+    new ATokenIterator(UnicodeString.makeUnicodeString(input), new REMatcher(regex))
 
   /**
    * Use this regular expression to analyze an input string, in support of the XSLT
@@ -90,9 +90,11 @@ class ARegularExpression(pattern: CharSequence,
    * @return an iterator over matched and unmatched substrings
    */
   def analyze(input: CharSequence): RegexIterator =
-    new ARegexIterator(UnicodeString.makeUnicodeString(input),
+    new ARegexIterator(
+      UnicodeString.makeUnicodeString(input),
       rawPattern,
-      new REMatcher(regex))
+      new REMatcher(regex)
+    )
 
   /**
    * Replace all substrings of a supplied input string that match the regular expression
@@ -105,9 +107,9 @@ class ARegularExpression(pattern: CharSequence,
    * if the replacement string is invalid
    */
   def replace(input: CharSequence, replacement: CharSequence): CharSequence = {
-    val matcher: REMatcher = new REMatcher(regex)
-    val in: UnicodeString = UnicodeString.makeUnicodeString(input)
-    val rep: UnicodeString = UnicodeString.makeUnicodeString(replacement)
+    val matcher = new REMatcher(regex)
+    val in      = UnicodeString.makeUnicodeString(input)
+    val rep     = UnicodeString.makeUnicodeString(replacement)
     matcher.replace(in, rep)
   }
 
@@ -121,10 +123,11 @@ class ARegularExpression(pattern: CharSequence,
    * @throws XPathException if the replacement string is invalid
    */
   def replaceWith(
-                   input: CharSequence,
-                   replacer: CharSequence => CharSequence): CharSequence = {
-    val matcher: REMatcher = new REMatcher(regex)
-    val in: UnicodeString = UnicodeString.makeUnicodeString(input)
+    input    : CharSequence,
+    replacer : CharSequence => CharSequence
+  ): CharSequence = {
+    val matcher = new REMatcher(regex)
+    val in      = UnicodeString.makeUnicodeString(input)
     matcher.replaceWith(in, replacer)
   }
 
@@ -133,5 +136,5 @@ class ARegularExpression(pattern: CharSequence,
    *
    * @return a string containing the flags
    */
-  override def getFlags: String = rawFlags
+  def getFlags: String = rawFlags
 }

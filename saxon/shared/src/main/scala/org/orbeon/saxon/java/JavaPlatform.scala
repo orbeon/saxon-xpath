@@ -1,20 +1,18 @@
 package org.orbeon.saxon.java
 
-import java.text.{CollationKey, Collator}
-import java.util.{List, Properties}
-
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
-import org.orbeon.saxon.expr.sort._
 import org.orbeon.saxon.functions.FunctionLibraryList
-import org.orbeon.saxon.java.JavaCollationFactory
 import org.orbeon.saxon.lib.{ModuleURIResolver, StandardModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.{ARegularExpression, JavaRegularExpression, RegularExpression}
 import org.orbeon.saxon.resource.StandardCollectionFinder
 import org.orbeon.saxon.utils.{Configuration, Platform}
 import org.xml.sax.XMLReader
+
+import java.{util => ju}
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
+
 
 object JavaPlatform {
   var tryJdk9: Boolean = true
@@ -106,14 +104,16 @@ class JavaPlatform extends Platform {
 //    loadParser()
   }
 
-  def getParserSource(pipe: PipelineConfiguration,
-                      input: StreamSource,
-                      validation: Int,
-                      dtdValidation: Boolean): Source = input
+  def getParserSource(
+    pipe          : PipelineConfiguration,
+    input         : StreamSource,
+    validation    : Int,
+    dtdValidation : Boolean
+  ): Source = input
 
   def makeCollation(
     config : Configuration,
-    props  : Properties,
+    props  : ju.Properties,
     uri    : String
   ): StringCollator =
     JavaCollationFactory.makeCollation(config, uri, props)
@@ -136,7 +136,6 @@ class JavaPlatform extends Platform {
 //  }
 
   def hasICUCollator: Boolean = false
-
   def hasICUNumberer: Boolean = false
 
   // ORBEON: Collations
@@ -149,21 +148,27 @@ class JavaPlatform extends Platform {
 //    }
 //  }
 
-  def addFunctionLibraries(list: FunctionLibraryList,
-                           config: Configuration,
-                           hostLanguage: Int): Unit = ()
+  def addFunctionLibraries(
+    list         : FunctionLibraryList,
+    config       : Configuration,
+    hostLanguage : Int
+  ): Unit = ()
 
-  def getExternalObjectType(config: Configuration,
-                            uri: String,
-                            localName: String): ExternalObjectType =
+  def getExternalObjectType(
+    config    : Configuration,
+    uri       : String,
+    localName : String
+  ): ExternalObjectType =
     throw new UnsupportedOperationException("getExternalObjectType for Java")
 
-  def getInstallationDirectory(edition: String,
-                               config: Configuration): String =
-    try System.getenv("SAXON_HOME")
+  def getInstallationDirectory(
+    edition : String,
+    config  : Configuration
+  ): String =
+    try
+      System.getenv("SAXON_HOME")
     catch {
-      case e: SecurityException => null
-
+      case _: SecurityException => null
     }
 
   def registerAllBuiltInObjectModels(config: Configuration): Unit = ()
@@ -173,26 +178,31 @@ class JavaPlatform extends Platform {
   def makeStandardModuleURIResolver(config: Configuration): ModuleURIResolver =
     new StandardModuleURIResolver(config)
 
-  override def compileRegularExpression(config: Configuration, regex: CharSequence, flags: String, hostLanguage: String, warnings: scala.List[String]): RegularExpression =
+  def compileRegularExpression(
+    config       : Configuration,
+    regex        : CharSequence,
+    flags        : String,
+    hostLanguage : String,
+    warnings     : ju.List[String]
+  ): RegularExpression =
     if (flags.contains("!")) {
       new JavaRegularExpression(regex, flags.replace("!", ""))
     } else {
-      var useJava: Boolean = false
-      var useSaxon: Boolean = false
-      var flgs = flags
-      val semi: Int = flgs.indexOf(';')
+      var useJava  = false
+      var useSaxon = false
+
+      var flgs     = flags
+      val semi = flgs.indexOf(';')
       if (semi >= 0) {
         useJava = flgs.indexOf('j', semi) >= 0
         useSaxon = flgs.indexOf('s', semi) >= 0
         flgs = flgs.substring(0, semi)
       }
-      if ("J" == config.getDefaultRegexEngine && !useSaxon) {
+      if ("J" == config.getDefaultRegexEngine && ! useSaxon)
         useJava = true
-      }
-      if (useJava) {
+      if (useJava)
         new JavaRegularExpression(regex, flgs)
-      } else {
-        new ARegularExpression(regex, flgs, hostLanguage, warnings.asInstanceOf[List[String]], config)
-      }
+      else
+        new ARegularExpression(regex, flgs, hostLanguage, warnings, config)
     }
 }

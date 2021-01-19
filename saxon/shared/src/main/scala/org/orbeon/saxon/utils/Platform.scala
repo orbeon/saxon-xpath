@@ -7,15 +7,15 @@
 
 package org.orbeon.saxon.utils
 
-import java.util.Properties
-
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.lib.{ModuleURIResolver, StringCollator}
 import org.orbeon.saxon.model.ExternalObjectType
 import org.orbeon.saxon.regex.RegularExpression
 import org.xml.sax.XMLReader
+
+import java.{util => ju}
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
 
 
 /**
@@ -32,15 +32,19 @@ trait Platform {
   def loadParser(): XMLReader
   def loadParserForXmlFragments(): XMLReader
 
-  def getParserSource(pipe: PipelineConfiguration,
-                      input: StreamSource,
-                      validation: Int,
-                      dtdValidation: Boolean): Source
+  def getParserSource(
+    pipe          : PipelineConfiguration,
+    input         : StreamSource,
+    validation    : Int,
+    dtdValidation : Boolean
+  ): Source
 
   /*@Nullable*/
-  def makeCollation(config: Configuration,
-                    props: Properties,
-                    uri: String): StringCollator
+  def makeCollation(
+    config : Configuration,
+    props  : ju.Properties,
+    uri    : String
+  ): StringCollator
 
   // ORBEON: Collations
 //  def canReturnCollationKeys(collation: StringCollator): Boolean
@@ -63,11 +67,13 @@ trait Platform {
   // ORBEON: Collations
 //  def makeUcaCollator(uri: String, config: Configuration): StringCollator
 
-  def compileRegularExpression(config: Configuration,
-                               regex: CharSequence,
-                               flags: String,
-                               hostLanguage: String,
-                               warnings: List[String]): RegularExpression
+  def compileRegularExpression(
+    config      : Configuration,
+    regex       : CharSequence,
+    flags       : String,
+    hostLanguage: String,
+    warnings    : ju.List[String]
+  ): RegularExpression
 
   def getExternalObjectType(config: Configuration, uri: String, localName: String): ExternalObjectType
   def getInstallationDirectory(edition: String, config: Configuration): String

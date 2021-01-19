@@ -98,14 +98,13 @@ abstract class RegexFunction
     if (config.getXsdVersion == Configuration.XSD11) {
       hostLang += "/XSD11"
     }
-    val warnings: List[String] = new ArrayList[String](1)
-    val regex: RegularExpression =
-      config.compileRegularExpression(re, flags, hostLang, warnings) // required changes in Configuration class
-    if (!allowRegexMatchingEmptyString() && regex.matches("")) {
+    val warnings = new ArrayList[String](1)
+    val regex    = config.compileRegularExpression(re, flags, hostLang, warnings)
+    if (! allowRegexMatchingEmptyString() && regex.matches(""))
       throw new XPathException(
         "The regular expression must not be one that matches a zero-length string",
-        "FORX0003")
-    }
+        "FORX0003"
+      )
     regex
   }
 

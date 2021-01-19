@@ -2,6 +2,7 @@ package org.orbeon.saxon.utils
 
 import java.io.{InputStream, PrintStream, UnsupportedEncodingException}
 import java.net.{URI, URISyntaxException, URLDecoder}
+import java.{util => ju}
 import java.util
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.{IntPredicate, Predicate}
@@ -1178,13 +1179,13 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @return the function
    */
-    def makeSystemFunction(localName: String, arity: Int): SystemFunction =
-      try
-        getXPath31FunctionSet.makeFunction(localName, arity)
-      catch {
-        case _: XPathException =>
-          null
-      }
+  def makeSystemFunction(localName: String, arity: Int): SystemFunction =
+    try
+      getXPath31FunctionSet.makeFunction(localName, arity)
+    catch {
+      case _: XPathException =>
+        null
+    }
 
   /**
    * Register an extension function that is to be made available within any stylesheet, query,
@@ -1578,10 +1579,11 @@ class Configuration extends SourceResolver with NotationSet {
    *               <li>N - (on .NET only) - the .NET regular expression engine</li>
    *               </ul>
    */
-  def setDefaultRegexEngine(engine: String): Unit = {
-    if (!("J" == engine || "N" == engine || "S" == engine)) throw new IllegalArgumentException("Regex engine must be S|J|N")
-    defaultRegexEngine = engine
-  }
+  def setDefaultRegexEngine(engine: String): Unit =
+    if (! ("J" == engine || "N" == engine || "S" == engine))
+      throw new IllegalArgumentException("Regex engine must be S|J|N")
+    else
+      defaultRegexEngine = engine
 
   /**
    * Get the default regular expression to be used
@@ -1604,8 +1606,13 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws XPathException if the regular expression or the flags are invalid
    */
   @throws[XPathException]
-  def compileRegularExpression(regex: CharSequence, flags: String, hostLanguage: String, warnings: java.util.List[String]): RegularExpression =
-    Version.platform.compileRegularExpression(this, regex, flags, hostLanguage, warnings.asScala.toList)
+  def compileRegularExpression(
+    regex        : CharSequence,
+    flags        : String,
+    hostLanguage : String,
+    warnings     : ju.List[String]
+  ): RegularExpression =
+    Version.platform.compileRegularExpression(this, regex, flags, hostLanguage, warnings)
 
   /**
    * Load a Numberer class for a given language and check it is OK.

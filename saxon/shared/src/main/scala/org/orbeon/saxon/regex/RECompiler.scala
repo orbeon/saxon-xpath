@@ -1,75 +1,88 @@
 package org.orbeon.saxon.regex
 
 
-import java.util.function.IntPredicate
-import java.{util => ju}
-
 import org.orbeon.saxon.regex.charclass._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.z._
 
+import java.util.function.IntPredicate
+import java.{util => ju}
 import scala.util.control.Breaks
 import scala.util.control.Breaks._
 
 
 object RECompiler {
+
   val NODE_NORMAL = 0
   val NODE_TOPLEVEL = 2
+
   private val TRACING = false
 
-
-  def trace(base: Operation): Operation = if (TRACING && !base.isInstanceOf[Operation.OpTrace]) new Operation.OpTrace(base)
-  else base
-
+  def trace(base: Operation): Operation =
+    if (TRACING && !base.isInstanceOf[Operation.OpTrace])
+      new Operation.OpTrace(base)
+    else
+      base
 
   private def isAsciiDigit(ch: Int) = ch >= '0' && ch <= '9'
 
-
   def makeUnion(p1: CharacterClass, p2: CharacterClass): CharacterClass = {
-    if (p1 eq EmptyCharacterClass.getInstance) return p2
-    if (p2 eq EmptyCharacterClass.getInstance) return p1
+    if (p1 eq EmptyCharacterClass.getInstance)
+      return p2
+    if (p2 eq EmptyCharacterClass.getInstance)
+      return p1
     val is1 = p1.getIntSet
     val is2 = p2.getIntSet
-    if (is1 == null || is2 == null) new PredicateCharacterClass(p1.or(p2))
-    else new IntSetCharacterClass(is1.union(is2))
+    if (is1 == null || is2 == null)
+      new PredicateCharacterClass(p1.or(p2))
+    else
+      new IntSetCharacterClass(is1.union(is2))
   }
-
 
   def makeDifference(p1: CharacterClass, p2: CharacterClass): CharacterClass = {
-    if (p1 eq EmptyCharacterClass.getInstance) return p1
-    if (p2 eq EmptyCharacterClass.getInstance) return p1
+    if (p1 eq EmptyCharacterClass.getInstance)
+      return p1
+    if (p2 eq EmptyCharacterClass.getInstance)
+      return p1
     val is1 = p1.getIntSet
     val is2 = p2.getIntSet
-    if (is1 == null || is2 == null) new PredicateCharacterClass(new IntExceptPredicate(p1, p2))
-    else new IntSetCharacterClass(is1.except(is2))
+    if (is1 == null || is2 == null)
+      new PredicateCharacterClass(new IntExceptPredicate(p1, p2))
+    else
+      new IntSetCharacterClass(is1.except(is2))
   }
 
+  def makeComplement(p1: CharacterClass): CharacterClass = p1 match {
+    case clazz: InverseCharacterClass => clazz.getComplement
+    case _                            => new InverseCharacterClass(p1)
+  }
 
-  def makeComplement(p1: CharacterClass) = if (p1.isInstanceOf[InverseCharacterClass]) p1.asInstanceOf[InverseCharacterClass].getComplement
-  else new InverseCharacterClass(p1)
-
-  private def makeSequence(o1: Operation, o2: Operation): Operation = if (o1.isInstanceOf[Operation.OpSequence]) {
-    if (o2.isInstanceOf[Operation.OpSequence]) {
-      val l1 = o1.asInstanceOf[Operation.OpSequence].getOperations
-      val l2 = o2.asInstanceOf[Operation.OpSequence].getOperations
-      l1.addAll(l2)
-      return o1
+  private def makeSequence(o1: Operation, o2: Operation): Operation = o1 match {
+    case opSequence1: Operation.OpSequence =>
+      o2 match {
+        case opSequence2: Operation.OpSequence =>
+          val l1 = opSequence1.getOperations
+          val l2 = opSequence2.getOperations
+          l1.addAll(l2)
+          return o1
+        case _                                 =>
+      }
+      val l1 = opSequence1.getOperations
+      l1.add(o2)
+      o1
+    case _ =>
+      o2 match {
+      case opSequence2: Operation.OpSequence =>
+        val l2 = opSequence2.getOperations
+        l2.add(0, o1)
+        o2
+      case _ =>
+        val list = new ju.ArrayList[Operation](4)
+        list.add(o1)
+        list.add(o2)
+        trace(new Operation.OpSequence(list))
     }
-    val l1 = o1.asInstanceOf[Operation.OpSequence].getOperations
-    l1.add(o2)
-    o1
-  }
-  else if (o2.isInstanceOf[Operation.OpSequence]) {
-    val l2 = o2.asInstanceOf[Operation.OpSequence].getOperations
-    l2.add(0, o1)
-    o2
-  }
-  else {
-    val list = new ju.ArrayList[Operation](4)
-    list.add(o1)
-    list.add(o2)
-    trace(new Operation.OpSequence(list))
   }
 
 
@@ -84,33 +97,21 @@ object RECompiler {
 }
 
 
-class RECompiler() {
+class RECompiler {
+
   var pattern: UnicodeString = _
-
   var len: Int = _
-
   var idx: Int = _
-
   var capturingOpenParenCount: Int = _
-
   var bracketMin: Int = _
-
   var bracketMax: Int = _
-
   var isXPath: Boolean = true
-
   var isXPath30: Boolean = true
-
   var isXSD11: Boolean = false
-
   var captures: IntHashSet = new IntHashSet()
-
   var hasBackReferences: Boolean = false
-
   var reFlags: REFlags = _
-
   var warnings: ju.List[String] = _
-
 
   def setFlags(flags: REFlags): Unit = {
     this.reFlags = flags
@@ -133,34 +134,34 @@ class RECompiler() {
   @throws[Error]
   def internalError(): Unit = throw new Error("Internal error!")
 
-
   @throws[RESyntaxException]
   def syntaxError(s: String): Unit = throw new RESyntaxException(s, idx)
-
 
   @throws[RESyntaxException]
   def bracket(): Unit = {
     if (idx >= len || pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx - 1
     }) != '{') internalError()
 
     if (idx >= len || !RECompiler.isAsciiDigit(pattern.uCharAt(idx))) syntaxError("Expected digit")
 
     val number = new FastStringBuffer(16)
-    while ( {
+    while ({
       idx < len && RECompiler.isAsciiDigit(pattern.uCharAt(idx))
     }) number.cat(pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx - 1
     }).toChar)
-    try bracketMin = number.toString.toInt
+    try
+      bracketMin = number.toString.toInt
     catch {
-      case e: NumberFormatException =>
+      case _: NumberFormatException =>
         syntaxError("Expected valid number")
     }
 
-    if (idx >= len) syntaxError("Expected comma or right bracket")
+    if (idx >= len)
+      syntaxError("Expected comma or right bracket")
 
     if (pattern.uCharAt(idx) == '}') {
       idx += 1
@@ -169,7 +170,7 @@ class RECompiler() {
     }
 
     if (idx >= len || pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx - 1
     }) != ',') syntaxError("Expected comma")
     if (idx >= len) syntaxError("Expected comma or right bracket")
@@ -179,13 +180,14 @@ class RECompiler() {
       bracketMax = Integer.MAX_VALUE
       return
     }
-    if (idx >= len || !RECompiler.isAsciiDigit(pattern.uCharAt(idx))) syntaxError("Expected digit")
+    if (idx >= len || !RECompiler.isAsciiDigit(pattern.uCharAt(idx)))
+      syntaxError("Expected digit")
 
     number.setLength(0)
-    while ( {
+    while ({
       idx < len && RECompiler.isAsciiDigit(pattern.uCharAt(idx))
     }) number.cat(pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx - 1
     }).toChar)
     try bracketMax = number.toString.toInt
@@ -194,20 +196,24 @@ class RECompiler() {
         syntaxError("Expected valid number")
     }
 
-    if (bracketMax < bracketMin) syntaxError("Bad range")
+    if (bracketMax < bracketMin)
+      syntaxError("Bad range")
 
     if (idx >= len || pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx - 1
-    }) != '}') syntaxError("Missing close brace")
+    }) != '}')
+      syntaxError("Missing close brace")
   }
 
 
   @throws[RESyntaxException]
   def escape(inSquareBrackets: Boolean): CharacterClass = {
-    if (pattern.uCharAt(idx) != '\\') internalError()
+    if (pattern.uCharAt(idx) != '\\')
+      internalError()
 
-    if (idx + 1 == len) syntaxError("Escape terminates string")
+    if (idx + 1 == len)
+      syntaxError("Escape terminates string")
 
     idx += 2
     val escapeChar = pattern.uCharAt(idx - 1)
@@ -245,10 +251,12 @@ class RECompiler() {
       case 'W' =>
         return Categories.ESCAPE_W
       case 'p' | 'P' =>
-        if (idx == len) syntaxError("Expected '{' after \\" + escapeChar)
-        if (pattern.uCharAt(idx) != '{') syntaxError("Expected '{' after \\" + escapeChar)
+        if (idx == len)
+          syntaxError("Expected '{' after \\" + escapeChar)
+        if (pattern.uCharAt(idx) != '{')
+          syntaxError("Expected '{' after \\" + escapeChar)
         val close = pattern.uIndexOf('}', {
-          idx += 1;
+          idx += 1
           idx - 1
         })
         if (close == -1) syntaxError("No closing '}' after \\" + escapeChar)
@@ -323,7 +331,7 @@ class RECompiler() {
     if (pattern.uCharAt(idx) != '[') internalError()
 
     if ((idx + 1) >= len || pattern.uCharAt({
-      idx += 1;
+      idx += 1
       idx
     }) == ']') syntaxError("Missing ']'")
 
@@ -359,7 +367,8 @@ class RECompiler() {
         case '\\' =>
 
           val cc = escape(true)
-          if (cc.isInstanceOf[SingletonCharacterClass]) simpleChar = cc.asInstanceOf[SingletonCharacterClass].getCodepoint
+          if (cc.isInstanceOf[SingletonCharacterClass])
+            simpleChar = cc.asInstanceOf[SingletonCharacterClass].getCodepoint
           else {
             if (definingRange) syntaxError("Multi-character escape cannot follow '-'")
             else if (addend == null) addend = cc
@@ -403,13 +412,13 @@ class RECompiler() {
         if (reFlags.isCaseIndependent) {
           if (rangeStart == 'a' && rangeEnd == 'z') {
             range.addRange('A', 'Z')
-            for (v <- 0 until CaseVariants.ROMAN_VARIANTS.length) {
+            for (v <- CaseVariants.ROMAN_VARIANTS.indices) {
               range.add(CaseVariants.ROMAN_VARIANTS(v))
             }
           }
           else if (rangeStart == 'A' && rangeEnd == 'Z') {
             range.addRange('a', 'z')
-            for (v <- 0 until CaseVariants.ROMAN_VARIANTS.length) {
+            for (v <- CaseVariants.ROMAN_VARIANTS.indices) {
               range.add(CaseVariants.ROMAN_VARIANTS(v))
             }
           }
@@ -456,10 +465,10 @@ class RECompiler() {
 
 
   @throws[RESyntaxException]
-  def parseAtom = {
+  def parseAtom: Operation = {
     var lenAtom = 0
     val fsb = new FastStringBuffer(FastStringBuffer.C64)
-    var atomLoop = new Breaks
+    val atomLoop = new Breaks
     atomLoop.breakable {
       while (idx < len) {
         if ((idx + 1) < len) {
@@ -500,7 +509,7 @@ class RECompiler() {
             if (isXPath) atomLoop.break()
           case _ =>
             fsb.appendWideChar(pattern.uCharAt({
-              idx += 1;
+              idx += 1
               idx - 1
             }))
             lenAtom += 1
@@ -530,12 +539,10 @@ class RECompiler() {
       case '.' =>
         idx += 1
         var predicate: IntPredicate = null
-        if (reFlags.isSingleLine) {
+        if (reFlags.isSingleLine)
           predicate = IntSetPredicate.ALWAYS_TRUE
-        }
-        else {
+        else
           predicate = (value: Int) => value != '\n' && value != '\r'
-        }
         return RECompiler.trace(new Operation.OpCharClass(predicate))
       case '[' =>
         val range = parseCharacterClass
@@ -555,19 +562,22 @@ class RECompiler() {
       case '\\' =>
         val idxBeforeEscape = idx
         val esc = escape(false)
-        if (esc.isInstanceOf[RECompiler#BackReference]) {
-          val backreference = esc.asInstanceOf[RECompiler#BackReference].getCodepoint
-          if (capturingOpenParenCount <= backreference) syntaxError("Bad backreference")
-          return RECompiler.trace(new Operation.OpBackReference(backreference))
+        esc match {
+          case reference: RECompiler#BackReference =>
+            val backreference = reference.getCodepoint
+            if (capturingOpenParenCount <= backreference)
+              syntaxError("Bad backreference")
+            RECompiler.trace(new Operation.OpBackReference(backreference))
+          case _: IntSingletonSet =>
+            idx = idxBeforeEscape
+          case _ =>
+            RECompiler.trace(new Operation.OpCharClass(esc))
         }
-        else if (esc.isInstanceOf[IntSingletonSet]) {
-          idx = idxBeforeEscape
-        }
-        else return RECompiler.trace(new Operation.OpCharClass(esc))
+      case _ =>
     }
+    // Default/fall-through
     parseAtom
   }
-
 
   @throws[RESyntaxException]
   def piece(flags: Array[Int]): Operation = {
@@ -701,7 +711,7 @@ class RECompiler() {
 
 
   @throws[RESyntaxException]
-  def compile(pattern: UnicodeString) = {
+  def compile(pattern: UnicodeString): REProgram = {
     var patternStr = pattern
     this.pattern = patternStr
     len = patternStr.uLength
@@ -738,7 +748,7 @@ class RECompiler() {
             escaped = false
             sb.appendWideChar(ch)
           }
-          else if (nesting == 0 && Whitespace.isWhitespace(ch).asInstanceOf[Boolean]) {
+          else if (nesting == 0 && Whitespace.isWhitespace(ch)) {
 
           }
           else {
