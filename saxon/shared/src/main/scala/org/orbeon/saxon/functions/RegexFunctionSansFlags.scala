@@ -9,8 +9,8 @@ class RegexFunctionSansFlags extends SystemFunction {
 
   private def addFlagsArgument(): SystemFunction = {
     val config = getRetainedStaticContext.getConfiguration
-    val fixed  = new CollationKeyFn().asInstanceOf[SystemFunction]
-      //config.makeSystemFunction(getFunctionName.getLocalPart, getArity + 1) // required changes in Configuration class
+//    val fixed  = new CollationKeyFn().asInstanceOf[SystemFunction]
+    val fixed = config.makeSystemFunction(getFunctionName.getLocalPart, getArity + 1)
     fixed.setRetainedStaticContext(getRetainedStaticContext)
     fixed
   }
