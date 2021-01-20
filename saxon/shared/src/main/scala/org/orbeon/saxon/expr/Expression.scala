@@ -457,7 +457,7 @@ abstract class Expression
 
   def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit = ()
 
-  def adoptChildExpression(child: Expression): Unit = {
+  final def adoptChildExpression(child: Expression): Unit = {
 
     if (child == null)
       return
