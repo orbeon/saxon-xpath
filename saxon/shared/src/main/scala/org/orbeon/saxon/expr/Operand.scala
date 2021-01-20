@@ -37,11 +37,16 @@ object Operand {
       OperandUsage.INSPECTION
 }
 
-class Operand(@BeanProperty val parentExpression: Expression,
-              var childExpression: Expression,
-              private var role: OperandRole)
-    extends java.lang.Iterable[Operand]
-    with ExpressionOwner {
+class Operand(
+  @BeanProperty val parentExpression : Expression,
+  _childExpression                   : Expression,
+  private var role                   : OperandRole
+) extends java.lang.Iterable[Operand]
+     with ExpressionOwner {
+
+  private var childExpression: Expression = null
+
+  setChildExpression(_childExpression)
 
   def setChildExpression(childExpression: Expression): Unit = {
     if (childExpression ne this.childExpression) {
