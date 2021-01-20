@@ -33,25 +33,22 @@ object CardinalityChecker {
    * @param role        information to be used in error reporting
    * @return a new Expression that does the CardinalityChecking (not necessarily a CardinalityChecker)
    */
-  def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression = {
-
+  def makeCardinalityChecker(sequence: Expression, cardinality: Int, role: RoleDiagnostic): Expression =
     sequence match {
       case literal: Literal if Cardinality.subsumes(cardinality, SequenceTool.getCardinality(literal.getValue)) =>
-        return literal
+        literal
       case _ =>
+        val result =
+          sequence match {
+            case atomizer: Atomizer if ! Cardinality.allowsMany(cardinality) =>
+              val base = atomizer.getBaseExpression
+              new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
+            case _ =>
+              new CardinalityChecker(sequence, cardinality, role)
+          }
+        ExpressionTool.copyLocationInfo(sequence, result)
+        result
     }
-
-    val result =
-      sequence match {
-        case atomizer: Atomizer if ! Cardinality.allowsMany(cardinality) =>
-          val base = atomizer.getBaseExpression
-          new SingletonAtomizer(base, role, Cardinality.allowsZero(cardinality))
-        case _ =>
-          new CardinalityChecker(sequence, cardinality, role)
-      }
-    ExpressionTool.copyLocationInfo(sequence, result)
-    result
-  }
 
   /**
    * Show the first couple of items in a sequence in an error message

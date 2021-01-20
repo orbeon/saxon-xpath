@@ -199,7 +199,7 @@ abstract class Expression
 
   def simplifyChildren(): Unit = {
     for (o <- operands.asScala if o != null) {
-      val e: Expression = o.getChildExpression
+      val e = o.getChildExpression
       if (e != null) {
         val f = e.simplify()
         o.setChildExpression(f)

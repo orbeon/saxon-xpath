@@ -10,7 +10,7 @@ import org.orbeon.saxon.utils.Configuration
 
 abstract class UnaryExpression(p0: Expression) extends Expression {
 
-   var operand: Operand = new Operand(this, p0, getOperandRole)
+  val operand: Operand = new Operand(this, p0, getOperandRole)
 
   ExpressionTool.copyLocationInfo(p0, this)
 

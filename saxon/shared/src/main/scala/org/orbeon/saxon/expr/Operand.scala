@@ -45,8 +45,7 @@ class Operand(@BeanProperty val parentExpression: Expression,
 
   def setChildExpression(childExpression: Expression): Unit = {
     if (childExpression ne this.childExpression) {
-      if (role.isConstrainedClass && this.childExpression != null && childExpression.getClass != this.childExpression.getClass)
-        throw new AssertionError
+      require (! (role.isConstrainedClass && this.childExpression != null && childExpression.getClass != this.childExpression.getClass))
       this.childExpression = childExpression
       parentExpression.adoptChildExpression(childExpression)
       parentExpression.resetLocalStaticProperties()

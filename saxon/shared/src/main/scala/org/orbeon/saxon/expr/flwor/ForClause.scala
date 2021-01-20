@@ -9,7 +9,6 @@ import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{Cardinality, SequenceType}
 
 import java.util.{ArrayList, List}
@@ -27,10 +26,9 @@ class ForClause extends Clause {
   var positionVariable: LocalVariableBinding = _
 
   private var sequenceOp: Operand = _
-
   private var allowsEmpty: Boolean = _
 
-  override def getClauseKey: ClauseName = FOR
+  def getClauseKey: ClauseName = FOR
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): ForClause = {
     val f2: ForClause = new ForClause()
@@ -45,29 +43,26 @@ class ForClause extends Clause {
     f2
   }
 
-  def initSequence(flwor: FLWORExpression, sequence: Expression): Unit = {
+  def initSequence(flwor: FLWORExpression, sequence: Expression): Unit =
     sequenceOp = new Operand(
       flwor,
       sequence,
-      if (isRepeated) OperandRole.REPEAT_NAVIGATE else OperandRole.NAVIGATE)
-  }
+      if (isRepeated) OperandRole.REPEAT_NAVIGATE else OperandRole.NAVIGATE
+    )
 
-  def setSequence(sequence: Expression): Unit = {
+  def setSequence(sequence: Expression): Unit =
     sequenceOp.setChildExpression(sequence)
-  }
 
   def getSequence: Expression = sequenceOp.getChildExpression
 
   override def getRangeVariables: Array[LocalVariableBinding] =
-    if (positionVariable == null) {
+    if (positionVariable == null)
       Array(rangeVariable)
-    } else {
+    else
       Array(rangeVariable, positionVariable)
-    }
 
-  def setAllowingEmpty(option: Boolean): Unit = {
+  def setAllowingEmpty(option: Boolean): Unit =
     allowsEmpty = option
-  }
 
   def isAllowingEmpty: Boolean = allowsEmpty
 
@@ -86,6 +81,7 @@ class ForClause extends Clause {
         StaticProperty.ALLOWS_ONE_OR_MORE,
         role
       )
+      checker.adoptChildExpression(getSequence)
       this.setSequence(checker)
     }
     val sequenceType = SequenceType.makeSequenceType(
@@ -121,13 +117,12 @@ class ForClause extends Clause {
                    visitor: ExpressionVisitor,
                    contextItemType: ContextItemStaticInfo,
                    condition: Expression): Boolean = {
-    val config: Configuration = getConfiguration
-    val opt: Optimizer = visitor.obtainOptimizer()
-    val debug: Boolean =
-      config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
-    val th = config.getTypeHierarchy
+    val config = getConfiguration
+    val opt    = visitor.obtainOptimizer()
+    val debug  = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
+    val th     = config.getTypeHierarchy
     var head: Expression = null
-    var selection: Expression = getSequence
+    var selection  = getSequence
     var selectionContextItemType: ItemType =
       if (contextItemType == null)
         null
@@ -139,8 +134,7 @@ class ForClause extends Clause {
         selection = getSequence.asInstanceOf[SlashExpression].getRemainingSteps
         selectionContextItemType = head.getItemType
       } else {
-        val p: SlashExpression =
-          getSequence.asInstanceOf[SlashExpression].tryToMakeAbsolute()
+        val p = getSequence.asInstanceOf[SlashExpression].tryToMakeAbsolute()
         if (p != null) {
           this.setSequence(p)
           head = p.getFirstStep
@@ -149,52 +143,45 @@ class ForClause extends Clause {
         }
       }
     }
-    var changed: Boolean = false
+    var changed = false
     if (positionVariable != null &&
       (condition.isInstanceOf[ValueComparison] || condition
         .isInstanceOf[GeneralComparison] ||
         condition.isInstanceOf[CompareToIntegerConstant]) &&
       ExpressionTool.dependsOnVariable(condition, Array(positionVariable))) {
-      val comp: ComparisonExpression =
-        condition.asInstanceOf[ComparisonExpression]
+      val comp                        = condition.asInstanceOf[ComparisonExpression]
       val operands: Array[Expression] =
         Array(comp.getLhsExpression, comp.getRhsExpression)
-      if (ExpressionTool.dependsOnVariable(flwor, Array(positionVariable))) {
+      if (ExpressionTool.dependsOnVariable(flwor, Array(positionVariable)))
         return false
-      }
       breakable {
         for (op <- 0 until 2) {
           val thisVar: Array[Binding] = Array(this.getRangeVariable)
-          if (positionVariable != null && operands(op)
-            .isInstanceOf[VariableReference] &&
-            !changed) {
-            val varRefs: List[VariableReference] =
-              new ArrayList[VariableReference]()
-            ExpressionTool.gatherVariableReferences(condition,
-              positionVariable,
-              varRefs)
-            if (varRefs.size == 1 && varRefs.get(0) == operands(op) &&
+          if (positionVariable != null && operands(op).isInstanceOf[VariableReference] && ! changed) {
+            val varRefs = new ArrayList[VariableReference]()
+            ExpressionTool.gatherVariableReferences(condition, positionVariable, varRefs)
+            if (varRefs.size == 1 && (varRefs.get(0) eq operands(op)) &&
               !ExpressionTool.dependsOnFocus(operands(1 - op)) &&
               !ExpressionTool.dependsOnVariable(operands(1 - op), thisVar)) {
-              val rsc: RetainedStaticContext = new RetainedStaticContext(
-                visitor.getStaticContext)
-              val position: Expression = SystemFunction.makeCall("position", rsc)
-              val predicate: Expression = condition.copy(new RebindingMap())
-              val child: Operand =
-                if (op == 0) predicate.asInstanceOf[ComparisonExpression].getLhs
-                else predicate.asInstanceOf[ComparisonExpression].getRhs
+              val rsc                   = new RetainedStaticContext(visitor.getStaticContext)
+              val position = SystemFunction.makeCall("position", rsc)
+              val predicate      = condition.copy(new RebindingMap())
+              val child          =
+                if (op == 0)
+                  predicate.asInstanceOf[ComparisonExpression].getLhs
+                else
+                  predicate.asInstanceOf[ComparisonExpression].getRhs
               child.setChildExpression(position)
-              if (debug) {
+              if (debug)
                 opt.trace(
                   "Replaced positional variable in predicate by position",
-                  predicate)
-              }
+                  predicate
+                )
               selection = new FilterExpression(selection, predicate)
               ExpressionTool.copyLocationInfo(predicate, selection)
-              val cit: ContextItemStaticInfo =
-                config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
+              val cit = config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
               selection = selection.typeCheck(visitor, cit)
-              if (!ExpressionTool.dependsOnVariable(flwor,
+              if (! ExpressionTool.dependsOnVariable(flwor,
                 Array(positionVariable))) {
                 positionVariable = null
               }
@@ -208,27 +195,23 @@ class ForClause extends Clause {
     if (positionVariable == null) {
       val thisVar: Array[Binding] = Array(this.getRangeVariable)
       if (opt.isVariableReplaceableByDot(condition, thisVar)) {
-        val replacement: Expression = new ContextItemExpression()
-        val found: Boolean = ExpressionTool.inlineVariableReferences(
+        val replacement = new ContextItemExpression()
+        val found       = ExpressionTool.inlineVariableReferences(
           condition,
           this.getRangeVariable,
           replacement)
         if (found) {
-          var cit: ContextItemStaticInfo =
-            config.makeContextItemStaticInfo(getSequence.getItemType, maybeUndefined = true)
-          var predicate: Expression = condition.typeCheck(visitor, cit)
-          val rel: Affinity.Affinity =
-            th.relationship(predicate.getItemType, BuiltInAtomicType.INTEGER)
+          var cit       = config.makeContextItemStaticInfo(getSequence.getItemType, maybeUndefined = true)
+          var predicate = condition.typeCheck(visitor, cit)
+          val rel = th.relationship(predicate.getItemType, BuiltInAtomicType.INTEGER)
           if (rel != Affinity.DISJOINT) {
-            val rsc: RetainedStaticContext = new RetainedStaticContext(
-              visitor.getStaticContext)
+            val rsc = new RetainedStaticContext(visitor.getStaticContext)
             predicate = SystemFunction.makeCall("boolean", rsc, predicate)
             assert(predicate != null)
           }
           selection = new FilterExpression(selection, predicate)
           ExpressionTool.copyLocationInfo(predicate, selection)
-          cit =
-            config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
+          cit = config.makeContextItemStaticInfo(selectionContextItemType, maybeUndefined = true)
           selection = selection.typeCheck(visitor, cit)
           changed = true
         }
@@ -241,19 +224,17 @@ class ForClause extends Clause {
         classOf[KeyFn])) {
         this.setSequence(selection)
       } else {
-        val path: Expression =
-          ExpressionTool.makePathExpression(head, selection)
+        val path = ExpressionTool.makePathExpression(head, selection)
         if (path.isInstanceOf[SlashExpression]) {
           ExpressionTool.copyLocationInfo(condition, path)
           val k: Expression = visitor
             .obtainOptimizer()
             .convertPathExpressionToKey(path.asInstanceOf[SlashExpression],
               visitor)
-          if (k == null) {
+          if (k == null)
             this.setSequence(path)
-          } else {
+          else
             this.setSequence(k)
-          }
           sequenceOp.typeCheck(visitor, contextItemType)
           sequenceOp.optimize(visitor, contextItemType)
         }
@@ -262,9 +243,8 @@ class ForClause extends Clause {
     changed
   }
 
-  override def processOperands(processor: OperandProcessor): Unit = {
+  def processOperands(processor: OperandProcessor): Unit =
     processor.processOperand(sequenceOp)
-  }
 
   override def gatherVariableReferences(
                                          visitor: ExpressionVisitor,
@@ -291,13 +271,13 @@ class ForClause extends Clause {
     }
   }
 
-  override def addToPathMap(pathMap: PathMap,
+  def addToPathMap(pathMap: PathMap,
                             pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {
     val varPath = getSequence.addToPathMap(pathMap, pathMapNodeSet)
     pathMap.registerPathForVariable(rangeVariable, varPath)
   }
 
-  override def explain(out: ExpressionPresenter): Unit = {
+  def explain(out: ExpressionPresenter): Unit = {
     out.startElement("for")
     out.emitAttribute("var", getRangeVariable.getVariableQName)
     out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)

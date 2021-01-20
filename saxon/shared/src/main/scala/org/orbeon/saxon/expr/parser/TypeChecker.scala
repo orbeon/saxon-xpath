@@ -307,7 +307,7 @@ class TypeChecker {
             exp.setRetainedStaticContextLocally(
               env.makeRetainedStaticContext())
           }
-          var cexp: Expression = Atomizer.makeAtomizer(exp, role)
+          var cexp = Atomizer.makeAtomizer(exp, role)
           ExpressionTool.copyLocationInfo(exp, cexp)
           exp = cexp
           cexp = exp.simplify()

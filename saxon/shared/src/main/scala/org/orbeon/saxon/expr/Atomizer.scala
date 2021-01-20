@@ -70,10 +70,11 @@ object Atomizer {
 
   val UNTYPED_KINDS: UType = UType.TEXT.union(UType.DOCUMENT)
 
-  val UNTYPED_IF_UNTYPED_KINDS: UType = UType.TEXT
-    .union(UType.ELEMENT)
-    .union(UType.DOCUMENT)
-    .union(UType.ATTRIBUTE)
+  val UNTYPED_IF_UNTYPED_KINDS: UType =
+    UType.TEXT
+      .union(UType.ELEMENT)
+      .union(UType.DOCUMENT)
+      .union(UType.ATTRIBUTE)
 
   def getAtomizingIterator(base: SequenceIterator, oneToOne: Boolean): SequenceIterator = {
     val properties = base.getProperties
