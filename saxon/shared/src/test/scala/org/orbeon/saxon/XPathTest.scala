@@ -192,7 +192,7 @@ class XPathTest extends AnyFunSpec {
           |                        'M', 'MM'),
           |                        'D', 'DD'),
           |                        'Y', 'YYYY'),
-          |    $format-en   := format-en/string(),
+          |    $format-en   := format-en,
           |    $format-lang := format-lang/string(),
           |    $translated  := translate($duplicate, $format-en, $format-lang)
           |return
