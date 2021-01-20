@@ -93,6 +93,37 @@ class XPathTest extends AnyFunSpec {
 
     val docElem = doc.children.next()
 
+    val doc2 = {
+      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
+
+      val handler = {
+        val handler = new SaxonTransformerFactory(Configuration).newTransformerHandler
+        handler.setResult(treeBuilder)
+        handler
+      }
+
+      def writeText(t: String) =
+        handler.characters(t.toCharArray, 0, t.length)
+
+      val EmptyAtts = new AttributesImpl
+
+      handler.startDocument()
+      handler.startElement("", "_", "_", EmptyAtts)
+      handler.startElement("", "input-date-prop", "input-date-prop", EmptyAtts)
+      writeText("[M]/[D]/[Y]")
+      handler.endElement("", "input-date-prop", "input-date-prop")
+      handler.startElement("", "format-en", "format-en", EmptyAtts)
+      writeText("MDY")
+      handler.endElement("", "format-en", "format-en")
+      handler.startElement("", "format-lang", "format-lang", EmptyAtts)
+      writeText("MDY")
+      handler.endElement("", "format-lang", "format-lang")
+      handler.endElement("", "_", "_")
+      handler.endDocument()
+
+      treeBuilder.getCurrentRoot
+    }
+
     val Expected = List(
       ("."                                          , int, false, "2020"),
       ("42"                                         , int, false, "42"),
@@ -147,20 +178,28 @@ class XPathTest extends AnyFunSpec {
       ("""string(/root/first-name)""",                             doc,     false, "Wile"),
       (
         """
-          |let $format      := '[M]/[D]/[Y]',
+          |let $format-en   := 'b',
+          |    $format-lang := format-lang/string()
+          |return
+          |    concat($format-en, $format-lang)
+          |
+          |""".stripMargin,                                        doc2.children.next(), false, "bMDY"),
+      (
+        """
+          |let $format      := string(input-date-prop),
           |    $cleaned     := translate($format, '[01]', ''),
           |    $duplicate   := replace(replace(replace($cleaned,
           |                        'M', 'MM'),
           |                        'D', 'DD'),
           |                        'Y', 'YYYY'),
-          |    $format-en   := 'MDY',
-          |    $format-lang := 'MDY',
+          |    $format-en   := format-en/string(),
+          |    $format-lang := format-lang/string(),
           |    $translated  := translate($duplicate, $format-en, $format-lang)
           |return
           |    $translated
           |
-          |""".stripMargin,                                         doc, false, "MM/DD/YYYY"),
-    )
+          |""".stripMargin,                                         doc2.children.next(), false, "MM/DD/YYYY"),
+      )
 
     for ((in, ctx, isAVT, out) <- Expected)
       it(s"must evaluate `$in`") {
