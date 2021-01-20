@@ -6,13 +6,10 @@ import org.orbeon.saxon.value.SequenceType
 
 object TreatExpression {
 
-  def make(sequence: Expression, `type`: SequenceType): Expression =
-    make(sequence, `type`, "XPDY0050")
-
   def make(
     sequence  : Expression,
     `type`    : SequenceType,
-    errorCode : String
+    errorCode : String = "XPDY0050"
   ): Expression = {
     val role = new RoleDiagnostic(RoleDiagnostic.TYPE_OP, "treat as", 0)
     role.setErrorCode(errorCode)
