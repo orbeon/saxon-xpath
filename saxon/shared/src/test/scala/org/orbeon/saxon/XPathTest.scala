@@ -168,6 +168,8 @@ class XPathTest extends AnyFunSpec {
       ("(*[1])/name(.) = 'first-name'",                            docElem, false, "true"),
       ("(*[1])/name() = 'first-name'",                             docElem, false, "true"),
       ("""There are {41 + 1} {*[3]}s""",                           docElem, true,  "There are 42 Coyotes"),
+      (""" "foo" """,                                              doc,     false, "foo"),
+      (""" 'foo' """,                                              doc,     false, "foo"),
       ("""for $parent in .[
             lower-case(string(*[1])) = ('wile', 'road')
           ]
@@ -199,7 +201,7 @@ class XPathTest extends AnyFunSpec {
           |    $translated
           |
           |""".stripMargin,                                         doc2.children.next(), false, "MM/DD/YYYY"),
-      )
+    )
 
     for ((in, ctx, isAVT, out) <- Expected)
       it(s"must evaluate `$in`") {

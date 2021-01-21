@@ -648,8 +648,7 @@ final class Tokenizer {
           nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
           nextToken = Token.NUMBER
           return
-        case '"' =>
-        case '\'' =>
+        case '"' | '\'' =>
           nextTokenValue = ""
           breakable {
             while (true) {
