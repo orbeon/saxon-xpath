@@ -165,5 +165,4 @@ class Sum extends FoldingFunction {
 
   override def getCompilerName(): String = "SumCompiler"
 
-  override def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context,args)
 }
