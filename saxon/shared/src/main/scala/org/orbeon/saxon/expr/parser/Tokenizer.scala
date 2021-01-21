@@ -225,10 +225,10 @@ final class Tokenizer {
           if (op == Token.UNKNOWN || followsOperator(oldPrecedingToken)) {
             currentToken = getFunctionType(currentTokenValue).asInstanceOf[Int]
             lookAhead() // swallow the "("
-          }
-          else currentToken = op
+          } else
+            currentToken = op
         case Token.LCURLY =>
-          if (!(state == Tokenizer.SEQUENCE_TYPE_STATE)) {
+          if (state != Tokenizer.SEQUENCE_TYPE_STATE) {
             currentToken = Token.KEYWORD_CURLY
             lookAhead() // swallow the "{"
           }
@@ -257,7 +257,8 @@ final class Tokenizer {
               currentToken = Token.COPY
           }
         case Token.PERCENT =>
-          if (currentTokenValue == "declare") currentToken = Token.DECLARE_ANNOTATED
+          if (currentTokenValue == "declare")
+            currentToken = Token.DECLARE_ANNOTATED
         case Token.NAME =>
           val candidate =
             currentTokenValue match {
@@ -267,7 +268,8 @@ final class Tokenizer {
               case "namespace"              => Token.NAMESPACE_QNAME
               case _                        => -1
             }
-          if (candidate != -1) { // <'element' QName '{'> constructor
+          if (candidate != -1) {
+            // <'element' QName '{'> constructor
             // <'attribute' QName '{'> constructor
             // <'processing-instruction' QName '{'> constructor
             // <'namespace' QName '{'> constructor
@@ -280,8 +282,8 @@ final class Tokenizer {
               currentTokenValue = qname
               lookAhead()
               return
-            }
-            else { // backtrack (we don't have 2-token lookahead; this is the
+            } else {
+              // backtrack (we don't have 2-token lookahead; this is the
               // only case where it's needed. So we backtrack instead.)
               currentToken = Token.NAME
               currentTokenValue = saveTokenValue
@@ -293,16 +295,19 @@ final class Tokenizer {
           val composite = currentTokenValue + ' ' + nextTokenValue
           val `val` = Token.doubleKeywords.get(composite)
           if (`val` == null) {
-          }
-          else {
+            //break
+          } else {
             currentToken = `val`
             currentTokenValue = composite
             // some tokens are actually triples
-            if (currentToken == Token.REPLACE_VALUE) { // this one's a quadruplet - "replace value of node"
+            if (currentToken == Token.REPLACE_VALUE) {
+              // this one's a quadruplet - "replace value of node"
               lookAhead()
-              if (nextToken != Token.NAME || !(nextTokenValue == "of")) throw new XPathException("After '" + composite + "', expected 'of'")
+              if (nextToken != Token.NAME || !(nextTokenValue == "of"))
+                throw new XPathException("After '" + composite + "', expected 'of'")
               lookAhead()
-              if (nextToken != Token.NAME || !(nextTokenValue == "node")) throw new XPathException("After 'replace value of', expected 'node'")
+              if (nextToken != Token.NAME || !(nextTokenValue == "node"))
+                throw new XPathException("After 'replace value of', expected 'node'")
               nextToken = currentToken // to reestablish after-operator state
             }
             lookAhead()
@@ -351,7 +356,7 @@ final class Tokenizer {
         return
       }
       var c = input.charAt({
-        inputOffset += 1;
+        inputOffset += 1
         inputOffset - 1
       })
 
@@ -362,14 +367,13 @@ final class Tokenizer {
             c = input.charAt(inputOffset)
             c match {
               case ':' =>
-                if (!foundColon) {
+                if (! foundColon) {
                   if (precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) {
                     // only NCName allowed after "? in a lookup expression, or after *:
                     nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
                     nextToken = Token.NAME
                     return
-                  }
-                  if (inputOffset + 1 < inputLength) {
+                  } else if (inputOffset + 1 < inputLength) {
                     val nc = input.charAt(inputOffset + 1)
                     if (nc == ':') {
                       nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
@@ -466,7 +470,8 @@ final class Tokenizer {
             val pragmaStart = inputOffset
             var nestingDepth = 1
             while (nestingDepth > 0 && inputOffset < (inputLength - 1)) {
-              if (input.charAt(inputOffset) == '\n') incrementLineNumber()
+              if (input.charAt(inputOffset) == '\n')
+                incrementLineNumber()
               else if (input.charAt(inputOffset) == '#' && input.charAt(inputOffset + 1) == ')') {
                 nestingDepth -= 1
                 inputOffset += 1
@@ -675,10 +680,9 @@ final class Tokenizer {
           }
           // maintain line number if there are newlines in the string
           if (nextTokenValue.indexOf('\n') >= 0)
-            for (i <- 0 until nextTokenValue.length) {
+            for (i <- 0 until nextTokenValue.length)
               if (nextTokenValue.charAt(i) == '\n')
                 incrementLineNumber(nextTokenStartOffset + i + 1)
-            }
           //nextTokenValue = nextTokenValue.intern();
           nextToken = Token.STRING_LITERAL
           return
