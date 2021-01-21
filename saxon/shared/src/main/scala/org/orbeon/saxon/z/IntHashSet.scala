@@ -119,7 +119,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     if (_size == 0) {
       IntEmptySet.getInstance
     } else {
-      val s: IntHashSet = new IntHashSet(_size, ndv)
+      val s = new IntHashSet(_size, ndv)
       s._nmax = _nmax
       s._size = _size
       s._nlo = _nlo
@@ -139,13 +139,13 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       _values(i) = ndv
   }
 
-  def size(): Int = _size
+  def size: Int = _size
 
   def isEmpty: Boolean = _size == 0
 
   def getValues: Array[Int] = {
-    var index: Int = 0
-    val values: Array[Int] = Array.ofDim[Int](_size)
+    var index = 0
+    val values = Array.ofDim[Int](_size)
     for (_value <- _values if _value != ndv) {
       values(index) = _value
       index += 1
@@ -163,8 +163,8 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     _size -= 1
     while (true) {
       _values(i) = ndv
-      val j: Int = i
-      var r: Int = 0
+      val j = i
+      var r = 0
       do {
         i = (i - 1) & _mask
         if (_values(i) == ndv)
@@ -262,7 +262,6 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     case other: IntHashSet =>
       size == other.size && containsAll(other)
     case _ => false
-
   }
 
   override def hashCode: Int = {
