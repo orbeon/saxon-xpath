@@ -189,7 +189,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       if (_size > MAX_SIZE)
         throw new RuntimeException("Too many elements (> " + MAX_SIZE + ')')
       if (_nlo < _size && _size <= _nhi)
-        this.capacity = _size
+        setCapacity(_size)
       true
     } else {
       // leave set unchanged
