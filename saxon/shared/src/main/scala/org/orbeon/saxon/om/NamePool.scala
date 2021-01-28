@@ -48,12 +48,13 @@ object NamePool {
    * FP_MASK is a mask used to obtain a fingerprint from a nameCode. Given a
    * nameCode nc, the fingerprint is <code>nc &amp; NamePool.FP_MASK</code>.
    * (In practice, Saxon code often uses the literal constant 0xfffff,
-   * to extract the bottom 20 bits).
-   * <p>The difference between a fingerprint and a nameCode is that
+   * to extract the bottom 20 bits).\
+   *
+   * The difference between a fingerprint and a nameCode is that
    * a nameCode contains information
    * about the prefix of a name, the fingerprint depends only on the namespace
    * URI and local name. Note that the "null" nameCode (-1) does not produce
-   * the "null" fingerprint (also -1) when this mask is applied.</p>
+   * the "null" fingerprint (also -1) when this mask is applied.
    */
   val FP_MASK = 0xfffff
 
@@ -82,18 +83,19 @@ class NamePool {
   def getUnprefixedQName(nameCode: Int): StructuredQName = {
     val fp = nameCode & FP_MASK
     if ((fp & USER_DEFINED_MASK) == 0)
-      return StandardNames.getUnprefixedQName(fp)
-    integerToQName.get(fp)
+      StandardNames.getUnprefixedQName(fp)
+    else
+      integerToQName.get(fp)
   }
 
   def getStructuredQName(fingerprint: Int): StructuredQName =
     getUnprefixedQName(fingerprint)
 
-  def suggestPrefixForURI(uri: String): String = {
+  def suggestPrefixForURI(uri: String): String =
     if (uri == NamespaceConstant.XML)
-      return "xml"
-    suggestedPrefixes.get(uri)
-  }
+      "xml"
+    else
+      suggestedPrefixes.get(uri)
 
   def allocateFingerprint(uri: String, local: String): Int =
     synchronized {

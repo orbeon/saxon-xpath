@@ -21,8 +21,10 @@ import scala.util.control.Breaks._
   * This is related to the `MappingIterator` class: it differs in that it
   * sets each item being processed as the context item
   */
-class ContextMappingIterator(private var action: ContextMappingFunction,
-                             private var context: XPathContext)
+class ContextMappingIterator(
+  private var action  : ContextMappingFunction,
+  private var context : XPathContext
+)
   extends SequenceIterator {
 
   private val base: FocusIterator = context.getCurrentIterator
