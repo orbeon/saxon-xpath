@@ -31,16 +31,17 @@ class ContextMappingIterator(private var action: ContextMappingFunction,
 
   def next(): Item = {
     var nextItem: Item = null
-    breakable {
-      while (true) {
-        if (stepIterator != null) {
-          nextItem = stepIterator.next()
-          if (nextItem != null) {
-            break()
-          } else {
-            stepIterator = null
-          }
-        }
+    // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
+    var exitLoop = false
+    while (! exitLoop) {
+      if (stepIterator != null) {
+        nextItem = stepIterator.next()
+        if (nextItem != null)
+          exitLoop = true
+        else
+          stepIterator = null
+      }
+      if (! exitLoop) {
         if (base.next() != null) {
           // Call the supplied mapping function
           stepIterator = action.map(context)
@@ -48,7 +49,7 @@ class ContextMappingIterator(private var action: ContextMappingFunction,
           if (nextItem == null)
             stepIterator = null
           else
-            break()
+            exitLoop = true
         } else {
           stepIterator = null
           return null

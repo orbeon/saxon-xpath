@@ -544,16 +544,27 @@ class TinyTree(config: Configuration, statistics: Statistics)
    * @param parent the node number of the element
    * @param nsMap  namespace map identifying the prefix and uri
    */
-  def addNamespaces(parent: Int, nsMap: NamespaceMap): Unit = {
+  def addNamespaces(
+    parent: Int,
+    nsMap : NamespaceMap
+  ): Unit = {
     usesNamespaces = true
-    for (i <- 0 until numberOfNamespaces if namespaceMaps(i) == nsMap) {
-      beta(parent) = i
-      return
+    // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
+    var i = 0
+    var exitLoop = false
+    while (! exitLoop && i < numberOfNamespaces) {
+      if (namespaceMaps(i) == nsMap) {
+        beta(parent) = i
+        exitLoop = true
+      } else
+        i += 1
     }
-    ensureNamespaceCapacity(1)
-    namespaceMaps(numberOfNamespaces) = nsMap
-    beta(parent) = numberOfNamespaces
-    numberOfNamespaces += 1
+    if (! exitLoop) {
+      ensureNamespaceCapacity(1)
+      namespaceMaps(numberOfNamespaces) = nsMap
+      beta(parent) = numberOfNamespaces
+      numberOfNamespaces += 1
+    }
   }
 
   def getNode(nr: Int): TinyNodeImpl =

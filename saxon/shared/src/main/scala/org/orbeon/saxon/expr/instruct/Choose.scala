@@ -599,19 +599,26 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
   }
 
   private def choose(context: XPathContext): Int = {
+    // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
     val sizeInt = size
-    for (i <- 0 until sizeInt) {
-      var b = false
-      try b = getCondition(i).effectiveBooleanValue(context)
+    var i = 0
+    var exitLoop = false
+    while (! exitLoop && i < sizeInt) {
+      try
+        if (getCondition(i).effectiveBooleanValue(context))
+          exitLoop = true
+        else
+          i += 1
       catch {
         case e: XPathException =>
           e.maybeSetFailingExpression(getCondition(i))
           throw e
       }
-      if (b)
-        return i
     }
-    -1
+    if (exitLoop)
+      i
+    else
+      -1
   }
 
   override def evaluateItem(context: XPathContext): Item = {
