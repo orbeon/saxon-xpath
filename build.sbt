@@ -20,6 +20,9 @@ ThisBuild / traceLevel        := 0
 //ThisBuild / Compile    / publishArtifact := false
 //ThisBuild / packageDoc / publishArtifact := false
 
+sources in (Compile, doc) := Nil
+publishArtifact in (Compile, packageDoc) := false
+
 lazy val DebugTest = config("debug-test") extend Test
 
 lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("saxon"))
