@@ -601,15 +601,20 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         throw e
     }
 
-  def evaluateManyToMany(iter0: SequenceIterator,
-                         iter1: SequenceIterator,
-                         context: XPathContext): Boolean =
+  def evaluateManyToMany(
+    iter0   : SequenceIterator,
+    iter1   : SequenceIterator,
+    context : XPathContext
+  ): Boolean =
     try {
       var exhausted0 = false
       var exhausted1 = false
+
       val value0 = new ArrayList[AtomicValue]()
       val value1 = new ArrayList[AtomicValue]()
+
       val boundComparer = comparer.provideContext(context)
+
       while (true) {
         if (!exhausted0) {
           val item0 = iter0.next().asInstanceOf[AtomicValue]
@@ -618,16 +623,25 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               return false
             exhausted0 = true
           } else {
-            for (item1 <- value1.asScala if GeneralComparison.compare(item0,
-              singletonOperator,
-              item1,
-              boundComparer,
-              needsRuntimeCheck,
-              context,
-              getRetainedStaticContext)) {
-              iter0.close()
-              iter1.close()
-              return true
+            // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
+            val it1 = value1.iterator
+            while (it1.hasNext) {
+              val item1 = it1.next()
+              if (
+                GeneralComparison.compare(
+                  item0,
+                  singletonOperator,
+                  item1,
+                  boundComparer,
+                  needsRuntimeCheck,
+                  context,
+                  getRetainedStaticContext
+                )
+              ) {
+                iter0.close()
+                iter1.close()
+                return true
+              }
             }
             if (! exhausted1)
               value0.add(item0)
@@ -640,16 +654,25 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               return false
             exhausted1 = true
           } else {
-            for (item0 <- value0.asScala if GeneralComparison.compare(item0,
-              singletonOperator,
-              item1,
-              boundComparer,
-              needsRuntimeCheck,
-              context,
-              getRetainedStaticContext)) {
-              iter0.close()
-              iter1.close()
-              return true
+            // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
+            val it0 = value0.iterator
+            while (it0.hasNext) {
+              val item0 = it0.next()
+              if (
+                GeneralComparison.compare(
+                  item0,
+                  singletonOperator,
+                  item1,
+                  boundComparer,
+                  needsRuntimeCheck,
+                  context,
+                  getRetainedStaticContext
+                )
+              ) {
+                iter0.close()
+                iter1.close()
+                return true
+              }
             }
             if (! exhausted0)
               value1.add(item1)
