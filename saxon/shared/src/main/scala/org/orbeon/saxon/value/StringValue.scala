@@ -191,24 +191,13 @@ object StringValue {
   }
 }
 
-class StringValue extends AtomicValue {
+class StringValue(
+  _value     : CharSequence,
+  _typeLabel : AtomicType = BuiltInAtomicType.STRING
+) extends AtomicValue {
 
-  // may be zero-length, will never be null
-  var value: CharSequence = ""
-
-  typeLabel = BuiltInAtomicType.STRING
-
-  def this(value: CharSequence) = {
-    this()
-    this.value = if (value == null) "" else value
-    typeLabel = BuiltInAtomicType.STRING
-  }
-
-  def this(value: CharSequence, typeLabel: AtomicType) = {
-    this()
-    this.value = value
-    this.typeLabel = typeLabel
-  }
+  var value = if (_value eq null) "" else _value // may be zero-length, will never be null
+  typeLabel = _typeLabel
 
   def setContainsNoSurrogates(): Unit =
     synchronized {
