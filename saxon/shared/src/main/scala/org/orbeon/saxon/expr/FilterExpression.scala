@@ -389,7 +389,11 @@ class FilterExpression(base: Expression, filter: Expression)
     // Rewrite child::X[last()] as child::X[empty(following-sibling::X)] - especially useful for patterns
 
     getFilter match {
-      case isLastExpression: IsLastExpression if getBase.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD && getBase.isInstanceOf[AxisExpression] && isLastExpression.getCondition =>
+      case isLastExpression: IsLastExpression
+        if isLastExpression.getCondition       &&
+          getBase.isInstanceOf[AxisExpression] &&
+          getBase.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD =>
+
         val test = getBase.asInstanceOf[AxisExpression].getNodeTest
         val fs = new AxisExpression(AxisInfo.FOLLOWING_SIBLING, test)
         setFilter(SystemFunction.makeCall("empty", getRetainedStaticContext, fs))
