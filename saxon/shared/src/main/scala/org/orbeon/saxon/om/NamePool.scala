@@ -130,8 +130,9 @@ class NamePool {
   def getURI(nameCode: Int): String = {
     val fp = nameCode & FP_MASK
     if ((fp & USER_DEFINED_MASK) == 0)
-      return StandardNames.getURI(fp)
-    getUnprefixedQName(fp).getURI
+      StandardNames.getURI(fp)
+    else
+      getUnprefixedQName(fp).getURI
   }
 
   def getLocalName(nameCode: Int): String =

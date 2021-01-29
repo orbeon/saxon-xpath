@@ -84,25 +84,24 @@ object ContextItemAccessorFunction {
 class ContextItemAccessorFunction extends ContextAccessorFunction {
 
   def bindContext(context: XPathContext): Function = {
-    val ci: Item = context.getContextItem
+    val ci = context.getContextItem
     if (ci == null) {
       val callable: Callable = (context1, arguments) =>
         throw new XPathException(
           "Context item for " + getFunctionName.getDisplayName +
             " is absent",
           "XPDY0002")
-      val fit: FunctionItemType =
-        new SpecificFunctionType(Array(), SequenceType.ANY_SEQUENCE)
+      val fit = new SpecificFunctionType(Array(), SequenceType.ANY_SEQUENCE)
       return new CallableFunction(0, callable, fit)
     }
-    val fn: ConstantFunction = new ConstantFunction(evaluate(ci, context))
+    val fn = new ConstantFunction(evaluate(ci, context))
     fn.setDetails(getDetails)
     fn.setRetainedStaticContext(getRetainedStaticContext)
     fn
   }
 
   def evaluate(item: Item, context: XPathContext): GroundedValue = {
-    val f: SystemFunction = SystemFunction.makeFunction(
+    val f = SystemFunction.makeFunction(
       getDetails.name.getLocalPart,
       getRetainedStaticContext,
       1)
@@ -113,17 +112,16 @@ class ContextItemAccessorFunction extends ContextAccessorFunction {
     evaluate(context.getContextItem, context)
 
   def makeFunctionCall(arguments: Array[Expression]): Expression = {
-    val arg: Expression = new ContextItemExpression()
+    val arg = new ContextItemExpression
     SystemFunction.makeCall(getFunctionName.getLocalPart,
       getRetainedStaticContext,
       arg)
   }
 
   def makeContextItemExplicit(): Expression = {
-    val args: Array[Expression] = Array(new ContextItemExpression())
+    val args = Array(new ContextItemExpression())
     SystemFunction.makeCall(getFunctionName.getLocalPart,
       getRetainedStaticContext,
       args.toIndexedSeq: _*)
   }
-
 }
