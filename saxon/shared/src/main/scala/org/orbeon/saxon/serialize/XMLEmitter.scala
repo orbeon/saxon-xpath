@@ -272,8 +272,7 @@ class XMLEmitter extends Emitter {
     previousAtomic = false
     if (! started) {
       openDocument()
-    } else if (requireWellFormed && elementStack.isEmpty && startedElement &&
-      !unfailing) {
+    } else if (requireWellFormed && elementStack.isEmpty && startedElement && ! unfailing) {
       val err = new XPathException(
         "When 'standalone' or 'doctype-system' is specified, " +
           "the document must be well-formed; but this document contains more than one top-level element")
@@ -361,11 +360,13 @@ class XMLEmitter extends Emitter {
   def setIndentForNextAttribute(indent: Int): Unit =
     indentForNextAttribute = indent
 
-  private def attribute(nameCode: NodeName,
-                        value: CharSequence,
-                        properties: Int,
-                        isFirst: Boolean): Unit = {
-    var displayName: String = nameCode.getDisplayName
+  private def attribute(
+    nameCode   : NodeName,
+    value      : CharSequence,
+    properties : Int,
+    isFirst    : Boolean
+  ): Unit = {
+    var displayName = nameCode.getDisplayName
     if (! allCharactersEncodable) {
       val badchar = testCharacters(displayName)
       if (badchar != 0) {
@@ -403,10 +404,13 @@ class XMLEmitter extends Emitter {
   def emptyElementTagCloser(displayName: String, nameCode: NodeName): String =
     if (canonical) "></" + displayName + ">" else "/>"
 
-  def writeAttribute(elCode: NodeName,
-                     attname: String,
-                     value: CharSequence,
-                     properties: Int): Unit = {
+  def writeAttribute(
+    elCode     : NodeName,
+    attname    : String,
+    value      : CharSequence,
+    properties : Int
+  ): Unit = {
+
     val `val` = value.toString
     writer.write(attname)
     if (ReceiverOption.contains(properties, ReceiverOption.NO_SPECIAL_CHARS)) {
@@ -414,8 +418,7 @@ class XMLEmitter extends Emitter {
       writer.write(delimiter)
       writer.write(`val`)
       writer.write(delimiter)
-    } else if (ReceiverOption.contains(properties,
-      ReceiverOption.USE_NULL_MARKERS)) {
+    } else if (ReceiverOption.contains(properties, ReceiverOption.USE_NULL_MARKERS)) {
       writer.write('=')
       val delim =
         if (`val`.indexOf('"') >= 0 && `val`.indexOf('\'') < 0)
@@ -617,16 +620,22 @@ class XMLEmitter extends Emitter {
   @throws[java.io.IOException]
   @throws[XPathException]
   def writeEscape(chars: CharSequence, inAttribute: Boolean): Unit = {
+
     var segstart = 0
     var disabled = false
-    val specialChars = if (inAttribute) attSpecials
-    else XMLEmitter.specialInText
+    val specialChars =
+      if (inAttribute)
+        attSpecials
+      else
+        XMLEmitter.specialInText
+
     chars match {
       case whitespace: CompressedWhitespace =>
         whitespace.writeEscape(specialChars, writer)
         return
       case _ =>
     }
+
     val clength = chars.length
     while (segstart < clength) {
       var i = segstart
@@ -635,48 +644,57 @@ class XMLEmitter extends Emitter {
         while (i < clength) {
           val c = chars.charAt(i)
           if (c < 127)
-            if (specialChars(c)) {
+            if (specialChars(c))
               break()
-            }
-
-            else i += 1
-          else if (c < 160) break()
-          else if (c == 0x2028) break()
-          else if (UTF16CharacterSet.isHighSurrogate(c)) break()
-          else if (!characterSet.inCharset(c)) break()
+            else
+              i += 1
+          else if (c < 160)
+            break()
+          else if (c == 0x2028)
+            break()
+          else if (UTF16CharacterSet.isHighSurrogate(c))
+            break()
+          else if (! characterSet.inCharset(c))
+            break()
           else i += 1
         }
       }
+
       // if this was the whole string write it out and exit
       if (i >= clength) {
-        if (segstart == 0) writeCharSequence(chars)
-        else writeCharSequence(chars.subSequence(segstart, i))
+        if (segstart == 0)
+          writeCharSequence(chars)
+        else
+          writeCharSequence(chars.subSequence(segstart, i))
         return
       }
+
       // otherwise write out this sequence
-      if (i > segstart) writeCharSequence(chars.subSequence(segstart, i))
+      if (i > segstart)
+        writeCharSequence(chars.subSequence(segstart, i))
+
       // examine the special character that interrupted the scan
       val c = chars.charAt(i)
-      if (c == 0) { // used to switch escaping on and off
+      if (c == 0) {
+        // used to switch escaping on and off
         disabled = ! disabled
-      }
-      else if (disabled) {
-        if (c > 127) if (UTF16CharacterSet.isHighSurrogate(c)) {
-          val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i + 1))
-          if (! characterSet.inCharset(cc)) {
-            val de = new XPathException("Character x" + Integer.toHexString(cc) + " is not available in the chosen encoding")
+      } else if (disabled) {
+        if (c > 127)
+          if (UTF16CharacterSet.isHighSurrogate(c)) {
+            val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i + 1))
+            if (! characterSet.inCharset(cc)) {
+              val de = new XPathException("Character x" + Integer.toHexString(cc) + " is not available in the chosen encoding")
+              de.setErrorCode("SERE0008")
+              throw de
+            }
+          } else if (! characterSet.inCharset(c)) {
+            val de = new XPathException("Character " + c + " (x" + Integer.toHexString(c.toInt) + ") is not available in the chosen encoding")
             de.setErrorCode("SERE0008")
             throw de
           }
-        }
-        else if (! characterSet.inCharset(c)) {
-          val de = new XPathException("Character " + c + " (x" + Integer.toHexString(c.toInt) + ") is not available in the chosen encoding")
-          de.setErrorCode("SERE0008")
-          throw de
-        }
         writer.write(c)
-      }
-      else if (c < 127) { // process special ASCII characters
+      } else if (c < 127) {
+        // process special ASCII characters
         c match {
           case '<' =>
             writer.write("&lt;")
@@ -698,11 +716,10 @@ class XMLEmitter extends Emitter {
             // C0 control characters
             characterReferenceGenerator.outputCharacterReference(c, writer)
         }
-      }
-      else if (c < 160 || c == 0x2028) { // XML 1.1 requires these characters to be written as character references
+      } else if (c < 160 || c == 0x2028) {
+        // XML 1.1 requires these characters to be written as character references
         characterReferenceGenerator.outputCharacterReference(c, writer)
-      }
-      else if (UTF16CharacterSet.isHighSurrogate(c)) {
+      } else if (UTF16CharacterSet.isHighSurrogate(c)) {
         i += 1
         val d = chars.charAt(i)
         val charval = UTF16CharacterSet.combinePair(c, d)
@@ -711,8 +728,8 @@ class XMLEmitter extends Emitter {
           writer.write(d)
         }
         else characterReferenceGenerator.outputCharacterReference(charval, writer)
-      }
-      else { // process characters not available in the current encoding
+      } else {
+        // process characters not available in the current encoding
         characterReferenceGenerator.outputCharacterReference(c, writer)
       }
       i += 1

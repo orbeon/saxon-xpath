@@ -8,7 +8,6 @@
 package org.orbeon.saxon.serialize
 
 import java.io.IOException
-
 import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.lib.SaxonOutputKeys
@@ -21,6 +20,7 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 
 import scala.collection.mutable
+
 
 /**
  * This class generates HTML output
@@ -209,11 +209,19 @@ abstract class HTMLEmitter extends XMLEmitter {
    * Output element start tag
    */
   @throws[XPathException]
-  override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int): Unit = {
+  override def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit = {
     uri = elemName.getURI
     super.startElement(elemName, `type`, attributes, namespaces, location, properties)
     parentElement = elementStack.head
-    if (elemName.hasURI("") && (parentElement.equalsIgnoreCase("script") || parentElement.equalsIgnoreCase("style"))) inScript = 0
+    if (elemName.hasURI("") && (parentElement.equalsIgnoreCase("script") || parentElement.equalsIgnoreCase("style")))
+      inScript = 0
     inScript += 1
     nodeNameStack.push(elemName)
   }
@@ -226,7 +234,7 @@ abstract class HTMLEmitter extends XMLEmitter {
    * a URL.
    */
   @throws[XPathException]
-  override  def writeAttribute(elCode: NodeName, attname: String, value: CharSequence, properties: Int): Unit = try {
+  override def writeAttribute(elCode: NodeName, attname: String, value: CharSequence, properties: Int): Unit = try {
     if (uri.isEmpty) if (HTMLEmitter.isBooleanAttribute(elCode.getLocalPart, attname, value.toString)) {
       writer.write(attname)
       return
@@ -242,16 +250,22 @@ abstract class HTMLEmitter extends XMLEmitter {
    */
   @throws[java.io.IOException]
   @throws[XPathException]
-  override  def writeEscape(chars: CharSequence, inAttribute: Boolean): Unit = {
+  override def writeEscape(chars: CharSequence, inAttribute: Boolean): Unit = {
+
     var segstart = 0
-    val specialChars = if (inAttribute) attSpecials
-    else specialInText
+    val specialChars =
+      if (inAttribute)
+        attSpecials
+      else
+        specialInText
+
     chars match {
       case whitespace: CompressedWhitespace =>
         whitespace.writeEscape(specialChars, writer)
         return
       case _ =>
     }
+
     var disabled = false
     while (segstart < chars.length) {
       var i = segstart
@@ -278,12 +292,17 @@ abstract class HTMLEmitter extends XMLEmitter {
       }
       // if this was the whole string, output the string and quit
       if (i == chars.length) {
-        if (segstart == 0) writeCharSequence(chars)
-        else writeCharSequence(chars.subSequence(segstart, i))
+        if (segstart == 0)
+          writeCharSequence(chars)
+        else
+          writeCharSequence(chars.subSequence(segstart, i))
         return
       }
+
       // otherwise, output this sequence and continue
-      if (i > segstart) writeCharSequence(chars.subSequence(segstart, i))
+      if (i > segstart)
+        writeCharSequence(chars.subSequence(segstart, i))
+
       val c = chars.charAt(i)
       if (c == 0) { // used to switch escaping on and off
         disabled = !disabled
@@ -345,7 +364,7 @@ abstract class HTMLEmitter extends XMLEmitter {
    * @param nameCode    the fingerprint of the name of the empty element
    * @return the string used to close an empty element tag.
    */
-  override  def emptyElementTagCloser(displayName: String, nameCode: NodeName): String = "></" + displayName + ">"
+  override def emptyElementTagCloser(displayName: String, nameCode: NodeName): String = "></" + displayName + ">"
 
   /**
    * Output an element end tag.
