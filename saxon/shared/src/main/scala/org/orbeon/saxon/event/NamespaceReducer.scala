@@ -15,8 +15,9 @@ import org.orbeon.saxon.trans.XPathException
 import java.util
 import scala.util.control.Breaks._
 
+
 /**
- * <tt>NamespaceReducer</tt> is a `ProxyReceiver` responsible for removing duplicate namespace
+ * `NamespaceReducer` is a `ProxyReceiver` responsible for removing duplicate namespace
  * declarations. It also ensures that an `xmlns=""` undeclaration is output when
  * necessary. Used on its own, the `NamespaceReducer` simply eliminates unwanted
  * namespace declarations. It can also be subclassed, in which case the subclass
@@ -80,10 +81,10 @@ class NamespaceReducer(val next: Receiver)
     // Record the current height of the namespace list so it can be reset at endElement time
     countStack(depth) = 0
     disinheritStack(depth) = ReceiverOption.contains(properties, ReceiverOption.DISINHERIT_NAMESPACES)
-    if ({
-      depth += 1
-      depth
-    } >= countStack.length) {
+
+    depth += 1
+
+    if (depth >= countStack.length) {
       countStack = util.Arrays.copyOf(countStack, depth * 2)
       disinheritStack = util.Arrays.copyOf(disinheritStack, depth * 2)
     }
@@ -146,11 +147,12 @@ class NamespaceReducer(val next: Receiver)
    */
   @throws[XPathException]
   override def endElement(): Unit = {
-    if ({
-      depth -= 1
-      depth + 1
-    } == 0)
+
+    if (depth == 0)
       throw new IllegalStateException("Attempt to output end tag with no matching start tag")
+
+    depth -= 1
+
     namespacesSize -= countStack(depth)
     nextReceiver.endElement()
   }

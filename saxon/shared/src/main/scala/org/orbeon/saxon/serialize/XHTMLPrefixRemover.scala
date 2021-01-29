@@ -28,7 +28,7 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
     }
     if (isSpecial(elemNodeName.getURI)) {
       val uri: String = elemNodeName.getURI
-      if (! elemNodeName.getPrefix.isEmpty)
+      if (elemNodeName.getPrefix.nonEmpty)
         elemNodeName = new FingerprintedQName("", uri, elemNodeName.getLocalPart)
       nameSpaceMap = nameSpaceMap.put("", uri)
     }

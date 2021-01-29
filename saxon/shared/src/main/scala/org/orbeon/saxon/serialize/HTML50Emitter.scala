@@ -1,11 +1,12 @@
 package org.orbeon.saxon.serialize
 
-import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.SchemaType
 import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.HTMLEmitter._
+
+import javax.xml.transform.OutputKeys
 
 object HTML50Emitter {
   setEmptyTag("area")
@@ -43,10 +44,12 @@ class HTML50Emitter extends HTMLEmitter {
     super.openDocument()
   }
 
-  override  def writeDocType(name: NodeName,
-                                      displayName: String,
-                                      systemId: String,
-                                      publicId: String): Unit =
+  override def writeDocType(
+    name        : NodeName,
+    displayName : String,
+    systemId    : String,
+    publicId    : String
+  ): Unit =
     if (systemId == null && publicId == null)
       writer.write("<!DOCTYPE HTML>")
     else
@@ -54,13 +57,15 @@ class HTML50Emitter extends HTMLEmitter {
 
   override  def writeDocTypeWithNullSystemId(): Boolean = true
 
-  override def startElement(elemName: NodeName,
-                            `type`: SchemaType,
-                            attributes: AttributeMap,
-                            namespaces: NamespaceMap,
-                            location: Location,
-                            properties: Int): Unit = {
-    if (!started) {
+  override def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit = {
+    if (! started) {
       openDocument()
       var systemId = outputProperties.getProperty(OutputKeys.DOCTYPE_SYSTEM)
       var publicId = outputProperties.getProperty(OutputKeys.DOCTYPE_PUBLIC)
@@ -71,12 +76,14 @@ class HTML50Emitter extends HTMLEmitter {
       writeDocType(null, "html", systemId, publicId)
       started = true
     }
-    super.startElement(elemName,
+    super.startElement(
+      elemName,
       `type`,
       attributes,
       namespaces,
       location,
-      properties)
+      properties
+    )
   }
 
   def rejectControlCharacters: Boolean = false

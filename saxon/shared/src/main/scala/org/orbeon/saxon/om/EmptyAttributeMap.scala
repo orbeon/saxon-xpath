@@ -13,8 +13,7 @@ import java.{util => ju}
   * An implementation of AttributeMap representing an empty AttributeMap
   */
 object EmptyAttributeMap {
-  private val THE_INSTANCE: EmptyAttributeMap = new EmptyAttributeMap()
-  def getInstance: EmptyAttributeMap = THE_INSTANCE
+  val getInstance: EmptyAttributeMap = new EmptyAttributeMap
 }
 
 class EmptyAttributeMap private () extends AttributeMap {

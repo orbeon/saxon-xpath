@@ -8,8 +8,6 @@ package org.orbeon.saxon.om
 
 
 import java.{lang => jl, util => ju}
-
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 
@@ -22,16 +20,15 @@ import scala.jdk.CollectionConverters._
 object AttributeMap {
 
   def fromList(list: ju.List[AttributeInfo]): AttributeMap = {
-    val n: Int = list.size
-    if (n == 0) {
+    val n = list.size
+    if (n == 0)
       EmptyAttributeMap.getInstance
-    } else if (n == 1) {
+    else if (n == 1)
       SingletonAttributeMap.of(list.get(0))
-    } else if (n <= SmallAttributeMap.LIMIT) {
+    else if (n <= SmallAttributeMap.LIMIT)
       new SmallAttributeMap(list)
-    } else {
+    else
       new LargeAttributeMap(list)
-    }
   }
 }
 
@@ -44,26 +41,24 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def get(uri: String, local: String): AttributeInfo = {
     for (att <- this.asScala) {
-      val attName: NodeName = att.getNodeName
-      if (attName.getLocalPart == local && attName.hasURI(uri)) {
+      val attName = att.getNodeName
+      if (attName.getLocalPart == local && attName.hasURI(uri))
         return att
-      }
     }
     null
   }
 
   def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
     for (att <- this.asScala) {
-      val attName: NodeName = att.getNodeName
-      if (attName.obtainFingerprint(namePool) == fingerprint) {
+      val attName = att.getNodeName
+      if (attName.obtainFingerprint(namePool) == fingerprint)
         return att
-      }
     }
     null
   }
 
   def getValue(uri: String, local: String): String = {
-    val att: AttributeInfo = get(uri, local)
+    val att = get(uri, local)
     if (att == null) null else att.getValue
   }
 
@@ -93,9 +88,8 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def asList: ju.List[AttributeInfo] = {
     val list = new ju.ArrayList[AttributeInfo](size)
-    for (a <- this.asScala) {
+    for (a <- this.asScala)
       list.add(a)
-    }
     list
   }
 

@@ -6,9 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
 
-import java.util.Properties
-
-import javax.xml.transform.OutputKeys
 import org.orbeon.saxon.event.{ProxyReceiver, Receiver, ReceiverOption}
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.{NamespaceConstant, SaxonOutputKeys}
@@ -17,6 +14,8 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.value.Whitespace
 
+import java.util.Properties
+import javax.xml.transform.OutputKeys
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -39,25 +38,20 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
 
   def setOutputProperties(details: Properties): Unit = {
     encoding = details.getProperty(OutputKeys.ENCODING)
-    if (encoding == null) {
+    if (encoding == null)
       encoding = "UTF-8"
-    }
     mediaType = details.getProperty(OutputKeys.MEDIA_TYPE)
-    if (mediaType == null) {
+    if (mediaType == null)
       mediaType = "text/html"
-    }
-    var htmlVn: String = details.getProperty(SaxonOutputKeys.HTML_VERSION)
-    if (htmlVn == null && !isXHTML) {
+    var htmlVn = details.getProperty(SaxonOutputKeys.HTML_VERSION)
+    if (htmlVn == null && ! isXHTML)
       htmlVn = details.getProperty(OutputKeys.VERSION)
-    }
-    if (htmlVn != null && htmlVn.startsWith("5")) {
+    if (htmlVn != null && htmlVn.startsWith("5"))
       htmlVersion = 5
-    }
   }
 
-  def setIsXHTML(xhtml: Boolean): Unit = {
+  def setIsXHTML(xhtml: Boolean): Unit =
     isXHTML = xhtml
-  }
 
   private def comparesEqual(name1: String, name2: String): Boolean =
     if (isXHTML)
@@ -79,21 +73,23 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
       name.getLocalPart.equalsIgnoreCase(local)
     }
 
-  override def startElement(elemName: NodeName,
-                            `type`: SchemaType,
-                            attributes: AttributeMap,
-                            namespaces: NamespaceMap,
-                            location: Location,
-                            properties: Int): Unit = {
+  override def startElement(
+    elemName   : NodeName,
+    `type`     : SchemaType,
+    attributes : AttributeMap,
+    namespaces : NamespaceMap,
+    location   : Location,
+    properties : Int
+  ): Unit = {
     if (droppingMetaTags == level) {
       if (matchesName(elemName, "meta")) {
         // if there was an http-equiv="ContentType" attribute, discard the meta element entirely
-        var found: Boolean = false
+        var found = false
         breakable {
           for (att <- attributes.iterator.asScala) {
-            val name: String = att.getNodeName.getLocalPart
+            val name = att.getNodeName.getLocalPart
             if (comparesEqual(name, "http-equiv")) {
-              val value: String = Whitespace.trim(att.getValue)
+              val value = Whitespace.trim(att.getValue)
               if (value.equalsIgnoreCase("Content-Type")) {
                 // case-blind comparison even for XHTML
                 found = true
@@ -103,9 +99,8 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
           }
         }
         inMetaTag = found
-        if (found) {
+        if (found)
           return
-        }
       }
     }
     level += 1
@@ -116,10 +111,9 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
       location,
       properties)
     if (seekingHead && matchesName(elemName, "head")) {
-      val headPrefix: String = elemName.getPrefix
-      val headURI: String = elemName.getURI
-      val metaCode: FingerprintedQName =
-        new FingerprintedQName(headPrefix, headURI, "meta")
+      val headPrefix = elemName.getPrefix
+      val headURI    = elemName.getURI
+      val metaCode   = new FingerprintedQName(headPrefix, headURI, "meta")
       var atts: AttributeMap = EmptyAttributeMap.getInstance
       atts = atts.put(
         new AttributeInfo(new NoNamespaceName("http-equiv"),
@@ -145,16 +139,13 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
     }
   }
 
-  override def endElement(): Unit = {
+  override def endElement(): Unit =
     if (inMetaTag) {
       inMetaTag = false
     } else {
       level -= 1
-      if (droppingMetaTags == level + 1) {
+      if (droppingMetaTags == level + 1)
         droppingMetaTags = -1
-      }
       nextReceiver.endElement()
     }
-  }
-
 }
