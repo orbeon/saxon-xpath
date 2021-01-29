@@ -23,9 +23,8 @@ import scala.jdk.CollectionConverters._
 
 object XMLEmitter {
 
-  var specialInText     : Array[Boolean] = new Array[Boolean](128)
-  var specialInAtt      : Array[Boolean] = new Array[Boolean](128)
-  var specialInAttSingle: Array[Boolean] = ju.Arrays.copyOf(specialInAtt, 128)
+  val specialInText     : Array[Boolean] = new Array[Boolean](128)
+  val specialInAtt      : Array[Boolean] = new Array[Boolean](128)
 
   locally {
     var i = 0
@@ -65,8 +64,8 @@ object XMLEmitter {
       i += 1
     }
   }
-
   specialInAtt(0.toChar)   = true
+
   specialInAtt('\r')       = true
   specialInAtt('\n')       = true
   specialInAtt('\t')       = true
@@ -74,6 +73,8 @@ object XMLEmitter {
   specialInAtt('>')        = true
   specialInAtt('&')        = true
   specialInAtt('\"')       = true
+
+  val specialInAttSingle: Array[Boolean] = ju.Arrays.copyOf(specialInAtt, 128)
   specialInAttSingle('\"') = false
   specialInAttSingle('\'') = true
 }
