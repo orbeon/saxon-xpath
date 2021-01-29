@@ -107,17 +107,27 @@ class SaxonTest extends AnyFunSpec {
 
       val EmptyAtts = new AttributesImpl
 
+      val NsAtts = new AttributesImpl
+      NsAtts.addAttribute("http://example.org/foo", "bar", "foo:bar", "CDATA", "baz")
+
       handler.startDocument()
       handler.startElement("", "_", "_", EmptyAtts)
+
       handler.startElement("", "input-date-prop", "input-date-prop", EmptyAtts)
       writeText("[M]/[D]/[Y]")
       handler.endElement("", "input-date-prop", "input-date-prop")
+
       handler.startElement("", "format-en", "format-en", EmptyAtts)
       writeText("MDY")
       handler.endElement("", "format-en", "format-en")
+
       handler.startElement("", "format-lang", "format-lang", EmptyAtts)
       writeText("MDY")
       handler.endElement("", "format-lang", "format-lang")
+
+      handler.startElement("", "with-att", "with-att", NsAtts)
+      handler.endElement("", "with-att", "with-att")
+
       handler.endElement("", "_", "_")
       handler.endDocument()
 
@@ -201,6 +211,9 @@ class SaxonTest extends AnyFunSpec {
           |    $translated
           |
           |""".stripMargin,                                         doc2.children.asScala.head, false, "MM/DD/YYYY"),
+      ("with-att/@*[local-name() = 'bar']",                         doc2.children.iterator.next(), false, "baz"),
+      ("with-att/@*[namespace-uri(.) = 'http://example.org/foo']",  doc2.children.iterator.next(), false, "baz"),
+      ("with-att/@*[namespace-uri() = 'http://example.org/foo']",   doc2.children.iterator.next(), false, "baz"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
