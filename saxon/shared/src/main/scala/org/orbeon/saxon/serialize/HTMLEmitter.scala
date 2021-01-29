@@ -272,24 +272,29 @@ abstract class HTMLEmitter extends XMLEmitter {
       // find a maximal sequence of "ordinary" characters
       if (escapeNonAscii) {
         var c = 0
-        while ( {
-          i < chars.length && {
+        while ({i < chars.length && {
             c = chars.charAt(i)
             c
-          } < 127 && !specialChars(c)
-        }) i += 1
-      }
-      else {
+          } < 127 && ! specialChars(c)
+        }) locally {
+          i += 1
+        }
+      } else {
         var c = 0
-        while ( {
-          i < chars.length && {
+        while ({i < chars.length && {
             c = chars.charAt(i)
-            if (c < 127) !specialChars(c)
-            else characterSet.inCharset(c)
-          } && c > 160
-
-        }) i += 1
+            if (c < 127)
+              ! specialChars(c)
+            else
+              characterSet.inCharset(c) && c > 160
+          }
+        }) locally {
+          i += 1
+        }
       }
+
+//      println(s"yyyy HTML writeEscape 2 $i / ${chars.length()}")
+
       // if this was the whole string, output the string and quit
       if (i == chars.length) {
         if (segstart == 0)
@@ -304,35 +309,45 @@ abstract class HTMLEmitter extends XMLEmitter {
         writeCharSequence(chars.subSequence(segstart, i))
 
       val c = chars.charAt(i)
-      if (c == 0) { // used to switch escaping on and off
-        disabled = !disabled
-      }
-      else if (disabled) writer.write(c)
-      else if (c <= 127) { // handle a special ASCII character
-        if (inAttribute) if (c == '<') writer.write('<') // not escaped
-        else if (c == '>') writer.write("&gt;") // recommended for older browsers
-        else if (c == '&') if (i + 1 < chars.length && chars.charAt(i + 1) == '{') writer.write('&') // not escaped if followed by '{'
-        else writer.write("&amp;")
-        else if (c == '\"') writer.write("&#34;")
-        else if (c == '\'') writer.write("&#39;")
-        else if (c == '\n') writer.write("&#xA;")
-        else if (c == '\t') writer.write("&#x9;")
-        else if (c == '\r') writer.write("&#xD;")
-        else if (c == '<') writer.write("&lt;")
-        else if (c == '>') writer.write("&gt;") // changed to allow for "]]>"
-        else if (c == '&') writer.write("&amp;")
-        else if (c == '\r') writer.write("&#xD;")
-      }
-      else if (c < 160) if (rejectControlCharacters) { // these control characters are illegal in HTML
-        val err = new XPathException("Illegal HTML character: decimal " + c.toInt)
-        err.setErrorCode("SERE0014")
-        throw err
-      }
-      else characterReferenceGenerator.outputCharacterReference(c, writer)
-      else if (c == 160) { // always output NBSP as an entity reference
+      if (c == 0) {
+        // used to switch escaping on and off
+        disabled = ! disabled
+      } else if (disabled) {
+        writer.write(c)
+      } else if (c <= 127) {
+        // handle a special ASCII character
+        if (inAttribute) {
+          if (c == '<') writer.write('<') // not escaped
+          else if (c == '>') writer.write("&gt;") // recommended for older browsers
+          else if (c == '&')
+            if (i + 1 < chars.length && chars.charAt(i + 1) == '{')
+              writer.write('&') // not escaped if followed by '{'
+            else
+              writer.write("&amp;")
+          else if (c == '\"') writer.write("&#34;")
+          else if (c == '\'') writer.write("&#39;")
+          else if (c == '\n') writer.write("&#xA;")
+          else if (c == '\t') writer.write("&#x9;")
+          else if (c == '\r') writer.write("&#xD;")
+        } else {
+          if (c == '<') writer.write("&lt;")
+          else if (c == '>') writer.write("&gt;") // changed to allow for "]]>"
+          else if (c == '&') writer.write("&amp;")
+          else if (c == '\r') writer.write("&#xD;")
+        }
+      } else if (c < 160) {
+        if (rejectControlCharacters) {
+          // these control characters are illegal in HTML
+          val err = new XPathException("Illegal HTML character: decimal " + c.toInt)
+          err.setErrorCode("SERE0014")
+          throw err
+        } else {
+          characterReferenceGenerator.outputCharacterReference(c, writer)
+        }
+      } else if (c == 160) { // always output NBSP as an entity reference
         writer.write("&nbsp;")
-      }
-      else if (c >= 55296 && c <= 56319) { //handle surrogate pair
+      } else if (c >= 55296 && c <= 56319) {
+        //handle surrogate pair
         //A surrogate pair is two consecutive Unicode characters.  The first
         //is in the range D800 to DBFF, the second is in the range DC00 to DFFF.
         //To compute the numeric value of the character corresponding to a surrogate
@@ -342,9 +357,11 @@ abstract class HTMLEmitter extends XMLEmitter {
         val charval = ((c.toInt - 55296) * 1024) + (chars.charAt(i + 1).toInt - 56320) + 65536
         characterReferenceGenerator.outputCharacterReference(charval, writer)
         i += 1
+      } else if (escapeNonAscii || !characterSet.inCharset(c)) {
+        characterReferenceGenerator.outputCharacterReference(c, writer)
+      } else {
+        writer.write(c)
       }
-      else if (escapeNonAscii || !characterSet.inCharset(c)) characterReferenceGenerator.outputCharacterReference(c, writer)
-      else writer.write(c)
       i += 1
       segstart = i
     }
