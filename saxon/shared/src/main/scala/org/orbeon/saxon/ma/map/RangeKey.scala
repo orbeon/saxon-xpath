@@ -73,7 +73,7 @@ class RangeKey
           if (nextVal == null) {
             null
           } else {
-            val kvp: KeyValuePair = new KeyValuePair(nextVal, get(nextVal))
+            val kvp: KeyValuePair = KeyValuePair(nextVal, get(nextVal))
             nextVal = keyAtItr.next()
             kvp
           }

@@ -177,7 +177,7 @@ class HashTrieMap extends MapItem {
 
   def addEntry(key: AtomicValue, value: GroundedValue): HashTrieMap = {
     val empty = isEmpty
-    val imap2 = imap.put(makeKey(key), new KeyValuePair(key, value))
+    val imap2 = imap.put(makeKey(key), KeyValuePair(key, value))
     val t2    = new HashTrieMap(imap2)
 
     t2.valueCardinality = this.valueCardinality
@@ -192,7 +192,7 @@ class HashTrieMap extends MapItem {
   def initialPut(key: AtomicValue, value: GroundedValue): Boolean = {
     val empty  = isEmpty
     val exists = get(key) != null
-    imap = imap.put(makeKey(key), new KeyValuePair(key, value))
+    imap = imap.put(makeKey(key), KeyValuePair(key, value))
     updateTypeInformation(key, value, empty)
     entries = -1
     exists

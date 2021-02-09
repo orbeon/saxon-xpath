@@ -43,7 +43,7 @@ class DictionaryMap extends MapItem {
   override def keyValuePairs: java.lang.Iterable[KeyValuePair] = {
     val pairs = new ArrayList[KeyValuePair]
     hashMap.asScala.foreach { case (k, v) =>
-      pairs.add(new KeyValuePair(new StringValue(k), v))
+      pairs.add(KeyValuePair(new StringValue(k), v))
     }
     pairs
   }
