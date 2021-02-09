@@ -57,7 +57,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    * @return an iterable containing all the key-value pairs
    */
   def keyValuePairs: java.lang.Iterable[KeyValuePair] =
-    new MonoIterator(new KeyValuePair(key, value)).asInstanceOf[java.lang.Iterable[KeyValuePair]]
+    () => new MonoIterator(KeyValuePair(key, value))
 
   /**
    * Create a new map containing the existing entries in the map plus an additional entry,
