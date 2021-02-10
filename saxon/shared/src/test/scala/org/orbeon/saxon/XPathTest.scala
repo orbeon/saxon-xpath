@@ -31,6 +31,8 @@ class XPathTest extends AnyFunSpec {
 
     staticContext.declareNamespace("fn",     NamespaceConstant.FN)
     staticContext.declareNamespace("math",   NamespaceConstant.MATH)
+    staticContext.declareNamespace("map",    NamespaceConstant.MAP_FUNCTIONS)
+    staticContext.declareNamespace("array",  NamespaceConstant.ARRAY_FUNCTIONS)
     staticContext.declareNamespace(FnPrefix, FnUri)
 
     val xpe =
@@ -214,6 +216,20 @@ class XPathTest extends AnyFunSpec {
       ("with-att/@*[local-name() = 'bar']",                         doc2.children.next(), false, "baz"),
       ("with-att/@*[namespace-uri(.) = 'http://example.org/foo']",  doc2.children.next(), false, "baz"),
       ("with-att/@*[namespace-uri() = 'http://example.org/foo']",   doc2.children.next(), false, "baz"),
+      ("""
+          |string-join(
+          |  map:for-each(
+          |    map:merge(
+          |      (
+          |        map:entry('first-name',  first-name),
+          |        map:entry('middle-name', middle-name),
+          |        map:entry('last-name',   last-name)
+          |      )
+          |    ),
+          |    function($k, $v) { $k || ' -> ' || $v }
+          |  ),
+          |  ', '
+          |)""".stripMargin,                                        docElem, false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
