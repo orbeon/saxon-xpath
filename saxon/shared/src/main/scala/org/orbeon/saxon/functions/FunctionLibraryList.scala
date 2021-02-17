@@ -1,15 +1,14 @@
 package org.orbeon.saxon.functions
 
-import java.util.{ArrayList, List}
-
 import org.orbeon.saxon.expr.{Expression, StaticContext}
-import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.om.{Function, StructuredQName}
 import org.orbeon.saxon.query.{XQueryFunction, XQueryFunctionBinder}
 import org.orbeon.saxon.trans.SymbolicName
 
-//import scala.collection.compat._
+import java.util.{ArrayList, List}
+
 import scala.jdk.CollectionConverters._
+
 
 class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
 
@@ -22,14 +21,8 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
 
   def get(n: Int): FunctionLibrary = libraryList.get(n)
 
-  def getFunctionItem(functionName: SymbolicName.F, staticContext: StaticContext): Function = {
-    for (lib <- libraryList.asScala) {
-      val fi = lib.getFunctionItem(functionName, staticContext)
-      if (fi ne null)
-        return fi
-    }
-    null
-  }
+  def getFunctionItem(functionName: SymbolicName.F, staticContext: StaticContext): Function =
+    libraryList.iterator.asScala.map(_.getFunctionItem(functionName, staticContext)).find(_ ne null).orNull
 
   def isAvailable(functionName: SymbolicName.F): Boolean =
     libraryList.asScala.exists(_.isAvailable(functionName))
@@ -40,24 +33,9 @@ class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
     env          : StaticContext,
     reasons      : List[String]
   ): Expression = {
-
-    val debug = env.getConfiguration.getBooleanProperty(Feature.TRACE_EXTERNAL_FUNCTIONS)
-
-    val err = env.getConfiguration.getLogger
-    if (debug)
-      err.info("Looking for function " + functionName.getComponentName.getEQName + "#" + functionName.getArity)
-
-    for (lib <- libraryList.asScala) {
-      if (debug)
-        err.info("Trying " + lib.getClass.getName)
-
-      val func = lib.bind(functionName, staticArgs, env, reasons)
-      if (func != null)
-        return func
-    }
-    if (debug)
-      err.info("Function " + functionName.getComponentName.getEQName + " not found!")
-    null
+//    val debug = env.getConfiguration.getBooleanProperty(Feature.TRACE_EXTERNAL_FUNCTIONS)
+//    val err = env.getConfiguration.getLogger
+    libraryList.iterator.asScala.map(_.bind(functionName, staticArgs, env, reasons)).find(_ ne null).orNull
   }
 
   def getDeclaration(
