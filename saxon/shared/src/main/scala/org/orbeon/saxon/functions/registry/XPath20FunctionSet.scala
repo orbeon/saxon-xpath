@@ -7,7 +7,7 @@ import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.value.{BooleanValue, DoubleValue, Int64Value, StringValue}
 
 object XPath20FunctionSet {
-  val getInstance: XPath20FunctionSet = new XPath20FunctionSet()
+  val getInstance: XPath20FunctionSet = new XPath20FunctionSet
 }
 
 class XPath20FunctionSet private() extends BuiltInFunctionSet {

@@ -28,9 +28,7 @@ import org.orbeon.saxon.value._
 
 object VendorFunctionSetHE {
 
-  private var THE_INSTANCE: VendorFunctionSetHE = new VendorFunctionSetHE()
-
-  def getInstance: VendorFunctionSetHE = THE_INSTANCE
+  val getInstance: VendorFunctionSetHE = new VendorFunctionSetHE
 
   class IsWholeNumberFn extends SystemFunction {
 
