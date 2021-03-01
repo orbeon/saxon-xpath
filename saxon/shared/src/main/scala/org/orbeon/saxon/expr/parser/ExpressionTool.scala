@@ -165,12 +165,13 @@ object ExpressionTool {
 
   def contains(a: Expression, b: Expression): Boolean = {
     var temp = b
-    while (temp != null)
+    var exitLoop = false
+    while (! exitLoop && temp != null)
       if (temp eq a)
-        return true
+        exitLoop = true
       else
-          temp = temp.getParentExpression
-    false
+        temp = temp.getParentExpression
+    exitLoop
   }
 
   def containsLocalParam(exp: Expression): Boolean =
@@ -256,14 +257,8 @@ object ExpressionTool {
     false
   }
 
-  def hasLoopingSubexpression(parent: Expression, child: Expression): Boolean = {
-
-    for (info <- parent.operands.asScala)
-      if (info.getChildExpression eq child)
-        return info.isEvaluatedRepeatedly
-
-    false
-  }
+  def hasLoopingSubexpression(parent: Expression, child: Expression): Boolean =
+    parent.operands.asScala.find(_.getChildExpression eq child).exists(_.isEvaluatedRepeatedly)
 
   def getFocusSettingContainer(exp: Expression): Expression = {
     var child = exp

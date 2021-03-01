@@ -1019,12 +1019,23 @@ final class Tokenizer {
    * @return the line and column number, packed together
    */
   private def getLineAndColumn(offset: Int): Long = {
-    if (newlineOffsets == null) return offset
-    for (line <- newlineOffsets.size - 1 to 0 by -1) {
+
+    if (newlineOffsets == null)
+      return offset
+
+    var result: Long = offset
+    var line = newlineOffsets.size - 1
+    // ORBEON: Avoid non-local return.
+    var exitLoop = false
+    while (! exitLoop && line >= 0) {
       val nloffset = newlineOffsets.get(line)
-      if (offset > nloffset) return ((line + 1).toLong << 32) | (offset - nloffset).toLong
+      if (offset > nloffset) {
+        exitLoop = true
+        result = ((line + 1).toLong << 32) | (offset - nloffset).toLong
+      } else
+        line -= 1
     }
-    offset
+    result
   }
 
   /**
