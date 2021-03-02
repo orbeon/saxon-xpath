@@ -98,12 +98,13 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     var count: Int = 0
     val `val`: Long = value
     var s: Int = 56
-    breakable {
-      while (s >= 0) {
-        val c: Int = ((`val` >>> s) & 0x3f).toInt
-        if (c == 0) {
-          break()
-        }
+    // ORBEON: Avoid non-local return.
+    var exitLoop = false
+    while (! exitLoop && s >= 0) {
+      val c = ((`val` >>> s) & 0x3f).toInt
+      if (c == 0) {
+        exitLoop = true
+      } else {
         count += c
         s -= 8
       }
@@ -115,20 +116,27 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
     var count: Int = 0
     val `val`: Long = value
     var s: Int = 56
-    breakable {
-      while (s >= 0) {
-        val b: Byte = ((`val` >>> s) & 0xff).toByte
-        if (b == 0) {
-          break()
-        }
+    // ORBEON: Avoid non-local return.
+    var exitLoop = false
+    var result: Char = 0
+    while (! exitLoop && s >= 0) {
+      val b = ((`val` >>> s) & 0xff).toByte
+      if (b == 0) {
+        exitLoop = true
+      } else {
         count += b & 0x3f
         if (count > index) {
-         return WHITE_CHARS(b >>> 6 & 0x3)
+          exitLoop = true
+          result = WHITE_CHARS(b >>> 6 & 0x3)
         }
         s -= 8
       }
     }
-    throw new IndexOutOfBoundsException(s"$index")
+    if (result == 0)
+      throw new IndexOutOfBoundsException(s"$index")
+    else
+      result
+
   }
 
   def subSequence(start: Int, end: Int): CharSequence =
@@ -148,17 +156,17 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   def write(writer: Writer): Unit = {
     val `val`: Long = value
     var s: Int = 56
-    breakable {
-      while (s >= 0) {
-        val b: Byte = ((`val` >>> s) & 0xff).toByte
-        if (b == 0) {
-          break()
-        }
-        val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
+    // ORBEON: Avoid non-local return.
+    var exitLoop = false
+    while (! exitLoop && s >= 0) {
+      val b = ((`val` >>> s) & 0xff).toByte
+      if (b == 0) {
+        exitLoop = true
+      } else {
+        val c   = WHITE_CHARS(b >>> 6 & 0x3)
         val len = b & 0x3f
-        for (j <- 0 until len) {
+        for (_ <- 0 until len)
           writer.write(c)
-        }
         s -= 8
       }
     }
@@ -167,13 +175,14 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   def writeEscape(specialChars: Array[Boolean], writer: Writer): Unit = {
     val `val`: Long = value
     var s: Int = 56
-    breakable {
-      while (s >= 0) {
-        val b: Byte = ((`val` >>> s) & 0xff).toByte
-        if (b == 0) {
-          break()
-        }
-        val c: Char = WHITE_CHARS(b >>> 6 & 0x3)
+    // ORBEON: Avoid non-local return.
+    var exitLoop = false
+    while (! exitLoop && s >= 0) {
+      val b = ((`val` >>> s) & 0xff).toByte
+      if (b == 0) {
+        exitLoop = true
+      } else {
+        val c   = WHITE_CHARS(b >>> 6 & 0x3)
         val len = b & 0x3f
         if (specialChars(c)) {
           var e: String = ""

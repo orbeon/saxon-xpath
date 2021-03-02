@@ -42,7 +42,16 @@ class PrefixPool {
       if (existing != null)
         return existing
     } else {
-      for (i <- 0 until used if prefixes(i) == prefix)
+      // ORBEON: Avoid non-local return.
+      var i = 0
+      var exitLoop = false
+      while (! exitLoop && i < used) {
+        if (prefixes(i) == prefix)
+          exitLoop = true
+        else
+          i += 1
+      }
+      if (exitLoop)
         return i
     }
 
