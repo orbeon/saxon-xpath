@@ -1,61 +1,59 @@
 package org.orbeon.saxon.tree.tiny
 
+import org.orbeon.saxon.tree.tiny.CompressedWhitespace._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.io.Writer
-
-import CompressedWhitespace._
-
 import scala.util.control.Breaks._
+
 
 object CompressedWhitespace {
 
-  private var WHITE_CHARS: Array[Char] = Array(0x09, 0x0A, 0x0D, 0x20)
+  private val WHITE_CHARS: Array[Char] = Array(0x09, 0x0A, 0x0D, 0x20)
 
-  private var CODES: Array[Int] =
-    Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, -1, -1, 2, -1, -1, -1, -1,
-      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3)
+  private val CODES: Array[Int] =
+    Array(
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, -1, -1, 2, -1, -1, -1, -1,
+      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3
+    )
 
   def compress(in: CharSequence): CharSequence = {
-    val inlen: Int = in.length
-    if (inlen == 0) {
+    val inlen = in.length
+    if (inlen == 0)
       return in
-    }
-    var runlength: Int = 1
-    var outlength: Int = 0
+    var runlength = 1
+    var outlength = 0
     for (i <- 0 until inlen) {
-      val c: Char = in.charAt(i)
+      val c = in.charAt(i)
       if (c <= 32 && CODES(c) >= 0) {
         if (i == inlen - 1 || c != in.charAt(i + 1) || runlength == 63) {
           runlength = 1
           outlength = outlength + 1
-          if (outlength > 8) {
-            return in
-          }
+          if (outlength > 8)
+            return in // TODO: non-local return
         } else {
           runlength = runlength + 1
         }
       } else {
-        return in
+        return in // TODO: non-local return
       }
     }
-    var ix: Int = 0
+    var ix = 0
     runlength = 1
-    val out: Array[Int] = Array.ofDim[Int](outlength)
+    val out = Array.ofDim[Int](outlength)
     for (i <- 0 until inlen) {
-      val c: Char = in.charAt(i)
+      val c = in.charAt(i)
       if (i == inlen - 1 || c != in.charAt(i + 1) || runlength == 63) {
         out(ix) = (CODES(c) << 6) | runlength
         ix = ix + 1
         runlength = 1
       } else {
-          runlength += 1
+        runlength += 1
       }
     }
-    var value: Long = 0
-    for (i <- 0 until outlength) {
+    var value = 0L
+    for (i <- 0 until outlength)
       value = (value << 8) | out(i)
-    }
     value <<= 8 * (8 - outlength)
     new CompressedWhitespace(value)
   }
@@ -113,9 +111,9 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   }
 
   def charAt(index: Int): Char = {
-    var count: Int = 0
-    val `val`: Long = value
-    var s: Int = 56
+    var count = 0
+    val `val` = value
+    var s     = 56
     // ORBEON: Avoid non-local return.
     var exitLoop = false
     var result: Char = 0
@@ -142,20 +140,19 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   def subSequence(start: Int, end: Int): CharSequence =
     uncompress(null).subSequence(start, end)
 
-  override def equals(obj: Any): Boolean = {
-    if (obj.isInstanceOf[CompressedWhitespace]) {
-      value == obj.asInstanceOf[CompressedWhitespace].value
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case whitespace: CompressedWhitespace => value == whitespace.value
+      case _                                => uncompress(null) == obj
     }
-    uncompress(null) == obj
-  }
 
   override def hashCode: Int = uncompress(null).hashCode
 
   override def toString: String = uncompress(null).toString
 
   def write(writer: Writer): Unit = {
-    val `val`: Long = value
-    var s: Int = 56
+    val `val` = value
+    var s     = 56
     // ORBEON: Avoid non-local return.
     var exitLoop = false
     while (! exitLoop && s >= 0) {
@@ -173,8 +170,8 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
   }
 
   def writeEscape(specialChars: Array[Boolean], writer: Writer): Unit = {
-    val `val`: Long = value
-    var s: Int = 56
+    val `val` = value
+    var s     = 56
     // ORBEON: Avoid non-local return.
     var exitLoop = false
     while (! exitLoop && s >= 0) {
@@ -185,7 +182,7 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
         val c   = WHITE_CHARS(b >>> 6 & 0x3)
         val len = b & 0x3f
         if (specialChars(c)) {
-          var e: String = ""
+          var e = ""
           if (c == '\n') {
             e = "&#xA;"
           } else if (c == '\r') {
@@ -193,17 +190,14 @@ class CompressedWhitespace(private var value: Long) extends CharSequence {
           } else if (c == '\t') {
             e = "&#x9;"
           }
-          for (j <- 0 until len) {
+          for (_ <- 0 until len)
             writer.write(e)
-          }
         } else {
-          for (j <- 0 until len) {
+          for (_ <- 0 until len)
             writer.write(c)
-          }
         }
         s -= 8
       }
     }
   }
-
 }

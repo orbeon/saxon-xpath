@@ -21,8 +21,8 @@ import java.util.{Arrays, HashMap, Map}
   */
 class PrefixPool {
 
-  var prefixes: Array[String] = new Array[String](8)
-  var used: Int = 1
+  var prefixes                    = new Array[String](8)
+  var used                        = 1
   var index: Map[String, Integer] = null
 
   prefixes(0) = ""
@@ -71,11 +71,11 @@ class PrefixPool {
       index.put(prefixes(i), i)
   }
 
-  def getPrefix(code: Int): String = {
+  def getPrefix(code: Int): String =
     if (code < used)
-      return prefixes(code)
-    throw new IllegalArgumentException("Unknown prefix code " + code)
-  }
+      prefixes(code)
+    else
+      throw new IllegalArgumentException("Unknown prefix code " + code)
 
   def condense(): Unit = {
     prefixes = Arrays.copyOf(prefixes, used)
