@@ -186,17 +186,10 @@ object ExpressionTool {
         false
     }: Predicate[Expression])
 
-  def contains(exp: Expression, sameFocusOnly: Boolean, predicate: Predicate[Expression]): Boolean = {
-
-    if (predicate.test(exp))
-      return true
-
-    for (info <- exp.operands.asScala)
-      if ((info.hasSameFocus || !sameFocusOnly) && contains(info.getChildExpression, sameFocusOnly, predicate))
-        return true
-
-    false
-  }
+  def contains(exp: Expression, sameFocusOnly: Boolean, predicate: Predicate[Expression]): Boolean =
+    predicate.test(exp) ||
+      exp.operands.asScala.exists(info =>
+        (info.hasSameFocus || ! sameFocusOnly) && contains(info.getChildExpression, sameFocusOnly, predicate))
 
   def changesXsltContext(exp: Expression): Boolean = {
     var expression = exp
