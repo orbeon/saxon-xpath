@@ -360,59 +360,64 @@ final class Tokenizer {
         inputOffset - 1
       })
 
+      def updateNextToken(token: Int): Unit = {
+        nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
+        nextToken = token
+      }
+
       def processOtherCharacter(): Unit = {
         var foundColon = false
-        breakable {
-          while (inputOffset < inputLength) {
-            c = input.charAt(inputOffset)
-            c match {
-              case ':' =>
-                if (! foundColon) {
-                  if (precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) {
-                    // only NCName allowed after "? in a lookup expression, or after *:
-                    nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                    nextToken = Token.NAME
-                    return
-                  } else if (inputOffset + 1 < inputLength) {
-                    val nc = input.charAt(inputOffset + 1)
-                    if (nc == ':') {
-                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                      nextToken = Token.AXIS
-                      inputOffset += 2
-                      return
-                    } else if (nc == '*') {
-                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                      nextToken = Token.PREFIX
-                      inputOffset += 2
-                      return
-                    } else if (!(nc == '_' || nc > 127 || Character.isLetter(nc))) {
-                      // for example: "let $x:=2", "x:y:z", "x:2"
-                      // end the token before the colon
-                      nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-                      nextToken = Token.NAME
-                      return
-                    }
+        var exitLoop = false
+        while (! exitLoop && inputOffset < inputLength) {
+          c = input.charAt(inputOffset)
+          c match {
+            case ':' =>
+              if (! foundColon) {
+                if (precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) {
+                  // only NCName allowed after "? in a lookup expression, or after *:
+                  updateNextToken(Token.NAME)
+                  exitLoop = true
+                } else if (inputOffset + 1 < inputLength) {
+                  val nc = input.charAt(inputOffset + 1)
+                  if (nc == ':') {
+                    updateNextToken(Token.AXIS)
+                    inputOffset += 2
+                    exitLoop = true
+                  } else if (nc == '*') {
+                    updateNextToken(Token.PREFIX)
+                    inputOffset += 2
+                    exitLoop = true
+                  } else if (!(nc == '_' || nc > 127 || Character.isLetter(nc))) {
+                    // for example: "let $x:=2", "x:y:z", "x:2"
+                    // end the token before the colon
+                    updateNextToken(Token.NAME)
+                    exitLoop = true
                   }
-                  foundColon = true
-                } else
-                  break()
-              case '.' | '-' =>
-                // If the name up to the "-" or "." is a valid operator, and if the preceding token
-                // is such that an operator is valid here and an NCName isn't, then quit here (bug 2715)
-                if (precedingToken > Token.LAST_OPERATOR && !(precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) && getBinaryOp(input.substring(nextTokenStartOffset, inputOffset)) != Token.UNKNOWN && !(precedingToken == Token.NAME && getBinaryOp(precedingTokenValue) != Token.UNKNOWN)) {
-                  nextToken = getBinaryOp(input.substring(nextTokenStartOffset, inputOffset))
-                  return
                 }
-              case '_' =>
-              case _ =>
-                if (c < 0x80 && ! Character.isLetterOrDigit(c))
-                  break()
-            }
-            inputOffset += 1
+                if (! exitLoop)
+                  foundColon = true
+              } else {
+                updateNextToken(Token.NAME)
+                exitLoop = true
+              }
+            case '.' | '-' =>
+              // If the name up to the "-" or "." is a valid operator, and if the preceding token
+              // is such that an operator is valid here and an NCName isn't, then quit here (bug 2715)
+              if (precedingToken > Token.LAST_OPERATOR && !(precedingToken == Token.QMARK || precedingToken == Token.SUFFIX) && getBinaryOp(input.substring(nextTokenStartOffset, inputOffset)) != Token.UNKNOWN && !(precedingToken == Token.NAME && getBinaryOp(precedingTokenValue) != Token.UNKNOWN)) {
+                nextToken = getBinaryOp(input.substring(nextTokenStartOffset, inputOffset))
+                exitLoop = true
+              }
+            case '_' =>
+            case _ =>
+              if (c < 0x80 && ! Character.isLetterOrDigit(c)) {
+                updateNextToken(Token.NAME)
+                exitLoop = true
+              }
           }
-        }
-        nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-        nextToken = Token.NAME
+          if (! exitLoop)
+            inputOffset += 1
+        } // end `while`
+        updateNextToken(Token.NAME)
       }
 
       c match {
