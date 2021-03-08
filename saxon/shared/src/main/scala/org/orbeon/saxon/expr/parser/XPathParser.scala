@@ -31,7 +31,6 @@ import org.orbeon.saxon.z.{IntArraySet, IntSet}
 
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
-import scala.util.control.Breaks._
 
 
 /**
@@ -1890,29 +1889,30 @@ class XPathParser {
     val offset = t.currentTokenStartOffset
     var exp = start
     var op = Token.SLASH
-    breakable {
-      while (true) {
-        val next = parseStepExpression(false)
-        if (op == Token.SLASH) exp = new HomogeneityChecker(new SlashExpression(exp, next))
-        else if (op == Token.SLASH_SLASH) {
-          val descOrSelf = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null)
-          setLocation(descOrSelf)
-          val step = ExpressionTool.makePathExpression(descOrSelf, next)
-          setLocation(step)
-          exp = ExpressionTool.makePathExpression(exp, step)
-          exp = new HomogeneityChecker(exp)
-        }
-        else {
-          /*if (op == Token.BANG)*/
-          if (!allowXPath30Syntax)
-            grumble("XPath '!' operator requires XPath 3.0 to be enabled")
-          exp = new ForEach(exp, next)
-        }
-        setLocation(exp, offset)
-        op = t.currentToken
-        if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG) break()
-        nextToken()
+    var exitLoop = false
+    while (! exitLoop) {
+      val next = parseStepExpression(false)
+      if (op == Token.SLASH) {
+        exp = new HomogeneityChecker(new SlashExpression(exp, next))
+      } else if (op == Token.SLASH_SLASH) {
+        val descOrSelf = new AxisExpression(AxisInfo.DESCENDANT_OR_SELF, null)
+        setLocation(descOrSelf)
+        val step = ExpressionTool.makePathExpression(descOrSelf, next)
+        setLocation(step)
+        exp = ExpressionTool.makePathExpression(exp, step)
+        exp = new HomogeneityChecker(exp)
+      } else {
+        /*if (op == Token.BANG)*/
+        if (! allowXPath30Syntax)
+          grumble("XPath '!' operator requires XPath 3.0 to be enabled")
+        exp = new ForEach(exp, next)
       }
+      setLocation(exp, offset)
+      op = t.currentToken
+      if (op != Token.SLASH && op != Token.SLASH_SLASH && op != Token.BANG)
+        exitLoop = true
+      else
+        nextToken()
     }
     exp
   }
@@ -1931,20 +1931,20 @@ class XPathParser {
     // When the filter is applied to an Axis step, the nodes are considered in
     // axis order. In all other cases they are considered in document order
     val reverse = step.isInstanceOf[AxisExpression] && !AxisInfo.isForwards(step.asInstanceOf[AxisExpression].getAxis)
-    breakable {
-      while (true)
-        if (t.currentToken == Token.LSQB)
-          step = parsePredicate(step)
-        else if (t.currentToken == Token.LPAR) {
-          // dynamic function call (XQuery 3.0/XPath 3.0 syntax)
-          step = parseDynamicFunctionCall(step, null)
-          setLocation(step)
-        } else if (t.currentToken == Token.QMARK) {
-          step = parseLookup(step)
-          setLocation(step)
-        } else
-          break()
-    }
+    var exitLoop = false
+    while (! exitLoop)
+      if (t.currentToken == Token.LSQB) {
+        step = parsePredicate(step)
+      } else if (t.currentToken == Token.LPAR) {
+        // dynamic function call (XQuery 3.0/XPath 3.0 syntax)
+        step = parseDynamicFunctionCall(step, null)
+        setLocation(step)
+      } else if (t.currentToken == Token.QMARK) {
+        step = parseLookup(step)
+        setLocation(step)
+      } else {
+        exitLoop = true
+      }
     if (reverse) {
       // An AxisExpression such as preceding-sibling::x delivers nodes in axis
       // order, so that positional predicate like preceding-sibling::x[1] work
@@ -2258,26 +2258,28 @@ class XPathParser {
     // the "(" has already been read by the Tokenizer: now parse the arguments
     nextToken()
     if (t.currentToken != Token.RPAR) {
-      breakable {
-        while (true) {
-          var arg = parseFunctionArgument
-          if (arg == null) { // this is a "?" placemarker
-            if (placeMarkers == null) placeMarkers = new IntArraySet
-            placeMarkers.add(args.size)
-            arg = Literal.makeEmptySequence // a convenient fiction
-          }
-          args.add(arg)
-          if (t.currentToken == Token.COMMA)
-            nextToken()
-          else
-            break()
+      var exitLoop = false
+      while (! exitLoop) {
+        var arg = parseFunctionArgument
+        if (arg == null) { // this is a "?" placemarker
+          if (placeMarkers == null)
+            placeMarkers = new IntArraySet
+          placeMarkers.add(args.size)
+          arg = Literal.makeEmptySequence // a convenient fiction
         }
+        args.add(arg)
+        if (t.currentToken == Token.COMMA)
+          nextToken()
+        else
+          exitLoop = true
       }
       expect(Token.RPAR)
     }
     nextToken()
-    if (placeMarkers == null) generateApplyCall(functionItem, args)
-    else parserExtension.createDynamicCurriedFunction(this, functionItem, args, placeMarkers)
+    if (placeMarkers == null)
+      generateApplyCall(functionItem, args)
+    else
+      parserExtension.createDynamicCurriedFunction(this, functionItem, args, placeMarkers)
   }
 
   @throws[XPathException]
@@ -2643,31 +2645,31 @@ class XPathParser {
     val offset = t.currentTokenStartOffset
     val entries = new util.ArrayList[Expression]
     nextToken()
-    if (t.currentToken != Token.RCURLY)
-      breakable {
-        while (true) {
-          val key = parseExprSingle
-          if (t.currentToken == Token.ASSIGN)
-            grumble("The ':=' notation is no longer accepted in map expressions: use ':' instead")
-          expect(Token.COLON)
-          nextToken()
-          val value: Expression = parseExprSingle
-          var entry: Expression = null
+    if (t.currentToken != Token.RCURLY) {
+      var exitLoop = false
+      while (! exitLoop) {
+        val key = parseExprSingle
+        if (t.currentToken == Token.ASSIGN)
+          grumble("The ':=' notation is no longer accepted in map expressions: use ':' instead")
+        expect(Token.COLON)
+        nextToken()
+        val value = parseExprSingle
+        val entry =
           key match {
             case literal: Literal if value.isInstanceOf[Literal] && literal.value.isInstanceOf[AtomicValue] =>
-              entry = Literal.makeLiteral(new SingleEntryMap(literal.value.asInstanceOf[AtomicValue], value.asInstanceOf[Literal].value))
+              Literal.makeLiteral(new SingleEntryMap(literal.value.asInstanceOf[AtomicValue], value.asInstanceOf[Literal].value))
             case _ =>
-              entry = MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
+              MapFunctionSet.getInstance.makeFunction("entry", 2).makeFunctionCall(key, value)
           }
-          entries.add(entry)
-          if (t.currentToken == Token.RCURLY)
-            break()
-          else {
-            expect(Token.COMMA)
-            nextToken()
-          }
+        entries.add(entry)
+        if (t.currentToken == Token.RCURLY) {
+          exitLoop = true
+        } else {
+          expect(Token.COMMA)
+          nextToken()
         }
       }
+    }
     t.lookAhead() //manual lookahead after an RCURLY
     nextToken()
     var result: Expression = null
@@ -2706,19 +2708,18 @@ class XPathParser {
       setLocation(block, offset)
       return block
     }
-    while (true) {
+    var exitLoop = false
+    while (! exitLoop) {
       val member = parseExprSingle
       members.add(member)
-      breakable {
-        if (t.currentToken == Token.COMMA) {
-          nextToken()
-        }
-        else if (t.currentToken == Token.RSQB) {
-          nextToken()
-          break()
-        }
+      if (t.currentToken == Token.COMMA) {
+        nextToken()
+      } else if (t.currentToken == Token.RSQB) {
+        nextToken()
+        exitLoop = true
+      } else {
+        grumble("Expected ',' or ']', " + "found " + Token.tokens(t.currentToken))
       }
-      grumble("Expected ',' or ']', " + "found " + Token.tokens(t.currentToken))
     }
     val block = new SquareArrayConstructor(members)
     setLocation(block, offset)
@@ -2765,30 +2766,29 @@ class XPathParser {
    */
   @throws[XPathException]
   def parseFunctionCall(prefixArgument: Expression): Expression = {
-    val fname = t.currentTokenValue
+    val fname  = t.currentTokenValue
     val offset = t.currentTokenStartOffset
-    val args = new util.ArrayList[Expression](10)
+    val args   = new util.ArrayList[Expression](10)
     if (prefixArgument != null)
       args.add(prefixArgument)
     val functionName = resolveFunctionName(fname)
     var placeMarkers: IntSet = null
     nextToken()
     if (t.currentToken != Token.RPAR) {
-      breakable {
-        while (true) {
-          var arg = parseFunctionArgument
-          if (arg == null) {
-            if (placeMarkers == null)
-              placeMarkers = new IntArraySet
-            placeMarkers.add(args.size)
-            arg = Literal.makeEmptySequence
-          }
-          args.add(arg)
-          if (t.currentToken == Token.COMMA)
-            nextToken()
-          else
-            break()
+      var exitLoop = false
+      while (! exitLoop) {
+        var arg = parseFunctionArgument
+        if (arg == null) {
+          if (placeMarkers == null)
+            placeMarkers = new IntArraySet
+          placeMarkers.add(args.size)
+          arg = Literal.makeEmptySequence
         }
+        args.add(arg)
+        if (t.currentToken == Token.COMMA)
+          nextToken()
+        else
+          exitLoop = true
       }
       expect(Token.RPAR)
     }
@@ -2853,21 +2853,16 @@ class XPathParser {
       sb.append(". ").append(reason)
 
     if (config.getBooleanProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS)) {
-      var existsWithDifferentArity = false
-      breakable {
-        for (i <- 0 until arguments.length + 5) {
-          if (i != arguments.length) {
-            val sn = new SymbolicName.F(functionName, i)
-            if (env.getFunctionLibrary.isAvailable(sn)) {
-              existsWithDifferentArity = true
-              break()
-            }
-          }
+
+      val existsWithDifferentArity =
+        0 until (arguments.length + 5) filter (_ != arguments.length) exists { arity =>
+          val sn = new SymbolicName.F(functionName, arity)
+          env.getFunctionLibrary.isAvailable(sn)
         }
-      }
-      if (existsWithDifferentArity)
+
+      if (existsWithDifferentArity) {
         sb.append(". The namespace URI and local name are recognized, but the number of arguments is wrong")
-      else {
+      } else {
         val supplementary = XPathParser.getMissingFunctionExplanation(functionName, config)
         if (supplementary != null) sb.append(". ").append(supplementary)
       }
