@@ -655,8 +655,7 @@ final class Tokenizer {
               })
             }
           }
-          nextTokenValue = input.substring(nextTokenStartOffset, inputOffset)
-          nextToken = Token.NUMBER
+          updateNextToken(Token.NUMBER)
           return
         case '"' | '\'' =>
           nextTokenValue = ""
