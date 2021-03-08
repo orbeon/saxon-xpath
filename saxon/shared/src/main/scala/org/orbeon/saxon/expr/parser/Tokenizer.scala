@@ -12,7 +12,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.Whitespace
 import java.util
 
-import scala.util.control.Breaks._
 
 /**
  * Tokenizer for expressions and inputs.
@@ -609,79 +608,81 @@ final class Tokenizer {
           }
         // otherwise drop through: we have a number starting with a decimal point
         case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
-          var allowE = true
-          var allowSign = false
-          var allowDot = true
-          breakable {
-            while (true) {
-              c match {
-                case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+          var allowE        = true
+          var allowSign     = false
+          var allowDot      = true
+          var exitInnerLoop = false
+          while (! exitInnerLoop) {
+            c match {
+              case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+                allowSign = false
+              case '.' =>
+                if (allowDot) {
+                  allowDot = false
                   allowSign = false
-                case '.' =>
-                  if (allowDot) {
-                    allowDot = false
-                    allowSign = false
-                  } else {
-                    inputOffset -= 1
-                    break()
-                  }
-                case 'E' | 'e' =>
-                  if (allowE) {
-                    allowSign = true
-                    allowE = false
-                  } else {
-                    inputOffset -= 1
-                    break()
-                  }
-                case '+' | '-' =>
-                  if (allowSign)
-                    allowSign = false
-                  else {
-                    inputOffset -= 1
-                    break()
-                  }
-                case _ =>
-                  if (('a' <= c && c <= 'z') || c > 127) { // this prevents the famous "10div 3"
-                    throw new XPathException("Separator needed after numeric literal")
-                  }
+                } else {
                   inputOffset -= 1
-                  break()
-              }
-              if (inputOffset >= inputLength)
-                break()
-              c = input.charAt({
-                inputOffset += 1;
-                inputOffset - 1
-              })
+                  exitInnerLoop = true
+                }
+              case 'E' | 'e' =>
+                if (allowE) {
+                  allowSign = true
+                  allowE = false
+                } else {
+                  inputOffset -= 1
+                  exitInnerLoop = true
+                }
+              case '+' | '-' =>
+                if (allowSign) {
+                  allowSign = false
+                } else {
+                  inputOffset -= 1
+                  exitInnerLoop = true
+                }
+              case _ =>
+                if (('a' <= c && c <= 'z') || c > 127) // this prevents the famous "10div 3"
+                  throw new XPathException("Separator needed after numeric literal")
+                inputOffset -= 1
+                exitInnerLoop = true
             }
-          }
+            if (! exitInnerLoop) {
+              if (inputOffset >= inputLength)
+                exitInnerLoop = true
+              else
+                c = input.charAt({
+                  inputOffset += 1
+                  inputOffset - 1
+                })
+            }
+          } // end `while`
           updateNextToken(Token.NUMBER)
           return
         case '"' | '\'' =>
           nextTokenValue = ""
-          breakable {
-            while (true) {
-              inputOffset = input.indexOf(c, inputOffset)
-              if (inputOffset < 0) {
-                inputOffset = nextTokenStartOffset + 1
-                throw new XPathException("Unmatched quote in expression")
-              }
-              nextTokenValue += input.substring(nextTokenStartOffset + 1, {
-                inputOffset += 1;
-                inputOffset - 1
-              })
-              if (inputOffset < inputLength) {
-                val n = input.charAt(inputOffset)
-                if (n == c) { // Doubled delimiters
-                  nextTokenValue += c
-                  nextTokenStartOffset = inputOffset
-                  inputOffset += 1
-                } else
-                  break()
-              } else
-                break()
+          var exitInnerLoop = false
+          while (! exitInnerLoop) {
+            inputOffset = input.indexOf(c, inputOffset)
+            if (inputOffset < 0) {
+              inputOffset = nextTokenStartOffset + 1
+              throw new XPathException("Unmatched quote in expression")
             }
-          }
+            nextTokenValue += input.substring(nextTokenStartOffset + 1, {
+              inputOffset += 1
+              inputOffset - 1
+            })
+            if (inputOffset < inputLength) {
+              val n = input.charAt(inputOffset)
+              if (n == c) { // Doubled delimiters
+                nextTokenValue += c
+                nextTokenStartOffset = inputOffset
+                inputOffset += 1
+              } else {
+                exitInnerLoop = true
+              }
+            } else {
+              exitInnerLoop = true
+            }
+          } // end `while`
           // maintain line number if there are newlines in the string
           if (nextTokenValue.indexOf('\n') >= 0)
             for (i <- 0 until nextTokenValue.length)
@@ -738,20 +739,21 @@ final class Tokenizer {
             if (uri.contains("{"))
               throw new XPathException("EQName must not contain opening brace")
             inputOffset = close + 1
-            val start = inputOffset
-            var isStar = false
-            breakable {
-              while (inputOffset < inputLength) {
-                val c2 = input.charAt(inputOffset)
-                if (c2 > 0x80 || Character.isLetterOrDigit(c2) || c2 == '_' || c2 == '.' || c2 == '-') inputOffset += 1
-                else if (c2 == '*' && (start == inputOffset)) {
-                  inputOffset += 1
-                  isStar = true
-                  break()
-                } else
-                  break()
+            val start         = inputOffset
+            var isStar        = false
+            var exitInnerLoop = false
+            while (! exitInnerLoop && inputOffset < inputLength) {
+              val c2 = input.charAt(inputOffset)
+              if (c2 > 0x80 || Character.isLetterOrDigit(c2) || c2 == '_' || c2 == '.' || c2 == '-') {
+                inputOffset += 1
+              } else if (c2 == '*' && (start == inputOffset)) {
+                inputOffset += 1
+                isStar = true
+                exitInnerLoop = true
+              } else {
+                exitInnerLoop = true
               }
-            }
+            } // end `while`
             val localName = input.substring(start, inputOffset)
             nextTokenValue = "Q{" + uri + "}" + localName
             // Reuse Token.NAME because EQName is allowed anywhere that QName is allowed
