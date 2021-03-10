@@ -30,6 +30,7 @@ class XPathTest extends AnyFunSpec {
     val FnUri    = "http://example.org/foo"
 
     staticContext.declareNamespace("fn",     NamespaceConstant.FN)
+    staticContext.declareNamespace("xs",     NamespaceConstant.SCHEMA)
     staticContext.declareNamespace("math",   NamespaceConstant.MATH)
     staticContext.declareNamespace("map",    NamespaceConstant.MAP_FUNCTIONS)
     staticContext.declareNamespace("array",  NamespaceConstant.ARRAY_FUNCTIONS)
@@ -229,7 +230,8 @@ class XPathTest extends AnyFunSpec {
           |    function($k, $v) { $k || ' -> ' || $v }
           |  ),
           |  ', '
-          |)""".stripMargin,                                        docElem, false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
+          |)""".stripMargin,                                        docElem,              false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
+      ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,              false, "2"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)

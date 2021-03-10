@@ -214,6 +214,7 @@ class SaxonTest extends AnyFunSpec {
       ("with-att/@*[local-name() = 'bar']",                         doc2.children.iterator.next(), false, "baz"),
       ("with-att/@*[namespace-uri(.) = 'http://example.org/foo']",  doc2.children.iterator.next(), false, "baz"),
       ("with-att/@*[namespace-uri() = 'http://example.org/foo']",   doc2.children.iterator.next(), false, "baz"),
+      ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,                       false, "2"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)

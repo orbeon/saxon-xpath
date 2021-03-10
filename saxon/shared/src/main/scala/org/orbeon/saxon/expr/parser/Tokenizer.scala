@@ -416,7 +416,8 @@ final class Tokenizer {
           if (! exitLoop)
             inputOffset += 1
         } // end `while`
-        updateNextToken(Token.NAME)
+        if (! exitLoop)
+          updateNextToken(Token.NAME)
       }
 
       c match {
