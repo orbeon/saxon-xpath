@@ -192,23 +192,22 @@ object AxisInfo {
   )
 
   def getAxisNumber(name: String): Int = name match {
-    case "ancestor" => ANCESTOR
-    case "ancestor-or-self" => ANCESTOR_OR_SELF
-    case "attribute" => ATTRIBUTE
-    case "child" => CHILD
-    case "descendant" => DESCENDANT
-    case "descendant-or-self" => DESCENDANT_OR_SELF
-    case "following" => FOLLOWING
-    case "following-sibling" => FOLLOWING_SIBLING
-    case "namespace" => NAMESPACE
-    case "parent" => PARENT
-    case "preceding" => PRECEDING
-    case "preceding-sibling" => PRECEDING_SIBLING
-    case "self" => SELF
+    case "ancestor"              => ANCESTOR
+    case "ancestor-or-self"      => ANCESTOR_OR_SELF
+    case "attribute"             => ATTRIBUTE
+    case "child"                 => CHILD
+    case "descendant"            => DESCENDANT
+    case "descendant-or-self"    => DESCENDANT_OR_SELF
+    case "following"             => FOLLOWING
+    case "following-sibling"     => FOLLOWING_SIBLING
+    case "namespace"             => NAMESPACE
+    case "parent"                => PARENT
+    case "preceding"             => PRECEDING
+    case "preceding-sibling"     => PRECEDING_SIBLING
+    case "self"                  => SELF
     case "preceding-or-ancestor" => PRECEDING_OR_ANCESTOR
-// preceding-or-ancestor cannot be used in an XPath expression
-    case _ => throw new XPathException("Unknown axis name: " + name)
-
+    // preceding-or-ancestor cannot be used in an XPath expression
+    case _                      => throw new XPathException("Unknown axis name: " + name)
   }
 
   private val DOC: Int = 1 << Type.DOCUMENT
@@ -291,7 +290,7 @@ object AxisInfo {
     axisTransitions.put(makeKey(origin, axis), target)
 
   private def makeKey(origin: PrimitiveUType, axis: Int): Int =
-    origin.getBit << 16 | axis
+    origin.bit << 16 | axis
 
   def getTargetUType(origin: UType, axis: Int): UType = {
     var resultType = UType.VOID
