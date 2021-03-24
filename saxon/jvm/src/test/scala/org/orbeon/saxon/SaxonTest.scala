@@ -134,6 +134,41 @@ class SaxonTest extends AnyFunSpec {
       treeBuilder.getCurrentRoot
     }
 
+    val doc3 = {
+      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
+
+      val handler = {
+        val handler = new SaxonTransformerFactory(Configuration).newTransformerHandler
+        handler.setResult(treeBuilder)
+        handler
+      }
+
+      def writeText(t: String) =
+        handler.characters(t.toCharArray, 0, t.length)
+
+      val EmptyAtts = new AttributesImpl
+
+      handler.startDocument()
+      handler.startElement("", "_", "_", EmptyAtts)
+
+      handler.startElement("", "item", "item", EmptyAtts)
+
+      handler.startElement("", "bar", "bar", EmptyAtts)
+      writeText("1300")
+      handler.endElement("", "bar", "bar")
+
+      handler.startElement("", "type", "type", EmptyAtts)
+      writeText("foo")
+      handler.endElement("", "type", "type")
+
+      handler.endElement("", "item", "item")
+
+      handler.endElement("", "_", "_")
+      handler.endDocument()
+
+      treeBuilder.getCurrentRoot
+    }
+
     val Expected = List(
 //      ("."                                          , int, false, "2020"),
 //      ("42"                                         , int, false, "42"),
@@ -215,6 +250,7 @@ class SaxonTest extends AnyFunSpec {
       ("with-att/@*[namespace-uri(.) = 'http://example.org/foo']",  doc2.children.iterator.next(), false, "baz"),
       ("with-att/@*[namespace-uri() = 'http://example.org/foo']",   doc2.children.iterator.next(), false, "baz"),
       ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,                       false, "2"),
+      ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.iterator.next(), false, "1300"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
