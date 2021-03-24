@@ -178,7 +178,7 @@ class FastStringBuffer(initialSize: Int)
     * @return the number of <code>char</code>s in this sequence
     */
   def length: Int = used
-  def isEmpty: Boolean = used == 0
+  override def isEmpty: Boolean = used == 0
 
   /**
     * Returns the <code>char</code> value at the specified index.  An index ranges from zero
