@@ -262,14 +262,16 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
 
   @throws[XPathException]
   private def doCast(value: AtomicValue, context: XPathContext): AtomicValue = {
-    if (value == null) if (allowsEmpty) return null
-    else {
-      val e = new XPathException("Cast does not allow an empty sequence")
-      e.setXPathContext(context)
-      e.setLocation(getLocation)
-      e.setErrorCode("XPTY0004")
-      throw e
-    }
+    if (value == null)
+      if (allowsEmpty) {
+        return null
+      } else {
+        val e = new XPathException("Cast does not allow an empty sequence")
+        e.setXPathContext(context)
+        e.setLocation(getLocation)
+        e.setErrorCode("XPTY0004")
+        throw e
+      }
     var converter = this.converter
     if (converter == null) {
       val rules = context.getConfiguration.getConversionRules
@@ -281,17 +283,18 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
         e.setErrorCode("XPTY0004")
         throw e
       }
-      if (getTargetType.isNamespaceSensitive) converter = converter.setNamespaceResolver(getRetainedStaticContext)
+      if (getTargetType.isNamespaceSensitive)
+        converter = converter.setNamespaceResolver(getRetainedStaticContext)
     }
-    val result = converter.convert(value)
-    if (result.isInstanceOf[ValidationFailure]) {
-      val err = result.asInstanceOf[ValidationFailure]
-      val xe = err.makeException
-      xe.maybeSetErrorCode("FORG0001")
-      xe.maybeSetLocation(getLocation)
-      throw xe
+    converter.convert(value) match {
+      case err: ValidationFailure =>
+        val xe = err.makeException
+        xe.maybeSetErrorCode("FORG0001")
+        xe.maybeSetLocation(getLocation)
+        throw xe
+      case result =>
+        result.asInstanceOf[AtomicValue]
     }
-    result.asInstanceOf[AtomicValue]
   }
 
   /**
