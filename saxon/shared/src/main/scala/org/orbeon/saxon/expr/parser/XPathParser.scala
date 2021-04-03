@@ -493,8 +493,7 @@ class XPathParser {
     if (offset == -1) {
       line = t.getLineNumber
       column = t.getColumnNumber
-    }
-    else {
+    } else {
       line = t.getLineNumber(offset)
       column = t.getColumnNumber(offset)
     }
@@ -2600,18 +2599,19 @@ class XPathParser {
    * @throws XPathException if the name is not recognized
    */
   @throws[XPathException]
-  private def getSystemType(name: String): Int = if ("item" == name) Type.ITEM
-  else if ("document-node" == name) Type.DOCUMENT
-  else if ("element" == name) Type.ELEMENT
-  else if ("schema-element" == name) Type.ELEMENT
-  else if ("attribute" == name) Type.ATTRIBUTE
-  else if ("schema-attribute" == name) Type.ATTRIBUTE
-  else if ("text" == name) Type.TEXT
-  else if ("comment" == name) Type.COMMENT
-  else if ("processing-instruction" == name) Type.PROCESSING_INSTRUCTION
-  else if ("namespace-node" == name) Type.NAMESPACE
-  else if ("node" == name) Type.NODE
-  else grumble("Unknown type " + name)
+  private def getSystemType(name: String): Int =
+    if ("item" == name)                        Type.ITEM
+    else if ("document-node" == name)          Type.DOCUMENT
+    else if ("element" == name)                Type.ELEMENT
+    else if ("schema-element" == name)         Type.ELEMENT
+    else if ("attribute" == name)              Type.ATTRIBUTE
+    else if ("schema-attribute" == name)       Type.ATTRIBUTE
+    else if ("text" == name)                   Type.TEXT
+    else if ("comment" == name)                Type.COMMENT
+    else if ("processing-instruction" == name) Type.PROCESSING_INSTRUCTION
+    else if ("namespace-node" == name)         Type.NAMESPACE
+    else if ("node" == name)                   Type.NODE
+    else                                       grumble("Unknown type " + name)
 
   @throws[XPathException]
   def checkLanguageVersion30(): Unit = if (!allowXPath30Syntax)
@@ -2864,7 +2864,8 @@ class XPathParser {
         sb.append(". The namespace URI and local name are recognized, but the number of arguments is wrong")
       } else {
         val supplementary = XPathParser.getMissingFunctionExplanation(functionName, config)
-        if (supplementary != null) sb.append(". ").append(supplementary)
+        if (supplementary != null)
+          sb.append(". ").append(supplementary)
       }
     }
     else sb.append(". External function calls have been disabled")
@@ -2995,7 +2996,8 @@ class XPathParser {
   def findRangeVariable(qName: StructuredQName): LocalBinding = {
     for (v <- rangeVariables.size - 1 to 0 by -1) {
       val b = rangeVariables(v)
-      if (b.getVariableQName == qName) return b
+      if (b.getVariableQName == qName)
+        return b
     }
     parserExtension.findOuterRangeVariable(this, qName)
   }
@@ -3025,8 +3027,11 @@ class XPathParser {
   final def makeFingerprint(qname: String, useDefault: Boolean): Int = {
     if (scanOnly) return StandardNames.XML_SPACE
     try {
-      val defaultNS = if (useDefault) env.getDefaultElementNamespace
-      else ""
+      val defaultNS =
+        if (useDefault)
+          env.getDefaultElementNamespace
+        else
+          ""
       val sq = qNameParser.parse(qname, defaultNS)
       env.getConfiguration.getNamePool.allocateFingerprint(sq.getURI, sq.getLocalPart)
     } catch {
@@ -3096,8 +3101,7 @@ class XPathParser {
     if (uri.isEmpty) {
       val fp = env.getConfiguration.getNamePool.allocateFingerprint("", qname)
       new NoNamespaceName(qname, fp)
-    }
-    else {
+    } else {
       val fp = env.getConfiguration.getNamePool.allocateFingerprint(uri, local)
       new FingerprintedQName(prefix, uri, local, fp)
     }
@@ -3224,7 +3228,7 @@ class XPathParser {
    * Make a location object corresponding to a specified offset in the query
    */
   def makeLocation(offset: Int): Location = {
-    val line = t.getLineNumber(offset)
+    val line   = t.getLineNumber(offset)
     val column = t.getColumnNumber(offset)
     makeNestedLocation(env.getContainingLocation, line, column, null)
   }
@@ -3247,13 +3251,19 @@ class XPathParser {
 
   private var mostRecentLocation: Location = Loc.NONE
 
-  def makeLocation: Location = if (t.getLineNumber == mostRecentLocation.getLineNumber && t.getColumnNumber == mostRecentLocation.getColumnNumber && ((env.getSystemId == null && mostRecentLocation.getSystemId == null) || env.getSystemId == mostRecentLocation.getSystemId)) mostRecentLocation
-  else {
-    val line = t.getLineNumber
-    val column = t.getColumnNumber
-    mostRecentLocation = makeNestedLocation(env.getContainingLocation, line, column, null)
-    mostRecentLocation
-  }
+  def makeLocation: Location =
+    if (
+      t.getLineNumber   == mostRecentLocation.getLineNumber   &&
+      t.getColumnNumber == mostRecentLocation.getColumnNumber &&
+      env.getSystemId   == mostRecentLocation.getSystemId
+    ) {
+      mostRecentLocation
+    } else {
+      val line = t.getLineNumber
+      val column = t.getColumnNumber
+      mostRecentLocation = makeNestedLocation(env.getContainingLocation, line, column, null)
+      mostRecentLocation
+    }
 
   /**
    * Make a Location object relative to an existing location
@@ -3265,10 +3275,10 @@ class XPathParser {
    * @return a suitable Location object
    */
   def makeNestedLocation(containingLoc: Location, line: Int, column: Int, nearbyText: String): Location =
-    if (containingLoc.isInstanceOf[Loc] && containingLoc.getLineNumber <= 1 && containingLoc.getColumnNumber == -1 && nearbyText == null) {
+    if (containingLoc.isInstanceOf[Loc] && containingLoc.getLineNumber <= 1 && containingLoc.getColumnNumber == -1 && nearbyText == null)
       new Loc(env.getSystemId, line + 1, column + 1)
-    }
-    else new XPathParser.NestedLocation(containingLoc, line, column, nearbyText)
+    else
+      new XPathParser.NestedLocation(containingLoc, line, column, nearbyText)
 
   /**
    * If tracing, wrap an expression in a trace instruction

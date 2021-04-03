@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,17 +6,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.sort
 
-import java.lang.Long
-import java.lang.Double
+import java.{lang => jl}
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.parser.Token
-import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.lib.StringCollator
-import org.orbeon.saxon.model.{BuiltInAtomicType, ConversionResult}
-
-import scala.util.control.Breaks._
+import org.orbeon.saxon.lib.{ConversionRules, StringCollator}
+import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
+
+import scala.util.control.Breaks._
 
 /**
  * A specialist comparer that implements the rules for comparing an untypedAtomic value
@@ -81,30 +78,30 @@ object UntypedNumericComparer {
       for (i <- 0 until cs.length) {
         val c = cs.charAt(i)
         if (c >= '0' && c <= '9') {
-          if (firstDigit < 0) firstDigit = c - '0'
-          if (decimalPoints == 0) wholePartLength += 1
-        }
-        else if (c == '-') {
+          if (firstDigit < 0)
+            firstDigit = c - '0'
+          if (decimalPoints == 0)
+            wholePartLength += 1
+        } else if (c == '-') {
           if (sign != '?' || wholePartLength > 0 || decimalPoints > 0) {
             simple = false
             break()
           }
           sign = c
-        }
-        else if (c == '.') {
+        } else if (c == '.') {
           if (decimalPoints > 0) {
             simple = false
             break()
           }
           decimalPoints = 1
-        }
-        else {
+        } else {
           simple = false
           break()
         }
       }
     }
-    if (firstDigit < 0) simple = false
+    if (firstDigit < 0)
+      simple = false
     if (simple && wholePartLength > 0 && wholePartLength <= 10) {
       var lowerBound = bounds(firstDigit)(wholePartLength)
       var upperBound = bounds(firstDigit + 1)(wholePartLength)
@@ -113,20 +110,21 @@ object UntypedNumericComparer {
         lowerBound = -upperBound
         upperBound = -temp
       }
-      if (upperBound < d1) return -1
-      if (lowerBound > d1) return +1
+      if (upperBound < d1)
+        return -1
+      if (lowerBound > d1)
+        return +1
     }
     if (simple && decimalPoints == 0 && wholePartLength <= 15 && a1.isInstanceOf[Int64Value]) {
       val l0 = cs.toString.toLong
-      Long.compare(l0, a1.longValue)
-    }
-    else {
-      var result: ConversionResult = null
-      a0.synchronized {
-        result = BuiltInAtomicType.DOUBLE.getStringConverter(rules).convertString(a0.getPrimitiveStringValue)
-      }
+      jl.Long.compare(l0, a1.longValue)
+    } else {
+      val result =
+        a0.synchronized {
+          BuiltInAtomicType.DOUBLE.getStringConverter(rules).convertString(a0.getPrimitiveStringValue)
+        }
       val av = result.asAtomic
-      Double.compare(av.asInstanceOf[DoubleValue].getDoubleValue, d1)
+      jl.Double.compare(av.asInstanceOf[DoubleValue].getDoubleValue, d1)
     }
   }
 }

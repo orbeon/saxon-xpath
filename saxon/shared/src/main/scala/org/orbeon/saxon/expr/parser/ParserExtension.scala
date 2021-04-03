@@ -36,13 +36,9 @@ object ParserExtension {
     }
 
   class InlineFunctionDetails {
-
     var outerVariables: mutable.Stack[LocalBinding] = _
-
     var outerVariablesUsed: ju.List[LocalBinding] = _
-
     var implicitParams: ju.List[UserFunctionParameter] = _
-
   }
 
   def makeInlineFunctionValue(p: XPathParser,
@@ -374,7 +370,7 @@ class ParserExtension {
           Literal.makeLiteral(Int64Value.makeIntegerValue(arity)))
       }
     }
-    val ref: Expression = makeNamedFunctionReference(functionName, fcf)
+    val ref = makeNamedFunctionReference(functionName, fcf)
     p.setLocation(ref, offset)
     ref
   }
