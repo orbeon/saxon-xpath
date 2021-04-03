@@ -199,7 +199,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
         val value =
           getRhsExpression.asInstanceOf[Literal].getValue
         if (value.isInstanceOf[NumericValue]) {
-          setLhsExpression(Literal.makeLiteral(
+          setRhsExpression(Literal.makeLiteral(
             new DoubleValue(value.asInstanceOf[NumericValue].getDoubleValue),
             this))
         }

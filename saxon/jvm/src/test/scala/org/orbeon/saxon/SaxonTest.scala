@@ -251,6 +251,14 @@ class SaxonTest extends AnyFunSpec {
       ("with-att/@*[namespace-uri() = 'http://example.org/foo']",   doc2.children.iterator.next(), false, "baz"),
       ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,                       false, "2"),
       ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.iterator.next(), false, "1300"),
+      ("""(2 - xs:double(8) + 9)""",                                docElem,                       false, "3"),
+      (
+        """(
+          |  (2 - xs:double(8) + 9) *
+          |  (
+          |    (4 - 3) div (xs:double(8) - 2)
+          |  ) + 2
+          |) div 1000""".stripMargin, docElem, false, "0.0025"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)

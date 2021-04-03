@@ -268,6 +268,15 @@ class XPathTest extends AnyFunSpec {
           |)""".stripMargin,                                        docElem,              false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
       ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,              false, "2"),
       ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.iterator.next(), false, "1300"),
+      ("""(xs:double(8) + xs:double(9))""",                         docElem, false, "17"),
+      ("""(xs:double(8) + 9)""",                                    docElem, false, "17"),
+      (
+        """(
+          |  (2 - xs:double(8) + 9) *
+          |  (
+          |    (4 - 3) div (xs:double(8) - 2)
+          |  ) + 2
+          |) div 1000""".stripMargin, docElem, false, "0.0025"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
