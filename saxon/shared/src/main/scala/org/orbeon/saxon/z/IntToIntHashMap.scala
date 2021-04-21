@@ -16,7 +16,7 @@ object IntToIntHashMap {
 class IntToIntHashMap(var capacity: Int, private var _factor: Double)
   extends IntToIntMap {
 
-  this.capacity = capacity
+  setCapacity(capacity)
 
   def this() = this(8, 0.25)
 
@@ -119,7 +119,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
       throw new RuntimeException("number of keys mapped exceeds " + NMAX)
     }
     if (_nlo < _n && _n <= _nhi) {
-      this.capacity = _n
+      setCapacity(_n)
     }
   }
 

@@ -184,7 +184,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
     if (_n > NMAX)
       throw new RuntimeException("number of keys mapped exceeds " + NMAX)
     if (_nlo < _n && _n <= _nhi)
-      capacity = _n
+      setCapacity(_n)
   }
 
   private def setCapacity(capacity: Int): Unit = {
