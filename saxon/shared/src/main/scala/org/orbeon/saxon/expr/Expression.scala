@@ -1,8 +1,5 @@
 package org.orbeon.saxon.expr
 
-import java.net.URI
-import java.{lang => jl, util => ju}
-
 import org.orbeon.saxon.event.{Outputter, ReceiverOption}
 import org.orbeon.saxon.expr.Expression._
 import org.orbeon.saxon.expr.parser._
@@ -21,6 +18,8 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.IntHashSet
 
+import java.net.URI
+import java.{lang => jl, util => ju}
 import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -529,7 +528,7 @@ abstract class Expression
     staticProperties |= prop
   }
 
-  def checkForUpdatingSubexpressions(): Unit = {
+  def checkForUpdatingSubexpressions(): Unit =
     for (o <- operands.asScala) {
       val sub = o.getChildExpression
       if (sub == null)
@@ -543,7 +542,6 @@ abstract class Expression
         throw err
       }
     }
-  }
 
   def isUpdatingExpression: Boolean =
     operands.asScala.exists(_.getChildExpression.isUpdatingExpression)
@@ -617,8 +615,10 @@ abstract class Expression
 
   def getProperties: collection.Iterator[String] = new MonoIterator("expression").asScala
 
-  def addToPathMap(pathMap: PathMap,
-                   pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+  def addToPathMap(
+    pathMap        : PathMap,
+    pathMapNodeSet : PathMap.PathMapNodeSet
+  ): PathMap.PathMapNodeSet = {
 
     val dependsOnFocus = ExpressionTool.dependsOnFocus(Expression.this)
     var attachmentPoint: PathMap.PathMapNodeSet = null
@@ -632,7 +632,7 @@ abstract class Expression
     } else {
       attachmentPoint = if (dependsOnFocus) pathMapNodeSet else null
     }
-    val result: PathMap.PathMapNodeSet = new PathMap.PathMapNodeSet()
+    val result = new PathMap.PathMapNodeSet
     for (o <- operands.asScala) {
       val usage = o.getUsage
       val child = o.getChildExpression

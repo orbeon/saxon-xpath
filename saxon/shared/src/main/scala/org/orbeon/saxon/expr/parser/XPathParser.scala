@@ -1245,7 +1245,7 @@ class XPathParser {
       expect(Token.NAME)
       val `var` = t.currentTokenValue
       clauses += 1
-      val v: QuantifiedExpression = new QuantifiedExpression
+      val v = new QuantifiedExpression
       v.setRequiredType(SequenceType.SINGLE_ITEM)
       v.setOperator(operator)
       setLocation(v, offset)
@@ -1265,8 +1265,10 @@ class XPathParser {
       nextToken()
       v.setSequence(parseExprSingle)
       declareRangeVariable(v)
-      if (previous != null) previous.setAction(v)
-      else first = v
+      if (previous != null)
+        previous.setAction(v)
+      else
+        first = v
       previous = v
     } while ( {
       t.currentToken == Token.COMMA
@@ -1275,9 +1277,8 @@ class XPathParser {
     expect(Token.SATISFIES)
     nextToken()
     previous.setAction(parseExprSingle)
-    for (i <- 0 until clauses) {
+    for (_ <- 0 until clauses)
       undeclareRangeVariable()
-    }
     makeTracer(first, first.getVariableQName)
   }
 

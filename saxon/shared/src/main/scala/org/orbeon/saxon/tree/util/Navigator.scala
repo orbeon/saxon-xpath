@@ -914,7 +914,7 @@ object Navigator {
    */
   class AxisFilter(var base: AxisIterator, var nodeTest: Predicate[_ >: NodeInfo]) extends AxisIterator {
 
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       while (true) {
         val next = base.next()
         if (next == null)
@@ -931,7 +931,7 @@ object Navigator {
    * nodes returned by an underlying AxisIterator.
    */
   class EmptyTextFilter(var base: AxisIterator) extends AxisIterator {
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       while (true) {
         val next = base.next()
         if (next == null)
@@ -950,7 +950,7 @@ object Navigator {
 
     private var atStart: Boolean = true
 
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       if (atStart) {
         atStart = false
         if (includeSelf)
@@ -981,7 +981,7 @@ object Navigator {
     private var atEnd = false
 
     @tailrec
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       if (descendants != null) {
         val nextd = descendants.next()
         if (nextd != null)
@@ -1077,7 +1077,7 @@ object Navigator {
 
 
     @tailrec
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       if (descendEnum != null) {
         val nextd = descendEnum.next()
         if (nextd != null)
@@ -1136,7 +1136,7 @@ object Navigator {
       }
     }
 
-    override def next(): NodeInfo = {
+    def next(): NodeInfo = {
       if (descendEnum != null) {
         val nextd = descendEnum.next()
         if (nextd != null)

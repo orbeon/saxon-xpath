@@ -26,9 +26,8 @@ object Literal {
 
   def makeStringsLiteral(strings: List[String]): Literal = {
     val values: List[StringValue] = new ArrayList[StringValue]()
-    for (s: String <- strings.asScala) {
+    for (s <- strings.asScala)
       values.add(new StringValue(s))
-    }
     val gv: GroundedValue = SequenceExtent.makeSequenceExtent(values)
     makeLiteral(gv)
   }
@@ -51,14 +50,13 @@ object Literal {
         out.emitAttribute("kind", nodeKind.toString)
         if (out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions].explaining) {
           val name: String = nodeInfo.getDisplayName
-          if (!name.isEmpty) {
+          if (name.nonEmpty)
             out.emitAttribute("name", name)
-          }
         } else {
           nodeKind match {
             case Type.DOCUMENT | Type.ELEMENT =>
-              var sw: StringWriter = new StringWriter()
-              var props: Properties = new Properties()
+              val sw    = new StringWriter
+              val props = new Properties
               props.setProperty("method", "xml")
               props.setProperty("indent", "no")
               props.setProperty("omit-xml-declaration", "yes")
@@ -75,19 +73,15 @@ object Literal {
               val name: StructuredQName = NameOfNode
                 .makeName(nodeInfo)
                 .getStructuredQName
-              if (!name.getLocalPart.isEmpty) {
+              if (name.getLocalPart.nonEmpty)
                 out.emitAttribute("localName", name.getLocalPart)
-              }
-              if (!name.getPrefix.isEmpty) {
+              if (name.getPrefix.nonEmpty)
                 out.emitAttribute("prefix", name.getPrefix)
-              }
-              if (!name.getURI.isEmpty) {
+              if (name.getURI.nonEmpty)
                 out.emitAttribute("ns", name.getURI)
-              }
               out.emitAttribute("content",
                 nodeInfo.getStringValue)
             case _ => assert(false)
-
           }
         }
         out.endElement()
@@ -302,15 +296,13 @@ class Literal extends Expression {
         }
       }
     } catch {
-      case err: XPathException => StaticProperty.ALLOWS_ZERO_OR_MORE
-
+      case _: XPathException => StaticProperty.ALLOWS_ZERO_OR_MORE
     }
   }
 
   override def computeSpecialProperties(): Int = {
-    if (value.getLength == 0) {
+    if (value.getLength == 0)
       return StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
-    }
     StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
@@ -335,15 +327,15 @@ class Literal extends Expression {
   }
 
   override def toPattern(config: Configuration): Pattern =
-    if (isEmptySequence(this)) {
+    if (isEmptySequence(this))
       new NodeTestPattern(ErrorType)
-    } else {
+    else
       super.toPattern(config)
-    }
 
   override def addToPathMap(
-                             pathMap: PathMap,
-                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet =
+    pathMap        : PathMap,
+    pathMapNodeSet : PathMap.PathMapNodeSet
+  ): PathMap.PathMapNodeSet =
     pathMapNodeSet
 
   override def getDependencies: Int = 0
@@ -367,7 +359,7 @@ class Literal extends Expression {
     }
   }
 
-  override def getImplementationMethod: Int = Expression.ITERATE_METHOD | Expression.PROCESS_METHOD | Expression.EVALUATE_METHOD
+  def getImplementationMethod: Int = Expression.ITERATE_METHOD | Expression.PROCESS_METHOD | Expression.EVALUATE_METHOD
 
   override def evaluateAsString(context: XPathContext): CharSequence = {
     val value: AtomicValue = evaluateItem(context).asInstanceOf[AtomicValue]
@@ -388,9 +380,8 @@ class Literal extends Expression {
   }
 
   override def equals(obj: Any): Boolean = {
-    if (!obj.isInstanceOf[Literal]) {
+    if (! obj.isInstanceOf[Literal])
       return false
-    }
     val v0 = value
     val v1 = obj.asInstanceOf[Literal].value
     try {
@@ -446,9 +437,8 @@ class Literal extends Expression {
 
   override def toString: String = value.toString
 
-  def export(out: ExpressionPresenter): Unit = {
+  def export(out: ExpressionPresenter): Unit =
     exportValue(value, out)
-  }
 
   override def getExpressionName: String = "literal"
 
@@ -463,6 +453,5 @@ class Literal extends Expression {
     }
 
   override def isSubtreeExpression: Boolean = true
-
   override def getStreamerName: String = "Literal"
 }

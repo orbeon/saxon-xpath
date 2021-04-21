@@ -302,7 +302,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   }
 
   override def computeSpecialProperties(): Int = {
-    var p: Int = super.computeSpecialProperties()
+    var p = super.computeSpecialProperties()
     p &= ~StaticProperty.NODESET_PROPERTIES
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
@@ -375,16 +375,15 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   }
 
   override def addToPathMap(
-                             pathMap: PathMap,
-                             pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
+    pathMap        : PathMap,
+    pathMapNodeSet : PathMap.PathMapNodeSet
+  ): PathMap.PathMapNodeSet = {
     val result = getBaseExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (result != null) {
       val th = getConfiguration.getTypeHierarchy
       val operandItemType = getBaseExpression.getItemType
-      if (th.relationship(NodeKindTest.ELEMENT, operandItemType) !=
-        Affinity.DISJOINT ||
-        th.relationship(NodeKindTest.DOCUMENT, operandItemType) !=
-          Affinity.DISJOINT) {
+      if (th.relationship(NodeKindTest.ELEMENT,  operandItemType) != Affinity.DISJOINT ||
+          th.relationship(NodeKindTest.DOCUMENT, operandItemType) != Affinity.DISJOINT) {
         result.setAtomized()
       }
     }

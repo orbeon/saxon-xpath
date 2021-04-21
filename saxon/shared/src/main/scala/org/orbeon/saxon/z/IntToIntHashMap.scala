@@ -135,7 +135,6 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     nbit = 1
     nmax = 2
     while (nmax * factor < capacity && nmax < NMAX) {
-
       nmax *= 2
     }
     val nold: Int = _nmax
