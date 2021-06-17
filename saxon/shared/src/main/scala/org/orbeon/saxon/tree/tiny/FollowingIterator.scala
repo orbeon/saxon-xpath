@@ -53,10 +53,11 @@ class FollowingIterator(var doc: TinyTree,
       }
     } else {
       assert(current != null)
-      var here: TinyNodeImpl = null
-      here = if (current.isInstanceOf[TinyTextualElement])
-        current.getParent.asInstanceOf[TinyNodeImpl]
-      else current.asInstanceOf[TinyNodeImpl]
+      val here =
+        if (current.isInstanceOf[TinyTextualElement#TinyTextualElementText])
+          current.getParent.asInstanceOf[TinyNodeImpl]
+        else
+          current.asInstanceOf[TinyNodeImpl]
       nodeNr = here.nodeNr + 1
     }
     while (true) {
