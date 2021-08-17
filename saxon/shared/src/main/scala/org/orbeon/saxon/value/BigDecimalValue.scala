@@ -195,15 +195,14 @@ object BigDecimalValue {
   class DecimalComparable(var value: BigDecimalValue) extends Comparable[AnyRef] {
     def asBigDecimal: BigDecimal = value.getDecimalValue
 
-    override def compareTo(o: AnyRef): Int = if (o.isInstanceOf[BigDecimalValue.DecimalComparable])
-      asBigDecimal.compareTo(o.asInstanceOf[BigDecimalValue.DecimalComparable].asBigDecimal)
-    else if (o.isInstanceOf[Int64Value.Int64Comparable])
-      asBigDecimal.compareTo(BigDecimal.valueOf(o.asInstanceOf[Int64Value.Int64Comparable].asLong))
-    else if (o.isInstanceOf[BigIntegerValue.BigIntegerComparable])
-      asBigDecimal.compareTo(new BigDecimal(o.asInstanceOf[BigIntegerValue.BigIntegerComparable].asBigInteger))
-    else SequenceTool.INDETERMINATE_ORDERING
+    override def compareTo(o: AnyRef): Int = o match {
+      case c: DecimalComparable                    => asBigDecimal.compareTo(c.asBigDecimal)
+      case c: Int64Value.Int64Comparable           => asBigDecimal.compareTo(BigDecimal.valueOf(c.asLong))
+      case c: BigIntegerValue.BigIntegerComparable => asBigDecimal.compareTo(new BigDecimal(c.asBigInteger))
+      case _                                       => SequenceTool.INDETERMINATE_ORDERING
+    }
 
-    override def equals(o: Any) = compareTo(o.asInstanceOf[AnyRef]) == 0
+    override def equals(o: Any): Boolean = compareTo(o.asInstanceOf[AnyRef]) == 0
 
     override def hashCode: Int = {
       if (value.isWholeNumber) {
@@ -213,7 +212,6 @@ object BigDecimalValue {
       value.hashCode
     }
   }
-
 }
 
 final class BigDecimalValue extends DecimalValue {
@@ -269,7 +267,7 @@ final class BigDecimalValue extends DecimalValue {
    * @param typeLabel the type label of the new copy. The caller is responsible for checking that
    *                  the value actually conforms to this type.
    */
-  override def copyAsSubType(typeLabel: AtomicType) = {
+  override def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v = new BigDecimalValue(value)
     v.typeLabel = typeLabel
     v
@@ -289,7 +287,7 @@ final class BigDecimalValue extends DecimalValue {
    * @return A double representing this numeric value; NaN if it cannot be
    *         converted
    */
-  override def getDoubleValue =
+  override def getDoubleValue: Double =
     if (doubleValue == null) {
       val d = value.doubleValue
       doubleValue = d
@@ -302,10 +300,10 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @return a float representing this numeric value; NaN if it cannot be converted
    */
-  override def getFloatValue = value.doubleValue.toFloat
+  override def getFloatValue: Float = value.doubleValue.toFloat
 
   @throws[XPathException]
-  override def longValue = value.doubleValue.toLong
+  override def longValue: Long = value.doubleValue.toLong
 
   /**
    * Get the value
@@ -324,14 +322,14 @@ final class BigDecimalValue extends DecimalValue {
     else getDoubleValue.hashCode
   }
 
-  override def effectiveBooleanValue = value.signum != 0
+  override def effectiveBooleanValue: Boolean = value.signum != 0
 
   /**
    * Get the canonical lexical representation as defined in XML Schema. This is not always the same
    * as the result of casting to a string according to the XPath rules. For xs:decimal, the canonical
    * representation always contains a decimal point.
    */
-  override def getCanonicalLexicalRepresentation = {
+  override def getCanonicalLexicalRepresentation: String = {
     var s = getStringValue
     if (s.indexOf('.') < 0) s += ".0"
     s
@@ -342,7 +340,9 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @return a String representation of the value
    */
-  /*@NotNull*/ override def getPrimitiveStringValue = BigDecimalValue.decimalToString(value, new FastStringBuffer(FastStringBuffer.C16))
+  /*@NotNull*/
+  override def getPrimitiveStringValue: FastStringBuffer =
+  BigDecimalValue.decimalToString(value, new FastStringBuffer(FastStringBuffer.C16))
 
   /**
    * Negate the value
@@ -363,9 +363,9 @@ final class BigDecimalValue extends DecimalValue {
    * Implement the XPath round() function
    */
   override def round(scale: Int): NumericValue = {
-    if (scale >= value.scale) {
+
+    if (scale >= value.scale)
       return this
-    }
 
     value.signum.toString match {
       case "-1" => new BigDecimalValue(value.setScale(scale, RoundingMode.HALF_DOWN))
@@ -379,7 +379,8 @@ final class BigDecimalValue extends DecimalValue {
    * Implement the XPath round-half-to-even() function
    */
   override def roundHalfToEven(scale: Int): NumericValue = {
-    if (scale >= value.scale) return this
+    if (scale >= value.scale)
+      return this
     val scaledValue = value.setScale(scale, RoundingMode.HALF_EVEN)
     new BigDecimalValue(scaledValue.stripTrailingZeros)
   }
@@ -389,7 +390,7 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @return -1 if negative, 0 if zero, +1 if positive, NaN if NaN
    */
-  override def signum = value.signum
+  override def signum: Int = value.signum
 
   /**
    * Determine whether the value is a whole number, that is, whether it compares
@@ -404,12 +405,15 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @return the number as an int if it is a possible subscript, or -1 otherwise
    */
-  override def asSubscript = if (isWholeNumber && value.compareTo(BigDecimal.ZERO) > 0 && value.compareTo(BigDecimalValue.MAX_INT) <= 0) try longValue.toInt
-  catch {
-    case e: XPathException =>
+  override def asSubscript: Int =
+    if (isWholeNumber && value.compareTo(BigDecimal.ZERO) > 0 && value.compareTo(BigDecimalValue.MAX_INT) <= 0)
+      try
+        longValue.toInt
+      catch {
+        case _: XPathException => -1
+      }
+    else
       -1
-  }
-  else -1
 
   /**
    * Get the absolute value as defined by the XPath abs() function
@@ -417,22 +421,29 @@ final class BigDecimalValue extends DecimalValue {
    * @return the absolute value
    * @since 9.2
    */
-  override def abs = if (value.signum > 0) this
-  else new BigDecimalValue(value.negate)
+  override def abs: BigDecimalValue =
+    if (value.signum > 0)
+      this
+    else
+      new BigDecimalValue(value.negate)
 
   /**
    * Compare the value to another numeric value
    */
-  override def compareTo(other: NumericValue): Int = if (NumericValue.isInteger(other)) { // deliberately triggers a ClassCastException if other value is the wrong type
-    try value.compareTo(other.getDecimalValue)
-    catch {
-      case err: XPathException =>
-        throw new AssertionError("Conversion of integer to decimal should never fail")
+  override def compareTo(other: NumericValue): Int =
+    if (NumericValue.isInteger(other)) {
+      // deliberately triggers a `ClassCastException` if other value is the wrong type
+      try
+        value.compareTo(other.getDecimalValue)
+      catch {
+        case _: XPathException =>
+          throw new AssertionError("Conversion of integer to decimal should never fail")
+      }
+    } else other match {
+      case v: BigDecimalValue => value.compareTo(v.value)
+      case _: FloatValue      => -other.compareTo(this)
+      case _                  => super.compareTo(other)
     }
-  }
-  else if (other.isInstanceOf[BigDecimalValue]) value.compareTo(other.asInstanceOf[BigDecimalValue].value)
-  else if (other.isInstanceOf[FloatValue]) -other.compareTo(this)
-  else super.compareTo(other)
 
   /**
    * Compare the value to a long
@@ -441,26 +452,31 @@ final class BigDecimalValue extends DecimalValue {
    * @return -1 if this is less, 0 if this is equal, +1 if this is greater or if this is NaN
    */
   override def compareTo(other: Long): Int = {
-    if (other == 0) return value.signum
+    if (other == 0)
+      return value.signum
     value.compareTo(BigDecimal.valueOf(other))
   }
 
   /**
    * Get an object that implements XML Schema comparison semantics
    */
-  override def getSchemaComparable: Comparable[AnyRef] = new BigDecimalValue.DecimalComparable(this)
+  override def getSchemaComparable: Comparable[AnyRef] =
+    new BigDecimalValue.DecimalComparable(this)
 
   /**
    * Determine whether two atomic values are identical, as determined by XML Schema rules. This is a stronger
    * test than equality (even schema-equality); for example two dateTime values are not identical unless
    * they are in the same timezone.
-   * <p>Note that even this check ignores the type annotation of the value. The integer 3 and the short 3
+   *
+   * Note that even this check ignores the type annotation of the value. The integer 3 and the short 3
    * are considered identical, even though they are not fully interchangeable. "Identical" means the
-   * same point in the value space, regardless of type annotation.</p>
-   * <p>NaN is identical to itself.</p>
+   * same point in the value space, regardless of type annotation.
+   *
+   * NaN is identical to itself.
    *
    * @param v the other value to be compared with this one
    * @return true if the two values are identical, false otherwise.
    */
-  override def isIdentical(v: AtomicValue) = v.isInstanceOf[DecimalValue] && this == v
+  override def isIdentical(v: AtomicValue): Boolean =
+    v.isInstanceOf[DecimalValue] && this == v
 }

@@ -4,13 +4,6 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-  * A simple implementation of a class similar to StringBuffer. Unlike
-  * StringBuffer it is not synchronized. It also offers the capability
-  * to remove unused space. (This class could possibly be replaced by
-  * StringBuilder in JDK 1.5, but using our own class gives more control.)
-  */
-
 package org.orbeon.saxon.tree.util
 
 import java.io.Writer
@@ -21,11 +14,17 @@ import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
 import org.orbeon.saxon.tree.tiny.{AppendableCharSequence, CharSlice, CompressedWhitespace}
 
 
+/**
+  * A simple implementation of a class similar to StringBuffer. Unlike
+  * StringBuffer it is not synchronized. It also offers the capability
+  * to remove unused space. (This class could possibly be replaced by
+  * StringBuilder in JDK 1.5, but using our own class gives more control.)
+  */
 object FastStringBuffer {
 
-  val C16: Int = 16
-  val C64: Int = 64
-  val C256: Int = 256
+  val C16  : Int = 16
+  val C64  : Int = 64
+  val C256 : Int = 256
   val C1024: Int = 1024
 
   def diagnosticPrint(in: CharSequence): String = {
@@ -36,7 +35,7 @@ object FastStringBuffer {
         buff.cat(c)
       } else {
         buff.append("\\u")
-        var d: Int = 12
+        var d = 12
         while (d >= 0) {
           buff.cat("0123456789ABCDEF".charAt((c >> d) & 0xf))
           d -= 4
@@ -178,7 +177,7 @@ class FastStringBuffer(initialSize: Int)
     * @return the number of <code>char</code>s in this sequence
     */
   def length: Int = used
-  override def isEmpty: Boolean = used == 0
+  def isEmpty: Boolean = used == 0
 
   /**
     * Returns the <code>char</code> value at the specified index.  An index ranges from zero

@@ -517,7 +517,8 @@ class RECompiler {
       }
     }
 
-    if (fsb.isEmpty) internalError()
+    if (fsb.isEmpty)
+      internalError()
 
     RECompiler.trace(new Operation.OpAtom(UnicodeString.makeUnicodeString(fsb.condense)))
   }
