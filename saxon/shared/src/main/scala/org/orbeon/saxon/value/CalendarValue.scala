@@ -1,7 +1,6 @@
 package org.orbeon.saxon.value
 
 import java.math.BigDecimal
-import java.util.GregorianCalendar
 
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.sort.{AtomicMatchKey, CodepointCollator}

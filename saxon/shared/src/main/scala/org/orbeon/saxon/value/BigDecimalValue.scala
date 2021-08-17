@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -26,14 +25,16 @@ import scala.util.control.Breaks._
  *        instance of xs:decimal is now implemented as an instance of DecimalValue.
  */
 object BigDecimalValue {
+
   val DIVIDE_PRECISION = 18
   val BIG_DECIMAL_ONE_MILLION = BigDecimal.valueOf(1000000)
   val BIG_DECIMAL_ONE_BILLION = BigDecimal.valueOf(1000000000)
-  val ZERO = new BigDecimalValue(BigDecimal.valueOf(0))
-  val ONE = new BigDecimalValue(BigDecimal.valueOf(1))
-  val TWO = new BigDecimalValue(BigDecimal.valueOf(2))
-  val THREE = new BigDecimalValue(BigDecimal.valueOf(3))
-  val MAX_INT = BigDecimal.valueOf(Integer.MAX_VALUE)
+  val ZERO                    = new BigDecimalValue(BigDecimal.valueOf(0))
+  val ONE                     = new BigDecimalValue(BigDecimal.valueOf(1))
+  val TWO                     = new BigDecimalValue(BigDecimal.valueOf(2))
+  val THREE                   = new BigDecimalValue(BigDecimal.valueOf(3))
+  val MAX_INT                 = BigDecimal.valueOf(Integer.MAX_VALUE)
+
   private val decimalPattern = Pattern.compile("(\\-|\\+)?((\\.[0-9]+)|([0-9]+(\\.[0-9]*)?))")
 
   /**

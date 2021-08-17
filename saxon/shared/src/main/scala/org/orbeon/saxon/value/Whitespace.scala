@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2018-2020 Saxonica Limited
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -13,6 +12,7 @@ import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import scala.util.control.Breaks._
 
+
 /**
  * This class provides helper methods and constants for handling whitespace
  */
@@ -24,21 +24,21 @@ object Whitespace {
    * used instead of COLLAPSE when all valid values have no interior whitespace; trimming
    * leading and trailing whitespace is then equivalent to the action of COLLAPSE, but faster.
    */
-    val PRESERVE = 0
-  val REPLACE = 1
+  val PRESERVE = 0
+  val REPLACE  = 1
   val COLLAPSE = 2
-  val TRIM = 3
+  val TRIM     = 3
   /**
    * The values NONE, IGNORABLE, and ALL identify which kinds of whitespace text node
    * should be stripped when building a source tree. UNSPECIFIED indicates that no
    * particular request has been made. XSLT indicates that whitespace should be stripped
    * as defined by the xsl:strip-space and xsl:preserve-space declarations in the stylesheet
    */
-  val NONE = 0
-  val IGNORABLE = 1
-  val ALL = 2
+  val NONE        = 0
+  val IGNORABLE   = 1
+  val ALL         = 2
   val UNSPECIFIED = 3
-  val XSLT = 4
+  val XSLT        = 4
 
   /**
    * Test whether a character is whitespace
@@ -48,7 +48,7 @@ object Whitespace {
    */
   def isWhitespace(ch: Int): Boolean = ch match {
     case 9 | 10 | 13 | 32 => true
-    case _ => false
+    case _                => false
   }
 
   /**
@@ -86,15 +86,17 @@ object Whitespace {
    * @return the string without its whitespace. This may be the original value
    *         if it contained no whitespace
    */
-  def removeAllWhitespace(value: CharSequence): CharSequence = if (containsWhitespace(value)) {
-    val sb = new FastStringBuffer(value.length)
-    for (i <- 0 until value.length) {
-      val c = value.charAt(i)
-      if (c > 32 || !C0WHITE(c)) sb.cat(c)
-    }
-    sb
-  }
-  else value
+  def removeAllWhitespace(value: CharSequence): CharSequence =
+    if (containsWhitespace(value)) {
+      val sb = new FastStringBuffer(value.length)
+      for (i <- 0 until value.length) {
+        val c = value.charAt(i)
+        if (c > 32 || !C0WHITE(c))
+          sb.cat(c)
+      }
+      sb
+    } else
+      value
 
   /**
    * Remove leading whitespace characters from a string
@@ -139,7 +141,8 @@ object Whitespace {
       val c = value.charAt({
         i -= 1; i + 1
       })
-      if (c <= 32 && C0WHITE(c)) return true
+      if (c <= 32 && C0WHITE(c))
+        return true
     }
     false
   }
@@ -155,12 +158,14 @@ object Whitespace {
     if (content.isInstanceOf[CompressedWhitespace]) return true
     val len = content.length
     var i = 0
-    while ( i < len) { // all valid XML 1.0 whitespace characters, and only whitespace characters, are <= 0x20
+    while ( i < len) {
+      // all valid XML 1.0 whitespace characters, and only whitespace characters, are <= 0x20
       // But XML 1.1 allows non-white characters that are also < 0x20, so we need a specific test for these
       val c = content.charAt({
         i += 1; i - 1
       })
-      if (c > 32 || !C0WHITE(c)) return false
+      if (c > 32 || !C0WHITE(c))
+        return false
     }
     true
   }
@@ -177,7 +182,7 @@ object Whitespace {
    * @param c the character to be tested
    * @return true if the character is a whitespace character
    */
-  def isWhite(c: Char) = c <= 32 && C0WHITE(c)
+  def isWhite(c: Char): Boolean = c <= 32 && C0WHITE(c)
 
   /**
    * Normalize whitespace as defined in XML Schema. Note that this is not the same
@@ -222,8 +227,7 @@ object Whitespace {
         case '\n'|'\r'|'\t'| ' ' =>
           if (inWhitespace) {
             // remove the whitespace
-          }
-          else {
+          } else {
             sb.cat(' ')
             inWhitespace = true
           }
@@ -283,10 +287,12 @@ object Whitespace {
    * @return the string with leading and trailing whitespace removed.
    *         Returns null if and only if the supplied argument is null.
    */
-  /*@Nullable*/ def trim(s: CharSequence): String = {
-    if (s == null) return null
-    trimWhitespace(s).toString
-  }
+  /*@Nullable*/
+  def trim(s: CharSequence): String =
+    if (s == null)
+      null
+    else
+      trimWhitespace(s).toString
 
   /**
    * An iterator that splits a string on whitespace boundaries, corresponding to the XPath 3.1 function tokenize#1
@@ -307,23 +313,21 @@ object Whitespace {
       this.position = 0
     }
 
-    override def next: StringValue = {
+    def next(): StringValue = {
       var start = position
       val eol = input.length
-      while (start < eol && isWhite(input(start))) start += 1
-      if (start >= eol) return null
+      while (start < eol && isWhite(input(start)))
+        start += 1
+      if (start >= eol)
+        return null
       var end = start
-      while (end < eol && !isWhite(input(end))) end += 1
+      while (end < eol && !isWhite(input(end)))
+        end += 1
       position = end
       StringValue.makeStringValue(new CharSlice(input, start, end - start))
     }
 
-    override def close() = {
-      // no action
-    }
+    // no action
+    override def close(): Unit = ()
   }
-
-}
-
-class Whitespace private() {
 }

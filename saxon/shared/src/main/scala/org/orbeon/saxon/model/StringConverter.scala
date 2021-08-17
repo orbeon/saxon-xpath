@@ -405,9 +405,7 @@ object StringConverter {
   }
 
   object StringToDecimal {
-
-    val INSTANCE: StringToDecimal = new StringToDecimal()
-
+    val INSTANCE: StringToDecimal = new StringToDecimal
   }
 
   class StringToDecimal extends StringConverter {
@@ -416,7 +414,6 @@ object StringConverter {
       BigDecimalValue.makeDecimalValue(input, validate = true)
 
     /*@Nullable*/
-
     override def validate(input: CharSequence): ValidationFailure =
       if (BigDecimalValue.castableAsDecimal(input)) {
         null
