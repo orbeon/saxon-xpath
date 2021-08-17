@@ -146,14 +146,14 @@ object BigDecimalValue {
    * @param fsb   the FastStringBuffer to which the value is to be appended
    * @return the supplied FastStringBuffer, suitably populated
    */
-  def decimalToString(value: BigDecimal, fsb: FastStringBuffer): FastStringBuffer = { // Can't use BigDecimal#toString() under JDK 1.5 because this produces values like "1E-5".
+  def decimalToString(value: BigDecimal, fsb: FastStringBuffer): FastStringBuffer = {
+    // Can't use BigDecimal#toString() under JDK 1.5 because this produces values like "1E-5".
     // Can't use BigDecimal#toPlainString() because it retains trailing zeroes to represent the scale
     val scale = value.scale
     if (scale == 0) {
       fsb.append(value.toString)
       fsb
-    }
-    else if (scale < 0) {
+    } else if (scale < 0) {
       val s = value.abs.unscaledValue.toString
       if (s == "0") {
         fsb.cat('0')
@@ -162,12 +162,11 @@ object BigDecimalValue {
       //FastStringBuffer sb = new FastStringBuffer(s.length + (-scale) + 2);
       if (value.signum < 0) fsb.cat('-')
       fsb.append(s)
-      for (i <- 0 until -scale) {
+      for (_ <- 0 until -scale) {
         fsb.cat('0')
       }
       fsb
-    }
-    else {
+    } else {
       val s = value.abs.unscaledValue.toString
       if (s == "0") {
         fsb.cat('0')
@@ -175,15 +174,14 @@ object BigDecimalValue {
       }
       val len = s.length
       //FastStringBuffer sb = new FastStringBuffer(len+1);
-      if (value.signum < 0) fsb.cat('-')
+      if (value.signum < 0)
+        fsb.cat('-')
       if (scale >= len) {
         fsb.append("0.")
-        for (i <- len until scale) {
+        for (_ <- len until scale)
           fsb.cat('0')
-        }
         fsb.append(s)
-      }
-      else {
+      } else {
         fsb.append(s.substring(0, len - scale))
         fsb.cat('.')
         fsb.append(s.substring(len - scale))
@@ -318,8 +316,10 @@ final class BigDecimalValue extends DecimalValue {
   override def hashCode: Int = {
     val round = value.setScale(0, RoundingMode.DOWN)
     val longValue = round.longValue
-    if (longValue > Integer.MIN_VALUE && longValue < Integer.MAX_VALUE) longValue.toInt
-    else getDoubleValue.hashCode
+    if (longValue > Integer.MIN_VALUE && longValue < Integer.MAX_VALUE)
+      longValue.toInt
+    else
+      getDoubleValue.hashCode
   }
 
   override def effectiveBooleanValue: Boolean = value.signum != 0
@@ -400,8 +400,7 @@ final class BigDecimalValue extends DecimalValue {
 
   /**
    * Test whether a number is a possible subscript into a sequence, that is,
-   * a whole number greater than zero and less than 2^31
-   *
+   * a whole number greater than zero and less than `2^31`
    *
    * @return the number as an int if it is a possible subscript, or -1 otherwise
    */
