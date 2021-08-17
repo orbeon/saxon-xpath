@@ -254,21 +254,24 @@ object Whitespace {
       return in
     var first = 0
     var last = in.length - 1
-    breakable {
-      while (true) {
+    locally {
+      var exitLoop = false
+      while (! exitLoop) {
         val x = in.charAt(first)
-        if (x > 32 || !C0WHITE(x))
-          break()
-        if ( { first += 1; first - 1 } >= last)
+        if (x > 32 || ! C0WHITE(x))
+          exitLoop = true
+        else if ( { first += 1; first - 1 } >= last)
           return ""
       }
     }
-    breakable {
-      while (true) {
+    locally {
+      var exitLoop = false
+      while (! exitLoop) {
         val x = in.charAt(last)
         if (x > 32 || !C0WHITE(x))
-          break()
-        last -= 1
+          exitLoop = true
+        else
+          last -= 1
       }
     }
     if (first == 0 && last == in.length - 1)
