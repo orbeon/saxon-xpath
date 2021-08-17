@@ -15,7 +15,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 import java.util.regex.Pattern
-import scala.util.control.Breaks._
+
 
 /**
  * An implementation class for decimal values other than integers
@@ -45,25 +45,25 @@ object BigDecimalValue {
    * @return the required DecimalValue if the input is valid, or a ValidationFailure encapsulating the error
    *         message if not.
    */
-  def makeDecimalValue(in: CharSequence, validate: Boolean) =
-    try parse(in)
-    catch {
-      case err: NumberFormatException =>
-        val e = new ValidationFailure("Cannot convert string " + Err.wrap(Whitespace.trim(in), Err.VALUE) + " to xs:decimal: " + err.getMessage)
-        e.setErrorCode("FORG0001")
-        e
-    }
+  def makeDecimalValue(in: CharSequence, validate: Boolean): ConversionResult =
+    parse(in)
 
   /**
    * Factory method to construct a DecimalValue from a string, throwing an unchecked exception
    * if the value is invalid
    *
    * @param in the lexical representation of the DecimalValue
-   * @return the required DecimalValue
-   * @throws NumberFormatException if the value is invalid
+   * @return `BigDecimalValue | ValidationFailure`
    */
-  @throws[NumberFormatException]
-  def parse(in: CharSequence): BigDecimalValue = {
+  def parse(in: CharSequence): ConversionResult = {
+
+    // ORBEON: Return values from `parse()` to avoid costly exception throwing.
+    def makeValidationFailure(msg: String): ValidationFailure = {
+      val e = new ValidationFailure(s"Cannot convert string ${Err.wrap(Whitespace.trim(in), Err.VALUE)} to xs:decimal: $msg")
+      e.setErrorCode("FORG0001")
+      e
+    }
+
     val digits = new FastStringBuffer(in.length)
     var scale = 0
     var state = 0
@@ -80,11 +80,11 @@ object BigDecimalValue {
             state = 5
         case '+' =>
           if (state != 0)
-            throw new NumberFormatException("unexpected sign")
+            return makeValidationFailure("unexpected sign")
           state = 1
         case '-' =>
           if (state != 0)
-            throw new NumberFormatException("unexpected sign")
+            return makeValidationFailure("unexpected sign")
           state = 1
           digits.cat(c)
         case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
@@ -93,36 +93,39 @@ object BigDecimalValue {
           else if (state >= 3)
             scale += 1
           if (state == 5)
-            throw new NumberFormatException("contains embedded whitespace")
+            return makeValidationFailure("contains embedded whitespace")
           digits.cat(c)
           foundDigit = true
         case '.' =>
           if (state == 5)
-            throw new NumberFormatException("contains embedded whitespace")
+            return makeValidationFailure("contains embedded whitespace")
           if (state >= 3)
-            throw new NumberFormatException("more than one decimal point")
+            return makeValidationFailure("more than one decimal point")
           state = 3
         case _ =>
-          throw new NumberFormatException("invalid character '" + c + "'")
+          return makeValidationFailure("invalid character '" + c + "'")
       }
     }
     if (! foundDigit)
-      throw new NumberFormatException("no digits in value")
+      return makeValidationFailure("no digits in value")
 
-    breakable {
-      while (scale > 0)
+    locally {
+      var exitLoop = false
+      while (scale > 0 && ! exitLoop)
         if (digits.charAt(digits.length - 1) == '0') {
           digits.setLength(digits.length - 1)
           scale -= 1
         } else
-          break()
+          exitLoop = true
     }
-    if (digits.isEmpty || (digits.length == 1 && digits.charAt(0) == '-'))
-      return BigDecimalValue.ZERO
-    val bigInt = new BigInteger(digits.toString)
-    val bigDec = new BigDecimal(bigInt, scale)
+    if (digits.isEmpty || (digits.length == 1 && digits.charAt(0) == '-')) {
+      BigDecimalValue.ZERO
+    } else {
+      val bigInt = new BigInteger(digits.toString)
+      val bigDec = new BigDecimal(bigInt, scale)
 
-    new BigDecimalValue(bigDec)
+      new BigDecimalValue(bigDec)
+    }
   }
 
   /**

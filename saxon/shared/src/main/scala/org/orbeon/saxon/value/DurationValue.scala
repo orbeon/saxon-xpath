@@ -532,7 +532,7 @@ class DurationValue extends AtomicValue with AtomicMatchKey {
         var ms = "000000000" + nanoseconds
         ms = ms.substring(ms.length - 9)
         sb.append((if (negative) "-" else "") + getSeconds + '.' + ms)
-        BigDecimalValue.parse(sb)
+        BigDecimalValue.parse(sb).asInstanceOf[BigDecimalValue] // ORBEON: changed `parse()` to avoid throwing
       case WHOLE_SECONDS =>
         Int64Value.makeIntegerValue(if (negative) -seconds else seconds)
       case MICROSECONDS =>
