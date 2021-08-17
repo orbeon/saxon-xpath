@@ -907,7 +907,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @param rules the conversion rules to be used
    * @since 9.3
    */
-  def setConversionRules(rules: ConversionRules): Unit = this.theConversionRules = rules
+  def setConversionRules(rules: ConversionRules): Unit =
+    this.theConversionRules = rules
 
   /**
    * Get the conversion rules used to convert between atomic types. By default, the rules depend on the versions
@@ -916,22 +917,25 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the appropriate conversion rules
    * @since 9.3
    */
-  def getConversionRules: ConversionRules = if (theConversionRules == null) {
-    this.synchronized {
-      val cv = new ConversionRules
-      cv.setTypeHierarchy(getTypeHierarchy)
-      cv.setNotationSet(this)
-      if (xsdVersion == Configuration.XSD10) {
-        cv.setStringToDoubleConverter(StringToDouble.getInstance)
-        cv.setURIChecker(StandardURIChecker.getInstance)
-        // In XSD 1.1, there is no checking
+  def getConversionRules: ConversionRules =
+    if (theConversionRules == null) {
+      this.synchronized {
+        val cv = new ConversionRules
+        cv.setTypeHierarchy(getTypeHierarchy)
+        cv.setNotationSet(this)
+        if (xsdVersion == Configuration.XSD10) {
+          cv.setStringToDoubleConverter(StringToDouble.getInstance)
+          cv.setURIChecker(StandardURIChecker.getInstance)
+          // In XSD 1.1, there is no checking
+        } else {
+          cv.setStringToDoubleConverter(StringToDouble11.getInstance)
+        }
+        cv.setAllowYearZero(xsdVersion != Configuration.XSD10)
+        theConversionRules = cv
+        return cv
       }
-      else cv.setStringToDoubleConverter(StringToDouble11.getInstance)
-      cv.setAllowYearZero(xsdVersion != Configuration.XSD10)
-      return cv
-    }
-  }
-  else theConversionRules
+    } else
+      theConversionRules
 
   /**
    * Get the version of XML Schema to be used
