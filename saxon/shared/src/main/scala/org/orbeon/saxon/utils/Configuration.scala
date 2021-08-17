@@ -1,17 +1,5 @@
 package org.orbeon.saxon.utils
 
-import java.io.{InputStream, PrintStream, UnsupportedEncodingException}
-import java.net.{URI, URISyntaxException, URLDecoder}
-import java.{util => ju}
-import java.util
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.function.{IntPredicate, Predicate}
-import java.util.{Collections, Comparator, Properties}
-
-import javax.xml.transform._
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.sax.SAXSource
-import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event._
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.accum.AccumulatorRegistry
@@ -50,12 +38,22 @@ import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.{IntHashSet, IntSet}
 import org.xml.sax._
 
+import java.io.{InputStream, PrintStream, UnsupportedEncodingException}
+import java.net.{URI, URISyntaxException, URLDecoder}
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.function.{IntPredicate, Predicate}
+import java.util.{Collections, Comparator, Properties}
+import java.{util => ju}
+import javax.xml.transform._
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.sax.SAXSource
+import javax.xml.transform.stream.StreamSource
 import scala.jdk.CollectionConverters._
 
 
 object Configuration {
 
-  val booleanFeatures = new util.HashSet[Feature[_]](40)
+  val booleanFeatures = new ju.HashSet[Feature[_]](40)
   /**
    * Constant indicating the XML Version 1.0
    */
@@ -89,7 +87,7 @@ object Configuration {
    * @param messages List to be populated with messages in the event of failure
    * @return an InputStream for reading the file/resource
    */
-  def locateResource(filename: String, messages: util.List[String]): InputStream = {
+  def locateResource(filename: String, messages: ju.List[String]): InputStream = {
 
     // ORBEON: JVM only
     null
@@ -277,7 +275,7 @@ object Configuration {
 
   /**
    * Marker interface to represent an API that is provided as a layer on top of this
-   * {@code Configuration}
+   * `Configuration`
    */
   trait ApiProvider
 
@@ -307,14 +305,19 @@ object Configuration {
    * @return the value as a boolean
    * @throws IllegalArgumentException if the supplied value cannot be validated as a recognized boolean value
    */
-  def requireBoolean(propertyName: String, value: Any): Boolean = if (value.isInstanceOf[Boolean]) value.asInstanceOf[Boolean]
-  else if (value.isInstanceOf[String]) {
-    val valueStr = value.asInstanceOf[String].trim
-    if ("true" == valueStr || "on" == valueStr || "yes" == valueStr || "1" == valueStr) true
-    else if ("false" == valueStr || "off" == valueStr || "no" == valueStr || "0" == valueStr) false
-    else throw new IllegalArgumentException(propertyName + " must be 'true' or 'false' (or on|off, yes|no, 1|0)")
+  def requireBoolean(propertyName: String, value: Any): Boolean = value match {
+    case bool: Boolean => bool
+    case str: String   =>
+      val valueStr = str.trim
+      if ("true" == valueStr || "on" == valueStr || "yes" == valueStr || "1" == valueStr)
+        true
+      else if ("false" == valueStr || "off" == valueStr || "no" == valueStr || "0" == valueStr)
+        false
+      else
+        throw new IllegalArgumentException(propertyName + " must be 'true' or 'false' (or on|off, yes|no, 1|0)")
+    case _             =>
+      throw new IllegalArgumentException(propertyName + " must be a boolean (or a string representing a boolean)")
   }
-  else throw new IllegalArgumentException(propertyName + " must be a boolean (or a string representing a boolean)")
 
   /**
    * This class contains constants representing features of the software that may or may
@@ -375,7 +378,7 @@ object Configuration {
 class Configuration extends SourceResolver with NotationSet {
   @transient private var apiProcessor: ApiProvider = null
   @transient private var characterSetFactory: CharacterSetFactory = _
-  private val collationMap: util.Map[String, StringCollator] = new util.HashMap(10)
+  private val collationMap: ju.Map[String, StringCollator] = new ju.HashMap(10)
   private var collationResolver: CollationURIResolver = new StandardCollationURIResolver
   private var defaultCollationName: String = NamespaceConstant.CODEPOINT_COLLATION_URI
   private var allowedUriTest: Predicate[java.net.URI] = (uri: java.net.URI) => true
@@ -409,7 +412,7 @@ class Configuration extends SourceResolver with NotationSet {
   private var defaultOutputProperties: Properties = new Properties()
   @transient private val dynamicLoader: DynamicLoader = new DynamicLoader
   private val enabledProperties: IntSet = new IntHashSet(64)
-  private var externalObjectModels: util.List[ExternalObjectModel] = new util.ArrayList[ExternalObjectModel](4)
+  private var externalObjectModels: ju.List[ExternalObjectModel] = new ju.ArrayList[ExternalObjectModel](4)
   private val globalDocumentPool: DocumentPool = new DocumentPool()
   private val integratedFunctionLibrary: IntegratedFunctionLibrary = new IntegratedFunctionLibrary()
   @transient private var localizerFactory: LocalizerFactory = _
@@ -442,9 +445,9 @@ class Configuration extends SourceResolver with NotationSet {
   private var xpathVersionForXslt: Int = 31
   // Plug-in to allow media queries in an xml-stylesheet processing instruction to be evaluated
   private var mediaQueryEvaluator: Comparator[String] = (o1: String, o2: String) => 0
-  private val fileExtensions: util.Map[String, String] = new util.HashMap()
-  private val resourceFactoryMapping: util.Map[String, ResourceFactory] = new util.HashMap()
-  private val functionAnnotationHandlers: util.Map[String, FunctionAnnotationHandler] = new util.HashMap()
+  private val fileExtensions: ju.Map[String, String] = new ju.HashMap()
+  private val resourceFactoryMapping: ju.Map[String, ResourceFactory] = new ju.HashMap()
+  private val functionAnnotationHandlers: ju.Map[String, FunctionAnnotationHandler] = new ju.HashMap()
   val byteCodeThreshold: Int = 100
   private var regexBacktrackingLimit: Int = 10000000
   private val treeStatistics: TreeStatistics = new TreeStatistics()
@@ -517,8 +520,8 @@ class Configuration extends SourceResolver with NotationSet {
   def getEditionCode = "HE"
 
   /**
-   * Save the ApiProvider object that owns this {@code Configuration} in the relevant API.
-   * <p>Note: it is possible to use multiple APIs over the same {@code Configuration}. This mechanism
+   * Save the ApiProvider object that owns this `Configuration` in the relevant API.
+   * <p>Note: it is possible to use multiple APIs over the same `Configuration`. This mechanism
    * is only capable of holding one of these, and is therefore only really useful in cases where
    * the API in use is homogeneous.</p>
    *
@@ -684,8 +687,8 @@ class Configuration extends SourceResolver with NotationSet {
 
   /**
    * Set a Predicate that is applied to a URI to determine whether the standard resource resolvers
-   * ({@link URIResolver}, {@link UnparsedTextURIResolver}, {@link SchemaURIResolver},
-   * {@link CollationURIResolver}, {@link ModuleURIResolver}) should accept it.
+   * (`URIResolver`, `UnparsedTextURIResolver`, `SchemaURIResolver`,
+   * `CollationURIResolver`, `ModuleURIResolver`) should accept it.
    *
    * <p>It is possible to set a predicate by means of the configuration property
    * {@link Feature#ALLOWED_PROTOCOLS}. This method, however, allows an arbitrary predicate to
@@ -715,7 +718,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @return a condition that a URI must satisfy if access to a resource with this URI
    *         is to be permitted
    */
-  def getAllowedUriTest: java.util.function.Predicate[URI] = this.allowedUriTest
+  def getAllowedUriTest: ju.function.Predicate[URI] = this.allowedUriTest
 
   /**
    * Get the URIResolver used in this configuration
@@ -770,12 +773,12 @@ class Configuration extends SourceResolver with NotationSet {
    *                              implement the javax.xml.transform.URIResolver interface
    */
   @throws[TransformerException]
-  def makeURIResolver(className: String): URIResolver = {
-    val obj = dynamicLoader.getInstance(className, null)
-    if (obj.isInstanceOf[StandardURIResolver]) obj.asInstanceOf[StandardURIResolver].setConfiguration(this)
-    if (obj.isInstanceOf[URIResolver]) return obj.asInstanceOf[URIResolver]
-    throw new XPathException("Class " + className + " is not a URIResolver")
-  }
+  def makeURIResolver(className: String): URIResolver =
+    dynamicLoader.getInstance(className, null) match {
+      case resolver: StandardURIResolver => resolver.setConfiguration(this); resolver
+      case resolver: URIResolver         => resolver
+      case _                             => throw new XPathException(s"Class $className is not a URIResolver")
+    }
 
   def setErrorReporterFactory(factory: Configuration => ErrorReporter): Unit =
     errorReporterFactory = factory
@@ -951,7 +954,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @return a dynamic context for performing conversions
    */
   def getConversionContext: XPathContext = {
-    if (theConversionContext == null) theConversionContext = new EarlyEvaluationContext(this)
+    if (theConversionContext == null)
+      theConversionContext = new EarlyEvaluationContext(this)
     theConversionContext
   }
 
@@ -963,8 +967,11 @@ class Configuration extends SourceResolver with NotationSet {
    *         the version of XML (1.0 or 1.1) selected by this configuration
    */
 
-  def getValidCharacterChecker: IntPredicate = if (xmlVersion == Configuration.XML10) (x: Int) => XMLCharacterData.isValid10(x)
-  else (x: Int) => XMLCharacterData.isValid11(x)
+  def getValidCharacterChecker: IntPredicate =
+    if (xmlVersion == Configuration.XML10)
+      (x: Int) => XMLCharacterData.isValid10(x)
+    else
+      (x: Int) => XMLCharacterData.isValid11(x)
 
   /**
    * Get the Tree Model used by this Configuration. This is typically
@@ -1170,13 +1177,10 @@ class Configuration extends SourceResolver with NotationSet {
 
 //   def getXSLT30FunctionSet = XSLT30FunctionSet.getInstance
 
-  def getUseWhenFunctionSet: UseWhen30FunctionSet = UseWhen30FunctionSet.getInstance
-
-  def getXPath30FunctionSet: XPath30FunctionSet = XPath30FunctionSet.getInstance
-
-  def getXPath31FunctionSet: XPath31FunctionSet = XPath31FunctionSet.getInstance
-
-  def getXQueryUpdateFunctionSet: BuiltInFunctionSet = null
+  def getUseWhenFunctionSet     : UseWhen30FunctionSet = UseWhen30FunctionSet.getInstance
+  def getXPath30FunctionSet     : XPath30FunctionSet   = XPath30FunctionSet.getInstance
+  def getXPath31FunctionSet     : XPath31FunctionSet   = XPath31FunctionSet.getInstance
+  def getXQueryUpdateFunctionSet: BuiltInFunctionSet   = null
 
   /**
    * Make a function in the "fn" namespace
@@ -1256,7 +1260,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws XPathException if dynamic function calls are not permitted by this Saxon Configuration
    */
   @throws[XPathException]
-  def getSystemFunction(name: StructuredQName, arity: Int) = throw new XPathException("Dynamic functions require Saxon-PE or higher")
+  def getSystemFunction(name: StructuredQName, arity: Int) =
+    throw new XPathException("Dynamic functions require Saxon-PE or higher")
 
   /**
    * Make a UserFunction object.
@@ -1353,7 +1358,7 @@ class Configuration extends SourceResolver with NotationSet {
       val absoluteURI = ResolveURI.makeAbsolute(collationURI, baseURI).toString
       getCollation(absoluteURI)
     } catch {
-      case e: URISyntaxException =>
+      case _: URISyntaxException =>
         throw new XPathException("Collation name is not a valid URI: " + collationURI + " (base = " + baseURI + ")", "FOCH0002")
     }
   }
@@ -1374,12 +1379,15 @@ class Configuration extends SourceResolver with NotationSet {
    */
   @throws[XPathException]
   def getCollation(collationURI: String, baseURI: String, errorCode: String): StringCollator = {
-    if (collationURI == NamespaceConstant.CODEPOINT_COLLATION_URI) return CodepointCollator.getInstance
+    if (collationURI == NamespaceConstant.CODEPOINT_COLLATION_URI)
+      return CodepointCollator.getInstance
     try {
       var absoluteURI = collationURI
-      if (baseURI != null) absoluteURI = ResolveURI.makeAbsolute(collationURI, baseURI).toString
+      if (baseURI != null)
+        absoluteURI = ResolveURI.makeAbsolute(collationURI, baseURI).toString
       val collator = getCollation(absoluteURI)
-      if (collator == null) throw new XPathException("Unknown collation " + absoluteURI, errorCode)
+      if (collator == null)
+        throw new XPathException("Unknown collation " + absoluteURI, errorCode)
       collator
     } catch {
       case e: URISyntaxException =>
@@ -1503,7 +1511,8 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def getMediaTypeForFileExtension(extension: String): String = {
     var mediaType = fileExtensions.get(extension)
-    if (mediaType == null) mediaType = fileExtensions.get("")
+    if (mediaType == null)
+      mediaType = fileExtensions.get("")
     mediaType
   }
 
@@ -1715,7 +1724,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the default XQuery static context for this configuration
    */
   def getDefaultStaticQueryContext: StaticQueryContext = {
-    if (defaultStaticQueryContext == null) defaultStaticQueryContext = makeStaticQueryContext(false)
+    if (defaultStaticQueryContext == null)
+      defaultStaticQueryContext = makeStaticQueryContext(false)
     defaultStaticQueryContext
   }
 
@@ -1870,7 +1880,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @since 9.2
    */
   def getCharacterSetFactory: CharacterSetFactory = {
-    if (characterSetFactory == null) characterSetFactory = new CharacterSetFactory
+    if (characterSetFactory == null)
+      characterSetFactory = new CharacterSetFactory
     characterSetFactory
   }
 
@@ -1929,7 +1940,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws XPathException if (for example) a dynamic error occurs while priming the queue
    */
   @throws[XPathException]
-  def getMultithreadedItemMappingIterator(base: SequenceIterator, action: ItemMappingFunction): SequenceIterator = new ItemMappingIterator(base, action)
+  def getMultithreadedItemMappingIterator(base: SequenceIterator, action: ItemMappingFunction): SequenceIterator =
+    new ItemMappingIterator(base, action)
 
   /**
    * Determine whether brief progress messages and timing information will be output.
@@ -2148,7 +2160,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @return the type hierarchy cache
    */
   def getTypeHierarchy: TypeHierarchy = {
-    if (typeHierarchy == null) typeHierarchy = new TypeHierarchy(this)
+    if (typeHierarchy == null)
+      typeHierarchy = new TypeHierarchy(this)
     typeHierarchy
   }
 
@@ -2160,8 +2173,11 @@ class Configuration extends SourceResolver with NotationSet {
    * @param backwardsCompatible set to true if XPath 1.0 compatibility mode is required
    * @return a suitable TypeChecker
    */
-  def getTypeChecker(backwardsCompatible: Boolean): TypeChecker = if (backwardsCompatible) typeChecker10
-  else typeChecker
+  def getTypeChecker(backwardsCompatible: Boolean): TypeChecker =
+    if (backwardsCompatible)
+      typeChecker10
+    else
+      typeChecker
 
   /**
    * Make a TypeAliasManager appropriate to the type of Configuration
@@ -2270,16 +2286,19 @@ class Configuration extends SourceResolver with NotationSet {
       parser = Configuration.loadParser
     if (isTiming)
       reportParserDetails(parser)
-    try Sender.configureParser(parser)
+    try
+      Sender.configureParser(parser)
     catch {
       case err: XPathException =>
         throw new TransformerFactoryConfigurationError(err)
     }
-    if (isValidation) try parser.setFeature("http://xml.org/sax/features/validation", true)
-    catch {
-      case err: SAXException =>
-        throw new TransformerFactoryConfigurationError("The XML parser does not support validation")
-    }
+    if (isValidation)
+      try
+        parser.setFeature("http://xml.org/sax/features/validation", true)
+      catch {
+        case _: SAXException =>
+          throw new TransformerFactoryConfigurationError("The XML parser does not support validation")
+      }
     parser
   }
 
@@ -2339,10 +2358,13 @@ class Configuration extends SourceResolver with NotationSet {
    */
   @throws[TransformerFactoryConfigurationError]
   def getStyleParser: XMLReader = {
-    if (styleParserPool == null) styleParserPool = new ConcurrentLinkedQueue[XMLReader]
+    if (styleParserPool == null)
+      styleParserPool = new ConcurrentLinkedQueue[XMLReader]
     var parser = styleParserPool.poll
-    if (parser != null) return parser
-    if (getStyleParserClass != null) parser = makeParser(getStyleParserClass)
+    if (parser != null)
+      return parser
+    if (getStyleParserClass != null)
+      parser = makeParser(getStyleParserClass)
     else {
       parser = Configuration.loadParser
       val resolver = new StandardEntityResolver(this)
@@ -2432,7 +2454,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @throws org.orbeon.saxon.model.SchemaException if an error occurs
    */
   @throws[SchemaException]
-  def readMultipleSchemas(pipe: PipelineConfiguration, baseURI: String, schemaLocations: util.Collection[String], expected: String): Unit = needEnterpriseEdition()
+  def readMultipleSchemas(pipe: PipelineConfiguration, baseURI: String, schemaLocations: ju.Collection[String], expected: String): Unit =
+    needEnterpriseEdition()
 
   /**
    * Read an inline schema from a stylesheet.
@@ -2515,7 +2538,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @return a Set whose members are the namespaces of all schemas in the schema cache, as
    *         String objects
    */
-  def getImportedNamespaces: util.Set[String] = Collections.emptySet[String]
+  def getImportedNamespaces: ju.Set[String] =
+    Collections.emptySet[String]
 
   /**
    * Mark a schema namespace as being sealed. This is done when components from this namespace
@@ -2533,7 +2557,7 @@ class Configuration extends SourceResolver with NotationSet {
    *
    * @return the set of parameters. May return null if none have been declared.
    */
-  def getDeclaredSchemaParameters: util.Collection[GlobalParam] = null
+  def getDeclaredSchemaParameters: ju.Collection[GlobalParam] = null
 
   /**
    * Get the set of complex types that have been defined as extensions of a given type.
@@ -2543,7 +2567,8 @@ class Configuration extends SourceResolver with NotationSet {
    * @param type the type whose extensions are required
    * @return an iterator over the types that are derived from the given type by extension
    */
-  def getExtensionsOfType(`type`: SchemaType): util.Iterator[_ <: SchemaType] = Collections.emptyIterator[SchemaType]
+  def getExtensionsOfType(`type`: SchemaType): ju.Iterator[_ <: SchemaType] =
+    Collections.emptyIterator[SchemaType]
 
   @throws[XPathException]
   def importComponents(source: Source): Unit = needEnterpriseEdition()
@@ -2591,7 +2616,7 @@ class Configuration extends SourceResolver with NotationSet {
     else
       null
 
-  def makeUserUnionType(memberTypes: java.util.List[AtomicType]): ItemType = null
+  def makeUserUnionType(memberTypes: ju.List[AtomicType]): ItemType = null
 
   override def isDeclaredNotation(uri: String, local: String): Boolean = false
 
@@ -2825,7 +2850,7 @@ class Configuration extends SourceResolver with NotationSet {
         return
     }
     if (externalObjectModels == null)
-      externalObjectModels = new java.util.ArrayList[ExternalObjectModel](4)
+      externalObjectModels = new ju.ArrayList[ExternalObjectModel](4)
     if (! externalObjectModels.contains(model))
       externalObjectModels.add(model)
   }
@@ -2860,7 +2885,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @return a list of external object models supported. The members of the list are of
    *         type { @link ExternalObjectModel}
    */
-  def getExternalObjectModels: util.List[ExternalObjectModel] = externalObjectModels
+  def getExternalObjectModels: ju.List[ExternalObjectModel] = externalObjectModels
 
   /**
    * Get the JavaExternalObjectType object representing a particular Java class
@@ -2884,7 +2909,7 @@ class Configuration extends SourceResolver with NotationSet {
    *         to the extent that these methods have unique names.
    * @throws UnsupportedOperationException except in subclasses
    */
-  def makeMethodMap(javaClass: Class[_], required: String): util.Map[String, Function[_, _]] = throw new UnsupportedOperationException
+  def makeMethodMap(javaClass: Class[_], required: String): ju.Map[String, Function[_, _]] = throw new UnsupportedOperationException
 
   /**
    * Convert a Java object to a map
@@ -3008,7 +3033,7 @@ class Configuration extends SourceResolver with NotationSet {
 
   /**
    * Supply a SourceResolver. This is used for handling unknown implementations of the
-   * {@link javax.xml.transform.Source} interface: a user-supplied SourceResolver can handle
+   * `javax.xml.transform.Source` interface: a user-supplied SourceResolver can handle
    * such Source objects and translate them to a kind of Source that Saxon understands.
    *
    * @param resolver the source resolver.

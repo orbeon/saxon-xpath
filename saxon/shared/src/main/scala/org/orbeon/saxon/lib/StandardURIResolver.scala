@@ -6,12 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-import java.io.{ByteArrayInputStream, InputStream, Reader, StringReader}
-import java.net.{URI, URISyntaxException}
-import java.util.function.Predicate
-
-import javax.xml.transform.Source
-import javax.xml.transform.sax.SAXSource
 import org.orbeon.saxon.event.{FilterFactory, IDFilter, Receiver}
 import org.orbeon.saxon.functions.{EncodeForUri, ResolveURI, URIQueryParameters}
 import org.orbeon.saxon.resource.{BinaryResource, DataURIScheme, UnparsedTextResource}
@@ -19,17 +13,24 @@ import org.orbeon.saxon.trans.{Err, Maker, NonDelegatingURIResolver, XPathExcept
 import org.orbeon.saxon.utils.{Configuration, Platform, Version}
 import org.xml.sax.{InputSource, XMLReader}
 
+import java.io.{ByteArrayInputStream, InputStream, Reader, StringReader}
+import java.net.{URI, URISyntaxException}
+import java.util.function.Predicate
+import javax.xml.transform.Source
+import javax.xml.transform.sax.SAXSource
+
 
 /**
-  * This class provides the service of converting a URI into an {@link Source}.
+  * This class provides the service of converting a URI into an `Source`.
   * It is used to get stylesheet modules referenced by xsl:import and xsl:include,
   * and source documents referenced by the document() function. The standard version
-  * handles anything that the java URL class will handle, plus the <code>classpath</code>
-  * URI scheme defined in the Spring framework, and the <code>data</code> URI scheme defined in
+  * handles anything that the java URL class will handle, plus the `classpath`
+  * URI scheme defined in the Spring framework, and the `data` URI scheme defined in
   * RFC 2397.
-  * <p>You can write a subclass to handle other kinds of URI, for example references to data in
+ *
+  * You can write a subclass to handle other kinds of URI, for example references to data in
   * a database, or to handle standard URIs in non-standard ways, for example by supplying
-  * authentication credentials.</p>
+  * authentication credentials.
   */
 class StandardURIResolver(private var config: Configuration)
     extends NonDelegatingURIResolver {
