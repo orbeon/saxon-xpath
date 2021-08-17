@@ -118,7 +118,7 @@ object BigDecimalValue {
         } else
           exitLoop = true
     }
-    if (digits.isEmpty || (digits.length == 1 && digits.charAt(0) == '-')) {
+    if (digits.isEmptySB || (digits.length == 1 && digits.charAt(0) == '-')) {
       BigDecimalValue.ZERO
     } else {
       val bigInt = new BigInteger(digits.toString)

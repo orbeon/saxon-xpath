@@ -451,7 +451,7 @@ class CopyOf(select: Expression,
     if (copyAccumulators) {
       fsb.cat('m')
     }
-    if (!fsb.isEmpty) {
+    if (! fsb.isEmptySB) {
       out.emitAttribute("flags", fsb.toString)
     }
     getSelect.export(out)

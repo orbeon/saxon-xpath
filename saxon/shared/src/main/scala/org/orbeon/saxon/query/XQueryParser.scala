@@ -3392,7 +3392,7 @@ class XQueryParser extends XPathParser {
           }
         }
       }
-      if (!text.isEmpty && (containsEntities | env.asInstanceOf[QueryModule].isPreserveBoundarySpace || !Whitespace.isWhite(text))) {
+      if (! text.isEmptySB && (containsEntities | env.asInstanceOf[QueryModule].isPreserveBoundarySpace || ! Whitespace.isWhite(text))) {
         val inst = new ValueOf(new StringLiteral(new StringValue(text.condense)), false, false)
         setLocation(inst)
         components.add(inst)

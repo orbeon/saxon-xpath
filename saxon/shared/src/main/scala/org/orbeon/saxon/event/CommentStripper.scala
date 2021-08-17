@@ -51,7 +51,7 @@ class CommentStripper(next: Receiver) extends ProxyReceiver(next) {
                           properties: Int): Unit = {
     chars match {
       case whitespace: CompressedWhitespace =>
-        if (buffer.isEmpty && savedWhitespace == null)
+        if (buffer.isEmptySB && savedWhitespace == null)
           savedWhitespace = whitespace
         else
           whitespace.uncompress(buffer)
@@ -74,7 +74,7 @@ class CommentStripper(next: Receiver) extends ProxyReceiver(next) {
                                      properties: Int): Unit = ()
 
   private def flush(): Unit = {
-    if (!buffer.isEmpty)
+    if (! buffer.isEmptySB)
       nextReceiver.characters(buffer, Loc.NONE, ReceiverOption.NONE)
     else if (savedWhitespace != null)
       nextReceiver.characters(savedWhitespace, Loc.NONE, ReceiverOption.NONE)

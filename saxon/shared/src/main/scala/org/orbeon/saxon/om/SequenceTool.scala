@@ -171,7 +171,7 @@ object SequenceTool {
     sequence
       .iterate()
       .forEachOrFail(item => {
-        if (! fsb.isEmpty)
+        if (! fsb.isEmptySB)
           fsb.cat(' ')
         fsb.cat(item.getStringValueCS)
       })

@@ -29,7 +29,7 @@ class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
         fsb.cat(next().getStringValueCS)
         lNext = base.next()
       }
-      if (fsb.isEmpty) {
+      if (fsb.isEmptySB) {
         next()
       } else {
         val o = new Orphan(current.asInstanceOf[NodeInfo].getConfiguration)

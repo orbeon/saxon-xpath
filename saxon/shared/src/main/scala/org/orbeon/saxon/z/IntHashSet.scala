@@ -40,7 +40,7 @@ object IntHashSet {
 
   def toString(it: IntIterator): String = {
     val sb = new FastStringBuffer(100)
-    while (it.hasNext) if (sb.isEmpty) {
+    while (it.hasNext) if (sb.isEmptySB) {
       sb.append("" + it.next)
     } else {
       sb.append(" " + it.next)
