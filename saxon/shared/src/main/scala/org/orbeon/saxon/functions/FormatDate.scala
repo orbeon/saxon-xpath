@@ -940,23 +940,25 @@ class FormatDate extends SystemFunction {
   }
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[StringValue] = {
-    var value = arguments(0).head.asInstanceOf[CalendarValue]
+    val value = arguments(0).head.asInstanceOf[CalendarValue]
     if (value == null) {
       ZeroOrOne.empty
     } else {
-      val format: String = arguments(1).head.getStringValue
-      var calendarVal: StringValue = null
-      var countryVal: StringValue = null
-      var languageVal: StringValue = null
-      if (getArity > 2) {
-        languageVal = arguments(2).head.asInstanceOf[StringValue]
-        calendarVal = arguments(3).head.asInstanceOf[StringValue]
-        countryVal = arguments(4).head.asInstanceOf[StringValue]
-      }
-      val language: String =
-        if (languageVal == null) null else languageVal.getStringValue
-      val place: String =
-        if (countryVal == null) null else countryVal.getStringValue
+      val format = arguments(1).head.getStringValue
+
+      val (languageVal, calendarVal, countryVal) =
+        if (getArity > 2)
+          (
+            arguments(2).head.asInstanceOf[StringValue],
+            arguments(3).head.asInstanceOf[StringValue],
+            arguments(4).head.asInstanceOf[StringValue]
+          )
+        else
+          (null, null, null)
+
+      val language = if (languageVal == null) null else languageVal.getStringValue
+      val place    = if (countryVal == null) null else countryVal.getStringValue
+
       if (place != null && place.contains("/") && value.hasTimezone && ! value.isInstanceOf[TimeValue]) {
         // ORBEON: TimeZone
         ???
@@ -968,11 +970,9 @@ class FormatDate extends SystemFunction {
 //          value = value.adjustTimezone(offset / 60000)
 //        }
       }
-      var result: CharSequence =
-        formatDate(value, format, language, place, context)
-      if (calendarVal != null) {
+      var result = formatDate(value, format, language, place, context)
+      if (calendarVal != null)
         result = adjustCalendar(calendarVal, result, context)
-      }
       new ZeroOrOne(new StringValue(result))
     }
   }
