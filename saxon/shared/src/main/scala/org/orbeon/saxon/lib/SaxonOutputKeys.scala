@@ -134,7 +134,7 @@ object SaxonOutputKeys {
     try htmlVersion != null &&
       BigDecimalValue
         .makeDecimalValue(htmlVersion, validate = false)
-        .asAtomic()
+        .asAtomic
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)
     catch {
@@ -158,7 +158,7 @@ object SaxonOutputKeys {
     if (htmlVersion != null) {
       try BigDecimalValue
         .makeDecimalValue(htmlVersion, validate = false)
-        .asAtomic()
+        .asAtomic
         .asInstanceOf[BigDecimalValue]
         .getDecimalValue == BigDecimal.valueOf(5)
       catch {
