@@ -367,11 +367,11 @@ final class BigDecimalValue extends DecimalValue {
     if (scale >= value.scale)
       return this
 
-    value.signum.toString match {
-      case "-1" => new BigDecimalValue(value.setScale(scale, RoundingMode.HALF_DOWN))
-      case "-0" => this
-      case "+1" => new BigDecimalValue(value.setScale(scale, RoundingMode.HALF_UP))
-      case _ => this
+    value.signum match {
+      case -1 => new BigDecimalValue(value.setScale(scale, RoundingMode.HALF_DOWN))
+      case 0  => this
+      case 1  => new BigDecimalValue(value.setScale(scale, RoundingMode.HALF_UP))
+      case _  => this
     }
   }
 

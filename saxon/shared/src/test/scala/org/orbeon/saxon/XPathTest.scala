@@ -277,6 +277,7 @@ class XPathTest extends AnyFunSpec {
           |    (4 - 3) div (xs:double(8) - 2)
           |  ) + 2
           |) div 1000""".stripMargin, docElem, false, "0.0025"),
+      ("""round(xs:decimal(10.4))""",                               docElem, false, "10"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
