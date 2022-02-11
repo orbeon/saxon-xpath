@@ -225,7 +225,7 @@ object Literal {
   }
 
   def makeLiteral(value: GroundedValue, origin: Expression): Literal = {
-    val lit: Literal = makeLiteral(value)
+    val lit = makeLiteral(value)
     ExpressionTool.copyLocationInfo(origin, lit)
     lit
   }

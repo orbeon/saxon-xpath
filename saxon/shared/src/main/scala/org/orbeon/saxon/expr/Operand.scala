@@ -134,8 +134,7 @@ class Operand(
 
   def iterator: Iterator[Operand] = new MonoIterator(this)
 
-  def typeCheck(visitor: ExpressionVisitor,
-                contextInfo: ContextItemStaticInfo): Unit = {
+  def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
     try
       this.childExpression = getChildExpression.typeCheck(visitor, contextInfo)
     catch {
@@ -150,10 +149,8 @@ class Operand(
           throw e
         }
     }
-  }
 
-  def optimize(visitor: ExpressionVisitor,
-               contextInfo: ContextItemStaticInfo): Unit = {
+  def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
     try
       this.childExpression = getChildExpression.optimize(visitor, contextInfo)
     catch {
@@ -170,5 +167,4 @@ class Operand(
           throw e
         }
     }
-  }
 }
