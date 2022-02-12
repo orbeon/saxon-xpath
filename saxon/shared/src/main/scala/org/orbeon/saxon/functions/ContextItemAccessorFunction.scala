@@ -111,17 +111,17 @@ class ContextItemAccessorFunction extends ContextAccessorFunction {
   override def call(context: XPathContext, arguments: Array[Sequence]): Sequence =
     evaluate(context.getContextItem, context)
 
-  def makeFunctionCall(arguments: Array[Expression]): Expression = {
-    val arg = new ContextItemExpression
-    SystemFunction.makeCall(getFunctionName.getLocalPart,
+  def makeFunctionCall(arguments: Array[Expression]): Expression =
+    SystemFunction.makeCall(
+      getFunctionName.getLocalPart,
       getRetainedStaticContext,
-      arg)
-  }
+      new ContextItemExpression
+    )
 
-  def makeContextItemExplicit(): Expression = {
-    val args = Array(new ContextItemExpression())
-    SystemFunction.makeCall(getFunctionName.getLocalPart,
+  def makeContextItemExplicit(): Expression =
+    SystemFunction.makeCall(
+      getFunctionName.getLocalPart,
       getRetainedStaticContext,
-      args.toIndexedSeq: _*)
-  }
+      new ContextItemExpression
+    )
 }

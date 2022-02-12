@@ -167,13 +167,15 @@ object FilterExpression {
           val floor = SystemFunction.makeCall(
             "floor",
             start.getRetainedStaticContext,
-            comparand)
+            comparand
+          )
           SystemFunction.makeCall(
             "subsequence",
             start.getRetainedStaticContext,
-            Array(start,
-              Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
-              floor).toIndexedSeq: _*)
+            start,
+            Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
+            floor
+          )
         case Token.FNE =>
           val let = new LetExpression()
           ExpressionTool.copyLocationInfo(start, let)
