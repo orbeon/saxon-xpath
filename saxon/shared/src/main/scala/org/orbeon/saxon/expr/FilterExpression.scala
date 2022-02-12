@@ -1,13 +1,11 @@
 package org.orbeon.saxon.expr
 
-import java.math.BigInteger
-
 import org.orbeon.saxon.expr.Expression._
 import org.orbeon.saxon.expr.FilterExpression._
 import org.orbeon.saxon.expr.instruct.Choose
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.functions.{LocalName_1, PositionAndLast, SystemFunction}
 import org.orbeon.saxon.functions.registry.VendorFunctionSetHE
+import org.orbeon.saxon.functions.{LocalName_1, PositionAndLast, SystemFunction}
 import org.orbeon.saxon.lib.{Feature, NamespaceConstant}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
@@ -18,7 +16,9 @@ import org.orbeon.saxon.tree.iter.EmptyIterator
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 
+import java.math.BigInteger
 import scala.beans.BooleanBeanProperty
+
 
 object FilterExpression {
 
@@ -44,83 +44,87 @@ object FilterExpression {
     if (th.isSubType(comparand.getItemType, BuiltInAtomicType.INTEGER)) {
       operator match {
         case Token.FEQ =>
-          if (Literal.isConstantOne(comparand)) {
+          if (Literal.isConstantOne(comparand))
             FirstItemExpression.makeFirstItemExpression(start)
-          } else comparand match {
-            case literal: Literal if literal
-              .getValue
-              .asInstanceOf[IntegerValue]
-              .asBigInteger()
-              .compareTo(BigInteger.ZERO) <=
-              0 =>
-              Literal.makeEmptySequence
-            case _ =>
-              new SubscriptExpression(start, comparand)
-          }
+          else
+            comparand match {
+              case literal: Literal if literal
+                .getValue
+                .asInstanceOf[IntegerValue]
+                .asBigInteger()
+                .compareTo(BigInteger.ZERO) <=
+                0 =>
+                Literal.makeEmptySequence
+              case _ =>
+                new SubscriptExpression(start, comparand)
+            }
         case Token.FLT =>
-          val args = Array.ofDim[Expression](3)
-          args(0) = start
-          args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
-          if (Literal.isAtomic(comparand)) {
-            val n: Long = comparand
-              .asInstanceOf[Literal]
-              .getValue
-              .asInstanceOf[NumericValue]
-              .longValue
-            args(2) =
+          SystemFunction.makeCall(
+            "subsequence",
+            start.getRetainedStaticContext,
+            start,
+            Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
+            if (Literal.isAtomic(comparand)) {
+              val n = comparand
+                .asInstanceOf[Literal]
+                .getValue
+                .asInstanceOf[NumericValue]
+                .longValue
               Literal.makeLiteral(Int64Value.makeIntegerValue(n - 1), start)
-          } else {
-            val decrement: ArithmeticExpression = new ArithmeticExpression(
-              comparand,
-              Token.MINUS,
-              Literal.makeLiteral(Int64Value.makeIntegerValue(1), start))
-            decrement.setCalculator(
-              Calculator.getCalculator(StandardNames.XS_INTEGER,
-                StandardNames.XS_INTEGER,
-                Calculator.MINUS,
-                mustResolve = true))
-            args(2) = decrement
-          }
-          SystemFunction.makeCall("subsequence",
-            start.getRetainedStaticContext,
-            args.toIndexedSeq: _*)
+            } else {
+              val decrement = new ArithmeticExpression(
+                comparand,
+                Token.MINUS,
+                Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
+              )
+              decrement.setCalculator(
+                Calculator.getCalculator(
+                  StandardNames.XS_INTEGER,
+                  StandardNames.XS_INTEGER,
+                  Calculator.MINUS,
+                  mustResolve = true
+                )
+              )
+              decrement
+            }
+          )
         case Token.FLE =>
-          val args = Array.ofDim[Expression](3)
-          args(0) = start
-          args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
-          args(2) = comparand
-          SystemFunction.makeCall("subsequence",
+          SystemFunction.makeCall(
+            "subsequence",
             start.getRetainedStaticContext,
-            args.toIndexedSeq: _*)
+            start,
+            Literal.makeLiteral(Int64Value.makeIntegerValue(1), start),
+            comparand
+          )
         case Token.FNE =>
           SystemFunction.makeCall("remove", start.getRetainedStaticContext, start, comparand)
         case Token.FGT =>
-          val args = Array.ofDim[Expression](2)
-          args(0) = start
-          if (Literal.isAtomic(comparand)) {
-            val n: Long = comparand
-              .asInstanceOf[Literal]
-              .getValue
-              .asInstanceOf[NumericValue]
-              .longValue
-            args(1) =
+          SystemFunction.makeCall(
+            "subsequence",
+            start.getRetainedStaticContext,
+            start,
+            if (Literal.isAtomic(comparand)) {
+              val n = comparand
+                .asInstanceOf[Literal]
+                .getValue
+                .asInstanceOf[NumericValue]
+                .longValue
               Literal.makeLiteral(Int64Value.makeIntegerValue(n + 1), start)
-          } else {
-            args(1) = new ArithmeticExpression(
-              comparand,
-              Token.PLUS,
-              Literal.makeLiteral(Int64Value.makeIntegerValue(1), start))
-          }
-          SystemFunction.makeCall("subsequence",
-            start.getRetainedStaticContext,
-            args.toIndexedSeq: _*)
+            } else {
+               new ArithmeticExpression(
+                comparand,
+                Token.PLUS,
+                Literal.makeLiteral(Int64Value.makeIntegerValue(1), start)
+               )
+            }
+          )
         case Token.FGE =>
-          val args = Array.ofDim[Expression](3)
-          args(0) = start
-          args(1) = comparand
-          SystemFunction.makeCall("subsequence",
+          SystemFunction.makeCall(
+            "subsequence",
             start.getRetainedStaticContext,
-            args.toIndexedSeq: _*)
+            start,
+            comparand
+          )
         case _ =>
           throw new IllegalArgumentException("operator")
       }
@@ -146,17 +150,17 @@ object FilterExpression {
           val floor = SystemFunction.makeCall(
             "floor",
             start.getRetainedStaticContext,
-            floorArg)
+            floorArg
+          )
           val choice = Choose.makeConditional(isWhole, minusOne, floor)
-          val args = Array.ofDim[Expression](4)
-          args(0) = start
-          args(1) = Literal.makeLiteral(Int64Value.makeIntegerValue(1))
-          args(2) = start
-          args(3) = choice
           val subs = SystemFunction.makeCall(
             "subsequence",
             start.getRetainedStaticContext,
-            args.toIndexedSeq: _*)
+            start,
+            Literal.makeLiteral(Int64Value.makeIntegerValue(1)),
+            start,
+            choice
+          )
           let.setAction(subs)
           let
         case Token.FLE =>
