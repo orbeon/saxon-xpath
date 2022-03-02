@@ -69,7 +69,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
               annotation: SchemaType): Boolean = kind == nodeKind
 
   override def getMatcher(tree: NodeVectorTree): IntPredicate = {
-    val nodeKindArray: Array[Byte] = tree.getNodeKindArray
+    val nodeKindArray = tree.getNodeKindArray
     if (kind == Type.TEXT.toInt) { // ORBEON: Added `.toInt`
       nodeNr => {
         val k = nodeKindArray(nodeNr)
