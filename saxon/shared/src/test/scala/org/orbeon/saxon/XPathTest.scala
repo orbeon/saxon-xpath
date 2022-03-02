@@ -271,7 +271,7 @@ class XPathTest extends AnyFunSpec {
           |  ', '
           |)""".stripMargin,                                        docElem,              false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
       ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,              false, "2"),
-      ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.iterator.next(), false, "1300"),
+      ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.next(), false, "1300"),
       ("""(xs:double(8) + xs:double(9))""",                         docElem, false, "17"),
       ("""(xs:double(8) + 9)""",                                    docElem, false, "17"),
       (
