@@ -64,7 +64,7 @@ class PrecedingIterator(private var doc: TinyTree,
         val element: TinyTextualElement =
           tree.getNode(nextNodeNr).asInstanceOf[TinyTextualElement]
         val text: TinyTextualElement#TinyTextualElementText =
-          element.getTextNode
+          element.textNode
         if (nodeTest.test(text)) {
           if (nodeTest.test(element)) {
             pending = element

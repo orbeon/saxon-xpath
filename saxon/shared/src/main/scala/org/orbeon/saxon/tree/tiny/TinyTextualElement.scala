@@ -1,51 +1,20 @@
 package org.orbeon.saxon.tree.tiny
 
-import org.orbeon.saxon.event.CopyInformee
-
-import org.orbeon.saxon.event.CopyNamespaceSensitiveException
-
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.Type
-
-import org.orbeon.saxon.model.Untyped
-
+import org.orbeon.saxon.event.{CopyInformee, CopyNamespaceSensitiveException, Receiver, ReceiverOption}
+import org.orbeon.saxon.model.{SchemaType, Type, Untyped}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.iter._
-
-import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import org.orbeon.saxon.tree.util.Navigator
-
+import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.value.UntypedAtomicValue
 
-import org.orbeon.saxon.z.IntValuePredicate
-
-import javax.xml.transform.SourceLocator
-
 import java.util.ArrayList
-
-import java.util.List
-
-import java.util.function.IntPredicate
-
 import java.util.function.Predicate
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import javax.xml.transform.SourceLocator
 
 
 class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tree, nodeNr) {
 
-  @BeanProperty
   lazy val textNode: TinyTextualElementText = new TinyTextualElementText()
 
   override def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] =
@@ -64,46 +33,47 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
 
   override def getAttributeValue(fp: Int): String = null
 
-  override def copy(receiver: Receiver,
-                    copyOptions: Int,
-                    location: Location): Unit = {
-    var lLocation = location
-    val typed: Boolean =
-      CopyOptions.includes(copyOptions, CopyOptions.TYPE_ANNOTATIONS)
-    val `type`: SchemaType = if (typed) getSchemaType else Untyped.getInstance
-    val disallowNamespaceSensitiveContent: Boolean = ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0) &&
-      ((copyOptions & CopyOptions.ALL_NAMESPACES) == 0)
-    if (disallowNamespaceSensitiveContent) {
-      try checkNotNamespaceSensitiveElement(`type`, nodeNr)
-      catch {
-        case e: CopyNamespaceSensitiveException => {
-          e.setErrorCode(
-            if (receiver.getPipelineConfiguration.isXSLT) "XTTE0950"
-            else "XQTY0086")
-          throw e
-        }
+  override def copy(receiver: Receiver, copyOptions: Int, location: Location): Unit = {
 
+    var lLocation = location
+    val typed     = CopyOptions.includes(copyOptions, CopyOptions.TYPE_ANNOTATIONS)
+    val `type`    = if (typed) getSchemaType else Untyped.getInstance
+
+    val disallowNamespaceSensitiveContent = ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0) &&
+      ((copyOptions & CopyOptions.ALL_NAMESPACES) == 0)
+
+    if (disallowNamespaceSensitiveContent) {
+      try
+        checkNotNamespaceSensitiveElement(`type`, nodeNr)
+      catch {
+        case e: CopyNamespaceSensitiveException =>
+          e.setErrorCode(if (receiver.getPipelineConfiguration.isXSLT) "XTTE0950" else "XQTY0086")
+          throw e
       }
     }
-    val informee: CopyInformee[_] = receiver.getPipelineConfiguration
+    val informee = receiver.getPipelineConfiguration
       .getComponent(classOf[CopyInformee[_]].getName)
       .asInstanceOf[CopyInformee[_]]
     if (informee != null) {
       val o: Any = informee.notifyElementNode(this)
-      if (o.isInstanceOf[Location]) {
-        lLocation = o.asInstanceOf[Location]
+      o match {
+        case location1: Location => lLocation = location1
+        case _                   =>
       }
     }
-    var namespaces: NamespaceMap = null
-    namespaces =
-      if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0) getAllNamespaces
-      else NamespaceMap.emptyMap
-    receiver.startElement(NameOfNode.makeName(this),
+    val namespaces =
+      if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0)
+        getAllNamespaces
+      else
+        NamespaceMap.emptyMap
+    receiver.startElement(
+      NameOfNode.makeName(this),
       `type`,
       EmptyAttributeMap.getInstance,
       namespaces,
       lLocation,
-      ReceiverOption.NONE)
+      ReceiverOption.NONE
+    )
     receiver.characters(getStringValueCS, lLocation, ReceiverOption.NONE)
     receiver.endElement()
   }
@@ -119,47 +89,38 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
   override def iterateAxis(axisNumber: Int): AxisIterator = axisNumber match {
     case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes
     case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
-      SingleNodeIterator.makeIterator(getTextNode)
+      SingleNodeIterator.makeIterator(textNode)
     case AxisInfo.DESCENDANT_OR_SELF =>
-      var list: List[NodeInfo] = new ArrayList[NodeInfo](2)
+      val list = new ArrayList[NodeInfo](2)
       list.add(this)
-      list.add(getTextNode)
+      list.add(textNode)
       new ListIterator.OfNodes(list)
     case _ => super.iterateAxis(axisNumber)
-
   }
 
-  override def iterateAxis(axisNumber: Int,
-                           nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
+  override def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
     axisNumber match {
       case AxisInfo.ATTRIBUTE => EmptyIterator.ofNodes
       case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
-        Navigator.filteredSingleton(getTextNode, nodeTest)
+        Navigator.filteredSingleton(textNode, nodeTest)
       case AxisInfo.DESCENDANT_OR_SELF =>
-        var list: List[NodeInfo] = new ArrayList[NodeInfo](2)
-        if (nodeTest.test(this)) {
+        val list = new ArrayList[NodeInfo](2)
+        if (nodeTest.test(this))
           list.add(this)
-        }
-        if (nodeTest.test(getTextNode)) {
-          list.add(getTextNode)
-        }
+        if (nodeTest.test(textNode))
+          list.add(textNode)
         new ListIterator.OfNodes(list)
       case _ => super.iterateAxis(axisNumber, nodeTest)
-
     }
 
   override def isAncestorOrSelf(d: TinyNodeImpl): Boolean = this == d
 
   class TinyTextualElementText extends NodeInfo with SourceLocator {
 
-    override def hasFingerprint: Boolean = true
-
+    def hasFingerprint: Boolean = true
     def getTreeInfo: TreeInfo = TinyTextualElement.this.getTreeInfo
-
     def setSystemId(systemId: String): Unit = ()
-
     def getNodeKind: Int = Type.TEXT
-
     def getStringValue: String = getStringValueCS.toString
 
     def getStringValueCS: CharSequence =
@@ -168,7 +129,6 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
     override def equals(other: Any): Boolean = other match {
       case other: TinyTextualElementText => getParent == other.getParent
       case _ => false
-
     }
 
     def generateId(buffer: FastStringBuffer): Unit = {
@@ -177,44 +137,32 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
     }
 
     def getSystemId: String = TinyTextualElement.this.getSystemId
-
     def getBaseURI: String = TinyTextualElement.this.getBaseURI
 
     def compareOrder(other: NodeInfo): Int =
-      if (other == this) {
+      if (other == this)
         0
-      } else if (other == getParent) {
+      else if (other == getParent)
         1
-      } else {
+      else
         getParent.compareOrder(other)
-      }
 
     def getFingerprint: Int = -1
-
     def getPrefix: String = ""
-
     def getURI: String = ""
-
     def getDisplayName: String = ""
-
     def getLocalPart: String = ""
-
     def hasChildNodes: Boolean = false
-
     def getAttributeValue(uri: String, local: String): String = null
 
     override def getLineNumber: Int = getParent.getLineNumber
+    override def getColumnNumber: Int = getParent.getColumnNumber
 
-    private var isNewline: IntPredicate = new IntValuePredicate(10)
-
-    override def getColumnNumber(): Int = getParent.getColumnNumber
-
-    def saveLocation(): Location = this
+    def saveLocation: Location = this
 
     override def getSchemaType: SchemaType = null
 
-    def getDeclaredNamespaces(
-                               buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
+    def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = null
 
     override def getAllNamespaces: NamespaceMap = null
 
@@ -241,11 +189,9 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
         SingleNodeIterator.makeIterator(this)
       case _ =>
         throw new IllegalArgumentException("Unknown axis number " + axisNumber)
-
     }
 
-    def iterateAxis(axisNumber: Int,
-                    nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
+    def iterateAxis(axisNumber: Int, nodeTest: Predicate[_ >: NodeInfo]): AxisIterator =
       axisNumber match {
         case AxisInfo.ANCESTOR =>
           getParent.iterateAxis(AxisInfo.ANCESTOR_OR_SELF, nodeTest)
@@ -275,19 +221,13 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
         case AxisInfo.SELF | AxisInfo.DESCENDANT_OR_SELF =>
           Navigator.filteredSingleton(this, nodeTest)
         case _ =>
-          throw new IllegalArgumentException(
-            "Unknown axis number " + axisNumber)
-
+          throw new IllegalArgumentException("Unknown axis number " + axisNumber)
       }
 
     def getParent: NodeInfo = TinyTextualElement.this
-
     def getRoot: NodeInfo = getParent.getRoot
 
-    override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+    override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
       out.characters(getStringValueCS, locationId, ReceiverOption.NONE)
-    }
-
   }
-
 }

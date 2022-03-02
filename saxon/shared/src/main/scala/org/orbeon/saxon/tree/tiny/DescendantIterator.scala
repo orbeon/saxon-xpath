@@ -37,7 +37,7 @@ class DescendantIterator(
           return null
       }
       if (tree.nodeKind(nextNodeNr) == Type.TEXTUAL_ELEMENT)
-        pending = tree.getNode(nextNodeNr).asInstanceOf[TinyTextualElement].getTextNode
+        pending = tree.getNode(nextNodeNr).asInstanceOf[TinyTextualElement].textNode
     } while (! matcher.test(nextNodeNr));
     tree.getNode(nextNodeNr)
   }

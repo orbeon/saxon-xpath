@@ -69,7 +69,7 @@ class FollowingIterator(var doc: TinyTree,
       if (tree.nodeKind(nodeNr) == Type.TEXTUAL_ELEMENT) {
         val e: TinyTextualElement =
           tree.getNode(nodeNr).asInstanceOf[TinyTextualElement]
-        val t: NodeInfo = e.getTextNode
+        val t: NodeInfo = e.textNode
         if (matcher.test(nodeNr)) {
           if (test.test(t)) {
             pending = t
