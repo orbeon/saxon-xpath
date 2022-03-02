@@ -260,6 +260,7 @@ class SaxonTest extends AnyFunSpec {
           |  ) + 2
           |) div 1000""".stripMargin, docElem, false, "0.0025"),
       ("""round(xs:decimal(10.4))""",                               docElem, false, "10"),
+      ("""/*//*[local-name() = 'foo']""",                           docElem, false, null),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
