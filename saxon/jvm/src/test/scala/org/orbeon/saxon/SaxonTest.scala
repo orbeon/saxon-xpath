@@ -4,12 +4,15 @@ import net.sf.saxon.`type`.BuiltInAtomicType
 import net.sf.saxon.expr.parser.OptimizerOptions
 import net.sf.saxon.jaxp.SaxonTransformerFactory
 import net.sf.saxon.lib.{NamespaceConstant, StandardLogger}
-import net.sf.saxon.{Configuration, om}
 import net.sf.saxon.sxpath.{IndependentContext, XPathEvaluator}
 import net.sf.saxon.value.Int64Value
+import net.sf.saxon.{Configuration, om}
 import org.scalatest.funspec.AnyFunSpec
 import org.xml.sax.helpers.AttributesImpl
 
+import _root_.java.io.ByteArrayOutputStream
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
 import scala.jdk.CollectionConverters.IterableHasAsScala
 
 
@@ -267,5 +270,39 @@ class SaxonTest extends AnyFunSpec {
       it(s"must evaluate `$in`") {
         assert(out == compileAndRunExpression(in, ctx, isAVT).map(_.getStringValue).orNull)
       }
+  }
+
+  // TODO: don't duplicate from `XPathTest`
+  describe("XML serialization") {
+
+    def serializeToByteArray: Array[Byte] = {
+
+      val th = new SaxonTransformerFactory(Configuration).newTransformerHandler
+
+      val t = th.getTransformer
+
+      t.setOutputProperty(OutputKeys.METHOD, "xml")
+      t.setOutputProperty(OutputKeys.ENCODING, "utf-8")
+      t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+
+      val os = new ByteArrayOutputStream
+      th.setResult(new StreamResult(os))
+
+      def writeText(t: String): Unit =
+        th.characters(t.toCharArray, 0, t.length)
+
+      th.startDocument()
+      th.startElement("", "root", "root", new AttributesImpl)
+      writeText("""! ” # $ % & ’ ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~""")
+      th.endElement("", "root", "root")
+      th.endDocument()
+
+      os.toByteArray
+    }
+
+    it("must serialize and escape special characters") {
+      val Expected = """<root>! ” # $ % &amp; ’ ( ) * + , - . / : ; &lt; = &gt; ? @ [ \ ] ^ _ ` { | } ~</root>"""
+      assert(new String(serializeToByteArray, "utf-8") == Expected)
+    }
   }
 }

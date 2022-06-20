@@ -11,6 +11,10 @@ import org.orbeon.saxon.value.Int64Value
 import org.scalatest.funspec.AnyFunSpec
 import org.xml.sax.helpers.AttributesImpl
 
+import _root_.java.io.ByteArrayOutputStream
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.stream.StreamResult
+
 
 class XPathTest extends AnyFunSpec {
 
@@ -43,9 +47,9 @@ class XPathTest extends AnyFunSpec {
         evaluator.createExpression(xpath)
 
     if (ExplainExpressions) {
-      import _root_.java.io.PrintStream
-
       import org.orbeon.saxon.lib.StandardLogger
+
+      import _root_.java.io.PrintStream
 
       xpe.getInternalExpression.explain(new StandardLogger(new PrintStream(System.out)))
     }
@@ -285,5 +289,38 @@ class XPathTest extends AnyFunSpec {
       it(s"must evaluate `$in`") {
         assert(out == compileAndRunExpression(in, ctx, isAVT).map(_.getStringValue).orNull)
       }
+  }
+
+  describe("XML serialization") {
+
+    def serializeToByteArray: Array[Byte] = {
+
+      val th = new SaxonTransformerFactory(Configuration).newTransformerHandler
+
+      val t = th.getTransformer
+
+      t.setOutputProperty(OutputKeys.METHOD, "xml")
+      t.setOutputProperty(OutputKeys.ENCODING, "utf-8")
+      t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+
+      val os = new ByteArrayOutputStream
+      th.setResult(new StreamResult(os))
+
+      def writeText(t: String): Unit =
+        th.characters(t.toCharArray, 0, t.length)
+
+      th.startDocument()
+      th.startElement("", "root", "root", new AttributesImpl)
+      writeText("""! ” # $ % & ’ ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~""")
+      th.endElement("", "root", "root")
+      th.endDocument()
+
+      os.toByteArray
+    }
+
+    it("must serialize and escape special characters") {
+      val Expected = """<root>! ” # $ % &amp; ’ ( ) * + , - . / : ; &lt; = &gt; ? @ [ \ ] ^ _ ` { | } ~</root>"""
+      assert(new String(serializeToByteArray, "utf-8") == Expected)
+    }
   }
 }

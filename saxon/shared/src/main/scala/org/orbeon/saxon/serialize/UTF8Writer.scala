@@ -24,7 +24,6 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
     buffLength = UTF8Writer.MIN_BUF_LEN
   _outBuffer = new Array[Byte](buffLength)
   _outBufferLast = buffLength - 4
-  _outPtr = 0
 
   def this(out: OutputStream) =
     this(out, UTF8Writer.DEFAULT_BUF_LEN)
@@ -55,20 +54,21 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
 
   @throws[IOException]
   def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
-    var offInt = off
-    var lenInt = len
-    if (lenInt < 2) {
-      if (lenInt == 1)
-        write(cbuf(offInt))
+
+    var _off = off
+    var _len = len
+    if (_len < 2) {
+      if (_len == 1)
+        write(cbuf(_off))
       return
     }
 
     if (_surrogate > 0) {
       val second = cbuf({
-        offInt += 1
-        offInt - 1
+        _off += 1
+        _off - 1
       })
-      lenInt -= 1
+      _len -= 1
       write(_convertSurrogate(second))
     }
 
@@ -76,16 +76,16 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
     val outBuf = _outBuffer
     val outBufLast = _outBufferLast
 
-    lenInt += off
+    _len += off
     var exitOutputLoop = false
-    while (! exitOutputLoop && offInt < len) {
+    while (! exitOutputLoop && _off < _len) {
       if (outPtr >= outBufLast) {
         _out.write(outBuf, 0, outPtr)
         outPtr = 0
       }
       var c: Int = cbuf({
-        offInt += 1
-        offInt - 1
+        _off += 1
+        _off - 1
       })
 
       var continueOutputLoop = false
@@ -95,19 +95,20 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
           outPtr - 1
         }) = c.toByte
 
-        var maxInCount = len - offInt
+        var maxInCount = _len - _off
         val maxOutCount = outBufLast - outPtr
         if (maxInCount > maxOutCount) maxInCount = maxOutCount
-        maxInCount += offInt
+        maxInCount += _off
+
         var exitAsciiLoop = false
         while (! exitAsciiLoop) {
-          if (offInt >= maxInCount) {
+          if (_off >= maxInCount) {
             exitAsciiLoop = true
             continueOutputLoop = true
           } else {
             c = cbuf({
-              offInt += 1
-              offInt - 1
+              _off += 1
+              _off - 1
             })
             if (c >= 0x80)
               exitAsciiLoop = true
@@ -154,12 +155,12 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
             }
             _surrogate = c
 
-            if (offInt >= len) {
+            if (_off >= _len) {
               exitOutputLoop = true
             } else {
               c = _convertSurrogate(cbuf({
-                offInt += 1
-                offInt - 1
+                _off += 1
+                _off - 1
               }))
               if (c > 0x10FFFF) {
                 _outPtr = outPtr
@@ -262,10 +263,11 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
 
   @throws[IOException]
   override def write(str: String, off: Int, len: Int): Unit = {
+
     var _off = off
-    var lenInt = len
-    if (lenInt < 2) {
-      if (lenInt == 1)
+    var _len = len
+    if (_len < 2) {
+      if (_len == 1)
         write(str.charAt(_off))
       return
     }
@@ -274,15 +276,15 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
         _off += 1
         _off - 1
       })
-      _off -= 1
+      _len -= 1
       write(_convertSurrogate(second))
     }
     var outPtr = _outPtr
     val outBuf = _outBuffer
     val outBufLast = _outBufferLast
-    lenInt += _off
+    _len += _off
     var exitOutputLoop = false
-    while (! exitOutputLoop && _off < lenInt) {
+    while (! exitOutputLoop && _off < _len) {
       if (outPtr >= outBufLast) {
         _out.write(outBuf, 0, outPtr)
         outPtr = 0
@@ -297,7 +299,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
           outPtr += 1
           outPtr - 1
         }) = c.toByte
-        var maxInCount = lenInt - _off
+        var maxInCount = _len - _off
         val maxOutCount = outBufLast - outPtr
         if (maxInCount > maxOutCount)
           maxInCount = maxOutCount
@@ -354,7 +356,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
               throwIllegal(c)
             }
             _surrogate = c
-            if (_off >= lenInt) {
+            if (_off >= _len) {
               exitOutputLoop = true
             } else {
               c = _convertSurrogate(str.charAt({
