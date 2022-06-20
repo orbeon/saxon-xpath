@@ -682,7 +682,8 @@ class XMLEmitter extends Emitter {
       } else if (disabled) {
         if (c > 127)
           if (UTF16CharacterSet.isHighSurrogate(c)) {
-            val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i + 1))
+            i += 1
+            val cc = UTF16CharacterSet.combinePair(c, chars.charAt(i))
             if (! characterSet.inCharset(cc)) {
               val de = new XPathException("Character x" + Integer.toHexString(cc) + " is not available in the chosen encoding")
               de.setErrorCode("SERE0008")

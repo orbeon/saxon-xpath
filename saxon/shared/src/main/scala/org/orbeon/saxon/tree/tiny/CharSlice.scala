@@ -81,7 +81,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
   def indexOf(c: Char): Int = {
     val end: Int = offset + count
     for (i <- offset until end if array(i) == c) {
-      i - offset
+      return i - offset
     }
     -1
   }
