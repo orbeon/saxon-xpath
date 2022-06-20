@@ -727,8 +727,9 @@ class XMLEmitter extends Emitter {
         if (characterSet.inCharset(charval)) {
           writer.write(c)
           writer.write(d)
+        } else {
+          characterReferenceGenerator.outputCharacterReference(charval, writer)
         }
-        else characterReferenceGenerator.outputCharacterReference(charval, writer)
       } else {
         // process characters not available in the current encoding
         characterReferenceGenerator.outputCharacterReference(c, writer)

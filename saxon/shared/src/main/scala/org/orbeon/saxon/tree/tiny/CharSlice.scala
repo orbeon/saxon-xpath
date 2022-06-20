@@ -31,19 +31,14 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
     this.array = array
     offset = start
     count = length
-    if (start + length > array.length) {
-      throw new IndexOutOfBoundsException(
-        "start(" + start + ") + length(" + length + ") > size(" +
-          array.length +
-          ')')
-    }
+    if (start + length > array.length)
+      throw new IndexOutOfBoundsException("start(" + start + ") + length(" + length + ") > size(" + array.length + ')')
   }
 
   def length: Int = count
 
-  def setLength(length: Int): Unit = {
+  def setLength(length: Int): Unit =
     count = length
-  }
 
   def charAt(index: Int): Char = array(offset + index)
 
@@ -52,14 +47,14 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
 
   override def toString: String = new String(array, offset, count)
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case cs2: CharSlice =>
         if (count != cs2.count)
           return false
-        val limit: Int = offset + count
-        var j: Int = offset
-        var k: Int = cs2.offset
+        val limit = offset + count
+        var j = offset
+        var k = cs2.offset
         while (j < limit) if (array({
           j += 1; j - 1
         }) != cs2
@@ -68,20 +63,18 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
           })) {
          return false
         }
-        return true
+        true
       case sequence: CharSequence =>
         count == sequence.length && toString == other.toString
       case _ =>
+        false
     }
-    false
-  }
 
   override def hashCode: Int = {
-    val end: Int = offset + count
-    var h: Int = 0
-    for (i <- offset until end) {
+    val end = offset + count
+    var h = 0
+    for (i <- offset until end)
       h = 31 * h + array(i)
-    }
     h
   }
 
@@ -111,7 +104,7 @@ class CharSlice(private var array: Array[Char]) extends CharSequence {
   }
 
   def toCharArray: Array[Char] = {
-    val chars: Array[Char] = Array.ofDim[Char](count)
+    val chars = Array.ofDim[Char](count)
     System.arraycopy(array, offset, chars, 0, count)
     chars
   }

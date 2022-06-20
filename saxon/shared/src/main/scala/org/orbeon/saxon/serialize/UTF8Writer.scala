@@ -293,6 +293,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
         _off += 1
         _off - 1
       })
+
       var continueOutputLoop = false
       if (c < 0x80) {
         outBuf({
@@ -304,6 +305,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
         if (maxInCount > maxOutCount)
           maxInCount = maxOutCount
         maxInCount += _off
+
         var exitAsciiLoop = false
         while (! exitAsciiLoop) {
           if (_off >= maxInCount) {
@@ -325,8 +327,11 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
           }
         }
       }
+
       if (! continueOutputLoop) {
+        // Nope, multi-byte:
         if (c < 0x800) {
+          // 2-byte
           outBuf({
             outPtr += 1
             outPtr - 1
@@ -336,6 +341,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
             outPtr - 1
           }) = (0x80 | (c & 0x3f)).toByte
         } else {
+          // 3 or 4 bytes
           if (c < UTF8Writer.SURR1_FIRST || c > UTF8Writer.SURR2_LAST) {
             outBuf({
               outPtr += 1
@@ -408,7 +414,7 @@ final class UTF8Writer(var _out: OutputStream, val bufferLength: Int) extends Wr
   }
 
   @throws[IOException]
-  private def throwIllegal(code: Int): Unit =
+  private def throwIllegal(code: Int): Nothing =
     if (code > 0x10FFFF)
       throw new IOException("Illegal character point (0x" + Integer.toHexString(code) + ") to output; max is 0x10FFFF as per RFC 3629")
     else if (code >= UTF8Writer.SURR1_FIRST) {
