@@ -121,11 +121,10 @@ object Categories {
     })
     val c = "CLMNPSZ"
     for (i <- 0 until c.length) {
-      val ch: Char = c.charAt(i)
+      val ch = c.charAt(i)
       var ip: IntPredicate = null
-      for ((key, value) <- CATEGORIES.asScala if key.charAt(0) == ch) {
+      for ((key, value) <- CATEGORIES.asScala if key.charAt(0) == ch)
         ip = if (ip == null) value else ip.or(value)
-      }
       val label = ch.toString
       CATEGORIES.put(label, new Category(label, ip))
     }
