@@ -5,12 +5,12 @@ enablePlugins(ScalaJSPlugin)
 
 val saxonVersion = "10.0.0.76-SNAPSHOT"
 
-lazy val scala212 = "2.12.16"
-lazy val scala213 = "2.13.8"
+lazy val scala212 = "2.12.17"
+lazy val scala213 = "2.13.10"
 val supportedScalaVersions = List(scala212, scala213)
 
-val ScalaTestVersion = "3.2.1"
-val ScalaCollectionCompatVersion  = "2.7.0"
+val ScalaTestVersion = "3.2.14"
+val ScalaCollectionCompatVersion  = "2.9.0"
 
 ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
