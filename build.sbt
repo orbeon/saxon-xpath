@@ -3,8 +3,7 @@ import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
-
-val saxonVersion = "10.0.0.71-SNAPSHOT"
+val saxonVersion = "10.0.0.76-SNAPSHOT"
 
 lazy val scala212 = "2.12.16"
 lazy val scala213 = "2.13.8"
