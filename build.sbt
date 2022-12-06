@@ -1,4 +1,5 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
@@ -59,6 +60,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     parallelExecution in DebugTest     := false
   )
   .jsSettings(
+    scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(ESVersion.ES2018))),
     libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.6-SNAPSHOT"),
     //  .enablePlugins(TzdbPlugin)
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0",
