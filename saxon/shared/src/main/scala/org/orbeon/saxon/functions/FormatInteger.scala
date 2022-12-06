@@ -1,45 +1,32 @@
 package org.orbeon.saxon.functions
 
-import java.util.function.IntPredicate
 import java.util.{ArrayList, List}
-
 import org.orbeon.saxon.expr.number._
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor}
 import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
 import org.orbeon.saxon.functions.FormatInteger._
 import org.orbeon.saxon.lib.Numberer
 import org.orbeon.saxon.om.Sequence
-import org.orbeon.saxon.regex.charclass.Categories
 import org.orbeon.saxon.regex.{ARegularExpression, RegularExpression, UnicodeString}
+import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{IntegerValue, StringValue}
 import org.orbeon.saxon.z.{IntHashSet, IntSet}
 
+import java.util
 import scala.util.control.Breaks._
+
 
 object FormatInteger {
 
-  private var badHashPattern: RegularExpression = _
-  private var modifierPattern: RegularExpression = _
-  private var decimalDigitPattern: RegularExpression = _
+  private val badHashPattern      = "((\\d+|\\w+)#+.*)|(#+[^\\d]+)".r
+  private val modifierPattern     = "([co](\\(.*\\))?)?[at]?".r
+  private val decimalDigitPattern = "^((\\p{Nd}|#|[^\\p{N}\\p{L}])+?)$".r
 
   val preface: String = "In the picture string for format-integer, "
 
-  locally {
-    badHashPattern = new ARegularExpression("((\\d+|\\w+)#+.*)|(#+[^\\d]+)",
-      "",
-      "XP20",
-      null,
-      null)
-    modifierPattern = new ARegularExpression("([co](\\(.*\\))?)?[at]?", "", "XP20", null, null)
-    decimalDigitPattern = new ARegularExpression(
-      "^((\\p{Nd}|#|[^\\p{N}\\p{L}])+?)$",
-      "",
-      "XP20",
-      null,
-      null)
   }
 
   def getPicSeparators(pic: String): NumericGroupFormatter = {
@@ -51,13 +38,11 @@ object FormatInteger {
     var lastGroupingPos: Int = 0
     var regularCheck: Boolean = true
     var zeroDigit: Int = -1
-    if (badHashPattern.matches(pic)) {
-      throw new XPathException(
-        preface +
-          "the picture is not valid (it uses '#' where disallowed)",
-        "FODF1310")
-    }
-    var i: Int = picExpanded.uLength - 1
+    if (badHashPattern.findFirstIn(pic).nonEmpty)
+      throw new XPathException(preface + "the picture is not valid (it uses '#' where disallowed)", "FODF1310")
+
+    var i = picExpanded.uLength - 1
+
     while (i >= 0) {
       val codePoint: Int = picExpanded.uCharAt(i)
       java.lang.Character.getType(codePoint) match {
@@ -245,10 +230,8 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
       modifier =
         if (lastSemicolon < pic.length - 1) pic.substring(lastSemicolon + 1)
         else ""
-      if (!modifierPattern.matches(modifier)) {
-        throw new XPathException(preface + "the modifier is invalid",
-          "FODF1310")
-      }
+      if (modifierPattern.findFirstIn(modifier).isEmpty)
+        throw new XPathException(preface + "the modifier is invalid", "FODF1310")
     } else {
       primaryToken = pic
       modifier = ""
@@ -263,17 +246,16 @@ class FormatInteger extends SystemFunction with StatefulSystemFunction {
     val ordinalValue: String =
       if (ordinal) if ("" == parenthetical) "yes" else parenthetical else ""
     val primary: UnicodeString = UnicodeString.makeUnicodeString(primaryToken)
-    val isDecimalDigit: IntPredicate = Categories.getCategory("Nd")
     var isDecimalDigitPattern: Boolean = false
     breakable {
       for (i <- 0 until primary.uLength
-           if isDecimalDigit.test(primary.uCharAt(i))) {
+           if Character.isDigit(primary.uCharAt(i))) { // ORBEON: Use standard Java `Character` vs. Saxon `Categories`
         isDecimalDigitPattern = true
         break()
       }
     }
     if (isDecimalDigitPattern) {
-      if (!decimalDigitPattern.matches(primaryToken)) {
+      if (decimalDigitPattern.findFirstIn(primaryToken).isEmpty)
         throw new XPathException(
           preface +
             "the primary format token contains a decimal digit but does not " +

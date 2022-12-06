@@ -6,8 +6,6 @@ import org.orbeon.saxon.regex.EmptyString
 
 import org.orbeon.saxon.regex.UnicodeString
 
-import org.orbeon.saxon.regex.charclass.Categories
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.math.BigInteger
@@ -32,9 +30,8 @@ object NumberFormatter {
       alphanumeric.test(c)
     }
 
-  private var alphanumeric: IntPredicate =
-    Categories.getCategory("N").or(Categories.getCategory("L"))
-
+  // ORBEON: Use standard Java `Character` vs. Saxon `Categories`
+  private val alphanumeric: IntPredicate = Character.isLetterOrDigit
 }
 
 class NumberFormatter {
