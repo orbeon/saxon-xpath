@@ -6,14 +6,14 @@ import net.sf.saxon.jaxp.SaxonTransformerFactory
 import net.sf.saxon.lib.{NamespaceConstant, StandardLogger}
 import net.sf.saxon.sxpath.{IndependentContext, XPathEvaluator}
 import net.sf.saxon.value.Int64Value
-import net.sf.saxon.{Configuration, om}
+import net.sf.saxon.{Configuration, om => som}
 import org.scalatest.funspec.AnyFunSpec
 import org.xml.sax.helpers.AttributesImpl
 
 import _root_.java.io.ByteArrayOutputStream
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.stream.StreamResult
-import scala.jdk.CollectionConverters.IterableHasAsScala
+import scala.jdk.CollectionConverters._
 
 
 class SaxonTest extends AnyFunSpec {
@@ -25,7 +25,7 @@ class SaxonTest extends AnyFunSpec {
     setDefaultRegexEngine("J") // the "S" (Saxon) engine is broken at this time
   }
 
-  def compileAndRunExpression(xpath: String, ctx: om.Item, isAVT: Boolean): Option[om.Item] = {
+  def compileAndRunExpression(xpath: String, ctx: som.Item, isAVT: Boolean): Option[som.Item] = {
 
     val evaluator = new XPathEvaluator(Configuration)
 
@@ -63,7 +63,7 @@ class SaxonTest extends AnyFunSpec {
     val int = Int64Value.makeDerived(2020, BuiltInAtomicType.INT)
 
     val doc = {
-      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
+      val treeBuilder = som.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
 //      val treeBuilder = om.TreeModel.LINKED_TREE.makeBuilder(Configuration.makePipelineConfiguration)
 
       val handler = {
@@ -97,7 +97,7 @@ class SaxonTest extends AnyFunSpec {
     val docElem = doc.children.asScala.head
 
     val doc2 = {
-      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
+      val treeBuilder = som.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
 
       val handler = {
         val handler = new SaxonTransformerFactory(Configuration).newTransformerHandler
@@ -138,7 +138,7 @@ class SaxonTest extends AnyFunSpec {
     }
 
     val doc3 = {
-      val treeBuilder = om.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
+      val treeBuilder = som.TreeModel.TINY_TREE.makeBuilder(Configuration.makePipelineConfiguration)
 
       val handler = {
         val handler = new SaxonTransformerFactory(Configuration).newTransformerHandler
