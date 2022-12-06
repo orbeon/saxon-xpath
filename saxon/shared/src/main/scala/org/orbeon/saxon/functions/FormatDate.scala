@@ -1,11 +1,7 @@
 package org.orbeon.saxon.functions
 
-import java.util.regex.{Matcher, Pattern}
-import java.util.Arrays
-import java.{lang => jl}
-
+import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.expr.number._
-import org.orbeon.saxon.expr.{Callable, XPathContext}
 import org.orbeon.saxon.functions.FormatDate._
 import org.orbeon.saxon.lib.Numberer
 import org.orbeon.saxon.om.{Sequence, StructuredQName, ZeroOrOne}
@@ -13,58 +9,65 @@ import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.regex.charclass.Categories
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 
+import java.util.Arrays
+import java.util.regex.Pattern
+import java.{lang => jl}
+import scala.annotation.tailrec
 import scala.util.control.Breaks._
+
 
 object FormatDate {
 
-  val knownCalendars: Array[String] = Array("AD",
-    "AH",
-    "AME",
-    "AM",
-    "AP",
-    "AS",
-    "BE",
-    "CB",
-    "CE",
-    "CL",
-    "CS",
-    "EE",
-    "FE",
-    "ISO",
-    "JE",
-    "KE",
-    "KY",
-    "ME",
-    "MS",
-    "NS",
-    "OS",
-    "RS",
-    "SE",
-    "SH",
-    "SS",
-    "TE",
-    "VE",
-    "VS")
+  val knownCalendars: Array[String] =
+    Array(
+      "AD",
+      "AH",
+      "AME",
+      "AM",
+      "AP",
+      "AS",
+      "BE",
+      "CB",
+      "CE",
+      "CL",
+      "CS",
+      "EE",
+      "FE",
+      "ISO",
+      "JE",
+      "KE",
+      "KY",
+      "ME",
+      "MS",
+      "NS",
+      "OS",
+      "RS",
+      "SE",
+      "SH",
+      "SS",
+      "TE",
+      "VE",
+      "VS"
+    )
 
-  private def formatDate(value: CalendarValue,
-                         format: String,
-                         language: String,
-                         place: String,
-                         context: XPathContext): CharSequence = {
-    val config: Configuration = context.getConfiguration
-    val languageDefaulted: Boolean = language == null
+  private def formatDate(
+    value   : CalendarValue,
+    format  : String,
+    language: String,
+    place   : String,
+    context : XPathContext
+  ): CharSequence = {
+    val config            = context.getConfiguration
+    val languageDefaulted = language == null
     var lang = language
     var placeStr = place
-    var calVal = value
-    if (lang == null) {
+    val calVal            = value
+    if (lang == null)
       lang = config.getDefaultLanguage
-    }
-    if (placeStr == null) {
+    if (placeStr == null)
       placeStr = config.getDefaultCountry
-    }
     if (calVal.hasTimezone && placeStr.contains("/")) {
       // ORBEON: TimeZone
 //      val tz = TimeZone.getTimeZone(placeStr)
@@ -75,18 +78,16 @@ object FormatDate {
 //        calVal = calVal.adjustTimezone(milliOffset / 60000)
 //      }
     }
-    val numberer: Numberer = config.makeNumberer(lang, placeStr)
-    val sb = new FastStringBuffer(FastStringBuffer.C64)
-    if (numberer.getClass == classOf[Numberer_en] && "en" != lang &&
-      !languageDefaulted) {
+
+    val numberer = config.makeNumberer(lang, placeStr)
+    val sb       = new FastStringBuffer(FastStringBuffer.C64)
+
+    if (numberer.getClass == classOf[Numberer_en] && "en" != lang && ! languageDefaulted)
       sb.append("[Language: en]")
-    }
-    if (numberer.defaultedLocale() != null) {
-      sb.append(
-        "[Language: " + numberer.defaultedLocale().getLanguage +
-          "]")
-    }
-    var i: Int = 0
+    if (numberer.defaultedLocale() != null)
+      sb.append("[Language: " + numberer.defaultedLocale().getLanguage + "]")
+
+    var i = 0
     breakable {
       while (true) {
         while (i < format.length && format.charAt(i) != '[') {
@@ -94,8 +95,7 @@ object FormatDate {
           if (format.charAt(i) == ']') {
             i += 1
             if (i == format.length || format.charAt(i) != ']') {
-              val e: XPathException = new XPathException(
-                "Closing ']' in date picture must be written as ']]'")
+              val e = new XPathException("Closing ']' in date picture must be written as ']]'")
               e.setErrorCode("FOFD1340")
               e.setXPathContext(context)
               throw e
@@ -103,29 +103,30 @@ object FormatDate {
           }
           i += 1
         }
-        if (i == format.length) {
+        if (i == format.length)
           break()
-        }
         i += 1
         if (i < format.length && format.charAt(i) == '[') {
           sb.cat('[')
           i += 1
         } else {
-          val close: Int = if (i < format.length) format.indexOf("]", i) else -1
+          val close = if (i < format.length) format.indexOf("]", i) else -1
           if (close == -1) {
-            val e: XPathException = new XPathException(
-              "Date format contains a '[' with no matching ']'")
+            val e = new XPathException("Date format contains a '[' with no matching ']'")
             e.setErrorCode("FOFD1340")
             e.setXPathContext(context)
             throw e
           }
-          val componentFormat: String = format.substring(i, close)
+          val componentFormat = format.substring(i, close)
           sb.cat(
-            formatComponent(calVal,
+            formatComponent(
+              calVal,
               Whitespace.removeAllWhitespace(componentFormat),
               numberer,
               placeStr,
-              context))
+              context
+            )
+          )
           i = close + 1
         }
       }
@@ -133,245 +134,260 @@ object FormatDate {
     sb
   }
 
-  private var componentPattern: Pattern =
+  private val componentPattern: Pattern =
     Pattern.compile("([YMDdWwFHhmsfZzPCE])\\s*(.*)")
 
-  private def formatComponent(value: CalendarValue,
-                              specifier: CharSequence,
-                              numberer: Numberer,
-                              country: String,
-                              context: XPathContext): CharSequence = {
-    val ignoreDate: Boolean = value.isInstanceOf[TimeValue]
-    val ignoreTime: Boolean = value.isInstanceOf[DateValue]
-    val dtvalue: DateTimeValue = value.toDateTime
-    val matcher: Matcher = componentPattern.matcher(specifier)
-    if (!matcher.matches()) {
-      val error: XPathException = new XPathException(
-        "Unrecognized date/time component [" + specifier + ']')
+  private def formatComponent(
+    value    : CalendarValue,
+    specifier: CharSequence,
+    numberer : Numberer,
+    country  : String,
+    context  : XPathContext
+  ): CharSequence = {
+    val ignoreDate = value.isInstanceOf[TimeValue]
+    val ignoreTime = value.isInstanceOf[DateValue]
+    val dtvalue = value.toDateTime
+    val matcher = componentPattern.matcher(specifier)
+
+    if (! matcher.matches()) {
+      val error = new XPathException("Unrecognized date/time component [" + specifier + ']')
       error.setErrorCode("FOFD1340")
       error.setXPathContext(context)
       throw error
     }
-    val component: String = matcher.group(1)
-    var format: String = matcher.group(2)
-    if (format == null) {
+    val component = matcher.group(1)
+    var format = matcher.group(2)
+    if (format == null)
       format = ""
-    }
-    var defaultFormat: Boolean = false
+    var defaultFormat = false
     if ("" == format || format.startsWith(",")) {
       defaultFormat = true
       component.charAt(0) match {
-        case 'F' => format = s"Nn$format"
-        case 'P' => format = s"n$format"
+        case 'F'       => format = s"Nn$format"
+        case 'P'       => format = s"n$format"
         case 'C' | 'E' => format = s"N$format"
         case 'm' | 's' => format = s"01$format"
         case 'z' | 'Z' =>
-        case _ => format = s"1$format"
-
+        case _         => format = s"1$format"
       }
     }
     component.charAt(0) match {
       case 'Y' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain a year component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain a year component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          var year: Int = dtvalue.getYear
-          if (year < 0) {
+          var year = dtvalue.getYear
+          if (year < 0)
             year = 0 - year
-          }
-          formatNumber(component,
+          formatNumber(
+            component,
             year,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'M' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain a month component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain a month component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val month: Int = dtvalue.getMonth
-          formatNumber(component,
+          val month = dtvalue.getMonth
+          formatNumber(
+            component,
             month,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'D' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain a day component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain a day component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val day: Int = dtvalue.getDay
-          formatNumber(component,
+          val day = dtvalue.getDay
+          formatNumber(
+            component,
             day,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'd' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain a day component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain a day component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val day: Int = DateValue.getDayWithinYear(dtvalue.getYear,
-            dtvalue.getMonth,
-            dtvalue.getDay)
-          formatNumber(component,
+          val day =
+            DateValue.getDayWithinYear(
+              dtvalue.getYear,
+              dtvalue.getMonth,
+              dtvalue.getDay
+            )
+          formatNumber(
+            component,
             day,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'W' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): cannot obtain the week number from an xs:time value")
+          val error = new XPathException("In format-time(): cannot obtain the week number from an xs:time value")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val week: Int = DateValue.getWeekNumber(dtvalue.getYear,
-            dtvalue.getMonth,
-            dtvalue.getDay)
-          formatNumber(component,
+          val week =
+            DateValue.getWeekNumber(
+              dtvalue.getYear,
+              dtvalue.getMonth,
+              dtvalue.getDay
+            )
+          formatNumber(
+            component,
             week,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'w' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): cannot obtain the week number from an xs:time value")
+          val error = new XPathException("In format-time(): cannot obtain the week number from an xs:time value")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val week: Int = DateValue.getWeekNumberWithinMonth(dtvalue.getYear,
-            dtvalue.getMonth,
-            dtvalue.getDay)
-          formatNumber(component,
+          val week =
+            DateValue.getWeekNumberWithinMonth(
+              dtvalue.getYear,
+              dtvalue.getMonth,
+              dtvalue.getDay
+            )
+          formatNumber(
+            component,
             week,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'H' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain an hour component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain an hour component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val hour: Int64Value = value
+          val hour = value
             .getComponent(AccessorFn.Component.HOURS)
             .asInstanceOf[Int64Value]
           assert(hour != null)
-          formatNumber(component,
+          formatNumber(
+            component,
             hour.longValue.toInt,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'h' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain an hour component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain an hour component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val hour: Int64Value = value
+          val hour = value
             .getComponent(AccessorFn.Component.HOURS)
             .asInstanceOf[Int64Value]
           assert(hour != null)
-          var hr: Int = hour.longValue.toInt
-          if (hr > 12) {
+          var hr = hour.longValue.toInt
+          if (hr > 12)
             hr = hr - 12
-          }
-          if (hr == 0) {
+          if (hr == 0)
             hr = 12
-          }
           formatNumber(component, hr, format, defaultFormat, numberer, context)
         }
       case 'm' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain a minutes component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain a minutes component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val minutes: Int64Value = value
+          val minutes = value
             .getComponent(AccessorFn.Component.MINUTES)
             .asInstanceOf[Int64Value]
           assert(minutes != null)
-          formatNumber(component,
+          formatNumber(
+            component,
             minutes.longValue.toInt,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 's' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain a seconds component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain a seconds component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val seconds: IntegerValue = value
+          val seconds = value
             .getComponent(AccessorFn.Component.WHOLE_SECONDS)
             .asInstanceOf[IntegerValue]
           assert(seconds != null)
-          formatNumber(component,
+          formatNumber(
+            component,
             seconds.longValue.toInt,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'f' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain a fractional seconds component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain a fractional seconds component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val micros: Int64Value = value
+          val micros = value
             .getComponent(AccessorFn.Component.MICROSECONDS)
             .asInstanceOf[Int64Value]
           assert(micros != null)
-          formatNumber(component,
+          formatNumber(
+            component,
             micros.longValue.toInt,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'z' | 'Z' =>
         var dtv: DateTimeValue = null
@@ -380,28 +396,34 @@ object FormatDate {
             val now = DateTimeValue.getCurrentDateTime(context)
             val year = now.getYear
             val tzoffset = value.getTimezoneInMinutes
-            var baseDate = new DateTimeValue(year,
-              1.toByte,
-              1.toByte,
-              0.toByte,
-              0.toByte,
-              0.toByte,
-              0,
-              tzoffset,
-              false)
-            // ORBEON: TimeZone
-//            val b = NamedTimeZone.inSummerTime(baseDate, country)
-            val b: jl.Boolean = false
-            if (b != null && b) {
-              baseDate = new DateTimeValue(year,
-                7.toByte,
+            var baseDate =
+              new DateTimeValue(
+                year,
+                1.toByte,
                 1.toByte,
                 0.toByte,
                 0.toByte,
                 0.toByte,
                 0,
                 tzoffset,
-                false)
+                false
+              )
+            // ORBEON: TimeZone
+//            val b = NamedTimeZone.inSummerTime(baseDate, country)
+            val b: jl.Boolean = false
+            if (b != null && b) {
+              baseDate =
+                new DateTimeValue(
+                  year,
+                  7.toByte,
+                  1.toByte,
+                  0.toByte,
+                  0.toByte,
+                  0.toByte,
+                  0,
+                  tzoffset,
+                  false
+                )
             }
             dtv = DateTimeValue.makeDateTimeValue(baseDate.toDateValue, timeValue)
           case _ =>
@@ -410,91 +432,86 @@ object FormatDate {
         formatTimeZone(dtv, component.charAt(0), format, country)
       case 'F' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain day-of-week component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain day-of-week component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val day: Int = DateValue.getDayOfWeek(dtvalue.getYear,
-            dtvalue.getMonth,
-            dtvalue.getDay)
-          formatNumber(component,
+          val day =
+            DateValue.getDayOfWeek(
+              dtvalue.getYear,
+              dtvalue.getMonth,
+              dtvalue.getDay
+            )
+          formatNumber(
+            component,
             day,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'P' =>
         if (ignoreTime) {
-          val error: XPathException = new XPathException(
-            "In format-date(): an xs:date value does not contain an am/pm component")
+          val error = new XPathException("In format-date(): an xs:date value does not contain an am/pm component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val minuteOfDay: Int = dtvalue.getHour * 60 + dtvalue.getMinute
-          formatNumber(component,
+          val minuteOfDay = dtvalue.getHour * 60 + dtvalue.getMinute
+          formatNumber(
+            component,
             minuteOfDay,
             format,
             defaultFormat,
             numberer,
-            context)
+            context
+          )
         }
       case 'C' => numberer.getCalendarName("AD")
       case 'E' =>
         if (ignoreDate) {
-          val error: XPathException = new XPathException(
-            "In format-time(): an xs:time value does not contain an AD/BC component")
+          val error = new XPathException("In format-time(): an xs:time value does not contain an AD/BC component")
           error.setErrorCode("FOFD1350")
           error.setXPathContext(context)
           throw error
         } else {
-          val year: Int = dtvalue.getYear
+          val year = dtvalue.getYear
           numberer.getEraName(year)
         }
       case _ =>
-        var e: XPathException = new XPathException(
-          "Unknown format-date/time component specifier '" + format.charAt(0) +
-            '\'')
+        val e = new XPathException("Unknown format-date/time component specifier '" + format.charAt(0) + '\'')
         e.setErrorCode("FOFD1340")
         e.setXPathContext(context)
         throw e
-
     }
   }
 
-  private var formatPattern: Pattern = Pattern.compile("([^,]*)(,.*)?")
+  private var formatPattern                : Pattern = Pattern.compile("([^,]*)(,.*)?")
+  private val widthPattern                 : Pattern = Pattern.compile(",(\\*|[0-9]+)(\\-(\\*|[0-9]+))?")
+  private var alphanumericPattern          : Pattern = Pattern.compile("([A-Za-z0-9]|\\p{L}|\\p{N})*")
+  private val digitsPattern                : Pattern = Pattern.compile("\\p{Nd}+")
+  private val digitsOrOptionalDigitsPattern: Pattern = Pattern.compile("[#\\p{Nd}]+")
+  private val fractionalDigitsPattern      : Pattern = Pattern.compile("\\p{Nd}+#*")
 
-  private var widthPattern: Pattern =
-    Pattern.compile(",(\\*|[0-9]+)(\\-(\\*|[0-9]+))?")
-
-  private var alphanumericPattern: Pattern =
-    Pattern.compile("([A-Za-z0-9]|\\p{L}|\\p{N})*")
-
-  private var digitsPattern: Pattern = Pattern.compile("\\p{Nd}+")
-
-  private var digitsOrOptionalDigitsPattern: Pattern =
-    Pattern.compile("[#\\p{Nd}]+")
-
-  private var fractionalDigitsPattern: Pattern = Pattern.compile("\\p{Nd}+#*")
-
-  private def formatNumber(component: String,
-                           value: Int,
-                           format: String,
-                           defaultFormat: Boolean,
-                           numberer: Numberer,
-                           context: XPathContext): CharSequence = {
+  private def formatNumber(
+    component    : String,
+    value        : Int,
+    format       : String,
+    defaultFormat: Boolean,
+    numberer     : Numberer,
+    context      : XPathContext
+  ): CharSequence = {
     var formatStr = format
     var intVal = value
-    val comma: Int = formatStr.lastIndexOf(',')
-    var widths: String = ""
+    val comma     = formatStr.lastIndexOf(',')
+    var widths    = ""
     if (comma >= 0) {
       widths = formatStr.substring(comma)
       formatStr = formatStr.substring(0, comma)
     }
-    var primary: String = formatStr
+    var primary          = formatStr
     var modifier: String = null
     if (primary.endsWith("t")) {
       primary = primary.substring(0, primary.length - 1)
@@ -503,12 +520,14 @@ object FormatDate {
       primary = primary.substring(0, primary.length - 1)
       modifier = "o"
     }
-    val letterValue: String = if ("t" == modifier) "traditional" else null
-    val ordinal: String =
-      if ("o" == modifier) numberer.getOrdinalSuffixForDateTime(component)
-      else null
-    var min: Int = 1
-    var max: Int = java.lang.Integer.MAX_VALUE
+    val letterValue = if ("t" == modifier) "traditional" else null
+    val ordinal     =
+      if ("o" == modifier)
+        numberer.getOrdinalSuffixForDateTime(component)
+      else
+        null
+    var min = 1
+    var max = java.lang.Integer.MAX_VALUE
     if (digitsPattern.matcher(primary).matches()) {
       val len = StringValue.getStringLength(primary)
       if (len > 1) {
@@ -519,12 +538,12 @@ object FormatDate {
     if ("Y" == component) {
       max = 0
       min = max
-      if (!widths.isEmpty) {
+      if (widths.nonEmpty) {
         max = getWidths(widths)(1)
       } else if (digitsPattern.matcher(primary).find()) {
-        val uPrimary: UnicodeString = UnicodeString.makeUnicodeString(primary)
+        val uPrimary = UnicodeString.makeUnicodeString(primary)
         for (i <- 0 until uPrimary.uLength) {
-          val c: Int = uPrimary.uCharAt(i)
+          val c = uPrimary.uCharAt(i)
           if (c == '#') {
             max += 1
           } else if ((c >= '0' && c <= '9') || Categories.ESCAPE_d.test(c)) {
@@ -541,78 +560,76 @@ object FormatDate {
         intVal = intVal % Math.pow(10, max).toInt
       }
     }
-    if (primary.==("I") || primary.==("i")) {
-      val range: Array[Int] = getWidths(widths)
+    if (primary == "I" || primary == "i") {
+      val range = getWidths(widths)
       min = range(0)
-      val roman: String = numberer.format(
-        intVal,
-        UnicodeString.makeUnicodeString(primary),
-        null,
-        letterValue,
-        ordinal)
-      val s: StringBuilder = new StringBuilder(roman)
-      var len: Int = StringValue.getStringLength(roman)
+      val roman =
+        numberer.format(
+          intVal,
+          UnicodeString.makeUnicodeString(primary),
+          null,
+          letterValue,
+          ordinal
+        )
+      val s     = new StringBuilder(roman)
+      var len   = StringValue.getStringLength(roman)
       while (len < min) {
         s.append(' ')
         len += 1
       }
       return s.toString
-    } else if (!widths.isEmpty) {
-      val range: Array[Int] = getWidths(widths)
+    } else if (widths.nonEmpty) {
+      val range = getWidths(widths)
       min = Math.max(min, range(0))
       max =
-        if (max == java.lang.Integer.MAX_VALUE) range(1)
-        else Math.max(max, range(1))
+        if (max == java.lang.Integer.MAX_VALUE)
+          range(1)
+        else
+          Math.max(max, range(1))
       if (defaultFormat) {
         if (primary.endsWith("1") && min != primary.length) {
           val sb = new FastStringBuffer(min + 1)
-          for (i <- 1 until min) {
+          for (_ <- 1 until min)
             sb.cat('0')
-          }
           sb.cat('1')
           primary = sb.toString
         }
       }
     }
     if ("P" == component) {
-      if (!("N" == primary || "n" == primary || "Nn" == primary)) {
+      if (! ("N" == primary || "n" == primary || "Nn" == primary))
         primary = "n"
-      }
       if (max == java.lang.Integer.MAX_VALUE) {
         max = 4
       }
     } else if ("Y" == component) {
-      if (max < java.lang.Integer.MAX_VALUE) {
+      if (max < java.lang.Integer.MAX_VALUE)
         intVal = intVal % Math.pow(10, max).toInt
-      }
     } else if ("f" == component) {
-      val uFormat: UnicodeString = UnicodeString.makeUnicodeString(format)
-      if (!digitsPattern.matcher(primary).find()) {
+      val uFormat = UnicodeString.makeUnicodeString(format)
+      if (! digitsPattern.matcher(primary).find()) {
         return formatNumber(component, intVal, "1", defaultFormat, numberer, context)
       }
-      if (!digitsOrOptionalDigitsPattern.matcher(primary).matches()) {
-        val reverseFormat: UnicodeString = reverse(uFormat)
-        val reverseValue: UnicodeString = reverse(
-          UnicodeString.makeUnicodeString("" + intVal))
-        val reverseResult: CharSequence = formatNumber(
-          "s",
-          java.lang.Integer.parseInt(reverseValue.toString),
-          reverseFormat.toString,
-          defaultFormat = false,
-          numberer,
-          context)
-        var correctedResult: UnicodeString = reverse(
+      if (! digitsOrOptionalDigitsPattern.matcher(primary).matches()) {
+        val reverseFormat = reverse(uFormat)
+        val reverseValue  = reverse(UnicodeString.makeUnicodeString("" + intVal))
+        val reverseResult =
+          formatNumber(
+            "s",
+            java.lang.Integer.parseInt(reverseValue.toString),
+            reverseFormat.toString,
+            defaultFormat = false,
+            numberer,
+            context
+          )
+        var correctedResult = reverse(
           UnicodeString.makeUnicodeString(reverseResult))
-        if (correctedResult.uLength > max) {
+        if (correctedResult.uLength > max)
           correctedResult = correctedResult.uSubstring(0, max)
-        }
        return correctedResult.toString
       }
-      if (!fractionalDigitsPattern.matcher(primary).matches()) {
-        throw new XPathException(
-          "Invalid picture for fractional seconds: " + primary,
-          "FOFD1340")
-      }
+      if (! fractionalDigitsPattern.matcher(primary).matches())
+        throw new XPathException("Invalid picture for fractional seconds: " + primary, "FOFD1340")
       var s: StringBuilder = null
       if (intVal == 0) {
         s = new StringBuilder("0")
@@ -622,28 +639,30 @@ object FormatDate {
           s = new StringBuilder(s.substring(0, max))
         }
       }
-      while (s.length < min) s.append('0')
-      while (s.length > min && s.charAt(s.length - 1) == '0') s =
-        new StringBuilder(s.substring(0, s.length - 1))
-      val zeroDigit: Int = Alphanumeric.getDigitFamily(uFormat.uCharAt(0))
+      while (s.length < min)
+        s.append('0')
+      while (s.length > min && s.charAt(s.length - 1) == '0')
+        s = new StringBuilder(s.substring(0, s.length - 1))
+      val zeroDigit = Alphanumeric.getDigitFamily(uFormat.uCharAt(0))
       if (zeroDigit >= 0 && zeroDigit != '0') {
-        val digits: Array[Int] = Array.ofDim[Int](10)
-        var z: Int = 0
+        val digits = Array.ofDim[Int](10)
+        var z = 0
         while (z <= 9) {
           digits(z) = zeroDigit + z
           z += 1
         }
-        val n: Long = java.lang.Long.parseLong(s.toString)
-        val requiredLength: Int = s.length
+        val n              = java.lang.Long.parseLong(s.toString)
+        val requiredLength = s.length
         s = new StringBuilder(
           AbstractNumberer
             .convertDigitSystem(n, digits, requiredLength)
-            .toString)
+            .toString
+        )
       }
       s.toString
     }
     if ("N" == primary || "n" == primary || "Nn" == primary) {
-      var s: String = ""
+      var s = ""
       if ("M" == component) {
         s = numberer.monthName(intVal, min, max)
       } else if ("F" == component) {
@@ -661,23 +680,25 @@ object FormatDate {
         return s
       }
     }
-    var picGroupFormat: NumericGroupFormatter = null
-    try picGroupFormat = FormatInteger.getPicSeparators(primary)
-    catch {
-      case e: XPathException =>
-        if ("FODF1310" == e.getErrorCodeLocalPart) {
-          e.setErrorCode("FOFD1340")
-        }
-        throw e
-    }
-    val adjustedPicture: UnicodeString = picGroupFormat.getAdjustedPicture
-    var s: String = numberer.format(intVal,
-      adjustedPicture,
-      picGroupFormat,
-      letterValue,
-      ordinal)
-    var len: Int = StringValue.getStringLength(s)
-    var zeroDigit: Int = 0
+    val picGroupFormat =
+      try
+        FormatInteger.getPicSeparators(primary)
+      catch {
+        case e: XPathException =>
+          if ("FODF1310" == e.getErrorCodeLocalPart)
+            e.setErrorCode("FOFD1340")
+          throw e
+      }
+    val adjustedPicture = picGroupFormat.adjustedPicture
+    var s              =
+      numberer.format(intVal,
+        adjustedPicture,
+        picGroupFormat,
+        letterValue,
+        ordinal
+      )
+    var len = StringValue.getStringLength(s)
+    var zeroDigit = 0
     if (len < min) {
       zeroDigit = Alphanumeric.getDigitFamily(adjustedPicture.uCharAt(0))
       val fsb = new FastStringBuffer(s)
@@ -691,9 +712,9 @@ object FormatDate {
   }
 
   private def reverse(in: UnicodeString): UnicodeString = {
-    val out: Array[Int] = Array.ofDim[Int](in.uLength)
-    var i: Int = in.uLength - 1
-    var j: Int = 0
+    val out = Array.ofDim[Int](in.uLength)
+    var i      = in.uLength - 1
+    var j      = 0
     while (i >= 0) {
       out(j) = in.uCharAt(i)
       i -= 1
@@ -704,112 +725,113 @@ object FormatDate {
 
   private def getWidths(widths: String): Array[Int] =
     try {
-      var min: Int = -1
-      var max: Int = -1
+      var min = -1
+      var max = -1
       if ("" != widths) {
-        val widthMatcher: Matcher = widthPattern.matcher(widths)
+        val widthMatcher = widthPattern.matcher(widths)
         if (widthMatcher.matches()) {
-          val smin: String = widthMatcher.group(1)
+          val smin = widthMatcher.group(1)
           min =
-            if (smin == null || "" == smin || "*" == smin) 1
-            else java.lang.Integer.parseInt(smin)
-          val smax: String = widthMatcher.group(3)
+            if (smin == null || "" == smin || "*" == smin)
+              1
+            else
+              java.lang.Integer.parseInt(smin)
+          val smax = widthMatcher.group(3)
           max =
             if (smax == null || "" == smax || "*" == smax)
               java.lang.Integer.MAX_VALUE
-            else java.lang.Integer.parseInt(smax)
-          if (min < 1) {
-            throw new XPathException(
-              "Invalid min value in format picture " + Err.wrap(widths,
-                Err.VALUE),
-              "FOFD1340")
-          }
-          if (max < 1 || max < min) {
-            throw new XPathException(
-              "Invalid max value in format picture " + Err.wrap(widths,
-                Err.VALUE),
-              "FOFD1340")
-          }
+            else
+              java.lang.Integer.parseInt(smax)
+          if (min < 1)
+            throw new XPathException("Invalid min value in format picture " + Err.wrap(widths, Err.VALUE), "FOFD1340")
+          if (max < 1 || max < min)
+            throw new XPathException("Invalid max value in format picture " + Err.wrap(widths, Err.VALUE), "FOFD1340")
         } else {
-          throw new XPathException(
-            "Unrecognized width specifier in format picture " + Err
-              .wrap(widths, Err.VALUE),
-            "FOFD1340")
+          throw new XPathException("Unrecognized width specifier in format picture " + Err.wrap(widths, Err.VALUE), "FOFD1340")
         }
       }
       if (min > max) {
-        val e: XPathException = new XPathException(
-          "Minimum width in date/time picture exceeds maximum width")
+        val e = new XPathException("Minimum width in date/time picture exceeds maximum width")
         e.setErrorCode("FOFD1340")
         throw e
       }
-      val result: Array[Int] = Array.ofDim[Int](2)
+      val result = Array.ofDim[Int](2)
       result(0) = min
       result(1) = max
       result
     } catch {
       case _: NumberFormatException =>
-        val e: XPathException = new XPathException("Invalid integer used as width in date/time picture")
+        val e = new XPathException("Invalid integer used as width in date/time picture")
         e.setErrorCode("FOFD1340")
         throw e
     }
 
-  private def formatTimeZone(value: DateTimeValue,
-                             component: Char,
-                             format: String,
-                             country: String): String = {
+  @tailrec
+  private def formatTimeZone(
+    value    : DateTimeValue,
+    component: Char,
+    format   : String,
+    country  : String
+  ): String = {
     var formatStr = format
-    val comma: Int = formatStr.lastIndexOf(',')
-    var widthModifier: String = ""
+    val comma = formatStr.lastIndexOf(',')
+    var widthModifier = ""
     if (comma >= 0) {
       widthModifier = formatStr.substring(comma)
       formatStr = formatStr.substring(0, comma)
     }
-    if (!value.hasTimezone) {
+    if (! value.hasTimezone) {
       if (formatStr.==("Z")) {
         return "J"
       } else {
         return ""
       }
     }
-    if (formatStr.isEmpty && !widthModifier.isEmpty) {
-      val widths: Array[Int] = getWidths(widthModifier)
-      val min: Int = widths(0)
-      val max: Int = widths(1)
+    if (formatStr.isEmpty && widthModifier.nonEmpty) {
+      val widths   = getWidths(widthModifier)
+      val min = widths(0)
+      val max      = widths(1)
       formatStr =
-        if (min <= 1) if (max >= 4) "0:00" else "0"
-        else if (min <= 4) if (max >= 5) "00:00" else "00"
-        else "00:00"
+        if (min <= 1)
+          if (max >= 4)
+            "0:00"
+          else
+            "0"
+        else if (min <= 4)
+          if (max >= 5)
+            "00:00"
+          else
+            "00"
+        else
+          "00:00"
     }
-    if (formatStr.isEmpty) {
+    if (formatStr.isEmpty)
       formatStr = "00:00"
-    }
-    var tz: Int = value.getTimezoneInMinutes
-    val useZforZero: Boolean = formatStr.endsWith("t")
-    if (useZforZero && tz == 0) {
+    var tz = value.getTimezoneInMinutes
+    val useZforZero = formatStr.endsWith("t")
+    if (useZforZero && tz == 0)
       return "Z"
-    }
-    if (useZforZero) {
+    if (useZforZero)
       formatStr = formatStr.substring(0, formatStr.length - 1)
-    }
-    var digits: Int = 0
-    var separators: Int = 0
+
+    var digits        = 0
+    var separators    = 0
     var separatorChar: Int = ':'
-    var zeroDigit: Int = -1
-    val expandedFormat: Array[Int] = StringValue.expand(formatStr)
+    var zeroDigit     = -1
+
+    val expandedFormat = StringValue.expand(formatStr)
     for (ch <- expandedFormat) {
-      if (java.lang.Character.isDigit(ch)) {
+      if (Character.isDigit(ch)) {
         digits += 1
-        if (zeroDigit < 0) {
+        if (zeroDigit < 0)
           zeroDigit = Alphanumeric.getDigitFamily(ch)
-        }
       } else {
         separators += 1
         separatorChar = ch
       }
     }
-    val buffer: Array[Int] = Array.ofDim[Int](10)
-    var used: Int = 0
+    val buffer = Array.ofDim[Int](10)
+    var used = 0
     if (digits > 0) {
       if (component == 'z') {
         buffer(0) = 'G'
@@ -817,17 +839,18 @@ object FormatDate {
         buffer(2) = 'T'
         used = 3
       }
-      val negative: Boolean = tz < 0
+      val negative = tz < 0
       tz = java.lang.Math.abs(tz)
       buffer({
         used += 1
         used - 1
       }) = if (negative) '-' else '+'
-      val hour: Int = tz / 60
-      val minute: Int = tz % 60
-      val includeMinutes: Boolean = minute != 0 || digits >= 3 || separators > 0
-      val includeSep: Boolean = (minute != 0 && digits <= 2) || (separators > 0 && (minute != 0 || digits >= 3))
-      val hourDigits: Int = if (digits <= 2) digits else digits - 2
+
+      val hour   = tz / 60
+      val minute = tz % 60
+      val includeMinutes = minute != 0 || digits >= 3 || separators > 0
+      val includeSep     = (minute != 0 && digits <= 2) || (separators > 0 && (minute != 0 || digits >= 3))
+      val hourDigits     = if (digits <= 2) digits else digits - 2
       if (hour > 9 || hourDigits >= 2) {
         buffer({
           used += 1
@@ -856,14 +879,12 @@ object FormatDate {
       }
       StringValue.contract(buffer, used).toString
     } else if (formatStr.==("Z")) {
-      val hour: Int = tz / 60
-      val minute: Int = tz % 60
-      if (hour < -12 || hour > 12 || minute != 0) {
+      val hour   = tz / 60
+      val minute = tz % 60
+      if (hour < -12 || hour > 12 || minute != 0)
         formatTimeZone(value, 'Z', "00:00", country)
-      } else {
-        java.lang.Character
-          .toString("YXWVUTSRQPONZABCDEFGHIKLM".charAt(hour + 12))
-      }
+      else
+        Character.toString("YXWVUTSRQPONZABCDEFGHIKLM".charAt(hour + 12))
     } else if (formatStr.charAt(0) == 'N' || formatStr.charAt(0) == 'n') {
       getNamedTimeZone(value, country, formatStr)
     } else {
@@ -871,14 +892,16 @@ object FormatDate {
     }
   }
 
-  private def getNamedTimeZone(value: DateTimeValue,
-                               country: String,
-                               format: String): String = {
-    var min: Int = 1
-    val comma: Int = format.indexOf(',')
+  private def getNamedTimeZone(
+    value  : DateTimeValue,
+    country: String,
+    format : String
+  ): String = {
+    var min = 1
+    val comma = format.indexOf(',')
     if (comma > 0) {
-      val widths: String = format.substring(comma)
-      val range: Array[Int] = getWidths(widths)
+      val widths = format.substring(comma)
+      val range  = getWidths(widths)
       min = range(0)
     }
     if (format.charAt(0) == 'N' || format.charAt(0) == 'n') {
@@ -897,38 +920,41 @@ object FormatDate {
     value.appendTimezone(sbz)
     sbz.toString
   }
-
 }
 
 class FormatDate extends SystemFunction {
 
-  private def adjustCalendar(calendarVal: StringValue,
-                             result: CharSequence,
-                             context: XPathContext): CharSequence = {
+  private def adjustCalendar(
+    calendarVal: StringValue,
+    result     : CharSequence,
+    context    : XPathContext
+  ): CharSequence = {
     var cal: StructuredQName = null
     var charSeqResult = result
     try {
-      val c: String = calendarVal.getStringValue
-      cal = StructuredQName.fromLexicalQName(c,
-        useDefault = false,
-        allowEQName = true,
-        getRetainedStaticContext)
+      val c = calendarVal.getStringValue
+      cal =
+        StructuredQName.fromLexicalQName(
+          c,
+          useDefault = false,
+          allowEQName = true,
+          getRetainedStaticContext
+        )
     } catch {
       case e: XPathException =>
-        val err = new XPathException(
-          "Invalid calendar name. " + e.getMessage)
+        val err = new XPathException("Invalid calendar name. " + e.getMessage)
         err.setErrorCode("FOFD1340")
         err.setXPathContext(context)
         throw err
     }
     if (cal.hasURI("")) {
-      val calLocal: String = cal.getLocalPart
-      if (calLocal.==("AD") || calLocal.==("ISO")) {}
-      else if (Arrays.binarySearch(knownCalendars.asInstanceOf[Array[AnyRef]], calLocal.asInstanceOf[AnyRef]) >= 0) {
+      val calLocal = cal.getLocalPart
+      if (calLocal == "AD" || calLocal == "ISO") {
+        // NOP
+      } else if (Arrays.binarySearch(knownCalendars.asInstanceOf[Array[AnyRef]], calLocal.asInstanceOf[AnyRef]) >= 0) {
         charSeqResult = "[Calendar: AD]" + charSeqResult
       } else {
-        val err = new XPathException(
-          "Unknown no-namespace calendar: " + calLocal)
+        val err = new XPathException("Unknown no-namespace calendar: " + calLocal)
         err.setErrorCode("FOFD1340")
         err.setXPathContext(context)
         throw err

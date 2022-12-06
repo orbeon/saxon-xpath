@@ -11,15 +11,16 @@ class RegularGroupFormatter(
 ) extends NumericGroupFormatter {
 
   def format(value: FastStringBuffer): String =
-    if (groupSize > 0 && groupSeparator.length > 0) {
-      val valueEx: UnicodeString = UnicodeString.makeUnicodeString(value)
-      val temp: FastStringBuffer = new FastStringBuffer(FastStringBuffer.C16)
-      var i: Int = valueEx.uLength - 1
-      var j: Int = 0
+    if (groupSize > 0 && groupSeparator.nonEmpty) {
+
+      val valueEx = UnicodeString.makeUnicodeString(value)
+      val temp    = new FastStringBuffer(FastStringBuffer.C16)
+
+      var i = valueEx.uLength - 1
+      var j = 0
       while (i >= 0) {
-        if (j != 0 && (j % groupSize) == 0) {
+        if (j != 0 && (j % groupSize) == 0)
           temp.prepend(groupSeparator)
-        }
         temp.prependWideChar(valueEx.uCharAt(i))
         i -= 1
         j += 1
