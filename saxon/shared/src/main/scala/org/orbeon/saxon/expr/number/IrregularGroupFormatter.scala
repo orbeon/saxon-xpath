@@ -1,18 +1,17 @@
 package org.orbeon.saxon.expr.number
 
-import java.util.List
-
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.z.IntSet
 
-class IrregularGroupFormatter(private var groupingPositions: IntSet,
-                              private var separators: List[Integer],
-                              adjustedPicture: UnicodeString)
-  extends NumericGroupFormatter {
+import java.util
 
-  var adjustPic = adjustedPicture
-  this.adjustPic = adjustedPicture
+
+class IrregularGroupFormatter(
+  private var groupingPositions: IntSet,
+  private var separators       : util.List[Integer],
+  val adjustedPicture          : UnicodeString
+) extends NumericGroupFormatter {
 
   def format(value: FastStringBuffer): String = {
     val in: UnicodeString = UnicodeString.makeUnicodeString(value)

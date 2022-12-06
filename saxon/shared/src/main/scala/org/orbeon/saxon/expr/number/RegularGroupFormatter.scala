@@ -3,13 +3,12 @@ package org.orbeon.saxon.expr.number
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-class RegularGroupFormatter(private var groupSize: Int,
-                            private var groupSeparator: String,
-                            adjustedPicture: UnicodeString)
-  extends NumericGroupFormatter {
 
-  var adjustPic = adjustedPicture
-  this.adjustPic = adjustedPicture
+class RegularGroupFormatter(
+  private var groupSize     : Int,
+  private var groupSeparator: String,
+  val adjustedPicture       : UnicodeString
+) extends NumericGroupFormatter {
 
   def format(value: FastStringBuffer): String =
     if (groupSize > 0 && groupSeparator.length > 0) {
