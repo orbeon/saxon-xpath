@@ -283,6 +283,8 @@ class XPathTest extends AnyFunSpec {
           |) div 1000""".stripMargin, docElem, false, "0.0025"),
       ("""round(xs:decimal(10.4))""",                               docElem, false, "10"),
       ("""/*//*[local-name() = 'foo']""",                           docElem, false, null),
+      ("""format-time(xs:time('15:07:23'), '[H01]:[m01]:[s01]',   'en', (), ())""", docElem, false, "15:07:23"),
+      ("""format-time(xs:time('15:07:23'), '[h]:[m]:[s] [P,*-2]', 'en', (), ())""", docElem, false, "3:07:23 pm"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
