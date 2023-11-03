@@ -287,6 +287,8 @@ class XPathTest extends AnyFunSpec {
       ("""format-time(xs:time('15:07:23'),                    '[h]:[m]:[s] [P,*-2]',             'en', (), ())""", docElem, false, "3:07:23 pm"),
       ("""format-date(xs:date('2022-12-06'),                  '[M]/[D]/[Y]',                     'en', (), ())""", docElem, false, "12/6/2022"),
       ("""format-dateTime(xs:dateTime('2022-12-06T15:07:23'), '[M]/[D]/[Y] [h]:[m]:[s] [P,*-2]', 'en', (), ())""", docElem, false, "12/6/2022 3:07:23 pm"),
+      ("""format-dateTime(xs:dateTime('2022-12-06T15:07:23'), '[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01]', 'en', (), 'Europe/London')""".stripMargin, docElem, false, "2022-12-06T15:07:23"),
+      ("""format-dateTime(xs:dateTime('2023-11-02T19:04:01-07:00'), '[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01][Z]', 'en', (), 'Europe/London')""".stripMargin, docElem, false, "2023-11-03T02:04:01+00:00"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)
