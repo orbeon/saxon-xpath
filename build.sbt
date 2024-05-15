@@ -5,12 +5,13 @@ enablePlugins(ScalaJSPlugin)
 
 val saxonVersion = "10.0.0.78-SNAPSHOT"
 
-lazy val scala212 = "2.12.17"
-lazy val scala213 = "2.13.10"
+lazy val scala212 = "2.12.19"
+lazy val scala213 = "2.13.14"
 val supportedScalaVersions = List(scala212, scala213)
 
-val ScalaTestVersion = "3.2.14"
-val ScalaCollectionCompatVersion  = "2.9.0"
+val ScalaTestVersion              = "3.2.18"
+val ScalaCollectionCompatVersion  = "2.12.0"
+val ScalaJsTimeVersion            = "2.5.0"
 
 ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
@@ -49,22 +50,22 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     libraryDependencies += "com.ibm.icu"   %   "icu4j"         % "63.1", // Java  only
     libraryDependencies += "xml-resolver"  %   "xml-resolver"  % "1.2",  // Java  only
 
-    testOptions       in Test          += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
+    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
   )
   .configs(DebugTest)
   .jvmSettings(
-    fork              in DebugTest     := true, // "By default, tests executed in a forked JVM are executed sequentially"
-    sourceDirectory   in DebugTest     := (sourceDirectory in Test).value,
-    javaOptions       in DebugTest     += "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005",
-    parallelExecution in DebugTest     := false
+    DebugTest / fork              := true, // "By default, tests executed in a forked JVM are executed sequentially"
+    DebugTest / sourceDirectory   := (Test / sourceDirectory).value,
+    DebugTest / javaOptions       += "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005",
+    DebugTest / parallelExecution := false
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(ESVersion.ES2018))),
     libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.6-SNAPSHOT"),
     //  .enablePlugins(TzdbPlugin)
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % "2.0.0",
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % ScalaJsTimeVersion,
 //    zonesFilter := {(z: String) => z == "America/Los_Angeles"} // Q: See if/how we do this filtering
-    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time-tzdb" % "2.0.0" % Test // for now, get the whole database
+    libraryDependencies += "io.github.cquiroz" %%% "scala-java-time-tzdb" % ScalaJsTimeVersion % Test // for now, get the whole database
   )
 
 lazy val saxonJS  = saxon.js
