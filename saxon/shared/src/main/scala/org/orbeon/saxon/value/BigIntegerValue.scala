@@ -146,7 +146,7 @@ class BigIntegerValue() extends IntegerValue {
 
   /*@NotNull*/
 
-  def asDecimal(): BigDecimal = new BigDecimal(value)
+  def asDecimal: BigDecimal = new BigDecimal(value)
 
   /**
     * Return the effective boolean value of this integer
@@ -162,7 +162,7 @@ class BigIntegerValue() extends IntegerValue {
       value.compareTo(
         BigInteger.valueOf(other.asInstanceOf[Int64Value].longValue))
     } else if (other.isInstanceOf[BigDecimalValue]) {
-      asDecimal().compareTo(
+      asDecimal.compareTo(
         other.asInstanceOf[BigDecimalValue].getDecimalValue)
     } else {
       super.compareTo(other)

@@ -190,7 +190,7 @@ object Converter {
         case int64Value: Int64Value =>
           new BigDecimalValue(int64Value.longValue)
         case _ =>
-          new BigDecimalValue(input.asInstanceOf[BigIntegerValue].asDecimal())
+          new BigDecimalValue(input.asInstanceOf[BigIntegerValue].asDecimal)
       }
   }
 
