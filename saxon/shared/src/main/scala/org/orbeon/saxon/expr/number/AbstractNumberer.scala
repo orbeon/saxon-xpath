@@ -189,8 +189,7 @@ abstract class AbstractNumberer extends Numberer {
         if (number == 0) {
           return "0"
         }
-        if (letterValue == null || letterValue.isEmpty || letterValue.==(
-          "traditional")) {
+        if (letterValue == null || letterValue.isEmpty || letterValue == "traditional") {
           toRoman(number)
         } else {
           alphaDefault(number, 'i', sb)
@@ -199,8 +198,7 @@ abstract class AbstractNumberer extends Numberer {
         if (number == 0) {
           return "0"
         }
-        if (letterValue == null || letterValue.isEmpty || letterValue.==(
-          "traditional")) {
+        if (letterValue == null || letterValue.isEmpty || letterValue == "traditional") {
           toRoman(number).toUpperCase()
         } else {
           alphaDefault(number, 'I', sb)
