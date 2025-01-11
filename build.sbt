@@ -3,15 +3,17 @@ import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
-val saxonVersion = "10.0.0.78-SNAPSHOT"
+val saxonVersion = "10.0.0.80-SNAPSHOT"
 
 lazy val scala212 = "2.12.19"
-lazy val scala213 = "2.13.14"
-val supportedScalaVersions = List(scala212, scala213)
+lazy val scala213 = "2.13.15"
+//val supportedScalaVersions = List(scala212, scala213)
+val supportedScalaVersions = List(scala213)
 
-val ScalaTestVersion              = "3.2.18"
+val SaxVersion                    = "2.0.2.9-SNAPSHOT"
+val ScalaTestVersion              = "3.2.19"
 val ScalaCollectionCompatVersion  = "2.12.0"
-val ScalaJsTimeVersion            = "2.5.0"
+val ScalaJsTimeVersion            = "2.6.0"
 
 ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
@@ -61,7 +63,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(ESVersion.ES2018))),
-    libraryDependencies ++= Seq("org.xml" %%% "sax"% "2.0.2.6-SNAPSHOT"),
+    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion),
     //  .enablePlugins(TzdbPlugin)
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % ScalaJsTimeVersion,
 //    zonesFilter := {(z: String) => z == "America/Los_Angeles"} // Q: See if/how we do this filtering
