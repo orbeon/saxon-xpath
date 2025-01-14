@@ -114,7 +114,7 @@ class SequenceSlice(
     }
   }
 
-  override def asIterable(): java.lang.Iterable[_ <: Item] =
+  override def asIterable: java.lang.Iterable[_ <: Item] =
     value.subList(offset, offset + length)
 
   def iterator: Iterator[_ <: Item] =

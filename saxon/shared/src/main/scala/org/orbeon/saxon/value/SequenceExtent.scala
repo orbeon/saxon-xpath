@@ -129,7 +129,7 @@ class SequenceExtent extends GroundedValue {
       this
   }
 
-  override def asIterable(): java.lang.Iterable[_ <: Item] = value
+  override def asIterable: java.lang.Iterable[_ <: Item] = value
 
   def iterator: ju.Iterator[_ <: Item] = value.iterator
 }
