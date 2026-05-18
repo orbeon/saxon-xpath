@@ -3,16 +3,18 @@ import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
-val saxonVersion = "10.0.0.80-SNAPSHOT"
+val saxonVersion = "10.0.0.81-SNAPSHOT"
 
-lazy val scala212 = "2.12.19"
-lazy val scala213 = "2.13.15"
-//val supportedScalaVersions = List(scala212, scala213)
-val supportedScalaVersions = List(scala213)
+//val scala212 = "2.12.19"
+val scala213 = "2.13.18"
+val scala3   = "3.7.4"
 
-val SaxVersion                    = "2.0.2.9-SNAPSHOT"
-val ScalaTestVersion              = "3.2.19"
-val ScalaCollectionCompatVersion  = "2.12.0"
+val mainScalaVersion       = scala213
+val supportedScalaVersions = List(scala213, scala3)
+
+val SaxVersion                    = "2.0.2.10-SNAPSHOT"
+val ScalaTestVersion              = "3.2.20"
+//val ScalaCollectionCompatVersion  = "2.12.0"
 val ScalaJsTimeVersion            = "2.6.0"
 
 ThisBuild / githubOwner       := "orbeon"
@@ -43,7 +45,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
       "-unchecked"
     ),
 
-    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
+//    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
 
     libraryDependencies += "org.scalactic" %%% "scalactic"     % ScalaTestVersion    % Test,
     libraryDependencies += "org.scalatest" %%% "scalatest"     % ScalaTestVersion    % Test,
