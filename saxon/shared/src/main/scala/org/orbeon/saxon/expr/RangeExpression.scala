@@ -155,10 +155,10 @@ class RangeExpression(start: Expression, end: Expression)
     *
     * @param out the output destination for the displayed expression tree
     */
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("to", this)
-    getLhsExpression.export(out)
-    getRhsExpression.export(out)
+    getLhsExpression.`export`(out)
+    getRhsExpression.`export`(out)
     out.endElement()
   }
 

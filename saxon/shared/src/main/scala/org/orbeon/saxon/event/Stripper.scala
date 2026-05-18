@@ -60,7 +60,7 @@ object Stripper {
 
   class StripRuleTarget extends RuleTarget {
 
-    def export(presenter: ExpressionPresenter): Unit = ()
+    def `export`(presenter: ExpressionPresenter): Unit = ()
 
     // no-op
     // no-op

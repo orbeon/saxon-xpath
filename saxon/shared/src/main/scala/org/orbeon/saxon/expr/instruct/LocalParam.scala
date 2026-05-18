@@ -300,7 +300,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def toShortString: String = "$" + getVariableQName.getDisplayName
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("param", this)
     out.emitAttribute("name", getVariableQName)
     out.emitAttribute("slot", "" + getSlotNumber)
@@ -315,12 +315,12 @@ class LocalParam extends Instruction with LocalBinding {
     }
     if (getSelectExpression != null) {
       out.setChildRole("select")
-      getSelectExpression.export(out)
+      getSelectExpression.`export`(out)
     }
     val conversion: Expression = getConversion
     if (conversion != null) {
       out.setChildRole("conversion")
-      conversion.export(out)
+      conversion.`export`(out)
     }
     out.endElement()
   }

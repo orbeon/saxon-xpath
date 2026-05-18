@@ -252,9 +252,9 @@ class Doctype(content: Expression) extends Instruction {
     out.characters(s, getLocation, ReceiverOption.DISABLE_ESCAPING)
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("saxonDoctype", this)
-    getContent.export(out)
+    getContent.`export`(out)
     out.endElement()
   }
 

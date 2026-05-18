@@ -291,7 +291,7 @@ class ForExpression extends Assignation {
       " return " +
       (if (getAction == null) "(...)" else getAction.toShortString)
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("for", this)
     explainSpecializedAttributes(out)
     out.emitAttribute("var", getVariableQName)
@@ -300,9 +300,9 @@ class ForExpression extends Assignation {
       out.emitAttribute("as", AlphaCode.fromItemType(varType))
     out.emitAttribute("slot", "" + getLocalSlotNumber)
     out.setChildRole("in")
-    getSequence.export(out)
+    getSequence.`export`(out)
     out.setChildRole("return")
-    getAction.export(out)
+    getAction.`export`(out)
     out.endElement()
   }
 

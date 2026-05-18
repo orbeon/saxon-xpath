@@ -117,11 +117,11 @@ abstract class VennPattern( var p1: Pattern,
 
   override def toString: String = p1.toString + " " + getOperatorName + " " + p2.toString
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.venn")
     presenter.emitAttribute("op", getOperatorName)
-    p1.export(presenter)
-    p2.export(presenter)
+    p1.`export`(presenter)
+    p2.`export`(presenter)
     presenter.endElement()
   }
 

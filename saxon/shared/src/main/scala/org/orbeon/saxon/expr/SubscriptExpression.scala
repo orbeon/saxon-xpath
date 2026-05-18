@@ -99,10 +99,10 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
 
   override def getExpressionName: String = "subscript"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("subscript", this)
-    getBaseExpression.export(destination)
-    getSubscript.export(destination)
+    getBaseExpression.`export`(destination)
+    getSubscript.`export`(destination)
     destination.endElement()
   }
 

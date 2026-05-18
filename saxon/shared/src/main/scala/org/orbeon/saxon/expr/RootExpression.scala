@@ -126,7 +126,7 @@ class RootExpression extends Expression {
 
   override def getExpressionName = "root"
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("root", this)
     destination.endElement()
   }

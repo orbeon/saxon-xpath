@@ -205,12 +205,12 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
     88267 ^ basePattern.hashCode ^ upperPattern.hashCode ^
       (upwardsAxis << 22)
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.withUpper")
     presenter.emitAttribute("axis", AxisInfo.axisName(getUpwardsAxis))
     presenter.emitAttribute("upFirst", "" + testUpperPatternFirst)
-    basePattern.export(presenter)
-    upperPattern.export(presenter)
+    basePattern.`export`(presenter)
+    upperPattern.`export`(presenter)
     presenter.endElement()
   }
 

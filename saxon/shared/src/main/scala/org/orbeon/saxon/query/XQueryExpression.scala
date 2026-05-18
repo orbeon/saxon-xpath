@@ -393,7 +393,7 @@ class XQueryExpression(
     getExecutable.explainGlobalVariables(out)
     mainModule.explainGlobalFunctions(out)
     out.startElement("body")
-    expression.export(out)
+    expression.`export`(out)
     out.endElement()
     out.endElement()
     out.close()

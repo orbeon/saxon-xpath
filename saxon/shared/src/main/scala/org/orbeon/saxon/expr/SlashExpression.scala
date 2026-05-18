@@ -499,15 +499,15 @@ class SlashExpression(start: Expression, step: Expression)
     new ContextMappingIterator(c1 => getStep.iterate(c1), context2)
   }
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("slash", this)
     if (this.isInstanceOf[SimpleStepExpression]) {
       destination.emitAttribute("simple", "1")
     } else if (isContextFree) {
       destination.emitAttribute("simple", "2")
     }
-    getStart.export(destination)
-    getStep.export(destination)
+    getStart.`export`(destination)
+    getStep.`export`(destination)
     destination.endElement()
   }
 

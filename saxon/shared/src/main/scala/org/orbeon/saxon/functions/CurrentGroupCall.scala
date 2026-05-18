@@ -91,7 +91,7 @@ class CurrentGroupCall extends Expression with Callable {
 
   override def getImplementationMethod: Int = Expression.ITERATE_METHOD
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("currentGroup")
     out.endElement()
   }

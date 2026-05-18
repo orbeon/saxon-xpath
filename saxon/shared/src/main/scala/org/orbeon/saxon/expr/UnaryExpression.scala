@@ -78,7 +78,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
   override def toShortString: String =
     getExpressionName + "(" + getBaseExpression.toShortString + ")"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     val name: String = getExpressionName
     if (name == null) {
       out.startElement("unaryOperator", this)
@@ -89,7 +89,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
       out.startElement(name, this)
     }
     emitExtraAttributes(out)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

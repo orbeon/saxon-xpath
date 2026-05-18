@@ -942,7 +942,7 @@ class FilterExpression(base: Expression, filter: Expression)
   override def toShortString: String =
     getBase.toShortString + "[" + getFilter.toShortString + "]"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("filter", this)
     var flags: String = ""
     if (filterIsIndependent)
@@ -952,8 +952,8 @@ class FilterExpression(base: Expression, filter: Expression)
     if (filterIsSingletonBoolean)
       flags += "b"
     out.emitAttribute("flags", flags)
-    getBase.export(out)
-    getFilter.export(out)
+    getBase.`export`(out)
+    getFilter.`export`(out)
     out.endElement()
   }
 

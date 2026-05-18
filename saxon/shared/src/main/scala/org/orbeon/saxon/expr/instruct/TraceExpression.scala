@@ -126,8 +126,8 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
       -1
     }
 
-  def export(out: ExpressionPresenter): Unit = {
-    getChild.export(out)
+  def `export`(out: ExpressionPresenter): Unit = {
+    getChild.`export`(out)
   }
 
   override def evaluatePendingUpdates(context: XPathContext,

@@ -397,7 +397,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
 
   override def getExpressionName: String = "varRef"
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("varRef", this)
     destination.emitAttribute("name", variableName)
     binding match {

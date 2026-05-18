@@ -20,7 +20,7 @@ trait SpaceStrippingRule {
 
   def makeStripper(next: Receiver): ProxyReceiver
 
-  def export(presenter: ExpressionPresenter): Unit
+  def `export`(presenter: ExpressionPresenter): Unit
 
 }
 

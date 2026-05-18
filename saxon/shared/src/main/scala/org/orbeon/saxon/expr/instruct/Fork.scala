@@ -78,10 +78,10 @@ class Fork extends Instruction {
     null
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("fork", this)
     for (o <- operands.asScala)
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     out.endElement()
   }
 }

@@ -85,9 +85,9 @@ class ConsumingOperand(subExpression: Expression)
     */
   override def getExpressionName: String = "consume"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("consume", this)
-    getBaseExpression.export(destination)
+    getBaseExpression.`export`(destination)
     destination.endElement()
   }
 

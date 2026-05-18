@@ -336,7 +336,7 @@ class UserFunctionCall extends FunctionCall
     actualArgs
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("ufCall", this)
     if (getFunctionName != null) {
       out.emitAttribute("name", getFunctionName)
@@ -354,11 +354,11 @@ class UserFunctionCall extends FunctionCall
       out.emitAttribute("eval", Whitespace.trim(fsb))
     }
     for (o <- operands.asScala) {
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     }
     if (getFunctionName == null) {
       out.setChildRole("inline")
-      function.getBody.export(out)
+      function.getBody.`export`(out)
       out.endElement()
     }
     out.endElement()

@@ -145,12 +145,12 @@ class IntegratedFunctionCall(private var name: StructuredQName,
     copy
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("ifCall", this)
     out.emitAttribute("name", getFunctionName)
     out.emitAttribute("type", resultType.toAlphaCode)
     for (o <- operands.asScala)
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     out.endElement()
   }
 

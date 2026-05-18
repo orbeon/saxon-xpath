@@ -184,12 +184,12 @@ class FLWORExpression extends Expression {
     }
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("FLWOR", this)
     for (c <- clauses.asScala)
       c.explain(out)
     out.startSubsidiaryElement("return")
-    getReturnClause.export(out)
+    getReturnClause.`export`(out)
     out.endSubsidiaryElement()
     out.endElement()
   }

@@ -247,7 +247,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_DOCUMENT
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("doc", this)
     if (!out.isRelocatable) {
       out.emitAttribute("base", getStaticBaseURIString)
@@ -272,7 +272,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
     if (schemaType != null) {
       out.emitAttribute("type", schemaType.getStructuredQName)
     }
-    getContentExpression.export(out)
+    getContentExpression.`export`(out)
     out.endElement()
   }
 

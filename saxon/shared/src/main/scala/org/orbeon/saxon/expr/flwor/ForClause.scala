@@ -286,7 +286,7 @@ class ForClause extends Clause {
       out.emitAttribute("at", posVar.getVariableQName)
       out.emitAttribute("at-slot", posVar.getLocalSlotNumber.toString)
     }
-    getSequence.export(out)
+    getSequence.`export`(out)
     out.endElement()
   }
 

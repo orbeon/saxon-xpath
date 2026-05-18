@@ -204,7 +204,7 @@ class FixedAttribute(private var nodeName: NodeName,
     o
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("att", this)
     out.emitAttribute("name", nodeName.getDisplayName)
     if (! nodeName.getStructuredQName.hasURI(""))
@@ -218,7 +218,7 @@ class FixedAttribute(private var nodeName: NodeName,
       flags += "l"
     if (! flags.isEmpty)
       out.emitAttribute("flags", flags)
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

@@ -234,7 +234,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
   override def displayOperator(config: Configuration): String =
     "convert"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("convert", this)
     destination.emitAttribute(
       "from",
@@ -247,7 +247,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
     if (getRoleDiagnostic != null) {
       destination.emitAttribute("diag", getRoleDiagnostic.save())
     }
-    getBaseExpression.export(destination)
+    getBaseExpression.`export`(destination)
     destination.endElement()
   }
 }

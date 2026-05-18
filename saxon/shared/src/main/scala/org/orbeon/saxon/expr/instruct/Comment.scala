@@ -108,7 +108,7 @@ class Comment extends SimpleNodeConstructor {
       }
     }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("comment", this)
     var flags: String = ""
     if (isLocal) {
@@ -117,7 +117,7 @@ class Comment extends SimpleNodeConstructor {
     if (!flags.isEmpty) {
       out.emitAttribute("flags", flags)
     }
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

@@ -439,10 +439,10 @@ class LookupExpression(start: Expression, step: Expression)
     }
   }
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("lookup", this)
-    getLhsExpression.export(destination)
-    getRhsExpression.export(destination)
+    getLhsExpression.`export`(destination)
+    getRhsExpression.`export`(destination)
     destination.endElement()
   }
 

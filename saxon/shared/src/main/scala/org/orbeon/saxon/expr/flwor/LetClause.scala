@@ -153,7 +153,7 @@ class LetClause extends Clause {
     out.startElement("let")
     out.emitAttribute("var", getRangeVariable.getVariableQName)
     out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
-    getSequence.export(out)
+    getSequence.`export`(out)
     out.endElement()
   }
 

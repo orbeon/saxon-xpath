@@ -207,7 +207,7 @@ class DecimalSymbols(language: HostLanguage.HostLanguage, languageLevel: Int) {
     }
   }
 
-  def export(name: StructuredQName, out: ExpressionPresenter): Unit = {
+  def `export`(name: StructuredQName, out: ExpressionPresenter): Unit = {
     val defaultSymbols: DecimalSymbols =
       new DecimalSymbols(HostLanguage.XSLT, 31)
     out.startElement("decimalFormat")

@@ -222,14 +222,14 @@ abstract class FunctionCall extends Expression {
       ")"
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("functionCall", this)
     if (getFunctionName == null)
       throw new AssertionError("Exporting call to anonymous function")
     else
       out.emitAttribute("name", getFunctionName.getDisplayName)
     for (o <- operands.asScala)
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     out.endElement()
   }
 

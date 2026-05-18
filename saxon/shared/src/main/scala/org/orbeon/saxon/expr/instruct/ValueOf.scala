@@ -260,7 +260,7 @@ class ValueOf(select: Expression,
 
     }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("valueOf", this)
     var flags: String = ""
     if (isDisableOutputEscaping) {
@@ -278,7 +278,7 @@ class ValueOf(select: Expression,
     if (!flags.isEmpty) {
       out.emitAttribute("flags", flags)
     }
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

@@ -58,7 +58,7 @@ abstract class AbstractFunction extends Function {
     "Argument to deep-equal() contains a function item", "FOTY0015"
   )
 
-  def export(
+  def `export`(
     out: ExpressionPresenter
   ): Unit = throw new UnsupportedOperationException("export() not implemented for " + this.getClass)
 

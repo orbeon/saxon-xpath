@@ -146,10 +146,10 @@ class SquareArrayConstructor(children: List[Expression]) extends Expression {
 
   def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("arrayBlock", this)
     for (o <- operands.asScala) {
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     }
     out.endElement()
   }

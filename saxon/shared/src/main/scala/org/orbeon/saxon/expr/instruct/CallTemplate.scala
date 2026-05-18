@@ -288,7 +288,7 @@ class CallTemplate(private var template: NamedTemplate,
   override def getObjectName: StructuredQName =
     if (template == null) null else template.getTemplateName
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("callT", this)
     var flags: String = ""
     if (template != null && template.getTemplateName != null) {

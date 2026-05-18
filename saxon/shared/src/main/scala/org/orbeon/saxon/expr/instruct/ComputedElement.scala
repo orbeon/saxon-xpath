@@ -341,7 +341,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
 
   override def getInstructionNameCode(): Int = StandardNames.XSL_ELEMENT
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("compElem", this)
     var flags: String = getInheritanceFlags
     if (isLocal) {
@@ -352,13 +352,13 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
     }
     exportValidationAndType(out)
     out.setChildRole("name")
-    getNameExp.export(out)
+    getNameExp.`export`(out)
     if (getNamespaceExp != null) {
       out.setChildRole("namespace")
-      getNamespaceExp.export(out)
+      getNamespaceExp.`export`(out)
     }
     out.setChildRole("content")
-    getContentExpression.export(out)
+    getContentExpression.`export`(out)
     out.endElement()
   }
 

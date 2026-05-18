@@ -123,8 +123,8 @@ override  def getItemType: ItemType = getChild.getItemType
       -1
     }
 
-  def export(out: ExpressionPresenter): Unit = {
-    getChild.export(out)
+  def `export`(out: ExpressionPresenter): Unit = {
+    getChild.`export`(out)
   }
 
   override def evaluatePendingUpdates(context: XPathContext,

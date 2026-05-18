@@ -171,10 +171,10 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
   override def computeHashCode(): Int =
     getBasePattern.hashCode ^ getPredicate.hashCode
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.withPredicate")
-    getBasePattern.export(presenter)
-    getPredicate.export(presenter)
+    getBasePattern.`export`(presenter)
+    getPredicate.`export`(presenter)
     presenter.endElement()
   }
 

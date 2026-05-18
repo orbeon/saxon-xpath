@@ -36,7 +36,7 @@ trait Function extends Item with Callable with GroundedValue {
                  flags: Int): Boolean
 
   def getDescription: String
-  def export(out: ExpressionPresenter): Unit
+  def `export`(out: ExpressionPresenter): Unit
   def isTrustedResultType: Boolean
 
   /**

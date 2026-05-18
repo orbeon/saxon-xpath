@@ -92,7 +92,7 @@ class NextMatch(var useTailRecursion: Boolean)
     null
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("nextMatch", this)
     var flags: String = "i"
     if (useTailRecursion) {

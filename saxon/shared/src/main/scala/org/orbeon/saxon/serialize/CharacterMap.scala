@@ -118,7 +118,7 @@ class CharacterMap(@BeanProperty var name: StructuredQName,
     buffer
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("charMap")
     out.emitAttribute("name", name)
     val iter = charMap.keyIterator

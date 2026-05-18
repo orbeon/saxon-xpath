@@ -172,7 +172,7 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
     }
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("namespace", this)
     var flags: String = ""
     if (isLocal) {
@@ -182,9 +182,9 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
       out.emitAttribute("flags", flags)
     }
     out.setChildRole("name")
-    getNameExp.export(out)
+    getNameExp.`export`(out)
     out.setChildRole("select")
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

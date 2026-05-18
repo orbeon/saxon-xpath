@@ -152,14 +152,14 @@ class UntypedSequenceConverter(sequence: Expression,
 
   override def toShortString: String = getBaseExpression.toShortString
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("cvUntyped", this)
     destination.emitAttribute("to",
       AlphaCode.fromItemType(getRequiredItemType))
     if (getRoleDiagnostic != null) {
       destination.emitAttribute("diag", getRoleDiagnostic.save())
     }
-    getBaseExpression.export(destination)
+    getBaseExpression.`export`(destination)
     destination.endElement()
   }
 

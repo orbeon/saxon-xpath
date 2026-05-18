@@ -66,10 +66,10 @@ class TailExpression(base: Expression, var start: Int)
 
   override def getExpressionName: String = "tail"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("tail", this)
     destination.emitAttribute("start", start.toString)
-    getBaseExpression.export(destination)
+    getBaseExpression.`export`(destination)
     destination.endElement()
   }
 

@@ -174,7 +174,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     null
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("template")
     presenter.emitAttribute("name", getTemplateName)
     explainProperties(presenter)
@@ -182,7 +182,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
       "" + getStackFrameMap.getNumberOfVariables)
     if (getBody != null) {
       presenter.setChildRole("body")
-      getBody.export(presenter)
+      getBody.`export`(presenter)
     }
     presenter.endElement()
   }

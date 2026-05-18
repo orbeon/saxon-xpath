@@ -110,7 +110,7 @@ object WithParam {
         if (param.getSlotNumber != -1) {
           out.emitAttribute("slot", param.getSlotNumber.toString)
         }
-        param.selectOp.getChildExpression.export(out)
+        param.selectOp.getChildExpression.`export`(out)
         out.endElement()
       }
     }

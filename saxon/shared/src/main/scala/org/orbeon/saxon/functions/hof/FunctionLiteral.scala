@@ -91,12 +91,12 @@ class FunctionLiteral(value: Function) extends Literal(value) {
     */
   override def getExpressionName: String = "namedFunctionRef"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     val f: Function = getValue
     if (f.isInstanceOf[UserFunction]) {
-      new UserFunctionReference(f.asInstanceOf[UserFunction]).export(out)
+      new UserFunctionReference(f.asInstanceOf[UserFunction]).`export`(out)
     } else {
-      f.export(out)
+      f.`export`(out)
     }
   }
 

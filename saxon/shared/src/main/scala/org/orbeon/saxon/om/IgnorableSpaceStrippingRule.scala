@@ -57,7 +57,7 @@ class IgnorableSpaceStrippingRule extends SpaceStrippingRule {
     *
     * @param presenter the output handler
     */
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("strip.ignorable")
     presenter.endElement()
   }

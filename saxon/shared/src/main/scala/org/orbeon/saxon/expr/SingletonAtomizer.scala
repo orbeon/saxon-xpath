@@ -210,12 +210,12 @@ class SingletonAtomizer(sequence: Expression,
 
   override def getExpressionName: String = "atomizeSingleton"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("atomSing", this)
     if (allowEmpty)
       out.emitAttribute("card", "?")
     out.emitAttribute("diag", getRole.save())
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

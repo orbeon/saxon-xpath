@@ -700,7 +700,7 @@ class ResultDocument(private val globalProperties: Properties,
     globalProperties.getProperty(clarkName)
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("resultDoc", this)
     out.emitAttribute("global", exportProperties(globalProperties))
     out.emitAttribute("local", exportProperties(localProperties))
@@ -713,20 +713,20 @@ class ResultDocument(private val globalProperties: Properties,
     }
     if (getHref != null) {
       out.setChildRole("href")
-      getHref.export(out)
+      getHref.`export`(out)
     }
     if (getFormatExpression != null) {
       out.setChildRole("format")
-      getFormatExpression.export(out)
+      getFormatExpression.`export`(out)
     }
     for ((key, value) <- serializationAttributes.asScala) {
       val name: StructuredQName = key
       val valStr: Expression = value.getChildExpression
       out.setChildRole(name.getEQName)
-      valStr.export(out)
+      valStr.`export`(out)
     }
     out.setChildRole("content")
-    getContentExpression.export(out)
+    getContentExpression.`export`(out)
     out.endElement()
   }
 

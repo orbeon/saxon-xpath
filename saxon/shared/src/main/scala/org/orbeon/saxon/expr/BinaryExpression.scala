@@ -221,12 +221,12 @@ abstract class BinaryExpression(p0: Expression,
     operandStr
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement(tag(), this)
     out.emitAttribute("op", displayOperator())
     explainExtraAttributes(out)
-    getLhsExpression.export(out)
-    getRhsExpression.export(out)
+    getLhsExpression.`export`(out)
+    getRhsExpression.`export`(out)
     out.endElement()
   }
 

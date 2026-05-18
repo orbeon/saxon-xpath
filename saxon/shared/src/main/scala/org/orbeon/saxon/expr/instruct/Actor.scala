@@ -137,7 +137,7 @@ abstract class Actor extends ExpressionOwner with Location {
     list.iterator
   }
 
-  def export(presenter: ExpressionPresenter): Unit
+  def `export`(presenter: ExpressionPresenter): Unit
   def isExportable: Boolean = true
 
   def setChildExpression(expr: Expression): Unit =

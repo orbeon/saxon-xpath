@@ -63,7 +63,7 @@ class CallableFunction extends AbstractFunction {
   def call(context: XPathContext, args: Array[Sequence]): Sequence =
     callable.call(context, args)
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     throw new UnsupportedOperationException(
       "A CallableFunction is a transient value that cannot be exported")
   }

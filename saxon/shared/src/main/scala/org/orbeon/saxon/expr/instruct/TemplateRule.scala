@@ -229,7 +229,7 @@ class TemplateRule
     }
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     throw new UnsupportedOperationException
   }
 

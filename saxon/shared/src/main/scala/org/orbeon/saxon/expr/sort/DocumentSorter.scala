@@ -201,12 +201,12 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
   override def effectiveBooleanValue(context: XPathContext): Boolean =
     getBaseExpression.effectiveBooleanValue(context)
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("docOrder", this)
     out.emitAttribute(
       "intra",
       if (comparer.isInstanceOf[LocalOrderComparer]) "1" else "0")
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

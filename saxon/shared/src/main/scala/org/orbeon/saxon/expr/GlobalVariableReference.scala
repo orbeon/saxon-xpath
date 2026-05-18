@@ -111,7 +111,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
       b.evaluateVariable(c, b.getDeclaringComponent)
     }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("gVarRef", this)
     out.emitAttribute("name", getVariableName)
     out.emitAttribute("bSlot", "" + getBindingSlot)

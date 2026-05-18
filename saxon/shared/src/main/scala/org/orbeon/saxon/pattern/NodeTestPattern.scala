@@ -49,7 +49,7 @@ class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
       this
     }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.nodeTest")
     presenter.emitAttribute("test", AlphaCode.fromItemType(nodeTest))
     presenter.endElement()

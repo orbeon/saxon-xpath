@@ -69,9 +69,9 @@ class WherePopulated(base: Expression)
 
   override def getExpressionName: String = "wherePop"
 
- override def export(out: ExpressionPresenter): Unit = {
+ override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("condCont", this)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

@@ -118,8 +118,8 @@ class SequenceInstr /**
   override def iterate(context: XPathContext): SequenceIterator =
     getBaseExpression.iterate(context)
 
-  override def export(out: ExpressionPresenter): Unit = {
-    getBaseExpression.export(out)
+  override def `export`(out: ExpressionPresenter): Unit = {
+    getBaseExpression.`export`(out)
   }
 
   /**

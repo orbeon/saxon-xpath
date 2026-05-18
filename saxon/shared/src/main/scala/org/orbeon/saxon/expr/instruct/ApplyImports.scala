@@ -86,7 +86,7 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
     null
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("applyImports", this)
     out.emitAttribute("flags", "i")
     if (getActualParams.length != 0) {

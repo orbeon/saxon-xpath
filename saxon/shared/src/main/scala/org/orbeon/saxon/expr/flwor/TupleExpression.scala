@@ -88,10 +88,10 @@ class TupleExpression extends Expression {
     t2
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("tuple", this)
     for (o <- operands.asScala) {
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     }
     out.endElement()
   }

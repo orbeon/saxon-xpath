@@ -51,11 +51,11 @@ class CompareToStringConstant(
 
   override def getExpressionName: String = "compareToString"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("compareToString", this)
     destination.emitAttribute("op", Token.tokens(operator))
     destination.emitAttribute("val", comparand)
-    getLhsExpression.export(destination)
+    getLhsExpression.`export`(destination)
     destination.endElement()
   }
 

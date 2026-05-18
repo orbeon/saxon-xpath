@@ -94,7 +94,7 @@ object Literal {
         }
         out.endElement()
       case function: Function =>
-        function.export(out)
+        function.`export`(out)
       case externalObject: ExternalObject[_] =>
         if (out.getOptions
           .asInstanceOf[ExpressionPresenter.ExportOptions]
@@ -437,7 +437,7 @@ class Literal extends Expression {
 
   override def toString: String = value.toString
 
-  def export(out: ExpressionPresenter): Unit =
+  def `export`(out: ExpressionPresenter): Unit =
     exportValue(value, out)
 
   override def getExpressionName: String = "literal"

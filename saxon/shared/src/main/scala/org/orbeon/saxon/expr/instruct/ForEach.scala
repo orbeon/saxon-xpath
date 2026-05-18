@@ -305,10 +305,10 @@ class ForEach(select: Expression,
       pul)
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("forEach", this)
-    getSelect.export(out)
-    getAction.export(out)
+    getSelect.`export`(out)
+    getAction.`export`(out)
     explainThreads(out)
     out.endElement()
   }

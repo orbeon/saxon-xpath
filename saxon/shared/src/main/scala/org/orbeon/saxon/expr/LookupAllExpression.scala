@@ -178,9 +178,9 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
       }
     }
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("lookupAll", this)
-    getBaseExpression.export(destination)
+    getBaseExpression.`export`(destination)
     destination.endElement()
   }
 

@@ -295,16 +295,16 @@ override  def iterate(c: XPathContext): SequenceIterator = {
 
   override def getExpressionName: String = "tryCatch"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("try", this)
     if (rollbackOutput) {
       out.emitAttribute("flags", "r")
     }
-    tryOp.getChildExpression.export(out)
+    tryOp.getChildExpression.`export`(out)
     for (clause <- catchClauses.asScala) {
       out.startElement("catch")
       out.emitAttribute("errors", clause.nameTest.exportQNameTest)
-      clause.catchOp.getChildExpression.export(out)
+      clause.catchOp.getChildExpression.`export`(out)
       out.endElement()
     }
     out.endElement()

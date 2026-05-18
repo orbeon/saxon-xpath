@@ -94,11 +94,11 @@ class Accumulator extends Actor {
    *
    * @param presenter the expression presenter used to generate the XML representation of the structure
    */
-  override def export(presenter: ExpressionPresenter): Unit = {
-    export(presenter, null)
+  override def `export`(presenter: ExpressionPresenter): Unit = {
+    `export`(presenter, null)
   }
 
-  def export(out: ExpressionPresenter,
+  def `export`(out: ExpressionPresenter,
              componentIdMap: Map[Component, Integer]): Unit = {
     //        }
     out.startElement("accumulator")
@@ -121,7 +121,7 @@ class Accumulator extends Actor {
       out.emitAttribute("flags", "u")
     }
     out.setChildRole("init")
-    initialValueExpression.export(out)
+    initialValueExpression.`export`(out)
     val action: Mode.RuleAction = new Mode.RuleAction {
       def processRule(r: Rule): Unit = {
         out.startElement("accRule")
@@ -135,8 +135,8 @@ class Accumulator extends Actor {
         if (r.getAction.asInstanceOf[AccumulatorRule].isCapturing) {
           out.emitAttribute("flags", "c")
         }
-        r.getPattern.export(out)
-        r.getAction.export(out)
+        r.getPattern.`export`(out)
+        r.getAction.`export`(out)
         out.endElement()
       }
     }

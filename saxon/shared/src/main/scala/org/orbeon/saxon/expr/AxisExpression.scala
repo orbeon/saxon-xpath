@@ -885,7 +885,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
     else
       origin.iterateAxis(axis, test)
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("axis", this)
     destination.emitAttribute("name", AxisInfo.axisName(axis))
     destination.emitAttribute(

@@ -243,7 +243,7 @@ class LoadXqueryModule extends SystemFunction {
     val functionIterator: Iterator[XQueryFunction] =
       functionLib.getFunctionDefinitions
     val agent: ExportAgent = new ExportAgent {
-      override def export(out: ExpressionPresenter): Unit = {
+      override def `export`(out: ExpressionPresenter): Unit = {
         var err: XPathException = new XPathException(
           "Cannot export a stylesheet that statically incorporates XQuery functions",
           SaxonErrorCode.SXST0069)

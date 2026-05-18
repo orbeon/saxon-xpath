@@ -111,9 +111,9 @@ class BooleanExpressionPattern(expression: Expression)
     n
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.booleanExp")
-    getPredicate.export(presenter)
+    getPredicate.`export`(presenter)
     presenter.endElement()
   }
 

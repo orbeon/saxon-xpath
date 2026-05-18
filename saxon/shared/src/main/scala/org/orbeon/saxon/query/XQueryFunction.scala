@@ -308,7 +308,7 @@ class XQueryFunction extends Declaration with Location {
       out.emitAttribute(
         "tailRecursive",
         if (compiledFunction.isTailRecursive) "true" else "false")
-      body.export(out)
+      body.`export`(out)
     }
     out.endElement()
   }

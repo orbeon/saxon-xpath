@@ -160,12 +160,12 @@ class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: E
 
   override def toString: String = nodeTest.toString + "[" + positionExpr.toString + "]"
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.genPos")
     presenter.emitAttribute("test", AlphaCode.fromItemType(nodeTest))
     if (! usesPosition)
       presenter.emitAttribute("flags", "P")
-    positionExpr.export(presenter)
+    positionExpr.`export`(presenter)
     presenter.endElement()
   }
 }

@@ -574,11 +574,11 @@ class Choose(conditions: Array[Expression], actions: Array[Expression])
   override def toShortString: String =
     "if(" + getCondition(0).toShortString + ") then ... else ..."
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("choose", this)
     for (i <- 0 until size) {
-      getCondition(i).export(out)
-      getAction(i).export(out)
+      getCondition(i).`export`(out)
+      getAction(i).`export`(out)
     }
     out.endElement()
   }

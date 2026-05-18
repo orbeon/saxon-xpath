@@ -428,30 +428,30 @@ class SortKeyDefinition extends PseudoExpression {
     h
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("sortKey", this)
     if (finalComparator != null) {
       out.emitAttribute("comp", finalComparator.save())
     }
     out.setChildRole("select")
-    sortKey.getChildExpression.export(out)
+    sortKey.getChildExpression.`export`(out)
     out.setChildRole("order")
-    order.getChildExpression.export(out)
+    order.getChildExpression.`export`(out)
     if (dataTypeExpression != null) {
       out.setChildRole("dataType")
-      dataTypeExpression.getChildExpression.export(out)
+      dataTypeExpression.getChildExpression.`export`(out)
     }
     out.setChildRole("lang")
-    language.getChildExpression.export(out)
+    language.getChildExpression.`export`(out)
     out.setChildRole("caseOrder")
-    caseOrder.getChildExpression.export(out)
+    caseOrder.getChildExpression.`export`(out)
     if (stable != null) {
       out.setChildRole("stable")
-      stable.getChildExpression.export(out)
+      stable.getChildExpression.`export`(out)
     }
     if (collationName != null) {
       out.setChildRole("collation")
-      collationName.getChildExpression.export(out)
+      collationName.getChildExpression.`export`(out)
     }
     out.endElement()
   }

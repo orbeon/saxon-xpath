@@ -59,8 +59,8 @@ object UserFunctionReference {
     def getArity: Int = function.getArity
     def getDescription: String = function.getDescription
 
-    override def export(out: ExpressionPresenter): Unit =
-      agent.export(out)
+    override def `export`(out: ExpressionPresenter): Unit =
+      agent.`export`(out)
   }
 
 }
@@ -165,7 +165,7 @@ class UserFunctionReference
   def setBindingSlot(slot: Int): Unit = bindingSlot = slot
   def getBindingSlot: Int = bindingSlot
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     val options: ExpressionPresenter.ExportOptions = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
     if ("JS" == options.target && options.targetVersion == 1) {
       throw new XPathException(
@@ -175,7 +175,7 @@ class UserFunctionReference
     }
     if (nominalTarget.getDeclaringComponent == null) {
       out.startElement("inlineFn")
-      nominalTarget.export(out)
+      nominalTarget.`export`(out)
       out.endElement()
     } else {
       val rootPackage: StylesheetPackage = options.rootPackage

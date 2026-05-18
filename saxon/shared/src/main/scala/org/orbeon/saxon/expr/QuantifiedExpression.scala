@@ -197,12 +197,12 @@ class QuantifiedExpression extends Assignation {
       getSequence.toShortString +
       " satisfies ..."
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement(Token.tokens(operator), this)
     out.emitAttribute("var", getVariableQName)
     out.emitAttribute("slot", "" + slotNumber)
-    getSequence.export(out)
-    getAction.export(out)
+    getSequence.`export`(out)
+    getAction.`export`(out)
     out.endElement()
   }
 }

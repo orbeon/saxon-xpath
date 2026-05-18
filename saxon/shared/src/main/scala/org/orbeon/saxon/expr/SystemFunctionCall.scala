@@ -315,13 +315,13 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
 
   override def getExpressionName: String = "sysFuncCall"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     if (getFunctionName.hasURI(NamespaceConstant.FN)) {
       out.startElement("fn", this)
       out.emitAttribute("name", getFunctionName.getLocalPart)
       getTargetFunction.exportAttributes(out)
       for (o <- operands.asScala)
-        o.getChildExpression.export(out)
+        o.getChildExpression.`export`(out)
       getTargetFunction.exportAdditionalArguments(this, out)
       out.endElement()
     } else {
@@ -332,7 +332,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         getTargetFunction.getFunctionItemType.getResultType.toAlphaCode)
       getTargetFunction.exportAttributes(out)
       for (o <- operands.asScala)
-        o.getChildExpression.export(out)
+        o.getChildExpression.`export`(out)
       getTargetFunction.exportAdditionalArguments(this, out)
       out.endElement()
     }

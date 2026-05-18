@@ -99,9 +99,9 @@ class OnEmptyExpr /**
   override def iterate(context: XPathContext): SequenceIterator =
     getBaseExpression.iterate(context)
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("onEmpty", this)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

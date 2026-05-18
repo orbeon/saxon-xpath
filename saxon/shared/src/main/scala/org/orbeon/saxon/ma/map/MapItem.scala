@@ -209,7 +209,7 @@ trait MapItem extends Function {
   override def effectiveBooleanValue: Boolean =
     throw new XPathException("A map item has no effective boolean value")
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("map")
     out.emitAttribute("size", "" + size)
     for (kvp <- keyValuePairs.asScala) {

@@ -175,15 +175,15 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
       true
     }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("partialApply", this)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     for (o <- boundArgumentsOp) {
       if (o == null) {
         out.startElement("null", this)
         out.endElement()
       } else {
-        o.getChildExpression.export(out)
+        o.getChildExpression.`export`(out)
       }
     }
     out.endElement()

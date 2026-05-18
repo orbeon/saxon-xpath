@@ -28,7 +28,7 @@ class UniversalPattern extends Pattern {
 
   override def toString: String = "."
 
-  override def export(presenter: ExpressionPresenter): Unit = {
+  override def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.any")
     presenter.endElement()
   }

@@ -19,6 +19,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
   * in particular includes custom export methods to handle different cases.
   */
 trait ExportAgent {
-  def export(out: ExpressionPresenter): Unit
+  def `export`(out: ExpressionPresenter): Unit
 }
 

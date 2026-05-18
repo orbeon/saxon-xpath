@@ -118,9 +118,9 @@ class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
     n
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.withCurrent")
-    wrappedPattern.export(presenter)
+    wrappedPattern.`export`(presenter)
     presenter.endElement()
   }
 

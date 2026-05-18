@@ -57,7 +57,7 @@ class BreakInstr extends Instruction with TailCallLoop.TailCallInfo {
 
   override def getExpressionName: String = "xsl:break"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("break", this)
     out.endElement()
   }

@@ -186,7 +186,7 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
       throw dynamicError(getLocation.toString, e.toString, context)
     }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("procInst", this)
     var flags: String = ""
     if (isLocal) {
@@ -196,9 +196,9 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
       out.emitAttribute("flags", flags)
     }
     out.setChildRole("name")
-    getNameExp.export(out)
+    getNameExp.`export`(out)
     out.setChildRole("select")
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

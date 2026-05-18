@@ -135,7 +135,7 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
     */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("where")
-    getPredicate.export(out)
+    getPredicate.`export`(out)
     out.endElement()
   }
 

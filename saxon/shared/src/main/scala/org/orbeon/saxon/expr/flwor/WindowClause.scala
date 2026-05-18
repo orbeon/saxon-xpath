@@ -294,14 +294,14 @@ class WindowClause extends Clause {
     out.startElement(
       if (isSlidingWindow) "slidingWindow" else "tumblingWindow")
     out.startSubsidiaryElement("select")
-    getSequence.export(out)
+    getSequence.`export`(out)
     out.endSubsidiaryElement()
     out.startSubsidiaryElement("start")
-    getStartCondition.export(out)
+    getStartCondition.`export`(out)
     out.endSubsidiaryElement()
     if (endConditionOp != null) {
       out.startSubsidiaryElement("end")
-      getEndCondition.export(out)
+      getEndCondition.`export`(out)
       out.endSubsidiaryElement()
     }
     out.endElement()

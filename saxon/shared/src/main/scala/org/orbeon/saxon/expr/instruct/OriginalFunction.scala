@@ -34,7 +34,7 @@ class OriginalFunction(@BeanProperty var component: Component)
   def getContainingPackageName: String =
     component.getContainingPackage.getPackageName
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     val options = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
 
     out.startElement("origF")

@@ -338,7 +338,7 @@ class UserFunction
     }
   }
 
-  override def export(presenter: ExpressionPresenter): Unit = {
+  override def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("function")
     if (getFunctionName != null) {
       presenter.emitAttribute("name", getFunctionName)
@@ -378,7 +378,7 @@ class UserFunction
       presenter.endElement()
     }
     presenter.setChildRole("body")
-    getBody.export(presenter)
+    getBody.`export`(presenter)
     presenter.endElement()
   }
 

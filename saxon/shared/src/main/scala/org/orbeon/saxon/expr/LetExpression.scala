@@ -439,7 +439,7 @@ class LetExpression extends Assignation with TailCallReturner {
 
   override def toShortString: String = "let $" + getVariableName + " := ..."
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("let", this)
     out.emitAttribute("var", variableName)
     if (getRequiredType != SequenceType.ANY_SEQUENCE)
@@ -450,8 +450,8 @@ class LetExpression extends Assignation with TailCallReturner {
     if (evaluator == null)
       this.evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
     out.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
-    getSequence.export(out)
-    getAction.export(out)
+    getSequence.`export`(out)
+    getAction.`export`(out)
     out.endElement()
   }
 

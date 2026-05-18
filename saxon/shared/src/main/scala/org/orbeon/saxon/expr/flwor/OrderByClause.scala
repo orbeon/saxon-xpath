@@ -185,7 +185,7 @@ class OrderByClause(flwor: FLWORExpression,
     out.startElement("order-by")
     for (k <- getSortKeyDefinitions.asScala) {
       out.startSubsidiaryElement("key")
-      k.getSortKey.export(out)
+      k.getSortKey.`export`(out)
       out.endSubsidiaryElement()
     }
     out.endElement()

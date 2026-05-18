@@ -76,12 +76,12 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
 
   override def getExpressionName: String = "minus"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("minus", this)
     if (backwardsCompatible) {
       out.emitAttribute("vn", "1")
     }
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

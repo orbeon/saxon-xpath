@@ -211,7 +211,7 @@ abstract class Pattern extends PseudoExpression {
 
   override def toPattern(config: Configuration): Pattern = this
 
-  def export(presenter: ExpressionPresenter): Unit
+  def `export`(presenter: ExpressionPresenter): Unit
 
   def copy(rebindings: RebindingMap): Pattern
 

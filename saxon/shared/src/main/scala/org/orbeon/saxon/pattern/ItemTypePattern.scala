@@ -36,7 +36,7 @@ class ItemTypePattern(@BeanProperty var itemTyp: ItemType) extends Pattern {
 
   override def computeHashCode(): Int = 0x7a83d1a8 ^ itemTyp.hashCode
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.nodeTest")
     presenter.emitAttribute("test", AlphaCode.fromItemType(itemTyp))
     presenter.endElement()

@@ -193,7 +193,7 @@ abstract class SystemFunction extends AbstractFunction {
     }
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("fnRef")
     val qName = getFunctionName
     val name =

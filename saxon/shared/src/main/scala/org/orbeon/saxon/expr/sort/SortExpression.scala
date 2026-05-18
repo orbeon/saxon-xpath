@@ -272,11 +272,11 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
 
   override def getStreamerName: String = "SortExpression"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("sort", this)
     out.setChildRole("select")
-    getSelect.export(out)
-    getSortKeyDefinitionList.export(out)
+    getSelect.`export`(out)
+    getSortKeyDefinitionList.`export`(out)
     out.endElement()
   }
 

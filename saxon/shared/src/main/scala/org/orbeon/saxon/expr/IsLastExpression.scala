@@ -95,7 +95,7 @@ class IsLastExpression(@BeanProperty var condition: Boolean)
     */
   override def getExpressionName: String = "isLast"
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("isLast", this)
     destination.emitAttribute("test", if (condition) "1" else "0")
     destination.endElement()

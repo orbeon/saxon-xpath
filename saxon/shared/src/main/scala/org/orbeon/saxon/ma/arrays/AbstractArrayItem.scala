@@ -147,7 +147,7 @@ abstract class AbstractArrayItem extends ArrayItem {
   /**
    * Output information about this function item to the diagnostic explain() output
    */
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("array")
     out.emitAttribute("size", s"${arrayLength()}")
     for (mem <- members) {

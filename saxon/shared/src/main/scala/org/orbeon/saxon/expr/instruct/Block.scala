@@ -539,11 +539,11 @@ class Block(children: Array[Expression]) extends Instruction {
       child.checkPermittedContents(parentType, whole = false)
     }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("sequence", this)
     for (o <- operands.asScala) {
       val child = o.getChildExpression
-      child.export(out)
+      child.`export`(out)
     }
     out.endElement()
   }

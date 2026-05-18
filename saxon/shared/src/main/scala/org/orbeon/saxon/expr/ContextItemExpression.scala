@@ -178,7 +178,7 @@ class ContextItemExpression extends Expression {
 
   override def toString: String = "."
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("dot", this)
     val `type`: ItemType = getItemType
     if (!(`type` == AnyItemType)) {

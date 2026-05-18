@@ -139,10 +139,10 @@ class GeneralNodePattern(
     n
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.genNode")
     presenter.emitAttribute("test", AlphaCode.fromItemType(itemTyp))
-    equivalentExpr.export(presenter)
+    equivalentExpr.`export`(presenter)
     presenter.endElement()
   }
 }

@@ -179,7 +179,7 @@ class Executable(var config: Configuration) {
   def explainGlobalVariables(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("globalVariables")
     for (pack <- getPackages.asScala; variables <- pack.getGlobalVariableList.asScala) {
-      variables.export(presenter)
+      variables.`export`(presenter)
     }
     presenter.endElement()
   }

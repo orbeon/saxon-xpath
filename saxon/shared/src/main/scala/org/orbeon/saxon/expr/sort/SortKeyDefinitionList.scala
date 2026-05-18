@@ -61,9 +61,9 @@ class SortKeyDefinitionList(
     */
   override def getImplementationMethod: Int = 0
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     for (skd <- sortKeyDefinitions) {
-      skd.export(out)
+      skd.`export`(out)
     }
   }
 

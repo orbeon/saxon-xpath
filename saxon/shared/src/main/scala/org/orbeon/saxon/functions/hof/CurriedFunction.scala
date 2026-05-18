@@ -74,9 +74,9 @@ class CurriedFunction(private var targetFunction: Function, private var boundVal
     targetFunction.call(c2, newArgs)
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("curriedFunc")
-    targetFunction.export(out)
+    targetFunction.`export`(out)
     out.startElement("args")
     for (seq <- boundValues) {
       if (seq == null) {

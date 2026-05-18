@@ -78,7 +78,7 @@ abstract class CastingExpression(source: Expression,
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
-   def export(out: ExpressionPresenter, elemName: String): Unit = {
+   def `export`(out: ExpressionPresenter, elemName: String): Unit = {
     out.startElement(elemName, this)
     val card: Int =
       if (allowsEmpty()) StaticProperty.ALLOWS_ZERO_OR_ONE
@@ -86,7 +86,7 @@ abstract class CastingExpression(source: Expression,
     val st: SequenceType = SequenceType.makeSequenceType(getTargetType, card)
     out.emitAttribute("flags", "a" + (if (allowsEmpty()) "e" else ""))
     out.emitAttribute("as", st.toAlphaCode)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

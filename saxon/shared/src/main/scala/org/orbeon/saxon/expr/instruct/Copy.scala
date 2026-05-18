@@ -394,7 +394,7 @@ class Copy(
 
   override def getStreamerName: String = "Copy"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("copy", this)
     exportValidationAndType(out)
     var flags: String = ""
@@ -416,7 +416,7 @@ class Copy(
       out.emitAttribute("sit", sType)
     }
     out.setChildRole("content")
-    getContentExpression.export(out)
+    getContentExpression.`export`(out)
     out.endElement()
   }
 }

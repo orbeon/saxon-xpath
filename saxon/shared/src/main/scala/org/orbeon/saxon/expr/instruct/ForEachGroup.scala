@@ -521,7 +521,7 @@ class ForEachGroup(select: Expression,
     else
       sortKeysOp.getChildExpression.asInstanceOf[SortKeyDefinitionList]
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("forEachGroup", this)
     out.emitAttribute("algorithm", getAlgorithmName(algorithm))
     var flags: String = ""
@@ -535,24 +535,24 @@ class ForEachGroup(select: Expression,
       out.emitAttribute("flags", flags)
     }
     out.setChildRole("select")
-    getSelectExpression.export(out)
+    getSelectExpression.`export`(out)
     if (algorithm == GROUP_BY || algorithm == GROUP_ADJACENT) {
       out.setChildRole("key")
-      getGroupingKey.export(out)
+      getGroupingKey.`export`(out)
     } else {
       out.setChildRole("match")
-      getGroupingKey.export(out)
+      getGroupingKey.`export`(out)
     }
     if (getSortKeyDefinitions != null) {
       out.setChildRole("sort")
-      getSortKeyDefinitionList.export(out)
+      getSortKeyDefinitionList.`export`(out)
     }
     if (getCollationNameExpression != null) {
       out.setChildRole("collation")
-      getCollationNameExpression.export(out)
+      getCollationNameExpression.`export`(out)
     }
     out.setChildRole("content")
-    getActionExpression.export(out)
+    getActionExpression.`export`(out)
     out.endElement()
   }
 

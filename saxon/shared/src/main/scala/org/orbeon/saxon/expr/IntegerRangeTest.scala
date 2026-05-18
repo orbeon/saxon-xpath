@@ -152,11 +152,11 @@ override def typeCheck(visitor: ExpressionVisitor,
 
   override def getExpressionName: String = "intRangeTest"
 
-  def export(destination: ExpressionPresenter): Unit = {
+  def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("intRangeTest", this)
-    getValue.export(destination)
-    getMin.export(destination)
-    getMax.export(destination)
+    getValue.`export`(destination)
+    getMin.`export`(destination)
+    getMax.`export`(destination)
     destination.endElement()
   }
 

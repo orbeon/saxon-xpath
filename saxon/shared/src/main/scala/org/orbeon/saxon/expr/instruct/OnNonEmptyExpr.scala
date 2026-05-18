@@ -97,9 +97,9 @@ class OnNonEmptyExpr(base: Expression)
 
   override def getExpressionName: String = "onNonEmpty"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("onNonEmpty", this)
-    getBaseExpression.export(out)
+    getBaseExpression.`export`(out)
     out.endElement()
   }
 

@@ -192,8 +192,8 @@ class CastableExpression(source: Expression,
   override def toString: String =
     getBaseExpression.toString + " castable as " + getTargetType.getEQName
 
-  override def export(out: ExpressionPresenter): Unit = {
-    export(out, "castable")
+  override def `export`(out: ExpressionPresenter): Unit = {
+    `export`(out, "castable")
   }
 
 

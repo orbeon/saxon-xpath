@@ -326,21 +326,21 @@ class AnalyzeString(select: Expression,
 
   override def getExpressionName: String = "analyzeString"
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("analyzeString", this)
     out.setChildRole("select")
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.setChildRole("regex")
-    getRegex.export(out)
+    getRegex.`export`(out)
     out.setChildRole("flags")
-    getFlags.export(out)
+    getFlags.`export`(out)
     if (getMatching != null) {
       out.setChildRole("matching")
-      getMatching.export(out)
+      getMatching.`export`(out)
     }
     if (getNonMatching != null) {
       out.setChildRole("nonMatching")
-      getNonMatching.export(out)
+      getNonMatching.`export`(out)
     }
     out.endElement()
   }

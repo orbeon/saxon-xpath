@@ -43,7 +43,7 @@ class AtomicConstructorFunction(private var targetType: AtomicType,
     }
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("acFnRef")
     out.emitAttribute("name", targetType.getTypeName)
     out.endElement()

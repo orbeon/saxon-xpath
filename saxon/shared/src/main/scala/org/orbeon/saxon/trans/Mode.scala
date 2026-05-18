@@ -318,7 +318,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     base
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     val s: Int = presenter.startElement("mode")
     if (!isUnnamedMode) {
       presenter.emitAttribute("name", getModeName)

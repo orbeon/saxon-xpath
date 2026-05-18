@@ -146,11 +146,11 @@ class NodeSetPattern(exp: Expression)
     n
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.nodeSet")
     if (itemType != null)
       presenter.emitAttribute("test", AlphaCode.fromItemType(itemType))
-    getSelectionExpression.export(presenter)
+    getSelectionExpression.`export`(presenter)
     presenter.endElement()
   }
 }

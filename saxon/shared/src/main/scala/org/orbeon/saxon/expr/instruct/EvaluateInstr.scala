@@ -409,7 +409,7 @@ class EvaluateInstr(xpath: Expression,
     }
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("evaluate", this)
     if (SequenceType.ANY_SEQUENCE != requiredType)
       out.emitAttribute("as", requiredType.toAlphaCode)
@@ -428,31 +428,31 @@ class EvaluateInstr(xpath: Expression,
     if (defaultXPathNamespace != null)
       out.emitAttribute("dxns", defaultXPathNamespace)
     out.setChildRole("xpath")
-    getXpath.export(out)
+    getXpath.`export`(out)
     if (getContextItemExpr != null) {
       out.setChildRole("cxt")
-      getContextItemExpr.export(out)
+      getContextItemExpr.`export`(out)
     }
     if (getBaseUriExpr != null) {
       out.setChildRole("baseUri")
-      getBaseUriExpr.export(out)
+      getBaseUriExpr.`export`(out)
     }
     if (getNamespaceContextExpr != null) {
       out.setChildRole("nsCxt")
-      getNamespaceContextExpr.export(out)
+      getNamespaceContextExpr.`export`(out)
     }
     if (getSchemaAwareExpr != null) {
       out.setChildRole("sa")
-      getSchemaAwareExpr.export(out)
+      getSchemaAwareExpr.`export`(out)
     }
     if (optionsOp != null) {
       out.setChildRole("options")
-      optionsOp.getChildExpression.export(out)
+      optionsOp.getChildExpression.`export`(out)
     }
     WithParam.exportParameters(actualParams, out, tunnel = false)
     if (dynamicParamsOp != null) {
       out.setChildRole("wp")
-      getDynamicParams.export(out)
+      getDynamicParams.`export`(out)
     }
     out.endElement()
   }

@@ -436,7 +436,7 @@ abstract class Expression
 
   def toShortString: String = getExpressionName
 
-  def export(out: ExpressionPresenter): Unit
+  def `export`(out: ExpressionPresenter): Unit
 
   def explain(out: Logger): Unit = {
     val ep = new ExpressionPresenter(getConfiguration, out)
@@ -444,7 +444,7 @@ abstract class Expression
     options.explaining = true
     ep.setOptions(options)
     try
-      export(ep)
+      `export`(ep)
     catch {
       case e: XPathException =>
         ep.startElement("failure")

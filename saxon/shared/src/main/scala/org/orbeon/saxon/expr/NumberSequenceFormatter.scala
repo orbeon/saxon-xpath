@@ -405,7 +405,7 @@ class NumberSequenceFormatter(value: Expression,
     list
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("numSeqFmt", this)
     var flags: String = ""
     if (backwardsCompatible) {
@@ -416,31 +416,31 @@ class NumberSequenceFormatter(value: Expression,
     }
     if (valueOp != null) {
       out.setChildRole("value")
-      valueOp.getChildExpression.export(out)
+      valueOp.getChildExpression.`export`(out)
     }
     if (formatOp != null) {
       out.setChildRole("format")
-      formatOp.getChildExpression.export(out)
+      formatOp.getChildExpression.`export`(out)
     }
     if (startAtOp != null) {
       out.setChildRole("startAt")
-      startAtOp.getChildExpression.export(out)
+      startAtOp.getChildExpression.`export`(out)
     }
     if (langOp != null) {
       out.setChildRole("lang")
-      langOp.getChildExpression.export(out)
+      langOp.getChildExpression.`export`(out)
     }
     if (ordinalOp != null) {
       out.setChildRole("ordinal")
-      ordinalOp.getChildExpression.export(out)
+      ordinalOp.getChildExpression.`export`(out)
     }
     if (groupSeparatorOp != null) {
       out.setChildRole("gpSep")
-      groupSeparatorOp.getChildExpression.export(out)
+      groupSeparatorOp.getChildExpression.`export`(out)
     }
     if (groupSizeOp != null) {
       out.setChildRole("gpSize")
-      groupSizeOp.getChildExpression.export(out)
+      groupSizeOp.getChildExpression.`export`(out)
     }
     out.endElement()
   }

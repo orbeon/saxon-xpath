@@ -59,7 +59,7 @@ class GlobalContextRequirement {
     requiredItemTypes.add(requiredItemType)
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("glob")
     var use: String = null
     use = if (isMayBeOmitted) if (isAbsentFocus) "pro" else "opt" else "req"

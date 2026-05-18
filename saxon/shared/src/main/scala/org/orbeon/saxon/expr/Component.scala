@@ -91,7 +91,7 @@ class Component private () {
 
   def getActor: Actor = actor
 
-  def export(
+  def `export`(
     out            : ExpressionPresenter,
     componentIdMap : ju.Map[Component, Integer],
     packageIdMap   : ju.Map[StylesheetPackage, Integer]
@@ -108,7 +108,7 @@ class Component private () {
       out.emitAttribute("base", "" + baseId)
       out.emitAttribute("dpack", packageIdMap.get(declaringPackage).toString)
     } else {
-      actor.export(out)
+      actor.`export`(out)
     }
     out.endElement()
   }

@@ -133,7 +133,7 @@ class Rule {
     * @param out   the destination for the export
     * @param modeStreamable    if the mode for this rule is streamable (should be EE only?)
     */
-  def export(out: ExpressionPresenter, modeStreamable: Boolean): Unit = {
+  def `export`(out: ExpressionPresenter, modeStreamable: Boolean): Unit = {
     val target: RuleTarget = getAction
     var template: TemplateRule = null
     if (target.isInstanceOf[TemplateRule]) {
@@ -152,10 +152,10 @@ class Rule {
       template.explainProperties(out)
       exportOtherProperties(out)
       out.setChildRole("match")
-      getPattern.export(out)
+      getPattern.`export`(out)
       if (template.getBody != null) {
         out.setChildRole("action")
-        template.getBody.export(out)
+        template.getBody.`export`(out)
       }
       val e: Int = out.endElement()
       if (s != e) {
@@ -166,7 +166,7 @@ class Rule {
              else ""))
       }
     } else {
-      target.export(out)
+      target.`export`(out)
     }
   }
 

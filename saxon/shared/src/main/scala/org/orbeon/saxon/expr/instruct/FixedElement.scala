@@ -387,7 +387,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
 
   def getActiveNamespaces: NamespaceMap = namespaceBindings
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("elem", this)
     out.emitAttribute("name", elementName.getDisplayName)
     out.emitAttribute("nsuri", elementName.getURI)
@@ -419,7 +419,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       out.emitAttribute("namespaces", fsb.toString)
     }
     exportValidationAndType(out)
-    getContentExpression.export(out)
+    getContentExpression.`export`(out)
     out.endElement()
   }
 

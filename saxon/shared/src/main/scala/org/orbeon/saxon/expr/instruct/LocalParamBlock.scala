@@ -53,10 +53,10 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
 
   override def getCardinality(): Int = StaticProperty.EMPTY
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("params", this)
     for (o <- operands.asScala) {
-      o.getChildExpression.export(out)
+      o.getChildExpression.`export`(out)
     }
     out.endElement()
   }

@@ -26,8 +26,8 @@ class AccumulatorRule(@BeanProperty var newValueExpression: Expression,
   @BooleanBeanProperty
   var capturing: Boolean = _
 
-  def export(out: ExpressionPresenter): Unit = {
-    newValueExpression.export(out)
+  def `export`(out: ExpressionPresenter): Unit = {
+    newValueExpression.`export`(out)
   }
 
   /**

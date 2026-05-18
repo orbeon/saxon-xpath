@@ -88,11 +88,11 @@ class CompareToIntegerConstant(operand: Expression,
     */
   override def getExpressionName: String = "compareToInt"
 
-  override def export(destination: ExpressionPresenter): Unit = {
+  override def `export`(destination: ExpressionPresenter): Unit = {
     destination.startElement("compareToInt", this)
     destination.emitAttribute("op", Token.tokens(operator))
     destination.emitAttribute("val", comparand.toString)
-    getLhsExpression.export(destination)
+    getLhsExpression.`export`(destination)
     destination.endElement()
   }
 

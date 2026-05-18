@@ -98,10 +98,10 @@ class CoercedFunction(private var targetFunction: Function, private val required
     }
   }
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("coercedFn")
     out.emitAttribute("type", requiredType.toExportString)
-    new FunctionLiteral(targetFunction).export(out)
+    new FunctionLiteral(targetFunction).`export`(out)
     out.endElement()
   }
 }

@@ -112,7 +112,7 @@
 //    iters
 //  }
 //
-//  def export(destination: ExpressionPresenter): Unit = {
+//  def `export`(destination: ExpressionPresenter): Unit = {
 //    throw new XPathException(
 //      "In general, stylesheets using extension instructions cannot be exported")
 //  }

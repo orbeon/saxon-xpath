@@ -125,10 +125,10 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
     cs
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("conditionalSort", this)
-    getCondition.export(out)
-    getDocumentSorter.export(out)
+    getCondition.`export`(out)
+    getDocumentSorter.`export`(out)
     out.endElement()
   }
 

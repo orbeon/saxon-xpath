@@ -129,7 +129,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
 
   override def computeHashCode(): Int = 83571 ^ attributeName.hashCode
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("attVal", this)
     out.emitAttribute("name", attributeName.getStructuredQName)
     out.emitAttribute("chk", "" + requiredChecks)

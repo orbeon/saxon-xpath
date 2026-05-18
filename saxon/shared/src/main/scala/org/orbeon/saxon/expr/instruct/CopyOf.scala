@@ -418,7 +418,7 @@ class CopyOf(select: Expression,
     this
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("copyOf", this)
     if (validation != Validation.SKIP) {
       out.emitAttribute("validation", Validation.toString(validation))
@@ -454,7 +454,7 @@ class CopyOf(select: Expression,
     if (! fsb.isEmptySB) {
       out.emitAttribute("flags", fsb.toString)
     }
-    getSelect.export(out)
+    getSelect.`export`(out)
     out.endElement()
   }
 

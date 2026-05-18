@@ -247,18 +247,18 @@ class IterateInstr(select: Expression,
     null
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("iterate", this)
     out.setChildRole("select")
-    getSelectExpression.export(out)
+    getSelectExpression.`export`(out)
     out.setChildRole("params")
-    getInitiallyExp.export(out)
+    getInitiallyExp.`export`(out)
     if (!Literal.isEmptySequence(getOnCompletion)) {
       out.setChildRole("on-completion")
-      getOnCompletion.export(out)
+      getOnCompletion.`export`(out)
     }
     out.setChildRole("action")
-    getActionExpression.export(out)
+    getActionExpression.`export`(out)
     out.endElement()
   }
 

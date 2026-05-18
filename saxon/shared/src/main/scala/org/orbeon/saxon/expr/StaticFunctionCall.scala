@@ -62,7 +62,7 @@ class StaticFunctionCall(private var target: Function,
 
   override def getExpressionName: String = "staticFunctionCall"
 
-  override def export(out: ExpressionPresenter): Unit = {
+  override def `export`(out: ExpressionPresenter): Unit = {
     target match {
       case originalFunction: OriginalFunction =>
         val options = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
@@ -70,7 +70,7 @@ class StaticFunctionCall(private var target: Function,
         out.emitAttribute("name", originalFunction.getFunctionName)
         out.emitAttribute("pack", options.componentMap.get(originalFunction.getComponent.getContainingPackage).toString)
         for (o <- operands.asScala)
-          o.getChildExpression.export(out)
+          o.getChildExpression.`export`(out)
         out.endElement()
       case _ =>
         target match {
@@ -88,7 +88,7 @@ class StaticFunctionCall(private var target: Function,
                   "e"
                 else ""))
             for (o <- operands.asScala)
-              o.getChildExpression.export(out)
+              o.getChildExpression.`export`(out)
             out.endElement()
           case _: ListCastableFunction =>
             out.startElement("castable", this)
@@ -103,7 +103,7 @@ class StaticFunctionCall(private var target: Function,
                 (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
                 else ""))
             for (o <- operands.asScala)
-              o.getChildExpression.export(out)
+              o.getChildExpression.`export`(out)
             out.endElement()
           case function: UnionConstructorFunction =>
             val targetType = function.getTargetType
@@ -119,7 +119,7 @@ class StaticFunctionCall(private var target: Function,
                   "e"
                 else ""))
             for (o <- operands.asScala)
-              o.getChildExpression.export(out)
+              o.getChildExpression.`export`(out)
             out.endElement()
           case function: ListConstructorFunction =>
             out.startElement("cast", this)
@@ -133,10 +133,10 @@ class StaticFunctionCall(private var target: Function,
                 (if (function.isAllowEmpty) "e"
                 else ""))
             for (o <- operands.asScala)
-              o.getChildExpression.export(out)
+              o.getChildExpression.`export`(out)
             out.endElement()
           case _ =>
-            super.export(out)
+            super.`export`(out)
         }
     }
   }

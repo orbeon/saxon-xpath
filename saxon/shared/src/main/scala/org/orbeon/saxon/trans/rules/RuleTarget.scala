@@ -13,7 +13,7 @@ import org.orbeon.saxon.trans.XPathException
   */
 trait RuleTarget {
 
-  def export(presenter: ExpressionPresenter): Unit
+  def `export`(presenter: ExpressionPresenter): Unit
 
   def registerRule(rule: Rule): Unit
 

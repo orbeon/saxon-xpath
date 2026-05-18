@@ -308,7 +308,7 @@ override  def optimize(visitor: ExpressionVisitor,
     new PathMap.PathMapNodeSet(pathMap.makeNewRoot(this))
   }
 
-  def export(out: ExpressionPresenter): Unit = {
+  def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("applyT", this)
     if (mode != null && !mode.isUnnamedMode) {
       out.emitAttribute("mode", mode.getModeName)
@@ -328,7 +328,7 @@ override  def optimize(visitor: ExpressionVisitor,
     }
     out.emitAttribute("bSlot", "" + getBindingSlot)
     out.setChildRole("select")
-    getSelect.export(out)
+    getSelect.`export`(out)
     if (getActualParams.length != 0) {
       WithParam.exportParameters(getActualParams, out, tunnel = false)
     }

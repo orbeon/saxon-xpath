@@ -619,7 +619,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     false
   }
 
-  def export(presenter: ExpressionPresenter): Unit = {
+  def `export`(presenter: ExpressionPresenter): Unit = {
     throw new XPathException("Exporting a stylesheet requires Saxon-EE")
   }
 
