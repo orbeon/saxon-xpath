@@ -106,7 +106,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
     var elementType: SchemaType = Untyped.getInstance
     var attributeType: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
 
-    do {
+    while ({
       val nodeLevel = tree.depth(next)
       if (closePending)
         level += 1
@@ -264,7 +264,8 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
           closePending = false
       }
       next = next + 1
-    } while (next < tree.numberOfNodes && tree.depth(next) > startLevel)
+      next < tree.numberOfNodes && tree.depth(next) > startLevel
+    }) ()
     if (closePending)
       level = level + 1
 

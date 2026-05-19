@@ -165,12 +165,13 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
       _values(i) = ndv
       val j = i
       var r = 0
-      do {
+      while ({
         i = (i - 1) & _mask
         if (_values(i) == ndv)
           return true
         r = hash(_values(i))
-      } while ((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r));
+        (i <= r && r < j) || (r < j && j < i) || (j < i && i <= r)
+      }) ()
       _values(j) = _values(i)
     }
     false

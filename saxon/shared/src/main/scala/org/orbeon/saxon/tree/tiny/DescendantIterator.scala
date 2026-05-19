@@ -21,7 +21,7 @@ class DescendantIterator(
   private var pending   : NodeInfo     = null
 
   def next(): NodeInfo = {
-    do {
+    while ({
       if (pending != null) {
         val p: NodeInfo = pending
         pending = null
@@ -38,7 +38,8 @@ class DescendantIterator(
       }
       if (tree.nodeKind(nextNodeNr) == Type.TEXTUAL_ELEMENT)
         pending = tree.getNode(nextNodeNr).asInstanceOf[TinyTextualElement].textNode
-    } while (! matcher.test(nextNodeNr));
+      !matcher.test(nextNodeNr)
+    }) ()
     tree.getNode(nextNodeNr)
   }
 }

@@ -48,13 +48,14 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
       _filled(i) = false
       val j: Int = i
       var r: Int = 0
-      do {
+      while ({
         i = (i - 1) & _mask
         if (!_filled(i)) {
           return true
         }
         r = hash(_key(i))
-      } while ((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r));
+        (i <= r && r < j) || (r < j && j < i) || (j < i && i <= r)
+      }) ()
       _key(j) = _key(i)
       _value(j) = _value(i)
       _filled(j) = _filled(i)

@@ -117,11 +117,12 @@ object DOMNodeWrapper {
       return NamespaceConstant.XML
 
     var node: Node = element
-    do {
+    while ({
       if (node.asInstanceOf[Element].hasAttribute(attName))
         return node.asInstanceOf[Element].getAttribute(attName)
       node = node.getParentNode
-    } while (node != null && node.getNodeType == Node.ELEMENT_NODE)
+      node != null && node.getNodeType == Node.ELEMENT_NODE
+    }) ()
 
     if (colon < 0)
       ""
@@ -145,11 +146,12 @@ object DOMNodeWrapper {
       return NamespaceConstant.XML
 
     var node: Node = attr.getOwnerElement
-    do {
+    while ({
       if (node.asInstanceOf[Element].hasAttribute(attName))
         return node.asInstanceOf[Element].getAttribute(attName)
       node = node.getParentNode
-    } while (node != null && node.getNodeType == Node.ELEMENT_NODE)
+      node != null && node.getNodeType == Node.ELEMENT_NODE
+    }) ()
 
     throw new IllegalStateException("Undeclared namespace prefix in attribute name " + displayName + " in DOM input")
   }
@@ -607,15 +609,15 @@ class DOMNodeWrapper(var node: Node,
       val stop = if (anchor == null) null else anchor.node
       var next = node
 
-      do next = getSuccessorNode(next, stop)
-      while (
+      while ({
+        next = getSuccessorNode(next, stop)
         next != null &&
         ! (
           next.getNodeType == Node.ELEMENT_NODE          &&
           (local == null || local == getLocalName(next)) &&
           (uri   == null || uri   == getElementURI(next.asInstanceOf[Element]))
         )
-      )
+      }) ()
 
       if (next == null)
         null

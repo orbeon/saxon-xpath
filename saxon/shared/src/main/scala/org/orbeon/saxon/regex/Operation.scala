@@ -612,7 +612,10 @@ object Operation {
             } else if (iterators.isEmpty) {
               false
             } else {
-              do advance() while (iterators.size < min && iterators.nonEmpty)
+              while ({
+                advance()
+                iterators.size < min && iterators.nonEmpty
+              }) ()
               iterators.nonEmpty
             }
 
@@ -648,7 +651,10 @@ object Operation {
           }
 
           def hasNext: Boolean = {
-            do advance() while (counter < min && pos >= 0)
+            while ({
+              advance()
+              counter < min && pos >= 0
+            }) ()
             pos >= 0
           }
 

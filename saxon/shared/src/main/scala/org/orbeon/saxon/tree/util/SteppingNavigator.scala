@@ -26,7 +26,7 @@ object SteppingNavigator {
     nodei = start
     var parenti = start.getParent
 
-    do {
+    while ({
       nodei = nodei.getNextSibling
       if (nodei != null)
         return nodei
@@ -34,7 +34,8 @@ object SteppingNavigator {
         return null.asInstanceOf[N]
       nodei = parenti
       parenti = parenti.getParent
-    } while (parenti != null)
+      parenti != null
+    }) ()
 
     null.asInstanceOf[N]
   }
@@ -56,7 +57,10 @@ object SteppingNavigator {
 
     def step(node: N): N = {
       var nde = node
-      do nde = getFollowingNode(nde, anchor) while (nde != null && !test.test(nde))
+      while ({
+        nde = getFollowingNode(nde, anchor)
+        nde != null && !test.test(nde)
+      }) ()
       nde
     }
   }
@@ -76,8 +80,10 @@ object SteppingNavigator {
 
     def step(node: N): N = {
       var nde = node
-      do nde = getFollowingNode(nde, anchor)
-        while (nde != null && nde.getFingerprint != fingerprint)
+      while ({
+        nde = getFollowingNode(nde, anchor)
+        nde != null && nde.getFingerprint != fingerprint
+      }) ()
       nde
     }
   }

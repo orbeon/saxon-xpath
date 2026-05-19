@@ -19,7 +19,7 @@ class DescendantIteratorSansText(
   private val matcher   : IntPredicate = nodeTest.getMatcher(doc)
 
   def next(): NodeInfo = {
-    do {
+    while ({
       nextNodeNr += 1
       try if (tree.depth(nextNodeNr) <= startDepth) {
         nextNodeNr = -1
@@ -29,7 +29,8 @@ class DescendantIteratorSansText(
           nextNodeNr = -1
           return null
       }
-    } while (! matcher.test(nextNodeNr));
+      !matcher.test(nextNodeNr)
+    }) ()
     tree.getNode(nextNodeNr)
   }
 }

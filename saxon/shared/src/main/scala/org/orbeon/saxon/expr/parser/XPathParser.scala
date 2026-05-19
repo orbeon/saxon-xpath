@@ -1180,7 +1180,7 @@ class XPathParser {
     val operator: Int = t.currentToken
     var first: Assignation = null
     var previous: Assignation = null
-    do {
+    while ({
       offset = t.currentTokenStartOffset
       nextToken()
       expect(Token.DOLLAR)
@@ -1210,7 +1210,8 @@ class XPathParser {
       else
         previous.setAction(v)
       previous = v
-    } while (t.currentToken == Token.COMMA)
+      t.currentToken == Token.COMMA
+    }) ()
 
     // process the "return" expression (called the "action")
     expect(Token.RETURN)
@@ -1237,7 +1238,7 @@ class XPathParser {
     val operator = t.currentToken
     var first: QuantifiedExpression = null
     var previous: QuantifiedExpression = null
-    do {
+    while ({
       val offset = t.currentTokenStartOffset
       nextToken()
       expect(Token.DOLLAR)
@@ -1270,9 +1271,8 @@ class XPathParser {
       else
         first = v
       previous = v
-    } while ( {
       t.currentToken == Token.COMMA
-    })
+    }) ()
     // process the "return/satisfies" expression (called the "action")
     expect(Token.SATISFIES)
     nextToken()

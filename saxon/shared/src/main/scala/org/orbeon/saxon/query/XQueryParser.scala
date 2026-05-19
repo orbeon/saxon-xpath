@@ -1015,12 +1015,13 @@ class XQueryParser extends XPathParser {
       importedModules.add(mImport.namespaceURI)
       env.asInstanceOf[QueryModule].addImportedNamespace(mImport.namespaceURI)
       nextToken()
-      if (isKeyword("at")) do {
+      if (isKeyword("at")) while ({
         nextToken()
         expect(Token.STRING_LITERAL)
         mImport.locationURIs.add(uriLiteral(t.currentTokenValue))
         nextToken()
-      } while (t.currentToken == Token.COMMA)
+        t.currentToken == Token.COMMA
+      }) ()
     }
     else grumble("After 'import module', expected 'namespace' or a string-literal")
     if (prefix != null) try if (mImport.namespaceURI == thisModule.getModuleNamespace && mImport.namespaceURI == thisModule.checkURIForPrefix(prefix)) {
@@ -1756,7 +1757,7 @@ class XQueryParser extends XPathParser {
   @throws[XPathException]
   private def parseForClause(flwor: FLWORExpression, clauseList: util.List[Clause]): Unit = {
     var first = true
-    do {
+    while ({
       val clause = new ForClause
       clause.setRepeated(!first || XQueryParser.containsLoopingClause(clauseList))
       setLocation(clause, t.currentTokenStartOffset)
@@ -1812,9 +1813,8 @@ class XQueryParser extends XPathParser {
       declareRangeVariable(clause.getRangeVariable)
       if (clause.getPositionVariable != null) declareRangeVariable(clause.getPositionVariable)
       if (allowingEmpty) checkForClauseAllowingEmpty(flwor, clause)
-    } while ( {
       t.currentToken == Token.COMMA
-    })
+    }) ()
   }
 
 
@@ -1829,7 +1829,7 @@ class XQueryParser extends XPathParser {
   @throws[XPathException]
   private def parseLetClause(flwor: FLWORExpression, clauseList: util.List[Clause]) = {
     var first: Boolean = true
-    do {
+    while ({
       val clause = new LetClause
       setLocation(clause, t.currentTokenStartOffset)
       clause.setRepeated(XQueryParser.containsLoopingClause(clauseList))
@@ -1857,14 +1857,13 @@ class XQueryParser extends XPathParser {
       clause.initSequence(flwor, parseExprSingle)
       clause.setRangeVariable(v)
       declareRangeVariable(v)
-    } while ( {
       t.currentToken == Token.COMMA
-    })
+    }) ()
   }
 
 
   @throws[XPathException]
-  private def parseCountClause(clauseList: util.List[Clause]) = do {
+  private def parseCountClause(clauseList: util.List[Clause]) = while ({
     val clause = new CountClause
     setLocation(clause, t.currentTokenStartOffset)
     clause.setRepeated(XQueryParser.containsLoopingClause(clauseList))
@@ -1880,9 +1879,8 @@ class XQueryParser extends XPathParser {
     val v = new LocalVariableBinding(varQName, `type`)
     clause.setRangeVariable(v)
     declareRangeVariable(v)
-  } while ( {
     t.currentToken == Token.COMMA
-  })
+  }) ()
 
 
   @throws[XPathException]
@@ -2290,16 +2288,15 @@ class XQueryParser extends XPathParser {
     outerLet.setRequiredType(SequenceType.OPTIONAL_ATOMIC)
     outerLet.setVariableQName(new StructuredQName("zz", NamespaceConstant.SAXON, "zz_switchVar"))
     outerLet.setSequence(Atomizer.makeAtomizer(operand, null))
-    do {
+    while ({
       val caseExpressions = new util.ArrayList[Expression](4)
       expect(Token.CASE)
-      do {
+      while ({
         nextToken()
         val c = parseExprSingle
         caseExpressions.add(c)
-      } while ( {
         t.currentToken == Token.CASE
-      })
+      }) ()
       expect(Token.RETURN)
       nextToken()
       val action = parseExprSingle
@@ -2315,9 +2312,8 @@ class XQueryParser extends XPathParser {
         }
 
       }
-    } while ( {
       t.currentToken == Token.CASE
-    })
+    }) ()
     expect(Token.DEFAULT)
     nextToken()
     expect(Token.RETURN)
@@ -2813,7 +2809,7 @@ class XQueryParser extends XPathParser {
       tests.clear()
       foundOneCatch = true
       var seenCurly = false
-      do {
+      while ({
         nextToken()
         var tokv = t.currentTokenValue
         t.currentToken match {
@@ -2845,9 +2841,8 @@ class XQueryParser extends XPathParser {
             grumble("Unrecognized name test")
             return null
         }
-      } while ( {
         t.currentToken == Token.UNION && !(t.currentTokenValue == "union")
-      })
+      }) ()
       if (!seenCurly) {
         expect(Token.LCURLY)
         nextToken()
@@ -3004,12 +2999,11 @@ class XQueryParser extends XPathParser {
       val attOffset = t.inputOffset - 1
       buff.setLength(0)
 
-      do {
+      while ({
         buff.cat(c)
         c = t.nextChar
-      } while ( {
         c != ' ' && c != '\n' && c != '\r' && c != '\t' && c != '='
-      })
+      }) ()
       val attName = buff.toString
       if (!NameChecker.isQName(attName)) grumble("Invalid attribute name " + Err.wrap(attName, Err.ATTRIBUTE))
       c = skipSpaces(c)

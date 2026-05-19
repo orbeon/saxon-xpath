@@ -248,7 +248,7 @@ class FLWORExpression extends Expression {
     var changed  = false
     val outer = new Breaks
     val inner = new Breaks
-    do {
+    while ({
       tryAgain = false
       outer.breakable {
         for (c <- clauses.asScala if c.getClauseKey == Clause.ClauseName.LET) {
@@ -289,7 +289,8 @@ class FLWORExpression extends Expression {
         }
       }
       changed |= tryAgain
-    } while (tryAgain)
+      tryAgain
+    }) ()
     if (changed) {
       var i = clauses.size - 1
       while (i >= 1) {

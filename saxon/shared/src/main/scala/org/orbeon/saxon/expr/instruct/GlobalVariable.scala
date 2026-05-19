@@ -52,7 +52,7 @@ object GlobalVariable {
     val controller = contxt.getController
     if (! contxt.isInstanceOf[XPathContextMajor])
       contxt = getMajorCaller(contxt)
-    while (contxt != null) do {
+    while (contxt != null) {
       val origin = contxt.asInstanceOf[XPathContextMajor].getOrigin
       origin match {
         case globalVar: GlobalVariable =>
@@ -61,7 +61,7 @@ object GlobalVariable {
         case _ =>
       }
       contxt = getMajorCaller(contxt)
-    } while (contxt != null)
+    }
   }
 
   private def getMajorCaller(context: XPathContext): XPathContextMajor = {

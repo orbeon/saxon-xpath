@@ -104,13 +104,14 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
       _value(i) = null
       val j = i
       var r = 0
-      do {
+      while ({
         i = (i - 1) & _mask
         //if (!_filled[i]) {
         if (_value(i) == null)
           return true
         r = hash(_key(i))
-      } while ((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r));
+        (i <= r && r < j) || (r < j && j < i) || (j < i && i <= r)
+      }) ()
       _key(j) = _key(i)
       _value(j) = _value(i)
     }

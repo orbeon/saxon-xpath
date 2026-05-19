@@ -23,14 +23,15 @@ class NamedChildIterator(tree: TinyTree,
   def next(): NodeInfo = {
     if (needToAdvance) {
       val thisNode = nextNodeNr
-      do {
+      while ({
         nextNodeNr = tree.next(nextNodeNr)
         if (nextNodeNr < thisNode) {
           nextNodeNr = -1
           needToAdvance = false
           return null
         }
-      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT))
+        ((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || ((tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT)
+      }) ()
     } else if (nextNodeNr == -1) {
       return null
     }
@@ -43,14 +44,15 @@ class NamedChildIterator(tree: TinyTree,
   def nextAtomizedValue(): AtomicSequence = {
     if (needToAdvance) {
       val thisNode = nextNodeNr
-      do {
+      while ({
         nextNodeNr = tree.next(nextNodeNr)
         if (nextNodeNr < thisNode) {
           nextNodeNr = -1
           needToAdvance = false
           return null
         }
-      } while (((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || (tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT)
+        ((tree.nameCode(nextNodeNr) & 0xfffff) != fingerprint) || (tree.nodeKind(nextNodeNr) & 0xf) != Type.ELEMENT
+      }) ()
     } else if (nextNodeNr == -1) {
       return null
     }
@@ -62,11 +64,12 @@ class NamedChildIterator(tree: TinyTree,
     var n = nextNodeNr
     if (needToAdvance) {
       val thisNode = n
-      do {
+      while ({
         n = tree.next(n)
         if (n < thisNode)
           return false
-      } while ((tree.nodeKind(n) & 0xf) != Type.ELEMENT || (tree.nameCode(n) & 0xfffff) != fingerprint)
+        (tree.nodeKind(n) & 0xf) != Type.ELEMENT || (tree.nameCode(n) & 0xfffff) != fingerprint
+      }) ()
       true
     } else {
       n != -1

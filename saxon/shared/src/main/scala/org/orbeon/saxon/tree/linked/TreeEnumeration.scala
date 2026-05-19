@@ -23,8 +23,10 @@ abstract class TreeEnumeration(var nextImpl: NodeImpl,
     node == null || nodeTest == null || nodeTest.test(node)
 
    def advance(): Unit =
-    do step()
-      while (!conforms(nextImpl))
+    while ({
+      step()
+      !conforms(nextImpl)
+    }) ()
 
   def step(): Unit
 

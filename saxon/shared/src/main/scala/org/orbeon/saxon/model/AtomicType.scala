@@ -71,10 +71,11 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     }
     var factor: Double = 1
     var at: SchemaType = this
-    do {
+    while ({
       factor *= 0.5
       at = at.getBaseType
-    } while (at != BuiltInAtomicType.ANY_ATOMIC);
+      at != BuiltInAtomicType.ANY_ATOMIC
+    }) ()
     1 - factor
   }
 }

@@ -28,8 +28,10 @@ abstract class AbstractVirtualNode extends VirtualNode {
 
   def getRealNode: AnyRef = {
     var u: AnyRef = this
-    do u = u.asInstanceOf[VirtualNode].getUnderlyingNode
-      while (u.isInstanceOf[VirtualNode]);
+    while ({
+      u = u.asInstanceOf[VirtualNode].getUnderlyingNode
+      u.isInstanceOf[VirtualNode]
+    }) ()
     u
   }
 

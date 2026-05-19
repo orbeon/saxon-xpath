@@ -186,7 +186,10 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
           if (lookahead && !iterator.asInstanceOf[LookaheadIterator].hasNext) {
             break()
           }
-          do tc = tc.processLeavingTail() while (tc != null)
+          while ({
+            tc = tc.processLeavingTail()
+            tc != null
+          }) ()
         }
         val item: Item = iterator.next()
         if (item == null) {
@@ -258,7 +261,10 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
             }
             tc = template.applyLeavingTail(output, context)
             if (tc != null) {
-              do tc = tc.processLeavingTail() while (tc != null)
+              while ({
+            tc = tc.processLeavingTail()
+            tc != null
+          }) ()
             }
             if (modeTracing) {
               traceListener.leave(template)

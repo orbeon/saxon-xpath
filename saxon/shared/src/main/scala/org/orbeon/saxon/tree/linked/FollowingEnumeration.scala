@@ -17,12 +17,13 @@ class FollowingEnumeration(var node: NodeImpl, nodeTest: Predicate[_ >: NodeInfo
   if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE) {
     nextImpl = node.getParent.getNextInDocument(root)
   } else {
-    do {
+    while ({
       nextImpl = node.getNextSibling
       if (next == null) {
         node = node.getParent
       }
-    } while (next == null && node != null);
+      next == null && node != null
+    }) ()
   }
 
   while (!conforms(nextImpl)) step()

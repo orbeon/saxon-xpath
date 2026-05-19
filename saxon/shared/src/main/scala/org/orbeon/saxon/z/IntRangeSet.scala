@@ -100,7 +100,7 @@ class IntRangeSet extends IntSet {
     }
     var i: Int = 0
     var j: Int = used
-    do {
+    while ({
       val mid: Int = i + (j - i) / 2
       if (endPoints(mid) < value) {
         i = Math.max(mid, i + 1)
@@ -109,7 +109,8 @@ class IntRangeSet extends IntSet {
       } else {
         return true
       }
-    } while (i != j);
+      i != j
+    }) ()
     false
   }
 
@@ -157,7 +158,7 @@ class IntRangeSet extends IntSet {
     }
     var i: Int = 0
     var j: Int = used
-    do {
+    while ({
       val mid: Int = i + (j - i) / 2
       if (endPoints(mid) < value) {
         i = Math.max(mid, i + 1)
@@ -167,7 +168,8 @@ class IntRangeSet extends IntSet {
         // value is already present
        return false
       }
-    } while (i != j);
+      i != j
+    }) ()
     if (i > 0 && endPoints(i - 1) + 1 == value) {
       i -= 1
     } else if (i < used - 1 && startPoints(i + 1) - 1 == value) {
