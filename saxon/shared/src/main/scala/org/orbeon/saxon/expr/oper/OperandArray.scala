@@ -32,7 +32,7 @@ class OperandArray extends java.lang.Iterable[Operand] {
 
   private var operandArray: Array[Operand] = _
 
-  def this(parent: Expression, args: Array[Expression]) {
+  def this(parent: Expression, args: Array[Expression]) = {
     this()
     this.operandArray = new Array[Operand](args.length)
     for (i <- args.indices)

@@ -188,11 +188,12 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     private var i: Int = 0
 
     def hasNext: Boolean = {
-      while (i < _key.length) if (_filled(i)) {
-        true
-      } else {
-        i += 1
-      }
+      while (i < _key.length)
+        if (_filled(i)) {
+          return true
+        } else {
+          i += 1
+        }
       false
     }
 
@@ -200,7 +201,5 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
       i += 1
       _key(i)
     }
-
   }
-
 }

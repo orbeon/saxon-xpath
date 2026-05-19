@@ -16,7 +16,7 @@ class Fork extends Instruction {
 
   var operanda: Array[Operand] = _
 
-  def this(prongs: Array[Operand]) {
+  def this(prongs: Array[Operand]) = {
     this()
     operanda = new Array[Operand](prongs.length)
     for (i <- prongs.indices) {

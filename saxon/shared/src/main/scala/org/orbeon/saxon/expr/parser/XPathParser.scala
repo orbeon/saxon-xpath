@@ -174,17 +174,17 @@ object XPathParser {
     else if (actualURI.contains("java"))
       if (config.getEditionCode == "HE")
         return "Reflexive calls to Java methods are not available under Saxon-HE"
-    else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
+      else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
         return "Reflexive calls to Java methods require a Saxon-PE or Saxon-EE license, and none was found"
-    else
+      else
         return "For diagnostics on calls to Java methods, use the -TJ command line option " + "or set the Configuration property FeatureKeys.TRACE_EXTERNAL_FUNCTIONS"
     else if (actualURI.startsWith("clitype:"))
       if (config.getEditionCode == "HE")
         return "Reflexive calls to external .NET methods are not available under Saxon-HE"
     else if (!config.isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION))
-        return "Reflexive calls to external .NET methods require a Saxon-PE or Saxon-EE license, and none was found"
+      return "Reflexive calls to external .NET methods require a Saxon-PE or Saxon-EE license, and none was found"
     else
-        return "For diagnostics on calls to .NET methods, use the -TJ command line option " + "or call processor.SetProperty(\"http://saxon.sf.net/feature/trace-external-functions\", \"true\")"
+      return "For diagnostics on calls to .NET methods, use the -TJ command line option " + "or call processor.SetProperty(\"http://saxon.sf.net/feature/trace-external-functions\", \"true\")"
     null
   }
 
@@ -234,7 +234,7 @@ object XPathParser {
      * @param localLineNumber    the line number within the containing construct, starting at zero
      * @param localColumnNumber  the column number within the containing construct, starting at zero
      */
-    def this(containingLocation: Location, localLineNumber: Int, localColumnNumber: Int) {
+    def this(containingLocation: Location, localLineNumber: Int, localColumnNumber: Int) = {
       this()
       this.containingLocation = containingLocation.saveLocation
       this.localLineNumber = localLineNumber
@@ -250,7 +250,7 @@ object XPathParser {
      * @param localColumnNumber  the column number within the containing construct, starting at zero
      * @param nearbyText         text appearing in the vicinity of the error location
      */
-    def this(containingLocation: Location, localLineNumber: Int, localColumnNumber: Int, nearbyText: String) {
+    def this(containingLocation: Location, localLineNumber: Int, localColumnNumber: Int, nearbyText: String) = {
       this()
       this.containingLocation = containingLocation.saveLocation
       this.localLineNumber = localLineNumber

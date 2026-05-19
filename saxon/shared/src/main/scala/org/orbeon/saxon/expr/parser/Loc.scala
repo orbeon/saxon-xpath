@@ -31,7 +31,7 @@ class Loc extends Location {
   var lineNumber: Int = _
   var columnNumber: Int = -1
 
-  def this(loc: SourceLocator) {
+  def this(loc: SourceLocator) = {
     this()
     this.systemId = loc.getSystemId
     this.lineNumber = loc.getLineNumber

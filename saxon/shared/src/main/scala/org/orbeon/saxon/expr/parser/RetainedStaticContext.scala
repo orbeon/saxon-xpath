@@ -53,7 +53,7 @@ class RetainedStaticContext extends NamespaceResolver {
   @BooleanBeanProperty
   var backwardsCompatibility: Boolean = _
 
-  def this(config: Configuration) {
+  def this(config: Configuration) = {
     this()
     this.config = config
     this.packageData = new PackageData(config)

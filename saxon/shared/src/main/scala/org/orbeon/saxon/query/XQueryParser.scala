@@ -2399,7 +2399,8 @@ class XQueryParser extends XPathParser {
     while ( {
       c < len && " \t\r\n".indexOf(trimmed.charAt(c)) >= 0
     }) c += 1
-    if (c < len) pragmaContents = trimmed.subSequence(c, len).toString
+    if (c < len)
+      pragmaContents = trimmed.subSequence(c, len).toString
     var validateType = false
     val streaming = false
     val pragmaName = makeStructuredQName(qname, "")
@@ -2410,16 +2411,17 @@ class XQueryParser extends XPathParser {
       if ("validate-type" == localName)
         if (!env.getConfiguration.isLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY))
           warning("Ignoring saxon:validate-type. To use this feature " + "you need the Saxon-EE processor from http:")
-    else {
-      val typeName = Whitespace.trim(pragmaContents)
-      if (!NameChecker.isQName(typeName))
-        grumble("Schema type name expected in saxon:validate-type pragma: found " + Err.wrap(typeName))
-      requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(typeName, env.getDefaultElementNamespace))
-      if (requiredType == null)
-        grumble("Unknown schema type " + typeName)
-      validateType = true
-    }
-    else warning("Ignored pragma " + qname + " (unrecognized Saxon pragma)")
+        else {
+          val typeName = Whitespace.trim(pragmaContents)
+          if (!NameChecker.isQName(typeName))
+            grumble("Schema type name expected in saxon:validate-type pragma: found " + Err.wrap(typeName))
+          requiredType = env.getConfiguration.getSchemaType(makeStructuredQName(typeName, env.getDefaultElementNamespace))
+          if (requiredType == null)
+            grumble("Unknown schema type " + typeName)
+          validateType = true
+        }
+      else
+        warning("Ignored pragma " + qname + " (unrecognized Saxon pragma)")
     nextToken()
     var expr: Expression = null
     if (t.currentToken == Token.PRAGMA) expr = parseExtensionExpression

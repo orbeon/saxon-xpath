@@ -519,7 +519,7 @@ abstract class Converter {
 
   def this(rules: ConversionRules) = {
     this
-    this.conversionRules = rules
+    conversionRules = rules
   }
 
   def convert(input: AtomicValue): ConversionResult
