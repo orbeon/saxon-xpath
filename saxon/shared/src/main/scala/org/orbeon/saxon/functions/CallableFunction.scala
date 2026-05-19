@@ -23,7 +23,7 @@ class CallableFunction extends AbstractFunction {
   private var name: SymbolicName.F = _
   private var `type`: FunctionItemType = _
 
-  def this(name: SymbolicName.F, callable: Callable, `type`: FunctionItemType) {
+  def this(name: SymbolicName.F, callable: Callable, `type`: FunctionItemType) = {
     this()
     this.name = name
     this.callable = callable

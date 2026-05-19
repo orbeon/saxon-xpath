@@ -180,7 +180,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
   }
 
 
-  def this(s: CharSequence) {
+  def this(s: CharSequence) = {
     this(s, ConversionRules.DEFAULT)
   }
 

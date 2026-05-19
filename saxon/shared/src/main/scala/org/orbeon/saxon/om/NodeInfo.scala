@@ -21,7 +21,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Configuration
 
-import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 

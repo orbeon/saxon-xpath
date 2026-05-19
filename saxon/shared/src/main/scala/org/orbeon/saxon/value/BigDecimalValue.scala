@@ -221,7 +221,7 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @param value the value of the DecimalValue
    */
-  def this(value: BigDecimal) {
+  def this(value: BigDecimal) = {
     this()
     this.value = value.stripTrailingZeros
     typeLabel = BuiltInAtomicType.DECIMAL

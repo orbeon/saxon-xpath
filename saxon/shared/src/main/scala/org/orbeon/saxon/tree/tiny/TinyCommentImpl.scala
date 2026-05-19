@@ -20,7 +20,7 @@ import org.orbeon.saxon.value.StringValue
 
 class TinyCommentImpl() extends TinyNodeImpl {
 
-  def this(tree: TinyTree, nodeNr: Int) {
+  def this(tree: TinyTree, nodeNr: Int) = {
     this()
     this.tree = tree
     this.nodeNr = nodeNr

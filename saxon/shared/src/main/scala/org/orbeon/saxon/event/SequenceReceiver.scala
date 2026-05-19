@@ -12,11 +12,12 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 
 
-abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
+abstract class SequenceReceiver(pipe: PipelineConfiguration)
+  extends Receiver {
 
-   var previousAtomic        : Boolean               = false
-   var pipelineConfiguration : PipelineConfiguration = pipe
-   var systemId              : String                = null
+  var previousAtomic       : Boolean               = false
+  var pipelineConfiguration: PipelineConfiguration = pipe
+  var systemId             : String                = null
 
   def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
@@ -32,15 +33,18 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
   def getSystemId: String = systemId
 
   def setUnparsedEntity(
-    name     : String,
-    systemID : String,
-    publicID : String
+    name    : String,
+    systemID: String,
+    publicID: String
   ): Unit = ()
 
   def open(): Unit =
     previousAtomic = false
 
-  def append(item: Item, locationId: Location, properties: Int): Unit
+  def append(item      : Item,
+             locationId: Location,
+             properties: Int
+  ): Unit
 
   override def append(item: Item): Unit =
     append(item, Loc.NONE, ReceiverOption.ALL_NAMESPACES)
@@ -49,9 +53,9 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
     pipelineConfiguration.getConfiguration.getNamePool
 
   def flatten(
-    array          : ArrayItem,
-    locationId     : Location,
-    copyNamespaces : Int
+    array         : ArrayItem,
+    locationId    : Location,
+    copyNamespaces: Int
   ): Unit = {
     for (member <- array.members) {
       member
@@ -61,9 +65,9 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
   }
 
   def decompose(
-    item           : Item,
-    locationId     : Location,
-    copyNamespaces : Int
+    item          : Item,
+    locationId    : Location,
+    copyNamespaces: Int
   ): Unit = {
     if (item != null) {
       if (item.isInstanceOf[AtomicValue] || item.isInstanceOf[ExternalObject[_]]) {
@@ -74,29 +78,33 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
       } else item match {
         case item1: ArrayItem =>
           flatten(item1, locationId, copyNamespaces)
-        case _: Function =>
+        case _: Function      =>
           val thing     = if (item.isInstanceOf[MapItem]) "map" else "function item"
           val errorCode = getErrorCodeForDecomposingFunctionItems
           if (errorCode.startsWith("SENR"))
             throw new XPathException(
               "Cannot serialize a " + thing + " using this output method",
               errorCode,
-              locationId)
+              locationId
+            )
           else
             throw new XPathException(
               "Cannot add a " + thing + " to an XDM node tree",
               errorCode,
-              locationId)
-        case _ =>
+              locationId
+            )
+        case _                =>
           val node = item.asInstanceOf[NodeInfo]
           val kind = node.getNodeKind
           node match {
             case orphan: Orphan if orphan.isDisableOutputEscaping =>
-              characters(item.getStringValueCS,
+              characters(
+                item.getStringValueCS,
                 locationId,
-                ReceiverOption.DISABLE_ESCAPING)
+                ReceiverOption.DISABLE_ESCAPING
+              )
               previousAtomic = false
-            case _ =>
+            case _                                                =>
               if (kind == Type.DOCUMENT) {
                 startDocument(ReceiverOption.NONE)
                 for (child <- node.children)
@@ -109,11 +117,14 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration) extends Receiver {
                 throw new XPathException(
                   "Sequence normalization: Cannot process " + thing + " node",
                   "SENR0001",
-                  locationId)
+                  locationId
+                )
               } else {
                 var copyOptions = CopyOptions.TYPE_ANNOTATIONS
-                if (ReceiverOption.contains(copyNamespaces,
-                  ReceiverOption.ALL_NAMESPACES)) {
+                if (ReceiverOption.contains(
+                  copyNamespaces,
+                  ReceiverOption.ALL_NAMESPACES
+                )) {
                   copyOptions |= CopyOptions.ALL_NAMESPACES
                 }
                 item.asInstanceOf[NodeInfo].copy(this, copyOptions, locationId)

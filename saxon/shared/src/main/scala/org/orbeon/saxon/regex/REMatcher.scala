@@ -27,7 +27,7 @@ object REMatcher {
     endn(1) = endn(2)
     endn(0) = endn(1)
 
-    def this(s: REMatcher.State) {
+    def this(s: REMatcher.State) = {
       this()
       parenCount = s.parenCount
       startn = util.Arrays.copyOf(s.startn, s.startn.length)

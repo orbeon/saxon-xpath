@@ -47,19 +47,19 @@ class DOMAttributeMap(private var element: NodeInfo) extends NamedNodeMap {
       for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
           return null
-        } else if (nsarray(i).getPrefix().isEmpty) {
+        } else if (nsarray(i).prefix.isEmpty) {
           val nn = new NamespaceNode(element, nsarray(i), i + 1)
           return NodeOverNodeInfo.wrap(nn)
         }
       }
-     null
+      null
     } else if (name.startsWith("xmlns:")) {
       val prefix: String = name.substring(6)
       val nsarray: Array[NamespaceBinding] = getNamespaceBindings
       for (i <- nsarray.indices) {
         if (nsarray(i) == null) {
          return null
-        } else if (prefix == nsarray(i).getPrefix()) {
+        } else if (prefix == nsarray(i).prefix) {
           val nn = new NamespaceNode(element, nsarray(i), i + 1)
           return NodeOverNodeInfo.wrap(nn)
         }

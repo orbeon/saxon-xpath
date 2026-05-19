@@ -518,7 +518,7 @@ abstract class Converter {
   var conversionRules: ConversionRules = _
 
   def this(rules: ConversionRules) = {
-    this
+    this()
     conversionRules = rules
   }
 

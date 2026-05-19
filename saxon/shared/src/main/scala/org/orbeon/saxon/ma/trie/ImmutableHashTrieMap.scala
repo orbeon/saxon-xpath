@@ -88,7 +88,7 @@ object ImmutableHashTrieMap {
     var entry2: Tuple2[K, V] = _
     private var entries: ImmutableList[Tuple2[K, V]] = _
 
-    def this(entry1: Tuple2[K, V], entry2: Tuple2[K, V]) {
+    def this(entry1: Tuple2[K, V], entry2: Tuple2[K, V]) = {
       this()
       assert(entry1._1.hashCode == entry2._1.hashCode)
       entries = ImmutableList.empty[Tuple2[K, V]]().prepend(entry1).prepend(entry2)
@@ -202,10 +202,7 @@ object ImmutableHashTrieMap {
     private var subnodes: Array[ImmutableHashTrieMap[K, V]] = new Array[ImmutableHashTrieMap[K, V]](FANOUT)
     private var size: Int = 0
 
-    def this(h1: Int,
-             subNode1: ImmutableHashTrieMap[K, V],
-             h2: Int,
-             subNode2: ImmutableHashTrieMap[K, V]) {
+    def this(h1: Int, subNode1: ImmutableHashTrieMap[K, V], h2: Int, subNode2: ImmutableHashTrieMap[K, V]) = {
       this()
       assert(h1 != h2)
       size = 2
@@ -213,7 +210,6 @@ object ImmutableHashTrieMap {
         val res: ImmutableHashTrieMap[K, V] = if (i == h1) subNode1 else if (i == h2) subNode2 else EMPTY_NODE.asInstanceOf[ImmutableHashTrieMap[K, V]]
         subnodes(i) = res
       }
-
     }
 
 

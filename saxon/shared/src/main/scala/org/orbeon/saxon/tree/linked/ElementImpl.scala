@@ -16,7 +16,6 @@ import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.value.Whitespace
 
 import scala.beans.BeanProperty
-import scala.collection.compat._
 import java.{util => ju}
 
 import scala.jdk.CollectionConverters._

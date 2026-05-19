@@ -177,12 +177,12 @@ class SerializerFactory {
    *
    * @param config the Saxon Configuration
    */
-  def this(config: Configuration) {
+  def this(config: Configuration) = {
     this()
     this.config = config
   }
 
-  def this(pipe: PipelineConfiguration) {
+  def this(pipe: PipelineConfiguration) = {
     this()
     this.pipe = pipe
     this.config = pipe.getConfiguration

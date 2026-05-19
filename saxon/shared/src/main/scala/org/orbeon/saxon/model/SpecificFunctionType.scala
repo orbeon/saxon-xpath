@@ -24,7 +24,7 @@ class SpecificFunctionType extends AnyFunctionType {
   private var annotations: AnnotationList = AnnotationList.EMPTY
   private var config: Configuration = _
 
-  def this(argTyps: Array[SequenceType], resultTyp: SequenceType) {
+  def this(argTyps: Array[SequenceType], resultTyp: SequenceType) = {
     this()
     argTypes = Objects.requireNonNull(argTyps)
     this.resultType = Objects.requireNonNull(resultTyp)

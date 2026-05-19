@@ -160,12 +160,12 @@ class ContentHandlerProxy extends Receiver {
     currentLocation = location.saveLocation
     namespaceStack ::= MARKER
     for (ns <- namespaces.asScala) {
-      val prefix: String = ns.getPrefix
+      val prefix: String = ns.prefix
       if (prefix.==("xml")) {
         return
       }
       val uri: String = ns.getURI
-      if (!undeclareNamespaces && uri.isEmpty && !prefix.isEmpty) {
+      if (!undeclareNamespaces && uri.isEmpty && prefix.nonEmpty) {
         return
       }
       try {
@@ -184,11 +184,13 @@ class ContentHandlerProxy extends Receiver {
         val aci: AttributeCollectionImpl =
           new AttributeCollectionImpl(getConfiguration, attributes.size)
         for (att <- attributes.iterator.asScala) {
-          aci.addAttribute(att.getNodeName,
+          aci.addAttribute(
+            att.nodeName,
             BuiltInAtomicType.UNTYPED_ATOMIC,
-            att.getValue,
-            att.getLocation,
-            att.getProperties)
+            att.value,
+            att.location,
+            att.properties
+          )
         }
         atts2 = aci
     }

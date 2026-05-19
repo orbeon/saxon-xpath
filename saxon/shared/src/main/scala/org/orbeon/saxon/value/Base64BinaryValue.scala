@@ -206,7 +206,7 @@ class Base64BinaryValue extends AtomicValue with AtomicMatchKey with Comparable[
    * if the supplied value is not in the lexical
    * space of the xs:base64Binary data type
    */
-  def this(s: CharSequence) {
+  def this(s: CharSequence) = {
     this()
     binaryValue = Base64BinaryValue.decode(s)
     typeLabel = BuiltInAtomicType.BASE64_BINARY
@@ -217,7 +217,7 @@ class Base64BinaryValue extends AtomicValue with AtomicMatchKey with Comparable[
    *
    * @param value array of bytes holding the octet sequence
    */
-  def this(value: Array[Byte]) {
+  def this(value: Array[Byte]) = {
     this()
     binaryValue = value
     typeLabel = BuiltInAtomicType.BASE64_BINARY

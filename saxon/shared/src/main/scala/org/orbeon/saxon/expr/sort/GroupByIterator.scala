@@ -42,7 +42,7 @@ class GroupByIterator
 
   var groupKeys: List[AtomicSequence] = new ArrayList(40)
 
-  def this(population: SequenceIterator, keyExpression: Expression, keyContext: XPathContext, collator: StringCollator, composite: Boolean) {
+  def this(population: SequenceIterator, keyExpression: Expression, keyContext: XPathContext, collator: StringCollator, composite: Boolean) = {
     this()
     this.population = population
     this.keyExpression = keyExpression

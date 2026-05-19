@@ -19,7 +19,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
 
   var in: CharSequence = _
 
-  def this(in: CharSequence) {
+  def this(in: CharSequence) = {
     this()
     this.in = in
     val s = Whitespace.trimWhitespace(in)

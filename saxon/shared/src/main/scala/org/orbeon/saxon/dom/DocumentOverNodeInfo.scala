@@ -22,23 +22,22 @@ import scala.util.control.Breaks._
 
 object DocumentOverNodeInfo {
 
-   def getElementsByTagName(node: NodeInfo,
-                                     tagname: String): NodeList = {
-     val allElements: AxisIterator = node.iterateAxis(AxisInfo.DESCENDANT)
-     val nodes: List[Node] = new ArrayList[Node](100)
-     breakable {
-       while (true) {
-         val next: NodeInfo = allElements.next()
-         if (next == null) {
-           break()
-         }
-         if (next.getNodeKind == Type.ELEMENT) {
-           if (tagname.==("*") || tagname == next.getDisplayName) {
-             nodes.add(NodeOverNodeInfo.wrap(next))
-           }
-         }
-       }
-   }
+  def getElementsByTagName(node: NodeInfo, tagname: String): NodeList = {
+    val allElements: AxisIterator = node.iterateAxis(AxisInfo.DESCENDANT)
+    val nodes: List[Node] = new ArrayList[Node](100)
+    breakable {
+      while (true) {
+        val next: NodeInfo = allElements.next()
+        if (next == null) {
+          break()
+        }
+        if (next.getNodeKind == Type.ELEMENT) {
+          if (tagname.==("*") || tagname == next.getDisplayName) {
+            nodes.add(NodeOverNodeInfo.wrap(next))
+          }
+        }
+      }
+    }
     new DOMNodeList(nodes)
   }
 

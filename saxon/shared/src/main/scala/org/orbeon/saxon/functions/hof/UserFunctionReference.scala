@@ -79,7 +79,7 @@ class UserFunctionReference
   private var optimizeCounter: Int = 0
   private var typeCheckCounter: Int = 0
 
-  def this(target: UserFunction) {
+  def this(target: UserFunction) = {
     this()
     this.nominalTarget = target
     this.functionName = target.getSymbolicName

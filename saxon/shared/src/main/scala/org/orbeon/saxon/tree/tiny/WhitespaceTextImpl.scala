@@ -53,7 +53,7 @@ class WhitespaceTextImpl() extends TinyNodeImpl {
 //
 //  override var nodeNr: Int = _
 
-  def this(tree: TinyTree, nodeNr: Int) {
+  def this(tree: TinyTree, nodeNr: Int) = {
     this()
     this.tree = tree
     this.nodeNr = nodeNr

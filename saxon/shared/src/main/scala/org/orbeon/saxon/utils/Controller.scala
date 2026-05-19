@@ -109,7 +109,7 @@ class Controller extends ContextOriginator {
    *
    * @param config The Configuration used by this Controller
    */
-  def this(config: Configuration) {
+  def this(config: Configuration) = {
     this()
     this.config = config
     // create a dummy executable
@@ -124,7 +124,7 @@ class Controller extends ContextOriginator {
    * @param config     The Configuration used by this Controller
    * @param executable The executable used by this Controller
    */
-  def this(config: Configuration, executable: Executable) {
+  def this(config: Configuration, executable: Executable) = {
     this()
     this.config = config
     this.executable = executable

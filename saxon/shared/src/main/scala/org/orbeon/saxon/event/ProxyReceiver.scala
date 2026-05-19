@@ -13,12 +13,11 @@ class ProxyReceiver(receiver: Receiver) extends SequenceReceiver(receiver.getPip
 
   def setUnderlyingReceiver(receiver: Receiver) = nextReceiver = receiver
 
- override def setSystemId(systemId: String): Unit = {
+  override def setSystemId(systemId: String): Unit = 
     if (systemId != this.systemId) {
       this.systemId = systemId
       nextReceiver.setSystemId(systemId)
     }
-  }
 
   def getNextReceiver: Receiver = nextReceiver
 

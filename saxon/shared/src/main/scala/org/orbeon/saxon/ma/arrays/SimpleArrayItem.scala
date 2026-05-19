@@ -48,7 +48,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
 
   def getMembersList: List[GroundedValue] = membersList
 
-  def this(members: List[GroundedValue]) {
+  def this(members: List[GroundedValue]) = {
     this()
     this.membersList = members
   }

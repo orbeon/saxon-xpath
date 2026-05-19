@@ -167,7 +167,7 @@ class AtomicSequenceConverter(sequence: Expression, var requiredItemType: PlainT
           (ascType == BuiltInAtomicType.STRING || ascType == BuiltInAtomicType.UNTYPED_ATOMIC)) {
           val old = asc
           val asc2 = new AtomicSequenceConverter(old.getBaseExpression, requiredItemType)
-         return  asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
+          return asc2.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
         }
       case _ =>
     }

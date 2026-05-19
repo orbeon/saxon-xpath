@@ -37,7 +37,7 @@ class LRUCache[K, V](val cacheSize: Int, val concurrent: Boolean) {
    *
    * @param cacheSize the maximum number of entries that will be kept in this cache.
    */
-  def this(cacheSize: Int) {
+  def this(cacheSize: Int) = {
     this(cacheSize, false)
   }
 

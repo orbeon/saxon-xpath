@@ -8,7 +8,7 @@ class BasicTransformerFactory extends TransformerFactoryImpl {
   this.configuration = configure
   configure.setProcessor(new ApiProvider {})
 
-  def this(config: Configuration) {
+  def this(config: Configuration) = {
     this()
     this.configuration = (config)
   }

@@ -20,7 +20,7 @@ abstract class CompareToConstant(p0: Expression)
     extends UnaryExpression(p0)
     with ComparisonExpression {
 
-   var operator: Int = _
+  var operator: Int = _
 
   def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
   def getLhsExpression: Expression = getBaseExpression

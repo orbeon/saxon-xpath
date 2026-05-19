@@ -1054,7 +1054,7 @@ object Navigator {
     private var siblingEnum: AxisIterator = null
     private var descendEnum: AxisIterator = null
 
-    def this(start: NodeInfo) {
+    def this(start: NodeInfo) = {
       this()
       ancestorEnum = new Navigator.AncestorEnumeration(start, false)
       start.getNodeKind match {
@@ -1124,8 +1124,8 @@ object Navigator {
     private var descendEnum: AxisIterator = null
     private var includeAncestors: Boolean = false
 
-    def this(start: NodeInfo, includeAncestors: Boolean) {
-      this
+    def this(start: NodeInfo, includeAncestors: Boolean) = {
+      this()
       this.includeAncestors = includeAncestors
       ancestorEnum = new Navigator.AncestorEnumeration(start, false)
       start.getNodeKind match {

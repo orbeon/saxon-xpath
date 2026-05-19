@@ -305,15 +305,15 @@ class JsonParser {
         val duplicate = handler.setKey(key, reEscaped)
         if (duplicate && ((flags & JsonParser.DUPLICATES_REJECTED) != 0))
           invalidJSON("Duplicate key value \"" + Err.wrap(key) + "\"", JsonParser.ERR_DUPLICATE, tokenizer.lineNumber)
-        try
-            if (!duplicate || ((flags & (JsonParser.DUPLICATES_LAST | JsonParser.DUPLICATES_RETAINED)) != 0))
-              parseConstruct(handler, tokenizer, flags, context)
-          else { // retain first: parse the duplicate value but discard it
+        try {
+          if (!duplicate || ((flags & (JsonParser.DUPLICATES_LAST | JsonParser.DUPLICATES_RETAINED)) != 0)) {
+            parseConstruct(handler, tokenizer, flags, context)
+          } else { // retain first: parse the duplicate value but discard it
             val h2 = new JsonHandler
             h2.setContext(context)
             parseConstruct(h2, tokenizer, flags, context)
           }
-        catch {
+        } catch {
           case _: StackOverflowError =>
             invalidJSON("Objects are too deeply nested", JsonParser.ERR_LIMITS, tokenizer.lineNumber)
         }

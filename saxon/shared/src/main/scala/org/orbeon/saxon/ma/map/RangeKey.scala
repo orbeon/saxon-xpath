@@ -22,7 +22,7 @@ class RangeKey
   private var max: UnicodeString = _
   private var index: TreeMap[AtomicMatchKey, Any] = _
 
-  def this(min: UnicodeString, max: UnicodeString, index: TreeMap[AtomicMatchKey, Any]) {
+  def this(min: UnicodeString, max: UnicodeString, index: TreeMap[AtomicMatchKey, Any]) = {
     this()
     this.min = if (min == null) null else UnicodeString.makeUnicodeString(min)
     this.max = if (max == null) null else UnicodeString.makeUnicodeString(max)

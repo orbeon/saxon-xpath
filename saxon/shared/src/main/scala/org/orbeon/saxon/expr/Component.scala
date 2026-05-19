@@ -51,7 +51,7 @@ object Component {
 
 class Component private () {
 
-   var actor: Actor = _
+  var actor: Actor = _
 
   @BeanProperty
   var visibility: Visibility = _

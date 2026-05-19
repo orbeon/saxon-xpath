@@ -304,13 +304,13 @@ object Whitespace {
     private var input : Array[Char] = _
     private var position = 0
 
-    def this(input: Array[Char]) {
+    def this(input: Array[Char]) = {
       this()
       this.input = input
       this.position = 0
     }
 
-    def this(input: CharSequence) {
+    def this(input: CharSequence) = {
       this()
       this.input = CharSlice.toCharArray(input)
       this.position = 0

@@ -69,7 +69,7 @@ class DocumentValidator(next: Receiver, private var errorCode: String)
     nextReceiver.characters(chars, locationId, properties)
   }
 
- override def endElement(): Unit = {
+  override def endElement(): Unit = {
     level -= 1
     nextReceiver.endElement()
   }

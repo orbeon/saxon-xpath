@@ -162,8 +162,8 @@ class QueryModule extends StaticContext {
 
   executable.addPackage(pd)
 
-  def this(sqc: StaticQueryContext) {
-    this
+  def this(sqc: StaticQueryContext) = {
+    this()
     this.sqc = sqc
   }
 

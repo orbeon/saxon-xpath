@@ -17,7 +17,7 @@ class UnknownResource extends Resource {
   var config: Configuration = _
   var details: AbstractResourceCollection.InputDetails = _
 
-  def this(config: Configuration, details: AbstractResourceCollection.InputDetails) {
+  def this(config: Configuration, details: AbstractResourceCollection.InputDetails) = {
     this()
     this.config = config
     this.details = details

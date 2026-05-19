@@ -159,7 +159,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
             test.getUType.toStringWithIndefiniteArticle,
           getLocation)
       }
-     return Literal.makeEmptySequence
+      return Literal.makeEmptySequence
     }
     test match {
       case test1: NameTest if !test1.getNamespaceURI.isEmpty && axis == AxisInfo.NAMESPACE =>

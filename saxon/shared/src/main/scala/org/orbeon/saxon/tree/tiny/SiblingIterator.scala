@@ -55,15 +55,17 @@ class SiblingIterator(
     if (needToAdvance) {
       val thisNode                        = nextNodeNr
       val tNext                           = tree.next
-      val nTest: Predicate[_ >: NodeInfo] = nodeTest
+      val nTest: Predicate[? >: NodeInfo] = nodeTest
       if (nTest == null) {
-        do
+        nextNodeNr = tNext(nextNodeNr)
+        while (tree.nodeKind(nextNodeNr) == Type.PARENT_POINTER) {
           nextNodeNr = tNext(nextNodeNr)
-        while (tree.nodeKind(nextNodeNr) == Type.PARENT_POINTER);
+        }
       } else {
-        do
+        nextNodeNr = tNext(nextNodeNr)
+        while (nextNodeNr >= thisNode && !matcher.test(nextNodeNr)) {
           nextNodeNr = tNext(nextNodeNr)
-        while (nextNodeNr >= thisNode && !matcher.test(nextNodeNr))
+        }
       }
       if (nextNodeNr < thisNode) {
         nextNodeNr = -1
@@ -83,16 +85,18 @@ class SiblingIterator(
   def nextAtomizedValue(): AtomicSequence = {
     if (needToAdvance) {
       val thisNode                        = nextNodeNr
-      val nTest: Predicate[_ >: NodeInfo] = nodeTest
+      val nTest: Predicate[? >: NodeInfo] = nodeTest
       val tNext         = tree.next
       if (nTest == null) {
-        do
+        nextNodeNr = tNext(nextNodeNr)
+        while (tree.nodeKind(nextNodeNr) == Type.PARENT_POINTER) {
           nextNodeNr = tNext(nextNodeNr)
-        while (tree.nodeKind(nextNodeNr) == Type.PARENT_POINTER)
+        }
       } else {
-        do
+        nextNodeNr = tNext(nextNodeNr)
+        while (nextNodeNr >= thisNode && !matcher.test(nextNodeNr)) {
           nextNodeNr = tNext(nextNodeNr)
-        while (nextNodeNr >= thisNode && !matcher.test(nextNodeNr))
+        }
       }
       if (nextNodeNr < thisNode) {
         nextNodeNr = -1
@@ -122,16 +126,18 @@ class SiblingIterator(
   def hasNext: Boolean = {
     var n = nextNodeNr
     if (needToAdvance) {
-      val nTest: Predicate[_ >: NodeInfo] = nodeTest
+      val nTest: Predicate[? >: NodeInfo] = nodeTest
       val tNext                           = tree.next
       if (nTest == null) {
-        do
+        n = tNext(n)
+        while (tree.nodeKind(n) == Type.PARENT_POINTER) {
           n = tNext(n)
-        while (tree.nodeKind(n) == Type.PARENT_POINTER)
+        }
       } else {
-        do
+        n = tNext(n)
+        while (n >= nextNodeNr && !matcher.test(n)) {
           n = tNext(n)
-        while (n >= nextNodeNr && !matcher.test(n))
+        }
       }
       if (n < nextNodeNr)
         return false
