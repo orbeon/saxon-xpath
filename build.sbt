@@ -65,7 +65,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(ESVersion.ES2018))),
-    libraryDependencies ++= Seq("org.xml" %%% "sax" % SaxVersion),
+    libraryDependencies += ("org.xml" %%% "sax" % SaxVersion).cross(CrossVersion.for2_13Use3),
     //  .enablePlugins(TzdbPlugin)
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % ScalaJsTimeVersion,
 //    zonesFilter := {(z: String) => z == "America/Los_Angeles"} // Q: See if/how we do this filtering
