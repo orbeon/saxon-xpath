@@ -226,8 +226,8 @@ class DocumentImpl
         }
         val atts: AttributeMap = e.attributes
         for (att <- atts.iterator.asScala if att.isId &&
-          NameChecker.isValidNCName(Whitespace.trim(att.getValue))) {
-          registerID(e, Whitespace.trim(att.getValue))
+          NameChecker.isValidNCName(Whitespace.trim(att.value))) {
+          registerID(e, Whitespace.trim(att.value))
         }
       }
       curr = curr.getNextInDocument(root)

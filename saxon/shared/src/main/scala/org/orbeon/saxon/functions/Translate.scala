@@ -9,9 +9,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.StringValue
 import org.orbeon.saxon.z.{IntToIntHashMap, IntToIntMap}
 
-import scala.beans.BeanProperty
-
-
 
 
 object Translate {
@@ -83,7 +80,6 @@ class Translate
     with Callable
     with StatefulSystemFunction {
 
-  @BeanProperty
   var staticMap: IntToIntMap = null
 
   /**
@@ -136,7 +132,7 @@ class Translate
   override def copy(): Translate = {
     val copy: Translate = SystemFunction
       .makeFunction(getFunctionName.getLocalPart,
-                    getRetainedStaticContext,
+                    retainedStaticContext,
                     getArity)
       .asInstanceOf[Translate]
     copy.staticMap = staticMap

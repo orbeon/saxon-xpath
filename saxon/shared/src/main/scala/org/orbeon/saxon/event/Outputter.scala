@@ -14,21 +14,21 @@ import scala.jdk.CollectionConverters._
 abstract class Outputter
   extends Receiver {
 
-  var pipelineConfiguration: PipelineConfiguration = _
+  override var pipelineConfiguration: PipelineConfiguration = _
   var systemId             : String                = null
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
+  override def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
     this.pipelineConfiguration = pipe
 
-  def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def getConfiguration: Configuration =
     pipelineConfiguration.getConfiguration
 
-  def setSystemId(systemId: String): Unit =
+  override def setSystemId(systemId: String): Unit =
     this.systemId = systemId
 
-  def getSystemId: String = systemId
+  override def getSystemId: String = systemId
 
   def open(): Unit = ()
 
@@ -62,11 +62,11 @@ abstract class Outputter
       namespace(ns.getPrefix, ns.getURI, properties)
     for (att <- attributes.iterator.asScala)
       attribute(
-        att.getNodeName,
-        att.getType,
-        att.getValue,
-        att.getLocation,
-        att.getProperties
+        att.nodeName,
+        att.`type`,
+        att.value,
+        att.location,
+        att.properties
       )
     startContent()
   }

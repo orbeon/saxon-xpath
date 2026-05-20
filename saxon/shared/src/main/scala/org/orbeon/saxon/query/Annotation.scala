@@ -16,8 +16,6 @@ import java.util.List
 
 import Annotation._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object Annotation {
 
   val UPDATING: StructuredQName =
@@ -48,8 +46,9 @@ class Annotation(name: StructuredQName) {
 
   private var qName: StructuredQName = name
 
-  @BeanProperty
   var annotationParameters: List[AtomicValue] = new ArrayList()
+
+  def getAnnotationParameters: List[AtomicValue] = annotationParameters
 
   def getAnnotationQName: StructuredQName = qName
 

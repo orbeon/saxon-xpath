@@ -20,8 +20,6 @@ import XQueryFunction._
 import org.orbeon.saxon.s9api.HostLanguage.{HostLanguage, XQUERY}
 import org.orbeon.saxon.trans.FunctionStreamability.{FunctionStreamability => _, _}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -34,15 +32,12 @@ object XQueryFunction {
 
 class XQueryFunction extends Declaration with Location {
 
-  @BeanProperty
   var functionName: StructuredQName = _
 
   private var arguments: List[UserFunctionParameter] = new ArrayList(8)
 
-  @BeanProperty
   var resultType: SequenceType = _
 
-  @BeanProperty
   var body: Expression = null
 
   private var references: List[UserFunctionResolvable] = new ArrayList(10)
@@ -51,13 +46,10 @@ class XQueryFunction extends Declaration with Location {
 
   private var compiledFunction: UserFunction = null
 
-  @BooleanBeanProperty
   var memoFunction: Boolean = _
 
-  @BeanProperty
   var namespaceResolver: NamespaceResolver = _
 
-  @BeanProperty
   var staticContext: QueryModule = _
 
   var isUpdating: Boolean = false
@@ -133,7 +125,7 @@ class XQueryFunction extends Declaration with Location {
         }
         var rsc: RetainedStaticContext = null
         try {
-          rsc = getStaticContext.makeRetainedStaticContext()
+          rsc = staticContext.makeRetainedStaticContext()
           body.setRetainedStaticContext(rsc)
           val visitor: ExpressionVisitor =
             ExpressionVisitor.make(staticContext)
@@ -166,13 +158,13 @@ class XQueryFunction extends Declaration with Location {
         compiledFunction.setBody(body)
         compiledFunction.setFunctionName(functionName)
         compiledFunction.setParameterDefinitions(params)
-        compiledFunction.setResultType(getResultType)
+        compiledFunction.setResultType(resultType)
         compiledFunction.setLineNumber(location.getLineNumber)
         compiledFunction.setSystemId(location.getSystemId)
         compiledFunction.setStackFrameMap(map)
         compiledFunction.setUpdating(isUpdating)
         compiledFunction.setAnnotations(annotations)
-        if (staticContext.getUserQueryContext.isCompileWithTracing) {
+        if (staticContext.userQueryContext.isCompileWithTracing) {
           namespaceResolver = staticContext.getNamespaceResolver
           val trace: ComponentTracer = new ComponentTracer(compiledFunction)
           trace.setLocation(location)
@@ -221,7 +213,7 @@ class XQueryFunction extends Declaration with Location {
     }
     if (opt.isOptionSet(OptimizerOptions.EXTRACT_GLOBALS)) {
       val exec: Executable =
-        getStaticContext.getExecutable
+        staticContext.executable
       val manager: GlobalVariableManager = new GlobalVariableManager() {
         def addGlobalVariable(variable: GlobalVariable): Unit = {
           var pd: PackageData = staticContext.getPackageData
@@ -263,7 +255,7 @@ class XQueryFunction extends Declaration with Location {
         val cbody: Expression = opt.compileToByteCode(
           compilerService,
           body,
-          getFunctionName.getDisplayName,
+          functionName.getDisplayName,
           Expression.PROCESS_METHOD | Expression.ITERATE_METHOD)
         if (cbody != null) {
           body = cbody
@@ -339,5 +331,23 @@ class XQueryFunction extends Declaration with Location {
   def getProperties: Iterator[String] = new PairIterator("name", "as")
 
   def getHostLanguage: HostLanguage = XQUERY
+
+  def getFunctionName: StructuredQName = functionName
+
+  def setFunctionName(name: StructuredQName): Unit = functionName = name
+
+  def getResultType: SequenceType = resultType
+
+  def setResultType(`type`: SequenceType): Unit = resultType = `type`
+
+  def setBody(body: Expression): Unit = this.body = body
+
+  def getBody: Expression = body
+
+  def setStaticContext(context: QueryModule): Unit = staticContext = context
+
+  def getStaticContext: QueryModule = staticContext
+
+  def setMemoFunction(memo: Boolean): Unit = memoFunction = memo
 
 }

@@ -11,12 +11,8 @@ import org.orbeon.saxon.tree.iter.ManualIterator
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.NumericValue
 
-import scala.beans.BeanProperty
+class GeneralPositionalPattern(base: NodeTest, var positionExpr: Expression) extends Pattern {
 
-
-class GeneralPositionalPattern(base: NodeTest, @BeanProperty var positionExpr: Expression) extends Pattern {
-
-  @BeanProperty
   var nodeTest: NodeTest = base
 
   private var usesPosition: Boolean = true

@@ -28,11 +28,9 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.value.SequenceType
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 import org.orbeon.saxon.s9api.HostLanguage._
 
-class PatternThatSetsCurrent(@BeanProperty var wrappedPattern: Pattern,
+class PatternThatSetsCurrent(var wrappedPattern: Pattern,
                              private var binding: LocalVariableBinding)
   extends Pattern {
 

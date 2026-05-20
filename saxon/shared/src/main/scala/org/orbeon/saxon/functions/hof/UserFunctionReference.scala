@@ -14,14 +14,14 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.utils.Controller
 
-import scala.beans.BeanProperty
+
 
 object UserFunctionReference {
 
   class BoundUserFunction(private var agent: ExportAgent,
                           private var function: Function,
                           private var component: Component,
-                          @BeanProperty var controller: Controller)
+                          var controller: Controller)
     extends AbstractFunction
       with ContextOriginator {
 

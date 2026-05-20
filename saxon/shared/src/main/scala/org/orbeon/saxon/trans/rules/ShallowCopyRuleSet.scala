@@ -56,13 +56,13 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         c2.setOrigin(this)
         c2.trackFocus(node.iterateAxis(AxisInfo.CHILD))
         c2.setCurrentComponent(c2.getCurrentMode) // Bug 3508
-        pipe.setXPathContext(c2)
+        pipe.xpathContext = c2
         var tc = context.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, out, c2, locationId)
         while ( {
           tc != null
         }) tc = tc.processLeavingTail
         out.endDocument()
-        pipe.setXPathContext(context)
+        pipe.xpathContext = context
       case Type.ELEMENT =>
         val pipe = out.getPipelineConfiguration
         if (out.getSystemId == null) out.setSystemId(node.getBaseURI)
@@ -74,7 +74,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         }
         val c2 = context.newContext
         c2.setCurrentComponent(c2.getCurrentMode)
-        pipe.setXPathContext(c2)
+        pipe.xpathContext = c2
         // apply-templates to all attributes
         val attributes = node.iterateAxis(AxisInfo.ATTRIBUTE)
         if (attributes ne EmptyIterator.ofNodes) {
@@ -94,7 +94,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
           }) tc = tc.processLeavingTail
         }
         out.endElement()
-        pipe.setXPathContext(context)
+        pipe.xpathContext = context
       case Type.TEXT =>
         out.characters(node.getStringValueCS, locationId, ReceiverOption.NONE)
       case Type.COMMENT =>

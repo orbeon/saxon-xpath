@@ -72,9 +72,8 @@ abstract class NodeImpl
 
   def getSiblingPosition: Int = index
 
-  def setSiblingPosition(index: Int): Unit = {
+  def setSiblingPosition(index: Int): Unit =
     this.index = index
-  }
 
   def atomize(): AtomicSequence = {
     val stype: SchemaType = getSchemaType

@@ -8,21 +8,19 @@ import org.orbeon.saxon.lib.{ErrorReporter, ParseOptions, SchemaURIResolver}
 import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.utils.{Configuration, Controller}
 
-import scala.beans.BeanProperty
-
-
 class PipelineConfiguration {
 
   private var config: Configuration = _
-  private var uriResolver: URIResolver = _
-  @BeanProperty
+  private var uriResolver_ : URIResolver = _
+
   var schemaURIResolver: SchemaURIResolver = _
-  @BeanProperty
+
   var controller: Controller = _
-  @BeanProperty
+
   var parseOptions: ParseOptions = _
-  @BeanProperty
+
   var hostLanguage: HostLanguage.HostLanguage = HostLanguage.XSLT
+
 
   private var components: Map[String, Any] = _
 
@@ -48,39 +46,46 @@ class PipelineConfiguration {
   }
 
   /*@NotNull*/
-  def getConfiguration: Configuration = config
+  def configuration: Configuration = config
 
-  def setConfiguration(config: Configuration): Unit =
+  def getConfiguration: Configuration = configuration
+
+  def configuration_=(config: Configuration): Unit =
     this.config = config
 
-  def getErrorReporter: ErrorReporter = {
-    var reporter = parseOptions.getErrorReporter
+  def errorReporter: ErrorReporter = {
+    var reporter = parseOptions.errorReporter
     if (reporter == null)
       reporter = config.makeErrorReporter
     reporter
   }
 
-  def setErrorReporter(errorReporter: ErrorReporter): Unit =
-    parseOptions.setErrorReporter(errorReporter)
+  def errorReporter_=(errorReporter: ErrorReporter): Unit =
+    parseOptions.errorReporter = errorReporter
 
-  def getURIResolver: URIResolver = uriResolver
+  def uriResolver: URIResolver = this.uriResolver_
 
-  def setURIResolver(uriResolver: URIResolver): Unit =
-    this.uriResolver = uriResolver
+  def uriResolver_=(uriResolver: URIResolver): Unit =
+    this.uriResolver_ = uriResolver
 
-  def setUseXsiSchemaLocation(recognize: Boolean): Unit =
-    parseOptions.setUseXsiSchemaLocation(recognize)
+  def useXsiSchemaLocation_=(recognize: Boolean): Unit =
+    parseOptions.useXsiSchemaLocation = recognize
 
-  def setRecoverFromValidationErrors(recover: Boolean): Unit =
-    parseOptions.setContinueAfterValidationErrors(recover)
+  def recoverFromValidationErrors_=(recover: Boolean): Unit =
+    parseOptions.continueAfterValidationErrors = recover
 
-  def isRecoverFromValidationErrors: Boolean =
-    parseOptions.isContinueAfterValidationErrors
+  def recoverFromValidationErrors: Boolean =
+    parseOptions.continueAfterValidationErrors
 
   def isXSLT: Boolean = hostLanguage == HostLanguage.XSLT
 
-  def setExpandAttributeDefaults(expand: Boolean): Unit =
-    parseOptions.setExpandAttributeDefaults(expand)
+  def getHostLanguage: HostLanguage.HostLanguage = hostLanguage
+
+  def setHostLanguage(hostLanguage: HostLanguage.HostLanguage): Unit =
+    this.hostLanguage = hostLanguage
+
+  def expandAttributeDefaults_=(expand: Boolean): Unit =
+    parseOptions.expandAttributeDefaults = expand
 
   def setComponent(name: String, value: AnyRef): Unit = {
     if (components == null)
@@ -91,8 +96,16 @@ class PipelineConfiguration {
   def getComponent(name: String): Any =
     if (components == null) null else components.get(name)
 
-  def setXPathContext(context: XPathContext): Unit =
+  def xPathContext_=(context: XPathContext): Unit =
     this.context = context
 
+  def xPathContext: XPathContext = context
+
   def getXPathContext: XPathContext = context
+
+  def setXPathContext(context: XPathContext): Unit = this.context = context
+
+  def xpathContext_=(context: XPathContext): Unit = xPathContext = context
+
+  def xpathContext: XPathContext = xPathContext
 }

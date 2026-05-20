@@ -136,7 +136,7 @@ object DocumentFn {
         var s: Receiver = b
         if (parseOpt == null) {
           parseOpt = new ParseOptions(
-            b.getPipelineConfiguration.getParseOptions)
+            b.pipelineConfiguration.parseOptions)
           if (packageData.isInstanceOf[StylesheetPackage]) {
             val rule: SpaceStrippingRule =
               packageData.asInstanceOf[StylesheetPackage].getSpaceStrippingRule
@@ -146,7 +146,7 @@ object DocumentFn {
           }
           parseOpt.setSchemaValidationMode(controller.getSchemaValidationMode)
         }
-        b.getPipelineConfiguration.setParseOptions(parseOpt)
+        b.pipelineConfiguration.parseOptions = parseOpt
         if (parseOpt.isLineNumbering) {
           b.setLineNumbering(true)
         }
@@ -171,7 +171,7 @@ object DocumentFn {
             parseOpt.addFilter(config.makeDocumentProjector(pathRoot))
           }
         }
-        s.setPipelineConfiguration(b.getPipelineConfiguration)
+        s.pipelineConfiguration = b.pipelineConfiguration
         try {
           Sender.send(source, s, parseOpt)
           newdoc = b.getCurrentRoot.getTreeInfo
@@ -429,11 +429,11 @@ object DocumentFn {
               out: Receiver,
               parseOptions: ParseOptions): Unit = {
     var baseUrl = baseURL
-    var pipe: PipelineConfiguration = out.getPipelineConfiguration
+    var pipe: PipelineConfiguration = out.pipelineConfiguration
     if (pipe == null) {
       pipe = c.getController.makePipelineConfiguration
-      pipe.setXPathContext(c)
-      out.setPipelineConfiguration(pipe)
+      pipe.xpathContext = c
+      out.pipelineConfiguration = pipe
     }
     var documentKey: String = null
     if (baseUrl == null) {
@@ -492,7 +492,7 @@ object DocumentFn {
       controller.getConfiguration.getLogger
         .info("Streaming input document " + source.getSystemId)
     }
-    out.setPipelineConfiguration(pipe)
+    out.pipelineConfiguration = pipe
     try Sender.send(source, out, parseOptions)
     catch {
       case e: XPathException => {

@@ -15,14 +15,15 @@ import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 abstract class SequenceReceiver(pipe: PipelineConfiguration)
   extends Receiver {
 
-  var previousAtomic       : Boolean               = false
-  var pipelineConfiguration: PipelineConfiguration = pipe
+  var previousAtomic          : Boolean               = false
+  private var _pipelineConfiguration: PipelineConfiguration = pipe
+  def pipelineConfiguration: PipelineConfiguration = _pipelineConfiguration
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
+    _pipelineConfiguration = pipe
+  }
   var systemId             : String                = null
 
-  def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
-
-  def setPipelineConfiguration(pipelineConfiguration: PipelineConfiguration): Unit =
-    this.pipelineConfiguration = pipelineConfiguration
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def getConfiguration: Configuration =
     pipelineConfiguration.getConfiguration
@@ -136,7 +137,7 @@ abstract class SequenceReceiver(pipe: PipelineConfiguration)
   }
 
   def getErrorCodeForDecomposingFunctionItems: String =
-    if (getPipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
+    if (pipelineConfiguration.isXSLT) "XTDE0450" else "XQTY0105"
 
   override def handlesAppend: Boolean = true
 }

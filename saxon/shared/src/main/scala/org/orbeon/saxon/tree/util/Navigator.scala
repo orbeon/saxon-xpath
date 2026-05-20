@@ -589,8 +589,8 @@ object Navigator {
             out.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
 
         for (attr <- node.attributes.iterator.asScala) {
-          val attType = if (keepTypes) attr.getType else BuiltInAtomicType.UNTYPED_ATOMIC
-          out.attribute(attr.getNodeName, attType, attr.getValue, attr.getLocation, attr.getProperties)
+          val attType = if (keepTypes) attr.`type` else BuiltInAtomicType.UNTYPED_ATOMIC
+          out.attribute(attr.nodeName, attType, attr.value, attr.location, attr.properties)
         }
 
         for (child <- node.children)

@@ -43,11 +43,11 @@ class OutputterEventBuffer extends Outputter {
       new OutputterEvent.StartElement(elemName, `type`, location, properties))
     for (att <- attributes.iterator.asScala) {
       buffer.add(
-        new OutputterEvent.Attribute(att.getNodeName,
-          att.getType,
-          att.getValue,
-          att.getLocation,
-          att.getProperties))
+        new OutputterEvent.Attribute(att.nodeName,
+          att.`type`,
+          att.value,
+          att.location,
+          att.properties))
     }
     for (binding <- namespaces.asScala) {
       buffer.add(

@@ -11,23 +11,20 @@ import org.orbeon.saxon.tree.tiny.NodeVectorTree
 import org.orbeon.saxon.value.StringValue
 import org.orbeon.saxon.z.{IntExceptPredicate, IntSet}
 
-import scala.beans.BeanProperty
-
-
 object CombinedNodeTest {
 
   def getContentTypeForAlphaCode(
     nodetest1 : NameTest,
     nodetest2 : ContentTypeTest
   ): String =
-    if (nodetest1.getNodeKind == Type.ELEMENT) {
+    if (nodetest1.nodeKind == Type.ELEMENT) {
       if (nodetest2.getContentType == Untyped.getInstance && nodetest2.isNillable) {
         null
       } else {
         val contentType = nodetest2.getContentType
         contentType.getEQName
       }
-    } else if (nodetest1.getNodeKind == Type.ATTRIBUTE) {
+    } else if (nodetest1.nodeKind == Type.ATTRIBUTE) {
       if (nodetest2.getContentType == BuiltInAtomicType.UNTYPED_ATOMIC) {
         null
       } else {
@@ -40,7 +37,7 @@ object CombinedNodeTest {
 }
 
 class CombinedNodeTest(private var nodetest1: NodeTest,
-                       @BeanProperty var operator: Int,
+                       var operator: Int,
                        private var nodetest2: NodeTest)
   extends NodeTest {
 
@@ -100,7 +97,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
       var content = ""
       nodetest2 match {
         case contentTypeTest: ContentTypeTest =>
-          var schemaType = contentTypeTest.getSchemaType
+          var schemaType = contentTypeTest.schemaType
           if (forExport)
             schemaType = schemaType.getNearestNamedType
           content = ", " + schemaType.getEQName
@@ -137,7 +134,7 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
       map.initialPut("n", new StringValue(nodetest1.getMatchingNodeName.getEQName))
       nodetest2 match {
         case contentTypeTest: ContentTypeTest =>
-          val schemaType = contentTypeTest.getSchemaType
+          val schemaType = contentTypeTest.schemaType
           if (schemaType != Untyped.getInstance && schemaType != BuiltInAtomicType.UNTYPED_ATOMIC) {
             map.initialPut(
               "c",
@@ -260,6 +257,8 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
 
   def getOperand(which: Int): NodeTest =
     if (which == 0) nodetest1 else nodetest2
+
+  def getOperator: Int = operator
 
   override def explainMismatch(
     item : Item,

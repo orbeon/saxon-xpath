@@ -34,7 +34,7 @@ class EndsWith extends CollatingFunctionFixed {
   override def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
                                          contextInfo: ContextItemStaticInfo,
                                          arguments: Expression*): Expression =
-    if (getStringCollator == CodepointCollator.getInstance) {
+    if (stringCollator == CodepointCollator.getInstance) {
       new SystemFunctionCall.Optimized(this, arguments.toArray) {
         override def effectiveBooleanValue(context: XPathContext): Boolean = {
           val s0: String = getArg(0).evaluateAsString(context).toString
@@ -50,7 +50,7 @@ class EndsWith extends CollatingFunctionFixed {
     val s0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val s1: StringValue = arguments(1).head.asInstanceOf[StringValue]
     BooleanValue.get(
-      endsWith(s0, s1, getStringCollator.asInstanceOf[SubstringMatcher]))
+      endsWith(s0, s1, stringCollator.asInstanceOf[SubstringMatcher]))
   }
 
   override def getCompilerName(): String = "StartsWithCompiler"

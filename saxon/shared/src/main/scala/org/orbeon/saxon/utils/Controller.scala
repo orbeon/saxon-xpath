@@ -82,7 +82,7 @@ class Controller extends ContextOriginator {
   var principalResultURI: String = _
   private var unparsedTextResolver: UnparsedTextURIResolver = _
   private var defaultCollectionURI: String = _
-  private var errorReporter: ErrorReporter = new StandardErrorReporter()
+  var errorReporter: ErrorReporter = new StandardErrorReporter()
   // UnfailingErrorListener errorListener;
   private var treeModel: TreeModel = TreeModel.TINY_TREE
   private var sourceDocumentPool: DocumentPool = _
@@ -325,14 +325,14 @@ class Controller extends ContextOriginator {
   /*@NotNull*/
   def makePipelineConfiguration: PipelineConfiguration = {
     val pipe = config.makePipelineConfiguration
-    pipe.setURIResolver(if (userURIResolver == null) standardURIResolver
-    else userURIResolver)
-    pipe.getParseOptions.setSchemaValidationMode(validationMode) // added in 9.7
-    pipe.getParseOptions.setErrorReporter(errorReporter) // added in 9.7.0.4
-    pipe.setController(this)
+    pipe.uriResolver = if (userURIResolver == null) standardURIResolver
+    else userURIResolver
+    pipe.parseOptions.setSchemaValidationMode(validationMode) // added in 9.7
+    pipe.parseOptions.setErrorReporter(errorReporter) // added in 9.7.0.4
+    pipe.controller = this
     val executable = getExecutable
     if (executable != null) { // can be null for an IdentityTransformer
-      pipe.setHostLanguage(executable.getHostLanguage)
+      pipe.hostLanguage = executable.getHostLanguage
     }
     pipe
   }
@@ -1025,7 +1025,7 @@ class Controller extends ContextOriginator {
     }
     /* if (isStylesheetStrippingTypeAnnotations) r = config.getAnnotationStripper(r)*/
     val pipe = sourceBuilder.getPipelineConfiguration
-    pipe.getParseOptions.setSchemaValidationMode(validationMode)
+    pipe.parseOptions.setSchemaValidationMode(validationMode)
     r.setPipelineConfiguration(pipe)
     Sender.send(source, r, null)
     if (source.isInstanceOf[AugmentedSource] && source.asInstanceOf[AugmentedSource].isPleaseCloseAfterUse) source.asInstanceOf[AugmentedSource].close()

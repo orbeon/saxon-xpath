@@ -12,9 +12,6 @@ import org.orbeon.saxon.tree.tiny.{NodeVectorTree, TinyTree}
 import org.orbeon.saxon.z.IntSet
 
 import java.util.function.IntPredicate
-import scala.beans.BeanProperty
-
-
 /**
   * NodeTest is an interface that enables a test of whether a node has a particular
   * name and type. A LocalNameTest matches the node type and the local name,
@@ -22,13 +19,12 @@ import scala.beans.BeanProperty
   */
 class LocalNameTest(
   pool                        : NamePool,
-  @BeanProperty var nodeKind  : Int,
-  @BeanProperty var localName : String
+  var nodeKind  : Int,
+  var localName : String
 )
   extends NodeTest
   with QNameTest {
 
-  @BeanProperty
   var namePool: NamePool = pool
 
   private val uType: UType = UType.fromTypeCode(nodeKind)
@@ -96,6 +92,8 @@ class LocalNameTest(
 
   def matches(qname: StructuredQName): Boolean =
     localName == qname.getLocalPart
+
+  def getLocalName: String = localName
 
   def getDefaultPriority: Double = -0.25
 

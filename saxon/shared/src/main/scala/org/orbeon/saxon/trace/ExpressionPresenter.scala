@@ -385,7 +385,7 @@ class ExpressionPresenter {
     try {
       receiver match {
         case filter: CheckSumFilter =>
-          val c = filter.getChecksum
+          val c = filter.checksum
           cco.processingInstruction(CheckSumFilter.SIGMA,
             java.lang.Integer.toHexString(c),
             Loc.NONE,

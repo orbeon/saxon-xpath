@@ -36,6 +36,10 @@ object PullProvider {
 trait PullProvider {
   def setPipelineConfiguration(pipe: PipelineConfiguration): Unit
   def getPipelineConfiguration: PipelineConfiguration
+
+  def pipelineConfiguration: PipelineConfiguration = getPipelineConfiguration
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = setPipelineConfiguration(pipe)
+
   def next(): Event
   def current: Event
   def getAttributes: AttributeMap

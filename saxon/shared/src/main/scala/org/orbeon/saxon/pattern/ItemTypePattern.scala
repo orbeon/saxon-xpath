@@ -16,7 +16,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import scala.beans.{BeanProperty}
 
-class ItemTypePattern(@BeanProperty var itemTyp: ItemType) extends Pattern {
+class ItemTypePattern(var itemTyp: ItemType) extends Pattern {
 
 
   this.priority = itemTyp.getDefaultPriority

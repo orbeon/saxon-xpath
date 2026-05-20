@@ -7,7 +7,6 @@ import org.orbeon.saxon.om.{Function, Sequence}
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
-import scala.beans.BooleanBeanProperty
 
 
 object PositionAndLast {
@@ -40,7 +39,6 @@ object PositionAndLast {
 
 abstract class PositionAndLast extends ContextAccessorFunction {
 
-  @BooleanBeanProperty
   var contextPossiblyUndefined: Boolean = true
 
   override def getNetCost: Int = 0

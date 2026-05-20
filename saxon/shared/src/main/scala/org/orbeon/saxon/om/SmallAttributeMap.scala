@@ -15,11 +15,11 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
   def size: Int = attributes.size
 
   override def get(name: NodeName): AttributeInfo =
-    attributes.asScala.find(_.getNodeName == name).orNull
+    attributes.asScala.find(_.nodeName == name).orNull
 
   override def get(uri: String, local: String): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name: NodeName = info.getNodeName
+      val name: NodeName = info.nodeName
       if (name.getLocalPart == local && name.hasURI(uri)) {
         return info
       }
@@ -29,7 +29,7 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
 
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name: NodeName = info.getNodeName
+      val name: NodeName = info.nodeName
       if (name.obtainFingerprint(namePool) == fingerprint) {
         return info
       }

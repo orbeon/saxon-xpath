@@ -11,14 +11,10 @@ import org.orbeon.saxon.query.{AnnotationList, XQueryFunctionLibrary}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.SymbolicName
 
-import scala.beans.BeanProperty
-
 class CallableFunction extends AbstractFunction {
 
-  @BeanProperty
   var annotationList: AnnotationList = _
 
-  @BeanProperty
   var callable: Callable = _
   private var name: SymbolicName.F = _
   private var `type`: FunctionItemType = _

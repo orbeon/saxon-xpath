@@ -10,12 +10,9 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.ManualIterator
 
-import scala.beans.BeanProperty
-
-
 class GeneralNodePattern(
-  @BeanProperty var equivalentExpr : Expression,
-  @BeanProperty var itemTyp        : NodeTest
+  var equivalentExpr : Expression,
+  var itemTyp        : NodeTest
 ) extends Pattern {
 
   override def getItemType: ItemType = itemTyp

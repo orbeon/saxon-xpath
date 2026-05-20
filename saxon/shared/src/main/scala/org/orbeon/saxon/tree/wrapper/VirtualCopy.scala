@@ -301,7 +301,7 @@ class VirtualCopy(var original: NodeInfo,
           allNamespaces.add(new NamespaceBinding(getPrefix, getURI))
         }
         for (att <- original.attributes.iterator.asScala) {
-          val name: NodeName = att.getNodeName
+          val name: NodeName = att.nodeName
           if (name.getURI != null) {
             val b: NamespaceBinding =
               new NamespaceBinding(name.getPrefix, name.getURI)

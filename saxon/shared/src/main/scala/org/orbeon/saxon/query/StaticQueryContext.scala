@@ -28,7 +28,6 @@ import java.util._
 import StaticQueryContext._
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.util.control.Breaks._
 
 object StaticQueryContext {
@@ -48,57 +47,42 @@ class StaticQueryContext() {
 
   private var config: Configuration = _
 
-  @BeanProperty
   var namePool: NamePool = _
 
-  @BeanProperty
   var baseURI: String = _
 
-  @BeanProperty
   var userDeclaredNamespaces: HashMap[String, String] = _
 
   private var userDeclaredVariables: Set[GlobalVariable] = _
 
-  @BooleanBeanProperty
   var inheritNamespaces: Boolean = true
 
-  @BooleanBeanProperty
   var preserveNamespaces: Boolean = true
 
-  @BeanProperty
   var constructionMode: Int = Validation.PRESERVE
 
-  @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
 
-  @BeanProperty
   var default_ElementNamespace: String = NamespaceConstant.NULL
 
-  @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
 
   private var preserveSpace: Boolean = false
 
   private var defaultEmptyLeast: Boolean = true
 
-  @BeanProperty
   var moduleURIResolver: ModuleURIResolver = _
 
-  @BeanProperty
   var errorReporter: ErrorReporter = new StandardErrorReporter()
 
-  @BeanProperty
   var codeInjector: CodeInjector = _
 
   var isUpdating: Boolean = false
 
-  @BeanProperty
   var defaultCollationName: String = _
 
-  @BeanProperty
   var moduleLocation: Location = _
 
-  @BeanProperty
   var optimizerOptions: OptimizerOptions = _
 
   def this(config: Configuration, initialize: Boolean) = {
@@ -177,6 +161,76 @@ class StaticQueryContext() {
   }
 
   def getConfiguration: Configuration = config
+
+  def getBaseURI: String = baseURI
+
+  def setBaseURI(baseURI: String): Unit = {
+    this.baseURI = baseURI
+  }
+
+  def getDefaultCollationName: String = defaultCollationName
+
+  def getModuleLocation: Location = moduleLocation
+
+  def setModuleLocation(location: Location): Unit = {
+    this.moduleLocation = location
+  }
+
+  def getOptimizerOptions: OptimizerOptions = optimizerOptions
+
+  def setOptimizerOptions(options: OptimizerOptions): Unit = {
+    this.optimizerOptions = options
+  }
+
+  def isInheritNamespaces: Boolean = inheritNamespaces
+
+  def setInheritNamespaces(inherit: Boolean): Unit = {
+    this.inheritNamespaces = inherit
+  }
+
+  def isPreserveNamespaces: Boolean = preserveNamespaces
+
+  def setPreserveNamespaces(preserve: Boolean): Unit = {
+    this.preserveNamespaces = preserve
+  }
+
+  def getDefaultFunctionNamespace: String = defaultFunctionNamespace
+
+  def setDefaultFunctionNamespace(ns: String): Unit = {
+    this.defaultFunctionNamespace = ns
+  }
+
+  def getDefault_ElementNamespace: String = default_ElementNamespace
+
+  def setDefault_ElementNamespace(ns: String): Unit = {
+    this.default_ElementNamespace = ns
+  }
+
+  def getConstructionMode: Int = constructionMode
+
+  def setConstructionMode(mode: Int): Unit = {
+    this.constructionMode = mode
+  }
+
+  def getRequiredContextItemType: ItemType = requiredContextItemType
+
+  def setRequiredContextItemType(`type`: ItemType): Unit = {
+    this.requiredContextItemType = `type`
+  }
+
+  def getCodeInjector: CodeInjector = codeInjector
+
+  def setCodeInjector(injector: CodeInjector): Unit = {
+    this.codeInjector = injector
+  }
+
+  def getErrorReporter: ErrorReporter = errorReporter
+
+  def setErrorReporter(reporter: ErrorReporter): Unit = {
+    this.errorReporter = reporter
+  }
+
+  def getUserDeclaredNamespaces: HashMap[String, String] = userDeclaredNamespaces
 
   def makeExecutable(): Executable = {
     val executable: Executable = new Executable(config)
@@ -411,5 +465,11 @@ class StaticQueryContext() {
   }
 
   def isUpdatingEnabled: Boolean = isUpdating
+
+  def getModuleURIResolver: ModuleURIResolver = moduleURIResolver
+
+  def setModuleURIResolver(resolver: ModuleURIResolver): Unit = {
+    this.moduleURIResolver = resolver
+  }
 
 }

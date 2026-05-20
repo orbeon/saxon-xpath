@@ -10,7 +10,7 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.AtomicValue
 
-import scala.beans.BeanProperty
+
 
 object Doc {
 
@@ -71,7 +71,6 @@ object Doc {
 
 class Doc extends SystemFunction {
 
-  @BeanProperty
   var parseOptions: ParseOptions = _
 
   override def getCardinality(arguments: Array[Expression]): Int =
@@ -93,7 +92,7 @@ class Doc extends SystemFunction {
         href,
         getRetainedStaticContext.getStaticBaseUriString,
         packageData,
-        getParseOptions,
+        parseOptions,
         context,
         null,
         silent = false)

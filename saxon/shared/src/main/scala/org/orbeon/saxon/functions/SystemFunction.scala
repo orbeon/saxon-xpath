@@ -12,7 +12,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
-import scala.beans.BeanProperty
 
 
 /**
@@ -63,18 +62,31 @@ object SystemFunction {
 
 abstract class SystemFunction extends AbstractFunction {
 
-  @BeanProperty
   var arity: Int = _
 
-  @BeanProperty
+  def getArity: Int = arity
+
+  def setArity(a: Int): Unit = arity = a
+
   var details: BuiltInFunctionSet.Entry = _
 
-  @BeanProperty
   var retainedStaticContext: RetainedStaticContext = _
+
+  def getDetails: BuiltInFunctionSet.Entry = details
+
+  def setDetails(details: BuiltInFunctionSet.Entry): Unit = {
+    this.details = details
+  }
+
+  def getRetainedStaticContext: RetainedStaticContext = retainedStaticContext
+
+  def setRetainedStaticContext(rsc: RetainedStaticContext): Unit = {
+    retainedStaticContext = rsc
+  }
 
   def makeFunctionCall(arguments: Expression*): Expression = {
     val e = new SystemFunctionCall(this, arguments.toArray)
-    e.setRetainedStaticContext(getRetainedStaticContext)
+    e.setRetainedStaticContext(retainedStaticContext)
     e
   }
 
@@ -203,8 +215,8 @@ abstract class SystemFunction extends AbstractFunction {
         qName.getEQName
     out.emitAttribute("name", name)
     out.emitAttribute("arity", getArity.toString)
-    if ((getDetails.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) != 0)
-      out.emitRetainedStaticContext(getRetainedStaticContext, null)
+    if ((details.properties & BuiltInFunctionSet.DEPENDS_ON_STATIC_CONTEXT) != 0)
+      out.emitRetainedStaticContext(retainedStaticContext, null)
     out.endElement()
   }
 
@@ -217,7 +229,7 @@ abstract class SystemFunction extends AbstractFunction {
   override def isTrustedResultType: Boolean = true
 
   def getStaticBaseUriString: String =
-    getRetainedStaticContext.getStaticBaseUriString
+    retainedStaticContext.getStaticBaseUriString
 
   def exportAttributes(out: ExpressionPresenter): Unit = ()
 

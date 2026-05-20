@@ -40,7 +40,7 @@ class MessageWarner extends XMLEmitter {
   }
 
   override def endDocument(): Unit = {
-    val reporter: ErrorReporter = getPipelineConfiguration.getErrorReporter
+    val reporter: ErrorReporter = getPipelineConfiguration.errorReporter
     var de: XmlProcessingIncident = new XmlProcessingIncident(
       getWriter.toString,
       if (errorCode == null) "XTMM9000" else errorCode)

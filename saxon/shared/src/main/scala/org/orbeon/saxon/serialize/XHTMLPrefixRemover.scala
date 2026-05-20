@@ -32,8 +32,8 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
         elemNodeName = new FingerprintedQName("", uri, elemNodeName.getLocalPart)
       nameSpaceMap = nameSpaceMap.put("", uri)
     }
-    for (att <- attributes.iterator.asScala if isSpecial(att.getNodeName.getURI))
-      nameSpaceMap = nameSpaceMap.put(att.getNodeName.getPrefix, att.getNodeName.getURI)
+    for (att <- attributes.iterator.asScala if isSpecial(att.nodeName.getURI))
+      nameSpaceMap = nameSpaceMap.put(att.nodeName.getPrefix, att.nodeName.getURI)
     nextReceiver.startElement(elemNodeName,
       `type`,
       attributes,

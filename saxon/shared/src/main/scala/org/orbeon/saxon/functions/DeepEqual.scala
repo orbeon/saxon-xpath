@@ -597,7 +597,7 @@ class DeepEqual extends CollatingFunctionFixed {
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val comparer: GenericAtomicComparer =
-      new GenericAtomicComparer(getStringCollator, context)
+      new GenericAtomicComparer(stringCollator, context)
     val b: Boolean = deepEqual(arguments(0).iterate(),
       arguments(1).iterate(),
       comparer,

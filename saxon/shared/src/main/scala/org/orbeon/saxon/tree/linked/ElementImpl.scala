@@ -182,10 +182,10 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       new ju.ArrayList[AttributeInfo](attributes.size)
     for (att <- attributes.iterator.asScala) {
       atts.add(
-        new AttributeInfo(att.getNodeName,
+        new AttributeInfo(att.nodeName,
           BuiltInAtomicType.UNTYPED_ATOMIC,
-          att.getValue,
-          att.getLocation,
+          att.value,
+          att.location,
           0))
     }
     out.startElement(
@@ -214,7 +214,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
         while (true) {
           val n: ElementImpl = iter.next().asInstanceOf[ElementImpl]
           for (att <- attributeMap.iterator.asScala if att.isId) {
-            root.deregisterID(att.getValue)
+            root.deregisterID(att.value)
           }
           if (n == null) {
             break()
@@ -330,7 +330,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     this.setAttributes(atts)
     if (index >= 0 && info.isId) {
       val root: DocumentImpl = getPhysicalRoot
-      root.deregisterID(info.getValue)
+      root.deregisterID(info.value)
     }
     attribute.asInstanceOf[AttributeImpl].setRawParent(null)
   }
@@ -341,7 +341,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on the element name")
     }
-    for (att <- attributeMap.iterator.asScala if att.getNodeName.getPrefix == prefix) {
+    for (att <- attributeMap.iterator.asScala if att.nodeName.getPrefix == prefix) {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on an existing attribute name")
     }

@@ -34,18 +34,18 @@ class CharacterMapExpander(next: Receiver) extends ProxyReceiver(next) {
     val atts2: ju.List[AttributeInfo] =
       new ju.ArrayList[AttributeInfo](attributes.size)
     for (att <- attributes.iterator.asScala) {
-      val oldValue: String = att.getValue
-      if (!ReceiverOption.contains(att.getProperties,
+      val oldValue: String = att.value
+      if (!ReceiverOption.contains(att.properties,
         ReceiverOption.DISABLE_CHARACTER_MAPS)) {
         val mapped: CharSequence = charMap.map(oldValue, useNullMarkers)
         if (mapped != oldValue) {
-          val p2: Int = (att.getProperties | ReceiverOption.USE_NULL_MARKERS) &
+          val p2: Int = (att.properties | ReceiverOption.USE_NULL_MARKERS) &
             ~ReceiverOption.NO_SPECIAL_CHARS
           atts2.add(
-            new AttributeInfo(att.getNodeName,
-              att.getType,
+            new AttributeInfo(att.nodeName,
+              att.`type`,
               mapped.toString,
-              att.getLocation,
+              att.location,
               p2))
         } else {
           atts2.add(att)

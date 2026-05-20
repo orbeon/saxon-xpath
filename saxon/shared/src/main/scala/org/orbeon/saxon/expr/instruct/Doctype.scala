@@ -63,8 +63,8 @@ class Doctype(content: Expression) extends Instruction {
   def processLeavingTail(out: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController
     val pipe: PipelineConfiguration = controller.makePipelineConfiguration
-    pipe.setXPathContext(context)
-    pipe.setHostLanguage(getPackageData.getHostLanguage)
+    pipe.xPathContext = context
+    pipe.hostLanguage = getPackageData.getHostLanguage
     val builder: TinyBuilder = new TinyBuilder(pipe)
     builder.setStatistics(
       pipe.getConfiguration.getTreeStatistics.RESULT_TREE_STATISTICS)

@@ -8,13 +8,15 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Cardinality
 
-import scala.beans.BooleanBeanProperty
 
 
 class StringJoin extends FoldingFunction with PushableFunction {
 
-  @BooleanBeanProperty
   var returnEmptyIfEmpty: Boolean = _
+
+  def isReturnEmptyIfEmpty: Boolean = returnEmptyIfEmpty
+
+  def setReturnEmptyIfEmpty(b: Boolean): Unit = returnEmptyIfEmpty = b
 
   override def getCardinality(arguments: Array[Expression]): Int =
     if (returnEmptyIfEmpty)

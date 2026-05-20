@@ -55,7 +55,7 @@ class CollationKeyFn extends CollatingFunctionFixed {
     arguments : Array[Sequence]
   ): Base64BinaryValue = {
     val in       = arguments(0).head.getStringValue
-    val collator = getStringCollator
+    val collator = stringCollator
     getCollationKey(
       in,
       collator

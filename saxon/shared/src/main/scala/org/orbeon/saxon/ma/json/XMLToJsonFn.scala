@@ -71,7 +71,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
     val indent: Boolean = isindentingRequested(context, arguments)
     val pipe: PipelineConfiguration =
       context.getController.makePipelineConfiguration
-    pipe.setXPathContext(context)
+    pipe.xpathContext = context
     val stringBuffer: FastStringBuffer = new FastStringBuffer(2048)
     convertToJson(xml, stringBuffer, indent, context)
     new StringValue(stringBuffer.condense())
@@ -96,7 +96,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
       val indent: Boolean = isindentingRequested(context, arguments)
       val pipe: PipelineConfiguration =
         context.getController.makePipelineConfiguration
-      pipe.setXPathContext(context)
+      pipe.xpathContext = context
       convertToJson(xml, destination.getStringReceiver(false), indent, context)
     }
   }
@@ -107,7 +107,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
                             context: XPathContext): Unit = {
     val pipe: PipelineConfiguration =
       context.getController.makePipelineConfiguration
-    pipe.setXPathContext(context)
+    pipe.xpathContext = context
     val receiver: JsonReceiver = new JsonReceiver(pipe, output)
     receiver.setIndenting(indent)
     var r: Receiver = receiver

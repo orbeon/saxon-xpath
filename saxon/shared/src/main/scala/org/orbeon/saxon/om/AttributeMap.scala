@@ -37,11 +37,11 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
   def size: Int
 
   def get(name: NodeName): AttributeInfo =
-    this.asScala.find(_.getNodeName == name).orNull
+    this.asScala.find(_.nodeName == name).orNull
 
   def get(uri: String, local: String): AttributeInfo = {
     for (att <- this.asScala) {
-      val attName = att.getNodeName
+      val attName = att.nodeName
       if (attName.getLocalPart == local && attName.hasURI(uri))
         return att
     }
@@ -50,7 +50,7 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
     for (att <- this.asScala) {
-      val attName = att.getNodeName
+      val attName = att.nodeName
       if (attName.obtainFingerprint(namePool) == fingerprint)
         return att
     }
@@ -59,12 +59,12 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def getValue(uri: String, local: String): String = {
     val att = get(uri, local)
-    if (att == null) null else att.getValue
+    if (att == null) null else att.value
   }
 
   def put(att: AttributeInfo): AttributeMap = {
     val list = new ju.ArrayList[AttributeInfo](size + 1)
-    for (a <- this.asScala if a.getNodeName != att.getNodeName)
+    for (a <- this.asScala if a.nodeName != att.nodeName)
       list.add(a)
     list.add(att)
     AttributeMap.fromList(list)
@@ -72,7 +72,7 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def remove(name: NodeName): AttributeMap = {
     val list = new ju.ArrayList[AttributeInfo](size)
-    for (a <- this.asScala if a.getNodeName != name)
+    for (a <- this.asScala if a.nodeName != name)
       list.add(a)
     AttributeMap.fromList(list)
   }

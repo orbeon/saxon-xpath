@@ -383,8 +383,7 @@ class Copy(
   override def evaluateItem(context: XPathContext): Item = {
     val controller: Controller = context.getController
     val seq: SequenceCollector = controller.allocateSequenceOutputter(1)
-    seq.getPipelineConfiguration.setHostLanguage(
-      getPackageData.getHostLanguage)
+    seq.getPipelineConfiguration.hostLanguage = getPackageData.getHostLanguage
     process(new ComplexContentOutputter(seq), context)
     seq.close()
     val item: Item = seq.getFirstItem

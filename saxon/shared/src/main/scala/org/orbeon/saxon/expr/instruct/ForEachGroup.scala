@@ -400,7 +400,7 @@ class ForEachGroup(select: Expression,
     val focusIterator: FocusIterator = c2.trackFocus(groupIterator)
     c2.setCurrentGroupIterator(groupIterator)
     c2.setCurrentTemplateRule(null)
-    pipe.setXPathContext(c2)
+    pipe.xPathContext = c2
     if (controller.isTracing) {
       val listener: TraceListener = controller.getTraceListener
       assert(listener != null)
@@ -417,7 +417,7 @@ class ForEachGroup(select: Expression,
       while (focusIterator.next() != null)
         getActionExpression.process(output, c2)
     }
-    pipe.setXPathContext(context)
+    pipe.xPathContext = context
     null
   }
 

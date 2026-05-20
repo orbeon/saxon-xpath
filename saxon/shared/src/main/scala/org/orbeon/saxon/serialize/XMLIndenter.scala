@@ -107,9 +107,9 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
         }
       }
       for (att <- attributes.iterator.asScala) {
-        val name: NodeName = att.getNodeName
+        val name: NodeName = att.nodeName
         val prefix: String = name.getPrefix
-        len += name.getLocalPart.length + att.getValue.length + 4 + (if (prefix.isEmpty)
+        len += name.getLocalPart.length + att.value.length + 4 + (if (prefix.isEmpty)
           4
         else
           prefix.length + 5)

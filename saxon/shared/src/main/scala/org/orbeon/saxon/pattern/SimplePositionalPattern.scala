@@ -21,11 +21,8 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.tree.util.Navigator
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-class SimplePositionalPattern(@BeanProperty var nodeTest: NodeTest,
-                              @BeanProperty var position: Int)
+class SimplePositionalPattern(var nodeTest: NodeTest,
+                              var position: Int)
   extends Pattern {
 
   def matches(item: Item, context: XPathContext): Boolean =

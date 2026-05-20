@@ -5,11 +5,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import javax.xml.transform.Source
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * An implementation of the JAXP Source class that supplies a document in the form of a stream
   * of push events sent to a Receiver
@@ -18,7 +13,6 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
   */
 abstract class EventSource extends Source {
 
-  @BeanProperty
   var systemId: String = _
 
   def send(out: Receiver): Unit

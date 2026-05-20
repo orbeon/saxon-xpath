@@ -29,11 +29,11 @@ class AttributeMapWithIdentity(private var attributes: ju.List[AttributeInfo])
   }
 
   override def get(name: NodeName): AttributeInfo =
-    attributes.asScala.find(info => info.getNodeName == name && !info.isInstanceOf[AttributeInfo.Deleted]).orNull
+    attributes.asScala.find(info => info.nodeName == name && !info.isInstanceOf[AttributeInfo.Deleted]).orNull
 
   override def get(uri: String, local: String): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name = info.getNodeName
+      val name = info.nodeName
       if (name.getLocalPart == local && name.hasURI(uri) && ! info.isInstanceOf[AttributeInfo.Deleted])
         return info
     }
@@ -43,7 +43,7 @@ class AttributeMapWithIdentity(private var attributes: ju.List[AttributeInfo])
   def getIndex(uri: String, local: String): Int = {
     for (i <- 0 until attributes.size) {
       val info = attributes.get(i)
-      val name: NodeName = info.getNodeName
+      val name: NodeName = info.nodeName
       if (name.getLocalPart == local && name.hasURI(uri))
         return i
     }
@@ -76,7 +76,7 @@ class AttributeMapWithIdentity(private var attributes: ju.List[AttributeInfo])
 
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
     for (info <- attributes.asScala) {
-      val name = info.getNodeName
+      val name = info.nodeName
       if (name.obtainFingerprint(namePool) == fingerprint)
         return info
     }

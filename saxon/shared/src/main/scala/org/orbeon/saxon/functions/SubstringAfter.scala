@@ -52,7 +52,7 @@ class SubstringAfter extends CollatingFunctionFixed {
     val arg2: StringValue = arguments(1).head.asInstanceOf[StringValue]
     substringAfter(arg1,
       arg2,
-      getStringCollator.asInstanceOf[SubstringMatcher])
+      stringCollator.asInstanceOf[SubstringMatcher])
   }
 
   override def getCompilerName(): String = "SubstringAfterCompiler"

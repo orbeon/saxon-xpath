@@ -18,7 +18,6 @@ abstract class CollatingFunctionFixed
 
   private var collationName: String = _
 
-  @BeanProperty
   var stringCollator: StringCollator = null
 
   private var atomicComparer: AtomicComparer = null
@@ -42,7 +41,7 @@ abstract class CollatingFunctionFixed
   }
 
   private def allocateCollator(): Unit = {
-    stringCollator = getRetainedStaticContext.getConfiguration.getCollation(collationName)
+    stringCollator = retainedStaticContext.getConfiguration.getCollation(collationName)
     if (stringCollator == null) {
       throw new XPathException(
         "Unknown collation " + collationName,
@@ -68,7 +67,7 @@ abstract class CollatingFunctionFixed
    def preAllocateComparer(type0: AtomicType,
                                     type1: AtomicType,
                                     env: StaticContext): Unit = {
-    val collation = getStringCollator
+    val collation = stringCollator
     if (type0 == ErrorType || type1 == ErrorType) {
       atomicComparer = EqualityComparer.getInstance
       return
@@ -87,7 +86,7 @@ abstract class CollatingFunctionFixed
     if (atomicComparer != null)
       atomicComparer.provideContext(context)
     else
-      new GenericAtomicComparer(getStringCollator, context)
+      new GenericAtomicComparer(stringCollator, context)
 
   override def exportAttributes(out: ExpressionPresenter): Unit =
     if (collationName != NamespaceConstant.CODEPOINT_COLLATION_URI)
@@ -102,7 +101,7 @@ abstract class CollatingFunctionFixed
   override def copy(): CollatingFunctionFixed = {
     var copy = SystemFunction.makeFunction(
       getFunctionName.getLocalPart,
-      getRetainedStaticContext,
+      retainedStaticContext,
       getArity
     )
     copy match {

@@ -263,7 +263,7 @@ class ForEach(select: Expression,
       }
     } else {
       val pipe: PipelineConfiguration = output.getPipelineConfiguration
-      pipe.setXPathContext(c2)
+      pipe.xPathContext = c2
       if (controller.isTracing) {
         val listener: TraceListener = controller.getTraceListener
         assert(listener != null)
@@ -279,7 +279,7 @@ class ForEach(select: Expression,
       } else {
         iter.forEachOrFail((item) => action.process(output, c2))
       }
-      pipe.setXPathContext(context)
+      pipe.xPathContext = context
     }
     null
   }

@@ -26,11 +26,11 @@ class EquivalenceComparer (collator: StringCollator,
     extends GenericAtomicComparer(collator, context) {
 
   override def provideContext(context: XPathContext): EquivalenceComparer =
-    new EquivalenceComparer(getStringCollator, context)
+    new EquivalenceComparer(collator, context)
 
   override def comparesEqual(a: AtomicValue, b: AtomicValue): Boolean = // System.err.println("Comparing " + a.getClass() + ": " + a + " with " + b.getClass() + ": " + b);
     if (a.isInstanceOf[StringValue] && b.isInstanceOf[StringValue]) {
-      getStringCollator.comparesEqual(a.getStringValue, b.getStringValue)
+      collator.comparesEqual(a.getStringValue, b.getStringValue)
     } else if (a.isInstanceOf[CalendarValue] && b
                  .isInstanceOf[CalendarValue]) {
       a.asInstanceOf[CalendarValue]
@@ -42,9 +42,9 @@ class EquivalenceComparer (collator: StringCollator,
     } else {
       val implicitTimezone: Int = getContext.getImplicitTimezone
       val ac: AnyRef =
-        a.getXPathComparable(ordered = false, getStringCollator, implicitTimezone)
+        a.getXPathComparable(ordered = false, collator, implicitTimezone)
       val bc: AnyRef =
-        b.getXPathComparable(ordered = false, getStringCollator, implicitTimezone)
+        b.getXPathComparable(ordered = false, collator, implicitTimezone)
       ac == bc
     }
 

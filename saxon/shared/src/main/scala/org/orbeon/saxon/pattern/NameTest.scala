@@ -8,14 +8,11 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
 import org.orbeon.saxon.z.{IntSet, IntSingletonSet}
 
-import scala.beans.BeanProperty
-
-
 class NameTest private (
-  @BeanProperty val nodeKind : Int,
+  val nodeKind : Int,
   private var uri            : String,
   private var localName      : String,
-  @BeanProperty val namePool : NamePool,
+  val namePool : NamePool,
   val fingerPrint            : Int
 ) extends NodeTest
      with QNameTest {
@@ -43,6 +40,8 @@ class NameTest private (
     this(nodeKind, name.getURI, name.getLocalPart, pool, name.obtainFingerprint(pool))
 
   def getUType: UType = uType
+
+  def getNamePool: NamePool = namePool
 
   override def matches(nodeKind: Int,
                        name: NodeName,
@@ -110,6 +109,8 @@ class NameTest private (
     computeUriAndLocal()
     localName
   }
+
+  def getNodeKind: Int = nodeKind
 
   override def toString: String =
     nodeKind match {

@@ -30,17 +30,17 @@ class ContentHandlerProxyLocator(private var parent: ContentHandlerProxy)
     extends Locator {
 
   def getPublicId: String = null
-  def getSystemId: String = parent.getCurrentLocation.getSystemId
-  def getLineNumber: Int = parent.getCurrentLocation.getLineNumber
-  def getColumnNumber: Int = parent.getCurrentLocation.getColumnNumber
+  def getSystemId: String = parent.currentLocation.getSystemId
+  def getLineNumber: Int = parent.currentLocation.getLineNumber
+  def getColumnNumber: Int = parent.currentLocation.getColumnNumber
 
   /*@Nullable*/
   def getContextItemStack: List[Item] = {
-    val traceListener = parent.getTraceListener
+    val traceListener = parent.traceListener
     if (traceListener == null)
       null
     else
-      traceListener.getContextItemStack
+      traceListener.contextItemStack
   }
 }
 

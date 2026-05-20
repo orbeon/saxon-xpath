@@ -32,10 +32,10 @@ object Sender {
   def send(source: Source, receiver: Receiver, options: ParseOptions): Unit = {
     var lSource = source
     var parserOptions = options
-    val pipe = receiver.getPipelineConfiguration
+    val pipe = receiver.pipelineConfiguration
     parserOptions =
       if (options == null)
-        new ParseOptions(pipe.getParseOptions)
+        new ParseOptions(pipe.parseOptions)
       else
         new ParseOptions(options)
     var systemId = lSource.getSystemId
@@ -46,7 +46,7 @@ object Sender {
         lSource = augmentedSource.getContainedSource
       case _ =>
     }
-    val config = pipe.getConfiguration
+    val config = pipe.configuration
     parserOptions.applyDefaults(config)
     receiver.setSystemId(systemId)
     var next = receiver
@@ -188,8 +188,8 @@ object Sender {
     receiver : Receiver,
     location : Location
   ): Unit = {
-    val pipe           = receiver.getPipelineConfiguration
-    val targetNamePool = pipe.getConfiguration.getNamePool
+    val pipe           = receiver.pipelineConfiguration
+    val targetNamePool = pipe.configuration.getNamePool
     var lReceiver      = receiver
     if (top.getConfiguration.getNamePool != targetNamePool) {
       // namecodes as necessary
@@ -228,13 +228,13 @@ object Sender {
                             options: ParseOptions): Unit = {
     var lSource = source
     var lReceiver = receiver
-    val pipe = lReceiver.getPipelineConfiguration
+    val pipe = lReceiver.pipelineConfiguration
     var parser               = lSource.getXMLReader
     var reuseParser          = false
-    val config               = pipe.getConfiguration
+    val config               = pipe.configuration
     var listener             = options.getErrorReporter
     if (listener == null)
-      listener = pipe.getErrorReporter
+      listener = pipe.errorReporter
     var errorHandler = options.getErrorHandler
     if (errorHandler == null)
       errorHandler = new StandardErrorHandler(listener)
@@ -257,7 +257,7 @@ object Sender {
       if (parser.getErrorHandler == null)
         parser.setErrorHandler(errorHandler)
     }
-    if (!pipe.getParseOptions.isExpandAttributeDefaults) {
+    if (!pipe.parseOptions.isExpandAttributeDefaults) {
       try parser.setFeature("http://xml.org/sax/features/use-attributes2",
                             true)
       catch {
@@ -323,7 +323,7 @@ object Sender {
     var ce: ReceivingContentHandler = null
     val ch = parser.getContentHandler
     ch match {
-      case rch: ReceivingContentHandler if config.isCompatible(rch.getConfiguration) =>
+      case rch: ReceivingContentHandler if config.isCompatible(rch.configuration) =>
         ce = rch
         ce.reset()
       case _ =>
@@ -336,8 +336,8 @@ object Sender {
           case _: SAXNotSupportedException | _: SAXNotRecognizedException =>
         }
     }
-    ce.setReceiver(lReceiver)
-    ce.setPipelineConfiguration(pipe)
+    ce.receiver = lReceiver
+    ce.pipelineConfiguration = pipe
     try
       parser.parse(lSource.getInputSource)
     catch {
@@ -434,11 +434,11 @@ object Sender {
     systemId : String,
     options  : ParseOptions
   ): Receiver = {
-    val pipe = receiver.getPipelineConfiguration
-    val config = pipe.getConfiguration
+    val pipe = receiver.pipelineConfiguration
+    val config = pipe.configuration
     val sv     = options.getSchemaValidationMode
     if (sv != Validation.PRESERVE && sv != Validation.DEFAULT) {
-      val controller = pipe.getController
+      val controller = pipe.controller
       if (controller != null && ! controller.getExecutable.isSchemaAware && sv != Validation.STRIP)
         throw new XPathException("Cannot use schema-validated input documents when the query/stylesheet is not schema-aware")
     }
@@ -451,14 +451,14 @@ object Sender {
     options  : ParseOptions
   ): Unit = {
     var lReceiver = receiver
-    val pipe      = lReceiver.getPipelineConfiguration
+    val pipe      = lReceiver.pipelineConfiguration
     val xInclude  = options.isXIncludeAware
     if (xInclude)
       throw new XPathException("XInclude processing is not supported with a pull parser")
     lReceiver = makeValidator(lReceiver, source.getSystemId, options)
     val provider = source.getPullProvider
-    provider.setPipelineConfiguration(pipe)
-    lReceiver.setPipelineConfiguration(pipe)
+    provider.pipelineConfiguration = pipe
+    lReceiver.pipelineConfiguration = pipe
     val copier = new PullPushCopier(provider, lReceiver)
     try
       copier.copy()

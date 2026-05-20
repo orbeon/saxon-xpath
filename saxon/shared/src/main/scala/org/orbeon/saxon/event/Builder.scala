@@ -82,23 +82,23 @@ abstract class Builder extends Receiver {
   def this(pipe: PipelineConfiguration) = {
     this()
     this.pipe = pipe
-    config = pipe.getConfiguration
+    config = pipe.configuration
     lineNumbering = config.isLineNumbering
-    namePool = config.getNamePool
+    namePool = config.namePool
   }
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
     this.pipe = pipe
-    config = pipe.getConfiguration
+    config = pipe.configuration
     lineNumbering = lineNumbering || config.isLineNumbering
-    namePool = config.getNamePool
+    namePool = config.namePool
   }
 
   /*@NotNull*/
-  def getPipelineConfiguration: PipelineConfiguration = pipe
+  def pipelineConfiguration: PipelineConfiguration = pipe
 
   /*@NotNull*/
-  def getConfiguration: Configuration = config
+  def configuration: Configuration = config
 
   /*@Nullable*/
   def getBuilderMonitor: BuilderMonitor = null
@@ -130,7 +130,7 @@ abstract class Builder extends Receiver {
 
   def open(): Unit = {
     if (timing && ! isOpen) {
-      getConfiguration.getStandardErrorOutput.println("Building tree for " + getSystemId + " using " + getClass)
+      configuration.getStandardErrorOutput.println("Building tree for " + getSystemId + " using " + getClass)
       startTime = System.nanoTime()
     }
     isOpen = true
@@ -139,7 +139,7 @@ abstract class Builder extends Receiver {
   def close(): Unit = {
     if (timing && isOpen) {
       val endTime = System.nanoTime()
-      getConfiguration.getStandardErrorOutput.println("Tree built in " + CommandLineOptions.showExecutionTimeNano(endTime - startTime))
+      configuration.getStandardErrorOutput.println("Tree built in " + CommandLineOptions.showExecutionTimeNano(endTime - startTime))
       currentRoot match {
         case impl: TinyDocumentImpl =>
           impl.showSize()

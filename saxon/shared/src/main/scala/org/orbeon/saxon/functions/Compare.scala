@@ -33,7 +33,7 @@ class Compare extends CollatingFunctionFixed {
     val arg0: StringValue = arguments(0).head.asInstanceOf[StringValue]
     val arg1: StringValue = arguments(1).head.asInstanceOf[StringValue]
     val comparer: GenericAtomicComparer =
-      new GenericAtomicComparer(getStringCollator, context)
+      new GenericAtomicComparer(stringCollator, context)
     val result: Int64Value = compare(arg0, arg1, comparer)
     new ZeroOrOne(result)
   }

@@ -82,7 +82,7 @@ class IdentityTransformerHandler protected[jaxp] (var controller: IdentityTransf
       setPipelineConfiguration(out.getPipelineConfiguration)
       if (config.isStripsAllWhiteSpace)
         out = new Stripper(AllElementsSpaceStrippingRule.getInstance, out)
-      setReceiver(out)
+      receiver = out
     } catch {
       case err: XPathException =>
         throw new SAXException(err)

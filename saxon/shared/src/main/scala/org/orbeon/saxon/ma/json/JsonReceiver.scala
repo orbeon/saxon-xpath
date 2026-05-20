@@ -138,11 +138,11 @@ object JsonReceiver {
 
 }
 
-class JsonReceiver(var pipeLine: PipelineConfiguration,
+class JsonReceiver(val pipeLine: PipelineConfiguration,
                    private var output: CharSequenceConsumer)
   extends Receiver {
 
-  private var pipe: PipelineConfiguration = pipeLine
+  override var pipelineConfiguration: PipelineConfiguration = pipeLine
 
   private val textBuffer: FastStringBuffer = new FastStringBuffer(128)
 
@@ -157,15 +157,15 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
 
   private var keyChecker: List[ju.Set[String]] = Nil
 
-  ju.Objects.requireNonNull(pipe)
+  ju.Objects.requireNonNull(pipelineConfiguration)
   ju.Objects.requireNonNull(output)
 
-  this.setPipelineConfiguration(pipe)
+  this.setPipelineConfiguration(pipelineConfiguration)
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
-    this.pipe = pipe
+  override def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
+    this.pipelineConfiguration = pipe
 
-  def getPipelineConfiguration: PipelineConfiguration = pipe
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def setSystemId(systemId: String): Unit = ()
 
@@ -197,7 +197,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
     var escapedAtt: String = null
     var escapedKey: String = null
     for (att <- attributes.iterator.asScala) {
-      val attName: NodeName = att.getNodeName
+      val attName: NodeName = att.nodeName
       if (attName.hasURI("")) {
         if (attName.getLocalPart.==("key")) {
           if (!inMap) {
@@ -205,14 +205,14 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
               "xml-to-json: The key attribute is allowed only on elements within a map",
               ERR_INPUT)
           }
-          key = att.getValue
+          key = att.value
         } else if (attName.getLocalPart.==("escaped-key")) {
           if (!inMap) {
             throw new XPathException(
               "xml-to-json: The escaped-key attribute is allowed only on elements within a map",
               ERR_INPUT)
           }
-          escapedKey = att.getValue
+          escapedKey = att.value
         } else if (attName.getLocalPart.==("escaped")) {
           val allowed: Boolean = stack.size == 1 || elemName.getLocalPart.==(
             "string")
@@ -221,7 +221,7 @@ class JsonReceiver(var pipeLine: PipelineConfiguration,
               "xml-to-json: The escaped attribute is allowed only on the <string> element",
               ERR_INPUT)
           }
-          escapedAtt = att.getValue
+          escapedAtt = att.value
         } else {
           throw new XPathException(
             "xml-to-json: Disallowed attribute in input: " + attName.getDisplayName,

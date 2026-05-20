@@ -144,13 +144,13 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
         .levelInEntity ==
         0
     val xmlId = lSuppliedAttributes.get(NamespaceConstant.XML, "id")
-    if (xmlId != null && Whitespace.containsWhitespace(xmlId.getValue)) {
+    if (xmlId != null && Whitespace.containsWhitespace(xmlId.value)) {
       lSuppliedAttributes = lSuppliedAttributes.put(
-        new AttributeInfo(xmlId.getNodeName,
-          xmlId.getType,
-          Whitespace.trim(xmlId.getValue),
-          xmlId.getLocation,
-          xmlId.getProperties))
+        new AttributeInfo(xmlId.nodeName,
+          xmlId.`type`,
+          Whitespace.trim(xmlId.value),
+          xmlId.location,
+          xmlId.properties))
     }
     val elem = nodeFactory.makeElementNode(
       currentNode,

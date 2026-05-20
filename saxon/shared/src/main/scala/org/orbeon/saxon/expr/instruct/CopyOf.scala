@@ -650,14 +650,14 @@ class CopyOf(select: Expression,
         }
         var savedPipe: PipelineConfiguration = null
         if (copyLineNumbers) {
-          savedPipe = new PipelineConfiguration(`val`.getPipelineConfiguration)
+          savedPipe = new PipelineConfiguration(`val`.pipelineConfiguration)
           val copier: LocationCopier = new LocationCopier(true)
-          `val`.getPipelineConfiguration
+          `val`.pipelineConfiguration
             .setComponent(classOf[CopyInformee[_ <: AnyRef]].getName, copier)
         }
         item.copy(`val`, copyOptions, getLocation)
         if (copyLineNumbers) {
-          `val`.setPipelineConfiguration(savedPipe)
+          `val`.pipelineConfiguration = savedPipe
         }
       }
       case _ =>
@@ -733,12 +733,12 @@ class CopyOf(select: Expression,
       }
     }
     val pipe: PipelineConfiguration = controller.makePipelineConfiguration
-    pipe.setXPathContext(context)
+    pipe.xPathContext = context
     val out: SequenceCollector = new SequenceCollector(pipe)
     if (copyForUpdate) {
-      out.setTreeModel(TreeModel.LINKED_TREE)
+      out.treeModel = TreeModel.LINKED_TREE
     }
-    pipe.setHostLanguage(getPackageData.getHostLanguage)
+    pipe.hostLanguage = getPackageData.getHostLanguage
     try process(new ComplexContentOutputter(out), context)
     catch {
       case err: XPathException => {

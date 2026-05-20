@@ -57,14 +57,14 @@ class UnicodeNormalizer(form: String, next: Receiver)
                             properties: Int): Unit = {
     val am2: AttributeMap = attributes.apply((attInfo) => {
       var newValue: String = normalize(
-        attInfo.getValue,
-        ReceiverOption.contains(attInfo.getProperties,
+        attInfo.value,
+        ReceiverOption.contains(attInfo.properties,
           ReceiverOption.USE_NULL_MARKERS)).toString
-      new AttributeInfo(attInfo.getNodeName,
-        attInfo.getType,
+      new AttributeInfo(attInfo.nodeName,
+        attInfo.`type`,
         newValue,
-        attInfo.getLocation,
-        attInfo.getProperties)
+        attInfo.location,
+        attInfo.properties)
     })
     nextReceiver.startElement(elemName,
       `type`,

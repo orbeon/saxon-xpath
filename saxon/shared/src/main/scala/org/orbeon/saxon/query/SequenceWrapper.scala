@@ -95,7 +95,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.namespace("", "", properties)
 
     for (att <- attributes.iterator.asScala) {
-      out.attribute(att.getNodeName, att.getType, att.getValue, att.getLocation, att.getProperties)
+      out.attribute(att.nodeName, att.`type`, att.value, att.location, att.properties)
     }
     out.startContent()
   }

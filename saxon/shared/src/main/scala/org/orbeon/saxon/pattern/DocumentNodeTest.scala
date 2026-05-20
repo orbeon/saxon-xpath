@@ -11,13 +11,10 @@ import org.orbeon.saxon.om.{AxisInfo, Item, NodeInfo, NodeName}
 import org.orbeon.saxon.trans.Err
 import org.orbeon.saxon.tree.iter.AxisIterator
 
-import scala.beans.BeanProperty
-
-
 /**
  * A DocumentNodeTest implements the test document-node(element(~,~))
  */
-class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
+class DocumentNodeTest(var elementTest: NodeTest)
   extends NodeTest {
 
   /**
@@ -84,6 +81,8 @@ class DocumentNodeTest(@BeanProperty var elementTest: NodeTest)
 
   // The match is true if there is exactly one element node child, no text node
   // The match is true if there is exactly one element node child, no text node
+
+  def getElementTest: NodeTest = elementTest
 
   def getDefaultPriority: Double = elementTest.getDefaultPriority
   override def getPrimitiveType: Int = Type.DOCUMENT

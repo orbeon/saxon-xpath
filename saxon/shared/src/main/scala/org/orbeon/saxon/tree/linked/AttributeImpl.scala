@@ -1,23 +1,9 @@
 package org.orbeon.saxon.tree.linked
 
-import org.orbeon.saxon.event.Receiver
-
-import org.orbeon.saxon.event.ReceiverOption
-
-import org.orbeon.saxon.model.BuiltInAtomicType
-
-import org.orbeon.saxon.model.SchemaType
-
-import org.orbeon.saxon.model.SimpleType
-
-import org.orbeon.saxon.model.Type
-
+import org.orbeon.saxon.event.{Receiver, ReceiverOption}
+import org.orbeon.saxon.model.{BuiltInAtomicType, SchemaType, SimpleType, Type}
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.s9api.Location
-
-import org.orbeon.saxon.trans.XPathException
-
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 
@@ -30,31 +16,27 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
   private def getAttributeInfo: AttributeInfo =
     getRawParent.attributes.itemAt(getSiblingPosition)
 
-  override def getNodeName: NodeName = {
-    if (getRawParent == null || getSiblingPosition == -1) {
-      return null
-    }
-    getAttributeInfo.getNodeName
-  }
+  override def getNodeName: NodeName =
+    if (getRawParent == null || getSiblingPosition == -1)
+      null
+    else
+      getAttributeInfo.nodeName
 
-  override def getFingerprint: Int = {
-    if (getRawParent == null || getSiblingPosition == -1) {
-      return -1
-    }
-    getNodeName.obtainFingerprint(getNamePool)
-  }
+  override def getFingerprint: Int =
+    if (getRawParent == null || getSiblingPosition == -1)
+      -1
+    else
+      getNodeName.obtainFingerprint(getNamePool)
 
-  override def getSchemaType: SchemaType = getAttributeInfo.getType
+  override def getSchemaType: SchemaType = getAttributeInfo.`type`
 
   override def isId: Boolean = getAttributeInfo.isId
 
-  override def isIdref(): Boolean = {
-    if (ReceiverOption.contains(getAttributeInfo.getProperties,
-      ReceiverOption.IS_IDREF)) {
-      return true
-    }
-    ElementImpl.isIdRefNode(this)
-  }
+  override def isIdref: Boolean =
+    if (ReceiverOption.contains(getAttributeInfo.properties, ReceiverOption.IS_IDREF))
+      true
+    else
+      ElementImpl.isIdRefNode(this)
 
   override def equals(other: Any): Boolean =
     other match {
@@ -68,23 +50,24 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
 
   override def getSequenceNumber: Long = {
     val parseq: Long = getRawParent.getSequenceNumber
-    (if (parseq == -1L) parseq else parseq + 0x8000 + getSiblingPosition)
+    if (parseq == -1L) parseq else parseq + 0x8000 + getSiblingPosition
   }
 
   def getNodeKind: Int = Type.ATTRIBUTE
 
-  def getStringValue: String = getAttributeInfo.getValue
+  def getStringValue: String = getAttributeInfo.value
 
   override def getNextSibling: NodeImpl = null
 
   override def getPreviousSibling: NodeImpl = null
 
-  override def getPreviousInDocument(): NodeImpl = getParent
+  override def getPreviousInDocument: NodeImpl = getParent
 
-  override def getNextInDocument(anchor: NodeImpl): NodeImpl = {
-    if (anchor == this) return null
-    getParent.getNextInDocument(anchor)
-  }
+  override def getNextInDocument(anchor: NodeImpl): NodeImpl =
+    if (anchor == this)
+      null
+    else
+      getParent.getNextInDocument(anchor)
 
   override def generateId(buffer: FastStringBuffer): Unit = {
     getParent.generateId(buffer)
@@ -92,19 +75,16 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     buffer.append(java.lang.Integer.toString(getSiblingPosition))
   }
 
-  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
+  override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit =
     throw new IllegalArgumentException
-  }
 
-  override def delete(): Unit = {
+  override def delete(): Unit =
     if (!isDeleted) {
-      if (getRawParent != null) {
+      if (getRawParent != null)
         getRawParent.removeAttribute(this)
-      }
       this.setRawParent(null)
       this.setSiblingPosition(-1)
     }
-  }
 
   override def isDeleted: Boolean =
     getRawParent == null ||
@@ -112,23 +92,21 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
       getRawParent.isDeleted
 
   override def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit = {
-    if (isDeleted) {
+    if (isDeleted)
       throw new IllegalStateException("Cannot replace a deleted node")
-    }
-    if (getParent == null) {
+    if (getParent == null)
       throw new IllegalStateException("Cannot replace a parentless node")
-    }
     val element: ParentNodeImpl = getRawParent
     delete()
     for (n <- replacement) {
-      if (n.getNodeKind != Type.ATTRIBUTE) {
-        throw new IllegalArgumentException(
-          "Replacement nodes must be attributes")
-      }
-      element.addAttribute(NameOfNode.makeName(n),
+      if (n.getNodeKind != Type.ATTRIBUTE)
+        throw new IllegalArgumentException("Replacement nodes must be attributes")
+      element.addAttribute(
+        NameOfNode.makeName(n),
         BuiltInAtomicType.UNTYPED_ATOMIC,
         n.getStringValue,
-        ReceiverOption.NONE)
+        ReceiverOption.NONE
+      )
     }
   }
 
@@ -140,23 +118,23 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
         getSiblingPosition,
         new AttributeInfo(newNameCode,
           BuiltInAtomicType.UNTYPED_ATOMIC,
-          att.getValue,
-          att.getLocation,
-          att.getProperties))
+          att.value,
+          att.location,
+          att.properties
+        )
+      )
       val newURI: String = newNameCode.getURI
-      if (!newURI.isEmpty) {
+      if (newURI.nonEmpty) {
         val newPrefix: String = newNameCode.getPrefix
         val newBinding: NamespaceBinding =
           new NamespaceBinding(newPrefix, newURI)
         val oldURI: String = getRawParent
           .asInstanceOf[ElementImpl]
           .getURIForPrefix(newPrefix, useDefault = false)
-        if (oldURI == null) {
+        if (oldURI == null)
           owner.addNamespace(newBinding)
-        } else if (oldURI != newURI) {
-          throw new IllegalArgumentException(
-            "Namespace binding of new name conflicts with existing namespace binding")
-        }
+        else if (oldURI != newURI)
+          throw new IllegalArgumentException("Namespace binding of new name conflicts with existing namespace binding")
       }
     }
   }
@@ -165,12 +143,16 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
     val owner: ElementImpl = getRawParent.asInstanceOf[ElementImpl]
     if (owner != null && !isDeleted) {
       val att: AttributeInfo = getAttributeInfo
-      owner.setAttributeInfo(getSiblingPosition,
-        new AttributeInfo(att.getNodeName,
-          att.getType,
+      owner.setAttributeInfo(
+        getSiblingPosition,
+        new AttributeInfo(
+          att.nodeName,
+          att.`type`,
           stringValue.toString,
-          att.getLocation,
-          att.getProperties))
+          att.location,
+          att.properties
+        )
+      )
     }
   }
 
@@ -180,31 +162,33 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
       val att: AttributeInfo = getAttributeInfo
       owner.setAttributeInfo(
         getSiblingPosition,
-        new AttributeInfo(att.getNodeName,
+        new AttributeInfo(
+          att.nodeName,
           BuiltInAtomicType.UNTYPED_ATOMIC,
-          att.getValue,
-          att.getLocation,
-          att.getProperties))
-      owner.removeTypeAnnotation()
+          att.value,
+          att.location,
+          att.properties
+        )
+      )
     }
   }
 
   override def setTypeAnnotation(`type`: SchemaType): Unit = {
-    if (!(`type`.isInstanceOf[SimpleType])) {
-      throw new IllegalArgumentException(
-        "Attribute type must be a simple type")
-    }
+    if (! `type`.isInstanceOf[SimpleType])
+      throw new IllegalArgumentException("Attribute type must be a simple type")
     val owner: ElementImpl = getRawParent.asInstanceOf[ElementImpl]
     if (owner != null && !isDeleted) {
       val att: AttributeInfo = getAttributeInfo
-      owner.setAttributeInfo(getSiblingPosition,
-        new AttributeInfo(att.getNodeName,
+      owner.setAttributeInfo(
+        getSiblingPosition,
+        new AttributeInfo(att.nodeName,
           `type`.asInstanceOf[SimpleType],
-          att.getValue,
-          att.getLocation,
-          att.getProperties))
+          att.value,
+          att.location,
+          att.properties
+        )
+      )
       owner.removeTypeAnnotation()
     }
   }
-
 }

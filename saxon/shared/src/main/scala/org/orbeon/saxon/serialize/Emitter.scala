@@ -164,7 +164,7 @@ abstract class Emitter
               val de = new XmlProcessingIncident(
                 "Encoding " + encoding + " is not supported: using UTF8",
                 "SESU0007")
-              getPipelineConfiguration.getErrorReporter.report(de)
+              getPipelineConfiguration.errorReporter.report(de)
               encoding = "UTF8"
               characterSet = UTF8CharacterSet.getInstance
               allCharactersEncodable = true

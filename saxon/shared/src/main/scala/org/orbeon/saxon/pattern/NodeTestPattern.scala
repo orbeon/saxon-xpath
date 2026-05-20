@@ -7,15 +7,14 @@ import org.orbeon.saxon.om.{Item, NodeInfo}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.BeanProperty
-
-
-class NodeTestPattern(@BeanProperty var nodeTest: NodeTest) extends Pattern {
+class NodeTestPattern(var nodeTest: NodeTest) extends Pattern {
 
   this.priority = nodeTest.getDefaultPriority
 
   def matches(item: Item, context: XPathContext): Boolean =
     item.isInstanceOf[NodeInfo] && nodeTest.test(item.asInstanceOf[NodeInfo])
+
+  def getNodeTest: NodeTest = nodeTest
 
   override def getItemType: NodeTest = nodeTest
   def getUType: UType = nodeTest.getUType

@@ -17,7 +17,7 @@ class XML10ContentChecker(next: Receiver) extends ProxyReceiver(next) {
                             location: Location,
                             properties: Int): Unit = {
     for (att <- attributes.iterator.asScala) {
-      checkString(att.getValue, att.getLocation)
+      checkString(att.value, att.location)
     }
     nextReceiver.startElement(elemName,
       `type`,

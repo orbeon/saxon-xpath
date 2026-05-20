@@ -58,7 +58,7 @@ class DistinctValues extends CollatingFunctionFixed {
 
   def call(context: XPathContext,
            arguments: Array[Sequence]): ZeroOrMore[AtomicValue] = {
-    val collator: StringCollator = getStringCollator
+    val collator: StringCollator = stringCollator
     new ZeroOrMore(
       new DistinctIterator(arguments(0).iterate(), collator, context))
   }

@@ -12,7 +12,6 @@ import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.SequenceType
 
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -35,7 +34,7 @@ object IntegratedFunctionCall {
 }
 
 class IntegratedFunctionCall(private var name: StructuredQName,
-                             @BeanProperty var function: ExtensionFunctionCall)
+                             var function: ExtensionFunctionCall)
   extends FunctionCall
      with Callable {
 

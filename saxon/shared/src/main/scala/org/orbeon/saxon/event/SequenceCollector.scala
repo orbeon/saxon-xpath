@@ -27,11 +27,6 @@ import java.util.List
 
 import SequenceCollector._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 object SequenceCollector {
 
   /*@Nullable*/
@@ -40,7 +35,7 @@ object SequenceCollector {
                                 hostLang: HostLanguage.HostLanguage): Outputter = {
     val controller: Controller = context.getController
     val pipe: PipelineConfiguration = controller.makePipelineConfiguration
-    pipe.setHostLanguage(hostLang)
+    pipe.hostLanguage = hostLang
     val collector: SequenceCollector = new SequenceCollector(pipe, 20)
     new ComplexContentOutputter(collector)
   }
@@ -50,10 +45,11 @@ object SequenceCollector {
 class SequenceCollector(pipe: PipelineConfiguration, estimatedSize: Int)
     extends SequenceWriter(pipe) {
 
-  @BeanProperty
   var list: List[Item] = new ArrayList(estimatedSize)
 
   def this(pipe: PipelineConfiguration) = this(pipe, 50)
+
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def reset(): Unit = {
     list = new ArrayList(Math.min(list.size + 10, 50))

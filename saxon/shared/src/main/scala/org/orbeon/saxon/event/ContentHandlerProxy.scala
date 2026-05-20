@@ -17,7 +17,6 @@ import org.orbeon.saxon.value.Whitespace
 import org.xml.sax.ext.LexicalHandler
 import org.xml.sax.{Attributes, ContentHandler, Locator, SAXException}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.util.control.Breaks._
 
 //import scala.collection.compat._
@@ -30,7 +29,6 @@ object ContentHandlerProxy {
 
   class ContentHandlerProxyTraceListener extends TraceListener {
 
-    @BeanProperty
     var contextItemStack: List[Item] = Nil
 
     def setOutputDestination(stream: Logger): Unit = ()
@@ -57,20 +55,16 @@ class ContentHandlerProxy extends Receiver {
   var lexicalHandler: LexicalHandler = _
   private var depth: Int = 0
 
-  @BooleanBeanProperty
   var requireWellFormed: Boolean = false
 
-  @BooleanBeanProperty
   var undeclareNamespaces: Boolean = false
 
   private var elementStack: List[String] = Nil
   private var namespaceStack: List[String] = Nil
 
-  @BeanProperty
   lazy val traceListener: ContentHandlerProxyTraceListener =
     new ContentHandlerProxyTraceListener()
 
-  @BeanProperty
   var currentLocation: Location = Loc.NONE
 
   def setUnderlyingContentHandler(handler: ContentHandler): Unit = {
@@ -87,13 +81,13 @@ class ContentHandlerProxy extends Receiver {
     lexicalHandler = handler
   }
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
     this.pipe = pipe
   }
 
-  def getPipelineConfiguration: PipelineConfiguration = pipe
+  def pipelineConfiguration: PipelineConfiguration = pipe
 
-  def getConfiguration: Configuration = pipe.getConfiguration
+  def getConfiguration: Configuration = pipe.configuration
 
   def setUnparsedEntity(name: String,
                         systemID: String,

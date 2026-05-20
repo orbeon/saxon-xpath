@@ -212,7 +212,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
       try {
         val pipe: PipelineConfiguration =
           controller.makePipelineConfiguration
-        pipe.setXPathContext(context)
+        pipe.xPathContext = context
         var builder: Builder = null
         builder = controller.makeBuilder
         builder.setUseEventLocation(false)
@@ -223,7 +223,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
         }
         builder.setBaseURI(getStaticBaseURIString)
         builder.setTiming(false)
-        pipe.setHostLanguage(getPackageData.getHostLanguage)
+        pipe.hostLanguage = getPackageData.getHostLanguage
         builder.setPipelineConfiguration(pipe)
         val out: ComplexContentOutputter = ComplexContentOutputter
           .makeComplexContentReceiver(builder, getValidationOptions)

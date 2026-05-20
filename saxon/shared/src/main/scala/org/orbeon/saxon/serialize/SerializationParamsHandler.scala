@@ -23,7 +23,7 @@ object SerializationParamsHandler {
 
   private def restrictAttributes(element: NodeInfo, allowedNames: String*): Unit = {
     for (att <- element.attributes.iterator.asScala) {
-      val name = att.getNodeName
+      val name = att.nodeName
       if ("" == name.getURI && ju.Arrays.binarySearch(allowedNames.asInstanceOf[Array[AnyRef]], name.getLocalPart) < 0)
         throw new XPathException(
           "In serialization parameters, attribute @" + name.getLocalPart +

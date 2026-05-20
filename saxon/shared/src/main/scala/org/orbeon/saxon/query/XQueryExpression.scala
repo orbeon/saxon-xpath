@@ -235,7 +235,7 @@ class XQueryExpression(
       if (iterator.getProperties.contains(SequenceIterator.Property.GROUNDED))
         iterator
       else
-        new ErrorReportingIterator(iterator, controller.getErrorReporter)
+        new ErrorReportingIterator(iterator, controller.errorReporter)
     } catch {
       case err: XPathException =>
         var terr: TransformerException = err
@@ -267,7 +267,7 @@ class XQueryExpression(
       case receiver: Receiver =>
         receiver
           .getPipelineConfiguration
-          .setController(controller)
+          .controller = controller
       case _                  =>
     }
     val actualProperties = validateOutputProperties(controller, outputProperties)
@@ -286,7 +286,7 @@ class XQueryExpression(
       case _                  =>
         val sf   = context.getConfiguration.getSerializerFactory
         val pipe = controller.makePipelineConfiguration
-        pipe.setHostLanguage(HostLanguage.XQUERY)
+        pipe.hostLanguage = HostLanguage.XQUERY
         out = sf.getReceiver(
           result,
           new SerializationProperties(actualProperties),
@@ -348,7 +348,7 @@ class XQueryExpression(
             outputProperties.remove(key)
             val err = new XmlProcessingException(dynamicError)
             err.setWarning(true)
-            controller.getErrorReporter.report(err)
+            controller.errorReporter.report(err)
         }
       }
     }

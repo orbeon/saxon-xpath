@@ -257,13 +257,14 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     for (att <- attributes.iterator.asScala) {
       attribute2(
-        att.getNodeName,
-        att.getType,
+        att.nodeName,
+        att.`type`,
         getAttValue(att),
         location,
-        att.getProperties
+        att.properties
       )
     }
+
     textualElementEligibilityState =
       if (noNewNamespaces) Eligibility.PRIMED else Eligibility.INELIGIBLE
     tree.addNamespaces(nodeNr, namespaceStack.head)
@@ -273,7 +274,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   // if the number of siblings exceeds a certain threshold, add a parent pointer, in the form
   // of a pseudo-node
 
-  def getAttValue(att: AttributeInfo): String = att.getValue
+  def getAttValue(att: AttributeInfo): String = att.value
 
   private def attribute2(
     attName    : NodeName,

@@ -240,7 +240,7 @@ abstract class Minimax extends CollatingFunctionFixed {
 
   override def getResultItemType(args: Array[Expression]): ItemType = {
     val th =
-      getRetainedStaticContext.getConfiguration.getTypeHierarchy
+      retainedStaticContext.getConfiguration.getTypeHierarchy
     var base: ItemType = Atomizer.getAtomizedItemType(args(0), alwaysUntyped = false, th)
     if (base == BuiltInAtomicType.UNTYPED_ATOMIC) {
       base = BuiltInAtomicType.DOUBLE
@@ -291,7 +291,7 @@ abstract class Minimax extends CollatingFunctionFixed {
     val prim: BuiltInAtomicType = `type`.asInstanceOf[BuiltInAtomicType]
     GenericAtomicComparer.makeAtomicComparer(prim,
       prim,
-      getStringCollator,
+      stringCollator,
       context)
   }
 

@@ -301,14 +301,14 @@ class RegularSequenceChecker(nextReceiver: Receiver,
         }
       }
       for (att <- attributes.iterator.asScala) {
-        val name: NodeName = att.getNodeName
+        val name: NodeName = att.nodeName
         if (!name.getURI.isEmpty) {
           val attPrefix: String = name.getPrefix
           val declaredUri: String = namespaces.getURI(attPrefix)
           if (declaredUri == null) {
             throw new IllegalStateException(
               "Prefix " + attPrefix + " has not been declared for attribute " +
-                att.getNodeName.getDisplayName)
+                att.nodeName.getDisplayName)
           } else if (declaredUri != name.getURI) {
             throw new IllegalStateException(
               "Prefix " + prefix + " is bound to the wrong namespace {" +

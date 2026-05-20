@@ -59,7 +59,7 @@ class SubstringBefore extends CollatingFunctionFixed {
     if (arg0 == null || arg0.isZeroLength) {
       return StringValue.EMPTY_STRING
     }
-    val collator: StringCollator = getStringCollator
+    val collator: StringCollator = stringCollator
     substringBefore(arg0, arg1, collator.asInstanceOf[SubstringMatcher])
   }
 

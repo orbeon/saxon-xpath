@@ -72,7 +72,7 @@ class ContainsToken extends CollatingFunctionFixed {
     BooleanValue.get(
       containsToken(arguments(0).iterate(),
         arguments(1).head.asInstanceOf[StringValue],
-        getStringCollator))
+        stringCollator))
 
 }
 

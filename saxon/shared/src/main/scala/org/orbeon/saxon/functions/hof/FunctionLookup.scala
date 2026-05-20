@@ -75,7 +75,7 @@ class FunctionLookup extends ContextAccessorFunction {
         case _ =>
       }
       fi match {
-        case f: CallableFunction => f.setCallable(new CallableWithBoundFocus(f.getCallable, context))
+        case f: CallableFunction => f.callable = new CallableWithBoundFocus(f.callable, context)
         case f: ContextItemAccessorFunction => return f.bindContext(context)
         case f: SystemFunction if f.dependsOnContextItem => return new SystemFunctionWithBoundContextItem(f, context)
         case _ =>

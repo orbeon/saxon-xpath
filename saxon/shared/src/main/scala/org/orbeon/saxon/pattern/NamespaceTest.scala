@@ -14,9 +14,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
 import org.orbeon.saxon.z.IntSet
 
-import scala.beans.BeanProperty
-
-
 /**
   * NodeTest is an interface that enables a test of whether a node has a particular
   * name and type. A NamespaceTest matches the node type and the namespace URI.
@@ -24,7 +21,7 @@ import scala.beans.BeanProperty
   * @author Michael H. Kay
   */
 class NamespaceTest(private var namePool: NamePool,
-                    @BeanProperty var nodeKind: Int,
+                    var nodeKind: Int,
                     private var uri: String)
     extends NodeTest
     with QNameTest {

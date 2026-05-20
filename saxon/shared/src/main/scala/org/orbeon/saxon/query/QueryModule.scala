@@ -17,7 +17,6 @@ import org.orbeon.saxon.trace.{ExpressionPresenter, TraceCodeInjector}
 import org.orbeon.saxon.trans._
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -45,14 +44,14 @@ object QueryModule {
     val module: QueryModule = new QueryModule(config, importer)
     module.setLocationURI(new URI(baseURI))
     module.setBaseURI(baseURI)
-    module.setExecutable(executable)
-    module.setModuleNamespace(namespaceURI)
+    module.executable = executable
+    module.moduleNamespace = namespaceURI
     executable.addQueryLibraryModule(module)
     val qp: XQueryParser = config
       .newExpressionParser("XQ", importer.isUpdating, 31)
       .asInstanceOf[XQueryParser]
-    if (importer.getCodeInjector != null) {
-      qp.setCodeInjector(importer.getCodeInjector)
+    if (importer.codeInjector != null) {
+      qp.setCodeInjector(importer.codeInjector)
     } else if (config.isCompileWithTracing) {
       qp.setCodeInjector(new TraceCodeInjector())
     }
@@ -62,7 +61,7 @@ object QueryModule {
         new XQueryParser.Unescaper(config.getValidCharacterChecker))
     qp.setQNameParser(qnp)
     qp.parseLibraryModule(query, module)
-    val namespace: String = module.getModuleNamespace
+    val namespace: String = module.moduleNamespace
     if (namespace == null) {
       val err = new XPathException(
         "Imported module must be a library module")
@@ -86,13 +85,10 @@ class QueryModule extends StaticContext {
   var isMainModule: Boolean = true
   var sqc: StaticQueryContext = _
   private var config: Configuration = sqc.getConfiguration
-  @BeanProperty
   var userQueryContext: StaticQueryContext = _
   private var topModule: QueryModule = this
   private var baseURI: String = sqc.getBaseURI
-  @BeanProperty
   var location_URI: URI = if (baseURI == null) null else new URI(baseURI)
-  @BeanProperty
   var moduleNamespace: String = _
   private var explicitPrologNamespaces: ju.HashMap[String, String] = _
   private var activeNamespaces: List[NamespaceBinding] = Nil
@@ -101,23 +97,17 @@ class QueryModule extends StaticContext {
   private var undeclaredVariables: ju.HashMap[StructuredQName, UndeclaredVariable] = _
   private var importedSchemata: ju.HashSet[String] = _
   private var loadedSchemata: ju.HashMap[String, ju.HashSet[String]] = _
-  @BeanProperty
   var executable: Executable = sqc.makeExecutable()
   private var importers: ju.List[QueryModule] = null
   private var functionLibraryList: FunctionLibraryList = _
-  @BeanProperty
   var globalFunctionLibrary: XQueryFunctionLibrary = _
   private var localFunctionLibraryNr: Int = _
   private var importedFunctionLibraryNr: Int = _
   private var unboundFunctionLibraryNr: Int = _
   private var importedModuleNamespaces: ju.Set[String] = _
-  @BooleanBeanProperty
   var inheritNamespaces: Boolean = true
-  @BooleanBeanProperty
   var preserveNamespaces: Boolean = true
-  @BeanProperty
   var constructionMode: Int = Validation.PRESERVE
-  @BeanProperty
   var defaultFunctionNamespace: String = _
   private var defaultElementNamespace: String = _
   private var preserveSpace: Boolean = false
@@ -125,13 +115,9 @@ class QueryModule extends StaticContext {
   private var defaultCollationName: String = sqc.getDefaultCollationName
   var revalidationMode: Int = Validation.SKIP
   var isUpdating: Boolean = false
-  @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
-  @BeanProperty
   lazy val decimalFormatManager: DecimalFormatManager = new DecimalFormatManager(HostLanguage.XQUERY, getXPathVersion)
-  @BeanProperty
   var codeInjector: CodeInjector = _
-  @BeanProperty
   var packageData: PackageData = _
   private var moduleStaticContext: RetainedStaticContext = null
 
@@ -139,12 +125,15 @@ class QueryModule extends StaticContext {
     if (sqc.getModuleLocation == null) new Loc(sqc.getSystemId, 1, -1)
     else sqc.getModuleLocation
 
-  @BeanProperty
   var optimizerOpts: OptimizerOptions = sqc.getOptimizerOptions
 
   init(sqc)
 
   val pd: PackageData = new PackageData(config)
+
+  if (packageData == null) {
+    packageData = pd
+  }
 
   pd.setHostLanguage(HostLanguage.XQUERY)
 
@@ -233,7 +222,7 @@ class QueryModule extends StaticContext {
       functionLibraryList.addFunctionLibrary(new XQueryFunctionLibrary(config))
     importedFunctionLibraryNr = functionLibraryList.addFunctionLibrary(
       new ImportedFunctionLibrary(this,
-        getTopLevelModule.getGlobalFunctionLibrary))
+        getTopLevelModule.globalFunctionLibrary))
     if (sqc != null && sqc.getExtensionFunctionLibrary != null) {
       functionLibraryList.addFunctionLibrary(sqc.getExtensionFunctionLibrary)
     }
@@ -387,7 +376,7 @@ class QueryModule extends StaticContext {
         if (!varDefinitions.contains(`var`)) {
           val slot: Int =
             globalVariableMap.allocateSlotNumber(`var`.getVariableQName)
-          `var`.compile(getExecutable, slot)
+          `var`.compile(executable, slot)
           varDefinitions.add(`var`)
         }
       }
@@ -595,7 +584,7 @@ class QueryModule extends StaticContext {
   def declareFunction(function: XQueryFunction): Unit = {
     val config: Configuration = getConfiguration
     if (function.getNumberOfArguments == 1) {
-      val name: StructuredQName = function.getFunctionName
+      val name: StructuredQName = function.functionName
       val t: SchemaType = config.getSchemaType(name)
       if (t != null && t.isAtomicType) {
         val err = new XPathException(
@@ -881,4 +870,42 @@ class QueryModule extends StaticContext {
 
   override def resolveTypeAlias(typeName: StructuredQName): ItemType =
     getPackageData.obtainTypeAliasManager.getItemType(typeName)
+
+  override def getDecimalFormatManager: DecimalFormatManager = decimalFormatManager
+
+  override def getDefaultFunctionNamespace: String = defaultFunctionNamespace
+
+  override def getPackageData: PackageData = packageData
+
+  override def getRequiredContextItemType: ItemType = requiredContextItemType
+
+  def getExecutable: Executable = executable
+
+  def getModuleNamespace: String = moduleNamespace
+
+  def setModuleNamespace(ns: String): Unit = moduleNamespace = ns
+
+  def getUserQueryContext: StaticQueryContext = userQueryContext
+
+  def getCodeInjector: CodeInjector = codeInjector
+
+  def setDefaultFunctionNamespace(ns: String): Unit = defaultFunctionNamespace = ns
+
+  def setPreserveNamespaces(b: Boolean): Unit = preserveNamespaces = b
+
+  def isPreserveNamespaces: Boolean = preserveNamespaces
+
+  def setInheritNamespaces(b: Boolean): Unit = inheritNamespaces = b
+
+  def isInheritNamespaces: Boolean = inheritNamespaces
+
+  def setConstructionMode(m: Int): Unit = constructionMode = m
+
+  def getConstructionMode: Int = constructionMode
+
+  def setExecutable(e: Executable): Unit = executable = e
+
+  def setPackageData(pd: PackageData): Unit = packageData = pd
+
+  def getGlobalFunctionLibrary: XQueryFunctionLibrary = globalFunctionLibrary
 }

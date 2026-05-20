@@ -23,11 +23,11 @@ object SingletonAttributeMap {
       case map: SingletonAttributeMap =>
         map
       case _ =>
-        new SingletonAttributeMap(att.getNodeName,
-          att.getType,
-          att.getValue,
-          att.getLocation,
-          att.getProperties)
+        new SingletonAttributeMap(att.nodeName,
+          att.`type`,
+          att.value,
+          att.location,
+          att.properties)
     }
 }
 
@@ -42,17 +42,17 @@ class SingletonAttributeMap private(nodeName: NodeName,
   override def size: Int = 1
 
   override def get(name: NodeName): AttributeInfo =
-    if (name == getNodeName) this else null
+    if (name == nodeName) this else null
 
   override def get(uri: String, local: String): AttributeInfo =
-    if (getNodeName.getLocalPart == local && getNodeName.hasURI(uri)) this
+    if (nodeName.getLocalPart == local && nodeName.hasURI(uri)) this
     else null
 
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo =
-    if (getNodeName.obtainFingerprint(namePool) == fingerprint) this else null
+    if (nodeName.obtainFingerprint(namePool) == fingerprint) this else null
 
   override def put(att: AttributeInfo): AttributeMap =
-    if (getNodeName == att.getNodeName) {
+    if (nodeName == att.nodeName) {
       SingletonAttributeMap.of(att)
     } else {
       val list: ju.List[AttributeInfo] = new ju.ArrayList[AttributeInfo](2)
@@ -62,7 +62,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
     }
 
   override def remove(name: NodeName): AttributeMap =
-    if (name == getNodeName) EmptyAttributeMap.getInstance else this
+    if (name == nodeName) EmptyAttributeMap.getInstance else this
 
   def iterator: ju.Iterator[AttributeInfo] = new MonoIterator(this)
 

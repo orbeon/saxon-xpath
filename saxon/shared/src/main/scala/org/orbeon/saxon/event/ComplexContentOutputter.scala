@@ -112,7 +112,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     state = Open
   }
 
-  def startDocument(properties: Int): Unit = {
+  override def startDocument(properties: Int): Unit = {
     level += 1
     if (level == 0)
       nextReceiver.startDocument(properties)
@@ -125,13 +125,14 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     state = Content
   }
 
-  def endDocument(): Unit = {
+  override def endDocument(): Unit = {
     if (level == 0)
       nextReceiver.endDocument()
     previousAtomic = false
     level -= 1
     state = if (level < 0) Open else Content
   }
+
 
   override def setUnparsedEntity(
     name     : String,
@@ -140,7 +141,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
   ): Unit =
     nextReceiver.setUnparsedEntity(name, systemID, publicID)
 
-  def characters(
+  override def characters(
     s          : CharSequence,
     locationId : Location,
     properties : Int
@@ -158,7 +159,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     nextReceiver.characters(s, locationId, properties)
   }
 
-  def startElement(
+  override def startElement(
     elemName   : NodeName,
     typeCode   : SchemaType,
     location   : Location,
@@ -181,7 +182,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     state = StartTag
   }
 
-  def namespace(prefix: String, namespaceUri: String, properties: Int): Unit = {
+  override def namespace(prefix: String, namespaceUri: String, properties: Int): Unit = {
     ju.Objects.requireNonNull(prefix)
     ju.Objects.requireNonNull(namespaceUri)
     if (ReceiverOption.contains(properties, ReceiverOption.NAMESPACE_OK)) {
@@ -245,7 +246,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
         super.namespaces(bindings, properties)
     }
 
-  def attribute(
+  override def attribute(
     attName    : NodeName,
     typeCode   : SimpleType,
     value      : CharSequence,
@@ -271,7 +272,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     )
     if (level >= 0 && ! ReceiverOption.contains(properties, ReceiverOption.NOT_A_DUPLICATE)) {
       for (a <- 0 until pendingAttributes.size
-           if pendingAttributes.get(a).getNodeName == attName) {
+           if pendingAttributes.get(a).nodeName == attName) {
         if (hostLanguage == HostLanguage.XSLT) {
           pendingAttributes.set(a, attInfo)
           return
@@ -387,7 +388,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       prefix + '_' + seq
   }
 
-  def endElement(): Unit = {
+  override def endElement(): Unit = {
     if (state == StartTag)
       startContent()
     else
@@ -399,7 +400,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     inheritedNamespaces = inheritedNamespaces.tail
   }
 
-  def comment(comment: CharSequence,
+  override def comment(comment: CharSequence,
               locationId: Location,
               properties: Int): Unit = {
     if (level >= 0) {
@@ -410,7 +411,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     nextReceiver.comment(comment, locationId, properties)
   }
 
-  def processingInstruction(target: String,
+  override def processingInstruction(target: String,
                             data: CharSequence,
                             locationId: Location,
                             properties: Int): Unit = {
@@ -466,7 +467,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     val elcode = checkProposedPrefix(pendingStartTag, 0)
     val props  = startElementProperties | ReceiverOption.NAMESPACE_OK
     for (a <- 0 until pendingAttributes.size) {
-      val oldName = pendingAttributes.get(a).getNodeName
+      val oldName = pendingAttributes.get(a).nodeName
       if (! oldName.hasURI("")) {
         val newName = checkProposedPrefix(oldName, a + 1)
         if (newName != oldName) {

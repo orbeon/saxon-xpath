@@ -185,7 +185,7 @@ class SerializerFactory {
   def this(pipe: PipelineConfiguration) = {
     this()
     this.pipe = pipe
-    this.config = pipe.getConfiguration
+    this.config = pipe.configuration
   }
 
   def getConfiguration: Configuration = config
@@ -365,19 +365,19 @@ class SerializerFactory {
         method match {
           case "html"     =>
             emitter = newHTMLEmitter(props)
-            emitter.setPipelineConfiguration(pipe)
+            emitter.pipelineConfiguration = pipe
             target = createHTMLSerializer(emitter, params, pipe)
           case "xml"      =>
             emitter = newXMLEmitter(props)
-            emitter.setPipelineConfiguration(pipe)
+            emitter.pipelineConfiguration = pipe
             target = createXMLSerializer(emitter.asInstanceOf[XMLEmitter], params)
           case "xhtml"    =>
             emitter = newXHTMLEmitter(props)
-            emitter.setPipelineConfiguration(pipe)
+            emitter.pipelineConfiguration = pipe
             target = createXHTMLSerializer(emitter, params, pipe)
           case "text"     =>
             emitter = newTEXTEmitter
-            emitter.setPipelineConfiguration(pipe)
+            emitter.pipelineConfiguration = pipe
             target = createTextSerializer(emitter, params)
           case "json"     =>
             props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
@@ -392,7 +392,7 @@ class SerializerFactory {
           case "adaptive" =>
             ???
           // ORBEON: No `File` support.
-          //          val esr = new ExpandedStreamResult(pipe.getConfiguration, result.asInstanceOf[StreamResult], props)
+          //          val esr = new ExpandedStreamResult(pipe.configuration, result.asInstanceOf[StreamResult], props)
           //          val writer = esr.obtainWriter
           //          val je = new AdaptiveEmitter(pipe, writer)
           //          je.setOutputProperties(props)
@@ -477,7 +477,7 @@ class SerializerFactory {
     else if (result.isInstanceOf[Receiver]) {
       val receiver = result.asInstanceOf[Receiver]
       receiver.setSystemId(result.getSystemId)
-      receiver.setPipelineConfiguration(pipe)
+      receiver.pipelineConfiguration = pipe
       if (result.asInstanceOf[Receiver].handlesAppend && "no" == props.getProperty(SaxonOutputKeys.BUILD_TREE)) {
         return receiver
         // TODO: handle item-separator
@@ -487,9 +487,9 @@ class SerializerFactory {
     else if (result.isInstanceOf[SAXResult]) {
       val proxy = newContentHandlerProxy
       proxy.setUnderlyingContentHandler(result.asInstanceOf[SAXResult].getHandler)
-      proxy.setPipelineConfiguration(pipe)
+      proxy.pipelineConfiguration = pipe
       proxy.setOutputProperties(props)
-      if ("yes" == props.getProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR)) if (config.isCompileWithTracing && pipe.getController != null) pipe.getController.addTraceListener(proxy.getTraceListener)
+      if ("yes" == props.getProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR)) if (config.isCompileWithTracing && pipe.controller != null) pipe.controller.addTraceListener(proxy.traceListener)
       else throw new XPathException("Cannot use saxon:supply-source-locator unless tracing was enabled at compile time", SaxonErrorCode.SXSE0002)
       //proxy.open();
       return makeSequenceNormalizer(proxy, props)
@@ -498,18 +498,18 @@ class SerializerFactory {
 //    else if (result.isInstanceOf[StAXResult]) {
 //      val handler = new StAXResultHandlerImpl
 //      val r = handler.getReceiver(result, props)
-//      r.setPipelineConfiguration(pipe)
+//      r.pipelineConfiguration = pipe
 //      return makeSequenceNormalizer(r, props)
 //    }
     else if (pipe != null) { // try to find an external object model that knows this kind of Result
-      val externalObjectModels = pipe.getConfiguration.getExternalObjectModels
+      val externalObjectModels = pipe.configuration.getExternalObjectModels
 
       for (externalObjectModel <- externalObjectModels.asScala) {
         val model = externalObjectModel.asInstanceOf[ExternalObjectModel]
         val builder = model.getDocumentBuilder(result)
         if (builder != null) {
           builder.setSystemId(result.getSystemId)
-          builder.setPipelineConfiguration(pipe)
+          builder.pipelineConfiguration = pipe
           return new TreeReceiver(builder)
         }
       }
@@ -522,12 +522,12 @@ class SerializerFactory {
     if ("json" == method || "adaptive" == method) if (receiver.isInstanceOf[SequenceReceiver]) receiver.asInstanceOf[SequenceReceiver]
     else new TreeReceiver(receiver)
     else {
-      val pipe = receiver.getPipelineConfiguration
+      val pipe = receiver.pipelineConfiguration
       var result: SequenceReceiver = null
       val separator = properties.getProperty(SaxonOutputKeys.ITEM_SEPARATOR)
       if (separator == null || "#absent" == separator) result = new SequenceNormalizerWithSpaceSeparator(receiver)
       else result = new SequenceNormalizerWithItemSeparator(receiver, separator)
-      result.setPipelineConfiguration(pipe)
+      result.pipelineConfiguration = pipe
       result
     }
   }
@@ -721,9 +721,9 @@ class SerializerFactory {
   @throws[XPathException]
    def createUserDefinedOutputMethod(method: String, props: Properties, pipe: PipelineConfiguration): SequenceReceiver = {
     var userReceiver: Receiver = null // See if this output method is recognized by the Configuration
-    userReceiver = pipe.getConfiguration.makeEmitter(method, props)
-    userReceiver.setPipelineConfiguration(pipe)
-    if (userReceiver.isInstanceOf[ContentHandlerProxy] && "yes" == props.getProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR)) if (pipe.getConfiguration.isCompileWithTracing && pipe.getController != null) pipe.getController.addTraceListener(userReceiver.asInstanceOf[ContentHandlerProxy].getTraceListener)
+    userReceiver = pipe.configuration.makeEmitter(method, props)
+    userReceiver.pipelineConfiguration = pipe
+    if (userReceiver.isInstanceOf[ContentHandlerProxy] && "yes" == props.getProperty(SaxonOutputKeys.SUPPLY_SOURCE_LOCATOR)) if (pipe.configuration.isCompileWithTracing && pipe.controller != null) pipe.controller.addTraceListener(userReceiver.asInstanceOf[ContentHandlerProxy].traceListener)
     else throw new XPathException("Cannot use saxon:supply-source-locator unless tracing was enabled at compile time", SaxonErrorCode.SXSE0002)
     if (userReceiver.isInstanceOf[SequenceReceiver]) userReceiver.asInstanceOf[SequenceReceiver]
     else new TreeReceiver(userReceiver)
@@ -1007,7 +1007,7 @@ class SerializerFactory {
    */
   @throws[XPathException]
   def prepareNextStylesheet(pipe: PipelineConfiguration, href: String, baseURI: String, result: Result): Null = {
-    pipe.getConfiguration.checkLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION, "saxon:next-in-chain", -1)
+    pipe.configuration.checkLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION, "saxon:next-in-chain", -1)
     null
   }
 

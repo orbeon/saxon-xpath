@@ -258,21 +258,21 @@ class AttributeCollectionImpl(private var config: Configuration,
   }
 
   def setAttribute(attribute: AttributeInfo): Unit = {
-    val name: NodeName = attribute.getNodeName
+    val name: NodeName = attribute.nodeName
     val index: Int = getIndex(name.getURI, name.getLocalPart)
     if (index < 0) {
       addAttribute(name,
-        attribute.getType,
-        attribute.getValue,
-        attribute.getLocation,
-        attribute.getProperties)
+        attribute.`type`,
+        attribute.value,
+        attribute.location,
+        attribute.properties)
     } else {
       setAttribute(index,
         name,
-        attribute.getType,
-        attribute.getValue,
-        attribute.getLocation,
-        attribute.getProperties)
+        attribute.`type`,
+        attribute.value,
+        attribute.location,
+        attribute.properties)
     }
   }
 }

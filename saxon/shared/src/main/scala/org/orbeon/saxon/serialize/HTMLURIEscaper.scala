@@ -147,16 +147,16 @@ class HTMLURIEscaper(nextReceiver: Receiver) extends ProxyReceiver(nextReceiver)
     if (escapeURIAttributes) {
       atts2 = attributes.apply(
         att =>
-          if (! ReceiverOption.contains(att.getProperties, ReceiverOption.DISABLE_ESCAPING)) {
-            val attName = att.getNodeName
+          if (! ReceiverOption.contains(att.properties, ReceiverOption.DISABLE_ESCAPING)) {
+            val attName = att.nodeName
             if (isUrlAttribute(nameCode, attName)) {
-              val value = att.getValue
+              val value = att.value
               new AttributeInfo(
-                att.getNodeName,
-                att.getType,
+                att.nodeName,
+                att.`type`,
                 escapeURL(value, normalize = true, getConfiguration).toString,
-                att.getLocation,
-                att.getProperties | ReceiverOption.DISABLE_CHARACTER_MAPS
+                att.location,
+                att.properties | ReceiverOption.DISABLE_CHARACTER_MAPS
               )
             } else {
              att

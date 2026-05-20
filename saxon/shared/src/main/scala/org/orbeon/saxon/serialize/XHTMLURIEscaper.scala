@@ -88,11 +88,11 @@ class XHTMLURIEscaper(next: Receiver) extends HTMLURIEscaper(next) {
     if (escapeURIAttributes) {
       atts2 = attributes.apply(
         (att) =>
-          if (!ReceiverOption.contains(att.getProperties,
+          if (!ReceiverOption.contains(att.properties,
             ReceiverOption.DISABLE_ESCAPING)) {
-            val attName: NodeName = att.getNodeName
+            val attName: NodeName = att.nodeName
             if (isUrlAttribute(nameCode, attName)) {
-              val value: String = att.getValue
+              val value: String = att.value
               val normalized: CharSequence =
                 (if (isAllAscii(value)) value
                 else
@@ -101,10 +101,10 @@ class XHTMLURIEscaper(next: Receiver) extends HTMLURIEscaper(next) {
                     .normalize(value))
               return new AttributeInfo(
                 attName,
-                att.getType,
+                att.`type`,
                 HTMLURIEscaper.escapeURL(normalized, normalize = true, getConfiguration).toString,
-                att.getLocation,
-                att.getProperties | ReceiverOption.DISABLE_CHARACTER_MAPS)
+                att.location,
+                att.properties | ReceiverOption.DISABLE_CHARACTER_MAPS)
             } else {
              return att
             }

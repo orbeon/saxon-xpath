@@ -322,7 +322,7 @@ class XMLEmitter extends Emitter {
       isFirst = false
     }
     for (att <- attributes.iterator.asScala) {
-      attribute(att.getNodeName, att.getValue, att.getProperties, isFirst)
+      attribute(att.nodeName, att.value, att.properties, isFirst)
       isFirst = false
     }
     openStartTag = true

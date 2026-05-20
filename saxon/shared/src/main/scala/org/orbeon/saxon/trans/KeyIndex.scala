@@ -12,7 +12,6 @@ import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.iter.{EmptyIterator, ListIterator, ManualIterator, SingleNodeIterator}
 import org.orbeon.saxon.value.{AtomicValue, UntypedAtomicValue}
 
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -60,7 +59,6 @@ class KeyIndex(isRangeKey: Boolean) {
   var collation: StringCollator = _
   var creatingThread: Long = Thread.currentThread().getId
 
-  @BeanProperty
   var status: Status.Status = Status.UNDER_CONSTRUCTION
 
   def getUnderlyingMap: util.Map[AtomicMatchKey, Any] = index

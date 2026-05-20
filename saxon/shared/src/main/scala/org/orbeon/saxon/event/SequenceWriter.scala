@@ -16,17 +16,18 @@ import org.orbeon.saxon.tree.linked.LinkedTreeBuilder
 
 import org.orbeon.saxon.tree.util.Orphan
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BooleanBeanProperty
 
 abstract class SequenceWriter(pipe: PipelineConfiguration)
   extends SequenceReceiver(pipe) {
 
-  @BeanProperty
   var treeModel: TreeModel = null
 
   private var builder: Builder = null
 
   private var level: Int = 0
+
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def write(item: Item): Unit
 
@@ -53,20 +54,20 @@ abstract class SequenceWriter(pipe: PipelineConfiguration)
     val pipe: PipelineConfiguration = getPipelineConfiguration
     if (treeModel != null) {
       builder = treeModel.makeBuilder(pipe)
-    } else if (pipe.getController != null) {
+    } else if (pipe.controller != null) {
       if (mutable) {
-        val model: TreeModel = pipe.getController.getModel
+        val model: TreeModel = pipe.controller.getModel
         builder =
-          if (model.isMutable) pipe.getController.makeBuilder
+          if (model.isMutable) pipe.controller.makeBuilder
           else new LinkedTreeBuilder(pipe)
       } else {
-        builder = pipe.getController.makeBuilder
+        builder = pipe.controller.makeBuilder
       }
     } else {
       val model: TreeModel = getConfiguration.getParseOptions.getModel
       builder = model.makeBuilder(pipe)
     }
-    builder.setPipelineConfiguration(pipe)
+    builder.pipelineConfiguration = pipe
     builder.setSystemId(systemId)
     builder.setBaseURI(systemId)
     builder.setTiming(false)

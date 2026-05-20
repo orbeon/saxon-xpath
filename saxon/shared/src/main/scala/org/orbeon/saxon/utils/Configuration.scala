@@ -416,7 +416,7 @@ class Configuration extends SourceResolver with NotationSet {
   private val globalDocumentPool: DocumentPool = new DocumentPool()
   private val integratedFunctionLibrary: IntegratedFunctionLibrary = new IntegratedFunctionLibrary()
   @transient private var localizerFactory: LocalizerFactory = _
-  private var namePool: NamePool = new NamePool()
+  private var namePool_ : NamePool = new NamePool()
   var optimizer: Optimizer = null
   private var serializerFactory: SerializerFactory = new SerializerFactory(this)
   @volatile private var sourceParserPool: ConcurrentLinkedQueue[XMLReader] = new ConcurrentLinkedQueue()
@@ -437,7 +437,7 @@ class Configuration extends SourceResolver with NotationSet {
   @transient  var typeHierarchy: TypeHierarchy = _
   private val typeChecker: TypeChecker = new TypeChecker()
   private val typeChecker10: TypeChecker10 = new TypeChecker10()
-  @transient private var uriResolver: URIResolver = _
+  @transient private var uriResolver_ : URIResolver = _
   var builtInExtensionLibraryList: FunctionLibraryList = _
   var xsdVersion: Int = Configuration.XSD11
   private var xmlVersion: Int = Configuration.XML10
@@ -720,6 +720,16 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def getAllowedUriTest: ju.function.Predicate[URI] = this.allowedUriTest
 
+  def uriResolver: URIResolver = {
+    if (uriResolver_ == null) return systemURIResolver
+    uriResolver_
+  }
+
+  def uriResolver_=(resolver: URIResolver): Unit = {
+    uriResolver_ = resolver
+    if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(this)
+  }
+
   /**
    * Get the URIResolver used in this configuration
    *
@@ -727,10 +737,7 @@ class Configuration extends SourceResolver with NotationSet {
    *         default URIResolver is used.
    * @since 8.4
    */
-  def getURIResolver: URIResolver = {
-    if (uriResolver == null) return systemURIResolver
-    uriResolver
-  }
+  def getURIResolver: URIResolver = uriResolver
 
   /**
    * Set the URIResolver to be used in this configuration. This will be used to
@@ -743,11 +750,7 @@ class Configuration extends SourceResolver with NotationSet {
    * @param resolver The URIResolver to be used.
    * @since 8.4
    */
-  def setURIResolver(resolver: URIResolver): Unit = {
-    uriResolver = resolver
-    if (resolver.isInstanceOf[StandardURIResolver]) resolver.asInstanceOf[StandardURIResolver].setConfiguration(this)
-    //defaultXsltCompilerInfo.setURIResolver(resolver)
-  }
+  def setURIResolver(resolver: URIResolver): Unit = uriResolver = resolver
 
   /**
    * Set the URIResolver to a URI resolver that allows query parameters after the URI,
@@ -2132,26 +2135,30 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def isExpandAttributeDefaults: Boolean = defaultParseOptions.isExpandAttributeDefaults
 
+  def namePool: NamePool = namePool_
+
+  def namePool_=(targetNamePool: NamePool): Unit = namePool_ = targetNamePool
+
   /**
-   * Get the target namepool to be used for stylesheets/queries and for source documents.
-   *
-   * @return the target name pool. If no NamePool has been specified explicitly, the
-   *         default NamePool is returned.
-   * @since 8.4
-   */
+    * Get the target namepool to be used for stylesheets/queries and for source documents.
+    *
+    * @return the target name pool. If no NamePool has been specified explicitly, the
+    *         default NamePool is returned.
+    * @since 8.4
+    */
   def getNamePool: NamePool = namePool
 
   /**
-   * Set the NamePool to be used for stylesheets/queries and for source documents.
-   * <p> Using this method allows several Configurations to share the same NamePool. This
-   * was the normal default arrangement until Saxon 8.9, which changed the default so
-   * that each Configuration uses its own NamePool.</p>
-   * <p>Sharing a NamePool creates a potential bottleneck, since changes to the namepool are
-   * synchronized.</p>
-   *
-   * @param targetNamePool The NamePool to be used.
-   * @since 8.4
-   */
+    * Set the NamePool to be used for stylesheets/queries and for source documents.
+    * <p> Using this method allows several Configurations to share the same NamePool. This
+    * was the normal default arrangement until Saxon 8.9, which changed the default so
+    * that each Configuration uses its own NamePool.</p>
+    * <p>Sharing a NamePool creates a potential bottleneck, since changes to the namepool are
+    * synchronized.</p>
+    *
+    * @param targetNamePool The NamePool to be used.
+    * @since 8.4
+    */
   def setNamePool(targetNamePool: NamePool): Unit = namePool = targetNamePool
 
   /**
@@ -3017,9 +3024,9 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def makePipelineConfiguration: PipelineConfiguration = {
     val pipe = new PipelineConfiguration(this)
-    pipe.setURIResolver(getURIResolver)
-    pipe.setParseOptions(new ParseOptions(defaultParseOptions))
-    pipe.setErrorReporter(makeErrorReporter)
+    pipe.uriResolver = getURIResolver
+    pipe.parseOptions = new ParseOptions(defaultParseOptions)
+    pipe.errorReporter = makeErrorReporter
     pipe
   }
 
@@ -3146,11 +3153,11 @@ class Configuration extends SourceResolver with NotationSet {
       // Decide whether line numbering is in use
       val lineNumbering = options.isLineNumbering
       val pipe = makePipelineConfiguration
-      pipe.setParseOptions(options)
+      pipe.parseOptions = options
       val builder = treeModel.makeBuilder(pipe)
       builder.setTiming(isTiming)
       builder.setLineNumbering(lineNumbering)
-      builder.setPipelineConfiguration(pipe)
+      builder.pipelineConfiguration = pipe
       builder.setSystemId(src.getSystemId)
       Sender.send(src, builder, options)
       // Get the constructed document

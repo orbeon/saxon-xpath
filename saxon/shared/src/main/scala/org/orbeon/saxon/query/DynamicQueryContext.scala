@@ -27,9 +27,6 @@ import javax.xml.transform.ErrorListener
 
 import javax.xml.transform.URIResolver
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
 class DynamicQueryContext(private var config: Configuration) {
 
   var contextItem: Item = _
@@ -38,22 +35,37 @@ class DynamicQueryContext(private var config: Configuration) {
 
   private var uriResolver: URIResolver = config.getURIResolver
 
-  @BeanProperty
   var errorReporter: ErrorReporter = new StandardErrorReporter()
 
   /*@Nullable*/
 
-  @BeanProperty
   var traceListener: TraceListener = _
 
-  @BeanProperty
   var unparsedTextURIResolver: UnparsedTextURIResolver = _
 
-  @BeanProperty
   var currentDateAndTime: DateTimeValue = _
 
-  @BeanProperty
   var traceFunctionDestination: Logger = config.getLogger
+
+  def getErrorReporter: ErrorReporter = errorReporter
+
+  def setErrorReporter(errorReporter: ErrorReporter): Unit = {
+    this.errorReporter = errorReporter
+  }
+
+  def getTraceListener: TraceListener = traceListener
+
+  def setTraceListener(traceListener: TraceListener): Unit = {
+    this.traceListener = traceListener
+  }
+
+  def getTraceFunctionDestination: Logger = traceFunctionDestination
+
+  def setTraceFunctionDestination(traceFunctionDestination: Logger): Unit = {
+    this.traceFunctionDestination = traceFunctionDestination
+  }
+
+  def getCurrentDateAndTime: DateTimeValue = currentDateAndTime
 
   private var validationMode: Int = Validation.DEFAULT
 

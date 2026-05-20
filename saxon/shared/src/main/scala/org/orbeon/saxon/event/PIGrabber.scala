@@ -36,8 +36,9 @@ class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
   private var uriResolver: URIResolver = null
   private var stylesheets: List[String] = new ArrayList()
 
-  @BooleanBeanProperty
   var terminated: Boolean = false
+
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def setFactory(config: Configuration): Unit = {
     this.config = config

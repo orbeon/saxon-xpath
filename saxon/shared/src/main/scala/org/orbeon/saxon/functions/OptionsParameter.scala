@@ -37,7 +37,7 @@ import org.orbeon.saxon.value.StringValue
 
 import java.util._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -60,10 +60,8 @@ class OptionsParameter {
 
   private var errorCodeForDisallowedValue: String = _
 
-  @BeanProperty
   var errorCodeForAbsentValue: String = "SXJE9999"
 
-  @BooleanBeanProperty
   var allowCastFromString: Boolean = false
 
   /**

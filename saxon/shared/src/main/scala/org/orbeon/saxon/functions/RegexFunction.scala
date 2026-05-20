@@ -22,20 +22,17 @@ import java.util.ArrayList
 
 import java.util.List
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 abstract class RegexFunction
   extends SystemFunction
     with StatefulSystemFunction {
 
-  @BeanProperty
   var staticRegex: RegularExpression = _
 
   private def tryToBindRegularExpression(arguments: Array[Expression]): Unit = {
     if (arguments(1).isInstanceOf[Literal] &&
       arguments(arguments.length - 1).isInstanceOf[Literal]) {
       try {
-        val config: Configuration = getRetainedStaticContext.getConfiguration
+        val config: Configuration = retainedStaticContext.getConfiguration
         val re: String = arguments(1)
           .asInstanceOf[Literal]
           .value
@@ -64,7 +61,7 @@ abstract class RegexFunction
   override def copy(): RegexFunction = {
     val copy: RegexFunction = SystemFunction
       .makeFunction(getFunctionName.getLocalPart,
-        getRetainedStaticContext,
+        retainedStaticContext,
         getArity)
       .asInstanceOf[RegexFunction]
     copy.staticRegex = staticRegex
@@ -90,7 +87,7 @@ abstract class RegexFunction
     if (staticRegex != null) {
       return staticRegex
     }
-    val config: Configuration = getRetainedStaticContext.getConfiguration
+    val config: Configuration = retainedStaticContext.getConfiguration
     val regexArg: StringValue = args(1).head.asInstanceOf[StringValue]
     val re: String = regexArg.getStringValue
     val flags: String = args(args.length - 1).head.getStringValue

@@ -12,7 +12,6 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
 
 
@@ -32,18 +31,17 @@ object CheckSumFilter {
 class CheckSumFilter(nextReceiver: Receiver)
     extends ProxyReceiver(nextReceiver) {
 
-  @BeanProperty
   var checksum: Int = 0
   private var sequence: Int = 0
   private var checkExistingChecksum: Boolean = false
   private var checksumCorrect: Boolean = false
 
-  @BooleanBeanProperty
   var checksumFound: Boolean = false
 
-  def setCheckExistingChecksum(check: Boolean): Unit = {
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
+
+  def setCheckExistingChecksum(check: Boolean): Unit =
     this.checkExistingChecksum = check
-  }
 
   override def startDocument(properties: Int): Unit = {
     if (DEBUG)
@@ -76,11 +74,8 @@ class CheckSumFilter(nextReceiver: Receiver)
                           properties: Int): Unit = {
     if (! Whitespace.isWhite(chars)) {
       checksum ^= hash(chars, { sequence += 1; sequence - 1 })
-      if (DEBUG) {
-        System.err.println(
-          "After characters " + chars + ": " + java.lang.Integer
-            .toHexString(checksum))
-      }
+      if (DEBUG) 
+        System.err.println("After characters " + chars + ": " + java.lang.Integer.toHexString(checksum))
     }
     super.characters(chars, locationId, properties)
   }
@@ -95,24 +90,21 @@ class CheckSumFilter(nextReceiver: Receiver)
                             location: Location,
                             properties: Int): Unit = {
     checksum ^= hash(elemName, { sequence += 1; sequence - 1 })
-    if (DEBUG) {
-      System.err.println(
-        "After startElement " + elemName.getDisplayName + ": " +
-          checksum)
-    }
+    if (DEBUG)
+      System.err.println("After startElement " + elemName.getDisplayName + ": " + checksum)
     checksumCorrect = false
     for (att <- attributes.iterator.asScala) {
-      checksum ^= hash(att.getNodeName, sequence)
-      checksum ^= hash(att.getValue, sequence)
+      checksum ^= hash(att.nodeName, sequence)
+      checksum ^= hash(att.value, sequence)
       if (DEBUG) {
         System.err.println(
-          "After attribute " + att.getNodeName.getDisplayName +
+          "After attribute " + att.nodeName.getDisplayName +
             ": " +
             checksum +
             "(" +
-            hash(att.getNodeName, sequence) +
+            hash(att.nodeName, sequence) +
             "," +
-            hash(att.getValue, sequence) +
+            hash(att.value, sequence) +
             ")")
       }
     }
@@ -129,9 +121,8 @@ class CheckSumFilter(nextReceiver: Receiver)
     */
   override def endElement(): Unit = {
     checksum ^= 1
-    if (DEBUG) {
+    if (DEBUG)
       System.err.println("After endElement: " + checksum)
-    }
     super.endElement()
   }
 
@@ -162,13 +153,11 @@ class CheckSumFilter(nextReceiver: Receiver)
 
   private def hash(s: CharSequence, sequence: Int): Int = {
     var h: Int = sequence << 8
-    for (i <- 0 until s.length) {
+    for (i <- 0 until s.length)
       h = (h << 1) + s.charAt(i)
-    }
     h
   }
 
   private def hash(n: NodeName, sequence: Int): Int = //System.err.println("hash(" + n.getLocalPart + ") " + hash(n.getLocalPart, sequence) + "/" + hash(n.getURI, sequence));
     hash(n.getLocalPart, sequence) ^ hash(n.getURI, sequence)
-
 }

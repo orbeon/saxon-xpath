@@ -19,8 +19,6 @@ import org.orbeon.saxon.utils.Configuration
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object Pattern {
 
   def make(pattern: String,
@@ -70,8 +68,9 @@ abstract class Pattern extends PseudoExpression {
 
   var priority: Double = 0.5
 
-  @BooleanBeanProperty
   var recoverable: Boolean = true
+
+  def isRecoverable: Boolean = recoverable
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 

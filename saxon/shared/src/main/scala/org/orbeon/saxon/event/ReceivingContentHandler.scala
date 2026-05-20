@@ -67,7 +67,6 @@ class ReceivingContentHandler
     with DTDHandler {
 
   private var pipe: PipelineConfiguration = _
-  @BeanProperty
   var receiver: Receiver = _
   // true while processing the DTD
   private var inDTD: Boolean = false
@@ -111,25 +110,32 @@ class ReceivingContentHandler
     lineNumbering = false
   }
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
     this.pipe = pipe
-    val config: Configuration = pipe.getConfiguration
-    ignoreIgnorable = pipe.getParseOptions.getSpaceStrippingRule != NoElementsSpaceStrippingRule.getInstance
+    val config: Configuration = pipe.configuration
+    ignoreIgnorable = pipe.parseOptions.getSpaceStrippingRule != NoElementsSpaceStrippingRule.getInstance
     retainDTDAttributeTypes =
       config.getBooleanProperty(Feature.RETAIN_DTD_ATTRIBUTE_TYPES)
-    if (!pipe.getParseOptions.isExpandAttributeDefaults) {
+    if (!pipe.parseOptions.isExpandAttributeDefaults) {
       defaultedAttributesAction = -1
     } else if (config.getBooleanProperty(Feature.MARK_DEFAULTED_ATTRIBUTES)) {
       defaultedAttributesAction = +1
     }
     allowDisableOutputEscaping =
       config.getConfigurationProperty(Feature.USE_PI_DISABLE_OUTPUT_ESCAPING)
-    lineNumbering = pipe.getParseOptions.isLineNumbering
+    lineNumbering = pipe.parseOptions.isLineNumbering
   }
 
-  def getPipelineConfiguration: PipelineConfiguration = pipe
+  def pipelineConfiguration: PipelineConfiguration = pipe
 
-  def getConfiguration: Configuration = pipe.getConfiguration
+  def configuration: Configuration = pipe.configuration
+
+  def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
+
+  def getConfiguration: Configuration = configuration
+
+  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit =
+    this.pipelineConfiguration = pipe
 
   def setIgnoreIgnorableWhitespace(ignore: Boolean): Unit = {
     ignoreIgnorable = ignore
@@ -144,7 +150,7 @@ class ReceivingContentHandler
       currentNamespaceMap = NamespaceMap.emptyMap
       namespaceStack = Nil
       namespaceStack ::= currentNamespaceMap
-      receiver.setPipelineConfiguration(pipe)
+      receiver.pipelineConfiguration = pipe
       val systemId: String = localLocator.getSystemId
       if (systemId != null) {
         receiver.setSystemId(localLocator.getSystemId)
@@ -153,7 +159,7 @@ class ReceivingContentHandler
       receiver.startDocument(ReceiverOption.NONE)
     } catch {
       case quit: QuitParsingException =>
-        getPipelineConfiguration.getErrorReporter.report(new XmlProcessingException(quit).asWarning())
+        getPipelineConfiguration.errorReporter.report(new XmlProcessingException(quit).asWarning())
         throw new SAXException(quit)
       case err: XPathException =>
         throw new SAXException(err)
@@ -402,7 +408,7 @@ class ReceivingContentHandler
       case err: ValidationException =>
         err.maybeSetLocation(localLocator)
         if (! err.hasBeenReported)
-          pipe.getErrorReporter.report(new XmlProcessingException(err))
+          pipe.errorReporter.report(new XmlProcessingException(err))
         err.setHasBeenReported(true)
         throw new SAXException(err)
       case err: XPathException =>

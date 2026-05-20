@@ -214,7 +214,7 @@ class IterateInstr(select: Expression,
       c2.trackFocus(getSelectExpression.iterate(context))
     c2.setCurrentTemplateRule(null)
     val pipe: PipelineConfiguration = output.getPipelineConfiguration
-    pipe.setXPathContext(c2)
+    pipe.xPathContext = c2
     val tracing: Boolean = context.getController.isTracing
     val listener: TraceListener =
       if (tracing) context.getController.getTraceListener else null
@@ -243,7 +243,7 @@ class IterateInstr(select: Expression,
         }
       }
     }
-    pipe.setXPathContext(context)
+    pipe.xPathContext = context
     null
   }
 

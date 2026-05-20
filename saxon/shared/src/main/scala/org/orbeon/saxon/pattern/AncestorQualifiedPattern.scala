@@ -28,18 +28,13 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
   extends Pattern {
 
-  @BeanProperty
   var basePattern: Pattern = base
 
-  @BeanProperty
   var upperPattern: Pattern = upper
 
-  @BeanProperty
   var upwardsAxis: Int = axis
 
   private var refinedItemType: ItemType = _
@@ -207,7 +202,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
 
   def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.withUpper")
-    presenter.emitAttribute("axis", AxisInfo.axisName(getUpwardsAxis))
+    presenter.emitAttribute("axis", AxisInfo.axisName(upwardsAxis))
     presenter.emitAttribute("upFirst", "" + testUpperPatternFirst)
     basePattern.`export`(presenter)
     upperPattern.`export`(presenter)

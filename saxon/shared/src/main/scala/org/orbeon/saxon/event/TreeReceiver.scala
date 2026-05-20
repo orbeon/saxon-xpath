@@ -16,17 +16,17 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Arrays
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class TreeReceiver(@BeanProperty var nextReceiver: Receiver) extends SequenceReceiver(nextReceiver.getPipelineConfiguration) {
+class TreeReceiver(var nextReceiver: Receiver) extends SequenceReceiver(nextReceiver.pipelineConfiguration) {
 
   private var level: Int = 0
 
   private var isDocumentLevel: Array[Boolean] = new Array[Boolean](20)
 
+  override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
+
   previousAtomic = false
 
-  this.pipelineConfiguration = nextReceiver.getPipelineConfiguration
+  this.pipelineConfiguration = nextReceiver.pipelineConfiguration
 
   override def setSystemId(systemId: String): Unit = {
     if (systemId != null && systemId != this.systemId) {
@@ -37,11 +37,11 @@ class TreeReceiver(@BeanProperty var nextReceiver: Receiver) extends SequenceRec
     }
   }
 
-  override def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = {
+  override def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
     if (pipelineConfiguration != pipe) {
-      pipelineConfiguration = pipe
+      super.pipelineConfiguration = pipe
       if (nextReceiver != null) {
-        nextReceiver.setPipelineConfiguration(pipe)
+        nextReceiver.pipelineConfiguration = pipe
       }
     }
   }

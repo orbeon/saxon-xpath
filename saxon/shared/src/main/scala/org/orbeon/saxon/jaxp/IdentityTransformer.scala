@@ -27,12 +27,12 @@ import scala.jdk.CollectionConverters._
 class IdentityTransformer protected[jaxp] (var configuration: Configuration) extends Transformer {
 
   private var localOutputProperties: Properties = null
-  private var uriResolver          : URIResolver = configuration.getURIResolver
+  private var uriResolver          : URIResolver = configuration.uriResolver
   private var errorListener        : ErrorListener = null
 
   override def reset(): Unit = {
     localOutputProperties = null
-    uriResolver = getConfiguration.getURIResolver
+    uriResolver = configuration.uriResolver
     errorListener = null
   }
 
@@ -137,10 +137,10 @@ class IdentityTransformer protected[jaxp] (var configuration: Configuration) ext
     try {
       val sf = getConfiguration.getSerializerFactory
       val receiver = sf.getReceiver(result, new SerializationProperties(getOutputProperties))
-      val options = receiver.getPipelineConfiguration.getParseOptions
+      val options = receiver.pipelineConfiguration.parseOptions
       if (errorListener != null)
-        options.setErrorReporter(new ErrorReporterToListener(errorListener))
-      options.setContinueAfterValidationErrors(true)
+        options.errorReporter = new ErrorReporterToListener(errorListener)
+      options.continueAfterValidationErrors = true
       Sender.send(source, receiver, options)
     } catch {
       case err: XPathException =>

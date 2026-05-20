@@ -34,20 +34,20 @@ class LargeAttributeMap extends AttributeMap {
     this.size = atts.size
     var current: AttributeInfoLink = null
     for (att:AttributeInfo <- atts.asScala) {
-      if (attributes.get(att.getNodeName) != null)
+      if (attributes.get(att.nodeName) != null)
         throw new IllegalArgumentException("Attribute map contains duplicates")
       val link: AttributeInfoLink = new AttributeInfoLink()
       link.payload = att
       if (current == null) {
-        firstNode = att.getNodeName
+        firstNode = att.nodeName
       } else {
-        current.next = att.getNodeName
-        link.prior = current.payload.getNodeName
+        current.next = att.nodeName
+        link.prior = current.payload.nodeName
       }
       current = link
-      attributes = attributes.put(att.getNodeName, link)
+      attributes = attributes.put(att.nodeName, link)
     }
-    lastNode = current.payload.getNodeName
+    lastNode = current.payload.nodeName
   }
 
   def this(
@@ -80,24 +80,24 @@ class LargeAttributeMap extends AttributeMap {
   }
 
   override def put(att: AttributeInfo): AttributeMap = {
-    val existing = attributes.get(att.getNodeName)
+    val existing = attributes.get(att.nodeName)
     val link = new AttributeInfoLink
     var last2 = lastNode
     link.payload = att
     if (existing == null) {
       link.prior = lastNode
-      last2 = att.getNodeName
+      last2 = att.nodeName
       val oldLast = attributes.get(lastNode)
       val penult = new AttributeInfoLink
       penult.payload = oldLast.payload
-      penult.next = att.getNodeName
+      penult.next = att.nodeName
       penult.prior = oldLast.prior
       attributes = attributes.put(lastNode, penult)
     } else {
       link.prior = existing.prior
       link.next = existing.next
     }
-    val att2 = attributes.put(att.getNodeName, link)
+    val att2 = attributes.put(att.nodeName, link)
     val size2 = if (existing == null) size + 1 else size
     new LargeAttributeMap(att2, size2, firstNode, last2)
   }
@@ -158,9 +158,9 @@ class LargeAttributeMap extends AttributeMap {
   override def toString: String = {
     val sb = new FastStringBuffer(256)
     for (att <- this.asScala) {
-      sb.cat(att.getNodeName.getDisplayName)
+      sb.cat(att.nodeName.getDisplayName)
         .cat("=\"")
-        .cat(att.getValue)
+        .cat(att.value)
         .cat("\" ")
     }
     sb.toString.trim()

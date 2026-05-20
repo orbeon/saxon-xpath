@@ -8,12 +8,10 @@ import org.orbeon.saxon.om.{Item, NodeInfo, NodeName}
 import org.orbeon.saxon.tree.tiny.{NodeVectorTree, TinyTree}
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class ContentTypeTest(nodeKind: Int,
-                      @BeanProperty var schemaType: SchemaType,
+                      var schemaType: SchemaType,
                       private var config: Configuration,
-                      @BooleanBeanProperty  var nillableBool: Boolean)
+                      var nillableBool: Boolean)
   extends NodeTest {
 
   private val kind: Int = nodeKind
@@ -60,6 +58,10 @@ class ContentTypeTest(nodeKind: Int,
   override def getPrimitiveType: Int = kind
 
   override def getContentType: SchemaType = schemaType
+
+  def getSchemaType: SchemaType = schemaType
+
+  def setNillableBool(b: Boolean): Unit = nillableBool = b
 
   override def getAtomizedItemType: AtomicType = {
     val `type`: SchemaType = schemaType

@@ -87,9 +87,9 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
         var found = false
         breakable {
           for (att <- attributes.iterator.asScala) {
-            val name = att.getNodeName.getLocalPart
+            val name = att.nodeName.getLocalPart
             if (comparesEqual(name, "http-equiv")) {
-              val value = Whitespace.trim(att.getValue)
+              val value = Whitespace.trim(att.value)
               if (value.equalsIgnoreCase("Content-Type")) {
                 // case-blind comparison even for XHTML
                 found = true

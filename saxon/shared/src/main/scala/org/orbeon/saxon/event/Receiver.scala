@@ -31,9 +31,13 @@ import javax.xml.transform.Result
   */
 trait Receiver extends Result {
 
-  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit
+  def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit
   /*@NotNull*/
-  def getPipelineConfiguration: PipelineConfiguration
+  def pipelineConfiguration: PipelineConfiguration
+
+  def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
+  def setPipelineConfiguration(pipe: PipelineConfiguration): Unit = pipelineConfiguration = pipe
+
   def setSystemId(systemId: String): Unit
   def open(): Unit
   def startDocument(properties: Int): Unit

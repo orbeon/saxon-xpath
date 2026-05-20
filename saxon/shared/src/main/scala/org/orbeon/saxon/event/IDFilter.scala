@@ -28,9 +28,9 @@ class IDFilter(next: Receiver, id: String) extends ProxyReceiver(next) {
     matched = false
     if (activeDepth == 0) {
       for (att <- attributes.iterator.asScala
-           if (att.getNodeName == StandardNames.XML_ID_NAME) ||
-             ReceiverOption.contains(att.getProperties, ReceiverOption.IS_ID)
-           if att.getValue == requiredId) {
+           if (att.nodeName == StandardNames.XML_ID_NAME) ||
+             ReceiverOption.contains(att.properties, ReceiverOption.IS_ID)
+           if att.value == requiredId) {
         matched = true
       }
       if (matched) {
