@@ -11,7 +11,6 @@ import org.orbeon.saxon.z.IntHashMap._
 import java.io.PrintStream
 import java.util.{Iterator, NoSuchElementException}
 
-
 /**
  * A hash table that maps int keys to Object values.
  *

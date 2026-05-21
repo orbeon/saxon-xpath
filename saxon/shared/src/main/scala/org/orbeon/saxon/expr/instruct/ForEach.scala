@@ -141,7 +141,7 @@ class ForEach(select: Expression,
     }
     val cit: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(getSelect.getItemType, maybeUndefined = false)
-    cit.setContextSettingExpression(getSelect)
+    cit.contextSettingExpression = getSelect
     actionOp.typeCheck(visitor, cit)
     if (!Cardinality.allowsMany(getSelect.getCardinality)) {
       actionOp.setOperandRole(
@@ -155,9 +155,9 @@ class ForEach(select: Expression,
     selectOp.optimize(visitor, contextInfo)
     val cit: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(getSelect.getItemType, maybeUndefined = false)
-    cit.setContextSettingExpression(getSelect)
+    cit.contextSettingExpression = getSelect
     actionOp.optimize(visitor, cit)
-    if (!visitor.isOptimizeForStreaming) {
+    if (!visitor.optimizeForStreaming) {
       if (Literal.isEmptySequence(getSelect)) {
         return getSelect
       }

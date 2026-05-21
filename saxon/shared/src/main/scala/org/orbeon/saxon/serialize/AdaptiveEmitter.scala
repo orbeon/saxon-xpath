@@ -45,16 +45,12 @@ import java.io.Writer
 
 import java.util.Properties
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
 class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   extends SequenceWriter(pipe)
     with ReceiverWithOutputProperties {
 
   private var characterMap: CharacterMap = _
 
-  @BeanProperty
   var output_Properties: Properties = _
 
   private var itemSeparator: String = "\n"
@@ -72,7 +68,6 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   def getOutputProperties : Properties = {
     return output_Properties
   }
-
 
   def setNormalizer(normalizer: Normalizer): Unit = ()
 

@@ -14,7 +14,6 @@ import org.orbeon.saxon.value.Whitespace
 
 import scala.jdk.CollectionConverters._
 
-
 /**
   * A filter to go on a Receiver pipeline and calculate a checksum of the data passing through the pipeline.
   * Optionally the filter will also check any checksum (represented by a processing instruction with name

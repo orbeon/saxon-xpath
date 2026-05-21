@@ -19,9 +19,6 @@ import org.orbeon.saxon.value.UntypedAtomicValue
 
 import WhitespaceTextImpl._
 
-
-
-
 object WhitespaceTextImpl {
 
   def getStringValueCS(tree: TinyTree, nodeNr: Int): CharSequence = {

@@ -9,7 +9,6 @@ import org.orbeon.saxon.value.{AtomicValue, CalendarValue, StringValue}
 
 import scala.beans.BeanProperty
 
-
 object GenericAtomicComparer {
 
   def makeAtomicComparer(
@@ -64,7 +63,7 @@ object GenericAtomicComparer {
 }
 
 class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
-                            @BeanProperty var context: XPathContext)
+                            var context: XPathContext)
   extends AtomicComparer {
 
   if (collator == null)

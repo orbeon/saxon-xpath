@@ -11,8 +11,7 @@ import org.orbeon.saxon.expr.parser.ExpressionVisitor._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 /**
   * The ExpressionVisitor supports the various phases of processing of an expression tree which require
@@ -35,23 +34,20 @@ class ExpressionVisitor(private var config: Configuration) {
   @BeanProperty
   var staticContext: StaticContext = _
 
-  @BooleanBeanProperty
   var optimizeForStreaming: Boolean = false
 
-  @BooleanBeanProperty
   var optimizeForPatternMatching: Boolean = false
 
   private var optimizer: Optimizer = _
 
   private var depth: Int = 0
 
-  @BooleanBeanProperty
   var suppressWarnings: Boolean = false
 
   def getConfiguration: Configuration = config
 
   def issueWarning(message: String, locator: Location): Unit =
-    if (! isSuppressWarnings)
+    if (! suppressWarnings)
       staticContext.issueWarning(message, locator)
 
   def makeDynamicContext(): XPathContext =

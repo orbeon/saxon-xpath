@@ -28,7 +28,7 @@ object IntHashSet {
     if (two.isInstanceOf[IntUniversalSet])
       return ! one.isEmpty
     two match {
-      case set: IntComplementSet => return ! set.getExclusions.containsAll(one)
+      case set: IntComplementSet => return ! set.exclusions.containsAll(one)
       case _ =>
     }
     val it = two.iterator

@@ -10,7 +10,6 @@ import org.orbeon.saxon.value.{BooleanValue, NumericValue}
 
 import scala.util.control.Breaks._
 
-
 class FunctionAvailable extends SystemFunction {
 
   override def makeFunctionCall(arguments: Expression*): Expression = {

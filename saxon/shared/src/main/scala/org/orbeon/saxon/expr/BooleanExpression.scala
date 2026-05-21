@@ -90,7 +90,7 @@ abstract class BooleanExpression(p1: Expression, operator: Int, p2: Expression)
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextItemType)
-    val forStreaming: Boolean = visitor.isOptimizeForStreaming
+    val forStreaming: Boolean = visitor.optimizeForStreaming
     this.setLhsExpression(ExpressionTool.unsortedIfHomogeneous(getLhsExpression, forStreaming))
     this.setRhsExpression(ExpressionTool.unsortedIfHomogeneous(getRhsExpression, forStreaming))
     val op0: Expression = BooleanFn.rewriteEffectiveBooleanValue(

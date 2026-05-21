@@ -3,7 +3,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap, Token}
 
-
 /**
  * The class GeneralComparison20 specializes GeneralComparison for the case where
  * the comparison is done with 2.0 semantics (i.e. with backwards compatibility off).

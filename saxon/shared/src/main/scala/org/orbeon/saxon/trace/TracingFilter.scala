@@ -31,11 +31,6 @@ import java.io.PrintStream
 
 import TracingFilter._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 object TracingFilter {
 
   private var nextid: Int = 0
@@ -51,7 +46,6 @@ class TracingFilter(nextReceiver: Receiver)
 
   private var nextId = 0
 
-  @BeanProperty
   var id: Int = nextid
 
   nextid += 1

@@ -8,7 +8,6 @@ import org.orbeon.saxon.value._
 
 import scala.beans.BeanProperty
 
-
 object Converter {
 
   def convert(value: AtomicValue, targetType: AtomicType, rules: ConversionRules): AtomicValue = {
@@ -411,7 +410,7 @@ object Converter {
       new TimeValue(dt.getHour,
         dt.getMinute,
         dt.getSecond,
-        dt.getNanosecond,
+        dt.nanosecond,
         dt.getTimezoneInMinutes,
         "")
     }

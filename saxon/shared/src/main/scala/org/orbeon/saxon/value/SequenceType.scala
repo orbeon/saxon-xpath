@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.{GroundedValue, Item, Sequence}
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
  * SequenceType: a sequence type consists of a primary type, which indicates the type of item,
  * and a cardinality, which indicates the number of occurrences permitted. Where the primary type
@@ -257,7 +256,6 @@ object SequenceType {
       new SequenceType(primaryType, cardinality)
   }
 }
-
 
 class SequenceType {
 

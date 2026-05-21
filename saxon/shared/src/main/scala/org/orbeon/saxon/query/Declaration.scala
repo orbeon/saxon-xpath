@@ -3,9 +3,6 @@ package org.orbeon.saxon.query
 
 import javax.xml.transform.SourceLocator
 
-
-
-
 /**
   * This interface represents the union of global variable declarations and function declarations in XQuery
   * modules

@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.{Expression, Literal, XPathContext}
 import org.orbeon.saxon.om.{GroundedValue, Sequence}
 import org.orbeon.saxon.value.{BooleanValue, IntegerValue}
 
-
 /**
   * A ConstantFunction is a zero-argument function that always delivers the same result, supplied
   * at the time the function is instantiated.

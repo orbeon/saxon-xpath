@@ -12,7 +12,6 @@ import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator}
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.{StringValue, UntypedAtomicValue}
 
-
 /**
  * A node in the XML parse tree representing an XML element, character content, or attribute.
  * <p>This implementation of the NodeInfo interface contains common code used by many "wrapper" implementations

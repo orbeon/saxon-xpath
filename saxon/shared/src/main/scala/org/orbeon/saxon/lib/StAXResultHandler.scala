@@ -7,9 +7,6 @@ import javax.xml.transform.Result
 
 import java.util.Properties
 
-
-
-
 /**
   * StAxResultHandler is a helper class
   */

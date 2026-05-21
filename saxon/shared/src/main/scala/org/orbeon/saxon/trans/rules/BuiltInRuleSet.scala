@@ -15,9 +15,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Defines a set of built-in template rules (rules for use when no user-defined template
   * rules match a given node)

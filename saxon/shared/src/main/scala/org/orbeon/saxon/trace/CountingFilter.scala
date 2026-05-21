@@ -27,11 +27,6 @@ import java.io.PrintStream
 
 import CountingFilter._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 object CountingFilter {
 
   private var nextid: Int = 0
@@ -47,7 +42,6 @@ object CountingFilter {
 class CountingFilter(nextReceiver: Receiver)
     extends ProxyReceiver(nextReceiver) {
 
-  @BeanProperty
   var id: Int = { nextid += 1; nextid - 1 }
 
   def this(nextReceiver: Receiver, diagnosticOutput: PrintStream) = {

@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.jiter
 
 import java.{util => ju}
 
-
 /**
  * An iterator over a single object (typically a sub-expression of an expression)
  */

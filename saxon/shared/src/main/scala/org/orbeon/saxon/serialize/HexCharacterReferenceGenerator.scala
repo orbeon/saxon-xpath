@@ -5,9 +5,6 @@ import java.io.Writer
 
 import HexCharacterReferenceGenerator._
 
-
-
-
 object HexCharacterReferenceGenerator {
 
   val THE_INSTANCE: HexCharacterReferenceGenerator =

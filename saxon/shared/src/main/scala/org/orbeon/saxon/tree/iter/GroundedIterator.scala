@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.om.{GroundedValue, SequenceIterator}
 
-
 /**
   * This interface is an extension to the SequenceIterator interface; it represents
   * a SequenceIterator that is based on an in-memory representation of a sequence,

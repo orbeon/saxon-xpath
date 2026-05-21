@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
-
-
-
 /**
   * An implementation of UnicodeString optimized for strings that contain
   * no characters outside the BMP (i.e. no characters whose codepoints exceed 65535)

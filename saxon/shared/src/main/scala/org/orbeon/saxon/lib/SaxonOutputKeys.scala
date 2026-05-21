@@ -16,7 +16,6 @@ import org.orbeon.saxon.om.{NameChecker, NamespaceResolver}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.BigDecimalValue
 
-
 /**
   * Provides string constants that can be used to set
   * output properties for a Transformer, or to retrieve

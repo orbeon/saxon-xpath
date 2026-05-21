@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.value.{AtomicValue, NumericValue}
 
-
 /**
   * This class implements the fn:abs() function
   */

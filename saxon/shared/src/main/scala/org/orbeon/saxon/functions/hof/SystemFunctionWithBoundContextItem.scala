@@ -21,9 +21,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.tree.iter.ManualIterator
 
-
-
-
 /**
   * A Callable that wraps another Callable and a Dynamic Context, in effect acting as a closure that
   * executes the original callable with a saved context.

@@ -3,9 +3,6 @@ package org.orbeon.saxon.tree.wrapper
 
 import org.orbeon.saxon.om.NodeInfo
 
-
-
-
 /**
   * Callback to create a VirtualNode that wraps a given NodeInfo
   */

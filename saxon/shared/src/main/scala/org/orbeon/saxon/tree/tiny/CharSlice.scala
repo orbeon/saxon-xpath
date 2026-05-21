@@ -4,7 +4,6 @@ import java.io.Writer
 
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 object CharSlice {
 
   def toCharArray(in: CharSequence): Array[Char] =

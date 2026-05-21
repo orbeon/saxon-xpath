@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-
 /**
   * A LastPositionFinder is an interface implemented by any SequenceIterator that is
   * able to return the position of the last item in the sequence.

@@ -12,7 +12,6 @@ import org.orbeon.saxon.sxpath.{XPathDynamicContext, XPathVariable}
 import java.util.{HashMap, Map}
 import scala.jdk.CollectionConverters._
 
-
 /**
   * This class represents a collection of parameter values for use in schema validation;
   * it defines values for the parameters declared using the saxon:param XSD extension.

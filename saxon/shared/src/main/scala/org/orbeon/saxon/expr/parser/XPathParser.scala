@@ -32,7 +32,6 @@ import org.orbeon.saxon.z.{IntArraySet, IntSet}
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
-
 /**
  * Parser for XPath expressions and XSLT patterns.
  *
@@ -331,7 +330,6 @@ object XPathParser {
     override def saveLocation: Location = this
   }
 }
-
 
 /**
  * Create an expression parser
@@ -1048,12 +1046,12 @@ class XPathParser {
           case Token.CASTABLE_AS =>
             val castable = new CastableExpression(lhs, atomicType, allowEmpty)
             if (lhs.isInstanceOf[StringLiteral])
-              castable.setOperandIsStringLiteral(true)
+              castable.operandIsStringLiteral = true
             castable
           case Token.CAST_AS =>
             val cast = new CastExpression(lhs, atomicType, allowEmpty)
             if (lhs.isInstanceOf[StringLiteral])
-              cast.setOperandIsStringLiteral(true)
+              cast.operandIsStringLiteral = true
             cast
           case _ =>
             throw new IllegalArgumentException
@@ -1930,7 +1928,7 @@ class XPathParser {
     var step = parseBasicStep(firstInPattern)
     // When the filter is applied to an Axis step, the nodes are considered in
     // axis order. In all other cases they are considered in document order
-    val reverse = step.isInstanceOf[AxisExpression] && !AxisInfo.isForwards(step.asInstanceOf[AxisExpression].getAxis)
+    val reverse = step.isInstanceOf[AxisExpression] && !AxisInfo.isForwards(step.asInstanceOf[AxisExpression].axis)
     var exitLoop = false
     while (! exitLoop)
       if (t.currentToken == Token.LSQB) {

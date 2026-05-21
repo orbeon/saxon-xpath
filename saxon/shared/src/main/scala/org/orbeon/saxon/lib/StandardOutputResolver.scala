@@ -13,7 +13,6 @@ import javax.xml.transform.Result
 import javax.xml.transform.stream.StreamResult
 import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
 
-
 /**
   * This class defines the default OutputURIResolver. This is a counterpart to the JAXP
   * URIResolver, but is used to map the URI of a secondary result document to a Result object

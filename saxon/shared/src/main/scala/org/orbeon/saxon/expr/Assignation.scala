@@ -29,7 +29,7 @@ object Assignation {
         if (ref.getBinding eq binding) {
           ref.recomputeInLoop()
 
-          if (ref.isInLoop)
+          if (ref.inLoop)
             results(0) += 10
           else
             results(0) += 1
@@ -402,15 +402,15 @@ abstract class Assignation extends Expression with LocalBinding {
       for (i <- references.size - 1 to 0 by -1) {
         // Check whether the reference still has this Assignation as an ancestor in the expression tree
         var found = false
-        inLoop |= references.get(i).isInLoop
-        var parent = references.get(i).getParentExpression
+        inLoop |= references.get(i).inLoop
+        var parent = references.get(i).parentExpression
         breakable {
           while (parent != null)
             if (parent eq this) {
               found = true
               break()
             } else
-              parent = parent.getParentExpression
+              parent = parent.parentExpression
         }
         if (!found)
           references.remove(i)

@@ -20,7 +20,6 @@ import org.orbeon.saxon.value.IntegerValue
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object SystemFunctionCall {
 
   abstract class Optimized(target: SystemFunction, arguments: Array[Expression])
@@ -134,11 +133,11 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
 
   override def getScopingExpression: Expression =
     if (isCallOn(classOf[RegexGroup])) {
-      var parent = getParentExpression
+      var parent = parentExpression
       while (parent != null) {
         if (parent.isInstanceOf[AnalyzeString])
           return parent
-        parent = parent.getParentExpression
+        parent = parent.parentExpression
       }
       null
     } else {
@@ -161,7 +160,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
         contextInfo,
         getArguments.toIndexedSeq: _*)
       if (sfo != null) {
-        sfo.setParentExpression(getParentExpression)
+        sfo.parentExpression = parentExpression
         ExpressionTool.copyLocationInfo(this, sfo)
         sfo match {
           case systemFunctionCall: SystemFunctionCall =>
@@ -175,7 +174,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
       case systemFunctionCall: SystemFunctionCall if opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING) =>
         val details = systemFunctionCall.getTargetFunction.getDetails
         if ((details.properties & BuiltInFunctionSet.UO) != 0)
-          setArg(0, getArg(0).unordered(retainAllNodes = true, forStreaming = visitor.isOptimizeForStreaming))
+          setArg(0, getArg(0).unordered(retainAllNodes = true, forStreaming = visitor.optimizeForStreaming))
         if (getArity <= details.resultIfEmpty.length) {
           for (i <- 0 until getArity
                if Literal.isEmptySequence(getArg(i)) && details.resultIfEmpty(i) != null) {

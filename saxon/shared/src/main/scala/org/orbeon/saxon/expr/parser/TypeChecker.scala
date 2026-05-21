@@ -300,7 +300,7 @@ class TypeChecker {
               supplied.getLocation
             )
             err.setIsTypeError(true)
-            err.setFailingExpression(supplied)
+            err.failingExpression = supplied
             throw err
           }
           if (exp.getRetainedStaticContext == null) {
@@ -345,7 +345,7 @@ class TypeChecker {
           } catch {
             case err: XPathException => {
               err.maybeSetLocation(exp.getLocation)
-              err.setFailingExpression(supplied)
+              err.failingExpression = supplied
               err.setErrorCode(role.getErrorCode)
               err.setIsStaticError(true)
               throw err
@@ -433,7 +433,7 @@ class TypeChecker {
               catch {
                 case err: XPathException => {
                   err.maybeSetLocation(exp.getLocation)
-                  err.setFailingExpression(supplied)
+                  err.failingExpression = supplied
                   err.setIsStaticError(true)
                   throw err
                 }
@@ -458,7 +458,7 @@ class TypeChecker {
               catch {
                 case err: XPathException => {
                   err.maybeSetLocation(exp.getLocation)
-                  err.setFailingExpression(supplied)
+                  err.failingExpression = supplied
                   err.setIsStaticError(true)
                   throw err
                 }
@@ -518,7 +518,7 @@ class TypeChecker {
         role.getErrorCode,
         supplied.getLocation)
       err.setIsTypeError(role.isTypeError)
-      err.setFailingExpression(supplied)
+      err.failingExpression = supplied
       throw err
     }
     var relation =
@@ -541,7 +541,7 @@ class TypeChecker {
         val msg = role.composeErrorMessage(reqItemType, supplied, th)
         val err = new XPathException(msg, role.getErrorCode, supplied.getLocation)
         err.setIsTypeError(role.isTypeError)
-        err.setFailingExpression(supplied)
+        err.failingExpression = supplied
         throw err
       }
     }

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.functions.registry
 
-
 /**
   * This is a marker interface representing an abstract superclass of JavaExtensionFunctionFactory
   * and DotNetExtensionFunctionFactory. These play equivalent roles in the system: that is, they

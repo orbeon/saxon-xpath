@@ -7,7 +7,6 @@ import org.orbeon.saxon.tree.util.Navigator
 
 import scala.beans.BeanProperty
 
-
 object XmlProcessingIncident {
 
   def maybeSetHostLanguage(error: XmlProcessingError, lang: HostLanguage.HostLanguage): Unit =

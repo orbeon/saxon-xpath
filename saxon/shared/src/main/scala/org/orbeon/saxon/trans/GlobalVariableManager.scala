@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.Expression
 
 import org.orbeon.saxon.expr.instruct.GlobalVariable
 
-
-
-
 trait GlobalVariableManager {
 
   def getEquivalentVariable(select: Expression): GlobalVariable

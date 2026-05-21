@@ -2,7 +2,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 
-
 class MappingIterator(
   private var base  : SequenceIterator,
   private var action: MappingFunction

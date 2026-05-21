@@ -23,7 +23,6 @@ import org.orbeon.saxon.z.{IntHashSet, IntSet, IntUniversalSet}
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object TypeHierarchy {
 
   private def stabilize(in: ItemType): ItemType =
@@ -509,10 +508,10 @@ class TypeHierarchy(var config: Configuration) {
                 else if (t2 == MapType.ANY_MAP_TYPE)
                   return SUBSUMED_BY
 
-                val k1       = mapType.getKeyType
-                val k2       = t2.asInstanceOf[MapType].getKeyType
-                val v1       = mapType.getValueType
-                val v2       = t2.asInstanceOf[MapType].getValueType
+                val k1       = mapType.keyType
+                val k2       = t2.asInstanceOf[MapType].keyType
+                val v1       = mapType.valueType
+                val v2       = t2.asInstanceOf[MapType].valueType
                 val keyRel   = relationship(k1, k2)
                 val valueRel = sequenceTypeRelationship(v1, v2)
                 val rel      = combineRelationships(keyRel, valueRel)

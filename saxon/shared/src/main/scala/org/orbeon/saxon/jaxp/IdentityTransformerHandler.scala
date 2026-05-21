@@ -16,7 +16,6 @@ import org.orbeon.saxon.serialize.SerializationProperties
 import org.orbeon.saxon.trans.XPathException
 import org.xml.sax.SAXException
 
-
 /**
  * <b>IdentityTransformerHandler</b> implements the javax.xml.transform.sax.TransformerHandler
  * interface. It acts as a ContentHandler and LexicalHandler which receives a stream of

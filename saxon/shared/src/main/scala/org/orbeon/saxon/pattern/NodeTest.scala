@@ -10,7 +10,6 @@ import org.orbeon.saxon.tree.tiny.NodeVectorTree
 import org.orbeon.saxon.value.SequenceType
 import org.orbeon.saxon.z.{IntSet, IntUniversalSet}
 
-
 abstract class NodeTest
   extends Predicate[NodeInfo]
     with ItemType.WithSequenceTypeCache {

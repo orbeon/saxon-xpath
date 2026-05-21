@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import java.{lang => jl}
 
-
 /**
   * Represents a set of namespace bindings
   */

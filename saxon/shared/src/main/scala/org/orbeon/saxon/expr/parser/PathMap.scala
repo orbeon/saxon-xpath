@@ -32,7 +32,7 @@ object PathMap {
     var hasUnknownDependencies: Boolean = _
 
     def createArc(axis: Int, test: NodeTest): PathMapNode = {
-      for (a <- arcs.asScala if a.getAxis == axis && a.getNodeTest == test) {
+      for (a <- arcs.asScala if a.axis == axis && a.getNodeTest == test) {
         return a.getTarget
       }
       val target: PathMapNode = new PathMapNode()
@@ -43,7 +43,7 @@ object PathMap {
 
     def createArc(axis: Int, test: NodeTest, target: PathMapNode): Unit = {
       for (a <- arcs.asScala
-           if a.getAxis == axis && a.getNodeTest == test && a.getTarget == target) {
+           if a.axis == axis && a.getNodeTest == test && a.getTarget == target) {
         a.getTarget.setReturnable(a.getTarget.isReturnable || target.isReturnable)
         if (target.isAtomized)
           a.getTarget.setAtomized()
@@ -75,7 +75,7 @@ object PathMap {
       if (hasUnknownDependencies || isReturnable || isAtomized)
         return false
       for (arc <- arcs.asScala) {
-        val axis = arc.getAxis
+        val axis = arc.axis
         if (axis == AxisInfo.ATTRIBUTE) {
           val next = arc.getTarget
           if (next.isReturnable)
@@ -98,14 +98,13 @@ object PathMap {
 
   class PathMapRoot(root: Expression) extends PathMapNode {
 
-    @BeanProperty
     var rootExpression: Expression = root
 
     var isDownwardsOnly: Boolean = _
 
   }
 
-  class PathMapArc(@BeanProperty var axis: Int,
+  class PathMapArc(var axis: Int,
                    var test: NodeTest,
                    @BeanProperty var target: PathMapNode) {
 
@@ -186,7 +185,7 @@ class PathMap(exp: Expression) {
   }
 
   def makeNewRoot(exp: Expression): PathMapRoot = {
-    for (r <- pathMapRoots.asScala if exp.isEqual(r.getRootExpression)) {
+    for (r <- pathMapRoots.asScala if exp.isEqual(r.rootExpression)) {
       return r
     }
     val root: PathMapRoot = new PathMapRoot(exp)
@@ -210,7 +209,7 @@ class PathMap(exp: Expression) {
     var contextRoot: PathMapRoot = null
     for (root <- roots) {
       val newRoot: PathMapRoot = reduceToDownwardsAxes(root)
-      if (newRoot.getRootExpression.isInstanceOf[RootExpression]) {
+      if (newRoot.rootExpression.isInstanceOf[RootExpression]) {
         if (contextRoot != null) {
           throw new IllegalStateException(
             "More than one context document root found in path map")
@@ -226,7 +225,7 @@ class PathMap(exp: Expression) {
     val roots: Array[PathMap.PathMapRoot] = getPathMapRoots
     var contextRoot: PathMapRoot = null
     for (root <- roots
-         if root.getRootExpression.isInstanceOf[ContextItemExpression]) {
+         if root.rootExpression.isInstanceOf[ContextItemExpression]) {
       if (contextRoot != null) {
         throw new IllegalStateException(
           "More than one context document root found in path map")
@@ -242,7 +241,7 @@ class PathMap(exp: Expression) {
     var requiredRoot: PathMapRoot = null
     for (root <- roots) {
       val newRoot: PathMapRoot = reduceToDownwardsAxes(root)
-      val exp: Expression = newRoot.getRootExpression
+      val exp: Expression = newRoot.rootExpression
       var baseUri: String = null
       if (exp.isCallOn(classOf[Doc])) {
         baseUri = exp.getStaticBaseURIString
@@ -283,13 +282,13 @@ class PathMap(exp: Expression) {
     if (root.isDownwardsOnly)
       return root
     var newRoot: PathMapRoot = root
-    if (root.getRootExpression.isInstanceOf[ContextItemExpression]) {
+    if (root.rootExpression.isInstanceOf[ContextItemExpression]) {
       val slash = new RootExpression()
       newRoot = makeNewRoot(slash)
       var i = root.arcs.size - 1
       while (i >= 0) {
         val arc = root.arcs.get(i)
-        val axis = arc.getAxis
+        val axis = arc.axis
         axis match {
           case AxisInfo.ATTRIBUTE | AxisInfo.NAMESPACE =>
             val newTarget: PathMapNode = new PathMapNode()
@@ -336,10 +335,10 @@ class PathMap(exp: Expression) {
         for (arc1 <- grandParent.arcs.asScala) {
           val arc = arc1
           if (arc.getTarget == node)
-            lastAxis = arc.getAxis
+            lastAxis = arc.axis
         }
       }
-      thisArc.getAxis match {
+      thisArc.axis match {
         case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF =>
           if (thisArc.getNodeTest == NodeKindTest.DOCUMENT) {
             node.arcs.remove(i)
@@ -350,7 +349,7 @@ class PathMap(exp: Expression) {
             // fall through
           }
         case AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING =>
-          if (thisArc.getAxis != AxisInfo.DESCENDANT_OR_SELF) {
+          if (thisArc.axis != AxisInfo.DESCENDANT_OR_SELF) {
             root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
             node.arcs.remove(i)
           }

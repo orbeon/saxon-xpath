@@ -15,7 +15,6 @@ import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 import java.{util => ju}
 import javax.xml.transform.Result
 
-
 /**
  * This class is used for generating complex content, that is, the content of an
  * element or document node. It enforces the rules on the order of events within
@@ -132,7 +131,6 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     level -= 1
     state = if (level < 0) Open else Content
   }
-
 
   override def setUnparsedEntity(
     name     : String,

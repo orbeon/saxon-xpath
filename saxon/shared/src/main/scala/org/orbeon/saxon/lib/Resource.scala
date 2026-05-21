@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * This interface defines a Resource. The Resource objects belong to a collection.
   * It is used to support the fn:collection() and fn:uri-collection() functions.

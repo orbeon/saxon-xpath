@@ -3,9 +3,6 @@ package org.orbeon.saxon.trace
 
 import org.orbeon.saxon.expr.Expression
 
-
-
-
 trait TraceableComponent extends Traceable {
 
   def getBody: Expression

@@ -8,7 +8,6 @@ package org.orbeon.saxon.model
 
 import org.orbeon.saxon.om.{Item, StructuredQName}
 
-
 /**
   * A "plain type" is either an atomic type, or a union type that (a) imposes no restrictions other
   * than those imposed by its member types, and (b) has exclusively plain types as its member types

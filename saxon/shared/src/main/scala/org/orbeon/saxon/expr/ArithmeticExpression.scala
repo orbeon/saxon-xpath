@@ -8,7 +8,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
 
-
 object ArithmeticExpression {
 
   def compute(value0: AtomicValue,
@@ -305,8 +304,8 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
   }
 
   override def getStaticUType(contextItemType: UType): UType =
-    if (getParentExpression.isInstanceOf[FilterExpression] &&
-      getParentExpression.asInstanceOf[FilterExpression].getRhsExpression ==
+    if (parentExpression.isInstanceOf[FilterExpression] &&
+      parentExpression.asInstanceOf[FilterExpression].getRhsExpression ==
         this) {
       UType.NUMERIC
     } else if (operator == Token.NEGATE) {

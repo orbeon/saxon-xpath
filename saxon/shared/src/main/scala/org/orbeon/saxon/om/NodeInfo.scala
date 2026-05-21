@@ -23,7 +23,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.jdk.CollectionConverters._
 
-
 /**
   * The NodeInfo interface represents a node in Saxon's implementation of the XPath 2.0 data model.
   *

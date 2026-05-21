@@ -16,7 +16,6 @@ import org.orbeon.saxon.utils.Configuration
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object VirtualCopy {
 
   def makeVirtualCopy(original: NodeInfo): VirtualCopy = {

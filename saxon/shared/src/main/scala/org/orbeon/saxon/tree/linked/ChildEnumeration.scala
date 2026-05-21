@@ -10,7 +10,6 @@ import java.util.function.Predicate
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 class ChildEnumeration(node: NodeImpl, nodeTest: Predicate[_ >: NodeInfo])
     extends TreeEnumeration(node, nodeTest) {
 

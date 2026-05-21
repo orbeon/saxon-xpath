@@ -7,9 +7,6 @@ import org.orbeon.saxon.z.IntSet
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class InverseCharacterClass(@BeanProperty var complement: CharacterClass)
     extends CharacterClass {
 

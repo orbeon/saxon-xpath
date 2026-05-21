@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.Sequence
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Holds the values of an accumulator function for one non-streamed document
   */

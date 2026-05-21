@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{FocusIterator, FocusTrackingIterator}
 import org.orbeon.saxon.value.Int64Value
 
-
 /**
  * This class implements the changes to the tuple stream effected by a "for" clause in a FLWOR expression
  */
@@ -38,10 +37,10 @@ class ForClausePull(var base: TuplePull, var forClause: ForClause)
       }
       val next = currentIteration.next()
       if (next != null) {
-        context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber, next)
-        if (forClause.getPositionVariable != null) {
+        context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber, next)
+        if (forClause.positionVariable != null) {
           context.setLocalVariable(
-            forClause.getPositionVariable.getLocalSlotNumber,
+            forClause.positionVariable.getLocalSlotNumber,
             new Int64Value(currentIteration.position)
           )
         }

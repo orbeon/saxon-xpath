@@ -11,7 +11,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import scala.beans.BeanProperty
 
-
 class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[AnyRef] {
 
   @BeanProperty

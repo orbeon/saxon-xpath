@@ -24,7 +24,6 @@ import java.util._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 /**
  * A Mode is a collection of rules; the selection of a rule to apply to a given element
  * is determined by a Pattern. A SimpleMode is a mode contained within a single package,
@@ -113,7 +112,7 @@ object SimpleMode {
       var rank = start
       for (i <- 0 until rules.size) {
         if (i > 0 && rules.get(i - 1).compareComputedRank(rules.get(i)) != 0) rank += 1
-        rules.get(i).setRank(rank)
+        rules.get(i).rank = rank
       }
     }
 
@@ -373,12 +372,12 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     if (pattern.isInstanceOf[NodeTestPattern]) {
       val test = pattern.getItemType
       test match {
-        case AnyNodeTest     => newRule.setAlwaysMatches(true)
-        case _: NodeKindTest => newRule.setAlwaysMatches(true)
+        case AnyNodeTest     => newRule.alwaysMatches = true
+        case _: NodeKindTest => newRule.alwaysMatches = true
         case _: NameTest     =>
           val kind = test.getPrimitiveType
           if (kind == Type.ELEMENT || kind == Type.ATTRIBUTE)
-            newRule.setAlwaysMatches(true)
+            newRule.alwaysMatches = true
         case _ =>
       }
     }
@@ -600,7 +599,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
         }
         else if (ruleMatches(head, item, XPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
           bstRule = head
-          if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) { //ruleSearchState.count();
+          if (recoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) { //ruleSearchState.count();
             break()
           }
         }
@@ -621,7 +620,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    * @throws XPathException if a dynamic error occurs while matching the pattern
    */
   @throws[XPathException]
-  def ruleMatches(r: Rule, item: Item, context: XPathContextMajor, pre: RuleSearchState) = r.isAlwaysMatches || r.matches(item, context)
+  def ruleMatches(r: Rule, item: Item, context: XPathContextMajor, pre: RuleSearchState) = r.alwaysMatches || r.matches(item, context)
 
   /**
    * Get the rule corresponding to a given item, by finding the best Pattern match.
@@ -747,7 +746,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
           }
         } else if (ruleMatches(head, item, xPathContext.asInstanceOf[XPathContextMajor], ruleSearchState)) {
           bstRule = head
-          if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY)
+          if (recoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY)
             break()
         }
       }
@@ -769,7 +768,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    */
   @throws[XPathException]
   def reportAmbiguity(item: Item, r1: Rule, r2: Rule, c: XPathContext): Unit = {
-    if (getRecoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) return
+    if (recoveryPolicy eq RecoveryPolicy.RECOVER_SILENTLY) return
 
     if ((r1.getAction eq r2.getAction) && r1.getSequence == r2.getSequence) return
     var path: String = null
@@ -783,7 +782,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
       "Matches \"" + SimpleMode.showPattern(pat1) + "\" on line " + pat1.getLocation.getLineNumber +
       " of " + pat1.getLocation.getSystemId + ", a rule which appears in the stylesheet more than once, because the containing module was included more than once"
     else message = "Ambiguous rule match for " + path + '\n' + "Matches both \"" + SimpleMode.showPattern(pat1) + "\" on line " + pat1.getLocation.getLineNumber + " of " + pat1.getLocation.getSystemId + "\nand \"" + SimpleMode.showPattern(pat2) + "\" on line " + pat2.getLocation.getLineNumber + " of " + pat2.getLocation.getSystemId
-    getRecoveryPolicy match {
+    recoveryPolicy match {
       case DO_NOT_RECOVER =>
         throw new XPathException(message, errorCode, getLocation)
       case RECOVER_WITH_WARNINGS =>
@@ -807,8 +806,8 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    *
    * @param pack the containing package
    */
-  override def allocateAllBindingSlots(pack: StylesheetPackage) = if ((getDeclaringComponent.getDeclaringPackage eq pack) && !bindingSlotsAllocated) {
-    SimpleMode.forceAllocateAllBindingSlots(pack, this, getDeclaringComponent.getComponentBindings)
+  override def allocateAllBindingSlots(pack: StylesheetPackage) = if ((declaringComponent.declaringPackage eq pack) && !bindingSlotsAllocated) {
+    SimpleMode.forceAllocateAllBindingSlots(pack, this, declaringComponent.getComponentBindings)
     bindingSlotsAllocated = true
   }
 

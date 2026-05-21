@@ -3,9 +3,6 @@ package org.orbeon.saxon.om
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 @FunctionalInterface
 trait Action {
 

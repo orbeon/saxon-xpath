@@ -7,9 +7,6 @@
 
 package org.orbeon.saxon.z
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
 /**
   * An immutable integer set containing all int values except those in an excluded set
   */
@@ -20,7 +17,6 @@ class IntComplementSet extends IntSet {
     this.exclusions = exclusions
   }
 
-  @BeanProperty
   var exclusions: IntSet = exclusions.copy()
 
   def copy(): IntSet = {

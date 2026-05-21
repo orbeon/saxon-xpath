@@ -8,7 +8,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import scala.beans.BeanProperty
 
-
 /**
  * This class represents a function invoked using xsl:original from within an xs:override element.
  */
@@ -32,15 +31,15 @@ class OriginalFunction(@BeanProperty var component: Component)
   def getDescription     : String           = userFunction.getDescription
 
   def getContainingPackageName: String =
-    component.getContainingPackage.getPackageName
+    component.containingPackage.packageName
 
   override def `export`(out: ExpressionPresenter): Unit = {
-    val options = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+    val options = out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
 
     out.startElement("origF")
     out.emitAttribute("name", getFunctionName)
     out.emitAttribute("arity", "" + getArity)
-    out.emitAttribute("pack", options.componentMap.get(component.getContainingPackage).toString)
+    out.emitAttribute("pack", options.componentMap.get(component.containingPackage).toString)
     out.endElement()
   }
 }

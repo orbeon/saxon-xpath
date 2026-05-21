@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.wrapper
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 /**
   * This interface is implemented by NodeInfo implementations that act as wrappers
   * on some underlying tree. It provides a method to access the real node underlying

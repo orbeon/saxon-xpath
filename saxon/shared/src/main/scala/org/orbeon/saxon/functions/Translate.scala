@@ -9,8 +9,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.StringValue
 import org.orbeon.saxon.z.{IntToIntHashMap, IntToIntMap}
 
-
-
 object Translate {
 
   def translate(sv0: StringValue,

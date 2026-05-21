@@ -23,7 +23,6 @@ import org.orbeon.saxon.tree.wrapper.SpaceStrippedDocument
 import org.orbeon.saxon.utils.Controller
 import org.orbeon.saxon.value.{ExternalObject, ObjectValue}
 
-
 object CollectionFn {
 
   /**
@@ -137,9 +136,9 @@ class CollectionFn extends SystemFunction {
       if (whitespaceRule != NoElementsSpaceStrippingRule.getInstance) {
         collectionKey = packageData
             .asInstanceOf[StylesheetPackage]
-            .getPackageName+
+            .packageName+
             " " +
-            absoluteURI // packageData.asInstanceOf[StylesheetPackage].getPackageVersion*/
+            absoluteURI // packageData.asInstanceOf[StylesheetPackage].packageVersion*/
       }
     }
     var cachedCollection: GroundedValue = context.getController

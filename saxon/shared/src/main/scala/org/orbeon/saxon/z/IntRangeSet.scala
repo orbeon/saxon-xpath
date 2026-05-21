@@ -11,9 +11,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.util.Arrays
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
 /**
  * Set of int values. This implementation of IntSet uses a sorted array
  * of integer ranges.
@@ -23,11 +20,9 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 class IntRangeSet extends IntSet {
 
   // The array of start points, which will always be sorted
-  @BeanProperty
   var startPoints: Array[Int] = new Array[Int](4)
 
   // The array of end points, which will always be sorted
-  @BeanProperty
   var endPoints: Array[Int] = new Array[Int](4)
 
   // The number of elements of the above two arrays that are actually in use

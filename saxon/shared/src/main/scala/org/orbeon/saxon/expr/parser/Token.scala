@@ -13,7 +13,6 @@ package org.orbeon.saxon.expr.parser
 
 import java.util.HashMap
 
-
 object Token {
 
   /**

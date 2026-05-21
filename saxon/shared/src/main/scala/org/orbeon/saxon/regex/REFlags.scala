@@ -13,7 +13,6 @@ package org.orbeon.saxon.regex
  * and XPath 3.0 extensions to XSD regex syntax are accepted.
  */
 
-
 /**
  * Create the regular expression flags
  *

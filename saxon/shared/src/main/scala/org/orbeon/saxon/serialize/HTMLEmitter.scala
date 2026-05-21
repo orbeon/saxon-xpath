@@ -21,7 +21,6 @@ import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 
 import scala.collection.mutable
 
-
 /**
  * This class generates HTML output
  */

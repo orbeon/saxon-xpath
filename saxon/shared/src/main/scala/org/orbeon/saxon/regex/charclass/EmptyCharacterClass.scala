@@ -7,9 +7,6 @@ import org.orbeon.saxon.z.IntSet
 
 import EmptyCharacterClass._
 
-
-
-
 object EmptyCharacterClass {
 
   private val THE_INSTANCE: EmptyCharacterClass = new EmptyCharacterClass()

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.tiny
 
-
 import java.util._
 
 import org.orbeon.saxon.event.ReceiverOption
@@ -21,11 +20,8 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z._
 
-import scala.beans.BeanProperty
-
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
-
 
 /**
  * A data structure to hold the contents of a tree. As the name implies, this implementation
@@ -66,10 +62,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
     with NodeVectorTree {
 
   /*@Nullable*/
-  val nodes         : Int              = statistics.getAverageNodes.toInt + 1
-  val attributes    : Int              = statistics.getAverageAttributes.toInt + 1
-  val namespaces    : Int              = statistics.getAverageNamespaces.toInt + 1
-  val characters    : Int              = statistics.getAverageCharacters.toInt + 1
+  val nodes         : Int              = statistics.averageNodes.toInt + 1
+  val attributes    : Int              = statistics.averageAttributes.toInt + 1
+  val namespaces    : Int              = statistics.averageNamespaces.toInt + 1
+  val characters    : Int              = statistics.averageCharacters.toInt + 1
   var commentBuffer : FastStringBuffer = null
   var numberOfNodes : Int              = 0
   var nodeKind      : Array[Byte]      = new Array[Byte](nodes)
@@ -117,12 +113,10 @@ class TinyTree(config: Configuration, statistics: Statistics)
   private var idTable: HashMap[String, NodeInfo] = _
   var entityTable: HashMap[String, Array[String]] = _
 
-  @BeanProperty
   var copiedFrom: NodeInfo = _
 
   var knownBaseUris: IntHashMap[String] = _
 
-  @BeanProperty
   var uniformBaseUri: String = null
 
   this.setConfiguration(config)

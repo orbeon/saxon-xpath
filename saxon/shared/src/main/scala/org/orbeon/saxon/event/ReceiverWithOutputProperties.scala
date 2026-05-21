@@ -8,7 +8,6 @@ package org.orbeon.saxon.event
 
 import java.util.Properties
 
-
 /**
   * Marker interface attached to a `Outputter` that retains
   * serialization properties (typically, a Receiver that forms part

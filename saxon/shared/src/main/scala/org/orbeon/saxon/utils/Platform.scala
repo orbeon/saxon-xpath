@@ -17,7 +17,6 @@ import java.{util => ju}
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 
-
 /**
  * This interface provides access to methods whose implementation depends on the chosen platform
  * (typically Java or .NET)

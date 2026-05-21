@@ -6,7 +6,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import java.io.Writer
 import scala.util.control.Breaks._
 
-
 object CompressedWhitespace {
 
   private val WHITE_CHARS: Array[Char] = Array(0x09, 0x0A, 0x0D, 0x20)

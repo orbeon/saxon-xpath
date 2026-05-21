@@ -15,9 +15,6 @@ import java.net.URI
 
 import java.nio.charset.StandardCharsets
 
-
-
-
 object DataURIScheme {
 
   def decode(uri: URI): Resource = {

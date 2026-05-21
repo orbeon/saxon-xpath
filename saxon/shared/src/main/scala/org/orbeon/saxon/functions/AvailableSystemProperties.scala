@@ -28,7 +28,6 @@ import java.util.List
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 class AvailableSystemProperties extends SystemFunction {
 
   /**

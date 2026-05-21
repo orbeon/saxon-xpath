@@ -11,9 +11,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class TextImpl(private var content: String) extends NodeImpl {
 
   def appendStringValue(content: String): Unit = {

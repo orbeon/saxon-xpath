@@ -2,7 +2,6 @@ package javax.xml.transform
 
 import java.io.{PrintStream, PrintWriter}
 
-
 class TransformerException(message: String) extends Exception(message) {
 
   private[transform] var containedException: Throwable = null

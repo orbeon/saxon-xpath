@@ -5,9 +5,6 @@ import org.orbeon.saxon.functions.FunctionLibrary
 
 import org.orbeon.saxon.om.StructuredQName
 
-
-
-
 trait XQueryFunctionBinder extends FunctionLibrary {
 
   /*@Nullable*/

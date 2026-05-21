@@ -35,7 +35,7 @@ object SnapshotNode {
     val docNr: Long =
       config.getDocumentNumberAllocator.allocateDocumentNumber()
     doc.setDocumentNumber(docNr)
-    doc.setCopyAccumulators(true)
+    doc.copyAccumulators = true
     vc.tree = doc
     doc.setRootNode(vc.getRoot)
     vc

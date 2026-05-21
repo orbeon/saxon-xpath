@@ -18,7 +18,6 @@ import scala.util.control.Breaks._
 
 import scala.jdk.CollectionConverters._
 
-
 object Choose {
 
   val CHOICE_ACTION: OperandRole = new OperandRole(

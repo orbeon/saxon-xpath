@@ -9,7 +9,6 @@ package org.orbeon.saxon.event
 import org.orbeon.saxon.om.Item
 import org.xml.sax.Locator
 
-
 /**
   * Implementation of the SAX Locator interface, used to supply location information to the ContentHandler.
   * <p>When the ContentHandler is used to receive the results of a query or stylesheet,

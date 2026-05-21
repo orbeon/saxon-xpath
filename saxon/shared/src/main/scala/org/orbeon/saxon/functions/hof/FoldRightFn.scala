@@ -12,7 +12,6 @@ import org.orbeon.saxon.model.{AnyFunctionType, AnyItemType, ItemType}
 import org.orbeon.saxon.om.{Function, Item, Sequence, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
   * This class implements the function fn:fold-right(), which is a standard function in XQuery 1.1
   */

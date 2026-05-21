@@ -17,7 +17,6 @@ import org.orbeon.saxon.tree.iter.LookaheadIterator
 import org.orbeon.saxon.utils.Controller
 import org.orbeon.saxon.value.SequenceType
 
-import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
 object Mode {
@@ -45,7 +44,6 @@ object Mode {
 abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   private var streamable: Boolean = _
-  @BeanProperty
   val recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
   var mustBeTyped: Boolean = false
   var mustBeUntyped: Boolean = false
@@ -296,7 +294,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
       case _: TextOnlyCopyRuleSet =>
         "TC"
       case warnings: RuleSetWithWarnings =>
-        getCodeForBuiltInRuleSet(warnings.getBaseRuleSet) + "+W"
+        getCodeForBuiltInRuleSet(warnings.baseRuleSet) + "+W"
       case _ =>
         "???"
     }

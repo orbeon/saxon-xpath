@@ -23,11 +23,6 @@ import org.orbeon.saxon.value.SequenceType
 
 import IdentityComparison._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 object IdentityComparison {
 
   private def getNode(exp: Expression, c: XPathContext): NodeInfo =
@@ -38,7 +33,6 @@ object IdentityComparison {
 class IdentityComparison(p1: Expression, op: Int, p2: Expression)
     extends BinaryExpression(p1, op, p2) {
 
-  @BooleanBeanProperty
   var generateIdEmulation: Boolean = false
 
   /*@NotNull*/

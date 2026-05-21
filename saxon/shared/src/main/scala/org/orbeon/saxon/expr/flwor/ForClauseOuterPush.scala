@@ -31,21 +31,21 @@ class ForClauseOuterPush(outputter: Outputter,
     var pos: Int = 0
     var next: Item = iter.next()
     if (next == null) {
-      context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
+      context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber,
         EmptySequence.getInstance)
-      if (forClause.getPositionVariable != null) {
+      if (forClause.positionVariable != null) {
         context.setLocalVariable(
-          forClause.getPositionVariable.getLocalSlotNumber,
+          forClause.positionVariable.getLocalSlotNumber,
           Int64Value.ZERO)
       }
       destination.processTuple(context)
     } else {
       while (true) {
-        context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
+        context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber,
           next)
-        if (forClause.getPositionVariable != null) {
+        if (forClause.positionVariable != null) {
           context.setLocalVariable(
-            forClause.getPositionVariable.getLocalSlotNumber,
+            forClause.positionVariable.getLocalSlotNumber,
             new Int64Value())
         }
         destination.processTuple(context)

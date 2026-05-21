@@ -7,7 +7,6 @@ import org.orbeon.saxon.tree.AttributeLocation
 
 import scala.beans.BeanProperty
 
-
 class XmlProcessingException(private var exception: XPathException)
   extends XmlProcessingError {
 

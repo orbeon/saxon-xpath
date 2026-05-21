@@ -19,7 +19,6 @@ import javax.xml.transform.OutputKeys
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 /**
  * The MetaTagAdjuster adds a meta element to the content of the head element, indicating
  * the required content type and encoding; it also removes any existing meta element

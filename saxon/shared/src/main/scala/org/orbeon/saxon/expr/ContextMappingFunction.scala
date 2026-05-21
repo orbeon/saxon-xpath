@@ -5,9 +5,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 trait ContextMappingFunction {
 
   def map(context: XPathContext): SequenceIterator

@@ -9,7 +9,6 @@ package org.orbeon.saxon.z
 
 import java.util.function.IntPredicate
 
-
 object IntSetPredicate {
   val ALWAYS_TRUE  : IntPredicate = _ => true
   val ALWAYS_FALSE : IntPredicate = _ => false

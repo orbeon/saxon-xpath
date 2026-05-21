@@ -11,7 +11,6 @@ import org.orbeon.saxon.s9api.XmlProcessingError
 import org.orbeon.saxon.trans.UncheckedXPathException
 import org.xml.sax.ErrorHandler
 
-
 /**
   * The ErrorReporter is a generic functional interface for reporting errors and
   * warnings.

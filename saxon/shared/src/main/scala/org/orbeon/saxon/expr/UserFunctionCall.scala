@@ -15,9 +15,7 @@ import org.orbeon.saxon.trans._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{Cardinality, EmptySequence, SequenceType, Whitespace}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.jdk.CollectionConverters._
-
 
 object UserFunctionCall {
 
@@ -32,7 +30,6 @@ object UserFunctionCall {
   // ORBEON: Never used.
 //  private var depth: Int = 0
 }
-
 
 /**
  * This class represents a call to a user-defined function in the stylesheet or query.
@@ -52,10 +49,8 @@ class UserFunctionCall extends FunctionCall
 
   private var name: StructuredQName = _
 
-  @BooleanBeanProperty
   var beingInlined: Boolean = false
 
-  @BeanProperty
   var argumentEvaluators: Array[Evaluator] = null
 
    def setFunction(compiledFunction: UserFunction): Unit =
@@ -75,8 +70,8 @@ class UserFunctionCall extends FunctionCall
     staticType = `type`
 
   def getFixedTarget: Component = {
-    val v: Visibility.Visibility = function.getDeclaringComponent.getVisibility
-    if (v == Visibility.PRIVATE || v == Visibility.FINAL) function.getDeclaringComponent else null
+    val v: Visibility.Visibility = function.declaringComponent.getVisibility
+    if (v == Visibility.PRIVATE || v == Visibility.FINAL) function.declaringComponent else null
   }
 
   def isTailCall: Boolean = tailCall != NOT_TAIL_CALL
@@ -89,7 +84,7 @@ class UserFunctionCall extends FunctionCall
   def getSymbolicName: SymbolicName =
     new SymbolicName.F(getFunctionName, getArity)
 
-  def getTarget: Component = function.getDeclaringComponent
+  def getTarget: Component = function.declaringComponent
 
   def setArgumentEvaluationModes(evalModes: Array[EvaluationMode.EvaluationMode]): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](evalModes.length)
@@ -105,7 +100,7 @@ class UserFunctionCall extends FunctionCall
       val required: SequenceType = function.getArgumentType(i)
       val cardinality: Int = required.getCardinality
       argumentEvaluators(i) =
-        if (i == 0 && function.getDeclaredStreamability.isConsuming)
+        if (i == 0 && function.declaredStreamability.isConsuming)
           Evaluator.STREAMING_ARGUMENT
         else if (function.getParameterDefinitions()(i).isIndexedVariable)
           Evaluator.MAKE_INDEXED_VARIABLE
@@ -145,15 +140,15 @@ class UserFunctionCall extends FunctionCall
 
   override def computeSpecialProperties(): Int =
     if (function == null) super.computeSpecialProperties() else if (function.getBody != null &&
-      (function.getDeclaredVisibility == Visibility.PRIVATE ||
-        function.getDeclaredVisibility == Visibility.FINAL)) {
+      (function.declaredVisibility == Visibility.PRIVATE ||
+        function.declaredVisibility == Visibility.FINAL)) {
       var props: Int = 0
       val calledFunctions: util.List[UserFunction] = new util.ArrayList[UserFunction]()
       ExpressionTool.gatherCalledFunctions(function.getBody, calledFunctions)
       props =
         if (calledFunctions.isEmpty) function.getBody.getSpecialProperties
         else super.computeSpecialProperties()
-      if (function.getDeterminism != UserFunction.Determinism.PROACTIVE) props |= StaticProperty.NO_NODES_NEWLY_CREATED
+      if (function.determinism != UserFunction.Determinism.PROACTIVE) props |= StaticProperty.NO_NODES_NEWLY_CREATED
       props
     } else super.computeSpecialProperties()
 
@@ -313,7 +308,7 @@ class UserFunctionCall extends FunctionCall
   }
 
   def getTargetComponent(context: XPathContext): Component =
-    if (bindingSlot == -1) function.getDeclaringComponent else context.getTargetComponent(bindingSlot)
+    if (bindingSlot == -1) function.declaringComponent else context.getTargetComponent(bindingSlot)
 
   def getTargetFunction(context: XPathContext): UserFunction =
     getTargetComponent(context).getActor.asInstanceOf[UserFunction]

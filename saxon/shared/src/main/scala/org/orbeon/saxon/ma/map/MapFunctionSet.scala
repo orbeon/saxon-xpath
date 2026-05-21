@@ -86,7 +86,7 @@ object MapFunctionSet {
             valueType.getPrimaryType
           }
         case mapType: MapType =>
-          mapType.getValueType.getPrimaryType
+          mapType.valueType.getPrimaryType
         case _ =>
           super.getResultItemType(args)
       }
@@ -106,7 +106,7 @@ object MapFunctionSet {
           }
         case mapType1: MapType =>
           Cardinality.union(
-            mapType1.getValueType.getCardinality,
+            mapType1.valueType.getCardinality,
             StaticProperty.ALLOWS_ZERO)
         case _ =>
           super.getCardinality(args)
@@ -307,9 +307,9 @@ object MapFunctionSet {
           }
           if (maybeCombined) {
             new MapType(
-              mapType.getKeyType,
+              mapType.keyType,
               SequenceType.makeSequenceType(
-                mapType.getValueType.getPrimaryType,
+                mapType.valueType.getPrimaryType,
                 StaticProperty.ALLOWS_ZERO_OR_MORE)
             )
           } else {

@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.{AtomicSequence, NodeInfo, StandardNames, StructuredQ
 import org.orbeon.saxon.value.UntypedAtomicValue
 import org.orbeon.saxon.z.IntHashSet
 
-
 /**
   * This class has a singleton instance which represents the complex type xdt:untyped,
   * used for elements that have not been validated.

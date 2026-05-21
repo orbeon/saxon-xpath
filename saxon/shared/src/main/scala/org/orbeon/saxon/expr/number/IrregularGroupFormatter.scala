@@ -6,7 +6,6 @@ import org.orbeon.saxon.z.IntSet
 
 import java.util
 
-
 class IrregularGroupFormatter(
   private var groupingPositions: IntSet,
   private var separators       : util.List[Integer],

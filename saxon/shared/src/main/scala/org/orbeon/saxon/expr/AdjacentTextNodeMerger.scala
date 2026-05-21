@@ -73,12 +73,12 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
     if (th.relationship(getBaseExpression.getItemType, NodeKindTest.TEXT) ==
       Affinity.DISJOINT) {
       val base: Expression = getBaseExpression
-      base.setParentExpression(getParentExpression)
+      base.parentExpression = parentExpression
       return base
     }
     if (!Cardinality.allowsMany(getBaseExpression.getCardinality)) {
       val base: Expression = getBaseExpression
-      base.setParentExpression(getParentExpression)
+      base.parentExpression = parentExpression
       return base
     }
     if (getBaseExpression.isInstanceOf[Choose]) {

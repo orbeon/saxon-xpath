@@ -15,7 +15,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-
 object Path_1 {
 
   def makePath(node: NodeInfo, context: XPathContext): StringValue = {

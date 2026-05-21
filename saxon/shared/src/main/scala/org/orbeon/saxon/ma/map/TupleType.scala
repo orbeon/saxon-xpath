@@ -5,9 +5,6 @@ import org.orbeon.saxon.model.FunctionItemType
 
 import org.orbeon.saxon.value.SequenceType
 
-
-
-
 /**
   * An instance of this class represents a specific tuple item type, for example
   * tuple(x as xs:double, y as element(employee)).

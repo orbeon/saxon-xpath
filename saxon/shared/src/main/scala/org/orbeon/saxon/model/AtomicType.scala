@@ -12,7 +12,6 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item, StructuredQName}
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
   * Interface for atomic types (these are either built-in atomic types
   * or user-defined atomic types). An AtomicType is both an ItemType (a possible type

@@ -17,7 +17,6 @@ import org.orbeon.saxon.tree.iter.{GroundedIterator, LookaheadIterator}
 import org.orbeon.saxon.tree.wrapper.SiblingCountingNode
 import org.orbeon.saxon.value.SequenceExtent
 
-
 object FocusTrackingIterator {
 
   def track(base: SequenceIterator): FocusTrackingIterator =

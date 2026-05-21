@@ -13,9 +13,6 @@ import org.orbeon.saxon.value.NumericValue
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class RegexGroup extends SystemFunction {
 
   /**

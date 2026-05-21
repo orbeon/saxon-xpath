@@ -12,9 +12,6 @@ import org.orbeon.saxon.expr.{Operand, OperandRole, PseudoExpression}
 import org.orbeon.saxon.expr.parser.RebindingMap
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-
-
-
 /**
   * The class represents a list of sort key definitions in major-to-minor sort key order. It is not a true
   * expression, because it cannot be evaluated, but it acts as a node in the expression tree, and is therefore

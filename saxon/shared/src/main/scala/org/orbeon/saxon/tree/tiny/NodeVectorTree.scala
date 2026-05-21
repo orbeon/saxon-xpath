@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.pattern.NodeTest
 
-
-
-
 /**
   * Interface defining methods common to the TinyTree and the Domino tree model. These two models are
   * recognized by the {@link NodeTest} class, which is able to match nodes without actually instantiating

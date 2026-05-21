@@ -19,8 +19,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object ExpressionPresenter {
 
   def defaultDestination(config: Configuration, out: Logger): Receiver = {
@@ -100,10 +98,8 @@ class ExpressionPresenter {
   private var namespaceMap: NamespaceMap = NamespaceMap.emptyMap
   private var defaultNamespace: String = _
 
-  @BeanProperty
   var options: Options = new ExportOptions
 
-  @BooleanBeanProperty
   val relocatable: Boolean = false
 
   def this(config: Configuration, receiver: Receiver) = {
@@ -133,7 +129,7 @@ class ExpressionPresenter {
   def init(config: Configuration, out: StreamResult, checksum: Boolean): Unit = {
     val props = makeDefaultProperties(config)
     if (config.getXMLVersion == Configuration.XML11) {
-      if ("JS" == getOptions.asInstanceOf[ExportOptions].target) {
+      if ("JS" == options.asInstanceOf[ExportOptions].target) {
         config.getLogger.warning(
           "For target=JS, the SEF file will use XML 1.0, which disallows control characters")
       } else {
@@ -180,7 +176,6 @@ class ExpressionPresenter {
         throw new InternalError(err.getMessage)
     }
   }
-
 
   def setDefaultNamespace(namespace: String): Unit = {
     defaultNamespace = namespace

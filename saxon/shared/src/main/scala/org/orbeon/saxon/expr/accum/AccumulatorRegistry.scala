@@ -58,8 +58,8 @@ class AccumulatorRegistry {
   }
 
   def addAccumulator(acc: Accumulator): Unit = {
-    if (acc.getAccumulatorName != null) {
-      accumulatorsByName.put(acc.getAccumulatorName, acc)
+    if (acc.accumulatorName != null) {
+      accumulatorsByName.put(acc.accumulatorName, acc)
     }
   }
 

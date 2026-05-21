@@ -5,9 +5,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import javax.xml.transform.TransformerException
 
-
-
-
 /**
   * This interface can be implemented by users (there are no implementations in Saxon itself). It is
   * used only when Saxon is invoked from the command line, and the -init:class option is used on the command

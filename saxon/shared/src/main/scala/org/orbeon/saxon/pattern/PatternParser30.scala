@@ -121,7 +121,7 @@ class PatternParser30 extends XPathParser with PatternParser {
           exp.asInstanceOf[VennExpression].getRhsExpression)
       }
       val visitor: ExpressionVisitor = ExpressionVisitor.make(env)
-      visitor.setOptimizeForPatternMatching(true)
+      visitor.optimizeForPatternMatching = true
       val cit: ContextItemStaticInfo = visitor.getConfiguration
         .makeContextItemStaticInfo(AnyNodeTest, maybeUndefined = true)
       var pat: Pattern = null

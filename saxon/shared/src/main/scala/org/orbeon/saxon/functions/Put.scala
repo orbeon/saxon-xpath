@@ -23,9 +23,6 @@ import java.net.URI
 
 import java.net.URISyntaxException
 
-
-
-
 /**
   * Implements the fn:put() function in XQuery Update 1.0.
   */

@@ -8,7 +8,6 @@ package org.orbeon.saxon.lib
 
 import java.{util => ju}
 
-
 /**
   * This interface defines a Saxon plug-in used to resolve calls on the XPath 3.0
   * functions available-environment-variables() and environment-variable(). The standard

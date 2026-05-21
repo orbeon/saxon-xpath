@@ -13,7 +13,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
-
 class XPathEvaluator(config: Configuration) {
 
   @BeanProperty
@@ -58,7 +57,7 @@ class XPathEvaluator(config: Configuration) {
 
     val config  = getConfiguration
     val exec = new Executable(config)
-    exec.setTopLevelPackage(staticContext.getPackageData)
+    exec.topLevelPackage = staticContext.getPackageData
     exec.setSchemaAware(staticContext.getPackageData.isSchemaAware)
     exec.setHostLanguage(HostLanguage.XPATH)
     val userlib = exec.getFunctionLibrary
@@ -86,14 +85,14 @@ class XPathEvaluator(config: Configuration) {
 
     val cit = config.makeContextItemStaticInfo(contextItemType, maybeUndefined = true)
 
-    cit.setParentless(staticContext.isContextItemParentless)
+    cit.parentless = staticContext.isContextItemParentless
 
     exp = exp.typeCheck(visitor, cit)
     if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS))
       exp = exp.optimize(visitor, cit)
 
     if (opt.isOptionSet(OptimizerOptions.LOOP_LIFTING)) {
-      exp.setParentExpression(null)
+      exp.parentExpression = null
       exp = LoopLifter.process(exp, visitor, cit)
     }
 

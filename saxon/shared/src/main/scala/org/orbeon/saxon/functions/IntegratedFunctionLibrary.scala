@@ -23,7 +23,6 @@ import java.util.List
 
 import IntegratedFunctionLibrary._
 
-
 object IntegratedFunctionLibrary {
 
   def makeFunctionCall(defn: ExtensionFunctionDefinition,

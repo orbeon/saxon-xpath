@@ -6,7 +6,6 @@ import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.tree.iter.{AxisIterator, LookaheadIterator}
 
-
 class NamedChildIterator(tree: TinyTree,
                          node: TinyNodeImpl,
                          fingerprint: Int)

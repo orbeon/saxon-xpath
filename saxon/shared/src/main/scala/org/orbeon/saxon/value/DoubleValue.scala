@@ -18,7 +18,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.DoubleValue._
 
-
 object DoubleValue {
 
   val ZERO          : DoubleValue = new DoubleValue(0.0)

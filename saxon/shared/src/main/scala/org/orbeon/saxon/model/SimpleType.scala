@@ -9,7 +9,6 @@ package org.orbeon.saxon.model
 import org.orbeon.saxon.lib.ConversionRules
 import org.orbeon.saxon.om.{AtomicSequence, NamespaceResolver}
 
-
 /**
   * This interface represents a simple type, which may be a built-in simple type, or
   * a user-defined simple type.

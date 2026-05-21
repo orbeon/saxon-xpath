@@ -10,9 +10,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class SinkOutputter extends Outputter {
 
   override def startDocument(properties: Int): Unit = ()

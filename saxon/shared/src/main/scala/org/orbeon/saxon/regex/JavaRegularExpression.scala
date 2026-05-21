@@ -6,7 +6,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{AtomicIterator, EmptyIterator}
 import org.orbeon.saxon.value.StringValue
 
-
 object JavaRegularExpression {
 
   def setFlags(inFlags: CharSequence): Int = {

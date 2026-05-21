@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.om
 
-
 /**
   * Interface representing the document node of a mutable document
   */

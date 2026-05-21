@@ -11,9 +11,6 @@ import org.apache.xml.resolver.helpers.Debug
 
 import javax.xml.transform.TransformerException
 
-
-
-
 object XmlCatalogResolver {
 
   def setCatalog(catalog: String,

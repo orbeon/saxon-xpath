@@ -20,9 +20,6 @@ import java.util.List
 
 import org.orbeon.saxon.expr.flwor.Clause.ClauseName.WHERE
 
-
-
-
 /**
   * A "where" clause in a FLWOR expression
   */

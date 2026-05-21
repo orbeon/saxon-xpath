@@ -7,8 +7,6 @@ import org.orbeon.saxon.om.{Function, Sequence}
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
-
-
 object PositionAndLast {
 
   class Position extends PositionAndLast {

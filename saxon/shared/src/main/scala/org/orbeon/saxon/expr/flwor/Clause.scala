@@ -14,7 +14,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
-
 object Clause {
 
   object ClauseName extends Enumeration {

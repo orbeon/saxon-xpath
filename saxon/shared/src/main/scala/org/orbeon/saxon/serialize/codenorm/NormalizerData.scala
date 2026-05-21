@@ -18,7 +18,6 @@ import org.orbeon.saxon.z.{IntHashMap, IntToIntMap}
 
 import scala.collection.mutable
 
-
 object NormalizerData {
 
   val copyright: String = "Copyright (c) 1998-1999 Unicode, Inc."

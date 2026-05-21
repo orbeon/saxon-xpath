@@ -13,7 +13,6 @@ import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.{Function, Sequence, StructuredQName, ZeroOrOne}
 import org.orbeon.saxon.value.QNameValue
 
-
 /**
   * This class implements the function function-name(), which is a standard function in XPath 3.0
   */

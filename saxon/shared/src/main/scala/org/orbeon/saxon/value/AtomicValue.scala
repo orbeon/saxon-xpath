@@ -18,7 +18,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.SingleAtomicIterator
 import org.orbeon.saxon.tree.jiter.MonoIterator
 
-
 /**
   * The AtomicValue class corresponds to the concept of an atomic value in the
   * XPath 2.0 data model. Atomic values belong to one of the 19 primitive types

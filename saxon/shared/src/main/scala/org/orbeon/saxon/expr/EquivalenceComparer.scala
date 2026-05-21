@@ -13,9 +13,6 @@ import org.orbeon.saxon.value.CalendarValue
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 /**
   * A comparer that compares atomic values for equality, with the properties:
   * - non-comparable types compare false
@@ -35,12 +32,12 @@ class EquivalenceComparer (collator: StringCollator,
                  .isInstanceOf[CalendarValue]) {
       a.asInstanceOf[CalendarValue]
         .compareTo(b.asInstanceOf[CalendarValue],
-                   getContext.getImplicitTimezone) ==
+                   context.getImplicitTimezone) ==
         0
     } else if (a.isNaN && b.isNaN) {
       true
     } else {
-      val implicitTimezone: Int = getContext.getImplicitTimezone
+      val implicitTimezone: Int = context.getImplicitTimezone
       val ac: AnyRef =
         a.getXPathComparable(ordered = false, collator, implicitTimezone)
       val bc: AnyRef =

@@ -5,7 +5,6 @@ import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.ObjectValue
 
-
 object Bindery {
   class FailureValue(err: XPathException)
     extends ObjectValue[XPathException](err)
@@ -16,7 +15,7 @@ class Bindery(pack: PackageData) {
   private var globals: Array[GroundedValue] = _
   private var busy: Array[Long] = _
 
-  allocateGlobals(pack.getGlobalSlotManager)
+  allocateGlobals(pack.globalSlotManager)
 
   private def allocateGlobals(map: SlotManager): Unit = {
     val n: Int = map.getNumberOfVariables + 1
@@ -35,7 +34,7 @@ class Bindery(pack: PackageData) {
   def setExecuting(binding: GlobalVariable): Boolean = {
     // ORBEON: Thread
     true
-//    val thisThread = Thread.currentThread().getId
+//    val thisThread = Thread.currentThread().id
 //    val slot = binding.getBinderySlotNumber
 //    val busyThread = busy(slot)
 //    if (busyThread != -1L) {

@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.{LazySequence, NodeInfo, Sequence, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.wrapper.VirtualCopy
 
-
 /**
   * XSLT 3.0 function copy-of(). This compiles into an xsl:copy-of instruction, except when called dynamically.
   */
@@ -43,7 +42,7 @@ class CopyOfFn extends SystemFunction {
         } else {
           var vc: VirtualCopy =
             VirtualCopy.makeVirtualCopy(item.asInstanceOf[NodeInfo])
-          vc.getTreeInfo.setCopyAccumulators(true)
+          vc.getTreeInfo.copyAccumulators = true
           vc
       }
     )
@@ -64,7 +63,7 @@ class CopyOfFn extends SystemFunction {
     arg =
       if (arguments.isEmpty) new ContextItemExpression() else arguments(0)
     val fn: CopyOf = new CopyOf(arg, true, Validation.PRESERVE, null, false)
-    fn.setCopyAccumulators(true)
+    fn.copyAccumulators = true
     fn.setSchemaAware(false)
     fn
   }

@@ -10,7 +10,6 @@ import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.Sequence
 
-
 /**
   * Interface implemented by functions that have a "push" implementation, whereby the result
   * of the function is written incrementally to an `Outputter` rather than being

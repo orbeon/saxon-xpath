@@ -17,9 +17,6 @@ import org.orbeon.saxon.value.QNameValue
 
 import NodeName_1._
 
-
-
-
 object NodeName_1 {
 
   def nodeName(node: NodeInfo): QNameValue = {

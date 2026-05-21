@@ -18,7 +18,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.jiter.MappingJavaIterator
 import org.orbeon.saxon.utils.Configuration
 
-
 object CatalogCollection {
 
   def makeStringBuilderFromStream(in: InputStream,

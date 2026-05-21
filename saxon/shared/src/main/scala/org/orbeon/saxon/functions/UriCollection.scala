@@ -29,9 +29,6 @@ import java.net.URISyntaxException
 
 import java.util.Iterator
 
-
-
-
 class UriCollection extends SystemFunction {
 
   private def getUris(href: String, context: XPathContext): SequenceIterator = {

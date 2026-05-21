@@ -10,7 +10,6 @@ package org.orbeon.saxon.om
 import org.orbeon.saxon.tree.iter.ConstrainedIterator
 import org.orbeon.saxon.value._
 
-
 object One {
   def bool   (value: Boolean): One[BooleanValue] = new One(BooleanValue.get(value))
   def string (value: String) : One[StringValue]  = new One(new StringValue(value))

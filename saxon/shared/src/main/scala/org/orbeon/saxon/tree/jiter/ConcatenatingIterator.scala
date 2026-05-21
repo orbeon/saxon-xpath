@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.jiter
 
 import java.util.function.Supplier
 
-
 /**
   * An iterator over nodes, that concatenates the nodes returned by two supplied iterators.
   */

@@ -14,7 +14,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.FloatValue._
 
-
 /**
  * A numeric (single precision floating point) value
  */

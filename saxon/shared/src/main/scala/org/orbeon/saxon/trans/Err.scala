@@ -14,7 +14,6 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Whitespace
 
-
 /**
   * Class containing utility methods for handling error messages
   */

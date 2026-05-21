@@ -17,9 +17,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class ProxyOutputter(private var next: Outputter) extends Outputter {
 
   this.pipelineConfiguration = next.getPipelineConfiguration

@@ -10,7 +10,6 @@ import java.util
 import java.util.function.IntPredicate
 import scala.util.control.Breaks._
 
-
 object NumberFormatter {
 
   def isLetterOrDigit(c: Int): Boolean =

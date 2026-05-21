@@ -9,7 +9,6 @@ package org.orbeon.saxon.regex
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-
 /**
   * A ATokenIterator is an iterator over the strings that result from tokenizing a string using a regular expression
   */

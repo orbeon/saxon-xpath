@@ -16,43 +16,34 @@ import org.orbeon.saxon.trans.rules.Rule
 import org.orbeon.saxon.value.SequenceType
 import java.util.Map
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BooleanBeanProperty
 
 /**
  * Represents a single accumulator declared in an XSLT 3.0 stylesheet
  */
 class Accumulator extends Actor {
 
-  @BeanProperty
   var accumulatorName: StructuredQName = _
 
-  @BeanProperty
   var preDescentRules: SimpleMode = new SimpleMode(
     new StructuredQName("saxon", NamespaceConstant.SAXON, "preDescent"))
 
-  @BeanProperty
   var postDescentRules: SimpleMode = new SimpleMode(
     new StructuredQName("saxon", NamespaceConstant.SAXON, "postDescent"))
 
-  @BeanProperty
   var initialValueExpression: Expression = _
 
-  @BeanProperty
   var seqType: SequenceType = _
 
   private var streamable: Boolean = _
 
-  @BooleanBeanProperty
   var universallyApplicable: Boolean = _
 
-  @BeanProperty
   var importPrecedence: Int = _
 
   @BooleanBeanProperty
   var tracing: Boolean = _
 
-  @BeanProperty
   var slotManagerForInitialValueExpression: SlotManager = _
 
   // The "body" of an accumulator is an artificial expression that contains all the constituent expressions, for ease of management.
@@ -64,7 +55,7 @@ class Accumulator extends Actor {
    * @return the symbolic name
    */
   override def getSymbolicName: SymbolicName =
-    new SymbolicName(StandardNames.XSL_ACCUMULATOR, getAccumulatorName)
+    new SymbolicName(StandardNames.XSL_ACCUMULATOR, accumulatorName)
 
   def isDeclaredStreamable: Boolean = streamable
 
@@ -78,7 +69,7 @@ class Accumulator extends Actor {
   }
 
   def isCompatible(other: Accumulator): Boolean =
-    getAccumulatorName == other.getAccumulatorName
+    accumulatorName == other.accumulatorName
 
   /**
    * Get a name identifying the object of the expression, for example a function name, template name,
@@ -109,15 +100,15 @@ class Accumulator extends Actor {
     out.emitAttribute("streamable", if (streamable) "1" else "0")
     out.emitAttribute(
       "slots",
-      getSlotManagerForInitialValueExpression.getNumberOfVariables.toString +
+      slotManagerForInitialValueExpression.getNumberOfVariables.toString +
         "")
     if (componentIdMap != null) {
       out.emitAttribute(
         "binds",
         "" +
-          getDeclaringComponent.listComponentReferences(componentIdMap))
+          declaringComponent.listComponentReferences(componentIdMap))
     }
-    if (isUniversallyApplicable) {
+    if (universallyApplicable) {
       out.emitAttribute("flags", "u")
     }
     out.setChildRole("init")
@@ -131,8 +122,8 @@ class Accumulator extends Actor {
             .getStackFrameMap
             .getNumberOfVariables.toString +
             "")
-        out.emitAttribute("rank", "" + r.getRank)
-        if (r.getAction.asInstanceOf[AccumulatorRule].isCapturing) {
+        out.emitAttribute("rank", "" + r.rank)
+        if (r.getAction.asInstanceOf[AccumulatorRule].capturing) {
           out.emitAttribute("flags", "c")
         }
         r.getPattern.`export`(out)

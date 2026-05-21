@@ -8,8 +8,6 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Cardinality
 
-
-
 class StringJoin extends FoldingFunction with PushableFunction {
 
   var returnEmptyIfEmpty: Boolean = _

@@ -8,8 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-
-
 /**
   * An export agent performs the job of exporting an expression to a SEF file. Normally
   * the expression itself acts as its own export agent, and includes an export() method

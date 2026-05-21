@@ -45,7 +45,6 @@ import java.util.Map
 
 import XMLToJsonFn._
 
-
 object XMLToJsonFn {
 
   def makeOptionsParameter(): OptionsParameter = {
@@ -109,7 +108,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
       context.getController.makePipelineConfiguration
     pipe.xpathContext = context
     val receiver: JsonReceiver = new JsonReceiver(pipe, output)
-    receiver.setIndenting(indent)
+    receiver.indenting = indent
     var r: Receiver = receiver
     if (xml.getNodeKind == Type.DOCUMENT) {
       r = new DocumentValidator(r, "FOJS0006")

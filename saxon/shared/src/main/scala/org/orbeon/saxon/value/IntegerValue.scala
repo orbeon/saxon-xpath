@@ -14,7 +14,6 @@ import org.orbeon.saxon.om.StandardNames
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.{Err, XPathException}
 
-
 /**
  * This class represents the XPath built-in type xs:integer. It is used for all
  * subtypes of xs:integer, other than user-defined subtypes. There are two implementations
@@ -302,5 +301,4 @@ abstract class IntegerValue extends DecimalValue {
   override def isIdentical(v: AtomicValue): Boolean =
     v.isInstanceOf[IntegerValue] && equals(v)
 }
-
 

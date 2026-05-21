@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.sort
 
 import DecimalSortComparer._
 
-
-
-
 object DecimalSortComparer {
 
   private var THE_INSTANCE: DecimalSortComparer = new DecimalSortComparer()

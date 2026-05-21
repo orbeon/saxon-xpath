@@ -12,7 +12,6 @@ import org.orbeon.saxon.s9api.Location
 
 import scala.jdk.CollectionConverters._
 
-
 /**
   * This class is a filter that passes all Receiver events through unchanged,
   * except that it changes namecodes to allow for the source and the destination

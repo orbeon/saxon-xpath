@@ -19,7 +19,6 @@ import org.orbeon.saxon.z.{IntHashMap, IntToIntHashMap}
 
 import scala.util.control.Breaks._
 
-
 /**
  * Class ARegexIterator - provides an iterator over matched and unmatched substrings.
  * This implementation of RegexIterator uses the modified Jakarta regular expression engine.

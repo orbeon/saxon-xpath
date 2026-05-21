@@ -12,7 +12,6 @@ import org.orbeon.saxon.lib.StringCollator
 import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.value.{AtomicValue, Base64BinaryValue}
 
-
 object CollationKeyFn {
 
   private def getCollationKey(s: String, collator: StringCollator): Base64BinaryValue = {

@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import scala.beans.BeanProperty
 
-
 /**
  * The Genre of an item is the top-level classification of its item type: one of Atomic, Node, Function,
  * Map, Array, or External

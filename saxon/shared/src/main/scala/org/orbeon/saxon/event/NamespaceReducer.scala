@@ -15,7 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 import java.util
 import scala.util.control.Breaks._
 
-
 /**
  * `NamespaceReducer` is a `ProxyReceiver` responsible for removing duplicate namespace
  * declarations. It also ensures that an `xmlns=""` undeclaration is output when

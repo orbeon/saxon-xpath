@@ -23,7 +23,6 @@ import java.util.Iterator
 
 import java.util.List
 
-
 class ExecutableFunctionLibrary(@transient private var config: Configuration)
   extends FunctionLibrary {
 

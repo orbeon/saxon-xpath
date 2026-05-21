@@ -8,7 +8,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.BooleanValue
 
-
 class TypeAvailable extends SystemFunction {
 
   private def typeAvailable(lexicalName: String, config: Configuration): Boolean = {

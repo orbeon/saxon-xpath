@@ -12,7 +12,6 @@ import org.orbeon.saxon.model.SimpleType
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.jiter.MonoIterator
 
-
 /**
  * An implementation of AttributeMap for use when there is exactly one attribute
  */

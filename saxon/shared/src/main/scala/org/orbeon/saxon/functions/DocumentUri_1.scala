@@ -21,9 +21,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import DocumentUri_1._
 
-
-
-
 object DocumentUri_1 {
 
   def getDocumentURI(node: NodeInfo, c: XPathContext): AnyURIValue =

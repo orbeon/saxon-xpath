@@ -5,9 +5,6 @@ import org.orbeon.saxon.lib.ErrorReporter
 
 import java.util.List
 
-
-
-
 trait StaticError {
 
   /**

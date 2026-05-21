@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.Expression
 import org.orbeon.saxon.expr.flwor.{Clause, FLWORExpression}
 import org.orbeon.saxon.trace.TraceableComponent
 
-
 /**
   * A code injector can be used to add code to the expression tree (for example, diagnostic tracing code)
   * during the process of parsing and tree construction

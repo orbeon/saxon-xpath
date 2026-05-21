@@ -5,7 +5,6 @@ import javax.xml.transform.stream.StreamSource
 import org.xml.sax.InputSource
 import org.xml.sax.XMLReader
 
-
 object SAXSource {
 
   val FEATURE = "http://javax.xml.transform.sax.SAXSource/feature"

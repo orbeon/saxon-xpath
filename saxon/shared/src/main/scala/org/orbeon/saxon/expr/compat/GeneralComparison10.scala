@@ -19,7 +19,6 @@ import org.orbeon.saxon.value.{AtomicValue, BooleanValue, DoubleValue, StringVal
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object GeneralComparison10 {
 
   private def compare(a0: AtomicValue,

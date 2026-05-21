@@ -10,7 +10,6 @@ import org.orbeon.saxon.serialize.codenorm.Normalizer
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 
-
 object HTMLURIEscaper {
 
   private val urlAttributes  : HTMLTagHashSet = new HTMLTagHashSet(47)

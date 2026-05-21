@@ -17,7 +17,6 @@ import org.orbeon.saxon.value.BooleanValue
 
 import org.orbeon.saxon.value.StringValue
 
-
 class Matches extends RegexFunction {
 
   def allowRegexMatchingEmptyString(): Boolean = true

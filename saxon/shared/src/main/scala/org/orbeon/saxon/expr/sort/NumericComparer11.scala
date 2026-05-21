@@ -5,9 +5,6 @@ import org.orbeon.saxon.value.StringToDouble11
 
 import NumericComparer11._
 
-
-
-
 object NumericComparer11 {
 
   private var THE_INSTANCE: NumericComparer11 = new NumericComparer11()

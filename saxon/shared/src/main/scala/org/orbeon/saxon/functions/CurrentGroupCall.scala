@@ -28,13 +28,13 @@ import org.orbeon.saxon.value.AtomicValue
 
 import CurrentGroupCall._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object CurrentGroupCall {
 
   def findControllingInstruction(exp: Expression): ForEachGroup = {
     var child: Expression = exp
-    var parent: Expression = exp.getParentExpression
+    var parent: Expression = exp.parentExpression
     while (parent != null) {
       if (parent.isInstanceOf[ForEachGroup] &&
         (child ==
@@ -44,7 +44,7 @@ object CurrentGroupCall {
         return parent.asInstanceOf[ForEachGroup]
       }
       child = parent
-      parent = parent.getParentExpression
+      parent = parent.parentExpression
     }
     null
   }

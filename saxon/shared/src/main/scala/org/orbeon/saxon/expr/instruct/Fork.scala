@@ -26,7 +26,6 @@ class Fork extends Instruction {
     }
   }
 
-
   def this(prong: Array[Expression]) = {
     this()
     operanda = Array.ofDim[Operand](prong.length)

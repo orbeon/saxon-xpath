@@ -3,9 +3,6 @@ package org.orbeon.saxon.event
 
 import org.orbeon.saxon.om.NodeInfo
 
-
-
-
 /**
   * A BuilderMonitor can be inserted into a pipeline immediately in front of a Builder. During tree construction,
   * the method markNextNode() can be called to request that the next node to be created is treated specially by

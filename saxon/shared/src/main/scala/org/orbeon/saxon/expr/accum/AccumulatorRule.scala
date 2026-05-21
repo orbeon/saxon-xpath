@@ -13,17 +13,13 @@ import org.orbeon.saxon.trans.rules.Rule
 
 import org.orbeon.saxon.trans.rules.RuleTarget
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
-
-
-
-class AccumulatorRule(@BeanProperty var newValueExpression: Expression,
+class AccumulatorRule(var newValueExpression: Expression,
                       @BeanProperty var stackFrameMap: SlotManager,
-                      @BooleanBeanProperty var postDescent: Boolean)
+                      var postDescent: Boolean)
     extends RuleTarget {
 
-  @BooleanBeanProperty
   var capturing: Boolean = _
 
   def `export`(out: ExpressionPresenter): Unit = {

@@ -17,9 +17,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value._
 
-
-
-
 class ListCastableFunction(targetType: ListType,
                            resolver: NamespaceResolver,
                            allowEmpty: Boolean)

@@ -5,15 +5,10 @@ import org.orbeon.saxon.om.{NamespaceResolver, StructuredQName}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.Traceable
 
-import scala.beans.BeanProperty
-
-
-
-
 /**
   * A "trace" clause in a FLWOR expression, added by a TraceCodeInjector
   */
-class ClauseInfo(@BeanProperty var clause: Clause) extends Traceable {
+class ClauseInfo(var clause: Clause) extends Traceable {
 
   private var nsResolver: NamespaceResolver = _
 

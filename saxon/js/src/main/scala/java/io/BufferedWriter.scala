@@ -16,7 +16,6 @@
  */
 package java.io
 
-
 /**
  * Wraps an existing `Writer` and <em>buffers</em> the output. Expensive
  * interaction with the underlying reader is minimized, since most (smaller)

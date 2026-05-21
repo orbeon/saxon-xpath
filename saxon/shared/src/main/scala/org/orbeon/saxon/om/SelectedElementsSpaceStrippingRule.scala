@@ -101,13 +101,13 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
     val prio = if (priority == 0) 2
     else if (priority == -0.25) 1
     else 0
-    newRule.setRank((precedence << 18) + (prio << 16) + sequence)
+    newRule.rank = (precedence << 18) + (prio << 16) + sequence
     if (test.isInstanceOf[NodeKindTest]) {
-      newRule.setAlwaysMatches(true)
+      newRule.alwaysMatches = true
       anyElementRule = addRuleToList(newRule, anyElementRule, dropRemainder = true)
     }
     else if (test.isInstanceOf[NameTest]) {
-      newRule.setAlwaysMatches(true)
+      newRule.alwaysMatches = true
       val fp = test.getFingerprint
       val pool = test.asInstanceOf[NameTest].getNamePool
       val key = new FingerprintedQName(pool.getUnprefixedQName(fp), pool)
@@ -190,7 +190,7 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
             break()
           }
           else if (rank == 0) { // this rule has the same precedence and priority as the matching rule already found
-            if (headRule.isAlwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) { // reportAmbiguity(bestRule, head);
+            if (headRule.alwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) { // reportAmbiguity(bestRule, head);
               // We no longer report the recoverable error XTRE0270, we always
               // take the recovery action.
               // choose whichever one comes last (assuming the error wasn't fatal)
@@ -202,10 +202,10 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
             }
           }
           else { // this rule has higher rank than the matching rule already found
-            if (headRule.isAlwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) bstRule = headRule
+            if (headRule.alwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) bstRule = headRule
           }
         }
-        else if (headRule.isAlwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) {
+        else if (headRule.alwaysMatches || headRule.getPattern.getItemType.asInstanceOf[NodeTest].matches(Type.ELEMENT, nodeName, null)) {
           bstRule = headRule
           break()
         }
@@ -224,16 +224,16 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
     val treeMap = new util.TreeMap[Integer, Rule]
     var rule = anyElementRule
     while (rule != null) {
-      treeMap.put(-rule.getRank, rule)
+      treeMap.put(-rule.rank, rule)
       rule = rule.getNext
     }
     rule = unnamedElementRuleChain
     while (rule != null) {
-      treeMap.put(-rule.getRank, rule)
+      treeMap.put(-rule.rank, rule)
       rule = rule.getNext
     }
     for (r <- namedElementRules.values.asScala) {
-      treeMap.put(-r.getRank, r)
+      treeMap.put(-r.rank, r)
     }
     treeMap.values.iterator
   }

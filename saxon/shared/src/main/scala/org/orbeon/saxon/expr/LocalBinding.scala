@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.expr
 
-
 /**
   * Binding for local variables and parameters: anything that is allocated a slot on the XPathContext
   * stack frame.

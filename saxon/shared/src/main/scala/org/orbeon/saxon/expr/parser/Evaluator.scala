@@ -9,7 +9,6 @@ import org.orbeon.saxon.value._
 
 import java.util
 
-
 object Evaluator {
 
   val EMPTY_SEQUENCE: Evaluator = new Evaluator {

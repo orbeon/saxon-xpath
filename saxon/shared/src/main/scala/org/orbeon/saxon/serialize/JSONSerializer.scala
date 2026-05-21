@@ -30,7 +30,6 @@ import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 import scala.jdk.CollectionConverters._
 
-
 class JSONSerializer(pipe: PipelineConfiguration,
                      private var emitter: JSONEmitter,
                      var outputProperties: Properties)
@@ -43,7 +42,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
   private var topLevelCount: Int = 0
   private var maxLineLength: Int = 80
   private var characterSet: CharacterSet = _
-  private var isIndenting: Boolean = _
+  private var indenting: Boolean = _
   private var propertySorter: Comparator[AtomicValue] = _
   private var unfailing: Boolean = false
 
@@ -53,7 +52,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
       allowDuplicateKeys = true
     }
     if ("yes" == details.getProperty(OutputKeys.INDENT)) {
-      isIndenting = true
+      indenting = true
     }
     if ("yes" == details.getProperty(SaxonOutputKeys.UNFAILING)) {
       unfailing = true
@@ -161,7 +160,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
     else if (item.isInstanceOf[MapItem]) {
       var keys: Set[String] = null
       if (!allowDuplicateKeys) keys = new HashSet[String]
-      val oneLiner = !isIndenting || isOneLinerMap(item.asInstanceOf[MapItem])
+      val oneLiner = !indenting || isOneLinerMap(item.asInstanceOf[MapItem])
       emitter.startMap(oneLiner)
       val first = true
       val keyList = new ArrayList[AtomicValue]
@@ -181,7 +180,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
       emitter.endMap()
     }
     else if (item.isInstanceOf[ArrayItem]) {
-      val oneLiner = !isIndenting || isOneLinerArray(item.asInstanceOf[ArrayItem])
+      val oneLiner = !indenting || isOneLinerArray(item.asInstanceOf[ArrayItem])
       emitter.startArray(oneLiner)
       val first = true
       for (member <- item.asInstanceOf[ArrayItem].members) {

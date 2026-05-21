@@ -29,7 +29,6 @@ import org.orbeon.saxon.value.{StringValue, UntypedAtomicValue}
 
 import scala.beans.BeanProperty
 
-
 class Orphan(config: Configuration) extends MutableNodeInfo {
 
   private var kind: Short = _

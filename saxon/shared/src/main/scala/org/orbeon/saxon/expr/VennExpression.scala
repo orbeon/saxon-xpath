@@ -14,7 +14,6 @@ import org.orbeon.saxon.value.{Cardinality, SequenceType}
 import java.util
 import java.util.Set
 
-
 class VennExpression(p1: Expression, val op: Int, p2: Expression) extends BinaryExpression(p1, op, p2) {
 
   override def simplify(): Expression = {
@@ -250,13 +249,13 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     if (lhs.isInstanceOf[AxisExpression] && rhs.isInstanceOf[AxisExpression]) {
       val a1: AxisExpression = lhs.asInstanceOf[AxisExpression]
       val a2: AxisExpression = rhs.asInstanceOf[AxisExpression]
-      if (a1.getAxis == a2.getAxis) {
+      if (a1.axis == a2.axis) {
         if (a1.getNodeTest == a2.getNodeTest) {
           if (op == Token.EXCEPT)
             return Literal.makeEmptySequence else return a1
         } else {
           val ax: AxisExpression = new AxisExpression(
-            a1.getAxis,
+            a1.axis,
             new CombinedNodeTest(a1.getNodeTest, op, a2.getNodeTest))
           ExpressionTool.copyLocationInfo(this, ax)
           return ax
@@ -302,14 +301,14 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
           .optimize(visitor, contextItemType)
       }
     }
-    if (! visitor.isOptimizeForStreaming && op == Token.UNION &&
+    if (! visitor.optimizeForStreaming && op == Token.UNION &&
       lhs.isInstanceOf[AxisExpression] &&
       rhs.isInstanceOf[AxisExpression]) {
       val a0 = lhs.asInstanceOf[AxisExpression]
       val a1 = rhs.asInstanceOf[AxisExpression]
-      if (a0.getAxis == AxisInfo.ATTRIBUTE && a1.getAxis == AxisInfo.CHILD) {
+      if (a0.axis == AxisInfo.ATTRIBUTE && a1.axis == AxisInfo.CHILD) {
         return new Block(Array(lhs, rhs))
-      } else if (a1.getAxis == AxisInfo.ATTRIBUTE && a0.getAxis == AxisInfo.CHILD) {
+      } else if (a1.axis == AxisInfo.ATTRIBUTE && a0.axis == AxisInfo.CHILD) {
         return new Block(Array(rhs, lhs))
       }
     }

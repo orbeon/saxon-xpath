@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{Item, Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.CalendarValue
 
-
 class Adjust_1 extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[Item] = {

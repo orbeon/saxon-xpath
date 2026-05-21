@@ -12,7 +12,6 @@ import org.orbeon.saxon.tree.iter.{AtomicIterator, SingleAtomicIterator}
 import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.value.{AtomicValue, SequenceType}
 
-
 /**
  * A key and a corresponding value to be held in a Map. A key-value pair also acts as a singleton
  * map in its own right.

@@ -9,7 +9,6 @@ import java.util.function.Predicate
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
-
 abstract class TreeEnumeration(var nextImpl: NodeImpl,
                                var nodeTest: Predicate[_ >: NodeInfo])
   extends AxisIterator

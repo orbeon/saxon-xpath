@@ -6,7 +6,6 @@ import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{Item, NodeInfo, NodeName}
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
 
-
 object NodeKindTest {
 
   val DOCUMENT               : NodeKindTest = new NodeKindTest(Type.DOCUMENT)

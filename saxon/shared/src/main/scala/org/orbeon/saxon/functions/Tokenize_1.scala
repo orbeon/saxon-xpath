@@ -15,9 +15,6 @@ import org.orbeon.saxon.value.EmptySequence
 
 import org.orbeon.saxon.value.Whitespace
 
-
-
-
 class Tokenize_1 extends SystemFunction {
 
   /**

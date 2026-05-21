@@ -15,7 +15,6 @@ import org.orbeon.saxon.trace.ContextStackIterator._
 import org.orbeon.saxon.trans.rules.BuiltInRuleSet
 import org.orbeon.saxon.utils.Controller
 
-
 object ContextStackIterator {
 
   private def getMajorCaller(context: XPathContext): XPathContextMajor = {
@@ -68,7 +67,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       sf.setLocation(ufc.getLocation)
       sf.setFunctionName(ufc.getFunctionName)
       sf.setContextItem(context.getContextItem)
-      sf.setContext(context)
+      sf.context = context
       nextVar = getMajorCaller(context)
       sf
     } else if (origin.isInstanceOf[UserFunctionCall]) {
@@ -79,7 +78,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       sf.setLocation(ufc.getLocation)
       sf.setFunctionName(ufc.getFunctionName)
       sf.setContextItem(context.getContextItem)
-      sf.setContext(context)
+      sf.context = context
       nextVar = getMajorCaller(context)
       sf
     } else if (origin.isInstanceOf[ApplyTemplates]) {
@@ -88,7 +87,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       val loc: ApplyTemplates = origin.asInstanceOf[ApplyTemplates]
       sf.setLocation(loc.getLocation)
       sf.setContextItem(context.getContextItem)
-      sf.setContext(context)
+      sf.context = context
       nextVar = getMajorCaller(context)
       sf
     } else if (origin.isInstanceOf[CallTemplate]) {
@@ -98,7 +97,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       sf.setLocation(loc.getLocation)
       sf.setTemplateName(loc.getObjectName)
       sf.setContextItem(context.getContextItem)
-      sf.setContext(context)
+      sf.context = context
       nextVar = getMajorCaller(context)
       sf
     } else if (origin.isInstanceOf[GlobalVariable]) {
@@ -109,7 +108,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       sf.setContextItem(context.getContextItem)
       sf.setVariableName(`var`.getVariableQName)
       sf.setComponent(`var`)
-      sf.setContext(context)
+      sf.context = context
       nextVar = getMajorCaller(context)
       sf
     } else {

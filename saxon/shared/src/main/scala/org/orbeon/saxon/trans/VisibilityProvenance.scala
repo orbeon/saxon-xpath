@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.trans
 
-
-
-
 object VisibilityProvenance extends Enumeration {
 
   val DEFAULTED: VisibilityProvenance = new VisibilityProvenance()

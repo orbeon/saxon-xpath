@@ -13,9 +13,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import NoElementsSpaceStrippingRule._
 
-
-
-
 object NoElementsSpaceStrippingRule {
 
   private val THE_INSTANCE: NoElementsSpaceStrippingRule =

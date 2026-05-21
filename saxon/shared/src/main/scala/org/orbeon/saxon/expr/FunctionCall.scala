@@ -16,7 +16,6 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object FunctionCall {
 
   def pluralArguments(num: Int): String =

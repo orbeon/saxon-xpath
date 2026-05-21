@@ -6,7 +6,6 @@ import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.om.{FocusIterator, GroundedValue, Item}
 import org.orbeon.saxon.trans.XPathException
 
-
 class ManualIterator
   extends FocusIterator
     with UnfailingIterator

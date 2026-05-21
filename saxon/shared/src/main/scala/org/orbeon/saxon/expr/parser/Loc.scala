@@ -11,7 +11,6 @@ import Loc._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
 object Loc {
 
   val NONE: Loc = new Loc(null, -1, -1)

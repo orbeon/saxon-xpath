@@ -25,7 +25,6 @@ import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 class EvaluateInstr(xpath: Expression,
                     private var requiredType: SequenceType,
                     contextItemExpr: Expression,
@@ -363,7 +362,7 @@ class EvaluateInstr(xpath: Expression,
     c2.openStackFrame(slotMap)
     if (getActualParams != null) {
       for (i <- getActualParams.indices) {
-        val slot = slotMap.getVariableMap.indexOf(getActualParams()(i).getVariableQName)
+        val slot = slotMap.variableMap.indexOf(getActualParams()(i).getVariableQName)
         c2.setLocalVariable(slot, getActualParams()(i).getSelectValue(context))
       }
     }
@@ -374,7 +373,7 @@ class EvaluateInstr(xpath: Expression,
         paramName = iter.next().asInstanceOf[QNameValue]
         paramName
       } != null) {
-        val slot = slotMap.getVariableMap.indexOf(paramName.getStructuredQName)
+        val slot = slotMap.variableMap.indexOf(paramName.getStructuredQName)
         if (slot >= 0)
           c2.setLocalVariable(slot, dynamicParams.get(paramName))
       }

@@ -9,7 +9,6 @@ package org.orbeon.saxon.ma.map
 import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
   * A key and a corresponding value to be held in a Map.
   */

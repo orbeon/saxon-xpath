@@ -26,7 +26,6 @@ import org.orbeon.saxon.value.UntypedAtomicValue
 
 import VirtualUntypedCopy._
 
-
 object VirtualUntypedCopy {
 
   def makeVirtualUntypedTree(original: NodeInfo, root: NodeInfo): VirtualCopy = {

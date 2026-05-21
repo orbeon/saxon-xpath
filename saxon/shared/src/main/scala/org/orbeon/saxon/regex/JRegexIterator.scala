@@ -21,7 +21,6 @@ import org.orbeon.saxon.regex.RegexIterator.MatchHandler
 
 import scala.util.control.Breaks._
 
-
 class JRegexIterator(private var theString: String,
                      private var pattern: Pattern)
   extends RegexIterator

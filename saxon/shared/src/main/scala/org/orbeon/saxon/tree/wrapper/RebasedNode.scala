@@ -4,9 +4,6 @@ package org.orbeon.saxon.tree.wrapper
 import org.orbeon.saxon.om.NodeInfo
 import org.orbeon.saxon.tree.iter.AxisIterator
 
-
-
-
 object RebasedNode {
 
   /*@NotNull*/

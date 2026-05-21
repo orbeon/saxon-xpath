@@ -5,9 +5,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class PrependAxisIterator(start: NodeInfo, base: AxisIterator)
     extends PrependSequenceIterator(start, base)
     with AxisIterator {

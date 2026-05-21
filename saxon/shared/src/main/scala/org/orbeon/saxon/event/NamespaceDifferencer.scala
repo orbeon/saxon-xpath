@@ -16,7 +16,6 @@ import java.util.Properties
 
 import scala.jdk.CollectionConverters._
 
-
 /**
  * <p><tt>NamespaceDifferencer</tt> is a {@link ProxyReceiver} responsible for removing duplicate namespace
  * declarations. It also ensures that namespace undeclarations are emitted when necessary.</p>

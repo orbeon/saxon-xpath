@@ -11,7 +11,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.om.Sequence
 
-
 trait Callable {
   /*@Nullable*/
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence

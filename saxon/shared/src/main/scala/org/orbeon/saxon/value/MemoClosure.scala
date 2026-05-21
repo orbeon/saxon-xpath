@@ -9,7 +9,6 @@ package org.orbeon.saxon.value
 import org.orbeon.saxon.expr.{ContextOriginator, Expression, XPathContext}
 import org.orbeon.saxon.om._
 
-
 /**
   * A MemoClosure represents a value that has not yet been evaluated: the value is represented
   * by an expression, together with saved values of all the context variables that the

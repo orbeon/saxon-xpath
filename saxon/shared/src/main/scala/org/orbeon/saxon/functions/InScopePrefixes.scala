@@ -12,7 +12,6 @@ import org.orbeon.saxon.value.{SequenceExtent, StringValue}
 
 import java.util.ArrayList
 
-
 /**
   * This class implements the XPath 2.0 function fn:in-scope-prefixes()
   */

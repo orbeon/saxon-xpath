@@ -173,7 +173,7 @@ object CopyOf {
 }
 
 class CopyOf(select: Expression,
-             @BooleanBeanProperty var copyNamespaces: Boolean,
+             var copyNamespaces: Boolean,
              private var validation: Int,
              @BeanProperty var schemaType: SchemaType,
              private var rejectDuplicateAttributes: Boolean)
@@ -183,7 +183,6 @@ class CopyOf(select: Expression,
   private var selectOp: Operand =
     new Operand(this, select, OperandRole.SINGLE_ATOMIC)
 
-  @BooleanBeanProperty
   var copyAccumulators: Boolean = _
 
   private var requireDocumentOrElement: Boolean = false
@@ -194,7 +193,6 @@ class CopyOf(select: Expression,
 
   private var copyLineNumbers: Boolean = false
 
-  @BooleanBeanProperty
   var copyForUpdate: Boolean = false
 
   private var isSchemaAware: Boolean = true
@@ -237,10 +235,10 @@ class CopyOf(select: Expression,
       schemaType,
       rejectDuplicateAttributes)
     ExpressionTool.copyLocationInfo(this, c)
-    c.setCopyForUpdate(copyForUpdate)
+    c.copyForUpdate = copyForUpdate
     c.setCopyLineNumbers(copyLineNumbers)
     c.isSchemaAware = isSchemaAware
-    c.setCopyAccumulators(copyAccumulators)
+    c.copyAccumulators = copyAccumulators
     c
   }
 
@@ -494,7 +492,7 @@ class CopyOf(select: Expression,
               cco.close()
               val copy: TinyNodeImpl =
                 builder.getCurrentRoot.asInstanceOf[TinyNodeImpl]
-              copy.getTree.setCopiedFrom(item.asInstanceOf[NodeInfo])
+              copy.getTree.copiedFrom = item.asInstanceOf[NodeInfo]
               out.append(copy)
             } else {
               out.append(item)
@@ -701,7 +699,7 @@ class CopyOf(select: Expression,
             var vc: VirtualCopy =
               VirtualCopy.makeVirtualCopy(item.asInstanceOf[NodeInfo])
             vc.setDropNamespaces(!copyNamespaces)
-            vc.getTreeInfo.setCopyAccumulators(copyAccumulators)
+            vc.getTreeInfo.copyAccumulators = copyAccumulators
             if (item.asInstanceOf[NodeInfo].getNodeKind == Type.ELEMENT) {
               vc.setSystemId(
                 computeNewBaseUri(item.asInstanceOf[NodeInfo],
@@ -720,7 +718,7 @@ class CopyOf(select: Expression,
             val vc: VirtualCopy = VirtualUntypedCopy.makeVirtualUntypedTree(
               item.asInstanceOf[NodeInfo],
               item.asInstanceOf[NodeInfo])
-            vc.getTreeInfo.setCopyAccumulators(copyAccumulators)
+            vc.getTreeInfo.copyAccumulators = copyAccumulators
             vc.setDropNamespaces(!copyNamespaces)
             if (item.asInstanceOf[NodeInfo].getNodeKind == Type.ELEMENT) {
               vc.setSystemId(

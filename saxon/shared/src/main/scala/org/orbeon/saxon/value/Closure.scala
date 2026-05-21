@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.tree.iter.ManualIterator
 
-
 /**
   * A Closure represents a value that has not yet been evaluated: the value is represented
   * by an expression, together with saved values of all the context variables that the

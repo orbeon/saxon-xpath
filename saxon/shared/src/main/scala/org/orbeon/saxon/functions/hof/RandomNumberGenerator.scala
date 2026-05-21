@@ -16,7 +16,6 @@ import org.orbeon.saxon.model.{BuiltInAtomicType, FunctionItemType, SpecificFunc
 import org.orbeon.saxon.om.{Item, Sequence, SequenceIterator}
 import org.orbeon.saxon.value.{AtomicValue, DoubleValue, SequenceExtent, SequenceType}
 
-
 object RandomNumberGenerator {
 
   val RETURN_TYPE: MapType =

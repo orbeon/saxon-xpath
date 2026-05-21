@@ -12,7 +12,6 @@ import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
 import scala.beans.BeanProperty
 
-
 /**
   * Represents the defining occurrence of a variable declared within a FLWOR expression,
   * for example the $p in "for $x at $p in ...". Also used for the variables bound to the context

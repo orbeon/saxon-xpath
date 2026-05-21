@@ -17,7 +17,6 @@ import java.util.ArrayList
 
 import java.util.List
 
-
 class WindowClausePull(private var source: TuplePull,
                        private var windowClause: WindowClause,
                        private var context: XPathContext)
@@ -93,7 +92,7 @@ class WindowClausePull(private var source: TuplePull,
           active.contents.add(current)
         }
         val explicitEndCondition: Boolean = windowClause.getEndCondition != null
-        val implicitEndCondition: Boolean = finished && windowClause.isIncludeUnclosedWindows
+        val implicitEndCondition: Boolean = finished && windowClause.includeUnclosedWindows
         if (explicitEndCondition || implicitEndCondition) {
           val removals: List[WindowClause.Window] =
             new ArrayList[WindowClause.Window]()

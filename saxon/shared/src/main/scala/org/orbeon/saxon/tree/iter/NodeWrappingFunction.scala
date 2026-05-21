@@ -3,9 +3,6 @@ package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.om.NodeInfo
 
-
-
-
 trait NodeWrappingFunction[B, T <: NodeInfo] {
 
   def wrap(node: B): T

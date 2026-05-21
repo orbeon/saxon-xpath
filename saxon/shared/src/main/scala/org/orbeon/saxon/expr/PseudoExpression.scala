@@ -13,9 +13,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A pseudo-expression is an object that can appear as a node on the expression tree, but which cannot
   * actually be evaluated in its own right. An example is a sort key definition. This has to be a node

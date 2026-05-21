@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.XPathContext
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Abtract class representing a tuple stream (used to evaluate a FLWOR expression) in pull mode
   * (where the consumer of tuples activates the provider of those tuples)

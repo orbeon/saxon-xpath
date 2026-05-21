@@ -28,7 +28,7 @@ import java.util.List
 
 import ApplyTemplates._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object ApplyTemplates {
 
@@ -278,7 +278,7 @@ override  def optimize(visitor: ExpressionVisitor,
           throw new AssertionError("Modes cannot be abstract")
         }
       } else {
-        targetMode = mode.getDeclaringComponent.asInstanceOf[Component.M]
+        targetMode = mode.declaringComponent.asInstanceOf[Component.M]
       }
     }
     targetMode
@@ -294,7 +294,7 @@ override  def optimize(visitor: ExpressionVisitor,
 
   def getMode: Mode = mode
 
-  def getFixedTarget: Component = mode.getDeclaringComponent
+  def getFixedTarget: Component = mode.declaringComponent
 
   def getSymbolicName: SymbolicName =
     if (mode == null) null else mode.getSymbolicName

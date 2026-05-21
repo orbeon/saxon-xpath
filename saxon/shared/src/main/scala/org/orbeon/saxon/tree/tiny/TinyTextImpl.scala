@@ -12,7 +12,6 @@ import org.orbeon.saxon.om.AtomicSequence
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.value.UntypedAtomicValue
 
-
 /**
   * A node in the XML parse tree representing character content
   *

@@ -10,7 +10,6 @@ import org.orbeon.saxon.om.{FocusIterator, Item, SequenceIterator}
 
 import scala.util.control.Breaks._
 
-
 /**
   * ContextMappingIterator merges a sequence of sequences into a single flat
   * sequence. It takes as inputs an iteration, and a mapping function to be

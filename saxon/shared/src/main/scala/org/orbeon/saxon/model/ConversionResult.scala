@@ -8,7 +8,6 @@ package org.orbeon.saxon.model
 
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
   * This is a marker interface used as the result of methods that convert or cast values from one type
   * to another. It is implemented by `AtomicValue`, which indicates a successful conversion, and by

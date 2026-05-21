@@ -14,7 +14,6 @@ package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.om.SequenceIterator
 
-
 trait LookaheadIterator extends SequenceIterator {
   def hasNext: Boolean
 }

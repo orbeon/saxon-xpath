@@ -8,7 +8,6 @@ import org.orbeon.saxon.om.{SequenceTool, StandardNames}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.Int64Value._
 
-
 object Int64Value {
 
   val MINUS_ONE : Int64Value = new Int64Value(-1)

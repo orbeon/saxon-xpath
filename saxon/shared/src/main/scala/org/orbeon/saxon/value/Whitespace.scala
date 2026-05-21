@@ -12,7 +12,6 @@ import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import scala.util.control.Breaks._
 
-
 /**
  * This class provides helper methods and constants for handling whitespace
  */

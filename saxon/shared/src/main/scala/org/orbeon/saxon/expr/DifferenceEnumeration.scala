@@ -9,7 +9,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
 class DifferenceEnumeration(private var p1: SequenceIterator,
                             private var p2: SequenceIterator,
                             private var comparer: ItemOrderComparer)

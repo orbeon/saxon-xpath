@@ -11,7 +11,6 @@ import org.orbeon.saxon.expr.instruct.SlotManager
 import org.orbeon.saxon.om.NamespaceResolver
 import org.orbeon.saxon.value.QNameValue
 
-
 /**
   * This interface defines methods that must be provided when Saxon's free-standing XPath API is used.
   * The default implementation of this interface is {@link org.orbeon.saxon.sxpath.IndependentContext}, and

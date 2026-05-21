@@ -15,7 +15,6 @@ import org.orbeon.saxon.pattern.AnyNodeTest
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.HomogeneityCheckerIterator
 
-
 /**
  * This class is an expression that does a run-time check of the result of a "/" expression
  * to ensure that (a) the results consists entirely of atomic values and function items, or entirely of nodes,
@@ -25,7 +24,6 @@ class HomogeneityChecker(val base: Expression)
   extends UnaryExpression(base) {
 
   def getOperandRole = OperandRole.INSPECT
-
 
   /**
    * Type-check the expression. Default implementation for unary operators that accept
@@ -58,11 +56,11 @@ class HomogeneityChecker(val base: Expression)
     } else if ((rel eq Affinity.SAME_TYPE) || (rel eq Affinity.SUBSUMED_BY)) {
       // expression always returns nodes, so replace this expression with a DocumentSorter
       val savedBase = getBaseExpression
-      val parent = getParentExpression
+      val parent = parentExpression
       getOperand.detachChild()
       val ds = new DocumentSorter(savedBase)
       ExpressionTool.copyLocationInfo(this, ds)
-      ds.setParentExpression(parent)
+      ds.parentExpression = parent
       //ds.verifyParentPointers();
       return ds
     }

@@ -14,14 +14,13 @@ import org.orbeon.saxon.value.CalendarValue._
 import org.orbeon.saxon.value.DateValue._
 import org.orbeon.saxon.value.GDateValue._
 
-
 object DateValue {
 
   def makeDateValue(in: CharSequence,
                     rules: ConversionRules): ConversionResult = {
     val d = new DateValue
     d.typeLabel = BuiltInAtomicType.DATE
-    setLexicalValue(d, in, rules.isAllowYearZero)
+    setLexicalValue(d, in, rules.allowYearZero)
   }
 
   def parse(s: CharSequence): DateValue = {
@@ -175,10 +174,9 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   def this(s: CharSequence, rules: ConversionRules) = {
     this()
-    setLexicalValue(this, s, rules.isAllowYearZero).asAtomic
+    setLexicalValue(this, s, rules.allowYearZero).asAtomic
     typeLabel = BuiltInAtomicType.DATE
   }
-
 
   def this(s: CharSequence) = {
     this(s, ConversionRules.DEFAULT)
@@ -237,7 +235,6 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
     }
     target.getStringValueCS
   }
-
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: DateValue =

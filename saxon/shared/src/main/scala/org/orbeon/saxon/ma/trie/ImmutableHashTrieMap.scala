@@ -12,11 +12,9 @@ import scala.util.control.Breaks._
 
 object ImmutableHashTrieMap {
 
-
   def empty[K, V](): ImmutableHashTrieMap[K, V] = EMPTY_NODE[K, V]
 
   def EMPTY_NODE[K, V]: ImmutableHashTrieMap[K, V] = new EmptyHashNode()
-
 
   private def getBucket[K](shift: Int, key: K): Int =
     key.hashCode >> shift & MASK
@@ -93,7 +91,6 @@ object ImmutableHashTrieMap {
       assert(entry1._1.hashCode == entry2._1.hashCode)
       entries = ImmutableList.empty[Tuple2[K, V]]().prepend(entry1).prepend(entry2)
     }
-
 
     def this(entries: ImmutableList[Tuple2[K, V]]) = {
       this()
@@ -211,7 +208,6 @@ object ImmutableHashTrieMap {
         subnodes(i) = res
       }
     }
-
 
     def this(size: Int, subnodes: Array[ImmutableHashTrieMap[K, V]]) = {
       this()

@@ -7,7 +7,6 @@ import org.orbeon.saxon.expr.sort.{AtomicComparer, ItemToBeSorted, SortKeyDefini
 import org.orbeon.saxon.ma.arrays.ArraySort
 import org.orbeon.saxon.trans.XPathException
 
-
 class OrderByClausePull(private var base: TuplePull,
                         private var tupleExpr: TupleExpression,
                         orderBy: OrderByClause,

@@ -16,7 +16,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Navigator
 
-
 /**
  * Creates a new ValidationException with the given nested
  * exception.
@@ -59,7 +58,6 @@ class ValidationException(exception: Exception)
       failure.setMessage(message)
     }
   }
-
 
   def this(failure: ValidationFailure) = {
     this(new Exception())

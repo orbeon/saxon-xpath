@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.regex
 
-
-
-
 /**
   * Exception thrown to indicate a syntax error in a regular expression.
   * This is a non-checked exception because you should only have problems compiling

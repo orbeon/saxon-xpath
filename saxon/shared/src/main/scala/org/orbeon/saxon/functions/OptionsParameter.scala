@@ -37,11 +37,8 @@ import org.orbeon.saxon.value.StringValue
 
 import java.util._
 
-
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-
 
 /**
  * This class implements the rules for options parameters, as used in functions such as parse-json, serialize,

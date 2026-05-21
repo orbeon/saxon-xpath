@@ -9,7 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
  * An expression whose value is always a set of nodes containing a single node,
  * the document root. This corresponds to the XPath Expression "/", including the implicit
@@ -30,7 +29,7 @@ class RootExpression extends Expression {
       err.setIsTypeError(true)
       err.setLocation(getLocation)
       throw err
-    } else if (!doneWarnings && contextInfo.isParentless && th.relationship(contextInfo.getItemType, NodeKindTest.DOCUMENT) == Affinity.DISJOINT) {
+    } else if (!doneWarnings && contextInfo.parentless && th.relationship(contextInfo.getItemType, NodeKindTest.DOCUMENT) == Affinity.DISJOINT) {
       visitor.issueWarning(
         noContextMessage() +
           ": the context item is parentless and is not a document node",

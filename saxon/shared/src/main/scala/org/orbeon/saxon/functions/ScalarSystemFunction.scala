@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.{Expression, SystemFunctionCall, XPathContext}
 import org.orbeon.saxon.om.{Item, One, Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-
 object ScalarSystemFunction {
   val ZERO_LENGTH_STRING: One[StringValue] = One.string("")
 }

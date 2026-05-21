@@ -3,9 +3,6 @@ package org.orbeon.saxon.pull
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class PullConsumer(private var in: PullProvider) {
 
   def consume(): Unit = {

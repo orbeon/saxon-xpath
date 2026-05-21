@@ -12,7 +12,6 @@ import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.value.{AtomicValue, EmptySequence, SequenceType}
 
-
 object BuiltInFunctionSet {
 
   val EMPTY                    : Sequence = EmptySequence.getInstance

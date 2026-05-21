@@ -11,9 +11,6 @@ import org.orbeon.saxon.value.NumericValue
 
 import DoubleSortComparer._
 
-
-
-
 object DoubleSortComparer {
 
   private var THE_INSTANCE: DoubleSortComparer = new DoubleSortComparer()

@@ -9,7 +9,6 @@ package org.orbeon.saxon.z
 
 import scala.beans.BeanProperty
 
-
 /**
  * An implementation of {@link IntToIntMap} that relies on serial searching, and
  * is therefore optimized for very small map sizes

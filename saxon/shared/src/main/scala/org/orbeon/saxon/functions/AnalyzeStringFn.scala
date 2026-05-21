@@ -14,7 +14,6 @@ import org.xml.sax.InputSource
 import java.{util => ju}
 import javax.xml.transform.sax.SAXSource
 
-
 class AnalyzeStringFn extends RegexFunction {
 
   private var resultName   : NodeName   = _

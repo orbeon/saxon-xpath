@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.trans
 
-
-
-
 /**
   * This exception class is used when early (compile-time) evaluation of an expression
   * is attempted, and the expression requires knowledge of the current dateTime or implicit

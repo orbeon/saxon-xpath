@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import org.orbeon.saxon.om.DocumentURI._
 
-
 object DocumentURI {
 
 //  val CASE_BLIND_FILES: Boolean = new File("a") == new File("A")

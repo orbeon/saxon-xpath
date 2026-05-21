@@ -11,7 +11,6 @@ import scala.jdk.CollectionConverters._
 
 //import scala.collection.compat._
 
-
 // ORBEON: `java.util.TimeZone` is not supported by Scala.js so use `java.time`.
 object NamedTimeZone {
 

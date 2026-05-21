@@ -13,7 +13,6 @@ import GMonthValue._
 import org.orbeon.saxon.value.CalendarValue.appendTwoDigits
 import org.orbeon.saxon.value.GDateValue.setLexicalValue
 
-
 object GMonthValue {
 
   private var regex: Pattern =
@@ -46,7 +45,6 @@ class GMonthValue() extends GDateValue {
   }
 
   def this(month: Byte, tz: Int) = this(month, tz, BuiltInAtomicType.G_MONTH)
-
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: GMonthValue = new GMonthValue(month, getTimezoneInMinutes)

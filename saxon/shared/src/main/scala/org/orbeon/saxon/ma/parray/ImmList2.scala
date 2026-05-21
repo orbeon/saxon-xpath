@@ -8,7 +8,6 @@ import ImmList2._
 
 import scala.collection
 
-
 object ImmList2 {
 
   private val THRESHOLD: Int = 10

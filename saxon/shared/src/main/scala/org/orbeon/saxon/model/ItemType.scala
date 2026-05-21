@@ -10,7 +10,6 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
   * ItemType is an interface that allows testing of whether an Item conforms to an
   * expected type. ItemType represents the types in the type hierarchy in the XPath model,

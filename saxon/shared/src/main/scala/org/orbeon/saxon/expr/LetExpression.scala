@@ -17,7 +17,6 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 class LetExpression extends Assignation with TailCallReturner {
 
   @BeanProperty
@@ -110,7 +109,7 @@ class LetExpression extends Assignation with TailCallReturner {
       return getAction.optimize(visitor, contextItemType)
     }
     getSequence match {
-      case instr: DocumentInstr if instr.isTextOnly =>
+      case instr: DocumentInstr if instr.textOnly =>
         verifyReferences()
         if (allReferencesAreFlattened()) {
           var stringValueExpression = instr.getStringValueExpression
@@ -145,10 +144,10 @@ class LetExpression extends Assignation with TailCallReturner {
         return getAction
       }
       if (considerRemoval && references.size == 1 && ExpressionTool.dependsOnFocus(getSequence)) {
-        if (visitor.isOptimizeForStreaming)
+        if (visitor.optimizeForStreaming)
           considerRemoval = false
         var child: Expression = references.get(0)
-        var parent = child.getParentExpression
+        var parent = child.parentExpression
         breakable {
           while (parent != null && (parent ne this)) {
             val operand = ExpressionTool.findOperand(parent, child)
@@ -158,7 +157,7 @@ class LetExpression extends Assignation with TailCallReturner {
               break()
             }
             child = parent
-            parent = child.getParentExpression
+            parent = child.parentExpression
           }
         }
       }
@@ -167,7 +166,7 @@ class LetExpression extends Assignation with TailCallReturner {
           considerRemoval = false
         else if ((getSequence.getDependencies & StaticProperty.DEPENDS_ON_CURRENT_GROUP) != 0)
           considerRemoval = false
-        else if (references.get(0).isInLoop)
+        else if (references.get(0).inLoop)
           considerRemoval = false
       }
       if (considerRemoval &&
@@ -213,7 +212,7 @@ class LetExpression extends Assignation with TailCallReturner {
               hasLoopingReference = false
               return optimize(visitor, contextItemType)
             } else {
-              if (!references.get(0).isInLoop) {
+              if (!references.get(0).inLoop) {
                 return optimize(visitor, contextItemType)
               }
             }
@@ -235,7 +234,7 @@ class LetExpression extends Assignation with TailCallReturner {
 
   private def inlineReferences(): Unit =
     for (ref <- references.asScala) {
-      val parent = ref.getParentExpression
+      val parent = ref.parentExpression
       if (parent != null) {
         val o = ExpressionTool.findOperand(parent, ref)
         if (o != null)

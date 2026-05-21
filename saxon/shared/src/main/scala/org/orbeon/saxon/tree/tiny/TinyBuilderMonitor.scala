@@ -18,7 +18,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
 class TinyBuilderMonitor(private var builder: TinyBuilder)
   extends BuilderMonitor(builder) {
 

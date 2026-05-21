@@ -15,9 +15,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class Sink(pipe: PipelineConfiguration) extends SequenceReceiver(pipe) {
 
   override def open(): Unit = ()

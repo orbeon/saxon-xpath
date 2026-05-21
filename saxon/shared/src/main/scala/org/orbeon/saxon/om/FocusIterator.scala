@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.om
 
-
 /**
   * An iterator that maintains the values of position and current,
   * typically implemented as a wrapper over an iterator which does not maintain these values itself.

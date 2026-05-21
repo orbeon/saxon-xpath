@@ -9,7 +9,6 @@ package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.om.{Item, Sequence}
 
-
 trait Fold {
   def processItem(item: Item): Unit
   def isFinished: Boolean

@@ -8,8 +8,6 @@ import org.orbeon.saxon.om.{AtomicSequence, NodeInfo, StandardNames, StructuredQ
 import org.orbeon.saxon.value.UntypedAtomicValue
 import org.orbeon.saxon.z.IntHashSet
 
-
-
 object AnyType extends Enumeration {
 
   val INSTANCE: AnyType = new AnyType()

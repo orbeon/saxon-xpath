@@ -9,9 +9,6 @@ import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.om.SequenceIterator
 
-
-
-
 trait ConstrainedIterator[T <: Item]
     extends SequenceIterator
     with UnfailingIterator

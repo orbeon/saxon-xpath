@@ -9,8 +9,6 @@ import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.tree.tiny.TinyTree
 import org.orbeon.saxon.tree.wrapper.SpaceStrippedDocument._
 
-import scala.beans.BeanProperty
-
 object SpaceStrippedDocument {
 
   private def findPreserveSpace(doc: TreeInfo): Boolean =
@@ -47,7 +45,7 @@ object SpaceStrippedDocument {
       false
 }
 
-class SpaceStrippedDocument(doc: TreeInfo, @BeanProperty var strippingRule: SpaceStrippingRule) extends GenericTreeInfo(doc.getConfiguration) {
+class SpaceStrippedDocument(doc: TreeInfo, var strippingRule: SpaceStrippingRule) extends GenericTreeInfo(doc.getConfiguration) {
 
   private val preservesSpace: Boolean = findPreserveSpace(doc)
   val containsAssertions: Boolean = findAssertions(doc)

@@ -3,9 +3,6 @@ package org.orbeon.saxon.event
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class CopyNamespaceSensitiveException(message: String)
     extends XPathException(message)
 

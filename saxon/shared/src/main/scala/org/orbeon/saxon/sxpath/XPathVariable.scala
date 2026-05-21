@@ -12,7 +12,6 @@ import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
 import scala.beans.BeanProperty
 
-
 /**
  * An object representing an XPath variable for use in the standalone XPath API. The object
  * can only be created by calling the declareVariable method of class `IndependentContext`.

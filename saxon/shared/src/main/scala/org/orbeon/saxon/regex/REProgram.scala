@@ -7,9 +7,6 @@ import java.util.function.IntPredicate
 
 import REProgram._
 
-
-
-
 object REProgram {
 
   val OPT_HASBACKREFS: Int = 1
@@ -66,11 +63,11 @@ class REProgram /**
     this.operation = operation.optimize(this, flags)
     if (operation.isInstanceOf[Operation.OpSequence]) {
       val first: Operation =
-        operation.asInstanceOf[Operation.OpSequence].getOperations.get(0)
+        operation.asInstanceOf[Operation.OpSequence].operations.get(0)
       if (first.isInstanceOf[Operation.OpBOL]) {
         optimizationFlags |= REProgram.OPT_HASBOL
       } else if (first.isInstanceOf[Operation.OpAtom]) {
-        prefix = first.asInstanceOf[Operation.OpAtom].getAtom
+        prefix = first.asInstanceOf[Operation.OpAtom].atom
       } else if (first.isInstanceOf[Operation.OpCharClass]) {
         initialCharClass =
           first.asInstanceOf[Operation.OpCharClass].getPredicate
@@ -121,7 +118,7 @@ class REProgram /**
     } else if (op.isInstanceOf[Operation.OpSequence]) {
       var fp: Int = fixedPosition
       var mp: Int = minPosition
-      op.asInstanceOf[Operation.OpSequence].getOperations.forEach { o=>
+      op.asInstanceOf[Operation.OpSequence].operations.forEach { o=>
         if (o.isInstanceOf[Operation.OpBOL]) {
           fp = 0
         }

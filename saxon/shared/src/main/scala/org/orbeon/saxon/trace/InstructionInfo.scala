@@ -7,9 +7,6 @@ import org.orbeon.saxon.s9api.Location
 
 import java.util.Iterator
 
-
-
-
 trait InstructionInfo extends Location {
 
   /*@Nullable*/

@@ -6,11 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-
 import java.{lang => jl, util => ju}
 import scala.jdk.CollectionConverters._
-
-
 
 /**
   * AttributeMap represents an immutable collection of attributes available on a particular element

@@ -3,9 +3,6 @@ package org.orbeon.saxon.sapling
 
 import org.orbeon.saxon.s9api.QName
 
-
-
-
 object Saplings {
 
   def doc(): SaplingDocument = new SaplingDocument()

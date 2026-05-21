@@ -17,9 +17,6 @@ import NodeOverNodeInfo._
 
 import org.w3c.dom.Text
 
-
-
-
 class TextOverNodeInfo extends NodeOverNodeInfo with Text with Comment {
 
   def getData(): String = node.getStringValue

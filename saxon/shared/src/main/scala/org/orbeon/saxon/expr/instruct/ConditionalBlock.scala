@@ -58,7 +58,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
           break()
         }
 
-        val axis = child.asInstanceOf[AxisExpression].getAxis
+        val axis = child.asInstanceOf[AxisExpression].axis
         if (axis != AxisInfo.CHILD)
           allChildAxis = false
 
@@ -76,8 +76,8 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
         p |= StaticProperty.SUBTREE_NODESET
       }
       if (size == 2 &&
-        getChildExpression(0).asInstanceOf[AxisExpression].getAxis == AxisInfo.ATTRIBUTE &&
-        getChildExpression(1).asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
+        getChildExpression(0).asInstanceOf[AxisExpression].axis == AxisInfo.ATTRIBUTE &&
+        getChildExpression(1).asInstanceOf[AxisExpression].axis == AxisInfo.CHILD) {
         p |= StaticProperty.ORDERED_NODESET
       }
     }

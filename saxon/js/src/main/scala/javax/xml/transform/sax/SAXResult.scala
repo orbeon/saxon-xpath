@@ -29,7 +29,6 @@ import javax.xml.transform.Result
 import org.xml.sax.ContentHandler
 import org.xml.sax.ext.LexicalHandler
 
-
 object SAXResult {
   val FEATURE = "http://javax.xml.transform.sax.SAXResult/feature"
 }

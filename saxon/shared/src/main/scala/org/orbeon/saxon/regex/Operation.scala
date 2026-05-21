@@ -14,7 +14,6 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object Operation {
 
   val MATCHES_ZLS_AT_START: Int = 1
@@ -124,7 +123,7 @@ object Operation {
 
   }
 
-  class OpSequence(@BeanProperty var operations: ju.List[Operation])
+  class OpSequence(var operations: ju.List[Operation])
     extends Operation {
 
     override def getMatchLength: Int = {
@@ -340,9 +339,9 @@ object Operation {
                 FastStringBuffer.C64)
               fsb.append("[")
               for (_ <- 0 until irs.getNumberOfRanges) {
-                fsb.cat(irs.getStartPoints()(1).toChar)
+                fsb.cat(irs.startPoints(1).toChar)
                 fsb.append("-")
-                fsb.cat(irs.getEndPoints()(1).toChar)
+                fsb.cat(irs.endPoints(1).toChar)
               }
               fsb.append("[")
               fsb.toString
@@ -355,7 +354,7 @@ object Operation {
 
   }
 
-  class OpAtom(@BeanProperty var atom: UnicodeString) extends Operation {
+  class OpAtom(var atom: UnicodeString) extends Operation {
 
     private val len: Int = atom.uLength
 

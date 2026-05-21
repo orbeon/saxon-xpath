@@ -44,8 +44,6 @@ import java.util.List
 
 import TryCatch._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -62,10 +60,8 @@ class TryCatch(tryExpr: Expression) extends Expression {
   private var tryOp: Operand =
     new Operand(this, tryExpr, OperandRole.SAME_FOCUS_ACTION)
 
-  @BeanProperty
   var catchClauses: List[CatchClause] = new ArrayList()
 
-  @BooleanBeanProperty
   var rollbackOutput: Boolean = _
 
   def addCatchExpression(test: QNameTest, catchExpr: Expression): Unit = {
@@ -116,7 +112,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextInfo)
-    var e: Expression = getParentExpression
+    var e: Expression = parentExpression
     while (e != null) {
       if (e.isInstanceOf[LetExpression] &&
         ExpressionTool.dependsOnVariable(
@@ -124,7 +120,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
           Array(e.asInstanceOf[LetExpression]))) {
         e.asInstanceOf[LetExpression].setNeedsEagerEvaluation(true)
       }
-      e = e.getParentExpression
+      e = e.parentExpression
     }
     this
   }
@@ -154,7 +150,7 @@ override  def computeHashCode(): Int = {
       t2.addCatchExpression(clause.nameTest,
         clause.catchOp.getChildExpression.copy(rebindings))
     }
-    t2.setRollbackOutput(rollbackOutput)
+    t2.rollbackOutput = rollbackOutput
     ExpressionTool.copyLocationInfo(this, t2)
     t2
   }

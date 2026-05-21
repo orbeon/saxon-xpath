@@ -147,7 +147,7 @@ class QueryModule extends StaticContext {
     `var`.setPackageData(pd)
   }
 
-  executable.setTopLevelPackage(pd)
+  executable.topLevelPackage = pd
 
   executable.addPackage(pd)
 
@@ -313,7 +313,7 @@ class QueryModule extends StaticContext {
   def getStaticBaseURI: String = baseURI
 
   def getGlobalStackFrameMap: SlotManager =
-    getPackageData.getGlobalSlotManager
+    getPackageData.globalSlotManager
 
   def declareVariable(`var`: GlobalVariable): Unit = {
     val key: StructuredQName = `var`.getVariableQName
@@ -509,7 +509,7 @@ class QueryModule extends StaticContext {
     }
     if (isMainModule) {
       val gcr: GlobalContextRequirement =
-        executable.getGlobalContextRequirement
+        executable.globalContextRequirement
       if (gcr != null && gcr.getDefaultValue != null) {
         val info: ContextItemStaticInfo = getConfiguration
           .makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)

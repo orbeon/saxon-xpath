@@ -40,7 +40,7 @@ import java.util.function.BiConsumer
 
 import NamedTemplate._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -74,13 +74,10 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
 
-  @BooleanBeanProperty
   var mayOmitContextItem: Boolean = true
 
-  @BooleanBeanProperty
   var absentFocus: Boolean = false
 
-  @BeanProperty
   var localParamDetails: List[LocalParamInfo] = new ArrayList(4)
 
   def setContextItemRequirements(`type`: ItemType,
@@ -127,7 +124,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
     }
 
   def getLocalParamInfo(id: StructuredQName): LocalParamInfo = {
-    val params: List[LocalParamInfo] = getLocalParamDetails
+    val params: List[LocalParamInfo] = localParamDetails
     for (lp <- params.asScala if lp.name == id) {
       return lp
     }

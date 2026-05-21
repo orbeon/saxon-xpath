@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.trans.rules
 
-
-
-
 /**
   * A simple class for holding stateful details of a rule search operation
   * This is a dummy implementation for Saxon-HE which does not optimize searching a rule chain.

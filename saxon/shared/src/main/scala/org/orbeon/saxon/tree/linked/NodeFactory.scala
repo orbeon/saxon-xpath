@@ -15,9 +15,6 @@ import org.orbeon.saxon.om.NodeName
 
 import org.orbeon.saxon.s9api.Location
 
-
-
-
 trait NodeFactory {
 
   /*@Nullable*/

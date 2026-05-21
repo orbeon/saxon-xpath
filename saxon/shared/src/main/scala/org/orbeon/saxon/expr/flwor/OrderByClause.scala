@@ -29,7 +29,6 @@ import Clause.ClauseName.ClauseName
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 /**
   * This class represents an "order by" clause in a FLWOR expression
   */
@@ -157,7 +156,7 @@ class OrderByClause(flwor: FLWORExpression,
       if (skd.isFixed) {
         val comp: AtomicComparer = skd.makeComparator(
           visitor.getStaticContext.makeEarlyEvaluationContext())
-        skd.setFinalComparator(comp)
+        skd.finalComparator = comp
         if (allKeysFixed) {
           comparators(i) = comp
         }

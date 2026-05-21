@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.{CardinalityCheckingIterator, StaticProperty, XPath
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
 import org.orbeon.saxon.om.{LazySequence, Sequence}
 
-
 /**
   * This class supports the XPath 2.0 functions exactly-one(), one-or-more(), zero-or-one().
   * Because Saxon doesn't do strict static type checking, these are essentially identity

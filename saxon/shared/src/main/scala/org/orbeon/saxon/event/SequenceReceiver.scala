@@ -11,7 +11,6 @@ import org.orbeon.saxon.tree.util.Orphan
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, ExternalObject}
 
-
 abstract class SequenceReceiver(pipe: PipelineConfiguration)
   extends Receiver {
 

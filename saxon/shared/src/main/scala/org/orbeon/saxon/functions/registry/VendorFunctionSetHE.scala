@@ -119,7 +119,7 @@ object VendorFunctionSetHE {
           }
           new StringValue(s)
         case "value" =>
-          var value: Sequence = error.getErrorObject
+          var value: Sequence = error.errorObject
           if (value == null) {
             EmptySequence.getInstance
           } else {

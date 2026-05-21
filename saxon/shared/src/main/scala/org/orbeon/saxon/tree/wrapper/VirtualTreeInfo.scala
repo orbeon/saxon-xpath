@@ -7,17 +7,11 @@ import org.orbeon.saxon.om.GenericTreeInfo
 
 import java.util.Iterator
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * Implementation of TreeInfo for a Virtual Copy tree
   */
 class VirtualTreeInfo(config: Configuration) extends GenericTreeInfo(config) {
 
-  @BooleanBeanProperty
   var copyAccumulators: Boolean = _
 
   def this(config: Configuration, vc: VirtualCopy) =

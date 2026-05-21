@@ -26,7 +26,7 @@ import org.orbeon.saxon.tree.util.Navigator
 
 import org.orbeon.saxon.value.AtomicValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object ContextStackFrame {
 
@@ -123,7 +123,7 @@ object ContextStackFrame {
 
     def print(out: Logger): Unit = {
       out.error(
-        "  in " + displayContainer(getContainer) + " " + showLocation())
+        "  in " + displayContainer(container) + " " + showLocation())
     }
 
   }
@@ -162,7 +162,6 @@ object ContextStackFrame {
 
 abstract class ContextStackFrame {
 
-  @BeanProperty
   var context: XPathContext = _
 
   private var location: Location = _
@@ -170,7 +169,6 @@ abstract class ContextStackFrame {
   @BeanProperty
   var contextItem: Item = _
 
-  @BeanProperty
   var container: AnyRef = _
 
   def setLocation(loc: Location): Unit = {

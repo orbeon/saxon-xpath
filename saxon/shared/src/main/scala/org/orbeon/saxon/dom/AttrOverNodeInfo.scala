@@ -23,7 +23,6 @@ import java.util.ArrayList
 
 import java.util.List
 
-
 class AttrOverNodeInfo extends NodeOverNodeInfo with Attr {
 
   def getName: String = {

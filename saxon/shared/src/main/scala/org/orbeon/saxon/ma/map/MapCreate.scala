@@ -13,7 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 /**
  * This is a variant of the map:new() or map:merge() function which differs in that duplicate
  * keys are considered an error. It is not available directly to users, but underpins the map

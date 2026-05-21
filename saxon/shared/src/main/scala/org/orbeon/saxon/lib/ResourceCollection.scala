@@ -9,9 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Iterator
 
-
-
-
 /**
   * This interface defines a ResourceCollection. This is a counterpart to the JAXP
   * URIResolver, but is used to map the URI of collection into a sequence of Resource objects.

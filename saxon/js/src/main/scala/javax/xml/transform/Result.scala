@@ -1,6 +1,5 @@
 package javax.xml.transform
 
-
 trait Result {
   def setSystemId(systemId: String): Unit
   def getSystemId: String

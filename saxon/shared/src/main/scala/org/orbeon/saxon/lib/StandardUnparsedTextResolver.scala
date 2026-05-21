@@ -22,7 +22,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 
-
 object StandardUnparsedTextResolver {
 
   def inferStreamEncoding(is: InputStream, err: Logger): String = {

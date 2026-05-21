@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.{Callable, Expression, StaticContext, XPathContext}
 import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.om.Sequence
 
-
 /**
  * This abstract class is provided to allow user-written extension functions to be implemented
  * with the full capabilities of functions that are an intrinsic part of the Saxon product.

@@ -13,9 +13,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class Valve(private var testNamespace: String,
             primary: Receiver,
             secondary: Receiver)

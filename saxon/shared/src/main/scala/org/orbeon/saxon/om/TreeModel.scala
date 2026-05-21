@@ -10,7 +10,6 @@ import org.orbeon.saxon.event.{Builder, PipelineConfiguration}
 import org.orbeon.saxon.tree.linked.LinkedTreeBuilder
 import org.orbeon.saxon.tree.tiny.{TinyBuilder, TinyBuilderCondensed}
 
-
 /**
   * A TreeModel represents an implementation of the Saxon NodeInfo interface, which itself
   * is essentially an implementation of the XDM model defined in W3C specifications (except

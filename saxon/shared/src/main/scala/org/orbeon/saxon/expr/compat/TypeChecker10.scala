@@ -35,9 +35,6 @@ import org.orbeon.saxon.value.Cardinality
 
 import org.orbeon.saxon.value.SequenceType
 
-
-
-
 class TypeChecker10 extends TypeChecker {
 
   override def staticTypeCheck(supplied: Expression,

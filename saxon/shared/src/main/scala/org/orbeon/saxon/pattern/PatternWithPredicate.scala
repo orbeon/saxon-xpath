@@ -3,9 +3,6 @@ package org.orbeon.saxon.pattern
 
 import org.orbeon.saxon.expr.Expression
 
-
-
-
 /**
   * Represents a pattern with a predicate, for example item[@value=3] or .[. instance of map(*)]
   */

@@ -7,9 +7,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import javax.xml.transform.Source
 
-
-
-
 /**
   * Interface for reporting validation errors found during validation of an instance document
   * against a schema.

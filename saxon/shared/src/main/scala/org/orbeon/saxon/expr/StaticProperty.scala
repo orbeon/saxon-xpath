@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Cardinality
 
-
 /**
   * This class contains constants identifying dependencies that an XPath expression
   * might have on its context.

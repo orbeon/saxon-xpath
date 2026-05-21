@@ -23,7 +23,6 @@ import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.stream.StreamSource
 import scala.jdk.CollectionConverters._
 
-
 /**
   * Sender is a helper class that sends events to a Receiver from any kind of Source object
   */
@@ -265,8 +264,8 @@ object Sender {
       }
     }
     val dtdRecover                         = options.getDTDValidationMode == Validation.LAX
-    val parserFeatures = options.getParserFeatures
-    val parserProperties = options.getParserProperties
+    val parserFeatures = options.parserFeatures
+    val parserProperties = options.parserProperties
     if (parserFeatures != null) {
       for ((key, mapVal) <- parserFeatures.asScala) {
         try {
@@ -352,7 +351,7 @@ object Sender {
             if ((errorHandler.isInstanceOf[StandardErrorHandler] &&
               errorHandler
                 .asInstanceOf[StandardErrorHandler]
-                .getFatalErrorCount ==
+                .fatalErrorCount ==
                 0) ||
               (err.isInstanceOf[SAXParseException] &&
                 err.asInstanceOf[SAXParseException].getSystemId == null &&
@@ -383,7 +382,7 @@ object Sender {
     }
     errorHandler match {
       case handler: StandardErrorHandler =>
-        var errs = handler.getFatalErrorCount
+        var errs = handler.fatalErrorCount
         if (errs > 0)
           throw new XPathException(
             "The XML parser reported " + errs + (if (errs == 1) " error"

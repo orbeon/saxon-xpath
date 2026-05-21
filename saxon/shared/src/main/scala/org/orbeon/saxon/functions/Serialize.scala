@@ -27,7 +27,6 @@ import javax.xml.transform.stream.StreamResult
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 /**
  * Implementation of fn:serialize() as defined in XPath 3.1
  */

@@ -35,7 +35,7 @@ class GeneralNodePattern(
     val defaultInfo = config.getDefaultContextItemStaticInfo
     equivalentExpr = equivalentExpr.optimize(visitor, defaultInfo)
     equivalentExpr match {
-      case expression: FilterExpression if !expression.isFilterIsPositional =>
+      case expression: FilterExpression if !expression.filterIsPositional =>
         try
           return PatternMaker
             .fromExpression(equivalentExpr, config, is30 = true)

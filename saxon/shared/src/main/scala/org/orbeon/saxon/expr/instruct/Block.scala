@@ -140,7 +140,7 @@ class Block(children: Array[Expression]) extends Instruction {
           allSubtreeAxis = false
           break()
         }
-        val axis: Int = child.asInstanceOf[AxisExpression].getAxis
+        val axis: Int = child.asInstanceOf[AxisExpression].axis
         if (axis != AxisInfo.CHILD) {
           allChildAxis = false
         }
@@ -161,8 +161,8 @@ class Block(children: Array[Expression]) extends Instruction {
       if (size == 2 &&
         child(0)
           .asInstanceOf[AxisExpression]
-          .getAxis == AxisInfo.ATTRIBUTE &&
-        child(1).asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD) {
+          .axis == AxisInfo.ATTRIBUTE &&
+        child(1).asInstanceOf[AxisExpression].axis == AxisInfo.CHILD) {
         p |= StaticProperty.ORDERED_NODESET
       }
     }
@@ -211,7 +211,7 @@ class Block(children: Array[Expression]) extends Instruction {
           getLocation
         )
         err.setIsTypeError(true)
-        err.setFailingExpression(this)
+        err.failingExpression = this
         throw err
       } else {
         CardinalityChecker.makeCardinalityChecker(b2, reqCard, role)
@@ -397,12 +397,12 @@ class Block(children: Array[Expression]) extends Instruction {
     }
     if (size == 1) {
       val e: Expression = getOperanda()(0).getChildExpression
-      e.setParentExpression(getParentExpression)
+      e.parentExpression = parentExpression
       e
     } else if (size == 0) {
       val result: Expression = Literal.makeEmptySequence
       ExpressionTool.copyLocationInfo(this, result)
-      result.setParentExpression(getParentExpression)
+      result.parentExpression = parentExpression
       result
     } else if (nested) {
       val list: List[Expression] = new ArrayList[Expression](size * 2)
@@ -424,7 +424,7 @@ class Block(children: Array[Expression]) extends Instruction {
       }
       val result: Expression =
         Literal.makeLiteral(new SequenceExtent(values.asInstanceOf[Array[Item]]), this)
-      result.setParentExpression(getParentExpression)
+      result.parentExpression = parentExpression
       result
     } else {
       this

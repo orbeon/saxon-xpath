@@ -160,12 +160,12 @@ class TupleItemType(names: List[String],
     val tupleKeyType: AtomicType =
       if (isExtensible) BuiltInAtomicType.ANY_ATOMIC
       else BuiltInAtomicType.STRING
-    val keyRel: Affinity = th.relationship(tupleKeyType, other.getKeyType)
+    val keyRel: Affinity = th.relationship(tupleKeyType, other.keyType)
     if (keyRel == Affinity.DISJOINT) {
      return Affinity.DISJOINT
     }
-    if (other.getValueType.getPrimaryType == AnyItemType &&
-      other.getValueType.getCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE) {
+    if (other.valueType.getPrimaryType == AnyItemType &&
+      other.valueType.getCardinality == StaticProperty.ALLOWS_ZERO_OR_MORE) {
       if (keyRel == Affinity.SUBSUMED_BY || keyRel == Affinity.SAME_TYPE) {
         Affinity.SUBSUMED_BY
       } else {
@@ -176,7 +176,7 @@ class TupleItemType(names: List[String],
     } else {
       for (entry <- fields.values.asScala) {
         val rel: Affinity =
-          th.sequenceTypeRelationship(entry, other.getValueType)
+          th.sequenceTypeRelationship(entry, other.valueType)
         if (!(rel == Affinity.SUBSUMED_BY || rel == Affinity.SAME_TYPE)) {
           return Affinity.OVERLAPS
         }

@@ -21,8 +21,7 @@ import java.util.ArrayList
 
 import java.util.List
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 abstract class ApplyNextMatchingTemplate
   extends Instruction
@@ -81,7 +80,7 @@ abstract class ApplyNextMatchingTemplate
     var pnSet = pathMapNodeSet
     if (pnSet == null) {
       val cie: ContextItemExpression = new ContextItemExpression()
-      //cie.setContainer(getContainer());
+      //cie.container = container();
       pnSet = new PathMap.PathMapNodeSet(pathMap.makeNewRoot(cie))
     }
     pnSet.addDescendants()

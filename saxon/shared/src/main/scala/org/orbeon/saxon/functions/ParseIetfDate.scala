@@ -1,6 +1,5 @@
 
 
-
 package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.expr.Callable
@@ -10,7 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
 import java.util
 
-
 object ParseIetfDate {
   @throws[XPathException]
   private def badDate(msg: String, value: String) = {
@@ -18,7 +16,6 @@ object ParseIetfDate {
     err.setErrorCode("FORG0010")
     throw err
   }
-
 
   def isValidTime(hour: Int, minute: Int, second: Int, microsecond: Int, tz: Int) = (hour >= 0 && hour <= 23 && minute >= 0 && minute < 60 && second >= 0 && second < 60 && microsecond >= 0 && microsecond < 1000000 || hour == 24 && minute == 0 && second == 0 && microsecond == 0) && tz >= -14 * 60 && tz <= 14 * 60
 
@@ -111,7 +108,6 @@ class ParseIetfDate extends SystemFunction {
     else if ("PDT".equalsIgnoreCase(string)) return -7 * 60
     0
   }
-
 
   @throws[XPathException]
   def parse(input: String, context: XPathContext) = {
@@ -220,7 +216,6 @@ class ParseIetfDate extends SystemFunction {
     }
     year
   }
-
 
   @throws[XPathException]
   def parseTime(tokens: util.List[String], currentPosition: Int, result: util.List[TimeValue], input: String) = {

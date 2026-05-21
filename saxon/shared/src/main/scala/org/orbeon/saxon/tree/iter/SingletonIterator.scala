@@ -5,7 +5,6 @@ import org.orbeon.saxon.om.{GroundedValue, Item, SequenceIterator}
 import org.orbeon.saxon.om.SequenceIterator.Property._
 import org.orbeon.saxon.value.EmptySequence
 
-
 object SingletonIterator {
 
   def makeIterator[T <: Item](item: T): UnfailingIterator =

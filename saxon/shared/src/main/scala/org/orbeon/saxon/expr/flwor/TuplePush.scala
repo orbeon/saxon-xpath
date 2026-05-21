@@ -7,17 +7,12 @@ import org.orbeon.saxon.expr.XPathContext
 
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * Abtract class representing a tuple stream (used to evaluate a FLWOR expression) in push mode
   * (where the provider of tuples activates the consumer of those tuples)
   */
 abstract class TuplePush  (
-    @BeanProperty  var outputter: Outputter) {
+    var outputter: Outputter) {
 
   def processTuple(context: XPathContext): Unit
 

@@ -10,7 +10,6 @@ import org.orbeon.saxon.value.StringValue
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 abstract class Outputter
   extends Receiver {
 

@@ -12,7 +12,6 @@ import java.util.{Properties, StringTokenizer}
 import org.orbeon.saxon.utils.{Configuration, Version}
 import org.orbeon.saxon.value.AnyURIValue
 
-
 /**
  * StandardCollationURIResolver allows a Collation to be created given
  * a URI starting with "http://saxon.sf.net/collation" followed by a set of query parameters.

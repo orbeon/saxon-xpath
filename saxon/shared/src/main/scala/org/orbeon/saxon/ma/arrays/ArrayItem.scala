@@ -15,7 +15,6 @@ import org.orbeon.saxon.z.IntSet
 
 import scala.util.control.Breaks._
 
-
 /**
  * Interface supported by different implementations of an XDM array item
  */

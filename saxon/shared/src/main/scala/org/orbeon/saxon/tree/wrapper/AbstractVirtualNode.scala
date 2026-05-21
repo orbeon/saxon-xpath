@@ -8,7 +8,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 
-
 abstract class AbstractVirtualNode extends VirtualNode {
 
    var node: NodeInfo = _

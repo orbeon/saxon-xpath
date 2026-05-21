@@ -15,9 +15,6 @@ import java.util.Iterator
 
 import java.util.List
 
-
-
-
 /**
   * Represents the tuple stream delivered by an "group by" clause. This groups the tuple stream supplied
   * as its input, and outputs a new set of tuples one per group of the input tuples. No groups are output

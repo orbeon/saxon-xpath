@@ -12,7 +12,6 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 class CharacterMap(@BeanProperty var name: StructuredQName,
                    map: IntHashMap[String]) {
 

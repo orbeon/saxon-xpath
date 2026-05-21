@@ -8,7 +8,6 @@ import org.orbeon.saxon.om.SequenceTool
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.trans.XPathException
 
-
 class QNameValue(prefix: String,
                  uri: String,
                  localName: String,

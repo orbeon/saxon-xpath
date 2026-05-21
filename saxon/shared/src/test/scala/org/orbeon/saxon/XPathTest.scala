@@ -15,7 +15,6 @@ import _root_.java.io.ByteArrayOutputStream
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.stream.StreamResult
 
-
 class XPathTest extends AnyFunSpec {
 
   val ExplainExpressions = false

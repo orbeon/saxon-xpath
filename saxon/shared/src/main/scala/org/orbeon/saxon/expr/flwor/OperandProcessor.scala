@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr.flwor
 
 import org.orbeon.saxon.expr.Operand
 
-
 /**
   * Interface representing a visitor of the clauses of a FLWOR expression that can process and
   * modify the operands of each clause

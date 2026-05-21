@@ -8,9 +8,6 @@ package org.orbeon.saxon.expr.parser
 
 import org.orbeon.saxon.expr.parser.OptimizerOptions._
 
-import scala.beans.BeanProperty
-
-
 object OptimizerOptions {
   val LOOP_LIFTING          : Int = 1
   val EXTRACT_GLOBALS       : Int = 2
@@ -37,7 +34,7 @@ object OptimizerOptions {
  * Defines switches that can be used to control which optimizations take place.
  * The object is immutable.
  */
-class OptimizerOptions(@BeanProperty var options: Int) {
+class OptimizerOptions(var options: Int) {
 
   def this(flags: String) = {
     this(0)

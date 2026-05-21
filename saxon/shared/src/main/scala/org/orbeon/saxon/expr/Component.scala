@@ -58,15 +58,12 @@ class Component private () {
 
   private var bindings: ju.List[ComponentBinding] = new ju.ArrayList
 
-  @BeanProperty
   var containingPackage: StylesheetPackage = _
 
-  @BeanProperty
   var declaringPackage: StylesheetPackage = _
 
   private var provenance: VisibilityProvenance = _
 
-  @BeanProperty
   var baseComponent: Component = _
 
   def getComponentBindings: ju.List[ComponentBinding] = bindings

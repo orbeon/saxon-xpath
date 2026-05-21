@@ -25,7 +25,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BooleanBeanProperty
 
-
 // ORBEON: Unused class
 class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 

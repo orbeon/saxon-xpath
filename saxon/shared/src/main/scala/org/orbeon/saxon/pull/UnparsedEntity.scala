@@ -3,9 +3,6 @@ package org.orbeon.saxon.pull
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class UnparsedEntity {
 
   @BeanProperty

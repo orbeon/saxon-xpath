@@ -15,7 +15,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
-
 object TextFragmentValue {
 
   def makeTextFragment(config: Configuration,

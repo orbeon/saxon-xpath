@@ -9,7 +9,6 @@ import org.orbeon.saxon.pull.PullProvider.Event.Event
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.value.AtomicValue
 
-
 object PullProvider {
 
   object Event extends Enumeration {

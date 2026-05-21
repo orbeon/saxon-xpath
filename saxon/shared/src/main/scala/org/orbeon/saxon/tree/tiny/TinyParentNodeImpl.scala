@@ -9,7 +9,6 @@ package org.orbeon.saxon.tree.tiny
 import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 /**
   * TinyParentNodeImpl is an implementation of a non-leaf node (specifically, an Element node
   * or a Document node)

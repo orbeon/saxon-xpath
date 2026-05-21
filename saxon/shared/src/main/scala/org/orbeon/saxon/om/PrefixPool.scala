@@ -9,7 +9,6 @@ package org.orbeon.saxon.om
 
 import java.util.{Arrays, HashMap, Map}
 
-
 /**
   * A prefix pool maintains a two-way mapping from namespace prefixes (as strings) to
   * integer prefix codes. Prefix codes always fit in 10 bits, but are handled as ints.

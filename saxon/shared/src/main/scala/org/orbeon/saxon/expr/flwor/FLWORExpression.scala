@@ -22,7 +22,6 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks
 import scala.util.control.Breaks._
 
-
 object FLWORExpression {
 
   def isLoopingClause(c: Clause): Boolean =
@@ -216,7 +215,7 @@ class FLWORExpression extends Expression {
   override def unordered(retainAllNodes: Boolean,
                          forStreaming: Boolean): Expression = {
     for (c <- clauses.asScala if c.isInstanceOf[ForClause] &&
-      c.asInstanceOf[ForClause].getPositionVariable == null) {
+      c.asInstanceOf[ForClause].positionVariable == null) {
       c.asInstanceOf[ForClause]
         .setSequence(
           c.asInstanceOf[ForClause]
@@ -240,7 +239,7 @@ class FLWORExpression extends Expression {
       val c = clauses.get(0)
       if (c.isInstanceOf[LetClause] ||
         (c.isInstanceOf[ForClause] &&
-          c.asInstanceOf[ForClause].getPositionVariable == null)) {
+          c.asInstanceOf[ForClause].positionVariable == null)) {
         return rewriteForOrLet(visitor, contextItemType)
       }
     }
@@ -254,7 +253,7 @@ class FLWORExpression extends Expression {
         for (c <- clauses.asScala if c.getClauseKey == Clause.ClauseName.LET) {
           val lc = c.asInstanceOf[LetClause]
           if (!ExpressionTool.dependsOnVariable(this,
-            Array(lc.getRangeVariable))) {
+            Array(lc.rangeVariable))) {
             clauses.remove(c)
             tryAgain = true
             outer.break()
@@ -262,19 +261,19 @@ class FLWORExpression extends Expression {
           var suppressInlining = false
           inner.breakable {
             for (c2 <- clauses.asScala if c2.containsNonInlineableVariableReference(
-              lc.getRangeVariable)) {
+              lc.rangeVariable)) {
               suppressInlining = true
               inner.break()
             }
           }
           if (!suppressInlining) {
-            val oneRef    = lc.getRangeVariable.getNominalReferenceCount == 1
+            val oneRef    = lc.rangeVariable.getNominalReferenceCount == 1
             val simpleSeq = lc.getSequence
               .isInstanceOf[VariableReference] || lc.getSequence
               .isInstanceOf[Literal]
             if (oneRef || simpleSeq) {
               ExpressionTool.replaceVariableReferences(this,
-                lc.getRangeVariable,
+                lc.rangeVariable,
                 lc.getSequence,
                 mustCopy = true
               )
@@ -327,7 +326,7 @@ class FLWORExpression extends Expression {
       for (c <- clauses.asScala) {
         c match {
           case clause: ForClause =>
-            if (clause.getPositionVariable != null) {
+            if (clause.positionVariable != null) {
               allForOrLetExpr = false
               break()
             }
@@ -448,10 +447,10 @@ class FLWORExpression extends Expression {
           forExpr.setRetainedStaticContext(getRetainedStaticContext)
           forExpr.setAction(action)
           forExpr.setSequence(forClause.getSequence)
-          forExpr.setVariableQName(forClause.getRangeVariable.getVariableQName)
-          forExpr.setRequiredType(forClause.getRangeVariable.getRequiredType)
+          forExpr.setVariableQName(forClause.rangeVariable.getVariableQName)
+          forExpr.setRequiredType(forClause.rangeVariable.getRequiredType)
           ExpressionTool.rebindVariableReferences(action,
-            forClause.getRangeVariable,
+            forClause.rangeVariable,
             forExpr)
           action = forExpr
         case _ =>
@@ -461,12 +460,12 @@ class FLWORExpression extends Expression {
           letExpr.setRetainedStaticContext(getRetainedStaticContext)
           letExpr.setAction(action)
           letExpr.setSequence(letClause.getSequence)
-          letExpr.setVariableQName(letClause.getRangeVariable.getVariableQName)
-          letExpr.setRequiredType(letClause.getRangeVariable.getRequiredType)
-          if (letClause.getRangeVariable.isIndexedVariable)
+          letExpr.setVariableQName(letClause.rangeVariable.getVariableQName)
+          letExpr.setRequiredType(letClause.rangeVariable.getRequiredType)
+          if (letClause.rangeVariable.isIndexedVariable)
             letExpr.setIndexedVariable()
           ExpressionTool.rebindVariableReferences(action,
-            letClause.getRangeVariable,
+            letClause.rangeVariable,
             letExpr)
           action = letExpr
       }

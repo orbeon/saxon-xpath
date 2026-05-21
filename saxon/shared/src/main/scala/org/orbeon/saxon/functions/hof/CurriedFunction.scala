@@ -68,7 +68,7 @@ class CurriedFunction(private var targetFunction: Function, private var boundVal
     }
     val c2 = targetFunction.makeNewContext(context, null)
     targetFunction match {
-      case fn: UserFunction => c2.asInstanceOf[XPathContextMajor].setCurrentComponent(fn.getDeclaringComponent)
+      case fn: UserFunction => c2.asInstanceOf[XPathContextMajor].setCurrentComponent(fn.declaringComponent)
       case _ =>
     }
     targetFunction.call(c2, newArgs)

@@ -13,7 +13,6 @@ import org.orbeon.saxon.lib.SerializerFactory
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
   * This class represents a set of named character maps. Each character map in the set is identified by a unique
   * QName.

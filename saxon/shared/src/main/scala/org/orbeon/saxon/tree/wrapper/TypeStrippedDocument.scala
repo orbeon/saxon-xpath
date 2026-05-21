@@ -14,7 +14,6 @@ import org.orbeon.saxon.om.GenericTreeInfo
 import org.orbeon.saxon.om.NodeInfo
 import org.orbeon.saxon.om.TreeInfo
 
-
 class TypeStrippedDocument(doc: TreeInfo)
     extends GenericTreeInfo(doc.getConfiguration) {
 
@@ -36,5 +35,4 @@ class TypeStrippedDocument(doc: TreeInfo)
   }
 
 }
-
 

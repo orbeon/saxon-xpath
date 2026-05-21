@@ -7,7 +7,6 @@ import org.orbeon.saxon.om.Genre
 import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.trans.Err
 
-
 object ObjectValue {
   def displayTypeName(value: AnyRef): String =
     "java-type:" + value.getClass.getName

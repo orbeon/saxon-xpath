@@ -11,10 +11,7 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.tree.util.Navigator
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
+import scala.beans.BeanProperty
 
 class AttributeLocation(element: NodeInfo,
                         @BeanProperty var attributeName: StructuredQName)
@@ -32,7 +29,6 @@ class AttributeLocation(element: NodeInfo,
   @BeanProperty
   var elementName: StructuredQName = Navigator.getNodeName(element)
 
-  @BeanProperty
   var elementNode: NodeInfo = _
 
   if (element.getConfiguration.getBooleanProperty(

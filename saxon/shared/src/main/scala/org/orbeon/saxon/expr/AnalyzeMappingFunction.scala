@@ -9,9 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.tree.iter.EmptyIterator
 
-
-
-
 class AnalyzeMappingFunction(private var base: RegexIterator,
                              private var c2: XPathContext,
                              private var nonMatchExpr: Expression,

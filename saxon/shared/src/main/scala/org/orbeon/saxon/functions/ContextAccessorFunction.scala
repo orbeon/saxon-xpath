@@ -9,9 +9,6 @@ import org.orbeon.saxon.om.Sequence
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 abstract class ContextAccessorFunction extends SystemFunction {
 
   def bindContext(context: XPathContext): Function

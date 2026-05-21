@@ -14,7 +14,6 @@ import org.orbeon.saxon.functions.ResolveURI
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
   * This class is the standard ModuleURIResolver used to implement the "import module" declaration
   * in a Query Prolog. It is used when no user-defined ModuleURIResolver has been specified, or when

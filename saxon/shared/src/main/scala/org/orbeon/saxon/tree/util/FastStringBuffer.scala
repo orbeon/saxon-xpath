@@ -13,7 +13,6 @@ import org.orbeon.saxon.regex.{BMPString, GeneralUnicodeString, UnicodeString}
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
 import org.orbeon.saxon.tree.tiny.{AppendableCharSequence, CharSlice, CompressedWhitespace}
 
-
 /**
   * A simple implementation of a class similar to StringBuffer. Unlike
   * StringBuffer it is not synchronized. It also offers the capability

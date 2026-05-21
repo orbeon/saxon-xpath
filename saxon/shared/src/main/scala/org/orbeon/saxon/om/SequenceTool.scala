@@ -19,7 +19,6 @@ import org.orbeon.saxon.value._
 
 import scala.util.control.Breaks._
 
-
 object SequenceTool {
 
   val INDETERMINATE_ORDERING: Int = java.lang.Integer.MIN_VALUE

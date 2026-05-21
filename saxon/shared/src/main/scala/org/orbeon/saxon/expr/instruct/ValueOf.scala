@@ -46,15 +46,13 @@ import org.orbeon.saxon.value.Whitespace
 
 import java.util.function.BiConsumer
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.util.control.Breaks._
 
 class ValueOf(select: Expression,
               disable: Boolean,
-              @BooleanBeanProperty var noNodeIfEmpty: Boolean)
+              var noNodeIfEmpty: Boolean)
   extends SimpleNodeConstructor {
 
-  @BeanProperty
   var options: Int = if (disable) ReceiverOption.DISABLE_ESCAPING else ReceiverOption.NONE
 
   var isNumberingInstruction: Boolean = false

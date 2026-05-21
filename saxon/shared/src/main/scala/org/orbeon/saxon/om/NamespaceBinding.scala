@@ -14,7 +14,6 @@ import org.orbeon.saxon.tree.jiter.MonoIterator
 
 import scala.beans.BeanProperty
 
-
 object NamespaceBinding {
 
   val XML: NamespaceBinding =

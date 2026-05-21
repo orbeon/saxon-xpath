@@ -9,9 +9,6 @@ import LocalOrderComparer._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 object LocalOrderComparer {
 
   @BeanProperty

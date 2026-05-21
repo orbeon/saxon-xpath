@@ -14,7 +14,6 @@ import org.orbeon.saxon.trace.Traceable
 import org.orbeon.saxon.trans.Mode
 import org.orbeon.saxon.utils.Controller
 
-
 /**
   * This interface defines methods that are called by Saxon during the execution of
   * a stylesheet, if tracing is switched on. Tracing can be switched on by nominating

@@ -3,7 +3,6 @@ package org.orbeon.saxon.functions
 import org.orbeon.saxon.expr.{Atomizer, Expression, XPathContext}
 import org.orbeon.saxon.om.{Item, Sequence, SequenceTool}
 
-
 class Data_1 extends SystemFunction {
 
   /**

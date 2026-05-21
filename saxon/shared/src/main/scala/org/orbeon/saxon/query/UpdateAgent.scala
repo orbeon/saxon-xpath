@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * An UpdateAgent is a callback class that is called to handle a document after it has been updated.
   * Typically the UpdateAgent might take responsibility for writing the updated document back to

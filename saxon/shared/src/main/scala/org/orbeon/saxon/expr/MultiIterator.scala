@@ -5,9 +5,6 @@ import java.util.Iterator
 
 import java.util.List
 
-
-
-
 /**
   * An iterator that combines the results of a sequence of iterators
   */

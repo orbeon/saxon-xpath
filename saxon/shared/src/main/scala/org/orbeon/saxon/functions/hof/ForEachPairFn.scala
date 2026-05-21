@@ -7,7 +7,6 @@ import org.orbeon.saxon.model.{AnyItemType, ItemType, SpecificFunctionType}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.value.{ExternalObject, ObjectValue}
 
-
 object ForEachPairFn {
 
   private class PairedSequenceIterator(private var seq0: SequenceIterator,

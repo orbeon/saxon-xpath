@@ -13,7 +13,6 @@ import java.util.List
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
-
 object ListIterator {
 
   class Atomic(list: List[AtomicValue])

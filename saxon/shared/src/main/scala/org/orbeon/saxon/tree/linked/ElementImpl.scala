@@ -15,12 +15,10 @@ import org.orbeon.saxon.tree.linked.ElementImpl.isIdRefNode
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.BeanProperty
 import java.{util => ju}
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
-
 
 object ElementImpl {
 
@@ -47,7 +45,6 @@ object ElementImpl {
 
 class ElementImpl extends ParentNodeImpl with NamespaceResolver {
 
-  @BeanProperty
   var nodeN: NodeName = _
 
   private var `type`: SchemaType = Untyped.getInstance
@@ -87,7 +84,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     if (up == null ||
       (up.isInstanceOf[DocumentImpl] && up
         .asInstanceOf[DocumentImpl]
-        .isImaginary)) {
+        .imaginary)) {
       this
     } else {
       up.getRoot

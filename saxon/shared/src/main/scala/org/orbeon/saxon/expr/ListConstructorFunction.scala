@@ -19,9 +19,6 @@ import org.orbeon.saxon.value.SequenceType
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class ListConstructorFunction( var targetType: ListType,
                               resolver: NamespaceResolver,
                                var allowEmpty: Boolean)

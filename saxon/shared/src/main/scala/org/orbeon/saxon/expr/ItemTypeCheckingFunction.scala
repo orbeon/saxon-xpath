@@ -7,7 +7,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 
-
 class ItemTypeCheckingFunction extends ItemMappingFunction {
 
   private var requiredItemType: ItemType = _
@@ -52,13 +51,13 @@ class ItemTypeCheckingFunction extends ItemMappingFunction {
       val errorCode = role.getErrorCode
       if ("XPDY0050" == errorCode) {
         val te = new XPathException(message, errorCode)
-        te.setFailingExpression(failingExpression)
+        te.failingExpression = failingExpression
         te.setLocator(location)
         te.setIsTypeError(false)
         throw te
       } else {
         val te = new XPathException(message, errorCode)
-        te.setFailingExpression(failingExpression)
+        te.failingExpression = failingExpression
         te.setLocator(location)
         te.setIsTypeError(true)
         throw te

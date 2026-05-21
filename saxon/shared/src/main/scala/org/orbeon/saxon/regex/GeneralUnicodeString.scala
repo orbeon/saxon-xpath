@@ -9,7 +9,6 @@ package org.orbeon.saxon.regex
 import org.jetbrains.annotations.NotNull
 import org.orbeon.saxon.value.StringValue
 
-
 /**
   * A Unicode string which, in general, may contain non-BMP characters (that is, codepoints
   * outside the range 0-65535)

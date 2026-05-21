@@ -17,7 +17,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.jdk.CollectionConverters._
 
-
 class IndependentContext(config: Configuration)
   extends AbstractStaticContext
     with XPathStaticContext

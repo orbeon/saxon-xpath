@@ -39,7 +39,6 @@ import org.orbeon.saxon.value._
 
 import LookupExpression._
 
-
 object LookupExpression {
 
   def mustBeArrayOrMap(exp: Expression, baseItem: Item): Unit = {
@@ -50,7 +49,7 @@ object LookupExpression {
       "XPTY0004")
     exception.setIsTypeError(true)
     exception.setLocation(exp.getLocation)
-    exception.setFailingExpression(exp)
+    exception.failingExpression = exp
     throw exception
   }
 
@@ -99,7 +98,7 @@ class LookupExpression(start: Expression, step: Expression)
             return fieldType.getPrimaryType
           }
         } else if (mapType.isInstanceOf[MapType]) {
-          return mapType.asInstanceOf[MapType].getValueType.getPrimaryType
+          return mapType.asInstanceOf[MapType].valueType.getPrimaryType
         }
       }
     }
@@ -154,7 +153,7 @@ class LookupExpression(start: Expression, step: Expression)
           "XPTY0004")
         err.setLocation(getLocation)
         err.setIsTypeError(true)
-        err.setFailingExpression(this)
+        err.failingExpression = this
         throw err
       }
     }
@@ -263,7 +262,7 @@ class LookupExpression(start: Expression, step: Expression)
           }
         } else if (mapType.isInstanceOf[MapType]) {
           return (Cardinality.union(
-            mapType.asInstanceOf[MapType].getValueType.getCardinality,
+            mapType.asInstanceOf[MapType].valueType.getCardinality,
             StaticProperty.ALLOWS_ZERO))
         }
       }
@@ -396,7 +395,7 @@ class LookupExpression(start: Expression, step: Expression)
               )
               exception.setIsTypeError(true)
               exception.setLocation(getLocation)
-              exception.setFailingExpression(LookupExpression.this)
+              exception.failingExpression = LookupExpression.this
               throw exception
             }
           var rhsIter: SequenceIterator = rhs.iterate()
@@ -423,7 +422,7 @@ class LookupExpression(start: Expression, step: Expression)
             )
             exception.setIsTypeError(true)
             exception.setLocation(getLocation)
-            exception.setFailingExpression(LookupExpression.this)
+            exception.failingExpression = LookupExpression.this
             throw exception
           }
           var key: String = rhs.getStringValue

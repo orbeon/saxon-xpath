@@ -15,7 +15,6 @@ import org.orbeon.saxon.functions.{Fold, FoldingFunction, SystemFunction}
 import org.orbeon.saxon.model.{AnyFunctionType, AnyItemType, ItemType}
 import org.orbeon.saxon.om.{Function, GroundedValue, Item, Sequence}
 
-
 class FoldLeftFn extends FoldingFunction {
 
   def getFold(context: XPathContext, arguments: Sequence*): Fold = {
@@ -71,5 +70,4 @@ class FoldLeftFn extends FoldingFunction {
     }
   }
 }
-
 

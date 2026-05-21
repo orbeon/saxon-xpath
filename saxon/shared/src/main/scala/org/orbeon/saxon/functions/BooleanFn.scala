@@ -36,7 +36,7 @@ object BooleanFn {
     var exprssn = exp
     val config: Configuration = visitor.getConfiguration
     val th = config.getTypeHierarchy
-    val forStreaming: Boolean = visitor.isOptimizeForStreaming
+    val forStreaming: Boolean = visitor.optimizeForStreaming
     exprssn = ExpressionTool.unsortedIfHomogeneous(exp, forStreaming)
     if (exprssn.isInstanceOf[Literal]) {
       val `val`: GroundedValue = exprssn.asInstanceOf[Literal].value
@@ -48,8 +48,8 @@ object BooleanFn {
     }
     if (exprssn.isInstanceOf[ValueComparison]) {
       val vc: ValueComparison = exprssn.asInstanceOf[ValueComparison]
-      if (vc.getResultWhenEmpty == null) {
-        vc.setResultWhenEmpty(BooleanValue.FALSE)
+      if (vc.resultWhenEmpty == null) {
+        vc.resultWhenEmpty = BooleanValue.FALSE
       }
       exprssn
     } else if (exprssn.isCallOn(classOf[BooleanFn])) {
@@ -108,7 +108,7 @@ class BooleanFn extends SystemFunction {
           if (ebv != null) {
             ebv = ebv.optimize(visitor, contextItemType)
             if (ebv.getItemType == BuiltInAtomicType.BOOLEAN && ebv.getCardinality == StaticProperty.EXACTLY_ONE) {
-              ebv.setParentExpression(getParentExpression)
+              ebv.parentExpression = parentExpression
               return ebv
             } else {
               setArg(0, ebv)

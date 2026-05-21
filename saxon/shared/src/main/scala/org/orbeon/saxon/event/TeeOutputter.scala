@@ -15,7 +15,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
 class TeeOutputter(
   private var seq1: Receiver,
   private var seq2: Receiver

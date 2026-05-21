@@ -15,7 +15,6 @@ import org.orbeon.saxon.model.{AnyItemType, BuiltInAtomicType, SpecificFunctionT
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest}
 import org.orbeon.saxon.value.{SequenceType, StringValue}
 
-
 /**
  * Function signatures (and pointers to implementations) of the functions defined in XPath 3.1 without the
  * Higher-Order-Functions feature

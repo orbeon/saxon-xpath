@@ -8,7 +8,6 @@ import org.orbeon.saxon.om.{NodeInfo, SequenceIterator}
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.ListIterator
 
-
 class DocumentOrderIterator(base: SequenceIterator,
                             private var comparer: ItemOrderComparer)
   extends SequenceIterator {

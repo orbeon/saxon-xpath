@@ -7,7 +7,6 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import scala.util.control.Breaks._
 
-
 object AnyURIValue {
 
   /*@NotNull*/

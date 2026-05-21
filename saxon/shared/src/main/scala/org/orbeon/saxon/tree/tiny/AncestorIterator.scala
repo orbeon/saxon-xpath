@@ -6,7 +6,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 
 import java.util.function.Predicate
 
-
 class AncestorIterator(private var current: NodeInfo,
                        private var test: Predicate[_ >: NodeInfo])
   extends AxisIterator {

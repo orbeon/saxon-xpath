@@ -9,12 +9,7 @@ import org.orbeon.saxon.trans.NoDynamicContextException
 
 import org.orbeon.saxon.value.AtomicValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
-class DescendingComparer(@BeanProperty var baseComparer: AtomicComparer)
+class DescendingComparer(var baseComparer: AtomicComparer)
     extends AtomicComparer {
 
   def getCollator(): StringCollator = baseComparer.getCollator

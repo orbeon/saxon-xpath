@@ -17,17 +17,11 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import org.orbeon.saxon.expr.flwor.Clause.ClauseName.COUNT
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * A "count" clause in a FLWOR expression
   */
 class CountClause extends Clause {
 
-  @BeanProperty
   var rangeVariable: LocalVariableBinding = _
 
   override def getClauseKey(): Clause.ClauseName.ClauseName = COUNT
@@ -89,7 +83,7 @@ class CountClause extends Clause {
     */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("count")
-    out.emitAttribute("var", getRangeVariable.getVariableQName)
+    out.emitAttribute("var", rangeVariable.getVariableQName)
     out.endElement()
   }
 

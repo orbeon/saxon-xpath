@@ -8,7 +8,6 @@ package org.orbeon.saxon.s9api
 
 import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 
-
 /**
   * The <b>XmlProcessingError</b> class contains information about an error detected during
   * compilation or execution of a stylesheet, query, XPath expression, or schema

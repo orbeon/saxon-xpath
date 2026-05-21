@@ -19,9 +19,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import IgnorableSpaceStrippingRule._
 
-
-
-
 object IgnorableSpaceStrippingRule {
 
   private val THE_INSTANCE: IgnorableSpaceStrippingRule =

@@ -18,7 +18,6 @@ import scala.beans.{BeanProperty}
 
 class ItemTypePattern(var itemTyp: ItemType) extends Pattern {
 
-
   this.priority = itemTyp.getDefaultPriority
 
   def matches(item: Item, context: XPathContext): Boolean =

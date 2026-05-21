@@ -3,9 +3,6 @@ package org.orbeon.saxon.serialize.charcode
 
 import ASCIICharacterSet._
 
-
-
-
 object ASCIICharacterSet {
 
   val theInstance: ASCIICharacterSet = new ASCIICharacterSet()

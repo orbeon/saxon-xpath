@@ -17,7 +17,6 @@ import java.util._
  * The methods are not synchronized.
  */
 
-
 /**
  * Creates a new LRU cache, with the option of making it thread-safe
  *

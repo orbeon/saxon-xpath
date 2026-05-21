@@ -18,7 +18,6 @@ import java.math.BigInteger
 
 import java.util.Calendar
 
-
 class SaxonDuration(private var duration: DurationValue) extends Duration {
 
   def getDurationValue: DurationValue = duration

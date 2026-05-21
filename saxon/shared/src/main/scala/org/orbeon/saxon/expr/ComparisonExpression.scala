@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.sort.AtomicComparer
 
-
-
-
 /**
   * Interface implemented by expressions that perform a comparison
   */

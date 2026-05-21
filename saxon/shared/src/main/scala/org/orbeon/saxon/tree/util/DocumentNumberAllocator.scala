@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.util
 
-
 /**
   * This class (which has one instance per Configuration) is used to allocate unique document
   * numbers. It's a separate class so that it can act as a monitor for synchronization

@@ -12,7 +12,6 @@ import java.util.ArrayList
 import java.util.function.Predicate
 import javax.xml.transform.SourceLocator
 
-
 class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tree, nodeNr) {
 
   lazy val textNode: TinyTextualElementText = new TinyTextualElementText()

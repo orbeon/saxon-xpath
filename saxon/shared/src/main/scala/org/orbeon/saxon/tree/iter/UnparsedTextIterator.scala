@@ -7,13 +7,11 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.utils.Configuration
 
-
 class UnparsedTextIterator(absoluteURI: URI,
                            var context: XPathContext,
                            var encoding: String,
                             var loc: Location)
   extends TextLinesIterator {
-
 
   val config: Configuration = context.getConfiguration
 

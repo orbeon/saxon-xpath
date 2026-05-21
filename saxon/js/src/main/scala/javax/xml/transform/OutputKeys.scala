@@ -1,6 +1,5 @@
 package javax.xml.transform
 
-
 object OutputKeys {
   val METHOD                 = "method"
   val VERSION                = "version"

@@ -1,6 +1,5 @@
 package org.orbeon.saxon.trans
 
-
 object FunctionStreamability extends Enumeration {
 
   val UNCLASSIFIED: FunctionStreamability = new FunctionStreamability(

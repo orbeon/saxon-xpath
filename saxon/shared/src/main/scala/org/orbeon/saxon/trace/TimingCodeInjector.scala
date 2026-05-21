@@ -8,7 +8,6 @@ package org.orbeon.saxon.trace
 
 import org.orbeon.saxon.expr.instruct.ComponentTracer
 
-
 /**
   * A code injector that wraps the body of a template or function in a TraceExpression, which causes
   * the TimingTraceListener to be notified at the start and end of the function/template evaluation

@@ -21,7 +21,6 @@ import org.orbeon.saxon.value._
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
-
 /**
  * This class together with its embedded subclasses handles conversion from Java values to XPath values.
  *
@@ -226,7 +225,7 @@ object JPConverter {
 
   object FromSequenceOfAny extends FromSequence(AnyItemType, StaticProperty.ALLOWS_ZERO_OR_MORE)
 
-  class FromSequence(var resultType: ItemType, @BeanProperty var cardinalityInt: Int) extends JPConverter {
+  class FromSequence(var resultType: ItemType, var cardinalityInt: Int) extends JPConverter {
 
     def convert(o: AnyRef, context: XPathContext): Sequence =
       o match {
@@ -324,7 +323,6 @@ object JPConverter {
 
     def getItemType: ItemType = BuiltInAtomicType.STRING
   }
-
 
   object FromQName extends JPConverter {
 

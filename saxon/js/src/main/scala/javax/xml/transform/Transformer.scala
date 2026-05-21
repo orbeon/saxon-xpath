@@ -2,7 +2,6 @@ package javax.xml.transform
 
 import java.util.Properties
 
-
 abstract class Transformer protected () {
 
   def reset(): Unit =

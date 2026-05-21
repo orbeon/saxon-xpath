@@ -37,7 +37,6 @@ object REMatcher {
 
 }
 
-
 class REMatcher(val progrm: REProgram) {
 
   setProgram(progrm)
@@ -69,12 +68,9 @@ class REMatcher(val progrm: REProgram) {
     else this.maxParen = REMatcher.MAX_PAREN
   }
 
-
   def getProgram = program
 
-
   def getParenCount = captureState.parenCount
-
 
   def getParen(which: Int): UnicodeString = {
     var start: Int = 0
@@ -83,18 +79,15 @@ class REMatcher(val progrm: REProgram) {
     null
   }
 
-
   final def getParenStart(which: Int): Int = {
     if (which < captureState.startn.length) return captureState.startn(which)
     -1
   }
 
-
   final def getParenEnd(which: Int): Int = {
     if (which < captureState.endn.length) return captureState.endn(which)
     -1
   }
-
 
   final def setParenStart(which: Int, i: Int):Unit = {
     while (which > captureState.startn.length - 1) {
@@ -106,7 +99,6 @@ class REMatcher(val progrm: REProgram) {
     captureState.startn(which) = i
   }
 
-
   final def setParenEnd(which: Int, i: Int):Unit = {
     while (which > captureState.endn.length - 1) {
       val e2 = new Array[Int](captureState.endn.length * 2)
@@ -117,7 +109,6 @@ class REMatcher(val progrm: REProgram) {
     captureState.endn(which) = i
   }
 
-
   def clearCapturedGroupsBeyond(pos: Int):Unit = {
     for (i <- 0 until captureState.startn.length) {
       if (captureState.startn(i) >= pos) captureState.endn(i) = captureState.startn(i)
@@ -126,7 +117,6 @@ class REMatcher(val progrm: REProgram) {
       if (startBackref(i) >= pos) endBackref(i) = startBackref(i)
     }
   }
-
 
   def matchAt(i: Int, anchored: Boolean): Boolean = {
     captureState.parenCount = 1
@@ -150,12 +140,10 @@ class REMatcher(val progrm: REProgram) {
     false
   }
 
-
   def anchoredMatch(search: UnicodeString) = {
     this.search = search
     matchAt(0, anchored = true)
   }
-
 
   def `match`(search: UnicodeString, i: Int): Boolean = {
     var z = i
@@ -240,7 +228,6 @@ class REMatcher(val progrm: REProgram) {
     }
   }
 
-
   private def checkPreconditions(start: Int): Boolean = {
 
     for (condition <- program.preconditions.asScala) {
@@ -267,12 +254,10 @@ class REMatcher(val progrm: REProgram) {
     true
   }
 
-
   def `match`(search: String): Boolean = {
     val uString = UnicodeString.makeUnicodeString(search)
     `match`(uString, 0)
   }
-
 
   def split(s: UnicodeString): util.List[UnicodeString] = {
     val v = new util.ArrayList[UnicodeString]
@@ -292,7 +277,6 @@ class REMatcher(val progrm: REProgram) {
     v.add(remainder)
     v
   }
-
 
   def replace(in: UnicodeString, replacement: UnicodeString): FastStringBuffer = {
     val sb = new FastStringBuffer(in.uLength * 2)
@@ -383,7 +367,6 @@ class REMatcher(val progrm: REProgram) {
     sb.condense
   }
 
-
   def replaceWith(in: UnicodeString, replacer: CharSequence => CharSequence) = {
     val sb = new FastStringBuffer(in.uLength * 2)
     var pos = 0
@@ -405,9 +388,7 @@ class REMatcher(val progrm: REProgram) {
     sb.condense()
   }
 
-
   private[regex] def isNewline(i: Int) = search.uCharAt(i) == '\n'
-
 
   private[regex] def equalCaseBlind(c1: Int, c2: Int): Boolean = {
     if (c1 == c2) return true

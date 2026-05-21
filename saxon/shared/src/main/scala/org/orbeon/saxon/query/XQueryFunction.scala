@@ -54,7 +54,6 @@ class XQueryFunction extends Declaration with Location {
 
   var isUpdating: Boolean = false
 
-
   var annotations: AnnotationList = AnnotationList.EMPTY
 
   def getPackageData: PackageData = staticContext.getPackageData
@@ -207,7 +206,7 @@ class XQueryFunction extends Declaration with Location {
     if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS)) {
       body = body.optimize(visitor, ContextItemStaticInfo.ABSENT)
     }
-    body.setParentExpression(null)
+    body.parentExpression = null
     if (opt.isOptionSet(OptimizerOptions.LOOP_LIFTING)) {
       body = LoopLifter.process(body, visitor, ContextItemStaticInfo.ABSENT)
     }
@@ -218,7 +217,7 @@ class XQueryFunction extends Declaration with Location {
         def addGlobalVariable(variable: GlobalVariable): Unit = {
           var pd: PackageData = staticContext.getPackageData
           variable.setPackageData(pd)
-          var sm: SlotManager = pd.getGlobalSlotManager
+          var sm: SlotManager = pd.globalSlotManager
           var slot: Int = sm.allocateSlotNumber(variable.getVariableQName)
           variable.compile(exec, slot)
           pd.addGlobalVariable(variable)

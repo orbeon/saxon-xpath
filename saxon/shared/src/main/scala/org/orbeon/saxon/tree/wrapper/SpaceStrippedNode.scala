@@ -22,7 +22,6 @@ import org.orbeon.saxon.value.Whitespace
 
 import scala.util.control.Breaks._
 
-
 /**
  * A StrippedNode is a view of a node, in a virtual tree that has whitespace
  * text nodes stripped from it. All operations on the node produce the same result
@@ -90,7 +89,7 @@ object SpaceStrippedNode {
     // the document contains one or more xml:space="preserve" attributes, so we need to see
     // otherwise it depends on xsl:strip-space
     try {
-      val preserve = docWrapper.getStrippingRule.isSpacePreserving(NameOfNode.makeName(actualParent), null)
+      val preserve = docWrapper.strippingRule.isSpacePreserving(NameOfNode.makeName(actualParent), null)
       preserve == Stripper.ALWAYS_PRESERVE
     } catch {
       case _: XPathException => true
@@ -219,7 +218,7 @@ class SpaceStrippedNode()
     // version of the document (test case strip-space-008)
     val temp: Receiver = out
     val stripper: Stripper = new Stripper(
-      docWrapper.asInstanceOf[SpaceStrippedDocument].getStrippingRule,
+      docWrapper.asInstanceOf[SpaceStrippedDocument].strippingRule,
       temp)
     node.copy(stripper, copyOptions, locationId)
   }

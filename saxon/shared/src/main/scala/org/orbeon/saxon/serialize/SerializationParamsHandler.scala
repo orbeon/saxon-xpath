@@ -16,7 +16,6 @@ import java.util.Properties
 import java.{util => ju}
 import scala.jdk.CollectionConverters._
 
-
 object SerializationParamsHandler {
 
   val NAMESPACE: String = NamespaceConstant.OUTPUT

@@ -17,7 +17,6 @@ import java.util.regex.Pattern
 import scala.annotation.tailrec
 import scala.util.control.Breaks._
 
-
 object FormatDate {
 
   val knownCalendars: Array[String] =

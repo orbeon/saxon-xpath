@@ -3,11 +3,6 @@ package org.orbeon.saxon.trans
 
 import LicenseException._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 object LicenseException {
 
   val EXPIRED: Int = 1
@@ -27,7 +22,7 @@ object LicenseException {
 /**
   * Exception thrown when there are problems with the license file
   */
-class LicenseException(message: String, @BeanProperty var reason: Int)
+class LicenseException(message: String, var reason: Int)
     extends RuntimeException(message)
 
 // Copyright (c) 2018-2020 Saxonica Limited

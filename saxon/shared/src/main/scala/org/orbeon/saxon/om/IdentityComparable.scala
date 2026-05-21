@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-
 /**
   * The IdentityComparable class provides a way to compare objects for strong equality.
   * In some cases it may test for Java-level object identity, but this is not essential. For example,

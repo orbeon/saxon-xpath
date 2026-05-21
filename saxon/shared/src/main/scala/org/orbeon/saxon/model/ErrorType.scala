@@ -12,7 +12,6 @@ import java.util.Collections
 
 import scala.jdk.CollectionConverters._
 
-
 object ErrorType
   extends NodeTest
     with AtomicType

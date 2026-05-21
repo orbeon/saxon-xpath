@@ -9,9 +9,6 @@ import org.orbeon.saxon.expr.XPathContext
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * This class represents the tuple stream delivered as the output of a where clause in a
   * FLWOR expression: that is, it supplies all the tuples in its input stream that satisfy

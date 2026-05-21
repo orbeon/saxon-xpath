@@ -66,7 +66,7 @@
 //        if (data != null) {
 //          if (data == MARKER) {
 //            throw new XPathException(
-//              "Accumulator " + acc.getAccumulatorName.getDisplayName +
+//              "Accumulator " + acc.accumulatorName.getDisplayName +
 //                " requires access to its own value",
 //              "XTDE3400")
 //          }
@@ -78,7 +78,7 @@
 //        accumulatorDataIndex.put(doc, map)
 //      }
 //      if (doc.isInstanceOf[VirtualTreeInfo] &&
-//          doc.asInstanceOf[VirtualTreeInfo].isCopyAccumulators) {
+//          doc.asInstanceOf[VirtualTreeInfo].copyAccumulators) {
 //        val original: NodeInfo =
 //          doc.getRootNode.asInstanceOf[VirtualCopy].getOriginalNode
 //        val originalData: IAccumulatorData =
@@ -89,17 +89,17 @@
 //        vad
 //      } else if (doc.isInstanceOf[TinyTree] && doc
 //                   .asInstanceOf[TinyTree]
-//                   .getCopiedFrom != null) {
+//                   .copiedFrom != null) {
 //        val original: IAccumulatorData = getAccumulatorData(
-//          doc.asInstanceOf[TinyTree].getCopiedFrom.getTreeInfo,
+//          doc.asInstanceOf[TinyTree].copiedFrom.getTreeInfo,
 //          acc,
 //          context)
 //        new PathMappedAccumulatorData(original,
-//                                      doc.asInstanceOf[TinyTree].getCopiedFrom)
+//                                      doc.asInstanceOf[TinyTree].copiedFrom)
 //      } else {
 //        val d: AccumulatorData = new AccumulatorData(acc)
 //        val c2: XPathContextMajor = context.newCleanContext()
-//        c2.setCurrentComponent(acc.getDeclaringComponent)
+//        c2.setCurrentComponent(acc.declaringComponent)
 //        try {
 //          d.buildIndex(doc.getRootNode, c2)
 //          map.put(acc, d)

@@ -31,7 +31,6 @@ import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 abstract class ParentNodeImpl extends NodeImpl {
 
   // null for no children

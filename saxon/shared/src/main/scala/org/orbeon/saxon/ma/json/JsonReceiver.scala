@@ -13,7 +13,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
 import org.orbeon.saxon.value.{DoubleValue, StringToDouble11, Whitespace}
 
-import scala.beans.BooleanBeanProperty
 import scala.jdk.CollectionConverters._
 
 object JsonReceiver {
@@ -150,7 +149,6 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
 
   private var atStart: Boolean = true
 
-  @BooleanBeanProperty
   var indenting: Boolean = false
 
   private var escaped: Boolean = false

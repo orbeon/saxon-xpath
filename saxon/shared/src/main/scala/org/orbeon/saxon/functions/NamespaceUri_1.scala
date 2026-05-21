@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{Item, NodeInfo, One, ZeroOrOne}
 import org.orbeon.saxon.value.{AnyURIValue, AtomicValue}
 
-
 class NamespaceUri_1 extends ScalarSystemFunction {
 
   def evaluate(item: Item, context: XPathContext): AtomicValue = {

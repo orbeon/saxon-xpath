@@ -21,7 +21,6 @@ import org.orbeon.saxon.value.Whitespace
 
 import java.util.Arrays
 
-
 class IgnorableWhitespaceStripper(next: Receiver) extends ProxyReceiver(next) {
 
   private var stripStack: Array[Boolean] = new Array[Boolean](100)

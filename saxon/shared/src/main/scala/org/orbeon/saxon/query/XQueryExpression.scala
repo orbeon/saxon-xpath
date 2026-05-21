@@ -5,7 +5,6 @@
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 package org.orbeon.saxon.query
 
-
 import org.orbeon.saxon.event.{ComplexContentOutputter, PipelineConfiguration, Receiver}
 import org.orbeon.saxon.expr.{Expression, ExpressionOwner, PackageData, XPathContextMajor}
 import org.orbeon.saxon.expr.instruct.{Executable, GlobalContextRequirement, GlobalVariable, SlotManager}
@@ -26,7 +25,6 @@ import java.util
 import java.util._
 import javax.xml.transform.{Result, Source, TransformerException}
 import javax.xml.transform.stream.StreamResult
-
 
 /**
  * XQueryExpression represents a compiled query. This object is immutable and thread-safe,
@@ -56,10 +54,10 @@ class XQueryExpression(
   try {
     val visitor   = ExpressionVisitor.make(mainModule)
     val optimizer = visitor.obtainOptimizer()
-    visitor.setOptimizeForStreaming(streaming)
+    visitor.optimizeForStreaming = streaming
     expression = expression.simplify()
     expression.checkForUpdatingSubexpressions()
-    val contextReq = exec.getGlobalContextRequirement
+    val contextReq = exec.globalContextRequirement
     val req =
       if (contextReq == null)
         AnyItemType
@@ -69,14 +67,14 @@ class XQueryExpression(
     var e2  = expression.typeCheck(visitor, cit)
     if (e2 != expression) {
       e2.setRetainedStaticContext(expression.getRetainedStaticContext)
-      e2.setParentExpression(null)
+      e2.parentExpression = null
       expression = e2
     }
     if (optimizer.isOptionSet(OptimizerOptions.MISCELLANEOUS)) {
       e2 = expression.optimize(visitor, cit)
       if (e2 != expression) {
         e2.setRetainedStaticContext(expression.getRetainedStaticContext)
-        e2.setParentExpression(null)
+        e2.parentExpression = null
         expression = e2
       }
     }
@@ -84,7 +82,7 @@ class XQueryExpression(
       e2 = LoopLifter.process(expression, visitor, cit)
       if (e2 != expression) {
         e2.setRetainedStaticContext(expression.getRetainedStaticContext)
-        e2.setParentExpression(null)
+        e2.parentExpression = null
         expression = e2
       }
     }
@@ -177,7 +175,7 @@ class XQueryExpression(
 
   /*@NotNull*/
   def getExternalVariableNames: Array[StructuredQName] = {
-    val list  = stackFrameMap.getVariableMap
+    val list  = stackFrameMap.variableMap
     val names = Array.ofDim[StructuredQName](stackFrameMap.getNumberOfVariables)
     for (i <- names.indices)
       names(i) = list.get(i)

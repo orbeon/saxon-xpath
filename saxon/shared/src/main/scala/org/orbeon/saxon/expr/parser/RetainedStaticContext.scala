@@ -14,8 +14,7 @@ import org.orbeon.saxon.utils.Configuration
 
 import java.net.{URI, URISyntaxException}
 import java.{util => ju}
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 /**
  * This class contains the part of the static context of expressions that (a) can change from one expression
@@ -50,7 +49,6 @@ class RetainedStaticContext extends NamespaceResolver {
   @BeanProperty
   var decimalFormatManager: DecimalFormatManager = _
 
-  @BooleanBeanProperty
   var backwardsCompatibility: Boolean = _
 
   def this(config: Configuration) = {

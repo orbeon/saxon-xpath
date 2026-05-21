@@ -87,7 +87,6 @@ class NameTest private (
 
   def getDefaultPriority: Double = 0.0
 
-
   override def getFingerprint: Int = fingerPrint
 
   override def getMatchingNodeName: StructuredQName = {

@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.{Expression, XPathContext}
 import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
   * Implements the XSLT function current-grouping-key()
   */

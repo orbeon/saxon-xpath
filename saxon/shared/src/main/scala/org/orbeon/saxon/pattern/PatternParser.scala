@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.StaticContext
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Interface to a parser of XSLT patterns. There were originally subclasses for XSLT 2.0 and
   * XSLT 3.0 patterns

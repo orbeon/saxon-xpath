@@ -20,9 +20,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{SequenceType, StringValue}
 
-import scala.beans.BeanProperty
-
-
 object JsonHandler {
   private val REPLACEMENT: String = "\ufffd"
 }
@@ -34,7 +31,6 @@ class JsonHandler {
 
   var escape: Boolean = _
   var charChecker: IntPredicate = _
-  @BeanProperty
   var context: XPathContext = _
   private var fallbackFunction: Function = null
 

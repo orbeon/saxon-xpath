@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.tree.iter.AxisIterator
 
-
-
-
 class WrappingIterator(var base: AxisIterator,
                        function: WrappingFunction,
                        var parent: VirtualNode)

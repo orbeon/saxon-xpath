@@ -8,9 +8,6 @@ package org.orbeon.saxon.tree.wrapper
 
 import org.orbeon.saxon.om.{GenericTreeInfo, NodeInfo, TreeInfo}
 
-import scala.beans.BeanProperty
-
-
 /**
   * A <tt>RebasedDocument</tt> represents a view of a real Document in which all nodes are mapped to a different
   * base URI and/or system ID using supplied mapping functions.
@@ -27,11 +24,10 @@ import scala.beans.BeanProperty
   */
 class RebasedDocument(
     doc: TreeInfo,
-    @BeanProperty var baseUriMapper: NodeInfo => String,
-    @BeanProperty var systemIdMapper: NodeInfo => String)
+    var baseUriMapper: NodeInfo => String,
+    var systemIdMapper: NodeInfo => String)
     extends GenericTreeInfo(doc.getConfiguration) {
 
-  @BeanProperty
   var underlyingTree: TreeInfo = doc
 
   this.setRootNode(wrap(doc.getRootNode))

@@ -15,11 +15,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 class Rule {
 
 // The pattern that fires this rule
@@ -47,11 +42,9 @@ class Rule {
    var part: Int = _
 
 // True if the pattern does not need to be tested, because the rule
-  @BooleanBeanProperty
   var alwaysMatches: Boolean = _
 
 // Indicates the relative precedence/priority of a rule within a mode;
-  @BeanProperty
   var rank: Int = _
 
   def this(p: Pattern,
@@ -145,7 +138,7 @@ class Rule {
       if (part != 0) {
         out.emitAttribute("part", "" + part)
       }
-      out.emitAttribute("rank", "" + getRank.toString)
+      out.emitAttribute("rank", "" + rank.toString)
       out.emitAttribute("minImp", getMinImportPrecedence.toString)
       out.emitAttribute("slots", template.getStackFrameMap.getNumberOfVariables.toString)
       out.emitAttribute("matches", pattern.getItemType.getFullAlphaCode)

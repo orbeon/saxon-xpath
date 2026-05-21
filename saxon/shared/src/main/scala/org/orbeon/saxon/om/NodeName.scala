@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-
 /**
   * This interface represents a node name. Actually it represents any QName, but it is intended for use
   * as an element or attribute name. Various implementations are available.

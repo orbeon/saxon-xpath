@@ -11,9 +11,6 @@ import org.orbeon.saxon.om.AxisInfo
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 object PatternMaker {
 
   /*@NotNull*/
@@ -35,7 +32,7 @@ object PatternMaker {
 
   def getAxisForPathStep(step: Expression): Int =
     if (step.isInstanceOf[AxisExpression]) {
-      AxisInfo.inverseAxis(step.asInstanceOf[AxisExpression].getAxis)
+      AxisInfo.inverseAxis(step.asInstanceOf[AxisExpression].axis)
     } else if (step.isInstanceOf[FilterExpression]) {
       getAxisForPathStep(
         step.asInstanceOf[FilterExpression].getSelectExpression)

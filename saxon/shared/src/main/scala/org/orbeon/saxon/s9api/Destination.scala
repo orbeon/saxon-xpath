@@ -13,9 +13,6 @@ import java.net.URI
 
 import java.util.function.Consumer
 
-
-
-
 /**
   * A <tt>Destination</tt> represents a place where XDM values can be sent. It is used, for example,
   * to define the output of a transformation or query.

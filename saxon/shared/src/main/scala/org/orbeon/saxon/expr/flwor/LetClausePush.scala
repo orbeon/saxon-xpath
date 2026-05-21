@@ -9,9 +9,6 @@ import org.orbeon.saxon.om.Sequence
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Implements the changes to a tuple stream effected by the Let clause in a FLWOR expression
   */
@@ -27,7 +24,7 @@ class LetClausePush(outputter: Outputter,
   override def processTuple(context: XPathContext): Unit = {
     val `val`: Sequence =
       letClause.getEvaluator.evaluate(letClause.getSequence, context)
-    context.setLocalVariable(letClause.getRangeVariable.getLocalSlotNumber,
+    context.setLocalVariable(letClause.rangeVariable.getLocalSlotNumber,
                              `val`)
     destination.processTuple(context)
   }

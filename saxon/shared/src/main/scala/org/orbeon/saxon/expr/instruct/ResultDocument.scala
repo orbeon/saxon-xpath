@@ -20,7 +20,7 @@ import org.orbeon.saxon.trans.{Err, XPathException, XmlProcessingException}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -299,12 +299,10 @@ class ResultDocument(private val globalProperties: Properties,
 
   private var async: Boolean = false
 
-  @BeanProperty
   var validationOptions: ParseOptions = _
 
   private val serializationAttributes: Map[StructuredQName, Operand] = new HashMap(serializationAttris.size)
 
-  @BooleanBeanProperty
   var resolveAgainstStaticBase: Boolean = false
 
   if (href != null) {
@@ -406,7 +404,7 @@ class ResultDocument(private val globalProperties: Properties,
                         contextInfo: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextInfo)
     if (isAsynchronous) {
-      var e: Expression = getParentExpression
+      var e: Expression = parentExpression
       while (e != null) {
         if (e.isInstanceOf[LetExpression] &&
           ExpressionTool.dependsOnVariable(
@@ -414,7 +412,7 @@ class ResultDocument(private val globalProperties: Properties,
             Array(e.asInstanceOf[LetExpression]))) {
           e.asInstanceOf[LetExpression].setNeedsEagerEvaluation(true)
         }
-        e = e.getParentExpression
+        e = e.parentExpression
       }
     }
     this

@@ -11,7 +11,6 @@
 
 package org.orbeon.saxon.om
 
-
 class QNameException(var message: String) extends Exception {
   override def getMessage: String = message
 }

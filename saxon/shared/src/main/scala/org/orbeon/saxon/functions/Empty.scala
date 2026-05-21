@@ -21,7 +21,6 @@ import org.orbeon.saxon.value.BooleanValue
 
 import Empty._
 
-
 object Empty {
 
   private def empty(iter: SequenceIterator): Boolean = {
@@ -53,7 +52,7 @@ class Empty extends Aggregate {
     }
     //    empty(A|B) => empty(A) and empty(B)
     if (arguments(0)
-      .isInstanceOf[VennExpression] && !visitor.isOptimizeForStreaming) {
+      .isInstanceOf[VennExpression] && !visitor.optimizeForStreaming) {
       val v: VennExpression = arguments(0).asInstanceOf[VennExpression]
       if (v.getOperator == Token.UNION) {
         val e0: Expression = SystemFunction.makeCall("empty",
@@ -70,7 +69,6 @@ class Empty extends Aggregate {
 
   // Rewrite
   // Rewrite
-
 
   /*Evaluate the expression
 
@@ -98,11 +96,11 @@ class Empty extends Aggregate {
           return Literal.makeLiteral(BooleanValue.TRUE, e2)
         }
         // Don't sort the argument
-        setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.isOptimizeForStreaming))
+        setArg(0, getArg(0).unordered(retainAllNodes = false, forStreaming = visitor.optimizeForStreaming))
         //    empty(A|B) => empty(A) and empty(B)
         if (getArg(0).isInstanceOf[VennExpression]) {
           val v: VennExpression = getArg(0).asInstanceOf[VennExpression]
-          if (v.getOperator == Token.UNION && !visitor.isOptimizeForStreaming) {
+          if (v.getOperator == Token.UNION && !visitor.optimizeForStreaming) {
             val e0: Expression = SystemFunction.makeCall(
               "empty",
               getRetainedStaticContext,

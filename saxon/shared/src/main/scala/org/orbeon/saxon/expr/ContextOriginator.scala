@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-
 /**
   * Represents a construct that is responsible for originating a new context; used in analysing the
   * stack of context objects for diagnostics

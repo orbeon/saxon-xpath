@@ -8,7 +8,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-
 object AtomicSequenceConverter {
 
   val TO_STRING_MAPPER: ToStringMappingFunction = new ToStringMappingFunction()

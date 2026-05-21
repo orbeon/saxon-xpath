@@ -23,7 +23,6 @@ import org.orbeon.saxon.value.Whitespace
 
 import ContainsToken._
 
-
 object ContainsToken {
 
   private def containsToken(arg0: SequenceIterator,

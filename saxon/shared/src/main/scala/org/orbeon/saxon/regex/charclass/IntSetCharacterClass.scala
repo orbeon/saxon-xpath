@@ -5,9 +5,6 @@ import org.orbeon.saxon.z.IntSet
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class IntSetCharacterClass(@BeanProperty var intSet: IntSet)
     extends CharacterClass {
 

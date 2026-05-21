@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import NamePool._
 
-
 /**
  * A NamePool holds a collection of expanded names, each containing a namespace URI,
  * and a local name.

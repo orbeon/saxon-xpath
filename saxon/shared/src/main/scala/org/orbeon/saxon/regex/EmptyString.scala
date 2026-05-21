@@ -3,9 +3,6 @@ package org.orbeon.saxon.regex
 
 import EmptyString._
 
-
-
-
 object EmptyString {
 
   val THE_INSTANCE: EmptyString = new EmptyString()

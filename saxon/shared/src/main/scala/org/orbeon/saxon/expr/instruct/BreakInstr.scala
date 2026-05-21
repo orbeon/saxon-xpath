@@ -17,9 +17,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Collections
 
-
-
-
 /**
   * A compiled xsl:break instruction. The effect of executing this instruction is to register with the
   * dynamic context that a tail call on a pseudo-function break() has been made; the enclosing xsl:iterate

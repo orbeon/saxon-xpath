@@ -19,7 +19,6 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.stream.StreamResult
 import scala.util.control.Breaks._
 
-
 /**
  * Emitter: This abstract class defines methods that must be implemented by
  * components that format SAXON output. There is one emitter for XML,

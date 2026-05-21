@@ -7,7 +7,6 @@ import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
 import scala.beans.BeanProperty
 
-
 class UserFunctionParameter extends LocalBinding {
 
   @BeanProperty
@@ -23,7 +22,6 @@ class UserFunctionParameter extends LocalBinding {
 
   private var isIndexed: Boolean = false
 
-  @BeanProperty
   var functionStreamability: FunctionStreamability.FunctionStreamability =
     FunctionStreamability.UNCLASSIFIED
 

@@ -7,7 +7,6 @@ import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.{Item, One, ZeroOrOne}
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-
 class String_1 extends ScalarSystemFunction {
 
   override def evaluate(arg: Item, context: XPathContext): AtomicValue = {

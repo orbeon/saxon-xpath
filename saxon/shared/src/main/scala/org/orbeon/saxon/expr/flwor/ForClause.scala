@@ -12,17 +12,13 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{Cardinality, SequenceType}
 
 import java.util.{ArrayList, List}
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 class ForClause extends Clause {
 
-  @BeanProperty
   var rangeVariable: LocalVariableBinding = _
 
-  @BeanProperty
   var positionVariable: LocalVariableBinding = _
 
   private var sequenceOp: Operand = _
@@ -156,7 +152,7 @@ class ForClause extends Clause {
         return false
       breakable {
         for (op <- 0 until 2) {
-          val thisVar: Array[Binding] = Array(this.getRangeVariable)
+          val thisVar: Array[Binding] = Array(this.rangeVariable)
           if (positionVariable != null && operands(op).isInstanceOf[VariableReference] && ! changed) {
             val varRefs = new ArrayList[VariableReference]()
             ExpressionTool.gatherVariableReferences(condition, positionVariable, varRefs)
@@ -193,12 +189,12 @@ class ForClause extends Clause {
       }
     }
     if (positionVariable == null) {
-      val thisVar: Array[Binding] = Array(this.getRangeVariable)
+      val thisVar: Array[Binding] = Array(this.rangeVariable)
       if (opt.isVariableReplaceableByDot(condition, thisVar)) {
         val replacement = new ContextItemExpression()
         val found       = ExpressionTool.inlineVariableReferences(
           condition,
-          this.getRangeVariable,
+          this.rangeVariable,
           replacement)
         if (found) {
           var cit       = config.makeContextItemStaticInfo(getSequence.getItemType, maybeUndefined = true)
@@ -279,9 +275,9 @@ class ForClause extends Clause {
 
   def explain(out: ExpressionPresenter): Unit = {
     out.startElement("for")
-    out.emitAttribute("var", getRangeVariable.getVariableQName)
-    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
-    val posVar: LocalVariableBinding = getPositionVariable
+    out.emitAttribute("var", rangeVariable.getVariableQName)
+    out.emitAttribute("slot", rangeVariable.getLocalSlotNumber.toString)
+    val posVar: LocalVariableBinding = positionVariable
     if (posVar != null) {
       out.emitAttribute("at", posVar.getVariableQName)
       out.emitAttribute("at-slot", posVar.getLocalSlotNumber.toString)
@@ -295,7 +291,7 @@ class ForClause extends Clause {
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.cat(' ')
-    val posVar: LocalVariableBinding = getPositionVariable
+    val posVar: LocalVariableBinding = positionVariable
     if (posVar != null) {
       fsb.append("at $")
       fsb.append(posVar.getVariableQName.getDisplayName)
@@ -311,7 +307,7 @@ class ForClause extends Clause {
     fsb.append("for $")
     fsb.append(rangeVariable.getVariableQName.getDisplayName)
     fsb.cat(' ')
-    val posVar: LocalVariableBinding = getPositionVariable
+    val posVar: LocalVariableBinding = positionVariable
     if (posVar != null) {
       fsb.append("at $")
       fsb.append(posVar.getVariableQName.getDisplayName)

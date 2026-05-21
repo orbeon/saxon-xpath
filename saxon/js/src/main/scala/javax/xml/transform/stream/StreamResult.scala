@@ -4,7 +4,6 @@ import java.io.{OutputStream, Writer}
 
 import javax.xml.transform.Result
 
-
 object StreamResult {
   val FEATURE = "http://javax.xml.transform.stream.StreamResult/feature"
 }

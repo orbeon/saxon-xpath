@@ -7,7 +7,6 @@ import org.orbeon.saxon.lib.Logger
 import org.orbeon.saxon.serialize.MessageEmitter
 import org.orbeon.saxon.utils.Configuration
 
-
 // ORBEON: JVM only
 // Used by `Configuration` only.
 class DynamicLoader {

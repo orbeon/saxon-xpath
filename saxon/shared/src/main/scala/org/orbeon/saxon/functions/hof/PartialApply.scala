@@ -267,7 +267,6 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
    */
   override def getExpressionName: String = "partialApply"
 
-
   /**
    * Hashcode supporting equals()
    */

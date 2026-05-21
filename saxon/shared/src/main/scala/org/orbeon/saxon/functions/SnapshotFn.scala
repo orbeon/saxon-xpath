@@ -13,7 +13,6 @@ import org.orbeon.saxon.tree.wrapper.{SnapshotNode, VirtualCopy}
 import java.util.{ArrayList, List}
 import scala.jdk.CollectionConverters._
 
-
 object SnapshotFn {
 
   def snapshotSequence(nodes: SequenceIterator, context: XPathContext): SequenceIterator =
@@ -26,7 +25,7 @@ object SnapshotFn {
       case nodeInfo: NodeInfo =>
         if (nodeInfo.getParent == null) {
           val vc = VirtualCopy.makeVirtualCopy(nodeInfo)
-          vc.getTreeInfo.setCopyAccumulators(true)
+          vc.getTreeInfo.copyAccumulators = true
           vc
         } else {
           SnapshotNode.makeSnapshot(nodeInfo)

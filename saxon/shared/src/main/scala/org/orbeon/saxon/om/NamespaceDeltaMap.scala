@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-
 /**
  * Holds a set of namespace bindings as a simple immutable map from prefixes to URIs.
  *
@@ -46,5 +45,4 @@ class NamespaceDeltaMap
   override def remove(prefix: String): NamespaceDeltaMap =
     super.remove(prefix).asInstanceOf[NamespaceDeltaMap]
 }
-
 

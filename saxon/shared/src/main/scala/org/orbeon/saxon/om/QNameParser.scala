@@ -11,7 +11,6 @@ import org.orbeon.saxon.query.XQueryParser
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.Whitespace
 
-
 /**
  * Parser to handle QNames in either lexical QName or EQName syntax, including resolving any prefix against
  * a URIResolver. The parser can be instantiated with various options to control the returned error code,

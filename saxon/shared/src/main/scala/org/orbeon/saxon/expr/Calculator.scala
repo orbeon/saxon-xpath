@@ -15,7 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
 import org.orbeon.saxon.z.IntHashMap
 
-
 /**
   * This class evaluates arithmetic expressions; it acts as a helper class to the ArithmeticExpression
   * class. There are many subclasses for the different kinds of arithmetic expression, and static methods

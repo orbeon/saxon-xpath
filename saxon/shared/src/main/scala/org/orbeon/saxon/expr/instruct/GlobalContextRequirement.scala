@@ -15,10 +15,7 @@ import java.util.ArrayList
 
 import java.util.List
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
+import scala.beans.BeanProperty
 
 /**
   * Information about the requirements placed by a query or stylesheet on the global
@@ -31,17 +28,13 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
   */
 class GlobalContextRequirement {
 
-  @BooleanBeanProperty
   var mayBeOmitted: Boolean = true
 
-  @BooleanBeanProperty
   var absentFocus: Boolean = _
 
 // XQuery only
-  @BooleanBeanProperty
   var external: Boolean = _
 
-  @BeanProperty
   var requiredItemTypes: List[ItemType] = new ArrayList()
 
 // Used in XQuery only
@@ -62,7 +55,7 @@ class GlobalContextRequirement {
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("glob")
     var use: String = null
-    use = if (isMayBeOmitted) if (isAbsentFocus) "pro" else "opt" else "req"
+    use = if (mayBeOmitted) if (absentFocus) "pro" else "opt" else "req"
     out.emitAttribute("use", use)
     if (getRequiredItemType != AnyItemType) {
       out.emitAttribute("type", getRequiredItemType.toExportString)

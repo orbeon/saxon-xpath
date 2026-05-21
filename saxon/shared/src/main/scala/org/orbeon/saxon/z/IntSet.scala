@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.z
 
-
 /**
  * A set of integers represented as int values
  */

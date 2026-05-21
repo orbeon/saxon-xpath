@@ -6,7 +6,6 @@ import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.value.{AtomicValue, EmptySequence}
 
-
 object EmptyIterator {
 
   private val theInstance: EmptyIterator = new EmptyIterator

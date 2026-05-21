@@ -11,8 +11,6 @@ import java.io.PrintStream
 
 import javax.xml.transform.stream.StreamResult
 
-import scala.beans.BeanProperty
-
 //remove if not needed
 
 /**
@@ -24,7 +22,6 @@ class StandardLogger extends Logger {
 
   private var out: PrintStream = System.err
 
-  @BeanProperty
   var threshold: Int = Logger.INFO
 
   private var mustClose: Boolean = false

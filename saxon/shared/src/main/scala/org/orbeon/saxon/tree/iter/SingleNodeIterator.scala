@@ -8,7 +8,6 @@ import java.util.EnumSet
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
-
 object SingleNodeIterator {
 
   def makeIterator(item: NodeInfo): AxisIterator =

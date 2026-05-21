@@ -17,7 +17,6 @@ import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object LoopLifter {
 
   def process(exp: Expression,
@@ -28,16 +27,16 @@ object LoopLifter {
     } else {
       val lifter = new LoopLifter(exp,
         visitor.getConfiguration,
-        visitor.isOptimizeForStreaming)
+        visitor.optimizeForStreaming)
       val rsc = exp.getRetainedStaticContext
       lifter.gatherInfo(exp)
       lifter.loopLift(exp)
       lifter.root.setRetainedStaticContext(rsc)
-      lifter.root.setParentExpression(null)
+      lifter.root.parentExpression = null
       if (lifter.changed) {
         ExpressionTool.resetPropertiesWithinSubtree(lifter.root)
         val e2 = lifter.root.optimize(visitor, contextInfo)
-        e2.setParentExpression(null)
+        e2.parentExpression = null
         e2
       } else {
         lifter.root
@@ -93,7 +92,7 @@ class LoopLifter(@BeanProperty var root: Expression,
 
   private def getContainingConditional(exp: Expression): Expression = {
     var _exp = exp
-    var parent = _exp.getParentExpression
+    var parent = _exp.parentExpression
     while (parent != null) {
       parent match {
         case _: ConditionalInstruction =>
@@ -106,7 +105,7 @@ class LoopLifter(@BeanProperty var root: Expression,
         case _ =>
       }
       _exp = parent
-      parent = parent.getParentExpression
+      parent = parent.parentExpression
     }
     null
   }
@@ -127,7 +126,7 @@ class LoopLifter(@BeanProperty var root: Expression,
             e.printStackTrace()
             throw e
         }
-        parent = parent.getParentExpression
+        parent = parent.parentExpression
       }
     }
   }
@@ -142,7 +141,7 @@ class LoopLifter(@BeanProperty var root: Expression,
         } else {
           var child = exp
           val expInfo = expInfoMap.get(exp)
-          var parent = exp.getParentExpression
+          var parent = exp.parentExpression
           breakable {
             while (parent != null) {
               if (expInfo.dependees.get(parent)) {
@@ -160,7 +159,7 @@ class LoopLifter(@BeanProperty var root: Expression,
                 break()
               }
               child = parent
-              parent = parent.getParentExpression
+              parent = parent.parentExpression
             }
           }
         }
@@ -175,7 +174,7 @@ class LoopLifter(@BeanProperty var root: Expression,
     val childInfo = expInfoMap.get(child)
     val actionInfo = expInfoMap.get(newAction)
     val hoist = childInfo.loopLevel - actionInfo.loopLevel
-    val oldParent = child.getParentExpression
+    val oldParent = child.parentExpression
     val oldOperand = ExpressionTool.findOperand(oldParent, child)
     assert(oldOperand != null)
     val let = new LetExpression
@@ -219,7 +218,7 @@ class LoopLifter(@BeanProperty var root: Expression,
     val `var` = new LocalVariableReference(let.asInstanceOf[StructuredQName])
     val properties = child.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC
     `var`.setStaticType(`type`, null, properties)
-    `var`.setInLoop(true)
+    `var`.inLoop = true
     let.addReference(`var`, isLoopingReference = true)
     ExpressionTool.copyLocationInfo(child, `var`)
     oldOperand.setChildExpression(`var`)

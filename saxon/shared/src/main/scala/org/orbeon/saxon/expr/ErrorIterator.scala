@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A SequenceIterator that throws an exception as soon as its next() method is called. Used when
   * the method that returns the iterator isn't allowed to throw a checked exception itself.

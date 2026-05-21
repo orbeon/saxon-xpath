@@ -52,7 +52,7 @@ class OrExpression(val p1: Expression, val p2: Expression)
     val e = super.optimize(visitor, contextItemType)
     if (e ne this) return e
     // If this is a top-level or-expression then try to replace multiple branches with a general comparison
-    if (!getParentExpression.isInstanceOf[OrExpression]) {
+    if (!parentExpression.isInstanceOf[OrExpression]) {
       val e2 = visitor.obtainOptimizer.tryGeneralComparison(visitor, contextItemType, this)
       if (e2 != null && (e2 ne this)) return e2
     }

@@ -159,7 +159,7 @@ object DocumentFn {
         if (packageData.isInstanceOf[StylesheetPackage] &&
           packageData
             .asInstanceOf[StylesheetPackage]
-            .isStripsTypeAnnotations) {
+            .stripsTypeAnnotations) {
           s = config.getAnnotationStripper(s)
         }
         val map: PathMap = controller.getPathMapForDocumentProjection
@@ -324,11 +324,11 @@ object DocumentFn {
       packageData.asInstanceOf[StylesheetPackage].getSpaceStrippingRule !=
         NoElementsSpaceStrippingRule.getInstance) {
       val name: String =
-        packageData.asInstanceOf[StylesheetPackage].getPackageName
+        packageData.asInstanceOf[StylesheetPackage].packageName
       if (name != null) {
         documentKey = name + " " +
           " " +
-          documentKey //  packageData.asInstanceOf[StylesheetPackage].getPackageVersion
+          documentKey //  packageData.asInstanceOf[StylesheetPackage].packageVersion
       }
     }
     new DocumentURI(documentKey)

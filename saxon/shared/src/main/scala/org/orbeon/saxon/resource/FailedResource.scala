@@ -9,16 +9,11 @@ import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.trans.XPathException
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * FailedResource represents an item in a collection that could not be processed because of some kind of error
   */
 class FailedResource(private var uri: String,
-                     @BeanProperty var error: XPathException)
+                     var error: XPathException)
     extends Resource {
 
   /**

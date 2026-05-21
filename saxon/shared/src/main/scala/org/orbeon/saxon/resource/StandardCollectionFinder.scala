@@ -15,8 +15,6 @@ import org.orbeon.saxon.lib.{CollectionFinder, ResourceCollection}
 import org.orbeon.saxon.resource.StandardCollectionFinder._
 import org.orbeon.saxon.trans.{Err, XPathException}
 
-
-
 /**
  * Default implementation of the CollectionFinder interface. The standard CollectionFinder recognizes four
  * types of collection:

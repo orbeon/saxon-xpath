@@ -11,7 +11,6 @@ import org.orbeon.saxon.functions.SystemFunction
 import org.orbeon.saxon.om.{Function, Sequence}
 import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
-
 /**
   * This class implements the function function-arity(), which is a standard function in XPath 3.0
   */

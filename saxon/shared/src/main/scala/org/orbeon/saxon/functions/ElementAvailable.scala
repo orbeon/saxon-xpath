@@ -18,7 +18,6 @@ import org.orbeon.saxon.om.StandardNames._
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.BooleanValue
 
-
 /**
  * This class supports the XSLT element-available function.  Note that when running in a 2.0 processor,
  * it only looks for XSLT 2.0 instructions; but when running in a 3.0 processor, it recognizes all

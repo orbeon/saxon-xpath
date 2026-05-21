@@ -27,9 +27,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.SequenceType
 
-
-
-
 class SuppliedParameterReference(var slotNumber: Int) extends Expression {
 
   var `type`: SequenceType = _

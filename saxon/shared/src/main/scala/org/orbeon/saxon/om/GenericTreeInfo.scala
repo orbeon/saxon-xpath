@@ -18,7 +18,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
-
 class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   private var root: NodeInfo = _

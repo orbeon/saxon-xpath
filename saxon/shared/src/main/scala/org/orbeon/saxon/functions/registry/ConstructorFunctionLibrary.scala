@@ -40,7 +40,6 @@ import org.orbeon.saxon.value.SequenceType
 
 import java.util.List
 
-
 /**
  * The ConstructorFunctionLibrary represents the collection of constructor functions for atomic types. These
  * are provided for the built-in types such as xs:integer and xs:date, and also for user-defined atomic types.
@@ -149,7 +148,7 @@ class ConstructorFunctionLibrary(private var config: Configuration)
               `type`.asInstanceOf[AtomicType],
               true)
             if (arguments(0).isInstanceOf[StringLiteral]) {
-              cast.setOperandIsStringLiteral(true)
+              cast.operandIsStringLiteral = true
             }
             return cast
           }

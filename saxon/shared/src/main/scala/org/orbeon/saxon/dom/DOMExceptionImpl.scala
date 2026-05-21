@@ -5,7 +5,6 @@ import org.w3c.dom.DOMException
 
 import DOMExceptionImpl._
 
-
 object DOMExceptionImpl {
 
   /**

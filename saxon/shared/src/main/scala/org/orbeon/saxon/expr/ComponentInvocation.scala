@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.trans.SymbolicName
 
-
 /**
   * Represents an expression or instruction such as call-template, or a user function call, or
   * a global variable reference, that needs to be bound to a target component, and can potentially

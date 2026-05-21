@@ -5,9 +5,6 @@ import org.orbeon.saxon.z.IntSet
 
 import java.util.function.IntPredicate
 
-
-
-
 trait CharacterClass extends IntPredicate {
 
   def isDisjoint(other: CharacterClass): Boolean

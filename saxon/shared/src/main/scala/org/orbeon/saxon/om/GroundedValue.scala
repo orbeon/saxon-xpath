@@ -13,7 +13,6 @@ import org.orbeon.saxon.tree.iter.UnfailingIterator
 
 import java.{util => ju}
 
-
 /**
   * A value that exists in memory and that can be directly addressed
   * @since 9.5.  Generified in 9.9.

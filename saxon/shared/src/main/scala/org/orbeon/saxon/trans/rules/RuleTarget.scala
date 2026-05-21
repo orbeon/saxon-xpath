@@ -5,9 +5,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * The target of a rule, typically a TemplateRule.
   */

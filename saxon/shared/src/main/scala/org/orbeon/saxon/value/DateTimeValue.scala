@@ -18,7 +18,6 @@ import java.time.temporal.{ChronoField, TemporalAccessor, TemporalField, Unsuppo
 import java.util._
 import scala.beans.BeanProperty
 
-
 object DateTimeValue {
 
   def getCurrentDateTime(context: XPathContext): DateTimeValue = {
@@ -111,7 +110,7 @@ object DateTimeValue {
     v.hour = time.getHour
     v.minute = time.getMinute
     v.second = time.getSecond
-    v.nanosecond = time.getNanosecond
+    v.nanosecond = time.nanosecond
     v.setTimezoneInMinutes(Math.max(tz1, tz2))
     v.typeLabel = BuiltInAtomicType.DATE_TIME
     v.hasNoYearZero = date.hasNoYearZero
@@ -121,7 +120,7 @@ object DateTimeValue {
   def makeDateTimeValue(s: CharSequence,
                         rules: ConversionRules): ConversionResult = {
     val dt = new DateTimeValue
-    dt.hasNoYearZero = !rules.isAllowYearZero
+    dt.hasNoYearZero = !rules.allowYearZero
     val tok = new StringTokenizer(
       Whitespace.trimWhitespace(s).toString,
       "-:.+TZ",
@@ -150,9 +149,9 @@ object DateTimeValue {
       return badDate("Year is less than four digits", s)
     if (part.length > 4 && part.charAt(0) == '0')
       return badDate("When year exceeds 4 digits, leading zeroes are not allowed", s)
-    if (dt.year == 0 && !rules.isAllowYearZero)
+    if (dt.year == 0 && !rules.allowYearZero)
       return badDate("Year zero is not allowed", s)
-    if (era < 0 && !rules.isAllowYearZero)
+    if (era < 0 && !rules.allowYearZero)
       dt.year += 1
     if (!tok.hasMoreElements)
       return badDate("Too short", s)
@@ -449,10 +448,8 @@ class DateTimeValue extends CalendarValue
   var minute: Byte = _
   @BeanProperty
   var second: Byte = _
-  @BeanProperty
   var nanosecond: Int = _
   private var hasNoYearZero: Boolean = _
-
 
 //  def this(calendar: Calendar, tzSpecified: Boolean) = {
 //    this()

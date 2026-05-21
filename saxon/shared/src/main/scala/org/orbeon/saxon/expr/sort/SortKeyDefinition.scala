@@ -42,8 +42,6 @@ import java.util.Objects
 
 import java.util.Properties
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -79,7 +77,6 @@ class SortKeyDefinition extends PseudoExpression {
 
    var setContextForSortKey: Boolean = false
 
-  @BeanProperty
   var finalComparator: AtomicComparer = null
 
   override def isLiftable(forStreaming: Boolean): Boolean = false

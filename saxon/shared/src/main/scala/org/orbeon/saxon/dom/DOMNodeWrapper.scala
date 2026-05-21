@@ -649,7 +649,6 @@ class DOMNodeWrapper(var node: Node,
       }
     }
 
-
     def hasNext: Boolean = ix < attList.size
 
     def next(): NodeInfo = {

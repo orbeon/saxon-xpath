@@ -239,7 +239,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     ExpressionTool.copyLocationInfo(this, c2)
     c2.converter = converter
     c2.setRetainedStaticContext(getRetainedStaticContext)
-    c2.setOperandIsStringLiteral(isOperandIsStringLiteral)
+    c2.operandIsStringLiteral = operandIsStringLiteral
     c2
   }
 

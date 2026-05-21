@@ -116,7 +116,7 @@ class ParseXmlFragment extends SystemFunction {
         val pd = getRetainedStaticContext.getPackageData
         if (pd.isInstanceOf[StylesheetPackage]) {
           options.setSpaceStrippingRule(pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
-          if (pd.asInstanceOf[StylesheetPackage].isStripsTypeAnnotations) s = configuration.getAnnotationStripper(s).asInstanceOf[Builder]
+          if (pd.asInstanceOf[StylesheetPackage].stripsTypeAnnotations) s = configuration.getAnnotationStripper(s).asInstanceOf[Builder]
         }
         else options.setSpaceStrippingRule(IgnorableSpaceStrippingRule.getInstance)
         options.setErrorHandler(errorHandler)

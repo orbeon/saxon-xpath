@@ -21,7 +21,6 @@ class PipelineConfiguration {
 
   var hostLanguage: HostLanguage.HostLanguage = HostLanguage.XSLT
 
-
   private var components: Map[String, Any] = _
 
   private var context: XPathContext = _

@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.query.AnnotationList
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-
 /**
   * XDM 3.0 introduces a third kind of item, beyond nodes and atomic values: the function. Functions
   * implement this interface.

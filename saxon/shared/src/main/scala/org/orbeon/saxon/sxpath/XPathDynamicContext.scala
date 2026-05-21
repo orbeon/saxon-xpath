@@ -18,7 +18,6 @@ import org.orbeon.saxon.value.SequenceType
 
 import javax.xml.transform.URIResolver
 
-
 /**
  * This object represents the dynamic XPath execution context for use in the free-standing Saxon XPath API.
  * The dynamic context holds the context item and the values of external variables used by the XPath expression.
@@ -76,7 +75,7 @@ class XPathDynamicContext(
       if (slot >= stackFrameMap.getNumberOfVariables)
         null
       else
-        stackFrameMap.getVariableMap.get(slot)
+        stackFrameMap.variableMap.get(slot)
     if (variable.getVariableQName != expectedName) {
       throw new XPathException(
         "Supplied XPathVariable is bound to the wrong slot: perhaps it was created using a different static context")
@@ -111,7 +110,7 @@ class XPathDynamicContext(
   def checkExternalVariables(stackFrameMap: SlotManager, numberOfExternals: Int): Unit = {
     val stack = contextObject.getStackFrame.getStackFrameValues
     for (i <- 0 until numberOfExternals if stack(i) == null) {
-      val qname = stackFrameMap.getVariableMap.get(i)
+      val qname = stackFrameMap.variableMap.get(i)
       throw new XPathException("No value has been supplied for variable $" + qname.getDisplayName)
     }
   }

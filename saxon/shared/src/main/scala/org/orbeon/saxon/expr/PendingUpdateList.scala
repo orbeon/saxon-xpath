@@ -9,9 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Set
 
-
-
-
 /**
   * A PendingUpdateList is created by updating expressions in XQuery Update.
   * <p>The implementation of this interface is in Saxon-EE.</p>

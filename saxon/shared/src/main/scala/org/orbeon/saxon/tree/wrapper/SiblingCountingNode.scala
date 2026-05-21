@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.wrapper
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 /**
   * Interface that extends NodeInfo by providing a method to get the position
   * of a node relative to its siblings.

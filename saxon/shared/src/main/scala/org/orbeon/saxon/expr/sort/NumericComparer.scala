@@ -13,7 +13,6 @@ import org.orbeon.saxon.value.NumericValue
 
 import NumericComparer._
 
-
 object NumericComparer {
 
   private var THE_INSTANCE: NumericComparer = new NumericComparer()

@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.StaticProperty
 import org.orbeon.saxon.om.{Genre, Item}
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
   * An implementation of ItemType that matches any item (node or atomic value)
   */

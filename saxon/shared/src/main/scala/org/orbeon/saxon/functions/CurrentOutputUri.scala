@@ -17,9 +17,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.AnyURIValue
 
-
-
-
 class CurrentOutputUri extends SystemFunction {
 
   /**

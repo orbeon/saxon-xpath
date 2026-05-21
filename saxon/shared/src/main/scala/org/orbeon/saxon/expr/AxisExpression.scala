@@ -15,9 +15,7 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Cardinality
 import org.orbeon.saxon.z.{IntHashSet, IntIterator}
 
-import scala.beans.BeanProperty
 import scala.util.control.Breaks._
-
 
 object AxisExpression {
 
@@ -65,7 +63,7 @@ object AxisExpression {
   }
 }
 
-class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
+class AxisExpression(var axis: Int, nodeTest: NodeTest)
   extends Expression {
 
   private var test: NodeTest = nodeTest
@@ -182,7 +180,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
           getLocation)
       return Literal.makeEmptySequence
     }
-    if (contextInfo.isParentless &&
+    if (contextInfo.parentless &&
       (axis == AxisInfo.PARENT || axis == AxisInfo.ANCESTOR)) {
       if (warnings)
         visitor.issueWarning(
@@ -328,7 +326,7 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
                 else getStartingNodeDescription(contentType)),
               getLocation
             )
-          } else if (axis == AxisInfo.CHILD && kind == UType.TEXT && getParentExpression.isInstanceOf[Atomizer]) {
+          } else if (axis == AxisInfo.CHILD && kind == UType.TEXT && parentExpression.isInstanceOf[Atomizer]) {
             visitor.issueWarning(
               "Selecting the text nodes of an element with simple content may give the " +
                 "wrong answer in the presence of comments or processing instructions. It is usually " +
@@ -536,8 +534,8 @@ class AxisExpression(@BeanProperty var axis: Int, nodeTest: NodeTest)
               return Literal.makeEmptySequence
             }
             if (!Cardinality.allowsMany(computedCardinality) &&
-              !getParentExpression.isInstanceOf[FirstItemExpression] &&
-              !visitor.isOptimizeForPatternMatching) {
+              !parentExpression.isInstanceOf[FirstItemExpression] &&
+              !visitor.optimizeForPatternMatching) {
               return FirstItemExpression.makeFirstItemExpression(this)
             }
           }

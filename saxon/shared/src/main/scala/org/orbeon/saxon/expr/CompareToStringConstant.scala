@@ -4,13 +4,10 @@ import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap, Token}
 import org.orbeon.saxon.expr.sort.{AtomicComparer, CodepointCollatingComparer, CodepointCollator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-import scala.beans.BeanProperty
-
-
 class CompareToStringConstant(
   operand                     : Expression,
   operator                    : Int,
-  @BeanProperty var comparand : String
+  var comparand : String
 )
   extends CompareToConstant(operand) {
 

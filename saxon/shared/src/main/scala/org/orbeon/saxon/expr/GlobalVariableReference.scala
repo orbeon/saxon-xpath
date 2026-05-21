@@ -14,7 +14,6 @@ import org.orbeon.saxon.trans.{SymbolicName, Visibility, XPathException}
 
 import java.util.{HashSet, Set}
 
-
 /**
  * A reference to a global variable
  */
@@ -72,7 +71,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
     binding = target.getActor.asInstanceOf[GlobalVariable]
 
   def getTarget: Component =
-    binding.asInstanceOf[GlobalVariable].getDeclaringComponent
+    binding.asInstanceOf[GlobalVariable].declaringComponent
 
   def getFixedTarget: Component = {
     val c = getTarget
@@ -108,7 +107,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
     } else {
       // code for references to final/private variables, also used in XQuery
       val b = binding.asInstanceOf[GlobalVariable]
-      b.evaluateVariable(c, b.getDeclaringComponent)
+      b.evaluateVariable(c, b.declaringComponent)
     }
 
   override def `export`(out: ExpressionPresenter): Unit = {

@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.regex
 
-
 object LatinString {
   val SINGLE_SPACE: LatinString = new LatinString(Array(0x20.toByte))
 }

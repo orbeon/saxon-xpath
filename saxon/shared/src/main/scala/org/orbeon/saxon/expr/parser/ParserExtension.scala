@@ -66,7 +66,7 @@ object ParserExtension {
           VisibilityProvenance.DEFAULTED,
           pack,
           pack)
-        uf.setDeclaringComponent(comp)
+        uf.declaringComponent = comp
       case _ =>
     }
     var result: Expression = null
@@ -132,7 +132,7 @@ object ParserExtension {
     }
     uf.getPackageData match {
       case stylesheetPackage: StylesheetPackage =>
-        stylesheetPackage.addComponent(uf.getDeclaringComponent)
+        stylesheetPackage.addComponent(uf.declaringComponent)
       case _ =>
     }
     result

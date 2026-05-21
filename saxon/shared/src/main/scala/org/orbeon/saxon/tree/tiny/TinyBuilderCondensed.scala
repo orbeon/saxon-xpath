@@ -16,7 +16,6 @@ import org.orbeon.saxon.z.IntHashMap
 
 import scala.util.control.Breaks._
 
-
 object TinyBuilderCondensed {
 
   private def isEqual(a: CharSequence, b: CharSequence): Boolean =
@@ -46,7 +45,7 @@ class TinyBuilderCondensed(pipeConf: PipelineConfiguration)
     super.endElement()
     // This might have created a TEXTUAL_ELEMENT node
     val last = tree.numberOfNodes - 1
-    val sameDepth = tree.depth(last) == getCurrentDepth
+    val sameDepth = tree.depth(last) == currentDepth
     if (sameDepth) {
       val isTextualElement = tree.nodeKind(last) == Type.TEXTUAL_ELEMENT
       // Alternatively, see if there was a final text node

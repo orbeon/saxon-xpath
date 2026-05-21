@@ -104,7 +104,6 @@ class PushToReceiver(out: Receiver) extends Push {
     private var foundElement: Boolean = false
     outReceiver.startDocument(ReceiverOption.NONE)
 
-
     override def element(name: QName): Element = {
       if (wellFormed && foundElement) {
         throw new SaxonApiException(

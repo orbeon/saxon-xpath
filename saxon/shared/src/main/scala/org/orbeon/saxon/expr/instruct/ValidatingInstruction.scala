@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.model.SchemaType
 
-
-
-
 /**
   * Interface implemented by instructions that have validation and type attributes
   */

@@ -9,9 +9,6 @@ import org.orbeon.saxon.value.StringValue
 
 import RegexIterator._
 
-
-
-
 object RegexIterator {
 
   trait MatchHandler {

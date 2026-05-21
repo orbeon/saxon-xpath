@@ -8,7 +8,6 @@ package org.orbeon.saxon.pattern
 
 import org.orbeon.saxon.om.StructuredQName
 
-
 /**
   * Interface for tests against a QName. This is implemented by a subset of NodeTests, specifically
   * those that are only concerned with testing a name. It is used for matching error

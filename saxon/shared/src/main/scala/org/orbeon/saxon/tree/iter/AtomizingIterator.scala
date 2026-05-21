@@ -5,7 +5,6 @@ import org.orbeon.saxon.om.{AtomicSequence, Item, SequenceIterator}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.AtomicValue
 
-
 class AtomizingIterator(private var base: SequenceIterator)
   extends SequenceIterator {
 

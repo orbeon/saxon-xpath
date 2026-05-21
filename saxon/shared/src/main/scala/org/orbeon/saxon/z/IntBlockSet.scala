@@ -7,16 +7,14 @@
 
 package org.orbeon.saxon.z
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
   * Set of int values. This immutable implementation of IntSet represents a dense monotonic
   * range of integers from A to B.
   *
   * @author Michael Kay
   */
-class IntBlockSet(@BeanProperty var startPoint: Int,
-                  @BeanProperty var endPoint: Int)
+class IntBlockSet(var startPoint: Int,
+                  var endPoint: Int)
   extends IntSet {
 
   // Hashcode, evaluated lazily

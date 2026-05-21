@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{AtomizingIterator, EmptyIterator, UntypedAtomizingIterator}
 import org.orbeon.saxon.value.{AtomicValue, Cardinality, EmptySequence}
 
-import scala.beans.BooleanBeanProperty
-
-
 object Atomizer {
 
   def makeAtomizer(sequence: Expression, role: RoleDiagnostic): Expression =
@@ -111,7 +108,6 @@ object Atomizer {
 class Atomizer(sequence: Expression, role: RoleDiagnostic)
   extends UnaryExpression(sequence) {
 
-  @BooleanBeanProperty
   var untyped: Boolean = false
 
   private var singleValued: Boolean = false
@@ -122,7 +118,6 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
       operandItemType = getBaseExpression.getItemType
     operandItemType
   }
-
 
   private var roleDiagnostic: RoleDiagnostic = role
   sequence.setFlattened(true)
@@ -171,7 +166,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           }
         }
         operand
-      case of: ValueOf if ! ReceiverOption.contains(of.getOptions, ReceiverOption.DISABLE_ESCAPING) =>
+      case of: ValueOf if ! ReceiverOption.contains(of.options, ReceiverOption.DISABLE_ESCAPING) =>
         of.convertToCastAsString
       case _ =>
         this.setBaseExpression(operand)
@@ -248,7 +243,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
       if (th.isSubType(operand.getItemType, BuiltInAtomicType.ANY_ATOMIC))
         return operand
       operand match {
-        case valueOf: ValueOf if ! ReceiverOption.contains(valueOf.getOptions, ReceiverOption.DISABLE_ESCAPING) =>
+        case valueOf: ValueOf if ! ReceiverOption.contains(valueOf.options, ReceiverOption.DISABLE_ESCAPING) =>
           val cast = valueOf.convertToCastAsString
           return cast.optimize(visitor, contextInfo)
         case assignation @ (_: LetExpression | _: ForExpression) =>
@@ -275,7 +270,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
         case _ =>
       }
       if (untyped && operand.isInstanceOf[AxisExpression] &&
-        operand.asInstanceOf[AxisExpression].getAxis == AxisInfo.ATTRIBUTE &&
+        operand.asInstanceOf[AxisExpression].axis == AxisInfo.ATTRIBUTE &&
         operand
           .asInstanceOf[AxisExpression]
           .getNodeTest
@@ -293,7 +288,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           .isInstanceOf[NodeTest]) {
           checks = AttributeGetter.CHECK_CONTEXT_ITEM_IS_NODE
         }
-        ag.setRequiredChecks(checks)
+        ag.requiredChecks = checks
         ExpressionTool.copyLocationInfo(this, ag)
         return ag
       }

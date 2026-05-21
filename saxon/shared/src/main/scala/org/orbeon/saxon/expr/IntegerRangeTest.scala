@@ -18,7 +18,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value._
 
-
 class IntegerRangeTest(value: Expression, min: Expression, max: Expression)
   extends Expression {
 

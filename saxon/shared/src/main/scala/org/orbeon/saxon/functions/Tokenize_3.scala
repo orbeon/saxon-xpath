@@ -15,9 +15,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import org.orbeon.saxon.value.EmptySequence
 
-
-
-
 class Tokenize_3 extends RegexFunction {
 
    def allowRegexMatchingEmptyString(): Boolean = false

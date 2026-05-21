@@ -69,7 +69,7 @@ class FunctionLookup extends ContextAccessorFunction {
       val fi = lib.getFunctionItem(sn, ic)
       fi match {
         case f: UserFunction =>
-          val vis = f.getDeclaredVisibility
+          val vis = f.declaredVisibility
           if (vis == Visibility.ABSTRACT)
             return null
         case _ =>
@@ -114,7 +114,7 @@ class FunctionLookup extends ContextAccessorFunction {
         case _ =>
       }
       val target = fi match {
-        case f: UserFunction => f.getDeclaringComponent
+        case f: UserFunction => f.declaringComponent
         case _               => null
       }
       val agent: ExportAgent = out => makeFunctionCall(Literal.makeLiteral(qname), Literal.makeLiteral(arity)).`export`(out)

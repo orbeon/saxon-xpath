@@ -21,9 +21,6 @@ import org.orbeon.saxon.value.StringValue
 
 import UnparsedEntity._
 
-
-
-
 object UnparsedEntity {
 
   var URI: Int = 0

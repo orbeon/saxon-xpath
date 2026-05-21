@@ -19,7 +19,6 @@ import org.orbeon.saxon.value.{CalendarValue, DateTimeValue}
 import java.{util => ju}
 import javax.xml.transform.URIResolver
 
-
 /**
   * This class is an implementation of XPathContext used when evaluating constant sub-expressions at
   * compile time.

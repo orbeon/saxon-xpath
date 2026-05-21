@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import OutputterEvent._
 
-
-
-
 object OutputterEvent {
 
   class StartDocument(var properties: Int) extends OutputterEvent {

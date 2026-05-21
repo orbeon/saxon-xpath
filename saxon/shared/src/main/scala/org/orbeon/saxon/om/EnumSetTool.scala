@@ -3,9 +3,6 @@ package org.orbeon.saxon.om
 
 import java.util.EnumSet
 
-
-
-
 object EnumSetTool {
 
   def intersect[P <: Enum[P]](a: EnumSet[P], b: EnumSet[P]): EnumSet[P] = {

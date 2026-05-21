@@ -12,7 +12,6 @@ import java.util.ArrayList
 
 import java.util.Iterator
 
-
 /**
   * This class is a NamespaceResolver that modifies an underyling NamespaceResolver
   * by changing the mapping of the null prefix to be a specified namespace, rather than

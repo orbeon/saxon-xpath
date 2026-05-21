@@ -103,7 +103,7 @@ object WithParam {
           out.emitAttribute("flags", flags)
         }
         val options: ExpressionPresenter.ExportOptions =
-          out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+          out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
         if (param.getRequiredType != SequenceType.ANY_SEQUENCE) {
           out.emitAttribute("as", param.getRequiredType.toAlphaCode)
         }

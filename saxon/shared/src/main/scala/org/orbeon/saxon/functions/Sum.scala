@@ -8,7 +8,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value._
 
-
 object Sum {
 
   def total(

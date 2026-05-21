@@ -14,7 +14,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Navigator
 
-
 object FailRuleSet {
   val getInstance: FailRuleSet = new FailRuleSet
 }

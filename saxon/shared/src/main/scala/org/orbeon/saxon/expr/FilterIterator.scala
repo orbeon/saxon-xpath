@@ -11,7 +11,6 @@ import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.om.{FocusIterator, Item, NodeInfo, SequenceIterator}
 import org.orbeon.saxon.value._
 
-
 /**
  * A FilterIterator filters an input sequence using a filter expression. Note that a FilterIterator
  * is not used where the filter is a constant number (PositionFilter is used for this purpose instead),

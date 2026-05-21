@@ -3,9 +3,6 @@ package org.orbeon.saxon.s9api
 
 import Push._
 
-
-
-
 object Push {
 
   trait Container {

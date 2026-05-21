@@ -10,9 +10,6 @@ import org.orbeon.saxon.expr.OperandUsage.OperandUsage
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 object OperandRole {
 
   val SETS_NEW_FOCUS: Int = 1

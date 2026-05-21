@@ -6,7 +6,6 @@ import org.orbeon.saxon.lib.Feature
 import org.orbeon.saxon.om.{Sequence, ZeroOrOne}
 import org.orbeon.saxon.value.StringValue
 
-
 object EnvironmentVariable {
 
   private def getVariable(environVar: StringValue, context: XPathContext): StringValue = {

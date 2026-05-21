@@ -16,7 +16,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import scala.beans.BeanProperty
 
-
 abstract class AbstractStaticContext extends StaticContext {
 
   private var baseURI: String = null
@@ -43,7 +42,6 @@ abstract class AbstractStaticContext extends StaticContext {
 
   def getDefaultElementNamespace: String = defaultElementNamespace
 
-  @BeanProperty
   var warningHandler: BiConsumer[String, Location] = (message, locator) => {
     val incident: XmlProcessingIncident =
       new XmlProcessingIncident(message, SaxonErrorCode.SXWN9000, locator)
@@ -93,7 +91,7 @@ abstract class AbstractStaticContext extends StaticContext {
   }
 
   def issueWarning(s: String, locator: Location): Unit =
-    getWarningHandler.accept(s, locator)
+    warningHandler.accept(s, locator)
 
   def getSystemId: String = ""
 

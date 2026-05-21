@@ -16,7 +16,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.Attributes
 
-
 /**
  * AttributeCollectionImpl is an implementation of the SAX2 interface Attributes.
  * <p>As well as providing the information required by the SAX2 interface, an

@@ -3,7 +3,6 @@ package javax.xml.transform.dom
 import javax.xml.transform.Source
 import org.w3c.dom.Node
 
-
 object DOMSource {
   val FEATURE = "http://javax.xml.transform.dom.DOMSource/feature"
 }

@@ -13,9 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.tree.iter.ReversibleIterator
 
-
-
-
 class LastItemExpression(base: Expression) extends SingleItemFilter(base) {
 
   /*@NotNull*/

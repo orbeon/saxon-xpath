@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.jiter
 
 import java.util.Iterator
 
-
 class MappingJavaIterator[S, T](
     input: Iterator[S],
     private var mapper: S => T)

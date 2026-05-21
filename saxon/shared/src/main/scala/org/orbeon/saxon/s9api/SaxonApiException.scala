@@ -2,7 +2,6 @@ package org.orbeon.saxon.s9api
 
 import org.orbeon.saxon.trans.XPathException
 
-
 class SaxonApiException(cause: Throwable) extends Exception(cause) {
 
   def this(message: String) =

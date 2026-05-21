@@ -6,7 +6,6 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
 
   this.setRawParent(element)

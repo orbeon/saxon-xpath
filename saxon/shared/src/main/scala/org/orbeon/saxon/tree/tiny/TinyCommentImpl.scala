@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class TinyCommentImpl() extends TinyNodeImpl {
 
   def this(tree: TinyTree, nodeNr: Int) = {

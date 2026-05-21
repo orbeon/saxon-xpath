@@ -9,9 +9,6 @@ import org.orbeon.saxon.om.StructuredQName
 
 import java.util.List
 
-
-
-
 /**
   * Manager for saxon:type-alias declarations in a stylesheet.
   *

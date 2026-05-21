@@ -19,7 +19,6 @@ import java.util.function.Predicate
 import javax.xml.transform.Source
 import javax.xml.transform.sax.SAXSource
 
-
 /**
   * This class provides the service of converting a URI into an `Source`.
   * It is used to get stylesheet modules referenced by xsl:import and xsl:include,

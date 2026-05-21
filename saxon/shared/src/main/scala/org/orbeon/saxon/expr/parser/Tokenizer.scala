@@ -6,12 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.parser
 
-
 import org.orbeon.saxon.om.NameChecker
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.Whitespace
 import java.util
-
 
 /**
  * Tokenizer for expressions and inputs.

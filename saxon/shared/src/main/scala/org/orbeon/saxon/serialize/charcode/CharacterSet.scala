@@ -11,7 +11,6 @@
   */
 package org.orbeon.saxon.serialize.charcode
 
-
 trait CharacterSet {
   def inCharset(ch: Int): Boolean
   def getCanonicalName: String

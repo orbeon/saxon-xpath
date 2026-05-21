@@ -46,8 +46,6 @@ import org.orbeon.saxon.value.TextFragmentValue
 
 import org.orbeon.saxon.value.UntypedAtomicValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object DocumentInstr {
 
    def checkContentSequence(env: StaticContext,
@@ -120,8 +118,8 @@ object DocumentInstr {
 
 }
 
-class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
-                    @BeanProperty var constantText: String)
+class DocumentInstr(var textOnly: Boolean,
+                    var constantText: String)
   extends ParentNodeConstructor {
 
   override def operands: java.lang.Iterable[Operand] = contentOp
@@ -129,7 +127,7 @@ class DocumentInstr(@BooleanBeanProperty var textOnly: Boolean,
   override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 
    def checkContentSequence(env: StaticContext): Unit = {
-    DocumentInstr.checkContentSequence(env, getContentOperand, getValidationOptions)
+    DocumentInstr.checkContentSequence(env, getContentOperand, validationOptions)
   }
 
   override def computeSpecialProperties(): Int = {
@@ -226,7 +224,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
         pipe.hostLanguage = getPackageData.getHostLanguage
         builder.setPipelineConfiguration(pipe)
         val out: ComplexContentOutputter = ComplexContentOutputter
-          .makeComplexContentReceiver(builder, getValidationOptions)
+          .makeComplexContentReceiver(builder, validationOptions)
         out.open()
         out.startDocument(ReceiverOption.NONE)
         getContentExpression.process(out, context)
@@ -249,7 +247,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("doc", this)
-    if (!out.isRelocatable) {
+    if (!out.relocatable) {
       out.emitAttribute("base", getStaticBaseURIString)
     }
     var flags: String = ""

@@ -70,20 +70,17 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     startWrapper(resultSequence)
   }
 
-
   @throws[XPathException]
   override def startDocument(properties: Int): Unit = {
     startWrapper(resultDocument)
     depth += 1
   }
 
-
   @throws[XPathException]
   override def endDocument(): Unit = {
     endWrapper()
     depth -= 1
   }
-
 
   @throws[XPathException]
   override def startElement(elemName: NodeName, `type`: SchemaType, attributes: AttributeMap, namespaces: NamespaceMap, location: Location, properties: Int): Unit = {
@@ -100,7 +97,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.startContent()
   }
 
-
   @throws[XPathException]
   override def endElement(): Unit = {
     out.endElement()
@@ -110,7 +106,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     } == 0) endWrapper()
   }
 
-
   @throws[XPathException]
   override def characters(chars: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
     startWrapper(resultText)
@@ -118,7 +113,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     endWrapper()
   }
   else out.characters(chars, locationId, properties)
-
 
   @throws[XPathException]
   override def comment(chars: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
@@ -128,7 +122,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   }
   else out.comment(chars, locationId, properties)
 
-
   @throws[XPathException]
   override def processingInstruction(target: String, data: CharSequence, locationId: Location, properties: Int): Unit = if (depth == 0) {
     startWrapper(resultPI)
@@ -136,7 +129,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     endWrapper()
   }
   else out.processingInstruction(target, data, locationId, properties)
-
 
   @throws[XPathException]
   override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = if (item.isInstanceOf[AtomicValue]) {
@@ -194,7 +186,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.endElement()
   }
 
-
   @throws[XPathException]
   override def close(): Unit = {
     endWrapper()
@@ -202,9 +193,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.close()
   }
 
-
   override def usesTypeAnnotations = true
-
 
   @throws[XPathException]
   private def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, locationId: Location, properties: Int): Unit = {
@@ -215,7 +204,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     out.startContent()
     out.endElement()
   }
-
 
   @throws[XPathException]
   private def namespace(namespaceBindings: NamespaceBindingSet, properties: Int): Unit = {

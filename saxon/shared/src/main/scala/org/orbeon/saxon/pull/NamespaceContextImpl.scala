@@ -1,6 +1,5 @@
 
 
-
 package org.orbeon.saxon.pull
 
 import java.util
@@ -10,7 +9,6 @@ import javax.xml.namespace.NamespaceContext
 import java.util.ArrayList
 import java.util.Iterator
 import java.util.List
-
 
 class NamespaceContextImpl(var resolver: NamespaceResolver)
   extends NamespaceContext

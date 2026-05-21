@@ -6,7 +6,6 @@ import org.orbeon.saxon.model.{SchemaType, SimpleType, Type}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 
-
 // ORBEON: Unused class.
 // With `WherePopulated`
 

@@ -13,7 +13,6 @@ import org.orbeon.saxon.value.{AtomicValue, Cardinality}
 
 import scala.beans.BooleanBeanProperty
 
-
 class SingletonAtomizer(sequence: Expression,
                         role: RoleDiagnostic,
                         @BooleanBeanProperty var allowEmpty: Boolean)
@@ -62,7 +61,7 @@ class SingletonAtomizer(sequence: Expression,
         }
       err.setIsTypeError(true)
       err.setLocation(getLocation)
-      err.setFailingExpression(getParentExpression)
+      err.failingExpression = parentExpression
       throw err
     }
     this

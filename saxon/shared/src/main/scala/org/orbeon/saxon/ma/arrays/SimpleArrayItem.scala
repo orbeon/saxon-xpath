@@ -13,7 +13,6 @@ import org.orbeon.saxon.z.IntSet
 import java.util.{ArrayList, List}
 import scala.jdk.CollectionConverters._
 
-
 object SimpleArrayItem {
 
   val EMPTY_ARRAY: SimpleArrayItem = new SimpleArrayItem(new ArrayList)

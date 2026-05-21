@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
   * A FunctionalInterface for any method that processes individual items, and which
   * may generate exceptions.

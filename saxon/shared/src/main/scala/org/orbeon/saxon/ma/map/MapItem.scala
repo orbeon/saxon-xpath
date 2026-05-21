@@ -15,7 +15,6 @@ import org.orbeon.saxon.value.{AtomicValue, EmptySequence, SequenceType}
 
 import scala.jdk.CollectionConverters._
 
-
 object MapItem {
 
   def isKnownToConform(value: Sequence, itemType: ItemType): Boolean = {

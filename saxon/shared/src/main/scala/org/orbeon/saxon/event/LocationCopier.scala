@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.s9api.Location
 
-
-
-
 class LocationCopier(private var wholeDocument: Boolean)
     extends CopyInformee[Location] {
 

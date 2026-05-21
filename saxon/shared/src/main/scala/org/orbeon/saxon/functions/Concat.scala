@@ -13,7 +13,6 @@ import org.orbeon.saxon.value.{SequenceType, StringValue}
 
 import scala.jdk.CollectionConverters._
 
-
 class Concat extends SystemFunction with PushableFunction {
 
  override def resultIfEmpty(arg: Int): Sequence = null

@@ -10,8 +10,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.AtomicValue
 
-
-
 object Doc {
 
   def maybePreEvaluate(sf: SystemFunction,

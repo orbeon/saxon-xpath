@@ -3,9 +3,6 @@ package org.orbeon.saxon.serialize.charcode
 
 import ISO88591CharacterSet._
 
-
-
-
 object ISO88591CharacterSet {
 
   private var theInstance: ISO88591CharacterSet = new ISO88591CharacterSet()

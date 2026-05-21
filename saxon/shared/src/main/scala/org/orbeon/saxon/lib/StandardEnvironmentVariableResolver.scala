@@ -8,7 +8,6 @@ package org.orbeon.saxon.lib
 
 import java.{util => ju}
 
-
 /**
   * Default implementation of the `EnvironmentVariableResolver`. This implementation
   * maps "environment variables" as defined in the XPath context to environment variables

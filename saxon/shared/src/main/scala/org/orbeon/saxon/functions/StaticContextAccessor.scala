@@ -19,9 +19,6 @@ import org.orbeon.saxon.value.StringValue
 
 import StaticContextAccessor._
 
-
-
-
 object StaticContextAccessor {
 
   class DefaultCollation extends StaticContextAccessor {

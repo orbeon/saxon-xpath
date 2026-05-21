@@ -1,6 +1,5 @@
 package org.orbeon.saxon.expr
 
-
 import java.util.{ArrayList, List}
 
 import org.orbeon.saxon.expr.parser._
@@ -14,7 +13,6 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 
 import scala.jdk.CollectionConverters._
-
 
 object GeneralComparison {
 
@@ -38,7 +36,7 @@ object GeneralComparison {
       fn.asInstanceOf[SystemFunctionCall]
         .getTargetFunction
         .asInstanceOf[Minimax]
-        .setIgnoreNaN(true)
+        .ignoreNaN = true
       fn
     } else {
       exp
@@ -285,7 +283,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       val vc: ValueComparison = new ValueComparison(e0, singletonOperator, e1)
       vc.setAtomicComparer(comparer)
-      vc.setResultWhenEmpty(BooleanValue.FALSE)
+      vc.resultWhenEmpty = BooleanValue.FALSE
       ExpressionTool.copyLocationInfo(this, vc)
       Optimizer.trace(config,
         "Replaced general comparison by value comparison",
@@ -456,13 +454,13 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
           vc = new ValueComparison(GeneralComparison.makeMinOrMax(getLhsExpression, "min"),
             singletonOperator,
             GeneralComparison.makeMinOrMax(getRhsExpression, "max"))
-          vc.setResultWhenEmpty(BooleanValue.FALSE)
+          vc.resultWhenEmpty = BooleanValue.FALSE
           vc.setAtomicComparer(comparer)
         case Token.GT | Token.GE =>
           vc = new ValueComparison(GeneralComparison.makeMinOrMax(getLhsExpression, "max"),
             singletonOperator,
             GeneralComparison.makeMinOrMax(getRhsExpression, "min"))
-          vc.setResultWhenEmpty(BooleanValue.FALSE)
+          vc.resultWhenEmpty = BooleanValue.FALSE
           vc.setAtomicComparer(comparer)
         case _ =>
           throw new UnsupportedOperationException("Unknown operator " + op)
@@ -480,8 +478,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   }
 
   private def manyOperandIsLiftable(): Boolean = {
-    getParentExpression match {
-      case _: ContextSwitchingExpression if getParentExpression
+    parentExpression match {
+      case _: ContextSwitchingExpression if parentExpression
         .asInstanceOf[ContextSwitchingExpression]
         .getActionExpression eq this =>
         for (o <- operands.asScala

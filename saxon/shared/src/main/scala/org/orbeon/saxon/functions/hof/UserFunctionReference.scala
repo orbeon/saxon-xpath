@@ -14,8 +14,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{SymbolicName, XPathException}
 import org.orbeon.saxon.utils.Controller
 
-
-
 object UserFunctionReference {
 
   class BoundUserFunction(private var agent: ExportAgent,
@@ -123,7 +121,7 @@ class UserFunctionReference
     this
   }
 
-  def getFixedTarget: Component = nominalTarget.getDeclaringComponent
+  def getFixedTarget: Component = nominalTarget.declaringComponent
   def getSymbolicName: SymbolicName = functionName
   def getFunctionItemType(th: TypeHierarchy): FunctionItemType = nominalTarget.getFunctionItemType
   def getFunctionName: StructuredQName = nominalTarget.getFunctionName
@@ -144,7 +142,7 @@ class UserFunctionReference
     if (bindingSlot == -1) {
       new BoundUserFunction(this,
         nominalTarget,
-        nominalTarget.getDeclaringComponent,
+        nominalTarget.declaringComponent,
         context.getController)
     } else {
       val targetComponent: Component = context.getTargetComponent(bindingSlot)
@@ -166,21 +164,21 @@ class UserFunctionReference
   def getBindingSlot: Int = bindingSlot
 
   def `export`(out: ExpressionPresenter): Unit = {
-    val options: ExpressionPresenter.ExportOptions = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+    val options: ExpressionPresenter.ExportOptions = out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
     if ("JS" == options.target && options.targetVersion == 1) {
       throw new XPathException(
         "Higher-order functions are not available in Saxon-JS v1.*",
         "XTSE3540",
         getLocation)
     }
-    if (nominalTarget.getDeclaringComponent == null) {
+    if (nominalTarget.declaringComponent == null) {
       out.startElement("inlineFn")
       nominalTarget.`export`(out)
       out.endElement()
     } else {
       val rootPackage: StylesheetPackage = options.rootPackage
       val containingPackage: StylesheetPackage =
-        nominalTarget.getDeclaringComponent.getContainingPackage
+        nominalTarget.declaringComponent.containingPackage
       if (rootPackage != null &&
         !(rootPackage == containingPackage || rootPackage.contains(
           containingPackage))) {

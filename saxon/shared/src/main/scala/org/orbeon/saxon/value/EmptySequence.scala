@@ -11,7 +11,6 @@ import java.util.Collections
 import org.orbeon.saxon.om.{GroundedValue, Item}
 import org.orbeon.saxon.tree.iter.{EmptyIterator, UnfailingIterator}
 
-
 /**
   * An EmptySequence object represents a sequence containing no members.
   */

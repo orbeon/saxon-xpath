@@ -13,7 +13,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.iter.AxisIterator
 import org.orbeon.saxon.value.UntypedAtomicValue
 
-
 /**
   * A TypeStrippedNode is a view of a node, in a virtual tree that has type
   * annotations stripped from it.

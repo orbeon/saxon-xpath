@@ -44,7 +44,7 @@ import java.util.function.BiConsumer
 
 import TemplateRule._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -85,7 +85,6 @@ class TemplateRule
   @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
 
-  @BooleanBeanProperty
   var absentFocus: Boolean = _
 
   @BeanProperty
@@ -100,7 +99,6 @@ class TemplateRule
   @BeanProperty
   var lineNumber: Int = _
 
-  @BeanProperty
   var rules: List[Rule] = new ArrayList()
 
    var slaveCopies: List[TemplateRule] = new ArrayList()

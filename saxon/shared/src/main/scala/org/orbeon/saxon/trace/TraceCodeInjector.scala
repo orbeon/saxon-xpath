@@ -11,7 +11,6 @@ import org.orbeon.saxon.expr.flwor.{Clause, FLWORExpression, TraceClause}
 import org.orbeon.saxon.expr.instruct.{ComponentTracer, TraceExpression}
 import org.orbeon.saxon.expr.parser.{CodeInjector, ExpressionTool}
 
-
 /**
   * A code injector that wraps every expression (other than a literal) in a TraceExpression, which causes
   * a TraceListener to be notified when the expression is evaluated

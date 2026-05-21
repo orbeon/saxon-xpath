@@ -13,7 +13,6 @@ import java.{util => ju}
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 
-
 object JavaPlatform {
   var tryJdk9: Boolean = true
 }

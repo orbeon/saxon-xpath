@@ -95,7 +95,7 @@ class Error extends SystemFunction {
           }
         }
       }
-      e.setErrorObject(errorObject)
+      e.errorObject = errorObject
     }
     throw e
   }

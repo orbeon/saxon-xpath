@@ -7,9 +7,6 @@
 
 package org.orbeon.saxon.ma.trie
 
-
-
-
 class Tuple2[T1, T2](val _1: T1, val _2: T2) {
 
   override def equals(o: Any): Boolean = {

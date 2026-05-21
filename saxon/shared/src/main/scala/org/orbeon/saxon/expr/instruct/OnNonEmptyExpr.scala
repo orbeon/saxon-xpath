@@ -12,7 +12,6 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, R
 import org.orbeon.saxon.om.SequenceIterator
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-
 /**
   * A compiled xsl:on-non-empty instruction.
   */
@@ -73,7 +72,7 @@ class OnNonEmptyExpr(base: Expression)
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.optimize(visitor, contextInfo)
-    if (visitor.isOptimizeForStreaming) {
+    if (visitor.optimizeForStreaming) {
       visitor.obtainOptimizer().makeCopyOperationsExplicit(this, getOperand)
     }
     this

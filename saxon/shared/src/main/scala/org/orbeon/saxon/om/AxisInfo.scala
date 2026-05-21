@@ -32,7 +32,6 @@ import org.orbeon.saxon.z.IntHashMap
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 /**
   * An axis, that is a direction of navigation in the document structure.
   */

@@ -14,9 +14,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.{BooleanValue, SequenceType}
 
-import scala.beans.BooleanBeanProperty
-
-
 object Copy {
 
   def copyUnparsedEntities(source: NodeInfo, out: Outputter): Unit = {
@@ -30,7 +27,7 @@ object Copy {
 }
 
 class Copy(
-  @BooleanBeanProperty var copyNamespaces : Boolean,
+  var copyNamespaces : Boolean,
   inheritNamespaces                       : Boolean,
   schemaType                              : SchemaType,
   validation                              : Int
@@ -249,10 +246,10 @@ class Copy(
         resultItemType = computeItemType(
           visitor.getConfiguration.getTypeHierarchy)
       }
-      if (visitor.isOptimizeForStreaming) {
+      if (visitor.optimizeForStreaming) {
         val `type`: UType = contextItemType.getItemType.getUType
         if (`type`.intersection(MultipleNodeKindTest.LEAF.getUType) != UType.VOID) {
-          val p: Expression = getParentExpression
+          val p: Expression = parentExpression
           if (p.isInstanceOf[Choose] && p.asInstanceOf[Choose].size == 2 &&
             p.asInstanceOf[Choose].getAction(1) == this &&
             p.asInstanceOf[Choose].getAction(0).isInstanceOf[CopyOf]) {
@@ -356,7 +353,7 @@ class Copy(
           ReceiverOption.NONE)
       case Type.DOCUMENT =>
         if (!preservingTypes) {
-          val options: ParseOptions = new ParseOptions(getValidationOptions)
+          val options: ParseOptions = new ParseOptions(validationOptions)
           options.setSpaceStrippingRule(
             NoElementsSpaceStrippingRule.getInstance)
           controller.getConfiguration

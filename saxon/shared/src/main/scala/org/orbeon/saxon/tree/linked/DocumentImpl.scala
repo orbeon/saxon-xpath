@@ -12,9 +12,8 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.z.IntHashMap
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-
 
 class DocumentImpl
   extends ParentNodeImpl
@@ -36,7 +35,6 @@ class DocumentImpl
   private var lineNumberMap: LineNumberMap = _
   private var systemIdMap: SystemIdMap = new SystemIdMap()
 
-  @BooleanBeanProperty
   var imaginary: Boolean = _
 
   var mutable: Boolean = _

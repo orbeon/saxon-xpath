@@ -19,7 +19,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{Cardinality, SequenceType}
 
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -54,8 +53,8 @@ object MapType {
   * An instance of this class represents a specific map item type, for example
   * map(x:integer, element(employee))
   */
-class MapType(@BeanProperty var keyType: AtomicType,
-              @BeanProperty var valueType: SequenceType)
+class MapType(var keyType: AtomicType,
+              var valueType: SequenceType)
   extends AnyFunctionType {
 
   private var mustBeEmpty: Boolean = false

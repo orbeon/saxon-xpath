@@ -10,9 +10,6 @@ import javax.xml.transform.stream.StreamResult
 
 import Logger._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
 object Logger {
   val INFO    : Int = 0
   val WARNING : Int = 1
@@ -27,7 +24,6 @@ object Logger {
   */
 abstract class Logger {
 
-  @BooleanBeanProperty
   var unicodeAware: Boolean = false
 
   /**

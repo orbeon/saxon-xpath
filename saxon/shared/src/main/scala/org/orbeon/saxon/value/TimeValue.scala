@@ -20,8 +20,7 @@ import org.orbeon.saxon.functions.AccessorFn.Component._
 import org.orbeon.saxon.functions.AccessorFn._
 import org.orbeon.saxon.value.CalendarValue.appendTwoDigits
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 object TimeValue {
 
@@ -210,7 +209,6 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
   @BeanProperty
   var second: Byte = _
 
-  @BeanProperty
   var nanosecond: Int = _
 
   def this(hour: Byte, minute: Byte, second: Byte, microsecond: Int, tz: Int) = {
@@ -330,7 +328,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     new TimeValue(dt.getHour,
       dt.getMinute,
       dt.getSecond,
-      dt.getNanosecond,
+      dt.nanosecond,
       dt.getTimezoneInMinutes,
       "")
   }
@@ -438,7 +436,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
       new TimeValue(dt.getHour,
         dt.getMinute,
         dt.getSecond,
-        dt.getNanosecond,
+        dt.nanosecond,
         getTimezoneInMinutes,
         "")
     } else {

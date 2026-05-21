@@ -4,9 +4,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Iterator
 
-
-
-
 /**
   * Class IteratorWrapper - provides an an SequenceIterator over a Java Iterator.
   */

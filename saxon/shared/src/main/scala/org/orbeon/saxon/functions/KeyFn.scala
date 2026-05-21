@@ -113,7 +113,7 @@ object KeyFn {
              origin: NodeInfo /*,
                        selectedKeySet: KeyDefinitionSet*/): Sequence = {
     val doc: NodeInfo = origin.getRoot
-    /*    if (selectedKeySet.isComposite) {
+    /*    if (selectedKeySet.composite) {
           val soughtKey: SequenceIterator = sought.iterate()
           val all: SequenceIterator = keyManager.selectByCompositeKey(
             selectedKeySet,

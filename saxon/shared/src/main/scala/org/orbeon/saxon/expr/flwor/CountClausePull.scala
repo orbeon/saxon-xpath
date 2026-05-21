@@ -7,16 +7,13 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.Int64Value
 
-
-
-
 /**
   * A tuple stream that implements a "count" clause in an XQuery 3.0 FLWOR expression
   */
 class CountClausePull(var base: TuplePull, countClause: CountClause)
     extends TuplePull {
 
-  var slot: Int = countClause.getRangeVariable.getLocalSlotNumber
+  var slot: Int = countClause.rangeVariable.getLocalSlotNumber
 
   var count: Int = 0
 

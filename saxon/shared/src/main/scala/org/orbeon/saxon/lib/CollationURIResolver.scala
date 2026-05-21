@@ -5,9 +5,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A CollationURIResolver accepts a collation name as input, and returns
   * a collation (represented by a {@link StringCollator} as output. A CollationURIResolver

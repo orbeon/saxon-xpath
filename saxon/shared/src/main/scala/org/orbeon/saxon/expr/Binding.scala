@@ -15,7 +15,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.om.{Sequence, StructuredQName}
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
-
 trait Binding {
   def getRequiredType: SequenceType
   /*@Nullable*/

@@ -3,9 +3,6 @@ package org.orbeon.saxon.trans
 
 import org.orbeon.saxon.lib.FeatureKeys
 
-
-
-
 object SaxonErrorCode {
 
   val SXLM0001: String = "SXLM0001"

@@ -25,9 +25,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import DeepSkipRuleSet._
 
-
-
-
 object DeepSkipRuleSet {
 
   private var THE_INSTANCE: DeepSkipRuleSet = new DeepSkipRuleSet()

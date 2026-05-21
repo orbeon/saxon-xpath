@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{FocusTrackingIterator, Item}
 import org.orbeon.saxon.value.{EmptySequence, Int64Value}
 
-
 /**
  * This class represents the tuple stream returned by a "for" clause in a FLWOR expression
  */
@@ -35,10 +34,10 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
         currentIteration = new FocusTrackingIterator(forClause.getSequence.iterate(context))
         next = currentIteration.next()
         if (next == null) {
-          context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber, EmptySequence.getInstance)
-          if (forClause.getPositionVariable != null) {
+          context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber, EmptySequence.getInstance)
+          if (forClause.positionVariable != null) {
             context.setLocalVariable(
-              forClause.getPositionVariable.getLocalSlotNumber,
+              forClause.positionVariable.getLocalSlotNumber,
               Int64Value.ZERO)
           }
           currentIteration = null
@@ -48,10 +47,10 @@ class ForClauseOuterPull(base: TuplePull, forClause: ForClause)
         next = currentIteration.next()
       }
       if (next != null) {
-        context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber, next)
-        if (forClause.getPositionVariable != null)
+        context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber, next)
+        if (forClause.positionVariable != null)
           context.setLocalVariable(
-            forClause.getPositionVariable.getLocalSlotNumber,
+            forClause.positionVariable.getLocalSlotNumber,
             new Int64Value(currentIteration.position)
           )
         return true

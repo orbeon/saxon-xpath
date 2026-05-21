@@ -4,7 +4,6 @@ import java.io.{InputStream, Reader}
 
 import javax.xml.transform.Source
 
-
 object StreamSource {
   val FEATURE = "http://javax.xml.transform.stream.StreamSource/feature"
 }

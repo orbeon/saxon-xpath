@@ -7,7 +7,6 @@ import org.orbeon.saxon.pattern.NodeTest
 import org.orbeon.saxon.tree.iter.AxisIterator
 import java.util.function.IntPredicate
 
-
 class PrecedingIterator(private var doc: TinyTree,
                         private var node: TinyNodeImpl,
                         private var nodeTest: NodeTest,

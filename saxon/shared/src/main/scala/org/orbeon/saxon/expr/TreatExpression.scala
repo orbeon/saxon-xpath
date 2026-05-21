@@ -3,7 +3,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.expr.parser.RoleDiagnostic
 import org.orbeon.saxon.value.SequenceType
 
-
 object TreatExpression {
 
   def make(

@@ -27,7 +27,6 @@ import java.util.Arrays
 
 import Stripper._
 
-
 object Stripper {
 
   val STRIP: StripRuleTarget = new StripRuleTarget() {}

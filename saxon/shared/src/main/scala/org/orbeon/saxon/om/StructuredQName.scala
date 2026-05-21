@@ -6,7 +6,6 @@ import org.orbeon.saxon.value.Whitespace
 
 import javax.xml.namespace.QName
 
-
 object StructuredQName {
 
   def fromClarkName(expandedName: String): StructuredQName = {

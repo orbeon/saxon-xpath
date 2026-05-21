@@ -19,7 +19,6 @@ import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.tree.tiny.TinyBuilder
 import org.orbeon.saxon.utils.Configuration
 
-
 object QueryResult {
 
   /*@NotNull*/

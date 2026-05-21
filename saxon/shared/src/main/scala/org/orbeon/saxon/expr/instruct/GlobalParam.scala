@@ -11,9 +11,6 @@ import org.orbeon.saxon.om.GroundedValue
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class GlobalParam extends GlobalVariable {
 
   private var implicitlyRequired: Boolean = _

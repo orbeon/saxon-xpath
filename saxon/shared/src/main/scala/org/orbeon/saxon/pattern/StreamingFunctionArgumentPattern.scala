@@ -25,7 +25,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import StreamingFunctionArgumentPattern._
 
-
 object StreamingFunctionArgumentPattern {
 
   private var THE_INSTANCE: StreamingFunctionArgumentPattern =

@@ -10,7 +10,6 @@ import org.orbeon.saxon.ma.parray.ImmList
 import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.z.IntSet
 
-
 /**
  * Implementation of ArrayItem backed by a persistent immutable array, so that operations
  * that "update" the array do not have to copy the whole array

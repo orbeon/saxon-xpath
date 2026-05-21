@@ -46,7 +46,7 @@ class NumericType private()
   override def containsListType(): Boolean = false
 
   override def getPlainMemberTypes(): Iterable[AtomicType] = synchronized {
-    getMemberTypes.asScala
+    memberTypes.asScala
   }
 
   override def getResultTypeOfCast(): SequenceType = SequenceType.ATOMIC_SEQUENCE

@@ -12,8 +12,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
-
-
 /**
  * Abstract superclass for calls to functions in the standard function library
  */

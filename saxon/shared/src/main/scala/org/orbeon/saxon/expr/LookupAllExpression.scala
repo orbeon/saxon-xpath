@@ -36,7 +36,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
   override def getItemType: ItemType = {
     val base: ItemType = getBaseExpression.getItemType
     if (base.isInstanceOf[MapType]) {
-      base.asInstanceOf[MapType].getValueType.getPrimaryType
+      base.asInstanceOf[MapType].valueType.getPrimaryType
     } else if (base.isInstanceOf[ArrayItemType]) {
       base.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
     } else {
@@ -67,7 +67,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
           "XPTY0004")
         err.setLocation(getLocation)
         err.setIsTypeError(true)
-        err.setFailingExpression(this)
+        err.failingExpression = this
         throw err
       }
     }

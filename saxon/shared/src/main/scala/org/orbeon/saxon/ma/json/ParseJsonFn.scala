@@ -27,9 +27,6 @@ import java.util.Map
 
 import ParseJsonFn._
 
-
-
-
 object ParseJsonFn {
 
   val parseJsonOptions: OptionsParameter = new OptionsParameter()

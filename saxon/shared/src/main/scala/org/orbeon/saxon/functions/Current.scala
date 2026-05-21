@@ -13,9 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import Current._
 
-
-
-
 object Current {
 
   /*@NotNull*/

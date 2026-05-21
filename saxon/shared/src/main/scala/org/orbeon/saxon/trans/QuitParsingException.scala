@@ -1,11 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.trans
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * An exception used to signal that no more input is required from the parser, and that
   * parsing can therefore be abandoned early (but without signaling any error to the user)
@@ -19,7 +14,7 @@ class QuitParsingException /**
   *                           (by sending a "stopper" item); and indeed, doing so causes the thread to hang.
   *                           See bug 3080.
   */
-(@BooleanBeanProperty var notifiedByConsumer: Boolean)
+(var notifiedByConsumer: Boolean)
     extends XPathException("No more input required", "SXQP0001")
 
 // Copyright (c) 2018-2020 Saxonica Limited

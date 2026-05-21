@@ -9,7 +9,6 @@ import java.util.regex.Matcher
 
 import java.util.regex.Pattern
 
-
 class JTokenIterator(private var input: CharSequence,
                      private var pattern: Pattern)
   extends AtomicIterator[StringValue] {

@@ -14,7 +14,6 @@ import org.orbeon.saxon.om.{SequenceTool, StandardNames}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.BigIntegerValue._
 
-
 /**
   * An integer value: note this is a subtype of decimal in XML Schema, not a primitive type.
   * The abstract class IntegerValue is used to represent any xs:integer value; this implementation

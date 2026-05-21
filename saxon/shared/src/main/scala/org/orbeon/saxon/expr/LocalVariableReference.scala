@@ -3,7 +3,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.expr.parser.RebindingMap
 import org.orbeon.saxon.om.{Sequence, StructuredQName}
 
-
 /**
  * Variable reference: a reference to a local variable. This subclass of VariableReference
  * bypasses the Binding object to get the value directly from the relevant slot in the local
@@ -28,7 +27,7 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
     val newBinding = rebindings.get(binding)
     if (newBinding != null)
       ref.binding = newBinding
-    ref.binding.addReference(ref, isInLoop)
+    ref.binding.addReference(ref, inLoop)
     ref
   }
 

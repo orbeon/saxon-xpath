@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.om.MemoSequence
 
-
-
-
 /**
   * This class is a specialization of ObjectToBeSorted for use when the sequence
   * being sorted is a sequence of groups. The group is represented by its initial

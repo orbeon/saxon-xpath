@@ -13,7 +13,6 @@ import GDayValue._
 import org.orbeon.saxon.value.CalendarValue.appendTwoDigits
 import org.orbeon.saxon.value.GDateValue.setLexicalValue
 
-
 object GDayValue {
 
   var regex: Pattern =
@@ -46,7 +45,6 @@ class GDayValue() extends GDateValue {
   }
 
   def this(day: Byte, tz: Int) = this(day, tz, BuiltInAtomicType.G_DAY)
-
 
   def copyAsSubType(typeLabel: AtomicType): AtomicValue = {
     val v: GDayValue = new GDayValue(day, getTimezoneInMinutes)

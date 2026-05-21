@@ -5,9 +5,6 @@ import org.orbeon.saxon.z.IntRangeSet
 
 import java.util.Arrays
 
-
-
-
 object XMLCharacterData {
 
   private val data: Array[Byte] = new Array[Byte](65536)

@@ -2,7 +2,6 @@ package org.orbeon.saxon.serialize
 
 import java.io.{IOException, OutputStream, Writer}
 
-
 object UTF8Writer {
   private val MIN_BUF_LEN = 32
   private val DEFAULT_BUF_LEN = 4000

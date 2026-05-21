@@ -12,7 +12,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.AttributeLocation
 import org.xml.sax.SAXException
 
-import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
 // ORBEON: Unused class.
@@ -20,12 +19,10 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
 
   private var warningCount: Int = 0
 
-  @BeanProperty
   var maximumNumberOfWarnings: Int = 25
 
   private var maxOrdinaryCharacter: Int = 255
 
-  @BeanProperty
   var stackTraceDetail: Int = 2
 
   private var warningsIssued: Set[String] = new HashSet
@@ -67,7 +64,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
       } else {
         logger.warning(message)
         warningCount += 1
-        if (warningCount > getMaximumNumberOfWarnings) {
+        if (warningCount > maximumNumberOfWarnings) {
           logger.info("No more warnings will be displayed")
           warningCount = 0
         }
@@ -171,7 +168,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     var failingExpression: Expression = null
     if (exception.isInstanceOf[XPathException]) {
       failingExpression =
-        exception.asInstanceOf[XPathException].getFailingExpression
+        exception.asInstanceOf[XPathException].failingExpression
     }
     if (xe.getLocator.isInstanceOf[AttributeLocation]) {
       kind + langText + getLocationMessageText(xe.getLocator)
@@ -269,7 +266,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
     var message: String = formatErrorCode(err)
     if (err.isInstanceOf[XPathException]) {
       val errorObject: Sequence =
-        err.asInstanceOf[XPathException].getErrorObject
+        err.asInstanceOf[XPathException].errorObject
       if (errorObject != null) {
         val errorObjectDesc: String = formatErrorObject(errorObject)
         if (errorObjectDesc != null) {
@@ -335,7 +332,7 @@ class StandardErrorListener extends StandardDiagnostics with ErrorListener {
   def formatErrorObject(errorObject: Sequence): String = null
 
   def expandSpecialCharacters(in: CharSequence): CharSequence =
-    if (logger.isUnicodeAware) {
+    if (logger.unicodeAware) {
       in
     } else {
       expandSpecialCharacters(in, maxOrdinaryCharacter)

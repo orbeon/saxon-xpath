@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.Binding
 
 import java.util.{IdentityHashMap, Map}
 
-
 /**
   * A map from old bindings to new bindings, maintained during a copy() operation applied
   * to an expression tree. When local variable bindings are copied, the mapping from old to

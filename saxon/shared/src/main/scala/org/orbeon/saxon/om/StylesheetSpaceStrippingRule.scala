@@ -15,9 +15,6 @@ import java.util.Arrays
 
 import StylesheetSpaceStrippingRule._
 
-
-
-
 object StylesheetSpaceStrippingRule {
 
   private val specials: Array[Int] = Array(

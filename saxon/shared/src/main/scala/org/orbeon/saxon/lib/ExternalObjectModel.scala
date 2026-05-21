@@ -12,7 +12,6 @@ import org.orbeon.saxon.expr.{JPConverter, PJConverter}
 import org.orbeon.saxon.om.NodeInfo
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
   * This interface must be implemented by any third-party object model that can
   * be wrapped with a wrapper that implements the Saxon Object Model (the NodeInfo interface).

@@ -21,8 +21,6 @@ import org.orbeon.saxon.utils.Configuration
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
-
-
 /**
  * The TinyBuilder class is responsible for taking a stream of SAX events and constructing
  * a Document tree, using the "TinyTree" implementation.
@@ -54,7 +52,6 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   private var namespaceStack: List[NamespaceMap] = Nil
 
-  @BeanProperty
   var currentDepth: Int = 0
 
   private var nodeNr: Int = 0 // this is the local sequence within this document
@@ -90,7 +87,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       if (lineNumbering)
         tree.setLineNumbering()
       uniformBaseURI = true
-      tree.setUniformBaseUri(baseURI)
+      tree.uniformBaseUri = baseURI
     }
     super.open()
   }
@@ -243,7 +240,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
     if (uniformBaseURI && localSystemId != null && localSystemId != baseURI) {
       uniformBaseURI = false
-      tt.setUniformBaseUri(null)
+      tt.uniformBaseUri = null
     }
     if (lineNumbering) {
       tt.setLineNumber(nodeNr,
@@ -300,7 +297,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     }
     if (fp == StandardNames.XML_BASE) {
       uniformBaseURI = false
-      tree.setUniformBaseUri(null)
+      tree.uniformBaseUri = null
     }
   }
 
@@ -445,7 +442,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     tt.setSystemId(nodeNr, localLocation)
     if (localLocation != null && localLocation != baseURI) {
       uniformBaseURI = false
-      tree.setUniformBaseUri(null)
+      tree.uniformBaseUri = null
     }
     if (lineNumbering) {
       tt.setLineNumber(nodeNr,

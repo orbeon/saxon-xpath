@@ -15,7 +15,6 @@ import org.orbeon.saxon.om.{GroundedValue, Sequence}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{BooleanValue, DoubleValue, EmptySequence, StringValue}
 
-
 /**
  * Event handler for the JSON parser which constructs a structure of maps and arrays
  * representing the content of the JSON text.

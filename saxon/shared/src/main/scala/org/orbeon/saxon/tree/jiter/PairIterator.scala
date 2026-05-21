@@ -9,7 +9,6 @@ package org.orbeon.saxon.tree.jiter
 import java.util.NoSuchElementException
 import java.{util => ju}
 
-
 /**
   * An iterator over a pair of objects (typically sub-expressions of an expression)
   */

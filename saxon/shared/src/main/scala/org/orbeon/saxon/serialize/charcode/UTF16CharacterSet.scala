@@ -45,7 +45,6 @@ object UTF16CharacterSet {
     false
   }
 
-
   def firstInvalidChar(chars: CharSequence, predicate: IntPredicate): Int = {
     for (c <- 0 until chars.length) {
       var ch = c

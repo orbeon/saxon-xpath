@@ -13,7 +13,6 @@ import org.orbeon.saxon.value.{SequenceExtent, StringValue}
 
 import scala.jdk.CollectionConverters._
 
-
 class AvailableEnvironmentVariables extends SystemFunction {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {

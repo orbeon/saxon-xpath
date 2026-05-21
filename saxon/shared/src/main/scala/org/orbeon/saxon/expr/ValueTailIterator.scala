@@ -15,7 +15,6 @@ import org.orbeon.saxon.tree.iter.LookaheadIterator
 
 import java.util.EnumSet
 
-
 class ValueTailIterator(private var baseValue: GroundedValue,
                         private var start: Int)
   extends SequenceIterator

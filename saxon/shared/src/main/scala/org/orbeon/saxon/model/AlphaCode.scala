@@ -23,7 +23,6 @@ import org.orbeon.saxon.value.{Cardinality, SequenceExtent, SequenceType, String
 import scala.util.control.Breaks._
 import scala.jdk.CollectionConverters._
 
-
 /**
  * An AlphaCode is a compact, context-independent string representation of a SequenceType
  */
@@ -590,10 +589,10 @@ object AlphaCode {
             result.argTypes.add(makeTree(tupleItemType.getFieldType(s)))
           }
         case mapType: MapType =>
-          val keyType = mapType.getKeyType
+          val keyType = mapType.keyType
           if (keyType ne BuiltInAtomicType.ANY_ATOMIC)
             result.keyType = makeTree(keyType)
-          val valueType = mapType.getValueType
+          val valueType = mapType.valueType
           if (valueType ne SequenceType.ANY_SEQUENCE)
             result.valueType = makeTree(valueType)
         case _ =>

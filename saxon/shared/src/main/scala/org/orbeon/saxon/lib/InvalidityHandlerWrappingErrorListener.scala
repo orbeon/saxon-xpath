@@ -13,9 +13,6 @@ import javax.xml.transform.TransformerException
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 /**
   * Interface for reporting validation errors found during validation of an instance document
   * against a schema.

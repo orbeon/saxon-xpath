@@ -19,9 +19,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
 
   var systemId: String = _

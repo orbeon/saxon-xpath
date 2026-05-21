@@ -7,9 +7,6 @@
 
 package org.orbeon.saxon.tree.tiny
 
-import scala.beans.BeanProperty
-
-
 /**
   * Statistics on the size of TinyTree instances, kept so that the system can learn how much space to allocate to new trees
   */
@@ -17,16 +14,12 @@ class Statistics {
 
   private var treesCreated: Int = 5
 
-  @BeanProperty
   var averageNodes: Double = 4000.0
 
-  @BeanProperty
   var averageAttributes: Double = 100.0
 
-  @BeanProperty
   var averageNamespaces: Double = 20.0
 
-  @BeanProperty
   var averageCharacters: Double = 4000.0
 
   def this(nodes: Int, atts: Int, namespaces: Int, chars: Int) = {

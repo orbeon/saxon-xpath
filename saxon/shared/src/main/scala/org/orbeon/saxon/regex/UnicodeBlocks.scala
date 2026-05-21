@@ -19,7 +19,6 @@ import org.orbeon.saxon.z.{IntBlockSet, IntSet}
 
 import scala.util.control.Breaks._
 
-
 object UnicodeBlocks {
 
   private var blocks: Map[String, IntSet] = null

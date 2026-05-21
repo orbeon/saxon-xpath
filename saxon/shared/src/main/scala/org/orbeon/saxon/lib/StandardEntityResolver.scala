@@ -13,7 +13,6 @@ import org.orbeon.saxon.lib.StandardEntityResolver._
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.{EntityResolver, InputSource, SAXException}
 
-
 object StandardEntityResolver {
 
   private val publicIds: ju.HashMap[String, String] = new ju.HashMap(30)

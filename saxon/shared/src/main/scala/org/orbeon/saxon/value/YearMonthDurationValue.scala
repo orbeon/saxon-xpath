@@ -23,9 +23,6 @@ import java.math.RoundingMode
 
 import YearMonthDurationValue._
 
-
-
-
 object YearMonthDurationValue {
 
   def makeYearMonthDurationValue(s: CharSequence): ConversionResult = {

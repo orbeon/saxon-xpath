@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
-
 /**
   * ReceiverOption defines a set of constants representing boolean flags, which can be used in
   * calls to methods on the Receiver interface.

@@ -16,20 +16,17 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.SequenceType
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 abstract class CastingExpression(source: Expression,
                                  @BeanProperty var targetType: AtomicType,
                                  private var allowEmpty: Boolean)
   extends UnaryExpression(source) {
 
-  @BeanProperty
   var targetPrimitiveType: AtomicType = targetType.getPrimitiveItemType
 
    var converter: Converter = _
 
-  @BooleanBeanProperty
   var operandIsStringLiteral: Boolean = false
 
    def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC

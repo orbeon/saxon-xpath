@@ -19,7 +19,6 @@ import org.orbeon.saxon.tree.iter.AtomicIterator
 
 import java.util.Iterator
 
-
 class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
 
   if (end < start) {

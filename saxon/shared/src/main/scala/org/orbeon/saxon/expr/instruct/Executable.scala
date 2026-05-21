@@ -16,13 +16,10 @@ import java.util._
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
-
 class Executable(var config: Configuration) {
 
-  @BeanProperty
   var topLevelPackage: PackageData = _
 
-  @BeanProperty
   var packages: List[PackageData] = new ArrayList()
 
   private var defaultOutputProperties: Properties = _
@@ -47,9 +44,7 @@ class Executable(var config: Configuration) {
 
    var schemaAware: Boolean = false
 
-  @BeanProperty
   var globalContextRequirement: GlobalContextRequirement = null
-
 
   def setConfiguration(config: Configuration): Unit = {
     this.config = config
@@ -178,7 +173,7 @@ class Executable(var config: Configuration) {
 
   def explainGlobalVariables(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("globalVariables")
-    for (pack <- getPackages.asScala; variables <- pack.getGlobalVariableList.asScala) {
+    for (pack <- packages.asScala; variables <- pack.getGlobalVariableList.asScala) {
       variables.`export`(presenter)
     }
     presenter.endElement()
@@ -204,14 +199,14 @@ class Executable(var config: Configuration) {
     if (globalContextRequirement == null) {
       return contextItemVar
     }
-    if (contextItemVar != null && globalContextRequirement.isAbsentFocus) {
+    if (contextItemVar != null && globalContextRequirement.absentFocus) {
       throw new XPathException(
         "The global context item is required to be absent",
         "XPDY0002")
     }
     val th = config.getTypeHierarchy
     if (contextItemVar == null) {
-      if (!globalContextRequirement.isMayBeOmitted) {
+      if (!globalContextRequirement.mayBeOmitted) {
         throw new XPathException(
           "A global context item is required, but none has been supplied",
           "XTDE3086")
@@ -236,7 +231,7 @@ class Executable(var config: Configuration) {
             "The context item cannot be initialized to an empty sequence",
             "XPTY0004")
         }
-        for (itemType <- globalContextRequirement.getRequiredItemTypes.asScala
+        for (itemType <- globalContextRequirement.requiredItemTypes.asScala
              if !itemType.matches(contextItemVar, th)) {
           val role: RoleDiagnostic = new RoleDiagnostic(
             RoleDiagnostic.MISC,
@@ -247,7 +242,7 @@ class Executable(var config: Configuration) {
         }
       }
     } else {
-      for (itemType <- globalContextRequirement.getRequiredItemTypes.asScala
+      for (itemType <- globalContextRequirement.requiredItemTypes.asScala
            if !itemType.matches(contextItemVar, config.getTypeHierarchy)) {
         val role: RoleDiagnostic = new RoleDiagnostic(
           RoleDiagnostic.MISC,

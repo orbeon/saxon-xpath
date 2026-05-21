@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
-
 /**
   * This interface is implemented by a collation that is capable of supporting
   * the XPath functions that require matching of a substring: namely contains(),

@@ -7,9 +7,6 @@ import javax.xml.transform.TransformerException
 
 import javax.xml.transform.URIResolver
 
-
-
-
 trait RelativeURIResolver extends URIResolver {
 
   def makeAbsolute(href: String, base: String): String

@@ -30,7 +30,6 @@ import java.io.Closeable
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.value.SequenceExtent
 
-
 object SequenceIterator {
 
   object Property extends Enumeration {

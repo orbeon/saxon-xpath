@@ -21,7 +21,6 @@ import org.orbeon.saxon.utils.Controller
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object StandardDiagnostics {
 
   def getInstructionNameDefault(inst: Instruction): String =

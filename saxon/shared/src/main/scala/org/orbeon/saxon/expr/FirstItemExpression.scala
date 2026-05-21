@@ -20,7 +20,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import FirstItemExpression._
 
-
 object FirstItemExpression {
 
   def makeFirstItemExpression(base: Expression): Expression =
@@ -47,7 +46,7 @@ class FirstItemExpression(base: Expression) extends SingleItemFilter(base) {
     if (`type`.isInstanceOf[NodeTest]) {
       val baseExpr: Expression = getBaseExpression
       if (baseExpr.isInstanceOf[AxisExpression] &&
-        baseExpr.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD &&
+        baseExpr.asInstanceOf[AxisExpression].axis == AxisInfo.CHILD &&
         basePattern.isInstanceOf[NodeTestPattern]) {
         new SimplePositionalPattern(`type`.asInstanceOf[NodeTest], 1)
       } else {

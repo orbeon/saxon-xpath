@@ -19,17 +19,12 @@ import org.orbeon.saxon.trans.XmlProcessingIncident
 
 import org.orbeon.saxon.tree.util.Navigator
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 /**
   * A set of built-in template rules that performs the same action as an underlying set of rules,
   * but with the addition of a warning message saying that no user-defined template rules was found.
   * <p>XSLT 3.0 feature</p>
   */
-class RuleSetWithWarnings(@BeanProperty var baseRuleSet: BuiltInRuleSet)
+class RuleSetWithWarnings(var baseRuleSet: BuiltInRuleSet)
     extends BuiltInRuleSet {
 
   def process(item: Item,

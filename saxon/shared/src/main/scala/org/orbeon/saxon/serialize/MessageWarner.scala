@@ -13,9 +13,6 @@ import org.orbeon.saxon.trans.XmlProcessingIncident
 
 import java.io.StringWriter
 
-
-
-
 class MessageWarner extends XMLEmitter {
 
   private var abort: Boolean = false

@@ -17,9 +17,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.Whitespace
 
-
-
-
 class DocumentValidator(next: Receiver, private var errorCode: String)
     extends ProxyReceiver(next) {
 

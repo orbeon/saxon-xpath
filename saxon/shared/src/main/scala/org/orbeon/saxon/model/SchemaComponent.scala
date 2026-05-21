@@ -8,7 +8,6 @@ package org.orbeon.saxon.model
 
 import org.orbeon.saxon.model.SchemaComponent.ValidationStatus.ValidationStatus
 
-
 object SchemaComponent {
 
   object ValidationStatus extends Enumeration {

@@ -16,9 +16,6 @@ import org.orbeon.saxon.trans.{Err, XmlProcessingException}
 import org.orbeon.saxon.tree.AttributeLocation
 import org.xml.sax.SAXParseException
 
-import scala.beans.BeanProperty
-
-
 /**
   * <B>StandardErrorReporter</B> is the standard error handler for processing XSLT and XQuery static
   * errors, used if no other error handler is nominated.
@@ -26,13 +23,10 @@ import scala.beans.BeanProperty
 class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
 
   private var warningCount: Int = 0
-  @BeanProperty
   var maximumNumberOfWarnings: Int = 25
   private var errorCount: Int = 0
-  @BeanProperty
   var maximumNumberOfErrors: Int = 1000
   private var maxOrdinaryCharacter: Int = 255
-  @BeanProperty
   var stackTraceDetail: Int = 2
   private val warningsIssued: ju.Set[String] = new ju.HashSet
   @transient  var logger: Logger = new StandardLogger
@@ -70,14 +64,14 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
     if (! warningsIssued.contains(message)) {
       logger.warning(message)
       warningCount += 1
-      if (warningCount > getMaximumNumberOfWarnings)
+      if (warningCount > maximumNumberOfWarnings)
         logger.info("No more warnings will be displayed")
       warningsIssued.add(message)
     }
   }
 
   def isReportingWarnings: Boolean =
-    warningCount < getMaximumNumberOfWarnings
+    warningCount < maximumNumberOfWarnings
 
    def error(error: XmlProcessingError): Unit = {
 
@@ -237,7 +231,7 @@ class StandardErrorReporter extends StandardDiagnostics with ErrorReporter {
   }
 
   def expandSpecialCharacters(in: CharSequence): CharSequence =
-    if (logger.isUnicodeAware)
+    if (logger.unicodeAware)
       in
     else
       expandSpecialCharacters(in, maxOrdinaryCharacter)

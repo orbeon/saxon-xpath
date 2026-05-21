@@ -13,7 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Navigator
 import org.orbeon.saxon.value.EmptySequence
 
-
 class StandardInvalidityHandler(var config: Configuration) extends StandardDiagnostics with InvalidityHandler {
   private var logger: Logger = null
   this.logger = config.getLogger

@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.value
 
-
 /**
   * Abstract class representing the XDM type xs:decimal. An instance of xs:decimal that is also
   * an instance of xs:integer will be implemented as an instance of IntegerValue; every other

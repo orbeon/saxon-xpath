@@ -1,6 +1,5 @@
 package org.orbeon.saxon.om
 
-
 /**
  * This interface represents an XDM Value, that is, a sequence of items.
  *

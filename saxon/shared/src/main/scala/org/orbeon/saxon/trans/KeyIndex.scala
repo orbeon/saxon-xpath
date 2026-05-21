@@ -86,7 +86,7 @@ class KeyIndex(isRangeKey: Boolean) {
     //val `match`: Pattern = keydef.getMatch
     val xc: XPathContextMajor = context.newContext()
     // xc.setOrigin(keydef)
-    //xc.setCurrentComponent(keydef.getDeclaringComponent)
+    //xc.setCurrentComponent(keydef.declaringComponent)
     xc.setTemporaryOutputState(StandardNames.XSL_KEY)
     //val map: SlotManager = keydef.getStackFrameMap
 
@@ -106,7 +106,7 @@ class KeyIndex(isRangeKey: Boolean) {
     val implicitTimezone: Int = xc.getImplicitTimezone
     //val use: Expression = keydef.getUse
     //val useval: SequenceIterator = use.iterate(xc)
-    /* if (keydef.isComposite) {
+    /* if (keydef.composite) {
        val amks: List[AtomicMatchKey] = new ArrayList[AtomicMatchKey](4)
        useval.forEachOrFail(
          (keyVal) =>
@@ -135,7 +135,6 @@ class KeyIndex(isRangeKey: Boolean) {
     untypedKeys.add(keyVal.asInstanceOf[UntypedAtomicValue])
     addEntry(amk, node, isFirst)
   }
-
 
   def addEntry(`val`: AtomicMatchKey,
                curr: NodeInfo,

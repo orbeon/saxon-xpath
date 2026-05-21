@@ -10,7 +10,6 @@ import java.util.function.Consumer
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 /**
   * A SequenceIterator is used to iterate over a sequence of items. An AxisIterator
   * is a SequenceIterator that throws no exceptions, and that always returns

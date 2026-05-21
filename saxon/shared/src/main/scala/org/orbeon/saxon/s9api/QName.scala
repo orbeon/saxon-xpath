@@ -12,7 +12,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Objects
 
-
 object QName {
 
   def fromClarkName(expandedName: String): QName = {

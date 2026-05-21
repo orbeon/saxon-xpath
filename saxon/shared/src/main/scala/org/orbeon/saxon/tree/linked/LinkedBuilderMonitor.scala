@@ -21,9 +21,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 /**
   * Monitor construction of a document tree. This allows a marker to be set during tree construction, in such a way
   * that the node corresponding to the marker can be retrieved at the end of tree construction. This is used in the

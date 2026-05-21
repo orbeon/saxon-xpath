@@ -50,7 +50,6 @@ import javax.xml.transform.sax.SAXSource
 import javax.xml.transform.stream.StreamSource
 import scala.jdk.CollectionConverters._
 
-
 object Configuration {
 
   val booleanFeatures = new ju.HashSet[Feature[_]](40)
@@ -367,7 +366,6 @@ object Configuration {
   booleanFeatures.add(Feature.RETAIN_NODE_FOR_DIAGNOSTICS)
   booleanFeatures.add(Feature.ALLOW_UNRESOLVED_SCHEMA_COMPONENTS)
 }
-
 
 /**
  * Create a non-schema-aware configuration object with default settings for all options.
@@ -936,7 +934,7 @@ class Configuration extends SourceResolver with NotationSet {
         } else {
           cv.setStringToDoubleConverter(StringToDouble11.getInstance)
         }
-        cv.setAllowYearZero(xsdVersion != Configuration.XSD10)
+        cv.allowYearZero = xsdVersion != Configuration.XSD10
         theConversionRules = cv
         return cv
       }
@@ -2089,7 +2087,7 @@ class Configuration extends SourceResolver with NotationSet {
    *             are to be treated as fatal errors.
    * @since 8.4
    */
-  def setValidationWarnings(warn: Boolean): Unit = defaultParseOptions.setContinueAfterValidationErrors(warn)
+  def setValidationWarnings(warn: Boolean): Unit = defaultParseOptions.continueAfterValidationErrors = warn
 
   /**
    * Determine whether schema validation failures on result documents are to be treated
@@ -2104,7 +2102,7 @@ class Configuration extends SourceResolver with NotationSet {
    *         if validation errors are fatal.
    * @since 8.4
    */
-  def isValidationWarnings: Boolean = defaultParseOptions.isContinueAfterValidationErrors
+  def isValidationWarnings: Boolean = defaultParseOptions.continueAfterValidationErrors
 
   /**
    * Indicate whether attributes that have a fixed or default value are to be expanded when
@@ -2616,7 +2614,6 @@ class Configuration extends SourceResolver with NotationSet {
   def getAttributeDeclaration(fingerprint: Int): SchemaDeclaration = null
   def getAttributeDeclaration(attributeName: StructuredQName): SchemaDeclaration = null
 
-
   def getSchemaType(name: StructuredQName): SchemaType =
     if (name.hasURI(NamespaceConstant.SCHEMA))
       BuiltInType.getSchemaTypeByLocalName(name.getLocalPart)
@@ -2861,7 +2858,6 @@ class Configuration extends SourceResolver with NotationSet {
     if (! externalObjectModels.contains(model))
       externalObjectModels.add(model)
   }
-
 
   def getExternalObjectModel(uri: String): ExternalObjectModel = {
     for (model <- externalObjectModels.asScala)
@@ -3438,9 +3434,9 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.URI_RESOLVER_CLASS =>
         setURIResolver(instantiateClassName(name, value, classOf[URIResolver]).asInstanceOf[URIResolver])
       case FeatureCode.USE_XSI_SCHEMA_LOCATION =>
-        defaultParseOptions.setUseXsiSchemaLocation(Configuration.requireBoolean(name, value))
+        defaultParseOptions.useXsiSchemaLocation = Configuration.requireBoolean(name, value)
       case FeatureCode.VALIDATION_COMMENTS =>
-        defaultParseOptions.setAddCommentsAfterValidationErrors(Configuration.requireBoolean(name, value))
+        defaultParseOptions.addCommentsAfterValidationErrors = Configuration.requireBoolean(name, value)
       case FeatureCode.VALIDATION_WARNINGS =>
         setValidationWarnings(Configuration.requireBoolean(name, value))
       case FeatureCode.VERSION_WARNING =>
@@ -3731,9 +3727,9 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.URI_RESOLVER_CLASS =>
         return getURIResolver.getClass.getName.asInstanceOf[T]
       case FeatureCode.USE_XSI_SCHEMA_LOCATION =>
-        return java.lang.Boolean.valueOf(defaultParseOptions.isUseXsiSchemaLocation).asInstanceOf[T]
+        return java.lang.Boolean.valueOf(defaultParseOptions.useXsiSchemaLocation).asInstanceOf[T]
       case FeatureCode.VALIDATION_COMMENTS =>
-        return java.lang.Boolean.valueOf(defaultParseOptions.isAddCommentsAfterValidationErrors).asInstanceOf[T]
+        return java.lang.Boolean.valueOf(defaultParseOptions.addCommentsAfterValidationErrors).asInstanceOf[T]
       case FeatureCode.VALIDATION_WARNINGS =>
         return java.lang.Boolean.valueOf(isValidationWarnings).asInstanceOf[T]
       case FeatureCode.VERSION_WARNING =>

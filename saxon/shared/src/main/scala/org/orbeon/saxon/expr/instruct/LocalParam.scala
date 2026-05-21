@@ -26,7 +26,7 @@ import org.orbeon.saxon.value.SequenceType
 
 import LocalParam._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 object LocalParam {
 
@@ -309,7 +309,7 @@ class LocalParam extends Instruction with LocalBinding {
       out.emitAttribute("flags", flags)
     }
     val options: ExpressionPresenter.ExportOptions =
-      out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+      out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
     if (getRequiredType != SequenceType.ANY_SEQUENCE) {
       out.emitAttribute("as", getRequiredType.toAlphaCode)
     }

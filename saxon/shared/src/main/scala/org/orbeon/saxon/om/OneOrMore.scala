@@ -10,7 +10,6 @@ import org.orbeon.saxon.value.SequenceExtent
 
 import java.{util => ju}
 
-
 /**
   * A value that is a sequence containing one or more items. The main use is in declarations of reflexive extension
   * functions, where declaring an argument of type &lt;OneOrMore&lt;IntegerValue&gt;&gt; triggers automatic type

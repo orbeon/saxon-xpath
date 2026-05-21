@@ -8,7 +8,6 @@ package org.orbeon.saxon.value
 
 import org.orbeon.saxon.model.StringToDouble
 
-
 object StringToDouble11 {
   val getInstance: StringToDouble11 = new StringToDouble11
 }

@@ -51,7 +51,6 @@ import GroupByClause._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-
 object GroupByClause {
 
   class ObjectToBeGrouped {
@@ -269,7 +268,7 @@ class GroupByClause(var config: Configuration) extends Clause {
       var h: Int = 0x77557755 ^ groupingValues.length
       for (i <- 0 until groupingValues.length) {
         val comparer: GenericAtomicComparer = comparers(i)
-        val implicitTimezone: Int = comparer.getContext.getImplicitTimezone
+        val implicitTimezone: Int = comparer.context.getImplicitTimezone
         try {
           val atoms: SequenceIterator = groupingValues(i).iterate()
           breakable {
@@ -309,7 +308,7 @@ class GroupByClause(var config: Configuration) extends Clause {
             .groupingValues(i)
             .iterate(),
           comparers(i),
-          comparers(i).getContext,
+          comparers(i).context,
           0)) {
           return false
         } catch {

@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr.sort
 
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
   * This class represents a member of a sequence that is being sorted. The sequence may contain
   * items, tuples, groups, or anything else. An instance of this class holds the object itself, the

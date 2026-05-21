@@ -17,7 +17,6 @@ import org.orbeon.saxon.tree.iter.LookaheadIterator
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.DateTimeValue
 
-
 /**
  * This class represents a minor change in the dynamic context in which an XPath expression is evaluated:
  * a "major context" object allows all aspects of the dynamic context to change, whereas

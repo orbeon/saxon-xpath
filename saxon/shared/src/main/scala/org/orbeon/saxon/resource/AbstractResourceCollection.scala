@@ -18,7 +18,6 @@ import org.orbeon.saxon.trans.{Maker, XmlProcessingIncident}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.xml.sax.XMLReader
 
-
 object AbstractResourceCollection {
 
   def setupErrorHandlingForCollection(options: ParseOptions,
@@ -68,7 +67,6 @@ object AbstractResourceCollection {
         val stream = getInputStream
         BinaryResource.readBinaryFromStream(stream, resourceUri)
       }
-
 
     def obtainCharacterContent(): String =
       if (characterContent != null) {

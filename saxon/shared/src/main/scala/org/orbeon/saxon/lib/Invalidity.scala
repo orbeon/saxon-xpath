@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import javax.xml.transform.SourceLocator
 
-
-
-
 /**
   * An {@code Invalidity} is a validation error, that is, a failure of the instance document
   * to conform to the schema being used for validation.

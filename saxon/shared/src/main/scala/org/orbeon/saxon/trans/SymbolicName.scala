@@ -51,7 +51,6 @@ object SymbolicName {
 
 }
 
-
 /**
  * Create a symbolic name for a component other than a function.
  *

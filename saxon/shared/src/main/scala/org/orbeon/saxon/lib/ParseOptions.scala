@@ -23,7 +23,6 @@ import org.xml.sax.{EntityResolver, ErrorHandler, InputSource, XMLReader}
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
 /**
  * This class defines options for parsing and/or validating a source document. Some of the options
  * are relevant only when parsing, some only when validating, but they are combined into a single
@@ -114,25 +113,20 @@ class ParseOptions {
   @BeanProperty
   var filters: List[FilterFactory] = null
 
-  @BooleanBeanProperty
   var continueAfterValidationErrors: Boolean = false
 
-  @BooleanBeanProperty
   var addCommentsAfterValidationErrors: Boolean = false
 
   @BooleanBeanProperty
   var expandAttributeDefaults: Boolean = true
 
-  @BooleanBeanProperty
   var useXsiSchemaLocation: Boolean = true
 
-  @BooleanBeanProperty
   var checkEntityReferences: Boolean = false
 
   @BooleanBeanProperty
   var stable: Boolean = true
 
-  @BeanProperty
   var validationErrorLimit: Int = java.lang.Integer.MAX_VALUE
 
   /*@Nullable*/
@@ -142,16 +136,12 @@ class ParseOptions {
 
   /*@Nullable*/
 
-  @BeanProperty
   var validationStatisticsRecipient: ValidationStatisticsRecipient = null
 
-  @BeanProperty
   var parserFeatures: Map[String, Boolean] = null
 
-  @BeanProperty
   var parserProperties: Map[String, Any] = null
 
-  @BeanProperty
   var invalidityHandler: InvalidityHandler = null
 
   // null means "all"

@@ -9,7 +9,6 @@ package org.orbeon.saxon.model
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.pattern.NodeTest
 
-
 /**
   * This is a marker interface that acts as a surrogate for an object representing
   * a global element or attribute declaration.

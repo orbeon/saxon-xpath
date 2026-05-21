@@ -27,7 +27,6 @@ import scala.annotation.tailrec
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object ExpressionTool {
 
   @throws[XPathException]
@@ -170,7 +169,7 @@ object ExpressionTool {
       if (temp eq a)
         exitLoop = true
       else
-        temp = temp.getParentExpression
+        temp = temp.parentExpression
     exitLoop
   }
 
@@ -205,7 +204,7 @@ object ExpressionTool {
   def isLoopingSubexpression(child: Expression, ancestor: Expression): Boolean = {
     var childExp = child
     while (true) {
-      val parent = childExp.getParentExpression
+      val parent = childExp.parentExpression
       if (parent == null)
         return false
       if (hasLoopingSubexpression(parent, childExp))
@@ -219,7 +218,7 @@ object ExpressionTool {
 
   def isLoopingReference(reference: VariableReference, binding: Binding): Boolean = {
     var child: Expression = reference
-    var parent = child.getParentExpression
+    var parent = child.parentExpression
 
     while (true) {
 
@@ -245,7 +244,7 @@ object ExpressionTool {
           }
       }
       child = parent
-      parent = child.getParentExpression
+      parent = child.parentExpression
     }
     false
   }
@@ -255,21 +254,21 @@ object ExpressionTool {
 
   def getFocusSettingContainer(exp: Expression): Expression = {
     var child = exp
-    var parent = child.getParentExpression
+    var parent = child.parentExpression
     while (parent != null) {
       val o = findOperand(parent, child)
       assert(o ne null)
       if (! o.hasSameFocus)
         return parent
       child = parent
-      parent = child.getParentExpression
+      parent = child.parentExpression
     }
     null
   }
 
   def getContextDocumentSettingContainer(exp: Expression): Expression = {
     var child = exp
-    var parent = child.getParentExpression
+    var parent = child.parentExpression
     while (parent != null) {
       parent match {
         case switcher: ContextSwitchingExpression =>
@@ -286,7 +285,7 @@ object ExpressionTool {
       if (! o.hasSameFocus)
         return parent
       child = parent
-      parent = child.getParentExpression
+      parent = child.parentExpression
     }
     null
   }
@@ -296,7 +295,7 @@ object ExpressionTool {
     var i = 0
     while (expression != null) {
       expression.resetLocalStaticProperties()
-      expression = expression.getParentExpression
+      expression = expression.parentExpression
       if (i > 100000)
         throw new IllegalStateException("Loop in parent expression chain")
       i += 1
@@ -331,7 +330,6 @@ object ExpressionTool {
     seq.reset()
     result
   }
-
 
   def allocateSlots(exp: Expression, _nextFree: Int, frame: SlotManager): Int = {
     var nextFree = _nextFree
@@ -414,7 +412,6 @@ object ExpressionTool {
     }
     nextFree
   }
-
 
   @throws[XPathException]
   def effectiveBooleanValue(iterator: SequenceIterator): Boolean = {
@@ -502,7 +499,7 @@ object ExpressionTool {
     val err = new XPathException("Effective boolean value is not defined for " + reason)
     err.setErrorCode("FORG0006")
     err.setIsTypeError(true)
-    err.setFailingExpression(cause)
+    err.failingExpression = cause
     throw err
   }
 
@@ -588,7 +585,7 @@ object ExpressionTool {
     if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) && ! compileWithTracing) {
       ExpressionTool.resetPropertiesWithinSubtree(expBody)
       if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS)) expBody = expBody.optimize(visitor, cisi)
-      expBody.setParentExpression(null)
+      expBody.parentExpression = null
       /*if (extractGlobals && compilation != null) {
         val exp2 = opt.promoteExpressionsToGlobal(expBody, compilation.getPrincipalStylesheetModule, visitor)
         if (exp2 != null) {
@@ -600,7 +597,7 @@ object ExpressionTool {
         expBody = LoopLifter.process(expBody, visitor, cisi)
     } else
       expBody = avoidDocumentSort(expBody)
-    if (!visitor.isOptimizeForStreaming)
+    if (!visitor.optimizeForStreaming)
       expBody = opt.eliminateCommonSubexpressions(expBody)
     opt.injectByteCodeCandidates(expBody)
     opt.prepareForStreaming(expBody)
@@ -667,13 +664,13 @@ object ExpressionTool {
       case ref: LocalVariableReference =>
         val binding = ref.getBinding
         if (binding.isInstanceOf[Assignation])
-          binding.addReference(ref, ref.isInLoop)
+          binding.addReference(ref, ref.inLoop)
       case _ =>
     }
 
     for (o <- exp.operands.asScala) {
       resetPropertiesWithinSubtree(o.getChildExpression)
-      o.getChildExpression.setParentExpression(exp)
+      o.getChildExpression.parentExpression = exp
     }
   }
 
@@ -718,7 +715,6 @@ object ExpressionTool {
     }
     false
   }
-
 
   trait ExpressionSelector {
     def matches(exp: Expression): Boolean
@@ -801,7 +797,7 @@ object ExpressionTool {
 
   def makePathExpression(start: Expression, step: Expression): Expression = {
 
-    if (start.isInstanceOf[RootExpression] && step.isInstanceOf[AxisExpression] && step.asInstanceOf[AxisExpression].getAxis == AxisInfo.PARENT)
+    if (start.isInstanceOf[RootExpression] && step.isInstanceOf[AxisExpression] && step.asInstanceOf[AxisExpression].axis == AxisInfo.PARENT)
       return Literal.makeEmptySequence
 
     val expr = new SlashExpression(start, step)
@@ -832,7 +828,7 @@ object ExpressionTool {
   @tailrec
   def unfilteredExpression(exp: Expression, allowPositional: Boolean): Expression =
     exp match {
-      case filterExpr: FilterExpression if allowPositional || !filterExpr.isFilterIsPositional =>
+      case filterExpr: FilterExpression if allowPositional || !filterExpr.filterIsPositional =>
         unfilteredExpression(filterExpr.getSelectExpression, allowPositional)
       case filter: SingleItemFilter if allowPositional =>
         unfilteredExpression(filter.getBaseExpression, allowPositional)
@@ -1048,7 +1044,7 @@ object ExpressionTool {
     var childExp = child
     if (! (childExp.isInstanceOf[ParentNodeConstructor] || childExp.isInstanceOf[SimpleNodeConstructor]))
       return false
-    var parent = childExp.getParentExpression
+    var parent = childExp.parentExpression
     while (parent != null) {
       if (parent.isInstanceOf[ParentNodeConstructor])
         return true
@@ -1056,7 +1052,7 @@ object ExpressionTool {
       if (o.getUsage ne OperandUsage.TRANSMISSION)
         return false
       childExp = parent
-      parent = parent.getParentExpression
+      parent = parent.parentExpression
     }
     false
   }

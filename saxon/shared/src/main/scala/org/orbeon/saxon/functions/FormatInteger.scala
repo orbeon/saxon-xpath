@@ -15,7 +15,6 @@ import org.orbeon.saxon.z.{IntHashSet, IntSet}
 import java.util
 import scala.util.control.Breaks._
 
-
 object FormatInteger {
 
   private val badHashPattern      = "((\\d+|\\w+)#+.*)|(#+[^\\d]+)".r

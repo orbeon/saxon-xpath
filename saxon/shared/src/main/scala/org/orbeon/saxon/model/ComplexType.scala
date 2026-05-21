@@ -4,7 +4,6 @@ package org.orbeon.saxon.model
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.z.IntHashSet
 
-
 /**
  * A complex type as defined in XML Schema: either a user-defined complex type, or xs:anyType, or xs:untyped.
  * In the non-schema-aware version of the Saxon product, the only complex type encountered is xs:untyped.

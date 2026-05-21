@@ -5,9 +5,6 @@ import org.orbeon.saxon.z.IntSet
 
 import java.util.function.IntPredicate
 
-
-
-
 class PredicateCharacterClass(private var predicate: IntPredicate)
     extends CharacterClass {
 

@@ -16,7 +16,6 @@ import org.orbeon.saxon.value.StringValue
 
 import scala.beans.BeanProperty
 
-
 object UnparsedTextResource {
 
   val FACTORY: ResourceFactory = new ResourceFactory() {

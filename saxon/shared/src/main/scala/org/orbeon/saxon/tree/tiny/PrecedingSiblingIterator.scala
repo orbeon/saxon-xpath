@@ -9,9 +9,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 
 import java.util.function.IntPredicate
 
-
-
-
 class PrecedingSiblingIterator(private var document: TinyTree,
                                private var startNode: TinyNodeImpl,
                                private var test: NodeTest)

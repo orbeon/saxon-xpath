@@ -18,7 +18,6 @@ import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.StringValue
 
-
 /**
   * This class represents a namespace node; it is used in several tree models.
   */

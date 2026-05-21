@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, ExpressionVisitor}
 
-
 /**
   * An EagerLetExpression is the same as a LetExpression except that the variable is evaluated using
   * eager evaluation rather than lazy evaluation. This is used when performing diagnostic tracing.

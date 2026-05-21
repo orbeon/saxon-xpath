@@ -1,6 +1,5 @@
 package org.orbeon.saxon.regex
 
-
 import org.orbeon.saxon.regex.charclass._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Whitespace
@@ -10,7 +9,6 @@ import java.util.function.IntPredicate
 import java.{util => ju}
 import scala.util.control.Breaks
 import scala.util.control.Breaks._
-
 
 object RECompiler {
 
@@ -62,19 +60,19 @@ object RECompiler {
     case opSequence1: Operation.OpSequence =>
       o2 match {
         case opSequence2: Operation.OpSequence =>
-          val l1 = opSequence1.getOperations
-          val l2 = opSequence2.getOperations
+          val l1 = opSequence1.operations
+          val l2 = opSequence2.operations
           l1.addAll(l2)
           return o1
         case _                                 =>
       }
-      val l1 = opSequence1.getOperations
+      val l1 = opSequence1.operations
       l1.add(o2)
       o1
     case _ =>
       o2 match {
       case opSequence2: Operation.OpSequence =>
-        val l2 = opSequence2.getOperations
+        val l2 = opSequence2.operations
         l2.add(0, o1)
         o2
       case _ =>
@@ -85,7 +83,6 @@ object RECompiler {
     }
   }
 
-
   def noAmbiguity(op0: Operation, op1: Operation, caseBlind: Boolean, reluctant: Boolean): Boolean = {
     if (op1.isInstanceOf[Operation.OpEndProgram]) return !reluctant
     if (op1.isInstanceOf[Operation.OpBOL] || op1.isInstanceOf[Operation.OpEOL]) return true
@@ -95,7 +92,6 @@ object RECompiler {
     c0.isDisjoint(c1)
   }
 }
-
 
 class RECompiler {
 
@@ -205,7 +201,6 @@ class RECompiler {
     }) != '}')
       syntaxError("Missing close brace")
   }
-
 
   @throws[RESyntaxException]
   def escape(inSquareBrackets: Boolean): CharacterClass = {
@@ -321,10 +316,8 @@ class RECompiler {
     null
   }
 
-
   class BackReference(val number: Int) extends SingletonCharacterClass(number) {
   }
-
 
   @throws[RESyntaxException]
   def parseCharacterClass : CharacterClass = {
@@ -368,7 +361,7 @@ class RECompiler {
 
           val cc = escape(true)
           if (cc.isInstanceOf[SingletonCharacterClass])
-            simpleChar = cc.asInstanceOf[SingletonCharacterClass].getCodepoint
+            simpleChar = cc.asInstanceOf[SingletonCharacterClass].codepoint
           else {
             if (definingRange) syntaxError("Multi-character escape cannot follow '-'")
             else if (addend == null) addend = cc
@@ -405,7 +398,6 @@ class RECompiler {
 
         if (rangeStart > rangeEnd) {
           syntaxError("Bad character range: start > end")
-
 
         }
         range.addRange(rangeStart, rangeEnd)
@@ -460,9 +452,7 @@ class RECompiler {
     result
   }
 
-
   private def thereFollows(s: String) = idx + s.length <= len && pattern.uSubstring(idx, idx + s.length).toString == s
-
 
   @throws[RESyntaxException]
   def parseAtom: Operation = {
@@ -523,7 +513,6 @@ class RECompiler {
     RECompiler.trace(new Operation.OpAtom(UnicodeString.makeUnicodeString(fsb.condense)))
   }
 
-
   @throws[RESyntaxException]
   def parseTerminal(flags: Array[Int]): Operation = {
     pattern.uCharAt(idx) match {
@@ -565,7 +554,7 @@ class RECompiler {
         val esc = escape(false)
         esc match {
           case reference: RECompiler#BackReference =>
-            val backreference = reference.getCodepoint
+            val backreference = reference.codepoint
             if (capturingOpenParenCount <= backreference)
               syntaxError("Bad backreference")
             RECompiler.trace(new Operation.OpBackReference(backreference))
@@ -644,7 +633,6 @@ class RECompiler {
     RECompiler.trace(result)
   }
 
-
   @throws[RESyntaxException]
   def parseBranch: Operation = {
     var current: Operation = null
@@ -661,7 +649,6 @@ class RECompiler {
     if (current == null) return new Operation.OpNothing
     current
   }
-
 
   @throws[RESyntaxException]
   private def parseExpr(compilerFlags: Array[Int]) = {
@@ -709,7 +696,6 @@ class RECompiler {
 
     op
   }
-
 
   @throws[RESyntaxException]
   def compile(pattern: UnicodeString): REProgram = {

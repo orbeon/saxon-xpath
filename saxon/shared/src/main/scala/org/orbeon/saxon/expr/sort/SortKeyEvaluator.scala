@@ -7,9 +7,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.AtomicValue
 
-
-
-
 trait SortKeyEvaluator {
 
   /*@Nullable*/

@@ -11,12 +11,7 @@ import org.orbeon.saxon.value.AtomicValue
 
 import org.orbeon.saxon.value.StringValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
-class TextComparer(@BeanProperty var baseComparer: AtomicComparer)
+class TextComparer(var baseComparer: AtomicComparer)
     extends AtomicComparer {
 
   def getCollator(): StringCollator = baseComparer.getCollator

@@ -3,9 +3,6 @@ package org.orbeon.saxon.om
 
 import org.orbeon.saxon.event.ReceiverOption
 
-
-
-
 object CopyOptions {
 
   val ALL_NAMESPACES: Int = 2

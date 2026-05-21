@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 trait MappingFunction {
 
   /*@Nullable*/

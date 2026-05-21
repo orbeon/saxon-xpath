@@ -377,7 +377,7 @@ class XPathContextMajor private () extends XPathContextMinor {
     currentMode /*val m: M = currentMode
     if (m == null) {
       val rm = getController.getRuleManager
-      if (rm != null) rm.getUnnamedMode.getDeclaringComponent // RuleManager Class not found
+      if (rm != null) rm.getUnnamedMode.declaringComponent // RuleManager Class not found
       else null
     }
     else m*/

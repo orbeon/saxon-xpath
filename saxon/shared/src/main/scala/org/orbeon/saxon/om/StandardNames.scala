@@ -10,7 +10,6 @@ import org.orbeon.saxon.lib.NamespaceConstant
 
 import java.util.HashMap
 
-
 /**
   * Well-known names used in XSLT processing. These names must all have
   * fingerprints in the range 0-1023, to avoid clashing with codes allocated

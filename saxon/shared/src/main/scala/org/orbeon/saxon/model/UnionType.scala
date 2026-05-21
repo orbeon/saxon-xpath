@@ -12,7 +12,6 @@ import org.orbeon.saxon.om.{AtomicSequence, Item, NamespaceResolver, StructuredQ
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{AtomicValue, SequenceType}
 
-
 /**
   * Interface representing a union type. This may be either a built-in union type (of which there are
   * currently two, namely ErrorType and NumericType), or a user-defined union type.

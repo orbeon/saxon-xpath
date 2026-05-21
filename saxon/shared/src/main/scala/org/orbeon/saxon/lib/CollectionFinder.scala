@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.XPathContext
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 @FunctionalInterface
 trait CollectionFinder {
 

@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.om.Item
 
-
 /**
   * ItemMappingFunction is an interface that must be satisfied by an object passed to a
   * ItemMappingIterator. It represents an object which, given an Item, can return either

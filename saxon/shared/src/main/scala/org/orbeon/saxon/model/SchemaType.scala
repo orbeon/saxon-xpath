@@ -9,7 +9,6 @@ package org.orbeon.saxon.model
 import org.orbeon.saxon.expr.Expression
 import org.orbeon.saxon.om.{AtomicSequence, NodeInfo, StructuredQName}
 
-
 /**
   * SchemaType is an interface implemented by all schema types: simple and complex types, built-in and
   * user-defined types.

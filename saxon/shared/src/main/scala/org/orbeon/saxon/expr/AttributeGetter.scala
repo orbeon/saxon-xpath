@@ -31,10 +31,7 @@ import org.orbeon.saxon.value.UntypedAtomicValue
 
 import AttributeGetter._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
+import scala.beans.BeanProperty
 
 object AttributeGetter {
 
@@ -46,7 +43,6 @@ object AttributeGetter {
 class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
     extends Expression {
 
-  @BeanProperty
   var requiredChecks: Int = CHECK_CONTEXT_ITEM_IS_NODE
 
   override def getItemType: ItemType = BuiltInAtomicType.UNTYPED_ATOMIC
@@ -61,7 +57,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
 
   override def copy(rebindings: RebindingMap): AttributeGetter = {
     val ag2: AttributeGetter = new AttributeGetter(attributeName)
-    ag2.setRequiredChecks(requiredChecks)
+    ag2.requiredChecks = requiredChecks
     ag2
   }
 

@@ -11,7 +11,6 @@ import org.orbeon.saxon.value._
 import scala.annotation.tailrec
 import scala.util.control.Breaks._
 
-
 object Type {
 
   val ELEMENT: Short = 1
@@ -261,7 +260,7 @@ object Type {
         if (t2 == MapType.EMPTY_MAP_TYPE)
           return t1
 
-        val keyType = getCommonSuperType(mapType.getKeyType, t2.asInstanceOf[MapType].getKeyType)
+        val keyType = getCommonSuperType(mapType.keyType, t2.asInstanceOf[MapType].keyType)
         val k =
           keyType match {
             case atomicType: AtomicType => atomicType
@@ -269,10 +268,10 @@ object Type {
           }
         val v = SequenceType.makeSequenceType(
           getCommonSuperType(
-            mapType.getValueType.getPrimaryType,
-            t2.asInstanceOf[MapType].getValueType.getPrimaryType),
-          Cardinality.union(mapType.getValueType.getCardinality,
-            t2.asInstanceOf[MapType].getValueType.getCardinality)
+            mapType.valueType.getPrimaryType,
+            t2.asInstanceOf[MapType].valueType.getPrimaryType),
+          Cardinality.union(mapType.valueType.getCardinality,
+            t2.asInstanceOf[MapType].valueType.getCardinality)
         )
         return new MapType(k, v)
       case _ =>

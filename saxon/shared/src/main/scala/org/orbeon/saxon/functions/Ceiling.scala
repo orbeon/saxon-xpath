@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.value.NumericValue
 
-
-
-
 class Ceiling extends ScalarSystemFunction {
 
   override def evaluate(arg: Item, context: XPathContext): NumericValue =

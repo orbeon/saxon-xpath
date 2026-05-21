@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.expr.Expression
 
-
-
-
 /**
   * Interface implemented by instructions that contain a sequence constructor evaluated
   * using the rules for "constructing complex content": for example, xsl:element, xsl:copy,

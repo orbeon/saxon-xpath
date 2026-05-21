@@ -10,7 +10,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 class StaticFunctionCall(private var target: Function,
                          arguments: Array[Expression])
   extends FunctionCall
@@ -65,10 +64,10 @@ class StaticFunctionCall(private var target: Function,
   override def `export`(out: ExpressionPresenter): Unit = {
     target match {
       case originalFunction: OriginalFunction =>
-        val options = out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions]
+        val options = out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
         out.startElement("origFC", this)
         out.emitAttribute("name", originalFunction.getFunctionName)
-        out.emitAttribute("pack", options.componentMap.get(originalFunction.getComponent.getContainingPackage).toString)
+        out.emitAttribute("pack", options.componentMap.get(originalFunction.getComponent.containingPackage).toString)
         for (o <- operands.asScala)
           o.getChildExpression.`export`(out)
         out.endElement()

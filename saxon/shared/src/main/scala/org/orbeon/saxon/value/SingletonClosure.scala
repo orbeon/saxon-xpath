@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.{Expression, XPathContext}
 import org.orbeon.saxon.om.{Item, Sequence, ZeroOrOne}
 import org.orbeon.saxon.tree.iter.{SingletonIterator, UnfailingIterator}
 
-
 /**
  * A SingletonClosure represents a value that has not yet been evaluated: the value is represented
  * by an expression, together with saved values of all the context variables that the

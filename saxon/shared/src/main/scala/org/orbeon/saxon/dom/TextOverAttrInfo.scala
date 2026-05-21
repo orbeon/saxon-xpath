@@ -5,9 +5,6 @@ import org.orbeon.saxon.model.Type
 
 import org.w3c.dom.Node
 
-
-
-
 /**
   * This class represents a DOM text node that is the child of a DOM attribute node. The DOM attribute node
   * will be a wrapper over a Saxon attribute node or namespace node.

@@ -2,7 +2,6 @@ package org.orbeon.saxon.tree.linked
 
 import java.util.Arrays
 
-
 class SystemIdMap {
 
   private var sequenceNumbers: Array[Int] = new Array[Int](4)

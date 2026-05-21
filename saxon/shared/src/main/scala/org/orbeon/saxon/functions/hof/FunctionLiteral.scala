@@ -21,9 +21,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class FunctionLiteral(value: Function) extends Literal(value) {
 
   override def getValue(): Function = super.getValue.asInstanceOf[Function]

@@ -16,7 +16,6 @@ import org.orbeon.saxon.trans.{Instantiator, Maker}
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.XMLReader
 
-
 /**
   * A set of query parameters on a URI passed to the collection() or document() function
   */

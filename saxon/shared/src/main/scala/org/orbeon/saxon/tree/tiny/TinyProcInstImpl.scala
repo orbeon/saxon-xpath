@@ -17,9 +17,6 @@ import org.orbeon.saxon.tree.util.Navigator
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class TinyProcInstImpl() extends TinyNodeImpl {
 
   def this(tree: TinyTree, nodeNr: Int) = {

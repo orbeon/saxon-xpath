@@ -7,9 +7,6 @@ import org.orbeon.saxon.resource.AbstractResourceCollection
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 trait ResourceFactory {
 
   /**

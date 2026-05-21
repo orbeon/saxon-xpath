@@ -7,7 +7,6 @@ package org.orbeon.saxon.trans
 
 import javax.xml.transform.URIResolver
 
-
 /**
   * This is a marker interface: if a URIResolver implements this interface and returns null from
   * its resolve() method, then the standard URI resolver will not be invoked.

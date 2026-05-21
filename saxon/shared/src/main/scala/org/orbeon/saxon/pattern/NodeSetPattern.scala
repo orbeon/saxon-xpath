@@ -16,7 +16,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.ManualIterator
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
   * A NodeSetPattern is a pattern based on an expression that is evaluated to return a set of nodes;
   * a node matches the pattern if it is a member of this node-set.

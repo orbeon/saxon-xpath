@@ -18,9 +18,6 @@ import org.orbeon.saxon.trans.{XPathException, XmlProcessingException}
 import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.value.SequenceType
 
-import scala.beans.BeanProperty
-
-
 /**
   * Information about a sub-expression and its relationship to the parent expression
   */
@@ -38,7 +35,7 @@ object Operand {
 }
 
 class Operand(
-  @BeanProperty val parentExpression : Expression,
+  val parentExpression : Expression,
   _childExpression                   : Expression,
   private var role                   : OperandRole
 ) extends java.lang.Iterable[Operand]
@@ -62,7 +59,7 @@ class Operand(
 
   def detachChild(): Unit = {
     if (DEBUG) {
-      childExpression.setParentExpression(null)
+      childExpression.parentExpression = null
       val sw = new StringWriter()
       new XPathException("dummy").printStackTrace(new PrintWriter(sw))
       childExpression = new ErrorExpression(

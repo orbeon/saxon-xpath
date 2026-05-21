@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.expr.ContextOriginator
 
-
-
-
 trait ITemplateCall extends ContextOriginator {
 
   /*@NotNull*/

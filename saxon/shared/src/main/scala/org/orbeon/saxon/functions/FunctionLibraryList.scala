@@ -9,7 +9,6 @@ import java.util.{ArrayList, List}
 
 import scala.jdk.CollectionConverters._
 
-
 class FunctionLibraryList extends FunctionLibrary with XQueryFunctionBinder {
 
   var libraryList: List[FunctionLibrary] = new ArrayList(8)

@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.om.{AtomicSequence, AtomizedValueIterator, SequenceIterator}
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
  * This iterator returns a sequence of atomic values, the result of atomizing the sequence
  * of nodes returned by an underlying SequenceIterator.

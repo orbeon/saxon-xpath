@@ -3,9 +3,6 @@ package org.orbeon.saxon.serialize.charcode
 
 import UTF8CharacterSet._
 
-
-
-
 object UTF8CharacterSet {
 
   private var theInstance: UTF8CharacterSet = new UTF8CharacterSet()

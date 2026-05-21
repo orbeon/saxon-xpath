@@ -15,9 +15,6 @@ import org.orbeon.saxon.value.StringValue
 
 import SubstringBefore._
 
-
-
-
 object SubstringBefore {
 
   private def substringBefore(arg0: StringValue,

@@ -7,9 +7,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import org.orbeon.saxon.value.QNameValue
 
-
-
-
 trait AtomicMatchKey {
 
   def asAtomic(): AtomicValue

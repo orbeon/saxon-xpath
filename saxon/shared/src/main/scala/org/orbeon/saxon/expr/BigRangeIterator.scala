@@ -16,7 +16,6 @@ import java.math.BigInteger
 import java.util.EnumSet
 import org.orbeon.saxon.om.SequenceIterator.Property._
 
-
 class BigRangeIterator(var start: BigInteger, var limit: BigInteger)
   extends AtomicIterator[IntegerValue]
     with LastPositionFinder

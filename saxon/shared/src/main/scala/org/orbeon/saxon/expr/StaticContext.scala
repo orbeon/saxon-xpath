@@ -17,7 +17,6 @@ import org.orbeon.saxon.s9api.{Location, UnprefixedElementMatchingPolicy}
 import org.orbeon.saxon.trans.DecimalFormatManager
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
   * A StaticContext contains the information needed while an expression or pattern
   * is being parsed. The information is also sometimes needed at run-time.

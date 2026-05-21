@@ -25,7 +25,6 @@ import org.xml.sax.ext.LexicalHandler
 
 import scala.beans.BeanProperty
 
-
 /**
  * ReceivingContentHandler is a glue class that provides a standard SAX ContentHandler
  * interface to a Saxon Receiver. To achieve this it needs to map names supplied

@@ -21,9 +21,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.AtomicValue
 
-
-
-
 class SequenceNormalizerWithItemSeparator(next: Receiver,
                                           private var separator: String)
     extends SequenceNormalizer(next) {

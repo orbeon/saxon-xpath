@@ -22,7 +22,6 @@ import org.orbeon.saxon.value.BooleanValue
 
 import org.orbeon.saxon.value.Cardinality
 
-
 class CastableExpression(source: Expression,
                          target: AtomicType,
                          allowEmpty: Boolean)
@@ -45,7 +44,7 @@ class CastableExpression(source: Expression,
           return Literal.makeLiteral(BooleanValue.FALSE, this)
         }
       } else {
-        if (getTargetPrimitiveType.isNamespaceSensitive) {
+        if (targetPrimitiveType.isNamespaceSensitive) {
           converter = converter.setNamespaceResolver(getRetainedStaticContext)
         }
         if (converter.isAlwaysSuccessful && !allowsEmpty() &&
@@ -81,8 +80,6 @@ class CastableExpression(source: Expression,
     this
   }
 
-
-
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     optimizeChildren(visitor, contextInfo)
@@ -107,12 +104,9 @@ class CastableExpression(source: Expression,
 
   override def getItemType: ItemType = BuiltInAtomicType.BOOLEAN
 
-
   override def getStaticUType(contextItemType: UType): UType = UType.BOOLEAN
 
   override def computeCardinality(): Int = StaticProperty.EXACTLY_ONE
-
-
 
   def copy(rebindings: RebindingMap): Expression = {
     val ce: CastableExpression = new CastableExpression(
@@ -164,9 +158,6 @@ class CastableExpression(source: Expression,
     count != 0 || allowsEmpty()
   }
 
-
-
-
   private def isCastable(value: AtomicValue,
                          targetType: AtomicType,
                          context: XPathContext): Boolean = {
@@ -196,24 +187,5 @@ class CastableExpression(source: Expression,
     `export`(out, "castable")
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
 

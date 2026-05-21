@@ -14,7 +14,6 @@ import SequenceIterator.Property._
 
 import java.util.Arrays
 
-
 class SortedGroupIterator(context: XPathContext,
                           base: GroupIterator,
                           sortKeyEvaluator: SortKeyEvaluator,

@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.instruct
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 trait TailCall {
 
   def processLeavingTail(): TailCall

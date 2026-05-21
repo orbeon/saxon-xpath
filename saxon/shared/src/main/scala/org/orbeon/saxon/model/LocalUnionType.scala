@@ -18,12 +18,10 @@ import org.orbeon.saxon.value.SequenceType
 
 import java.util.List
 
-import scala.beans.{BeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-class LocalUnionType(@BeanProperty var memberTypes: List[AtomicType])
+class LocalUnionType(var memberTypes: List[AtomicType])
   extends PlainType
     with UnionType {
 

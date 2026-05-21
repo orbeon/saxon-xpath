@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr.instruct
 import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr.XPathContext
 
-
 /**
   * This interface represents an expression that is capable of being processed leaving tail calls for the
   * calling instruction to deal with.

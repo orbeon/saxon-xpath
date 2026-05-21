@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.{StandardNames, StructuredQName}
 
 import javax.xml.namespace.QName
 
-
 /**
   * A qualified name: this is an abstract superclass for QNameValue and NotationValue, representing the
   * XPath primitive types xs:QName and xs:NOTATION respectively

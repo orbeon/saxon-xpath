@@ -17,8 +17,6 @@ import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
 
 import java.math.BigInteger
-import scala.beans.BooleanBeanProperty
-
 
 object FilterExpression {
 
@@ -274,7 +272,6 @@ class FilterExpression(base: Expression, filter: Expression)
   extends BinaryExpression(base, Token.LSQB, filter)
     with ContextSwitchingExpression {
 
-  @BooleanBeanProperty
   var filterIsPositional: Boolean = _
   private var filterIsSingletonBoolean: Boolean = _
   private var filterIsIndependent: Boolean = _
@@ -353,11 +350,11 @@ class FilterExpression(base: Expression, filter: Expression)
     if (Literal.isEmptySequence(getBase))
       return getBase
     val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
-    baseItemType.setContextSettingExpression(getBase)
+    baseItemType.contextSettingExpression = getBase
     getRhs.typeCheck(visitor, baseItemType)
     val filter2 = ExpressionTool.unsortedIfHomogeneous(
       getFilter,
-      visitor.isOptimizeForStreaming)
+      visitor.optimizeForStreaming)
     if (filter2 ne getFilter)
       setFilter(filter2)
     if (Literal.isConstantOne(getFilter)) {
@@ -385,10 +382,10 @@ class FilterExpression(base: Expression, filter: Expression)
     getBase.setFiltered(true)
 
     val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
-    baseItemType.setContextSettingExpression(getBase)
+    baseItemType.contextSettingExpression = getBase
     getRhs.optimize(visitor, baseItemType)
 
-    val filter2 = ExpressionTool.unsortedIfHomogeneous(getFilter, visitor.isOptimizeForStreaming)
+    val filter2 = ExpressionTool.unsortedIfHomogeneous(getFilter, visitor.optimizeForStreaming)
     if (filter2 != getFilter)
       setFilter(filter2)
 
@@ -398,7 +395,7 @@ class FilterExpression(base: Expression, filter: Expression)
       case isLastExpression: IsLastExpression
         if isLastExpression.getCondition       &&
           getBase.isInstanceOf[AxisExpression] &&
-          getBase.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD =>
+          getBase.asInstanceOf[AxisExpression].axis == AxisInfo.CHILD =>
 
         val test = getBase.asInstanceOf[AxisExpression].getNodeTest
         val fs = new AxisExpression(AxisInfo.FOLLOWING_SIBLING, test)
@@ -422,8 +419,8 @@ class FilterExpression(base: Expression, filter: Expression)
 //      getFilter.asInstanceOf[CompareToStringConstant].getLhsExpression.asInstanceOf[SystemFunctionCall].getArg(0).isInstanceOf[ContextItemExpression]) {
 //      val ax2 =
 //        new AxisExpression(
-//          getBase.asInstanceOf[AxisExpression].getAxis,
-//          new LocalNameTest(config.getNamePool, Type.ELEMENT, getFilter.asInstanceOf[CompareToStringConstant].getComparand)
+//          getBase.asInstanceOf[AxisExpression].axis,
+//          new LocalNameTest(config.getNamePool, Type.ELEMENT, getFilter.asInstanceOf[CompareToStringConstant].comparand)
 //        )
 //      ExpressionTool.copyLocationInfo(this, ax2)
 //      return ax2
@@ -447,8 +444,8 @@ class FilterExpression(base: Expression, filter: Expression)
     ) {
       val ax2 =
         new AxisExpression(
-          getBase.asInstanceOf[AxisExpression].getAxis,
-          new LocalNameTest(config.getNamePool, Type.ELEMENT, getFilter.asInstanceOf[CompareToStringConstant].getComparand)
+          getBase.asInstanceOf[AxisExpression].axis,
+          new LocalNameTest(config.getNamePool, Type.ELEMENT, getFilter.asInstanceOf[CompareToStringConstant].comparand)
         )
       ExpressionTool.copyLocationInfo(this, ax2)
       return ax2
@@ -491,7 +488,7 @@ class FilterExpression(base: Expression, filter: Expression)
       getFilter.getCardinality == StaticProperty.EXACTLY_ONE &&
       getFilter.getItemType == BuiltInAtomicType.BOOLEAN
 
-    if (! filterIsPositional && ! visitor.isOptimizeForStreaming) {
+    if (! filterIsPositional && ! visitor.optimizeForStreaming) {
       val isIndexable = opt.isIndexableFilter(getFilter)
       if (isIndexable != 0) {
         val contextIsDoc = contextItemType != null &&
@@ -560,7 +557,7 @@ class FilterExpression(base: Expression, filter: Expression)
     // of evaluation, so we evaluate the cheapest predicates first
 
     if (! filterIsPositional && ! doneReorderingPredicates &&
-      ! getParentExpression.isInstanceOf[FilterExpression]) {
+      ! parentExpression.isInstanceOf[FilterExpression]) {
       val f2 = opt.reorderPredicates(this, visitor, contextItemType)
       if (f2 ne this) {
         f2.doneReorderingPredicates = true
@@ -826,7 +823,7 @@ class FilterExpression(base: Expression, filter: Expression)
       .isInstanceOf[NodeTest] &&
       filterIsPositional &&
       base.isInstanceOf[AxisExpression] &&
-      base.asInstanceOf[AxisExpression].getAxis == AxisInfo.CHILD &&
+      base.asInstanceOf[AxisExpression].axis == AxisInfo.CHILD &&
       (filter.getDependencies & StaticProperty.DEPENDS_ON_LAST) == 0) {
       filter match {
         case literal: Literal if literal.getValue.isInstanceOf[IntegerValue] =>

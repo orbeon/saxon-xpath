@@ -5,7 +5,6 @@ import org.orbeon.saxon.z.IntIterator
 
 import EmptyIntIterator._
 
-
 object EmptyIntIterator {
 
   var THE_INSTANCE: EmptyIntIterator = new EmptyIntIterator

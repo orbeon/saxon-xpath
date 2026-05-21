@@ -3,9 +3,6 @@ package org.orbeon.saxon.serialize
 
 import java.io.Writer
 
-
-
-
 trait CharacterReferenceGenerator {
 
   /**

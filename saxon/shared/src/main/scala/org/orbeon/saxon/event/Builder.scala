@@ -11,7 +11,6 @@ import org.orbeon.saxon.trans.CommandLineOptions
 import org.orbeon.saxon.tree.tiny.TinyDocumentImpl
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
   * The abstract Builder class is responsible for taking a stream of SAX events
   * and constructing a Document tree. There is one concrete subclass for each

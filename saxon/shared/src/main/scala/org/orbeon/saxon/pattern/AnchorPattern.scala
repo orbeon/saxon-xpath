@@ -23,9 +23,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import AnchorPattern._
 
-
-
-
 object AnchorPattern {
 
   private var THE_INSTANCE: AnchorPattern = new AnchorPattern()

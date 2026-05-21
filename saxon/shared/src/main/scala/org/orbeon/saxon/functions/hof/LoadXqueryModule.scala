@@ -34,7 +34,6 @@ import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.query.{DynamicQueryContext, QueryLibrary, QueryModule, QueryReader, StaticQueryContext, XQueryExpression, XQueryFunction, XQueryFunctionLibrary}
 import org.orbeon.saxon.trace.ExpressionPresenter
 
-
 object LoadXqueryModule {
 
   def makeOptionsParameter(): OptionsParameter = {
@@ -204,7 +203,7 @@ class LoadXqueryModule extends SystemFunction {
     if (contextItemOption != null) {
       val contextItem: Item = contextItemOption.head
       val gcr: GlobalContextRequirement =
-        main.getExecutable.getGlobalContextRequirement
+        main.getExecutable.globalContextRequirement
       if (gcr != null) {
         val req: ItemType = gcr.getRequiredItemType
         if (req != null && !req.matches(contextItem, config.getTypeHierarchy)) {

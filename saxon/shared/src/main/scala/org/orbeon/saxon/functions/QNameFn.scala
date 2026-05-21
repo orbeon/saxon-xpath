@@ -13,7 +13,6 @@ import org.orbeon.saxon.om.{NameChecker, QNameException, Sequence}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{QNameValue, StringValue}
 
-
 /**
   * This class supports the fn:QName() function (previously named fn:expanded-QName())
   */

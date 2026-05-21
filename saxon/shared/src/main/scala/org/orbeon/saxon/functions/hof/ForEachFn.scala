@@ -14,7 +14,6 @@ import org.orbeon.saxon.functions.SystemFunction
 import org.orbeon.saxon.model.{AnyItemType, ItemType, SpecificFunctionType}
 import org.orbeon.saxon.om._
 
-
 class ForEachFn extends SystemFunction {
 
   /**
@@ -54,5 +53,4 @@ class ForEachFn extends SystemFunction {
   }
 
 }
-
 

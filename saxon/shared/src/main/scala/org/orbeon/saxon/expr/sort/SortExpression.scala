@@ -23,9 +23,7 @@ import org.orbeon.saxon.value.SequenceType
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.util.control.Breaks._
-
 
 object SortExpression {
 
@@ -51,7 +49,6 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
   private var sortOp: Operand =
     new Operand(this, sortKeys, OperandRole.ATOMIC_SEQUENCE)
 
-  @BeanProperty
   var comparators: Array[AtomicComparer] = null
 
   adoptChildExpression(select)
@@ -152,7 +149,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       if (sortKeyDef.isFixed) {
         val comp: AtomicComparer = sortKeyDef.makeComparator(
           visitor.getStaticContext.makeEarlyEvaluationContext())
-        sortKeyDef.setFinalComparator(comp)
+        sortKeyDef.finalComparator = comp
         if (allKeysFixed) {
           comparators(i) = comp
         }
@@ -244,7 +241,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       val len = getSortKeyDefinitionList.size
       comps = Array.ofDim[AtomicComparer](len)
       for (s <- 0 until len) {
-        var comp: AtomicComparer = getSortKeyDefinition(s).getFinalComparator
+        var comp: AtomicComparer = getSortKeyDefinition(s).finalComparator
         if (comp == null) {
           comp = getSortKeyDefinition(s).makeComparator(context)
         }

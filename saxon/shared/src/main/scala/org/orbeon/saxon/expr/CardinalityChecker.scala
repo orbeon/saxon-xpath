@@ -144,7 +144,7 @@ final class CardinalityChecker private (
         // change this -> checker -> other to checker -> this -> other
         setBaseExpression(other)
         checker.setBaseExpression(this)
-        checker.setParentExpression(null)
+        checker.parentExpression = null
         return checker
       case _ =>
     }

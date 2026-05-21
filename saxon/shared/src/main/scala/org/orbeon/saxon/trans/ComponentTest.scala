@@ -15,9 +15,6 @@ import org.orbeon.saxon.pattern.QNameTest
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class ComponentTest(@BeanProperty var componentKind: Int,
                     private var nameTest: QNameTest,
                     @BeanProperty var arity: Int) {

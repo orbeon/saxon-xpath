@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.sort
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class ComparisonException(var cause: XPathException)
     extends ClassCastException {
 

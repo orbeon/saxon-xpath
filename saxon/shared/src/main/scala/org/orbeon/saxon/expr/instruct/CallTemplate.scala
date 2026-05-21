@@ -35,8 +35,7 @@ import java.util.Arrays
 
 import CallTemplate._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 object CallTemplate {
 
@@ -71,7 +70,7 @@ object CallTemplate {
 }
 
 class CallTemplate(private var template: NamedTemplate,
-                   @BeanProperty var calledTemplateName: StructuredQName,
+                   var calledTemplateName: StructuredQName,
                    private var useTailRecursion: Boolean,
                    inStreamable: Boolean)
   extends Instruction
@@ -108,7 +107,7 @@ class CallTemplate(private var template: NamedTemplate,
     if (calledTemplateName == null) null
     else new SymbolicName(StandardNames.XSL_TEMPLATE, calledTemplateName)
 
-  def getTarget: Component = template.getDeclaringComponent
+  def getTarget: Component = template.declaringComponent
 
   def getFixedTarget: Component = {
     val c: Component = getTarget

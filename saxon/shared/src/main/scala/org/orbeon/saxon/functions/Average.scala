@@ -18,7 +18,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value._
 
-
 class Average extends FoldingFunction {
 
   override def getCardinality(arguments: Array[Expression]): Int =

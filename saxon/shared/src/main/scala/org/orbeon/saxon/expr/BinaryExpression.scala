@@ -14,7 +14,6 @@ import org.orbeon.saxon.value.Cardinality
 
 import scala.beans.BeanProperty
 
-
 object BinaryExpression {
 
   def isCommutative(operator: Int): Boolean =

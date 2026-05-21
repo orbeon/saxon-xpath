@@ -21,7 +21,6 @@ import java.util.Objects
 
 import DayTimeDurationValue._
 
-
 object DayTimeDurationValue {
 
   def makeDayTimeDurationValue(s: CharSequence): ConversionResult = {

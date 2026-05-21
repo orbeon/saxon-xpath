@@ -10,7 +10,6 @@ import java.util.function.Predicate
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
-
 class AttributeAxisIterator(node: ElementImpl,
                             private val nodeTest: Predicate[_ >: NodeInfo])
   extends AxisIterator

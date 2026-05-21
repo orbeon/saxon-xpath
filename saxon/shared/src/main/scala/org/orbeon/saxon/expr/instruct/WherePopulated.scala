@@ -11,7 +11,6 @@ import org.orbeon.saxon.om.{Item, NodeInfo, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.value.{Base64BinaryValue, HexBinaryValue, StringValue}
 
-
 // ORBEON: Unused class.
 // With `WherePopulatedOutputter`
 

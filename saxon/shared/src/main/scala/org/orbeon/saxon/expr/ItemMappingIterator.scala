@@ -4,16 +4,12 @@ import org.orbeon.saxon.om.SequenceIterator.Property._
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.tree.iter.LookaheadIterator
 
-import scala.beans.BooleanBeanProperty
-
-
 class ItemMappingIterator(var base: SequenceIterator,
                           var action: ItemMappingFunction)
   extends SequenceIterator
     with LookaheadIterator
     with LastPositionFinder {
 
-  @BooleanBeanProperty
   var oneToOne: Boolean = false
 
   def this(base: SequenceIterator,

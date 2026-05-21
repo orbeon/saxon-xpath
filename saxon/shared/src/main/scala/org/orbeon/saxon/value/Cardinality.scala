@@ -220,7 +220,6 @@ object Cardinality {
   else "function c(n) {return n<=1;};"
 }
 
-
 /**
  * Private constructor: no instances allowed
  */

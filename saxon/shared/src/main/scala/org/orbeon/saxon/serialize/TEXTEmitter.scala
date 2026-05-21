@@ -17,7 +17,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.charcode.UTF8CharacterSet
 import org.orbeon.saxon.trans.XPathException
 
-
 /**
   * This class generates TEXT output
   *

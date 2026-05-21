@@ -11,7 +11,6 @@ import java.{util => ju}
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
-
 /**
  * A chain is an implementation of Sequence that represents the concatenation of
  * a number of subsequences.

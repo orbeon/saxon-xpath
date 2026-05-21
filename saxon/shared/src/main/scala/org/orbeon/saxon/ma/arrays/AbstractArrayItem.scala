@@ -22,7 +22,6 @@ import org.orbeon.saxon.query.AnnotationList
 
 import scala.jdk.CollectionConverters._
 
-
 /**
  * An abstract implementation of XDM array items, containing methods that can be implemented generically.
  */

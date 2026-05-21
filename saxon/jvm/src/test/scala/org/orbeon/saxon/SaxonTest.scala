@@ -15,7 +15,6 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.stream.StreamResult
 import scala.jdk.CollectionConverters._
 
-
 class SaxonTest extends AnyFunSpec {
 
   val ExplainExpressions = false

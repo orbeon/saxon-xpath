@@ -16,7 +16,6 @@ import org.orbeon.saxon.value.StringValue
 
 import CodepointCollatingComparer._
 
-
 /**
  * An AtomicComparer used for comparing strings, untypedAtomic values, and URIs using the Unicode codepoint
  * collation.

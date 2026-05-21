@@ -8,7 +8,6 @@ package org.orbeon.saxon.ma.parray
 
 import java.util.List
 
-
 /**
  * An immutable list of elements
  */

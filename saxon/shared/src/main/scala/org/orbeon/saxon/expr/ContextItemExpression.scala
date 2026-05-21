@@ -15,7 +15,6 @@ import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
  * This class represents the expression "(dot)", which always returns the context item.
  * This may be a AtomicValue or a Node.

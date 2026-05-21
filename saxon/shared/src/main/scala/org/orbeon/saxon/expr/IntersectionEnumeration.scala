@@ -9,7 +9,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
 class IntersectionEnumeration(private var e1: SequenceIterator,
                               private var e2: SequenceIterator,
                               private var comparer: ItemOrderComparer)

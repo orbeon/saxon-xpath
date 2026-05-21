@@ -21,9 +21,6 @@ import java.util.Optional
 
 import java.util.function.IntPredicate
 
-
-
-
 class SameNameTest(private var origin: NodeInfo)
     extends NodeTest
     with QNameTest {

@@ -9,9 +9,6 @@ import org.orbeon.saxon.model.SchemaType
 
 import org.w3c.dom.TypeInfo
 
-
-
-
 class TypeInfoImpl(private var config: Configuration, `type`: SchemaType)
     extends TypeInfo {
 

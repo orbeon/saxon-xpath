@@ -16,7 +16,6 @@ import org.orbeon.saxon.query.XQueryExpression
 
 import org.orbeon.saxon.trans.Mode
 
-
 class XQueryTraceListener extends AbstractTraceListener {
 
    def getOpeningAttributes: String = ""
@@ -33,7 +32,7 @@ class XQueryTraceListener extends AbstractTraceListener {
       case _: Trace =>
         "fn:trace"
       case clauseInfo: ClauseInfo =>
-        clauseInfo.getClause.getClauseKey.toString
+        clauseInfo.clause.getClauseKey.toString
       case expression: Expression =>
         var s: String = expression.getExpressionName
         if (s.startsWith("xsl:"))

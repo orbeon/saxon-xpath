@@ -11,7 +11,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.linked.LinkedTreeBuilder._
 import org.orbeon.saxon.value.Whitespace
 
-
 object LinkedTreeBuilder {
 
   object DefaultNodeFactory {
@@ -62,7 +61,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
   override def getCurrentRoot: NodeInfo = {
     val physicalRoot: NodeInfo = currentRoot
     physicalRoot match {
-      case impl: DocumentImpl if impl.isImaginary =>
+      case impl: DocumentImpl if impl.imaginary =>
         impl.getDocumentElement
       case _ =>
         physicalRoot
@@ -134,7 +133,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
     var lSuppliedAttributes = suppliedAttributes
     if (currentNode == null) {
       startDocument(ReceiverOption.NONE)
-      currentRoot.asInstanceOf[DocumentImpl].setImaginary(true)
+      currentRoot.asInstanceOf[DocumentImpl].imaginary = true
     }
     val isNilled = ReceiverOption.contains(properties, ReceiverOption.NILLED_ELEMENT)
     namespaceStack ::= namespaces

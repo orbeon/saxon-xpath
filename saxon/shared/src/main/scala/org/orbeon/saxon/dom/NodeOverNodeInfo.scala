@@ -183,7 +183,6 @@ abstract class NodeOverNodeInfo extends Node {
         version.==("2.0") ||
         version.==("1.0"))
 
-
   def getNamespaceURI: String = {
     if (node.getNodeKind == Type.NAMESPACE) {
       NamespaceConstant.XMLNS

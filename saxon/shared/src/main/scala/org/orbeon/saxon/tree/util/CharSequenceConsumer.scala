@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.tree.util
 
-
 /**
   * Interface that accepts a string in the form of a sequence of CharSequences,
   * which are conceptually concatenated (though in some implementations, the final

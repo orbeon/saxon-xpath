@@ -35,7 +35,6 @@ import org.orbeon.saxon.value.IntegerValue
 
 import IndexOf._
 
-
 object IndexOf {
 
   private class IndexIterator(private var base: SequenceIterator,

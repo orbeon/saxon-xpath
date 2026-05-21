@@ -19,7 +19,7 @@ import java.util.List
 
 import org.orbeon.saxon.expr.flwor.Clause.ClauseName.LET
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 import Clause.ClauseName.ClauseName
 
 //import scala.collection.compat._
@@ -30,7 +30,6 @@ import scala.jdk.CollectionConverters._
  */
 class LetClause extends Clause {
 
-  @BeanProperty
   var rangeVariable: LocalVariableBinding = _
 
   private var sequenceOp: Operand = _
@@ -151,8 +150,8 @@ class LetClause extends Clause {
    */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("let")
-    out.emitAttribute("var", getRangeVariable.getVariableQName)
-    out.emitAttribute("slot", getRangeVariable.getLocalSlotNumber.toString)
+    out.emitAttribute("var", rangeVariable.getVariableQName)
+    out.emitAttribute("slot", rangeVariable.getLocalSlotNumber.toString)
     getSequence.`export`(out)
     out.endElement()
   }

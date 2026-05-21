@@ -27,7 +27,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.BooleanValue
 
-
 class NotFn extends SystemFunction {
 
   override def supplyTypeInformation(visitor: ExpressionVisitor,

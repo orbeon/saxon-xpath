@@ -3,7 +3,6 @@ package org.orbeon.saxon.expr.number
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 class RegularGroupFormatter(
   private var groupSize     : Int,
   private var groupSeparator: String,

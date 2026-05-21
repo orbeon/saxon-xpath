@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, T
 import org.orbeon.saxon.model.{BuiltInAtomicType, ItemType}
 import org.orbeon.saxon.value.BooleanValue
 
-
 /**
   * This class implements a comparison of a computed value to a literal constant using one of the operators
   * eq, ne, lt, gt, le, ge. The semantics are identical to ValueComparison, but this is a fast path for an

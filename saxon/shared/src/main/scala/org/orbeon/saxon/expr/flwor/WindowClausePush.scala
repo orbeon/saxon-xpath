@@ -61,7 +61,7 @@ class WindowClausePush(outputter: Outputter,
             w.endPreviousItem = previousPrevious
             w.endNextItem = current
             w.endPosition = position - 1
-            despatch(w, getOutputter, context)
+            despatch(w, outputter, context)
             currentWindows.clear()
           }
           val window: WindowClause.Window = new WindowClause.Window()
@@ -89,7 +89,7 @@ class WindowClausePush(outputter: Outputter,
             w.endPreviousItem = previous
             w.endNextItem = next
             w.endPosition = position
-            despatch(w, getOutputter, context)
+            despatch(w, outputter, context)
             if (w.isDespatched) {
               removals.add(w)
             }
@@ -100,13 +100,13 @@ class WindowClausePush(outputter: Outputter,
         }
       }
     }
-    if (windowClause.isIncludeUnclosedWindows) {
+    if (windowClause.includeUnclosedWindows) {
       for (w <- currentWindows.asScala) {
         w.endItem = current
         w.endPreviousItem = previous
         w.endNextItem = null
         w.endPosition = position
-        despatch(w, getOutputter, context)
+        despatch(w, outputter, context)
       }
     }
   }

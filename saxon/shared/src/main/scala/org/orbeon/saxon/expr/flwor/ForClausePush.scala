@@ -13,9 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.Int64Value
 
-
-
-
 /**
   * This class implements the changes to the tuple stream effected by a "for" clause in a FLWOR expression
   */
@@ -36,12 +33,12 @@ class ForClausePush(outputter: Outputter,
       next = iter.next()
       next
     }) != null) {
-      context.setLocalVariable(forClause.getRangeVariable.getLocalSlotNumber,
+      context.setLocalVariable(forClause.rangeVariable.getLocalSlotNumber,
                                next)
-      if (forClause.getPositionVariable != null) {
+      if (forClause.positionVariable != null) {
         pos += 1
         context.setLocalVariable(
-          forClause.getPositionVariable.getLocalSlotNumber,
+          forClause.positionVariable.getLocalSlotNumber,
           new Int64Value(pos))
       }
       destination.processTuple(context)

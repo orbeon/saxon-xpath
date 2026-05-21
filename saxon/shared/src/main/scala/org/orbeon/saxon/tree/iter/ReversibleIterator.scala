@@ -3,9 +3,6 @@ package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.om.SequenceIterator
 
-
-
-
 trait ReversibleIterator extends SequenceIterator {
 
   def getReverseIterator: SequenceIterator

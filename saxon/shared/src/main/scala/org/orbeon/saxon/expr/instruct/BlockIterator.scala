@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr.instruct
 import org.orbeon.saxon.expr.{Operand, XPathContext}
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 
-
 /**
  * Iterate over the instructions in a sequence of instructions (or an XPath comma expression),
  * concatenating the result of each instruction into a single combined sequence.

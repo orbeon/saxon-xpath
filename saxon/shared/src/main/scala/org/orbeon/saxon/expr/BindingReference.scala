@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
  * BindingReference is a interface used to mark references to a variable declaration. The main
  * implementation is VariableReference, which represents a reference to a variable in an XPath

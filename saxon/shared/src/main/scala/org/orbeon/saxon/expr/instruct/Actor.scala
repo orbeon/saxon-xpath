@@ -43,9 +43,7 @@ abstract class Actor extends ExpressionOwner with Location {
   var stackFrameMap: SlotManager = _
   @BeanProperty
   var packageData: PackageData = _
-  @BeanProperty
   var declaringComponent: Component = _
-  @BeanProperty
   var declaredVisibility: Visibility.Visibility = _
   @BeanProperty
   var retainedStaticContext: RetainedStaticContext = _
@@ -69,9 +67,9 @@ abstract class Actor extends ExpressionOwner with Location {
   def obtainDeclaringComponent(/*declaration: StyleElement*/): Component = {
     // StyleElement not exist
     if (declaringComponent == null) {
-      val declaringPackage: StylesheetPackage = null //declaration.getContainingPackage
+      val declaringPackage: StylesheetPackage = null //declaration.containingPackage
       val defaultVisibility: Visibility.Visibility = /*if (declaration.isInstanceOf[XSLGlobalParam]) Visibility.PUBLIC else*/ Visibility.PRIVATE
-      val declaredVisibility: Visibility.Visibility = null //declaration.getDeclaredVisibility
+      val declaredVisibility: Visibility.Visibility = null //declaration.declaredVisibility
       val actualVisibility: Visibility.Visibility =
         if (declaredVisibility == null) defaultVisibility
         else declaredVisibility
@@ -88,11 +86,11 @@ abstract class Actor extends ExpressionOwner with Location {
   }
 
   def allocateAllBindingSlots(pack: StylesheetPackage): Unit = {
-    if (getBody != null && getDeclaringComponent.getDeclaringPackage == pack && packageData.isXSLT) {
+    if (getBody != null && declaringComponent.declaringPackage == pack && packageData.isXSLT) {
       allocateBindingSlotsRecursive(pack,
         this,
         getBody,
-        getDeclaringComponent.getComponentBindings)
+        declaringComponent.getComponentBindings)
     }
   }
 
@@ -121,7 +119,7 @@ abstract class Actor extends ExpressionOwner with Location {
   def setBody(body: Expression): Unit = {
     this.body = body
     if (body != null)
-      body.setParentExpression(null)
+      body.parentExpression = null
   }
 
   def getBody: Expression = body

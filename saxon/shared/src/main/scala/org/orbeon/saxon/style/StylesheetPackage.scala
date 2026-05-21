@@ -42,10 +42,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   /*  @BeanProperty
     var packageVersion: PackageVersion = null  // PackageVersion not exist*/
 
-  @BeanProperty
   var packageName: String = _
 
-  @BeanProperty
   var usedPackages: List[StylesheetPackage] = new ArrayList()
 
   private var xsltVersion: Int = _
@@ -56,7 +54,6 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   @BeanProperty
   var characterMapIndex: CharacterMapIndex = _
 
-  @BooleanBeanProperty
   var createsSecondaryResultDocuments: Boolean = _
 
   private var completionActions: List[Action] = new ArrayList()
@@ -67,18 +64,14 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   var stripperRules: SpaceStrippingRule = _
 
-  @BooleanBeanProperty
   var stripsWhitespace: Boolean = false
 
-  @BooleanBeanProperty
   var stripsTypeAnnotations: Boolean = false
 
   var defaultOutputProperties: Properties = _
 
-  @BeanProperty
   var defaultMode: StructuredQName = _
 
-  @BooleanBeanProperty
   var declaredModes: Boolean = _
 
   var namedOutputProperties: Map[StructuredQName, Properties] =
@@ -100,10 +93,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   @BooleanBeanProperty
   var retainUnusedFunctions: Boolean = false
 
-  @BooleanBeanProperty
   var implicitPackage: Boolean = _
 
-  @BeanProperty
   var componentIndex: HashMap[SymbolicName, Component] = new HashMap(20)
 
   var hiddenComponents: List[Component] = new ArrayList()
@@ -111,7 +102,6 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   var overriddenComponents: HashMap[SymbolicName, Component] =
     new HashMap()
 
-  @BeanProperty
   var abstractComponents: HashMap[SymbolicName, Component] = new HashMap()
 
   this.hostLanguage = HostLanguage.XSLT
@@ -162,8 +152,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def setContextItemRequirements(requirement: GlobalContextRequirement): Unit = {
     if (containsGlobalContextItemDeclaration) {
-      if ((!requirement.isAbsentFocus && globalContextRequirement.isAbsentFocus) ||
-        (requirement.isMayBeOmitted && !globalContextRequirement.isMayBeOmitted)) {
+      if ((!requirement.absentFocus && globalContextRequirement.absentFocus) ||
+        (requirement.mayBeOmitted && !globalContextRequirement.mayBeOmitted)) {
         throw new XPathException(
           "The package contains two xsl:global-context-item declarations with conflicting @use attributes",
           "XTSE3087")
@@ -222,7 +212,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   def addComponent(component: Component): Unit = {
     val name: SymbolicName = component.getActor.getSymbolicName
     componentIndex.put(name, component)
-    if (component.getVisibility == Visibility.ABSTRACT && component.getContainingPackage == this) {
+    if (component.getVisibility == Visibility.ABSTRACT && component.containingPackage == this) {
       abstractComponents.put(component.getActor.getSymbolicName, component)
     }
   }
@@ -231,7 +221,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     super.addGlobalVariable(variable)
     val name: SymbolicName = variable.getSymbolicName
     if (componentIndex.get(name) == null) {
-      var comp: Component = variable.getDeclaringComponent
+      var comp: Component = variable.declaringComponent
       if (comp == null) {
         comp = variable.makeDeclaringComponent(PRIVATE, this)
       }
@@ -269,9 +259,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
                                    overrides: Set[SymbolicName]): Unit = {
     usedPackages.add(usedPackage)
     trace(
-      "=== Adding components from " + usedPackage.getPackageName +
+      "=== Adding components from " + usedPackage.packageName +
         " to " +
-        getPackageName +
+        packageName +
         " ===")
     val correspondence: Map[Component, Component] =
       new HashMap[Component, Component]()
@@ -290,7 +280,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
             throw new XPathException(
               "Cannot accept a " + oldV.show() + " component (" + name +
                 ") from package " +
-                usedPackage.getPackageName +
+                usedPackage.packageName +
                 " with visibility " +
                 acceptedVisibility.show(),
               "XTSE3040"
@@ -320,9 +310,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         newV,
         VisibilityProvenance.DERIVED,
         this,
-        oldC.getDeclaringPackage)
+        oldC.declaringPackage)
       correspondence.put(oldC, newC)
-      newC.setBaseComponent(oldC)
+      newC.baseComponent = oldC
       if (overrides.contains(name)) {
         overriddenComponents.put(name, newC)
         if (newV != Visibility.ABSTRACT) {
@@ -354,7 +344,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         addCompletionAction(() => {
           trace("Doing mode completion for " + newC.getActor.getSymbolicName)
           val oldBindings: List[ComponentBinding] =
-            newC.getBaseComponent.getComponentBindings
+            newC.baseComponent.getComponentBindings
           val newBindings: List[ComponentBinding] = newC.getComponentBindings
           for (i <- 0 until oldBindings.size) {
             val name12: SymbolicName = oldBindings.get(i).getSymbolicName
@@ -382,7 +372,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         addCompletionAction(() => {
           trace("Doing normal completion for " + newC.getActor.getSymbolicName)
           val oldBindings: List[ComponentBinding] =
-            newC.getBaseComponent.getComponentBindings
+            newC.baseComponent.getComponentBindings
           val newBindings: List[ComponentBinding] =
             new ArrayList[ComponentBinding](oldBindings.size)
           makeNewComponentBindings(overrides,
@@ -396,20 +386,20 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     for (oldC <- usedPackage.hiddenComponents.asScala) {
       trace(
         oldC.getActor.getSymbolicName.toString + " (HIDDEN, declared in " +
-          oldC.getDeclaringPackage.getPackageName.toString +
+          oldC.declaringPackage.packageName.toString +
           ") becomes HIDDEN")
       val newC: Component = Component.makeComponent(
         oldC.getActor,
         Visibility.HIDDEN,
         VisibilityProvenance.DERIVED,
         this,
-        oldC.getDeclaringPackage)
+        oldC.declaringPackage)
       correspondence.put(oldC, newC)
-      newC.setBaseComponent(oldC)
+      newC.baseComponent = oldC
       hiddenComponents.add(newC)
       addCompletionAction(() => {
         val oldBindings: List[ComponentBinding] =
-          newC.getBaseComponent.getComponentBindings
+          newC.baseComponent.getComponentBindings
         val newBindings: List[ComponentBinding] =
           new ArrayList[ComponentBinding](oldBindings.size)
         makeNewComponentBindings(overrides,
@@ -419,7 +409,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
         newC.setComponentBindings(newBindings)
       })
     }
-    if (usedPackage.isCreatesSecondaryResultDocuments) {
+    if (usedPackage.createsSecondaryResultDocuments) {
       this.createsSecondaryResultDocuments = true
     }
   }
@@ -541,7 +531,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       }
       null
     } else {
-      val component: Component = getComponentIndex.get(name)
+      val component: Component = componentIndex.get(name)
       if (component != null) {
         val uf: UserFunction = component.getActor.asInstanceOf[UserFunction]
         uf.incrementReferenceCount()
@@ -560,7 +550,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
          if value.getVisibility == Visibility.ABSTRACT) {
       abstractComponents.put(key, value)
     }
-    /* pss.setTopLevelPackage(this)
+    /* pss.topLevelPackage = this
      if (isSchemaAware || !schemaIndex.isEmpty) {
        pss.setSchemaAware(true)
      }
@@ -570,7 +560,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       /*    if (lib.isInstanceOf[StylesheetFunctionLibrary]) {
             if (lib
               .asInstanceOf[StylesheetFunctionLibrary]
-              .isOverrideExtensionFunction) {
+              .overrideExtensionFunction) {
               libraryList.addFunctionLibrary(overriding)
             } else {
               libraryList.addFunctionLibrary(underriding)
@@ -598,14 +588,14 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       val t: NamedTemplate = comp.getActor.asInstanceOf[NamedTemplate]
       // pss.putNamedTemplate(t.getTemplateName, t)
     }
-    //pss.setComponentIndex(componentIndex)
+    //pss.componentIndex = componentIndex
     for (comp <- componentIndex.values.asScala
          if comp.getActor.isInstanceOf[GlobalParam]) {
       val gv: GlobalParam = comp.getActor.asInstanceOf[GlobalParam]
       // pss.registerGlobalParameter(gv)
     }
     /* if (globalContextRequirement != null) {
-       pss.setGlobalContextRequirement(globalContextRequirement)
+       pss.globalContextRequirement = globalContextRequirement
      }*/
   }
 
@@ -625,7 +615,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def checkForAbstractComponents(): Unit = {
     for ((key, value) <- componentIndex.asScala
-         if value.getVisibility == Visibility.ABSTRACT && value.getContainingPackage == this) {
+         if value.getVisibility == Visibility.ABSTRACT && value.containingPackage == this) {
       abstractComponents.put(key, value)
     }
     if (!abstractComponents.isEmpty) {

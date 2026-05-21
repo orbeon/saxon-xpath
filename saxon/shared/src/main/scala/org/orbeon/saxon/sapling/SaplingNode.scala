@@ -10,7 +10,6 @@ import javax.xml.transform.Source
 import org.orbeon.saxon.event.Receiver
 import org.orbeon.saxon.om.NodeInfo
 
-
 /**
   * This class represents a sapling node. Sapling nodes represent transient nodes used in the course
   * of tree construction; they are intended to have a very lightweight implementation, making construction

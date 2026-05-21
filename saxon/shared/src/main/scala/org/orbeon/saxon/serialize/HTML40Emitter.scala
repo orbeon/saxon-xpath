@@ -18,8 +18,6 @@ import javax.xml.transform.OutputKeys
 
 import HTMLEmitter._
 
-
-
 object HTML40Emitter {
 
   setEmptyTag("area")

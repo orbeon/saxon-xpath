@@ -3,8 +3,6 @@ package org.orbeon.saxon.model
 
 import org.orbeon.saxon.pattern.NodeKindTest
 
-import scala.beans.BeanProperty
-
 object PrimitiveUType extends Enumeration {
 
   val DOCUMENT: PrimitiveUType = new PrimitiveUType(0)
@@ -65,7 +63,7 @@ object PrimitiveUType extends Enumeration {
 
   val EXTENSION: PrimitiveUType = new PrimitiveUType(30)
 
-  class PrimitiveUType (@BeanProperty val bit: Int) extends Val {
+  class PrimitiveUType (val bit: Int) extends Val {
 
     def toUType: UType = new UType(1 << bit)
 

@@ -13,9 +13,6 @@ import javax.xml.stream.XMLStreamWriter
 
 import InvalidityReportGenerator._
 
-
-
-
 object InvalidityReportGenerator {
 
   val REPORT_NS: String = "http://saxon.sf.net/ns/validation"

@@ -10,7 +10,6 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.tree.iter.SingletonIterator
 import org.orbeon.saxon.value.EmptySequence
 
-
 /**
   * An Item is an object that can occur as a member of a sequence.
   * It corresponds directly to the concept of an item in the XPath 2.0 data model.

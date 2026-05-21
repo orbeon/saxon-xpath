@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.sort.AtomicMatchKey
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{AtomicValue, Base64BinaryValue}
 
-
 /**
   * An abstract class that efficiently handles Unicode strings including
   * non-BMP characters; it has three subclasses, respectively handling

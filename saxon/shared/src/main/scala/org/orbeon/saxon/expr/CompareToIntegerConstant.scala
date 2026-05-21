@@ -19,14 +19,9 @@ import org.orbeon.saxon.value.Int64Value
 
 import org.orbeon.saxon.value.NumericValue
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
 class CompareToIntegerConstant(operand: Expression,
                                operator: Int,
-                               @BeanProperty var comparand: Long)
+                               var comparand: Long)
     extends CompareToConstant(operand) {
 
   var oprt = operator

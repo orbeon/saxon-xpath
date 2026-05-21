@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.s9api.Location
 
-
 /**
   * Represents a construct that has a meaningful location for use in diagnostics
   */

@@ -1,6 +1,5 @@
 
 
-
 package org.orbeon.saxon.query
 
 import org.orbeon.saxon.utils.Configuration
@@ -51,7 +50,6 @@ object XQueryParser {
   val XQUERY30 = "3.0"
   val XQUERY31 = "3.1"
 
-
   private def normalizeLineEndings11(in: String): String = {
     if (in.indexOf(0xd.toChar) < 0 && in.indexOf(0x85.toChar) < 0 && in.indexOf(0x2028.toChar) < 0) return in
     val sb = new FastStringBuffer(in.length)
@@ -75,7 +73,6 @@ object XQueryParser {
     }
     sb.toString
   }
-
 
   private def normalizeLineEndings10(in: String): String = {
     if (in.indexOf(0xd.toChar) < 0) return in
@@ -105,7 +102,6 @@ object XQueryParser {
     false
   }
 
-
   def makeStringJoin(exp: Expression, env: StaticContext): Expression = {
     var express = exp
     express = Atomizer.makeAtomizer(express, null)
@@ -130,7 +126,6 @@ object XQueryParser {
     var collation: String = null
   }
 
-
   def stringify(exp: Expression, noNodeIfEmpty: Boolean, env: StaticContext): Expression = {
     var express = exp
     if (express.isInstanceOf[StringLiteral]) return express
@@ -139,7 +134,6 @@ object XQueryParser {
     express = Atomizer.makeAtomizer(express, null)
 
     express = new AtomicSequenceConverter(express, BuiltInAtomicType.STRING)
-
 
     express = SystemFunction.makeCall("string-join", express.getRetainedStaticContext, express, new StringLiteral(StringValue.SINGLE_SPACE))
     assert(express != null)
@@ -203,7 +197,6 @@ object XQueryParser {
         if (value > UTF16CharacterSet.NONBMP_MAX) throw new XPathException("Character reference exceeds Unicode codepoint limit", "XQST0090")
       }
       if (!characterChecker.test(value)) throw new XPathException("Invalid XML character reference x" + Integer.toHexString(value), "XQST0090")
-
 
       if (value <= 0x0000ffff) {
         "" + value.toChar
@@ -286,7 +279,6 @@ class XQueryParser extends XPathParser {
     qp
   }
 
-
   @throws[XPathException]
   def makeXQueryExpression(query: String, mainModule: QueryModule, config: Configuration): XQueryExpression = try {
     setLanguage(ParsedLanguage.XQUERY, 31)
@@ -297,17 +289,17 @@ class XQueryParser extends XPathParser {
     if (exec == null) {
       exec = new Executable(config)
       exec.setHostLanguage(HostLanguage.XQUERY)
-      exec.setTopLevelPackage(mainModule.getPackageData)
+      exec.topLevelPackage = mainModule.getPackageData
       setExecutable(exec)
 
     }
-    val requirement = exec.getGlobalContextRequirement
+    val requirement = exec.globalContextRequirement
     if (requirement != null) requirement.addRequiredItemType(mainModule.getRequiredContextItemType)
     else if (mainModule.getRequiredContextItemType != null && (mainModule.getRequiredContextItemType ne AnyItemType)) {
       val req = new GlobalContextRequirement
-      req.setExternal(true)
+      req.external = true
       req.addRequiredItemType(mainModule.getRequiredContextItemType)
-      exec.setGlobalContextRequirement(req)
+      exec.globalContextRequirement = req
     }
 
     val outputProps = new Properties(config.getDefaultSerializationProperties)
@@ -327,7 +319,6 @@ class XQueryParser extends XPathParser {
 
     val queryExp = config.makeXQueryExpression(exp, mainModule, streaming)
 
-
     val userlib = exec.getFunctionLibrary
     val lib = new FunctionLibraryList
     lib.addFunctionLibrary(mainModule.getBuiltInFunctionSet)
@@ -345,21 +336,15 @@ class XQueryParser extends XPathParser {
       throw e
   }
 
-
   def getExecutable: Executable = executable
-
 
   def setExecutable(exec: Executable): Unit = executable = exec
 
-
   override  def customizeTokenizer(t: Tokenizer): Unit = t.isXQuery = true
-
 
   def setStreaming(option: Boolean): Unit = streaming = option
 
-
   def isStreaming: Boolean = streaming
-
 
   @throws[XPathException]
   private def parseQuery(queryString: String, env: QueryModule): Expression = {
@@ -385,7 +370,6 @@ class XQueryParser extends XPathParser {
     var exp = parseExpression
     exp = makeTracer(exp, null)
 
-
     if (t.currentToken != Token.EOF) grumble("Unexpected token " + currentTokenDisplay + " beyond end of query")
     setLocation(exp)
     ExpressionTool.setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext)
@@ -397,7 +381,6 @@ class XQueryParser extends XPathParser {
       throw err
     }
   }
-
 
   @throws[XPathException]
   final def parseLibraryModule(queryString: String, env: QueryModule): Unit = {
@@ -443,7 +426,6 @@ class XQueryParser extends XPathParser {
     throw exception
   }
 
-
   @throws[XPathException]
   private def parseVersionDeclaration(): Unit = if (t.currentToken == Token.XQUERY_VERSION) {
     nextToken()
@@ -476,7 +458,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseModuleDeclaration(): Unit = {
     expect(Token.MODULE_NAMESPACE)
@@ -506,7 +487,6 @@ class XQueryParser extends XPathParser {
         reportError(err)
     }
   }
-
 
   @throws[XPathException]
   private def parseProlog(): Unit = {
@@ -663,7 +643,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   override  def parseAnnotationsList: AnnotationList = {
     val annotations = new util.ArrayList[Annotation]
@@ -738,7 +717,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def processPreamble(): Unit = {
     if (preambleProcessed) return
@@ -799,7 +777,6 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
   private def parseDefaultOrder(): Unit = {
     if (foundEmptyOrderingDeclaration) grumble("empty ordering declaration appears more than once", "XQST0069")
@@ -813,7 +790,6 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
   private def parseBoundarySpaceDeclaration(): Unit = {
     if (foundBoundarySpaceDeclaration) grumble("'declare boundary-space' appears more than once", "XQST0068")
@@ -825,7 +801,6 @@ class XQueryParser extends XPathParser {
     else grumble("boundary-space must be 'preserve' or 'strip'")
     nextToken()
   }
-
 
   @throws[XPathException]
   private def parseOrderingDeclaration(): Unit = {
@@ -841,7 +816,6 @@ class XQueryParser extends XPathParser {
     else grumble("ordering mode must be 'ordered' or 'unordered'")
     nextToken()
   }
-
 
   @throws[XPathException]
   private def parseCopyNamespacesDeclaration(): Unit = {
@@ -862,7 +836,6 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
   private def parseConstructionDeclaration(): Unit = {
     if (foundConstructionDeclaration) grumble("declare construction appears more than once", "XQST0067")
@@ -872,7 +845,6 @@ class XQueryParser extends XPathParser {
     var `val` = 0
     if ("preserve" == t.currentTokenValue) {
       `val` = Validation.PRESERVE
-
 
     }
     else if ("strip" == t.currentTokenValue) `val` = Validation.STRIP
@@ -884,10 +856,8 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
    def parseRevalidationDeclaration(): Unit = grumble("declare revalidation is allowed only in XQuery Update")
-
 
   @throws[XPathException]
   private def parseSchemaImport(): Boolean = {
@@ -992,7 +962,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseModuleImport(): Unit = {
     val thisModule = env.asInstanceOf[QueryModule]
@@ -1034,13 +1003,11 @@ class XQueryParser extends XPathParser {
         reportError(err)
     }
 
-
     moduleImports.add(mImport)
   }
 
   @throws[XPathException]
   def applyModuleImport(mImport: XQueryParser.Import): Unit = {
-
 
     var existingModules: util.List[QueryModule] = null
 
@@ -1106,7 +1073,6 @@ class XQueryParser extends XPathParser {
         }
         else grumble("No base URI available for imported module", "XQST0059", mImport.offset)
 
-
         existingModules = executable.getQueryLibraryModules(mImport.namespaceURI)
         var loaded = false
         if (existingModules != null && m < hints.length) {
@@ -1138,7 +1104,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseBaseURIDeclaration(): Unit = {
     if (foundBaseURIDeclaration) grumble("Base URI Declaration may only appear once", "XQST0032")
@@ -1161,7 +1126,6 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
   private def parseDecimalFormatDeclaration(): Unit = {
     nextToken()
@@ -1171,7 +1135,6 @@ class XQueryParser extends XPathParser {
     nextToken()
     parseDecimalFormatProperties(formatName)
   }
-
 
   @throws[XPathException]
   private def parseDefaultDecimalFormat(): Unit = {
@@ -1240,7 +1203,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseDefaultFunctionNamespace(): Unit = {
     if (foundDefaultFunctionNamespace) grumble("default function namespace appears more than once", "XQST0066")
@@ -1255,7 +1217,6 @@ class XQueryParser extends XPathParser {
     env.asInstanceOf[QueryModule].setDefaultFunctionNamespace(uri)
     nextToken()
   }
-
 
   @throws[XPathException]
   private def parseDefaultElementNamespace(): Unit = {
@@ -1273,7 +1234,6 @@ class XQueryParser extends XPathParser {
     env.asInstanceOf[QueryModule].setDefaultElementNamespace(uri)
     nextToken()
   }
-
 
   @throws[XPathException]
   private def parseNamespaceDeclaration(): Unit = {
@@ -1299,7 +1259,6 @@ class XQueryParser extends XPathParser {
     nextToken()
   }
 
-
   @throws[XPathException]
   private def checkProhibitedPrefixes(prefix: String, uri: String): Unit = {
     var prefixStr = prefix
@@ -1314,7 +1273,6 @@ class XQueryParser extends XPathParser {
     if (prefixStr == "xml" && !(uriStr == NamespaceConstant.XML))
       grumble("The prefix 'xml' cannot be bound to any namespace other than " + NamespaceConstant.XML, "XQST0070")
   }
-
 
   @throws[XPathException]
   private def parseVariableDeclaration(annotations: AnnotationList): Unit = {
@@ -1381,7 +1339,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseContextItemDeclaration(): Unit = {
     val offset = t.currentTokenStartOffset
@@ -1390,7 +1347,7 @@ class XQueryParser extends XPathParser {
     if (foundContextItemDeclaration) grumble("More than one context item declaration found", "XQST0099", offset)
     foundContextItemDeclaration = true
     val req = new GlobalContextRequirement
-    req.setAbsentFocus(false)
+    req.absentFocus = false
     t.setState(Tokenizer.BARE_NAME_STATE)
     nextToken()
     var requiredType: ItemType = AnyItemType
@@ -1414,11 +1371,11 @@ class XQueryParser extends XPathParser {
       exp.setRetainedStaticContext(env.makeRetainedStaticContext)
       exp = exp.typeCheck(visitor, info)
       req.setDefaultValue(exp)
-      req.setExternal(false)
+      req.external = false
     }
     else if (t.currentToken == Token.NAME && "external" == t.currentTokenValue) {
-      req.setAbsentFocus(false)
-      req.setExternal(true)
+      req.absentFocus = false
+      req.external = true
       nextToken()
       if (t.currentToken == Token.ASSIGN) {
         if (!(env.asInstanceOf[QueryModule]).isMainModule) grumble("The context item must not be initialized in a library module", "XQST0113")
@@ -1433,11 +1390,11 @@ class XQueryParser extends XPathParser {
     }
     else grumble("Expected ':=' or 'external' in context item declaration")
     val exec = getExecutable
-    if (exec.getGlobalContextRequirement != null) {
-      val gcr = exec.getGlobalContextRequirement
+    if (exec.globalContextRequirement != null) {
+      val gcr = exec.globalContextRequirement
       if (gcr.getDefaultValue == null && req.getDefaultValue != null) gcr.setDefaultValue(req.getDefaultValue)
 
-      for (otherType <- gcr.getRequiredItemTypes.asScala) {
+      for (otherType <- gcr.requiredItemTypes.asScala) {
         if (otherType ne AnyItemType) {
           val th = env.getConfiguration.getTypeHierarchy
           val rel = th.relationship(requiredType, otherType)
@@ -1448,9 +1405,8 @@ class XQueryParser extends XPathParser {
       }
       gcr.addRequiredItemType(requiredType)
     }
-    else exec.setGlobalContextRequirement(req)
+    else exec.globalContextRequirement = req
   }
-
 
   @throws[XPathException]
   def parseFunctionDeclaration(annotations: AnnotationList): Unit = {
@@ -1559,10 +1515,8 @@ class XQueryParser extends XPathParser {
     memoFunction = false
   }
 
-
   @throws[XPathException]
    def parseTypeAliasDeclaration(): Unit = parserExtension.parseTypeAliasDeclaration(this)
-
 
   @throws[XPathException]
   private def parseOptionDeclaration(): Unit = {
@@ -1641,7 +1595,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   private def setOutputProperty(property: String) = {
     val equals = property.indexOf("=")
     if (equals < 0) badOutputProperty("no equals sign")
@@ -1662,7 +1615,6 @@ class XQueryParser extends XPathParser {
   }
 
   private def badOutputProperty(s: String) = warning("Invalid serialization property (" + s + ")")
-
 
   @throws[XPathException]
   override  def parseFLWORExpression: Expression = {
@@ -1743,16 +1695,13 @@ class XQueryParser extends XPathParser {
       }
     }
 
-
     flwor.init(clauseList, returnExpression)
     setLocation(flwor, exprOffset)
     flwor
   }
 
-
    def makeLetExpression: LetExpression = if (env.asInstanceOf[QueryModule].getUserQueryContext.isCompileWithTracing) new EagerLetExpression
   else new LetExpression
-
 
   @throws[XPathException]
   private def parseForClause(flwor: FLWORExpression, clauseList: util.List[Clause]): Unit = {
@@ -1795,7 +1744,7 @@ class XQueryParser extends XPathParser {
         `type` = SequenceType.makeSequenceType(`type`.getPrimaryType, StaticProperty.EXACTLY_ONE)
       }
       val binding = new LocalVariableBinding(varQName, `type`)
-      clause.setRangeVariable(binding)
+      clause.rangeVariable = binding
       if (isKeyword("at")) {
         nextToken()
         expect(Token.DOLLAR)
@@ -1804,27 +1753,25 @@ class XQueryParser extends XPathParser {
         val posQName = makeStructuredQName(t.currentTokenValue, "")
         if (!scanOnly && posQName == varQName) grumble("The two variables declared in a single 'for' clause must have different names", "XQST0089")
         val pos = new LocalVariableBinding(posQName, SequenceType.SINGLE_INTEGER)
-        clause.setPositionVariable(pos)
+        clause.positionVariable = pos
         nextToken()
       }
       expect(Token.IN)
       nextToken()
       clause.initSequence(flwor, parseExprSingle)
-      declareRangeVariable(clause.getRangeVariable)
-      if (clause.getPositionVariable != null) declareRangeVariable(clause.getPositionVariable)
+      declareRangeVariable(clause.rangeVariable)
+      if (clause.positionVariable != null) declareRangeVariable(clause.positionVariable)
       if (allowingEmpty) checkForClauseAllowingEmpty(flwor, clause)
       t.currentToken == Token.COMMA
     }) ()
   }
 
-
   @throws[XPathException]
   private def checkForClauseAllowingEmpty(flwor: FLWORExpression, clause: ForClause): Unit = {
     if (!allowXPath30Syntax) grumble("The 'allowing empty' option requires XQuery 3.0")
-    val `type` = clause.getRangeVariable.getRequiredType
+    val `type` = clause.rangeVariable.getRequiredType
     if (!Cardinality.allowsZero(`type`.getCardinality)) warning("When 'allowing empty' is specified, the occurrence indicator on the range variable type should be '?'")
   }
-
 
   @throws[XPathException]
   private def parseLetClause(flwor: FLWORExpression, clauseList: util.List[Clause]) = {
@@ -1855,12 +1802,11 @@ class XQueryParser extends XPathParser {
       expect(Token.ASSIGN)
       nextToken()
       clause.initSequence(flwor, parseExprSingle)
-      clause.setRangeVariable(v)
+      clause.rangeVariable = v
       declareRangeVariable(v)
       t.currentToken == Token.COMMA
     }) ()
   }
-
 
   @throws[XPathException]
   private def parseCountClause(clauseList: util.List[Clause]) = while ({
@@ -1877,11 +1823,10 @@ class XQueryParser extends XPathParser {
     val `type` = SequenceType.ANY_SEQUENCE
     nextToken()
     val v = new LocalVariableBinding(varQName, `type`)
-    clause.setRangeVariable(v)
+    clause.rangeVariable = v
     declareRangeVariable(v)
     t.currentToken == Token.COMMA
   }) ()
-
 
   @throws[XPathException]
   private def parseGroupByClause(flwor: FLWORExpression, clauseList: util.List[Clause]): Unit = {
@@ -1910,7 +1855,7 @@ class XQueryParser extends XPathParser {
           val role = new RoleDiagnostic(RoleDiagnostic.MISC, "grouping key", 0)
           val atomizedValue = Atomizer.makeAtomizer(value, role)
           letClause.initSequence(flwor, atomizedValue)
-          letClause.setRangeVariable(v)
+          letClause.rangeVariable = v
           declareRangeVariable(v)
         }
         variableNames.add(varQName)
@@ -2003,7 +1948,6 @@ class XQueryParser extends XPathParser {
     makeStructuredQName(name, "")
   }
 
-
   @throws[XPathException]
   private def parseWindowClause(flwor: FLWORExpression, clauseList: util.List[Clause]): Unit = {
     val clause = new WindowClause
@@ -2058,7 +2002,7 @@ class XQueryParser extends XPathParser {
     nextToken()
     clause.initStartCondition(flwor, parseExprSingle)
     if (isKeyword("only")) {
-      clause.setIncludeUnclosedWindows(false)
+      clause.includeUnclosedWindows = false
       nextToken()
     }
     if (isKeyword("end")) {
@@ -2098,7 +2042,6 @@ class XQueryParser extends XPathParser {
     declareRangeVariable(windowVar)
     clauseList.add(clause)
   }
-
 
   @throws[XPathException]
   private def parseSortDefinition: util.List[SortSpec] = {
@@ -2160,7 +2103,6 @@ class XQueryParser extends XPathParser {
     collationName
   }
 
-
   @throws[XPathException]
   override def parseTypeswitchExpression: Expression = {
     val offset = t.currentTokenStartOffset
@@ -2170,7 +2112,6 @@ class XQueryParser extends XPathParser {
     val actions = new util.ArrayList[Expression](10)
     expect(Token.RPAR)
     nextToken()
-
 
     val outerLet = makeLetExpression
     outerLet.setRequiredType(SequenceType.ANY_SEQUENCE)
@@ -2273,7 +2214,6 @@ class XQueryParser extends XPathParser {
     innerLet
   }
 
-
   @throws[XPathException]
   override  def parseSwitchExpression: Expression = {
     nextToken()
@@ -2282,7 +2222,6 @@ class XQueryParser extends XPathParser {
     nextToken()
     val conditions: util.List[Expression] = new util.ArrayList[Expression](10)
     val actions: util.List[Expression] = new util.ArrayList[Expression](10)
-
 
     val outerLet = makeLetExpression
     outerLet.setRequiredType(SequenceType.OPTIONAL_ATOMIC)
@@ -2326,7 +2265,6 @@ class XQueryParser extends XPathParser {
     makeTracer(outerLet, null)
   }
 
-
   @throws[XPathException]
   override  def parseValidateExpression: Expression = {
     val offset: Int = t.currentTokenStartOffset
@@ -2342,7 +2280,6 @@ class XQueryParser extends XPathParser {
         mode = Validation.LAX
         nextToken()
       case Token.VALIDATE_TYPE =>
-
 
         mode = Validation.BY_TYPE
         nextToken()
@@ -2379,7 +2316,6 @@ class XQueryParser extends XPathParser {
     nextToken()
     makeTracer(exp, null)
   }
-
 
   @throws[XPathException]
   override  def parseExtensionExpression: Expression = {
@@ -2453,7 +2389,6 @@ class XQueryParser extends XPathParser {
     else expr
   }
 
-
   @throws[XPathException]
   override  def parseConstructor: Expression = {
     val offset = t.currentTokenStartOffset
@@ -2469,7 +2404,6 @@ class XQueryParser extends XPathParser {
         nodeKind match {
           case "validate" =>
             grumble("A validate expression is not allowed within a path expression")
-
 
           case "ordered" =>
           case "unordered" =>
@@ -2511,7 +2445,6 @@ class XQueryParser extends XPathParser {
     new ErrorExpression
   }
 
-
   @throws[XPathException]
   private def parseDocumentConstructor(offset: Int): Expression = {
     nextToken()
@@ -2528,7 +2461,6 @@ class XQueryParser extends XPathParser {
     setLocation(doc, offset)
     doc
   }
-
 
   @throws[XPathException]
   private def parseComputedElementConstructor(offset: Int): Expression = {
@@ -2599,7 +2531,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def parseNamedElementConstructor(offset: Int): Expression = {
     val nodeName: NodeName = makeNodeName(t.currentTokenValue, useDefault = true)
@@ -2620,7 +2551,6 @@ class XQueryParser extends XPathParser {
     el2.setContentExpression(content)
     makeTracer(el2, nodeName.getStructuredQName)
   }
-
 
   @throws[XPathException]
   private def parseComputedAttributeConstructor(offset: Int): Expression = {
@@ -2677,7 +2607,6 @@ class XQueryParser extends XPathParser {
     makeSimpleContent(content, att, offset)
     makeTracer(att, null)
   }
-
 
   @throws[XPathException]
   private def parseNamedAttributeConstructor(offset: Int): Expression = {
@@ -2737,7 +2666,6 @@ class XQueryParser extends XPathParser {
     makeTracer(com, null)
   }
 
-
   @throws[XPathException]
   private def parseProcessingInstructionConstructor(offset: Int): Expression = {
     nextToken()
@@ -2759,7 +2687,6 @@ class XQueryParser extends XPathParser {
     makeSimpleContent(content, pi, offset)
     makeTracer(pi, null)
   }
-
 
   @throws[XPathException]
   private def parseNamedProcessingInstructionConstructor(offset: Int): Expression = {
@@ -2786,7 +2713,6 @@ class XQueryParser extends XPathParser {
       new ErrorExpression(warningStr, "XQDY0064", false)
     }
   }
-
 
   @throws[XPathException]
   override  def parseTryCatchExpression: Expression = {
@@ -2864,7 +2790,6 @@ class XQueryParser extends XPathParser {
     tryCatch
   }
 
-
   @throws[XPathException]
   private def parseNamespaceConstructor(offset: Int): Expression = {
     if (!allowXPath30Syntax) grumble("Namespace node constructors require XQuery 3.0")
@@ -2889,7 +2814,6 @@ class XQueryParser extends XPathParser {
     makeTracer(instr, null)
   }
 
-
   @throws[XPathException]
   private def parseNamedNamespaceConstructor(offset: Int): Expression = {
     if (!allowXPath30Syntax) grumble("Namespace node constructors require XQuery 3.0")
@@ -2909,13 +2833,11 @@ class XQueryParser extends XPathParser {
     makeTracer(instr, null)
   }
 
-
    def makeSimpleContent(content: Expression, inst: SimpleNodeConstructor, offset: Int): Unit = {
     if (content == null) inst.setSelect(new StringLiteral(StringValue.EMPTY_STRING))
     else inst.setSelect(XQueryParser.stringify(content, noNodeIfEmpty = false, env))
     setLocation(inst, offset)
   }
-
 
   @throws[XPathException]
   private def parsePseudoXML(allowEndTag: Boolean): Expression = try {
@@ -2965,7 +2887,6 @@ class XQueryParser extends XPathParser {
       new ErrorExpression
   }
 
-
   @throws[XPathException]
   @throws[StringIndexOutOfBoundsException]
   private def parseDirectElementConstructor(isNested: Boolean): Expression = {
@@ -2992,7 +2913,6 @@ class XQueryParser extends XPathParser {
     while ( {
       true
     }) {
-
 
       c = skipSpaces(c)
       if (c == '/' || c == '>') break()
@@ -3032,7 +2952,6 @@ class XQueryParser extends XPathParser {
       val `val` = t.input.substring(t.inputOffset - 1, end + 1)
 
       var rval = t.input.substring(t.inputOffset, end)
-
 
       var tail = `val`
       var pos = 0
@@ -3095,7 +3014,6 @@ class XQueryParser extends XPathParser {
       if (attributes.get(attName) != null) if (isNamespace) grumble("Duplicate namespace declaration " + attName, "XQST0071", attOffset)
       else grumble("Duplicate attribute name " + attName, "XQST0040", attOffset)
 
-
       val a = new XQueryParser.AttributeDetails
       a.value = `val`
       a.startOffset = attOffset
@@ -3122,7 +3040,6 @@ class XQueryParser extends XPathParser {
     setLocation(elInst, offset)
     val contents = new util.ArrayList[Expression](10)
     val attFingerprints = new IntHashSet(attributes.size)
-
 
     for (entry <- attributes.entrySet.asScala) {
       val attName = entry.getKey
@@ -3187,7 +3104,6 @@ class XQueryParser extends XPathParser {
     }
     makeTracer(elInst, qName)
   }
-
 
   @throws[XPathException]
   private def makeAttributeContent(avt: String, start: Int, terminator: Char, scanOnly: Boolean): Expression = {
@@ -3312,7 +3228,6 @@ class XQueryParser extends XPathParser {
     }
   }
 
-
   @throws[XPathException]
   private def makeNamespaceContent(avt: String, start: Int, terminator: Char): Int = {
 
@@ -3340,7 +3255,6 @@ class XQueryParser extends XPathParser {
     }
     last
   }
-
 
   @throws[XPathException]
   private def readElementContent(startTag: String, components: util.List[Expression]): Unit = try {
@@ -3525,7 +3439,6 @@ class XQueryParser extends XPathParser {
       null
   }
 
-
   @throws[XPathException]
    override def makeStringLiteral(token: String): Literal = {
     var lit: StringLiteral = null
@@ -3538,10 +3451,8 @@ class XQueryParser extends XPathParser {
     lit
   }
 
-
   @throws[XPathException]
   override  def unescape(token: String): CharSequence = new XQueryParser.Unescaper(env.getConfiguration.getValidCharacterChecker).unescape(token)
-
 
   @throws[XPathException]
   private def readEntityReference: String = try {
@@ -3561,7 +3472,6 @@ class XQueryParser extends XPathParser {
       grumble("No closing ';' found for entity or character reference")
       ""
   }
-
 
   @throws[XPathException]
   override def parseStringConstructor: Expression = {
@@ -3627,10 +3537,8 @@ class XQueryParser extends XPathParser {
     result
   }
 
-
   @throws[XPathException]
   def uriLiteral(in: String): String = Whitespace.applyWhitespaceNormalization(Whitespace.COLLAPSE, unescape(in)).toString
-
 
   @throws[XPathException]
    def lookAhead(): Unit = try t.lookAhead()
@@ -3650,7 +3558,6 @@ class XQueryParser extends XPathParser {
     if (axis == AxisInfo.NAMESPACE && (language eq ParsedLanguage.XQUERY)) grumble("The namespace axis is not available in XQuery", errorCode)
   }
 
-
   @throws[StringIndexOutOfBoundsException]
   private def skipSpaces(c: Char): Char = {
     var ch = c
@@ -3660,10 +3567,8 @@ class XQueryParser extends XPathParser {
     ch
   }
 
-
   @throws[XPathException]
   private def expectChar(actual: Char, expected: Char): Unit = if (actual != expected) grumble("Expected '" + expected + "', found '" + actual + '\'')
-
 
   override  def getLanguage: String = "XQuery"
 }

@@ -17,7 +17,6 @@ import org.orbeon.saxon.value.DurationValue._
 import java.math.{BigDecimal, BigInteger}
 import java.util.StringTokenizer
 
-
 /**
  * A value of type xs:duration
  */

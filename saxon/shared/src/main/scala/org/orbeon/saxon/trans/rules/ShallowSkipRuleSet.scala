@@ -31,7 +31,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import ShallowSkipRuleSet._
 
-
 object ShallowSkipRuleSet {
 
   private var THE_INSTANCE: ShallowSkipRuleSet = new ShallowSkipRuleSet()

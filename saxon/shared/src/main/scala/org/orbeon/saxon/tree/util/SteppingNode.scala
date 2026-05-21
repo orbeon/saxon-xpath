@@ -8,7 +8,6 @@ package org.orbeon.saxon.tree.util
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 trait SteppingNode[N <: SteppingNode[N]] extends NodeInfo {
   def getParent: N
   def getNextSibling: N

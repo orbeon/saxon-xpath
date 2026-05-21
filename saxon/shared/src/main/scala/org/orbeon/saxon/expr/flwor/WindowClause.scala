@@ -46,8 +46,6 @@ import org.orbeon.saxon.expr.flwor.Clause.ClauseName.WINDOW
 
 import WindowClause._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 import Clause.ClauseName.ClauseName
 import Affinity._
 
@@ -112,7 +110,6 @@ class WindowClause extends Clause {
 
   private var sliding: Boolean = _
 
-  @BooleanBeanProperty
   var includeUnclosedWindows: Boolean = true
 
   private var sequenceOp: Operand = _
@@ -123,10 +120,8 @@ class WindowClause extends Clause {
 
   private var windowVars: IntHashMap[LocalVariableBinding] = new IntHashMap(10)
 
-  @BeanProperty
   var itemTypeChecker: ItemTypeCheckingFunction = _
 
-  @BooleanBeanProperty
   var windowMustBeSingleton: Boolean = _
 
   override def getClauseKey(): ClauseName = WINDOW
@@ -232,7 +227,7 @@ class WindowClause extends Clause {
         "XPTY0004",
         getLocation)
     }
-    val checker: ItemTypeCheckingFunction = getItemTypeChecker
+    val checker: ItemTypeCheckingFunction = itemTypeChecker
     if (checker != null) {
       val check: SequenceIterator =
         new ItemMappingIterator(new ListIterator(w.contents), checker)

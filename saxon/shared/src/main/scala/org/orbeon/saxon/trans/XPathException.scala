@@ -15,9 +15,6 @@ import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.s9api.{Location, QName, XmlProcessingError}
 import org.orbeon.saxon.trans.XPathException._
 
-import scala.beans.BeanProperty
-
-
 /**
   * XPathException is used to indicate an error (static or dynamic) in an XPath expression,
   * or in a query or stylesheet.
@@ -80,9 +77,7 @@ class XPathException(message: String) extends TransformerException(message) {
   var hostLanguage: String = _
 
   private var errorCode: StructuredQName = _
-  @BeanProperty
   var errorObject: Sequence = _
-  @BeanProperty
   var failingExpression: Expression = _
   var hasBeenReported: Boolean = false
   @transient var context: XPathContext = _

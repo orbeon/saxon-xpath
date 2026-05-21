@@ -219,7 +219,6 @@ object JsonParser {
     }
 }
 
-
 /**
  * Create a JSON parser
  */
@@ -310,7 +309,7 @@ class JsonParser {
             parseConstruct(handler, tokenizer, flags, context)
           } else { // retain first: parse the duplicate value but discard it
             val h2 = new JsonHandler
-            h2.setContext(context)
+            h2.context = context
             parseConstruct(h2, tokenizer, flags, context)
           }
         } catch {

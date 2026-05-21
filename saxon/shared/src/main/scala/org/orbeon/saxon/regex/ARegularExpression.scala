@@ -14,7 +14,6 @@ import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 import java.{util => ju}
 
-
 /**
  * Glue class to interface the Jakarta regex engine to Saxon
  * (The prefix 'A' indicates an Apache regular expression, as distinct from

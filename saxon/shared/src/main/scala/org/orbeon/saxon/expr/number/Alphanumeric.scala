@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.number
 
 import org.orbeon.saxon.z.IntRangeSet
 
-
-
-
 object Alphanumeric {
 
   private var zeroDigits: Array[Int] = Array(0x0030, 0x0660, 0x06f0, 0x0966,

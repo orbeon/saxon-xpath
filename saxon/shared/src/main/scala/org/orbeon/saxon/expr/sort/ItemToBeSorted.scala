@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.sort
 
 import org.orbeon.saxon.om.Item
 
-
-
-
 /**
   * This class is a specialization of class ObjectToBeSorted for use when
   * the sequence being sorted is a sequence of items (including tuples, which

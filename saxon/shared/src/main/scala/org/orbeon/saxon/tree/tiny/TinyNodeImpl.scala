@@ -19,7 +19,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import java.util.function.Predicate
 
-
 /**
   * A node in a TinyTree representing an XML element, character content, or attribute.
   *

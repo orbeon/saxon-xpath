@@ -8,7 +8,6 @@ package org.orbeon.saxon.pattern
 
 import org.orbeon.saxon.om.StructuredQName
 
-
 /**
   * Marker interface for schema-element() and schema-attribute() node tests
   */

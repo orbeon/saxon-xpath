@@ -8,7 +8,6 @@ import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
   * This abstract class is provided to allow user-written extension functions to be implemented
   * with the full capabilities of functions that are an intrinsic part of the Saxon product.

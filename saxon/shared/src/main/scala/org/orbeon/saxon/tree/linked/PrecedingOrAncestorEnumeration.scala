@@ -4,7 +4,6 @@ import org.orbeon.saxon.om.NodeInfo
 
 import java.util.function.Predicate
 
-
 class PrecedingOrAncestorEnumeration(node: NodeImpl,
                                      nodeTest: Predicate[_ >: NodeInfo])
   extends TreeEnumeration(node, nodeTest) {

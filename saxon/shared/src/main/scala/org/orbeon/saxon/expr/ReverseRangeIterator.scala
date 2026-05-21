@@ -7,7 +7,6 @@ import org.orbeon.saxon.tree.iter.ReversibleIterator
 import org.orbeon.saxon.value.{AtomicValue, Int64Value, IntegerValue}
 import java.util.EnumSet
 
-
 class ReverseRangeIterator(var start: Long, var limit: Long)
   extends AtomicIterator[IntegerValue]
     with ReversibleIterator

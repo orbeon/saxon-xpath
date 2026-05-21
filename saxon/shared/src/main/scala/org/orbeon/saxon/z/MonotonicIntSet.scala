@@ -12,7 +12,6 @@ import org.orbeon.saxon.z.MonotonicIntSet._
 import java.util.Arrays
 import scala.util.control.Breaks._
 
-
 /**
  * Set of int values. This implementation requires that new entries are added in monotonically
  * increasing order; any attempt to add a value out of sequence, or to remove a value, results

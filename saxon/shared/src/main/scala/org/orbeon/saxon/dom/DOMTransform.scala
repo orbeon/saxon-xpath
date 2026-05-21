@@ -14,7 +14,6 @@ import org.orbeon.saxon.utils.Configuration
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object DOMTransform {
 
   def main(args: Array[String]): Unit = {

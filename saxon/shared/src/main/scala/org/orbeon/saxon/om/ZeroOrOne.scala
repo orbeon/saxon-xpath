@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.parser.ExpressionTool
 import org.orbeon.saxon.tree.iter.ConstrainedIterator
 import org.orbeon.saxon.value.EmptySequence
 
-
 /**
   * A value that is a sequence containing zero or one items.
   */

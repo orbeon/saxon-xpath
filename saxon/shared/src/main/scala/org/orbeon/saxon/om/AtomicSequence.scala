@@ -5,7 +5,6 @@ import java.{lang => jl}
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.AtomicValue
 
-
 /**
  * Interface representing a sequence of atomic values. This is often used to represent the
  * typed value of a node. In most cases the typed value of a node is a single atomic value,

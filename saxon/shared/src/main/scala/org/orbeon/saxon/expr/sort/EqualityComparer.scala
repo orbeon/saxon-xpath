@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.lib.StringCollator
 import org.orbeon.saxon.value.AtomicValue
 
-
 object EqualityComparer {
   val getInstance: EqualityComparer = new EqualityComparer
 }

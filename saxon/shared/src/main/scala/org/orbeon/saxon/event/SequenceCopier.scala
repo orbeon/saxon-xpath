@@ -5,9 +5,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 object SequenceCopier {
 
   def copySequence(in: SequenceIterator, out: Receiver): Unit = {

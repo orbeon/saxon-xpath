@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.om.{NodeInfo, Sequence}
 import org.orbeon.saxon.value.BooleanValue
 
-
 /**
   * This class implements the function fn:has-children($node), which is a standard function in XPath 3.0
   */

@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class CommentImpl(content: String) extends NodeImpl {
 
   var comment: String = content

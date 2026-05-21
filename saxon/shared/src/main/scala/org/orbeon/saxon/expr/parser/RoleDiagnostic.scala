@@ -8,7 +8,6 @@ import org.orbeon.saxon.trans.Err
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.SequenceType
 
-
 object RoleDiagnostic {
 
   val FUNCTION                : Int = 0

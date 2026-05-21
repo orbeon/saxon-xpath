@@ -35,8 +35,7 @@ import org.orbeon.saxon.tree.util.Orphan
 
 import org.orbeon.saxon.value.Whitespace
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 abstract class AttributeCreator
   extends SimpleNodeConstructor
@@ -49,7 +48,6 @@ abstract class AttributeCreator
   @BeanProperty
   var validationAction: Int = _
 
-  @BeanProperty
   var options: Int = ReceiverOption.NONE
 
   var isInstruct: Boolean = _
@@ -98,7 +96,7 @@ abstract class AttributeCreator
                    context: XPathContext): Unit = {
     var charSeq = value
     val attName: NodeName = evaluateNodeName(context)
-    val opt: Int = getOptions
+    val opt: Int = options
     var ann: SimpleType = null
     val schemaType: SimpleType = getSchemaType
     val validateAction: Int = getValidationAction

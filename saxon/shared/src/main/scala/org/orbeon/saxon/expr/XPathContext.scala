@@ -19,7 +19,6 @@ import org.orbeon.saxon.trans.rules.Rule
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.DateTimeValue
 
-
 /**
   * This class represents a context in which an XPath expression is evaluated.
   */

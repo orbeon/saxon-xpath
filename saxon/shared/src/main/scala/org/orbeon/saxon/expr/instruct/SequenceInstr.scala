@@ -17,9 +17,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A compiled xsl:sequence instruction. Used only when strict streamability analysis is
   * required; the instruction differs from its operand only by being marked as an instruction,

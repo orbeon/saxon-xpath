@@ -11,9 +11,6 @@ import org.orbeon.saxon.trans.XmlProcessingException
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 /**
   * Interface for reporting validation errors found during validation of an instance document
   * against a schema.

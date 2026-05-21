@@ -695,7 +695,7 @@ class Controller extends ContextOriginator {
    */
   def isStylesheetContainingStripSpace = {
     var rule = null
-    /* executable.isInstanceOf[PreparedStylesheet] && (rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule) != null &&*/
+    /* executable.isInstanceOf[PreparedStylesheet] && (rule = executable.asInstanceOf[PreparedStylesheet].topLevelPackage.getSpaceStrippingRule) != null &&*/
     rule != NoElementsSpaceStrippingRule.getInstance // PreparedStylesheet class not exist
   }
 
@@ -706,7 +706,7 @@ class Controller extends ContextOriginator {
    * @return true if stripping of type annotations has been requested
    */
   /*def isStylesheetStrippingTypeAnnotations = executable.isInstanceOf[PreparedStylesheet] &&
-    executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.isStripsTypeAnnotations // PreparedStylesheet class not exist*/
+    executable.asInstanceOf[PreparedStylesheet].topLevelPackage.stripsTypeAnnotations // PreparedStylesheet class not exist*/
 
   /**
    * Make a Stripper configured to implement the whitespace stripping rules.
@@ -742,7 +742,7 @@ class Controller extends ContextOriginator {
   def getSpaceStrippingRule: SpaceStrippingRule = {
     if (config.getParseOptions.getSpaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance) return AllElementsSpaceStrippingRule.getInstance
     /* else if (executable.isInstanceOf[PreparedStylesheet]) {
-       val rule = executable.asInstanceOf[PreparedStylesheet].getTopLevelPackage.getSpaceStrippingRule // // PreparedStylesheet class not exist
+       val rule = executable.asInstanceOf[PreparedStylesheet].topLevelPackage.getSpaceStrippingRule // // PreparedStylesheet class not exist
        if (rule != null) return rule
      }*/
     NoElementsSpaceStrippingRule.getInstance
@@ -1081,9 +1081,9 @@ class Controller extends ContextOriginator {
    */
   @throws[XPathException]
   def preEvaluateGlobals(context: XPathContext): Unit = {
-    for (pack <- getExecutable.getPackages.asScala) {
+    for (pack <- getExecutable.packages.asScala) {
       for (glVar <- pack.getGlobalVariableList.asScala) {
-        if (!glVar.isUnused) try glVar.evaluateVariable(context, glVar.getDeclaringComponent)
+        if (!glVar.isUnused) try glVar.evaluateVariable(context, glVar.declaringComponent)
         catch {
           case err: XPathException =>
             // Don't report an exception unless the variable is actually evaluated

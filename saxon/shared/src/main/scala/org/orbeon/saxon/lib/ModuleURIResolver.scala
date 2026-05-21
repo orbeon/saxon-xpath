@@ -5,9 +5,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import javax.xml.transform.stream.StreamSource
 
-
-
-
 trait ModuleURIResolver {
 
   def resolve(moduleURI: String,

@@ -25,7 +25,6 @@ object AbsolutePath {
     new AbsolutePath(list)
   }
 
-
   class PathElement(var nodeKind: Int, var name: NodeName, var index: Int) {
     def getIndex: Int = index
 
@@ -101,10 +100,8 @@ object AbsolutePath {
 
 }
 
-
 class AbsolutePath(path: util.List[AbsolutePath.PathElement]) {
   private var systemId: String = null
-
 
   def appendAttributeName(attributeName: NodeName): Unit = {
     if (!path.isEmpty) {
@@ -114,7 +111,6 @@ class AbsolutePath(path: util.List[AbsolutePath.PathElement]) {
     val att = new AbsolutePath.PathElement(Type.ATTRIBUTE, attributeName, 1)
     path.add(att)
   }
-
 
   def getPathUsingPrefixes: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
@@ -126,7 +122,6 @@ class AbsolutePath(path: util.List[AbsolutePath.PathElement]) {
     fsb.toString
   }
 
-
   def getPathUsingUris: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
 
@@ -136,7 +131,6 @@ class AbsolutePath(path: util.List[AbsolutePath.PathElement]) {
     }
     fsb.toString
   }
-
 
   def getPathUsingAbbreviatedUris: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)

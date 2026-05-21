@@ -26,8 +26,6 @@ import org.orbeon.saxon.value.SequenceType
 
 import ParentNodeConstructor._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object ParentNodeConstructor {
 
   private val SAME_FOCUS_CONTENT: OperandRole =
@@ -42,7 +40,6 @@ abstract class ParentNodeConstructor
 
    var contentOp: Operand = _
 
-  @BeanProperty
   var validationOptions: ParseOptions = null
 
    var preservingTypes: Boolean = true
@@ -108,7 +105,7 @@ abstract class ParentNodeConstructor
           .asInstanceOf[Block]
           .mergeAdjacentTextInstructions()
       }
-      if (visitor.isOptimizeForStreaming) {
+      if (visitor.optimizeForStreaming) {
         visitor.obtainOptimizer().makeCopyOperationsExplicit(this, contentOp)
       }
     }

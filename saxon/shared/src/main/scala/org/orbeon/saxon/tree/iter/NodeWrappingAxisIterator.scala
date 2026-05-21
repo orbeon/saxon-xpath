@@ -7,7 +7,6 @@ import java.util.Iterator
 import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
-
 class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
                                    private val wrappingFunction: NodeWrappingFunction[_ >: B, NodeInfo])
   extends AxisIterator

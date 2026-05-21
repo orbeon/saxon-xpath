@@ -17,8 +17,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.utils.Controller
 import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -32,45 +30,45 @@ object ForEachGroup {
   private def fixupGroupReferences(exp: Expression,
                                    feg: ForEachGroup,
                                    selectedItemType: ItemType,
-                                   isInLoop: Boolean): Unit = {
+                                   inLoop: Boolean): Unit = {
     if (exp == null) {} else exp match {
       case call: CurrentGroupCall =>
-        call.setControllingInstruction(feg, selectedItemType, isInLoop)
+        call.setControllingInstruction(feg, selectedItemType, inLoop)
       case feg2: ForEachGroup =>
         if (feg2 == feg) {
           fixupGroupReferences(feg2.getActionExpression,
             feg,
             selectedItemType,
-            isInLoop = false)
+            inLoop = false)
         } else {
           fixupGroupReferences(feg2.getSelectExpression,
             feg,
             selectedItemType,
-            isInLoop)
+            inLoop)
           fixupGroupReferences(feg2.getGroupingKey,
             feg,
             selectedItemType,
-            isInLoop)
+            inLoop)
           if (feg2.getSortKeyDefinitions != null) {
             for (skd <- feg2.getSortKeyDefinitions.asScala) {
-              fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
+              fixupGroupReferences(skd.getOrder, feg, selectedItemType, inLoop)
               fixupGroupReferences(skd.getCaseOrder,
                 feg,
                 selectedItemType,
-                isInLoop)
+                inLoop)
               fixupGroupReferences(skd.getDataTypeExpression,
                 feg,
                 selectedItemType,
-                isInLoop)
+                inLoop)
               fixupGroupReferences(skd.getLanguage,
                 feg,
                 selectedItemType,
-                isInLoop)
+                inLoop)
               fixupGroupReferences(skd.getCollationNameExpression,
                 feg,
                 selectedItemType,
-                isInLoop)
-              fixupGroupReferences(skd.getOrder, feg, selectedItemType, isInLoop)
+                inLoop)
+              fixupGroupReferences(skd.getOrder, feg, selectedItemType, inLoop)
             }
           }
         }
@@ -79,7 +77,7 @@ object ForEachGroup {
           fixupGroupReferences(o.getChildExpression,
             feg,
             selectedItemType,
-            isInLoop || o.isHigherOrder)
+            inLoop || o.isHigherOrder)
         }
     }
   }
@@ -97,7 +95,7 @@ object ForEachGroup {
 
 class ForEachGroup(select: Expression,
                    action: Expression,
-                   @BeanProperty var algorithm: Byte,
+                   var algorithm: Byte,
                    key: Expression,
                    private var collator: StringCollator,
                    collationNameExpression: Expression,
@@ -109,12 +107,10 @@ class ForEachGroup(select: Expression,
 
   var cnExpression: Expression = collationNameExpression
 
-  @BeanProperty
   var keyItemType: Int = _
 
   @transient private var sortComparators: Array[AtomicComparer] = null
 
-  @BooleanBeanProperty
   var composite: Boolean = false
 
   var isInFork: Boolean = false
@@ -190,9 +186,9 @@ class ForEachGroup(select: Expression,
       return Literal.makeEmptySequence
 
     for (o <- operands.asScala)
-      fixupGroupReferences(this, this, selectedItemType, isInLoop = false)
+      fixupGroupReferences(this, this, selectedItemType, inLoop = false)
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
-    cit.setContextSettingExpression(getSelectExpression)
+    cit.contextSettingExpression = getSelectExpression
     actionOp.typeCheck(visitor, cit)
     keyOp.typeCheck(visitor, cit)
     if (Literal.isEmptySequence(getSelectExpression))
@@ -222,7 +218,7 @@ class ForEachGroup(select: Expression,
         if (sk.isFixed) {
           val comp: AtomicComparer = sk.makeComparator(
             visitor.getStaticContext.makeEarlyEvaluationContext())
-          sk.setFinalComparator(comp)
+          sk.finalComparator = comp
         } else {
           allFixed = false
         }
@@ -230,7 +226,7 @@ class ForEachGroup(select: Expression,
       if (allFixed) {
         sortComparators = Array.ofDim[AtomicComparer](getSortKeyDefinitions.size)
         for (i <- 0 until getSortKeyDefinitions.size)
-          sortComparators(i) = getSortKeyDefinitions.getSortKeyDefinition(i).getFinalComparator
+          sortComparators(i) = getSortKeyDefinitions.getSortKeyDefinition(i).finalComparator
       }
     }
     keyItemType = getGroupingKey.getItemType.getPrimitiveType
@@ -243,7 +239,7 @@ class ForEachGroup(select: Expression,
     val selectedItemType: ItemType = getSelectExpression.getItemType
     val sit: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
-    sit.setContextSettingExpression(getSelectExpression)
+    sit.contextSettingExpression = getSelectExpression
     actionOp.optimize(visitor, sit)
     keyOp.optimize(visitor, sit)
     if (Literal.isEmptySequence(getSelectExpression)) {
@@ -314,8 +310,8 @@ class ForEachGroup(select: Expression,
         new SortKeyDefinitionList(newKeyDef)
     )
     ExpressionTool.copyLocationInfo(this, feg)
-    feg.setComposite(isComposite)
-    fixupGroupReferences(feg, feg, getSelectExpression.getItemType, isInLoop = false)
+    feg.composite = composite
+    fixupGroupReferences(feg, feg, getSelectExpression.getItemType, inLoop = false)
     feg
   }
 

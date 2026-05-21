@@ -17,9 +17,6 @@ import org.orbeon.saxon.value.IntegerValue
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class StringToCodepoints extends SystemFunction {
 
   /**

@@ -11,9 +11,6 @@ import javax.xml.transform.OutputKeys
 
 import java.util.Properties
 
-
-
-
 class MessageEmitter extends XMLEmitter {
 
   override def setPipelineConfiguration(

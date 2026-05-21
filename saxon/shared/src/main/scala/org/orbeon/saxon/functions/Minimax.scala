@@ -34,7 +34,7 @@ import java.util.Properties
 
 import Minimax._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
 object Minimax {
@@ -216,7 +216,6 @@ abstract class Minimax extends CollatingFunctionFixed {
   @BeanProperty
   var argumentType: PlainType = BuiltInAtomicType.ANY_ATOMIC
 
-  @BooleanBeanProperty
   var ignoreNaN: Boolean = false
 
   def isMaxFunction: Boolean

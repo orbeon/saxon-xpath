@@ -19,7 +19,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import scala.beans.BeanProperty
 
-
 /**
  * This exception indicates a failure when validating an instance against a type
  * defined in a schema.

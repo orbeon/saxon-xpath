@@ -14,7 +14,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, _}
 
-
 class RangeKey
   extends MapItem {
 
@@ -28,7 +27,6 @@ class RangeKey
     this.max = if (max == null) null else UnicodeString.makeUnicodeString(max)
     this.index = index
   }
-
 
   def get(key: AtomicValue): GroundedValue = {
     val k: UnicodeString =

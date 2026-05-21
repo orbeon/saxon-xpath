@@ -20,11 +20,9 @@ import org.orbeon.saxon.z.IntHashSet
 
 import java.net.URI
 import java.{lang => jl, util => ju}
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
-
 
 object Expression {
 
@@ -72,11 +70,9 @@ abstract class Expression
 
   var staticProperties: Int = -1
   private var location: Location = Loc.NONE
-  @BeanProperty
   var parentExpression: Expression = _
   private var retainedStaticContext: RetainedStaticContext = _
   private var slotsUsed: Array[Int] = _
-  @BeanProperty
   var evaluationMethod: Int = _
   private var extraProperties: ju.Map[String, Any] = _
   private var cost: Double = -1
@@ -90,8 +86,8 @@ abstract class Expression
     val ops = operands
     for (o <- ops.asScala) {
       val child = o.getChildExpression
-      val badOperand = o.getParentExpression ne this
-      val badExpression = child.getParentExpression ne this
+      val badOperand = o.parentExpression ne this
+      val badExpression = child.parentExpression ne this
       if (badOperand || badExpression) {
         val message = "*** Bad parent pointer found in " + (if (badOperand)
           "operand "
@@ -109,7 +105,7 @@ abstract class Expression
           logger.warning(message)
         else
           throw new IllegalStateException(message)
-        child.setParentExpression(Expression.this)
+        child.parentExpression = Expression.this
       }
       if (child.getRetainedStaticContext == null)
         child.setRetainedStaticContext(getRetainedStaticContext)
@@ -128,14 +124,14 @@ abstract class Expression
 
   def verifyParentPointers(): Expression = {
     for (o <- operands.asScala) {
-      val parent = o.getChildExpression.getParentExpression
+      val parent = o.getChildExpression.parentExpression
       if (parent ne this) {
         throw new IllegalStateException(
           "Invalid parent pointer in " + parent.toShortString +
             " subexpression " +
             o.getChildExpression.toShortString)
       }
-      if (o.getParentExpression ne this) {
+      if (o.parentExpression ne this) {
         throw new IllegalStateException(
           "Invalid parent pointer in operand object " + parent
             .toShortString +
@@ -156,7 +152,7 @@ abstract class Expression
   def restoreParentPointers(): Unit =
     for (o <- operands.asScala) {
       val child = o.getChildExpression
-      child.setParentExpression(Expression.this)
+      child.parentExpression = Expression.this
       child.restoreParentPointers()
     }
 
@@ -247,7 +243,7 @@ abstract class Expression
 
   def getRetainedStaticContext: RetainedStaticContext = {
     if (retainedStaticContext == null) {
-      val parent: Expression = getParentExpression
+      val parent: Expression = parentExpression
       assert(parent != null)
       retainedStaticContext = parent.getRetainedStaticContext
       assert(retainedStaticContext != null)
@@ -442,7 +438,7 @@ abstract class Expression
     val ep = new ExpressionPresenter(getConfiguration, out)
     val options = new ExpressionPresenter.ExportOptions
     options.explaining = true
-    ep.setOptions(options)
+    ep.options = options
     try
       `export`(ep)
     catch {
@@ -461,7 +457,7 @@ abstract class Expression
     if (child == null)
       return
 
-    child.setParentExpression(Expression.this)
+    child.parentExpression = Expression.this
     if (child.retainedStaticContext == null)
       child.retainedStaticContext = retainedStaticContext
 
@@ -480,8 +476,8 @@ abstract class Expression
     var limit = 0
     var exp: Expression = this
     while (limit < 10)
-      if ((exp.location == null || exp.location == Loc.NONE) && exp.getParentExpression != null) {
-        exp = exp.getParentExpression
+      if ((exp.location == null || exp.location == Loc.NONE) && exp.parentExpression != null) {
+        exp = exp.parentExpression
         limit = limit + 1
       } else {
         return exp.location
@@ -589,7 +585,7 @@ abstract class Expression
                    context: XPathContext): Throwable = {
     val err = new XPathException(message, code, getLocation)
     err.setXPathContext(context)
-    err.setFailingExpression(this)
+    err.failingExpression = this
     throw err
   }
 
@@ -599,7 +595,7 @@ abstract class Expression
     val e = new XPathException(message, errorCode, getLocation)
     e.setIsTypeError(true)
     e.setXPathContext(context)
-    e.setFailingExpression(this)
+    e.failingExpression = this
     throw e
   }
 

@@ -17,8 +17,7 @@ import org.xml.sax.SAXParseException
 
 import java.util.Objects
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 class StandardErrorHandler(reporter: ErrorReporter)
   extends org.xml.sax.ErrorHandler {
@@ -31,7 +30,6 @@ class StandardErrorHandler(reporter: ErrorReporter)
   @BeanProperty
   var errorCount: Int = 0
 
-  @BeanProperty
   var fatalErrorCount: Int = 0
 
   private var silent: Boolean = false

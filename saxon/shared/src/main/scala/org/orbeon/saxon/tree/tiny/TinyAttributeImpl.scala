@@ -6,7 +6,6 @@ import org.orbeon.saxon.om.{AtomicSequence, NamePool, NodeInfo}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImpl {
 
   this.tree = treeImpl

@@ -15,7 +15,6 @@ import org.orbeon.saxon.event.ReceivingContentHandler
 import org.orbeon.saxon.lib.{Feature, FeatureKeys, StandardErrorListener}
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
  * A SaxonTransformerFactory instance can be used to create Transformer and Template
  * objects.

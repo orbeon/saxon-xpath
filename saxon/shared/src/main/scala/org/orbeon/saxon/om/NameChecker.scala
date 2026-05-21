@@ -11,7 +11,6 @@ import org.orbeon.saxon.trans.{Err, XPathException}
 
 import scala.util.control.Breaks._
 
-
 /**
  * The NameChecker performs validation and analysis of XML names.
  *

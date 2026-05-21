@@ -128,7 +128,7 @@ class IterateInstr(select: Expression,
     }
     val cit: ContextItemStaticInfo =
       visitor.getConfiguration.makeContextItemStaticInfo(selectType, maybeUndefined = false)
-    cit.setContextSettingExpression(getSelectExpression)
+    cit.contextSettingExpression = getSelectExpression
     actionOp.typeCheck(visitor, cit)
     onCompletionOp.typeCheck(visitor, ContextItemStaticInfo.ABSENT)
     if (Literal.isEmptySequence(getOnCompletion)) {
@@ -146,7 +146,7 @@ class IterateInstr(select: Expression,
     initiallyOp.optimize(visitor, contextInfo)
     val cit2: ContextItemStaticInfo = visitor.getConfiguration
       .makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
-    cit2.setContextSettingExpression(getSelectExpression)
+    cit2.contextSettingExpression = getSelectExpression
     actionOp.optimize(visitor, cit2)
     onCompletionOp.optimize(visitor, ContextItemStaticInfo.ABSENT)
     if (Literal.isEmptySequence(getOnCompletion)) {

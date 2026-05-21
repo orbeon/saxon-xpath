@@ -3,9 +3,6 @@ package org.orbeon.saxon.ma.trie
 
 import java.util.Iterator
 
-
-
-
 trait ImmutableMap[K, V] extends java.lang.Iterable[Tuple2[K, V]] {
 
   /**

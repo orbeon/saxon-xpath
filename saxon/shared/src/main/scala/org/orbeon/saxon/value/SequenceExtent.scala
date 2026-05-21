@@ -8,7 +8,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.{util => ju}
 
-
 object SequenceExtent {
 
   def makeSequenceExtent(iter: SequenceIterator): GroundedValue = iter.materialize

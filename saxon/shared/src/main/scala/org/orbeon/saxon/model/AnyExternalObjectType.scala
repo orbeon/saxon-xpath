@@ -11,7 +11,6 @@ import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item}
 import org.orbeon.saxon.value.ObjectValue
 
-
 object AnyExternalObjectType {
   val THE_INSTANCE: AnyExternalObjectType = new AnyExternalObjectType
 }

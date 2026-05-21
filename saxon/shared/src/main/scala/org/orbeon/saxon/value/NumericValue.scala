@@ -12,7 +12,6 @@ import org.orbeon.saxon.expr.sort.AtomicMatchKey
 import org.orbeon.saxon.lib.StringCollator
 import org.orbeon.saxon.model.{ConversionResult, ValidationFailure}
 
-
 /**
   * NumericValue is an abstract superclass for IntegerValue, DecimalValue,
   * FloatValue, and DoubleValue

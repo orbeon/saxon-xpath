@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
-
-
-
 class CurrentItemExpression extends ContextItemExpression {
 
   setErrorCodeForUndefinedContext("XTDE1360", isTypeError = false)

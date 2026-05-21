@@ -15,9 +15,6 @@ import java.util.Objects
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class SaplingProcessingInstruction(@BeanProperty var name: String,
                                    private var value: String)
     extends SaplingNode {

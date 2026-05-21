@@ -17,7 +17,6 @@ import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.StringValue
 
-
 /**
   * An iterator that iterates over a file line by line, returning each line as a {@link StringValue}
   */

@@ -12,7 +12,6 @@ import org.orbeon.saxon.model.{SchemaType, Type, UType}
 import org.orbeon.saxon.om.{NodeInfo, NodeName, StructuredQName}
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
 
-
 /**
   * NodeTest is an interface that enables a test of whether a node has a particular
   * name and type. An AnyNodeTest matches any node.

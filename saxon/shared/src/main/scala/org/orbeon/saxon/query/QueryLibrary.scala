@@ -3,9 +3,6 @@ package org.orbeon.saxon.query
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A QueryLibrary represents an independently compiled set of query modules that does not include a
   * main module. Such a library can be compiled once, and then linked to different main modules without

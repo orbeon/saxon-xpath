@@ -4,7 +4,6 @@ object IntUniversalSet {
   val getInstance: IntUniversalSet = new IntUniversalSet
 }
 
-
 class IntUniversalSet private () extends IntSet {
 
   def copy(): IntSet = this

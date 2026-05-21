@@ -9,7 +9,6 @@ package org.orbeon.saxon.s9api
 import javax.xml.transform.SourceLocator
 import org.xml.sax.Locator
 
-
 /**
   * Saxon interface to represent a location, typically the location of an expression within a query
   * or stylesheet. The interface combines the two JAXP interfaces SourceLocator and Locator.

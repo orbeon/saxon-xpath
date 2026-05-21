@@ -13,7 +13,6 @@ import org.orbeon.saxon.tree.NamespaceNode
 import org.orbeon.saxon.utils.Configuration
 import org.w3c.dom.{NamedNodeMap, Node}
 
-
 /**
  * Implementation of DOM NamedNodeMap used to represent the attributes of an element, for use when
  * Saxon element and attribute nodes are accessed using the DOM API.

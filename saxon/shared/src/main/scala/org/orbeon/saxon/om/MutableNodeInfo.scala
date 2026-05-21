@@ -7,9 +7,6 @@ import org.orbeon.saxon.model.SchemaType
 
 import org.orbeon.saxon.model.SimpleType
 
-
-
-
 trait MutableNodeInfo extends NodeInfo {
 
   def setTypeAnnotation(`type`: SchemaType): Unit

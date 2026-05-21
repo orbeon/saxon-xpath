@@ -7,7 +7,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 
 import java.util.function.IntPredicate
 
-
 class DescendantIterator(
   private val doc: TinyTree,
   node           : TinyNodeImpl,

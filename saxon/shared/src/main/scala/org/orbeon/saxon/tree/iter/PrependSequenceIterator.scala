@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.SequenceIterator
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class PrependSequenceIterator(var start: Item, var base: SequenceIterator) extends SequenceIterator {
 
   /*@Nullable*/

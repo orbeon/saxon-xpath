@@ -11,7 +11,6 @@ import org.orbeon.saxon.om.Function
 import org.orbeon.saxon.trans.SymbolicName
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
  * A FunctionLibrary handles the binding of function calls in XPath (or XQuery) expressions.
  * There are a number of implementations of this

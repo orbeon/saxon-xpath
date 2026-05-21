@@ -14,7 +14,6 @@ import java.util.ArrayList
 
 import java.util.List
 
-
 class ItemWithMergeKeys(var baseItem: Item,
                         sKeys: SortKeyDefinitionList,
                         var sourceName: String,

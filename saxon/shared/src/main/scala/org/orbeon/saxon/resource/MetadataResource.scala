@@ -27,9 +27,6 @@ import java.util.Map
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 /**
   * Created by mike on 28/10/15.
   */

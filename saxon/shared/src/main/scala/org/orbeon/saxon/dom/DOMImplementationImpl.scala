@@ -9,9 +9,6 @@ import org.w3c.dom.Document
 
 import org.w3c.dom.DocumentType
 
-
-
-
 class DOMImplementationImpl extends DOMImplementation {
 
   def hasFeature(feature: String, version: String): Boolean =

@@ -19,7 +19,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Orphan
 import org.orbeon.saxon.value._
 
-
 /**
  * An instruction derived from an xsl:attribute element in stylesheet, or from
  * an attribute constructor in XQuery, in cases where the attribute name is not known
@@ -35,13 +34,13 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
   if (namespace != null) namespaceOp = new Operand(this, namespace, OperandRole.SINGLE_ATOMIC)
   setSchemaType(schemaType)
   setValidationAction(validAction)
-  setOptions(ReceiverOption.NONE)
+  options = ReceiverOption.NONE
 
   /**
    * Indicate that two attributes with the same name are not acceptable.
    * (This option is set in XQuery, but not in XSLT)
    */
-  override def setRejectDuplicates() = setOptions(getOptions | ReceiverOption.REJECT_DUPLICATES)
+  override def setRejectDuplicates() = options = options | ReceiverOption.REJECT_DUPLICATES
 
   /**
    * Get the name of this instruction

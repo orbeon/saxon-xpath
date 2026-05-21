@@ -13,8 +13,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   extends Expression with BindingReference {
@@ -31,7 +30,6 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   var staticType: SequenceType = null
   var constantValue: GroundedValue = null
   var flattened: Boolean = false
-  @BooleanBeanProperty
   var inLoop: Boolean = false
   var filtered: Boolean = false
 
@@ -276,23 +274,23 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
         if (binding.isInstanceOf[LocalParam] &&
           binding
             .asInstanceOf[LocalParam]
-            .getParentExpression
+            .parentExpression
             .isInstanceOf[LocalParamBlock]) {
           val block = binding
             .asInstanceOf[LocalParam]
-            .getParentExpression
+            .parentExpression
             .asInstanceOf[LocalParamBlock]
-          return block.getParentExpression
+          return block.parentExpression
         } else {
           return expression
         }
       case _                      =>
     }
-    var parent = getParentExpression
+    var parent = parentExpression
     while (parent != null) {
       if (parent.hasVariableBinding(binding))
         return parent
-      parent = parent.getParentExpression
+      parent = parent.parentExpression
     }
     null
   }

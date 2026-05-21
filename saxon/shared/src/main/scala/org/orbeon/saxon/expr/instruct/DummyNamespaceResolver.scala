@@ -12,7 +12,6 @@ import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.om.NamespaceResolver
 import org.orbeon.saxon.tree.jiter.PairIterator
 
-
 /**
   * A dummy namespace resolver used when validating QName-valued attributes written to
   * the result tree. The namespace node might be created after the initial validation

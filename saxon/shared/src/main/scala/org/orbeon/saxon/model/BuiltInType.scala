@@ -11,7 +11,6 @@ import java.util.{HashMap, Map}
 import org.orbeon.saxon.om.StandardNames
 import org.orbeon.saxon.z.IntHashMap
 
-
 /**
   * This non-instantiable class acts as a register of Schema objects containing all the built-in types:
   * that is, the types defined in the "xs" namespace.

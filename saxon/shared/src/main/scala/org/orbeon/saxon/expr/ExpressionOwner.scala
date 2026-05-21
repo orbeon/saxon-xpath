@@ -11,7 +11,6 @@
   */
 package org.orbeon.saxon.expr
 
-
 trait ExpressionOwner {
   def getChildExpression: Expression
   def setChildExpression(expr: Expression): Unit

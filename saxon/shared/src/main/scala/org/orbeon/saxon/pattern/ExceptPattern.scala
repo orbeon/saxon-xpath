@@ -21,9 +21,6 @@ import java.util.HashSet
 
 import java.util.Set
 
-
-
-
 class ExceptPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
 
   /**

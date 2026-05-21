@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.model.TypeHierarchy
 
-
-
-
 /**
   * This interface is implemented by expressions that returns a boolean value, and returns an expression
   * whose result is the negated boolean value

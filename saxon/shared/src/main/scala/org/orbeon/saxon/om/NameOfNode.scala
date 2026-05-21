@@ -5,9 +5,6 @@ import org.orbeon.saxon.tree.wrapper.AbstractVirtualNode
 
 import NameOfNode._
 
-
-
-
 object NameOfNode {
 
   def makeName(node: NodeInfo): NodeName =

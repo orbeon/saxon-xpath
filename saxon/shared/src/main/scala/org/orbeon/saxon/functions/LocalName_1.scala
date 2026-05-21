@@ -14,7 +14,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import org.orbeon.saxon.value.StringValue
 
-
 class LocalName_1 extends ScalarSystemFunction {
 
   override def evaluate(item: Item, context: XPathContext): AtomicValue =

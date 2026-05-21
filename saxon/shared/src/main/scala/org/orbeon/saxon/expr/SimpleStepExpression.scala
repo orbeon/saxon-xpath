@@ -14,7 +14,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.EmptyIterator
 import org.orbeon.saxon.value.SequenceType
 
-
 /**
  * A SimpleStepExpression is a special case of a SlashExpression in which the
  * start expression selects a single item (or nothing), and the step expression is
@@ -48,7 +47,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
     if (selectType == ErrorType)
       return Literal.makeEmptySequence
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(selectType, maybeUndefined = false)
-    cit.setContextSettingExpression(getStart)
+    cit.contextSettingExpression = getStart
     getRhs.typeCheck(visitor, cit)
     if (! getStep.isInstanceOf[AxisExpression]) {
       if (Literal.isEmptySequence(getStep))
@@ -57,7 +56,7 @@ class SimpleStepExpression(start: Expression, step: Expression)
       ExpressionTool.copyLocationInfo(this, se)
       return se
     }
-    if (getStart.isInstanceOf[ContextItemExpression] && AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].getAxis))
+    if (getStart.isInstanceOf[ContextItemExpression] && AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].axis))
       return getStep
     this
   }

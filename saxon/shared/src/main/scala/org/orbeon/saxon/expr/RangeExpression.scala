@@ -25,9 +25,6 @@ import org.orbeon.saxon.value.IntegerValue
 
 import org.orbeon.saxon.value.SequenceType
 
-
-
-
 class RangeExpression(start: Expression, end: Expression)
     extends BinaryExpression(start, Token.TO, end) {
 

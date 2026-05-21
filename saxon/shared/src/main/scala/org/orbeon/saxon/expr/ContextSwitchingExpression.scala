@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.expr
 
-
 /**
   * Interface implemented by expressions that switch the context, for example A/B or A[B]
   */

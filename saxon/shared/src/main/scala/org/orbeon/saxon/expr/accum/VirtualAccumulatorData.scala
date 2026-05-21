@@ -9,9 +9,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.tree.wrapper.VirtualCopy
 
-
-
-
 /**
   * Holds the values of an accumulator function for a virtual copy of a document (where the accumulator values
   * are copies of those on the underlying document)

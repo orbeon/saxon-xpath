@@ -22,7 +22,6 @@ import org.orbeon.saxon.expr.Expression._
 
 import scala.jdk.CollectionConverters._
 
-
 /**
  * A ItemChecker implements the item type checking of "treat as": that is,
  * it returns the supplied sequence, checking that all its items are of the correct type

@@ -5,7 +5,6 @@ import java.util.function.Consumer
 
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 
-
 trait UnfailingIterator extends SequenceIterator {
 
   def next(): Item

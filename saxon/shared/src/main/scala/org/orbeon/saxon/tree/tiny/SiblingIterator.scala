@@ -11,7 +11,6 @@ import org.orbeon.saxon.z.IntSetPredicate
 
 import java.util.function.{IntPredicate, Predicate}
 
-
 class SiblingIterator(
   private var tree        : TinyTree,
   private var node        : TinyNodeImpl,

@@ -80,7 +80,7 @@ object ParseXml {
         for (e <- retainedErrors.asScala) {
           wrappedErrors.add(new ObjectValue(e))
         }
-        xe.setErrorObject(SequenceExtent.makeSequenceExtent(wrappedErrors))
+        xe.errorObject = SequenceExtent.makeSequenceExtent(wrappedErrors)
       }
     }
 
@@ -122,7 +122,7 @@ class ParseXml extends SystemFunction {
       if (pd.isInstanceOf[StylesheetPackage]) {
         options.setSpaceStrippingRule(
           pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
-        if (pd.asInstanceOf[StylesheetPackage].isStripsTypeAnnotations) {
+        if (pd.asInstanceOf[StylesheetPackage].stripsTypeAnnotations) {
           s = config.getAnnotationStripper(s)
         }
       } else {

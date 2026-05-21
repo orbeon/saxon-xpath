@@ -10,7 +10,6 @@ import org.orbeon.saxon.om.Item
 
 import java.util.Comparator
 
-
 /**
   * A Comparer used for comparing nodes in document order, or items in merge order
   */

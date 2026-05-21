@@ -183,7 +183,7 @@ abstract class NodeImpl
   def getParent: NodeImpl = {
     if (parent.isInstanceOf[DocumentImpl] && parent
       .asInstanceOf[DocumentImpl]
-      .isImaginary) {
+      .imaginary) {
       return null
     }
     parent
@@ -367,7 +367,7 @@ abstract class NodeImpl
       parent.removeChild(this)
       val newRoot: DocumentImpl = new DocumentImpl()
       newRoot.setConfiguration(getConfiguration)
-      newRoot.setImaginary(true)
+      newRoot.imaginary = true
       parent = newRoot
     }
     index = -1

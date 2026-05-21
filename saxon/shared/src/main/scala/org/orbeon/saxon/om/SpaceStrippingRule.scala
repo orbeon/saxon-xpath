@@ -11,9 +11,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 trait SpaceStrippingRule {
 
   def isSpacePreserving(nodeName: NodeName, schemaType: SchemaType): Int

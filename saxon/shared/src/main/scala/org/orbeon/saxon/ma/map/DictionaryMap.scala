@@ -9,7 +9,6 @@ import java.util._
 
 import scala.jdk.CollectionConverters._
 
-
 class DictionaryMap extends MapItem {
 
   private val hashMap: HashMap[String, GroundedValue] = new HashMap

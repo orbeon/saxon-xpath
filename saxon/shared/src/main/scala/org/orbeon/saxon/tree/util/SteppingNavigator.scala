@@ -7,7 +7,6 @@ import org.orbeon.saxon.om.NodeInfo
 import org.orbeon.saxon.pattern._
 import org.orbeon.saxon.tree.iter.AxisIterator
 
-
 /**
  * The SteppingNavigator is a utility class containing methods to assist with navigating a tree whose nodes
  * implement the `SteppingNode` interface

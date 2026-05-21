@@ -14,7 +14,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import java.util.{ArrayList, Arrays}
 
-
 /**
   * Implements a xsl:next-iteration instruction within the body of xsl:iterate
   */

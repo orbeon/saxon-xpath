@@ -13,9 +13,6 @@ import org.orbeon.saxon.value.BooleanValue
 
 import org.orbeon.saxon.value.StringValue
 
-
-
-
 class UnparsedTextAvailable extends UnparsedTextFunction with Callable {
 
   /**

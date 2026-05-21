@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr.flwor
 
 import org.orbeon.saxon.expr.XPathContext
 
-
-
-
 /**
   * The "singularity" tuple stream delivers a single empty tuple. It is the base tuple stream
   * for the outermost for/let clause in a FLWOR expression

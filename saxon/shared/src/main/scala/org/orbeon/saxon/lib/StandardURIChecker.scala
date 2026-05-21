@@ -14,7 +14,6 @@ import org.orbeon.saxon.functions.IriToUri
 import org.orbeon.saxon.lib.StandardURIChecker._
 import org.orbeon.saxon.value.Whitespace
 
-
 object StandardURIChecker {
 
   private val THE_INSTANCE: StandardURIChecker = new StandardURIChecker()

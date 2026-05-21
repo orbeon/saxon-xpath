@@ -9,9 +9,6 @@ import java.util.HashMap
 
 import java.util.Map
 
-
-
-
 /**
   * The History object is used to avoid backtracking too far. In particular, when a greedy repeat
   * operator allows zero repetitions (something we try to optimize away, but it isn't always possible,

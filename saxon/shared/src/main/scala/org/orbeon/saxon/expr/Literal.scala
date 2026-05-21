@@ -48,7 +48,7 @@ object Literal {
         out.startElement("node")
         val nodeKind: Int = nodeInfo.getNodeKind
         out.emitAttribute("kind", nodeKind.toString)
-        if (out.getOptions.asInstanceOf[ExpressionPresenter.ExportOptions].explaining) {
+        if (out.options.asInstanceOf[ExpressionPresenter.ExportOptions].explaining) {
           val name: String = nodeInfo.getDisplayName
           if (name.nonEmpty)
             out.emitAttribute("name", name)
@@ -96,7 +96,7 @@ object Literal {
       case function: Function =>
         function.`export`(out)
       case externalObject: ExternalObject[_] =>
-        if (out.getOptions
+        if (out.options
           .asInstanceOf[ExpressionPresenter.ExportOptions]
           .explaining) {
           out.startElement("externalObject")
@@ -121,7 +121,7 @@ object Literal {
   }
 
   def exportAtomicValue(value: AtomicValue, out: ExpressionPresenter): Unit = {
-    if ("JS" == out.getOptions
+    if ("JS" == out.options
       .asInstanceOf[ExpressionPresenter.ExportOptions]
       .target) {
       value.checkValidInJavascript()

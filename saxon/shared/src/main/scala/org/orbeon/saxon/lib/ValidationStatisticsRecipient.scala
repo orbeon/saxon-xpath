@@ -7,9 +7,6 @@ import org.orbeon.saxon.s9api.SaxonApiException
 
 import java.util.Map
 
-
-
-
 /**
   * Defines a class that is notified of validation statistics at the end of a validation episode
   */

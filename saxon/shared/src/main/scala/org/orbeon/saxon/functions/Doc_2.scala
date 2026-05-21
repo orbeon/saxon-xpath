@@ -102,7 +102,7 @@ class Doc_2 extends SystemFunction {
     value = checkedOptions.get("accumulators")
     if (value != null) {
       val reg: AccumulatorRegistry =
-        getRetainedStaticContext.getPackageData.getAccumulatorRegistry
+        getRetainedStaticContext.getPackageData.accumulatorRegistry
       val accumulators: Set[Accumulator] = new HashSet[Accumulator]()
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
@@ -118,8 +118,7 @@ class Doc_2 extends SystemFunction {
     }
     value = checkedOptions.get("use-xsi-schema-location")
     if (value != null) {
-      result.setUseXsiSchemaLocation(
-        value.head.asInstanceOf[BooleanValue].getBooleanValue)
+      result.useXsiSchemaLocation = value.head.asInstanceOf[BooleanValue].getBooleanValue
     }
     result
   }

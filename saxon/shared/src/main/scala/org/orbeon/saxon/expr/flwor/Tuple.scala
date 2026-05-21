@@ -5,9 +5,6 @@ import org.orbeon.saxon.om.Sequence
 
 import org.orbeon.saxon.value.ObjectValue
 
-
-
-
 /**
   * A tuple, as it appears in an XQuery tuple stream handled by extended FLWOR expressions.
   */

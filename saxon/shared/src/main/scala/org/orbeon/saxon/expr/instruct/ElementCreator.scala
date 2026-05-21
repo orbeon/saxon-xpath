@@ -169,7 +169,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
         else Untyped.getInstance
       val elemOut: Receiver = outPutter
       if (!preservingTypes) {
-        val options: ParseOptions = new ParseOptions(getValidationOptions)
+        val options: ParseOptions = new ParseOptions(validationOptions)
         options.setTopLevelElement(elemName.getStructuredQName)
         context.getConfiguration.prepareValidationReporting(context, options)
         val validator: Receiver = context.getConfiguration.getElementValidator(

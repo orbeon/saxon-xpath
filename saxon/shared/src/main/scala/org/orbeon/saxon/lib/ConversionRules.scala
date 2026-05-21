@@ -11,9 +11,6 @@ import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{NotationSet, StandardNames}
 import org.orbeon.saxon.value.StringToDouble11
 
-import scala.beans.BooleanBeanProperty
-
-
 /**
  * This class defines a set of rules for converting between different atomic types. It handles the variations
  * that arise between different versions of the W3C specifications, for example the changes in Name syntax
@@ -44,7 +41,6 @@ class ConversionRules {
   private var notationSet: NotationSet = _
   private var uriChecker: URIChecker = _
 
-  @BooleanBeanProperty
   var allowYearZero: Boolean = true
 
   // may be null

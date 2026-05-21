@@ -9,9 +9,6 @@ import org.orbeon.saxon.value.AtomicValue
 
 import org.orbeon.saxon.value.NumericValue
 
-
-
-
 class Floor extends ScalarSystemFunction {
 
   override def evaluate(arg: Item, context: XPathContext): AtomicValue =

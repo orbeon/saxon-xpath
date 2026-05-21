@@ -54,7 +54,7 @@ class ApplyFn extends SystemFunction {
     val fnType = args(0).getItemType
     fnType match {
       case mapType: MapType =>
-        mapType.getValueType.getPrimaryType
+        mapType.valueType.getPrimaryType
       case itemType: ArrayItemType =>
         itemType.getMemberType.getPrimaryType
       case itemType: FunctionItemType =>

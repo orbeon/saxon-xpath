@@ -7,7 +7,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.utils.Configuration
 
-
 abstract class UnaryExpression(p0: Expression) extends Expression {
 
   val operand: Operand = new Operand(this, p0, getOperandRole)

@@ -15,9 +15,6 @@ import java.util.List
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class RawResult extends Result {
 
   @BeanProperty

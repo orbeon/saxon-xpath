@@ -5,9 +5,6 @@ import NodeOverNodeInfo._
 
 import org.w3c.dom.ProcessingInstruction
 
-
-
-
 class PIOverNodeInfo extends NodeOverNodeInfo with ProcessingInstruction {
 
   /**

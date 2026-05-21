@@ -13,9 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import java.util.Objects
 
-
-
-
 class SaplingComment(private var value: String) extends SaplingNode {
 
   Objects.requireNonNull(value)

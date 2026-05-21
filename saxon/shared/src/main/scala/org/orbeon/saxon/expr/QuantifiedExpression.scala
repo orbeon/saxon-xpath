@@ -10,7 +10,6 @@ import org.orbeon.saxon.value.{BooleanValue, SequenceType}
 
 import scala.beans.BeanProperty
 
-
 class QuantifiedExpression extends Assignation {
 
   @BeanProperty
@@ -118,7 +117,7 @@ class QuantifiedExpression extends Assignation {
         }
       case _                =>
     }
-    if (visitor.isOptimizeForStreaming) {
+    if (visitor.optimizeForStreaming) {
       val e3 = visitor
         .obtainOptimizer()
         .optimizeQuantifiedExpressionForStreaming(this)

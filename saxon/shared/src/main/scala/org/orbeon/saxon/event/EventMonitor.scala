@@ -13,9 +13,6 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class EventMonitor(private var next: Outputter) extends Outputter {
 
   private var written: Boolean = false

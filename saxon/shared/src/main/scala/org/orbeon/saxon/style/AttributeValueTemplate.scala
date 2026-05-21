@@ -17,7 +17,6 @@ import org.orbeon.saxon.value.{Cardinality, IntegerValue, StringValue}
 
 import scala.util.control.Breaks.{break, breakable}
 
-
 /**
  * This class represents an attribute value template. The class allows an AVT to be parsed, and
  * can construct an Expression that returns the effective value of the AVT.

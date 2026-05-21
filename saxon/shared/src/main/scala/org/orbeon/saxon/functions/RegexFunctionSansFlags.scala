@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.{Expression, StringLiteral, XPathContext}
 import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.value.StringValue
 
-
 class RegexFunctionSansFlags extends SystemFunction {
 
   private def addFlagsArgument(): SystemFunction = {

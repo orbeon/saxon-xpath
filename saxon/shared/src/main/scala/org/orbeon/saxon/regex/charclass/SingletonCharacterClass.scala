@@ -5,12 +5,7 @@ import org.orbeon.saxon.z.IntSet
 
 import org.orbeon.saxon.z.IntSingletonSet
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-
-
-
-class SingletonCharacterClass(@BeanProperty var codepoint: Int)
+class SingletonCharacterClass(var codepoint: Int)
     extends CharacterClass {
 
   def test(value: Int): Boolean = value == codepoint

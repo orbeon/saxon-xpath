@@ -9,7 +9,6 @@ package org.orbeon.saxon.om
 
 import scala.beans.BeanProperty
 
-
 object FingerprintedQName {
 
   def fromClarkName(expandedName: String): FingerprintedQName = {

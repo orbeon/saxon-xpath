@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.Expression
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * General action class which can be used to process all nodes on an expression tree
   */

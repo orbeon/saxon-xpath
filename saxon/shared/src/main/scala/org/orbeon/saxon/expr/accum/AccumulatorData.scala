@@ -43,22 +43,22 @@ import scala.jdk.CollectionConverters._
 
 object AccumulatorData {
 
-  private class Visit(var node: NodeInfo, var isPostDescent: Boolean)
+  private class Visit(var node: NodeInfo, var postDescent: Boolean)
     extends Comparable[Visit] {
 
     def compareTo(other: Visit): Int = {
       val relation: Int = Navigator.comparePosition(node, other.node)
       relation match {
         case AxisInfo.SELF =>
-          if (isPostDescent == other.isPostDescent) {
+          if (postDescent == other.postDescent) {
             0
           } else {
-            if (isPostDescent) +1 else -1
+            if (postDescent) +1 else -1
           }
         case AxisInfo.PRECEDING => -1
         case AxisInfo.FOLLOWING => +1
-        case AxisInfo.ANCESTOR => if (isPostDescent) +1 else -1
-        case AxisInfo.DESCENDANT => if (other.isPostDescent) -1 else +1
+        case AxisInfo.ANCESTOR => if (postDescent) +1 else -1
+        case AxisInfo.DESCENDANT => if (other.postDescent) -1 else +1
         case _ => throw new IllegalStateException
 
       }
@@ -82,14 +82,14 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
   def buildIndex(doc: NodeInfo, context: XPathContext): Unit = {
     if (building) {
       throw new XPathException(
-        "Accumulator " + accumulator.getAccumulatorName.getDisplayName +
+        "Accumulator " + accumulator.accumulatorName.getDisplayName +
           " requires access to its own value",
         "XTDE3400")
     }
     building = true
-    val initialValue: Expression = accumulator.getInitialValueExpression
+    val initialValue: Expression = accumulator.initialValueExpression
     val c2: XPathContextMajor = context.newContext()
-    val sf: SlotManager = accumulator.getSlotManagerForInitialValueExpression
+    val sf: SlotManager = accumulator.slotManagerForInitialValueExpression
     val slots: Array[Sequence] = Array.ofDim[Sequence](sf.getNumberOfVariables)
     c2.setStackFrame(sf, slots)
     c2.setCurrentIterator(new ManualIterator(doc))
@@ -109,9 +109,9 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
       context.getCurrentIterator
         .asInstanceOf[ManualIterator]
         .setContextItem(node)
-      var rule: Rule = accumulator.getPreDescentRules.getRule(node, context)
+      var rule: Rule = accumulator.preDescentRules.getRule(node, context)
       if (rule != null) {
-        seq = processRule(rule, node, isPostDescent = false, seq, context)
+        seq = processRule(rule, node, postDescent = false, seq, context)
         logChange(node, seq, context, " BEFORE ")
       }
       for (kid <- node.children) {
@@ -120,9 +120,9 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
       context.getCurrentIterator
         .asInstanceOf[ManualIterator]
         .setContextItem(node)
-      rule = accumulator.getPostDescentRules.getRule(node, context)
+      rule = accumulator.postDescentRules.getRule(node, context)
       if (rule != null) {
-        seq = processRule(rule, node, isPostDescent = true, seq, context)
+        seq = processRule(rule, node, postDescent = true, seq, context)
         logChange(node, seq, context, " AFTER ")
       }
       seq
@@ -144,7 +144,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
                         phase: String): Unit = {
     if (accumulator.isTracing) {
       context.getConfiguration.getLogger.info(
-        accumulator.getAccumulatorName.getDisplayName + phase +
+        accumulator.accumulatorName.getDisplayName + phase +
           Navigator.getPath(node) +
           ": " +
           Err.depictSequence(value))
@@ -153,12 +153,12 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
 
   private def processRule(rule: Rule,
                           node: NodeInfo,
-                          isPostDescent: Boolean,
+                          postDescent: Boolean,
                           value: Sequence,
                           context: XPathContext): Sequence = {
     var seq = value
     val target: AccumulatorRule = rule.getAction.asInstanceOf[AccumulatorRule]
-    val delta: Expression = target.getNewValueExpression
+    val delta: Expression = target.newValueExpression
     val c2: XPathContextMajor = context.newCleanContext()
     val controller: Controller = c2.getController
     assert(controller != null)
@@ -166,10 +166,10 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     c2.setCurrentIterator(initialNode)
     c2.openStackFrame(target.getStackFrameMap)
     c2.setLocalVariable(0, seq)
-    c2.setCurrentComponent(accumulator.getDeclaringComponent)
+    c2.setCurrentComponent(accumulator.declaringComponent)
     c2.setTemporaryOutputState(StandardNames.XSL_ACCUMULATOR_RULE)
     seq = Evaluator.EAGER_SEQUENCE.evaluate(delta, c2)
-    values.add(new DataPoint(new Visit(node, isPostDescent), seq))
+    values.add(new DataPoint(new Visit(node, postDescent), seq))
     seq
   }
 

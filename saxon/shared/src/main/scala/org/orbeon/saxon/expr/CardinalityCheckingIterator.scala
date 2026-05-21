@@ -13,7 +13,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.ArrayIterator
 import org.orbeon.saxon.value.Cardinality
 
-
 /**
  * CardinalityCheckingIterator returns the items in an underlying sequence
  * unchanged, but checks that the number of items conforms to the required

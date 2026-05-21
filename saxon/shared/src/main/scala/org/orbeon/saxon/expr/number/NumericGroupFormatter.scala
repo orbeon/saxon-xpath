@@ -9,7 +9,6 @@ package org.orbeon.saxon.expr.number
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 /**
  * A NumericGroupFormatter is responsible for insertion of grouping separators
  * into a formatted number (for example, reformatting "1234" as "1,234").

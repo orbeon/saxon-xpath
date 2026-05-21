@@ -17,7 +17,6 @@ import java.{util => ju}
 
 import scala.jdk.CollectionConverters._
 
-
 class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
 
   private var level: Int = 0

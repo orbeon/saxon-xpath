@@ -68,19 +68,15 @@ class UserFunction
   @BeanProperty
   var parameterDefinitions: Array[UserFunctionParameter] = _
   private var resultType: SequenceType = _
-  @BeanProperty
   var declaredResultType: SequenceType = _
   var evaluator: Evaluator = null
   var isUpdating: Boolean = false
   private var inlineable: Int = -1
   private var inliningCount: Int = 0
-  @BooleanBeanProperty
   var overrideExtensionFunction: Boolean = true
   @BeanProperty
   var annotations: AnnotationList = AnnotationList.EMPTY
-  @BeanProperty
   var declaredStreamability: FunctionStreamability.FunctionStreamability = FunctionStreamability.UNCLASSIFIED
-  @BeanProperty
   var determinism: Determinism.Determinism = Determinism.PROACTIVE
 
   private var refCount: Int = 0
@@ -183,9 +179,9 @@ class UserFunction
       return null
     if (body.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) || tailCalls)
       return false
-    val component = getDeclaringComponent
+    val component = declaringComponent
     if (component != null) {
-      val visibility = getDeclaringComponent.getVisibility
+      val visibility = declaringComponent.getVisibility
       if (visibility == Visibility.PRIVATE || visibility == Visibility.FINAL) {
         if (inlineable < 0) {
           null
@@ -286,7 +282,7 @@ class UserFunction
     val c2: XPathContextMajor = oldContext.newCleanContext()
     c2.setTemporaryOutputState(StandardNames.XSL_FUNCTION)
     c2.setCurrentOutputUri(null)
-    c2.setCurrentComponent(getDeclaringComponent)
+    c2.setCurrentComponent(declaringComponent)
     c2.setOrigin(originator)
     c2
   }
@@ -301,7 +297,6 @@ class UserFunction
       evaluator.evaluate(getBody, c2)
     catch {
       case xpe: XPathException =>
-
 
         xpe.maybeSetLocation(getLocation)
         xpe.maybeSetContext(c2)
@@ -368,7 +363,7 @@ class UserFunction
 
     }
     presenter.emitAttribute("flags", flags)
-    presenter.emitAttribute("as", getDeclaredResultType.toAlphaCode)
+    presenter.emitAttribute("as", declaredResultType.toAlphaCode)
     presenter.emitAttribute("slots",
       getStackFrameMap.getNumberOfVariables.toString)
     for (p <- parameterDefinitions) {
@@ -384,7 +379,7 @@ class UserFunction
 
   override def isExportable: Boolean =
     refCount > 0 ||
-      (getDeclaredVisibility != null && getDeclaredVisibility != Visibility.PRIVATE) ||
+      (declaredVisibility != null && declaredVisibility != Visibility.PRIVATE) ||
       getPackageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
 
   def isTrustedResultType: Boolean = false

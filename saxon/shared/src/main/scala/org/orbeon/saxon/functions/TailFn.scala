@@ -15,9 +15,6 @@ import org.orbeon.saxon.om.SequenceTool
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 class TailFn extends SystemFunction {
 
   /**

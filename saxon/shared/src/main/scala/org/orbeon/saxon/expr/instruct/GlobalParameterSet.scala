@@ -25,7 +25,6 @@ import java.util.Collection
 
 import java.util.HashMap
 
-
 class GlobalParameterSet {
 
   private var params: HashMap[StructuredQName, GroundedValue] = new HashMap(10)

@@ -22,7 +22,6 @@ import scala.util.control.Breaks._
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 object ContentHandlerProxy {
 
   private val MARKER: String = "##"

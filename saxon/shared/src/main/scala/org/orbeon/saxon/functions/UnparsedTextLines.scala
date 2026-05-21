@@ -15,7 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.EmptyIterator
 import org.orbeon.saxon.value.StringValue
 
-
 class UnparsedTextLines extends UnparsedTextFunction with Callable {
 
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {

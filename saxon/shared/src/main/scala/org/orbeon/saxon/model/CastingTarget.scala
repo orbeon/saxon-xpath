@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.model
 
-
 /**
   * This marker interface represents a type that can be used as the target of a cast or castable
   * operation, that is, an atomic type, list type, or plain union type

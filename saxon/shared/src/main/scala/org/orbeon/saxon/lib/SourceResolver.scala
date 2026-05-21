@@ -7,9 +7,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import javax.xml.transform.Source
 
-
-
-
 trait SourceResolver {
 
   /*@Nullable*/

@@ -14,7 +14,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import java.util.{Iterator, List}
 import scala.beans.BeanProperty
 
-
 /**
  * A sequence value implemented extensionally. That is, this class represents a sequence
  * by allocating memory to each item in the sequence.

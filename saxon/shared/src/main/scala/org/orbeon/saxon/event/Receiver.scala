@@ -13,7 +13,6 @@ import org.orbeon.saxon.s9api.Location
 
 import javax.xml.transform.Result
 
-
 /**
   * Receiver: This interface represents a recipient of XML tree-walking (push) events. It is
   * based on SAX2's ContentHandler, but adapted to handle additional events. Namespaces and

@@ -9,9 +9,6 @@ import java.util.Collections
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
-
-
 class UndeclaredVariable extends GlobalVariable {
 
   def transferReferences(`var`: GlobalVariable): Unit = {

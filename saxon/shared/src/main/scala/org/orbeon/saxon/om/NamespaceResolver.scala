@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import java.util.Iterator
 
-
 /**
   * Abstract class that supports lookup of a lexical QName to get the expanded QName.
   */

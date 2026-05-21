@@ -3,9 +3,6 @@ package org.orbeon.saxon.lib
 
 import java.util.Properties
 
-
-
-
 /**
   * Interface allowing localization modules for different languages to be dynamically loaded
   */

@@ -9,7 +9,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import scala.jdk.CollectionConverters._
 
-
 object LargeAttributeMap {
 
   private class AttributeInfoLink {

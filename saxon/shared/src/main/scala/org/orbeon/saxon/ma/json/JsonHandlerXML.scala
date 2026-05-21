@@ -21,7 +21,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.InputSource
 
-
 object JsonHandlerXML {
   private val SCHEMA_URI: String = "http://www.w3.org/2005/xpath-functions.xsd"
   private val JSON_NS: String = NamespaceConstant.FN

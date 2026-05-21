@@ -40,7 +40,6 @@ import java.util.List
 
 import scala.util.control.Breaks._
 
-
 class NumberSequenceFormatter(value: Expression,
                               format: Expression,
                               groupSize: Expression,

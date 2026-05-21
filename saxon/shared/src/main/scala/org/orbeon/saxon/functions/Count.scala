@@ -11,7 +11,6 @@ import org.orbeon.saxon.functions.Count._
 import org.orbeon.saxon.om.{GroundedValue, Sequence, SequenceIterator}
 import org.orbeon.saxon.value.{Int64Value, IntegerValue}
 
-
 object Count {
 
   def count(iter: SequenceIterator): Int =

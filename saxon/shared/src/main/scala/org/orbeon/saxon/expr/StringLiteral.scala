@@ -10,7 +10,6 @@ import org.orbeon.saxon.expr.parser.{ExpressionTool, RebindingMap}
 import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.value.StringValue
 
-
 /**
   * Subclass of Literal used specifically for string literals, as this is a common case
   */

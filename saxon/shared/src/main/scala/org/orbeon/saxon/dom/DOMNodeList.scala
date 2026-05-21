@@ -5,9 +5,6 @@ import org.w3c.dom.Node
 
 import java.util.List
 
-
-
-
 class DOMNodeList(private var sequence: List[Node])
     extends org.w3c.dom.NodeList {
 

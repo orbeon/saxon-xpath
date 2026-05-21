@@ -21,7 +21,6 @@ import org.orbeon.saxon.tree.iter.SingletonIterator
 
 import SingletonIntersectExpression._
 
-
 object SingletonIntersectExpression {
 
   def containsNode(iter: SequenceIterator, m: NodeInfo): Boolean = {

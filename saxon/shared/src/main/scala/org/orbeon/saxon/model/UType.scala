@@ -10,7 +10,6 @@ import org.orbeon.saxon.tree.iter.UnfailingIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.{AtomicValue, ObjectValue}
 
-
 object UType {
 
   val VOID                 : UType = new UType(0)
@@ -231,7 +230,7 @@ class UType(private var bits: Int) {
 
   def decompose: ju.Set[PrimitiveUType] = {
     val result = new ju.HashSet[PrimitiveUType]()
-    for (p <- PrimitiveUType.values if (bits & (1 << p.getBit)) != 0)
+    for (p <- PrimitiveUType.values if (bits & (1 << p.bit)) != 0)
       result.add(p)
     result
   }

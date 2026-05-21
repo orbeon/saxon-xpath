@@ -19,7 +19,6 @@ import org.orbeon.saxon.trans.XPathException
 
 import Expression._
 
-
 /**
   * This class performs part of the processing in "constructing simple content":
   * it takes an input sequence and eliminates empty text nodes

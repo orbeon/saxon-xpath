@@ -8,7 +8,6 @@ package org.orbeon.saxon.event
 
 import org.orbeon.saxon.om.NodeInfo
 
-
 /**
   * A CopyInformee is an agent that receives extra information while a tree is being copied. Specifically,
   * each time an element node is copied to the receiver, before calling the startElement() method, the copying

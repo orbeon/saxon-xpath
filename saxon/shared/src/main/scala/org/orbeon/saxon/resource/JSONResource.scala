@@ -25,9 +25,6 @@ import java.util.Map
 
 import JSONResource._
 
-
-
-
 object JSONResource {
 
   val FACTORY: ResourceFactory = (config, details) => new JSONResource(details)

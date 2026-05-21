@@ -10,7 +10,6 @@ import javax.xml.transform.Source
 
 import scala.beans.BeanProperty
 
-
 /**
   * A PullSource is a JAXP Source that encapsulates a PullProvider - that is, an object
   * that supplies an XML document as a sequence of events that are read under the control

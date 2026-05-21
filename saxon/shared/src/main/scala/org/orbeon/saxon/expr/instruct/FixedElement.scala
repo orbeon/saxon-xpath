@@ -32,7 +32,7 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.util.function.BiConsumer
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -184,7 +184,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           Token.INTERSECT,
           new ContentTypeTest(Type.ELEMENT, schTyp, config, false))
         if (xsiType != null || ! decl.hasTypeAlternatives) {
-          instr.getValidationOptions.setTopLevelType(schTyp)
+          instr.validationOptions.setTopLevelType(schTyp)
           try schTyp.analyzeContentExpression(content, Type.ELEMENT)
           catch {
             case e: XPathException => {
@@ -219,7 +219,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           itemType = new NameTest(Type.ELEMENT, fp, config.getNamePool)
         } else {
           schTyp = decl.getType
-          instr.getValidationOptions.setTopLevelType(schTyp)
+          instr.validationOptions.setTopLevelType(schTyp)
           itemType = new CombinedNodeTest(
             new NameTest(Type.ELEMENT, fp, config.getNamePool),
             Token.INTERSECT,
@@ -345,7 +345,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       throw err
     }
     if (whole) {
-      val parent: Expression = getParentExpression
+      val parent: Expression = parentExpression
       val block: Block = new Block(Array(this))
       parentType.analyzeContentExpression(block, Type.ELEMENT)
       this.parentExpression = parent

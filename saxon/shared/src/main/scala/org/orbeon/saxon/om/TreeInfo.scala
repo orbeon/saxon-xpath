@@ -11,7 +11,6 @@ import java.{util => ju}
 import javax.xml.transform.Source
 import org.orbeon.saxon.utils.Configuration
 
-
 /**
   * This interface represents information about a tree as a whole. The tree may or may not be rooted
   * at a document node. In some tree models, the interface is implemented by the object representing the

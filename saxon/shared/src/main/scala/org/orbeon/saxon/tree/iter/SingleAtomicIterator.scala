@@ -5,9 +5,6 @@ import org.orbeon.saxon.expr.LastPositionFinder
 
 import org.orbeon.saxon.value.AtomicValue
 
-
-
-
 class SingleAtomicIterator[T <: AtomicValue](value: T)
     extends SingletonIterator[T](value)
     with AtomicIterator[T]

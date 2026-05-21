@@ -13,7 +13,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 /**
   * The CommentStripper class is a filter that removes all comments and processing instructions.
   * It also concatenates text nodes that are split by comments and PIs. This follows the rules for

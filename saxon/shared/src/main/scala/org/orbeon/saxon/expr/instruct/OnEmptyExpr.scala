@@ -17,9 +17,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * A compiled xsl:on-empty instruction. The instruction
   * will always be a child of a ConditionalBlock.
@@ -83,7 +80,6 @@ class OnEmptyExpr /**
     getOperand.optimize(visitor, contextInfo)
     this
   }
-
 
   def copy(rebindings: RebindingMap): Expression =
     new OnEmptyExpr(getBaseExpression.copy(rebindings))

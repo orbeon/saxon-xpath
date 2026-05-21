@@ -16,7 +16,6 @@ import java.math.BigInteger
 import java.math.RoundingMode
 import java.util.regex.Pattern
 
-
 /**
  * An implementation class for decimal values other than integers
  *

@@ -8,7 +8,7 @@ import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.trans.{DecimalFormatManager, TypeAliasManager}
 import org.orbeon.saxon.utils.Configuration
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 class PackageData(var config: Configuration) {
 
@@ -16,16 +16,12 @@ class PackageData(var config: Configuration) {
   var hostLanguage: HostLanguage = _
   var isSchemaAware: Boolean = _
   private var decimalFormatManager: DecimalFormatManager = null
-  @BeanProperty
   var accumulatorRegistry: AccumulatorRegistry = null
   private var globalVariables: ju.List[GlobalVariable] = new ju.ArrayList()
-  @BeanProperty
   var globalSlotManager: SlotManager = config.makeSlotManager
-  @BeanProperty
   var localLicenseId: Int = -1
   @BeanProperty
   var targetEdition: String = config.getEditionCode
-  @BooleanBeanProperty
   var relocatable: Boolean = _
   private var typeAliasManager: TypeAliasManager = _
 

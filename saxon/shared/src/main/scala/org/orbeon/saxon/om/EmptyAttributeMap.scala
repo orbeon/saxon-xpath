@@ -8,7 +8,6 @@ package org.orbeon.saxon.om
 
 import java.{util => ju}
 
-
 /**
   * An implementation of AttributeMap representing an empty AttributeMap
   */

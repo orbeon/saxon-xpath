@@ -1,6 +1,5 @@
 package org.orbeon.saxon.expr.instruct
 
-
 import java.util._
 import java.util.function.BiConsumer
 import java.{lang => jl, util => ju}
@@ -87,7 +86,6 @@ class GlobalVariable
   private var indexed: Boolean = _
   var isPrivate: Boolean = false
   var isAssignable: Boolean = false
-  @BeanProperty
   var originalVariable: GlobalVariable = _
   var binderySlotNumber: Int = _
   var isRequiredParam: Boolean = _
@@ -326,8 +324,8 @@ class GlobalVariable
           var hasAccessToGlobalContext: Boolean = true
           /* if (exec.isInstanceOf[PreparedStylesheet]) { //PreparedStylesheet scala class does not exist
              hasAccessToGlobalContext = target == null ||
-               target.getDeclaringPackage ==
-                 exec.asInstanceOf[PreparedStylesheet].getTopLevelPackage //PreparedStylesheet scala class does not exist
+               target.declaringPackage ==
+                 exec.asInstanceOf[PreparedStylesheet].topLevelPackage //PreparedStylesheet scala class does not exist
            }*/
           val c2: XPathContextMajor = context.newCleanContext()
           c2.setOrigin(this)
@@ -453,8 +451,8 @@ class GlobalVariable
     presenter.emitAttribute("module", getSystemId)
     if (getStackFrameMap != null)
       presenter.emitAttribute("slots", getStackFrameMap.getNumberOfVariables.toString)
-    if (getDeclaringComponent != null) {
-      val vis: Visibility.Visibility = getDeclaringComponent.getVisibility
+    if (declaringComponent != null) {
+      val vis: Visibility.Visibility = declaringComponent.getVisibility
       if (vis != null)
         presenter.emitAttribute("visibility", vis.toString)
     }

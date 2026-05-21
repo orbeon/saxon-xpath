@@ -8,7 +8,6 @@ package org.orbeon.saxon.pull
 
 import org.orbeon.saxon.event.Receiver
 
-
 /**
   * This class copies a document by using the pull interface to read the input document,
   * and the push interface to write the output document.

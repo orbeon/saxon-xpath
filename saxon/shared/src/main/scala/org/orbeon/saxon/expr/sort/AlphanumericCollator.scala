@@ -8,7 +8,6 @@ import org.orbeon.saxon.lib.StringCollator
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
-
 object AlphanumericCollator {
   private val pattern: Pattern = Pattern.compile("\\d+")
   val PREFIX: String = "http://saxon.sf.net/collation/alphaNumeric?base="

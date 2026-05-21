@@ -1075,7 +1075,6 @@ object Navigator {
       }
     }
 
-
     @tailrec
     def next(): NodeInfo = {
       if (descendEnum != null) {

@@ -14,7 +14,6 @@ import GYearValue._
 import org.orbeon.saxon.value.CalendarValue.appendString
 import org.orbeon.saxon.value.GDateValue.setLexicalValue
 
-
 object GYearValue {
 
   var regex: Pattern =
@@ -31,7 +30,7 @@ object GYearValue {
     val tz: String = m.group(2)
     val date: String = base + "-01-01" + (if (tz == null) "" else tz)
     g.typeLabel = BuiltInAtomicType.G_YEAR
-    setLexicalValue(g, date, rules.isAllowYearZero)
+    setLexicalValue(g, date, rules.allowYearZero)
   }
 
 }

@@ -17,7 +17,6 @@ import org.orbeon.saxon.value.{AtomicValue, EmptySequence}
 import java.util.{ArrayList, HashMap, List}
 import scala.jdk.CollectionConverters._
 
-
 object GroupByClausePush {
 
   def addToGroup(

@@ -5,7 +5,6 @@
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.expr.Expression
@@ -13,7 +12,6 @@ import org.orbeon.saxon.lib.{ConversionRules, NamespaceConstant}
 import org.orbeon.saxon.model.SchemaComponent.ValidationStatus.{VALIDATED, ValidationStatus}
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.value.{UntypedAtomicValue, Whitespace}
-
 
 /**
   * This class has a singleton instance which represents the XML Schema built-in type xs:anySimpleType

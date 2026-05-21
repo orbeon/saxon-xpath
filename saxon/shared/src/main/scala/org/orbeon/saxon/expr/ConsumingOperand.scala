@@ -19,9 +19,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 
 import Expression._
 
-
-
-
 class ConsumingOperand(subExpression: Expression)
     extends UnaryExpression(subExpression) {
 

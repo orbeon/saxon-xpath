@@ -9,9 +9,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{AtomicValue, BooleanValue, Cardinality, SequenceType}
 
-import scala.beans.BeanProperty
-
-
 object ValueComparison {
 
   def compare(
@@ -63,7 +60,6 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
 
   private var comparer: AtomicComparer = _
 
-  @BeanProperty
   var resultWhenEmpty: BooleanValue = null
 
   private var needsRuntimeCheck: Boolean = _

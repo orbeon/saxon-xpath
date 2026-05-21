@@ -26,7 +26,6 @@ import org.orbeon.saxon.z._
 
 import scala.jdk.CollectionConverters._
 
-
 /**
  * Data for Regular expression character categories. The data is in an XML file derived from the Unicode
  * database (In Saxon 9.6, this is based on Unicode 6.2.0). Since Saxon 9.4,
@@ -68,7 +67,7 @@ object Categories {
         case _: InverseCharacterClass =>
           other.isDisjoint(this)
         case scClass: SingletonCharacterClass =>
-          ! test(scClass.getCodepoint)
+          ! test(scClass.codepoint)
         case _: IntSetCharacterClass =>
           val intSet = other.getIntSet
           if (intSet.size > 100)

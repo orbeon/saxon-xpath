@@ -9,9 +9,6 @@ import java.io.Reader
 
 import java.net.URI
 
-
-
-
 trait UnparsedTextURIResolver {
 
   /*@NotNull*/

@@ -7,9 +7,6 @@ import org.orbeon.saxon.om.Sequence
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * Represents the values of an accumulator whose evaluation has failed. The error is retained
   * until referenced using accumulator-before() or accumulator-after().

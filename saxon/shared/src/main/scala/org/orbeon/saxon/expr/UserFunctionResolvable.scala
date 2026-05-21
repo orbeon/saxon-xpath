@@ -3,9 +3,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.instruct.UserFunction
 
-
-
-
 /**
   * A reference to a function; typically a forwards reference to a user-defined function in XQuery
   * that has not yet been compiled.

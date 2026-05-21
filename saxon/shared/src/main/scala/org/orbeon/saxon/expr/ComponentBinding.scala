@@ -5,9 +5,6 @@ import org.orbeon.saxon.trans.SymbolicName
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 class ComponentBinding(name: SymbolicName, @BeanProperty var target: Component) {
 
   @BeanProperty

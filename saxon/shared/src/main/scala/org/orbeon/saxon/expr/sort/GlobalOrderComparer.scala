@@ -9,9 +9,6 @@ import GlobalOrderComparer._
 
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
-
-
-
 object GlobalOrderComparer {
 
   @BeanProperty

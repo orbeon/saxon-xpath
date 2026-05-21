@@ -23,7 +23,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   private var normalizer: Normalizer = _
   private var characterMap: CharacterMap = _
   private var characterSet: CharacterSet = _
-  private var isIndenting: Boolean = _
+  private var indenting: Boolean = _
   private var indentSpaces: Int = 2
   private var maxLineLength: Int = _
   private var first: Boolean = true
@@ -35,7 +35,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   def setOutputProperties(details: Properties): Unit = {
     this.outputProperties = details
     if ("yes" == details.getProperty(OutputKeys.INDENT))
-      isIndenting = true
+      indenting = true
     if ("yes" == details.getProperty(SaxonOutputKeys.UNFAILING))
       unfailing = true
     val max = details.getProperty(SaxonOutputKeys.LINE_LENGTH)
@@ -65,7 +65,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     emit('"')
     emit(escape(key))
     emit("\":")
-    if (isIndenting)
+    if (indenting)
       emit(" ")
     afterKey = true
   }
@@ -135,7 +135,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
     oneLinerStack ::= oneLiner
     emit(bracket)
     first = true
-    if (isIndenting) {
+    if (indenting) {
       if (oneLiner)
         emit(' ')
     }
@@ -144,7 +144,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   private def emitClose(bracket: Char, level: Int): Unit = {
     val oneLiner = oneLinerStack.head
     oneLinerStack = oneLinerStack.tail
-    if (isIndenting) {
+    if (indenting) {
       if (oneLiner)
         emit(' ')
       else
@@ -164,7 +164,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
 
     if (wasFirst && afterKey) {
       emit(' ')
-    } else if (isIndenting && !afterKey && level != 0) {
+    } else if (indenting && !afterKey && level != 0) {
       emit('\n')
       for (_ <- 0 until indentSpaces * (level + 1))
         emit(' ')

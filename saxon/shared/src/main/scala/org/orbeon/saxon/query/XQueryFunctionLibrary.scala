@@ -41,9 +41,6 @@ import java.util.List
 
 import XQueryFunctionLibrary._
 
-
-
-
 object XQueryFunctionLibrary {
 
   class UnresolvedCallable(var symbolicName: SymbolicName.F)

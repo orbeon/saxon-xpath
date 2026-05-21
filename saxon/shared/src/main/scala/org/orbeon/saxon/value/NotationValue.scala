@@ -5,7 +5,6 @@ import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.om.{Item, NameChecker, SequenceTool, StructuredQName}
 import org.orbeon.saxon.trans.XPathException
 
-
 class NotationValue(prefix: String,
                     uri: String,
                     localName: String,

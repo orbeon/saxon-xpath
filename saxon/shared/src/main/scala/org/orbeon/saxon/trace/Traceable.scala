@@ -11,7 +11,6 @@ import org.orbeon.saxon.om.StructuredQName
 
 import java.util.function.BiConsumer
 
-
 /**
   * A construct whose execution can be notified to a TraceListener. In practice this is either
   * an expression, or a component such as a function or template or global variable.

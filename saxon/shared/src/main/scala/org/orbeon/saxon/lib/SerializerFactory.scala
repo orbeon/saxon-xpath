@@ -23,7 +23,6 @@ import org.orbeon.saxon.value.BigDecimalValue
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
-
 /**
  * Helper class to construct a serialization pipeline for a given result destination
  * and a given set of output properties. The pipeline is represented by a Receiver object

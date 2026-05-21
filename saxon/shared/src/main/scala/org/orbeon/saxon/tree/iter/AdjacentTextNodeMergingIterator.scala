@@ -7,7 +7,6 @@ import org.orbeon.saxon.om.SequenceIterator.Property
 import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Orphan}
 
-
 class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
   extends LookaheadIterator {
 

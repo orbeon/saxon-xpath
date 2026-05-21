@@ -18,8 +18,7 @@ import org.orbeon.saxon.model.UType
 
 import ContextItemStaticInfo._
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
+import scala.beans.BeanProperty
 
 /**
   * A data structure that represents the required type of the context item, together
@@ -36,10 +35,8 @@ class ContextItemStaticInfo(@BeanProperty var itemType: ItemType,
 
   private val contextMaybeUndefined: Boolean = maybeUndefined
 
-  @BeanProperty
   var contextSettingExpression: Expression = _
 
-  @BooleanBeanProperty
   var parentless: Boolean = _
 
   def getContextItemUType: UType = itemType.getUType

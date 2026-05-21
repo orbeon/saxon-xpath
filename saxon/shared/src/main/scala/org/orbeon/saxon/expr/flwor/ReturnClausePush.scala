@@ -9,9 +9,6 @@ import org.orbeon.saxon.expr.XPathContext
 
 import org.orbeon.saxon.trans.XPathException
 
-
-
-
 /**
   * The class represents the final stage in a push-mode tuple pipeline. The previous stages
   * have stored the values corresponding to the current tuple in local variables on the
@@ -30,7 +27,7 @@ class ReturnClausePush(outputter: Outputter,
     * @param context the dynamic evaluation context
     */
   override def processTuple(context: XPathContext): Unit = {
-    returnExpr.process(getOutputter, context)
+    returnExpr.process(outputter, context)
   }
 
   /**
