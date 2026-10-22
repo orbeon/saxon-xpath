@@ -476,7 +476,7 @@ object FormatNumber {
       if ((numValue.isInstanceOf[DoubleValue] || numValue
         .isInstanceOf[FloatValue]) &&
         java.lang.Double.isInfinite(numValue.getDoubleValue)) {
-        minusSign + prefix + dfs.getInfinity + suffix
+        return minusSign + prefix + dfs.getInfinity + suffix
       }
       val sb = new FastStringBuffer(FastStringBuffer.C16)
       if (numValue.isInstanceOf[DoubleValue] || numValue.isInstanceOf[FloatValue]) {

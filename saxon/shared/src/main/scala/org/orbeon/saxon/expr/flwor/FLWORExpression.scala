@@ -316,7 +316,7 @@ class FLWORExpression extends Expression {
       if (expr1 == null || (expr1 eq this))
         return this
       resetLocalStaticProperties()
-      expr1.optimize(visitor, contextItemType)
+      return expr1.optimize(visitor, contextItemType)
     }
     val expr2 = rewriteWhereClause(visitor, contextItemType)
     if (expr2 != null && (expr2 ne this))

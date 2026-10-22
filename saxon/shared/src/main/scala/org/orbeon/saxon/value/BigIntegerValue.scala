@@ -55,7 +55,7 @@ object BigIntegerValue {
       val big: BigInteger = value.asBigInteger()
       if (big.compareTo(MAX_LONG) < 0 && big.compareTo(MIN_LONG) > 0) {
         val iv: Int64Value = new Int64Value(big.longValue)
-        iv.hashCode
+        return iv.hashCode
       }
       big.hashCode
     }

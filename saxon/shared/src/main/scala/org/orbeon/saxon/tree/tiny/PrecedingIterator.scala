@@ -14,10 +14,10 @@ class PrecedingIterator(private var doc: TinyTree,
   extends AxisIterator {
 
   private val tree: TinyTree = doc
-  private var current: TinyNodeImpl = node
+  private var current: NodeInfo = node
   private var nextAncestorDepth: Int = doc.depth(node.nodeNr) - 1
   private val matcher: IntPredicate = nodeTest.getMatcher(doc)
-  private var pending: TinyNodeImpl = null
+  private var pending: NodeInfo = null
 
   private val matchesTextNodes: Boolean =
     nodeTest.getUType.overlaps(UType.TEXT)
@@ -34,7 +34,7 @@ class PrecedingIterator(private var doc: TinyTree,
     if (current.isInstanceOf[TinyTextualElement#TinyTextualElementText]) {
       current = current.getParent
     }
-    var nextNodeNr: Int = current.nodeNr
+    var nextNodeNr: Int = current.asInstanceOf[TinyNodeImpl].nodeNr
     while ( {
       true
     }) {
@@ -68,7 +68,7 @@ class PrecedingIterator(private var doc: TinyTree,
           if (nodeTest.test(element)) {
             pending = element
           }
-          current = text.asInstanceOf[TinyNodeImpl]
+          current = text
         } else if (nodeTest.test(element)) {
           current = element
         }

@@ -185,7 +185,7 @@ abstract class NodeOverNodeInfo extends Node {
 
   def getNamespaceURI: String = {
     if (node.getNodeKind == Type.NAMESPACE) {
-      NamespaceConstant.XMLNS
+      return NamespaceConstant.XMLNS
     }
     val uri: String = node.getURI
     if ("" == uri) null else uri

@@ -121,7 +121,7 @@ object DateValue {
     if (firstDay > 4 && (firstDay + day) <= 8) {
 
       val lastDayPrevMonth: DateValue = yesterday(year, month.toByte, 1.toByte)
-      getWeekNumberWithinMonth(lastDayPrevMonth.year,
+      return getWeekNumberWithinMonth(lastDayPrevMonth.year,
         lastDayPrevMonth.month,
         lastDayPrevMonth.day)
     }

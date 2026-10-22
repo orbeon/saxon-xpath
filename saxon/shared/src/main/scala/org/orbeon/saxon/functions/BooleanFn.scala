@@ -41,7 +41,7 @@ object BooleanFn {
     if (exprssn.isInstanceOf[Literal]) {
       val `val`: GroundedValue = exprssn.asInstanceOf[Literal].value
       if (`val`.isInstanceOf[BooleanValue]) return exprssn
-      Literal.makeLiteral(
+      return Literal.makeLiteral(
         BooleanValue.get(
           ExpressionTool.effectiveBooleanValue(`val`.iterate())),
         exprssn)

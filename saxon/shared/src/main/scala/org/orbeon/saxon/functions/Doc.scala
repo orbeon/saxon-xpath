@@ -58,7 +58,7 @@ object Doc {
                                contextItemType: ContextItemStaticInfo): Expression = {
           optimizeChildren(visitor, contextItemType)
           if (getArg(0).isInstanceOf[StringLiteral]) {
-            preEvaluate(visitor)
+            return preEvaluate(visitor)
           }
           this
         }

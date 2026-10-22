@@ -867,8 +867,8 @@ class XPathParser {
         parseValidateExpression
       case Token.PRAGMA =>
         parseExtensionExpression // XQuery only
-      case Token.KEYWORD_CURLY =>
-        if (t.currentTokenValue == "try") parseTryCatchExpression else null
+      case Token.KEYWORD_CURLY if t.currentTokenValue == "try" =>
+        parseTryCatchExpression
       case _ =>
         parseBinaryExpression(parseUnaryExpression, 4)
     }

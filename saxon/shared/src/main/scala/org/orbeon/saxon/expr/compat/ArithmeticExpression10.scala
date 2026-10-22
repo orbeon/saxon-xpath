@@ -108,7 +108,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
       }
       val ne: NegateExpression = new NegateExpression(getRhsExpression)
       ne.setBackwardsCompatible(true)
-      ne.typeCheck(visitor, contextInfo)
+      return ne.typeCheck(visitor, contextInfo)
     }
     val mustResolve: Boolean =
       !(type0 == BuiltInAtomicType.ANY_ATOMIC || type1 == BuiltInAtomicType.ANY_ATOMIC ||

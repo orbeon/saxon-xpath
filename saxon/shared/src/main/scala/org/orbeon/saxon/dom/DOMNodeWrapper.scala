@@ -186,7 +186,6 @@ class DOMNodeWrapper(var node: Node,
     with SiblingCountingNode
     with SteppingNode[DOMNodeWrapper] {
 
-  val enumSet = Set[Property]()
   var nodeKind: Short = _
   var span: Int = 1
 
@@ -659,10 +658,8 @@ class DOMNodeWrapper(var node: Node,
       current
     }
 
-    override def getProperties: Set[Property] = {
-      enumSet(LAST_POSITION_FINDER)
-      enumSet
-    }
+    override def getProperties: Set[Property] =
+      Set(LAST_POSITION_FINDER)
   }
 
   private class ChildEnumeration
@@ -794,10 +791,7 @@ class DOMNodeWrapper(var node: Node,
       null
     }
 
-    override def getProperties: Set[Property] = {
-      val enumSet = Set[Property]()
-      enumSet(LOOKAHEAD)
-      enumSet
-    }
+    override def getProperties: Set[Property] =
+      Set(LOOKAHEAD)
   }
 }

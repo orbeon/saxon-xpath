@@ -101,9 +101,9 @@ abstract class ParentNodeConstructor
     optimizeChildren(visitor, contextItemType)
     if (!Literal.isEmptySequence(getContentExpression)) {
       if (getContentExpression.isInstanceOf[Block]) {
-        this.setContentExpression(getContentExpression)
-          .asInstanceOf[Block]
-          .mergeAdjacentTextInstructions()
+        this.setContentExpression(
+          getContentExpression.asInstanceOf[Block].mergeAdjacentTextInstructions()
+        )
       }
       if (visitor.optimizeForStreaming) {
         visitor.obtainOptimizer().makeCopyOperationsExplicit(this, contentOp)

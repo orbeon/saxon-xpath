@@ -288,6 +288,22 @@ class XPathTest extends AnyFunSpec {
       ("""format-dateTime(xs:dateTime('2022-12-06T15:07:23'), '[M]/[D]/[Y] [h]:[m]:[s] [P,*-2]', 'en', (), ())""", docElem, false, "12/6/2022 3:07:23 pm"),
       ("""format-dateTime(xs:dateTime('2022-12-06T15:07:23'), '[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01]', 'en', (), 'Europe/London')""".stripMargin, docElem, false, "2022-12-06T15:07:23"),
       ("""format-dateTime(xs:dateTime('2023-11-02T19:04:01-07:00'), '[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01][Z]', 'en', (), 'Europe/London')""".stripMargin, docElem, false, "2023-11-03T02:04:01+00:00"),
+      ("""format-number(xs:double('INF'), '#,##0.00')""",          docElem, false, "Infinity"),
+      ("""format-number(xs:double('-INF'), '#,##0.00')""",         docElem, false, "-Infinity"),
+      ("""fn:boolean(42)""",                                       docElem, false, "true"),
+      ("""fn:boolean(0)""",                                        docElem, false, "false"),
+      ("""fn:boolean('abc')""",                                    docElem, false, "true"),
+      ("""fn:boolean('')""",                                       docElem, false, "false"),
+      ("""fn:deep-equal(., .)""",                                  docElem, false, "true"),
+      ("""fn:deep-equal(., /*)""",                                 docElem, false, "true"),
+      ("""fn:deep-equal(*[1], *[2])""",                            docElem, false, "false"),
+      ("""fn:deep-equal(*[1], *[1])""",                            docElem, false, "true"),
+      ("""fn:deep-equal((1, 2, 3), (1, 2, 3))""",                  docElem, false, "true"),
+      ("""fn:deep-equal((1, 2, 3), (1, 2, 4))""",                  docElem, false, "false"),
+      ("""fn:deep-equal((), ())""",                                docElem, false, "true"),
+      ("""fn:deep-equal((), (1))""",                               docElem, false, "false"),
+      ("""fn:deep-equal(with-att/@*, with-att/@*)""",              doc2.children.next(), false, "true"),
+      ("""xs:integer('100000000000000000000') + 1""",             docElem, false, "100000000000000000001"),
     )
 
     for ((in, ctx, isAVT, out) <- Expected)

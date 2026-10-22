@@ -339,21 +339,14 @@ class PathMap(exp: Expression) {
         }
       }
       thisArc.axis match {
-        case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF =>
-          if (thisArc.getNodeTest == NodeKindTest.DOCUMENT) {
-            node.arcs.remove(i)
-            for (arc <- thisArc.getTarget.arcs.asScala)
-              root.arcs.add(arc)
-          } else {
-            // TODO FIXME compare to Java
-            // fall through
-          }
-        case AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING =>
-          if (thisArc.axis != AxisInfo.DESCENDANT_OR_SELF) {
-            root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
-            node.arcs.remove(i)
-          }
-        case AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT | AxisInfo.NAMESPACE =>
+        case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF if thisArc.getNodeTest == NodeKindTest.DOCUMENT =>
+          node.arcs.remove(i)
+          for (arc <- thisArc.getTarget.arcs.asScala)
+            root.arcs.add(arc)
+        case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING =>
+          root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
+          node.arcs.remove(i)
+        case AxisInfo.DESCENDANT_OR_SELF | AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT | AxisInfo.NAMESPACE =>
         case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
           if (grandParent != null) {
             grandParent.createArc(lastAxis, thisArc.getNodeTest, thisArc.getTarget)

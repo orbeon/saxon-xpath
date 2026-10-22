@@ -179,7 +179,7 @@ class Block(children: Array[Expression]) extends Instruction {
       visitor.getConfiguration.getTypeChecker(backwardsCompatible)
     if (backwardsCompatible && !Cardinality.allowsMany(req.getCardinality)) {
       val first: Expression = FirstItemExpression.makeFirstItemExpression(this)
-      tc.staticTypeCheck(first, req, role, visitor)
+      return tc.staticTypeCheck(first, req, role, visitor)
     }
     val checked: Array[Expression] = Array.ofDim[Expression](operanda.length)
     var subReq: SequenceType = req
@@ -214,7 +214,7 @@ class Block(children: Array[Expression]) extends Instruction {
         err.failingExpression = this
         throw err
       } else {
-        CardinalityChecker.makeCardinalityChecker(b2, reqCard, role)
+        return CardinalityChecker.makeCardinalityChecker(b2, reqCard, role)
       }
     }
     b2

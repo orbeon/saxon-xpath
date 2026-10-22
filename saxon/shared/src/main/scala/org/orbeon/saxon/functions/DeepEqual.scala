@@ -51,17 +51,16 @@ object DeepEqual {
       }
       var pos1: Int = 0
       var pos2: Int = 0
-      while (true) {
-        val item1: Item = opSeqItr1.next()
-        val item2: Item = opSeqItr2.next()
-        breakable {
-          if (item1 == null && item2 == null)
+      breakable {
+        while (true) {
+          val item1: Item = opSeqItr1.next()
+          val item2: Item = opSeqItr2.next()
+          if (item1 == null && item2 == null) {
             break()
-        }
+          }
 
-        pos1 += 1
-        pos2 += 1
-        breakable {
+          pos1 += 1
+          pos2 += 1
           if (item1 == null || item2 == null) {
             result = false
             reason =
@@ -79,65 +78,62 @@ object DeepEqual {
             }
             break()
           }
-        }
-        if (item1.isInstanceOf[Function] || item2.isInstanceOf[Function]) {
-          if (!(item1.isInstanceOf[Function] && item2
-            .isInstanceOf[Function])) {
-            reason = "if one item is a function then both must be functions (position " +
-              pos1 +
-              ")"
-            return false
-          }
-          val fe: Boolean = item1
-            .asInstanceOf[Function]
-            .deepEquals(item2.asInstanceOf[Function], context, comparer, flags)
-          breakable {
+
+          if (item1.isInstanceOf[Function] || item2.isInstanceOf[Function]) {
+            if (!(item1.isInstanceOf[Function] && item2
+              .isInstanceOf[Function])) {
+              reason = "if one item is a function then both must be functions (position " +
+                pos1 +
+                ")"
+              return false
+            }
+            val fe: Boolean = item1
+              .asInstanceOf[Function]
+              .deepEquals(item2.asInstanceOf[Function], context, comparer, flags)
             if (!fe) {
               result = false
               reason = "functions at position " + pos1 + " differ"
               break()
             }
-          }
-        }
-        if (item1.isInstanceOf[ObjectValue[_]] || item2
-          .isInstanceOf[ObjectValue[_]]) {
-          if (item1 != item2) return false
-        }
-        breakable {
-          item1 match {
-            case nodeInfo1: NodeInfo =>
-              item2 match {
-                case nodeInfo2: NodeInfo =>
-                  if (!deepEquals(nodeInfo1,
-                    nodeInfo2,
-                    comparer,
-                    context,
-                    flags)) {
+          } else if (item1.isInstanceOf[ObjectValue[_]] || item2
+            .isInstanceOf[ObjectValue[_]]) {
+            if (item1 != item2) return false
+          } else {
+            item1 match {
+              case nodeInfo1: NodeInfo =>
+                item2 match {
+                  case nodeInfo2: NodeInfo =>
+                    if (!deepEquals(nodeInfo1,
+                      nodeInfo2,
+                      comparer,
+                      context,
+                      flags)) {
+                      result = false
+                      reason = "nodes at position " + pos1 + " differ"
+                      break()
+                    }
+                  case _ =>
                     result = false
-                    reason = "nodes at position " + pos1 + " differ"
+                    reason = "comparing a node to an atomic value at position " + pos1
+                    break()
+                }
+              case _ =>
+                if (item2.isInstanceOf[NodeInfo]) {
+                  result = false
+                  reason = "comparing an atomic value to a node at position " + pos1
+                  break()
+                } else {
+                  val av1 = item1.asInstanceOf[AtomicValue]
+                  val av2 = item2.asInstanceOf[AtomicValue]
+                  if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
+                    av1,
+                    av2)) {
+                    result = false
+                    reason = "atomic values at position " + pos1 + " differ"
                     break()
                   }
-                case _ =>
-                  result = false
-                  reason = "comparing a node to an atomic value at position " + pos1
-                  break()
-              }
-            case _ =>
-              if (item2.isInstanceOf[NodeInfo]) {
-                result = false
-                reason = "comparing an atomic value to a node at position " + pos1
-                break()
-              } else {
-                val av1 = item1.asInstanceOf[AtomicValue]
-                val av2 = item2.asInstanceOf[AtomicValue]
-                if (av1.isNaN && av2.isNaN) {} else if (!comparer.comparesEqual(
-                  av1,
-                  av2)) {
-                  result = false
-                  reason = "atomic values at position " + pos1 + " differ"
-                  break()
                 }
-              }
+            }
           }
         }
       }
@@ -168,6 +164,94 @@ object DeepEqual {
         n2)
       return false
     }
+
+    def compareChildren(): Boolean = {
+      val c1 = n1.iterateAxis(AxisInfo.CHILD)
+      val c2 = n2.iterateAxis(AxisInfo.CHILD)
+      while (true) {
+        var d1 = c1.next()
+        while (d1 != null && isIgnorable(d1, flags))
+          d1 = c1.next()
+        var d2 = c2.next()
+        while (d2 != null && isIgnorable(d2, flags))
+          d2 = c2.next()
+        if (d1 == null || d2 == null) {
+          val r = d1 == d2
+          if (! r) {
+            var message: String = "the first operand contains a node with " + (if (d1 == null)
+              "fewer"
+            else
+              "more") +
+              " children than the second"
+            if (d1.isInstanceOf[WhitespaceTextImpl] || d2
+              .isInstanceOf[WhitespaceTextImpl]) {
+              message += " (the first extra child is whitespace text)"
+            }
+            explain(reporter, message, flags, n1, n2)
+          }
+          return r
+        }
+        if (! deepEquals(d1, d2, comparer, context, flags))
+          return false
+      }
+      false
+    }
+
+    def compareTextOrComment(): Boolean = {
+      val vr = comparer.comparesEqual(
+        n1.atomize().asInstanceOf[AtomicValue],
+        n2.atomize().asInstanceOf[AtomicValue])
+      if (! vr && ((flags & WARNING_IF_FALSE) != 0)) {
+        val v1 = n1.atomize().getStringValue
+        val v2 = n2.atomize().getStringValue
+        var message = ""
+        if (v1.length != v2.length)
+          message = "lengths (" + v1.length + "," + v2.length + ")"
+        if (v1.length < 10 && v2.length < 10) {
+          message = " (\"" + v1 + "\" vs \"" + v2 + "\")"
+        } else {
+          val min: Int = Math.min(v1.length, v2.length)
+          if (v1.substring(0, min) == v2.substring(0, min)) {
+            message += " different at char " + min + "(\"" +
+              StringValue.diagnosticDisplay(
+                (if (v1.length > v2.length) v1 else v2).substring(min)) +
+              "\")"
+          } else if (v1.charAt(0) != v2.charAt(0)) {
+            message += " different at start " + "(\"" + v1.substring(
+              0,
+              Math.min(v1.length, 10)) +
+              "\", \"" +
+              v2.substring(0, Math.min(v2.length, 10)) +
+              "\")"
+          } else {
+            breakable {
+              for (i <- 1 until min
+                   if v1.substring(0, i) != v2.substring(0, i)) {
+                message += " different at char " + (i - 1) + "(\"" + v1
+                  .substring(i - 1, Math.min(v1.length, i + 10)) +
+                  "\", \"" +
+                  v2.substring(i - 1, Math.min(v2.length, i + 10)) +
+                  "\")"
+                break()
+              }
+            }
+          }
+        }
+        explain(
+          reporter,
+          Type.displayTypeName(n1) + " values differ (" + Navigator.getPath(
+            n1) +
+            ", " +
+            Navigator.getPath(n2) +
+            "): " +
+            message,
+          flags,
+          n1,
+          n2)
+      }
+      vr
+    }
+
     n1.getNodeKind match {
       case Type.ELEMENT =>
         if (!Navigator.haveSameName(n1, n2)) {
@@ -222,7 +306,6 @@ object DeepEqual {
             return false
           }
           if (!deepEquals(att1, att2, comparer, context, flags)) {
-            deepEquals(att1, att2, comparer, context, flags)
             explain(reporter,
               "elements have different values for the attribute " +
                 NameOfNode.makeName(att1).getStructuredQName.getEQName,
@@ -320,7 +403,6 @@ object DeepEqual {
             val v2 = n2.atomize().iterate().asInstanceOf[AtomicIterator[AtomicValue]]
             return deepEqual(v1, v2, comparer, context, flags)
           }
-          return false
         }
         if ((flags & COMPARE_ID_FLAGS) != 0) {
           if (n1.isId != n2.isId) {
@@ -339,38 +421,10 @@ object DeepEqual {
               n2)
             return false
           }
-          return false
         }
+        compareChildren()
       case Type.DOCUMENT =>
-        val c1 = n1.iterateAxis(AxisInfo.CHILD)
-        val c2 = n2.iterateAxis(AxisInfo.CHILD)
-        while (true) {
-          var d1 = c1.next()
-          while (d1 != null && isIgnorable(d1, flags))
-            d1 = c1.next()
-          var d2 = c2.next()
-          while (d2 != null && isIgnorable(d2, flags))
-            d2 = c2.next()
-          if (d1 == null || d2 == null) {
-            val r = d1 == d2
-            if (! r) {
-              var message: String = "the first operand contains a node with " + (if (d1 == null)
-                "fewer"
-              else
-                "more") +
-                " children than the second"
-              if (d1.isInstanceOf[WhitespaceTextImpl] || d2
-                .isInstanceOf[WhitespaceTextImpl]) {
-                message += " (the first extra child is whitespace text)"
-              }
-              explain(reporter, message, flags, n1, n2)
-            }
-            return r
-          }
-          if (! deepEquals(d1, d2, comparer, context, flags))
-            return false
-          false
-        }
+        compareChildren()
       case Type.ATTRIBUTE =>
         if (! Navigator.haveSameName(n1, n2)) {
           explain(
@@ -378,7 +432,7 @@ object DeepEqual {
             "attribute names differ: " +
               NameOfNode.makeName(n1).getStructuredQName.getEQName +
               " != " +
-              NameOfNode.makeName(n1).getStructuredQName.getEQName,
+              NameOfNode.makeName(n2).getStructuredQName.getEQName,
             flags,
             n1,
             n2
@@ -447,63 +501,11 @@ object DeepEqual {
             n2)
           return false
         }
+        compareTextOrComment()
       case Type.TEXT | Type.COMMENT =>
-        val vr = comparer.comparesEqual(
-          n1.atomize().asInstanceOf[AtomicValue],
-          n2.atomize().asInstanceOf[AtomicValue])
-        if (! vr && ((flags & WARNING_IF_FALSE) != 0)) {
-          val v1 = n1.atomize().getStringValue
-          val v2 = n2.atomize().getStringValue
-          var message = ""
-          if (v1.length != v2.length)
-            message = "lengths (" + v1.length + "," + v2.length + ")"
-          if (v1.length < 10 && v2.length < 10) {
-            message = " (\"" + v1 + "\" vs \"" + v2 + "\")"
-          } else {
-            val min: Int = Math.min(v1.length, v2.length)
-            if (v1.substring(0, min) == v2.substring(0, min)) {
-              message += " different at char " + min + "(\"" +
-                StringValue.diagnosticDisplay(
-                  (if (v1.length > v2.length) v1 else v2).substring(min)) +
-                "\")"
-            } else if (v1.charAt(0) != v2.charAt(0)) {
-              message += " different at start " + "(\"" + v1.substring(
-                0,
-                Math.min(v1.length, 10)) +
-                "\", \"" +
-                v2.substring(0, Math.min(v2.length, 10)) +
-                "\")"
-            } else {
-              breakable {
-                for (i <- 1 until min
-                     if v1.substring(0, i) != v2.substring(0, i)) {
-                  message += " different at char " + (i - 1) + "(\"" + v1
-                    .substring(i - 1, Math.min(v1.length, i + 10)) +
-                    "\", \"" +
-                    v2.substring(i - 1, Math.min(v2.length, i + 10)) +
-                    "\")"
-                  break()
-                }
-              }
-            }
-          }
-          explain(
-            reporter,
-            Type.displayTypeName(n1) + " values differ (" + Navigator.getPath(
-              n1) +
-              ", " +
-              Navigator.getPath(n2) +
-              "): " +
-              message,
-            flags,
-            n1,
-            n2)
-        }
-        return vr
+        compareTextOrComment()
       case _ => throw new IllegalArgumentException("Unknown node type")
-
     }
-    false
   }
 
   private def isIgnorable(node: NodeInfo, flags: Int): Boolean = {

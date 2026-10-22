@@ -99,17 +99,17 @@ class XHTMLURIEscaper(next: Receiver) extends HTMLURIEscaper(next) {
                   Normalizer
                     .make(Normalizer.C, getConfiguration)
                     .normalize(value))
-              return new AttributeInfo(
+              new AttributeInfo(
                 attName,
                 att.`type`,
                 HTMLURIEscaper.escapeURL(normalized, normalize = true, getConfiguration).toString,
                 att.location,
                 att.properties | ReceiverOption.DISABLE_CHARACTER_MAPS)
             } else {
-             return att
+              att
             }
           } else {
-           return att
+            att
           })
     }
     nextReceiver.startElement(nameCode,

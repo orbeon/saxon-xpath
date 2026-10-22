@@ -573,8 +573,8 @@ class Configuration extends SourceResolver with NotationSet {
   def checkLicensedFeature(feature: Int, name: String, localLicenseId: Int): Unit = {
     val require = if (feature == Configuration.LicenseFeature.PROFESSIONAL_EDITION) "PE"
     else "EE"
-    val message = "Requested feature (" + name + ") requires Saxon-" + require
-    if (!Version.softwareEdition.equals("HE")) message + ". You are using Saxon-" + Version.softwareEdition +
+    var message = "Requested feature (" + name + ") requires Saxon-" + require
+    if (!Version.softwareEdition.equals("HE")) message += ". You are using Saxon-" + Version.softwareEdition +
       " software, but the Configuration is an instance of " + getClass.getName + "; to use this feature you need to create an instance of " +
       (if (feature == Configuration.LicenseFeature.PROFESSIONAL_EDITION) "com.saxonica.config.ProfessionalConfiguration"
       else "com.saxonica.config.EnterpriseConfiguration")

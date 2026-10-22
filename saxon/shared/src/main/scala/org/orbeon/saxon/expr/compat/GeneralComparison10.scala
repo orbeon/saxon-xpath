@@ -113,7 +113,7 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression
       .isInstanceOf[Literal])) {
-      Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
+      return Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
     }
     val th = config.getTypeHierarchy
     var type0: ItemType = getLhsExpression.getItemType

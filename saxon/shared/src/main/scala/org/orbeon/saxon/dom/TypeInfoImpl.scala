@@ -29,10 +29,10 @@ class TypeInfoImpl(private var config: Configuration, `type`: SchemaType)
           0) {
       if (base.getFingerprint == fingerprint) {
         return true
-      } else if (base.isInstanceOf[Any]) {
+      } else if (base.isInstanceOf[AnyType.AnyType]) {
         return false
       } else {
-        new TypeInfoImpl(config, base)
+        return new TypeInfoImpl(config, base)
           .isDerivedFrom(typeNamespaceArg, typeNameArg, derivationMethod)
       }
     }

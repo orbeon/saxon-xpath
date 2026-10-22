@@ -39,7 +39,7 @@ object GDateValue {
       var part: String = tok.nextElement().asInstanceOf[String]
       var era: Int = +1
       if ("+" == part) {
-        badDate("Date must not start with '+' sign", s)
+        return badDate("Date must not start with '+' sign", s)
       } else if ("-" == part) {
         era = -1
         if (!tok.hasMoreElements()) {
@@ -57,9 +57,9 @@ object GDateValue {
       var value: Int = DurationValue.simpleInteger(part)
       if (value < 0) {
         if (value == -1) {
-          badDate("Non-numeric year component", s)
+          return badDate("Non-numeric year component", s)
         } else {
-          badDate("Year is outside the range that Saxon can handle",
+          return badDate("Year is outside the range that Saxon can handle",
             s,
             "FODT0001")
         }
@@ -342,7 +342,7 @@ abstract class GDateValue extends CalendarValue {
           o.asInstanceOf[GDateComparable]
             .asGDateValue()
             .getPrimitiveType) {
-          SequenceTool.INDETERMINATE_ORDERING
+          return SequenceTool.INDETERMINATE_ORDERING
         }
         val dt0: DateTimeValue = GDateValue.this.toDateTime
         val dt1: DateTimeValue =
