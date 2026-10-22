@@ -472,6 +472,7 @@ class RECompiler {
           c match {
             case '{' | '?' | '*' | '+' =>
               if (lenAtom != 0) atomLoop.break()
+            case _ =>
           }
         }
 
@@ -495,8 +496,8 @@ class RECompiler {
             }
             fsb.appendWideChar(charClass.asInstanceOf[IntValuePredicate].getTarget)
             lenAtom += 1
-          case '^' | '$' =>
-            if (isXPath) atomLoop.break()
+          case '^' | '$' if isXPath =>
+            atomLoop.break()
           case _ =>
             fsb.appendWideChar(pattern.uCharAt({
               idx += 1
@@ -557,11 +558,11 @@ class RECompiler {
             val backreference = reference.codepoint
             if (capturingOpenParenCount <= backreference)
               syntaxError("Bad backreference")
-            RECompiler.trace(new Operation.OpBackReference(backreference))
+            return RECompiler.trace(new Operation.OpBackReference(backreference))
           case _: IntSingletonSet =>
             idx = idxBeforeEscape
           case _ =>
-            RECompiler.trace(new Operation.OpCharClass(esc))
+            return RECompiler.trace(new Operation.OpCharClass(esc))
         }
       case _ =>
     }
@@ -581,23 +582,26 @@ class RECompiler {
     var greedy = true
     var quantifierType = pattern.uCharAt(idx)
     quantifierType match {
-      case '?' | '*' | '+' =>
-        idx += 1
-      case '{' =>
-        if (quantifierType == '{') bracket()
+      case '?' | '*' | '+' | '{' =>
+        if (quantifierType != '{') {
+          idx += 1
+        } else {
+          bracket()
+        }
         if (ret.isInstanceOf[Operation.OpBOL] || ret.isInstanceOf[Operation.OpEOL]) {
-          if (quantifierType == '?' || quantifierType == '*' || (quantifierType == '{' && bracketMin == 0)) return new Operation.OpNothing
-          else quantifierType = 0
+          if (quantifierType == '?' || quantifierType == '*' || (quantifierType == '{' && bracketMin == 0))
+            return new Operation.OpNothing
+          else
+            quantifierType = 0
         }
-        if (ret.matchesEmptyString == Operation.MATCHES_ZLS_ANYWHERE) if (quantifierType == '?') {
-          quantifierType = 0
+        if (ret.matchesEmptyString == Operation.MATCHES_ZLS_ANYWHERE) {
+          if (quantifierType == '?') {
+            quantifierType = 0
+          } else if (quantifierType == '+' || quantifierType == '{') {
+            quantifierType = '*'
+          }
         }
-        else if (quantifierType == '+') {
-          quantifierType = '*'
-        }
-        else if (quantifierType == '{') {
-          quantifierType = '*'
-        }
+      case _ =>
     }
 
     if (idx < len && pattern.uCharAt(idx) == '?') {
@@ -620,6 +624,7 @@ class RECompiler {
       case '*' =>
         min = 0
         max = Integer.MAX_VALUE
+      case _ =>
     }
     var result: Operation = null
     if (max == 0) result = new Operation.OpNothing

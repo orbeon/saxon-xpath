@@ -168,12 +168,12 @@ abstract class AbstractNumberer extends Numberer {
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, latinUpper)
+        return toAlphaSequence(number, latinUpper)
       case 'a' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, latinLower)
+        return toAlphaSequence(number, latinLower)
       case 'w' | 'W' =>
         var wordCase: Int = 0
         wordCase =
@@ -181,16 +181,16 @@ abstract class AbstractNumberer extends Numberer {
             if (formchar == 'W') UPPER_CASE else LOWER_CASE
           else TITLE_CASE
         if (ordinal != null && !ordinal.isEmpty) {
-          toOrdinalWords(ordinal, number, wordCase)
+          return toOrdinalWords(ordinal, number, wordCase)
         } else {
-          toWords(number, wordCase)
+          return toWords(number, wordCase)
         }
       case 'i' =>
         if (number == 0) {
           return "0"
         }
         if (letterValue == null || letterValue.isEmpty || letterValue == "traditional") {
-          toRoman(number)
+          return toRoman(number)
         } else {
           alphaDefault(number, 'i', sb)
         }
@@ -199,7 +199,7 @@ abstract class AbstractNumberer extends Numberer {
           return "0"
         }
         if (letterValue == null || letterValue.isEmpty || letterValue == "traditional") {
-          toRoman(number).toUpperCase()
+          return toRoman(number).toUpperCase()
         } else {
           alphaDefault(number, 'I', sb)
         }
@@ -277,25 +277,25 @@ abstract class AbstractNumberer extends Numberer {
           return "" + number
         }
         fsb.appendWideChar(65799 + number.toInt - 1)
-        fsb.toString
+        return fsb.toString
       case 69216 =>
         if (number == 0 || number > 10) {
           return "" + number
         }
         fsb.appendWideChar(69216 + number.toInt - 1)
-        fsb.toString
+        return fsb.toString
       case 69714 =>
         if (number == 0 || number > 10) {
           return "" + number
         }
         fsb.appendWideChar(69714 + number.toInt - 1)
-        fsb.toString
+        return fsb.toString
       case 119648 =>
         if (number == 0 || number >= 10) {
           return "" + number
         }
         fsb.appendWideChar(119648 + number.toInt - 1)
-        fsb.toString
+        return fsb.toString
       case 127234 =>
         if (number == 0) {
           fsb.appendWideChar(127233)
@@ -305,53 +305,53 @@ abstract class AbstractNumberer extends Numberer {
           return "" + number
         }
         fsb.appendWideChar(127234 + number.toInt - 1)
-        fsb.toString
+        return fsb.toString
       case 'Α' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, greekUpper)
+        return toAlphaSequence(number, greekUpper)
       case 'α' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, greekLower)
+        return toAlphaSequence(number, greekLower)
       case 'А' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, cyrillicUpper)
+        return toAlphaSequence(number, cyrillicUpper)
       case 'а' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, cyrillicLower)
+        return toAlphaSequence(number, cyrillicLower)
       case 'א' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, hebrew)
+        return toAlphaSequence(number, hebrew)
       case 'あ' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, hiraganaA)
+        return toAlphaSequence(number, hiraganaA)
       case 'ア' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, katakanaA)
+        return toAlphaSequence(number, katakanaA)
       case 'い' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, hiraganaI)
+        return toAlphaSequence(number, hiraganaI)
       case 'イ' =>
         if (number == 0) {
           return "0"
         }
-        toAlphaSequence(number, katakanaI)
-      case '一' => toJapanese(number)
+        return toAlphaSequence(number, katakanaI)
+      case '一' => return toJapanese(number)
       case _ =>
         var digitValue: Int = Alphanumeric.getDigitValue(formchar)
         if (digitValue >= 0) {
@@ -362,7 +362,7 @@ abstract class AbstractNumberer extends Numberer {
             digits(z) = zero + z
             z += 1
           }
-          toRadical(number, digits, pictureLength, numGroupFormatter)
+          return toRadical(number, digits, pictureLength, numGroupFormatter)
         } else {
           if (formchar < 'ᄀ' && java.lang.Character.isLetter(formchar.toChar) &&
             number > 0) {

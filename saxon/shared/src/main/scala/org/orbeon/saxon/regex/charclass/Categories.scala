@@ -12,6 +12,7 @@ import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.om.{AxisInfo, NodeInfo}
 import org.orbeon.saxon.pattern.{NameTest, NodeKindTest}
 import org.orbeon.saxon.serialize.charcode.XMLCharacterData
+import org.orbeon.saxon.regex.UnicodeData
 import org.orbeon.saxon.utils.Configuration
 
 import java.util
@@ -88,36 +89,19 @@ object Categories {
 
   def build(): Unit = {
     CATEGORIES = new util.HashMap(30)
-    val in = Configuration.locateResource("categories.xml", new util.ArrayList)
-    if (in == null)
-      throw new RuntimeException("Unable to read categories.xml file")
-    val config = new Configuration()
-    val options = new ParseOptions()
-    options.setSchemaValidationMode(Validation.SKIP)
-    options.setDTDValidationMode(Validation.SKIP)
-    options.setTreeModel(Builder.TINY_TREE)
-    val doc =
-      config
-        .buildDocumentTree(new StreamSource(in, "categories.xml"), options)
-        .getRootNode
-    val fp_name = config.getNamePool.allocateFingerprint("", "name")
-    val fp_f = config.getNamePool.allocateFingerprint("", "f")
-    val fp_t = config.getNamePool.allocateFingerprint("", "t")
-    val iter = doc.iterateAxis(
-      AxisInfo.DESCENDANT,
-      new NameTest(Type.ELEMENT, "", "cat", config.getNamePool))
-    iter.forEach(item => {
-      val cat =
-        item.asInstanceOf[TinyElementImpl].getAttributeValue(fp_name)
+    for (entry <- UnicodeData.categoriesData.split(";")) {
+      val colon = entry.indexOf(':')
+      val cat = entry.substring(0, colon)
+      val rangesStr = entry.substring(colon + 1)
       val irs = new IntRangeSet
-      for (r <- item.asInstanceOf[NodeInfo].children(NodeKindTest.ELEMENT)) {
-        val from = r.asInstanceOf[TinyElementImpl].getAttributeValue(fp_f)
-        val to = r.asInstanceOf[TinyElementImpl].getAttributeValue(fp_t)
-        irs.addRange(java.lang.Integer.parseInt(from, 16),
-          java.lang.Integer.parseInt(to, 16))
+      for (rangeStr <- rangesStr.split(",")) {
+        val dash = rangeStr.indexOf('-')
+        val from = java.lang.Integer.parseInt(rangeStr.substring(0, dash), 16)
+        val to = java.lang.Integer.parseInt(rangeStr.substring(dash + 1), 16)
+        irs.addRange(from, to)
       }
       CATEGORIES.put(cat, new Category(cat, new IntSetPredicate(irs)))
-    })
+    }
     val c = "CLMNPSZ"
     for (i <- 0 until c.length) {
       val ch = c.charAt(i)

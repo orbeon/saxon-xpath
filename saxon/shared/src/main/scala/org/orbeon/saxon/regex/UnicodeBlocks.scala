@@ -48,43 +48,22 @@ object UnicodeBlocks {
   private def readBlocks(config: Configuration): Unit = {
     synchronized {
       blocks = new HashMap(250)
-      val in = Configuration.locateResource("unicodeBlocks.xml", new ArrayList)
-      if (in == null)
-        throw new RESyntaxException("Unable to read unicodeBlocks.xml file")
-      val options = new ParseOptions
-      options.setSchemaValidationMode(Validation.SKIP)
-      options.setDTDValidationMode(Validation.SKIP)
-      options.setSpaceStrippingRule(AllElementsSpaceStrippingRule.getInstance)
-      var doc = config.buildDocumentTree(new StreamSource(in, "unicodeBlocks.xml"), options)
-      val iter = doc.getRootNode.iterateAxis(
-        AxisInfo.DESCENDANT,
-        new NameTest(Type.ELEMENT, "", "block", config.getNamePool))
-      breakable {
-        while (true) {
-          val item: NodeInfo = iter.next()
-          if (item == null)
-            break()
-          val blockName: String =
-            normalizeBlockName(item.getAttributeValue("", "name"))
-          var range: IntSet = null
-          for (rangeElement <- item.children(NodeKindTest.ELEMENT)) {
-            val from = java.lang.Integer.parseInt(
-              rangeElement.getAttributeValue("", "from").substring(2),
-              16)
-            val to = java.lang.Integer.parseInt(
-              rangeElement.getAttributeValue("", "to").substring(2),
-              16)
-            val cr = new IntBlockSet(from, to)
-            range =
-              if (range == null)
-                cr
-              else if (range.isInstanceOf[IntBlockSet])
-                range.mutableCopy().union(cr)
-              else
-                range.union(cr)
-          }
-          blocks.put(blockName, range)
+      for (entry <- UnicodeData.unicodeBlocksData.split(";")) {
+        val colon = entry.indexOf(':')
+        val blockName = normalizeBlockName(entry.substring(0, colon))
+        val rangesStr = entry.substring(colon + 1)
+        var range: IntSet = null
+        for (rangeStr <- rangesStr.split(",")) {
+          val dash = rangeStr.indexOf('-')
+          val from = java.lang.Integer.parseInt(rangeStr.substring(0, dash), 16)
+          val to = java.lang.Integer.parseInt(rangeStr.substring(dash + 1), 16)
+          val cr = new IntBlockSet(from, to)
+          range =
+            if (range == null) cr
+            else if (range.isInstanceOf[IntBlockSet]) range.mutableCopy().union(cr)
+            else range.union(cr)
         }
+        blocks.put(blockName, range)
       }
     }
   }

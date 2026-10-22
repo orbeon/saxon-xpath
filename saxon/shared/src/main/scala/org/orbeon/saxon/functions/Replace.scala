@@ -19,14 +19,13 @@ import Replace._
 object Replace {
 
   def checkReplacement(rep: CharSequence): String = {
-    var itr = 0
-    for (i <- 0 until rep.length) {
-      itr = i
-      val c: Char = rep.charAt(itr)
+    var i = 0
+    while (i < rep.length) {
+      val c: Char = rep.charAt(i)
       if (c == '$') {
-        if (itr + 1 < rep.length) {
-          itr += 1
-          val next: Char = rep.charAt(itr)
+        if (i + 1 < rep.length) {
+          i += 1
+          val next: Char = rep.charAt(i)
           if (next < '0' || next > '9') {
             return "Invalid replacement string in replace(): $ sign must be followed by digit 0-9"
           }
@@ -34,16 +33,17 @@ object Replace {
           return "Invalid replacement string in replace(): $ sign at end of string"
         }
       } else if (c == '\\') {
-        if (itr + 1 < rep.length) {
-          itr += 1
-          val next: Char = rep.charAt(itr)
+        if (i + 1 < rep.length) {
+          i += 1
+          val next: Char = rep.charAt(i)
           if (next != '\\' && next != '$') {
-            return  "Invalid replacement string in replace(): \\ character must be followed by \\ or $"
+            return "Invalid replacement string in replace(): \\ character must be followed by \\ or $"
           }
         } else {
           return "Invalid replacement string in replace(): \\ character at end of string"
         }
       }
+      i += 1
     }
     null
   }

@@ -65,15 +65,18 @@ class REFlags(val flags: String, val language: String) {
         throw new RESyntaxException("Unrecognized flag '" + c + "'")
     }
   }
-  for (i <- semi + 1 until flags.length) {
-    val c = flags.charAt(i)
-    c match {
-      case 'g' =>
-        debug = true
-      case 'k' =>
-        allowUnknownBlockNames = true
-      case 'K' =>
-        allowUnknownBlockNames = false
+  if (semi >= 0) {
+    for (i <- semi + 1 until flags.length) {
+      val c = flags.charAt(i)
+      c match {
+        case 'g' =>
+          debug = true
+        case 'k' =>
+          allowUnknownBlockNames = true
+        case 'K' =>
+          allowUnknownBlockNames = false
+        case _ =>
+      }
     }
   }
 

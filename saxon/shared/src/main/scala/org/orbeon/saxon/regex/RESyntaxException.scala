@@ -33,12 +33,7 @@ class RESyntaxException /**
     * @param offset character position within regex where the error was detected
     */
   def this(s: String, offset: Int) =
-    this(???) /* TODO: Scala does not allow multiple super constructor calls
- * Change this code to call a constructor of the current class instead.
- * For your convenience, here is the invalid super constructor call:
- * }super("Syntax error at char " + offset + " in regular expression: " +
-  s)
- */
+    this("Syntax error at char " + offset + " in regular expression: " + s)
 
 }
 
