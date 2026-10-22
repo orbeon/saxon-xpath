@@ -79,4 +79,15 @@ trait XPathTestBase extends AnyFunSpec {
       assert(evalStrings(xpath, ctx) == expected)
     }
   }
+
+  def checkError(xpath: String, expectedErrorCode: String = null, ctx: Item = null): Unit = {
+    it(s"must fail evaluating `$xpath`${if (expectedErrorCode != null) s" with error $expectedErrorCode" else ""}") {
+      val ex = intercept[org.orbeon.saxon.trans.XPathException] {
+        evalAll(xpath, ctx)
+      }
+      if (expectedErrorCode != null) {
+        assert(ex.getErrorCodeLocalPart == expectedErrorCode, s"Expected error code $expectedErrorCode but got ${ex.getErrorCodeLocalPart}")
+      }
+    }
+  }
 }

@@ -28,7 +28,7 @@ class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[Any
       err.setErrorCode("FORG0001")
       throw err
     }
-    new Array[Byte](s.length / 2)
+    binaryValue = new Array[Byte](s.length / 2)
     for (i <- binaryValue.indices)
       binaryValue(i) = ((fromHex(s.charAt(2 * i)) << 4) + fromHex(s.charAt(2 * i + 1))).toByte
     typeLabel = BuiltInAtomicType.HEX_BINARY

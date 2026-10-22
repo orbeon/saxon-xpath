@@ -128,7 +128,7 @@ class SpecificFunctionType extends AnyFunctionType {
       for (i <- argTypes.indices) {
         val argRel = th.sequenceTypeRelationship(argTypes(i), other.getArgumentTypes(i))
         argRel match {
-          case DISJOINT => Affinity.DISJOINT
+          case DISJOINT => return Affinity.DISJOINT
           case SUBSUMES => narrower = true
           case SUBSUMED_BY => wider = true
           case OVERLAPS =>

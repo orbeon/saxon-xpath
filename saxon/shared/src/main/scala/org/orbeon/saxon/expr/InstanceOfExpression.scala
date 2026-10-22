@@ -207,7 +207,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
         return false
       }
     }
-    !(count == 0 && ((targetCardinality & StaticProperty.ALLOWS_ZERO) != 0))
+    !(count == 0 && ((targetCardinality & StaticProperty.ALLOWS_ZERO) == 0))
   }
 
   /**

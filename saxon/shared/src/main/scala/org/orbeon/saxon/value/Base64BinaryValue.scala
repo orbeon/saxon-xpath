@@ -262,9 +262,7 @@ class Base64BinaryValue extends AtomicValue with AtomicMatchKey with Comparable[
   /**
    * Support XML Schema comparison semantics
    */
-  val base64Bin = new Base64BinaryValue
-
-  override def getSchemaComparable: Comparable[AnyRef] = new base64Bin.Base64BinaryComparable
+  override def getSchemaComparable: Comparable[AnyRef] = new Base64BinaryComparable
 
   /**
    * Private inner class to support XML Schema comparison semantics

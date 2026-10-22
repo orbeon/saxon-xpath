@@ -239,8 +239,13 @@ class MapType(var keyType: AtomicType,
       }
       Affinity.OVERLAPS
     } else {
-      new SpecificFunctionType(getArgumentTypes, getResultType)
-        .relationship(other, th)
+      val rel: Affinity =
+        new SpecificFunctionType(getArgumentTypes, getResultType)
+          .relationship(other, th)
+      if (rel == Affinity.SUBSUMES || rel == Affinity.SAME_TYPE)
+        Affinity.OVERLAPS
+      else
+        rel
     }
 
   /**

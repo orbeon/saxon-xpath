@@ -96,8 +96,14 @@ class XPathException(message: String) extends TransformerException(message) {
     breakPoint()
   }
 
-  def this(message: String, errorCode: String, loc: Location) = {
+  def this(message: String, errorCode: String) = {
     this(message)
+    this.setErrorCode(errorCode)
+    breakPoint()
+  }
+
+  def this(message: String, errorCode: String, loc: Location) = {
+    this(message, errorCode)
     setLocator(loc)
     breakPoint()
   }
@@ -106,12 +112,6 @@ class XPathException(message: String) extends TransformerException(message) {
     this(message)
     setLocator(loc)
     this.initCause(err)
-    breakPoint()
-  }
-
-  def this(message: String, errorCode: String) = {
-    this(message)
-    this.setErrorCode(errorCode)
     breakPoint()
   }
 
