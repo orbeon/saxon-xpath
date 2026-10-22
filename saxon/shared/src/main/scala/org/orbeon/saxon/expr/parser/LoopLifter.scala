@@ -119,13 +119,8 @@ class LoopLifter(@BeanProperty var root: Expression,
     if (variableSetter != null) {
       parent = exp
       while (parent != null && parent != variableSetter) {
-        try
-          expInfoMap.get(parent).dependees.put(variableSetter, true)
-        catch {
-          case e: NullPointerException =>
-            e.printStackTrace()
-            throw e
-        }
+        val info = expInfoMap.get(parent)
+        info.dependees.put(variableSetter, true)
         parent = parent.parentExpression
       }
     }

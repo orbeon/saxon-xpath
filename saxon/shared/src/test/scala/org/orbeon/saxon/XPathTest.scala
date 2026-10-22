@@ -20,8 +20,8 @@ class XPathTest extends AnyFunSpec {
   val ExplainExpressions = false
 
   val Configuration = new Configuration
-  Configuration.optimizerOptions = new OptimizerOptions("vmt") // FIXME: temporarily remove the "l" option which fails
-  Configuration.setDefaultRegexEngine("J") // the "S" (Saxon) engine is broken at this time
+  Configuration.optimizerOptions = new OptimizerOptions("vmtl")
+  Configuration.setDefaultRegexEngine("S") // the "S" (Saxon) engine is broken at this time
 
   def compileAndRunExpression(xpath: String, ctx: Item, isAVT: Boolean): Option[Item] = {
 

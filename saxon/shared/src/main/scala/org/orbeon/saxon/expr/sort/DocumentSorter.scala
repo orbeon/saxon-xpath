@@ -142,7 +142,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     if (sortable
       .isInstanceOf[SlashExpression] && !visitor.optimizeForStreaming &&
       !(parentExpression.isInstanceOf[ConditionalSorter])) {
-      visitor
+      return visitor
         .obtainOptimizer()
         .makeConditionalDocumentSorter(this,
           sortable.asInstanceOf[SlashExpression])

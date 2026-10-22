@@ -133,7 +133,7 @@ class Operand(
 
   def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
     try
-      this.childExpression = getChildExpression.typeCheck(visitor, contextInfo)
+      setChildExpression(getChildExpression.typeCheck(visitor, contextInfo))
     catch {
       case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
@@ -141,7 +141,7 @@ class Operand(
           visitor.getStaticContext.issueWarning(
             "Evaluation will always throw a dynamic error: " + e.getMessage,
             getChildExpression.getLocation)
-          this.childExpression = new ErrorExpression(new XmlProcessingException(e))
+          setChildExpression(new ErrorExpression(new XmlProcessingException(e)))
         } else {
           throw e
         }
@@ -149,7 +149,7 @@ class Operand(
 
   def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
     try
-      this.childExpression = getChildExpression.optimize(visitor, contextInfo)
+      setChildExpression(getChildExpression.optimize(visitor, contextInfo))
     catch {
       case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
@@ -159,7 +159,7 @@ class Operand(
             getChildExpression.getLocation
           )
           e.printStackTrace()
-          this.childExpression = new ErrorExpression(new XmlProcessingException(e))
+          setChildExpression(new ErrorExpression(new XmlProcessingException(e)))
         } else {
           throw e
         }
