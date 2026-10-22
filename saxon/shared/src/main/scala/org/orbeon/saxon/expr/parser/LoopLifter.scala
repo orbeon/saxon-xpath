@@ -210,7 +210,7 @@ class LoopLifter(@BeanProperty var root: Expression,
       case e: XPathException =>
         e.printStackTrace()
     }
-    val `var` = new LocalVariableReference(let.asInstanceOf[StructuredQName])
+    val `var` = new LocalVariableReference(let: LocalBinding)
     val properties = child.getSpecialProperties & StaticProperty.NOT_UNTYPED_ATOMIC
     `var`.setStaticType(`type`, null, properties)
     `var`.inLoop = true

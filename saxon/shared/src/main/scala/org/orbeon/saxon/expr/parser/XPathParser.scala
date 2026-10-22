@@ -2992,14 +2992,8 @@ class XPathParser {
    * @return null if not found (this means the variable is probably a
    *         context variable); otherwise the relevant RangeVariable
    */
-  def findRangeVariable(qName: StructuredQName): LocalBinding = {
-    for (v <- rangeVariables.size - 1 to 0 by -1) {
-      val b = rangeVariables(v)
-      if (b.getVariableQName == qName)
-        return b
-    }
-    parserExtension.findOuterRangeVariable(this, qName)
-  }
+  def findRangeVariable(qName: StructuredQName): LocalBinding =
+    rangeVariables.find(_.getVariableQName == qName).getOrElse(parserExtension.findOuterRangeVariable(this, qName))
 
   /**
    * Set the range variable stack. Used when parsing a nested subexpression

@@ -252,6 +252,7 @@ final class Tokenizer {
               currentToken = Token.COUNT
             case "copy" =>
               currentToken = Token.COPY
+            case _ =>
           }
         case Token.PERCENT =>
           if (currentTokenValue == "declare")
@@ -330,6 +331,7 @@ final class Tokenizer {
       if (optype != Token.UNKNOWN) currentToken = optype
     case Token.STAR =>
       currentToken = Token.MULT
+    case _ =>
   }
 
   /**
