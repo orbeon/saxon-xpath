@@ -159,12 +159,12 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
             next()
           }
         } else {
-          val next: Item = level2.next()
-          if (next == null) {
+          val nextItem: Item = level2.next()
+          if (nextItem == null) {
             level2 = null
-            next
+            next()
           } else {
-            next
+            nextItem
           }
         }
 

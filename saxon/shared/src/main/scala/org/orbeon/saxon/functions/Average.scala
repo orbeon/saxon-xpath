@@ -120,6 +120,4 @@ class Average extends FoldingFunction {
       }
 
   }
-
-  override def call(context: XPathContext, args: Array[Sequence]): Sequence = call(context, args)
 }

@@ -86,44 +86,8 @@ object Configuration {
    * @param messages List to be populated with messages in the event of failure
    * @return an InputStream for reading the file/resource
    */
-  def locateResource(filename: String, messages: ju.List[String]): InputStream = {
-
-    // ORBEON: JVM only
-    null
-//
-//    val fileName: String = "net/sf/saxon/data/" + filename
-//    var loader: ClassLoader = null
-//    try loader = Thread.currentThread.getContextClassLoader
-//    catch {
-//      case _: Exception =>
-//        messages.add("Failed to getContextClassLoader() - continuing\n")
-//    }
-//    var in: InputStream = null
-//    if (loader != null) {
-//      in = loader.getResourceAsStream(fileName)
-//      if (in == null)
-//        messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
-//    }
-//    if (in == null) {
-//      loader = classOf[Configuration].getClassLoader
-//      if (loader != null) {
-//        in = loader.getResourceAsStream(fileName)
-//        if (in == null)
-//          messages.add("Cannot read " + fileName + " file located using ClassLoader " + loader + " - continuing\n")
-//      }
-//    }
-//    if (in == null) { // Means we're in a very strange class-loading environment, things are getting desperate
-//      val url = ClassLoader.getSystemResource(fileName)
-//      if (url != null)
-//        try in = url.openStream
-//        catch {
-//          case ioe: IOException =>
-//            messages.add("IO error " + ioe.getMessage + " reading " + fileName + " located using getSystemResource(): using defaults")
-//            in = null
-//        }
-//    }
-//    in
-  }
+  def locateResource(filename: String, messages: ju.List[String]): InputStream =
+    org.orbeon.saxon.java.PlatformImpl.locateResource(filename)
 
   // ORBEON: No callers.
 //  /**

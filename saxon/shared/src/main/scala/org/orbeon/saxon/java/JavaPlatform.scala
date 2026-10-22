@@ -62,46 +62,11 @@ class JavaPlatform extends Platform {
 
   def getPlatformSuffix: String = "J"
 
-  // ORBEON: TODO: Custom parser loading.
-  def loadParser(): XMLReader = {
-    ???
-//    SAXParserFactory.newInstance().newSAXParser().getXMLReader
-  }
+  def loadParser(): XMLReader =
+    PlatformImpl.loadParser()
 
-  // ORBEON: TODO: Custom parser loading.
-  def loadParserForXmlFragments(): XMLReader = {
-    ???
-//    var factory: SAXParserFactory = null
-//    if (tryJdk9) {
-//      try {
-//        val method: Method =
-//          classOf[SAXParserFactory].getMethod("newDefaultInstance")
-//        val result: AnyRef = method.invoke(null)
-//        factory = result.asInstanceOf[SAXParserFactory]
-//      } catch {
-//        case e: Exception => tryJdk9 = false
-//
-//      }
-//    }
-//    if (factory == null) {
-//      try {
-//        val factoryClass: Class[_] = Class.forName(
-//          "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl")
-//        factory = factoryClass.newInstance().asInstanceOf[SAXParserFactory]
-//      } catch {
-//        case e2: Exception => {}
-//
-//      }
-//    }
-//    if (factory != null) {
-//      try factory.newSAXParser().getXMLReader
-//      catch {
-//        case e: Exception => {}
-//
-//      }
-//    }
-//    loadParser()
-  }
+  def loadParserForXmlFragments(): XMLReader =
+    loadParser()
 
   def getParserSource(
     pipe          : PipelineConfiguration,

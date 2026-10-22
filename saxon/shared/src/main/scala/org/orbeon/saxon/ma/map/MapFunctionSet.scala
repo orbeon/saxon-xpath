@@ -292,7 +292,7 @@ object MapFunctionSet {
         case mapType: MapType =>
           var maybeCombined: Boolean = true
           if (args.length == 1) {
-            maybeCombined = false
+            maybeCombined = duplicates == "combine"
           } else args(1) match {
             case literal: Literal =>
               val options = literal.getValue.head.asInstanceOf[MapItem]

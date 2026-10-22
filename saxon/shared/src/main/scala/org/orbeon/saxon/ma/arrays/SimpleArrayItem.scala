@@ -91,7 +91,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
   }
 
   def subArray(start: Int, end: Int): ArrayItem =
-    new SimpleArrayItem(members.slice(start, end).asInstanceOf[List[GroundedValue]])
+    new SimpleArrayItem(membersList.subList(start, end))
 
   def insert(position: Int, member: GroundedValue): ArrayItem = {
     val a2 = new ImmutableArrayItem(this)

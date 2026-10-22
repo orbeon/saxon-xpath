@@ -29,8 +29,9 @@ class SlotManager {
 
   def allocateSlotNumber(qName: StructuredQName): Int = {
     variableMap.add(qName)
+    val s = numberOfVariables
     numberOfVariables += 1
-    numberOfVariables
+    s
   }
 
   def showStackFrame(context: XPathContext, logger: Logger): Unit = ()

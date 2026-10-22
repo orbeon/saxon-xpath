@@ -344,20 +344,18 @@ object ExpressionTool {
     }
     exp match {
       case param: LocalParam if param.getSlotNumber < 0 =>
-        param.setSlotNumber({
-          nextFree += 1
-          nextFree
-        })
+        val s = nextFree
+        nextFree += 1
+        param.setSlotNumber(s)
       case _ =>
     }
     exp match {
       case expr: FLWORExpression =>
         for (c <- expr.getClauseList.asScala) {
           for (b <- c.getRangeVariables) {
-            b.setSlotNumber({
-              nextFree += 1
-              nextFree
-            })
+            val s = nextFree
+            nextFree += 1
+            b.setSlotNumber(s)
             frame.allocateSlotNumber(b.getVariableQName)
           }
         }

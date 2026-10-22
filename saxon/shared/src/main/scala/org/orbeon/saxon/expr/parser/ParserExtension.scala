@@ -176,7 +176,7 @@ object ParserExtension {
   }
 
   def findOuterRangeVariable(qName: StructuredQName,
-                             inlineFunctionStack: List[InlineFunctionDetails],
+                             inlineFunctionStack: collection.Seq[InlineFunctionDetails],
                              env: StaticContext): LocalBinding = {
     var b2 = findOuterXPathRangeVariable(qName, inlineFunctionStack)
     if (b2 != null)
@@ -187,7 +187,7 @@ object ParserExtension {
   }
 
   private def findOuterXPathRangeVariable(qName: StructuredQName,
-                                          inlineFunctionStack: List[InlineFunctionDetails]): LocalBinding = {
+                                          inlineFunctionStack: collection.Seq[InlineFunctionDetails]): LocalBinding = {
     var s: Int = inlineFunctionStack.size - 1
     while (s >= 0) {
       var details: InlineFunctionDetails = inlineFunctionStack(s)
@@ -201,7 +201,7 @@ object ParserExtension {
             details = inlineFunctionStack(bs)
             var found = false
             breakable {
-              for (p <- 0 until details.outerVariablesUsed.size - 1
+              for (p <- 0 until details.outerVariablesUsed.size
                    if details.outerVariablesUsed.get(p) == b2) {
                 b2 = details.implicitParams.get(p)
                 found = true
@@ -231,7 +231,7 @@ object ParserExtension {
   }
 
   private def bindParametersInNestedFunctions(qName: StructuredQName,
-                                              inlineFunctionStack: List[InlineFunctionDetails],
+                                              inlineFunctionStack: collection.Seq[InlineFunctionDetails],
                                               start: Int): LocalBinding = {
     var details = inlineFunctionStack(start)
     val params = details.implicitParams
@@ -242,7 +242,7 @@ object ParserExtension {
         details = inlineFunctionStack(bs)
         var found: Boolean = false
         breakable {
-          for (p <- 0 until details.outerVariablesUsed.size - 1
+          for (p <- 0 until details.outerVariablesUsed.size
                if details.outerVariablesUsed.get(p) == param) {
             b2 = details.implicitParams.get(p)
             found = true
@@ -267,7 +267,7 @@ object ParserExtension {
   }
 
   private def findOuterXSLTVariable(qName: StructuredQName,
-                                    inlineFunctionStack: List[InlineFunctionDetails],
+                                    inlineFunctionStack: collection.Seq[InlineFunctionDetails],
                                     env: StaticContext): LocalBinding = {
     /*val decl: SourceBinding = env
       .asInstanceOf[ExpressionContext]
@@ -302,7 +302,7 @@ object ParserExtension {
 
 class ParserExtension {
 
-  var inlineFunctionStack: List[InlineFunctionDetails] = Nil
+  val inlineFunctionStack = new mutable.ArrayBuffer[InlineFunctionDetails]()
 
   private def needExtension(p: XPathParser, what: String): Unit =
     p.grumble(what + " require support for Saxon extensions, available in Saxon-PE or higher")
@@ -456,7 +456,7 @@ class ParserExtension {
     details.outerVariablesUsed = new ju.ArrayList(4)
     details.implicitParams = new ju.ArrayList(4)
 
-    inlineFunctionStack ::= details
+    inlineFunctionStack += details
 
     p.setRangeVariables(new mutable.Stack[LocalBinding])
     p.nextToken()
@@ -537,7 +537,7 @@ class ParserExtension {
     p.setLocation(result, offset)
     p.setRangeVariables(details.outerVariables)
 
-    inlineFunctionStack = inlineFunctionStack.tail
+    inlineFunctionStack.remove(inlineFunctionStack.size - 1)
     result
   }
 

@@ -309,8 +309,8 @@ object Type {
     if ((p1 == DECIMAL && p2 == INTEGER) || (p2 == DECIMAL && p1 == INTEGER))
       return DECIMAL
 
-    p1 match {
-      case atomicType: BuiltInAtomicType if p2.asInstanceOf[BuiltInAtomicType].isNumericType && p2.isInstanceOf[BuiltInAtomicType] && atomicType.isNumericType =>
+    (p1, p2) match {
+      case (a1: BuiltInAtomicType, a2: BuiltInAtomicType) if a1.isNumericType && a2.isNumericType =>
         return NumericType.getInstance
       case _ =>
     }

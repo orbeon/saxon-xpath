@@ -35,8 +35,7 @@ class DictionaryMap extends MapItem {
 
   override def keys: AtomicIterator[StringValue] = {
     val base = hashMap.keySet.iterator
-    if (base.hasNext)
-      new StringValue(base.next()).asInstanceOf[AtomicIterator[StringValue]] else null
+    () => if (base.hasNext) new StringValue(base.next()) else null
   }
 
   override def keyValuePairs: java.lang.Iterable[KeyValuePair] = {
