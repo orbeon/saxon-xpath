@@ -179,7 +179,7 @@ class REMatcher(val progrm: REProgram) {
       if (!checkPreconditions(z)) return false
 
       while (!search.isEnd(z - 1)) {
-        if (matchAt(i, anchored = false)) return true
+        if (matchAt(z, anchored = false)) return true
         z += 1
       }
       false

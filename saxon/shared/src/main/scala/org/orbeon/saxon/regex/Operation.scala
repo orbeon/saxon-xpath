@@ -386,17 +386,17 @@ object Operation {
                                 position: Int): IntIterator = {
       val in: UnicodeString = matcher.search
       if (position + len > in.uLength) {
-        EmptyIntIterator.getInstance
+        return EmptyIntIterator.getInstance
       }
       if (matcher.program.flags.isCaseIndependent) {
         for (i <- 0 until len
              if !matcher.equalCaseBlind(in.uCharAt(position + i),
                atom.uCharAt(i))) {
-          EmptyIntIterator.getInstance
+          return EmptyIntIterator.getInstance
         }
       } else {
         for (i <- 0 until len if in.uCharAt(position + i) != atom.uCharAt(i)) {
-          EmptyIntIterator.getInstance
+          return EmptyIntIterator.getInstance
         }
       }
       new IntSingletonIterator(position + len)
