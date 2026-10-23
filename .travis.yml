@@ -2,7 +2,7 @@ language: scala
 scala:
 - 2.13.1
 jdk:
-- openjdk11
+- openjdk17
 node_js:
 - node
 env:
