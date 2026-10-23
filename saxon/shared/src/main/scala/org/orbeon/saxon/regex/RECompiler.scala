@@ -511,7 +511,7 @@ class RECompiler {
     if (fsb.isEmptySB)
       internalError()
 
-    RECompiler.trace(new Operation.OpAtom(UnicodeString.makeUnicodeString(fsb.condense)))
+    RECompiler.trace(new Operation.OpAtom(UnicodeString.makeUnicodeString(fsb.condense())))
   }
 
   @throws[RESyntaxException]
@@ -594,7 +594,7 @@ class RECompiler {
           else
             quantifierType = 0
         }
-        if (ret.matchesEmptyString == Operation.MATCHES_ZLS_ANYWHERE) {
+        if (ret.matchesEmptyString() == Operation.MATCHES_ZLS_ANYWHERE) {
           if (quantifierType == '?') {
             quantifierType = 0
           } else if (quantifierType == '+' || quantifierType == '{') {

@@ -51,7 +51,7 @@ abstract class GroupMatchingIterator
 
    def advance(): Unit
 
-  def getCurrentGroupingKey(): AtomicSequence = null
+  def getCurrentGroupingKey: AtomicSequence = null
 
   def iterateCurrentGroup(): SequenceIterator =
     new ListIterator(currentMembers)

@@ -30,7 +30,7 @@ class Put extends SystemFunction {
 
   def makeFunctionCall(arguments: Array[Expression]): Expression =
     new SystemFunctionCall(this, arguments) {
-      override def isUpdatingExpression(): Boolean = true
+      override def isUpdatingExpression: Boolean = true
 
       override def evaluatePendingUpdates(context: XPathContext,
                                           pul: PendingUpdateList): Unit = {

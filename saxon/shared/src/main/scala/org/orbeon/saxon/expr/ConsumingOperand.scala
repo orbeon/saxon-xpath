@@ -27,7 +27,7 @@ class ConsumingOperand(subExpression: Expression)
     *
     * @return the operand usage
     */
-   override def getOperandRole(): OperandRole =
+   override def getOperandRole: OperandRole =
     new OperandRole(0, OperandUsage.ABSORPTION)
 
   /*@NotNull*/

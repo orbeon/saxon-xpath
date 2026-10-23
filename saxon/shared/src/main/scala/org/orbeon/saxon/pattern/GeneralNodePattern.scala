@@ -48,7 +48,7 @@ class GeneralNodePattern(
     this
   }
 
-  override def getDependencies(): Int =
+  override def getDependencies: Int =
     equivalentExpr.getDependencies &
       (StaticProperty.DEPENDS_ON_LOCAL_VARIABLES | StaticProperty.DEPENDS_ON_USER_FUNCTIONS)
 

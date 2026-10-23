@@ -29,7 +29,7 @@ object EndsWith {
 
 class EndsWith extends CollatingFunctionFixed {
 
-  override def isSubstringMatchingFunction(): Boolean = true
+  override def isSubstringMatchingFunction: Boolean = true
 
   override def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
                                          contextInfo: ContextItemStaticInfo,
@@ -53,6 +53,6 @@ class EndsWith extends CollatingFunctionFixed {
       endsWith(s0, s1, stringCollator.asInstanceOf[SubstringMatcher]))
   }
 
-  override def getCompilerName(): String = "StartsWithCompiler"
+  override def getCompilerName: String = "StartsWithCompiler"
 
 }

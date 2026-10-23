@@ -17,6 +17,6 @@ class UpperCase extends ScalarSystemFunction {
 
   override def resultWhenEmpty(): One[StringValue] = ScalarSystemFunction.ZERO_LENGTH_STRING
 
-  override def getCompilerName(): String = "ForceCaseCompiler"
+  override def getCompilerName: String = "ForceCaseCompiler"
 
 }

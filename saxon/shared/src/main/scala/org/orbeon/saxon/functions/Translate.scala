@@ -118,7 +118,7 @@ class Translate
     }
   }
 
-  override def getCompilerName(): String = "TranslateCompiler"
+  override def getCompilerName: String = "TranslateCompiler"
 
   /**
     * Make a copy of this SystemFunction. This is required only for system functions such as regex

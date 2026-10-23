@@ -186,7 +186,7 @@ class TypeHierarchy(var config: Configuration) {
               .convert(numericValue,
                 BuiltInAtomicType.DOUBLE,
                 config.getConversionRules)
-              .asAtomic()
+              .asAtomic
               .asInstanceOf[DoubleValue]
           case _ =>
             throw new XPathException(
@@ -205,7 +205,7 @@ class TypeHierarchy(var config: Configuration) {
               .convert(numericValue,
                 BuiltInAtomicType.FLOAT,
                 config.getConversionRules)
-              .asAtomic()
+              .asAtomic
               .asInstanceOf[FloatValue]
           case _ =>
             throw new XPathException(

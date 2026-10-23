@@ -44,7 +44,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   adoptChildExpression(getPredicate)
 
-  def getPredicate(): Expression = predicateOp.getChildExpression
+  def getPredicate: Expression = predicateOp.getChildExpression
 
   def getBasePattern: Pattern =
     basePatternOp.getChildExpression.asInstanceOf[Pattern]
@@ -110,7 +110,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def getItemType: ItemType = getBasePattern.getItemType
 
-  override def getDependencies(): Int = getPredicate.getDependencies
+  override def getDependencies: Int = getPredicate.getDependencies
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {

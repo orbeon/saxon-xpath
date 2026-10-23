@@ -27,7 +27,7 @@ class CompareToIntegerConstant(operand: Expression,
   var oprt = operator
   this.oprt = operator
 
-  def getRhsExpression(): Expression = new Literal(new Int64Value(comparand))
+  def getRhsExpression: Expression = new Literal(new Int64Value(comparand))
 
   /*@NotNull*/
 
@@ -115,7 +115,7 @@ class CompareToIntegerConstant(operand: Expression,
       " " +
       comparand
 
-  def getAtomicComparer(): AtomicComparer = DoubleSortComparer.getInstance
+  def getAtomicComparer: AtomicComparer = DoubleSortComparer.getInstance
 
 }
 

@@ -38,7 +38,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   override def computeSpecialProperties(): Int = {
 
-    if (size == 0)
+    if (size() == 0)
       return StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
 
     var p = super.computeSpecialProperties()
@@ -75,7 +75,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
       if (allSubtreeAxis) {
         p |= StaticProperty.SUBTREE_NODESET
       }
-      if (size == 2 &&
+      if (size() == 2 &&
         getChildExpression(0).asInstanceOf[AxisExpression].axis == AxisInfo.ATTRIBUTE &&
         getChildExpression(1).asInstanceOf[AxisExpression].axis == AxisInfo.CHILD) {
         p |= StaticProperty.ORDERED_NODESET
@@ -86,12 +86,12 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   def copy(rebindings: RebindingMap): Expression = {
 
-    val c2 = Array.ofDim[Expression](size)
-    for (c <- 0 until size)
+    val c2 = Array.ofDim[Expression](size())
+    for (c <- 0 until size())
       c2(c) = getChildExpression(c).copy(rebindings)
 
     val b2 = new ConditionalBlock(c2)
-    for (c <- 0 until size)
+    for (c <- 0 until size())
       b2.adoptChildExpression(c2(c))
 
     b2.allNodesUntyped = allNodesUntyped
@@ -101,12 +101,12 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   override def getItemType: ItemType = {
 
-    if (size == 0)
+    if (size() == 0)
       return ErrorType
 
     var t1 = getChildExpression(0).getItemType
     val th = getConfiguration.getTypeHierarchy
-    for (i <- 1 until size) {
+    for (i <- 1 until size()) {
       t1 = Type.getCommonSuperType(t1, getChildExpression(i).getItemType, th)
       if (t1 eq AnyItemType)
         return t1
@@ -114,14 +114,14 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     t1
   }
 
-  override def getCardinality(): Int = {
+  override def getCardinality: Int = {
 
-    if (size == 0)
+    if (size() == 0)
       return StaticProperty.EMPTY
 
     var c1 = getChildExpression(0).getCardinality
     breakable {
-      for (i <- 1 until size) {
+      for (i <- 1 until size()) {
         c1 = Cardinality.sum(c1, getChildExpression(i).getCardinality)
         if (c1 == StaticProperty.ALLOWS_ZERO_OR_MORE)
           break()
@@ -154,7 +154,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     var alwaysNonEmpty: Boolean = false
     var alwaysEmpty: Boolean = true
     breakable {
-      for (c <- 0 until size if !(getChildExpression(c)
+      for (c <- 0 until size() if !(getChildExpression(c)
         .isInstanceOf[OnEmptyExpr] || getChildExpression(c)
         .isInstanceOf[OnNonEmptyExpr])) {
         lastOrdinaryInstruction = c
@@ -181,7 +181,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
         getLocation
       )
       val retain = new ArrayList[Expression]()
-      for (c <- 0 until size)
+      for (c <- 0 until size())
         getChildExpression(c) match {
           case _: OnNonEmptyExpr =>
           case expr: OnEmptyExpr => retain.add(expr.getBaseExpression)
@@ -196,7 +196,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
         getLocation
       )
       val retain = new ArrayList[Expression]()
-      for (c <- 0 until size)
+      for (c <- 0 until size())
         getChildExpression(c) match {
           case _: OnEmptyExpr       =>
           case expr: OnNonEmptyExpr => retain.add(expr.getBaseExpression)
@@ -206,7 +206,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
     }
     if (lastOrdinaryInstruction == -1) {
       val retain = new ArrayList[Expression]()
-      for (c <- 0 until size if getChildExpression(c).isInstanceOf[OnEmptyExpr])
+      for (c <- 0 until size() if getChildExpression(c).isInstanceOf[OnEmptyExpr])
         retain.add(getChildExpression(c).asInstanceOf[OnEmptyExpr].getBaseExpression)
       return Block.makeBlock(retain)
     }

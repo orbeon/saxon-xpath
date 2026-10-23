@@ -80,7 +80,7 @@ class NotationValue(prefix: String,
 
   }
 
-  def getSchemaComparable(): Comparable[AnyRef] = new NotationComparable().asInstanceOf
+  def getSchemaComparable: Comparable[AnyRef] = new NotationComparable().asInstanceOf
 
   private class NotationComparable extends Comparable[AnyRef] {
 

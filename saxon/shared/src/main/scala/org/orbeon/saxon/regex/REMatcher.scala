@@ -131,7 +131,7 @@ class REMatcher(val progrm: REProgram) {
     var idx = 0
     val iter = operation.iterateMatches(this, i)
     if (iter.hasNext) {
-      idx = iter.next
+      idx = iter.next()
       setParenEnd(0, idx)
       return true
     }
@@ -364,7 +364,7 @@ class REMatcher(val progrm: REProgram) {
       sb.appendWideChar(in.uCharAt(i))
     }
 
-    sb.condense
+    sb.condense()
   }
 
   def replaceWith(in: UnicodeString, replacer: CharSequence => CharSequence) = {

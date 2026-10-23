@@ -239,7 +239,7 @@ class JsonParser {
     val t = new JsonTokenizer(input)
     t.next()
     parseConstruct(handler, t, flags, context)
-    if (t.next != JsonParser.JsonToken.EOF) invalidJSON("Unexpected token beyond end of JSON input", JsonParser.ERR_GRAMMAR, t.lineNumber)
+    if (t.next() != JsonParser.JsonToken.EOF) invalidJSON("Unexpected token beyond end of JSON input", JsonParser.ERR_GRAMMAR, t.lineNumber)
   }
 
   /**

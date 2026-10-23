@@ -68,7 +68,7 @@ class ForEach(select: Expression,
     isInstr = inst
   }
 
-  override def isInstruction(): Boolean = isInstr
+  override def isInstruction: Boolean = isInstr
 
   def getSelect: Expression = selectOp.getChildExpression
 
@@ -102,9 +102,9 @@ class ForEach(select: Expression,
       operandList(selectOp, actionOp, threadsOp)
     }
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_FOR_EACH
+  override def getInstructionNameCode: Int = StandardNames.XSL_FOR_EACH
 
-  def getSelectExpression(): Expression = getSelect
+  def getSelectExpression: Expression = getSelect
 
   def setSelectExpression(select: Expression): Unit = {
     this.setSelect(select)
@@ -114,7 +114,7 @@ class ForEach(select: Expression,
     this.setAction(action)
   }
 
-  def getActionExpression(): Expression = getAction
+  def getActionExpression: Expression = getAction
 
   def getNumberOfThreadsExpression: Expression = getThreads
 
@@ -214,7 +214,7 @@ class ForEach(select: Expression,
     (getAction.isInstanceOf[Instruction]) &&
       getAction.asInstanceOf[Instruction].alwaysCreatesNewNodes()
 
-  override def isUpdatingExpression(): Boolean = getAction.isUpdatingExpression
+  override def isUpdatingExpression: Boolean = getAction.isUpdatingExpression
 
   override def checkForUpdatingSubexpressions(): Unit = {
     if (getSelect.isUpdatingExpression) {

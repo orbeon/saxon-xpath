@@ -144,7 +144,7 @@ class DocumentInstr(var textOnly: Boolean,
       if (constantText != null) {
         new StringLiteral(new UntypedAtomicValue(constantText))
       } else if (getContentExpression.isInstanceOf[ValueOf]) {
-        getContentExpression.asInstanceOf[ValueOf].convertToCastAsString
+        getContentExpression.asInstanceOf[ValueOf].convertToCastAsString()
       } else {
         val fn: Expression = SystemFunction.makeCall(
           "string-join",
@@ -243,7 +243,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
     root
   }
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_DOCUMENT
+  override def getInstructionNameCode: Int = StandardNames.XSL_DOCUMENT
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("doc", this)

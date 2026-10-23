@@ -33,7 +33,7 @@ import java.util.Arrays
 class NextMatch(var useTailRecursion: Boolean)
   extends ApplyNextMatchingTemplate() {
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_NEXT_MATCH
+  override def getInstructionNameCode: Int = StandardNames.XSL_NEXT_MATCH
 
   def copy(rebindings: RebindingMap): Expression = {
     val nm2: NextMatch = new NextMatch(useTailRecursion)

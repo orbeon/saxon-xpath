@@ -103,7 +103,7 @@ class LocalParam extends Instruction with LocalBinding {
     referenceCount = refCount
   }
 
-  override def getCardinality(): Int = StaticProperty.EMPTY
+  override def getCardinality: Int = StaticProperty.EMPTY
 
   def isAssignable: Boolean = false
 
@@ -229,7 +229,7 @@ class LocalParam extends Instruction with LocalBinding {
   def getConversionEvaluationMode: EvaluationMode.EvaluationMode =
     conversionEvaluator.getEvaluationMode
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_PARAM
+  override def getInstructionNameCode: Int = StandardNames.XSL_PARAM
 
   override def operands: java.lang.Iterable[Operand] =
     operandSparseList(selectOp, conversionOp)

@@ -36,7 +36,7 @@ object SelectedElementsSpaceStrippingRule {
     presenter.startElement(which)
     presenter.emitAttribute("test", AlphaCode.fromItemType(rule.getPattern.getItemType))
     presenter.emitAttribute("prec", rule.getPrecedence.toString)
-    presenter.endElement
+    presenter.endElement()
   }
 
   private def exportRuleJS(rule: Rule, fsb: FastStringBuffer) = {
@@ -268,6 +268,6 @@ class SelectedElementsSpaceStrippingRule(var rejectDuplicates: Boolean) extends 
     for (r <- namedElementRules.values.asScala) {
       SelectedElementsSpaceStrippingRule.exportRule(r, presenter)
     }
-    presenter.endElement
+    presenter.endElement()
   }
 }

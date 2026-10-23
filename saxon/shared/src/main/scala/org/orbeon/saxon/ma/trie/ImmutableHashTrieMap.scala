@@ -31,7 +31,7 @@ object ImmutableHashTrieMap {
 
     override def remove(shift: Int, key: K): ImmutableHashTrieMap[K, V] = this
 
-    override def isArrayNode(): Boolean = false
+    override def isArrayNode: Boolean = false
 
     override def get(shift: Int, key: K): V = null.asInstanceOf[V]
 
@@ -65,7 +65,7 @@ object ImmutableHashTrieMap {
       this
     }
 
-    override def isArrayNode(): Boolean = false
+    override def isArrayNode: Boolean = false
 
     override def get(shift: Int, key: K): V = {
       if (this.key == key) {
@@ -139,7 +139,7 @@ object ImmutableHashTrieMap {
       new ListHashNode(newList)
     }
 
-    override def isArrayNode(): Boolean = false
+    override def isArrayNode: Boolean = false
 
     override def get(shift: Int, key: K): V =
       entries.asScala.find(_._1 == key).map(_._2).getOrElse(null.asInstanceOf[V])
@@ -190,7 +190,7 @@ object ImmutableHashTrieMap {
   private abstract class ArrayHashNode[K, V]
     extends ImmutableHashTrieMap[K, V] {
 
-    override def isArrayNode(): Boolean = true
+    override def isArrayNode: Boolean = true
 
   }
 

@@ -46,11 +46,11 @@ class NamespaceConstructor(name: Expression) extends SimpleNodeConstructor {
   override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, nameOp)
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_NAMESPACE
+  override def getInstructionNameCode: Int = StandardNames.XSL_NAMESPACE
 
   override def getItemType: ItemType = NodeKindTest.NAMESPACE
 
-  override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  override def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   def localTypeCheck(visitor: ExpressionVisitor,
                      contextItemType: ContextItemStaticInfo): Unit = {

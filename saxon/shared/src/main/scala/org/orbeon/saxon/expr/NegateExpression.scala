@@ -25,7 +25,7 @@ class NegateExpression(base: Expression) extends UnaryExpression(base) {
   @BooleanBeanProperty
   var backwardsCompatible: Boolean = _
 
-   def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC
+   def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
 
   override def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Expression = {

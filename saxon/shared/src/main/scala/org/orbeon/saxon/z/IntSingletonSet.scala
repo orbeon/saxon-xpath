@@ -57,7 +57,7 @@ class IntSingletonSet(private var value: Int) extends IntSet {
       return false
     }
     val ii: IntIterator = other.iterator
-    while (ii.hasNext) if (value != ii.next) {
+    while (ii.hasNext) if (value != ii.next()) {
      return false
     }
     true

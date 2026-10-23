@@ -73,6 +73,6 @@ class VirtualUntypedCopy  (base: NodeInfo, root: NodeInfo)
     vc
   }
 
-  override def isNilled(): Boolean = false
+  override def isNilled: Boolean = false
 
 }

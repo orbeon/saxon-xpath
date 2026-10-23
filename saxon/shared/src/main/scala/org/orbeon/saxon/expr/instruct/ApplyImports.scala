@@ -30,7 +30,7 @@ import org.orbeon.saxon.trans.rules.Rule
 
 class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
 
- override def getInstructionNameCode(): Int = StandardNames.XSL_APPLY_IMPORTS
+ override def getInstructionNameCode: Int = StandardNames.XSL_APPLY_IMPORTS
 
   def copy(rebindings: RebindingMap): Expression = {
     val ai2: ApplyImports = new ApplyImports()

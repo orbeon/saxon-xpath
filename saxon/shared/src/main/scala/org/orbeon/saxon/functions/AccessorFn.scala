@@ -52,145 +52,145 @@ object AccessorFn {
 
   class YearFromDateTime extends AccessorFn {
 
-    override def getComponentId(): Component.Component = Component.YEAR
+    override def getComponentId: Component.Component = Component.YEAR
 
   }
 
   class MonthFromDateTime extends AccessorFn {
 
-    override def getComponentId():  Component.Component = Component.MONTH
+    override def getComponentId:  Component.Component = Component.MONTH
 
   }
 
   class DayFromDateTime extends AccessorFn {
 
-    override def getComponentId():  Component.Component = Component.DAY
+    override def getComponentId:  Component.Component = Component.DAY
 
   }
 
   class HoursFromDateTime extends AccessorFn {
 
-    override def getComponentId():  Component.Component = Component.HOURS
+    override def getComponentId:  Component.Component = Component.HOURS
 
   }
 
   class MinutesFromDateTime extends AccessorFn {
 
-    override def getComponentId():  Component.Component = Component.MINUTES
+    override def getComponentId:  Component.Component = Component.MINUTES
 
   }
 
   class SecondsFromDateTime extends AccessorFn {
 
-    override def getComponentId():  Component.Component = Component.SECONDS
+    override def getComponentId:  Component.Component = Component.SECONDS
 
   }
 
   class TimezoneFromDateTime extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.TIMEZONE
+    override def getComponentId : Component.Component =Component.TIMEZONE
 
   }
 
   class YearFromDate extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.YEAR
+    override def getComponentId : Component.Component =Component.YEAR
 
   }
 
   class MonthFromDate extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.MONTH
+    override def getComponentId : Component.Component =Component.MONTH
 
   }
 
   class DayFromDate extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.DAY
+    override def getComponentId : Component.Component =Component.DAY
 
   }
 
   class TimezoneFromDate extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.TIMEZONE
+    override def getComponentId : Component.Component =Component.TIMEZONE
 
   }
 
   class HoursFromTime extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.HOURS
+    override def getComponentId : Component.Component =Component.HOURS
 
   }
 
   class MinutesFromTime extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.MINUTES
+    override def getComponentId : Component.Component =Component.MINUTES
 
   }
 
   class SecondsFromTime extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.SECONDS
+    override def getComponentId : Component.Component =Component.SECONDS
 
   }
 
   class TimezoneFromTime extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.TIMEZONE
+    override def getComponentId : Component.Component =Component.TIMEZONE
 
   }
 
   class YearsFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.YEAR
+    override def getComponentId : Component.Component =Component.YEAR
 
   }
 
   class MonthsFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.MONTH
+    override def getComponentId : Component.Component =Component.MONTH
 
   }
 
   class DaysFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.DAY
+    override def getComponentId : Component.Component =Component.DAY
 
   }
 
   class HoursFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.HOURS
+    override def getComponentId : Component.Component =Component.HOURS
 
   }
 
   class MinutesFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.MINUTES
+    override def getComponentId : Component.Component =Component.MINUTES
 
   }
 
   class SecondsFromDuration extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.SECONDS
+    override def getComponentId : Component.Component =Component.SECONDS
 
   }
 
   class LocalNameFromQName extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.LOCALNAME
+    override def getComponentId : Component.Component =Component.LOCALNAME
 
   }
 
   class PrefixFromQName extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.PREFIX
+    override def getComponentId : Component.Component =Component.PREFIX
 
   }
 
   class NamespaceUriFromQName extends AccessorFn {
 
-    override def getComponentId() : Component.Component =Component.NAMESPACE
+    override def getComponentId : Component.Component =Component.NAMESPACE
 
   }
 
@@ -200,7 +200,7 @@ abstract class AccessorFn extends ScalarSystemFunction {
 
   def getComponentId: AccessorFn.Component.Component
 
-  override  def getIntegerBounds(): Array[IntegerValue] = getComponentId match {
+  override  def getIntegerBounds: Array[IntegerValue] = getComponentId match {
     case AccessorFn.Component.YEAR =>
       Array(Int64Value.makeIntegerValue(-100000),
         Int64Value.makeIntegerValue(+100000))
@@ -223,6 +223,6 @@ abstract class AccessorFn extends ScalarSystemFunction {
   def evaluate(item: Item, context: XPathContext): AtomicValue =
     item.asInstanceOf[AtomicValue].getComponent(getComponentId)
 
-  override def getCompilerName(): String = "AccessorFnCompiler"
+  override def getCompilerName: String = "AccessorFnCompiler"
 
 }

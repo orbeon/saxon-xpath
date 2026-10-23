@@ -194,8 +194,8 @@ object BigDecimalValue {
 
     override def compareTo(o: AnyRef): Int = o match {
       case c: DecimalComparable                    => asBigDecimal.compareTo(c.asBigDecimal)
-      case c: Int64Value.Int64Comparable           => asBigDecimal.compareTo(BigDecimal.valueOf(c.asLong))
-      case c: BigIntegerValue.BigIntegerComparable => asBigDecimal.compareTo(new BigDecimal(c.asBigInteger))
+      case c: Int64Value.Int64Comparable           => asBigDecimal.compareTo(BigDecimal.valueOf(c.asLong()))
+      case c: BigIntegerValue.BigIntegerComparable => asBigDecimal.compareTo(new BigDecimal(c.asBigInteger()))
       case _                                       => SequenceTool.INDETERMINATE_ORDERING
     }
 
@@ -242,7 +242,7 @@ final class BigDecimalValue extends DecimalValue {
         // Must be a special value such as NaN or infinity
         val e = new ValidationFailure("Cannot convert double " + Err.wrap(in.toString, Err.VALUE) + " to decimal")
         e.setErrorCode("FOCA0002")
-        throw e.makeException
+        throw e.makeException()
     }
     typeLabel = BuiltInAtomicType.DECIMAL
   }
@@ -346,17 +346,17 @@ final class BigDecimalValue extends DecimalValue {
   /**
    * Negate the value
    */
-  override def negate = new BigDecimalValue(value.negate)
+  override def negate() = new BigDecimalValue(value.negate)
 
   /**
    * Implement the XPath floor() function
    */
-  override def floor = new BigDecimalValue(value.setScale(0, RoundingMode.FLOOR))
+  override def floor() = new BigDecimalValue(value.setScale(0, RoundingMode.FLOOR))
 
   /**
    * Implement the XPath ceiling() function
    */
-  override def ceiling = new BigDecimalValue(value.setScale(0, RoundingMode.CEILING))
+  override def ceiling() = new BigDecimalValue(value.setScale(0, RoundingMode.CEILING))
 
   /**
    * Implement the XPath round() function
@@ -403,7 +403,7 @@ final class BigDecimalValue extends DecimalValue {
    *
    * @return the number as an int if it is a possible subscript, or -1 otherwise
    */
-  override def asSubscript: Int =
+  override def asSubscript(): Int =
     if (isWholeNumber && value.compareTo(BigDecimal.ZERO) > 0 && value.compareTo(BigDecimalValue.MAX_INT) <= 0)
       try
         longValue.toInt
@@ -419,7 +419,7 @@ final class BigDecimalValue extends DecimalValue {
    * @return the absolute value
    * @since 9.2
    */
-  override def abs: BigDecimalValue =
+  override def abs(): BigDecimalValue =
     if (value.signum > 0)
       this
     else

@@ -126,7 +126,7 @@ class ApplyTemplates  ()
     operanda
   }
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_APPLY_TEMPLATES
+  override def getInstructionNameCode: Int = StandardNames.XSL_APPLY_TEMPLATES
 
   override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD

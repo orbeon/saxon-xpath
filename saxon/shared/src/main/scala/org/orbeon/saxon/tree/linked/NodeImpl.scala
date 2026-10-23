@@ -178,7 +178,7 @@ abstract class NodeImpl
 
   override def getLineNumber: Int = parent.getLineNumber
 
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   def getParent: NodeImpl = {
     if (parent.isInstanceOf[DocumentImpl] && parent

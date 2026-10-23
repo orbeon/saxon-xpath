@@ -283,14 +283,14 @@ final class CardinalityChecker private (
   /**
    * Determine the static cardinality of the expression
    */
-  override def computeCardinality: Int = requiredCardinality
+  override def computeCardinality(): Int = requiredCardinality
 
   /**
    * Get the static properties of this expression (other than its type). The result is
    * bit-signficant. These properties are used for optimizations. In general, if
    * property bit is set, it is true, but if it is unset, the value is unknown.
    */
-  override def computeSpecialProperties: Int = getBaseExpression.getSpecialProperties
+  override def computeSpecialProperties(): Int = getBaseExpression.getSpecialProperties
 
   /**
    * Copy an expression. This makes a deep copy.
@@ -313,7 +313,7 @@ final class CardinalityChecker private (
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode: Int = super.computeHashCode ^ requiredCardinality
+  override def computeHashCode(): Int = super.computeHashCode() ^ requiredCardinality
 
   /**
    * Diagnostic print of expression structure. The abstract expression tree
@@ -325,9 +325,9 @@ final class CardinalityChecker private (
     var occ = Cardinality.getOccurrenceIndicator(requiredCardinality)
     if (occ == "") occ = "1"
     out.emitAttribute("card", occ)
-    out.emitAttribute("diag", role.save)
+    out.emitAttribute("diag", role.save())
     getBaseExpression.`export`(out)
-    out.endElement
+    out.endElement()
   }
 
   /**

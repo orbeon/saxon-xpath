@@ -70,7 +70,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
                 contextInfo: ContextItemStaticInfo): Expression =
     rewrite((exp) => exp.typeCheck(visitor, contextInfo))
 
-  override def getCardinality(): Int = getDocumentSorter.getCardinality
+  override def getCardinality: Int = getDocumentSorter.getCardinality
 
  override  def computeSpecialProperties(): Int =
     getCondition.getSpecialProperties |

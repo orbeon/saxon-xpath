@@ -96,7 +96,7 @@ class Block(children: Array[Expression]) extends Instruction {
     adoptChildExpression(e)
   }
 
-  override def isInstruction(): Boolean = false
+  override def isInstruction: Boolean = false
 
   private def child(n: Int): Expression = operanda(n).getChildExpression
 
@@ -123,7 +123,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def getExpressionName: String = "sequence"
 
   override def computeSpecialProperties(): Int = {
-    if (size == 0) {
+    if (size() == 0) {
       return StaticProperty.SPECIAL_PROPERTY_MASK & ~StaticProperty.HAS_SIDE_EFFECTS
     }
     var p: Int = super.computeSpecialProperties()
@@ -160,7 +160,7 @@ class Block(children: Array[Expression]) extends Instruction {
       if (allSubtreeAxis) {
         p |= StaticProperty.SUBTREE_NODESET
       }
-      if (size == 2 &&
+      if (size() == 2 &&
         child(0)
           .asInstanceOf[AxisExpression]
           .axis == AxisInfo.ATTRIBUTE &&
@@ -223,9 +223,9 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   def mergeAdjacentTextInstructions(): Expression = {
-    val isLiteralText: Array[Boolean] = Array.ofDim[Boolean](size)
+    val isLiteralText: Array[Boolean] = Array.ofDim[Boolean](size())
     var hasAdjacentTextNodes: Boolean = false
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       isLiteralText(i) = child(i).isInstanceOf[ValueOf] &&
         child(i)
           .asInstanceOf[ValueOf]
@@ -237,9 +237,9 @@ class Block(children: Array[Expression]) extends Instruction {
       }
     }
     if (hasAdjacentTextNodes) {
-      val content: List[Expression] = new ArrayList[Expression](size)
+      val content: List[Expression] = new ArrayList[Expression](size())
       var pendingText: String = null
-      for (i <- 0 until size) {
+      for (i <- 0 until size()) {
         if (isLiteralText(i)) {
           pendingText = (if (pendingText == null) "" else pendingText) +
             child(i)
@@ -269,12 +269,12 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val c2: Array[Expression] = Array.ofDim[Expression](size)
-    for (c <- 0 until size) {
+    val c2: Array[Expression] = Array.ofDim[Expression](size())
+    for (c <- 0 until size()) {
       c2(c) = child(c).copy(rebindings)
     }
     val b2: Block = new Block(c2)
-    for (c <- 0 until size) {
+    for (c <- 0 until size()) {
       b2.adoptChildExpression(c2(c))
     }
     b2.allNodesUntyped = allNodesUntyped
@@ -284,12 +284,12 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def getItemType: ItemType = {
 
-    if (size == 0)
+    if (size() == 0)
       return ErrorType
 
     var t1: ItemType = null
     val th = getConfiguration.getTypeHierarchy
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       val child1: Expression = child(i)
       /*if (!(child1.isInstanceOf[Message])) {*/
       // Message class does not exist
@@ -313,11 +313,11 @@ class Block(children: Array[Expression]) extends Instruction {
     if (isInstruction) {
       super.getStaticUType(contextItemType)
     } else {
-      if (size == 0)
+      if (size() == 0)
         return UType.VOID
 
       var t1 = child(0).getStaticUType(contextItemType)
-      for (i <- 1 until size) {
+      for (i <- 1 until size()) {
         t1 = t1.union(child(i).getStaticUType(contextItemType))
         if (t1 == UType.ANY)
           return t1
@@ -326,12 +326,12 @@ class Block(children: Array[Expression]) extends Instruction {
     }
 
   override def computeCardinality(): Int = {
-    if (size == 0) {
+    if (size() == 0) {
       return StaticProperty.EMPTY
     }
     var c1: Int = child(0).getCardinality
     breakable {
-      for (i <- 1 until size) {
+      for (i <- 1 until size()) {
         c1 = Cardinality.sum(c1, child(i).getCardinality)
         if (c1 == StaticProperty.ALLOWS_MANY) {
           break()
@@ -344,7 +344,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def mayCreateNewNodes(): Boolean = someOperandCreatesNewNodes()
 
   override def checkForUpdatingSubexpressions(): Unit = {
-    if (size < 2) {
+    if (size() < 2) {
       return
     }
     var updating: Boolean = false
@@ -374,7 +374,7 @@ class Block(children: Array[Expression]) extends Instruction {
     }
   }
 
-  override def isVacuousExpression(): Boolean = {
+  override def isVacuousExpression: Boolean = {
     for (o <- operands.asScala) {
       val child = o.getChildExpression
       if (! child.isVacuousExpression)
@@ -386,7 +386,7 @@ class Block(children: Array[Expression]) extends Instruction {
   override def simplify(): Expression = {
     var allAtomic: Boolean = true
     var nested: Boolean = false
-    for (c <- 0 until size) {
+    for (c <- 0 until size()) {
       setChild(c, child(c).simplify())
       if (!Literal.isAtomic(child(c))) {
         allAtomic = false
@@ -397,17 +397,17 @@ class Block(children: Array[Expression]) extends Instruction {
         nested = true
       }
     }
-    if (size == 1) {
+    if (size() == 1) {
       val e: Expression = operanda(0).getChildExpression
       e.parentExpression = parentExpression
       e
-    } else if (size == 0) {
+    } else if (size() == 0) {
       val result: Expression = Literal.makeEmptySequence
       ExpressionTool.copyLocationInfo(this, result)
       result.parentExpression = parentExpression
       result
     } else if (nested) {
-      val list: List[Expression] = new ArrayList[Expression](size * 2)
+      val list: List[Expression] = new ArrayList[Expression](size() * 2)
       flatten(list)
       val children: Array[Expression] = Array.ofDim[Expression](list.size)
       for (i <- 0 until list.size) {
@@ -417,8 +417,8 @@ class Block(children: Array[Expression]) extends Instruction {
       ExpressionTool.copyLocationInfo(this, newBlock)
       newBlock.simplify()
     } else if (allAtomic) {
-      val values: Array[AtomicValue] = Array.ofDim[AtomicValue](size)
-      for (c <- 0 until size) {
+      val values: Array[AtomicValue] = Array.ofDim[AtomicValue](size())
+      for (c <- 0 until size()) {
         values(c) = child(c)
           .asInstanceOf[Literal]
           .getValue
@@ -520,15 +520,15 @@ class Block(children: Array[Expression]) extends Instruction {
       }
     }
     if (canSimplify) {
-      val list: List[Expression] = new ArrayList[Expression](size * 2)
+      val list: List[Expression] = new ArrayList[Expression](size() * 2)
       flatten(list)
       val result: Expression = Block.makeBlock(list)
       result.setRetainedStaticContext(getRetainedStaticContext)
       return result
     }
-    if (size == 0) {
+    if (size() == 0) {
       Literal.makeEmptySequence
-    } else if (size == 1) {
+    } else if (size() == 1) {
       child(0)
     } else {
       this
@@ -577,9 +577,9 @@ class Block(children: Array[Expression]) extends Instruction {
   override def getImplementationMethod: Int = ITERATE_METHOD | PROCESS_METHOD
 
   override def iterate(context: XPathContext): SequenceIterator =
-    if (size == 0)
+    if (size() == 0)
       EmptyIterator.emptyIterator
-    else if (size == 1)
+    else if (size() == 1)
       child(0).iterate(context)
     else
       new BlockIterator(operanda, context)

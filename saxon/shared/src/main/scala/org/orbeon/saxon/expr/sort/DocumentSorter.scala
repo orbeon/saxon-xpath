@@ -53,7 +53,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
       else GlobalOrderComparer.instance
   }
 
-  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   override def getExpressionName: String = "docOrder"
 
@@ -150,7 +150,7 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
     this
   }
 
-  override def getNetCost(): Int = 30
+  override def getNetCost: Int = 30
 
   override def unordered(retainAllNodes: Boolean,
                          forStreaming: Boolean): Expression = {

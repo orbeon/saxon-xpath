@@ -17,7 +17,7 @@ class ISO88591CharacterSet private () extends CharacterSet {
 
   /*@NotNull*/
 
-  def getCanonicalName(): String = "ISO-8859-1"
+  def getCanonicalName: String = "ISO-8859-1"
 
 }
 

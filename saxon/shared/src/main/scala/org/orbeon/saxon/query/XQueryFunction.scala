@@ -316,7 +316,7 @@ class XQueryFunction extends Declaration with Location {
 
   def getColumnNumber(): Int = -1
 
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
   def getProperty(name: String): AnyRef =
     if ("name" == name) {

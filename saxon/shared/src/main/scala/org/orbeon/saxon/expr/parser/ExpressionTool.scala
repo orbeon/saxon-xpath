@@ -413,7 +413,7 @@ object ExpressionTool {
 
   @throws[XPathException]
   def effectiveBooleanValue(iterator: SequenceIterator): Boolean = {
-    val first = iterator.next
+    val first = iterator.next()
     if (first == null)
       return false
     first match {
@@ -422,20 +422,20 @@ object ExpressionTool {
         true
       case value: AtomicValue => first match {
         case value1: BooleanValue =>
-          if (iterator.next != null) {
+          if (iterator.next() != null) {
             iterator.close()
             ebvError("a sequence of two or more items starting with a boolean")
           }
           iterator.close()
           value1.getBooleanValue
         case value1: StringValue =>
-          if (iterator.next != null) {
+          if (iterator.next() != null) {
             iterator.close()
             ebvError("a sequence of two or more items starting with a string")
           }
           !value1.isZeroLength
         case n: NumericValue =>
-          if (iterator.next != null) {
+          if (iterator.next() != null) {
             iterator.close()
             ebvError("a sequence of two or more items starting with a numeric value")
           }
@@ -455,7 +455,7 @@ object ExpressionTool {
             ebvError("a sequence starting with a function (" + first.toShortString + ")")
         }
       case _: ObjectValue[_] =>
-        if (iterator.next != null) {
+        if (iterator.next() != null) {
           iterator.close()
           ebvError("a sequence of two or more items starting with an external object value")
         }
@@ -570,7 +570,7 @@ object ExpressionTool {
   @throws[XPathException]
   def optimizeComponentBody(body: Expression/*, compilation: Compilation*/, visitor: ExpressionVisitor, cisi: ContextItemStaticInfo, extractGlobals: Boolean): Expression = { //
     val config = visitor.getConfiguration
-    val opt = visitor.obtainOptimizer
+    val opt = visitor.obtainOptimizer()
     val env = visitor.staticContext
     var compileWithTracing = config.isCompileWithTracing
     var expBody = body

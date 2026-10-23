@@ -35,7 +35,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   this.priority = 1
 
-  override def getPredicate(): Expression = expressionOp.getChildExpression
+  override def getPredicate: Expression = expressionOp.getChildExpression
 
   override def operands: java.lang.Iterable[Operand] = expressionOp
 

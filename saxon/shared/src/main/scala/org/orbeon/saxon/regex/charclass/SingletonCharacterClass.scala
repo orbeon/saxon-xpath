@@ -12,7 +12,7 @@ class SingletonCharacterClass(var codepoint: Int)
 
   def isDisjoint(other: CharacterClass): Boolean = !other.test(codepoint)
 
-  def getIntSet(): IntSet = new IntSingletonSet(codepoint)
+  def getIntSet: IntSet = new IntSingletonSet(codepoint)
 
 }
 

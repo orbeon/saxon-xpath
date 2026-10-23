@@ -68,7 +68,7 @@ abstract class VennPattern( var p1: Pattern,
     p2.bindCurrent(binding)
   }
 
-  override def isMotionless(): Boolean = p1.isMotionless && p2.isMotionless
+  override def isMotionless: Boolean = p1.isMotionless && p2.isMotionless
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = {
     var nxtFree = nextFree
@@ -90,7 +90,7 @@ abstract class VennPattern( var p1: Pattern,
     }
   }
 
-  override def getDependencies(): Int = p1.getDependencies | p2.getDependencies
+  override def getDependencies: Int = p1.getDependencies | p2.getDependencies
 
   def getLHS: Pattern = p1
 

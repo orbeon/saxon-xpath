@@ -129,7 +129,7 @@ object XQueryParser {
   def stringify(exp: Expression, noNodeIfEmpty: Boolean, env: StaticContext): Expression = {
     var express = exp
     if (express.isInstanceOf[StringLiteral]) return express
-    if (express.getLocalRetainedStaticContext == null) express.setRetainedStaticContext(env.makeRetainedStaticContext)
+    if (express.getLocalRetainedStaticContext == null) express.setRetainedStaticContext(env.makeRetainedStaticContext())
 
     express = Atomizer.makeAtomizer(express, null)
 
@@ -372,7 +372,7 @@ class XQueryParser extends XPathParser {
 
     if (t.currentToken != Token.EOF) grumble("Unexpected token " + currentTokenDisplay + " beyond end of query")
     setLocation(exp)
-    ExpressionTool.setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext)
+    ExpressionTool.setDeepRetainedStaticContext(exp, env.makeRetainedStaticContext())
     if (errorCount == 0) exp
     else {
       val err = new XPathException("One or more static errors were reported during query analysis")
@@ -1328,7 +1328,7 @@ class XQueryParser extends XPathParser {
     else grumble("Variable must either be initialized or be declared as external")
     else grumble("Expected ':=' or 'external' in variable declaration")
     val qenv = env.asInstanceOf[QueryModule]
-    val rsc = env.makeRetainedStaticContext
+    val rsc = env.makeRetainedStaticContext()
     `var`.retainedStaticContext = rsc
     if (`var`.getBody != null) ExpressionTool.setDeepRetainedStaticContext(`var`.getBody, rsc)
     if (qenv.getModuleNamespace != null && !(uri == qenv.getModuleNamespace)) grumble("Variable " + Err.wrap(varName, Err.VARIABLE) + " is not defined in the module namespace")
@@ -1362,13 +1362,13 @@ class XQueryParser extends XPathParser {
       t.setState(Tokenizer.DEFAULT_STATE)
       nextToken()
       var exp = parseExprSingle
-      exp.setRetainedStaticContext(env.makeRetainedStaticContext)
+      exp.setRetainedStaticContext(env.makeRetainedStaticContext())
       val role = new RoleDiagnostic(RoleDiagnostic.CONTEXT_ITEM, "context item declaration", 0)
       exp = CardinalityChecker.makeCardinalityChecker(exp, StaticProperty.EXACTLY_ONE, role)
       val visitor = ExpressionVisitor.make(env)
-      exp = exp.simplify
+      exp = exp.simplify()
       val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
-      exp.setRetainedStaticContext(env.makeRetainedStaticContext)
+      exp.setRetainedStaticContext(env.makeRetainedStaticContext())
       exp = exp.typeCheck(visitor, info)
       req.defaultValue = exp
       req.external = false
@@ -1384,7 +1384,7 @@ class XQueryParser extends XPathParser {
         var exp = parseExprSingle
         val role = new RoleDiagnostic(RoleDiagnostic.CONTEXT_ITEM, "context item declaration", 0)
         exp = CardinalityChecker.makeCardinalityChecker(exp, StaticProperty.EXACTLY_ONE, role)
-        exp.setRetainedStaticContext(env.makeRetainedStaticContext)
+        exp.setRetainedStaticContext(env.makeRetainedStaticContext())
         req.defaultValue = exp
       }
     }
@@ -1486,14 +1486,14 @@ class XQueryParser extends XPathParser {
       nextToken()
       if (t.currentToken == Token.RCURLY) {
         val body = Literal.makeEmptySequence
-        body.setRetainedStaticContext(env.makeRetainedStaticContext)
+        body.setRetainedStaticContext(env.makeRetainedStaticContext())
         setLocation(body)
         func.setBody(body)
       }
       else {
         val body = parseExpression
         func.setBody(body)
-        ExpressionTool.setDeepRetainedStaticContext(body, env.makeRetainedStaticContext)
+        ExpressionTool.setDeepRetainedStaticContext(body, env.makeRetainedStaticContext())
       }
       expect(Token.RCURLY)
       lookAhead()
@@ -1929,7 +1929,7 @@ class XQueryParser extends XPathParser {
     }
     clause.setVariableBindings(bindings)
     val comparers = new Array[GenericAtomicComparer](collations.size)
-    val context = env.makeEarlyEvaluationContext
+    val context = env.makeEarlyEvaluationContext()
     for (i <- 0 until comparers.length) {
       val coll = env.getConfiguration.getCollation(collations.get(i))
       comparers(i) = GenericAtomicComparer.makeAtomicComparer(BuiltInAtomicType.ANY_ATOMIC, BuiltInAtomicType.ANY_ATOMIC, coll, context).asInstanceOf[GenericAtomicComparer]
@@ -2627,7 +2627,7 @@ class XQueryParser extends XPathParser {
     if (warningStr == null) {
       val att2 = new FixedAttribute(attributeName, Validation.STRIP, null)
       att2.setRejectDuplicates()
-      att2.setRetainedStaticContext(env.makeRetainedStaticContext)
+      att2.setRetainedStaticContext(env.makeRetainedStaticContext())
       makeSimpleContent(attContent, att2, offset)
       makeTracer(att2, attributeName.getStructuredQName)
     }
@@ -3075,7 +3075,7 @@ class XQueryParser extends XPathParser {
             err.setIsStaticError(true)
             throw err
         }
-        attInst.setRetainedStaticContext(env.makeRetainedStaticContext)
+        attInst.setRetainedStaticContext(env.makeRetainedStaticContext())
         attInst.setSelect(select)
         attInst.setRejectDuplicates()
         setLocation(attInst)
@@ -3092,7 +3092,7 @@ class XQueryParser extends XPathParser {
       elk(i) = contents.get(i)
     }
     val block = new Block(elk)
-    if (changesContext) block.setRetainedStaticContext(env.makeRetainedStaticContext)
+    if (changesContext) block.setRetainedStaticContext(env.makeRetainedStaticContext())
     elInst.setContentExpression(block)
 
     for (n <- 0 until namespaceCount) {
@@ -3165,7 +3165,7 @@ class XQueryParser extends XPathParser {
           parser.setRangeVariableStack(rangeVariables)
           parser.setCatchDepth(catchDepth)
           exp = parser.parse(avt, i0 + 1, Token.RCURLY, env)
-          if (!scanOnly) exp = exp.simplify
+          if (!scanOnly) exp = exp.simplify()
           last = parser.getTokenizer.currentTokenStartOffset + 1
           components.add(XQueryParser.makeStringJoin(exp, env))
         }
@@ -3299,7 +3299,7 @@ class XQueryParser extends XPathParser {
         }
       }
       if (! text.isEmptySB && (containsEntities | env.asInstanceOf[QueryModule].isPreserveBoundarySpace || ! Whitespace.isWhite(text))) {
-        val inst = new ValueOf(new StringLiteral(new StringValue(text.condense)), false, false)
+        val inst = new ValueOf(new StringLiteral(new StringValue(text.condense())), false, false)
         setLocation(inst)
         components.add(inst)
         afterEnclosedExpr = false
@@ -3484,7 +3484,7 @@ class XQueryParser extends XPathParser {
         if (emptyExpression) components.add(new StringLiteral(StringValue.EMPTY_STRING))
         else {
           val enclosed = parseExpression
-          val stringJoin = SystemFunction.makeCall("string-join", env.makeRetainedStaticContext, enclosed, new StringLiteral(" "))
+          val stringJoin = SystemFunction.makeCall("string-join", env.makeRetainedStaticContext(), enclosed, new StringLiteral(" "))
           components.add(stringJoin)
         }
         if (t.currentToken != Token.RCURLY) grumble("Expected '}' after enclosed expression in string constructor")
@@ -3528,7 +3528,7 @@ class XQueryParser extends XPathParser {
       }
     }
     val args = components.toArray(new Array[Expression](0))
-    val result = SystemFunction.makeCall("concat", env.makeRetainedStaticContext, args.toIndexedSeq: _*)
+    val result = SystemFunction.makeCall("concat", env.makeRetainedStaticContext(), args.toIndexedSeq: _*)
     setLocation(result, offset)
     result
   }

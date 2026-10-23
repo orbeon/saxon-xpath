@@ -36,7 +36,7 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
     }
   }
 
-  override def getClauseKey(): Clause.ClauseName.ClauseName = WHERE
+  override def getClauseKey: Clause.ClauseName.ClauseName = WHERE
 
   def getPredicate: Expression = predicateOp.getChildExpression
 

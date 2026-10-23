@@ -143,7 +143,7 @@ class GroupByIterator
     }
   }
 
-  def getCurrentGroupingKey(): AtomicSequence = synchronized {
+  def getCurrentGroupingKey: AtomicSequence = synchronized {
     val `val`: AtomicSequence = groupKeys.get(position - 1)
     if (`val` == null) {
       EmptyAtomicSequence.getInstance

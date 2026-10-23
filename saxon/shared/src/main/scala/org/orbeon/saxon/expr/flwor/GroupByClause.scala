@@ -78,7 +78,7 @@ class GroupByClause(var config: Configuration) extends Clause {
 
   var groupingTupleOp: Operand = _
 
-  override def getClauseKey(): Clause.ClauseName.ClauseName = GROUP_BY
+  override def getClauseKey: Clause.ClauseName.ClauseName = GROUP_BY
 
   override def containsNonInlineableVariableReference(
                                                        binding: Binding): Boolean =
@@ -155,7 +155,7 @@ class GroupByClause(var config: Configuration) extends Clause {
     this.bindings = bindings
   }
 
-  override def getRangeVariables(): Array[LocalVariableBinding] = bindings
+  override def getRangeVariables: Array[LocalVariableBinding] = bindings
 
   def setComparers(comparers: Array[GenericAtomicComparer]): Unit = {
     this.comparers = comparers

@@ -58,7 +58,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
     getOperand.typeCheck(visitor, contextInfo)
     val operand = getBaseExpression
     if (operand.isInstanceOf[Literal]) {
-      val lit = Literal.makeLiteral(evaluateItem(visitor.staticContext.makeEarlyEvaluationContext), this)
+      val lit = Literal.makeLiteral(evaluateItem(visitor.staticContext.makeEarlyEvaluationContext()), this)
       ExpressionTool.copyLocationInfo(this, lit)
       return lit
     }
@@ -133,12 +133,12 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode = super.computeHashCode ^ targetType.hashCode ^ targetCardinality
+  override def computeHashCode() = super.computeHashCode() ^ targetType.hashCode ^ targetCardinality
 
   /**
    * Determine the cardinality
    */
-  override def computeCardinality = StaticProperty.EXACTLY_ONE
+  override def computeCardinality() = StaticProperty.EXACTLY_ONE
 
   /**
    * Copy an expression. This makes a deep copy.
@@ -194,7 +194,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
     var count = 0
     var item: Item = null
     while (({
-      item = iter.next
+      item = iter.next()
       item
     }) != null) {
       count += 1
@@ -229,7 +229,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
     val st = SequenceType.makeSequenceType(targetType, targetCardinality)
     out.emitAttribute("of", st.toAlphaCode)
     getBaseExpression.`export`(out)
-    out.endElement
+    out.endElement()
   }
 
   /**

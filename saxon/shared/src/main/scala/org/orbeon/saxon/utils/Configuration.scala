@@ -3629,7 +3629,7 @@ class Configuration extends SourceResolver with NotationSet {
 //      case FeatureCode.OUTPUT_URI_RESOLVER_CLASS =>
 //        return getOutputURIResolver.getClass.getName.asInstanceOf[T]
       case FeatureCode.RECOGNIZE_URI_QUERY_PARAMETERS =>
-        return java.lang.Boolean.valueOf(getSystemURIResolver.queryParametersAreRecognized).asInstanceOf[T]
+        return java.lang.Boolean.valueOf(getSystemURIResolver.queryParametersAreRecognized()).asInstanceOf[T]
       case FeatureCode.RECOVERY_POLICY =>
         return Integer.valueOf(0).asInstanceOf[T]
       case FeatureCode.RECOVERY_POLICY_NAME =>

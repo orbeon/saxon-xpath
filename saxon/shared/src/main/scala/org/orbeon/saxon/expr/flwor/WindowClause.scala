@@ -124,7 +124,7 @@ class WindowClause extends Clause {
 
   var windowMustBeSingleton: Boolean = _
 
-  override def getClauseKey(): ClauseName = WINDOW
+  override def getClauseKey: ClauseName = WINDOW
 
   def setIsSlidingWindow(sliding: Boolean): Unit = {
     this.sliding = sliding
@@ -273,9 +273,9 @@ class WindowClause extends Clause {
       "Cannot use document projection with windowing")
   }
 
-  override def getRangeVariables(): Array[LocalVariableBinding] = {
+  override def getRangeVariables: Array[LocalVariableBinding] = {
     val vars: Array[LocalVariableBinding] =
-      Array.ofDim[LocalVariableBinding](windowVars.size)
+      Array.ofDim[LocalVariableBinding](windowVars.size())
     var i: Int = 0
     val iter: Iterator[LocalVariableBinding] = windowVars.valueiterator
     while (iter.hasNext) {

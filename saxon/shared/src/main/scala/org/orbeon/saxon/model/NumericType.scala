@@ -36,7 +36,7 @@ class NumericType private()
       BuiltInAtomicType.DECIMAL))
     with SimpleType {
 
-  override def getTypeName(): StructuredQName =
+  override def getTypeName: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "numeric")
 
   override def getGenre: Genre.Genre = Genre.ATOMIC
@@ -45,11 +45,11 @@ class NumericType private()
 
   override def containsListType(): Boolean = false
 
-  override def getPlainMemberTypes(): Iterable[AtomicType] = synchronized {
+  override def getPlainMemberTypes: Iterable[AtomicType] = synchronized {
     memberTypes.asScala
   }
 
-  override def getResultTypeOfCast(): SequenceType = SequenceType.ATOMIC_SEQUENCE
+  override def getResultTypeOfCast: SequenceType = SequenceType.ATOMIC_SEQUENCE
 
   override def isPlainType: Boolean = true
 
@@ -70,13 +70,13 @@ class NumericType private()
 
   override def isAtomicType: Boolean = false
 
-  override def isListType(): Boolean = false
+  override def isListType: Boolean = false
 
-  override def isUnionType(): Boolean = true
+  override def isUnionType: Boolean = true
 
-  override def isBuiltInType(): Boolean = true
+  override def isBuiltInType: Boolean = true
 
-  def getBuiltInBaseType(): SchemaType = AnySimpleType
+  def getBuiltInBaseType: SchemaType = AnySimpleType
 
   override def getTypedValue(value: CharSequence,
                              resolver: NamespaceResolver,
@@ -100,9 +100,9 @@ class NumericType private()
                                   rules: ConversionRules): ValidationFailure =
     null
 
-  override def isNamespaceSensitive(): Boolean = false
+  override def isNamespaceSensitive: Boolean = false
 
-  def getWhitespaceAction(): Int = Whitespace.COLLAPSE
+  def getWhitespaceAction: Int = Whitespace.COLLAPSE
 
   def preprocess(input: CharSequence): CharSequence = input
 
@@ -110,30 +110,30 @@ class NumericType private()
 
   def getName: String = "numeric"
 
-  def getTargetNamespace(): String = NamespaceConstant.SCHEMA
+  def getTargetNamespace: String = NamespaceConstant.SCHEMA
 
   def getFingerprint: Int = StandardNames.XS_NUMERIC
 
   def getDisplayName: String = "xs:numeric"
 
-  def getEQName(): String = "Q(" + NamespaceConstant.SCHEMA + "}numeric"
+  def getEQName: String = "Q(" + NamespaceConstant.SCHEMA + "}numeric"
 
   override def getStructuredQName: StructuredQName =
     new StructuredQName("xs", NamespaceConstant.SCHEMA, "numeric")
 
-  def isComplexType(): Boolean = false
+  def isComplexType: Boolean = false
 
-  def isSimpleType(): Boolean = true
+  def isSimpleType: Boolean = true
 
-  def isAnonymousType(): Boolean = false
+  def isAnonymousType: Boolean = false
 
   def getBlock(): Int = 0
 
-  def getBaseType(): SchemaType = AnySimpleType
+  def getBaseType: SchemaType = AnySimpleType
 
-  def getDerivationMethod(): Int = DERIVATION_RESTRICTION
+  def getDerivationMethod: Int = DERIVATION_RESTRICTION
 
-  def getFinalProhibitions(): Int = 0
+  def getFinalProhibitions: Int = 0
 
   def allowsDerivation(derivation: Int): Boolean = true
 
@@ -150,13 +150,13 @@ class NumericType private()
 
   def getSystemId: String = null
 
-  override def isIdType(): Boolean = false
+  override def isIdType: Boolean = false
 
-  override def isIdRefType(): Boolean = false
+  override def isIdRefType: Boolean = false
 
-  def getValidationStatus(): ValidationStatus = VALIDATED
+  def getValidationStatus: ValidationStatus = VALIDATED
 
-  def getRedefinitionLevel(): Int = 0
+  def getRedefinitionLevel: Int = 0
 
   override def toExportString: String = toString
 

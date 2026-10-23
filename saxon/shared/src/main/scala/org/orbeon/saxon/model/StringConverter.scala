@@ -106,7 +106,7 @@ object StringConverter {
 
     override def validate(input: CharSequence): ValidationFailure = null
 
-    override def isAlwaysSuccessful(): Boolean = true
+    override def isAlwaysSuccessful: Boolean = true
 
   }
 
@@ -128,7 +128,7 @@ object StringConverter {
 
     override def validate(input: CharSequence): ValidationFailure = null
 
-    override def isAlwaysSuccessful(): Boolean = true
+    override def isAlwaysSuccessful: Boolean = true
 
   }
 
@@ -148,7 +148,7 @@ object StringConverter {
 
     override def validate(input: CharSequence): ValidationFailure = null
 
-    override def isAlwaysSuccessful(): Boolean = true
+    override def isAlwaysSuccessful: Boolean = true
 
   }
 
@@ -168,7 +168,7 @@ object StringConverter {
 
     override def validate(input: CharSequence): ValidationFailure = null
 
-    override def isAlwaysSuccessful(): Boolean = true
+    override def isAlwaysSuccessful: Boolean = true
 
   }
 
@@ -675,7 +675,7 @@ object StringConverter {
       c
     }
 
-    override def getNamespaceResolver(): NamespaceResolver = nsResolver
+    override def getNamespaceResolver: NamespaceResolver = nsResolver
 
     def convertString(input: CharSequence): ConversionResult = {
       if (nsResolver == null) {
@@ -717,7 +717,7 @@ object StringConverter {
       c
     }
 
-    override def getNamespaceResolver(): NamespaceResolver = nsResolver
+    override def getNamespaceResolver: NamespaceResolver = nsResolver
 
     def convertString(input: CharSequence): ConversionResult = {
       if (getNamespaceResolver == null) {

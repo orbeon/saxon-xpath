@@ -339,7 +339,7 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
                            nodeName: NodeName,
                            copiedNode: NodeInfo): Unit = ()
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_ELEMENT
+  override def getInstructionNameCode: Int = StandardNames.XSL_ELEMENT
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("compElem", this)

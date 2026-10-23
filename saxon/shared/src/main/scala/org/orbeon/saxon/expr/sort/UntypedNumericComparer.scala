@@ -188,5 +188,5 @@ class UntypedNumericComparer extends AtomicComparer {
    *
    * @return a string representation of the AtomicComparer
    */
-  override def save: String = "QUNC"
+  override def save(): String = "QUNC"
 }

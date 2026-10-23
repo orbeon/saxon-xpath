@@ -199,13 +199,13 @@ object Minimax {
 
   class Min extends Minimax {
 
-    def isMaxFunction(): Boolean = false
+    def isMaxFunction: Boolean = false
 
   }
 
   class Max extends Minimax {
 
-    def isMaxFunction(): Boolean = true
+    def isMaxFunction: Boolean = true
 
   }
 

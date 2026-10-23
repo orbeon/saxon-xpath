@@ -52,9 +52,9 @@ class ComponentTracer(private var component: TraceableComponent)
     t
   }
 
-  override def isUpdatingExpression(): Boolean = getChild.isUpdatingExpression
+  override def isUpdatingExpression: Boolean = getChild.isUpdatingExpression
 
-  override def isVacuousExpression(): Boolean = getChild.isVacuousExpression
+  override def isVacuousExpression: Boolean = getChild.isVacuousExpression
 
   override def checkForUpdatingSubexpressions(): Unit = {
     getChild.checkForUpdatingSubexpressions()
@@ -79,9 +79,9 @@ class ComponentTracer(private var component: TraceableComponent)
 
 override  def getItemType: ItemType = getChild.getItemType
 
-  override def getCardinality(): Int = getChild.getCardinality
+  override def getCardinality: Int = getChild.getCardinality
 
-  override  def getDependencies(): Int = getChild.getDependencies
+  override  def getDependencies: Int = getChild.getDependencies
 
   override  def mayCreateNewNodes(): Boolean =
     !getChild.hasSpecialProperty(StaticProperty.NO_NODES_NEWLY_CREATED)
@@ -116,7 +116,7 @@ override  def getItemType: ItemType = getChild.getItemType
     }
   }
 
-  override def getInstructionNameCode(): Int =
+  override def getInstructionNameCode: Int =
     if (getChild.isInstanceOf[Instruction]) {
       getChild.asInstanceOf[Instruction].getInstructionNameCode
     } else {

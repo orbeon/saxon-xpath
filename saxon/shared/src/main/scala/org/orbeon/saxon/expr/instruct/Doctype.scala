@@ -58,7 +58,7 @@ class Doctype(content: Expression) extends Instruction {
 
   override def mayCreateNewNodes(): Boolean = true
 
-  override def getInstructionNameCode(): Int = StandardNames.SAXON_DOCTYPE
+  override def getInstructionNameCode: Int = StandardNames.SAXON_DOCTYPE
 
   def processLeavingTail(out: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController

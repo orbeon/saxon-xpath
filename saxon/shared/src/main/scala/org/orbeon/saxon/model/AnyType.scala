@@ -23,28 +23,28 @@ object AnyType extends Enumeration {
       *
       * @return an EQName identifying the type, specifically "Q{http://www.w3.org/2001/XMLSchema}anyType"
       */
-    def getEQName(): String = "Q{" + NamespaceConstant.SCHEMA + "}anyType"
+    def getEQName: String = "Q{" + NamespaceConstant.SCHEMA + "}anyType"
 
-    def getTargetNamespace(): String = NamespaceConstant.SCHEMA
+    def getTargetNamespace: String = NamespaceConstant.SCHEMA
 
     def getVariety(): Int = ComplexType.VARIETY_MIXED
 
     /**
       * Get the validation status - always valid
       */
-    def getValidationStatus(): ValidationStatus = VALIDATED
+    def getValidationStatus: ValidationStatus = VALIDATED
 
-    def getRedefinitionLevel(): Int = 0
+    def getRedefinitionLevel: Int = 0
 
     /*@Nullable*/
 
-    def getBaseType(): SchemaType = null
+    def getBaseType: SchemaType = null
 
     /*@Nullable*/
 
     def getKnownBaseType: SchemaType = null
 
-    def getDerivationMethod(): Int = 0
+    def getDerivationMethod: Int = 0
 
     def allowsDerivation(derivation: Int): Boolean = true
 
@@ -54,21 +54,21 @@ object AnyType extends Enumeration {
       * @return the types of derivation that are not permitted, as a bit-significant integer
       *         containing bits such as {@link org.orbeon.saxon.model.SchemaType#DERIVATION_EXTENSION}
       */
-    def getFinalProhibitions(): Int = 0
+    def getFinalProhibitions: Int = 0
 
-    def isAbstract(): Boolean = false
+    def isAbstract: Boolean = false
 
-    def isComplexType(): Boolean = true
+    def isComplexType: Boolean = true
 
-    def isAnonymousType(): Boolean = false
+    def isAnonymousType: Boolean = false
 
-    def isSimpleType(): Boolean = false
+    def isSimpleType: Boolean = false
 
     def isAtomicType: Boolean = false
 
-    def isIdType(): Boolean = false
+    def isIdType: Boolean = false
 
-    def isIdRefType(): Boolean = false
+    def isIdRefType: Boolean = false
 
     def getBlock(): Int = 0
 
@@ -77,28 +77,28 @@ object AnyType extends Enumeration {
       *
       * @return true: this complex type has complex content
       */
-    def isComplexContent(): Boolean = true
+    def isComplexContent: Boolean = true
 
-    def isSimpleContent(): Boolean = false
+    def isSimpleContent: Boolean = false
 
-    def isAllContent(): Boolean = false
+    def isAllContent: Boolean = false
 
     /*@Nullable*/
 
-    def getSimpleContentType(): SimpleType = null
+    def getSimpleContentType: SimpleType = null
 
     /**
       * Test whether this complex type is derived by restriction
       *
       * @return false: this type is not a restriction
       */
-    def isRestricted(): Boolean = false
+    def isRestricted: Boolean = false
 
-    def isEmptyContent(): Boolean = false
+    def isEmptyContent: Boolean = false
 
-    def isEmptiable(): Boolean = true
+    def isEmptiable: Boolean = true
 
-    def isMixedContent(): Boolean = true
+    def isMixedContent: Boolean = true
 
     def getFingerprint: Int = StandardNames.XS_ANY_TYPE
 
@@ -181,7 +181,7 @@ object AnyType extends Enumeration {
       *
       * @return true if there are any assertions
       */
-    def hasAssertions(): Boolean = false
+    def hasAssertions: Boolean = false
 
   }
 

@@ -39,7 +39,7 @@ class BreakInstr extends Instruction with TailCallLoop.TailCallInfo {
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_BREAK
+  override def getInstructionNameCode: Int = StandardNames.XSL_BREAK
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     markContext(context)

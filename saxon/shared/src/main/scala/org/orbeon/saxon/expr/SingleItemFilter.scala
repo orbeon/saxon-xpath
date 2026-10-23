@@ -11,7 +11,7 @@ import org.orbeon.saxon.value.Cardinality
 
 abstract class SingleItemFilter(base: Expression) extends UnaryExpression(base) {
 
-  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   /*@NotNull*/
 

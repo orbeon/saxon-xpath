@@ -18,7 +18,7 @@ class FunctionArity extends SystemFunction {
 
   /*@NotNull*/
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     Array(Int64Value.ZERO, Int64Value.makeIntegerValue(65535))
 
   /**

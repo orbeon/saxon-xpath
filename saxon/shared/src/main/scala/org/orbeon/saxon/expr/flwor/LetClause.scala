@@ -38,7 +38,7 @@ class LetClause extends Clause {
   var evaluator: Evaluator =
     ExpressionTool.lazyEvaluator(getSequence, repeatable = true)
 
-  override def getClauseKey(): ClauseName = LET
+  override def getClauseKey: ClauseName = LET
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): LetClause = {
     val let2: LetClause = new LetClause()
@@ -67,7 +67,7 @@ class LetClause extends Clause {
    *
    * @return the number of variable bindings
    */
-  override def getRangeVariables(): Array[LocalVariableBinding] =
+  override def getRangeVariables: Array[LocalVariableBinding] =
     Array(rangeVariable)
 
   override def getPullStream(base: TuplePull,

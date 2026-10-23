@@ -127,7 +127,7 @@ class LetExpression extends Assignation with TailCallReturner {
     }
     if (getSequence.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS))
       needsEagerEvaluation = true
-    hasLoopingReference |= removeDeadReferences
+    hasLoopingReference |= removeDeadReferences()
     if (!needsEagerEvaluation) {
       var considerRemoval =
         ((references != null && references.size < 2) || getSequence.isInstanceOf[VariableReference]) &&

@@ -144,7 +144,7 @@ class GroupAdjacentIterator(private var select: Expression,
     nextKey = null
   }
 
-  def getCurrentGroupingKey(): AtomicSequence = currentKey
+  def getCurrentGroupingKey: AtomicSequence = currentKey
 
   def iterateCurrentGroup(): SequenceIterator =
     new ListIterator(currentMembers)

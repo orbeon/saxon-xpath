@@ -163,7 +163,7 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
   override def comparesEqual(s1: CharSequence, s2: CharSequence): Boolean =
     uca.compare(s1, s2) == 0
 
-  override def getCollationURI(): String = uri
+  override def getCollationURI: String = uri
 
   override def compareStrings(o1: CharSequence, o2: CharSequence): Int =
     uca.compare(o1, o2)

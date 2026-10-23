@@ -90,7 +90,7 @@ class ParseXmlFragment extends SystemFunction {
         reader = configuration.getSourceParser
         breakable {
           if (reader.getEntityResolver != null) break()
-          else reader = Version.platform.loadParserForXmlFragments
+          else reader = Version.platform.loadParserForXmlFragments()
         }
         source.setXMLReader(reader)
         source.setSystemId(baseURI)

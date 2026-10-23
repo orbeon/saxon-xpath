@@ -29,7 +29,7 @@ abstract class CastingExpression(source: Expression,
 
   var operandIsStringLiteral: Boolean = false
 
-   def getOperandRole(): OperandRole = OperandRole.SINGLE_ATOMIC
+   def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
 
   def setAllowEmpty(allow: Boolean): Unit = {
     allowEmpty = allow

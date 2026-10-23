@@ -112,11 +112,11 @@ class IterateInstr(select: Expression,
   override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, actionOp, initiallyOp, onCompletionOp)
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_ITERATE
+  override def getInstructionNameCode: Int = StandardNames.XSL_ITERATE
 
-  def getSelectExpression(): Expression = selectOp.getChildExpression
+  def getSelectExpression: Expression = selectOp.getChildExpression
 
-  def getActionExpression(): Expression = actionOp.getChildExpression
+  def getActionExpression: Expression = actionOp.getChildExpression
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {

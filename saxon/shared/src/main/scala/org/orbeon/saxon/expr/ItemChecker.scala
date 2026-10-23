@@ -294,7 +294,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode: Int = super.computeHashCode ^ requiredItemType.hashCode
+  override def computeHashCode(): Int = super.computeHashCode() ^ requiredItemType.hashCode
 
   /**
    * Diagnostic print of expression structure. The abstract expression tree
@@ -304,7 +304,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
   override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("treat", this)
     out.emitAttribute("as", AlphaCode.fromItemType(requiredItemType))
-    out.emitAttribute("diag", role.save)
+    out.emitAttribute("diag", role.save())
     getBaseExpression.`export`(out)
     out.endElement()
   }

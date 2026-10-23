@@ -93,10 +93,8 @@ class TemplateRule
   @BeanProperty
   var packageData: PackageData = _
 
-  @BeanProperty
   var systemId: String = _
 
-  @BeanProperty
   var lineNumber: Int = _
 
   var rules: List[Rule] = new ArrayList()
@@ -107,9 +105,9 @@ class TemplateRule
     matchPattern = pattern
   }
 
-  def getBody(): Expression = body
+  def getBody: Expression = body
 
-  def getChildExpression(): Expression = body
+  def getChildExpression: Expression = body
 
   def getLocation: Location = this
 
@@ -155,9 +153,13 @@ class TemplateRule
 
   def getPublicId: String = null
 
-  def getColumnNumber(): Int = -1
+  def getLineNumber: Int = lineNumber
 
-  def saveLocation(): Location = this
+  def getSystemId: String = systemId
+
+  def getColumnNumber: Int = -1
+
+  def saveLocation: Location = this
 
   def getLocalParams: List[LocalParam] = {
     val result: List[LocalParam] = new ArrayList[LocalParam]()
@@ -300,6 +302,6 @@ class TemplateRule
 
   override def getObjectName: StructuredQName = null
 
-  override def getTracingTag(): String = "xsl:template"
+  override def getTracingTag: String = "xsl:template"
 
 }

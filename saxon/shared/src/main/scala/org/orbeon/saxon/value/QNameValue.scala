@@ -94,7 +94,7 @@ class QNameValue(prefix: String,
 
   }
 
-  def getSchemaComparable(): Comparable[AnyRef] = new QNameComparable()
+  def getSchemaComparable: Comparable[AnyRef] = new QNameComparable()
 
   class QNameComparable extends Comparable[AnyRef] {
 

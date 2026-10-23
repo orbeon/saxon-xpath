@@ -105,7 +105,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
    *
    * @return a set of flags indicating static properties of this expression
    */
-  override def computeSpecialProperties = super.computeSpecialProperties | StaticProperty.SINGLE_DOCUMENT_NODESET
+  override def computeSpecialProperties() = super.computeSpecialProperties() | StaticProperty.SINGLE_DOCUMENT_NODESET
 
   @throws[XPathException]
   def localTypeCheck(visitor: ExpressionVisitor, contextItemType: ContextItemStaticInfo) = {
@@ -169,7 +169,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
     if (exp ne this) return exp
     // If the name is known statically, use a FixedAttribute instead
     if (getNameExp.isInstanceOf[Literal] && (getNamespaceExp == null || getNamespaceExp.isInstanceOf[Literal])) {
-      val context = visitor.staticContext.makeEarlyEvaluationContext
+      val context = visitor.staticContext.makeEarlyEvaluationContext()
       val nc = evaluateNodeName(context)
       val fa = new FixedAttribute(nc, getValidationAction, getSchemaType)
       fa.setSelect(getSelect)
@@ -371,6 +371,6 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
     }
     out.setChildRole("select")
     getSelect.`export`(out)
-    out.endElement
+    out.endElement()
   }
 }

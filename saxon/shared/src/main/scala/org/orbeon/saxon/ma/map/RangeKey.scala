@@ -58,7 +58,7 @@ class RangeKey
 
   def keys: AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator
 
-  def keyValuePairs(): java.lang.Iterable[KeyValuePair] =
+  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
     () =>
       new Iterator[KeyValuePair]() {
         var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys
@@ -126,7 +126,7 @@ class RangeKey
     out.endElement()
   }
 
-  override def isTrustedResultType(): Boolean = false
+  override def isTrustedResultType: Boolean = false
 
   override def toString: String = MapItem.mapToString(this)
 

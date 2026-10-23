@@ -67,7 +67,7 @@ class UnionPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
 
   override def computeHashCode(): Int = 0x9bd723a6 ^ p1.hashCode ^ p2.hashCode
 
-   override def getOperatorName(): String = "union"
+   override def getOperatorName: String = "union"
 
   def copy(rebindings: RebindingMap): Pattern = {
     val n: UnionPattern =

@@ -74,6 +74,6 @@ class UTF16CharacterSet private() extends CharacterSet {
 
   def inCharset(c: Int): Boolean = true
 
-  def getCanonicalName(): String = "UTF-16"
+  def getCanonicalName: String = "UTF-16"
 
 }

@@ -270,7 +270,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
   /**
    * Hashcode supporting equals()
    */
-  override def computeHashCode = {
+  override def computeHashCode() = {
     var h = 0x836b92a0
     var i = 0
     for (o <- operands.asScala) {

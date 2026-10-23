@@ -366,7 +366,7 @@ class Controller extends ContextOriginator {
    * @param locator   the location in the source code. May be null.
    */
   def warning(message: String, errorCode: String, locator: Location) = {
-    val warning = new XmlProcessingIncident(message, errorCode, locator).asWarning
+    val warning = new XmlProcessingIncident(message, errorCode, locator).asWarning()
     errorReporter.report(warning)
   }
 
@@ -1150,7 +1150,7 @@ class Controller extends ContextOriginator {
    */
   def getCurrentDateTime: DateTimeValue = {
     if (currentDateTime == null)
-      currentDateTime = DateTimeValue.now
+      currentDateTime = DateTimeValue.now()
     currentDateTime
   }
 
@@ -1246,7 +1246,7 @@ class Controller extends ContextOriginator {
       var fti: FocusTrackingIterator = null
       if (!base.getProperties.contains(SequenceIterator.Property.GROUNDED) && !base.isInstanceOf[GroupIterator] && !base.isInstanceOf[RegexIterator]) try {
         val ms = new MemoSequence(base)
-        fti = FocusTrackingIterator.track(ms.iterate)
+        fti = FocusTrackingIterator.track(ms.iterate())
       } catch {
         case e: XPathException =>
           fti = FocusTrackingIterator.track(base)

@@ -220,7 +220,7 @@ class IntArraySet(private var contents: Array[Int]) extends IntSet {
       var h = 936247625
       val it = iterator
       while (it.hasNext)
-        h += it.next
+        h += it.next()
       return h
     }
     hashCodeVar

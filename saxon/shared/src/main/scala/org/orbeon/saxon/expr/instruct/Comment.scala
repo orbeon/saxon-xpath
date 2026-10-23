@@ -60,11 +60,11 @@ object Comment {
 
 class Comment extends SimpleNodeConstructor {
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_COMMENT
+  override def getInstructionNameCode: Int = StandardNames.XSL_COMMENT
 
   override def getItemType: ItemType = NodeKindTest.COMMENT
 
-  override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  override def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   def copy(rebindings: RebindingMap): Expression = {
     val exp: Comment = new Comment()

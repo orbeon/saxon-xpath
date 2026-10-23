@@ -135,7 +135,7 @@ class BooleanFn extends SystemFunction {
         BooleanValue.get(effectiveBooleanValue(context))
     }
 
-  override def getCompilerName(): String = "BooleanFnCompiler"
+  override def getCompilerName: String = "BooleanFnCompiler"
 
   override def getStreamerName: String = "BooleanFn"
 

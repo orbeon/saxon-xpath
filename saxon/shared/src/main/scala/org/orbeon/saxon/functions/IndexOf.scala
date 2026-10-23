@@ -108,7 +108,7 @@ class IndexOf extends CollatingFunctionFixed {
    * @return the lower and upper bounds of integer values in the result, or null to indicate
    *         unknown or not applicable.
    */
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     Array(Int64Value.PLUS_ONE, Expression.MAX_SEQUENCE_LENGTH)
 
   override def supplyTypeInformation(visitor: ExpressionVisitor,

@@ -48,7 +48,7 @@ object Choose {
   }
 
   def isSingleBranchChoice(exp: Expression): Boolean =
-    exp.isInstanceOf[Choose] && exp.asInstanceOf[Choose].size == 1
+    exp.isInstanceOf[Choose] && exp.asInstanceOf[Choose].size() == 1
 }
 
 class Choose(_conditions: Array[Expression], _actions: Array[Expression])
@@ -93,8 +93,8 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   def actions(): java.lang.Iterable[Operand] = Arrays.asList(actionOps: _*)
 
   override def operands: java.lang.Iterable[Operand] = {
-    val operanda = new ArrayList[Operand](size * 2)
-    for (i <- 0 until size) {
+    val operanda = new ArrayList[Operand](size() * 2)
+    for (i <- 0 until size()) {
       operanda.add(conditionOps(i))
       operanda.add(actionOps(i))
     }
@@ -104,15 +104,15 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   override def allowExtractingCommonSubexpressions(): Boolean = false
 
   def atomizeActions(): Unit = {
-    for (i <- 0 until size)
+    for (i <- 0 until size())
       setAction(i, Atomizer.makeAtomizer(getAction(i), null))
   }
 
   override def getInstructionNameCode: Int =
-    if (size == 1) StandardNames.XSL_IF else StandardNames.XSL_CHOOSE
+    if (size() == 1) StandardNames.XSL_IF else StandardNames.XSL_CHOOSE
 
   override def simplify(): Expression = {
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       setCondition(i, getCondition(i).simplify())
       try
         setAction(i, getAction(i).simplify())
@@ -145,7 +145,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
         }
       }
     }
-    val localSize: Int = size
+    val localSize: Int = size()
     val changed: Boolean = false
     if (compress) {
       val conditions = new ArrayList[Expression](localSize)
@@ -196,14 +196,14 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
     } else if (Literal.hasEffectiveBooleanValue(getCondition(localSize - 1), value = true) &&
       getAction(localSize - 1).isInstanceOf[Choose]) {
       val choose2               = getAction(localSize - 1).asInstanceOf[Choose]
-      val newLen = localSize + choose2.size - 1
+      val newLen = localSize + choose2.size() - 1
       val c2                    = Array.ofDim[Expression](newLen)
       val a2                    = Array.ofDim[Expression](newLen)
       for (i <- 0 until localSize - 1) {
         c2(i) = getCondition(i)
         a2(i) = getAction(i)
       }
-      for (i <- 0 until choose2.size) {
+      for (i <- 0 until choose2.size()) {
         c2(i + localSize - 1) = choose2.getCondition(i)
         a2(i + localSize - 1) = choose2.getAction(i)
       }
@@ -225,7 +225,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val th = visitor.getConfiguration.getTypeHierarchy
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       conditionOps(i).typeCheck(visitor, contextInfo)
       val err = TypeChecker.ebvError(getCondition(i), th)
       if (err != null) {
@@ -238,7 +238,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
     // type of the top-level expression. It's important with tail recursion not to wrap a tail call in a type checking
     // expression just because a dynamic type check is needed on a different branch of the choice.
     breakable {
-      for (i <- 0 until size) {
+      for (i <- 0 until size()) {
         if (Literal.hasEffectiveBooleanValue(getCondition(i), value = false)) {
           // Don't do any checking if we know statically the condition will be false, because it could
           // result in spurious warnings: bug 4537
@@ -283,7 +283,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
                                backwardsCompatible: Boolean,
                                role: RoleDiagnostic,
                                visitor: ExpressionVisitor): Expression = {
-    val sizeInt = size
+    val sizeInt = size()
     val tc      = getConfiguration.getTypeChecker(backwardsCompatible)
     for (i <- 0 until sizeInt) {
       try
@@ -326,7 +326,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
-    val sizeInt = size
+    val sizeInt = size()
     for (i <- 0 until sizeInt) {
       conditionOps(i).optimize(visitor, contextItemType)
       val ebv = BooleanFn.rewriteEffectiveBooleanValue(
@@ -403,7 +403,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val sizeInt = size
+    val sizeInt = size()
     val c2      = Array.ofDim[Expression](sizeInt)
     val a2      = Array.ofDim[Expression](sizeInt)
     for (c <- 0 until sizeInt) {
@@ -483,7 +483,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   override def getItemType: ItemType = {
     val th = getConfiguration.getTypeHierarchy
     var `type` = getAction(0).getItemType
-    for (i <- 1 until size)
+    for (i <- 1 until size())
       `type` = Type.getCommonSuperType(`type`, getAction(i).getItemType, th)
     `type`
   }
@@ -493,7 +493,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
       return super.getStaticUType(contextItemType)
     } else {
       var `type` = getAction(0).getStaticUType(contextItemType)
-      for (i <- 1 until size)
+      for (i <- 1 until size())
         `type` = `type`.union(getAction(i).getStaticUType(contextItemType))
       `type`
     }
@@ -501,7 +501,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   override def computeCardinality(): Int = {
     var card         = 0
     var includesTrue = false
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       card = Cardinality.union(card, getAction(i).getCardinality)
       if (Literal.hasEffectiveBooleanValue(getCondition(i), value = true))
         includesTrue = true
@@ -513,7 +513,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
 
   override def computeSpecialProperties(): Int = {
     var props = getAction(0).getSpecialProperties
-    for (i <- 1 until size)
+    for (i <- 1 until size())
       props &= getAction(i).getSpecialProperties
     props
   }
@@ -531,7 +531,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
     retainAllNodes : Boolean,
     forStreaming   : Boolean
   ): Expression = {
-    for (i <- 0 until size)
+    for (i <- 0 until size())
       setAction(i, getAction(i).unordered(retainAllNodes, forStreaming))
     this
   }
@@ -557,11 +557,11 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   override def toString: String = {
     val sb = new FastStringBuffer(FastStringBuffer.C64)
     sb.append("if (")
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       sb.append(getCondition(i).toString)
       sb.append(") then (")
       sb.append(getAction(i).toString)
-      if (i == size - 1) {
+      if (i == size() - 1) {
         sb.append(")")
       } else {
         sb.append(") else if (")
@@ -575,7 +575,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("choose", this)
-    for (i <- 0 until size) {
+    for (i <- 0 until size()) {
       getCondition(i).`export`(out)
       getAction(i).`export`(out)
     }
@@ -599,7 +599,7 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
 
   private def choose(context: XPathContext): Int = {
     // ORBEON: Optimize loop with `while` as the non-local return showed in the JavaScript profiler.
-    val sizeInt = size
+    val sizeInt = size()
     var i = 0
     var exitLoop = false
     while (! exitLoop && i < sizeInt) {

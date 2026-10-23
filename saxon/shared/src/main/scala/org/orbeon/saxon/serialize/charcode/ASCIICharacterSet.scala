@@ -17,7 +17,7 @@ class ASCIICharacterSet private () extends CharacterSet {
 
   /*@NotNull*/
 
-  def getCanonicalName(): String = "US-ASCII"
+  def getCanonicalName: String = "US-ASCII"
 
 }
 

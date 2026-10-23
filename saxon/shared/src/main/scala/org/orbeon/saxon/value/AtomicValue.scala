@@ -153,7 +153,7 @@ abstract class AtomicValue
   def checkValidInJavascript(): Unit = ()
 
   /*@NotNull*/
-  def asAtomic(): AtomicValue = this
+  def asAtomic: AtomicValue = this
 
   override def toString: String =
     typeLabel.toString + "(\"" + getStringValueCS.toString + "\")"

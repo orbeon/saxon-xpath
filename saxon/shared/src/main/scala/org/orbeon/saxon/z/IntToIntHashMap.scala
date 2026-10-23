@@ -81,7 +81,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
 
   override def setDefaultValue(defaultVal: Int): Unit = defaultValue = defaultVal
 
-  override def getDefaultValue(): Int = defaultValue
+  override def getDefaultValue: Int = defaultValue
 
   private var _nmax: Int = _
 
@@ -168,7 +168,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
     var count: Int = 0
     breakable {
       while (keys.hasNext) {
-        val k: Int = keys.next
+        val k: Int = keys.next()
         val v: Int = get(k)
         buffer.append(" " + k + ":" + v + ",")
         if ( {

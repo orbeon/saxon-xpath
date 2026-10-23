@@ -52,7 +52,7 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
             "-encoding", "utf8",
             "-unchecked",
             "-source:3.0-migration",
-            "-Wconf:id=E164:s,id=E100:s,id=E203:s,msg=Name resolution will change:s,cat=deprecation:s,cat=feature:s"
+            "-Wconf:id=E164:s,id=E203:s,msg=Name resolution will change:s,cat=deprecation:s,cat=feature:s"
           )
         case _ => Seq.empty
       }

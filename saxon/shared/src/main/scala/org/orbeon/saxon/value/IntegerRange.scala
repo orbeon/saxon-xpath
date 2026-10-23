@@ -76,7 +76,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
    * @return the canonical lexical representation if defined in XML Schema; otherwise, the result
    *         of casting to string according to the XPath 2.0 rules
    */
-  def getCanonicalLexicalRepresentation(): CharSequence = getStringValueCS
+  def getCanonicalLexicalRepresentation: CharSequence = getStringValueCS
 
   /**
    * Get a Comparable value that implements the XML Schema ordering comparison semantics for this value.
@@ -88,7 +88,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
    *
    * @return a Comparable that follows XML Schema comparison rules
    */
-  def getSchemaComparable(): Comparable[_] =
+  def getSchemaComparable: Comparable[_] =
     new AtomicArray(iterate()).getSchemaComparable
 
   def getStringValueCS: CharSequence = SequenceTool.getStringValue(this)

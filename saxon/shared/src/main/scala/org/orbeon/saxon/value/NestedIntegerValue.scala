@@ -73,7 +73,7 @@ class NestedIntegerValue(v: String)
       value(value.length - 1)
     }
 
-  override def getSchemaComparable(): Comparable[AnyRef] = this.asInstanceOf
+  override def getSchemaComparable: Comparable[AnyRef] = this.asInstanceOf
 
   override def getXPathComparable(ordered: Boolean,
                                   collator: StringCollator,
@@ -91,7 +91,7 @@ class NestedIntegerValue(v: String)
     v
   }
 
-  override def getPrimitiveStringValue(): CharSequence = {
+  override def getPrimitiveStringValue: CharSequence = {
     val buffer: FastStringBuffer = new FastStringBuffer(value.length * 2)
     for (i <- 0 until value.length - 1) {
       buffer.append(value(i).toString + ".")

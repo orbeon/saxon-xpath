@@ -82,7 +82,7 @@ class NodeSetPattern(exp: Expression)
   def setItemType(`type`: ItemType): Unit =
     this.itemType = `type`
 
-  override def getDependencies(): Int = getSelectionExpression.getDependencies
+  override def getDependencies: Int = getSelectionExpression.getDependencies
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int =
     ExpressionTool.allocateSlots(getSelectionExpression, nextFree, slotManager)

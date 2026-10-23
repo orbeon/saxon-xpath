@@ -187,7 +187,7 @@ class PatternParser30 extends XPathParser with PatternParser {
 
   override def customizeTokenizer(t: Tokenizer): Unit = ()
 
-  override def parseExpression(): Expression = {
+  override def parseExpression: Expression = {
     val t: Tokenizer = getTokenizer
     if (inPredicate > 0) {
       super.parseExpression
@@ -275,11 +275,11 @@ class PatternParser30 extends XPathParser with PatternParser {
     }
   }
 
-  override def parsePredicate(): Expression = {
+  override def parsePredicate: Expression = {
     val disallow: Boolean = t.disallowUnionKeyword
     t.disallowUnionKeyword = false
 
-    val exp: Expression = parseExpression()
+    val exp: Expression = parseExpression
 
     t.disallowUnionKeyword = disallow
     exp
@@ -298,7 +298,7 @@ class PatternParser30 extends XPathParser with PatternParser {
     fn
   }
 
-  override def parseFunctionArgument(): Expression =
+  override def parseFunctionArgument: Expression =
     if (inPredicate > 0) {
       super.parseFunctionArgument
     } else {

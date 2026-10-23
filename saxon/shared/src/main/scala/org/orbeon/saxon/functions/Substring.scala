@@ -142,6 +142,6 @@ class Substring extends SystemFunction {
     }
   }
 
-  override def getCompilerName(): String = "SubstringCompiler"
+  override def getCompilerName: String = "SubstringCompiler"
 
 }

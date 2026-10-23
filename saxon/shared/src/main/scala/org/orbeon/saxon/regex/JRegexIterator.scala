@@ -89,7 +89,7 @@ class JRegexIterator(private var theString: String,
 
   def getRegexProperties: Set[Property.Property] = Set(Property.LAST_POSITION_FINDER)
 
-  def isMatching(): Boolean = next1 == null && prevEnd >= 0
+  def isMatching: Boolean = next1 == null && prevEnd >= 0
 
   def getRegexGroup(number: Int): String = {
     if (!isMatching) return null
@@ -102,7 +102,7 @@ class JRegexIterator(private var theString: String,
   /**
    * Get the number of captured groups
    */
-  def getNumberOfGroups(): Int = matcher.groupCount()
+  def getNumberOfGroups: Int = matcher.groupCount()
 
   def processMatchingSubstring(action: MatchHandler): Unit = {
     val c: Int = matcher.groupCount()

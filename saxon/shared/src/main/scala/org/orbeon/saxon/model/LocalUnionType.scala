@@ -27,7 +27,7 @@ class LocalUnionType(var memberTypes: List[AtomicType])
 
   override def getGenre: Genre.Genre = Genre.ATOMIC
 
-  def getTypeName(): StructuredQName =
+  def getTypeName: StructuredQName =
     new StructuredQName("", NamespaceConstant.ANONYMOUS, "U" + hashCode)
 
   def isAtomicType: Boolean = false
@@ -36,9 +36,9 @@ class LocalUnionType(var memberTypes: List[AtomicType])
 
   def isPlainType: Boolean = true
 
-  override def isTrueItemType(): Boolean = true
+  override def isTrueItemType: Boolean = true
 
-  def getResultTypeOfCast(): SequenceType =
+  def getResultTypeOfCast: SequenceType =
     SequenceType.makeSequenceType(this, StaticProperty.ALLOWS_ZERO_OR_ONE)
 
   def isIdType: Boolean = memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isIdType)
@@ -61,7 +61,7 @@ class LocalUnionType(var memberTypes: List[AtomicType])
 
   override def getBasicAlphaCode: String = "A"
 
-  def isNamespaceSensitive(): Boolean =
+  def isNamespaceSensitive: Boolean =
     memberTypes.stream().anyMatch((atmType: AtomicType) => atmType.isNamespaceSensitive)
 
   def validateContent(value: CharSequence,
@@ -116,7 +116,7 @@ class LocalUnionType(var memberTypes: List[AtomicType])
 
   def isAtomizable(th: TypeHierarchy): Boolean = true
 
-  def getPlainMemberTypes(): Iterable[AtomicType] = memberTypes.asScala
+  def getPlainMemberTypes: Iterable[AtomicType] = memberTypes.asScala
 
   override def getDefaultPriority: Double = {
     var result: Double = 1

@@ -250,7 +250,7 @@ class Copy(
         val `type`: UType = contextItemType.itemType.getUType
         if (`type`.intersection(MultipleNodeKindTest.LEAF.getUType) != UType.VOID) {
           val p: Expression = parentExpression
-          if (p.isInstanceOf[Choose] && p.asInstanceOf[Choose].size == 2 &&
+          if (p.isInstanceOf[Choose] && p.asInstanceOf[Choose].size() == 2 &&
             p.asInstanceOf[Choose].getAction(1) == this &&
             p.asInstanceOf[Choose].getAction(0).isInstanceOf[CopyOf]) {
             return exp

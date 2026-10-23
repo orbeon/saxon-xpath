@@ -42,7 +42,7 @@ class InvalidityReportGenerator(config: Configuration) extends StandardInvalidit
 
   override def startReporting(systemId: String): Unit = ()
 
-  override def endReporting(): Sequence = null
+  override def endReporting: Sequence = null
 
   def createMetaData(): Unit = ()
 

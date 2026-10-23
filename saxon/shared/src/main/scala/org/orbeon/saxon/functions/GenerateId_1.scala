@@ -45,6 +45,6 @@ class GenerateId_1 extends ScalarSystemFunction {
   override def evaluate(arg: Item, context: XPathContext): AtomicValue =
     generateId(arg.asInstanceOf[NodeInfo])
 
-  override def getCompilerName(): String = "GenerateIdCompiler"
+  override def getCompilerName: String = "GenerateIdCompiler"
 
 }

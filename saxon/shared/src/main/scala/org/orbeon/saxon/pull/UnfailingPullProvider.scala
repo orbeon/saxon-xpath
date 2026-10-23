@@ -24,7 +24,7 @@ trait UnfailingPullProvider extends PullProvider {
 
   def getAttributes: AttributeMap
 
-  def getNamespaceDeclarations(): Array[NamespaceBinding]
+  def getNamespaceDeclarations: Array[NamespaceBinding]
 
   def skipToMatchingEnd(): Event
 
@@ -36,10 +36,10 @@ trait UnfailingPullProvider extends PullProvider {
 
   def getSchemaType: SchemaType
 
-  def getAtomicValue(): AtomicValue
+  def getAtomicValue: AtomicValue
 
-  def getSourceLocator(): Location
+  def getSourceLocator: Location
 
-  def getUnparsedEntities(): List[UnparsedEntity]
+  def getUnparsedEntities: List[UnparsedEntity]
 
 }

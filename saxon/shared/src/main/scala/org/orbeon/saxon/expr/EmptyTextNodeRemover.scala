@@ -37,7 +37,7 @@ class EmptyTextNodeRemover(p0: Expression)
   override def computeCardinality(): Int =
     getBaseExpression.getCardinality | StaticProperty.ALLOWS_ZERO
 
-   override def getOperandRole(): OperandRole =
+   override def getOperandRole: OperandRole =
     OperandRole.SAME_FOCUS_ACTION
 
   /*@NotNull*/

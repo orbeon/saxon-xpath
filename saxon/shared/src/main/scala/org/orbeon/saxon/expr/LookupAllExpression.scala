@@ -31,7 +31,7 @@ import scala.jdk.CollectionConverters._
 
 class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
 
-  override def getOperandRole(): OperandRole = OperandRole.INSPECT
+  override def getOperandRole: OperandRole = OperandRole.INSPECT
 
   override def getItemType: ItemType = {
     val base: ItemType = getBaseExpression.getItemType

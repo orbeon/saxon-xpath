@@ -78,7 +78,7 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
       // This is not an error in a switch statement, but it means the branch will never be chosen
     }
     try if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-      val v = evaluateItem(visitor.staticContext.makeEarlyEvaluationContext).materialize
+      val v = evaluateItem(visitor.staticContext.makeEarlyEvaluationContext()).materialize
       return Literal.makeLiteral(v, this)
     }
     catch {
@@ -102,12 +102,12 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
    * @return true if untyped values should be converted to the type of the other operand, false if they
    *         should be converted to strings.
    */
-  override def convertsUntypedToOther = false
+  override def convertsUntypedToOther() = false
 
   /**
    * Determine the static cardinality. Returns [1..1]
    */
-  override def computeCardinality = StaticProperty.EXACTLY_ONE
+  override def computeCardinality() = StaticProperty.EXACTLY_ONE
 
   /**
    * Determine the data type of the expression

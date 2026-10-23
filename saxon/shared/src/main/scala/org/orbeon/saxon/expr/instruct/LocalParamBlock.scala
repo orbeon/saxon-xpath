@@ -51,7 +51,7 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
 
   override def getItemType: ItemType = ErrorType
 
-  override def getCardinality(): Int = StaticProperty.EMPTY
+  override def getCardinality: Int = StaticProperty.EMPTY
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("params", this)

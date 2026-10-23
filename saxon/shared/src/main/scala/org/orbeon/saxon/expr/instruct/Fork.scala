@@ -36,7 +36,7 @@ class Fork extends Instruction {
   override def operands: java.lang.Iterable[Operand] =
     Arrays.asList(operanda: _*)
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_FORK
+  override def getInstructionNameCode: Int = StandardNames.XSL_FORK
 
   def getSize: Int = operanda.length
 

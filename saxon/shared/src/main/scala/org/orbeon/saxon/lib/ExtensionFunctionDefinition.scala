@@ -92,7 +92,7 @@ abstract class ExtensionFunctionDefinition {
       * @return true if the result does not need to be checked (which can cause catastrophic
       * failure if this trust is misplaced)
       */
-    override def isTrustedResultType(): Boolean = trustResultType()
+    override def isTrustedResultType: Boolean = trustResultType()
   }
 
 }

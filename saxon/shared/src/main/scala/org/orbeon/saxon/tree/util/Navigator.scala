@@ -900,7 +900,7 @@ object Navigator {
     }
     val prev = node.iterateAxis(AxisInfo.PRECEDING_SIBLING, nodeTest)
     var count = 1
-    while (prev.next != null) if ( {
+    while (prev.next() != null) if ( {
       count += 1
       count
     } > max)

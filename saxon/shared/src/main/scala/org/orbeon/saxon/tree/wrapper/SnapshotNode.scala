@@ -92,9 +92,9 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
 
   override def isId: Boolean = original.isId
 
-  override def isIdref(): Boolean = original.isIdref
+  override def isIdref: Boolean = original.isIdref
 
-  override def isNilled(): Boolean = original.isNilled
+  override def isNilled: Boolean = original.isNilled
 
   override def getPublicId: String =
     if (original != null) original.getPublicId else null

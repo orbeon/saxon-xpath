@@ -66,8 +66,8 @@ final class FunctionSequenceCoercer(val sequence: Expression, var requiredItemTy
   override  def getOperandRole = OperandRole.INSPECT
 
   @throws[XPathException]
-  override def simplify: Expression = {
-    setBaseExpression(getBaseExpression.simplify)
+  override def simplify(): Expression = {
+    setBaseExpression(getBaseExpression.simplify())
     if (getBaseExpression.isInstanceOf[Literal]) {
       val `val` = iterate(new EarlyEvaluationContext(getConfiguration)).materialize
       return Literal.makeLiteral(`val`, this)
@@ -91,8 +91,8 @@ final class FunctionSequenceCoercer(val sequence: Expression, var requiredItemTy
    *
    * @return { @link org.orbeon.saxon.expr.StaticProperty#NO_NODES_NEWLY_CREATED}.
    */
-  override def computeSpecialProperties = {
-    val p = super.computeSpecialProperties
+  override def computeSpecialProperties() = {
+    val p = super.computeSpecialProperties()
     p | StaticProperty.NO_NODES_NEWLY_CREATED
   }
 
@@ -160,7 +160,7 @@ final class FunctionSequenceCoercer(val sequence: Expression, var requiredItemTy
   /**
    * Determine the static cardinality of the expression
    */
-  override def computeCardinality = getBaseExpression.getCardinality
+  override def computeCardinality() = getBaseExpression.getCardinality
 
   /**
    * @return the role locator
@@ -172,7 +172,7 @@ final class FunctionSequenceCoercer(val sequence: Expression, var requiredItemTy
    */
   override def equals(other: Any) = super.equals(other) && requiredItemType == other.asInstanceOf[FunctionSequenceCoercer].requiredItemType
 
-  override def computeHashCode = super.computeHashCode ^ requiredItemType.hashCode
+  override def computeHashCode() = super.computeHashCode() ^ requiredItemType.hashCode
 
   override def getExpressionName = "fnCoercer"
 
@@ -185,9 +185,9 @@ final class FunctionSequenceCoercer(val sequence: Expression, var requiredItemTy
     destination.startElement("fnCoercer", this)
     val st = SequenceType.makeSequenceType(requiredItemType, StaticProperty.EXACTLY_ONE)
     destination.emitAttribute("to", st.toAlphaCode)
-    destination.emitAttribute("diag", role.save)
+    destination.emitAttribute("diag", role.save())
     getBaseExpression.`export`(destination)
-    destination.endElement
+    destination.endElement()
   }
 }
 

@@ -65,7 +65,7 @@ object ContainsToken {
  */
 class ContainsToken extends CollatingFunctionFixed {
 
-  override def isSubstringMatchingFunction(): Boolean = true
+  override def isSubstringMatchingFunction: Boolean = true
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     BooleanValue.get(

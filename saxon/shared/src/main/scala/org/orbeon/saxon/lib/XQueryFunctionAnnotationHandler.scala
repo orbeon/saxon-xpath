@@ -89,7 +89,7 @@ object XQueryFunctionAnnotationHandler {
 class XQueryFunctionAnnotationHandler extends FunctionAnnotationHandler {
 
   override def check(annotations: AnnotationList, construct: String): Unit = {
-    for (i <- 0 until annotations.size) {
+    for (i <- 0 until annotations.size()) {
       val ann: Annotation = annotations.get(i)
       for (dc <- blackList if dc.one == ann.getAnnotationQName && dc.where
         .contains(construct)) {
@@ -122,7 +122,7 @@ class XQueryFunctionAnnotationHandler extends FunctionAnnotationHandler {
     }
   }
 
-  def getAssertionNamespace(): String = "http://www.w3.org/2012/xquery"
+  def getAssertionNamespace: String = "http://www.w3.org/2012/xquery"
 
   def satisfiesAssertion(assertion: Annotation, annotationList: AnnotationList)
   : Boolean = // annotation assertions are not defined for this namespace (surprisingly)

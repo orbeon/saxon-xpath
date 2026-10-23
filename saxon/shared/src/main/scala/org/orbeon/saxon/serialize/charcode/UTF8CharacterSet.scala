@@ -96,7 +96,7 @@ class UTF8CharacterSet private () extends CharacterSet {
 
   /*@NotNull*/
 
-  def getCanonicalName(): String = "UTF-8"
+  def getCanonicalName: String = "UTF-8"
 
 }
 

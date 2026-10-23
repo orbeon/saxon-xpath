@@ -43,7 +43,7 @@ class JSONResource(
     details.encoding = "UTF-8"
   }
 
-  def getResourceURI(): String = href
+  def getResourceURI: String = href
 
   def getItem(context: XPathContext): Item = {
     if (jsonStr == null) {
@@ -56,7 +56,7 @@ class JSONResource(
     ParseJsonFn.parse(jsonStr, options, context)
   }
 
-  def getContentType(): String = "application/json"
+  def getContentType: String = "application/json"
 
 }
 

@@ -22,7 +22,7 @@ import org.orbeon.saxon.value.StringValue
 
 class StringLength_1 extends ScalarSystemFunction {
 
-  override def getIntegerBounds(): Array[IntegerValue] =
+  override def getIntegerBounds: Array[IntegerValue] =
     Array(Int64Value.ZERO, Expression.MAX_STRING_LENGTH)
 
   override def resultWhenEmpty(): ZeroOrOne[_ <: Item] = One.integer(0)
@@ -37,6 +37,6 @@ class StringLength_1 extends ScalarSystemFunction {
       Int64Value.makeIntegerValue(StringValue.getStringLength(s))
     }
 
-  override def getCompilerName(): String = "StringLengthCompiler"
+  override def getCompilerName: String = "StringLengthCompiler"
 
 }

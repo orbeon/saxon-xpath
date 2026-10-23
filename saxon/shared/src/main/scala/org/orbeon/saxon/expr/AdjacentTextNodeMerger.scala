@@ -54,7 +54,7 @@ object AdjacentTextNodeMerger {
 
 class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
 
-  def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION
+  def getOperandRole: OperandRole = OperandRole.SAME_FOCUS_ACTION
 
   override def simplify(): Expression = {
     val operand: Expression = getBaseExpression
@@ -83,7 +83,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
     }
     if (getBaseExpression.isInstanceOf[Choose]) {
       val choose: Choose = getBaseExpression.asInstanceOf[Choose]
-      for (i <- 0 until choose.size) {
+      for (i <- 0 until choose.size()) {
         val atm2: AdjacentTextNodeMerger = new AdjacentTextNodeMerger(
           choose.getAction(i))
         choose.setAction(i, atm2.typeCheck(visitor, contextInfo))

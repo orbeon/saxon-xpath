@@ -859,11 +859,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
   def getNumberOfNamespaces: Int = numberOfNamespaces
 
-  def getNodeKindArray(): Array[Byte] = nodeKind
+  def getNodeKindArray: Array[Byte] = nodeKind
 
   def getNodeDepthArray: Array[Short] = depth
 
-  def getNameCodeArray(): Array[Int] = nameCode
+  def getNameCodeArray: Array[Int] = nameCode
 
   /*@Nullable*/
   def getTypeArray: Array[SchemaType] = typeArray

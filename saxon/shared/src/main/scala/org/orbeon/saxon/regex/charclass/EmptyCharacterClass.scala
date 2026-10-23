@@ -27,7 +27,7 @@ class EmptyCharacterClass private () extends CharacterClass {
   def isDisjoint(other: CharacterClass): Boolean = // intersection of the two sets is empty
     true
 
-  override def getIntSet(): IntSet = IntEmptySet.getInstance
+  override def getIntSet: IntSet = IntEmptySet.getInstance
 
 }
 

@@ -42,7 +42,7 @@ class TailCallLoop(var containingFunction: UserFunction, body: Expression)
   def getImplementationMethod: Int =
     getBaseExpression.getImplementationMethod
 
-   override def getOperandRole(): OperandRole =
+   override def getOperandRole: OperandRole =
     OperandRole.SAME_FOCUS_ACTION
 
   def copy(rebindings: RebindingMap): Expression =

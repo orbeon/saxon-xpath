@@ -41,9 +41,9 @@ object IntHashSet {
   def toString(it: IntIterator): String = {
     val sb = new FastStringBuffer(100)
     while (it.hasNext) if (sb.isEmptySB) {
-      sb.append("" + it.next)
+      sb.append("" + it.next())
     } else {
-      sb.append(" " + it.next)
+      sb.append(" " + it.next())
     }
     sb.toString
   }
@@ -270,7 +270,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
     var h = 936247625
     val it = iterator
     while (it.hasNext)
-      h += it.next
+      h += it.next()
     h
   }
 
@@ -310,7 +310,7 @@ class IntHashSet(var capacity: Int, private val ndv: Int)
         System.err.println(sb.toString)
         sb.setLength(0)
       }
-      sb.append(iter.next.toString + ", ")
+      sb.append(iter.next().toString + ", ")
     }
     System.err.println(sb.toString)
     System.err.println("=====================")

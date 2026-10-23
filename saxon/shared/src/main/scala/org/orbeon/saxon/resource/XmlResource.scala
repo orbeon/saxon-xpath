@@ -49,7 +49,7 @@ class XmlResource(private var doc: NodeInfo) extends Resource {
     this.details = details
   }
 
-  def getResourceURI(): String =
+  def getResourceURI: String =
     if (doc == null) {
       details.resourceUri
     } else {
@@ -107,6 +107,6 @@ class XmlResource(private var doc: NodeInfo) extends Resource {
     doc
   }
 
-  def getContentType(): String = "application/xml"
+  def getContentType: String = "application/xml"
 
 }

@@ -21,7 +21,7 @@ class GlobalParam extends GlobalVariable {
 
   def isImplicitlyRequiredParam: Boolean = this.implicitlyRequired
 
-  override def getTracingTag(): String = "xsl:param"
+  override def getTracingTag: String = "xsl:param"
 
   /**
     * Evaluate the variable
@@ -67,7 +67,7 @@ class GlobalParam extends GlobalVariable {
   override def evaluateVariable(context: XPathContext): GroundedValue =
     evaluateVariable(context, null)
 
-   override def getFlags(): String = {
+   override def getFlags: String = {
     var f: String = super.getFlags
     if (isImplicitlyRequiredParam) {
       f += "i"

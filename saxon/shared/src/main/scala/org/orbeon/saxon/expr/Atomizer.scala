@@ -167,7 +167,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
         }
         operand
       case of: ValueOf if ! ReceiverOption.contains(of.options, ReceiverOption.DISABLE_ESCAPING) =>
-        of.convertToCastAsString
+        of.convertToCastAsString()
       case _ =>
         this.setBaseExpression(operand)
         this
@@ -244,7 +244,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
         return operand
       operand match {
         case valueOf: ValueOf if ! ReceiverOption.contains(valueOf.options, ReceiverOption.DISABLE_ESCAPING) =>
-          val cast = valueOf.convertToCastAsString
+          val cast = valueOf.convertToCastAsString()
           return cast.optimize(visitor, contextInfo)
         case assignation @ (_: LetExpression | _: ForExpression) =>
 

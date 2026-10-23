@@ -36,7 +36,7 @@ object SubstringBefore {
   */
 class SubstringBefore extends CollatingFunctionFixed {
 
-  override def isSubstringMatchingFunction(): Boolean = true
+  override def isSubstringMatchingFunction: Boolean = true
 
   /**
     * Evaluate the expression
@@ -60,7 +60,7 @@ class SubstringBefore extends CollatingFunctionFixed {
     substringBefore(arg0, arg1, collator.asInstanceOf[SubstringMatcher])
   }
 
-  override def getCompilerName(): String = "SubstringBeforeCompiler"
+  override def getCompilerName: String = "SubstringBeforeCompiler"
 
 }
 

@@ -62,7 +62,7 @@ class MemoFunction extends UserFunction {
     evaluator = ExpressionTool.eagerEvaluator(getBody)
   }
 
-  override def isMemoFunction(): Boolean = true
+  override def isMemoFunction: Boolean = true
 
   override def call(context: XPathContext,
                     actualArgs: Array[Sequence]): Sequence = {

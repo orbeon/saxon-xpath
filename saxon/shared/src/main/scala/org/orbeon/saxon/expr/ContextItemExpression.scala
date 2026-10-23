@@ -124,7 +124,7 @@ class ContextItemExpression extends Expression {
 
   override def isSubtreeExpression: Boolean = true
 
-  override def getNetCost(): Int = 0
+  override def getNetCost: Int = 0
 
   /**
    * Convert this expression to an equivalent XSLT pattern

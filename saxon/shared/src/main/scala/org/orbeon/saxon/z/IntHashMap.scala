@@ -232,7 +232,7 @@ class IntHashMap[T >: Null <: AnyRef](var capacity: Int, var _factor: Double) {
   }
 
   def copy(): IntHashMap[T] = {
-    val n  = new IntHashMap[T](size)
+    val n  = new IntHashMap[T](size())
     val it = keyIterator
     while (it.hasNext) {
       val k = it.next()

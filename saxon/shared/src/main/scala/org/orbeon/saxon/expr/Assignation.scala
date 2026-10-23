@@ -305,7 +305,7 @@ abstract class Assignation extends Expression with LocalBinding {
    */
   def getVariableName: String =
     if (variableName == null)
-      "zz:var" + computeHashCode
+      "zz:var" + computeHashCode()
     else
       variableName.getDisplayName
 
@@ -318,7 +318,7 @@ abstract class Assignation extends Expression with LocalBinding {
    */
   def getVariableEQName: String =
     if (variableName == null)
-      "Q{http://ns.saxonica.com/anonymous-var}var" + computeHashCode
+      "Q{http://ns.saxonica.com/anonymous-var}var" + computeHashCode()
     else if (variableName.hasURI(""))
       variableName.getLocalPart
     else

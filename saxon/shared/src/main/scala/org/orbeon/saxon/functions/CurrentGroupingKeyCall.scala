@@ -24,7 +24,7 @@ import org.orbeon.saxon.trans.XPathException
 
 class CurrentGroupingKeyCall extends Expression with Callable {
 
-  override def getScopingExpression(): Expression =
+  override def getScopingExpression: Expression =
     CurrentGroupCall.findControllingInstruction(this)
 
    override def computeCardinality(): Int =

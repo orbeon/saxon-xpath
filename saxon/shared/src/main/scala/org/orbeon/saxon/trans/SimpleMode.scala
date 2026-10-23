@@ -53,7 +53,7 @@ object SimpleMode {
     while ( {
       ii.hasNext
     }) {
-      val fp = ii.next
+      val fp = ii.next()
       val eChain = indexByFP.get(fp)
       val name = pool.getStructuredQName(fp)
       indexByQN.put(name, eChain)
@@ -340,7 +340,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
     while ( {
       ii.hasNext
     }) {
-      val fp = ii.next
+      val fp = ii.next()
       namespaces.add(pool.getURI(fp))
     }
     namespaces
@@ -539,8 +539,8 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
   def getNamedRuleChain(c: XPathContext, kind: Int, uri: String, local: String) = {
     this synchronized {
       if (qNamedElementRuleChains == null) {
-        qNamedElementRuleChains = new HashMap[StructuredQName, RuleChain](namedElementRuleChains.size)
-        qNamedAttributeRuleChains = new HashMap[StructuredQName, RuleChain](namedAttributeRuleChains.size)
+        qNamedElementRuleChains = new HashMap[StructuredQName, RuleChain](namedElementRuleChains.size())
+        qNamedAttributeRuleChains = new HashMap[StructuredQName, RuleChain](namedAttributeRuleChains.size())
         val pool = c.getNamePool
         SimpleMode.indexByQName(pool, namedElementRuleChains, qNamedElementRuleChains)
         SimpleMode.indexByQName(pool, namedAttributeRuleChains, qNamedAttributeRuleChains)
@@ -864,7 +864,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
 
       override
 
-      def end() = out.endElement
+      def end() = out.endElement()
     }
     try processRules(action, group)
     catch {
@@ -941,13 +941,13 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
   }
 
   @throws[XPathException]
-  def processRuleChains(chains: IntHashMap[RuleChain], action: Mode.RuleAction, group: SimpleMode.RuleGroupAction) = if (chains.size > 0) {
+  def processRuleChains(chains: IntHashMap[RuleChain], action: Mode.RuleAction, group: SimpleMode.RuleGroupAction) = if (chains.size() > 0) {
     if (group != null) group.start()
     val ii = chains.keyIterator
     while ( {
       ii.hasNext
     }) {
-      val i = ii.next
+      val i = ii.next()
       if (group != null) group.start(i)
       val r = chains.get(i)
       processRuleChain(r, action, null)

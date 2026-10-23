@@ -203,7 +203,7 @@ class DayTimeDurationValue
   override def getPrimitiveType: BuiltInAtomicType =
     BuiltInAtomicType.DAY_TIME_DURATION
 
-  override def getPrimitiveStringValue(): CharSequence = {
+  override def getPrimitiveStringValue: CharSequence = {
     val sb = new FastStringBuffer(32)
     if (negative) {
       sb.cat('-')
@@ -238,7 +238,7 @@ class DayTimeDurationValue
     sb
   }
 
-  override def getLengthInSeconds(): Double = {
+  override def getLengthInSeconds: Double = {
     val a: Double = seconds + (nanoseconds.toDouble / 1000000000)
     // System.err.println("Duration length " + days + "/" + hours + "/" + minutes + "/" + seconds + " is " + a);
     if (negative) -a else a

@@ -36,7 +36,7 @@ class NodeName_1 extends ScalarSystemFunction {
   override def evaluate(item: Item, context: XPathContext): AtomicValue =
     nodeName(item.asInstanceOf[NodeInfo])
 
-  override def getCompilerName(): String = "NodeNameFnCompiler"
+  override def getCompilerName: String = "NodeNameFnCompiler"
 
 }
 

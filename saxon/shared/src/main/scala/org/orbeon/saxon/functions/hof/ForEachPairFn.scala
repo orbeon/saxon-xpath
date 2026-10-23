@@ -72,7 +72,7 @@ class ForEachPairFn extends SystemFunction {
     val map: MappingFunction = new MappingFunction {
       override def map(item: Item): SequenceIterator = {
         val pair = item.asInstanceOf[ExternalObject[_]].getObject.asInstanceOf[Array[Sequence]]
-         SystemFunction.dynamicCall(function, context, pair).iterate
+         SystemFunction.dynamicCall(function, context, pair).iterate()
       }
     }
     new MappingIterator(pairs, map)

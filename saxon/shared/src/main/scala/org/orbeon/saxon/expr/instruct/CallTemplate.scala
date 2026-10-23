@@ -127,7 +127,7 @@ class CallTemplate(private var template: NamedTemplate,
 
   def usesTailRecursion(): Boolean = useTailRecursion
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_CALL_TEMPLATE
+  override def getInstructionNameCode: Int = StandardNames.XSL_CALL_TEMPLATE
 
   override def simplify(): Expression = {
     WithParam.simplify(actualParams)

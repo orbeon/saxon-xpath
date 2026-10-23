@@ -30,7 +30,7 @@ class TraceClause(expression: FLWORExpression, private var target: Clause)
     this.nsResolver = nsResolver
   }
 
-  override def getClauseKey(): ClauseName = TRACE
+  override def getClauseKey: ClauseName = TRACE
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): TraceClause =
     new TraceClause(flwor, target)

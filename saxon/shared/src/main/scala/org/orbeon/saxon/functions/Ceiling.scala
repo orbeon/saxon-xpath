@@ -12,7 +12,7 @@ class Ceiling extends ScalarSystemFunction {
   override def evaluate(arg: Item, context: XPathContext): NumericValue =
     arg.asInstanceOf[NumericValue].ceiling()
 
-  override def getCompilerName(): String = "RoundingCompiler"
+  override def getCompilerName: String = "RoundingCompiler"
 
 }
 

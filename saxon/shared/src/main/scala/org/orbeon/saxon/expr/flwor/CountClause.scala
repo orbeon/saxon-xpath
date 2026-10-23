@@ -24,7 +24,7 @@ class CountClause extends Clause {
 
   var rangeVariable: LocalVariableBinding = _
 
-  override def getClauseKey(): Clause.ClauseName.ClauseName = COUNT
+  override def getClauseKey: Clause.ClauseName.ClauseName = COUNT
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): CountClause = {
     val c2: CountClause = new CountClause()
@@ -39,7 +39,7 @@ class CountClause extends Clause {
     *
     * @return the number of variable bindings
     */
-  override def getRangeVariables(): Array[LocalVariableBinding] =
+  override def getRangeVariables: Array[LocalVariableBinding] =
     Array(rangeVariable)
 
   override def getPullStream(base: TuplePull,

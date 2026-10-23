@@ -18,7 +18,7 @@ import scala.util.control.Breaks._
 
 class OuterForExpression extends ForExpression {
 
-  override def getRangeVariableCardinality(): Int =
+  override def getRangeVariableCardinality: Int =
     StaticProperty.ALLOWS_ZERO_OR_ONE
 
   override def optimize(visitor: ExpressionVisitor,

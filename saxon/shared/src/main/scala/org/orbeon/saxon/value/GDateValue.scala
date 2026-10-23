@@ -310,7 +310,7 @@ abstract class GDateValue extends CalendarValue {
       getTimezoneInMinutes,
       hasNoYearZero)
 
-  def getSchemaComparable(): Comparable[AnyRef] = new GDateComparable()
+  def getSchemaComparable: Comparable[AnyRef] = new GDateComparable()
 
   override def getComponent(component: AccessorFn.Component.Component): AtomicValue =
     component match {

@@ -20,9 +20,9 @@ class IntBlockSet(var startPoint: Int,
   // Hashcode, evaluated lazily
   private var hashCodeVariable: Int = -1
 
-  def copy: IntSet = this
+  def copy(): IntSet = this
 
-  def mutableCopy: IntSet =
+  def mutableCopy(): IntSet =
     new IntRangeSet(Array(startPoint), Array(endPoint))
 
   override def isMutable(): Boolean = false

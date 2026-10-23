@@ -98,9 +98,9 @@ class BooleanValue private()
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.BOOLEAN
 
-  def getPrimitiveStringValue(): String = if (value) "true" else "false"
+  def getPrimitiveStringValue: String = if (value) "true" else "false"
 
-  def getSchemaComparable(): Comparable[AnyRef] = new BooleanComparable()
+  def getSchemaComparable: Comparable[AnyRef] = new BooleanComparable()
 
   private class BooleanComparable extends Comparable[AnyRef] {
 

@@ -33,14 +33,14 @@ class OnEmptyExpr /**
     *
     * @return true if this construct originates as an XSLT instruction
     */
-  override def isInstruction(): Boolean = true
+  override def isInstruction: Boolean = true
 
   /**
     * Get the usage (in terms of streamability analysis) of the single operand
     *
     * @return the operand usage
     */
-   override def getOperandRole(): OperandRole =
+   override def getOperandRole: OperandRole =
     new OperandRole(0, OperandUsage.TRANSMISSION)
 
   /**

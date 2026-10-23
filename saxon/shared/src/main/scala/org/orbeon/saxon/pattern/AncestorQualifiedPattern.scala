@@ -54,7 +54,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
     upperPattern.bindCurrent(binding)
   }
 
-  override def isMotionless(): Boolean =
+  override def isMotionless: Boolean =
     basePattern.isMotionless && upperPattern.isMotionless
 
   override def matchesCurrentGroup(): Boolean =
@@ -92,7 +92,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
     this
   }
 
-  override def getDependencies(): Int =
+  override def getDependencies: Int =
     basePattern.getDependencies | upperPattern.getDependencies
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = {

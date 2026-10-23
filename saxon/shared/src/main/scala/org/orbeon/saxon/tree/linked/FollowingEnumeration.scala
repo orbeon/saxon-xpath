@@ -18,10 +18,10 @@ class FollowingEnumeration(var node: NodeImpl, nodeTest: Predicate[_ >: NodeInfo
   } else {
     while ({
       nextImpl = node.getNextSibling
-      if (next == null) {
+      if (next() == null) {
         node = node.getParent
       }
-      next == null && node != null
+      next() == null && node != null
     }) ()
   }
 

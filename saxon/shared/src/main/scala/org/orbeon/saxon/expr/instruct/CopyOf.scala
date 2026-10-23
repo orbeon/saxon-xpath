@@ -205,7 +205,7 @@ class CopyOf(select: Expression,
 
   override def operands: java.lang.Iterable[Operand] = selectOp
 
-  def getValidationAction(): Int = validation
+  def getValidationAction: Int = validation
 
   def setSchemaAware(schemaAware: Boolean): Unit = {
     this.isSchemaAware = schemaAware
@@ -217,7 +217,7 @@ class CopyOf(select: Expression,
 
   override def mayCreateNewNodes(): Boolean = !getSelect.getItemType.isPlainType
 
-  override def getInstructionNameCode(): Int = StandardNames.XSL_COPY_OF
+  override def getInstructionNameCode: Int = StandardNames.XSL_COPY_OF
 
   def setRequireDocumentOrElement(requireDocumentOrElement: Boolean): Unit = {
     this.requireDocumentOrElement = requireDocumentOrElement
@@ -357,9 +357,9 @@ class CopyOf(select: Expression,
     getSelect.getItemType
   }
 
-  override def getCardinality(): Int = getSelect.getCardinality
+  override def getCardinality: Int = getSelect.getCardinality
 
-  override def getDependencies(): Int = getSelect.getDependencies
+  override def getDependencies: Int = getSelect.getDependencies
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {

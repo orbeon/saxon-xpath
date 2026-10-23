@@ -254,7 +254,7 @@ class NumberSequenceFormatter(value: Expression,
           if (num.compareTo(Int64Value.MAX_LONG) > 0) {
             var bi: BigInteger = Converter
               .convert(num, BuiltInAtomicType.INTEGER, rules)
-              .asAtomic()
+              .asAtomic
               .asInstanceOf[BigIntegerValue]
               .asBigInteger()
             if (startValue != 1) {
@@ -270,7 +270,7 @@ class NumberSequenceFormatter(value: Expression,
             // thrown to be caught
             var i: Long = Converter
               .convert(num, BuiltInAtomicType.INTEGER, rules)
-              .asAtomic()
+              .asAtomic
               .asInstanceOf[NumericValue]
               .longValue
             i += startValue - 1

@@ -78,7 +78,7 @@ object AttributeValueTemplate {
           parser.setLanguage(XPathParser.ParsedLanguage.XPATH, 31)
           parser.setAllowAbsentExpression(allowEmpty = true)
           exp = parser.parse(avt, i0 + 1, Token.RCURLY, env)
-          exp.setRetainedStaticContext(env.makeRetainedStaticContext)
+          exp.setRetainedStaticContext(env.makeRetainedStaticContext())
           exp = exp.simplify()
           last = parser.getTokenizer.currentTokenStartOffset + 1
 
@@ -87,7 +87,7 @@ object AttributeValueTemplate {
           if (env.isInBackwardsCompatibleMode)
             components.add(makeFirstItem(exp, env))
           else
-            components.add(makeSimpleContentConstructor(exp, new StringLiteral(StringValue.SINGLE_SPACE), env).simplify)
+            components.add(makeSimpleContentConstructor(exp, new StringLiteral(StringValue.SINGLE_SPACE), env).simplify())
         } else
           throw new IllegalStateException("Internal error parsing AVT")
       }
@@ -195,7 +195,7 @@ object AttributeValueTemplate {
 
     var rsc = select.getLocalRetainedStaticContext
     if (rsc == null)
-      rsc = env.makeRetainedStaticContext
+      rsc = env.makeRetainedStaticContext()
     // Merge adjacent text nodes
     select = AdjacentTextNodeMerger.makeAdjacentTextNodeMerger(select)
     // Atomize the result

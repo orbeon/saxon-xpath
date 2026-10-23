@@ -51,7 +51,7 @@ class SimplePositionalPattern(var nodeTest: NodeTest,
 
   override def computeHashCode(): Int = nodeTest.hashCode ^ (position << 3)
 
-  override def isMotionless(): Boolean = false
+  override def isMotionless: Boolean = false
 
   override def matchesBeneathAnchor(node: NodeInfo,
                                     anchor: NodeInfo,

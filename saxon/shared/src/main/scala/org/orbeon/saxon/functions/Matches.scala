@@ -68,7 +68,7 @@ class Matches extends RegexFunction {
     BooleanValue.get(result)
   }
 
-  override def getCompilerName(): String = "MatchesCompiler"
+  override def getCompilerName: String = "MatchesCompiler"
 
 }
 

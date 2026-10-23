@@ -100,7 +100,7 @@ class ValueOf(select: Expression,
     }
   }
 
-  override def getInstructionNameCode(): Int =
+  override def getInstructionNameCode: Int =
     if (isNumberingInstruction) {
       StandardNames.XSL_NUMBER
     } else if (getSelect.isInstanceOf[StringLiteral]) {

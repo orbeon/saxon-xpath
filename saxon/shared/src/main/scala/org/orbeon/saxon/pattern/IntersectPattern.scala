@@ -87,7 +87,7 @@ class IntersectPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
     *
     * @return the operator, as a string
     */
-   override def getOperatorName(): String = "intersect"
+   override def getOperatorName: String = "intersect"
 
   /*@NotNull*/
 

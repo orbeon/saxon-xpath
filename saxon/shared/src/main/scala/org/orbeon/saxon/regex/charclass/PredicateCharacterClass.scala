@@ -13,7 +13,7 @@ class PredicateCharacterClass(private var predicate: IntPredicate)
   def isDisjoint(other: CharacterClass): Boolean =
     other.isInstanceOf[InverseCharacterClass] && other.isDisjoint(this)
 
-  def getIntSet(): IntSet = // Not known
+  def getIntSet: IntSet = // Not known
     null
 
 }

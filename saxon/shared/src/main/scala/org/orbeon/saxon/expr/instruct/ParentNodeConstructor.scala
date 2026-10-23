@@ -62,7 +62,7 @@ abstract class ParentNodeConstructor
     }
   }
 
-  def getValidationAction(): Int =
+  def getValidationAction: Int =
     if (validationOptions == null) Validation.PRESERVE
     else validationOptions.getSchemaValidationMode
 
@@ -78,7 +78,7 @@ abstract class ParentNodeConstructor
     }
   }
 
-  def getContentExpression(): Expression =
+  def getContentExpression: Expression =
     if (contentOp == null) null else contentOp.getChildExpression
 
   def getContentOperand: Operand = contentOp
@@ -131,7 +131,7 @@ abstract class ParentNodeConstructor
 
   override def alwaysCreatesNewNodes(): Boolean = true
 
-  override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  override def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   override def addToPathMap(
                              pathMap: PathMap,

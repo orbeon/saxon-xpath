@@ -273,7 +273,7 @@ class ValidationFailure(var message: String)
   }
 
   /*@NotNull*/
-  def asAtomic(): AtomicValue = throw makeException()
+  def asAtomic: AtomicValue = throw makeException()
 
   def setHasBeenReported(reported: Boolean): Unit = {
     hasBeenReported = reported

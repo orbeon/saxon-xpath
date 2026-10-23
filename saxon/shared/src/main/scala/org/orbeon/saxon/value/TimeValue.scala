@@ -260,7 +260,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
   def getMicrosecond: Int = nanosecond / 1000
 
-  def getPrimitiveStringValue(): CharSequence = {
+  def getPrimitiveStringValue: CharSequence = {
     val sb = new FastStringBuffer(FastStringBuffer.C16)
     appendTwoDigits(sb, hour)
     sb.cat(':')
@@ -284,7 +284,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     sb
   }
 
-  override def getCanonicalLexicalRepresentation(): CharSequence =
+  override def getCanonicalLexicalRepresentation: CharSequence =
     if (hasTimezone && getTimezoneInMinutes != 0) {
       adjustTimezone(0).getStringValueCS
     } else {
@@ -391,7 +391,7 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
     }
   }
 
-  def getSchemaComparable(): Comparable[AnyRef] = new TimeComparable().asInstanceOf[Comparable[AnyRef]]
+  def getSchemaComparable: Comparable[AnyRef] = new TimeComparable().asInstanceOf[Comparable[AnyRef]]
 
   private class TimeComparable extends Comparable[AnyRef] {
 

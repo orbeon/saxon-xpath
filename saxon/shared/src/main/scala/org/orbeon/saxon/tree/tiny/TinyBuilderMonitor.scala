@@ -90,7 +90,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
     super.processingInstruction(target, data, locationId, properties)
   }
 
-  def getMarkedNode(): NodeInfo =
+  def getMarkedNode: NodeInfo =
     if (markedNodeNr != -1) {
       builder.tree.getNode(markedNodeNr)
     } else if (markedAttribute != -1) {

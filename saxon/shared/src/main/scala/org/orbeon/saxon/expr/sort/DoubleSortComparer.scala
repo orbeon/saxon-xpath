@@ -23,7 +23,7 @@ class DoubleSortComparer private () extends AtomicComparer {
 
   /*@Nullable*/
 
-  def getCollator(): StringCollator = null
+  def getCollator: StringCollator = null
 
   def provideContext(context: XPathContext): AtomicComparer = this
 

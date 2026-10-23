@@ -67,11 +67,11 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
   override def operands: java.lang.Iterable[Operand] =
     operandList(selectOp, nameOp)
 
- override def getInstructionNameCode(): Int = StandardNames.XSL_PROCESSING_INSTRUCTION
+ override def getInstructionNameCode: Int = StandardNames.XSL_PROCESSING_INSTRUCTION
 
  override def getItemType: ItemType = NodeKindTest.PROCESSING_INSTRUCTION
 
- override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+ override def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   def copy(rebindings: RebindingMap): Expression = {
     val exp: ProcessingInstruction = new ProcessingInstruction(
@@ -109,7 +109,7 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
     }
   }
 
-  override def getDependencies(): Int =
+  override def getDependencies: Int =
     getNameExp.getDependencies | super.getDependencies
 
   def processValue(value: CharSequence,

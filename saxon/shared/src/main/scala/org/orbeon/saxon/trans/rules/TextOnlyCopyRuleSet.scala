@@ -56,14 +56,14 @@ class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
     node.getNodeKind match {
       case Type.DOCUMENT =>
       case Type.ELEMENT =>
-        val c2 = context.newContext
+        val c2 = context.newContext()
         c2.setOrigin(this)
         c2.trackFocus(node.iterateAxis(AxisInfo.CHILD))
         c2.setCurrentComponent(c2.getCurrentMode) // Bug 3508
         var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, output, c2, locationId)
         while ( {
           tc != null
-        }) tc = tc.processLeavingTail
+        }) tc = tc.processLeavingTail()
       case Type.TEXT =>
       // NOTE: I tried changing this to use the text node's copy() method, but
       // performance was worse
@@ -77,15 +77,15 @@ class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
   }
   else if (item.isInstanceOf[ArrayItem]) {
     val seq = ArrayFunctionSet.ArrayToSequence.toSequence(item.asInstanceOf[ArrayItem])
-    val members = seq.iterate
-    val c2 = context.newContext
+    val members = seq.iterate()
+    val c2 = context.newContext()
     c2.setOrigin(this)
     c2.trackFocus(members)
     c2.setCurrentComponent(c2.getCurrentMode)
     var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, output, c2, locationId)
     while ( {
       tc != null
-    }) tc = tc.processLeavingTail
+    }) tc = tc.processLeavingTail()
   }
   else if (item.isInstanceOf[AtomicValue]) output.characters(item.getStringValueCS, locationId, ReceiverOption.NONE)
   else {

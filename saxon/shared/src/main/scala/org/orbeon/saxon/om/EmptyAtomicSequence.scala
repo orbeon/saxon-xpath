@@ -24,9 +24,9 @@ object EmptyAtomicSequence extends Enumeration {
 
     def getLength: Int = 0
 
-    def getCanonicalLexicalRepresentation(): CharSequence = ""
+    def getCanonicalLexicalRepresentation: CharSequence = ""
 
-    def getSchemaComparable(): Comparable[_] = null
+    def getSchemaComparable: Comparable[_] = null
 
     def getStringValueCS: CharSequence = ""
 

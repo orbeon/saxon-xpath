@@ -109,7 +109,7 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
 
   override def getItemType = BuiltInAtomicType.INTEGER
 
-  override def computeCardinality = level match {
+  override def computeCardinality() = level match {
     case NumberInstruction.SIMPLE => 0
     case NumberInstruction.SINGLE => 0
     case NumberInstruction.ANY =>
@@ -149,7 +149,7 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
     var e = super.optimize(visitor, contextInfo)
     if (e ne this) return e
     if ("EE" == packageData.targetEdition) {
-      e = visitor.obtainOptimizer.optimizeNumberInstruction(this, contextInfo)
+      e = visitor.obtainOptimizer().optimizeNumberInstruction(this, contextInfo)
       if (e != null) return e
     }
     this
@@ -198,6 +198,6 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
       out.setChildRole("from")
       getFrom.`export`(out)
     }
-    out.endElement
+    out.endElement()
   }
 }

@@ -102,7 +102,7 @@ abstract class Pattern extends PseudoExpression {
     this
   }
 
-  override def getDependencies(): Int = 0
+  override def getDependencies: Int = 0
 
   def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = nextFree
 

@@ -132,7 +132,7 @@ class Empty extends Aggregate {
         result
       }
 
-      override def getNetCost(): Int = 0
+      override def getNetCost: Int = 0
     }
 
   /*
@@ -155,7 +155,7 @@ class Empty extends Aggregate {
   /**
    * Evaluate the function in a boolean context
    */
-  override def getCompilerName(): String = "EmptyCompiler"
+  override def getCompilerName: String = "EmptyCompiler"
 
   override def getStreamerName: String = "Empty"
 

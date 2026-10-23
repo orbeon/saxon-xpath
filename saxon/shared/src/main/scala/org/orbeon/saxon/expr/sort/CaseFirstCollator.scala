@@ -32,7 +32,7 @@ class CaseFirstCollator(base: StringCollator,
 
   private var uri: String = collationURI
 
-  def getCollationURI(): String = uri
+  def getCollationURI: String = uri
 
   def compareStrings(a: CharSequence, b: CharSequence): Int = {
     val diff: Int = baseCollator.compareStrings(a, b)

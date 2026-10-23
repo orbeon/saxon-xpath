@@ -317,7 +317,7 @@ class ForEachGroup(select: Expression,
 
   override def getItemType: ItemType = getActionExpression.getItemType
 
-  override def computeDependencies: Int = {
+  override def computeDependencies(): Int = {
     var dependencies = 0
     dependencies |= getSelectExpression.getDependencies
     dependencies |= getGroupingKey.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS

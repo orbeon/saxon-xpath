@@ -45,7 +45,7 @@ object SubstringAfter {
 
 class SubstringAfter extends CollatingFunctionFixed {
 
-  override def isSubstringMatchingFunction(): Boolean = true
+  override def isSubstringMatchingFunction: Boolean = true
 
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val arg1: StringValue = arguments(0).head.asInstanceOf[StringValue]
@@ -55,6 +55,6 @@ class SubstringAfter extends CollatingFunctionFixed {
       stringCollator.asInstanceOf[SubstringMatcher])
   }
 
-  override def getCompilerName(): String = "SubstringAfterCompiler"
+  override def getCompilerName: String = "SubstringAfterCompiler"
 
 }

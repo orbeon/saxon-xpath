@@ -88,9 +88,9 @@ class PatternThatSetsCurrent(var wrappedPattern: Pattern,
 
   override def toString: String = wrappedPattern.toString
 
-  override def getHostLanguage(): HostLanguage = wrappedPattern.getHostLanguage
+  override def getHostLanguage: HostLanguage = wrappedPattern.getHostLanguage
 
-  override def isMotionless(): Boolean = wrappedPattern.isMotionless
+  override def isMotionless: Boolean = wrappedPattern.isMotionless
 
   override def matchesBeneathAnchor(node: NodeInfo,
                                     anchor: NodeInfo,

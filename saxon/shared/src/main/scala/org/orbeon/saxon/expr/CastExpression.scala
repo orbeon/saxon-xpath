@@ -49,7 +49,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
 
     sourceItemType = operand.getItemType
     if (sourceItemType eq ErrorType)
-      if (allowsEmpty)
+      if (allowsEmpty())
         return Literal.makeEmptySequence
       else {
         val err = new XPathException("Cast does not allow an empty sequence as input")
@@ -172,7 +172,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
       }
       else return Literal.makeLiteral(result.asInstanceOf[AtomicValue], this)
     }
-    if (literalOperand.getLength == 0) if (allowsEmpty) return getBaseExpression
+    if (literalOperand.getLength == 0) if (allowsEmpty()) return getBaseExpression
     else {
       val err = new XPathException("Cast can never succeed: the operand must not be an empty sequence", "XPTY0004", this.getLocation)
       err.setIsTypeError(true)
@@ -184,7 +184,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
   /**
    * Get the static cardinality of the expression
    */
-  override def computeCardinality = if (allowsEmpty && Cardinality.allowsZero(getBaseExpression.getCardinality)) StaticProperty.ALLOWS_ZERO_OR_ONE
+  override def computeCardinality() = if (allowsEmpty() && Cardinality.allowsZero(getBaseExpression.getCardinality)) StaticProperty.ALLOWS_ZERO_OR_ONE
   else StaticProperty.EXACTLY_ONE
 
   /**
@@ -206,8 +206,8 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    *
    * @return the expression properties
    */
-  override def computeSpecialProperties = {
-    var p = super.computeSpecialProperties
+  override def computeSpecialProperties() = {
+    var p = super.computeSpecialProperties()
     if (targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) p = p & ~StaticProperty.NOT_UNTYPED_ATOMIC
     p
   }
@@ -235,7 +235,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    * @param rebindings variables that need to be rebound
    */
   override def copy(rebindings: RebindingMap) = {
-    val c2 = new CastExpression(getBaseExpression.copy(rebindings), targetType, allowsEmpty)
+    val c2 = new CastExpression(getBaseExpression.copy(rebindings), targetType, allowsEmpty())
     ExpressionTool.copyLocationInfo(this, c2)
     c2.converter = converter
     c2.setRetainedStaticContext(getRetainedStaticContext)
@@ -263,7 +263,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
   @throws[XPathException]
   private def doCast(value: AtomicValue, context: XPathContext): AtomicValue = {
     if (value == null)
-      if (allowsEmpty) {
+      if (allowsEmpty()) {
         return null
       } else {
         val e = new XPathException("Cast does not allow an empty sequence")
@@ -288,7 +288,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     }
     converter.convert(value) match {
       case err: ValidationFailure =>
-        val xe = err.makeException
+        val xe = err.makeException()
         xe.maybeSetErrorCode("FORG0001")
         xe.maybeSetLocation(getLocation)
         throw xe
@@ -313,13 +313,13 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
   /**
    * Is this expression the same as another expression?
    */
-  override def equals(other: Any) = other.isInstanceOf[CastExpression] && getBaseExpression.isEqual(other.asInstanceOf[CastExpression].getBaseExpression) && (targetType eq other.asInstanceOf[CastExpression].targetType) && allowsEmpty == other.asInstanceOf[CastExpression].allowsEmpty
+  override def equals(other: Any) = other.isInstanceOf[CastExpression] && getBaseExpression.isEqual(other.asInstanceOf[CastExpression].getBaseExpression) && (targetType eq other.asInstanceOf[CastExpression].targetType) && allowsEmpty() == other.asInstanceOf[CastExpression].allowsEmpty()
 
   /**
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode = super.computeHashCode ^ targetType.hashCode
+  override def computeHashCode() = super.computeHashCode() ^ targetType.hashCode
 
   /**
    * Represent the expression as a string. The resulting string will be a valid XPath 3.0 expression

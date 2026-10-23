@@ -21,7 +21,7 @@ class OrExpression(val p1: Expression, val p2: Expression)
  * @param p2 the second operand
  */
   extends BooleanExpression(p1, Token.OR, p2) {
-  override  def preEvaluate = if (Literal.hasEffectiveBooleanValue(getLhsExpression, value = true) || Literal.hasEffectiveBooleanValue(getRhsExpression, value = true)) { // A or true() => true()
+  override  def preEvaluate() = if (Literal.hasEffectiveBooleanValue(getLhsExpression, value = true) || Literal.hasEffectiveBooleanValue(getRhsExpression, value = true)) { // A or true() => true()
     // true() or B => true()
     Literal.makeLiteral(BooleanValue.TRUE, this)
   }
@@ -53,7 +53,7 @@ class OrExpression(val p1: Expression, val p2: Expression)
     if (e ne this) return e
     // If this is a top-level or-expression then try to replace multiple branches with a general comparison
     if (!parentExpression.isInstanceOf[OrExpression]) {
-      val e2 = visitor.obtainOptimizer.tryGeneralComparison(visitor, contextItemType, this)
+      val e2 = visitor.obtainOptimizer().tryGeneralComparison(visitor, contextItemType, this)
       if (e2 != null && (e2 ne this)) return e2
     }
     this
@@ -81,7 +81,7 @@ class OrExpression(val p1: Expression, val p2: Expression)
    *
    * @return the negation of this expression
    */
-  override def negate = { // Apply de Morgan's laws
+  override def negate() = { // Apply de Morgan's laws
     // not(A or B) => not(A) and not(B)
     val not0 = SystemFunction.makeCall("not", getRetainedStaticContext, getLhsExpression)
     val not1 = SystemFunction.makeCall("not", getRetainedStaticContext, getRhsExpression)
@@ -95,7 +95,7 @@ class OrExpression(val p1: Expression, val p2: Expression)
    *
    * @return the element name used to identify this expression
    */
-  override  def tag = "or"
+  override  def tag() = "or"
 
   /**
    * Evaluate as a boolean.

@@ -60,7 +60,7 @@ class AttributeLocation(element: NodeInfo,
     * should not be saved for later use. The result of this operation holds the same location information,
     * but in an immutable form.
     */
-  def saveLocation(): Location = this
+  def saveLocation: Location = this
 
 }
 

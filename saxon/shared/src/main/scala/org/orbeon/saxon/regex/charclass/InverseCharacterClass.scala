@@ -14,7 +14,7 @@ class InverseCharacterClass(@BeanProperty var complement: CharacterClass)
 
   def isDisjoint(other: CharacterClass): Boolean = other == complement
 
-  override def getIntSet(): IntSet = {
+  override def getIntSet: IntSet = {
     val comp: IntSet = complement.getIntSet
     if (comp == null) null else new IntComplementSet(complement.getIntSet)
   }

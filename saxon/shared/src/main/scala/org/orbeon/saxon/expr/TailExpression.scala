@@ -44,7 +44,7 @@ class TailExpression(base: Expression, var start: Int)
   override def computeCardinality(): Int =
     getBaseExpression.getCardinality | StaticProperty.ALLOWS_ZERO
 
-   override def getOperandRole(): OperandRole =
+   override def getOperandRole: OperandRole =
     OperandRole.SAME_FOCUS_ACTION
 
   def getStart: Int = start

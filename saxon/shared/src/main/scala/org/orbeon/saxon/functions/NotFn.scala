@@ -83,7 +83,7 @@ class NotFn extends SystemFunction {
     null
   }
 
-  override def getCompilerName(): String = "NotFnCompiler"
+  override def getCompilerName: String = "NotFnCompiler"
 
   override def getStreamerName: String = "NotFn"
 

@@ -14,7 +14,7 @@ class Floor extends ScalarSystemFunction {
   override def evaluate(arg: Item, context: XPathContext): AtomicValue =
     arg.asInstanceOf[NumericValue].floor()
 
-  override def getCompilerName(): String = "RoundingCompiler"
+  override def getCompilerName: String = "RoundingCompiler"
 
 }
 

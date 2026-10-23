@@ -23,7 +23,7 @@ class SequenceNormalizerWithSpaceSeparator(next: Receiver)
     decompose(item, locationId, copyNamespaces)
   }
 
-   override def getErrorCodeForDecomposingFunctionItems(): String =
+   override def getErrorCodeForDecomposingFunctionItems: String =
     "SENR0001"
 
 }

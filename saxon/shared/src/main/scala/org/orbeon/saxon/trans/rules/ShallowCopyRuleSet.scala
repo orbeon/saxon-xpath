@@ -52,7 +52,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         val pipe = out.getPipelineConfiguration
         if (out.getSystemId == null) out.setSystemId(node.getBaseURI)
         out.startDocument(ReceiverOption.NONE)
-        val c2 = context.newContext
+        val c2 = context.newContext()
         c2.setOrigin(this)
         c2.trackFocus(node.iterateAxis(AxisInfo.CHILD))
         c2.setCurrentComponent(c2.getCurrentMode) // Bug 3508
@@ -60,7 +60,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         var tc = context.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, out, c2, locationId)
         while ( {
           tc != null
-        }) tc = tc.processLeavingTail
+        }) tc = tc.processLeavingTail()
         out.endDocument()
         pipe.xpathContext = context
       case Type.ELEMENT =>
@@ -72,7 +72,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         for (ns <- node.getAllNamespaces.asScala) {
           out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
         }
-        val c2 = context.newContext
+        val c2 = context.newContext()
         c2.setCurrentComponent(c2.getCurrentMode)
         pipe.xpathContext = c2
         // apply-templates to all attributes
@@ -83,7 +83,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
           var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, out, c2, locationId)
           while ( {
             tc != null
-          }) tc = tc.processLeavingTail
+          }) tc = tc.processLeavingTail()
         }
         // apply-templates to all children
         if (node.hasChildNodes) {
@@ -91,7 +91,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
           var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, out, c2, locationId)
           while ( {
             tc != null
-          }) tc = tc.processLeavingTail
+          }) tc = tc.processLeavingTail()
         }
         out.endElement()
         pipe.xpathContext = context

@@ -37,10 +37,10 @@ object BigIntegerValue {
       if (o.isInstanceOf[Int64Value.Int64Comparable]) {
         asBigInteger().compareTo(
           BigInteger.valueOf(
-            o.asInstanceOf[Int64Value.Int64Comparable].asLong))
+            o.asInstanceOf[Int64Value.Int64Comparable].asLong()))
       } else if (o.isInstanceOf[BigIntegerComparable]) {
         asBigInteger().compareTo(
-          o.asInstanceOf[BigIntegerComparable].asBigInteger)
+          o.asInstanceOf[BigIntegerComparable].asBigInteger())
       } else if (o.isInstanceOf[BigDecimalValue.DecimalComparable]) {
         value.getDecimalValue.compareTo(
           o.asInstanceOf[BigDecimalValue.DecimalComparable].asBigDecimal)
@@ -136,7 +136,7 @@ class BigIntegerValue() extends IntegerValue {
       java.lang.Double.valueOf(getDoubleValue).hashCode
     }
 
-  def longValue(): Long = value.longValue
+  def longValue: Long = value.longValue
 
   def asBigInteger(): BigInteger = value
 
@@ -174,7 +174,7 @@ class BigIntegerValue() extends IntegerValue {
     value.compareTo(BigInteger.valueOf(other))
   }
 
-  def getPrimitiveStringValue(): String = value.toString
+  def getPrimitiveStringValue: String = value.toString
 
   /**
     * Get the numeric value as a double
@@ -182,18 +182,18 @@ class BigIntegerValue() extends IntegerValue {
     * @return A double representing this numeric value; NaN if it cannot be
     *         converted
     */
-  def getDoubleValue(): Double = value.doubleValue()
+  def getDoubleValue: Double = value.doubleValue()
 
   /*@NotNull*/
 
-  def getDecimalValue(): BigDecimal = new BigDecimal(value)
+  def getDecimalValue: BigDecimal = new BigDecimal(value)
 
   /**
     * Get the numeric value converted to a float
     *
     * @return a float representing this numeric value; NaN if it cannot be converted
     */
-  override def getFloatValue(): Float = getDoubleValue.toFloat
+  override def getFloatValue: Float = getDoubleValue.toFloat
 
   /*@NotNull*/
 
@@ -252,7 +252,7 @@ class BigIntegerValue() extends IntegerValue {
       new BigIntegerValue(value.abs())
     }
 
-  override def isWholeNumber(): Boolean = true
+  override def isWholeNumber: Boolean = true
 
   /**
     * Test whether a number is a possible subscript into a sequence, that is,
@@ -262,7 +262,7 @@ class BigIntegerValue() extends IntegerValue {
     */
   override def asSubscript(): Int =
     if (value.compareTo(BigInteger.ZERO) > 0 && value.compareTo(MAX_INT) <= 0) {
-      longValue().toInt
+      longValue.toInt
     } else {
       -1
     }
@@ -350,19 +350,19 @@ class BigIntegerValue() extends IntegerValue {
 
   /*@NotNull*/
 
-  def getSchemaComparable(): Comparable[AnyRef] = new BigIntegerComparable(this)
+  def getSchemaComparable: Comparable[AnyRef] = new BigIntegerComparable(this)
 
   /*@NotNull*/
 
   override def reduce(): IntegerValue = {
     if (compareTo(java.lang.Long.MAX_VALUE) < 0 && compareTo(
           java.lang.Long.MIN_VALUE) > 0) {
-      val iv: Int64Value = new Int64Value(longValue())
+      val iv: Int64Value = new Int64Value(longValue)
       iv.setTypeLabel(typeLabel)
       return iv
     }
     this
   }
 
-  override def asAtomic(): BigIntegerValue = this
+  override def asAtomic: BigIntegerValue = this
 }

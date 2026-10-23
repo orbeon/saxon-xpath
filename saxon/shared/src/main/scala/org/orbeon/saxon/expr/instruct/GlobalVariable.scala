@@ -79,10 +79,11 @@ class GlobalVariable
     with ContextOriginator {
 
   var references: ju.List[BindingReference] = new ju.ArrayList(10)
-  @BeanProperty
   var variableQName: StructuredQName = _
-  @BeanProperty
   var requiredType: SequenceType = _
+
+  def getVariableQName: StructuredQName = variableQName
+  def getRequiredType: SequenceType = requiredType
   private var indexed: Boolean = _
   var isPrivate: Boolean = false
   var isAssignable: Boolean = false

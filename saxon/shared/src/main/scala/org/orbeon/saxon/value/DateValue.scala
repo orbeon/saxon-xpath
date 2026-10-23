@@ -203,7 +203,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.DATE
 
-  def getPrimitiveStringValue(): CharSequence = {
+  def getPrimitiveStringValue: CharSequence = {
     val sb = new FastStringBuffer(FastStringBuffer.C16)
     var yr: Int = year
     if (year <= 0) {
@@ -224,7 +224,7 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
     sb
   }
 
-  override def getCanonicalLexicalRepresentation(): CharSequence = {
+  override def getCanonicalLexicalRepresentation: CharSequence = {
     var target: DateValue = this
     if (hasTimezone) {
       if (getTimezoneInMinutes > 12 * 60) {

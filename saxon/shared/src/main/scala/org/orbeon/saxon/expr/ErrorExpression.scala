@@ -138,7 +138,7 @@ class ErrorExpression(var exception: XmlProcessingError)
   /**
    * Determine the static cardinality
    */
-  override def computeCardinality = {
+  override def computeCardinality() = {
     StaticProperty.ALLOWS_ZERO_OR_MORE
     // we return a liberal value, so that we never get a type error reported
     // statically
@@ -177,6 +177,6 @@ class ErrorExpression(var exception: XmlProcessingError)
     destination.emitAttribute("code", exception.getErrorCode.getLocalName)
     destination.emitAttribute("isTypeErr", if (exception.isTypeError) "0"
     else "1")
-    destination.endElement
+    destination.endElement()
   }
 }

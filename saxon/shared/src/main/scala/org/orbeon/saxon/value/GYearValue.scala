@@ -59,7 +59,7 @@ class GYearValue() extends GDateValue {
 
   def getPrimitiveType: BuiltInAtomicType = BuiltInAtomicType.G_YEAR
 
-  def getPrimitiveStringValue(): CharSequence = {
+  def getPrimitiveStringValue: CharSequence = {
     val sb = new FastStringBuffer(FastStringBuffer.C16)
     var yr: Int = year
     if (year <= 0) {

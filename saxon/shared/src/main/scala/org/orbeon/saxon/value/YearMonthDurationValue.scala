@@ -64,7 +64,7 @@ class YearMonthDurationValue private ()
   override def getPrimitiveType: BuiltInAtomicType =
     BuiltInAtomicType.YEAR_MONTH_DURATION
 
-  override def getPrimitiveStringValue(): CharSequence = {
+  override def getPrimitiveStringValue: CharSequence = {
     val y: Int = getYears
     val m: Int = getMonths
     val sb = new FastStringBuffer(32)

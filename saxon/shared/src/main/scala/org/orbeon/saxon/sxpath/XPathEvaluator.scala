@@ -77,7 +77,7 @@ class XPathEvaluator(config: Configuration) {
     val opt = config.obtainOptimizer
     var exp = expression
 
-    val rsc = staticContext.makeRetainedStaticContext
+    val rsc = staticContext.makeRetainedStaticContext()
     exp.setRetainedStaticContext(rsc)
 
     val visitor = ExpressionVisitor.make(staticContext)

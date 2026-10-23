@@ -77,7 +77,7 @@ object XPathContextMajor {
    */
   def newThreadContext(prev: XPathContextMinor): XPathContextMajor = {
     val c = newContext(prev)
-    c.stackFrame = prev.stackFrame.copy
+    c.stackFrame = prev.stackFrame.copy()
     c
   }
 
@@ -152,7 +152,7 @@ class XPathContextMajor private () extends XPathContextMinor {
    * Construct a new context as a copy of another. The new context is effectively added
    * to the top of a stack, and contains a pointer to the previous context.
    */
-  override def newContext: XPathContextMajor = {
+  override def newContext(): XPathContextMajor = {
     val c = new XPathContextMajor
     c.controller                = controller
     c.currentIterator           = currentIterator

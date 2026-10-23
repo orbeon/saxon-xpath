@@ -106,7 +106,7 @@ class RangeExpression(start: Expression, end: Expression)
 
   /*@Nullable*/
 
-  override def getIntegerBounds(): Array[IntegerValue] = {
+  override def getIntegerBounds: Array[IntegerValue] = {
     val start: Array[IntegerValue] = getLhsExpression.getIntegerBounds
     val end: Array[IntegerValue] = getLhsExpression.getIntegerBounds
     if (start == null || end == null) {

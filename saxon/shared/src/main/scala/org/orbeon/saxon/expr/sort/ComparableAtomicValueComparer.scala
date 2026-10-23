@@ -17,7 +17,7 @@ object ComparableAtomicValueComparer {
 
 class ComparableAtomicValueComparer  () extends AtomicComparer {
 
-  def getCollator(): StringCollator = null
+  def getCollator: StringCollator = null
 
   def provideContext(context: XPathContext): AtomicComparer = this
 

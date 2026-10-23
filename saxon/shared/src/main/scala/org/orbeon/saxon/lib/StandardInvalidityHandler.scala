@@ -82,5 +82,5 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
   }
 
   @throws[XPathException]
-  override def endReporting: Sequence = EmptySequence.getInstance
+  override def endReporting(): Sequence = EmptySequence.getInstance
 }

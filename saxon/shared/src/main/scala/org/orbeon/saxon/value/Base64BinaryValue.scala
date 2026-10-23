@@ -76,7 +76,7 @@ object Base64BinaryValue {
         buff.append("=")
       case _ =>
     }
-    buff.condense
+    buff.condense()
   }
 
   /**

@@ -30,7 +30,7 @@ class ProxyReceiver(receiver: Receiver) extends SequenceReceiver(receiver.getPip
     }
   }
 
-  override def getNamePool(): NamePool =
+  override def getNamePool: NamePool =
     pipelineConfiguration.getConfiguration.getNamePool
 
   override def open(): Unit = {

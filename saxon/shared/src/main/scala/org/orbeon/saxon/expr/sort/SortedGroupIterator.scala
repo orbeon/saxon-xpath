@@ -59,7 +59,7 @@ class SortedGroupIterator(context: XPathContext,
     }
   }
 
-  def getCurrentGroupingKey(): AtomicSequence =
+  def getCurrentGroupingKey: AtomicSequence =
     values(position - 1).asInstanceOf[GroupToBeSorted].currentGroupingKey
 
   def iterateCurrentGroup(): SequenceIterator =

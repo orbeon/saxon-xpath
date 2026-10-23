@@ -76,7 +76,7 @@ class AtomicArray extends AtomicSequence {
     new AtomicArray(content.subList(startInt, startInt + len))
   }
 
-  def getCanonicalLexicalRepresentation(): CharSequence = getStringValueCS
+  def getCanonicalLexicalRepresentation: CharSequence = getStringValueCS
 
   def getStringValueCS: CharSequence = {
     val fsb = new FastStringBuffer(FastStringBuffer.C64)
@@ -97,7 +97,7 @@ class AtomicArray extends AtomicSequence {
   override def effectiveBooleanValue: Boolean =
     ExpressionTool.effectiveBooleanValue(iterate())
 
-  def getSchemaComparable(): Comparable[_] =
+  def getSchemaComparable: Comparable[_] =
     if (content.size == 1) {
       content.get(0).getSchemaComparable
     } else {

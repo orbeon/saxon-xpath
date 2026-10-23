@@ -62,7 +62,7 @@ class Contains extends CollatingFunctionFixed {
       super.makeOptimizedFunctionCall(visitor, contextInfo, arguments: _*)
     }
 
-  override def isSubstringMatchingFunction(): Boolean = true
+  override def isSubstringMatchingFunction: Boolean = true
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val s0: StringValue = arguments(0).head.asInstanceOf[StringValue]
@@ -71,6 +71,6 @@ class Contains extends CollatingFunctionFixed {
       contains(s0, s1, stringCollator.asInstanceOf[SubstringMatcher]))
   }
 
-  override def getCompilerName(): String = "ContainsCompiler"
+  override def getCompilerName: String = "ContainsCompiler"
 
 }

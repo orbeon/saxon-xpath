@@ -51,6 +51,6 @@ class NormalizeSpace_1 extends ScalarSystemFunction {
       }
     }
 
-  override def getCompilerName(): String = "NormalizeSpaceCompiler"
+  override def getCompilerName: String = "NormalizeSpaceCompiler"
 
 }

@@ -37,7 +37,7 @@ object Number_1 {
     } else if (arg0.isInstanceOf[NumericValue]) {
       Converter.NumericToDouble.INSTANCE
         .convert(arg0.asInstanceOf[NumericValue])
-        .asAtomic()
+        .asAtomic
         .asInstanceOf[DoubleValue]
     } else if (arg0.isInstanceOf[StringValue] && !(arg0
       .isInstanceOf[AnyURIValue])) {
@@ -98,6 +98,6 @@ class Number_1 extends ScalarSystemFunction {
     caller
   }
 
-  override def getCompilerName(): String = "NumberFnCompiler"
+  override def getCompilerName: String = "NumberFnCompiler"
 
 }

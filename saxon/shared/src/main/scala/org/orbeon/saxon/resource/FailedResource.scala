@@ -21,14 +21,14 @@ class FailedResource(private var uri: String,
     *
     * @return always null for this kind of resource
     */
-  def getContentType(): String = null
+  def getContentType: String = null
 
   /**
     * Get a URI that identifies this resource
     *
     * @return a URI identifying this resource
     */
-  def getResourceURI(): String = uri
+  def getResourceURI: String = uri
 
   def getItem(context: XPathContext): Item = throw error
 

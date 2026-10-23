@@ -21,6 +21,6 @@ class LocalName_1 extends ScalarSystemFunction {
 
   override def resultWhenEmpty(): ZeroOrOne[StringValue] = ZERO_LENGTH_STRING
 
-  override def getCompilerName(): String = "LocalNameCompiler"
+  override def getCompilerName: String = "LocalNameCompiler"
 
 }

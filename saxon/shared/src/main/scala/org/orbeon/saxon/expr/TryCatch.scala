@@ -76,7 +76,7 @@ class TryCatch(tryExpr: Expression) extends Expression {
 
   def getTryExpr: Expression = tryOp.getChildExpression
 
-  override def isInstruction(): Boolean = true
+  override def isInstruction: Boolean = true
 
   override def allowExtractingCommonSubexpressions(): Boolean = false
 

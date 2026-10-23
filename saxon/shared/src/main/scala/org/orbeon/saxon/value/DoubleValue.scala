@@ -85,7 +85,7 @@ class DoubleValue extends NumericValue {
     * @throws XPathException
     *          if the value cannot be converted
     */
-  def longValue(): Long = value.toLong
+  def longValue: Long = value.toLong
 
   override def hashCode: Int =
     if (value > java.lang.Integer.MIN_VALUE && value < java.lang.Integer.MAX_VALUE)

@@ -23,7 +23,7 @@ import org.orbeon.saxon.trans.XPathException
 
 class FunctionLiteral(value: Function) extends Literal(value) {
 
-  override def getValue(): Function = super.getValue.asInstanceOf[Function]
+  override def getValue: Function = super.getValue.asInstanceOf[Function]
 
   /*@NotNull*/
 
@@ -52,7 +52,7 @@ class FunctionLiteral(value: Function) extends Literal(value) {
 
   override def computeSpecialProperties(): Int = StaticProperty.NO_NODES_NEWLY_CREATED
 
-  override def isVacuousExpression(): Boolean = false
+  override def isVacuousExpression: Boolean = false
 
   /*@NotNull*/
 

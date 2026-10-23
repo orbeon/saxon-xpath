@@ -62,7 +62,7 @@ class GeneralPositionalPattern(base: NodeTest, var positionExpr: Expression) ext
     this
   }
 
-  override def getDependencies(): Int =
+  override def getDependencies: Int =
     positionExpr.getDependencies & (StaticProperty.DEPENDS_ON_LOCAL_VARIABLES | StaticProperty.DEPENDS_ON_USER_FUNCTIONS)
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int =
@@ -95,7 +95,7 @@ class GeneralPositionalPattern(base: NodeTest, var positionExpr: Expression) ext
           java.lang.Integer.MAX_VALUE,
           context.getCurrentIterator)
         val man = new ManualIterator(node, actualPosition)
-        val c3  = c2.newMinorContext
+        val c3  = c2.newMinorContext()
         c3.setCurrentIterator(man)
         c = c3
       }

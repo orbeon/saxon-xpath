@@ -94,7 +94,7 @@ class Exists extends Aggregate {
       override def evaluateItem(context: XPathContext): BooleanValue =
         BooleanValue.get(effectiveBooleanValue(context))
 
-      override def getNetCost(): Int = 0
+      override def getNetCost: Int = 0
     }
 
   override def makeOptimizedFunctionCall(visitor: ExpressionVisitor,
@@ -126,7 +126,7 @@ class Exists extends Aggregate {
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     BooleanValue.get(exists(arguments(0).iterate()))
 
-  override def getCompilerName(): String = "ExistsCompiler"
+  override def getCompilerName: String = "ExistsCompiler"
 
   override def getStreamerName: String = "Exists"
 

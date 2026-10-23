@@ -216,7 +216,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     this
   }
 
-  override def getIntegerBounds(): Array[IntegerValue] = {
+  override def getIntegerBounds: Array[IntegerValue] = {
     val bounds0: Array[IntegerValue] = getLhsExpression.getIntegerBounds
     val bounds1: Array[IntegerValue] = getRhsExpression.getIntegerBounds
     if (bounds0 == null || bounds1 == null) {

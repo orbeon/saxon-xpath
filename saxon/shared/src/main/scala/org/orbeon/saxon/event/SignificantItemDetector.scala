@@ -33,10 +33,10 @@ object SignificantItemDetector {
 
       for (mem <- item.asInstanceOf[ArrayItem].members) {
         try {
-          val memIter = mem.iterate
+          val memIter = mem.iterate()
           var it: Item = null
           while (({
-            it = memIter.next
+            it = memIter.next()
             it
           }) != null) if (isSignificant(it)) return true
         } catch {

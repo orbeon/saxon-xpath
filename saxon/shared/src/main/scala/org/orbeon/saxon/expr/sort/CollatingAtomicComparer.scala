@@ -28,5 +28,5 @@ class CollatingAtomicComparer(collator: StringCollator) extends AtomicComparer {
 
   override def equals(obj: Any): Boolean = obj.isInstanceOf[CollatingAtomicComparer] && collator.equals(obj.asInstanceOf[CollatingAtomicComparer])
 
-  override def getCollator(): StringCollator = strCollator
+  override def getCollator: StringCollator = strCollator
 }

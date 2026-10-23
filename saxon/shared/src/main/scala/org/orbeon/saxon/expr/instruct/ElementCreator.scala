@@ -42,7 +42,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
 
   override def getItemType: ItemType = NodeKindTest.ELEMENT
 
-  override def getCardinality(): Int = StaticProperty.EXACTLY_ONE
+  override def getCardinality: Int = StaticProperty.EXACTLY_ONE
 
   def setBequeathNamespacesToChildren(inherit: Boolean): Unit = {
     bequeathNamespacesToChildren = inherit
