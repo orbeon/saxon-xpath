@@ -3,16 +3,13 @@ package org.orbeon.saxon.trans
 import org.orbeon.saxon.expr.instruct.Instruction
 import org.orbeon.saxon.s9api.{HostLanguage, Location, QName, XmlProcessingError}
 import org.orbeon.saxon.tree.AttributeLocation
-
-import scala.beans.BeanProperty
-
 class XmlProcessingException(private var exception: XPathException)
   extends XmlProcessingError {
 
   var isWarning: Boolean = _
 
-  @BeanProperty
   var fatalErrorMessage: String = _
+  def getFatalErrorMessage: String = fatalErrorMessage
 
   def getXPathException: XPathException = exception
 

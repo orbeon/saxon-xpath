@@ -26,15 +26,13 @@
 //
 //import java.util.Arrays
 //
-//import scala.beans.{BeanProperty, BooleanBeanProperty}
 //
 ////import scala.collection.compat._
 //import scala.jdk.CollectionConverters._
 //
 //abstract class SimpleExpression extends Expression with Callable {
 //
-//  @BeanProperty
-//   var operanda: OperandArray = _
+//  //   var operanda: OperandArray = _
 //
 //  override def operands: java.lang.Iterable[Operand] = operanda.operands
 //

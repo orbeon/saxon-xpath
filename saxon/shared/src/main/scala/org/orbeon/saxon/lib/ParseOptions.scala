@@ -20,9 +20,6 @@ import org.orbeon.saxon.om.{SpaceStrippingRule, StructuredQName, TreeModel}
 import org.orbeon.saxon.trans.Maker
 import org.orbeon.saxon.utils.Configuration
 import org.xml.sax.{EntityResolver, ErrorHandler, InputSource, XMLReader}
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
  * This class defines options for parsing and/or validating a source document. Some of the options
  * are relevant only when parsing, some only when validating, but they are combined into a single
@@ -67,7 +64,6 @@ class ParseOptions {
 
   var topLevelElement: StructuredQName = _
 
-  @BeanProperty
   var topLevelType: SchemaType = _
 
   /*@Nullable*/
@@ -78,7 +74,6 @@ class ParseOptions {
 
   /*@Nullable*/
 
-  @BeanProperty
   var wrapDocument: java.lang.Boolean = null
 
   /*@Nullable*/
@@ -98,38 +93,32 @@ class ParseOptions {
 
   /*@Nullable*/
 
-  @BeanProperty
   var entityResolver: EntityResolver = null
 
   /*@Nullable*/
 
-  @BeanProperty
   var errorHandler: ErrorHandler = null
 
   /*@Nullable*/
 
-  @BeanProperty
   var filters: List[FilterFactory] = null
 
   var continueAfterValidationErrors: Boolean = false
 
   var addCommentsAfterValidationErrors: Boolean = false
 
-  @BooleanBeanProperty
   var expandAttributeDefaults: Boolean = true
 
   var useXsiSchemaLocation: Boolean = true
 
   var checkEntityReferences: Boolean = false
 
-  @BooleanBeanProperty
   var stable: Boolean = true
 
   var validationErrorLimit: Int = java.lang.Integer.MAX_VALUE
 
   /*@Nullable*/
 
-  @BeanProperty
   var validationParams: ValidationParams = null
 
   /*@Nullable*/
@@ -143,7 +132,6 @@ class ParseOptions {
   var invalidityHandler: InvalidityHandler = null
 
   // null means "all"
-  @BeanProperty
   var applicableAccumulators: Set[_ <: Accumulator] = null
 
   def this(p: ParseOptions) = {

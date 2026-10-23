@@ -14,8 +14,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import java.net.{URI, URISyntaxException}
 import java.{util => ju}
-import scala.beans.BeanProperty
-
 /**
  * This class contains the part of the static context of expressions that (a) can change from one expression
  * to another within a query or stylesheet, and (b) are potentially needed at run-time.
@@ -29,7 +27,6 @@ class RetainedStaticContext extends NamespaceResolver {
 
   private var config: Configuration = _
 
-  @BeanProperty
   var packageData: PackageData = _
 
   private var staticBaseUri: URI = _
@@ -40,12 +37,10 @@ class RetainedStaticContext extends NamespaceResolver {
 
   private var namespaces: NamespaceResolver = _
 
-  @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
 
   private var defaultElementNamespace: String = _
 
-  @BeanProperty
   var decimalFormatManager: DecimalFormatManager = _
 
   var backwardsCompatibility: Boolean = _

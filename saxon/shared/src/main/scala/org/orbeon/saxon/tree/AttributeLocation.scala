@@ -10,23 +10,19 @@ import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.tree.util.Navigator
-
-import scala.beans.BeanProperty
-
 class AttributeLocation(element: NodeInfo,
-                        @BeanProperty var attributeName: StructuredQName)
+                        var attributeName: StructuredQName)
     extends Location {
 
-  @BeanProperty
   var systemId: String = element.getSystemId
+  def getSystemId: String = systemId
 
-  @BeanProperty
   var lineNumber: Int = element.getLineNumber
+  def getLineNumber: Int = lineNumber
 
-  @BeanProperty
   var columnNumber: Int = element.getColumnNumber
+  def getColumnNumber: Int = columnNumber
 
-  @BeanProperty
   var elementName: StructuredQName = Navigator.getNodeName(element)
 
   var elementNode: NodeInfo = _

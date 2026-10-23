@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.{Mode, SimpleMode, SymbolicName, XPathException}
 import org.orbeon.saxon.trans.rules.Rule
 import org.orbeon.saxon.value.SequenceType
 import java.util.Map
-
-import scala.beans.BooleanBeanProperty
-
 /**
  * Represents a single accumulator declared in an XSLT 3.0 stylesheet
  */
@@ -41,7 +38,6 @@ class Accumulator extends Actor {
 
   var importPrecedence: Int = _
 
-  @BooleanBeanProperty
   var tracing: Boolean = _
 
   var slotManagerForInitialValueExpression: SlotManager = _

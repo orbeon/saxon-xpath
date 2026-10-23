@@ -9,9 +9,6 @@ import org.orbeon.saxon.lib.{NamespaceConstant, StringCollator, SubstringMatcher
 import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType, ErrorType}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-
-import scala.beans.BeanProperty
-
 abstract class CollatingFunctionFixed
   extends SystemFunction
     with StatefulSystemFunction {

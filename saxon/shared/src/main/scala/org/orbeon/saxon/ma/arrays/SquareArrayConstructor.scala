@@ -29,16 +29,12 @@ import org.orbeon.saxon.value.SequenceType
 import java.util.ArrayList
 
 import java.util.List
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 class SquareArrayConstructor(children: List[Expression]) extends Expression {
   val kids: Array[Expression] = children.toArray(Array.ofDim[Expression](0))
 
-  @BeanProperty
   var operanda: OperandArray =
     new OperandArray(this, kids, OperandRole.NAVIGATE)
 

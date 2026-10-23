@@ -24,16 +24,15 @@ import org.orbeon.saxon.value.SequenceType
 import org.orbeon.saxon.value.StringValue
 
 import java.util.Map
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
   * Created by mike on 28/10/15.
   */
-class MetadataResource(@BeanProperty var resourceURI: String,
+class MetadataResource(var resourceURI: String,
                        private var content: Resource,
                        private var properties: Map[String, GroundedValue])
     extends Resource {
+
+  def getResourceURI: String = resourceURI
 
   def getContentType: String = content.getContentType
 

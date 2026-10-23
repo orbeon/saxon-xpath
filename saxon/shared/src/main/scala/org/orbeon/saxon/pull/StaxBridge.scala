@@ -18,7 +18,6 @@
 //import org.orbeon.saxon.tree.util.FastStringBuffer
 //import org.orbeon.saxon.value.{AtomicValue, Whitespace}
 //
-//import scala.beans.BeanProperty
 //
 ////import scala.collection.compat._
 //import scala.jdk.CollectionConverters._
@@ -27,8 +26,7 @@
 //
 //  private var reader: XMLStreamReader = _
 //
-//  @BeanProperty
-//  var attributes: AttributeMap = _
+//  //  var attributes: AttributeMap = _
 //
 //  private var pipe: PipelineConfiguration = _
 //

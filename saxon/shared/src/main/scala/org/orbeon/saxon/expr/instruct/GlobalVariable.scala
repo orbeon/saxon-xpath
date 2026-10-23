@@ -18,8 +18,6 @@ import org.orbeon.saxon.trans.{SymbolicName, Visibility, XPathException}
 import org.orbeon.saxon.tree.iter.ManualIterator
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 

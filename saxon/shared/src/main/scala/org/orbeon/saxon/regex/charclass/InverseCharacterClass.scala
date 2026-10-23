@@ -4,10 +4,7 @@ package org.orbeon.saxon.regex.charclass
 import org.orbeon.saxon.z.IntComplementSet
 
 import org.orbeon.saxon.z.IntSet
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class InverseCharacterClass(@BeanProperty var complement: CharacterClass)
+class InverseCharacterClass(var complement: CharacterClass)
     extends CharacterClass {
 
   def test(value: Int): Boolean = !complement.test(value)

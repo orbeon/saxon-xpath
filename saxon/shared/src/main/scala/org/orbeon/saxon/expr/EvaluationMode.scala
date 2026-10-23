@@ -2,9 +2,6 @@
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.expr.parser.Evaluator
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object EvaluationMode extends Enumeration {
 
   val UNDECIDED: EvaluationMode =

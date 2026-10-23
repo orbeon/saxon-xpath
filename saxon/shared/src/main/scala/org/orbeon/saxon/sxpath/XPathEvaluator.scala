@@ -10,12 +10,8 @@ import org.orbeon.saxon.pattern.Pattern
 import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.style.AttributeValueTemplate
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 class XPathEvaluator(config: Configuration) {
 
-  @BeanProperty
   var staticContext: XPathStaticContext = new IndependentContext(config)
 
   def getConfiguration: Configuration = staticContext.getConfiguration

@@ -10,8 +10,6 @@ import java.util.Iterator
 
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, Cardinality, SequenceType}
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -37,8 +35,8 @@ class HashTrieMap extends MapItem {
   private var imap: ImmutableMap[AtomicMatchKey, KeyValuePair] =
     ImmutableHashTrieMap.empty()
 
-  @BeanProperty
   var keyUType: UType = UType.VOID
+  def getKeyUType: UType = keyUType
 
   private var valueUType: UType = UType.VOID
   private var keyAtomicType: AtomicType = ErrorType

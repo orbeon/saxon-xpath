@@ -11,8 +11,6 @@ import org.orbeon.saxon.om.{Function, Sequence, SequenceIterator, StructuredQNam
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{NoDynamicContextException, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -24,7 +22,6 @@ object FunctionCall {
 
 abstract class FunctionCall extends Expression {
 
-  @BeanProperty
   var operanda: OperandArray = _
 
   override def operands: java.lang.Iterable[Operand] =

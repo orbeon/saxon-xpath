@@ -16,8 +16,6 @@ import java.time._
 import java.time.format.DateTimeParseException
 import java.time.temporal.{ChronoField, TemporalAccessor, TemporalField, UnsupportedTemporalTypeException}
 import java.util._
-import scala.beans.BeanProperty
-
 object DateTimeValue {
 
   def getCurrentDateTime(context: XPathContext): DateTimeValue = {

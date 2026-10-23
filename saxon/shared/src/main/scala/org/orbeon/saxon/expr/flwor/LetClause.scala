@@ -18,8 +18,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import java.util.List
 
 import org.orbeon.saxon.expr.flwor.Clause.ClauseName.LET
-
-import scala.beans.BeanProperty
 import Clause.ClauseName.ClauseName
 
 //import scala.collection.compat._
@@ -34,7 +32,6 @@ class LetClause extends Clause {
 
   private var sequenceOp: Operand = _
 
-  @BeanProperty
   var evaluator: Evaluator =
     ExpressionTool.lazyEvaluator(getSequence, repeatable = true)
 

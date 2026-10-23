@@ -25,16 +25,12 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.Cardinality
 
 import org.orbeon.saxon.value.SequenceType
-
-import scala.beans.BeanProperty
-
 import scala.util.control.Breaks._
 
 class DocumentSorter(base: Expression) extends UnaryExpression(base) {
 
   val props: Int = base.getSpecialProperties
 
-  @BeanProperty
   var comparer: ItemOrderComparer =
     if (((props & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0) ||
       (props & StaticProperty.SINGLE_DOCUMENT_NODESET) != 0)

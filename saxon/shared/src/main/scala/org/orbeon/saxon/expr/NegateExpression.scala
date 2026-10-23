@@ -17,12 +17,8 @@ import org.orbeon.saxon.value.DoubleValue
 import org.orbeon.saxon.value.NumericValue
 
 import org.orbeon.saxon.value.SequenceType
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class NegateExpression(base: Expression) extends UnaryExpression(base) {
 
-  @BooleanBeanProperty
   var backwardsCompatible: Boolean = _
 
    def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC

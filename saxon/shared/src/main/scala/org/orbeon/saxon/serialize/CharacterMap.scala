@@ -7,12 +7,10 @@ import org.orbeon.saxon.tree.tiny.CompressedWhitespace
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.z.{IntHashMap, IntIterator}
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-class CharacterMap(@BeanProperty var name: StructuredQName,
+class CharacterMap(var name: StructuredQName,
                    map: IntHashMap[String]) {
 
   private var charMap: IntHashMap[String] = map

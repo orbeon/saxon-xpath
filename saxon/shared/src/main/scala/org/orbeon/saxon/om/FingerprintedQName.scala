@@ -6,9 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 package org.orbeon.saxon.om
-
-import scala.beans.BeanProperty
-
 object FingerprintedQName {
 
   def fromClarkName(expandedName: String): FingerprintedQName = {
@@ -64,8 +61,8 @@ class FingerprintedQName extends NodeName {
 
   private var qName: StructuredQName = _
 
-  @BeanProperty
   var fingerprint: Int = -1
+  def getFingerprint: Int = fingerprint
 
   def this(prefix: String, uri: String, localName: String) = {
     this()

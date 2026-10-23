@@ -4,9 +4,6 @@ import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.om.{NameChecker, NodeInfo, StructuredQName}
 import org.orbeon.saxon.s9api.{HostLanguage, Location, QName, XmlProcessingError}
 import org.orbeon.saxon.tree.util.Navigator
-
-import scala.beans.BeanProperty
-
 object XmlProcessingIncident {
 
   def maybeSetHostLanguage(error: XmlProcessingError, lang: HostLanguage.HostLanguage): Unit =
@@ -42,14 +39,14 @@ class XmlProcessingIncident(
   var isWarning: Boolean = false
   var isTypeError: Boolean = _
 
-  @BeanProperty
   var cause: Throwable = _
+  def getCause: Throwable = cause
 
-  @BeanProperty
   var fatalErrorMessage: String = _
+  def getFatalErrorMessage: String = fatalErrorMessage
 
-  @BeanProperty
   var hostLanguage: HostLanguage.HostLanguage = _
+  def getHostLanguage: HostLanguage.HostLanguage = hostLanguage
 
   var isStaticError: Boolean = _
 

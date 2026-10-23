@@ -5,9 +5,6 @@ import java.math.BigDecimal
 import org.orbeon.saxon.lib.ConversionRules
 import org.orbeon.saxon.om.NamespaceResolver
 import org.orbeon.saxon.value._
-
-import scala.beans.BeanProperty
-
 object Converter {
 
   def convert(value: AtomicValue, targetType: AtomicType, rules: ConversionRules): AtomicValue = {
@@ -513,7 +510,6 @@ object Converter {
 
 abstract class Converter {
 
-  @BeanProperty
   var conversionRules: ConversionRules = _
 
   def this(rules: ConversionRules) = {

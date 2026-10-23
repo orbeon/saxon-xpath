@@ -9,9 +9,6 @@ import org.orbeon.saxon.trans.NoDynamicContextException
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{AtomicValue, HexBinaryValue, NumericValue, QNameValue, StringValue, UntypedAtomicValue}
 import AtomicSortComparer._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object AtomicSortComparer {
 
   def makeSortComparer(collator: StringCollator,
@@ -46,8 +43,8 @@ object AtomicSortComparer {
 }
 
 class AtomicSortComparer  (
-    @BeanProperty var collator: StringCollator,
-    @BeanProperty var itemType: Int,
+    var collator: StringCollator,
+    var itemType: Int,
     @transient private var context: XPathContext)
     extends AtomicComparer {
 
@@ -59,6 +56,7 @@ class AtomicSortComparer  (
     new AtomicSortComparer(collator, itemType, context)
 
   def getStringCollator: StringCollator = collator
+  def getCollator: StringCollator = collator
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
     if (a == null) {

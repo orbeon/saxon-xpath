@@ -35,9 +35,6 @@ import java.util.ArrayList
 import java.util.List
 
 import AccumulatorData._
-
-import scala.beans.BeanProperty
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -72,8 +69,8 @@ object AccumulatorData {
 
 class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
 
-  @BeanProperty
   var accumulator: Accumulator = acc
+  def getAccumulator: Accumulator = accumulator
 
   private var values: List[DataPoint] = new ArrayList()
 

@@ -6,9 +6,6 @@ import org.orbeon.saxon.model.{BuiltInAtomicType, Type}
 import org.orbeon.saxon.om.StandardNames
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{AtomicValue, CalendarValue, StringValue}
-
-import scala.beans.BeanProperty
-
 object GenericAtomicComparer {
 
   def makeAtomicComparer(
@@ -62,7 +59,7 @@ object GenericAtomicComparer {
 
 }
 
-class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
+class GenericAtomicComparer(var collator: StringCollator,
                             var context: XPathContext)
   extends AtomicComparer {
 
@@ -73,6 +70,7 @@ class GenericAtomicComparer(@BeanProperty var collator: StringCollator,
     new GenericAtomicComparer(collator, context)
 
   def getStringCollator: StringCollator = collator
+  def getCollator: StringCollator = collator
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
 

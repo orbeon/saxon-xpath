@@ -27,9 +27,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.AtomicValue
 
 import CurrentGroupCall._
-
-import scala.beans.BeanProperty
-
 object CurrentGroupCall {
 
   def findControllingInstruction(exp: Expression): ForEachGroup = {
@@ -57,7 +54,6 @@ class CurrentGroupCall extends Expression with Callable {
 
   private var itemType: ItemType = AnyItemType
 
-  @BeanProperty
   var controllingInstruction: ForEachGroup = findControllingInstruction(this)
 
   override def getScopingExpression: Expression = controllingInstruction

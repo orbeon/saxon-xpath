@@ -11,8 +11,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{SymbolicName, Visibility, VisibilityProvenance}
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -35,16 +33,12 @@ object Actor {
 abstract class Actor extends ExpressionOwner with Location {
 
   var body: Expression = _
-  @BeanProperty
   var systemId: String = _
-  @BeanProperty
   var lineNumber: Int = _
   var stackFrameMap: SlotManager = _
-  @BeanProperty
   var packageData: PackageData = _
   var declaringComponent: Component = _
   var declaredVisibility: Visibility.Visibility = _
-  @BeanProperty
   var retainedStaticContext: RetainedStaticContext = _
 
   def getSymbolicName: SymbolicName
@@ -124,6 +118,8 @@ abstract class Actor extends ExpressionOwner with Location {
   def getBody: Expression = body
   def getChildExpression: Expression = getBody
   def getLocation: Location = this.asInstanceOf[Location]
+  def getSystemId: String = systemId
+  def getLineNumber: Int = lineNumber
   def getColumnNumber: Int = -1
   def getPublicId: String = null
   def saveLocation: Location = this.asInstanceOf[Location]

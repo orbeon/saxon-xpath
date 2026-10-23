@@ -18,10 +18,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.BooleanValue
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class IsLastExpression(@BeanProperty var condition: Boolean)
+class IsLastExpression(var condition: Boolean)
     extends Expression {
 
   /*@NotNull*/

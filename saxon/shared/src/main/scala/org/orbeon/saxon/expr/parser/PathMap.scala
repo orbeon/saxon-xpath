@@ -10,9 +10,6 @@ import org.orbeon.saxon.lib.Logger
 import org.orbeon.saxon.om.AxisInfo
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeKindTest, NodeTest}
 import org.orbeon.saxon.trans.XPathException
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
@@ -104,7 +101,7 @@ object PathMap {
 
   class PathMapArc(var axis: Int,
                    var test: NodeTest,
-                   @BeanProperty var target: PathMapNode) {
+                   var target: PathMapNode) {
 
     def getNodeTest: NodeTest = test
 

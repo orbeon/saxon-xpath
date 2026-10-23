@@ -7,8 +7,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Controller
 
 import java.util.{ArrayList, List}
-import scala.beans.BeanProperty
-
 class XPathExpression(
   private var env        : StaticContext,
   private var expression : Expression,
@@ -17,7 +15,6 @@ class XPathExpression(
 
   private var stackFrameMap: SlotManager = _
 
-  @BeanProperty
   var executable: Executable = exec
 
   private var numberOfExternalVariables: Int = _

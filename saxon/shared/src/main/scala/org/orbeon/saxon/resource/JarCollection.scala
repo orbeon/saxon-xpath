@@ -14,14 +14,13 @@
 //import org.orbeon.saxon.trans.{UncheckedXPathException, XPathException}
 //import org.orbeon.saxon.value.{Base64BinaryValue, DateTimeValue, Int64Value, StringValue}
 //
-//import scala.beans.BeanProperty
 //import scala.util.control.Breaks._
 //
 //
 //
 //
 //class JarCollection(private var context: XPathContext,
-//                    @BeanProperty var collectionUri: String,
+//                    var collectionUri: String,
 //                    params: URIQueryParameters)
 //    extends AbstractResourceCollection(context.getConfiguration) {
 //

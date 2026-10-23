@@ -15,9 +15,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.linked.LinkedTreeBuilder
 
 import org.orbeon.saxon.tree.util.Orphan
-
-import scala.beans.BooleanBeanProperty
-
 abstract class SequenceWriter(pipe: PipelineConfiguration)
   extends SequenceReceiver(pipe) {
 

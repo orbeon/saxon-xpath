@@ -19,8 +19,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{Err, XPathException, XmlProcessingException}
 import org.orbeon.saxon.utils.{Configuration, Controller}
 import org.orbeon.saxon.value.Whitespace
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -285,7 +283,7 @@ class ResultDocument(private val globalProperties: Properties,
                      validationAction: Int,
                      schemaType: SchemaType,
                      serializationAttris: Map[StructuredQName, Expression],
-                     @BeanProperty val characterMapIndex: CharacterMapIndex)
+                     val characterMapIndex: CharacterMapIndex)
   extends Instruction
     with ValidatingInstruction
     with InstructionWithComplexContent

@@ -11,9 +11,6 @@ import java.util.Iterator
 
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.tree.jiter.MonoIterator
-
-import scala.beans.BeanProperty
-
 object NamespaceBinding {
 
   val XML: NamespaceBinding =
@@ -42,7 +39,7 @@ object NamespaceBinding {
 class NamespaceBinding(prefStr: String, uriStr: String)
     extends NamespaceBindingSet {
 
-  @BeanProperty var prefix: String = prefStr
+  var prefix: String = prefStr
   private val uri: String = uriStr
 
   if (prefix == null || uri == null)

@@ -14,8 +14,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{EmptyIterator, ListIterator}
 import org.orbeon.saxon.value._
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
@@ -83,7 +81,6 @@ object Block {
 
 class Block(children: Array[Expression]) extends Instruction {
 
-  @BeanProperty
   val operanda: Array[Operand] = new Array[Operand](children.length)
 
   private var allNodesUntyped: Boolean = _

@@ -17,8 +17,6 @@ import javax.xml.transform.dom.DOMSource
 import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 /**
@@ -214,7 +212,7 @@ object JPConverter {
 
   // ORBEON: TMP s9api
 //  class FromXdmValue(var resultType: ItemType,
-//                     @BeanProperty var cardinalityInt: Int = 0)
+//                     var cardinalityInt: Int = 0)
 //    extends JPConverter {
 //
 //    def convert(o: AnyRef, context: XPathContext): Sequence =

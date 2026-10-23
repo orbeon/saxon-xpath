@@ -12,9 +12,6 @@ import org.orbeon.saxon.tree.iter.{ArrayIterator, AxisIterator, EmptyIterator, S
 import org.orbeon.saxon.tree.linked.DocumentImpl
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 object TextFragmentValue {
 
   def makeTextFragment(config: Configuration,
@@ -33,17 +30,17 @@ object TextFragmentValue {
 
 class TextFragmentValue(config: Configuration,
                         value: CharSequence,
-                        @BeanProperty var baseURI: String)
+                        var baseURI: String)
   extends NodeInfo
     with SourceLocator {
 
   private val text: CharSequence = value
   private var documentURI: String = _
 
-  @BeanProperty
   val treeInfo: GenericTreeInfo = new GenericTreeInfo(config)
+  def getBaseURI: String = baseURI
+  def getTreeInfo: TreeInfo = treeInfo
 
-  @BeanProperty
   lazy val textNode: TextFragmentTextNode = new TextFragmentTextNode
 
   this.treeInfo.setRootNode(this)

@@ -25,15 +25,11 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import org.orbeon.saxon.value.Whitespace
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class UnicodeNormalizer(form: String, next: Receiver)
   extends ProxyReceiver(next) {
 
   var fb: Byte = 0
 
-  @BeanProperty
   var normalizer: Normalizer = Normalizer.make(fb, getConfiguration)
 
   form match {

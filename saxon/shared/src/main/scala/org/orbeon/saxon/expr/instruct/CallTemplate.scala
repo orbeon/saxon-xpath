@@ -34,9 +34,6 @@ import java.util.ArrayList
 import java.util.Arrays
 
 import CallTemplate._
-
-import scala.beans.BeanProperty
-
 object CallTemplate {
 
   class CallTemplatePackage(private var targetComponent: Component,
@@ -77,11 +74,11 @@ class CallTemplate(private var template: NamedTemplate,
     with ITemplateCall
     with ComponentInvocation {
 
-  @BeanProperty
   var actualParams: Array[WithParam] = WithParam.EMPTY_ARRAY
+  def getActualParams: Array[WithParam] = actualParams
 
-  @BeanProperty
   var tunnelParams: Array[WithParam] = WithParam.EMPTY_ARRAY
+  def getTunnelParams: Array[WithParam] = tunnelParams
 
   var bindingSlot = -1
 

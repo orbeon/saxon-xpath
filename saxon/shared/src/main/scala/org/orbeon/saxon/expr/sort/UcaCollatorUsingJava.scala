@@ -9,9 +9,6 @@ import org.orbeon.saxon.lib.SubstringMatcher
 import org.orbeon.saxon.model.{StringConverter, ValidationFailure}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.AnyURIValue
-
-import scala.beans.BeanProperty
-
 import scala.jdk.CollectionConverters._
 
 // ORBEON: Collations
@@ -44,7 +41,6 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
 
   private var strengthLevel: Strength = _
 
-  @BeanProperty
   var properties: Properties = _
 
   this.setProps(parseProps(uri))

@@ -25,9 +25,6 @@ import org.orbeon.saxon.value.IntegerValue
 import org.orbeon.saxon.value.SequenceType
 
 import LocalParam._
-
-import scala.beans.BeanProperty
-
 object LocalParam {
 
   private val REQUIRED: Int = 4
@@ -50,8 +47,8 @@ class LocalParam extends Instruction with LocalBinding {
 
   var variableQName: StructuredQName = _
 
-  @BeanProperty
   var requiredType: SequenceType = _
+  def getRequiredType: SequenceType = requiredType
 
   var slotNumber: Int = -999
 

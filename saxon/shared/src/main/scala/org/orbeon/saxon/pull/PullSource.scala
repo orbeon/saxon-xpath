@@ -7,9 +7,6 @@
 package org.orbeon.saxon.pull
 
 import javax.xml.transform.Source
-
-import scala.beans.BeanProperty
-
 /**
   * A PullSource is a JAXP Source that encapsulates a PullProvider - that is, an object
   * that supplies an XML document as a sequence of events that are read under the control
@@ -20,8 +17,9 @@ import scala.beans.BeanProperty
   */
 class PullSource(private var provider: PullProvider) extends Source {
 
-  @BeanProperty
   var systemId: String = _
+  def getSystemId: String = systemId
+  def setSystemId(s: String): Unit = systemId = s
 
   if (provider.getSourceLocator != null)
     systemId = provider.getSourceLocator.getSystemId

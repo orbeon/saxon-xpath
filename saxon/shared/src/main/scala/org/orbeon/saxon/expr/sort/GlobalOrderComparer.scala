@@ -6,12 +6,8 @@ import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.om.NodeInfo
 
 import GlobalOrderComparer._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object GlobalOrderComparer {
 
-  @BeanProperty
   var instance: GlobalOrderComparer = new GlobalOrderComparer()
 
 }

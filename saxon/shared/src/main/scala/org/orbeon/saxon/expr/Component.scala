@@ -10,8 +10,6 @@ import org.orbeon.saxon.trans.Visibility.{Visibility => VisibilityType}
 import org.orbeon.saxon.trans.VisibilityProvenance.{VisibilityProvenance => VisibilityProvenanceType}
 import org.orbeon.saxon.trans.{Mode, Visibility, VisibilityProvenance}
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -53,7 +51,6 @@ class Component private () {
 
   var actor: Actor = _
 
-  @BeanProperty
   var visibility: VisibilityType = _
 
   private var bindings: ju.List[ComponentBinding] = new ju.ArrayList

@@ -19,9 +19,6 @@ import TimeValue._
 import org.orbeon.saxon.functions.AccessorFn.Component._
 import org.orbeon.saxon.functions.AccessorFn._
 import org.orbeon.saxon.value.CalendarValue.appendTwoDigits
-
-import scala.beans.BeanProperty
-
 object TimeValue {
 
   def makeTimeValue(s: CharSequence): ConversionResult = {
@@ -200,13 +197,10 @@ object TimeValue {
 
 class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
-  @BeanProperty
   var hour: Byte = _
 
-  @BeanProperty
   var minute: Byte = _
 
-  @BeanProperty
   var second: Byte = _
 
   var nanosecond: Int = _

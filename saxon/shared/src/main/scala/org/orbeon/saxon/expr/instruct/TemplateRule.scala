@@ -43,9 +43,6 @@ import java.util.List
 import java.util.function.BiConsumer
 
 import TemplateRule._
-
-import scala.beans.BeanProperty
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -82,15 +79,12 @@ class TemplateRule
 
   private var declaredStreamable: Boolean = _
 
-  @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
 
   var absentFocus: Boolean = _
 
-  @BeanProperty
   var stackFrameMap: SlotManager = _
 
-  @BeanProperty
   var packageData: PackageData = _
 
   var systemId: String = _

@@ -1,8 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.pull
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class UnparsedEntity {
   var name: String = _
   var systemId: String = _

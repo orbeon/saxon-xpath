@@ -11,8 +11,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.z.IntHashMap
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 class DocumentImpl
@@ -20,11 +18,10 @@ class DocumentImpl
     with TreeInfo
     with MutableDocumentInfo {
 
-  @BeanProperty
   var documentElement: ElementImpl = _
   private var idTable: ju.HashMap[String, NodeInfo] = _
-  @BeanProperty
   var documentNumber: Long = _
+  def getDocumentNumber: Long = documentNumber
   private var baseURI: String = _
   private var entityTable: ju.HashMap[String, Array[String]] = _
   private var nilledElements: ju.Set[ElementImpl] = _

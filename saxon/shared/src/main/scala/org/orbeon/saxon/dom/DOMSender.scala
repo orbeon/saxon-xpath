@@ -11,7 +11,6 @@
 //import org.orbeon.saxon.s9api.Location
 //import org.w3c.dom.{CharacterData, _}
 //
-//import scala.beans.BeanProperty
 //
 //
 //class DOMSender(startNode: Node, receiver: Receiver) {
@@ -22,8 +21,7 @@
 //
 //  private var namespaces: List[NamespaceMap] = Nil
 //
-//  @BeanProperty
-//  var currentNode: Node = _
+//  //  var currentNode: Node = _
 //
 //  if (startNode == null)
 //    throw new NullPointerException("startNode")

@@ -31,9 +31,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -42,7 +39,7 @@ class ComputedElement(elementName: Expression,
                       schemaType: SchemaType,
                       validation: Int,
                       inheritNamespaces: Boolean,
-                      @BooleanBeanProperty var allowNameAsQName: Boolean)
+                      var allowNameAsQName: Boolean)
   extends ElementCreator {
 
   private var nameOp: Operand =

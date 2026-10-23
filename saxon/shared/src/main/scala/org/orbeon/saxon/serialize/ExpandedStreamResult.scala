@@ -12,7 +12,6 @@
 //import org.orbeon.saxon.trans.{SaxonErrorCode, XPathException}
 //import org.orbeon.saxon.utils.Configuration
 //
-//import scala.beans.BeanProperty
 //
 //
 //object ExpandedStreamResult {
@@ -48,10 +47,8 @@
 //
 //  private val systemId: String = result.getSystemId
 //  var writer: Writer = result.getWriter
-//  @BeanProperty
-//  var outputStream: OutputStream = result.getOutputStream
-//  @BeanProperty
-//  var characterSet: CharacterSet = _
+//  //  var outputStream: OutputStream = result.getOutputStream
+//  //  var characterSet: CharacterSet = _
 //  private var encoding: String = outputProperties.getProperty(OutputKeys.ENCODING)
 //  private var mustClose: Boolean = _
 //  private var allCharactersEncodable: Boolean = _

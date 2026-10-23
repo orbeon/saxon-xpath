@@ -6,9 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 package org.orbeon.saxon.z
-
-import scala.beans.BeanProperty
-
 /**
  * An implementation of {@link IntToIntMap} that relies on serial searching, and
  * is therefore optimized for very small map sizes
@@ -21,8 +18,9 @@ class IntToIntArrayMap extends IntToIntMap {
 
   private var used: Int = 0
 
-  @BeanProperty
   var defaultValue: Int = java.lang.Integer.MIN_VALUE
+  def getDefaultValue: Int = defaultValue
+  def setDefaultValue(defaultValue: Int): Unit = this.defaultValue = defaultValue
 
   def this(capacity: Int) = {
     this()

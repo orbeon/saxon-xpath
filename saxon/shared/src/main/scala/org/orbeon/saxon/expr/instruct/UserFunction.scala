@@ -26,9 +26,6 @@ import java.util.function.BiConsumer
 import UserFunction._
 import FunctionStreamability._
 import org.orbeon.saxon.query.AnnotationList
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object UserFunction {
 
   object Determinism extends Enumeration {
@@ -63,9 +60,7 @@ class UserFunction
   var functionName: StructuredQName = _
   def getFunctionName: StructuredQName = functionName
   private var tailCalls: Boolean = false
-  @BooleanBeanProperty
   var tailRecursive: Boolean = false
-  @BeanProperty
   var parameterDefinitions: Array[UserFunctionParameter] = _
   private var resultType: SequenceType = _
   var declaredResultType: SequenceType = _
@@ -74,8 +69,8 @@ class UserFunction
   private var inlineable: Int = -1
   private var inliningCount: Int = 0
   var overrideExtensionFunction: Boolean = true
-  @BeanProperty
   var annotations: AnnotationList = AnnotationList.EMPTY
+  def getAnnotations: AnnotationList = annotations
   var declaredStreamability: FunctionStreamability.FunctionStreamability = FunctionStreamability.UNCLASSIFIED
   var determinism: Determinism.Determinism = Determinism.PROACTIVE
 

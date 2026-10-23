@@ -10,9 +10,6 @@ import org.orbeon.saxon.expr.{StaticContext, XPathContext}
 import org.orbeon.saxon.expr.parser.ExpressionVisitor._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 /**
   * The ExpressionVisitor supports the various phases of processing of an expression tree which require
   * a recursive walk of the tree structure visiting each node in turn. In maintains a stack holding the
@@ -31,7 +28,6 @@ object ExpressionVisitor {
 
 class ExpressionVisitor(private var config: Configuration) {
 
-  @BeanProperty
   var staticContext: StaticContext = _
 
   var optimizeForStreaming: Boolean = false

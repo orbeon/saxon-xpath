@@ -12,14 +12,11 @@ import java.util.ArrayList
 import java.util.function.BiConsumer
 
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 class LetExpression extends Assignation with TailCallReturner {
 
-  @BeanProperty
   var evaluator: Evaluator = null
   private var needsEagerEvaluation: Boolean = false
   var needsLazyEvaluation: Boolean = false

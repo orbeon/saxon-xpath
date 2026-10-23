@@ -16,9 +16,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.AtomicValue
-
-import scala.beans.BeanProperty
-
 /**
  * This exception indicates a failure when validating an instance against a type
  * defined in a schema.
@@ -65,32 +62,31 @@ class ValidationFailure(var message: String)
     with Invalidity {
 
   def getMessage: String = message
+  def getSchemaPart: Int = schemaPart
+  def getConstraintName: String = constraintName
+  def getInvalidNode: NodeInfo = invalidNode
+  def getPath: AbsolutePath = path
+  def getContextPath: AbsolutePath = contextPath
 
   private var systemId     : String = _
   private var publicId     : String = _
   private var lineNumber   : Int    = -1
   private var columnNumber : Int    = -1
 
-  @BeanProperty
   var path: AbsolutePath = _
 
-  @BeanProperty
   var contextPath: AbsolutePath = _
 
-  @BeanProperty
   var invalidNode: NodeInfo = _
 
   private var offendingNodes: List[NodeInfo] = _
 
-  @BeanProperty
   var schemaPart: Int = -1
 
-  @BeanProperty
   var constraintName: String = _
 
   private var clause: String = _
 
-  @BeanProperty
   var schemaType: SchemaType = _
 
   /*@Nullable*/

@@ -8,15 +8,12 @@ import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.trans.XmlProcessingException
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
   * Interface for reporting validation errors found during validation of an instance document
   * against a schema.
   */
 class InvalidityHandlerWrappingErrorReporter(
-    @BeanProperty var errorReporter: ErrorReporter)
+    var errorReporter: ErrorReporter)
     extends InvalidityHandler {
 
   /**

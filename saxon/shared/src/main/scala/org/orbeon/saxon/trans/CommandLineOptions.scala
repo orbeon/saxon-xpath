@@ -210,8 +210,7 @@ object CommandLineOptions {
 //  private val configOptions: Properties = new Properties()
 //  private val permittedValues: Map[String, Set[String]] = new HashMap()
 //  private val defaultValues: Map[String, String] = new HashMap()
-//  @BeanProperty
-//  val positionalOptions: List[String] = new ArrayList()
+//  //  val positionalOptions: List[String] = new ArrayList()
 //  private val paramValues: Properties = new Properties()
 //  private val paramExpressions: Properties = new Properties()
 //  private val paramFiles: Properties = new Properties()

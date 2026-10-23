@@ -13,9 +13,6 @@ import org.orbeon.saxon.lib.{Resource, ResourceFactory, StandardUnparsedTextReso
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.StringValue
-
-import scala.beans.BeanProperty
-
 object UnparsedTextResource {
 
   val FACTORY: ResourceFactory = new ResourceFactory() {
@@ -38,7 +35,6 @@ class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
 
   private val contentType: String = details.contentType
 
-  @BeanProperty
   var encoding: String = details.encoding
 
   private val href: String = details.resourceUri

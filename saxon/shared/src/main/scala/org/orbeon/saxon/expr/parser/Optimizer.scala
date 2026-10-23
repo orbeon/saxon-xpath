@@ -36,9 +36,6 @@ import org.orbeon.saxon.value.BooleanValue
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object Optimizer {
 
   def trace(config: Configuration, message: String, exp: Expression): Unit = {
@@ -57,7 +54,6 @@ object Optimizer {
 
 class Optimizer( var config: Configuration) {
 
-  @BeanProperty
   var optimizerOptions: OptimizerOptions =
     OptimizerOptions.FULL_EE_OPTIMIZATION
 

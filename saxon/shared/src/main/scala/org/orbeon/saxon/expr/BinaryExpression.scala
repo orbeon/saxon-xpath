@@ -11,9 +11,6 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.jiter.PairIterator
 import org.orbeon.saxon.value.Cardinality
-
-import scala.beans.BeanProperty
-
 object BinaryExpression {
 
   def isCommutative(operator: Int): Boolean =
@@ -45,11 +42,11 @@ abstract class BinaryExpression(p0: Expression,
                                 p1: Expression)
   extends Expression {
 
-  @BeanProperty
   var lhs: Operand = new Operand(this, p0, getOperandRole(0))
+  def getLhs: Operand = lhs
 
-  @BeanProperty
   var rhs: Operand = new Operand(this, p1, getOperandRole(1))
+  def getRhs: Operand = rhs
 
   adoptChildExpression(p0)
   adoptChildExpression(p1)

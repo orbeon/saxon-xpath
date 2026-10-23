@@ -12,13 +12,11 @@ import javax.xml.transform.Result
 import java.util.ArrayList
 
 import java.util.List
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 class RawResult extends Result {
 
-  @BeanProperty
   var systemId: String = _
+  def getSystemId: String = systemId
+  def setSystemId(s: String): Unit = systemId = s
 
   private var content: List[Item] = new ArrayList[Item]()
 

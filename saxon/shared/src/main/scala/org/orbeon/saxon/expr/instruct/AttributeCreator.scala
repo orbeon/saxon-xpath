@@ -34,9 +34,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.Orphan
 
 import org.orbeon.saxon.value.Whitespace
-
-import scala.beans.BeanProperty
-
 abstract class AttributeCreator
   extends SimpleNodeConstructor
     with ValidatingInstruction {
@@ -45,8 +42,9 @@ abstract class AttributeCreator
 
   var schemaType: SimpleType = null
 
-  @BeanProperty
   var validationAction: Int = _
+  def getValidationAction: Int = validationAction
+  def setValidationAction(action: Int): Unit = validationAction = action
 
   var options: Int = ReceiverOption.NONE
 

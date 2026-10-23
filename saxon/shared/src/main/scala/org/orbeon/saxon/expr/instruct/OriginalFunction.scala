@@ -5,13 +5,10 @@ import org.orbeon.saxon.functions.AbstractFunction
 import org.orbeon.saxon.model.FunctionItemType
 import org.orbeon.saxon.om.{Function, Sequence, StructuredQName}
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import scala.beans.BeanProperty
-
 /**
  * This class represents a function invoked using xsl:original from within an xs:override element.
  */
-class OriginalFunction(@BeanProperty var component: Component)
+class OriginalFunction(var component: Component)
   extends AbstractFunction
     with Function
     with ContextOriginator {

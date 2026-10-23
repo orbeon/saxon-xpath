@@ -8,12 +8,8 @@ import org.orbeon.saxon.model.{AtomicType, BuiltInAtomicType}
 import org.orbeon.saxon.om.SequenceTool
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
-
-import scala.beans.BeanProperty
-
 class HexBinaryValue extends AtomicValue with AtomicMatchKey with Comparable[AnyRef] {
 
-  @BeanProperty
   var binaryValue: Array[Byte] = _
 
   var in: CharSequence = _

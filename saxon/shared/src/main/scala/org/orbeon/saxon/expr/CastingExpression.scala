@@ -15,11 +15,8 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.SequenceType
-
-import scala.beans.BeanProperty
-
 abstract class CastingExpression(source: Expression,
-                                 @BeanProperty var targetType: AtomicType,
+                                 var targetType: AtomicType,
                                  private var allowEmpty: Boolean)
   extends UnaryExpression(source) {
 

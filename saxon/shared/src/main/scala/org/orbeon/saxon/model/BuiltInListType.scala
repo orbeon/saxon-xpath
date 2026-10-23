@@ -13,9 +13,6 @@ import org.orbeon.saxon.value.StringValue
 import org.orbeon.saxon.value.Whitespace
 import org.orbeon.saxon.model.SchemaComponent.ValidationStatus.{VALIDATED, ValidationStatus}
 import BuiltInListType._
-
-import scala.beans.BeanProperty
-
 object BuiltInListType {
 
   var ENTITIES : BuiltInListType = makeListType(NamespaceConstant.SCHEMA, "ENTITIES")
@@ -44,14 +41,16 @@ object BuiltInListType {
 
 }
 
-class BuiltInListType(@BeanProperty var fingerprint: Int) extends ListType {
+class BuiltInListType(var fingerprint: Int) extends ListType {
+
+  def getFingerprint: Int = fingerprint
+  def getItemType: SimpleType = itemType
 
   def isBuiltInType: Boolean = true
   def getSystemId: String = null
   def getRedefinitionLevel: Int = 0
   def getWhitespaceAction: Int = Whitespace.COLLAPSE
 
-  @BeanProperty
   var itemType: BuiltInAtomicType = _
 
   fingerprint match {

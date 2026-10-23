@@ -2,12 +2,8 @@
 package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.trans.SymbolicName
+class ComponentBinding(name: SymbolicName, var target: Component) {
 
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class ComponentBinding(name: SymbolicName, @BeanProperty var target: Component) {
-
-  @BeanProperty
   var symbolicName: SymbolicName = name
 
 }

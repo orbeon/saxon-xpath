@@ -6,9 +6,6 @@ import org.orbeon.saxon.expr.instruct.{GlobalVariable, SlotManager}
 import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.trans.{DecimalFormatManager, TypeAliasManager}
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 class PackageData(var config: Configuration) {
 
   var hostLanguage: HostLanguage.HostLanguage = _

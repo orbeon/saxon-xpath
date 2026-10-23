@@ -26,9 +26,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator, SingleNodeIterator}
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{StringValue, UntypedAtomicValue}
-
-import scala.beans.BeanProperty
-
 class Orphan(config: Configuration) extends MutableNodeInfo {
 
   private var kind: Short = _
@@ -40,8 +37,8 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   private var typeAnnotation: SchemaType = null
   private var options: Int = ReceiverOption.NONE
 
-  @BeanProperty
   var treeInfo: GenericTreeInfo = new GenericTreeInfo(config)
+  def getTreeInfo: TreeInfo = treeInfo
 
   treeInfo.setRootNode(this)
 

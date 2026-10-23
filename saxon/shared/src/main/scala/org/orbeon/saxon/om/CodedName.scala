@@ -6,17 +6,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 package org.orbeon.saxon.om
-
-import scala.beans.BeanProperty
-
 /**
   * An implementation of NodeName that encapsulates an integer fingerprint, a string prefix, and a reference to the NamePool from which
   * the fingerprint was allocated.
   */
-class CodedName(@BeanProperty var fingerprint: Int,
-                @BeanProperty var prefix: String,
+class CodedName(var fingerprint: Int,
+                var prefix: String,
                 private var pool: NamePool)
     extends NodeName {
+
+  def getFingerprint: Int = fingerprint
+  def getPrefix: String = prefix
 
   /**
     * Get the namespace URI of the QName.

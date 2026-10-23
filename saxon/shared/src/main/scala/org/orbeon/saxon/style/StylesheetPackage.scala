@@ -27,8 +27,6 @@ import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.trans.Visibility.PRIVATE
 import StylesheetPackage._
 import org.orbeon.saxon.query.XQueryFunctionLibrary
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
 import scala.util.control.Breaks._
 
 object StylesheetPackage {
@@ -39,8 +37,7 @@ object StylesheetPackage {
 
 class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
-  /*  @BeanProperty
-    var packageVersion: PackageVersion = null  // PackageVersion not exist*/
+  /*  var packageVersion: PackageVersion = null  // PackageVersion not exist*/
 
   var packageName: String = _
 
@@ -48,10 +45,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   private var xsltVersion: Int = _
   /*
-    @BeanProperty
     var ruleManager: RuleManager = _*/
 
-  @BeanProperty
   var characterMapIndex: CharacterMapIndex = _
 
   var createsSecondaryResultDocuments: Boolean = _

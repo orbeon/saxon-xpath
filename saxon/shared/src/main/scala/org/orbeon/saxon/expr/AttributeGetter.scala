@@ -30,9 +30,6 @@ import org.orbeon.saxon.tree.tiny.TinyElementImpl
 import org.orbeon.saxon.value.UntypedAtomicValue
 
 import AttributeGetter._
-
-import scala.beans.BeanProperty
-
 object AttributeGetter {
 
 //public static final int CHECK_CONTEXT_ITEM_PRESENT = 1;
@@ -40,7 +37,7 @@ object AttributeGetter {
 
 }
 
-class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
+class AttributeGetter(var attributeName: FingerprintedQName)
     extends Expression {
 
   var requiredChecks: Int = CHECK_CONTEXT_ITEM_IS_NODE

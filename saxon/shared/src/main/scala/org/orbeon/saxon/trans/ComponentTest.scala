@@ -12,12 +12,9 @@ import org.orbeon.saxon.pattern.NameTest
 import org.orbeon.saxon.pattern.NamespaceTest
 
 import org.orbeon.saxon.pattern.QNameTest
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class ComponentTest(@BeanProperty var componentKind: Int,
+class ComponentTest(var componentKind: Int,
                     private var nameTest: QNameTest,
-                    @BeanProperty var arity: Int) {
+                    var arity: Int) {
 
   def getQNameTest: QNameTest = nameTest
 

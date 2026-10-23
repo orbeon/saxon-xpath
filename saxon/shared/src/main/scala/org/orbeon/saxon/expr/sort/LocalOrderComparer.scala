@@ -6,12 +6,8 @@ import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.om.NodeInfo
 
 import LocalOrderComparer._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object LocalOrderComparer {
 
-  @BeanProperty
   var instance: LocalOrderComparer = new LocalOrderComparer()
 
 }

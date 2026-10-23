@@ -27,9 +27,6 @@ import java.util.ArrayList
 import java.util.List
 
 import ApplyTemplates._
-
-import scala.beans.BeanProperty
-
 object ApplyTemplates {
 
    class ApplyTemplatesPackage(
@@ -64,11 +61,11 @@ class ApplyTemplates  ()
 
   private var selectOp: Operand = _
 
-  @BeanProperty
   var actualParams: Array[WithParam] = _
+  def getActualParams: Array[WithParam] = actualParams
 
-  @BeanProperty
   var tunnelParams: Array[WithParam] = _
+  def getTunnelParams: Array[WithParam] = tunnelParams
 
    var useCurrentMode: Boolean = false
 

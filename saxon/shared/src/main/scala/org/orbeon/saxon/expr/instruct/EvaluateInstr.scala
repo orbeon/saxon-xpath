@@ -21,7 +21,6 @@ import org.orbeon.saxon.value._
 
 import java.util._
 import java.util.function.Predicate
-import scala.beans.BeanProperty
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 

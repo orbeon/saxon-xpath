@@ -12,13 +12,10 @@ import org.orbeon.saxon.pattern.NodeTest
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{Cardinality, IntegerValue, SequenceType}
-
-import scala.beans.BeanProperty
-
 abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
   extends Expression with BindingReference {
 
-  @BeanProperty var variableName: StructuredQName = qnameOrBinding.fold(identity, _.getVariableQName)
+  var variableName: StructuredQName = qnameOrBinding.fold(identity, _.getVariableQName)
 
   // This will be null until fixup() is called; it will also be null if the variable reference has been inlined
   var binding: Binding = null

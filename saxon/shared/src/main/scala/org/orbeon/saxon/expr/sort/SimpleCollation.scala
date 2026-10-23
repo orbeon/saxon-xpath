@@ -6,14 +6,13 @@
 //import org.orbeon.saxon.lib.{StringCollator, SubstringMatcher}
 //import org.orbeon.saxon.utils.{Platform, Version}
 //
-//import scala.beans.BeanProperty
 //
 //object SimpleCollation {
 //  private val platform: Platform = Version.platform
 //}
 //
 //class SimpleCollation(private var uri: String,
-//                      @BeanProperty var comparator: Comparator[CharSequence])
+//                      var comparator: Comparator[CharSequence])
 //  extends StringCollator {
 //
 //  def getCollationURI: String = uri

@@ -13,9 +13,6 @@ import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.s9api.{HostLanguage, Location, UnprefixedElementMatchingPolicy}
 import org.orbeon.saxon.trans.{DecimalFormatManager, SaxonErrorCode, XmlProcessingIncident}
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 abstract class AbstractStaticContext extends StaticContext {
 
   private var baseURI: String = null
@@ -29,8 +26,9 @@ abstract class AbstractStaticContext extends StaticContext {
   var defaultCollationName: String = _
   def getDefaultCollationName: String = defaultCollationName
   private var libraryList: FunctionLibraryList = new FunctionLibraryList
-  @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN
+  def getDefaultFunctionNamespace: String = defaultFunctionNamespace
+  def setDefaultFunctionNamespace(ns: String): Unit = defaultFunctionNamespace = ns
   var defaultElementNamespace: String = NamespaceConstant.NULL
   private var backwardsCompatible: Boolean = false
   private var xpathLanguageLevel: Int = 31

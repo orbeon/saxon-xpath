@@ -22,9 +22,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.ProcInstParser
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BooleanBeanProperty
-
 // ORBEON: Unused class
 class PIGrabber(next: Receiver) extends ProxyReceiver(next) {
 

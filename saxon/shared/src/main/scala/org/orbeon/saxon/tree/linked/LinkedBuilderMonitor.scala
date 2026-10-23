@@ -18,9 +18,6 @@ import org.orbeon.saxon.om.NodeName
 import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
   * Monitor construction of a document tree. This allows a marker to be set during tree construction, in such a way
   * that the node corresponding to the marker can be retrieved at the end of tree construction. This is used in the
@@ -33,8 +30,8 @@ class LinkedBuilderMonitor(private var builder: LinkedTreeBuilder)
 
   /*@Nullable*/
 
-  @BeanProperty
   var markedNode: NodeInfo = _
+  override def getMarkedNode: NodeInfo = markedNode
 
   def markNextNode(nodeKind: Int): Unit = {
     mark = nodeKind

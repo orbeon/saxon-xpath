@@ -5,9 +5,6 @@
 // This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
-
-import scala.beans.BeanProperty
-
 /**
  * The Genre of an item is the top-level classification of its item type: one of Atomic, Node, Function,
  * Map, Array, or External
@@ -26,7 +23,6 @@ object Genre
   class Genre(desc: String)
     extends Val(desc) {
 
-    @BeanProperty
     var description: String = desc
   }
 

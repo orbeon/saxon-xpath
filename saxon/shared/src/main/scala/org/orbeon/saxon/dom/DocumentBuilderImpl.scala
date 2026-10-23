@@ -14,14 +14,12 @@
 //import org.w3c.dom.{DOMImplementation, Document}
 //import org.xml.sax.{EntityResolver, ErrorHandler, InputSource}
 //
-//import scala.beans.BeanProperty
 //
 //class DocumentBuilderImpl extends DocumentBuilder {
 //
 //  private var config: Configuration = _
 //
-//  @BeanProperty
-//  var parseOptions: ParseOptions = new ParseOptions()
+//  //  var parseOptions: ParseOptions = new ParseOptions()
 //
 //  def setConfiguration(config: Configuration): Unit = {
 //    this.config = config

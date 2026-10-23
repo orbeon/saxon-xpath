@@ -16,20 +16,15 @@
 //
 //  private var year: BigInteger = _
 //
-//  //@BeanProperty
-//  var month: Int = DatatypeConstants.FIELD_UNDEFINED
+//  ////  var month: Int = DatatypeConstants.FIELD_UNDEFINED
 //
-//  //@BeanProperty
-//  var day: Int = DatatypeConstants.FIELD_UNDEFINED
+//  ////  var day: Int = DatatypeConstants.FIELD_UNDEFINED
 //
-//  //@BeanProperty
-//  var hour: Int = DatatypeConstants.FIELD_UNDEFINED
+//  ////  var hour: Int = DatatypeConstants.FIELD_UNDEFINED
 //
-//  //@BeanProperty
-//  var minute: Int = DatatypeConstants.FIELD_UNDEFINED
+//  ////  var minute: Int = DatatypeConstants.FIELD_UNDEFINED
 //
-//  //@BeanProperty
-//  var second: Int = DatatypeConstants.FIELD_UNDEFINED
+//  ////  var second: Int = DatatypeConstants.FIELD_UNDEFINED
 //
 //  private var microsecond: Int = DatatypeConstants.FIELD_UNDEFINED
 //

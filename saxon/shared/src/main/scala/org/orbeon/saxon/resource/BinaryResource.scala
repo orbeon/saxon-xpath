@@ -12,9 +12,6 @@ import org.orbeon.saxon.expr.XPathContext
 import org.orbeon.saxon.lib.{Resource, ResourceFactory}
 import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.value.Base64BinaryValue
-
-import scala.beans.BeanProperty
-
 object BinaryResource {
 
   val FACTORY: ResourceFactory = (config, details) =>
@@ -41,10 +38,9 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
 
   private var href: String = in.resourceUri
 
-  @BeanProperty
   var contentType: String = in.contentType
+  def getContentType: String = contentType
 
-  @BeanProperty
   var data: Array[Byte] = in.binaryContent
 
   // ORBEON: JVM only

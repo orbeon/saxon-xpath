@@ -8,9 +8,6 @@ import org.xml.sax.Locator
 import javax.xml.transform.SourceLocator
 
 import Loc._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object Loc {
 
   val NONE: Loc = new Loc(null, -1, -1)

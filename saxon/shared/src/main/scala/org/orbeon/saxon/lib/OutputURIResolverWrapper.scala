@@ -9,13 +9,11 @@
 //import org.orbeon.saxon.serialize.SerializationProperties
 //import org.orbeon.saxon.trans.{UncheckedXPathException, XPathException}
 //
-//import scala.beans.BeanProperty
 //
 //class OutputURIResolverWrapper(resolver: OutputURIResolver)
 //    extends ResultDocumentResolver {
 //
-//  @BeanProperty
-//  var outputURIResolver: OutputURIResolver = resolver
+//  //  var outputURIResolver: OutputURIResolver = resolver
 //
 //  def resolve(context: XPathContext,
 //              href: String,

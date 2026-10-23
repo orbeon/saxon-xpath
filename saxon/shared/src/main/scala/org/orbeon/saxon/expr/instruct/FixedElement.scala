@@ -31,14 +31,11 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.util.function.BiConsumer
-
-import scala.beans.BeanProperty
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
-class FixedElement(@BeanProperty var elementName: NodeName,
+class FixedElement(var elementName: NodeName,
                    var namespaceBindings: NamespaceMap,
                    inheritNamespacesToChildren: Boolean,
                    inheritNamespacesFromParent: Boolean,
@@ -284,7 +281,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     elementName
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
-    consumer.accept("name", getElementName)
+    consumer.accept("name", elementName)
   }
 
   def getNewBaseURI(context: XPathContext, copiedNode: NodeInfo): String =

@@ -8,17 +8,13 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, Expr
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.om.Sequence
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import scala.beans.BeanProperty
-
 //remove if not needed
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 class TupleExpression extends Expression {
 
-  @BeanProperty
-   var operanda: OperandArray = _
+  var operanda: OperandArray = _
 
   override def operands: java.lang.Iterable[Operand] = operanda.operands
 

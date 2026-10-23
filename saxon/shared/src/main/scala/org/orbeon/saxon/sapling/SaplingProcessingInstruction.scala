@@ -12,10 +12,7 @@ import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.trans.XPathException
 
 import java.util.Objects
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class SaplingProcessingInstruction(@BeanProperty var name: String,
+class SaplingProcessingInstruction(var name: String,
                                    private var value: String)
     extends SaplingNode {
 

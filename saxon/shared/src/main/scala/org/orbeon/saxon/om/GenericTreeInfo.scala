@@ -15,15 +15,13 @@ package org.orbeon.saxon.om
 import java.util._
 
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
   private var root: NodeInfo = _
 
-  @BeanProperty
   var systemId: String = _
+  def getSystemId: String = systemId
+  def setSystemId(s: String): Unit = systemId = s
 
   private var userData: Map[String, Any] = _
 

@@ -33,8 +33,6 @@ import org.orbeon.saxon.value._
 import java.util.Properties
 
 import Minimax._
-
-import scala.beans.BeanProperty
 import scala.util.control.Breaks._
 
 object Minimax {
@@ -213,7 +211,6 @@ object Minimax {
 
 abstract class Minimax extends CollatingFunctionFixed {
 
-  @BeanProperty
   var argumentType: PlainType = BuiltInAtomicType.ANY_ATOMIC
 
   var ignoreNaN: Boolean = false

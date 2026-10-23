@@ -10,12 +10,9 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{AtomicValue, Cardinality}
-
-import scala.beans.BooleanBeanProperty
-
 class SingletonAtomizer(sequence: Expression,
                         role: RoleDiagnostic,
-                        @BooleanBeanProperty var allowEmpty: Boolean)
+                        var allowEmpty: Boolean)
   extends UnaryExpression(sequence) {
 
   private val roleDiagnostic: RoleDiagnostic = role

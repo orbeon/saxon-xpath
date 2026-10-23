@@ -14,9 +14,6 @@ import org.orbeon.saxon.trans.XPathException
 import java.util.ArrayList
 
 import java.util.List
-
-import scala.beans.BeanProperty
-
 /**
   * Information about the requirements placed by a query or stylesheet on the global
   * context item: whether it is mandatory or optional, what its type must be, and

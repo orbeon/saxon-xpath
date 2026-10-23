@@ -17,8 +17,6 @@ import org.orbeon.saxon.tree.tiny.TinyBuilder.Eligibility.Eligibility
 import org.orbeon.saxon.tree.tiny.TinyBuilder._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 /**
@@ -47,7 +45,6 @@ object TinyBuilder {
 class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
 
   /*@Nullable*/
-  @BeanProperty
   var tree: TinyTree = _
 
   private var namespaceStack: List[NamespaceMap] = Nil

@@ -13,9 +13,6 @@ import org.orbeon.saxon.model.UType
 import org.orbeon.saxon.om.Item
 
 import org.orbeon.saxon.trace.ExpressionPresenter
-
-import scala.beans.{BeanProperty}
-
 class ItemTypePattern(var itemTyp: ItemType) extends Pattern {
 
   this.priority = itemTyp.getDefaultPriority

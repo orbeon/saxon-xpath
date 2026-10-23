@@ -39,9 +39,6 @@ import java.util.List
 import java.util.function.BiConsumer
 
 import NamedTemplate._
-
-import scala.beans.BeanProperty
-
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
@@ -61,7 +58,7 @@ object NamedTemplate {
 
 }
 
-class NamedTemplate(@BeanProperty var templateName: StructuredQName)
+class NamedTemplate(var templateName: StructuredQName)
   extends Actor
     with TraceableComponent {
 
@@ -71,7 +68,6 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
 
   private var requiredType: SequenceType = _
 
-  @BeanProperty
   var requiredContextItemType: ItemType = AnyItemType
 
   var mayOmitContextItem: Boolean = true

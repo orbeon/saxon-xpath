@@ -25,9 +25,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.tree.util.Navigator
 
 import org.orbeon.saxon.value.AtomicValue
-
-import scala.beans.BeanProperty
-
 object ContextStackFrame {
 
   class CallingApplication extends ContextStackFrame {
@@ -166,7 +163,6 @@ abstract class ContextStackFrame {
 
   private var location: Location = _
 
-  @BeanProperty
   var contextItem: Item = _
 
   var container: AnyRef = _

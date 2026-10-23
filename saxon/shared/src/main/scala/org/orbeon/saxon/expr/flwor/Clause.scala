@@ -11,9 +11,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
-
-import scala.beans.BeanProperty
-
 object Clause {
 
   object ClauseName extends Enumeration {

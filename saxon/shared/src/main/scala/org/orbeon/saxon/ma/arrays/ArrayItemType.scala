@@ -11,9 +11,6 @@ import org.orbeon.saxon.om.{Genre, GroundedValue, Item}
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value.SequenceType
-
-import scala.beans.BeanProperty
-
 object ArrayItemType {
 
   val ANY_ARRAY_TYPE: ArrayItemType = new ArrayItemType(
@@ -25,7 +22,7 @@ object ArrayItemType {
 
 }
 
-class ArrayItemType(@BeanProperty var memberType: SequenceType)
+class ArrayItemType(var memberType: SequenceType)
   extends AnyFunctionType {
 
   override def getGenre: Genre.Genre = Genre.ARRAY

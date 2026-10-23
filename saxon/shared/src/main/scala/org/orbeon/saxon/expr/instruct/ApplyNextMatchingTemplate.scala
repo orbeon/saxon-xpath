@@ -20,18 +20,15 @@ import org.orbeon.saxon.trans.XPathException
 import java.util.ArrayList
 
 import java.util.List
-
-import scala.beans.BeanProperty
-
 abstract class ApplyNextMatchingTemplate
   extends Instruction
     with ITemplateCall {
 
-  @BeanProperty
   var actualParams: Array[WithParam] = _
+  def getActualParams: Array[WithParam] = actualParams
 
-  @BeanProperty
   var tunnelParams: Array[WithParam] = _
+  def getTunnelParams: Array[WithParam] = tunnelParams
 
   override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD

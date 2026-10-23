@@ -17,9 +17,6 @@ import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.model.UType
 
 import ContextItemStaticInfo._
-
-import scala.beans.BeanProperty
-
 /**
   * A data structure that represents the required type of the context item, together
   * with information about whether it is known to be present or absent or whether it

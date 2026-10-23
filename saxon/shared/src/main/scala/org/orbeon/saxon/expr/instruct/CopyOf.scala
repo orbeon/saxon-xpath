@@ -52,9 +52,6 @@ import java.net.URI
 import java.net.URISyntaxException
 
 import CopyOf._
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object CopyOf {
 
   def computeNewBaseUri(source: NodeInfo, staticBaseURI: String): String = {
@@ -175,10 +172,12 @@ object CopyOf {
 class CopyOf(select: Expression,
              var copyNamespaces: Boolean,
              private var validation: Int,
-             @BeanProperty var schemaType: SchemaType,
+             var schemaType: SchemaType,
              private var rejectDuplicateAttributes: Boolean)
   extends Instruction
     with ValidatingInstruction {
+
+  def getSchemaType: SchemaType = schemaType
 
   private var selectOp: Operand =
     new Operand(this, select, OperandRole.SINGLE_ATOMIC)
@@ -187,7 +186,6 @@ class CopyOf(select: Expression,
 
   private var requireDocumentOrElement: Boolean = false
 
-  @BooleanBeanProperty
   var validating: Boolean = schemaType != null || validation == Validation.STRICT ||
     validation == Validation.LAX
 

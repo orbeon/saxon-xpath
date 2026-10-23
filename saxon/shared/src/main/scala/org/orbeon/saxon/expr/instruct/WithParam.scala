@@ -17,9 +17,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.SequenceType
 
 import java.util.List
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object WithParam {
 
   var EMPTY_ARRAY: Array[WithParam] = new Array[WithParam](0)
@@ -122,13 +119,10 @@ class WithParam {
 
   private var selectOp: Operand = _
 
-  @BooleanBeanProperty
   var typeChecked: Boolean = false
 
-  @BeanProperty
   var slotNumber: Int = -1
 
-  @BeanProperty
   var requiredType: SequenceType = _
 
   var variableQName: StructuredQName = _

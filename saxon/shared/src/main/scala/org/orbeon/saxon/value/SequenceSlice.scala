@@ -12,8 +12,6 @@ import org.orbeon.saxon.tree.iter.ListIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import java.util.{Iterator, List}
-import scala.beans.BeanProperty
-
 /**
  * A sequence value implemented extensionally. That is, this class represents a sequence
  * by allocating memory to each item in the sequence.
@@ -24,12 +22,12 @@ class SequenceSlice(
   lengthParam        : Int
 ) extends GroundedValue {
 
-  @BeanProperty
   var length: Int =
     if (lengthParam > value.size || offset + lengthParam > value.size)
       value.size - offset
     else
       lengthParam
+  def getLength: Int = length
 
   if (offset < 0 || length < 0)
     throw new IndexOutOfBoundsException()

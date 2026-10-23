@@ -2,11 +2,10 @@
 package org.orbeon.saxon.regex.charclass
 
 import org.orbeon.saxon.z.IntSet
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
-class IntSetCharacterClass(@BeanProperty var intSet: IntSet)
+class IntSetCharacterClass(var intSet: IntSet)
     extends CharacterClass {
+
+  override def getIntSet: IntSet = intSet
 
   def test(value: Int): Boolean = intSet.contains(value)
 

@@ -10,7 +10,6 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.z._
 
 //import scala.collection.compat._
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -304,7 +303,7 @@ object Operation {
 
   }
 
-  class OpCharClass(@BeanProperty var predicate: IntPredicate)
+  class OpCharClass(var predicate: IntPredicate)
     extends Operation {
 
     override def getMatchLength: Int = 1

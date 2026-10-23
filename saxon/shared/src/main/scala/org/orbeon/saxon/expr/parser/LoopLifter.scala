@@ -11,9 +11,6 @@ import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value.{Cardinality, SequenceType}
-
-import scala.beans.BeanProperty
-
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
@@ -51,7 +48,7 @@ object LoopLifter {
   }
 }
 
-class LoopLifter(@BeanProperty var root: Expression,
+class LoopLifter(var root: Expression,
                  private var config: Configuration,
                  private var streaming: Boolean) {
 

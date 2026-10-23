@@ -7,9 +7,6 @@ import org.orbeon.saxon.model.PlainType
 import org.orbeon.saxon.value.SequenceType
 import OperandRole._
 import org.orbeon.saxon.expr.OperandUsage.OperandUsage
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 object OperandRole {
 
   val SETS_NEW_FOCUS: Int = 1
@@ -95,9 +92,8 @@ object OperandRole {
   * of an operand role depend only on the kind of expression and not on the actual arguments
   * supplied to a specific instance of the kind of operand.
   */
-class OperandRole(var properties: Int, @BeanProperty var usage: OperandUsage) {
+class OperandRole(var properties: Int, var usage: OperandUsage) {
 
-  @BeanProperty
   var requiredType: SequenceType = SequenceType.ANY_SEQUENCE
 
   def this(properties: Int, usage: OperandUsage, requiredType: SequenceType) = {

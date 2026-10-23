@@ -7,12 +7,8 @@ import org.orbeon.saxon.om.Item
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.value.{BooleanValue, SequenceType}
-
-import scala.beans.BeanProperty
-
 class QuantifiedExpression extends Assignation {
 
-  @BeanProperty
   var operator: Int = _
 
   override def getExpressionName: String = Token.tokens(operator)

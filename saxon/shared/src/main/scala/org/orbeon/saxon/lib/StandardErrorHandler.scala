@@ -16,18 +16,13 @@ import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
 
 import java.util.Objects
-
-import scala.beans.BeanProperty
-
 class StandardErrorHandler(reporter: ErrorReporter)
   extends org.xml.sax.ErrorHandler {
 
   private var errorReporter: ErrorReporter = Objects.requireNonNull(reporter)
 
-  @BeanProperty
   var warningCount: Int = 0
 
-  @BeanProperty
   var errorCount: Int = 0
 
   var fatalErrorCount: Int = 0

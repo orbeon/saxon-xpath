@@ -10,15 +10,12 @@ import org.orbeon.saxon.trans.XPathException
 import javax.xml.transform.ErrorListener
 
 import javax.xml.transform.TransformerException
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
-
 /**
   * Interface for reporting validation errors found during validation of an instance document
   * against a schema.
   */
 class InvalidityHandlerWrappingErrorListener(
-    @BeanProperty var errorListener: ErrorListener)
+    var errorListener: ErrorListener)
     extends InvalidityHandler {
 
   /**

@@ -9,9 +9,6 @@ package org.orbeon.saxon.sxpath
 import org.orbeon.saxon.expr.{LocalBinding, VariableReference, XPathContext}
 import org.orbeon.saxon.om.{Sequence, StructuredQName}
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
-
-import scala.beans.BeanProperty
-
 /**
  * An object representing an XPath variable for use in the standalone XPath API. The object
  * can only be created by calling the declareVariable method of class `IndependentContext`.
@@ -30,9 +27,8 @@ object XPathVariable {
 
 class XPathVariable private (name: StructuredQName, slotNumber: Int) extends LocalBinding {
 
-  @BeanProperty
   var requiredType: SequenceType = SequenceType.ANY_SEQUENCE
-  @BeanProperty
+  def getRequiredType: SequenceType = requiredType
   var defaultValue: Sequence = _
 
   def isGlobal: Boolean = false

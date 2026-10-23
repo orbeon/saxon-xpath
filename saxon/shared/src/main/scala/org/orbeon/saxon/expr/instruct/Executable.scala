@@ -12,7 +12,6 @@ import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.utils.Configuration
 
 import java.util._
-import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
 
 class Executable(var config: Configuration) {
@@ -29,10 +28,8 @@ class Executable(var config: Configuration) {
 
   private var queryLocationHintsProcessed: HashSet[String] = _
 
-  @BeanProperty
   var functionLibrary: FunctionLibraryList = _
 
-  @BeanProperty
   var hostLanguage: HostLanguage.HostLanguage = HostLanguage.XSLT
 
   private val globalParams: Map[StructuredQName, GlobalParam] = new HashMap
