@@ -164,9 +164,9 @@ class ForClause extends Clause {
               val predicate      = condition.copy(new RebindingMap())
               val child          =
                 if (op == 0)
-                  predicate.asInstanceOf[ComparisonExpression].getLhs
+                  predicate.asInstanceOf[ComparisonExpression].lhs
                 else
-                  predicate.asInstanceOf[ComparisonExpression].getRhs
+                  predicate.asInstanceOf[ComparisonExpression].rhs
               child.setChildExpression(position)
               if (debug)
                 opt.trace(

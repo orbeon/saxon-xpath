@@ -16,7 +16,7 @@ import org.orbeon.saxon.tree.wrapper.VirtualCopy
 class VirtualAccumulatorData(private var realData: IAccumulatorData)
     extends IAccumulatorData {
 
-  def getAccumulator: Accumulator = realData.getAccumulator
+  def accumulator: Accumulator = realData.accumulator
 
   def getValue(node: NodeInfo, postDescent: Boolean): Sequence = {
     val original: NodeInfo = node.asInstanceOf[VirtualCopy].getOriginalNode

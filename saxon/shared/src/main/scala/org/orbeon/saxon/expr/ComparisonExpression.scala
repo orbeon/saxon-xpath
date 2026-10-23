@@ -12,9 +12,9 @@ trait ComparisonExpression {
 
   def getSingletonOperator: Int
 
-  def getLhs: Operand
+  def lhs: Operand
 
-  def getRhs: Operand
+  def rhs: Operand
 
   def getLhsExpression: Expression
 

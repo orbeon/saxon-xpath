@@ -70,7 +70,7 @@ class RetainedStaticContext extends NamespaceResolver {
     this.defaultCollationName = sc.getDefaultCollationName
     this.decimalFormatManager = sc.getDecimalFormatManager
     this.defaultElementNamespace = sc.getDefaultElementNamespace
-    this.defaultFunctionNamespace = sc.getDefaultFunctionNamespace
+    this.defaultFunctionNamespace = sc.defaultFunctionNamespace
     this.backwardsCompatibility = sc.isInBackwardsCompatibleMode
 //    if (Version.platform.JAXPStaticContextCheck(this, sc)) {} else
     locally {

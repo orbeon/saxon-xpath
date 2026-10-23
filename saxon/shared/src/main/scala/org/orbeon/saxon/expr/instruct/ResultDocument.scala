@@ -280,8 +280,8 @@ class ResultDocument(private val globalProperties: Properties,
                      private val localProperties: Properties,
                      href: Expression,
                      formatExpression: Expression,
-                     validationAction: Int,
-                     schemaType: SchemaType,
+                     _validationAction: Int,
+                     _schemaType: SchemaType,
                      serializationAttris: Map[StructuredQName, Expression],
                      val characterMapIndex: CharacterMapIndex)
   extends Instruction
@@ -311,7 +311,7 @@ class ResultDocument(private val globalProperties: Properties,
     formatOp = new Operand(this, formatExpression, OperandRole.SINGLE_ATOMIC)
   }
 
-  setValidationAction(validationAction, schemaType)
+  setValidationAction(_validationAction, _schemaType)
 
   for ((key, value) <- serializationAttris.asScala) {
     this.serializationAttributes.put(key, new Operand(this, value, OperandRole.SINGLE_ATOMIC))
@@ -333,7 +333,7 @@ class ResultDocument(private val globalProperties: Properties,
     validationOptions.topLevelType = `type`
   }
 
-  def getSchemaType: SchemaType =
+  def schemaType: SchemaType =
     if (validationOptions == null) null else validationOptions.topLevelType
 
   def setValidationAction(mode: Int, schemaType: SchemaType): Unit = {
@@ -347,7 +347,7 @@ class ResultDocument(private val globalProperties: Properties,
     }
   }
 
-  def getValidationAction: Int =
+  def validationAction: Int =
     if (validationOptions == null) Validation.PRESERVE
     else validationOptions.getSchemaValidationMode
 

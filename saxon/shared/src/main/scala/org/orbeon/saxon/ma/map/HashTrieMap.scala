@@ -36,7 +36,6 @@ class HashTrieMap extends MapItem {
     ImmutableHashTrieMap.empty()
 
   var keyUType: UType = UType.VOID
-  def getKeyUType: UType = keyUType
 
   private var valueUType: UType = UType.VOID
   private var keyAtomicType: AtomicType = ErrorType

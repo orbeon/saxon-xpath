@@ -62,7 +62,6 @@ class FingerprintedQName extends NodeName {
   private var qName: StructuredQName = _
 
   var fingerprint: Int = -1
-  def getFingerprint: Int = fingerprint
 
   def this(prefix: String, uri: String, localName: String) = {
     this()
@@ -119,7 +118,7 @@ class FingerprintedQName extends NodeName {
     *
     * @return the prefix. Returns the empty string if the name is unprefixed.
     */
-  def getPrefix: String = qName.getPrefix
+  def prefix: String = qName.getPrefix
 
   /**
     * Get the namespace URI of the QName.

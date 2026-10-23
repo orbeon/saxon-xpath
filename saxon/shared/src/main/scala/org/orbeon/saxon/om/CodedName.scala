@@ -15,8 +15,7 @@ class CodedName(var fingerprint: Int,
                 private var pool: NamePool)
     extends NodeName {
 
-  def getFingerprint: Int = fingerprint
-  def getPrefix: String = prefix
+
 
   /**
     * Get the namespace URI of the QName.

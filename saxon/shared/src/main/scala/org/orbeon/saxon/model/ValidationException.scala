@@ -106,7 +106,7 @@ class ValidationException(exception: Exception)
 
   def getNode: NodeInfo =
     if (failure != null) {
-      failure.getInvalidNode
+      failure.invalidNode
     } else {
       null
     }
@@ -129,7 +129,7 @@ class ValidationException(exception: Exception)
 
   def getAbsolutePath: AbsolutePath =
     if (failure != null) {
-      failure.getPath
+      failure.path
     } else {
       null
     }

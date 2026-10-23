@@ -25,10 +25,8 @@ abstract class ApplyNextMatchingTemplate
     with ITemplateCall {
 
   var actualParams: Array[WithParam] = _
-  def getActualParams: Array[WithParam] = actualParams
 
   var tunnelParams: Array[WithParam] = _
-  def getTunnelParams: Array[WithParam] = tunnelParams
 
   override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD
@@ -44,8 +42,8 @@ abstract class ApplyNextMatchingTemplate
   /*@NotNull*/
 
   override def simplify(): Expression = {
-    WithParam.simplify(getActualParams)
-    WithParam.simplify(getTunnelParams)
+    WithParam.simplify(actualParams)
+    WithParam.simplify(tunnelParams)
     this
   }
 

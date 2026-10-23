@@ -19,7 +19,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     *
     * @return the prefix. Returns the empty string if the name is unprefixed.
     */
-  def getPrefix: String = ""
+  def prefix: String = ""
 
   /**
     * Get the namespace URI of the QName.
@@ -81,7 +81,7 @@ class NoNamespaceName(private var localName: String) extends NodeName {
     *
     * @return the fingerprint if known; otherwise -1
     */
-  def getFingerprint: Int = nameCode & NamePool.FP_MASK
+  def fingerprint: Int = nameCode & NamePool.FP_MASK
 
   /**
     * Get the nameCode of this name, allocating a new code from the name pool if necessary

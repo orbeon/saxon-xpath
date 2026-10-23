@@ -72,7 +72,7 @@ abstract class AbstractArrayItem extends ArrayItem {
     new AtomicArray(list)
   }
 
-  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
+  override def annotations: AnnotationList = AnnotationList.EMPTY
 
   def getFunctionItemType: FunctionItemType = ArrayItemType.ANY_ARRAY_TYPE
 

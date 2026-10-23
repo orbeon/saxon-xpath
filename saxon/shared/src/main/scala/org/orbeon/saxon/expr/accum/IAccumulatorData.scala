@@ -12,7 +12,7 @@ import org.orbeon.saxon.trans.XPathException
   */
 trait IAccumulatorData {
 
-  def getAccumulator: Accumulator
+  def accumulator: Accumulator
 
   def getValue(node: NodeInfo, postDescent: Boolean): Sequence
 

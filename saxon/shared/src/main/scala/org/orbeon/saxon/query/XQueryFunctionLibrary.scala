@@ -147,7 +147,7 @@ class XQueryFunctionLibrary(private var config: Configuration)
       val `type`: FunctionItemType = new SpecificFunctionType(
         fd.getArgumentTypes,
         fd.getResultType,
-        fd.getAnnotations)
+        fd.annotations)
       if (fn == null) {
         // not yet compiled: create a dummy
         val uf: UserFunction = new UserFunction()

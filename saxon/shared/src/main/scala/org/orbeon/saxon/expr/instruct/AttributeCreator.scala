@@ -43,8 +43,6 @@ abstract class AttributeCreator
   var schemaType: SimpleType = null
 
   var validationAction: Int = _
-  def getValidationAction: Int = validationAction
-  def setValidationAction(action: Int): Unit = validationAction = action
 
   var options: Int = ReceiverOption.NONE
 
@@ -58,9 +56,9 @@ abstract class AttributeCreator
     schemaType = `type`
   }
 
-  /*@Nullable*/
+  override def getSchemaType: SimpleType = schemaType
 
-  def getSchemaType: SimpleType = schemaType
+
 
   def setRejectDuplicates(): Unit = {
     options |= ReceiverOption.REJECT_DUPLICATES
@@ -96,8 +94,8 @@ abstract class AttributeCreator
     val attName: NodeName = evaluateNodeName(context)
     val opt: Int = options
     var ann: SimpleType = null
-    val schemaType: SimpleType = getSchemaType
-    val validateAction: Int = getValidationAction
+    val schemaType: SimpleType = this.schemaType
+    val validateAction: Int = this.validationAction
     if (schemaType != null) {
       ann = schemaType
       // test whether the value actually conforms to the given type
@@ -154,8 +152,8 @@ abstract class AttributeCreator
    def validateOrphanAttribute(orphan: Orphan,
                                         context: XPathContext): Unit = {
     val rules: ConversionRules = context.getConfiguration.getConversionRules
-    val schemaType: SimpleType = getSchemaType
-    val validateAction: Int = getValidationAction
+    val schemaType: SimpleType = this.schemaType
+    val validateAction: Int = this.validationAction
     if (schemaType != null) {
       val err: ValidationFailure = schemaType.validateContent(
         orphan.getStringValueCS,

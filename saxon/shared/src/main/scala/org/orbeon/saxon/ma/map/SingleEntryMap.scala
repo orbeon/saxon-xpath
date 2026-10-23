@@ -117,7 +117,7 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    * @return the most specific type to which all the keys belong. If the map is
    *         empty, return UType.VOID
    */
-  def getKeyUType: UType = key.getUType
+  def keyUType: UType = key.getUType
 
   private def toHashTrieMap: HashTrieMap = {
     val target = new HashTrieMap

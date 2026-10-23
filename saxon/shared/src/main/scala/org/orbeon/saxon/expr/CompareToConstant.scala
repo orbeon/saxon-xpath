@@ -23,9 +23,9 @@ abstract class CompareToConstant(p0: Expression)
 
   def getOperandRole: OperandRole = OperandRole.SINGLE_ATOMIC
   def getLhsExpression: Expression = getBaseExpression
-  def getLhs: Operand = getOperand
+  def lhs: Operand = getOperand
   def getRhsExpression: Expression
-  def getRhs: Operand = new Operand(this, getRhsExpression, OperandRole.SINGLE_ATOMIC)
+  def rhs: Operand = new Operand(this, getRhsExpression, OperandRole.SINGLE_ATOMIC)
   def getComparisonOperator: Int = operator
   def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 

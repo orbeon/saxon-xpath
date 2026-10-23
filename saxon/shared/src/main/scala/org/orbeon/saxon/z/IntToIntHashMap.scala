@@ -77,11 +77,7 @@ class IntToIntHashMap(var capacity: Int, private var _factor: Double)
 
   def keyIterator: IntIterator = new IntToIntHashMapKeyIterator
 
-  private var defaultValue: Int = java.lang.Integer.MAX_VALUE
-
-  override def setDefaultValue(defaultVal: Int): Unit = defaultValue = defaultVal
-
-  override def getDefaultValue: Int = defaultValue
+  var defaultValue: Int = java.lang.Integer.MAX_VALUE
 
   private var _nmax: Int = _
 

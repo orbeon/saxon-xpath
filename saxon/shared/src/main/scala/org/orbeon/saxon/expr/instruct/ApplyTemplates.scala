@@ -62,10 +62,8 @@ class ApplyTemplates  ()
   private var selectOp: Operand = _
 
   var actualParams: Array[WithParam] = _
-  def getActualParams: Array[WithParam] = actualParams
 
   var tunnelParams: Array[WithParam] = _
-  def getTunnelParams: Array[WithParam] = tunnelParams
 
    var useCurrentMode: Boolean = false
 
@@ -118,8 +116,8 @@ class ApplyTemplates  ()
   override def operands: java.lang.Iterable[Operand] = {
     val operanda: List[Operand] = new ArrayList[Operand]()
     operanda.add(selectOp)
-    WithParam.gatherOperands(this, getActualParams, operanda)
-    WithParam.gatherOperands(this, getTunnelParams, operanda)
+    WithParam.gatherOperands(this, actualParams, operanda)
+    WithParam.gatherOperands(this, tunnelParams, operanda)
     operanda
   }
 
@@ -129,8 +127,8 @@ class ApplyTemplates  ()
     super.getImplementationMethod | Expression.WATCH_METHOD
 
   override def simplify(): Expression = {
-    WithParam.simplify(getActualParams)
-    WithParam.simplify(getTunnelParams)
+    WithParam.simplify(actualParams)
+    WithParam.simplify(tunnelParams)
     this.setSelect(getSelect.simplify())
     this
   }
@@ -195,8 +193,8 @@ override  def optimize(visitor: ExpressionVisitor,
       inStreamableConstruct,
       mode)
     // ruleManager
-    a2.actualParams = WithParam.copy(a2, getActualParams, rebindings)
-    a2.tunnelParams = WithParam.copy(a2, getTunnelParams, rebindings)
+    a2.actualParams = WithParam.copy(a2, actualParams, rebindings)
+    a2.tunnelParams = WithParam.copy(a2, tunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, a2)
     //a2.ruleManager = ruleManager
     a2
@@ -216,8 +214,8 @@ override  def optimize(visitor: ExpressionVisitor,
                       returnTailCall: Boolean): TailCall = {
     val targetMode: Component.M = getTargetMode(context)
     val thisMode: Mode = targetMode.getActor
-    val params: ParameterSet = Instruction.assembleParams(context, getActualParams)
-    val tunnels: ParameterSet =Instruction assembleTunnelParams(context, getTunnelParams)
+    val params: ParameterSet = Instruction.assembleParams(context, actualParams)
+    val tunnels: ParameterSet =Instruction assembleTunnelParams(context, tunnelParams)
     if (returnTailCall) {
       val c2: XPathContextMajor = context.newContext()
       c2.setOrigin(this)
@@ -326,11 +324,11 @@ override  def optimize(visitor: ExpressionVisitor,
     out.emitAttribute("bSlot", "" + getBindingSlot)
     out.setChildRole("select")
     getSelect.`export`(out)
-    if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, tunnel = false)
+    if (actualParams.length != 0) {
+      WithParam.exportParameters(actualParams, out, tunnel = false)
     }
-    if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
+    if (tunnelParams.length != 0) {
+      WithParam.exportParameters(tunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

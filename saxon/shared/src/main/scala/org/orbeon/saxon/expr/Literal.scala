@@ -41,8 +41,8 @@ object Literal {
         exportAtomicValue(atomicValue, out)
       case integerRange: IntegerRange =>
         out.startElement("range")
-        out.emitAttribute("from", "" + integerRange.getStart)
-        out.emitAttribute("to", "" + integerRange.getEnd)
+        out.emitAttribute("from", "" + integerRange.start)
+        out.emitAttribute("to", "" + integerRange.end)
         out.endElement()
       case nodeInfo: NodeInfo =>
         out.startElement("node")
@@ -312,8 +312,8 @@ class Literal extends Expression {
         Array(integerValue, integerValue)
       case integerRange: IntegerRange =>
         Array(
-          Int64Value.makeIntegerValue(integerRange.getStart),
-          Int64Value.makeIntegerValue(integerRange.getEnd))
+          Int64Value.makeIntegerValue(integerRange.start),
+          Int64Value.makeIntegerValue(integerRange.end))
       case _ =>
         null
     }

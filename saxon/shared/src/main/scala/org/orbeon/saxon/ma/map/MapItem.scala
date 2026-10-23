@@ -107,7 +107,7 @@ trait MapItem extends Function {
 
   def getItemType(th: TypeHierarchy): ItemType
 
-  def getKeyUType: UType
+  def keyUType: UType
 
   override def toShortString: String = {
     val sb = new StringBuilder
@@ -140,7 +140,7 @@ trait MapItem extends Function {
   def isArray: Boolean = false
   def isMap: Boolean = true
 
-  def getAnnotations: AnnotationList = AnnotationList.EMPTY
+  def annotations: AnnotationList = AnnotationList.EMPTY
 
   def atomize(): AtomicSequence =
     throw new XPathException("Cannot atomize a map (" + toShortString + ")", "FOTY0013")

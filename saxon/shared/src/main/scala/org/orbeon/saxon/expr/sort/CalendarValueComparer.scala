@@ -11,7 +11,7 @@ import org.orbeon.saxon.value.CalendarValue
 class CalendarValueComparer(@transient private var context: XPathContext)
   extends AtomicComparer {
 
-  def getCollator: StringCollator = null
+  def collator: StringCollator = null
 
   def provideContext(context: XPathContext): AtomicComparer =
     new CalendarValueComparer(context)

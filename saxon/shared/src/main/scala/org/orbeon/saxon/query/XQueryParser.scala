@@ -1214,7 +1214,7 @@ class XQueryParser extends XPathParser {
     expect(Token.STRING_LITERAL)
     val uri = uriLiteral(t.currentTokenValue)
     if (uri == NamespaceConstant.XML || uri == NamespaceConstant.XMLNS) grumble("Reserved namespace used as default element/type namespace", "XQST0070")
-    env.asInstanceOf[QueryModule].setDefaultFunctionNamespace(uri)
+    env.asInstanceOf[QueryModule].defaultFunctionNamespace = uri
     nextToken()
   }
 
@@ -1422,7 +1422,7 @@ class XQueryParser extends XPathParser {
     var uri: String = null
     var qName: StructuredQName = null
     if (t.currentTokenValue.indexOf(':') < 0) {
-      uri = env.getDefaultFunctionNamespace
+      uri = env.defaultFunctionNamespace
       qName = new StructuredQName("", uri, t.currentTokenValue)
     }
     else {

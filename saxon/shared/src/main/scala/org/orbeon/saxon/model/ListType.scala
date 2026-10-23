@@ -5,7 +5,8 @@ trait ListType extends SimpleType with CastingTarget {
 
   /*@NotNull*/
 
-  def getItemType: SimpleType
+  def itemType: SimpleType
+  def getItemType: SimpleType = itemType
 
 }
 

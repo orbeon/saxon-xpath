@@ -33,7 +33,7 @@ object UnparsedTextResource {
 class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
     extends Resource {
 
-  private val contentType: String = details.contentType
+  private val _contentType: String = details.contentType
 
   var encoding: String = details.encoding
 
@@ -53,7 +53,7 @@ class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
     this.unparsedText = new String(details.binaryContent, details.encoding)
   }
 
-  def getResourceURI: String = href
+  def resourceURI: String = href
 
   def getContent: String = {
     if (unparsedText == null) {
@@ -75,6 +75,6 @@ class UnparsedTextResource(details: AbstractResourceCollection.InputDetails)
 
   def getItem(context: XPathContext): Item = new StringValue(getContent)
 
-  def getContentType: String =
-    if (contentType == null) "text/plain" else contentType
+  def contentType: String =
+    if (_contentType == null) "text/plain" else _contentType
 }

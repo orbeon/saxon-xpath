@@ -15,7 +15,7 @@ class FailedAccumulatorData(private var acc: Accumulator,
                             private var error: XPathException)
     extends IAccumulatorData {
 
-  override def getAccumulator: Accumulator = acc
+  override def accumulator: Accumulator = acc
 
   override def getValue(node: NodeInfo, postDescent: Boolean): Sequence =
     throw error

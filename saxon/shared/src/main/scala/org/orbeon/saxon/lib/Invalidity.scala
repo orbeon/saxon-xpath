@@ -20,9 +20,9 @@ import javax.xml.transform.SourceLocator
   */
 trait Invalidity extends SourceLocator {
 
-  def getSchemaPart: Int
+  def schemaPart: Int
 
-  def getConstraintName: String
+  def constraintName: String
 
   def getConstraintClauseNumber: String
 
@@ -35,11 +35,11 @@ trait Invalidity extends SourceLocator {
     */
   def getConstraintReference: String
 
-  def getInvalidNode: NodeInfo
+  def invalidNode: NodeInfo
 
-  def getPath: AbsolutePath
+  def path: AbsolutePath
 
-  def getContextPath: AbsolutePath
+  def contextPath: AbsolutePath
 
   def getMessage: String
 

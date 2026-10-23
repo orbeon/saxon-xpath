@@ -105,7 +105,6 @@ class XQueryFunction extends Declaration with Location {
     }
   }
 
-  def getAnnotations: AnnotationList = annotations
 
   def hasAnnotation(name: StructuredQName): Boolean =
     annotations.includes(name)

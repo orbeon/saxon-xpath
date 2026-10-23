@@ -32,9 +32,7 @@ class MetadataResource(var resourceURI: String,
                        private var properties: Map[String, GroundedValue])
     extends Resource {
 
-  def getResourceURI: String = resourceURI
-
-  def getContentType: String = content.getContentType
+  def contentType: String = content.contentType
 
   def getItem(context: XPathContext): Item = {
 // Create a map for the result

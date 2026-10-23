@@ -31,7 +31,6 @@ class LocalVariableBinding(private var variableName: StructuredQName,
 
   def getVariableQName: StructuredQName = variableName
 
-  def getRequiredType: SequenceType = requiredType
 
   /**
     * If the variable is bound to an integer, get the minimum and maximum possible values.

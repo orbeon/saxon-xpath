@@ -271,7 +271,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
 
   def makeTypedResource(config: Configuration,
                         basicResource: Resource): Resource = {
-    val mediaType: String = basicResource.getContentType
+    val mediaType: String = basicResource.contentType
     val factory: ResourceFactory =
       config.getResourceFactoryForMediaType(mediaType)
     if (factory == null) {
@@ -282,13 +282,13 @@ abstract class AbstractResourceCollection(var config: Configuration)
         val details: InputDetails = new InputDetails()
         details.binaryContent = resource.data
         details.contentType = mediaType
-        details.resourceUri = basicResource.getResourceURI
+        details.resourceUri = basicResource.resourceURI
         factory.makeResource(config, details)
       case resource: UnparsedTextResource =>
         val details: InputDetails = new InputDetails()
         details.characterContent = resource.getContent
         details.contentType = mediaType
-        details.resourceUri = basicResource.getResourceURI
+        details.resourceUri = basicResource.resourceURI
         factory.makeResource(config, details)
       case _ =>
         basicResource

@@ -29,7 +29,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     *
     * @return the prefix. Returns the empty string if the name is unprefixed.
     */
-  def getPrefix: String = node.getPrefix
+  def prefix: String = node.getPrefix
 
   /**
     * Get the namespace URI of the QName.
@@ -85,7 +85,7 @@ class NameOfNode private (private var node: NodeInfo) extends NodeName {
     *
     * @return the fingerprint if known; otherwise -1
     */
-  def getFingerprint: Int =
+  def fingerprint: Int =
     if (hasFingerprint) {
       node.getFingerprint
     } else {

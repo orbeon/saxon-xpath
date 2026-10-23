@@ -46,13 +46,13 @@ object UnicodeDataParserFromXML {
 
     }
     val canonicalClass = new IntToIntHashMap(400)
-    canonicalClass.setDefaultValue(0)
+    canonicalClass.defaultValue = 0
     readCanonicalClassTable(canonicalClassKeys.getStringValue,
       canonicalClassValues.getStringValue,
       canonicalClass)
     val decompose = new IntHashMap[String](18000)
     val compose = new IntToIntHashMap(15000)
-    compose.setDefaultValue(NormalizerData.NOT_COMPOSITE)
+    compose.defaultValue = NormalizerData.NOT_COMPOSITE
     readDecompositionTable(decompositionKeys.getStringValue,
       decompositionValues.getStringValue,
       decompose,

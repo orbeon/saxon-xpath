@@ -43,7 +43,6 @@ class XmlProcessingIncident(
   def getCause: Throwable = cause
 
   var fatalErrorMessage: String = _
-  def getFatalErrorMessage: String = fatalErrorMessage
 
   var hostLanguage: HostLanguage.HostLanguage = _
   def getHostLanguage: HostLanguage.HostLanguage = hostLanguage

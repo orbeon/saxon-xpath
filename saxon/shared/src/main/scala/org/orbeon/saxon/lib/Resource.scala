@@ -19,11 +19,11 @@ import org.orbeon.saxon.trans.XPathException
   */
 trait Resource {
 
-  def getResourceURI: String
+  def resourceURI: String
 
   def getItem(context: XPathContext): Item
 
-  def getContentType: String
+  def contentType: String
 
 }
 

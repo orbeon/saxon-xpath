@@ -157,7 +157,7 @@ class UntypedNumericComparer extends AtomicComparer {
    *
    * @return the collation used for comparing strings, or null if not applicable
    */
-  override def getCollator: StringCollator = null
+  override def collator: StringCollator = null
 
   /**
    * Supply the dynamic context in case this is needed for the comparison

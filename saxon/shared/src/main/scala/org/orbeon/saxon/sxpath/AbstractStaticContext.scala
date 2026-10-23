@@ -27,8 +27,6 @@ abstract class AbstractStaticContext extends StaticContext {
   def getDefaultCollationName: String = defaultCollationName
   private var libraryList: FunctionLibraryList = new FunctionLibraryList
   var defaultFunctionNamespace: String = NamespaceConstant.FN
-  def getDefaultFunctionNamespace: String = defaultFunctionNamespace
-  def setDefaultFunctionNamespace(ns: String): Unit = defaultFunctionNamespace = ns
   var defaultElementNamespace: String = NamespaceConstant.NULL
   private var backwardsCompatible: Boolean = false
   private var xpathLanguageLevel: Int = 31

@@ -34,8 +34,8 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
 
   def copy(rebindings: RebindingMap): Expression = {
     val ai2: ApplyImports = new ApplyImports()
-    ai2.actualParams = WithParam.copy(ai2, getActualParams, rebindings)
-    ai2.tunnelParams = WithParam.copy(ai2, getTunnelParams, rebindings)
+    ai2.actualParams = WithParam.copy(ai2, actualParams, rebindings)
+    ai2.tunnelParams = WithParam.copy(ai2, tunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, ai2)
     ai2
   }
@@ -43,8 +43,8 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val params: ParameterSet = Instruction.assembleParams(context, getActualParams)
-    val tunnels: ParameterSet = Instruction.assembleTunnelParams(context, getTunnelParams)
+    val params: ParameterSet = Instruction.assembleParams(context, actualParams)
+    val tunnels: ParameterSet = Instruction.assembleTunnelParams(context, tunnelParams)
     val currentTemplateRule: Rule = context.getCurrentTemplateRule
     if (currentTemplateRule == null) {
       val e: XPathException = new XPathException(
@@ -89,11 +89,11 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("applyImports", this)
     out.emitAttribute("flags", "i")
-    if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, tunnel = false)
+    if (actualParams.length != 0) {
+      WithParam.exportParameters(actualParams, out, tunnel = false)
     }
-    if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
+    if (tunnelParams.length != 0) {
+      WithParam.exportParameters(tunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

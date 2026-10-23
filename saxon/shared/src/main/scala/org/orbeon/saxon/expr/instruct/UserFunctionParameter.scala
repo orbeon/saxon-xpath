@@ -8,7 +8,6 @@ import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 class UserFunctionParameter extends LocalBinding {
 
   var requiredType: SequenceType = _
-  def getRequiredType: SequenceType = requiredType
 
   var variableQName: StructuredQName = _
   def getVariableQName: StructuredQName = variableQName

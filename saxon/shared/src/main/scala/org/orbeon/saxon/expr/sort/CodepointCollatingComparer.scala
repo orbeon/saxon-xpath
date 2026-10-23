@@ -38,7 +38,7 @@ object CodepointCollatingComparer {
 
 class CodepointCollatingComparer private () extends AtomicComparer {
 
-  def getCollator: StringCollator = collator
+  def collator: StringCollator = CodepointCollatingComparer.collator
 
   def provideContext(context: XPathContext): AtomicComparer = this
 

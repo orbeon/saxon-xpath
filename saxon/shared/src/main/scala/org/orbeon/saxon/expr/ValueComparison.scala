@@ -80,8 +80,8 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     resetLocalStaticProperties()
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
 
     val config = visitor.getConfiguration
     val env    = visitor.staticContext
@@ -187,8 +187,8 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
   }
 
 override  def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.optimize(visitor, contextInfo)
-    getRhs.optimize(visitor, contextInfo)
+    lhs.optimize(visitor, contextInfo)
+    rhs.optimize(visitor, contextInfo)
     visitor
       .obtainOptimizer()
       .optimizeValueComparison(this, visitor, contextInfo)

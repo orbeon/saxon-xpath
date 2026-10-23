@@ -59,7 +59,7 @@ class IndependentContext(config: Configuration)
     this.setBaseURI(ic.getStaticBaseURI)
     this.containingLocation = ic.getContainingLocation
     this.defaultElementNamespace = ic.getDefaultElementNamespace
-    this.defaultFunctionNamespace = ic.getDefaultFunctionNamespace
+    this.defaultFunctionNamespace = ic.defaultFunctionNamespace
     this.setBackwardsCompatibilityMode(ic.isInBackwardsCompatibleMode)
 
     namespaces = new ju.HashMap(ic.namespaces)

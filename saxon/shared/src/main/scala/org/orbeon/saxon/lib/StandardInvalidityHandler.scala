@@ -45,7 +45,7 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
   def getLocationMessage(err: Invalidity): String = {
     var locMessage: String = ""
     var systemId: String = null
-    val node: NodeInfo = err.getInvalidNode
+    val node: NodeInfo = err.invalidNode
     var path: AbsolutePath = null
     var nodeMessage: String = null
     val lineNumber = err.getLineNumber
@@ -53,7 +53,7 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
       // ORBEON: No W3C DOM.
 //      case locator: DOMLocator => nodeMessage = "at " + locator.getOriginatingNode.getNodeName + ' '
       case _ => if ((lineNumber == -1) && ({
-        path = err.getPath
+        path = err.path
         path
       } != null)) nodeMessage = "at " + path.toString + " "
       else if (node != null) nodeMessage = "at " + Navigator.getPath(node) + ' '
@@ -77,8 +77,8 @@ class StandardInvalidityHandler(var config: Configuration) extends StandardDiagn
   }
 
   def getConstraintReferenceMessage(err: Invalidity): String = {
-    if (err.getSchemaPart == -1) return null
-    "See http://www.w3.org/TR/xmlschema-" + err.getSchemaPart + "/#" + err.getConstraintName + " clause " + err.getConstraintClauseNumber
+    if (err.schemaPart == -1) return null
+    "See http://www.w3.org/TR/xmlschema-" + err.schemaPart + "/#" + err.constraintName + " clause " + err.getConstraintClauseNumber
   }
 
   @throws[XPathException]

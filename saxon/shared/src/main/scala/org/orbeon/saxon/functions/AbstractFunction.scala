@@ -35,7 +35,7 @@ abstract class AbstractFunction extends Function {
   def getStringValueCS: CharSequence =
     throw new UnsupportedOperationException("The string value of a function is not defined")
 
-  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
+  override def annotations: AnnotationList = AnnotationList.EMPTY
 
  override def effectiveBooleanValue: Boolean =
     throw new XPathException("A function has no effective boolean value", "XPTY0004")

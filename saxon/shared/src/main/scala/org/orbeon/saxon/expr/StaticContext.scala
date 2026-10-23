@@ -34,7 +34,7 @@ trait StaticContext {
   def getDefaultCollationName: String
   def getDefaultElementNamespace: String
   def getUnprefixedElementMatchingPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
-  def getDefaultFunctionNamespace: String
+  def defaultFunctionNamespace: String
   def isInBackwardsCompatibleMode: Boolean
   def isImportedSchema(namespace: String): Boolean
   def getImportedSchemaNamespaces: ju.Set[String]

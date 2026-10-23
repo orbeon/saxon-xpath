@@ -195,8 +195,8 @@ object Evaluator {
       }
       base match {
         case range: IntegerRange =>
-          val start = range.getStart + tail.getStart - 1
-          val end   = range.getEnd
+          val start = range.start + tail.getStart - 1
+          val end   = range.end
           if (start == end)
             Int64Value.makeIntegerValue(end)
           else if (start > end)

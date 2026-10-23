@@ -48,7 +48,6 @@ class LocalParam extends Instruction with LocalBinding {
   var variableQName: StructuredQName = _
 
   var requiredType: SequenceType = _
-  def getRequiredType: SequenceType = requiredType
 
   var slotNumber: Int = -999
 

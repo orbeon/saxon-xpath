@@ -52,7 +52,7 @@ object UserFunctionReference {
     }
 
     def getFunctionItemType: FunctionItemType = function.getFunctionItemType
-    override def getAnnotations: AnnotationList = function.getAnnotations
+    override def annotations: AnnotationList = function.annotations
     def getFunctionName: StructuredQName = function.getFunctionName
     def getArity: Int = function.getArity
     def getDescription: String = function.getDescription

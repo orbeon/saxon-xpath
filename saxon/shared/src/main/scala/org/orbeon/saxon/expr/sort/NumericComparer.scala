@@ -27,7 +27,7 @@ class NumericComparer() extends AtomicComparer {
 
   /*@Nullable*/
 
-  def getCollator: StringCollator = null
+  def collator: StringCollator = null
 
   def provideContext(context: XPathContext): AtomicComparer = this
 

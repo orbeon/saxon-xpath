@@ -81,7 +81,6 @@ class GlobalVariable
   var requiredType: SequenceType = _
 
   def getVariableQName: StructuredQName = variableQName
-  def getRequiredType: SequenceType = requiredType
   private var indexed: Boolean = _
   var isPrivate: Boolean = false
   var isAssignable: Boolean = false

@@ -69,8 +69,7 @@ class GenericAtomicComparer(var collator: StringCollator,
   def provideContext(context: XPathContext): GenericAtomicComparer =
     new GenericAtomicComparer(collator, context)
 
-  def getStringCollator: StringCollator = collator
-  def getCollator: StringCollator = collator
+
 
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int = {
 

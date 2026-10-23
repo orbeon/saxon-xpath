@@ -177,8 +177,6 @@ class CopyOf(select: Expression,
   extends Instruction
     with ValidatingInstruction {
 
-  def getSchemaType: SchemaType = schemaType
-
   private var selectOp: Operand =
     new Operand(this, select, OperandRole.SINGLE_ATOMIC)
 
@@ -203,7 +201,7 @@ class CopyOf(select: Expression,
 
   override def operands: java.lang.Iterable[Operand] = selectOp
 
-  def getValidationAction: Int = validation
+  def validationAction: Int = validation
 
   def setSchemaAware(schemaAware: Boolean): Unit = {
     this.isSchemaAware = schemaAware

@@ -41,10 +41,9 @@ object BuiltInListType {
 
 }
 
-class BuiltInListType(var fingerprint: Int) extends ListType {
+class BuiltInListType(fingerprint: Int) extends ListType {
 
   def getFingerprint: Int = fingerprint
-  def getItemType: SimpleType = itemType
 
   def isBuiltInType: Boolean = true
   def getSystemId: String = null

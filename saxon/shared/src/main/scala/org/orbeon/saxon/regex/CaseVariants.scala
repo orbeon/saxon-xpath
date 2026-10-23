@@ -63,7 +63,7 @@ object CaseVariants {
       build()
     }
     val mono: Int = monoVariants.get(code)
-    if (mono != monoVariants.getDefaultValue) {
+    if (mono != monoVariants.defaultValue) {
       Array(mono)
     } else {
       val result: Array[Int] = polyVariants.get(code)

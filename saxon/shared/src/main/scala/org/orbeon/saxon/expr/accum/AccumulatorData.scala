@@ -70,7 +70,6 @@ object AccumulatorData {
 class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
 
   var accumulator: Accumulator = acc
-  def getAccumulator: Accumulator = accumulator
 
   private var values: List[DataPoint] = new ArrayList()
 

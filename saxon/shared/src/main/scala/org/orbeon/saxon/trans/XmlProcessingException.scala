@@ -9,7 +9,6 @@ class XmlProcessingException(private var exception: XPathException)
   var isWarning: Boolean = _
 
   var fatalErrorMessage: String = _
-  def getFatalErrorMessage: String = fatalErrorMessage
 
   def getXPathException: XPathException = exception
 

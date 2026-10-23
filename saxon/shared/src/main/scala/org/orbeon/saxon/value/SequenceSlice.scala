@@ -22,14 +22,13 @@ class SequenceSlice(
   lengthParam        : Int
 ) extends GroundedValue {
 
-  var length: Int =
+  val getLength: Int =
     if (lengthParam > value.size || offset + lengthParam > value.size)
       value.size - offset
     else
       lengthParam
-  def getLength: Int = length
 
-  if (offset < 0 || length < 0)
+  if (offset < 0 || getLength < 0)
     throw new IndexOutOfBoundsException()
 
   def getStringValue  : String       = SequenceTool.getStringValue(this)
@@ -59,7 +58,7 @@ class SequenceSlice(
 
   /*@NotNull*/
   def iterate(): ListIterator[_ <: Item] =
-    new ListIterator(value.subList(offset, offset + length))
+    new ListIterator(value.subList(offset, offset + getLength))
 
   /*@NotNull*/
   def subsequence(start: Int, length: Int): GroundedValue = {
@@ -71,7 +70,7 @@ class SequenceSlice(
      return EmptySequence.getInstance
     if (length < 0)
      return EmptySequence.getInstance
-    var newLength = java.lang.Integer.min(length, this.length)
+    var newLength = java.lang.Integer.min(length, this.getLength)
     if (newStart + newLength > value.size)
       newLength = value.size - newStart
     newLength match {
@@ -112,8 +111,8 @@ class SequenceSlice(
   }
 
   override def asIterable: java.lang.Iterable[_ <: Item] =
-    value.subList(offset, offset + length)
+    value.subList(offset, offset + getLength)
 
   def iterator: Iterator[_ <: Item] =
-    value.subList(offset, offset + length).iterator
+    value.subList(offset, offset + getLength).iterator
 }

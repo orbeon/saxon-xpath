@@ -104,12 +104,7 @@ abstract class Assignation extends Expression with LocalBinding {
 
   override def getObjectName: StructuredQName = variableName
 
-  /**
-   * Get the declared type of the variable
-   *
-   * @return the declared type
-   */
-  def getRequiredType: SequenceType = requiredType
+
 
   /**
    * If the variable is bound to an integer, get the minimum and maximum possible values.

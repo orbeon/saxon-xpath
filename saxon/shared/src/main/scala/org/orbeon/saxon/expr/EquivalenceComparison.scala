@@ -41,8 +41,8 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
     comparer = new EquivalenceComparer(collation, config.getConversionContext.asInstanceOf[XPathContext])
     val oldOp0 = getLhsExpression
     val oldOp1 = getRhsExpression
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
     // Neither operand needs to be sorted
     setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))

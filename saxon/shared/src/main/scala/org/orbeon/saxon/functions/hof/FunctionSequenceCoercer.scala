@@ -28,7 +28,7 @@ object FunctionSequenceCoercer {
 
     for (ann <- requiredItemType.getAnnotationAssertions.asScala) {
       val handler = config.getFunctionAnnotationHandler(ann.getAnnotationQName.getURI)
-      if (handler != null && !handler.satisfiesAssertion(ann, item.getAnnotations))
+      if (handler != null && !handler.satisfiesAssertion(ann, item.annotations))
         throw new XPathException("Supplied function does not satisfy the annotation assertions of the required function type", "XPTY0004")
     }
   }

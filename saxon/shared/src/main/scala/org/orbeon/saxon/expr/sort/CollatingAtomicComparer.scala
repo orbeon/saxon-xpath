@@ -6,9 +6,9 @@ import org.orbeon.saxon.lib.StringCollator
 
 import org.orbeon.saxon.value.AtomicValue
 
-class CollatingAtomicComparer(collator: StringCollator) extends AtomicComparer {
+class CollatingAtomicComparer(coll: StringCollator) extends AtomicComparer {
 
-  var strCollator: StringCollator = if (collator == null) CodepointCollator.getInstance else collator
+  var collator: StringCollator = if (coll == null) CodepointCollator.getInstance else coll
 
   def provideContext(context: XPathContext): AtomicComparer = this
 
@@ -22,11 +22,9 @@ class CollatingAtomicComparer(collator: StringCollator) extends AtomicComparer {
   def comparesEqual(a: AtomicValue, b: AtomicValue): Boolean =
     compareAtomicValues(a, b) == 0
 
-  def save(): String = "CAC|" + getCollator.getCollationURI
+  def save(): String = "CAC|" + collator.getCollationURI
 
   override def hashCode: Int = collator.hashCode
 
   override def equals(obj: Any): Boolean = obj.isInstanceOf[CollatingAtomicComparer] && collator.equals(obj.asInstanceOf[CollatingAtomicComparer])
-
-  override def getCollator: StringCollator = strCollator
 }

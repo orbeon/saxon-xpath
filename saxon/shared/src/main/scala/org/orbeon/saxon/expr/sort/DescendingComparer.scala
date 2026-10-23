@@ -12,7 +12,7 @@ import org.orbeon.saxon.value.AtomicValue
 class DescendingComparer(var baseComparer: AtomicComparer)
     extends AtomicComparer {
 
-  def getCollator: StringCollator = baseComparer.getCollator
+  def collator: StringCollator = baseComparer.collator
 
   /*@NotNull*/
 

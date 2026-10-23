@@ -39,7 +39,7 @@ class FunctionAvailable extends SystemFunction {
           .withErrorOnBadSyntax("XTDE1400")
           .withErrorOnUnresolvedPrefix("XTDE1400")
         val functionName                  =
-          qp.parse(lexicalQName, env.getDefaultFunctionNamespace)
+          qp.parse(lexicalQName, env.defaultFunctionNamespace)
         var minArity = 0
         var maxArity                      = 20
         if (getArity == 2) {

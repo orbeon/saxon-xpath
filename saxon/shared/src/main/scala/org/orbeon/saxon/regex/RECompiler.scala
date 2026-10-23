@@ -494,7 +494,7 @@ class RECompiler {
               idx = idxBeforeEscape
               atomLoop.break()
             }
-            fsb.appendWideChar(charClass.asInstanceOf[IntValuePredicate].getTarget)
+            fsb.appendWideChar(charClass.asInstanceOf[IntValuePredicate].target)
             lenAtom += 1
           case '^' | '$' if isXPath =>
             atomLoop.break()

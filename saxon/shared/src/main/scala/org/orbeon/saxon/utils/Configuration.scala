@@ -3408,7 +3408,7 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.XQUERY_DEFAULT_ELEMENT_NAMESPACE =>
         getDefaultStaticQueryContext.setDefaultElementNamespace(value.toString)
       case FeatureCode.XQUERY_DEFAULT_FUNCTION_NAMESPACE =>
-        getDefaultStaticQueryContext.setDefaultFunctionNamespace(value.toString)
+        getDefaultStaticQueryContext.defaultFunctionNamespace = value.toString
       case FeatureCode.XQUERY_EMPTY_LEAST =>
         getDefaultStaticQueryContext.setEmptyLeast(Configuration.requireBoolean(name, value))
       case FeatureCode.XQUERY_INHERIT_NAMESPACES =>
@@ -3697,7 +3697,7 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.XQUERY_DEFAULT_ELEMENT_NAMESPACE =>
         return getDefaultStaticQueryContext.getDefault_ElementNamespace.asInstanceOf[T]
       case FeatureCode.XQUERY_DEFAULT_FUNCTION_NAMESPACE =>
-        return getDefaultStaticQueryContext.getDefaultFunctionNamespace.asInstanceOf[T]
+        return getDefaultStaticQueryContext.defaultFunctionNamespace.asInstanceOf[T]
       case FeatureCode.XQUERY_EMPTY_LEAST =>
         return java.lang.Boolean.valueOf(getDefaultStaticQueryContext.isEmptyLeast).asInstanceOf[T]
       case FeatureCode.XQUERY_INHERIT_NAMESPACES =>

@@ -192,7 +192,7 @@ class QueryModule extends StaticContext {
       preserveNamespaces = sqc.isPreserveNamespaces
       preserveSpace = sqc.isPreserveBoundarySpace
       defaultEmptyLeast = sqc.isEmptyLeast
-      defaultFunctionNamespace = sqc.getDefaultFunctionNamespace
+      defaultFunctionNamespace = sqc.defaultFunctionNamespace
       defaultElementNamespace = sqc.getDefault_ElementNamespace
       defaultCollationName = sqc.getDefaultCollationName
       constructionMode = sqc.getConstructionMode
@@ -696,8 +696,8 @@ class QueryModule extends StaticContext {
 
   def reportStaticError(err: XmlProcessingError): Unit = {
     userQueryContext.getErrorReporter.report(err)
-    if (err.getFatalErrorMessage != null)
-      throw new XmlProcessingAbort(err.getFatalErrorMessage)
+    if (err.fatalErrorMessage != null)
+      throw new XmlProcessingAbort(err.fatalErrorMessage)
   }
 
   def makeEarlyEvaluationContext(): XPathContext =
@@ -873,7 +873,7 @@ class QueryModule extends StaticContext {
 
   override def getDecimalFormatManager: DecimalFormatManager = decimalFormatManager
 
-  override def getDefaultFunctionNamespace: String = defaultFunctionNamespace
+
 
   override def getPackageData: PackageData = packageData
 
@@ -889,7 +889,7 @@ class QueryModule extends StaticContext {
 
   def getCodeInjector: CodeInjector = codeInjector
 
-  def setDefaultFunctionNamespace(ns: String): Unit = defaultFunctionNamespace = ns
+
 
   def setPreserveNamespaces(b: Boolean): Unit = preserveNamespaces = b
 

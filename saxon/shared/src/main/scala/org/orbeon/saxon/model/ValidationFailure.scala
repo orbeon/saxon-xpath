@@ -62,11 +62,6 @@ class ValidationFailure(var message: String)
     with Invalidity {
 
   def getMessage: String = message
-  def getSchemaPart: Int = schemaPart
-  def getConstraintName: String = constraintName
-  def getInvalidNode: NodeInfo = invalidNode
-  def getPath: AbsolutePath = path
-  def getContextPath: AbsolutePath = contextPath
 
   private var systemId     : String = _
   private var publicId     : String = _
@@ -293,7 +288,7 @@ class ValidationFailure(var message: String)
 
   def getContextLocationText: String = {
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
-    val contextPath = getContextPath
+    val contextPath = this.contextPath
     if (contextPath != null) {
       fsb.append("Currently processing ")
       fsb.append(contextPath.getPathUsingPrefixes)

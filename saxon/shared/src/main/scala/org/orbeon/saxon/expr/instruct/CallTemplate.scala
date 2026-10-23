@@ -75,10 +75,8 @@ class CallTemplate(private var template: NamedTemplate,
     with ComponentInvocation {
 
   var actualParams: Array[WithParam] = WithParam.EMPTY_ARRAY
-  def getActualParams: Array[WithParam] = actualParams
 
   var tunnelParams: Array[WithParam] = WithParam.EMPTY_ARRAY
-  def getTunnelParams: Array[WithParam] = tunnelParams
 
   var bindingSlot = -1
 
@@ -316,7 +314,7 @@ class CallTemplate(private var template: NamedTemplate,
       buff.append(template.getObjectName.getDisplayName)
     }
     var first: Boolean = true
-    for (p <- getActualParams) {
+    for (p <- actualParams) {
       buff.append(if (first) "(" else ", ")
       buff.append(p.variableQName.getDisplayName)
       buff.append("=")

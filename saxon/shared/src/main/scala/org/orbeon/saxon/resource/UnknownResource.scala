@@ -23,7 +23,7 @@ class UnknownResource extends Resource {
     this.details = details
   }
 
-  def getResourceURI: String = details.resourceUri
+  def resourceURI: String = details.resourceUri
 
   def getItem(context: XPathContext): Item = {
 
@@ -65,5 +65,5 @@ class UnknownResource extends Resource {
     actual.getItem(context)
   }
 
-  def getContentType: String = "application/xml"
+  def contentType: String = "application/xml"
 }

@@ -28,7 +28,7 @@ class MapUntypedContains extends SystemFunction {
     val map: MapItem = arguments(0).head.asInstanceOf[MapItem]
     val key: AtomicValue = arguments(1).head.asInstanceOf[AtomicValue]
     if (key.isInstanceOf[UntypedAtomicValue]) {
-      for (prim <- map.getKeyUType.decompose.asScala) {
+      for (prim <- map.keyUType.decompose.asScala) {
         val t: BuiltInAtomicType =
           prim.toItemType.asInstanceOf[BuiltInAtomicType]
         var converter: StringConverter = t.getStringConverter(rules)

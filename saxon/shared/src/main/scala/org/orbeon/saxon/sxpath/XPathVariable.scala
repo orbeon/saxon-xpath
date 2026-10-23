@@ -28,7 +28,6 @@ object XPathVariable {
 class XPathVariable private (name: StructuredQName, slotNumber: Int) extends LocalBinding {
 
   var requiredType: SequenceType = SequenceType.ANY_SEQUENCE
-  def getRequiredType: SequenceType = requiredType
   var defaultValue: Sequence = _
 
   def isGlobal: Boolean = false

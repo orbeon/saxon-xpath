@@ -82,7 +82,7 @@ trait StaticError {
 
   def setFatal(message: String): Unit
 
-  def getFatalErrorMessage: String
+  def fatalErrorMessage: String
 
 }
 

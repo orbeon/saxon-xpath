@@ -37,8 +37,8 @@ class NextMatch(var useTailRecursion: Boolean)
 
   def copy(rebindings: RebindingMap): Expression = {
     val nm2: NextMatch = new NextMatch(useTailRecursion)
-    nm2.actualParams = WithParam.copy(nm2, getActualParams, rebindings)
-    nm2.tunnelParams = WithParam.copy(nm2, getTunnelParams, rebindings)
+    nm2.actualParams = WithParam.copy(nm2, actualParams, rebindings)
+    nm2.tunnelParams = WithParam.copy(nm2, tunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, nm2)
     nm2
   }
@@ -46,8 +46,8 @@ class NextMatch(var useTailRecursion: Boolean)
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val params: ParameterSet = Instruction.assembleParams(context, getActualParams)
-    val tunnels: ParameterSet = Instruction.assembleTunnelParams(context, getTunnelParams)
+    val params: ParameterSet = Instruction.assembleParams(context, actualParams)
+    val tunnels: ParameterSet = Instruction.assembleTunnelParams(context, tunnelParams)
     val currentRule: Rule = context.getCurrentTemplateRule
     if (currentRule == null) {
       val e: XPathException =
@@ -99,11 +99,11 @@ class NextMatch(var useTailRecursion: Boolean)
       flags = "t"
     }
     out.emitAttribute("flags", flags)
-    if (getActualParams.length != 0) {
-      WithParam.exportParameters(getActualParams, out, tunnel = false)
+    if (actualParams.length != 0) {
+      WithParam.exportParameters(actualParams, out, tunnel = false)
     }
-    if (getTunnelParams.length != 0) {
-      WithParam.exportParameters(getTunnelParams, out, tunnel = true)
+    if (tunnelParams.length != 0) {
+      WithParam.exportParameters(tunnelParams, out, tunnel = true)
     }
     out.endElement()
   }

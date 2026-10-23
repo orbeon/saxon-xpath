@@ -39,7 +39,6 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
   private var href: String = in.resourceUri
 
   var contentType: String = in.contentType
-  def getContentType: String = contentType
 
   var data: Array[Byte] = in.binaryContent
 
@@ -53,7 +52,7 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
     this.data = content
   }
 
-  def getResourceURI: String = href
+  def resourceURI: String = href
 
 //  private def readBinaryFromConn(con: URLConnection): Array[Byte] = {
 //    var raw: InputStream = null

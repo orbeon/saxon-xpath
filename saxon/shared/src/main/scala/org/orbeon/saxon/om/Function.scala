@@ -25,7 +25,7 @@ trait Function extends Item with Callable with GroundedValue {
   def getFunctionName: StructuredQName
   def getArity: Int
   def getOperandRoles: Array[OperandRole]
-  def getAnnotations: AnnotationList
+  def annotations: AnnotationList
   def makeNewContext(callingContext: XPathContext, originator: ContextOriginator): XPathContext
   def call(context: XPathContext, args: Array[Sequence]): Sequence
 

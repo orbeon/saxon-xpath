@@ -79,7 +79,7 @@ class RangeKey
 
   def remove(key: AtomicValue): MapItem = HashTrieMap.copy(this).remove(key)
 
-  def getKeyUType: UType = UType.STRING
+  def keyUType: UType = UType.STRING
 
   override def addEntry(key: AtomicValue, value: GroundedValue): MapItem =
     HashTrieMap.copy(this).addEntry(key, value)

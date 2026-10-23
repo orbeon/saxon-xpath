@@ -78,7 +78,7 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
     * @param systemId The system identifier as a URL string.
     */
   override def setSystemId(systemId: String): Unit = {
-    treeInfo.setSystemId(systemId)
+    treeInfo.systemId = systemId
   }
 
   /**

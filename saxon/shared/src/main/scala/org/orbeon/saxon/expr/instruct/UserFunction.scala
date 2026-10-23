@@ -70,7 +70,6 @@ class UserFunction
   private var inliningCount: Int = 0
   var overrideExtensionFunction: Boolean = true
   var annotations: AnnotationList = AnnotationList.EMPTY
-  def getAnnotations: AnnotationList = annotations
   var declaredStreamability: FunctionStreamability.FunctionStreamability = FunctionStreamability.UNCLASSIFIED
   var determinism: Determinism.Determinism = Determinism.PROACTIVE
 

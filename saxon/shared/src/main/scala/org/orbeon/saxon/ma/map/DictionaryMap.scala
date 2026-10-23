@@ -93,7 +93,7 @@ class DictionaryMap extends MapItem {
       new MapType(BuiltInAtomicType.STRING, SequenceType.makeSequenceType(valueType, valueCard))
   }
 
-  override def getKeyUType: UType =
+  override def keyUType: UType =
     if (hashMap.isEmpty) UType.VOID else UType.STRING
 
   private def toHashTrieMap: HashTrieMap = {

@@ -19,8 +19,6 @@ class IntToIntArrayMap extends IntToIntMap {
   private var used: Int = 0
 
   var defaultValue: Int = java.lang.Integer.MIN_VALUE
-  def getDefaultValue: Int = defaultValue
-  def setDefaultValue(defaultValue: Int): Unit = this.defaultValue = defaultValue
 
   def this(capacity: Int) = {
     this()

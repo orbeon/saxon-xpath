@@ -52,7 +52,7 @@ class CurriedFunction(private var targetFunction: Function, private var boundVal
     count
   }
 
-  override def getAnnotations: AnnotationList = targetFunction.getAnnotations
+  override def annotations: AnnotationList = targetFunction.annotations
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
     val newArgs = Array.ofDim[Sequence](boundValues.length)

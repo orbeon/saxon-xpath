@@ -160,7 +160,7 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
       if (encodingVar == null) {
         encodingVar = contentEncoding
       }
-      val mediaType: String = resource.getContentType
+      val mediaType: String = resource.contentType
       isXmlMediaType = (mediaType.startsWith("application/") || mediaType
           .startsWith("text/")) &&
           (mediaType.endsWith("/xml") || mediaType.endsWith("+xml"))

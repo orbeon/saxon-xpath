@@ -142,7 +142,7 @@ object ParserExtension {
 
     //var declaration: SourceBinding = decl // no scala class found
 
-    def getRequiredType: SequenceType = new SequenceType()
+    def requiredType: SequenceType = new SequenceType()
 
     def evaluateVariable(context: XPathContext): Sequence =
       throw new UnsupportedOperationException
@@ -330,7 +330,7 @@ class ParserExtension {
     var functionName: StructuredQName = null
     try {
       functionName =
-        p.getQNameParser.parse(fname, env.getDefaultFunctionNamespace)
+        p.getQNameParser.parse(fname, env.defaultFunctionNamespace)
       if (functionName.getPrefix.==("")) {
         if (XPathParser.isReservedFunctionName31(functionName.getLocalPart)) {
           p.grumble(

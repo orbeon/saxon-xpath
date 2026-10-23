@@ -14,7 +14,7 @@ import org.orbeon.saxon.value.StringValue
 class TextComparer(var baseComparer: AtomicComparer)
     extends AtomicComparer {
 
-  def getCollator: StringCollator = baseComparer.getCollator
+  def collator: StringCollator = baseComparer.collator
 
   def provideContext(context: XPathContext): AtomicComparer = {
     val newBase: AtomicComparer = baseComparer.provideContext(context)

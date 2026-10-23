@@ -2894,7 +2894,7 @@ class XPathParser {
 
     val functionName =
       try
-        qNameParser.parse(fname, env.getDefaultFunctionNamespace)
+        qNameParser.parse(fname, env.defaultFunctionNamespace)
       catch {
         case e: XPathException =>
           grumble(e.getMessage, e.getErrorCodeLocalPart)

@@ -2,9 +2,8 @@ package org.orbeon.saxon.z
 
 trait IntToIntMap {
 
-  def setDefaultValue(defaultValue: Int): Unit
-
-  def getDefaultValue: Int
+  def defaultValue: Int
+  def defaultValue_=(defaultValue: Int): Unit
 
   def clear(): Unit
 

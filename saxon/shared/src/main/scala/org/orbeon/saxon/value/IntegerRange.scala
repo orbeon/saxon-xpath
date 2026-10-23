@@ -30,9 +30,7 @@ class IntegerRange(var start: Long, var end: Long) extends AtomicSequence {
       "Maximum length of sequence in Saxon is " + java.lang.Integer.MAX_VALUE)
   }
 
-  def getStart: Long = start
 
-  def getEnd: Long = end
 
   /*@NotNull*/
 

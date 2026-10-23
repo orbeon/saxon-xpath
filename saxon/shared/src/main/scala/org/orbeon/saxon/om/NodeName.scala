@@ -28,7 +28,8 @@ package org.orbeon.saxon.om
   * StructuredQName or the fingerprint as the key.
   */
 trait NodeName extends IdentityComparable {
-  def getPrefix: String
+  def prefix: String
+  def getPrefix: String = prefix
   def getURI: String
   def getLocalPart: String
   def getDisplayName: String
@@ -36,6 +37,7 @@ trait NodeName extends IdentityComparable {
   def hasURI(ns: String): Boolean
   def getNamespaceBinding: NamespaceBinding
   def hasFingerprint: Boolean
-  def getFingerprint: Int
+  def fingerprint: Int
+  def getFingerprint: Int = fingerprint
   def obtainFingerprint(namePool: NamePool): Int
 }

@@ -12,7 +12,7 @@ import org.orbeon.saxon.value.AtomicValue
 class EmptyGreatestComparer(var baseComparer: AtomicComparer)
     extends AtomicComparer {
 
-  def getCollator: StringCollator = baseComparer.getCollator
+  def collator: StringCollator = baseComparer.collator
 
   def provideContext(context: XPathContext): AtomicComparer = {
     val newBase: AtomicComparer = baseComparer.provideContext(context)

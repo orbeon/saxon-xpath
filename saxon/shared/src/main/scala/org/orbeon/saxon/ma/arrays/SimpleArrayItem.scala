@@ -65,7 +65,7 @@ class SimpleArrayItem extends AbstractArrayItem with ArrayItem {
   override def isArray: Boolean = true
   override def isMap: Boolean = false
 
-  override def getAnnotations: AnnotationList = AnnotationList.EMPTY
+  override def annotations: AnnotationList = AnnotationList.EMPTY
 
   def get(index: Int): GroundedValue = membersList.get(index)
 

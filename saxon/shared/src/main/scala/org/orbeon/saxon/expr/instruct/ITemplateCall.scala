@@ -7,11 +7,11 @@ trait ITemplateCall extends ContextOriginator {
 
   /*@NotNull*/
 
-  def getActualParams: Array[WithParam]
+  def actualParams: Array[WithParam]
 
   /*@NotNull*/
 
-  def getTunnelParams: Array[WithParam]
+  def tunnelParams: Array[WithParam]
 
 }
 

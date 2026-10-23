@@ -194,11 +194,9 @@ class StaticQueryContext() {
     this.preserveNamespaces = preserve
   }
 
-  def getDefaultFunctionNamespace: String = defaultFunctionNamespace
 
-  def setDefaultFunctionNamespace(ns: String): Unit = {
-    this.defaultFunctionNamespace = ns
-  }
+
+
 
   def getDefault_ElementNamespace: String = default_ElementNamespace
 

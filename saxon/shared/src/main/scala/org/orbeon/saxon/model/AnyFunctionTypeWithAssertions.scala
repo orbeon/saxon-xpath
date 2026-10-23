@@ -16,7 +16,7 @@ object AnyFunctionTypeWithAssertions {
   private def checkAnnotationAssertions(assertions: AnnotationList,
                                         item: Function,
                                         config: Configuration): Boolean = {
-    val annotations: AnnotationList = item.getAnnotations
+    val annotations: AnnotationList = item.annotations
     for (ann <- assertions.asScala) {
       val handler: FunctionAnnotationHandler =
         config.getFunctionAnnotationHandler(ann.getAnnotationQName.getURI)

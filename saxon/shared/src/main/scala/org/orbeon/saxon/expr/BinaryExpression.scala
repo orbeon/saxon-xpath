@@ -43,10 +43,8 @@ abstract class BinaryExpression(p0: Expression,
   extends Expression {
 
   var lhs: Operand = new Operand(this, p0, getOperandRole(0))
-  def getLhs: Operand = lhs
 
   var rhs: Operand = new Operand(this, p1, getOperandRole(1))
-  def getRhs: Operand = rhs
 
   adoptChildExpression(p0)
   adoptChildExpression(p1)

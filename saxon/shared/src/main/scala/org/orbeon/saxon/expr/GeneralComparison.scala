@@ -156,8 +156,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     val oldOp0 = getLhsExpression
     val oldOp1 = getRhsExpression
 
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
 
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
       return Literal.makeLiteral(BooleanValue.FALSE, this)
@@ -352,8 +352,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     val th = visitor.getConfiguration.getTypeHierarchy
     val env = visitor.staticContext
 
-    getLhs.optimize(visitor, contextInfo)
-    getRhs.optimize(visitor, contextInfo)
+    lhs.optimize(visitor, contextInfo)
+    rhs.optimize(visitor, contextInfo)
 
     if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(getRhsExpression))
       return Literal.makeLiteral(BooleanValue.FALSE, this)
@@ -414,8 +414,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         case literal1: Literal =>
           literal1.getValue match {
             case range: IntegerRange =>
-              val min = range.getStart
-              val max = range.getEnd
+              val min = range.start
+              val max = range.end
               val ir = new IntegerRangeTest(
                 getRhsExpression,
                 Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),
@@ -430,8 +430,8 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         case literal: Literal =>
           literal.getValue match {
             case range: IntegerRange =>
-              val min: Long = range.getStart
-              val max: Long = range.getEnd
+              val min: Long = range.start
+              val max: Long = range.end
               val ir: IntegerRangeTest = new IntegerRangeTest(
                 getLhsExpression,
                 Literal.makeLiteral(Int64Value.makeIntegerValue(min), this),

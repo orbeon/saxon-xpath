@@ -21,10 +21,5 @@ class IntValuePredicate(var target: Int) extends IntPredicate {
    */
   override def test(value: Int) = value == target
 
-  /**
-   * Get the value matched by this predicate
-   *
-   * @return the value that this predicate matches
-   */
-  def getTarget = target
+
 }

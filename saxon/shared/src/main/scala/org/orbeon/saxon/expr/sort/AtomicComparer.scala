@@ -15,7 +15,7 @@ import org.orbeon.saxon.value.AtomicValue
   * for ordering.
   */
 trait AtomicComparer {
-  def getCollator: StringCollator
+  def collator: StringCollator
   def provideContext(context: XPathContext): AtomicComparer
   def compareAtomicValues(a: AtomicValue, b: AtomicValue): Int
   def comparesEqual(a: AtomicValue, b: AtomicValue): Boolean

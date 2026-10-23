@@ -16,7 +16,8 @@ import org.orbeon.saxon.om.{Sequence, StructuredQName}
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
 trait Binding {
-  def getRequiredType: SequenceType
+  def requiredType: SequenceType
+  def getRequiredType: SequenceType = requiredType
   /*@Nullable*/
   def getIntegerBoundsForVariable: Array[IntegerValue]
   def evaluateVariable(context: XPathContext): Sequence
