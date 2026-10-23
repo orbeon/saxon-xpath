@@ -22,12 +22,6 @@ ThisBuild / githubRepository  := "saxon-xpath"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 ThisBuild / traceLevel        := 0
 
-//ThisBuild / Compile    / publishArtifact := false
-//ThisBuild / packageDoc / publishArtifact := false
-
-sources in (Compile, doc) := Nil
-publishArtifact in (Compile, packageDoc) := false
-
 lazy val DebugTest = config("debug-test") extend Test
 
 lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("saxon"))
@@ -38,6 +32,9 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
 
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
+
+    Compile / doc / sources                := Seq.empty,
+    Compile / packageDoc / publishArtifact := false,
 
     maxErrors := 5000,
     scalacOptions ++= {
