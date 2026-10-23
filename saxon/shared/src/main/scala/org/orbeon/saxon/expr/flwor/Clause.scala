@@ -28,7 +28,7 @@ object Clause {
     val TRACE: ClauseName = new ClauseName()
     val FOR_MEMBER: ClauseName = new ClauseName()
 
-    class ClauseName extends Val
+    class ClauseName extends Val("ClauseName")
 
     implicit def convertValue(v: Value): ClauseName =
       v.asInstanceOf[ClauseName]

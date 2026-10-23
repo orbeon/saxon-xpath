@@ -21,7 +21,7 @@ object UnprefixedElementMatchingPolicy extends Enumeration {
   val DEFAULT_NAMESPACE_OR_NONE: UnprefixedElementMatchingPolicy =
     new UnprefixedElementMatchingPolicy()
 
-  class UnprefixedElementMatchingPolicy extends Val
+  class UnprefixedElementMatchingPolicy extends Val("UnprefixedElementMatchingPolicy")
 
   implicit def convertValue(v: Value): UnprefixedElementMatchingPolicy =
     v.asInstanceOf[UnprefixedElementMatchingPolicy]

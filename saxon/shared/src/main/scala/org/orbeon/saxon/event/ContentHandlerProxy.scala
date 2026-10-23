@@ -303,10 +303,10 @@ class ContentHandlerProxy extends Receiver {
   private def handleSAXException(err: SAXException): Unit = {
     val nested: Exception = err.getException
     nested match {
-      case e: XPathException =>
-        throw e
       case _: SchemaException =>
         throw new XPathException(nested)
+      case e: XPathException =>
+        throw e
       case _ =>
         val de: XPathException = new XPathException(err)
         de.setErrorCode(SaxonErrorCode.SXCH0003)

@@ -19,7 +19,7 @@ object SchemaComponent {
     val INVALID    : ValidationStatus = new ValidationStatus
     val INCOMPLETE : ValidationStatus = new ValidationStatus
 
-    class ValidationStatus extends Val
+    class ValidationStatus extends Val("ValidationStatus")
 
     implicit def convertValue(v: Value): ValidationStatus =
       v.asInstanceOf[ValidationStatus]

@@ -33,10 +33,12 @@ import ProcessingInstruction._
 object ProcessingInstruction {
 
   def checkContentXSLT(data: String): String = {
-    var hh: Int = 0
     var strData = data
-    while ((hh = strData.indexOf("?>")) .asInstanceOf[Int] >= 0) strData = strData.substring(0, hh + 1) + ' ' + strData
-      .substring(hh + 1)
+    var hh: Int = strData.indexOf("?>")
+    while (hh >= 0) {
+      strData = strData.substring(0, hh + 1) + ' ' + strData.substring(hh + 1)
+      hh = strData.indexOf("?>")
+    }
     Whitespace.removeLeadingWhitespace(strData).toString
   }
 

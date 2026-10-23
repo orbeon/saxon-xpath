@@ -13,7 +13,7 @@ object Visibility extends Enumeration {
 
   val HIDDEN: Visibility = new Visibility()
 
-  class Visibility extends Val {
+  class Visibility extends Val("Visibility") {
 
     def show(): String = super.toString.toLowerCase()
 

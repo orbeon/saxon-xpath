@@ -11,7 +11,7 @@ object OperandUsage extends Enumeration {
 
   val NAVIGATION: OperandUsage = new OperandUsage()
 
-  class OperandUsage extends Val
+  class OperandUsage extends Val("OperandUsage")
 
   implicit def convertValue(v: Value): OperandUsage =
     v.asInstanceOf[OperandUsage]

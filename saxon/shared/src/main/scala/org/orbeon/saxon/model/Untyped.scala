@@ -21,7 +21,7 @@ object Untyped extends Enumeration {
 
   private val INSTANCE: Untyped = new Untyped
 
-  class Untyped extends Val with ComplexType {
+  class Untyped extends Val("Untyped") with ComplexType {
 
     /**
       * Get the validation status - always valid

@@ -14,7 +14,7 @@ object HostLanguage extends Enumeration {
 
   val XSLT_PATTERN: HostLanguage = new HostLanguage()
 
-  class HostLanguage extends Val
+  class HostLanguage extends Val("HostLanguage")
 
   implicit def convertValue(v: Value): HostLanguage =
     v.asInstanceOf[HostLanguage]

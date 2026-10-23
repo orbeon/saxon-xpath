@@ -9,7 +9,7 @@ object RecoveryPolicy extends Enumeration {
 
   val DO_NOT_RECOVER: RecoveryPolicy = new RecoveryPolicy()
 
-  class RecoveryPolicy extends Val
+  class RecoveryPolicy extends Val("RecoveryPolicy")
 
   def fromString(s: String): RecoveryPolicy = s match {
     case "recoverSilently" => RECOVER_SILENTLY

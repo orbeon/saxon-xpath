@@ -23,7 +23,7 @@ object KeyIndex {
     val BUILT              : Status = new Status
     val FAILED             : Status = new Status
 
-    class Status extends Val
+    class Status extends Val("Status")
 
     implicit def convertValue(v: Value): Status = v.asInstanceOf[Status]
 

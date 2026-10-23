@@ -156,7 +156,7 @@ class StructuredQName private (
     while (i >= 0) {
       if (content(i) != uri.charAt(i))
         return false
-        i -= 1
+      i -= 1
     }
     true
   }

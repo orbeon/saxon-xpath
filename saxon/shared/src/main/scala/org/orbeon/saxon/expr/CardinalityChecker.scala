@@ -220,9 +220,10 @@ final class CardinalityChecker private (
     val iter = getBaseExpression.iterate(context)
     val first = iter.next()
     if (first == null) {
-      if (!Cardinality.allowsZero(requiredCardinality))
+      if (!Cardinality.allowsZero(requiredCardinality)) {
         typeError("An empty sequence is not allowed as the " + role.getMessage, role.getErrorCode, context)
         return null
+      }
     } else {
       if (requiredCardinality == StaticProperty.EMPTY) {
         typeError("An empty sequence is required as the " + role.getMessage, role.getErrorCode, context)

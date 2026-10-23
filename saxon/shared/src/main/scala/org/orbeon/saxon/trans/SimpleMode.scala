@@ -300,7 +300,7 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
       explicitPropertyPrecedences.put(name, precedence)
       explicitPropertyValues.put(name, value)
     }
-    else if (p.equals(precedence)) {
+    else if (p == precedence) {
       val v = explicitPropertyValues.get(name)
       if (v != null & !(v == value)) { // We don't throw an exception, because the conflict is an error only if this
         // is the highest-precedence declaration of this mode

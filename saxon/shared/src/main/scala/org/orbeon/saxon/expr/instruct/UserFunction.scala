@@ -37,7 +37,7 @@ object UserFunction {
     val PROACTIVE: Determinism = new Determinism()
     val ELIDABLE: Determinism = new Determinism()
 
-    class Determinism extends Val
+    class Determinism extends Val("Determinism")
 
     implicit def convertValue(v: Value): Determinism =
       v.asInstanceOf[Determinism]

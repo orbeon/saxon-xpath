@@ -44,7 +44,7 @@ object AccessorFn {
 
     val YEAR_ALLOWING_ZERO : Component.Component =new Component()
 
-    class Component extends Val
+    class Component extends Val("Component")
 
     implicit def convertValue(v: Value) : Component.Component =v.asInstanceOf[Component]
 

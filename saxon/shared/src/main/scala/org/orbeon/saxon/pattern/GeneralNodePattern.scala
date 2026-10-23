@@ -93,7 +93,7 @@ class GeneralNodePattern(
         if (ancestor == null)
           return false
         if (matchesBeneathAnchor(node, ancestor, context))
-          true
+          return true
       }
     }
     val c2: XPathContext = context.newMinorContext()

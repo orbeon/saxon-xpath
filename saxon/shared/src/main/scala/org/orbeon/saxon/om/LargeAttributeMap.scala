@@ -49,7 +49,7 @@ class LargeAttributeMap extends AttributeMap {
     lastNode = current.payload.nodeName
   }
 
-  def this(
+  private def this(
       attributes: ImmutableHashTrieMap[NodeName, AttributeInfoLink],
       size: Int,
       first: NodeName,

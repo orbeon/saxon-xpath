@@ -59,7 +59,7 @@ object EvaluationMode extends Enumeration {
 
   class EvaluationMode(val code: Int,
                        val evaluator: Evaluator)
-      extends Val
+      extends Val("EvaluationMode")
 
   def forCode(code: Int): EvaluationMode =
     EvaluationMode.values

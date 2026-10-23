@@ -2954,15 +2954,11 @@ class XQueryParser extends XPathParser {
       var rval = t.input.substring(t.inputOffset, end)
 
       var tail = `val`
-      var pos = 0
-      while ( {
-        {
-          (pos = tail.indexOf('\n'))
-          pos
-        } >= 0
-      }) {
+      var pos = tail.indexOf('\n')
+      while (pos >= 0) {
         t.incrementLineNumber(t.inputOffset - 1 + pos)
         tail = tail.substring(pos + 1)
+        pos = tail.indexOf('\n')
       }
       t.inputOffset = end + 1
       breakable {

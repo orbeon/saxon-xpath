@@ -39,7 +39,7 @@ object SequenceIterator {
     val LOOKAHEAD            : Property = new Property
     val ATOMIZING            : Property = new Property
 
-    class Property extends Val
+    class Property extends Val("Property")
 
     implicit def convertValue(v: Value): Property = v.asInstanceOf[Property]
   }

@@ -17,7 +17,7 @@ object Affinity extends Enumeration {
   val DISJOINT    : Affinity = new Affinity
   val OVERLAPS    : Affinity = new Affinity
 
-  class Affinity extends Val
+  class Affinity extends Val("Affinity")
 
   implicit def convertValue(v: Value): Affinity = v.asInstanceOf[Affinity]
 }

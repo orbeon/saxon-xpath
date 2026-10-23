@@ -20,7 +20,7 @@ object FunctionStreamability extends Enumeration {
 
   val ASCENT: FunctionStreamability = new FunctionStreamability("ascent")
 
-  class FunctionStreamability(var streamabilityStr: String) extends Val {
+  class FunctionStreamability(var streamabilityStr: String) extends Val(streamabilityStr) {
 
     def isConsuming: Boolean =
       this == ABSORBING || this == SHALLOW_DESCENT || this == DEEP_DESCENT

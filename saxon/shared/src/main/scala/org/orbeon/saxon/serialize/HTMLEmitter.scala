@@ -274,7 +274,7 @@ abstract class HTMLEmitter extends XMLEmitter {
         while ({i < chars.length && {
             c = chars.charAt(i)
             c
-          } < 127 && ! specialChars(c)
+          } < 127 && !specialChars(c)
         }) locally {
           i += 1
         }
@@ -283,7 +283,7 @@ abstract class HTMLEmitter extends XMLEmitter {
         while ({i < chars.length && {
             c = chars.charAt(i)
             if (c < 127)
-              ! specialChars(c)
+              !specialChars(c)
             else
               characterSet.inCharset(c) && c > 160
           }

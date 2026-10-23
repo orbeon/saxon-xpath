@@ -70,7 +70,7 @@ class LocalUnionType(var memberTypes: List[AtomicType])
     for (at <- memberTypes.asScala) {
       val err: ValidationFailure = at.validateContent(value, nsResolver, rules)
       if (err == null) {
-        null
+        return null
       }
     }
     new ValidationFailure(

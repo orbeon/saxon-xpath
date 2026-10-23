@@ -848,7 +848,7 @@ class DateTimeValue extends CalendarValue
               throw new UnsupportedTemporalTypeException("xs:dateTime value has no timezone")
             else
               tz * 60
-          case _ => throw new UnsupportedTemporalTypeException(field.toString)
+          case null => throw new UnsupportedTemporalTypeException("null")
         }
       case _ =>
         field.getFrom(this)

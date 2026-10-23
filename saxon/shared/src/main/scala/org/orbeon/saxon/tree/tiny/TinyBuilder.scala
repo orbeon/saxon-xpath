@@ -35,7 +35,7 @@ object TinyBuilder {
     val PRIMED     : Eligibility = new Eligibility
     val ELIGIBLE   : Eligibility = new Eligibility
 
-    class Eligibility extends Val
+    class Eligibility extends Val("Eligibility")
 
     implicit def convertValue(v: Value): Eligibility =
       v.asInstanceOf[Eligibility]

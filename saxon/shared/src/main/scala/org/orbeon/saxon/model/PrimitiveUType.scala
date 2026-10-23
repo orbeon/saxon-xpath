@@ -63,7 +63,7 @@ object PrimitiveUType extends Enumeration {
 
   val EXTENSION: PrimitiveUType = new PrimitiveUType(30)
 
-  class PrimitiveUType (val bit: Int) extends Val {
+  class PrimitiveUType (val bit: Int) extends Val("PrimitiveUType") {
 
     def toUType: UType = new UType(1 << bit)
 

@@ -13,7 +13,7 @@ object VisibilityProvenance extends Enumeration {
 
   val DERIVED: VisibilityProvenance = new VisibilityProvenance()
 
-  class VisibilityProvenance extends Val
+  class VisibilityProvenance extends Val("VisibilityProvenance")
 
   implicit def convertValue(v: Value): VisibilityProvenance =
     v.asInstanceOf[VisibilityProvenance]

@@ -22,7 +22,7 @@ object GeneralComparison {
     val MANY_TO_ONE  : ComparisonCardinality = new ComparisonCardinality
     val MANY_TO_MANY : ComparisonCardinality = new ComparisonCardinality
 
-    class ComparisonCardinality extends Val
+    class ComparisonCardinality extends Val("ComparisonCardinality")
 
     implicit def convertValue(v: Value): ComparisonCardinality =
       v.asInstanceOf[ComparisonCardinality]

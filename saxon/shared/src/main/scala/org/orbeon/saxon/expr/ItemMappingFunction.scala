@@ -13,6 +13,7 @@ import org.orbeon.saxon.om.Item
   * ItemMappingIterator. It represents an object which, given an Item, can return either
   * another Item, or null.
   */
+@FunctionalInterface
 trait ItemMappingFunction {
   /*@Nullable*/
   def mapItem(item: Item): Item

@@ -108,7 +108,7 @@ class XPathContextMinor extends XPathContext {
 
   def isAtLast: Boolean =
     if (currentIterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD))
-      ! currentIterator.asInstanceOf[LookaheadIterator].hasNext
+      !currentIterator.asInstanceOf[LookaheadIterator].hasNext
     else
       currentIterator.position == getLast
 

@@ -50,7 +50,7 @@ object XPathParser {
     val XQUERY: ParsedLanguage = new ParsedLanguage()
     val EXTENDED_ITEM_TYPE: ParsedLanguage = new ParsedLanguage()
 
-    class ParsedLanguage extends Val
+    class ParsedLanguage extends Val("ParsedLanguage")
 
     implicit def convertValue(v: Value): ParsedLanguage =
       v.asInstanceOf[ParsedLanguage]

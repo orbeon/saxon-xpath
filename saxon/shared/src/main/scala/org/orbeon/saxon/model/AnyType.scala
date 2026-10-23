@@ -12,7 +12,7 @@ object AnyType extends Enumeration {
 
   val INSTANCE: AnyType = new AnyType()
 
-  class AnyType extends Val with ComplexType {
+  class AnyType extends Val("AnyType") with ComplexType {
 
     /*@NotNull*/
 

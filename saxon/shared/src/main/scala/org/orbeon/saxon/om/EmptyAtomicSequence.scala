@@ -14,7 +14,7 @@ object EmptyAtomicSequence extends Enumeration {
 
   val INSTANCE: EmptyAtomicSequence = new EmptyAtomicSequence()
 
-  class EmptyAtomicSequence extends Val with AtomicSequence {
+  class EmptyAtomicSequence extends Val("EmptyAtomicSequence") with AtomicSequence {
 
     def head: AtomicValue = null
 

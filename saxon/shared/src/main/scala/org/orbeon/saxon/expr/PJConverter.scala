@@ -462,14 +462,14 @@ object PJConverter {
         try
           list = targetClass.newInstance().asInstanceOf[Collection[Any]]
         catch {
-          case e =>
-            val de: XPathException = new XPathException(
-              "Cannot instantiate collection class " + targetClass)
-            de.setXPathContext(context)
-            throw de
           case _: IllegalAccessException =>
             val de: XPathException = new XPathException(
               "Cannot access collection class " + targetClass)
+            de.setXPathContext(context)
+            throw de
+          case e: Throwable =>
+            val de: XPathException = new XPathException(
+              "Cannot instantiate collection class " + targetClass)
             de.setXPathContext(context)
             throw de
         }

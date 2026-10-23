@@ -32,10 +32,12 @@ object Mode {
 
   val RECOVER_WITH_WARNINGS: Int = 1
 
+  @FunctionalInterface
   trait RuleFilter {
     def testRule(r: Rule): Boolean
   }
 
+  @FunctionalInterface
   trait RuleAction {
     def processRule(r: Rule): Unit
   }

@@ -41,7 +41,7 @@ object RegularSequenceChecker {
     val END_DOCUMENT: Transition = new Transition()
     val CLOSE: Transition = new Transition()
 
-    class Transition extends Val
+    class Transition extends Val("Transition")
 
     implicit def convertValue(v: Value): Transition =
       v.asInstanceOf[Transition]

@@ -414,12 +414,12 @@ class SlashExpression(start: Expression, step: Expression)
   }
 
   private def testNaturallyReverseSorted(): Boolean =
-    if (! Cardinality.allowsMany(getStart.getCardinality) && getStep.isInstanceOf[AxisExpression]) {
-      ! AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].axis)
+    if (!Cardinality.allowsMany(getStart.getCardinality) && getStep.isInstanceOf[AxisExpression]) {
+      !AxisInfo.isForwards(getStep.asInstanceOf[AxisExpression].axis)
     } else {
-      ! Cardinality.allowsMany(getStep.getCardinality) &&
+      !Cardinality.allowsMany(getStep.getCardinality) &&
         getStart.isInstanceOf[AxisExpression] &&
-        ! AxisInfo.isForwards(getStart.asInstanceOf[AxisExpression].axis)
+        !AxisInfo.isForwards(getStart.asInstanceOf[AxisExpression].axis)
     }
 
   override def computeCardinality(): Int = {

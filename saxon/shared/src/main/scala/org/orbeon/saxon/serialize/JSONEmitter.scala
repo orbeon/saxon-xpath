@@ -195,10 +195,10 @@ class JSONEmitter(pipe: PipelineConfiguration,
           prev = end + 1
         } else {
           out.cat(simpleEscape(s.substring(prev)))
-          out
+          return out
         }
       }
-      ""
+      out
     } else {
       simpleEscape(cs)
     }

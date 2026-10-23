@@ -222,7 +222,7 @@ object IntegerValue {
         else
           new BigIntegerValue(new BigInteger(t.toString))
       } catch {
-        case _ =>
+        case _: NumberFormatException =>
           new ValidationFailure("Cannot convert string " + Err.wrap(s, Err.VALUE) + " to an integer")
       }
     }

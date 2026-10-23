@@ -54,7 +54,7 @@ class UnionCastableFunction(targetType: UnionType,
         return false
       }
       if (!castable(av, context)) {
-        false
+        return false
       }
     } else {
       throw new XPathException(

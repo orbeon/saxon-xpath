@@ -26,7 +26,7 @@ object PullProvider {
     val PROCESSING_INSTRUCTION: Event = new Event()
     val END_OF_INPUT: Event = new Event()
 
-    class Event extends Val
+    class Event extends Val("Event")
 
     implicit def convertValue(v: Value): Event = v.asInstanceOf[Event]
   }

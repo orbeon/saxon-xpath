@@ -110,10 +110,12 @@ class Block(children: Array[Expression]) extends Instruction {
     Arrays.asList(operanda: _*)
 
   override def hasVariableBinding(binding: Binding): Boolean = {
-    if (binding.isInstanceOf[LocalParam]) {
-      for (o <- operanda if o.getChildExpression eq binding) {
-        return true
-      }
+    binding match {
+      case lp: LocalParam =>
+        for (o <- operanda if o.getChildExpression eq lp) {
+          return true
+        }
+      case _ =>
     }
     false
   }

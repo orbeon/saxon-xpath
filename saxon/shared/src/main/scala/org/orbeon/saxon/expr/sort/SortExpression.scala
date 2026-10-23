@@ -205,7 +205,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
       val exp: Expression = sortKeyDefinition.getSortKey
       if (exp == child) {
-        true
+        return true
       }
     }
     false

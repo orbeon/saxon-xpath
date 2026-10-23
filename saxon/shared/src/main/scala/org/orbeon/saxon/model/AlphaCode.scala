@@ -302,7 +302,7 @@ object AlphaCode {
     out.toString
   }
 
-  private class AlphaCodeTree {
+  private[model] class AlphaCodeTree {
     private[model] var cardinality: String = null
     private[model] var principal: String = null
     private[model] var name: String = null

@@ -24,7 +24,7 @@ object Genre
   val EXTERNAL: Genre = new Genre("an external object")
 
   class Genre(desc: String)
-    extends Val {
+    extends Val(desc) {
 
     @BeanProperty
     var description: String = desc
