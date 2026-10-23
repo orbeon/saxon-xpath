@@ -66,8 +66,8 @@ class OrderByClause(flwor: FLWORExpression,
       flwor,
       sk2,
       getTupleExpression.copy(rebindings).asInstanceOf[TupleExpression])
-    obc.setLocation(location)
-    obc.setPackageData(packageData)
+    obc.location = location
+    obc.packageData = packageData
     obc.comparators = comparators
     obc
   }

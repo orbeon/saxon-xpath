@@ -39,8 +39,6 @@ class GlobalContextRequirement {
 
 // Used in XQuery only
   var defaultValue: Expression = null
-  def getDefaultValue: Expression = defaultValue
-  def setDefaultValue(defaultValue: Expression): Unit = this.defaultValue = defaultValue
 
   def getRequiredItemType: ItemType =
     if (requiredItemTypes.isEmpty) {

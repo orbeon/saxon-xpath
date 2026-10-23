@@ -233,7 +233,7 @@ class ExpressionPresenter {
     }
     if (sc.defaultCollationName != NamespaceConstant.CODEPOINT_COLLATION_URI &&
       (parentSC == null ||
-        sc.getDefaultCollationName != parentSC.getDefaultCollationName)) {
+        sc.defaultCollationName != parentSC.defaultCollationName)) {
       emitAttribute("defaultCollation", sc.defaultCollationName)
     }
     if (!sc.getDefaultElementNamespace.isEmpty &&

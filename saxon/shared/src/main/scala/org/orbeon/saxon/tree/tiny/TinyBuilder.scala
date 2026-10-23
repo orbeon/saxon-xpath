@@ -62,7 +62,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
   private var statistics: Statistics =
     configur.getTreeStatistics.TEMPORARY_TREE_STATISTICS
 
-  private val markDefaultedAttributes: Boolean = config.isExpandAttributeDefaults &&
+  private val markDefaultedAttributes: Boolean = config.expandAttributeDefaults &&
     configur.getBooleanProperty(Feature.MARK_DEFAULTED_ATTRIBUTES)
 
   private var textualElementEligibilityState: Eligibility = Eligibility.INELIGIBLE

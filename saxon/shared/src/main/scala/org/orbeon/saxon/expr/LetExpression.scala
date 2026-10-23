@@ -448,7 +448,7 @@ class LetExpression extends Assignation with TailCallReturner {
     out.emitAttribute("slot", getLocalSlotNumber.toString)
     if (evaluator == null)
       this.evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
-    out.emitAttribute("eval", evaluator.getEvaluationMode.getCode.toString)
+    out.emitAttribute("eval", evaluator.getEvaluationMode.code.toString)
     getSequence.`export`(out)
     getAction.`export`(out)
     out.endElement()

@@ -199,7 +199,7 @@ class ParseIetfDate extends SystemFunction {
     var date = new DateValue(year, month.toByte, day.toByte)
     var time = timeValue.get(0)
     if (time.hour == 24) {
-      date = DateValue.tomorrow(date.getYear, date.getMonth, date.getDay)
+      date = DateValue.tomorrow(date.year, date.month, date.day)
       time = new TimeValue(0.toByte, 0.toByte, 0.toByte, 0, time.getTimezoneInMinutes, "")
     }
     DateTimeValue.makeDateTimeValue(date, time)

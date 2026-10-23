@@ -255,7 +255,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       getSortKeyDefinition(0).isSetContextForSortKey)
     iter
       .asInstanceOf[SortedIterator]
-      .setHostLanguage(getPackageData.hostLanguage)
+      .setHostLanguage(packageData.hostLanguage)
     iter
   }
 

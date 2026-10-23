@@ -60,7 +60,7 @@ class FunctionLookup extends ContextAccessorFunction {
     val lib = exec.functionLibrary
     val sn = new SymbolicName.F(name, arity)
     val ic = new IndependentContext(controller.getConfiguration)
-    ic.setDefaultCollationName(rsc.defaultCollationName)
+    ic.defaultCollationName = rsc.defaultCollationName
     ic.setBaseURI(rsc.getStaticBaseUriString)
     ic.setDecimalFormatManager(rsc.decimalFormatManager)
     ic.setNamespaceResolver(rsc)

@@ -59,10 +59,7 @@ object EvaluationMode extends Enumeration {
 
   class EvaluationMode(val code: Int,
                        val evaluator: Evaluator)
-      extends Val {
-    def getCode: Int = code
-    def getEvaluator: Evaluator = evaluator
-  }
+      extends Val
 
   def forCode(code: Int): EvaluationMode =
     EvaluationMode.values

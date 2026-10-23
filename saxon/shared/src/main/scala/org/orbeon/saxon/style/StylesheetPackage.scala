@@ -80,8 +80,6 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   var schemaIndex: Set[String] = new HashSet(10)
 
   var functionLibrary: FunctionLibraryList = _
-  def getFunctionLibrary: FunctionLibraryList = functionLibrary
-  def setFunctionLibrary(fl: FunctionLibraryList): Unit = this.functionLibrary = fl
 
   private var queryFunctions: XQueryFunctionLibrary = _
 
@@ -92,8 +90,6 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   private var maxFunctionArity: Int = -1
 
   var retainUnusedFunctions: Boolean = false
-  def isRetainUnusedFunctions: Boolean = retainUnusedFunctions
-  def setRetainUnusedFunctions(retain: Boolean): Unit = this.retainUnusedFunctions = retain
 
   var implicitPackage: Boolean = _
 

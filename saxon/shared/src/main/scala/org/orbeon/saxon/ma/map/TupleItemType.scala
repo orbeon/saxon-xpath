@@ -11,8 +11,6 @@ import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.value._
 
-import scala.beans.BooleanBeanProperty
-
 //import scala.collection.compat._
 import org.orbeon.saxon.model.Affinity
 
@@ -20,9 +18,11 @@ import scala.jdk.CollectionConverters._
 
 class TupleItemType(names: List[String],
                     types: List[SequenceType],
-                    @BooleanBeanProperty var extensible: Boolean)
+                    var extensible: Boolean)
   extends AnyFunctionType
     with TupleType {
+
+  def isExtensible: Boolean = extensible
 
   private var fields: Map[String, SequenceType] = new HashMap()
 

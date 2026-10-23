@@ -116,7 +116,6 @@ class Operand(
     * @return the usage
     */
   def usage: OperandUsage = role.usage
-  def getUsage: OperandUsage = usage
 
   def setUsage(usage: OperandUsage): Unit =
     role = new OperandRole(role.properties, usage, role.requiredType)

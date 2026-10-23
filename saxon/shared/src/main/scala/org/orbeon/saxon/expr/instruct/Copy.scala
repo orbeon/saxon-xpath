@@ -44,7 +44,7 @@ class Copy(
   preservingTypes = schemaType == null && validation == Validation.PRESERVE
 
   override def simplify(): Expression = {
-    preservingTypes = preservingTypes || !getPackageData.isSchemaAware
+    preservingTypes = preservingTypes || !packageData.isSchemaAware
     super.simplify()
   }
 
@@ -118,7 +118,7 @@ class Copy(
 
   private def computeItemType(th: TypeHierarchy): ItemType = {
     val selectItemType: ItemType = this.selectItemType
-    if (!getPackageData.isSchemaAware) {
+    if (!packageData.isSchemaAware) {
       return selectItemType
     }
     if (selectItemType.getUType.overlaps(
@@ -354,8 +354,8 @@ class Copy(
       case Type.DOCUMENT =>
         if (!preservingTypes) {
           val options: ParseOptions = new ParseOptions(validationOptions)
-          options.setSpaceStrippingRule(
-            NoElementsSpaceStrippingRule.getInstance)
+          options.spaceStrippingRule =
+            NoElementsSpaceStrippingRule.getInstance
           controller.getConfiguration
             .prepareValidationReporting(context, options)
           val `val`: Receiver = controller.getConfiguration
@@ -380,7 +380,7 @@ class Copy(
   override def evaluateItem(context: XPathContext): Item = {
     val controller: Controller = context.getController
     val seq: SequenceCollector = controller.allocateSequenceOutputter(1)
-    seq.getPipelineConfiguration.hostLanguage = getPackageData.hostLanguage
+    seq.getPipelineConfiguration.hostLanguage = packageData.hostLanguage
     process(new ComplexContentOutputter(seq), context)
     seq.close()
     val item: Item = seq.getFirstItem

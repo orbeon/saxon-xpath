@@ -57,7 +57,7 @@ abstract class CastingExpression(source: Expression,
   override def simplify(): Expression = {
     if (targetType.isInstanceOf[BuiltInAtomicType]) {
       val s: String = XPathParser.whyDisallowedType(
-        getPackageData,
+        packageData,
         targetType.asInstanceOf[BuiltInAtomicType])
       if (s != null) {
         val err =

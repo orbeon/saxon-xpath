@@ -21,9 +21,6 @@ class LocalVariableBinding(private var variableName: StructuredQName,
                            var requiredType: SequenceType)
     extends LocalBinding {
 
-  def setRequiredType(requiredType: SequenceType): Unit = this.requiredType = requiredType
-  def getRequiredType: SequenceType = requiredType
-
   private var slotNumber: Int = -999
 
   private var refCount: Int = 0
@@ -36,6 +33,8 @@ class LocalVariableBinding(private var variableName: StructuredQName,
   }
 
   def getVariableQName: StructuredQName = variableName
+
+  def getRequiredType: SequenceType = requiredType
 
   /**
     * If the variable is bound to an integer, get the minimum and maximum possible values.

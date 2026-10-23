@@ -65,7 +65,6 @@ class ValidationFailure(var message: String)
     with Invalidity {
 
   def getMessage: String = message
-  def setMessage(message: String): Unit = this.message = message
 
   private var systemId     : String = _
   private var publicId     : String = _

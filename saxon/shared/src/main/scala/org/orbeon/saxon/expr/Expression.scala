@@ -489,7 +489,6 @@ abstract class Expression
     getRetainedStaticContext.getConfiguration
 
   def packageData: PackageData = getRetainedStaticContext.packageData
-  def getPackageData: PackageData = packageData
 
   def isInstruction: Boolean = false
 
@@ -631,7 +630,7 @@ abstract class Expression
     }
     val result = new PathMap.PathMapNodeSet
     for (o <- operands.asScala) {
-      val usage = o.getUsage
+      val usage = o.usage
       val child = o.getChildExpression
       var target = child.addToPathMap(pathMap, attachmentPoint)
       if (usage == OperandUsage.NAVIGATION) {

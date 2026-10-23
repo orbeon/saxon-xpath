@@ -24,11 +24,8 @@ object PathMap {
     var arcs: ju.List[PathMapArc] = new ju.ArrayList[PathMapArc]()
 
     var returnable: Boolean = _
-    def isReturnable: Boolean = returnable
-    def setReturnable(returnable: Boolean): Unit = this.returnable = returnable
 
     var atomized: Boolean = _
-    def isAtomized: Boolean = atomized
 
     var hasUnknownDependencies: Boolean = _
 
@@ -45,7 +42,7 @@ object PathMap {
     def createArc(axis: Int, test: NodeTest, target: PathMapNode): Unit = {
       for (a <- arcs.asScala
            if a.axis == axis && a.getNodeTest == test && a.target == target) {
-        a.target.setReturnable(a.target.isReturnable || target.isReturnable)
+        a.target.returnable = a.target.returnable || target.returnable
         if (target.atomized)
           a.target.setAtomized()
         return
@@ -73,19 +70,19 @@ object PathMap {
       hasUnknownDependencies = true
 
     def allPathsAreWithinStreamableSnapshot(): Boolean = {
-      if (hasUnknownDependencies || returnable || isAtomized)
+      if (hasUnknownDependencies || returnable || atomized)
         return false
       for (arc <- arcs.asScala) {
         val axis = arc.axis
         if (axis == AxisInfo.ATTRIBUTE) {
           val next = arc.target
-          if (next.isReturnable)
+          if (next.returnable)
             return false
           if (next.getArcs.length != 0 && ! next.allPathsAreWithinStreamableSnapshot())
             return false
         } else if (axis == AxisInfo.SELF || axis == AxisInfo.ANCESTOR || axis == AxisInfo.ANCESTOR_OR_SELF || axis == AxisInfo.PARENT) {
           val next = arc.target
-          if (next.isAtomized)
+          if (next.atomized)
             return false
           if (! next.allPathsAreWithinStreamableSnapshot())
             return false

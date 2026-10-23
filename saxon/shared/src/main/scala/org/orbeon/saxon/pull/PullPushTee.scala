@@ -77,7 +77,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
         if (entities != null) {
           for (entity <- entities.asScala) {
             val ue: UnparsedEntity = entity.asInstanceOf[UnparsedEntity]
-            out.setUnparsedEntity(ue.getName, ue.getSystemId, ue.publicId)
+            out.setUnparsedEntity(ue.name, ue.systemId, ue.publicId)
           }
         }
         out.endDocument()

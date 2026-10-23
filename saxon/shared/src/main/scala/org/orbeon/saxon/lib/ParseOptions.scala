@@ -66,8 +66,6 @@ class ParseOptions {
   private var dtdValidation: Int = Validation.DEFAULT
 
   var topLevelElement: StructuredQName = _
-  def setTopLevelElement(topLevelElement: StructuredQName): Unit = this.topLevelElement = topLevelElement
-  def getTopLevelElement: StructuredQName = topLevelElement
 
   @BeanProperty
   var topLevelType: SchemaType = _
@@ -89,8 +87,6 @@ class ParseOptions {
 
   //private int stripSpace = Whitespace.UNSPECIFIED;
   var spaceStrippingRule: SpaceStrippingRule = null
-  def setSpaceStrippingRule(spaceStrippingRule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule
-  def getSpaceStrippingRule: SpaceStrippingRule = spaceStrippingRule
 
   /*@Nullable*/
 

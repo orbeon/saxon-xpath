@@ -187,7 +187,7 @@ class ElementAvailable extends SystemFunction {
   @throws[XPathException]
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue = {
     val lexicalQName = arguments(0).head.getStringValue
-    val b = isElementAvailable(lexicalQName, getRetainedStaticContext.packageData.getTargetEdition, context)
+    val b = isElementAvailable(lexicalQName, getRetainedStaticContext.packageData.targetEdition, context)
     BooleanValue.get(b)
   }
 }

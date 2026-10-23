@@ -37,8 +37,6 @@ class RetainedStaticContext extends NamespaceResolver {
   var staticBaseUriString: String = _
 
   var defaultCollationName: String = _
-  def getDefaultCollationName: String = defaultCollationName
-  def setDefaultCollationName(name: String): Unit = this.defaultCollationName = name
 
   private var namespaces: NamespaceResolver = _
 

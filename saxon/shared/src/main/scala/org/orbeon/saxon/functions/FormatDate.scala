@@ -458,7 +458,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          val minuteOfDay = dtvalue.hour * 60 + dtvalue.getMinute
+          val minuteOfDay = dtvalue.hour * 60 + dtvalue.minute
           formatNumber(
             component,
             minuteOfDay,

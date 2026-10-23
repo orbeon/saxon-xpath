@@ -91,7 +91,6 @@ class ContextItemExpression extends Expression {
   /*@NotNull*/
 
   override def getItemType: ItemType = staticInfo.itemType
-  def itemType: ItemType = getItemType
 
   override def getStaticUType(contextItemType: UType): UType = contextItemType
 

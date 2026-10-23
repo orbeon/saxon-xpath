@@ -34,9 +34,9 @@ class PatternThatSetsCurrent(var wrappedPattern: Pattern,
                              private var binding: LocalVariableBinding)
   extends Pattern {
 
-  binding.setRequiredType(
+  binding.requiredType =
     SequenceType.makeSequenceType(wrappedPattern.getItemType,
-      StaticProperty.EXACTLY_ONE))
+      StaticProperty.EXACTLY_ONE)
 
   adoptChildExpression(wrappedPattern)
 

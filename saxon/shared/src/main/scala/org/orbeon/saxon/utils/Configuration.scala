@@ -2083,8 +2083,6 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def expandAttributeDefaults: Boolean = defaultParseOptions.expandAttributeDefaults
   def expandAttributeDefaults_=(expand: Boolean): Unit = defaultParseOptions.expandAttributeDefaults = expand
-  def setExpandAttributeDefaults(expand: Boolean): Unit = expandAttributeDefaults = expand
-  def isExpandAttributeDefaults: Boolean = expandAttributeDefaults
 
   def namePool: NamePool = namePool_
 
@@ -3227,7 +3225,7 @@ class Configuration extends SourceResolver with NotationSet {
       }
       else if (feature eq Feature.EXPAND_ATTRIBUTE_DEFAULTS) {
         val b = Configuration.requireBoolean(name, value)
-        setExpandAttributeDefaults(b)
+        expandAttributeDefaults = b
       }
       internalSetBooleanProperty(feature, value)
     }
@@ -3613,7 +3611,7 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.ENVIRONMENT_VARIABLE_RESOLVER_CLASS =>
         return environmentVariableResolver.getClass.getName.asInstanceOf[T]
       case FeatureCode.EXPAND_ATTRIBUTE_DEFAULTS =>
-        return java.lang.Boolean.valueOf(isExpandAttributeDefaults).asInstanceOf[T]
+        return java.lang.Boolean.valueOf(expandAttributeDefaults).asInstanceOf[T]
       case FeatureCode.LINE_NUMBERING =>
         return java.lang.Boolean.valueOf(isLineNumbering).asInstanceOf[T]
 //      case FeatureCode.MESSAGE_EMITTER_CLASS =>

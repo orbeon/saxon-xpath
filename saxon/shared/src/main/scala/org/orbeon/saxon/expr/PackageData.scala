@@ -12,8 +12,6 @@ import scala.beans.BeanProperty
 class PackageData(var config: Configuration) {
 
   var hostLanguage: HostLanguage.HostLanguage = _
-  def getHostLanguage: HostLanguage.HostLanguage = hostLanguage
-  def setHostLanguage(hl: HostLanguage.HostLanguage): Unit = this.hostLanguage = hl
 
   var isSchemaAware: Boolean = _
   private var decimalFormatManager: DecimalFormatManager = null
@@ -23,8 +21,6 @@ class PackageData(var config: Configuration) {
   var localLicenseId: Int = -1
 
   var targetEdition: String = config.getEditionCode
-  def getTargetEdition: String = targetEdition
-  def setTargetEdition(te: String): Unit = this.targetEdition = te
   var relocatable: Boolean = _
   private var typeAliasManager: TypeAliasManager = _
 

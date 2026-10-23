@@ -42,8 +42,6 @@ class EvaluateInstr(xpath: Expression,
 
   private var importedSchemaNamespaces: Set[String] = _
   var actualParams: Array[WithParam] = _
-  def getActualParams: Array[WithParam] = actualParams
-  def setActualParams(actualParams: Array[WithParam]): Unit = this.actualParams = actualParams
   private var dynamicParamsOp: Operand = _
   private var defaultXPathNamespace: String = null
 
@@ -152,7 +150,7 @@ class EvaluateInstr(xpath: Expression,
     ExpressionTool.copyLocationInfo(this, e2)
     e2.setRetainedStaticContext(getRetainedStaticContext)
     e2.importedSchemaNamespaces = importedSchemaNamespaces
-    e2.setActualParams(WithParam.copy(e2, actualParams, rebindings))
+    e2.actualParams = WithParam.copy(e2, actualParams, rebindings)
     if (optionsOp != null) {
       e2.setOptionsExpression(optionsOp.getChildExpression.copy(rebindings))
     }
@@ -251,8 +249,8 @@ class EvaluateInstr(xpath: Expression,
       env.setBaseURI(baseUri)
       env.setExecutable(context.getController.getExecutable)
       env.setXPathLanguageLevel(31)
-      env.setDefaultCollationName(
-        getRetainedStaticContext.defaultCollationName)
+      env.defaultCollationName =
+        getRetainedStaticContext.defaultCollationName
       if (getNamespaceContextExpr != null) {
         env.setNamespaces(namespaceContextBase)
       } else {
@@ -263,7 +261,7 @@ class EvaluateInstr(xpath: Expression,
       val libraryList0: FunctionLibraryList =
         getRetainedStaticContext.packageData
           .asInstanceOf[StylesheetPackage]
-          .getFunctionLibrary
+          .functionLibrary
       val libraryList1: FunctionLibraryList = new FunctionLibraryList
       for (lib <- libraryList0.getLibraryList.asScala) {
         lib match {
@@ -314,7 +312,7 @@ class EvaluateInstr(xpath: Expression,
       }
       if (actualParams != null) {
         for (actualParam <- actualParams) {
-          val name: StructuredQName = actualParam.getVariableQName
+          val name: StructuredQName = actualParam.variableQName
           if (locals.get(name) == null) {
             val `var`: XPathVariable = env.declareVariable(name)
             locals.put(name, `var`.getLocalSlotNumber)

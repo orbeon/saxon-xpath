@@ -194,6 +194,6 @@ abstract class Instruction extends Expression with TailCallReturner {
     }
   }
 
-  def isXSLT: Boolean = getPackageData.isXSLT
+  def isXSLT: Boolean = packageData.isXSLT
 
 }

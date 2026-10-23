@@ -78,11 +78,11 @@ class Doc_2 extends SystemFunction {
       val s = value.head.getStringValue
       s match {
         case "all" =>
-          result.setSpaceStrippingRule(
-            AllElementsSpaceStrippingRule.getInstance)
+          result.spaceStrippingRule =
+            AllElementsSpaceStrippingRule.getInstance
         case "none" =>
-          result.setSpaceStrippingRule(
-            NoElementsSpaceStrippingRule.getInstance)
+          result.spaceStrippingRule =
+            NoElementsSpaceStrippingRule.getInstance
         case "package-defined" =>
           val data = getRetainedStaticContext.packageData
           data match {

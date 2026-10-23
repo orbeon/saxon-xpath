@@ -49,10 +49,10 @@ object ParserExtension {
                               body: Expression): Expression = {
     val arity: Int = params.size
     val uf: UserFunction = new UserFunction()
-    uf.setFunctionName(
+    uf.functionName =
       new StructuredQName("anon",
         NamespaceConstant.ANONYMOUS,
-        "f_" + uf.hashCode))
+        "f_" + uf.hashCode)
     uf.packageData = p.getStaticContext.getPackageData
     uf.setBody(body)
     uf.annotations = annotations
@@ -89,7 +89,7 @@ object ParserExtension {
         p.getStaticContext.getConfiguration.makeSlotManager
       for (i <- 0 until expandedArity) {
         val slot: Int =
-          stackFrame.allocateSlotNumber(paramArray(i).getVariableQName)
+          stackFrame.allocateSlotNumber(paramArray(i).variableQName)
         paramArray(i).setSlotNumber(slot)
       }
       ExpressionTool.allocateSlots(body, expandedArity, stackFrame)
@@ -124,7 +124,7 @@ object ParserExtension {
       val stackFrame: SlotManager =
         p.getStaticContext.getConfiguration.makeSlotManager
       for (param <- paramArray) {
-        stackFrame.allocateSlotNumber(param.getVariableQName)
+        stackFrame.allocateSlotNumber(param.variableQName)
       }
       ExpressionTool.allocateSlots(body, params.size, stackFrame)
       uf.setStackFrameMap(stackFrame)
@@ -235,7 +235,7 @@ object ParserExtension {
                                               start: Int): LocalBinding = {
     var details = inlineFunctionStack(start)
     val params = details.implicitParams
-    for (param <- params.asScala if param.getVariableQName == qName) {
+    for (param <- params.asScala if param.variableQName == qName) {
       var b2: LocalBinding = param
       var bs: Int = start + 1
       while (bs <= inlineFunctionStack.size - 1) {
@@ -253,7 +253,7 @@ object ParserExtension {
           details.outerVariablesUsed.add(param)
           val ufp: UserFunctionParameter = new UserFunctionParameter()
           ufp.variableQName = qName
-          ufp.requiredType = param.getRequiredType
+          ufp.requiredType = param.requiredType
           details.implicitParams.add(ufp)
           b2 = ufp
         }

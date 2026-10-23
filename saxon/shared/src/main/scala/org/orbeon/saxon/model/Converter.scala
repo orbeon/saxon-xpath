@@ -385,7 +385,7 @@ object Converter {
   class DateTimeToGMonthDay extends UnfailingConverter {
     def convert(input: AtomicValue): GMonthDayValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GMonthDayValue(dt.getMonth, dt.day, dt.getTimezoneInMinutes)
+      new GMonthDayValue(dt.month, dt.day, dt.getTimezoneInMinutes)
     }
   }
 

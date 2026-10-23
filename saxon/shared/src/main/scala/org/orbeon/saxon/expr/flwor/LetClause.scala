@@ -42,8 +42,8 @@ class LetClause extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): LetClause = {
     val let2: LetClause = new LetClause()
-    let2.setLocation(location)
-    let2.setPackageData(packageData)
+    let2.location = location
+    let2.packageData = packageData
     let2.rangeVariable = rangeVariable.copy()
     let2.initSequence(flwor, getSequence.copy(rebindings))
     let2

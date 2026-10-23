@@ -5,19 +5,16 @@ import org.orbeon.saxon.om.{Sequence, StructuredQName}
 import org.orbeon.saxon.trans.FunctionStreamability
 import org.orbeon.saxon.value.{IntegerValue, SequenceType}
 
-import scala.beans.BeanProperty
-
 class UserFunctionParameter extends LocalBinding {
 
-  @BeanProperty
   var requiredType: SequenceType = _
+  def getRequiredType: SequenceType = requiredType
 
-  @BeanProperty
   var variableQName: StructuredQName = _
+  def getVariableQName: StructuredQName = variableQName
 
   private var slotNumber: Int = _
 
-  @BeanProperty
   var referenceCount: Int = 999
 
   private var isIndexed: Boolean = false

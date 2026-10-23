@@ -4,23 +4,10 @@ package org.orbeon.saxon.pull
 import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 class UnparsedEntity {
-
   var name: String = _
-  def getName: String = name
-  def setName(name: String): Unit = this.name = name
-
   var systemId: String = _
-  def getSystemId: String = systemId
-  def setSystemId(systemId: String): Unit = this.systemId = systemId
-
   var publicId: String = _
-  def getPublicId: String = publicId
-  def setPublicId(publicId: String): Unit = this.publicId = publicId
-
   var baseURI: String = _
-  def getBaseURI: String = baseURI
-  def setBaseURI(baseURI: String): Unit = this.baseURI = baseURI
-
 }
 
 // Copyright (c) 2018-2020 Saxonica Limited

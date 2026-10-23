@@ -90,7 +90,7 @@ class ComputedElement(elementName: Expression,
       setNamespaceExp(getNamespaceExp.simplify())
     }
     val config: Configuration = getConfiguration
-    val schemaAware: Boolean = getPackageData.isSchemaAware
+    val schemaAware: Boolean = packageData.isSchemaAware
     preservingTypes |= !schemaAware
     val schemaType: SchemaType = getSchemaType
     if (schemaType != null) {

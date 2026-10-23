@@ -62,7 +62,6 @@ class UserFunction
 
   var functionName: StructuredQName = _
   def getFunctionName: StructuredQName = functionName
-  def setFunctionName(functionName: StructuredQName): Unit = this.functionName = functionName
   private var tailCalls: Boolean = false
   @BooleanBeanProperty
   var tailRecursive: Boolean = false
@@ -93,7 +92,7 @@ class UserFunction
         } else {
           sb.append(", ")
         }
-        sb.append("$").append(param.getVariableQName.getDisplayName)
+        sb.append("$").append(param.variableQName.getDisplayName)
       }
       sb.append("){")
       val body: Expression = getBody
@@ -125,7 +124,7 @@ class UserFunction
     val argTypes = Array.ofDim[SequenceType](parameterDefinitions.length)
     for (i <- parameterDefinitions.indices) {
       val ufp = parameterDefinitions(i)
-      argTypes(i) = ufp.getRequiredType
+      argTypes(i) = ufp.requiredType
     }
     new SpecificFunctionType(argTypes, resultType, annotations)
   }
@@ -226,7 +225,7 @@ class UserFunction
   }
 
   def getArgumentType(n: Int): SequenceType =
-    parameterDefinitions(n).getRequiredType
+    parameterDefinitions(n).requiredType
 
   def getEvaluator: Evaluator = {
     if (evaluator == null)
@@ -369,8 +368,8 @@ class UserFunction
       getStackFrameMap.getNumberOfVariables.toString)
     for (p <- parameterDefinitions) {
       presenter.startElement("arg")
-      presenter.emitAttribute("name", p.getVariableQName)
-      presenter.emitAttribute("as", p.getRequiredType.toAlphaCode)
+      presenter.emitAttribute("name", p.variableQName)
+      presenter.emitAttribute("as", p.requiredType.toAlphaCode)
       presenter.endElement()
     }
     presenter.setChildRole("body")
@@ -381,7 +380,7 @@ class UserFunction
   override def isExportable: Boolean =
     refCount > 0 ||
       (declaredVisibility != null && declaredVisibility != Visibility.PRIVATE) ||
-      packageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
+      packageData.asInstanceOf[StylesheetPackage].retainUnusedFunctions
 
   def isTrustedResultType: Boolean = false
   def isMap: Boolean = false

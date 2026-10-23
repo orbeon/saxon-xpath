@@ -63,7 +63,7 @@ object DocumentInstr {
       if (validationOptions == null) null
       else validationOptions.topLevelType
     var elementCount: Int = 0
-    val isXSLT: Boolean = content.getChildExpression.getPackageData.isXSLT
+    val isXSLT: Boolean = content.getChildExpression.packageData.isXSLT
     for (o <- components) {
       val component: Expression = o.getChildExpression
       val it: ItemType = component.getItemType
@@ -221,7 +221,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
         }
         builder.setBaseURI(getStaticBaseURIString)
         builder.setTiming(false)
-        pipe.hostLanguage = getPackageData.hostLanguage
+        pipe.hostLanguage = packageData.hostLanguage
         builder.setPipelineConfiguration(pipe)
         val out: ComplexContentOutputter = ComplexContentOutputter
           .makeComplexContentReceiver(builder, validationOptions)

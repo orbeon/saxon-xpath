@@ -120,8 +120,8 @@ class ParseXml extends SystemFunction {
       val options: ParseOptions = new ParseOptions(config.getParseOptions)
       val pd: PackageData = getRetainedStaticContext.packageData
       if (pd.isInstanceOf[StylesheetPackage]) {
-        options.setSpaceStrippingRule(
-          pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
+        options.spaceStrippingRule =
+          pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule
         if (pd.asInstanceOf[StylesheetPackage].stripsTypeAnnotations) {
           s = config.getAnnotationStripper(s)
         }

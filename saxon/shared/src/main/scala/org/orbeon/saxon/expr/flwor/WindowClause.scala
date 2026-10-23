@@ -237,8 +237,8 @@ class WindowClause extends Clause {
 
   override def copy(flwor: FLWORExpression, rebindings: RebindingMap): Clause = {
     val wc: WindowClause = new WindowClause()
-    wc.setLocation(location)
-    wc.setPackageData(packageData)
+    wc.location = location
+    wc.packageData = packageData
     wc.sliding = sliding
     wc.includeUnclosedWindows = includeUnclosedWindows
     wc.initSequence(flwor, getSequence.copy(rebindings))

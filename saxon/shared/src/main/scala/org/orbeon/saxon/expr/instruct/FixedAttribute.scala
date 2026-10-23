@@ -172,7 +172,7 @@ class FixedAttribute(private var nodeName: NodeName,
           parentType.getDescription)
       err.setIsTypeError(true)
       err.setLocation(getLocation)
-      err.setErrorCode(if (getPackageData.isXSLT) "XTTE1510" else "XQDY0027")
+      err.setErrorCode(if (packageData.isXSLT) "XTTE1510" else "XQDY0027")
       throw err
     }
     val `type`: SchemaType =
@@ -186,7 +186,7 @@ class FixedAttribute(private var nodeName: NodeName,
           parentType.getDescription)
       err.setIsTypeError(true)
       err.setLocation(getLocation)
-      err.setErrorCode(if (getPackageData.isXSLT) "XTTE1510" else "XQDY0027")
+      err.setErrorCode(if (packageData.isXSLT) "XTTE1510" else "XQDY0027")
       throw err
     }
     try getSelect.checkPermittedContents(`type`, whole = true)

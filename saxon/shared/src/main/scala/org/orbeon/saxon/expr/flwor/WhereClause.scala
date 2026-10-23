@@ -46,8 +46,8 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): WhereClause = {
     val w2: WhereClause = new WhereClause(flwor, getPredicate.copy(rebindings))
-    w2.setLocation(location)
-    w2.setPackageData(packageData)
+    w2.location = location
+    w2.packageData = packageData
     w2
   }
 

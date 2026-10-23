@@ -40,7 +40,7 @@ object StandardDiagnostics {
       }
       if (construct < 1024 && construct != StandardNames.XSL_FUNCTION &&
         construct != StandardNames.XSL_TEMPLATE) {
-        if (inst.getPackageData.isXSLT) {
+        if (inst.packageData.isXSLT) {
           StandardNames.getDisplayName(construct)
         } else {
           val s: String = StandardNames.getDisplayName(construct)

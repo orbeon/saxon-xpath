@@ -105,7 +105,7 @@ object CopyOf {
       case e: XPathException => {
         e.maybeSetContext(context)
         e.maybeSetLocation(instruction.getLocation)
-        if (instruction.getPackageData.hostLanguage == HostLanguage.XQUERY &&
+        if (instruction.packageData.hostLanguage == HostLanguage.XQUERY &&
           e.getErrorCodeLocalPart.==("XTTE0950")) {
           e.setErrorCode("XQTY0086")
         }
@@ -133,9 +133,9 @@ object CopyOf {
         DummyNamespaceResolver.getInstance,
         context.getConfiguration.getConversionRules)
       if (err != null) {
-        err.setMessage(
+        err.message =
           "Attribute being copied does not match the required type. " +
-            err.getMessage)
+            err.getMessage
         err.setErrorCode("XTTE1510")
         throw err.makeException()
       }
@@ -560,8 +560,8 @@ class CopyOf(select: Expression,
             }
           }
           options.topLevelType = `type`
-          options.setTopLevelElement(
-            NameOfNode.makeName(item).getStructuredQName)
+          options.topLevelElement =
+            NameOfNode.makeName(item).getStructuredQName
           options.setErrorReporter(context.getErrorReporter)
           config.prepareValidationReporting(context, options)
           val validator: Receiver =
@@ -736,7 +736,7 @@ class CopyOf(select: Expression,
     if (copyForUpdate) {
       out.treeModel = TreeModel.LINKED_TREE
     }
-    pipe.hostLanguage = getPackageData.hostLanguage
+    pipe.hostLanguage = packageData.hostLanguage
     try process(new ComplexContentOutputter(out), context)
     catch {
       case err: XPathException => {

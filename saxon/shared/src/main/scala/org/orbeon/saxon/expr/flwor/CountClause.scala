@@ -29,8 +29,8 @@ class CountClause extends Clause {
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): CountClause = {
     val c2: CountClause = new CountClause()
     c2.rangeVariable = rangeVariable.copy()
-    c2.setPackageData(packageData)
-    c2.setLocation(location)
+    c2.packageData = packageData
+    c2.location = location
     c2
   }
 

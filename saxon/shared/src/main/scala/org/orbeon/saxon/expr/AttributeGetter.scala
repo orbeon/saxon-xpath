@@ -83,7 +83,7 @@ class AttributeGetter(@BeanProperty var attributeName: FingerprintedQName)
 // fast path
       val `val`: String = item
         .asInstanceOf[TinyElementImpl]
-        .getAttributeValue(attributeName.getFingerprint)
+        .getAttributeValue(attributeName.fingerprint)
       if (`val` == null) return null else return new UntypedAtomicValue(`val`)
     }
     if (item == null) {

@@ -198,7 +198,7 @@ class FLWORExpression extends Expression {
     val f2         = new FLWORExpression
     for (c <- clauses.asScala) {
       val c2 = c.copy(f2, rebindings)
-      c2.setLocation(c.location)
+      c2.location = c.location
       c2.setRepeated(c.isRepeated)
       val oldBindings = c.getRangeVariables
       val newBindings = c2.getRangeVariables

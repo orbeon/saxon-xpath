@@ -28,8 +28,8 @@ class ForClause extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): ForClause = {
     val f2: ForClause = new ForClause()
-    f2.setLocation(location)
-    f2.setPackageData(packageData)
+    f2.location = location
+    f2.packageData = packageData
     f2.rangeVariable = rangeVariable.copy()
     if (positionVariable != null) {
       f2.positionVariable = positionVariable.copy()

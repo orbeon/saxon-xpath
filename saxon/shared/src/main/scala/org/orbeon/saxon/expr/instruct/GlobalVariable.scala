@@ -139,7 +139,7 @@ class GlobalVariable
   override def getProperties: ju.Iterator[String] =
     Collections.emptyIterator()
 
-  def getHostLanguage: HostLanguage.HostLanguage = packageData.getHostLanguage
+  def getHostLanguage: HostLanguage.HostLanguage = packageData.hostLanguage
 
   def setIndexedVariable(): Unit =
     indexed = true

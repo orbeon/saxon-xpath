@@ -320,9 +320,9 @@ object DateTimeValue {
       return badDate("Non-existent date", s)
     if (midnight) {
       val t = DateValue.tomorrow(dt.year, dt.month, dt.day)
-      dt.year = t.getYear
-      dt.month = t.getMonth
-      dt.day = t.getDay
+      dt.year = t.year
+      dt.month = t.month
+      dt.day = t.day
     }
     dt.typeLabel = BuiltInAtomicType.DATE_TIME
     dt
@@ -380,9 +380,9 @@ object DateTimeValue {
     js = js % (60L * 60L)
     val minute = (js / 60L).toByte
     js = js % 60L
-    new DateTimeValue(date.getYear,
-      date.getMonth,
-      date.getDay,
+    new DateTimeValue(date.year,
+      date.month,
+      date.day,
       hour,
       minute,
       js.toByte,
@@ -413,16 +413,16 @@ object DateTimeValue {
     while (h < 0) {
       h += 24
       val t: DateValue = DateValue.yesterday(lYear, lMonth, lDay)
-      lYear = t.getYear
-      lMonth = t.getMonth
-      lDay = t.getDay
+      lYear = t.year
+      lMonth = t.month
+      lDay = t.day
     }
     while (h > 23) {
       h -= 24
       val t: DateValue = DateValue.tomorrow(lYear, lMonth, lDay)
-      lYear = t.getYear
-      lMonth = t.getMonth
-      lDay = t.getDay
+      lYear = t.year
+      lMonth = t.month
+      lDay = t.day
     }
     (lYear << 4) ^ (lMonth << 28) ^ (lDay << 23) ^ (h << 18) ^
       (mi << 13) ^
@@ -437,17 +437,11 @@ class DateTimeValue extends CalendarValue
   with TemporalAccessor {
 
   var year: Int = _
-  def getYear: Int = year
   var month: Byte = _
-  def getMonth: Byte = month
   var day: Byte = _
-  def getDay: Byte = day
   var hour: Byte = _
-  def getHour: Byte = hour
   var minute: Byte = _
-  def getMinute: Byte = minute
   var second: Byte = _
-  def getSecond: Byte = second
   var nanosecond: Int = _
   private var hasNoYearZero: Boolean = _
 
@@ -688,10 +682,10 @@ class DateTimeValue extends CalendarValue
     var dt: DateTimeValue = this
     while (h < 0) {
       h += 24
-      val t = DateValue.yesterday(dt.getYear, dt.getMonth, dt.day)
-      dt = new DateTimeValue(t.getYear,
-        t.getMonth,
-        t.getDay,
+      val t = DateValue.yesterday(dt.year, dt.month, dt.day)
+      dt = new DateTimeValue(t.year,
+        t.month,
+        t.day,
         h.toByte,
         mi.toByte,
         second,
@@ -702,9 +696,9 @@ class DateTimeValue extends CalendarValue
     if (h > 23) {
       h -= 24
       val t = DateValue.tomorrow(year, month, day)
-      dt = new DateTimeValue(t.getYear,
-        t.getMonth,
-        t.getDay,
+      dt = new DateTimeValue(t.year,
+        t.month,
+        t.day,
         h.toByte,
         mi.toByte,
         second,

@@ -51,7 +51,7 @@ class StaticFunctionCall(private var target: Function,
 
   override def getStaticUType(contextItemType: UType): UType = {
     var result = getItemType.getUType
-    for (o <- operands.asScala if o.getUsage == OperandUsage.TRANSMISSION)
+    for (o <- operands.asScala if o.usage == OperandUsage.TRANSMISSION)
       result = result.intersection(o.getChildExpression.getStaticUType(contextItemType))
     result
   }

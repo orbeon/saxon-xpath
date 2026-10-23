@@ -12,8 +12,7 @@ class ClauseInfo(var clause: Clause) extends Traceable {
 
   private var nsResolver: NamespaceResolver = _
 
-  def location: Location = clause.location
-  def getLocation: Location = location
+  def getLocation: Location = clause.location
 
   /**
     * Get a name identifying the object of the expression, for example a function name, template name,

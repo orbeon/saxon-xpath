@@ -39,7 +39,6 @@ class ContextItemStaticInfo(var itemType: ItemType,
 
   var parentless: Boolean = _
 
-  def getItemType: ItemType = itemType
   def getContextItemUType: UType = itemType.getUType
   def isPossiblyAbsent: Boolean = contextMaybeUndefined
   def setContextPostureStriding(): Unit = ()

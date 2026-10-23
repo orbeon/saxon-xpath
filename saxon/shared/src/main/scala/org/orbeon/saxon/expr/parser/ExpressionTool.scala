@@ -1047,7 +1047,7 @@ object ExpressionTool {
       if (parent.isInstanceOf[ParentNodeConstructor])
         return true
       val o = findOperand(parent, childExp)
-      if (o.getUsage ne OperandUsage.TRANSMISSION)
+      if (o.usage ne OperandUsage.TRANSMISSION)
         return false
       childExp = parent
       parent = parent.parentExpression

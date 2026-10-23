@@ -132,8 +132,6 @@ class WithParam {
   var requiredType: SequenceType = _
 
   var variableQName: StructuredQName = _
-  def getVariableQName: StructuredQName = variableQName
-  def setVariableQName(name: StructuredQName): Unit = this.variableQName = name
 
   private var evaluator: Evaluator = null
 

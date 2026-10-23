@@ -32,7 +32,7 @@ object SystemProperty {
 
   def getProperty(uri: String, local: String, rsc: RetainedStaticContext): String = {
     val config = rsc.getConfiguration
-    val edition = rsc.packageData.getTargetEdition
+    val edition = rsc.packageData.targetEdition
     if (uri == NamespaceConstant.XSLT) {
       local match {
         case "version"                          => "3.0"

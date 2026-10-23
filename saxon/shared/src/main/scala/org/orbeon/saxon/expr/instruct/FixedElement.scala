@@ -61,7 +61,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
   override def operands: java.lang.Iterable[Operand] = contentOp
 
   override def simplify(): Expression = {
-    preservingTypes = preservingTypes || !getPackageData.isSchemaAware
+    preservingTypes = preservingTypes || !packageData.isSchemaAware
     super.simplify()
   }
 

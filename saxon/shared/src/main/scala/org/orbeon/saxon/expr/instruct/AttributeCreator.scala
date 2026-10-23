@@ -164,12 +164,12 @@ abstract class AttributeCreator
         DummyNamespaceResolver.getInstance,
         rules)
       if (err != null) {
-        err.setMessage(
+        err.message =
           "Attribute value " + Err.wrap(orphan.getStringValueCS, Err.VALUE) +
             " does not the match the required type " +
             schemaType.getDescription +
             ". " +
-            err.getMessage)
+            err.getMessage
         err.setErrorCode("XTTE1555")
         err.setLocator(getLocation)
         throw err.makeException()

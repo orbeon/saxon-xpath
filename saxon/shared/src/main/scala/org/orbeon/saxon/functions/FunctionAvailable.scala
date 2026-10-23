@@ -106,7 +106,7 @@ class FunctionAvailable extends SystemFunction {
     BooleanValue.get(
       isFunctionAvailable(
         lexicalQName,
-        getRetainedStaticContext.packageData.getTargetEdition,
+        getRetainedStaticContext.packageData.targetEdition,
         arity,
         context
       )

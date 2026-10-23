@@ -87,8 +87,8 @@ class GroupByClause(var config: Configuration) extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): GroupByClause = {
     val g2: GroupByClause = new GroupByClause(config)
-    g2.setLocation(location)
-    g2.setPackageData(packageData)
+    g2.location = location
+    g2.packageData = packageData
     g2.bindings = Array.ofDim[LocalVariableBinding](bindings.length)
     for (i <- 0 until bindings.length) {
       g2.bindings(i) = bindings(i).copy()
@@ -277,12 +277,12 @@ class GroupByClause(var config: Configuration) extends Clause {
               if (`val` == null) {
                 break()
               }
-              h ^= i +
+              h = h ^ (i +
                 `val`
                   .getXPathComparable(ordered = false,
-                    comparer.getCollator,
+                    comparer.collator,
                     implicitTimezone)
-                  .hashCode
+                  .hashCode)
             }
           }
         } catch {

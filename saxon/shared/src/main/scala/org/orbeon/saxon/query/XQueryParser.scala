@@ -1392,7 +1392,7 @@ class XQueryParser extends XPathParser {
     val exec = getExecutable
     if (exec.globalContextRequirement != null) {
       val gcr = exec.globalContextRequirement
-      if (gcr.defaultValue == null && req.defaultValue != null) gcr.setDefaultValue(req.defaultValue)
+      if (gcr.defaultValue == null && req.defaultValue != null) gcr.defaultValue = req.defaultValue
 
       for (otherType <- gcr.requiredItemTypes.asScala) {
         if (otherType ne AnyItemType) {
