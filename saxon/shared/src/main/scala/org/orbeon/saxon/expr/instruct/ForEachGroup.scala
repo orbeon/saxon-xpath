@@ -217,7 +217,7 @@ class ForEachGroup(select: Expression,
         sk.typeCheck(visitor, contextInfo)
         if (sk.isFixed) {
           val comp: AtomicComparer = sk.makeComparator(
-            visitor.getStaticContext.makeEarlyEvaluationContext())
+            visitor.staticContext.makeEarlyEvaluationContext())
           sk.finalComparator = comp
         } else {
           allFixed = false

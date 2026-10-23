@@ -345,13 +345,13 @@ class FilterExpression(base: Expression, filter: Expression)
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
     val th = config.getTypeHierarchy
-    getLhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
     getBase.setFiltered(true)
     if (Literal.isEmptySequence(getBase))
       return getBase
     val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.contextSettingExpression = getBase
-    getRhs.typeCheck(visitor, baseItemType)
+    rhs.typeCheck(visitor, baseItemType)
     val filter2 = ExpressionTool.unsortedIfHomogeneous(
       getFilter,
       visitor.optimizeForStreaming)
@@ -378,12 +378,12 @@ class FilterExpression(base: Expression, filter: Expression)
     val tracing = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)
     val th = config.getTypeHierarchy
 
-    getLhs.optimize(visitor, contextItemType)
+    lhs.optimize(visitor, contextItemType)
     getBase.setFiltered(true)
 
     val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)
     baseItemType.contextSettingExpression = getBase
-    getRhs.optimize(visitor, baseItemType)
+    rhs.optimize(visitor, baseItemType)
 
     val filter2 = ExpressionTool.unsortedIfHomogeneous(getFilter, visitor.optimizeForStreaming)
     if (filter2 != getFilter)
@@ -393,7 +393,7 @@ class FilterExpression(base: Expression, filter: Expression)
 
     getFilter match {
       case isLastExpression: IsLastExpression
-        if isLastExpression.getCondition       &&
+        if isLastExpression.condition       &&
           getBase.isInstanceOf[AxisExpression] &&
           getBase.asInstanceOf[AxisExpression].axis == AxisInfo.CHILD =>
 
@@ -492,7 +492,7 @@ class FilterExpression(base: Expression, filter: Expression)
       val isIndexable = opt.isIndexableFilter(getFilter)
       if (isIndexable != 0) {
         val contextIsDoc = contextItemType != null &&
-          contextItemType.getItemType != ErrorType &&
+          contextItemType.itemType != ErrorType &&
           th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)
         val f = opt.tryIndexedFilter(this, visitor, isIndexable > 0, contextIsDoc)
         if (f ne this)
@@ -530,7 +530,7 @@ class FilterExpression(base: Expression, filter: Expression)
       }
     }
     getFilter match {
-      case isLastExpression: IsLastExpression if isLastExpression.getCondition =>
+      case isLastExpression: IsLastExpression if isLastExpression.condition =>
         getBase match {
           case literal: Literal =>
             setFilter(Literal.makeLiteral(new Int64Value(literal.getValue.getLength), this))
@@ -585,7 +585,7 @@ class FilterExpression(base: Expression, filter: Expression)
       if (getBase.isInstanceOf[Literal] &&
         ! ExpressionTool.refersToVariableOrFunction(getFilter) &&
         (getFilter.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS) == 0) {
-        val context = visitor.getStaticContext.makeEarlyEvaluationContext()
+        val context = visitor.staticContext.makeEarlyEvaluationContext()
         return iterate(context).materialize
       }
     catch {
@@ -788,7 +788,7 @@ class FilterExpression(base: Expression, filter: Expression)
         return StaticProperty.ALLOWS_ZERO_OR_ONE
     }
     getFilter match {
-      case isLastExpression: IsLastExpression if isLastExpression.getCondition =>
+      case isLastExpression: IsLastExpression if isLastExpression.condition =>
         return StaticProperty.ALLOWS_ZERO_OR_ONE
       case _ =>
     }

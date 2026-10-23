@@ -10,7 +10,6 @@ import java.util.{ArrayList, List}
 
 import org.orbeon.saxon.expr.LastPositionFinder
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.regex.ARegexIterator._
 import org.orbeon.saxon.regex.RegexIterator.MatchHandler
 import org.orbeon.saxon.tree.util.FastStringBuffer
@@ -168,7 +167,7 @@ class ARegexIterator(private var theString: UnicodeString,
   private def currentStringValue(): StringValue =
     StringValue.makeStringValue(current)
 
-  def getRegExProperties: Set[Property] =
+  def getRegExProperties: Set[Property.Property] =
     Set(Property.LAST_POSITION_FINDER)
 
   def isMatching: Boolean = nextSubStr == null && prevEnd >= 0

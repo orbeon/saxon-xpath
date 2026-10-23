@@ -35,8 +35,8 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
 
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
 
     val config = visitor.getConfiguration
     val th = config.getTypeHierarchy
@@ -107,7 +107,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
         case _ =>
       }
       val ne: NegateExpression = new NegateExpression(getRhsExpression)
-      ne.setBackwardsCompatible(true)
+      ne.backwardsCompatible = true
       return ne.typeCheck(visitor, contextInfo)
     }
     val mustResolve: Boolean =
@@ -118,7 +118,7 @@ class ArithmeticExpression10(p0: Expression, operator: Int, p1: Expression)
     try
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
         return Literal.makeLiteral(
-          evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
+          evaluateItem(visitor.staticContext.makeEarlyEvaluationContext())
             .materialize,
           this)
       }

@@ -78,7 +78,7 @@ class GMonthDayValue() extends GDateValue {
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
       toDateTime.adjustTimezone(tz)
-    new GMonthDayValue(dt.getMonth, dt.getDay, dt.getTimezoneInMinutes)
+    new GMonthDayValue(dt.getMonth, dt.day, dt.getTimezoneInMinutes)
   }
 
 }

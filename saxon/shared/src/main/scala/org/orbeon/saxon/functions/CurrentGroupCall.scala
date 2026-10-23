@@ -60,7 +60,7 @@ class CurrentGroupCall extends Expression with Callable {
   @BeanProperty
   var controllingInstruction: ForEachGroup = findControllingInstruction(this)
 
-  override def getScopingExpression(): Expression = getControllingInstruction
+  override def getScopingExpression(): Expression = controllingInstruction
 
   def setControllingInstruction(instruction: ForEachGroup,
                                 itemType: ItemType,
@@ -97,7 +97,7 @@ class CurrentGroupCall extends Expression with Callable {
   }
 
   override def computeSpecialProperties(): Int =
-    if (getControllingInstruction == null) {
+    if (controllingInstruction == null) {
       0
     } else {
       controllingInstruction.getSelectExpression.getSpecialProperties

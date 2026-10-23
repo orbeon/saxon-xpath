@@ -235,7 +235,7 @@ class StaticQueryContext() {
   def makeExecutable(): Executable = {
     val executable: Executable = new Executable(config)
     executable.setSchemaAware(isSchemaAware)
-    executable.setHostLanguage(HostLanguage.XQUERY)
+    executable.hostLanguage = HostLanguage.XQUERY
     executable
   }
 
@@ -396,8 +396,8 @@ class StaticQueryContext() {
     }
     val `var`: GlobalVariable =
       if (external) new GlobalParam() else new GlobalVariable()
-    `var`.setVariableQName(qName)
-    `var`.setRequiredType(`type`)
+    `var`.variableQName = qName
+    `var`.requiredType = `type`
     if (value != null) {
       `var`.setBody(Literal.makeLiteral(value.materialize))
     }

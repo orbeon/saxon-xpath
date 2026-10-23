@@ -12,7 +12,6 @@ import org.orbeon.saxon.expr.parser.{OptimizerOptions, RetainedStaticContext}
 import org.orbeon.saxon.functions.FunctionLibrary
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.om.{NamespaceResolver, StructuredQName}
-import org.orbeon.saxon.s9api.UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy
 import org.orbeon.saxon.s9api.{Location, UnprefixedElementMatchingPolicy}
 import org.orbeon.saxon.trans.DecimalFormatManager
 import org.orbeon.saxon.utils.Configuration
@@ -34,7 +33,7 @@ trait StaticContext {
   def getFunctionLibrary: FunctionLibrary
   def getDefaultCollationName: String
   def getDefaultElementNamespace: String
-  def getUnprefixedElementMatchingPolicy: UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
+  def getUnprefixedElementMatchingPolicy: UnprefixedElementMatchingPolicy.UnprefixedElementMatchingPolicy = UnprefixedElementMatchingPolicy.DEFAULT_NAMESPACE
   def getDefaultFunctionNamespace: String
   def isInBackwardsCompatibleMode: Boolean
   def isImportedSchema(namespace: String): Boolean

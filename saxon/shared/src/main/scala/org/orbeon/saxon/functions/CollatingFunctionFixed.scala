@@ -27,7 +27,7 @@ abstract class CollatingFunctionFixed
   override def setRetainedStaticContext(retainedStaticContext: RetainedStaticContext): Unit = {
     super.setRetainedStaticContext(retainedStaticContext)
     if (collationName == null) {
-      collationName = retainedStaticContext.getDefaultCollationName
+      collationName = retainedStaticContext.defaultCollationName
       try allocateCollator()
       catch {
         case _: XPathException =>

@@ -135,7 +135,7 @@ class QueryModule extends StaticContext {
     packageData = pd
   }
 
-  pd.setHostLanguage(HostLanguage.XQUERY)
+  pd.hostLanguage = HostLanguage.XQUERY
 
   pd.setSchemaAware(isSchemaAware)
 
@@ -144,7 +144,7 @@ class QueryModule extends StaticContext {
     val `var`: GlobalVariable = vars.next()
     declareVariable(`var`)
     pd.addGlobalVariable(`var`)
-    `var`.setPackageData(pd)
+    `var`.packageData = pd
   }
 
   executable.topLevelPackage = pd
@@ -510,10 +510,10 @@ class QueryModule extends StaticContext {
     if (isMainModule) {
       val gcr: GlobalContextRequirement =
         executable.globalContextRequirement
-      if (gcr != null && gcr.getDefaultValue != null) {
+      if (gcr != null && gcr.defaultValue != null) {
         val info: ContextItemStaticInfo = getConfiguration
           .makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
-        gcr.setDefaultValue(gcr.getDefaultValue.typeCheck(visitor, info))
+        gcr.setDefaultValue(gcr.defaultValue.typeCheck(visitor, info))
       }
     }
   }
@@ -534,8 +534,8 @@ class QueryModule extends StaticContext {
             return ref
           } else {
             uvar = new UndeclaredVariable()
-            uvar.setPackageData(main.getPackageData)
-            uvar.setVariableQName(qName)
+            uvar.packageData = main.getPackageData
+            uvar.variableQName = qName
             val ref: GlobalVariableReference = new GlobalVariableReference(qName)
             uvar.registerReference(ref)
             undeclaredVariables.put(qName, uvar)
@@ -770,7 +770,7 @@ class QueryModule extends StaticContext {
 
       var i = activeNamespaces.size - 1
       while (i >= 0) {
-        if (activeNamespaces(i).getPrefix == prefix) {
+        if (activeNamespaces(i).prefix == prefix) {
           val uri = activeNamespaces(i).getURI
           if (uri.isEmpty && prefix.nonEmpty)
             return null
@@ -819,10 +819,10 @@ class QueryModule extends StaticContext {
     var n = activeNamespaces.size - 1
     while (n >= 0) {
       val an = activeNamespaces(n)
-      if (! prefixes.contains(an.getPrefix)) {
-        prefixes.add(an.getPrefix)
+      if (! prefixes.contains(an.prefix)) {
+        prefixes.add(an.prefix)
         if (! an.getURI.isEmpty)
-          result = result.put(an.getPrefix, an.getURI)
+          result = result.put(an.prefix, an.getURI)
       }
       n -= 1
     }
@@ -845,13 +845,13 @@ class QueryModule extends StaticContext {
     var n = activeNamespaces.size - 1
     while (n >= 0) {
       val an = activeNamespaces(n)
-      if (! prefixes.contains(an.getPrefix)) {
-        prefixes.add(an.getPrefix)
+      if (! prefixes.contains(an.prefix)) {
+        prefixes.add(an.prefix)
         result =
           if (an.getURI.isEmpty)
-            result.remove(an.getPrefix)
+            result.remove(an.prefix)
           else
-            result.put(an.getPrefix, an.getURI)
+            result.put(an.prefix, an.getURI)
       }
       n -= 1
     }
@@ -861,7 +861,7 @@ class QueryModule extends StaticContext {
   def issueWarning(s: String, locator: Location): Unit = {
     val err: XmlProcessingIncident = new XmlProcessingIncident(s).asWarning()
     err.setLocation(locator)
-    err.setHostLanguage(HostLanguage.XQUERY)
+    err.hostLanguage = HostLanguage.XQUERY
     userQueryContext.getErrorReporter.report(err)
   }
 

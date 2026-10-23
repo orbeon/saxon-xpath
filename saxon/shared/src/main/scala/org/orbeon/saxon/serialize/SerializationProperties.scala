@@ -94,7 +94,7 @@ class SerializationProperties {
     }
     if (charMapIndex != null) {
       for (cm <- charMapIndex.asScala) {
-        sb.append(cm.getName.getEQName)
+        sb.append(cm.name.getEQName)
           .append("={")
           .append(cm.toString)
           .append("} ")

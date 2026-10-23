@@ -29,7 +29,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     operand.typeCheck(visitor, contextInfo)
     try
       if (getBaseExpression.isInstanceOf[Literal]) {
-        val e2 = Literal.makeLiteral(iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
+        val e2 = Literal.makeLiteral(iterate(visitor.staticContext.makeEarlyEvaluationContext()).materialize, this)
         ExpressionTool.copyLocationInfo(this, e2)
         return e2
       }
@@ -48,7 +48,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
     try
       if (base.isInstanceOf[Literal]) {
         return Literal.makeLiteral(
-          iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize,
+          iterate(visitor.staticContext.makeEarlyEvaluationContext()).materialize,
           this
         )
       }

@@ -55,7 +55,7 @@ class ContextItemExpression extends Expression {
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    if (contextInfo.getItemType == ErrorType) {
+    if (contextInfo.itemType == ErrorType) {
       visitor.issueWarning(
         "Evaluation will always fail: there is no context item",
         getLocation)
@@ -90,7 +90,8 @@ class ContextItemExpression extends Expression {
 
   /*@NotNull*/
 
-  def getItemType: ItemType = staticInfo.getItemType
+  override def getItemType: ItemType = staticInfo.itemType
+  def itemType: ItemType = getItemType
 
   override def getStaticUType(contextItemType: UType): UType = contextItemType
 

@@ -59,8 +59,8 @@ class XPathEvaluator(config: Configuration) {
     val exec = new Executable(config)
     exec.topLevelPackage = staticContext.getPackageData
     exec.setSchemaAware(staticContext.getPackageData.isSchemaAware)
-    exec.setHostLanguage(HostLanguage.XPATH)
-    val userlib = exec.getFunctionLibrary
+    exec.hostLanguage = HostLanguage.XPATH
+    val userlib = exec.functionLibrary
 
     val lib = new FunctionLibraryList
     lib.addFunctionLibrary(config.getXPath31FunctionSet)
@@ -72,7 +72,7 @@ class XPathEvaluator(config: Configuration) {
     if (userlib != null)
       lib.addFunctionLibrary(userlib)
 
-    exec.setFunctionLibrary(lib)
+    exec.functionLibrary = lib
 
     val opt = config.obtainOptimizer
     var exp = expression

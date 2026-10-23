@@ -89,16 +89,16 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   }
 
   def getSymbolicName: SymbolicName =
-    if (getTemplateName == null) {
+    if (templateName == null) {
       null
     } else {
-      new SymbolicName(StandardNames.XSL_TEMPLATE, getTemplateName)
+      new SymbolicName(StandardNames.XSL_TEMPLATE, templateName)
     }
 
   override def getTracingTag(): String = "xsl:template"
 
   override def gatherProperties(consumer: BiConsumer[String, Any]): Unit = {
-    consumer.accept("name", getTemplateName)
+    consumer.accept("name", templateName)
   }
 
   override def setBody(body: Expression): Unit = {
@@ -173,7 +173,7 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
 
   def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("template")
-    presenter.emitAttribute("name", getTemplateName)
+    presenter.emitAttribute("name", templateName)
     explainProperties(presenter)
     presenter.emitAttribute("slots",
       "" + getStackFrameMap.getNumberOfVariables)
@@ -185,9 +185,9 @@ class NamedTemplate(@BeanProperty var templateName: StructuredQName)
   }
 
   def explainProperties(presenter: ExpressionPresenter): Unit = {
-    if (getRequiredContextItemType != AnyItemType) {
+    if (requiredContextItemType != AnyItemType) {
       val st: SequenceType = SequenceType.makeSequenceType(
-        getRequiredContextItemType,
+        requiredContextItemType,
         StaticProperty.EXACTLY_ONE)
       presenter.emitAttribute("cxt", st.toAlphaCode)
     }

@@ -39,14 +39,27 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     scalaVersion       := scala213,
     crossScalaVersions := supportedScalaVersions,
 
-    scalacOptions ++= Seq(
-      "-encoding", "utf8",
-      "-unchecked",
-      "-Ytasty-reader",
-      "-Wnonunit-statement",
-      "-Wconf:cat=deprecation:s",
-      "-Xmaxwarns", "5000"
-    ),
+    maxErrors := 5000,
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 13)) =>
+          Seq(
+            "-encoding", "utf8",
+            "-unchecked",
+            "-Ytasty-reader",
+            "-Wnonunit-statement",
+            "-Wconf:cat=deprecation:s",
+            "-Xmaxwarns", "5000"
+          )
+        case Some((3, _)) =>
+          Seq(
+            "-encoding", "utf8",
+            "-unchecked",
+            "-source:3.0-migration"
+          )
+        case _ => Seq.empty
+      }
+    },
 
 //    libraryDependencies += "org.scala-lang.modules"  %%% "scala-collection-compat" % ScalaCollectionCompatVersion,
 

@@ -80,7 +80,7 @@ class LookupExpression(start: Expression, step: Expression)
       if (isArrayLookup) {
         val arrayType: ItemType = getLhsExpression.getItemType
         if (arrayType.isInstanceOf[ArrayItemType]) {
-          return arrayType.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
+          return arrayType.asInstanceOf[ArrayItemType].memberType.getPrimaryType
         }
       } else if (isMapLookup) {
         val mapType: ItemType = getLhsExpression.getItemType
@@ -124,7 +124,7 @@ class LookupExpression(start: Expression, step: Expression)
     // with a tuple type. So check this first.
     val originalType: ItemType = getLhsExpression.getItemType
     // Check the first operand
-    getLhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
     val containerType: ItemType = getLhsExpression.getItemType
     isArrayLookup = containerType.isInstanceOf[ArrayItemType]
     val isTupleLookup: Boolean = containerType
@@ -157,7 +157,7 @@ class LookupExpression(start: Expression, step: Expression)
         throw err
       }
     }
-    getRhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
     val role: RoleDiagnostic =
       new RoleDiagnostic(RoleDiagnostic.BINARY_EXPR, "?", 1)
     val tc: TypeChecker = config.getTypeChecker(false)
@@ -196,8 +196,8 @@ class LookupExpression(start: Expression, step: Expression)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.optimize(visitor, contextInfo)
-    getRhs.optimize(visitor, contextInfo)
+    lhs.optimize(visitor, contextInfo)
+    rhs.optimize(visitor, contextInfo)
     this
   }
 
@@ -243,7 +243,7 @@ class LookupExpression(start: Expression, step: Expression)
       if (isArrayLookup) {
         val arrayType: ItemType = getLhsExpression.getItemType
         if (arrayType.isInstanceOf[ArrayItemType]) {
-          return arrayType.asInstanceOf[ArrayItemType].getMemberType.getCardinality
+          return arrayType.asInstanceOf[ArrayItemType].memberType.getCardinality
         }
       } else if (isMapLookup) {
         val mapType: ItemType = getLhsExpression.getItemType

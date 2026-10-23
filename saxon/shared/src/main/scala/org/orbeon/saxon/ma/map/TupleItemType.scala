@@ -14,7 +14,7 @@ import org.orbeon.saxon.value._
 import scala.beans.BooleanBeanProperty
 
 //import scala.collection.compat._
-import org.orbeon.saxon.model.Affinity._
+import org.orbeon.saxon.model.Affinity
 
 import scala.jdk.CollectionConverters._
 
@@ -156,11 +156,11 @@ class TupleItemType(names: List[String],
     }
 
   private def tupleToMapRelationship(other: MapType,
-                                     th: TypeHierarchy): Affinity = {
+                                     th: TypeHierarchy): Affinity.Affinity = {
     val tupleKeyType: AtomicType =
       if (isExtensible) BuiltInAtomicType.ANY_ATOMIC
       else BuiltInAtomicType.STRING
-    val keyRel: Affinity = th.relationship(tupleKeyType, other.keyType)
+    val keyRel: Affinity.Affinity = th.relationship(tupleKeyType, other.keyType)
     if (keyRel == Affinity.DISJOINT) {
      return Affinity.DISJOINT
     }
@@ -175,7 +175,7 @@ class TupleItemType(names: List[String],
       Affinity.OVERLAPS
     } else {
       for (entry <- fields.values.asScala) {
-        val rel: Affinity =
+        val rel: Affinity.Affinity =
           th.sequenceTypeRelationship(entry, other.valueType)
         if (!(rel == Affinity.SUBSUMED_BY || rel == Affinity.SAME_TYPE)) {
           return Affinity.OVERLAPS
@@ -219,14 +219,13 @@ class TupleItemType(names: List[String],
           return Affinity.DISJOINT
         }
       } else {
-        val a: Affinity = th.sequenceTypeRelationship(t1, t2)
+        val a: Affinity.Affinity = th.sequenceTypeRelationship(t1, t2)
         a match {
-          case SAME_TYPE =>
-          case SUBSUMED_BY => foundSubsumed = true
-          case SUBSUMES => foundSubsuming = true
-          case OVERLAPS => foundOverlap = true
-          case DISJOINT => return Affinity.DISJOINT
-
+          case Affinity.SAME_TYPE =>
+          case Affinity.SUBSUMED_BY => foundSubsumed = true
+          case Affinity.SUBSUMES => foundSubsuming = true
+          case Affinity.OVERLAPS => foundOverlap = true
+          case Affinity.DISJOINT => return Affinity.DISJOINT
         }
       }
     }

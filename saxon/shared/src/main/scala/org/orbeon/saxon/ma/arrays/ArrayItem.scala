@@ -8,7 +8,6 @@ package org.orbeon.saxon.ma.arrays
 
 import org.orbeon.saxon.expr.StaticProperty
 import org.orbeon.saxon.model.TypeHierarchy
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Function, Genre, GroundedValue}
 import org.orbeon.saxon.value.SequenceType
 import org.orbeon.saxon.z.IntSet
@@ -70,5 +69,5 @@ trait ArrayItem extends Function {
    *
    * @return the genre: specifically, { @link Genre#ARRAY}.
    */
-  override def getGenre: Genre = Genre.ARRAY
+  override def getGenre: Genre.Genre = Genre.ARRAY
 }

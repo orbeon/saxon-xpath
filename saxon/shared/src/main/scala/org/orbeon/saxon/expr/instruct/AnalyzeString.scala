@@ -172,7 +172,7 @@ class AnalyzeString(select: Expression,
     val warnings: List[String] = new ArrayList[String]()
     precomputeRegex(config, warnings)
     for (w <- warnings.asScala) {
-      visitor.getStaticContext.issueWarning(w, getLocation)
+      visitor.staticContext.issueWarning(w, getLocation)
     }
     this
   }

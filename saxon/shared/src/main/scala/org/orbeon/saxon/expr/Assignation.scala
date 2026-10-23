@@ -339,8 +339,8 @@ abstract class Assignation extends Expression with LocalBinding {
    */
   @throws[XPathException]
   def refineTypeInformation(`type`: ItemType, cardinality: Int, constantValue: GroundedValue, properties: Int, currentExpression: Assignation): Boolean =
-    ExpressionTool.processExpressionTree(currentExpression.getAction, null, (exp: Expression, result: Any) => {
-    def foo(exp: Expression, result: Any) = {
+    ExpressionTool.processExpressionTree(currentExpression.getAction, null, (exp: Expression, result: AnyRef) => {
+    def foo(exp: Expression, result: AnyRef) = {
       exp match {
         case varRef: VariableReference if varRef.getBinding eq currentExpression =>
           varRef.refineVariableType(`type`, cardinality, constantValue, properties)

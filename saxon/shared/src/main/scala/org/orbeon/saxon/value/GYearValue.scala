@@ -85,7 +85,7 @@ class GYearValue() extends GDateValue {
   def adjustTimezone(tz: Int): CalendarValue = {
     val dt: DateTimeValue =
       toDateTime.adjustTimezone(tz)
-    new GYearValue(dt.getYear, dt.getTimezoneInMinutes, hasNoYearZero)
+    new GYearValue(dt.year, dt.getTimezoneInMinutes, hasNoYearZero)
   }
 
 }

@@ -461,7 +461,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       while (j >= 0) {
         val binding = bindings.get(j)
         if (binding.getURI == uri)
-          return binding.getPrefix
+          return binding.prefix
         j -= 1
       }
     }
@@ -506,7 +506,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
       val bindings: ju.Map[String, String] = new ju.HashMap
 
       for (list <- setPrefixes; binding <- list.asScala)
-        bindings.put(binding.getPrefix, binding.getURI)
+        bindings.put(binding.prefix, binding.getURI)
 
       def getNamespaceURI(prefix: String): String = {
         val uri = bindings.get(prefix)

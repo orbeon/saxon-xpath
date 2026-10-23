@@ -39,8 +39,8 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor,
                 contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
     if (!generateIdEmulation) {
       if (Literal.isEmptySequence(getLhsExpression) || Literal.isEmptySequence(
             getRhsExpression)) {
@@ -148,10 +148,10 @@ class IdentityComparison(p1: Expression, op: Int, p2: Expression)
     op match {
       case Token.IS => node0 == node1
       case Token.PRECEDES =>
-        GlobalOrderComparer.getInstance.compare(node0, node1) <
+        GlobalOrderComparer.instance.compare(node0, node1) <
           0
       case Token.FOLLOWS =>
-        GlobalOrderComparer.getInstance.compare(node0, node1) >
+        GlobalOrderComparer.instance.compare(node0, node1) >
           0
       case _ =>
         throw new UnsupportedOperationException("Unknown node identity test")

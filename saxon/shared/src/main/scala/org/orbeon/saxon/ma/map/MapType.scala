@@ -13,7 +13,6 @@ import org.orbeon.saxon.expr.{Expression, StaticProperty}
 import org.orbeon.saxon.ma.map.MapType._
 import org.orbeon.saxon.model.Affinity.Affinity
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item}
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
@@ -71,7 +70,7 @@ class MapType(var keyType: AtomicType,
     *
     * @return the Genre to which this type belongs, specifically {@link Genre#MAP}
     */
-  override def getGenre: Genre = Genre.MAP
+  override def getGenre: Genre.Genre = Genre.MAP
 
   /**
     * Ask whether this function item type is a map type. In this case function coercion (to the map type)

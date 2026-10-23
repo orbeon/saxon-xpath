@@ -1,7 +1,7 @@
 package org.orbeon.saxon.expr.parser
 
 import org.orbeon.saxon.event.ComplexContentOutputter
-import org.orbeon.saxon.expr.EvaluationMode._
+import org.orbeon.saxon.expr.EvaluationMode
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct.Block
 import org.orbeon.saxon.om._
@@ -15,7 +15,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       EmptySequence.getInstance
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.RETURN_EMPTY_SEQUENCE
   }
 
@@ -23,7 +23,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       expr.asInstanceOf[Literal].getValue
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.EVALUATE_LITERAL
   }
 
@@ -38,7 +38,7 @@ object Evaluator {
           LAZY_SEQUENCE.evaluate(expr, context)
       }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.EVALUATE_AND_MATERIALIZE_VARIABLE
   }
 
@@ -55,7 +55,7 @@ object Evaluator {
           LAZY_SEQUENCE.evaluate(expr, context)
       }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.EVALUATE_SUPPLIED_PARAMETER
   }
 
@@ -63,7 +63,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Item =
       expr.evaluateItem(context)
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.CALL_EVALUATE_SINGLE_ITEM
   }
 
@@ -73,7 +73,7 @@ object Evaluator {
       if (item == null) EmptySequence.getInstance else item
     }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.CALL_EVALUATE_OPTIONAL_ITEM
   }
 
@@ -83,7 +83,7 @@ object Evaluator {
       new LazySequence(iter)
     }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.MAKE_CLOSURE
   }
 
@@ -93,7 +93,7 @@ object Evaluator {
       new MemoSequence(iter)
     }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.MAKE_MEMO_CLOSURE
   }
 
@@ -101,7 +101,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       new MemoClosure(expr, context)
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.MAKE_MEMO_CLOSURE
   }
 
@@ -109,7 +109,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       new SingletonClosure(expr, context)
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.MAKE_SINGLETON_CLOSURE
   }
 
@@ -119,7 +119,7 @@ object Evaluator {
       iter.materialize
     }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.ITERATE_AND_MATERIALIZE
   }
 
@@ -127,7 +127,7 @@ object Evaluator {
     def evaluate(expr: Expression, context: XPathContext): Sequence =
       expr match {
         case block: Block =>
-          val children     = block.getOperanda
+          val children     = block.operanda
           val subsequences = new util.ArrayList[GroundedValue](children.length)
           for (o <- children) {
             val child = o.getChildExpression
@@ -144,7 +144,7 @@ object Evaluator {
           expr.iterate(context).materialize
       }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.SHARED_APPEND_EXPRESSION
   }
 
@@ -154,7 +154,7 @@ object Evaluator {
         .obtainOptimizer
         .evaluateStreamingArgument(expr, context)
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.STREAMING_ARGUMENT
   }
 
@@ -164,7 +164,7 @@ object Evaluator {
         .obtainOptimizer
         .makeIndexedValue(expr.iterate(context))
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.MAKE_INDEXED_VARIABLE
   }
 
@@ -181,7 +181,7 @@ object Evaluator {
       `val`
     }
 
-    def getEvaluationMode: EvaluationMode = EvaluationMode.PROCESS
+    def getEvaluationMode: EvaluationMode.EvaluationMode = EvaluationMode.PROCESS
   }
 
   val LAZY_TAIL: Evaluator = new Evaluator {
@@ -213,12 +213,12 @@ object Evaluator {
       }
     }
 
-    def getEvaluationMode: EvaluationMode =
+    def getEvaluationMode: EvaluationMode.EvaluationMode =
       EvaluationMode.LAZY_TAIL_EXPRESSION
   }
 }
 
 abstract class Evaluator {
   def evaluate(expr: Expression, context: XPathContext): Sequence
-  def getEvaluationMode: EvaluationMode
+  def getEvaluationMode: EvaluationMode.EvaluationMode
 }

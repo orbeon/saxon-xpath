@@ -70,7 +70,7 @@ class NamespaceBinding(prefStr: String, uriStr: String)
     */
   override def equals(obj: Any): Boolean =
     obj.isInstanceOf[NamespaceBinding] &&
-      prefix == obj.asInstanceOf[NamespaceBinding].getPrefix &&
+      prefix == obj.asInstanceOf[NamespaceBinding].prefix &&
       uri == obj.asInstanceOf[NamespaceBinding].getURI
 
   override def hashCode: Int = prefix.hashCode ^ uri.hashCode

@@ -53,7 +53,7 @@ class ForExpression extends Assignation {
       this.setSequence(TypeChecker.strictTypeCheck(getSequence,
         sequenceType,
         role,
-        visitor.getStaticContext))
+        visitor.staticContext))
       val actualItemType = getSequence.getItemType
       refineTypeInformation(actualItemType,
         getRangeVariableCardinality,

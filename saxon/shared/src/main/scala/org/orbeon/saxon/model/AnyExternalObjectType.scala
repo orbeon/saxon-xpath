@@ -7,7 +7,6 @@
 
 package org.orbeon.saxon.model
 
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item}
 import org.orbeon.saxon.value.ObjectValue
 
@@ -29,6 +28,6 @@ class AnyExternalObjectType extends ItemType {
   def getUType: UType = UType.EXTENSION
   def getAtomizedItemType: AtomicType = BuiltInAtomicType.STRING
   def isAtomizable(th: TypeHierarchy): Boolean = true
-  def getGenre: Genre = Genre.EXTERNAL
+  def getGenre: Genre.Genre = Genre.EXTERNAL
   def getDefaultPriority: Double = -1
 }

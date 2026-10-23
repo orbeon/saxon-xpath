@@ -6,7 +6,6 @@ import org.orbeon.saxon.value.EmptySequence
 import java.util.EnumSet
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 object SingleNodeIterator {
 
@@ -54,7 +53,7 @@ class SingleNodeIterator private (value: NodeInfo)
   override def getResidue: GroundedValue =
     if (item == null) EmptySequence.getInstance else new One(item)
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(Property.LOOKAHEAD,
       Property.LAST_POSITION_FINDER,
       Property.GROUNDED)

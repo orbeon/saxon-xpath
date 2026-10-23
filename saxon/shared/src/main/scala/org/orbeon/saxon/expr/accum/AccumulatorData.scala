@@ -142,7 +142,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
                         value: Sequence,
                         context: XPathContext,
                         phase: String): Unit = {
-    if (accumulator.isTracing) {
+    if (accumulator.tracing) {
       context.getConfiguration.getLogger.info(
         accumulator.accumulatorName.getDisplayName + phase +
           Navigator.getPath(node) +
@@ -164,7 +164,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     assert(controller != null)
     val initialNode: ManualIterator = new ManualIterator(node)
     c2.setCurrentIterator(initialNode)
-    c2.openStackFrame(target.getStackFrameMap)
+    c2.openStackFrame(target.stackFrameMap)
     c2.setLocalVariable(0, seq)
     c2.setCurrentComponent(accumulator.declaringComponent)
     c2.setTemporaryOutputState(StandardNames.XSL_ACCUMULATOR_RULE)

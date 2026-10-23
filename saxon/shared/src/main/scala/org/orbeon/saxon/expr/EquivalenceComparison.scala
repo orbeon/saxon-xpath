@@ -33,7 +33,7 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
    */
   /*@NotNull*/ @throws[XPathException]
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
-    val env = visitor.getStaticContext
+    val env = visitor.staticContext
     val defaultCollationName = env.getDefaultCollationName
     val config = visitor.getConfiguration
     var collation = config.getCollation(defaultCollationName)
@@ -78,7 +78,7 @@ class EquivalenceComparison(val p1: Expression, override val operator: Int, val 
       // This is not an error in a switch statement, but it means the branch will never be chosen
     }
     try if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-      val v = evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext).materialize
+      val v = evaluateItem(visitor.staticContext.makeEarlyEvaluationContext).materialize
       return Literal.makeLiteral(v, this)
     }
     catch {

@@ -135,7 +135,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
       }
       val stripSpace: SpaceStrippingRule = params.getSpaceStrippingRule
       if (stripSpace != null) {
-        options.setSpaceStrippingRule(stripSpace)
+        options.spaceStrippingRule = stripSpace
       }
       val p: Maker[XMLReader] = params.getXMLReaderMaker
       if (p != null) {
@@ -280,7 +280,7 @@ abstract class AbstractResourceCollection(var config: Configuration)
     basicResource match {
       case resource: BinaryResource =>
         val details: InputDetails = new InputDetails()
-        details.binaryContent = resource.getData
+        details.binaryContent = resource.data
         details.contentType = mediaType
         details.resourceUri = basicResource.getResourceURI
         factory.makeResource(config, details)

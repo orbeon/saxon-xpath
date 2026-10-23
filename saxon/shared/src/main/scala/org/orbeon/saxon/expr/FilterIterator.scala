@@ -74,7 +74,7 @@ object FilterIterator {
           false
         case v               =>
           ExpressionTool.ebvError(
-            "a sequence starting with " + v.getGenre.getDescription +
+            "a sequence starting with " + v.getGenre.description +
               " (" +
               v.toShortString +
               ")",

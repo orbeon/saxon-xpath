@@ -119,7 +119,7 @@ class IndexOf extends CollatingFunctionFixed {
     if (type0.isInstanceOf[AtomicType] && type1.isInstanceOf[AtomicType]) {
       preAllocateComparer(type0.asInstanceOf[AtomicType],
         type1.asInstanceOf[AtomicType],
-        visitor.getStaticContext)
+        visitor.staticContext)
     }
   }
 

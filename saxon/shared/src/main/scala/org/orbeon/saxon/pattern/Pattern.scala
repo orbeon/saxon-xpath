@@ -25,7 +25,7 @@ object Pattern {
            env: StaticContext,
            packageData: PackageData): Pattern = {
     var languageLevel: Int = env.getConfiguration.getConfigurationProperty(
-      Feature.XPATH_VERSION_FOR_XSLT)
+      Feature.XPATH_VERSION_FOR_XSLT).intValue
     if (languageLevel == 30) {
       languageLevel = 305
     }

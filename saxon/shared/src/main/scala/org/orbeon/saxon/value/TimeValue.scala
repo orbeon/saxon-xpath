@@ -325,9 +325,9 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
 
   def adjustTimezone(timezone: Int): TimeValue = {
     val dt: DateTimeValue = toDateTime.adjustTimezone(timezone)
-    new TimeValue(dt.getHour,
-      dt.getMinute,
-      dt.getSecond,
+    new TimeValue(dt.hour,
+      dt.minute,
+      dt.second,
       dt.nanosecond,
       dt.getTimezoneInMinutes,
       "")
@@ -433,9 +433,9 @@ class TimeValue extends CalendarValue with Comparable[AnyRef] {
   def add(duration: DurationValue): TimeValue =
     if (duration.isInstanceOf[DayTimeDurationValue]) {
       val dt: DateTimeValue = toDateTime.add(duration)
-      new TimeValue(dt.getHour,
-        dt.getMinute,
-        dt.getSecond,
+      new TimeValue(dt.hour,
+        dt.minute,
+        dt.second,
         dt.nanosecond,
         getTimezoneInMinutes,
         "")

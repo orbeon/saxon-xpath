@@ -51,7 +51,7 @@ class SlashExpression(start: Expression, step: Expression)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
 
-    getLhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
 
     if (Literal.isEmptySequence(getStart))
       return getStart
@@ -70,9 +70,9 @@ class SlashExpression(start: Expression, step: Expression)
     val cit = config.makeContextItemStaticInfo(startType, maybeUndefined = false)
     cit.contextSettingExpression = getStart
 
-    getRhs.typeCheck(visitor, cit)
+    rhs.typeCheck(visitor, cit)
 
-    val e2 = simplifyDescendantPath(visitor.getStaticContext)
+    val e2 = simplifyDescendantPath(visitor.staticContext)
     if (e2 != null)
       return e2.typeCheck(visitor, contextInfo)
     if (getStart.isInstanceOf[ContextItemExpression] && getStep.hasSpecialProperty(StaticProperty.ORDERED_NODESET))
@@ -177,18 +177,18 @@ class SlashExpression(start: Expression, step: Expression)
     val config = visitor.getConfiguration
     val th = config.getTypeHierarchy
     val opt = visitor.obtainOptimizer()
-    getLhs.optimize(visitor, contextItemType)
+    lhs.optimize(visitor, contextItemType)
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(getStart.getItemType, maybeUndefined = false)
     cit.contextSettingExpression = getStart
-    getRhs.optimize(visitor, cit)
+    rhs.optimize(visitor, cit)
 
     if (Literal.isEmptySequence(getStart) || Literal.isEmptySequence(getStep))
       return Literal.makeEmptySequence
 
-    if (getStart.isInstanceOf[RootExpression] && th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT))
+    if (getStart.isInstanceOf[RootExpression] && th.isSubType(contextItemType.itemType, NodeKindTest.DOCUMENT))
       return getStep
 
-    var e2: Expression = simplifyDescendantPath(visitor.getStaticContext)
+    var e2: Expression = simplifyDescendantPath(visitor.staticContext)
     if (e2 != null)
       return e2.optimize(visitor, contextItemType)
 
@@ -323,7 +323,7 @@ class SlashExpression(start: Expression, step: Expression)
       .asInstanceOf[AxisExpression]
     ay.axis = AxisInfo.DESCENDANT
     var k: Expression = new FilterExpression(y, x)
-    if (! th.isSubType(contextItemType.getItemType, NodeKindTest.DOCUMENT)) {
+    if (! th.isSubType(contextItemType.itemType, NodeKindTest.DOCUMENT)) {
       k = new SlashExpression(new AxisExpression(AxisInfo.CHILD, NodeKindTest.ELEMENT), k)
       ExpressionTool.copyLocationInfo(this, k)
       opt.trace(

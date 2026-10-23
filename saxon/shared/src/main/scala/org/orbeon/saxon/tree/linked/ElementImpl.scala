@@ -246,14 +246,14 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       throw new IllegalArgumentException(
         "Cannot add a namespace undeclaration")
     }
-    val existing: String = namespaceMap.getURI(binding.getPrefix)
+    val existing: String = namespaceMap.getURI(binding.prefix)
     if (existing != null) {
       if (existing != binding.getURI) {
         throw new IllegalArgumentException(
           "New namespace conflicts with existing namespace binding")
       }
     } else {
-      namespaceMap = namespaceMap.put(binding.getPrefix, binding.getURI)
+      namespaceMap = namespaceMap.put(binding.prefix, binding.getURI)
     }
   }
 
@@ -298,7 +298,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     this.setAttributes(atts)
     if (!nodeName.hasURI("")) {
       val binding: NamespaceBinding = nodeName.getNamespaceBinding
-      val prefix: String = binding.getPrefix
+      val prefix: String = binding.prefix
       val uc: String = getURIForPrefix(prefix, useDefault = false)
       if (uc == null) {
         addNamespace(binding)
@@ -404,26 +404,26 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     var lInheritedNamespaces: NamespaceMap = inheritedNamespaces
     var childNamespaces: NamespaceMap = namespaceMap
     for (binding <- lInheritedNamespaces.asScala) {
-      if (childNamespaces.getURI(binding.getPrefix) == null) {
+      if (childNamespaces.getURI(binding.prefix) == null) {
         childNamespaces =
-          childNamespaces.put(binding.getPrefix, binding.getURI)
+          childNamespaces.put(binding.prefix, binding.getURI)
       } else {
-        lInheritedNamespaces = lInheritedNamespaces.remove(binding.getPrefix)
+        lInheritedNamespaces = lInheritedNamespaces.remove(binding.prefix)
       }
     }
     namespaceMap = childNamespaces
-    for (child <- getChildren((cls: Class[ElementImpl]) => cls.isInstance(ElementImpl))) {
+    for (child <- getChildren((node: NodeInfo) => node.isInstanceOf[ElementImpl])) {
       child.asInstanceOf[ElementImpl].deepAddNamespaces(inheritedNamespaces)
     }
 
   }
 
-  def getChildren(filter: Predicate[_ <: NodeInfo]): Iterable[_ <: NodeInfo] =
+  def getChildren(filter: Predicate[NodeInfo]): Iterable[NodeInfo] =
     if (hasChildNodes) {
       val parent: NodeInfo = this
-      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter.asInstanceOf[Predicate[_ >: NodeInfo]])).asIterator.to(Iterable)
+      (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator.to(Iterable)
     } else {
-      ju.Collections.emptyList().asScala
+      ju.Collections.emptyList[NodeInfo]().asScala
     }
 
   override def getAllNamespaces: NamespaceMap = namespaceMap

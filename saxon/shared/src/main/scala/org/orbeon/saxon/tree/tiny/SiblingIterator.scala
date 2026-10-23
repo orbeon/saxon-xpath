@@ -3,7 +3,6 @@ package org.orbeon.saxon.tree.tiny
 import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.om.{AtomicSequence, AtomizedValueIterator, NodeInfo}
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.pattern.NodeTest
 import org.orbeon.saxon.tree.iter.{AxisIterator, LookaheadIterator}
 import org.orbeon.saxon.value.UntypedAtomicValue
@@ -144,6 +143,6 @@ class SiblingIterator(
     n != -1
   }
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(Property.LOOKAHEAD, Property.ATOMIZING)
 }

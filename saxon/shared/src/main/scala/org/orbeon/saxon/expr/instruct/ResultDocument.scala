@@ -332,11 +332,11 @@ class ResultDocument(private val globalProperties: Properties,
       validationOptions = new ParseOptions()
     }
     validationOptions.setSchemaValidationMode(Validation.BY_TYPE)
-    validationOptions.setTopLevelType(`type`)
+    validationOptions.topLevelType = `type`
   }
 
   def getSchemaType: SchemaType =
-    if (validationOptions == null) null else validationOptions.getTopLevelType
+    if (validationOptions == null) null else validationOptions.topLevelType
 
   def setValidationAction(mode: Int, schemaType: SchemaType): Unit = {
     val preservingTypes: Boolean = mode == Validation.PRESERVE && schemaType == null
@@ -344,7 +344,7 @@ class ResultDocument(private val globalProperties: Properties,
       if (validationOptions == null) {
         validationOptions = new ParseOptions()
         validationOptions.setSchemaValidationMode(mode)
-        validationOptions.setTopLevelType(schemaType)
+        validationOptions.topLevelType = schemaType
       }
     }
   }
@@ -384,7 +384,7 @@ class ResultDocument(private val globalProperties: Properties,
       "html" == method ||
       "xhtml" == method ||
       "text" == method) {
-      try DocumentInstr.checkContentSequence(visitor.getStaticContext,
+      try DocumentInstr.checkContentSequence(visitor.staticContext,
         contentOp,
         validationOptions)
       catch {
@@ -621,7 +621,7 @@ class ResultDocument(private val globalProperties: Properties,
         }
         qName = new StructuredQName(parts(0), uri, parts(1))
       }
-      computedGlobalProps = getRetainedStaticContext.getPackageData
+      computedGlobalProps = getRetainedStaticContext.packageData
         .asInstanceOf[StylesheetPackage]
         .getNamedOutputProperties(qName)
       if (computedGlobalProps == null) {

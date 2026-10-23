@@ -41,7 +41,6 @@ class TinyBuilderCondensed(pipeConf: PipelineConfiguration)
     // We do this at endElement() time because we need to make sure that adjacent text nodes are concatenated first.
 
     // First do the endElement() in the normal way
-    val tree = getTree
     super.endElement()
     // This might have created a TEXTUAL_ELEMENT node
     val last = tree.numberOfNodes - 1

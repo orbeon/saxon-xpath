@@ -6,7 +6,6 @@ import org.orbeon.saxon.trans.XPathException
 import java.util.EnumSet
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 object LookaheadIteratorImpl {
 
@@ -38,6 +37,6 @@ class LookaheadIteratorImpl private (private var base: SequenceIterator)
     base.close()
   }
 
-  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property.Property] = Set(Property.LOOKAHEAD)
 
 }

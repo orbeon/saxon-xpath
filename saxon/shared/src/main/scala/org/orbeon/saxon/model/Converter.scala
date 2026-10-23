@@ -53,7 +53,7 @@ object Converter {
 
     def convert(input: AtomicValue,
                 lexicalForm: CharSequence): ConversionResult = {
-      val f = newType.validate(input, lexicalForm, getConversionRules)
+      val f = newType.validate(input, lexicalForm, conversionRules)
       if (f == null)
         input.copyAsSubType(newType)
       else
@@ -61,7 +61,7 @@ object Converter {
     }
 
     def validate(input: AtomicValue, lexicalForm: CharSequence): ValidationFailure =
-      newType.validate(input, lexicalForm, getConversionRules)
+      newType.validate(input, lexicalForm, conversionRules)
   }
 
   object TwoPhaseConverter {
@@ -334,9 +334,9 @@ object Converter {
   class DateTimeToDate extends UnfailingConverter {
     def convert(input: AtomicValue): DateValue = {
       val dt: DateTimeValue = input.asInstanceOf[DateTimeValue]
-      new DateValue(dt.getYear,
-        dt.getMonth,
-        dt.getDay,
+      new DateValue(dt.year,
+        dt.month,
+        dt.day,
         dt.getTimezoneInMinutes,
         dt.isXsd10Rules)
     }
@@ -349,7 +349,7 @@ object Converter {
   class DateTimeToGMonth extends UnfailingConverter {
     def convert(input: AtomicValue): GMonthValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GMonthValue(dt.getMonth, dt.getTimezoneInMinutes)
+      new GMonthValue(dt.month, dt.getTimezoneInMinutes)
     }
   }
 
@@ -360,8 +360,8 @@ object Converter {
   class DateTimeToGYearMonth extends UnfailingConverter {
     def convert(input: AtomicValue): GYearMonthValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GYearMonthValue(dt.getYear,
-        dt.getMonth,
+      new GYearMonthValue(dt.year,
+        dt.month,
         dt.getTimezoneInMinutes,
         dt.isXsd10Rules)
     }
@@ -374,7 +374,7 @@ object Converter {
   class DateTimeToGYear extends UnfailingConverter {
     def convert(input: AtomicValue): GYearValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GYearValue(dt.getYear, dt.getTimezoneInMinutes, dt.isXsd10Rules)
+      new GYearValue(dt.year, dt.getTimezoneInMinutes, dt.isXsd10Rules)
     }
   }
 
@@ -385,7 +385,7 @@ object Converter {
   class DateTimeToGMonthDay extends UnfailingConverter {
     def convert(input: AtomicValue): GMonthDayValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GMonthDayValue(dt.getMonth, dt.getDay, dt.getTimezoneInMinutes)
+      new GMonthDayValue(dt.getMonth, dt.day, dt.getTimezoneInMinutes)
     }
   }
 
@@ -396,7 +396,7 @@ object Converter {
   class DateTimeToGDay extends UnfailingConverter {
     def convert(input: AtomicValue): GDayValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new GDayValue(dt.getDay, dt.getTimezoneInMinutes)
+      new GDayValue(dt.day, dt.getTimezoneInMinutes)
     }
   }
 
@@ -407,9 +407,9 @@ object Converter {
   class DateTimeToTime extends UnfailingConverter {
     def convert(input: AtomicValue): TimeValue = {
       val dt = input.asInstanceOf[DateTimeValue]
-      new TimeValue(dt.getHour,
-        dt.getMinute,
-        dt.getSecond,
+      new TimeValue(dt.hour,
+        dt.minute,
+        dt.second,
         dt.nanosecond,
         dt.getTimezoneInMinutes,
         "")
@@ -440,7 +440,7 @@ object Converter {
 
   class HexBinaryToBase64Binary extends UnfailingConverter {
     def convert(input: AtomicValue): Base64BinaryValue =
-      new Base64BinaryValue(input.asInstanceOf[HexBinaryValue].getBinaryValue)
+      new Base64BinaryValue(input.asInstanceOf[HexBinaryValue].binaryValue)
   }
 
   object NotationToQName {
@@ -473,7 +473,7 @@ object Converter {
           new DoubleValue(numericValue.getDoubleValue)
         case _: UntypedAtomicValue =>
           if (stringToDouble == null)
-            stringToDouble = BuiltInAtomicType.DOUBLE.getStringConverter(getConversionRules)
+            stringToDouble = BuiltInAtomicType.DOUBLE.getStringConverter(conversionRules)
           stringToDouble.convert(input)
         case _ =>
           val err = new ValidationFailure(
@@ -500,7 +500,7 @@ object Converter {
           new FloatValue(numericValue.getDoubleValue.toFloat)
         case _: UntypedAtomicValue =>
           if (stringToFloat == null)
-            stringToFloat = BuiltInAtomicType.FLOAT.getStringConverter(getConversionRules)
+            stringToFloat = BuiltInAtomicType.FLOAT.getStringConverter(conversionRules)
           stringToFloat.convert(input)
         case _ =>
           val err = new ValidationFailure(

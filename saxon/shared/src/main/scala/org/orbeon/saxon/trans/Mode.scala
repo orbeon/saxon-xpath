@@ -246,7 +246,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
           if (template != previousTemplate) {
             previousTemplate = template
             template.initialize()
-            context.openStackFrame(template.getStackFrameMap)
+            context.openStackFrame(template.stackFrameMap)
             context.setLocalParameters(parameters)
             context.setTunnelParameters(tunnelParameters)
             context.setCurrentMergeGroupIterator(null)

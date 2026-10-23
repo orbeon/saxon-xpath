@@ -437,7 +437,7 @@ class Configuration extends SourceResolver with NotationSet {
     Version.platform.initialize(this)
     //defaultXsltCompilerInfo.setURIResolver(getSystemURIResolver)
     val resolver = new StandardEntityResolver(this)
-    defaultParseOptions.setEntityResolver(resolver)
+    defaultParseOptions.entityResolver = resolver
     internalSetBooleanProperty(Feature.PREFER_JAXP_PARSER, true)
     internalSetBooleanProperty(Feature.ALLOW_EXTERNAL_FUNCTIONS, true)
     internalSetBooleanProperty(Feature.DISABLE_XSL_EVALUATE, false)
@@ -2081,21 +2081,10 @@ class Configuration extends SourceResolver with NotationSet {
    *               documents, as this would make the type annotations on input nodes unsound.
    * @since 9.0
    */
-  def setExpandAttributeDefaults(expand: Boolean): Unit = defaultParseOptions.setExpandAttributeDefaults(expand)
-
-  /**
-   * Determine whether elements and attributes that have a fixed or default value are to be expanded.
-   * This option applies both to DTD-defined attribute defaults and to schema-defined defaults for
-   * elements and attributes. If an XML parser is used that does not report whether defaults have
-   * been used, this option is ignored.
-   * <p>This option can be overridden at the level of a PipelineConfiguration</p>
-   *
-   * @return true if elements and attributes that have a fixed or default value are to be expanded,
-   *         false if defaults are not to be expanded. The default value is true. Note that the setting "false"
-   *         is potentially non-conformant with the W3C specifications.
-   * @since 9.0
-   */
-  def isExpandAttributeDefaults: Boolean = defaultParseOptions.isExpandAttributeDefaults
+  def expandAttributeDefaults: Boolean = defaultParseOptions.expandAttributeDefaults
+  def expandAttributeDefaults_=(expand: Boolean): Unit = defaultParseOptions.expandAttributeDefaults = expand
+  def setExpandAttributeDefaults(expand: Boolean): Unit = expandAttributeDefaults = expand
+  def isExpandAttributeDefaults: Boolean = expandAttributeDefaults
 
   def namePool: NamePool = namePool_
 
@@ -2216,7 +2205,7 @@ class Configuration extends SourceResolver with NotationSet {
    *         nodes to be stripped from all elements.
    * @since 8.4
    */
-  def isStripsAllWhiteSpace: Boolean = defaultParseOptions.getSpaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance
+  def isStripsAllWhiteSpace: Boolean = defaultParseOptions.spaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance
 
   /**
    * Get an XML parser for source documents.
@@ -2295,7 +2284,7 @@ class Configuration extends SourceResolver with NotationSet {
     try {
       try { // give things back to the garbage collecter
         parser.setContentHandler(null)
-        if (parser.getEntityResolver eq defaultParseOptions.getEntityResolver)
+        if (parser.getEntityResolver eq defaultParseOptions.entityResolver)
           parser.setEntityResolver(null)
         parser.setDTDHandler(null)
         parser.setErrorHandler(null)
@@ -2704,7 +2693,7 @@ class Configuration extends SourceResolver with NotationSet {
   def obtainOptimizer: Optimizer =
     if (optimizer == null) {
       optimizer = new Optimizer(this)
-      optimizer.setOptimizerOptions(optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION))
+      optimizer.optimizerOptions = optimizerOptions.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION)
       optimizer
     } else
       optimizer
@@ -2719,7 +2708,7 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def obtainOptimizer(options: OptimizerOptions): Optimizer = {
     val optimizer = new Optimizer(this)
-    optimizer.setOptimizerOptions(options.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION))
+    optimizer.optimizerOptions = options.intersect(OptimizerOptions.FULL_HE_OPTIMIZATION)
     optimizer
   }
 
@@ -3272,8 +3261,8 @@ class Configuration extends SourceResolver with NotationSet {
         else Validation.SKIP)
         internalSetBooleanProperty(Feature.DTD_VALIDATION_RECOVERABLE, b)
       case FeatureCode.ENTITY_RESOLVER_CLASS =>
-        if ("" == value) defaultParseOptions.setEntityResolver(null)
-        else defaultParseOptions.setEntityResolver(instantiateClassName(name, value, classOf[EntityResolver]).asInstanceOf[EntityResolver])
+        if ("" == value) defaultParseOptions.entityResolver = null
+        else defaultParseOptions.entityResolver = instantiateClassName(name, value, classOf[EntityResolver]).asInstanceOf[EntityResolver]
       case FeatureCode.ENVIRONMENT_VARIABLE_RESOLVER =>
         if (!value.isInstanceOf[EnvironmentVariableResolver]) throw new IllegalArgumentException("ENVIRONMENT_VARIABLE_RESOLVER value must be an instance of org.orbeon.saxon.lib.EnvironmentVariableResolver")
         environmentVariableResolver = value.asInstanceOf[EnvironmentVariableResolver]
@@ -3310,7 +3299,7 @@ class Configuration extends SourceResolver with NotationSet {
           }
           else optimizerOptions = new OptimizerOptions(s)
         }
-        if (optimizer != null) optimizer.setOptimizerOptions(optimizerOptions)
+        if (optimizer != null) optimizer.optimizerOptions = optimizerOptions
         internalSetBooleanProperty(Feature.GENERATE_BYTE_CODE, optimizerOptions.isSet(OptimizerOptions.BYTE_CODE))
         //defaultXsltCompilerInfo.setOptimizerOptions(optimizerOptions)
       case FeatureCode.OUTPUT_URI_RESOLVER =>
@@ -3352,11 +3341,11 @@ class Configuration extends SourceResolver with NotationSet {
         val s = requireString(name, value)
         s match {
           case "all" =>
-            defaultParseOptions.setSpaceStrippingRule(AllElementsSpaceStrippingRule.getInstance)
+            defaultParseOptions.spaceStrippingRule = AllElementsSpaceStrippingRule.getInstance
           case "none" =>
-            defaultParseOptions.setSpaceStrippingRule(NoElementsSpaceStrippingRule.getInstance)
+            defaultParseOptions.spaceStrippingRule = NoElementsSpaceStrippingRule.getInstance
           case "ignorable" =>
-            defaultParseOptions.setSpaceStrippingRule(IgnorableSpaceStrippingRule.getInstance)
+            defaultParseOptions.spaceStrippingRule = IgnorableSpaceStrippingRule.getInstance
           case _ =>
             throw new IllegalArgumentException("Unrecognized value STRIP_WHITESPACE = '" + value + "': must be 'all', 'none', or 'ignorable'")
         }
@@ -3616,7 +3605,7 @@ class Configuration extends SourceResolver with NotationSet {
         // Obsolete
         return null.asInstanceOf[T]
       case FeatureCode.ENTITY_RESOLVER_CLASS =>
-        val er = defaultParseOptions.getEntityResolver
+        val er = defaultParseOptions.entityResolver
         if (er == null) return "".asInstanceOf[T]
         else return er.getClass.getName.asInstanceOf[T]
       case FeatureCode.ENVIRONMENT_VARIABLE_RESOLVER =>
@@ -3660,7 +3649,7 @@ class Configuration extends SourceResolver with NotationSet {
       case FeatureCode.SOURCE_RESOLVER_CLASS =>
         return getSourceResolver.getClass.getName.asInstanceOf[T]
       case FeatureCode.STRIP_WHITESPACE =>
-        val rule = getParseOptions.getSpaceStrippingRule
+        val rule = getParseOptions.spaceStrippingRule
         if (rule eq AllElementsSpaceStrippingRule.getInstance) return "all".asInstanceOf[T]
         else if (rule == null || (rule eq IgnorableSpaceStrippingRule.getInstance)) return "ignorable".asInstanceOf[T]
         else return "none".asInstanceOf[T]

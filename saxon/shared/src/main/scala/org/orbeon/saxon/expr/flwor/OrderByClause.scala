@@ -66,8 +66,8 @@ class OrderByClause(flwor: FLWORExpression,
       flwor,
       sk2,
       getTupleExpression.copy(rebindings).asInstanceOf[TupleExpression])
-    obc.setLocation(getLocation)
-    obc.setPackageData(getPackageData)
+    obc.setLocation(location)
+    obc.setPackageData(packageData)
     obc.comparators = comparators
     obc
   }
@@ -155,7 +155,7 @@ class OrderByClause(flwor: FLWORExpression,
       skd.typeCheck(visitor, contextInfo)
       if (skd.isFixed) {
         val comp: AtomicComparer = skd.makeComparator(
-          visitor.getStaticContext.makeEarlyEvaluationContext())
+          visitor.staticContext.makeEarlyEvaluationContext())
         skd.finalComparator = comp
         if (allKeysFixed) {
           comparators(i) = comp

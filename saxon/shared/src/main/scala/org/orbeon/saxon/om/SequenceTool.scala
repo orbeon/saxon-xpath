@@ -160,7 +160,7 @@ object SequenceTool {
           case StandardNames.XS_BASE64_BINARY =>
             value.asInstanceOf[Base64BinaryValue].getBinaryValue
           case StandardNames.XS_HEX_BINARY =>
-            value.asInstanceOf[HexBinaryValue].getBinaryValue
+            value.asInstanceOf[HexBinaryValue].binaryValue
           case _ => item
         }
     }

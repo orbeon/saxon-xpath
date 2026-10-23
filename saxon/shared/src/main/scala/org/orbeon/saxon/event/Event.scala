@@ -73,12 +73,12 @@ object Event {
 
   }
 
-  class Text(content: CharSequence,
+  class Text(_content: CharSequence,
              var location: Location,
              var properties: Int)
       extends Event {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Receiver): Unit = {
       out.characters(content, location, properties)
@@ -86,12 +86,12 @@ object Event {
 
   }
 
-  class Comment(content: CharSequence,
+  class Comment(_content: CharSequence,
                 var location: Location,
                 var properties: Int)
       extends Event {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Receiver): Unit = {
       out.comment(content, location, properties)
@@ -100,12 +100,12 @@ object Event {
   }
 
   class ProcessingInstruction(var target: String,
-                              content: CharSequence,
+                              _content: CharSequence,
                               var location: Location,
                               var properties: Int)
       extends Event {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Receiver): Unit = {
       out.processingInstruction(target, content, location, properties)

@@ -56,15 +56,15 @@ class FunctionLookup extends ContextAccessorFunction {
     val controller = context.getController
     val exec = controller.getExecutable
     val rsc = getRetainedStaticContext
-    val pd = rsc.getPackageData
-    val lib = exec.getFunctionLibrary
+    val pd = rsc.packageData
+    val lib = exec.functionLibrary
     val sn = new SymbolicName.F(name, arity)
     val ic = new IndependentContext(controller.getConfiguration)
-    ic.setDefaultCollationName(rsc.getDefaultCollationName)
+    ic.setDefaultCollationName(rsc.defaultCollationName)
     ic.setBaseURI(rsc.getStaticBaseUriString)
-    ic.setDecimalFormatManager(rsc.getDecimalFormatManager)
+    ic.setDecimalFormatManager(rsc.decimalFormatManager)
     ic.setNamespaceResolver(rsc)
-    ic.setPackageData(pd)
+    ic.packageData = pd
     try {
       val fi = lib.getFunctionItem(sn, ic)
       fi match {

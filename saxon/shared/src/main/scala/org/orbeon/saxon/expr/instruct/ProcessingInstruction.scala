@@ -81,7 +81,7 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
 
   def localTypeCheck(visitor: ExpressionVisitor,
                      contextItemType: ContextItemStaticInfo): Unit = {
-    val env: StaticContext = visitor.getStaticContext
+    val env: StaticContext = visitor.staticContext
     nameOp.typeCheck(visitor, contextItemType)
     val role: RoleDiagnostic = new RoleDiagnostic(
       RoleDiagnostic.INSTRUCTION,

@@ -37,7 +37,7 @@ abstract class FunctionCall extends Expression {
 
   def getFunctionName: StructuredQName
 
-  def getArity: Int = getOperanda.getNumberOfOperands
+  def getArity: Int = operanda.getNumberOfOperands
 
   def setArguments(args: Array[Expression]): Unit =
     this.operanda = new OperandArray(this, args)
@@ -55,10 +55,10 @@ abstract class FunctionCall extends Expression {
     result
   }
 
-  def getArg(n: Int): Expression = getOperanda.getOperandExpression(n)
+  def getArg(n: Int): Expression = operanda.getOperandExpression(n)
 
   def setArg(n: Int, child: Expression): Unit = {
-    getOperanda.setOperand(n, child)
+    operanda.setOperand(n, child)
     adoptChildExpression(child)
   }
 
@@ -100,7 +100,7 @@ abstract class FunctionCall extends Expression {
   }
 
   def checkFunctionCall(target: Function, visitor: ExpressionVisitor): Unit = {
-    val tc = visitor.getConfiguration.getTypeChecker(visitor.getStaticContext.isInBackwardsCompatibleMode)
+    val tc = visitor.getConfiguration.getTypeChecker(visitor.staticContext.isInBackwardsCompatibleMode)
     val argTypes = target.getFunctionItemType.getArgumentTypes
     val n = target.getArity
     for (i <- 0 until n) {
@@ -135,7 +135,7 @@ abstract class FunctionCall extends Expression {
       return this
 
     try {
-      val lit = Literal.makeLiteral(iterate(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
+      val lit = Literal.makeLiteral(iterate(visitor.staticContext.makeEarlyEvaluationContext()).materialize, this)
       Optimizer.trace(visitor.getConfiguration,
         "Pre-evaluated function call " + toShortString,
         lit)

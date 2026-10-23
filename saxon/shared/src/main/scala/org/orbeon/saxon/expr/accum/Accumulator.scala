@@ -119,7 +119,7 @@ class Accumulator extends Actor {
         out.emitAttribute("slots",
           r.getAction
             .asInstanceOf[AccumulatorRule]
-            .getStackFrameMap
+            .stackFrameMap
             .getNumberOfVariables.toString +
             "")
         out.emitAttribute("rank", "" + r.rank)

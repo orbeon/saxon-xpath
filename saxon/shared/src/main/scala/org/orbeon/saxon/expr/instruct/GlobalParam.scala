@@ -30,7 +30,7 @@ class GlobalParam extends GlobalVariable {
                                 target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData)
+    val b: Bindery = controller.getBindery(packageData)
     var `val`: GroundedValue = b.getGlobalVariableValue(this)
     if (`val` != null) {
       if (`val`.isInstanceOf[Bindery.FailureValue]) {
@@ -49,7 +49,7 @@ class GlobalParam extends GlobalVariable {
         "No value supplied for required parameter $" + getVariableQName.getDisplayName)
       e.setXPathContext(context)
       e.setLocator(this)
-      e.setErrorCode(if (getPackageData.isXSLT) "XTDE0050" else "XPDY0002")
+      e.setErrorCode(if (packageData.isXSLT) "XTDE0050" else "XPDY0002")
       throw e
     } else if (isImplicitlyRequiredParam) {
       val e: XPathException = new XPathException(

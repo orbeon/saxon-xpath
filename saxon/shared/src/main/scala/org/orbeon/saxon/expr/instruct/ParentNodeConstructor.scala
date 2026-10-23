@@ -45,7 +45,7 @@ abstract class ParentNodeConstructor
    var preservingTypes: Boolean = true
 
   def getSchemaType: SchemaType =
-    if (validationOptions == null) null else validationOptions.getTopLevelType
+    if (validationOptions == null) null else validationOptions.topLevelType
 
   def setValidationAction(mode: Int, schemaType: SchemaType): Unit = {
     preservingTypes = mode == Validation.PRESERVE && schemaType == null
@@ -57,7 +57,7 @@ abstract class ParentNodeConstructor
         validationOptions.setSchemaValidationMode(Validation.SKIP)
       } else {
         validationOptions.setSchemaValidationMode(mode)
-        validationOptions.setTopLevelType(schemaType)
+        validationOptions.topLevelType = schemaType
       }
     }
   }
@@ -88,7 +88,7 @@ abstract class ParentNodeConstructor
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     typeCheckChildren(visitor, contextInfo)
-    checkContentSequence(visitor.getStaticContext)
+    checkContentSequence(visitor.staticContext)
     this
   }
 
@@ -109,7 +109,7 @@ abstract class ParentNodeConstructor
         visitor.obtainOptimizer().makeCopyOperationsExplicit(this, contentOp)
       }
     }
-    if (visitor.getStaticContext.getPackageData.isSchemaAware) {
+    if (visitor.staticContext.getPackageData.isSchemaAware) {
       val th = visitor.getConfiguration.getTypeHierarchy
       if (getValidationAction == Validation.STRIP) {
         if (getContentExpression.hasSpecialProperty(

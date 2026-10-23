@@ -23,7 +23,7 @@ class LetClausePush(outputter: Outputter,
 
   override def processTuple(context: XPathContext): Unit = {
     val `val`: Sequence =
-      letClause.getEvaluator.evaluate(letClause.getSequence, context)
+      letClause.evaluator.evaluate(letClause.getSequence, context)
     context.setLocalVariable(letClause.rangeVariable.getLocalSlotNumber,
                              `val`)
     destination.processTuple(context)

@@ -27,7 +27,7 @@ class LetClausePull(var base: TuplePull, var letClause: LetClause)
       return false
     }
     val `val`: Sequence =
-      letClause.getEvaluator.evaluate(letClause.getSequence, context)
+      letClause.evaluator.evaluate(letClause.getSequence, context)
     context.setLocalVariable(letClause.rangeVariable.getLocalSlotNumber,
       `val`)
     true

@@ -60,7 +60,7 @@ class HomogeneityCheckerIterator(var base: SequenceIterator, var loc: Location)
           nodes.add(item)
         }
         base = new DocumentOrderIterator(new ListIterator(nodes),
-          GlobalOrderComparer.getInstance)
+          GlobalOrderComparer.instance)
         // first item is a node
         state = 1
        return base.next()

@@ -42,8 +42,8 @@ class LetClause extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): LetClause = {
     val let2: LetClause = new LetClause()
-    let2.setLocation(getLocation)
-    let2.setPackageData(getPackageData)
+    let2.setLocation(location)
+    let2.setPackageData(packageData)
     let2.rangeVariable = rangeVariable.copy()
     let2.initSequence(flwor, getSequence.copy(rebindings))
     let2
@@ -107,7 +107,7 @@ class LetClause extends Clause {
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       rangeVariable.getRequiredType,
       role,
-      visitor.getStaticContext))
+      visitor.staticContext))
     evaluator = ExpressionTool.lazyEvaluator(getSequence, repeatable = true)
   }
 

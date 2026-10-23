@@ -4,7 +4,6 @@ import java.util.Objects
 
 import org.orbeon.saxon.model.{ItemType, TypeHierarchy}
 import org.orbeon.saxon.om.Genre
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.trans.Err
 
 object ObjectValue {
@@ -17,7 +16,7 @@ class ObjectValue[T](obj: T) extends ExternalObject[T] {
   private val value: T =
     Objects.requireNonNull(obj, "External object cannot wrap a Java null")
 
-  def getGenre: Genre = Genre.EXTERNAL
+  def getGenre: Genre.Genre = Genre.EXTERNAL
   def getStringValue: String = value.toString
   def getStringValueCS: CharSequence = value.toString
   def atomize(): StringValue = new StringValue(getStringValue)

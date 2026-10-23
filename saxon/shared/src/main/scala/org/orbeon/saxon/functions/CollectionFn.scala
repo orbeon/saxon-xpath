@@ -126,7 +126,7 @@ class CollectionFn extends SystemFunction {
                                "FODC0002")
     }
     val absoluteURI: String = getAbsoluteCollectionURI(href, context)
-    val packageData: PackageData = getRetainedStaticContext.getPackageData
+    val packageData: PackageData = getRetainedStaticContext.packageData
     var whitespaceRule: SpaceStrippingRule =
       NoElementsSpaceStrippingRule.getInstance
     var collectionKey: String = absoluteURI

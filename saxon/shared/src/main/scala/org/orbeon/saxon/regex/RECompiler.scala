@@ -52,7 +52,7 @@ object RECompiler {
   }
 
   def makeComplement(p1: CharacterClass): CharacterClass = p1 match {
-    case clazz: InverseCharacterClass => clazz.getComplement
+    case clazz: InverseCharacterClass => clazz.complement
     case _                            => new InverseCharacterClass(p1)
   }
 

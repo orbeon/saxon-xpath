@@ -92,7 +92,7 @@ class AdjacentTextNodeMerger(p0: Expression) extends UnaryExpression(p0) {
     }
     if (getBaseExpression.isInstanceOf[Block]) {
       val block: Block = getBaseExpression.asInstanceOf[Block]
-      val actions: Array[Operand] = block.getOperanda
+      val actions: Array[Operand] = block.operanda
       var prevtext: Boolean = false
       var needed: Boolean = false
       var maybeEmpty: Boolean = false

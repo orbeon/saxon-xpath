@@ -332,7 +332,7 @@ class Controller extends ContextOriginator {
     pipe.controller = this
     val executable = getExecutable
     if (executable != null) { // can be null for an IdentityTransformer
-      pipe.hostLanguage = executable.getHostLanguage
+      pipe.hostLanguage = executable.hostLanguage
     }
     pipe
   }
@@ -352,8 +352,8 @@ class Controller extends ContextOriginator {
    * @param err the error to be reported
    */
   def reportFatalError(err: XPathException) = if (!err.hasBeenReported) {
-    if (err.getHostLanguage == null) if (executable.getHostLanguage eq HostLanguage.XSLT) err.setHostLanguage("XSLT")
-    else if (executable.getHostLanguage eq HostLanguage.XQUERY) err.setHostLanguage("XQuery")
+    if (err.hostLanguage == null) if (executable.hostLanguage eq HostLanguage.XSLT) err.setHostLanguage("XSLT")
+    else if (executable.hostLanguage eq HostLanguage.XQUERY) err.setHostLanguage("XQuery")
     getErrorReporter.report(new XmlProcessingException(err))
     err.setHasBeenReported(true)
   }
@@ -740,7 +740,7 @@ class Controller extends ContextOriginator {
    *         all elements, then AllElementsSpaceStrippingRule.getInstance(). Otherwise,
    */
   def getSpaceStrippingRule: SpaceStrippingRule = {
-    if (config.getParseOptions.getSpaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance) return AllElementsSpaceStrippingRule.getInstance
+    if (config.getParseOptions.spaceStrippingRule eq AllElementsSpaceStrippingRule.getInstance) return AllElementsSpaceStrippingRule.getInstance
     /* else if (executable.isInstanceOf[PreparedStylesheet]) {
        val rule = executable.asInstanceOf[PreparedStylesheet].topLevelPackage.getSpaceStrippingRule // // PreparedStylesheet class not exist
        if (rule != null) return rule
@@ -762,7 +762,7 @@ class Controller extends ContextOriginator {
   @throws[XPathException]
   def registerDocument(doc: TreeInfo, uri: DocumentURI): Unit = {
     if (!getExecutable.isSchemaAware && !Untyped.getInstance.equals(doc.getRootNode.getSchemaType)) {
-      val isXSLT = getExecutable.getHostLanguage eq HostLanguage.XSLT
+      val isXSLT = getExecutable.hostLanguage eq HostLanguage.XSLT
       var message: String = null
       if (isXSLT) message = "The source document has been schema-validated, but" + " the stylesheet is not schema-aware. A stylesheet is schema-aware if" + " either (a) it contains an xsl:import-schema declaration, or (b) the stylesheet compiler" + " was configured to be schema-aware."
       else message = "The source document has been schema-validated, but" + " the query is not schema-aware. A query is schema-aware if" + " either (a) it contains an 'import schema' declaration, or (b) the query compiler" + " was configured to be schema-aware."
@@ -1087,7 +1087,7 @@ class Controller extends ContextOriginator {
         catch {
           case err: XPathException =>
             // Don't report an exception unless the variable is actually evaluated
-            getBindery(glVar.getPackageData).setGlobalVariable(glVar, new Bindery.FailureValue(err))
+            getBindery(glVar.packageData).setGlobalVariable(glVar, new Bindery.FailureValue(err))
         }
       }
     }

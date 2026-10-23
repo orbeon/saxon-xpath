@@ -31,7 +31,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
       //System.err.println("copy unbound variable " + this);
       throw new UnsupportedOperationException("Cannot copy a variable reference whose binding is unknown")
 
-    val ref = new GlobalVariableReference(Left(getVariableName))
+    val ref = new GlobalVariableReference(Left(variableName))
     ref.copyFrom(this)
     ref
   }
@@ -65,7 +65,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
    * @return the symbolic name of the target component
    */
   def getSymbolicName: SymbolicName =
-    new SymbolicName(StandardNames.XSL_VARIABLE, getVariableName)
+    new SymbolicName(StandardNames.XSL_VARIABLE, variableName)
 
   def setTarget(target: Component): Unit =
     binding = target.getActor.asInstanceOf[GlobalVariable]
@@ -75,7 +75,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
 
   def getFixedTarget: Component = {
     val c = getTarget
-    val v = c.getVisibility
+    val v = c.visibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL)
       c
     else
@@ -96,7 +96,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
       val target = c.getTargetComponent(bindingSlot)
       if (target.isHiddenAbstractComponent) {
         val err = new XPathException(
-          "Cannot evaluate an abstract variable (" + getVariableName.getDisplayName +
+          "Cannot evaluate an abstract variable (" + variableName.getDisplayName +
             ") with no overriding declaration",
           "XTDE3052")
         err.setLocation(getLocation)
@@ -112,7 +112,7 @@ class GlobalVariableReference private (qnameOrBinding: StructuredQName Either Gl
 
   override def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("gVarRef", this)
-    out.emitAttribute("name", getVariableName)
+    out.emitAttribute("name", variableName)
     out.emitAttribute("bSlot", "" + getBindingSlot)
     out.endElement()
   }

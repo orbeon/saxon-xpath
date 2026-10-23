@@ -82,9 +82,9 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
-    val env: StaticContext = visitor.getStaticContext
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
+    val env: StaticContext = visitor.staticContext
     var comp: StringCollator =
       visitor.getConfiguration.getCollation(env.getDefaultCollationName)
     if (comp == null) {
@@ -106,9 +106,9 @@ class GeneralComparison10(p0: Expression, op: Int, p1: Expression)
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
     val config: Configuration = visitor.getConfiguration
-    val env: StaticContext = visitor.getStaticContext
-    getLhs.optimize(visitor, contextInfo)
-    getRhs.optimize(visitor, contextInfo)
+    val env: StaticContext = visitor.staticContext
+    lhs.optimize(visitor, contextInfo)
+    rhs.optimize(visitor, contextInfo)
     this.setLhsExpression(getLhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     this.setRhsExpression(getRhsExpression.unordered(retainAllNodes = false, forStreaming = false))
     if ((getLhsExpression.isInstanceOf[Literal]) && (getRhsExpression

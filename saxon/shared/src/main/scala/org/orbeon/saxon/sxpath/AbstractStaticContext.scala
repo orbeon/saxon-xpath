@@ -20,12 +20,17 @@ abstract class AbstractStaticContext extends StaticContext {
 
   private var baseURI: String = null
   private var config: Configuration = _
-  @BeanProperty
   var packageData: PackageData = _
-  @BeanProperty
+  def getPackageData: PackageData = packageData
+  def setPackageData(packageData: PackageData): Unit = this.packageData = packageData
+
   var containingLocation: Location = Loc.NONE
-  @BeanProperty
+  def getContainingLocation: Location = containingLocation
+  def setContainingLocation(loc: Location): Unit = this.containingLocation = loc
+
   var defaultCollationName: String = _
+  def getDefaultCollationName: String = defaultCollationName
+  def setDefaultCollationName(name: String): Unit = this.defaultCollationName = name
   private var libraryList: FunctionLibraryList = new FunctionLibraryList
   @BeanProperty
   var defaultFunctionNamespace: String = NamespaceConstant.FN

@@ -60,8 +60,9 @@ class UserFunction
     with ContextOriginator
     with TraceableComponent {
 
-  @BeanProperty
   var functionName: StructuredQName = _
+  def getFunctionName: StructuredQName = functionName
+  def setFunctionName(functionName: StructuredQName): Unit = this.functionName = functionName
   private var tailCalls: Boolean = false
   @BooleanBeanProperty
   var tailRecursive: Boolean = false
@@ -86,7 +87,7 @@ class UserFunction
     if (name.hasURI(NamespaceConstant.ANONYMOUS)) {
       var first: Boolean = true
       val sb: StringBuilder = new StringBuilder("function(")
-      for (param <- getParameterDefinitions) {
+      for (param <- parameterDefinitions) {
         if (first) {
           first = false
         } else {
@@ -181,7 +182,7 @@ class UserFunction
       return false
     val component = declaringComponent
     if (component != null) {
-      val visibility = declaringComponent.getVisibility
+      val visibility = declaringComponent.visibility
       if (visibility == Visibility.PRIVATE || visibility == Visibility.FINAL) {
         if (inlineable < 0) {
           null
@@ -234,7 +235,7 @@ class UserFunction
   }
 
   def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit =
-    evaluator = mode.getEvaluator
+    evaluator = mode.evaluator
 
   def getArity: Int = parameterDefinitions.length
 
@@ -244,7 +245,7 @@ class UserFunction
     val exp: Expression = getBody
     exp match {
       case valueOf: ValueOf if declaredResultType.getPrimaryType != BuiltInAtomicType.STRING && declaredResultType.getPrimaryType.isAtomicType && valueOf.getSelect.getItemType.isAtomicType =>
-        visitor.getStaticContext.issueWarning(
+        visitor.staticContext.issueWarning(
           "A function that computes atomic values should use xsl:sequence rather than xsl:value-of",
           getLocation
         )
@@ -262,7 +263,7 @@ class UserFunction
           else functionName.getDisplayName + "#" + getArity,
           0)
         role.setErrorCode(
-          if (getPackageData.isXSLT && getFunctionName != null) "XTTE0780"
+          if (packageData.isXSLT && getFunctionName != null) "XTTE0780"
           else "XPTY0004")
         exp2 = visitor.getConfiguration
           .getTypeChecker(false)
@@ -339,7 +340,7 @@ class UserFunction
       presenter.emitAttribute("name", getFunctionName)
       presenter.emitAttribute("line", getLineNumber.toString)
       presenter.emitAttribute("module", getSystemId)
-      presenter.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
+      presenter.emitAttribute("eval", getEvaluator.getEvaluationMode.code.toString)
     }
     var flags: String = ""
     if (determinism == Determinism.PROACTIVE) {
@@ -380,7 +381,7 @@ class UserFunction
   override def isExportable: Boolean =
     refCount > 0 ||
       (declaredVisibility != null && declaredVisibility != Visibility.PRIVATE) ||
-      getPackageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
+      packageData.asInstanceOf[StylesheetPackage].isRetainUnusedFunctions
 
   def isTrustedResultType: Boolean = false
   def isMap: Boolean = false

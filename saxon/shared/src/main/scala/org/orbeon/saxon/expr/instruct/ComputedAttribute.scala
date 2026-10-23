@@ -33,7 +33,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
   nameOp = new Operand(this, attributeName, OperandRole.SINGLE_ATOMIC)
   if (namespace != null) namespaceOp = new Operand(this, namespace, OperandRole.SINGLE_ATOMIC)
   setSchemaType(schemaType)
-  setValidationAction(validAction)
+  validationAction = validAction
   options = ReceiverOption.NONE
 
   /**
@@ -169,7 +169,7 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
     if (exp ne this) return exp
     // If the name is known statically, use a FixedAttribute instead
     if (getNameExp.isInstanceOf[Literal] && (getNamespaceExp == null || getNamespaceExp.isInstanceOf[Literal])) {
-      val context = visitor.getStaticContext.makeEarlyEvaluationContext
+      val context = visitor.staticContext.makeEarlyEvaluationContext
       val nc = evaluateNodeName(context)
       val fa = new FixedAttribute(nc, getValidationAction, getSchemaType)
       fa.setSelect(getSelect)

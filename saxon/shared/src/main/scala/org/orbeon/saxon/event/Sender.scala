@@ -50,7 +50,7 @@ object Sender {
     receiver.setSystemId(systemId)
     var next = receiver
     val schemaValidation = parserOptions.getSchemaValidationMode
-    val filters = parserOptions.getFilters
+    val filters = parserOptions.filters
     if (filters != null) {
       var i = filters.size - 1
       while (i >= 0) {
@@ -60,7 +60,7 @@ object Sender {
         i -= 1
       }
     }
-    val strippingRule = parserOptions.getSpaceStrippingRule
+    val strippingRule = parserOptions.spaceStrippingRule
     if (strippingRule != null && ! strippingRule.isInstanceOf[NoElementsSpaceStrippingRule])
       next = strippingRule.makeStripper(next)
     lSource match {
@@ -106,8 +106,8 @@ object Sender {
           var parser      = parserOptions.obtainXMLReader()
           if (parser == null) {
             parser = config.getSourceParser
-            if (parserOptions.getEntityResolver != null && parser.getEntityResolver == null)
-              parser.setEntityResolver(parserOptions.getEntityResolver)
+            if (parserOptions.entityResolver != null && parser.getEntityResolver == null)
+              parser.setEntityResolver(parserOptions.entityResolver)
             reuseParser = true
           }
           //System.err.println("Using parser: " + parser.getClass().getName);
@@ -234,7 +234,7 @@ object Sender {
     var listener             = options.getErrorReporter
     if (listener == null)
       listener = pipe.errorReporter
-    var errorHandler = options.getErrorHandler
+    var errorHandler = options.errorHandler
     if (errorHandler == null)
       errorHandler = new StandardErrorHandler(listener)
     if (parser == null)
@@ -245,8 +245,8 @@ object Sender {
       ss.setSystemId(lSource.getSystemId)
       parser = config.getSourceParser
       parser.setErrorHandler(errorHandler)
-      if (options.getEntityResolver != null && parser.getEntityResolver == null)
-        parser.setEntityResolver(options.getEntityResolver)
+      if (options.entityResolver != null && parser.getEntityResolver == null)
+        parser.setEntityResolver(options.entityResolver)
       ss.setXMLReader(parser)
       lSource = ss
       reuseParser = true
@@ -256,7 +256,7 @@ object Sender {
       if (parser.getErrorHandler == null)
         parser.setErrorHandler(errorHandler)
     }
-    if (!pipe.parseOptions.isExpandAttributeDefaults) {
+    if (!pipe.parseOptions.expandAttributeDefaults) {
       try parser.setFeature("http://xml.org/sax/features/use-attributes2",
                             true)
       catch {
@@ -388,7 +388,7 @@ object Sender {
             "The XML parser reported " + errs + (if (errs == 1) " error"
             else " errors")
           )
-        errs = handler.getErrorCount
+        errs = handler.errorCount
         if (errs > 0) {
           var message = "The XML parser reported " + new Numberer_en()
             .toWords(errs)

@@ -70,7 +70,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         out.startElement(fqn, node.getSchemaType, locationId, ReceiverOption.NONE)
 
         for (ns <- node.getAllNamespaces.asScala) {
-          out.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
+          out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
         }
         val c2 = context.newContext
         c2.setCurrentComponent(c2.getCurrentMode)

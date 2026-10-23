@@ -34,8 +34,8 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
 
   def copy(rebindings: RebindingMap): Expression = {
     val ai2: ApplyImports = new ApplyImports()
-    ai2.setActualParams(WithParam.copy(ai2, getActualParams, rebindings))
-    ai2.setTunnelParams(WithParam.copy(ai2, getTunnelParams, rebindings))
+    ai2.actualParams = WithParam.copy(ai2, getActualParams, rebindings)
+    ai2.tunnelParams = WithParam.copy(ai2, getTunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, ai2)
     ai2
   }
@@ -77,7 +77,7 @@ class ApplyImports extends ApplyNextMatchingTemplate with ITemplateCall {
       c2.setOrigin(this)
       c2.setLocalParameters(params)
       c2.setTunnelParameters(tunnels)
-      c2.openStackFrame(nh.getStackFrameMap)
+      c2.openStackFrame(nh.stackFrameMap)
       c2.setCurrentTemplateRule(rule)
       c2.setCurrentComponent(modeComponent)
       c2.setCurrentMergeGroupIterator(null)

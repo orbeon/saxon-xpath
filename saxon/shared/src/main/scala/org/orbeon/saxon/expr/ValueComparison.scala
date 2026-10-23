@@ -84,7 +84,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
     getRhs.typeCheck(visitor, contextInfo)
 
     val config = visitor.getConfiguration
-    val env    = visitor.getStaticContext
+    val env    = visitor.staticContext
 
     if (Literal.isEmptySequence(getLhsExpression))
       return {
@@ -138,7 +138,7 @@ class ValueComparison(p1: Expression, op: Int, p2: Expression)
           which = "the second operand is"
         if (opt0 && opt1)
           which = "one or both operands are"
-        visitor.getStaticContext.issueWarning(
+        visitor.staticContext.issueWarning(
           "Comparison of " + t0.toString + (if (opt0) "?" else "") +
             " to " +
             t1.toString +

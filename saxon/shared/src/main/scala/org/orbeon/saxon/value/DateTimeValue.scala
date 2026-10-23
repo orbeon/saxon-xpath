@@ -107,9 +107,9 @@ object DateTimeValue {
       throw err
     }
     val v = date.toDateTime
-    v.hour = time.getHour
-    v.minute = time.getMinute
-    v.second = time.getSecond
+    v.hour = time.hour
+    v.minute = time.minute
+    v.second = time.second
     v.nanosecond = time.nanosecond
     v.setTimezoneInMinutes(Math.max(tz1, tz2))
     v.typeLabel = BuiltInAtomicType.DATE_TIME
@@ -436,18 +436,18 @@ class DateTimeValue extends CalendarValue
   with Comparable[AnyRef]
   with TemporalAccessor {
 
-  @BeanProperty
   var year: Int = _
-  @BeanProperty
+  def getYear: Int = year
   var month: Byte = _
-  @BeanProperty
+  def getMonth: Byte = month
   var day: Byte = _
-  @BeanProperty
+  def getDay: Byte = day
   var hour: Byte = _
-  @BeanProperty
+  def getHour: Byte = hour
   var minute: Byte = _
-  @BeanProperty
+  def getMinute: Byte = minute
   var second: Byte = _
+  def getSecond: Byte = second
   var nanosecond: Int = _
   private var hasNoYearZero: Boolean = _
 
@@ -688,7 +688,7 @@ class DateTimeValue extends CalendarValue
     var dt: DateTimeValue = this
     while (h < 0) {
       h += 24
-      val t = DateValue.yesterday(dt.getYear, dt.getMonth, dt.getDay)
+      val t = DateValue.yesterday(dt.getYear, dt.getMonth, dt.day)
       dt = new DateTimeValue(t.getYear,
         t.getMonth,
         t.getDay,

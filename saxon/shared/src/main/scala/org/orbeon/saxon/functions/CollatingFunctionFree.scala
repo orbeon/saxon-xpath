@@ -64,7 +64,7 @@ class CollatingFunctionFree extends SystemFunction {
         }
       } catch {
         case e: URISyntaxException =>
-          visitor.getStaticContext.issueWarning(
+          visitor.staticContext.issueWarning(
             "Cannot resolve relative collation URI " + coll,
             c.getLocation)
 

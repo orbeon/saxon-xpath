@@ -4,7 +4,7 @@ import java.util.function.IntPredicate
 
 import org.orbeon.saxon.expr.parser.Token
 import org.orbeon.saxon.ma.map.DictionaryMap
-import org.orbeon.saxon.model.AnyType._
+import org.orbeon.saxon.model.AnyType
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{Item, NodeInfo, NodeName, StructuredQName}
 import org.orbeon.saxon.tree.tiny.NodeVectorTree
@@ -181,9 +181,9 @@ class CombinedNodeTest(private var nodetest1: NodeTest,
     if (type1.isSameType(type2))
       return type1
     if (operator == Token.INTERSECT) {
-      if (type2.isInstanceOf[AnyType] || ((type2 eq AnySimpleType) && type1.isSimpleType))
+      if (type2.isInstanceOf[AnyType.AnyType] || ((type2 eq AnySimpleType) && type1.isSimpleType))
         return type1
-      if (type1.isInstanceOf[AnyType] || ((type1 eq AnySimpleType) && type2.isSimpleType))
+      if (type1.isInstanceOf[AnyType.AnyType] || ((type1 eq AnySimpleType) && type2.isSimpleType))
         return type2
     }
     AnyType.getInstance

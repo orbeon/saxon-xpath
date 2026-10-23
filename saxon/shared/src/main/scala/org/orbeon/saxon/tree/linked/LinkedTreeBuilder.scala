@@ -62,7 +62,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
     val physicalRoot: NodeInfo = currentRoot
     physicalRoot match {
       case impl: DocumentImpl if impl.imaginary =>
-        impl.getDocumentElement
+        impl.documentElement
       case _ =>
         physicalRoot
     }
@@ -173,7 +173,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
     depth += 1
     size(depth) = 0
     if (currentNode.isInstanceOf[TreeInfo])
-      currentNode.asInstanceOf[DocumentImpl].setDocumentElement(elem)
+      currentNode.asInstanceOf[DocumentImpl].documentElement = elem
     if (isTopWithinEntity)
       currentNode.getPhysicalRoot.markTopWithinEntity(elem)
     currentNode = elem

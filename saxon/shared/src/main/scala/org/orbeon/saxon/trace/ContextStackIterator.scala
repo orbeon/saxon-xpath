@@ -66,7 +66,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       val ufc: UserFunction = origin.asInstanceOf[UserFunction]
       sf.setLocation(ufc.getLocation)
       sf.setFunctionName(ufc.getFunctionName)
-      sf.setContextItem(context.getContextItem)
+      sf.contextItem = context.getContextItem
       sf.context = context
       nextVar = getMajorCaller(context)
       sf
@@ -77,7 +77,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       val ufc: UserFunctionCall = origin.asInstanceOf[UserFunctionCall]
       sf.setLocation(ufc.getLocation)
       sf.setFunctionName(ufc.getFunctionName)
-      sf.setContextItem(context.getContextItem)
+      sf.contextItem = context.getContextItem
       sf.context = context
       nextVar = getMajorCaller(context)
       sf
@@ -86,7 +86,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
         new ContextStackFrame.ApplyTemplates()
       val loc: ApplyTemplates = origin.asInstanceOf[ApplyTemplates]
       sf.setLocation(loc.getLocation)
-      sf.setContextItem(context.getContextItem)
+      sf.contextItem = context.getContextItem
       sf.context = context
       nextVar = getMajorCaller(context)
       sf
@@ -96,7 +96,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
       val loc: CallTemplate = origin.asInstanceOf[CallTemplate]
       sf.setLocation(loc.getLocation)
       sf.setTemplateName(loc.getObjectName)
-      sf.setContextItem(context.getContextItem)
+      sf.contextItem = context.getContextItem
       sf.context = context
       nextVar = getMajorCaller(context)
       sf
@@ -105,7 +105,7 @@ class ContextStackIterator(var context: XPathContext) extends Iterator[ContextSt
         new ContextStackFrame.VariableEvaluation()
       val `var`: GlobalVariable = origin.asInstanceOf[GlobalVariable]
       sf.setLocation(`var`.getLocation)
-      sf.setContextItem(context.getContextItem)
+      sf.contextItem = context.getContextItem
       sf.setVariableName(`var`.getVariableQName)
       sf.setComponent(`var`)
       sf.context = context

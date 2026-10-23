@@ -38,7 +38,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     if (base.isInstanceOf[MapType]) {
       base.asInstanceOf[MapType].valueType.getPrimaryType
     } else if (base.isInstanceOf[ArrayItemType]) {
-      base.asInstanceOf[ArrayItemType].getMemberType.getPrimaryType
+      base.asInstanceOf[ArrayItemType].memberType.getPrimaryType
     } else {
       AnyItemType
     }

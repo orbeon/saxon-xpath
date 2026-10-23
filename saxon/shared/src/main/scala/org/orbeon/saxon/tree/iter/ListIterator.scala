@@ -11,7 +11,6 @@ import java.util.EnumSet
 import java.util.List
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 object ListIterator {
 
@@ -50,7 +49,7 @@ class ListIterator[T <: Item](var list: List[T])
 
   def getLength: Int = list.size
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(Property.LOOKAHEAD,
       Property.GROUNDED,
       Property.LAST_POSITION_FINDER)

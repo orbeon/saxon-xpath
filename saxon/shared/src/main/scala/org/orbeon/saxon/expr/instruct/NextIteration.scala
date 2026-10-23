@@ -84,13 +84,13 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
       c = c.getCaller
     val cm = c.asInstanceOf[XPathContextMajor]
     if (actualParams.length == 1) {
-      cm.setLocalVariable(actualParams(0).getSlotNumber, actualParams(0).getSelectValue(context))
+      cm.setLocalVariable(actualParams(0).slotNumber, actualParams(0).getSelectValue(context))
     } else {
       // we can't overwrite any of the parameters until we've evaluated all of them: test iterate012
       val oldVars = cm.getAllVariableValues
       val newVars = Arrays.copyOf(oldVars, oldVars.length)
       for (wp <- actualParams)
-        newVars(wp.getSlotNumber) = wp.getSelectValue(context)
+        newVars(wp.slotNumber) = wp.getSelectValue(context)
       cm.resetAllVariableValues(newVars)
     }
     cm.requestTailCall(this, null)

@@ -48,7 +48,7 @@ abstract class CastingExpression(source: Expression,
    * @return the expression's dependencies.
    */
   override def getIntrinsicDependencies: Int =
-    if (getTargetType.isNamespaceSensitive)
+    if (targetType.isNamespaceSensitive)
       StaticProperty.DEPENDS_ON_STATIC_CONTEXT
     else 0
 
@@ -80,7 +80,7 @@ abstract class CastingExpression(source: Expression,
     val card: Int =
       if (allowsEmpty()) StaticProperty.ALLOWS_ZERO_OR_ONE
       else StaticProperty.EXACTLY_ONE
-    val st: SequenceType = SequenceType.makeSequenceType(getTargetType, card)
+    val st: SequenceType = SequenceType.makeSequenceType(targetType, card)
     out.emitAttribute("flags", "a" + (if (allowsEmpty()) "e" else ""))
     out.emitAttribute("as", st.toAlphaCode)
     getBaseExpression.`export`(out)

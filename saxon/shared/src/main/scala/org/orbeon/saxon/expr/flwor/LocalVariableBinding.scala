@@ -18,8 +18,11 @@ import scala.beans.BeanProperty
   * item in a pattern that uses current
   */
 class LocalVariableBinding(private var variableName: StructuredQName,
-                           @BeanProperty var requiredType: SequenceType)
+                           var requiredType: SequenceType)
     extends LocalBinding {
+
+  def setRequiredType(requiredType: SequenceType): Unit = this.requiredType = requiredType
+  def getRequiredType: SequenceType = requiredType
 
   private var slotNumber: Int = -999
 

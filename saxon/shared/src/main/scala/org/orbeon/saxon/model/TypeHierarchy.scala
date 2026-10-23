@@ -366,8 +366,8 @@ class TypeHierarchy(var config: Configuration) {
             }
             DISJOINT
           case _ => if (!t1.isAtomicType && t2.isPlainType) {
-            val s1 = toSet(t1.asInstanceOf[PlainType].getPlainMemberTypes)
-            val s2 = toSet(t2.asInstanceOf[PlainType].getPlainMemberTypes)
+            val s1 = toSet[PlainType](t1.asInstanceOf[PlainType].getPlainMemberTypes.asInstanceOf[Iterable[PlainType]])
+            val s2 = toSet[PlainType](t2.asInstanceOf[PlainType].getPlainMemberTypes.asInstanceOf[Iterable[PlainType]])
             if (!unionOverlaps(s1, s2))
               return DISJOINT
             val gt = s1.containsAll(s2)

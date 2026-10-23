@@ -12,7 +12,8 @@ class ClauseInfo(var clause: Clause) extends Traceable {
 
   private var nsResolver: NamespaceResolver = _
 
-  def getLocation: Location = clause.getLocation
+  def location: Location = clause.location
+  def getLocation: Location = location
 
   /**
     * Get a name identifying the object of the expression, for example a function name, template name,
@@ -44,7 +45,7 @@ class ClauseInfo(var clause: Clause) extends Traceable {
     *
     * @return the URI of the containing module
     */
-  def getSystemId: String = clause.getLocation.getSystemId
+  def getSystemId: String = clause.location.getSystemId
 
   /**
     * Get the line number of the instruction in the source stylesheet module.
@@ -53,7 +54,7 @@ class ClauseInfo(var clause: Clause) extends Traceable {
     *
     * @return the line number of the expression within the containing module
     */
-  def getLineNumber: Int = clause.getLocation.getLineNumber
+  def getLineNumber: Int = clause.location.getLineNumber
 
   /**
     * Return the public identifier for the current document event.

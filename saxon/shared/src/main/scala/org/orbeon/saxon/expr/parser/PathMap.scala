@@ -23,17 +23,18 @@ object PathMap {
 
     var arcs: ju.List[PathMapArc] = new ju.ArrayList[PathMapArc]()
 
-    @BooleanBeanProperty
     var returnable: Boolean = _
+    def isReturnable: Boolean = returnable
+    def setReturnable(returnable: Boolean): Unit = this.returnable = returnable
 
-    @BooleanBeanProperty
     var atomized: Boolean = _
+    def isAtomized: Boolean = atomized
 
     var hasUnknownDependencies: Boolean = _
 
     def createArc(axis: Int, test: NodeTest): PathMapNode = {
       for (a <- arcs.asScala if a.axis == axis && a.getNodeTest == test) {
-        return a.getTarget
+        return a.target
       }
       val target: PathMapNode = new PathMapNode()
       val arc: PathMapArc = new PathMapArc(axis, test, target)
@@ -43,10 +44,10 @@ object PathMap {
 
     def createArc(axis: Int, test: NodeTest, target: PathMapNode): Unit = {
       for (a <- arcs.asScala
-           if a.axis == axis && a.getNodeTest == test && a.getTarget == target) {
-        a.getTarget.setReturnable(a.getTarget.isReturnable || target.isReturnable)
-        if (target.isAtomized)
-          a.getTarget.setAtomized()
+           if a.axis == axis && a.getNodeTest == test && a.target == target) {
+        a.target.setReturnable(a.target.isReturnable || target.isReturnable)
+        if (target.atomized)
+          a.target.setAtomized()
         return
       }
       val arc = new PathMapArc(axis, test, target)
@@ -57,9 +58,9 @@ object PathMap {
       arcs.toArray(Array.ofDim[PathMapArc](arcs.size))
 
     def hasReachableReturnables: Boolean = {
-      if (isReturnable)
+      if (returnable)
         return true
-      for (arc <- arcs.asScala if arc.getTarget.hasReachableReturnables) {
+      for (arc <- arcs.asScala if arc.target.hasReachableReturnables) {
         return true
       }
       false
@@ -72,18 +73,18 @@ object PathMap {
       hasUnknownDependencies = true
 
     def allPathsAreWithinStreamableSnapshot(): Boolean = {
-      if (hasUnknownDependencies || isReturnable || isAtomized)
+      if (hasUnknownDependencies || returnable || isAtomized)
         return false
       for (arc <- arcs.asScala) {
         val axis = arc.axis
         if (axis == AxisInfo.ATTRIBUTE) {
-          val next = arc.getTarget
+          val next = arc.target
           if (next.isReturnable)
             return false
           if (next.getArcs.length != 0 && ! next.allPathsAreWithinStreamableSnapshot())
             return false
         } else if (axis == AxisInfo.SELF || axis == AxisInfo.ANCESTOR || axis == AxisInfo.ANCESTOR_OR_SELF || axis == AxisInfo.PARENT) {
-          val next = arc.getTarget
+          val next = arc.target
           if (next.isAtomized)
             return false
           if (! next.allPathsAreWithinStreamableSnapshot())
@@ -143,7 +144,7 @@ object PathMap {
 
     def setReturnable(isReturned: Boolean): Unit = {
       for (node <- this.asScala) {
-        node.setReturnable(isReturned)
+        node.returnable = isReturned
       }
     }
 
@@ -180,7 +181,7 @@ class PathMap(exp: Expression) {
 
   if (finalNodes != null) {
     for (node <- finalNodes.asScala) {
-      node.setReturnable(true)
+      node.returnable = true
     }
   }
 
@@ -295,7 +296,7 @@ class PathMap(exp: Expression) {
             newTarget.arcs.add(arc)
             newRoot.createArc(AxisInfo.DESCENDANT, NodeKindTest.ELEMENT, newTarget)
           case _ =>
-            newRoot.createArc(AxisInfo.DESCENDANT_OR_SELF, arc.getNodeTest, arc.getTarget)
+            newRoot.createArc(AxisInfo.DESCENDANT_OR_SELF, arc.getNodeTest, arc.target)
         }
         i -= 1
       }
@@ -318,7 +319,7 @@ class PathMap(exp: Expression) {
     if (node.hasUnknownDependencies)
       root.setHasUnknownDependencies()
     for (i <- 0 until node.arcs.size) {
-      nodeStack ::= node.arcs.get(i).getTarget
+      nodeStack = node.arcs.get(i).target :: nodeStack
       reduceToDownwardsAxes(root, nodeStack)
       nodeStack = nodeStack.tail
     }
@@ -334,47 +335,47 @@ class PathMap(exp: Expression) {
       if (grandParent != null) {
         for (arc1 <- grandParent.arcs.asScala) {
           val arc = arc1
-          if (arc.getTarget == node)
+          if (arc.target == node)
             lastAxis = arc.axis
         }
       }
       thisArc.axis match {
         case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.DESCENDANT_OR_SELF if thisArc.getNodeTest == NodeKindTest.DOCUMENT =>
           node.arcs.remove(i)
-          for (arc <- thisArc.getTarget.arcs.asScala)
+          for (arc <- thisArc.target.arcs.asScala)
             root.arcs.add(arc)
         case AxisInfo.ANCESTOR_OR_SELF | AxisInfo.ANCESTOR | AxisInfo.FOLLOWING | AxisInfo.PRECEDING =>
-          root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
+          root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.target)
           node.arcs.remove(i)
         case AxisInfo.DESCENDANT_OR_SELF | AxisInfo.ATTRIBUTE | AxisInfo.CHILD | AxisInfo.DESCENDANT | AxisInfo.NAMESPACE =>
         case AxisInfo.FOLLOWING_SIBLING | AxisInfo.PRECEDING_SIBLING =>
           if (grandParent != null) {
-            grandParent.createArc(lastAxis, thisArc.getNodeTest, thisArc.getTarget)
+            grandParent.createArc(lastAxis, thisArc.getNodeTest, thisArc.target)
             node.arcs.remove(i)
           } else {
-            root.createArc(AxisInfo.CHILD, thisArc.getNodeTest, thisArc.getTarget)
+            root.createArc(AxisInfo.CHILD, thisArc.getNodeTest, thisArc.target)
             node.arcs.remove(i)
           }
         case AxisInfo.PARENT =>
           if (lastAxis == AxisInfo.CHILD || lastAxis == AxisInfo.ATTRIBUTE ||
             lastAxis == AxisInfo.NAMESPACE) {
-            if (node.isReturnable)
-              grandParent.setReturnable(true)
-            val target = thisArc.getTarget
+            if (node.returnable)
+              grandParent.returnable = true
+            val target = thisArc.target
             for (a <- 0 until target.arcs.size)
               grandParent.arcs.add(target.arcs.get(a))
             node.arcs.remove(i)
           } else if (lastAxis == AxisInfo.DESCENDANT) {
-            if (thisArc.getTarget.arcs.isEmpty)
+            if (thisArc.target.arcs.isEmpty)
               grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest)
             else
-              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
+              grandParent.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.target)
             node.arcs.remove(i)
           } else {
-            if (thisArc.getTarget.arcs.isEmpty)
+            if (thisArc.target.arcs.isEmpty)
               root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest)
             else
-              root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.getTarget)
+              root.createArc(AxisInfo.DESCENDANT_OR_SELF, thisArc.getNodeTest, thisArc.target)
             node.arcs.remove(i)
           }
         case AxisInfo.SELF =>
@@ -403,8 +404,8 @@ class PathMap(exp: Expression) {
     for (arc <- arcs.asScala) {
       out.info(
         pad + AxisInfo.axisName(arc.axis) + "::" + arc.test.toString +
-          (if (arc.target.isAtomized) " @" else "") +
-          (if (arc.target.isReturnable) " #" else "") +
+          (if (arc.target.atomized) " @" else "") +
+          (if (arc.target.returnable) " #" else "") +
           (if (arc.target.hasUnknownDependencies) " ...??" else ""))
       showArcs(out, arc.target, indent + 2)
     }

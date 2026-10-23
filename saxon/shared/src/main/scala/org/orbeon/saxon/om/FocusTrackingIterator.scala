@@ -10,7 +10,6 @@ package org.orbeon.saxon.om
 import org.orbeon.saxon.expr.LastPositionFinder
 import org.orbeon.saxon.om.FocusTrackingIterator._
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.pattern.{AnyNodeTest, NodeTest}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{GroundedIterator, LookaheadIterator}
@@ -185,7 +184,7 @@ class FocusTrackingIterator(private var base: SequenceIterator)
    *         It is acceptable for the properties of the iterator to change depending on its state.
    * @since 8.6
    */
-  override def getProperties: Set[Property] = base.getProperties
+  override def getProperties: Set[Property.Property] = base.getProperties
 
   def getSiblingPosition(node: NodeInfo, nodeTest: NodeTest, max: Int): Int = {
     node match {

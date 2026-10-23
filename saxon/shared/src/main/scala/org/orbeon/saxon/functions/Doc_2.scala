@@ -70,7 +70,7 @@ class Doc_2 extends SystemFunction {
     value = checkedOptions.get("type")
     if (value != null) {
       val qval = value.head.asInstanceOf[QNameValue]
-      result.setTopLevelType(context.getConfiguration.getSchemaType(qval.getStructuredQName))
+      result.topLevelType = context.getConfiguration.getSchemaType(qval.getStructuredQName)
       result.setSchemaValidationMode(Validation.BY_TYPE)
     }
     value = checkedOptions.get("strip-space")
@@ -84,10 +84,10 @@ class Doc_2 extends SystemFunction {
           result.setSpaceStrippingRule(
             NoElementsSpaceStrippingRule.getInstance)
         case "package-defined" =>
-          val data = getRetainedStaticContext.getPackageData
+          val data = getRetainedStaticContext.packageData
           data match {
             case stylesheetPackage: StylesheetPackage =>
-              result.setSpaceStrippingRule(stylesheetPackage.getSpaceStrippingRule)
+              result.spaceStrippingRule = stylesheetPackage.getSpaceStrippingRule
             case _ =>
           }
       }
@@ -102,7 +102,7 @@ class Doc_2 extends SystemFunction {
     value = checkedOptions.get("accumulators")
     if (value != null) {
       val reg: AccumulatorRegistry =
-        getRetainedStaticContext.getPackageData.accumulatorRegistry
+        getRetainedStaticContext.packageData.accumulatorRegistry
       val accumulators: Set[Accumulator] = new HashSet[Accumulator]()
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
@@ -114,7 +114,7 @@ class Doc_2 extends SystemFunction {
         val acc: Accumulator = reg.getAccumulator(name.getStructuredQName)
         accumulators.add(acc)
       }
-      result.setApplicableAccumulators(accumulators)
+      result.applicableAccumulators = accumulators
     }
     value = checkedOptions.get("use-xsi-schema-location")
     if (value != null) {

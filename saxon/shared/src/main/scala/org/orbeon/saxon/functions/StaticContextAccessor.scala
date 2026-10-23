@@ -24,7 +24,7 @@ object StaticContextAccessor {
   class DefaultCollation extends StaticContextAccessor {
 
     override def evaluate(rsc: RetainedStaticContext): AtomicValue =
-      new StringValue(rsc.getDefaultCollationName)
+      new StringValue(rsc.defaultCollationName)
 
   }
 

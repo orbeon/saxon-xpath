@@ -83,7 +83,7 @@ object ContextStackFrame {
 
     def print(out: Logger): Unit = {
       out.error("  at xsl:apply-templates " + showLocation())
-      val node: Item = getContextItem
+      val node: Item = contextItem
       if (node.isInstanceOf[NodeInfo]) {
         out.error(
           "     processing " + Navigator.getPath(node.asInstanceOf[NodeInfo]))

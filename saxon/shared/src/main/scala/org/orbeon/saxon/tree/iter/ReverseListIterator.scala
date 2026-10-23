@@ -7,7 +7,6 @@ import java.util.EnumSet
 import java.util.List
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 class ReverseListIterator[T <: Item](private val items: List[T])
   extends UnfailingIterator
@@ -28,7 +27,7 @@ class ReverseListIterator[T <: Item](private val items: List[T])
 
   def getLength: Int = items.size
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(Property.LAST_POSITION_FINDER)
 
   def getReverseIterator: SequenceIterator = new ListIterator(items)

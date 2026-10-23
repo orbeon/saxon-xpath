@@ -32,7 +32,7 @@ object SystemProperty {
 
   def getProperty(uri: String, local: String, rsc: RetainedStaticContext): String = {
     val config = rsc.getConfiguration
-    val edition = rsc.getPackageData.getTargetEdition
+    val edition = rsc.packageData.getTargetEdition
     if (uri == NamespaceConstant.XSLT) {
       local match {
         case "version"                          => "3.0"
@@ -40,7 +40,7 @@ object SystemProperty {
         case "vendor-url"                       => Version.getWebSiteAddress
         case "product-name"                     => Version.getProductName
         case "product-version"                  => Version.getProductVariantAndVersion(edition)
-        case "is-schema-aware"                  => yesOrNo(rsc.getPackageData.isSchemaAware)
+        case "is-schema-aware"                  => yesOrNo(rsc.packageData.isSchemaAware)
         case "supports-serialization"           => yesOrNo("JS" != edition)
         case "supports-backwards-compatibility" => "yes"
         case "supports-namespace-axis"          => "yes"

@@ -38,8 +38,8 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
   var comparer: ItemOrderComparer =
     if (((props & StaticProperty.CONTEXT_DOCUMENT_NODESET) != 0) ||
       (props & StaticProperty.SINGLE_DOCUMENT_NODESET) != 0)
-      LocalOrderComparer.getInstance
-    else GlobalOrderComparer.getInstance
+      LocalOrderComparer.instance
+    else GlobalOrderComparer.instance
 
   def this(base: Expression, intraDocument: Boolean) = {
     this(???) /* TODO: Scala does not allow multiple super constructor calls
@@ -49,8 +49,8 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
      */
 
     comparer =
-      if (intraDocument) LocalOrderComparer.getInstance
-      else GlobalOrderComparer.getInstance
+      if (intraDocument) LocalOrderComparer.instance
+      else GlobalOrderComparer.instance
   }
 
   def getOperandRole(): OperandRole = OperandRole.SAME_FOCUS_ACTION

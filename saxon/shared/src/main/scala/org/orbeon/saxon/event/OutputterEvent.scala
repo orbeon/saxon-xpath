@@ -83,12 +83,12 @@ object OutputterEvent {
 
   }
 
-  class Text(content: CharSequence,
+  class Text(_content: CharSequence,
              var location: Location,
              var properties: Int)
       extends OutputterEvent {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Outputter): Unit = {
       out.characters(content, location, properties)
@@ -96,12 +96,12 @@ object OutputterEvent {
 
   }
 
-  class Comment(content: CharSequence,
+  class Comment(_content: CharSequence,
                 var location: Location,
                 var properties: Int)
       extends OutputterEvent {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Outputter): Unit = {
       out.comment(content, location, properties)
@@ -110,12 +110,12 @@ object OutputterEvent {
   }
 
   class ProcessingInstruction(var target: String,
-                              content: CharSequence,
+                              _content: CharSequence,
                               var location: Location,
                               var properties: Int)
       extends OutputterEvent {
 
-    var content: String = content.toString
+    var content: String = _content.toString
 
     override def replay(out: Outputter): Unit = {
       out.processingInstruction(target, content, location, properties)

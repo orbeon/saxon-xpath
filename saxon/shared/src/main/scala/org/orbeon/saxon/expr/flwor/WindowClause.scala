@@ -201,13 +201,13 @@ class WindowClause extends Clause {
           getVariableBinding(WindowClause.WINDOW_VAR).getVariableQName.getDisplayName,
           0)
         itemTypeChecker =
-          new ItemTypeCheckingFunction(required, role, getLocation, config)
+          new ItemTypeCheckingFunction(required, role, location, config)
       case DISJOINT =>
         var message: String = "The items in the window will always be instances of " +
           supplied +
           ", never of the required type " +
           required
-        throw new XPathException(message, "XPTY0004", getLocation)
+        throw new XPathException(message, "XPTY0004", location)
 
     }
     windowMustBeSingleton =
@@ -215,7 +215,7 @@ class WindowClause extends Clause {
     if (requiredType.getCardinality == StaticProperty.ALLOWS_ZERO) {
       val message: String =
         "The value of the window variable can never be an empty sequence"
-      throw new XPathException(message, "XPTY0004", getLocation)
+      throw new XPathException(message, "XPTY0004", location)
     }
   }
 
@@ -225,7 +225,7 @@ class WindowClause extends Clause {
         "Required type of window allows only a single item; window has length " +
           w.contents.size,
         "XPTY0004",
-        getLocation)
+        location)
     }
     val checker: ItemTypeCheckingFunction = itemTypeChecker
     if (checker != null) {
@@ -237,8 +237,8 @@ class WindowClause extends Clause {
 
   override def copy(flwor: FLWORExpression, rebindings: RebindingMap): Clause = {
     val wc: WindowClause = new WindowClause()
-    wc.setLocation(getLocation)
-    wc.setPackageData(getPackageData)
+    wc.setLocation(location)
+    wc.setPackageData(packageData)
     wc.sliding = sliding
     wc.includeUnclosedWindows = includeUnclosedWindows
     wc.initSequence(flwor, getSequence.copy(rebindings))

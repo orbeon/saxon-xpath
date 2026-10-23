@@ -40,7 +40,7 @@ class ValidationException(exception: Exception)
     this.initCause(exception)
     this.message = message
     if (failure != null) {
-      failure.setMessage(message)
+      failure.message = message
     }
   }
 
@@ -55,7 +55,7 @@ class ValidationException(exception: Exception)
     this.message = message
     this.setLocator(locator)
     if (failure != null) {
-      failure.setMessage(message)
+      failure.message = message
     }
   }
 

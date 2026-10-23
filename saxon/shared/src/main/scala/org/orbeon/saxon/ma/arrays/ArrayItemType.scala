@@ -7,7 +7,6 @@ import org.orbeon.saxon.expr.parser.RoleDiagnostic
 import org.orbeon.saxon.ma.arrays.ArrayItemType._
 import org.orbeon.saxon.model.Affinity.Affinity
 import org.orbeon.saxon.model._
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, GroundedValue, Item}
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
@@ -29,7 +28,7 @@ object ArrayItemType {
 class ArrayItemType(@BeanProperty var memberType: SequenceType)
   extends AnyFunctionType {
 
-  override def getGenre: Genre = Genre.ARRAY
+  override def getGenre: Genre.Genre = Genre.ARRAY
 
   override def isMapType: Boolean = false
 

@@ -87,8 +87,8 @@ class GroupByClause(var config: Configuration) extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): GroupByClause = {
     val g2: GroupByClause = new GroupByClause(config)
-    g2.setLocation(getLocation)
-    g2.setPackageData(getPackageData)
+    g2.setLocation(location)
+    g2.setPackageData(packageData)
     g2.bindings = Array.ofDim[LocalVariableBinding](bindings.length)
     for (i <- 0 until bindings.length) {
       g2.bindings(i) = bindings(i).copy()

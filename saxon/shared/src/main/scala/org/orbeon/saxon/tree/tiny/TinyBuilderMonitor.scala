@@ -35,7 +35,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
 
   override def startDocument(properties: Int): Unit = {
     if (mark == Type.DOCUMENT) {
-      markedNodeNr = builder.getTree.getNumberOfNodes
+      markedNodeNr = builder.tree.getNumberOfNodes
     }
     mark = -1
     super.startDocument(properties)
@@ -48,7 +48,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
                             location: Location,
                             properties: Int): Unit = {
     if (mark == Type.ELEMENT) {
-      markedNodeNr = builder.getTree.getNumberOfNodes
+      markedNodeNr = builder.tree.getNumberOfNodes
     }
     mark = -1
     super.startElement(elemName,
@@ -63,7 +63,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
                           locationId: Location,
                           properties: Int): Unit = {
     if (mark == Type.TEXT) {
-      markedNodeNr = builder.getTree.getNumberOfNodes
+      markedNodeNr = builder.tree.getNumberOfNodes
     }
     mark = -1
     super.characters(chars, locationId, properties)
@@ -73,7 +73,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
                        locationId: Location,
                        properties: Int): Unit = {
     if (mark == Type.COMMENT) {
-      markedNodeNr = builder.getTree.getNumberOfNodes
+      markedNodeNr = builder.tree.getNumberOfNodes
     }
     mark = -1
     super.comment(chars, locationId, properties)
@@ -84,7 +84,7 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
                                      locationId: Location,
                                      properties: Int): Unit = {
     if (mark == Type.PROCESSING_INSTRUCTION) {
-      markedNodeNr = builder.getTree.getNumberOfNodes
+      markedNodeNr = builder.tree.getNumberOfNodes
     }
     mark = -1
     super.processingInstruction(target, data, locationId, properties)
@@ -92,9 +92,9 @@ class TinyBuilderMonitor(private var builder: TinyBuilder)
 
   def getMarkedNode(): NodeInfo =
     if (markedNodeNr != -1) {
-      builder.getTree.getNode(markedNodeNr)
+      builder.tree.getNode(markedNodeNr)
     } else if (markedAttribute != -1) {
-      builder.getTree.getAttributeNode(markedAttribute)
+      builder.tree.getAttributeNode(markedAttribute)
     } else {
       null
     }

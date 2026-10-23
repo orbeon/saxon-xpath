@@ -84,13 +84,13 @@ class ArraySort extends SystemFunction {
     var collation: StringCollator = null
     if (arguments.length == 1) {
       collation = context.getConfiguration.getCollation(
-        getRetainedStaticContext.getDefaultCollationName)
+        getRetainedStaticContext.defaultCollationName)
     } else {
       val collName: StringValue = arguments(1).head.asInstanceOf[StringValue]
       collation =
         if (collName == null)
           context.getConfiguration.getCollation(
-            getRetainedStaticContext.getDefaultCollationName)
+            getRetainedStaticContext.defaultCollationName)
         else
           context.getConfiguration
             .getCollation(collName.getStringValue, getStaticBaseUriString)

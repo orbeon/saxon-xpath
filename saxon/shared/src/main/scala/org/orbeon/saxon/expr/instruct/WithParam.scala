@@ -96,7 +96,7 @@ object WithParam {
         if (tunnel) {
           flags += "t"
         }
-        if (param.isTypeChecked) {
+        if (param.typeChecked) {
           flags += "c"
         }
         if (!flags.isEmpty) {
@@ -104,11 +104,11 @@ object WithParam {
         }
         val options: ExpressionPresenter.ExportOptions =
           out.options.asInstanceOf[ExpressionPresenter.ExportOptions]
-        if (param.getRequiredType != SequenceType.ANY_SEQUENCE) {
-          out.emitAttribute("as", param.getRequiredType.toAlphaCode)
+        if (param.requiredType != SequenceType.ANY_SEQUENCE) {
+          out.emitAttribute("as", param.requiredType.toAlphaCode)
         }
-        if (param.getSlotNumber != -1) {
-          out.emitAttribute("slot", param.getSlotNumber.toString)
+        if (param.slotNumber != -1) {
+          out.emitAttribute("slot", param.slotNumber.toString)
         }
         param.selectOp.getChildExpression.`export`(out)
         out.endElement()
@@ -131,8 +131,9 @@ class WithParam {
   @BeanProperty
   var requiredType: SequenceType = _
 
-  @BeanProperty
   var variableQName: StructuredQName = _
+  def getVariableQName: StructuredQName = variableQName
+  def setVariableQName(name: StructuredQName): Unit = this.variableQName = name
 
   private var evaluator: Evaluator = null
 

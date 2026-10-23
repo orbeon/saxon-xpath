@@ -58,7 +58,7 @@ final class InstanceOfExpression(val source: Expression, val target: SequenceTyp
     getOperand.typeCheck(visitor, contextInfo)
     val operand = getBaseExpression
     if (operand.isInstanceOf[Literal]) {
-      val lit = Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext), this)
+      val lit = Literal.makeLiteral(evaluateItem(visitor.staticContext.makeEarlyEvaluationContext), this)
       ExpressionTool.copyLocationInfo(this, lit)
       return lit
     }

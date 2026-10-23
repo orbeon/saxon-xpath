@@ -10,7 +10,6 @@ import org.orbeon.saxon.tree.iter.AxisIterator
 import java.util.EnumSet
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 class AttributeIterator(private val tree: TinyTree,
                         private val element: Int,
@@ -60,7 +59,7 @@ class AttributeIterator(private val tree: TinyTree,
       null
     }
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(Property.ATOMIZING)
 
 }

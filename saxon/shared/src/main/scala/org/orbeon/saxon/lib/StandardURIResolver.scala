@@ -119,7 +119,7 @@ class StandardURIResolver(private var config: Configuration)
       resource = DataURIScheme.decode(uri)
       resource match {
         case binaryResource: BinaryResource =>
-          val contents = binaryResource.getData
+          val contents = binaryResource.data
           val is = new InputSource(new ByteArrayInputStream(contents))
           source = new SAXSource(is)
           source.setSystemId(uriString)
@@ -157,7 +157,7 @@ class StandardURIResolver(private var config: Configuration)
       source
         .asInstanceOf[AugmentedSource]
         .getParseOptions
-        .setSpaceStrippingRule(stripSpace)
+        .spaceStrippingRule = stripSpace
     }
     if (id != null) {
       val idFinal = id

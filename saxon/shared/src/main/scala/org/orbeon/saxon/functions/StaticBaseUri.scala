@@ -21,7 +21,7 @@ class StaticBaseUri extends SystemFunction {
     new AnyURIValue(getRetainedStaticContext.getStaticBaseUriString)
 
   def makeFunctionCall(arguments: Array[Expression]): Expression = {
-    val pd: PackageData = getRetainedStaticContext.getPackageData
+    val pd: PackageData = getRetainedStaticContext.packageData
     if (pd.relocatable) {
       super.makeFunctionCall(arguments.toIndexedSeq: _*)
     } else {

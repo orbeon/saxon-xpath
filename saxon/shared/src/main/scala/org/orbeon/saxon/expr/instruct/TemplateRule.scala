@@ -236,9 +236,9 @@ class TemplateRule
   def isDeclaredStreamable: Boolean = false
 
   def explainProperties(presenter: ExpressionPresenter): Unit = {
-    if (getRequiredContextItemType != AnyItemType) {
+    if (requiredContextItemType != AnyItemType) {
       val st: SequenceType = SequenceType.makeSequenceType(
-        getRequiredContextItemType,
+        requiredContextItemType,
         StaticProperty.EXACTLY_ONE)
       presenter.emitAttribute("cxt", st.toAlphaCode)
     }

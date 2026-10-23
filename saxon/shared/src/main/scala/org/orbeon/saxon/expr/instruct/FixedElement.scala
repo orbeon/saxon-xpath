@@ -61,7 +61,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
   override def operands: java.lang.Iterable[Operand] = contentOp
 
   override def simplify(): Expression = {
-    preservingTypes |= !getPackageData.isSchemaAware
+    preservingTypes = preservingTypes || !getPackageData.isSchemaAware
     super.simplify()
   }
 
@@ -126,8 +126,8 @@ class FixedElement(@BeanProperty var elementName: NodeName,
       var reduced: NamespaceMap = namespaceBindings
       for (childNamespace <- namespaceBindings.asScala
            if childNamespace.getURI == parentNamespaces.getURI(
-             childNamespace.getPrefix)) {
-        reduced = reduced.remove(childNamespace.getPrefix)
+             childNamespace.prefix)) {
+        reduced = reduced.remove(childNamespace.prefix)
       }
       namespaceBindings = reduced
     }
@@ -184,7 +184,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           Token.INTERSECT,
           new ContentTypeTest(Type.ELEMENT, schTyp, config, false))
         if (xsiType != null || ! decl.hasTypeAlternatives) {
-          instr.validationOptions.setTopLevelType(schTyp)
+          instr.validationOptions.topLevelType = schTyp
           try schTyp.analyzeContentExpression(content, Type.ELEMENT)
           catch {
             case e: XPathException => {
@@ -219,7 +219,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
           itemType = new NameTest(Type.ELEMENT, fp, config.getNamePool)
         } else {
           schTyp = decl.getType
-          instr.validationOptions.setTopLevelType(schTyp)
+          instr.validationOptions.topLevelType = schTyp
           itemType = new CombinedNodeTest(
             new NameTest(Type.ELEMENT, fp, config.getNamePool),
             Token.INTERSECT,
@@ -381,7 +381,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
                            nodeName: NodeName,
                            copiedNode: NodeInfo): Unit = {
     for (ns <- namespaceBindings.asScala) {
-      out.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
+      out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
     }
   }
 
@@ -404,7 +404,7 @@ class FixedElement(@BeanProperty var elementName: NodeName,
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
     if (!namespaceBindings.isEmpty) {
       for (ns <- namespaceBindings.asScala) {
-        val prefix: String = ns.getPrefix
+        val prefix: String = ns.prefix
         if (prefix.!=("xml")) {
           fsb.append(if (prefix.isEmpty) "#" else prefix)
           if (ns.getURI != getRetainedStaticContext.getURIForPrefix(prefix,

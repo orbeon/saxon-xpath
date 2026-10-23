@@ -118,7 +118,7 @@ class ParseXml extends SystemFunction {
         TreeModel.TINY_TREE.makeBuilder(controller.makePipelineConfiguration)
       var s: Receiver = b
       val options: ParseOptions = new ParseOptions(config.getParseOptions)
-      val pd: PackageData = getRetainedStaticContext.getPackageData
+      val pd: PackageData = getRetainedStaticContext.packageData
       if (pd.isInstanceOf[StylesheetPackage]) {
         options.setSpaceStrippingRule(
           pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
@@ -126,9 +126,9 @@ class ParseXml extends SystemFunction {
           s = config.getAnnotationStripper(s)
         }
       } else {
-        options.setSpaceStrippingRule(IgnorableSpaceStrippingRule.getInstance)
+        options.spaceStrippingRule = IgnorableSpaceStrippingRule.getInstance
       }
-      options.setErrorHandler(errorHandler)
+      options.errorHandler = errorHandler
       s.setPipelineConfiguration(b.getPipelineConfiguration)
       Sender.send(source, s, options)
       val node: TinyDocumentImpl =

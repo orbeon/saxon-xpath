@@ -108,7 +108,7 @@ class GlobalVariable
     isStatic = declaredStatic
 
   private def getConfiguration: Configuration =
-    getPackageData.getConfiguration
+    packageData.getConfiguration
 
   def getUltimateOriginalVariable: GlobalVariable =
     if (originalVariable == null)
@@ -139,7 +139,7 @@ class GlobalVariable
   override def getProperties: ju.Iterator[String] =
     Collections.emptyIterator()
 
-  def getHostLanguage: HostLanguage.HostLanguage = getPackageData.getHostLanguage
+  def getHostLanguage: HostLanguage.HostLanguage = packageData.getHostLanguage
 
   def setIndexedVariable(): Unit =
     indexed = true
@@ -216,7 +216,7 @@ class GlobalVariable
         value.simplify().typeCheck(visitor, cit),
         getRequiredType,
         role,
-        visitor.getStaticContext)
+        visitor.staticContext)
       value2 = value2.optimize(visitor, cit)
       this.body = value2
       val map = getConfiguration.makeSlotManager
@@ -279,7 +279,7 @@ class GlobalVariable
       val err = new XPathException(message)
       var errorCode: String = null
       errorCode =
-        if (getPackageData.isXSLT)
+        if (packageData.isXSLT)
           "XTDE0640"
         else if (s == 0 && referees.stack.size == 2)
           "XPST0008"
@@ -364,7 +364,7 @@ class GlobalVariable
   def evaluateVariable(context: XPathContext): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData)
+    val b: Bindery = controller.getBindery(packageData)
     val v: GroundedValue = b.getGlobalVariable(getBinderySlotNumber)
     if (v != null) {
       v
@@ -377,7 +377,7 @@ class GlobalVariable
                        target: Component): GroundedValue = {
     val controller: Controller = context.getController
     assert(controller != null)
-    val b: Bindery = controller.getBindery(getPackageData)
+    val b: Bindery = controller.getBindery(packageData)
     if (b == null) {
       throw new AssertionError()
     }
@@ -397,7 +397,7 @@ class GlobalVariable
    def actuallyEvaluate(context: XPathContext, target: Component): GroundedValue = {
     val controller = context.getController
     assert(controller != null)
-    val b = controller.getBindery(getPackageData)
+    val b = controller.getBindery(packageData)
      try {
       setDependencies(this, context)
       val go = b.setExecuting(this)
@@ -414,7 +414,7 @@ class GlobalVariable
       case err: XPathException =>
         b.setNotExecuting(this)
         if (err.isInstanceOf[XPathException.Circularity]) {
-          err.setErrorCode(if (getPackageData.isXSLT) "XTDE0640" else "XQDY0054")
+          err.setErrorCode(if (packageData.isXSLT) "XTDE0640" else "XQDY0054")
           err.setXPathContext(context)
           err.setIsGlobalError(true)
           b.setGlobalVariable(this, new Bindery.FailureValue(err))
@@ -452,7 +452,7 @@ class GlobalVariable
     if (getStackFrameMap != null)
       presenter.emitAttribute("slots", getStackFrameMap.getNumberOfVariables.toString)
     if (declaringComponent != null) {
-      val vis: Visibility.Visibility = declaringComponent.getVisibility
+      val vis: Visibility.Visibility = declaringComponent.visibility
       if (vis != null)
         presenter.emitAttribute("visibility", vis.toString)
     }

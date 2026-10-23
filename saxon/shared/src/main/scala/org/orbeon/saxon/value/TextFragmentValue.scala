@@ -106,9 +106,9 @@ class TextFragmentValue(config: Configuration,
     case AxisInfo.SELF | AxisInfo.ANCESTOR_OR_SELF =>
       SingleNodeIterator.makeIterator(this)
     case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
-      SingleNodeIterator.makeIterator(getTextNode)
+      SingleNodeIterator.makeIterator(textNode)
     case AxisInfo.DESCENDANT_OR_SELF =>
-      val nodes: Array[NodeInfo] = Array(this, getTextNode)
+      val nodes: Array[NodeInfo] = Array(this, textNode)
       new ArrayIterator.OfNodes(nodes)
     case _ =>
       throw new IllegalArgumentException("Unknown axis number " + axisNumber)
@@ -125,14 +125,14 @@ class TextFragmentValue(config: Configuration,
       case AxisInfo.SELF | AxisInfo.ANCESTOR_OR_SELF =>
         Navigator.filteredSingleton(this, nodeTest)
       case AxisInfo.CHILD | AxisInfo.DESCENDANT =>
-        Navigator.filteredSingleton(getTextNode, nodeTest)
+        Navigator.filteredSingleton(textNode, nodeTest)
       case AxisInfo.DESCENDANT_OR_SELF =>
         val b1        = nodeTest.test(this)
-        val textNode2 = getTextNode
+        val textNode2 = textNode
         val b2        = nodeTest.test(textNode2)
         if (b1) {
           val res = if (b2) {
-            val pair = Array(this, textNode2)
+            val pair: Array[NodeInfo] = Array(this, textNode2)
             new ArrayIterator.OfNodes(pair)
           } else {
             SingleNodeIterator.makeIterator(this)

@@ -31,7 +31,7 @@ object ValidationParams {
       if (paramValue != null)
         context.setVariable(`var`, paramValue)
       else
-        context.setVariable(`var`, `var`.getDefaultValue)
+        context.setVariable(`var`, `var`.defaultValue)
     }
 }
 

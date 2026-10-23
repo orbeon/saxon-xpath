@@ -549,7 +549,7 @@ object DeepEqual {
   private def showNamespaces(bindings: HashSet[NamespaceBinding]): String = {
     val sb = new FastStringBuffer(256)
     for (binding <- bindings.asScala) {
-      sb.append(binding.getPrefix)
+      sb.append(binding.prefix)
       sb.append("=")
       sb.append(binding.getURI)
       sb.append(" ")

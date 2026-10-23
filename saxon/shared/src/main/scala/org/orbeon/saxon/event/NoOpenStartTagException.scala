@@ -8,7 +8,6 @@ package org.orbeon.saxon.event
 
 import org.orbeon.saxon.lib.StandardDiagnostics
 import org.orbeon.saxon.model.Type
-import org.orbeon.saxon.s9api.HostLanguage._
 import org.orbeon.saxon.s9api.{HostLanguage, Location}
 import org.orbeon.saxon.trans.XPathException
 
@@ -21,7 +20,7 @@ object NoOpenStartTagException {
   def makeNoOpenStartTagException(
       nodeKind: Int,
       name: String,
-      hostLanguage: HostLanguage,
+      hostLanguage: HostLanguage.HostLanguage,
       parentIsDocument: Boolean,
       startElementLocationId: Location): NoOpenStartTagException = {
     var message: String = null

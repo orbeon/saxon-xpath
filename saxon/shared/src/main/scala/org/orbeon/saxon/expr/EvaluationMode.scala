@@ -57,13 +57,16 @@ object EvaluationMode extends Enumeration {
   val CALL_EVALUATE_SINGLE_ITEM: EvaluationMode =
     new EvaluationMode(16, Evaluator.SINGLE_ITEM)
 
-  class EvaluationMode(@BeanProperty val code: Int,
-                       @BeanProperty val evaluator: Evaluator)
-      extends Val
+  class EvaluationMode(val code: Int,
+                       val evaluator: Evaluator)
+      extends Val {
+    def getCode: Int = code
+    def getEvaluator: Evaluator = evaluator
+  }
 
   def forCode(code: Int): EvaluationMode =
     EvaluationMode.values
-      .find(_.getCode == code)
+      .find(_.code == code)
       .getOrElse(ITERATE_AND_MATERIALIZE)
 
   implicit def convertValue(v: Value): EvaluationMode =

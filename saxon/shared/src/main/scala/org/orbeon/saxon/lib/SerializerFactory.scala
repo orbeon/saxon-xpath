@@ -341,8 +341,8 @@ class SerializerFactory {
       }
       val charMap = ph.getCharacterMap
       if (charMap != null) {
-        props2.setProperty(SaxonOutputKeys.USE_CHARACTER_MAPS, charMap.getName.getClarkName)
-        charMapIndex.putCharacterMap(charMap.getName, charMap)
+        props2.setProperty(SaxonOutputKeys.USE_CHARACTER_MAPS, charMap.name.getClarkName)
+        charMapIndex.putCharacterMap(charMap.name, charMap)
       }
       props = props2
     }
@@ -593,7 +593,7 @@ class SerializerFactory {
    */
   @throws[XPathException]
    def customizeJSONSerializer(emitter: JSONSerializer, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver): JSONSerializer = {
-    if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].getNormalizer)
+    if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].normalizer)
     if (characterMapExpander != null) emitter.setCharacterMap(characterMapExpander.getCharacterMap)
     emitter
   }
@@ -609,7 +609,7 @@ class SerializerFactory {
    * @return a Receiver acting as the entry point to the serialization pipeline
    */
    def customizeAdaptiveSerializer(emitter: AdaptiveEmitter, props: Properties, characterMapExpander: CharacterMapExpander, normalizer: ProxyReceiver): AdaptiveEmitter = {
-    if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].getNormalizer)
+    if (normalizer.isInstanceOf[UnicodeNormalizer]) emitter.setNormalizer(normalizer.asInstanceOf[UnicodeNormalizer].normalizer)
     if (characterMapExpander != null) emitter.setCharacterMap(characterMapExpander.getCharacterMap)
     emitter
   }

@@ -12,7 +12,6 @@ import java.util.function.IntPredicate
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.flwor.Clause
 import org.orbeon.saxon.expr.instruct.{Block, Choose, ForEach}
-import org.orbeon.saxon.expr.parser.XPathParser.ParsedLanguage
 import org.orbeon.saxon.functions._
 import org.orbeon.saxon.functions.registry.VendorFunctionSetHE
 import org.orbeon.saxon.lib.{Feature, NamespaceConstant}
@@ -335,6 +334,8 @@ object XPathParser {
  * Create an expression parser
  */
 class XPathParser {
+
+  import XPathParser.ParsedLanguage
 
   var t: Tokenizer = _
   var env: StaticContext = _
@@ -1246,7 +1247,7 @@ class XPathParser {
       clauses += 1
       val v = new QuantifiedExpression
       v.setRequiredType(SequenceType.SINGLE_ITEM)
-      v.setOperator(operator)
+      v.operator = operator
       setLocation(v, offset)
       v.setVariableQName(makeStructuredQName(`var`, ""))
       nextToken()
@@ -3238,8 +3239,8 @@ class XPathParser {
     val line = t.getLineNumber(offset)
     val column = t.getColumnNumber(offset)
     val loc = makeNestedLocation(env.getContainingLocation, line, column, null)
-    clause.setLocation(loc)
-    clause.setPackageData(env.getPackageData)
+    clause.location = loc
+    clause.packageData = env.getPackageData
   }
 
   private var mostRecentLocation: Location = Loc.NONE

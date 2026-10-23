@@ -175,7 +175,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
       }
     }
     if (alwaysEmpty) {
-      visitor.getStaticContext.issueWarning(
+      visitor.staticContext.issueWarning(
         "The result of the sequence constructor will always be empty, so xsl:on-empty " +
           "instructions will always be evaluated, and xsl:on-non-empty instructions will never be evaluated",
         getLocation
@@ -190,7 +190,7 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
       return Block.makeBlock(retain)
     }
     if (alwaysNonEmpty) {
-      visitor.getStaticContext.issueWarning(
+      visitor.staticContext.issueWarning(
         "The result of the sequence constructor will never be empty, so xsl:on-empty " +
           "instructions will never be evaluated, and xsl:on-non-empty instructions will always be evaluated",
         getLocation

@@ -141,7 +141,7 @@ object DocumentFn {
             val rule: SpaceStrippingRule =
               packageData.asInstanceOf[StylesheetPackage].getSpaceStrippingRule
             if (rule != NoElementsSpaceStrippingRule.getInstance) {
-              parseOpt.setSpaceStrippingRule(rule)
+              parseOpt.spaceStrippingRule = rule
             }
           }
           parseOpt.setSchemaValidationMode(controller.getSchemaValidationMode)
@@ -154,7 +154,7 @@ object DocumentFn {
           val eh: StandardErrorHandler = new StandardErrorHandler(
             controller.getErrorReporter)
           eh.setSilent(true)
-          parseOpt.setErrorHandler(eh)
+          parseOpt.errorHandler = eh
         }
         if (packageData.isInstanceOf[StylesheetPackage] &&
           packageData
@@ -166,7 +166,7 @@ object DocumentFn {
         if (map != null) {
           val pathRoot: PathMap.PathMapRoot =
             map.getRootForDocument(documentKey.toString)
-          if (pathRoot != null && !pathRoot.isReturnable && !pathRoot
+          if (pathRoot != null && !pathRoot.returnable && !pathRoot
             .hasUnknownDependencies) {
             parseOpt.addFilter(config.makeDocumentProjector(pathRoot))
           }
@@ -561,11 +561,11 @@ class DocumentFn extends SystemFunction {
     val map: DocumentMappingFunction = new DocumentMappingFunction(context)
     map.baseURI = baseURI
     map.stylesheetURI = getStaticBaseUriString
-    map.packageData = getRetainedStaticContext.getPackageData
+    map.packageData = getRetainedStaticContext.packageData
     map.locator = location
     val iter: ItemMappingIterator = new ItemMappingIterator(hrefSequence, map)
     SequenceTool.toLazySequence(
-      new DocumentOrderIterator(iter, GlobalOrderComparer.getInstance))
+      new DocumentOrderIterator(iter, GlobalOrderComparer.instance))
   }
 
 }

@@ -11,7 +11,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.{SymbolicName, Visibility, VisibilityProvenance}
-import org.orbeon.saxon.trans.VisibilityProvenance.VisibilityProvenance
 
 import scala.beans.BeanProperty
 //import scala.collection.compat._
@@ -73,7 +72,7 @@ abstract class Actor extends ExpressionOwner with Location {
       val actualVisibility: Visibility.Visibility =
         if (declaredVisibility == null) defaultVisibility
         else declaredVisibility
-      val provenance: VisibilityProvenance =
+      val provenance: VisibilityProvenance.VisibilityProvenance =
         if (declaredVisibility == null) VisibilityProvenance.DEFAULTED
         else VisibilityProvenance.EXPLICIT
       declaringComponent = Component.makeComponent(this,

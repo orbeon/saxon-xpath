@@ -78,7 +78,7 @@ class Comment extends SimpleNodeConstructor {
     if (getSelect.isInstanceOf[Literal]) {
       val s: String = getSelect.asInstanceOf[Literal].getValue.getStringValue
       val s2: String =
-        checkContent(s, visitor.getStaticContext.makeEarlyEvaluationContext())
+        checkContent(s, visitor.staticContext.makeEarlyEvaluationContext())
       if (s2 != s) {
         this.select = new StringLiteral(s2)
       }

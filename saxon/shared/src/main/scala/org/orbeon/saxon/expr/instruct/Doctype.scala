@@ -64,7 +64,7 @@ class Doctype(content: Expression) extends Instruction {
     val controller: Controller = context.getController
     val pipe: PipelineConfiguration = controller.makePipelineConfiguration
     pipe.xPathContext = context
-    pipe.hostLanguage = getPackageData.getHostLanguage
+    pipe.hostLanguage = getPackageData.hostLanguage
     val builder: TinyBuilder = new TinyBuilder(pipe)
     builder.setStatistics(
       pipe.getConfiguration.getTreeStatistics.RESULT_TREE_STATISTICS)

@@ -257,7 +257,7 @@ object MapFunctionSet {
         val values: Map[String, Sequence] =
           getDetails.optionDetails.processSuppliedOptions(
             options,
-            visitor.getStaticContext.makeEarlyEvaluationContext())
+            visitor.staticContext.makeEarlyEvaluationContext())
         var duplicates: String =
           values.get("duplicates").asInstanceOf[StringValue].getStringValue
         val duplicatesErrorCode: String =

@@ -396,7 +396,7 @@ class Block(children: Array[Expression]) extends Instruction {
       }
     }
     if (size == 1) {
-      val e: Expression = getOperanda()(0).getChildExpression
+      val e: Expression = operanda(0).getChildExpression
       e.parentExpression = parentExpression
       e
     } else if (size == 0) {

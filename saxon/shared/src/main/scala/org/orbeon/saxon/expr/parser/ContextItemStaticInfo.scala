@@ -30,7 +30,7 @@ object ContextItemStaticInfo {
   val ABSENT : ContextItemStaticInfo = new ContextItemStaticInfo(ErrorType,   true)
 }
 
-class ContextItemStaticInfo(@BeanProperty var itemType: ItemType,
+class ContextItemStaticInfo(var itemType: ItemType,
                             maybeUndefined: Boolean) {
 
   private val contextMaybeUndefined: Boolean = maybeUndefined
@@ -39,6 +39,7 @@ class ContextItemStaticInfo(@BeanProperty var itemType: ItemType,
 
   var parentless: Boolean = _
 
+  def getItemType: ItemType = itemType
   def getContextItemUType: UType = itemType.getUType
   def isPossiblyAbsent: Boolean = contextMaybeUndefined
   def setContextPostureStriding(): Unit = ()

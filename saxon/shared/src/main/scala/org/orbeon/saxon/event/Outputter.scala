@@ -58,7 +58,7 @@ abstract class Outputter
   ): Unit = {
     startElement(elemName, `type`, location, properties)
     for (ns <- namespaces.asScala)
-      namespace(ns.getPrefix, ns.getURI, properties)
+      namespace(ns.prefix, ns.getURI, properties)
     for (att <- attributes.iterator.asScala)
       attribute(
         att.nodeName,
@@ -79,7 +79,7 @@ abstract class Outputter
                  properties: Int
   ): Unit =
     for (nb <- bindings.asScala)
-      namespace(nb.getPrefix, nb.getURI, properties)
+      namespace(nb.prefix, nb.getURI, properties)
 
   def attribute(
     attName   : NodeName,

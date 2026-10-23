@@ -8,7 +8,6 @@ package org.orbeon.saxon.expr
 
 import org.orbeon.saxon.om.{GroundedValue, Item, SequenceIterator}
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.tree.iter.{ArrayIterator, LookaheadIterator}
 
 import scala.util.control.Breaks._
@@ -86,8 +85,8 @@ class SubsequenceIterator private(private var base: SequenceIterator,
     base.close()
   }
 
-  override def getProperties: Set[Property] = {
-    val intersectSet: Set[Property] = base.getProperties.intersect(Set(Property.LAST_POSITION_FINDER))
+  override def getProperties: Set[Property.Property] = {
+    val intersectSet: Set[Property.Property] = base.getProperties.intersect(Set(Property.LAST_POSITION_FINDER))
     intersectSet.union(Set(Property.LOOKAHEAD))
   }
 

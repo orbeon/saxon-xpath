@@ -65,8 +65,9 @@ class ParseOptions {
 
   private var dtdValidation: Int = Validation.DEFAULT
 
-  @BeanProperty
   var topLevelElement: StructuredQName = _
+  def setTopLevelElement(topLevelElement: StructuredQName): Unit = this.topLevelElement = topLevelElement
+  def getTopLevelElement: StructuredQName = topLevelElement
 
   @BeanProperty
   var topLevelType: SchemaType = _
@@ -87,8 +88,9 @@ class ParseOptions {
   private var treeModel: TreeModel = null
 
   //private int stripSpace = Whitespace.UNSPECIFIED;
-  @BeanProperty
   var spaceStrippingRule: SpaceStrippingRule = null
+  def setSpaceStrippingRule(spaceStrippingRule: SpaceStrippingRule): Unit = this.spaceStrippingRule = spaceStrippingRule
+  def getSpaceStrippingRule: SpaceStrippingRule = spaceStrippingRule
 
   /*@Nullable*/
 
@@ -272,7 +274,7 @@ class ParseOptions {
       treeModel = TreeModel.getTreeModel(config.getTreeModel)
     }
     if (spaceStrippingRule == null) {
-      spaceStrippingRule = config.getParseOptions.getSpaceStrippingRule
+      spaceStrippingRule = config.getParseOptions.spaceStrippingRule
     }
     if (lineNumbering == null) {
       lineNumbering = config.isLineNumbering

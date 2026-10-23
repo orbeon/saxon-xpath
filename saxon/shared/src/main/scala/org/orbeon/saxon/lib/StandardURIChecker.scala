@@ -22,8 +22,8 @@ object StandardURIChecker {
 
   /*@NotNull*/
 
-  private val caches: ThreadLocal[LRUCache[CharSequence, Boolean]] =
-    new ThreadLocal[LRUCache[CharSequence, Boolean]]()
+  private val caches: ThreadLocal[LRUCache[CharSequence, java.lang.Boolean]] =
+    new ThreadLocal[LRUCache[CharSequence, java.lang.Boolean]]()
 
   def main(args: Array[String]): Unit = {
     System.err.println(
@@ -38,9 +38,9 @@ object StandardURIChecker {
 class StandardURIChecker extends URIChecker {
 
   def isValidURI(value: CharSequence): Boolean = {
-    var cache: LRUCache[CharSequence, Boolean] = caches.get
+    var cache: LRUCache[CharSequence, java.lang.Boolean] = caches.get
     if (cache == null) {
-      cache = new LRUCache[CharSequence, Boolean](50)
+      cache = new LRUCache[CharSequence, java.lang.Boolean](50)
       caches.set(cache)
     }
     if (cache.get(value) != null) {

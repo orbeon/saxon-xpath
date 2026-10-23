@@ -488,7 +488,8 @@ abstract class Expression
   def getConfiguration: Configuration =
     getRetainedStaticContext.getConfiguration
 
-  def getPackageData: PackageData = getRetainedStaticContext.getPackageData
+  def packageData: PackageData = getRetainedStaticContext.packageData
+  def getPackageData: PackageData = packageData
 
   def isInstruction: Boolean = false
 

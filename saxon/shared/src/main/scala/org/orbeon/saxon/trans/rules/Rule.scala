@@ -140,7 +140,7 @@ class Rule {
       }
       out.emitAttribute("rank", "" + rank.toString)
       out.emitAttribute("minImp", getMinImportPrecedence.toString)
-      out.emitAttribute("slots", template.getStackFrameMap.getNumberOfVariables.toString)
+      out.emitAttribute("slots", template.stackFrameMap.getNumberOfVariables.toString)
       out.emitAttribute("matches", pattern.getItemType.getFullAlphaCode)
       template.explainProperties(out)
       exportOtherProperties(out)

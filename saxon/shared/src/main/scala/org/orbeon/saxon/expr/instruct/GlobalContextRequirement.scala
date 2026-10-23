@@ -38,8 +38,9 @@ class GlobalContextRequirement {
   var requiredItemTypes: List[ItemType] = new ArrayList()
 
 // Used in XQuery only
-  @BeanProperty
   var defaultValue: Expression = null
+  def getDefaultValue: Expression = defaultValue
+  def setDefaultValue(defaultValue: Expression): Unit = this.defaultValue = defaultValue
 
   def getRequiredItemType: ItemType =
     if (requiredItemTypes.isEmpty) {

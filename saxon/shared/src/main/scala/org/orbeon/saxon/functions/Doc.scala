@@ -85,7 +85,7 @@ class Doc extends SystemFunction {
       ZeroOrOne.empty
     } else {
       val href: String = hrefVal.getStringValue
-      val packageData: PackageData = getRetainedStaticContext.getPackageData
+      val packageData: PackageData = getRetainedStaticContext.packageData
       val item: NodeInfo = DocumentFn.makeDoc(
         href,
         getRetainedStaticContext.getStaticBaseUriString,

@@ -156,7 +156,7 @@ class KeyIndex(isRangeKey: Boolean) {
           nodes.add(curr)
         }
       } else {
-        val comparer: LocalOrderComparer = LocalOrderComparer.getInstance
+        val comparer: LocalOrderComparer = LocalOrderComparer.instance
         var found: Boolean = false
         var i: Int = nodes.size - 1
         breakable {   while (i >= 0) {

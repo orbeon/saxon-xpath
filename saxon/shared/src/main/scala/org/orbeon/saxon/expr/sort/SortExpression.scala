@@ -148,7 +148,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       sortKeyDef.typeCheck(visitor, contextInfo)
       if (sortKeyDef.isFixed) {
         val comp: AtomicComparer = sortKeyDef.makeComparator(
-          visitor.getStaticContext.makeEarlyEvaluationContext())
+          visitor.staticContext.makeEarlyEvaluationContext())
         sortKeyDef.finalComparator = comp
         if (allKeysFixed) {
           comparators(i) = comp
@@ -156,7 +156,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       }
       if (sortKeyDef.isSetContextForSortKey && !ExpressionTool.dependsOnFocus(
         sortKey)) {
-        visitor.getStaticContext.issueWarning(
+        visitor.staticContext.issueWarning(
           "Sort key will have no effect because its value does not depend on the context item",
           sortKey.getLocation)
       }
@@ -255,7 +255,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
       getSortKeyDefinition(0).isSetContextForSortKey)
     iter
       .asInstanceOf[SortedIterator]
-      .setHostLanguage(getPackageData.getHostLanguage)
+      .setHostLanguage(getPackageData.hostLanguage)
     iter
   }
 

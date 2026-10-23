@@ -31,7 +31,7 @@ object NamespaceNode {
     var foundXML = false
     while (bindings.hasNext) {
       val binding = bindings.next()
-      if (binding.getPrefix.==("xml")) {
+      if (binding.prefix.==("xml")) {
         foundXML = true
       }
       val node =
@@ -135,16 +135,16 @@ class NamespaceNode(var element: NodeInfo,
 
   def getFingerprint: Int = {
     if (fingerprint == -1) {
-      if (nsBinding.getPrefix.isEmpty) {
+      if (nsBinding.prefix.isEmpty) {
         return -1
       } else {
-        fingerprint = element.getConfiguration.getNamePool.allocateFingerprint("", nsBinding.getPrefix)
+        fingerprint = element.getConfiguration.getNamePool.allocateFingerprint("", nsBinding.prefix)
       }
     }
     fingerprint
   }
 
-  def getLocalPart: String = nsBinding.getPrefix
+  def getLocalPart: String = nsBinding.prefix
   /*@NotNull*/
   def getURI: String = ""
   def getDisplayName: String = getLocalPart

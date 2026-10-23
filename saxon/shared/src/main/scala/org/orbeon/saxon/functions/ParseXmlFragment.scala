@@ -113,13 +113,13 @@ class ParseXmlFragment extends SystemFunction {
 
           foo(publicId, systemId)
         })
-        val pd = getRetainedStaticContext.getPackageData
+        val pd = getRetainedStaticContext.packageData
         if (pd.isInstanceOf[StylesheetPackage]) {
-          options.setSpaceStrippingRule(pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule)
+          options.spaceStrippingRule = pd.asInstanceOf[StylesheetPackage].getSpaceStrippingRule
           if (pd.asInstanceOf[StylesheetPackage].stripsTypeAnnotations) s = configuration.getAnnotationStripper(s).asInstanceOf[Builder]
         }
-        else options.setSpaceStrippingRule(IgnorableSpaceStrippingRule.getInstance)
-        options.setErrorHandler(errorHandler)
+        else options.spaceStrippingRule = IgnorableSpaceStrippingRule.getInstance
+        options.errorHandler = errorHandler
         s.setPipelineConfiguration(b.getPipelineConfiguration)
         options.addFilter(res => new OuterElementStripper(res))
         try Sender.send(source, s, options)

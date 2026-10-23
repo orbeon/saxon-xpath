@@ -9,7 +9,7 @@ package org.orbeon.saxon.expr
 import org.orbeon.saxon.event.{Outputter, TypeCheckingFilter}
 import org.orbeon.saxon.expr.instruct.Block
 import org.orbeon.saxon.expr.parser._
-import org.orbeon.saxon.model.Affinity._
+import org.orbeon.saxon.model.Affinity
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{Item, SequenceIterator}
 import org.orbeon.saxon.pattern.{CombinedNodeTest, DocumentNodeTest, NodeTest}
@@ -95,7 +95,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
         return operand
       } else if (Cardinality.allowsZero(card)) if (! operand.isInstanceOf[Literal]) {
         val message = role.composeErrorMessage(requiredItemType, operand, th)
-        visitor.getStaticContext.issueWarning("The only value that can pass type-checking is an empty sequence. " + message, getLocation)
+        visitor.staticContext.issueWarning("The only value that can pass type-checking is an empty sequence. " + message, getLocation)
       } else {
         val message = role.composeErrorMessage(requiredItemType, operand, th)
         val err = new XPathException(message)
@@ -259,7 +259,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
     val th = getConfiguration.getTypeHierarchy
     val relationship = th.relationship(requiredItemType, operandType)
     relationship match {
-      case OVERLAPS =>
+      case Affinity.OVERLAPS =>
         requiredItemType match {
           case nodeTest: NodeTest if operandType.isInstanceOf[NodeTest] =>
             new CombinedNodeTest(nodeTest, Token.INTERSECT, operandType.asInstanceOf[NodeTest])
@@ -267,7 +267,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
             // we don't know how to intersect atomic types, it doesn't actually happen
             requiredItemType
         }
-      case SAME_TYPE | SUBSUMES =>
+      case Affinity.SAME_TYPE | Affinity.SUBSUMES =>
         // shouldn't happen, but it doesn't matter
         operandType
       case _ => // including `SUBSUMED_BY`

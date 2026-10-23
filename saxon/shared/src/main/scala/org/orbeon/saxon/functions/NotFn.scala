@@ -70,7 +70,7 @@ class NotFn extends SystemFunction {
                                          contextInfo: ContextItemStaticInfo,
                                          arguments: Expression*): Expression = {
     val th =
-      visitor.getStaticContext.getConfiguration.getTypeHierarchy
+      visitor.staticContext.getConfiguration.getTypeHierarchy
     if (arguments(0).isInstanceOf[Negatable] &&
       arguments(0).asInstanceOf[Negatable].isNegatable(th)) {
       return arguments(0).asInstanceOf[Negatable].negate()

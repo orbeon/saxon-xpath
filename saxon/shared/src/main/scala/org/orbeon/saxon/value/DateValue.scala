@@ -245,9 +245,9 @@ class DateValue extends GDateValue with Comparable[AnyRef] {
 
   def adjustTimezone(timezone: Int): DateValue = {
     val dt: DateTimeValue = toDateTime.adjustTimezone(timezone)
-    new DateValue(dt.getYear,
-      dt.getMonth,
-      dt.getDay,
+    new DateValue(dt.year,
+      dt.month,
+      dt.day,
       dt.getTimezoneInMinutes,
       hasNoYearZero)
   }

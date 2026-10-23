@@ -24,7 +24,7 @@ object ExpressionVisitor {
 
   def make(env: StaticContext): ExpressionVisitor = {
     val visitor = new ExpressionVisitor(env.getConfiguration)
-    visitor.setStaticContext(env)
+    visitor.staticContext = env
     visitor
   }
 }
@@ -60,7 +60,7 @@ class ExpressionVisitor(private var config: Configuration) {
   }
 
   def getTargetEdition: String =
-    staticContext.getPackageData.getTargetEdition
+    staticContext.getPackageData.targetEdition
 
   def incrementAndTestDepth(): Boolean =
     { depth += 1; depth - 1 } < MAX_DEPTH

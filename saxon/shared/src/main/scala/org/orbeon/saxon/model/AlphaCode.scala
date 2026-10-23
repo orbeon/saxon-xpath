@@ -576,7 +576,7 @@ object AlphaCode {
         result.elementType = makeTree(content)
       case itemType: FunctionItemType => primary match {
         case arrayItemType: ArrayItemType =>
-          val memberType = arrayItemType.getMemberType
+          val memberType = arrayItemType.memberType
           if (memberType ne SequenceType.ANY_SEQUENCE)
             result.valueType = makeTree(memberType)
         case tupleItemType: TupleItemType =>

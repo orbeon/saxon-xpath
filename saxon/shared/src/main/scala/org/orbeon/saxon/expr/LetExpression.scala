@@ -66,7 +66,7 @@ class LetExpression extends Assignation with TailCallReturner {
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       requiredType,
       role,
-      visitor.getStaticContext))
+      visitor.staticContext))
     val actualItemType = getSequence.getItemType
     refineTypeInformation(
       actualItemType,
@@ -448,12 +448,12 @@ class LetExpression extends Assignation with TailCallReturner {
     out.emitAttribute("slot", getLocalSlotNumber.toString)
     if (evaluator == null)
       this.evaluator = ExpressionTool.lazyEvaluator(getSequence, getNominalReferenceCount > 1)
-    out.emitAttribute("eval", getEvaluator.getEvaluationMode.getCode.toString)
+    out.emitAttribute("eval", evaluator.getEvaluationMode.getCode.toString)
     getSequence.`export`(out)
     getAction.`export`(out)
     out.endElement()
   }
 
   def setEvaluationMode(mode: EvaluationMode.EvaluationMode): Unit =
-    this.evaluator = mode.getEvaluator
+    this.evaluator = mode.evaluator
 }

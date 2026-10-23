@@ -8,7 +8,6 @@
 package org.orbeon.saxon.model
 
 import org.orbeon.saxon.lib.ConversionRules
-import org.orbeon.saxon.om.Genre.Genre
 import org.orbeon.saxon.om.{Genre, Item, StructuredQName}
 import org.orbeon.saxon.value.AtomicValue
 
@@ -25,7 +24,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
     *
     * @return the Genre to which this type belongs, specifically `Genre#ATOMIC`
     */
-  override def getGenre: Genre = Genre.ATOMIC
+  override def getGenre: Genre.Genre = Genre.ATOMIC
 
   def validate(primValue: AtomicValue,
                lexicalValue: CharSequence,
@@ -54,7 +53,7 @@ trait AtomicType extends SimpleType with PlainType with CastingTarget {
       case value: AtomicValue =>
         Some("The supplied value is of type " + value.getItemType)
       case _ =>
-        Some("The supplied value is " + item.getGenre.getDescription)
+        Some("The supplied value is " + item.getGenre.description)
     }
 
   /**

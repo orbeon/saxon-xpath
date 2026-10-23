@@ -70,7 +70,7 @@ class UserFunctionCall extends FunctionCall
     staticType = `type`
 
   def getFixedTarget: Component = {
-    val v: Visibility.Visibility = function.declaringComponent.getVisibility
+    val v: Visibility.Visibility = function.declaringComponent.visibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) function.declaringComponent else null
   }
 
@@ -89,7 +89,7 @@ class UserFunctionCall extends FunctionCall
   def setArgumentEvaluationModes(evalModes: Array[EvaluationMode.EvaluationMode]): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](evalModes.length)
     for (i <- evalModes.indices)
-      argumentEvaluators(i) = evalModes(i).getEvaluator
+      argumentEvaluators(i) = evalModes(i).evaluator
   }
 
   def allocateArgumentEvaluators(): Unit = {
@@ -102,7 +102,7 @@ class UserFunctionCall extends FunctionCall
       argumentEvaluators(i) =
         if (i == 0 && function.declaredStreamability.isConsuming)
           Evaluator.STREAMING_ARGUMENT
-        else if (function.getParameterDefinitions()(i).isIndexedVariable)
+        else if (function.parameterDefinitions(i).isIndexedVariable)
           Evaluator.MAKE_INDEXED_VARIABLE
         else if (arg.isInstanceOf[Literal]) Evaluator.LITERAL
         else if (arg.isInstanceOf[VariableReference]) Evaluator.VARIABLE
@@ -293,7 +293,7 @@ class UserFunctionCall extends FunctionCall
       val target: Component = getTargetComponent(context)
       val targetFunction: UserFunction =
         target.getActor.asInstanceOf[UserFunction]
-      if (target.getVisibility == Visibility.ABSTRACT) throw new XPathException(
+      if (target.visibility == Visibility.ABSTRACT) throw new XPathException(
         "Cannot call a function defined with visibility=abstract",
         "XTDE3052")
       val c2: XPathContextMajor = targetFunction.makeNewContext(context, this)
@@ -344,7 +344,7 @@ class UserFunctionCall extends FunctionCall
     if (argumentEvaluators != null && getArity > 0) {
       val fsb = new FastStringBuffer(FastStringBuffer.C64)
       for (e <- argumentEvaluators) {
-        fsb.append(e.getEvaluationMode.getCode.toString + " ")
+        fsb.append(e.getEvaluationMode.code.toString + " ")
       }
       out.emitAttribute("eval", Whitespace.trim(fsb))
     }

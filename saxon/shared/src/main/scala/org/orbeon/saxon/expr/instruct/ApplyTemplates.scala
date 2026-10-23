@@ -198,8 +198,8 @@ override  def optimize(visitor: ExpressionVisitor,
       inStreamableConstruct,
       mode)
     // ruleManager
-    a2.setActualParams(WithParam.copy(a2, getActualParams, rebindings))
-    a2.setTunnelParams(WithParam.copy(a2, getTunnelParams, rebindings))
+    a2.actualParams = WithParam.copy(a2, getActualParams, rebindings)
+    a2.tunnelParams = WithParam.copy(a2, getTunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, a2)
     //a2.ruleManager = ruleManager
     a2
@@ -274,7 +274,7 @@ override  def optimize(visitor: ExpressionVisitor,
       if (bindingSlot >= 0) {
         targetMode =
           context.getTargetComponent(bindingSlot).asInstanceOf[Component.M]
-        if (targetMode.getVisibility == Visibility.ABSTRACT) {
+        if (targetMode.visibility == Visibility.ABSTRACT) {
           throw new AssertionError("Modes cannot be abstract")
         }
       } else {

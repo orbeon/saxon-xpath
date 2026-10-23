@@ -76,7 +76,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
         "Error reported by XML parser",
         SaxonErrorCode.SXXP0003,
         loc)
-      err.setCause(e)
+      err.cause = e
       errorReporter.report(err)
     }
   }

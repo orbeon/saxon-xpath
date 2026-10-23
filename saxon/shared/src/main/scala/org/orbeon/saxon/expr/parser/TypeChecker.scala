@@ -214,7 +214,7 @@ object TypeChecker {
     `type`    : BuiltInAtomicType
   ): Expression = {
     val rules: ConversionRules = exp.getConfiguration.getConversionRules
-    converter.setConversionRules(rules)
+    converter.conversionRules = rules
     exp match {
       case literal: Literal if literal.value.isInstanceOf[AtomicValue] =>
         val result = converter.convert(literal.value.asInstanceOf[AtomicValue])
@@ -248,7 +248,7 @@ class TypeChecker {
       return supplied.staticTypeCheck(req, backwardsCompatible = false, role, visitor)
 
     var exp    = supplied
-    val env    = visitor.getStaticContext
+    val env    = visitor.staticContext
     val config = env.getConfiguration
 
     val th                 = config.getTypeHierarchy
@@ -276,7 +276,7 @@ class TypeChecker {
       if (reqItemType == null || suppliedItemType == null)
         throw new NullPointerException()
       val relation = th.relationship(reqItemType, suppliedItemType)
-      itemTypeOK = relation == Affinity.SAME_TYPE || relation == Affinity.SUBSUMES
+      itemTypeOK = relation == SAME_TYPE || relation == SUBSUMES
     }
     if (! itemTypeOK) {
       if (reqItemType.isPlainType) {

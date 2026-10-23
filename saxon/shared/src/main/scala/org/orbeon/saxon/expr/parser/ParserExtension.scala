@@ -53,12 +53,12 @@ object ParserExtension {
       new StructuredQName("anon",
         NamespaceConstant.ANONYMOUS,
         "f_" + uf.hashCode))
-    uf.setPackageData(p.getStaticContext.getPackageData)
+    uf.packageData = p.getStaticContext.getPackageData
     uf.setBody(body)
-    uf.setAnnotations(annotations)
+    uf.annotations = annotations
     uf.setResultType(resultType)
     uf.incrementReferenceCount()
-    uf.getPackageData match {
+    uf.packageData match {
       case pack: StylesheetPackage =>
         val comp: Component = Component.makeComponent(
           uf,
@@ -84,7 +84,7 @@ object ParserExtension {
           k += 1; k - 1
         }) = implicitParam
       }
-      uf.setParameterDefinitions(paramArray)
+      uf.parameterDefinitions = paramArray
       val stackFrame: SlotManager =
         p.getStaticContext.getConfiguration.makeSlotManager
       for (i <- 0 until expandedArity) {
@@ -114,13 +114,13 @@ object ParserExtension {
           `var` = new LocalVariableReference(binding)
         }
         `var`.setStaticType(binding.getRequiredType, null, 0)
-        ufp.setRequiredType(binding.getRequiredType)
+        ufp.requiredType = binding.getRequiredType
         partialArgs(ip + arity) = `var`
       }
       result = new PartialApply(result, partialArgs)
     } else {
       val paramArray = params.toArray(Array.ofDim[UserFunctionParameter](0))
-      uf.setParameterDefinitions(paramArray)
+      uf.parameterDefinitions = paramArray
       val stackFrame: SlotManager =
         p.getStaticContext.getConfiguration.makeSlotManager
       for (param <- paramArray) {
@@ -130,7 +130,7 @@ object ParserExtension {
       uf.setStackFrameMap(stackFrame)
       result = new UserFunctionReference(uf)
     }
-    uf.getPackageData match {
+    uf.packageData match {
       case stylesheetPackage: StylesheetPackage =>
         stylesheetPackage.addComponent(uf.declaringComponent)
       case _ =>
@@ -211,8 +211,8 @@ object ParserExtension {
             if (!found) {
               details.outerVariablesUsed.add(b2)
               val ufp: UserFunctionParameter = new UserFunctionParameter()
-              ufp.setVariableQName(qName)
-              ufp.setRequiredType(b2.getRequiredType)
+              ufp.variableQName = qName
+              ufp.requiredType = b2.getRequiredType
               details.implicitParams.add(ufp)
               b2 = ufp
             }
@@ -252,8 +252,8 @@ object ParserExtension {
         if (!found) {
           details.outerVariablesUsed.add(param)
           val ufp: UserFunctionParameter = new UserFunctionParameter()
-          ufp.setVariableQName(qName)
-          ufp.setRequiredType(param.getRequiredType)
+          ufp.variableQName = qName
+          ufp.requiredType = param.getRequiredType
           details.implicitParams.add(ufp)
           b2 = ufp
         }
@@ -482,8 +482,8 @@ class ParserExtension {
           paramType = p.parseSequenceType
         }
         val arg = new UserFunctionParameter()
-        arg.setRequiredType(paramType)
-        arg.setVariableQName(argQName)
+        arg.requiredType = paramType
+        arg.variableQName = argQName
         arg.setSlotNumber(paramSlot)
         paramSlot += 1
         params.add(arg)

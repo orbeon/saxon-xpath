@@ -198,7 +198,7 @@ class ParseIetfDate extends SystemFunction {
     if (!(currentToken == ParseIetfDate.EOF)) ParseIetfDate.badDate("Extra content found in string after date", input)
     var date = new DateValue(year, month.toByte, day.toByte)
     var time = timeValue.get(0)
-    if (time.getHour == 24) {
+    if (time.hour == 24) {
       date = DateValue.tomorrow(date.getYear, date.getMonth, date.getDay)
       time = new TimeValue(0.toByte, 0.toByte, 0.toByte, 0, time.getTimezoneInMinutes, "")
     }

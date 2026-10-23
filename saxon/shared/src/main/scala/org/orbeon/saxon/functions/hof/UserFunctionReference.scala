@@ -114,7 +114,7 @@ class UserFunctionReference
       nominalTarget.setBody(o)
       val slotManager = visitor.getConfiguration.makeSlotManager
       for (i <- 0 until getArity)
-        slotManager.allocateSlotNumber(nominalTarget.getParameterDefinitions()(i).getVariableQName)
+        slotManager.allocateSlotNumber(nominalTarget.parameterDefinitions(i).getVariableQName)
       ExpressionTool.allocateSlots(o, getArity, slotManager)
       nominalTarget.setStackFrameMap(slotManager)
     }

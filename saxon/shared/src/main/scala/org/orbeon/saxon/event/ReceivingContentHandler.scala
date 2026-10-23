@@ -112,10 +112,10 @@ class ReceivingContentHandler
   def pipelineConfiguration_=(pipe: PipelineConfiguration): Unit = {
     this.pipe = pipe
     val config: Configuration = pipe.configuration
-    ignoreIgnorable = pipe.parseOptions.getSpaceStrippingRule != NoElementsSpaceStrippingRule.getInstance
+    ignoreIgnorable = pipe.parseOptions.spaceStrippingRule != NoElementsSpaceStrippingRule.getInstance
     retainDTDAttributeTypes =
       config.getBooleanProperty(Feature.RETAIN_DTD_ATTRIBUTE_TYPES)
-    if (!pipe.parseOptions.isExpandAttributeDefaults) {
+    if (!pipe.parseOptions.expandAttributeDefaults) {
       defaultedAttributesAction = -1
     } else if (config.getBooleanProperty(Feature.MARK_DEFAULTED_ATTRIBUTES)) {
       defaultedAttributesAction = +1

@@ -114,7 +114,7 @@ abstract class AttributeCreator
             schemaType.getDescription +
             ". " +
             err.getMessage)
-        ve.setSchemaType(schemaType)
+        ve.schemaType = schemaType
         ve.setErrorCode("XTTE1540")
         throw ve.makeException()
       }

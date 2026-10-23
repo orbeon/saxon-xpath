@@ -25,7 +25,7 @@ object Idref {
     map.document = doc
     map.keyContext = context
     val allValues: SequenceIterator = new MappingIterator(keys, map)
-    new DocumentOrderIterator(allValues, LocalOrderComparer.getInstance)
+    new DocumentOrderIterator(allValues, LocalOrderComparer.instance)
   }
 
   private class IdrefMappingFunction extends MappingFunction {

@@ -586,7 +586,7 @@ object Navigator {
         out.startElement(NameOfNode.makeName(node), annotation, locationId, ReceiverOption.DISINHERIT_NAMESPACES | ReceiverOption.NAMESPACE_OK)
         if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0)
           for (ns <- node.getAllNamespaces.asScala)
-            out.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
+            out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
 
         for (attr <- node.attributes.iterator.asScala) {
           val attType = if (keepTypes) attr.`type` else BuiltInAtomicType.UNTYPED_ATOMIC
@@ -980,7 +980,6 @@ object Navigator {
     private var descendants: AxisIterator = null
     private var atEnd = false
 
-    @tailrec
     def next(): NodeInfo = {
       if (descendants != null) {
         val nextd = descendants.next()
@@ -1075,7 +1074,6 @@ object Navigator {
       }
     }
 
-    @tailrec
     def next(): NodeInfo = {
       if (descendEnum != null) {
         val nextd = descendEnum.next()

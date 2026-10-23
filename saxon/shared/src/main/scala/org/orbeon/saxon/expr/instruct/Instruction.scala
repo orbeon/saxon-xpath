@@ -57,9 +57,9 @@ object Instruction {
     }
     val params: ParameterSet = new ParameterSet(actualParams.length)
     for (actualParam <- actualParams) {
-      params.put(actualParam.getVariableQName,
+      params.put(actualParam.variableQName,
         actualParam.getSelectValue(context),
-        actualParam.isTypeChecked)
+        actualParam.typeChecked)
     }
     params
   }
@@ -76,7 +76,7 @@ object Instruction {
     val newParams: ParameterSet =
       new ParameterSet(existingParams, actualParams.length)
     for (actualParam <- actualParams) {
-      newParams.put(actualParam.getVariableQName,
+      newParams.put(actualParam.variableQName,
         actualParam.getSelectValue(context),
         checked = false)
     }

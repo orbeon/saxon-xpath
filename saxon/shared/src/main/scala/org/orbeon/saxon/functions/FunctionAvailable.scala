@@ -13,7 +13,7 @@ import scala.util.control.Breaks._
 class FunctionAvailable extends SystemFunction {
 
   override def makeFunctionCall(arguments: Expression*): Expression = {
-    val pack = getRetainedStaticContext.getPackageData
+    val pack = getRetainedStaticContext.packageData
     pack match {
       case stylesheetPackage: StylesheetPackage =>
         stylesheetPackage.setRetainUnusedFunctions()
@@ -32,7 +32,7 @@ class FunctionAvailable extends SystemFunction {
         val lexicalQName = literal
           .value
           .getStringValue
-        val env          = visitor.getStaticContext
+        val env          = visitor.staticContext
         var b = false
         val qp = new QNameParser(getRetainedStaticContext)
           .withAcceptEQName(true)
@@ -93,7 +93,7 @@ class FunctionAvailable extends SystemFunction {
             e.setXPathContext(context)
             throw e
         }
-      val lib = context.getController.getExecutable.getFunctionLibrary
+      val lib = context.getController.getExecutable.functionLibrary
       val sn  = new SymbolicName.F(qName, arity)
       lib.isAvailable(sn)
     }
@@ -106,7 +106,7 @@ class FunctionAvailable extends SystemFunction {
     BooleanValue.get(
       isFunctionAvailable(
         lexicalQName,
-        getRetainedStaticContext.getPackageData.getTargetEdition,
+        getRetainedStaticContext.packageData.getTargetEdition,
         arity,
         context
       )

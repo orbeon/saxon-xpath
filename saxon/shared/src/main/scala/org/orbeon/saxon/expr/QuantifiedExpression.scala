@@ -42,7 +42,7 @@ class QuantifiedExpression extends Assignation {
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       sequenceType,
       role,
-      visitor.getStaticContext))
+      visitor.staticContext))
     val actualItemType = getSequence.getItemType
     refineTypeInformation(actualItemType,
       StaticProperty.EXACTLY_ONE,
@@ -73,7 +73,7 @@ class QuantifiedExpression extends Assignation {
       adoptChildExpression(ebv)
     }
     if (Literal.hasEffectiveBooleanValue(ebv, value = true)) {
-      if (getOperator == Token.SOME) {
+      if (operator == Token.SOME) {
         return SystemFunction.makeCall("exists",
           getRetainedStaticContext,
           getSequence)
@@ -83,7 +83,7 @@ class QuantifiedExpression extends Assignation {
         return e2
       }
     } else if (Literal.hasEffectiveBooleanValue(ebv, value = false)) {
-      if (getOperator == Token.SOME) {
+      if (operator == Token.SOME) {
         val e2: Expression = new Literal(BooleanValue.FALSE)
         ExpressionTool.copyLocationInfo(this, e2)
         return e2
@@ -97,7 +97,7 @@ class QuantifiedExpression extends Assignation {
         val len = seq.getLength
         if (len == 0) {
           val e2: Expression = new Literal(
-            BooleanValue.get(getOperator == Token.EVERY)
+            BooleanValue.get(operator == Token.EVERY)
           )
           ExpressionTool.copyLocationInfo(this, e2)
           return e2
@@ -139,7 +139,7 @@ class QuantifiedExpression extends Assignation {
   def copy(rebindings: RebindingMap): Expression = {
     val qe = new QuantifiedExpression
     ExpressionTool.copyLocationInfo(this, qe)
-    qe.setOperator(operator)
+    qe.operator = operator
     qe.setVariableQName(variableName)
     qe.setRequiredType(requiredType)
     qe.setSequence(getSequence.copy(rebindings))
@@ -174,7 +174,7 @@ class QuantifiedExpression extends Assignation {
         return some
       }
     }
-    ! some
+    !some
   }
 
   def getItemType: ItemType = BuiltInAtomicType.BOOLEAN

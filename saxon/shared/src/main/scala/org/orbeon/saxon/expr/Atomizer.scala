@@ -51,7 +51,7 @@ object Atomizer {
           in.getAtomizedItemType
         case arrayItemType: ArrayItemType =>
           val ait = arrayItemType
-            .getMemberType
+            .memberType
             .getPrimaryType
             .getAtomizedItemType
           if (ait == null) ErrorType else ait
@@ -260,7 +260,7 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
           choose.atomizeActions()
           return operand.optimize(visitor, contextInfo)
         case block: Block =>
-          val children = block.getOperanda
+          val children = block.operanda
           val atomizedChildren: Array[Expression] =
             Array.ofDim[Expression](children.length)
           for (i <- children.indices)

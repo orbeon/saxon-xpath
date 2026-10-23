@@ -198,7 +198,7 @@ class FLWORExpression extends Expression {
     val f2         = new FLWORExpression
     for (c <- clauses.asScala) {
       val c2 = c.copy(f2, rebindings)
-      c2.setLocation(c.getLocation)
+      c2.setLocation(c.location)
       c2.setRepeated(c.isRepeated)
       val oldBindings = c.getRangeVariables
       val newBindings = c2.getRangeVariables
@@ -312,7 +312,7 @@ class FLWORExpression extends Expression {
       }
     }
     if (depends && contextItemType != null) {
-      val expr1 = ExpressionTool.tryToFactorOutDot(this, contextItemType.getItemType)
+      val expr1 = ExpressionTool.tryToFactorOutDot(this, contextItemType.itemType)
       if (expr1 == null || (expr1 eq this))
         return this
       resetLocalStaticProperties()
@@ -428,7 +428,7 @@ class FLWORExpression extends Expression {
                                contextItemType: ContextItemStaticInfo): Expression = {
     var action                 = getReturnClause
     var injector: CodeInjector = null
-    visitor.getStaticContext match {
+    visitor.staticContext match {
       case module: QueryModule =>
         injector = module.getCodeInjector
       case _ =>
@@ -443,7 +443,7 @@ class FLWORExpression extends Expression {
               new OuterForExpression
             else
               new ForExpression
-          forExpr.setLocation(forClause.getLocation)
+          forExpr.setLocation(forClause.location)
           forExpr.setRetainedStaticContext(getRetainedStaticContext)
           forExpr.setAction(action)
           forExpr.setSequence(forClause.getSequence)
@@ -456,7 +456,7 @@ class FLWORExpression extends Expression {
         case _ =>
           val letClause = clauses.get(i).asInstanceOf[LetClause]
           val letExpr   = new LetExpression
-          letExpr.setLocation(letClause.getLocation)
+          letExpr.setLocation(letClause.location)
           letExpr.setRetainedStaticContext(getRetainedStaticContext)
           letExpr.setAction(action)
           letExpr.setSequence(letClause.getSequence)

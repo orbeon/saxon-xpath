@@ -51,22 +51,22 @@ object Choose {
     exp.isInstanceOf[Choose] && exp.asInstanceOf[Choose].size == 1
 }
 
-class Choose(conditions: Array[Expression], actions: Array[Expression])
+class Choose(_conditions: Array[Expression], _actions: Array[Expression])
   extends Instruction
     with ConditionalInstruction {
 
   private val conditionOps: Array[Operand] =
-    new Array[Operand](conditions.length)
+    new Array[Operand](_conditions.length)
 
-  private val actionOps: Array[Operand] = new Array[Operand](actions.length)
+  private val actionOps: Array[Operand] = new Array[Operand](_actions.length)
 
   var isInstruct: Boolean = _
 
-  for (i <- conditions.indices)
-    conditionOps(i) = new Operand(this, conditions(i), OperandRole.INSPECT)
+  for (i <- _conditions.indices)
+    conditionOps(i) = new Operand(this, _conditions(i), OperandRole.INSPECT)
 
-  for (i <- actions.indices)
-    actionOps(i) = new Operand(this, actions(i), CHOICE_ACTION)
+  for (i <- _actions.indices)
+    actionOps(i) = new Operand(this, _actions(i), CHOICE_ACTION)
 
   def setInstruction(inst: Boolean): Unit =
     isInstruct = inst

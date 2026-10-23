@@ -39,7 +39,7 @@ class Concat extends SystemFunction with PushableFunction {
     if (OperandArray.every(arguments.toArray,
       (arg: Expression) =>
         arg.getCardinality == StaticProperty.EXACTLY_ONE && arg.getItemType == BuiltInAtomicType.BOOLEAN)) {
-      visitor.getStaticContext.issueWarning(
+      visitor.staticContext.issueWarning(
         "Did you intend to apply string concatenation to boolean operands? " +
           "Perhaps you intended 'or' rather than '||'. " +
           "To suppress this warning, use string() on the arguments.",

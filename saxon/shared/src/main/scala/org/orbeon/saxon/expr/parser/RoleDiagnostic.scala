@@ -163,7 +163,7 @@ class RoleDiagnostic(private var kind: Int,
     message.cat(Err.depict(item))
     if (requiredItemType.getGenre != item.getGenre) {
       message.append(" is ")
-      message.append(item.getGenre.getDescription)
+      message.append(item.getGenre.description)
     } else {
       message.append(" does not match. ")
       if (th != null) {

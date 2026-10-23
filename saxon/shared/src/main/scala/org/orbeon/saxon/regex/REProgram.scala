@@ -70,7 +70,7 @@ class REProgram /**
         prefix = first.asInstanceOf[Operation.OpAtom].atom
       } else if (first.isInstanceOf[Operation.OpCharClass]) {
         initialCharClass =
-          first.asInstanceOf[Operation.OpCharClass].getPredicate
+          first.asInstanceOf[Operation.OpCharClass].predicate
       }
       addPrecondition(operation, -1, 0)
     }

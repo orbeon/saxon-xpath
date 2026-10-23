@@ -24,7 +24,6 @@
 
 package org.orbeon.saxon.om
 
-import org.orbeon.saxon.model.PrimitiveUType.PrimitiveUType
 import org.orbeon.saxon.model.{PrimitiveUType, Type, UType}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.z.IntHashMap
@@ -285,10 +284,10 @@ object AxisInfo {
 
   private val axisTransitions: IntHashMap[UType] = new IntHashMap(50)
 
-  private def e(origin: PrimitiveUType, axis: Int, target: UType): Unit =
+  private def e(origin: PrimitiveUType.PrimitiveUType, axis: Int, target: UType): Unit =
     axisTransitions.put(makeKey(origin, axis), target)
 
-  private def makeKey(origin: PrimitiveUType, axis: Int): Int =
+  private def makeKey(origin: PrimitiveUType.PrimitiveUType, axis: Int): Int =
     origin.bit << 16 | axis
 
   def getTargetUType(origin: UType, axis: Int): UType = {

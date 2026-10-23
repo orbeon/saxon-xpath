@@ -42,13 +42,13 @@ class SimpleStepExpression(start: Expression, step: Expression)
   /*@NotNull*/
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
     val selectType = getStart.getItemType
     if (selectType == ErrorType)
       return Literal.makeEmptySequence
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(selectType, maybeUndefined = false)
     cit.contextSettingExpression = getStart
-    getRhs.typeCheck(visitor, cit)
+    rhs.typeCheck(visitor, cit)
     if (! getStep.isInstanceOf[AxisExpression]) {
       if (Literal.isEmptySequence(getStep))
         return getStep

@@ -47,8 +47,8 @@ abstract class BooleanExpression(p1: Expression, operator: Int, p2: Expression)
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
     val th = visitor.getConfiguration.getTypeHierarchy
     val err0: XPathException = TypeChecker.ebvError(getLhsExpression, th)
     if (err0 != null) {

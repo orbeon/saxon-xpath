@@ -6,8 +6,8 @@ import org.orbeon.saxon.expr.instruct.{Actor, GlobalVariable, NamedTemplate}
 import org.orbeon.saxon.om.{Function, StandardNames}
 import org.orbeon.saxon.style.StylesheetPackage
 import org.orbeon.saxon.trace.ExpressionPresenter
-import org.orbeon.saxon.trans.Visibility.Visibility
-import org.orbeon.saxon.trans.VisibilityProvenance.VisibilityProvenance
+import org.orbeon.saxon.trans.Visibility.{Visibility => VisibilityType}
+import org.orbeon.saxon.trans.VisibilityProvenance.{VisibilityProvenance => VisibilityProvenanceType}
 import org.orbeon.saxon.trans.{Mode, Visibility, VisibilityProvenance}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
@@ -19,8 +19,8 @@ object Component {
 
   def makeComponent(
     actor             : Actor,
-    visibility        : Visibility,
-    provenance        : VisibilityProvenance,
+    visibility        : VisibilityType,
+    provenance        : VisibilityProvenanceType,
     containingPackage : StylesheetPackage,
     declaringPackage  : StylesheetPackage
   ): Component = {
@@ -54,7 +54,7 @@ class Component private () {
   var actor: Actor = _
 
   @BeanProperty
-  var visibility: Visibility = _
+  var visibility: VisibilityType = _
 
   private var bindings: ju.List[ComponentBinding] = new ju.ArrayList
 
@@ -62,7 +62,7 @@ class Component private () {
 
   var declaringPackage: StylesheetPackage = _
 
-  private var provenance: VisibilityProvenance = _
+  private var provenance: VisibilityProvenanceType = _
 
   var baseComponent: Component = _
 
@@ -72,19 +72,19 @@ class Component private () {
     this.bindings = bindings
 
   def setVisibility(
-    visibility : Visibility,
-    provenance : VisibilityProvenance
+    visibility : VisibilityType,
+    provenance : VisibilityProvenanceType
   ): Unit = {
     this.visibility = visibility
     this.provenance = provenance
   }
 
-  def getVisibilityProvenance: VisibilityProvenance = provenance
+  def getVisibilityProvenance: VisibilityProvenanceType = provenance
 
   def isHiddenAbstractComponent: Boolean =
     visibility                  == Visibility.HIDDEN &&
     baseComponent               != null              &&
-    baseComponent.getVisibility == Visibility.ABSTRACT
+    baseComponent.visibility    == Visibility.ABSTRACT
 
   def getActor: Actor = actor
 
@@ -97,7 +97,7 @@ class Component private () {
     val id = obtainComponentId(this, componentIdMap)
     out.emitAttribute("id", "" + id)
     if (provenance != VisibilityProvenance.DEFAULTED)
-      out.emitAttribute("vis", getVisibility.toString)
+      out.emitAttribute("vis", visibility.toString)
     val refs = listComponentReferences(componentIdMap)
     out.emitAttribute("binds", refs)
     if (baseComponent != null && getActor == baseComponent.getActor) {
@@ -115,7 +115,7 @@ class Component private () {
   ): String = {
     val fsb = new FastStringBuffer(128)
     for (ref <- getComponentBindings.asScala) {
-      val target = ref.getTarget
+      val target = ref.target
       val targetId = obtainComponentId(target, componentIdMap)
       if (fsb.length != 0)
         fsb.append(" ")

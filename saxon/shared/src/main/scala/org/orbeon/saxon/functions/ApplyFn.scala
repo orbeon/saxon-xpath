@@ -56,7 +56,7 @@ class ApplyFn extends SystemFunction {
       case mapType: MapType =>
         mapType.valueType.getPrimaryType
       case itemType: ArrayItemType =>
-        itemType.getMemberType.getPrimaryType
+        itemType.memberType.getPrimaryType
       case itemType: FunctionItemType =>
         itemType.getResultType.getPrimaryType
       case _ =>
@@ -94,7 +94,7 @@ class ApplyFn extends SystemFunction {
     val target: Expression = arguments(0)
     val key: Expression = arguments(1)
       .asInstanceOf[SquareArrayConstructor]
-      .getOperanda
+      .operanda
       .getOperand(0)
       .getChildExpression
     val getter: Expression =

@@ -35,7 +35,7 @@ object SuperId {
       map.document = doc
       map.operation = operation
       val result: SequenceIterator = new MappingIterator(tokens, map)
-      new DocumentOrderIterator(result, LocalOrderComparer.getInstance)
+      new DocumentOrderIterator(result, LocalOrderComparer.instance)
     } else {
       SingletonIterator.makeIterator(
         doc.selectID(idrefs, operation == ELEMENT_WITH_ID))
@@ -48,7 +48,7 @@ object SuperId {
     map.document = doc
     map.operation = operation
     val result: SequenceIterator = new MappingIterator(idrefs, map)
-    new DocumentOrderIterator(result, LocalOrderComparer.getInstance)
+    new DocumentOrderIterator(result, LocalOrderComparer.instance)
   }
 
   private class IdMappingFunction extends MappingFunction {

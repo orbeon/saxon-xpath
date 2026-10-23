@@ -102,21 +102,21 @@ class NamespaceReducer(val next: Receiver)
       return false
 
     // First cancel any pending undeclaration of this namespace prefix (there may be more than one)
-    val prefix = nsBinding.getPrefix
+    val prefix = nsBinding.prefix
     if (pendingUndeclarations != null)
       for (p <- pendingUndeclarations.indices) {
         val nb = pendingUndeclarations(p)
-        if (nb != null && prefix == nb.getPrefix)
+        if (nb != null && prefix == nb.prefix)
           pendingUndeclarations(p) = null
       }
     for (i <- namespacesSize - 1 to 0 by -1) {
       if (namespaces(i) == nsBinding)  // it's a duplicate so we don't need it
         return false
-      if (namespaces(i).getPrefix == nsBinding.getPrefix)  // same prefix, different URI.
+      if (namespaces(i).prefix == nsBinding.prefix)  // same prefix, different URI.
         return true
     }
     // we need it unless it's a redundant xmlns=""
-    ! nsBinding.isDefaultUndeclaration
+    !nsBinding.isDefaultUndeclaration
   }
 
   /**
@@ -173,7 +173,7 @@ class NamespaceReducer(val next: Receiver)
       return NamespaceConstant.XML
     else
       for (i <- namespacesSize - 1 to 0 by -1)
-        if (namespaces(i).getPrefix == prefix)
+        if (namespaces(i).prefix == prefix)
           return namespaces(i).getURI
     if (prefix.isEmpty)
       NamespaceConstant.NULL
@@ -188,7 +188,7 @@ class NamespaceReducer(val next: Receiver)
   def iteratePrefixes: util.Iterator[String] = {
     val prefixes = new util.ArrayList[String](namespacesSize)
     for (i <- namespacesSize - 1 to 0 by -1) {
-      val prefix = namespaces(i).getPrefix
+      val prefix = namespaces(i).prefix
       if (!prefixes.contains(prefix))
         prefixes.add(prefix)
     }

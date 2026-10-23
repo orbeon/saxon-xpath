@@ -231,18 +231,18 @@ class ExpressionPresenter {
       (parentSC == null || sc.getStaticBaseUri != parentSC.getStaticBaseUri)) {
       emitAttribute("baseUri", sc.getStaticBaseUriString)
     }
-    if (sc.getDefaultCollationName != NamespaceConstant.CODEPOINT_COLLATION_URI &&
+    if (sc.defaultCollationName != NamespaceConstant.CODEPOINT_COLLATION_URI &&
       (parentSC == null ||
         sc.getDefaultCollationName != parentSC.getDefaultCollationName)) {
-      emitAttribute("defaultCollation", sc.getDefaultCollationName)
+      emitAttribute("defaultCollation", sc.defaultCollationName)
     }
     if (!sc.getDefaultElementNamespace.isEmpty &&
       (parentSC == null ||
         sc.getDefaultElementNamespace != parentSC.getDefaultElementNamespace)) {
       emitAttribute("defaultElementNS", sc.getDefaultElementNamespace)
     }
-    if (NamespaceConstant.FN != sc.getDefaultFunctionNamespace) {
-      emitAttribute("defaultFunctionNS", sc.getDefaultFunctionNamespace)
+    if (NamespaceConstant.FN != sc.defaultFunctionNamespace) {
+      emitAttribute("defaultFunctionNS", sc.defaultFunctionNamespace)
     }
     if (!options.asInstanceOf[ExportOptions].suppressStaticContext &&
       (parentSC == null || !sc.declaresSameNamespaces(parentSC))) {

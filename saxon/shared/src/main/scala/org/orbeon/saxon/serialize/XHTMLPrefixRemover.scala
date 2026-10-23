@@ -24,7 +24,7 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
     var nameSpaceMap = namespaces
     var elemNodeName = elemName
     for (ns <- nameSpaceMap.asScala if isSpecial(ns.getURI)) {
-      nameSpaceMap = nameSpaceMap.remove(ns.getPrefix)
+      nameSpaceMap = nameSpaceMap.remove(ns.prefix)
     }
     if (isSpecial(elemNodeName.getURI)) {
       val uri: String = elemNodeName.getURI

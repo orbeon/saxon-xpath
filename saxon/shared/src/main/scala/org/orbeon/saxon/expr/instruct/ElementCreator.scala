@@ -75,7 +75,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
     var components: Array[Operand] = null
     components =
       if (getContentExpression.isInstanceOf[Block])
-        getContentExpression.asInstanceOf[Block].getOperanda
+        getContentExpression.asInstanceOf[Block].operanda
       else Array(contentOp)
     var foundChild: Boolean = false
     var foundPossibleChild: Boolean = false
@@ -170,7 +170,7 @@ abstract class ElementCreator extends ParentNodeConstructor {
       val elemOut: Receiver = outPutter
       if (!preservingTypes) {
         val options: ParseOptions = new ParseOptions(validationOptions)
-        options.setTopLevelElement(elemName.getStructuredQName)
+        options.topLevelElement = elemName.getStructuredQName
         context.getConfiguration.prepareValidationReporting(context, options)
         val validator: Receiver = context.getConfiguration.getElementValidator(
           elemOut,

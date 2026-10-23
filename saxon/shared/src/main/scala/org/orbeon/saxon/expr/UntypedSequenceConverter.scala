@@ -56,7 +56,7 @@ object UntypedSequenceConverter {
 
   class UntypedConverter(rules: ConversionRules, var untypedConverter: Converter) extends Converter {
 
-    this.setConversionRules(rules)
+    this.conversionRules = rules
 
     override def convert(input: AtomicValue): ConversionResult =
       if (input.isInstanceOf[UntypedAtomicValue]) {

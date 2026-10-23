@@ -111,7 +111,7 @@ class CallTemplate(private var template: NamedTemplate,
 
   def getFixedTarget: Component = {
     val c: Component = getTarget
-    val v: Visibility.Visibility = c.getVisibility
+    val v: Visibility.Visibility = c.visibility
     if (v == Visibility.PRIVATE || v == Visibility.FINAL) {
       c
     } else {
@@ -140,23 +140,23 @@ class CallTemplate(private var template: NamedTemplate,
     WithParam.typeCheck(actualParams, visitor, contextInfo)
     WithParam.typeCheck(tunnelParams, visitor, contextInfo)
     val backwards: Boolean =
-      visitor.getStaticContext.isInBackwardsCompatibleMode
+      visitor.staticContext.isInBackwardsCompatibleMode
     val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(backwards)
     for (p <- 0 until actualParams.length) {
       val wp: WithParam = actualParams(p)
       val lp: NamedTemplate.LocalParamInfo =
-        template.getLocalParamInfo(wp.getVariableQName)
+        template.getLocalParamInfo(wp.variableQName)
       if (lp != null) {
         val req: SequenceType = lp.requiredType
         val role: RoleDiagnostic = new RoleDiagnostic(
           RoleDiagnostic.PARAM,
-          wp.getVariableQName.getDisplayName,
+          wp.variableQName.getDisplayName,
           p)
         role.setErrorCode("XTTE0590")
         val select: Expression =
           tc.staticTypeCheck(wp.getSelectExpression, req, role, visitor)
         wp.setSelectExpression(this, select)
-        wp.setTypeChecked(true)
+        wp.typeChecked = true
       }
     }
     this
@@ -285,13 +285,13 @@ class CallTemplate(private var template: NamedTemplate,
     }
 
   override def getObjectName: StructuredQName =
-    if (template == null) null else template.getTemplateName
+    if (template == null) null else template.templateName
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("callT", this)
     var flags: String = ""
-    if (template != null && template.getTemplateName != null) {
-      out.emitAttribute("name", template.getTemplateName)
+    if (template != null && template.templateName != null) {
+      out.emitAttribute("name", template.templateName)
     }
     out.emitAttribute("bSlot", "" + getBindingSlot)
     if (isWithinDeclaredStreamableConstruct) {
@@ -321,7 +321,7 @@ class CallTemplate(private var template: NamedTemplate,
     var first: Boolean = true
     for (p <- getActualParams) {
       buff.append(if (first) "(" else ", ")
-      buff.append(p.getVariableQName.getDisplayName)
+      buff.append(p.variableQName.getDisplayName)
       buff.append("=")
       buff.append(p.getSelectExpression.toString)
       first = false

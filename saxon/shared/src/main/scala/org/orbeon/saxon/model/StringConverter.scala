@@ -328,7 +328,7 @@ object StringConverter {
       }
       val sv: StringValue = new StringValue(cs)
       val f: ValidationFailure =
-        targetType.validate(sv, cs, getConversionRules)
+        targetType.validate(sv, cs, conversionRules)
       if (f == null) {
         sv.setTypeLabel(targetType)
         sv
@@ -345,7 +345,7 @@ object StringConverter {
         case err: ValidationException => return err.getValidationFailure
 
       }
-      targetType.validate(new StringValue(cs), cs, getConversionRules)
+      targetType.validate(new StringValue(cs), cs, conversionRules)
     }
 
   }
@@ -373,7 +373,7 @@ object StringConverter {
 
       }
       val sv: StringValue = new StringValue(cs)
-      f = targetType.validate(sv, cs, getConversionRules)
+      f = targetType.validate(sv, cs, conversionRules)
       if (f == null) {
         sv.setTypeLabel(targetType)
         sv
@@ -388,7 +388,7 @@ object StringConverter {
 
     def convertString(input: CharSequence): ConversionResult =
       try {
-        val flt: Float = getConversionRules.getStringToDoubleConverter
+        val flt: Float = conversionRules.getStringToDoubleConverter
           .stringToNumber(input)
           .toFloat
         new FloatValue(flt)
@@ -519,7 +519,7 @@ object StringConverter {
     extends StringConverter(rules) {
 
     def convertString(input: CharSequence): ConversionResult =
-      DateTimeValue.makeDateTimeValue(input, getConversionRules)
+      DateTimeValue.makeDateTimeValue(input, conversionRules)
 
   }
 
@@ -528,7 +528,7 @@ object StringConverter {
 
     def convertString(input: CharSequence): ConversionResult = {
       val `val`: ConversionResult =
-        DateTimeValue.makeDateTimeValue(input, getConversionRules)
+        DateTimeValue.makeDateTimeValue(input, conversionRules)
       if (`val`.isInstanceOf[DateTimeValue]) {
         if (!`val`.asInstanceOf[DateTimeValue].hasTimezone ){
           return new ValidationFailure(
@@ -547,7 +547,7 @@ object StringConverter {
   class StringToDate(rules: ConversionRules) extends StringConverter(rules) {
 
     def convertString(input: CharSequence): ConversionResult =
-      DateValue.makeDateValue(input, getConversionRules)
+      DateValue.makeDateValue(input, conversionRules)
 
   }
 
@@ -568,14 +568,14 @@ object StringConverter {
     extends StringConverter(rules) {
 
     def convertString(input: CharSequence): ConversionResult =
-      GYearMonthValue.makeGYearMonthValue(input, getConversionRules)
+      GYearMonthValue.makeGYearMonthValue(input, conversionRules)
 
   }
 
   class StringToGYear(rules: ConversionRules) extends StringConverter(rules) {
 
     def convertString(input: CharSequence): ConversionResult =
-      GYearValue.makeGYearValue(input, getConversionRules)
+      GYearValue.makeGYearValue(input, conversionRules)
 
   }
 
@@ -670,7 +670,7 @@ object StringConverter {
     private var nsResolver: NamespaceResolver = _
 
     override def setNamespaceResolver(resolver: NamespaceResolver): StringToQName = {
-      val c: StringToQName = new StringToQName(getConversionRules)
+      val c: StringToQName = new StringToQName(conversionRules)
       c.nsResolver = resolver
       c
     }
@@ -712,7 +712,7 @@ object StringConverter {
 
     override def setNamespaceResolver(
                                        resolver: NamespaceResolver): StringToNotation = {
-      val c: StringToNotation = new StringToNotation(getConversionRules)
+      val c: StringToNotation = new StringToNotation(conversionRules)
       c.nsResolver = resolver
       c
     }
@@ -733,7 +733,7 @@ object StringConverter {
             "Namespace prefix " + Err
               .wrap(parts(0)) + " has not been declared")
         }
-        if (!getConversionRules.isDeclaredNotation(uri, parts(1))) {
+        if (!conversionRules.isDeclaredNotation(uri, parts(1))) {
          return new ValidationFailure(
             "Notation {" + uri + "}" + parts(1) + " is not declared in the schema")
         }
@@ -752,7 +752,7 @@ object StringConverter {
   class StringToAnyURI(rules: ConversionRules) extends StringConverter(rules) {
 
     def convertString(input: CharSequence): ConversionResult =
-      if (getConversionRules.isValidURI(input)) {
+      if (conversionRules.isValidURI(input)) {
         new AnyURIValue(input)
       } else {
         new ValidationFailure("Invalid URI: " + input)
@@ -761,7 +761,7 @@ object StringConverter {
     /*@Nullable*/
 
     override def validate(input: CharSequence): ValidationFailure =
-      if (getConversionRules.isValidURI(input)) {
+      if (conversionRules.isValidURI(input)) {
         null
       } else {
         new ValidationFailure("Invalid URI: " + input)
@@ -808,7 +808,7 @@ abstract class StringConverter  () extends Converter {
 
   def this(rules: ConversionRules) = {
     this()
-    this.setConversionRules(rules)
+    this.conversionRules = rules
   }
 
   def convertString(input: CharSequence): ConversionResult

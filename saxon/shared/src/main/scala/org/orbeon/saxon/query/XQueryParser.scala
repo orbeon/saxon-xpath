@@ -288,7 +288,7 @@ class XQueryParser extends XPathParser {
     var exec = mainModule.getExecutable
     if (exec == null) {
       exec = new Executable(config)
-      exec.setHostLanguage(HostLanguage.XQUERY)
+      exec.hostLanguage = HostLanguage.XQUERY
       exec.topLevelPackage = mainModule.getPackageData
       setExecutable(exec)
 
@@ -309,7 +309,7 @@ class XQueryParser extends XPathParser {
 
     val libList = new FunctionLibraryList
     libList.addFunctionLibrary(new ExecutableFunctionLibrary(config))
-    exec.setFunctionLibrary(libList)
+    exec.functionLibrary = libList
 
     setExecutable(exec)
     setCodeInjector(mainModule.getCodeInjector)
@@ -319,7 +319,7 @@ class XQueryParser extends XPathParser {
 
     val queryExp = config.makeXQueryExpression(exp, mainModule, streaming)
 
-    val userlib = exec.getFunctionLibrary
+    val userlib = exec.functionLibrary
     val lib = new FunctionLibraryList
     lib.addFunctionLibrary(mainModule.getBuiltInFunctionSet)
     lib.addFunctionLibrary(config.getBuiltInExtensionLibraryList)
@@ -328,7 +328,7 @@ class XQueryParser extends XPathParser {
     lib.addFunctionLibrary(mainModule.getGlobalFunctionLibrary)
     config.addExtensionBinders(lib)
     lib.addFunctionLibrary(userlib)
-    exec.setFunctionLibrary(lib)
+    exec.functionLibrary = lib
     queryExp
   } catch {
     case e: XPathException =>
@@ -1278,9 +1278,9 @@ class XQueryParser extends XPathParser {
   private def parseVariableDeclaration(annotations: AnnotationList): Unit = {
     val offset = t.currentTokenStartOffset
     var `var` = new GlobalVariable
-    `var`.setPackageData(env.getPackageData)
-    `var`.setLineNumber(t.getLineNumber + 1)
-    `var`.setSystemId(env.getSystemId)
+    `var`.packageData = env.getPackageData
+    `var`.lineNumber = t.getLineNumber + 1
+    `var`.systemId = env.getSystemId
     if (annotations != null) `var`.setPrivate(annotations.includes(Annotation.PRIVATE))
     nextToken()
     expect(Token.DOLLAR)
@@ -1290,7 +1290,7 @@ class XQueryParser extends XPathParser {
     val varName = t.currentTokenValue
     val varQName = makeStructuredQName(t.currentTokenValue, "")
     assert(varQName != null)
-    `var`.setVariableQName(varQName)
+    `var`.variableQName = varQName
     val uri = varQName.getURI
     val moduleURI = env.asInstanceOf[QueryModule].getModuleNamespace
     if (moduleURI != null && !(moduleURI == uri)) grumble("A variable declared in a library module must be in the module namespace", "XQST0048", offset)
@@ -1301,7 +1301,7 @@ class XQueryParser extends XPathParser {
       nextToken()
       requiredType = parseSequenceType
     }
-    `var`.setRequiredType(requiredType)
+    `var`.requiredType = requiredType
     if (t.currentToken == Token.ASSIGN) {
       t.setState(Tokenizer.DEFAULT_STATE)
       nextToken()
@@ -1310,12 +1310,12 @@ class XQueryParser extends XPathParser {
     }
     else if (t.currentToken == Token.NAME) if ("external" == t.currentTokenValue) {
       val par = new GlobalParam
-      par.setPackageData(env.getPackageData)
+      par.packageData = env.getPackageData
 
-      par.setLineNumber(`var`.getLineNumber)
-      par.setSystemId(`var`.getSystemId)
-      par.setVariableQName(`var`.getVariableQName)
-      par.setRequiredType(`var`.getRequiredType)
+      par.lineNumber = `var`.getLineNumber
+      par.systemId = `var`.getSystemId
+      par.variableQName = `var`.getVariableQName
+      par.requiredType = `var`.getRequiredType
       `var` = par
       nextToken()
       if (t.currentToken == Token.ASSIGN) {
@@ -1329,7 +1329,7 @@ class XQueryParser extends XPathParser {
     else grumble("Expected ':=' or 'external' in variable declaration")
     val qenv = env.asInstanceOf[QueryModule]
     val rsc = env.makeRetainedStaticContext
-    `var`.setRetainedStaticContext(rsc)
+    `var`.retainedStaticContext = rsc
     if (`var`.getBody != null) ExpressionTool.setDeepRetainedStaticContext(`var`.getBody, rsc)
     if (qenv.getModuleNamespace != null && !(uri == qenv.getModuleNamespace)) grumble("Variable " + Err.wrap(varName, Err.VARIABLE) + " is not defined in the module namespace")
     try qenv.declareVariable(`var`)
@@ -1370,7 +1370,7 @@ class XQueryParser extends XPathParser {
       val info = env.getConfiguration.makeContextItemStaticInfo(AnyItemType, maybeUndefined = true)
       exp.setRetainedStaticContext(env.makeRetainedStaticContext)
       exp = exp.typeCheck(visitor, info)
-      req.setDefaultValue(exp)
+      req.defaultValue = exp
       req.external = false
     }
     else if (t.currentToken == Token.NAME && "external" == t.currentTokenValue) {
@@ -1385,14 +1385,14 @@ class XQueryParser extends XPathParser {
         val role = new RoleDiagnostic(RoleDiagnostic.CONTEXT_ITEM, "context item declaration", 0)
         exp = CardinalityChecker.makeCardinalityChecker(exp, StaticProperty.EXACTLY_ONE, role)
         exp.setRetainedStaticContext(env.makeRetainedStaticContext)
-        req.setDefaultValue(exp)
+        req.defaultValue = exp
       }
     }
     else grumble("Expected ':=' or 'external' in context item declaration")
     val exec = getExecutable
     if (exec.globalContextRequirement != null) {
       val gcr = exec.globalContextRequirement
-      if (gcr.getDefaultValue == null && req.getDefaultValue != null) gcr.setDefaultValue(req.getDefaultValue)
+      if (gcr.defaultValue == null && req.defaultValue != null) gcr.setDefaultValue(req.defaultValue)
 
       for (otherType <- gcr.requiredItemTypes.asScala) {
         if (otherType ne AnyItemType) {
@@ -1462,8 +1462,8 @@ class XQueryParser extends XPathParser {
             paramType = parseSequenceType
           }
           val arg = new UserFunctionParameter
-          arg.setRequiredType(paramType)
-          arg.setVariableQName(argQName)
+          arg.requiredType = paramType
+          arg.variableQName = argQName
           func.addArgument(arg)
           declareRangeVariable(arg)
           if (t.currentToken == Token.RPAR) break()
@@ -1583,9 +1583,9 @@ class XQueryParser extends XPathParser {
         val characterMap = ph.getCharacterMap
         if (characterMap != null) {
           val index = new CharacterMapIndex
-          index.putCharacterMap(characterMap.getName, characterMap)
+          index.putCharacterMap(characterMap.name, characterMap)
           getExecutable.setCharacterMapIndex(index)
-          parameterDocProperties.setProperty(SaxonOutputKeys.USE_CHARACTER_MAPS, characterMap.getName.getClarkName)
+          parameterDocProperties.setProperty(SaxonOutputKeys.USE_CHARACTER_MAPS, characterMap.name.getClarkName)
         }
       case "use-character-maps" =>
         grumble("Output declaration use-character-maps cannot appear except in a parameter file", "XQST0109")
@@ -2378,7 +2378,7 @@ class XQueryParser extends XPathParser {
       if (!requiredType.isInstanceOf[SimpleType]) grumble("The type used for validating an attribute must be a simple type")
 
       expr.asInstanceOf[AttributeCreator].setSchemaType(requiredType.asInstanceOf[SimpleType])
-      expr.asInstanceOf[AttributeCreator].setValidationAction(Validation.BY_TYPE)
+      expr.asInstanceOf[AttributeCreator].validationAction = Validation.BY_TYPE
       expr
     }
     else {

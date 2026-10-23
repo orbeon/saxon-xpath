@@ -23,13 +23,13 @@ class RootExpression extends Expression {
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     val th = visitor.getConfiguration.getTypeHierarchy
-    if (contextInfo == null || contextInfo.getItemType == null || contextInfo.getItemType == ErrorType) {
+    if (contextInfo == null || contextInfo.itemType == null || contextInfo.itemType == ErrorType) {
       val err = new XPathException(noContextMessage() + ": the context item is absent")
       err.setErrorCode("XPDY0002")
       err.setIsTypeError(true)
       err.setLocation(getLocation)
       throw err
-    } else if (!doneWarnings && contextInfo.parentless && th.relationship(contextInfo.getItemType, NodeKindTest.DOCUMENT) == Affinity.DISJOINT) {
+    } else if (!doneWarnings && contextInfo.parentless && th.relationship(contextInfo.itemType, NodeKindTest.DOCUMENT) == Affinity.DISJOINT) {
       visitor.issueWarning(
         noContextMessage() +
           ": the context item is parentless and is not a document node",
@@ -37,14 +37,14 @@ class RootExpression extends Expression {
       doneWarnings = true
     }
     contextMaybeUndefined = contextInfo.isPossiblyAbsent
-    if (th.isSubType(contextInfo.getItemType, NodeKindTest.DOCUMENT)) {
+    if (th.isSubType(contextInfo.itemType, NodeKindTest.DOCUMENT)) {
       val cie = new ContextItemExpression()
       ExpressionTool.copyLocationInfo(this, cie)
       cie.setStaticInfo(contextInfo)
       return cie
     }
     val relation =
-      th.relationship(contextInfo.getItemType, AnyNodeTest)
+      th.relationship(contextInfo.itemType, AnyNodeTest)
     if (relation == Affinity.DISJOINT) {
       val err = new XPathException(
         noContextMessage() + ": the context item is not a node")

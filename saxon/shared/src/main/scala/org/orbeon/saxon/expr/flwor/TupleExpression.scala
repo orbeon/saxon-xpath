@@ -30,13 +30,13 @@ class TupleExpression extends Expression {
     this.operanda = new OperandArray(this, e, OperandRole.SAME_FOCUS_ACTION)
   }
 
-  def getSize: Int = getOperanda.getNumberOfOperands
+  def getSize: Int = operanda.getNumberOfOperands
 
   def getSlot(i: Int): LocalVariableReference =
-    getOperanda.getOperandExpression(i).asInstanceOf[LocalVariableReference]
+    operanda.getOperandExpression(i).asInstanceOf[LocalVariableReference]
 
   def setSlot(i: Int, ref: LocalVariableReference): Unit = {
-    getOperanda.setOperand(i, ref)
+    operanda.setOperand(i, ref)
   }
 
   def includesBinding(binding: Binding): Boolean =
@@ -60,7 +60,7 @@ class TupleExpression extends Expression {
       return false
     } else {
       val t2: TupleExpression = other.asInstanceOf[TupleExpression]
-      if (getOperanda.getNumberOfOperands != t2.getOperanda.getNumberOfOperands) {
+      if (operanda.getNumberOfOperands != t2.operanda.getNumberOfOperands) {
         return false
       }
       for (i <- 0 until getSize if !getSlot(i).isEqual(t2.getSlot(i))) {
@@ -78,7 +78,7 @@ class TupleExpression extends Expression {
   }
 
   def copy(rebindings: RebindingMap): Expression = {
-    val n: Int = getOperanda.getNumberOfOperands
+    val n: Int = operanda.getNumberOfOperands
     val refs2: List[LocalVariableReference] = new ArrayList[LocalVariableReference](n)
     for (i <- 0 until n)
       refs2.add(getSlot(i).copy(rebindings).asInstanceOf[LocalVariableReference])

@@ -149,7 +149,7 @@ class StandardUnparsedTextResolver extends UnparsedTextURIResolver {
       resource = DataURIScheme.decode(absoluteURI)
       resource match {
         case binaryResource: BinaryResource =>
-          val octets: Array[Byte] = binaryResource.getData
+          val octets: Array[Byte] = binaryResource.data
           inputStream = new ByteArrayInputStream(octets)
           contentEncoding = "utf-8"
         case _ =>

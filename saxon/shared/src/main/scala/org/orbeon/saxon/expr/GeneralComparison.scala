@@ -222,7 +222,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
               c0)) {
               which = "the second"
             }
-            visitor.getStaticContext.issueWarning(
+            visitor.staticContext.issueWarning(
               message + ". The comparison can succeed only if " + which +
                 " operand is empty, and in that case will always be false",
               getLocation)
@@ -290,7 +290,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
         vc)
       return vc.typeCheck(visitor, contextInfo)
     }
-    val env = visitor.getStaticContext
+    val env = visitor.staticContext
     if (comparer == null) {
       val defaultCollationName = env.getDefaultCollationName
       var collation = config.getCollation(defaultCollationName)
@@ -350,7 +350,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   ): Expression = {
 
     val th = visitor.getConfiguration.getTypeHierarchy
-    val env = visitor.getStaticContext
+    val env = visitor.staticContext
 
     getLhs.optimize(visitor, contextInfo)
     getRhs.optimize(visitor, contextInfo)
@@ -363,7 +363,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
 
     if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
       return Literal.makeLiteral(
-        evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
+        evaluateItem(visitor.staticContext.makeEarlyEvaluationContext())
           .materialize,
         this)
 

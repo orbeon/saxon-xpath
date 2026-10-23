@@ -1,7 +1,6 @@
 package org.orbeon.saxon.trans
 
 import org.orbeon.saxon.expr.instruct.Instruction
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.s9api.{HostLanguage, Location, QName, XmlProcessingError}
 import org.orbeon.saxon.tree.AttributeLocation
 
@@ -17,7 +16,7 @@ class XmlProcessingException(private var exception: XPathException)
 
   def getXPathException: XPathException = exception
 
-  def getHostLanguage: HostLanguage = {
+  def getHostLanguage: HostLanguage.HostLanguage = {
     val loc = getLocation
     if (loc.isInstanceOf[Instruction] || loc.isInstanceOf[AttributeLocation])
       HostLanguage.XSLT

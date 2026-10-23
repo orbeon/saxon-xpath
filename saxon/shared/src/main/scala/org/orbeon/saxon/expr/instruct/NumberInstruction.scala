@@ -148,7 +148,7 @@ class NumberInstruction(val select: Expression, var level: Int, val count: Patte
   override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     var e = super.optimize(visitor, contextInfo)
     if (e ne this) return e
-    if ("EE" == getPackageData.getTargetEdition) {
+    if ("EE" == getPackageData.targetEdition) {
       e = visitor.obtainOptimizer.optimizeNumberInstruction(this, contextInfo)
       if (e != null) return e
     }

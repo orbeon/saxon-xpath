@@ -41,8 +41,9 @@ class EvaluateInstr(xpath: Expression,
   private var optionsOp          : Operand = _
 
   private var importedSchemaNamespaces: Set[String] = _
-  @BeanProperty
   var actualParams: Array[WithParam] = _
+  def getActualParams: Array[WithParam] = actualParams
+  def setActualParams(actualParams: Array[WithParam]): Unit = this.actualParams = actualParams
   private var dynamicParamsOp: Operand = _
   private var defaultXPathNamespace: String = null
 
@@ -90,9 +91,9 @@ class EvaluateInstr(xpath: Expression,
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    importedSchemaNamespaces = visitor.getStaticContext.getImportedSchemaNamespaces
+    importedSchemaNamespaces = visitor.staticContext.getImportedSchemaNamespaces
     typeCheckChildren(visitor, contextInfo)
-    WithParam.typeCheck(getActualParams, visitor, contextInfo)
+    WithParam.typeCheck(actualParams, visitor, contextInfo)
     this
   }
 
@@ -131,7 +132,7 @@ class EvaluateInstr(xpath: Expression,
       sub.add(dynamicParamsOp)
     if (optionsOp != null)
       sub.add(optionsOp)
-    WithParam.gatherOperands(this, getActualParams, sub)
+    WithParam.gatherOperands(this, actualParams, sub)
     sub
   }
 
@@ -151,7 +152,7 @@ class EvaluateInstr(xpath: Expression,
     ExpressionTool.copyLocationInfo(this, e2)
     e2.setRetainedStaticContext(getRetainedStaticContext)
     e2.importedSchemaNamespaces = importedSchemaNamespaces
-    e2.setActualParams(WithParam.copy(e2, getActualParams, rebindings))
+    e2.setActualParams(WithParam.copy(e2, actualParams, rebindings))
     if (optionsOp != null) {
       e2.setOptionsExpression(optionsOp.getChildExpression.copy(rebindings))
     }
@@ -251,7 +252,7 @@ class EvaluateInstr(xpath: Expression,
       env.setExecutable(context.getController.getExecutable)
       env.setXPathLanguageLevel(31)
       env.setDefaultCollationName(
-        getRetainedStaticContext.getDefaultCollationName)
+        getRetainedStaticContext.defaultCollationName)
       if (getNamespaceContextExpr != null) {
         env.setNamespaces(namespaceContextBase)
       } else {
@@ -260,7 +261,7 @@ class EvaluateInstr(xpath: Expression,
           getRetainedStaticContext.getDefaultElementNamespace)
       }
       val libraryList0: FunctionLibraryList =
-        getRetainedStaticContext.getPackageData
+        getRetainedStaticContext.packageData
           .asInstanceOf[StylesheetPackage]
           .getFunctionLibrary
       val libraryList1: FunctionLibraryList = new FunctionLibraryList
@@ -274,9 +275,9 @@ class EvaluateInstr(xpath: Expression,
       }
       env.setFunctionLibrary(libraryList1)
       env.setDecimalFormatManager(
-        getRetainedStaticContext.getDecimalFormatManager)
+        getRetainedStaticContext.decimalFormatManager)
       env.setXPathLanguageLevel(
-        config.getConfigurationProperty(Feature.XPATH_VERSION_FOR_XSLT))
+        config.getConfigurationProperty(Feature.XPATH_VERSION_FOR_XSLT).intValue)
       if (isSchemaAware) {
         val allowAny: GroundedValue =
           options.get(new StringValue("allow-any-namespace"))
@@ -289,7 +290,7 @@ class EvaluateInstr(xpath: Expression,
       val defaultCollation: GroundedValue =
         options.get(new StringValue("default-collation"))
       if (defaultCollation != null) {
-        env.setDefaultCollationName(defaultCollation.head.getStringValue)
+        env.defaultCollationName = defaultCollation.head.getStringValue
       }
       val locals = new HashMap[StructuredQName, Integer]
       if (dynamicParams != null) {
@@ -311,8 +312,8 @@ class EvaluateInstr(xpath: Expression,
           locals.put(paramName.asInstanceOf[QNameValue].getStructuredQName, `var`.getLocalSlotNumber)
         })
       }
-      if (getActualParams != null) {
-        for (actualParam <- getActualParams) {
+      if (actualParams != null) {
+        for (actualParam <- actualParams) {
           val name: StructuredQName = actualParam.getVariableQName
           if (locals.get(name) == null) {
             val `var`: XPathVariable = env.declareVariable(name)
@@ -360,10 +361,10 @@ class EvaluateInstr(xpath: Expression,
       c2.setCurrentIterator(mono)
     }
     c2.openStackFrame(slotMap)
-    if (getActualParams != null) {
-      for (i <- getActualParams.indices) {
-        val slot = slotMap.variableMap.indexOf(getActualParams()(i).getVariableQName)
-        c2.setLocalVariable(slot, getActualParams()(i).getSelectValue(context))
+    if (actualParams != null) {
+      for (i <- actualParams.indices) {
+        val slot = slotMap.variableMap.indexOf(actualParams(i).variableQName)
+        c2.setLocalVariable(slot, actualParams(i).getSelectValue(context))
       }
     }
     if (dynamicParams != null) {
@@ -382,7 +383,7 @@ class EvaluateInstr(xpath: Expression,
       val name = decVal.getVariableQName
       val nameMatch: Predicate[Expression] = e =>
         e.isInstanceOf[LocalVariableReference] &&
-          e.asInstanceOf[LocalVariableReference].getVariableName == name &&
+          e.asInstanceOf[LocalVariableReference].variableName == name &&
           e.asInstanceOf[LocalVariableReference]
             .getBinding
             .isInstanceOf[XPathVariable]
@@ -513,7 +514,7 @@ class EvaluateInstr(xpath: Expression,
       schemaAwareOp.setChildExpression(schemaAwareExpr)
 
   def isActualParam(name: StructuredQName): Boolean =
-    actualParams.exists(_.getVariableQName == name)
+    actualParams.exists(_.variableQName == name)
 
   def setDynamicParams(params: Expression): Unit =
     if (dynamicParamsOp == null)

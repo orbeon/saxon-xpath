@@ -233,7 +233,7 @@ abstract class Minimax extends CollatingFunctionFixed {
       }
       preAllocateComparer(argumentType.asInstanceOf[AtomicType],
         argumentType.asInstanceOf[AtomicType],
-        visitor.getStaticContext)
+        visitor.staticContext)
     }
   }
 

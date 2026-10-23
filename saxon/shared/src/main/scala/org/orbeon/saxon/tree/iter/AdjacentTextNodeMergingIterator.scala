@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.AdjacentTextNodeMerger
 import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.om.{Item, NodeInfo, SequenceIterator}
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Orphan}
 
 class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
@@ -45,5 +44,5 @@ class AdjacentTextNodeMergingIterator(private var base: SequenceIterator)
   override def close(): Unit =
     base.close()
 
-  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property.Property] = Set(Property.LOOKAHEAD)
 }

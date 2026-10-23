@@ -180,7 +180,7 @@ object ExpressionTool {
     contains(exp, sameFocusOnly = false, {
       case vref: LocalVariableReference =>
         val binding = vref.getBinding
-        ! (binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
+        !(binding.isInstanceOf[Expression] && contains(exp, binding.asInstanceOf[Expression]))
       case _ =>
         false
     }: Predicate[Expression])
@@ -433,7 +433,7 @@ object ExpressionTool {
             iterator.close()
             ebvError("a sequence of two or more items starting with a string")
           }
-          ! value1.isZeroLength
+          !value1.isZeroLength
         case n: NumericValue =>
           if (iterator.next != null) {
             iterator.close()
@@ -571,7 +571,7 @@ object ExpressionTool {
   def optimizeComponentBody(body: Expression/*, compilation: Compilation*/, visitor: ExpressionVisitor, cisi: ContextItemStaticInfo, extractGlobals: Boolean): Expression = { //
     val config = visitor.getConfiguration
     val opt = visitor.obtainOptimizer
-    val env = visitor.getStaticContext
+    val env = visitor.staticContext
     var compileWithTracing = config.isCompileWithTracing
     var expBody = body
     if (!compileWithTracing) {
@@ -628,8 +628,8 @@ object ExpressionTool {
 
   @throws[XPathException]
   def computeEvaluationModesForUserFunctionCalls(exp: Expression): Boolean =
-    ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: Any) => {
-    def foo(expression: Expression, result: Any) = {
+    ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: AnyRef) => {
+    def foo(expression: Expression, result: AnyRef) = {
       expression match {
         case call: UserFunctionCall => call.allocateArgumentEvaluators()
         case _ =>
@@ -646,8 +646,8 @@ object ExpressionTool {
 
   @throws[XPathException]
   def clearStreamabilityData(exp: Expression): Boolean =
-    ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: Any) => {
-    def foo(expression: Expression, result: Any) = {
+    ExpressionTool.processExpressionTree(exp, null, (expression: Expression, result: AnyRef) => {
+    def foo(expression: Expression, result: AnyRef) = {
       expression.setExtraProperty("P+S", null)
       expression.setExtraProperty("inversion", null)
       false

@@ -105,7 +105,7 @@ object CopyOf {
       case e: XPathException => {
         e.maybeSetContext(context)
         e.maybeSetLocation(instruction.getLocation)
-        if (instruction.getPackageData.getHostLanguage == HostLanguage.XQUERY &&
+        if (instruction.getPackageData.hostLanguage == HostLanguage.XQUERY &&
           e.getErrorCodeLocalPart.==("XTTE0950")) {
           e.setErrorCode("XQTY0086")
         }
@@ -160,7 +160,7 @@ object CopyOf {
         val err = new XPathException(
           "Cannot preserve type annotation when copying an attribute with namespace-sensitive content")
         err.setErrorCode(
-          if (context.getController.getExecutable.getHostLanguage ==
+          if (context.getController.getExecutable.hostLanguage ==
             HostLanguage.XSLT) "XTTE0950"
           else "XQTY0086")
         err.setIsTypeError(true)
@@ -559,7 +559,7 @@ class CopyOf(select: Expression,
               }
             }
           }
-          options.setTopLevelType(`type`)
+          options.topLevelType = `type`
           options.setTopLevelElement(
             NameOfNode.makeName(item).getStructuredQName)
           options.setErrorReporter(context.getErrorReporter)
@@ -635,8 +635,8 @@ class CopyOf(select: Expression,
       case Type.DOCUMENT => {
         val options: ParseOptions = new ParseOptions()
         options.setSchemaValidationMode(validation)
-        options.setSpaceStrippingRule(NoElementsSpaceStrippingRule.getInstance)
-        options.setTopLevelType(schemaType)
+        options.spaceStrippingRule = NoElementsSpaceStrippingRule.getInstance
+        options.topLevelType = schemaType
         options.setErrorReporter(context.getErrorReporter)
         config.prepareValidationReporting(context, options)
         val `val`: Receiver = config.getDocumentValidator(out,
@@ -736,7 +736,7 @@ class CopyOf(select: Expression,
     if (copyForUpdate) {
       out.treeModel = TreeModel.LINKED_TREE
     }
-    pipe.hostLanguage = getPackageData.getHostLanguage
+    pipe.hostLanguage = getPackageData.hostLanguage
     try process(new ComplexContentOutputter(out), context)
     catch {
       case err: XPathException => {

@@ -6,7 +6,6 @@ import org.orbeon.saxon.functions.FunctionLibraryList
 import org.orbeon.saxon.om.{Item, StructuredQName}
 import org.orbeon.saxon.query.QueryModule
 import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.serialize.{CharacterMapIndex, SerializationProperties}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
@@ -34,7 +33,7 @@ class Executable(var config: Configuration) {
   var functionLibrary: FunctionLibraryList = _
 
   @BeanProperty
-  var hostLanguage: HostLanguage = HostLanguage.XSLT
+  var hostLanguage: HostLanguage.HostLanguage = HostLanguage.XSLT
 
   private val globalParams: Map[StructuredQName, GlobalParam] = new HashMap
 
@@ -211,9 +210,9 @@ class Executable(var config: Configuration) {
           "A global context item is required, but none has been supplied",
           "XTDE3086")
       }
-      if (globalContextRequirement.getDefaultValue != null) {
+      if (globalContextRequirement.defaultValue != null) {
         try{
-          contextItemVar =globalContextRequirement.getDefaultValue.evaluateItem(context)
+          contextItemVar =globalContextRequirement.defaultValue.evaluateItem(context)
         }catch {
           case e: XPathException => {
             if ("XPDY0002" == e.getErrorCodeLocalPart) {
@@ -251,7 +250,7 @@ class Executable(var config: Configuration) {
         val s: String = role.composeErrorMessage(itemType, contextItemVar, th)
         throw new XPathException(
           s,
-          if (getHostLanguage == HostLanguage.XSLT) "XTTE0590" else "XPTY0004")
+          if (hostLanguage == HostLanguage.XSLT) "XTTE0590" else "XPTY0004")
       }
     }
     contextItemVar

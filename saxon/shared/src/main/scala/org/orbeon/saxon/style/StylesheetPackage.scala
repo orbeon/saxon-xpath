@@ -79,8 +79,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   var schemaIndex: Set[String] = new HashSet(10)
 
-  @BeanProperty
   var functionLibrary: FunctionLibraryList = _
+  def getFunctionLibrary: FunctionLibraryList = functionLibrary
+  def setFunctionLibrary(fl: FunctionLibraryList): Unit = this.functionLibrary = fl
 
   private var queryFunctions: XQueryFunctionLibrary = _
 
@@ -90,8 +91,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   private var maxFunctionArity: Int = -1
 
-  @BooleanBeanProperty
   var retainUnusedFunctions: Boolean = false
+  def isRetainUnusedFunctions: Boolean = retainUnusedFunctions
+  def setRetainUnusedFunctions(retain: Boolean): Unit = this.retainUnusedFunctions = retain
 
   var implicitPackage: Boolean = _
 
@@ -201,9 +203,9 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     if (c.getActor.isInstanceOf[GlobalVariable]) {
       val `var`: GlobalVariable = c.getActor.asInstanceOf[GlobalVariable]
       val slot: Int = slotManager.allocateSlotNumber(`var`.getVariableQName)
-      `var`.setPackageData(this)
+      `var`.packageData = this
       `var`.setBinderySlotNumber(slot)
-      if (c.getVisibility != Visibility.HIDDEN) {
+      if (c.visibility != Visibility.HIDDEN) {
         addGlobalVariable(`var`)
       }
     }
@@ -212,7 +214,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   def addComponent(component: Component): Unit = {
     val name: SymbolicName = component.getActor.getSymbolicName
     componentIndex.put(name, component)
-    if (component.getVisibility == Visibility.ABSTRACT && component.containingPackage == this) {
+    if (component.visibility == Visibility.ABSTRACT && component.containingPackage == this) {
       abstractComponents.put(component.getActor.getSymbolicName, component)
     }
   }
@@ -268,7 +270,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     for ((key, value) <- usedPackage.componentIndex.asScala) {
       val name: SymbolicName = key
       val oldC: Component = value
-      val oldV: Visibility.Visibility = oldC.getVisibility
+      val oldV: Visibility.Visibility = oldC.visibility
       var newV: Visibility.Visibility = null
       if (overrides.contains(name) && !(oldC.getActor.isInstanceOf[Mode])) {
         newV = Visibility.HIDDEN
@@ -319,7 +321,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
           abstractComponents.remove(name)
         }
       }
-      if (newC.getVisibility == Visibility.HIDDEN) {
+      if (newC.visibility == Visibility.HIDDEN) {
         hiddenComponents.add(newC)
       } else if (componentIndex.get(name) != null) {
         if (!(oldC.getActor.isInstanceOf[Mode])) {
@@ -347,7 +349,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
             newC.baseComponent.getComponentBindings
           val newBindings: List[ComponentBinding] = newC.getComponentBindings
           for (i <- 0 until oldBindings.size) {
-            val name12: SymbolicName = oldBindings.get(i).getSymbolicName
+            val name12: SymbolicName = oldBindings.get(i).symbolicName
             var target: Component = null
             if (overrides.contains(name12)) {
               target = getComponent(name12)
@@ -356,7 +358,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
                   "We know there's an override for " + name12 + ", but we can't find it")
               }
             } else {
-              target = correspondence.get(oldBindings.get(i).getTarget)
+              target = correspondence.get(oldBindings.get(i).target)
               if (target == null) {
                 throw new AssertionError(
                   "Saxon can't find the new component corresponding to " +
@@ -420,7 +422,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
                                         oldBindings: List[ComponentBinding],
                                         newBindings: List[ComponentBinding]): Unit = {
     for (oldBinding <- oldBindings.asScala) {
-      val name: SymbolicName = oldBinding.getSymbolicName
+      val name: SymbolicName = oldBinding.symbolicName
       var target: Component = null
       if (overrides.contains(name)) {
         target = getComponent(name)
@@ -429,7 +431,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
             "We know there's an override for " + name + ", but we can't find it")
         }
       } else {
-        target = correspondence.get(oldBinding.getTarget)
+        target = correspondence.get(oldBinding.target)
         if (target == null) {
           throw new AssertionError(
             "Saxon can't find the new component corresponding to " +
@@ -480,7 +482,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
   def createFunctionLibrary(): Unit = {
     val functionLibrary: FunctionLibraryList = new FunctionLibraryList
     val includeHOF: Boolean =
-      !("HE" == getTargetEdition || "JS" == getTargetEdition)
+      !("HE" == targetEdition || "JS" == targetEdition)
     /*functionLibrary.addFunctionLibrary(
       if (includeHOF) config.getXSLT30FunctionSet
       else new Configuration().getXSLT30FunctionSet)
@@ -488,7 +490,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
       new StylesheetFunctionLibrary(this, true))*/
     functionLibrary.addFunctionLibrary(config.getBuiltInExtensionLibraryList)
     functionLibrary.addFunctionLibrary(new ConstructorFunctionLibrary(config))
-    if ("JS" == getTargetEdition) {
+    if ("JS" == targetEdition) {
       addIxslFunctionLibrary(functionLibrary)
     }
     queryFunctions = new XQueryFunctionLibrary(config)
@@ -547,7 +549,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def updatePreparedStylesheet(/*pss: PreparedStylesheet*/): Unit = {
     for ((key, value) <- componentIndex.asScala
-         if value.getVisibility == Visibility.ABSTRACT) {
+         if value.visibility == Visibility.ABSTRACT) {
       abstractComponents.put(key, value)
     }
     /* pss.topLevelPackage = this
@@ -615,7 +617,7 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
 
   def checkForAbstractComponents(): Unit = {
     for ((key, value) <- componentIndex.asScala
-         if value.getVisibility == Visibility.ABSTRACT && value.containingPackage == this) {
+         if value.visibility == Visibility.ABSTRACT && value.containingPackage == this) {
       abstractComponents.put(key, value)
     }
     if (!abstractComponents.isEmpty) {

@@ -12,7 +12,7 @@ object XmlProcessingIncident {
   def maybeSetHostLanguage(error: XmlProcessingError, lang: HostLanguage.HostLanguage): Unit =
     if (error.getHostLanguage == null)
       error match {
-        case incident: XmlProcessingIncident   => incident.setHostLanguage(lang)
+        case incident: XmlProcessingIncident   => incident.hostLanguage = lang
         case exception: XmlProcessingException => exception.getXPathException.setHostLanguage(lang)
         case _                                 =>
       }

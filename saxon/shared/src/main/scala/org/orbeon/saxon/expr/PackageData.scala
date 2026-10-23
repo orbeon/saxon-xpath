@@ -4,7 +4,6 @@ import java.{util => ju}
 import org.orbeon.saxon.expr.accum.AccumulatorRegistry
 import org.orbeon.saxon.expr.instruct.{GlobalVariable, SlotManager}
 import org.orbeon.saxon.s9api.HostLanguage
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.trans.{DecimalFormatManager, TypeAliasManager}
 import org.orbeon.saxon.utils.Configuration
 
@@ -12,16 +11,20 @@ import scala.beans.BeanProperty
 
 class PackageData(var config: Configuration) {
 
-  @BeanProperty
-  var hostLanguage: HostLanguage = _
+  var hostLanguage: HostLanguage.HostLanguage = _
+  def getHostLanguage: HostLanguage.HostLanguage = hostLanguage
+  def setHostLanguage(hl: HostLanguage.HostLanguage): Unit = this.hostLanguage = hl
+
   var isSchemaAware: Boolean = _
   private var decimalFormatManager: DecimalFormatManager = null
   var accumulatorRegistry: AccumulatorRegistry = null
   private var globalVariables: ju.List[GlobalVariable] = new ju.ArrayList()
   var globalSlotManager: SlotManager = config.makeSlotManager
   var localLicenseId: Int = -1
-  @BeanProperty
+
   var targetEdition: String = config.getEditionCode
+  def getTargetEdition: String = targetEdition
+  def setTargetEdition(te: String): Unit = this.targetEdition = te
   var relocatable: Boolean = _
   private var typeAliasManager: TypeAliasManager = _
 

@@ -141,7 +141,7 @@ object KeyFn {
         if (allResults == null) null*/
       allResults = new UnionEnumeration(allResults,
         null,
-        LocalOrderComparer.getInstance)
+        LocalOrderComparer.instance)
     }
     if (allResults == null) {
       allResults = EmptyIterator.ofNodes

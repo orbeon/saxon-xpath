@@ -58,7 +58,7 @@ class Innermost extends SystemFunction {
   def innermost(in: SequenceIterator): SequenceIterator = {
     var seqIn = in
     if (!presorted) {
-      seqIn = new DocumentOrderIterator(seqIn, GlobalOrderComparer.getInstance)
+      seqIn = new DocumentOrderIterator(seqIn, GlobalOrderComparer.instance)
     }
     new InnermostIterator(seqIn)
   }

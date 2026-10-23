@@ -152,8 +152,8 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
                          contextInfo: ContextItemStaticInfo): Expression = {
     val config = visitor.getConfiguration
     val tc     = config.getTypeChecker(false)
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
     if (! getLhsExpression.isInstanceOf[Pattern]) {
       val role0: RoleDiagnostic = new RoleDiagnostic(
         RoleDiagnostic.BINARY_EXPR,
@@ -429,11 +429,11 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     val i2 = getRhsExpression.iterate(c)
     op match {
       case Token.UNION =>
-        new UnionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        new UnionEnumeration(i1, i2, GlobalOrderComparer.instance)
       case Token.INTERSECT =>
-        new IntersectionEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        new IntersectionEnumeration(i1, i2, GlobalOrderComparer.instance)
       case Token.EXCEPT =>
-        new DifferenceEnumeration(i1, i2, GlobalOrderComparer.getInstance)
+        new DifferenceEnumeration(i1, i2, GlobalOrderComparer.instance)
       case _ =>
         throw new UnsupportedOperationException("Unknown op in Venn Expression")
     }

@@ -115,17 +115,18 @@ class Operand(
     *
     * @return the usage
     */
-  def getUsage: OperandUsage = role.getUsage
+  def usage: OperandUsage = role.usage
+  def getUsage: OperandUsage = usage
 
   def setUsage(usage: OperandUsage): Unit =
-    role = new OperandRole(role.properties, usage, role.getRequiredType)
+    role = new OperandRole(role.properties, usage, role.requiredType)
 
   /**
     * Get the required type of the operand
     *
     * @return the required type
     */
-  def getRequiredType: SequenceType = role.getRequiredType
+  def requiredType: SequenceType = role.requiredType
 
   def isInChoiceGroup: Boolean = role.isInChoiceGroup
 
@@ -138,7 +139,7 @@ class Operand(
       case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
         if (! e.isReportableStatically) {
-          visitor.getStaticContext.issueWarning(
+          visitor.staticContext.issueWarning(
             "Evaluation will always throw a dynamic error: " + e.getMessage,
             getChildExpression.getLocation)
           setChildExpression(new ErrorExpression(new XmlProcessingException(e)))
@@ -154,7 +155,7 @@ class Operand(
       case e: XPathException =>
         e.maybeSetLocation(getChildExpression.getLocation)
         if (!e.isReportableStatically) {
-          visitor.getStaticContext.issueWarning(
+          visitor.staticContext.issueWarning(
             "Evaluation will always throw a dynamic error: " + e.getMessage,
             getChildExpression.getLocation
           )

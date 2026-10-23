@@ -8,7 +8,6 @@ import java.util.EnumSet
 import java.util.function.Predicate
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 class AttributeAxisIterator(node: ElementImpl,
                             private val nodeTest: Predicate[_ >: NodeInfo])
@@ -50,5 +49,5 @@ class AttributeAxisIterator(node: ElementImpl,
         }
       }
 
-  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property.Property] = Set(Property.LOOKAHEAD)
 }

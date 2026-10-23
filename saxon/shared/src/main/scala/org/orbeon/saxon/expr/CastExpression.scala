@@ -60,24 +60,24 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
       }
 
     val sourceType = sourceItemType.asInstanceOf[PlainType]
-    val r = th.relationship(sourceType, getTargetType)
+    val r = th.relationship(sourceType, targetType)
     if (r eq Affinity.SAME_TYPE) return operand
     else if (r eq Affinity.SUBSUMED_BY) { // It's generally true that any expression defined to return an X is allowed to return a subtype of X.
       // However, people seem to get upset if we treat the cast as a no-op.
-      converter = new Converter.UpCastingConverter(getTargetType)
+      converter = new Converter.UpCastingConverter(targetType)
     }
     else {
       val rules = visitor.getConfiguration.getConversionRules
       if (sourceType.isAtomicType && (sourceType ne BuiltInAtomicType.ANY_ATOMIC)) {
-        converter = rules.getConverter(sourceType.asInstanceOf[AtomicType], getTargetType)
+        converter = rules.getConverter(sourceType.asInstanceOf[AtomicType], targetType)
         if (converter == null) {
-          val err = new XPathException("Casting from " + sourceType + " to " + getTargetType + " can never succeed")
+          val err = new XPathException("Casting from " + sourceType + " to " + targetType + " can never succeed")
           err.setErrorCode("XPTY0004")
           err.setLocation(getLocation)
           err.setIsTypeError(true)
           throw err
         }
-        else if (getTargetType.isNamespaceSensitive) converter = converter.setNamespaceResolver(getRetainedStaticContext)
+        else if (targetType.isNamespaceSensitive) converter = converter.setNamespaceResolver(getRetainedStaticContext)
       }
     }
     if (operand.isInstanceOf[Literal]) return preEvaluate
@@ -106,13 +106,13 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     if (e2 ne this) return e2
     // Eliminate pointless casting between untypedAtomic and string
     var operand = getBaseExpression
-    if (getTargetType eq BuiltInAtomicType.UNTYPED_ATOMIC) if (operand.isCallOn(classOf[String_1])) {
+    if (targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) if (operand.isCallOn(classOf[String_1])) {
       val e = operand.asInstanceOf[SystemFunctionCall].getArg(0)
       if (e.getItemType.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE) operand = e
     }
-    else if (operand.isInstanceOf[CastExpression]) if (operand.asInstanceOf[CastExpression].getTargetType eq BuiltInAtomicType.UNTYPED_ATOMIC) return operand
-    else if (operand.asInstanceOf[CastExpression].getTargetType eq BuiltInAtomicType.STRING) {
-      operand.asInstanceOf[CastExpression].setTargetType(BuiltInAtomicType.UNTYPED_ATOMIC)
+    else if (operand.isInstanceOf[CastExpression]) if (operand.asInstanceOf[CastExpression].targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) return operand
+    else if (operand.asInstanceOf[CastExpression].targetType eq BuiltInAtomicType.STRING) {
+      operand.asInstanceOf[CastExpression].targetType = BuiltInAtomicType.UNTYPED_ATOMIC
       return operand
     }
     else if (operand.isInstanceOf[AtomicSequenceConverter]) if (operand.getItemType eq BuiltInAtomicType.UNTYPED_ATOMIC) return operand
@@ -125,15 +125,15 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     if (operand.isCallOn(classOf[String_1])) {
       val e = operand.asInstanceOf[SystemFunctionCall].getArg(0)
       val et = e.getItemType
-      if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, getTargetType)) return e
+      if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, targetType)) return e
     }
     // avoid converting anything to untypedAtomic and then back again
     if (operand.isInstanceOf[CastExpression]) {
-      val it = operand.asInstanceOf[CastExpression].getTargetType
+      val it = operand.asInstanceOf[CastExpression].targetType
       if (th.isSubType(it, BuiltInAtomicType.STRING) || th.isSubType(it, BuiltInAtomicType.UNTYPED_ATOMIC)) {
         val e = operand.asInstanceOf[CastExpression].getBaseExpression
         val et = e.getItemType
-        if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, getTargetType)) return e
+        if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, targetType)) return e
       }
     }
     if (operand.isInstanceOf[AtomicSequenceConverter]) {
@@ -141,7 +141,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
       if (th.isSubType(it, BuiltInAtomicType.STRING) || th.isSubType(it, BuiltInAtomicType.UNTYPED_ATOMIC)) {
         val e = operand.asInstanceOf[AtomicSequenceConverter].getBaseExpression
         val et = e.getItemType
-        if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, getTargetType)) return e
+        if (et.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE && th.isSubType(et, targetType)) return e
       }
     }
     // if the operand can't be empty, then set allowEmpty to false to provide more information for analysis
@@ -190,7 +190,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
   /**
    * Get the static type of the expression
    */
-  override def getItemType = getTargetType
+  override def getItemType = targetType
 
   /**
    * Get the static type of the expression as a UType, following precisely the type
@@ -199,7 +199,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    * @return the static item type of the expression according to the XSLT 3.0 defined rules
    * @param contextItemType static information about the context item
    */
-  override def getStaticUType(contextItemType: UType) = getTargetType.getUType
+  override def getStaticUType(contextItemType: UType) = targetType.getUType
 
   /**
    * Determine the special properties of this expression
@@ -208,7 +208,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    */
   override def computeSpecialProperties = {
     var p = super.computeSpecialProperties
-    if (getTargetType eq BuiltInAtomicType.UNTYPED_ATOMIC) p = p & ~StaticProperty.NOT_UNTYPED_ATOMIC
+    if (targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) p = p & ~StaticProperty.NOT_UNTYPED_ATOMIC
     p
   }
 
@@ -235,7 +235,7 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    * @param rebindings variables that need to be rebound
    */
   override def copy(rebindings: RebindingMap) = {
-    val c2 = new CastExpression(getBaseExpression.copy(rebindings), getTargetType, allowsEmpty)
+    val c2 = new CastExpression(getBaseExpression.copy(rebindings), targetType, allowsEmpty)
     ExpressionTool.copyLocationInfo(this, c2)
     c2.converter = converter
     c2.setRetainedStaticContext(getRetainedStaticContext)
@@ -275,15 +275,15 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     var converter = this.converter
     if (converter == null) {
       val rules = context.getConfiguration.getConversionRules
-      converter = rules.getConverter(value.getPrimitiveType, getTargetType)
+      converter = rules.getConverter(value.getPrimitiveType, targetType)
       if (converter == null) {
-        val e = new XPathException("Casting from " + value.getPrimitiveType + " to " + getTargetType + " is not permitted")
+        val e = new XPathException("Casting from " + value.getPrimitiveType + " to " + targetType + " is not permitted")
         e.setXPathContext(context)
         e.setLocation(getLocation)
         e.setErrorCode("XPTY0004")
         throw e
       }
-      if (getTargetType.isNamespaceSensitive)
+      if (targetType.isNamespaceSensitive)
         converter = converter.setNamespaceResolver(getRetainedStaticContext)
     }
     converter.convert(value) match {
@@ -313,13 +313,13 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
   /**
    * Is this expression the same as another expression?
    */
-  override def equals(other: Any) = other.isInstanceOf[CastExpression] && getBaseExpression.isEqual(other.asInstanceOf[CastExpression].getBaseExpression) && (getTargetType eq other.asInstanceOf[CastExpression].getTargetType) && allowsEmpty == other.asInstanceOf[CastExpression].allowsEmpty
+  override def equals(other: Any) = other.isInstanceOf[CastExpression] && getBaseExpression.isEqual(other.asInstanceOf[CastExpression].getBaseExpression) && (targetType eq other.asInstanceOf[CastExpression].targetType) && allowsEmpty == other.asInstanceOf[CastExpression].allowsEmpty
 
   /**
    * get HashCode for comparing two expressions. Note that this hashcode gives the same
    * result for (A op B) and for (B op A), whether or not the operator is commutative.
    */
-  override def computeHashCode = super.computeHashCode ^ getTargetType.hashCode
+  override def computeHashCode = super.computeHashCode ^ targetType.hashCode
 
   /**
    * Represent the expression as a string. The resulting string will be a valid XPath 3.0 expression
@@ -327,9 +327,9 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
    *
    * @return the expression as a string in XPath 3.0 syntax
    */
-  override def toString = getTargetType.getEQName + "(" + getBaseExpression.toString + ")"
+  override def toString = targetType.getEQName + "(" + getBaseExpression.toString + ")"
 
-  override def toShortString = getTargetType.getDisplayName + "(" + getBaseExpression.toShortString + ")"
+  override def toShortString = targetType.getDisplayName + "(" + getBaseExpression.toShortString + ")"
 
   /**
    * Diagnostic print of expression structure. The abstract expression tree

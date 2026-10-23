@@ -95,12 +95,12 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
   def this(bindings: ju.List[NamespaceBinding]) = {
     this()
     val bindingArray = bindings.toArray(NamespaceBinding.EMPTY_ARRAY)
-    bindingArray.sortBy((res: NamespaceBinding) => res.getPrefix)
+    bindingArray.sortBy((res: NamespaceBinding) => res.prefix)
     var bindsXmlNamespace = false
     prefixes = new Array[String](bindingArray.length)
     uris = new Array[String](bindingArray.length)
     for (i <- 0 until bindingArray.length) {
-      prefixes(i) = bindingArray(i).getPrefix
+      prefixes(i) = bindingArray(i).prefix
       uris(i) = bindingArray(i).getURI
       if (prefixes(i) == "xml") {
         bindsXmlNamespace = true
@@ -333,7 +333,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
     case _ =>
       var map = this
       for (nb <- namespaces.asScala)
-        map = map.put(nb.getPrefix, nb.getURI)
+        map = map.put(nb.prefix, nb.getURI)
       map
   }
 
@@ -531,7 +531,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
     val sb = new StringBuilder
 
     for (nb <- this.asScala) {
-      sb.append(nb.getPrefix).append("=").append(nb.getURI).append(" ")
+      sb.append(nb.prefix).append("=").append(nb.getURI).append(" ")
     }
     sb.toString
   }

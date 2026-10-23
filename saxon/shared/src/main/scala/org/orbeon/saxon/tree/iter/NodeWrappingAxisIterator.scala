@@ -5,7 +5,6 @@ import java.util.EnumSet
 import java.util.Iterator
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 
 class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
                                    private val wrappingFunction: NodeWrappingFunction[_ >: B, NodeInfo])
@@ -31,6 +30,6 @@ class NodeWrappingAxisIterator[B](var base: Iterator[_ <: B],
 
   def isIgnorable(node: B): Boolean = false
 
-  override def getProperties: Set[Property] = Set(Property.LOOKAHEAD)
+  override def getProperties: Set[Property.Property] = Set(Property.LOOKAHEAD)
 
 }

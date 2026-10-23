@@ -16,7 +16,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.regex.RegexIterator.MatchHandler
 
 import scala.util.control.Breaks._
@@ -88,7 +87,7 @@ class JRegexIterator(private var theString: String,
     StringValue.makeStringValue(current)
   }
 
-  def getRegexProperties: Set[Property] = Set(Property.LAST_POSITION_FINDER)
+  def getRegexProperties: Set[Property.Property] = Set(Property.LAST_POSITION_FINDER)
 
   def isMatching(): Boolean = next1 == null && prevEnd >= 0
 

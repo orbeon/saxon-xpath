@@ -188,7 +188,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
         var cmi: CharacterMapIndex = null
         if (characterMap != null) {
           cmi = new CharacterMapIndex()
-          cmi.putCharacterMap(characterMap.getName, characterMap)
+          cmi.putCharacterMap(characterMap.name, characterMap)
         }
         var sProps: SerializationProperties =
           new SerializationProperties(props, cmi)

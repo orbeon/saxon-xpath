@@ -51,7 +51,7 @@ class OutputterEventBuffer extends Outputter {
     }
     for (binding <- namespaces.asScala) {
       buffer.add(
-        new OutputterEvent.Namespace(binding.getPrefix,
+        new OutputterEvent.Namespace(binding.prefix,
           binding.getURI,
           properties))
     }

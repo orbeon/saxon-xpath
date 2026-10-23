@@ -3,9 +3,7 @@ package org.orbeon.saxon.om
 import java.{util => ju}
 
 import org.orbeon.saxon.expr.LastPositionFinder
-import org.orbeon.saxon.om.MemoSequence.State
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{ArrayIterator, EmptyIterator, GroundedIterator, SingletonIterator}
 import org.orbeon.saxon.value.{EmptySequence, SequenceExtent}
@@ -24,7 +22,7 @@ object MemoSequence {
 
 class MemoSequence extends Sequence {
 
-  import State._
+  import MemoSequence.State._
 
   var inputIterator: SequenceIterator = _
 
@@ -35,7 +33,7 @@ class MemoSequence extends Sequence {
 
   var reservoir: Array[Item] = null
   var used: Int = _
-  var state: State = State.UNREAD
+  var state: State = UNREAD
   def head: Item = iterate().next()
 
   def iterate(): SequenceIterator = synchronized {
@@ -242,6 +240,6 @@ class MemoSequence extends Sequence {
           Seq(reservoir.toIndexedSeq: _*).slice(position + 1, used).toList.asInstanceOf[ju.List[Item]])
       }
 
-    override def getProperties: Set[Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)
+    override def getProperties: Set[Property.Property] = Set(Property.GROUNDED, Property.LAST_POSITION_FINDER)
   }
 }

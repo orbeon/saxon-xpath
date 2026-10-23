@@ -5,17 +5,21 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
 
 class UnparsedEntity {
 
-  @BeanProperty
   var name: String = _
+  def getName: String = name
+  def setName(name: String): Unit = this.name = name
 
-  @BeanProperty
   var systemId: String = _
+  def getSystemId: String = systemId
+  def setSystemId(systemId: String): Unit = this.systemId = systemId
 
-  @BeanProperty
   var publicId: String = _
+  def getPublicId: String = publicId
+  def setPublicId(publicId: String): Unit = this.publicId = publicId
 
-  @BeanProperty
   var baseURI: String = _
+  def getBaseURI: String = baseURI
+  def setBaseURI(baseURI: String): Unit = this.baseURI = baseURI
 
 }
 

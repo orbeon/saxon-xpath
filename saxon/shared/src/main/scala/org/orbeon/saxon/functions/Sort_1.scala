@@ -27,7 +27,7 @@ class Sort_1 extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     val inputList = getItemsToBeSorted(arguments(0))
     val collation: StringCollator = context.getConfiguration.getCollation(
-      getRetainedStaticContext.getDefaultCollationName)
+      getRetainedStaticContext.defaultCollationName)
     doSort(inputList, collation, context)
   }
 

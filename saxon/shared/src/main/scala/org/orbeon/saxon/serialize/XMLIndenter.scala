@@ -98,7 +98,7 @@ class XMLIndenter(var emitter: XMLEmitter) extends ProxyReceiver(emitter) {
     if (suppressedAtLevel < 0) {
       var len: Int = 0
       for (nbs <- namespaces.asScala; binding <- nbs.asScala) {
-        val prefix: String = binding.getPrefix
+        val prefix: String = binding.prefix
         if (prefix.isEmpty) {
           len += 9 + binding.getURI.length
         } else {

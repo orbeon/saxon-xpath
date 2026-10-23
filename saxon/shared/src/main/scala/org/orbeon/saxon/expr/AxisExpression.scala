@@ -86,8 +86,8 @@ class AxisExpression(var axis: Int, nodeTest: NodeTest)
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
 
-    val contextItemType = contextInfo.getItemType
-    val noWarnings      = doneOptimize || (doneTypeCheck && this.staticInfo.getItemType == contextItemType)
+    val contextItemType = contextInfo.itemType
+    val noWarnings      = doneOptimize || (doneTypeCheck && this.staticInfo.itemType == contextItemType)
 
     doneTypeCheck = true
     if (contextItemType == ErrorType) {
@@ -131,7 +131,7 @@ class AxisExpression(var axis: Int, nodeTest: NodeTest)
       }
     }
 
-    if (visitor.getStaticContext.getOptimizerOptions.isSet(
+    if (visitor.staticContext.getOptimizerOptions.isSet(
       OptimizerOptions.VOID_EXPRESSIONS)) {
       checkPlausibility(visitor, contextInfo, !noWarnings)
     } else {
@@ -142,9 +142,9 @@ class AxisExpression(var axis: Int, nodeTest: NodeTest)
   private def checkPlausibility(visitor: ExpressionVisitor,
                                 contextInfo: ContextItemStaticInfo,
                                 warnings: Boolean): Expression = {
-    val env: StaticContext = visitor.getStaticContext
+    val env: StaticContext = visitor.staticContext
     val config: Configuration = env.getConfiguration
-    var contextType: ItemType = contextInfo.getItemType
+    var contextType: ItemType = contextInfo.itemType
     if (! contextType.isInstanceOf[NodeTest])
       contextType = AnyNodeTest
     if (test != null &&
@@ -640,7 +640,7 @@ class AxisExpression(var axis: Int, nodeTest: NodeTest)
     test
   }
 
-  def getContextItemType: ItemType = staticInfo.getItemType
+  def getContextItemType: ItemType = staticInfo.itemType
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {
@@ -731,7 +731,7 @@ class AxisExpression(var axis: Int, nodeTest: NodeTest)
   def computeCardinality(): Int = {
     var originNodeType: NodeTest = null
     val nodeTest = test
-    val contextItemType = staticInfo.getItemType
+    val contextItemType = staticInfo.itemType
     contextItemType match {
       case test1: NodeTest =>
         originNodeType = test1

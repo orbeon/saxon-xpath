@@ -6,7 +6,6 @@ import java.util.{Collections, HashSet, Set}
 
 import org.orbeon.saxon.lib.XQueryFunctionAnnotationHandler._
 import org.orbeon.saxon.model.Affinity
-import org.orbeon.saxon.model.Affinity.Affinity
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.query.{Annotation, AnnotationList}
 import org.orbeon.saxon.trans.XPathException
@@ -130,7 +129,7 @@ class XQueryFunctionAnnotationHandler extends FunctionAnnotationHandler {
     true
 
   def relationship(firstList: AnnotationList,
-                   secondList: AnnotationList): Affinity = Affinity.OVERLAPS
+                   secondList: AnnotationList): Affinity.Affinity = Affinity.OVERLAPS
 
 }
 

@@ -573,7 +573,7 @@ class XPathContextMajor private () extends XPathContextMinor {
   override def getTargetComponent(bindingSlot: Int): Component =
     try {
       val binding = currentComponent.getComponentBindings.get(bindingSlot)
-      binding.getTarget
+      binding.target
     } catch {
       case e: NullPointerException =>
         // Suggests that the current component is null, which would be a bug

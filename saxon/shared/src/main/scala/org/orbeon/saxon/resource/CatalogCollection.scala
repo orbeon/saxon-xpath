@@ -65,7 +65,7 @@ class CatalogCollection //TODO we might know the catalog File already
           val id: InputDetails = getInputDetails(in)
           id.parseOptions =
             new ParseOptions(context.getConfiguration.getParseOptions)
-          id.parseOptions.setSpaceStrippingRule(whitespaceRules)
+          id.parseOptions.spaceStrippingRule = whitespaceRules
           id.resourceUri = in
           makeResource(context.getConfiguration, id)
         } catch {

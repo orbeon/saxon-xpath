@@ -98,7 +98,7 @@ class FixedAttribute(private var nodeName: NodeName,
           schemaType = decl.getType.asInstanceOf[SimpleType]
           errorCode = "XTTE1515"
         } else {
-          visitor.getStaticContext.issueWarning(
+          visitor.staticContext.issueWarning(
             "Lax validation has no effect: there is no global attribute declaration for " +
               nodeName.getDisplayName,
             getLocation)

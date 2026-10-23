@@ -178,7 +178,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          var year = dtvalue.getYear
+          var year = dtvalue.year
           if (year < 0)
             year = 0 - year
           formatNumber(
@@ -197,7 +197,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          val month = dtvalue.getMonth
+          val month = dtvalue.month
           formatNumber(
             component,
             month,
@@ -214,7 +214,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          val day = dtvalue.getDay
+          val day = dtvalue.day
           formatNumber(
             component,
             day,
@@ -233,9 +233,9 @@ object FormatDate {
         } else {
           val day =
             DateValue.getDayWithinYear(
-              dtvalue.getYear,
-              dtvalue.getMonth,
-              dtvalue.getDay
+              dtvalue.year,
+              dtvalue.month,
+              dtvalue.day
             )
           formatNumber(
             component,
@@ -255,9 +255,9 @@ object FormatDate {
         } else {
           val week =
             DateValue.getWeekNumber(
-              dtvalue.getYear,
-              dtvalue.getMonth,
-              dtvalue.getDay
+              dtvalue.year,
+              dtvalue.month,
+              dtvalue.day
             )
           formatNumber(
             component,
@@ -277,9 +277,9 @@ object FormatDate {
         } else {
           val week =
             DateValue.getWeekNumberWithinMonth(
-              dtvalue.getYear,
-              dtvalue.getMonth,
-              dtvalue.getDay
+              dtvalue.year,
+              dtvalue.month,
+              dtvalue.day
             )
           formatNumber(
             component,
@@ -393,7 +393,7 @@ object FormatDate {
         value match {
           case timeValue: TimeValue =>
             val now = DateTimeValue.getCurrentDateTime(context)
-            val year = now.getYear
+            val year = now.year
             val tzoffset = value.getTimezoneInMinutes
             var baseDate =
               new DateTimeValue(
@@ -438,9 +438,9 @@ object FormatDate {
         } else {
           val day =
             DateValue.getDayOfWeek(
-              dtvalue.getYear,
-              dtvalue.getMonth,
-              dtvalue.getDay
+              dtvalue.year,
+              dtvalue.month,
+              dtvalue.day
             )
           formatNumber(
             component,
@@ -458,7 +458,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          val minuteOfDay = dtvalue.getHour * 60 + dtvalue.getMinute
+          val minuteOfDay = dtvalue.hour * 60 + dtvalue.getMinute
           formatNumber(
             component,
             minuteOfDay,
@@ -476,7 +476,7 @@ object FormatDate {
           error.setXPathContext(context)
           throw error
         } else {
-          val year = dtvalue.getYear
+          val year = dtvalue.year
           numberer.getEraName(year)
         }
       case _ =>

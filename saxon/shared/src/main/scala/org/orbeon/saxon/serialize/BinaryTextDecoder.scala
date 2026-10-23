@@ -48,7 +48,7 @@ class BinaryTextDecoder(next: Receiver, details: Properties)
       encoding = outputEncoding
     }
     if (nameStr.==("hex")) {
-      bytes = new HexBinaryValue(value).getBinaryValue
+      bytes = new HexBinaryValue(value).binaryValue
     } else if (nameStr.==("b64")) {
       bytes = new Base64BinaryValue(value).getBinaryValue
     }

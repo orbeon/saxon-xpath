@@ -151,9 +151,9 @@ class XQueryFunctionLibrary(private var config: Configuration)
       if (fn == null) {
         // not yet compiled: create a dummy
         val uf: UserFunction = new UserFunction()
-        uf.setFunctionName(functionName.getComponentName)
+        uf.functionName = functionName.getComponentName
         uf.setResultType(fd.getResultType)
-        uf.setParameterDefinitions(fd.getParameterDefinitions)
+        uf.parameterDefinitions = fd.getParameterDefinitions
         val ref: UserFunctionReference = new UserFunctionReference(uf)
         fd.registerReference(ref)
         // Dependent Error due to UnresolvedXQueryFunctionItem. Will be resolved with correct import.

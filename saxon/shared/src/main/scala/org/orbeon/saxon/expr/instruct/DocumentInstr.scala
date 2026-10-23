@@ -54,14 +54,14 @@ object DocumentInstr {
     var components: Array[Operand] = null
     components =
       if (content.getChildExpression.isInstanceOf[Block])
-        content.getChildExpression.asInstanceOf[Block].getOperanda
+        content.getChildExpression.asInstanceOf[Block].operanda
       else Array(content)
     val validation: Int =
       if (validationOptions == null) Validation.PRESERVE
       else validationOptions.getSchemaValidationMode
     val `type`: SchemaType =
       if (validationOptions == null) null
-      else validationOptions.getTopLevelType
+      else validationOptions.topLevelType
     var elementCount: Int = 0
     val isXSLT: Boolean = content.getChildExpression.getPackageData.isXSLT
     for (o <- components) {
@@ -102,7 +102,7 @@ object DocumentInstr {
               env.getConfiguration.getElementDeclaration(
                 component
                   .asInstanceOf[FixedElement]
-                  .getElementName
+                  .elementName
                   .getFingerprint)
             if (decl != null) {
               component
@@ -221,7 +221,7 @@ override  def getItemType: ItemType = NodeKindTest.DOCUMENT
         }
         builder.setBaseURI(getStaticBaseURIString)
         builder.setTiming(false)
-        pipe.hostLanguage = getPackageData.getHostLanguage
+        pipe.hostLanguage = getPackageData.hostLanguage
         builder.setPipelineConfiguration(pipe)
         val out: ComplexContentOutputter = ComplexContentOutputter
           .makeComplexContentReceiver(builder, validationOptions)

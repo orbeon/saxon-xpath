@@ -611,7 +611,7 @@ class DOMNodeWrapper(var node: Node,
       while ({
         next = getSuccessorNode(next, stop)
         next != null &&
-        ! (
+        !(
           next.getNodeType == Node.ELEMENT_NODE          &&
           (local == null || local == getLocalName(next)) &&
           (uri   == null || uri   == getElementURI(next.asInstanceOf[Element]))

@@ -21,7 +21,7 @@ class LocalVariableReference private (qnameOrBinding: StructuredQName Either Loc
     if (binding == null)
       throw new UnsupportedOperationException("Cannot copy a variable reference whose binding is unknown")
 
-    val ref = new LocalVariableReference(Left(getVariableName))
+    val ref = new LocalVariableReference(Left(variableName))
     ref.copyFrom(this)
     ref.slotNumber = slotNumber
     val newBinding = rebindings.get(binding)

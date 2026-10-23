@@ -76,16 +76,16 @@ class NamespaceDifferencer(next: Receiver, details: Properties)
     if (thisMap != parentMap) {
       var delta = NamespaceDeltaMap.emptyMap()
       for (nb <- thisMap.asScala) {
-        val parentUri = parentMap.getURI(nb.getPrefix)
+        val parentUri = parentMap.getURI(nb.prefix)
         if (parentUri == null) {
-          delta = delta.put(nb.getPrefix, nb.getURI)
+          delta = delta.put(nb.prefix, nb.getURI)
         } else if (parentUri != nb.getURI) {
-          delta = delta.put(nb.getPrefix, nb.getURI)
+          delta = delta.put(nb.prefix, nb.getURI)
         }
       }
       if (undeclareNamespaces) {
-        for (nb <- parentMap.asScala if thisMap.getURI(nb.getPrefix) == null)
-          delta = delta.put(nb.getPrefix, "")
+        for (nb <- parentMap.asScala if thisMap.getURI(nb.prefix) == null)
+          delta = delta.put(nb.prefix, "")
       } else {
         // undeclare the default namespace if the child element is in the default namespace
         if (elementInDefaultNamespace && !parentMap.getDefaultNamespace.isEmpty && thisMap.getDefaultNamespace.isEmpty)

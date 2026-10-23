@@ -78,7 +78,7 @@ abstract class SimpleNodeConstructor extends Instruction {
         this.setSelect(arg)
       }
     } else if (getSelect.isInstanceOf[CastExpression] &&
-      getSelect.asInstanceOf[CastExpression].getTargetType ==
+      getSelect.asInstanceOf[CastExpression].targetType ==
         BuiltInAtomicType.STRING) {
       val arg: Expression =
         getSelect.asInstanceOf[CastExpression].getBaseExpression

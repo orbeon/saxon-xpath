@@ -77,7 +77,7 @@ abstract class BinaryExpression(p0: Expression,
     rhs.typeCheck(visitor, contextInfo)
     try
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-        val v = evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize
+        val v = evaluateItem(visitor.staticContext.makeEarlyEvaluationContext()).materialize
         return Literal.makeLiteral(v, this)
       }
     catch {
@@ -93,7 +93,7 @@ abstract class BinaryExpression(p0: Expression,
     try {
       val opt: Optimizer = visitor.obtainOptimizer()
       if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING) && getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal]) {
-        val item = evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext())
+        val item = evaluateItem(visitor.staticContext.makeEarlyEvaluationContext())
         if (item != null) {
           val v = item.materialize
           return Literal.makeLiteral(v, this)

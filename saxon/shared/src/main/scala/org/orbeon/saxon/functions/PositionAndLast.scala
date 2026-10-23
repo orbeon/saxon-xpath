@@ -66,7 +66,7 @@ abstract class PositionAndLast extends ContextAccessorFunction {
                                      contextInfo: ContextItemStaticInfo,
                                      arguments: Array[Expression]): Unit = {
     super.supplyTypeInformation(visitor, contextInfo, arguments)
-    if (contextInfo.getItemType == ErrorType) {
+    if (contextInfo.itemType == ErrorType) {
       val err = new XPathException("The context item is absent at this point")
       err.setErrorCode("XPDY0002")
       throw err

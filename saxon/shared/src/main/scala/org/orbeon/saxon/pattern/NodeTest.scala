@@ -120,7 +120,7 @@ abstract class NodeTest
       else
         None
     } else {
-      Some("The supplied value is " + item.getGenre.getDescription)
+      Some("The supplied value is " + item.getGenre.description)
     }
 
   def toShortString: String = toString

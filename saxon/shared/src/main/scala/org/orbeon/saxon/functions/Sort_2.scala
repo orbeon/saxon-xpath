@@ -20,7 +20,7 @@ class Sort_2 extends Sort_1 {
     val secondArg: StringValue = collationArg.head.asInstanceOf[StringValue]
     if (secondArg == null) {
       context.getConfiguration.getCollation(
-        getRetainedStaticContext.getDefaultCollationName)
+        getRetainedStaticContext.defaultCollationName)
     } else {
       context.getConfiguration
         .getCollation(secondArg.getStringValue, getStaticBaseUriString)

@@ -2,7 +2,6 @@ package org.orbeon.saxon.tree.iter
 
 import org.orbeon.saxon.expr.LastPositionFinder
 import org.orbeon.saxon.om.SequenceIterator.Property
-import org.orbeon.saxon.om.SequenceIterator.Property.Property
 import org.orbeon.saxon.om.{FocusIterator, GroundedValue, Item}
 import org.orbeon.saxon.trans.XPathException
 
@@ -70,7 +69,7 @@ class ManualIterator
 
   def getResidue: GroundedValue = materialize
 
-  override def getProperties: Set[Property] =
+  override def getProperties: Set[Property.Property] =
     Set(
       Property.LOOKAHEAD,
       Property.GROUNDED,

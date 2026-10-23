@@ -29,7 +29,7 @@ class DocAvailable extends SystemFunction {
 
   def docAvailable(href: String, context: XPathContext): Boolean =
     try {
-      val packageData: PackageData = getRetainedStaticContext.getPackageData
+      val packageData: PackageData = getRetainedStaticContext.packageData
       val documentKey: DocumentURI = DocumentFn.computeDocumentKey(
         href,
         getStaticBaseUriString,

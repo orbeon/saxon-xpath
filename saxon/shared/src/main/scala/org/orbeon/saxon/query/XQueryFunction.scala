@@ -98,7 +98,7 @@ class XQueryFunction extends Declaration with Location {
   def setAnnotations(annotations: AnnotationList): Unit = {
     this.annotations = annotations
     if (compiledFunction != null) {
-      compiledFunction.setAnnotations(annotations)
+      compiledFunction.annotations = annotations
     }
     if (annotations.includes(Annotation.UPDATING)) {
       setUpdating(true)
@@ -152,17 +152,17 @@ class XQueryFunction extends Declaration with Location {
 
         }
         compiledFunction = config.newUserFunction(memoFunction, FunctionStreamability.UNCLASSIFIED)
-        compiledFunction.setRetainedStaticContext(rsc)
-        compiledFunction.setPackageData(staticContext.getPackageData)
+        compiledFunction.retainedStaticContext = rsc
+        compiledFunction.packageData = staticContext.getPackageData
         compiledFunction.setBody(body)
-        compiledFunction.setFunctionName(functionName)
-        compiledFunction.setParameterDefinitions(params)
+        compiledFunction.functionName = functionName
+        compiledFunction.parameterDefinitions = params
         compiledFunction.setResultType(resultType)
-        compiledFunction.setLineNumber(location.getLineNumber)
-        compiledFunction.setSystemId(location.getSystemId)
+        compiledFunction.lineNumber = location.getLineNumber
+        compiledFunction.systemId = location.getSystemId
         compiledFunction.setStackFrameMap(map)
         compiledFunction.setUpdating(isUpdating)
-        compiledFunction.setAnnotations(annotations)
+        compiledFunction.annotations = annotations
         if (staticContext.userQueryContext.isCompileWithTracing) {
           namespaceResolver = staticContext.getNamespaceResolver
           val trace: ComponentTracer = new ComponentTracer(compiledFunction)
@@ -216,7 +216,7 @@ class XQueryFunction extends Declaration with Location {
       val manager: GlobalVariableManager = new GlobalVariableManager() {
         def addGlobalVariable(variable: GlobalVariable): Unit = {
           var pd: PackageData = staticContext.getPackageData
-          variable.setPackageData(pd)
+          variable.packageData = pd
           var sm: SlotManager = pd.globalSlotManager
           var slot: Int = sm.allocateSlotNumber(variable.getVariableQName)
           variable.compile(exec, slot)
@@ -232,7 +232,7 @@ class XQueryFunction extends Declaration with Location {
         body = body.optimize(visitor, ContextItemStaticInfo.ABSENT)
       }
     }
-    if (opt.getOptimizerOptions.isSet(OptimizerOptions.TAIL_CALLS) &&
+    if (opt.optimizerOptions.isSet(OptimizerOptions.TAIL_CALLS) &&
       !isUpdating) {
       val tailCalls: Int =
         ExpressionTool.markTailFunctionCalls(body, functionName, arity)
@@ -298,7 +298,7 @@ class XQueryFunction extends Declaration with Location {
       }
       out.emitAttribute(
         "tailRecursive",
-        if (compiledFunction.isTailRecursive) "true" else "false")
+        if (compiledFunction.tailRecursive) "true" else "false")
       body.`export`(out)
     }
     out.endElement()

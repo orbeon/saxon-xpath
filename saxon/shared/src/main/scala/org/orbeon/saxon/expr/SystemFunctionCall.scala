@@ -279,7 +279,6 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
   }
 
   override def evaluateArguments(context: XPathContext): Array[Sequence] = {
-    val operanda = getOperanda
     val numArgs = operanda.getNumberOfOperands
     val actualArgs = Array.ofDim[Sequence](numArgs)
     for (i <- 0 until numArgs) {

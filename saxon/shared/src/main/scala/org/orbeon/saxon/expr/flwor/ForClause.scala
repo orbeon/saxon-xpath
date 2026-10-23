@@ -28,8 +28,8 @@ class ForClause extends Clause {
 
   def copy(flwor: FLWORExpression, rebindings: RebindingMap): ForClause = {
     val f2: ForClause = new ForClause()
-    f2.setLocation(getLocation)
-    f2.setPackageData(getPackageData)
+    f2.setLocation(location)
+    f2.setPackageData(packageData)
     f2.rangeVariable = rangeVariable.copy()
     if (positionVariable != null) {
       f2.positionVariable = positionVariable.copy()
@@ -92,7 +92,7 @@ class ForClause extends Clause {
     this.setSequence(TypeChecker.strictTypeCheck(getSequence,
       sequenceType,
       role,
-      visitor.getStaticContext))
+      visitor.staticContext))
   }
 
   override def getPullStream(base: TuplePull, context: XPathContext): TuplePull =
@@ -123,7 +123,7 @@ class ForClause extends Clause {
       if (contextItemType == null)
         null
       else
-        contextItemType.getItemType
+        contextItemType.itemType
     if (getSequence.isInstanceOf[SlashExpression]) {
       if (getSequence.asInstanceOf[SlashExpression].isAbsolute) {
         head = getSequence.asInstanceOf[SlashExpression].getFirstStep
@@ -159,7 +159,7 @@ class ForClause extends Clause {
             if (varRefs.size == 1 && (varRefs.get(0) eq operands(op)) &&
               !ExpressionTool.dependsOnFocus(operands(1 - op)) &&
               !ExpressionTool.dependsOnVariable(operands(1 - op), thisVar)) {
-              val rsc                   = new RetainedStaticContext(visitor.getStaticContext)
+              val rsc                   = new RetainedStaticContext(visitor.staticContext)
               val position = SystemFunction.makeCall("position", rsc)
               val predicate      = condition.copy(new RebindingMap())
               val child          =
@@ -201,7 +201,7 @@ class ForClause extends Clause {
           var predicate = condition.typeCheck(visitor, cit)
           val rel = th.relationship(predicate.getItemType, BuiltInAtomicType.INTEGER)
           if (rel != Affinity.DISJOINT) {
-            val rsc = new RetainedStaticContext(visitor.getStaticContext)
+            val rsc = new RetainedStaticContext(visitor.staticContext)
             predicate = SystemFunction.makeCall("boolean", rsc, predicate)
             assert(predicate != null)
           }

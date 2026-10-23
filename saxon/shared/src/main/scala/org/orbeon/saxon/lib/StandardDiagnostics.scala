@@ -111,11 +111,11 @@ class StandardDiagnostics {
     }
     sorLoc match {
       case saLoc: AttributeLocation =>
-        nodeMessage = "in " + saLoc.getElementName.getDisplayName
-        if (saLoc.getAttributeName != null) {
-          nodeMessage += "/@" + saLoc.getAttributeName
+        nodeMessage = "in " + saLoc.elementName.getDisplayName
+        if (saLoc.attributeName != null) {
+          nodeMessage = nodeMessage + "/@" + saLoc.attributeName
         }
-        nodeMessage += ' '
+        nodeMessage = nodeMessage + ' '
       // ORBEON: No W3C DOM.
       //    } else if (sorLoc.isInstanceOf[DOMLocator]) {
       //      nodeMessage = "at " +

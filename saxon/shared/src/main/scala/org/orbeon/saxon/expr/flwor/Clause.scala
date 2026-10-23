@@ -42,11 +42,15 @@ object Clause {
  */
 abstract class Clause {
 
-  @BeanProperty
   var location: Location = _
 
-  @BeanProperty
+  def setLocation(location: Location): Unit = this.location = location
+  def getLocation: Location = location
+
   var packageData: PackageData = _
+
+  def setPackageData(packageData: PackageData): Unit = this.packageData = packageData
+  def getPackageData: PackageData = packageData
 
   var repeated: Boolean = _
 

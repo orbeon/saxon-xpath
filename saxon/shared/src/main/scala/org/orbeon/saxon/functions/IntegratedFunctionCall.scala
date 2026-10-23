@@ -81,7 +81,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
     }
     resultType = definition.getResultType(actualArgumentTypes)
     if (state == 0)
-      function.supplyStaticContext(visitor.getStaticContext, 0, getArguments)
+      function.supplyStaticContext(visitor.staticContext, 0, getArguments)
     state += 1
   }
 
@@ -93,7 +93,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
       case integratedFunctionCall: IntegratedFunctionCall =>
         val exp2 = integratedFunctionCall
           .function
-          .rewrite(visitor.getStaticContext, getArguments)
+          .rewrite(visitor.staticContext, getArguments)
         if (exp2 == null) {
           integratedFunctionCall
         } else {

@@ -33,7 +33,7 @@ object DataURIScheme {
       val octets: Array[Byte] = Base64BinaryValue.decode(content)
       val resource: BinaryResource =
         new BinaryResource(uri.toString, contentType, octets)
-      resource.setData(octets)
+      resource.data = octets
       resource
     } else {
       var encoding: String = getEncoding(contentType)

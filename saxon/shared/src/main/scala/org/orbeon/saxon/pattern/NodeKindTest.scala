@@ -130,7 +130,7 @@ class NodeKindTest(var kind: Int) extends NodeTest {
         None
       }
     } else {
-      Some("The supplied value is " + item.getGenre.getDescription)
+      Some("The supplied value is " + item.getGenre.description)
     }
   }
 

@@ -44,15 +44,15 @@ class Copy(
   preservingTypes = schemaType == null && validation == Validation.PRESERVE
 
   override def simplify(): Expression = {
-    preservingTypes |= !getPackageData.isSchemaAware
+    preservingTypes = preservingTypes || !getPackageData.isSchemaAware
     super.simplify()
   }
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
-    var selectItemType: ItemType = contextInfo.getItemType
+    var selectItemType: ItemType = contextInfo.itemType
     typeCheckChildren(visitor, contextInfo)
-    selectItemType = contextInfo.getItemType
+    selectItemType = contextInfo.itemType
     if (selectItemType == ErrorType) {
       val err =
         new XPathException("No context item supplied for xsl:copy", "XTTE0945")
@@ -83,7 +83,7 @@ class Copy(
     } else {
       this.resultItemType = selectItemType
     }
-    checkContentSequence(visitor.getStaticContext)
+    checkContentSequence(visitor.staticContext)
     this
   }
 
@@ -247,7 +247,7 @@ class Copy(
           visitor.getConfiguration.getTypeHierarchy)
       }
       if (visitor.optimizeForStreaming) {
-        val `type`: UType = contextItemType.getItemType.getUType
+        val `type`: UType = contextItemType.itemType.getUType
         if (`type`.intersection(MultipleNodeKindTest.LEAF.getUType) != UType.VOID) {
           val p: Expression = parentExpression
           if (p.isInstanceOf[Choose] && p.asInstanceOf[Choose].size == 2 &&
@@ -294,7 +294,7 @@ class Copy(
     } else {
       val ns: NamespaceBinding = nodeName.getNamespaceBinding
       if (!ns.isDefaultUndeclaration) {
-        receiver.namespace(ns.getPrefix, ns.getURI, ReceiverOption.NONE)
+        receiver.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
       }
     }
   }
@@ -380,7 +380,7 @@ class Copy(
   override def evaluateItem(context: XPathContext): Item = {
     val controller: Controller = context.getController
     val seq: SequenceCollector = controller.allocateSequenceOutputter(1)
-    seq.getPipelineConfiguration.hostLanguage = getPackageData.getHostLanguage
+    seq.getPipelineConfiguration.hostLanguage = getPackageData.hostLanguage
     process(new ComplexContentOutputter(seq), context)
     seq.close()
     val item: Item = seq.getFirstItem

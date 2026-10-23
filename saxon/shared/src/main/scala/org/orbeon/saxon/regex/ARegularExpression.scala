@@ -42,7 +42,7 @@ class ARegularExpression(
         warnings.add(s)
       }
     if (config != null)
-      regex.setBacktrackingLimit(config.getConfigurationProperty(Feature.REGEX_BACKTRACKING_LIMIT))
+      regex.setBacktrackingLimit(config.getConfigurationProperty(Feature.REGEX_BACKTRACKING_LIMIT).intValue)
   }
 
   /**

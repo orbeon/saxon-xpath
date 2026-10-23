@@ -54,8 +54,8 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
 
     resetLocalStaticProperties()
-    getLhs.typeCheck(visitor, contextInfo)
-    getRhs.typeCheck(visitor, contextInfo)
+    lhs.typeCheck(visitor, contextInfo)
+    rhs.typeCheck(visitor, contextInfo)
 
     val config = visitor.getConfiguration
     val th = config.getTypeHierarchy
@@ -153,7 +153,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
         return Literal.makeLiteral(nv.negate(), this)
       } else {
         val ne = new NegateExpression(getRhsExpression)
-        ne.setBackwardsCompatible(false)
+        ne.backwardsCompatible = false
         return ne.typeCheck(visitor, contextInfo)
       }
     }
@@ -206,7 +206,7 @@ class ArithmeticExpression(p0: Expression, operator: Int, p1: Expression) extend
     }
     try {
       if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
-        return Literal.makeLiteral(evaluateItem(visitor.getStaticContext.makeEarlyEvaluationContext()).materialize, this)
+        return Literal.makeLiteral(evaluateItem(visitor.staticContext.makeEarlyEvaluationContext()).materialize, this)
     } catch {
       case _: XPathException =>
       // if early evaluation fails, suppress the error: the value might

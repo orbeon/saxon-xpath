@@ -37,7 +37,7 @@ class CastableExpression(source: Expression,
         .asInstanceOf[AtomicType]
     if (!(atomizedType == BuiltInAtomicType.ANY_ATOMIC)) {
       converter = visitor.getConfiguration.getConversionRules
-        .getConverter(atomizedType, getTargetType)
+        .getConverter(atomizedType, targetType)
       if (converter == null) {
         if (!allowsEmpty() || !Cardinality.allowsZero(operand.getCardinality)) {
 
@@ -95,8 +95,8 @@ class CastableExpression(source: Expression,
     other.isInstanceOf[CastableExpression] &&
       getBaseExpression.isEqual(
         other.asInstanceOf[CastableExpression].getBaseExpression) &&
-      getTargetType ==
-        other.asInstanceOf[CastableExpression].getTargetType &&
+      targetType ==
+        other.asInstanceOf[CastableExpression].targetType &&
       allowsEmpty() ==
         other.asInstanceOf[CastableExpression].allowsEmpty()
 
@@ -111,7 +111,7 @@ class CastableExpression(source: Expression,
   def copy(rebindings: RebindingMap): Expression = {
     val ce: CastableExpression = new CastableExpression(
       getBaseExpression.copy(rebindings),
-      getTargetType,
+      targetType,
       allowsEmpty())
     ExpressionTool.copyLocationInfo(this, ce)
     ce.setRetainedStaticContext(getRetainedStaticContext)
@@ -139,7 +139,7 @@ class CastableExpression(source: Expression,
       }
       if (length != 0) {
         val av: AtomicValue = atomizedValue.head
-        if (!isCastable(av, getTargetType, context)) {
+        if (!isCastable(av, targetType, context)) {
           return false
         }
       }
@@ -149,7 +149,7 @@ class CastableExpression(source: Expression,
       if (count > 1) {
         return false
       }
-      if (!isCastable(av, getTargetType, context)) {
+      if (!isCastable(av, targetType, context)) {
         return false
       }
     } else {
@@ -171,7 +171,7 @@ class CastableExpression(source: Expression,
       if (converter.isAlwaysSuccessful) {
         return  true
       }
-      if (getTargetType.isNamespaceSensitive) {
+      if (targetType.isNamespaceSensitive) {
         converter = converter.setNamespaceResolver(getRetainedStaticContext)
       }
     }
@@ -181,7 +181,7 @@ class CastableExpression(source: Expression,
   override def getExpressionName: String = "castable"
 
   override def toString: String =
-    getBaseExpression.toString + " castable as " + getTargetType.getEQName
+    getBaseExpression.toString + " castable as " + targetType.getEQName
 
   override def `export`(out: ExpressionPresenter): Unit = {
     `export`(out, "castable")

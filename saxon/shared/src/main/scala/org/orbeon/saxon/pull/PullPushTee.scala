@@ -51,7 +51,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
             if (binding == null) {
               break()
             }
-            nsMap = nsMap.put(binding.getPrefix, binding.getURI)
+            nsMap = nsMap.put(binding.prefix, binding.getURI)
           }
         }
         nsStack ::= nsMap
@@ -77,7 +77,7 @@ class PullPushTee(base: PullProvider, private var branch: Receiver)
         if (entities != null) {
           for (entity <- entities.asScala) {
             val ue: UnparsedEntity = entity.asInstanceOf[UnparsedEntity]
-            out.setUnparsedEntity(ue.getName, ue.getSystemId, ue.getPublicId)
+            out.setUnparsedEntity(ue.getName, ue.getSystemId, ue.publicId)
           }
         }
         out.endDocument()

@@ -52,7 +52,7 @@ class Outermost extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): Sequence = {
     var in: SequenceIterator = arguments(0).iterate()
     if (!presorted) {
-      in = new DocumentOrderIterator(in, GlobalOrderComparer.getInstance)
+      in = new DocumentOrderIterator(in, GlobalOrderComparer.instance)
     }
     val out: SequenceIterator = new OutermostIterator(in)
     SequenceTool.toLazySequence(out)

@@ -12,7 +12,6 @@ import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.lib.{ErrorReporter, SerializerFactory, TraceListener}
 import org.orbeon.saxon.model.{AnyItemType, ItemType}
 import org.orbeon.saxon.om._
-import org.orbeon.saxon.s9api.HostLanguage.HostLanguage
 import org.orbeon.saxon.s9api.{HostLanguage, Location}
 import org.orbeon.saxon.serialize.SerializationProperties
 import org.orbeon.saxon.trace.{ExpressionPresenter, TraceableComponent}
@@ -449,7 +448,7 @@ class XQueryExpression(
    */
   def saveLocation: Location = this
 
-  def getHostLanguage: HostLanguage = HostLanguage.XQUERY
+  def getHostLanguage: HostLanguage.HostLanguage = HostLanguage.XQUERY
 
   def setChildExpression(expr: Expression): Unit =
     expression = expr

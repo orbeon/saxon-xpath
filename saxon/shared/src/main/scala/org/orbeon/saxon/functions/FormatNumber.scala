@@ -708,7 +708,7 @@ class FormatNumber extends SystemFunction {
     if (arguments(1).isInstanceOf[Literal] &&
       (arguments.length == 2 || arguments(2).isInstanceOf[Literal])) {
       val dfm: DecimalFormatManager =
-        getRetainedStaticContext.getDecimalFormatManager
+        getRetainedStaticContext.decimalFormatManager
       assert(dfm != null)
       picture = arguments(1).asInstanceOf[Literal].value.getStringValue
       if (arguments.length == 3 && !Literal.isEmptySequence(arguments(2))) {
@@ -751,7 +751,7 @@ class FormatNumber extends SystemFunction {
   def call(context: XPathContext, arguments: Array[Sequence]): StringValue = {
     val numArgs: Int = arguments.length
     val dfm: DecimalFormatManager =
-      getRetainedStaticContext.getDecimalFormatManager
+      getRetainedStaticContext.decimalFormatManager
     var dfs: DecimalSymbols = null
     var av0: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
     if (av0 == null) {

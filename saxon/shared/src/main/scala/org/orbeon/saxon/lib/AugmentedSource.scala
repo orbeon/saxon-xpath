@@ -48,7 +48,7 @@ class AugmentedSource private (private var source: Source) extends Source {
     options.addFilter(filter)
   }
 
-  def getFilters: List[FilterFactory] = options.getFilters
+  def filters: List[FilterFactory] = options.filters
 
   def getContainedSource: Source = source
 
@@ -67,16 +67,16 @@ class AugmentedSource private (private var source: Source) extends Source {
   def getSchemaValidation: Int = options.getSchemaValidationMode
 
   def setTopLevelElement(elementName: StructuredQName): Unit = {
-    options.setTopLevelElement(elementName)
+    options.topLevelElement = elementName
   }
 
-  def getTopLevelElement: StructuredQName = options.getTopLevelElement
+  def topLevelElement: StructuredQName = options.topLevelElement
 
   def setTopLevelType(`type`: SchemaType): Unit = {
-    options.setTopLevelType(`type`)
+    options.topLevelType = `type`
   }
 
-  def getTopLevelType: SchemaType = options.getTopLevelType
+  def topLevelType: SchemaType = options.topLevelType
 
   def setDTDValidationMode(option: Int): Unit = {
     options.setDTDValidationMode(option)
@@ -113,10 +113,10 @@ class AugmentedSource private (private var source: Source) extends Source {
   }
 
   def setWrapDocument(wrap: java.lang.Boolean): Unit = {
-    options.setWrapDocument(wrap)
+    options.wrapDocument = wrap
   }
 
-  def getWrapDocument: java.lang.Boolean = options.getWrapDocument
+  def wrapDocument: java.lang.Boolean = options.wrapDocument
 
   def setSystemId(id: String): Unit = {
     systemID = id
@@ -145,10 +145,10 @@ class AugmentedSource private (private var source: Source) extends Source {
   def isXIncludeAware: Boolean = options.isXIncludeAware
 
   def setEntityResolver(resolver: EntityResolver): Unit = {
-    options.setEntityResolver(resolver)
+    options.entityResolver = resolver
   }
 
-  def getEntityResolver: EntityResolver = options.getEntityResolver
+  def entityResolver: EntityResolver = options.entityResolver
 
   def setErrorReporter(listener: ErrorReporter): Unit = {
     options.setErrorReporter(listener)
