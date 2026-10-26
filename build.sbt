@@ -3,7 +3,7 @@ import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
-val saxonVersion = "10.0.0.86-SNAPSHOT"
+val saxonVersion = "10.0.0.88-SNAPSHOT"
 
 //val scala212 = "2.12.19"
 val scala213 = "2.13.18"
@@ -17,6 +17,53 @@ val ScalaTestVersion              = "3.2.20"
 //val ScalaCollectionCompatVersion  = "2.12.0"
 val ScalaJsTimeVersion            = "2.6.0"
 
+def rewritePackage(content: String): String =
+  content
+    .replace("org.orbeon.saxon", "org.orbeon.saxon.xpath")
+    .replace("org/orbeon/saxon/", "org/orbeon/saxon/xpath/")
+
+def generateSources(
+  sourceDirs: Seq[File],
+  targetDir: File
+): Seq[File] = {
+  for {
+    dir  <- sourceDirs.filter(_.exists())
+    file <- (dir ** "*.scala").get
+  } yield {
+    val relPath       = dir.toPath.relativize(file.toPath).toString
+    val targetRelPath = relPath.replace("org/orbeon/saxon", "org/orbeon/saxon/xpath")
+    val targetFile    = targetDir / targetRelPath
+    if (!targetFile.exists() || targetFile.lastModified() < file.lastModified()) {
+      val content = IO.read(file)
+      IO.write(targetFile, rewritePackage(content))
+    }
+    targetFile
+  }
+}
+
+def generateResources(
+  resourceDirs: Seq[File],
+  targetDir: File
+): Seq[File] = {
+  for {
+    dir         <- resourceDirs.filter(_.exists())
+    file        <- (dir ** "*").get if file.isFile
+    relPath     =  dir.toPath.relativize(file.toPath).toString
+    targetFile  =  targetDir / relPath
+    _           =  if (!targetFile.exists() || targetFile.lastModified() < file.lastModified()) {
+      IO.copyFile(file, targetFile)
+    }
+    extraTarget =  if (relPath.startsWith("org/orbeon/saxon/")) {
+      val xpathTargetFile = targetDir / relPath.replace("org/orbeon/saxon/", "org/orbeon/saxon/xpath/")
+      if (!xpathTargetFile.exists() || xpathTargetFile.lastModified() < file.lastModified()) {
+        IO.copyFile(file, xpathTargetFile)
+      }
+      Some(xpathTargetFile)
+    } else None
+    res         <- Seq(targetFile) ++ extraTarget
+  } yield res
+}
+
 ThisBuild / githubOwner       := "orbeon"
 ThisBuild / githubRepository  := "saxon-xpath"
 ThisBuild / githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
@@ -27,7 +74,7 @@ lazy val DebugTest = config("debug-test") extend Test
 lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full) in file("saxon"))
   .settings(
     organization := "org.orbeon",
-    name         := "saxon",
+    name         := "saxon-xpath",
     version      := saxonVersion,
 
     scalaVersion       := scala213,
@@ -74,7 +121,31 @@ lazy val saxon = (crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Full
     DebugTest / fork              := true, // "By default, tests executed in a forked JVM are executed sequentially"
     DebugTest / sourceDirectory   := (Test / sourceDirectory).value,
     DebugTest / javaOptions       += "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005",
-    DebugTest / parallelExecution := false
+    DebugTest / parallelExecution := false,
+
+    Compile / sourceGenerators += Def.task {
+      generateSources(
+        (Compile / unmanagedSourceDirectories).value,
+        (Compile / sourceManaged).value
+      )
+    },
+    Compile / unmanagedSources := Seq.empty,
+
+    Compile / resourceGenerators += Def.task {
+      generateResources(
+        (Compile / unmanagedResourceDirectories).value,
+        (Compile / resourceManaged).value
+      )
+    },
+    Compile / unmanagedResources := Seq.empty,
+
+    Test / sourceGenerators += Def.task {
+      generateSources(
+        (Test / unmanagedSourceDirectories).value,
+        (Test / sourceManaged).value
+      )
+    },
+    Test / unmanagedSources := Seq.empty
   )
   .jsSettings(
     scalaJSLinkerConfig ~= (_.withESFeatures(_.withESVersion(ESVersion.ES2018))),
