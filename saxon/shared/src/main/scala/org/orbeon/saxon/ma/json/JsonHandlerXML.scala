@@ -89,6 +89,7 @@ class JsonHandlerXML( var xpathContext: XPathContext, staticBaseUri: String, fla
 
   private def init(context: XPathContext, flags: Int): Unit = {
     keys = Nil
+    this.context = context
     this.xpathContext = context
     charChecker = context.getConfiguration.getValidCharacterChecker
     escape = (flags & JsonParser.ESCAPE) != 0

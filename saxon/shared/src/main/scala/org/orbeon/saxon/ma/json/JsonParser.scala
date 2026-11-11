@@ -430,23 +430,21 @@ class JsonParser {
 
     @throws[XPathException]
     private def readToken: JsonToken = {
-      val jsonToken = new JsonToken
+      while (position < input.length && {
+        input.charAt(position) match {
+          case '\n' | '\r' =>
+            lineNumber += 1
+            true
+          case ' ' | '\t' =>
+            true
+          case _ =>
+            false
+        }
+      }) {
+        position += 1
+      }
       if (position >= input.length)
         return JsonParser.JsonToken.EOF
-      while (true) {
-        val c = input.charAt(position)
-        c match {
-          // XXX ERIK TO CHECK: This is wrong.
-          case '\n' | '\r' | ' ' | '\t' =>
-            if (c == '\n' || c == '\r')
-              lineNumber += 1
-            if ( {
-              position += 1
-              position
-            } >= input.length) return JsonParser.JsonToken.EOF
-          case _ =>
-        }
-      }
       val ch = input.charAt({
         position += 1
         position - 1
@@ -463,31 +461,30 @@ class JsonParser {
         case '"' =>
           currentTokenValue.setLength(0)
           var afterBackslash = false
-          breakable {
-            while (true) {
-              if (position >= input.length)
-                invalidJSON("Unclosed quotes in string literal", JsonParser.ERR_GRAMMAR, lineNumber)
-              val c = input.charAt({
-                position += 1
-                position - 1
-              })
-              if (c < 32)
-                invalidJSON("Unescaped control character (x" + Integer.toHexString(c) + ")", JsonParser.ERR_GRAMMAR, lineNumber)
-              if (afterBackslash && c == 'u')
-                try {
-                  val hex = input.substring(position, position + 4)
-                  //noinspection ResultOfMethodCallIgnored
-                  Integer.parseInt(hex, 16)
-                } catch {
-                  case _: Exception =>
-                    invalidJSON("\\u must be followed by four hex characters", JsonParser.ERR_GRAMMAR, lineNumber)
-                }
-              if (c == '"' && !afterBackslash)
-                break()
-              else {
-                currentTokenValue.cat(c)
-                afterBackslash = c == '\\' && !afterBackslash
+          var done = false
+          while (!done) {
+            if (position >= input.length)
+              invalidJSON("Unclosed quotes in string literal", JsonParser.ERR_GRAMMAR, lineNumber)
+            val c = input.charAt({
+              position += 1
+              position - 1
+            })
+            if (c < 32)
+              invalidJSON("Unescaped control character (x" + Integer.toHexString(c) + ")", JsonParser.ERR_GRAMMAR, lineNumber)
+            if (afterBackslash && c == 'u')
+              try {
+                val hex = input.substring(position, position + 4)
+                //noinspection ResultOfMethodCallIgnored
+                Integer.parseInt(hex, 16)
+              } catch {
+                case _: Exception =>
+                  invalidJSON("\\u must be followed by four hex characters", JsonParser.ERR_GRAMMAR, lineNumber)
               }
+            if (c == '"' && !afterBackslash)
+              done = true
+            else {
+              currentTokenValue.cat(c)
+              afterBackslash = c == '\\' && !afterBackslash
             }
           }
           JsonParser.JsonToken.STRING_LITERAL
@@ -495,38 +492,17 @@ class JsonParser {
           JsonParser.JsonToken.COLON
         case ',' =>
           JsonParser.JsonToken.COMMA
-        // XXX ERIK TO CHECK: This is wrong.
-        case '-' => jsonToken
-        case '+' => jsonToken
-        case '.' => jsonToken
-        case '0' => jsonToken
-        case '1' => jsonToken
-        case '2' => jsonToken
-        case '3' => jsonToken
-        case '4' => jsonToken
-        case '5' => jsonToken
-        case '6' => jsonToken
-        case '7' => jsonToken
-        case '8' => jsonToken
-        case '9' =>
+        case '-' | '+' | '.' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
           currentTokenValue.setLength(0)
           currentTokenValue.cat(ch)
-          if (position < input.length) {
-            // We could be in ECMA mode when there is a single digit
-            breakable {
-              while (true) {
-                val c = input.charAt(position)
-                if ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E') {
-                  currentTokenValue.cat(c)
-                  if ( {
-                    position += 1
-                    position
-                  } >= input.length)
-                    break()
-                }
-                else
-                  break()
-              }
+          var done = false
+          while (position < input.length && !done) {
+            val c = input.charAt(position)
+            if ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E') {
+              currentTokenValue.cat(c)
+              position += 1
+            } else {
+              done = true
             }
           }
           JsonParser.JsonToken.NUMERIC_LITERAL
@@ -535,15 +511,9 @@ class JsonParser {
           if (NameChecker.isNCNameChar(ch)) {
             currentTokenValue.setLength(0)
             currentTokenValue.cat(ch)
-            breakable {
-              while (position < input.length) {
-                val c = input.charAt(position)
-                if (NameChecker.isNCNameChar(c)) {
-                  currentTokenValue.cat(c)
-                  position += 1
-                } else
-                  break()
-              }
+            while (position < input.length && NameChecker.isNCNameChar(input.charAt(position))) {
+              currentTokenValue.cat(input.charAt(position))
+              position += 1
             }
             currentTokenValue.toString match {
               case "true" =>

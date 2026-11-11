@@ -19,8 +19,9 @@ import org.orbeon.saxon.value.{BooleanValue, DoubleValue, EmptySequence, StringV
  * Event handler for the JSON parser which constructs a structure of maps and arrays
  * representing the content of the JSON text.
  */
-class JsonHandlerMap(context: XPathContext, flags: Int) extends JsonHandler {
+class JsonHandlerMap(xPathContext: XPathContext, flags: Int) extends JsonHandler {
 
+  this.context = xPathContext
   var stack: List[Sequence] = Nil
   var keys: List[String] = Nil
 

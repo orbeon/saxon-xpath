@@ -94,13 +94,13 @@ object JsonReceiver {
       return literal
     }
     val buffer: FastStringBuffer = new FastStringBuffer(literal.length)
-    for (k <- 0 until literal.length) {
-      var i = k
+    var i = 0
+    while (i < literal.length) {
       val c: Char = literal.charAt(i)
       if (c == '\\') {
-        if ( {
+        if ({
           i += 1
-          i
+          i - 1
         } == literal.length - 1) {
           throw new XPathException(
             "String '" + Err.wrap(literal) + "' ends in backslash ",
@@ -116,10 +116,17 @@ object JsonReceiver {
           case 'r' => buffer.cat('\r')
           case 't' => buffer.cat('\t')
           case 'u' =>
-            val hex: String = literal.substring(i + 1, i + 5)
-            val code: Int = java.lang.Integer.parseInt(hex, 16)
-            buffer.cat(code.toChar)
-            i += 4
+            try {
+              val hex: String = literal.substring(i + 1, i + 5)
+              val code: Int = java.lang.Integer.parseInt(hex, 16)
+              buffer.cat(code.toChar)
+              i += 4
+            } catch {
+              case _: Exception =>
+                throw new XPathException(
+                  "Invalid hex escape sequence in string '" + Err.wrap(literal) + "'",
+                  "FOJS0007")
+            }
           case _ =>
             val next: Char = literal.charAt(i)
             val xx: String =
@@ -132,6 +139,7 @@ object JsonReceiver {
       } else {
         buffer.cat(c)
       }
+      i += 1
     }
     buffer.toString
   }

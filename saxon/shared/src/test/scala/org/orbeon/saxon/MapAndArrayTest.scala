@@ -109,4 +109,58 @@ class MapAndArrayTest extends XPathTestBase {
       check("fn:deep-equal(map {'data': [1, 2, map {'x': 10}]}, map {'data': [1, 2, map {'x': 10}]})", "true")
     }
   }
+
+  describe("XPath 3.1 JSON Functions") {
+
+    describe("fn:parse-json basic parsing") {
+      check("""parse-json('"hello"')""", "hello")
+      check("""parse-json('0')""", "0")
+      check("""parse-json('-42.5')""", "-42.5")
+      check("""parse-json('1.5e2')""", "150")
+      check("""parse-json('true')""", "true")
+      check("""parse-json('false')""", "false")
+      check("""empty(parse-json('null'))""", "true")
+      check("""let $m := parse-json(' { "a" : 1 , "b" : [ 2, -3, 0, 8, 9 ], "c" : true } ') return $m?a || ':' || string-join($m?b?*, ',') || ':' || $m?c""", "1:2,-3,0,8,9:true")
+      check("""parse-json('{"escaped": "line1\nline2\t\"quoted\"\u0041"}')?escaped""", "line1\nline2\t\"quoted\"A")
+    }
+
+    describe("fn:parse-json options and error handling") {
+      // Duplicate keys: default is use-first
+      check("""parse-json('{"k": 1, "k": 2}')?k""", "1")
+      check("""parse-json('{"k": 1, "k": 2}', map {'duplicates': 'use-first'})?k""", "1")
+      check("""parse-json('{"k": 1, "k": 2}', map {'duplicates': 'use-last'})?k""", "2")
+      checkError("""parse-json('{"k": 1, "k": 2}', map {'duplicates': 'reject'})""", "FOJS0003")
+
+      // Liberal mode
+      check("""let $m := parse-json('{a: +1, b: [01, 2, ], }', map {'liberal': true()}) return $m?a + $m?b?1 + $m?b?2""", "4")
+
+      // Escape and fallback
+      check("parse-json('\"\\u0041\\n\"', map {'escape': true()})", "A\\n")
+      check("parse-json('\"\\u0000\"', map {'fallback': function($s) { '[NULL:' || $s || ']' }})", "[NULL:\\u0000]")
+
+      // Syntax errors
+      checkError("""parse-json('')""", "FOJS0001")
+      checkError("""parse-json('{unquoted: 1}')""", "FOJS0001")
+      checkError("""parse-json('[1, 2,]')""", "FOJS0001")
+    }
+
+    describe("fn:json-to-xml and fn:xml-to-json") {
+      check(
+        """let $xml := json-to-xml('{"name": "Orbeon", "version": 2024, "active": true, "tags": ["forms", "xforms"], "extra": null}')
+          |return $xml/*:map/*:string[@key='name'] || ':' || $xml/*:map/*:number[@key='version'] || ':' || count($xml/*:map/*:array[@key='tags']/*:string)""".stripMargin,
+        "Orbeon:2024:2"
+      )
+      check(
+        """let $xml := json-to-xml('{"a": 1, "b": "hello\nworld", "c": [true, false, null]}'),
+          |    $json := xml-to-json($xml),
+          |    $m := parse-json($json)
+          |return $m?a || ':' || $m?b || ':' || $m?c?1 || ':' || $m?c?2 || ':' || empty($m?c?3)""".stripMargin,
+        "1:hello\nworld:true:false:true"
+      )
+      check(
+        "let $xml := json-to-xml('{\"k\": \"a\\u0000c\"}', map {'escape': true()}) return xml-to-json($xml)",
+        "{\"k\":\"a\\u0000c\"}"
+      )
+    }
+  }
 }

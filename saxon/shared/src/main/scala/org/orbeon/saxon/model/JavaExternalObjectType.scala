@@ -15,8 +15,8 @@ object JavaExternalObjectType {
   def localNameToClassName(className: String): String = {
     val fsb = new FastStringBuffer(className.length)
     var atStart: Boolean = true
-    for (k <- 0 until className.length) {
-      var i = k
+    var i = 0
+    while (i < className.length) {
       val c: Char = className.charAt(i)
       if (atStart) {
         if (c == '_' && i + 1 < className.length && className.charAt(i + 1) == '-') {
@@ -29,6 +29,7 @@ object JavaExternalObjectType {
       } else {
         fsb.cat(if (c == '-') '$' else c)
       }
+      i += 1
     }
     fsb.toString
   }
