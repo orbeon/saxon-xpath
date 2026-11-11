@@ -62,6 +62,7 @@ class CoercedFunction(private var targetFunction: Function, private val required
   def getFunctionName: StructuredQName = targetFunction.getFunctionName
   def getDescription: String = "coerced " + targetFunction.getDescription
   def getArity: Int = targetFunction.getArity
+  override def annotations: org.orbeon.saxon.query.AnnotationList = targetFunction.annotations
 
   def call(context: XPathContext, args: Array[Sequence]): Sequence = {
     val req: SpecificFunctionType = requiredType

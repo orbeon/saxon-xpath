@@ -26,7 +26,7 @@ class String_1 extends ScalarSystemFunction {
     if (th.isSubType(arg.getItemType, BuiltInAtomicType.STRING) && arg.getCardinality == StaticProperty.EXACTLY_ONE)
       return arg
     arg match {
-      case constructor: SimpleNodeConstructor =>
+      case constructor: SimpleNodeConstructor if arg.getCardinality == StaticProperty.EXACTLY_ONE =>
         return constructor.getSelect
       case _ =>
     }

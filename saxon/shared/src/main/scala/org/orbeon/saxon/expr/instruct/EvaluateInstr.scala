@@ -39,7 +39,7 @@ class EvaluateInstr(xpath: Expression,
   private var schemaAwareOp      : Operand = _
   private var optionsOp          : Operand = _
 
-  private var importedSchemaNamespaces: Set[String] = _
+  private var importedSchemaNamespaces: Set[String] = new HashSet()
   var actualParams: Array[WithParam] = _
   private var dynamicParamsOp: Operand = _
   private var defaultXPathNamespace: String = null

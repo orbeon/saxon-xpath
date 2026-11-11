@@ -106,7 +106,8 @@ object Literal {
           out.endElement()
         } else {
           throw new XPathException(
-            "Cannot export a stylesheet containing literal values bound to external Java objects")
+            "Cannot export a stylesheet containing literal values bound to external Java objects",
+            org.orbeon.saxon.trans.SaxonErrorCode.SXST0070)
         }
       case _ =>
         out.startElement("literal")

@@ -602,6 +602,8 @@ class StylesheetPackage(config: Configuration) extends PackageData(config) {
     false
   }
 
+  def markNonExportable(message: String, errorCode: String): Unit = ()
+
   def `export`(presenter: ExpressionPresenter): Unit = {
     throw new XPathException("Exporting a stylesheet requires Saxon-EE")
   }

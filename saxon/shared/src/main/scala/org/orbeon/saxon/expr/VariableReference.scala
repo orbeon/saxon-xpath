@@ -117,7 +117,7 @@ abstract class VariableReference(qnameOrBinding: StructuredQName Either Binding)
             "Replaced static parameter " + getDisplayName + " by its value",
             select
           )
-          return select
+          return select.copy(new RebindingMap())
         }
       case _      =>
     }

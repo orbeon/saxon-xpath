@@ -307,15 +307,16 @@ object ArrayFunctionSet {
 
     def call(context: XPathContext, arguments: Array[Sequence]): ArrayItem = {
       val array: ArrayItem = arguments(0).head.asInstanceOf[ArrayItem]
-      if (arguments(1).isInstanceOf[IntegerValue]) {
+      val offsets: GroundedValue = arguments(1).materialize
+      if (offsets.isInstanceOf[IntegerValue]) {
         val index: Int = checkSubscript(
-          arguments(1).asInstanceOf[IntegerValue],
+          offsets.asInstanceOf[IntegerValue],
           array.arrayLength()) -
           1
-        array.remove(index)
+        return array.remove(index)
       }
       val positions: IntSet = new IntHashSet()
-      val arg1: SequenceIterator = arguments(1).iterate()
+      val arg1: SequenceIterator = offsets.iterate()
       arg1.forEachOrFail((pos) => {
         val index: Int = checkSubscript(pos.asInstanceOf[IntegerValue],
           array.arrayLength()) -

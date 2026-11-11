@@ -33,7 +33,7 @@ class UriCollection extends SystemFunction {
 
   private def getUris(href: String, context: XPathContext): SequenceIterator = {
     val rCollection: ResourceCollection =
-      context.getConfiguration.getCollectionFinder
+      context.getController.getCollectionFinder
         .findCollection(context, href)
     if (rCollection == null) {
 // Should not happen, we're calling user code so we check for it.
@@ -45,20 +45,9 @@ class UriCollection extends SystemFunction {
       throw err
     }
     val sources: Iterator[String] = rCollection.getResourceURIs(context)
-    new SequenceIterator {
-      def next(): AnyURIValue =
-        if (sources.hasNext) {
-          new AnyURIValue(sources.next())
-        } else {
-          null
-        }
-
-      override def close(): Unit = {
-        if (sources.isInstanceOf[Closeable]) {
-          sources.asInstanceOf[Closeable].close()
-        }
-      }
-    }
+    val uris: Iterator[AnyURIValue] =
+      new org.orbeon.saxon.tree.jiter.MappingJavaIterator[String, AnyURIValue](sources, s => new AnyURIValue(s))
+    new org.orbeon.saxon.om.IteratorWrapper(uris)
   }
 
   /**

@@ -51,12 +51,10 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
   private var depth: Int = -1
   private var isEmptyElement: Boolean = _
   private var setPrefixes: List[ju.List[NamespaceBinding]] = Nil
+  private var namespaceStack: List[NamespaceMap] = List(NamespaceMap.emptyMap)
 
   private var rootNamespaceContext: javax.xml.namespace.NamespaceContext =
-    new NamespaceContextImpl(new NamespaceResolver {
-      def getURIForPrefix(prefix: String, useDefault: Boolean): String = null
-      def iteratePrefixes: ju.Iterator[String] = ju.Collections.emptyIterator[String]
-    })
+    new NamespaceContextImpl(NamespaceMap.emptyMap)
 
   this.setPrefixes ::= new ju.ArrayList
 
@@ -83,7 +81,7 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
           new FingerprintedQName(pendingTag.elementName.prefix,
             pendingTag.elementName.uri,
             pendingTag.elementName.local)
-      var nsMap: NamespaceMap = NamespaceMap.emptyMap
+      var nsMap: NamespaceMap = namespaceStack.head
       if (!pendingTag.elementName.uri.isEmpty) {
         nsMap =
           nsMap.put(pendingTag.elementName.prefix, pendingTag.elementName.uri)
@@ -127,6 +125,8 @@ class StreamWriterToReceiver(receiver: Receiver) extends XMLStreamWriter {
         depth -= 1
         setPrefixes = setPrefixes.tail
         lReceiver.endElement()
+      } else {
+        namespaceStack ::= nsMap
       }
     }
   }

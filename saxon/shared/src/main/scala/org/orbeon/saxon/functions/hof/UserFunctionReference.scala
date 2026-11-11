@@ -105,10 +105,8 @@ class UserFunctionReference
   }
 
   override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
-    if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && {
+    if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && optimizeCounter == 0) {
       optimizeCounter += 1
-      optimizeCounter - 1
-    } < 10) {
       var o: Expression = null
       o = nominalTarget.getBody.optimize(visitor, ContextItemStaticInfo.ABSENT)
       nominalTarget.setBody(o)
@@ -117,11 +115,13 @@ class UserFunctionReference
         slotManager.allocateSlotNumber(nominalTarget.parameterDefinitions(i).getVariableQName)
       ExpressionTool.allocateSlots(o, getArity, slotManager)
       nominalTarget.setStackFrameMap(slotManager)
+      optimizeCounter -= 1
     }
     this
   }
 
   def getFixedTarget: Component = nominalTarget.declaringComponent
+  def getNominalTarget: UserFunction = nominalTarget
   def getSymbolicName: SymbolicName = functionName
   def getFunctionItemType(th: TypeHierarchy): FunctionItemType = nominalTarget.getFunctionItemType
   def getFunctionName: StructuredQName = nominalTarget.getFunctionName

@@ -32,9 +32,12 @@ class StringJoin extends FoldingFunction with PushableFunction {
       return e2
     val card = arguments(0).getCardinality
     if (! Cardinality.allowsMany(card)) {
-      if (Cardinality.allowsZero(card) || arguments(0).getItemType.getPrimitiveItemType != BuiltInAtomicType.STRING)
-        SystemFunction.makeCall("string", getRetainedStaticContext, arguments(0))
-      else
+      if (Cardinality.allowsZero(card) || arguments(0).getItemType.getPrimitiveItemType != BuiltInAtomicType.STRING) {
+        if (returnEmptyIfEmpty)
+          new org.orbeon.saxon.expr.CastExpression(arguments(0), BuiltInAtomicType.STRING, true)
+        else
+          SystemFunction.makeCall("string", getRetainedStaticContext, arguments(0))
+      } else
         arguments(0)
     } else
       null

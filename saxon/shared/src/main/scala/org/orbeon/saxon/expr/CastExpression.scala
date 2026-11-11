@@ -108,7 +108,8 @@ class CastExpression(val source: Expression, val target: AtomicType, val allowEm
     var operand = getBaseExpression
     if (targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) if (operand.isCallOn(classOf[String_1])) {
       val e = operand.asInstanceOf[SystemFunctionCall].getArg(0)
-      if (e.getItemType.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE) operand = e
+      if (e.getItemType.isInstanceOf[AtomicType] && e.getCardinality == StaticProperty.EXACTLY_ONE)
+        return new CastExpression(e, BuiltInAtomicType.UNTYPED_ATOMIC, allowsEmpty())
     }
     else if (operand.isInstanceOf[CastExpression]) if (operand.asInstanceOf[CastExpression].targetType eq BuiltInAtomicType.UNTYPED_ATOMIC) return operand
     else if (operand.asInstanceOf[CastExpression].targetType eq BuiltInAtomicType.STRING) {

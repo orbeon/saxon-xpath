@@ -46,6 +46,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
    */
   @throws[XPathException]
   override def process(item: Item, parameters: ParameterSet, tunnelParams: ParameterSet, out: Outputter, context: XPathContext, locationId: Location) = if (item.isInstanceOf[NodeInfo]) {
+    val schemaAware = context.getController.getExecutable.isSchemaAware
     val node = item.asInstanceOf[NodeInfo]
     node.getNodeKind match {
       case Type.DOCUMENT =>
@@ -67,7 +68,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         val pipe = out.getPipelineConfiguration
         if (out.getSystemId == null) out.setSystemId(node.getBaseURI)
         val fqn = NameOfNode.makeName(node)
-        out.startElement(fqn, node.getSchemaType, locationId, ReceiverOption.NONE)
+        out.startElement(fqn, if (schemaAware) org.orbeon.saxon.model.AnyType.getInstance else org.orbeon.saxon.model.Untyped.getInstance, locationId, ReceiverOption.NONE)
 
         for (ns <- node.getAllNamespaces.asScala) {
           out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)

@@ -81,7 +81,8 @@ object ExpressionTool {
       case _ =>
         if (!exp.isInstanceOf[TraceExpression])
           for (o <- exp.operands.asScala)
-            o.setChildExpression(injectCode(o.getChildExpression, injector))
+            if (!o.getOperandRole.isConstrainedClass)
+              o.setChildExpression(injectCode(o.getChildExpression, injector))
     }
     injector.inject(exp)
   }
@@ -777,8 +778,15 @@ object ExpressionTool {
     expres = expres.getInterpretedExpression
     var total = 1
 
-    for (o <- expres.operands.asScala)
+    for (o <- expres.operands.asScala) {
       total += expressionSize(o.getChildExpression)
+      o.getChildExpression match {
+        case ufr: org.orbeon.saxon.functions.hof.UserFunctionReference =>
+          val uf = ufr.getNominalTarget
+          total += expressionSize(uf.getBody)
+        case _ =>
+      }
+    }
 
     total
   }

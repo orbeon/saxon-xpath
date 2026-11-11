@@ -58,10 +58,10 @@ class NodeSetPattern(exp: Expression)
       0)
     val tc   = visitor.getConfiguration.getTypeChecker(false)
     var checked = getSelectionExpression
-    try tc.staticTypeCheck(getSelectionExpression,
-                           SequenceType.NODE_SEQUENCE,
-                           role,
-                           visitor)
+    try checked = tc.staticTypeCheck(getSelectionExpression,
+                                     SequenceType.NODE_SEQUENCE,
+                                     role,
+                                     visitor)
     catch {
       case e: XPathException =>
         visitor.issueWarning(
@@ -97,17 +97,24 @@ class NodeSetPattern(exp: Expression)
   def matches(item: Item, context: XPathContext): Boolean =
     item match {
       case nodeInfo: NodeInfo =>
-        val exp = getSelectionExpression
-        exp match {
-          case varRef: GlobalVariableReference =>
-            val value = varRef.evaluateVariable(context)
-            value.containsNode(nodeInfo)
-          case _                               =>
-            val iter = exp.iterate(context)
-            SingletonIntersectExpression.containsNode(
-              iter,
-              nodeInfo
-            )
+        try {
+          val exp = getSelectionExpression
+          exp match {
+            case varRef: GlobalVariableReference =>
+              val value = varRef.evaluateVariable(context)
+              value.containsNode(nodeInfo)
+            case _                               =>
+              val iter = exp.iterate(context)
+              SingletonIntersectExpression.containsNode(
+                iter,
+                nodeInfo
+              )
+          }
+        } catch {
+          case e @ (_: XPathException.Circularity | _: XPathException.StackOverflow) =>
+            throw e
+          case _: XPathException =>
+            false
         }
       case _ =>
         false

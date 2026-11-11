@@ -171,7 +171,8 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @throws IllegalArgumentException if an attempt is made to create an incorrect
    *                                  mapping for the "xml" prefix or URI.
    */
-  def put(prefix: String, uri: String): NamespaceMap = {
+  def put(prefix: String, uriArg: String): NamespaceMap = {
+    val uri = if (uriArg == null) "" else uriArg
     if (isPointlessMapping(prefix, uri))
       return this
     val position = ju.Arrays.binarySearch(prefixes.asInstanceOf[Array[AnyRef]], prefix.asInstanceOf[AnyRef])
@@ -182,10 +183,10 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
         val n2 = newInstance
         n2.prefixes = new Array[String](prefixes.length - 1)
         System.arraycopy(prefixes, 0, n2.prefixes, 0, position)
-        System.arraycopy(prefixes, position + 1, n2.prefixes, position + 1, prefixes.length - position)
+        System.arraycopy(prefixes, position + 1, n2.prefixes, position, prefixes.length - position - 1)
         n2.uris = new Array[String](uris.length - 1)
         System.arraycopy(uris, 0, n2.uris, 0, position)
-        System.arraycopy(uris, position + 1, n2.uris, position + 1, uris.length - position)
+        System.arraycopy(uris, position + 1, n2.uris, position, uris.length - position - 1)
         n2
       } else { // Replace the entry for the prefix
         val n2 = newInstance

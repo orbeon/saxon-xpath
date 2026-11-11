@@ -91,6 +91,10 @@ object SaxonErrorCode {
 
   val SXST0069: String = "SXST0069"
 
+  val SXST0070: String = "SXST0070"
+
+  val SXST0071: String = "SXST0071"
+
   /**
     * SXTA0001: unresolved type alias
     */ /**
@@ -149,6 +153,8 @@ object SaxonErrorCode {
   val SXWN9016: String = "SXWN9016"
 
   val SXWN9017: String = "SXWN9017"
+
+  val SXWN9018: String = "SXWN9018"
 
 }
 

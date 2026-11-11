@@ -61,14 +61,21 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
         Affinity.DISJOINT &&
         th.relationship(containerType, AnyFunctionType) ==
           Affinity.DISJOINT) {
-        val err = new XPathException(
-          "The left-hand operand of '?' must be a map or an array; the supplied expression is of type " +
-            containerType,
-          "XPTY0004")
-        err.setLocation(getLocation)
-        err.setIsTypeError(true)
-        err.failingExpression = this
-        throw err
+        if (org.orbeon.saxon.value.Cardinality.allowsZero(getBaseExpression.getCardinality)) {
+          visitor.issueWarning(
+            "The left-hand operand of '?' must be a map or an array; the expression can succeed only if the operand is an empty sequence " + containerType,
+            getLocation
+          )
+        } else {
+          val err = new XPathException(
+            "The left-hand operand of '?' must be a map or an array; the supplied expression is of type " +
+              containerType,
+            "XPTY0004")
+          err.setLocation(getLocation)
+          err.setIsTypeError(true)
+          err.failingExpression = this
+          throw err
+        }
       }
     }
     if (getBaseExpression.isInstanceOf[Literal]) {

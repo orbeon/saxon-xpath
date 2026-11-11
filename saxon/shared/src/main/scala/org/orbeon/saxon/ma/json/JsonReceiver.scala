@@ -387,6 +387,16 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
   def characters(chars: CharSequence,
                  locationId: Location,
                  properties: Int): Unit = {
+    if (stack.nonEmpty && !Whitespace.isWhite(chars)) {
+      val element = stack.head
+      val local = element.getLocalPart
+      if (local == "map" || local == "array") {
+        throw new XPathException(
+          "xml-to-json: Element " + local + " must have no text content",
+          ERR_INPUT
+        )
+      }
+    }
     textBuffer.cat(chars)
   }
 

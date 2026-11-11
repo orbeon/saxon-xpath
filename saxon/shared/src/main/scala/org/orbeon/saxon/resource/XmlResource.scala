@@ -64,19 +64,20 @@ class XmlResource(private var doc: NodeInfo) extends Resource {
         options = config.getParseOptions
       }
       var source: StreamSource = null
-      if (details.characterContent != null) {
-        source = new StreamSource(new StringReader(details.characterContent),
-          resourceURI)
-      } else if (details.binaryContent != null) {
-        source = new StreamSource(
-          new ByteArrayInputStream(details.binaryContent),
-          resourceURI)
-      } else {
-        val stream: InputStream = details.getInputStream
-        source = new StreamSource(stream, resourceURI)
-      }
-      try doc = config.buildDocumentTree(source, options).getRootNode
-      catch {
+      try {
+        if (details.characterContent != null) {
+          source = new StreamSource(new StringReader(details.characterContent),
+            resourceURI)
+        } else if (details.binaryContent != null) {
+          source = new StreamSource(
+            new ByteArrayInputStream(details.binaryContent),
+            resourceURI)
+        } else {
+          val stream: InputStream = details.getInputStream
+          source = new StreamSource(stream, resourceURI)
+        }
+        doc = config.buildDocumentTree(source, options).getRootNode
+      } catch {
         case e: XPathException => {
           if (details.onError == URIQueryParameters.ON_ERROR_FAIL) {
             val e2: XPathException = new XPathException(

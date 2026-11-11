@@ -366,7 +366,10 @@ class Controller extends ContextOriginator {
    * @param locator   the location in the source code. May be null.
    */
   def warning(message: String, errorCode: String, locator: Location) = {
-    val warning = new XmlProcessingIncident(message, errorCode, locator).asWarning()
+    val loc = if (locator == null) org.orbeon.saxon.expr.parser.Loc.NONE else locator
+    val code = if (errorCode == null) SaxonErrorCode.SXWN9000 else errorCode
+    val msg = if (message == null) "Unspecified warning" else message
+    val warning = new XmlProcessingIncident(msg, code, loc).asWarning()
     errorReporter.report(warning)
   }
 

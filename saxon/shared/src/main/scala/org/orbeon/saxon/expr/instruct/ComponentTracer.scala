@@ -22,19 +22,18 @@ import org.orbeon.saxon.trace.TraceableComponent
 
 import java.util.HashMap
 
-class ComponentTracer(private var component: TraceableComponent)
-  extends Instruction {
+class ComponentTracer private () extends Instruction {
 
-  private var baseOp: Operand =
-    new Operand(this, component.getBody, OperandRole.SAME_FOCUS_ACTION)
-
+  private var component: TraceableComponent = _
+  private var baseOp: Operand = _
   private var properties: HashMap[String, Any] = new HashMap(10)
 
-  adoptChildExpression(component.getBody)
-
-  component.setBody(this)
-
-  component.gatherProperties((k, v) => properties.put(k, v))
+  def this(component: TraceableComponent) = {
+    this()
+    this.component = component
+    this.baseOp = new Operand(this, component.getBody, OperandRole.SAME_FOCUS_ACTION)
+    component.gatherProperties((k, v) => properties.put(k, v))
+  }
 
   def getChild: Expression = baseOp.getChildExpression
 
@@ -47,8 +46,10 @@ class ComponentTracer(private var component: TraceableComponent)
   override def getStreamerName: String = "TraceExpr"
 
   def copy(rebindings: RebindingMap): Expression = {
-    val t: ComponentTracer = new ComponentTracer(component)
-    val newBody: Expression = getBody.copy(rebindings)
+    val t: ComponentTracer = new ComponentTracer()
+    t.component = component
+    t.properties = properties
+    val newBody: Expression = getChild.copy(rebindings)
     t.baseOp = new Operand(t, newBody, OperandRole.SAME_FOCUS_ACTION)
     t.adoptChildExpression(newBody)
     t.setLocation(getLocation)

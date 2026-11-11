@@ -50,9 +50,10 @@ class HTML50Emitter extends HTMLEmitter {
     systemId    : String,
     publicId    : String
   ): Unit =
-    if (systemId == null && publicId == null)
-      writer.write("<!DOCTYPE HTML>")
-    else
+    if (systemId == null && publicId == null) {
+      if (name.getLocalPart.equalsIgnoreCase("html"))
+        writer.write("<!DOCTYPE HTML>")
+    } else
       super.writeDocType(name, displayName, systemId, publicId)
 
   override  def writeDocTypeWithNullSystemId(): Boolean = true
@@ -73,7 +74,7 @@ class HTML50Emitter extends HTMLEmitter {
         systemId = null
       if ("" == publicId)
         publicId = null
-      writeDocType(null, "html", systemId, publicId)
+      writeDocType(elemName, "html", systemId, publicId)
       started = true
     }
     super.startElement(

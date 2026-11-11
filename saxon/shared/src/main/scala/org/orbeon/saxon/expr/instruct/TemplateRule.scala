@@ -91,6 +91,8 @@ class TemplateRule
 
   var lineNumber: Int = _
 
+  var columnNumber: Int = _
+
   var rules: List[Rule] = new ArrayList()
 
    var slaveCopies: List[TemplateRule] = new ArrayList()
@@ -151,7 +153,10 @@ class TemplateRule
 
   def getSystemId: String = systemId
 
-  def getColumnNumber: Int = -1
+  def setColumnNumber(col: Int): Unit =
+    this.columnNumber = col
+
+  def getColumnNumber: Int = columnNumber
 
   def saveLocation: Location = this
 

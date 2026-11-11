@@ -14,7 +14,7 @@ import org.orbeon.saxon.value.{AtomicValue, Base64BinaryValue}
 
 object CollationKeyFn {
 
-  private def getCollationKey(s: String, collator: StringCollator): Base64BinaryValue = {
+  def getCollationKey(s: String, collator: StringCollator): Base64BinaryValue = {
     val `val` = collator.getCollationKey(s).asAtomic()
     `val` match {
       case base64BinaryValue: Base64BinaryValue => base64BinaryValue

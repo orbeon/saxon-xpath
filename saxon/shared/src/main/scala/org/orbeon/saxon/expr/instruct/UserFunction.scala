@@ -371,10 +371,13 @@ class UserFunction
     presenter.endElement()
   }
 
-  override def isExportable: Boolean =
+  override def isExportable: Boolean = {
+    if (!packageData.isInstanceOf[StylesheetPackage])
+      return false
     refCount > 0 ||
       (declaredVisibility != null && declaredVisibility != Visibility.PRIVATE) ||
       packageData.asInstanceOf[StylesheetPackage].retainUnusedFunctions
+  }
 
   def isTrustedResultType: Boolean = false
   def isMap: Boolean = false

@@ -57,19 +57,27 @@ class AlphanumericCollator(private var baseCollator: StringCollator)
     compareStrings(s1, s2) == 0
 
   def getCollationKey(cs: CharSequence): AtomicMatchKey = {
-// The string is normalized by removing leading zeros in a numeric component
+    // The string is normalized by removing leading zeros in a numeric component
     val s: String = cs.toString
-    val sb = new FastStringBuffer(s.length * 2)
+    // See bug 5049
+    val baos = new java.io.ByteArrayOutputStream()
     var pos1: Int = 0
     val m1: Matcher = pattern.matcher(s)
     while (true) {
       val b1: Boolean = m1.find(pos1)
       val m1start: Int = if (b1) m1.start() else s.length
-      sb.append(baseCollator.getCollationKey(s.substring(pos1, m1start)).toString)
-      if (!b1)  return UnicodeString.makeUnicodeString(sb)
+      val b64 = org.orbeon.saxon.functions.CollationKeyFn.getCollationKey(s.substring(pos1, m1start), baseCollator)
+      var bin = b64.getBinaryValue
+      baos.write(bin, 0, bin.length)
+      if (!b1)
+        return new org.orbeon.saxon.value.Base64BinaryValue(baos.toByteArray)
 
-      val n1: Int = java.lang.Integer.parseInt(s.substring(m1start, m1.end()))
-      sb.append(n1.toString)
+      val n: BigInteger = new BigInteger(s.substring(m1start, m1.end()))
+      bin = n.toByteArray
+      val len = bin.length
+      baos.write(0)
+      baos.write(len.toByte)
+      baos.write(bin, 0, bin.length)
       pos1 = m1.end()
     }
     null

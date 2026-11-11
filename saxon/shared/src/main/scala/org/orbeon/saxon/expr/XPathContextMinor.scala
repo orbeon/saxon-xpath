@@ -102,8 +102,11 @@ class XPathContextMinor extends XPathContext {
     }
     if (last.value >= 0)
       last.value
-    else
-      currentIterator.getLength
+    else {
+      val length = currentIterator.getLength
+      last = new LastValue(length)
+      length
+    }
   }
 
   def isAtLast: Boolean =

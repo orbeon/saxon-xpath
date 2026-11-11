@@ -66,7 +66,7 @@ class SystemFunctionCall(target: SystemFunction, arguments: Array[Expression])
     this
   }
 
-  private def allocateArgumentEvaluators(arguments: Array[Expression]): Unit = {
+  def allocateArgumentEvaluators(arguments: Array[Expression]): Unit = {
     for (i <- arguments.indices) {
       val arg: Expression = arguments(i)
       val cardinality: Int =

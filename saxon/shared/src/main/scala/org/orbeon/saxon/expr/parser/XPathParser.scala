@@ -2319,9 +2319,10 @@ class XPathParser {
     } else if (token == Token.MULT || token == Token.STAR) {
       nextToken()
       result = XPathParser.lookupStar(lhs)
-    } else if (token == Token.LPAR)
+    } else if (token == Token.LPAR) {
+      t.setState(Tokenizer.DEFAULT_STATE)
       result = XPathParser.lookup(this, lhs, parseParenthesizedExpression)
-    else if (token == Token.STRING_LITERAL) {
+    } else if (token == Token.STRING_LITERAL) {
       checkSyntaxExtensions("string literal after '?'")
       result = lookupName(lhs, t.currentTokenValue)
       nextToken()

@@ -35,16 +35,16 @@ class RangeKey
       .compareTo(k) >= 0)) {
       val value: Any = index.get(k)
       if (value == null) {
-        return EmptySequence.getInstance
+        return null
       } else value match {
         case info: NodeInfo =>
           return info
         case _ =>
           val nodes: util.List[NodeInfo] = value.asInstanceOf[util.List[NodeInfo]]
-          return SequenceExtent.makeSequenceExtent(nodes)
+          return if (nodes.isEmpty) null else SequenceExtent.makeSequenceExtent(nodes)
       }
     }
-    EmptySequence.getInstance
+    null
   }
 
   def size: Int =

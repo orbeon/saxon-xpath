@@ -203,7 +203,9 @@ class HTMLIndenter(next: Receiver, method: String) extends ProxyReceiver(next) {
   override def characters(chars: CharSequence,
                           locationId: Location,
                           properties: Int): Unit = {
+    val withinSuppressed: Int = if (level == 0) 0 else (propertyStack(level - 1) & IS_SUPPRESSED)
     if (inFormattedTag ||
+      withinSuppressed > 0 ||
       ReceiverOption.contains(properties, ReceiverOption.USE_NULL_MARKERS) ||
       ReceiverOption.contains(properties, ReceiverOption.DISABLE_ESCAPING)) {
       nextReceiver.characters(chars, locationId, properties)

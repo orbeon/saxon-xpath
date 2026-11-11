@@ -35,6 +35,7 @@ abstract class Actor extends ExpressionOwner with Location {
   var body: Expression = _
   var systemId: String = _
   var lineNumber: Int = _
+  var columnNumber: Int = _
   var stackFrameMap: SlotManager = _
   var packageData: PackageData = _
   var declaringComponent: Component = _
@@ -120,7 +121,8 @@ abstract class Actor extends ExpressionOwner with Location {
   def getLocation: Location = this.asInstanceOf[Location]
   def getSystemId: String = systemId
   def getLineNumber: Int = lineNumber
-  def getColumnNumber: Int = -1
+  def getColumnNumber: Int = columnNumber
+  def setColumnNumber(columnNumber: Int): Unit = this.columnNumber = lineNumber
   def getPublicId: String = null
   def saveLocation: Location = this.asInstanceOf[Location]
   def getProperty(name: String): AnyRef = null
