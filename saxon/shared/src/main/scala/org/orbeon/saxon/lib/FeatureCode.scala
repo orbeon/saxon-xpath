@@ -871,7 +871,9 @@ object FeatureCode {
     */
   val ALLOW_UNRESOLVED_SCHEMA_COMPONENTS: Int = 126
 
-  val MAX: Int = 127
+  val ZIP_URI_PATTERN: Int = 127
+
+  val MAX: Int = 128
 
 }
 

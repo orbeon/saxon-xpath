@@ -414,6 +414,7 @@ class Configuration extends SourceResolver with NotationSet {
   val byteCodeThreshold: Int = 100
   private var regexBacktrackingLimit: Int = 10000000
   private val treeStatistics: TreeStatistics = new TreeStatistics()
+  private var zipUriPattern: String = null
 
 //  /**
 //   * Read the configuration file an construct a new Configuration (the real one)
@@ -3476,6 +3477,8 @@ class Configuration extends SourceResolver with NotationSet {
 //      case FeatureCode.XSLT_VERSION =>
 //        if (!("3.0" == value)) makeErrorReporter.report(new XmlProcessingIncident("XSLT version ignored: only \"3.0\" is recognized").asWarning)
       //getDefaultXsltCompilerInfo().setXsltVersion(v);
+      case FeatureCode.ZIP_URI_PATTERN =>
+        zipUriPattern = value.asInstanceOf[String]
       case _ =>
         throw new IllegalArgumentException("Unknown configuration property " + name)
     }
@@ -3748,6 +3751,8 @@ class Configuration extends SourceResolver with NotationSet {
 //        return getDefaultXsltCompilerInfo.getURIResolver.getClass.getName.asInstanceOf[T]
 //      case FeatureCode.XSLT_VERSION =>
 //        return Integer.valueOf(30).asInstanceOf[T]
+      case FeatureCode.ZIP_URI_PATTERN =>
+        return (if (zipUriPattern == null) Feature.ZIP_URI_PATTERN.defaultValue else zipUriPattern).asInstanceOf[T]
     }
     throw new IllegalArgumentException("Unknown configuration property " + feature.name)
   }

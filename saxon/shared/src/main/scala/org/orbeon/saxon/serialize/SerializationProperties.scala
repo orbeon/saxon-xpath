@@ -70,12 +70,21 @@ class SerializationProperties {
     val props: Properties = new Properties(defaults.getProperties)
     for (prop <- this.getProperties.stringPropertyNames().asScala) {
       val value: String = this.getProperties.getProperty(prop)
-      if (prop == OutputKeys.CDATA_SECTION_ELEMENTS || prop == SaxonOutputKeys.SUPPRESS_INDENTATION) {
+      if (prop == OutputKeys.CDATA_SECTION_ELEMENTS ||
+        prop == SaxonOutputKeys.SUPPRESS_INDENTATION ||
+        prop == SaxonOutputKeys.USE_CHARACTER_MAPS) {
         val existing: String = defaults.getProperty(prop)
         if (existing == null || existing == value) {
           props.setProperty(prop, value)
         } else {
           props.setProperty(prop, existing + " " + value)
+          if (prop == SaxonOutputKeys.USE_CHARACTER_MAPS) {
+            val charMapIndex2 = charMap.copy()
+            for (map <- defaults.getCharacterMapIndex.asScala) {
+              charMapIndex2.putCharacterMap(map.name, map)
+            }
+            charMap = charMapIndex2
+          }
         }
       } else {
         props.setProperty(prop, value)

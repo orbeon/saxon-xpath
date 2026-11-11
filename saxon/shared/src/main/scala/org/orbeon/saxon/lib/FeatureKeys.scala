@@ -351,6 +351,9 @@ object FeatureKeys {
   val ALLOW_UNRESOLVED_SCHEMA_COMPONENTS: String =
     "http://saxon.sf.net/feature/allowUnresolvedSchemaComponents"
 
+  val ZIP_URI_PATTERN: String =
+    "http://saxon.sf.net/feature/zipUriPattern"
+
 }
 
 // Copyright (c) 2018-2020 Saxonica Limited

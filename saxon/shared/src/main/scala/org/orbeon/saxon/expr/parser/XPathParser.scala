@@ -3283,11 +3283,10 @@ class XPathParser {
    */
   def makeTracer(exp: Expression, qName: StructuredQName): Expression = {
     exp.setRetainedStaticContextLocally(env.makeRetainedStaticContext())
-    //        if (codeInjector != null) {
-    //            return codeInjector.inject(exp, env, construct, qName);
-    //        } else {
-    //            return exp;
-    exp
+    if (codeInjector != null)
+      codeInjector.inject(exp)
+    else
+      exp
   }
 
   /**

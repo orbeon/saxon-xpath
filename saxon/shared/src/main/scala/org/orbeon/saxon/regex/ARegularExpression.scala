@@ -14,6 +14,15 @@ import org.orbeon.saxon.value.{AtomicValue, StringValue}
 
 import java.{util => ju}
 
+object ARegularExpression {
+  def compile(pattern: String, flags: String): ARegularExpression =
+    try new ARegularExpression(pattern, flags, "XP31", null, null)
+    catch {
+      case e: XPathException =>
+        throw new IllegalArgumentException(e)
+    }
+}
+
 /**
  * Glue class to interface the Jakarta regex engine to Saxon
  * (The prefix 'A' indicates an Apache regular expression, as distinct from

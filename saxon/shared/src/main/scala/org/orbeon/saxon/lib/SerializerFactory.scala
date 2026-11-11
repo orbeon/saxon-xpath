@@ -400,10 +400,13 @@ class SerializerFactory {
           //          val normalizer = makeUnicodeNormalizer(pipe, props)
           //          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
           case _ =>
-            if (method.startsWith("Q{" + NamespaceConstant.SAXON + "}")) {
+            var methodVar = method
+            if (methodVar.startsWith("{"))
+              methodVar = "Q" + methodVar
+            if (methodVar.startsWith("Q{" + NamespaceConstant.SAXON + "}")) {
               val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
               val normalizer           = makeUnicodeNormalizer(pipe, props)
-              target = createSaxonSerializationMethod(method, params, pipe, characterMapExpander, normalizer, sr)
+              target = createSaxonSerializationMethod(methodVar, params, pipe, characterMapExpander, normalizer, sr)
               target match {
                 case e: Emitter => emitter = e
                 case _ =>
@@ -411,7 +414,7 @@ class SerializerFactory {
             }
             else {
               var userReceiver: SequenceReceiver = null
-              userReceiver = createUserDefinedOutputMethod(method, props, pipe)
+              userReceiver = createUserDefinedOutputMethod(methodVar, props, pipe)
               userReceiver match {
                 case e: Emitter =>
                   emitter = e

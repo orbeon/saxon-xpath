@@ -703,6 +703,9 @@ class ResultDocument(private val globalProperties: Properties,
     if (getValidationAction != Validation.SKIP && getValidationAction != Validation.BY_TYPE) {
       out.emitAttribute("validation", Validation.toString(getValidationAction))
     }
+    if (async) {
+      out.emitAttribute("flags", "a")
+    }
     val schemaType: SchemaType = getSchemaType
     if (schemaType != null) {
       out.emitAttribute("type", schemaType.getStructuredQName)

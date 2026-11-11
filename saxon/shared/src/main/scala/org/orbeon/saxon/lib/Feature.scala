@@ -918,6 +918,14 @@ object Feature {
       classOf[Boolean],
       false)
 
+  val ZIP_URI_PATTERN: Feature[String] =
+    new Feature[String](
+      "http://saxon.sf.net/feature/zipUriPattern",
+      127,
+      HE,
+      classOf[String],
+      null)
+
 }
 
 class Feature[T] private(var name: String,

@@ -41,7 +41,11 @@ class TypeAvailable extends SystemFunction {
       }
     } else {
       val `type` = config.getSchemaType(qName)
-      `type` != null
+      `type` != null && (
+        config.getXsdVersion != 10 ||
+          !`type`.isInstanceOf[org.orbeon.saxon.model.BuiltInAtomicType] ||
+          `type`.asInstanceOf[org.orbeon.saxon.model.BuiltInAtomicType].isAllowedInXSD10
+      )
     }
   }
 

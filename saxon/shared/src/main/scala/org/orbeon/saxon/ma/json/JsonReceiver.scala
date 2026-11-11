@@ -4,10 +4,11 @@ import java.util.function.IntPredicate
 import java.{util => ju}
 
 import org.orbeon.saxon.event.{PipelineConfiguration, Receiver}
+import org.orbeon.saxon.functions.SystemFunction
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.json.JsonReceiver._
 import org.orbeon.saxon.model.{SchemaType, StringConverter}
-import org.orbeon.saxon.om.{AttributeMap, NamespaceMap, NodeName}
+import org.orbeon.saxon.om.{AttributeMap, Function, NamespaceMap, NodeName, Sequence}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.{CharSequenceConsumer, FastStringBuffer}
@@ -155,6 +156,8 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
 
   private var keyChecker: List[ju.Set[String]] = Nil
 
+  private var numberFormatter: Function = null
+
   ju.Objects.requireNonNull(pipelineConfiguration)
   ju.Objects.requireNonNull(output)
 
@@ -166,6 +169,20 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
   override def getPipelineConfiguration: PipelineConfiguration = pipelineConfiguration
 
   def setSystemId(systemId: String): Unit = ()
+
+  def setIndenting(indenting: Boolean): Unit =
+    this.indenting = indenting
+
+  def isIndenting: Boolean =
+    indenting
+
+  def setNumberFormatter(formatter: Function): Unit = {
+    assert(formatter.getArity == 1)
+    this.numberFormatter = formatter
+  }
+
+  def getNumberFormatter: Function =
+    this.numberFormatter
 
   def open(): Unit =
     output.open()
@@ -326,13 +343,22 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
         .effectiveBooleanValue
       output.cat(if (b) "true" else "false")
     } else if (local.==("number")) {
-      val d: Double = StringToDouble11.getInstance.stringToNumber(textBuffer)
-      if (java.lang.Double.isNaN(d) || java.lang.Double.isInfinite(d)) {
-        throw new XPathException(
-          "xml-to-json: Infinity and NaN are not allowed",
-          ERR_INPUT)
+      if (numberFormatter == null) {
+        val d: Double = StringToDouble11.getInstance.stringToNumber(textBuffer)
+        if (java.lang.Double.isNaN(d) || java.lang.Double.isInfinite(d)) {
+          throw new XPathException(
+            "xml-to-json: Infinity and NaN are not allowed",
+            ERR_INPUT)
+        }
+        output.cat(new DoubleValue(d).getStringValueCS)
+      } else {
+        val result = SystemFunction.dynamicCall(
+          numberFormatter,
+          pipelineConfiguration.getXPathContext,
+          Array[Sequence](new org.orbeon.saxon.value.StringValue(textBuffer))
+        )
+        output.cat(result.head.getStringValueCS)
       }
-      output.cat(new DoubleValue(d).getStringValueCS)
     } else if (local.==("string")) {
       output.cat("\"")
       val str: String = textBuffer.toString

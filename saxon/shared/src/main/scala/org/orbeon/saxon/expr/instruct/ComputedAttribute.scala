@@ -232,10 +232,18 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
       var rawName = nameValue.getStringValue
       rawName = Whitespace.trimWhitespace(rawName).toString // required in XSLT; possibly wrong in XQuery
       if (rawName.startsWith("Q{") && allowNameAsQName) { // not allowed in XSLT; a little unclear in XQuery
-        val qn = StructuredQName.fromEQName(rawName)
-        prefix = ""
-        localName = qn.getLocalPart
-        uri = qn.getURI
+        try {
+          val qn = StructuredQName.fromEQName(rawName)
+          prefix = ""
+          localName = qn.getLocalPart
+          uri = qn.getURI
+        } catch {
+          case e: IllegalArgumentException =>
+            throw new XPathException("Invalid EQName in computed attribute constructor: " + e.getMessage, "XQDY0074")
+        }
+        if (!NameChecker.isValidNCName(localName)) {
+          throw new XPathException("Local part of EQName in computed attribute constructor is invalid", "XQDY0074")
+        }
       } else {
         try {
           val parts = NameChecker.getQNameParts(rawName)

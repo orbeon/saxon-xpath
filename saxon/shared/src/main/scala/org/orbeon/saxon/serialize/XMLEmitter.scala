@@ -432,7 +432,11 @@ class XMLEmitter extends Emitter {
     } else {
       writer.write("=")
       writer.write(delimiter)
-      writeEscape(value, inAttribute = true)
+      if (ReceiverOption.contains(properties, ReceiverOption.DISABLE_ESCAPING)) {
+        writer.write(value.toString)
+      } else {
+        writeEscape(value, inAttribute = true)
+      }
       writer.write(delimiter)
     }
   }

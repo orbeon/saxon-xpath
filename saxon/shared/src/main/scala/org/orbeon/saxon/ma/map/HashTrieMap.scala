@@ -182,6 +182,8 @@ class HashTrieMap extends MapItem {
     t2.valueUType       = valueUType
     t2.keyAtomicType    = keyAtomicType
     t2.valueItemType    = valueItemType
+    if (entries >= 0 && imap.get(makeKey(key)) == null)
+      t2.entries = entries + 1
     t2.updateTypeInformation(key, value, empty)
     t2
   }

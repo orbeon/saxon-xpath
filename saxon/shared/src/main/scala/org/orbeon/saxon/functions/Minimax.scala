@@ -270,6 +270,15 @@ abstract class Minimax extends CollatingFunctionFixed {
         } else {
          return arguments(0)
         }
+      } else if (arguments(0).isInstanceOf[RangeExpression]) {
+        if (isMaxFunction) {
+          val start = arguments(0).asInstanceOf[RangeExpression].getLhsExpression
+          val end   = arguments(0).asInstanceOf[RangeExpression].getRhsExpression
+          if (start.isInstanceOf[Literal] && end.isInstanceOf[Literal])
+            return end
+        } else {
+          return FirstItemExpression.makeFirstItemExpression(arguments(0))
+        }
       }
     }
     null

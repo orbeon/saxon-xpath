@@ -121,6 +121,8 @@ object DocumentFn {
     }
     try {
       var source: Source = resolveURI(hrefStr, baseURI, documentKey.toString, c)
+      if (source.isInstanceOf[org.orbeon.saxon.lib.EmptySource])
+        return null
       source = config.getSourceResolver.resolveSource(source, config)
       var newdoc: TreeInfo = null
       if (source.isInstanceOf[NodeInfo] || source.isInstanceOf[DOMSource]) {

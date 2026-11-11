@@ -219,7 +219,7 @@ abstract class HTMLEmitter extends XMLEmitter {
     uri = elemName.getURI
     super.startElement(elemName, `type`, attributes, namespaces, location, properties)
     parentElement = elementStack.head
-    if (elemName.hasURI("") && (parentElement.equalsIgnoreCase("script") || parentElement.equalsIgnoreCase("style")))
+    if (isHTMLElement(elemName) && (parentElement.equalsIgnoreCase("script") || parentElement.equalsIgnoreCase("style")))
       inScript = 0
     inScript += 1
     nodeNameStack.push(elemName)
@@ -234,11 +234,14 @@ abstract class HTMLEmitter extends XMLEmitter {
    */
   @throws[XPathException]
   override def writeAttribute(elCode: NodeName, attname: String, value: CharSequence, properties: Int): Unit = try {
-    if (uri.isEmpty) if (HTMLEmitter.isBooleanAttribute(elCode.getLocalPart, attname, value.toString)) {
+    if (isHTMLElement(elCode)) if (HTMLEmitter.isBooleanAttribute(elCode.getLocalPart, attname, value.toString)) {
       writer.write(attname)
       return
     }
-    super.writeAttribute(elCode, attname, value, properties)
+    var props = properties
+    if (inScript > 0)
+      props |= ReceiverOption.DISABLE_ESCAPING
+    super.writeAttribute(elCode, attname, value, props)
   } catch {
     case err: IOException =>
       throw new XPathException(err)
@@ -380,7 +383,11 @@ abstract class HTMLEmitter extends XMLEmitter {
    * @param nameCode    the fingerprint of the name of the empty element
    * @return the string used to close an empty element tag.
    */
-  override def emptyElementTagCloser(displayName: String, nameCode: NodeName): String = "></" + displayName + ">"
+  override def emptyElementTagCloser(displayName: String, nameCode: NodeName): String =
+    if (isHTMLElement(nameCode))
+      "></" + displayName + ">"
+    else
+      "/>"
 
   /**
    * Output an element end tag.
@@ -392,9 +399,12 @@ abstract class HTMLEmitter extends XMLEmitter {
     inScript -= 1
     if (inScript == 0)
       inScript = -1000000
-    if (HTMLEmitter.isEmptyTag(name) && isHTMLElement(nodeName)) // no end tag required
+    if (HTMLEmitter.isEmptyTag(name) && isHTMLElement(nodeName)) {
+      if (openStartTag)
+        closeStartTag()
+      // no end tag required
       elementStack = elementStack.tail
-    else
+    } else
       super.endElement()
   }
 

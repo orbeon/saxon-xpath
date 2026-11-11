@@ -446,7 +446,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
     if (op != Token.EQUALS && op != Token.NE &&
       (comparisonCardinality == MANY_TO_MANY ||
         comparisonCardinality == MANY_TO_ONE &&
-          manyOperandIsLiftable()) &&
+          (manyOperandIsLiftable() || manyOperandIsRangeExpression())) &&
       (NumericType.isNumericType(t0) || NumericType.isNumericType(t1))) {
       var vc: ValueComparison = null
       op match {
@@ -467,7 +467,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       }
       ExpressionTool.copyLocationInfo(this, vc)
       vc.setRetainedStaticContext(getRetainedStaticContext)
-      return vc.typeCheck(visitor, contextInfo)
+      return vc.typeCheck(visitor, contextInfo).optimize(visitor, contextInfo)
     }
     if (getLhsExpression.isInstanceOf[Literal] && getRhsExpression.isInstanceOf[Literal])
       Literal.makeLiteral(evaluateItem(env.makeEarlyEvaluationContext()), this)
@@ -491,6 +491,17 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       case _ =>
         false
     }
+  }
+
+  private def manyOperandIsRangeExpression(): Boolean = {
+    for (o <- operands.asScala) {
+      val e = o.getChildExpression
+      if (Cardinality.allowsMany(e.getCardinality)) {
+        return e.isInstanceOf[RangeExpression] ||
+          (e.isInstanceOf[Literal] && e.asInstanceOf[Literal].getValue.isInstanceOf[IntegerRange])
+      }
+    }
+    false
   }
 
   override def evaluateItem(context: XPathContext): BooleanValue =

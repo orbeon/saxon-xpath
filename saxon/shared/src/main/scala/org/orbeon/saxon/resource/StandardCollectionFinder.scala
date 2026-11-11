@@ -121,6 +121,8 @@ class StandardCollectionFinder extends CollectionFinder {
   // otherwise assume the URI identifies a collection catalog
 
   def isJarFileURI(collectionURI: String): Boolean =
-    collectionURI.endsWith(".jar") || collectionURI.endsWith(".zip") ||
+    collectionURI.endsWith(".jar") ||
+      collectionURI.endsWith(".zip") ||
+      collectionURI.endsWith(".docx") ||
       collectionURI.startsWith("jar:")
 }

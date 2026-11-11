@@ -87,6 +87,8 @@ object StructuredQName {
       else if (endBrace == name.length - 1)
         throw new IllegalArgumentException("Invalid EQName: local part is missing")
       val uri = name.substring(2, endBrace)
+      if (uri.indexOf('{') >= 0)
+        throw new IllegalArgumentException("Invalid EQName: open brace in URI part")
       val local = name.substring(endBrace + 1)
       new StructuredQName("", uri, local)
     } else {

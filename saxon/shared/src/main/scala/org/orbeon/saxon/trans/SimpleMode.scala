@@ -61,7 +61,7 @@ object SimpleMode {
   }
 
   private def showPattern(p: Pattern) = { // Complex patterns can be laid out with lots of whitespace, which looks messy in the error message
-    Whitespace.collapseWhitespace(p.toString).toString
+    Whitespace.collapseWhitespace(p.toShortString).toString
   }
 
   def forceAllocateAllBindingSlots(pack: StylesheetPackage, mode: SimpleMode, bindings: List[ComponentBinding]): Unit = {

@@ -139,6 +139,16 @@ class PatternParser30 extends XPathParser with PatternParser {
 
       }
       setLocation(pat)
+      pat.setOriginalText(pattern)
+      pat match {
+        case unionPat: UnionPattern =>
+          val branches = pattern.split("\\|")
+          if (branches.length == 2) {
+            unionPat.getLHS.setOriginalText(branches(0))
+            unionPat.getRHS.setOriginalText(branches(1))
+          }
+        case _ =>
+      }
       if (exp.isInstanceOf[FilterExpression] &&
         exp
           .asInstanceOf[FilterExpression]

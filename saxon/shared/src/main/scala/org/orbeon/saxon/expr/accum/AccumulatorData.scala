@@ -166,7 +166,7 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     c2.setCurrentComponent(accumulator.declaringComponent)
     c2.setTemporaryOutputState(StandardNames.XSL_ACCUMULATOR_RULE)
     seq = Evaluator.EAGER_SEQUENCE.evaluate(delta, c2)
-    if (node.getNodeKind == Type.DOCUMENT && !postDescent && values.size == 1) {
+    if (node.getParent == null && !postDescent && values.size == 1) {
       // Overwrite the accumulator's initial value with the "before document start" value. Bug 4786.
       values.clear()
     }

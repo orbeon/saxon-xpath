@@ -577,7 +577,7 @@ object FormatNumber {
       var decValue = dval
       if (minExponentSize == 0) {
         decValue = decValue.setScale(maxFractionPartSize, RoundingMode.HALF_EVEN)
-      } else {
+      } else if (decValue.signum() != 0) {
         exponent = decValue.precision() - decValue.scale() - scalingFactor
         decValue = decValue.movePointLeft(exponent)
         decValue = decValue.setScale(maxFractionPartSize, RoundingMode.HALF_EVEN)

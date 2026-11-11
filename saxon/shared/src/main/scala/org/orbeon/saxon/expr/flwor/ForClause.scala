@@ -140,6 +140,9 @@ class ForClause extends Clause {
       }
     }
     var changed = false
+    if (positionVariable != null && positionVariable.getNominalReferenceCount == 0) {
+      positionVariable = null
+    }
     if (positionVariable != null &&
       (condition.isInstanceOf[ValueComparison] || condition
         .isInstanceOf[GeneralComparison] ||

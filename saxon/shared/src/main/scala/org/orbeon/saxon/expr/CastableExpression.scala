@@ -1,26 +1,13 @@
 package org.orbeon.saxon.expr
 
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionTool
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.RebindingMap
-
+import org.orbeon.saxon.expr.parser._
+import org.orbeon.saxon.ma.arrays.ArrayItem
 import org.orbeon.saxon.model._
-
 import org.orbeon.saxon.om._
-
 import org.orbeon.saxon.trace.ExpressionPresenter
-
 import org.orbeon.saxon.trans.XPathException
-
-import org.orbeon.saxon.value.AtomicValue
-
-import org.orbeon.saxon.value.BooleanValue
-
-import org.orbeon.saxon.value.Cardinality
+import org.orbeon.saxon.utils.Configuration
+import org.orbeon.saxon.value.{AtomicValue, BooleanValue, SequenceType}
 
 class CastableExpression(source: Expression,
                          target: AtomicType,
@@ -30,29 +17,11 @@ class CastableExpression(source: Expression,
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {
     getOperand.typeCheck(visitor, contextInfo)
-    val operand: Expression = getBaseExpression
-    val sourceItemType: ItemType = operand.getItemType
-    val atomizedType: AtomicType =
-      sourceItemType.getAtomizedItemType.getPrimitiveItemType
-        .asInstanceOf[AtomicType]
-    if (!(atomizedType == BuiltInAtomicType.ANY_ATOMIC)) {
-      converter = visitor.getConfiguration.getConversionRules
-        .getConverter(atomizedType, targetType)
-      if (converter == null) {
-        if (!allowsEmpty() || !Cardinality.allowsZero(operand.getCardinality)) {
-
-          return Literal.makeLiteral(BooleanValue.FALSE, this)
-        }
-      } else {
-        if (targetPrimitiveType.isNamespaceSensitive) {
-          converter = converter.setNamespaceResolver(getRetainedStaticContext)
-        }
-        if (converter.isAlwaysSuccessful && !allowsEmpty() &&
-          operand.getCardinality == StaticProperty.ALLOWS_ONE) {
-          return Literal.makeLiteral(BooleanValue.TRUE, this)
-        }
-      }
-    }
+    val atomicType: SequenceType = SequenceType.ATOMIC_SEQUENCE
+    val config: Configuration = visitor.getConfiguration
+    val role: RoleDiagnostic = new RoleDiagnostic(RoleDiagnostic.TYPE_OP, "castable as", 0)
+    val tc: TypeChecker = config.getTypeChecker(backwardsCompatible = false)
+    val operand: Expression = tc.staticTypeCheck(getBaseExpression, atomicType, role, visitor)
     this.setBaseExpression(operand)
     if (operand.isInstanceOf[Literal]) {
       return preEvaluate()
@@ -152,6 +121,8 @@ class CastableExpression(source: Expression,
       if (!isCastable(av, targetType, context)) {
         return false
       }
+    } else if (item.isInstanceOf[ArrayItem]) {
+      return false
     } else {
       throw new XPathException("Input to cast cannot be atomized", "XPTY0004")
     }

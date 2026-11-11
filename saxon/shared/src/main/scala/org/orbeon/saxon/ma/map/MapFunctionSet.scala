@@ -203,7 +203,9 @@ object MapFunctionSet {
       val results = new ArrayList[GroundedValue]()
       for (pair <- map.keyValuePairs.asScala) {
         val seq = dynamicCall(fn, context, Array(pair.key, pair.value))
-        results.add(seq.materialize)
+        val `val` = seq.materialize
+        if (`val`.getLength > 0)
+          results.add(`val`)
       }
       new Chain(results)
     }
@@ -416,50 +418,76 @@ object MapFunctionSet {
         if (baseMap == null) {
           new HashTrieMap()
         } else {
-          if (!(baseMap.isInstanceOf[HashTrieMap])) {
-            baseMap = HashTrieMap.copy(baseMap)
-          }
           var next: MapItem = null
           while (({
             next = iter.next().asInstanceOf[MapItem]
             next
-          }) != null) for (pair <- next
-            .keyValuePairs.asScala) {
-            val existing: Sequence = baseMap.get(pair.key)
-            if (existing != null) {
-              duplicates match {
-                case "use-first" | "unspecified" | "use-any" =>
-                case "use-last" =>
-                  baseMap = baseMap.addEntry(pair.key, pair.value)
-                case "combine" =>
-                  var combinedIter: InsertBefore.InsertIterator =
-                    new InsertBefore.InsertIterator(pair.value.iterate(),
-                      existing.iterate(),
-                      1)
-                  var combinedValue: GroundedValue = combinedIter.materialize
-                  baseMap = baseMap.addEntry(pair.key, combinedValue)
-                case "use-callback" =>
-                  assert(onDuplicates != null)
-                  var args: Array[Sequence] =
-                    if (onDuplicates.getArity == 2) Array(existing, pair.value)
-                    else Array(existing, pair.value, pair.key)
-                  var combined: Sequence = onDuplicates.call(context, args)
-                  baseMap = baseMap.addEntry(pair.key, combined.materialize)
-                case _ =>
-                  throw new XPathException(
-                    "Duplicate key in constructed map: " + Err.wrap(
-                      pair.key.getStringValueCS),
-                    duplicatesErrorCode)
-
+          }) != null) {
+            // Merge the next map and the base map. Merge the smaller of the two
+            // maps into the larger. The complication is that this affects duplicates handling.
+            // See bug #4865
+            val inverse: Boolean = next.size > baseMap.size
+            var larger: MapItem = if (inverse) next else baseMap
+            val smaller: MapItem = if (inverse) baseMap else next
+            val dup: String = if (inverse) invertDuplicates(duplicates) else duplicates
+            for (pair <- smaller.keyValuePairs.asScala) {
+              val existing: Sequence = larger.get(pair.key)
+              if (existing != null) {
+                dup match {
+                  case "use-first" | "unspecified" | "use-any" =>
+                  case "use-last" =>
+                    larger = larger.addEntry(pair.key, pair.value)
+                  case "combine" =>
+                    val combinedIter: InsertBefore.InsertIterator =
+                      new InsertBefore.InsertIterator(pair.value.iterate(),
+                        existing.iterate(),
+                        1)
+                    val combinedValue: GroundedValue = combinedIter.materialize
+                    larger = larger.addEntry(pair.key, combinedValue)
+                  case "combine-reverse" =>
+                    val combinedIter: InsertBefore.InsertIterator =
+                      new InsertBefore.InsertIterator(existing.iterate(),
+                        pair.value.iterate(),
+                        1)
+                    val combinedValue: GroundedValue = combinedIter.materialize
+                    larger = larger.addEntry(pair.key, combinedValue)
+                  case "use-callback" =>
+                    assert(onDuplicates != null)
+                    val args: Array[Sequence] =
+                      if (inverse) {
+                        if (onDuplicates.getArity == 2) Array(pair.value, existing)
+                        else Array(pair.value, existing, pair.key)
+                      } else {
+                        if (onDuplicates.getArity == 2) Array(existing, pair.value)
+                        else Array(existing, pair.value, pair.key)
+                      }
+                    val combined: Sequence = onDuplicates.call(context, args)
+                    larger = larger.addEntry(pair.key, combined.materialize)
+                  case _ =>
+                    throw new XPathException(
+                      "Duplicate key in constructed map: " + Err.wrap(
+                        pair.key.getStringValue),
+                      duplicatesErrorCode)
+                }
+              } else {
+                larger = larger.addEntry(pair.key, pair.value)
               }
-            } else {
-              baseMap = baseMap.addEntry(pair.key, pair.value)
             }
+            baseMap = larger
           }
           baseMap
         }
       }
     }
+
+    private def invertDuplicates(duplicates: String): String =
+      duplicates match {
+        case "use-first" | "unspecified" | "use-any" => "use-last"
+        case "use-last"                              => "use-first"
+        case "combine"                               => "combine-reverse"
+        case "combine-reverse"                       => "combine"
+        case _                                       => duplicates
+      }
 
     override def getStreamerName: String = "NewMap"
 

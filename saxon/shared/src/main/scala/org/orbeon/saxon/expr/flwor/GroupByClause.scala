@@ -129,7 +129,7 @@ class GroupByClause(var config: Configuration) extends Clause {
         o.getChildExpression.asInstanceOf[LocalVariableReference])
     }
     val groupingSize: Int = getGroupingTupleExpression.getSize
-    for (i <- groupingSize until list.size
+    for (i <- (list.size - 1) to groupingSize by -1
          if list.get(i).getNominalReferenceCount == 0) {
       list.remove(i)
       retainingExpr.remove(i - groupingSize)

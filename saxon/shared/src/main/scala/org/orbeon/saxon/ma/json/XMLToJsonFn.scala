@@ -52,7 +52,21 @@ object XMLToJsonFn {
     xmlToJsonOptions.addAllowedOption("indent",
       SequenceType.SINGLE_BOOLEAN,
       BooleanValue.FALSE)
+    val nfType = new org.orbeon.saxon.model.SpecificFunctionType(
+      Array(SequenceType.SINGLE_STRING),
+      SequenceType.SINGLE_STRING
+    )
+    xmlToJsonOptions.addAllowedOption(
+      "Q{" + org.orbeon.saxon.lib.NamespaceConstant.SAXON + "}number-formatter",
+      SequenceType.makeSequenceType(nfType, org.orbeon.saxon.expr.StaticProperty.ALLOWS_ZERO_OR_ONE),
+      EmptySequence.getInstance
+    )
     xmlToJsonOptions
+  }
+
+  private class Options {
+    var indent: Boolean = _
+    var numberFormatter: org.orbeon.saxon.om.Function = _
   }
 
 }
@@ -67,24 +81,30 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
     if (xml == null) {
      return EmptySequence.getInstance
     }
-    val indent: Boolean = isindentingRequested(context, arguments)
+    val options = getOptions(context, arguments)
     val pipe: PipelineConfiguration =
       context.getController.makePipelineConfiguration
     pipe.xpathContext = context
     val stringBuffer: FastStringBuffer = new FastStringBuffer(2048)
-    convertToJson(xml, stringBuffer, indent, context)
+    convertToJson(xml, stringBuffer, options, context)
     new StringValue(stringBuffer.condense())
   }
 
-  private def isindentingRequested(context: XPathContext,
-                                   arguments: Array[Sequence]): Boolean = {
+  private def getOptions(context: XPathContext,
+                         arguments: Array[Sequence]): Options = {
     if (getArity > 1) {
       val suppliedOptions: MapItem = arguments(1).head.asInstanceOf[MapItem]
       val options: Map[String, Sequence] = getDetails.optionDetails
         .processSuppliedOptions(suppliedOptions, context)
-      return options.get("indent").head.asInstanceOf[BooleanValue].getBooleanValue
+      val o = new Options
+      o.indent = options.get("indent").head.asInstanceOf[BooleanValue].getBooleanValue
+      val qn = options.get("Q{" + org.orbeon.saxon.lib.NamespaceConstant.SAXON + "}number-formatter")
+      if (qn != null)
+        o.numberFormatter = qn.head.asInstanceOf[org.orbeon.saxon.om.Function]
+      o
+    } else {
+      new Options
     }
-    false
   }
 
   override def process(destination: Outputter,
@@ -92,23 +112,25 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
                        arguments: Array[Sequence]): Unit = {
     val xml: NodeInfo = arguments(0).head.asInstanceOf[NodeInfo]
     if (xml != null) {
-      val indent: Boolean = isindentingRequested(context, arguments)
+      val options = getOptions(context, arguments)
       val pipe: PipelineConfiguration =
         context.getController.makePipelineConfiguration
       pipe.xpathContext = context
-      convertToJson(xml, destination.getStringReceiver(false), indent, context)
+      convertToJson(xml, destination.getStringReceiver(false), options, context)
     }
   }
 
   private def convertToJson(xml: NodeInfo,
                             output: CharSequenceConsumer,
-                            indent: Boolean,
+                            options: Options,
                             context: XPathContext): Unit = {
     val pipe: PipelineConfiguration =
       context.getController.makePipelineConfiguration
     pipe.xpathContext = context
     val receiver: JsonReceiver = new JsonReceiver(pipe, output)
-    receiver.indenting = indent
+    receiver.setIndenting(options.indent)
+    if (options.numberFormatter != null)
+      receiver.setNumberFormatter(options.numberFormatter)
     var r: Receiver = receiver
     if (xml.getNodeKind == Type.DOCUMENT) {
       r = new DocumentValidator(r, "FOJS0006")

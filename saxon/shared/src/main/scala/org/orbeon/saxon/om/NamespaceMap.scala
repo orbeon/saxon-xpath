@@ -370,7 +370,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
           }
           i2 += 1
         } else {
-          if (!u2(i2).isEmpty) {
+          if (!u2(i2).isEmpty || p2(i2).isEmpty) {
             prefixes.add(p2(i2))
             uris.add(u2(i2))
           }

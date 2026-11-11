@@ -89,7 +89,7 @@ class BinaryResource(in: AbstractResourceCollection.InputDetails)
 //    }
 //  }
 
-  def getItem(context: XPathContext): Item =
+  def getItem(context: XPathContext): Base64BinaryValue =
     if (data != null) {
       new Base64BinaryValue(data)
     } else {

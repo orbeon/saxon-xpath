@@ -321,7 +321,7 @@ class StandardDiagnostics {
   def abbreviateLocationURI(uri: String): String =
     abbreviateLocationURIDefault(uri)
 
-  var MAX_MESSAGE_LENGTH: Int = 1000
+  var MAX_MESSAGE_LENGTH: Int = 2000
 
   var MAX_MESSAGE_LINE_LENGTH: Int = 100
 

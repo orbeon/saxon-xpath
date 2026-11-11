@@ -105,16 +105,30 @@ class MultipleNodeKindTest(u: UType) extends NodeTest {
     fsb.toString
   }
 
+  override def toShortString: String = {
+    if (nodeKindMask == MultipleNodeKindTest.CHILD_NODE.nodeKindMask)
+      return "node()"
+    val fsb = new FastStringBuffer(FastStringBuffer.C64)
+    val types: LinkedList[PrimitiveUType] =
+      new LinkedList[PrimitiveUType](uType.decompose)
+    format(types, fsb, (it: ItemType) => it.asInstanceOf[NodeKindTest].toShortString)
+    fsb.toString
+  }
+
   private def format(list: LinkedList[PrimitiveUType],
                      fsb: FastStringBuffer,
                      show: ItemType => String): Unit = {
     if (list.size == 1) {
       fsb.append(list.get(0).toItemType.toString)
     } else {
-      fsb.cat('(')
-      fsb.append(list.removeFirst().toItemType.toString)
-      fsb.cat('|')
-      format(list, fsb, show)
+      var first = true
+      val iter = list.iterator()
+      while (iter.hasNext) {
+        val pu = iter.next()
+        fsb.cat(if (first) '(' else '|')
+        first = false
+        fsb.append(pu.toItemType.asInstanceOf[NodeKindTest].toShortString)
+      }
       fsb.cat(')')
     }
   }

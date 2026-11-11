@@ -198,7 +198,7 @@ class ValueOf(select: Expression,
         processValue(value.getStringValueCS, output, context)
       }
       null
-    } else if (getSelect.getItemType == BuiltInAtomicType.STRING && !isDisableOutputEscaping) {
+    } else if (getSelect.getItemType == BuiltInAtomicType.STRING && !isDisableOutputEscaping && !Cardinality.allowsZero(getCardinality)) {
       val toText: Outputter = new ProxyOutputter(output) {
         override def append(item: Item): Unit = {
           getNextOutputter.characters(item.getStringValueCS, Loc.NONE, options)

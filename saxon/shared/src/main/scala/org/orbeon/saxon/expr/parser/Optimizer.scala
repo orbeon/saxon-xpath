@@ -149,18 +149,17 @@ class Optimizer( var config: Configuration) {
     ExpressionTool.eagerEvaluate(expr, context)
 
   def isVariableReplaceableByDot(exp: Expression,
-                                 binding: Array[Binding]): Boolean =
-    if (exp.isInstanceOf[ContextSwitchingExpression]) {
-      val start: Expression =
-        exp.asInstanceOf[ContextSwitchingExpression].getSelectExpression
-      val step: Expression =
-        exp.asInstanceOf[ContextSwitchingExpression].getActionExpression
-      isVariableReplaceableByDot(start, binding) && !ExpressionTool
-        .dependsOnVariable(step, binding)
-    } else {
-      for (op <- exp.operands.asScala) if (!isVariableReplaceableByDot(op.getChildExpression, binding)) return false
-      true
+                                 binding: Array[Binding]): Boolean = {
+    for (o <- exp.operands.asScala) {
+      if (o.hasSameFocus) {
+        if (!isVariableReplaceableByDot(o.getChildExpression, binding))
+          return false
+      } else if (ExpressionTool.dependsOnVariable(o.getChildExpression, binding)) {
+        return false
+      }
     }
+    true
+  }
 
   def makeConditionalDocumentSorter(sorter: DocumentSorter,
                                     path: SlashExpression): Expression = sorter

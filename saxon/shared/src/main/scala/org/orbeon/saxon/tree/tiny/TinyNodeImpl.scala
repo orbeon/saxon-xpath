@@ -275,7 +275,7 @@ abstract class TinyNodeImpl extends NodeInfo {
             Navigator.filteredSingleton(parent, nodeTest)
           case AxisInfo.PRECEDING =>
             if (`type` == Type.ATTRIBUTE || `type` == Type.NAMESPACE)
-              new PrecedingIterator(tree, getParent, nodeTest, false)
+              getParent.iterateAxis(axisNumber, predicate)
             else if (tree.depth(nodeNr) == 0)
               EmptyIterator.ofNodes
             else

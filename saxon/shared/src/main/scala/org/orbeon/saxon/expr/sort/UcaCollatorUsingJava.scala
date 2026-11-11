@@ -250,10 +250,10 @@ class UcaCollatorUsingJava(private var uri: String) extends SubstringMatcher {
   private def makeStrengthObject(): Unit = {
     if (strengthLevel == null) {
       getStrength match {
-        case com.ibm.icu.text.Collator.PRIMARY => strengthLevel = new Primary()
-        case com.ibm.icu.text.Collator.SECONDARY =>
+        case Collator.PRIMARY => strengthLevel = new Primary()
+        case Collator.SECONDARY =>
           strengthLevel = new Secondary()
-        case com.ibm.icu.text.Collator.TERTIARY =>
+        case Collator.TERTIARY =>
           strengthLevel = new Tertiary()
         case _ => strengthLevel = new Identical()
 

@@ -233,10 +233,18 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       var rawName: String = nameValue.getStringValue
       rawName = Whitespace.trimWhitespace(rawName).toString
       if (rawName.startsWith("Q{") && allowNameAsQName) {
-        val qn = StructuredQName.fromEQName(rawName)
-        prefix = ""
-        localName = qn.getLocalPart
-        uri = qn.getURI
+        try {
+          val qn = StructuredQName.fromEQName(rawName)
+          prefix = ""
+          localName = qn.getLocalPart
+          uri = qn.getURI
+        } catch {
+          case e: IllegalArgumentException =>
+            throw new XPathException("Invalid EQName in computed element constructor: " + e.getMessage, "XQDY0074")
+        }
+        if (!NameChecker.isValidNCName(localName)) {
+          throw new XPathException("Local part of EQName in computed element constructor is invalid", "XQDY0074")
+        }
       } else {
         try {
           val parts: Array[String] = NameChecker.getQNameParts(rawName)

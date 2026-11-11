@@ -59,7 +59,7 @@ class StandardModuleURIResolver extends ModuleURIResolver {
             se.setIsStaticError(true)
             throw se
         }
-        if (!config.getAllowedUriTest.test(absoluteURI)) {
+        if (config != null && !config.getAllowedUriTest.test(absoluteURI)) {
           throw new XPathException(
             "URI scheme '" + absoluteURI.getScheme + "' has been disallowed")
         }

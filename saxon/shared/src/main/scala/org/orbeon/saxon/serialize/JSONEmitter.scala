@@ -135,9 +135,8 @@ class JSONEmitter(pipe: PipelineConfiguration,
     oneLinerStack ::= oneLiner
     emit(bracket)
     first = true
-    if (indenting) {
-      if (oneLiner)
-        emit(' ')
+    if (indenting && oneLiner) {
+      emit(' ')
     }
   }
 
@@ -148,7 +147,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
       if (oneLiner)
         emit(' ')
       else
-        indent(level)
+        indent(level - 1)
     }
     emit(bracket)
     first = false
@@ -157,6 +156,7 @@ class JSONEmitter(pipe: PipelineConfiguration,
   private def conditionalComma(opening: Boolean): Unit = {
 
     val wasFirst = first
+    val actuallyIndenting = indenting && level != 0 && !oneLinerStack.head
     if (first)
       first = false
     else if (!afterKey)
@@ -164,9 +164,9 @@ class JSONEmitter(pipe: PipelineConfiguration,
 
     if (wasFirst && afterKey) {
       emit(' ')
-    } else if (indenting && !afterKey && level != 0) {
+    } else if (actuallyIndenting && !afterKey) {
       emit('\n')
-      for (_ <- 0 until indentSpaces * (level + 1))
+      for (_ <- 0 until indentSpaces * level)
         emit(' ')
     }
     afterKey = false

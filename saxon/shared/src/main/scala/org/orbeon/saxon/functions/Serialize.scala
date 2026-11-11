@@ -62,10 +62,12 @@ object Serialize {
     op.addAllowedOption("version",                      SequenceType.SINGLE_STRING)
     op.addAllowedOption(sx("attribute-order"),          SequenceType.ATOMIC_SEQUENCE)
     //eqnames
+    op.addAllowedOption(sx("canonical"),                SequenceType.SINGLE_BOOLEAN)
     op.addAllowedOption(sx("character-representation"), SequenceType.SINGLE_STRING) //string
     op.addAllowedOption(sx("double-space"),             listOfQNames)
     op.addAllowedOption(sx("indent-spaces"),            SequenceType.SINGLE_INTEGER) //integer
     op.addAllowedOption(sx("line-length"),              SequenceType.SINGLE_INTEGER)
+    op.addAllowedOption(sx("newline"),                  SequenceType.SINGLE_STRING)
     //requiredTypes.put("next-in-chain", SequenceType.SINGLE_STRING); //uri
     op.addAllowedOption(sx("property-order"),           SequenceType.STRING_SEQUENCE)
     op.addAllowedOption(sx("recognize-binary"),         SequenceType.SINGLE_BOOLEAN) //boolean
@@ -150,10 +152,12 @@ object Serialize {
   requiredTypes.put("use-character-maps", SequenceType.makeSequenceType(MapType.ANY_MAP_TYPE, StaticProperty.EXACTLY_ONE))
   requiredTypes.put("version", SequenceType.SINGLE_STRING)
   requiredTypesSaxon.put("attribute-order", BuiltInAtomicType.QNAME.zeroOrMore)
+  requiredTypesSaxon.put("canonical", SequenceType.SINGLE_BOOLEAN)
   requiredTypesSaxon.put("character-representation", SequenceType.SINGLE_STRING)
   requiredTypesSaxon.put("double-space", BuiltInAtomicType.QNAME.zeroOrMore)
   requiredTypesSaxon.put("indent-spaces", SequenceType.SINGLE_INTEGER)
   requiredTypesSaxon.put("line-length", SequenceType.SINGLE_INTEGER)
+  requiredTypesSaxon.put("newline", SequenceType.SINGLE_STRING)
   requiredTypesSaxon.put("recognize-binary", SequenceType.SINGLE_BOOLEAN)
   requiredTypesSaxon.put("require-well-formed", SequenceType.SINGLE_BOOLEAN)
   requiredTypesSaxon.put("single-quotes", SequenceType.SINGLE_BOOLEAN)
@@ -177,7 +181,8 @@ class Serialize extends SystemFunction {
   }
 
   private val paramNamesSaxon = Array[String](
-    "attribute-order", "character-representation", "double-space", "indent-spaces", "line-length", /*"next-in-chain",*/
+    "attribute-order", "canonical", "character-representation", "double-space", "indent-spaces", "line-length",
+    "newline", /*"next-in-chain",*/
     "property-order", "recognize-binary", "require-well-formed", "single-quotes", "supply-source-locator",
     "suppress-indentation"
   )
@@ -434,6 +439,10 @@ class Serialize extends SystemFunction {
       seqVal = map.get(Serialize.sx("line-length"))
       seqVal
     }) != null) props.setProperty(SaxonOutputKeys.LINE_LENGTH, seqVal.head.getStringValue)
+    if (({
+      seqVal = map.get(Serialize.sx("newline"))
+      seqVal
+    }) != null) props.setProperty(SaxonOutputKeys.NEWLINE, seqVal.head.getStringValue)
     if (({
       seqVal = map.get(Serialize.sx("property-order"))
       seqVal
