@@ -23,13 +23,13 @@ object XmlCatalogResolver {
       CatalogManager.getStaticManager.debug = new Debug() {
         override def message(level: Int, message: String): Unit = {
           if (level <= getDebug) {
-            config.getStandardErrorOutput.println(message)
+            config.getLogger.info(message)
           }
         }
 
         override def message(level: Int, message: String, spec: String): Unit = {
           if (level <= getDebug) {
-            config.getStandardErrorOutput.println(message + ": " + spec)
+            config.getLogger.info(message + ": " + spec)
           }
         }
 
@@ -38,8 +38,8 @@ object XmlCatalogResolver {
                              spec1: String,
                              spec2: String): Unit = {
           if (level <= getDebug) {
-            config.getStandardErrorOutput.println(message + ": " + spec1)
-            config.getStandardErrorOutput.println("\t" + spec2)
+            config.getLogger.info(message + ": " + spec1)
+            config.getLogger.info("\t" + spec2)
           }
         }
       }

@@ -132,7 +132,7 @@ abstract class Builder extends Receiver {
       var sysId = getSystemId
       if (sysId == null)
         sysId = "(unknown systemId)"
-      configuration.getStandardErrorOutput.println("Building tree for " + sysId + " using " + getClass)
+      configuration.getLogger.info("Building tree for " + sysId + " using " + getClass)
       startTime = System.nanoTime()
     }
     isOpen = true
@@ -141,7 +141,7 @@ abstract class Builder extends Receiver {
   def close(): Unit = {
     if (timing && isOpen) {
       val endTime = System.nanoTime()
-      configuration.getStandardErrorOutput.println("Tree built in " + CommandLineOptions.showExecutionTimeNano(endTime - startTime))
+      configuration.getLogger.info("Tree built in " + CommandLineOptions.showExecutionTimeNano(endTime - startTime))
       currentRoot match {
         case impl: TinyDocumentImpl =>
           impl.showSize()

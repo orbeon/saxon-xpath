@@ -17,7 +17,7 @@ class MessageEmitter extends XMLEmitter {
       pipelineConfiguration: PipelineConfiguration): Unit = {
     super.setPipelineConfiguration(pipelineConfiguration)
     if (writer == null && outputStream == null) {
-      this.outputStream = getConfiguration.getStandardErrorOutput
+      setWriter(getConfiguration.getLogger.asWriter())
     }
     val props: Properties = new Properties()
     props.setProperty(OutputKeys.METHOD, "xml")

@@ -178,7 +178,8 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
         var props: Properties = new Properties(output_Properties)
         props.setProperty("method", "xml")
         props.setProperty("indent", "no")
-        props.setProperty("omit-xml-declaration", "yes")
+        if (props.getProperty("omit-xml-declaration") == null)
+          props.setProperty("omit-xml-declaration", "no")
         props.setProperty(SaxonOutputKeys.UNFAILING, "yes")
         var cmi: CharacterMapIndex = null
         if (characterMap != null) {

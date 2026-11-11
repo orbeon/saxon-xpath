@@ -666,7 +666,7 @@ class StandardEntityResolver(var config: Configuration)
 
     // If this is a W3C URI, Saxon ought really to have a copy...
     if (systemId.startsWith("http://www.w3.org/") && config.isTiming)
-      config.getStandardErrorOutput.println("Saxon does not have a local copy of PUBLIC " + publicId + " SYSTEM " + systemId)
+      config.getLogger.warning("Saxon does not have a local copy of PUBLIC " + publicId + " SYSTEM " + systemId)
 
     try {
       val uri = new URI(systemId)

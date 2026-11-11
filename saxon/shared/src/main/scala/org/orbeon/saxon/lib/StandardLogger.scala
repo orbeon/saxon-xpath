@@ -48,7 +48,7 @@ class StandardLogger extends Logger {
     *
     * @return a Result that serializes XML to this Logger
     */
-  def asStreamResult(): StreamResult = new StreamResult(out)
+  override def asStreamResult(): StreamResult = new StreamResult(out)
 
   def println(message: String, severity: Int): Unit =
     if (severity >= threshold)

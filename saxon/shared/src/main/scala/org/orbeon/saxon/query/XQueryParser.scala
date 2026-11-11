@@ -317,8 +317,6 @@ class XQueryParser extends XPathParser {
     if (streaming) env.getConfiguration.checkLicensedFeature(Configuration.LicenseFeature.ENTERPRISE_XQUERY, "streaming", -1)
     exec.fixupQueryModules(mainModule)
 
-    val queryExp = config.makeXQueryExpression(exp, mainModule, streaming)
-
     val userlib = exec.functionLibrary
     val lib = new FunctionLibraryList
     lib.addFunctionLibrary(mainModule.getBuiltInFunctionSet)
@@ -329,6 +327,8 @@ class XQueryParser extends XPathParser {
     config.addExtensionBinders(lib)
     lib.addFunctionLibrary(userlib)
     exec.functionLibrary = lib
+
+    val queryExp = config.makeXQueryExpression(exp, mainModule, streaming)
     queryExp
   } catch {
     case e: XPathException =>

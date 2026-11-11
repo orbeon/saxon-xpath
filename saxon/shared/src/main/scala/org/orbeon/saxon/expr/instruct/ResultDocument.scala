@@ -67,7 +67,7 @@ object ResultDocument {
           else if (result.isInstanceOf[DOMResult]) "DOM tree"
           else result.getClass.getName
       }
-      config.getStandardErrorOutput.println("Writing to " + dest)
+      config.getLogger.info("Writing to " + dest)
     }
   }
 

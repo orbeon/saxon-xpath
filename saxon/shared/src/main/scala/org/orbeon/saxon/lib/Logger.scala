@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.lib
 
+import java.io.Writer
 import javax.xml.transform.stream.StreamResult
 
 import Logger._
@@ -58,5 +59,33 @@ abstract class Logger {
 
   def close(): Unit = ()
 
-  def asStreamResult(): StreamResult
+  def asWriter(): Writer = new Writer() {
+    private val builder = new java.lang.StringBuilder()
+
+    override def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
+      var i = 0
+      while (i < len) {
+        val ch = cbuf(off + i)
+        if (ch == '\n') {
+          println(builder.toString, INFO)
+          builder.setLength(0)
+        } else {
+          builder.append(ch)
+        }
+        i += 1
+      }
+    }
+
+    override def flush(): Unit =
+      if (builder.length > 0) {
+        println(builder.toString, INFO)
+        builder.setLength(0)
+      }
+
+    override def close(): Unit =
+      flush()
+  }
+
+  def asStreamResult(): StreamResult =
+    new StreamResult(asWriter())
 }

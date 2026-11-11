@@ -400,7 +400,7 @@ class SerializerFactory {
           //          val normalizer = makeUnicodeNormalizer(pipe, props)
           //          return customizeAdaptiveSerializer(je, props, characterMapExpander, normalizer)
           case _ =>
-            if (method.startsWith("{" + NamespaceConstant.SAXON + "}")) {
+            if (method.startsWith("Q{" + NamespaceConstant.SAXON + "}")) {
               val characterMapExpander = makeCharacterMapExpander(pipe, props, charMapIndex)
               val normalizer           = makeUnicodeNormalizer(pipe, props)
               target = createSaxonSerializationMethod(method, params, pipe, characterMapExpander, normalizer, sr)

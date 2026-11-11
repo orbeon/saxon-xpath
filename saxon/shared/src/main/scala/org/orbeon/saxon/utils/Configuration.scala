@@ -764,20 +764,6 @@ class Configuration extends SourceResolver with NotationSet {
   }
 
   /**
-   * Set the standard error output to be used in all cases where no more specific destination
-   * is defined. This defaults to System.err.
-   *
-   * @param out the stream to be used for error output where no more specific destination
-   *            has been supplied. The caller is responsible for closing this stream after use
-   *            (if necessary).
-   * @since 9.3
-   */
-  def setStandardErrorOutput(out: PrintStream): Unit = {
-    if (!traceOutput.isInstanceOf[StandardLogger]) traceOutput = new StandardLogger
-    traceOutput.asInstanceOf[StandardLogger].setPrintStream(out)
-  }
-
-  /**
    * Register a new logger to be used in the Saxon event logging mechanism
    *
    * @param logger the Logger to be used as default. The caller is responsible for
@@ -787,6 +773,21 @@ class Configuration extends SourceResolver with NotationSet {
    * @since 9.6
    */
   def setLogger(logger: Logger): Unit = traceOutput = logger
+
+  /**
+   * Set the standard error output to be used in all cases where no more specific destination
+   * is defined. This defaults to System.err.
+   *
+   * @param out the stream to be used for error output where no more specific destination
+   *            has been supplied. The caller is responsible for closing this stream after use
+   *            (if necessary).
+   * @since 9.3
+   */
+  def setStandardErrorOutput(out: PrintStream): Unit =
+    traceOutput match {
+      case standardLogger: StandardLogger => standardLogger.setPrintStream(out)
+      case _ =>
+    }
 
   /**
    * Get the standard error output to be used in all cases where no more specific destination
@@ -800,7 +801,7 @@ class Configuration extends SourceResolver with NotationSet {
   def getStandardErrorOutput: PrintStream =
     traceOutput match {
       case standardLogger: StandardLogger => standardLogger.getPrintStream
-      case _ => null
+      case _ => System.err
     }
 
   /**

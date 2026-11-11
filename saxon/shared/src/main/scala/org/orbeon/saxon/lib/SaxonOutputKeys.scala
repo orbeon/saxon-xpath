@@ -32,10 +32,10 @@ import org.orbeon.saxon.value.BigDecimalValue
   */
 object SaxonOutputKeys {
 
-  val SAXON_XQUERY_METHOD         : String = "{http://saxon.sf.net/}xquery"
-  val SAXON_BASE64_BINARY_METHOD  : String = "{http://saxon.sf.net/}base64Binary"
-  val SAXON_HEX_BINARY_METHOD     : String = "{http://saxon.sf.net/}hexBinary"
-  val SAXON_XML_TO_JSON_METHOD    : String = "{http://saxon.sf.net/}xml-to-json"
+  val SAXON_XQUERY_METHOD         : String = "Q{http://saxon.sf.net/}xquery"
+  val SAXON_BASE64_BINARY_METHOD  : String = "Q{http://saxon.sf.net/}base64Binary"
+  val SAXON_HEX_BINARY_METHOD     : String = "Q{http://saxon.sf.net/}hexBinary"
+  val SAXON_XML_TO_JSON_METHOD    : String = "Q{http://saxon.sf.net/}xml-to-json"
   val ALLOW_DUPLICATE_NAMES       : String = "allow-duplicate-names"
   val BUILD_TREE                  : String = "build-tree"
   val INDENT_SPACES               : String = "{http://saxon.sf.net/}indent-spaces"
