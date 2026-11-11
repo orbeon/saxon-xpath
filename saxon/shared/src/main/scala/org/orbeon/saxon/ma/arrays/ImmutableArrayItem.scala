@@ -6,18 +6,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.ma.arrays
 
-import org.orbeon.saxon.ma.parray.ImmList
 import org.orbeon.saxon.om.GroundedValue
 import org.orbeon.saxon.z.IntSet
+
+import scala.jdk.CollectionConverters._
 
 /**
  * Implementation of ArrayItem backed by a persistent immutable array, so that operations
  * that "update" the array do not have to copy the whole array
  */
-class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArrayItem {
+class ImmutableArrayItem(val vector: Vector[GroundedValue]) extends AbstractArrayItem {
 
   def this(other: SimpleArrayItem) =
-    this(ImmList.fromList(other.getMembersList))
+    this(other.getMembersList.asScala.toVector)
 
   /**
    * Get a member of the array
@@ -26,7 +27,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @return the value at the given position.
    * @throws IndexOutOfBoundsException if the index is out of range
    */
-  def get(index: Int): GroundedValue = vector.get(index)
+  def get(index: Int): GroundedValue = vector(index)
 
   /**
    * Replace a member of the array
@@ -37,7 +38,7 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @throws IndexOutOfBoundsException if the index is out of range
    */
   def put(index: Int, newValue: GroundedValue): ArrayItem = {
-    val v2 = vector.replace(index, newValue)
+    val v2 = vector.updated(index, newValue)
     if (v2 eq vector)
       this
     else
@@ -53,7 +54,9 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @throws IndexOutOfBoundsException if position is out of range
    */
   def insert(position: Int, member: GroundedValue): ArrayItem = {
-    val v2 = vector.insert(position, member)
+    if (position < 0 || position > vector.size)
+      throw new IndexOutOfBoundsException(s"Requested $position, actual size ${vector.size}")
+    val v2 = vector.patch(position, Iterator.single(member), 0)
     new ImmutableArrayItem(v2)
   }
 
@@ -88,8 +91,11 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    *              (zero based)
    * @throws IndexOutOfBoundsException if start, or start+end, is out of range
    */
-  def subArray(start: Int, end: Int): ArrayItem =
-    new ImmutableArrayItem(vector.subList(start, end))
+  def subArray(start: Int, end: Int): ArrayItem = {
+    if (start < 0 || start > vector.size || end < start || end > vector.size)
+      throw new IndexOutOfBoundsException(s"start: $start, end: $end, size: ${vector.size}")
+    new ImmutableArrayItem(vector.slice(start, end))
+  }
 
   /**
    * Concatenate this array with another
@@ -101,13 +107,12 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
   def concat(other: ArrayItem): ArrayItem = {
     if (other.arrayLength() == 0)
       return this
-    var v1: ImmList[GroundedValue] = null
-    v1 =
+    val v1 =
       other match {
         case arrayItem: ImmutableArrayItem => arrayItem.vector
         case _                             => new ImmutableArrayItem(other.asInstanceOf[SimpleArrayItem]).vector
       }
-    val v2 = vector.appendList(v1)
+    val v2 = vector ++ v1
     new ImmutableArrayItem(v2)
   }
 
@@ -119,20 +124,14 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
    * @throws IndexOutOfBoundsException if index is out of range
    */
   def remove(index: Int): ArrayItem = {
-    //try {
-    val v2 = vector.remove(index)
+    if (index < 0 || index >= vector.size)
+      throw new IndexOutOfBoundsException(s"Requested $index, actual size ${vector.size}")
+    val v2 = vector.patch(index, Nil, 1)
     if (v2 eq vector)
       this
     else
       new ImmutableArrayItem(v2)
   }
-
-  //        } catch (IndexOutOfBoundsException e) {
-  //            throw new XPathException(e.getMessage, "FOAR0001");
-  //        }
-  //        } catch (IndexOutOfBoundsException e) {
-  //            throw new XPathException(e.getMessage, "FOAR0001");
-  //        }
 
   /**
    * Remove zero or more members from the array
@@ -153,7 +152,10 @@ class ImmutableArrayItem(val vector: ImmList[GroundedValue]) extends AbstractArr
     var v2 = vector
     var j  = p.length - 1
     while (j >= 0) {
-      v2 = v2.remove(p(j))
+      val idx = p(j)
+      if (idx < 0 || idx >= v2.size)
+        throw new IndexOutOfBoundsException(s"Requested $idx, actual size ${v2.size}")
+      v2 = v2.patch(idx, Nil, 1)
       j = j - 1
     }
     if (v2 eq vector)

@@ -240,5 +240,79 @@ class Saxon102PatchesTest extends XPathTestBase {
       check("xs:dayTimeDuration('PT0.6S') * 5 = xs:dayTimeDuration('PT3S')", "true")
       check("xs:dayTimeDuration('PT0.5S') * 10 = xs:dayTimeDuration('PT5S')", "true")
     }
+
+    describe("Scala standard library collections backing HashTrieMap, ImmutableArrayItem, LargeAttributeMap, and Sapling") {
+      checkStrings(
+        """let $m0 := map:merge(for $i in 1 to 100 return map { $i: $i * 10 }),
+          |    $m1 := map:put($m0, 50, 999),
+          |    $m2 := map:remove($m1, 25)
+          |return (map:size($m0), map:size($m1), map:size($m2), $m1(50), empty($m2(25)), $m2(100))""".stripMargin,
+        List("100", "100", "99", "999", "true", "1000")
+      )
+      checkStrings(
+        """let $a0 := [1, 2, 3, 4],
+          |    $a1 := array:put($a0, 2, 20),
+          |    $a2 := array:insert-before($a1, 3, 25),
+          |    $a3 := array:remove($a2, (1, 5)),
+          |    $a4 := array:subarray($a3, 1, 2),
+          |    $a5 := array:append($a4, 99)
+          |return (array:size($a2), array:size($a3), $a5?1, $a5?2, $a5?3)""".stripMargin,
+        List("5", "3", "20", "25", "99")
+      )
+      it("must support LargeAttributeMap and SaplingElement/SaplingDocument backed by Scala collections") {
+        import org.orbeon.saxon.event.ReceiverOption
+        import org.orbeon.saxon.expr.parser.Loc
+        import org.orbeon.saxon.model.BuiltInAtomicType
+        import org.orbeon.saxon.om.{AttributeInfo, AttributeMap, NoNamespaceName}
+        import org.orbeon.saxon.sapling.{SaplingDocument, SaplingElement}
+        import scala.jdk.CollectionConverters._
+
+        val attInfos = (1 to 40).map { i =>
+          new AttributeInfo(
+            new NoNamespaceName(s"a$i"),
+            BuiltInAtomicType.UNTYPED_ATOMIC,
+            s"v$i",
+            Loc.NONE,
+            ReceiverOption.NONE
+          )
+        }.asJava
+
+        val largeMap = AttributeMap.fromList(attInfos)
+        assert(largeMap.size == 40)
+        assert(largeMap.get("", "a1").value == "v1")
+        assert(largeMap.get("", "a40").value == "v40")
+
+        val updatedMap = largeMap.put(
+          new AttributeInfo(
+            new NoNamespaceName("a41"),
+            BuiltInAtomicType.UNTYPED_ATOMIC,
+            "v41",
+            Loc.NONE,
+            ReceiverOption.NONE
+          )
+        )
+        assert(largeMap.size == 40)
+        assert(updatedMap.size == 41)
+        assert(updatedMap.get("", "a41").value == "v41")
+
+        val removedMap = updatedMap.remove(new NoNamespaceName("a20"))
+        assert(removedMap.size == 40)
+        assert(removedMap.get("", "a20") == null)
+        assert(removedMap.asList.size == 40)
+
+        val saplingDoc =
+          new SaplingDocument()
+            .withChild(
+              new SaplingElement("root")
+                .withAttr("id", "r1")
+                .withChild(
+                  new SaplingElement("item").withText("first"),
+                  new SaplingElement("item").withText("second")
+                )
+            )
+        val docNode = saplingDoc.toNodeInfo(configuration)
+        assert(docNode.getStringValue == "firstsecond")
+      }
+    }
   }
 }

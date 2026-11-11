@@ -1,16 +1,13 @@
 package org.orbeon.saxon.ma.map
 
 import org.orbeon.saxon.expr.sort.AtomicMatchKey
-import org.orbeon.saxon.ma.trie.{ImmutableHashTrieMap, ImmutableMap, Tuple2}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{GroundedValue, Sequence, SequenceTool}
 
-//import scala.collection.compat._
 import java.util.Iterator
 
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.{AtomicValue, Cardinality, SequenceType}
-//import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 object HashTrieMap {
@@ -32,8 +29,7 @@ object HashTrieMap {
 
 class HashTrieMap extends MapItem {
 
-  private var imap: ImmutableMap[AtomicMatchKey, KeyValuePair] =
-    ImmutableHashTrieMap.empty()
+  private var imap: Map[AtomicMatchKey, KeyValuePair] = Map.empty
 
   var keyUType: UType = UType.VOID
 
@@ -41,12 +37,10 @@ class HashTrieMap extends MapItem {
   private var keyAtomicType: AtomicType = ErrorType
   private var valueItemType: ItemType = ErrorType
   private var valueCardinality: Int = 0
-  private var entries: Int = 0
 
-  def this(imap: ImmutableMap[AtomicMatchKey, KeyValuePair]) = {
+  def this(imap: Map[AtomicMatchKey, KeyValuePair]) = {
     this()
     this.imap = imap
-    entries = -1
   }
 
   private def updateTypeInformation(key: AtomicValue,
@@ -71,17 +65,9 @@ class HashTrieMap extends MapItem {
     }
   }
 
-  def size: Int = {
-    if (entries >= 0)
-      return entries
-    var count = 0
-    for (_ <- keyValuePairs.asScala)
-      count += 1
-    entries = count
-    entries
-  }
+  def size: Int = imap.size
 
-  def isEmpty: Boolean = entries == 0 || ! imap.iterator.hasNext
+  def isEmpty: Boolean = imap.isEmpty
 
   override def conforms(requiredKeyType: AtomicType,
                         requiredValueType: SequenceType,
@@ -174,7 +160,7 @@ class HashTrieMap extends MapItem {
 
   def addEntry(key: AtomicValue, value: GroundedValue): HashTrieMap = {
     val empty = isEmpty
-    val imap2 = imap.put(makeKey(key), KeyValuePair(key, value))
+    val imap2 = imap.updated(makeKey(key), KeyValuePair(key, value))
     val t2    = new HashTrieMap(imap2)
 
     t2.valueCardinality = this.valueCardinality
@@ -182,72 +168,58 @@ class HashTrieMap extends MapItem {
     t2.valueUType       = valueUType
     t2.keyAtomicType    = keyAtomicType
     t2.valueItemType    = valueItemType
-    if (entries >= 0 && imap.get(makeKey(key)) == null)
-      t2.entries = entries + 1
     t2.updateTypeInformation(key, value, empty)
     t2
   }
 
   def initialPut(key: AtomicValue, value: GroundedValue): Boolean = {
     val empty  = isEmpty
-    val exists = get(key) != null
-    imap = imap.put(makeKey(key), KeyValuePair(key, value))
+    val k      = makeKey(key)
+    val exists = imap.contains(k)
+    imap = imap.updated(k, KeyValuePair(key, value))
     updateTypeInformation(key, value, empty)
-    entries = -1
     exists
   }
 
   private def makeKey(key: AtomicValue): AtomicMatchKey = key.asMapKey()
 
   def remove(key: AtomicValue): HashTrieMap = {
-    if (imap.get(makeKey(key)) == null)
+    val k = makeKey(key)
+    if (! imap.contains(k))
       return this
-    val m2 = imap.remove(makeKey(key))
+    val m2 = imap.removed(k)
     val result = new HashTrieMap(m2)
     result.keyUType = keyUType
     result.valueUType = valueUType
     result.valueCardinality = valueCardinality
-    result.entries = entries - 1
     result
   }
 
-  def get(key: AtomicValue): GroundedValue = {
-    val o = imap.get(makeKey(key))
-    if (o == null) null else o.value
-  }
+  def get(key: AtomicValue): GroundedValue =
+    imap.get(makeKey(key)).map(_.value).orNull
 
-  def getKeyValuePair(key: AtomicValue): KeyValuePair = imap.get(makeKey(key))
+  def getKeyValuePair(key: AtomicValue): KeyValuePair =
+    imap.get(makeKey(key)).orNull
 
   def keys: AtomicIterator[_ <: AtomicValue] =
     new AtomicIterator[AtomicValue]() {
-      val base = imap.iterator
+      val base = imap.valuesIterator
 
       def next(): AtomicValue =
         if (base.hasNext)
-          base.next()._2.key
+          base.next().key
         else
           null
     }
 
   def keyValuePairs: java.lang.Iterable[KeyValuePair] =
-    () =>
-      new Iterator[KeyValuePair]() {
-        val base = imap.iterator
-
-        def hasNext: Boolean = base.hasNext
-
-        def next(): KeyValuePair = base.next()._2
-
-        override def remove(): Unit =
-          base.remove()
-      }
+    () => imap.valuesIterator.asJava
 
   def diagnosticDump(): Unit = {
     System.err.println("Map details:")
-    for (entry <- imap.asScala) {
-      val k1 = entry._1
-      val k2 = entry._2.key
-      val v  = entry._2.value
+    for ((k1, entry) <- imap) {
+      val k2 = entry.key
+      val v  = entry.value
       System.err.println(
         k1.getClass.toString + " " + k1.toString + " #:" + k1.hashCode.toString + " = (" +
           k2.getClass.toString +

@@ -268,7 +268,7 @@ class XPathTest extends AnyFunSpec {
           |    function($k, $v) { $k || ' -> ' || $v }
           |  ),
           |  ', '
-          |)""".stripMargin,                                        docElem,              false, "last-name -> Coyote, middle-name -> E., first-name -> Wile"),
+          |)""".stripMargin,                                        docElem,              false, "first-name -> Wile, middle-name -> E., last-name -> Coyote"),
       ("""count(*[last()]/preceding-sibling::*)""".stripMargin,     docElem,              false, "2"),
       ("""xs:double(item[type = 'foo']/*[local-name() = 'bar'])""", doc3.children.next(), false, "1300"),
       ("""(xs:double(8) + xs:double(9))""",                         docElem, false, "17"),

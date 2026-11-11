@@ -1,7 +1,6 @@
 package org.orbeon.saxon.sapling
 
 import org.orbeon.saxon.event._
-import org.orbeon.saxon.ma.trie.ImmutableList
 import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.om.NodeInfo
 import org.orbeon.saxon.om.TreeModel
@@ -10,15 +9,11 @@ import org.orbeon.saxon.serialize.SerializationProperties
 import javax.xml.transform.Source
 import org.orbeon.saxon.utils.Configuration
 
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
-
 class SaplingDocument extends SaplingNode with Source {
 
   private var baseUri: String = _
 
-  private var reversedChildren: ImmutableList[SaplingNode] =
-    ImmutableList.empty()
+  private var reversedChildren: List[SaplingNode] = Nil
 
   def this(baseUri: String) = {
     this()
@@ -48,7 +43,7 @@ class SaplingDocument extends SaplingNode with Source {
             "Cannot add document child to a document node")
         case Type.ELEMENT | Type.TEXT | Type.COMMENT |
              Type.PROCESSING_INSTRUCTION =>
-          e2.reversedChildren = e2.reversedChildren.prepend(node)
+          e2.reversedChildren = node :: e2.reversedChildren
 
       }
     }
@@ -61,8 +56,8 @@ class SaplingDocument extends SaplingNode with Source {
     rec.open()
     rec.setSystemId(baseUri)
     rec.startDocument(ReceiverOption.NONE)
-    val children: ImmutableList[SaplingNode] = reversedChildren.reverse()
-    for (node <- children.asScala) {
+    val children: List[SaplingNode] = reversedChildren.reverse
+    for (node <- children) {
       node.sendTo(rec)
     }
     rec.endDocument()

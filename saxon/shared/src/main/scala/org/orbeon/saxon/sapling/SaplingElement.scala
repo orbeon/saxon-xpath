@@ -1,16 +1,10 @@
 package org.orbeon.saxon.sapling
 
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 import org.orbeon.saxon.event.Builder
 import org.orbeon.saxon.event.PipelineConfiguration
 import org.orbeon.saxon.event.Receiver
 import org.orbeon.saxon.event.ReceiverOption
 import org.orbeon.saxon.expr.parser.Loc
-import org.orbeon.saxon.ma.trie.ImmutableHashTrieMap
-import org.orbeon.saxon.ma.trie.ImmutableList
-import org.orbeon.saxon.ma.trie.ImmutableMap
-import org.orbeon.saxon.ma.trie.Tuple2
 import org.orbeon.saxon.model.BuiltInAtomicType
 import org.orbeon.saxon.model.Type
 import org.orbeon.saxon.model.Untyped
@@ -24,11 +18,9 @@ class SaplingElement(name: String) extends SaplingNode {
 
   private var nodeName: StructuredQName = StructuredQName.fromEQName(name)
 
-  private var reversedChildren: ImmutableList[SaplingNode] =
-    ImmutableList.empty()
+  private var reversedChildren: List[SaplingNode] = Nil
 
-  private var attributes: ImmutableMap[StructuredQName, String] =
-    ImmutableHashTrieMap.empty()
+  private var attributes: Map[StructuredQName, String] = Map.empty
 
   private var namespaces: NamespaceMap = NamespaceMap.emptyMap
 
@@ -72,7 +64,7 @@ class SaplingElement(name: String) extends SaplingNode {
             "Cannot add document node as a child of an element node")
         case Type.ELEMENT | Type.TEXT | Type.COMMENT |
              Type.PROCESSING_INSTRUCTION =>
-          e2.reversedChildren = e2.reversedChildren.prepend(child)
+          e2.reversedChildren = child :: e2.reversedChildren
 
       }
     }
@@ -85,7 +77,7 @@ class SaplingElement(name: String) extends SaplingNode {
   private def withAttribute(name: StructuredQName,
                             value: String): SaplingElement = {
     val e2: SaplingElement = copy()
-    e2.attributes = e2.attributes.put(name, value)
+    e2.attributes = e2.attributes.updated(name, value)
     e2
   }
 
@@ -135,15 +127,15 @@ class SaplingElement(name: String) extends SaplingNode {
       ns = ns.put(nodeName.getPrefix, nodeName.getURI)
     }
     var atts: AttributeMap = EmptyAttributeMap.getInstance
-    for (attribute <- attributes.asScala) {
+    for ((attName, attValue) <- attributes) {
       atts = atts.put(
-        new AttributeInfo(new FingerprintedQName(attribute._1, namePool),
+        new AttributeInfo(new FingerprintedQName(attName, namePool),
           BuiltInAtomicType.UNTYPED_ATOMIC,
-          attribute._2,
+          attValue,
           Loc.NONE,
           ReceiverOption.NONE))
-      if (!attribute._1.getURI.isEmpty) {
-        ns = ns.put(attribute._1.getPrefix, attribute._1.getURI)
+      if (!attName.getURI.isEmpty) {
+        ns = ns.put(attName.getPrefix, attName.getURI)
       }
     }
     receiver.startElement(new FingerprintedQName(nodeName, namePool),
@@ -152,8 +144,8 @@ class SaplingElement(name: String) extends SaplingNode {
       ns,
       Loc.NONE,
       ReceiverOption.NONE)
-    val children: ImmutableList[SaplingNode] = reversedChildren.reverse()
-    for (node <- children.asScala) {
+    val children: List[SaplingNode] = reversedChildren.reverse
+    for (node <- children) {
       node.sendTo(receiver)
     }
     receiver.endElement()

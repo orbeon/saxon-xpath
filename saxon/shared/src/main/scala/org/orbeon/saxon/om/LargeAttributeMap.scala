@@ -3,7 +3,6 @@ package org.orbeon.saxon.om
 
 import java.{util => ju}
 
-import org.orbeon.saxon.ma.trie.ImmutableHashTrieMap
 import org.orbeon.saxon.om.LargeAttributeMap._
 import org.orbeon.saxon.tree.util.FastStringBuffer
 
@@ -20,7 +19,7 @@ object LargeAttributeMap {
 
 class LargeAttributeMap extends AttributeMap {
 
-  private var attributes: ImmutableHashTrieMap[NodeName, AttributeInfoLink] = _
+  private var attributes: Map[NodeName, AttributeInfoLink] = _
   private var firstNode: NodeName = _
   private var lastNode: NodeName = _
 
@@ -29,11 +28,11 @@ class LargeAttributeMap extends AttributeMap {
   def this(atts: ju.List[AttributeInfo]) = {
     this()
     assert(!atts.isEmpty)
-    this.attributes = ImmutableHashTrieMap.empty[NodeName, AttributeInfoLink]()
+    this.attributes = Map.empty[NodeName, AttributeInfoLink]
     this.size = atts.size
     var current: AttributeInfoLink = null
-    for (att:AttributeInfo <- atts.asScala) {
-      if (attributes.get(att.nodeName) != null)
+    for (att: AttributeInfo <- atts.asScala) {
+      if (attributes.contains(att.nodeName))
         throw new IllegalArgumentException("Attribute map contains duplicates")
       val link: AttributeInfoLink = new AttributeInfoLink()
       link.payload = att
@@ -44,13 +43,13 @@ class LargeAttributeMap extends AttributeMap {
         link.prior = current.payload.nodeName
       }
       current = link
-      attributes = attributes.put(att.nodeName, link)
+      attributes = attributes.updated(att.nodeName, link)
     }
     lastNode = current.payload.nodeName
   }
 
   private def this(
-      attributes: ImmutableHashTrieMap[NodeName, AttributeInfoLink],
+      attributes: Map[NodeName, AttributeInfoLink],
       size: Int,
       first: NodeName,
       last: NodeName) = {
@@ -61,10 +60,8 @@ class LargeAttributeMap extends AttributeMap {
     this.lastNode = last
   }
 
-  override def get(name: NodeName): AttributeInfo = {
-    val link: AttributeInfoLink = attributes.get(name)
-    if (link == null) null else link.payload
-  }
+  override def get(name: NodeName): AttributeInfo =
+    attributes.get(name).map(_.payload).orNull
 
   override def get(uri: String, local: String): AttributeInfo = {
     val name: NodeName = new FingerprintedQName("", uri, local)
@@ -79,57 +76,58 @@ class LargeAttributeMap extends AttributeMap {
   }
 
   override def put(att: AttributeInfo): AttributeMap = {
-    val existing = attributes.get(att.nodeName)
+    val existing = attributes.get(att.nodeName).orNull
     val link = new AttributeInfoLink
     var last2 = lastNode
+    var att2 = attributes
     link.payload = att
     if (existing == null) {
       link.prior = lastNode
       last2 = att.nodeName
-      val oldLast = attributes.get(lastNode)
+      val oldLast = attributes(lastNode)
       val penult = new AttributeInfoLink
       penult.payload = oldLast.payload
       penult.next = att.nodeName
       penult.prior = oldLast.prior
-      attributes = attributes.put(lastNode, penult)
+      att2 = att2.updated(lastNode, penult)
     } else {
       link.prior = existing.prior
       link.next = existing.next
     }
-    val att2 = attributes.put(att.nodeName, link)
+    att2 = att2.updated(att.nodeName, link)
     val size2 = if (existing == null) size + 1 else size
     new LargeAttributeMap(att2, size2, firstNode, last2)
   }
 
   override def remove(name: NodeName): AttributeMap = // Not actually used (or tested)
-    if (attributes.get(name) == null) {
-      return this
-    } else {
-      var first2 = firstNode
-      var last2 = lastNode
-      val att2 = attributes.remove(name)
-      val existing = attributes.get(name)
-      if (existing.prior != null) {
-        val priorLink = attributes.get(existing.prior)
-        val priorLink2 = new AttributeInfoLink()
-        priorLink2.payload = priorLink.payload
-        priorLink2.prior = priorLink.prior
-        priorLink2.next = existing.next
-        att2.put(existing.prior, priorLink2)
-      } else {
-        first2 = existing.next
-      }
-      if (existing.next != null) {
-        val nextLink = attributes.get(existing.next)
-        val nextLink2 = new AttributeInfoLink()
-        nextLink2.payload = nextLink.payload
-        nextLink2.next = nextLink.next
-        nextLink2.prior = existing.prior
-        att2.put(existing.next, nextLink2)
-      } else {
-        last2 = existing.prior
-      }
-      new LargeAttributeMap(att2, size - 1, first2, last2)
+    attributes.get(name) match {
+      case None =>
+        this
+      case Some(existing) =>
+        var first2 = firstNode
+        var last2 = lastNode
+        var att2 = attributes.removed(name)
+        if (existing.prior != null) {
+          val priorLink = attributes(existing.prior)
+          val priorLink2 = new AttributeInfoLink()
+          priorLink2.payload = priorLink.payload
+          priorLink2.prior = priorLink.prior
+          priorLink2.next = existing.next
+          att2 = att2.updated(existing.prior, priorLink2)
+        } else {
+          first2 = existing.next
+        }
+        if (existing.next != null) {
+          val nextLink = attributes(existing.next)
+          val nextLink2 = new AttributeInfoLink()
+          nextLink2.payload = nextLink.payload
+          nextLink2.next = nextLink.next
+          nextLink2.prior = existing.prior
+          att2 = att2.updated(existing.next, nextLink2)
+        } else {
+          last2 = existing.prior
+        }
+        new LargeAttributeMap(att2, size - 1, first2, last2)
     }
 
   override def iterator: ju.Iterator[AttributeInfo] =
@@ -140,7 +138,7 @@ class LargeAttributeMap extends AttributeMap {
       def hasNext: Boolean = current != null
 
       def next(): AttributeInfo = {
-        val link = attributes.get(current)
+        val link = attributes(current)
         current = link.next
         link.payload
       }
