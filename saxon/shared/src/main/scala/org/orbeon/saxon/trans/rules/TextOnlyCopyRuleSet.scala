@@ -60,7 +60,7 @@ class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
         c2.setOrigin(this)
         c2.trackFocus(node.iterateAxis(AxisInfo.CHILD))
         c2.setCurrentComponent(c2.getCurrentMode) // Bug 3508
-        var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, output, c2, locationId)
+        var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, null, output, c2, locationId)
         while ( {
           tc != null
         }) tc = tc.processLeavingTail()
@@ -82,7 +82,7 @@ class TextOnlyCopyRuleSet private() extends BuiltInRuleSet {
     c2.setOrigin(this)
     c2.trackFocus(members)
     c2.setCurrentComponent(c2.getCurrentMode)
-    var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, output, c2, locationId)
+    var tc = c2.getCurrentMode.getActor.applyTemplates(parameters, tunnelParams, null, output, c2, locationId)
     while ( {
       tc != null
     }) tc = tc.processLeavingTail()

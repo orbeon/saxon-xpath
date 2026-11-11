@@ -93,7 +93,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   override def getFingerprint: Int = -1
 
-  override def toString: String = ".[" + getPredicate + "]"
+  override def reconstruct: String = ".[" + getPredicate + "]"
 
   override def equals(other: Any): Boolean =
     (other.isInstanceOf[BooleanExpressionPattern]) &&
@@ -108,6 +108,7 @@ class BooleanExpressionPattern(expression: Expression)
     val n: BooleanExpressionPattern = new BooleanExpressionPattern(
       getPredicate.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

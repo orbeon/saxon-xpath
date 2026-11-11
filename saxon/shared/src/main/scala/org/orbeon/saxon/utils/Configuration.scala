@@ -375,6 +375,7 @@ class Configuration extends SourceResolver with NotationSet {
   @transient private val dynamicLoader: DynamicLoader = new DynamicLoader
   private val enabledProperties: IntSet = new IntHashSet(64)
   private var externalObjectModels: ju.List[ExternalObjectModel] = new ju.ArrayList[ExternalObjectModel](4)
+  protected var staticContextForSystemFunctions: IndependentContext = _
   private val globalDocumentPool: DocumentPool = new DocumentPool()
   private val integratedFunctionLibrary: IntegratedFunctionLibrary = new IntegratedFunctionLibrary()
   @transient private var localizerFactory: LocalizerFactory = _
@@ -1222,11 +1223,22 @@ class Configuration extends SourceResolver with NotationSet {
    * @param arity the arity of the required function
    * @return the requested function, or null if there is no such function. Note that some functions
    *         (those with particular context dependencies) may be unsuitable for dynamic calling.
-   * @throws XPathException if dynamic function calls are not permitted by this Saxon Configuration
    */
-  @throws[XPathException]
-  def getSystemFunction(name: StructuredQName, arity: Int) =
-    throw new XPathException("Dynamic functions require Saxon-PE or higher")
+  def getSystemFunction(name: StructuredQName, arity: Int): om.Function =
+    try {
+      if (staticContextForSystemFunctions == null)
+        staticContextForSystemFunctions = new IndependentContext(this)
+      val lib = new FunctionLibraryList
+      lib.addFunctionLibrary(XPath31FunctionSet.getInstance)
+      lib.addFunctionLibrary(getBuiltInExtensionLibraryList)
+      lib.addFunctionLibrary(new ConstructorFunctionLibrary(this))
+      lib.addFunctionLibrary(getIntegratedFunctionLibrary)
+      val symbolicName = new SymbolicName.F(name, arity)
+      lib.getFunctionItem(symbolicName, staticContextForSystemFunctions)
+    } catch {
+      case _: XPathException =>
+        null
+    }
 
   /**
    * Make a UserFunction object.

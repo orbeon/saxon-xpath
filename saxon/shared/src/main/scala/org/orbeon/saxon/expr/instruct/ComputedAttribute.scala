@@ -229,24 +229,31 @@ final class ComputedAttribute(val attributeName: Expression, val namespace: Expr
     var localName: String = null
     var uri: String = null
     if (nameValue.isInstanceOf[StringValue]) { // this will always be the case in XSLT
-      var rawName = nameValue.getStringValueCS
-      rawName = Whitespace.trimWhitespace(rawName) // required in XSLT; possibly wrong in XQuery
-      try {
-        val parts = NameChecker.getQNameParts(rawName)
-        prefix = parts(0)
-        localName = parts(1)
-      } catch {
-        case err: QNameException =>
-          val errorCode = if (isXSLT) "XTDE0850"
-          else "XQDY0074"
-          val err1 = new XPathException("Invalid attribute name: " + rawName, errorCode, this.getLocation)
-          throw dynamicError(getLocation.toString, err1.toString, context)
-      }
-      if (rawName.toString == "xmlns") if (getNamespaceExp == null) {
-        val errorCode = if (isXSLT) "XTDE0855"
-        else "XQDY0044"
-        val err = new XPathException("Invalid attribute name: " + rawName, errorCode, this.getLocation)
-        throw dynamicError(getLocation.toString, err.toString, context)
+      var rawName = nameValue.getStringValue
+      rawName = Whitespace.trimWhitespace(rawName).toString // required in XSLT; possibly wrong in XQuery
+      if (rawName.startsWith("Q{") && allowNameAsQName) { // not allowed in XSLT; a little unclear in XQuery
+        val qn = StructuredQName.fromEQName(rawName)
+        prefix = ""
+        localName = qn.getLocalPart
+        uri = qn.getURI
+      } else {
+        try {
+          val parts = NameChecker.getQNameParts(rawName)
+          prefix = parts(0)
+          localName = parts(1)
+        } catch {
+          case err: QNameException =>
+            val errorCode = if (isXSLT) "XTDE0850"
+            else "XQDY0074"
+            val err1 = new XPathException("Invalid attribute name: " + rawName, errorCode, this.getLocation)
+            throw dynamicError(getLocation.toString, err1.toString, context)
+        }
+        if (rawName.toString == "xmlns") if (getNamespaceExp == null) {
+          val errorCode = if (isXSLT) "XTDE0855"
+          else "XQDY0044"
+          val err = new XPathException("Invalid attribute name: " + rawName, errorCode, this.getLocation)
+          throw dynamicError(getLocation.toString, err.toString, context)
+        }
       }
       if (prefix == "xmlns") if (getNamespaceExp == null) {
         val errorCode = if (isXSLT) "XTDE0860"

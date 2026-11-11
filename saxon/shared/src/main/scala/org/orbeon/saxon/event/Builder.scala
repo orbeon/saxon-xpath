@@ -129,7 +129,10 @@ abstract class Builder extends Receiver {
 
   def open(): Unit = {
     if (timing && ! isOpen) {
-      configuration.getStandardErrorOutput.println("Building tree for " + getSystemId + " using " + getClass)
+      var sysId = getSystemId
+      if (sysId == null)
+        sysId = "(unknown systemId)"
+      configuration.getStandardErrorOutput.println("Building tree for " + sysId + " using " + getClass)
       startTime = System.nanoTime()
     }
     isOpen = true

@@ -11,9 +11,10 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, Expr
 import org.orbeon.saxon.expr.sort.DocumentSorter
 import org.orbeon.saxon.model.{Affinity, ErrorType}
 import org.orbeon.saxon.om.SequenceIterator
-import org.orbeon.saxon.pattern.AnyNodeTest
+import org.orbeon.saxon.pattern.{AnyNodeTest, Pattern}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.HomogeneityCheckerIterator
+import org.orbeon.saxon.utils.Configuration
 
 /**
  * This class is an expression that does a run-time check of the result of a "/" expression
@@ -66,6 +67,17 @@ class HomogeneityChecker(val base: Expression)
     }
     this
   }
+
+  /**
+   * Convert this expression to an equivalent XSLT pattern
+   *
+   * @param config the Saxon configuration
+   * @return the equivalent pattern
+   * @throws org.orbeon.saxon.trans.XPathException if conversion is not possible
+   */
+  @throws[XPathException]
+  override def toPattern(config: Configuration): Pattern =
+    getBaseExpression.toPattern(config)
 
   @throws[XPathException]
   override def optimize(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {

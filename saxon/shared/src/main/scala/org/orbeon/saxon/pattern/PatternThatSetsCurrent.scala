@@ -86,7 +86,7 @@ class PatternThatSetsCurrent(var wrappedPattern: Pattern,
 
   override def getFingerprint: Int = wrappedPattern.getFingerprint
 
-  override def toString: String = wrappedPattern.toString
+  override def reconstruct: String = wrappedPattern.toString
 
   override def getHostLanguage: HostLanguage = wrappedPattern.getHostLanguage
 
@@ -113,6 +113,7 @@ class PatternThatSetsCurrent(var wrappedPattern: Pattern,
     val n: PatternThatSetsCurrent =
       new PatternThatSetsCurrent(wrappedPattern.copy(rebindings), newCurrent)
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(this.toString)
     n
   }
 

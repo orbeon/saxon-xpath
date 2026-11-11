@@ -456,19 +456,24 @@ class Controller extends ContextOriginator {
     var conItem = contextItem
     if (!alreadyStripped) { // Bug 2929 - don't do space-stripping twice
       if (globalContextItem.isInstanceOf[SpaceStrippedNode] && (globalContextItem.asInstanceOf[SpaceStrippedNode].getUnderlyingNode eq conItem)) return
-      if (conItem.isInstanceOf[NodeInfo]) { // In XSLT, apply strip-space and strip-type-annotations options
-        conItem = prepareInputTree(conItem.asInstanceOf[NodeInfo])
+      conItem match {
+        case node: NodeInfo => // In XSLT, apply strip-space and strip-type-annotations options
+          conItem = prepareInputTree(node)
+          if (node.getNodeKind == Type.DOCUMENT && node.getSystemId != null)
+            getDocumentPool.add(node.getTreeInfo, node.getSystemId)
+        case _ =>
       }
     }
-    if (globalContextItem.isInstanceOf[NodeInfo]) {
-      val startNode = globalContextItem.asInstanceOf[NodeInfo]
-      if (startNode.getConfiguration == null) { // must be a non-standard document implementation
-        throw new XPathException("The supplied source document must be associated with a Configuration")
-      }
-      if (!startNode.getConfiguration.isCompatible(executable.getConfiguration))
-        throw new XPathException("Source document and stylesheet must use the same or compatible Configurations", SaxonErrorCode.SXXP0004)
-      if (startNode.getTreeInfo.isTyped && !executable.isSchemaAware)
-        throw new XPathException("Cannot use a schema-validated source document unless the stylesheet is schema-aware")
+    conItem match {
+      case startNode: NodeInfo =>
+        if (startNode.getConfiguration == null) { // must be a non-standard document implementation
+          throw new XPathException("The supplied source document must be associated with a Configuration")
+        }
+        if (!startNode.getConfiguration.isCompatible(executable.getConfiguration))
+          throw new XPathException("Source document and stylesheet must use the same or compatible Configurations", SaxonErrorCode.SXXP0004)
+        if (startNode.getTreeInfo.isTyped && !executable.isSchemaAware)
+          throw new XPathException("Cannot use a schema-validated source document unless the stylesheet is schema-aware")
+      case _ =>
     }
     this.globalContextItem = conItem
     this.globalContextItemPreset = true

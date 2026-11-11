@@ -18,11 +18,15 @@ import org.orbeon.saxon.model.ItemType
 
 import org.orbeon.saxon.model.SchemaType
 
+import org.orbeon.saxon.model.Type
+
 import org.orbeon.saxon.model.UType
 
 import org.orbeon.saxon.om.FocusIterator
 
 import org.orbeon.saxon.om.Item
+
+import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.om.SequenceIterator
 
@@ -31,6 +35,10 @@ import org.orbeon.saxon.om.StandardNames
 import org.orbeon.saxon.trace.ExpressionPresenter
 
 import org.orbeon.saxon.trans.XPathException
+
+import org.orbeon.saxon.tree.iter.PrependSequenceIterator
+
+import org.orbeon.saxon.tree.util.Orphan
 
 import org.orbeon.saxon.value.Cardinality
 
@@ -53,6 +61,8 @@ class ForEach(select: Expression,
   var actionOp: Operand =
     new Operand(this, action, OperandRole.FOCUS_CONTROLLED_ACTION)
 
+  var separatorOp: Operand = _
+
   var threadsOp: Operand = _
 
   var isInstr: Boolean = _
@@ -63,6 +73,13 @@ class ForEach(select: Expression,
 
   def this(select: Expression, action: Expression) =
     this(select, action, false, null)
+
+  def setSeparatorExpression(separator: Expression): Unit = {
+    separatorOp = new Operand(this, separator, OperandRole.SINGLE_ATOMIC)
+  }
+
+  def getSeparatorExpression: Expression =
+    if (separatorOp == null) null else separatorOp.getChildExpression
 
   def setInstruction(inst: Boolean): Unit = {
     isInstr = inst
@@ -96,11 +113,7 @@ class ForEach(select: Expression,
   }
 
   override def operands: java.lang.Iterable[Operand] =
-    if (threadsOp == null) {
-      operandList(selectOp, actionOp)
-    } else {
-      operandList(selectOp, actionOp, threadsOp)
-    }
+    operandSparseList(selectOp, actionOp, separatorOp, threadsOp)
 
   override def getInstructionNameCode: Int = StandardNames.XSL_FOR_EACH
 
@@ -195,6 +208,8 @@ class ForEach(select: Expression,
       getAction.copy(rebindings),
       containTailCall,
       getThreads)
+    if (separatorOp != null)
+      f2.setSeparatorExpression(getSeparatorExpression.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, f2)
     f2.setInstruction(isInstruction)
     f2
@@ -264,17 +279,32 @@ class ForEach(select: Expression,
     } else {
       val pipe: PipelineConfiguration = output.getPipelineConfiguration
       pipe.xPathContext = c2
-      if (controller.isTracing) {
+      var separator: NodeInfo = null
+      if (separatorOp != null)
+        separator = makeSeparator(context)
+      if (controller.isTracing || separator != null) {
         val listener: TraceListener = controller.getTraceListener
-        assert(listener != null)
         var item: Item = null
+        var first: Boolean = true
         while (({
           item = iter.next()
           item
         }) != null) {
-          listener.startCurrentItem(item)
+          if (controller.isTracing) {
+            assert(listener != null)
+            listener.startCurrentItem(item)
+          }
+          if (separator != null) {
+            if (first) {
+              first = false
+            } else {
+              output.append(separator)
+            }
+          }
           action.process(output, c2)
-          listener.endCurrentItem(item)
+          if (controller.isTracing) {
+            listener.endCurrentItem(item)
+          }
         }
       } else {
         iter.forEachOrFail((item) => action.process(output, c2))
@@ -284,10 +314,28 @@ class ForEach(select: Expression,
     null
   }
 
+  protected def makeSeparator(context: XPathContext): NodeInfo = {
+    val sepValue = separatorOp.getChildExpression.evaluateAsString(context)
+    val orphan = new Orphan(context.getConfiguration)
+    orphan.setNodeKind(Type.TEXT)
+    orphan.setStringValue(sepValue)
+    orphan
+  }
+
   override def iterate(context: XPathContext): SequenceIterator = {
     val c2: XPathContextMinor = context.newMinorContext()
     c2.trackFocus(getSelect.iterate(context))
-    new ContextMappingIterator(this, c2)
+    if (separatorOp == null) {
+      new ContextMappingIterator(this, c2)
+    } else {
+      val separator = makeSeparator(context)
+      val mapper: ContextMappingFunction = cxt =>
+        if (cxt.getCurrentIterator.position == 1)
+          ForEach.this.map(cxt)
+        else
+          new PrependSequenceIterator(separator, ForEach.this.map(cxt))
+      new ContextMappingIterator(mapper, c2)
+    }
   }
 
   def map(context: XPathContext): SequenceIterator = getAction.iterate(context)
@@ -309,6 +357,10 @@ class ForEach(select: Expression,
     out.startElement("forEach", this)
     getSelect.`export`(out)
     getAction.`export`(out)
+    if (separatorOp != null) {
+      out.setChildRole("separator")
+      separatorOp.getChildExpression.`export`(out)
+    }
     explainThreads(out)
     out.endElement()
   }

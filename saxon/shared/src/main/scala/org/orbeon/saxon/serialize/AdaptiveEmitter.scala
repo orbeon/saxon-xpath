@@ -176,12 +176,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
       case _ =>
         var sw: StringWriter = new StringWriter()
         var props: Properties = new Properties(output_Properties)
-        var nodeMethod: String =
-          output_Properties.getProperty(SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD)
-        if (nodeMethod == null) {
-          nodeMethod = "xml"
-        }
-        props.setProperty("method", nodeMethod)
+        props.setProperty("method", "xml")
         props.setProperty("indent", "no")
         props.setProperty("omit-xml-declaration", "yes")
         props.setProperty(SaxonOutputKeys.UNFAILING, "yes")

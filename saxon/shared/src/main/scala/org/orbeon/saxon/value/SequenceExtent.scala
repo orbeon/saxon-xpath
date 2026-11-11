@@ -29,7 +29,7 @@ object SequenceExtent {
     else if (len == 1)
       input.get(0)
     else
-      new SequenceExtent(new ju.ArrayList(input))
+      new SequenceExtent(input)
   }
 }
 

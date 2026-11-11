@@ -188,7 +188,7 @@ class ForExpression extends Assignation {
         if (list.isEmpty) {
           val oldThen = getAction.asInstanceOf[Choose].getAction(0)
           this.setAction(oldThen)
-          return Choose.makeConditional(condition, this)
+          return Choose.makeConditional(promotedCondition, this)
         } else {
           var retainedCondition = list.get(0)
           for (i <- 1 until list.size)

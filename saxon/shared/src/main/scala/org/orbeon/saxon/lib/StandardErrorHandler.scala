@@ -68,7 +68,7 @@ class StandardErrorHandler(reporter: ErrorReporter)
     val loc: Loc = new Loc(e.getSystemId, e.getLineNumber, e.getColumnNumber)
     if (errorReporter != null) {
       val err: XmlProcessingIncident = new XmlProcessingIncident(
-        "Error reported by XML parser",
+        "Error reported by XML parser: " + e.getMessage,
         SaxonErrorCode.SXXP0003,
         loc)
       err.cause = e

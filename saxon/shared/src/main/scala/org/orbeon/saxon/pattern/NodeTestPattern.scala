@@ -19,8 +19,7 @@ class NodeTestPattern(var nodeTest: NodeTest) extends Pattern {
   override def getItemType: NodeTest = nodeTest
   def getUType: UType = nodeTest.getUType
   override def getFingerprint: Int = nodeTest.getFingerprint
-  override def toString: String = nodeTest.toString
-  override def toShortString: String = nodeTest.toShortString
+  override def reconstruct: String = nodeTest.toString
   override def equals(other: Any): Boolean =
     other.isInstanceOf[NodeTestPattern] &&
       other.asInstanceOf[NodeTestPattern].nodeTest == nodeTest
@@ -58,6 +57,7 @@ class NodeTestPattern(var nodeTest: NodeTest) extends Pattern {
     val n: NodeTestPattern = new NodeTestPattern(nodeTest.copy())
     n.setPriority(getDefaultPriority)
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 }

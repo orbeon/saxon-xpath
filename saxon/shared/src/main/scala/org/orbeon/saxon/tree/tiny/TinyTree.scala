@@ -109,7 +109,6 @@ class TinyTree(config: Configuration, statistics: Statistics)
   private var systemIdMap: SystemIdMap = null
   var usesNamespaces: Boolean = false
   var prefixPool: PrefixPool = new PrefixPool()
-  private var root: TinyDocumentImpl = _
   private var idTable: HashMap[String, NodeInfo] = _
   var entityTable: HashMap[String, Array[String]] = _
 

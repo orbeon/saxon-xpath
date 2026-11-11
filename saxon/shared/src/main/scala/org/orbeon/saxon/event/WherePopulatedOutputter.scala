@@ -96,7 +96,7 @@ class WherePopulatedOutputter(next: Outputter) extends ProxyOutputter(next) {
           value.toString,
           location,
           properties))
-    } else if (value.length > 0) {
+    } else if (!(level == 0 && value.length == 0)) {
       super.attribute(attName, typeCode, value, location, properties)
     }
   }

@@ -238,8 +238,16 @@ class MapType(var keyType: AtomicType,
       }
       Affinity.OVERLAPS
     } else {
+      // see Bug #4692
+      var st: SequenceType = getResultType
+      if (!Cardinality.allowsZero(st.getCardinality)) {
+        st = SequenceType.makeSequenceType(
+          st.getPrimaryType,
+          Cardinality.union(st.getCardinality, StaticProperty.ALLOWS_ZERO)
+        )
+      }
       val rel: Affinity =
-        new SpecificFunctionType(getArgumentTypes, getResultType)
+        new SpecificFunctionType(Array(SequenceType.ATOMIC_SEQUENCE), st)
           .relationship(other, th)
       if (rel == Affinity.SUBSUMES || rel == Affinity.SAME_TYPE)
         Affinity.OVERLAPS

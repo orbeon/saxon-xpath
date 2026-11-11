@@ -5,6 +5,8 @@ import org.orbeon.saxon.trans.SaxonErrorCode
 
 import org.orbeon.saxon.trans.XPathException
 
+import org.orbeon.saxon.utils.Version
+
 import org.xml.sax.Attributes
 
 import org.xml.sax.InputSource
@@ -13,13 +15,7 @@ import org.xml.sax.SAXException
 
 import org.xml.sax.XMLReader
 
-import org.xml.sax.helpers.XMLFilterImpl
-
-import javax.xml.parsers.ParserConfigurationException
-
-import javax.xml.parsers.SAXParser
-
-import javax.xml.parsers.SAXParserFactory
+import org.xml.sax.helpers.DefaultHandler
 
 import java.io.IOException
 
@@ -33,29 +29,30 @@ object ProcInstParser {
 
   /*@Nullable*/
 
-  def getPseudoAttribute(content: String, name: String): String = {
-    val result: List[String] = new ArrayList[String]()
-    val filter: XMLFilterImpl = new XMLFilterImpl() {
-      override def startElement(uri: String,
-                                localName: String,
-                                qName: String,
-                                atts: Attributes): Unit = {
-        var `val`: String = atts.getValue(name)
-        if (`val` != null) {
-          result.add(`val`)
+  def getPseudoAttribute(content: String, name: String): String =
+    try {
+      val result: List[String] = new ArrayList[String]()
+      val filter: DefaultHandler = new DefaultHandler() {
+        override def startElement(uri: String,
+                                  localName: String,
+                                  qName: String,
+                                  atts: Attributes): Unit = {
+          val `val`: String = atts.getValue(name)
+          if (`val` != null) {
+            result.add(`val`)
+          }
         }
       }
+      val reader: XMLReader = Version.platform.loadParserForXmlFragments()
+      reader.setContentHandler(filter)
+      reader.setErrorHandler(filter)
+      val in: StringReader = new StringReader("<e " + content + "/>")
+      reader.parse(new InputSource(in))
+      if (result.isEmpty) null else result.get(0)
+    } catch {
+      case e @ (_: SAXException | _: IOException) =>
+        throw new XPathException("Invalid syntax for pseudo-attributes: " + e.getMessage, SaxonErrorCode.SXCH0005)
     }
-    val factory: SAXParserFactory = SAXParserFactory.newInstance()
-// allows attribute names containing colons or unbound prefixes
-    factory.setNamespaceAware(false)
-    val parser: SAXParser = factory.newSAXParser()
-    val reader: XMLReader = parser.getXMLReader
-    reader.setContentHandler(filter)
-    val in: StringReader = new StringReader("<e " + content + "/>")
-    reader.parse(new InputSource(in))
-    if (result.isEmpty) null else result.get(0)
-  }
 
 }
 

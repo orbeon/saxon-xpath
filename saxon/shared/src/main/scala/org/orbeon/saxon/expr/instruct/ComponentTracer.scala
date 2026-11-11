@@ -48,6 +48,9 @@ class ComponentTracer(private var component: TraceableComponent)
 
   def copy(rebindings: RebindingMap): Expression = {
     val t: ComponentTracer = new ComponentTracer(component)
+    val newBody: Expression = getBody.copy(rebindings)
+    t.baseOp = new Operand(t, newBody, OperandRole.SAME_FOCUS_ACTION)
+    t.adoptChildExpression(newBody)
     t.setLocation(getLocation)
     t
   }

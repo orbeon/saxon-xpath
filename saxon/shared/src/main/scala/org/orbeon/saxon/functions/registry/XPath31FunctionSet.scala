@@ -180,7 +180,7 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
       () => new ParseXml,
       NodeKindTest.DOCUMENT,
       OPT,
-      LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
+      LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("random-number-generator",
       0,
       () => new RandomNumberGenerator,
@@ -198,7 +198,7 @@ class XPath31FunctionSet private () extends BuiltInFunctionSet {
       () => new ParseXmlFragment,
       NodeKindTest.DOCUMENT,
       OPT,
-      LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
+      LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("serialize",
       2,
       () => new Serialize,

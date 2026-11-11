@@ -230,24 +230,31 @@ override  def checkPermittedContents(parentType: SchemaType, whole: Boolean): Un
       throw dynamicError(getLocation.toString, err1.toString, context)
     }
     if (nameValue.isInstanceOf[StringValue]) {
-      var rawName: CharSequence = nameValue.getStringValueCS
-      rawName = Whitespace.trimWhitespace(rawName)
-      try {
-        val parts: Array[String] = NameChecker.getQNameParts(rawName)
-        prefix = parts(0)
-        localName = parts(1)
-      } catch {
-        case err: QNameException => {
-          var message: String = "Invalid element name. " + err.getMessage
-          if (rawName.length == 0) {
-            message = "Supplied element name is a zero-length string"
+      var rawName: String = nameValue.getStringValue
+      rawName = Whitespace.trimWhitespace(rawName).toString
+      if (rawName.startsWith("Q{") && allowNameAsQName) {
+        val qn = StructuredQName.fromEQName(rawName)
+        prefix = ""
+        localName = qn.getLocalPart
+        uri = qn.getURI
+      } else {
+        try {
+          val parts: Array[String] = NameChecker.getQNameParts(rawName)
+          prefix = parts(0)
+          localName = parts(1)
+        } catch {
+          case err: QNameException => {
+            var message: String = "Invalid element name. " + err.getMessage
+            if (rawName.length == 0) {
+              message = "Supplied element name is a zero-length string"
+            }
+            val errorCode: String = if (isXSLT) "XTDE0820" else "XQDY0074"
+            val err1: XPathException =
+              new XPathException(message, errorCode, getLocation)
+            throw dynamicError(getLocation.toString, err1.toString, context)
           }
-          val errorCode: String = if (isXSLT) "XTDE0820" else "XQDY0074"
-          val err1: XPathException =
-            new XPathException(message, errorCode, getLocation)
-          throw dynamicError(getLocation.toString, err1.toString, context)
-        }
 
+        }
       }
     } else if (nameValue.isInstanceOf[QNameValue] && allowNameAsQName) {
       localName = nameValue.asInstanceOf[QNameValue].getLocalName

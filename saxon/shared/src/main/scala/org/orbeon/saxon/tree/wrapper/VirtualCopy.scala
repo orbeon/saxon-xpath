@@ -282,7 +282,10 @@ class VirtualCopy(var original: NodeInfo,
   }
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
-    original.copy(out, copyOptions, locationId)
+    var options = copyOptions
+    if (dropNamespaces)
+      options &= ~CopyOptions.ALL_NAMESPACES
+    original.copy(out, options, locationId)
   }
 
   def getDeclaredNamespaces(

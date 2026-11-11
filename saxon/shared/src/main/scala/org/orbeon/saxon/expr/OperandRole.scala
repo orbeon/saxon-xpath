@@ -1,9 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr
 
+import java.util.function.Predicate
+import org.orbeon.saxon.expr.flwor.TupleExpression
 import org.orbeon.saxon.model.FunctionItemType
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.model.PlainType
+import org.orbeon.saxon.pattern.Pattern
 import org.orbeon.saxon.value.SequenceType
 import OperandRole._
 import org.orbeon.saxon.expr.OperandUsage.OperandUsage
@@ -57,7 +60,8 @@ object OperandRole {
   val REPEAT_NAVIGATE_CONSTRAINED: OperandRole = new OperandRole(
     OperandRole.HIGHER_ORDER | OperandRole.CONSTRAINED_CLASS,
     OperandUsage.NAVIGATION,
-    SequenceType.ANY_SEQUENCE)
+    SequenceType.ANY_SEQUENCE,
+    expr => expr.isInstanceOf[TupleExpression])
 
   val SINGLE_ATOMIC: OperandRole =
     new OperandRole(0, OperandUsage.ABSORPTION, SequenceType.SINGLE_ATOMIC)
@@ -74,7 +78,8 @@ object OperandRole {
     OperandRole.USES_NEW_FOCUS | OperandRole.HIGHER_ORDER |
       OperandRole.CONSTRAINED_CLASS,
     OperandUsage.ABSORPTION,
-    SequenceType.ATOMIC_SEQUENCE)
+    SequenceType.ATOMIC_SEQUENCE,
+    expr => expr.isInstanceOf[Pattern])
 
   def getTypeDeterminedUsage(`type`: ItemType): OperandUsage =
     if (`type`.isInstanceOf[FunctionItemType]) {
@@ -95,10 +100,17 @@ object OperandRole {
 class OperandRole(var properties: Int, var usage: OperandUsage) {
 
   var requiredType: SequenceType = SequenceType.ANY_SEQUENCE
+  private var constraint: Predicate[Expression] = _
 
   def this(properties: Int, usage: OperandUsage, requiredType: SequenceType) = {
     this(properties,usage)
     this.requiredType = requiredType
+  }
+
+  def this(properties: Int, usage: OperandUsage, requiredType: SequenceType, constraint: Predicate[Expression]) = {
+    this(properties, usage)
+    this.requiredType = requiredType
+    this.constraint = constraint
   }
 
   def setsNewFocus(): Boolean = (properties & SETS_NEW_FOCUS) != 0
@@ -115,6 +127,11 @@ class OperandRole(var properties: Int, var usage: OperandUsage) {
     ((properties & HIGHER_ORDER) != 0) && ((properties & SINGLETON) == 0)
 
   def isConstrainedClass: Boolean = (properties & CONSTRAINED_CLASS) != 0
+
+  def setConstraint(constraint: Predicate[Expression]): Unit =
+    this.constraint = constraint
+
+  def getConstraint: Predicate[Expression] = constraint
 
   def isInChoiceGroup: Boolean = (properties & IN_CHOICE_GROUP) != 0
 

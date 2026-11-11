@@ -151,10 +151,11 @@ class GeneralPositionalPattern(base: NodeTest, var positionExpr: Expression) ext
       positionExpr.copy(rebindings)
     )
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 
-  override def toString: String = nodeTest.toString + "[" + positionExpr.toString + "]"
+  override def reconstruct: String = nodeTest.toString + "[" + positionExpr.toString + "]"
 
   def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.genPos")

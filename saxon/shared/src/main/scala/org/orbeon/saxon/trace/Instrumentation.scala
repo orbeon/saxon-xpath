@@ -7,19 +7,19 @@ import scala.jdk.CollectionConverters._
 
 object Instrumentation {
 
-  val ACTIVE: Boolean = true
+  val ACTIVE: Boolean = false
 
-  var counters: HashMap[String, Integer] = new HashMap()
+  var counters: HashMap[String, java.lang.Long] = new HashMap()
 
   def count(counter: String): Unit = {
     if (counters.containsKey(counter)) {
-      counters.put(counter, counters.get(counter) + 1)
+      counters.put(counter, counters.get(counter) + 1L)
     } else {
-      counters.put(counter, 1)
+      counters.put(counter, 1L)
     }
   }
 
-  def count(counter: String, increment: Int): Unit = {
+  def count(counter: String, increment: Long): Unit = {
     if (counters.containsKey(counter)) {
       counters.put(counter, counters.get(counter) + increment)
     } else {

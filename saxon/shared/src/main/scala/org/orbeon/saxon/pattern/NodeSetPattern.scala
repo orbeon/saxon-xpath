@@ -142,6 +142,7 @@ class NodeSetPattern(exp: Expression)
   def copy(rebindings: RebindingMap): Pattern = {
     val n = new NodeSetPattern(getSelectionExpression.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

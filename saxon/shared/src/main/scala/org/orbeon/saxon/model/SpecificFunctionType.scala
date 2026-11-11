@@ -12,7 +12,7 @@ import org.orbeon.saxon.query.AnnotationList
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
-import org.orbeon.saxon.value.SequenceType
+import org.orbeon.saxon.value.{Cardinality, SequenceType}
 
 //import scala.collection.compat._
 import scala.jdk.CollectionConverters._
@@ -179,7 +179,8 @@ class SpecificFunctionType extends AnyFunctionType {
       case mapItem: MapItem =>
         if (getArity == 1 &&
           argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
-          argTypes(0).getPrimaryType.isPlainType) {
+          argTypes(0).getPrimaryType.isPlainType &&
+          Cardinality.allowsZero(resultType.getCardinality)) {
           for (pair <- mapItem.keyValuePairs.asScala) {
             try if (!resultType.matches(pair.value, th)) {
               return false

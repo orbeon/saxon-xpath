@@ -88,7 +88,7 @@ class NamespaceDifferencer(next: Receiver, details: Properties)
           delta = delta.put(nb.prefix, "")
       } else {
         // undeclare the default namespace if the child element is in the default namespace
-        if (elementInDefaultNamespace && !parentMap.getDefaultNamespace.isEmpty && thisMap.getDefaultNamespace.isEmpty)
+        if (!parentMap.getDefaultNamespace.isEmpty && thisMap.getDefaultNamespace.isEmpty)
           delta = delta.put("", "")
       }
       return delta

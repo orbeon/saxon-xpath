@@ -23,9 +23,7 @@ object NumericType {
   }
 
   def isNumericType(`type`: ItemType): Boolean =
-    `type`
-      .isInstanceOf[AtomicType] && `type` != BuiltInAtomicType.ANY_ATOMIC &&
-      `type`.getUType.overlaps(getInstance.getUType)
+    `type`.isPlainType && UType.NUMERIC.subsumes(`type`.getUType)
 
 }
 
@@ -80,10 +78,15 @@ class NumericType private()
 
   override def getTypedValue(value: CharSequence,
                              resolver: NamespaceResolver,
-                             rules: ConversionRules): DoubleValue = {
-    val d: Double = StringToDouble.getInstance.stringToNumber(value)
-    new DoubleValue(d)
-  }
+                             rules: ConversionRules): DoubleValue =
+    try {
+      val d: Double = StringToDouble.getInstance.stringToNumber(value)
+      new DoubleValue(d)
+    } catch {
+      case _: NumberFormatException =>
+        val message = String.format("Cannot convert string \"%s\" to xs:numeric", value)
+        throw new ValidationFailure(message).makeException()
+    }
 
   override def validateContent(value: CharSequence,
                                nsResolver: NamespaceResolver,

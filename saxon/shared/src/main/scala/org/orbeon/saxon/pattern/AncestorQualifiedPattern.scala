@@ -209,10 +209,8 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
     presenter.endElement()
   }
 
-  override def toString: String = {
-    val res = if (upwardsAxis == AxisInfo.PARENT) "/" else ""
-    upperPattern.toString + res
-  }
+  override def reconstruct: String =
+    upperPattern.toString + (if (upwardsAxis == AxisInfo.PARENT) "/" else "//") + basePattern.toString
 
   def copy(rebindings: RebindingMap): AncestorQualifiedPattern = {
     val n = new AncestorQualifiedPattern(
@@ -220,6 +218,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
       upperPattern.copy(rebindings),
       upwardsAxis)
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

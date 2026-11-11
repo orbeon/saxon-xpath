@@ -161,6 +161,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   def applyTemplates(parameters: ParameterSet,
                      tunnelParameters: ParameterSet,
+                     separator: NodeInfo,
                      output: Outputter,
                      context: XPathContextMajor,
                      locationId: Location): TailCall = {
@@ -180,6 +181,7 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
     val lookahead: Boolean =
       iterator.getProperties.contains(SequenceIterator.Property.LOOKAHEAD)
     var previousTemplate: TemplateRule = null
+    var first: Boolean = true
     breakable {
       while (true) {
         if (tc != null) {
@@ -194,6 +196,13 @@ abstract class Mode(var modeName: StructuredQName) extends Actor {
         val item: Item = iterator.next()
         if (item == null) {
           break()
+        }
+        if (separator != null) {
+          if (first) {
+            first = false
+          } else {
+            output.append(separator)
+          }
         }
         if (mustBeTyped) {
           item match {

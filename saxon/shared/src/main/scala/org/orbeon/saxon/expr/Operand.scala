@@ -47,7 +47,14 @@ class Operand(
 
   def setChildExpression(childExpression: Expression): Unit = {
     if (childExpression ne this.childExpression) {
-      require (! (role.isConstrainedClass && this.childExpression != null && childExpression.getClass != this.childExpression.getClass))
+      if (role.isConstrainedClass) {
+        if (role.getConstraint != null) {
+          if (! role.getConstraint.test(childExpression))
+            throw new AssertionError()
+        } else if (this.childExpression != null && childExpression.getClass != this.childExpression.getClass) {
+          throw new AssertionError()
+        }
+      }
       this.childExpression = childExpression
       parentExpression.adoptChildExpression(childExpression)
       parentExpression.resetLocalStaticProperties()

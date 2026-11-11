@@ -95,6 +95,7 @@ class IntersectPattern(p1: Pattern, p2: Pattern) extends VennPattern(p1, p2) {
     val n: IntersectPattern =
       new IntersectPattern(p1.copy(rebindings), p2.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

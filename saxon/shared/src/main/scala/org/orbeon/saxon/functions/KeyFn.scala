@@ -22,6 +22,7 @@ import org.orbeon.saxon.tree.iter.EmptyIterator
 
 import org.orbeon.saxon.tree.util.Navigator
 
+import java.util.{ArrayList, List}
 import org.orbeon.saxon.value.AtomicValue
 
 import KeyFn._
@@ -128,6 +129,7 @@ object KeyFn {
     var allResults: SequenceIterator = null
     val keys: SequenceIterator = sought.iterate()
     var keyValue: AtomicValue = null
+    val allKeyIterators: List[SequenceIterator] = new ArrayList[SequenceIterator]()
     while (({
       keyValue = keys.next().asInstanceOf[AtomicValue]
       keyValue
@@ -137,14 +139,14 @@ object KeyFn {
          doc.getTreeInfo,
          keyValue,
          context)*/
-      /*allResults =
-        if (allResults == null) null*/
-      allResults = new UnionEnumeration(allResults,
-        null,
-        LocalOrderComparer.instance)
+      allKeyIterators.add(null)
     }
-    if (allResults == null) {
+    if (allKeyIterators.isEmpty) {
       allResults = EmptyIterator.ofNodes
+    } else if (allKeyIterators.size == 1) {
+      allResults = allKeyIterators.get(0)
+    } else {
+      allResults = new UnionIterator(allKeyIterators, LocalOrderComparer.instance)
     }
     if (origin == doc) {
       return new LazySequence(allResults)

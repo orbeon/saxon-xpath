@@ -29,6 +29,7 @@ import org.orbeon.saxon.trans.rules.Rule
 import org.orbeon.saxon.tree.iter.ManualIterator
 
 import org.orbeon.saxon.tree.util.Navigator
+import org.orbeon.saxon.model.Type
 
 import java.util.ArrayList
 
@@ -165,6 +166,10 @@ class AccumulatorData(acc: Accumulator) extends IAccumulatorData {
     c2.setCurrentComponent(accumulator.declaringComponent)
     c2.setTemporaryOutputState(StandardNames.XSL_ACCUMULATOR_RULE)
     seq = Evaluator.EAGER_SEQUENCE.evaluate(delta, c2)
+    if (node.getNodeKind == Type.DOCUMENT && !postDescent && values.size == 1) {
+      // Overwrite the accumulator's initial value with the "before document start" value. Bug 4786.
+      values.clear()
+    }
     values.add(new DataPoint(new Visit(node, postDescent), seq))
     seq
   }

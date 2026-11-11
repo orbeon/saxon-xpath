@@ -32,7 +32,8 @@ object ConditionalSorter {
   private val DOC_SORTER_ROLE: OperandRole = new OperandRole(
     OperandRole.CONSTRAINED_CLASS,
     OperandUsage.TRANSMISSION,
-    SequenceType.ANY_SEQUENCE)
+    SequenceType.ANY_SEQUENCE,
+    expr => expr.isInstanceOf[DocumentSorter])
 
 }
 

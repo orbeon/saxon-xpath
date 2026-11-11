@@ -694,7 +694,7 @@ object FormatNumber {
 
 }
 
-class FormatNumber extends SystemFunction {
+class FormatNumber extends SystemFunction with StatefulSystemFunction {
 
   private var decimalFormatName: StructuredQName = _
 
@@ -806,6 +806,19 @@ class FormatNumber extends SystemFunction {
       throw err
     }
     dfs
+  }
+
+  override def copy(): FormatNumber = {
+    val copy = SystemFunction.makeFunction(
+      getFunctionName.getLocalPart,
+      getRetainedStaticContext,
+      getArity
+    ).asInstanceOf[FormatNumber]
+    copy.decimalFormatName = decimalFormatName
+    copy.picture = picture
+    copy.decimalSymbols = decimalSymbols
+    copy.subPictures = subPictures
+    copy
   }
 
 }

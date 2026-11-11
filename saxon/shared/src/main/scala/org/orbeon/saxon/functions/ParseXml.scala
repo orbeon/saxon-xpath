@@ -114,8 +114,7 @@ class ParseXml extends SystemFunction {
       is.setSystemId(baseURI)
       val source: Source = new SAXSource(is)
       source.setSystemId(baseURI)
-      val b: Builder =
-        TreeModel.TINY_TREE.makeBuilder(controller.makePipelineConfiguration)
+      val b: Builder = controller.makeBuilder
       var s: Receiver = b
       val options: ParseOptions = new ParseOptions(config.getParseOptions)
       val pd: PackageData = getRetainedStaticContext.packageData

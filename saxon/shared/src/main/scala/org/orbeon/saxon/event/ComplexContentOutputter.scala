@@ -215,11 +215,11 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
             "Cannot create two namespace nodes with the same prefix " +
               "mapped to different URIs (prefix=\"" +
               prefix +
-              "\", URIs=(" +
+              "\", URIs=(\"" +
               uri +
               "\", \"" +
               namespaceUri +
-              "\")")
+              "\"))")
           err.setErrorCode(
             if (hostLanguage == HostLanguage.XSLT) "XTDE0430" else "XQDY0102")
           throw err
@@ -327,11 +327,11 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
       ReceiverOption.DISINHERIT_NAMESPACES)
     var ns2: NamespaceMap = null
     if (inherit) {
-      val inherited = inheritedNamespaces.head
-      ns2 = inherited.putAll(nameSpacMap)
+      var inherited = inheritedNamespaces.head
       if (inherited.getDefaultNamespace.nonEmpty && elemName.getURI.isEmpty) {
-        ns2 = ns2.remove("")
+        inherited = inherited.remove("")
       }
+      ns2 = inherited.putAll(nameSpacMap)
       if (ReceiverOption.contains(
         properties,
         ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY)) {

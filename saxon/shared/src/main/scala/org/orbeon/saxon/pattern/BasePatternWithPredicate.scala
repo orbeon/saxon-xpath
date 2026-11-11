@@ -143,17 +143,14 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
     }
   }
 
-  override def toString: String = getBasePattern.toString + "[" + getPredicate.toString + "]"
-
-  override def toShortString: String =
-    getBasePattern.toShortString + "[" + getPredicate.toShortString +
-      "]"
+  override def reconstruct: String = getBasePattern.toString + "[" + getPredicate.toString + "]"
 
   def copy(rebindings: RebindingMap): Pattern = {
     val n: BasePatternWithPredicate = new BasePatternWithPredicate(
       getBasePattern.copy(rebindings),
       getPredicate.copy(rebindings))
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

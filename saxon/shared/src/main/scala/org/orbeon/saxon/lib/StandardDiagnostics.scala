@@ -9,6 +9,7 @@ import org.orbeon.saxon.expr.parser.{Loc, XPathParser}
 import org.orbeon.saxon.lib.StandardDiagnostics._
 import org.orbeon.saxon.model.{Type, ValidationException, ValidationFailure}
 import org.orbeon.saxon.om.{NodeInfo, StandardNames, StructuredQName}
+import org.orbeon.saxon.pattern.Pattern
 import org.orbeon.saxon.regex.{BMPString, GeneralUnicodeString, LatinString, UnicodeString}
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.serialize.charcode.UTF16CharacterSet
@@ -161,6 +162,8 @@ class StandardDiagnostics {
           nodeMessage += name.toString
           nodeMessage += " "
         }
+      case pattern: Pattern =>
+        nodeMessage = "in pattern " + pattern.toString + " "
       case _ =>
     }
     if (lineNumber == -1) {

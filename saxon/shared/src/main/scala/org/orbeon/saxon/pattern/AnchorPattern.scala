@@ -67,7 +67,7 @@ class AnchorPattern  () extends Pattern {
 
   /*@NotNull*/
 
-  override def toString: String = "."
+  override def reconstruct: String = "."
 
   override def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.anchor")

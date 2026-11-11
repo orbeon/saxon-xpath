@@ -133,6 +133,7 @@ class GeneralNodePattern(
   def copy(rebindings: RebindingMap): Pattern = {
     val n = new GeneralNodePattern(equivalentExpr.copy(rebindings), itemTyp)
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 

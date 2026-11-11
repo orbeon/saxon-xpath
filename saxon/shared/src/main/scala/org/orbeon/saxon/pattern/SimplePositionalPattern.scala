@@ -72,13 +72,14 @@ class SimplePositionalPattern(var nodeTest: NodeTest,
     val n: SimplePositionalPattern =
       new SimplePositionalPattern(nodeTest.copy(), position)
     ExpressionTool.copyLocationInfo(this, n)
+    n.setOriginalText(toString)
     n
   }
 
   /**
    * Get the original pattern text
    */
-  override def toString: String = nodeTest.toString + "[" + position.toString + "]"
+  override def reconstruct: String = nodeTest.toString + "[" + position.toString + "]"
 
   def `export`(presenter: ExpressionPresenter): Unit = {
     presenter.startElement("p.simPos")

@@ -5,12 +5,12 @@ import org.orbeon.saxon.java.JavaPlatform
 object Version {
 
   private val MAJOR_VERSION: Int = 10
-  private val MINOR_VERSION: Int = 1
+  private val MINOR_VERSION: Int = 2
 
   //mddhh
-  private val BUILD: Int = 51412
+  private val BUILD: Int = 82606
   private val MAJOR_RELEASE_DATE: String = "2020-03-16"
-  private val MINOR_RELEASE_DATE: String = "2020-05-14"
+  private val MINOR_RELEASE_DATE: String = "2020-08-26"
 
   def getProductName: String = "SAXON"
   def getProductVendor: String = "Saxonica"

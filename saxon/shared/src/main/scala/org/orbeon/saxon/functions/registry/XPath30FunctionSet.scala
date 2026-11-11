@@ -43,7 +43,7 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
       .arg(1, BuiltInAtomicType.STRING, ONE, null)
       .arg(2, BuiltInAtomicType.STRING, ONE, null)
     register("apply", 2, () => new ApplyFn, AnyItemType, STAR, LATE)
-      .arg(0, AnyFunctionType, OPT, null)
+      .arg(0, AnyFunctionType, ONE, null)
       .arg(1, ArrayItemType.ANY_ARRAY_TYPE, ONE, null)
     register("available-environment-variables",
              0,
@@ -308,13 +308,13 @@ class XPath30FunctionSet private () extends BuiltInFunctionSet {
              () => new ParseXml,
              NodeKindTest.DOCUMENT,
              OPT,
-             LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
+             LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("parse-xml-fragment",
              1,
              () => new ParseXmlFragment,
              NodeKindTest.DOCUMENT,
              OPT,
-             LATE).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
+             LATE | NEW).arg(0, BuiltInAtomicType.STRING, OPT, EMPTY)
     register("path",
              0,
              () => new ContextItemAccessorFunction,

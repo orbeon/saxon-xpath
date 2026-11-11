@@ -178,11 +178,14 @@ class SlashExpression(start: Expression, step: Expression)
     val th = config.getTypeHierarchy
     val opt = visitor.obtainOptimizer()
     lhs.optimize(visitor, contextItemType)
+    if (Literal.isEmptySequence(getStart))
+      return Literal.makeEmptySequence
+
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(getStart.getItemType, maybeUndefined = false)
     cit.contextSettingExpression = getStart
     rhs.optimize(visitor, cit)
 
-    if (Literal.isEmptySequence(getStart) || Literal.isEmptySequence(getStep))
+    if (Literal.isEmptySequence(getStep))
       return Literal.makeEmptySequence
 
     if (getStart.isInstanceOf[RootExpression] && th.isSubType(contextItemType.itemType, NodeKindTest.DOCUMENT))
@@ -463,8 +466,16 @@ class SlashExpression(start: Expression, step: Expression)
       case _ =>
     }
     if (headPattern == null) {
-      axis = PatternMaker.getAxisForPathStep(tail)
-      headPattern = head.toPattern(config)
+      tail match {
+        case vennTail: VennExpression =>
+          val lhExpansion = new SlashExpression(head.copy(new RebindingMap()), vennTail.getLhsExpression)
+          val rhExpansion = new SlashExpression(head.copy(new RebindingMap()), vennTail.getRhsExpression)
+          val topExpansion = new VennExpression(lhExpansion, vennTail.operator, rhExpansion)
+          return topExpansion.toPattern(config)
+        case _ =>
+          axis = PatternMaker.getAxisForPathStep(tail)
+          headPattern = head.toPattern(config)
+      }
     }
     new AncestorQualifiedPattern(tailPattern, headPattern, axis)
   }
@@ -485,16 +496,18 @@ class SlashExpression(start: Expression, step: Expression)
     "SlashExpression".hashCode + getStart.hashCode + getStep.hashCode
 
   override def iterate(context: XPathContext): SequenceIterator = {
-    if (contextFree) {
+    val step = getStep
+    if (contextFree && step.isInstanceOf[AxisExpression]) {
+      // see bug 4730, the step might have been rewritten since the flag was set
       return new MappingIterator(getStart.iterate(context),
         item =>
-          getRhsExpression
+          step
             .asInstanceOf[AxisExpression]
             .iterate(item.asInstanceOf[NodeInfo]))
     }
     val context2 = context.newMinorContext()
     context2.trackFocus(getStart.iterate(context))
-    new ContextMappingIterator(c1 => getStep.iterate(c1), context2)
+    new ContextMappingIterator(c1 => step.iterate(c1), context2)
   }
 
   override def `export`(destination: ExpressionPresenter): Unit = {

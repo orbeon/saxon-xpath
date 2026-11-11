@@ -17,7 +17,7 @@ import java.util._
 import org.orbeon.saxon.utils.Configuration
 class GenericTreeInfo(private var config: Configuration) extends TreeInfo {
 
-  private var root: NodeInfo = _
+  protected var root: NodeInfo = _
 
   var systemId: String = _
   def getSystemId: String = systemId

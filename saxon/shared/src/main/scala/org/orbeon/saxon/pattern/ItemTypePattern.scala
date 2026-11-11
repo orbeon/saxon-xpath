@@ -22,7 +22,7 @@ class ItemTypePattern(var itemTyp: ItemType) extends Pattern {
 
   override def getUType: UType = itemTyp.getUType
 
-  override def toString: String = itemTyp.toString
+  override def reconstruct: String = itemTyp.toString
 
   override def getItemType: ItemType = itemTyp
 
@@ -38,6 +38,10 @@ class ItemTypePattern(var itemTyp: ItemType) extends Pattern {
     presenter.endElement()
   }
 
-  def copy(rebindings: RebindingMap): Pattern = new ItemTypePattern(itemTyp)
+  def copy(rebindings: RebindingMap): Pattern = {
+    val n = new ItemTypePattern(itemTyp)
+    n.setOriginalText(toString)
+    n
+  }
 
 }

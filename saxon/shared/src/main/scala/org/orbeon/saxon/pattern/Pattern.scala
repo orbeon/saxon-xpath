@@ -42,6 +42,7 @@ object Pattern {
     var pat: Pattern = parser.parsePattern(pattern, env)
     pat.setRetainedStaticContext(env.makeRetainedStaticContext())
     pat = pat.simplify()
+    pat.setOriginalText(pattern)
     pat
   }
 
@@ -70,6 +71,8 @@ abstract class Pattern extends PseudoExpression {
 
   var recoverable: Boolean = true
 
+  private var originalText: String = _
+
   def isRecoverable: Boolean = recoverable
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
@@ -78,7 +81,8 @@ abstract class Pattern extends PseudoExpression {
 
   def matchesCurrentGroup(): Boolean = false
 
-  def setOriginalText(text: String): Unit = ()
+  def setOriginalText(text: String): Unit =
+    originalText = text
 
    def handleDynamicError(ex: XPathException,
                                    context: XPathContext): Unit = {
@@ -89,7 +93,7 @@ abstract class Pattern extends PseudoExpression {
       throw ex
     }
     context.getController.warning(
-      "An error occurred matching pattern {" + this + "}: ",
+      s"An error occurred matching pattern {$this}: ${ex.getMessage}",
       ex.getErrorCodeQName.getEQName,
       getLocation)
   }
@@ -202,7 +206,11 @@ abstract class Pattern extends PseudoExpression {
 
   def getDefaultPriority: Double = priority
 
-  override def toString: String = "pattern matching " + getItemType
+  override def toString: String =
+    if (originalText != null)
+      originalText
+    else
+      s"pattern matching $getItemType"
 
   def getHostLanguage: HostLanguage = XSLT
 
@@ -217,6 +225,24 @@ abstract class Pattern extends PseudoExpression {
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Pattern = this
 
-  override def toShortString: String = toString
+  /**
+   * Generate a string representation of the pattern optimized for diagnostics: if the original text
+   * of the pattern was retained, this is used in preference to generating a string representation from
+   * the compiled form of the pattern.
+   *
+   * @return either the original text of the pattern, or a reconstructed string representation
+   */
+  override def toShortString: String =
+    if (originalText != null)
+      originalText
+    else
+      reconstruct
+
+  /**
+   * Reconstruct a string representation of the pattern from the compiled pattern
+   * @return a reconstructed string representation of the pattern, which in general resolves URI prefixes
+   * to EQName notation
+   */
+  def reconstruct: String = toString
 
 }

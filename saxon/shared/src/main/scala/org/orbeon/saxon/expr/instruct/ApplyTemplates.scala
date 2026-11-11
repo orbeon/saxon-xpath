@@ -8,11 +8,8 @@ import org.orbeon.saxon.expr._
 
 import org.orbeon.saxon.expr.parser._
 
-import org.orbeon.saxon.om.Sequence
-
-import org.orbeon.saxon.om.SequenceIterator
-
-import org.orbeon.saxon.om.StandardNames
+import org.orbeon.saxon.model.Type
+import org.orbeon.saxon.om.{NodeInfo, Sequence, SequenceIterator, StandardNames}
 
 import org.orbeon.saxon.s9api.Location
 
@@ -21,6 +18,7 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans._
 
 import org.orbeon.saxon.tree.iter.EmptyIterator
+import org.orbeon.saxon.tree.util.Orphan
 
 import java.util.ArrayList
 
@@ -34,6 +32,7 @@ object ApplyTemplates {
                                          private var targetMode: Component.M,
                                          private var params: ParameterSet,
                                          private var tunnelParams: ParameterSet,
+                                         private var separator: NodeInfo,
                                          private var output: Outputter,
                                          private var evaluationContext: XPathContextMajor,
                                          private var locationId: Location)
@@ -45,6 +44,7 @@ object ApplyTemplates {
       evaluationContext.setCurrentComponent(targetMode)
       targetMode.getActor.applyTemplates(params,
         tunnelParams,
+        separator,
         output,
         evaluationContext,
         locationId)
@@ -60,6 +60,7 @@ class ApplyTemplates  ()
     with ComponentInvocation {
 
   private var selectOp: Operand = _
+  private var separatorOp: Operand = _
 
   var actualParams: Array[WithParam] = _
 
@@ -113,9 +114,18 @@ class ApplyTemplates  ()
     this.mode = target
   }
 
+  def setSeparatorExpression(separator: Expression): Unit = {
+    separatorOp = new Operand(this, separator, OperandRole.SINGLE_ATOMIC)
+  }
+
+  def getSeparatorExpression: Expression =
+    if (separatorOp == null) null else separatorOp.getChildExpression
+
   override def operands: java.lang.Iterable[Operand] = {
     val operanda: List[Operand] = new ArrayList[Operand]()
     operanda.add(selectOp)
+    if (separatorOp != null)
+      operanda.add(separatorOp)
     WithParam.gatherOperands(this, actualParams, operanda)
     WithParam.gatherOperands(this, tunnelParams, operanda)
     operanda
@@ -197,6 +207,8 @@ override  def optimize(visitor: ExpressionVisitor,
     a2.tunnelParams = WithParam.copy(a2, tunnelParams, rebindings)
     ExpressionTool.copyLocationInfo(this, a2)
     //a2.ruleManager = ruleManager
+    if (separatorOp != null)
+      a2.setSeparatorExpression(getSeparatorExpression.copy(rebindings))
     a2
   }
 
@@ -209,11 +221,22 @@ override  def optimize(visitor: ExpressionVisitor,
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall =
     apply(output, context, useTailRecur)
 
+  protected def makeSeparator(context: XPathContext): NodeInfo = {
+    val sepValue = separatorOp.getChildExpression.evaluateAsString(context)
+    val orphan = new Orphan(context.getConfiguration)
+    orphan.setNodeKind(Type.TEXT)
+    orphan.setStringValue(sepValue)
+    orphan
+  }
+
    def apply(output: Outputter,
                       context: XPathContext,
                       returnTailCall: Boolean): TailCall = {
     val targetMode: Component.M = getTargetMode(context)
     val thisMode: Mode = targetMode.getActor
+    var separator: NodeInfo = null
+    if (separatorOp != null)
+      separator = makeSeparator(context)
     val params: ParameterSet = Instruction.assembleParams(context, actualParams)
     val tunnels: ParameterSet =Instruction assembleTunnelParams(context, tunnelParams)
     if (returnTailCall) {
@@ -224,6 +247,7 @@ override  def optimize(visitor: ExpressionVisitor,
         targetMode,
         params,
         tunnels,
+        separator,
         output,
         c2,
         getLocation)
@@ -244,7 +268,7 @@ override  def optimize(visitor: ExpressionVisitor,
     pipe.setXPathContext(c2)
     try {
       var tc: TailCall =
-        thisMode.applyTemplates(params, tunnels, output, c2, getLocation)
+        thisMode.applyTemplates(params, tunnels, separator, output, c2, getLocation)
       while (tc != null) tc = tc.processLeavingTail()
     } catch {
       case e: StackOverflowError => {
@@ -324,6 +348,10 @@ override  def optimize(visitor: ExpressionVisitor,
     out.emitAttribute("bSlot", "" + getBindingSlot)
     out.setChildRole("select")
     getSelect.`export`(out)
+    if (separatorOp != null) {
+      out.setChildRole("separator")
+      getSeparatorExpression.`export`(out)
+    }
     if (actualParams.length != 0) {
       WithParam.exportParameters(actualParams, out, tunnel = false)
     }

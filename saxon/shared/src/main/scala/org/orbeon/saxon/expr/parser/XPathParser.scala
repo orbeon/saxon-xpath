@@ -3093,8 +3093,8 @@ class XPathParser {
     val uri = sq.getURI
     val local = sq.getLocalPart
     if (uri.isEmpty) {
-      val fp = env.getConfiguration.getNamePool.allocateFingerprint("", qname)
-      new NoNamespaceName(qname, fp)
+      val fp = env.getConfiguration.getNamePool.allocateFingerprint("", local)
+      new NoNamespaceName(local, fp)
     } else {
       val fp = env.getConfiguration.getNamePool.allocateFingerprint(uri, local)
       new FingerprintedQName(prefix, uri, local, fp)

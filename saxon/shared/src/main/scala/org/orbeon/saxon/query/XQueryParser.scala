@@ -2487,7 +2487,10 @@ class XQueryParser extends XPathParser {
       if (vName.isInstanceOf[StringValue] && !vName.isInstanceOf[AnyURIValue]) {
         val lex = vName.asInstanceOf[StringValue].getStringValue
         try {
+          val oldQP = getQNameParser
+          setQNameParser(oldQP.withUnescaper(null))
           elemName = makeNodeName(lex, useDefault = true)
+          setQNameParser(oldQP)
           elemName.obtainFingerprint(env.getConfiguration.getNamePool)
         } catch {
           case staticError: XPathException =>
@@ -2575,8 +2578,12 @@ class XQueryParser extends XPathParser {
         val lex = vName.asInstanceOf[StringValue].getStringValue
         if (lex == "xmlns" || lex.startsWith("xmlns:")) grumble("Cannot create a namespace using an attribute constructor", "XQDY0044", offset)
         var attributeName: NodeName = null
-        try attributeName = makeNodeName(lex, useDefault = false)
-        catch {
+        try {
+          val oldQP = getQNameParser
+          setQNameParser(oldQP.withUnescaper(null))
+          attributeName = makeNodeName(lex, useDefault = false)
+          setQNameParser(oldQP)
+        } catch {
           case staticError: XPathException =>
             val code = staticError.getErrorCodeLocalPart
             staticError.setLocator(makeLocation)
@@ -2586,6 +2593,14 @@ class XQueryParser extends XPathParser {
               return new ErrorExpression
             }
             throw staticError
+        }
+        if (attributeName.getPrefix.isEmpty && !attributeName.hasURI("")) {
+          attributeName = new FingerprintedQName(
+            "_",
+            attributeName.getURI,
+            attributeName.getLocalPart,
+            attributeName.getFingerprint
+          )
         }
         val fatt = new FixedAttribute(attributeName, Validation.STRIP, null)
         fatt.setRejectDuplicates()

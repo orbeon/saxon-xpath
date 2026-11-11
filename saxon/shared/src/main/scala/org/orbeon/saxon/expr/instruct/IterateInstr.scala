@@ -77,7 +77,8 @@ class IterateInstr(select: Expression,
     initiallyExp,
     new OperandRole(OperandRole.CONSTRAINED_CLASS,
       OperandUsage.NAVIGATION,
-      SequenceType.ANY_SEQUENCE))
+      SequenceType.ANY_SEQUENCE,
+      expr => expr.isInstanceOf[LocalParamBlock]))
 
   private var onCompletionOp: Operand = new Operand(
     this,

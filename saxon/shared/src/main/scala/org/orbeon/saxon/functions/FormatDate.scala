@@ -81,7 +81,7 @@ object FormatDate {
     val numberer = config.makeNumberer(lang, placeStr)
     val sb       = new FastStringBuffer(FastStringBuffer.C64)
 
-    if (numberer.getClass == classOf[Numberer_en] && "en" != lang && ! languageDefaulted)
+    if (! languageDefaulted && numberer.getClass == classOf[Numberer_en] && ! lang.startsWith("en"))
       sb.append("[Language: en]")
     if (numberer.defaultedLocale() != null)
       sb.append("[Language: " + numberer.defaultedLocale().getLanguage + "]")
@@ -658,7 +658,7 @@ object FormatDate {
             .toString
         )
       }
-      s.toString
+      return s.toString
     }
     if ("N" == primary || "n" == primary || "Nn" == primary) {
       var s = ""

@@ -55,9 +55,9 @@ class PatternParser30 extends XPathParser with PatternParser {
     if (isSelectionPattern(trimmed)) {
       var e: Expression = parse(pattern, 0, Token.EOF, env)
       if (e.isInstanceOf[Pattern]) {
-        e.asInstanceOf[Pattern]
+        return e.asInstanceOf[Pattern]
       } else if (e.isInstanceOf[ContextItemExpression]) {
-        new UniversalPattern()
+        return new UniversalPattern()
       } else if (e.isInstanceOf[FilterExpression]) {
         var predicate: Expression = null
         while (e.isInstanceOf[FilterExpression]) {
@@ -105,7 +105,9 @@ class PatternParser30 extends XPathParser with PatternParser {
             else new AndExpression(filter, predicate)
         }
         if (e.isInstanceOf[ContextItemExpression]) {
-          return new BooleanExpressionPattern(predicate)
+          val pat = new BooleanExpressionPattern(predicate)
+          setLocation(pat)
+          return pat
         }
       }
       grumble(
@@ -136,6 +138,7 @@ class PatternParser30 extends XPathParser with PatternParser {
             is30 = true)
 
       }
+      setLocation(pat)
       if (exp.isInstanceOf[FilterExpression] &&
         exp
           .asInstanceOf[FilterExpression]

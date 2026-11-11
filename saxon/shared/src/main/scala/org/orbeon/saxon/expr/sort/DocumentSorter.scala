@@ -123,8 +123,11 @@ class DocumentSorter(base: Expression) extends UnaryExpression(base) {
           if (!ExpressionTool.dependsOnFocus(rhs) &&
             !rhs.hasSpecialProperty(StaticProperty.HAS_SIDE_EFFECTS) &&
             rhs.hasSpecialProperty(StaticProperty.NO_NODES_NEWLY_CREATED)) {
-            this.setBaseExpression(slash.getRhsExpression)
-            return optimize(visitor, contextInfo)
+            val e1: Expression = FirstItemExpression.makeFirstItemExpression(slash.getLhsExpression)
+            val e2: Expression = new DocumentSorter(slash.getRhsExpression)
+            val e3: SlashExpression = new SlashExpression(e1, e2)
+            ExpressionTool.copyLocationInfo(this, e3)
+            return e3.optimize(visitor, contextInfo)
           }
         }
         if (tryHarder) {

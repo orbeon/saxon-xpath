@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamSource
 import org.orbeon.saxon.event.{Builder, Sender}
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.accum.{Accumulator, AccumulatorRegistry}
+import org.orbeon.saxon.expr.parser.RetainedStaticContext
 import org.orbeon.saxon.lib.{ParseOptions, Validation}
 import org.orbeon.saxon.ma.map.MapItem
 import org.orbeon.saxon.model.BuiltInAtomicType
@@ -26,12 +27,14 @@ object Doc_2 {
       BuiltInAtomicType.QNAME,
       StaticProperty.ALLOWS_ZERO_OR_MORE)
     val op: OptionsParameter = new OptionsParameter()
+    op.addAllowedOption("base-uri", SequenceType.SINGLE_STRING)
     op.addAllowedOption("validation", SequenceType.SINGLE_STRING)
     op.setAllowedValues("validation",
       "SXZZ0001",
       "strict",
       "lax",
       "preserve",
+      "strip",
       "skip")
     op.addAllowedOption("type", SequenceType.SINGLE_QNAME)
     op.addAllowedOption("strip-space", SequenceType.SINGLE_STRING)
@@ -39,7 +42,9 @@ object Doc_2 {
       "SXZZ0001",
       "none",
       "all",
-      "package-defined")
+      "ignorable",
+      "package-defined",
+      "default")
     op.addAllowedOption("stable", SequenceType.SINGLE_BOOLEAN)
     op.addAllowedOption("dtd-validation", SequenceType.SINGLE_BOOLEAN)
     op.addAllowedOption("accumulators", listOfQNames)
@@ -47,12 +52,11 @@ object Doc_2 {
     op
   }
 
-}
-
-class Doc_2 extends SystemFunction {
-
-  private def setParseOptions(checkedOptions: Map[String, Sequence],
-                              context: XPathContext): ParseOptions = {
+  def setParseOptions(
+    rsc            : RetainedStaticContext,
+    checkedOptions : Map[String, Sequence],
+    context        : XPathContext
+  ): ParseOptions = {
     val result = new ParseOptions(context.getConfiguration.getParseOptions)
     var value = checkedOptions.get("validation")
     if (value != null) {
@@ -83,8 +87,11 @@ class Doc_2 extends SystemFunction {
         case "none" =>
           result.spaceStrippingRule =
             NoElementsSpaceStrippingRule.getInstance
-        case "package-defined" =>
-          val data = getRetainedStaticContext.packageData
+        case "ignorable" =>
+          result.spaceStrippingRule =
+            IgnorableSpaceStrippingRule.getInstance
+        case "package-defined" | "default" =>
+          val data = rsc.packageData
           data match {
             case stylesheetPackage: StylesheetPackage =>
               result.spaceStrippingRule = stylesheetPackage.getSpaceStrippingRule
@@ -102,7 +109,7 @@ class Doc_2 extends SystemFunction {
     value = checkedOptions.get("accumulators")
     if (value != null) {
       val reg: AccumulatorRegistry =
-        getRetainedStaticContext.packageData.accumulatorRegistry
+        rsc.packageData.accumulatorRegistry
       val accumulators: Set[Accumulator] = new HashSet[Accumulator]()
       val iter: SequenceIterator = value.iterate()
       var it: Item = null
@@ -123,6 +130,10 @@ class Doc_2 extends SystemFunction {
     result
   }
 
+}
+
+class Doc_2 extends SystemFunction {
+
   def call(context: XPathContext, arguments: Array[Sequence]): ZeroOrOne[NodeInfo] = {
     val hrefVal = arguments(0).head.asInstanceOf[AtomicValue]
     if (hrefVal == null) {
@@ -131,7 +142,7 @@ class Doc_2 extends SystemFunction {
       val href = hrefVal.getStringValue
       val param = arguments(1).head
       val checkedOptions = getDetails.optionDetails.processSuppliedOptions(param.asInstanceOf[MapItem], context)
-      val parseOptions = setParseOptions(checkedOptions, context)
+      val parseOptions = Doc_2.setParseOptions(getRetainedStaticContext, checkedOptions, context)
       val item = fetch(href, parseOptions, context).getRootNode
       if (item == null)
         throw new XPathException("Failed to load document " + href,

@@ -505,6 +505,19 @@ object AlphaCode {
           a(i) = sequenceTypeFromTree(argTypes.get(i), config)
         itemType = new SpecificFunctionType(a, r)
       }
+    } else if (principal.startsWith("X")) {
+      val theClass: Class[_] = classOf[Object]
+      // ORBEON: No `Class.forName` in Scala.js
+//      if (tree.name != null) {
+//        val className = StructuredQName.fromEQName(tree.name).getLocalPart
+//        try
+//          theClass = Class.forName(className)
+//        catch {
+//          case _: ClassNotFoundException =>
+//            theClass = classOf[Object]
+//        }
+//      }
+      itemType = new JavaExternalObjectType(config, theClass)
     }
     val indicator = tree.cardinality
     val cardinality = Cardinality.fromOccurrenceIndicator(indicator).asInstanceOf[Int]

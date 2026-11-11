@@ -1,16 +1,9 @@
 package org.orbeon.saxon.functions
 
 import org.orbeon.saxon.expr.Expression
-
+import org.orbeon.saxon.expr.SystemFunctionCall
 import org.orbeon.saxon.expr.XPathContext
-
-import org.orbeon.saxon.expr.parser.ContextItemStaticInfo
-
-import org.orbeon.saxon.expr.parser.ExpressionVisitor
-
-import org.orbeon.saxon.expr.parser.Loc
-
-import org.orbeon.saxon.expr.parser.RoleDiagnostic
+import org.orbeon.saxon.expr.parser._
 
 import org.orbeon.saxon.functions.registry.BuiltInFunctionSet
 
@@ -100,6 +93,15 @@ class ApplyFn extends SystemFunction {
     val getter: Expression =
       fnSet.makeFunction("get", 2).makeFunctionCall(target, key)
     getter.setRetainedStaticContext(target.getRetainedStaticContext)
+    // Use custom diagnostics for type errors on the argument of the call (bug 4772)
+    val tc = visitor.getConfiguration.getTypeChecker(visitor.staticContext.isInBackwardsCompatibleMode)
+    if (fnSet == MapFunctionSet.getInstance) {
+      val role = new RoleDiagnostic(RoleDiagnostic.MISC, "key value supplied when calling a map as a function", 0)
+      getter.asInstanceOf[SystemFunctionCall].setArg(1, tc.staticTypeCheck(key, SequenceType.SINGLE_ATOMIC, role, visitor))
+    } else {
+      val role = new RoleDiagnostic(RoleDiagnostic.MISC, "subscript supplied when calling an array as a function", 0)
+      getter.asInstanceOf[SystemFunctionCall].setArg(1, tc.staticTypeCheck(key, SequenceType.SINGLE_INTEGER, role, visitor))
+    }
     getter.typeCheck(visitor, contextInfo)
   }
 

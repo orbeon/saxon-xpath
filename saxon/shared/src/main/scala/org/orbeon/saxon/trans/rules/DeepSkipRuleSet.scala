@@ -54,6 +54,7 @@ class DeepSkipRuleSet private () extends BuiltInRuleSet {
       var tc: TailCall = c2.getCurrentMode.getActor.applyTemplates(
         parameters,
         tunnelParams,
+        null,
         output,
         c2,
         locationId)

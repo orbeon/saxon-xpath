@@ -316,10 +316,11 @@ class SerializerFactory {
       return prepareNextStylesheet(pipe, href, base, result)
     }
     val paramDoc = props.getProperty(SaxonOutputKeys.PARAMETER_DOCUMENT)
-    if (paramDoc != null) {
+    if (paramDoc != null && paramDoc.nonEmpty) {
       var base = props.getProperty(SaxonOutputKeys.PARAMETER_DOCUMENT_BASE_URI)
       if (base == null) base = result.getSystemId
       val props2 = new Properties(props)
+      props2.setProperty(SaxonOutputKeys.PARAMETER_DOCUMENT, "")
       var source: Source = null
       try source = config.getURIResolver.resolve(paramDoc, base)
       catch {
