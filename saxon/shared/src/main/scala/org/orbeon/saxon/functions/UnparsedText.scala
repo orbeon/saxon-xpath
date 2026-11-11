@@ -140,7 +140,7 @@ class UnparsedText extends UnparsedTextFunction with PushableFunction {
           arguments(1).head.getStringValue
         else
           null
-      val consumer = destination.getStringReceiver(false)
+      val consumer = destination.getStringReceiver(false, Loc.NONE)
       consumer.open()
       try {
         UnparsedTextFunction.readFile(absoluteURI, encoding, consumer, context)

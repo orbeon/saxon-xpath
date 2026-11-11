@@ -184,7 +184,7 @@ class LetExpression extends Assignation with TailCallReturner {
       } < 5) {
         val seq0: Expression = getSequence
         getSequenceOp.optimize(visitor, contextItemType)
-        if (getSequence.isInstanceOf[Literal] && !isIndexedVariable) {
+        if (getSequence.isInstanceOf[Literal] && !isIndexedVariable && opt.isOptionSet(OptimizerOptions.INLINE_VARIABLES)) {
           return optimize(visitor, contextItemType)
         }
         if (seq0 eq getSequence) {

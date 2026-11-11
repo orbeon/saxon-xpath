@@ -78,11 +78,14 @@ object ExpressionTool {
   def injectCode(exp: Expression, injector: CodeInjector): Expression = {
     exp match {
       case expression: FLWORExpression => expression.injectCode(injector)
+      case traceExpr: TraceExpression =>
+        for (o <- traceExpr.getChild.operands.asScala)
+          if (!o.getOperandRole.isConstrainedClass)
+            o.setChildExpression(injectCode(o.getChildExpression, injector))
       case _ =>
-        if (!exp.isInstanceOf[TraceExpression])
-          for (o <- exp.operands.asScala)
-            if (!o.getOperandRole.isConstrainedClass)
-              o.setChildExpression(injectCode(o.getChildExpression, injector))
+        for (o <- exp.operands.asScala)
+          if (!o.getOperandRole.isConstrainedClass)
+            o.setChildExpression(injectCode(o.getChildExpression, injector))
     }
     injector.inject(exp)
   }
@@ -581,7 +584,7 @@ object ExpressionTool {
         compileWithTracing = env.asInstanceOf[QueryModule].getUserQueryContext.isCompileWithTracing
       //else if (env.isInstanceOf[ExpressionContext]) compileWithTracing = env.asInstanceOf[ExpressionContext].getStyleElement.getCompilation.getCompilerInfo.isCompileWithTracing
     }
-    if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) && ! compileWithTracing) {
+    if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS) /*&& ! compileWithTracing*/) {
       ExpressionTool.resetPropertiesWithinSubtree(expBody)
       if (opt.isOptionSet(OptimizerOptions.MISCELLANEOUS)) expBody = expBody.optimize(visitor, cisi)
       expBody.parentExpression = null
@@ -732,14 +735,17 @@ object ExpressionTool {
         o.setChildExpression(e2)
         replaced = true
       } else
-        replaced = replaceSelectedSubexpressions(child, selector, replacement, mustCpy)
+        replaced |= replaceSelectedSubexpressions(child, selector, replacement, mustCpy)
     }
     replaced
   }
 
   def replaceVariableReferences(exp: Expression, binding: Binding, replacement: Expression, mustCopy: Boolean): Boolean = {
     val selector: ExpressionSelector = (child: Expression) => child.isInstanceOf[VariableReference] && (child.asInstanceOf[VariableReference].getBinding eq binding)
-    replaceSelectedSubexpressions(exp, selector, replacement, mustCopy)
+    val changed = replaceSelectedSubexpressions(exp, selector, replacement, mustCopy)
+    if (changed)
+      resetPropertiesWithinSubtree(exp)
+    changed
   }
 
   import scala.util.control.Breaks._

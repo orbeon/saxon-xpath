@@ -18,19 +18,23 @@ import org.orbeon.saxon.expr.parser.{CodeInjector, ExpressionTool}
 class TraceCodeInjector extends CodeInjector {
 
   override def inject(exp: Expression): Expression =
-    if (! exp.isInstanceOf[TraceExpression] && isApplicable(exp))
+    if (exp.isInstanceOf[FLWORExpression]) {
+      exp.asInstanceOf[FLWORExpression].injectCode(this)
+      exp
+    } else if (! exp.isInstanceOf[TraceExpression] && isApplicable(exp))
       new TraceExpression(exp)
     else
       exp
 
   def isApplicable(exp: Expression): Boolean = false
 
-  override def process(component: TraceableComponent): Unit = {
-    val newBody = ExpressionTool.injectCode(component.getBody, this)
-    component.setBody(newBody)
-    val trace = new ComponentTracer(component)
-    component.setBody(trace)
-  }
+  override def process(component: TraceableComponent): Unit =
+    if (! component.getBody.isInstanceOf[ComponentTracer]) {
+      val newBody = ExpressionTool.injectCode(component.getBody, this)
+      component.setBody(newBody)
+      val trace = new ComponentTracer(component)
+      component.setBody(trace)
+    }
 
   override def injectClause(expression: FLWORExpression, clause: Clause): Clause =
     new TraceClause(expression, clause)

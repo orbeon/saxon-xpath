@@ -61,7 +61,7 @@ class ProcInstImpl(var name: String, var content: String) extends NodeImpl {
                               ReceiverOption.NONE)
   }
 
-  override def rename(newNameCode: NodeName): Unit = {
+  override def rename(newNameCode: NodeName, inheritNamespaces: Boolean): Unit = {
     name = newNameCode.getLocalPart
   }
 

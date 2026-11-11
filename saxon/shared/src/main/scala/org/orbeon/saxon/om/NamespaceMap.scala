@@ -465,7 +465,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
           j += 1
         } else {
           // prefix present in other map, absent from this: maybe add an undeclaration
-          if (addUndeclarations || prefixes(i).isEmpty)
+          if (addUndeclarations || other.prefixes(i).isEmpty)
             result.add(new NamespaceBinding(other.prefixes(j), ""))
           j += 1
         }

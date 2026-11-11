@@ -37,9 +37,9 @@ class WindowClausePull(private var source: TuplePull,
   private var currentWindows: List[WindowClause.Window] = new ArrayList()
 
   override def nextTuple(context: XPathContext): Boolean = {
-    var deliver: Boolean = false
-    val pending: Boolean = lookForEarliest()
-    if (pending) {
+    var earliest: WindowClause.Window = lookForEarliest()
+    if (earliest != null) {
+      processWindow(earliest, context)
       return true
     }
     if (finished || baseIterator == null) {
@@ -54,7 +54,6 @@ class WindowClausePull(private var source: TuplePull,
     }
     while (!finished) {
       val autoclose: Boolean = windowClause.isTumblingWindow && windowClause.getEndCondition == null
-      deliver = false
       val oldPrevious: Item = previous
       previous = current
       current = next
@@ -77,7 +76,7 @@ class WindowClausePull(private var source: TuplePull,
             w.endPreviousItem = oldPrevious
             w.endNextItem = current
             w.endPosition = position - 1
-            deliver = despatch(w, context)
+            earliest = despatch(w, context)
             currentWindows.clear()
           }
           val window: WindowClause.Window = new WindowClause.Window()
@@ -108,8 +107,8 @@ class WindowClausePull(private var source: TuplePull,
             w.endPreviousItem = previous
             w.endNextItem = next
             w.endPosition = position
-            if (!deliver) {
-              deliver = despatch(w, context)
+            if (earliest == null) {
+              earliest = despatch(w, context)
               if (w.isDespatched) {
                 removals.add(w)
               }
@@ -119,7 +118,8 @@ class WindowClausePull(private var source: TuplePull,
             currentWindows.remove(w)
           }
         }
-        if (deliver) {
+        if (earliest != null) {
+          processWindow(earliest, context)
           return true
         }
       }
@@ -128,12 +128,12 @@ class WindowClausePull(private var source: TuplePull,
   }
 
   private def despatch(w: WindowClause.Window,
-                       context: XPathContext): Boolean = {
+                       context: XPathContext): WindowClause.Window = {
     windowClause.checkWindowContents(w)
     lookForEarliest()
   }
 
-  private def lookForEarliest(): Boolean = {
+  private def lookForEarliest(): WindowClause.Window = {
     var earliestStart: Int = java.lang.Integer.MAX_VALUE
     var earliestWindow: WindowClause.Window = null
     for (u <- currentWindows.asScala
@@ -142,10 +142,10 @@ class WindowClausePull(private var source: TuplePull,
       earliestWindow = u
     }
     if (earliestWindow == null || !earliestWindow.isFinished) {
-      false
+      null
     } else {
-      processWindow(earliestWindow, context)
-      true
+      earliestWindow.isDespatched = true
+      earliestWindow
     }
   }
 

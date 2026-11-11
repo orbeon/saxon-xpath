@@ -569,7 +569,7 @@ class CopyOf(select: Expression,
         }
         val pipe: PipelineConfiguration = out.getPipelineConfiguration
         if (copyLineNumbers) {
-          val copier: LocationCopier = new LocationCopier(false)
+          val copier: LocationCopier = new LocationCopier(false, out.getSystemId)
           pipe.setComponent(classOf[CopyInformee[_ <: AnyRef]].getName, copier)
         }
         item.copy(eval, copyOptions, getLocation)
@@ -645,7 +645,7 @@ class CopyOf(select: Expression,
         var savedPipe: PipelineConfiguration = null
         if (copyLineNumbers) {
           savedPipe = new PipelineConfiguration(`val`.pipelineConfiguration)
-          val copier: LocationCopier = new LocationCopier(true)
+          val copier: LocationCopier = new LocationCopier(true, getLocation.getSystemId)
           `val`.pipelineConfiguration
             .setComponent(classOf[CopyInformee[_ <: AnyRef]].getName, copier)
         }

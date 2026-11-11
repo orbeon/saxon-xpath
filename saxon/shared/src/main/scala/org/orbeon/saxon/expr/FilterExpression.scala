@@ -379,6 +379,8 @@ class FilterExpression(base: Expression, filter: Expression)
     val th = config.getTypeHierarchy
 
     lhs.optimize(visitor, contextItemType)
+    if (Literal.isEmptySequence(getSelectExpression))
+      return getSelectExpression
     getBase.setFiltered(true)
 
     val baseItemType = config.makeContextItemStaticInfo(getSelectExpression.getItemType, maybeUndefined = false)

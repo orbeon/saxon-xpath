@@ -21,8 +21,11 @@ class ConditionalBlock(children: Array[Expression]) extends Instruction {
 
   private var allNodesUntyped: Boolean = _
 
-  for (i <- children.indices)
+  for (i <- children.indices) {
     operanda(i) = new Operand(this, children(i), OperandRole.SAME_FOCUS_ACTION)
+    if (children(i).isInstanceOf[OnEmptyExpr])
+      operanda(i).setOperandRole(OperandRole.SAME_FOCUS_ACTION.withConstrainedClass)
+  }
 
   def this(children: List[Expression]) =
     this(children.toArray(Array.ofDim[Expression](children.size)))

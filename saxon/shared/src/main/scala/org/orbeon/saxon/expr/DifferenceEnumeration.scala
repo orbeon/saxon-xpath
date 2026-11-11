@@ -25,6 +25,7 @@ class DifferenceEnumeration(private var p1: SequenceIterator,
   def next(): NodeInfo = {
     while (true) {
       if (nextNode1 == null) {
+        p2.close()
         return null
       }
       if (nextNode2 == null) {

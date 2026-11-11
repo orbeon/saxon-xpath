@@ -7,8 +7,10 @@ import org.orbeon.saxon.om.NodeInfo
 
 import org.orbeon.saxon.s9api.Location
 
-class LocationCopier(private var wholeDocument: Boolean)
+class LocationCopier(private var wholeDocument: Boolean, private var systemId: String)
     extends CopyInformee[Location] {
+
+  def this(wholeDocument: Boolean) = this(wholeDocument, null)
 
   def notifyElementNode(element: NodeInfo): Location = {
     val systemId: String =
@@ -18,6 +20,8 @@ class LocationCopier(private var wholeDocument: Boolean)
     val columnNumber: Int = element.getColumnNumber
     new Loc(systemId, lineNumber, columnNumber)
   }
+
+  def getSystemId: String = systemId
 // The logic behind this is that if we are copying the whole document, we will be copying all
 // the relevant xml:base attributes; so retaining the systemId values is sufficient to enable
 // the base URIs of the nodes to be preserved. But if we only copy an element (for example

@@ -199,22 +199,26 @@ class ValueOf(select: Expression,
       }
       null
     } else if (getSelect.getItemType == BuiltInAtomicType.STRING && !isDisableOutputEscaping && !Cardinality.allowsZero(getCardinality)) {
+      val instructionLoc: Location = getLocation
       val toText: Outputter = new ProxyOutputter(output) {
         override def append(item: Item): Unit = {
-          getNextOutputter.characters(item.getStringValueCS, Loc.NONE, options)
+          getNextOutputter.characters(item.getStringValueCS, instructionLoc, options)
         }
 
         override def append(item: Item,
                             locationId: Location,
                             properties: Int): Unit = {
           getNextOutputter.characters(item.getStringValueCS,
-            locationId,
+            instructionLoc,
             properties | options)
         }
 
         override def getStringReceiver(
-                                        asTextNode: Boolean): CharSequenceConsumer =
-          getNextOutputter.getStringReceiver(true)
+                                        asTextNode: Boolean,
+                                        loc: Location): CharSequenceConsumer = {
+          val location = if (loc.getLineNumber == -1) instructionLoc else loc
+          getNextOutputter.getStringReceiver(true, location)
+        }
       }
       getSelect.process(toText, context)
       null

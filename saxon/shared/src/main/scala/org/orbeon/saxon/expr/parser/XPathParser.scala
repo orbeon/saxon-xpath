@@ -1013,6 +1013,7 @@ class XPathParser {
    * @return a conditional expression with the correct semantics
    */
   private def makeOtherwiseExpression(lhs: Expression, rhs: Expression) = {
+    checkSyntaxExtensions("otherwise")
     val let = new LetExpression
     let.setVariableQName(new StructuredQName("vv", NamespaceConstant.ANONYMOUS, "n" + lhs.hashCode))
     let.setSequence(lhs)
@@ -2682,9 +2683,9 @@ class XPathParser {
       case _ =>
         val entriesArray = new Array[Expression](entries.size)
         val block = new Block(entries.toArray(entriesArray))
-        val options = new DictionaryMap
-        options.initialPut("duplicates", new StringValue("reject"))
-        options.initialPut("duplicates-error-code", new StringValue("XQDY0137"))
+        val options = new HashTrieMap
+        options.initialPut(new StringValue("duplicates"), new StringValue("reject"))
+        options.initialPut(new QNameValue("", NamespaceConstant.SAXON, "duplicates-error-code"), new StringValue("XQDY0137"))
         result = MapFunctionSet.getInstance.makeFunction("merge", 2).makeFunctionCall(block, Literal.makeLiteral(options))
     }
     setLocation(result, offset)
@@ -2936,7 +2937,7 @@ class XPathParser {
 
   @throws[XPathException]
   def parseAnnotationsList: AnnotationList =
-    grumble("Inline functions are not allowed in Saxon-HE")
+    grumble("Function annotations are not allowed in XPath")
 
   @throws[XPathException]
   def parseInlineFunction(annotations: AnnotationList): Expression =

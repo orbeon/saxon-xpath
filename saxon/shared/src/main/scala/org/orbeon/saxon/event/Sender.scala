@@ -71,7 +71,7 @@ object Sender {
     lSource match {
       case ns: NodeInfo =>
         val baseURI = ns.getBaseURI
-        if (schemaValidation != Validation.PRESERVE)
+        if (schemaValidation != Validation.PRESERVE && pipe.getComponent(classOf[DocumentValidator].getName) == null)
           next = config.getDocumentValidator(next, baseURI, parserOptions, null)
         val kind = ns.getNodeKind
         if (kind != Type.DOCUMENT && kind != Type.ELEMENT)
@@ -198,7 +198,7 @@ object Sender {
     }
 // This code allows a document in one Configuration to be copied to another, changing
     val copier = new LocationCopier(
-      top.getNodeKind == Type.DOCUMENT)
+      top.getNodeKind == Type.DOCUMENT, location.getSystemId)
       pipe.setComponent(classOf[CopyInformee[_<: AnyRef]].getName, copier)
     // start event stream
     receiver.open()

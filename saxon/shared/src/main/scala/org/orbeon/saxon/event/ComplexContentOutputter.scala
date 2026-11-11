@@ -427,20 +427,20 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
     else
       nextReceiver.append(item, locationId, copyNamespaces)
 
-  override def getStringReceiver(asTextNode: Boolean): CharSequenceConsumer =
+  override def getStringReceiver(asTextNode: Boolean, loc: Location): CharSequenceConsumer =
     if (level >= 0) {
       new CharSequenceConsumer() {
         override def open(): Unit = {
           if (previousAtomic && !asTextNode) {
             ComplexContentOutputter.this.characters(" ",
-              Loc.NONE,
+              loc,
               ReceiverOption.NONE)
           }
         }
 
         override def cat(chars: CharSequence): CharSequenceConsumer = {
           ComplexContentOutputter.this.characters(chars,
-            Loc.NONE,
+            loc,
             ReceiverOption.NONE)
           this
         }
@@ -450,7 +450,7 @@ class ComplexContentOutputter(next: Receiver) extends Outputter with Receiver wi
         }
       }
     } else {
-      super.getStringReceiver(asTextNode)
+      super.getStringReceiver(asTextNode, loc)
     }
 
   override def close(): Unit = {

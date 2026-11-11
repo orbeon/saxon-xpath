@@ -46,7 +46,8 @@ object Mode {
 abstract class Mode(var modeName: StructuredQName) extends Actor {
 
   private var streamable: Boolean = _
-  val recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
+  var recoveryPolicy: RecoveryPolicy.RecoveryPolicy = RecoveryPolicy.RECOVER_WITH_WARNINGS
+  def setRecoveryPolicy(rp: RecoveryPolicy.RecoveryPolicy): Unit = this.recoveryPolicy = rp
   var mustBeTyped: Boolean = false
   var mustBeUntyped: Boolean = false
   var hasRules: Boolean = false

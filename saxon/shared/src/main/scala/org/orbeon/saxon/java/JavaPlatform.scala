@@ -160,13 +160,14 @@ class JavaPlatform extends Platform {
       if (semi >= 0) {
         useJava = flgs.indexOf('j', semi) >= 0
         useSaxon = flgs.indexOf('s', semi) >= 0
-        flgs = flgs.substring(0, semi)
       }
       if ("J" == config.getDefaultRegexEngine && ! useSaxon)
         useJava = true
-      if (useJava)
+      if (useJava) {
+        if (semi >= 0)
+          flgs = flgs.substring(0, semi)
         new JavaRegularExpression(regex, flgs)
-      else
+      } else
         new ARegularExpression(regex, flgs, hostLanguage, warnings, config)
     }
 }

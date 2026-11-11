@@ -146,9 +146,8 @@ abstract class AbstractResourceCollection(var config: Configuration)
         onError = params.getOnError
       }
       val controller: Controller = context.getController
-      //        final PipelineConfiguration newPipe = new PipelineConfiguration(oldPipe);
       val oldErrorListener: ErrorReporter =
-        if (controller == null) new StandardErrorReporter()
+        if (controller == null) context.getConfiguration.makeErrorReporter
         else controller.getErrorReporter
       setupErrorHandlingForCollection(options, onError, oldErrorListener)
     }

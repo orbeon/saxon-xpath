@@ -35,7 +35,7 @@ class DynamicQueryContext(private var config: Configuration) {
 
   private var uriResolver: URIResolver = config.getURIResolver
 
-  var errorReporter: ErrorReporter = new StandardErrorReporter()
+  var errorReporter: ErrorReporter = config.makeErrorReporter
 
   /*@Nullable*/
 

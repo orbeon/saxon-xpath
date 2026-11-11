@@ -73,7 +73,7 @@ class StaticQueryContext() {
 
   var moduleURIResolver: ModuleURIResolver = _
 
-  var errorReporter: ErrorReporter = new StandardErrorReporter()
+  var errorReporter: ErrorReporter = _
 
   var codeInjector: CodeInjector = _
 
@@ -89,6 +89,7 @@ class StaticQueryContext() {
     this()
     this.config = config
     this.namePool = config.getNamePool
+    this.errorReporter = config.makeErrorReporter
     if (initialize) {
       copyFrom(config.getDefaultStaticQueryContext)
     } else {
@@ -133,7 +134,7 @@ class StaticQueryContext() {
 
   def reset(): Unit = {
     userDeclaredNamespaces = new HashMap(10)
-    errorReporter = new StandardErrorReporter()
+    errorReporter = config.makeErrorReporter
     constructionMode =
       if (getConfiguration.isLicensedFeature(
         Configuration.LicenseFeature.ENTERPRISE_XQUERY))
@@ -271,7 +272,7 @@ class StaticQueryContext() {
     codeInjector.isInstanceOf[TraceCodeInjector]
 
   def setCompileWithTracing(trace: Boolean): Unit = {
-    codeInjector = if (trace) new TraceCodeInjector() else null
+    codeInjector = if (trace) new org.orbeon.saxon.trace.XQueryTraceCodeInjector() else null
   }
 
   def compileQuery(query: String): XQueryExpression = {

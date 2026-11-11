@@ -89,13 +89,19 @@ class SignificantItemDetector(val next: Outputter, var trigger: Action) extends 
    * Notify a namespace binding.
    */
   @throws[XPathException]
-  override def namespace(prefix: String, namespaceUri: String, properties: Int) = getNextOutputter.namespace(prefix, namespaceUri, properties)
+  override def namespace(prefix: String, namespaceUri: String, properties: Int) = {
+    start()
+    getNextOutputter.namespace(prefix, namespaceUri, properties)
+  }
 
   /**
    * Notify an attribute.
    */
   @throws[XPathException]
-  override def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, location: Location, properties: Int) = getNextOutputter.attribute(attName, typeCode, value, location, properties)
+  override def attribute(attName: NodeName, typeCode: SimpleType, value: CharSequence, location: Location, properties: Int) = {
+    start()
+    getNextOutputter.attribute(attName, typeCode, value, location, properties)
+  }
 
   /**
    * Notify the start of the content, that is, the completion of all attributes and namespaces.

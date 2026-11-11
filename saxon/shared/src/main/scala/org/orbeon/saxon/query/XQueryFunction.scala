@@ -158,15 +158,15 @@ class XQueryFunction extends Declaration with Location {
         compiledFunction.parameterDefinitions = params
         compiledFunction.setResultType(resultType)
         compiledFunction.lineNumber = location.getLineNumber
+        compiledFunction.columnNumber = location.getColumnNumber
         compiledFunction.systemId = location.getSystemId
         compiledFunction.setStackFrameMap(map)
         compiledFunction.setUpdating(isUpdating)
         compiledFunction.annotations = annotations
         if (staticContext.userQueryContext.isCompileWithTracing) {
           namespaceResolver = staticContext.getNamespaceResolver
-          val trace: ComponentTracer = new ComponentTracer(compiledFunction)
-          trace.setLocation(location)
-          body = trace
+          staticContext.getCodeInjector.process(compiledFunction)
+          body = compiledFunction.getBody
         }
       }
       fixupReferences()

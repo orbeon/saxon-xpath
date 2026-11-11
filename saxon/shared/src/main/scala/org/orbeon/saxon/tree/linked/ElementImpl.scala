@@ -2,7 +2,7 @@ package org.orbeon.saxon.tree.linked
 
 import java.util.function.Predicate
 
-import org.orbeon.saxon.event.{CopyInformee, Receiver, ReceiverOption}
+import org.orbeon.saxon.event.{CopyInformee, CopyNamespaceSensitiveException, Receiver, ReceiverOption}
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model._
@@ -156,8 +156,9 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
 
   override def copy(out: Receiver, copyOptions: Int, location: Location): Unit = {
     var lLocation = location
+    val copyTypes = CopyOptions.includes(copyOptions, CopyOptions.TYPE_ANNOTATIONS)
     val typeCode: SchemaType =
-      if (CopyOptions.includes(copyOptions, CopyOptions.TYPE_ANNOTATIONS))
+      if (copyTypes)
         getSchemaType
       else Untyped.getInstance
     val informee: CopyInformee[AnyRef] = out.getPipelineConfiguration
@@ -175,12 +176,39 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES))
         getAllNamespaces
       else NamespaceMap.emptyMap
+
+    val disallowNamespaceSensitiveContent =
+      ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0) &&
+        ((copyOptions & CopyOptions.ALL_NAMESPACES) == 0)
+    if (copyTypes && disallowNamespaceSensitiveContent) {
+      try {
+        checkNotNamespaceSensitiveElement(getSchemaType)
+      } catch {
+        case e: CopyNamespaceSensitiveException =>
+          e.setErrorCode(if (out.getPipelineConfiguration.isXSLT) "XTTE0950" else "XQTY0086")
+          throw e
+      }
+    }
+
     val atts: ju.List[AttributeInfo] =
       new ju.ArrayList[AttributeInfo](attributes.size)
     for (att <- attributes.iterator.asScala) {
+      var attributeType: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
+      if (copyTypes) {
+        attributeType = att.`type`
+        if (disallowNamespaceSensitiveContent) {
+          try {
+            checkNotNamespaceSensitiveAttribute(attributeType, att)
+          } catch {
+            case e: CopyNamespaceSensitiveException =>
+              e.setErrorCode(if (out.getPipelineConfiguration.isXSLT) "XTTE0950" else "XQTY0086")
+              throw e
+          }
+        }
+      }
       atts.add(
         new AttributeInfo(att.nodeName,
-          BuiltInAtomicType.UNTYPED_ATOMIC,
+          attributeType,
           att.value,
           att.location,
           0))
@@ -199,6 +227,40 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       next = next.getNextSibling
     }
     out.endElement()
+  }
+
+  protected def checkNotNamespaceSensitiveElement(`type`: SchemaType): Unit = {
+    if (`type`.isInstanceOf[SimpleType] && `type`.asInstanceOf[SimpleType].isNamespaceSensitive) {
+      if (`type`.isAtomicType) {
+        throw new CopyNamespaceSensitiveException(
+          "Cannot copy QName or NOTATION values without copying namespaces")
+      } else {
+        val value = atomize()
+        for (valItem <- value.asScala) {
+          if (valItem.getPrimitiveType.isNamespaceSensitive) {
+            throw new CopyNamespaceSensitiveException(
+              "Cannot copy QName or NOTATION values without copying namespaces")
+          }
+        }
+      }
+    }
+  }
+
+  private def checkNotNamespaceSensitiveAttribute(`type`: SimpleType, att: AttributeInfo): Unit = {
+    if (`type`.isNamespaceSensitive) {
+      if (`type`.isAtomicType) {
+        throw new CopyNamespaceSensitiveException(
+          "Cannot copy QName or NOTATION values without copying namespaces")
+      } else {
+        val value = `type`.getTypedValue(att.value, namespaceMap, getConfiguration.getConversionRules)
+        for (valItem <- value.asScala) {
+          if (valItem.getPrimitiveType.isNamespaceSensitive) {
+            throw new CopyNamespaceSensitiveException(
+              "Cannot copy QName or NOTATION values without copying namespaces")
+          }
+        }
+      }
+    }
   }
 
   override def delete(): Unit = {
@@ -222,7 +284,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     }
   }
 
-  override def rename(newName: NodeName): Unit = {
+  override def rename(newName: NodeName, inheritNamespaces: Boolean): Unit = {
     val prefix: String = newName.getPrefix
     val uri: String = newName.getURI
     val ns: NamespaceBinding = new NamespaceBinding(prefix, uri)
@@ -232,7 +294,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     }
     if (uc != uri) {
       if (uc.isEmpty) {
-        addNamespace(ns)
+        addNamespace(ns, inheritNamespaces)
       } else {
         throw new IllegalArgumentException(
           "Namespace binding of new name conflicts with existing namespace binding")
@@ -241,7 +303,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     nodeN = newName
   }
 
-  override def addNamespace(binding: NamespaceBinding): Unit = {
+  override def addNamespace(binding: NamespaceBinding, inheritNamespaces: Boolean): Unit = {
     if (binding.getURI.isEmpty) {
       throw new IllegalArgumentException(
         "Cannot add a namespace undeclaration")
@@ -287,7 +349,8 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   override def addAttribute(nodeName: NodeName,
                             attType: SimpleType,
                             value: CharSequence,
-                            properties: Int): Unit = {
+                            properties: Int,
+                            inheritNamespaces: Boolean): Unit = {
     var atts: AttributeMapWithIdentity = prepareAttributesForUpdate()
     atts = atts.add(
       new AttributeInfo(nodeName,
@@ -301,7 +364,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       val prefix: String = binding.prefix
       val uc: String = getURIForPrefix(prefix, useDefault = false)
       if (uc == null) {
-        addNamespace(binding)
+        addNamespace(binding, inheritNamespaces)
       } else if (uc != binding.getURI) {
         throw new IllegalStateException(
           "Namespace binding of new name conflicts with existing namespace binding")
@@ -345,13 +408,39 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
     namespaceMap = namespaceMap.remove(prefix)
   }
 
-  override def addNamespace(prefix: String, uri: String): Unit = {
-    val existingURI: String = namespaceMap.getURI(prefix)
-    if (existingURI == null) {
-      namespaceMap = namespaceMap.put(prefix, uri)
-    } else if (existingURI != uri) {
-      throw new IllegalStateException(
-        "New namespace binding conflicts with existing namespace binding")
+  override def addNamespace(prefix: String, uri: String, inherit: Boolean): Unit = {
+    val binding = new NamespaceBinding(prefix, uri)
+    if (binding.getURI.isEmpty) {
+      throw new IllegalArgumentException("Cannot add a namespace undeclaration")
+    }
+    val existing = namespaceMap.getURI(binding.prefix)
+    if (existing != null) {
+      if (existing != binding.getURI) {
+        throw new IllegalArgumentException(
+          "New namespace conflicts with existing namespace binding")
+      }
+    } else {
+      val oldMap = namespaceMap
+      namespaceMap = namespaceMap.put(binding.prefix, binding.getURI)
+      if (inherit && (namespaceMap ne oldMap)) {
+        for (child <- getChildren(NodeKindTest.ELEMENT)) {
+          child.asInstanceOf[ElementImpl].inheritParentNamespaces(binding, oldMap, namespaceMap)
+        }
+      }
+    }
+  }
+
+  private def inheritParentNamespaces(binding: NamespaceBinding, oldParentMap: NamespaceMap, newParentMap: NamespaceMap): Unit = {
+    val oldMap = namespaceMap
+    if (oldMap.getURIForPrefix(binding.prefix, useDefault = false) == null) {
+      if (namespaceMap eq oldParentMap) {
+        namespaceMap = newParentMap
+      } else {
+        namespaceMap = namespaceMap.put(binding.prefix, binding.getURI)
+      }
+      for (child <- getChildren(NodeKindTest.ELEMENT)) {
+        child.asInstanceOf[ElementImpl].inheritParentNamespaces(binding, oldMap, namespaceMap)
+      }
     }
   }
 

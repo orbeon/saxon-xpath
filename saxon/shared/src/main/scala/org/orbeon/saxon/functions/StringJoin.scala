@@ -57,7 +57,7 @@ class StringJoin extends FoldingFunction with PushableFunction {
       if (arguments.length > 1)
         arguments(1).head.getStringValueCS
       else ""
-    val output = destination.getStringReceiver(false)
+    val output = destination.getStringReceiver(false, org.orbeon.saxon.expr.parser.Loc.NONE)
     output.open()
     var first = true
     val iter = arguments(0).iterate()

@@ -386,11 +386,12 @@ abstract class NodeImpl
   def addAttribute(name: NodeName,
                    attType: SimpleType,
                    value: CharSequence,
-                   properties: Int): Unit = ()
+                   properties: Int,
+                   inheritNamespaces: Boolean): Unit = ()
 
-  def rename(newNameCode: NodeName): Unit = ()
+  def rename(newNameCode: NodeName, inheritNamespaces: Boolean): Unit = ()
 
-  def addNamespace(nscode: NamespaceBinding): Unit = ()
+  def addNamespace(nscode: NamespaceBinding, inheritNamespaces: Boolean): Unit = ()
 
   def replace(replacement: Array[NodeInfo], inherit: Boolean): Unit = {
     if (isDeleted) {

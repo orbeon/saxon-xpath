@@ -53,6 +53,8 @@ object SystemFunction {
     var xPathCont = context
     xPathCont = f.makeNewContext(xPathCont, null)
     xPathCont.setCurrentOutputUri(null)
+    if (xPathCont.isInstanceOf[XPathContextMajor])
+      xPathCont.asInstanceOf[XPathContextMajor].setCurrentRegexIterator(null)
     f.call(xPathCont, args)
   }
 

@@ -58,9 +58,9 @@ class Saxon102PatchesTest extends XPathTestBase {
   describe("Saxon 10.1 to 10.2 Upstream Patches") {
 
     describe("Version") {
-      it("must report Saxon 10.6 version") {
-        assert(Version.getProductVersion == "10.6")
-        assert(Version.getStructuredVersionNumber.sameElements(Array(10, 6, 91613)))
+      it("must report Saxon 10.7 version") {
+        assert(Version.getProductVersion == "10.7")
+        assert(Version.getStructuredVersionNumber.sameElements(Array(10, 7, 22411)))
       }
     }
 

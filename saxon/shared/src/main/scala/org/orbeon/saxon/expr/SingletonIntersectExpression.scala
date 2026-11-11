@@ -94,6 +94,7 @@ class SingletonIntersectExpression(p1: Expression, op: Int, p2: Expression)
       n = iter.next().asInstanceOf[NodeInfo]
       n
     }) != null) if (n == m) {
+      iter.close()
       return SingletonIterator.makeIterator(m)
     }
     EmptyIterator.getInstance

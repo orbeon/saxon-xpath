@@ -18,7 +18,7 @@ import org.orbeon.saxon.s9api.Location
 
 import org.orbeon.saxon.trans.XPathException
 
-import org.orbeon.saxon.tree.iter.AxisIterator
+import org.orbeon.saxon.tree.iter.{AxisIterator, EmptyIterator}
 
 import org.orbeon.saxon.tree.util.Navigator
 
@@ -104,7 +104,14 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
     getNodeKind match {
       case Type.ATTRIBUTE | Type.NAMESPACE | Type.TEXT | Type.COMMENT |
            Type.PROCESSING_INSTRUCTION =>
-        super.iterateAxis(axisNumber, nodeTest)
+        axisNumber match {
+          case AxisInfo.CHILD | AxisInfo.DESCENDANT | AxisInfo.DESCENDANT_OR_SELF |
+               AxisInfo.PRECEDING_SIBLING | AxisInfo.FOLLOWING_SIBLING |
+               AxisInfo.PRECEDING | AxisInfo.FOLLOWING =>
+            EmptyIterator.ofNodes
+          case _ =>
+            super.iterateAxis(axisNumber, nodeTest)
+        }
       case _ =>
         if (!original.isSameNodeInfo(pivot) && Navigator.isAncestorOrSelf(
           original,
@@ -121,6 +128,9 @@ class SnapshotNode(base: NodeInfo, var pivot: NodeInfo)
                 iter = new Navigator.AxisFilter(iter, nodeTest)
               }
               iter
+            case AxisInfo.PRECEDING_SIBLING | AxisInfo.FOLLOWING_SIBLING |
+                 AxisInfo.PRECEDING | AxisInfo.FOLLOWING =>
+              EmptyIterator.ofNodes
             case _ => super.iterateAxis(axisNumber, nodeTest)
 
           }

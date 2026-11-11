@@ -80,7 +80,7 @@ class Concat extends SystemFunction with PushableFunction {
   def process(destination: Outputter,
                        context: XPathContext,
                        arguments: Array[Sequence]): Unit = {
-    val output = destination.getStringReceiver(false)
+    val output = destination.getStringReceiver(false, org.orbeon.saxon.expr.parser.Loc.NONE)
     output.open()
     for (arg <- arguments) {
       val item = arg.head

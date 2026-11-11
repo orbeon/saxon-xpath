@@ -92,4 +92,15 @@ abstract class Clause {
   def getClauseKey: ClauseName.ClauseName
 
   def toShortString: String = toString
+
+  def getTraceInfo: java.util.Map[String, Any] = {
+    val vars = getRangeVariables
+    if (vars.length == 0) {
+      java.util.Collections.emptyMap()
+    } else {
+      val info = new java.util.HashMap[String, Any](1)
+      info.put("var", "$" + vars(0).getVariableQName.getDisplayName)
+      info
+    }
+  }
 }

@@ -686,6 +686,8 @@ class TinyTree(config: Configuration, statistics: Statistics)
     if (systemIdMap == null)
       systemIdMap = new SystemIdMap()
     systemIdMap.setSystemId(seq, uriStr)
+    if (getSystemId(0) == null)
+      setSystemId(0, uriStr)
   }
 
   /*@Nullable*/

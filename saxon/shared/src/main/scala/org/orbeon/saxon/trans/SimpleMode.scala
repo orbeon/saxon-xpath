@@ -230,37 +230,52 @@ class SimpleMode(val structModeName: StructuredQName) extends Mode(structModeNam
    */
   @throws[XPathException]
   def checkForConflictingProperties(): Unit = {
-
+    var failOnMultipleMatch = false
+    var warningOnMultipleMatch = true
     for (entry <- getActivePart.explicitPropertyValues.entrySet.asScala) {
       val prop = entry.getKey
       val value = entry.getValue
       if (value == "##conflict##") throw new XPathException("For " + getLabel + ", there are conflicting values for xsl:mode/@" + prop + " at the same import precedence", "XTSE0545")
-      if (prop == "typed") {
-        mustBeTyped = "yes" == value || "strict" == value || "lax" == value
-        mustBeUntyped = "no" == value
-      }
-      else if (prop == "on-no-match") {
-        var base: BuiltInRuleSet = null
-        value match {
-          case "text-only-copy" =>
-            base = TextOnlyCopyRuleSet.getInstance
-          case "shallow-copy" =>
-            base = ShallowCopyRuleSet.getInstance
-          case "deep-copy" =>
-            base = DeepCopyRuleSet.getInstance
-          case "shallow-skip" =>
-            base = ShallowSkipRuleSet.getInstance
-          case "deep-skip" =>
-            base = DeepSkipRuleSet.getInstance
-          case "fail" =>
-            base = FailRuleSet.getInstance
-          case _ =>
-          // already validated
-        }
-        if ("yes" == explicitPropertyValues.get("warning-on-no-match")) base = new RuleSetWithWarnings(base)
-        setBuiltInRuleSet(base)
+      prop match {
+        case "streamable" =>
+          val streamable = "yes" == value
+          setStreamable(streamable)
+        case "typed" =>
+          mustBeTyped = "yes" == value || "strict" == value || "lax" == value
+          mustBeUntyped = "no" == value
+        case "on-no-match" =>
+          var base: BuiltInRuleSet = null
+          value match {
+            case "text-only-copy" =>
+              base = TextOnlyCopyRuleSet.getInstance
+            case "shallow-copy" =>
+              base = ShallowCopyRuleSet.getInstance
+            case "deep-copy" =>
+              base = DeepCopyRuleSet.getInstance
+            case "shallow-skip" =>
+              base = ShallowSkipRuleSet.getInstance
+            case "deep-skip" =>
+              base = DeepSkipRuleSet.getInstance
+            case "fail" =>
+              base = FailRuleSet.getInstance
+            case _ =>
+            // already validated
+          }
+          if ("yes" == explicitPropertyValues.get("warning-on-no-match")) base = new RuleSetWithWarnings(base)
+          setBuiltInRuleSet(base)
+        case "on-multiple-match" =>
+          if (value == "fail") failOnMultipleMatch = true
+        case "warning-on-multiple-match" =>
+          warningOnMultipleMatch = "yes" == value
+        case _ =>
       }
     }
+    if (failOnMultipleMatch)
+      setRecoveryPolicy(RecoveryPolicy.DO_NOT_RECOVER)
+    else if (warningOnMultipleMatch)
+      setRecoveryPolicy(RecoveryPolicy.RECOVER_WITH_WARNINGS)
+    else
+      setRecoveryPolicy(RecoveryPolicy.RECOVER_SILENTLY)
   }
 
   /**

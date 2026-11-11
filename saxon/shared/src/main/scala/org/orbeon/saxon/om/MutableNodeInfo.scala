@@ -26,13 +26,23 @@ trait MutableNodeInfo extends NodeInfo {
   def addAttribute(name: NodeName,
                    attType: SimpleType,
                    value: CharSequence,
-                   properties: Int): Unit
+                   properties: Int,
+                   inheritNamespaces: Boolean): Unit
+
+  def addAttribute(name: NodeName,
+                   attType: SimpleType,
+                   value: CharSequence,
+                   properties: Int): Unit =
+    addAttribute(name, attType, value, properties, inheritNamespaces = false)
 
   def removeNamespace(prefix: String): Unit = ()
 // default: no action
 // default: no action
 
-  def addNamespace(prefix: String, uri: String): Unit = ()
+  def addNamespace(prefix: String, uri: String, inherit: Boolean): Unit = ()
+
+  def addNamespace(prefix: String, uri: String): Unit =
+    addNamespace(prefix, uri, inherit = false)
 // default: no action
 // default: no action
 
@@ -44,9 +54,15 @@ trait MutableNodeInfo extends NodeInfo {
 
   def replaceStringValue(stringValue: CharSequence): Unit
 
-  def rename(newName: NodeName): Unit
+  def rename(newName: NodeName, inheritNamespaces: Boolean): Unit
 
-  def addNamespace(nscode: NamespaceBinding): Unit
+  def rename(newName: NodeName): Unit =
+    rename(newName, inheritNamespaces = false)
+
+  def addNamespace(nscode: NamespaceBinding, inheritNamespaces: Boolean): Unit
+
+  def addNamespace(nscode: NamespaceBinding): Unit =
+    addNamespace(nscode, inheritNamespaces = false)
 
   def removeTypeAnnotation(): Unit
 

@@ -20,7 +20,7 @@ class TraceClausePush(outputter: Outputter,
       val baseInfo: ClauseInfo = new ClauseInfo(baseClause)
       baseInfo.setNamespaceResolver(traceClause.getNamespaceResolver)
       controller.getTraceListener.enter(baseInfo,
-        Collections.emptyMap(),
+        baseClause.getTraceInfo,
         context)
       destination.processTuple(context)
       controller.getTraceListener.leave(baseInfo)

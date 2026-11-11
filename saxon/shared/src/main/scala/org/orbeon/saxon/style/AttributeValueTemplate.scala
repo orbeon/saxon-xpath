@@ -75,7 +75,7 @@ object AttributeValueTemplate {
           var exp: Expression = null
           val parser = env.getConfiguration.newExpressionParser("XP", updating = false, languageLevel)
           //parser.setDefaultContainer(container);
-          parser.setLanguage(XPathParser.ParsedLanguage.XPATH, 31)
+          parser.setLanguage(XPathParser.ParsedLanguage.XPATH, languageLevel)
           parser.setAllowAbsentExpression(allowEmpty = true)
           exp = parser.parse(avt, i0 + 1, Token.RCURLY, env)
           exp.setRetainedStaticContext(env.makeRetainedStaticContext())

@@ -450,7 +450,7 @@ abstract class AbstractNumberer extends Numberer {
 
   def toWords(number: Long, wordCase: Int): String = {
     var s: String = null
-    s = if (number == 0) "Zero" else toWords(number)
+    s = if (number == 0) zero() else toWords(number)
     wordCase match {
       case UPPER_CASE => s.toUpperCase()
       case LOWER_CASE => s.toLowerCase()
@@ -458,6 +458,8 @@ abstract class AbstractNumberer extends Numberer {
 
     }
   }
+
+  def zero(): String = "Zero"
 
   def toOrdinalWords(ordinalParam: String, number: Long, wordCase: Int): String
 

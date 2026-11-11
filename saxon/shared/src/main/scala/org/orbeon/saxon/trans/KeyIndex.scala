@@ -4,9 +4,9 @@ import java.util
 
 import org.orbeon.saxon.expr.{XPathContext, XPathContextMajor}
 //import scala.collection.compat._
-import org.orbeon.saxon.expr.sort.{AtomicMatchKey, LocalOrderComparer}
+import org.orbeon.saxon.expr.sort.{AtomicMatchKey, DocumentOrderIterator, GlobalOrderComparer, LocalOrderComparer}
 import org.orbeon.saxon.lib.{ConversionRules, StringCollator}
-import org.orbeon.saxon.model.{BuiltInAtomicType, StringConverter, UType}
+import org.orbeon.saxon.model._
 import org.orbeon.saxon.om.{NodeInfo, SequenceIterator, StandardNames, TreeInfo}
 import org.orbeon.saxon.regex.UnicodeString
 import org.orbeon.saxon.tree.iter.{EmptyIterator, ListIterator, ManualIterator, SingleNodeIterator}
@@ -213,9 +213,32 @@ class KeyIndex(isRangeKey: Boolean) {
       !keyTypesConvertedFromUntyped.subsumes(soughtValue.getUType)) {
       reindexUntypedValues(soughtValue.getPrimitiveType)
     }
-    val value: AnyRef =
-      index.get(getCollationKey(soughtValue, collation, implicitTimezone)).asInstanceOf[AnyRef]
-    entryIterator(value)
+    if (soughtValue.isInstanceOf[UntypedAtomicValue]) {
+      val resultNodes = new util.ArrayList[NodeInfo]()
+      var counter = 0
+      for (`type` <- keyTypesPresent.decompose.asScala) {
+        val targetType = `type`.toItemType.asInstanceOf[AtomicType]
+        val converted = Converter.convert(soughtValue, targetType, rules)
+        val value = index.get(getCollationKey(converted, collation, implicitTimezone))
+        if (value != null) {
+          counter += 1
+          if (value.isInstanceOf[NodeInfo]) {
+            resultNodes.add(value.asInstanceOf[NodeInfo])
+          } else {
+            resultNodes.addAll(value.asInstanceOf[util.List[NodeInfo]])
+          }
+        }
+      }
+      var result: SequenceIterator = new ListIterator(resultNodes)
+      if (counter > 1) {
+        result = new DocumentOrderIterator(result, GlobalOrderComparer.instance)
+      }
+      result
+    } else {
+      val value: AnyRef =
+        index.get(getCollationKey(soughtValue, collation, implicitTimezone)).asInstanceOf[AnyRef]
+      entryIterator(value)
+    }
   }
 
   def entryIterator(value: AnyRef): SequenceIterator =

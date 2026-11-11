@@ -304,7 +304,11 @@ class Copy(
     val controller: Controller = context.getController
     val item: Item = context.getContextItem
     if (item == null) {
-      return null
+      val err = new XPathException("There is no context item for xsl:copy", "XTTE0945")
+      err.setIsTypeError(true)
+      err.setLocation(getLocation)
+      err.setXPathContext(context)
+      throw err
     }
     if (!(item.isInstanceOf[NodeInfo])) {
       outPutter.append(item, getLocation, ReceiverOption.ALL_NAMESPACES)

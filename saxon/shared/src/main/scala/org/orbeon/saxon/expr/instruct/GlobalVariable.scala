@@ -311,7 +311,7 @@ class GlobalVariable
   def getSelectValue(context: XPathContext, target: Component): GroundedValue = {
     val select: Expression = getBody
     if (select == null) {
-      throw new AssertionError("*** No select expression for global variable $" + getVariableQName.getDisplayName + "!!")
+      throw new AssertionError("*** No select expression for global variable $" + getVariableQName.getDisplayName)
     } else select match {
       case literal: Literal =>
         literal.value

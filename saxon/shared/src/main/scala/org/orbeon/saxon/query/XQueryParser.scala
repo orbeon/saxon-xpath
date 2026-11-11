@@ -1280,6 +1280,7 @@ class XQueryParser extends XPathParser {
     var `var` = new GlobalVariable
     `var`.packageData = env.getPackageData
     `var`.lineNumber = t.getLineNumber + 1
+    `var`.columnNumber = t.getColumnNumber + 1
     `var`.systemId = env.getSystemId
     if (annotations != null) `var`.setPrivate(annotations.includes(Annotation.PRIVATE))
     nextToken()
@@ -1313,6 +1314,7 @@ class XQueryParser extends XPathParser {
       par.packageData = env.getPackageData
 
       par.lineNumber = `var`.getLineNumber
+      par.columnNumber = `var`.getColumnNumber
       par.systemId = `var`.getSystemId
       par.variableQName = `var`.getVariableQName
       par.requiredType = `var`.getRequiredType
@@ -1634,6 +1636,7 @@ class XQueryParser extends XPathParser {
           nextToken()
           val condition = parseExprSingle
           val clause = new WhereClause(flwor, condition)
+          setLocation(clause, t.currentTokenStartOffset)
           clause.setRepeated(XQueryParser.containsLoopingClause(clauseList))
           clauseList.add(clause)
         }
@@ -1809,7 +1812,7 @@ class XQueryParser extends XPathParser {
   }
 
   @throws[XPathException]
-  private def parseCountClause(clauseList: util.List[Clause]) = while ({
+  private def parseCountClause(clauseList: util.List[Clause]): Unit = {
     val clause = new CountClause
     setLocation(clause, t.currentTokenStartOffset)
     clause.setRepeated(XQueryParser.containsLoopingClause(clauseList))
@@ -1825,8 +1828,7 @@ class XQueryParser extends XPathParser {
     val v = new LocalVariableBinding(varQName, `type`)
     clause.rangeVariable = v
     declareRangeVariable(v)
-    t.currentToken == Token.COMMA
-  }) ()
+  }
 
   @throws[XPathException]
   private def parseGroupByClause(flwor: FLWORExpression, clauseList: util.List[Clause]): Unit = {

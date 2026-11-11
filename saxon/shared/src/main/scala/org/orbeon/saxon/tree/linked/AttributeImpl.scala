@@ -104,12 +104,13 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
         NameOfNode.makeName(n),
         BuiltInAtomicType.UNTYPED_ATOMIC,
         n.getStringValue,
-        ReceiverOption.NONE
+        ReceiverOption.NONE,
+        inherit
       )
     }
   }
 
-  override def rename(newNameCode: NodeName): Unit = {
+  override def rename(newNameCode: NodeName, inheritNamespaces: Boolean): Unit = {
     val owner: ElementImpl = getRawParent.asInstanceOf[ElementImpl]
     if (owner != null && !isDeleted) {
       val att: AttributeInfo = getAttributeInfo
@@ -131,7 +132,7 @@ class AttributeImpl(element: ElementImpl, index: Int) extends NodeImpl {
           .asInstanceOf[ElementImpl]
           .getURIForPrefix(newPrefix, useDefault = false)
         if (oldURI == null)
-          owner.addNamespace(newBinding)
+          owner.addNamespace(newBinding, inheritNamespaces)
         else if (oldURI != newURI)
           throw new IllegalArgumentException("Namespace binding of new name conflicts with existing namespace binding")
       }

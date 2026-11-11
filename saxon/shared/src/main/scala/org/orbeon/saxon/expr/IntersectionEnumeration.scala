@@ -24,7 +24,12 @@ class IntersectionEnumeration(private var e1: SequenceIterator,
     iter.next().asInstanceOf[NodeInfo]
 
   def next(): NodeInfo = {
-    if (nextNode1 == null || nextNode2 == null) {
+    if (nextNode1 == null) {
+      e2.close()
+      return null
+    }
+    if (nextNode2 == null) {
+      e1.close()
       return null
     }
     while (nextNode1 != null && nextNode2 != null) {

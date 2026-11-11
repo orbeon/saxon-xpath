@@ -92,6 +92,12 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
     if (arrays == null)
       arrays = new ArrayList[Array[NodeImpl]](20)
     super.open()
+    if (useEventLocation) {
+      val copier = getPipelineConfiguration.getComponent(classOf[CopyInformee[_]].getName)
+      if (copier.isInstanceOf[LocationCopier]) {
+        setSystemId(copier.asInstanceOf[LocationCopier].getSystemId)
+      }
+    }
   }
 
   def startDocument(properties: Int): Unit = {

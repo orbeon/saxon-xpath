@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.event
 
+import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.model.SchemaType
 
 import org.orbeon.saxon.model.SimpleType
@@ -19,9 +20,14 @@ import org.orbeon.saxon.trans.XPathException
 
 class ProxyOutputter(private var next: Outputter) extends Outputter {
 
+  private var location: Location = Loc.NONE
+
   this.pipelineConfiguration = next.getPipelineConfiguration
 
   this.systemId = next.getSystemId
+
+  def setLocation(location: Location): Unit =
+    this.location = location
 
   def getNextOutputter: Outputter = next
 

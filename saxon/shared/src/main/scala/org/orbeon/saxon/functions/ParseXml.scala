@@ -130,12 +130,18 @@ class ParseXml extends SystemFunction {
       options.errorHandler = errorHandler
       s.setPipelineConfiguration(b.getPipelineConfiguration)
       Sender.send(source, s, options)
-      val node: TinyDocumentImpl =
-        b.getCurrentRoot.asInstanceOf[TinyDocumentImpl]
-      node.setBaseURI(baseURI)
-      node.getTreeInfo.setUserData("saxon:document-uri", "")
+      val root: NodeInfo = b.getCurrentRoot
+      root match {
+        case node: TinyDocumentImpl =>
+          node.setBaseURI(baseURI)
+          node.getTreeInfo.setUserData("saxon:document-uri", "")
+        case node: org.orbeon.saxon.tree.linked.DocumentImpl =>
+          node.setBaseURI(baseURI)
+          node.getTreeInfo.setUserData("saxon:document-uri", "")
+        case _ =>
+      }
       b.reset()
-      node
+      root
     } catch {
       case err: XPathException => {
         val xe: XPathException = new XPathException(

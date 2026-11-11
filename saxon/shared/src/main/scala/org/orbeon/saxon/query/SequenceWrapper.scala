@@ -4,7 +4,7 @@ import org.orbeon.saxon.event.{ComplexContentOutputter, Receiver, ReceiverOption
 import org.orbeon.saxon.expr.parser.Loc
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.ma.arrays.ArrayItem
-import org.orbeon.saxon.ma.map.MapItem
+import org.orbeon.saxon.ma.map.{KeyValuePair, MapItem}
 import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
@@ -31,7 +31,11 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   private var resultAtomicValue: FingerprintedQName = _
   private var resultFunction: FingerprintedQName = _
   private var resultArray: FingerprintedQName = _
+  private var resultArrayMember: FingerprintedQName = _
   private var resultMap: FingerprintedQName = _
+  private var resultMapEntry: FingerprintedQName = _
+  private var resultMapKey: FingerprintedQName = _
+  private var resultMapValue: FingerprintedQName = _
   private var resultExternalValue: FingerprintedQName = _
   private var xsiType: FingerprintedQName = _
   private var namespaces: NamespaceMap = _
@@ -41,7 +45,8 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   @throws[XPathException]
   private def startWrapper(name: NodeName): Unit = {
     out.startElement(name, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
-    out.namespace("", "", ReceiverOption.NONE)
+    out.namespace("xs", NamespaceConstant.SCHEMA, ReceiverOption.NONE)
+    out.namespace("xsi", NamespaceConstant.SCHEMA_INSTANCE, ReceiverOption.NONE)
     out.startContent()
   }
 
@@ -61,12 +66,15 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     resultAtomicValue = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "atomic-value")
     resultFunction = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "function")
     resultArray = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "array")
+    resultArrayMember = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "array-member")
     resultMap = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "map")
+    resultMapEntry = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "map-entry")
+    resultMapKey = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "map-key")
+    resultMapValue = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "map-value")
     resultExternalValue = new FingerprintedQName("result", SequenceWrapper.RESULT_NS, "external-object")
     xsiType = new FingerprintedQName("xsi", NamespaceConstant.SCHEMA_INSTANCE, "type")
     out.open()
     out.startDocument(ReceiverOption.NONE)
-    namespaces = NamespaceMap.emptyMap.put("result", SequenceWrapper.RESULT_NS).put("xs", NamespaceConstant.SCHEMA).put("xsi", NamespaceConstant.SCHEMA_INSTANCE)
     startWrapper(resultSequence)
   }
 
@@ -89,7 +97,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
       depth - 1
     } == 0) startWrapper(resultElement)
     out.startElement(elemName, `type`, location, properties)
-    out.namespace("", "", properties)
 
     for (att <- attributes.iterator.asScala) {
       out.attribute(att.nodeName, att.`type`, att.value, att.location, att.properties)
@@ -134,7 +141,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
   override def append(item: Item, locationId: Location, copyNamespaces: Int): Unit = if (item.isInstanceOf[AtomicValue]) {
     val pool = getNamePool
     out.startElement(resultAtomicValue, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
-    out.namespace("", "", ReceiverOption.NONE)
     val `type` = item.asInstanceOf[AtomicValue].getItemType
     val name = `type`.getStructuredQName
     var prefix = name.getPrefix
@@ -145,7 +151,6 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
       if (prefix == null) prefix = "p" + uri.hashCode
     }
     val displayName = prefix + ':' + localName
-    out.namespace("", "", ReceiverOption.NONE)
     out.namespace(prefix, uri, ReceiverOption.NONE)
     out.attribute(xsiType, BuiltInAtomicType.UNTYPED_ATOMIC, displayName, locationId, ReceiverOption.NONE)
     out.startContent()
@@ -159,19 +164,41 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     else if (kind == Type.NAMESPACE) namespace(new NamespaceBinding(node.getLocalPart, node.getStringValue), 0)
     else item.asInstanceOf[NodeInfo].copy(this, CopyOptions.ALL_NAMESPACES | CopyOptions.TYPE_ANNOTATIONS, locationId)
   }
-  else if (item.isInstanceOf[Function]) if (item.isInstanceOf[MapItem]) {
-    out.startElement(resultMap, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
-    out.startContent()
-    out.characters(item.toShortString, locationId, ReceiverOption.NONE)
+  else if (item.isInstanceOf[MapItem]) {
+    val out = getDestination
+    out.startElement(resultMap, Untyped.getInstance, locationId, ReceiverOption.NONE)
+    val map = item.asInstanceOf[MapItem]
+    for (pair <- map.keyValuePairs.asScala) {
+      out.startElement(resultMapEntry, Untyped.getInstance, locationId, ReceiverOption.NONE)
+      out.startElement(resultMapKey, Untyped.getInstance, locationId, ReceiverOption.NONE)
+      append(pair.key)
+      out.endElement()
+      out.startElement(resultMapValue, Untyped.getInstance, locationId, ReceiverOption.NONE)
+      val value = pair.value.iterate()
+      var valItem: Item = null
+      while ({ valItem = value.next(); valItem != null }) {
+        append(valItem)
+      }
+      out.endElement()
+      out.endElement()
+    }
     out.endElement()
   }
   else if (item.isInstanceOf[ArrayItem]) {
     out.startElement(resultArray, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
     out.startContent()
-    out.characters(item.toShortString, locationId, ReceiverOption.NONE)
+    for (mem <- item.asInstanceOf[ArrayItem].members) {
+      out.startElement(resultArrayMember, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
+      val value = mem.iterate()
+      var valItem: Item = null
+      while ({ valItem = value.next(); valItem != null }) {
+        append(valItem)
+      }
+      out.endElement()
+    }
     out.endElement()
   }
-  else {
+  else if (item.isInstanceOf[Function]) {
     out.startElement(resultFunction, Untyped.getInstance, Loc.NONE, ReceiverOption.NONE)
     out.startContent()
     out.characters(item.asInstanceOf[Function].getDescription, locationId, ReceiverOption.NONE)

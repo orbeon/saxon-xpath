@@ -86,6 +86,12 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
       uniformBaseURI = true
       tree.uniformBaseUri = baseURI
     }
+    if (useEventLocation) {
+      val copier = getPipelineConfiguration.getComponent(classOf[CopyInformee[_]].getName)
+      if (copier.isInstanceOf[LocationCopier]) {
+        setSystemId(copier.asInstanceOf[LocationCopier].getSystemId)
+      }
+    }
     super.open()
   }
 

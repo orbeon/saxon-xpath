@@ -168,6 +168,10 @@ class FLWORExpression extends Expression {
 
   def injectCode(injector: CodeInjector): Unit = {
     if (injector != null) {
+      for (clause <- clauses.asScala) {
+        if (clause.isInstanceOf[TraceClause])
+          return
+      }
       val expandedList = new ArrayList[Clause](clauses.size * 2)
       expandedList.add(clauses.get(0))
       for (i <- 1 until clauses.size) {
@@ -229,6 +233,7 @@ class FLWORExpression extends Expression {
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
+    val opt = visitor.obtainOptimizer()
     for (c <- clauses.asScala) {
       c.processOperands(op => op.optimize(visitor, contextItemType))
       c.optimize(visitor, contextItemType)
@@ -278,6 +283,7 @@ class FLWORExpression extends Expression {
                 mustCopy = true
               )
               clauses.remove(c)
+              opt.trace("Inlined let $" + lc.rangeVariable.getVariableQName.getDisplayName, this)
               if (clauses.isEmpty) {
                 return getReturnClause
               }
@@ -394,6 +400,7 @@ class FLWORExpression extends Expression {
                     clauses.add(c + 1, new WhereClause(this, removedExpr))
                 case _ =>
                   val newWhere = new WhereClause(this, term)
+                  newWhere.location = whereClause.location
                   clauses.add(c + 1, newWhere)
               }
               break()
@@ -408,6 +415,7 @@ class FLWORExpression extends Expression {
           else
             whereClause.setPredicate(makeAndCondition(list))
           val newWhere = new WhereClause(this, term)
+          newWhere.location = whereClause.location
           clauses.add(0, newWhere)
         }
         i -= 1

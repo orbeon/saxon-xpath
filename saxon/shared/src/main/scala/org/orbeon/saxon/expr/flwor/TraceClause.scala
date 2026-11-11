@@ -21,6 +21,8 @@ import  Clause.ClauseName.ClauseName
 class TraceClause(expression: FLWORExpression, private var target: Clause)
   extends Clause {
 
+  this.location = target.location
+
   private var nsResolver: NamespaceResolver =
     expression.getRetainedStaticContext
 

@@ -122,7 +122,7 @@ abstract class Actor extends ExpressionOwner with Location {
   def getSystemId: String = systemId
   def getLineNumber: Int = lineNumber
   def getColumnNumber: Int = columnNumber
-  def setColumnNumber(columnNumber: Int): Unit = this.columnNumber = lineNumber
+  def setColumnNumber(columnNumber: Int): Unit = this.columnNumber = columnNumber
   def getPublicId: String = null
   def saveLocation: Location = this.asInstanceOf[Location]
   def getProperty(name: String): AnyRef = null

@@ -121,6 +121,9 @@ abstract class Outputter
     append(item, Loc.NONE, ReceiverOption.ALL_NAMESPACES)
 
   def getStringReceiver(asTextNode: Boolean): CharSequenceConsumer =
+    getStringReceiver(asTextNode, Loc.NONE)
+
+  def getStringReceiver(asTextNode: Boolean, loc: Location): CharSequenceConsumer =
     new CharSequenceConsumer() {
       val buffer = new FastStringBuffer(256)
 
@@ -131,9 +134,9 @@ abstract class Outputter
 
       override def close(): Unit =
         if (asTextNode)
-          Outputter.this.characters(buffer, Loc.NONE, ReceiverOption.NONE)
+          Outputter.this.characters(buffer, loc, ReceiverOption.NONE)
         else
-          Outputter.this.append(new StringValue(buffer.condense()))
+          Outputter.this.append(new StringValue(buffer.condense()), loc, ReceiverOption.ALL_NAMESPACES)
     }
 
   def close(): Unit = ()

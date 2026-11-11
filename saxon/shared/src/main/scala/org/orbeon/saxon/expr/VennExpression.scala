@@ -216,8 +216,10 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
             0) {
           return lhs
         }
-        if (lhs.isInstanceOf[CurrentGroupCall] && rhs
-          .isInstanceOf[ContextItemExpression]) {
+        if (contextItemWithCurrentGroup(lhs, rhs)) {
+          return rhs
+        }
+        if (contextItemWithCurrentGroup(rhs, lhs)) {
           return lhs
         }
       case Token.INTERSECT =>
@@ -227,8 +229,10 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
         if (Literal.isEmptySequence(rhs)) {
           return rhs
         }
-        if (lhs.isInstanceOf[CurrentGroupCall] && rhs
-          .isInstanceOf[ContextItemExpression]) {
+        if (contextItemWithCurrentGroup(lhs, rhs)) {
+          return lhs
+        }
+        if (contextItemWithCurrentGroup(rhs, lhs)) {
           return rhs
         }
       case Token.EXCEPT =>
@@ -240,8 +244,10 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
             0) {
           return lhs
         }
-        if (lhs.isInstanceOf[CurrentGroupCall] && rhs
-          .isInstanceOf[ContextItemExpression]) {
+        if (contextItemWithCurrentGroup(lhs, rhs)) {
+          return Literal.makeEmptySequence
+        }
+        if (contextItemWithCurrentGroup(rhs, lhs)) {
           return new TailExpression(lhs, 2)
         }
       case _ =>
@@ -337,6 +343,15 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
       }
     }
     this
+  }
+
+  private def contextItemWithCurrentGroup(lhs: Expression, rhs: Expression): Boolean = {
+    if (lhs.isInstanceOf[ContextItemExpression] && rhs.isInstanceOf[CurrentGroupCall]) {
+      val focusSetter = ExpressionTool.getFocusSettingContainer(lhs)
+      val forEachGroup = rhs.asInstanceOf[CurrentGroupCall].controllingInstruction
+      return forEachGroup != null && (focusSetter eq forEachGroup)
+    }
+    false
   }
 
   private def operandsAreDisjoint(th: TypeHierarchy): Boolean =

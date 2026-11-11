@@ -82,7 +82,7 @@ class Controller extends ContextOriginator {
   var principalResultURI: String = _
   private var unparsedTextResolver: UnparsedTextURIResolver = _
   private var defaultCollectionURI: String = _
-  var errorReporter: ErrorReporter = new StandardErrorReporter()
+  var errorReporter: ErrorReporter = _
   // UnfailingErrorListener errorListener;
   private var treeModel: TreeModel = TreeModel.TINY_TREE
   private var sourceDocumentPool: DocumentPool = _
@@ -163,7 +163,7 @@ class Controller extends ContextOriginator {
     userURIResolver = config.getURIResolver
     unparsedTextResolver = config.getUnparsedTextURIResolver
     validationMode = config.getSchemaValidationMode
-    errorReporter = new StandardErrorReporter
+    errorReporter = config.makeErrorReporter
     traceListener = null
     traceFunctionDestination = config.getLogger
     var tracer: TraceListener = null
@@ -1091,7 +1091,7 @@ class Controller extends ContextOriginator {
   def preEvaluateGlobals(context: XPathContext): Unit = {
     for (pack <- getExecutable.packages.asScala) {
       for (glVar <- pack.getGlobalVariableList.asScala) {
-        if (!glVar.isUnused) try glVar.evaluateVariable(context, glVar.declaringComponent)
+        if (!glVar.isUnused && glVar.declaredVisibility != Visibility.ABSTRACT) try glVar.evaluateVariable(context, glVar.declaringComponent)
         catch {
           case err: XPathException =>
             // Don't report an exception unless the variable is actually evaluated

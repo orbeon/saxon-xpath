@@ -200,9 +200,9 @@ class HashTrieMap extends MapItem {
   private def makeKey(key: AtomicValue): AtomicMatchKey = key.asMapKey()
 
   def remove(key: AtomicValue): HashTrieMap = {
-    val m2 = imap.remove(makeKey(key))
-    if (m2 == imap)
+    if (imap.get(makeKey(key)) == null)
       return this
+    val m2 = imap.remove(makeKey(key))
     val result = new HashTrieMap(m2)
     result.keyUType = keyUType
     result.valueUType = valueUType

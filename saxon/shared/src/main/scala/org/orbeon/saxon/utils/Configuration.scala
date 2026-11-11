@@ -355,12 +355,7 @@ class Configuration extends SourceResolver with NotationSet {
 
   //var defaultXsltCompilerInfo: CompilerInfo = makeCompilerInfo
 
-  private var errorReporterFactory: Configuration => ErrorReporter =
-    (config: Configuration) => {
-      val reporter = new StandardErrorReporter
-      reporter.setLogger(config.getLogger)
-      reporter
-    }
+  private var errorReporterFactory: Configuration => ErrorReporter = _
 
   private var label: String = null
 
@@ -571,6 +566,11 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def isLicensedFeature(feature: Int): Boolean = false
 
+  def requireProfessionalLicense(featureName: String): Unit =
+    if (!isLicensedFeature(Configuration.LicenseFeature.PROFESSIONAL_EDITION)) {
+      throw new LicenseException("Use of " + featureName + " requires a license key for Saxon-PE or Saxon-EE", LicenseException.NOT_FOUND)
+    }
+
   /**
    * Get the value of a named license feature
    *
@@ -750,7 +750,16 @@ class Configuration extends SourceResolver with NotationSet {
   def setErrorReporterFactory(factory: Configuration => ErrorReporter): Unit =
     errorReporterFactory = factory
 
-  def makeErrorReporter: ErrorReporter = errorReporterFactory(this)
+  def makeErrorReporter: ErrorReporter = {
+    if (errorReporterFactory == null) {
+      errorReporterFactory = (config: Configuration) => {
+        val reporter = new StandardErrorReporter
+        reporter.setLogger(config.getLogger)
+        reporter
+      }
+    }
+    errorReporterFactory(this)
+  }
 
   def getLogger: Logger = traceOutput
 
@@ -1120,8 +1129,7 @@ class Configuration extends SourceResolver with NotationSet {
    */
   def setCompileWithTracing(trace: Boolean): Unit = {
     internalSetBooleanProperty(Feature.COMPILE_WITH_TRACING, trace)
-    if (defaultStaticQueryContext != null) if (trace) defaultStaticQueryContext.setCodeInjector(new TraceCodeInjector)
-    else defaultStaticQueryContext.setCodeInjector(null)
+    getDefaultStaticQueryContext.setCodeInjector(if (trace) new org.orbeon.saxon.trace.XQueryTraceCodeInjector else null)
   }
 
   @throws[XPathException]

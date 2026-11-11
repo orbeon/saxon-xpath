@@ -94,6 +94,15 @@ class UserFunctionReference
     this.nominalTarget = function
   }
 
+  override def simplify(): Expression = {
+    if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && typeCheckCounter == 0) {
+      typeCheckCounter += 1
+      nominalTarget.setBody(nominalTarget.getBody.simplify())
+      typeCheckCounter -= 1
+    }
+    this
+  }
+
   override def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Expression = {
     if (nominalTarget.getFunctionName.hasURI(NamespaceConstant.ANONYMOUS) && {
       typeCheckCounter += 1

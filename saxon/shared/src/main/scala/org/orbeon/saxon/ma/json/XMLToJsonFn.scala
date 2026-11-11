@@ -116,7 +116,7 @@ class XMLToJsonFn extends SystemFunction with PushableFunction {
       val pipe: PipelineConfiguration =
         context.getController.makePipelineConfiguration
       pipe.xpathContext = context
-      convertToJson(xml, destination.getStringReceiver(false), options, context)
+      convertToJson(xml, destination.getStringReceiver(false, org.orbeon.saxon.expr.parser.Loc.NONE), options, context)
     }
   }
 

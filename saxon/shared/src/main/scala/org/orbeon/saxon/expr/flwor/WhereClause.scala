@@ -150,6 +150,12 @@ class WhereClause(flwor: FLWORExpression, predicate: Expression)
     fsb.toString
   }
 
+  override def getTraceInfo: java.util.Map[String, Any] = {
+    val info = new java.util.HashMap[String, Any](1)
+    info.put("condition", getPredicate.toShortString)
+    info
+  }
+
 }
 
 // Copyright (c) 2018-2020 Saxonica Limited

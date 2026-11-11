@@ -361,7 +361,8 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def addAttribute(nameCode: NodeName,
                    attType: SimpleType,
                    value: CharSequence,
-                   properties: Int): Unit = ()
+                   properties: Int,
+                   inheritNamespaces: Boolean): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 
@@ -377,11 +378,11 @@ class Orphan(config: Configuration) extends MutableNodeInfo {
   def replaceStringValue(stringValue: CharSequence): Unit =
     this.stringValue = stringValue
 
-  def rename(newNameCode: NodeName): Unit =
+  def rename(newNameCode: NodeName, inheritNamespaces: Boolean): Unit =
     if (kind == Type.ATTRIBUTE || kind == Type.PROCESSING_INSTRUCTION)
       nodeName = newNameCode
 
-  def addNamespace(nscode: NamespaceBinding): Unit = ()
+  def addNamespace(nscode: NamespaceBinding, inheritNamespaces: Boolean): Unit = ()
 // no action: node is not an element
 // no action: node is not an element
 

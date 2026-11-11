@@ -94,6 +94,7 @@ class TinyAttributeImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyNodeImp
   override def getColumnNumber: Int     = getParent.getColumnNumber
   override def isId           : Boolean = tree.isIdAttribute(nodeNr)
   override def isIdref        : Boolean = tree.isIdrefAttribute(nodeNr)
+  override def isNilled       : Boolean = false
 
   def isDefaultedAttribute: Boolean = tree.isDefaultedAttribute(nodeNr)
 

@@ -59,6 +59,11 @@ class GlobalContextRequirement {
     out.endElement()
   }
 
+  def makeGlobalContextInfo(config: org.orbeon.saxon.utils.Configuration): org.orbeon.saxon.expr.parser.ContextItemStaticInfo = {
+    val `type` = if (absentFocus) org.orbeon.saxon.model.ErrorType else getRequiredItemType
+    config.makeContextItemStaticInfo(`type`, mayBeOmitted)
+  }
+
 }
 
 // Copyright (c) 2013-2020 Saxonica Limited

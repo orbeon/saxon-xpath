@@ -113,6 +113,12 @@ class OperandRole(var properties: Int, var usage: OperandUsage) {
     this.constraint = constraint
   }
 
+  def withConstraint(constraint: Predicate[Expression]): OperandRole =
+    new OperandRole(properties, usage, requiredType, constraint)
+
+  def withConstrainedClass: OperandRole =
+    new OperandRole(properties | CONSTRAINED_CLASS, usage, requiredType, constraint)
+
   def setsNewFocus(): Boolean = (properties & SETS_NEW_FOCUS) != 0
 
   def hasSameFocus: Boolean =
