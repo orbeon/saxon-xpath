@@ -15,6 +15,38 @@ class GeneralNodePattern(
   var itemTyp        : NodeTest
 ) extends Pattern {
 
+  var topNodeEquivalent: Expression = null
+  makeTopNodeEquivalent()
+
+  def makeTopNodeEquivalent(): Unit = {
+    equivalentExpr match {
+      case slashExp: SlashExpression =>
+        val head = slashExp.getFirstStep
+        if (ExpressionTool.getAxisNavigation(head) == AxisInfo.CHILD) {
+          val copy = equivalentExpr.copy(new RebindingMap()).asInstanceOf[SlashExpression]
+          var copyHead = copy.getFirstStep
+          var loop = true
+          while (loop) {
+            copyHead match {
+              case filterExp: FilterExpression =>
+                copyHead = filterExp.getBase
+              case singleFilter: SingleItemFilter =>
+                copyHead = singleFilter.getBaseExpression
+              case _ =>
+                loop = false
+            }
+          }
+          copyHead match {
+            case axisExp: AxisExpression =>
+              axisExp.axis = AxisInfo.SELF
+              topNodeEquivalent = copy
+            case _ =>
+          }
+        }
+      case _ =>
+    }
+  }
+
   override def getItemType: ItemType = itemTyp
 
   override def operands: java.lang.Iterable[Operand] =
@@ -24,7 +56,7 @@ class GeneralNodePattern(
 
   override def typeCheck(visitor: ExpressionVisitor,
                          contextItemType: ContextItemStaticInfo): Pattern = {
-    val cit = visitor.getConfiguration.getDefaultContextItemStaticInfo
+    val cit = new ContextItemStaticInfo(AnyNodeTest, maybeUndefined = false)
     equivalentExpr = equivalentExpr.typeCheck(visitor, cit)
     this
   }
@@ -71,12 +103,17 @@ class GeneralNodePattern(
     if (!itemTyp.matches(item, th))
       return false
     val anc = item.asInstanceOf[NodeInfo].iterateAxis(AxisInfo.ANCESTOR_OR_SELF)
+    var top = item.asInstanceOf[NodeInfo]
     while (true) {
       val a = anc.next()
-      if (a == null)
+      if (a == null) {
+        if (topNodeEquivalent != null && UType.CHILD_NODE_KINDS.matches(top))
+          return isSelected(item.asInstanceOf[NodeInfo], top, topNodeEquivalent, context)
         return false
+      }
       if (matchesBeneathAnchor(item.asInstanceOf[NodeInfo], a, context))
         return true
+      top = a
     }
     false
   }
@@ -96,11 +133,15 @@ class GeneralNodePattern(
           return true
       }
     }
+    isSelected(node, anchor, equivalentExpr, context)
+  }
+
+  private def isSelected(node: NodeInfo, anchor: NodeInfo, selector: Expression, context: XPathContext): Boolean = {
     val c2: XPathContext = context.newMinorContext()
     val iter             = new ManualIterator(anchor)
     c2.setCurrentIterator(iter)
     try {
-      val nsv = equivalentExpr.iterate(c2)
+      val nsv = selector.iterate(c2)
       while (true) {
         val n = nsv.next().asInstanceOf[NodeInfo]
         if (n == null)

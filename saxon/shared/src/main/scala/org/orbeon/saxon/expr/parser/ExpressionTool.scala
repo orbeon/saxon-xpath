@@ -569,6 +569,21 @@ object ExpressionTool {
           gatherCalledFunctionNames(o.getChildExpression, list)
     }
 
+  def getAxisNavigation(exp: Expression): Int = {
+    val unfiltered = unfilteredExpression(exp, allowPositional = true)
+    unfiltered match {
+      case axisExp: AxisExpression =>
+        return axisExp.axis
+      case vennExp: VennExpression =>
+        val v1 = getAxisNavigation(vennExp.getLhsExpression)
+        val v2 = getAxisNavigation(vennExp.getRhsExpression)
+        if (v1 == v2)
+          return v1
+      case _ =>
+    }
+    -1
+  }
+
   // Compilation,ExpressionContext scala class not exist
   // ORBEON: Not used by Saxon XPath.
   @throws[XPathException]

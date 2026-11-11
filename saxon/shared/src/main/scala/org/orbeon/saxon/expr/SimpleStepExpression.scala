@@ -39,6 +39,9 @@ class SimpleStepExpression(start: Expression, step: Expression)
   override def getOperandRole(arg: Int): OperandRole =
     if (arg == 0) OperandRole.FOCUS_CONTROLLING_SELECT else STEP_ROLE
 
+  def getAxisExpression: AxisExpression =
+    getStep.asInstanceOf[AxisExpression]
+
   /*@NotNull*/
   override def typeCheck(visitor: ExpressionVisitor,
                          contextInfo: ContextItemStaticInfo): Expression = {

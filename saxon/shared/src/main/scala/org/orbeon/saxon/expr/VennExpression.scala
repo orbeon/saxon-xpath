@@ -412,12 +412,20 @@ class VennExpression(p1: Expression, val op: Int, p2: Expression) extends Binary
     if (op == Token.UNION) {
       new UnionPattern(getLhsExpression.toPattern(config), getRhsExpression.toPattern(config))
     } else {
-      if (op == Token.EXCEPT)
-        new ExceptPattern(getLhsExpression.toPattern(config), getRhsExpression.toPattern(config))
-      else
-        new IntersectPattern(getLhsExpression.toPattern(config), getRhsExpression.toPattern(config))
+      val commonAxis = ExpressionTool.getAxisNavigation(this)
+      if (commonAxis == AxisInfo.CHILD || commonAxis == AxisInfo.ATTRIBUTE ||
+        independentOfContextItem(getLhsExpression) || independentOfContextItem(getRhsExpression)) {
+        if (op == Token.EXCEPT)
+          return new ExceptPattern(getLhsExpression.toPattern(config), getRhsExpression.toPattern(config))
+        else
+          return new IntersectPattern(getLhsExpression.toPattern(config), getRhsExpression.toPattern(config))
+      }
+      new GeneralNodePattern(this, getItemType.asInstanceOf[NodeTest])
     }
   }
+
+  private def independentOfContextItem(exp: Expression): Boolean =
+    (exp.getDependencies & StaticProperty.DEPENDS_ON_CONTEXT_ITEM) == 0
 
   private def isPredicatePattern(exp: Expression): Boolean = {
     var expr = exp
