@@ -47,7 +47,7 @@ object Pattern {
   }
 
    def replaceCurrent(exp: Expression, binding: LocalBinding): Unit = {
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands) {
       val child = o.getChildExpression
       if (child.isCallOn(classOf[Current])) {
         val ref: LocalVariableReference = new LocalVariableReference(binding)

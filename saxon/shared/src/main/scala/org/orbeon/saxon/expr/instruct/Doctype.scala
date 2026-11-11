@@ -51,7 +51,7 @@ class Doctype(content: Expression) extends Instruction {
     contentOp.setChildExpression(content)
   }
 
-  override def operands: java.lang.Iterable[Operand] = contentOp
+  override def operands: Iterable[Operand] = contentOp
 
   def copy(rebindings: RebindingMap): Expression =
     throw new UnsupportedOperationException("Doctype.copy()")

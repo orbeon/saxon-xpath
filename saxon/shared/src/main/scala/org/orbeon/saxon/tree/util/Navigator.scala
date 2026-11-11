@@ -535,7 +535,7 @@ object Navigator {
       } else {
         // Bug #5861 - we need to ensure the namespaces used in element and attribute names are declared
         nsMap = NamespaceMap.of(elementName.getPrefix, elementName.getURI)
-        for (att <- node.attributes.iterator.asScala) {
+        for (att <- node.attributes) {
           val attName = att.nodeName
           if (!attName.getPrefix.isEmpty) {
             nsMap = nsMap.put(attName.getPrefix, attName.getURI)
@@ -594,10 +594,10 @@ object Navigator {
         val annotation = if (keepTypes) node.getSchemaType else Untyped.getInstance
         out.startElement(NameOfNode.makeName(node), annotation, locationId, ReceiverOption.DISINHERIT_NAMESPACES | ReceiverOption.NAMESPACE_OK)
         if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0)
-          for (ns <- node.getAllNamespaces.asScala)
+          for (ns <- node.getAllNamespaces)
             out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
 
-        for (attr <- node.attributes.iterator.asScala) {
+        for (attr <- node.attributes) {
           val attType = if (keepTypes) attr.`type` else BuiltInAtomicType.UNTYPED_ATOMIC
           out.attribute(attr.nodeName, attType, attr.value, attr.location, attr.properties)
         }

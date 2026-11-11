@@ -227,7 +227,7 @@ class LocalParam extends Instruction with LocalBinding {
 
   override def getInstructionNameCode: Int = StandardNames.XSL_PARAM
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(selectOp, conversionOp)
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {

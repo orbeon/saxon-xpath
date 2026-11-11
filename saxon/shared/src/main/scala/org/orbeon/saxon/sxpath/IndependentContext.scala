@@ -199,11 +199,11 @@ class IndependentContext(config: Configuration)
       namespaces.get(prefix)
     }
 
-  def iteratePrefixes: ju.Iterator[String] =
+  def iteratePrefixes: Iterator[String] =
     if (externalResolver != null)
       externalResolver.iteratePrefixes
     else
-      namespaces.keySet.iterator
+      namespaces.keySet.iterator.asScala
 
   def bindVariable(qName: StructuredQName): Expression = {
     val variable = variables.get(qName)

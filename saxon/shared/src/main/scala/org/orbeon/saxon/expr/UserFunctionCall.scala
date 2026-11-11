@@ -95,7 +95,7 @@ class UserFunctionCall extends FunctionCall
   def allocateArgumentEvaluators(): Unit = {
     argumentEvaluators = Array.ofDim[Evaluator](getArity)
     var i: Int = 0
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val arg: Expression = o.getChildExpression
       val required: SequenceType = function.getArgumentType(i)
       val cardinality: Int = required.getCardinality
@@ -348,7 +348,7 @@ class UserFunctionCall extends FunctionCall
       }
       out.emitAttribute("eval", Whitespace.trim(fsb))
     }
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       o.getChildExpression.`export`(out)
     }
     if (getFunctionName == null) {

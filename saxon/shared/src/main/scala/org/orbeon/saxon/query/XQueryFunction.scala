@@ -10,7 +10,6 @@ import org.orbeon.saxon.s9api.HostLanguage
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans._
-import org.orbeon.saxon.tree.jiter.PairIterator
 import org.orbeon.saxon.value.SequenceType
 import java.util.ArrayList
 import java.util.Iterator
@@ -326,7 +325,7 @@ class XQueryFunction extends Declaration with Location {
       null
     }
 
-  def getProperties: Iterator[String] = new PairIterator("name", "as")
+  def getProperties: scala.collection.Iterator[String] = scala.collection.Iterator("name", "as")
 
   def getHostLanguage: HostLanguage = XQUERY
 

@@ -1,7 +1,5 @@
 package org.orbeon.saxon.tree.wrapper
 
-import java.util.Iterator
-
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.model.ComplexType
 import org.orbeon.saxon.om._

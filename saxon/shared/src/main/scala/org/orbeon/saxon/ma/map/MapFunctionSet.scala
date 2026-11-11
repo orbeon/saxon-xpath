@@ -161,7 +161,7 @@ object MapFunctionSet {
           val value = mapItem.get(key)
           if (value != null)
             result.add(value)
-          for (entry <- mapItem.keyValuePairs.asScala)
+          for (entry <- mapItem.keyValuePairs)
             processSequence(entry.value, key, result)
         case _ =>
       }
@@ -201,7 +201,7 @@ object MapFunctionSet {
       val map = arguments(0).head.asInstanceOf[MapItem]
       val fn = arguments(1).head.asInstanceOf[Function]
       val results = new ArrayList[GroundedValue]()
-      for (pair <- map.keyValuePairs.asScala) {
+      for (pair <- map.keyValuePairs) {
         val seq = dynamicCall(fn, context, Array(pair.key, pair.value))
         val `val` = seq.materialize
         if (`val`.getLength > 0)
@@ -359,7 +359,7 @@ object MapFunctionSet {
               next = iter.next().asInstanceOf[MapItem]
               next
             }) != null) for (pair <- next
-              .keyValuePairs.asScala) {
+              .keyValuePairs) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
                   "The keys in this map must all be strings (found " + pair.key.getItemType +
@@ -373,7 +373,7 @@ object MapFunctionSet {
               next = iter.next().asInstanceOf[MapItem]
               next
             }) != null) for (pair <- next
-              .keyValuePairs.asScala) {
+              .keyValuePairs) {
               if (!(pair.key.isInstanceOf[StringValue])) {
                 throw new XPathException(
                   "The keys in this map must all be strings (found " + pair.key.getItemType +
@@ -430,7 +430,7 @@ object MapFunctionSet {
             var larger: MapItem = if (inverse) next else baseMap
             val smaller: MapItem = if (inverse) baseMap else next
             val dup: String = if (inverse) invertDuplicates(duplicates) else duplicates
-            for (pair <- smaller.keyValuePairs.asScala) {
+            for (pair <- smaller.keyValuePairs) {
               val existing: Sequence = larger.get(pair.key)
               if (existing != null) {
                 dup match {

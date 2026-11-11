@@ -6,11 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.instruct
 
-import java.util.Iterator
-
 import org.orbeon.saxon.lib.NamespaceConstant
 import org.orbeon.saxon.om.NamespaceResolver
-import org.orbeon.saxon.tree.jiter.PairIterator
 
 /**
   * A dummy namespace resolver used when validating QName-valued attributes written to
@@ -32,6 +29,6 @@ class DummyNamespaceResolver private () extends NamespaceResolver {
     else // this is a dummy namespace resolver, we don't actually know the URI
       NamespaceConstant.NULL
 
-  def iteratePrefixes: Iterator[String] = new PairIterator[String]("", "xml")
+  def iteratePrefixes: Iterator[String] = Iterator("", "xml")
 }
 

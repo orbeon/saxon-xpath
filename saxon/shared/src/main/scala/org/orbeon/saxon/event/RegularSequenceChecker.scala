@@ -300,7 +300,7 @@ class RegularSequenceChecker(nextReceiver: Receiver,
             "Prefix " + prefix + " is bound to the wrong namespace")
         }
       }
-      for (att <- attributes.iterator.asScala) {
+      for (att <- attributes) {
         val name: NodeName = att.nodeName
         if (!name.getURI.isEmpty) {
           val attPrefix: String = name.getPrefix

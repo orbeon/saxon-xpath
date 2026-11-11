@@ -53,7 +53,7 @@ object ExpressionTool {
     else
       rsc = exp.getLocalRetainedStaticContext
 
-    for (o <- exp.operands.asScala)
+    for (o <- exp.operands)
       setDeepRetainedStaticContext(o.getChildExpression, rsc)
   }
 
@@ -79,11 +79,11 @@ object ExpressionTool {
     exp match {
       case expression: FLWORExpression => expression.injectCode(injector)
       case traceExpr: TraceExpression =>
-        for (o <- traceExpr.getChild.operands.asScala)
+        for (o <- traceExpr.getChild.operands)
           if (!o.getOperandRole.isConstrainedClass)
             o.setChildExpression(injectCode(o.getChildExpression, injector))
       case _ =>
-        for (o <- exp.operands.asScala)
+        for (o <- exp.operands)
           if (!o.getOperandRole.isConstrainedClass)
             o.setChildExpression(injectCode(o.getChildExpression, injector))
     }
@@ -191,7 +191,7 @@ object ExpressionTool {
 
   def contains(exp: Expression, sameFocusOnly: Boolean, predicate: Predicate[Expression]): Boolean =
     predicate.test(exp) ||
-      exp.operands.asScala.exists(info =>
+      exp.operands.exists(info =>
         (info.hasSameFocus || ! sameFocusOnly) && contains(info.getChildExpression, sameFocusOnly, predicate))
 
   def changesXsltContext(exp: Expression): Boolean = {
@@ -199,7 +199,7 @@ object ExpressionTool {
     expression = exp.getInterpretedExpression
     if (exp.isInstanceOf[ResultDocument] || exp.isInstanceOf[CallTemplate] || exp.isInstanceOf[ApplyTemplates] || exp.isInstanceOf[NextMatch] || exp.isInstanceOf[ApplyImports] || exp.isCallOn(classOf[RegexGroup]) || exp.isCallOn(classOf[CurrentGroup])) return true
 
-    for (o <- exp.operands.asScala)
+    for (o <- exp.operands)
       if (changesXsltContext(o.getChildExpression))
         return true
     false
@@ -254,7 +254,7 @@ object ExpressionTool {
   }
 
   def hasLoopingSubexpression(parent: Expression, child: Expression): Boolean =
-    parent.operands.asScala.find(_.getChildExpression eq child).exists(_.isEvaluatedRepeatedly)
+    parent.operands.find(_.getChildExpression eq child).exists(_.isEvaluatedRepeatedly)
 
   def getFocusSettingContainer(exp: Expression): Expression = {
     var child = exp
@@ -409,7 +409,7 @@ object ExpressionTool {
       case pattern: Pattern =>
         nextFree = pattern.allocateSlots(frame, nextFree)
       case _ =>
-        for (o <- exp.operands.asScala)
+        for (o <- exp.operands)
           nextFree = allocateSlots(o.getChildExpression, nextFree, frame)
     }
     nextFree
@@ -530,7 +530,7 @@ object ExpressionTool {
         if (! list.contains(binding))
           list.add(binding)
       case _ =>
-        for (o <- e.operands.asScala)
+        for (o <- e.operands)
           if (! o.getOperandRole.isInChoiceGroup)
             gatherReferencedVariables(o.getChildExpression, list)
     }
@@ -557,7 +557,7 @@ object ExpressionTool {
         if (!list.contains(function))
           list.add(function)
       case _ =>
-        for (o <- e.operands.asScala)
+        for (o <- e.operands)
           gatherCalledFunctions(o.getChildExpression, list)
     }
 
@@ -565,7 +565,7 @@ object ExpressionTool {
     e match {
       case call: UserFunctionCall => list.add(call.getSymbolicName)
       case _ =>
-        for (o <- e.operands.asScala)
+        for (o <- e.operands)
           gatherCalledFunctionNames(o.getChildExpression, list)
     }
 
@@ -639,7 +639,7 @@ object ExpressionTool {
       case _ =>
     }
 
-    for (o <- exp.operands.asScala)
+    for (o <- exp.operands)
       o.setChildExpression(avoidDocumentSort(o.getChildExpression))
 
     exp
@@ -685,7 +685,7 @@ object ExpressionTool {
       case _ =>
     }
 
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands) {
       resetPropertiesWithinSubtree(o.getChildExpression)
       o.getChildExpression.parentExpression = exp
     }
@@ -716,7 +716,7 @@ object ExpressionTool {
       case varRef: VariableReference if varRef.getBinding eq binding =>
         list.add(varRef)
       case _ =>
-        for (o <- exp.operands.asScala)
+        for (o <- exp.operands)
           gatherVariableReferences(o.getChildExpression, binding, list)
     }
 
@@ -724,7 +724,7 @@ object ExpressionTool {
   def processExpressionTree(root: Expression, result: Any, action: ExpressionAction): Boolean = {
     var done = action.process(root, result.asInstanceOf[AnyRef])
     if (! done) {
-      for (o <- root.operands.asScala) {
+      for (o <- root.operands) {
         done = processExpressionTree(o.getChildExpression, result, action)
         if (done)
           return true
@@ -740,7 +740,7 @@ object ExpressionTool {
   def replaceSelectedSubexpressions(exp: Expression, selector: ExpressionTool.ExpressionSelector, replacement: Expression, mustCopy: Boolean): Boolean = {
     var replaced = false
     var mustCpy = mustCopy
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands) {
       if (replaced)
         mustCpy = true
       val child = o.getChildExpression
@@ -782,7 +782,7 @@ object ExpressionTool {
           return 0
         else
           breakable {
-            for (info <- exp.operands.asScala) {
+            for (info <- exp.operands) {
               val child = info.getChildExpression
               val childLoop = inLoop || info.isEvaluatedRepeatedly
               rcount += getReferenceCount(child, binding, childLoop)
@@ -799,7 +799,7 @@ object ExpressionTool {
     expres = expres.getInterpretedExpression
     var total = 1
 
-    for (o <- expres.operands.asScala) {
+    for (o <- expres.operands) {
       total += expressionSize(o.getChildExpression)
       o.getChildExpression match {
         case ufr: org.orbeon.saxon.functions.hof.UserFunctionReference =>
@@ -818,7 +818,7 @@ object ExpressionTool {
         if (varRef.getBinding eq oldBinding)
           varRef.fixup(newBinding)
       case _ =>
-        for (o <- exp.operands.asScala)
+        for (o <- exp.operands)
           rebindVariableReferences(o.getChildExpression, oldBinding, newBinding)
     }
 
@@ -842,7 +842,7 @@ object ExpressionTool {
 
   def findOperand(parentExpression: Expression, childExpression: Expression): Operand = {
 
-    for (o <- parentExpression.operands.asScala)
+    for (o <- parentExpression.operands)
       if (o.getChildExpression eq childExpression)
         return o
 
@@ -891,7 +891,7 @@ object ExpressionTool {
     var changed = false
     if ((exp.getDependencies & (StaticProperty.DEPENDS_ON_CONTEXT_ITEM | StaticProperty.DEPENDS_ON_CONTEXT_DOCUMENT)) != 0) {
 
-      for (info <- exp.operands.asScala) {
+      for (info <- exp.operands) {
         if (info.hasSameFocus) {
           val child = info.getChildExpression
           if (child.isInstanceOf[ContextItemExpression]) {
@@ -931,7 +931,7 @@ object ExpressionTool {
     } else {
       var found = false
 
-      for (o <- expr.operands.asScala) {
+      for (o <- expr.operands) {
         val child = o.getChildExpression
         child match {
           case varRef: VariableReference if varRef.getBinding eq binding =>
@@ -957,7 +957,7 @@ object ExpressionTool {
   def replaceTrivialCallsToCurrent(expr: Expression): Boolean = {
     var found = false
 
-    for (o <- expr.operands.asScala) {
+    for (o <- expr.operands) {
       if (o.hasSameFocus) {
         val child = o.getChildExpression
         if (child.isCallOn(classOf[Current])) {
@@ -977,7 +977,7 @@ object ExpressionTool {
   def replaceCallsToCurrent(expr: Expression, binding: LocalBinding): Boolean = {
     var found = false
 
-    for (o <- expr.operands.asScala) {
+    for (o <- expr.operands) {
       val child = o.getChildExpression
       if (child.isCallOn(classOf[Current])) {
         val varRef = new LocalVariableReference(binding)
@@ -1054,13 +1054,13 @@ object ExpressionTool {
     val ops = exp.operands.iterator
     if (! ops.hasNext)
       return false
-    ops.next
+    ops.next()
     ops.hasNext
   }
 
   def validateTree(exp: Expression): Unit =
     try {
-      for (o <- exp.checkedOperands.asScala)
+      for (o <- exp.checkedOperands)
         validateTree(o.getChildExpression)
     } catch {
       case e: IllegalStateException =>

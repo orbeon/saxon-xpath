@@ -47,7 +47,7 @@ class PatternThatSetsCurrent(var wrappedPattern: Pattern,
       wrappedPattern,
       new LocalVariableBinding(Current.FN_CURRENT, SequenceType.SINGLE_ITEM))
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     new Operand(this, wrappedPattern, OperandRole.SINGLE_ATOMIC)
 
   def getCurrentBinding: LocalBinding = binding

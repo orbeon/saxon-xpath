@@ -49,7 +49,7 @@ class ConditionalSorter(condition: Expression, sorter: DocumentSorter)
 
   adoptChildExpression(sorter)
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(conditionOp, sorterOp)
 
   def setCondition(condition: Expression): Unit = {

@@ -125,7 +125,7 @@ class FLWORExpression extends Expression {
   override def computeCardinality(): Int =
     StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val list = new ArrayList[Operand](5)
     var repeatable = false
     for (c <- clauses.asScala) {
@@ -134,7 +134,7 @@ class FLWORExpression extends Expression {
         repeatable = true
     }
     list.add(returnClauseOp)
-    list
+    list.asScala
   }
 
   override def checkForUpdatingSubexpressions(): Unit = {

@@ -124,7 +124,7 @@ class GroupByClause(var config: Configuration) extends Clause {
       new LinkedList[LocalVariableBinding](Arrays.asList(bindings: _*))
     val retainingExpr: LinkedList[LocalVariableReference] =
       new LinkedList[LocalVariableReference]()
-    for (o <- getRetainedTupleExpression.operands.asScala) {
+    for (o <- getRetainedTupleExpression.operands) {
       retainingExpr.add(
         o.getChildExpression.asInstanceOf[LocalVariableReference])
     }
@@ -206,7 +206,7 @@ class GroupByClause(var config: Configuration) extends Clause {
    */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("group-by")
-    for (o <- getRetainedTupleExpression.operands.asScala) {
+    for (o <- getRetainedTupleExpression.operands) {
       val ref: LocalVariableReference =
         o.getChildExpression.asInstanceOf[LocalVariableReference]
       out.startSubsidiaryElement("by")

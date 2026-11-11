@@ -92,7 +92,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
     }
     if (getBaseExpression.isInstanceOf[SquareArrayConstructor]) {
       val children: List[Expression] = new ArrayList[Expression]()
-      for (o <- getBaseExpression.operands.asScala) {
+      for (o <- getBaseExpression.operands) {
         children.add(o.getChildExpression.copy(new RebindingMap()))
       }
       val childExpressions: Array[Expression] =
@@ -142,7 +142,7 @@ class LookupAllExpression(base: Expression) extends UnaryExpression(base) {
               level1 = base.asInstanceOf[ArrayItem].members.iterator
               next()
             } else if (base.isInstanceOf[MapItem]) {
-              level1 = base.asInstanceOf[MapItem].keyValuePairs.iterator.asScala
+              level1 = base.asInstanceOf[MapItem].keyValuePairs.iterator
               next()
             } else {
               LookupExpression.mustBeArrayOrMap(LookupAllExpression.this, base)

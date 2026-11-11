@@ -42,7 +42,7 @@ abstract class SimpleNodeConstructor extends Instruction {
 
   def getSelect: Expression = selectOp.getChildExpression
 
-  override def operands: java.lang.Iterable[Operand] = selectOp
+  override def operands: Iterable[Operand] = selectOp
 
   override def mayCreateNewNodes(): Boolean = true
 

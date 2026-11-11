@@ -6,8 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.{lang => jl, util => ju}
-import scala.jdk.CollectionConverters._
+import java.{util => ju}
 
 /**
   * AttributeMap represents an immutable collection of attributes available on a particular element
@@ -29,15 +28,15 @@ object AttributeMap {
   }
 }
 
-trait AttributeMap extends jl.Iterable[AttributeInfo] {
+trait AttributeMap extends Iterable[AttributeInfo] {
 
   def size: Int
 
   def get(name: NodeName): AttributeInfo =
-    this.asScala.find(_.nodeName == name).orNull
+    this.find(_.nodeName == name).orNull
 
   def get(uri: String, local: String): AttributeInfo = {
-    for (att <- this.asScala) {
+    for (att <- this) {
       val attName = att.nodeName
       if (attName.getLocalPart == local && attName.hasURI(uri))
         return att
@@ -46,7 +45,7 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
   }
 
   def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = {
-    for (att <- this.asScala) {
+    for (att <- this) {
       val attName = att.nodeName
       if (attName.obtainFingerprint(namePool) == fingerprint)
         return att
@@ -61,7 +60,7 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def put(att: AttributeInfo): AttributeMap = {
     val list = new ju.ArrayList[AttributeInfo](size + 1)
-    for (a <- this.asScala if a.nodeName != att.nodeName)
+    for (a <- this if a.nodeName != att.nodeName)
       list.add(a)
     list.add(att)
     AttributeMap.fromList(list)
@@ -69,7 +68,7 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def remove(name: NodeName): AttributeMap = {
     val list = new ju.ArrayList[AttributeInfo](size)
-    for (a <- this.asScala if a.nodeName != name)
+    for (a <- this if a.nodeName != name)
       list.add(a)
     AttributeMap.fromList(list)
   }
@@ -78,14 +77,14 @@ trait AttributeMap extends jl.Iterable[AttributeInfo] {
 
   def apply(mapper: AttributeInfo => AttributeInfo): AttributeMap = {
     val list = new ju.ArrayList[AttributeInfo](size)
-    for (a <- this.asScala)
+    for (a <- this)
       list.add(mapper(a))
     AttributeMap.fromList(list)
   }
 
   def asList: ju.List[AttributeInfo] = {
     val list = new ju.ArrayList[AttributeInfo](size)
-    for (a <- this.asScala)
+    for (a <- this)
       list.add(a)
     list
   }

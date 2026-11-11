@@ -98,7 +98,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     } == 0) startWrapper(resultElement)
     out.startElement(elemName, `type`, location, properties)
 
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       out.attribute(att.nodeName, att.`type`, att.value, att.location, att.properties)
     }
     out.startContent()
@@ -168,7 +168,7 @@ class SequenceWrapper(var destination: Receiver) extends SequenceReceiver(destin
     val out = getDestination
     out.startElement(resultMap, Untyped.getInstance, locationId, ReceiverOption.NONE)
     val map = item.asInstanceOf[MapItem]
-    for (pair <- map.keyValuePairs.asScala) {
+    for (pair <- map.keyValuePairs) {
       out.startElement(resultMapEntry, Untyped.getInstance, locationId, ReceiverOption.NONE)
       out.startElement(resultMapKey, Untyped.getInstance, locationId, ReceiverOption.NONE)
       append(pair.key)

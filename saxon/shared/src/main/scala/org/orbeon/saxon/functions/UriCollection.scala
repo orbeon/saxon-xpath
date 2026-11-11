@@ -19,15 +19,7 @@ import org.orbeon.saxon.trans.XPathException
 
 import org.orbeon.saxon.value.AnyURIValue
 
-import java.io.Closeable
-
-import java.io.IOException
-
 import java.net.URI
-
-import java.net.URISyntaxException
-
-import java.util.Iterator
 
 class UriCollection extends SystemFunction {
 
@@ -45,8 +37,7 @@ class UriCollection extends SystemFunction {
       throw err
     }
     val sources: Iterator[String] = rCollection.getResourceURIs(context)
-    val uris: Iterator[AnyURIValue] =
-      new org.orbeon.saxon.tree.jiter.MappingJavaIterator[String, AnyURIValue](sources, s => new AnyURIValue(s))
+    val uris: Iterator[AnyURIValue] = sources.map(new AnyURIValue(_))
     new org.orbeon.saxon.om.IteratorWrapper(uris)
   }
 

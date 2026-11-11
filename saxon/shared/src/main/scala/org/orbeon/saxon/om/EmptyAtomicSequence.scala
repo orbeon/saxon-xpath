@@ -6,10 +6,6 @@ import org.orbeon.saxon.tree.iter.EmptyIterator
 
 import org.orbeon.saxon.value.AtomicValue
 
-import java.util.Collections
-
-import java.util.Iterator
-
 object EmptyAtomicSequence extends Enumeration {
 
   val INSTANCE: EmptyAtomicSequence = new EmptyAtomicSequence()
@@ -40,7 +36,7 @@ object EmptyAtomicSequence extends Enumeration {
     override def reduce(): EmptyAtomicSequence = this
 
     def iterator: Iterator[AtomicValue] =
-      Collections.emptyList[AtomicValue]().iterator
+      Iterator.empty
 
   }
 

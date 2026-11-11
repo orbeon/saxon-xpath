@@ -83,8 +83,8 @@ class AttributeMapWithIdentity(private var attributes: ju.List[AttributeInfo])
     null
   }
 
-  def iterator: ju.Iterator[AttributeInfo] =
-    (attributes.iterator.asScala filterNot (_.isInstanceOf[AttributeInfo.Deleted])).asJava
+  def iterator: Iterator[AttributeInfo] =
+    attributes.iterator.asScala filterNot (_.isInstanceOf[AttributeInfo.Deleted])
 
   override def asList: ju.List[AttributeInfo] =
     (attributes.asScala filterNot (_.isInstanceOf[AttributeInfo.Deleted])).asJava

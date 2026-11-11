@@ -21,7 +21,7 @@ object SerializationParamsHandler {
   val NAMESPACE: String = NamespaceConstant.OUTPUT
 
   private def restrictAttributes(element: NodeInfo, allowedNames: String*): Unit = {
-    for (att <- element.attributes.iterator.asScala) {
+    for (att <- element.attributes) {
       val name = att.nodeName
       if ("" == name.getURI && ju.Arrays.binarySearch(allowedNames.asInstanceOf[Array[AnyRef]], name.getLocalPart) < 0)
         throw new XPathException(

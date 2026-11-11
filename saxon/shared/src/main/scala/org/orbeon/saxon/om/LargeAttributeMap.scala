@@ -22,14 +22,15 @@ class LargeAttributeMap extends AttributeMap {
   private var attributes: Map[NodeName, AttributeInfoLink] = _
   private var firstNode: NodeName = _
   private var lastNode: NodeName = _
+  private var _size: Int = _
 
-  var size: Int = _
+  override def size: Int = _size
 
   def this(atts: ju.List[AttributeInfo]) = {
     this()
     assert(!atts.isEmpty)
     this.attributes = Map.empty[NodeName, AttributeInfoLink]
-    this.size = atts.size
+    this._size = atts.size
     var current: AttributeInfoLink = null
     for (att: AttributeInfo <- atts.asScala) {
       if (attributes.contains(att.nodeName))
@@ -55,7 +56,7 @@ class LargeAttributeMap extends AttributeMap {
       last: NodeName) = {
     this()
     this.attributes = attributes
-    this.size = size
+    this._size = size
     this.firstNode = first
     this.lastNode = last
   }
@@ -130,8 +131,8 @@ class LargeAttributeMap extends AttributeMap {
         new LargeAttributeMap(att2, size - 1, first2, last2)
     }
 
-  override def iterator: ju.Iterator[AttributeInfo] =
-    new ju.Iterator[AttributeInfo] {
+  override def iterator: Iterator[AttributeInfo] =
+    new Iterator[AttributeInfo] {
 
       var current: NodeName = firstNode
 
@@ -142,19 +143,17 @@ class LargeAttributeMap extends AttributeMap {
         current = link.next
         link.payload
       }
-
-      override def remove(): Unit = throw new UnsupportedOperationException("remove")
     }
 
   override def asList: ju.List[AttributeInfo] = synchronized {
     val result = new ju.ArrayList[AttributeInfo](size)
-    iterator.asScala foreach result.add
+    iterator foreach result.add
     result
   }
 
   override def toString: String = {
     val sb = new FastStringBuffer(256)
-    for (att <- this.asScala) {
+    for (att <- this) {
       sb.cat(att.nodeName.getDisplayName)
         .cat("=\"")
         .cat(att.value)

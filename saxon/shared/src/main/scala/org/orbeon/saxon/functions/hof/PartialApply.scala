@@ -127,15 +127,8 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
     new SpecificFunctionType(argTypes, resultType)
   }
 
-  override def operands: java.lang.Iterable[Operand] = {
-    val operanda: List[Operand] =
-      new ArrayList[Operand](boundArgumentsOp.length + 1)
-    operanda.add(baseOp)
-    for (o <- boundArgumentsOp if o != null) {
-      operanda.add(o)
-    }
-    operanda
-  }
+  override def operands: Iterable[Operand] =
+    baseOp +: boundArgumentsOp.filter(_ != null).toIndexedSeq
 
   def getNumberOfArguments: Int = boundArgumentsOp.length
 
@@ -273,7 +266,7 @@ class PartialApply(base: Expression, boundArguments: Array[Expression])
   override def computeHashCode() = {
     var h = 0x836b92a0
     var i = 0
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       if (o == null) {
         h ^= i + 1
       }

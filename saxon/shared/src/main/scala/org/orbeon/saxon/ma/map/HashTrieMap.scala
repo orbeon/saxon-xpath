@@ -21,7 +21,7 @@ object HashTrieMap {
         hashTrieMap
       case _                 =>
         var m2 = new HashTrieMap
-        for (pair <- map.keyValuePairs.asScala)
+        for (pair <- map.keyValuePairs)
           m2 = m2.addEntry(pair.key, pair.value)
         m2
     }
@@ -212,8 +212,7 @@ class HashTrieMap extends MapItem {
           null
     }
 
-  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
-    () => imap.valuesIterator.asJava
+  def keyValuePairs: Iterable[KeyValuePair] = imap.values
 
   def diagnosticDump(): Unit = {
     System.err.println("Map details:")

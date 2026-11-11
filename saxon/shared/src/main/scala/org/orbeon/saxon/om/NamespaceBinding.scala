@@ -7,10 +7,7 @@
 
 package org.orbeon.saxon.om
 
-import java.util.Iterator
-
 import org.orbeon.saxon.lib.NamespaceConstant
-import org.orbeon.saxon.tree.jiter.MonoIterator
 object NamespaceBinding {
 
   val XML: NamespaceBinding =
@@ -57,7 +54,7 @@ class NamespaceBinding(prefStr: String, uriStr: String)
     *
     * @return an Iterator.
     */
-  def iterator: Iterator[NamespaceBinding] = new MonoIterator[NamespaceBinding](this)
+  def iterator: Iterator[NamespaceBinding] = Iterator.single(this)
 
   /**
     * Test if this namespace binding is the same as another

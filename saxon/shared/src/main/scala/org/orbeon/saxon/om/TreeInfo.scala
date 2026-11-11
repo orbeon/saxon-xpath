@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.{util => ju}
-
 import javax.xml.transform.Source
 import org.orbeon.saxon.utils.Configuration
 
@@ -36,7 +34,7 @@ trait TreeInfo extends Source {
   def isTyped: Boolean = false
   def isMutable: Boolean = false
   def selectID(id: String, getParent: Boolean): NodeInfo
-  def getUnparsedEntityNames: ju.Iterator[String]
+  def getUnparsedEntityNames: Iterator[String]
   def getUnparsedEntity(name: String): Array[String]
   def setSpaceStrippingRule(rule: SpaceStrippingRule): Unit
   def getSpaceStrippingRule: SpaceStrippingRule

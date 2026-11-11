@@ -30,14 +30,14 @@ object Block {
     if (e1.isInstanceOf[Block] || e2.isInstanceOf[Block]) {
       val list: List[Expression] = new ArrayList[Expression](10)
       if (e1.isInstanceOf[Block]) {
-        for (o <- e1.operands.asScala) {
+        for (o <- e1.operands) {
           list.add(o.getChildExpression)
         }
       } else {
         list.add(e1)
       }
       if (e2.isInstanceOf[Block]) {
-        for (o <- e2.operands.asScala) {
+        for (o <- e2.operands) {
           list.add(o.getChildExpression)
         }
       } else {
@@ -64,7 +64,7 @@ object Block {
     }
 
   def neverReturnsTypedNodes(insn: Instruction, th: TypeHierarchy): Boolean = {
-    for (o <- insn.operands.asScala) {
+    for (o <- insn.operands) {
       val exp: Expression = o.getChildExpression
       if (!exp.hasSpecialProperty(StaticProperty.ALL_NODES_UNTYPED)) {
         val it: ItemType = exp.getItemType
@@ -103,8 +103,8 @@ class Block(children: Array[Expression]) extends Instruction {
 
   private def size(): Int = operanda.length
 
-  override def operands: java.lang.Iterable[Operand] =
-    Arrays.asList(operanda: _*)
+  override def operands: Iterable[Operand] =
+    operanda.toIndexedSeq
 
   override def hasVariableBinding(binding: Binding): Boolean = {
     binding match {
@@ -131,7 +131,7 @@ class Block(children: Array[Expression]) extends Instruction {
     var allChildAxis: Boolean = true
     var allSubtreeAxis: Boolean = true
     breakable {
-      for (o <- operands.asScala) {
+      for (o <- operands) {
         val child = o.getChildExpression
         if (!(child.isInstanceOf[AxisExpression])) {
           allAxisExpressions = false
@@ -346,7 +346,7 @@ class Block(children: Array[Expression]) extends Instruction {
     }
     var updating: Boolean = false
     var nonUpdating: Boolean = false
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       if (ExpressionTool.isNotAllowedInUpdatingContext(child)) {
         if (updating) {
@@ -372,7 +372,7 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   override def isVacuousExpression: Boolean = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       if (! child.isVacuousExpression)
         return false
@@ -432,7 +432,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   private def flatten(targetList: List[Expression]): Unit = {
     var currentLiteralList: List[Item] = null
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       if (Literal.isEmptySequence(child)) {} else if (child
         .isInstanceOf[Block]) {
@@ -472,7 +472,7 @@ class Block(children: Array[Expression]) extends Instruction {
     }
 
   def isCandidateForSharedAppend: Boolean = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val exp: Expression = o.getChildExpression
       if (exp.isInstanceOf[VariableReference] || exp.isInstanceOf[Literal]) {
         return true
@@ -498,7 +498,7 @@ class Block(children: Array[Expression]) extends Instruction {
     var canSimplify: Boolean = false
     var prevLiteral: Boolean = false
     breakable {
-      for (o <- operands.asScala) {
+      for (o <- operands) {
         val child = o.getChildExpression
         if (child.isInstanceOf[Block]) {
           canSimplify = true
@@ -533,14 +533,14 @@ class Block(children: Array[Expression]) extends Instruction {
   }
 
   override def checkPermittedContents(parentType: SchemaType, whole: Boolean): Unit =
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       child.checkPermittedContents(parentType, whole = false)
     }
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("sequence", this)
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       child.`export`(out)
     }
@@ -552,7 +552,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
     var tc: TailCall = null
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       try child match {
         case returner: TailCallReturner =>
@@ -583,7 +583,7 @@ class Block(children: Array[Expression]) extends Instruction {
 
   override def evaluatePendingUpdates(context: XPathContext,
                                       pul: PendingUpdateList): Unit =
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       child.evaluatePendingUpdates(context, pul)
     }

@@ -45,7 +45,7 @@ object UserFunction {
   private def containsUserFunctionCalls(exp: Expression): Boolean = {
     if (exp.isInstanceOf[UserFunctionCall])
       return true
-    for (o <- exp.operands.asScala if containsUserFunctionCalls(o.getChildExpression))
+    for (o <- exp.operands if containsUserFunctionCalls(o.getChildExpression))
       return true
     false
   }

@@ -199,7 +199,7 @@ class CopyOf(select: Expression,
     selectOp.setChildExpression(select)
   }
 
-  override def operands: java.lang.Iterable[Operand] = selectOp
+  override def operands: Iterable[Operand] = selectOp
 
   def validationAction: Int = validation
 

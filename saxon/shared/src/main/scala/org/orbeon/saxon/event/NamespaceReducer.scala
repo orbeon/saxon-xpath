@@ -13,6 +13,7 @@ import org.orbeon.saxon.om._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trans.XPathException
 import java.util
+import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 /**
@@ -185,7 +186,7 @@ class NamespaceReducer(val next: Receiver)
    * Get an iterator over all the prefixes declared in this namespace context. This will include
    * the default namespace (prefix="") and the XML namespace where appropriate
    */
-  def iteratePrefixes: util.Iterator[String] = {
+  def iteratePrefixes: Iterator[String] = {
     val prefixes = new util.ArrayList[String](namespacesSize)
     for (i <- namespacesSize - 1 to 0 by -1) {
       val prefix = namespaces(i).prefix
@@ -193,6 +194,6 @@ class NamespaceReducer(val next: Receiver)
         prefixes.add(prefix)
     }
     prefixes.add("xml")
-    prefixes.iterator
+    prefixes.iterator.asScala
   }
 }

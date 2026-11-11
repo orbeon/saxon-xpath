@@ -24,6 +24,7 @@ import java.util.ArrayList
 
 import java.util.List
 
+import scala.jdk.CollectionConverters._
 import ApplyTemplates._
 object ApplyTemplates {
 
@@ -121,14 +122,14 @@ class ApplyTemplates  ()
   def getSeparatorExpression: Expression =
     if (separatorOp == null) null else separatorOp.getChildExpression
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val operanda: List[Operand] = new ArrayList[Operand]()
     operanda.add(selectOp)
     if (separatorOp != null)
       operanda.add(separatorOp)
     WithParam.gatherOperands(this, actualParams, operanda)
     WithParam.gatherOperands(this, tunnelParams, operanda)
-    operanda
+    operanda.asScala
   }
 
   override def getInstructionNameCode: Int = StandardNames.XSL_APPLY_TEMPLATES

@@ -8,10 +8,6 @@ package org.orbeon.saxon.tree.util
 
 import org.orbeon.saxon.om.NamespaceResolver
 
-import java.util.ArrayList
-
-import java.util.Iterator
-
 /**
   * This class is a NamespaceResolver that modifies an underyling NamespaceResolver
   * by changing the mapping of the null prefix to be a specified namespace, rather than
@@ -27,16 +23,7 @@ class NamespaceResolverWithDefault(base: NamespaceResolver, defaultNamespace: St
     else
       base.getURIForPrefix(prefix, useDefault)
 
-  def iteratePrefixes: Iterator[String] = {
-    val list = new ArrayList[String](10)
-    val it = base.iteratePrefixes
-    while (it.hasNext) {
-      val p = it.next()
-      if (p.length != 0)
-        list.add(p)
-    }
-    list.add("")
-    list.iterator
-  }
+  def iteratePrefixes: Iterator[String] =
+    base.iteratePrefixes.filter(_.nonEmpty) ++ Iterator.single("")
 }
 

@@ -55,7 +55,7 @@ class FixedElement(var elementName: NodeName,
 
   preservingTypes = schemaType == null && validation == Validation.PRESERVE
 
-  override def operands: java.lang.Iterable[Operand] = contentOp
+  override def operands: Iterable[Operand] = contentOp
 
   override def simplify(): Expression = {
     preservingTypes = preservingTypes || !packageData.isSchemaAware
@@ -98,7 +98,7 @@ class FixedElement(var elementName: NodeName,
       if (getContentExpression.isInstanceOf[Block]) {
         ok = true
         breakable {
-          for (o <- getContentExpression.operands.asScala) {
+          for (o <- getContentExpression.operands) {
             val exp: Expression = o.getChildExpression
             if (exp.isInstanceOf[FixedAttribute]) {
               if (!exp
@@ -121,7 +121,7 @@ class FixedElement(var elementName: NodeName,
     }
     if (ok) {
       var reduced: NamespaceMap = namespaceBindings
-      for (childNamespace <- namespaceBindings.asScala
+      for (childNamespace <- namespaceBindings
            if childNamespace.getURI == parentNamespaces.getURI(
              childNamespace.prefix)) {
         reduced = reduced.remove(childNamespace.prefix)
@@ -291,7 +291,7 @@ class FixedElement(var elementName: NodeName,
     if (getContentExpression.isInstanceOf[FixedAttribute]) {
       testForXSIType(getContentExpression.asInstanceOf[FixedAttribute], env)
     } else if (getContentExpression.isInstanceOf[Block]) {
-      for (o <- getContentExpression.operands.asScala) {
+      for (o <- getContentExpression.operands) {
         val exp: Expression = o.getChildExpression
         if (exp.isInstanceOf[FixedAttribute]) {
           val `type`: SchemaType =
@@ -377,7 +377,7 @@ class FixedElement(var elementName: NodeName,
   def outputNamespaceNodes(out: Outputter,
                            nodeName: NodeName,
                            copiedNode: NodeInfo): Unit = {
-    for (ns <- namespaceBindings.asScala) {
+    for (ns <- namespaceBindings) {
       out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
     }
   }
@@ -400,7 +400,7 @@ class FixedElement(var elementName: NodeName,
     }
     val fsb = new FastStringBuffer(FastStringBuffer.C256)
     if (!namespaceBindings.isEmpty) {
-      for (ns <- namespaceBindings.asScala) {
+      for (ns <- namespaceBindings) {
         val prefix: String = ns.prefix
         if (prefix.!=("xml")) {
           fsb.append(if (prefix.isEmpty) "#" else prefix)

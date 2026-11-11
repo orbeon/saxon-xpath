@@ -70,7 +70,7 @@ final class ItemChecker(sequence: Expression, val requiredItemType: ItemType, ro
       case block: Block =>
         // Do the item-checking on each operand of the block separately (it might not be needed on all items)
         val checkedOperands = new util.ArrayList[Expression]
-        for (o <- block.operands.asScala) {
+        for (o <- block.operands) {
           val checkedOp = new ItemChecker(o.getChildExpression, requiredItemType, role)
           checkedOperands.add(checkedOp)
         }

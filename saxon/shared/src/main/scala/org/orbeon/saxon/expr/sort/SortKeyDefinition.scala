@@ -223,7 +223,7 @@ class SortKeyDefinition extends PseudoExpression {
 
   override def typeCheck(visitor: ExpressionVisitor,
                 contextItemType: ContextItemStaticInfo): SortKeyDefinition = {
-    for (o <- checkedOperands.asScala if o.hasSameFocus) {
+    for (o <- checkedOperands if o.hasSameFocus) {
       o.typeCheck(visitor, contextItemType)
     }
     val lang: Expression = getLanguage
@@ -240,23 +240,8 @@ class SortKeyDefinition extends PseudoExpression {
     this
   }
 
-  override def operands: java.lang.Iterable[Operand] = {
-    val list: List[Operand] = new ArrayList[Operand](8)
-    list.add(sortKey)
-    list.add(order)
-    if (dataTypeExpression != null) {
-      list.add(dataTypeExpression)
-    }
-    list.add(caseOrder)
-    list.add(language)
-    if (stable != null) {
-      list.add(stable)
-    }
-    if (collationName != null) {
-      list.add(collationName)
-    }
-    list
-  }
+  override def operands: Iterable[Operand] =
+    operandSparseList(sortKey, order, dataTypeExpression, caseOrder, language, stable, collationName)
 
   override def getImplementationMethod: Int = 0
 

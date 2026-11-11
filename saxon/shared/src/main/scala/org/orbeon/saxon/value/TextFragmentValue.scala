@@ -1,7 +1,6 @@
 package org.orbeon.saxon.value
 
 import java.util.function.Predicate
-import java.util.{Collections, Iterator}
 
 import javax.xml.transform.SourceLocator
 import org.orbeon.saxon.event.{Receiver, ReceiverOption}
@@ -153,7 +152,7 @@ class TextFragmentValue(config: Configuration,
 
   def selectID(id: String, getParent: Boolean): NodeInfo = null
 
-  def getUnparsedEntityNames: Iterator[String] = Collections.emptyIterator[String]
+  def getUnparsedEntityNames: Iterator[String] = Iterator.empty
 
   def getUnparsedEntity(name: String): Array[String] = null
 

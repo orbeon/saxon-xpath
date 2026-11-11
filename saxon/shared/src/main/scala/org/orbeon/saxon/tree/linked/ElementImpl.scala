@@ -29,7 +29,7 @@ object ElementImpl {
         return true
       }
       try
-        for (av <- node.atomize().asScala if av.getItemType.isIdRefType) {
+        for (av <- node.atomize().iterator if av.getItemType.isIdRefType) {
           return true
         }
       catch {
@@ -196,7 +196,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
 
     val atts: ju.List[AttributeInfo] =
       new ju.ArrayList[AttributeInfo](attributes.size)
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       var attributeType: SimpleType = BuiltInAtomicType.UNTYPED_ATOMIC
       if (copyTypes) {
         attributeType = att.`type`
@@ -243,7 +243,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
           "Cannot copy QName or NOTATION values without copying namespaces")
       } else {
         val value = atomize()
-        for (valItem <- value.asScala) {
+        for (valItem <- value.iterator) {
           if (valItem.getPrimitiveType.isNamespaceSensitive) {
             throw new CopyNamespaceSensitiveException(
               "Cannot copy QName or NOTATION values without copying namespaces")
@@ -260,7 +260,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
           "Cannot copy QName or NOTATION values without copying namespaces")
       } else {
         val value = `type`.getTypedValue(att.value, namespaceMap, getConfiguration.getConversionRules)
-        for (valItem <- value.asScala) {
+        for (valItem <- value.iterator) {
           if (valItem.getPrimitiveType.isNamespaceSensitive) {
             throw new CopyNamespaceSensitiveException(
               "Cannot copy QName or NOTATION values without copying namespaces")
@@ -279,7 +279,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       breakable {
         while (true) {
           val n: ElementImpl = iter.next().asInstanceOf[ElementImpl]
-          for (att <- attributeMap.iterator.asScala if att.isId) {
+          for (att <- attributeMap if att.isId) {
             root.deregisterID(att.value)
           }
           if (n == null) {
@@ -408,7 +408,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on the element name")
     }
-    for (att <- attributeMap.iterator.asScala if att.nodeName.getPrefix == prefix) {
+    for (att <- attributeMap if att.nodeName.getPrefix == prefix) {
       throw new IllegalStateException(
         "Cannot remove binding of namespace prefix used on an existing attribute name")
     }
@@ -473,14 +473,14 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       namespaceMap.getURI(prefix)
     }
 
-  def iteratePrefixes: ju.Iterator[String] = namespaceMap.iteratePrefixes
+  def iteratePrefixes: Iterator[String] = namespaceMap.iteratePrefixes
 
   def isInScopeNamespace(uri: String): Boolean =
-    namespaceMap.asScala.exists(_.getURI == uri)
+    namespaceMap.exists(_.getURI == uri)
 
   override def getDeclaredNamespaces(buffer: Array[NamespaceBinding]): Array[NamespaceBinding] = {
     val bindings: ju.List[NamespaceBinding] = new ju.ArrayList[NamespaceBinding]
-    for (nb <- namespaceMap.asScala)
+    for (nb <- namespaceMap)
       bindings.add(nb)
     bindings.toArray(NamespaceBinding.EMPTY_ARRAY)
   }
@@ -499,7 +499,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
   private def deepAddNamespaces(inheritedNamespaces: NamespaceMap): Unit = {
     var lInheritedNamespaces: NamespaceMap = inheritedNamespaces
     var childNamespaces: NamespaceMap = namespaceMap
-    for (binding <- lInheritedNamespaces.asScala) {
+    for (binding <- lInheritedNamespaces) {
       if (childNamespaces.getURI(binding.prefix) == null) {
         childNamespaces =
           childNamespaces.put(binding.prefix, binding.getURI)
@@ -519,7 +519,7 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
       val parent: NodeInfo = this
       (parent iterateAxis(AxisInfo.CHILD, nodeTest = filter)).asIterator.to(Iterable)
     } else {
-      ju.Collections.emptyList[NodeInfo]().asScala
+      Nil
     }
 
   override def getAllNamespaces: NamespaceMap = namespaceMap

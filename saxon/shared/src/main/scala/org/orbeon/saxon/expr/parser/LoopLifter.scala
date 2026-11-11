@@ -79,7 +79,7 @@ class LoopLifter(var root: Expression,
     val choose = getContainingConditional(exp)
     if (choose != null)
       markDependencies(exp, choose)
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands) {
       gatherInfo(o.getChildExpression,
         level + 1,
         if (o.isEvaluatedRepeatedly) loopLevel + 1 else loopLevel,
@@ -156,7 +156,7 @@ class LoopLifter(var root: Expression,
           }
         }
       }
-      for (o <- exp.operands.asScala if !o.getOperandRole.isConstrainedClass)
+      for (o <- exp.operands if !o.getOperandRole.isConstrainedClass)
         loopLift(o.getChildExpression)
     }
   }

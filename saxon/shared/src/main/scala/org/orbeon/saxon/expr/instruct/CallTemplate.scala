@@ -29,6 +29,8 @@ import org.orbeon.saxon.tree.util.FastStringBuffer
 
 import org.orbeon.saxon.value.SequenceType
 
+import scala.jdk.CollectionConverters._
+
 import java.util.ArrayList
 
 import java.util.Arrays
@@ -195,11 +197,11 @@ class CallTemplate(private var template: NamedTemplate,
 
   override def mayCreateNewNodes(): Boolean = true
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val list: ArrayList[Operand] = new ArrayList[Operand](10)
     WithParam.gatherOperands(this, actualParams, list)
     WithParam.gatherOperands(this, tunnelParams, list)
-    list
+    list.asScala
   }
 
   override def process(output: Outputter, context: XPathContext): Unit = {

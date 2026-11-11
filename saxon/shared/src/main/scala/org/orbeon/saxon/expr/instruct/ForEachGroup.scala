@@ -50,7 +50,7 @@ object ForEachGroup {
             selectedItemType,
             inLoop)
           if (feg2.getSortKeyDefinitions != null) {
-            for (skd <- feg2.getSortKeyDefinitions.asScala) {
+            for (skd <- feg2.getSortKeyDefinitions) {
               fixupGroupReferences(skd.getOrder, feg, selectedItemType, inLoop)
               fixupGroupReferences(skd.getCaseOrder,
                 feg,
@@ -73,7 +73,7 @@ object ForEachGroup {
           }
         }
       case _ =>
-        for (o <- exp.operands.asScala) {
+        for (o <- exp.operands) {
           fixupGroupReferences(o.getChildExpression,
             feg,
             selectedItemType,
@@ -141,13 +141,13 @@ class ForEachGroup(select: Expression,
     sortKeysOp = new Operand(this, sortKeys, OperandRole.SINGLE_ATOMIC)
   }
 
-  for (o <- operands.asScala) {
+  for (o <- operands) {
     adoptChildExpression(o.getChildExpression)
   }
 
   override def getInstructionNameCode: Int = StandardNames.XSL_FOR_EACH_GROUP
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(selectOp, actionOp, keyOp, collationOp, sortKeysOp)
 
   def getSelectExpression: Expression = selectOp.getChildExpression
@@ -185,7 +185,7 @@ class ForEachGroup(select: Expression,
     if (selectedItemType == ErrorType)
       return Literal.makeEmptySequence
 
-    for (o <- operands.asScala)
+    for (o <- operands)
       fixupGroupReferences(this, this, selectedItemType, inLoop = false)
     val cit = visitor.getConfiguration.makeContextItemStaticInfo(selectedItemType, maybeUndefined = false)
     cit.contextSettingExpression = getSelectExpression
@@ -197,7 +197,7 @@ class ForEachGroup(select: Expression,
       return getActionExpression
     if (getSortKeyDefinitions != null) {
       var allFixed: Boolean = true
-      for (sk <- getSortKeyDefinitions.asScala) {
+      for (sk <- getSortKeyDefinitions) {
         var sortKey: Expression = sk.getSortKey
         sortKey = sortKey.typeCheck(visitor, cit)
         if (sk.isBackwardsCompatible) {
@@ -249,7 +249,7 @@ class ForEachGroup(select: Expression,
       return getActionExpression
     }
     if (getSortKeyDefinitions != null) {
-      for (skd <- getSortKeyDefinitions.asScala) {
+      for (skd <- getSortKeyDefinitions) {
         var sortKey: Expression = skd.getSortKey
         sortKey = sortKey.optimize(visitor, sit)
         skd.setSortKey(sortKey, setContext = true)
@@ -324,7 +324,7 @@ class ForEachGroup(select: Expression,
     dependencies |= getActionExpression.getDependencies &
       ~(StaticProperty.DEPENDS_ON_FOCUS | StaticProperty.DEPENDS_ON_CURRENT_GROUP)
     if (getSortKeyDefinitions != null) {
-      for (skd <- getSortKeyDefinitions.asScala) {
+      for (skd <- getSortKeyDefinitions) {
         dependencies |= skd.getSortKey.getDependencies & ~StaticProperty.DEPENDS_ON_FOCUS
         var e = skd.getCaseOrder
         if (e != null && !e.isInstanceOf[Literal])
@@ -361,7 +361,7 @@ class ForEachGroup(select: Expression,
     if (getCollationNameExpression != null)
       getCollationNameExpression.addToPathMap(pathMap, pathMapNodeSet)
     if (getSortKeyDefinitions != null) {
-      for (skd <- getSortKeyDefinitions.asScala) {
+      for (skd <- getSortKeyDefinitions) {
         skd.getSortKey.addToPathMap(pathMap, target)
         var e = skd.getOrder
         if (e != null)

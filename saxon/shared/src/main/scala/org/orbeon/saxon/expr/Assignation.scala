@@ -46,7 +46,7 @@ object Assignation {
             results(0) = 100
             results(1) = 0
           } else {
-            for (o <- exp.operands.asScala)
+            for (o <- exp.operands)
               countReferences(binding, o.getChildExpression, references, results)
           }
     }
@@ -79,7 +79,7 @@ abstract class Assignation extends Expression with LocalBinding {
   def getSequenceOp: Operand = sequenceOp
   def getActionOp  : Operand = actionOp
 
-  override def operands: util.List[Operand] = operandList(sequenceOp, actionOp)
+  override def operands: Iterable[Operand] = operandList(sequenceOp, actionOp)
 
   /**
    * Set the required type (declared type) of the variable

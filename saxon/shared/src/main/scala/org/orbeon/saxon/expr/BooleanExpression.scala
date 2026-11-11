@@ -28,7 +28,7 @@ object BooleanExpression {
   def listAndComponents(exp: Expression, list: List[Expression]): Unit = {
     if (exp.isInstanceOf[BooleanExpression] &&
       exp.asInstanceOf[BooleanExpression].getOperator == Token.AND) {
-      for (o <- exp.operands.asScala) {
+      for (o <- exp.operands) {
         listAndComponents(o.getChildExpression, list)
       }
     } else {

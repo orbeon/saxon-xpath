@@ -53,7 +53,7 @@ object TemplateRule {
     if (exp.isInstanceOf[LocalParam]) {
       result.add(exp.asInstanceOf[LocalParam])
     } else {
-      for (o <- exp.operands.asScala) {
+      for (o <- exp.operands) {
         gatherLocalParams(o.getChildExpression, result)
       }
     }

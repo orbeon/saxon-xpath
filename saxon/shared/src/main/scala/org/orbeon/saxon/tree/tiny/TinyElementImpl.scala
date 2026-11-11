@@ -283,7 +283,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
           "Cannot copy QName or NOTATION values without copying namespaces")
       } else {
         val value: AtomicSequence = tree.getTypedValueOfElement(nodeNr)
-        for (lVal <- value.asScala if lVal.getPrimitiveType.isNamespaceSensitive) {
+        for (lVal <- value.iterator if lVal.getPrimitiveType.isNamespaceSensitive) {
           throw new CopyNamespaceSensitiveException(
             "Cannot copy QName or NOTATION values without copying namespaces")
         }
@@ -299,7 +299,7 @@ class TinyElementImpl(treeImpl: TinyTree, nodeNrImpl: Int) extends TinyParentNod
           "Cannot copy QName or NOTATION values without copying namespaces")
       } else {
         val value = tree.getTypedValueOfAttribute(null, nodeNr)
-        for (lVal <- value.asScala if lVal.getPrimitiveType.isNamespaceSensitive) {
+        for (lVal <- value.iterator if lVal.getPrimitiveType.isNamespaceSensitive) {
           throw new CopyNamespaceSensitiveException(
             "Cannot copy QName or NOTATION values without copying namespaces")
         }

@@ -122,7 +122,7 @@ class DocumentInstr(var textOnly: Boolean,
                     var constantText: String)
   extends ParentNodeConstructor {
 
-  override def operands: java.lang.Iterable[Operand] = contentOp
+  override def operands: Iterable[Operand] = contentOp
 
   override def getImplementationMethod: Int = Expression.EVALUATE_METHOD
 

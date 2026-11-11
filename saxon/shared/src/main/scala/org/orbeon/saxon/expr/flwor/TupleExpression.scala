@@ -16,7 +16,7 @@ class TupleExpression extends Expression {
 
   var operanda: OperandArray = _
 
-  override def operands: java.lang.Iterable[Operand] = operanda.operands
+  override def operands: Iterable[Operand] = operanda.operands
 
   def setVariables(refs: List[LocalVariableReference]): Unit = {
     val e: Array[Expression] = Array.ofDim[Expression](refs.size)
@@ -36,7 +36,7 @@ class TupleExpression extends Expression {
   }
 
   def includesBinding(binding: Binding): Boolean =
-    operands.asScala.exists(_.getChildExpression.asInstanceOf[LocalVariableReference].getBinding == binding)
+    operands.exists(_.getChildExpression.asInstanceOf[LocalVariableReference].getBinding == binding)
 
   def getItemType: ItemType =
     getConfiguration.getJavaExternalObjectType(classOf[AnyRef])
@@ -67,7 +67,7 @@ class TupleExpression extends Expression {
 
   override def computeHashCode(): Int = {
     var h: Int = 77
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       h ^= o.getChildExpression.hashCode
     }
     h
@@ -86,7 +86,7 @@ class TupleExpression extends Expression {
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("tuple", this)
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       o.getChildExpression.`export`(out)
     }
     out.endElement()

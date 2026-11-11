@@ -45,7 +45,7 @@ class SubscriptExpression(base: Expression, subscript: Expression) extends Singl
     exp
   }
 
-  override def operands: java.lang.Iterable[Operand] = operandList(getOperand, subscriptOp)
+  override def operands: Iterable[Operand] = operandList(getOperand, subscriptOp)
 
   def getSubscriptExpression: Expression = getSubscript
 

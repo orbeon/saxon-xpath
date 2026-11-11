@@ -10,7 +10,6 @@ import java.{util => ju}
 
 import org.orbeon.saxon.model.SimpleType
 import org.orbeon.saxon.s9api.Location
-import org.orbeon.saxon.tree.jiter.MonoIterator
 
 /**
  * An implementation of AttributeMap for use when there is exactly one attribute
@@ -63,7 +62,7 @@ class SingletonAttributeMap private(nodeName: NodeName,
   override def remove(name: NodeName): AttributeMap =
     if (name == nodeName) EmptyAttributeMap.getInstance else this
 
-  def iterator: ju.Iterator[AttributeInfo] = new MonoIterator(this)
+  def iterator: Iterator[AttributeInfo] = Iterator.single(this)
 
   override def apply(mapper: AttributeInfo => AttributeInfo): AttributeMap =
     SingletonAttributeMap.of(mapper.apply(this))

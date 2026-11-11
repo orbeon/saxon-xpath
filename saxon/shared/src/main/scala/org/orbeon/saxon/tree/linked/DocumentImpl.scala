@@ -220,7 +220,7 @@ class DocumentImpl
           registerID(e, Whitespace.trim(e.getStringValueCS))
         }
         val atts: AttributeMap = e.attributes
-        for (att <- atts.iterator.asScala if att.isId &&
+        for (att <- atts if att.isId &&
           NameChecker.isValidNCName(Whitespace.trim(att.value))) {
           registerID(e, Whitespace.trim(att.value))
         }
@@ -266,13 +266,11 @@ class DocumentImpl
     entityTable.put(name, ids)
   }
 
-  def getUnparsedEntityNames: ju.Iterator[String] =
-    if (entityTable == null) {
-      val ls: ju.List[String] = ju.Collections.emptyList()
-      ls.iterator
-    } else {
-      entityTable.keySet.iterator
-    }
+  def getUnparsedEntityNames: Iterator[String] =
+    if (entityTable == null)
+      Iterator.empty
+    else
+      entityTable.keySet.iterator.asScala
 
   def getUnparsedEntity(name: String): Array[String] = {
     if (entityTable == null) {
@@ -291,7 +289,7 @@ class DocumentImpl
 
   override def copy(out: Receiver, copyOptions: Int, locationId: Location): Unit = {
     out.startDocument(CopyOptions.getStartDocumentProperties(copyOptions))
-    val names: ju.Iterator[String] = getUnparsedEntityNames
+    val names: Iterator[String] = getUnparsedEntityNames
     while (names.hasNext) {
       val name: String = names.next()
       val details: Array[String] = getUnparsedEntity(name)

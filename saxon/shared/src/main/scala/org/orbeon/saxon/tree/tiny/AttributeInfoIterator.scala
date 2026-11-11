@@ -11,8 +11,6 @@ import org.orbeon.saxon.om.CodedName
 
 import org.orbeon.saxon.om.NamePool
 
-import java.util.Iterator
-
 class AttributeInfoIterator(private var tree: TinyTree,
                             private var element: Int)
     extends Iterator[AttributeInfo] {

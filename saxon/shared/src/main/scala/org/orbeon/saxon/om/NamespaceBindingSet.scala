@@ -6,11 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.{lang => jl}
-
 /**
   * Represents a set of namespace bindings
   */
-trait NamespaceBindingSet extends jl.Iterable[NamespaceBinding] {
+trait NamespaceBindingSet extends Iterable[NamespaceBinding] {
   def getURI(prefix: String): String
 }

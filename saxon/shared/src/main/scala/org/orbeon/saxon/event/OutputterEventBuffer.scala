@@ -41,7 +41,7 @@ class OutputterEventBuffer extends Outputter {
                             properties: Int): Unit = {
     buffer.add(
       new OutputterEvent.StartElement(elemName, `type`, location, properties))
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       buffer.add(
         new OutputterEvent.Attribute(att.nodeName,
           att.`type`,
@@ -49,7 +49,7 @@ class OutputterEventBuffer extends Outputter {
           att.location,
           att.properties))
     }
-    for (binding <- namespaces.asScala) {
+    for (binding <- namespaces) {
       buffer.add(
         new OutputterEvent.Namespace(binding.prefix,
           binding.getURI,

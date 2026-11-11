@@ -17,7 +17,7 @@ class GeneralPositionalPattern(base: NodeTest, var positionExpr: Expression) ext
 
   private var usesPosition: Boolean = true
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     new Operand(this, positionExpr, OperandRole.FOCUS_CONTROLLED_ACTION)
 
   def setUsesPosition(usesPosition: Boolean): Unit =

@@ -80,7 +80,7 @@ class SerializationProperties {
           props.setProperty(prop, existing + " " + value)
           if (prop == SaxonOutputKeys.USE_CHARACTER_MAPS) {
             val charMapIndex2 = charMap.copy()
-            for (map <- defaults.getCharacterMapIndex.asScala) {
+            for (map <- defaults.getCharacterMapIndex) {
               charMapIndex2.putCharacterMap(map.name, map)
             }
             charMap = charMapIndex2
@@ -102,7 +102,7 @@ class SerializationProperties {
       sb.append(k).append("=").append(properties.getProperty(k)).append(" ")
     }
     if (charMapIndex != null) {
-      for (cm <- charMapIndex.asScala) {
+      for (cm <- charMapIndex) {
         sb.append(cm.name.getEQName)
           .append("={")
           .append(cm.toString)

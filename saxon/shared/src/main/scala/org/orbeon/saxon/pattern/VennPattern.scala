@@ -30,7 +30,7 @@ abstract class VennPattern( var p1: Pattern,
 
   adoptChildExpression(p2)
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(new Operand(this, p1, OperandRole.SAME_FOCUS_ACTION),
       new Operand(this, p2, OperandRole.SAME_FOCUS_ACTION))
 

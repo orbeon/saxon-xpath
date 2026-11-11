@@ -317,11 +317,11 @@ class XMLEmitter extends Emitter {
     if (indentForNextAttribute >= 0)
       indentForNextAttribute += displayName.length
     var isFirst = true
-    for (ns <- namespaces.asScala) {
+    for (ns <- namespaces) {
       namespace(ns.prefix, ns.getURI, isFirst)
       isFirst = false
     }
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       attribute(att.nodeName, att.value, att.properties, isFirst)
       isFirst = false
     }

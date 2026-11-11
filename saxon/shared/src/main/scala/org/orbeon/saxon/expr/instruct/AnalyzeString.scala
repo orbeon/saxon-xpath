@@ -110,7 +110,7 @@ class AnalyzeString(select: Expression,
 
   override def getInstructionNameCode: Int = StandardNames.XSL_ANALYZE_STRING
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(selectOp, regexOp, flagsOp, matchingOp, nonMatchingOp)
 
   override def getImplementationMethod: Int =

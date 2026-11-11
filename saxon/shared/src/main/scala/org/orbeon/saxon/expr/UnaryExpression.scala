@@ -4,7 +4,6 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, Expr
 import org.orbeon.saxon.model.ItemType
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.utils.Configuration
 
 abstract class UnaryExpression(p0: Expression) extends Expression {
@@ -20,7 +19,7 @@ abstract class UnaryExpression(p0: Expression) extends Expression {
 
   def getOperand: Operand = operand
 
-  override def operands: java.lang.Iterable[Operand] = new MonoIterator(operand).next()
+  override def operands: Iterable[Operand] = operand
 
    def getOperandRole: OperandRole
 

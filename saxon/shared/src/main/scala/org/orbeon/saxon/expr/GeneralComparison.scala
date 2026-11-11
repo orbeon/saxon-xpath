@@ -482,7 +482,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
       case _: ContextSwitchingExpression if parentExpression
         .asInstanceOf[ContextSwitchingExpression]
         .getActionExpression eq this =>
-        for (o <- operands.asScala
+        for (o <- operands
              if Cardinality.allowsMany(o.getChildExpression.getCardinality)
              if ExpressionTool.dependsOnFocus(o.getChildExpression)) {
           return false
@@ -494,7 +494,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   }
 
   private def manyOperandIsRangeExpression(): Boolean = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val e = o.getChildExpression
       if (Cardinality.allowsMany(e.getCardinality)) {
         return e.isInstanceOf[RangeExpression] ||

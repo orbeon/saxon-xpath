@@ -44,7 +44,7 @@ class NodeSetPattern(exp: Expression)
     *
     * @return an iterator containing the sub-expressions of this expression
     */
-  override def operands: java.lang.Iterable[Operand] = selectionOp
+  override def operands: Iterable[Operand] = selectionOp
 
   def getSelectionExpression: Expression = selectionOp.getChildExpression
 

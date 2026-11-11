@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.expr.sort
 
-import java.util.{ArrayList, Arrays, Iterator, List}
-
 import org.orbeon.saxon.expr.{Operand, OperandRole, PseudoExpression}
 import org.orbeon.saxon.expr.parser.RebindingMap
 import org.orbeon.saxon.trace.ExpressionPresenter
@@ -20,24 +18,19 @@ import org.orbeon.saxon.trace.ExpressionPresenter
 class SortKeyDefinitionList(
     private var sortKeyDefinitions: Array[SortKeyDefinition])
     extends PseudoExpression
-    with java.lang.Iterable[SortKeyDefinition] {
+    with Iterable[SortKeyDefinition] {
 
-  override def operands: java.lang.Iterable[Operand] = {
-    val list: List[Operand] = new ArrayList[Operand](size)
-    for (skd <- sortKeyDefinitions) {
-      list.add(new Operand(this, skd, OperandRole.INSPECT))
-    }
-    list
-  }
+  override def operands: Iterable[Operand] =
+    sortKeyDefinitions.toIndexedSeq.map(new Operand(this, _, OperandRole.INSPECT))
 
   override def isLiftable(forStreaming: Boolean): Boolean = false
 
-  def size: Int = sortKeyDefinitions.length
+  override def size: Int = sortKeyDefinitions.length
 
   def getSortKeyDefinition(i: Int): SortKeyDefinition = sortKeyDefinitions(i)
 
   def iterator: Iterator[SortKeyDefinition] =
-    Arrays.asList(sortKeyDefinitions: _*).iterator
+    sortKeyDefinitions.iterator
 
   override def copy(rebindings: RebindingMap): SortKeyDefinitionList = {
     val s2: Array[SortKeyDefinition] =

@@ -23,7 +23,7 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
                             properties: Int): Unit = {
     var nameSpaceMap = namespaces
     var elemNodeName = elemName
-    for (ns <- nameSpaceMap.asScala if isSpecial(ns.getURI)) {
+    for (ns <- nameSpaceMap if isSpecial(ns.getURI)) {
       nameSpaceMap = nameSpaceMap.remove(ns.prefix)
     }
     if (isSpecial(elemNodeName.getURI)) {
@@ -32,7 +32,7 @@ class XHTMLPrefixRemover(next: Receiver) extends ProxyReceiver(next) {
         elemNodeName = new FingerprintedQName("", uri, elemNodeName.getLocalPart)
       nameSpaceMap = nameSpaceMap.put("", uri)
     }
-    for (att <- attributes.iterator.asScala if isSpecial(att.nodeName.getURI))
+    for (att <- attributes if isSpecial(att.nodeName.getURI))
       nameSpaceMap = nameSpaceMap.put(att.nodeName.getPrefix, att.nodeName.getURI)
     nextReceiver.startElement(elemNodeName,
       `type`,

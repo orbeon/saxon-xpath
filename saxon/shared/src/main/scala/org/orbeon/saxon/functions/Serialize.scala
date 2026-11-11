@@ -92,7 +92,7 @@ object Serialize {
 
     val th = context.getConfiguration.getTypeHierarchy
 
-    for (pair <- map.keyValuePairs.asScala) {
+    for (pair <- map.keyValuePairs) {
       val key = pair.key
       if (!key.isInstanceOf[StringValue])
         throw new XPathException("Keys in a character map must all be strings. Found a value of type " + key.getItemType, "XPTY0004")

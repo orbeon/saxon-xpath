@@ -12,7 +12,6 @@ import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.{ExpressionPresenter, Traceable}
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{EmptyIterator, SingletonIterator}
-import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.tree.util.FastStringBuffer
 import org.orbeon.saxon.utils.Configuration
 import org.orbeon.saxon.value._
@@ -20,8 +19,6 @@ import org.orbeon.saxon.z.IntHashSet
 
 import java.net.URI
 import java.{lang => jl, util => ju}
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks._
 
 object Expression {
@@ -57,7 +54,7 @@ object Expression {
         val slot = suppliedParameterRef.getSlotNumber
         slots.add(slot)
       case expVar =>
-        for (o <- expVar.operands.asScala)
+        for (o <- expVar.operands)
           gatherSlotsUsed(o.getChildExpression, slots)
     }
 }
@@ -79,12 +76,12 @@ abstract class Expression
   private var cachedHashCode: Int = -1
 
   def getExpressionName: String = getClass.getSimpleName
-  def operands: jl.Iterable[Operand] = ju.Collections.emptyList()
+  def operands: Iterable[Operand] = Nil
   def getInterpretedExpression: Expression = this
 
-  def checkedOperands: jl.Iterable[Operand] = {
+  def checkedOperands: Iterable[Operand] = {
     val ops = operands
-    for (o <- ops.asScala) {
+    for (o <- ops) {
       val child = o.getChildExpression
       val badOperand = o.parentExpression ne this
       val badExpression = child.parentExpression ne this
@@ -113,17 +110,12 @@ abstract class Expression
     ops
   }
 
-  def operandList(a: Operand*): ju.List[Operand] = ju.Arrays.asList(a: _*)
+  def operandList(a: Operand*): Seq[Operand] = a
 
-  def operandSparseList(a: Operand*): ju.List[Operand] = {
-    val operanda = new ju.ArrayList[Operand]()
-    for (o <- a if o != null)
-      operanda.add(o)
-    operanda
-  }
+  def operandSparseList(a: Operand*): Seq[Operand] = a.filter(_ != null)
 
   def verifyParentPointers(): Expression = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val parent = o.getChildExpression.parentExpression
       if (parent ne this) {
         throw new IllegalStateException(
@@ -150,7 +142,7 @@ abstract class Expression
   }
 
   def restoreParentPointers(): Unit =
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       child.parentExpression = Expression.this
       child.restoreParentPointers()
@@ -193,7 +185,7 @@ abstract class Expression
   }
 
   def simplifyChildren(): Unit = {
-    for (o <- operands.asScala if o != null) {
+    for (o <- operands if o != null) {
       val e = o.getChildExpression
       if (e != null) {
         val f = e.simplify()
@@ -205,7 +197,7 @@ abstract class Expression
   def setRetainedStaticContext(rsc: RetainedStaticContext): Unit = {
     if (rsc != null) {
       retainedStaticContext = rsc
-      for (o <- operands.asScala if o != null) {
+      for (o <- operands if o != null) {
         val child = o.getChildExpression
         if (child != null && child.retainedStaticContext == null) {
           child.setRetainedStaticContext(rsc)
@@ -218,14 +210,14 @@ abstract class Expression
     var rscVar = rsc
     if (rscVar != null) {
       retainedStaticContext = rscVar
-      for (o <- operands.asScala if o != null) {
+      for (o <- operands if o != null) {
         val child = o.getChildExpression
         if (child != null) {
           if (child.getLocalRetainedStaticContext == null) {
             child.setRetainedStaticContextThoroughly(rsc)
           } else {
             rscVar = child.getLocalRetainedStaticContext
-            for (p <- child.operands.asScala) {
+            for (p <- child.operands) {
               val grandchild = p.getChildExpression
               if (grandchild != null)
                 grandchild.setRetainedStaticContextThoroughly(rscVar)
@@ -267,7 +259,7 @@ abstract class Expression
   }
 
   final def typeCheckChildren(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
-    for (o <- operands.asScala)
+    for (o <- operands)
       o.typeCheck(visitor, contextInfo)
 
   def staticTypeCheck(req: SequenceType,
@@ -287,7 +279,7 @@ abstract class Expression
 
   def optimizeChildren(visitor: ExpressionVisitor,
                        contextInfo: ContextItemStaticInfo): Unit =
-    for (o <- operands.asScala)
+    for (o <- operands)
       o.optimize(visitor, contextInfo)
 
   def prepareForStreaming(): Unit = ()
@@ -296,7 +288,7 @@ abstract class Expression
     if (cost < 0) {
       var i: Double = getNetCost
       breakable {
-        for (o <- operands.asScala) {
+        for (o <- operands) {
           i += o.getChildExpression.getCost
           if (i > MAX_COST)
             break()
@@ -418,7 +410,7 @@ abstract class Expression
     buff.append(className)
 
     var first = true
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       buff.append(if (first) "(" else ", ")
       buff.append(o.getChildExpression.toString)
       first = false
@@ -505,7 +497,7 @@ abstract class Expression
 
   def computeDependencies(): Int = {
     var dependencies = getIntrinsicDependencies
-    for (o <- operands.asScala)
+    for (o <- operands)
       if (o.hasSameFocus)
         dependencies |= o.getChildExpression.getDependencies
       else
@@ -522,7 +514,7 @@ abstract class Expression
   }
 
   def checkForUpdatingSubexpressions(): Unit =
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val sub = o.getChildExpression
       if (sub == null)
         throw new NullPointerException
@@ -537,7 +529,7 @@ abstract class Expression
     }
 
   def isUpdatingExpression: Boolean =
-    operands.asScala.exists(_.getChildExpression.isUpdatingExpression)
+    operands.exists(_.getChildExpression.isUpdatingExpression)
 
   def isVacuousExpression: Boolean = false
 
@@ -606,7 +598,7 @@ abstract class Expression
     else
       null
 
-  def getProperties: collection.Iterator[String] = new MonoIterator("expression").asScala
+  def getProperties: collection.Iterator[String] = collection.Iterator.single("expression")
 
   def addToPathMap(
     pathMap        : PathMap,
@@ -626,7 +618,7 @@ abstract class Expression
       attachmentPoint = if (dependsOnFocus) pathMapNodeSet else null
     }
     val result = new PathMap.PathMapNodeSet
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val usage = o.usage
       val child = o.getChildExpression
       var target = child.addToPathMap(pathMap, attachmentPoint)
@@ -648,7 +640,7 @@ abstract class Expression
       if ((getIntrinsicDependencies & StaticProperty.DEPENDS_ON_FOCUS) != 0)
         false
       else
-        operands.asScala.forall(_.getChildExpression.isSubtreeExpression)
+        operands.forall(_.getChildExpression.isSubtreeExpression)
     } else {
       true
     }

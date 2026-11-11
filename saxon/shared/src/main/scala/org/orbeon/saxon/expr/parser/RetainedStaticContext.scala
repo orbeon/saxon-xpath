@@ -130,7 +130,7 @@ class RetainedStaticContext extends NamespaceResolver {
   def getURIForPrefix(prefix: String, useDefault: Boolean): String =
     namespaces.getURIForPrefix(prefix, useDefault)
 
-  def iteratePrefixes: ju.Iterator[String] =
+  def iteratePrefixes: Iterator[String] =
     namespaces.iteratePrefixes
 
   def declaresSameNamespaces(other: RetainedStaticContext): Boolean =

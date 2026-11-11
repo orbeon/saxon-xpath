@@ -150,7 +150,7 @@ class Optimizer( var config: Configuration) {
 
   def isVariableReplaceableByDot(exp: Expression,
                                  binding: Array[Binding]): Boolean = {
-    for (o <- exp.operands.asScala) {
+    for (o <- exp.operands) {
       if (o.hasSameFocus) {
         if (!isVariableReplaceableByDot(o.getChildExpression, binding))
           return false

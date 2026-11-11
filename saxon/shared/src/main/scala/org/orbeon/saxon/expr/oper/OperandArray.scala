@@ -1,23 +1,9 @@
 package org.orbeon.saxon.expr.oper
 
-import org.orbeon.saxon.expr.Expression
-
-import org.orbeon.saxon.expr.Operand
-
-import org.orbeon.saxon.expr.OperandRole
-
-import java.util.ArrayList
+import org.orbeon.saxon.expr.{Expression, Operand, OperandRole}
 
 import java.util.Arrays
-
-import java.util.Iterator
-
-import java.util.List
-
 import java.util.function.Predicate
-
-//import scala.collection.compat._
-import scala.jdk.CollectionConverters._
 
 object OperandArray {
 
@@ -28,7 +14,7 @@ object OperandArray {
     args.exists(condition.test)
 }
 
-class OperandArray extends java.lang.Iterable[Operand] {
+class OperandArray extends Iterable[Operand] {
 
   private var operandArray: Array[Operand] = _
 
@@ -61,7 +47,7 @@ class OperandArray extends java.lang.Iterable[Operand] {
   }
 
   override def iterator: Iterator[Operand] =
-    Arrays.asList(operandArray: _*).iterator
+    operandArray.iterator
 
   def copy(): Array[Operand] = Arrays.copyOf(operandArray, operandArray.length)
 
@@ -78,14 +64,10 @@ class OperandArray extends java.lang.Iterable[Operand] {
   def getOperandExpression(n: Int): Expression =
     operandArray(n).getChildExpression
 
-  def operands: java.lang.Iterable[Operand] = Arrays.asList(operandArray: _*)
+  def operands: Iterable[Operand] = operandArray
 
-  def operandExpressions(): java.lang.Iterable[Expression] = {
-    val list = new ArrayList[Expression](operandArray.length)
-    for (o <- operands.asScala)
-      list.add(o.getChildExpression)
-    list
-  }
+  def operandExpressions(): Iterable[Expression] =
+    operandArray.toIndexedSeq.map(_.getChildExpression)
 
   def setOperand(n: Int, child: Expression): Unit =
     if (operandArray(n).getChildExpression ne child)

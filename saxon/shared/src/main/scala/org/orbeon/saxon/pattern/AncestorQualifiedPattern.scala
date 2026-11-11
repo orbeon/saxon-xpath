@@ -45,7 +45,7 @@ class AncestorQualifiedPattern(base: Pattern, upper: Pattern, axis: Int)
 
   adoptChildExpression(upper)
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(new Operand(this, upperPattern, OperandRole.SAME_FOCUS_ACTION),
       new Operand(this, basePattern, OperandRole.SAME_FOCUS_ACTION))
 

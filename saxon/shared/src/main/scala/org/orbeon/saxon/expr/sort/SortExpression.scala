@@ -61,7 +61,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
 
   def getBaseExpression: Expression = getSelect
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(selectOp, sortOp)
 
   override def addToPathMap(
@@ -69,7 +69,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
                              pathMapNodeSet: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val target: PathMap.PathMapNodeSet =
       getSelect.addToPathMap(pathMap, pathMapNodeSet)
-    for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
+    for (sortKeyDefinition <- getSortKeyDefinitionList) {
       if (sortKeyDefinition.isSetContextForSortKey) {
         sortKeyDefinition.getSortKey.addToPathMap(pathMap, target)
       } else {
@@ -113,7 +113,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     val sortedItemType: ItemType = getSelect.getItemType
     var allKeysFixed: Boolean = true
     breakable {
-      for (sortKeyDefinition <- getSortKeyDefinitionList.asScala
+      for (sortKeyDefinition <- getSortKeyDefinitionList
            if !sortKeyDefinition.isFixed) {
         allKeysFixed = false
         break()
@@ -175,7 +175,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
     } else {
       cit = contextItemType
     }
-    for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
+    for (sortKeyDefinition <- getSortKeyDefinitionList) {
       var sortKey: Expression = sortKeyDefinition.getSortKey
       sortKey = sortKey.optimize(visitor, cit)
       sortKeyDefinition.setSortKey(sortKey, setContext = true)
@@ -202,7 +202,7 @@ class SortExpression(select: Expression, sortKeys: SortKeyDefinitionList)
   }
 
   def isSortKey(child: Expression): Boolean = {
-    for (sortKeyDefinition <- getSortKeyDefinitionList.asScala) {
+    for (sortKeyDefinition <- getSortKeyDefinitionList) {
       val exp: Expression = sortKeyDefinition.getSortKey
       if (exp == child) {
         return true

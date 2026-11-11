@@ -30,7 +30,7 @@ class IntegerRangeTest(value: Expression, min: Expression, max: Expression)
   private var maxOp: Operand =
     new Operand(this, max, OperandRole.SINGLE_ATOMIC)
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(valueOp, minOp, maxOp)
 
   def getValue: Expression = valueOp.getChildExpression

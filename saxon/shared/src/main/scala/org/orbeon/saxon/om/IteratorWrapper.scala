@@ -1,11 +1,7 @@
 package org.orbeon.saxon.om
 
-import org.orbeon.saxon.trans.XPathException
-
-import java.util.Iterator
-
 /**
-  * Class IteratorWrapper - provides an an SequenceIterator over a Java Iterator.
+  * Class IteratorWrapper - provides a SequenceIterator over a Scala Iterator.
   */
 class IteratorWrapper(var iterator: Iterator[_ <: Item])
     extends SequenceIterator {

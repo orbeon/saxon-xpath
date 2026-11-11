@@ -38,13 +38,8 @@ class DictionaryMap extends MapItem {
     () => if (base.hasNext) new StringValue(base.next()) else null
   }
 
-  override def keyValuePairs: java.lang.Iterable[KeyValuePair] = {
-    val pairs = new ArrayList[KeyValuePair]
-    hashMap.asScala.foreach { case (k, v) =>
-      pairs.add(KeyValuePair(new StringValue(k), v))
-    }
-    pairs
-  }
+  override def keyValuePairs: Iterable[KeyValuePair] =
+    hashMap.asScala.map { case (k, v) => KeyValuePair(new StringValue(k), v) }
 
   override def addEntry(key: AtomicValue, value: GroundedValue): MapItem =
     toHashTrieMap.addEntry(key, value)

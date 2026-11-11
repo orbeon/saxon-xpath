@@ -9,7 +9,6 @@ import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.model.AtomicType
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
-import org.orbeon.saxon.tree.jiter.PairIterator
 import org.orbeon.saxon.value.Cardinality
 object BinaryExpression {
 
@@ -49,8 +48,8 @@ abstract class BinaryExpression(p0: Expression,
   adoptChildExpression(p0)
   adoptChildExpression(p1)
 
-  override def operands: java.lang.Iterable[Operand] =
-    () => new PairIterator(lhs, rhs)
+  override def operands: Iterable[Operand] =
+    scala.List(lhs, rhs)
 
   def getOperandRole(arg: Int): OperandRole =
     OperandRole.SINGLE_ATOMIC

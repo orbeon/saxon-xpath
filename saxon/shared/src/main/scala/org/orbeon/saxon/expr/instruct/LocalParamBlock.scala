@@ -29,8 +29,8 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
 
   override def getExpressionName: String = "params"
 
-  override def operands: java.lang.Iterable[Operand] =
-    Arrays.asList(operanda: _*)
+  override def operands: Iterable[Operand] =
+    operanda.toIndexedSeq
 
   def getNumberOfParams: Int = operanda.length
 
@@ -39,7 +39,7 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
   def copy(rebindings: RebindingMap): Expression = {
     val lps2: Array[LocalParam] = Array.ofDim[LocalParam](getNumberOfParams)
     var i: Int = 0
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val oldLps: LocalParam = o.getChildExpression.asInstanceOf[LocalParam]
       val newLps: LocalParam = oldLps.copy(rebindings)
       rebindings.put(oldLps, newLps)
@@ -55,14 +55,14 @@ class LocalParamBlock(params: Array[LocalParam]) extends Instruction {
 
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("params", this)
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       o.getChildExpression.`export`(out)
     }
     out.endElement()
   }
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val param: LocalParam = o.getChildExpression.asInstanceOf[LocalParam]
       try context.setLocalVariable(param.getSlotNumber,
         param.getSelectValue(context))

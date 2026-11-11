@@ -477,7 +477,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
 
           val as = `type`.getTypedValue(attValue, null, getConfiguration.getConversionRules)
           breakable {
-            for (v <- as.asScala) {
+            for (v <- as.iterator) {
               if (v.getItemType.isIdRefType) {
                 isIDREF = true
                 break()
@@ -665,7 +665,7 @@ class TinyTree(config: Configuration, statistics: Statistics)
         if (`type` == BuiltInAtomicType.IDREF || `type` == BuiltInListType.IDREFS)
           return true
         try
-          for (av <- getTypedValueOfElement(nr).asScala
+          for (av <- getTypedValueOfElement(nr).iterator
                if av.getItemType.isIdRefType) {
             return true
           }
@@ -785,11 +785,11 @@ class TinyTree(config: Configuration, statistics: Statistics)
     entityTable.put(name, ids)
   }
 
-  override def getUnparsedEntityNames: Iterator[String] =
+  override def getUnparsedEntityNames: collection.Iterator[String] =
     if (entityTable == null)
-      Collections.emptyIterator[String]()
+      collection.Iterator.empty
     else
-      entityTable.keySet.iterator
+      entityTable.keySet.iterator.asScala
 
   /*@Nullable*/
   override def getUnparsedEntity(name: String): Array[String] =

@@ -47,7 +47,7 @@ object IterateInstr {
       var found: Boolean = false
       val inTryCatch: Boolean = withinTryCatch || exp.isInstanceOf[TryCatch]
       breakable {
-        for (o <- exp.operands.asScala
+        for (o <- exp.operands
              if containsBreakOrNextIterationWithinTryCatch(o.getChildExpression,
                inTryCatch)) {
           found = true
@@ -110,7 +110,7 @@ class IterateInstr(select: Expression,
     onCompletionOp.setChildExpression(onCompletion)
   }
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(selectOp, actionOp, initiallyOp, onCompletionOp)
 
   override def getInstructionNameCode: Int = StandardNames.XSL_ITERATE
@@ -179,7 +179,7 @@ class IterateInstr(select: Expression,
 
   override def hasVariableBinding(binding: Binding): Boolean = {
     val paramBlock: LocalParamBlock = getInitiallyExp
-    for (o <- paramBlock.operands.asScala) {
+    for (o <- paramBlock.operands) {
       val setter: LocalParam = o.getChildExpression.asInstanceOf[LocalParam]
       if (setter == binding) {
         return true

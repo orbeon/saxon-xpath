@@ -10,6 +10,8 @@ import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.utils.Configuration
 import org.w3c.dom._
 
+import scala.jdk.CollectionConverters._
+
 class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends GenericTreeInfo(config) {
 
   var domLevel3: Boolean = true
@@ -63,22 +65,22 @@ class DocumentWrapper(doc: Node, baseURI: String, config: Configuration) extends
       }
     }
 
-  override def getUnparsedEntityNames: Iterator[String] = docNode.synchronized {
+  override def getUnparsedEntityNames: collection.Iterator[String] = docNode.synchronized {
     getRootNode.asInstanceOf[DOMNodeWrapper].node match {
       case document: Document =>
         val docType = document.getDoctype
         if (docType == null)
-          return Collections.emptyIterator[String]
+          return collection.Iterator.empty
         val map = docType.getEntities
         if (map == null)
-          return Collections.emptyIterator[String]
+          return collection.Iterator.empty
         val names = new util.ArrayList[String](map.getLength)
         for (i <- 0 until map.getLength) {
           val e = map.item(i).asInstanceOf[Entity]
           if (e.getNotationName != null)
             names.add(e.getLocalName)
         }
-        names.iterator
+        names.iterator.asScala
       case _ =>
         null
     }

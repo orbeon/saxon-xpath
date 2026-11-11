@@ -64,7 +64,7 @@ class ProcessingInstruction(name: Expression) extends SimpleNodeConstructor {
     nameOp.setChildExpression(nameExp)
   }
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(selectOp, nameOp)
 
  override def getInstructionNameCode: Int = StandardNames.XSL_PROCESSING_INSTRUCTION

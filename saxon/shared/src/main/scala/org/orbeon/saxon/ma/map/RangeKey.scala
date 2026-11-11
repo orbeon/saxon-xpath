@@ -58,24 +58,26 @@ class RangeKey
 
   def keys: AtomicIterator[_ <: AtomicValue] = new RangeKeyIterator
 
-  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
-    () =>
-      new Iterator[KeyValuePair]() {
-        var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys
+  def keyValuePairs: Iterable[KeyValuePair] =
+    new Iterable[KeyValuePair] {
+      override def iterator: scala.collection.Iterator[KeyValuePair] =
+        new scala.collection.Iterator[KeyValuePair] {
+          var keyAtItr: AtomicIterator[_ <: AtomicValue] = keys
 
-        var nextVal: AtomicValue = keyAtItr.next()
+          var nextVal: AtomicValue = keyAtItr.next()
 
-        def hasNext: Boolean = nextVal != null
+          def hasNext: Boolean = nextVal != null
 
-        def next(): KeyValuePair =
-          if (nextVal == null) {
-            null
-          } else {
-            val kvp: KeyValuePair = KeyValuePair(nextVal, get(nextVal))
-            nextVal = keyAtItr.next()
-            kvp
-          }
-      }
+          def next(): KeyValuePair =
+            if (nextVal == null) {
+              null
+            } else {
+              val kvp: KeyValuePair = KeyValuePair(nextVal, get(nextVal))
+              nextVal = keyAtItr.next()
+              kvp
+            }
+        }
+    }
 
   def remove(key: AtomicValue): MapItem = HashTrieMap.copy(this).remove(key)
 

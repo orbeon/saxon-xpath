@@ -260,7 +260,7 @@ object ResultDocument {
                               props: Properties,
                               c: XPathContext): Unit = {
     val resolver: NamespaceResolver = element.getAllNamespaces
-    for (att <- element.attributes.iterator.asScala) {
+    for (att <- element.attributes) {
       val uri: String = att.nodeName.getURI
       val local: String = att.nodeName.getLocalPart
       val `val`: String = Whitespace.trim(att.value)
@@ -444,7 +444,7 @@ class ResultDocument(private val globalProperties: Properties,
 
   override def getItemType: ItemType = ErrorType
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val list: ArrayList[Operand] = new ArrayList[Operand](6)
     list.add(contentOp)
     if (hrefOp != null) {
@@ -454,7 +454,7 @@ class ResultDocument(private val globalProperties: Properties,
       list.add(formatOp)
     }
     list.addAll(serializationAttributes.values)
-    list
+    list.asScala
   }
 
   override def addToPathMap(

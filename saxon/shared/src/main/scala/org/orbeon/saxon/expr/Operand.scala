@@ -7,7 +7,6 @@
 package org.orbeon.saxon.expr
 
 import java.io.{PrintWriter, StringWriter}
-import java.util.Iterator
 
 import org.orbeon.saxon.expr.Operand._
 import org.orbeon.saxon.expr.OperandUsage.OperandUsage
@@ -15,7 +14,6 @@ import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionTool, Expr
 import org.orbeon.saxon.model.AnyItemType
 import org.orbeon.saxon.pattern.NodeTest
 import org.orbeon.saxon.trans.{XPathException, XmlProcessingException}
-import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.value.SequenceType
 
 /**
@@ -38,7 +36,7 @@ class Operand(
   val parentExpression : Expression,
   _childExpression                   : Expression,
   private var role                   : OperandRole
-) extends java.lang.Iterable[Operand]
+) extends Iterable[Operand]
      with ExpressionOwner {
 
   private var childExpression: Expression = null
@@ -136,7 +134,7 @@ class Operand(
 
   def isInChoiceGroup: Boolean = role.isInChoiceGroup
 
-  def iterator: Iterator[Operand] = new MonoIterator(this)
+  def iterator: Iterator[Operand] = Iterator.single(this)
 
   def typeCheck(visitor: ExpressionVisitor, contextInfo: ContextItemStaticInfo): Unit =
     try

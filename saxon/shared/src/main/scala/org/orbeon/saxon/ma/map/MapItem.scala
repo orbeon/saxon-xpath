@@ -79,7 +79,7 @@ object MapItem {
   def mapToString(map: MapItem): String = {
     val buffer = new FastStringBuffer(256)
     buffer.append("map{")
-    for (pair <- map.keyValuePairs.asScala) {
+    for (pair <- map.keyValuePairs) {
       if (buffer.length > 4)
         buffer.append(",")
       buffer.append(pair.key.toString)
@@ -97,7 +97,7 @@ trait MapItem extends Function {
   def size: Int
   def isEmpty: Boolean
   def keys: AtomicIterator[_ <: AtomicValue]
-  def keyValuePairs: java.lang.Iterable[KeyValuePair]
+  def keyValuePairs: Iterable[KeyValuePair]
   def addEntry(key: AtomicValue, value: GroundedValue): MapItem
   def remove(key: AtomicValue): MapItem
 
@@ -117,7 +117,7 @@ trait MapItem extends Function {
       sb.append("}")
     } else if (sizeInt <= 5) {
       var pos = 0
-      for (pair <- keyValuePairs.asScala) {
+      for (pair <- keyValuePairs) {
         if ({
           pos += 1
           pos - 1
@@ -211,7 +211,7 @@ trait MapItem extends Function {
   def `export`(out: ExpressionPresenter): Unit = {
     out.startElement("map")
     out.emitAttribute("size", "" + size)
-    for (kvp <- keyValuePairs.asScala) {
+    for (kvp <- keyValuePairs) {
       Literal.exportAtomicValue(kvp.key, out)
       Literal.exportValue(kvp.value, out)
     }

@@ -105,7 +105,7 @@ class Copy(
 
   override def getInstructionNameCode: Int = StandardNames.XSL_COPY
 
-  override def operands: java.lang.Iterable[Operand] = contentOp
+  override def operands: Iterable[Operand] = contentOp
 
   override def getItemType: ItemType =
     if (resultItemType != null) {

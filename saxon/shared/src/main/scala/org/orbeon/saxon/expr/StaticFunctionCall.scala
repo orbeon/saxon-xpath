@@ -51,7 +51,7 @@ class StaticFunctionCall(private var target: Function,
 
   override def getStaticUType(contextItemType: UType): UType = {
     var result = getItemType.getUType
-    for (o <- operands.asScala if o.usage == OperandUsage.TRANSMISSION)
+    for (o <- operands if o.usage == OperandUsage.TRANSMISSION)
       result = result.intersection(o.getChildExpression.getStaticUType(contextItemType))
     result
   }
@@ -68,7 +68,7 @@ class StaticFunctionCall(private var target: Function,
         out.startElement("origFC", this)
         out.emitAttribute("name", originalFunction.getFunctionName)
         out.emitAttribute("pack", options.componentMap.get(originalFunction.component.containingPackage).toString)
-        for (o <- operands.asScala)
+        for (o <- operands)
           o.getChildExpression.`export`(out)
         out.endElement()
       case _ =>
@@ -86,7 +86,7 @@ class StaticFunctionCall(private var target: Function,
                 (if (target.asInstanceOf[UnionConstructorFunction].isAllowEmpty)
                   "e"
                 else ""))
-            for (o <- operands.asScala)
+            for (o <- operands)
               o.getChildExpression.`export`(out)
             out.endElement()
           case _: ListCastableFunction =>
@@ -101,7 +101,7 @@ class StaticFunctionCall(private var target: Function,
               "l" +
                 (if (target.asInstanceOf[ListConstructorFunction].isAllowEmpty) "e"
                 else ""))
-            for (o <- operands.asScala)
+            for (o <- operands)
               o.getChildExpression.`export`(out)
             out.endElement()
           case function: UnionConstructorFunction =>
@@ -117,7 +117,7 @@ class StaticFunctionCall(private var target: Function,
                 (if (function.isAllowEmpty)
                   "e"
                 else ""))
-            for (o <- operands.asScala)
+            for (o <- operands)
               o.getChildExpression.`export`(out)
             out.endElement()
           case function: ListConstructorFunction =>
@@ -131,7 +131,7 @@ class StaticFunctionCall(private var target: Function,
               "l" +
                 (if (function.isAllowEmpty) "e"
                 else ""))
-            for (o <- operands.asScala)
+            for (o <- operands)
               o.getChildExpression.`export`(out)
             out.endElement()
           case _ =>

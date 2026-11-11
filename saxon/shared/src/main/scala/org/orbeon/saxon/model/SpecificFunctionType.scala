@@ -181,7 +181,7 @@ class SpecificFunctionType extends AnyFunctionType {
           argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE &&
           argTypes(0).getPrimaryType.isPlainType &&
           Cardinality.allowsZero(resultType.getCardinality)) {
-          for (pair <- mapItem.keyValuePairs.asScala) {
+          for (pair <- mapItem.keyValuePairs) {
             try if (!resultType.matches(pair.value, th)) {
               return false
             } catch {
@@ -227,7 +227,7 @@ class SpecificFunctionType extends AnyFunctionType {
       case mapItem: MapItem =>
         if (getArity == 1) {
           if (argTypes(0).getCardinality == StaticProperty.EXACTLY_ONE && argTypes(0).getPrimaryType.isPlainType) {
-            for (pair <- mapItem.keyValuePairs.asScala) {
+            for (pair <- mapItem.keyValuePairs) {
               try
                 if (!resultType.matches(pair.value, th)) {
                   var s: String = "The supplied map contains an entry with key (" + pair.key +

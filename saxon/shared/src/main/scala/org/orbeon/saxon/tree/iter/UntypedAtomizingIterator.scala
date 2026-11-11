@@ -34,14 +34,8 @@ class UntypedAtomizingIterator(private val base: SequenceIterator)
     base.close()
   }
 
-  override def getProperties: immutable.Set[Property] = {
-    val p: Set[Property] = base.getProperties.asJava
-    val props = new util.HashSet[Property]()
-    props.add(LAST_POSITION_FINDER)
-    props.add(LOOKAHEAD)
-    p.retainAll(props)
-    p.asScala.toSet
-  }
+  override def getProperties: immutable.Set[Property] =
+    base.getProperties.intersect(immutable.Set(LAST_POSITION_FINDER, LOOKAHEAD))
 
   def getLength: Int = base.asInstanceOf[LastPositionFinder].getLength
 

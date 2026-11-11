@@ -34,7 +34,7 @@
 //
 //  //   var operanda: OperandArray = _
 //
-//  override def operands: java.lang.Iterable[Operand] = operanda.operands
+//  override def operands: Iterable[Operand] = operanda.operands
 //
 //  def setArguments(sub: Array[Expression]): Unit = {
 //    if (getOperanda != null && getOperanda.getNumberOfOperands > 0) {
@@ -53,7 +53,7 @@
 //    val a2: Array[Expression] =
 //      Array.ofDim[Expression](operanda.getNumberOfOperands)
 //    var i: Int = 0
-//    for (o <- operands.asScala) {
+//    for (o <- operands) {
 //      i += 1
 //      a2(i) = o.getChildExpression.copy(rebindings)
 //    }
@@ -66,7 +66,7 @@
 //    val a2: Array[Expression] =
 //      Array.ofDim[Expression](se1.operanda.getNumberOfOperands)
 //    var i: Int = 0
-//    for (o <- se1.operands.asScala) {
+//    for (o <- se1.operands) {
 //      i += 1
 //      a2(i) = o.getChildExpression.copy(new RebindingMap())
 //    }
@@ -102,7 +102,7 @@
 //    val iters: Array[Sequence] =
 //      SequenceTool.makeSequenceArray(getOperanda.getNumberOfOperands)
 //    var i: Int = 0
-//    for (o <- operands.asScala) {
+//    for (o <- operands) {
 //      i += 1
 //      iters(i) =
 //        SequenceTool.toLazySequence(o.getChildExpression.iterate(context))

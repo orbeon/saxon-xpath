@@ -76,7 +76,7 @@ class ComputedElement(elementName: Expression,
     }
   }
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(contentOp, nameOp, namespaceOp)
 
   def getNamespaceResolver: NamespaceResolver = getRetainedStaticContext

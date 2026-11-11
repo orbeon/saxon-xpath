@@ -112,7 +112,7 @@ class ForEach(select: Expression,
     }
   }
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(selectOp, actionOp, separatorOp, threadsOp)
 
   override def getInstructionNameCode: Int = StandardNames.XSL_FOR_EACH

@@ -120,14 +120,14 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    *
    * @return the number of prefix-uri bindings (excluding any binding for the XML namespace)
    */
-  def size: Int = prefixes.length
+  override def size: Int = prefixes.length
 
   /**
    * Ask if the map contains only the binding
    *
    * @return true if the map contains no bindings
    */
-  def isEmpty: Boolean = prefixes.length == 0
+  override def isEmpty: Boolean = prefixes.length == 0
 
   /**
    * Get the URI associated with a given prefix. If the supplied prefix is "xml", the
@@ -333,7 +333,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
       return putAll(map)
     case _ =>
       var map = this
-      for (nb <- namespaces.asScala)
+      for (nb <- namespaces)
         map = map.put(nb.prefix, nb.getURI)
       map
   }
@@ -403,7 +403,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @return an iterator over the namespace bindings. (In the current implementation
    *         they will be in alphabetical order of namespace prefix.)
    */
-  override def iterator: ju.Iterator[NamespaceBinding] = new ju.Iterator[NamespaceBinding]() {
+  override def iterator: Iterator[NamespaceBinding] = new Iterator[NamespaceBinding]() {
     private[om] var i = 0
 
     def hasNext: Boolean =
@@ -414,9 +414,6 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
       i += 1
       nb
     }
-
-    override def remove(): Unit =
-      throw new UnsupportedOperationException("remove")
   }
 
   /**
@@ -514,10 +511,8 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
    * @return an iterator over the prefixes. (In the current implementation
    *         they will be in alphabetical order, except that the "xml" prefix will always come last.)
    */
-  def iteratePrefixes: ju.Iterator[String] = {
-    // ORBEON: Original was making a copy.
-    (prefixes.iterator ++ Iterator("xml")).asJava
-  }
+  def iteratePrefixes: Iterator[String] =
+    prefixes.iterator ++ Iterator("xml")
 
   /**
    * Get the prefixes present in the NamespaceMap, as an array, excluding the "xml" prefix
@@ -531,7 +526,7 @@ class NamespaceMap extends NamespaceBindingSet with NamespaceResolver {
   override def toString: String = {
     val sb = new StringBuilder
 
-    for (nb <- this.asScala) {
+    for (nb <- this) {
       sb.append(nb.prefix).append("=").append(nb.getURI).append(" ")
     }
     sb.toString

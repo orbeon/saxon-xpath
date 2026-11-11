@@ -269,7 +269,7 @@ object AlphaCode {
     else alphaCode.getStringValue)
     out.append(" ")
 
-    for (kvp <- map.keyValuePairs.asScala) {
+    for (kvp <- map.keyValuePairs) {
       val key = kvp.key.getStringValue
       key match {
         case "o" | "p" |"n" | "c" | "t" =>

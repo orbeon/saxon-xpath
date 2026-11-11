@@ -92,13 +92,13 @@ class Choose(_conditions: Array[Expression], _actions: Array[Expression])
 
   def actions(): java.lang.Iterable[Operand] = Arrays.asList(actionOps: _*)
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val operanda = new ArrayList[Operand](size() * 2)
     for (i <- 0 until size()) {
       operanda.add(conditionOps(i))
       operanda.add(actionOps(i))
     }
-    operanda
+    operanda.asScala
   }
 
   override def allowExtractingCommonSubexpressions(): Boolean = false

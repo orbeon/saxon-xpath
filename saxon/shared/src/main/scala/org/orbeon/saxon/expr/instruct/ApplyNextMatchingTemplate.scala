@@ -20,6 +20,8 @@ import org.orbeon.saxon.trans.XPathException
 import java.util.ArrayList
 
 import java.util.List
+import scala.jdk.CollectionConverters._
+
 abstract class ApplyNextMatchingTemplate
   extends Instruction
     with ITemplateCall {
@@ -31,12 +33,12 @@ abstract class ApplyNextMatchingTemplate
   override def getImplementationMethod: Int =
     super.getImplementationMethod | Expression.WATCH_METHOD
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val operanda: List[Operand] =
       new ArrayList[Operand](actualParams.length + tunnelParams.length)
     WithParam.gatherOperands(this, actualParams, operanda)
     WithParam.gatherOperands(this, tunnelParams, operanda)
-    operanda
+    operanda.asScala
   }
 
   /*@NotNull*/

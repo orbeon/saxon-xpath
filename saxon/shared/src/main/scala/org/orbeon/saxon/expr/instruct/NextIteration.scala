@@ -13,6 +13,7 @@ import org.orbeon.saxon.om.StandardNames
 import org.orbeon.saxon.trace.ExpressionPresenter
 
 import java.util.{ArrayList, Arrays}
+import scala.jdk.CollectionConverters._
 
 /**
   * Implements a xsl:next-iteration instruction within the body of xsl:iterate
@@ -63,10 +64,10 @@ class NextIteration extends Instruction with TailCallLoop.TailCallInfo {
     *
     * @return an iterator containing the sub-expressions of this expression
     */
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val list = new ArrayList[Operand]
     WithParam.gatherOperands(this, actualParams, list)
-    list
+    list.asScala
   }
 
   /**

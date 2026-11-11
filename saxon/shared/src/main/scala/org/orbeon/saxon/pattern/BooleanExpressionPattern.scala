@@ -37,7 +37,7 @@ class BooleanExpressionPattern(expression: Expression)
 
   override def getPredicate: Expression = expressionOp.getChildExpression
 
-  override def operands: java.lang.Iterable[Operand] = expressionOp
+  override def operands: Iterable[Operand] = expressionOp
 
   override def getUType: UType =
     if (getPredicate.isInstanceOf[InstanceOfExpression]) {

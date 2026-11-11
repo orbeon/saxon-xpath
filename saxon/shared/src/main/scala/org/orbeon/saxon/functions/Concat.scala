@@ -49,7 +49,7 @@ class Concat extends SystemFunction with PushableFunction {
     new SystemFunctionCall.Optimized(this, arguments.toArray) {
       override def evaluateAsString(context: XPathContext): CharSequence = {
         val buffer: FastStringBuffer = new FastStringBuffer(256)
-        for (o <- operands.asScala) {
+        for (o <- operands) {
           val it: Item = o.getChildExpression.evaluateItem(context)
           if (it != null) {
             buffer.cat(it.getStringValueCS)

@@ -24,11 +24,11 @@ abstract class FunctionCall extends Expression {
 
   var operanda: OperandArray = _
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     if (operanda != null)
       operanda.operands
     else
-      Collections.emptyList()
+      Nil
 
   def getTargetFunction(context: XPathContext): Function
 
@@ -45,7 +45,7 @@ abstract class FunctionCall extends Expression {
   def getArguments: Array[Expression] = {
     val result = Array.ofDim[Expression](getArity)
     var i = 0
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       result(i) = o.getChildExpression
       i += 1
     }
@@ -82,7 +82,7 @@ abstract class FunctionCall extends Expression {
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
 
       var fixed = true
-      for (o <- operands.asScala if ! o.getChildExpression.isInstanceOf[Literal])
+      for (o <- operands if ! o.getChildExpression.isInstanceOf[Literal])
         fixed = false
 
       if (fixed) {
@@ -114,7 +114,7 @@ abstract class FunctionCall extends Expression {
     if (opt.isOptionSet(OptimizerOptions.CONSTANT_FOLDING)) {
       var fixed = true
       breakable {
-        for (o <- operands.asScala if ! o.getChildExpression.isInstanceOf[Literal]) {
+        for (o <- operands if ! o.getChildExpression.isInstanceOf[Literal]) {
           fixed = false
           break()
         }
@@ -176,7 +176,7 @@ abstract class FunctionCall extends Expression {
                                         pathMap: PathMap,
                                         pathMapNodes: PathMap.PathMapNodeSet): PathMap.PathMapNodeSet = {
     val result = new PathMap.PathMapNodeSet()
-    for (o <- operands.asScala)
+    for (o <- operands)
       result.addNodeSet(o.getChildExpression.addToPathMap(pathMap, pathMapNodes))
     result.setHasUnknownDependencies()
     result
@@ -201,7 +201,7 @@ abstract class FunctionCall extends Expression {
         fName.getEQName
     buff.append(f)
     var first = true
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       buff.append(if (first) "(" else ", ")
       buff.append(o.getChildExpression.toString)
       first = false
@@ -224,7 +224,7 @@ abstract class FunctionCall extends Expression {
       throw new AssertionError("Exporting call to anonymous function")
     else
       out.emitAttribute("name", getFunctionName.getDisplayName)
-    for (o <- operands.asScala)
+    for (o <- operands)
       o.getChildExpression.`export`(out)
     out.endElement()
   }

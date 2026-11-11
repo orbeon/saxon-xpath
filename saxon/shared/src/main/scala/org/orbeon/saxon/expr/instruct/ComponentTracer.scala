@@ -39,7 +39,7 @@ class ComponentTracer private () extends Instruction {
 
   def getBody: Expression = baseOp.getChildExpression
 
-  override def operands: java.lang.Iterable[Operand] = baseOp
+  override def operands: Iterable[Operand] = baseOp
 
   override def getExpressionName: String = "trace"
 

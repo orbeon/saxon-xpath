@@ -302,7 +302,7 @@ class VirtualCopy(var original: NodeInfo,
         } else {
           allNamespaces.add(new NamespaceBinding(getPrefix, getURI))
         }
-        for (att <- original.attributes.iterator.asScala) {
+        for (att <- original.attributes) {
           val name: NodeName = att.nodeName
           if (name.getURI != null) {
             val b: NamespaceBinding =
@@ -316,10 +316,7 @@ class VirtualCopy(var original: NodeInfo,
       } else {
         if (original == root) {
           val bindings: ju.List[NamespaceBinding] = new ju.ArrayList[NamespaceBinding]()
-          //          for (binding <- original.getAllNamespaces) {
-          //            bindings.add(binding)
-          //          }
-          original.getAllNamespaces.asScala.foreach(binding => bindings.add(binding))
+          original.getAllNamespaces.foreach(binding => bindings.add(binding))
           bindings.toArray(NamespaceBinding.EMPTY_ARRAY)
         } else {
           original.getDeclaredNamespaces(buffer)

@@ -70,7 +70,7 @@ class ShallowCopyRuleSet private() extends BuiltInRuleSet {
         val fqn = NameOfNode.makeName(node)
         out.startElement(fqn, if (schemaAware) org.orbeon.saxon.model.AnyType.getInstance else org.orbeon.saxon.model.Untyped.getInstance, locationId, ReceiverOption.NONE)
 
-        for (ns <- node.getAllNamespaces.asScala) {
+        for (ns <- node.getAllNamespaces) {
           out.namespace(ns.prefix, ns.getURI, ReceiverOption.NONE)
         }
         val c2 = context.newContext()

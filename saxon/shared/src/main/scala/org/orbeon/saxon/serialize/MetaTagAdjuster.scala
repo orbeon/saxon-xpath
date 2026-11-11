@@ -85,7 +85,7 @@ class MetaTagAdjuster(next: Receiver) extends ProxyReceiver(next) {
         // if there was an http-equiv="ContentType" attribute, discard the meta element entirely
         var found = false
         breakable {
-          for (att <- attributes.iterator.asScala) {
+          for (att <- attributes) {
             val name = att.nodeName.getLocalPart
             if (comparesEqual(name, "http-equiv")) {
               val value = Whitespace.trim(att.value)

@@ -31,7 +31,7 @@ class TraceExpression(child: Expression) extends Instruction with Traceable {
 
   def getBody: Expression = baseOp.getChildExpression
 
-  override def operands: java.lang.Iterable[Operand] = baseOp
+  override def operands: Iterable[Operand] = baseOp
 
   def setProperty(name: String, value: AnyRef): Unit = {
     properties.put(name, value)

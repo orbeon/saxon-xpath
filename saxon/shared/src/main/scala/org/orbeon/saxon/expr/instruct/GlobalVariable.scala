@@ -134,8 +134,8 @@ class GlobalVariable
 
   override def getProperty(name: String): AnyRef = null
 
-  override def getProperties: ju.Iterator[String] =
-    Collections.emptyIterator()
+  override def getProperties: scala.collection.Iterator[String] =
+    scala.collection.Iterator.empty
 
   def getHostLanguage: HostLanguage.HostLanguage = packageData.hostLanguage
 

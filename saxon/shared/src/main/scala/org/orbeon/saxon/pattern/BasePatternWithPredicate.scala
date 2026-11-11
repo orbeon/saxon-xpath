@@ -63,7 +63,7 @@ class BasePatternWithPredicate(basePattern: Pattern, predicate: Expression)
 
   override def matchesCurrentGroup(): Boolean = getBasePattern.matchesCurrentGroup()
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandList(basePatternOp, predicateOp)
 
   override def allocateSlots(slotManager: SlotManager, nextFree: Int): Int = {

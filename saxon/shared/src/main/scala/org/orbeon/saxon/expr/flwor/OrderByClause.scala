@@ -132,7 +132,7 @@ class OrderByClause(flwor: FLWORExpression,
     var allKeysFixed: Boolean = true
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
     breakable {
-      for (sk <- sortKeys.asScala if !sk.isFixed) {
+      for (sk <- sortKeys if !sk.isFixed) {
         allKeysFixed = false
         break()
       }
@@ -142,7 +142,7 @@ class OrderByClause(flwor: FLWORExpression,
     }
     var i: Int = 0
     val tc: TypeChecker = visitor.getConfiguration.getTypeChecker(false)
-    for (skd <- sortKeys.asScala) {
+    for (skd <- sortKeys) {
       var sortKey: Expression = skd.getSortKey
       val role: RoleDiagnostic =
         new RoleDiagnostic(RoleDiagnostic.ORDER_BY, "", i)
@@ -168,7 +168,7 @@ class OrderByClause(flwor: FLWORExpression,
   def addToPathMap(pathMap: PathMap,
                    pathMapNodeSet: PathMap.PathMapNodeSet): Unit = {
     val sortKeys: SortKeyDefinitionList = getSortKeyDefinitions
-    for (skd <- sortKeys.asScala) {
+    for (skd <- sortKeys) {
       val sortKey: Expression = skd.getSortKey
       sortKey.addToPathMap(pathMap, pathMapNodeSet)
     }
@@ -182,7 +182,7 @@ class OrderByClause(flwor: FLWORExpression,
     */
   override def explain(out: ExpressionPresenter): Unit = {
     out.startElement("order-by")
-    for (k <- getSortKeyDefinitions.asScala) {
+    for (k <- getSortKeyDefinitions) {
       out.startSubsidiaryElement("key")
       k.getSortKey.`export`(out)
       out.endSubsidiaryElement()

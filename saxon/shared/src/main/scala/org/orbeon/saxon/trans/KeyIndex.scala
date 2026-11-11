@@ -268,18 +268,13 @@ class KeyIndex(isRangeKey: Boolean) {
 
     def asAtomic(): AtomicValue = throw new UnsupportedOperationException
 
-    override def equals(obj: Any): Boolean = {
+    override def equals(obj: Any): Boolean =
       obj match {
-        case compositeAtomicMatchKey: CompositeAtomicMatchKey if compositeAtomicMatchKey.keys.size ==
-          keys.size =>
-          val keys2: util.List[AtomicMatchKey] = compositeAtomicMatchKey.keys.asJava
-          for (i <- keys.indices if keys.asJava.get(i) != keys2.get(i))
-            return false
-          return true
+        case compositeAtomicMatchKey: CompositeAtomicMatchKey =>
+          compositeAtomicMatchKey.keys == keys
         case _ =>
+          false
       }
-      false
-    }
 
     override def hashCode: Int = {
       var h: Int = 0x8ab27cd6

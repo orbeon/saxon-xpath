@@ -9,7 +9,7 @@ package org.orbeon.saxon.functions
 
 import java.io.Closeable
 import java.net.{URI, URISyntaxException}
-import java.util.{ArrayList, Iterator}
+import java.util.ArrayList
 
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.functions.CollectionFn._
@@ -42,10 +42,10 @@ object CollectionFn {
     def getCollectionURI: String = collectionUri
 
     def getResourceURIs(context: XPathContext): Iterator[String] =
-      new ArrayList[String]().iterator
+      Iterator.empty
 
     def getResources(context: XPathContext): Iterator[Resource] =
-      new ArrayList[Resource]().iterator
+      Iterator.empty
 
     def isStable(context: XPathContext): Boolean = true
     def stripWhitespace(rules: SpaceStrippingRule): Boolean = false

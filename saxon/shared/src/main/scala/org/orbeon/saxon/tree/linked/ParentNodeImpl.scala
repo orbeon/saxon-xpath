@@ -24,7 +24,6 @@ import org.orbeon.saxon.om.{CopyOptions, NodeInfo}
 import org.orbeon.saxon.pattern.AnyNodeTest
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.{ArrayIterator, AxisIterator, EmptyIterator, SingleNodeIterator}
-import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.tree.util.{FastStringBuffer, Navigator}
 
 //import scala.collection.compat._
@@ -54,12 +53,12 @@ abstract class ParentNodeImpl extends NodeImpl {
 
   override def children: Iterator[NodeImpl] =
     if (childrenImpl == null) {
-      Collections.emptyList[NodeImpl].iterator.asScala
+      Iterator.empty
     } else childrenImpl match {
       case impl: NodeImpl =>
-        new MonoIterator(impl).asScala
-      case _ =>
-        Arrays.asList(childrenImpl.asInstanceOf[Array[NodeImpl]]: _*).iterator.asScala
+        Iterator.single(impl)
+      case arr: Array[NodeImpl @unchecked] =>
+        arr.iterator
     }
 
   def getNumberOfChildren: Int =

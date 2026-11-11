@@ -9,7 +9,6 @@ package org.orbeon.saxon.ma.map
 import org.orbeon.saxon.model.{AtomicType, ItemType, TypeHierarchy, UType}
 import org.orbeon.saxon.om.{GroundedValue, SequenceTool}
 import org.orbeon.saxon.tree.iter.{AtomicIterator, SingleAtomicIterator}
-import org.orbeon.saxon.tree.jiter.MonoIterator
 import org.orbeon.saxon.value.{AtomicValue, SequenceType}
 
 /**
@@ -55,8 +54,8 @@ class SingleEntryMap(var key: AtomicValue, var value: GroundedValue)
    *
    * @return an iterable containing all the key-value pairs
    */
-  def keyValuePairs: java.lang.Iterable[KeyValuePair] =
-    () => new MonoIterator(KeyValuePair(key, value))
+  def keyValuePairs: Iterable[KeyValuePair] =
+    List(KeyValuePair(key, value))
 
   /**
    * Create a new map containing the existing entries in the map plus an additional entry,

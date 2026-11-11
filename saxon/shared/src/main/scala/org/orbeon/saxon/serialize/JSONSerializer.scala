@@ -102,7 +102,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
     var totalSize: Int = 0
     if (map.size < 2)
       return true
-    for (entry <- map.keyValuePairs.asScala) {
+    for (entry <- map.keyValuePairs) {
       if (! entry.value.isInstanceOf[AtomicValue])
         return false
       totalSize += entry.key.getStringValueCS.length +
@@ -164,7 +164,7 @@ class JSONSerializer(pipe: PipelineConfiguration,
       emitter.startMap(oneLiner)
       val first = true
       val keyList = new ArrayList[AtomicValue]
-      for (pair <- item.asInstanceOf[MapItem].keyValuePairs.asScala) {
+      for (pair <- item.asInstanceOf[MapItem].keyValuePairs) {
         keyList.add(pair.key)
       }
       if (propertySorter != null)

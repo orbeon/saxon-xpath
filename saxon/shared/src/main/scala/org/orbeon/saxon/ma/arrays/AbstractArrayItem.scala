@@ -64,7 +64,7 @@ abstract class AbstractArrayItem extends ArrayItem {
         .iterate()
         .forEachOrFail((item: Item) => {
           val atoms: AtomicSequence = item.atomize()
-          for (atom: AtomicValue <- atoms.asScala) {
+          for (atom: AtomicValue <- atoms.iterator) {
             list.add(atom)
           }
         })

@@ -4,7 +4,7 @@ package org.orbeon.saxon.resource
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 import java.net.{URI, URISyntaxException}
 import java.nio.charset.Charset
-import java.util.{ArrayList, Iterator, List}
+import java.util.{ArrayList, List}
 
 import javax.xml.transform.Source
 import org.orbeon.saxon.expr.XPathContext
@@ -15,8 +15,9 @@ import org.orbeon.saxon.pattern.NodeKindTest
 import org.orbeon.saxon.resource.AbstractResourceCollection.InputDetails
 import org.orbeon.saxon.trans.XPathException
 import org.orbeon.saxon.tree.iter.AxisIterator
-import org.orbeon.saxon.tree.jiter.MappingJavaIterator
 import org.orbeon.saxon.utils.Configuration
+
+import scala.jdk.CollectionConverters._
 
 object CatalogCollection {
 
@@ -55,39 +56,35 @@ class CatalogCollection //TODO we might know the catalog File already
   def getResources(context: XPathContext): Iterator[Resource] = {
     StandardCollectionFinder.checkNotNull(collectionURI, context)
     val resourceURIs: Iterator[String] = getResourceURIs(context)
-    new MappingJavaIterator(
-      resourceURIs,
-      (in:String) =>
-        try if (in.startsWith("data:")) {
-          val basicResource: Resource = DataURIScheme.decode(new URI(in))
-          makeTypedResource(context.getConfiguration, basicResource)
-        } else {
-          val id: InputDetails = getInputDetails(in)
-          id.parseOptions =
-            new ParseOptions(context.getConfiguration.getParseOptions)
-          id.parseOptions.spaceStrippingRule = whitespaceRules
-          id.resourceUri = in
-          makeResource(context.getConfiguration, id)
-        } catch {
-          case e: XPathException => {
-            val onError: Int =
-              if (params == null) URIQueryParameters.ON_ERROR_FAIL
-              else params.getOnError
-            if (onError == URIQueryParameters.ON_ERROR_FAIL) {
-              new FailedResource(in, e)
-            } else if (onError == URIQueryParameters.ON_ERROR_WARNING) {
-              context.getController.warning(
-                "collection(): failed to parse " + in + ": " + e.getMessage,
-                e.getErrorCodeLocalPart,
-                null)
-              null
-            } else {
-              null
-            }
+    resourceURIs.map { (in: String) =>
+      try if (in.startsWith("data:")) {
+        val basicResource: Resource = DataURIScheme.decode(new URI(in))
+        makeTypedResource(context.getConfiguration, basicResource)
+      } else {
+        val id: InputDetails = getInputDetails(in)
+        id.parseOptions =
+          new ParseOptions(context.getConfiguration.getParseOptions)
+        id.parseOptions.spaceStrippingRule = whitespaceRules
+        id.resourceUri = in
+        makeResource(context.getConfiguration, id)
+      } catch {
+        case e: XPathException =>
+          val onError: Int =
+            if (params == null) URIQueryParameters.ON_ERROR_FAIL
+            else params.getOnError
+          if (onError == URIQueryParameters.ON_ERROR_FAIL) {
+            new FailedResource(in, e)
+          } else if (onError == URIQueryParameters.ON_ERROR_WARNING) {
+            context.getController.warning(
+              "collection(): failed to parse " + in + ": " + e.getMessage,
+              e.getErrorCodeLocalPart,
+              null)
+            null
+          } else {
+            null
           }
-
       }
-    )
+    }.filter(_ != null)
   }
 
   override def isStable(context: XPathContext): Boolean = stable
@@ -184,7 +181,7 @@ class CatalogCollection //TODO we might know the catalog File already
       }
       result.add(uri)
     }
-    result.iterator
+    result.iterator.asScala
   }
 // Now return an iterator over the documents that it refers to
 // Now return an iterator over the documents that it refers to

@@ -6,20 +6,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.serialize
 
-import java.util._
+import java.{util => ju}
 
 import org.orbeon.saxon.event.Receiver
 import org.orbeon.saxon.lib.SerializerFactory
 import org.orbeon.saxon.om.StructuredQName
 import org.orbeon.saxon.trans.XPathException
 
+import scala.jdk.CollectionConverters._
+
 /**
   * This class represents a set of named character maps. Each character map in the set is identified by a unique
   * QName.
   */
-class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
+class CharacterMapIndex extends Iterable[CharacterMap] {
 
-  private var index: HashMap[StructuredQName, CharacterMap] = new HashMap(10)
+  private var index: ju.HashMap[StructuredQName, CharacterMap] = new ju.HashMap(10)
 
   def getCharacterMap(name: StructuredQName): CharacterMap = index.get(name)
 
@@ -27,13 +29,13 @@ class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
     index.put(name, charMap)
   }
 
-  def iterator: Iterator[CharacterMap] = index.values.iterator
+  def iterator: Iterator[CharacterMap] = index.values.iterator.asScala
 
-  def isEmpty: Boolean = index.isEmpty
+  override def isEmpty: Boolean = index.isEmpty
 
   def copy(): CharacterMapIndex = {
     val copy: CharacterMapIndex = new CharacterMapIndex()
-    copy.index = new HashMap(this.index)
+    copy.index = new ju.HashMap(this.index)
     copy
   }
 
@@ -41,8 +43,8 @@ class CharacterMapIndex extends java.lang.Iterable[CharacterMap] {
                                next: Receiver,
                                sf: SerializerFactory): CharacterMapExpander = {
     var characterMapExpander: CharacterMapExpander = null
-    val characterMaps: List[CharacterMap] = new ArrayList[CharacterMap](5)
-    val st: StringTokenizer = new StringTokenizer(useMaps, " \t\n\r", false)
+    val characterMaps: ju.List[CharacterMap] = new ju.ArrayList[CharacterMap](5)
+    val st: ju.StringTokenizer = new ju.StringTokenizer(useMaps, " \t\n\r", false)
     while (st.hasMoreTokens()) {
       val expandedName: String = st.nextToken()
       val qName: StructuredQName = StructuredQName.fromClarkName(expandedName)

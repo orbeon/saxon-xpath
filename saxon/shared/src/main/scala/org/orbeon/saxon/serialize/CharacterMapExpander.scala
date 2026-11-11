@@ -33,7 +33,7 @@ class CharacterMapExpander(next: Receiver) extends ProxyReceiver(next) {
                             properties: Int): Unit = {
     val atts2: ju.List[AttributeInfo] =
       new ju.ArrayList[AttributeInfo](attributes.size)
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       val oldValue: String = att.value
       if (!ReceiverOption.contains(att.properties,
         ReceiverOption.DISABLE_CHARACTER_MAPS)) {

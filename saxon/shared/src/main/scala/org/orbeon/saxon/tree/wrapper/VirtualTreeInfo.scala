@@ -5,8 +5,6 @@ import org.orbeon.saxon.utils.Configuration
 
 import org.orbeon.saxon.om.GenericTreeInfo
 
-import java.util.Iterator
-
 /**
   * Implementation of TreeInfo for a Virtual Copy tree
   */

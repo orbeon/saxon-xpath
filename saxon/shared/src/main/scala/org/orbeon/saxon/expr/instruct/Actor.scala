@@ -25,7 +25,7 @@ object Actor {
         p.processComponentReference(pack, componentInvocation, bindings)
       case _ =>
     }
-    for (o <- exp.operands.asScala)
+    for (o <- exp.operands)
       allocateBindingSlotsRecursive(pack, p, o.getChildExpression, bindings)
   }
 }
@@ -127,10 +127,7 @@ abstract class Actor extends ExpressionOwner with Location {
   def saveLocation: Location = this.asInstanceOf[Location]
   def getProperty(name: String): AnyRef = null
 
-  def getProperties: Iterator[String] = {
-    val list: List[String] = Collections.emptyList()
-    list.iterator
-  }
+  def getProperties: scala.collection.Iterator[String] = scala.collection.Iterator.empty
 
   def `export`(presenter: ExpressionPresenter): Unit
   def isExportable: Boolean = true

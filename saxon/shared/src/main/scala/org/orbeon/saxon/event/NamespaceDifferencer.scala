@@ -75,7 +75,7 @@ class NamespaceDifferencer(next: Receiver, details: Properties)
                              elementInDefaultNamespace: Boolean): NamespaceMap = {
     if (thisMap != parentMap) {
       var delta = NamespaceDeltaMap.emptyMap()
-      for (nb <- thisMap.asScala) {
+      for (nb <- thisMap) {
         val parentUri = parentMap.getURI(nb.prefix)
         if (parentUri == null) {
           delta = delta.put(nb.prefix, nb.getURI)
@@ -84,7 +84,7 @@ class NamespaceDifferencer(next: Receiver, details: Properties)
         }
       }
       if (undeclareNamespaces) {
-        for (nb <- parentMap.asScala if thisMap.getURI(nb.prefix) == null)
+        for (nb <- parentMap if thisMap.getURI(nb.prefix) == null)
           delta = delta.put(nb.prefix, "")
       } else {
         // undeclare the default namespace if the child element is in the default namespace

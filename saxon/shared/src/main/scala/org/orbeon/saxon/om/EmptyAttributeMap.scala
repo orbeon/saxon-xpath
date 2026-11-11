@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 package org.orbeon.saxon.om
 
-import java.{util => ju}
-
 /**
   * An implementation of AttributeMap representing an empty AttributeMap
   */
@@ -16,13 +14,13 @@ object EmptyAttributeMap {
 }
 
 class EmptyAttributeMap private () extends AttributeMap {
-  def size: Int = 0
+  override def size: Int = 0
   override def get(name: NodeName): AttributeInfo = null
   override def get(uri: String, local: String): AttributeInfo = null
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = null
   override def put(att: AttributeInfo): AttributeMap = SingletonAttributeMap.of(att)
   override def remove(name: NodeName): AttributeMap = this
-  def iterator: ju.Iterator[AttributeInfo] = ju.Collections.emptyIterator[AttributeInfo]
+  def iterator: Iterator[AttributeInfo] = Iterator.empty
   override def apply(mapper: AttributeInfo => AttributeInfo): AttributeMap = this
 }
 

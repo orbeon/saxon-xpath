@@ -753,7 +753,7 @@ class QueryModule extends StaticContext {
 
   def getLiveNamespaceResolver: NamespaceResolver = new NamespaceResolver {
     def getURIForPrefix(prefix: String, useDefault: Boolean): String = checkURIForPrefix(prefix)
-    def iteratePrefixes: ju.Iterator[String] = getNamespaceResolver.iteratePrefixes
+    def iteratePrefixes: Iterator[String] = getNamespaceResolver.iteratePrefixes
   }
 
   def checkURIForPrefix(prefix: String): String = {

@@ -12,7 +12,7 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
 
   private val attributes: ju.List[AttributeInfo] = new ju.ArrayList(attrib)
 
-  def size: Int = attributes.size
+  override def size: Int = attributes.size
 
   override def get(name: NodeName): AttributeInfo =
     attributes.asScala.find(_.nodeName == name).orNull
@@ -37,7 +37,7 @@ class SmallAttributeMap(attrib: ju.List[AttributeInfo]) extends AttributeMap {
     null
   }
 
-  def iterator: ju.Iterator[AttributeInfo] = attributes.iterator
+  def iterator: Iterator[AttributeInfo] = attributes.iterator.asScala
 
   override def asList: ju.List[AttributeInfo] = new ju.ArrayList(attributes)
 

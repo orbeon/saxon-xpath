@@ -20,8 +20,6 @@ import java.util.ArrayList
 
 import java.util.Collections
 
-import java.util.Iterator
-
 import java.util.List
 
 //import scala.collection.compat._
@@ -167,6 +165,6 @@ class AtomicArray extends AtomicSequence {
     }
   }
 
-  def iterator: Iterator[AtomicValue] = content.iterator
+  def iterator: Iterator[AtomicValue] = content.iterator.asScala
 
 }

@@ -106,7 +106,7 @@ abstract class Instruction extends Expression with TailCallReturner {
 
   def computeCardinality(): Int = StaticProperty.ALLOWS_ZERO_OR_MORE
 
-  override def operands: java.lang.Iterable[Operand] = super.operands
+  override def operands: Iterable[Operand] = super.operands
 
   def processLeavingTail(output: Outputter, context: XPathContext): TailCall
 
@@ -145,7 +145,7 @@ abstract class Instruction extends Expression with TailCallReturner {
   def alwaysCreatesNewNodes(): Boolean = false
 
   def someOperandCreatesNewNodes(): Boolean = {
-    for (o <- operands.asScala) {
+    for (o <- operands) {
       val child = o.getChildExpression
       val props: Int = child.getSpecialProperties
       if ((props & StaticProperty.NO_NODES_NEWLY_CREATED) == 0) {

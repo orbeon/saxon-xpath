@@ -1,7 +1,5 @@
 package org.orbeon.saxon.om
 
-import java.{lang => jl}
-
 import org.orbeon.saxon.tree.iter.AtomicIterator
 import org.orbeon.saxon.value.AtomicValue
 
@@ -13,12 +11,11 @@ import org.orbeon.saxon.value.AtomicValue
  * An AtomicSequence is always represented as a GroundedValue: that is, the entire sequence
  * is in memory, making operations such as {@link #itemAt ( int )} and {@link #getLength} possible.
  */
-trait AtomicSequence
-    extends GroundedValue
-    with jl.Iterable[AtomicValue] {
+trait AtomicSequence extends GroundedValue {
 
   def head: AtomicValue
   def iterate(): AtomicIterator[_]
+  def iterator: Iterator[AtomicValue]
   def itemAt(n: Int): AtomicValue
   def getLength: Int
   def getCanonicalLexicalRepresentation: CharSequence

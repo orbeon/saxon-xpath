@@ -113,7 +113,7 @@ class EvaluateInstr(xpath: Expression,
   override def getIntrinsicDependencies: Int =
     StaticProperty.DEPENDS_ON_FOCUS | StaticProperty.DEPENDS_ON_XSLT_CONTEXT
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val sub = new ArrayList[Operand](8)
     if (xpathOp != null)
       sub.add(xpathOp)
@@ -130,7 +130,7 @@ class EvaluateInstr(xpath: Expression,
     if (optionsOp != null)
       sub.add(optionsOp)
     WithParam.gatherOperands(this, actualParams, sub)
-    sub
+    sub.asScala
   }
 
   def getImplementationMethod: Int = Expression.ITERATE_METHOD

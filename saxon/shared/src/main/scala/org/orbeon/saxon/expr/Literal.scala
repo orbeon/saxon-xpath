@@ -88,7 +88,7 @@ object Literal {
       case mapItem: MapItem =>
         out.startElement("map")
         out.emitAttribute("size", "" + mapItem.size)
-        for (kvp <- mapItem.keyValuePairs.asScala) {
+        for (kvp <- mapItem.keyValuePairs) {
           exportAtomicValue(kvp.key, out)
           exportValue(kvp.value, out)
         }

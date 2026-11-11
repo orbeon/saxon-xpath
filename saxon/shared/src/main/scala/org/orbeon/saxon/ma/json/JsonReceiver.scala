@@ -211,7 +211,7 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
     var key: String = null
     var escapedAtt: String = null
     var escapedKey: String = null
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       val attName: NodeName = att.nodeName
       if (attName.hasURI("")) {
         if (attName.getLocalPart.==("key")) {

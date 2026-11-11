@@ -149,7 +149,7 @@ class NumberSequenceFormatter(value: Expression,
     // else we allocate a numberer at run-time
   }
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     operandSparseList(valueOp,
       formatOp,
       groupSizeOp,
@@ -163,7 +163,7 @@ class NumberSequenceFormatter(value: Expression,
     op == null || op.getChildExpression.isInstanceOf[Literal]
 
   private def hasFixedOperands: Boolean =
-    operands.asScala.forall(isFixed)
+    operands.forall(isFixed)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextInfo: ContextItemStaticInfo): Expression = {

@@ -36,7 +36,7 @@ class TinyAttributeMap(private var tree: TinyTree, private var element: Int)
   override def getByFingerprint(fingerprint: Int, namePool: NamePool): AttributeInfo = null
 
   @NotNull
-  override def iterator: ju.Iterator[AttributeInfo] =
+  override def iterator: Iterator[AttributeInfo] =
     new AttributeInfoIterator(tree, element)
 
   override def itemAt(index: Int): AttributeInfo = {

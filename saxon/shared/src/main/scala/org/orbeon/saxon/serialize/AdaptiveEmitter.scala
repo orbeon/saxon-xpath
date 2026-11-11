@@ -228,7 +228,7 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
   private def serializeMap(map: MapItem): Unit = {
     emit("map{")
     var first: Boolean = true
-    for (pair <- map.keyValuePairs.asScala) {
+    for (pair <- map.keyValuePairs) {
       if (first) {
         first = false
       } else {

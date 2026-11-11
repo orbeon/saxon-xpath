@@ -100,13 +100,13 @@ class TryCatch(tryExpr: Expression) extends Expression {
     `type`
   }
 
-  override def operands: java.lang.Iterable[Operand] = {
+  override def operands: Iterable[Operand] = {
     val list: List[Operand] = new ArrayList[Operand]()
     list.add(tryOp)
     for (cc <- catchClauses.asScala) {
       list.add(cc.catchOp)
     }
-    list
+    list.asScala
   }
 
   override def optimize(visitor: ExpressionVisitor,

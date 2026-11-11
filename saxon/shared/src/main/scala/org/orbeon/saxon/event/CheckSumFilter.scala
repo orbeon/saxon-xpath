@@ -92,7 +92,7 @@ class CheckSumFilter(nextReceiver: Receiver)
     if (DEBUG)
       System.err.println("After startElement " + elemName.getDisplayName + ": " + checksum)
     checksumCorrect = false
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       checksum ^= hash(att.nodeName, sequence)
       checksum ^= hash(att.value, sequence)
       if (DEBUG) {

@@ -16,7 +16,6 @@ import org.orbeon.saxon.model._
 import org.orbeon.saxon.om._
 import org.orbeon.saxon.trans.{Err, XPathException}
 import org.orbeon.saxon.tree.iter.SingleAtomicIterator
-import org.orbeon.saxon.tree.jiter.MonoIterator
 
 /**
   * The AtomicValue class corresponds to the concept of an atomic value in the
@@ -166,7 +165,7 @@ abstract class AtomicValue
   override def iterate(): SingleAtomicIterator[_ <: AtomicValue] =
     new SingleAtomicIterator(this)
 
-  def iterator: util.Iterator[AtomicValue] = new MonoIterator(this)
+  def iterator: Iterator[AtomicValue] = Iterator.single(this)
 
   /**
     * Get the genre of this item

@@ -23,7 +23,7 @@ object ErrorType
   def getTargetNamespace: String = NamespaceConstant.SCHEMA
   def getEQName: String = "Q{" + NamespaceConstant.SCHEMA + "}error"
   def containsListType(): Boolean = false
-  def getPlainMemberTypes: Iterable[_ <: PlainType] = Collections.emptySet().asScala
+  def getPlainMemberTypes: Iterable[_ <: PlainType] = Set.empty
   def isBuiltInType: Boolean = true
   def getRedefinitionLevel: Int = 0
   def getSystemId: String = null

@@ -39,7 +39,7 @@ class NamePoolConverter(next: Receiver,
       newPool.allocateFingerprint(elemName.getURI, elemName.getLocalPart)
     val newElemName: CodedName = new CodedName(fp, elemName.getPrefix, newPool)
     var newAtts: AttributeMap = EmptyAttributeMap.getInstance
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       checkType(att.`type`)
       val afp: Int = newPool.allocateFingerprint(att.nodeName.getURI,
                                                  att.nodeName.getLocalPart)

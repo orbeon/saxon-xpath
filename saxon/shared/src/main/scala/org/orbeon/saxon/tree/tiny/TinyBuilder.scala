@@ -255,7 +255,7 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
         tt.markTopWithinEntity(nodeNr)
       case _ =>
     }
-    for (att <- attributes.iterator.asScala) {
+    for (att <- attributes) {
       attribute2(
         att.nodeName,
         att.`type`,

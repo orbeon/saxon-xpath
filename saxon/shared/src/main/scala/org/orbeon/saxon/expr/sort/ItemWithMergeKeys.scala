@@ -21,7 +21,7 @@ class ItemWithMergeKeys(var baseItem: Item,
 
   var sortKeyValues: List[AtomicValue] = new ArrayList[AtomicValue](sKeys.size)
 
-  for (sKey <- sKeys.asScala) {
+  for (sKey <- sKeys) {
     sortKeyValues.add(
       sKey.getSortKey.evaluateItem(context).asInstanceOf[AtomicValue])
   }

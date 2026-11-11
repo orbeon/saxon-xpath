@@ -48,7 +48,7 @@ class GeneralNodePattern(
 
   override def getItemType: ItemType = itemTyp
 
-  override def operands: java.lang.Iterable[Operand] =
+  override def operands: Iterable[Operand] =
     new Operand(this, equivalentExpr, OperandRole.SAME_FOCUS_ACTION)
 
   override def isMotionless: Boolean = false

@@ -148,7 +148,7 @@ class IntegratedFunctionCall(private var name: StructuredQName,
     out.startElement("ifCall", this)
     out.emitAttribute("name", getFunctionName)
     out.emitAttribute("type", resultType.toAlphaCode)
-    for (o <- operands.asScala)
+    for (o <- operands)
       o.getChildExpression.`export`(out)
     out.endElement()
   }
