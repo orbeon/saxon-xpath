@@ -38,11 +38,14 @@ class SaplingElement(name: String) extends SaplingNode {
     this("")
     Objects.requireNonNull(name)
     nodeName = name.getStructuredQName
-    if (!nodeName.getPrefix.isEmpty && nodeName.getURI.isEmpty) {
-      throw new IllegalArgumentException(
-        "No namespace URI for prefixed element name: " + name)
+    if (nodeName.hasURI("")) {
+      if (!nodeName.getPrefix.isEmpty) {
+        throw new IllegalArgumentException(
+          "No namespace URI for prefixed element name: " + name)
+      }
+    } else {
+      namespaces = NamespaceMap.of(nodeName.getPrefix, nodeName.getURI)
     }
-    namespaces = NamespaceMap.of(nodeName.getPrefix, nodeName.getURI)
   }
 
   def this(name: StructuredQName) = {

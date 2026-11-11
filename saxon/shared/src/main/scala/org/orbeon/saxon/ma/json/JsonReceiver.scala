@@ -279,6 +279,7 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
       output.cat("\"").cat(key).cat("\"").cat(if (indenting) " : " else ":")
     }
     val local: String = elemName.getLocalPart
+    checkParent(local, parent)
     local match {
       case "array" =>
         if (indenting) {
@@ -298,7 +299,7 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
         atStart = true
         keyChecker ::= new ju.HashSet[String]()
       case "null" =>
-        checkParent(local, parent)
+        //checkParent(local, parent)
         output.cat("null")
         atStart = false
       case "string" =>
@@ -308,10 +309,10 @@ class JsonReceiver(val pipeLine: PipelineConfiguration,
             .asAtomic
             .effectiveBooleanValue
         }
-        checkParent(local, parent)
+        //checkParent(local, parent)
         atStart = false
       case "boolean" | "number" =>
-        checkParent(local, parent)
+        //checkParent(local, parent)
         atStart = false
       case _ =>
         throw new XPathException(

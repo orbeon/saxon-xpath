@@ -16,7 +16,6 @@ class GeneralNodePattern(
 ) extends Pattern {
 
   var topNodeEquivalent: Expression = null
-  makeTopNodeEquivalent()
 
   def makeTopNodeEquivalent(): Unit = {
     equivalentExpr match {
@@ -58,6 +57,7 @@ class GeneralNodePattern(
                          contextItemType: ContextItemStaticInfo): Pattern = {
     val cit = new ContextItemStaticInfo(AnyNodeTest, maybeUndefined = false)
     equivalentExpr = equivalentExpr.typeCheck(visitor, cit)
+    makeTopNodeEquivalent()
     this
   }
 
@@ -175,6 +175,8 @@ class GeneralNodePattern(
     val n = new GeneralNodePattern(equivalentExpr.copy(rebindings), itemTyp)
     ExpressionTool.copyLocationInfo(this, n)
     n.setOriginalText(toString)
+    if (topNodeEquivalent != null)
+      n.topNodeEquivalent = topNodeEquivalent.copy(rebindings)
     n
   }
 

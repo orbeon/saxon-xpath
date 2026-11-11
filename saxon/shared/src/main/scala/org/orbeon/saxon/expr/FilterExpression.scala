@@ -373,6 +373,14 @@ class FilterExpression(base: Expression, filter: Expression)
 
   override def optimize(visitor: ExpressionVisitor,
                         contextItemType: ContextItemStaticInfo): Expression = {
+    if (visitor.optimizeForStreaming && getSelectExpression.isInstanceOf[GlobalVariableReference]) {
+      // the leading variable reference can't be a streamed node, so ignore streaming for this expression (bug 5475)
+      visitor.optimizeForStreaming = false
+      val eOpt = optimize(visitor, contextItemType)
+      visitor.optimizeForStreaming = true
+      return eOpt
+    }
+
     val config = visitor.getConfiguration
     val opt = visitor.obtainOptimizer()
     val tracing = config.getBooleanProperty(Feature.TRACE_OPTIMIZER_DECISIONS)

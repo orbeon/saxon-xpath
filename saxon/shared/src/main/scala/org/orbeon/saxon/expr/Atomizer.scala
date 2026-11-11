@@ -129,6 +129,9 @@ class Atomizer(sequence: Expression, role: RoleDiagnostic)
   def setRoleDiagnostic(role: RoleDiagnostic): Unit =
     this.roleDiagnostic = role
 
+  override def getStaticUType(contextItemType: UType): UType =
+    UType.ANY_ATOMIC.intersection(getItemType.getUType)
+
   override def simplify(): Expression = {
     // ORBEON: Don't set `untyped = true` so we can handle type annotations on our DOM.
 //    untyped = ! getPackageData.isSchemaAware

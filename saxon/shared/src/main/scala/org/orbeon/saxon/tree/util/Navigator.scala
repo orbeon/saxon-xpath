@@ -528,12 +528,21 @@ object Navigator {
           node.getSchemaType
         else
           Untyped.getInstance
-      val ns =
-        if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES))
-          node.getAllNamespaces
-        else
-          NamespaceMap.emptyMap
-      out.startElement(NameOfNode.makeName(node), annotation, node.attributes, ns, locationId, ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY | ReceiverOption.NAMESPACE_OK)
+      val elementName = NameOfNode.makeName(node)
+      var nsMap: NamespaceMap = null
+      if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES)) {
+        nsMap = node.getAllNamespaces
+      } else {
+        // Bug #5861 - we need to ensure the namespaces used in element and attribute names are declared
+        nsMap = NamespaceMap.of(elementName.getPrefix, elementName.getURI)
+        for (att <- node.attributes.iterator.asScala) {
+          val attName = att.nodeName
+          if (!attName.getPrefix.isEmpty) {
+            nsMap = nsMap.put(attName.getPrefix, attName.getURI)
+          }
+        }
+      }
+      out.startElement(elementName, annotation, node.attributes, nsMap, locationId, ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY | ReceiverOption.NAMESPACE_OK)
       // output the children
 
       for (child <- node.children)

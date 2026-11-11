@@ -1850,6 +1850,7 @@ class XQueryParser extends XPathParser {
         }
         if (t.currentToken == Token.ASSIGN) {
           val letClause = new LetClause
+          setLocation(clause, t.currentTokenStartOffset)
           clauseList.add(letClause)
           nextToken()
           val v = new LocalVariableBinding(varQName, `type`)
@@ -2948,6 +2949,8 @@ class XQueryParser extends XPathParser {
       c = t.nextChar
       c = skipSpaces(c)
       val delim = c
+      if (c != '"' && c != '\'')
+        grumble("Expected ' or \" as attribute delimiter - found '" + c + "'")
       val isNamespace = "xmlns" == attName || attName.startsWith("xmlns:")
       var end = 0
       if (isNamespace) {
@@ -3453,16 +3456,19 @@ class XQueryParser extends XPathParser {
   }
 
   @throws[XPathException]
-   override def makeStringLiteral(token: String): Literal = {
-    var lit: StringLiteral = null
-    if (token.indexOf('&') == -1) lit = new StringLiteral(token)
-    else {
-      val sb = unescape(token)
-      lit = new StringLiteral(StringValue.makeStringValue(sb))
+  override def makeStringLiteral(token: String, doUnescaping: Boolean): Literal =
+    if (doUnescaping) {
+      var lit: StringLiteral = null
+      if (token.indexOf('&') == -1) lit = new StringLiteral(token)
+      else {
+        val sb = unescape(token)
+        lit = new StringLiteral(StringValue.makeStringValue(sb))
+      }
+      setLocation(lit)
+      lit
+    } else {
+      super.makeStringLiteral(token, doUnescaping)
     }
-    setLocation(lit)
-    lit
-  }
 
   @throws[XPathException]
   override  def unescape(token: String): CharSequence = new XQueryParser.Unescaper(env.getConfiguration.getValidCharacterChecker).unescape(token)

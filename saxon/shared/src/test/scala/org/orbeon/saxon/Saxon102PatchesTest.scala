@@ -58,9 +58,9 @@ class Saxon102PatchesTest extends XPathTestBase {
   describe("Saxon 10.1 to 10.2 Upstream Patches") {
 
     describe("Version") {
-      it("must report Saxon 10.8 version") {
-        assert(Version.getProductVersion == "10.8")
-        assert(Version.getStructuredVersionNumber.sameElements(Array(10, 8, 31510)))
+      it("must report Saxon 10.9 version") {
+        assert(Version.getProductVersion == "10.9")
+        assert(Version.getStructuredVersionNumber.sameElements(Array(10, 9, 21612)))
       }
     }
 
@@ -209,6 +209,36 @@ class Saxon102PatchesTest extends XPathTestBase {
         assert(concatFn != null)
         assert(concatFn.getArity == 2)
       }
+    }
+  }
+
+  describe("Saxon 10.3 to 10.9 Upstream Patches") {
+
+    describe("10.3 & 10.5: Subsequence, Minimax on RangeExpression, and FormatNumber zero exponent") {
+      checkStrings("subsequence(('a', 'b', 'c', 'd'), 2, 2)", List("b", "c"))
+      check("min(1 to 5)", "1")
+      check("max(1 to 5)", "5")
+      check("empty(max(5 to 1))", "true")
+      check("format-number(0, '0.0e0')", "0.0e0")
+    }
+
+    describe("10.5: HashTrieMap.remove on non-existent key") {
+      check("let $m := map {'a': 1, 'b': 2} return map:size(map:remove($m, 'c'))", "2")
+    }
+
+    describe("10.6: Array lookup subscript bounds checking") {
+      checkError("let $a := [10, 20, 30] return $a?(0, 1)", "FOAY0001")
+      checkError("let $a := [10, 20, 30] return $a?(1, 4)", "FOAY0001")
+    }
+
+    describe("10.7: Regexp grouping and backreferences") {
+      check("matches('abab', '((a)(b))\\1')", "true")
+      check("matches('abab', '((a)(b))\\2\\3')", "true")
+    }
+
+    describe("10.9: DayTimeDurationValue.multiply(Long) with non-zero nanoseconds") {
+      check("xs:dayTimeDuration('PT0.6S') * 5 = xs:dayTimeDuration('PT3S')", "true")
+      check("xs:dayTimeDuration('PT0.5S') * 10 = xs:dayTimeDuration('PT5S')", "true")
     }
   }
 }

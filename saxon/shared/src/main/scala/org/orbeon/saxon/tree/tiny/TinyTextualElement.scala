@@ -63,6 +63,8 @@ class TinyTextualElement(tree: TinyTree, nodeNr: Int) extends TinyElementImpl(tr
     val namespaces =
       if ((copyOptions & CopyOptions.ALL_NAMESPACES) != 0)
         getAllNamespaces
+      else if (!getURI.isEmpty) // Bug 5616
+        NamespaceMap.of(getPrefix, getURI)
       else
         NamespaceMap.emptyMap
     receiver.startElement(

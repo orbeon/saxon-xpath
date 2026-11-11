@@ -172,10 +172,14 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
         case _ =>
       }
     }
-    val ns: NamespaceMap =
-      if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES))
-        getAllNamespaces
-      else NamespaceMap.emptyMap
+    var nsMap: NamespaceMap = null
+    var gatherAttributeNamespaces = false
+    if (CopyOptions.includes(copyOptions, CopyOptions.ALL_NAMESPACES)) {
+      nsMap = getAllNamespaces
+    } else {
+      nsMap = NamespaceMap.of(getPrefix, getURI)
+      gatherAttributeNamespaces = true
+    }
 
     val disallowNamespaceSensitiveContent =
       ((copyOptions & CopyOptions.TYPE_ANNOTATIONS) != 0) &&
@@ -212,12 +216,15 @@ class ElementImpl extends ParentNodeImpl with NamespaceResolver {
           att.value,
           att.location,
           0))
+      if (gatherAttributeNamespaces && !att.nodeName.getPrefix.isEmpty) {
+        nsMap = nsMap.put(att.nodeName.getPrefix, att.nodeName.getURI)
+      }
     }
     out.startElement(
       NameOfNode.makeName(this),
       typeCode,
       AttributeMap.fromList(atts),
-      ns,
+      nsMap,
       lLocation,
       ReceiverOption.BEQUEATH_INHERITED_NAMESPACES_ONLY | ReceiverOption.NAMESPACE_OK
     )

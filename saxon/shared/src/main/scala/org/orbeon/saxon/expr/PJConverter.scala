@@ -446,7 +446,7 @@ object PJConverter {
 
     def convert(value: Sequence,
                 targetClass: Class[_],
-                context: XPathContext): AnyRef = value.iterate().materialize
+                context: XPathContext): AnyRef = value.materialize
 
   }
 

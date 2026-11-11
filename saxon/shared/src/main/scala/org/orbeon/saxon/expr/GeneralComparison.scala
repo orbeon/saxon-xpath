@@ -505,22 +505,7 @@ abstract class GeneralComparison(p0: Expression, op: Int, p1: Expression)
   }
 
   override def evaluateItem(context: XPathContext): BooleanValue =
-    comparisonCardinality match {
-      case ONE_TO_ONE =>
-        val value0 = getLhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-        val value1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-        BooleanValue.get(evaluateOneToOne(value0, value1, context))
-      case MANY_TO_ONE =>
-        val iter0 = getLhsExpression.iterate(context)
-        val value1 = getRhsExpression.evaluateItem(context).asInstanceOf[AtomicValue]
-        BooleanValue.get(evaluateManyToOne(iter0, value1, context))
-      case MANY_TO_MANY =>
-        val iter1 = getLhsExpression.iterate(context)
-        val iter2 = getRhsExpression.iterate(context)
-        BooleanValue.get(evaluateManyToMany(iter1, iter2, context))
-      case _ =>
-        null
-    }
+    BooleanValue.get(effectiveBooleanValue(context))
 
   def call(context: XPathContext, arguments: Array[Sequence]): BooleanValue =
     comparisonCardinality match {

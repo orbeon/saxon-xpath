@@ -174,7 +174,7 @@ object MapFunctionSet {
       val key: AtomicValue = arguments(0).head.asInstanceOf[AtomicValue]
       assert(key != null)
       val value: GroundedValue =
-        arguments(1).iterate().materialize
+        arguments(1).materialize
       new SingleEntryMap(key, value)
     }
 

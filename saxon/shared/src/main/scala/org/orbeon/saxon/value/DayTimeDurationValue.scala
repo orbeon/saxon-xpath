@@ -270,13 +270,13 @@ class DayTimeDurationValue
     }
 
   override def multiply(factor: Long): DurationValue = // Fast path for simple cases
-    if (Math.abs(factor) < 0x7fffffff && Math.abs(seconds) < 0x7fffffff) {
+    if (Math.abs(factor) < 0x7fffffff && Math.abs(seconds) < 0x7fffffff && nanoseconds == 0) {
       new DayTimeDurationValue(
         0,
         0,
         0,
         seconds * factor * (if (negative) -1 else 1),
-        (nanoseconds * factor * (if (negative) -1 else 1)).toInt)
+        0)
     } else {
       multiply(BigDecimal.valueOf(factor))
     }

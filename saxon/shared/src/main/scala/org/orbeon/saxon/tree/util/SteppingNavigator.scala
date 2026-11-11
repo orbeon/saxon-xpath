@@ -94,6 +94,7 @@ object SteppingNavigator {
   ) extends AxisIterator {
 
     private var current: N = _
+    private var done: Boolean = false
     private var stepper: Stepper[N] = _
 
     if (! (includeSelf && test.test(start)))
@@ -130,13 +131,18 @@ object SteppingNavigator {
         stepper = new FollowingFilteredNodeStepper(start, test)
     }
 
-    def next(): N = if (current == null) {
-      current = start
-      start
-    } else {
-      val curr = stepper.step(current)
-      current = curr
-      current
-    }
+    def next(): N =
+      if (done) {
+        null.asInstanceOf[N]
+      } else if (current == null) {
+        current = start
+        start
+      } else {
+        val curr = stepper.step(current)
+        if (curr == null)
+          done = true
+        current = curr
+        current
+      }
   }
 }

@@ -61,7 +61,7 @@ class Closure extends Sequence with ContextOriginator {
             case closure: Closure =>
               val cdepth = closure.depth
               if (cdepth >= 10)
-                local(i) = local(i).iterate().materialize
+                local(i) = local(i).materialize
               else if (cdepth + 1 > depth)
                 depth = cdepth + 1
             case _ =>

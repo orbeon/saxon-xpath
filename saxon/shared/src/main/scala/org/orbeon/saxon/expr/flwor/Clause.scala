@@ -6,7 +6,7 @@ import java.util.List
 import org.orbeon.saxon.event.Outputter
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.flwor.Clause._
-import org.orbeon.saxon.expr.parser.{ContextItemStaticInfo, ExpressionVisitor, PathMap, RebindingMap}
+import org.orbeon.saxon.expr.parser._
 import org.orbeon.saxon.s9api.Location
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.trans.XPathException
@@ -39,8 +39,10 @@ object Clause {
  */
 abstract class Clause {
 
-  var location: Location = _
+  var location: Location = Loc.NONE
   var packageData: PackageData = _
+
+  def getLocation: Location = if (location == null) Loc.NONE else location
 
   var repeated: Boolean = _
 

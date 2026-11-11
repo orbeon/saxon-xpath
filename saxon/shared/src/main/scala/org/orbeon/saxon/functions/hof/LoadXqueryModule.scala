@@ -220,7 +220,7 @@ class LoadXqueryModule extends SystemFunction {
       var value: GroundedValue = null
       val qNameValue: QNameValue =
         new QNameValue(variable.getVariableQName, BuiltInAtomicType.QNAME)
-      if (qNameValue.getNamespaceURI == moduleUri) {
+      if (qNameValue.getNamespaceURI == moduleUri && !variable.isPrivate) {
         try value = variable.evaluateVariable(newContext)
         catch {
           case e: XPathException => {
@@ -258,7 +258,7 @@ class LoadXqueryModule extends SystemFunction {
         function = functionIterator.next()
         functionQName =
           new QNameValue(function.getFunctionName, BuiltInAtomicType.QNAME)
-        if (functionQName.getNamespaceURI == moduleUri) {
+        if (functionQName.getNamespaceURI == moduleUri && !function.isPrivate) {
           val userFunction: UserFunction = function.getUserFunction
           val buf: UserFunctionReference.BoundUserFunction =
             new UserFunctionReference.BoundUserFunction(agent,

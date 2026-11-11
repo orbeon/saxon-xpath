@@ -177,7 +177,12 @@ class ParseOptions {
       if (parserFeatures == null) {
         parserFeatures = new HashMap()
       }
-      parserFeatures.putAll(options.parserFeatures)
+      // Bug 5167
+      options.parserFeatures.entrySet().forEach { feature =>
+        if (feature.getValue) {
+          parserFeatures.put(feature.getKey, true)
+        }
+      }
     }
     if (options.dtdValidation != Validation.DEFAULT) {
       setDTDValidationMode(options.dtdValidation)

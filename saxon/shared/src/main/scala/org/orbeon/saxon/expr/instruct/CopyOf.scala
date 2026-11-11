@@ -213,6 +213,9 @@ class CopyOf(select: Expression,
 
   override def mayCreateNewNodes(): Boolean = !getSelect.getItemType.isPlainType
 
+  override def getStaticUType(contextItemType: UType): UType =
+    getSelect.getStaticUType(contextItemType)
+
   override def getInstructionNameCode: Int = StandardNames.XSL_COPY_OF
 
   def setRequireDocumentOrElement(requireDocumentOrElement: Boolean): Unit = {

@@ -475,14 +475,11 @@ abstract class Expression
   def getLocation: Location = {
     var limit = 0
     var exp: Expression = this
-    while (limit < 10)
-      if ((exp.location == null || exp.location == Loc.NONE) && exp.parentExpression != null) {
-        exp = exp.parentExpression
-        limit = limit + 1
-      } else {
-        return exp.location
-      }
-    exp.location
+    while (limit < 10 && (exp.location == null || exp.location == Loc.NONE) && exp.parentExpression != null) {
+      exp = exp.parentExpression
+      limit = limit + 1
+    }
+    if (exp.location == null) Loc.NONE else exp.location
   }
 
   def getConfiguration: Configuration =

@@ -5,11 +5,13 @@ import org.orbeon.saxon.expr.Expression._
 import org.orbeon.saxon.expr._
 import org.orbeon.saxon.expr.instruct.WherePopulated._
 import org.orbeon.saxon.expr.parser.RebindingMap
+import org.orbeon.saxon.ma.arrays.ArrayItem
 import org.orbeon.saxon.ma.map.MapItem
 import org.orbeon.saxon.model.Type
-import org.orbeon.saxon.om.{Item, NodeInfo, SequenceIterator}
+import org.orbeon.saxon.om.{GroundedValue, Item, NodeInfo, SequenceIterator}
 import org.orbeon.saxon.trace.ExpressionPresenter
 import org.orbeon.saxon.value.{Base64BinaryValue, HexBinaryValue, StringValue}
+import scala.jdk.CollectionConverters._
 
 // ORBEON: Unused class.
 // With `WherePopulatedOutputter`
@@ -33,6 +35,15 @@ object WherePopulated {
       } else item match {
         case item1: MapItem =>
           item1.isEmpty
+        case arrayItem: ArrayItem =>
+          for (value <- arrayItem.members) {
+            for (it <- value.asIterable.asScala) {
+              if (!isDeemedEmpty(it)) {
+                return false
+              }
+            }
+          }
+          true
         case _ =>
           false
       }

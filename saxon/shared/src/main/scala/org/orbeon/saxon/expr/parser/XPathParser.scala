@@ -2028,7 +2028,7 @@ class XPathParser {
       case Token.STRING_LITERAL =>
         return parseStringLiteral(true)
       case Token.STRING_LITERAL_BACKTICKED =>
-        return parseStringLiteral(true)
+        return parseBackTickedStringLiteral()
       case Token.STRING_CONSTRUCTOR_INITIAL =>
         return parseStringConstructor
       case Token.NUMBER =>
@@ -2171,10 +2171,17 @@ class XPathParser {
 
   @throws[XPathException]
   def parseStringLiteral(traceable: Boolean): Expression = {
-    val literal = makeStringLiteral(t.currentTokenValue)
+    val literal = makeStringLiteral(t.currentTokenValue, doUnescaping = true)
     nextToken()
     if (traceable) makeTracer(literal, null)
     else literal
+  }
+
+  @throws[XPathException]
+  def parseBackTickedStringLiteral(): Expression = {
+    val literal = makeStringLiteral(t.currentTokenValue, doUnescaping = false)
+    nextToken()
+    makeTracer(literal, null)
   }
 
   @throws[XPathException]
@@ -2227,7 +2234,11 @@ class XPathParser {
   }
 
   @throws[XPathException]
-  def makeStringLiteral(currentTokenValue: String): Literal = {
+  def makeStringLiteral(currentTokenValue: String): Literal =
+    makeStringLiteral(currentTokenValue, doUnescaping = true)
+
+  @throws[XPathException]
+  def makeStringLiteral(currentTokenValue: String, doUnescaping: Boolean): Literal = {
     val literal = new StringLiteral(currentTokenValue)
     setLocation(literal)
     literal

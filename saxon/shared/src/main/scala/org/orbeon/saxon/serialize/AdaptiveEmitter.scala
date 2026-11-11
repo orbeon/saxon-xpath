@@ -164,14 +164,14 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
       case Type.ATTRIBUTE =>
         emit(node.getDisplayName)
         emit("=\"")
-        emit(node.getStringValueCS)
+        emit(escapeAttributeValue(node.getStringValueCS))
         emit("\"")
       case Type.NAMESPACE =>
         emit(
           if (node.getLocalPart.isEmpty) "xmlns"
           else "xmlns:" + node.getLocalPart)
         emit("=\"")
-        emit(node.getStringValueCS)
+        emit(escapeAttributeValue(node.getStringValueCS))
         emit("\"")
       case _ =>
         var sw: StringWriter = new StringWriter()
@@ -189,9 +189,26 @@ class AdaptiveEmitter(pipe: PipelineConfiguration, private var writer: Writer)
         var sProps: SerializationProperties =
           new SerializationProperties(props, cmi)
         QueryResult.serialize(node, new StreamResult(sw), sProps)
-        emit(sw.toString.trim())
+        emit(sw.toString)
 
     }
+  }
+
+  private def escapeAttributeValue(value: CharSequence): String = {
+    val sb = new java.lang.StringBuilder(value.length * 2)
+    for (i <- 0 until value.length) {
+      value.charAt(i) match {
+        case '\r' => sb.append("&#xD;")
+        case '\t' => sb.append("&#x9;")
+        case '\n' => sb.append("&#xA;")
+        case '&'  => sb.append("&amp;")
+        case '<'  => sb.append("&lt;")
+        case '>'  => sb.append("&gt;")
+        case '"'  => sb.append("&quot;")
+        case c    => sb.append(c)
+      }
+    }
+    sb.toString
   }
 
   private def serializeArray(array: ArrayItem): Unit = {

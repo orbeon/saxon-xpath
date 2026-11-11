@@ -1108,14 +1108,20 @@ class SerializerFactory {
   private def checkMethod(key: String, value: String): String = {
     var finalValue = value
     if (!("xml" == finalValue) && !("html" == finalValue) && !("xhtml" == finalValue) && !("text" == finalValue)) {
-      if (!(SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD == key) && ("json" == finalValue || "adaptive" == finalValue))
-        return finalValue
+      var allowed: String = null
+      if (SaxonOutputKeys.JSON_NODE_OUTPUT_METHOD == key) {
+        allowed = "xml|html|xhtml|text"
+      } else {
+        allowed = "xml|html|xhtml|text|json|adaptive"
+        if ("json" == finalValue || "adaptive" == finalValue)
+          return finalValue
+      }
       if (value.startsWith("{"))
         finalValue = "Q" + finalValue
       if (SerializerFactory.isValidEQName(finalValue))
         checkExtensions(finalValue)
       else
-        throw new XPathException("Invalid value (" + finalValue + ") for serialization method: " + "must be xml|html|xhtml|text|json|adaptive, or a QName in 'Q{uri}local' form", "SEPM0016")
+        throw new XPathException("Invalid value (" + finalValue + ") for serialization method: " + "must be " + allowed + ", or a QName in 'Q{uri}local' form", "SEPM0016")
     }
     finalValue
   }

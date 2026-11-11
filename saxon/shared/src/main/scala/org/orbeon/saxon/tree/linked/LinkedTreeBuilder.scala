@@ -137,6 +137,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
                    location: Location,
                    properties: Int): Unit = {
     var lSuppliedAttributes = suppliedAttributes
+    var lLocation = location
     if (currentNode == null) {
       startDocument(ReceiverOption.NONE)
       currentRoot.asInstanceOf[DocumentImpl].imaginary = true
@@ -157,6 +158,10 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
           xmlId.location,
           xmlId.properties))
     }
+    if (lLocation.getSystemId == null) {
+      // Bug 5800
+      lLocation = new Loc(getSystemId, lLocation.getLineNumber, lLocation.getColumnNumber)
+    }
     val elem = nodeFactory.makeElementNode(
       currentNode,
       elemName,
@@ -165,7 +170,7 @@ class LinkedTreeBuilder(pipe: PipelineConfiguration, mutable: Boolean = false) e
       lSuppliedAttributes,
       namespaceStack.head,
       pipe,
-      location,
+      lLocation,
       if (allocateSequenceNumbers) { nextNodeNumber += 1; nextNodeNumber - 1 } else -1
     )
 

@@ -389,9 +389,13 @@ class LookupExpression(start: Expression, step: Expression)
         if (baseItem.isInstanceOf[ArrayItem]) {
           var arrayAccess: MappingFunction = (index) =>
             if (index.isInstanceOf[IntegerValue]) {
+              val validIndex = ArrayFunctionSet.checkSubscript(
+                index.asInstanceOf[IntegerValue],
+                baseItem.asInstanceOf[ArrayItem].arrayLength()
+              )
               var member: GroundedValue = baseItem
                 .asInstanceOf[ArrayItem]
-                .get(index.asInstanceOf[IntegerValue].longValue.toInt - 1)
+                .get(validIndex - 1)
               member.iterate()
             } else {
               var exception: XPathException = new XPathException(

@@ -442,7 +442,11 @@ class TinyBuilder(pipe: PipelineConfiguration) extends Builder(pipe) {
     siblingsAtDepth(currentDepth) += 1
 
     val localLocation = locationId.getSystemId
-    tt.setSystemId(nodeNr, localLocation)
+    if (isUseEventLocation && localLocation != null) {
+      tt.setSystemId(nodeNr, localLocation)
+    } else if (currentDepth == 1) {
+      tt.setSystemId(nodeNr, systemId)
+    }
     if (localLocation != null && localLocation != baseURI) {
       uniformBaseURI = false
       tree.uniformBaseUri = null
