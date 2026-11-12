@@ -3,19 +3,16 @@ import org.scalajs.linker.interface.ESVersion
 
 enablePlugins(ScalaJSPlugin)
 
-val saxonVersion = "10.9.0.3"
+val saxonVersion = "10.9.0.4"
 
-//val scala212 = "2.12.19"
 val scala213 = "2.13.18"
 val scala3   = "3.7.4"
 
-val mainScalaVersion       = scala213
 val supportedScalaVersions = List(scala213, scala3)
 
-val SaxVersion                    = "2.0.2.10-SNAPSHOT"
-val ScalaTestVersion              = "3.2.20"
-//val ScalaCollectionCompatVersion  = "2.12.0"
-val ScalaJsTimeVersion            = "2.6.0"
+val SaxVersion         = "2.0.2.10-SNAPSHOT"
+val ScalaTestVersion   = "3.2.20"
+val ScalaJsTimeVersion = "2.6.0"
 
 def rewritePackage(content: String): String =
   content
